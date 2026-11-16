@@ -299,6 +299,9 @@ export const pl: Messages = {
   "prefs.rulesChanged": "zmienione: {count}",
   "prefs.rulesLibrary": "Biblioteka założeń: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteka założeń: {value} {unit} (zakres {low}–{high})",
+  "prefs.accessTitle": "Dostępność peronów",
+  "prefs.accessIntro":
+    "Limity stopnia i szczeliny między peronem a pociągiem (TSI PRM) oraz wysokość podłogi dla pociągów bez tej wartości w katalogu. Linie są sprawdzane na każdym przystanku.",
   "prefs.vehicles": "Używane pojazdy (z katalogu pojazdów)",
   "prefs.switches": "Rozjazdy (z katalogu rozjazdów)",
   "prefs.calendar": "Kalendarz, popyt i koszty",

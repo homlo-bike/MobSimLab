@@ -297,6 +297,9 @@ export const yo: Messages = {
   "prefs.rulesChanged": "tí a yí padà: {count}",
   "prefs.rulesLibrary": "Ilé ìkàwé àròsọ: {value} {unit}",
   "prefs.rulesLibraryRange": "Ilé ìkàwé àròsọ: {value} {unit} (ìwọ̀n {low}–{high})",
+  "prefs.accessTitle": "Ìráyè pèpéle",
+  "prefs.accessIntro":
+    "Ààlà àtẹ̀gùn àti àlàfo láàrin pèpéle àti ọkọ̀ (TSI PRM), àti gíga ilẹ̀ fún ọkọ̀ tí kò ní nínú àkójọ. A ń ṣàyẹ̀wò àwọn ìlà ní gbogbo ibùdó.",
   "prefs.vehicles": "Àwọn ọkọ̀ tí a ń lò, láti inú àkójọ ọkọ̀",
   "prefs.switches": "Àwọn ìyípadà ojú irin, láti inú àkójọ ìyípadà",
   "prefs.calendar": "Kàlẹ́ńdà, ìbéèrè àti iye owó",

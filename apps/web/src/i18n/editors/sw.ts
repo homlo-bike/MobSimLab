@@ -259,6 +259,17 @@ export const editorsSw = {
   "rail.line.needsTrain": "Chagua treni.",
   "rail.line.lastAfterFirst": "Kuondoka kwa mwisho lazima kuwe baada ya kwa kwanza.",
   "rail.line.headwayMin": "Vipindi lazima viwe angalau dakika 1.",
+  "rail.access.title": "Ufikiaji wa jukwaa",
+  "rail.access.level": "Kupanda kwa usawa",
+  "rail.access.step": "Kupanda kwa ngazi",
+  "rail.access.aid": "Msaada wa kupanda unahitajika",
+  "rail.access.clash": "Treni ni pana kuliko ukingo wa jukwaa unavyoruhusu",
+  "rail.access.detail": "Sakafu {vertical} kutoka jukwaa la mm {platform} · pengo {gap}",
+  "rail.access.floorOnly": "Sakafu {vertical} kutoka jukwaa la mm {platform}",
+  "rail.access.floorAssumed":
+    "Treni hii haina kimo cha sakafu kwenye orodha ya magari, kwa hiyo thamani chaguo-msingi ya aina hii ya usafiri, mm {value} (Mapendeleo), inachukuliwa.",
+  "rail.access.short":
+    "Jukwaa la {platform} ni fupi mno kwa treni ya {train} pamoja na {tolerance} ya ustahimilivu wa kusimama.",
 
   "rail.hint.select":
     "Bofya stesheni, reli, swichi au ishara kuihariri. Buruta stesheni na nukta za reli; buruta swichi au ishara kando ya reli yake.",

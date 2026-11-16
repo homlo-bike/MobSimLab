@@ -301,6 +301,9 @@ export const id: Messages = {
   "prefs.rulesChanged": "{count} diubah",
   "prefs.rulesLibrary": "Pustaka asumsi: {value} {unit}",
   "prefs.rulesLibraryRange": "Pustaka asumsi: {value} {unit} (rentang {low}–{high})",
+  "prefs.accessTitle": "Aksesibilitas peron",
+  "prefs.accessIntro":
+    "Batas anak tangga dan celah antara peron dan kereta (TSI PRM), serta tinggi lantai untuk kereta yang tidak punya nilainya di katalog. Jalur diperiksa di setiap pemberhentian.",
   "prefs.vehicles": "Kendaraan yang digunakan (dari katalog kendaraan)",
   "prefs.switches": "Wesel (dari katalog wesel)",
   "prefs.calendar": "Kalender, permintaan, dan biaya",

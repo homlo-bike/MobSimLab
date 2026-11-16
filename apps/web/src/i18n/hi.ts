@@ -297,6 +297,9 @@ export const hi: Messages = {
   "prefs.rulesChanged": "बदले गए: {count}",
   "prefs.rulesLibrary": "धारणा पुस्तकालय: {value} {unit}",
   "prefs.rulesLibraryRange": "धारणा पुस्तकालय: {value} {unit} (सीमा {low}–{high})",
+  "prefs.accessTitle": "प्लेटफ़ॉर्म सुगम्यता",
+  "prefs.accessIntro":
+    "प्लेटफ़ॉर्म और ट्रेन के बीच सीढ़ी और अंतर की सीमाएँ (TSI PRM), और सूची में न होने वाली ट्रेनों की फ़र्श ऊँचाई। लाइनें हर स्टॉप पर जाँची जाती हैं।",
   "prefs.vehicles": "इस्तेमाल किए गए वाहन, वाहन सूची से",
   "prefs.switches": "पटरी स्विच, स्विच सूची से",
   "prefs.calendar": "कैलेंडर, माँग और लागत",

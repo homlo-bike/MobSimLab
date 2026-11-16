@@ -261,6 +261,17 @@ export const editorsDe = {
   "rail.line.needsTrain": "Wählen Sie einen Zug.",
   "rail.line.lastAfterFirst": "Die letzte Abfahrt muss nach der ersten liegen.",
   "rail.line.headwayMin": "Der Takt muss mindestens 1 min sein.",
+  "rail.access.title": "Barrierefreier Einstieg",
+  "rail.access.level": "Niveaugleicher Einstieg",
+  "rail.access.step": "Einstieg mit Stufe",
+  "rail.access.aid": "Einstiegshilfe nötig",
+  "rail.access.clash": "Zug breiter als die Bahnsteigkante zulässt",
+  "rail.access.detail": "Fußboden {vertical} zum {platform}-mm-Bahnsteig · Spalt {gap}",
+  "rail.access.floorOnly": "Fußboden {vertical} zum {platform}-mm-Bahnsteig",
+  "rail.access.floorAssumed":
+    "Für diesen Zug fehlt im Fahrzeugkatalog die Fußbodenhöhe; angenommen wird der Standardwert des Verkehrsmittels von {value} mm (Einstellungen).",
+  "rail.access.short":
+    "Bahnsteig {platform} ist zu kurz für einen {train}-Zug plus {tolerance} Haltetoleranz.",
 
   "rail.hint.select":
     "Klicken Sie auf eine Station, ein Gleis, eine Weiche oder ein Signal, um es zu bearbeiten. Ziehen Sie Stationen und Gleispunkte; ziehe eine Weiche oder ein Signal entlang seines Gleises.",

@@ -301,6 +301,9 @@ export const ru: Messages = {
   "prefs.rulesChanged": "изменено: {count}",
   "prefs.rulesLibrary": "Библиотека допущений: {value} {unit}",
   "prefs.rulesLibraryRange": "Библиотека допущений: {value} {unit} (диапазон {low}–{high})",
+  "prefs.accessTitle": "Доступность платформ",
+  "prefs.accessIntro":
+    "Пределы ступеньки и зазора между платформой и поездом (TSI PRM) и высота пола для поездов без неё в каталоге. Линии проверяются на каждой остановке.",
   "prefs.vehicles": "Используемый подвижной состав из каталога",
   "prefs.switches": "Стрелочные переводы из каталога стрелок",
   "prefs.calendar": "Календарь, спрос и затраты",

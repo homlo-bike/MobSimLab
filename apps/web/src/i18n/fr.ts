@@ -302,6 +302,9 @@ export const fr: Messages = {
   "prefs.rulesChanged": "{count} modifiées",
   "prefs.rulesLibrary": "Bibliothèque d'hypothèses : {value} {unit}",
   "prefs.rulesLibraryRange": "Bibliothèque d'hypothèses : {value} {unit} (plage {low}–{high})",
+  "prefs.accessTitle": "Accessibilité des quais",
+  "prefs.accessIntro":
+    "Limites de marche et de lacune entre quai et train (STI PMR), et hauteur de plancher utilisée pour les trains qui n'en ont pas dans le catalogue. Les lignes sont vérifiées à chaque arrêt.",
   "prefs.vehicles": "Véhicules utilisés, depuis le catalogue de véhicules",
   "prefs.switches": "Aiguillages, depuis le catalogue d’aiguillages",
   "prefs.calendar": "Calendrier, demande et coûts",

@@ -293,6 +293,9 @@ export const ko: Messages = {
   "prefs.rulesChanged": "{count}개 변경됨",
   "prefs.rulesLibrary": "가정값 라이브러리: {value} {unit}",
   "prefs.rulesLibraryRange": "가정값 라이브러리: {value} {unit} (범위 {low}–{high})",
+  "prefs.accessTitle": "승강장 접근성",
+  "prefs.accessIntro":
+    "승강장과 열차 사이 단차·틈 한도(TSI PRM)와 차량 목록에 바닥 높이가 없는 열차에 쓰는 값. 노선은 모든 정류장에서 이를 기준으로 검사됩니다.",
   "prefs.vehicles": "사용 차량(차량 카탈로그에서)",
   "prefs.switches": "분기기(분기기 카탈로그에서)",
   "prefs.calendar": "달력, 수요, 비용",

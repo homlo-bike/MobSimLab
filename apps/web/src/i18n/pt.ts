@@ -300,6 +300,9 @@ export const pt: Messages = {
   "prefs.rulesChanged": "{count} alterados",
   "prefs.rulesLibrary": "Biblioteca de premissas: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteca de premissas: {value} {unit} (intervalo {low}–{high})",
+  "prefs.accessTitle": "Acessibilidade da plataforma",
+  "prefs.accessIntro":
+    "Limites de degrau e vão entre plataforma e trem (ETI PMR) e a altura de piso usada para trens sem dado no catálogo. As linhas são verificadas em cada parada.",
   "prefs.vehicles": "Veículos usados, do catálogo de veículos",
   "prefs.switches": "Aparelhos de mudança de via, do catálogo",
   "prefs.calendar": "Calendário, demanda e custos",

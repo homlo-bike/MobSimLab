@@ -260,6 +260,17 @@ export const editorsHi = {
   "rail.line.needsTrain": "एक गाड़ी चुनें।",
   "rail.line.lastAfterFirst": "अंतिम प्रस्थान पहले के बाद होना चाहिए।",
   "rail.line.headwayMin": "अंतराल कम से कम 1 मिनट होना चाहिए।",
+  "rail.access.title": "प्लेटफ़ॉर्म से पहुँच",
+  "rail.access.level": "समतल चढ़ाई",
+  "rail.access.step": "सीढ़ी के साथ चढ़ाई",
+  "rail.access.aid": "चढ़ने में सहायता ज़रूरी",
+  "rail.access.clash": "ट्रेन प्लेटफ़ॉर्म किनारे की अनुमति से चौड़ी है",
+  "rail.access.detail": "फ़र्श {platform} मिमी प्लेटफ़ॉर्म से {vertical} · अंतर {gap}",
+  "rail.access.floorOnly": "फ़र्श {platform} मिमी प्लेटफ़ॉर्म से {vertical}",
+  "rail.access.floorAssumed":
+    "वाहन सूची में इस ट्रेन की फ़र्श ऊँचाई नहीं है, इसलिए साधन का डिफ़ॉल्ट {value} मिमी (प्राथमिकताएँ) माना गया।",
+  "rail.access.short":
+    "प्लेटफ़ॉर्म {platform}, {train} ट्रेन और {tolerance} रुकने की छूट के लिए बहुत छोटा है।",
 
   "rail.hint.select":
     "संपादित करने के लिए स्टेशन, पटरी, स्विच या सिग्नल पर क्लिक करें। स्टेशनों और पटरी के बिंदुओं को खींचें; स्विच या सिग्नल को उसकी पटरी पर खींचें।",

@@ -299,6 +299,9 @@ export const ur: Messages = {
   "prefs.rulesChanged": "تبدیل شدہ: {count}",
   "prefs.rulesLibrary": "مفروضات کی لائبریری: {value} {unit}",
   "prefs.rulesLibraryRange": "مفروضات کی لائبریری: {value} {unit} (حد {low}–{high})",
+  "prefs.accessTitle": "پلیٹ فارم تک رسائی",
+  "prefs.accessIntro":
+    "پلیٹ فارم اور ٹرین کے درمیان سیڑھی اور خلا کی حدیں (TSI PRM)، اور فہرست میں نہ ہونے والی ٹرینوں کے فرش کی اونچائی۔ لائنیں ہر اسٹاپ پر جانچی جاتی ہیں۔",
   "prefs.vehicles": "استعمال شدہ گاڑیاں، گاڑیوں کی فہرست سے",
   "prefs.switches": "پٹری کے سوئچ، سوئچوں کی فہرست سے",
   "prefs.calendar": "کیلنڈر، طلب اور لاگت",

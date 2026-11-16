@@ -14,7 +14,8 @@ import {
   updateLine,
 } from "./serviceLines";
 import { TimeDistanceGraph } from "./TimeDistanceGraph";
-import type { LonLat, Network, RailView, ServiceLine, ServicePublication } from "./types";
+import { type Access, accessRules, lineAccess } from "./platformAccess";
+import type { CatalogueTrain, LonLat, Network, RailView, ServiceLine, ServicePublication } from "./types";
 
 /** The last publication, and whether the drawing changed since. */
 export interface Publication {
@@ -34,6 +35,8 @@ interface Props {
   setPicking: (id: string | null) => void;
   newLine: () => void;
   show: (at: LonLat | null, ref: number | null) => void;
+  /** The project's design rules (Project preferences) as `<mode>.<field>`; the library's when absent. */
+  designValues?: Readonly<Record<string, number>> | null;
 }
 
 const field = "rounded border border-slate-300 bg-slate-50 px-2 py-1";
@@ -62,6 +65,7 @@ export function ServiceLinesPanel({
   setPicking,
   newLine,
   show,
+  designValues = null,
 }: Props) {
   const { t, tn } = useI18n();
   const lines = doc.lines ?? [];
@@ -126,6 +130,7 @@ export function ServiceLinesPanel({
                   picking={picking === l.id}
                   setPicking={(on) => setPicking(on ? l.id : null)}
                   show={show}
+                  designValues={designValues}
                   report={publication?.stale ? null : r}
                   published={publication?.stale ? null : (publication?.result ?? null)}
                 />
@@ -190,6 +195,7 @@ function LineEditor({
   picking,
   setPicking,
   show,
+  designValues,
   report,
   published,
 }: {
@@ -201,6 +207,7 @@ function LineEditor({
   picking: boolean;
   setPicking: (on: boolean) => void;
   show: (at: LonLat | null, ref: number | null) => void;
+  designValues: Readonly<Record<string, number>> | null;
   report: ServicePublication["lines"][number] | null;
   /** The publication the report comes from, for the time-distance graph. */
   published: ServicePublication | null;
@@ -318,6 +325,16 @@ function LineEditor({
         </p>
       )}
 
+      {train && l.stations.length > 0 && (
+        <PlatformAccess
+          doc={doc}
+          line={l}
+          train={train}
+          designValues={designValues}
+          show={(id) => show(lonlat(id), id)}
+        />
+      )}
+
       <Row label={t("rail.line.first")}>
         <TimeInput
           label={t("rail.line.first")}
@@ -396,6 +413,87 @@ function LineEditor({
       >
         {t("rail.line.delete")}
       </button>
+    </div>
+  );
+}
+
+const ACCESS_STYLE: Record<Access, string> = {
+  level: "bg-emerald-100 text-emerald-900",
+  step: "bg-sky-100 text-sky-900",
+  aid: "bg-amber-100 text-amber-900",
+  clash: "bg-red-100 text-red-900",
+};
+
+/** Purpose: "+20 mm" / "−150 mm" (a signed step: positive is up into the train). */
+const signedMm = (mm: number) => `${mm > 0 ? "+" : mm < 0 ? "−" : "±"}${Math.abs(Math.round(mm))} mm`;
+
+/**
+ * Purpose: the platform access check of a line (TSI PRM step and gap, platform length) at each stop, against
+ * the limits in Project preferences. A train without a floor height in the catalogue is checked at the mode's
+ * default floor height, and says so.
+ */
+function PlatformAccess({
+  doc,
+  line,
+  train,
+  designValues,
+  show,
+}: {
+  doc: Network;
+  line: ServiceLine;
+  train: CatalogueTrain;
+  designValues: Readonly<Record<string, number>> | null;
+  show: (station: number) => void;
+}) {
+  const { t } = useI18n();
+  const stops = lineAccess(doc, line, train, (m) => accessRules(designValues, m));
+  if (stops.length === 0) return null;
+  const assumed = stops[0]!.floor_assumed ? stops[0]!.floor_height_mm : null;
+  return (
+    <div className="rounded border border-slate-200 p-2 text-xs" data-testid="platform-access">
+      <p className="font-semibold text-slate-700">{t("rail.access.title")}</p>
+      {assumed !== null && (
+        <p className="mt-1 rounded bg-amber-50 px-1.5 py-1 text-amber-900" data-testid="floor-assumed">
+          {t("rail.access.floorAssumed", { value: assumed })}
+        </p>
+      )}
+      <ul className="mt-1 flex flex-col gap-1">
+        {stops.map((s) => (
+          <li key={s.station}>
+            <div className="flex flex-wrap items-center gap-x-1.5">
+              <button
+                type="button"
+                onClick={() => show(s.station)}
+                className="min-w-0 truncate rounded px-0.5 text-start hover:bg-slate-100"
+              >
+                {s.name}
+              </button>
+              <span className={`rounded px-1 ${ACCESS_STYLE[s.access]}`}>{t(`rail.access.${s.access}`)}</span>
+              <span className="text-slate-600">
+                {s.horizontal_mm === null
+                  ? t("rail.access.floorOnly", {
+                      vertical: signedMm(s.vertical_mm),
+                      platform: s.platform_height_mm,
+                    })
+                  : t("rail.access.detail", {
+                      vertical: signedMm(s.vertical_mm),
+                      platform: s.platform_height_mm,
+                      gap: `${Math.round(s.horizontal_mm)} mm`,
+                    })}
+              </span>
+            </div>
+            {s.platform_length_m < s.needed_length_m && (
+              <p className="text-red-800">
+                {t("rail.access.short", {
+                  platform: fmtM(s.platform_length_m),
+                  train: fmtM(s.train_length_m),
+                  tolerance: fmtM(s.stopping_tolerance_m),
+                })}
+              </p>
+            )}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -9,6 +9,9 @@ Reads assumptions/parameters (validated by tools/assumptions/check.py) and write
 railway design tool checks, the field of its design values (crates/rail-design ModeParams), label and unit,
 and per rail mode the library key and [low, central, high], resolved the way check.py resolves the rail
 export. A project's own value is kept in its preferences as `<key>.<mode>`.
+
+The platform accessibility rules (ACCESS_RULES) are checked in the web app, not by the rail engine, so they are
+written with `"engine": false` and are not sent to it.
 """
 
 from __future__ import annotations
@@ -45,8 +48,19 @@ RULES: dict[str, str | tuple[str, str, str]] = {
     "platform_height_mm": "mode.platform_height_mm",
     "side_platform_width_m": "platform.side_width_m",
     "island_platform_width_m": "platform.island_width_m",
+    "platform_edge_offset_m": "platform.edge_offset_m",
+    "stopping_tolerance_m": "platform.stopping_tolerance_m",
     "acceleration_ms2": "mode.acceleration_ms2",
     "service_braking_ms2": "mode.service_braking_ms2",
+}
+# Platform accessibility check (TSI PRM step and gap, apps/web/src/features/railways/platformAccess.ts).
+ACCESS_RULES: dict[str, str] = {
+    "level_gap_horizontal_mm": "access.level_gap_horizontal_mm",
+    "level_gap_vertical_mm": "access.level_gap_vertical_mm",
+    "step_gap_horizontal_mm": "access.step_gap_horizontal_mm",
+    "step_above_platform_mm": "access.step_above_platform_mm",
+    "step_below_platform_mm": "access.step_below_platform_mm",
+    "vehicle_floor_height_mm": "vehicle.floor_height_mm",
 }
 TRAM_LIKE = {"tram", "light_rail"}
 
@@ -66,7 +80,10 @@ def render() -> str:
     ac = assumption_check()
     by_key = {p["key"]: p for p in ac.load_parameters()}
     rules = []
-    for field, spec in RULES.items():
+    specs = [(f, k, True) for f, k in RULES.items()] + [
+        (f, k, False) for f, k in ACCESS_RULES.items()
+    ]
+    for field, spec, engine in specs:
         label = None
         modes = {}
         for m in ac.RAIL_MODES:
@@ -91,6 +108,7 @@ def render() -> str:
                 "field": field,
                 "label": label or by_key[spec]["label"],
                 "unit": unit,
+                "engine": engine,
                 "modes": modes,
             }
         )

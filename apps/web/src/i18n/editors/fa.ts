@@ -240,6 +240,16 @@ export const editorsFa = {
   "rail.line.needsTrain": "یک قطار انتخاب کنید.",
   "rail.line.lastAfterFirst": "آخرین حرکت باید بعد از نخستین باشد.",
   "rail.line.headwayMin": "سرفاصله دست‌کم 1 دقیقه است.",
+  "rail.access.title": "دسترسی از سکو",
+  "rail.access.level": "سوارشدن هم‌تراز",
+  "rail.access.step": "سوارشدن با پله",
+  "rail.access.aid": "کمک برای سوارشدن لازم است",
+  "rail.access.clash": "قطار پهن‌تر از حدی است که لبهٔ سکو اجازه می‌دهد",
+  "rail.access.detail": "کف {vertical} نسبت به سکوی {platform} میلی‌متری · فاصله {gap}",
+  "rail.access.floorOnly": "کف {vertical} نسبت به سکوی {platform} میلی‌متری",
+  "rail.access.floorAssumed":
+    "این قطار در کاتالوگ وسایل نقلیه ارتفاع کف ندارد؛ مقدار پیش‌فرض شیوه، {value} میلی‌متر (تنظیمات)، فرض شد.",
+  "rail.access.short": "سکوی {platform} برای قطار {train} به‌علاوهٔ {tolerance} رواداری توقف کوتاه است.",
 
   "rail.hint.select":
     "روی ایستگاه، ریل، سوزن یا علامت کلیک کنید تا ویرایش شود. ایستگاه‌ها و نقاط ریل را بکشید تا جابه‌جا شوند؛ سوزن‌ها و علائم را در طول ریل بکشید.",

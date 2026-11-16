@@ -260,6 +260,17 @@ export const editorsUr = {
   "rail.line.needsTrain": "ٹرین چنیں۔",
   "rail.line.lastAfterFirst": "آخری روانگی پہلی کے بعد ہونی چاہیے۔",
   "rail.line.headwayMin": "وقفہ کم از کم 1 منٹ ہونا چاہیے۔",
+  "rail.access.title": "پلیٹ فارم سے رسائی",
+  "rail.access.level": "ہموار سواری",
+  "rail.access.step": "سیڑھی کے ساتھ سواری",
+  "rail.access.aid": "سوار ہونے میں مدد درکار",
+  "rail.access.clash": "ٹرین پلیٹ فارم کے کنارے کی اجازت سے زیادہ چوڑی ہے",
+  "rail.access.detail": "فرش {platform} ملی میٹر پلیٹ فارم سے {vertical} · خلا {gap}",
+  "rail.access.floorOnly": "فرش {platform} ملی میٹر پلیٹ فارم سے {vertical}",
+  "rail.access.floorAssumed":
+    "گاڑیوں کی فہرست میں اس ٹرین کے فرش کی اونچائی نہیں، اس لیے طریقے کی طے شدہ قدر {value} ملی میٹر (ترجیحات) فرض کی گئی۔",
+  "rail.access.short":
+    "پلیٹ فارم {platform}، {train} ٹرین اور {tolerance} رکنے کی گنجائش کے لیے بہت چھوٹا ہے۔",
 
   "rail.hint.select":
     "ترمیم کے لیے اسٹیشن، پٹری، سوئچ یا سگنل پر کلک کریں۔ اسٹیشن اور پٹری کے نقطے کھینچیں؛ سوئچ یا سگنل کو اس کی پٹری کے ساتھ کھینچیں۔",

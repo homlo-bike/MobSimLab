@@ -305,6 +305,9 @@ export const de: Messages = {
   "prefs.rulesChanged": "{count} geändert",
   "prefs.rulesLibrary": "Annahmenbibliothek: {value} {unit}",
   "prefs.rulesLibraryRange": "Annahmenbibliothek: {value} {unit} (Bereich {low}–{high})",
+  "prefs.accessTitle": "Barrierefreiheit am Bahnsteig",
+  "prefs.accessIntro":
+    "Grenzwerte für Stufe und Spalt zwischen Bahnsteig und Zug (TSI PRM) sowie die Fußbodenhöhe für Züge ohne Angabe im Fahrzeugkatalog. Linien werden an jedem Halt daran geprüft.",
   "prefs.vehicles": "Eingesetzte Fahrzeuge aus dem Fahrzeugkatalog",
   "prefs.switches": "Weichen aus dem Weichenkatalog",
   "prefs.calendar": "Kalender, Nachfrage und Kosten",

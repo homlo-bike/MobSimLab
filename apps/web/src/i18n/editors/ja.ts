@@ -240,6 +240,16 @@ export const editorsJa = {
   "rail.line.needsTrain": "車両を選んでください。",
   "rail.line.lastAfterFirst": "終発は始発より後にしてください。",
   "rail.line.headwayMin": "運行間隔は1分以上にしてください。",
+  "rail.access.title": "ホームのバリアフリー",
+  "rail.access.level": "段差なし乗降",
+  "rail.access.step": "段差あり乗降",
+  "rail.access.aid": "乗降補助が必要",
+  "rail.access.clash": "列車幅がホーム縁の許容を超えています",
+  "rail.access.detail": "床面 {platform} mm ホームに対し {vertical} ・すき間 {gap}",
+  "rail.access.floorOnly": "床面 {platform} mm ホームに対し {vertical}",
+  "rail.access.floorAssumed":
+    "車両カタログにこの列車の床面高さがないため、モードの既定値 {value} mm（設定）を仮定しています。",
+  "rail.access.short": "ホーム {platform} は {train} の列車と停止余裕 {tolerance} には短すぎます。",
 
   "rail.hint.select":
     "駅・線路・分岐器・信号機をクリックして編集します。駅や線路の点はドラッグで動かせます。分岐器や信号機は線路に沿ってドラッグします。",

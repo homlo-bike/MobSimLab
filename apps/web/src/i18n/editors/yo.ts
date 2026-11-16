@@ -241,6 +241,16 @@ export const editorsYo = {
   "rail.line.needsTrain": "Yan ọkọ̀ ojú irin.",
   "rail.line.lastAfterFirst": "Ìlọ ìkẹyìn gbọ́dọ̀ wà lẹ́yìn èyí àkọ́kọ́.",
   "rail.line.headwayMin": "Àlàfo gbọ́dọ̀ jẹ́ ìṣẹ́jú 1 ó kéré tán.",
+  "rail.access.title": "Ìwọlé láti pèpéle",
+  "rail.access.level": "Ìwọlé ní ìpele kan náà",
+  "rail.access.step": "Ìwọlé pẹ̀lú àtẹ̀gùn",
+  "rail.access.aid": "A nílò ìrànlọ́wọ́ láti wọlé",
+  "rail.access.clash": "Ọkọ̀ ojú-irin fẹ̀ ju bí etí pèpéle ṣe gbà",
+  "rail.access.detail": "Ilẹ̀ ọkọ̀ {vertical} láti pèpéle mm {platform} · àlàfo {gap}",
+  "rail.access.floorOnly": "Ilẹ̀ ọkọ̀ {vertical} láti pèpéle mm {platform}",
+  "rail.access.floorAssumed":
+    "Ọkọ̀ yìí kò ní gíga ilẹ̀ nínú àkójọ ọkọ̀, nítorí náà a gba ìye àìyípadà irú ọkọ̀ náà, mm {value} (Àwọn ààyò).",
+  "rail.access.short": "Pèpéle {platform} kúrú jù fún ọkọ̀ {train} pẹ̀lú {tolerance} ìfàyègbà ìdúró.",
 
   "rail.hint.select":
     "Tẹ ibùdókọ̀, ojú irin, ìyípadà tàbí àmì láti ṣàtúnṣe rẹ̀. Fa àwọn ibùdókọ̀ àti ojúàmì ojú irin; fa ìyípadà tàbí àmì lórí ojú irin rẹ̀.",

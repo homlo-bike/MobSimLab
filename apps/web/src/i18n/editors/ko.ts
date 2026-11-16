@@ -240,6 +240,16 @@ export const editorsKo = {
   "rail.line.needsTrain": "차량을 선택하세요.",
   "rail.line.lastAfterFirst": "막차는 첫차보다 늦어야 합니다.",
   "rail.line.headwayMin": "배차 간격은 1분 이상이어야 합니다.",
+  "rail.access.title": "승강장 접근성",
+  "rail.access.level": "단차 없는 승차",
+  "rail.access.step": "계단 있는 승차",
+  "rail.access.aid": "승차 보조 필요",
+  "rail.access.clash": "열차 폭이 승강장 끝 허용치보다 넓음",
+  "rail.access.detail": "바닥 {platform} mm 승강장 대비 {vertical} · 틈 {gap}",
+  "rail.access.floorOnly": "바닥 {platform} mm 승강장 대비 {vertical}",
+  "rail.access.floorAssumed":
+    "차량 목록에 이 열차의 바닥 높이가 없어 수단 기본값 {value} mm(환경설정)를 가정합니다.",
+  "rail.access.short": "승강장 {platform}은 {train} 열차와 정차 허용 오차 {tolerance}에 비해 짧습니다.",
 
   "rail.hint.select":
     "역, 선로, 분기기, 신호기를 클릭해 편집합니다. 역과 선로의 점은 드래그로 옮기고, 분기기와 신호기는 선로를 따라 드래그합니다.",

@@ -240,6 +240,17 @@ export const editorsIg = {
   "rail.line.needsTrain": "Họrọ ụgbọ oloko.",
   "rail.line.lastAfterFirst": "Ọpụpụ ikpeazụ ga-abịarịrị mgbe nke mbụ gasịrị.",
   "rail.line.headwayMin": "Oghere oge ga-abụrịrị opekata mpe nkeji 1.",
+  "rail.access.title": "Ịbanye n'ikpo okwu",
+  "rail.access.level": "Ịbanye n'otu ọkwa",
+  "rail.access.step": "Ịbanye nwere steepụ",
+  "rail.access.aid": "A chọrọ enyemaka ịbanye",
+  "rail.access.clash": "Ụgbọ okporo ígwè sara mbara karịa ihe nsọtụ ikpo okwu kwere",
+  "rail.access.detail": "Ala {vertical} site na ikpo okwu mm {platform} · oghere {gap}",
+  "rail.access.floorOnly": "Ala {vertical} site na ikpo okwu mm {platform}",
+  "rail.access.floorAssumed":
+    "Ụgbọ a enweghị ịdị elu ala na katalọgụ ụgbọ, ya mere e weere ndabara ụdị ahụ, mm {value} (Mmasị).",
+  "rail.access.short":
+    "Ikpo okwu {platform} dị mkpụmkpụ maka ụgbọ {train} gbakwunyere {tolerance} maka nkwụsị.",
 
   "rail.hint.select":
     "Pịa ọdụ, ụzọ ígwè, ihe ntụgharị ma ọ bụ akara iji dezie ya. Dọkpụ ọdụ na ntụpọ ụzọ ígwè; dọkpụ ihe ntụgharị ma ọ bụ akara n'ụzọ ígwè ya.",

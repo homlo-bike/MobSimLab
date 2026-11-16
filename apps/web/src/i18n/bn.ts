@@ -297,6 +297,9 @@ export const bn: Messages = {
   "prefs.rulesChanged": "পরিবর্তিত: {count}",
   "prefs.rulesLibrary": "অনুমান লাইব্রেরি: {value} {unit}",
   "prefs.rulesLibraryRange": "অনুমান লাইব্রেরি: {value} {unit} (পরিসর {low}–{high})",
+  "prefs.accessTitle": "প্ল্যাটফর্ম প্রবেশযোগ্যতা",
+  "prefs.accessIntro":
+    "প্ল্যাটফর্ম ও ট্রেনের মধ্যে ধাপ ও ফাঁকের সীমা (TSI PRM), এবং তালিকায় না থাকা ট্রেনের মেঝের উচ্চতা। লাইনগুলো প্রতিটি স্টপে যাচাই হয়।",
   "prefs.vehicles": "ব্যবহৃত যানবাহন, যানবাহন তালিকা থেকে",
   "prefs.switches": "রেল সুইচ, সুইচ তালিকা থেকে",
   "prefs.calendar": "ক্যালেন্ডার, চাহিদা ও খরচ",

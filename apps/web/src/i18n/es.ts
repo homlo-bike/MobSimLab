@@ -300,6 +300,9 @@ export const es: Messages = {
   "prefs.rulesChanged": "{count} cambiados",
   "prefs.rulesLibrary": "Biblioteca de supuestos: {value} {unit}",
   "prefs.rulesLibraryRange": "Biblioteca de supuestos: {value} {unit} (intervalo {low}–{high})",
+  "prefs.accessTitle": "Accesibilidad del andén",
+  "prefs.accessIntro":
+    "Límites de escalón y hueco entre andén y tren (ETI PMR) y la altura de piso usada para trenes sin dato en el catálogo. Las líneas se comprueban en cada parada.",
   "prefs.vehicles": "Vehículos usados, del catálogo de vehículos",
   "prefs.switches": "Desvíos, del catálogo de desvíos",
   "prefs.calendar": "Calendario, demanda y costes",

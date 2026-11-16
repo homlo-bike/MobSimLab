@@ -298,6 +298,17 @@ export const editorsUk = {
   "rail.line.needsTrain": "Виберіть поїзд.",
   "rail.line.lastAfterFirst": "Останнє відправлення має бути після першого.",
   "rail.line.headwayMin": "Інтервал щонайменше 1 хвилина.",
+  "rail.access.title": "Доступ з платформи",
+  "rail.access.level": "Посадка без сходинки",
+  "rail.access.step": "Посадка зі сходинкою",
+  "rail.access.aid": "Потрібен засіб для посадки",
+  "rail.access.clash": "Поїзд ширший, ніж дозволяє край платформи",
+  "rail.access.detail": "Підлога {vertical} відносно платформи {platform} мм · зазор {gap}",
+  "rail.access.floorOnly": "Підлога {vertical} відносно платформи {platform} мм",
+  "rail.access.floorAssumed":
+    "У каталозі немає висоти підлоги для цього поїзда; прийнято типове значення для виду транспорту, {value} мм (Налаштування).",
+  "rail.access.short":
+    "Платформа {platform} закоротка для поїзда {train} плюс {tolerance} на точність зупинки.",
 
   "rail.hint.select":
     "Клацніть станцію, колію, стрілку чи світлофор, щоб редагувати. Перетягуйте станції й точки колій, щоб переміщувати їх; стрілки й світлофори перетягуйте вздовж колії.",
