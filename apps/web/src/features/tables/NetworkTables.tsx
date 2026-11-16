@@ -517,6 +517,10 @@ function ServiceAndFleet({ facts, riders }: { facts: LineFact[]; riders: Record<
                           <>
                             {int(riders[f.id]![1])}
                             {sub(`${compact(riders[f.id]![0])}–${compact(riders[f.id]![2])}`)}
+                            {f.placesPerVehicle * f.tripsPerDay > 0 &&
+                              sub(
+                                `${int((100 * riders[f.id]![1]) / (f.placesPerVehicle * f.tripsPerDay))}% of places`,
+                              )}
                           </>
                         ) : (
                           dash
@@ -547,7 +551,9 @@ function ServiceAndFleet({ facts, riders }: { facts: LineFact[]; riders: Record<
             </li>
             <li>
               Riders are the projected boardings a weekday from the benefit estimate below, medium with low
-              and high under it.{riders ? "" : " They show once that estimate is ready."}
+              and high under it, then the medium as a share of the places the line offers a day (places per
+              vehicle or train × trips). A share over 100% means places are used more than once along a trip.
+              {riders ? "" : " They show once that estimate is ready."}
             </li>
             {assumedHours && (
               <li>
