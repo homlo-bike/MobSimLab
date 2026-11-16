@@ -67,7 +67,7 @@ const CELL_M = 50;
 // ---------------------------------------------------------------------------------------------------
 // Buildings: use, floor area, homes and jobs.
 
-type JobClass = "office" | "retail" | "industrial" | "public";
+export type JobClass = "office" | "retail" | "industrial" | "public";
 const RESIDENTIAL = new Set([
   "house",
   "residential",

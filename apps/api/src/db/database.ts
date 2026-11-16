@@ -34,8 +34,11 @@ export type PopulationLayerKind = "grid" | "zones" | "points";
 export type PopulationLayerStatus = "importing" | "ready" | "failed";
 export type PopulationConfidence = "high" | "medium" | "low";
 
-/** Kinds of simulation run: the rail capacity run, and a sweep of its settings (0008_agent_runs.sql). */
-export type RunKind = "capacity" | "sweep" | "road";
+/**
+ * Kinds of simulation run: the rail capacity run, a sweep of its settings (0008_agent_runs.sql), the road
+ * simulation (0009_road_runs.sql) and the demand model (0012_demand_runs.sql).
+ */
+export type RunKind = "capacity" | "sweep" | "road" | "demand";
 
 type Timestamp = ColumnType<Date, Date | string | undefined, Date | string>;
 
@@ -234,6 +237,14 @@ export interface DB {
   "simulation.run_replay": {
     run_id: string;
     data: Buffer;
+    created_at: Generated<Date>;
+  };
+  /** Files a run saves next to its result, such as a demand run's OD matrices (0012_demand_runs.sql). */
+  "simulation.run_file": {
+    run_id: string;
+    name: string;
+    media_type: string;
+    content: Buffer;
     created_at: Generated<Date>;
   };
   "project.member": {
