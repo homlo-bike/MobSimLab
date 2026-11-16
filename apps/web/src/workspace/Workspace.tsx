@@ -1,6 +1,11 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { BenefitTables } from "../features/benefits/BenefitTables";
+import { DemandSection } from "../features/demand/DemandSection";
+import { DemandZoneEditor } from "../features/demand/ZoneEditor";
+import { partStepFree, schematicNetwork } from "../features/schematic/lines";
+import { type DemandRidership, demandRidership } from "../features/demand/ridership";
+import type { DemandDoc } from "../features/demand/zones";
 import type { Estimate as BenefitEstimate } from "../features/benefits/model";
 import type { Triple } from "../features/benefits/params";
 import type { BenefitsDoc } from "../features/benefits/formulas";
@@ -22,6 +27,7 @@ import { journeySettingsFrom } from "../features/journey-planner/projectSettings
 import { JourneyPlanner } from "../features/journey-planner/JourneyPlanner";
 import { NoiseMap } from "../features/noise/NoiseMap";
 import { NetworkTables } from "../features/tables/NetworkTables";
+import { TimetableTables } from "../features/timetables/TimetableTables";
 import { FareTables } from "../features/fares/FareTables";
 import type { FaresDoc } from "../features/fares/model";
 import { Scenarios } from "../features/tables/Scenarios";
@@ -134,7 +140,7 @@ const NO_SETUPS: StreetSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
 type SimView = "test" | "journey" | "road";
-type GisView = "streets" | "regions" | "population";
+type GisView = "streets" | "regions" | "zones" | "population";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
 const NO_DEPOTS: SavedDepot[] = [];
@@ -190,6 +196,8 @@ export function Workspace({
     currency: string | null;
     country: string | null;
     rate: number;
+    /** Local currency units per international $ (the demand model's fares and car costs). */
+    ppp: number;
     /** Units of the currency per 2023 international dollar (PPP factor × price escalation), for fares. */
     perIntl: number;
   } | null>(null);
@@ -200,6 +208,7 @@ export function Workspace({
         currency: prices.currency,
         country,
         rate,
+        ppp: prices.ppp,
         perIntl: prices.ppp * prices.escalation,
       }),
     [],
@@ -313,6 +322,10 @@ export function Workspace({
     () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
     [api, projectKey],
   );
+  const demandRuns = useMemo(
+    () => (projectKey && typeof api.demandRuns === "function" ? api.demandRuns(projectKey) : null),
+    [api, projectKey],
+  );
   // The project's population layers (GIS tab). `populationVersion` changes when the layer the project uses
   // changes, so the noise map, the walk analysis and the benefit tables fetch their people again.
   const population = useMemo(
@@ -339,6 +352,40 @@ export function Workspace({
   const gtfsFeeds = drawings.doc<GtfsNetworkDoc>("gtfs-network")?.feeds ?? NO_FEEDS;
   // Street setups from the GIS tab: they override OSM in the street line tool and the railway editor.
   const setups = drawings.doc<StreetSetup[]>("street-setups") ?? NO_SETUPS;
+  // The demand run the planner picked for ridership (Demand section): its boardings replace the formula
+  // estimate in the Tables tab and the system test.
+  const ridershipRun = drawings.doc<DemandDoc>("demand")?.ridershipRun ?? null;
+  const [demandRidershipState, setDemandRidership] = useState<DemandRidership | null>(null);
+  useEffect(() => {
+    if (!ridershipRun || !demandRuns) {
+      setDemandRidership(null);
+      return;
+    }
+    let alive = true;
+    demandRuns.get(ridershipRun).then(
+      (r) => {
+        if (!alive) return;
+        setDemandRidership(
+          r.status === "done" && r.result ? demandRidership(r.id, r.finishedAt, r.result) : null,
+        );
+      },
+      () => {
+        if (alive) setDemandRidership(null);
+      },
+    );
+    return () => {
+      alive = false;
+    };
+  }, [ridershipRun, demandRuns]);
+  const usedRidership = demandRidershipState?.runId === ridershipRun ? demandRidershipState : null;
+  // Drawn stops and platforms with their recorded step-free access, for the demand model.
+  const stopAccess = useMemo(
+    () =>
+      schematicNetwork(railway, streetLines).stations.flatMap((st) =>
+        st.parts.map((p) => ({ lonlat: p.lonlat, stepFree: partStepFree(p) })),
+      ),
+    [railway, streetLines],
+  );
   const changeSetups = (next: StreetSetup[]) => drawings.set("street-setups", next);
   // GIS tab regions: their values take priority in the benefit tables.
   const regions = drawings.doc<RegionsDoc>("regions")?.regions ?? NO_REGIONS;
@@ -743,6 +790,16 @@ export function Workspace({
               currency={currency?.code ?? costInfo?.currency ?? null}
             />
           )}
+          {project && drawings.loaded && tab === "gis" && gis === "zones" && (
+            <DemandZoneEditor
+              map={map}
+              panel={panel}
+              timetable={networkTimetable}
+              preferences={preferences}
+              doc={drawings.doc<DemandDoc>("demand")}
+              onDoc={editable ? (d) => drawings.set("demand", d) : undefined}
+            />
+          )}
           {project && tab === "gis" && gis === "population" && (
             <PopulationPanel
               map={map}
@@ -925,6 +982,12 @@ export function Workspace({
                     onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                     riders={riders}
                   />
+                  <TimetableTables
+                    railway={railway}
+                    streetLines={streetLines}
+                    preferences={preferences}
+                    onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                  />
                   <CostTables
                     railway={railway}
                     streetLines={streetLines}
@@ -952,6 +1015,23 @@ export function Workspace({
                   onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
                   costs={costInfo}
                   onEstimate={onBenefitEstimate}
+                  ridership={usedRidership}
+                />
+              )}
+              {project && drawings.loaded && (
+                <DemandSection
+                  timetable={networkTimetable}
+                  regions={regions}
+                  preferences={preferences}
+                  doc={drawings.doc<DemandDoc>("demand")}
+                  onDoc={editable ? (d) => drawings.set("demand", d) : undefined}
+                  costs={costInfo}
+                  runs={demandRuns}
+                  canRun={editable}
+                  streetSetups={setups}
+                  stopAccess={stopAccess}
+                  onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                  api={benefitsApiOfProject}
                 />
               )}
               {project && drawings.loaded && (
@@ -1053,6 +1133,14 @@ export function Workspace({
                   <button
                     type="button"
                     role="tab"
+                    aria-selected={gis === "zones"}
+                    onClick={() => setGis("zones")}
+                  >
+                    {t("gis.zonesView")}
+                  </button>
+                  <button
+                    type="button"
+                    role="tab"
                     aria-selected={gis === "population"}
                     onClick={() => setGis("population")}
                   >
@@ -1105,6 +1193,7 @@ export function Workspace({
             <div className="min-h-0 flex-1 overflow-y-auto">
               {tab === "simulator" && sim === "test" && (
                 <CapacityRun
+                  demandRidership={usedRidership}
                   runs={runs}
                   canRun={editable}
                   railway={railway}

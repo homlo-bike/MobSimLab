@@ -25,7 +25,8 @@
       "enum": [
         "capacity",
         "sweep",
-        "road"
+        "road",
+        "demand"
       ]
     },
     "status": {

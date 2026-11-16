@@ -251,6 +251,34 @@ export interface StationKm {
   km: number;
 }
 
+/** One run of a train's day (Rust `rail_plan::BlockRun`). */
+export interface RailBlockRun {
+  kind: "service" | "pull_out" | "pull_in";
+  /** Line id. */
+  line: string;
+  /** Trip id (the timetable's trip id for a passenger trip). */
+  trip: string;
+  direction: number;
+  /** Station name; null for a storage track. */
+  from: string | null;
+  to: string | null;
+  depart_s: number;
+  arrive_s: number;
+  km: number;
+}
+
+/** The runs one train makes in a day (Rust `rail_plan::VehicleBlock`). */
+export interface RailVehicleBlock {
+  vehicle: number;
+  runs: RailBlockRun[];
+}
+
+/** Settings of a publication the project can change (Rust `rail_plan::PublishOptions`). */
+export interface PublishOptions {
+  /** Longest a train waits in a terminal before it goes to stabling instead, s. */
+  max_idle_s?: number | null;
+}
+
 /** Trains of one line in each clock hour on one section of the topology export (Rust `rail_plan::SectionTrains`). */
 export interface SectionTrains {
   section: string;
@@ -264,6 +292,8 @@ export interface ServicePublication {
   timetable: Timetable;
   lines: LineReport[];
   notes: string[];
+  /** Each train's runs of the day, by first departure (absent from engines built before blocks). */
+  blocks?: RailVehicleBlock[];
   /** Trains per hour on each section, for the noise map's timetabled input. */
   section_trains?: SectionTrains[];
 }
@@ -612,7 +642,7 @@ export interface RailEngine {
   /** Where a signal placed at a map position would stand, within `maxM`. */
   signalAnchor(at: LonLat, maxM: number): SignalAt | null;
   /** Plan the service lines on the last build and publish them for the journey planner; throws on errors. */
-  publishLines(lines: EngineServiceLine[], serviceId: string): ServicePublication;
+  publishLines(lines: EngineServiceLine[], serviceId: string, options?: PublishOptions): ServicePublication;
   /** Whether trains can run from one station (document id) to another on the last build; throws on errors. */
   reachable(from: number, to: number): { ok: boolean; reason: string | null };
   dispose(): void;

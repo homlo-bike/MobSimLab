@@ -20,6 +20,7 @@ import {
   MSLAB_ZIP_LIMITS,
   type PluginsFile,
   type ProjectFile,
+  RUN_KINDS,
   type RunFile,
 } from "./format.mts";
 import type { MslabReadResult } from "./read.mts";
@@ -86,7 +87,7 @@ const readResult = z.object({
 const isoDate = z.iso.datetime({ offset: true });
 const runFile = z.object({
   id: z.uuid(),
-  kind: z.enum(["capacity", "sweep", "road"]),
+  kind: z.enum(RUN_KINDS),
   status: z.enum(FINISHED_RUN_STATUSES),
   input: z.record(z.string(), z.unknown()),
   progress: z.unknown(),
@@ -231,7 +232,7 @@ export class MslabService {
           status: r.status as RunFile["status"],
           input: r.input,
           progress: r.progress ?? null,
-          result: r.result ?? null,
+          result: withoutRunFiles(r.kind, r.result ?? null),
           error: r.error,
           createdAt: r.created_at.toISOString(),
           startedAt: r.started_at?.toISOString() ?? null,
@@ -486,6 +487,15 @@ export class MslabService {
  * Purpose: ATTRIBUTION.md: what the file holds and the sources the project refers to (ADR-0021). Reference
  * data (OpenStreetMap, terrain, population) is not in the file; the project refers to it by id or position.
  */
+/**
+ * Purpose: a demand run's result without its list of saved files (the OD matrices), which a `.mslab` file does
+ * not carry; other results as they are.
+ */
+function withoutRunFiles(kind: string, result: unknown): unknown {
+  if (kind !== "demand" || !result || typeof result !== "object" || !("files" in result)) return result;
+  return { ...(result as Record<string, unknown>), files: [] };
+}
+
 function attribution(project: ProjectFile, drawings: { kind: string; doc: unknown }[], runs: number): string {
   const lines = [
     `# ${project.name}`,
