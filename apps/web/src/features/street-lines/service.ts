@@ -4,7 +4,7 @@
  */
 import { DEFAULT_SERVICE_DAY, servicePeriods, type ServiceDay } from "../journey-planner/network";
 import { fullTiming, type Timing } from "./modes";
-import { VEHICLES } from "./vehicles";
+import { streetVehicles } from "../fleet/registry";
 import type { CatalogueVehicle, Mode, VehicleProfile } from "./types";
 
 /** Purpose: the line's service day: its first and last departure, with the planner's peak windows. */
@@ -48,15 +48,18 @@ export function dayService(timing: Partial<Timing> | undefined, cycleMin: number
   return { serviceHours, tripsPerDay: departures * 2, vehicleHours };
 }
 
-/** Purpose: the catalogue vehicles of a street mode. */
-export function vehiclesFor(mode: Mode, all: readonly CatalogueVehicle[] = VEHICLES): CatalogueVehicle[] {
+/** Purpose: the catalogue and own vehicles of a street mode. */
+export function vehiclesFor(
+  mode: Mode,
+  all: readonly CatalogueVehicle[] = streetVehicles(),
+): CatalogueVehicle[] {
   return all.filter((v) => v.mode === mode);
 }
 
 /** Purpose: a catalogue vehicle by id, or null (none chosen, or no longer in the catalogue). */
 export function vehicleById(
   id: string | null | undefined,
-  all: readonly CatalogueVehicle[] = VEHICLES,
+  all: readonly CatalogueVehicle[] = streetVehicles(),
 ): CatalogueVehicle | null {
   return (id && all.find((v) => v.id === id)) || null;
 }

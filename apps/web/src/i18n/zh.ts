@@ -2,6 +2,7 @@ import { roadZh } from "./road/zh";
 import { editorsZh } from "./editors/zh";
 import { cargoBikeZh } from "./cargo-bike/zh";
 import { depotsZh } from "./depots/zh";
+import { fleetZh } from "./fleet/zh";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -365,6 +366,7 @@ export const zh: Messages = {
   ...editorsZh,
   ...cargoBikeZh,
   ...depotsZh,
+  ...fleetZh,
   ...roadZh,
   ...PLUGIN_MESSAGES.zh,
 };

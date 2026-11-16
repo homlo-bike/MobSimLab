@@ -2,6 +2,7 @@ import { roadPl } from "./road/pl";
 import { editorsPl } from "./editors/pl";
 import { cargoBikePl } from "./cargo-bike/pl";
 import { depotsPl } from "./depots/pl";
+import { fleetPl } from "./fleet/pl";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -386,6 +387,7 @@ export const pl: Messages = {
   ...editorsPl,
   ...cargoBikePl,
   ...depotsPl,
+  ...fleetPl,
   ...roadPl,
   ...PLUGIN_MESSAGES.pl,
 };

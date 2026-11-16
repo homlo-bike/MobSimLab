@@ -9,6 +9,10 @@ import { ProjectPlugins } from "./ProjectPlugins";
 import { DesignRulesSection } from "./DesignRules";
 import { VehicleChoiceSection } from "./VehicleChoice";
 import { SwitchChoiceSection } from "./SwitchChoice";
+import { OwnVehiclesSection } from "./OwnVehicles";
+import { FleetSection } from "./Fleet";
+import { EMPTY_FLEET, type FleetDoc } from "../features/fleet/model";
+import type { SavedDepot } from "../features/depots/types";
 import { roadValue } from "../features/road-sim/params";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
@@ -27,6 +31,9 @@ export function ProjectPreferences({
   plugins = null,
   onSetPlugin,
   currency = NO_CURRENCY,
+  fleet = null,
+  onFleet,
+  depots = [],
 }: {
   api: ProjectsApi;
   project: Project;
@@ -41,6 +48,12 @@ export function ProjectPreferences({
   onSetPlugin?: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
   /** The project's currency and its exchange rate. */
   currency?: CurrencyState;
+  /** The project's own vehicles and its fleet; null while loading. */
+  fleet?: FleetDoc | null;
+  /** Told about each change to the own vehicles or the fleet; the project saves it. */
+  onFleet?: (doc: FleetDoc) => void;
+  /** The road depots (depot tool), as homes for fleet vehicles. */
+  depots?: readonly SavedDepot[];
 }) {
   const { t } = useI18n();
   const editable = can.edit(project);
@@ -147,6 +160,19 @@ export function ProjectPreferences({
           preferences={preferences}
           editable={editable && !!onPreferences}
           onPreferences={(d) => onPreferences?.(d)}
+        />
+        <OwnVehiclesSection
+          fleet={fleet ?? EMPTY_FLEET}
+          editable={editable && !!onFleet && !!fleet}
+          onFleet={(d) => onFleet?.(d)}
+        />
+        <FleetSection
+          fleet={fleet ?? EMPTY_FLEET}
+          preferences={preferences}
+          projectModes={project.modes}
+          depots={depots}
+          editable={editable && !!onFleet && !!fleet}
+          onFleet={(d) => onFleet?.(d)}
         />
         <SwitchChoiceSection
           projectModes={project.modes}

@@ -222,6 +222,20 @@ describe("projects", () => {
     // Drawings may be larger than other requests (100 kB): a 300 kB street setup list saves.
     const big = Array.from({ length: 6000 }, (_, i) => ({ way: i, note: "x".repeat(40) }));
     expect((await as("alice").put(`${path}/street-setups`, { doc: big, baseVersion: 1 })).status).toBe(200);
+    // Own vehicles and fleet: own vehicle ids start with `own-`.
+    const fleet = {
+      vehicles: [{ id: "own-town-bus", name: "Town bus", mode: "bus", length_m: 12 }],
+      units: [{ id: "u1", vehicle: "own-town-bus", number: "101", status: "active" }],
+    };
+    expect((await as("alice").put(`${path}/fleet`, { doc: fleet, baseVersion: null })).status).toBe(200);
+    expect(
+      (
+        await as("alice").put(`${path}/fleet`, {
+          doc: { vehicles: [{ id: "siemens_avenio", name: "Avenio", mode: "tram" }], units: [] },
+          baseVersion: 1,
+        })
+      ).status,
+    ).toBe(400);
     // Project preferences: assumption values by id, numbers only.
     const prefs = {
       values: { "street.mixed_traffic_delay_share": 0.3, "street.bus_lane_delay_share": 0.05 },
