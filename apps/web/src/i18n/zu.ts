@@ -284,6 +284,10 @@ export const zu: Messages = {
   "prefs.delayLane": "Emzileni webhasi noma wethremu odwetshwe ngopende",
   "prefs.delayDefault": "Umtapo wolwazi wemicabango: {value} %",
   "prefs.delayReset": "Sebenzisa inani lomtapo wolwazi",
+  "prefs.stationsTitle": "Iziteshi",
+  "prefs.stationsIntro":
+    "Iziteshi ezinegama elifanayo ngaphakathi kwaleli banga zibalwa njengesiteshi esisodwa kumephu yomdwebo, kumhleli wohambo nasematafuleni ezinzuzo nabagibeli.",
+  "prefs.libraryM": "Umtapo wolwazi wemicabango: {value} m",
   "prefs.currencyTitle": "Imali",
   "prefs.currencyIntro":
     "Yonke imali yephrojekthi iboniswa ngale mali: amathebula ezindleko, izinzuzo, izimo kanye nokonga kwebhayisikili lempahla.",
