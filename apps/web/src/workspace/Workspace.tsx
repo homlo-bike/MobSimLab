@@ -5,6 +5,8 @@ import type { Estimate as BenefitEstimate } from "../features/benefits/model";
 import type { Triple } from "../features/benefits/params";
 import type { BenefitsDoc } from "../features/benefits/formulas";
 import { RegionEditor } from "../features/benefits/RegionEditor";
+import { benefitsApi } from "../features/benefits/data";
+import { PopulationPanel } from "../features/population/PopulationPanel";
 import type { Region, RegionsDoc } from "../features/benefits/regions";
 import { projectTimetable } from "../features/benefits/timetable";
 import { CargoBikeTab } from "../features/cargo-bike/CargoBikeTab";
@@ -120,7 +122,7 @@ const NO_SETUPS: StreetSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
 type SimView = "test" | "journey" | "road";
-type GisView = "streets" | "regions";
+type GisView = "streets" | "regions" | "population";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
 const NO_DEPOTS: SavedDepot[] = [];
@@ -277,6 +279,21 @@ export function Workspace({
   const roadRuns = useMemo(
     () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
     [api, projectKey],
+  );
+  // The project's population layers (GIS tab). `populationVersion` changes when the layer the project uses
+  // changes, so the noise map, the walk analysis and the benefit tables fetch their people again.
+  const population = useMemo(
+    () => (projectKey && typeof api.population === "function" ? api.population(projectKey) : null),
+    [api, projectKey],
+  );
+  const [populationVersion, setPopulationVersion] = useState(0);
+  const fetchPeople = useMemo(
+    () => (population ? (bbox: [number, number, number, number]) => population.grid(bbox) : undefined),
+    [population, populationVersion],
+  );
+  const benefitsApiOfProject = useMemo(
+    () => (population ? benefitsApi(undefined, population.catchments) : undefined),
+    [population, populationVersion],
   );
 
   // What is drawn in the project, saved with it a moment after each change.
@@ -630,6 +647,7 @@ export function Workspace({
               streetSetups={setups}
               delays={delays}
               designValues={designValues}
+              prefValues={preferences?.values}
               switchChoice={switchChoice}
               existingRailways={existingRailways}
               initial={railway}
@@ -675,6 +693,15 @@ export function Workspace({
               onChange={(next) => drawings.set("regions", { regions: next } satisfies RegionsDoc)}
               editable={editable}
               currency={currency?.code ?? costInfo?.currency ?? null}
+            />
+          )}
+          {project && tab === "gis" && gis === "population" && (
+            <PopulationPanel
+              map={map}
+              panel={panel}
+              api={population}
+              editable={editable}
+              onPrimaryChange={() => setPopulationVersion((n) => n + 1)}
             />
           )}
           {project && drawings.loaded && tab === "gis" && gis === "streets" && (
@@ -866,6 +893,7 @@ export function Workspace({
               )}
               {project && drawings.loaded && (
                 <BenefitTables
+                  api={benefitsApiOfProject}
                   timetable={networkTimetable}
                   regions={regions}
                   preferences={preferences}
@@ -967,6 +995,14 @@ export function Workspace({
                   >
                     {t("gis.regionsView")}
                   </button>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={gis === "population"}
+                    onClick={() => setGis("population")}
+                  >
+                    {t("gis.populationView")}
+                  </button>
                 </div>
               </div>
             )}
@@ -1064,6 +1100,7 @@ export function Workspace({
                 <div className="border-t border-slate-200 px-4 py-5 md:px-5">
                   <WalkAnalysis
                     map={map}
+                    fetchPeople={fetchPeople}
                     streetLines={streetLines}
                     railway={railway}
                     preferences={preferences?.values}
@@ -1074,6 +1111,7 @@ export function Workspace({
                 <div className="border-t border-slate-200 px-4 py-5 md:px-5">
                   <NoiseMap
                     map={map}
+                    fetchPeople={fetchPeople}
                     streetLines={streetLines}
                     railway={railway}
                     preferences={preferences?.values}

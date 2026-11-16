@@ -1,12 +1,16 @@
 import type { NoiseBuilding, NoisePopulation } from "./types";
 
-/** Where the people counts come from (the API's WorldPop source). */
+/**
+ * Where the people counts come from: the API's WorldPop source, or the project's own population layer
+ * (`id` "layer:<id>", `year` its reference year or null).
+ */
 export interface PopulationSource {
+  id?: string;
   name: string;
   dataset: string;
   url: string;
   licence: string;
-  year: number;
+  year: number | null;
   countries: string[];
   citation: string;
 }
