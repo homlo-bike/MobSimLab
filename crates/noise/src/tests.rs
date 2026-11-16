@@ -894,6 +894,118 @@ fn grid_people_are_shared_by_floor_area_within_their_cell() {
     assert_eq!(r.unplaced, 7.0);
 }
 
+fn point(key: &str, context: &[&str], active: f64) -> PointSourceInput {
+    PointSourceInput {
+        id: "p".into(),
+        label: String::new(),
+        p: [0.0, 0.0],
+        height_m: 10.0,
+        height_key: None,
+        lw_dba: None,
+        lw_key: Some(key.into()),
+        context: context.iter().map(|c| c.to_string()).collect(),
+        active: Flows {
+            day: active,
+            evening: active,
+            night: 0.0,
+        },
+    }
+}
+
+fn points_only(points: Vec<PointSourceInput>, kv: &[(&str, f64)]) -> Estimate {
+    estimate(&with_overrides(
+        EstimateInput {
+            point_sources: points,
+            grid: true,
+            grid_reach_m: Some(200.0),
+            ..Default::default()
+        },
+        kv,
+    ))
+}
+
+#[test]
+fn point_sources_alone_make_a_map_from_their_parameter() {
+    let e = points_only(
+        vec![point(
+            "noise.cable_car_tower_lw_db",
+            &["cable_car/mgd", "cable_car"],
+            1.0,
+        )],
+        &[],
+    );
+    // The check names the study the sound power comes from; no ferry checks without ferries.
+    let texts: Vec<&str> = e.checks.iter().map(|c| c.text.as_str()).collect();
+    assert!(
+        texts
+            .iter()
+            .any(|t| t.contains("indicative") && t.contains("Placer County")),
+        "{texts:?}"
+    );
+    assert!(!texts.iter().any(|t| t.contains("Ferries")), "{texts:?}");
+    let near = grid_level(&e, [20.0, 0.0]);
+    let far = grid_level(&e, [150.0, 0.0]);
+    assert!(near.is_finite() && far.is_finite());
+    assert!(near > far + 10.0, "{near} vs {far}");
+    // 10 dB more sound power is 10 dB more everywhere.
+    let lw = Library::builtin().range_in("noise.cable_car_tower_lw_db", &["cable_car".into()])[1];
+    let louder = points_only(
+        vec![point("noise.cable_car_tower_lw_db", &["cable_car"], 1.0)],
+        &[("noise.cable_car_tower_lw_db", lw + 10.0)],
+    );
+    assert!((grid_level(&louder, [20.0, 0.0]) - near - 10.0).abs() < 0.2);
+    // Half the time is 3 dB less; two at once 3 dB more.
+    let half = points_only(
+        vec![point("noise.cable_car_tower_lw_db", &["cable_car"], 0.5)],
+        &[],
+    );
+    assert!((near - grid_level(&half, [20.0, 0.0]) - 3.01).abs() < 0.2);
+    let two = points_only(
+        vec![point("noise.cable_car_tower_lw_db", &["cable_car"], 2.0)],
+        &[],
+    );
+    assert!((grid_level(&two, [20.0, 0.0]) - near - 3.01).abs() < 0.2);
+}
+
+#[test]
+fn point_source_contexts_take_the_most_specific_value() {
+    let lib = Library::builtin();
+    let ctx = |c: &[&str]| -> Vec<String> { c.iter().map(|x| x.to_string()).collect() };
+    let glob = lib.range_in("noise.ferry_cruise_lw_db", &[]);
+    assert_eq!(
+        lib.range_in("noise.ferry_cruise_lw_db", &ctx(&["nowhere/x", "nowhere"])),
+        glob
+    );
+    for key in [
+        "noise.cable_car_tower_lw_db",
+        "noise.cable_car_station_lw_db",
+        "noise.ferry_cruise_lw_db",
+        "noise.ferry_berth_lw_db",
+        "noise.ferry_source_height_m",
+    ] {
+        let r = lib.range_in(key, &[]);
+        assert!(r[0] <= r[1] && r[1] <= r[2], "{key} {r:?}");
+    }
+    // Small ferries keep their own (placeholder) value under way; large ones take the Livorno value.
+    let small = lib.range_in(
+        "noise.ferry_cruise_lw_db",
+        &ctx(&["ferry/catamaran", "ferry"]),
+    );
+    assert_ne!(small, glob);
+    let checks = |c: &[&str]| -> Vec<String> {
+        points_only(vec![point("noise.ferry_cruise_lw_db", c, 1.0)], &[])
+            .checks
+            .into_iter()
+            .map(|c| c.text)
+            .collect()
+    };
+    let t = checks(&["ferry/catamaran", "ferry"]);
+    assert!(t.iter().any(|x| x.starts_with("Water buses")), "{t:?}");
+    assert!(!t.iter().any(|x| x.contains("Livorno")), "{t:?}");
+    let t = checks(&["ferry"]);
+    assert!(t.iter().any(|x| x.contains("Livorno")), "{t:?}");
+}
+
 #[test]
 fn hourly_flows_average_over_each_period() {
     // 12 trains an hour 07–19, 6 an hour 19–23, 2 an hour 05–07, none otherwise.

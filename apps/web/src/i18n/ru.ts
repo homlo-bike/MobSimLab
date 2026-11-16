@@ -4,12 +4,14 @@ import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
 import { commentsRu } from "./comments/ru";
 import { depotsRu } from "./depots/ru";
+import { geodataRu } from "./geodata/ru";
+import { tablesRu } from "./tables/ru";
 import { fleetRu } from "./fleet/ru";
 import { timetablesRu } from "./timetables/ru";
 import { mslabRu } from "./mslab/ru";
 import { pluginCodeRu } from "./plugin-code/ru";
 import { populationRu } from "./population/ru";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsRu } from "./plugins/ru";
 import type { Messages } from "./en";
 
 /** Русский. */
@@ -503,6 +505,8 @@ export const ru: Messages = {
   ...editorsRu,
   ...cargoBikeRu,
   ...depotsRu,
+  ...geodataRu,
+  ...tablesRu,
   ...fleetRu,
   ...timetablesRu,
   ...commentsRu,
@@ -511,5 +515,5 @@ export const ru: Messages = {
   ...populationRu,
   ...roadRu,
   ...calendarRu,
-  ...PLUGIN_MESSAGES.ru,
+  ...pluginsRu,
 };

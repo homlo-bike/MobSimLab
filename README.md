@@ -1,9 +1,68 @@
-# MobSimLab
-Mobility Simulator Lab
+<p align="center">
+  <img src="docs/images/logo.svg" alt="MobSimLab logo" width="120" height="120">
+</p>
 
-An open-source, self-hosted platform for public transport planning, GIS analysis and operations simulation.
+<h1 align="center">MobSimLab</h1>
 
-**Status:** architecture approved; Phase 0 (foundations) in progress. Start with the [architecture documentation](docs/architecture/README.md), the [challenged assumptions](docs/architecture/00-challenged-assumptions.md) and the [Architecture Decision Records](docs/adr/README.md).
+<p align="center">Mobility Simulator Lab: plan, simulate and test public transport.</p>
+
+<p align="center">
+  <b>English</b> ·
+  <a href="README.de.md">Deutsch</a> ·
+  <a href="README.es.md">Español</a> ·
+  <a href="README.fr.md">Français</a> ·
+  <a href="README.pt.md">Português</a> ·
+  <a href="README.zh.md">中文</a> ·
+  <a href="README.ja.md">日本語</a> ·
+  <a href="README.ar.md">العربية</a> ·
+  <a href="README.hi.md">हिन्दी</a>
+</p>
+
+MobSimLab is an open-source, self-hosted web app for public transport planning, GIS analysis and operations simulation. Draw bus, tram, metro and rail lines on the real street and terrain data, test whether they run on time and fit their passengers, and see what they cost, what they bring and whether the project is worth it.
+
+![The street line tool: a BRT line drawn on the streets, with its length, stops, cycle time, vehicles needed and reliability in the side panel](docs/images/street-line-editor.png)
+
+## What it does
+
+**Draw the network**
+
+- **Street lines**: bus, BRT, trolleybus and intercity bus lines routed on OpenStreetMap streets. [Guide](docs/user/street-line-tool.md)
+- **Railways**: tram, light rail, metro, commuter, regional, intercity and high-speed lines with stations, tracks, switches and crossings, all to scale. [Guide](docs/user/railway-tool.md)
+- **Vehicles and fleet**: a sourced vehicle catalogue, plus the project's own vehicles and its list of individual vehicles. [Guide](docs/user/vehicles-and-fleet.md)
+
+**Test it**
+
+- **Simulator**: do the rail lines fit the tracks, do the trains and buses run on time, do small delays die out, and does everyone fit in the vehicles. [Guide](docs/user/simulator.md)
+- **Road simulation**: street lines run in traffic with Eclipse SUMO, from their depots and back, with a replay. [Guide](docs/user/road-simulation.md)
+- **Multi-year runs**: every simulation year (10 by default, up to 60) runs by day type (weekday, Saturday, Sunday, public holiday) with the project's calendar and climate. [ADR-0020](docs/adr/0020-multi-year-day-types.md)
+- **Journey planner**: door-to-door times from A to B through the day. [Guide](docs/user/journey-planner.md)
+
+**Analyse it**
+
+- **Schematic**: the lines as a transport map and as strip maps, exported as SVG, PNG or PDF. [Guide](docs/user/schematic.md)
+- **GIS**: how streets are shared, walk coverage and stop spacing, population, regions and the noise map. [Streets](docs/user/gis-streets.md), [walk](docs/user/gis-walk.md), [population](docs/user/gis-population.md), [regions](docs/user/gis-regions.md)
+- **Tables**: network and fleet figures, timetables with vehicle blocks (CSV, PDF and GTFS downloads), costs, benefits, fare revenue and scenario comparison. [Network](docs/user/network-tables.md), [costs](docs/user/cost-tables.md), [benefits](docs/user/benefit-tables.md), [fares](docs/user/fare-revenue.md)
+- **Demand model**: a four-step weekday forecast (generation, distribution, mode choice and assignment) run with AequilibraE. [Guide](docs/user/demand-model.md)
+- **Appraisal**: economic and financial net present value, rates of return, benefit-cost ratio, multi-criteria analysis, sensitivity and Monte Carlo ranges. [Guide](docs/user/appraisal.md)
+
+**Share and extend it**
+
+- **Projects**: share a project with others, make it public to everyone signed in to the instance, or save it as a `.mslab` file. [Project files](docs/user/project-files.md)
+- **Static viewer**: a website with no server that shows saved projects read-only, ready for Cloudflare Pages. [Guide](docs/user/static-viewer.md)
+- **Plugins**: bundled plugins add cable cars, ferries, people movers, on-demand buses, cargo bikes, energy and emissions, GTFS import and export and the noise map; Admins can install more, which run in a sandbox. [Bundled plugins](plugins/README.md), [writing plugins](docs/plugins/README.md)
+- **AI agents**: connect Claude or another MCP app to build scenarios and check them against the 15-minute walk rule. [Guide](docs/user/ai-agents.md)
+- **32 languages** in the app.
+
+## Screenshots
+
+| | |
+|---|---|
+| ![Schematic network map with metro, regional rail and bus lines, tariff zones and station symbols](docs/images/schematic-network-map.png) | ![Timetables tab with vehicle blocks per line and the departures of a bus line on a Sunday](docs/images/timetables.png) |
+| **Schematic**: the network map, with strip maps and SVG, PNG and PDF export | **Timetables**: vehicle blocks and departures per day type |
+| ![Appraisal summary with net present value, benefit-cost ratio, rate of return, benefits against costs and the Monte Carlo spread](docs/images/appraisal.png) | ![GIS walk coverage map showing how far residents live from a stop, from green to red](docs/images/walk-coverage.png) |
+| **Appraisal**: is the project worth it, and how sure is the result | **Walk coverage**: who lives within a short walk of a stop |
+| ![Noise map showing L_den levels along a line and the buildings beside it](docs/images/noise-map.png) | |
+| **Noise map**: L_den and L_night from the planned service, screened by buildings and terrain | |
 
 ## Quick start
 
@@ -29,10 +88,21 @@ MobSimLab has no local passwords; people sign in with an OpenID Connect provider
 4. After setup, new users wait for approval (auto-registration is off by default). Owners and Admins handle this under **Administration** in the account menu: approve or reject people, change roles (Restricted suspends an account without deleting it), set sign-up rules (auto-registration, allowed e-mail domains and IdP groups) and map IdP groups to roles. Only an Owner can create Owners or Admins, and the last Owner cannot be removed.
 5. Behind a TLS reverse proxy, set `MOBSIMLAB_TRUSTED_PROXIES` to the proxy's address so sign-in rate limits (10 per minute per client by default) and audit records see the real client address, and browsers that arrive over plain http are sent to https. See [docs/user/reverse-proxy.md](docs/user/reverse-proxy.md) for an nginx example.
 
-**AI agents:** Owners, Admins and Editors can connect Claude or another MCP app at `<MOBSIMLAB_PUBLIC_URL>/mcp` to build scenarios and check them against the 15-minute walk rule. See [docs/user/ai-agents.md](docs/user/ai-agents.md). The instance must be reachable over HTTPS from the AI app, and `MOBSIMLAB_PUBLIC_URL` must be the address the app uses.
+**AI agents:** Owners, Admins and Editors can connect Claude or another MCP app at `<MOBSIMLAB_PUBLIC_URL>/mcp`. The instance must be reachable over HTTPS from the AI app, and `MOBSIMLAB_PUBLIC_URL` must be the address the app uses. See [docs/user/ai-agents.md](docs/user/ai-agents.md).
 
-**Static viewer:** `pnpm build:static` builds a website with no server that shows saved `.mslab` projects read-only (simulator, schematic, tables and preferences), ready to upload to Cloudflare Pages. See [docs/user/static-viewer.md](docs/user/static-viewer.md).
+**Static viewer:** `pnpm build:static` builds the read-only website. See [docs/user/static-viewer.md](docs/user/static-viewer.md).
 
 Lost the Owner account? Run `docker compose exec mobsimlab /app/bin/mobsimlab admin reset-owner`. This demotes the current Owner to Admin, signs them out, returns the instance to setup mode and records the action in the audit log. Only the person named by `MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL` or `_SUBJECT` can then claim it, and never a Restricted account.
 
-Spike reports: [S1 co-simulation](docs/spikes/s1-cosimulation.md), [S2 rail kernel performance](docs/spikes/s2-rail-kernel-performance.md), [S3 OSM import](docs/spikes/s3-osm-import.md).
+## Documentation
+
+- [Architecture](docs/architecture/README.md), [challenged assumptions](docs/architecture/00-challenged-assumptions.md) and [Architecture Decision Records](docs/adr/README.md)
+- Spike reports: [S1 co-simulation](docs/spikes/s1-cosimulation.md), [S2 rail kernel performance](docs/spikes/s2-rail-kernel-performance.md), [S3 OSM import](docs/spikes/s3-osm-import.md)
+
+## Contributing
+
+Read [CONTRIBUTING.md](CONTRIBUTING.md) first, and follow the [code of conduct](CODE_OF_CONDUCT.md). Report security issues as described in [SECURITY.md](SECURITY.md). [ACCESSIBILITY.md](ACCESSIBILITY.md) sets out the accessibility target and the known limitations.
+
+## Licence
+
+The code is licensed under the [GNU Affero General Public License v3.0 or later](LICENSE). The vehicle catalogue, the assumption library and the documentation are licensed under CC BY 4.0.

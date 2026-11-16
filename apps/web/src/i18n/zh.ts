@@ -4,12 +4,14 @@ import { editorsZh } from "./editors/zh";
 import { cargoBikeZh } from "./cargo-bike/zh";
 import { commentsZh } from "./comments/zh";
 import { depotsZh } from "./depots/zh";
+import { geodataZh } from "./geodata/zh";
+import { tablesZh } from "./tables/zh";
 import { fleetZh } from "./fleet/zh";
 import { timetablesZh } from "./timetables/zh";
 import { mslabZh } from "./mslab/zh";
 import { pluginCodeZh } from "./plugin-code/zh";
 import { populationZh } from "./population/zh";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsZh } from "./plugins/zh";
 import type { Messages } from "./en";
 
 /** 中文（简体）. */
@@ -476,6 +478,8 @@ export const zh: Messages = {
   ...editorsZh,
   ...cargoBikeZh,
   ...depotsZh,
+  ...geodataZh,
+  ...tablesZh,
   ...fleetZh,
   ...timetablesZh,
   ...commentsZh,
@@ -484,5 +488,5 @@ export const zh: Messages = {
   ...populationZh,
   ...roadZh,
   ...calendarZh,
-  ...PLUGIN_MESSAGES.zh,
+  ...pluginsZh,
 };

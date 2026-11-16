@@ -1,0 +1,51 @@
+import type { PluginKey } from "../plugins";
+
+/** Plugin messages (hi). */
+export const pluginsHi = {
+  "admin.plugins": "प्लगइन",
+  "plugins.title": "प्लगइन",
+  "plugins.intro":
+    "प्लगइन परिवहन साधन, टूल और गणनाएँ जोड़ते हैं। इस परियोजना में जो चाहिए उन्हें चालू करें; बंद करने पर टूल छिप जाते हैं और बनाया गया काम बना रहता है।",
+  "plugins.bundled": "MobSimLab के साथ आता है",
+  "plugins.by": "प्रकाशक: {publisher}",
+  "plugins.versionN": "संस्करण {version}",
+  "plugins.adds": "जोड़ता है: {list}",
+  "plugins.uses": "उपयोग करता है: {list}",
+  "plugins.parameters": "{count} धारणा मान",
+  "plugins.missing":
+    "संस्करण {version} इस MobSimLab से हटा दिया गया। फिर से उपयोग के लिए दूसरा संस्करण चुनें।",
+  "plugins.versionOf": "{name} का संस्करण",
+  "plugins.useIn": "इस परियोजना में {name} का उपयोग करें",
+  "plugins.ownerOnly": "केवल परियोजना का स्वामी प्लगइन चालू या बंद कर सकता है।",
+  "plugins.perm.readNetwork": "परियोजना का नेटवर्क",
+  "plugins.perm.readTimetable": "समय-सारणी",
+  "plugins.perm.readFleet": "वाहन और बेड़ा",
+  "plugins.perm.readGeodata": "आयात किया गया मानचित्र डेटा",
+  "plugins.perm.readResults": "सिमुलेशन परिणाम",
+  "plugins.perm.writeResults": "अपने परिणाम सहेजता है",
+  "plugins.perm.writeScenario": "परिदृश्य में बदलाव सुझाता है",
+  "plugins.installTitle": "प्लगइन इंस्टॉल करें",
+  "plugins.choose": ".msplugin फ़ाइल चुनें",
+  "plugins.problems": "यह प्लगइन इंस्टॉल नहीं हो सकता:",
+  "plugins.install": "इंस्टॉल करें",
+  "plugins.installed": "इंस्टॉल किए गए प्लगइन",
+  "plugins.none": "अभी कोई प्लगइन इंस्टॉल नहीं है।",
+  "plugins.removeOne": "{name} {version} हटाएँ",
+  "plugins.inProjects": "{count} परियोजनाओं में उपयोग",
+  "plugins.bundledTitle": "MobSimLab के साथ शामिल",
+  "plugins.keys": "विश्वसनीय प्रकाशक",
+  "plugins.keysIntro":
+    "प्लगइन तभी इंस्टॉल होता है जब प्रकाशक ने उसे इनमें से किसी कुंजी से हस्ताक्षरित किया हो (ECDSA P-256 या Ed25519, PEM)।",
+  "plugins.noKeys": "अभी कोई विश्वसनीय कुंजी नहीं।",
+  "plugins.removeKey": "{name} पर भरोसा हटाएँ",
+  "plugins.addKey": "कुंजी जोड़ें",
+  "plugins.keyName": "प्रकाशक का नाम",
+  "plugins.keyPem": "सार्वजनिक कुंजी",
+  "plugins.allowUnsigned": "बिना हस्ताक्षर वाले प्लगइन की अनुमति (डेवलपमेंट मोड, केवल स्वामी)",
+  "plugins.signedBy": "हस्ताक्षरकर्ता: {name}",
+  "plugins.untrusted": "ऐसी कुंजी से हस्ताक्षरित जिस पर यह इंस्टेंस भरोसा नहीं करता",
+  "plugins.unsigned": "हस्ताक्षर नहीं",
+  "plugins.licences": "लाइसेंस: कोड {code}, डेटा {data}",
+  "plugins.removeConfirm":
+    "{name} {count} परियोजनाओं में चालू है। फिर भी हटाएँ? वहाँ यह बंद हो जाएगा और ड्रॉइंग बनी रहेंगी।",
+} satisfies Record<PluginKey, string>;

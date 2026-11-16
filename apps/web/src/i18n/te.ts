@@ -4,12 +4,14 @@ import { editorsTe } from "./editors/te";
 import { cargoBikeTe } from "./cargo-bike/te";
 import { commentsTe } from "./comments/te";
 import { depotsTe } from "./depots/te";
+import { geodataTe } from "./geodata/te";
+import { tablesTe } from "./tables/te";
 import { fleetTe } from "./fleet/te";
 import { timetablesTe } from "./timetables/te";
 import { mslabTe } from "./mslab/te";
 import { pluginCodeTe } from "./plugin-code/te";
 import { populationTe } from "./population/te";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsTe } from "./plugins/te";
 import type { Messages } from "./en";
 
 /** తెలుగు */
@@ -496,6 +498,8 @@ export const te: Messages = {
   ...editorsTe,
   ...cargoBikeTe,
   ...depotsTe,
+  ...geodataTe,
+  ...tablesTe,
   ...fleetTe,
   ...timetablesTe,
   ...commentsTe,
@@ -504,5 +508,5 @@ export const te: Messages = {
   ...populationTe,
   ...roadTe,
   ...calendarTe,
-  ...PLUGIN_MESSAGES.te,
+  ...pluginsTe,
 };

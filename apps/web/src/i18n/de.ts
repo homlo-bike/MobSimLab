@@ -4,12 +4,14 @@ import { editorsDe } from "./editors/de";
 import { cargoBikeDe } from "./cargo-bike/de";
 import { commentsDe } from "./comments/de";
 import { depotsDe } from "./depots/de";
+import { geodataDe } from "./geodata/de";
+import { tablesDe } from "./tables/de";
 import { fleetDe } from "./fleet/de";
 import { timetablesDe } from "./timetables/de";
 import { mslabDe } from "./mslab/de";
 import { pluginCodeDe } from "./plugin-code/de";
 import { populationDe } from "./population/de";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsDe } from "./plugins/de";
 import type { Messages } from "./en";
 
 /** Deutsch. */
@@ -509,6 +511,8 @@ export const de: Messages = {
   ...editorsDe,
   ...cargoBikeDe,
   ...depotsDe,
+  ...geodataDe,
+  ...tablesDe,
   ...fleetDe,
   ...timetablesDe,
   ...commentsDe,
@@ -517,5 +521,5 @@ export const de: Messages = {
   ...populationDe,
   ...roadDe,
   ...calendarDe,
-  ...PLUGIN_MESSAGES.de,
+  ...pluginsDe,
 };

@@ -4,12 +4,14 @@ import { editorsKo } from "./editors/ko";
 import { cargoBikeKo } from "./cargo-bike/ko";
 import { commentsKo } from "./comments/ko";
 import { depotsKo } from "./depots/ko";
+import { geodataKo } from "./geodata/ko";
+import { tablesKo } from "./tables/ko";
 import { fleetKo } from "./fleet/ko";
 import { timetablesKo } from "./timetables/ko";
 import { mslabKo } from "./mslab/ko";
 import { pluginCodeKo } from "./plugin-code/ko";
 import { populationKo } from "./population/ko";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsKo } from "./plugins/ko";
 import type { Messages } from "./en";
 
 /** 한국어 */
@@ -489,6 +491,8 @@ export const ko: Messages = {
   ...editorsKo,
   ...cargoBikeKo,
   ...depotsKo,
+  ...geodataKo,
+  ...tablesKo,
   ...fleetKo,
   ...timetablesKo,
   ...commentsKo,
@@ -497,5 +501,5 @@ export const ko: Messages = {
   ...populationKo,
   ...roadKo,
   ...calendarKo,
-  ...PLUGIN_MESSAGES.ko,
+  ...pluginsKo,
 };

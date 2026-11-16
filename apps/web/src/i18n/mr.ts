@@ -4,12 +4,14 @@ import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
 import { commentsMr } from "./comments/mr";
 import { depotsMr } from "./depots/mr";
+import { geodataMr } from "./geodata/mr";
+import { tablesMr } from "./tables/mr";
 import { fleetMr } from "./fleet/mr";
 import { timetablesMr } from "./timetables/mr";
 import { mslabMr } from "./mslab/mr";
 import { pluginCodeMr } from "./plugin-code/mr";
 import { populationMr } from "./population/mr";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsMr } from "./plugins/mr";
 import type { Messages } from "./en";
 
 /** मराठी */
@@ -494,6 +496,8 @@ export const mr: Messages = {
   ...editorsMr,
   ...cargoBikeMr,
   ...depotsMr,
+  ...geodataMr,
+  ...tablesMr,
   ...fleetMr,
   ...timetablesMr,
   ...commentsMr,
@@ -502,5 +506,5 @@ export const mr: Messages = {
   ...populationMr,
   ...roadMr,
   ...calendarMr,
-  ...PLUGIN_MESSAGES.mr,
+  ...pluginsMr,
 };

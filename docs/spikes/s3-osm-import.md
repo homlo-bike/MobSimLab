@@ -8,7 +8,7 @@
 ## What was built
 
 - `mobsimlab-flex.lua`: osm2pgsql flex style writing to `geo.osm_way_road`, `osm_way_rail`, `osm_building`, `osm_landuse`, `osm_water`, `osm_pt`, `osm_poi`, `osm_barrier`, `osm_place`. Geometry in EPSG:4326, all tags kept as `jsonb`, main attributes as columns. The target schema is set by `MOBSIMLAB_OSM_SCHEMA`, so both paths can be compared side by side.
-- `tag_mapping_v0.lua`: the tag mapping as a pure data file (classes and tags from 06 §2.2). It is Lua rather than YAML because osm2pgsql's Lua runtime has no YAML parser. The data-not-code rule still holds.
+- `tag_mapping_v0.lua` (since renamed `tag_mapping.lua`, version 1, ADR-0046): the tag mapping as a pure data file (classes and tags from 06 §2.2). It is Lua rather than YAML because osm2pgsql's Lua runtime has no YAML parser. The data-not-code rule still holds.
 - `overpass_fetch.py`: small-area client, standard library only. It has a configurable HTTPS endpoint and an identifying User-Agent. It throttles to one request per 5 s and retries on 429/502/503/504 and timeouts, with backoff (2–32 s) and jitter. It refuses areas over 400 km² and caches responses by query hash. It makes read-only queries only and never touches the OSM editing API.
 - `s3_benchmark.sh`: runs both paths and prints times, row counts and table sizes.
 

@@ -4,12 +4,14 @@ import { editorsHi } from "./editors/hi";
 import { cargoBikeHi } from "./cargo-bike/hi";
 import { commentsHi } from "./comments/hi";
 import { depotsHi } from "./depots/hi";
+import { geodataHi } from "./geodata/hi";
+import { tablesHi } from "./tables/hi";
 import { fleetHi } from "./fleet/hi";
 import { timetablesHi } from "./timetables/hi";
 import { mslabHi } from "./mslab/hi";
 import { pluginCodeHi } from "./plugin-code/hi";
 import { populationHi } from "./population/hi";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsHi } from "./plugins/hi";
 import type { Messages } from "./en";
 
 /** हिन्दी। */
@@ -497,6 +499,8 @@ export const hi: Messages = {
   ...editorsHi,
   ...cargoBikeHi,
   ...depotsHi,
+  ...geodataHi,
+  ...tablesHi,
   ...fleetHi,
   ...timetablesHi,
   ...commentsHi,
@@ -505,5 +509,5 @@ export const hi: Messages = {
   ...populationHi,
   ...roadHi,
   ...calendarHi,
-  ...PLUGIN_MESSAGES.hi,
+  ...pluginsHi,
 };

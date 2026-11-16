@@ -4,12 +4,14 @@ import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
 import { commentsTr } from "./comments/tr";
 import { depotsTr } from "./depots/tr";
+import { geodataTr } from "./geodata/tr";
+import { tablesTr } from "./tables/tr";
 import { fleetTr } from "./fleet/tr";
 import { timetablesTr } from "./timetables/tr";
 import { mslabTr } from "./mslab/tr";
 import { pluginCodeTr } from "./plugin-code/tr";
 import { populationTr } from "./population/tr";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsTr } from "./plugins/tr";
 import type { Messages } from "./en";
 
 /** Türkçe */
@@ -499,6 +501,8 @@ export const tr: Messages = {
   ...editorsTr,
   ...cargoBikeTr,
   ...depotsTr,
+  ...geodataTr,
+  ...tablesTr,
   ...fleetTr,
   ...timetablesTr,
   ...commentsTr,
@@ -507,5 +511,5 @@ export const tr: Messages = {
   ...populationTr,
   ...roadTr,
   ...calendarTr,
-  ...PLUGIN_MESSAGES.tr,
+  ...pluginsTr,
 };

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="MobSimLab test fixture">
+  <meta osm_base="2026-11-15T08:00:00Z"/>
+  <node id="1" lat="50.0000" lon="7.0000"/>
+  <node id="2" lat="50.0000" lon="7.0100"/>
+  <node id="3" lat="50.0050" lon="7.0100"/>
+  <node id="4" lat="50.0010" lon="7.0010"/>
+  <node id="5" lat="50.0010" lon="7.0020"/>
+  <node id="6" lat="50.0020" lon="7.0020"/>
+  <node id="7" lat="50.0020" lon="7.0010"/>
+  <node id="8" lat="50.0030" lon="7.0050"><tag k="amenity" v="kindergarten"/><tag k="name" v="Kita Sonne"/></node>
+  <node id="9" lat="50.0040" lon="7.0000"/>
+  <node id="10" lat="50.0040" lon="7.0100"/>
+  <node id="11" lat="50.0045" lon="7.0050"><tag k="highway" v="bus_stop"/><tag k="name" v="Markt"/></node>
+  <node id="12" lat="50.0060" lon="7.0000"/>
+  <node id="13" lat="50.0060" lon="7.0100"/>
+  <way id="100"><nd ref="1"/><nd ref="2"/><tag k="highway" v="primary"/><tag k="name" v="Hauptstraße"/><tag k="bridge" v="yes"/><tag k="layer" v="1"/></way>
+  <way id="101"><nd ref="2"/><nd ref="3"/><tag k="highway" v="construction"/><tag k="construction" v="secondary"/></way>
+  <way id="102"><nd ref="4"/><nd ref="5"/><nd ref="6"/><nd ref="7"/><nd ref="4"/><tag k="building" v="school"/><tag k="amenity" v="school"/><tag k="building:levels" v="3"/></way>
+  <way id="103"><nd ref="9"/><nd ref="10"/><tag k="railway" v="tram"/><tag k="tunnel" v="yes"/></way>
+  <way id="104"><nd ref="13"/><nd ref="12"/><tag k="natural" v="coastline"/></way>
+</osm>

@@ -4,12 +4,14 @@ import { editorsKk } from "./editors/kk";
 import { cargoBikeKk } from "./cargo-bike/kk";
 import { commentsKk } from "./comments/kk";
 import { depotsKk } from "./depots/kk";
+import { geodataKk } from "./geodata/kk";
+import { tablesKk } from "./tables/kk";
 import { fleetKk } from "./fleet/kk";
 import { timetablesKk } from "./timetables/kk";
 import { mslabKk } from "./mslab/kk";
 import { pluginCodeKk } from "./plugin-code/kk";
 import { populationKk } from "./population/kk";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsKk } from "./plugins/kk";
 import type { Messages } from "./en";
 
 /** Қазақша */
@@ -498,6 +500,8 @@ export const kk: Messages = {
   ...editorsKk,
   ...cargoBikeKk,
   ...depotsKk,
+  ...geodataKk,
+  ...tablesKk,
   ...fleetKk,
   ...timetablesKk,
   ...commentsKk,
@@ -506,5 +510,5 @@ export const kk: Messages = {
   ...populationKk,
   ...roadKk,
   ...calendarKk,
-  ...PLUGIN_MESSAGES.kk,
+  ...pluginsKk,
 };

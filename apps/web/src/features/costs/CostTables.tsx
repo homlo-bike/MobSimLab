@@ -1,6 +1,9 @@
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { loadRailEngine } from "../railways/engine";
 import { en } from "../../i18n/en";
+import { hasMessage, type Translate, type TranslatePlural, useI18n, withNodes } from "../../i18n/i18n";
+import { tablesEn } from "../../i18n/tables/en";
+import { useModeLabel } from "../schematic/common";
 import { RAIL_MODES } from "../railways/modes";
 import { engineLines } from "../railways/serviceLines";
 import type { LineReport, Network, RailEngineLoader, RailView } from "../railways/types";
@@ -65,9 +68,8 @@ interface Props {
 const DEFAULT_API = economyApi();
 const BASE_YEAR = libraryValue("cost.price_base_year", "*")[1];
 
-/** Purpose: a mode's name for the tables. */
+/** Purpose: a mode's name in English, for the tables that are still in English (fares, benefits). */
 export function modeLabel(mode: string): string {
-  // The cost tables are in English for now, so mode names come from the English messages.
   const key =
     RAIL_MODES.find((m) => m.id === mode)?.label ?? STREET_MODES[mode as keyof typeof STREET_MODES]?.label;
   return key ? en[key] : mode.replace(/_/g, " ");
@@ -78,6 +80,30 @@ export function fmtMoney(v: number, currency: string | null): string {
   const opts: Intl.NumberFormatOptions = { notation: "compact", maximumFractionDigits: v >= 1e3 ? 1 : 0 };
   if (!currency) return `${new Intl.NumberFormat("en", opts).format(v)} LCU`;
   return new Intl.NumberFormat("en", { ...opts, style: "currency", currency }).format(v);
+}
+
+/** Purpose: a cost parameter's name in the language; parameters added to the library later stay in English. */
+function paramLabel(t: Translate, key: string, label: string): string {
+  const k = `cost.p.${key}`;
+  return hasMessage(k) ? t(k) : label;
+}
+
+/** English unit of each `cost.pu.*` message, with the price base year filled in, back to its key. */
+const UNIT_KEYS = new Map(
+  Object.entries(tablesEn)
+    .filter(([k]) => k.startsWith("cost.pu."))
+    .map(([k, v]) => [v.replace("{year}", String(BASE_YEAR)), k as keyof typeof tablesEn] as const),
+);
+
+/** Purpose: a cost parameter's unit in the language; units not in the messages stay in English. */
+function paramUnit(t: Translate, unit: string): string {
+  const k = UNIT_KEYS.get(unit);
+  return k ? t(k, { year: BASE_YEAR }) : unit;
+}
+
+/** Purpose: a count with the language's plural form, the count in the tables' number format. */
+function count(tn: TranslatePlural, key: "cost.groups" | "cost.items", n: number): string {
+  return tn(key, n, { count: String(n) });
 }
 
 /** Purpose: a quantity with sensible decimals. */
@@ -104,6 +130,8 @@ export function CostTables({
   loadRail = loadRailEngine,
   api = DEFAULT_API,
 }: Props) {
+  const { t } = useI18n();
+  const modeLabel = useModeLabel();
   const prefs = preferences?.values;
   const [rail, setRail] = useState<{ view: RailView; reports: Record<string, LineReport> } | null>(null);
   const [railError, setRailError] = useState<string | null>(null);
@@ -204,8 +232,9 @@ export function CostTables({
         streetLines: streetLines?.lines ?? [],
         prefs,
         prices,
+        t,
       }),
-    [railway, rail, streetLines, prefs, prices],
+    [railway, rail, streetLines, prefs, prices, t],
   );
   useEffect(() => {
     onEstimate?.(est, prices, code ?? null, conv.rate, econ?.country.income ?? null);
@@ -223,58 +252,61 @@ export function CostTables({
     <div>
       <section aria-labelledby="cost-title" className="mt-6">
         <h2 id="cost-title" className="text-xl font-semibold tracking-tight">
-          Construction and operating costs
+          {t("cost.title")}
         </h2>
         <p className="mt-1 max-w-3xl text-slate-600">
-          Educated estimates to put the project in perspective: quantities from the railway design and the
-          street lines, unit costs from the assumption library (low, medium, high), converted to{" "}
-          {econ ? econ.country.name : "the project's country"} and today's prices with World Bank data. Change
-          any unit cost or the conversion below.
+          {t("cost.intro", { country: econ ? econ.country.name : t("cost.projectCountry") })}
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <span className="text-xs text-slate-500">
-            {prices.year ? `${prices.year} prices` : `${BASE_YEAR} prices`}, in{" "}
-            {prices.currency ?? "local currency"}
             {conv.currency !== local.currency
-              ? ` (Project preferences), at ${sig(conv.rate)} ${prices.currency} per ${local.currency ?? "local currency unit"}`
-              : ""}
+              ? t("cost.pricesConverted", {
+                  year: prices.year ?? BASE_YEAR,
+                  currency: prices.currency ?? t("cost.localCurrency"),
+                  rate: sig(conv.rate),
+                  from: local.currency ?? t("cost.localCurrencyUnit"),
+                })
+              : t("cost.pricesIn", {
+                  year: prices.year ?? BASE_YEAR,
+                  currency: prices.currency ?? t("cost.localCurrency"),
+                })}
           </span>
         </div>
         {railError && (
           <p role="alert" className="mt-3 text-sm text-red-700">
-            The railway design could not be read: {railError}
+            {t("tbl.railwayUnreadable", { error: railError })}
           </p>
         )}
         {empty ? (
           <p className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-slate-600">
-            Nothing to cost yet. Draw a railway or a street line in the Create tab.
+            {t("cost.nothing")}
           </p>
         ) : (
           <>
             <div className="mt-5 grid gap-3 sm:grid-cols-2">
               <Tile
-                title="Construction"
+                title={t("tbl.construction")}
                 value={money(construction[1])}
-                sub={`low to high ${range(construction)}`}
+                sub={t("cost.lowToHigh", { range: range(construction) })}
               />
               <Tile
-                title="Operating, a year"
+                title={t("cost.operatingTile")}
                 value={money(operating[1])}
-                sub={`low to high ${range(operating)}`}
+                sub={t("cost.lowToHigh", { range: range(operating) })}
               />
             </div>
             <section className={card} aria-labelledby="cost-where">
               <h3 id="cost-where" className="caps m-0">
-                Where the construction money goes
+                {t("cost.where")}
               </h3>
               <div className="mt-3 grid gap-6 md:grid-cols-2">
                 <CompositionChart est={est} money={money} labelOf={modeLabel} />
                 <BarList
-                  label="Construction cost by infrastructure type"
+                  label={t("cost.byType")}
                   money={money}
                   rows={CONSTRUCTION.map((c) => ({
                     id: c,
-                    label: CATEGORY_LABEL[c],
+                    label: t(CATEGORY_LABEL[c]),
                     value: sum(est.items.filter((x) => x.category === c).map((x) => x.amount)),
                   }))}
                 />
@@ -283,23 +315,25 @@ export function CostTables({
             <ByMode est={est} money={money} range={range} />
             <ByLine est={est} money={money} range={range} />
             <Breakdown
-              title="Construction by infrastructure type"
+              id="cost-construction-by-infrastructure-type"
+              title={t("cost.constructionByType")}
               cats={CONSTRUCTION}
               est={est}
               money={money}
             />
             <Breakdown
-              title="Operating cost a year"
+              id="cost-operating-cost-a-year"
+              title={t("cost.operatingYear")}
               cats={OPERATING}
               est={est}
               money={money}
               chart={
                 <BarList
-                  label="Operating cost a year by kind"
+                  label={t("cost.operatingByKind")}
                   money={money}
                   rows={OPERATING.map((c) => ({
                     id: c,
-                    label: CATEGORY_LABEL[c],
+                    label: t(CATEGORY_LABEL[c]),
                     value: sum(est.items.filter((x) => x.category === c).map((x) => x.amount)),
                   }))}
                 />
@@ -410,6 +444,8 @@ function ByMode({
   money: (v: number) => string;
   range: (t: Triple) => string;
 }) {
+  const { t } = useI18n();
+  const modeLabel = useModeLabel();
   const [sort, setSort] = useState<Sort<"mode" | "c" | "o">>(null);
   const base = est.modes.map((m) => ({ mode: m, ...totalsOf(est, (_, mode) => mode === m) }));
   const rows = sorted(base, sort, (r, k) =>
@@ -422,15 +458,15 @@ function ByMode({
   return (
     <section className={card} aria-labelledby="cost-by-mode">
       <h3 id="cost-by-mode" className="caps m-0">
-        Per mode
+        {t("tbl.perMode")}
       </h3>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full min-w-[20rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <SortHeader label="Mode" k="mode" sort={sort} setSort={setSort} />
-              <SortHeader label="Construction" k="c" sort={sort} setSort={setSort} right />
-              <SortHeader label="Operating a year" k="o" sort={sort} setSort={setSort} right />
+              <SortHeader label={t("tbl.mode")} k="mode" sort={sort} setSort={setSort} />
+              <SortHeader label={t("tbl.construction")} k="c" sort={sort} setSort={setSort} right />
+              <SortHeader label={t("tbl.operatingYear")} k="o" sort={sort} setSort={setSort} right />
             </tr>
           </thead>
           <tbody>
@@ -450,7 +486,7 @@ function ByMode({
               </tr>
             ))}
             <tr className="font-semibold">
-              <td className={td}>Total</td>
+              <td className={td}>{t("tbl.total")}</td>
               <td className={num}>
                 {money(c[1])}
                 <span className="block text-xs font-normal text-slate-500">{range(c)}</span>
@@ -478,6 +514,8 @@ function ByLine({
   money: (v: number) => string;
   range: (t: Triple) => string;
 }) {
+  const { t } = useI18n();
+  const modeLabel = useModeLabel();
   const [sort, setSort] = useState<Sort<LineKey>>(null);
   const totals = perLine(est);
   const unassigned = [...totals.entries()].filter(([id]) => id.startsWith(":"));
@@ -494,15 +532,15 @@ function ByLine({
       c: totals.get(l.id)?.construction ?? null,
       o: totals.get(l.id)?.operating ?? null,
     })),
-    ...unassigned.map(([id, t]) => ({
+    ...unassigned.map(([id, x]) => ({
       id,
-      name: "Not used by a line yet",
+      name: t("cost.unassigned"),
       mode: id.slice(1),
       color: null,
       km: null,
       fleet: 0,
-      c: t.construction,
-      o: t.operating,
+      c: x.construction,
+      o: x.operating,
     })),
   ];
   const rows = sorted(base, sort, (r, k) =>
@@ -531,22 +569,19 @@ function ByLine({
   return (
     <section className={card} aria-labelledby="cost-by-line">
       <h3 id="cost-by-line" className="caps m-0">
-        Per line
+        {t("tbl.perLine")}
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        Rail lines that share track split its cost by their train-km. Construction includes the line's
-        vehicles and depot places; operating covers the service, upkeep and overheads. Click a column to sort.
-      </p>
+      <p className="mt-1 text-xs text-slate-500">{t("cost.perLineNote")}</p>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full min-w-[40rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <SortHeader label="Line" k="name" sort={sort} setSort={setSort} />
-              <SortHeader label="Mode" k="mode" sort={sort} setSort={setSort} />
-              <SortHeader label="Length" k="km" sort={sort} setSort={setSort} right />
-              <SortHeader label="Fleet" k="fleet" sort={sort} setSort={setSort} right />
-              <SortHeader label="Construction" k="c" sort={sort} setSort={setSort} right />
-              <SortHeader label="Operating a year" k="o" sort={sort} setSort={setSort} right />
+              <SortHeader label={t("tbl.line")} k="name" sort={sort} setSort={setSort} />
+              <SortHeader label={t("tbl.mode")} k="mode" sort={sort} setSort={setSort} />
+              <SortHeader label={t("tbl.length")} k="km" sort={sort} setSort={setSort} right />
+              <SortHeader label={t("tbl.fleet")} k="fleet" sort={sort} setSort={setSort} right />
+              <SortHeader label={t("tbl.construction")} k="c" sort={sort} setSort={setSort} right />
+              <SortHeader label={t("tbl.operatingYear")} k="o" sort={sort} setSort={setSort} right />
             </tr>
           </thead>
           <tbody>
@@ -563,7 +598,7 @@ function ByLine({
                   {r.name}
                 </td>
                 <td className={td}>{modeLabel(r.mode)}</td>
-                <td className={num}>{r.km === null ? "" : `${fmtQty(r.km)} km`}</td>
+                <td className={num}>{r.km === null ? "" : t("tbl.u.km", { v: fmtQty(r.km) })}</td>
                 <td className={num}>{r.color ? r.fleet || "–" : ""}</td>
                 <td className={num}>{cell(r.c, maxC)}</td>
                 <td className={num}>{cell(r.o, maxO)}</td>
@@ -592,19 +627,23 @@ function Chevron({ open }: { open: boolean }) {
 }
 
 function Breakdown({
+  id,
   title,
   cats,
   est,
   money,
   chart,
 }: {
+  /** Element id of the heading (the same in every language). */
+  id: string;
   title: string;
   cats: Category[];
   est: Estimate;
   money: (v: number) => string;
   chart?: ReactNode;
 }) {
-  const id = `cost-${title.replace(/\W+/g, "-").toLowerCase()}`;
+  const { t, tn } = useI18n();
+  const modeLabel = useModeLabel();
   // Modes start open, item lists closed; "largest first" orders groups and items by the medium estimate.
   const [closedModes, setClosedModes] = useState<Set<string>>(new Set());
   const [openCats, setOpenCats] = useState<Set<string>>(new Set());
@@ -637,12 +676,12 @@ function Breakdown({
           {title}
         </h3>
         <div className="flex flex-wrap items-center gap-2">
-          <div className="seg" role="group" aria-label={`Order of ${title}`}>
+          <div className="seg" role="group" aria-label={t("cost.order", { title })}>
             <button type="button" aria-pressed={!largest} onClick={() => setLargest(false)}>
-              Usual order
+              {t("cost.usualOrder")}
             </button>
             <button type="button" aria-pressed={largest} onClick={() => setLargest(true)}>
-              Largest first
+              {t("cost.largestFirst")}
             </button>
           </div>
           <button
@@ -658,7 +697,7 @@ function Breakdown({
               }
             }}
           >
-            {allOpen ? "Collapse all" : "Expand all"}
+            {allOpen ? t("cost.collapseAll") : t("cost.expandAll")}
           </button>
         </div>
       </div>
@@ -667,12 +706,12 @@ function Breakdown({
         <table className="w-full min-w-[44rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Item</th>
-              <th className={`${th} text-right`}>Quantity</th>
-              <th className={`${th} text-right`}>Unit cost</th>
-              <th className={`${th} text-right`}>Low</th>
-              <th className={`${th} text-right`}>Medium</th>
-              <th className={`${th} text-right`}>High</th>
+              <th className={th}>{t("cost.item")}</th>
+              <th className={`${th} text-right`}>{t("tbl.quantity")}</th>
+              <th className={`${th} text-right`}>{t("cost.unitCost")}</th>
+              <th className={`${th} text-right`}>{t("cost.low")}</th>
+              <th className={`${th} text-right`}>{t("cost.medium")}</th>
+              <th className={`${th} text-right`}>{t("cost.high")}</th>
             </tr>
           </thead>
           {orderedModes.map((m) => {
@@ -696,7 +735,9 @@ function Breakdown({
                     >
                       <Chevron open={open} />
                       {modeLabel(m)}
-                      <span className="font-normal text-slate-500">· {groups.length} groups</span>
+                      <span className="font-normal text-slate-500">
+                        · {count(tn, "cost.groups", groups.length)}
+                      </span>
                     </button>
                   </th>
                   <td className={`${num} font-semibold`}>{money(sub[0])}</td>
@@ -718,9 +759,9 @@ function Breakdown({
                             onClick={() => toggle(openCats, key, setOpenCats)}
                           >
                             <Chevron open={catOpen} />
-                            {CATEGORY_LABEL[c]}
+                            {t(CATEGORY_LABEL[c])}
                             <span className="font-normal text-slate-500">
-                              · {ys.length} {ys.length === 1 ? "item" : "items"}
+                              · {count(tn, "cost.items", ys.length)}
                             </span>
                           </button>
                         </td>
@@ -738,7 +779,7 @@ function Breakdown({
           })}
           <tfoot>
             <tr className="border-t border-slate-300 font-semibold">
-              <td className={td}>Total</td>
+              <td className={td}>{t("tbl.total")}</td>
               <td className={num} />
               <td className={num} />
               <td className={num}>{money(total[0])}</td>
@@ -835,20 +876,17 @@ function PricesSection({
 }) {
   const own = (id: string) => (typeof prefs?.[id] === "number" ? prefs[id] : undefined);
   const iso3 = econ?.country.iso3 ?? code ?? "";
-  const cur = prices.currency ?? "local currency";
+  const { t } = useI18n();
+  const cur = prices.currency ?? t("cost.localCurrency");
   return (
     <section className={card} aria-labelledby="cost-prices">
       <h3 id="cost-prices" className="caps m-0">
-        Country and prices
+        {t("cost.prices")}
       </h3>
-      <p className="mt-1 text-sm text-slate-600">
-        Unit costs are in {BASE_YEAR} international dollars (purchasing power parity), as the Transit Costs
-        Project reports them; vehicles are in {BASE_YEAR} US dollars. They are scaled to today with the US GDP
-        deflator and converted with the country's PPP factor, or its exchange rate for vehicles.
-      </p>
+      <p className="mt-1 text-sm text-slate-600">{t("cost.pricesIntro", { year: BASE_YEAR })}</p>
       <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
         <label htmlFor="cost-country" className="text-slate-600">
-          Country
+          {t("cost.country")}
         </label>
         <select
           id="cost-country"
@@ -857,7 +895,7 @@ function PricesSection({
           onChange={(e) => onCountry(e.target.value || null)}
           className="max-w-full rounded border border-slate-300 px-2 py-1"
         >
-          <option value="">From the project's location</option>
+          <option value="">{t("cost.fromLocation")}</option>
           {econ && !countries.some((c) => c.iso3 === econ.country.iso3) && (
             <option value={econ.country.iso3}>{econ.country.name}</option>
           )}
@@ -867,36 +905,32 @@ function PricesSection({
             </option>
           ))}
         </select>
-        {!chosen && econ && <span className="text-xs text-slate-500">found at the project's location</span>}
+        {!chosen && econ && <span className="text-xs text-slate-500">{t("cost.foundAtLocation")}</span>}
       </div>
       {error && (
         <p role="alert" className="mt-2 text-sm text-amber-800">
-          World Bank data could not be loaded ({error}). The tables use {BASE_YEAR} international dollars
-          until it loads or you enter the values below.
+          {t("cost.wbError", { error, year: BASE_YEAR })}
         </p>
       )}
       {!econ && !error && !code && (
-        <p className="mt-2 text-sm text-slate-600">
-          Draw something on the map or choose a country to convert the costs; until then they are in{" "}
-          {BASE_YEAR} international dollars.
-        </p>
+        <p className="mt-2 text-sm text-slate-600">{t("cost.noPlace", { year: BASE_YEAR })}</p>
       )}
       <div className="mt-3 overflow-x-auto">
         <table className="w-full min-w-[34rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Value</th>
-              <th className={`${th} text-right`}>World Bank</th>
-              <th className={`${th} text-right`}>This project</th>
+              <th className={th}>{t("cost.value")}</th>
+              <th className={`${th} text-right`}>{t("cost.worldBank")}</th>
+              <th className={`${th} text-right`}>{t("tbl.thisProject")}</th>
             </tr>
           </thead>
           <tbody>
             <tr className="border-b border-slate-100">
-              <td className={td}>{cur} per international $ (PPP, construction and operation)</td>
+              <td className={td}>{t("cost.pppRow", { currency: cur })}</td>
               <td className={num}>{econ?.ppp ? `${sig(econ.ppp.value)} (${econ.ppp.year})` : "–"}</td>
               <td className={num}>
                 <NumberField
-                  label="PPP conversion factor"
+                  label={t("cost.pppLabel")}
                   value={own(PRICE_PREFS.ppp)}
                   placeholder={sig(prices.ppp)}
                   editable={editable}
@@ -905,11 +939,11 @@ function PricesSection({
               </td>
             </tr>
             <tr className="border-b border-slate-100">
-              <td className={td}>{cur} per US$ (exchange rate, vehicles)</td>
+              <td className={td}>{t("cost.fxRow", { currency: cur })}</td>
               <td className={num}>{econ?.fx ? `${sig(econ.fx.value)} (${econ.fx.year})` : "–"}</td>
               <td className={num}>
                 <NumberField
-                  label="Exchange rate"
+                  label={t("cost.fxLabel")}
                   value={own(PRICE_PREFS.fx)}
                   placeholder={sig(prices.fx)}
                   editable={editable}
@@ -919,8 +953,9 @@ function PricesSection({
             </tr>
             <tr>
               <td className={td}>
-                Price rise since {BASE_YEAR} (factor, US GDP deflator
-                {econ?.usDeflator.latest ? ` to ${econ.usDeflator.latest.year}` : ""})
+                {econ?.usDeflator.latest
+                  ? t("cost.riseRowTo", { year: BASE_YEAR, latest: econ.usDeflator.latest.year })
+                  : t("cost.riseRow", { year: BASE_YEAR })}
               </td>
               <td className={num}>
                 {econ?.usDeflator.base && econ.usDeflator.latest
@@ -929,7 +964,7 @@ function PricesSection({
               </td>
               <td className={num}>
                 <NumberField
-                  label="Price rise factor"
+                  label={t("cost.riseLabel")}
                   value={own(PRICE_PREFS.escalation)}
                   placeholder={sig(prices.escalation)}
                   editable={editable}
@@ -941,12 +976,13 @@ function PricesSection({
         </table>
       </div>
       <p className="mt-2 text-xs text-slate-500">
-        Source:{" "}
-        <a href="https://data.worldbank.org/" target="_blank" rel="noreferrer">
-          World Bank World Development Indicators
-        </a>{" "}
-        (PA.NUS.PPP, PA.NUS.FCRF, NY.GDP.DEFL.ZS), CC BY 4.0. Leave a field empty to use the World Bank's
-        value.
+        {withNodes(t("cost.source"), {
+          link: (
+            <a href="https://data.worldbank.org/" target="_blank" rel="noreferrer">
+              {t("cost.wdi")}
+            </a>
+          ),
+        })}
       </p>
     </section>
   );
@@ -964,6 +1000,8 @@ function UnitCosts({
   editable: boolean;
   setPref: (id: string, v: number | null) => void;
 }) {
+  const { t } = useI18n();
+  const modeLabel = useModeLabel();
   const used = new Map<string, { key: string; mode: string }>();
   for (const x of est.items)
     if (x.param) {
@@ -981,21 +1019,17 @@ function UnitCosts({
   return (
     <section className={card} aria-labelledby="cost-units">
       <h3 id="cost-units" className="caps m-0">
-        Unit costs used
+        {t("cost.unitsUsed")}
       </h3>
-      <p className="mt-1 text-sm text-slate-600">
-        The assumption library's low, medium and high values, in the units shown ({BASE_YEAR} prices before
-        conversion). Enter a medium value to change it for this project; low and high move with it. Leave the
-        field empty to return to the library's value.
-      </p>
+      <p className="mt-1 text-sm text-slate-600">{t("cost.unitsIntro", { year: BASE_YEAR })}</p>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full min-w-[44rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Unit cost</th>
-              <th className={th}>Mode</th>
-              <th className={`${th} text-right`}>Library (low – medium – high)</th>
-              <th className={`${th} text-right`}>This project</th>
+              <th className={th}>{t("cost.unitCost")}</th>
+              <th className={th}>{t("tbl.mode")}</th>
+              <th className={`${th} text-right`}>{t("cost.library")}</th>
+              <th className={`${th} text-right`}>{t("tbl.thisProject")}</th>
             </tr>
           </thead>
           <tbody>
@@ -1006,22 +1040,25 @@ function UnitCosts({
               const id = prefId(key, mode);
               const ownV = prefs?.[id];
               const now = paramValue(key, mode, prefs);
+              const label = paramLabel(t, key, p.label);
               return (
                 <tr key={`${key}|${mode}`} className="border-b border-slate-100">
                   <td className={td}>
-                    {p.label}
-                    <span className="block text-xs text-slate-500">{p.unit}</span>
+                    {label}
+                    <span className="block text-xs text-slate-500">{paramUnit(t, p.unit)}</span>
                   </td>
-                  <td className={td}>{mode === "*" ? "All" : modeLabel(mode)}</td>
+                  <td className={td}>{mode === "*" ? t("tbl.all") : modeLabel(mode)}</td>
                   <td className={num}>
                     {lib.map(sig).join(" – ")}
                     {ownV !== undefined && (
-                      <span className="block text-xs text-blue-700">now {now.map(sig).join(" – ")}</span>
+                      <span className="block text-xs text-blue-700">
+                        {t("cost.now", { values: now.map(sig).join(" – ") })}
+                      </span>
                     )}
                   </td>
                   <td className={num}>
                     <NumberField
-                      label={`${p.label}, ${mode === "*" ? "all modes" : modeLabel(mode)}`}
+                      label={`${label}, ${mode === "*" ? t("tbl.allModes") : modeLabel(mode)}`}
                       value={ownV}
                       placeholder={sig(lib[1])}
                       editable={editable}
@@ -1034,9 +1071,7 @@ function UnitCosts({
           </tbody>
         </table>
       </div>
-      <p className="mt-2 text-xs text-slate-500">
-        Sources and reasoning for every value: assumptions/parameters/costs.yaml in the MobSimLab repository.
-      </p>
+      <p className="mt-2 text-xs text-slate-500">{t("cost.unitsSource")}</p>
     </section>
   );
 }

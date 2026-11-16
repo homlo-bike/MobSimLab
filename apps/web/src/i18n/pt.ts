@@ -4,12 +4,14 @@ import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
 import { commentsPt } from "./comments/pt";
 import { depotsPt } from "./depots/pt";
+import { geodataPt } from "./geodata/pt";
+import { tablesPt } from "./tables/pt";
 import { fleetPt } from "./fleet/pt";
 import { timetablesPt } from "./timetables/pt";
 import { mslabPt } from "./mslab/pt";
 import { pluginCodePt } from "./plugin-code/pt";
 import { populationPt } from "./population/pt";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsPt } from "./plugins/pt";
 import type { Messages } from "./en";
 
 /** Português (Brazilian spelling, the most widely used). */
@@ -503,6 +505,8 @@ export const pt: Messages = {
   ...editorsPt,
   ...cargoBikePt,
   ...depotsPt,
+  ...geodataPt,
+  ...tablesPt,
   ...fleetPt,
   ...timetablesPt,
   ...commentsPt,
@@ -511,5 +515,5 @@ export const pt: Messages = {
   ...populationPt,
   ...roadPt,
   ...calendarPt,
-  ...PLUGIN_MESSAGES.pt,
+  ...pluginsPt,
 };

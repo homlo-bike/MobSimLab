@@ -4,12 +4,14 @@ import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
 import { commentsJa } from "./comments/ja";
 import { depotsJa } from "./depots/ja";
+import { geodataJa } from "./geodata/ja";
+import { tablesJa } from "./tables/ja";
 import { fleetJa } from "./fleet/ja";
 import { timetablesJa } from "./timetables/ja";
 import { mslabJa } from "./mslab/ja";
 import { pluginCodeJa } from "./plugin-code/ja";
 import { populationJa } from "./population/ja";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsJa } from "./plugins/ja";
 import type { Messages } from "./en";
 
 /** 日本語 */
@@ -491,6 +493,8 @@ export const ja: Messages = {
   ...editorsJa,
   ...cargoBikeJa,
   ...depotsJa,
+  ...geodataJa,
+  ...tablesJa,
   ...fleetJa,
   ...timetablesJa,
   ...commentsJa,
@@ -499,5 +503,5 @@ export const ja: Messages = {
   ...populationJa,
   ...roadJa,
   ...calendarJa,
-  ...PLUGIN_MESSAGES.ja,
+  ...pluginsJa,
 };

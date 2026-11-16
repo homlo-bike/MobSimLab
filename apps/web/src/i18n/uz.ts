@@ -4,12 +4,14 @@ import { editorsUz } from "./editors/uz";
 import { cargoBikeUz } from "./cargo-bike/uz";
 import { commentsUz } from "./comments/uz";
 import { depotsUz } from "./depots/uz";
+import { geodataUz } from "./geodata/uz";
+import { tablesUz } from "./tables/uz";
 import { fleetUz } from "./fleet/uz";
 import { timetablesUz } from "./timetables/uz";
 import { mslabUz } from "./mslab/uz";
 import { pluginCodeUz } from "./plugin-code/uz";
 import { populationUz } from "./population/uz";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsUz } from "./plugins/uz";
 import type { Messages } from "./en";
 
 /** Oʻzbekcha */
@@ -505,6 +507,8 @@ export const uz: Messages = {
   ...editorsUz,
   ...cargoBikeUz,
   ...depotsUz,
+  ...geodataUz,
+  ...tablesUz,
   ...fleetUz,
   ...timetablesUz,
   ...commentsUz,
@@ -513,5 +517,5 @@ export const uz: Messages = {
   ...populationUz,
   ...roadUz,
   ...calendarUz,
-  ...PLUGIN_MESSAGES.uz,
+  ...pluginsUz,
 };

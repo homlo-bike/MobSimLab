@@ -4,12 +4,14 @@ import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
 import { commentsUk } from "./comments/uk";
 import { depotsUk } from "./depots/uk";
+import { geodataUk } from "./geodata/uk";
+import { tablesUk } from "./tables/uk";
 import { fleetUk } from "./fleet/uk";
 import { timetablesUk } from "./timetables/uk";
 import { mslabUk } from "./mslab/uk";
 import { pluginCodeUk } from "./plugin-code/uk";
 import { populationUk } from "./population/uk";
-import { PLUGIN_MESSAGES } from "./plugins";
+import { pluginsUk } from "./plugins/uk";
 import type { Messages } from "./en";
 
 /** Українська */
@@ -502,6 +504,8 @@ export const uk: Messages = {
   ...editorsUk,
   ...cargoBikeUk,
   ...depotsUk,
+  ...geodataUk,
+  ...tablesUk,
   ...fleetUk,
   ...timetablesUk,
   ...commentsUk,
@@ -510,5 +514,5 @@ export const uk: Messages = {
   ...populationUk,
   ...roadUk,
   ...calendarUk,
-  ...PLUGIN_MESSAGES.uk,
+  ...pluginsUk,
 };
