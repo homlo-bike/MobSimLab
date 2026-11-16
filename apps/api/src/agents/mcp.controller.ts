@@ -7,6 +7,7 @@ import type { AppConfig } from "../config/env";
 import { DATABASE, type Database } from "../db/database";
 import { RateLimitService } from "../iam/rate-limit.service";
 import { BearerAuth, Public } from "../iam/requires";
+import { AccessService } from "./access.service";
 import { AnalysisService } from "./analysis.service";
 import { buildMcpServer } from "./mcp.tools";
 import { OAuthService } from "./oauth.service";
@@ -26,6 +27,7 @@ export class McpController {
     private readonly oauth: OAuthService,
     private readonly scenarios: ScenariosService,
     private readonly analysis: AnalysisService,
+    private readonly access: AccessService,
     private readonly limits: RateLimitService,
     @Inject(DATABASE) private readonly db: Database,
     @Inject(APP_CONFIG) private readonly config: AppConfig,
@@ -69,7 +71,9 @@ export class McpController {
     const server = buildMcpServer(principal, {
       scenarios: this.scenarios,
       analysis: this.analysis,
+      access: this.access,
       instanceName: inst.name,
+      instanceUrl: this.config.publicUrl.origin,
       requestId: req.requestId,
     });
     const transport = new StreamableHTTPServerTransport({

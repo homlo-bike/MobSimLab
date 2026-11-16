@@ -11,6 +11,9 @@ import {
   th,
   Tile,
 } from "../costs/CostTables";
+import { EnergySection } from "../energy/EnergySection";
+import { energyInTables } from "../energy/params";
+import type { EnergyEngineLoader } from "../energy/types";
 import { hhmm } from "../railways/serviceLines";
 import type { Network, RailEngineLoader } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
@@ -33,8 +36,11 @@ interface Props {
   railway: Network | null;
   streetLines: StreetLinesDoc | null;
   preferences: PreferencesDoc | null;
+  /** Saves the project's own values (the energy section's grid intensity and battery bus share). */
+  onPreferences?: (d: PreferencesDoc) => void;
   /** Tests inject these. */
   loadRail?: RailEngineLoader;
+  loadEnergy?: EnergyEngineLoader;
   fetchHeights?: HeightsFetcher;
 }
 
@@ -43,11 +49,19 @@ const int = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
 const sumOf = <T,>(xs: T[], f: (x: T) => number) => xs.reduce((s, x) => s + f(x), 0);
 
 /**
- * The network tables of the Tables tab: a summary of the project, its infrastructure quantities, and the
- * service and fleet of each line. In English for now, like the cost tables.
+ * The network tables of the Tables tab: a summary of the project, its infrastructure quantities, the
+ * service and fleet of each line, and, with the energy plugin, their energy and emissions. In English for now, like the cost tables.
  * Side effects: builds the railway with the rail engine and loads the terrain heights under it.
  */
-export function NetworkTables({ railway, streetLines, preferences, loadRail, fetchHeights }: Props) {
+export function NetworkTables({
+  railway,
+  streetLines,
+  preferences,
+  onPreferences,
+  loadRail,
+  loadEnergy,
+  fetchHeights,
+}: Props) {
   const { build, error } = useRailBuild(railway, loadRail, fetchHeights);
   const prefs = preferences?.values;
   const lines = streetLines?.lines ?? [];
@@ -91,6 +105,14 @@ export function NetworkTables({ railway, streetLines, preferences, loadRail, fet
           <Summary facts={facts} q={q} />
           <Infrastructure q={q} terrain={build?.terrain ?? null} />
           <ServiceAndFleet facts={facts} />
+          {energyInTables() && (
+            <EnergySection
+              facts={facts}
+              preferences={preferences}
+              onPreferences={onPreferences}
+              loadEngine={loadEnergy}
+            />
+          )}
         </>
       )}
     </div>
@@ -385,7 +407,6 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
   );
   const dash = "—";
   const sub = (text: ReactNode) => <span className="block text-xs text-slate-500">{text}</span>;
-  const assumedHours = facts.some((f) => f.hoursAssumed);
   const assumedPlaces = facts.some((f) => f.placesAssumed);
   return (
     <section aria-labelledby="service-title" className="mt-10">
@@ -462,7 +483,7 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
                       </td>
                       <td className={num}>
                         {int(f.placesPerVehicle)}
-                        {sub(f.placesAssumed ? "assumed" : "per train")}
+                        {sub(f.placesAssumed ? "assumed" : f.kind === "rail" ? "per train" : "per vehicle")}
                       </td>
                       <td className={num}>
                         {int(f.capacityPerHour)}
@@ -491,16 +512,11 @@ function ServiceAndFleet({ facts }: { facts: LineFact[] }) {
               Rail fleets count units: a line of 4 trains of 2 coupled units has a fleet of 8. Spares come
               from the assumption library (mode.spare_share).
             </li>
-            {assumedHours && (
-              <li>
-                Street lines have no first and last departure yet, so their service hours are the library's
-                (cost.service_hours_per_day).
-              </li>
-            )}
             {assumedPlaces && (
               <li>
-                Street lines have no catalogue vehicle yet, so their places per vehicle are the library's
-                (mode.vehicle_capacity). Rail lines use the chosen train's seats plus standing places.
+                Street lines without a catalogue vehicle use the library's places per vehicle
+                (mode.vehicle_capacity); choose a vehicle for them in the street line tool. Other lines use
+                the chosen vehicle's seats plus standing places.
               </li>
             )}
           </ul>

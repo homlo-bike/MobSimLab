@@ -26,6 +26,19 @@ const railTimetable = z.looseObject({
   trips: z.array(z.looseObject({ trip_id: z.string() })).max(100000),
 });
 
+/** Existing networks imported from GTFS feeds (GTFS plugin): each feed's timetable of one service day. */
+const gtfsNetwork = z.looseObject({
+  feeds: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().max(200),
+        timetable: railTimetable,
+      }),
+    )
+    .max(5),
+});
+
 const streetSetups = z.array(z.looseObject({ way: z.number().int() })).max(50000);
 
 /** Assumption library values the project changes, by assumption id (for example `street.mixed_traffic_delay_share`). */
@@ -47,6 +60,48 @@ const costs = z.looseObject({
     .string()
     .regex(/^[A-Z]{3}$/)
     .nullable()
+    .optional(),
+});
+
+/** Schematic edits (ADR-0041): stations the planner moved, label places and display switches. */
+const STATION_STATUSES = [
+  "central_station",
+  "bus_station",
+  "airport",
+  "seaport",
+  "park_and_ride",
+  "hospital",
+  "university",
+  "stadium",
+] as const;
+const schematic = z.looseObject({
+  origin: point.optional(),
+  pins: z
+    .record(z.string().max(300), point)
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 pins"),
+  labels: z
+    .record(z.string().max(300), z.number().int().min(0).max(7))
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 labels"),
+  hidden: z.array(z.string().max(40)).max(20).optional(),
+  rotate: z
+    .record(z.string().max(300), z.number().min(-90).max(90))
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 rotations")
+    .optional(),
+  statuses: z
+    .record(z.string().max(300), z.array(z.enum(STATION_STATUSES)).max(STATION_STATUSES.length))
+    .refine((v) => Object.keys(v).length <= 20000, "at most 20000 stations with a status")
+    .optional(),
+  areas: z
+    .array(
+      z.looseObject({
+        id: z.string().min(1).max(64),
+        name: z.string().max(80),
+        kind: z.enum(["zone", "landmark"]),
+        color: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+        points: z.array(point).min(3).max(500),
+      }),
+    )
+    .max(200)
     .optional(),
 });
 
@@ -96,6 +151,28 @@ const regions = z.looseObject({
     .max(500),
 });
 
+/** Cargo bike tab (plugins/cargo-bike): start point, destination and the values the project changed. */
+const cargoBike = z.looseObject({
+  start: point.nullable().optional(),
+  destination: point.nullable().optional(),
+  values: z
+    .record(
+      z
+        .string()
+        .regex(/^[a-z_.]+$/)
+        .max(60),
+      z.number().finite(),
+    )
+    .refine((v) => Object.keys(v).length <= 100, "at most 100 values")
+    .optional(),
+  kit: z
+    .string()
+    .regex(/^[a-z0-9-]+$/)
+    .max(40)
+    .nullable()
+    .optional(),
+});
+
 /** Drawing kinds with their document outline and current schema version. */
 export const DRAWING_KINDS = {
   /** The street line tool (ADR-0029): bus, BRT, trolleybus and intercity bus lines. */
@@ -106,16 +183,22 @@ export const DRAWING_KINDS = {
   "street-setups": { schema: streetSetups, schemaVersion: 1 },
   /** The trains of the railway tool's service lines as last published, for the journey planner. */
   "rail-timetable": { schema: railTimetable, schemaVersion: 1 },
+  /** Existing networks imported from GTFS feeds (GTFS plugin), for the journey planner. */
+  "gtfs-network": { schema: gtfsNetwork, schemaVersion: 1 },
   /** Project preferences: assumption library values changed for this project (Preferences tab). */
   preferences: { schema: preferences, schemaVersion: 1 },
   /** Cost tables settings (ADR-0039): the country chosen for prices. */
   costs: { schema: costs, schemaVersion: 1 },
+  /** Schematic tab (ADR-0041): the planner's edits of the network diagram. */
+  schematic: { schema: schematic, schemaVersion: 1 },
   /** Tables tab: saved copies of the design to compare side by side. */
   scenarios: { schema: scenarios, schemaVersion: 1 },
   /** Benefit tables settings (ADR-0040): the project's own formulas. */
   benefits: { schema: benefits, schemaVersion: 1 },
   /** GIS tab regions with their own values (land use, land value, tax, population, jobs…). */
   regions: { schema: regions, schemaVersion: 1 },
+  /** Cargo bike tab of the cargo bike plugin: start point, destination and the project's own values. */
+  "cargo-bike": { schema: cargoBike, schemaVersion: 1 },
 } as const satisfies Record<string, { schema: z.ZodType; schemaVersion: number }>;
 
 export type DrawingKind = keyof typeof DRAWING_KINDS;

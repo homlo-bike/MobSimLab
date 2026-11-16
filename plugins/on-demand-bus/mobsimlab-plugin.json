@@ -1,0 +1,28 @@
+{
+  "$schema": "../../contracts/plugin-manifest.schema.json",
+  "id": "org.mobsimlab.on-demand-bus",
+  "name": "On-demand bus",
+  "description": "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. The zone shows in the journey planner. A trip-by-trip dispatch simulation comes later (ADR-0037 §7).",
+  "version": "0.1.0",
+  "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
+  "license": "AGPL-3.0-or-later",
+  "dataLicense": "CC-BY-4.0",
+  "engines": { "mobsimlab": ">=0.1 <1", "pluginApi": "1" },
+  "bundled": true,
+  "tiers": ["data"],
+  "contributes": {
+    "modes": [{ "id": "on_demand_bus", "file": "modes/on_demand_bus.json" }],
+    "parameters": [{ "file": "assumptions/parameters.yaml" }],
+    "sources": [{ "file": "assumptions/sources.yaml" }],
+    "tools": [
+      {
+        "id": "on-demand-bus",
+        "label": "On-demand bus",
+        "hint": "Minibuses booked by app: outline the zone, set the fleet and hours.",
+        "kit": "service-zone",
+        "modes": ["on_demand_bus"]
+      }
+    ]
+  },
+  "permissions": ["read:network"]
+}

@@ -73,6 +73,21 @@ describe("plugin checks (ADR-0036)", () => {
     expect(errs).toContain("licence Proprietary");
     expect(errs).toContain("made for MobSimLab >=2");
 
+    const tab = checkPlugin(
+      samplePlugin({
+        contributes: {
+          modes: [{ id: "water_taxi", file: "modes/water_taxi.json" }],
+          parameters: [{ file: "assumptions/parameters.yaml" }],
+          sources: [{ file: "assumptions/sources.yaml" }],
+          tabs: [{ id: "taxis", label: "Taxis", view: "taxis", calculations: [] }],
+        },
+      }),
+      [],
+    );
+    expect(tab.ok ? [] : tab.errors).toContain(
+      "org.example.water-taxi: only bundled plugins may contribute tabs for now",
+    );
+
     const clash = checkPlugin(samplePlugin({}, "org.example.other"), [
       {
         id: "org.example.water-taxi",

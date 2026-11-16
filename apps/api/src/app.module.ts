@@ -15,6 +15,7 @@ import { StreetNetworkModule } from "./street-network/street-network.module";
 import { BenefitsModule } from "./benefits/benefits.module";
 import { PopulationModule } from "./population/population.module";
 import { EconomyModule } from "./economy/economy.module";
+import { PlacesModule } from "./places/places.module";
 import { TerrainModule } from "./terrain/terrain.module";
 import { AccessGuard } from "./iam/access.guard";
 import { RateLimitService } from "./iam/rate-limit.service";
@@ -44,6 +45,7 @@ export class AppModule {
         PopulationModule,
         EconomyModule,
         BenefitsModule,
+        PlacesModule,
         AgentsModule,
       ],
       controllers: [

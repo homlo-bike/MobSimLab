@@ -1,6 +1,14 @@
 import { tNow } from "../../i18n/i18n";
 import type { StreetInfo, StreetInfoLoader } from "../street-setup/types";
 import type {
+  CatchmentGeoJson,
+  CoverageResult,
+  SpacingResult,
+  WalkEngine,
+  WalkEngineLoader,
+  WalkTileFetcher,
+} from "../walk/types";
+import type {
   EngineLoader,
   LineView,
   Mode,
@@ -74,5 +82,36 @@ export const fetchStreetTile: TileFetcher = async (x, y) => {
   if (res.status === 401) throw new Error(tNow("street.osmUnauthorised"));
   if (!res.ok)
     throw new Error(res.status === 400 ? tNow("rail.osmInvalidTile") : tNow("street.osmUnavailable"));
+  return res.text();
+};
+
+/**
+ * Purpose: the walk analysis of the GIS tab (walk coverage, gaps and stop spacing, ADR-0035 §5–§6), on the
+ * same street-routing WebAssembly module as the street line tool.
+ * Output: an engine with no walk network; walk tiles are added with `addOsm` and `build`.
+ */
+export const loadWalkEngine: WalkEngineLoader = async () => {
+  const wasm = await initWasm();
+  const w = new wasm.WalkAnalysis();
+  return {
+    addOsm: (xml) => w.add_osm(xml),
+    build: () => w.build(),
+    ready: () => w.ready(),
+    coverage: (req) => JSON.parse(w.coverage(JSON.stringify(req))) as CoverageResult,
+    catchment: (stops, maxMinutes, settings) =>
+      JSON.parse(
+        w.catchment(JSON.stringify(stops), maxMinutes, JSON.stringify(settings)),
+      ) as CatchmentGeoJson,
+    spacing: (req) => JSON.parse(w.spacing(JSON.stringify(req))) as SpacingResult,
+    dispose: () => w.free(),
+  } satisfies WalkEngine;
+};
+
+/** Purpose: fetch the walkable ways of one zoom-14 tile from the API (OSM, fetched and cached server-side). */
+export const fetchWalkTile: WalkTileFetcher = async (x, y) => {
+  const res = await fetch(`/api/street-network/walk-tiles/14/${x}/${y}`);
+  if (res.status === 401) throw new Error(tNow("street.osmUnauthorised"));
+  if (!res.ok)
+    throw new Error(res.status === 400 ? tNow("rail.osmInvalidTile") : tNow("walk.osmUnavailable"));
   return res.text();
 };

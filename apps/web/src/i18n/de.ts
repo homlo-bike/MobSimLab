@@ -1,4 +1,5 @@
 import { editorsDe } from "./editors/de";
+import { cargoBikeDe } from "./cargo-bike/de";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -219,6 +220,7 @@ export const de: Messages = {
   "drawing.rail-timetable": "den Fahrplan der Bahnlinien",
   "drawing.preferences": "die Projekteinstellungen",
   "drawing.costs": "die Kosteneinstellungen",
+  "drawing.schematic": "das Schema",
   "drawing.scenarios": "die gespeicherten Szenarien",
   "drawing.benefits": "die Nutzenformeln",
   "drawing.regions": "die Gebiete",
@@ -254,10 +256,6 @@ export const de: Messages = {
 
   "schematic.title": "Schema",
   "schematic.intro": "Den Liniennetzplan ansehen und bearbeiten und einzelne Linien betrachten.",
-  "schematic.network": "Liniennetzplan in schematischer Darstellung",
-  "schematic.line": "Eine Linie: Linienband und Anschlüsse",
-  "schematic.layers": "Ebenen, Verschieben und Kurven",
-  "schematic.export": "Export für Druck und Bildschirme",
 
   "gis.title": "GIS",
   "gis.intro": "Informationen hinzufügen oder bearbeiten, die in die Berechnungen eingehen.",
@@ -285,6 +283,18 @@ export const de: Messages = {
   "prefs.delayLane": "Auf einer markierten Bus- oder Straßenbahnspur",
   "prefs.delayDefault": "Annahmenbibliothek: {value} %",
   "prefs.delayReset": "Wert der Bibliothek verwenden",
+  "prefs.currencyTitle": "Währung",
+  "prefs.currencyIntro":
+    "Alle Geldbeträge des Projekts werden in dieser Währung angezeigt: Kostentabellen, Nutzen, Szenarien und die Einsparungen des Lastenrads.",
+  "prefs.currencyLabel": "Geld anzeigen in",
+  "prefs.currencyCountry": "Die eigene Währung des Landes",
+  "prefs.currencyRate": "{code} je US$",
+  "prefs.currencyWorldBank": "Amtlicher Wechselkurs der Weltbank ({year}): {value}",
+  "prefs.currencyMissing":
+    "Die Weltbank hat keinen Wechselkurs für {code}. Geben Sie einen ein, um umzurechnen; bis dahin zeigt jedes Werkzeug die Währung des Landes.",
+  "prefs.currencyReset": "Kurs der Weltbank verwenden",
+  "prefs.currencyHow":
+    "Beträge werden über den US-Dollar umgerechnet, mit dem amtlichen Wechselkurs der Weltbank für jedes Land.",
   "prefs.moreTitle": "Regeln, Fahrzeuge und Annahmen",
   "prefs.moreIntro": "Jede Variable mit Mindest- und Richtwert sowie die Fahrzeuge des Projekts.",
   "prefs.rules": "Entwurfsregeln je Verkehrsmittel, Mindest- und Richtwert",
@@ -292,6 +302,82 @@ export const de: Messages = {
   "prefs.switches": "Weichen aus dem Weichenkatalog",
   "prefs.calendar": "Kalender, Nachfrage und Kosten",
 
+  "job.stepOf": "Schritt {step} von {steps}",
+  "job.cancel": "Abbrechen",
+  "map.search": "Orte suchen",
+  "map.searchPlaceholder": "Ort, Straße, Bahnhof oder Adresse",
+  "map.searching": "Suche…",
+  "map.searchFailed": "Ortssuche fehlgeschlagen: {error}",
+  "map.noPlaces": "Keine Orte gefunden.",
+  "map.places": "Gefundene Orte",
+  "map.searchCredit": "Ortsnamen © OpenStreetMap-Mitwirkende, gefunden mit Photon",
+  "map.layers": "Kartenebenen",
+  "map.basemap": "Grundkarte",
+  "map.streetMap": "Karte",
+  "map.aerial": "Luftbild",
+  "map.aerialNote":
+    "Satellitenbilder mit etwa 10 m pro Pixel: gut, um die Landnutzung zu sehen, zu grob, um Gleise oder Bordsteine zu zeichnen.",
+  "map.projectLayers": "Projektebenen",
+  "map.noLayers": "Die Linien und Ergebnisse, die du zeichnest, erscheinen hier.",
+  "map.group.streetLines": "Straßenlinien",
+  "map.group.railways": "Bahnstrecken",
+  "map.group.cableFerry": "Seilbahnen und Fähren",
+  "map.group.streetSetups": "Straßeneinrichtungen",
+  "map.group.noise": "Lärmkarte",
+  "map.group.journey": "Reiseplaner",
+  "map.group.agents": "Szenario des KI-Agenten",
+  "help.menu": "Hilfe",
+  "help.tour": "Rundgang starten",
+  "help.tourHint": "Ein kurzer Gang durch die Tabs und Werkzeuge des Projekts",
+  "help.example": "Beispielprojekt öffnen",
+  "help.exampleMaking": "Beispielprojekt wird erstellt…",
+  "help.exampleHint": "Ein neues eigenes Projekt mit einer Buslinie und einem Tram in Zürich",
+  "help.exampleFailed": "Das Beispielprojekt konnte nicht erstellt werden: {error}",
+  "example.name": "Beispiel: Bus und Tram in Zürich",
+  "example.description":
+    "Ein Beispiel zum Ausprobieren: eine Buslinie von Bellevue nach Haldenbach und ein Tram durch die Bahnhofstrasse. Ändern Sie alles; es ist Ihre eigene Kopie.",
+  "example.busName": "Beispielbus",
+  "tour.stepOf": "{step} von {steps}",
+  "tour.close": "Schließen",
+  "tour.back": "Zurück",
+  "tour.next": "Weiter",
+  "tour.done": "Fertig",
+  "tour.tabs.title": "Die Tabs des Projekts",
+  "tour.tabs.body":
+    "Jeder Tab ist ein Teil der Arbeit: simulieren, Linien erstellen, Schema, GIS, Tabellen und Einstellungen.",
+  "tour.create.title": "Linien zeichnen",
+  "tour.create.body":
+    "Wähle unter Erstellen das Straßenlinien-Werkzeug, den Bahn-Editor oder ein Plugin-Werkzeug. Seine Einstellungen, Prüfungen und Ergebnisse erscheinen in diesem Bereich.",
+  "tour.search.title": "Einen Ort finden",
+  "tour.search.body":
+    "Suche einen Ort, eine Straße, einen Bahnhof oder eine Adresse, um die Karte dorthin zu bewegen.",
+  "tour.layers.title": "Grundkarte und Ebenen",
+  "tour.layers.body":
+    "Wechsle zwischen Straßenkarten und Luftbildern und blende die Ebenen des Projekts ein oder aus.",
+  "tour.simulator.title": "Simulieren",
+  "tour.simulator.body":
+    "Führe den Kapazitätstest der Bahn aus und plane Reisen über die gezeichneten Linien.",
+  "tour.gis.title": "GIS",
+  "tour.gis.body": "Richte Straßen für Busse und Straßenbahnen ein und berechne die Lärmkarte um die Linien.",
+  "tour.tables.title": "Tabellen",
+  "tour.tables.body": "Schätzungen der Bau- und Betriebskosten der Linien.",
+  "tour.save.title": "Für dich gespeichert",
+  "tour.save.body":
+    "Änderungen werden kurz nach dem Vornehmen im Projekt gespeichert. Hier siehst du, ob sie es sind.",
+  "tour.print.title": "Drucken oder als PDF speichern",
+  "tour.print.body": "Drucke die Karte und die Kostentabellen für einen Bericht oder speichere sie als PDF.",
+  "tour.help.title": "Hilfe",
+  "tour.help.body": "Starte diesen Rundgang jederzeit hier erneut.",
+  "print.title": "Drucken oder als PDF speichern",
+  "print.intro": "Ein Bericht mit dem Projektnamen und dem heutigen Datum.",
+  "print.include": "Enthalten",
+  "print.map": "Karte, wie sie jetzt angezeigt wird",
+  "print.mapHidden": "Öffne den Tab Simulator, Erstellen oder GIS, um die Karte aufzunehmen.",
+  "print.tables": "Kostentabellen",
+  "print.pdfHint": "Um ein PDF zu speichern, wähle im sich öffnenden Dialog „Als PDF speichern“ als Drucker.",
+  "print.print": "Drucken…",
+
   ...editorsDe,
+  ...cargoBikeDe,
   ...PLUGIN_MESSAGES.de,
 };

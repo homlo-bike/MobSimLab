@@ -16,6 +16,11 @@ export interface WalkAnalysisWasm {
   catchment(stopsJson: string, maxMinutes: number, settingsJson: string): string;
   spacing(requestJson: string): string;
   suggest_stops(requestJson: string): string;
+  /** `walk` (default) or `cycle`; call before `build`. */
+  set_profile(profile: string): void;
+  ptal(requestJson: string): string;
+  reach_counts(requestJson: string): string;
+  matrix(requestJson: string): string;
   free(): void;
 }
 
@@ -41,6 +46,8 @@ interface StreetRoutingModule {
 /** Journey planner (crates/journey-planner) over a published timetable. */
 export interface JourneyPlannerWasm {
   plan(queryJson: string): string;
+  /** JSON `{stop_ids, arrive_s}`: earliest arrival at every stop leaving [lon, lat] at t0. */
+  reach(lon: number, lat: number, t0: number): string;
   summary(): string;
   free(): void;
 }
@@ -49,6 +56,12 @@ interface JourneyPlannerModule {
   JourneyPlanner: (new (timetableJson: string, settingsJson: string) => JourneyPlannerWasm) & {
     default_settings(): string;
   };
+}
+
+/** GTFS exporter (crates/gtfs, the GTFS plugin's code): published timetable → GTFS text files. */
+interface GtfsModule {
+  /** JSON `gtfs::ExportInput` → JSON file name → text. */
+  export_gtfs(inputJson: string): string;
 }
 
 /** The modules were not built. */
@@ -80,6 +93,11 @@ function load<T>(name: string, file: string): T {
 /** Purpose: load the street routing and walk analysis module (once). Throws WasmMissingError. */
 export function streetRouting(): StreetRoutingModule {
   return load<StreetRoutingModule>("street-routing", "street_routing_wasm.js");
+}
+
+/** Purpose: load the GTFS module (once). Throws WasmMissingError. */
+export function gtfs(): GtfsModule {
+  return load<GtfsModule>("gtfs", "gtfs_wasm.js");
 }
 
 /** Purpose: load the journey planner module (once). Throws WasmMissingError. */

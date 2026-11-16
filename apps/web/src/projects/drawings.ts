@@ -7,20 +7,26 @@ export type DrawingKind =
   | "street-setups"
   | "preferences"
   | "rail-timetable"
+  | "gtfs-network"
   | "costs"
+  | "schematic"
   | "benefits"
   | "regions"
-  | "scenarios";
+  | "scenarios"
+  | "cargo-bike";
 export const DRAWING_KINDS: readonly DrawingKind[] = [
   "street-lines",
   "railway",
   "street-setups",
   "preferences",
   "rail-timetable",
+  "gtfs-network",
   "costs",
+  "schematic",
   "scenarios",
   "benefits",
   "regions",
+  "cargo-bike",
 ];
 
 /** One saved drawing as the API returns it. */

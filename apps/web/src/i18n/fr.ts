@@ -1,4 +1,5 @@
 import { editorsFr } from "./editors/fr";
+import { cargoBikeFr } from "./cargo-bike/fr";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -216,6 +217,7 @@ export const fr: Messages = {
   "drawing.rail-timetable": "l'horaire ferroviaire",
   "drawing.preferences": "les préférences du projet",
   "drawing.costs": "les réglages des coûts",
+  "drawing.schematic": "le plan schématique",
   "drawing.scenarios": "les scénarios enregistrés",
   "drawing.benefits": "les formules des bénéfices",
   "drawing.regions": "les régions",
@@ -251,10 +253,6 @@ export const fr: Messages = {
 
   "schematic.title": "Schéma",
   "schematic.intro": "Voir et modifier le plan du réseau, et regarder chaque ligne séparément.",
-  "schematic.network": "Plan du réseau avec les lignes en schéma",
-  "schematic.line": "Une ligne : son thermomètre et ses correspondances",
-  "schematic.layers": "Calques, glisser-déposer et courbes",
-  "schematic.export": "Export pour l’impression et les écrans",
 
   "gis.title": "SIG",
   "gis.intro": "Ajoutez ou modifiez les informations utilisées par les calculs.",
@@ -282,6 +280,18 @@ export const fr: Messages = {
   "prefs.delayLane": "Dans une voie bus ou tram marquée",
   "prefs.delayDefault": "Bibliothèque d'hypothèses : {value} %",
   "prefs.delayReset": "Utiliser la valeur de la bibliothèque",
+  "prefs.currencyTitle": "Devise",
+  "prefs.currencyIntro":
+    "Tout l'argent du projet est affiché dans cette devise : tableaux de coûts, bénéfices, scénarios et économies du vélo cargo.",
+  "prefs.currencyLabel": "Afficher l'argent en",
+  "prefs.currencyCountry": "La devise du pays",
+  "prefs.currencyRate": "{code} par US$",
+  "prefs.currencyWorldBank": "Taux de change officiel de la Banque mondiale ({year}) : {value}",
+  "prefs.currencyMissing":
+    "La Banque mondiale n'a pas de taux de change pour {code}. Saisissez-en un pour convertir ; d'ici là, chaque outil affiche la devise du pays.",
+  "prefs.currencyReset": "Utiliser le taux de la Banque mondiale",
+  "prefs.currencyHow":
+    "Les montants sont convertis en passant par le dollar américain, avec le taux de change officiel de la Banque mondiale de chaque pays.",
   "prefs.moreTitle": "Règles, véhicules et hypothèses",
   "prefs.moreIntro": "Chaque variable avec ses valeurs minimale et recommandée, et les véhicules du projet.",
   "prefs.rules": "Règles de conception par mode, minimales et recommandées",
@@ -289,6 +299,83 @@ export const fr: Messages = {
   "prefs.switches": "Aiguillages, depuis le catalogue d’aiguillages",
   "prefs.calendar": "Calendrier, demande et coûts",
 
+  "job.stepOf": "Étape {step} sur {steps}",
+  "job.cancel": "Annuler",
+  "map.search": "Rechercher un lieu",
+  "map.searchPlaceholder": "Ville, rue, gare ou adresse",
+  "map.searching": "Recherche…",
+  "map.searchFailed": "La recherche de lieu a échoué : {error}",
+  "map.noPlaces": "Aucun lieu trouvé.",
+  "map.places": "Lieux trouvés",
+  "map.searchCredit": "Noms de lieux © contributeurs OpenStreetMap, trouvés avec Photon",
+  "map.layers": "Couches de la carte",
+  "map.basemap": "Fond de carte",
+  "map.streetMap": "Carte",
+  "map.aerial": "Aérienne",
+  "map.aerialNote":
+    "Imagerie satellite d’environ 10 m par pixel : utile pour voir l’occupation du sol, trop grossière pour dessiner des voies ou des bordures.",
+  "map.projectLayers": "Couches du projet",
+  "map.noLayers": "Les lignes et résultats que vous dessinez apparaissent ici.",
+  "map.group.streetLines": "Lignes routières",
+  "map.group.railways": "Voies ferrées",
+  "map.group.cableFerry": "Téléphériques et ferries",
+  "map.group.streetSetups": "Aménagements de rue",
+  "map.group.noise": "Carte de bruit",
+  "map.group.journey": "Calculateur d’itinéraire",
+  "map.group.agents": "Scénario de l’agent IA",
+  "help.menu": "Aide",
+  "help.tour": "Faire la visite",
+  "help.tourHint": "Un court parcours des onglets et outils du projet",
+  "help.example": "Ouvrir le projet d’exemple",
+  "help.exampleMaking": "Création du projet d’exemple…",
+  "help.exampleHint": "Un nouveau projet à vous avec une ligne de bus et un tram à Zurich",
+  "help.exampleFailed": "Impossible de créer le projet d’exemple : {error}",
+  "example.name": "Exemple : bus et tram à Zurich",
+  "example.description":
+    "Un exemple à explorer : une ligne de bus de Bellevue à Haldenbach et un tram le long de la Bahnhofstrasse. Modifiez tout ; c’est votre propre copie.",
+  "example.busName": "Bus d’exemple",
+  "tour.stepOf": "{step} sur {steps}",
+  "tour.close": "Fermer",
+  "tour.back": "Retour",
+  "tour.next": "Suivant",
+  "tour.done": "Terminé",
+  "tour.tabs.title": "Les onglets du projet",
+  "tour.tabs.body":
+    "Chaque onglet est une partie du travail : simuler, créer des lignes, schéma, SIG, tableaux et préférences.",
+  "tour.create.title": "Dessiner des lignes",
+  "tour.create.body":
+    "Dans Créer, choisissez l’outil de ligne routière, l’éditeur ferroviaire ou un outil de plugin. Ses réglages, contrôles et résultats s’affichent dans ce panneau.",
+  "tour.search.title": "Trouver un lieu",
+  "tour.search.body": "Cherchez une ville, une rue, une gare ou une adresse pour y déplacer la carte.",
+  "tour.layers.title": "Fond de carte et couches",
+  "tour.layers.body":
+    "Passez des cartes routières à l’imagerie aérienne, et affichez ou masquez les couches du projet.",
+  "tour.simulator.title": "Simuler",
+  "tour.simulator.body":
+    "Lancez le test de capacité ferroviaire et planifiez des trajets sur les lignes dessinées.",
+  "tour.gis.title": "SIG",
+  "tour.gis.body":
+    "Aménagez les rues pour les bus et les tramways, et calculez la carte de bruit autour des lignes.",
+  "tour.tables.title": "Tableaux",
+  "tour.tables.body": "Estimations des coûts de construction et d’exploitation des lignes.",
+  "tour.save.title": "Enregistré pour vous",
+  "tour.save.body":
+    "Les modifications sont enregistrées dans le projet peu après. Ceci indique si elles le sont.",
+  "tour.print.title": "Imprimer ou enregistrer en PDF",
+  "tour.print.body": "Imprimez la carte et les tableaux de coûts pour un rapport, ou enregistrez-les en PDF.",
+  "tour.help.title": "Aide",
+  "tour.help.body": "Relancez cette visite d’ici à tout moment.",
+  "print.title": "Imprimer ou enregistrer en PDF",
+  "print.intro": "Un rapport avec le nom du projet et la date du jour.",
+  "print.include": "Inclure",
+  "print.map": "Carte, telle qu’elle est affichée",
+  "print.mapHidden": "Ouvrez l’onglet Simulateur, Créer ou SIG pour inclure la carte.",
+  "print.tables": "Tableaux de coûts",
+  "print.pdfHint":
+    "Pour enregistrer un PDF, choisissez « Enregistrer au format PDF » comme imprimante dans la boîte de dialogue qui s’ouvre.",
+  "print.print": "Imprimer…",
+
   ...editorsFr,
+  ...cargoBikeFr,
   ...PLUGIN_MESSAGES.fr,
 };

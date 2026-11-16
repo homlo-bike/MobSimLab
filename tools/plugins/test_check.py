@@ -88,3 +88,44 @@ def test_tool_must_draw_own_modes(plugins: Path):
     )
     errors, _ = check.build(plugins)
     assert any("draws cable_car" in e for e in errors)
+
+
+def test_cargo_bike_tab_is_rendered_with_its_calculations():
+    errors, reg = check.build()
+    assert errors == []
+    cargo = next(p for p in reg["plugins"] if p["id"] == "org.mobsimlab.cargo-bike")
+    assert cargo["tabs"] == [
+        {
+            "id": "cargo-bike",
+            "label": "Cargo bike",
+            "view": "cargo-bike",
+            "calculations": ["cargo_bike_range", "cargo_bike_savings"],
+        }
+    ]
+
+
+def test_tab_may_not_take_a_core_tab_or_unknown_calculation(plugins: Path):
+    def f(m):
+        m["contributes"]["tabs"][0]["id"] = "gis"
+        m["contributes"]["tabs"][0]["calculations"] = ["nope"]
+
+    edit(plugins / "cargo-bike" / "mobsimlab-plugin.json", f)
+    errors, _ = check.build(plugins)
+    assert any("tab gis is a core tab" in e for e in errors)
+    assert any("shows unknown calculation nope" in e for e in errors)
+
+
+def test_tabs_only_in_bundled_plugins(plugins: Path):
+    edit(
+        plugins / "ferry" / "mobsimlab-plugin.json",
+        lambda m: m["contributes"].update(
+            {"tabs": [{"id": "boats", "label": "Boats", "view": "boats", "calculations": []}]}
+        ),
+    )
+
+    def g(m):
+        m["bundled"] = False
+
+    edit(plugins / "ferry" / "mobsimlab-plugin.json", g)
+    errors, _ = check.build(plugins)
+    assert any("only bundled plugins may contribute tabs" in e for e in errors)

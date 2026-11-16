@@ -15,6 +15,7 @@ vi.mock("../src/features/noise/mapLayer", () => ({
   ],
 }));
 
+import { engineRunner } from "../src/features/noise/engine";
 import { buildingTiles, loadBuildings, MAX_BUILDING_TILES } from "../src/features/noise/buildings";
 import { MAP_REACH_M, NoiseMap, projectSources } from "../src/features/noise/NoiseMap";
 import { buildingsBbox, type PopulationAnswer } from "../src/features/noise/population";
@@ -242,6 +243,7 @@ describe("noise map in the GIS tab", () => {
       async () => READY,
     ),
     result: NoiseView = RESULT,
+    waits: { popWaitMs: number; popPollMs?: number } = { popWaitMs: 0 },
   ) {
     const estimate = vi.fn((input: NoiseInput) => (input ? { ...result, terrain: true } : result));
     const engine: NoiseEngine = {
@@ -265,7 +267,9 @@ describe("noise map in the GIS tab", () => {
         streetLines={DOC}
         railway={null}
         preferences={{ "noise.building_default_height_m": 12, "street.bus_lane_delay_share": 0.1 }}
-        loadNoise={async () => engine}
+        runNoise={engineRunner(async () => engine)}
+        popWaitMs={waits.popWaitMs}
+        popPollMs={waits.popPollMs}
         loadRail={noRail}
         fetchTile={fetchTile}
         fetchTerrain={fetchTerrain}
@@ -386,5 +390,46 @@ describe("noise map in the GIS tab", () => {
     await waitFor(() => expect(estimate).toHaveBeenCalled());
     expect(fetchPeople).not.toHaveBeenCalled();
     expect(buildingsBbox([])).toBeNull();
+  });
+
+  it("shows the step under way and can be cancelled", async () => {
+    let release: () => void = () => undefined;
+    const slowTerrain = vi.fn(
+      (pts: [number, number][]) => new Promise<number[]>((r) => (release = () => r(pts.map(() => 120)))),
+    );
+    const { estimate } = setup(slowTerrain);
+    fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
+    const bar = await screen.findByRole("progressbar", { name: "Noise map" });
+    expect(screen.getByText("Step 3 of 5")).toBeTruthy();
+    expect(Number(bar.getAttribute("aria-valuenow"))).toBeGreaterThan(0);
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(await screen.findByText("The noise map was cancelled.")).toBeTruthy();
+    release();
+    await new Promise((r) => setTimeout(r, 20));
+    expect(estimate).not.toHaveBeenCalled();
+    expect(screen.queryByRole("progressbar")).toBeNull();
+  });
+
+  it("waits for a first-time WorldPop download, showing how far it is, and can go on without it", async () => {
+    const loading: PopulationAnswer = {
+      status: "loading",
+      reason: "downloading",
+      countries: ["DEU"],
+      progress: { receivedBytes: 120e6, totalBytes: 300e6 },
+    };
+    const fetchPeople = vi.fn(async () => (fetchPeople.mock.calls.length < 2 ? loading : READY));
+    const ready = setup(undefined, fetchPeople, RESULT, { popWaitMs: 60_000, popPollMs: 5 });
+    fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
+    expect(await screen.findByText(/population grid of DEU to the server: 120 of 300 MB/)).toBeTruthy();
+    await waitFor(() => expect(ready.estimate).toHaveBeenCalled());
+    expect(ready.estimate.mock.calls[0]![0].population).toEqual(GRID);
+    cleanup();
+
+    const always = vi.fn(async () => loading);
+    const skipped = setup(undefined, always, RESULT, { popWaitMs: 60_000, popPollMs: 60_000 });
+    fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Use the building size instead" }));
+    await waitFor(() => expect(skipped.estimate).toHaveBeenCalled());
+    expect(skipped.estimate.mock.calls[0]![0].population).toBeNull();
   });
 });

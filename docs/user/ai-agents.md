@@ -34,13 +34,33 @@ Under **Personal access token** in the AI agents panel, give the token a name, p
 | `validate_scenario`, `diff_scenarios` | Problems in a scenario; what differs between two | project:read |
 | `delete_agent_scenario` | Delete a scenario this connection made (never yours) | scenario:write |
 | `measure_stop_spacing` | Spacing along each line and on foot, against the guidance for the mode | analysis:run |
-| `coverage_report` | Share of the area within an N-minute walk of a stop along streets, next to the crow-flies figure, in 5-minute bands | analysis:run |
+| `coverage_report` | Share of the area within an N-minute walk of a stop along streets, next to the crow-flies figure, in 5-minute bands. With the `ptal` preset: the TfL PTAL band (0 to 6b) | analysis:run |
 | `find_coverage_gaps`, `walk_catchment` | Where people are farther than the limit; the walk catchment as a map layer | analysis:run |
-| `suggest_stop_locations` | Up to k new stops that cover the most uncovered demand, at least a set distance apart | analysis:run |
+| `suggest_stop_locations` | Up to k new stops that cover the most uncovered demand, at least a set distance apart, solved exactly | analysis:run |
+| `accessibility_to_destinations` | The 15-minute city: food shops, primary schools, GPs or clinics, pharmacies, parks and workplaces within N minutes on foot, by bicycle, or on foot and public transport | analysis:run |
 | `plan_journey` | Door-to-door journeys on the scenario's lines at a time of day | analysis:run |
+| `export_gtfs` | The scenario as a GTFS Schedule feed (zip), from the same timetable `plan_journey` rides | project:read |
 | `benchmark_scenarios` | Coverage, journey times, line length, run times, cycle time and fleet for several scenarios side by side | analysis:run |
 
-The headline is the 15-minute walk to the nearest stop or station (`walk_minutes` preset). The SDG 11.2.1 rule (500 m to any stop, 1000 m to rail and BRT), the per-mode catchment rule and the frequent-service rule are available as secondary presets. Every result names the rule, the parameters and where the defaults come from.
+The headline is the 15-minute walk to the nearest stop or station (`walk_minutes` preset). The SDG 11.2.1 rule (500 m to any stop, 1000 m to rail and BRT), the per-mode catchment rule, the frequent-service rule and PTAL are available as secondary presets. Every result names the rule, the parameters and where the defaults come from.
+
+### PTAL
+
+`coverage_report` with `preset: "ptal"` grades each point by Transport for London's Public Transport Accessibility Level (TfL, *Assessing transport connectivity in London*, 2015). For every line, the walk to its nearest stop is measured along the street network at TfL's 80 m/min, up to 640 m for bus and tram and 960 m for rail, metro and light rail. Half the headway and a reliability allowance (2 min for bus, 0.75 min for rail and tram) are added, which gives the access time. 30 divided by the access time is the line's equivalent doorstep frequency; per mode the best line counts in full and the others at half weight, and the modes are added up to the access index. The index is banded 0, 1a, 1b, 2, 3, 4, 5, 6a and 6b. The walk speed and limits are TfL's, not the project's, so the bands compare with published PTAL maps. The report gives the share in each band, the share at PTAL 4 or better and the mean index; `list_points` also returns the graded points as GeoJSON.
+
+### The 15-minute city
+
+`accessibility_to_destinations` counts the daily needs each place reaches within N minutes (default 15, `analysis.walk_rule_minutes`), following Moreno et al. (2021):
+
+- `walk`: along the street network at 4.5 km/h (`demand.walk_speed_kmh`), 20 s at each signalised crossing.
+- `cycle`: at 15 km/h (`analysis.cycle_speed_kmh`) on streets, cycleways and paths open to bicycles; footways and pedestrian zones only where bicycles are signed in, never steps or motorways.
+- `walk_transit`: on foot and the scenario's lines with the journey planner, for departures every 10 minutes between 07:00 and 09:00 (both can be set), and the median count over those departures, so one lucky connection does not count. Walks from the last stop follow the street network; the walk to the first stop is still the journey planner's straight line × 1.3. At most 400 places are evaluated this way.
+
+Destinations come from OpenStreetMap: food shops (`shop=supermarket`, `convenience`, `greengrocer`, `bakery`, `butcher`, `deli`, `grocery`, `farm`, `amenity=marketplace`), primary schools (`amenity=school` unless marked secondary only), GPs and clinics, pharmacies, parks (`leisure=park`, counted at the centre of the park) and workplaces (`office`, `craft`, industrial and commercial land, `man_made=works`). The list is versioned and its version is printed with every result. An agent can send its own destinations instead, for example jobs or services from a local register, with any category names. The report gives, per category, the share of demand that reaches at least one and the median count, the share that reaches every category, and the places that miss the most as GeoJSON.
+
+### Stop placement
+
+`suggest_stop_locations` solves the maximal covering location problem (Church & ReVelle, 1974): which k candidate points along the scenario's routes, no two closer than the mode's shortest stop spacing, bring the most uncovered demand within the walk limit. A quick greedy choice is made first, then the exact problem is solved as a mixed-integer programme with HiGHS (MIT licence) within a time limit (default 10 s, at most 60 s). The result says whether HiGHS proved the choice optimal; if time runs out, the better of the two choices is returned. `exact: false` gives the greedy choice only.
 
 ## Seeing what agents did
 
@@ -58,5 +78,6 @@ Walks follow the street network from OpenStreetMap at 4.5 km/h, avoid motorways 
 - Agent scenarios live in your own workspace, not in shared projects yet; people cannot be invited to them.
 - Rail lines without a timetable from the railway operations planner use run times from the vehicle's speed and acceleration, and the frequency the agent gives.
 - In `plan_journey`, walks to and between stops are still straight-line distance × 1.3 (as in the [journey planner](journey-planner.md)).
-- Not yet available: simulation runs and parameter sweeps, PTAL, the 15-minute-city destination preset, GTFS export, and an exact optimiser for stop placement (the suggestion is a greedy best-first choice).
+- `export_gtfs` writes a weekday feed in which each line runs at its headways (one template trip per direction and period, repeated by `frequencies.txt`). It uses the GTFS plugin's exporter. The agent gives the time zone; the agency is the scenario name and this instance unless set. The feed is not run through the MobilityData GTFS Validator.
+- Not yet available: simulation runs and parameter sweeps.
 - At most 200 scenarios per user, 2000 stops and 100 lines per scenario; calls are rate limited per connection.

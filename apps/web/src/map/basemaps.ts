@@ -1,10 +1,22 @@
+import type { LayerSpecification, StyleSpecification } from "maplibre-gl";
+
 /** A basemap the user can pick. Attribution is mandatory and always rendered. */
 export interface Basemap {
   id: string;
+  /** Shown in the layer control. Product names, so they are not translated. */
   label: string;
+  /** "street" maps are drawn from OpenStreetMap; "aerial" shows imagery under the place and street names. */
+  kind: "street" | "aerial";
   styleUrl: string;
   attribution: string;
+  /** For aerial basemaps: the imagery drawn under the labels of `styleUrl`. */
+  imagery?: { id: string; tiles: string[]; tileSize: number; maxzoom: number };
 }
+
+const OSM_ATTRIBUTION =
+  '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> ' +
+  '<a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">© OpenMapTiles</a> ' +
+  'Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>';
 
 /**
  * Default basemap: OpenFreeMap Positron (free, no key). Data © OpenStreetMap contributors (ODbL),
@@ -13,9 +25,101 @@ export interface Basemap {
 export const DEFAULT_BASEMAP: Basemap = {
   id: "openfreemap-positron",
   label: "OpenFreeMap Positron",
+  kind: "street",
   styleUrl: "https://tiles.openfreemap.org/styles/positron",
-  attribution:
-    '<a href="https://openfreemap.org" target="_blank" rel="noopener">OpenFreeMap</a> ' +
-    '<a href="https://www.openmaptiles.org/" target="_blank" rel="noopener">© OpenMapTiles</a> ' +
-    'Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>',
+  attribution: OSM_ATTRIBUTION,
 };
+
+/**
+ * The basemaps in the layer control (docs/architecture/06-gis.md §8): the three OpenFreeMap styles and the
+ * Sentinel-2 cloudless 2016 mosaic by EOX (CC BY 4.0, about 10 m per pixel) under the OpenFreeMap Liberty
+ * labels. Later EOX years (non-commercial licence) and Esri World Imagery need an admin's consent and the
+ * gateway's tile proxy, so they are not offered here.
+ */
+export const BASEMAPS: readonly Basemap[] = [
+  DEFAULT_BASEMAP,
+  {
+    id: "openfreemap-liberty",
+    label: "OpenFreeMap Liberty",
+    kind: "street",
+    styleUrl: "https://tiles.openfreemap.org/styles/liberty",
+    attribution: OSM_ATTRIBUTION,
+  },
+  {
+    id: "openfreemap-bright",
+    label: "OpenFreeMap Bright",
+    kind: "street",
+    styleUrl: "https://tiles.openfreemap.org/styles/bright",
+    attribution: OSM_ATTRIBUTION,
+  },
+  {
+    id: "eox-s2cloudless-2016",
+    label: "Sentinel-2 cloudless 2016",
+    kind: "aerial",
+    styleUrl: "https://tiles.openfreemap.org/styles/liberty",
+    attribution:
+      '<a href="https://s2maps.eu" target="_blank" rel="noopener">Sentinel-2 cloudless – https://s2maps.eu</a> by ' +
+      '<a href="https://eox.at" target="_blank" rel="noopener">EOX IT Services GmbH</a> ' +
+      "(Contains modified Copernicus Sentinel data 2016) · " +
+      OSM_ATTRIBUTION,
+    imagery: {
+      id: "eox-s2cloudless-2016",
+      tiles: ["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless_3857/default/g/{z}/{y}/{x}.jpg"],
+      tileSize: 256,
+      maxzoom: 15,
+    },
+  },
+];
+
+/** Purpose: the basemap with an id, else the default. */
+export function basemapById(id: string | null | undefined): Basemap {
+  return BASEMAPS.find((b) => b.id === id) ?? DEFAULT_BASEMAP;
+}
+
+/** Layer types of an OpenMapTiles style that are kept over imagery: names, and borders. */
+function keptOverImagery(l: LayerSpecification): boolean {
+  if (l.type === "symbol") return true;
+  return l.type === "line" && "source-layer" in l && l["source-layer"] === "boundary";
+}
+
+/**
+ * Purpose: the style a basemap draws, from the style loaded from its `styleUrl`.
+ * Street basemaps are used as they come. Aerial basemaps keep the vector source (place and street names,
+ * which the naming rules also read) and its labels and borders, and draw the imagery under them.
+ */
+export function basemapStyle(basemap: Basemap, loaded: StyleSpecification): StyleSpecification {
+  const img = basemap.imagery;
+  if (!img) return loaded;
+  return {
+    ...loaded,
+    sources: {
+      ...loaded.sources,
+      [img.id]: { type: "raster", tiles: img.tiles, tileSize: img.tileSize, maxzoom: img.maxzoom },
+    },
+    layers: [
+      { id: "background", type: "background", paint: { "background-color": "#1f2a1f" } },
+      { id: img.id, type: "raster", source: img.id },
+      ...loaded.layers.filter(keptOverImagery),
+    ],
+  };
+}
+
+const STORAGE_KEY = "mobsimlab.basemap";
+
+/** Purpose: the basemap last picked in this browser (a per-viewer convenience), else the default. */
+export function rememberedBasemap(): Basemap {
+  try {
+    return basemapById(localStorage.getItem(STORAGE_KEY));
+  } catch {
+    return DEFAULT_BASEMAP;
+  }
+}
+
+/** Purpose: remember the basemap picked in this browser. */
+export function rememberBasemap(id: string): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, id);
+  } catch {
+    // Storage blocked: the pick lasts until the page is closed.
+  }
+}

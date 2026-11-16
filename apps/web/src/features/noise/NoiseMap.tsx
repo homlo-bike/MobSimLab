@@ -1,5 +1,6 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
+import { JobProgress } from "../../shell/JobProgress";
 import { formatInt, tNow, useI18n } from "../../i18n/i18n";
 import { loadRailEngine } from "../railways/engine";
 import type { Network, RailEngineLoader } from "../railways/types";
@@ -13,7 +14,7 @@ import {
   MAX_BUILDING_TILES,
   removeBuildings,
 } from "./buildings";
-import { loadWasmNoise } from "./engine";
+import { type NoiseImages, type NoiseRunner, workerRunner } from "./engine";
 import { drawNoise, LEGEND, removeNoise } from "./mapLayer";
 import { RAIL_FLOWS, railSources, streetLineSources } from "./sources";
 import { buildingsBbox, fetchPopulation, type PopulationFetcher, type PopulationSource } from "./population";
@@ -22,8 +23,6 @@ import type {
   Flows,
   Indicator,
   NoiseBuilding,
-  NoiseEngine,
-  NoiseEngineLoader,
   NoiseLine,
   NoisePopulation,
   NoiseTerrain,
@@ -44,12 +43,30 @@ interface Props {
   /** Project preferences: `noise.*` values replace the plugin's assumptions. */
   preferences?: Record<string, number>;
   /** Tests inject these. */
-  loadNoise?: NoiseEngineLoader;
+  runNoise?: NoiseRunner;
   loadRail?: RailEngineLoader;
   fetchTile?: BuildingTileFetcher;
   fetchTerrain?: HeightsFetcher;
   fetchPeople?: PopulationFetcher;
+  /** How long to wait for a first-time WorldPop download before using the building size, ms. */
+  popWaitMs?: number;
+  /** How often to ask whether the WorldPop download is done, ms. */
+  popPollMs?: number;
 }
+
+/** Purpose: `p`, or a rejection with the signal's reason as soon as it aborts (the request itself runs on). */
+function abortable<T>(p: Promise<T>, signal: AbortSignal): Promise<T> {
+  if (signal.aborted) return Promise.reject(signal.reason);
+  return new Promise<T>((resolve, reject) => {
+    const stop = () => reject(signal.reason);
+    signal.addEventListener("abort", stop, { once: true });
+    p.then(resolve, reject).finally(() => signal.removeEventListener("abort", stop));
+  });
+}
+
+/** Wait for a first-time WorldPop download for up to this long by default (a large country takes minutes). */
+const POP_WAIT_MS = 15 * 60_000;
+const POP_POLL_MS = 3_000;
 
 /**
  * Purpose: the project's noise lines as sources: every saved street line (buses per hour from the
@@ -82,17 +99,30 @@ export async function projectSources(
   return lines;
 }
 
+/** A step of the computation under way: its text, its number of `steps`, and how far it is when known. */
+interface Busy {
+  kind: "busy";
+  step: string;
+  index: number;
+  steps: number;
+  fraction: number | null;
+  /** While waiting for WorldPop, the planner may go on with the building size. */
+  canSkip?: boolean;
+}
+
 type Status =
   | { kind: "idle" }
-  | { kind: "busy"; step: string }
+  | Busy
   | {
       kind: "done";
       view: NoiseView;
+      images: NoiseImages | null;
       buildings: NoiseBuilding[] | null;
       notes: string[];
       people: PopulationSource | null;
     }
-  | { kind: "error"; text: string };
+  | { kind: "error"; text: string }
+  | { kind: "cancelled" };
 
 /**
  * Purpose: the Noise map in the GIS tab (ADR-0038 step N2): L_den or L_night from every saved
@@ -108,25 +138,27 @@ export function NoiseMap({
   streetLines,
   railway,
   preferences,
-  loadNoise = loadWasmNoise,
+  runNoise = workerRunner,
   loadRail = loadRailEngine,
   fetchTile = fetchBuildingTile,
   fetchTerrain = fetchHeights,
   fetchPeople = fetchPopulation,
+  popWaitMs = POP_WAIT_MS,
+  popPollMs = POP_POLL_MS,
 }: Props) {
   const { t } = useI18n();
   const [indicator, setIndicator] = useState<Indicator>("lden");
   const [withBuildings, setWithBuildings] = useState(true);
   const [withTerrain, setWithTerrain] = useState(true);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
-  const engine = useRef<NoiseEngine | null>(null);
+  // The run under way: aborting it cancels the run; `skip` ends the wait for WorldPop.
+  const run = useRef<{ abort: AbortController; skip: AbortController } | null>(null);
   const hasLines =
     (streetLines?.lines ?? []).some((l) => l.view.points.length >= 2) || !!railway?.tracks.length;
 
   useEffect(
     () => () => {
-      engine.current?.dispose();
-      engine.current = null;
+      run.current?.abort.abort();
       if (map) {
         removeNoise(map);
         removeBuildings(map);
@@ -138,7 +170,7 @@ export function NoiseMap({
   // Draw the result for the indicator shown.
   useEffect(() => {
     if (!map) return;
-    if (status.kind !== "done" || !engine.current || !status.view.image) {
+    if (status.kind !== "done" || !status.images || !status.view.image) {
       if (status.kind !== "busy") {
         removeNoise(map);
         removeBuildings(map);
@@ -147,7 +179,7 @@ export function NoiseMap({
     }
     const img = status.view.image;
     drawNoise(map, {
-      pixels: engine.current.image(indicator, FROM_DB[indicator], 255),
+      pixels: status.images[indicator],
       width: img.width,
       height: img.height,
       coordinates: img.coordinates,
@@ -156,9 +188,26 @@ export function NoiseMap({
   }, [map, status, indicator]);
 
   async function compute() {
+    const abort = new AbortController();
+    const skip = new AbortController();
+    run.current?.abort.abort();
+    run.current = { abort, skip };
+    const signal = abort.signal;
+    const steps = 2 + (withBuildings ? 2 : 0) + (withTerrain ? 1 : 0);
+    let index = 0;
+    const step = (text: string, extra: Partial<Busy> = {}) => {
+      signal.throwIfAborted();
+      setStatus({ kind: "busy", step: text, index, steps, fraction: null, ...extra });
+    };
+    const progress = (done: number, total: number) =>
+      setStatus((s) =>
+        s.kind === "busy" && !signal.aborted ? { ...s, fraction: total ? done / total : null } : s,
+      );
     try {
-      setStatus({ kind: "busy", step: tNow("noise.collecting") });
-      const lines = await projectSources(streetLines, railway, loadRail);
+      index++;
+      step(tNow("noise.collecting"));
+      const lines = await abortable(projectSources(streetLines, railway, loadRail), signal);
+      signal.throwIfAborted();
       if (!lines.length) {
         setStatus({ kind: "error", text: tNow("noise.drawFirst") });
         return;
@@ -167,24 +216,27 @@ export function NoiseMap({
       const notes: string[] = [];
       const points = lines.flatMap((l) => l.points);
       if (withBuildings) {
+        index++;
         const tiles = buildingTiles(points, MAP_REACH_M);
         if (tiles.length > MAX_BUILDING_TILES) {
           notes.push(tNow("noise.tooLarge", { tiles: tiles.length, max: MAX_BUILDING_TILES }));
         } else {
-          setStatus({ kind: "busy", step: tNow("noise.loadingBuildings") });
-          buildings = await loadBuildings(tiles, fetchTile);
+          step(tNow("noise.loadingBuildings"), { fraction: 0 });
+          buildings = await abortable(loadBuildings(tiles, fetchTile, progress, signal), signal);
         }
       }
       let terrain: NoiseTerrain | null = null;
       if (withTerrain) {
+        index++;
         const plan = terrainPlan(points, MAP_REACH_M);
         if (!plan) {
           notes.push(tNow("noise.terrainTooLarge"));
         } else {
-          setStatus({ kind: "busy", step: tNow("noise.loadingTerrain") });
+          step(tNow("noise.loadingTerrain"), { fraction: 0 });
           try {
-            terrain = await loadTerrain(plan, fetchTerrain);
+            terrain = await abortable(loadTerrain(plan, fetchTerrain, progress, signal), signal);
           } catch (err) {
+            if (signal.aborted) throw err;
             notes.push(
               tNow("noise.terrainDown", { error: err instanceof Error ? err.message : String(err) }),
             );
@@ -193,39 +245,88 @@ export function NoiseMap({
       }
       let population: NoisePopulation | null = null;
       let people: PopulationSource | null = null;
+      if (withBuildings) index++;
       const bbox = buildings?.length ? buildingsBbox(buildings) : null;
       if (bbox) {
-        setStatus({ kind: "busy", step: tNow("noise.loadingPopulation") });
+        step(tNow("noise.loadingPopulation"));
         try {
-          const a = await fetchPeople(bbox);
+          const a = await waitForPeople(bbox);
           if (a.status === "ready") [population, people] = [a.grid, a.source];
           else if (a.status === "loading")
             notes.push(tNow("noise.popDownloading", { countries: a.countries.join(", ") }));
           else notes.push(tNow("noise.popUnavailable", { reason: a.reason }));
         } catch (err) {
+          if (signal.aborted) throw err;
           notes.push(
             tNow("noise.popUnavailable", { reason: err instanceof Error ? err.message : String(err) }),
           );
         }
       }
-      setStatus({ kind: "busy", step: tNow("noise.computing") });
-      // Let the panel show the step before the engine holds the page.
-      await new Promise((r) => setTimeout(r, 30));
-      engine.current ??= await loadNoise();
-      const view = engine.current.estimate({
-        lines,
-        grid: true,
-        grid_reach_m: MAP_REACH_M,
-        buildings: buildings ?? [],
-        terrain,
-        population,
-        overrides: Object.fromEntries(
-          Object.entries(preferences ?? {}).filter(([k, v]) => k.startsWith("noise.") && Number.isFinite(v)),
-        ),
-      });
-      setStatus({ kind: "done", view, buildings, notes, people });
+      index++;
+      step(tNow("noise.computing"));
+      const result = await runNoise(
+        {
+          lines,
+          grid: true,
+          grid_reach_m: MAP_REACH_M,
+          buildings: buildings ?? [],
+          terrain,
+          population,
+          overrides: Object.fromEntries(
+            Object.entries(preferences ?? {}).filter(
+              ([k, v]) => k.startsWith("noise.") && Number.isFinite(v),
+            ),
+          ),
+        },
+        FROM_DB,
+        signal,
+      );
+      signal.throwIfAborted();
+      setStatus({ kind: "done", view: result.view, images: result.images, buildings, notes, people });
     } catch (err) {
-      setStatus({ kind: "error", text: err instanceof Error ? err.message : String(err) });
+      if (signal.aborted) setStatus({ kind: "cancelled" });
+      else setStatus({ kind: "error", text: err instanceof Error ? err.message : String(err) });
+    } finally {
+      if (run.current?.abort === abort) run.current = null;
+    }
+
+    /**
+     * WorldPop's grid; while the server downloads a country for the first time, ask again until it is
+     * there, showing how far the download is, until `popWaitMs` passes or the planner skips the wait.
+     */
+    async function waitForPeople(box: [number, number, number, number]) {
+      const until = Date.now() + popWaitMs;
+      for (;;) {
+        const a = await abortable(fetchPeople(box), signal);
+        signal.throwIfAborted();
+        if (a.status !== "loading" || skip.signal.aborted || Date.now() >= until) return a;
+        const p = a.progress;
+        const mb = (b: number) => formatInt(Math.round(b / 1e6));
+        step(
+          p?.totalBytes
+            ? tNow("noise.popWaiting", {
+                countries: a.countries.join(", "),
+                received: mb(p.receivedBytes),
+                total: mb(p.totalBytes),
+              })
+            : tNow("noise.popWaitingUnknown", {
+                countries: a.countries.join(", "),
+                received: mb(p?.receivedBytes ?? 0),
+              }),
+          { fraction: p?.totalBytes ? p.receivedBytes / p.totalBytes : null, canSkip: true },
+        );
+        await new Promise<void>((resolve) => {
+          const t = setTimeout(resolve, popPollMs);
+          const go = () => {
+            clearTimeout(t);
+            resolve();
+          };
+          signal.addEventListener("abort", go, { once: true });
+          skip.signal.addEventListener("abort", go, { once: true });
+        });
+        signal.throwIfAborted();
+        if (skip.signal.aborted) return a;
+      }
     }
   }
 
@@ -276,10 +377,18 @@ export function NoiseMap({
       </button>
       {!hasLines && <p className="text-xs text-slate-500">{t("noise.drawFirst")}</p>}
       {status.kind === "busy" && (
-        <p role="status" className="text-xs text-slate-600">
-          {status.step}
-        </p>
+        <JobProgress
+          label={t("noise.map")}
+          step={status.step}
+          index={status.index}
+          steps={status.steps}
+          fraction={status.fraction}
+          onCancel={() => run.current?.abort.abort()}
+          skipLabel={status.canSkip ? t("noise.popSkip") : undefined}
+          onSkip={() => run.current?.skip.abort()}
+        />
       )}
+      {status.kind === "cancelled" && <p className="text-xs text-slate-600">{t("noise.cancelled")}</p>}
       {status.kind === "error" && (
         <p className="rounded bg-red-50 px-2 py-1 text-xs text-red-700">{status.text}</p>
       )}

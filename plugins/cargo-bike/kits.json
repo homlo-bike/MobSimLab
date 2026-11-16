@@ -1,0 +1,36 @@
+{
+  "_comment": "Example kit presets of the Cargo bike tab. Prices are estimates in 2024 EUR (German prices, converted to the start point's country like the other prices); replace them with the real kit list. Each kit sets parameters of assumptions/parameters.yaml by key without the cargo_bike. prefix; tools/cargo-bike/export_defaults.py checks the keys and copies the kits to crates/cargo-bike/data/defaults.json.",
+  "default": "trike-900",
+  "kits": [
+    {
+      "id": "trike-500",
+      "label": "Cargo trike, 500 Wh",
+      "wheels": 3,
+      "values": { "bike_mass_kg": 33, "battery_wh": 500, "savings.bike_price_eur": 3400 }
+    },
+    {
+      "id": "trike-900",
+      "label": "Cargo trike, 900 Wh",
+      "wheels": 3,
+      "values": { "bike_mass_kg": 35, "battery_wh": 900, "savings.bike_price_eur": 4000 }
+    },
+    {
+      "id": "trike-1800",
+      "label": "Cargo trike, 2 × 900 Wh",
+      "wheels": 3,
+      "values": { "bike_mass_kg": 40, "battery_wh": 1800, "savings.bike_price_eur": 4700 }
+    },
+    {
+      "id": "bike-900",
+      "label": "Two-wheel cargo bike, 900 Wh",
+      "wheels": 2,
+      "values": {
+        "bike_mass_kg": 28,
+        "battery_wh": 900,
+        "rolling_resistance": 0.008,
+        "drag_area_m2": 0.75,
+        "savings.bike_price_eur": 3600
+      }
+    }
+  ]
+}
