@@ -2,6 +2,7 @@ import { roadIt } from "./road/it";
 import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
 import { depotsIt } from "./depots/it";
+import { tablesIt } from "./tables/it";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -389,6 +390,7 @@ export const it: Messages = {
   ...editorsIt,
   ...cargoBikeIt,
   ...depotsIt,
+  ...tablesIt,
   ...roadIt,
   ...PLUGIN_MESSAGES.it,
 };

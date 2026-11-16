@@ -2,6 +2,7 @@ import { roadYo } from "./road/yo";
 import { editorsYo } from "./editors/yo";
 import { cargoBikeYo } from "./cargo-bike/yo";
 import { depotsYo } from "./depots/yo";
+import { tablesYo } from "./tables/yo";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -387,6 +388,7 @@ export const yo: Messages = {
   ...editorsYo,
   ...cargoBikeYo,
   ...depotsYo,
+  ...tablesYo,
   ...roadYo,
   ...PLUGIN_MESSAGES.yo,
 };

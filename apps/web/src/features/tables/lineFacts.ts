@@ -13,6 +13,7 @@ import type { SavedStreetLine } from "../street-lines/saved";
 import { fullTiming } from "../street-lines/modes";
 import { dayService, vehicleById } from "../street-lines/service";
 import { lineStats } from "../street-lines/summary";
+import { type Translate, translate } from "../../i18n/i18n";
 
 /** One line of the project, rail or street, with what it offers. */
 export interface LineFact {
@@ -66,16 +67,19 @@ export interface LineFactsInput {
   reports: Record<string, LineReport>;
   streetLines: SavedStreetLine[];
   prefs: Record<string, number> | undefined;
+  /** Translates the names and problems; English when absent. */
+  t?: Translate;
 }
 
 /**
  * Purpose: the facts of every line of the project, rail service lines first, then street lines.
- * Inputs: the railway and its build with the published service lines, the street lines, the project values.
+ * Inputs: the railway and its build with the published service lines, the street lines, the project values, the translator.
  * Output: one fact sheet per line, in the order of the cost estimate.
  */
 export function lineFacts(input: LineFactsInput): LineFact[] {
   const { railway, view, reports, streetLines, prefs } = input;
-  const est = estimate({ railway, view, reports, streetLines, prefs, prices: BASE_PRICES });
+  const t: Translate = input.t ?? ((key, vars) => translate("en", key, vars));
+  const est = estimate({ railway, view, reports, streetLines, prefs, prices: BASE_PRICES, t });
   const summary = new Map<string, LineSummary>(est.lines.map((l) => [l.id, l]));
   const out: LineFact[] = [];
 
@@ -117,7 +121,7 @@ export function lineFacts(input: LineFactsInput): LineFact[] {
       kmPerYear: s.kmPerYear,
       problem: running
         ? null
-        : (r?.issues[0] ?? (train ? "The line could not be published." : "No train chosen.")),
+        : (r?.issues[0] ?? t(train ? "net.problem.unpublished" : "net.problem.noTrain")),
     });
   }
 
@@ -158,7 +162,7 @@ export function lineFacts(input: LineFactsInput): LineFact[] {
       capacityPerHour: headway ? (60 / headway) * places : 0,
       hoursPerYear: s.hoursPerYear,
       kmPerYear: s.kmPerYear,
-      problem: s.inService > 0 ? null : "The line has no route or headway yet.",
+      problem: s.inService > 0 ? null : t("net.problem.noService"),
     });
   });
   return out;
