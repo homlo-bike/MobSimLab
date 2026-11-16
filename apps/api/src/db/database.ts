@@ -38,6 +38,7 @@ export interface DB {
     setup_finished_at: Date | null;
     updated_at: Timestamp;
     agent_registration: Generated<boolean>;
+    allow_unsigned_plugins: Generated<boolean>;
   };
   "iam.user": {
     id: Generated<string>;
@@ -166,6 +167,35 @@ export interface DB {
     role: ProjectRole;
     added_by: string | null;
     created_at: Generated<Date>;
+  };
+  "plugin.trusted_key": {
+    id: Generated<string>;
+    name: string;
+    public_key: string;
+    fingerprint: string;
+    added_by: string | null;
+    added_at: Generated<Date>;
+  };
+  "plugin.package": {
+    plugin_id: string;
+    version: string;
+    manifest: ColumnType<unknown, string, string>;
+    entry: ColumnType<unknown, string, string>;
+    sha256: string;
+    size_bytes: number;
+    signature: "trusted" | "unsigned";
+    signed_by: string | null;
+    signer_name: string | null;
+    installed_by: string | null;
+    installed_at: Generated<Date>;
+  };
+  "project.plugin": {
+    project_id: string;
+    plugin_id: string;
+    enabled: boolean;
+    version: string | null;
+    updated_by: string | null;
+    updated_at: Timestamp;
   };
   "audit.record": {
     id: Generated<string>;

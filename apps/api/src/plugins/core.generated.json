@@ -1,0 +1,2605 @@
+{
+  "pluginApi": "1",
+  "manifestSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://mobsimlab.org/schemas/plugin-manifest/1.json",
+    "title": "MobSimLab plugin manifest (mobsimlab-plugin.json)",
+    "description": "What a plugin contributes to MobSimLab (ADR-0036 §2 and §3). Producer: plugin authors; the bundled plugins live in plugins/. Consumer: tools/plugins/check.py (validation and the web app's generated registry, apps/web/src/plugins/bundled.generated.json), later the install flow. Plugin API major version 1. Bundled plugins may also add project tabs (`tabs`). Contribution points that are not built yet (checks, engines, schematics, importers, exporters, panels, kpis) are reserved: the schema accepts no entries for them yet.",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "name",
+      "version",
+      "publisher",
+      "license",
+      "dataLicense",
+      "engines",
+      "tiers",
+      "contributes",
+      "permissions"
+    ],
+    "properties": {
+      "$schema": {
+        "type": "string"
+      },
+      "id": {
+        "description": "Reverse-DNS id; everything the plugin contributes is addressed as <id>/<item id>.",
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9-]*(\\.[a-z0-9][a-z0-9-]*){2,}$"
+      },
+      "name": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 60
+      },
+      "description": {
+        "type": "string",
+        "maxLength": 400
+      },
+      "version": {
+        "description": "SemVer.",
+        "type": "string",
+        "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(-[0-9A-Za-z.-]+)?$"
+      },
+      "publisher": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        }
+      },
+      "license": {
+        "description": "SPDX licence of the code.",
+        "type": "string",
+        "minLength": 1
+      },
+      "dataLicense": {
+        "description": "SPDX licence of the data contributions; must allow bundling into .mslab exports.",
+        "type": "string",
+        "minLength": 1
+      },
+      "engines": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "mobsimlab",
+          "pluginApi"
+        ],
+        "properties": {
+          "mobsimlab": {
+            "description": "Range of MobSimLab versions, such as \">=0.1 <1\".",
+            "type": "string"
+          },
+          "pluginApi": {
+            "const": "1"
+          }
+        }
+      },
+      "bundled": {
+        "description": "Ships with the MobSimLab image and is signed with the release key (ADR-0036 §8).",
+        "type": "boolean"
+      },
+      "tiers": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "enum": [
+            "data",
+            "compute",
+            "ui"
+          ]
+        }
+      },
+      "contributes": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "modes": {
+            "description": "Transport modes; each file follows plugin-mode.schema.json.",
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/fileItem",
+              "required": [
+                "id",
+                "file"
+              ]
+            }
+          },
+          "contexts": {
+            "description": "New assumption context keys with their options (ADR-0018), such as ropeway_system.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "key",
+                "label",
+                "options"
+              ],
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "options": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "id",
+                      "label"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9][a-z0-9_]*$"
+                      },
+                      "label": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "parameters": {
+            "description": "Assumption library entries (assumptions/README.md format), each with sources and a global fallback.",
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/fileItem",
+              "required": [
+                "file"
+              ]
+            }
+          },
+          "sources": {
+            "description": "Source register entries used by the plugin's parameters and vehicles.",
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/fileItem",
+              "required": [
+                "file"
+              ]
+            }
+          },
+          "vehicles": {
+            "description": "Folders of vehicle files per vehicles/schema (ADR-0026).",
+            "type": "array",
+            "items": {
+              "$ref": "#/$defs/fileItem",
+              "required": [
+                "dir"
+              ]
+            }
+          },
+          "tools": {
+            "description": "Authoring tools for the Create tab: a core authoring kit with the modes it draws.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "label",
+                "kit",
+                "modes"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]*$"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "hint": {
+                  "type": "string"
+                },
+                "kit": {
+                  "enum": [
+                    "straight-spans",
+                    "water-route"
+                  ]
+                },
+                "modes": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "calculations": {
+            "description": "Calculations over the project's network (ADR-0036 §3). Until the sandboxed plugin host exists (Phase 2), only bundled plugins may contribute them, with runtime `bundled-wasm`: the code is a core crate compiled to WebAssembly (tools/wasm/build-<module>.sh, loaded from apps/web/src/wasm/<module>), released and reviewed with MobSimLab. Third-party `component` calculations come with Phase 2.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "label",
+                "runtime",
+                "module",
+                "inputs",
+                "outputs"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "runtime": {
+                  "enum": [
+                    "bundled-wasm"
+                  ]
+                },
+                "module": {
+                  "description": "WebAssembly module name under apps/web/src/wasm/ (bundled-wasm).",
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]*$"
+                },
+                "inputs": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "enum": [
+                      "network",
+                      "street_lines",
+                      "rail_design",
+                      "timetable",
+                      "fleet",
+                      "geodata",
+                      "parameters"
+                    ]
+                  }
+                },
+                "outputs": {
+                  "type": "array",
+                  "minItems": 1,
+                  "uniqueItems": true,
+                  "items": {
+                    "enum": [
+                      "grid",
+                      "segments",
+                      "table",
+                      "kpis",
+                      "findings"
+                    ]
+                  }
+                },
+                "where": {
+                  "description": "Where the app offers it: live while drawing in a tool, on demand in the GIS tab (maps over the whole project), or in Analysis. `plugin-tab`: in a tab the plugin contributes (`tabs`).",
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "enum": [
+                      "street-line-tool",
+                      "railway-tool",
+                      "cable-car-tool",
+                      "ferry-tool",
+                      "gis",
+                      "analysis",
+                      "plugin-tab"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "checks": {
+            "$ref": "#/$defs/reserved"
+          },
+          "engines": {
+            "$ref": "#/$defs/reserved"
+          },
+          "infrastructure": {
+            "$ref": "#/$defs/reserved"
+          },
+          "catalogues": {
+            "$ref": "#/$defs/reserved"
+          },
+          "kpis": {
+            "$ref": "#/$defs/reserved"
+          },
+          "schematics": {
+            "$ref": "#/$defs/reserved"
+          },
+          "importers": {
+            "$ref": "#/$defs/reserved"
+          },
+          "exporters": {
+            "$ref": "#/$defs/reserved"
+          },
+          "mapLayers": {
+            "description": "Map layers drawn from a calculation's output with a MapLibre style (subset) file.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "label",
+                "calculation",
+                "style"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9_]*$"
+                },
+                "label": {
+                  "type": "string"
+                },
+                "calculation": {
+                  "type": "string"
+                },
+                "style": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z0-9_./-]+$",
+                  "not": {
+                    "pattern": "\\.\\."
+                  }
+                }
+              }
+            }
+          },
+          "panels": {
+            "$ref": "#/$defs/reserved"
+          },
+          "tabs": {
+            "description": "Project tabs after the core ones (Simulator … Preferences). Until the UI tier exists (ADR-0036 §6), only bundled plugins may contribute tabs: `view` names a view built into the web app (apps/web/src/features/<view>), reviewed and released with MobSimLab, and the tab shows the plugin's own calculations.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "label",
+                "view"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]*$"
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 30
+                },
+                "view": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]*$"
+                },
+                "calculations": {
+                  "type": "array",
+                  "uniqueItems": true,
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "permissions": {
+        "type": "array",
+        "uniqueItems": true,
+        "items": {
+          "enum": [
+            "read:network",
+            "read:timetable",
+            "read:fleet",
+            "read:geodata",
+            "read:results",
+            "write:results",
+            "write:scenario"
+          ]
+        }
+      },
+      "dependsOn": {
+        "type": "object",
+        "additionalProperties": {
+          "type": "string"
+        }
+      }
+    },
+    "$defs": {
+      "fileItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9_]*$"
+          },
+          "file": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_./-]+$",
+            "not": {
+              "pattern": "\\.\\."
+            }
+          },
+          "dir": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_./-]+/$",
+            "not": {
+              "pattern": "\\.\\."
+            }
+          }
+        }
+      },
+      "reserved": {
+        "description": "Contribution point of a later phase of ADR-0036; no entries are accepted yet.",
+        "type": "array",
+        "maxItems": 0
+      }
+    }
+  },
+  "modeSchema": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://mobsimlab.org/schemas/plugin-mode/1.json",
+    "title": "MobSimLab transport mode contributed by a plugin",
+    "description": "One entry of a plugin's `modes` contribution point (ADR-0036 §3). Producer: plugin authors. Consumer: tools/plugins/check.py, the web app's mode and tool registry, the published timetable (`mode`, GTFS route_type).",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+      "id",
+      "label",
+      "family",
+      "colour",
+      "gtfsRouteType",
+      "kit",
+      "operation"
+    ],
+    "properties": {
+      "id": {
+        "description": "Mode id, unique across the core and all plugins.",
+        "type": "string",
+        "pattern": "^[a-z][a-z0-9_]*$"
+      },
+      "label": {
+        "type": "string",
+        "minLength": 1
+      },
+      "family": {
+        "enum": [
+          "street",
+          "rail",
+          "guided",
+          "aerial",
+          "water"
+        ]
+      },
+      "colour": {
+        "description": "Default line colour (assumption `mode.colour`).",
+        "type": "string",
+        "pattern": "^#[0-9a-f]{6}$"
+      },
+      "gtfsRouteType": {
+        "description": "GTFS route_type (basic or extended).",
+        "type": "integer",
+        "minimum": 0
+      },
+      "kit": {
+        "description": "Core authoring kit that draws the mode.",
+        "enum": [
+          "straight-spans",
+          "water-route"
+        ]
+      },
+      "operation": {
+        "description": "frequency: a belt of vehicles with no timetable; shuttle: vehicles reverse between two ends; timetabled: exact trips.",
+        "enum": [
+          "frequency",
+          "shuttle",
+          "timetabled"
+        ]
+      },
+      "contextKey": {
+        "description": "Assumption context key whose option picks the system or vessel type.",
+        "type": "string"
+      },
+      "contexts": {
+        "description": "Options of contextKey this mode uses.",
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "string"
+        }
+      },
+      "defaultContext": {
+        "type": "string"
+      }
+    }
+  },
+  "coreModes": [
+    "brt",
+    "bus",
+    "commuter_rail",
+    "funicular",
+    "high_speed_rail",
+    "intercity_bus",
+    "light_rail",
+    "long_distance_rail",
+    "metro",
+    "regional_rail",
+    "tram",
+    "trolleybus"
+  ],
+  "tractions": [
+    "battery",
+    "diesel",
+    "hydrogen",
+    "cng",
+    "electric"
+  ],
+  "coreParameterKeys": [
+    "access.level_gap_horizontal_mm",
+    "access.level_gap_vertical_mm",
+    "access.step_above_platform_mm",
+    "access.step_below_platform_mm",
+    "access.step_gap_horizontal_mm",
+    "analysis.frequent_headway_min",
+    "analysis.walk_rule_minutes",
+    "benefit.access_decay_per_min",
+    "benefit.age_18_24_share",
+    "benefit.commercial_value_factor",
+    "benefit.construction_productivity_ratio",
+    "benefit.default_levels",
+    "benefit.domestic_share.civil",
+    "benefit.domestic_share.operating",
+    "benefit.domestic_share.systems",
+    "benefit.domestic_share.vehicles",
+    "benefit.ed_decay",
+    "benefit.elasticity_agglomeration",
+    "benefit.elasticity_job_access",
+    "benefit.floor_m2_per_person",
+    "benefit.labour_income_share",
+    "benefit.m2_per_job.industrial",
+    "benefit.m2_per_job.office",
+    "benefit.m2_per_job.public",
+    "benefit.m2_per_job.retail",
+    "benefit.property_tax_rate",
+    "benefit.ridership.days_per_year",
+    "benefit.ridership.resident_share",
+    "benefit.ridership.trips_per_user",
+    "benefit.time_limit.clinic",
+    "benefit.time_limit.hospital",
+    "benefit.time_limit.jobs",
+    "benefit.time_limit.school",
+    "benefit.time_limit.university",
+    "benefit.unknown_building_residential_share",
+    "benefit.uplift.commercial",
+    "benefit.uplift.residential",
+    "benefit.uplift_inner_share",
+    "benefit.va_multiplier.construction",
+    "benefit.va_multiplier.operation",
+    "benefit.value_per_m2_gdp_ratio",
+    "capacity.occupancy_limit_share",
+    "climate.ocl_sag_air_temp_c",
+    "climate.rail_design_temp_c",
+    "climate.rail_temp_above_air_c",
+    "cost.civil.at_grade_per_km",
+    "cost.civil.bridge_per_km",
+    "cost.civil.cut_and_cover_per_km",
+    "cost.civil.elevated_per_km",
+    "cost.civil.ramp_per_km",
+    "cost.civil.tbm_per_km",
+    "cost.civil.viaduct_per_km",
+    "cost.contingency_share",
+    "cost.days_per_year",
+    "cost.depot_per_bus",
+    "cost.depot_per_train_m",
+    "cost.engineering_share",
+    "cost.opex.car_km",
+    "cost.opex.infrastructure_share",
+    "cost.opex.overhead_share",
+    "cost.opex.train_hour",
+    "cost.opex.vehicle_hour",
+    "cost.price_base_year",
+    "cost.service_hours_per_day",
+    "cost.single_track_share",
+    "cost.station.at_grade",
+    "cost.station.elevated",
+    "cost.station.underground",
+    "cost.station.underground_deep",
+    "cost.street.bus_lane_per_km",
+    "cost.street.stop_each",
+    "cost.street.trolley_wire_per_km",
+    "cost.switch_each",
+    "cost.systems_per_km",
+    "cost.vehicle_each",
+    "cost.vehicle_per_train_m",
+    "crossing.clearance_m",
+    "curve.cant_change_rate_mm_s",
+    "curve.cant_deficiency_change_rate_mm_s",
+    "curve.cant_deficiency_rail_mm",
+    "curve.cant_deficiency_tram_mm",
+    "curve.cant_rail_mm",
+    "curve.cant_tram_mm",
+    "curve.max_cant_gradient_mm_m",
+    "curve.vertical_radius_m",
+    "demand.walk_speed_kmh",
+    "depot.aisle_width_m",
+    "depot.lateral_spacing_m",
+    "depot.longitudinal_gap_m",
+    "depot.vehicles_per_lane",
+    "depot.walkway_every_n_lanes",
+    "depot.walkway_width_m",
+    "dwell.alight_s_per_pax",
+    "dwell.board_s_per_pax",
+    "dwell.door_open_close_s",
+    "ebus.cold_band_high_c",
+    "ebus.cold_band_low_c",
+    "ebus.cold_extra_share",
+    "ebus.cool_band_high_c",
+    "ebus.cool_band_low_c",
+    "ebus.cool_extra_share",
+    "energy.hvac_power_kw",
+    "journey.level_change_s",
+    "journey.min_change_s",
+    "journey.walk_detour_factor",
+    "level_crossing.barrier_closing_s",
+    "level_crossing.cycle_min_angle_deg",
+    "level_crossing.max_line_speed_kmh",
+    "level_crossing.min_angle_deg",
+    "level_crossing.path_width_m",
+    "level_crossing.permitted",
+    "level_crossing.reopen_s",
+    "level_crossing.signal_closing_s",
+    "level_crossing.warning_time_s",
+    "mode.acceleration_ms2",
+    "mode.catchment_m",
+    "mode.colour",
+    "mode.crossing_priority_rank",
+    "mode.dwell_s",
+    "mode.emergency_braking_ms2",
+    "mode.max_gradient_permille",
+    "mode.max_speed_kmh",
+    "mode.min_curve_radius_m",
+    "mode.min_headway_s",
+    "mode.new_track_electrification",
+    "mode.new_track_gauge_mm",
+    "mode.platform_height_mm",
+    "mode.platform_length_m",
+    "mode.recommended_curve_radius_m",
+    "mode.right_of_way",
+    "mode.service_braking_ms2",
+    "mode.spare_share",
+    "mode.standing_density_ppm2",
+    "mode.stop_spacing_m",
+    "mode.vehicle_capacity",
+    "ocl.span_m",
+    "operations.depot_run_speed_kmh",
+    "operations.energy_reserve_share",
+    "operations.refuel_time_min",
+    "platform.edge_offset_m",
+    "platform.island_width_m",
+    "platform.max_gradient_pct",
+    "platform.side_width_m",
+    "recording.late_threshold_s",
+    "signalling.approach_release_s",
+    "signalling.moving_block_margin_m",
+    "signalling.overlap_31_40_m",
+    "signalling.overlap_41_60_m",
+    "signalling.overlap_above_60_m",
+    "signalling.overlap_release_s",
+    "signalling.release_s",
+    "signalling.route_setting_s",
+    "signalling.sight_reaction_s",
+    "signalling.sighting_m",
+    "signalling.signal_before_switch_m",
+    "signalling.supervision_tolerance_kmh",
+    "signalling.system",
+    "sim.ato_brake_share",
+    "sim.emergency_brake_factor",
+    "sim.min_gap_stopped_m",
+    "sim.rail_min_following_distance_m",
+    "sim.start_adhesion",
+    "sim.time_gap_s",
+    "stability.delayed_share",
+    "stability.primary_delay_max_s",
+    "stability.primary_delay_mean_s",
+    "stability.recovery_s",
+    "stability.residual_delay_s",
+    "stability.runs",
+    "station.track_beyond_platform_m",
+    "station.track_suggest_distance_m",
+    "stop.reuse_distance_m",
+    "street.bus_lane_delay_share",
+    "street.driving_side",
+    "street.lane_width_m",
+    "street.lanes",
+    "street.mixed_traffic_delay_share",
+    "street.speed_limit_kmh",
+    "street.walking_pace_kmh",
+    "structure.elevated_level_height_m",
+    "structure.outline_width_m",
+    "structure.underground_level_depth_m",
+    "switch.cant_deficiency_mm",
+    "switch.default_turnout",
+    "terrain.smoothing_window_m",
+    "terrain.street_level_tolerance_m",
+    "terrain.tie_in_gradient_share",
+    "timetable.layover_min",
+    "timetable.min_buffer_s",
+    "timetable.policy_headway_offpeak_min",
+    "timetable.policy_headway_peak_min",
+    "timetable.recovery_share",
+    "timetable.target_load_factor",
+    "timetable.terminal_separation_s",
+    "track.centre_distance_m",
+    "track.clearance_marker_centre_distance_m",
+    "track.running_side",
+    "walk.crossing_delay_s"
+  ],
+  "coreSourceIds": [
+    "aashto-green-book",
+    "ada-49cfr38",
+    "adif-desvios-av",
+    "amtrak-spec-63",
+    "arema-mre-ch5",
+    "bathtrams-uk-costs",
+    "becker-kreuzungsweichen",
+    "bostrab",
+    "bostrab-trr",
+    "ceder-2016",
+    "cornell-ebus-cold",
+    "crchi-hs-turnouts",
+    "csx-sidetracks",
+    "curtius-kniffler",
+    "db-punctuality",
+    "db-ril-408",
+    "db-ril-800-0120",
+    "db-ril-819",
+    "debrezion-2007",
+    "dewiki-weiche",
+    "dft-agglomeration-2018",
+    "ebo",
+    "eisenbahnweiche-fandom",
+    "en-13803",
+    "en-15273",
+    "en-15663",
+    "en-50119",
+    "en-50122-1",
+    "en-50163",
+    "en-50367",
+    "en-50388-1",
+    "era-subset-026",
+    "era-tsi-ene",
+    "eu-accessible-platforms",
+    "eu-dir-92-6",
+    "eu-dir-96-53",
+    "eu-reco-2001-290",
+    "flyvbjerg-2003",
+    "fra-rr0610",
+    "fra-td99-021",
+    "fta-c9030",
+    "fta-relative-costs",
+    "gb-50157",
+    "hanser-weichen",
+    "hca-employment-density-2015",
+    "hcm7",
+    "iec-60850",
+    "ieee-1474-1",
+    "ilostat-labour-share",
+    "isacsson-2015",
+    "itdp-pnft",
+    "krakow-tram-switches",
+    "metro-no9-optimised",
+    "mobsimlab-derivation",
+    "mohammad-2013",
+    "moreno-2021",
+    "mutcd-2009",
+    "mutcd-2009-part8",
+    "nortrak-transit",
+    "nr-anglia-ole",
+    "nr-cwr-sft",
+    "nra-tech-rules",
+    "oecd-icio",
+    "orr-ole-heat",
+    "orr-ppm",
+    "osm-switch-2500",
+    "pachl-roc",
+    "pedestrian-observations-opex",
+    "railfuture-step-gap",
+    "railwaypro-besancon",
+    "rast06",
+    "rennert-2022",
+    "sae-j2601-2",
+    "salzburger-lokalbahn",
+    "sandnes-benchmarking",
+    "sbb-punctuality",
+    "sncf-landes-220",
+    "stvo",
+    "suburban-no12",
+    "sumo-vtype",
+    "tcqsm3",
+    "tcrp-spare-ratio",
+    "trackopedia-track-centres",
+    "transit-costs-project",
+    "tsi-ccs",
+    "tsi-ene",
+    "tsi-inf",
+    "tsi-loc-pas",
+    "tsi-prm",
+    "tud-tram-radius",
+    "uic-406",
+    "uic-451-1",
+    "uic-hsr-cost",
+    "uitp-trolleybus-tco",
+    "uk-dc-third-rail",
+    "unece-r107",
+    "up-5015",
+    "us-49cfr234",
+    "vde-ebus-fleet",
+    "vienna-convention-1968",
+    "voestalpine-tram-train-hu",
+    "vuchic-2007",
+    "worldbank-benefit-wdi",
+    "worldbank-china-hsr",
+    "worldbank-wdi",
+    "zusi-weichen"
+  ],
+  "bundled": [
+    {
+      "id": "org.mobsimlab.aerial-lift",
+      "name": "Cable cars",
+      "description": "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data"
+      ],
+      "permissions": [
+        "read:network"
+      ],
+      "modes": [
+        {
+          "id": "cable_car",
+          "label": "Cable car",
+          "family": "aerial",
+          "colour": "#7c3aed",
+          "gtfsRouteType": 6,
+          "kit": "straight-spans",
+          "operation": "frequency",
+          "contextKey": "ropeway_system",
+          "contexts": [
+            "mgd",
+            "2s",
+            "3s",
+            "funitel",
+            "pulsed"
+          ],
+          "defaultContext": "mgd"
+        },
+        {
+          "id": "aerial_tramway",
+          "label": "Aerial tramway",
+          "family": "aerial",
+          "colour": "#9333ea",
+          "gtfsRouteType": 6,
+          "kit": "straight-spans",
+          "operation": "shuttle",
+          "contextKey": "ropeway_system",
+          "contexts": [
+            "reversible"
+          ],
+          "defaultContext": "reversible"
+        }
+      ],
+      "contexts": [
+        {
+          "key": "ropeway_system",
+          "label": "Ropeway system",
+          "options": [
+            {
+              "id": "mgd",
+              "label": "Monocable detachable gondola (MGD)"
+            },
+            {
+              "id": "2s",
+              "label": "Bicable gondola (2S)"
+            },
+            {
+              "id": "3s",
+              "label": "Tricable gondola (3S)"
+            },
+            {
+              "id": "funitel",
+              "label": "Funitel"
+            },
+            {
+              "id": "pulsed",
+              "label": "Pulsed gondola"
+            },
+            {
+              "id": "reversible",
+              "label": "Aerial tramway (reversible)"
+            }
+          ]
+        }
+      ],
+      "tools": [
+        {
+          "id": "cable-car",
+          "label": "Cable car",
+          "hint": "Gondolas and aerial tramways: click stations, towers follow.",
+          "kit": "straight-spans",
+          "modes": [
+            "cable_car",
+            "aerial_tramway"
+          ]
+        }
+      ],
+      "calculations": [],
+      "mapLayers": [],
+      "tabs": [],
+      "parameters": {
+        "ropeway.line_speed_ms": {
+          "label": "Line speed",
+          "unit": "m/s"
+        },
+        "ropeway.cabin_interval_s": {
+          "label": "Cabin interval",
+          "unit": "s"
+        },
+        "ropeway.cabin_capacity": {
+          "label": "Cabin capacity",
+          "unit": "passengers"
+        },
+        "ropeway.max_span_m": {
+          "label": "Span between supports, maximum",
+          "unit": "m"
+        },
+        "ropeway.max_station_angle_deg": {
+          "label": "Direction change in a station, maximum",
+          "unit": "°"
+        },
+        "ropeway.min_clearance_m": {
+          "label": "Clearance under the loaded cabin, minimum",
+          "unit": "m"
+        },
+        "ropeway.recommended_clearance_m": {
+          "label": "Clearance under the loaded cabin, recommended",
+          "unit": "m"
+        },
+        "ropeway.tower_height_m": {
+          "label": "Tower height, standard",
+          "unit": "m"
+        },
+        "ropeway.max_tower_height_m": {
+          "label": "Tower height, maximum",
+          "unit": "m"
+        },
+        "ropeway.station_rope_height_m": {
+          "label": "Rope height at a station",
+          "unit": "m"
+        },
+        "ropeway.cabin_hang_m": {
+          "label": "Rope to cabin bottom",
+          "unit": "m"
+        },
+        "ropeway.sag_ratio": {
+          "label": "Rope sag under load, share of span",
+          "unit": "share"
+        },
+        "ropeway.station_passage_s": {
+          "label": "Time through an intermediate station",
+          "unit": "s"
+        },
+        "ropeway.terminal_dwell_s": {
+          "label": "Boarding time at an aerial tramway terminal",
+          "unit": "s"
+        },
+        "ropeway.reserve_share": {
+          "label": "Spare cabins, share of cabins on the line",
+          "unit": "share"
+        },
+        "ropeway.wind_slow_kmh": {
+          "label": "Wind speed at which the line slows down",
+          "unit": "km/h"
+        },
+        "ropeway.wind_stop_kmh": {
+          "label": "Wind speed at which the line stops",
+          "unit": "km/h"
+        },
+        "ropeway.capacity_ceiling_pphpd": {
+          "label": "Capacity ceiling of any ropeway",
+          "unit": "p/h/dir"
+        }
+      },
+      "defaults": {
+        "cable_car": {
+          "mgd": {
+            "ropeway.line_speed_ms": {
+              "low": 5,
+              "central": 6,
+              "high": 6
+            },
+            "ropeway.cabin_interval_s": {
+              "low": 8,
+              "central": 12,
+              "high": 30
+            },
+            "ropeway.cabin_capacity": {
+              "low": 8,
+              "central": 10,
+              "high": 15
+            },
+            "ropeway.max_span_m": {
+              "low": 200,
+              "central": 400,
+              "high": 600
+            },
+            "ropeway.max_station_angle_deg": {
+              "low": 20,
+              "central": 45,
+              "high": 90
+            },
+            "ropeway.min_clearance_m": {
+              "low": 3,
+              "central": 5,
+              "high": 8
+            },
+            "ropeway.recommended_clearance_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.tower_height_m": {
+              "low": 15,
+              "central": 25,
+              "high": 40
+            },
+            "ropeway.max_tower_height_m": {
+              "low": 35,
+              "central": 50,
+              "high": 70
+            },
+            "ropeway.station_rope_height_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.cabin_hang_m": {
+              "low": 3,
+              "central": 4,
+              "high": 6
+            },
+            "ropeway.sag_ratio": {
+              "low": 0.02,
+              "central": 0.04,
+              "high": 0.06
+            },
+            "ropeway.station_passage_s": {
+              "low": 20,
+              "central": 45,
+              "high": 90
+            },
+            "ropeway.terminal_dwell_s": {
+              "low": 30,
+              "central": 60,
+              "high": 120
+            },
+            "ropeway.reserve_share": {
+              "low": 0.05,
+              "central": 0.1,
+              "high": 0.15
+            },
+            "ropeway.wind_slow_kmh": {
+              "low": 60,
+              "central": 70,
+              "high": 70
+            },
+            "ropeway.wind_stop_kmh": {
+              "low": 60,
+              "central": 90,
+              "high": 90
+            },
+            "ropeway.capacity_ceiling_pphpd": {
+              "low": 4500,
+              "central": 6000,
+              "high": 8000
+            }
+          },
+          "2s": {
+            "ropeway.line_speed_ms": {
+              "low": 6,
+              "central": 6.5,
+              "high": 7
+            },
+            "ropeway.cabin_interval_s": {
+              "low": 15,
+              "central": 20,
+              "high": 30
+            },
+            "ropeway.cabin_capacity": {
+              "low": 15,
+              "central": 17,
+              "high": 17
+            },
+            "ropeway.max_span_m": {
+              "low": 500,
+              "central": 800,
+              "high": 1200
+            },
+            "ropeway.max_station_angle_deg": {
+              "low": 10,
+              "central": 30,
+              "high": 60
+            },
+            "ropeway.min_clearance_m": {
+              "low": 3,
+              "central": 5,
+              "high": 8
+            },
+            "ropeway.recommended_clearance_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.tower_height_m": {
+              "low": 20,
+              "central": 35,
+              "high": 50
+            },
+            "ropeway.max_tower_height_m": {
+              "low": 50,
+              "central": 70,
+              "high": 100
+            },
+            "ropeway.station_rope_height_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.cabin_hang_m": {
+              "low": 3,
+              "central": 4,
+              "high": 6
+            },
+            "ropeway.sag_ratio": {
+              "low": 0.02,
+              "central": 0.04,
+              "high": 0.06
+            },
+            "ropeway.station_passage_s": {
+              "low": 20,
+              "central": 45,
+              "high": 90
+            },
+            "ropeway.terminal_dwell_s": {
+              "low": 30,
+              "central": 60,
+              "high": 120
+            },
+            "ropeway.reserve_share": {
+              "low": 0.05,
+              "central": 0.1,
+              "high": 0.15
+            },
+            "ropeway.wind_slow_kmh": {
+              "low": 40,
+              "central": 60,
+              "high": 80
+            },
+            "ropeway.wind_stop_kmh": {
+              "low": 60,
+              "central": 80,
+              "high": 110
+            },
+            "ropeway.capacity_ceiling_pphpd": {
+              "low": 4500,
+              "central": 6000,
+              "high": 8000
+            }
+          },
+          "3s": {
+            "ropeway.line_speed_ms": {
+              "low": 6,
+              "central": 7.5,
+              "high": 8.5
+            },
+            "ropeway.cabin_interval_s": {
+              "low": 20,
+              "central": 25,
+              "high": 40
+            },
+            "ropeway.cabin_capacity": {
+              "low": 30,
+              "central": 32,
+              "high": 35
+            },
+            "ropeway.max_span_m": {
+              "low": 1000,
+              "central": 1500,
+              "high": 3000
+            },
+            "ropeway.max_station_angle_deg": {
+              "low": 10,
+              "central": 20,
+              "high": 30
+            },
+            "ropeway.min_clearance_m": {
+              "low": 3,
+              "central": 5,
+              "high": 8
+            },
+            "ropeway.recommended_clearance_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.tower_height_m": {
+              "low": 40,
+              "central": 60,
+              "high": 100
+            },
+            "ropeway.max_tower_height_m": {
+              "low": 80,
+              "central": 120,
+              "high": 150
+            },
+            "ropeway.station_rope_height_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.cabin_hang_m": {
+              "low": 4,
+              "central": 5,
+              "high": 6
+            },
+            "ropeway.sag_ratio": {
+              "low": 0.02,
+              "central": 0.04,
+              "high": 0.06
+            },
+            "ropeway.station_passage_s": {
+              "low": 40,
+              "central": 60,
+              "high": 90
+            },
+            "ropeway.terminal_dwell_s": {
+              "low": 30,
+              "central": 60,
+              "high": 120
+            },
+            "ropeway.reserve_share": {
+              "low": 0.05,
+              "central": 0.1,
+              "high": 0.15
+            },
+            "ropeway.wind_slow_kmh": {
+              "low": 70,
+              "central": 80,
+              "high": 100
+            },
+            "ropeway.wind_stop_kmh": {
+              "low": 90,
+              "central": 100,
+              "high": 110
+            },
+            "ropeway.capacity_ceiling_pphpd": {
+              "low": 4500,
+              "central": 6000,
+              "high": 8000
+            }
+          },
+          "funitel": {
+            "ropeway.line_speed_ms": {
+              "low": 6,
+              "central": 6.5,
+              "high": 7
+            },
+            "ropeway.cabin_interval_s": {
+              "low": 20,
+              "central": 25,
+              "high": 35
+            },
+            "ropeway.cabin_capacity": {
+              "low": 20,
+              "central": 24,
+              "high": 30
+            },
+            "ropeway.max_span_m": {
+              "low": 400,
+              "central": 600,
+              "high": 800
+            },
+            "ropeway.max_station_angle_deg": {
+              "low": 10,
+              "central": 30,
+              "high": 60
+            },
+            "ropeway.min_clearance_m": {
+              "low": 3,
+              "central": 5,
+              "high": 8
+            },
+            "ropeway.recommended_clearance_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.tower_height_m": {
+              "low": 20,
+              "central": 30,
+              "high": 45
+            },
+            "ropeway.max_tower_height_m": {
+              "low": 40,
+              "central": 60,
+              "high": 80
+            },
+            "ropeway.station_rope_height_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.cabin_hang_m": {
+              "low": 3,
+              "central": 4,
+              "high": 6
+            },
+            "ropeway.sag_ratio": {
+              "low": 0.02,
+              "central": 0.04,
+              "high": 0.06
+            },
+            "ropeway.station_passage_s": {
+              "low": 20,
+              "central": 45,
+              "high": 90
+            },
+            "ropeway.terminal_dwell_s": {
+              "low": 30,
+              "central": 60,
+              "high": 120
+            },
+            "ropeway.reserve_share": {
+              "low": 0.05,
+              "central": 0.1,
+              "high": 0.15
+            },
+            "ropeway.wind_slow_kmh": {
+              "low": 40,
+              "central": 60,
+              "high": 80
+            },
+            "ropeway.wind_stop_kmh": {
+              "low": 60,
+              "central": 80,
+              "high": 110
+            },
+            "ropeway.capacity_ceiling_pphpd": {
+              "low": 4500,
+              "central": 6000,
+              "high": 8000
+            }
+          },
+          "pulsed": {
+            "ropeway.line_speed_ms": {
+              "low": 4,
+              "central": 4.5,
+              "high": 5
+            },
+            "ropeway.cabin_interval_s": {
+              "low": 30,
+              "central": 60,
+              "high": 120
+            },
+            "ropeway.cabin_capacity": {
+              "low": 4,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.max_span_m": {
+              "low": 150,
+              "central": 300,
+              "high": 400
+            },
+            "ropeway.max_station_angle_deg": {
+              "low": 0,
+              "central": 20,
+              "high": 45
+            },
+            "ropeway.min_clearance_m": {
+              "low": 3,
+              "central": 5,
+              "high": 8
+            },
+            "ropeway.recommended_clearance_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.tower_height_m": {
+              "low": 10,
+              "central": 20,
+              "high": 30
+            },
+            "ropeway.max_tower_height_m": {
+              "low": 25,
+              "central": 35,
+              "high": 50
+            },
+            "ropeway.station_rope_height_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.cabin_hang_m": {
+              "low": 3,
+              "central": 4,
+              "high": 6
+            },
+            "ropeway.sag_ratio": {
+              "low": 0.02,
+              "central": 0.04,
+              "high": 0.06
+            },
+            "ropeway.station_passage_s": {
+              "low": 30,
+              "central": 60,
+              "high": 90
+            },
+            "ropeway.terminal_dwell_s": {
+              "low": 30,
+              "central": 60,
+              "high": 120
+            },
+            "ropeway.reserve_share": {
+              "low": 0.05,
+              "central": 0.1,
+              "high": 0.15
+            },
+            "ropeway.wind_slow_kmh": {
+              "low": 40,
+              "central": 60,
+              "high": 80
+            },
+            "ropeway.wind_stop_kmh": {
+              "low": 60,
+              "central": 80,
+              "high": 110
+            },
+            "ropeway.capacity_ceiling_pphpd": {
+              "low": 4500,
+              "central": 6000,
+              "high": 8000
+            }
+          }
+        },
+        "aerial_tramway": {
+          "reversible": {
+            "ropeway.line_speed_ms": {
+              "low": 8,
+              "central": 10,
+              "high": 12
+            },
+            "ropeway.cabin_interval_s": {
+              "low": 8,
+              "central": 12,
+              "high": 60
+            },
+            "ropeway.cabin_capacity": {
+              "low": 30,
+              "central": 80,
+              "high": 200
+            },
+            "ropeway.max_span_m": {
+              "low": 800,
+              "central": 1500,
+              "high": 3000
+            },
+            "ropeway.max_station_angle_deg": {
+              "low": 0,
+              "central": 0,
+              "high": 0
+            },
+            "ropeway.min_clearance_m": {
+              "low": 3,
+              "central": 5,
+              "high": 8
+            },
+            "ropeway.recommended_clearance_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.tower_height_m": {
+              "low": 30,
+              "central": 50,
+              "high": 100
+            },
+            "ropeway.max_tower_height_m": {
+              "low": 60,
+              "central": 120,
+              "high": 150
+            },
+            "ropeway.station_rope_height_m": {
+              "low": 5,
+              "central": 8,
+              "high": 15
+            },
+            "ropeway.cabin_hang_m": {
+              "low": 4,
+              "central": 6,
+              "high": 8
+            },
+            "ropeway.sag_ratio": {
+              "low": 0.02,
+              "central": 0.04,
+              "high": 0.06
+            },
+            "ropeway.station_passage_s": {
+              "low": 20,
+              "central": 30,
+              "high": 60
+            },
+            "ropeway.terminal_dwell_s": {
+              "low": 30,
+              "central": 60,
+              "high": 120
+            },
+            "ropeway.reserve_share": {
+              "low": 0.05,
+              "central": 0.1,
+              "high": 0.15
+            },
+            "ropeway.wind_slow_kmh": {
+              "low": 40,
+              "central": 60,
+              "high": 80
+            },
+            "ropeway.wind_stop_kmh": {
+              "low": 60,
+              "central": 80,
+              "high": 110
+            },
+            "ropeway.capacity_ceiling_pphpd": {
+              "low": 4500,
+              "central": 6000,
+              "high": 8000
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "org.mobsimlab.cargo-bike",
+      "name": "Cargo bike",
+      "description": "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data",
+        "compute"
+      ],
+      "permissions": [
+        "read:geodata"
+      ],
+      "modes": [],
+      "contexts": [],
+      "tools": [],
+      "calculations": [
+        {
+          "id": "cargo_bike_range",
+          "label": "Cargo bike range",
+          "description": "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.",
+          "runtime": "bundled-wasm",
+          "module": "cargo-bike",
+          "inputs": [
+            "geodata",
+            "parameters"
+          ],
+          "outputs": [
+            "segments",
+            "kpis"
+          ],
+          "where": [
+            "plugin-tab"
+          ]
+        },
+        {
+          "id": "cargo_bike_savings",
+          "label": "Cargo bike savings",
+          "description": "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.",
+          "runtime": "bundled-wasm",
+          "module": "cargo-bike",
+          "inputs": [
+            "parameters"
+          ],
+          "outputs": [
+            "table"
+          ],
+          "where": [
+            "plugin-tab"
+          ]
+        }
+      ],
+      "mapLayers": [
+        {
+          "id": "cargo_bike_route",
+          "label": "Cargo bike trip and range",
+          "calculation": "cargo_bike_range",
+          "style": {
+            "_comment": "The range map (area reachable out and back on one charge), the trip there and back coloured by the kind of street, the bike-lane gap picked in the tab, and the charging points and bike parkings along the route. Class ids come from crates/cargo-bike (Class), amenity kinds from the API's bike-amenity tiles.",
+            "layers": [
+              {
+                "id": "cargo-bike-range-fill",
+                "type": "fill",
+                "source": "range",
+                "paint": {
+                  "fill-color": "#16a34a",
+                  "fill-opacity": 0.12
+                }
+              },
+              {
+                "id": "cargo-bike-range-line",
+                "type": "line",
+                "source": "range",
+                "paint": {
+                  "line-color": "#15803d",
+                  "line-width": 2,
+                  "line-dasharray": [
+                    2,
+                    1.5
+                  ]
+                }
+              },
+              {
+                "id": "cargo-bike-gap",
+                "type": "line",
+                "source": "gap",
+                "layout": {
+                  "line-cap": "round",
+                  "line-join": "round"
+                },
+                "paint": {
+                  "line-color": "#facc15",
+                  "line-width": 18,
+                  "line-opacity": 0.7
+                }
+              },
+              {
+                "id": "cargo-bike-trip-casing",
+                "type": "line",
+                "source": "trip",
+                "layout": {
+                  "line-cap": "round",
+                  "line-join": "round"
+                },
+                "paint": {
+                  "line-color": "#ffffff",
+                  "line-width": 8
+                }
+              },
+              {
+                "id": "cargo-bike-trip",
+                "type": "line",
+                "source": "trip",
+                "layout": {
+                  "line-cap": "round",
+                  "line-join": "round"
+                },
+                "paint": {
+                  "line-width": 5,
+                  "line-color": [
+                    "match",
+                    [
+                      "get",
+                      "class"
+                    ],
+                    "separated",
+                    "#15803d",
+                    "lane",
+                    "#65a30d",
+                    "quiet",
+                    "#2563eb",
+                    "mixed",
+                    "#dc2626",
+                    "#64748b"
+                  ]
+                }
+              },
+              {
+                "id": "cargo-bike-amenity",
+                "type": "circle",
+                "source": "amenity",
+                "paint": {
+                  "circle-radius": 7,
+                  "circle-stroke-width": 2,
+                  "circle-stroke-color": "#ffffff",
+                  "circle-color": [
+                    "match",
+                    [
+                      "get",
+                      "kind"
+                    ],
+                    "charging",
+                    "#d97706",
+                    "secure_parking",
+                    "#7c3aed",
+                    "cargo_parking",
+                    "#0e7490",
+                    "#64748b"
+                  ]
+                }
+              }
+            ],
+            "legend": [
+              {
+                "class": "separated",
+                "color": "#15803d"
+              },
+              {
+                "class": "lane",
+                "color": "#65a30d"
+              },
+              {
+                "class": "quiet",
+                "color": "#2563eb"
+              },
+              {
+                "class": "mixed",
+                "color": "#dc2626"
+              }
+            ],
+            "amenities": [
+              {
+                "kind": "charging",
+                "color": "#d97706"
+              },
+              {
+                "kind": "secure_parking",
+                "color": "#7c3aed"
+              },
+              {
+                "kind": "cargo_parking",
+                "color": "#0e7490"
+              }
+            ]
+          }
+        }
+      ],
+      "tabs": [
+        {
+          "id": "cargo-bike",
+          "label": "Cargo bike",
+          "view": "cargo-bike",
+          "calculations": [
+            "cargo_bike_range",
+            "cargo_bike_savings"
+          ]
+        }
+      ],
+      "parameters": {
+        "cargo_bike.bike_mass_kg": {
+          "label": "Cargo bike mass",
+          "unit": "kg"
+        },
+        "cargo_bike.load_kg": {
+          "label": "Load carried",
+          "unit": "kg"
+        },
+        "cargo_bike.rider_mass_kg": {
+          "label": "Rider mass",
+          "unit": "kg"
+        },
+        "cargo_bike.battery_wh": {
+          "label": "Battery capacity",
+          "unit": "Wh"
+        },
+        "cargo_bike.battery_usable_share": {
+          "label": "Usable share of the battery",
+          "unit": "share"
+        },
+        "cargo_bike.motor_rated_w": {
+          "label": "Motor power (mechanical, sustained)",
+          "unit": "W"
+        },
+        "cargo_bike.motor_efficiency": {
+          "label": "Motor and controller efficiency",
+          "unit": "share"
+        },
+        "cargo_bike.drivetrain_efficiency": {
+          "label": "Drivetrain efficiency (chain and gears)",
+          "unit": "share"
+        },
+        "cargo_bike.assist_cutoff_kmh": {
+          "label": "Assistance cut-off speed",
+          "unit": "km/h"
+        },
+        "cargo_bike.assist_share": {
+          "label": "Share of the pedalling power the motor gives",
+          "unit": "share"
+        },
+        "cargo_bike.rider_power_w": {
+          "label": "Rider's sustained pedalling power",
+          "unit": "W"
+        },
+        "cargo_bike.rolling_resistance": {
+          "label": "Rolling resistance coefficient",
+          "unit": "ratio"
+        },
+        "cargo_bike.drag_area_m2": {
+          "label": "Drag area (Cd·A)",
+          "unit": "m²"
+        },
+        "cargo_bike.air_density": {
+          "label": "Air density",
+          "unit": "kg/m³"
+        },
+        "cargo_bike.speed_separated_kmh": {
+          "label": "Cruising speed on a separated cycle track or cycle path",
+          "unit": "km/h"
+        },
+        "cargo_bike.speed_lane_kmh": {
+          "label": "Cruising speed in a painted bike lane",
+          "unit": "km/h"
+        },
+        "cargo_bike.speed_quiet_kmh": {
+          "label": "Cruising speed on quiet streets without a bike lane",
+          "unit": "km/h"
+        },
+        "cargo_bike.speed_mixed_kmh": {
+          "label": "Cruising speed in main-road traffic without a bike lane",
+          "unit": "km/h"
+        },
+        "cargo_bike.stops_per_km_separated": {
+          "label": "Stops per km on separated cycle tracks",
+          "unit": "1/km"
+        },
+        "cargo_bike.stops_per_km_lane": {
+          "label": "Stops per km in painted bike lanes",
+          "unit": "1/km"
+        },
+        "cargo_bike.stops_per_km_quiet": {
+          "label": "Stops per km on quiet streets",
+          "unit": "1/km"
+        },
+        "cargo_bike.stops_per_km_mixed": {
+          "label": "Stops per km in main-road traffic",
+          "unit": "1/km"
+        },
+        "cargo_bike.signal_stop_share": {
+          "label": "Share of traffic signals that stop the bike",
+          "unit": "share"
+        },
+        "cargo_bike.route_factor_separated": {
+          "label": "Route choice weight: separated cycle track",
+          "unit": "ratio"
+        },
+        "cargo_bike.route_factor_lane": {
+          "label": "Route choice weight: painted bike lane",
+          "unit": "ratio"
+        },
+        "cargo_bike.route_factor_quiet": {
+          "label": "Route choice weight: quiet street",
+          "unit": "ratio"
+        },
+        "cargo_bike.route_factor_mixed": {
+          "label": "Route choice weight: main road without bike lane",
+          "unit": "ratio"
+        },
+        "cargo_bike.detour_factor": {
+          "label": "Street distance over straight-line distance (range map)",
+          "unit": "ratio"
+        },
+        "cargo_bike.elevation_smoothing_m": {
+          "label": "Height smoothing window",
+          "unit": "m"
+        },
+        "cargo_bike.savings.trips_per_week": {
+          "label": "Round trips per week",
+          "unit": "1/week"
+        },
+        "cargo_bike.savings.weeks_per_year": {
+          "label": "Weeks of use per year",
+          "unit": "weeks"
+        },
+        "cargo_bike.savings.bike_price_eur": {
+          "label": "Cargo bike purchase price (2024 EUR)",
+          "unit": "EUR"
+        },
+        "cargo_bike.savings.bike_lifetime_years": {
+          "label": "Cargo bike lifetime",
+          "unit": "years"
+        },
+        "cargo_bike.savings.bike_maintenance_eur": {
+          "label": "Cargo bike maintenance per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.bike_insurance_eur": {
+          "label": "Cargo bike insurance per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.electricity_eur_kwh": {
+          "label": "Household electricity price (2024 EUR)",
+          "unit": "EUR/kWh"
+        },
+        "cargo_bike.savings.charger_efficiency": {
+          "label": "Charger efficiency",
+          "unit": "share"
+        },
+        "cargo_bike.savings.car_price_eur": {
+          "label": "Car purchase price (2024 EUR)",
+          "unit": "EUR"
+        },
+        "cargo_bike.savings.car_years": {
+          "label": "Years the car is kept",
+          "unit": "years"
+        },
+        "cargo_bike.savings.car_residual_share": {
+          "label": "Car resale value at the end, share of the price",
+          "unit": "share"
+        },
+        "cargo_bike.savings.car_fuel_l_100km": {
+          "label": "Car fuel consumption",
+          "unit": "l/100 km"
+        },
+        "cargo_bike.savings.fuel_eur_l": {
+          "label": "Petrol price (2024 EUR)",
+          "unit": "EUR/l"
+        },
+        "cargo_bike.savings.car_tax_eur": {
+          "label": "Car tax per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.car_insurance_eur": {
+          "label": "Car insurance per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.car_parking_eur": {
+          "label": "Car parking per year (2024 EUR)",
+          "unit": "EUR/year"
+        },
+        "cargo_bike.savings.car_maintenance_eur_km": {
+          "label": "Car maintenance and tyres per km (2024 EUR)",
+          "unit": "EUR/km"
+        },
+        "cargo_bike.savings.fuel_co2_kg_l": {
+          "label": "Car CO₂ per litre of petrol (well to wheel)",
+          "unit": "kg/l"
+        },
+        "cargo_bike.savings.grid_co2_kg_kwh": {
+          "label": "CO₂ per kWh of mains electricity",
+          "unit": "kg/kWh"
+        },
+        "cargo_bike.savings.rider_efficiency": {
+          "label": "Rider's gross efficiency (pedalling energy per food energy)",
+          "unit": "share"
+        },
+        "cargo_bike.savings.active_min_week_target": {
+          "label": "Recommended physical activity per week",
+          "unit": "min/week"
+        }
+      },
+      "defaults": {}
+    },
+    {
+      "id": "org.mobsimlab.ferry",
+      "name": "Ferries",
+      "description": "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data"
+      ],
+      "permissions": [
+        "read:network"
+      ],
+      "modes": [
+        {
+          "id": "ferry",
+          "label": "Ferry",
+          "family": "water",
+          "colour": "#0e7490",
+          "gtfsRouteType": 4,
+          "kit": "water-route",
+          "operation": "timetabled",
+          "contextKey": "vessel_type",
+          "contexts": [
+            "monohull",
+            "catamaran",
+            "hydrofoil"
+          ],
+          "defaultContext": "monohull"
+        }
+      ],
+      "contexts": [
+        {
+          "key": "vessel_type",
+          "label": "Vessel type",
+          "options": [
+            {
+              "id": "monohull",
+              "label": "Monohull water bus"
+            },
+            {
+              "id": "catamaran",
+              "label": "Fast catamaran"
+            },
+            {
+              "id": "hydrofoil",
+              "label": "Electric hydrofoil"
+            }
+          ]
+        }
+      ],
+      "tools": [
+        {
+          "id": "ferry",
+          "label": "Ferry",
+          "hint": "Water buses and crossings: click piers, shape the route over water.",
+          "kit": "water-route",
+          "modes": [
+            "ferry"
+          ]
+        }
+      ],
+      "calculations": [],
+      "mapLayers": [],
+      "tabs": [],
+      "parameters": {
+        "ferry.service_speed_kn": {
+          "label": "Service speed",
+          "unit": "kn"
+        },
+        "ferry.berthing_s": {
+          "label": "Berthing manoeuvre per call",
+          "unit": "s"
+        },
+        "ferry.boarding_pax_per_min_per_gangway": {
+          "label": "Boarding rate per gangway",
+          "unit": "passengers/min"
+        },
+        "ferry.min_dwell_s": {
+          "label": "Dwell at a call, minimum",
+          "unit": "s"
+        },
+        "ferry.passenger_capacity": {
+          "label": "Passengers per vessel",
+          "unit": "passengers"
+        },
+        "ferry.harbour_speed_kn": {
+          "label": "Speed limit in a new speed zone",
+          "unit": "kn"
+        },
+        "ferry.layover_s": {
+          "label": "Layover at the ends of a line, minimum",
+          "unit": "s"
+        },
+        "ferry.pax_per_call_share": {
+          "label": "Passengers on and off at the busiest call, share of capacity",
+          "unit": "share"
+        },
+        "ferry.wave_limit_hs_m": {
+          "label": "Significant wave height limit",
+          "unit": "m"
+        }
+      },
+      "defaults": {
+        "ferry": {
+          "monohull": {
+            "ferry.service_speed_kn": {
+              "low": 8,
+              "central": 12,
+              "high": 15
+            },
+            "ferry.berthing_s": {
+              "low": 60,
+              "central": 120,
+              "high": 300
+            },
+            "ferry.boarding_pax_per_min_per_gangway": {
+              "low": 15,
+              "central": 30,
+              "high": 50
+            },
+            "ferry.min_dwell_s": {
+              "low": 30,
+              "central": 60,
+              "high": 120
+            },
+            "ferry.passenger_capacity": {
+              "low": 100,
+              "central": 250,
+              "high": 600
+            },
+            "ferry.harbour_speed_kn": {
+              "low": 4,
+              "central": 6,
+              "high": 8
+            },
+            "ferry.layover_s": {
+              "low": 180,
+              "central": 300,
+              "high": 600
+            },
+            "ferry.pax_per_call_share": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1.0
+            },
+            "ferry.wave_limit_hs_m": {
+              "low": 1,
+              "central": 1.5,
+              "high": 2.5
+            }
+          },
+          "catamaran": {
+            "ferry.service_speed_kn": {
+              "low": 20,
+              "central": 25,
+              "high": 35
+            },
+            "ferry.berthing_s": {
+              "low": 60,
+              "central": 120,
+              "high": 300
+            },
+            "ferry.boarding_pax_per_min_per_gangway": {
+              "low": 15,
+              "central": 30,
+              "high": 50
+            },
+            "ferry.min_dwell_s": {
+              "low": 30,
+              "central": 60,
+              "high": 120
+            },
+            "ferry.passenger_capacity": {
+              "low": 150,
+              "central": 300,
+              "high": 450
+            },
+            "ferry.harbour_speed_kn": {
+              "low": 4,
+              "central": 6,
+              "high": 8
+            },
+            "ferry.layover_s": {
+              "low": 180,
+              "central": 300,
+              "high": 600
+            },
+            "ferry.pax_per_call_share": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1.0
+            },
+            "ferry.wave_limit_hs_m": {
+              "low": 1.5,
+              "central": 2,
+              "high": 3
+            }
+          },
+          "hydrofoil": {
+            "ferry.service_speed_kn": {
+              "low": 18,
+              "central": 22,
+              "high": 30
+            },
+            "ferry.berthing_s": {
+              "low": 60,
+              "central": 90,
+              "high": 180
+            },
+            "ferry.boarding_pax_per_min_per_gangway": {
+              "low": 15,
+              "central": 30,
+              "high": 50
+            },
+            "ferry.min_dwell_s": {
+              "low": 30,
+              "central": 60,
+              "high": 120
+            },
+            "ferry.passenger_capacity": {
+              "low": 20,
+              "central": 30,
+              "high": 50
+            },
+            "ferry.harbour_speed_kn": {
+              "low": 4,
+              "central": 6,
+              "high": 8
+            },
+            "ferry.layover_s": {
+              "low": 180,
+              "central": 300,
+              "high": 600
+            },
+            "ferry.pax_per_call_share": {
+              "low": 0.2,
+              "central": 0.5,
+              "high": 1.0
+            },
+            "ferry.wave_limit_hs_m": {
+              "low": 0.5,
+              "central": 1,
+              "high": 1.5
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "org.mobsimlab.noise",
+      "name": "Noise map",
+      "description": "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data",
+        "compute"
+      ],
+      "permissions": [
+        "read:network",
+        "read:timetable",
+        "read:fleet"
+      ],
+      "modes": [],
+      "contexts": [],
+      "tools": [],
+      "calculations": [
+        {
+          "id": "noise_estimate",
+          "label": "Noise band",
+          "description": "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.",
+          "runtime": "bundled-wasm",
+          "module": "noise",
+          "inputs": [
+            "street_lines",
+            "rail_design",
+            "timetable",
+            "fleet",
+            "parameters"
+          ],
+          "outputs": [
+            "grid",
+            "segments",
+            "findings"
+          ],
+          "where": [
+            "street-line-tool",
+            "railway-tool",
+            "gis",
+            "analysis"
+          ]
+        }
+      ],
+      "mapLayers": [
+        {
+          "id": "noise_band",
+          "label": "Noise band",
+          "calculation": "noise_estimate",
+          "style": {
+            "_comment": "The noise band is drawn as a picture of the receiver grid (raster), coloured in 5 dB bands after ISO 1996-2 / DIN 45682. Colours are applied by the engine (noise::band_colour); this layer sets how the picture is shown.",
+            "layers": [
+              {
+                "id": "noise-band",
+                "type": "raster",
+                "paint": {
+                  "raster-opacity": 0.6,
+                  "raster-resampling": "nearest",
+                  "raster-fade-duration": 0
+                }
+              }
+            ],
+            "legend": [
+              {
+                "from_db": 45,
+                "color": "#cee4cc"
+              },
+              {
+                "from_db": 50,
+                "color": "#e2f2bf"
+              },
+              {
+                "from_db": 55,
+                "color": "#f3c683"
+              },
+              {
+                "from_db": 60,
+                "color": "#e87e4d"
+              },
+              {
+                "from_db": 65,
+                "color": "#cd463e"
+              },
+              {
+                "from_db": 70,
+                "color": "#a11a4d"
+              },
+              {
+                "from_db": 75,
+                "color": "#75085c"
+              }
+            ]
+          }
+        }
+      ],
+      "tabs": [],
+      "parameters": {
+        "noise.receiver_height_m": {
+          "label": "Receiver height above ground",
+          "unit": "m"
+        },
+        "noise.day_start_h": {
+          "label": "Start of the day period (L_day)",
+          "unit": "h"
+        },
+        "noise.evening_start_h": {
+          "label": "Start of the evening period (L_evening)",
+          "unit": "h"
+        },
+        "noise.night_start_h": {
+          "label": "Start of the night period (L_night)",
+          "unit": "h"
+        },
+        "noise.evening_penalty_db": {
+          "label": "Evening penalty in L_den",
+          "unit": "dB"
+        },
+        "noise.night_penalty_db": {
+          "label": "Night penalty in L_den",
+          "unit": "dB"
+        },
+        "noise.band_lden_db": {
+          "label": "Noise corridor edge in the editors, L_den",
+          "unit": "dB"
+        },
+        "noise.band_lnight_db": {
+          "label": "Noise corridor edge in the editors, L_night",
+          "unit": "dB"
+        },
+        "noise.who_guideline_lden_db": {
+          "label": "WHO guideline level, L_den",
+          "unit": "dB"
+        },
+        "noise.who_guideline_lnight_db": {
+          "label": "WHO guideline level, L_night",
+          "unit": "dB"
+        },
+        "noise.air_temperature_c": {
+          "label": "Air temperature for atmospheric absorption",
+          "unit": "°C"
+        },
+        "noise.relative_humidity_pct": {
+          "label": "Relative humidity for atmospheric absorption",
+          "unit": "%"
+        },
+        "noise.ground_factor_default": {
+          "label": "Ground factor G where land use is unknown (0 hard, 1 soft)",
+          "unit": "-"
+        },
+        "noise.max_source_distance_m": {
+          "label": "Largest source-to-receiver distance considered",
+          "unit": "m"
+        },
+        "noise.grid_spacing_m": {
+          "label": "Receiver grid spacing",
+          "unit": "m"
+        },
+        "noise.building_storey_height_m": {
+          "label": "Height of one storey, for OSM buildings tagged with storeys only",
+          "unit": "m"
+        },
+        "noise.building_default_height_m": {
+          "label": "Height of an OSM building with neither height nor storeys",
+          "unit": "m"
+        },
+        "noise.favourable_probability_day": {
+          "label": "Share of favourable propagation conditions, day",
+          "unit": "-"
+        },
+        "noise.favourable_probability_evening": {
+          "label": "Share of favourable propagation conditions, evening",
+          "unit": "-"
+        },
+        "noise.favourable_probability_night": {
+          "label": "Share of favourable propagation conditions, night",
+          "unit": "-"
+        },
+        "noise.reflection_order": {
+          "label": "Reflection order (full map)",
+          "unit": "-"
+        },
+        "noise.reflection_max_distance_m": {
+          "label": "Farthest facade that reflects onto a receiver (full map)",
+          "unit": "m"
+        },
+        "noise.facade_reflection_coefficient": {
+          "label": "Share of sound energy a facade reflects",
+          "unit": "-"
+        },
+        "noise.terrain_filter_window_m": {
+          "label": "Width of what is taken out of the surface model as not ground",
+          "unit": "m"
+        },
+        "noise.floor_area_per_person_m2": {
+          "label": "Floor area per resident, for people counts from the building size",
+          "unit": "m²"
+        },
+        "noise.population_min_footprint_m2": {
+          "label": "Smallest building footprint that may hold homes",
+          "unit": "m²"
+        },
+        "noise.building_level_height_m": {
+          "label": "Storey height for buildings without a height",
+          "unit": "m"
+        },
+        "noise.road_source_height_m": {
+          "label": "Road vehicle source height",
+          "unit": "m"
+        },
+        "noise.rail_source_height_a_m": {
+          "label": "Rail source A height above the rail head (rolling, impact, squeal, bridge, low traction)",
+          "unit": "m"
+        },
+        "noise.rail_source_height_b_m": {
+          "label": "Rail source B height above the rail head (roof traction, pantograph, aerodynamic)",
+          "unit": "m"
+        },
+        "noise.rail_min_roughness_speed_kmh": {
+          "label": "Lowest speed used for the rail rolling noise roughness",
+          "unit": "km/h"
+        },
+        "noise.rail_aero_from_kmh": {
+          "label": "Speed above which aerodynamic noise is added",
+          "unit": "km/h"
+        },
+        "noise.rail_vehicle_length_m": {
+          "label": "Rail vehicle length used to count vehicles in a train",
+          "unit": "m"
+        },
+        "noise.rail_axles_per_vehicle": {
+          "label": "Axles per rail vehicle",
+          "unit": "axles"
+        },
+        "noise.rail_powered_vehicle_share": {
+          "label": "Share of rail vehicles that carry traction equipment (multiple units)",
+          "unit": "share"
+        },
+        "noise.rail_locomotives_per_train": {
+          "label": "Locomotives per train",
+          "unit": "count"
+        },
+        "noise.rail_traction": {
+          "label": "Traction noise source (CNOSSOS-EU Table G-5)",
+          "unit": "id"
+        },
+        "noise.rail_wheel_roughness": {
+          "label": "Wheel roughness by brake type (CNOSSOS-EU Table G-1)",
+          "unit": "id"
+        },
+        "noise.rail_rail_roughness": {
+          "label": "Rail roughness (CNOSSOS-EU Table G-1, as replaced by 2021/1226)",
+          "unit": "id"
+        },
+        "noise.rail_contact_filter": {
+          "label": "Contact filter by wheel load and diameter (CNOSSOS-EU Table G-2, as replaced by 2021/1226)",
+          "unit": "id"
+        },
+        "noise.rail_wheel_transfer": {
+          "label": "Wheel transfer function by wheel diameter (CNOSSOS-EU Table G-3)",
+          "unit": "id"
+        },
+        "noise.rail_track_transfer": {
+          "label": "Track transfer function by sleeper and rail pad (CNOSSOS-EU Table G-3, as replaced by 2021/1226)",
+          "unit": "id"
+        },
+        "noise.rail_bridge_transfer": {
+          "label": "Bridge transfer function (CNOSSOS-EU Table G-7, as replaced by 2021/1226)",
+          "unit": "id"
+        },
+        "noise.rail_impact_extent_m": {
+          "label": "Impact noise from a switch or joint: extent before and after it",
+          "unit": "m"
+        },
+        "noise.road_stop_zone_m": {
+          "label": "Acceleration and braking zone either side of a stop",
+          "unit": "m"
+        },
+        "noise.electric_road_propulsion_delta_db": {
+          "label": "Electric buses and trolleybuses: change to the propulsion noise term",
+          "unit": "dB"
+        },
+        "noise.rail_squeal_r300_db": {
+          "label": "Curve squeal, railways, radius up to 300 m",
+          "unit": "dB"
+        },
+        "noise.rail_squeal_r500_db": {
+          "label": "Curve squeal, railways, radius 300–500 m",
+          "unit": "dB"
+        },
+        "noise.tram_squeal_r200_db": {
+          "label": "Curve squeal, trams, radius up to 200 m",
+          "unit": "dB"
+        },
+        "noise.squeal_min_length_m": {
+          "label": "Shortest curve that gets the squeal correction",
+          "unit": "m"
+        },
+        "noise.tram_embedded_track_db": {
+          "label": "Trams on embedded street track: added to the track part of rolling noise",
+          "unit": "dB"
+        },
+        "noise.cable_car_tower_lw_db": {
+          "label": "Cable car tower: sound power while cabins pass the sheaves",
+          "unit": "dB(A)"
+        },
+        "noise.cable_car_station_lw_db": {
+          "label": "Cable car station: sound power of drive, bullwheel and cabin handling",
+          "unit": "dB(A)"
+        },
+        "noise.ferry_cruise_lw_db": {
+          "label": "Ferry at cruise speed: sound power",
+          "unit": "dB(A)"
+        },
+        "noise.ferry_berth_lw_db": {
+          "label": "Ferry at the berth: sound power of engines, auxiliaries and ramp",
+          "unit": "dB(A)"
+        }
+      },
+      "defaults": {}
+    }
+  ]
+}

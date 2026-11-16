@@ -43,6 +43,14 @@ export interface PluginMapLayer {
   style: unknown;
 }
 
+/** A project tab a bundled plugin adds after the core tabs; `view` names a view built into the web app. */
+export interface PluginTab {
+  id: string;
+  label: string;
+  view: string;
+  calculations?: string[];
+}
+
 /** Low, central and high value of an assumption parameter. */
 export interface Range {
   low: number;
@@ -67,6 +75,7 @@ export interface Plugin {
   tools: PluginTool[];
   calculations?: PluginCalculation[];
   mapLayers?: PluginMapLayer[];
+  tabs?: PluginTab[];
   parameters: Record<string, { label: string; unit: string }>;
   /** mode id → context option ("*" without one) → parameter key → range. */
   defaults: Record<string, Record<string, Record<string, Range>>>;
@@ -75,15 +84,63 @@ export interface Plugin {
 /** The plugins bundled with this build (ADR-0036 §8), from apps/web/src/plugins/bundled.generated.json. */
 export const PLUGINS: readonly Plugin[] = (bundled as unknown as { plugins: Plugin[] }).plugins;
 
+/** One plugin as `GET /api/projects/:id/plugins` lists it (ADR-0036 §9). */
+export interface ProjectPlugin {
+  id: string;
+  name: string;
+  description: string;
+  publisher: { name: string; url?: string };
+  bundled: boolean;
+  enabled: boolean;
+  version: string;
+  versions: string[];
+  permissions: string[];
+  contributes: {
+    modes: string[];
+    tools: string[];
+    parameters: number;
+    calculations: string[];
+    mapLayers: string[];
+  };
+  missing: boolean;
+  /** Registry entry of an installed plugin the project has turned on. */
+  entry?: Plugin;
+}
+
+let active: readonly Plugin[] = PLUGINS;
+
+/** Purpose: the plugins turned on in the open project (all bundled plugins when no project is open). */
+export function activePlugins(): readonly Plugin[] {
+  return active;
+}
+
+/** Purpose: set the open project's plugins; every helper below uses them by default. */
+export function setActivePlugins(plugins: readonly Plugin[]): void {
+  active = plugins;
+}
+
+/**
+ * Purpose: the plugins a project uses: the bundled ones it has not turned off, then the installed ones it has
+ * turned on (their registry entries come from the API). Output: plugins in that order.
+ */
+export function pluginsOfProject(list: readonly ProjectPlugin[]): Plugin[] {
+  const on = new Set(list.filter((p) => p.enabled).map((p) => p.id));
+  const known = new Set(list.map((p) => p.id));
+  return [
+    ...PLUGINS.filter((p) => on.has(p.id) || !known.has(p.id)),
+    ...list.filter((p) => p.enabled && !p.bundled && p.entry).map((p) => p.entry!),
+  ];
+}
+
 /** Purpose: every mode the plugins contribute. */
-export function pluginModes(plugins: readonly Plugin[] = PLUGINS): PluginMode[] {
+export function pluginModes(plugins: readonly Plugin[] = activePlugins()): PluginMode[] {
   return plugins.flatMap((p) => p.modes);
 }
 
 /** Purpose: a plugin mode by id, with the plugin that contributes it. */
 export function findMode(
   id: string,
-  plugins: readonly Plugin[] = PLUGINS,
+  plugins: readonly Plugin[] = activePlugins(),
 ): { plugin: Plugin; mode: PluginMode } | null {
   for (const plugin of plugins) {
     const mode = plugin.modes.find((m) => m.id === id);
@@ -93,14 +150,21 @@ export function findMode(
 }
 
 /** Purpose: the Create tab's plugin tools, in plugin order. */
-export function pluginTools(plugins: readonly Plugin[] = PLUGINS): (PluginTool & { plugin: string })[] {
+export function pluginTools(
+  plugins: readonly Plugin[] = activePlugins(),
+): (PluginTool & { plugin: string })[] {
   return plugins.flatMap((p) => p.tools.map((t) => ({ ...t, plugin: p.id })));
+}
+
+/** Purpose: the project tabs the plugins add, in plugin order. */
+export function pluginTabs(plugins: readonly Plugin[] = PLUGINS): (PluginTab & { plugin: string })[] {
+  return plugins.flatMap((p) => (p.tabs ?? []).map((t) => ({ ...t, plugin: p.id })));
 }
 
 /** Purpose: a calculation by id, so editors show it only when its plugin is present. */
 export function pluginCalculation(
   id: string,
-  plugins: readonly Plugin[] = PLUGINS,
+  plugins: readonly Plugin[] = activePlugins(),
 ): (PluginCalculation & { plugin: string }) | null {
   for (const p of plugins) {
     const c = p.calculations?.find((x) => x.id === id);
@@ -110,12 +174,19 @@ export function pluginCalculation(
 }
 
 /** Purpose: the map layers drawn from a calculation. */
-export function pluginMapLayers(calculation: string, plugins: readonly Plugin[] = PLUGINS): PluginMapLayer[] {
+export function pluginMapLayers(
+  calculation: string,
+  plugins: readonly Plugin[] = activePlugins(),
+): PluginMapLayer[] {
   return plugins.flatMap((p) => (p.mapLayers ?? []).filter((l) => l.calculation === calculation));
 }
 
 /** Purpose: the label of a context option, such as "Tricable gondola (3S)" for `3s`. */
-export function contextLabel(modeId: string, option: string, plugins: readonly Plugin[] = PLUGINS): string {
+export function contextLabel(
+  modeId: string,
+  option: string,
+  plugins: readonly Plugin[] = activePlugins(),
+): string {
   const f = findMode(modeId, plugins);
   const key = f?.mode.contextKey;
   return f?.plugin.contexts.find((c) => c.key === key)?.options.find((o) => o.id === option)?.label ?? option;
@@ -128,7 +199,7 @@ export function contextLabel(modeId: string, option: string, plugins: readonly P
 export function centralValues(
   modeId: string,
   option: string,
-  plugins: readonly Plugin[] = PLUGINS,
+  plugins: readonly Plugin[] = activePlugins(),
 ): Record<string, number> {
   const f = findMode(modeId, plugins);
   const per = f?.plugin.defaults[modeId]?.[option] ?? {};

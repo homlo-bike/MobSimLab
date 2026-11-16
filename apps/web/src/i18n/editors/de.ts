@@ -216,6 +216,26 @@ export const editorsDe = {
   "rail.line.published":
     "{lines} · {trips} veröffentlicht. Fahren Sie mit ihnen unter Simulator → Reiseplaner.",
   "rail.line.notes": "Hinweise",
+  "rail.tdg.open": "Bildfahrplan",
+  "rail.tdg.title": "Bildfahrplan · {line}",
+  "rail.tdg.intro":
+    "Jede Linie ist ein Zug. Die Zeit läuft von links nach rechts; {from} steht oben, {to} unten. Steilere Linien sind schnellere Züge, flache Stücke sind Halte, Züge zurück nach {from} sind gestrichelt.",
+  "rail.tdg.window": "Tageszeit",
+  "rail.tdg.morning": "Morgenspitze",
+  "rail.tdg.midday": "Mittag",
+  "rail.tdg.evening": "Abendspitze",
+  "rail.tdg.day": "Ganzer Tag",
+  "rail.tdg.chart": "Bildfahrplan von {line}",
+  "rail.tdg.towards": "Nach {to}",
+  "rail.tdg.shifted": "Verschoben, um Konflikte zu vermeiden",
+  "rail.tdg.otherLines": "Andere Linien an diesen Stationen",
+  "rail.tdg.conflicts": "Konflikte",
+  "rail.tdg.noConflicts": "Keine Konflikte: Jeder Zug fährt zu seiner Taktzeit.",
+  "rail.tdg.unplaced": "{trip} konnte nicht fahren: {reason}.",
+  "rail.tdg.unplacedBy": "{trip} konnte nicht fahren: {reason} ({other} ist im Weg).",
+  "rail.tdg.shiftedRow": "{trip} ({time}) um {by} verschoben, um anderen Zügen auszuweichen.",
+  "rail.tdg.noTrips": "In dieser Zeit fahren keine Züge dieser Linie.",
+  "rail.tdg.noData": "Veröffentlichen Sie den Fahrplan erneut, um den Bildfahrplan dieser Linie zu sehen.",
   "rail.line.name": "Name der Linie",
   "rail.line.colour": "Farbe der Linie",
   "rail.line.stops": "Halte",
@@ -1182,4 +1202,69 @@ export const editorsDe = {
   "rail.profileAria": "Höhenprofil: Gelände und Schienenoberkante entlang des Gleises",
   "rail.profileLegend":
     "Durchgezogen: Schienenoberkante. Gestrichelt: Gelände (Copernicus GLO-30, geglättet). Höhen aus einem Oberflächenmodell, ±4 m.",
+
+  "walk.title": "Fußweg zur Haltestelle",
+  "walk.intro":
+    "Wie viel der Umgebung der Linien in kurzer Gehzeit von einer Haltestelle oder einem Bahnhof liegt, über Straßen und Fußwege, mit Wartezeit an jeder Ampelquerung.",
+  "walk.minutes": "Gehzeit-Grenze, Minuten",
+  "walk.stepFree": "Stufenfrei (ohne Treppen)",
+  "walk.compute": "Fußweg-Abdeckung berechnen",
+  "walk.computeAgain": "Neu berechnen",
+  "walk.drawFirst": "Zeichnen Sie zuerst eine Straßenlinie oder eine Bahnstrecke mit Stationen.",
+  "walk.collecting": "Haltestellen und Stationen werden gesammelt…",
+  "walk.loadingTiles": "Fußwege werden geladen ({done} von {count} Kartenkacheln)…",
+  "walk.loadingPopulation": "Wohnorte werden geladen…",
+  "walk.computing": "Fußwege werden gemessen…",
+  "walk.tooLarge":
+    "Die Haltestellen verteilen sich über {tiles} Kartenkacheln; höchstens {max} (etwa 12 km × 12 km) werden auf einmal geladen.",
+  "walk.osmUnavailable":
+    "OpenStreetMap-Fußwege sind gerade nicht verfügbar. Versuchen Sie es in einer Minute erneut.",
+  "walk.headlinePeople":
+    "{share} % der {total} Einwohner rund um die Linien wohnen höchstens {minutes} Gehminuten von einer Haltestelle oder einem Bahnhof entfernt.",
+  "walk.headlineStreets":
+    "{share} % der begehbaren Straßen rund um die Linien liegen höchstens {minutes} Gehminuten von einer Haltestelle oder einem Bahnhof entfernt.",
+  "walk.crowFlies": "Luftlinie wären es {share} %: Straßen und Fußwege machen die Wege länger.",
+  "walk.bands": "Fußweg zur nächsten Haltestelle",
+  "walk.band": "{from}–{to} min",
+  "walk.bandOver": "{from} min oder mehr",
+  "walk.residents": "Einwohner",
+  "walk.streets": "Straßen",
+  "walk.gaps": "Größte Lücken",
+  "walk.gapsIntro":
+    "Orte mit den meisten Menschen jenseits der Gehzeit-Grenze, die größten zuerst. Tippen Sie auf einen, um dorthin zu gehen.",
+  "walk.gapsIntroStreets":
+    "Orte mit den meisten Straßen jenseits der Gehzeit-Grenze, die größten zuerst. Tippen Sie auf einen, um dorthin zu gehen.",
+  "walk.gapPeople": "{people} Einwohner",
+  "walk.gapStreets": "{metres} m Straße",
+  "walk.gapWalk": "{minutes} min Fußweg zur nächsten Haltestelle",
+  "walk.gapUnreachable": "keine Haltestelle zu Fuß erreichbar",
+  "walk.noGaps": "Keine Lücken: alles im Gebiet liegt innerhalb der Gehzeit-Grenze.",
+  "walk.showOnMap": "Auf der Karte zeigen",
+  "walk.legend": "Gehminuten zur nächsten Haltestelle",
+  "walk.offNetwork": "Zu weit von einem Fußweg, nicht berücksichtigt: {stops}.",
+  "walk.popDownloading":
+    "Die Bevölkerung von {countries} wird noch auf den Server geladen; bis dahin stehen die Straßen für die Menschen.",
+  "walk.popUnavailable": "Keine Bevölkerungsdaten ({reason}); die Straßen stehen für die Menschen.",
+  "walk.popCredit": "Einwohner: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "Das Gebiet ist das Rechteck um die Haltestellen plus die in der Grenze gegangene Strecke. Steigungen werden noch nicht berücksichtigt.",
+  "spacing.title": "Haltestellenabstand",
+  "spacing.intro":
+    "Abstand zwischen aufeinanderfolgenden Haltestellen entlang der Linie, verglichen mit dem üblichen Bereich des Verkehrsmittels. Zu nahe Haltestellen bremsen die Linie; zu weit auseinander bedeutet lange Fußwege.",
+  "spacing.none":
+    "Zeichnen Sie zuerst eine Straßenlinie oder eine Bahn-Betriebslinie mit mindestens zwei Stationen.",
+  "spacing.loading": "Haltestellenabstand wird gemessen…",
+  "spacing.direction": "Richtung {n}",
+  "spacing.summary": "Median {median} m · kürzester {min} m · längster {max} m",
+  "spacing.guidance": "Üblich für dieses Verkehrsmittel: {low}–{high} m",
+  "spacing.allOk": "Alle Haltestellen liegen im üblichen Bereich.",
+  "spacing.flags": "{short} zu nah, {long} zu weit auseinander",
+  "spacing.short": "zu nah",
+  "spacing.long": "zu weit auseinander",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "{metres} m",
+  "spacing.onFoot": "{metres} m zu Fuß",
+  "spacing.straight": "Luftlinie zwischen den Stationen gemessen.",
+  "spacing.onFootHint":
+    "Berechnen Sie oben die Fußweg-Abdeckung, um die Fußwegstrecke zwischen markierten Haltestellen zu ergänzen.",
 } satisfies EditorMessages;

@@ -1,4 +1,6 @@
 import { editorsTa } from "./editors/ta";
+import { cargoBikeTa } from "./cargo-bike/ta";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** தமிழ் */
@@ -288,4 +290,6 @@ export const ta: Messages = {
   "prefs.calendar": "நாட்காட்டி, தேவை மற்றும் செலவுகள்",
 
   ...editorsTa,
+  ...cargoBikeTa,
+  ...PLUGIN_MESSAGES.ta,
 };

@@ -1,4 +1,6 @@
 import { editorsPl } from "./editors/pl";
+import { cargoBikePl } from "./cargo-bike/pl";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** Polski */
@@ -283,4 +285,6 @@ export const pl: Messages = {
   "prefs.calendar": "Kalendarz, popyt i koszty",
 
   ...editorsPl,
+  ...cargoBikePl,
+  ...PLUGIN_MESSAGES.pl,
 };

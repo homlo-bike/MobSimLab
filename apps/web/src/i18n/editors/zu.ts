@@ -217,6 +217,26 @@ export const editorsZu = {
     "Umdwebo ushintshile kusukela ushicilelwe. Shicilela futhi ukuze ubuyekeze umhleli wohambo.",
   "rail.line.published": "Kushicilelwe {lines} · {trips}. Bagibele ku-Isilingisi → Umhleli wohambo.",
   "rail.line.notes": "Amanothi",
+  "rail.tdg.open": "Igrafu yesikhathi nebanga",
+  "rail.tdg.title": "Igrafu yesikhathi nebanga · {line}",
+  "rail.tdg.intro":
+    "Umugqa ngamunye uyisitimela esisodwa. Isikhathi sihamba kusuka kwesobunxele kuya kwesokudla; i-{from} iphezulu ne-{to} ingezansi. Imigqa ewumqansa iyizitimela ezisheshayo, izingxenye eziyisicaba ziyizitobhi, nezitimela ezibuyela e-{from} zinemigqa enamachashaza.",
+  "rail.tdg.window": "Isikhathi sosuku",
+  "rail.tdg.morning": "Isiminyaminya sasekuseni",
+  "rail.tdg.midday": "Emini",
+  "rail.tdg.evening": "Isiminyaminya sakusihlwa",
+  "rail.tdg.day": "Usuku lonke",
+  "rail.tdg.chart": "Igrafu yesikhathi nebanga ka-{line}",
+  "rail.tdg.towards": "Iya e-{to}",
+  "rail.tdg.shifted": "Kususwe ukugwema ukushayisana",
+  "rail.tdg.otherLines": "Eminye imigqa kulezi zitshi",
+  "rail.tdg.conflicts": "Ukushayisana",
+  "rail.tdg.noConflicts": "Akukho ukushayisana: isitimela ngasinye sihamba ngesikhathi saso esijwayelekile.",
+  "rail.tdg.unplaced": "I-{trip} ayikwazanga ukuhamba: {reason}.",
+  "rail.tdg.unplacedBy": "I-{trip} ayikwazanga ukuhamba: {reason} (i-{other} isendleleni).",
+  "rail.tdg.shiftedRow": "I-{trip} ({time}) isuswe ngo-{by} ukuze kudlule ezinye izitimela.",
+  "rail.tdg.noTrips": "Azikho izitimela zalo mugqa ngalesi sikhathi.",
+  "rail.tdg.noData": "Shicilela kabusha uhlelo lwezikhathi ukuze ubone igrafu yalo mugqa.",
   "rail.line.name": "Igama lomugqa",
   "rail.line.colour": "Umbala womugqa",
   "rail.line.stops": "Iziteshi",
@@ -1185,4 +1205,71 @@ export const editorsZu = {
   "rail.profileAria": "Iphrofayela yobude: umhlaba nengaphezulu lensimbi kulo lonke ulayini",
   "rail.profileLegend":
     "Umugqa oqinile: ingaphezulu lensimbi. Imigqa enezikhala: umhlaba (Copernicus GLO-30, wenziwe bushelelezi). Ukuphakama kusuka kumodeli yobuso, ±4 m.",
+
+  "walk.title": "Ukuhamba uye esitobhini",
+  "walk.intro":
+    "Ingakanani indawo ezungeze imigqa esebangeni elifushane lokuhamba ngezinyawo ukusuka esitobhini noma esiteshini, ngemigwaqo nezindlela zabahamba ngezinyawo, kubalwa ukulinda kuwo wonke umgwaqo onamarobhothi.",
+  "walk.minutes": "Umkhawulo wokuhamba, imizuzu",
+  "walk.stepFree": "Ngaphandle kwezitebhisi",
+  "walk.compute": "Bala ukufinyeleleka ngezinyawo",
+  "walk.computeAgain": "Bala futhi",
+  "walk.drawFirst": "Qala udwebe umugqa womgwaqo noma ujantshi oneziteshi.",
+  "walk.collecting": "Kuqoqwa izitobhi neziteshi…",
+  "walk.loadingTiles":
+    "Kulayishwa izindlela zabahamba ngezinyawo ({done} kwezingu-{count} zamathayela ebalazwe)…",
+  "walk.loadingPopulation": "Kulayishwa lapho abantu behlala khona…",
+  "walk.computing": "Kukalwa ukuhamba…",
+  "walk.tooLarge":
+    "Izitobhi zisabalele kumathayela ebalazwe angu-{tiles}; kulayishwa angu-{max} kuphela (cishe u-12 km × 12 km) ngesikhathi esisodwa.",
+  "walk.osmUnavailable":
+    "Izindlela zabahamba ngezinyawo ze-OpenStreetMap azitholakali manje. Zama futhi emva komzuzu.",
+  "walk.headlinePeople":
+    "U-{share} % wabahlali abangu-{total} abazungeze imigqa uhlala ngaphakathi kwemizuzu engu-{minutes} yokuhamba ukusuka esitobhini noma esiteshini.",
+  "walk.headlineStreets":
+    "U-{share} % wemigwaqo ehambeka ngezinyawo ezungeze imigqa ungaphakathi kwemizuzu engu-{minutes} yokuhamba ukusuka esitobhini noma esiteshini.",
+  "walk.crowFlies":
+    "Ngomugqa oqondile bekungaba ngu-{share} %: imigwaqo nezindlela zenza ukuhamba kube kude.",
+  "walk.bands": "Ukuhamba uye esitobhini esiseduze",
+  "walk.band": "imiz {from}–{to}",
+  "walk.bandOver": "imiz {from} noma ngaphezulu",
+  "walk.residents": "Abahlali",
+  "walk.streets": "Imigwaqo",
+  "walk.gaps": "Izikhala ezinkulu kakhulu",
+  "walk.gapsIntro":
+    "Izindawo ezinabantu abaningi ngaphandle komkhawulo wokuhamba, ezinkulu kuqala. Thepha eyodwa ukuya khona.",
+  "walk.gapsIntroStreets":
+    "Izindawo ezinemigwaqo eminingi ngaphandle komkhawulo wokuhamba, ezinkulu kuqala. Thepha eyodwa ukuya khona.",
+  "walk.gapPeople": "abahlali abangu-{people}",
+  "walk.gapStreets": "{metres} m womgwaqo",
+  "walk.gapWalk": "imiz {minutes} yokuhamba uye esitobhini esiseduze",
+  "walk.gapUnreachable": "asikho isitobhi esifinyeleleka ngezinyawo",
+  "walk.noGaps": "Azikho izikhala: yonke indawo ingaphakathi komkhawulo wokuhamba.",
+  "walk.showOnMap": "Bonisa ebalazweni",
+  "walk.legend": "Imizuzu yokuhamba uye esitobhini esiseduze",
+  "walk.offNetwork": "Kude kakhulu nendlela yabahamba ngezinyawo, kushiywe ngaphandle: {stops}.",
+  "walk.popDownloading":
+    "Inani labantu lase-{countries} lisalandwa kuseva; kuze kube yilapho imigwaqo imela abantu.",
+  "walk.popUnavailable": "Ayikho idatha yenani labantu ({reason}); imigwaqo imela abantu.",
+  "walk.popCredit": "Abahlali: WorldPop {year} ({countries}), CC BY 4.0.",
+  "walk.note":
+    "Indawo ibhokisi elizungeze izitobhi kanye nebanga elihanjwa ngaphakathi komkhawulo. Imithambeka ayikabalwa.",
+  "spacing.title": "Ibanga phakathi kwezitobhi",
+  "spacing.intro":
+    "Ibanga phakathi kwezitobhi ezilandelanayo emgqeni, kuqhathaniswa nebanga elivamile lohlobo lwezokuthutha. Izitobhi eziseduze kakhulu zinensa umugqa; ezikude kakhulu zisho ukuhamba isikhathi eside.",
+  "spacing.none":
+    "Qala udwebe umugqa womgwaqo, noma umugqa wesevisi kajantshi oneziteshi okungenani ezimbili.",
+  "spacing.loading": "Kukalwa ibanga phakathi kwezitobhi…",
+  "spacing.direction": "indlela {n}",
+  "spacing.summary": "Okuphakathi {median} m · okufushane kakhulu {min} m · okude kakhulu {max} m",
+  "spacing.guidance": "Okuvamile kulolu hlobo: {low}–{high} m",
+  "spacing.allOk": "Zonke izitobhi zingaphakathi kwebanga elivamile.",
+  "spacing.flags": "{short} ziseduze kakhulu, {long} zikude kakhulu",
+  "spacing.short": "ziseduze kakhulu",
+  "spacing.long": "zikude kakhulu",
+  "spacing.pair": "{from} → {to}",
+  "spacing.along": "{metres} m",
+  "spacing.onFoot": "{metres} m ngezinyawo",
+  "spacing.straight": "Kukalwe ngomugqa oqondile phakathi kweziteshi.",
+  "spacing.onFootHint":
+    "Bala ukufinyeleleka ngezinyawo ngenhla ukuze wengeze ibanga lokuhamba phakathi kwezitobhi eziphawuliwe.",
 } satisfies EditorMessages;

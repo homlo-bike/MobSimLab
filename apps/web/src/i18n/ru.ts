@@ -1,4 +1,6 @@
 import { editorsRu } from "./editors/ru";
+import { cargoBikeRu } from "./cargo-bike/ru";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** Русский. */
@@ -285,4 +287,6 @@ export const ru: Messages = {
   "prefs.calendar": "Календарь, спрос и затраты",
 
   ...editorsRu,
+  ...cargoBikeRu,
+  ...PLUGIN_MESSAGES.ru,
 };

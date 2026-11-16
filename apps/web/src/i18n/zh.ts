@@ -1,4 +1,6 @@
 import { editorsZh } from "./editors/zh";
+import { cargoBikeZh } from "./cargo-bike/zh";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** 中文（简体）. */
@@ -272,4 +274,6 @@ export const zh: Messages = {
   "prefs.calendar": "日历、需求和成本",
 
   ...editorsZh,
+  ...cargoBikeZh,
+  ...PLUGIN_MESSAGES.zh,
 };

@@ -1,4 +1,6 @@
 import { editorsKk } from "./editors/kk";
+import { cargoBikeKk } from "./cargo-bike/kk";
+import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
 /** Қазақша */
@@ -281,4 +283,6 @@ export const kk: Messages = {
   "prefs.calendar": "Күнтізбе, сұраныс және шығындар",
 
   ...editorsKk,
+  ...cargoBikeKk,
+  ...PLUGIN_MESSAGES.kk,
 };
