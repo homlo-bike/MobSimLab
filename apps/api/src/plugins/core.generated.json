@@ -777,6 +777,28 @@
     "analysis.same_place_m",
     "analysis.station_grouping_m",
     "analysis.walk_rule_minutes",
+    "appraisal.build_years",
+    "appraisal.conversion_factor",
+    "appraisal.discount.financial",
+    "appraisal.discount.social_high",
+    "appraisal.discount.social_lower",
+    "appraisal.discount.social_upper_middle",
+    "appraisal.external.accidents",
+    "appraisal.external.air_pollution",
+    "appraisal.external.climate",
+    "appraisal.external.congestion",
+    "appraisal.external.noise",
+    "appraisal.life.civil",
+    "appraisal.life.systems",
+    "appraisal.life.vehicles",
+    "appraisal.mca.weight.construction_cost",
+    "appraisal.mca.weight.education",
+    "appraisal.mca.weight.enpv",
+    "appraisal.mca.weight.healthcare",
+    "appraisal.mca.weight.jobs",
+    "appraisal.mca.weight.ridership",
+    "appraisal.period_years",
+    "appraisal.vot_growth",
     "benefit.access_decay_per_min",
     "benefit.age_18_24_share",
     "benefit.commercial_value_factor",
@@ -1157,6 +1179,7 @@
   "coreSourceIds": [
     "aashto-green-book",
     "ada-49cfr38",
+    "adb-economic-analysis-2017",
     "adif-desvios-av",
     "amtrak-spec-63",
     "arema-mre-ch5",
@@ -1191,8 +1214,10 @@
     "era-subset-026",
     "era-tsi-ene",
     "eu-accessible-platforms",
+    "eu-cba-guide-2014",
     "eu-dir-92-6",
     "eu-dir-96-53",
+    "eu-external-costs-2019",
     "eu-reco-2001-290",
     "fishman-2016",
     "flyvbjerg-2003",
@@ -1265,6 +1290,7 @@
     "uic-hsr-cost",
     "uitp-trolleybus-tco",
     "uk-dc-third-rail",
+    "uk-green-book-2022",
     "unece-r107",
     "up-5015",
     "us-49cfr234",
@@ -1277,6 +1303,8 @@
     "who-2011-disability",
     "worldbank-benefit-wdi",
     "worldbank-china-hsr",
+    "worldbank-income-groups",
+    "worldbank-sdr-2016",
     "worldbank-wdi",
     "zusi-weichen"
   ],
@@ -6977,6 +7005,10 @@
         "noise.ferry_berth_lw_db": {
           "label": "Ferry at the berth: sound power of engines, auxiliaries and ramp",
           "unit": "dB(A)"
+        },
+        "noise.ferry_source_height_m": {
+          "label": "Ferry source height above the water (funnel, engine room vents, ventilation)",
+          "unit": "m"
         }
       },
       "defaults": {
@@ -7243,24 +7275,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         },
@@ -7527,24 +7564,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         },
@@ -7811,24 +7853,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         },
@@ -8095,24 +8142,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         },
@@ -8379,24 +8431,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         },
@@ -8663,24 +8720,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         },
@@ -8947,24 +9009,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         },
@@ -9231,24 +9298,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         },
@@ -9515,24 +9587,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         },
@@ -9799,24 +9876,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         },
@@ -10083,24 +10165,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         },
@@ -10367,24 +10454,29 @@
               "high": 5
             },
             "noise.cable_car_tower_lw_db": {
-              "low": 80,
-              "central": 90,
-              "high": 100
+              "low": 90,
+              "central": 100,
+              "high": 102
             },
             "noise.cable_car_station_lw_db": {
-              "low": 85,
-              "central": 95,
-              "high": 105
+              "low": 99,
+              "central": 102,
+              "high": 106
             },
             "noise.ferry_cruise_lw_db": {
-              "low": 95,
-              "central": 105,
-              "high": 115
+              "low": 105,
+              "central": 108,
+              "high": 112
             },
             "noise.ferry_berth_lw_db": {
               "low": 90,
               "central": 100,
               "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
             }
           }
         }

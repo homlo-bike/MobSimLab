@@ -37,6 +37,18 @@ export const calendarPl = {
   "cal.total": "Razem",
   "cal.noHolidaysYear": "Nie pobrano jeszcze świąt",
   "cal.resetCount": "przywróć policzone {value}",
+  "cal.service": "Dzień kursowania według typu dnia",
+  "cal.serviceIntro":
+    "Kiedy kursowanie zaczyna się i kończy w każdym typie dnia oraz jego szczyt poranny i popołudniowy, jako GG:MM. Godziny po północy liczą się dalej po 24:00, np. 24:30. Zostaw szczyt pusty, jeśli go nie ma.",
+  "cal.serviceDefault": "Domyślnie dla każdego typu dnia: od {first} do {last}, szczyty {peaks}.",
+  "cal.firstDep": "Pierwszy odjazd",
+  "cal.lastDep": "Ostatni odjazd",
+  "cal.morningPeak": "Szczyt poranny",
+  "cal.eveningPeak": "Szczyt popołudniowy",
+  "cal.peakFrom": "od",
+  "cal.peakTo": "do",
+  "cal.serviceInvalid":
+    "Jeszcze nie zapisano: ostatni odjazd musi być po pierwszym, a każdy szczyt musi kończyć się po swoim początku.",
   "cal.day.weekday": "Dzień roboczy",
   "cal.day.saturday": "Sobota",
   "cal.day.sunday": "Niedziela",

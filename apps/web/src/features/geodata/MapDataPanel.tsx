@@ -56,7 +56,7 @@ function removeArea(map: MapLibreMap) {
 const busy = (r: ImportRun | null | undefined) => r?.status === "queued" || r?.status === "running";
 
 /**
- * The Map data view of the GIS tab (ADR-0045): the project area (the box around everything drawn plus the
+ * The Map data view of the GIS tab (ADR-0046): the project area (the box around everything drawn plus the
  * buffer), and the OpenStreetMap and elevation imports of it, with their state, source and licence. Owners and
  * Editors start and cancel imports; the panel follows a running import until it ends.
  */

@@ -130,7 +130,7 @@ function toRun(r: Row): ImportRun {
 }
 
 /**
- * Imports OpenStreetMap data and elevation into PostGIS per project area (06-gis §2 and §4, ADR-0045).
+ * Imports OpenStreetMap data and elevation into PostGIS per project area (06-gis §2 and §4, ADR-0046).
  * Imports run in the API process, one at a time, in the order they were asked for; their state is in
  * `geo.import`, so the panel shows progress and the result after a reload. An import that was running when the
  * server stopped is marked failed at the next start. Owners and Editors start imports; every member reads them.

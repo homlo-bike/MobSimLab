@@ -1,7 +1,11 @@
 import { gzipSync } from "node:zlib";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import request from "supertest";
-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { BenefitsService } from "../src/benefits/benefits.service";
+import { EconomyService } from "../src/economy/economy.service";
+import { PopulationService } from "../src/population/population.service";
+import { StreetNetworkService } from "../src/street-network/street-network.service";
 import type { AppConfig } from "../src/config/env";
 import { readZip } from "../src/tool-runner/zip.mts";
 import { createApp, testConfig } from "./support/app";
@@ -236,6 +240,88 @@ describe("mslab project files", () => {
       expect(exported.rows[0].n).toBeGreaterThan(0);
     } finally {
       await su.end();
+    }
+  });
+
+  it("saves the map data of the project area for the static viewer when asked, and leaves it out on opening", async () => {
+    // OpenStreetMap, WorldPop and the World Bank are not reachable from tests: their answers are stubbed.
+    const streets = app.get(StreetNetworkService);
+    const osm = '<?xml version="1.0"?><osm version="0.6"></osm>';
+    const spies = [
+      vi.spyOn(streets, "tile").mockResolvedValue(osm),
+      vi.spyOn(streets, "walkTile").mockResolvedValue(osm),
+      vi.spyOn(streets, "railTile").mockResolvedValue(osm),
+      vi.spyOn(streets, "buildingTile").mockResolvedValue('{"buildings":[]}'),
+      vi.spyOn(streets, "placeTile").mockResolvedValue('{"places":[]}'),
+      vi.spyOn(streets, "water").mockResolvedValue('{"areas":[],"rivers":[],"sea":[]}'),
+      vi.spyOn(app.get(PopulationService), "gridFor").mockImplementation(async (b) => ({
+        status: "ready",
+        grid: { x0: b[0], y0: b[1], dx: 1 / 1200, dy: 1 / 1200, nx: 1, ny: 1, people: [42] },
+        source: {
+          id: "worldpop",
+          name: "WorldPop",
+          dataset: "WorldPop",
+          url: "https://www.worldpop.org",
+          licence: "CC BY 4.0",
+          citation: "",
+          year: 2020,
+        } as never,
+      })),
+      vi
+        .spyOn(app.get(EconomyService), "countryAt")
+        .mockResolvedValue({ iso3: "DEU", iso2: "DE", name: "Germany" }),
+      vi
+        .spyOn(app.get(EconomyService), "countries")
+        .mockResolvedValue([{ iso3: "DEU", iso2: "DE", name: "Germany", income: null }]),
+      vi.spyOn(app.get(EconomyService), "economy").mockResolvedValue({ fx: null } as never),
+      vi.spyOn(app.get(BenefitsService), "indicators").mockResolvedValue({ gdp: null } as never),
+    ];
+    try {
+      // The project area is the box round what is drawn, widened by 2 km.
+      const lines = { lines: [{ name: "1", points: [{ lonlat: [13.4, 52.5] }, { lonlat: [13.41, 52.5] }] }] };
+      expect(
+        (
+          await as("alice").put(`/api/projects/${source}/drawings/street-lines`, {
+            doc: lines,
+            baseVersion: null,
+          })
+        ).status,
+      ).toBe(200);
+      const res = await as("alice").download(`/api/projects/${source}/mslab?map=true`);
+      expect(res.status).toBe(200);
+      const files = readZip(res.body as Buffer, {
+        zipBytes: 1e9,
+        entries: 5000,
+        fileBytes: 1e9,
+        totalBytes: 1e9,
+        maxRatio: 1e9,
+      });
+      const manifest = JSON.parse(files.get("manifest.json")!.toString());
+      expect(manifest).toMatchObject({ formatVersion: "1.1.0", includes: { runs: false, map: true } });
+      const area = JSON.parse(files.get("map/area.json")!.toString());
+      expect(area.kinds).toEqual(["streets", "walk", "buildings", "places", "rail"]);
+      expect(area.tiles.length).toBeGreaterThan(1);
+      for (const [x, y] of area.tiles as [number, number][]) {
+        expect(files.get(`map/streets/${x}-${y}.xml`)?.toString()).toBe(osm);
+        expect(files.has(`map/buildings/${x}-${y}.json`)).toBe(true);
+        expect(files.has(`map/bike-amenities/${x}-${y}.json`)).toBe(false);
+      }
+      expect(JSON.parse(files.get("map/population.json")!.toString()).grids[0].people).toEqual([42]);
+      expect(Object.keys(JSON.parse(files.get("map/reference.json")!.toString())).sort()).toEqual([
+        "/api/benefits/indicators?code=DEU",
+        "/api/economy/countries",
+        "/api/economy/country-at",
+        "/api/economy/indicators?code=DEU&base=2023",
+      ]);
+      expect(files.get("ATTRIBUTION.md")!.toString()).toContain("map/population.json");
+
+      const opened = await as("alice").upload("/api/projects/import", res.body as Buffer);
+      expect(opened.status).toBe(201);
+      expect(opened.body.skipped).toEqual([
+        "plugin com.example.missing 1.0.0: not installed on this MobSimLab",
+      ]);
+    } finally {
+      for (const s of spies) s.mockRestore();
     }
   });
 

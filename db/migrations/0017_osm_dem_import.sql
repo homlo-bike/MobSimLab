@@ -1,4 +1,4 @@
--- 0011: OpenStreetMap and elevation imported per project area (06-gis §2 and §4, ADR-0045).
+-- 0011: OpenStreetMap and elevation imported per project area (06-gis §2 and §4, ADR-0046).
 -- The project area is the box around everything drawn in the project, buffered by `project.area_buffer_km`.
 -- An import run is a row in `geo.import`. When a run finishes, the project's earlier data of the same kind is
 -- replaced in one transaction, so readers always see one complete import.

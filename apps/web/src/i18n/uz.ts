@@ -5,6 +5,8 @@ import { cargoBikeUz } from "./cargo-bike/uz";
 import { commentsUz } from "./comments/uz";
 import { depotsUz } from "./depots/uz";
 import { geodataUz } from "./geodata/uz";
+import { fleetUz } from "./fleet/uz";
+import { timetablesUz } from "./timetables/uz";
 import { mslabUz } from "./mslab/uz";
 import { pluginCodeUz } from "./plugin-code/uz";
 import { populationUz } from "./population/uz";
@@ -357,6 +359,7 @@ export const uz: Messages = {
   "prefs.group.cost": "Xarajatlar",
   "prefs.group.benefits": "Foydalar",
   "prefs.group.fares": "Yo'l haqi",
+  "prefs.group.appraisal": "Baholash",
   "prefs.group.noise": "Shovqin",
   "prefs.traction.battery": "batareya",
   "prefs.traction.diesel": "dizel",
@@ -504,6 +507,8 @@ export const uz: Messages = {
   ...cargoBikeUz,
   ...depotsUz,
   ...geodataUz,
+  ...fleetUz,
+  ...timetablesUz,
   ...commentsUz,
   ...mslabUz,
   ...pluginCodeUz,

@@ -39,6 +39,18 @@ export const calendarDe = {
   "cal.total": "Summe",
   "cal.noHolidaysYear": "Noch keine Feiertage abgerufen",
   "cal.resetCount": "zurück zu den gezählten {value}",
+  "cal.service": "Betriebstag je Tagestyp",
+  "cal.serviceIntro":
+    "Wann der Betrieb an jedem Tagestyp beginnt und endet, und seine Morgen- und Abendspitze, als HH:MM. Zeiten nach Mitternacht laufen über 24:00 hinaus, etwa 24:30. Eine Spitze leer lassen für keine.",
+  "cal.serviceDefault": "Standard für jeden Tagestyp: {first} bis {last}, Spitzen {peaks}.",
+  "cal.firstDep": "Erste Abfahrt",
+  "cal.lastDep": "Letzte Abfahrt",
+  "cal.morningPeak": "Morgenspitze",
+  "cal.eveningPeak": "Abendspitze",
+  "cal.peakFrom": "von",
+  "cal.peakTo": "bis",
+  "cal.serviceInvalid":
+    "Noch nicht gespeichert: Die letzte Abfahrt muss nach der ersten liegen, und jede Spitze muss nach ihrem Beginn enden.",
   "cal.day.weekday": "Werktag",
   "cal.day.saturday": "Samstag",
   "cal.day.sunday": "Sonntag",

@@ -39,6 +39,19 @@ export const calendarZu = {
   "cal.total": "Isamba",
   "cal.noHolidaysYear": "Awekho amaholide omphakathi alandiwe okwamanje",
   "cal.resetCount": "Buyela ku-{value} ebaliwe",
+  "cal.service": "Usuku lwesevisi ngohlobo losuku",
+  "cal.serviceIntro":
+    "Lapho isevisi iqala futhi iphela ohlotsheni ngalunye losuku, kanye nesikhathi sayo esimatasa sasekuseni nasantambama, njenge-HH:MM. Izikhathi ezingemva kwaphakathi kwamabili ziqhubeka ngale kuka-24:00, njengo-24:30. Shiya isikhathi esimatasa singenalutho uma singekho.",
+  "cal.serviceDefault":
+    "Okuzenzakalelayo kohlobo ngalunye losuku: {first} kuya ku-{last}, izikhathi ezimatasa {peaks}.",
+  "cal.firstDep": "Ukuhamba kokuqala",
+  "cal.lastDep": "Ukuhamba kokugcina",
+  "cal.morningPeak": "Isikhathi esimatasa sasekuseni",
+  "cal.eveningPeak": "Isikhathi esimatasa santambama",
+  "cal.peakFrom": "kusukela",
+  "cal.peakTo": "kuya",
+  "cal.serviceInvalid":
+    "Akukagcinwa: ukuhamba kokugcina kufanele kube ngemva kokokuqala, futhi isikhathi ngasinye esimatasa kufanele siphele ngemva kokuqala.",
   "cal.day.weekday": "Usuku lomsebenzi",
   "cal.day.saturday": "UMgqibelo",
   "cal.day.sunday": "ISonto",

@@ -2,9 +2,8 @@ import { useId, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { RAIL_MODES } from "../features/railways/modes";
-import { TRAINS } from "../features/railways/trains";
 import { MODE_ORDER, MODES } from "../features/street-lines/modes";
-import { VEHICLES } from "../features/street-lines/vehicles";
+import { isOwnVehicle, railVehicles, streetVehicles } from "../features/fleet/registry";
 import { type PreferencesDoc, vehiclesOffFrom, withVehicles } from "./preferences";
 
 /** Project mode ids that the catalogue knows by another id. */
@@ -18,19 +17,23 @@ interface Entry {
   top_speed_kmh: number;
 }
 
-/** Every mode with catalogue vehicles, in the Create tab's order, with its vehicles. */
-const CATALOGUE: { mode: string; label: MessageKey; vehicles: Entry[] }[] = [
-  ...MODE_ORDER.map((m) => ({
-    mode: m as string,
-    label: MODES[m].label,
-    vehicles: VEHICLES.filter((v) => v.mode === m),
-  })),
-  ...RAIL_MODES.map((r) => ({
-    mode: r.id as string,
-    label: r.label,
-    vehicles: TRAINS.filter((v) => v.mode === r.id),
-  })),
-].filter((g) => g.vehicles.length > 0);
+/** Purpose: every mode with catalogue or own vehicles, in the Create tab's order, with its vehicles. */
+function catalogue(): { mode: string; label: MessageKey; vehicles: Entry[] }[] {
+  const street = streetVehicles();
+  const rail = railVehicles();
+  return [
+    ...MODE_ORDER.map((m) => ({
+      mode: m as string,
+      label: MODES[m].label,
+      vehicles: street.filter((v) => v.mode === m) as Entry[],
+    })),
+    ...RAIL_MODES.map((r) => ({
+      mode: r.id as string,
+      label: r.label,
+      vehicles: rail.filter((v) => v.mode === r.id) as Entry[],
+    })),
+  ].filter((g) => g.vehicles.length > 0);
+}
 
 /**
  * Purpose: which catalogue vehicles the project uses, per mode. The street line and railway tools offer only
@@ -49,14 +52,15 @@ export function VehicleChoiceSection({
 }) {
   const { t } = useI18n();
   const modeId = useId();
+  const groups = catalogue();
   const own = projectModes
     .map((m) => CATALOGUE_MODE_OF[m] ?? m)
-    .filter((m) => CATALOGUE.some((g) => g.mode === m));
-  const [mode, setMode] = useState<string>(own[0] ?? CATALOGUE[0]?.mode ?? "bus");
+    .filter((m) => groups.some((g) => g.mode === m));
+  const [mode, setMode] = useState<string>(own[0] ?? groups[0]?.mode ?? "bus");
   const off = vehiclesOffFrom(preferences);
-  const group = CATALOGUE.find((g) => g.mode === mode) ?? CATALOGUE[0];
+  const group = groups.find((g) => g.mode === mode) ?? groups[0];
   if (!group) return null;
-  const usedOf = (g: (typeof CATALOGUE)[number]) => g.vehicles.filter((v) => !off.has(v.id)).length;
+  const usedOf = (g: (typeof groups)[number]) => g.vehicles.filter((v) => !off.has(v.id)).length;
   const used = usedOf(group);
   const ids = group.vehicles.map((v) => v.id);
   return (
@@ -73,7 +77,7 @@ export function VehicleChoiceSection({
       </label>
       <div className="field">
         <select id={modeId} value={group.mode} onChange={(e) => setMode(e.target.value)}>
-          {CATALOGUE.map((g) => (
+          {groups.map((g) => (
             <option key={g.mode} value={g.mode}>
               {t(g.label)} · {t("prefs.vehiclesUsed", { used: usedOf(g), total: g.vehicles.length })}
             </option>
@@ -108,7 +112,14 @@ export function VehicleChoiceSection({
                   onChange={(e) => onPreferences(withVehicles(preferences, [v.id], e.target.checked))}
                 />
                 <span className="min-w-0">
-                  <span className="block font-semibold">{v.name}</span>
+                  <span className="block font-semibold">
+                    {v.name}
+                    {isOwnVehicle(v.id) && (
+                      <span className="ml-2 rounded-full bg-blue-50 px-2 py-0.5 text-xs font-semibold text-blue-800">
+                        {t("fleet.ownTag")}
+                      </span>
+                    )}
+                  </span>
                   <span className="block text-sm text-slate-500">
                     {t("prefs.vehiclesFacts", {
                       length: String(Number(v.length_m.toFixed(1))),

@@ -42,7 +42,7 @@ function parse<T>(schema: z.ZodType<T>, value: unknown): T {
 }
 
 /**
- * OpenStreetMap and elevation imported per project area (06-gis §2 and §4, ADR-0045). Every member reads the
+ * OpenStreetMap and elevation imported per project area (06-gis §2 and §4, ADR-0046). Every member reads the
  * import state; Owners and Editors start, cancel and remove imports (checked in GeodataService).
  */
 @Controller("api/projects/:id/geodata")

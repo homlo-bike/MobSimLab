@@ -1,6 +1,8 @@
 import { loadRailEngine } from "../railways/engine";
 import { engineLines } from "../railways/serviceLines";
 import type { Network, RailEngineLoader } from "../railways/types";
+import { dayEngineLines } from "../timetables/railPublish";
+import { DAY_TYPES, type DayTypeId, type ServiceCalendar } from "../../workspace/calendar";
 import { defaultHeights, loadTerrain, type HeightsFetcher } from "../tables/railBuild";
 
 /** The drawn railway as the capacity run loads it. */
@@ -9,6 +11,11 @@ export interface DrawnNetwork {
   topology: string;
   /** The service lines in the timetable planner's form: `{"service_lines": [...]}` (JSON text). */
   lines: string;
+  /**
+   * With a calendar: the service lines of each other day type whose lines run other times than on a weekday
+   * (JSON text, as `lines`); `lines` is then the weekday's, with the calendar's peaks.
+   */
+  dayLines?: Partial<Record<DayTypeId, string>>;
 }
 
 /** Why the drawn railway cannot be tested: nothing drawn, no service line ready, or errors in the drawing. */
@@ -25,7 +32,7 @@ export function drawnProblem(railway: Network | null | undefined): DrawnProblem 
  * Purpose: build the project's railway with its terrain heights, as the Tables tab does, and give the
  * capacity run its track topology and service lines (the lines the railway tool can publish).
  * Inputs: the railway document; the engine loader and height source (tests inject them); the project's
- * preference values (running values of the lines).
+ * preference values (running values of the lines); the project calendar, for the service of every day type.
  * Output: the network, or a problem when nothing can be tested.
  * Side effects: loads the rail engine (WebAssembly) and fetches terrain heights.
  */
@@ -34,6 +41,7 @@ export async function buildDrawnNetwork(
   loadRail: RailEngineLoader = loadRailEngine,
   fetchHeights: HeightsFetcher = defaultHeights,
   values?: Readonly<Record<string, number>> | null,
+  cal?: ServiceCalendar,
 ): Promise<DrawnNetwork | DrawnProblem> {
   const problem = drawnProblem(railway);
   if (problem || !railway) return problem ?? "noTrack";
@@ -45,10 +53,20 @@ export async function buildDrawnNetwork(
       view = engine.build(railway, null);
     }
     if (view.counts.errors > 0) return "errors";
-    return {
-      topology: JSON.stringify(engine.topology()),
-      lines: JSON.stringify({ service_lines: engineLines(railway, railway.lines ?? [], values) }),
-    };
+    const topology = JSON.stringify(engine.topology());
+    if (!cal)
+      return {
+        topology,
+        lines: JSON.stringify({ service_lines: engineLines(railway, railway.lines ?? [], values) }),
+      };
+    const text = (d: DayTypeId) => JSON.stringify({ service_lines: dayEngineLines(railway, d, cal, values) });
+    const lines = text("weekday");
+    const dayLines: Partial<Record<DayTypeId, string>> = {};
+    for (const d of DAY_TYPES) {
+      const own = d === "weekday" ? lines : text(d);
+      if (own !== lines) dayLines[d] = own;
+    }
+    return { topology, lines, dayLines };
   } finally {
     engine.dispose();
   }

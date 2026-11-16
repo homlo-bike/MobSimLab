@@ -71,7 +71,7 @@ LABEL org.opencontainers.image.source="https://github.com/homlo-bike/MobSimLab" 
       org.opencontainers.image.licenses="AGPL-3.0-or-later" \
       org.opencontainers.image.title="MobSimLab"
 
-# osmium-tool (GPL-3.0) and osm2pgsql (GPL-2.0) import a project's OpenStreetMap data (ADR-0045); they run as
+# osmium-tool (GPL-3.0) and osm2pgsql (GPL-2.0) import a project's OpenStreetMap data (ADR-0046); they run as
 # separate programs, never linked into MobSimLab.
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates xz-utils curl osmium-tool osm2pgsql \
  && rm -rf /var/lib/apt/lists/*

@@ -252,7 +252,7 @@ export const editorsId = {
   "rail.line.peakHeadway": "Selang waktu jam sibuk",
   "rail.line.everyOffpeak": "Setiap, di luar jam sibuk",
   "rail.line.offpeakHeadway": "Selang waktu di luar jam sibuk",
-  "rail.line.peaks": "Jam sibuk adalah 07:00–09:00 dan 16:00–19:00.",
+  "rail.line.peaks": "Jam sibuk adalah {peaks}.",
   "rail.line.delete": "Hapus layanan",
   "rail.line.needsStops": "Diperlukan setidaknya dua pemberhentian.",
   "rail.line.needsTrain": "Pilih kereta.",

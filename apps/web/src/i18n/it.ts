@@ -5,6 +5,8 @@ import { cargoBikeIt } from "./cargo-bike/it";
 import { commentsIt } from "./comments/it";
 import { depotsIt } from "./depots/it";
 import { geodataIt } from "./geodata/it";
+import { fleetIt } from "./fleet/it";
+import { timetablesIt } from "./timetables/it";
 import { mslabIt } from "./mslab/it";
 import { pluginCodeIt } from "./plugin-code/it";
 import { populationIt } from "./population/it";
@@ -354,6 +356,7 @@ export const it: Messages = {
   "prefs.group.cost": "Costi",
   "prefs.group.benefits": "Benefici",
   "prefs.group.fares": "Tariffe",
+  "prefs.group.appraisal": "Valutazione",
   "prefs.group.noise": "Rumore",
   "prefs.traction.battery": "batteria",
   "prefs.traction.diesel": "diesel",
@@ -498,6 +501,8 @@ export const it: Messages = {
   ...cargoBikeIt,
   ...depotsIt,
   ...geodataIt,
+  ...fleetIt,
+  ...timetablesIt,
   ...commentsIt,
   ...mslabIt,
   ...pluginCodeIt,

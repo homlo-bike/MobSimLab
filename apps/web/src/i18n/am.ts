@@ -5,6 +5,8 @@ import { cargoBikeAm } from "./cargo-bike/am";
 import { commentsAm } from "./comments/am";
 import { depotsAm } from "./depots/am";
 import { geodataAm } from "./geodata/am";
+import { fleetAm } from "./fleet/am";
+import { timetablesAm } from "./timetables/am";
 import { mslabAm } from "./mslab/am";
 import { pluginCodeAm } from "./plugin-code/am";
 import { populationAm } from "./population/am";
@@ -342,6 +344,7 @@ export const am: Messages = {
   "prefs.group.cost": "ወጪዎች",
   "prefs.group.benefits": "ጥቅሞች",
   "prefs.group.fares": "የጉዞ ዋጋ",
+  "prefs.group.appraisal": "ግምገማ",
   "prefs.group.noise": "ጫጫታ",
   "prefs.traction.battery": "ባትሪ",
   "prefs.traction.diesel": "ናፍጣ",
@@ -483,6 +486,8 @@ export const am: Messages = {
   ...cargoBikeAm,
   ...depotsAm,
   ...geodataAm,
+  ...fleetAm,
+  ...timetablesAm,
   ...commentsAm,
   ...mslabAm,
   ...pluginCodeAm,

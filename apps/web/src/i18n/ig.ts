@@ -5,6 +5,8 @@ import { cargoBikeIg } from "./cargo-bike/ig";
 import { commentsIg } from "./comments/ig";
 import { depotsIg } from "./depots/ig";
 import { geodataIg } from "./geodata/ig";
+import { fleetIg } from "./fleet/ig";
+import { timetablesIg } from "./timetables/ig";
 import { mslabIg } from "./mslab/ig";
 import { pluginCodeIg } from "./plugin-code/ig";
 import { populationIg } from "./population/ig";
@@ -354,6 +356,7 @@ export const ig: Messages = {
   "prefs.group.cost": "Ego ọ na-efu",
   "prefs.group.benefits": "Uru",
   "prefs.group.fares": "Ụgwọ njem",
+  "prefs.group.appraisal": "Nyocha",
   "prefs.group.noise": "Mkpọtụ",
   "prefs.traction.battery": "batrị",
   "prefs.traction.diesel": "dizel",
@@ -498,6 +501,8 @@ export const ig: Messages = {
   ...cargoBikeIg,
   ...depotsIg,
   ...geodataIg,
+  ...fleetIg,
+  ...timetablesIg,
   ...commentsIg,
   ...mslabIg,
   ...pluginCodeIg,

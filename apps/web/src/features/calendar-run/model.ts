@@ -9,6 +9,7 @@ import { paramValue as benefitParam } from "../benefits/params";
 import { type Category, type Estimate, OPERATING } from "../costs/model";
 import { paramValue as costParam } from "../costs/params";
 import type { EnergyEstimate } from "../energy/types";
+import type { DayShares } from "../timetables/feed";
 import type { MonthClimate } from "../../workspace/climate";
 import {
   DAY_TYPES,
@@ -105,24 +106,31 @@ export function operatingSplit(
 export function dayFigures(
   t: TableFigures,
   prefs: PreferencesDoc["values"] | undefined,
+  shares?: DayShares,
 ): { days: Record<DayTypeId, DayFigures>; fixedPerYear: number | null } {
   const days = costParam("cost.days_per_year", "*", prefs)[1];
   const lines = t.estimate?.lines ?? [];
-  const km = t.estimate ? lines.reduce((s, l) => s + l.kmPerYear, 0) / days : null;
-  const hours = t.estimate ? lines.reduce((s, l) => s + l.hoursPerYear, 0) / days : null;
+  // A line's vehicle-km and hours on a day type: its weekday's times its service share on the day.
+  const share = (id: string, dt: DayTypeId) => shares?.[id]?.[dt] ?? 1;
+  const kmOn = (dt: DayTypeId) => lines.reduce((s, l) => s + l.kmPerYear * share(l.id, dt), 0) / days;
+  const hoursOn = (dt: DayTypeId) => lines.reduce((s, l) => s + l.hoursPerYear * share(l.id, dt), 0) / days;
+  const weekdayKm = kmOn("weekday");
   const weekdayRiders = t.riders ? Object.values(t.riders).reduce((s, r) => s + r[1], 0) : null;
   // The energy estimate is a year of the same vehicle-km.
   const energy = t.energy ? t.energy.total.energy_kwh / days : null;
   const split = t.estimate ? operatingSplit(t.estimate, prefs) : null;
   const out = {} as Record<DayTypeId, DayFigures>;
-  for (const dt of DAY_TYPES)
+  for (const dt of DAY_TYPES) {
+    // Energy and the cost of a day of service follow the day's vehicle-km.
+    const ratio = weekdayKm > 0 ? kmOn(dt) / weekdayKm : 1;
     out[dt] = {
-      vehicle_km: km,
-      vehicle_hours: hours,
+      vehicle_km: t.estimate ? kmOn(dt) : null,
+      vehicle_hours: t.estimate ? hoursOn(dt) : null,
       passengers: weekdayRiders === null ? null : weekdayRiders * riderShare(dt, prefs),
-      energy_kwh: energy,
-      operating_cost: split ? split.perDay : null,
+      energy_kwh: energy === null ? null : energy * ratio,
+      operating_cost: split ? split.perDay * ratio : null,
     };
+  }
   return { days: out, fixedPerYear: split ? split.fixedPerYear : null };
 }
 
@@ -276,7 +284,8 @@ export function weatherPeriods(
 /** The plan the worker runs (apps/api/src/simulation/calendar.ts `calendarPlan`). */
 export interface CalendarPlan {
   mode: RunMode;
-  day_types: Record<DayTypeId, { from_s: number; to_s: number; per_day: DayFigures }>;
+  /** Each day type's service day and day figures, and its own service lines when they differ (JSON text). */
+  day_types: Record<DayTypeId, { from_s: number; to_s: number; per_day: DayFigures; lines?: string }>;
   periods: Period[];
   fixed_per_year: { operating_cost: number | null };
   currency: string | null;
@@ -284,7 +293,10 @@ export interface CalendarPlan {
   weather?: WeatherPlan;
 }
 
-/** Purpose: the plan of a run: each day type's service day and day figures, and the periods. */
+/**
+ * Purpose: the plan of a run: each day type's service day, day figures and, when its lines run other times than
+ * on a weekday, its own service lines; and the periods.
+ */
 export function buildPlan(
   mode: RunMode,
   cal: ServiceCalendar,
@@ -292,11 +304,18 @@ export function buildPlan(
   figures: ReturnType<typeof dayFigures>,
   currency: string | null,
   weather?: WeatherPlan,
+  dayLines?: Partial<Record<DayTypeId, string>>,
 ): CalendarPlan {
   const day_types = {} as CalendarPlan["day_types"];
   for (const dt of DAY_TYPES) {
     const d = serviceDayFor(cal, dt);
-    day_types[dt] = { from_s: d.firstS, to_s: d.lastS, per_day: figures.days[dt] };
+    const lines = dayLines?.[dt];
+    day_types[dt] = {
+      from_s: d.firstS,
+      to_s: d.lastS,
+      per_day: figures.days[dt],
+      ...(lines ? { lines } : {}),
+    };
   }
   return {
     mode,

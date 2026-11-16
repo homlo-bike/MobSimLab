@@ -473,7 +473,7 @@ function tileBox(x: number, y: number): [number, number, number, number] {
 
 /**
  * Streets, railways, buildings, places and water for the editors and tables. When a request names a project
- * whose OpenStreetMap import holds the tile (06-gis §2, ADR-0045), the answer comes from the import; otherwise it
+ * whose OpenStreetMap import holds the tile (06-gis §2, ADR-0046), the answer comes from the import; otherwise it
  * is fetched tile by tile from OSM through the gateway's Overpass client. Both are cached in memory.
  * Data © OpenStreetMap contributors, ODbL.
  */

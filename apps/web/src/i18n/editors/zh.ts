@@ -231,7 +231,7 @@ export const editorsZh = {
   "rail.line.peakHeadway": "高峰发车间隔",
   "rail.line.everyOffpeak": "平峰间隔",
   "rail.line.offpeakHeadway": "平峰发车间隔",
-  "rail.line.peaks": "高峰时段 07:00–09:00 和 16:00–19:00。",
+  "rail.line.peaks": "高峰时段 {peaks}。",
   "rail.line.delete": "删除线路",
   "rail.line.needsStops": "至少需要两个站点。",
   "rail.line.needsTrain": "请选择列车。",

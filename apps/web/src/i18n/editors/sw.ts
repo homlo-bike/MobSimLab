@@ -253,7 +253,7 @@ export const editorsSw = {
   "rail.line.peakHeadway": "Kipindi cha kilele",
   "rail.line.everyOffpeak": "Kila, nje ya kilele",
   "rail.line.offpeakHeadway": "Kipindi nje ya kilele",
-  "rail.line.peaks": "Kilele 07:00–09:00 na 16:00–19:00.",
+  "rail.line.peaks": "Kilele {peaks}.",
   "rail.line.delete": "Futa njia",
   "rail.line.needsStops": "Inahitaji angalau vituo viwili.",
   "rail.line.needsTrain": "Chagua treni.",

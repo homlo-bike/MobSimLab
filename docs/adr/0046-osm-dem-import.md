@@ -1,4 +1,4 @@
-# ADR-0045: OpenStreetMap and GLO-30 elevation imported into PostGIS per project area
+# ADR-0046: OpenStreetMap and GLO-30 elevation imported into PostGIS per project area
 
 - Status: Proposed (first version built: GIS tab, Map data view)
 - Date: 2026-11-16

@@ -235,7 +235,7 @@ export const editorsTr = {
   "rail.line.peakHeadway": "Zirve sefer aralığı",
   "rail.line.everyOffpeak": "Her, zirve dışında",
   "rail.line.offpeakHeadway": "Zirve dışı sefer aralığı",
-  "rail.line.peaks": "Zirve saatleri 07:00–09:00 ve 16:00–19:00'dır.",
+  "rail.line.peaks": "Zirve saatleri {peaks}'dır.",
   "rail.line.delete": "Seferi sil",
   "rail.line.needsStops": "En az iki durak gerekir.",
   "rail.line.needsTrain": "Bir tren seçin.",

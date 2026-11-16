@@ -1,0 +1,28 @@
+name: Feature request
+description: Suggest a new feature or an improvement to an existing one.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem
+      description: What planning or analysis task is hard or impossible today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like
+      description: Describe the feature or change you have in mind.
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you have considered
+      description: Other ways to solve the problem, including other tools.
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources and methods
+      description: If the feature adds a calculation or a default value, link the method, standard or data source it should follow.

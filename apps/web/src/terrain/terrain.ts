@@ -2,7 +2,7 @@
  * Terrain heights for the editors: one shared source for the railway, cable car and other tools.
  * The API reads the Copernicus GLO-30 DEM (and optionally the OpenStreetMap buildings a line passes
  * over); see apps/api/src/terrain. With a project open, it reads the project's imported elevation and
- * OpenStreetMap data first (ADR-0045). Answers are cached per request for the session.
+ * OpenStreetMap data first (ADR-0046). Answers are cached per request for the session.
  */
 import { dataProject } from "../geodata/projectData";
 

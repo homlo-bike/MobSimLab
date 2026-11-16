@@ -18,7 +18,10 @@ import {
   withFetched,
   withHolidayAdded,
   withHolidayRemoved,
+  withServiceWindow,
   withSimulationYears,
+  DEFAULT_WINDOW,
+  parseClock,
   yearList,
   type CalendarApi,
   type ServiceCalendar,
@@ -113,6 +116,18 @@ describe("project calendar", () => {
     expect(serviceDayFor(cal, "sunday")).toEqual({ firstS: 21600, lastS: 86400, peaks: [] });
   });
 
+  it("keeps a day type's own service day, and drops one that is the default or makes no sense", () => {
+    const sunday = { firstMin: 7 * 60, lastMin: 23 * 60, peaks: [] as [number, number][] };
+    const cal = withServiceWindow({}, "sunday", sunday);
+    expect(cal.days).toEqual({ sunday });
+    expect(withServiceWindow(cal, "sunday", { ...sunday, lastMin: 6 * 60 })).toBe(cal);
+    expect(withServiceWindow(cal, "sunday", DEFAULT_WINDOW).days).toBeUndefined();
+    expect(withServiceWindow(cal, "sunday", null).days).toBeUndefined();
+    expect(parseClock("24:30")).toBe(1470);
+    expect(parseClock("7.05")).toBe(425);
+    expect(parseClock("31:00")).toBeNull();
+  });
+
   it("fetches a year's holidays once through the API", async () => {
     const calls: string[] = [];
     const api = calendarApi((async (url: string) => {
@@ -179,6 +194,34 @@ describe("calendar section", () => {
     // An own count is kept and marked.
     fireEvent.change(screen.getByLabelText("2027 · Sunday"), { target: { value: "40" } });
     expect(doc.calendar?.counts).toEqual({ "2027": { sunday: 40 } });
+  });
+
+  it("sets a day type's service hours and peaks, and goes back to the default", () => {
+    let doc: PreferencesDoc = withSimulationYears(null, { first: 2027, last: 2027 });
+    const onPreferences = vi.fn((d: PreferencesDoc) => {
+      doc = d;
+    });
+    const view = () => (
+      <CalendarSection preferences={doc} editable onPreferences={onPreferences} api={api} today={today} />
+    );
+    const { rerender } = render(view());
+    expect(screen.getByLabelText("Weekday · First departure")).toHaveProperty("value", "05:00");
+    // Saturday: service from 06:00 and no evening peak.
+    fireEvent.change(screen.getByLabelText("Saturday · First departure"), { target: { value: "06:00" } });
+    expect(doc.calendar?.days?.saturday?.firstMin).toBe(360);
+    rerender(view());
+    fireEvent.change(screen.getByLabelText("Saturday · Evening peak from"), { target: { value: "" } });
+    // Half a peak is not saved yet.
+    expect(doc.calendar?.days?.saturday?.peaks).toHaveLength(2);
+    fireEvent.change(screen.getByLabelText("Saturday · Evening peak to"), { target: { value: "" } });
+    expect(doc.calendar?.days?.saturday).toEqual({ firstMin: 360, lastMin: 1470, peaks: [[420, 540]] });
+    rerender(view());
+    // A last departure before the first is not saved, and says why.
+    fireEvent.change(screen.getByLabelText("Saturday · Last departure"), { target: { value: "04:00" } });
+    expect(screen.getByRole("alert")).toBeTruthy();
+    expect(doc.calendar?.days?.saturday?.lastMin).toBe(1470);
+    fireEvent.click(screen.getByRole("button", { name: "Saturday: Back to the default" }));
+    expect(doc.calendar?.days).toBeUndefined();
   });
 
   it("lets viewers see the holidays without saving them", async () => {

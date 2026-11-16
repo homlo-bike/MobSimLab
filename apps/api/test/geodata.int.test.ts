@@ -17,7 +17,7 @@ import { startDatabase, type TestDatabase } from "./support/database";
 import { cookieValue, signIn, startIdp, type TestIdp } from "./support/idp";
 
 /**
- * Integration: OpenStreetMap and elevation imported per project area (ADR-0045), with the real osmium and
+ * Integration: OpenStreetMap and elevation imported per project area (ADR-0046), with the real osmium and
  * osm2pgsql, the real flex style and PostGIS. Overpass and the GLO-30 bucket are faked: Overpass answers the
  * fixture `small.osm` for every tile, the bucket serves the small COG of `support/cog.ts` over N50 E007.
  */
