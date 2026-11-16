@@ -1,0 +1,24 @@
+{
+  "name": "mobsimlab-desktop",
+  "productName": "MobSimLab",
+  "version": "0.0.0-dev",
+  "private": true,
+  "description": "MobSimLab desktop app: work on this computer without signing in, or connect to a MobSimLab server",
+  "license": "AGPL-3.0-or-later",
+  "author": "MobSimLab contributors",
+  "homepage": "https://github.com/homlo-bike/MobSimLab",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "npm run build && electron .",
+    "smoke": "npm run build && node scripts/smoke.mjs",
+    "dist": "npm run build && electron-builder --publish never"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "electron": "45.3.2",
+    "electron-builder": "26.18.0",
+    "typescript": "~6.0.3"
+  }
+}

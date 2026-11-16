@@ -1,0 +1,65 @@
+# Installers for Windows, macOS and Linux (npm run dist). The bundled server (runtime/, assembled in CI by
+# scripts/assemble-runtime.mjs) is shipped next to the app as resources/runtime.
+appId: org.mobsimlab.desktop
+productName: MobSimLab
+copyright: MobSimLab contributors, AGPL-3.0-or-later
+directories:
+  output: release
+  buildResources: build
+files:
+  - dist/**
+  - static/**
+  - package.json
+extraResources:
+  - from: runtime
+    to: runtime
+    filter: ["**/*"]
+  - from: ../LICENSE
+    to: LICENSE.txt
+asar: true
+artifactName: MobSimLab-${version}-${os}-${arch}.${ext}
+# Not signed for now: Windows SmartScreen and macOS Gatekeeper warn on first start (see docs/user/desktop.md).
+publish: null
+
+win:
+  target:
+    - target: nsis
+      arch: [x64]
+    - target: portable
+      arch: [x64]
+  signAndEditExecutable: false
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  artifactName: MobSimLab-${version}-windows-x64-setup.${ext}
+portable:
+  artifactName: MobSimLab-${version}-windows-x64-portable.${ext}
+
+mac:
+  target:
+    - target: dmg
+      arch: [arm64]
+  category: public.app-category.productivity
+  identity: null
+  hardenedRuntime: false
+  artifactName: MobSimLab-${version}-macos-${arch}.${ext}
+
+linux:
+  target:
+    - target: AppImage
+      arch: [x64]
+    - target: deb
+      arch: [x64]
+    - target: rpm
+      arch: [x64]
+  category: Science
+  executableName: mobsimlab
+  maintainer: MobSimLab contributors
+  synopsis: Public transport planning and mobility simulation
+  artifactName: MobSimLab-${version}-linux-${arch}.${ext}
+deb:
+  artifactName: MobSimLab-${version}-linux-amd64.${ext}
+rpm:
+  artifactName: MobSimLab-${version}-linux-x86_64.${ext}
