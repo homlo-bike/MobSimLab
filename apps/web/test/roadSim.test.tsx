@@ -354,6 +354,9 @@ function fakeApi(runs: RoadRunDetail[] = []): RoadRunsApi {
     rerun: vi.fn(async () => run()),
     remove: vi.fn(async () => undefined),
     replay: vi.fn(async () => REPLAY),
+    scenario: vi.fn(async () => {
+      throw new Error("not used");
+    }),
   } as never;
 }
 

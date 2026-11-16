@@ -1,6 +1,6 @@
 # ADR-0037: Cable car and ferry service lines: two new mode families drawn station-first, frequency-based gondolas and timetabled ferries with berths
 
-- Status: Proposed
+- Status: Accepted (product owner, 2026-11-16)
 - Date: 2026-11-02
 - Deciders: product owner, architecture
 - Related: FR-NET-01, FR-NET-11, FR-VEH-01, FR-SIM, FR-TT, ADR-0009 (unified graph), ADR-0018 (assumptions), ADR-0026 (vehicle catalogue), ADR-0029 (street lines), ADR-0030 and ADR-0032 (railway design and operations), ADR-0034 (journey planner), ADR-0036 (plugins, §8 new modes as plugins), [Research R1](../research/r1-cable-car-and-ferry.md)
