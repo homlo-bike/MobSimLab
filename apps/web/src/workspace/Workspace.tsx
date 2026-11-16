@@ -58,7 +58,6 @@ import {
 } from "../shell/icons";
 import { type CoreTab, type Tab, TABS } from "../shell/route";
 import { TopBar } from "../shell/TopBar";
-import { Placeholder } from "./Placeholder";
 import { ProjectPreferences } from "./ProjectPreferences";
 import { delaysFrom, type PreferencesDoc } from "./preferences";
 import type { DelayShares } from "../features/street-lines/types";
