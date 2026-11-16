@@ -1,3 +1,4 @@
+import { roadDe } from "./road/de";
 import { editorsDe } from "./editors/de";
 import { cargoBikeDe } from "./cargo-bike/de";
 import { depotsDe } from "./depots/de";
@@ -394,5 +395,6 @@ export const de: Messages = {
   ...editorsDe,
   ...cargoBikeDe,
   ...depotsDe,
+  ...roadDe,
   ...PLUGIN_MESSAGES.de,
 };

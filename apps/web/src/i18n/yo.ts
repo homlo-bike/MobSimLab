@@ -1,3 +1,4 @@
+import { roadYo } from "./road/yo";
 import { editorsYo } from "./editors/yo";
 import { cargoBikeYo } from "./cargo-bike/yo";
 import { depotsYo } from "./depots/yo";
@@ -383,5 +384,6 @@ export const yo: Messages = {
   ...editorsYo,
   ...cargoBikeYo,
   ...depotsYo,
+  ...roadYo,
   ...PLUGIN_MESSAGES.yo,
 };

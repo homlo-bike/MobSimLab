@@ -1,3 +1,4 @@
+import { roadJa } from "./road/ja";
 import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
 import { depotsJa } from "./depots/ja";
@@ -378,5 +379,6 @@ export const ja: Messages = {
   ...editorsJa,
   ...cargoBikeJa,
   ...depotsJa,
+  ...roadJa,
   ...PLUGIN_MESSAGES.ja,
 };

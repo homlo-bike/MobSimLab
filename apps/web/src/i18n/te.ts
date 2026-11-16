@@ -1,3 +1,4 @@
+import { roadTe } from "./road/te";
 import { editorsTe } from "./editors/te";
 import { cargoBikeTe } from "./cargo-bike/te";
 import { depotsTe } from "./depots/te";
@@ -383,5 +384,6 @@ export const te: Messages = {
   ...editorsTe,
   ...cargoBikeTe,
   ...depotsTe,
+  ...roadTe,
   ...PLUGIN_MESSAGES.te,
 };

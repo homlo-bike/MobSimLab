@@ -1,3 +1,4 @@
+import { roadUk } from "./road/uk";
 import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
 import { depotsUk } from "./depots/uk";
@@ -388,5 +389,6 @@ export const uk: Messages = {
   ...editorsUk,
   ...cargoBikeUk,
   ...depotsUk,
+  ...roadUk,
   ...PLUGIN_MESSAGES.uk,
 };

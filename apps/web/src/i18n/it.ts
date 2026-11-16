@@ -1,3 +1,4 @@
+import { roadIt } from "./road/it";
 import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
 import { depotsIt } from "./depots/it";
@@ -385,5 +386,6 @@ export const it: Messages = {
   ...editorsIt,
   ...cargoBikeIt,
   ...depotsIt,
+  ...roadIt,
   ...PLUGIN_MESSAGES.it,
 };
