@@ -34,6 +34,7 @@ const gtfsNetwork = z.looseObject({
         id: z.string().min(1).max(64),
         name: z.string().max(200),
         timetable: railTimetable,
+        converted: z.array(z.string().max(200)).max(5000).optional(),
       }),
     )
     .max(5),

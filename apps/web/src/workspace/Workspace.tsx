@@ -28,6 +28,18 @@ import type { Network } from "../features/railways/types";
 import { LineList } from "../features/street-lines/LineList";
 import { lineInput, type SavedStreetLine, type StreetLinesDoc } from "../features/street-lines/saved";
 import { StreetLineEditor } from "../features/street-lines/StreetLineEditor";
+import { loadWasmEngine as loadStreetEngine } from "../features/street-lines/engine";
+import type { Mode as StreetMode } from "../features/street-lines/types";
+import { loadRailEngine } from "../features/railways/engine";
+import type { RailMode } from "../features/railways/types";
+import {
+  addStreetLine,
+  addTerminalCrossovers,
+  kindOf,
+  mainPattern,
+  toRailLine,
+  toStreetLine,
+} from "../features/gtfs/toLines";
 import { forgetSetups, loadSetups } from "../features/street-setup/model";
 import { StreetSetupEditor } from "../features/street-setup/StreetSetupEditor";
 import type { StreetSetup } from "../features/street-setup/types";
@@ -275,6 +287,55 @@ export function Workspace({
     () => savedStreet.filter((_, i) => i !== editedStreet),
     [savedStreet, editedStreet],
   );
+  // An imported GTFS route becomes a line of the project's own: a street line or a railway service line.
+  // The feed then leaves the route out, so it is not ridden twice.
+  const [convertError, setConvertError] = useState<string | null>(null);
+  const editGtfsRoute = async (feedId: string, routeId: string) => {
+    const feed = gtfsFeeds.find((f) => f.id === feedId);
+    const pattern = feed && mainPattern(feed.timetable, routeId);
+    const kind = pattern ? kindOf(pattern.route.mode) : null;
+    if (!feed || !pattern || !kind) return;
+    setConvertError(null);
+    try {
+      if (kind === "street") {
+        const e = await loadStreetEngine();
+        try {
+          const mode = pattern.route.mode as StreetMode;
+          const [doc, i] = addStreetLine(
+            streetLines,
+            toStreetLine(pattern, e.defaultProfile(mode), e.defaultRules()),
+          );
+          drawings.set("street-lines", doc);
+          switchStreet(i);
+        } finally {
+          e.dispose();
+        }
+      } else {
+        const e = await loadRailEngine();
+        try {
+          const mode = pattern.route.mode as RailMode;
+          const [doc, id] = toRailLine(railway, pattern, mode, e.toLocal, {
+            platformLengthM: Number(e.defaultParams(mode).platform_length_m) || 100,
+          });
+          drawings.set(
+            "railway",
+            addTerminalCrossovers(doc, id, (d) => e.build(d, null)),
+          );
+        } finally {
+          e.dispose();
+        }
+      }
+      drawings.set("gtfs-network", {
+        feeds: gtfsFeeds.map((f) =>
+          f.id === feedId ? { ...f, converted: [...(f.converted ?? []), routeId] } : f,
+        ),
+      } satisfies GtfsNetworkDoc);
+      setBuild(kind);
+      onTab("create");
+    } catch (err) {
+      setConvertError(err instanceof Error ? err.message : String(err));
+    }
+  };
   const hasPanel = onMap && project !== null;
   const pluginTab = projectTabs.includes(tab) ? (PLUGIN_TABS.find((x) => x.id === tab) ?? null) : null;
   const tabLabel = (x: Tab) => {
@@ -567,7 +628,16 @@ export function Workspace({
               gtfsFeeds={gtfsFeeds}
               {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
               projectName={project.name}
+              {...(editable ? { onEditGtfsRoute: (f: string, r: string) => void editGtfsRoute(f, r) } : {})}
             />
+          )}
+          {convertError && tab === "simulator" && (
+            <p
+              role="alert"
+              className="absolute top-2 left-1/2 z-30 -translate-x-1/2 rounded-lg border border-red-300 bg-red-50 px-3 py-1.5 text-sm text-red-900"
+            >
+              {convertError}
+            </p>
           )}
           {project && tab === "create" && editable && chosen === null && (
             <div className="absolute inset-0 z-20 flex items-start justify-center overflow-y-auto bg-slate-50/70 p-4 md:pt-16">
