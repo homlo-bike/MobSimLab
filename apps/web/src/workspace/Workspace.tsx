@@ -91,6 +91,7 @@ import {
   delaysFrom,
   designValuesFrom,
   type PreferencesDoc,
+  sameNameStationM,
   switchChoiceFrom,
   vehiclesOffFrom,
 } from "./preferences";
@@ -730,6 +731,7 @@ export function Workspace({
               railLines={railLines}
               pluginLines={pluginLineList}
               demandZones={demandZoneList}
+              sameNameM={sameNameStationM(preferences?.values)}
               gtfsFeeds={gtfsFeeds}
               {...(editable ? { onGtfsFeeds: (d: GtfsNetworkDoc) => drawings.set("gtfs-network", d) } : {})}
               projectName={project.name}
@@ -838,6 +840,7 @@ export function Workspace({
                 railway={railway}
                 streetLines={streetLines}
                 pluginLines={pluginLineList}
+                sameNameM={sameNameStationM(preferences?.values)}
                 doc={drawings.doc<SchematicDoc>("schematic")}
                 onDoc={editable ? (d) => drawings.set("schematic", d) : undefined}
                 projectName={project.name}

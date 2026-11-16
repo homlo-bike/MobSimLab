@@ -43,6 +43,15 @@
       "wp-sydney-metro-metropolis-stock"
     ]
   },
+  "floorHeight": {
+    "value": 1200,
+    "unit": "mm",
+    "assumed": false,
+    "basis": "cited",
+    "sources": [
+      "alstom-environmental-product-declaration-sydney"
+    ]
+  },
   "consist": {
     "carLengths": {
       "value": [

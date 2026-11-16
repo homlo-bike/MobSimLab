@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import { json, raw } from "express";
 import helmet from "helmet";
 import type { AppConfig } from "./config/env";
+import { requestLogContext } from "./logging/context";
 
 /**
  * Purpose: HTTP middleware shared by the server and the tests: security headers and CSP (05 §3.4) and
@@ -49,4 +50,7 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
     raw({ type: "application/octet-stream", limit: populationSettings().maxUploadBytes }),
   );
   app.use(json({ limit: "100kb" }));
+  // After the body parsers, whose stream callbacks would lose the context: every log entry of the request
+  // carries its request ID (ADR-0022).
+  app.use(requestLogContext);
 }
