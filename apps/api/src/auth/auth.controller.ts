@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 import {
   BadRequestException,
   Body,
@@ -7,6 +7,7 @@ import {
   HttpCode,
   Inject,
   Logger,
+  NotFoundException,
   Post,
   Put,
   Query,
@@ -14,7 +15,7 @@ import {
   Res,
   ServiceUnavailableException,
 } from "@nestjs/common";
-import type { Response } from "express";
+import type { Request, Response } from "express";
 import { z } from "zod";
 import { APP_CONFIG } from "../config/config.module";
 import type { AppConfig } from "../config/env";
@@ -81,7 +82,13 @@ export class AuthController {
           .executeTakeFirst()
       : undefined;
     return {
-      instance: { mode: inst.mode, name: inst.name },
+      instance: {
+        mode: inst.mode,
+        name: inst.name,
+        // Desktop app on this computer: one local Owner, no sign-in or administration of other people.
+        local: Boolean(this.config.localLaunchKey),
+        agents: !this.config.agentsDisabled,
+      },
       signInAvailable: Boolean(this.config.oidc),
       user: s
         ? {
@@ -195,6 +202,31 @@ export class AuthController {
   }
 
   /**
+   * Purpose: sign in the desktop app's local Owner (local mode only; 404 on a server). The desktop app adds the
+   * launch key header to its own requests to this local address; a browser on the same computer cannot, so it
+   * cannot take over the local session. The page itself calls this when it finds no session.
+   * Output: `{ ok: true }` and a new session cookie.
+   */
+  @Post("local")
+  @HttpCode(200)
+  @Public()
+  @AuthRateLimit()
+  async local(@Req() req: MslRequest, @Res({ passthrough: true }) res: Response) {
+    const key = this.config.localLaunchKey;
+    if (!key) throw new NotFoundException();
+    if (!sameSecret(key, (req as Request).header(LOCAL_KEY_HEADER))) {
+      this.security.warn(`local sign-in refused: wrong or missing launch key`);
+      throw new NotFoundException();
+    }
+    const meta = { ipHash: this.sessions.ipHash(req.ip), requestId: req.requestId ?? null };
+    const userId = await this.auth.signInLocalOwner(meta);
+    if (req.session) await this.sessions.revoke(req.session.tokenHash);
+    const token = await this.sessions.create(userId);
+    res.cookie(this.sessions.cookieName, token, this.sessions.cookieOptions(ABSOLUTE_MS));
+    return { ok: true };
+  }
+
+  /**
    * Purpose: sign out. Revokes the session server-side and returns the provider's end-session URL, if any,
    * for the browser to visit.
    */
@@ -218,6 +250,17 @@ export class AuthController {
     const endSessionUrl = await this.oidc.endSessionUrl().catch(() => null);
     return { endSessionUrl };
   }
+}
+
+/** Header the desktop app adds to its requests to the local API (never visible to the page's scripts). */
+export const LOCAL_KEY_HEADER = "x-mobsimlab-local-key";
+
+/** Purpose: constant-time comparison of the launch key. */
+function sameSecret(expected: string, given: string | undefined): boolean {
+  if (!given) return false;
+  const a = Buffer.from(sha256(expected));
+  const b = Buffer.from(sha256(given));
+  return timingSafeEqual(a, b);
 }
 
 function sha256(s: string): Buffer {

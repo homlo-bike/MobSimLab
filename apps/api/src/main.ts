@@ -47,7 +47,7 @@ async function bootstrap(): Promise<void> {
     });
   }
   app.enableShutdownHooks();
-  await app.listen(config.port, "0.0.0.0");
+  await app.listen(config.port, config.listenHost ?? "0.0.0.0");
 }
 
 void bootstrap();

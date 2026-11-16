@@ -85,4 +85,42 @@ describe("loadConfig", () => {
     expect(c.rateLimits.authPerMinute).toBe(20);
     expect(() => loadConfig({ ...env, MOBSIMLAB_TRUSTED_PROXIES: "*" }, reader)).toThrow(/TRUSTED_PROXIES/);
   });
+
+  describe("desktop local mode", () => {
+    const local = {
+      ...env,
+      MOBSIMLAB_PUBLIC_URL: "http://127.0.0.1:47800",
+      MOBSIMLAB_LOCAL_MODE: "true",
+      MOBSIMLAB_LISTEN_HOST: "127.0.0.1",
+    };
+    const withKey = (p: string) => (p === "/s/local_launch_key" ? strong() : reader(p));
+
+    it("starts with a launch key on the loopback address", () => {
+      const c = loadConfig(local, withKey);
+      expect(c.localLaunchKey).toBe(strong());
+      expect(c.listenHost).toBe("127.0.0.1");
+      expect(c.agentsDisabled).toBeUndefined();
+      expect(loadConfig({ ...local, MOBSIMLAB_AGENTS_ENABLED: "false" }, withKey).agentsDisabled).toBe(true);
+    });
+
+    it("refuses local mode without a launch key, off loopback, or with a provider", () => {
+      expect(() => loadConfig(local, reader)).toThrow(/local_launch_key is missing/);
+      expect(() => loadConfig({ ...local, MOBSIMLAB_LISTEN_HOST: "0.0.0.0" }, withKey)).toThrow(
+        /MOBSIMLAB_LISTEN_HOST=127.0.0.1/,
+      );
+      expect(() =>
+        loadConfig({ ...local, MOBSIMLAB_PUBLIC_URL: "https://mobsimlab.example.org" }, withKey),
+      ).toThrow(/loopback/);
+      expect(() =>
+        loadConfig(
+          { ...local, MOBSIMLAB_OIDC_ISSUER: "https://idp.example.org", MOBSIMLAB_OIDC_CLIENT_ID: "x" },
+          withKey,
+        ),
+      ).toThrow(/does not use a sign-in provider/);
+    });
+
+    it("is off on a server", () => {
+      expect(loadConfig(env, reader).localLaunchKey).toBeUndefined();
+    });
+  });
 });

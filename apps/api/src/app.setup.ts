@@ -56,6 +56,15 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
     res.setHeader("Cache-Control", "no-store");
     next();
   });
+  // AI agents switched off (the desktop app's local mode until the person turns them on): the MCP and OAuth
+  // endpoints do not exist.
+  if (config.agentsDisabled)
+    app.use(
+      ["/mcp", "/oauth", "/.well-known/oauth-protected-resource", "/.well-known/oauth-authorization-server"],
+      (_req: Request, res: Response) => {
+        res.status(404).json({ statusCode: 404, message: "AI agents are switched off" });
+      },
+    );
   app.use(cookieParser());
   // Drawings are whole documents (a railway design can be a few MB), terrain requests carry every track
   // of a design, a simulation run carries the topology and lines it runs; every other route keeps the
