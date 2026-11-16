@@ -25,9 +25,9 @@ import type { Timetable } from "../features/journey-planner/types";
 import { RailwayEditor } from "../features/railways/RailwayEditor";
 import { Schematic, type SchematicDoc } from "../features/schematic/Schematic";
 import type { Network } from "../features/railways/types";
+import { LineList } from "../features/street-lines/LineList";
 import { lineInput, type SavedStreetLine, type StreetLinesDoc } from "../features/street-lines/saved";
 import { StreetLineEditor } from "../features/street-lines/StreetLineEditor";
-import { StreetLinePicker } from "../features/street-lines/StreetLinePicker";
 import { loadWasmEngine as loadStreetEngine } from "../features/street-lines/engine";
 import type { Mode as StreetMode } from "../features/street-lines/types";
 import { loadRailEngine } from "../features/railways/engine";
@@ -101,12 +101,12 @@ const tabIcon = (x: Tab): IconFn =>
 /** Tabs drawn over the map; the others are full pages. The plugins' tabs all use the map. */
 const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis", ...PLUGIN_TABS.map((x) => x.id)];
 const NO_SETUPS: StreetSetup[] = [];
+const NO_STREET_LINES: SavedStreetLine[] = [];
 
 type SimView = "test" | "journey";
 type GisView = "streets" | "regions";
 const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
-const NO_STREET_LINES: SavedStreetLine[] = [];
 /** "street", "rail", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
 /** The economy API for the project's currency rate. */
@@ -163,11 +163,12 @@ export function Workspace({
     [],
   );
   const [build, setBuild] = useState<Build | null>(null);
-  // The street line as the tool last routed it, so the journey planner can ride it.
+  // The street line being edited, as the tool last routed it, so the journey planner can ride it.
   const [line, setLine] = useState<StreetLineInput | null>(null);
-  // Which of the project's street lines the street line tool edits, and a key to open it afresh.
+  // Which street line the tool edits (the number of saved lines for a new one), and a count of switches
+  // so the tool opens afresh on the right line after a switch or a delete.
   const [streetIndex, setStreetIndex] = useState(0);
-  const [streetRev, setStreetRev] = useState(0);
+  const [streetSwitch, setStreetSwitch] = useState(0);
   // Cable car and ferry lines from the plugin tools, per tool, for the journey planner.
   const [pluginLines, setPluginLines] = useState<Record<string, PluginLineInput | null>>({});
   // On-demand zones from the service zone kit, for the journey planner.
@@ -254,28 +255,35 @@ export function Workspace({
     if (local.length && !drawings.doc("street-setups")) drawings.set("street-setups", local);
     forgetSetups(projectId);
   }, [drawings.loaded, editable, projectId]);
-  // Every saved street line for the journey planner; the one open in the tool as it last routed it.
-  const streetDocLines = streetLines?.lines ?? NO_STREET_LINES;
-  const ridden = useMemo(() => {
-    const ls = streetDocLines.map((l) => lineInput(l));
-    if (line) ls[streetIndex] = line;
-    return ls.filter((l): l is StreetLineInput => l !== null && l.view.points.length >= 2);
-  }, [streetDocLines, line, streetIndex]);
-  const saveStreetLine = (l: SavedStreetLine) => {
-    const lines = [...streetDocLines];
-    lines[Math.min(streetIndex, lines.length)] = l;
-    drawings.set("street-lines", { lines } satisfies StreetLinesDoc);
-  };
-  const openStreetLine = (i: number) => {
-    setLine(null);
+  const savedStreet = streetLines?.lines ?? NO_STREET_LINES;
+  const editedStreet = Math.min(streetIndex, savedStreet.length);
+  const switchStreet = (i: number) => {
     setStreetIndex(i);
-    setStreetRev((r) => r + 1);
+    setStreetSwitch((n) => n + 1);
+    setLine(null);
   };
-  const removeStreetLine = () => {
-    const lines = streetDocLines.filter((_, i) => i !== streetIndex);
-    drawings.set("street-lines", { lines } satisfies StreetLinesDoc);
-    openStreetLine(Math.max(0, Math.min(streetIndex, lines.length - 1)));
+  const saveStreet = (l: SavedStreetLine) => {
+    const next = [...savedStreet];
+    next[editedStreet] = l;
+    drawings.set("street-lines", { lines: next } satisfies StreetLinesDoc);
   };
+  const deleteStreet = (i: number) => {
+    drawings.set("street-lines", { lines: savedStreet.filter((_, k) => k !== i) } satisfies StreetLinesDoc);
+    switchStreet(Math.max(0, i - 1));
+  };
+  // Every street line for the journey planner, the one being edited as the tool last routed it.
+  const ridden = useMemo(
+    () =>
+      savedStreet
+        .map((l, i) => (i === editedStreet && line ? line : lineInput(l)))
+        .concat(editedStreet === savedStreet.length && line ? [line] : [])
+        .filter((l): l is StreetLineInput => l !== null && l.view.points.length >= 2),
+    [savedStreet, editedStreet, line],
+  );
+  const otherStreet = useMemo(
+    () => savedStreet.filter((_, i) => i !== editedStreet),
+    [savedStreet, editedStreet],
+  );
   // An imported GTFS route becomes a line of the project's own: a street line or a railway service line.
   // The feed then leaves the route out, so it is not ridden twice.
   const [convertError, setConvertError] = useState<string | null>(null);
@@ -295,7 +303,7 @@ export function Workspace({
             toStreetLine(pattern, e.defaultProfile(mode), e.defaultRules()),
           );
           drawings.set("street-lines", doc);
-          openStreetLine(i);
+          switchStreet(i);
         } finally {
           e.dispose();
         }
@@ -510,21 +518,23 @@ export function Workspace({
           <MapView onReady={setMap} />
           {project && drawings.loaded && tab === "create" && editable && chosen === "street" && (
             <StreetLineEditor
-              key={`${projectId}-${drawings.generation("street-lines")}-${streetRev}`}
+              key={`${projectId}-${drawings.generation("street-lines")}-${streetSwitch}`}
               map={map}
               panel={panel}
               onLineChange={setLine}
               streetSetups={setups}
               delays={delays}
-              initial={streetDocLines[streetIndex] ?? null}
-              onSave={saveStreetLine}
-              picker={
-                <StreetLinePicker
-                  names={streetDocLines.map((l) => l.name)}
-                  index={streetIndex}
-                  onPick={openStreetLine}
-                  onNew={() => openStreetLine(streetDocLines.length)}
-                  onRemove={removeStreetLine}
+              initial={savedStreet[editedStreet] ?? null}
+              onSave={saveStreet}
+              defaultName={t("street.lineN", { n: editedStreet + 1 })}
+              otherLines={otherStreet}
+              lineList={
+                <LineList
+                  names={savedStreet.map((l) => l.name)}
+                  current={editedStreet}
+                  onSelect={switchStreet}
+                  onNew={() => switchStreet(savedStreet.length)}
+                  onDelete={deleteStreet}
                 />
               }
               railTopology={railTopology}

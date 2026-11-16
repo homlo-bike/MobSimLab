@@ -19,7 +19,6 @@ import { JourneyPlanner } from "../src/features/journey-planner/JourneyPlanner";
 import type { PlannerEngine, PlannerLoader, Timetable } from "../src/features/journey-planner/types";
 import { loadRailEngine } from "../src/features/railways/engine";
 import { lineProblem } from "../src/features/railways/serviceLines";
-import { StreetLinePicker } from "../src/features/street-lines/StreetLinePicker";
 import type { RoutingRules, VehicleProfile } from "../src/features/street-lines/types";
 
 afterEach(cleanup);
@@ -147,7 +146,14 @@ describe("imported routes as lines", () => {
       ["end_stop", "Station"],
     ]);
     expect(line.points[1]!.lonlat).toEqual([10.006, 50.004]);
-    expect(line.timing).toEqual({ headwayMin: 10, dwellS: 20, layoverMin: 5 });
+    expect(line.timing).toEqual({
+      headwayMin: 10,
+      offPeakHeadwayMin: 20,
+      dwellS: 20,
+      layoverMin: 5,
+      firstMin: 7 * 60,
+      lastMin: 18 * 60,
+    });
     expect(line.view.points).toEqual([]);
   });
 
@@ -233,21 +239,5 @@ describe("the journey planner after a route became a line", () => {
     expect(screen.getByText("Routes now edited as lines: 1")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Edit as a line" }));
     expect(onEdit).toHaveBeenCalledWith("f1", "7");
-  });
-});
-
-describe("street line picker", () => {
-  it("picks, adds and removes lines", () => {
-    const pick = vi.fn();
-    const add = vi.fn();
-    const remove = vi.fn();
-    render(<StreetLinePicker names={["7", ""]} index={1} onPick={pick} onNew={add} onRemove={remove} />);
-    const select = screen.getByRole("combobox", { name: "Line" }) as HTMLSelectElement;
-    expect([...select.options].map((o) => o.text)).toEqual(["7", "Line 2"]);
-    fireEvent.change(select, { target: { value: "0" } });
-    expect(pick).toHaveBeenCalledWith(0);
-    fireEvent.click(screen.getByRole("button", { name: "New line" }));
-    fireEvent.click(screen.getByRole("button", { name: "Remove line" }));
-    expect([add.mock.calls.length, remove.mock.calls.length]).toEqual([1, 1]);
   });
 });
