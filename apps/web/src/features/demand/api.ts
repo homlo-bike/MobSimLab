@@ -94,8 +94,6 @@ export interface DemandRunsApi {
   remove(id: string): Promise<void>;
   /** Where the browser downloads a file the run saved (the OD matrices, `od.omx`). */
   fileUrl(id: string, name: string): string;
-  /** Load one zoom-14 street tile into the server's street cache, so starting a run does not wait for it. */
-  streetTile(x: number, y: number): Promise<void>;
 }
 
 /** Most street tiles one demand run may take (apps/api `MAX_DEMAND_TILES`). */
@@ -149,12 +147,6 @@ export function projectDemandRuns(projectId: string, csrf: string): DemandRunsAp
       await send<{ ok: true }>("DELETE", one(id), csrf);
     },
     fileUrl: (id, name) => `${one(id)}/files/${encodeURIComponent(name)}`,
-    streetTile: async (x, y) => {
-      const res = await fetch(`/api/street-network/tiles/14/${x}/${y}`, { credentials: "same-origin" });
-      if (!res.ok)
-        throw new Error(`OpenStreetMap streets are unavailable right now (${res.status}); try again`);
-      await res.text();
-    },
   };
 }
 

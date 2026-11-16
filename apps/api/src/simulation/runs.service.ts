@@ -217,9 +217,10 @@ export class RunsService {
    */
   async start(actor: ProjectActor, projectId: string, input: NewRun, via?: AgentVia): Promise<RunDetail> {
     await this.projects.authorize(actor, projectId, "edit");
+    const demand = input.kind === "demand" ? this.demandNetwork(input) : null;
     const net =
       input.kind === "demand"
-        ? await this.demandNetwork(input)
+        ? demand!
         : input.kind === "road"
           ? await this.roadNetwork(input.scenario)
           : await this.resolveNetwork(projectId, input.network);
@@ -278,7 +279,9 @@ export class RunsService {
       );
       return r.id;
     });
-    await this.enqueue(id);
+    // A demand run is queued once its streets are loaded, in the background (they can take minutes).
+    if (demand) void this.prepareDemand(id, demand.tiles);
+    else await this.enqueue(id);
     return this.get(actor, projectId, id);
   }
 
@@ -338,7 +341,15 @@ export class RunsService {
         tx,
       );
     });
-    await this.enqueue(runId);
+    // A demand run whose streets never loaded loads them again first.
+    const stored = await this.db
+      .selectFrom("simulation.run")
+      .select(["kind", "lines"])
+      .where("id", "=", runId)
+      .where("network", "=", "{}")
+      .executeTakeFirst();
+    if (stored?.kind === "demand") void this.prepareDemand(runId, demandTiles(stored.lines));
+    else await this.enqueue(runId);
     return this.get(actor, projectId, runId);
   }
 
@@ -541,43 +552,84 @@ export class RunsService {
   }
 
   /**
-   * Purpose: the network of a demand run: the street tiles (OSM XML) around every zone centre of the bundle,
-   * from which the worker builds the streets (worker `demand/osm.py`), and the bundle itself. 400 when the
-   * bundle has no zone centres or the zones take more than `MAX_DEMAND_TILES` tiles; 502/504 when
-   * OpenStreetMap cannot be reached for a tile that is not cached.
+   * Purpose: what to store for a new demand run before its streets are loaded: the bundle, and the street tiles
+   * around every zone centre that `prepareDemand` loads next. 400 when the bundle has no zone centres or the
+   * zones take more than `MAX_DEMAND_TILES` tiles.
    */
-  private async demandNetwork(
-    input: NewDemandRun,
-  ): Promise<{ stored: StoredInput["network"]; network: string; lines: string }> {
+  private demandNetwork(input: NewDemandRun): {
+    stored: StoredInput["network"];
+    network: string;
+    lines: string;
+    tiles: [number, number][];
+  } {
     const tiles = demandTiles(input.bundle);
     if (!tiles.length) throw new BadRequestException("the demand model input has no zones");
     if (tiles.length > MAX_DEMAND_TILES)
       throw new BadRequestException(
         `the zones cover too large an area for one demand run (${tiles.length} street tiles, at most ${MAX_DEMAND_TILES}); use a smaller buffer or fewer lines`,
       );
-    // Four tiles at a time; the web app loads them first, so they are usually in the street cache already.
-    const xml: string[] = new Array<string>(tiles.length);
-    let next = 0;
-    const worker = async () => {
-      for (let i = next++; i < tiles.length; i = next++) {
-        const [x, y] = tiles[i]!;
-        try {
+    return { stored: { kind: "demand", ...input.summary }, network: "{}", lines: input.bundle, tiles };
+  }
+
+  /**
+   * Purpose: load the OpenStreetMap street tiles of a queued demand run in the background, store them gzipped
+   * in its network (worker `jobs/demand.py` `street_tiles`) and queue it. The run's progress counts the tiles.
+   * A run stopped meanwhile is left as it is; a run whose streets cannot be loaded fails with the reason.
+   */
+  private async prepareDemand(id: string, tiles: [number, number][]): Promise<void> {
+    const open = async () =>
+      (
+        await this.db
+          .selectFrom("simulation.run")
+          .select(["status", "cancel_requested"])
+          .where("id", "=", id)
+          .executeTakeFirst()
+      )?.status === "queued";
+    try {
+      const xml = new Array<string>(tiles.length);
+      let next = 0;
+      let done = 0;
+      let stopped = false;
+      const worker = async () => {
+        for (let i = next++; i < tiles.length && !stopped; i = next++) {
+          const [x, y] = tiles[i]!;
           xml[i] = await this.streets.tile(x, y);
-        } catch (e) {
-          if (e instanceof OverpassError)
-            throw new HttpException("OpenStreetMap streets are unavailable right now; try again", e.status);
-          throw e;
+          done++;
+          if (done % 8 === 0 || done === tiles.length) {
+            if (!(await open())) stopped = true;
+            else
+              await this.db
+                .updateTable("simulation.run")
+                .set({ progress: JSON.stringify({ step: "streets", done, of: tiles.length }) })
+                .where("id", "=", id)
+                .execute();
+          }
         }
+      };
+      await Promise.all([worker(), worker(), worker(), worker()]);
+      if (stopped || !(await open())) return;
+      // A city's street tiles are large; gzipped they fit the run's network column.
+      const network = JSON.stringify({ tiles_gz: gzipSync(JSON.stringify(xml)).toString("base64") });
+      if (network.length > MAX_ROAD_NETWORK_CHARS) {
+        await this.settle(
+          id,
+          "failed",
+          "the streets of the model area are too large for one demand run; use a smaller buffer or fewer lines",
+        );
+        return;
       }
-    };
-    await Promise.all([worker(), worker(), worker(), worker()]);
-    // A city's street tiles are large; gzipped they fit the run's network column (worker `jobs/demand.py`).
-    const network = JSON.stringify({ tiles_gz: gzipSync(JSON.stringify(xml)).toString("base64") });
-    if (network.length > MAX_ROAD_NETWORK_CHARS)
-      throw new BadRequestException(
-        "the streets of the model area are too large for one demand run; use a smaller buffer or fewer lines",
-      );
-    return { stored: { kind: "demand", ...input.summary }, network, lines: input.bundle };
+      await this.db.updateTable("simulation.run").set({ network }).where("id", "=", id).execute();
+      await this.enqueue(id);
+    } catch (e) {
+      const reason =
+        e instanceof OverpassError
+          ? "OpenStreetMap streets are unavailable right now; run it again in a moment"
+          : e instanceof ServiceUnavailableException
+            ? "the run could not be queued; try again in a moment"
+            : `the streets of the model area could not be loaded: ${e instanceof Error ? e.message : String(e)}`;
+      this.log.warn(`demand run ${id}: ${reason}`);
+      await this.settle(id, "failed", reason).catch(() => undefined);
+    }
   }
 
   /**

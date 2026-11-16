@@ -381,7 +381,6 @@ function fakeRuns(): DemandRunsApi & { started: unknown[] } {
     cancel: async () => done,
     remove: async () => undefined,
     fileUrl: (id, name) => `/files/${id}/${name}`,
-    streetTile: async () => undefined,
   };
 }
 
