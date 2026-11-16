@@ -1,7 +1,10 @@
 //! Service lines from the railway editor: stops, a catalogue train and headways, planned on the
 //! design's topology export and published for the journey planner in one call.
 
-use rail_plan::{publish_service, service_bands, train_params, ServiceLine, ServiceVehicle};
+use rail_plan::{
+    line_spec, publish_service, service_bands, train_params, train_params_with, ServiceLine,
+    ServiceVehicle,
+};
 
 fn topology() -> String {
     std::fs::read_to_string(concat!(
@@ -40,6 +43,9 @@ fn shuttle() -> ServiceLine {
         peaks: vec![[7.0 * 3600.0, 9.0 * 3600.0]],
         dwell_s: None,
         turnback_s: None,
+        accel_ms2: None,
+        decel_ms2: None,
+        supplement_share: None,
     }
 }
 
@@ -242,4 +248,27 @@ fn trains_per_hour_on_each_section_follow_the_timetable() {
         .max()
         .unwrap();
     assert!(total <= 36, "{total}");
+}
+
+#[test]
+fn the_projects_acceleration_braking_and_supplement_replace_the_modes() {
+    let t = train_params_with(&class_j(), 1, "metro", Some(0.8), Some(0.9));
+    let a0 = t.max_tractive_effort_n / (t.mass_kg * t.rotating_mass_factor);
+    assert!((a0 - 0.8).abs() < 1e-9);
+    assert!((t.service_decel_mps2 - 0.9).abs() < 1e-9);
+    // Nonsense keeps the mode's values.
+    let d = train_params_with(&class_j(), 1, "metro", Some(-1.0), None);
+    assert_eq!(d, train_params(&class_j(), 1, "metro"));
+    let imp = rail_model::topology::import_json(
+        &topology(),
+        &rail_model::topology::ImportOptions::default(),
+    )
+    .unwrap();
+    let m = rail_model::Model::compile(&imp.spec).unwrap();
+    let l = ServiceLine {
+        supplement_share: Some(0.08),
+        ..shuttle()
+    };
+    assert!((line_spec(&l, &m).supplement_share - 0.08).abs() < 1e-9);
+    assert!((line_spec(&shuttle(), &m).supplement_share - 0.05).abs() < 1e-9);
 }
