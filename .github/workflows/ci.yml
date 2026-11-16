@@ -87,7 +87,7 @@ jobs:
       - run: uv run --frozen --extra sim --extra demand pytest -q
       - name: Demand test town matches contracts/demand-input.schema.json
         run: |
-          uvx ruff check ../tools/contracts && uvx ruff format --check ../tools/contracts
+          (cd .. && uvx ruff check tools/contracts && uvx ruff format --check tools/contracts)
           mkdir -p "$RUNNER_TEMP/demand"
           uv run --frozen --extra sim --extra demand python -c "import json, sys; sys.path.insert(0, 'tests'); from test_demand import town; json.dump(town(), open(sys.argv[1], 'w'))" "$RUNNER_TEMP/demand/town.json"
           uv run --no-project --with jsonschema python ../tools/contracts/check_demand_input.py "$RUNNER_TEMP"/demand/*.json
