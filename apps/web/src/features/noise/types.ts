@@ -14,6 +14,8 @@ export type NoiseMode =
   | "long_distance_rail"
   | "high_speed_rail";
 export type Indicator = "lden" | "lnight";
+/** Level of detail of the flows and speeds (ADR-0038 §4). */
+export type InputLevel = "planned" | "timetabled" | "simulated";
 
 /** Vehicles per hour in each period (day 07–19, evening 19–23, night 23–07 average). */
 export interface Flows {
@@ -37,6 +39,8 @@ export interface NoiseLine {
   electric?: boolean;
   vehicle_length_m: number;
   flows: Flows;
+  /** Vehicles in each clock hour 0–23 (timetabled and simulated input); replaces `flows` when given. */
+  hourly?: number[];
   points: LonLat[];
   /** `[chainage m, km/h]` along the line. */
   speed?: [number, number][];
@@ -96,6 +100,12 @@ export interface NoiseInput {
   terrain?: NoiseTerrain | null;
   /** People per cell, shared among the buildings; null estimates them from the building size. */
   population?: NoisePopulation | null;
+  /** Level of detail of the flows and speeds, stored with the result. */
+  input_level?: InputLevel;
+  /** Points that set the map grid instead of the sources (two scenarios compared share them). */
+  grid_cover?: LonLat[];
+  /** Origin of the engine's local projection; two scenarios compared share it. */
+  origin?: LonLat;
 }
 
 /**
@@ -139,7 +149,7 @@ export interface NoiseView {
     cell_m: number;
     coordinates: [LonLat, LonLat, LonLat, LonLat];
   } | null;
-  input_level: "planned" | "timetabled" | "simulated";
+  input_level: InputLevel;
   /** With buildings only. */
   buildings?: NoiseExposure | null;
   /** `[L_den, L_night]` beside each input building, null where the map does not reach. */
@@ -153,6 +163,8 @@ export interface NoiseEngine {
   estimate(input: NoiseInput): NoiseView;
   /** RGBA pixels of the last estimate, north row first; colours start at `fromDb`. */
   image(indicator: Indicator, fromDb: number, alpha: number): Uint8Array;
+  /** Grid levels of the last estimate in dB, rows from the south; NaN where not computed. */
+  levels?(indicator: Indicator): Float32Array;
   dispose(): void;
 }
 

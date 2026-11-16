@@ -10,7 +10,7 @@
 | Shared | Named users and IdP groups with a project role | Editors/Owners |
 | Public | Everyone signed in to the instance, read-only. Visitors who are not signed in never see projects (product owner decision, 2026-11-16). | Editors/Owners only |
 
-**Public projects (v1).** `project.project.visibility` is `private` or `public` (migration 0013); Private and Shared differ only in whether the Owner added people. Only the Owner changes it, with `PUT /api/projects/:id/visibility` `{ visibility, licenceAccepted }`. Making a project public first shows the Owner the ODbL notice for OpenStreetMap-derived data (C-12) and asks them to confirm that everything else in the project may be shared too; the API refuses without `licenceAccepted: true`. The change is audited as `project.visibility_changed`. `GET /api/projects?public=true` lists the public projects the caller is not a member of, for the "Public projects" shelf on the projects home. People who reach a project only because it is public get the Viewer role and cannot duplicate it or see its members. Public replaced the earlier view-only link; projects that had the link on became private. The project header shows a "Public" tag with the OpenStreetMap notice.
+**Public projects (v1).** `project.project.visibility` is `private` or `public` (migration 0013); Private and Shared differ only in whether the Owner added people. Only the Owner changes it, with `PUT /api/projects/:id/visibility` `{ visibility, licenceAccepted }`. Making a project public first shows the Owner the ODbL notice for OpenStreetMap-derived data (C-12) and asks them to confirm that everything else in the project may be shared too; the API refuses without `licenceAccepted: true`. The change is audited as `project.visibility_changed`. `GET /api/projects?public=true` lists the public projects the caller is not a member of, for the "Public projects" shelf on the projects home. People who reach a project only because it is public get the Viewer role and cannot duplicate it, save it as a .mslab file or see its members. Public replaced the earlier view-only link; projects that had the link on became private. The project header shows a "Public" tag with the OpenStreetMap notice.
 
 ### 1.2 Concurrent editing
 
@@ -25,7 +25,7 @@ Instead:
 - **Scenarios as branches:** each team member can work in their own scenario; differences are shown as a diff layer and list; changes can be cherry-picked into another scenario or promoted to base.
 - **Comments and mentions:** threads on any object or map location; mentions notify (in-app; e-mail optional via SMTP config).
 
-**Drawings (v1).** Until the network is stored object by object, what the editors draw is saved as one JSON document per project and kind in `project.drawing` (migration 0005): `street-lines`, `railway` and `street-setups` (GIS tab). `GET /api/projects/:id/drawings` returns them all; `PUT /api/projects/:id/drawings/:kind` with `{ doc, baseVersion }` replaces one and returns the new `version`, or 409 with the current drawing when `baseVersion` is stale. The web app saves 0.8 s after the last change, one save per kind at a time, retries lost connections with back-off, and on 409 shows a banner to keep one's own drawing or take the other one. Owners and Editors write; everyone who can read the project reads. The API checks each kind's outline (apps/api/src/projects/drawings.ts) and a size limit of 8 MB; saves are audited as `project.drawing_saved` with versions and size but not the document. Duplicating a project copies its drawings. A new editor adds a kind there and in `apps/web/src/projects/drawings.ts`.
+**Drawings (v1).** Until the network is stored object by object, what the editors draw is saved as one JSON document per project and kind in `project.drawing` (migration 0005): `street-lines`, `railway` and `street-setups` (GIS tab). `GET /api/projects/:id/drawings` returns them all; `PUT /api/projects/:id/drawings/:kind` with `{ doc, baseVersion }` replaces one and returns the new `version`, or 409 with the current drawing when `baseVersion` is stale. The web app saves 0.8 s after the last change, one save per kind at a time, retries lost connections with back-off, and on 409 shows a banner to keep one's own drawing or take the other one. Owners and Editors write; everyone who can read the project reads. The API checks each kind's outline (apps/api/src/projects/drawings.ts) and a size limit of 8 MB; saves are audited as `project.drawing_saved` with versions and size but not the document. Saving the `preferences` drawing also records each project value it changes (09 §1.5) as `project.value_changed` (old and new value, null when the library's applies, and the reason from the document's `reasons`), or `project.value_reason` when only a reason was given; `GET /api/projects/:id/value-history` (optional `id`, `before`, `limit`) lists them newest first with who and when, for everyone who can read the project. Duplicating a project copies its drawings. A new editor adds a kind there and in `apps/web/src/projects/drawings.ts`.
 
 ### 1.3 Change history
 
@@ -51,22 +51,23 @@ A ZIP container, versioned, readable with standard tools:
 
 ```text
 project.mslab
-├── manifest.json            format version, app version, project id, created, checksums, licences summary
-├── project.json             project metadata, preferences, custom field schemas
-├── scenarios/<id>.json      scenario metadata
-├── data/<entity>.ndjson     one JSON object per line per entity type (nodes, edges, stations, lines, …)
-│                            geometry as GeoJSON in EPSG:4326 + local CRS definition
-├── vehicles/<mode>/*.json   custom vehicle types (same schema as catalogue)
-├── assumptions.json         assumption instances + overrides
-├── sources.json             source registry entries used by this project
-├── attachments/             user uploads (optional, user chooses)
-├── runs/<runId>/            optional: run results (large)
-├── ATTRIBUTION.md           generated: all sources and licences contained
-└── signatures/ (optional)   detached signature for integrity
+├── manifest.json            format version, app version, project id and name, date, what is included,
+│                            SHA-256 and size of every other file
+├── project.json             name, description, area, modes
+├── plugins.json             plugins switched on or off for the project (bundled, or installed with a version)
+├── data/<kind>.json         one saved drawing per tool (railway, street-lines, depots, preferences, scenarios, …):
+│                            kind, schema version, document as the tool saves it (geometry in EPSG:4326)
+├── runs/<runId>/            optional: finished simulation runs (run.json, network.txt, lines.txt,
+│                            replay.json.gz for road runs)
+└── ATTRIBUTION.md           generated: contents and the sources the project refers to
 ```
 
+Format 1.0.0 (2026-11-16) has no custom vehicles, attachments, sources registry or signatures yet, because
+projects cannot hold them; they come as a later minor version (`vehicles/<mode>/*.json`, `attachments/`,
+`sources.json`, `signatures/`).
+
 - JSON Schemas for every file are published, so other tools can read and write `.mslab`.
-- **Import** validates schemas, checks checksums, applies forward migrations (`format 1.x → current`), remaps IDs only on conflict (UUIDv7 makes conflicts rare), and runs in the sandboxed tool-runner with zip-bomb limits.
+- **Import** always creates a new project owned by the person who opens it, with new ids. It runs in the sandboxed tool-runner (`apps/api/src/tool-runner`) with ZIP limits (200 MB file, 5000 entries, 70 MB per file, 512 MB unpacked, compression ratio), checks the checksums and every file against its schema, and applies forward migrations (`apps/api/src/mslab/migrations.mts`); the API then checks every drawing again against the editor's outline. Drawings of tools or plugins this instance lacks are left out and listed.
 - Reference data (OSM, rasters) is **not** included by default (size, and it can be re-imported); the manifest records what was used (source, timestamp, bbox) so it can be rebuilt. Optional "full export" includes it.
 
 ### 2.3 Other import/export formats

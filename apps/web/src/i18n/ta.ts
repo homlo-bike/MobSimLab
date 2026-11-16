@@ -2,6 +2,7 @@ import { roadTa } from "./road/ta";
 import { editorsTa } from "./editors/ta";
 import { cargoBikeTa } from "./cargo-bike/ta";
 import { depotsTa } from "./depots/ta";
+import { mslabTa } from "./mslab/ta";
 import { populationTa } from "./population/ta";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -292,6 +293,7 @@ export const ta: Messages = {
   "prefs.delayLane": "வண்ணம் பூசப்பட்ட பேருந்து அல்லது டிராம் பாதையில்",
   "prefs.delayDefault": "அனுமானங்களின் நூலகம்: {value} %",
   "prefs.delayReset": "நூலக மதிப்பைப் பயன்படுத்து",
+  "prefs.reason": "இந்த மதிப்புக்கான காரணம் (விருப்பத்தேர்வு)",
   "prefs.stationsTitle": "நிலையங்கள்",
   "prefs.stationsIntro":
     "இந்தத் தூரத்திற்குள் ஒரே பெயருள்ள நிறுத்தங்கள் வரைபட வரைவு, பயணத் திட்டமிடுபவர், நன்மை மற்றும் பயணிகள் அட்டவணைகளில் ஒரு நிலையமாகக் கணக்கிடப்படும்.",
@@ -435,6 +437,7 @@ export const ta: Messages = {
   ...editorsTa,
   ...cargoBikeTa,
   ...depotsTa,
+  ...mslabTa,
   ...populationTa,
   ...roadTa,
   ...PLUGIN_MESSAGES.ta,

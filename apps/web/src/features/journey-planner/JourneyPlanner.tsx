@@ -52,6 +52,8 @@ interface Props {
   demandZones?: readonly DemandZone[];
   /** Stops with the same name within this many metres are one station (Project preferences). */
   sameNameM?: number;
+  /** The project's walking and change values (Project preferences → All parameters). */
+  projectSettings?: Partial<Settings>;
   /** Existing networks imported from GTFS feeds (GTFS plugin). */
   gtfsFeeds?: readonly GtfsFeed[];
   /** Saves the imported feeds; absent when the planner may only look. */
@@ -190,6 +192,7 @@ export function JourneyPlanner({
   pluginLines = NO_PLUGIN_LINES,
   demandZones = NO_ZONES,
   sameNameM = LIBRARY_SAME_NAME_M,
+  projectSettings,
   onEditGtfsRoute,
   gtfsFeeds = NO_FEEDS,
   onGtfsFeeds,
@@ -267,7 +270,7 @@ export function JourneyPlanner({
     }
     let alive = true;
     let made: PlannerEngine | null = null;
-    loadPlanner(timetable, { same_name_station_m: sameNameM, ...settings })
+    loadPlanner(timetable, { same_name_station_m: sameNameM, ...projectSettings, ...settings })
       .then((e) => {
         made = e;
         if (!alive) return e.dispose();
@@ -282,7 +285,7 @@ export function JourneyPlanner({
       alive = false;
       made?.dispose();
     };
-  }, [timetable, settings, sameNameM, loadPlanner]);
+  }, [timetable, settings, sameNameM, projectSettings, loadPlanner]);
 
   const time = parseClock(timeText);
   const planned = useMemo((): { plan: Plan | null; error: string | null } => {
@@ -820,7 +823,7 @@ export function JourneyPlanner({
                     type="number"
                     step={stepv}
                     min={0}
-                    value={settings[key] ?? def}
+                    value={settings[key] ?? projectSettings?.[key] ?? def}
                     onChange={(e) => {
                       const v = Number(e.target.value);
                       if (Number.isFinite(v) && v > 0) setSettings((s) => ({ ...s, [key]: v }));

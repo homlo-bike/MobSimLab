@@ -5,12 +5,12 @@ import { EyeIcon, MoreIcon, PlusIcon, SearchIcon } from "../shell/icons";
 import { anchorOf, Popover } from "../shell/Popover";
 import { initials } from "../shell/UserMenu";
 import { can, type Project, type ProjectsApi, type Shelf, shelfOf } from "./api";
-import { DeleteDialog, NewProjectDialog, RenameDialog, ShareDialog } from "./ProjectDialogs";
+import { DeleteDialog, NewProjectDialog, RenameDialog, SaveMslabDialog, ShareDialog } from "./ProjectDialogs";
 
 type Filter = "all" | Shelf | "archived";
 type Dialogs =
   | { kind: "new" }
-  | { kind: "rename" | "delete"; project: Project }
+  | { kind: "rename" | "delete" | "mslab"; project: Project }
   | { kind: "share"; project: Project; focus: "invite" | "access" };
 
 const LINE_COLOURS = ["#1d4ed8", "#c81e1e", "#c2410c", "#0f766e", "#7c3aed", "#475569"];
@@ -55,7 +55,7 @@ const isPhone = () =>
 /**
  * The projects home (mockups "Projects home", desktop, tablet and phone): own projects, projects shared with the
  * person that they can edit, view-only projects, and archived ones; a New project card; and on each project a
- * menu with Open, Rename, Share, Manage access, Duplicate, Archive and Delete, by right-click, the ⋯ button, the
+ * menu with Open, Rename, Share, Manage access, Duplicate, Save as .mslab file, Archive and Delete, by right-click, the ⋯ button, the
  * keyboard context-menu key, or a long press on touch screens.
  */
 export function ProjectsHome({
@@ -83,6 +83,28 @@ export function ProjectsHome({
   } | null>(null);
   const [dialog, setDialog] = useState<Dialogs | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+  const [opening, setOpening] = useState(false);
+  const fileInput = useRef<HTMLInputElement>(null);
+
+  /** Open a `.mslab` file as a new project (ADR-0021) and say what, if anything, was left out. */
+  const openFile = (file: File) =>
+    void act(async () => {
+      setOpening(true);
+      try {
+        const { project, skipped } = await api.importMslab(file);
+        setProjects((ps) => [project, ...(ps ?? [])]);
+        setNotice(
+          [
+            t("home.openedMslab", { name: project.name }),
+            skipped.length ? t("home.leftOut", { list: skipped.join("; ") }) : "",
+          ]
+            .filter(Boolean)
+            .join(" "),
+        );
+      } finally {
+        setOpening(false);
+      }
+    });
 
   const reload = useCallback(() => {
     api.list(false).then(setProjects, (e: unknown) => setError(String(e)));
@@ -208,6 +230,7 @@ export function ProjectsHome({
               setNotice(t("home.duplicated", { name: copy.name }));
             }),
         ),
+      !p.viaPublic && item("menu.saveMslab", () => setDialog({ kind: "mslab", project: p })),
       can.manage(p) && <hr key="hr" className="my-1.5 border-slate-200" />,
       can.manage(p) &&
         (p.archivedAt
@@ -296,6 +319,31 @@ export function ProjectsHome({
               onChange={(e) => setQ(e.target.value)}
             />
           </label>
+          {canCreate && (
+            <>
+              <input
+                ref={fileInput}
+                type="file"
+                accept=".mslab"
+                className="hidden"
+                aria-hidden="true"
+                tabIndex={-1}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  e.target.value = "";
+                  if (file) openFile(file);
+                }}
+              />
+              <button
+                type="button"
+                className="btn"
+                disabled={opening}
+                onClick={() => fileInput.current?.click()}
+              >
+                {opening ? t("home.openingMslab") : t("home.openMslab")}
+              </button>
+            </>
+          )}
           {canCreate && (
             <button
               type="button"
@@ -473,6 +521,9 @@ export function ProjectsHome({
             reload();
           }}
         />
+      )}
+      {dialog?.kind === "mslab" && (
+        <SaveMslabDialog api={api} project={dialog.project} onClose={() => setDialog(null)} />
       )}
       {dialog?.kind === "delete" && (
         <DeleteDialog

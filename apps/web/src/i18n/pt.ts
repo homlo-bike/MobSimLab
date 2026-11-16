@@ -2,6 +2,7 @@ import { roadPt } from "./road/pt";
 import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
 import { depotsPt } from "./depots/pt";
+import { mslabPt } from "./mslab/pt";
 import { populationPt } from "./population/pt";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -289,6 +290,7 @@ export const pt: Messages = {
   "prefs.delayLane": "Em uma faixa pintada de ônibus ou bonde",
   "prefs.delayDefault": "Biblioteca de premissas: {value} %",
   "prefs.delayReset": "Usar o valor da biblioteca",
+  "prefs.reason": "Motivo deste valor (opcional)",
   "prefs.stationsTitle": "Estações",
   "prefs.stationsIntro":
     "Paradas com o mesmo nome dentro desta distância contam como uma só estação no mapa esquemático, no planejador de viagens e nas tabelas de benefícios e de passageiros.",
@@ -430,6 +432,7 @@ export const pt: Messages = {
   ...editorsPt,
   ...cargoBikePt,
   ...depotsPt,
+  ...mslabPt,
   ...populationPt,
   ...roadPt,
   ...PLUGIN_MESSAGES.pt,

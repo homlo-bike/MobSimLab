@@ -768,7 +768,7 @@ export const editorsFr = {
   "noise.dbOrMore": "{db} dB ou plus",
   "noise.dbRange": "{from}–{to} dB",
   "noise.mapNote":
-    "Service prévu seulement, sans trafic général. Les bâtiments font écran par-dessus leurs toits et autour de leurs extrémités (ISO 9613-2) et leurs façades réfléchissent une fois (premier ordre). Les bâtiments sans hauteur dans OpenStreetMap prennent 3 m par étage indiqué, ou 8 m (hypothèses du plugin bruit). Le niveau d’un bâtiment exclut la réflexion sur sa propre façade. Bâtiments © contributeurs d’OpenStreetMap.",
+    "Lignes de service seulement, sans trafic général. Les bâtiments font écran par-dessus leurs toits et autour de leurs extrémités (ISO 9613-2) et leurs façades réfléchissent une fois (premier ordre). Les bâtiments sans hauteur dans OpenStreetMap prennent 3 m par étage indiqué, ou 8 m (hypothèses du plugin bruit). Le niveau d’un bâtiment exclut la réflexion sur sa propre façade. Bâtiments © contributeurs d’OpenStreetMap.",
   "noise.terrain": "Utiliser les altitudes du relief (Copernicus GLO-30)",
   "noise.terrainTooLarge":
     "Les lignes couvrent une zone trop grande pour charger le relief : cette carte est donc calculée sur terrain plat.",
@@ -800,6 +800,50 @@ export const editorsFr = {
   "noise.flat": "Terrain plat.",
   "noise.popCredit":
     "Population : WorldPop, University of Southampton (doi:10.5258/SOTON/WP00839), CC BY 4.0.",
+  "noise.scenario": "Scénario",
+  "noise.currentDesign": "Projet actuel",
+  "noise.compareTo": "Comparer à",
+  "noise.noComparison": "Aucune comparaison",
+  "noise.inputLevel": "Véhicules et vitesses d’après",
+  "noise.level.planned": "Prévu : intervalles et flux d’exemple",
+  "noise.level.timetabled": "Horaire : les courses de la journée",
+  "noise.level.simulated": "Simulé : une simulation routière enregistrée",
+  "noise.simulatedIntro":
+    "Les lignes routières prennent les bus que la simulation routière a comptés sur chaque tronçon et leurs vitesses. Les heures que la simulation ne couvre pas entièrement, et les voies ferrées, gardent leur horaire.",
+  "noise.noRuns":
+    "Aucune simulation routière terminée : simulez d’abord les lignes routières dans la simulation routière.",
+  "noise.chooseRun": "Choisir une simulation routière",
+  "noise.run": "Simulation routière",
+  "noise.runFor": "Simulation routière pour {name}",
+  "noise.runLabel": "{when}, {from}–{to}",
+  "noise.runHours": "Bus de la simulation routière du {run} pour {hours} ; l’horaire pour les autres heures.",
+  "noise.runNoHours":
+    "La simulation routière du {run} ne couvre aucune heure entière, les lignes routières gardent donc leur horaire.",
+  "noise.runNoTimetable":
+    "Aucune ligne routière de même numéro pour {lines} : hors des heures de la simulation, ces lignes n’ont pas de bus.",
+  "noise.railTimetabled":
+    "Les voies ferrées gardent leur horaire : la simulation de capacité ferroviaire ne conserve pas les positions des trains.",
+  "noise.noRailService":
+    "La voie ferrée n’a aucune ligne publiée, elle n’a donc pas de trains sur cette carte.",
+  "noise.railNotPublished":
+    "Les lignes de la voie ferrée n’ont pas pu être publiées ({error}), elle n’a donc pas de trains sur cette carte.",
+  "noise.computingOf": "Calcul de la carte de bruit de {name}…",
+  "noise.noDifference":
+    "Les deux cartes n’ont pas pu être comparées maille par maille, aucune carte de différence n’est donc affichée.",
+  "noise.inputUsed": "{name} · {level}",
+  "noise.comparing": "{name} comparé à {other} · {level}",
+  "noise.differenceNote":
+    "Variation en dB là où l’un des scénarios atteint la bande la plus basse ; les variations de moins de 1 dB ne sont pas affichées. Les deux utilisent les mêmes bâtiments, le même terrain et les mêmes habitants, le trafic général s’annulerait donc.",
+  "noise.changeBelow": "moins de {db}",
+  "noise.changeAbove": "{db} ou plus",
+  "noise.changeRange": "de {from} à {to}",
+  "noise.comparisonTable": "Variation par bande de bruit",
+  "noise.comparisonCaptionPeople":
+    "Habitants selon le niveau devant la façade la plus exposée de leur bâtiment",
+  "noise.comparisonCaptionBuildings": "Bâtiments selon le niveau devant leur façade la plus exposée",
+  "noise.change": "Variation",
+  "noise.exportContours": "Exporter les contours (GeoJSON)",
+  "noise.exportTable": "Exporter le tableau (CSV)",
 
   "jp.title": "Calculateur d’itinéraire",
   "jp.s": "{n} s",

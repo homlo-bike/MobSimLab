@@ -1,0 +1,12 @@
+{
+ "kind": "railway",
+ "schemaVersion": 1,
+ "updatedAt": "2026-11-16T10:00:00.000Z",
+ "doc": {
+  "origin": [13.4, 52.5],
+  "mode": "tram",
+  "stations": [{ "id": 1, "name": "Lakeside" }],
+  "tracks": [{ "id": 1, "points": [[0, 0], [400, 0]] }],
+  "switches": []
+ }
+}

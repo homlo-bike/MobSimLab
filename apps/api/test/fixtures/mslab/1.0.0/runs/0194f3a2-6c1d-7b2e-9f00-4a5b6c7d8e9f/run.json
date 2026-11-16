@@ -1,0 +1,12 @@
+{
+ "id": "0194f3a2-6c1d-7b2e-9f00-4a5b6c7d8e9f",
+ "kind": "capacity",
+ "status": "done",
+ "input": { "period": "morning_peak" },
+ "progress": null,
+ "result": { "trainsPerHour": 12 },
+ "error": null,
+ "createdAt": "2026-11-16T09:30:00.000Z",
+ "startedAt": "2026-11-16T09:30:01.000Z",
+ "finishedAt": "2026-11-16T09:31:00.000Z"
+}

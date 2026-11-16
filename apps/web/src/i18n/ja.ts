@@ -2,6 +2,7 @@ import { roadJa } from "./road/ja";
 import { editorsJa } from "./editors/ja";
 import { cargoBikeJa } from "./cargo-bike/ja";
 import { depotsJa } from "./depots/ja";
+import { mslabJa } from "./mslab/ja";
 import { populationJa } from "./population/ja";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -283,6 +284,7 @@ export const ja: Messages = {
   "prefs.delayLane": "塗装のみのバス・路面電車レーン",
   "prefs.delayDefault": "前提値ライブラリ：{value} %",
   "prefs.delayReset": "ライブラリの値を使う",
+  "prefs.reason": "この値の理由（任意）",
   "prefs.stationsTitle": "駅",
   "prefs.stationsIntro":
     "この距離内の同名の停留所は、路線図、乗換案内、便益表と利用者表で1つの駅として扱われます。",
@@ -418,6 +420,7 @@ export const ja: Messages = {
   ...editorsJa,
   ...cargoBikeJa,
   ...depotsJa,
+  ...mslabJa,
   ...populationJa,
   ...roadJa,
   ...PLUGIN_MESSAGES.ja,

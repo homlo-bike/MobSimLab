@@ -2,6 +2,7 @@ import { roadUr } from "./road/ur";
 import { editorsUr } from "./editors/ur";
 import { cargoBikeUr } from "./cargo-bike/ur";
 import { depotsUr } from "./depots/ur";
+import { mslabUr } from "./mslab/ur";
 import { populationUr } from "./population/ur";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
@@ -286,6 +287,7 @@ export const ur: Messages = {
   "prefs.delayLane": "رنگ سے بنی بس یا ٹرام لین میں",
   "prefs.delayDefault": "مفروضات کی لائبریری: {value} %",
   "prefs.delayReset": "لائبریری کی قدر استعمال کریں",
+  "prefs.reason": "اس قدر کی وجہ (اختیاری)",
   "prefs.stationsTitle": "اسٹیشن",
   "prefs.stationsIntro":
     "اس فاصلے کے اندر ایک ہی نام کے اسٹاپ اسکیمیٹک نقشے، سفر منصوبہ ساز اور فوائد و مسافر جدولوں میں ایک اسٹیشن شمار ہوتے ہیں۔",
@@ -426,6 +428,7 @@ export const ur: Messages = {
   ...editorsUr,
   ...cargoBikeUr,
   ...depotsUr,
+  ...mslabUr,
   ...populationUr,
   ...roadUr,
   ...PLUGIN_MESSAGES.ur,
