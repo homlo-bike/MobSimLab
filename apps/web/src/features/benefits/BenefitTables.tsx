@@ -57,6 +57,8 @@ interface Props {
    * country's currency to that one (the World Bank's figures are in the country's currency).
    */
   costs: { estimate: CostEstimate; currency: string | null; country: string | null; rate?: number } | null;
+  /** Called with each new estimate, and with null while there is none (the service table shows its riders). */
+  onEstimate?: (e: Estimate | null) => void;
   /** Tests inject these. */
   api?: BenefitsApi;
   loadReach?: ReachLoader;
@@ -125,6 +127,7 @@ export function BenefitTables({
   doc,
   onDoc,
   costs,
+  onEstimate,
   api = DEFAULT_API,
   loadReach = loadWasmReach,
   draws,
@@ -220,6 +223,9 @@ export function BenefitTables({
     if (!prepared || !acc) return null;
     return estimate({ prepared, access: acc, spending, country, prefs, doc, draws });
   }, [prepared, acc, spending, country, prefs, doc, draws]);
+  useEffect(() => {
+    onEstimate?.(est);
+  }, [est, onEstimate]);
 
   const currency = costs?.currency ?? null;
   const money = (v: number) => fmtMoney(v, currency);
