@@ -98,9 +98,20 @@ impl PyRailSim {
     }
 }
 
+/// Purpose: all checks of a road depot (`crates/depot-layout`), for the road simulation: the depot's
+/// driving network and a slot for every vehicle of the lines that use it.
+/// Inputs: the depot (contracts/depot.schema.json) with its vehicles, fleet and project values, as JSON.
+/// Output: the report as JSON. Raises ValueError on invalid input.
+#[pyfunction]
+fn depot_report(depot_json: &str) -> PyResult<String> {
+    let input: depot_layout::DepotInput = serde_json::from_str(depot_json).map_err(json_err)?;
+    serde_json::to_string(&depot_layout::analyse(&input)).map_err(json_err)
+}
+
 /// MobSimLab simulation kernels.
 #[pymodule]
 fn mobsim_kernels(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<PyRailSim>()?;
+    m.add_function(wrap_pyfunction!(depot_report, m)?)?;
     Ok(())
 }

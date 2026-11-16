@@ -13,5 +13,6 @@ crate-type = ["cdylib"]
 
 [dependencies]
 rail-sim = { path = "../rail-sim" }
+depot-layout = { path = "../depot-layout" }
 pyo3 = { version = "0.30", features = ["extension-module", "abi3-py312"] }
 serde_json = "1"
