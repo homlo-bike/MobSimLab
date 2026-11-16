@@ -17,6 +17,21 @@ export interface VehicleProfile {
   doors_both_sides: boolean;
 }
 
+/** A street vehicle of the catalogue (generated into vehicles.ts by tools/vehicles/street_vehicles.py). */
+export interface CatalogueVehicle {
+  id: string;
+  name: string;
+  mode: Mode;
+  length_m: number;
+  /** Null when the catalogue has no height; the mode's profile height then stays. */
+  height_m: number | null;
+  /** Loaded weight, t; null when the catalogue has none. */
+  weight_t: number | null;
+  top_speed_kmh: number;
+  /** Seats plus standing places at the mode's planning density. */
+  capacity: number;
+}
+
 export interface RoutingRules {
   traffic_side: "right" | "left";
   detour_warn_m: number;

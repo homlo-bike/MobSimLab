@@ -13,13 +13,15 @@ import type { LineView } from "./types";
 export const HIT_LAYER = "sl-legs-hit";
 
 const EMPTY: FeatureCollection = { type: "FeatureCollection", features: [] };
-const SOURCES = ["sl-roads", "sl-depot", "sl-groups", "sl-bays", "sl-legs"];
+const SOURCES = ["sl-others", "sl-roads", "sl-depot", "sl-groups", "sl-bays", "sl-legs"];
 const LAYERS = [
+  "sl-others",
   "sl-roads",
   "sl-depot",
   "sl-groups",
   "sl-bays-fill",
   "sl-bays-line",
+  "sl-legs-warn",
   "sl-legs-casing",
   "sl-legs",
   "sl-legs-error",
@@ -27,23 +29,32 @@ const LAYERS = [
   HIT_LAYER,
 ];
 const DEPOT_COLOR = "#6b7280";
+/** The mockup's warning colour, for the band under a leg with a warning. */
+const WARN_BAND = "#b97300";
 
-/** Purpose: draw a white chevron into an image so direction arrows need no font glyphs. */
+/** Pixel ratio of the chevron image: drawn at 4× so it stays sharp at its small size on the map. */
+const ARROW_RATIO = 4;
+
+/**
+ * Purpose: draw the thin white direction chevron of the line and track drawing mockup into an image (no font
+ * glyphs needed): a small chevron inside the 4 px line, pointing along it, with a 1.2 px stroke.
+ */
 function arrowImage(): ImageData | null {
-  const size = 32;
+  const size = 8 * ARROW_RATIO;
   const canvas = document.createElement("canvas");
   canvas.width = size;
   canvas.height = size;
   const ctx = canvas.getContext?.("2d");
   if (!ctx) return null;
+  const k = ARROW_RATIO;
   ctx.lineCap = "round";
   ctx.lineJoin = "round";
   ctx.strokeStyle = "#ffffff";
-  ctx.lineWidth = 4;
+  ctx.lineWidth = 1.2 * k;
   ctx.beginPath();
-  ctx.moveTo(11, 9);
-  ctx.lineTo(19, 16);
-  ctx.lineTo(11, 23);
+  ctx.moveTo(2.3 * k, 2.3 * k);
+  ctx.lineTo(4 * k, 4 * k);
+  ctx.lineTo(2.3 * k, 5.7 * k);
   ctx.stroke();
   return ctx.getImageData(0, 0, size, size);
 }
@@ -57,6 +68,13 @@ export function ensureLayers(map: MapLibreMap, color: string, trafficSide: "righ
   if (map.getSource("sl-legs")) return;
   const offset = trafficSide === "right" ? 3 : -3;
   for (const id of SOURCES) map.addSource(id, { type: "geojson", data: EMPTY });
+  map.addLayer({
+    id: "sl-others",
+    type: "line",
+    source: "sl-others",
+    layout: { "line-join": "round", "line-cap": "round" },
+    paint: { "line-color": ["get", "color"], "line-width": 3, "line-opacity": 0.4 },
+  });
   map.addLayer({
     id: "sl-roads",
     type: "line",
@@ -97,13 +115,23 @@ export function ensureLayers(map: MapLibreMap, color: string, trafficSide: "righ
     source: "sl-bays",
     paint: { "line-color": color, "line-width": 1 },
   });
+  // As in the mockup: a leg with a warning keeps the line colour over a wide, faint amber band; every leg
+  // has a white casing under a 4 px line in the mode colour.
+  map.addLayer({
+    id: "sl-legs-warn",
+    type: "line",
+    source: "sl-legs",
+    filter: ["==", ["get", "status"], "warning"],
+    layout: { "line-join": "round", "line-cap": "round" },
+    paint: { "line-color": WARN_BAND, "line-opacity": 0.45, "line-width": 10, "line-offset": offset },
+  });
   map.addLayer({
     id: "sl-legs-casing",
     type: "line",
     source: "sl-legs",
     filter: ["!=", ["get", "status"], "error"],
     layout: { "line-join": "round", "line-cap": "round" },
-    paint: { "line-color": "#ffffff", "line-width": 8, "line-offset": offset },
+    paint: { "line-color": "#ffffff", "line-width": 6.5, "line-offset": offset },
   });
   map.addLayer({
     id: "sl-legs",
@@ -111,11 +139,7 @@ export function ensureLayers(map: MapLibreMap, color: string, trafficSide: "righ
     source: "sl-legs",
     filter: ["!=", ["get", "status"], "error"],
     layout: { "line-join": "round", "line-cap": "round" },
-    paint: {
-      "line-color": ["match", ["get", "status"], "warning", STATUS_COLOR.warning, color],
-      "line-width": 5,
-      "line-offset": offset,
-    },
+    paint: { "line-color": color, "line-width": 4, "line-offset": offset },
   });
   map.addLayer({
     id: "sl-legs-error",
@@ -126,7 +150,7 @@ export function ensureLayers(map: MapLibreMap, color: string, trafficSide: "righ
   });
   const arrow = arrowImage();
   if (arrow) {
-    map.addImage("sl-arrow", arrow, { pixelRatio: 2 });
+    map.addImage("sl-arrow", arrow, { pixelRatio: ARROW_RATIO });
     map.addLayer({
       id: "sl-legs-arrows",
       type: "symbol",
@@ -134,10 +158,14 @@ export function ensureLayers(map: MapLibreMap, color: string, trafficSide: "righ
       filter: ["!=", ["get", "status"], "error"],
       layout: {
         "symbol-placement": "line",
-        "symbol-spacing": 80,
+        "symbol-spacing": 110,
         "icon-image": "sl-arrow",
         "icon-allow-overlap": true,
-        "icon-offset": [0, offset * 2],
+        "icon-ignore-placement": true,
+        "icon-rotation-alignment": "map",
+        // The chevron turns with the line (pointing along it), so its offset is across the line in its own
+        // frame: the same pixels as the leg's line-offset puts it on the middle of the drawn line.
+        "icon-offset": [0, offset],
       },
     });
   }
@@ -152,13 +180,7 @@ export function ensureLayers(map: MapLibreMap, color: string, trafficSide: "righ
 /** Purpose: recolour the route and stop bays for another mode. */
 export function setLineColor(map: MapLibreMap, color: string): void {
   if (!map.getLayer("sl-legs")) return;
-  map.setPaintProperty("sl-legs", "line-color", [
-    "match",
-    ["get", "status"],
-    "warning",
-    STATUS_COLOR.warning,
-    color,
-  ]);
+  map.setPaintProperty("sl-legs", "line-color", color);
   map.setPaintProperty("sl-bays-fill", "fill-color", color);
   map.setPaintProperty("sl-bays-line", "line-color", color);
 }
@@ -177,6 +199,16 @@ function set(map: MapLibreMap, id: string, data: object): void {
 /** Purpose: show the roads usable by the current vehicle, or hide them with `null`. */
 export function drawRoads(map: MapLibreMap, roads: object | null): void {
   set(map, "sl-roads", roads ?? EMPTY);
+}
+
+/** Purpose: draw the project's other street lines faded, from their saved routes, in their mode colours. */
+export function drawOtherLines(map: MapLibreMap, lines: { view: LineView; color: string }[]): void {
+  set(map, "sl-others", {
+    type: "FeatureCollection",
+    features: lines.flatMap((l) =>
+      legsToGeoJson(l.view).features.map((f) => ({ ...f, properties: { color: l.color } })),
+    ),
+  });
 }
 
 /** Purpose: push the line view to the map; `depot` picks which depot runs to show (`null` hides them). */
