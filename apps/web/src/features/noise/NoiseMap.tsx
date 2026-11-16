@@ -16,7 +16,8 @@ import {
 } from "./buildings";
 import { type NoiseImages, type NoiseRunner, workerRunner } from "./engine";
 import { drawNoise, LEGEND, removeNoise } from "./mapLayer";
-import { RAIL_FLOWS, railSources, streetLineSources } from "./sources";
+import type { SavedPluginLine } from "../../kits/saved";
+import { pluginSources, RAIL_FLOWS, railSources, streetLineSources } from "./sources";
 import { buildingsBbox, fetchPopulation, type PopulationFetcher, type PopulationSource } from "./population";
 import { fetchHeights, type HeightsFetcher, loadTerrain, terrainPlan } from "./terrain";
 import type {
@@ -40,6 +41,8 @@ interface Props {
   map: MapLibreMap | null;
   streetLines: StreetLinesDoc | null;
   railway: Network | null;
+  /** Cable car and ferry lines saved with the project, by plugin tool. */
+  pluginLines?: Record<string, SavedPluginLine>;
   /** Project preferences: `noise.*` values replace the plugin's assumptions. */
   preferences?: Record<string, number>;
   /** Tests inject these. */
@@ -63,6 +66,8 @@ function abortable<T>(p: Promise<T>, signal: AbortSignal): Promise<T> {
     p.then(resolve, reject).finally(() => signal.removeEventListener("abort", stop));
   });
 }
+
+const NO_PLUGIN_LINES: Record<string, SavedPluginLine> = {};
 
 /** Wait for a first-time WorldPop download for up to this long by default (a large country takes minutes). */
 const POP_WAIT_MS = 15 * 60_000;
@@ -137,6 +142,7 @@ export function NoiseMap({
   map,
   streetLines,
   railway,
+  pluginLines = NO_PLUGIN_LINES,
   preferences,
   runNoise = workerRunner,
   loadRail = loadRailEngine,
@@ -154,7 +160,9 @@ export function NoiseMap({
   // The run under way: aborting it cancels the run; `skip` ends the wait for WorldPop.
   const run = useRef<{ abort: AbortController; skip: AbortController } | null>(null);
   const hasLines =
-    (streetLines?.lines ?? []).some((l) => l.view.points.length >= 2) || !!railway?.tracks.length;
+    (streetLines?.lines ?? []).some((l) => l.view.points.length >= 2) ||
+    !!railway?.tracks.length ||
+    pluginSources(pluginLines).length > 0;
 
   useEffect(
     () => () => {
@@ -208,13 +216,14 @@ export function NoiseMap({
       step(tNow("noise.collecting"));
       const lines = await abortable(projectSources(streetLines, railway, loadRail), signal);
       signal.throwIfAborted();
-      if (!lines.length) {
+      const pointSources = pluginSources(pluginLines);
+      if (!lines.length && !pointSources.length) {
         setStatus({ kind: "error", text: tNow("noise.drawFirst") });
         return;
       }
       let buildings: NoiseBuilding[] | null = null;
       const notes: string[] = [];
-      const points = lines.flatMap((l) => l.points);
+      const points = [...lines.flatMap((l) => l.points), ...pointSources.map((x) => x.p)];
       if (withBuildings) {
         index++;
         const tiles = buildingTiles(points, MAP_REACH_M);
@@ -267,6 +276,7 @@ export function NoiseMap({
       const result = await runNoise(
         {
           lines,
+          point_sources: pointSources,
           grid: true,
           grid_reach_m: MAP_REACH_M,
           buildings: buildings ?? [],

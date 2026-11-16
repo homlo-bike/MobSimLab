@@ -183,6 +183,14 @@ The product owner chose the source (2026-11-09, "Both, WorldPop first"): WorldPo
 - Electric buses, ferries and cable cars rely on educated guesses with wide ranges until better data is added; their results carry the range and the "indicative" label.
 - ISO/TR 17534-4 is a paid document; a copy has to be bought for the test suite, or the cases taken from NoiseModelling's open test suite where it reproduces them.
 
+## Implementation notes, N4 cable cars and ferries (2026-11-16)
+
+- **Lines saved with the project** (product owner, 2026-11-16): the cable car, people mover and ferry tools save their lines with the project in the drawing kind `plugin-lines`, by tool id: the planner's drawing, the line the journey planner rides and the shape the noise map needs (towers, stations, route legs, berth time). Before, they were kept only in the browser. A drawing still kept in the browser is read once when the project has none for that tool, and then saved with the project.
+- **Noise map only** (product owner, 2026-11-16): cable cars and ferries appear in the GIS tab's noise map, not as a band in their own tools.
+- **Point sources.** A cable car is a point source at the top of every tower (`noise.cable_car_tower_lw_db`) and at every station at rope height (`noise.cable_car_station_lw_db`). A gondola's rope runs all through the service; an aerial tramway's only while the cabins travel (trip time over headway). A ferry route is a point source about every 25 m, carrying the vessels' time on that stretch spread over the hour (two passes per headway at the leg's mean speed, `noise.ferry_cruise_lw_db`), and each pier a source for the vessels lying there (berth time of a round trip over the headway, `noise.ferry_berth_lw_db`), at `noise.ferry_source_height_m`. People movers have no sound power yet and are left out. Sound power is spread evenly over the octave bands until a spectrum is taken from the sources.
+- **Service periods** (product owner's choice of the recommendation, 2026-11-16): the drawn headway in the day and the evening, no service at night; the tools have one headway for the whole day.
+- **Values per system and vessel type** (product owner, 2026-11-16): the noise parameters may carry values for a plugin mode (`cable_car`) and for one of its systems or vessel types (`cable_car/3s`, `ferry/catamaran`); the engine takes the most specific one there is, else the mode's, else the global value. Results keep the "indicative" label where a value rests on one study, and the label names it.
+
 ## Sources
 
 - Directive 2002/49/EC (Environmental Noise Directive), Annex I (indicators, periods, 4 m) and Annex VI (reporting bands). https://eur-lex.europa.eu/eli/dir/2002/49/oj
