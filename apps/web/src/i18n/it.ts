@@ -3,6 +3,7 @@ import { calendarIt } from "./calendar/it";
 import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
 import { depotsIt } from "./depots/it";
+import { populationIt } from "./population/it";
 import { PLUGIN_MESSAGES } from "./plugins";
 import type { Messages } from "./en";
 
@@ -280,6 +281,10 @@ export const it: Messages = {
   "prefs.delayLane": "Su una corsia bus o tram solo dipinta",
   "prefs.delayDefault": "Libreria delle ipotesi: {value} %",
   "prefs.delayReset": "Usa il valore della libreria",
+  "prefs.stationsTitle": "Stazioni",
+  "prefs.stationsIntro":
+    "Le fermate con lo stesso nome entro questa distanza contano come una sola stazione nella mappa schematica, nel pianificatore di viaggio e nelle tabelle dei benefici e dei passeggeri.",
+  "prefs.libraryM": "Libreria delle ipotesi: {value} m",
   "prefs.currencyTitle": "Valuta",
   "prefs.currencyIntro":
     "Tutto il denaro del progetto è mostrato in questa valuta: tabelle dei costi, benefici, scenari e risparmi della cargo bike.",
@@ -301,6 +306,30 @@ export const it: Messages = {
   "prefs.rulesChanged": "{count} modificati",
   "prefs.rulesLibrary": "Libreria delle ipotesi: {value} {unit}",
   "prefs.rulesLibraryRange": "Libreria delle ipotesi: {value} {unit} (intervallo {low}–{high})",
+  "prefs.paramsTitle": "Tutti i parametri",
+  "prefs.paramsIntro":
+    "Ogni valore della libreria delle ipotesi. Imposta il tuo per tutti i modi o per un modo; il valore di un modo prevale su quello per tutti i modi. Il valore della libreria resta accanto.",
+  "prefs.paramsGroup": "Gruppo",
+  "prefs.paramsMode": "Modo",
+  "prefs.paramsAllModes": "Tutti i modi",
+  "prefs.paramsFromAll": "il tuo valore per tutti i modi",
+  "prefs.group.modes": "Modi",
+  "prefs.group.operations": "Esercizio",
+  "prefs.group.demand": "Domanda",
+  "prefs.group.analysis": "Analisi",
+  "prefs.group.simulation": "Simulazione",
+  "prefs.group.infrastructure": "Standard infrastrutturali",
+  "prefs.group.accessibility": "Accessibilità",
+  "prefs.group.depots": "Depositi e strade",
+  "prefs.group.energy": "Energia e clima",
+  "prefs.group.cost": "Costi",
+  "prefs.group.benefits": "Benefici",
+  "prefs.group.fares": "Tariffe",
+  "prefs.traction.battery": "batteria",
+  "prefs.traction.diesel": "diesel",
+  "prefs.traction.hydrogen": "idrogeno",
+  "prefs.traction.cng": "metano (CNG)",
+  "prefs.traction.electric": "elettrico",
   "prefs.accessTitle": "Accessibilità dei marciapiedi",
   "prefs.accessIntro":
     "Limiti di gradino e distanza tra marciapiede e treno (STI PMR) e altezza del pavimento usata per i treni che non l'hanno nel catalogo. Le linee sono verificate a ogni fermata.",
@@ -390,6 +419,7 @@ export const it: Messages = {
   ...editorsIt,
   ...cargoBikeIt,
   ...depotsIt,
+  ...populationIt,
   ...roadIt,
   ...calendarIt,
   ...PLUGIN_MESSAGES.it,

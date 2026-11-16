@@ -78,6 +78,99 @@ pub struct CapacityParams {
     pub residual_delay_s: f64,
     /// Seed of the random primary delays.
     pub seed: u64,
+    /// The project's signalling and driving values; absent ones keep the kernels' defaults.
+    #[serde(skip_serializing_if = "Signalling::is_empty")]
+    pub signalling: Signalling,
+}
+
+/// The project's signalling and driving values for a capacity run (assumption library keys in
+/// brackets). A value left out keeps the planner's, interlocking's or kernel's default.
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Signalling {
+    /// Interlocking processing time to set a route, s (`signalling.route_setting_s`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub route_setting_s: Option<f64>,
+    /// Driver's sight and reaction time at the approach point, s (`signalling.sight_reaction_s`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sight_reaction_s: Option<f64>,
+    /// Section release after the tail clears it, s (`signalling.release_s`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub release_s: Option<f64>,
+    /// Sighting distance added to the braking distance, m (`signalling.sighting_m`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub sighting_m: Option<f64>,
+    /// Standing time before the overlap is released, s (`signalling.overlap_release_s`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub overlap_release_s: Option<f64>,
+    /// Approach locking time of a cancelled route, s (`signalling.approach_release_s`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub approach_release_s: Option<f64>,
+    /// Closing time of a level crossing with barriers, s (`level_crossing.barrier_closing_s`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub barrier_closing_s: Option<f64>,
+    /// Closing time of a level crossing with road signals, s (`level_crossing.signal_closing_s`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub signal_closing_s: Option<f64>,
+    /// Margin behind the train ahead in moving block or on sight, m (`signalling.moving_block_margin_m`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub moving_block_margin_m: Option<f64>,
+    /// Overspeed allowed before the protection brakes, km/h (`signalling.supervision_tolerance_kmh`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub supervision_tolerance_kmh: Option<f64>,
+    /// Emergency braking as a multiple of service braking (`sim.emergency_brake_factor`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub emergency_brake_factor: Option<f64>,
+    /// Share of the service braking rate the driver model uses (`sim.ato_brake_share`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ato_brake_share: Option<f64>,
+    /// Separation of two trains at a terminal, s (`timetable.terminal_separation_s`).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub terminal_separation_s: Option<f64>,
+}
+
+impl Signalling {
+    /// Purpose: whether no value is set.
+    pub fn is_empty(&self) -> bool {
+        *self == Signalling::default()
+    }
+
+    /// Purpose: the planner's values with the project's applied.
+    pub fn plan(&self, mut pp: PlanParams) -> PlanParams {
+        let b = &mut pp.blocking;
+        set(&mut b.route_setting_s, self.route_setting_s);
+        set(&mut b.sight_reaction_s, self.sight_reaction_s);
+        set(&mut b.release_s, self.release_s);
+        set(&mut b.sighting_m, self.sighting_m);
+        set(&mut pp.terminal_separation_s, self.terminal_separation_s);
+        pp
+    }
+
+    /// Purpose: the network kernel's values with the project's applied.
+    pub fn net(&self, mut np: NetParams) -> NetParams {
+        set(&mut np.request_margin_m, self.sighting_m);
+        set(&mut np.follow_margin_m, self.moving_block_margin_m);
+        set(
+            &mut np.supervision_tol_mps,
+            self.supervision_tolerance_kmh.map(|v| v / 3.6),
+        );
+        set(&mut np.emergency_factor, self.emergency_brake_factor);
+        set(&mut np.driver_brake_share, self.ato_brake_share);
+        let il = &mut np.interlocking;
+        set(&mut il.route_setting_s, self.route_setting_s);
+        set(&mut il.overlap_release_s, self.overlap_release_s);
+        set(&mut il.approach_release_s, self.approach_release_s);
+        set(&mut il.barrier_closing_s, self.barrier_closing_s);
+        set(&mut il.signal_closing_s, self.signal_closing_s);
+        np
+    }
+}
+
+/// Purpose: replace `field` with `v` when it is a finite, non-negative number.
+fn set(field: &mut f64, v: Option<f64>) {
+    if let Some(v) = v.filter(|v| v.is_finite() && *v >= 0.0) {
+        *field = v;
+    }
 }
 
 impl Default for CapacityParams {
@@ -99,6 +192,7 @@ impl Default for CapacityParams {
             primary_delay_max_s: 180.0,
             residual_delay_s: 30.0,
             seed: 1,
+            signalling: Signalling::default(),
         }
     }
 }
@@ -336,10 +430,10 @@ fn run_kernel(
 ) -> (Vec<RunStats>, Vec<Vec<String>>, u64) {
     let mut stats: Vec<RunStats> = (0..lines).map(|_| RunStats::default()).collect();
     let mut problems: Vec<Vec<String>> = vec![Vec::new(); lines];
-    let np = NetParams {
+    let np = p.signalling.net(NetParams {
         check_invariants: true,
         ..NetParams::default()
-    };
+    });
     let mut sim = match NetworkSim::new(m, pl, np) {
         Ok(s) => s,
         Err(e) => {
@@ -449,10 +543,10 @@ fn evaluate(
     lines: &[LineSpec],
     p: &CapacityParams,
 ) -> Result<(Vec<Point>, Fleet, Vec<String>), String> {
-    let pp = PlanParams {
+    let pp = p.signalling.plan(PlanParams {
         min_buffer_s: p.min_buffer_s,
         ..PlanParams::default()
-    };
+    });
     let pl = plan(m, lines, &pp)?;
     let ids: Vec<String> = lines.iter().map(|l| l.id.clone()).collect();
     let rep = report(

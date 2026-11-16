@@ -1,0 +1,19 @@
+{
+  "$comment": "Shared log redaction deny-list (ADR-0022, 03 §6). A field whose name, lower-cased and without '-' and '_', contains one of these words is replaced by \"[REDACTED]\" before any sink writes it. Copies: apps/api/src/logging/redact.ts, apps/web/src/logging/redact.ts, worker/src/mobsim_worker/logsink.py; apps/api/test/logging.test.ts checks they match.",
+  "keys": [
+    "password",
+    "passwd",
+    "passphrase",
+    "secret",
+    "token",
+    "authorization",
+    "cookie",
+    "apikey",
+    "credential",
+    "privatekey",
+    "session",
+    "codeverifier",
+    "nonce"
+  ],
+  "replacement": "[REDACTED]"
+}

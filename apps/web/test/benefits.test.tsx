@@ -16,7 +16,8 @@ import {
   prepare,
   scenarios,
 } from "../src/features/benefits/model";
-import { metres, networkOf, withoutRoutes } from "../src/features/benefits/network";
+import { networkOf, withoutRoutes } from "../src/features/benefits/network";
+import { distanceM as metres } from "../src/map/geo";
 import { libraryValue, p10p50p90, paramValue, seeded, triangular } from "../src/features/benefits/params";
 import { RegionEditor } from "../src/features/benefits/RegionEditor";
 import { inRing, type Region, ringAreaM2 } from "../src/features/benefits/regions";
@@ -258,6 +259,8 @@ describe("stations and lines", () => {
     const central = n.stations.find((s) => s.name === "Central")!;
     expect(central.stopIds.sort()).toEqual(["b1", "m2"]);
     expect(central.modes.sort()).toEqual(["bus", "metro"]);
+    // The project's same-name distance (journey.same_name_station_m): 30 m keeps the bus stop 50 m away apart.
+    expect(networkOf(network(), 30).stations).toHaveLength(5);
     expect(n.lines.map((l) => [l.id, l.stations.length])).toEqual([
       ["rail:M1", 3],
       ["street:0", 2],

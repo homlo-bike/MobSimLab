@@ -426,3 +426,24 @@ describe("capacity runs on the server", () => {
     expect(screen.queryByRole("button", { name: "Delete" })).toBeNull();
   });
 });
+
+describe("project values in the capacity run", () => {
+  it("takes the run settings and signalling values the project sets in All parameters", async () => {
+    const { projectRunSettings } = await import("../src/features/capacity/projectSettings");
+    expect(projectRunSettings(undefined)).toEqual({});
+    expect(
+      projectRunSettings({
+        "timetable.min_buffer_s": 30,
+        "stability.runs": 4.4,
+        "signalling.route_setting_s": 8,
+        "sim.ato_brake_share": 0.9,
+        "mode.dwell_s": 40,
+        "stability.recovery_s": -1,
+      }),
+    ).toEqual({
+      min_buffer_s: 30,
+      stability_runs: 4,
+      signalling: { route_setting_s: 8, ato_brake_share: 0.9 },
+    });
+  });
+});
