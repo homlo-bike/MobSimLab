@@ -92,6 +92,10 @@ export interface DesignRule {
 /** Design rules the project can change per rail mode (tools/design-rules/export_defaults.py). */
 export const DESIGN_RULES = (rulesData as unknown as { rules: DesignRule[] }).rules;
 
+/** Every numeric design value of the rail engine and its library key, per rail mode. */
+const ENGINE_KEYS = (rulesData as unknown as { engine_keys: Record<string, Record<string, string>> })
+  .engine_keys;
+
 /** Purpose: the preference id of a design rule's value for a mode, for example `mode.min_curve_radius_m.tram`. */
 export function rulePrefId(rule: DesignRule, mode: string): string | null {
   const m = rule.modes[mode];
@@ -104,11 +108,20 @@ export function rulePrefId(rule: DesignRule, mode: string): string | null {
  */
 export function designValuesFrom(doc: PreferencesDoc | null | undefined): Record<string, number> {
   const out: Record<string, number> = {};
+  // A value for the mode wins over one for every mode (Project preferences → All parameters).
+  const pick = (key: string, mode: string) => prefValue(doc, `${key}.${mode}`) ?? prefValue(doc, key);
   for (const rule of DESIGN_RULES) {
-    for (const mode of Object.keys(rule.modes)) {
-      const id = rulePrefId(rule, mode);
-      const v = id ? prefValue(doc, id) : undefined;
+    for (const [mode, m] of Object.entries(rule.modes)) {
+      const v = pick(m.key, mode);
       if (v !== undefined && v > 0) out[`${mode}.${rule.field}`] = v;
+    }
+  }
+  for (const [mode, fields] of Object.entries(ENGINE_KEYS)) {
+    for (const [field, key] of Object.entries(fields)) {
+      const id = `${mode}.${field}`;
+      if (id in out) continue;
+      const v = pick(key, mode);
+      if (v !== undefined && v >= 0) out[id] = v;
     }
   }
   return out;

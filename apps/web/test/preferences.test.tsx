@@ -82,6 +82,23 @@ describe("project preferences", () => {
     ).toEqual({});
   });
 
+  it("passes every rail engine value set in All parameters, for every mode or for one", () => {
+    const doc = withPref(
+      withPref(withPref(null, "track.centre_distance_m", 3.6), "track.centre_distance_m.metro", 3.8),
+      "mode.min_curve_radius_m",
+      30,
+    );
+    const v = designValuesFrom(doc);
+    // A value for every mode reaches each rail mode; one for the mode wins.
+    expect(v["tram.track_centre_m"]).toBe(3.6);
+    expect(v["metro.track_centre_m"]).toBe(3.8);
+    expect(v["regional_rail.min_radius_m"]).toBe(30);
+    // A design rule set for the mode still wins over the value for every mode.
+    expect(designValuesFrom(withPref(doc, "mode.min_curve_radius_m.tram", 25))["tram.min_radius_m"]).toBe(25);
+    // Values for other tools do not reach the rail engine.
+    expect(Object.keys(designValuesFrom(withPref(null, "mode.dwell_s", 40)))).toEqual([]);
+  });
+
   it("keeps the catalogue vehicles the project leaves out, and offers the rest", () => {
     const doc = withVehicles(withPref(null, "x", 1), ["a", "b"], false);
     expect(doc).toEqual({ values: { x: 1 }, vehiclesOff: ["a", "b"] });
