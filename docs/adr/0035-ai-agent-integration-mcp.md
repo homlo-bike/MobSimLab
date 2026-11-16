@@ -1,6 +1,6 @@
 # ADR-0035: AI agents connect from outside through an MCP server; MobSimLab supplies deterministic scenario, benchmark and walk-coverage tools
 
-- Status: Accepted, phases A and B implemented (2026-11-02), PTAL, the 15-minute city, exact stop placement and GTFS export (2026-11-16); see *Implementation status* at the end
+- Status: Accepted, phases A and B implemented (2026-11-02), PTAL, the 15-minute city, exact stop placement, GTFS export, and simulation runs and sweeps on the worker (2026-11-16); see *Implementation status* at the end
 - Date: 2026-11-01
 - Deciders: product owner, architecture
 - Related: FR-PLAT-05, FR-PLAT-06, FR-ASM-01..05, FR-DEM-03, FR-NET-01, C-10, ADR-0012 (audit), ADR-0013 (scenario overlays), ADR-0014 (results storage), ADR-0015 (OIDC), ADR-0017 (outbound gateway), ADR-0018 (no built-in AI), ADR-0020 (day types), ADR-0023 (job queue), ADR-0027 (collaboration), ADR-0031 (street routing), ADR-0032 (railway operations), ADR-0034 (journey time planner, in progress), [06 §9.3](../architecture/06-gis.md), [09 §2.2](../architecture/09-planning-models.md)
@@ -191,3 +191,13 @@ Tool set 0.2.0:
 ## Implementation status (2026-11-16): GTFS export
 
 Tool set 0.3.0 adds `export_gtfs` (scope `project:read`): the scenario's published timetable (the one `plan_journey` rides) written by the GTFS plugin's exporter (`crates/gtfs`, now also built for the API by `tools/wasm/build-api.sh`) as a weekday feed with `frequencies.txt`, zipped (stored) and returned as an embedded MCP resource with the row count of each file; at most 5 MB. The agent gives the IANA time zone. Running the MobilityData GTFS Validator on the result is not done: it is a Java tool the image does not ship.
+
+## Implementation status (2026-11-16): simulation runs and sweeps (phase C, first part)
+
+Tool set 0.4.0 adds the scope `simulation:run` and seven tools over the background worker of ADR-0023, scoped with the product owner (2026-11-16) to what the worker runs today: the simulator tab's rail capacity run.
+
+- `list_projects`, `list_runs`, `start_run`, `get_run_status`, `cancel_run` and `rerun` act on the project's saved runs (`simulation.run`) through the same `RunsService` as the simulator tab, with the user's project role: every member reads runs, Owners and Editors start, stop and rerun them. A run's network can be copied from a saved run of the same project, so agents do not resend files. The audit records of runs name the agent connection and the tool.
+- `run_sweep` stores a run of the new kind `sweep` (`db/migrations/0008_agent_runs.sql`). The worker (`worker/src/mobsim_worker/jobs/sweep.py`) runs the capacity run once per variant of a full grid or a seeded Latin hypercube (McKay, Beckman & Conover 1979) over the capacity settings, at most 200 variants with the period fixed, measures each variant and keeps the Pareto front over the agent's objectives. The settings and measures are listed in `apps/api/src/simulation/params.ts`.
+- **Budgets:** each agent connection may have 2 runs queued or running at once (`AGENT_MAX_OPEN_RUNS`, checked under a per-connection transaction lock); people are not counted. The per-token daily budget of simulated vehicle-hours and worker-minutes set by an Admin is not built yet.
+- Progress is read with `get_run_status`, because the endpoint is stateless with JSON responses; MCP progress notifications are not sent.
+- Not done, as agreed: `get_kpis`, `create_experiment` and `compare_results`, and sweeps of headways, fleet size, stop sets or vehicle types. They need scenarios that the worker can simulate (the SUMO road simulation and drawn lines); the capacity run's own per-line headway sweep is available through `start_run`.
