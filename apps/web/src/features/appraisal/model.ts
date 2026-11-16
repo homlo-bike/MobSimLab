@@ -155,6 +155,9 @@ export interface Present {
   err: number | null;
   fnpv: number;
   firr: number | null;
+  /** Social discount rate and conversion factor used. */
+  rate: number;
+  cf: number;
 }
 
 /** One year of the cash flow (economic money, before discounting; fares also in the financial flow). */
@@ -336,6 +339,8 @@ export function present(
     err: irr(econ),
     fnpv: npv(fin, rf),
     firr: irr(fin),
+    rate: rs,
+    cf,
   };
 }
 
@@ -360,6 +365,8 @@ export interface AppraisalRow {
   /** Draws with a rate of return (the others have none). */
   errShare: number;
   firrShare: number;
+  /** ENPV of every draw. */
+  enpvDraws: number[];
 }
 
 export interface TornadoBar {
@@ -542,6 +549,7 @@ export function appraise(input: AppraisalInput, draws = 200, seed = 0xa9a1): App
       positive: res.filter((r) => r.enpv > 0).length / res.length,
       errShare: err.length / res.length,
       firrShare: firr.length / res.length,
+      enpvDraws: res.map((r) => r.enpv),
     };
   });
 
