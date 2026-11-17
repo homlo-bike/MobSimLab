@@ -109,8 +109,8 @@ caf-urbos-3-budapest-9-module:
   rationale: The Urbos family ranges from 2.30 to 2.65 m; the owner judges Budapest uses the widest body. Not confirmed
     for Budapest.
   source: &id001
-    url: https://claude.ai/code/project/chan_01F1w55ANnnpLfXqB5CwyRpk?thread=cmsg_01F1w55ANnnpLfXqB5CwyRpk8ftgFkdmwjYenfiv6kir1f
-    title: Estimates supplied by the project owner in the vehicle catalogue thread
+    url: https://github.com/homlo-bike/MobSimLab/blob/main/vehicles/_import/additions.yaml
+    title: Estimates supplied by the project owner
     publisher: MobSimLab project owner
     accessed: '2026-10-27'
     kind: secondary

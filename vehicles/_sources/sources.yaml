@@ -560,9 +560,9 @@
   kind: primary
   note: Imported with the 2026-10-26 catalogue; not re-read in this repository.
 - id: mobsimlab-project-ow-estimates-supplied-by-the-project-owner
-  title: Estimates supplied by the project owner in the vehicle catalogue thread
+  title: Estimates supplied by the project owner
   publisher: MobSimLab project owner
-  url: https://claude.ai/code/project/chan_01F1w55ANnnpLfXqB5CwyRpk?thread=cmsg_01F1w55ANnnpLfXqB5CwyRpk8ftgFkdmwjYenfiv6kir1f
+  url: https://github.com/homlo-bike/MobSimLab/blob/main/vehicles/_import/additions.yaml
   licence: Publisher's terms; facts cited only
   access: free
   retrieved: '2026-10-27'
