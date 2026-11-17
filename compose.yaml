@@ -2,7 +2,7 @@
 # First run:  deploy/scripts/init-secrets && cp .env.example .env  (edit MOBSIMLAB_PUBLIC_URL)
 #             docker compose up -d
 # The only secret file you must create is the database password (db_password). master_key and session_secret are
-# generated on first start and kept in the mobsimlab-data volume (/data/secrets).
+# optional: add them as secrets only if you want to provide them (see .env.example).
 # Keep your secret files somewhere else? Set MOBSIMLAB_SECRETS_PATH in .env; do not edit the /run/secrets paths below,
 # they are where Docker puts the files inside the containers.
 name: mobsimlab

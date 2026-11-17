@@ -245,8 +245,6 @@ jobs:
           curl -fsS http://127.0.0.1:8080/api/health
           curl -fsS http://127.0.0.1:8080/ | grep -q '<div id="root">'
           docker exec mobsimlab id -u | grep -qx 10001
-          docker exec mobsimlab test -s /data/secrets/master_key
-          docker exec mobsimlab test -s /data/secrets/session_secret
           docker compose exec -T postgres psql -U postgres -d mobsimlab -tAc \
             "select string_agg(rolname, ',' order by rolname) from pg_roles where rolname like 'mobsimlab_%'" \
             | grep -qx 'mobsimlab_app,mobsimlab_migrator,mobsimlab_worker'

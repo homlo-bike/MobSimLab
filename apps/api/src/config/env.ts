@@ -1,9 +1,10 @@
+import { randomBytes } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { z } from "zod";
 import { LOG_LEVELS, type LoggingConfig } from "../logging/logger";
 
-/** Secret files the API needs, read from the secrets directory (Docker secrets). */
+/** Secret files the API reads from the secrets directory (Docker secrets); master_key and session_secret are optional. */
 export const API_SECRETS = ["db_app_password", "master_key", "session_secret"] as const;
 export type ApiSecretName = (typeof API_SECRETS)[number];
 
@@ -15,22 +16,22 @@ const MIN_LENGTH: Record<ApiSecretName, number> = {
 };
 
 /**
- * Where each secret is read from, first file that exists and is not empty wins:
- * - db_app_password: the role's own file (separate role passwords), else the one db_password;
- * - master_key, session_secret: a Docker secret if the operator provided one, else the file `deploy/bin/init-keys`
- *   generated in the data volume on first start.
+ * Where each secret is read from, first file that exists and is not empty wins. db_app_password: the role's own
+ * file (separate role passwords), else the one db_password. master_key and session_secret: only a Docker secret the
+ * operator provided; they are optional (see OPTIONAL_SECRETS).
  */
-const SECRET_SOURCES: Record<ApiSecretName, (dir: string, generatedDir: string) => string[]> = {
+const SECRET_SOURCES: Record<ApiSecretName, (dir: string) => string[]> = {
   db_app_password: (dir) => [join(dir, "db_app_password"), join(dir, "db_password")],
-  master_key: (dir, gen) => [join(dir, "master_key"), join(gen, "master_key")],
-  session_secret: (dir, gen) => [join(dir, "session_secret"), join(gen, "session_secret")],
+  master_key: (dir) => [join(dir, "master_key")],
+  session_secret: (dir) => [join(dir, "session_secret")],
 };
 
-const MISSING_HINT: Record<ApiSecretName, string> = {
-  db_app_password: "db_password is missing (run deploy/scripts/init-secrets)",
-  master_key: "master_key is missing (generated on start by /app/bin/init-keys, or a Docker secret)",
-  session_secret: "session_secret is missing (generated on start by /app/bin/init-keys, or a Docker secret)",
-};
+/**
+ * Secrets the operator may leave out. Without session_secret, a random key is made at each start, kept in memory
+ * only: CSRF tokens then end at a restart (people reload the page) and audit IP hashes do not match across restarts.
+ * master_key is not used by any code yet.
+ */
+const OPTIONAL_SECRETS = new Set<ApiSecretName>(["master_key", "session_secret"]);
 
 /** Purpose: the trimmed content of the first of `paths` that can be read and is not empty, or undefined. */
 function firstSecret(readFile: (path: string) => string, paths: string[]): string | undefined {
@@ -80,7 +81,8 @@ export interface AppConfig {
   logging?: LoggingConfig;
   /** Token-bucket limits (05 §3.5), in requests per minute. */
   rateLimits: { authPerMinute: number; writesPerMinute: number };
-  secrets: Record<ApiSecretName, string>;
+  /** master_key is absent unless the operator provided it; session_secret is random per start if not provided. */
+  secrets: { db_app_password: string; session_secret: string; master_key?: string };
   /**
    * Desktop app, "Use on this computer" (local mode): the key the desktop app adds to its own requests so that its
    * single local Owner is signed in without a provider (`POST /api/auth/local`). Absent on a server.
@@ -170,12 +172,12 @@ export function loadConfig(
     for (const issue of parsed.error.issues) problems.push(`${issue.path.join(".")}: ${issue.message}`);
   }
   const dir = parsed.success ? parsed.data.MOBSIMLAB_SECRETS_DIR : "/run/secrets";
-  const generatedDir = join(env.MOBSIMLAB_DATA_DIR || "/data", "secrets");
-  const secrets = {} as Record<ApiSecretName, string>;
+  const secrets: Partial<Record<ApiSecretName, string>> = {};
   for (const name of API_SECRETS) {
-    const value = firstSecret(readFile, SECRET_SOURCES[name](dir, generatedDir));
+    const value = firstSecret(readFile, SECRET_SOURCES[name](dir));
     if (value === undefined) {
-      problems.push(`secret ${MISSING_HINT[name]}`);
+      if (!OPTIONAL_SECRETS.has(name))
+        problems.push("secret db_password is missing (run deploy/scripts/init-secrets)");
       continue;
     }
     const p = secretProblem(name, value);
@@ -245,7 +247,11 @@ export function loadConfig(
       authPerMinute: d.MOBSIMLAB_RATE_LIMIT_AUTH,
       writesPerMinute: d.MOBSIMLAB_RATE_LIMIT_WRITES,
     },
-    secrets,
+    secrets: {
+      db_app_password: secrets.db_app_password ?? "",
+      session_secret: secrets.session_secret ?? randomBytes(32).toString("base64"),
+      master_key: secrets.master_key,
+    },
     localLaunchKey,
     listenHost: d.MOBSIMLAB_LISTEN_HOST,
     agentsDisabled: d.MOBSIMLAB_AGENTS_ENABLED === "false" ? true : undefined,
