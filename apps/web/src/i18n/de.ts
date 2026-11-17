@@ -440,6 +440,15 @@ export const de: Messages = {
   "prefs.switchesLast":
     "Die Standardweiche bleibt im Einsatz. Um sie wegzulassen, wählen Sie zuerst eine andere als Standard.",
   "prefs.calendar": "Kalender, Nachfrage und Kosten",
+  "prefs.navLabel": "Gruppen der Einstellungen",
+  "prefs.search": "Einstellungen durchsuchen",
+  "prefs.searchNone": "Nichts passt zu „{query}“.",
+  "prefs.details": "Name, Gebiet und Verkehrsmittel",
+  "prefs.groupNetwork": "Netzentwurf",
+  "prefs.groupVehicles": "Fahrzeuge und Flotte",
+  "prefs.groupDemand": "Nachfrage und Verkehr",
+  "prefs.groupTime": "Kalender und Klima",
+  "prefs.groupAssumptions": "Annahmen",
 
   "job.stepOf": "Schritt {step} von {steps}",
   "job.cancel": "Abbrechen",

@@ -436,6 +436,15 @@ export const uz: Messages = {
   "prefs.switchesLast":
     "Standart strelka ishlatilib qoladi. Uni olib tashlash uchun avval boshqasini tanlang.",
   "prefs.calendar": "Kalendar, talab va xarajatlar",
+  "prefs.navLabel": "Sozlamalar guruhlari",
+  "prefs.search": "Sozlamalardan qidirish",
+  "prefs.searchNone": "“{query}” boʻyicha hech narsa topilmadi.",
+  "prefs.details": "Nomi, hududi va transport turlari",
+  "prefs.groupNetwork": "Tarmoq loyihasi",
+  "prefs.groupVehicles": "Transport vositalari va park",
+  "prefs.groupDemand": "Talab va harakat",
+  "prefs.groupTime": "Kalendar va iqlim",
+  "prefs.groupAssumptions": "Taxminlar",
 
   "job.stepOf": "{steps} qadamdan {step}-qadam",
   "job.cancel": "Bekor qilish",

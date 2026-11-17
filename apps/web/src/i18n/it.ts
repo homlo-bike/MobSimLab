@@ -433,6 +433,15 @@ export const it: Messages = {
   "prefs.switchesLast":
     "Il deviatoio predefinito resta in uso. Per escluderlo, scegli prima un altro predefinito.",
   "prefs.calendar": "Calendario, domanda e costi",
+  "prefs.navLabel": "Gruppi di preferenze",
+  "prefs.search": "Cerca nelle preferenze",
+  "prefs.searchNone": "Nessun risultato per «{query}».",
+  "prefs.details": "Nome, area e modi",
+  "prefs.groupNetwork": "Progetto della rete",
+  "prefs.groupVehicles": "Veicoli e flotta",
+  "prefs.groupDemand": "Domanda e traffico",
+  "prefs.groupTime": "Calendario e clima",
+  "prefs.groupAssumptions": "Ipotesi",
 
   "job.stepOf": "Passo {step} di {steps}",
   "job.cancel": "Annulla",

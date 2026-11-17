@@ -434,6 +434,15 @@ export const es: Messages = {
   "prefs.switchesLast":
     "El desvío predeterminado sigue en uso. Para quitarlo, elija antes otro predeterminado.",
   "prefs.calendar": "Calendario, demanda y costes",
+  "prefs.navLabel": "Grupos de preferencias",
+  "prefs.search": "Buscar en las preferencias",
+  "prefs.searchNone": "Nada coincide con «{query}».",
+  "prefs.details": "Nombre, zona y modos",
+  "prefs.groupNetwork": "Diseño de la red",
+  "prefs.groupVehicles": "Vehículos y flota",
+  "prefs.groupDemand": "Demanda y tráfico",
+  "prefs.groupTime": "Calendario y clima",
+  "prefs.groupAssumptions": "Supuestos",
 
   "job.stepOf": "Paso {step} de {steps}",
   "job.cancel": "Cancelar",

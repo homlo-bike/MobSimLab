@@ -428,6 +428,15 @@ export const fa: Messages = {
   "prefs.switchesLast":
     "سوزن پیش‌فرض در استفاده می‌ماند. برای کنار گذاشتن آن، اول پیش‌فرض دیگری انتخاب کنید.",
   "prefs.calendar": "تقویم، تقاضا و هزینه‌ها",
+  "prefs.navLabel": "گروه‌های ترجیحات",
+  "prefs.search": "جستجو در ترجیحات",
+  "prefs.searchNone": "چیزی با «{query}» مطابقت ندارد.",
+  "prefs.details": "نام، محدوده و شیوه‌ها",
+  "prefs.groupNetwork": "طراحی شبکه",
+  "prefs.groupVehicles": "وسایل نقلیه و ناوگان",
+  "prefs.groupDemand": "تقاضا و ترافیک",
+  "prefs.groupTime": "تقویم و اقلیم",
+  "prefs.groupAssumptions": "فرض‌ها",
 
   "job.stepOf": "گام {step} از {steps}",
   "job.cancel": "لغو",

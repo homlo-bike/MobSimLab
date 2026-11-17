@@ -438,6 +438,15 @@ export const ta: Messages = {
   "prefs.switchesLast":
     "இயல்புநிலை பாயிண்ட் பயன்பாட்டில் இருக்கும். அதை நீக்க, முதலில் வேறொன்றைத் தேர்ந்தெடுக்கவும்.",
   "prefs.calendar": "நாட்காட்டி, தேவை மற்றும் செலவுகள்",
+  "prefs.navLabel": "விருப்பக் குழுக்கள்",
+  "prefs.search": "விருப்பங்களில் தேடு",
+  "prefs.searchNone": "“{query}” உடன் எதுவும் பொருந்தவில்லை.",
+  "prefs.details": "பெயர், பகுதி மற்றும் போக்குவரத்து முறைகள்",
+  "prefs.groupNetwork": "வலையமைப்பு வடிவமைப்பு",
+  "prefs.groupVehicles": "வாகனங்கள் மற்றும் வாகனத் தொகுப்பு",
+  "prefs.groupDemand": "தேவை மற்றும் போக்குவரத்து",
+  "prefs.groupTime": "நாட்காட்டி மற்றும் காலநிலை",
+  "prefs.groupAssumptions": "அனுமானங்கள்",
 
   "job.stepOf": "படி {step} / {steps}",
   "job.cancel": "ரத்துசெய்",

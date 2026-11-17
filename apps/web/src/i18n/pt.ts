@@ -434,6 +434,15 @@ export const pt: Messages = {
   "prefs.switchesLast":
     "O aparelho predefinido continua em uso. Para o retirar, escolha primeiro outro predefinido.",
   "prefs.calendar": "Calendário, demanda e custos",
+  "prefs.navLabel": "Grupos de preferências",
+  "prefs.search": "Pesquisar nas preferências",
+  "prefs.searchNone": "Nada corresponde a “{query}”.",
+  "prefs.details": "Nome, área e modos",
+  "prefs.groupNetwork": "Desenho da rede",
+  "prefs.groupVehicles": "Veículos e frota",
+  "prefs.groupDemand": "Procura e trânsito",
+  "prefs.groupTime": "Calendário e clima",
+  "prefs.groupAssumptions": "Pressupostos",
 
   "job.stepOf": "Passo {step} de {steps}",
   "job.cancel": "Cancelar",

@@ -434,6 +434,15 @@ export const uk: Messages = {
   "prefs.switchesLast":
     "Перевід за замовчуванням залишається у використанні. Щоб прибрати його, спершу виберіть інший.",
   "prefs.calendar": "Календар, попит і витрати",
+  "prefs.navLabel": "Групи параметрів",
+  "prefs.search": "Пошук у параметрах",
+  "prefs.searchNone": "Нічого не знайдено за запитом «{query}».",
+  "prefs.details": "Назва, територія і види транспорту",
+  "prefs.groupNetwork": "Проєктування мережі",
+  "prefs.groupVehicles": "Рухомий склад і парк",
+  "prefs.groupDemand": "Попит і рух",
+  "prefs.groupTime": "Календар і клімат",
+  "prefs.groupAssumptions": "Припущення",
 
   "job.stepOf": "Крок {step} з {steps}",
   "job.cancel": "Скасувати",
