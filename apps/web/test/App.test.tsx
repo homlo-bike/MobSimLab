@@ -524,6 +524,7 @@ describe("project workspace", () => {
     });
     window.history.replaceState(null, "", `/projects/${P1}/preferences`);
     render(<App />);
+    fireEvent.click(await screen.findByRole("button", { name: "Demand and traffic" }));
     const mixed = await screen.findByLabelText("In a main road's general traffic");
     expect((mixed as HTMLInputElement).value).toBe("25");
     expect(screen.getByText("Assumption library: 8 %")).toBeTruthy();
@@ -557,6 +558,7 @@ describe("project workspace", () => {
     });
     window.history.replaceState(null, "", `/projects/${P1}/preferences`);
     render(<App />);
+    fireEvent.click(await screen.findByRole("button", { name: "Demand and traffic" }));
     const share = await screen.findByLabelText(
       "Traffic outside the morning and evening peaks, as a share of each street's peak",
     );
@@ -589,6 +591,7 @@ describe("project workspace", () => {
     });
     window.history.replaceState(null, "", `/projects/${P1}/preferences`);
     render(<App />);
+    fireEvent.click(await screen.findByRole("button", { name: "Vehicles and fleet" }));
     const section = await screen.findByRole("region", { name: "Vehicles" });
     // The project plans for trams, so its trams show first, all in use.
     expect((within(section).getByLabelText("Mode") as HTMLSelectElement).value).toBe("tram");
@@ -625,6 +628,7 @@ describe("project workspace", () => {
     });
     window.history.replaceState(null, "", `/projects/${P1}/preferences`);
     render(<App />);
+    fireEvent.click(await screen.findByRole("button", { name: "Network design" }));
     const section = await screen.findByRole("region", { name: "Switches" });
     const r50 = within(section).getByRole("checkbox", { name: /turnout R 50 m/ }) as HTMLInputElement;
     // The library's tram default stays in use.
@@ -661,6 +665,7 @@ describe("project workspace", () => {
     });
     window.history.replaceState(null, "", `/projects/${P1}/preferences`);
     render(<App />);
+    fireEvent.click(await screen.findByRole("button", { name: "Assumptions" }));
     const params = await screen.findByRole("region", { name: "All parameters" });
     expect((within(params).getByLabelText("Group") as HTMLSelectElement).value).toBe("Modes");
     const dwell = within(params).getByLabelText("Dwell time at a stop") as HTMLInputElement;
@@ -729,6 +734,7 @@ describe("project workspace", () => {
     vi.stubGlobal("print", print);
     window.history.replaceState(null, "", `/projects/${P1}/preferences`);
     render(<App />);
+    fireEvent.click(await screen.findByRole("button", { name: "Assumptions" }));
     const report = await screen.findByRole("region", { name: "Assumptions report" });
     await within(report).findByRole("button", { name: "Download CSV" });
     // The project uses trams: dwell time shows for all modes and for trams, the tram value marked as changed.
@@ -773,6 +779,7 @@ describe("project workspace", () => {
     });
     window.history.replaceState(null, "", `/projects/${P1}/preferences`);
     render(<App />);
+    fireEvent.click(await screen.findByRole("button", { name: "Network design" }));
     const rules = await screen.findByRole("region", { name: "Design rules per mode" });
     // The project plans for trams, so tram rules show first.
     expect((within(rules).getByLabelText("Rail mode") as HTMLSelectElement).value).toBe("tram");
