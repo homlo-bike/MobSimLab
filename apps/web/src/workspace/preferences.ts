@@ -391,3 +391,23 @@ export function paramNumber(key: string, values: PreferencesDoc["values"] | unde
   if (!Array.isArray(lib)) throw new Error(`no number parameter ${key} in the assumption library`);
   return lib[1];
 }
+
+/**
+ * Purpose: the street rules of the project (Project preferences) for the street line tool: driving side
+ * (`street.driving_side`), station grouping (`analysis.station_grouping_m`) and the detour warning
+ * (`street.detour_warn_m`). Values the project leaves alone are the library's.
+ */
+export function streetRulesFrom(doc: PreferencesDoc | null | undefined): {
+  traffic_side: "right" | "left";
+  grouping_distance_m: number;
+  detour_warn_m: number;
+} {
+  const side = choiceValue(doc, "street.driving_side");
+  const p = LIBRARY_PARAMS.find((x) => x.id === "street.driving_side");
+  const lib = p ? paramLibrary(p, "*") : "right";
+  return {
+    traffic_side: (side ?? lib) === "left" ? "left" : "right",
+    grouping_distance_m: paramNumber("analysis.station_grouping_m", doc?.values),
+    detour_warn_m: paramNumber("street.detour_warn_m", doc?.values),
+  };
+}

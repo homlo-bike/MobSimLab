@@ -103,6 +103,7 @@ import {
   type PreferencesDoc,
   paramNumber,
   sameNameStationM,
+  streetRulesFrom,
   switchChoiceFrom,
   vehiclesOffFrom,
 } from "./preferences";
@@ -493,6 +494,8 @@ export function Workspace({
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
   const journeySettings = useMemo(() => journeySettingsFrom(preferences?.values), [preferences]);
+  // The street rules every street line follows (Project preferences).
+  const streetRules = useMemo(() => streetRulesFrom(preferences), [preferences]);
   // Road depots shared by the street lines (depot tool).
   const depotsDoc = drawings.doc<DepotsDoc>("depots");
   // The currency all money is shown in, and its exchange rate (Project preferences).
@@ -886,6 +889,7 @@ export function Workspace({
                   />
                 }
                 railTopology={railTopology}
+                projectRules={streetRules}
                 depots={depotsDoc?.depots ?? NO_DEPOTS}
                 onOpenDepots={() => setBuild("depots")}
               />

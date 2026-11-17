@@ -5171,6 +5171,20 @@
    ]
   },
   {
+   "id": "street.detour_warn_m",
+   "label": "Street lines: warn when turning round adds more than this",
+   "group": "Depots and streets",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     300,
+     500,
+     1000
+    ]
+   }
+  },
+  {
    "id": "track.running_side",
    "label": "Running side for new double track",
    "group": "Depots and streets",

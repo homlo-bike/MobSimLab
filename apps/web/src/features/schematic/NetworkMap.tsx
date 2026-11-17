@@ -295,7 +295,12 @@ export function NetworkMap({
     const x = at[0] * scale;
     const y = at[1] * scale;
     const left = x + 18 + 320 > wrapW ? Math.max(0, x - 18 - 320) : x + 18;
-    return { left, top: Math.max(0, y - 24) };
+    // Keep the whole pop-up (its status and name choices at the bottom) inside the drawing: move it up
+    // near the bottom edge, and scroll inside it when the drawing is lower than the pop-up.
+    const wrapH = wrapRef.current?.clientHeight ?? height * scale;
+    const room = Math.max(240, wrapH);
+    const top = Math.max(0, Math.min(y - 24, wrapH - Math.min(room, 560)));
+    return { left, top, maxHeight: room - top, overflowY: "auto" };
   };
 
   const areaShown = (a: SchematicArea): Pt[] =>

@@ -6,6 +6,7 @@ import type {
   Map as MapLibreMap,
 } from "maplibre-gl";
 import { COLORS } from "./modes";
+import type { TrackEnd } from "./trackEnds";
 import { LAYER_NAMES, type FeatureCollection, type IssueView, type RailView } from "./types";
 
 const P = "rd-";
@@ -30,6 +31,8 @@ export const HIT_LAYERS = [SIGNAL_LAYER].concat(
   [`${P}corridors`],
 );
 export const CONNECTION_LAYER = `${P}connections`;
+/** Free ends of drawn tracks a new track can start or end at. */
+export const TRACK_END_LAYER = `${P}track-ends`;
 
 /**
  * Purpose: a width given in metres as a zoom expression in pixels, so the drawing stays to scale.
@@ -74,6 +77,7 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
   for (const n of LAYER_NAMES) map.addSource(`${P}${n}`, { type: "geojson", data: EMPTY });
   map.addSource(`${P}issues`, { type: "geojson", data: EMPTY });
   map.addSource(`${P}selection`, { type: "geojson", data: EMPTY });
+  map.addSource(TRACK_END_LAYER, { type: "geojson", data: EMPTY });
   const layers: LayerSpecification[] = [];
   // Existing railways from OpenStreetMap, under the design: solid in use, dashed under
   // construction, faint when disused or preserved.
@@ -422,6 +426,18 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
         "circle-stroke-width": 2,
       },
     },
+    {
+      id: TRACK_END_LAYER,
+      type: "circle",
+      source: TRACK_END_LAYER,
+      layout: { visibility: "none" },
+      paint: {
+        "circle-radius": ["case", ["==", ["get", "tracks"], 2], 7, 5],
+        "circle-color": "#ffffff",
+        "circle-stroke-color": COLORS.accent,
+        "circle-stroke-width": 2,
+      },
+    },
   );
   for (const l of layers) map.addLayer(l);
 }
@@ -442,8 +458,20 @@ export function drawRail(map: MapLibreMap, view: RailView, selection: FeatureCol
 
 /** Purpose: show or hide the connection points (while drawing track). */
 export function showConnections(map: MapLibreMap, on: boolean): void {
-  if (map.getLayer(CONNECTION_LAYER))
-    map.setLayoutProperty(CONNECTION_LAYER, "visibility", on ? "visible" : "none");
+  for (const id of [CONNECTION_LAYER, TRACK_END_LAYER])
+    if (map.getLayer(id)) map.setLayoutProperty(id, "visibility", on ? "visible" : "none");
+}
+
+/** Purpose: draw the free ends of the drawn tracks as snap points. Side effects: replaces the source's data. */
+export function drawTrackEnds(map: MapLibreMap, ends: TrackEnd[]): void {
+  (map.getSource(TRACK_END_LAYER) as GeoJSONSource | undefined)?.setData({
+    type: "FeatureCollection",
+    features: ends.map((e) => ({
+      type: "Feature",
+      geometry: { type: "Point", coordinates: e.lonlat },
+      properties: { track: e.track, end: e.end, tracks: e.tracks },
+    })),
+  });
 }
 
 /** Purpose: errors and warnings with a position, as map points. */

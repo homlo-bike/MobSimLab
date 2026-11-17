@@ -1,8 +1,9 @@
 # MobSimLab: exactly two containers (ADR-0003).
 # First run:  deploy/scripts/init-secrets && cp .env.example .env  (edit MOBSIMLAB_PUBLIC_URL)
 #             docker compose up -d
-# The only secret file you must create is the database password (db_password). master_key and session_secret are
-# optional: add them as secrets only if you want to provide them (see .env.example).
+# The secret files you must create are the two database passwords, db_password and db_admin_password
+# (deploy/scripts/init-secrets makes both). The mobsimlab container creates the database and its roles itself.
+# master_key and session_secret are optional: add them as secrets only if you want to provide them (.env.example).
 # Keep your secret files somewhere else? Set MOBSIMLAB_SECRETS_PATH in .env; do not edit the /run/secrets paths below,
 # they are where Docker puts the files inside the containers.
 name: mobsimlab
@@ -15,7 +16,9 @@ services:
     ports: ["${MOBSIMLAB_BIND:-127.0.0.1}:8080:8080"]
     environment:
       MOBSIMLAB_PUBLIC_URL: ${MOBSIMLAB_PUBLIC_URL:?set MOBSIMLAB_PUBLIC_URL in .env}
-      MOBSIMLAB_DB_HOST: postgres
+      # The database's name on this stack's own network only. Not "postgres": once mobsimlab also joins a shared
+      # network (a reverse proxy's), that name can belong to another stack's database there.
+      MOBSIMLAB_DB_HOST: mobsimlab-db
       MOBSIMLAB_SIM_WORKERS: ${MOBSIMLAB_SIM_WORKERS:-1}
       MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL: ${MOBSIMLAB_BOOTSTRAP_OWNER_EMAIL:-}
       MOBSIMLAB_BOOTSTRAP_OWNER_SUBJECT: ${MOBSIMLAB_BOOTSTRAP_OWNER_SUBJECT:-}
@@ -38,7 +41,9 @@ services:
       MOBSIMLAB_ELEVATION_FALLBACK: ${MOBSIMLAB_ELEVATION_FALLBACK:-open-elevation}
       MOBSIMLAB_OPEN_ELEVATION_URL: ${MOBSIMLAB_OPEN_ELEVATION_URL:-https://api.open-elevation.com}
       MOBSIMLAB_LOG_LEVEL: ${MOBSIMLAB_LOG_LEVEL:-info}
-    secrets: [db_password, oidc_client_secret]
+    # db_admin_password: mobsimlab creates the roles and the database with it on the first start (and when
+    # db_password changes). Once it has started, you may remove it here; it is then needed only to change db_password.
+    secrets: [db_password, db_admin_password, oidc_client_secret]
     volumes: ["mobsimlab-data:/data"]
     depends_on: { postgres: { condition: service_healthy } }
     read_only: true
@@ -55,9 +60,10 @@ services:
     environment:
       POSTGRES_USER: postgres
       # A path inside the container, where Docker mounts the secret: keep it as it is.
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-    secrets: [db_password]
-    volumes: ["pgdata:/var/lib/postgresql/data", "./db/init:/docker-entrypoint-initdb.d:ro"]
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
+    secrets: [db_admin_password]
+    networks: { default: { aliases: [mobsimlab-db] } }
+    volumes: ["pgdata:/var/lib/postgresql/data"]
     # No host port: only the mobsimlab container can reach the database.
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d mobsimlab"]
@@ -69,9 +75,10 @@ services:
 
 secrets:
   # Paths on this computer, relative to this file.
-  # One password for the database. PostgreSQL's superuser gets it only to create the database: the first start then
-  # removes the superuser's password, so this password cannot sign in as superuser (db/init/10-roles.sh).
+  # The password of MobSimLab's database roles.
   db_password: { file: "${MOBSIMLAB_SECRETS_PATH:-./deploy/secrets}/db_password" }
+  # The password of PostgreSQL's superuser (postgres). Set when the database volume is first created.
+  db_admin_password: { file: "${MOBSIMLAB_SECRETS_PATH:-./deploy/secrets}/db_admin_password" }
   # Empty for a public OIDC client; otherwise the client secret from your identity provider.
   oidc_client_secret: { file: "${MOBSIMLAB_SECRETS_PATH:-./deploy/secrets}/oidc_client_secret" }
 

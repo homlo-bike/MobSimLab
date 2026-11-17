@@ -153,8 +153,8 @@ services:
     environment:
       MOBSIMLAB_PUBLIC_URL: ${MOBSIMLAB_PUBLIC_URL}
       MOBSIMLAB_SIM_WORKERS: "2"
-      MOBSIMLAB_DB_HOST: postgres
-    secrets: [db_password]
+      MOBSIMLAB_DB_HOST: mobsimlab-db
+    secrets: [db_password, db_admin_password]   # db_admin_password: creates the roles and database on first start
     volumes: ["mobsimlab-data:/data"]
     depends_on: { postgres: { condition: service_healthy } }
     read_only: true
@@ -169,14 +169,15 @@ services:
     image: postgis/postgis:16-3.4
     container_name: postgres
     environment:
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
-    secrets: [db_password]
-    volumes: ["pgdata:/var/lib/postgresql/data", "./db/init:/docker-entrypoint-initdb.d:ro"]
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_admin_password
+    secrets: [db_admin_password]
+    volumes: ["pgdata:/var/lib/postgresql/data"]
     # no host port published
     healthcheck: { test: ["CMD-SHELL", "pg_isready -U postgres"], interval: 10s }
 
 secrets:   # created by `deploy/scripts/init-secrets` with a random value
-  db_password: { file: ./deploy/secrets/db_password }
+  db_password:       { file: ./deploy/secrets/db_password }         # MobSimLab's three roles
+  db_admin_password: { file: ./deploy/secrets/db_admin_password }   # PostgreSQL's superuser
   # master_key and session_secret: optional, used only when provided as Docker secrets
 
 volumes: { pgdata: {}, mobsimlab-data: {} }

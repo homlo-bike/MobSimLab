@@ -1,7 +1,6 @@
 import { tNow } from "../../i18n/i18n";
 import type { Timing } from "./modes";
-import type { LineView, LonLat } from "./types";
-import { distanceM } from "../../map/geo";
+import type { LineView } from "./types";
 
 /** Numbers in the panel's stat tiles. */
 export interface LineStats {
@@ -113,46 +112,4 @@ export function lineChecks(view: LineView): Check[] {
   }
   const rank: Record<Severity, number> = { error: 0, warn: 1, ok: 2, info: 3 };
   return out.sort((a, b) => rank[a.sev] - rank[b.sev]);
-}
-
-/** A vehicle position along the circuit for the preview run. */
-export interface Circuit {
-  coords: LonLat[];
-  /** Cumulative metres at each coordinate. */
-  cum: number[];
-  /** Metres along the circuit where each stop is. */
-  stops: number[];
-  length: number;
-}
-
-/** Purpose: the whole circuit as one polyline with stop positions, starting at point 1. */
-export function circuitPath(view: LineView): Circuit | null {
-  if (view.legs.length < 2 || view.legs.some((l) => l.status === "error")) return null;
-  const coords: LonLat[] = [];
-  const cum: number[] = [];
-  const stops: number[] = [];
-  let acc = 0;
-  for (const l of view.legs) {
-    if (view.points[l.index]?.kind !== "via") stops.push(acc);
-    l.coords.forEach((c, i) => {
-      if (coords.length) acc += distanceM(coords[coords.length - 1]!, c);
-      if (i > 0 || !coords.length) {
-        coords.push(c);
-        cum.push(acc);
-      }
-    });
-  }
-  return { coords, cum, stops, length: acc };
-}
-
-/** Purpose: position and bearing (degrees from north) at `s` metres along the circuit. */
-export function along(c: Circuit, s: number): { at: LonLat; bearing: number } {
-  const d = ((s % c.length) + c.length) % c.length;
-  let i = 1;
-  while (i < c.cum.length - 1 && c.cum[i]! < d) i++;
-  const [a, b] = [c.coords[i - 1]!, c.coords[i]!];
-  const span = c.cum[i]! - c.cum[i - 1]! || 1;
-  const f = Math.min(1, Math.max(0, (d - c.cum[i - 1]!) / span));
-  const bearing = (Math.atan2((b[0] - a[0]) * Math.cos((a[1] * Math.PI) / 180), b[1] - a[1]) * 180) / Math.PI;
-  return { at: [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f], bearing };
 }

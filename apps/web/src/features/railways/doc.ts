@@ -57,6 +57,22 @@ export function kindOf(
 }
 
 /**
+ * Purpose: the element a click picks among the features under it: a signal or a switch before the
+ * station or track it sits on, so a crossover lying over its two tracks can be selected.
+ */
+export function pickElement(doc: Network, refs: number[], signals: SignalView[] = []): number | null {
+  const order = ["signal", "switch", "station", "track"] as const;
+  let best: { id: number; rank: number } | null = null;
+  for (const r of refs) {
+    const k = kindOf(doc, r, signals);
+    if (!k) continue;
+    const rank = order.indexOf(k);
+    if (!best || rank < best.rank) best = { id: r, rank };
+  }
+  return best?.id ?? null;
+}
+
+/**
  * Purpose: a signal of the plan by id: the planner's from the document, or a generated one from
  * the view (as a document signal). Output: the signal, or undefined.
  */

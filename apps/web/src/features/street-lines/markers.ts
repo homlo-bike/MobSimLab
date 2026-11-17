@@ -25,8 +25,10 @@ export function pointElement(
     ...(error ? ["0 0 0 4px #ffffff", `0 0 0 6.5px ${ERROR}`] : []),
     "0 1px 2px rgba(0,0,0,.35)",
   ];
+  // No `position` here: MapLibre's marker class makes the element absolute and places it with a transform.
+  // An inline `position: relative` puts every marker in the page flow, so each one sits lower than the last
+  // and none stays where the planner clicked. Absolute still anchors the name label below.
   Object.assign(el.style, {
-    position: "relative",
     width: `${size}px`,
     height: `${size}px`,
     boxSizing: "border-box",
@@ -83,21 +85,6 @@ export function depotElement(): HTMLElement {
     font: "700 12px system-ui, sans-serif",
     boxShadow: "0 1px 3px rgba(0,0,0,.4)",
     cursor: "pointer",
-  });
-  return el;
-}
-
-/** Purpose: DOM element for the preview vehicle (a bus seen from above, pointing up). */
-export function vehicleElement(color: string): HTMLElement {
-  const el = document.createElement("div");
-  Object.assign(el.style, {
-    width: "10px",
-    height: "24px",
-    background: color,
-    border: "2px solid #fff",
-    borderRadius: "3px 3px 2px 2px",
-    boxShadow: "0 1px 4px rgba(0,0,0,.5)",
-    pointerEvents: "none",
   });
   return el;
 }

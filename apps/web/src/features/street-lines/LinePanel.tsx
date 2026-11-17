@@ -20,7 +20,7 @@ import { usedVehicles } from "../../workspace/preferences";
 import { useVehiclesOff } from "../../workspace/projectVehicles";
 import { usePublishChecks } from "../../shell/checks";
 import { lineChecks, lineStats, type Check, type Severity } from "./summary";
-import type { LineView, Mode, PointKind, RoutingRules, VehicleProfile } from "./types";
+import type { LineView, Mode, PointKind, VehicleProfile } from "./types";
 import type { FitProblem } from "../depots/model";
 
 const KINDS: { id: PointKind; label: MessageKey; title: MessageKey }[] = [
@@ -43,7 +43,6 @@ export interface PanelActions {
   setProfile: (p: VehicleProfile) => void;
   /** A catalogue vehicle by id, or null for the mode's typical vehicle. */
   setVehicle: (id: string | null) => void;
-  setRules: (r: RoutingRules) => void;
   setTiming: (t: Timing) => void;
   select: (id: number | null) => void;
   setKind: (id: number, kind: PointKind) => void;
@@ -60,21 +59,6 @@ export interface PanelActions {
   setDepotStops: (s: { out?: number; in?: number }) => void;
   setShowDepot: (v: boolean) => void;
   setShowRoads: (v: boolean) => void;
-  /** A track topology file (the railway tool's Download track topology) replaces the drawing. */
-  loadTopology: (name: string, text: string) => void;
-  /** Rail timetable closures (rail-plan's level_crossing_closures) replace the assumed service. */
-  loadClosures: (name: string, text: string) => void;
-  clearTopology: () => void;
-  clearClosures: () => void;
-}
-
-/** Where the level crossings and their closures come from, for the panel. */
-export interface CrossingSources {
-  /** Topology file name, "railway tool drawing", or null for none. */
-  topology: string | null;
-  topologyIsFile: boolean;
-  /** Closures file name, or null for the service assumed in the topology. */
-  closures: string | null;
 }
 
 const RAIL_MODE: Record<string, MessageKey> = {
@@ -110,31 +94,10 @@ function clock(s: number): string {
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
-/** Purpose: a file input that hands the file's name and text to `onLoad`. */
-function FileButton({ label, onLoad }: { label: string; onLoad: (name: string, text: string) => void }) {
-  return (
-    <label className="w-fit cursor-pointer rounded border border-slate-300 px-2 py-1 hover:bg-slate-100">
-      {label}
-      <input
-        type="file"
-        accept="application/json,.json"
-        className="sr-only"
-        aria-label={label}
-        onChange={(e) => {
-          const f = e.target.files?.[0];
-          e.target.value = "";
-          if (f) void f.text().then((t) => onLoad(f.name, t));
-        }}
-      />
-    </label>
-  );
-}
-
 interface Props {
   lineName: string;
   view: LineView;
   profile: VehicleProfile;
-  rules: RoutingRules;
   timing: Timing;
   /** The chosen catalogue vehicle's id, or null for the mode's typical vehicle. */
   vehicle: string | null;
@@ -150,7 +113,8 @@ interface Props {
   /** Opens the depot tool. */
   onOpenDepots?: () => void;
   showRoads: boolean;
-  crossingSources?: CrossingSources;
+  /** Where the level crossings come from ("railway tool drawing"), or null when there is no railway. */
+  crossingSource?: string | null;
   status: string | null;
   error: string | null;
   actions: PanelActions;
@@ -245,12 +209,13 @@ function NumberField({
 
 /**
  * Purpose: the street line side panel, laid out like the line and track drawing mockup:
- * name and mode, stat tiles, route points in circuit order, checks, depot runs and rules.
+ * mode, name and vehicle, stat tiles, route points in circuit order, checks, depot runs and service. The
+ * routing rules are set in the project preferences.
  */
 export function LinePanel(props: Props) {
   const { t } = useI18n();
   const vehiclesOff = useVehiclesOff();
-  const { view, profile, rules, timing, selected, actions: a } = props;
+  const { view, profile, timing, selected, actions: a } = props;
   // The day type whose times and headways the fields below show and change.
   const [day, setDay] = useState<DayTypeId>("weekday");
   const weekday = streetWeekday(timing);
@@ -304,16 +269,6 @@ export function LinePanel(props: Props) {
 
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
-      {props.lineList}
-      <h2 className="text-xl font-semibold">{props.lineName || t("street.untitled")}</h2>
-      <label className="flex flex-col gap-1">
-        <span className="text-xs text-slate-600">{t("rail.line.name")}</span>
-        <input
-          value={props.lineName}
-          onChange={(e) => a.setName(e.target.value)}
-          className="rounded border border-slate-300 bg-slate-50 px-2 py-1.5"
-        />
-      </label>
       <div className="flex flex-col gap-1">
         <span className="text-xs text-slate-600">{t("street.mode")}</span>
         <div
@@ -335,6 +290,18 @@ export function LinePanel(props: Props) {
             </button>
           ))}
         </div>
+      </div>
+      {props.lineList}
+      <h2 className="text-xl font-semibold">{props.lineName || t("street.untitled")}</h2>
+      <label className="flex flex-col gap-1">
+        <span className="text-xs text-slate-600">{t("rail.line.name")}</span>
+        <input
+          value={props.lineName}
+          onChange={(e) => a.setName(e.target.value)}
+          className="rounded border border-slate-300 bg-slate-50 px-2 py-1.5"
+        />
+      </label>
+      <div className="flex flex-col gap-1">
         <label className="flex flex-col gap-1">
           <span className="text-xs text-slate-600">{t("street.vehicle")}</span>
           <select
@@ -590,38 +557,16 @@ export function LinePanel(props: Props) {
           </ul>
         )}
         <p className="text-xs text-slate-600">
-          {props.crossingSources?.topology
+          {props.crossingSource
             ? t("street.railwaySource", {
-                railway: props.crossingSources.topology,
-                closures: props.crossingSources.closures ?? t("street.source.assumed"),
+                railway: props.crossingSource,
+                closures: t("street.source.assumed"),
               })
             : t("street.noRailway")}
-          {props.crossingSources?.topology && view.level_crossings.length === 0 && view.legs.length > 0
+          {props.crossingSource && view.level_crossings.length === 0 && view.legs.length > 0
             ? ` ${t("street.crossesNone")}`
             : ""}
         </p>
-        <div className="flex flex-wrap gap-2">
-          <FileButton label={t("street.loadTopology")} onLoad={a.loadTopology} />
-          {props.crossingSources?.topologyIsFile && (
-            <button
-              type="button"
-              className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-              onClick={a.clearTopology}
-            >
-              {t("street.useDrawing")}
-            </button>
-          )}
-          <FileButton label={t("street.loadClosures")} onLoad={a.loadClosures} />
-          {props.crossingSources?.closures && (
-            <button
-              type="button"
-              className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-              onClick={a.clearClosures}
-            >
-              {t("street.useAssumed")}
-            </button>
-          )}
-        </div>
       </Section>
 
       <Section title={t("street.depotRuns")}>
@@ -724,34 +669,7 @@ export function LinePanel(props: Props) {
         {stops.length === 0 && view.depot && null}
       </Section>
 
-      <Section title={t("street.rules")}>
-        <label className="flex items-center justify-between gap-2">
-          <span>{t("street.traffic")}</span>
-          <select
-            value={rules.traffic_side}
-            onChange={(e) =>
-              a.setRules({ ...rules, traffic_side: e.target.value as RoutingRules["traffic_side"] })
-            }
-            className="rounded border border-slate-300 p-0.5"
-          >
-            <option value="right">{t("street.rightHand")}</option>
-            <option value="left">{t("street.leftHand")}</option>
-          </select>
-        </label>
-        <NumberField
-          label={t("street.grouping")}
-          value={rules.grouping_distance_m}
-          unit="m"
-          step={10}
-          onChange={(v) => a.setRules({ ...rules, grouping_distance_m: v })}
-        />
-        <NumberField
-          label={t("street.detourWarn")}
-          value={rules.detour_warn_m}
-          unit="m"
-          step={50}
-          onChange={(v) => a.setRules({ ...rules, detour_warn_m: v })}
-        />
+      <Section title={t("street.service")}>
         <DayTypeChoice
           day={day}
           onDay={setDay}
