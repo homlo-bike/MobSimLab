@@ -69,7 +69,50 @@ map $http_upgrade $connection_upgrade {
 }
 ```
 
-## 3. What not to add
+## 3. Nginx Proxy Manager, Traefik or Caddy in another container
+
+When the proxy runs in its own container, MobSimLab sees the proxy's address on the Docker network between them,
+not `127.0.0.1`, so `loopback` does not match. Put both on one Docker network and let the proxy reach MobSimLab by
+name:
+
+```bash
+docker network create proxy                       # once; skip if your proxy already has a network
+docker network connect proxy mobsimlab            # or add the network to compose.yaml (below)
+docker network inspect proxy -f '{{range .IPAM.Config}}{{.Subnet}}{{end}}'   # e.g. 172.20.0.0/16
+```
+
+In `compose.yaml`, so that it survives `docker compose up`:
+
+```yaml
+services:
+  mobsimlab:
+    networks: [default, proxy]
+networks:
+  proxy: { external: true }
+```
+
+`.env`:
+
+```bash
+MOBSIMLAB_PUBLIC_URL=https://plans.example.org
+MOBSIMLAB_TRUSTED_PROXIES=172.20.0.0/16    # the subnet printed above: only containers on that network
+```
+
+In Nginx Proxy Manager, add a Proxy Host: scheme `http`, forward hostname `mobsimlab`, port `8080`, and turn on
+**Websockets Support**, **Block Common Exploits** and, on the SSL tab, **Force SSL**. Nginx Proxy Manager sets
+`X-Forwarded-For` and `X-Forwarded-Proto` itself. For large uploads and long requests add, under **Advanced**:
+
+```nginx
+client_max_body_size 200m;
+proxy_read_timeout 300s;
+```
+
+The proxy then reaches MobSimLab over the Docker network, so the published port is not needed for it; keep
+`MOBSIMLAB_BIND=127.0.0.1`. If the proxy instead reaches MobSimLab through the host's published port, MobSimLab
+sees the Docker gateway of its own network (`docker network inspect mobsimlab_default -f
+'{{range .IPAM.Config}}{{.Gateway}}{{end}}'`); list that address.
+
+## 4. What not to add
 
 - **No CORS headers.** MobSimLab answers no cross-origin requests on purpose: the web app is served from the same
   address as the API, and AI apps call `/mcp` and `/oauth/*` from their servers, which needs no CORS. Do not add
@@ -80,7 +123,7 @@ map $http_upgrade $connection_upgrade {
 - **No caching of `/api`, `/oauth` or `/mcp`.** Their answers carry `Cache-Control: no-store`; do not add
   `proxy_cache` for them.
 
-## 4. Check it
+## 5. Check it
 
 ```bash
 curl -sI http://plans.example.org/ | head -3          # 308 to https://

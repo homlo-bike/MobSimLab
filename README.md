@@ -67,12 +67,14 @@ MobSimLab is an open-source, self-hosted web app for public transport planning, 
 ## Quick start
 
 ```bash
-deploy/scripts/init-secrets          # random secrets in deploy/secrets (never committed)
+deploy/scripts/init-secrets          # a random database password in deploy/secrets (never committed)
 cp .env.example .env                 # set MOBSIMLAB_VERSION, MOBSIMLAB_PUBLIC_URL and the OIDC provider
 docker compose pull                  # ready-made image from ghcr.io, nothing to build
 docker compose up -d                 # two containers: mobsimlab and postgres
 open http://localhost:8080
 ```
+
+The only secret you create is the database password (`deploy/secrets/db_password`; set `MOBSIMLAB_SECRETS_PATH` in `.env` to keep it elsewhere). `session_secret` and `master_key` are optional and used only when you provide them as Docker secrets (see `.env.example`); without `session_secret` a random key is made at each start, so people reload the page after a restart. Installs from 2026.11.1-alpha keep their four database passwords with `COMPOSE_FILE=compose.yaml:deploy/compose.separate-db-passwords.yaml` in `.env`.
 
 Each release publishes a ready-made image for Intel/AMD and ARM servers to `ghcr.io/homlo-bike/mobsimlab`, tagged with its version only (for example `2026.11.1-alpha`; there is no `latest` tag). Set that version as `MOBSIMLAB_VERSION` in `.env` before pulling; to update, change it to the newer version and run `docker compose pull && docker compose up -d`. To build the image yourself from this checkout instead, run `docker compose up -d --build`.
 

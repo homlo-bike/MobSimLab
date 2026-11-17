@@ -76,14 +76,19 @@ def load_config(env: dict[str, str] | None = None) -> WorkerConfig:
     if not db_host:
         problems.append("MOBSIMLAB_DB_HOST is not set")
     secrets_dir = Path(env.get("MOBSIMLAB_SECRETS_DIR", "/run/secrets"))
+    # The worker role's own password if it has one (separate role passwords), else the one db_password.
     password = ""
-    try:
-        password = (secrets_dir / "db_worker_password").read_text(encoding="utf-8").strip()
-    except OSError:
-        problems.append("secret db_worker_password is missing (run deploy/scripts/init-secrets)")
-    else:
-        if p := secret_problem("db_worker_password", password):
-            problems.append(p)
+    for name in ("db_worker_password", "db_password"):
+        try:
+            password = (secrets_dir / name).read_text(encoding="utf-8").strip()
+        except OSError:
+            continue
+        if password:
+            break
+    if not password:
+        problems.append("secret db_password is missing (run deploy/scripts/init-secrets)")
+    elif p := secret_problem("db_worker_password", password):
+        problems.append(p)
     db_port = 5432
     try:
         db_port = int(env.get("MOBSIMLAB_DB_PORT", "5432"))

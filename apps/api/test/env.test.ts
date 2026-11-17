@@ -26,9 +26,35 @@ describe("loadConfig", () => {
     expect(c.oidc).toBeUndefined();
   });
 
-  it("refuses to start when a secret is missing", () => {
-    expect(() => loadConfig(env, (p) => (p.endsWith("master_key") ? reader("x") : reader(p)))).toThrow(
-      /master_key is missing/,
+  it("refuses to start without a database password", () => {
+    expect(() => loadConfig(env, (p) => (p.endsWith("db_app_password") ? reader("x") : reader(p)))).toThrow(
+      /db_password is missing/,
+    );
+  });
+
+  it("uses the one db_password when the app role has no password of its own", () => {
+    const one: Record<string, string> = { "/s/db_password": strong(40) };
+    const c = loadConfig(env, (p) => one[p] ?? reader("x"));
+    expect(c.secrets.db_app_password).toBe(strong(40));
+    // The role's own file wins when both are there.
+    const both: Record<string, string> = { ...files, "/s/db_password": strong(40) };
+    expect(loadConfig(env, (p) => both[p] ?? reader("x")).secrets.db_app_password).toBe(strong(32));
+  });
+
+  it("starts without master_key and session_secret, and uses them only when provided", () => {
+    const only: Record<string, string> = { "/s/db_password": strong(40) };
+    const a = loadConfig(env, (p) => only[p] ?? reader("x"));
+    const b = loadConfig(env, (p) => only[p] ?? reader("x"));
+    expect(a.secrets.master_key).toBeUndefined();
+    // A random session key per start, never a fixed default.
+    expect(a.secrets.session_secret).toHaveLength(44);
+    expect(a.secrets.session_secret).not.toBe(b.secrets.session_secret);
+    const c = loadConfig(env, reader);
+    expect(c.secrets.master_key).toBe(strong());
+    expect(c.secrets.session_secret).toBe(strong());
+    // A provided key is still checked.
+    expect(() => loadConfig(env, (p) => (p.endsWith("session_secret") ? "short" : reader(p)))).toThrow(
+      /shorter/,
     );
   });
 
