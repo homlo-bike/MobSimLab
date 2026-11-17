@@ -122,9 +122,27 @@ jobs:
           init-shell: none
           cache-downloads: true
       # On Windows conda-forge's postgresql only provides psql: the server with PostGIS comes from the next step.
+      # conda-forge builds PostgreSQL under a 255-character placeholder folder and writes the install folder over it
+      # when installing. PostgreSQL finds its share and lib folders next to its programs only when the install folder
+      # is exactly as long as that placeholder; otherwise it looks in the install folder itself, which does not exist
+      # on the user's computer ("postgres.bki does not exist"). So on Linux and macOS the environment is installed in a
+      # 255-character folder and then moved; pg_config checks that PostgreSQL follows the move.
       - name: PostgreSQL with PostGIS (Linux, macOS) and the OpenStreetMap tools, from conda-forge
         run: |
-          "$MAMBA_EXE" create -y -p desktop/runtime/conda -c conda-forge --override-channels ${{ matrix.conda }}
+          set -euo pipefail
+          if [ "$RUNNER_OS" = Windows ]; then
+            "$MAMBA_EXE" create -y -p desktop/runtime/conda -c conda-forge --override-channels ${{ matrix.conda }}
+          else
+            base="$RUNNER_TEMP/conda"
+            prefix="$base/$(printf '%*s' $((255 - ${#base} - 1)) '' | tr ' ' _)"
+            "$MAMBA_EXE" create -y -p "$prefix" -c conda-forge --override-channels ${{ matrix.conda }}
+            mkdir -p desktop/runtime
+            mv "$prefix" desktop/runtime/conda
+            rm -rf "$base"
+            want="$PWD/desktop/runtime/conda/share"
+            got=$(desktop/runtime/conda/bin/pg_config --sharedir)
+            [ "$got" = "$want" ] || { echo "PostgreSQL is not relocatable: share folder $got, expected $want" >&2; exit 1; }
+          fi
           rm -rf desktop/runtime/conda/{include,man,share/doc,share/man,share/info,conda-meta/*.json.bak}
           rm -rf desktop/runtime/conda/Library/{include,share/doc,share/man}
       - name: PostgreSQL and PostGIS for Windows

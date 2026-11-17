@@ -76,4 +76,7 @@ When connected to a server, AI agents work as described in [AI agents](ai-agents
 The release workflow (`.github/workflows/release-desktop.yml`) shows every step. In short, on the system you build for:
 build the API and web app, assemble `desktop/runtime` with `desktop/scripts/assemble-runtime.mjs` (after creating
 `desktop/runtime/conda` with PostgreSQL, PostGIS, osmium and osm2pgsql from conda-forge, and on Windows
-`desktop/runtime/pgsql`), check it with `npm run smoke`, then run `npm run dist` in `desktop/`.
+`desktop/runtime/pgsql`), check it with `npm run smoke`, then run `npm run dist` in `desktop/`. On Linux and macOS,
+create the conda environment in a folder whose path is exactly 255 characters long and then move it to
+`desktop/runtime/conda`, as the workflow does: otherwise the bundled PostgreSQL only works in the folder it was
+installed in, and the app fails to start on other computers.
