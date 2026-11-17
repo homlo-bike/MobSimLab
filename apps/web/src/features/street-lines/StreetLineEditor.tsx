@@ -14,10 +14,9 @@ import {
   removeLayers,
   setLineColor,
 } from "./mapLayers";
-import { depotElement, pointElement, vehicleElement } from "./markers";
+import { depotElement, pointElement } from "./markers";
 import { fullTiming, MODES, type Timing } from "./modes";
 import { profileWith, vehicleById } from "./service";
-import { along, circuitPath } from "./summary";
 import { lineBounds, type SavedStreetLine } from "./saved";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
 import type { StreetLineInput } from "../journey-planner/network";
@@ -84,9 +83,6 @@ const NO_SETUPS: readonly StreetSetup[] = [];
 const NO_LINES: readonly SavedStreetLine[] = [];
 const NO_DEPOTS: readonly SavedDepot[] = [];
 
-/** The preview runs this many times faster than the timetable. */
-const PREVIEW_SPEEDUP = 30;
-
 interface Props {
   /** The map to draw on; `null` until the map has loaded. */
   map: MapLibreMap | null;
@@ -100,9 +96,14 @@ interface Props {
   onLineChange?: (line: StreetLineInput) => void;
   /**
    * The track topology last built in the railway tool (contracts/rail-topology.schema.json): the line
-   * waits at its level crossings. A topology file loaded in the panel takes its place.
+   * waits at its level crossings.
    */
   railTopology?: unknown;
+  /**
+   * The project's street rules (Project preferences): driving side, station grouping and detour warning.
+   * They apply to every street line and take the place of the rules a line was saved with.
+   */
+  projectRules?: ProjectRules;
   /** The planner's street setups from the GIS tab (bus lanes, separation…), over OSM. */
   streetSetups?: readonly StreetSetup[];
   /** The project's delays in traffic (Project preferences); the library's when absent. */
@@ -127,18 +128,17 @@ interface Props {
   onOpenDepots?: () => void;
 }
 
-/** A JSON file the planner loaded in the panel. */
-interface LoadedFile {
-  name: string;
-  text: string;
-}
+/** The street rules a project sets in its preferences; a missing one keeps the line's own. */
+export type ProjectRules = Partial<
+  Pick<RoutingRules, "traffic_side" | "grouping_distance_m" | "detour_warn_m">
+>;
 
 /**
  * Purpose: street line tool for bus, BRT, trolleybus and intercity bus (ADR-0029), laid out like the
  * line and track drawing mockup. Streets for the area on screen load automatically. The planner adds
  * points in order; the route follows legal streets and closes back to the first point. Points can be
  * dragged, inserted (click on the line), deleted, and promoted to stops or end stops; a depot adds
- * routed pull-out and pull-in runs; the preview run drives a vehicle round the circuit.
+ * routed pull-out and pull-in runs. The routing rules come from the project preferences.
  * Side effects: adds layers, markers and handlers to the map while mounted; fetches street tiles.
  */
 export function StreetLineEditor({
@@ -148,6 +148,7 @@ export function StreetLineEditor({
   fetchTile = fetchStreetTile,
   onLineChange,
   railTopology = null,
+  projectRules,
   streetSetups = NO_SETUPS,
   delays = null,
   initial = null,
@@ -181,7 +182,6 @@ export function StreetLineEditor({
   const [depotId, setDepotId] = useState<string | null>(initial?.depotId ?? null);
   const [showDepot, setShowDepot] = useState(true);
   const [showRoads, setShowRoads] = useState(false);
-  const [previewing, setPreviewing] = useState(false);
   const [status, setStatus] = useState<string | null>(tNow("street.starting"));
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
@@ -189,8 +189,10 @@ export function StreetLineEditor({
   const [indicator, setIndicator] = useState<Indicator>("lden");
   const [offPeak, setOffPeak] = useState<Omit<Flows, "day">>({ evening: 3, night: 1 });
   const [electric, setElectric] = useState(false);
-  const [topologyFile, setTopologyFile] = useState<LoadedFile | null>(null);
-  const [closuresFile, setClosuresFile] = useState<LoadedFile | null>(null);
+
+  // The project's rules as the engine loads; later changes are applied by the effect below.
+  const projectRulesNow = useRef(projectRules);
+  projectRulesNow.current = projectRules;
 
   // Latest values for map and keyboard handlers registered once.
   const latest = useRef({ tool, view, selected });
@@ -216,8 +218,8 @@ export function StreetLineEditor({
         engine.current = e;
         const saved = pending.current;
         const p = saved?.profile ?? e.defaultProfile("bus");
-        const r = saved ? { ...e.defaultRules(), ...saved.rules } : e.defaultRules();
-        if (saved) e.setSettings(p, r);
+        const r = { ...e.defaultRules(), ...saved?.rules, ...projectRulesNow.current };
+        e.setSettings(p, r);
         setProfile(p);
         setRules(r);
         setStatus(null);
@@ -369,14 +371,22 @@ export function StreetLineEditor({
     };
   }, [map, profile !== null, fetchTile, run]);
 
-  // Level crossings: from a loaded topology file, else the railway tool's drawing; with timetable closures
-  // when loaded, else the service the topology assumes.
-  const topologyText = topologyFile?.text ?? (railTopology ? JSON.stringify(railTopology) : "");
-  const closuresText = closuresFile?.text ?? "";
+  // Level crossings: from the railway tool's drawing, with the service its topology assumes.
+  const topologyText = railTopology ? JSON.stringify(railTopology) : "";
   useEffect(() => {
     if (!profile) return;
-    run((e) => e.setLevelCrossings(topologyText, closuresText));
-  }, [profile !== null, topologyText, closuresText, run]);
+    run((e) => e.setLevelCrossings(topologyText, ""));
+  }, [profile !== null, topologyText, run]);
+
+  // The project's street rules, again whenever they change in the project preferences.
+  const projectRulesKey = JSON.stringify(projectRules ?? {});
+  useEffect(() => {
+    if (!profile || !rules) return;
+    const r = { ...rules, ...(JSON.parse(projectRulesKey) as ProjectRules) };
+    if (JSON.stringify(r) === JSON.stringify(rules)) return;
+    setRules(r);
+    run((e) => e.setSettings(profile, r));
+  }, [projectRulesKey, profile !== null, rules !== null, run]);
 
   const color = profile ? MODES[profile.mode].color : MODES.bus.color;
   const lineChanged = useRef(onLineChange);
@@ -444,6 +454,8 @@ export function StreetLineEditor({
       if (!engine.current) return;
       const at: LonLat = [ev.lngLat.lng, ev.lngLat.lat];
       if (t === "depot") {
+        // A depot gate placed on the map is the line's own depot, in place of a shared one.
+        setDepotId(null);
         run((e) => e.setDepot(at));
         setTool("select");
       } else if (t === "add") {
@@ -508,52 +520,7 @@ export function StreetLineEditor({
     return () => markers.forEach((m) => m.remove());
   }, [map, view, selected, color, tool, run, depotId]);
 
-  // Preview run: one vehicle drives the circuit, stopping at every stop.
-  useEffect(() => {
-    if (!map || !previewing) return;
-    const c = circuitPath(view);
-    if (!c || view.time_s <= 0) {
-      setPreviewing(false);
-      return;
-    }
-    const speed = (c.length / view.time_s) * PREVIEW_SPEEDUP;
-    const dwellMs = (timing.dwellS * 1000) / PREVIEW_SPEEDUP;
-    const vehicle = new Marker({ element: vehicleElement(color), rotationAlignment: "map" })
-      .setLngLat(c.coords[0]!)
-      .addTo(map);
-    let s = 0;
-    let lap = 0;
-    let next = 1;
-    let pausedUntil = 0;
-    let last = performance.now();
-    let frame = requestAnimationFrame(function step(now) {
-      const dt = (now - last) / 1000;
-      last = now;
-      if (now >= pausedUntil) {
-        s += speed * dt;
-        const stopAt =
-          lap * c.length + (next < c.stops.length ? c.stops[next]! : c.length + (c.stops[0] ?? 0));
-        if (c.stops.length && s >= stopAt) {
-          s = stopAt;
-          pausedUntil = now + dwellMs;
-          next++;
-          if (next > c.stops.length) {
-            next = 1;
-            lap++;
-          }
-        }
-      }
-      const pos = along(c, s);
-      vehicle.setLngLat(pos.at).setRotation(pos.bearing);
-      frame = requestAnimationFrame(step);
-    });
-    return () => {
-      cancelAnimationFrame(frame);
-      vehicle.remove();
-    };
-  }, [map, previewing, view, color, timing.dwellS]);
-
-  // Keyboard: V, P and H pick tools; Delete removes the selected point; Escape stops what is going on.
+  // Keyboard: V, P, H and D pick tools; Delete removes the selected point; Escape stops what is going on.
   useEffect(() => {
     const onKey = (ev: KeyboardEvent) => {
       const target = ev.target as HTMLElement | null;
@@ -564,12 +531,12 @@ export function StreetLineEditor({
       if (key === "v") setTool("select");
       else if (key === "p") setTool("add");
       else if (key === "h") setTool("pan");
+      else if (key === "d") setTool("depot");
       else if ((ev.key === "Delete" || ev.key === "Backspace") && sel !== null) {
         run((e) => e.deletePoint(sel));
         setSelected(null);
       } else if (ev.key === "Escape") {
         setSelected(null);
-        setPreviewing(false);
         setTool((t) => (t === "depot" ? "select" : t));
       }
     };
@@ -688,7 +655,6 @@ export function StreetLineEditor({
       settings(v ? profileWith({ ...base, ...keep }, v) : { ...base, ...keep }, rules);
     },
     setProfile: (p) => rules && settings(p, rules),
-    setRules: (r) => profile && settings(profile, r),
     setTiming,
     select: setSelected,
     setKind,
@@ -701,7 +667,6 @@ export function StreetLineEditor({
     clear: () => {
       run((e) => e.clear());
       setSelected(null);
-      setPreviewing(false);
     },
     placeDepot: () => setTool("depot"),
     removeDepot: () => run((e) => e.clearDepot()),
@@ -712,10 +677,6 @@ export function StreetLineEditor({
     setDepotStops,
     setShowDepot,
     setShowRoads,
-    loadTopology: (name, text) => setTopologyFile({ name, text }),
-    loadClosures: (name, text) => setClosuresFile({ name, text }),
-    clearTopology: () => setTopologyFile(null),
-    clearClosures: () => setClosuresFile(null),
   };
 
   const dayFlow = timing.headwayMin > 0 ? 60 / timing.headwayMin : 0;
@@ -725,7 +686,6 @@ export function StreetLineEditor({
       : null;
   const noise = useNoise(map, noiseAvailable && noiseOn, noiseInput, indicator, loadNoise, "sl-roads");
 
-  const canPreview = circuitPath(view) !== null;
   const notice = zoomedOut && !ready ? t("street.zoomStreet") : zoomedOut ? t("street.zoomArea") : status;
 
   const sidePanel = profile && rules && (
@@ -733,7 +693,6 @@ export function StreetLineEditor({
       lineName={lineName}
       view={view}
       profile={profile}
-      rules={rules}
       timing={timing}
       vehicle={vehicle}
       lineList={lineList}
@@ -744,11 +703,7 @@ export function StreetLineEditor({
       onOpenDepots={onOpenDepots}
       showDepot={showDepot}
       showRoads={showRoads}
-      crossingSources={{
-        topology: topologyFile?.name ?? (railTopology ? t("street.drawingSource") : null),
-        topologyIsFile: topologyFile !== null,
-        closures: closuresFile?.name ?? null,
-      }}
+      crossingSource={railTopology ? t("street.drawingSource") : null}
       status={null}
       error={error}
       actions={actions}
@@ -783,13 +738,7 @@ export function StreetLineEditor({
 
   return (
     <>
-      <ToolPalette
-        tool={tool}
-        onTool={setTool}
-        previewing={previewing}
-        canPreview={canPreview}
-        onPreview={() => setPreviewing(!previewing)}
-      />
+      <ToolPalette tool={tool} onTool={setTool} />
       <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 flex max-w-[90%] -translate-x-1/2 flex-col items-center gap-1 text-sm">
         {notice && <p className="rounded-full bg-slate-900/85 px-3 py-1 text-white">{notice}</p>}
         {note && (

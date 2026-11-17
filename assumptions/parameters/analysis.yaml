@@ -68,7 +68,8 @@
   label: "Station grouping: stops and stations closer than this are one stop or station and share a name"
   group: Analysis
   unit: m
-  used_by: [stop and station names in the railway editor, renaming stops and stations]
+  used_by:
+    [stop and station names in the railway editor, street line station groups, renaming stops and stations]
   values:
     - context:
         mode: "*"
@@ -78,7 +79,7 @@
       basis: educated-guess
       sources: [mobsimlab-derivation]
       check: unverified
-      rationale: "06-gis §9.3 default: platforms of one interchange (a tram stop in front of a station, two bus stops on either side of a junction) usually lie within about 150 m of each other; farther apart they are separate stops that need their own names. A street line's own grouping distance (line rules) still applies to its stops."
+      rationale: "06-gis §9.3 default: platforms of one interchange (a tram stop in front of a station, two bus stops on either side of a junction) usually lie within about 150 m of each other; farther apart they are separate stops that need their own names."
 
 - key: analysis.same_place_m
   label: "Network map: stops of any name closer than this are drawn as one station"

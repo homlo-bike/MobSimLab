@@ -1143,6 +1143,7 @@
     "station.track_suggest_distance_m",
     "stop.reuse_distance_m",
     "street.bus_lane_delay_share",
+    "street.detour_warn_m",
     "street.driving_side",
     "street.lane_width_m",
     "street.lanes",

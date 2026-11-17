@@ -10,6 +10,8 @@ use crate::graph::RoadGraph;
 use crate::profile::{RoutingRules, TrafficSide, VehicleProfile};
 use crate::router::{route, Anchor, Path, SearchOptions};
 use serde::{Deserialize, Serialize};
+use std::cell::RefCell;
+use std::collections::HashMap;
 
 /// Role of a route point.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -111,6 +113,9 @@ pub struct StreetLine {
     pub legs_routed: usize,
     /// Level crossings with railways, with the expected wait at each ([`crate::crossings`]).
     pub level_crossings: Vec<LevelCrossing>,
+    /// Quickest time between two anchors, by (from arc, from t, to arc, to t). Valid for one road graph
+    /// and vehicle: cleared when either changes.
+    leg_costs: RefCell<HashMap<(u32, u64, u32, u64), f64>>,
 }
 
 /// Point as reported to the UI.
@@ -311,6 +316,7 @@ impl StreetLine {
             next_id: 1,
             legs_routed: 0,
             level_crossings: Vec::new(),
+            leg_costs: RefCell::new(HashMap::new()),
         }
     }
 
@@ -371,7 +377,8 @@ impl StreetLine {
         self.points.insert(seq, p);
         self.legs.insert(seq, Leg::empty());
         self.resnap(g, seq);
-        self.reroute_around(g, seq);
+        let n = self.points.len();
+        self.reroute_after_edit(g, &[(seq + n - 1) % n, seq]);
         id
     }
 
@@ -380,7 +387,8 @@ impl StreetLine {
         let i = self.index_of(id)?;
         self.points[i].click = g.proj.to_xy(lon, lat);
         self.resnap(g, i);
-        self.reroute_around(g, i);
+        let n = self.points.len();
+        self.reroute_after_edit(g, &[(i + n - 1) % n, i]);
         Ok(())
     }
 
@@ -391,7 +399,7 @@ impl StreetLine {
         self.legs.remove(i);
         if !self.points.is_empty() {
             let prev = (i + self.points.len() - 1) % self.points.len();
-            self.route_leg(g, prev);
+            self.reroute_after_edit(g, &[prev]);
         }
         Ok(())
     }
@@ -403,7 +411,8 @@ impl StreetLine {
         self.points[i].kind = kind;
         if was_stop != kind.is_stop() {
             self.resnap(g, i);
-            self.reroute_around(g, i);
+            let n = self.points.len();
+            self.reroute_after_edit(g, &[(i + n - 1) % n, i]);
         }
         Ok(())
     }
@@ -418,6 +427,7 @@ impl StreetLine {
     /// Purpose: change the vehicle; every point is re-snapped and every leg re-routed.
     pub fn set_profile(&mut self, g: &RoadGraph, profile: VehicleProfile) {
         self.profile = profile;
+        self.leg_costs.borrow_mut().clear();
         for i in 0..self.points.len() {
             self.resnap(g, i);
         }
@@ -427,6 +437,7 @@ impl StreetLine {
     /// Purpose: after the road graph was rebuilt (more area loaded), snap every point and the depot
     /// again and re-route the whole circuit. The graph must use the same projection as before.
     pub fn rebuild(&mut self, g: &RoadGraph) {
+        self.leg_costs.borrow_mut().clear();
         for i in 0..self.points.len() {
             self.resnap(g, i);
         }
@@ -479,15 +490,56 @@ impl StreetLine {
 
     /// Purpose: choose the travel direction at every point for the shortest whole circuit and route all legs.
     pub fn reroute_all(&mut self, g: &RoadGraph) {
+        self.choose_directions(g);
+        for i in 0..self.points.len() {
+            self.route_leg(g, i);
+        }
+    }
+
+    /// Purpose: after an edit, choose the travel direction at every point for the shortest whole circuit
+    /// (as when the streets load again, so the route does not change on its own later), then route the
+    /// legs given and the legs at every point whose direction changed. Other legs keep their paths.
+    fn reroute_after_edit(&mut self, g: &RoadGraph, legs: &[usize]) {
         let n = self.points.len();
-        if n < 2 {
-            for i in 0..n {
+        let before: Vec<Option<Anchor>> = self.points.iter().map(|p| p.anchor).collect();
+        self.choose_directions(g);
+        let mut todo = vec![false; n];
+        for &i in legs {
+            if i < n {
+                todo[i] = true;
+            }
+        }
+        for (k, b) in before.iter().enumerate() {
+            if !same_anchor(*b, self.points[k].anchor) {
+                todo[(k + n - 1) % n] = true;
+                todo[k] = true;
+            }
+        }
+        for (i, t) in todo.into_iter().enumerate() {
+            if t {
                 self.route_leg(g, i);
+            }
+        }
+    }
+
+    /// Purpose: pick each point's anchor (the travel direction on its street) so that the whole circuit
+    /// is quickest. Points that are not on a usable road are left out of the circuit for this choice.
+    fn choose_directions(&mut self, g: &RoadGraph) {
+        let on_road: Vec<usize> = (0..self.points.len())
+            .filter(|&k| !self.points[k].candidates.is_empty())
+            .collect();
+        let n = on_road.len();
+        if n < 2 {
+            for &k in &on_road {
+                self.points[k].anchor = self.points[k].candidates.first().copied();
             }
             return;
         }
         // Cycle DP over candidate anchors: fix the first point's candidate, sweep forward, close the loop.
-        let cands: Vec<Vec<Anchor>> = self.points.iter().map(|p| p.candidates.clone()).collect();
+        let cands: Vec<Vec<Anchor>> = on_road
+            .iter()
+            .map(|&k| self.points[k].candidates.clone())
+            .collect();
         let mut best: Option<(f64, Vec<usize>)> = None;
         for c0 in 0..cands[0].len() {
             // cost[k][c] = best cost to reach candidate c of point k; back[k][c] = chosen predecessor.
@@ -530,16 +582,18 @@ impl StreetLine {
         }
         if let Some((_, choice)) = best {
             for (k, c) in choice.into_iter().enumerate() {
-                self.points[k].anchor = self.points[k].candidates.get(c).copied();
+                let p = &mut self.points[on_road[k]];
+                p.anchor = p.candidates.get(c).copied();
             }
-        }
-        for i in 0..n {
-            self.route_leg(g, i);
         }
     }
 
     fn leg_cost(&self, g: &RoadGraph, from: Anchor, to: Anchor) -> f64 {
-        route(
+        let key = (from.arc, from.t.to_bits(), to.arc, to.t.to_bits());
+        if let Some(&c) = self.leg_costs.borrow().get(&key) {
+            return c;
+        }
+        let c = route(
             g,
             &self.profile,
             from,
@@ -548,7 +602,9 @@ impl StreetLine {
                 allow_u_turns: false,
             },
         )
-        .map_or(1e12, |p| p.time_s)
+        .map_or(1e12, |p| p.time_s);
+        self.leg_costs.borrow_mut().insert(key, c);
+        c
     }
 
     /// Snap a click to the road. Stops keep only the arc that has the click on its door side.
@@ -614,33 +670,6 @@ impl StreetLine {
                 p.error = Some(e);
                 p.side = None;
             }
-        }
-    }
-
-    /// Choose the best candidate at point `i` given its neighbours, then route the two adjacent legs.
-    fn reroute_around(&mut self, g: &RoadGraph, i: usize) {
-        let n = self.points.len();
-        if n == 0 {
-            return;
-        }
-        let prev = (i + n - 1) % n;
-        let next = (i + 1) % n;
-        if n >= 2 && self.points[i].candidates.len() > 1 {
-            let (pa, na) = (self.points[prev].anchor, self.points[next].anchor);
-            let best = self.points[i]
-                .candidates
-                .iter()
-                .map(|&c| {
-                    let a = pa.map_or(0.0, |p| self.leg_cost(g, p, c));
-                    let b = na.map_or(0.0, |q| self.leg_cost(g, c, q));
-                    (a + b, c)
-                })
-                .min_by(|x, y| x.0.total_cmp(&y.0));
-            self.points[i].anchor = best.map(|b| b.1);
-        }
-        self.route_leg(g, prev);
-        if next != prev || n == 2 {
-            self.route_leg(g, i);
         }
     }
 
@@ -1251,4 +1280,13 @@ fn to_lonlat(g: &RoadGraph, xy: &[(f64, f64)]) -> Vec<[f64; 2]> {
             [lon, lat]
         })
         .collect()
+}
+
+/// Whether two anchors are the same place and direction.
+fn same_anchor(a: Option<Anchor>, b: Option<Anchor>) -> bool {
+    match (a, b) {
+        (None, None) => true,
+        (Some(a), Some(b)) => a.arc == b.arc && a.t.to_bits() == b.t.to_bits(),
+        _ => false,
+    }
 }
