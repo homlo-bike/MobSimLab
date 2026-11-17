@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { Client } from "pg";
 import { migrate, readMigrations } from "../db/migrate";
+import { errorText } from "./error-text";
 
 /**
  * Purpose: command-line entry for `deploy/bin/migrate` (runs before the API starts).
@@ -17,7 +18,14 @@ async function main(): Promise<void> {
     user: "mobsimlab_migrator",
     password: migratorPassword(secrets),
   });
-  await db.connect();
+  try {
+    await db.connect();
+  } catch (e) {
+    throw new Error(
+      `cannot connect to the database ${db.database} at ${db.host}:${db.port} as mobsimlab_migrator: ${errorText(e)}`,
+      { cause: e },
+    );
+  }
   try {
     const dir = process.env.MOBSIMLAB_MIGRATIONS_DIR ?? "/app/db/migrations";
     const applied = await migrate(db, readMigrations(dir));
@@ -41,6 +49,6 @@ function migratorPassword(dir: string): string {
 }
 
 main().catch((e: unknown) => {
-  process.stderr.write(`${JSON.stringify({ level: "error", msg: (e as Error).message })}\n`);
+  process.stderr.write(`${JSON.stringify({ level: "error", msg: errorText(e) })}\n`);
   process.exit(1);
 });

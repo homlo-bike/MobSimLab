@@ -153,7 +153,7 @@ services:
     environment:
       MOBSIMLAB_PUBLIC_URL: ${MOBSIMLAB_PUBLIC_URL}
       MOBSIMLAB_SIM_WORKERS: "2"
-      MOBSIMLAB_DB_HOST: postgres
+      MOBSIMLAB_DB_HOST: mobsimlab-db
     secrets: [db_password]
     volumes: ["mobsimlab-data:/data"]
     depends_on: { postgres: { condition: service_healthy } }
@@ -171,7 +171,7 @@ services:
     environment:
       POSTGRES_PASSWORD_FILE: /run/secrets/db_password
     secrets: [db_password]
-    volumes: ["pgdata:/var/lib/postgresql/data", "./db/init:/docker-entrypoint-initdb.d:ro"]
+    volumes: ["pgdata:/var/lib/postgresql/data"]   # init script: the db-init config in compose.yaml
     # no host port published
     healthcheck: { test: ["CMD-SHELL", "pg_isready -U postgres"], interval: 10s }
 
