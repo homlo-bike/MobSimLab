@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { Client } from "pg";
 import { migrate, readMigrations } from "../db/migrate";
+import { connectWithRetry } from "./connect";
 import { errorText } from "./error-text";
 
 /**
@@ -11,21 +12,17 @@ import { errorText } from "./error-text";
  */
 async function main(): Promise<void> {
   const secrets = process.env.MOBSIMLAB_SECRETS_DIR ?? "/run/secrets";
-  const db = new Client({
+  const options = {
     host: process.env.MOBSIMLAB_DB_HOST,
     port: Number(process.env.MOBSIMLAB_DB_PORT ?? 5432),
     database: process.env.MOBSIMLAB_DB_NAME ?? "mobsimlab",
     user: "mobsimlab_migrator",
     password: migratorPassword(secrets),
-  });
-  try {
-    await db.connect();
-  } catch (e) {
-    throw new Error(
-      `cannot connect to the database ${db.database} at ${db.host}:${db.port} as mobsimlab_migrator: ${errorText(e)}`,
-      { cause: e },
-    );
-  }
+  };
+  const db = await connectWithRetry(
+    () => new Client(options),
+    `${options.database} at ${options.host}:${options.port}`,
+  );
   try {
     const dir = process.env.MOBSIMLAB_MIGRATIONS_DIR ?? "/app/db/migrations";
     const applied = await migrate(db, readMigrations(dir));
