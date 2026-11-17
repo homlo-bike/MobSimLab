@@ -2,7 +2,8 @@ import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { EsriImageryAdmin, type EsriStatus } from "../src/admin/EsriImageryAdmin";
 
-const KEY = "AAPTesriTestKey_0123456789abcdefWXYZ";
+// A made-up key with little variety, so secret scanners do not take it for a real one.
+const KEY = `test-${"x".repeat(26)}WXYZ`;
 const none: EsriStatus = {
   configured: false,
   keyEnd: null,

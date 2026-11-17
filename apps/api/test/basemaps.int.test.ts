@@ -7,7 +7,8 @@ import { createApp, testConfig } from "./support/app";
 import { startDatabase, type TestDatabase } from "./support/database";
 import { cookieValue, signIn, startIdp, type TestIdp } from "./support/idp";
 
-const KEY = "AAPTesriTestKey_0123456789abcdefWXYZ";
+// A made-up key with little variety, so secret scanners do not take it for a real one.
+const KEY = `test-${"x".repeat(26)}WXYZ`;
 
 /** Integration: the Admin's ArcGIS key for Esri World Imagery, and its tiles through the API. */
 describe("Esri World Imagery", () => {

@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
 import { EsriImageryClient, maxAgeOf, TileError, validTile } from "../src/basemaps/esri.client";
 
-const KEY = "AAPTxy1234567890abcdefKEYEND";
+// A made-up key with little variety, so secret scanners do not take it for a real one.
+const KEY = `test-${"x".repeat(26)}WXYZ`;
 
 function answer(body: BodyInit, init: ResponseInit) {
   return vi.fn(async (...args: [string | URL | Request, RequestInit?]) => {
