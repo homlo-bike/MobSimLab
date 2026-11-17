@@ -139,6 +139,24 @@ jobs:
             mkdir -p desktop/runtime
             mv "$prefix" desktop/runtime/conda
             rm -rf "$base"
+            if [ "$RUNNER_OS" = macOS ]; then
+              # A few libraries (ncurses for psql, for example) name the libraries they load by absolute path:
+              # point those at the moved folder, relative to each file, and sign the changed files again.
+              conda="$PWD/desktop/runtime/conda"
+              find "$conda/bin" "$conda/lib" "$conda/libexec" -type f 2>/dev/null | while IFS= read -r f; do
+                deps=$(otool -L "$f" 2>/dev/null | tail -n +2 | awk '{print $1}' | grep -F "$prefix/" || true)
+                [ -n "$deps" ] || continue
+                for dep in $deps; do
+                  rel=$(python3 -c 'import os, sys; print(os.path.relpath(sys.argv[1], os.path.dirname(sys.argv[2])))' \
+                    "$conda/${dep#"$prefix/"}" "$f")
+                  install_name_tool -change "$dep" "@loader_path/$rel" "$f"
+                done
+                case $(otool -D "$f" | tail -n +2) in "$prefix/"*) install_name_tool -id "@rpath/$(basename "$f")" "$f" ;; esac
+                codesign -f -s - "$f"
+              done
+              left=$(find "$conda/bin" "$conda/lib" -type f -exec otool -L {} + 2>/dev/null | grep -F "$prefix/" || true)
+              [ -z "$left" ] || { echo "libraries still load from the install folder:" >&2; echo "$left" >&2; exit 1; }
+            fi
             want="$PWD/desktop/runtime/conda/share"
             got=$(desktop/runtime/conda/bin/pg_config --sharedir)
             [ "$got" = "$want" ] || { echo "PostgreSQL is not relocatable: share folder $got, expected $want" >&2; exit 1; }
