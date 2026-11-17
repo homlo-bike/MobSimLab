@@ -1086,6 +1086,78 @@ mod tests {
     }
 
     #[test]
+    fn a_crossover_running_into_a_curve_ends_on_both_tracks() {
+        let mut net = Network::new(RailMode::RegionalRail, [7.0, 50.9]);
+        let mut t = straight(1, (-600.0, 0.0), (300.0, 600.0), None);
+        t.tracks = 2;
+        t.points = vec![crate::model::Pi {
+            x: 300.0,
+            y: 0.0,
+            radius_m: Some(300.0),
+            level: None,
+        }];
+        net.tracks.push(t);
+        let dz0 = build(&net, None);
+        let g = dz0.track(1).unwrap();
+        // The curve (with its transition) starts where the curvature first leaves zero.
+        let curve_s = g
+            .centre
+            .iter()
+            .find(|q| q.k.abs() > 1e-6)
+            .map(|q| q.s)
+            .unwrap();
+        let element = defaults()
+            .mode(RailMode::RegionalRail)
+            .default_turnout
+            .clone();
+        net.switches.push(crate::model::Switch {
+            id: 2,
+            kind: SwitchKind::Crossover,
+            track: 1,
+            s: curve_s - 30.0,
+            element,
+            side: 1,
+            direction: 1,
+            flip: false,
+        });
+        let dz = build(&net, None);
+        let g = dz.track(1).unwrap();
+        let sw = dz
+            .switches
+            .iter()
+            .find(|s| s.id == 2)
+            .expect("crossover built");
+        assert!(
+            sw.s1 > curve_s + 10.0,
+            "the crossover reaches into the curve"
+        );
+        let off_track = |p: crate::geom::P2| {
+            g.lines
+                .iter()
+                .map(|l| {
+                    l.windows(2)
+                        .map(|w| {
+                            let (a, b) = (w[0].p, w[1].p);
+                            let ab = b.sub(a);
+                            let t = (p.sub(a).dot(ab) / ab.dot(ab).max(1e-12)).clamp(0.0, 1.0);
+                            a.add(ab.mul(t)).dist(p)
+                        })
+                        .fold(f64::INFINITY, f64::min)
+                })
+                .fold(f64::INFINITY, f64::min)
+        };
+        let path = &sw.paths[0];
+        for end in [path.first().unwrap().p, path.last().unwrap().p] {
+            assert!(
+                off_track(end) < 0.15,
+                "crossover end {:?} is {:.2} m off the tracks",
+                end,
+                off_track(end)
+            );
+        }
+    }
+
+    #[test]
     fn two_systems_cross_on_one_shared_diamond() {
         let mut net = Network::new(RailMode::RegionalRail, [7.0, 50.9]);
         net.tracks

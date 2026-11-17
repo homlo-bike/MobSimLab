@@ -6,21 +6,36 @@ import { afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 
 afterEach(cleanup);
 
+/** Markers the editor made, with their drag handlers, so tests can drag edit handles. */
+const markers: {
+  draggable: boolean;
+  at: { lng: number; lat: number };
+  on: Map<string, () => void>;
+  removed: boolean;
+}[] = [];
 vi.mock("maplibre-gl", () => ({
   Marker: class {
+    m = { draggable: false, at: { lng: 0, lat: 0 }, on: new Map<string, () => void>(), removed: false };
+    constructor(opts?: { draggable?: boolean }) {
+      this.m.draggable = !!opts?.draggable;
+      markers.push(this.m);
+    }
     setLngLat() {
       return this;
     }
     addTo() {
       return this;
     }
-    on() {
+    on(ev: string, f: () => void) {
+      this.m.on.set(ev, f);
       return this;
     }
     getLngLat() {
-      return { lng: 0, lat: 0 };
+      return this.m.at;
     }
-    remove() {}
+    remove() {
+      this.m.removed = true;
+    }
   },
 }));
 vi.mock("../src/features/railways/mapLayers", async (orig) => ({
@@ -697,6 +712,51 @@ describe("Railway editor", () => {
     act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
     expect(await screen.findByDisplayValue("Riverside")).toBeTruthy();
     expect(screen.getByText(/2 tracks · 2 platform edges/)).toBeTruthy();
+  });
+
+  it("rotates a station smoothly: its handle stays while it is dragged round", async () => {
+    const { handlers } = await opened();
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+    markers.length = 0;
+    act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
+    const rotation = () => (screen.getByRole("spinbutton", { name: "Rotation" }) as HTMLInputElement).value;
+    await waitFor(() => expect(markers.some((m) => m.draggable && !m.removed)).toBe(true));
+    const handle = markers.find((m) => m.draggable && !m.removed)!;
+    const seen: string[] = [];
+    for (const [dx, dy] of [
+      [0.001, 0],
+      [0, 0.001],
+      [-0.001, 0],
+      [0, -0.001],
+    ]) {
+      handle.at = { lng: ORIGIN[0] + dx!, lat: ORIGIN[1] + dy! };
+      act(() => handle.on.get("dragend")!());
+      await waitFor(() => expect(seen).not.toContain(rotation()));
+      seen.push(rotation());
+      // The same handle keeps being dragged: it is not removed and made again after each step.
+      expect(handle.removed).toBe(false);
+    }
+    expect(new Set(seen).size).toBe(4);
+  });
+
+  it("stays in the track tool after drawing a track", async () => {
+    const { handlers } = await opened();
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+    fireEvent.click(screen.getByRole("button", { name: /^Track/ }));
+    const at = (dx: number) => ({
+      lngLat: { lng: ORIGIN[0] + dx, lat: ORIGIN[1] },
+      point: { x: dx * 1e5, y: 0 },
+    });
+    act(() => handlers.get("click")!(at(0)));
+    act(() => handlers.get("click")!(at(0.003)));
+    act(() => {
+      handlers.get("click")!(at(0.006));
+      handlers.get("dblclick")!({ ...at(0.006), preventDefault() {} });
+    });
+    await waitFor(() =>
+      expect(screen.getByRole("button", { name: /^Track/ }).getAttribute("aria-pressed")).toBe("true"),
+    );
+    expect(screen.queryByRole("button", { name: /Delete track/ })).toBeNull();
   });
 
   it("names a station placed beside a bus stop after it, and a far one uniquely", async () => {

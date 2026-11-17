@@ -11,6 +11,7 @@ import {
   autoLeads,
   fallbackStationName,
   kindOf,
+  pickElement,
   type LocalConnection,
   stationPlaces,
   update,
@@ -28,6 +29,7 @@ import {
 import { HIT_LAYERS } from "./mapLayers";
 import type { RailTool } from "./railPanelTypes";
 import { updateLine } from "./serviceLines";
+import type { TrackEnd } from "./trackEnds";
 import type { Anchor, ConnectionView, LonLat, Network, RailEngine, Track } from "./types";
 
 /**
@@ -48,6 +50,7 @@ export function useMapEditing({
   setDraft,
   setCursor,
   connectionAt,
+  trackEndAt,
   connLocal,
   finishDraft,
   startDraft,
@@ -66,6 +69,7 @@ export function useMapEditing({
   setDraft: Dispatch<SetStateAction<Track | null>>;
   setCursor: Dispatch<SetStateAction<Cursor | null>>;
   connectionAt: (pt: { x: number; y: number }, wantTracks: number | null) => ConnectionView | null;
+  trackEndAt: (pt: { x: number; y: number }, wantTracks: number | null) => TrackEnd | null;
   connLocal: (a: Anchor) => LocalConnection | null;
   finishDraft: (end: Anchor | null) => void;
   startDraft: (start: Anchor, d: Network, level: Track["level"], tracks: 1 | 2) => void;
@@ -135,12 +139,17 @@ export function useMapEditing({
         const p = snap ? e.toLocal(s.doc.origin, snap.lonlat) : at;
         if (!s.draft) {
           const c = connectionAt(ev.point, s.trackOpts.tracks);
+          const te = c ? null : trackEndAt(ev.point, null);
           if (c) startDraft(c.anchor, s.doc, c.level, c.tracks === 2 ? 2 : 1);
+          else if (te)
+            startDraft({ type: "free", x: te.x, y: te.y, level: te.level }, s.doc, te.level, te.tracks);
           else startDraft({ type: "free", x: p[0], y: p[1] }, s.doc, s.trackOpts.level, s.trackOpts.tracks);
           return;
         }
         const c = connectionAt(ev.point, s.draft.tracks);
         if (c) return finishDraft(c.anchor);
+        const te = trackEndAt(ev.point, s.draft.tracks);
+        if (te) return finishDraft({ type: "free", x: te.x, y: te.y, level: te.level });
         const dr = s.draft;
         const pts = [...dr.points, { x: p[0], y: p[1], level: draftLevel(dr) }];
         const next = autoLeads({ ...dr, points: pts }, connLocal(dr.start), null, null, minLead);
@@ -197,7 +206,11 @@ export function useMapEditing({
         ];
         const layers = HIT_LAYERS.filter((l) => map.getLayer(l));
         const hits = map.queryRenderedFeatures(box, { layers });
-        const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r, sigs(s.view)));
+        const ref = pickElement(
+          s.doc,
+          hits.map((h) => Number(h.properties?.ref)),
+          sigs(s.view),
+        );
         setSel(ref ? { id: ref } : null);
       }
     };
@@ -210,7 +223,12 @@ export function useMapEditing({
       const pts = dr.points.slice(0, -1);
       const at = engine.current.toLocal(s.doc.origin, [ev.lngLat.lng, ev.lngLat.lat]);
       latest.current.draft = { ...dr, points: pts };
-      finishDraft({ type: "free", x: at[0], y: at[1], level: draftLevel(dr) });
+      const te = trackEndAt(ev.point, dr.tracks);
+      finishDraft(
+        te
+          ? { type: "free", x: te.x, y: te.y, level: te.level }
+          : { type: "free", x: at[0], y: at[1], level: draftLevel(dr) },
+      );
     };
     let frame = 0;
     const onMove = (ev: MapMouseEvent) => {
@@ -253,8 +271,9 @@ export function useMapEditing({
       }
       if (s.tool === "track" && s.draft) {
         const conn = connectionAt(ev.point, s.draft.tracks);
-        const snap = e.existingSnap(ll, pxToM(10));
-        const at = e.toLocal(s.doc.origin, snap ? snap.lonlat : ll);
+        const te = conn ? null : trackEndAt(ev.point, s.draft.tracks);
+        const snap = te ? null : e.existingSnap(ll, pxToM(10));
+        const at: [number, number] = te ? [te.x, te.y] : e.toLocal(s.doc.origin, snap ? snap.lonlat : ll);
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() => {
           const d = latest.current.draft;
@@ -274,7 +293,11 @@ export function useMapEditing({
       ];
       const layers = HIT_LAYERS.filter((l) => map.getLayer(l));
       const hits = map.queryRenderedFeatures(box, { layers });
-      const ref = hits.map((h) => Number(h.properties?.ref)).find((r) => kindOf(s.doc!, r, sigs(s.view)));
+      const ref = pickElement(
+        s.doc,
+        hits.map((h) => Number(h.properties?.ref)),
+        sigs(s.view),
+      );
       if (!ref || s.sel?.id !== ref) return;
       const ll: LonLat = [ev.lngLat.lng, ev.lngLat.lat];
       const kind = kindOf(s.doc, ref, sigs(s.view));
@@ -312,5 +335,5 @@ export function useMapEditing({
       map.off("mouseup", onUp);
       cancelAnimationFrame(frame);
     };
-  }, [map, connectionAt, connLocal, finishDraft, minLead, pxToM, startDraft]);
+  }, [map, connectionAt, trackEndAt, connLocal, finishDraft, minLead, pxToM, startDraft]);
 }

@@ -4,6 +4,7 @@ import { autoLeads, type LocalConnection, update } from "./doc";
 import { handleElement } from "./editorDom";
 import { type DraggingRef, draftLevel, type LatestRef, type Selection } from "./editorState";
 import { showConnections } from "./mapLayers";
+import { joinAtFreeEnds, type TrackEnd } from "./trackEnds";
 import type { Anchor, ConnectionView, Network, RailEngine, RailView, Track } from "./types";
 
 /**
@@ -21,6 +22,7 @@ export function useEditHandles({
   setSel,
   connLocal,
   connectionAt,
+  trackEndAt,
   minLead,
 }: {
   map: MapLibreMap | null;
@@ -33,6 +35,7 @@ export function useEditHandles({
   setSel: Dispatch<SetStateAction<Selection | null>>;
   connLocal: (a: Anchor) => LocalConnection | null;
   connectionAt: (pt: { x: number; y: number }, wantTracks: number | null) => ConnectionView | null;
+  trackEndAt: (pt: { x: number; y: number }, wantTracks: number | null) => TrackEnd | null;
   minLead: number;
 }) {
   const handles = useMemo(
@@ -90,9 +93,28 @@ export function useEditHandles({
         } else if (h.kind === "end" || h.kind === "start") {
           const pt = map.project([lng, la]);
           const conn = final ? connectionAt(pt, t.tracks) : null;
-          const a: Anchor = conn ? conn.anchor : { type: "free", x: at[0], y: at[1], level: draftLevel(t) };
+          // Another track's free end (not this track's own other end).
+          const te = final && !conn ? trackEndAt(pt, t.tracks) : null;
+          const end = te && te.track !== t.id ? te : null;
+          const a: Anchor = conn
+            ? conn.anchor
+            : end
+              ? { type: "free", x: end.x, y: end.y, level: end.level }
+              : { type: "free", x: at[0], y: at[1], level: draftLevel(t) };
           next = h.kind === "end" ? { ...t, end: a } : { ...t, start: a };
           if (conn) next = autoLeads(next, connLocal(next.start), connLocal(conn.anchor), null, minLead);
+          if (end) {
+            setSel(null);
+            setDoc(
+              (d) =>
+                d &&
+                joinAtFreeEnds(
+                  update(d, "tracks", t.id, () => next),
+                  t.id,
+                )[0],
+            );
+            return;
+          }
         }
         setDoc((d) => d && update(d, "tracks", t.id, () => next));
       };
@@ -121,7 +143,7 @@ export function useEditHandles({
       cancelAnimationFrame(frame);
       made.forEach((m) => m.remove());
     };
-  }, [map, handleKey, sel?.pi, connLocal, connectionAt, minLead]);
+  }, [map, handleKey, sel?.pi, connLocal, connectionAt, trackEndAt, minLead]);
   // Keep handles on the fitted geometry while not being dragged.
   useEffect(() => {
     for (const h of handles) {

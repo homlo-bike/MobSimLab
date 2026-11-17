@@ -79,7 +79,6 @@ export function RailPanel(props: Props) {
         <Stat value={String(doc.stations.length)} label={t("rail.stat.stations")} />
         <Stat value={String(doc.switches.length)} label={t("rail.stat.switches")} />
       </div>
-      {props.noise}
       <div className="flex gap-2">
         <button
           type="button"

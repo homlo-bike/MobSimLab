@@ -49,7 +49,6 @@ interface Props {
   /** The line whose stops map clicks on stations add, if any. */
   picking: string | null;
   setPicking: (id: string | null) => void;
-  newLine: () => void;
   show: (at: LonLat | null, ref: number | null) => void;
   /** The project's design rules (Project preferences) as `<mode>.<field>`; the library's when absent. */
   designValues?: Readonly<Record<string, number>> | null;
@@ -88,7 +87,6 @@ export function ServiceLinesPanel({
   publish,
   picking,
   setPicking,
-  newLine,
   show,
   designValues = null,
   calendar = NO_CALENDAR,
@@ -171,14 +169,8 @@ export function ServiceLinesPanel({
           );
         })}
       </ul>
+      {/* New lines are made with the "Create service line" tool in the tool palette. */}
       <div className="flex gap-2">
-        <button
-          type="button"
-          onClick={newLine}
-          className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-        >
-          {t("rail.line.new")}
-        </button>
         <button
           type="button"
           onClick={publish}

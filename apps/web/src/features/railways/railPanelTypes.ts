@@ -65,8 +65,6 @@ export interface RailPanelProps {
   switchOpts: NewSwitchOpts;
   error: string | null;
   actions: RailPanelActions;
-  /** The noise plugin's section (toggle, band, legend), when the plugin is installed. */
-  noise?: React.ReactNode;
   /** Checks from plugins (noise), added after the design's own. */
   extraIssues?: IssueView[];
   /** Service lines: the last publication, publishing, and picking stops on the map. */
@@ -77,8 +75,6 @@ export interface RailPanelProps {
     publish: () => void;
     picking: string | null;
     setPicking: (id: string | null) => void;
-    /** Start a new line and pick its stations on the map. */
-    newLine: () => void;
     /** The project calendar (peak windows of each day type); the default calendar when absent. */
     calendar?: ServiceCalendar;
   };
