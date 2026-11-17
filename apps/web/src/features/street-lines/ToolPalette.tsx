@@ -1,10 +1,10 @@
 import { useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 
-/** Editing tools, as in the mockup: select and move, add point, pan, and the preview run. */
+/** Editing tools: select and move, add point, pan, and place the bus depot. */
 export type Tool = "select" | "add" | "pan" | "depot";
 
-const TOOLS: { id: Exclude<Tool, "depot">; label: MessageKey; key: string; icon: string }[] = [
+const TOOLS: { id: Tool; label: MessageKey; key: string; icon: string }[] = [
   { id: "select", label: "rail.tool.select", key: "V", icon: "M5 3l14 8-6 2-2 6z" },
   {
     id: "add",
@@ -18,18 +18,21 @@ const TOOLS: { id: Exclude<Tool, "depot">; label: MessageKey; key: string; icon:
     key: "H",
     icon: "M12 3v18M3 12h18M12 3l-3 3m3-3l3 3m-3 15l-3-3m3 3l3-3M3 12l3-3m-3 3l3 3m15-3l-3-3m3 3l-3 3",
   },
+  {
+    id: "depot",
+    label: "street.tool.depot",
+    key: "D",
+    icon: "M3 21V9l9-6 9 6v12M7 21v-7h10v7M7 17h10",
+  },
 ];
 
 interface Props {
   tool: Tool;
   onTool: (t: Tool) => void;
-  previewing: boolean;
-  canPreview: boolean;
-  onPreview: () => void;
 }
 
 /** Purpose: floating tool palette in the top-left corner of the map. */
-export function ToolPalette({ tool, onTool, previewing, canPreview, onPreview }: Props) {
+export function ToolPalette({ tool, onTool }: Props) {
   const { t: tr } = useI18n();
   const item = "flex w-full items-center gap-2 rounded px-2 py-1.5 text-start";
   return (
@@ -54,19 +57,6 @@ export function ToolPalette({ tool, onTool, previewing, canPreview, onPreview }:
           <kbd className="text-xs opacity-60">{t.key}</kbd>
         </button>
       ))}
-      <div className="my-1 border-t border-slate-200" />
-      <button
-        type="button"
-        className={`${item} hover:bg-slate-100 disabled:opacity-40`}
-        aria-pressed={previewing}
-        disabled={!canPreview}
-        onClick={onPreview}
-      >
-        <svg viewBox="0 0 24 24" className="h-4 w-4 fill-current" aria-hidden="true">
-          <path d={previewing ? "M6 6h12v12H6z" : "M7 5l12 7-12 7z"} />
-        </svg>
-        {previewing ? tr("street.stopPreview") : tr("street.preview")}
-      </button>
     </div>
   );
 }

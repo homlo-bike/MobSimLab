@@ -1698,11 +1698,11 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Station grouping: stops and stations closer than this are one stop or station and share a name
 
-`analysis.station_grouping_m` · unit: m · used by: stop and station names in the railway editor, renaming stops and stations
+`analysis.station_grouping_m` · unit: m · used by: stop and station names in the railway editor, street line station groups, renaming stops and stations
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 100 | 150 | 250 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | 06-gis §9.3 default: platforms of one interchange (a tram stop in front of a station, two bus stops on either side of a junction) usually lie within about 150 m of each other; farther apart they are separate stops that need their own names. A street line's own grouping distance (line rules) still applies to its stops. |
+| all | 100 | 150 | 250 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | 06-gis §9.3 default: platforms of one interchange (a tram stop in front of a station, two bus stops on either side of a junction) usually lie within about 150 m of each other; farther apart they are separate stops that need their own names. |
 
 ### Network map: stops of any name closer than this are drawn as one station
 
@@ -2407,6 +2407,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | – | right | – | cited | unverified | [vienna-convention-1968](#src-vienna-convention-1968) | Right-hand traffic in most countries; the project country sets it (left in for example GB, IE, MT, CY, JP, IN, AU, NZ, ZA, HK, SG, TH, ID). |
+
+### Street lines: warn when turning round adds more than this
+
+`street.detour_warn_m` · unit: m · used by: street line checks
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 300 | 500 | 1000 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Buses never U-turn or reverse, so a point reached in the wrong direction makes the line go round the block. A detour of a few hundred metres is one urban block; more than about 500 m usually means a point is on the wrong street or the wrong side, so the street line tool warns about that leg. |
 
 ### Running side for new double track
 

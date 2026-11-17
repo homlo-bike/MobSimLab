@@ -45,7 +45,7 @@ import { LineList } from "../src/features/street-lines/LineList";
 import { dayService, vehicleById, vehiclesFor } from "../src/features/street-lines/service";
 import { setProjectServiceDay } from "../src/features/journey-planner/network";
 import { StreetLineEditor } from "../src/features/street-lines/StreetLineEditor";
-import { along, circuitPath, lineChecks, lineStats } from "../src/features/street-lines/summary";
+import { lineChecks, lineStats } from "../src/features/street-lines/summary";
 import { tilesFor, tileX, tileY } from "../src/features/street-lines/tiles";
 import type { LineView, PointKind, StreetEngine, VehicleProfile } from "../src/features/street-lines/types";
 
@@ -320,7 +320,7 @@ describe("Street line editor", () => {
     expect(screen.getByText(/green: overhead wire/)).toBeTruthy();
   });
 
-  it("waits at the railway tool's level crossings and uses rail timetable closures when loaded", async () => {
+  it("waits at the railway tool's level crossings with the service it assumes", async () => {
     const topology = { schema: "mobsimlab.rail-topology/1", level_crossings: [] };
     const { engine } = await opened(15, topology);
     await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
@@ -335,14 +335,7 @@ describe("Street line editor", () => {
     expect(screen.getByText(/^Railway: /).textContent).toMatch(
       /Railway: railway tool drawing\. Closures: assumed service\./,
     );
-    const closures = JSON.stringify({ schema: "mobsimlab.level-crossing-closures/1", level_crossings: [] });
-    const file = new File([closures], "closures.json", { type: "application/json" });
-    fireEvent.change(screen.getByLabelText("Load rail timetable closures"), { target: { files: [file] } });
-    await waitFor(() =>
-      expect(engine.setLevelCrossings).toHaveBeenLastCalledWith(JSON.stringify(topology), closures),
-    );
-    expect(await screen.findByText(/08:00 busiest hour/)).toBeTruthy();
-    expect(screen.getByText(/^Railway: /).textContent).toMatch(/Closures: closures\.json/);
+    expect(screen.queryByText(/Load track topology|Load rail timetable closures/)).toBeNull();
   });
 
   it("switches tools from the palette and the keyboard", async () => {
@@ -354,6 +347,29 @@ describe("Street line editor", () => {
     expect(screen.getByRole("note").textContent).toMatch(/Drag a point/);
     fireEvent.click(screen.getByRole("button", { name: /Pan/ }));
     expect(pressed(/Pan/)).toBe("true");
+    fireEvent.keyDown(window, { key: "d" });
+    expect(pressed(/Bus depot/)).toBe("true");
+    expect(screen.queryByRole("button", { name: /Preview run/ })).toBeNull();
+  });
+
+  it("places the bus depot from the palette", async () => {
+    const { engine, handlers } = await opened();
+    await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
+    fireEvent.click(screen.getByRole("button", { name: /Bus depot/ }));
+    expect(screen.getByRole("note").textContent).toMatch(/depot gate/);
+    act(() => handlers.get("click")!({ lngLat: { lng: 7.412, lat: 43.73 }, point: { x: 1, y: 1 } }));
+    expect(engine.setDepot).toHaveBeenCalledWith([7.412, 43.73]);
+    expect(screen.getByRole("button", { name: /Select and move/ }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("shows the mode first, right under the tool choice, and no rules of its own", async () => {
+    await opened();
+    const mode = screen.getByRole("radiogroup", { name: "Mode" });
+    const name = screen.getByDisplayValue("Line 1");
+    expect(mode.compareDocumentPosition(name) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+    expect(screen.queryByText("Rules")).toBeNull();
+    expect(screen.queryByText(/Right-hand|Stops within this distance|Warn when turning round/)).toBeNull();
+    expect(screen.getByText("Service")).toBeTruthy();
   });
 });
 
@@ -506,6 +522,40 @@ describe("Street line saved with the project", () => {
     act(() => handlers.get("click")!({ lngLat: { lng: 7.42, lat: 43.735 }, point: { x: 10, y: 10 } }));
     await waitFor(() => expect(onSave).toHaveBeenCalled());
   });
+
+  it("follows the project's street rules over the rules the line was saved with", async () => {
+    const engine = fakeEngine();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    const projectRules = { traffic_side: "left" as const, grouping_distance_m: 200, detour_warn_m: 300 };
+    const { rerender } = render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={saved}
+        projectRules={projectRules}
+      />,
+    );
+    await waitFor(() =>
+      expect(engine.setSettings).toHaveBeenCalledWith(saved.profile, { ...saved.rules, ...projectRules }),
+    );
+    rerender(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={saved}
+        projectRules={{ ...projectRules, traffic_side: "right" }}
+      />,
+    );
+    await waitFor(() =>
+      expect(engine.setSettings).toHaveBeenLastCalledWith(
+        expect.anything(),
+        expect.objectContaining({ traffic_side: "right", detour_warn_m: 300 }),
+      ),
+    );
+  });
 });
 
 describe("Street line vehicle and service", () => {
@@ -647,15 +697,6 @@ describe("Line summary", () => {
     const c = lineChecks(clean);
     expect(c[0]!.sev).toBe("ok");
     expect(c.some((x) => /Mark an end stop/.test(x.text))).toBe(true);
-  });
-
-  it("follows the circuit for the preview run", () => {
-    const c = circuitPath(sampleView(["stop", "stop"]))!;
-    expect(c.stops).toHaveLength(2);
-    expect(c.length).toBeGreaterThan(0);
-    const mid = along(c, c.length / 4);
-    expect(mid.at[0]).toBeCloseTo(7.0005, 4);
-    expect(Math.round(mid.bearing)).toBe(90);
   });
 });
 

@@ -258,6 +258,22 @@
       check: unverified
       rationale: Right-hand traffic in most countries; the project country sets it (left in for example GB, IE, MT, CY, JP, IN, AU, NZ, ZA, HK, SG, TH, ID).
 
+- key: street.detour_warn_m
+  label: "Street lines: warn when turning round adds more than this"
+  group: Depots and streets
+  unit: m
+  used_by: [street line checks]
+  values:
+    - context:
+        mode: "*"
+      low: 300
+      central: 500
+      high: 1000
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Buses never U-turn or reverse, so a point reached in the wrong direction makes the line go round the block. A detour of a few hundred metres is one urban block; more than about 500 m usually means a point is on the wrong street or the wrong side, so the street line tool warns about that leg."
+
 - key: track.running_side
   label: Running side for new double track
   group: Depots and streets

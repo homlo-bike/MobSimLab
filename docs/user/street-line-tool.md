@@ -6,7 +6,7 @@ Draw bus, BRT, trolleybus and intercity bus lines on the street network. The lay
 
 1. Click **Street line** in the top bar. The tool palette appears on the map and the line panel on the right.
 2. Zoom in to street level (zoom 13 or closer). The streets for the area on screen load by themselves, and more load as you move the map. There are no files to load. You need to be signed in. Street data © OpenStreetMap contributors, ODbL.
-3. Give the line a **name** and pick the **mode**: Bus, BRT, Trolleybus or Intercity bus. The line takes the mode's colour, and the route is recalculated with that vehicle's rules. The vehicle list offers the catalogue vehicles the project uses (**Project preferences → Vehicles**) and the project's own vehicles ([own vehicles and fleet](vehicles-and-fleet.md)).
+3. Pick the **mode** at the top of the panel (Bus, BRT, Trolleybus or Intercity bus) and give the line a **name**. The line takes the mode's colour, and the route is recalculated with that vehicle's rules. The vehicle list offers the catalogue vehicles the project uses (**Project preferences → Vehicles**) and the project's own vehicles ([own vehicles and fleet](vehicles-and-fleet.md)).
 
 ## Saving
 
@@ -23,9 +23,11 @@ If someone else saved the same drawing while you were changing it, a banner name
 | Select and move | V   | Click a point to select it; drag it to move it. Click the empty map to clear the selection.   |
 | Add point       | P   | Click a street to add the next point. Click on the line to insert a point between two others. |
 | Pan             | H   | Move the map without editing.                                                                 |
-| Preview run     |     | A vehicle drives the circuit, stopping at every stop. Escape stops it.                        |
+| Bus depot       | D   | Click the street at the depot gate. The line pulls out from and in to it (see below).         |
 
 **Delete** removes the selected point. **Escape** clears the selection.
+
+A point sits where you click, on the nearest street the vehicle may use. Each time you add, move or delete a point, the tool picks the travel direction at every point for the quickest whole circuit, so the route does not depend on the order you drew the points in and does not change when more streets load.
 
 ## Draw the line
 
@@ -37,11 +39,14 @@ If someone else saved the same drawing while you were changing it, a banner name
 
 ## The panel
 
-- **Stat tiles:** circuit length; stops and end stops; cycle time (running time + dwell at every stop + layover at every end stop); vehicles needed for the headway. Headway, dwell and layover are under _Rules_.
+- **Stat tiles:** circuit length; stops and end stops; cycle time (running time + dwell at every stop + layover at every end stop); vehicles needed for the headway. Headway, dwell and layover are under _Service_.
 - **Route points:** the circuit in order with the length of each leg. The arrow back to point 1 is the closing leg.
 - **Checks:** problems first, then advice. Click a check to select the point it is about.
 
 ## Rules the router follows
+
+The rules are the project's, for every street line: **Project preferences → Parameters** sets the driving side (`street.driving_side`), the station grouping distance (`analysis.station_grouping_m`) and when a detour from turning round is warned about (`street.detour_warn_m`, 500 m).
+
 
 - Buses never make a U-turn on the street or reverse. They may turn round only at mapped turning circles, turning loops and mini roundabouts. Otherwise the route goes round the block.
 - A stop sits on the sidewalk you click next to. In right-hand traffic it is served by vehicles that have it on their right (left in left-hand traffic). A two-way line puts its outbound stops on one sidewalk and its return stops on the other. Stops within the station distance form one station.
@@ -50,7 +55,7 @@ If someone else saved the same drawing while you were changing it, a banner name
 
 ## Stop and station names
 
-- A new stop (a point you make a stop or end stop) or a new station that is within **150 m** of an existing stop or station takes its name: they are one stop or station for passengers. The street line tool uses the station distance under _Rules_ (150 m by default); railway stations are measured to the platform, not the centre. This works across the tools, so a bus stop beside a railway station takes the station's name.
+- A new stop (a point you make a stop or end stop) or a new station that is within **150 m** of an existing stop or station takes its name: they are one stop or station for passengers. The street line tool uses the project's station grouping distance (150 m by default); railway stations are measured to the platform, not the centre. This works across the tools, so a bus stop beside a railway station takes the station's name.
 - With nothing that close, the name comes from the map around it (within 500 m): a station or stop already on the map, a landmark, the district, a facility, a street corner ("A / B"), a main street, a street, then a local place name. The note at the bottom of the map says what the name came from.
 - Names are unique otherwise. If the best name is already used farther away, the next suggestion is used, or the name gets its district or street, "Market (Old Town)", or a number, "Market 2".
 - Renaming a stop or station renames the ones next to it too. A name already used farther away gets a number, and the note says so.
@@ -66,8 +71,8 @@ If someone else saved the same drawing while you were changing it, a banner name
 
 Where the line crosses a railway on the level, buses wait while the barriers or tram signals close the street. The expected wait is added to the running time of every leg that crosses, so the cycle time, the vehicles needed and the journey planner include it. The panel's **Level crossings** section lists each crossing with its wait per pass, closures an hour and how long the street is closed.
 
-- **Where the crossings come from:** the railway drawn in the railway tool (the last design you built in this session), or a track topology file (**Load track topology**).
-- **When trains pass:** without a timetable, the service assumed for the railway: the longest peak headway of its mode in both directions (`timetable.policy_headway_peak_min`, so 8 regional or 24 tram passages an hour), each closing the street for the warning time, the train over the crossing at line speed (the mode's platform length as train length) and the barriers rising (`level_crossing.reopen_s`, 10 s; 5 s for tram signals). With **Load rail timetable closures**, the closures of the planned trains are used instead: `cargo run --release -p rail-plan --example level_crossing_closures -- rail-topology.json lines.json > closures.json`. Trains that stop near the crossing or run slower than line speed close it for longer, and trains meeting there close it once.
+- **Where the crossings come from:** the railway drawn in the railway tool (the last design you built in this session).
+- **When trains pass:** without a timetable, the service assumed for the railway: the longest peak headway of its mode in both directions (`timetable.policy_headway_peak_min`, so 8 regional or 24 tram passages an hour), each closing the street for the warning time, the train over the crossing at line speed (the mode's platform length as train length) and the barriers rising (`level_crossing.reopen_s`, 10 s; 5 s for tram signals).
 - **The wait:** a bus that arrives at a random moment waits Σ c² / (2 T) on average, for closures c in a period T: the chance of meeting a closure times half its length, the same uniform delay as at a traffic signal (HCM). Running times use the busiest hour of the timetable (or the assumed peak); the off-peak value is shown too.
 - Crossings of one street within each other's stop lines (two railways side by side) are one place to wait.
 - Railway lines own their level crossings and are not delayed by road traffic. Trams drawn in the railway tool cross other railways at diamonds, which the rail timetable handles as conflicts.
@@ -75,7 +80,7 @@ Where the line crosses a railway on the level, buses wait while the barriers or 
 ## Directions and depot
 
 - Two **end stops** split the circuit into direction 0 and direction 1 (used for timetables and GTFS). One end stop, or none, makes a circular line.
-- Under **Depot runs**, choose **Place depot gate on the map** and click the depot gate. The tool routes a pull-out from the depot to each terminal and a pull-in from each terminal back, with the same rules. Pick which pull-out and pull-in to show; the grey dashed lines are the runs without passengers. The block builder (Phase 7) picks the ones each vehicle needs.
+- Choose **Bus depot** in the tool palette (or press D) and click the depot gate; a shared depot can be picked under **Depot runs** instead. The tool routes a pull-out from the depot to each terminal and a pull-in from each terminal back, with the same rules. Pick which pull-out and pull-in to show; the grey dashed lines are the runs without passengers. The block builder (Phase 7) picks the ones each vehicle needs.
 
 ## Saving
 

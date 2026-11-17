@@ -706,3 +706,36 @@ fn shared_depot_runs_use_its_exit_and_entrance_gates() {
     let back = v.depot_trips.iter().find(|t| t.kind == "pull_in").unwrap();
     assert_eq!(back.status, Status::Error);
 }
+
+#[test]
+fn drawing_point_by_point_gives_the_same_route_as_routing_again() {
+    // Via points on two-way streets, added one by one as a planner draws them. The route must already
+    // be the quickest circuit, so it does not change when the streets load again (pan or zoom).
+    let g = grid().graph();
+    let mut seed: u64 = 7;
+    let mut rnd = || {
+        seed = seed
+            .wrapping_mul(6364136223846793005)
+            .wrapping_add(1442695040888963407);
+        ((seed >> 33) % 600) as f64
+    };
+    for _ in 0..30 {
+        let mut line = StreetLine::new(bus(), RoutingRules::default());
+        for _ in 0..6 {
+            let (mut x, mut y) = (rnd(), rnd());
+            if (x as i64) % 2 == 0 {
+                x = (x / 200.0).round() * 200.0 + 3.0;
+            } else {
+                y = (y / 200.0).round() * 200.0 + 3.0;
+            }
+            add(&mut line, &g, x, y, PointKind::Via);
+        }
+        let drawn = line.view(&g).time_s;
+        line.rebuild(&g);
+        assert_eq!(
+            drawn,
+            line.view(&g).time_s,
+            "no detour left from drawing order"
+        );
+    }
+}
