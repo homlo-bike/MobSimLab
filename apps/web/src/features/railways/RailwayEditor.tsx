@@ -29,7 +29,15 @@ import {
 import { fetchRailTile, loadRailEngine } from "./engine";
 import { describeClash, renamePlace, STATION_GROUPING_M } from "../naming/names";
 import { placesOtherThan, publishPlaces } from "../naming/registry";
-import { CONNECTION_LAYER, drawRail, ensureRailLayers, removeRailLayers, showConnections } from "./mapLayers";
+import {
+  CONNECTION_LAYER,
+  drawRail,
+  drawTrackEnds,
+  ensureRailLayers,
+  removeRailLayers,
+  showConnections,
+} from "./mapLayers";
+import { freeTrackEnds, joinAtFreeEnds, type TrackEnd } from "./trackEnds";
 import { COLORS } from "./modes";
 import {
   RailPanel,
@@ -39,12 +47,6 @@ import {
   type RailTool,
 } from "./RailPanel";
 import { RailToolPalette } from "./RailToolPalette";
-import { loadWasmNoise } from "../noise/engine";
-import { NoiseSection } from "../noise/NoiseSection";
-import { noiseCalculationIn } from "../noise/plugin";
-import { noiseCheckText, RAIL_FLOWS, railSources } from "../noise/sources";
-import type { Flows, Indicator, NoiseEngineLoader } from "../noise/types";
-import { useNoise } from "../noise/useNoise";
 import { addLine, linesTrainLength, removeLine } from "./serviceLines";
 import { dayEngineLines, type DayPublications, publishDays } from "../timetables/railPublish";
 import type { ServiceCalendar } from "../../workspace/calendar";
@@ -134,10 +136,6 @@ interface Props {
   initial?: Network | null;
   /** Told about the drawing after every change, so the project can save it. */
   onDocChange?: (doc: Network) => void;
-  /** Noise engine loader (noise plugin); tests inject a fake. */
-  loadNoise?: NoiseEngineLoader;
-  /** Offer the noise band; defaults to whether the noise plugin is installed. */
-  noiseAvailable?: boolean;
   /** Called with the published service lines' timetable (`null` when withdrawn), for the journey planner. */
   onPublish?: (timetable: Timetable | null) => void;
 }
@@ -173,8 +171,6 @@ export function RailwayEditor({
   stationGroupingM = STATION_GROUPING_M,
   initial = null,
   onDocChange,
-  loadNoise = loadWasmNoise,
-  noiseAvailable = noiseCalculationIn("railway-tool"),
   onPublish,
 }: Props) {
   const { t } = useI18n();
@@ -202,9 +198,6 @@ export function RailwayEditor({
   const [flash, setFlash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
-  const [noiseOn, setNoiseOn] = useState(false);
-  const [indicator, setIndicator] = useState<Indicator>("lden");
-  const [trainFlows, setTrainFlows] = useState<Flows | null>(null);
   const [published, setPublished] = useState<Published | null>(null);
   const [picking, setPicking] = useState<string | null>(null);
 
@@ -256,11 +249,14 @@ export function RailwayEditor({
     if (drawn.current) docChanged.current?.(doc);
   }, [doc]);
 
-  const local = useCallback(
-    (ll: LonLat): [number, number] =>
-      engine.current && doc ? engine.current.toLocal(doc.origin, ll) : [0, 0],
-    [doc],
-  );
+  // Read through a ref so the callbacks built on it keep their identity while the drawing changes:
+  // the edit handles are rebuilt when they change, which would end a drag after its first step.
+  const docRef = useRef(doc);
+  docRef.current = doc;
+  const local = useCallback((ll: LonLat): [number, number] => {
+    const d = docRef.current;
+    return engine.current && d ? engine.current.toLocal(d.origin, ll) : [0, 0];
+  }, []);
 
   // The draft with its end at the cursor (or the connection under it).
   const shown = useMemo(() => {
@@ -393,6 +389,31 @@ export function RailwayEditor({
     [map],
   );
 
+  // Free ends of the drawn tracks: snap points for new tracks, like the stations' connection points.
+  const trackEnds = useMemo(
+    () => (doc && view ? freeTrackEnds(doc, view, draft?.id ?? null) : []),
+    [doc, view, draft?.id],
+  );
+  const trackEndsRef = useRef<TrackEnd[]>(trackEnds);
+  trackEndsRef.current = trackEnds;
+  useEffect(() => {
+    if (map && map.getSource("rd-track-ends")) drawTrackEnds(map, trackEnds);
+  }, [map, trackEnds]);
+  const trackEndAt = useCallback(
+    (pt: { x: number; y: number }, wantTracks: number | null): TrackEnd | null => {
+      if (!map) return null;
+      let best: { e: TrackEnd; d: number } | null = null;
+      for (const e of trackEndsRef.current) {
+        if (wantTracks !== null && e.tracks !== wantTracks) continue;
+        const p = map.project(e.lonlat);
+        const d = Math.hypot(p.x - pt.x, p.y - pt.y);
+        if (d <= 10 && (!best || d < best.d)) best = { e, d };
+      }
+      return best?.e ?? null;
+    },
+    [map],
+  );
+
   const latest = useRef<EditorState>({
     tool,
     doc,
@@ -448,11 +469,12 @@ export function RailwayEditor({
       const startC = connLocal(t.start);
       const endC = t.end && t.end.type !== "free" ? connLocal(t.end) : null;
       t = autoLeads(t, startC, endC, null, minLead);
-      setDoc({ ...d, tracks: [...d.tracks, t] });
+      // Snapped to the free end of a drawn track: the two become one connected track.
+      setDoc(joinAtFreeEnds({ ...d, tracks: [...d.tracks, t] }, t.id)[0]);
       setDraft(null);
       setCursor(null);
-      setSel({ id: t.id });
-      setTool("select");
+      // Stay in the track tool, ready for the next track.
+      setSel(null);
     },
     [connLocal, minLead],
   );
@@ -470,6 +492,7 @@ export function RailwayEditor({
     setDraft,
     setCursor,
     connectionAt,
+    trackEndAt,
     connLocal,
     finishDraft,
     startDraft,
@@ -488,19 +511,44 @@ export function RailwayEditor({
     setSel,
     connLocal,
     connectionAt,
+    trackEndAt,
     minLead,
   });
 
-  // Station names.
+  // Station names: one marker per station, moved rather than made again while a station is dragged.
+  const nameMarkers = useRef(new Map<string, Marker>());
+  const stationKey = view?.stations.map((s) => `${s.id}:${s.name}@${s.lonlat.join()}`).join("|");
   useEffect(() => {
     if (!map || !view) return;
-    const ms = view.stations.map((st) =>
-      new Marker({ element: labelElement(st.name), anchor: "bottom", offset: [0, -14] })
-        .setLngLat(st.lonlat)
-        .addTo(map),
-    );
-    return () => ms.forEach((m) => m.remove());
-  }, [map, view?.stations.map((s) => `${s.name}@${s.lonlat.join()}`).join("|")]);
+    const ms = nameMarkers.current;
+    const keep = new Set<string>();
+    for (const st of view.stations) {
+      const key = `${st.id}:${st.name}`;
+      keep.add(key);
+      const m = ms.get(key);
+      if (m) m.setLngLat(st.lonlat);
+      else
+        ms.set(
+          key,
+          new Marker({ element: labelElement(st.name), anchor: "bottom", offset: [0, -14] })
+            .setLngLat(st.lonlat)
+            .addTo(map),
+        );
+    }
+    for (const [key, m] of ms)
+      if (!keep.has(key)) {
+        m.remove();
+        ms.delete(key);
+      }
+    // `view` is read for the stations behind `stationKey`.
+  }, [map, stationKey]);
+  useEffect(() => {
+    const ms = nameMarkers.current;
+    return () => {
+      ms.forEach((m) => m.remove());
+      ms.clear();
+    };
+  }, [map]);
 
   const anchorAt = (a: Anchor): [number, number] | null => connLocal(a)?.p ?? null;
 
@@ -681,11 +729,6 @@ export function RailwayEditor({
     },
   };
 
-  const flows = trainFlows ?? RAIL_FLOWS[doc?.mode ?? "tram"] ?? RAIL_FLOWS.tram!;
-  const noiseInput =
-    noiseOn && doc && view && view.tracks.length ? { lines: railSources(doc, view, flows) } : null;
-  const noise = useNoise(map, noiseAvailable && noiseOn, noiseInput, indicator, loadNoise, "rd-corridors");
-
   const sidePanel = doc && view && (
     <RailPanel
       doc={doc}
@@ -700,28 +743,7 @@ export function RailwayEditor({
       streetNote={[streetNote, terrainNote].filter(Boolean).join(" ") || null}
       existingRailways={existingRailways}
       actions={panelActions}
-      noise={
-        noiseAvailable && (
-          <NoiseSection
-            on={noiseOn}
-            setOn={setNoiseOn}
-            indicator={indicator}
-            setIndicator={setIndicator}
-            flows={flows}
-            setFlows={setTrainFlows}
-            flowsLabel={t("rail.noiseFlows")}
-            view={noise.view}
-            error={noise.error}
-          />
-        )
-      }
-      extraIssues={noise.view?.checks.map((c) => ({
-        severity: c.severity,
-        text: noiseCheckText(c),
-        at: c.at,
-        ref_id: null,
-      }))}
-      service={{ publication, publish, picking, setPicking: pickFor, newLine, designValues, calendar }}
+      service={{ publication, publish, picking, setPicking: pickFor, designValues, calendar }}
     />
   );
 

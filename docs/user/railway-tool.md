@@ -18,7 +18,7 @@ The drawing is saved with the project a moment after each change (see [Saving](s
 | Station         | S   | Click the map to place a station with the level and platforms set in the panel.                                                                                                 |
 | Track           | T   | Draw a track (see below).                                                                                                                                                       |
 | Turnout         | B   | Click a straight part of a track to place a turnout, then draw the branch from it. On double track it places a double junction.                                                 |
-| Crossover       | X   | Click a straight part of a double track to place a crossover (or a scissors crossover).                                                                                         |
+| Crossover       | X   | Click a straight part of a double track to place a crossover (or a scissors crossover). Select it later to change its element, scissors, position and side.                    |
 | Signal          | G   | Click a track, station track or switch leg to place a signal. **F** turns the selected signal round.                                                                            |
 | Pan             | H   | Move the map without editing.                                                                                                                                                   |
 
@@ -49,15 +49,19 @@ The commuter and regional rail examples show a tram line crossing the railway on
 ## Draw tracks
 
 1. Choose **Track** (T) and set single or double track, level, electrification and use (running or storage) in the panel.
-2. Click a connection point (shown while drawing) or the map to start.
+2. Click a connection point (shown while drawing), the free end of a drawn track, or the map to start.
 3. Click to add points. The tool fits a curve at each point: transition curves and an arc with the largest radius that fits, so there are no sharp corners.
-4. Finish on a connection point, double-click, or press **Enter**. **+** and **−** move the next points up or down one level; **Backspace** removes the last point.
+4. Finish on a connection point or the free end of a drawn track, double-click, or press **Enter**. **+** and **−** move the next points up or down one level; **Backspace** removes the last point.
+
+The free ends of drawn tracks are snap points, like a station's connection points. A track started or finished at one becomes part of that track, so the two are one connected track. A track that switches or signals are placed on keeps its start and direction: a track drawn on from its start only meets it.
+
+The Track tool stays on after a track is finished, ready for the next one. (After placing a station, the editor changes to Select and move.)
 
 After drawing, select the track to change it:
 
 - Drag a point to move it. Click a point to set its radius or level, or to remove it.
 - Drag the square handles to make the straight out of a station or switch longer or shorter.
-- Drag a free end onto a connection point to connect it.
+- Drag a free end onto a connection point, or onto the free end of another track, to connect it.
 - The panel lists each curve with its radius, transition length, cant and speed, the ramps between levels, and the time from end to end.
 
 Where a track changes level, the tool adds a ramp next to the deeper or higher end. Its length follows from the mode's maximum gradient and vertical curve radius. A track that changes level shows its tunnel, deck and ramp zones.
@@ -161,7 +165,7 @@ If you delete or redraw a track, signals of yours on it get a warning.
 
 A service line is a route trains run on the drawn track: its stops in order, its train and its headways. Publish the lines to ride the trains in the journey planner.
 
-1. Pick **Create service line** at the bottom of the tool palette (key **L**). A new line opens under **Service lines** in the panel.
+1. Pick **Create service line** at the bottom of the tool palette (key **L**). A new line opens under **Service lines** in the panel. This tool is the only way to start a new line.
 2. Click the stations in the order trains call at them. Each station must be reachable on track from the one before, in either direction of running; if it is not, the station is not added and the message says which stations no track joins. Press **Enter** or **Esc** to finish. A line left without stops is removed again.
 3. In the panel, change the stops if needed: the arrows change the order and **×** takes a stop off. **Add stops on the map** picks more stations after the last one, with the same check. The return trip runs the stops in reverse.
 4. **Train**: a rail vehicle from the vehicle catalogue, and how many units run coupled. The train's length follows from the two (catalogue length × units); the panel shows it with the top speed and places. The platforms are checked against the longest train of all lines.

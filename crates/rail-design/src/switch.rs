@@ -124,12 +124,36 @@ pub fn place(
     let t = spec
         .turnout_geometry()
         .ok_or_else(|| format!("{} is not a turnout with complete geometry.", spec.id))?;
-    let q = at_s(&parent.centre, sw.s);
     let d = if sw.direction < 0 { -1.0 } else { 1.0 };
-    let ux = P2::dir(q.h);
-    let uy = ux.left();
-    let world = |l: P2| q.p.add(ux.mul(d * l.x)).add(uy.mul(l.y));
-    let world_dir = |l: P2| ux.mul(d * l.x).add(uy.mul(l.y));
+    // The local x runs along the parent's centre line, not along the tangent at the start: on
+    // a track that curves within the switch, its ends stay on the tracks they join.
+    let centre = &parent.centre;
+    let frame = |x: f64| -> (P2, P2, P2) {
+        let s = sw.s + d * x;
+        let q = match (centre.first(), centre.last()) {
+            (Some(f), _) if s < f.s => {
+                let mut q = *f;
+                q.p = f.p.add(P2::dir(f.h).mul(s - f.s));
+                q
+            }
+            (_, Some(l)) if s > l.s => {
+                let mut q = *l;
+                q.p = l.p.add(P2::dir(l.h).mul(s - l.s));
+                q
+            }
+            _ => at_s(centre, s),
+        };
+        let ux = P2::dir(q.h);
+        (q.p, ux, ux.left())
+    };
+    let world = |l: P2| {
+        let (p0, _, uy) = frame(l.x);
+        p0.add(uy.mul(l.y))
+    };
+    let world_dir = |at: P2, l: P2| {
+        let (_, ux, uy) = frame(at.x);
+        ux.mul(d * l.x).add(uy.mul(l.y))
+    };
     let double = parent.ntracks == 2;
     let e = parent.spacing_at(sw.s);
     let side = if sw.side < 0 { -1.0 } else { 1.0 };
@@ -230,7 +254,7 @@ pub fn place(
             .into_iter()
             .map(|(pt, dir, spacing)| ResolvedAnchor {
                 p: world(pt),
-                dir: Some(world_dir(dir).unit()),
+                dir: Some(world_dir(pt, dir).unit()),
                 spacing,
                 level,
             })

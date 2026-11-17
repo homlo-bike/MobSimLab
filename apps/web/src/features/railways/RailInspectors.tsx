@@ -206,6 +206,16 @@ export function SwitchInspector({ sw, doc, view, actions: a }: Props & { sw: Swi
           ))}
         </select>
       </Row>
+      {(sw.kind === "crossover" || sw.kind === "scissors") && (
+        <label className="flex items-center gap-2">
+          <input
+            type="checkbox"
+            checked={sw.kind === "scissors"}
+            onChange={(e) => set((x) => ({ ...x, kind: e.target.checked ? "scissors" : "crossover" }))}
+          />
+          {t("rail.scissors")}
+        </label>
+      )}
       <Row label={t("rail.positionAlong")}>
         <Num
           label={t("rail.switchPosition")}
