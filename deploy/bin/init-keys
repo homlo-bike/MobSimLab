@@ -1,0 +1,17 @@
+#!/bin/sh
+# Runs before the migrations and the API: creates master_key and session_secret, with random values, in the data
+# volume when the operator did not provide them as Docker secrets. A file that exists is never replaced:
+# master_key will decrypt stored credentials, so a new one would make them unreadable.
+set -eu
+umask 077
+dir="${MOBSIMLAB_DATA_DIR:-/data}/secrets"
+for name in master_key session_secret; do
+  [ -s "${MOBSIMLAB_SECRETS_DIR:-/run/secrets}/$name" ] && continue
+  [ -s "$dir/$name" ] && continue
+  mkdir -p "$dir"
+  chmod 700 "$dir"
+  tmp="$dir/.$name.tmp"
+  head -c 32 /dev/urandom | base64 > "$tmp"
+  mv "$tmp" "$dir/$name"
+  echo "{\"level\":\"warn\",\"msg\":\"created $name in $dir: back up the mobsimlab-data volume, it holds this key\"}"
+done

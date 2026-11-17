@@ -32,6 +32,31 @@ describe("loadConfig", () => {
     );
   });
 
+  it("uses the one db_password when the app role has no password of its own", () => {
+    const one = { "/s/db_password": strong(40), "/s/master_key": strong(), "/s/session_secret": strong() };
+    const c = loadConfig(env, (p) => one[p as keyof typeof one] ?? reader("x"));
+    expect(c.secrets.db_app_password).toBe(strong(40));
+    // The role's own file wins when both are there.
+    const both: Record<string, string> = { ...files, "/s/db_password": strong(40) };
+    expect(loadConfig(env, (p) => both[p] ?? reader("x")).secrets.db_app_password).toBe(strong(32));
+  });
+
+  it("reads master_key and session_secret generated in the data volume when no Docker secret is given", () => {
+    const key = "Ab3$Cd5%Ef7^Gh9&Ij1*Kl2(Mn4)Op6!Qr8@St0#Uv2=";
+    const gen: Record<string, string> = {
+      "/s/db_password": strong(40),
+      "/srv/secrets/master_key": key,
+      "/srv/secrets/session_secret": strong(),
+    };
+    const c = loadConfig({ ...env, MOBSIMLAB_DATA_DIR: "/srv" }, (p) => gen[p] ?? reader("x"));
+    expect(c.secrets.master_key).toBe(key);
+    // A Docker secret wins over the generated file.
+    const own: Record<string, string> = { ...gen, "/s/master_key": strong() };
+    expect(
+      loadConfig({ ...env, MOBSIMLAB_DATA_DIR: "/srv" }, (p) => own[p] ?? reader("x")).secrets.master_key,
+    ).toBe(strong());
+  });
+
   it("refuses short, example and low-variety secrets", () => {
     expect(secretProblem("session_secret", "short")).toMatch(/shorter/);
     expect(secretProblem("db_app_password", "changeme-changeme-changeme")).toMatch(/example/);

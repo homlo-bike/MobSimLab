@@ -6,7 +6,7 @@ import { migrate, readMigrations } from "../db/migrate";
 /**
  * Purpose: command-line entry for `deploy/bin/migrate` (runs before the API starts).
  * Inputs: MOBSIMLAB_DB_HOST, optional MOBSIMLAB_DB_NAME, MOBSIMLAB_MIGRATIONS_DIR, MOBSIMLAB_SECRETS_DIR.
- * Side effects: connects as mobsimlab_migrator and applies pending migrations; exits non-zero on failure.
+ * Side effects: connects as mobsimlab_migrator (password: db_migrator_password, else db_password) and applies pending migrations; exits non-zero on failure.
  */
 async function main(): Promise<void> {
   const secrets = process.env.MOBSIMLAB_SECRETS_DIR ?? "/run/secrets";
@@ -15,7 +15,7 @@ async function main(): Promise<void> {
     port: Number(process.env.MOBSIMLAB_DB_PORT ?? 5432),
     database: process.env.MOBSIMLAB_DB_NAME ?? "mobsimlab",
     user: "mobsimlab_migrator",
-    password: readFileSync(join(secrets, "db_migrator_password"), "utf8").trim(),
+    password: migratorPassword(secrets),
   });
   await db.connect();
   try {
@@ -25,6 +25,19 @@ async function main(): Promise<void> {
   } finally {
     await db.end();
   }
+}
+
+/** The migrator role's own password if it has one (separate role passwords), else the one db_password. */
+function migratorPassword(dir: string): string {
+  for (const name of ["db_migrator_password", "db_password"]) {
+    try {
+      const v = readFileSync(join(dir, name), "utf8").trim();
+      if (v) return v;
+    } catch {
+      // try the next one
+    }
+  }
+  throw new Error("secret db_password is missing");
 }
 
 main().catch((e: unknown) => {

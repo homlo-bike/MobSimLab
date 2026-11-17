@@ -18,7 +18,20 @@ def test_refuses_missing_secret_and_host(tmp_path: Path) -> None:
     with pytest.raises(ConfigError) as e:
         load_config({"MOBSIMLAB_SECRETS_DIR": str(tmp_path)})
     assert "MOBSIMLAB_DB_HOST" in str(e.value)
-    assert "db_worker_password is missing" in str(e.value)
+    assert "db_password is missing" in str(e.value)
+
+
+def test_falls_back_to_the_one_db_password(tmp_path: Path) -> None:
+    (tmp_path / "db_password").write_text(STRONG + "\n")
+    cfg = load_config({"MOBSIMLAB_DB_HOST": "postgres", "MOBSIMLAB_SECRETS_DIR": str(tmp_path)})
+    assert cfg.db_password == STRONG
+
+
+def test_own_role_password_wins_over_db_password(tmp_path: Path) -> None:
+    (tmp_path / "db_password").write_text("Qw8@eR5#tY2$uI9%oP4^aS7&dF1*gH6(")
+    (tmp_path / "db_worker_password").write_text(STRONG)
+    cfg = load_config({"MOBSIMLAB_DB_HOST": "postgres", "MOBSIMLAB_SECRETS_DIR": str(tmp_path)})
+    assert cfg.db_password == STRONG
 
 
 @pytest.mark.parametrize("value", ["short", "changeme-changeme-changeme", "a" * 40])

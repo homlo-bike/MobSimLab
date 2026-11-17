@@ -1,6 +1,10 @@
 # MobSimLab: exactly two containers (ADR-0003).
 # First run:  deploy/scripts/init-secrets && cp .env.example .env  (edit MOBSIMLAB_PUBLIC_URL)
 #             docker compose up -d
+# The only secret file you must create is the database password (db_password). master_key and session_secret are
+# generated on first start and kept in the mobsimlab-data volume (/data/secrets).
+# Keep your secret files somewhere else? Set MOBSIMLAB_SECRETS_PATH in .env; do not edit the /run/secrets paths below,
+# they are where Docker puts the files inside the containers.
 name: mobsimlab
 
 services:
@@ -34,13 +38,7 @@ services:
       MOBSIMLAB_ELEVATION_FALLBACK: ${MOBSIMLAB_ELEVATION_FALLBACK:-open-elevation}
       MOBSIMLAB_OPEN_ELEVATION_URL: ${MOBSIMLAB_OPEN_ELEVATION_URL:-https://api.open-elevation.com}
       MOBSIMLAB_LOG_LEVEL: ${MOBSIMLAB_LOG_LEVEL:-info}
-    secrets:
-      - db_migrator_password
-      - db_app_password
-      - db_worker_password
-      - master_key
-      - session_secret
-      - oidc_client_secret
+    secrets: [db_password, oidc_client_secret]
     volumes: ["mobsimlab-data:/data"]
     depends_on: { postgres: { condition: service_healthy } }
     read_only: true
@@ -56,8 +54,9 @@ services:
     container_name: postgres
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD_FILE: /run/secrets/db_superuser_password
-    secrets: [db_superuser_password, db_migrator_password, db_app_password, db_worker_password]
+      # A path inside the container, where Docker mounts the secret: keep it as it is.
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    secrets: [db_password]
     volumes: ["pgdata:/var/lib/postgresql/data", "./db/init:/docker-entrypoint-initdb.d:ro"]
     # No host port: only the mobsimlab container can reach the database.
     healthcheck:
@@ -69,14 +68,12 @@ services:
     restart: unless-stopped
 
 secrets:
-  db_superuser_password: { file: ./deploy/secrets/db_superuser_password }
-  db_migrator_password: { file: ./deploy/secrets/db_migrator_password }
-  db_app_password: { file: ./deploy/secrets/db_app_password }
-  db_worker_password: { file: ./deploy/secrets/db_worker_password }
-  master_key: { file: ./deploy/secrets/master_key }
-  session_secret: { file: ./deploy/secrets/session_secret }
+  # Paths on this computer, relative to this file.
+  # One password for the database. PostgreSQL's superuser gets it only to create the database: the first start then
+  # removes the superuser's password, so this password cannot sign in as superuser (db/init/10-roles.sh).
+  db_password: { file: "${MOBSIMLAB_SECRETS_PATH:-./deploy/secrets}/db_password" }
   # Empty for a public OIDC client; otherwise the client secret from your identity provider.
-  oidc_client_secret: { file: ./deploy/secrets/oidc_client_secret }
+  oidc_client_secret: { file: "${MOBSIMLAB_SECRETS_PATH:-./deploy/secrets}/oidc_client_secret" }
 
 volumes:
   pgdata: {}

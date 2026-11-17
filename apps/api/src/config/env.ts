@@ -14,6 +14,37 @@ const MIN_LENGTH: Record<ApiSecretName, number> = {
   session_secret: 44,
 };
 
+/**
+ * Where each secret is read from, first file that exists and is not empty wins:
+ * - db_app_password: the role's own file (separate role passwords), else the one db_password;
+ * - master_key, session_secret: a Docker secret if the operator provided one, else the file `deploy/bin/init-keys`
+ *   generated in the data volume on first start.
+ */
+const SECRET_SOURCES: Record<ApiSecretName, (dir: string, generatedDir: string) => string[]> = {
+  db_app_password: (dir) => [join(dir, "db_app_password"), join(dir, "db_password")],
+  master_key: (dir, gen) => [join(dir, "master_key"), join(gen, "master_key")],
+  session_secret: (dir, gen) => [join(dir, "session_secret"), join(gen, "session_secret")],
+};
+
+const MISSING_HINT: Record<ApiSecretName, string> = {
+  db_app_password: "db_password is missing (run deploy/scripts/init-secrets)",
+  master_key: "master_key is missing (generated on start by /app/bin/init-keys, or a Docker secret)",
+  session_secret: "session_secret is missing (generated on start by /app/bin/init-keys, or a Docker secret)",
+};
+
+/** Purpose: the trimmed content of the first of `paths` that can be read and is not empty, or undefined. */
+function firstSecret(readFile: (path: string) => string, paths: string[]): string | undefined {
+  for (const p of paths) {
+    try {
+      const v = readFile(p).trim();
+      if (v) return v;
+    } catch {
+      // try the next one
+    }
+  }
+  return undefined;
+}
+
 /** Values that appear in examples and tutorials. Never accepted. */
 const KNOWN_WEAK = [
   "changeme",
@@ -139,13 +170,12 @@ export function loadConfig(
     for (const issue of parsed.error.issues) problems.push(`${issue.path.join(".")}: ${issue.message}`);
   }
   const dir = parsed.success ? parsed.data.MOBSIMLAB_SECRETS_DIR : "/run/secrets";
+  const generatedDir = join(env.MOBSIMLAB_DATA_DIR || "/data", "secrets");
   const secrets = {} as Record<ApiSecretName, string>;
   for (const name of API_SECRETS) {
-    let value: string;
-    try {
-      value = readFile(join(dir, name)).trim();
-    } catch {
-      problems.push(`secret ${name} is missing (run deploy/scripts/init-secrets)`);
+    const value = firstSecret(readFile, SECRET_SOURCES[name](dir, generatedDir));
+    if (value === undefined) {
+      problems.push(`secret ${MISSING_HINT[name]}`);
       continue;
     }
     const p = secretProblem(name, value);
