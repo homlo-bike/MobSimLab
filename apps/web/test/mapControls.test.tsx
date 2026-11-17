@@ -11,6 +11,7 @@ import {
   basemapStyle,
   DEFAULT_BASEMAP,
   imageryTiles,
+  loadServerBasemaps,
   newestDay,
   pluginBasemap,
 } from "../src/map/basemaps";
@@ -83,6 +84,26 @@ describe("basemaps and project layers", () => {
     );
     expect(imageryTiles({ ...hls, day: "2024-06-01" }, now)[0]).toContain("/default/2024-06-01/");
     expect(newestDay(DEFAULT_BASEMAP)).toBeNull();
+  });
+
+  it("offers Esri World Imagery only once the API says an Admin saved the key, with tiles through the API", async () => {
+    expect(availableBasemaps().map((b) => b.id)).not.toContain("esri-world-imagery");
+    const answer = (available: string[]) =>
+      vi.fn(
+        async () => new Response(JSON.stringify({ available }), { status: 200 }),
+      ) as unknown as typeof fetch;
+    expect(await loadServerBasemaps(answer(["esri"]))).toBe(true);
+    const esri = basemapById("esri-world-imagery");
+    expect(esri.id).toBe("esri-world-imagery");
+    expect(esri.attribution).toContain("Powered by Esri");
+    expect(imageryTiles(esri)).toEqual([`${window.location.origin}/api/basemaps/esri/tiles/{z}/{y}/{x}`]);
+    expect(await loadServerBasemaps(answer([]))).toBe(true);
+    expect(availableBasemaps().map((b) => b.id)).not.toContain("esri-world-imagery");
+    // Without an API (the static viewer) nothing keyed is offered.
+    const down = vi.fn(async () => {
+      throw new TypeError("offline");
+    }) as unknown as typeof fetch;
+    expect(await loadServerBasemaps(down)).toBe(false);
   });
 
   it("escapes a plugin's attribution", () => {

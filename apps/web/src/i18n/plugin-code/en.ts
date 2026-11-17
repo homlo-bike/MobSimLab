@@ -30,6 +30,17 @@ export const pluginCodeEn = {
   "pcode.saved": "Saved.",
   "pcode.installIntro":
     "Upload a .msplugin file. MobSimLab checks it and shows what it adds before you install it. Plugins can add modes, tools, parameters and sources, and run their own code (calculations, importers, exporters and tab pages) in a sandbox without internet access.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Aerial photos at about 0.3 to 1 m per pixel. Esri needs an ArcGIS API key from an ArcGIS Location Platform account and acceptance of its terms. The tiles come through this MobSimLab, so browsers never see the key, and they are not stored.",
+  "esri.key": "ArcGIS API key",
+  "esri.accept": "I accept Esri's terms of use for this MobSimLab",
+  "esri.terms": "Esri's terms",
+  "esri.save": "Save key",
+  "esri.remove": "Remove key",
+  "esri.saved":
+    "Key ending {end} saved by {name} on {date}. Esri World Imagery is offered in the map's layer control.",
+  "esri.none": "No key saved: Esri World Imagery is not offered.",
 } as const;
 
 export type PluginCodeMessages = Record<keyof typeof pluginCodeEn, string>;

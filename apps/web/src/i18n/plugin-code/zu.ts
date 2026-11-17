@@ -28,4 +28,15 @@ export const pluginCodeZu = {
   "pcode.saved": "Kulondoloziwe.",
   "pcode.installIntro":
     "Layisha ifayela le-.msplugin. I-MobSimLab iyalihlola futhi ikhombise ukuthi lengezani ngaphambi kokuthi ulifake. Ama-plugin angengeza izindlela zokuhamba, amathuluzi, amapharamitha nemithombo, futhi aqhube ikhodi yawo (izibalo, ukungenisa, ukuthumela namakhasi ethebhu) endaweni evikelekile engenayo i-inthanethi.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Izithombe zasemoyeni ezicishe zibe ngamamitha angu-0.3 kuya ku-1 ngephikseli ngayinye. I-Esri idinga ukhiye we-ArcGIS API ovela ku-akhawunti ye-ArcGIS Location Platform nokwamukela imigomo yayo. Amathayili adlula kule MobSimLab, ngakho iziphequluli azilokothi zibone ukhiye, futhi awagcinwa.",
+  "esri.key": "Ukhiye we-ArcGIS API",
+  "esri.accept": "Ngiyayamukela imigomo yokusebenzisa ye-Esri yale MobSimLab",
+  "esri.terms": "Imigomo ye-Esri",
+  "esri.save": "Gcina ukhiye",
+  "esri.remove": "Susa ukhiye",
+  "esri.saved":
+    "Ukhiye ophela ngo-{end} ugcinwe ngu-{name} ngo-{date}. I-Esri World Imagery iyatholakala ekukhetheni izingqimba zemephu.",
+  "esri.none": "Akukho khiye ogciniwe: i-Esri World Imagery ayinikezwa.",
 } satisfies PluginCodeMessages;

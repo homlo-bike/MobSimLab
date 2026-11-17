@@ -5,6 +5,9 @@ import { AdminController } from "./admin/admin.controller";
 import { UsersService } from "./admin/users.service";
 import { AuditService } from "./audit/audit.service";
 import { AuthController } from "./auth/auth.controller";
+import { BasemapsController } from "./basemaps/basemaps.controller";
+import { BasemapsService } from "./basemaps/basemaps.service";
+import { EsriImageryClient } from "./basemaps/esri.client";
 import { AuthService } from "./auth/auth.service";
 import { CommentsController } from "./comments/comments.controller";
 import { CommentsService } from "./comments/comments.service";
@@ -72,6 +75,7 @@ export class AppModule {
         ProjectsController,
         CommentsController,
         PluginsController,
+        BasemapsController,
         RunsController,
         MslabController,
         PopulationLayersController,
@@ -79,6 +83,8 @@ export class AppModule {
       providers: [
         AuditService,
         AuthService,
+        BasemapsService,
+        { provide: EsriImageryClient, useFactory: () => new EsriImageryClient() },
         CommentsService,
         OidcService,
         ProjectsService,

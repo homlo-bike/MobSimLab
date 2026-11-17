@@ -28,4 +28,15 @@ export const pluginCodeHa = {
   "pcode.saved": "An ajiye.",
   "pcode.installIntro":
     "Ɗora fayil na .msplugin. MobSimLab zai duba shi kuma ya nuna abin da yake ƙarawa kafin ka girka shi. Plugin na iya ƙara hanyoyin sufuri, kayan aiki, sigogi da tushe, kuma su gudanar da lambarsu (lissafi, shigo da, fitarwa da shafukan shafi) a cikin keɓantaccen wuri ba tare da intanet ba.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Hotunan sama na kusan mita 0.3 zuwa 1 a kowane pixel. Esri tana bukatar mabuɗin ArcGIS API daga asusun ArcGIS Location Platform da amincewa da sharuɗɗanta. Tayal ɗin suna wucewa ta wannan MobSimLab, don haka masu bincike ba sa ganin mabuɗin, kuma ba a adana su.",
+  "esri.key": "Mabuɗin ArcGIS API",
+  "esri.accept": "Na amince da sharuɗɗan amfani na Esri don wannan MobSimLab",
+  "esri.terms": "Sharuɗɗan Esri",
+  "esri.save": "Adana mabuɗi",
+  "esri.remove": "Cire mabuɗi",
+  "esri.saved":
+    "{name} ya adana mabuɗin da ya ƙare da {end} a ranar {date}. Ana bayar da Esri World Imagery a zaɓin layukan taswira.",
+  "esri.none": "Babu mabuɗin da aka adana: ba a bayar da Esri World Imagery.",
 } satisfies PluginCodeMessages;

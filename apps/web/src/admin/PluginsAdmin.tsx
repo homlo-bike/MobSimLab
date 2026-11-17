@@ -3,6 +3,7 @@ import { formatDateTime, useI18n } from "../i18n/i18n";
 import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
 import { addsLine, PERMISSION_LABELS } from "../workspace/ProjectPlugins";
+import { EsriImageryAdmin } from "./EsriImageryAdmin";
 
 /** One plugin version as `GET /api/admin/plugins` lists it. */
 interface PluginRow {
@@ -399,6 +400,7 @@ export function PluginsAdmin({
           </label>
         )}
       </section>
+      <EsriImageryAdmin csrfToken={csrfToken} run={run} />
     </div>
   );
 }

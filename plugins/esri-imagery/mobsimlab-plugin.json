@@ -1,0 +1,31 @@
+{
+  "$schema": "../../contracts/plugin-manifest.schema.json",
+  "id": "org.mobsimlab.esri-imagery",
+  "name": "Esri World Imagery",
+  "description": "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.",
+  "version": "0.1.0",
+  "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
+  "license": "AGPL-3.0-or-later",
+  "dataLicense": "CC-BY-4.0",
+  "engines": { "mobsimlab": ">=0.1 <1", "pluginApi": "1" },
+  "bundled": true,
+  "tiers": ["data"],
+  "contributes": {
+    "basemaps": [
+      {
+        "id": "esri-world-imagery",
+        "label": "Esri World Imagery",
+        "note": "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.",
+        "tiles": ["/api/basemaps/esri/tiles/{z}/{y}/{x}"],
+        "tileSize": 256,
+        "maxzoom": 19,
+        "attribution": {
+          "text": "Powered by Esri · Esri, Maxar, Earthstar Geographics, and the GIS User Community",
+          "url": "https://www.esri.com"
+        },
+        "server": "esri"
+      }
+    ]
+  },
+  "permissions": []
+}

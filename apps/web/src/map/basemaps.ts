@@ -18,6 +18,8 @@ export interface Basemap {
   date?: { first: string; latencyDays: number };
   /** The day picked for daily imagery (YYYY-MM-DD); the newest day when not set. */
   day?: string;
+  /** Plugin basemaps whose tiles come through the API with an Admin's key (`esri`). */
+  server?: string;
 }
 
 const OSM_ATTRIBUTION =
@@ -100,7 +102,32 @@ export function pluginBasemap(b: PluginBasemap): Basemap {
     imagery: { id: b.id, tiles: b.tiles, tileSize: b.tileSize, maxzoom: b.maxzoom },
     ...(b.note ? { note: b.note } : {}),
     ...(b.date ? { date: b.date } : {}),
+    ...(b.server ? { server: b.server } : {}),
   };
+}
+
+/** Keyed basemaps the API offers now (an Admin saved their key), from `GET /api/basemaps`. */
+let serverBasemaps: ReadonlySet<string> = new Set();
+
+/**
+ * Purpose: ask the API which keyed basemaps (Esri) an Admin has set up, so the layer control offers them.
+ * Output: whether the answer changed what is offered. Without an API (static viewer) none are offered.
+ */
+export async function loadServerBasemaps(fetchImpl: typeof fetch = fetch): Promise<boolean> {
+  let next: Set<string> = new Set();
+  try {
+    const res = await fetchImpl("/api/basemaps", { credentials: "same-origin" });
+    if (res.ok) {
+      const body = (await res.json()) as { available?: unknown };
+      if (Array.isArray(body.available))
+        next = new Set(body.available.filter((x): x is string => typeof x === "string"));
+    }
+  } catch {
+    // No API here, or it cannot be reached: offer no keyed basemaps.
+  }
+  const changed = [...next].join() !== [...serverBasemaps].join();
+  serverBasemaps = next;
+  return changed;
 }
 
 /** Purpose: the basemaps to offer: the core's, then those of the plugins turned on (ADR-0036). */
@@ -109,7 +136,7 @@ export function availableBasemaps(plugins: readonly Plugin[] = activePlugins()):
   return [
     ...BASEMAPS,
     ...pluginBasemaps(plugins)
-      .filter((b) => !core.has(b.id))
+      .filter((b) => !core.has(b.id) && (!b.server || serverBasemaps.has(b.server)))
       .map(pluginBasemap),
   ];
 }
@@ -129,11 +156,16 @@ export function newestDay(basemap: Basemap, now: Date = new Date()): string | nu
   return d.toISOString().slice(0, 10);
 }
 
-/** Purpose: the imagery's tile URLs for the picked day (or the newest one). */
+/**
+ * Purpose: the imagery's tile URLs for the picked day (or the newest one); the API's own paths (keyed basemaps)
+ * made absolute, as MapLibre needs.
+ */
 export function imageryTiles(basemap: Basemap, now: Date = new Date()): string[] {
-  const tiles = basemap.imagery?.tiles ?? [];
   const day = basemap.day ?? newestDay(basemap, now);
-  return day ? tiles.map((t) => t.replaceAll("{date}", day)) : tiles;
+  return (basemap.imagery?.tiles ?? []).map((t) => {
+    const url = day ? t.replaceAll("{date}", day) : t;
+    return url.startsWith("/") ? `${window.location.origin}${url}` : url;
+  });
 }
 
 /** Layer types of an OpenMapTiles style that are kept over imagery: names, and borders. */

@@ -28,4 +28,15 @@ export const pluginCodeIt = {
   "pcode.saved": "Salvato.",
   "pcode.installIntro":
     "Carica un file .msplugin. MobSimLab lo controlla e mostra cosa aggiunge prima di installarlo. I plugin possono aggiungere modi, strumenti, parametri e fonti, ed eseguire il proprio codice (calcoli, importazioni, esportazioni e pagine di scheda) in una sandbox senza accesso a internet.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Foto aeree da circa 0,3 a 1 m per pixel. Esri richiede una chiave API ArcGIS di un account ArcGIS Location Platform e l'accettazione dei suoi termini. Le tessere passano da questo MobSimLab, quindi i browser non vedono mai la chiave, e non vengono conservate.",
+  "esri.key": "Chiave API ArcGIS",
+  "esri.accept": "Accetto i termini d'uso di Esri per questo MobSimLab",
+  "esri.terms": "Termini di Esri",
+  "esri.save": "Salva chiave",
+  "esri.remove": "Rimuovi chiave",
+  "esri.saved":
+    "Chiave che termina con {end} salvata da {name} il {date}. Esri World Imagery è disponibile nel selettore dei livelli della mappa.",
+  "esri.none": "Nessuna chiave salvata: Esri World Imagery non è disponibile.",
 } satisfies PluginCodeMessages;

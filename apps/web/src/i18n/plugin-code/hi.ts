@@ -27,4 +27,15 @@ export const pluginCodeHi = {
   "pcode.saved": "सहेजा गया।",
   "pcode.installIntro":
     ".msplugin फ़ाइल अपलोड करें। MobSimLab इसे जाँचता है और इंस्टॉल करने से पहले दिखाता है कि यह क्या जोड़ती है। प्लगइन परिवहन साधन, टूल, पैरामीटर और स्रोत जोड़ सकते हैं और अपना कोड (गणनाएँ, आयात, निर्यात और टैब पेज) इंटरनेट के बिना सैंडबॉक्स में चला सकते हैं।",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "लगभग 0.3 से 1 मीटर प्रति पिक्सेल की हवाई तस्वीरें। Esri को ArcGIS Location Platform खाते की ArcGIS API कुंजी और अपनी शर्तों की स्वीकृति चाहिए। टाइलें इसी MobSimLab से होकर आती हैं, इसलिए ब्राउज़र कुंजी कभी नहीं देखते, और टाइलें सहेजी नहीं जातीं।",
+  "esri.key": "ArcGIS API कुंजी",
+  "esri.accept": "मैं इस MobSimLab के लिए Esri की उपयोग शर्तें स्वीकार करता/करती हूँ",
+  "esri.terms": "Esri की शर्तें",
+  "esri.save": "कुंजी सहेजें",
+  "esri.remove": "कुंजी हटाएँ",
+  "esri.saved":
+    "{end} पर ख़त्म होने वाली कुंजी {name} ने {date} को सहेजी। Esri World Imagery नक्शे के परत नियंत्रण में उपलब्ध है।",
+  "esri.none": "कोई कुंजी सहेजी नहीं गई: Esri World Imagery उपलब्ध नहीं है।",
 } satisfies PluginCodeMessages;

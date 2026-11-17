@@ -28,4 +28,15 @@ export const pluginCodeVi = {
   "pcode.saved": "Đã lưu.",
   "pcode.installIntro":
     "Tải lên tệp .msplugin. MobSimLab kiểm tra tệp và cho biết nó thêm gì trước khi cài. Plugin có thể thêm phương thức, công cụ, tham số và nguồn, và chạy mã riêng (tính toán, nhập, xuất và trang thẻ) trong hộp cát không có internet.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Ảnh hàng không khoảng 0,3 đến 1 m mỗi điểm ảnh. Esri yêu cầu khóa API ArcGIS từ tài khoản ArcGIS Location Platform và chấp nhận điều khoản của họ. Các ô bản đồ đi qua MobSimLab này nên trình duyệt không bao giờ thấy khóa, và các ô không được lưu.",
+  "esri.key": "Khóa API ArcGIS",
+  "esri.accept": "Tôi chấp nhận điều khoản sử dụng của Esri cho MobSimLab này",
+  "esri.terms": "Điều khoản của Esri",
+  "esri.save": "Lưu khóa",
+  "esri.remove": "Gỡ khóa",
+  "esri.saved":
+    "Khóa kết thúc bằng {end} do {name} lưu vào {date}. Esri World Imagery có trong mục chọn lớp của bản đồ.",
+  "esri.none": "Chưa lưu khóa: không cung cấp Esri World Imagery.",
 } satisfies PluginCodeMessages;

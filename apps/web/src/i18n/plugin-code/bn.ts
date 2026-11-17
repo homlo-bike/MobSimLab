@@ -27,4 +27,15 @@ export const pluginCodeBn = {
   "pcode.saved": "সংরক্ষিত।",
   "pcode.installIntro":
     "একটি .msplugin ফাইল আপলোড করুন। MobSimLab এটি যাচাই করে এবং ইনস্টলের আগে দেখায় এটি কী যোগ করে। প্লাগইন পরিবহন মাধ্যম, টুল, প্যারামিটার ও উৎস যোগ করতে পারে এবং নিজের কোড (গণনা, ইমপোর্ট, এক্সপোর্ট ও ট্যাব পাতা) ইন্টারনেট ছাড়া স্যান্ডবক্সে চালাতে পারে।",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "প্রতি পিক্সেলে প্রায় ০.৩ থেকে ১ মিটারের আকাশচিত্র। Esri-র জন্য ArcGIS Location Platform অ্যাকাউন্টের ArcGIS API কী এবং শর্তে সম্মতি লাগে। টাইলগুলো এই MobSimLab হয়ে আসে, তাই ব্রাউজার কখনো কী দেখে না, আর টাইল সংরক্ষিত হয় না।",
+  "esri.key": "ArcGIS API কী",
+  "esri.accept": "আমি এই MobSimLab-এর জন্য Esri-র ব্যবহারের শর্ত মেনে নিচ্ছি",
+  "esri.terms": "Esri-র শর্ত",
+  "esri.save": "কী সংরক্ষণ করুন",
+  "esri.remove": "কী সরান",
+  "esri.saved":
+    "{end} দিয়ে শেষ হওয়া কী {name} {date}-এ সংরক্ষণ করেছেন। মানচিত্রের স্তর নিয়ন্ত্রণে Esri World Imagery পাওয়া যাচ্ছে।",
+  "esri.none": "কোনো কী সংরক্ষিত নেই: Esri World Imagery দেওয়া হচ্ছে না।",
 } satisfies PluginCodeMessages;

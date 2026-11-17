@@ -27,4 +27,15 @@ export const pluginCodeYo = {
   "pcode.saved": "A ti fi pamọ́.",
   "pcode.installIntro":
     "Gbé fáìlì .msplugin sókè. MobSimLab yóò ṣàyẹ̀wò rẹ̀, yóò sì fi ohun tí ó ń fi kún hàn kí o tó fi sí. Àwọn plugin lè fi ọ̀nà ìrìnàjò, irinṣẹ́, pàrámítà àti orísun kún, kí wọ́n sì ṣiṣẹ́ kóòdù tiwọn (ìṣirò, gbígbé wọlé, gbígbé jáde àti ojú-ewé táàbù) nínú àyè àdádó láìsí íntánẹ́ẹ̀tì.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Àwọn fọ́tò láti ojú ọ̀run tí ó tó nǹkan bí mítà 0.3 sí 1 fún píkísẹ́lì kọ̀ọ̀kan. Esri nílò kọ́kọ́rọ́ ArcGIS API láti àkáǹtì ArcGIS Location Platform àti gbígba àwọn òfin rẹ̀. Àwọn tiles ń kọjá nínú MobSimLab yìí, nítorí náà àwọn aṣàwákiri kò rí kọ́kọ́rọ́ náà rí, a kò sì tọ́jú wọn.",
+  "esri.key": "Kọ́kọ́rọ́ ArcGIS API",
+  "esri.accept": "Mo gba àwọn òfin lílo Esri fún MobSimLab yìí",
+  "esri.terms": "Àwọn òfin Esri",
+  "esri.save": "Fi kọ́kọ́rọ́ pamọ́",
+  "esri.remove": "Yọ kọ́kọ́rọ́ kúrò",
+  "esri.saved":
+    "Kọ́kọ́rọ́ tí ó parí sí {end} ni {name} fi pamọ́ ní {date}. Esri World Imagery wà nínú àṣàyàn ìpele máàpù.",
+  "esri.none": "Kò sí kọ́kọ́rọ́ tí a fi pamọ́: a kò pèsè Esri World Imagery.",
 } satisfies PluginCodeMessages;

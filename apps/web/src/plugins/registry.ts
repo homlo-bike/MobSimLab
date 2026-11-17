@@ -70,7 +70,8 @@ export interface PluginMapLayer {
 
 /**
  * An aerial basemap a bundled plugin adds to the layer control: raster tiles under the place and street names.
- * With `date`, the tile URLs hold `{date}` and the layer control offers a day.
+ * With `date`, the tile URLs hold `{date}` and the layer control offers a day. With `server`, the tiles come
+ * through the API (`/api/basemaps/<server>/tiles/...`), which holds the provider's key.
  */
 export interface PluginBasemap {
   id: string;
@@ -81,6 +82,8 @@ export interface PluginBasemap {
   maxzoom: number;
   attribution: { text: string; url?: string };
   date?: { first: string; latencyDays: number };
+  /** Imagery the API fetches with a key an Admin saved; offered only once it is saved. */
+  server?: "esri";
 }
 
 /**

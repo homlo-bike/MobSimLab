@@ -83,7 +83,7 @@ def map_origins() -> set[str]:
 
 
 def check_basemaps(pid: str, manifest: dict) -> list[str]:
-    """Check a plugin's basemaps: bundled only, tiles from a host the CSP lists, {date} with `date`."""
+    """Check basemaps: bundled only, tiles from a host the CSP lists or the API, {date} with `date`."""
     errors: list[str] = []
     basemaps = manifest["contributes"].get("basemaps", [])
     if basemaps and not manifest.get("bundled", False):
@@ -94,6 +94,13 @@ def check_basemaps(pid: str, manifest: dict) -> list[str]:
         if b["id"] in CORE_BASEMAPS:
             errors.append(f"{pid}: basemap {b['id']} is a core basemap")
         for url in b["tiles"]:
+            if "server" in b:
+                if not url.startswith(f"/api/basemaps/{b['server']}/tiles/"):
+                    errors.append(
+                        f"{pid}: basemap {b['id']}: tiles of server {b['server']} come from "
+                        f"/api/basemaps/{b['server']}/tiles/"
+                    )
+                continue
             origin = "/".join(url.split("/")[:3])
             if origin not in origins:
                 errors.append(

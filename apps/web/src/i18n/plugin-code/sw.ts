@@ -28,4 +28,15 @@ export const pluginCodeSw = {
   "pcode.saved": "Imehifadhiwa.",
   "pcode.installIntro":
     "Pakia faili ya .msplugin. MobSimLab huikagua na kuonyesha inachoongeza kabla ya kusakinisha. Programu-jalizi zinaweza kuongeza njia za usafiri, zana, vigezo na vyanzo, na kuendesha msimbo wake (hesabu, uletaji, uhamishaji na kurasa za vichupo) kwenye mazingira yaliyotengwa bila intaneti.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Picha za angani za takriban mita 0.3 hadi 1 kwa pikseli. Esri inahitaji ufunguo wa ArcGIS API kutoka akaunti ya ArcGIS Location Platform na kukubali masharti yake. Vigae hupita kupitia MobSimLab hii, hivyo vivinjari havioni ufunguo, na havihifadhiwi.",
+  "esri.key": "Ufunguo wa ArcGIS API",
+  "esri.accept": "Ninakubali masharti ya matumizi ya Esri kwa MobSimLab hii",
+  "esri.terms": "Masharti ya Esri",
+  "esri.save": "Hifadhi ufunguo",
+  "esri.remove": "Ondoa ufunguo",
+  "esri.saved":
+    "Ufunguo unaoishia {end} umehifadhiwa na {name} tarehe {date}. Esri World Imagery inapatikana kwenye uchaguzi wa tabaka za ramani.",
+  "esri.none": "Hakuna ufunguo uliohifadhiwa: Esri World Imagery haitolewi.",
 } satisfies PluginCodeMessages;

@@ -381,13 +381,13 @@
                 "maxLength": 300
               },
               "tiles": {
-                "description": "Tile URL templates with {z}, {x} and {y}; {date} is replaced by the picked day (YYYY-MM-DD) when `date` is set.",
+                "description": "Tile URL templates with {z}, {x} and {y}: https URLs on a host the CSP lists, or, with `server`, the API's own path /api/basemaps/<server>/tiles/. {date} is replaced by the picked day (YYYY-MM-DD) when `date` is set.",
                 "type": "array",
                 "minItems": 1,
                 "maxItems": 4,
                 "items": {
                   "type": "string",
-                  "pattern": "^https://[A-Za-z0-9.-]+/[A-Za-z0-9_./{}-]+$"
+                  "pattern": "^(https://[A-Za-z0-9.-]+|/api/basemaps/[a-z]+/tiles)/[A-Za-z0-9_./{}-]+$"
                 }
               },
               "tileSize": {
@@ -430,6 +430,10 @@
                     "maximum": 60
                   }
                 }
+              },
+              "server": {
+                "description": "Imagery the API fetches with a key an Admin saved (keys stay on the server): offered only once the Admin has saved it. Tile URLs are then /api/basemaps/<server>/tiles/{z}/{y}/{x}.",
+                "enum": ["esri"]
               }
             }
           }

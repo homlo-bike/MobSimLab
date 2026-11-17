@@ -25,4 +25,14 @@ export const pluginCodeZh = {
   "pcode.saved": "已保存。",
   "pcode.installIntro":
     "上传 .msplugin 文件。MobSimLab 会检查它，并在安装前显示它添加的内容。插件可以添加交通方式、工具、参数和来源，并在无法联网的沙箱中运行自己的代码（计算、导入、导出和标签页）。",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "约 0.3 至 1 米/像素的航空影像。Esri 需要来自 ArcGIS Location Platform 账户的 ArcGIS API 密钥，并须接受其条款。瓦片经由本 MobSimLab 获取，浏览器不会看到密钥，瓦片也不会被保存。",
+  "esri.key": "ArcGIS API 密钥",
+  "esri.accept": "我代表本 MobSimLab 接受 Esri 的使用条款",
+  "esri.terms": "Esri 条款",
+  "esri.save": "保存密钥",
+  "esri.remove": "删除密钥",
+  "esri.saved": "以 {end} 结尾的密钥由 {name} 于 {date} 保存。地图图层控件中已提供 Esri World Imagery。",
+  "esri.none": "未保存密钥：不提供 Esri World Imagery。",
 } satisfies PluginCodeMessages;
