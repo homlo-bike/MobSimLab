@@ -3,4 +3,5 @@
 set -eu
 [ -s /run/secrets/db_migrator_password ] || [ -s /run/secrets/db_password ] \
   || { echo "secret db_password is missing" >&2; exit 78; }
+[ -n "${MOBSIMLAB_DB_HOST:-}" ] || { echo "MOBSIMLAB_DB_HOST is not set (compose.yaml sets it under mobsimlab: environment)" >&2; exit 78; }
 exec /usr/local/bin/node /app/api/dist/cli/migrate.js

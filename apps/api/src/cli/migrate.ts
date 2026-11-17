@@ -12,8 +12,11 @@ import { errorText } from "./error-text";
  */
 async function main(): Promise<void> {
   const secrets = process.env.MOBSIMLAB_SECRETS_DIR ?? "/run/secrets";
+  // Without a host, pg falls back to localhost, which is never the database in the container.
+  const host = process.env.MOBSIMLAB_DB_HOST;
+  if (!host) throw new Error("MOBSIMLAB_DB_HOST is not set (compose.yaml sets it under mobsimlab: environment)");
   const options = {
-    host: process.env.MOBSIMLAB_DB_HOST,
+    host,
     port: Number(process.env.MOBSIMLAB_DB_PORT ?? 5432),
     database: process.env.MOBSIMLAB_DB_NAME ?? "mobsimlab",
     user: "mobsimlab_migrator",
