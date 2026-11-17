@@ -9,6 +9,7 @@ import { tablesTr } from "./tables/tr";
 import { fleetTr } from "./fleet/tr";
 import { timetablesTr } from "./timetables/tr";
 import { mslabTr } from "./mslab/tr";
+import { workspaceUiTr } from "./workspace-ui/tr";
 import { pluginCodeTr } from "./plugin-code/tr";
 import { populationTr } from "./population/tr";
 import { pluginsTr } from "./plugins/tr";
@@ -517,6 +518,7 @@ export const tr: Messages = {
   ...timetablesTr,
   ...commentsTr,
   ...mslabTr,
+  ...workspaceUiTr,
   ...pluginCodeTr,
   ...populationTr,
   ...roadTr,

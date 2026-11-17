@@ -62,6 +62,9 @@ jobs:
           file: deploy/Dockerfile
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            MOBSIMLAB_VERSION=${{ env.TAG }}
+            MOBSIMLAB_BUILD=${{ github.sha }}
           tags: mobsimlab:release
           load: true
           cache-from: type=gha,scope=release-${{ matrix.arch }}
@@ -97,6 +100,9 @@ jobs:
           file: deploy/Dockerfile
           platforms: ${{ matrix.platform }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            MOBSIMLAB_VERSION=${{ env.TAG }}
+            MOBSIMLAB_BUILD=${{ github.sha }}
           cache-from: type=gha,scope=release-${{ matrix.arch }}
           outputs: type=image,name=${{ env.IMAGE }},push-by-digest=true,name-canonical=true,push=true
       - name: Keep the digest

@@ -9,6 +9,7 @@ import { tablesTe } from "./tables/te";
 import { fleetTe } from "./fleet/te";
 import { timetablesTe } from "./timetables/te";
 import { mslabTe } from "./mslab/te";
+import { workspaceUiTe } from "./workspace-ui/te";
 import { pluginCodeTe } from "./plugin-code/te";
 import { populationTe } from "./population/te";
 import { pluginsTe } from "./plugins/te";
@@ -514,6 +515,7 @@ export const te: Messages = {
   ...timetablesTe,
   ...commentsTe,
   ...mslabTe,
+  ...workspaceUiTe,
   ...pluginCodeTe,
   ...populationTe,
   ...roadTe,

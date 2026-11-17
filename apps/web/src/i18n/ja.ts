@@ -9,6 +9,7 @@ import { tablesJa } from "./tables/ja";
 import { fleetJa } from "./fleet/ja";
 import { timetablesJa } from "./timetables/ja";
 import { mslabJa } from "./mslab/ja";
+import { workspaceUiJa } from "./workspace-ui/ja";
 import { pluginCodeJa } from "./plugin-code/ja";
 import { populationJa } from "./population/ja";
 import { pluginsJa } from "./plugins/ja";
@@ -509,6 +510,7 @@ export const ja: Messages = {
   ...timetablesJa,
   ...commentsJa,
   ...mslabJa,
+  ...workspaceUiJa,
   ...pluginCodeJa,
   ...populationJa,
   ...roadJa,

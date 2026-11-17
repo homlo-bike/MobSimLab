@@ -192,12 +192,6 @@ export const HelpIcon = (p: P) => (
     <path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.6v.3M12 17v.5" />
   </Icon>
 );
-export const PrintIcon = (p: P) => (
-  <Icon {...p}>
-    <path d="M7 9V4h10v5M7 17H5a1 1 0 0 1-1-1v-6a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1h-2" />
-    <path d="M7 14h10v6H7z" />
-  </Icon>
-);
 export const CompassIcon = (p: P) => (
   <Icon {...p}>
     <circle cx="12" cy="12" r="9" />
@@ -211,5 +205,23 @@ export const CargoBikeIcon = (p: P) => (
     <circle cx="5" cy="17.5" r="2.5" />
     <circle cx="19" cy="17.5" r="2.5" />
     <path d="M10.5 14h4l4.5 3.5M14.5 14l-1.5-6h2.5M13 8l-1.5-2.5" />
+  </Icon>
+);
+export const BellIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z" />
+    <path d="M10 20.5a2 2 0 0 0 4 0" />
+  </Icon>
+);
+export const UndoIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M9 14 4 9l5-5" />
+    <path d="M4 9h10a6 6 0 0 1 0 12h-3" />
+  </Icon>
+);
+export const RedoIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="m15 14 5-5-5-5" />
+    <path d="M20 9H10a6 6 0 0 0 0 12h3" />
   </Icon>
 );

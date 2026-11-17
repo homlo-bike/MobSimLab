@@ -438,7 +438,7 @@ export function WaterRouteEditor({
           />
         </div>
       )}
-      {view && <Issues issues={view.issues} where={where} />}
+      {view && <Issues issues={view.issues} where={where} source={tool.id} label={tool.label} />}
       <section aria-label={t("ferry.piers")} className="flex flex-col gap-2">
         <h3 className="font-semibold">{t("ferry.piers")}</h3>
         {doc.piers.length === 0 && <p className="text-slate-500">{t("ferry.noPiers")}</p>}

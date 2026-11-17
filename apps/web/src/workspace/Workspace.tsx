@@ -1,5 +1,5 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
-import { type ReactNode, Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { type ReactNode, Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { partStepFree, schematicNetwork } from "../features/schematic/lines";
 import { type DemandRidership, demandRidership } from "../features/demand/ridership";
 import type { DemandDoc } from "../features/demand/zones";
@@ -81,11 +81,15 @@ import {
   LayersIcon,
   PenIcon,
   PlayIcon,
-  PrintIcon,
+  RedoIcon,
   SchematicIcon,
   TableIcon,
   TrainIcon,
+  UndoIcon,
 } from "../shell/icons";
+import { ChecksProvider } from "../shell/checks";
+import { ChecksMenu } from "../shell/ChecksMenu";
+import { OtherModesLayer } from "./OtherModesLayer";
 import { type CoreTab, type Tab, TABS } from "../shell/route";
 import { HelpMenu } from "../shell/HelpMenu";
 import { lazyNamed, LoadingScreen } from "../shell/lazy";
@@ -155,7 +159,6 @@ const StreetSetupEditor = lazyNamed(
 const SpanLineEditor = lazyNamed(() => import("../kits/SpanLineEditor"), "SpanLineEditor");
 const WaterRouteEditor = lazyNamed(() => import("../kits/WaterRouteEditor"), "WaterRouteEditor");
 const ZoneEditor = lazyNamed(() => import("../kits/ZoneEditor"), "ZoneEditor");
-const PrintReport = lazyNamed(() => import("./PrintReport"), "PrintReport");
 const ProjectPreferences = lazyNamed(() => import("./ProjectPreferences"), "ProjectPreferences");
 const CalendarRun = lazyNamed(() => import("../features/calendar-run/CalendarRun"), "CalendarRun");
 const DepotEditor = lazyNamed(() => import("../features/depots/DepotEditor"), "DepotEditor");
@@ -185,6 +188,9 @@ const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
 const NO_PLUGIN_LINES: Record<string, SavedPluginLine> = {};
 const NO_DEPOTS: SavedDepot[] = [];
+/** The modifier key of shortcuts as the keyboard shows it. */
+const MOD_KEY =
+  typeof navigator !== "undefined" && /Mac|iP(hone|ad)/.test(navigator.platform) ? "⌘" : "Ctrl+";
 /** "street", "rail", "depots", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
 /** The economy API for the project's currency rate. */
@@ -306,7 +312,6 @@ export function Workspace({
   // The track topology last built in the railway tool, so street lines wait at its level crossings.
   const [railTopology, setRailTopology] = useState<unknown>(null);
   const [touring, setTouring] = useState(false);
-  const [printing, setPrinting] = useState(false);
   useEffect(() => {
     setLine(null);
     setStreetIndex(0);
@@ -623,6 +628,26 @@ export function Workspace({
       setConvertError(err instanceof Error ? err.message : String(err));
     }
   };
+  // Cmd+Z (Ctrl+Z) undoes the last change to a drawing; Cmd+Shift+Z or Ctrl+Y makes it again. In a text field
+  // the field's own undo applies.
+  const undoRef = useRef(drawings);
+  undoRef.current = drawings;
+  useEffect(() => {
+    const onKey = (ev: KeyboardEvent) => {
+      if (!(ev.metaKey || ev.ctrlKey) || ev.altKey) return;
+      const target = ev.target as HTMLElement | null;
+      if (target && (["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName) || target.isContentEditable))
+        return;
+      const key = ev.key.toLowerCase();
+      const redo = (key === "z" && ev.shiftKey) || (key === "y" && !ev.shiftKey);
+      if (key !== "z" && !redo) return;
+      ev.preventDefault();
+      if (redo) undoRef.current.redo();
+      else undoRef.current.undo();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
   const hasPanel = onMap && project !== null;
   const pluginTab = projectTabs.includes(tab) ? (activeTabs.find((x) => x.id === tab) ?? null) : null;
   const tabLabel = (x: Tab) => {
@@ -675,17 +700,31 @@ export function Workspace({
       actions={
         project && (
           <>
-            <button
-              type="button"
-              className="icon-btn hidden sm:inline-flex"
-              aria-label={t("print.title")}
-              title={t("print.title")}
-              aria-haspopup="dialog"
-              data-tour="print"
-              onClick={() => setPrinting(true)}
-            >
-              <PrintIcon />
-            </button>
+            {editable && drawings.loaded && (
+              <>
+                <button
+                  type="button"
+                  className="icon-btn hidden sm:inline-flex"
+                  aria-label={t("undo.undo")}
+                  title={`${t("undo.undo")} (${MOD_KEY}Z)`}
+                  disabled={!drawings.canUndo}
+                  onClick={drawings.undo}
+                >
+                  <UndoIcon />
+                </button>
+                <button
+                  type="button"
+                  className="icon-btn hidden sm:inline-flex"
+                  aria-label={t("undo.redo")}
+                  title={`${t("undo.redo")} (${MOD_KEY}⇧Z)`}
+                  disabled={!drawings.canRedo}
+                  onClick={drawings.redo}
+                >
+                  <RedoIcon />
+                </button>
+              </>
+            )}
+            <ChecksMenu />
             <HelpMenu onTour={() => setTouring(true)} />
           </>
         )
@@ -781,7 +820,7 @@ export function Workspace({
   const demandZoneList = Object.values(demandZones).filter((z): z is DemandZone => z !== null);
 
   const body = (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col overflow-clip">
       {top}
       {drawings.clash && (
         <div
@@ -813,9 +852,19 @@ export function Workspace({
           </button>
         </div>
       )}
-      <main className="relative flex min-h-0 flex-1 flex-col md:flex-row">
+      <main className="relative flex min-h-0 flex-1 flex-col overflow-clip md:flex-row">
         <div className={`relative min-h-0 min-w-0 flex-1 ${onMap ? "" : "hidden"}`}>
           <MapView onReady={setMap} />
+          {project && drawings.loaded && tab === "create" && (
+            <OtherModesLayer
+              map={map}
+              active={editable ? chosen : null}
+              railway={railway}
+              streetLines={savedStreet}
+              depots={depotsDoc?.depots ?? NO_DEPOTS}
+              pluginLines={pluginSaved}
+            />
+          )}
           {project && drawings.loaded && tab === "create" && editable && chosen === "street" && (
             <Suspense fallback={null}>
               <StreetLineEditor
@@ -1308,8 +1357,8 @@ export function Workspace({
               aria-hidden="true"
             />
             {tab === "simulator" && (
-              <div className="shrink-0 px-4 pt-3 pb-2 md:px-5 md:pt-5">
-                <div className="seg" role="tablist" aria-label={tabLabel("simulator")}>
+              <div className="shrink-0 overflow-x-auto overscroll-x-contain px-4 pt-3 pb-2 md:px-5 md:pt-5">
+                <div className="seg w-max min-w-full" role="tablist" aria-label={tabLabel("simulator")}>
                   <button
                     type="button"
                     role="tab"
@@ -1346,8 +1395,8 @@ export function Workspace({
               </div>
             )}
             {tab === "gis" && (
-              <div className="shrink-0 px-4 pt-3 pb-2 md:px-5 md:pt-5">
-                <div className="seg" role="tablist" aria-label={tabLabel("gis")}>
+              <div className="shrink-0 overflow-x-auto overscroll-x-contain px-4 pt-3 pb-2 md:px-5 md:pt-5">
+                <div className="seg w-max min-w-full" role="tablist" aria-label={tabLabel("gis")}>
                   <button
                     type="button"
                     role="tab"
@@ -1392,8 +1441,8 @@ export function Workspace({
               </div>
             )}
             {tab === "create" && editable && chosen !== null && (
-              <div className="shrink-0 px-4 pt-3 pb-2 md:px-5 md:pt-5">
-                <div className="seg" role="tablist" aria-label={tabLabel("create")}>
+              <div className="shrink-0 overflow-x-auto overscroll-x-contain px-4 pt-3 pb-2 md:px-5 md:pt-5">
+                <div className="seg w-max min-w-full" role="tablist" aria-label={tabLabel("create")}>
                   <button
                     type="button"
                     role="tab"
@@ -1432,7 +1481,8 @@ export function Workspace({
                 </div>
               </div>
             )}
-            <div className="min-h-0 flex-1 overflow-y-auto">
+            {/* Scrolls on its own, both ways for text wider than the panel, and never scrolls the page or the map. */}
+            <div className="min-h-0 flex-1 overflow-auto overscroll-contain">
               {tab === "simulator" && sim === "test" && (
                 <LoadingScreen>
                   <CapacityRun
@@ -1544,27 +1594,6 @@ export function Workspace({
       </main>
       {bottomTabs}
       {touring && <Tour steps={PROJECT_TOUR} onTab={onTab} onClose={() => setTouring(false)} />}
-      {printing && project && (
-        <Suspense fallback={null}>
-          <PrintReport
-            projectName={project.name}
-            areaName={project.areaName}
-            map={map}
-            mapOnScreen={onMap}
-            onClose={() => setPrinting(false)}
-            tables={
-              drawings.loaded && (
-                <CostTables
-                  railway={railway}
-                  streetLines={streetLines}
-                  preferences={preferences}
-                  costs={drawings.doc<CostsDoc>("costs")}
-                />
-              )
-            }
-          />
-        </Suspense>
-      )}
     </div>
   );
   // The catalogue vehicles the project does not use reach the line tools (Project preferences → Vehicles).
@@ -1576,7 +1605,7 @@ export function Workspace({
         isOwner={project ? can.manage(project) : false}
         userId={userId}
       >
-        {body}
+        <ChecksProvider key={projectId}>{body}</ChecksProvider>
       </CommentsProvider>
     </VehiclesOffContext.Provider>
   );

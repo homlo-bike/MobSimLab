@@ -11,7 +11,7 @@ export interface TourStep {
   tab?: Tab;
 }
 
-/** The project tour: the tabs, drawing, the map's own buttons, the other tabs, printing and help. */
+/** The project tour: the tabs, drawing, the map's own buttons, the other tabs, the checks and help. */
 export const PROJECT_TOUR: readonly TourStep[] = [
   { target: "tabs", title: "tour.tabs.title", body: "tour.tabs.body" },
   { target: "panel", title: "tour.create.title", body: "tour.create.body", tab: "create" },
@@ -21,7 +21,7 @@ export const PROJECT_TOUR: readonly TourStep[] = [
   { target: "tab-gis", title: "tour.gis.title", body: "tour.gis.body" },
   { target: "tab-tables", title: "tour.tables.title", body: "tour.tables.body" },
   { target: "save", title: "tour.save.title", body: "tour.save.body" },
-  { target: "print", title: "tour.print.title", body: "tour.print.body" },
+  { target: "checks", title: "tour.checks.title", body: "tour.checks.body" },
   { target: "help", title: "tour.help.title", body: "tour.help.body" },
 ];
 

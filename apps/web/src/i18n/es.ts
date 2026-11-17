@@ -9,6 +9,7 @@ import { tablesEs } from "./tables/es";
 import { fleetEs } from "./fleet/es";
 import { timetablesEs } from "./timetables/es";
 import { mslabEs } from "./mslab/es";
+import { workspaceUiEs } from "./workspace-ui/es";
 import { pluginCodeEs } from "./plugin-code/es";
 import { populationEs } from "./population/es";
 import { pluginsEs } from "./plugins/es";
@@ -521,6 +522,7 @@ export const es: Messages = {
   ...timetablesEs,
   ...commentsEs,
   ...mslabEs,
+  ...workspaceUiEs,
   ...pluginCodeEs,
   ...populationEs,
   ...roadEs,

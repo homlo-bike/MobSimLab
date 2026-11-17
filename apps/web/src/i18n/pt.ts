@@ -9,6 +9,7 @@ import { tablesPt } from "./tables/pt";
 import { fleetPt } from "./fleet/pt";
 import { timetablesPt } from "./timetables/pt";
 import { mslabPt } from "./mslab/pt";
+import { workspaceUiPt } from "./workspace-ui/pt";
 import { pluginCodePt } from "./plugin-code/pt";
 import { populationPt } from "./population/pt";
 import { pluginsPt } from "./plugins/pt";
@@ -521,6 +522,7 @@ export const pt: Messages = {
   ...timetablesPt,
   ...commentsPt,
   ...mslabPt,
+  ...workspaceUiPt,
   ...pluginCodePt,
   ...populationPt,
   ...roadPt,

@@ -144,7 +144,6 @@ beforeAll(async () => {
     import("../src/kits/SpanLineEditor"),
     import("../src/kits/WaterRouteEditor"),
     import("../src/kits/ZoneEditor"),
-    import("../src/workspace/PrintReport"),
     import("../src/workspace/ProjectPreferences"),
     import("../src/admin/AdminPanel"),
     import("../src/agents/AgentsPanel"),

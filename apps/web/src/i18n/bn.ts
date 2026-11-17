@@ -9,6 +9,7 @@ import { tablesBn } from "./tables/bn";
 import { fleetBn } from "./fleet/bn";
 import { timetablesBn } from "./timetables/bn";
 import { mslabBn } from "./mslab/bn";
+import { workspaceUiBn } from "./workspace-ui/bn";
 import { pluginCodeBn } from "./plugin-code/bn";
 import { populationBn } from "./population/bn";
 import { pluginsBn } from "./plugins/bn";
@@ -511,6 +512,7 @@ export const bn: Messages = {
   ...timetablesBn,
   ...commentsBn,
   ...mslabBn,
+  ...workspaceUiBn,
   ...pluginCodeBn,
   ...populationBn,
   ...roadBn,

@@ -7,6 +7,7 @@ import { tablesEn } from "./tables/en";
 import { fleetEn } from "./fleet/en";
 import { timetablesEn } from "./timetables/en";
 import { mslabEn } from "./mslab/en";
+import { workspaceUiEn } from "./workspace-ui/en";
 import { pluginCodeEn } from "./plugin-code/en";
 import { roadEn } from "./road/en";
 import { calendarEn } from "./calendar/en";
@@ -510,6 +511,7 @@ export const en = {
   ...timetablesEn,
   ...commentsEn,
   ...mslabEn,
+  ...workspaceUiEn,
   ...pluginCodeEn,
   ...roadEn,
   ...calendarEn,

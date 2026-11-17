@@ -9,6 +9,7 @@ import { tablesAr } from "./tables/ar";
 import { fleetAr } from "./fleet/ar";
 import { timetablesAr } from "./timetables/ar";
 import { mslabAr } from "./mslab/ar";
+import { workspaceUiAr } from "./workspace-ui/ar";
 import { pluginCodeAr } from "./plugin-code/ar";
 import { populationAr } from "./population/ar";
 import { pluginsAr } from "./plugins/ar";
@@ -505,6 +506,7 @@ export const ar: Messages = {
   ...timetablesAr,
   ...commentsAr,
   ...mslabAr,
+  ...workspaceUiAr,
   ...pluginCodeAr,
   ...populationAr,
   ...roadAr,

@@ -9,6 +9,7 @@ import { tablesUr } from "./tables/ur";
 import { fleetUr } from "./fleet/ur";
 import { timetablesUr } from "./timetables/ur";
 import { mslabUr } from "./mslab/ur";
+import { workspaceUiUr } from "./workspace-ui/ur";
 import { pluginCodeUr } from "./plugin-code/ur";
 import { populationUr } from "./population/ur";
 import { pluginsUr } from "./plugins/ur";
@@ -517,6 +518,7 @@ export const ur: Messages = {
   ...timetablesUr,
   ...commentsUr,
   ...mslabUr,
+  ...workspaceUiUr,
   ...pluginCodeUr,
   ...populationUr,
   ...roadUr,

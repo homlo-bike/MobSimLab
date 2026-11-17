@@ -9,6 +9,7 @@ import { tablesSw } from "./tables/sw";
 import { fleetSw } from "./fleet/sw";
 import { timetablesSw } from "./timetables/sw";
 import { mslabSw } from "./mslab/sw";
+import { workspaceUiSw } from "./workspace-ui/sw";
 import { pluginCodeSw } from "./plugin-code/sw";
 import { populationSw } from "./population/sw";
 import { pluginsSw } from "./plugins/sw";
@@ -518,6 +519,7 @@ export const sw: Messages = {
   ...timetablesSw,
   ...commentsSw,
   ...mslabSw,
+  ...workspaceUiSw,
   ...pluginCodeSw,
   ...populationSw,
   ...roadSw,

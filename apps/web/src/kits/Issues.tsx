@@ -1,4 +1,5 @@
 import { useI18n } from "../i18n/i18n";
+import { usePublishChecks } from "../shell/checks";
 import type { Issue } from "./types";
 
 const STYLE: Record<Issue["level"], string> = {
@@ -7,10 +8,33 @@ const STYLE: Record<Issue["level"], string> = {
   info: "border-slate-200 bg-slate-50 text-slate-700",
 };
 
-/** Purpose: the kit's live checks as a list, errors first. */
-export function Issues({ issues, where }: { issues: Issue[]; where: (i: Issue) => string | null }) {
+/**
+ * Purpose: the kit's live checks. In a project they go to the notifications button in the top bar (under the
+ * tool's name); on its own the editor lists them here, errors first.
+ */
+export function Issues({
+  issues,
+  where,
+  source,
+  label,
+}: {
+  issues: Issue[];
+  where: (i: Issue) => string | null;
+  /** The tool's id and name, for the notifications list. */
+  source: string;
+  label: string;
+}) {
   const { t } = useI18n();
-  if (!issues.length) return null;
+  const elsewhere = usePublishChecks(
+    source,
+    label,
+    issues.map((i) => ({
+      severity: i.level,
+      text: where(i) ? `${where(i)}: ${i.message}` : i.message,
+      ...(i.parameter ? { detail: t("kit.parameter", { name: i.parameter }) } : {}),
+    })),
+  );
+  if (elsewhere || !issues.length) return null;
   const order = { error: 0, warning: 1, info: 2 };
   const sorted = [...issues].sort((a, b) => order[a.level] - order[b.level]);
   return (

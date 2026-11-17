@@ -9,6 +9,7 @@ import { tablesKk } from "./tables/kk";
 import { fleetKk } from "./fleet/kk";
 import { timetablesKk } from "./timetables/kk";
 import { mslabKk } from "./mslab/kk";
+import { workspaceUiKk } from "./workspace-ui/kk";
 import { pluginCodeKk } from "./plugin-code/kk";
 import { populationKk } from "./population/kk";
 import { pluginsKk } from "./plugins/kk";
@@ -516,6 +517,7 @@ export const kk: Messages = {
   ...timetablesKk,
   ...commentsKk,
   ...mslabKk,
+  ...workspaceUiKk,
   ...pluginCodeKk,
   ...populationKk,
   ...roadKk,

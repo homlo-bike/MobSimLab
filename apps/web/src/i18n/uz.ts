@@ -9,6 +9,7 @@ import { tablesUz } from "./tables/uz";
 import { fleetUz } from "./fleet/uz";
 import { timetablesUz } from "./timetables/uz";
 import { mslabUz } from "./mslab/uz";
+import { workspaceUiUz } from "./workspace-ui/uz";
 import { pluginCodeUz } from "./plugin-code/uz";
 import { populationUz } from "./population/uz";
 import { pluginsUz } from "./plugins/uz";
@@ -523,6 +524,7 @@ export const uz: Messages = {
   ...timetablesUz,
   ...commentsUz,
   ...mslabUz,
+  ...workspaceUiUz,
   ...pluginCodeUz,
   ...populationUz,
   ...roadUz,

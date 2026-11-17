@@ -22,6 +22,12 @@ export const DEPOT_LAYERS = {
   draftPts: "depots-draft-points",
 } as const;
 
+/**
+ * Zoom from which the depot's details are drawn. Zoomed out only the outline and its zones show, so a large
+ * depot does not draw hundreds of parking slots that are too small to see.
+ */
+export const DETAIL_ZOOM = { aisles: 15, slots: 16, slotLines: 17.5 } as const;
+
 type Feature = {
   type: "Feature";
   properties: Record<string, unknown>;
@@ -163,6 +169,7 @@ export function ensureDepotLayers(map: MapLibreMap) {
   });
   add({
     id: L.aisles,
+    minzoom: DETAIL_ZOOM.aisles,
     type: "line",
     source: SRC,
     filter: ["==", ["get", "kind"], "aisle"],
@@ -190,6 +197,7 @@ export function ensureDepotLayers(map: MapLibreMap) {
   });
   add({
     id: L.slots,
+    minzoom: DETAIL_ZOOM.slots,
     type: "fill",
     source: SRC,
     filter: ["==", ["get", "kind"], "slot"],
@@ -200,6 +208,7 @@ export function ensureDepotLayers(map: MapLibreMap) {
   });
   add({
     id: L.slotLines,
+    minzoom: DETAIL_ZOOM.slotLines,
     type: "line",
     source: SRC,
     filter: ["==", ["get", "kind"], "slot"],
@@ -210,6 +219,7 @@ export function ensureDepotLayers(map: MapLibreMap) {
   });
   add({
     id: L.swept,
+    minzoom: DETAIL_ZOOM.slots,
     type: "line",
     source: SWEPT,
     paint: { "line-color": "#a855f7", "line-width": 0.6, "line-opacity": 0.8 },
@@ -228,6 +238,7 @@ export function ensureDepotLayers(map: MapLibreMap) {
   });
   add({
     id: L.gateLabels,
+    minzoom: DETAIL_ZOOM.slots,
     type: "symbol",
     source: SRC,
     filter: ["==", ["get", "kind"], "gate"],

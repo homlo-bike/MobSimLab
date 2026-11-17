@@ -9,6 +9,7 @@ import { tablesId } from "./tables/id";
 import { fleetId } from "./fleet/id";
 import { timetablesId } from "./timetables/id";
 import { mslabId } from "./mslab/id";
+import { workspaceUiId } from "./workspace-ui/id";
 import { pluginCodeId } from "./plugin-code/id";
 import { populationId } from "./population/id";
 import { pluginsId } from "./plugins/id";
@@ -519,6 +520,7 @@ export const id: Messages = {
   ...timetablesId,
   ...commentsId,
   ...mslabId,
+  ...workspaceUiId,
   ...pluginCodeId,
   ...populationId,
   ...roadId,

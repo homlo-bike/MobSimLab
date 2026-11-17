@@ -1,4 +1,5 @@
 import { ObjectComments } from "../comments/Comments";
+import { usePublishChecks } from "../../shell/checks";
 import { hasMessage, type Translate, useI18n } from "../../i18n/i18n";
 import { signalById } from "./doc";
 import { field, input, levelOpts, Num, Row, Section, Segmented, Stat } from "./panelControls";
@@ -46,6 +47,15 @@ export function RailPanel(props: Props) {
             : null
     : null;
   const issues = [...view.issues, ...(props.extraIssues ?? [])];
+  // In a project the checks go to the notifications button in the top bar; on its own the panel lists them.
+  const checksElsewhere = usePublishChecks("rail", t("checks.railway"), [
+    ...(props.error ? [{ severity: "error" as const, text: props.error }] : []),
+    ...issues.map((i) => ({
+      severity: i.severity,
+      text: i.text,
+      ...(i.at || i.ref_id ? { onShow: () => a.showIssue(i.at, i.ref_id) } : {}),
+    })),
+  ]);
 
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
@@ -73,12 +83,15 @@ export function RailPanel(props: Props) {
           power: electrification(t, String(p.electrification)),
         })}
       </p>
-      <div className="grid grid-cols-2 gap-2">
-        <Stat value={`${view.counts.route_km.toFixed(2)} km`} label={t("rail.stat.route")} />
-        <Stat value={`${view.counts.track_km.toFixed(2)} km`} label={t("rail.stat.track")} />
-        <Stat value={String(doc.stations.length)} label={t("rail.stat.stations")} />
-        <Stat value={String(doc.switches.length)} label={t("rail.stat.switches")} />
-      </div>
+      {/* The network's figures only while nothing is selected or being drawn. */}
+      {!sel && !draft && (
+        <div className="grid grid-cols-2 gap-2">
+          <Stat value={`${view.counts.route_km.toFixed(2)} km`} label={t("rail.stat.route")} />
+          <Stat value={`${view.counts.track_km.toFixed(2)} km`} label={t("rail.stat.track")} />
+          <Stat value={String(doc.stations.length)} label={t("rail.stat.stations")} />
+          <Stat value={String(doc.switches.length)} label={t("rail.stat.switches")} />
+        </div>
+      )}
       <div className="flex gap-2">
         <button
           type="button"
@@ -249,7 +262,11 @@ export function RailPanel(props: Props) {
 
       <LevelCrossingsSection view={view} streetNote={props.streetNote} actions={a} />
 
-      <ChecksSection view={view} issues={issues} error={props.error} actions={a} />
+      {checksElsewhere ? (
+        props.error && <p className="text-red-700">{props.error}</p>
+      ) : (
+        <ChecksSection view={view} issues={issues} error={props.error} actions={a} />
+      )}
     </div>
   );
 }

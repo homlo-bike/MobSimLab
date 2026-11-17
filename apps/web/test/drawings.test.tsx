@@ -133,4 +133,59 @@ describe("project drawings", () => {
     h.unmount();
     expect(api.saveDrawing).toHaveBeenCalledWith("p1", "railway", { stations: [1] }, null);
   });
+
+  it("undoes and redoes changes to the drawings, joining quick changes into one step", async () => {
+    const { api } = fakeApi({ railway: drawing("railway", { stations: [] }, 1) });
+    const h = await open(api);
+    vi.useFakeTimers();
+    expect(h.result.current.canUndo).toBe(false);
+    // A drag: many changes close together are one step.
+    act(() => h.result.current.set("railway", { stations: [1] }));
+    act(() => h.result.current.set("railway", { stations: [1, 2] }));
+    await act(() => vi.advanceTimersByTimeAsync(2000));
+    act(() => h.result.current.set("street-lines", { lines: [{ name: "A" }] }));
+    expect(h.result.current.canUndo).toBe(true);
+    const generation = h.result.current.generation("railway");
+
+    act(() => h.result.current.undo());
+    expect(h.result.current.doc("street-lines")).toBeNull();
+    act(() => h.result.current.undo());
+    expect(h.result.current.doc("railway")).toEqual({ stations: [] });
+    // The railway editor opens again from the drawing undone.
+    expect(h.result.current.generation("railway")).toBe(generation + 1);
+    expect(h.result.current.canUndo).toBe(false);
+    expect(h.result.current.canRedo).toBe(true);
+
+    // What the editor sends back as it opens again is not a new step.
+    act(() => h.result.current.set("railway", { stations: [] }));
+    act(() => h.result.current.redo());
+    expect(h.result.current.doc("railway")).toEqual({ stations: [1, 2] });
+    await act(() => vi.advanceTimersByTimeAsync(2000));
+    expect(api.saveDrawing).toHaveBeenLastCalledWith(
+      "p1",
+      "railway",
+      { stations: [1, 2] },
+      expect.any(Number),
+    );
+
+    // A new change after an undo drops the steps that could be redone.
+    act(() => h.result.current.undo());
+    await act(() => vi.advanceTimersByTimeAsync(2000));
+    act(() => h.result.current.set("railway", { stations: [7] }));
+    expect(h.result.current.canRedo).toBe(false);
+    // Settings and worked-out results are not undone.
+    act(() => h.result.current.set("preferences", { values: { a: 1 } }));
+    act(() => h.result.current.undo());
+    expect(h.result.current.doc("railway")).toEqual({ stations: [] });
+    expect(h.result.current.doc("preferences")).toEqual({ values: { a: 1 } });
+  });
+
+  it("does not undo for a viewer", async () => {
+    const { api } = fakeApi({ railway: drawing("railway", { stations: [] }, 1) });
+    const h = await open(api, false);
+    act(() => h.result.current.set("railway", { stations: [9] }));
+    expect(h.result.current.canUndo).toBe(false);
+    act(() => h.result.current.undo());
+    expect(h.result.current.doc("railway")).toEqual({ stations: [9] });
+  });
 });

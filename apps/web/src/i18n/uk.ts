@@ -9,6 +9,7 @@ import { tablesUk } from "./tables/uk";
 import { fleetUk } from "./fleet/uk";
 import { timetablesUk } from "./timetables/uk";
 import { mslabUk } from "./mslab/uk";
+import { workspaceUiUk } from "./workspace-ui/uk";
 import { pluginCodeUk } from "./plugin-code/uk";
 import { populationUk } from "./population/uk";
 import { pluginsUk } from "./plugins/uk";
@@ -520,6 +521,7 @@ export const uk: Messages = {
   ...timetablesUk,
   ...commentsUk,
   ...mslabUk,
+  ...workspaceUiUk,
   ...pluginCodeUk,
   ...populationUk,
   ...roadUk,

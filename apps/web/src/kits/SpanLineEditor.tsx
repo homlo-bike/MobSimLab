@@ -537,7 +537,7 @@ export function SpanLineEditor({
                 : t("cable.buildings", { licence: current.buildingSource.licence }))}
         </p>
       )}
-      {view && <Issues issues={view.issues} where={where} />}
+      {view && <Issues issues={view.issues} where={where} source={tool.id} label={tool.label} />}
       <section aria-label={t("cable.stations")} className="flex flex-col gap-2">
         <h3 className="font-semibold">{t("cable.stations")}</h3>
         {doc.stations.length === 0 && <p className="text-slate-500">{t("cable.noStations")}</p>}

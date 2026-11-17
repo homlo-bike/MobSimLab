@@ -9,6 +9,7 @@ import { tablesIt } from "./tables/it";
 import { fleetIt } from "./fleet/it";
 import { timetablesIt } from "./timetables/it";
 import { mslabIt } from "./mslab/it";
+import { workspaceUiIt } from "./workspace-ui/it";
 import { pluginCodeIt } from "./plugin-code/it";
 import { populationIt } from "./population/it";
 import { pluginsIt } from "./plugins/it";
@@ -517,6 +518,7 @@ export const it: Messages = {
   ...timetablesIt,
   ...commentsIt,
   ...mslabIt,
+  ...workspaceUiIt,
   ...pluginCodeIt,
   ...populationIt,
   ...roadIt,
