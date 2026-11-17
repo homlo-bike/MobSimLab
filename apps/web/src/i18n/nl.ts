@@ -435,6 +435,15 @@ export const nl: Messages = {
   "prefs.switchesLast":
     "De standaardwissel blijft in gebruik. Kies eerst een andere standaard om hem weg te laten.",
   "prefs.calendar": "Kalender, vraag en kosten",
+  "prefs.navLabel": "Groepen voorkeuren",
+  "prefs.search": "Voorkeuren doorzoeken",
+  "prefs.searchNone": "Niets komt overeen met ‘{query}’.",
+  "prefs.details": "Naam, gebied en vervoerswijzen",
+  "prefs.groupNetwork": "Netwerkontwerp",
+  "prefs.groupVehicles": "Voertuigen en vloot",
+  "prefs.groupDemand": "Vraag en verkeer",
+  "prefs.groupTime": "Kalender en klimaat",
+  "prefs.groupAssumptions": "Aannames",
 
   "job.stepOf": "Stap {step} van {steps}",
   "job.cancel": "Annuleren",

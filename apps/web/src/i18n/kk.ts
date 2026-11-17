@@ -430,6 +430,15 @@ export const kk: Messages = {
   "prefs.switchesLast":
     "Әдепкі бағыттама пайдаланыста қалады. Оны алып тастау үшін алдымен басқасын таңдаңыз.",
   "prefs.calendar": "Күнтізбе, сұраныс және шығындар",
+  "prefs.navLabel": "Параметр топтары",
+  "prefs.search": "Параметрлерден іздеу",
+  "prefs.searchNone": "«{query}» бойынша ештеңе табылмады.",
+  "prefs.details": "Атауы, аумағы және көлік түрлері",
+  "prefs.groupNetwork": "Желіні жобалау",
+  "prefs.groupVehicles": "Көлік құралдары және парк",
+  "prefs.groupDemand": "Сұраныс және жол қозғалысы",
+  "prefs.groupTime": "Күнтізбе және климат",
+  "prefs.groupAssumptions": "Болжамдар",
 
   "job.stepOf": "{steps} қадамның {step}-қадамы",
   "job.cancel": "Бас тарту",

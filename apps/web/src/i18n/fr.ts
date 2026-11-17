@@ -436,6 +436,15 @@ export const fr: Messages = {
   "prefs.switchesLast":
     "L'aiguillage par défaut reste utilisé. Pour l'exclure, choisissez d'abord un autre par défaut.",
   "prefs.calendar": "Calendrier, demande et coûts",
+  "prefs.navLabel": "Groupes de préférences",
+  "prefs.search": "Rechercher dans les préférences",
+  "prefs.searchNone": "Rien ne correspond à « {query} ».",
+  "prefs.details": "Nom, zone et modes",
+  "prefs.groupNetwork": "Conception du réseau",
+  "prefs.groupVehicles": "Véhicules et flotte",
+  "prefs.groupDemand": "Demande et circulation",
+  "prefs.groupTime": "Calendrier et climat",
+  "prefs.groupAssumptions": "Hypothèses",
 
   "job.stepOf": "Étape {step} sur {steps}",
   "job.cancel": "Annuler",

@@ -435,6 +435,15 @@ export const ru: Messages = {
   "prefs.switchesLast":
     "Перевод по умолчанию остаётся в работе. Чтобы убрать его, сначала выберите другой по умолчанию.",
   "prefs.calendar": "Календарь, спрос и затраты",
+  "prefs.navLabel": "Группы параметров",
+  "prefs.search": "Поиск по параметрам",
+  "prefs.searchNone": "Ничего не найдено по запросу «{query}».",
+  "prefs.details": "Название, территория и виды транспорта",
+  "prefs.groupNetwork": "Проектирование сети",
+  "prefs.groupVehicles": "Подвижной состав и парк",
+  "prefs.groupDemand": "Спрос и движение",
+  "prefs.groupTime": "Календарь и климат",
+  "prefs.groupAssumptions": "Допущения",
 
   "job.stepOf": "Шаг {step} из {steps}",
   "job.cancel": "Отмена",

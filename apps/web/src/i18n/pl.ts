@@ -432,6 +432,15 @@ export const pl: Messages = {
   "prefs.switchesLast":
     "Domyślny rozjazd pozostaje w użyciu. Aby go wyłączyć, najpierw wybierz inny domyślny.",
   "prefs.calendar": "Kalendarz, popyt i koszty",
+  "prefs.navLabel": "Grupy preferencji",
+  "prefs.search": "Szukaj w preferencjach",
+  "prefs.searchNone": "Nic nie pasuje do „{query}”.",
+  "prefs.details": "Nazwa, obszar i środki transportu",
+  "prefs.groupNetwork": "Projekt sieci",
+  "prefs.groupVehicles": "Pojazdy i tabor",
+  "prefs.groupDemand": "Popyt i ruch",
+  "prefs.groupTime": "Kalendarz i klimat",
+  "prefs.groupAssumptions": "Założenia",
 
   "job.stepOf": "Krok {step} z {steps}",
   "job.cancel": "Anuluj",
