@@ -15,6 +15,6 @@ describe("errorText", () => {
     const auth = Object.assign(new Error('password authentication failed for user "mobsimlab_migrator"'), {
       code: "28P01",
     });
-    expect(errorText(auth)).toMatch(/28P01\): the role or its password does not match/);
+    expect(errorText(auth)).toMatch(/28P01\): the role does not exist or its password does not match/);
   });
 });

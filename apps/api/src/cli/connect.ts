@@ -26,10 +26,9 @@ export async function connectWithRetry(
       const code = (e as { code?: unknown }).code;
       const sqlState = typeof code === "string" && /^[0-9A-Z]{5}$/.test(code);
       if (sqlState || Date.now() >= until) {
-        throw new Error(
-          `cannot connect to the database ${label} as mobsimlab_migrator (attempt ${attempt}): ${errorText(e)}`,
-          { cause: e },
-        );
+        throw new Error(`cannot connect to the database ${label} (attempt ${attempt}): ${errorText(e)}`, {
+          cause: e,
+        });
       }
       process.stderr.write(
         `${JSON.stringify({ level: "warn", msg: `database not reachable yet, retrying: ${errorText(e)}` })}\n`,

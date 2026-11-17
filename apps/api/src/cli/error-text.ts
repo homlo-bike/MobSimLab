@@ -1,9 +1,7 @@
 /** Hints for the PostgreSQL errors an operator meets on a first start. */
 const PG_HINTS: Record<string, string> = {
-  "28P01":
-    "the role or its password does not match: the database volume was created without the init script, or with " +
-    "another db_password. On a new install, remove the pgdata volume and start again",
-  "3D000": "the database does not exist: the database volume was created without the init script",
+  "28P01": "the role does not exist or its password does not match the secret",
+  "3D000": "the database does not exist",
 };
 
 /**
