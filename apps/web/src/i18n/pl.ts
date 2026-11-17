@@ -9,6 +9,7 @@ import { tablesPl } from "./tables/pl";
 import { fleetPl } from "./fleet/pl";
 import { timetablesPl } from "./timetables/pl";
 import { mslabPl } from "./mslab/pl";
+import { workspaceUiPl } from "./workspace-ui/pl";
 import { pluginCodePl } from "./plugin-code/pl";
 import { populationPl } from "./population/pl";
 import { pluginsPl } from "./plugins/pl";
@@ -506,6 +507,7 @@ export const pl: Messages = {
   ...timetablesPl,
   ...commentsPl,
   ...mslabPl,
+  ...workspaceUiPl,
   ...pluginCodePl,
   ...populationPl,
   ...roadPl,

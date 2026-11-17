@@ -9,6 +9,7 @@ import { tablesHi } from "./tables/hi";
 import { fleetHi } from "./fleet/hi";
 import { timetablesHi } from "./timetables/hi";
 import { mslabHi } from "./mslab/hi";
+import { workspaceUiHi } from "./workspace-ui/hi";
 import { pluginCodeHi } from "./plugin-code/hi";
 import { populationHi } from "./population/hi";
 import { pluginsHi } from "./plugins/hi";
@@ -505,6 +506,7 @@ export const hi: Messages = {
   ...timetablesHi,
   ...commentsHi,
   ...mslabHi,
+  ...workspaceUiHi,
   ...pluginCodeHi,
   ...populationHi,
   ...roadHi,

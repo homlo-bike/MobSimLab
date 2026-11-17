@@ -9,6 +9,7 @@ import { tablesMr } from "./tables/mr";
 import { fleetMr } from "./fleet/mr";
 import { timetablesMr } from "./timetables/mr";
 import { mslabMr } from "./mslab/mr";
+import { workspaceUiMr } from "./workspace-ui/mr";
 import { pluginCodeMr } from "./plugin-code/mr";
 import { populationMr } from "./population/mr";
 import { pluginsMr } from "./plugins/mr";
@@ -502,6 +503,7 @@ export const mr: Messages = {
   ...timetablesMr,
   ...commentsMr,
   ...mslabMr,
+  ...workspaceUiMr,
   ...pluginCodeMr,
   ...populationMr,
   ...roadMr,

@@ -9,6 +9,7 @@ import { tablesZh } from "./tables/zh";
 import { fleetZh } from "./fleet/zh";
 import { timetablesZh } from "./timetables/zh";
 import { mslabZh } from "./mslab/zh";
+import { workspaceUiZh } from "./workspace-ui/zh";
 import { pluginCodeZh } from "./plugin-code/zh";
 import { populationZh } from "./population/zh";
 import { pluginsZh } from "./plugins/zh";
@@ -484,6 +485,7 @@ export const zh: Messages = {
   ...timetablesZh,
   ...commentsZh,
   ...mslabZh,
+  ...workspaceUiZh,
   ...pluginCodeZh,
   ...populationZh,
   ...roadZh,

@@ -28,6 +28,36 @@ interface Entry {
   timer: ReturnType<typeof setTimeout> | undefined;
 }
 
+/** One change the person can undo: a drawing before and after it. */
+interface Step {
+  kind: DrawingKind;
+  before: unknown;
+  after: unknown;
+  /** When the step last grew, ms. */
+  at: number;
+}
+
+/**
+ * Drawings the person changes on the map or in the schematic, which undo and redo go back and forth through.
+ * Results the app works out (published timetables, estimates) and the settings pages are left out.
+ */
+export const UNDOABLE: ReadonlySet<DrawingKind> = new Set<DrawingKind>([
+  "street-lines",
+  "railway",
+  "plugin-lines",
+  "depots",
+  "street-setups",
+  "regions",
+  "demand",
+  "cargo-bike",
+  "schematic",
+]);
+/** Changes to one drawing closer together than this are one step (a drag sends many), ms. */
+const STEP_JOIN_MS = 1000;
+/** After an undo or redo the tool opens again from the drawing; what it sends back meanwhile is not a new step, ms. */
+const SETTLE_MS = 1500;
+const MAX_STEPS = 100;
+
 /** Wait after the last change before saving, ms. */
 const SAVE_DELAY_MS = 800;
 const RETRY_MAX_MS = 30_000;
@@ -74,6 +104,9 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
   const [attempt, setAttempt] = useState(0);
   const [, setTick] = useState(0);
   const tick = useCallback(() => setTick((n) => n + 1), []);
+  const undoStack = useRef<Step[]>([]);
+  const redoStack = useRef<Step[]>([]);
+  const settle = useRef<{ kind: DrawingKind; until: number } | null>(null);
   const live = useRef({ api, projectId, editable });
   live.current = { api, projectId, editable };
 
@@ -129,6 +162,63 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
     [tick],
   );
 
+  /** Purpose: replace a document and save it shortly after the last change. */
+  const apply = (kind: DrawingKind, doc: unknown) => {
+    const e = entry(kind);
+    e.doc = doc;
+    const json = JSON.stringify(doc);
+    const changed = json !== (e.sending ?? e.json);
+    if (!changed) {
+      if (e.dirty) {
+        e.dirty = false;
+        tick();
+      }
+      return;
+    }
+    if (!live.current.editable) return;
+    const was = e.dirty;
+    e.dirty = true;
+    if (e.clash === undefined && e.failures === 0) {
+      clearTimeout(e.timer);
+      e.timer = setTimeout(() => push(kind), SAVE_DELAY_MS);
+    }
+    if (!was) tick();
+  };
+
+  /** Purpose: remember a change for undo; quick changes to one drawing (a drag) make one step. */
+  const record = (kind: DrawingKind, doc: unknown) => {
+    const before = entries.current.get(kind)?.doc ?? null;
+    if (JSON.stringify(before) === JSON.stringify(doc)) return;
+    const now = Date.now();
+    const s = settle.current;
+    if (s && s.kind === kind && now < s.until) return;
+    settle.current = null;
+    const top = undoStack.current.at(-1);
+    if (top && top.kind === kind && now - top.at < STEP_JOIN_MS) {
+      top.after = doc;
+      top.at = now;
+    } else {
+      undoStack.current.push({ kind, before, after: doc, at: now });
+      if (undoStack.current.length > MAX_STEPS) undoStack.current.shift();
+    }
+    const changed = redoStack.current.length > 0 || undoStack.current.length === 1;
+    redoStack.current = [];
+    if (changed) tick();
+  };
+
+  /** Purpose: take a step off one stack, put its drawing back, and keep it on the other stack. */
+  const step = (from: Step[], to: Step[], side: "before" | "after") => {
+    if (!live.current.editable) return;
+    const st = from.pop();
+    if (!st) return;
+    to.push({ ...st, at: 0 });
+    apply(st.kind, st[side]);
+    // The tool showing this drawing opens again from it.
+    entry(st.kind).generation++;
+    settle.current = { kind: st.kind, until: Date.now() + SETTLE_MS };
+    tick();
+  };
+
   const flush = useCallback(() => {
     for (const k of entries.current.keys()) push(k);
   }, [push]);
@@ -137,6 +227,9 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
   useEffect(() => {
     const mine = ++session.current;
     entries.current = new Map();
+    undoStack.current = [];
+    redoStack.current = [];
+    settle.current = null;
     setLoaded(false);
     setLoadError(null);
     live.current.api.drawings(projectId).then(
@@ -204,28 +297,17 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
     doc: <T>(kind: DrawingKind): T | null => (entries.current.get(kind)?.doc as T | undefined) ?? null,
     /** Purpose: a key that changes when the document was replaced from the server. */
     generation: (kind: DrawingKind) => entries.current.get(kind)?.generation ?? 0,
-    /** Purpose: replace a document; it is saved shortly after the last change. */
+    /** Purpose: replace a document; it is saved shortly after the last change, and can be undone. */
     set: (kind: DrawingKind, doc: unknown) => {
-      const e = entry(kind);
-      e.doc = doc;
-      const json = JSON.stringify(doc);
-      const changed = json !== (e.sending ?? e.json);
-      if (!changed) {
-        if (e.dirty) {
-          e.dirty = false;
-          tick();
-        }
-        return;
-      }
-      if (!live.current.editable) return;
-      const was = e.dirty;
-      e.dirty = true;
-      if (e.clash === undefined && e.failures === 0) {
-        clearTimeout(e.timer);
-        e.timer = setTimeout(() => push(kind), SAVE_DELAY_MS);
-      }
-      if (!was) tick();
+      if (live.current.editable && UNDOABLE.has(kind)) record(kind, doc);
+      apply(kind, doc);
     },
+    canUndo: editable && undoStack.current.length > 0,
+    canRedo: editable && redoStack.current.length > 0,
+    /** Purpose: go back one change; the tool showing that drawing opens again from it. */
+    undo: () => step(undoStack.current, redoStack.current, "before"),
+    /** Purpose: make the last undone change again. */
+    redo: () => step(redoStack.current, undoStack.current, "after"),
     /** Purpose: save now instead of after the pause. */
     flush,
     /** Purpose: after a clash, save this person's drawing over the other one. */

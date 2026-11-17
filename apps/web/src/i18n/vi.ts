@@ -9,6 +9,7 @@ import { tablesVi } from "./tables/vi";
 import { fleetVi } from "./fleet/vi";
 import { timetablesVi } from "./timetables/vi";
 import { mslabVi } from "./mslab/vi";
+import { workspaceUiVi } from "./workspace-ui/vi";
 import { pluginCodeVi } from "./plugin-code/vi";
 import { populationVi } from "./population/vi";
 import { pluginsVi } from "./plugins/vi";
@@ -504,6 +505,7 @@ export const vi: Messages = {
   ...timetablesVi,
   ...commentsVi,
   ...mslabVi,
+  ...workspaceUiVi,
   ...pluginCodeVi,
   ...populationVi,
   ...roadVi,

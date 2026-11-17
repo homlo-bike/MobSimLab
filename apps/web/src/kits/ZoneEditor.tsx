@@ -317,7 +317,7 @@ export function ZoneEditor({
           <Stat label={t("drt.vhours")} value={fmtInt(view.vehicle_hours_per_day)} />
         </div>
       )}
-      {view && <Issues issues={view.issues} where={() => null} />}
+      {view && <Issues issues={view.issues} where={() => null} source={tool.id} label={tool.label} />}
       {kits && simInput && (
         <button type="button" className="btn self-start" disabled={simulating} onClick={simulate}>
           {simulating ? t("drt.simulating") : t("drt.simulate")}

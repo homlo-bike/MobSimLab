@@ -117,7 +117,8 @@ function openApp(url: string): void {
     });
     // New windows (links with target=_blank, the provider's help pages) open in the person's browser.
     appWindow.webContents.setWindowOpenHandler(({ url: to }) => {
-      if (/^https?:\/\//i.test(to)) void shell.openExternal(to);
+      if (isConnectRequest(to)) void adoptServer(to);
+      else if (/^https?:\/\//i.test(to)) void shell.openExternal(to);
       return { action: "deny" };
     });
   }
@@ -132,6 +133,11 @@ function openApp(url: string): void {
       return;
     }
     if (target.origin === origin) return;
+    if (isConnectRequest(to)) {
+      e.preventDefault();
+      void adoptServer(to);
+      return;
+    }
     // A server signs in through its identity provider (SSO), which needs the window to go there and back.
     if (settings.mode === "server" && (target.protocol === "https:" || target.protocol === "http:")) return;
     e.preventDefault();
@@ -142,6 +148,46 @@ function openApp(url: string): void {
     settings.mode === "server" && instanceName ? `MobSimLab · ${instanceName}` : "MobSimLab",
   );
   if (panel && phase !== "settings") panel.close();
+}
+
+/** The web app's Settings → Server asks to connect to a server through this address (apps/web SettingsDialog). */
+const CONNECT_URL = "mobsimlab-desktop://connect";
+
+function isConnectRequest(url: string): boolean {
+  return url.startsWith(`${CONNECT_URL}?`);
+}
+
+/**
+ * Purpose: connect the app to a MobSimLab server running in the background (such as the Docker setup) when the web
+ * app's Settings ask for it in local mode. The address is checked like one typed in the app's own settings, and the
+ * person confirms in a dialog of the app itself, so a page cannot switch the app on its own.
+ */
+async function adoptServer(request: string): Promise<void> {
+  if (settings.mode !== "local") return;
+  const input = new URL(request).searchParams.get("server") ?? "";
+  const n = normaliseServerUrl(input);
+  const fail = (detail: string) =>
+    void dialog.showMessageBox({
+      type: "error",
+      message: "MobSimLab could not connect to the server.",
+      detail,
+    });
+  if ("error" in n) return fail(n.error);
+  const probe = await probeServer(n.url, (u) => net.fetch(u));
+  if ("error" in probe) return fail(probe.error);
+  const choice = await dialog.showMessageBox({
+    type: "question",
+    buttons: ["Connect", "Cancel"],
+    defaultId: 0,
+    cancelId: 1,
+    message: `Connect MobSimLab to ${probe.name}?`,
+    detail:
+      `MobSimLab will use the server at ${n.url} and stop running on this computer. Projects on this computer ` +
+      "stay here: move them by saving them as .mslab files. You can switch back in Settings.",
+  });
+  if (choice.response !== 0) return;
+  instanceName = probe.name;
+  await switchTo({ ...settings, mode: "server", serverUrl: n.url });
 }
 
 /** Purpose: the app's own page for onboarding, start-up progress, errors and settings. */

@@ -43,7 +43,10 @@ RUN pnpm install --frozen-lockfile
 COPY apps apps
 COPY --from=wasm-build /src/apps/web/src/wasm apps/web/src/wasm
 COPY --from=wasm-build /src/apps/api/wasm apps/api/wasm
-RUN pnpm -r build \
+# The version and build the About dialog shows (the release workflow passes the tag and commit).
+ARG MOBSIMLAB_VERSION=""
+ARG MOBSIMLAB_BUILD="dev"
+RUN MOBSIMLAB_VERSION="${MOBSIMLAB_VERSION}" MOBSIMLAB_BUILD="${MOBSIMLAB_BUILD}" pnpm -r build \
  && pnpm --filter @mobsimlab/api deploy --prod --legacy /out/api \
  && cp -r apps/api/dist /out/api/dist \
  && rm -rf /out/api/wasm && cp -r apps/api/wasm /out/api/wasm \

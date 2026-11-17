@@ -9,6 +9,7 @@ import { tablesNl } from "./tables/nl";
 import { fleetNl } from "./fleet/nl";
 import { timetablesNl } from "./timetables/nl";
 import { mslabNl } from "./mslab/nl";
+import { workspaceUiNl } from "./workspace-ui/nl";
 import { pluginCodeNl } from "./plugin-code/nl";
 import { populationNl } from "./population/nl";
 import { pluginsNl } from "./plugins/nl";
@@ -511,6 +512,7 @@ export const nl: Messages = {
   ...timetablesNl,
   ...commentsNl,
   ...mslabNl,
+  ...workspaceUiNl,
   ...pluginCodeNl,
   ...populationNl,
   ...roadNl,

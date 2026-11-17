@@ -9,6 +9,7 @@ import { tablesTa } from "./tables/ta";
 import { fleetTa } from "./fleet/ta";
 import { timetablesTa } from "./timetables/ta";
 import { mslabTa } from "./mslab/ta";
+import { workspaceUiTa } from "./workspace-ui/ta";
 import { pluginCodeTa } from "./plugin-code/ta";
 import { populationTa } from "./population/ta";
 import { pluginsTa } from "./plugins/ta";
@@ -516,6 +517,7 @@ export const ta: Messages = {
   ...timetablesTa,
   ...commentsTa,
   ...mslabTa,
+  ...workspaceUiTa,
   ...pluginCodeTa,
   ...populationTa,
   ...roadTa,

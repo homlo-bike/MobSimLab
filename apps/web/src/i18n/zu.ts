@@ -9,6 +9,7 @@ import { tablesZu } from "./tables/zu";
 import { fleetZu } from "./fleet/zu";
 import { timetablesZu } from "./timetables/zu";
 import { mslabZu } from "./mslab/zu";
+import { workspaceUiZu } from "./workspace-ui/zu";
 import { pluginCodeZu } from "./plugin-code/zu";
 import { populationZu } from "./population/zu";
 import { pluginsZu } from "./plugins/zu";
@@ -514,6 +515,7 @@ export const zu: Messages = {
   ...timetablesZu,
   ...commentsZu,
   ...mslabZu,
+  ...workspaceUiZu,
   ...pluginCodeZu,
   ...populationZu,
   ...roadZu,

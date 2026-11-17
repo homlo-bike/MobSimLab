@@ -9,6 +9,7 @@ import { tablesKo } from "./tables/ko";
 import { fleetKo } from "./fleet/ko";
 import { timetablesKo } from "./timetables/ko";
 import { mslabKo } from "./mslab/ko";
+import { workspaceUiKo } from "./workspace-ui/ko";
 import { pluginCodeKo } from "./plugin-code/ko";
 import { populationKo } from "./population/ko";
 import { pluginsKo } from "./plugins/ko";
@@ -497,6 +498,7 @@ export const ko: Messages = {
   ...timetablesKo,
   ...commentsKo,
   ...mslabKo,
+  ...workspaceUiKo,
   ...pluginCodeKo,
   ...populationKo,
   ...roadKo,

@@ -9,6 +9,7 @@ import { tablesYo } from "./tables/yo";
 import { fleetYo } from "./fleet/yo";
 import { timetablesYo } from "./timetables/yo";
 import { mslabYo } from "./mslab/yo";
+import { workspaceUiYo } from "./workspace-ui/yo";
 import { pluginCodeYo } from "./plugin-code/yo";
 import { populationYo } from "./population/yo";
 import { pluginsYo } from "./plugins/yo";
@@ -504,6 +505,7 @@ export const yo: Messages = {
   ...timetablesYo,
   ...commentsYo,
   ...mslabYo,
+  ...workspaceUiYo,
   ...pluginCodeYo,
   ...populationYo,
   ...roadYo,

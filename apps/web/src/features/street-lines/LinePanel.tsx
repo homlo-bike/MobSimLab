@@ -18,6 +18,7 @@ import { MODE_ORDER, MODES, type Timing } from "./modes";
 import { vehicleById, vehiclesFor } from "./service";
 import { usedVehicles } from "../../workspace/preferences";
 import { useVehiclesOff } from "../../workspace/projectVehicles";
+import { usePublishChecks } from "../../shell/checks";
 import { lineChecks, lineStats, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, RoutingRules, VehicleProfile } from "./types";
 import type { FitProblem } from "../depots/model";
@@ -280,6 +281,16 @@ export function LinePanel(props: Props) {
   const checks = [...serviceChecks, ...lineChecks(view), ...(props.extraChecks ?? [])].sort(
     (x, y) => rank[x.sev] - rank[y.sev],
   );
+  // In a project the checks go to the notifications button in the top bar; on its own the panel lists them.
+  const checksElsewhere = usePublishChecks(
+    "street",
+    t("checks.streetLine", { name: props.lineName || t("street.untitled") }),
+    checks.map((c) => ({
+      severity: c.sev === "warn" ? "warning" : c.sev,
+      text: c.text,
+      ...(c.point !== undefined ? { onShow: () => a.select(c.point!) } : {}),
+    })),
+  );
   const stops = view.points.filter((p) => p.kind !== "via");
   const name = (id: number | undefined) => {
     const p = view.points.find((q) => q.id === id);
@@ -369,23 +380,28 @@ export function LinePanel(props: Props) {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
-        <Stat value={formatLength(st.lengthM)} label={t("street.stat.length")} />
-        <Stat value={String(st.stops)} label={t("street.stat.stops", { end: st.endStops })} />
-        <Stat
-          value={`${Math.round(st.cycleMin)} min`}
-          label={t("street.stat.cycle", {
-            run: Math.round(st.runMin),
-            crossings:
-              st.crossingMin > 0
-                ? ` ${t("street.stat.atCrossings", { min: st.crossingMin < 1 ? "<1" : Math.round(st.crossingMin) })}`
-                : "",
-            dwell: Math.round(st.dwellMin),
-            layover: Math.round(st.layoverMin),
-          })}
-        />
-        <Stat value={String(st.vehicles)} label={t("street.stat.vehicles", { headway: timing.headwayMin })} />
-      </div>
+      {selected === null && (
+        <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
+          <Stat value={formatLength(st.lengthM)} label={t("street.stat.length")} />
+          <Stat value={String(st.stops)} label={t("street.stat.stops", { end: st.endStops })} />
+          <Stat
+            value={`${Math.round(st.cycleMin)} min`}
+            label={t("street.stat.cycle", {
+              run: Math.round(st.runMin),
+              crossings:
+                st.crossingMin > 0
+                  ? ` ${t("street.stat.atCrossings", { min: st.crossingMin < 1 ? "<1" : Math.round(st.crossingMin) })}`
+                  : "",
+              dwell: Math.round(st.dwellMin),
+              layover: Math.round(st.layoverMin),
+            })}
+          />
+          <Stat
+            value={String(st.vehicles)}
+            label={t("street.stat.vehicles", { headway: timing.headwayMin })}
+          />
+        </div>
+      )}
       {view.points.length >= 2 && <Reliability view={view} />}
       {props.noise}
 
@@ -521,22 +537,24 @@ export function LinePanel(props: Props) {
         </div>
       </Section>
 
-      <Section title={t("rail.checks")}>
-        <ul className="flex flex-col gap-1.5" aria-label={t("rail.checks")}>
-          {checks.map((c) => (
-            <li
-              key={c.text}
-              className={`flex gap-2 ${c.point !== undefined ? "cursor-pointer" : ""}`}
-              onClick={() => c.point !== undefined && a.select(c.point)}
-            >
-              <span className={`h-fit rounded px-1 text-[10px] font-bold uppercase ${CHIP[c.sev]}`}>
-                {sevLabel(t, c.sev)}
-              </span>
-              <span className="text-xs">{c.text}</span>
-            </li>
-          ))}
-        </ul>
-      </Section>
+      {!checksElsewhere && (
+        <Section title={t("rail.checks")}>
+          <ul className="flex flex-col gap-1.5" aria-label={t("rail.checks")}>
+            {checks.map((c) => (
+              <li
+                key={c.text}
+                className={`flex gap-2 ${c.point !== undefined ? "cursor-pointer" : ""}`}
+                onClick={() => c.point !== undefined && a.select(c.point)}
+              >
+                <span className={`h-fit rounded px-1 text-[10px] font-bold uppercase ${CHIP[c.sev]}`}>
+                  {sevLabel(t, c.sev)}
+                </span>
+                <span className="text-xs">{c.text}</span>
+              </li>
+            ))}
+          </ul>
+        </Section>
+      )}
 
       <Section title={`${t("rail.levelCrossings")} · ${view.level_crossings.length}`}>
         <p className="text-xs text-slate-600">{t("street.crossingsNote")}</p>

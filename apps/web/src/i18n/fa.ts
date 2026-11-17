@@ -9,6 +9,7 @@ import { tablesFa } from "./tables/fa";
 import { fleetFa } from "./fleet/fa";
 import { timetablesFa } from "./timetables/fa";
 import { mslabFa } from "./mslab/fa";
+import { workspaceUiFa } from "./workspace-ui/fa";
 import { pluginCodeFa } from "./plugin-code/fa";
 import { populationFa } from "./population/fa";
 import { pluginsFa } from "./plugins/fa";
@@ -503,6 +504,7 @@ export const fa: Messages = {
   ...timetablesFa,
   ...commentsFa,
   ...mslabFa,
+  ...workspaceUiFa,
   ...pluginCodeFa,
   ...populationFa,
   ...roadFa,

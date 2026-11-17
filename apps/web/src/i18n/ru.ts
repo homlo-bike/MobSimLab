@@ -9,6 +9,7 @@ import { tablesRu } from "./tables/ru";
 import { fleetRu } from "./fleet/ru";
 import { timetablesRu } from "./timetables/ru";
 import { mslabRu } from "./mslab/ru";
+import { workspaceUiRu } from "./workspace-ui/ru";
 import { pluginCodeRu } from "./plugin-code/ru";
 import { populationRu } from "./population/ru";
 import { pluginsRu } from "./plugins/ru";
@@ -511,6 +512,7 @@ export const ru: Messages = {
   ...timetablesRu,
   ...commentsRu,
   ...mslabRu,
+  ...workspaceUiRu,
   ...pluginCodeRu,
   ...populationRu,
   ...roadRu,

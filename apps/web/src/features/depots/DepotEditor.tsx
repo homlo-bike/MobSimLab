@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useI18n } from "../../i18n/i18n";
 import { CommentBadge, ObjectComments } from "../comments/Comments";
+import { usePublishChecks } from "../../shell/checks";
 import type { MessageKey } from "../../i18n/messages";
 import type { PreferencesDoc } from "../../workspace/preferences";
 import type { SavedStreetLine } from "../street-lines/saved";
@@ -350,6 +351,12 @@ export function DepotEditor({
       (i) => !(report?.issues ?? []).some((j) => j.message === i.message),
     ),
   ];
+  // In a project the checks go to the notifications button in the top bar; on its own the panel lists them.
+  const checksElsewhere = usePublishChecks(
+    "depots",
+    selected ? t("checks.depot", { name: selected.name }) : t("create.depots"),
+    selected ? issues.map((i) => ({ severity: i.severity, text: i.message })) : [],
+  );
   const laneCheck = lane && report?.lanes.find((c) => c.lane === lane.id);
   const laneReach = lane && report?.reach.find((r) => r.lane === lane.id);
 
@@ -799,7 +806,7 @@ export function DepotEditor({
           </div>
 
           {/* Issues */}
-          {issues.length > 0 && (
+          {!checksElsewhere && issues.length > 0 && (
             <div>
               <h3 className="font-medium">{t("depot.issues")}</h3>
               <ul className="mt-1 flex flex-col gap-1">

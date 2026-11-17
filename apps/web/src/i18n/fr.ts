@@ -9,6 +9,7 @@ import { tablesFr } from "./tables/fr";
 import { fleetFr } from "./fleet/fr";
 import { timetablesFr } from "./timetables/fr";
 import { mslabFr } from "./mslab/fr";
+import { workspaceUiFr } from "./workspace-ui/fr";
 import { pluginCodeFr } from "./plugin-code/fr";
 import { populationFr } from "./population/fr";
 import { pluginsFr } from "./plugins/fr";
@@ -514,6 +515,7 @@ export const fr: Messages = {
   ...timetablesFr,
   ...commentsFr,
   ...mslabFr,
+  ...workspaceUiFr,
   ...pluginCodeFr,
   ...populationFr,
   ...roadFr,
