@@ -3,4 +3,13 @@
 set -eu
 [ -s /run/secrets/db_migrator_password ] || [ -s /run/secrets/db_password ] \
   || { echo "secret db_password is missing" >&2; exit 78; }
+[ -n "${MOBSIMLAB_DB_HOST:-}" ] || { echo "MOBSIMLAB_DB_HOST is not set (compose.yaml sets it under mobsimlab: environment)" >&2; exit 78; }
+# The data folder (logs, caches, uploads) must be writable by the container's user. A named volume is; a folder of
+# the host mounted at /data keeps the host's owner, so say how to fix it instead of letting the API crash later.
+data="${MOBSIMLAB_DATA_DIR:-/data}"
+if ! { mkdir -p "$data/logs" && [ -w "$data" ] && [ -w "$data/logs" ]; } 2>/dev/null; then
+  echo "$data is not writable by the container's user (uid $(id -u), gid $(id -g)). If it is a folder of the host," \
+    "run on the host: sudo chown -R $(id -u):$(id -g) <that folder>" >&2
+  exit 78
+fi
 exec /usr/local/bin/node /app/api/dist/cli/migrate.js
