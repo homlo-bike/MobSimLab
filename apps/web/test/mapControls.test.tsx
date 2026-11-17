@@ -4,7 +4,16 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("maplibre-gl", () => ({ Marker: undefined }));
 
-import { BASEMAPS, basemapById, basemapStyle, DEFAULT_BASEMAP } from "../src/map/basemaps";
+import {
+  availableBasemaps,
+  BASEMAPS,
+  basemapById,
+  basemapStyle,
+  DEFAULT_BASEMAP,
+  imageryTiles,
+  newestDay,
+  pluginBasemap,
+} from "../src/map/basemaps";
 import { MapControls } from "../src/map/MapControls";
 import { applyHidden, groupOf, groupsOnMap } from "../src/map/mapLayers";
 
@@ -57,6 +66,39 @@ describe("basemaps and project layers", () => {
     expect(basemapStyle(DEFAULT_BASEMAP, loaded)).toBe(loaded);
   });
 
+  it("adds the NASA GIBS plugin's daily imagery, for the newest day or a picked one", () => {
+    const ids = availableBasemaps().map((b) => b.id);
+    expect(ids.slice(0, BASEMAPS.length)).toEqual(BASEMAPS.map((b) => b.id));
+    expect(ids).toContain("gibs-hls-sentinel-2");
+    expect(availableBasemaps([]).map((b) => b.id)).toEqual(BASEMAPS.map((b) => b.id));
+    const hls = basemapById("gibs-hls-sentinel-2");
+    expect(hls.kind).toBe("aerial");
+    expect(hls.attribution).toContain("NASA GIBS");
+    expect(hls.attribution).toContain("OpenStreetMap contributors");
+    expect(hls.note).toContain("30 m");
+    const now = new Date("2026-11-17T12:00:00Z");
+    expect(newestDay(hls, now)).toBe("2026-11-13");
+    expect(imageryTiles(hls, now)[0]).toBe(
+      "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/HLS_S30_Nadir_BRDF_Adjusted_Reflectance/default/2026-11-13/GoogleMapsCompatible_Level12/{z}/{y}/{x}.png",
+    );
+    expect(imageryTiles({ ...hls, day: "2024-06-01" }, now)[0]).toContain("/default/2024-06-01/");
+    expect(newestDay(DEFAULT_BASEMAP)).toBeNull();
+  });
+
+  it("escapes a plugin's attribution", () => {
+    const b = pluginBasemap({
+      id: "x",
+      label: "X",
+      tiles: ["https://gibs.earthdata.nasa.gov/{z}/{x}/{y}.jpg"],
+      tileSize: 256,
+      maxzoom: 9,
+      attribution: { text: "<img src=x onerror=alert(1)>", url: 'https://example.org/"a' },
+    });
+    expect(b.attribution).not.toContain("<img");
+    expect(b.attribution).toContain("&#60;img");
+    expect(b.attribution).toContain('href="https://example.org/&#34;a"');
+  });
+
   it("groups the tools' layers by their id and hides and restores them", () => {
     expect(groupOf("sl-legs")).toBe("streetLines");
     expect(groupOf("rd-tracks")).toBe("railways");
@@ -94,6 +136,26 @@ describe("map controls", () => {
     expect(onBasemap).toHaveBeenCalledWith(basemapById("eox-s2cloudless-2016"));
     fireEvent.click(screen.getByRole("checkbox", { name: "Street lines" }));
     expect([...onHidden.mock.calls[0]![0]]).toEqual(["streetLines"]);
+  });
+
+  it("offers a date for daily imagery and shows its own note", () => {
+    const onBasemap = vi.fn();
+    const hls = basemapById("gibs-hls-sentinel-2");
+    render(
+      <MapControls
+        map={fakeMap([]).map}
+        basemap={hls}
+        onBasemap={onBasemap}
+        hidden={new Set()}
+        onHidden={vi.fn()}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Map layers" }));
+    expect(screen.getByText(/About 30 m per pixel/)).toBeTruthy();
+    const date = screen.getByLabelText("Imagery date") as HTMLInputElement;
+    expect(date.min).toBe("2015-11-28");
+    fireEvent.change(date, { target: { value: "2024-06-01" } });
+    expect(onBasemap).toHaveBeenCalledWith({ ...hls, day: "2024-06-01" });
   });
 
   it("finds a place and moves the map to it", async () => {

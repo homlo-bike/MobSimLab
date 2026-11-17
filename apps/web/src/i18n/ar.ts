@@ -438,6 +438,7 @@ export const ar: Messages = {
   "map.aerial": "جوية",
   "map.aerialNote":
     "صور أقمار صناعية بدقة نحو 10 م لكل بكسل: جيدة لرؤية استخدامات الأراضي، وخشنة جدًا لرسم السكك أو حواف الأرصفة.",
+  "map.imageryDate": "تاريخ الصورة",
   "map.projectLayers": "طبقات المشروع",
   "map.noLayers": "تظهر هنا الخطوط والنتائج التي ترسمها.",
   "map.group.streetLines": "خطوط الشوارع",

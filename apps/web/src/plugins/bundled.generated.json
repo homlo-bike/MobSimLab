@@ -101,6 +101,7 @@
       "importers": [],
       "exporters": [],
       "mapLayers": [],
+      "basemaps": [],
       "tabs": [],
       "parameters": {
         "ropeway.line_speed_ms": {
@@ -940,6 +941,7 @@
           }
         }
       ],
+      "basemaps": [],
       "tabs": [
         {
           "id": "cargo-bike",
@@ -4318,6 +4320,7 @@
       "importers": [],
       "exporters": [],
       "mapLayers": [],
+      "basemaps": [],
       "tabs": [],
       "parameters": {
         "energy.electric_share": {
@@ -5083,6 +5086,7 @@
       "importers": [],
       "exporters": [],
       "mapLayers": [],
+      "basemaps": [],
       "tabs": [],
       "parameters": {
         "ferry.service_speed_kn": {
@@ -5326,6 +5330,90 @@
         }
       ],
       "mapLayers": [],
+      "basemaps": [],
+      "tabs": [],
+      "parameters": {},
+      "defaults": {}
+    },
+    {
+      "id": "org.mobsimlab.nasa-gibs",
+      "name": "NASA GIBS imagery",
+      "description": "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data"
+      ],
+      "permissions": [],
+      "modes": [],
+      "contexts": [],
+      "tools": [],
+      "calculations": [],
+      "importers": [],
+      "exporters": [],
+      "mapLayers": [],
+      "basemaps": [
+        {
+          "id": "gibs-hls-sentinel-2",
+          "label": "NASA HLS Sentinel-2",
+          "note": "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.",
+          "tiles": [
+            "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/HLS_S30_Nadir_BRDF_Adjusted_Reflectance/default/{date}/GoogleMapsCompatible_Level12/{z}/{y}/{x}.png"
+          ],
+          "tileSize": 256,
+          "maxzoom": 12,
+          "attribution": {
+            "text": "NASA GIBS: HLS Sentinel-2 (HLSS30 v2.0), contains modified Copernicus Sentinel data",
+            "url": "https://www.earthdata.nasa.gov/gibs"
+          },
+          "date": {
+            "first": "2015-11-28",
+            "latencyDays": 4
+          }
+        },
+        {
+          "id": "gibs-hls-landsat",
+          "label": "NASA HLS Landsat 8 and 9",
+          "note": "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.",
+          "tiles": [
+            "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/HLS_L30_Nadir_BRDF_Adjusted_Reflectance/default/{date}/GoogleMapsCompatible_Level12/{z}/{y}/{x}.png"
+          ],
+          "tileSize": 256,
+          "maxzoom": 12,
+          "attribution": {
+            "text": "NASA GIBS: HLS Landsat 8 and 9 (HLSL30 v2.0), courtesy of the U.S. Geological Survey",
+            "url": "https://www.earthdata.nasa.gov/gibs"
+          },
+          "date": {
+            "first": "2013-04-11",
+            "latencyDays": 4
+          }
+        },
+        {
+          "id": "gibs-viirs-noaa20",
+          "label": "NASA VIIRS true colour",
+          "note": "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.",
+          "tiles": [
+            "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_NOAA20_CorrectedReflectance_TrueColor/default/{date}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg"
+          ],
+          "tileSize": 256,
+          "maxzoom": 9,
+          "attribution": {
+            "text": "NASA GIBS: VIIRS NOAA-20 Corrected Reflectance",
+            "url": "https://www.earthdata.nasa.gov/gibs"
+          },
+          "date": {
+            "first": "2018-01-05",
+            "latencyDays": 1
+          }
+        }
+      ],
       "tabs": [],
       "parameters": {},
       "defaults": {}
@@ -5472,6 +5560,7 @@
           }
         }
       ],
+      "basemaps": [],
       "tabs": [],
       "parameters": {
         "noise.receiver_height_m": {
@@ -9220,6 +9309,7 @@
       "importers": [],
       "exporters": [],
       "mapLayers": [],
+      "basemaps": [],
       "tabs": [],
       "parameters": {
         "drt.speed_kmh": {
@@ -9411,6 +9501,7 @@
       "importers": [],
       "exporters": [],
       "mapLayers": [],
+      "basemaps": [],
       "tabs": [],
       "parameters": {
         "people_mover.line_speed_ms": {

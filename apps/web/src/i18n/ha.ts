@@ -449,6 +449,7 @@ export const ha: Messages = {
   "map.aerial": "Daga sama",
   "map.aerialNote":
     "Hotunan tauraron dan adam kusan mita 10 a kowane pikisel: suna da kyau don ganin amfani da ƙasa, sun yi kauri sosai don zana layin dogo ko gefen titi.",
+  "map.imageryDate": "Ranar hoton",
   "map.projectLayers": "Matakan aikin",
   "map.noLayers": "Layukan da sakamakon da kuka zana suna bayyana a nan.",
   "map.group.streetLines": "Layukan titi",

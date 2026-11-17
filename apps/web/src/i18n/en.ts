@@ -442,6 +442,7 @@ export const en = {
   "map.aerial": "Aerial",
   "map.aerialNote":
     "Satellite imagery at about 10 m per pixel: good for seeing land use, too coarse to draw track or kerbs.",
+  "map.imageryDate": "Imagery date",
   "map.projectLayers": "Project layers",
   "map.noLayers": "The lines and results you draw show here.",
   "map.group.streetLines": "Street lines",

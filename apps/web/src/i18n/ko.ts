@@ -441,6 +441,7 @@ export const ko: Messages = {
   "map.aerial": "항공",
   "map.aerialNote":
     "픽셀당 약 10 m의 위성 영상: 토지 이용을 보기에는 좋지만 선로나 연석을 그리기에는 너무 거칩니다.",
+  "map.imageryDate": "영상 날짜",
   "map.projectLayers": "프로젝트 레이어",
   "map.noLayers": "그린 노선과 결과가 여기에 표시됩니다.",
   "map.group.streetLines": "도로 노선",

@@ -448,6 +448,7 @@ export const pl: Messages = {
   "map.aerial": "Lotnicza",
   "map.aerialNote":
     "Zdjęcia satelitarne o rozdzielczości około 10 m na piksel: dobre do oceny zagospodarowania terenu, zbyt zgrubne do rysowania torów lub krawężników.",
+  "map.imageryDate": "Data zdjęcia",
   "map.projectLayers": "Warstwy projektu",
   "map.noLayers": "Tutaj pojawiają się narysowane linie i wyniki.",
   "map.group.streetLines": "Linie uliczne",

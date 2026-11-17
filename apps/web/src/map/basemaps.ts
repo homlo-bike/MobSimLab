@@ -1,4 +1,5 @@
 import type { LayerSpecification, StyleSpecification } from "maplibre-gl";
+import { activePlugins, type Plugin, type PluginBasemap, pluginBasemaps } from "../plugins/registry";
 
 /** A basemap the user can pick. Attribution is mandatory and always rendered. */
 export interface Basemap {
@@ -9,8 +10,14 @@ export interface Basemap {
   kind: "street" | "aerial";
   styleUrl: string;
   attribution: string;
-  /** For aerial basemaps: the imagery drawn under the labels of `styleUrl`. */
+  /** For aerial basemaps: the imagery drawn under the labels of `styleUrl`. Tile URLs may hold `{date}`. */
   imagery?: { id: string; tiles: string[]; tileSize: number; maxzoom: number };
+  /** Plugin basemaps: one sentence on the imagery (its resolution), shown instead of the core note. */
+  note?: string;
+  /** Daily imagery (plugin basemaps): the first day there is, and how many days the newest lags behind today. */
+  date?: { first: string; latencyDays: number };
+  /** The day picked for daily imagery (YYYY-MM-DD); the newest day when not set. */
+  day?: string;
 }
 
 const OSM_ATTRIBUTION =
@@ -71,9 +78,62 @@ export const BASEMAPS: readonly Basemap[] = [
   },
 ];
 
-/** Purpose: the basemap with an id, else the default. */
-export function basemapById(id: string | null | undefined): Basemap {
-  return BASEMAPS.find((b) => b.id === id) ?? DEFAULT_BASEMAP;
+/** Labels over plugin imagery: the OpenFreeMap Liberty style, as for the Sentinel-2 mosaic. */
+const PLUGIN_LABELS_STYLE = "https://tiles.openfreemap.org/styles/liberty";
+
+function escapeHtml(text: string): string {
+  return text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+}
+
+/** Purpose: a plugin's basemap as the layer control shows it, with its attribution and the labels' own. */
+export function pluginBasemap(b: PluginBasemap): Basemap {
+  const text = escapeHtml(b.attribution.text);
+  const credit = b.attribution.url
+    ? `<a href="${escapeHtml(b.attribution.url)}" target="_blank" rel="noopener">${text}</a>`
+    : text;
+  return {
+    id: b.id,
+    label: b.label,
+    kind: "aerial",
+    styleUrl: PLUGIN_LABELS_STYLE,
+    attribution: `${credit} · ${OSM_ATTRIBUTION}`,
+    imagery: { id: b.id, tiles: b.tiles, tileSize: b.tileSize, maxzoom: b.maxzoom },
+    ...(b.note ? { note: b.note } : {}),
+    ...(b.date ? { date: b.date } : {}),
+  };
+}
+
+/** Purpose: the basemaps to offer: the core's, then those of the plugins turned on (ADR-0036). */
+export function availableBasemaps(plugins: readonly Plugin[] = activePlugins()): Basemap[] {
+  const core = new Set(BASEMAPS.map((b) => b.id));
+  return [
+    ...BASEMAPS,
+    ...pluginBasemaps(plugins)
+      .filter((b) => !core.has(b.id))
+      .map(pluginBasemap),
+  ];
+}
+
+/** Purpose: the basemap with an id among `list`, else the default. */
+export function basemapById(
+  id: string | null | undefined,
+  list: readonly Basemap[] = availableBasemaps(),
+): Basemap {
+  return list.find((b) => b.id === id) ?? DEFAULT_BASEMAP;
+}
+
+/** Purpose: the newest day a daily basemap has (today in UTC less its lag), as YYYY-MM-DD; null if not daily. */
+export function newestDay(basemap: Basemap, now: Date = new Date()): string | null {
+  if (!basemap.date) return null;
+  const d = new Date(now.getTime() - basemap.date.latencyDays * 86_400_000);
+  return d.toISOString().slice(0, 10);
+}
+
+/** Purpose: the imagery's tile URLs for the picked day (or the newest one). */
+export function imageryTiles(basemap: Basemap, now: Date = new Date()): string[] {
+  const tiles = basemap.imagery?.tiles ?? [];
+  const day = basemap.day ?? newestDay(basemap, now);
+  return day ? tiles.map((t) => t.replaceAll("{date}", day)) : tiles;
 }
 
 /** Layer types of an OpenMapTiles style that are kept over imagery: names, and borders. */
@@ -94,7 +154,12 @@ export function basemapStyle(basemap: Basemap, loaded: StyleSpecification): Styl
     ...loaded,
     sources: {
       ...loaded.sources,
-      [img.id]: { type: "raster", tiles: img.tiles, tileSize: img.tileSize, maxzoom: img.maxzoom },
+      [img.id]: {
+        type: "raster",
+        tiles: imageryTiles(basemap),
+        tileSize: img.tileSize,
+        maxzoom: img.maxzoom,
+      },
     },
     layers: [
       { id: "background", type: "background", paint: { "background-color": "#1f2a1f" } },

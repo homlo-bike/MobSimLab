@@ -94,7 +94,7 @@ export function MapView({ onReady }: Props) {
   }, [map, hidden]);
 
   const pickBasemap = (b: Basemap) => {
-    if (b.id === basemap.id) return;
+    if (b.id === basemap.id && b.day === basemap.day) return;
     setBasemap(b);
     rememberBasemap(b.id);
     if (!map) return;

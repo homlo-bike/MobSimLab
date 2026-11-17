@@ -450,6 +450,7 @@ export const id: Messages = {
   "map.aerial": "Udara",
   "map.aerialNote":
     "Citra satelit sekitar 10 m per piksel: baik untuk melihat tata guna lahan, terlalu kasar untuk menggambar rel atau tepi jalan.",
+  "map.imageryDate": "Tanggal citra",
   "map.projectLayers": "Lapisan proyek",
   "map.noLayers": "Jalur dan hasil yang Anda gambar tampil di sini.",
   "map.group.streetLines": "Jalur jalan",

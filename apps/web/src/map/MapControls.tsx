@@ -3,7 +3,7 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { CloseIcon, LayersIcon, SearchIcon } from "../shell/icons";
-import { type Basemap, BASEMAPS } from "./basemaps";
+import { availableBasemaps, type Basemap, newestDay } from "./basemaps";
 import { groupsOnMap, OVERLAY_GROUPS, type OverlayGroup } from "./mapLayers";
 import { type Place, searchPlaces } from "./places";
 
@@ -273,7 +273,7 @@ function LayerPanel({
       <PanelHead title={t("map.layers")} onClose={onClose} />
       <fieldset className="px-3 pt-1 pb-2">
         <legend className="caps pb-1">{t("map.basemap")}</legend>
-        {BASEMAPS.map((b) => (
+        {availableBasemaps().map((b) => (
           <label key={b.id} className="flex min-h-10 cursor-pointer items-center gap-2.5">
             <input
               type="radio"
@@ -290,7 +290,25 @@ function LayerPanel({
             </span>
           </label>
         ))}
-        {basemap.kind === "aerial" && <p className="mt-1 text-xs text-slate-600">{t("map.aerialNote")}</p>}
+        {basemap.date && (
+          <label className="mt-1 flex min-h-10 items-center gap-2.5 text-sm">
+            {t("map.imageryDate")}
+            <input
+              type="date"
+              className="w-auto"
+              min={basemap.date.first}
+              max={newestDay(basemap) ?? undefined}
+              value={basemap.day ?? newestDay(basemap) ?? ""}
+              onChange={(e) => {
+                const day = e.target.value;
+                if (/^\d{4}-\d{2}-\d{2}$/.test(day)) onBasemap({ ...basemap, day });
+              }}
+            />
+          </label>
+        )}
+        {basemap.kind === "aerial" && (
+          <p className="mt-1 text-xs text-slate-600">{basemap.note ?? t("map.aerialNote")}</p>
+        )}
       </fieldset>
       <fieldset className="border-t border-slate-100 px-3 pt-2 pb-3">
         <legend className="caps float-left w-full pb-1">{t("map.projectLayers")}</legend>

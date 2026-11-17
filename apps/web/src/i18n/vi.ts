@@ -447,6 +447,7 @@ export const vi: Messages = {
   "map.aerial": "Ảnh vệ tinh",
   "map.aerialNote":
     "Ảnh vệ tinh khoảng 10 m mỗi điểm ảnh: tốt để xem sử dụng đất, quá thô để vẽ đường ray hay bó vỉa.",
+  "map.imageryDate": "Ngày ảnh",
   "map.projectLayers": "Lớp của dự án",
   "map.noLayers": "Các tuyến và kết quả bạn vẽ hiện ở đây.",
   "map.group.streetLines": "Tuyến đường bộ",

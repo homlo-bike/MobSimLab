@@ -445,6 +445,7 @@ export const yo: Messages = {
   "map.aerial": "Láti òkè",
   "map.aerialNote":
     "Àwòrán sátẹ́láìtì tó tó nǹkan bí mítà 10 fún píkísẹ́lì kan: ó dára láti rí bí a ṣe ń lo ilẹ̀, ó nípọn jù láti ya ọ̀nà ojú irin tàbí ẹ̀gbẹ́ òpópónà.",
+  "map.imageryDate": "Ọjọ́ àwòrán",
   "map.projectLayers": "Àwọn ìpele iṣẹ́ àkànṣe",
   "map.noLayers": "Àwọn ìlà àti àbájáde tí o yà yóò hàn níbí.",
   "map.group.streetLines": "Àwọn ìlà òpópónà",

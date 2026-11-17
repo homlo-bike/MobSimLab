@@ -436,6 +436,7 @@ export const am: Messages = {
   "map.aerial": "የአየር ላይ",
   "map.aerialNote":
     "በአንድ ፒክሰል 10 ሜ ገደማ የሳተላይት ምስሎች፦ የመሬት አጠቃቀምን ለማየት ጥሩ ናቸው፣ ሐዲድ ወይም የመንገድ ጠርዝ ለመሳል በጣም ሻካራ ናቸው።",
+  "map.imageryDate": "የምስሉ ቀን",
   "map.projectLayers": "የፕሮጀክት ንብርብሮች",
   "map.noLayers": "የሚስሏቸው መስመሮችና ውጤቶች እዚህ ይታያሉ።",
   "map.group.streetLines": "የመንገድ መስመሮች",

@@ -454,6 +454,7 @@ export const zu: Messages = {
   "map.aerial": "Emoyeni",
   "map.aerialNote":
     "Izithombe zesathelayithi ezingaba ngamamitha ayi-10 ngephikseli ngayinye: zinhle ukubona ukusetshenziswa komhlaba, zimahhadla kakhulu ukudweba ujantshi noma imiphetho yomgwaqo.",
+  "map.imageryDate": "Usuku lwesithombe",
   "map.projectLayers": "Izendlalelo zephrojekthi",
   "map.noLayers": "Imizila nemiphumela oyidwebayo ivela lapha.",
   "map.group.streetLines": "Imizila yasemgwaqweni",

@@ -111,6 +111,7 @@
 | Copernicus DEM GLO-30 | Copernicus DEM licence (free, attribution) — **Verify** wording | On | Attribution |
 | SRTM | Public domain (USGS) | Fallback | Courtesy attribution |
 | Sentinel-2 cloudless 2016 (EOX) | CC BY 4.0 | On | EOX attribution text |
+| NASA GIBS imagery (HLS, VIIRS) | NASA data, no restrictions on use; HLS Sentinel-2 contains modified Copernicus Sentinel data (free and open) | On (bundled plugin `org.mobsimlab.nasa-gibs`) | Acknowledge NASA GIBS; Copernicus and USGS credits in the attribution |
 | Sentinel-2 cloudless 2018+ (EOX) | CC BY-NC-SA 4.0 | **Off** | Admin must acknowledge non-commercial terms; commercial users need EOX licence |
 | Esri World Imagery | Esri terms of use, account/API key | **Off** | User-supplied key; Esri attribution; no caching |
 | Open-Elevation (public API) | Service; software GPL-2.0 | Optional | Respect rate limits |

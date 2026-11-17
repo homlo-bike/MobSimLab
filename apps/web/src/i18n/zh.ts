@@ -429,6 +429,7 @@ export const zh: Messages = {
   "map.streetMap": "地图",
   "map.aerial": "航拍",
   "map.aerialNote": "卫星影像约每像素 10 米：适合查看土地利用，但太粗糙，无法绘制轨道或路缘。",
+  "map.imageryDate": "影像日期",
   "map.projectLayers": "项目图层",
   "map.noLayers": "你绘制的线路和结果显示在这里。",
   "map.group.streetLines": "道路线路",

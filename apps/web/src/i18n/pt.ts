@@ -450,6 +450,7 @@ export const pt: Messages = {
   "map.aerial": "Aérea",
   "map.aerialNote":
     "Imagens de satélite com cerca de 10 m por píxel: boas para ver o uso do solo, grosseiras demais para desenhar vias ou lancis.",
+  "map.imageryDate": "Data da imagem",
   "map.projectLayers": "Camadas do projeto",
   "map.noLayers": "As linhas e os resultados que desenhar aparecem aqui.",
   "map.group.streetLines": "Linhas rodoviárias",

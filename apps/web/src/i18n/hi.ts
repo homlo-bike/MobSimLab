@@ -446,6 +446,7 @@ export const hi: Messages = {
   "map.aerial": "हवाई",
   "map.aerialNote":
     "लगभग 10 मीटर प्रति पिक्सेल की उपग्रह छवियाँ: भूमि उपयोग देखने के लिए अच्छी, पटरी या फुटपाथ किनारे बनाने के लिए बहुत मोटी।",
+  "map.imageryDate": "चित्र की तारीख",
   "map.projectLayers": "परियोजना परतें",
   "map.noLayers": "आपकी बनाई लाइनें और परिणाम यहाँ दिखते हैं।",
   "map.group.streetLines": "सड़क लाइनें",

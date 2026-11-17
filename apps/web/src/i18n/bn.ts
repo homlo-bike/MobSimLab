@@ -445,6 +445,7 @@ export const bn: Messages = {
   "map.aerial": "আকাশ থেকে",
   "map.aerialNote":
     "প্রতি পিক্সেলে প্রায় ১০ মিটারের উপগ্রহ চিত্র: ভূমি ব্যবহার দেখতে ভালো, রেললাইন বা ফুটপাতের কিনারা আঁকতে খুব মোটা।",
+  "map.imageryDate": "চিত্রের তারিখ",
   "map.projectLayers": "প্রকল্পের স্তর",
   "map.noLayers": "আপনার আঁকা লাইন ও ফলাফল এখানে দেখা যায়।",
   "map.group.streetLines": "সড়ক লাইন",
