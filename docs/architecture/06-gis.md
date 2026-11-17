@@ -183,8 +183,9 @@ Built-in layers: roads, buildings, vehicles, stops, stations, railways, bridges,
 |---------|--------|---------|
 | OpenFreeMap Liberty / Bright / Positron | `tiles.openfreemap.org` styles | Positron default |
 | Sentinel-2 Cloudless 2016 | EOX WMTS | Available (CC BY 4.0) |
+| NASA GIBS: HLS Sentinel-2, HLS Landsat 8 and 9 (about 30 m), VIIRS NOAA-20 (about 250 m) | `gibs.earthdata.nasa.gov` WMTS, bundled plugin `org.mobsimlab.nasa-gibs`, a day picked in the layer control | Available (NASA data, no key) |
 | Sentinel-2 Cloudless 2018+ | EOX WMTS | Disabled; admin must acknowledge non-commercial licence |
-| Esri World Imagery | Esri | Disabled; admin adds API key and accepts terms |
+| Esri World Imagery | Esri ArcGIS Location Platform (`ibasemaps-api.arcgis.com`), bundled plugin `org.mobsimlab.esri-imagery`, tiles through `/api/basemaps/esri/tiles/{z}/{y}/{x}` | Off until an Admin saves an ArcGIS API key and accepts Esri's terms (*Administration → Plugins*); the key stays on the server and tiles are not stored |
 | Offline styles | PMTiles/MBTiles on the data volume, served by the API | For air-gapped installs |
 | External WMTS / WMS / XYZ | Admin or project config | Optional username/password, proxied (C-18) |
 

@@ -87,6 +87,31 @@ describe("plugin checks (ADR-0036)", () => {
       "org.example.water-taxi: tab taxis: installed plugins bring their own page (ui)",
     );
 
+    // Tiles may come only from the hosts the CSP lists, so basemaps ship with MobSimLab.
+    const basemap = checkPlugin(
+      samplePlugin({
+        contributes: {
+          modes: [{ id: "water_taxi", file: "modes/water_taxi.json" }],
+          parameters: [{ file: "assumptions/parameters.yaml" }],
+          sources: [{ file: "assumptions/sources.yaml" }],
+          basemaps: [
+            {
+              id: "example-imagery",
+              label: "Example imagery",
+              tiles: ["https://tiles.example.org/{z}/{x}/{y}.png"],
+              tileSize: 256,
+              maxzoom: 18,
+              attribution: { text: "Example" },
+            },
+          ],
+        },
+      }),
+      [],
+    );
+    expect(basemap.ok ? [] : basemap.errors).toContain(
+      "org.example.water-taxi: basemaps are for bundled plugins only",
+    );
+
     const clash = checkPlugin(samplePlugin({}, "org.example.other"), [
       {
         id: "org.example.water-taxi",

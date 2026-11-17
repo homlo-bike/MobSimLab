@@ -28,4 +28,15 @@ export const pluginCodeUr = {
   "pcode.saved": "محفوظ ہو گیا۔",
   "pcode.installIntro":
     "‎.msplugin فائل اپ لوڈ کریں۔ MobSimLab اسے جانچتا ہے اور انسٹال سے پہلے دکھاتا ہے کہ یہ کیا شامل کرتی ہے۔ پلگ اِنز نقل و حمل کے طریقے، اوزار، پیرامیٹر اور ماخذ شامل کر سکتے ہیں اور اپنا کوڈ (حسابات، درآمد، برآمد اور ٹیب صفحات) انٹرنیٹ کے بغیر الگ تھلگ ماحول میں چلا سکتے ہیں۔",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "تقریباً 0.3 سے 1 میٹر فی پکسل کی فضائی تصاویر۔ Esri کو ArcGIS Location Platform اکاؤنٹ کی ArcGIS API کلید اور اپنی شرائط کی منظوری درکار ہے۔ ٹائلیں اسی MobSimLab سے ہو کر آتی ہیں، اس لیے براؤزر کبھی کلید نہیں دیکھتے، اور ٹائلیں محفوظ نہیں ہوتیں۔",
+  "esri.key": "ArcGIS API کلید",
+  "esri.accept": "میں اس MobSimLab کے لیے Esri کی شرائطِ استعمال قبول کرتا/کرتی ہوں",
+  "esri.terms": "Esri کی شرائط",
+  "esri.save": "کلید محفوظ کریں",
+  "esri.remove": "کلید ہٹائیں",
+  "esri.saved":
+    "{end} پر ختم ہونے والی کلید {name} نے {date} کو محفوظ کی۔ Esri World Imagery نقشے کی پرتوں میں دستیاب ہے۔",
+  "esri.none": "کوئی کلید محفوظ نہیں: Esri World Imagery پیش نہیں کی جاتی۔",
 } satisfies PluginCodeMessages;

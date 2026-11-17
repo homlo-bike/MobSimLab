@@ -111,8 +111,9 @@
 | Copernicus DEM GLO-30 | Copernicus DEM licence (free, attribution) — **Verify** wording | On | Attribution |
 | SRTM | Public domain (USGS) | Fallback | Courtesy attribution |
 | Sentinel-2 cloudless 2016 (EOX) | CC BY 4.0 | On | EOX attribution text |
+| NASA GIBS imagery (HLS, VIIRS) | NASA data, no restrictions on use; HLS Sentinel-2 contains modified Copernicus Sentinel data (free and open) | On (bundled plugin `org.mobsimlab.nasa-gibs`) | Acknowledge NASA GIBS; Copernicus and USGS credits in the attribution |
 | Sentinel-2 cloudless 2018+ (EOX) | CC BY-NC-SA 4.0 | **Off** | Admin must acknowledge non-commercial terms; commercial users need EOX licence |
-| Esri World Imagery | Esri terms of use, account/API key | **Off** | User-supplied key; Esri attribution; no caching |
+| Esri World Imagery | Esri terms of use, ArcGIS API key (ArcGIS Location Platform) | **Off** until an Admin saves a key and accepts Esri's terms (bundled plugin `org.mobsimlab.esri-imagery`) | Admin-supplied key kept on the server; "Powered by Esri" and "Esri, Maxar, Earthstar Geographics, and the GIS User Community" on the map; tiles passed through, not stored (the browser keeps them no longer than Esri's own max-age) |
 | Open-Elevation (public API) | Service; software GPL-2.0 | Optional | Respect rate limits |
 | Elevation-API.eu | Service terms **Verify** | Optional | |
 | Mobility Database catalog | **Verify** catalog data licence; individual feeds have own licences | Optional | Record each feed's licence in Source registry |

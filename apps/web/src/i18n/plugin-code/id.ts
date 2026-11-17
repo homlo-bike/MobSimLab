@@ -28,4 +28,15 @@ export const pluginCodeId = {
   "pcode.saved": "Tersimpan.",
   "pcode.installIntro":
     "Unggah berkas .msplugin. MobSimLab memeriksanya dan menunjukkan apa yang ditambahkannya sebelum Anda memasangnya. Plugin dapat menambahkan moda, alat, parameter, dan sumber, serta menjalankan kodenya sendiri (perhitungan, impor, ekspor, dan halaman tab) di sandbox tanpa akses internet.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Foto udara sekitar 0,3 hingga 1 m per piksel. Esri memerlukan kunci API ArcGIS dari akun ArcGIS Location Platform dan persetujuan atas ketentuannya. Ubin melewati MobSimLab ini, jadi peramban tidak pernah melihat kuncinya, dan ubin tidak disimpan.",
+  "esri.key": "Kunci API ArcGIS",
+  "esri.accept": "Saya menerima ketentuan penggunaan Esri untuk MobSimLab ini",
+  "esri.terms": "Ketentuan Esri",
+  "esri.save": "Simpan kunci",
+  "esri.remove": "Hapus kunci",
+  "esri.saved":
+    "Kunci berakhiran {end} disimpan oleh {name} pada {date}. Esri World Imagery tersedia di pilihan lapisan peta.",
+  "esri.none": "Belum ada kunci tersimpan: Esri World Imagery tidak ditawarkan.",
 } satisfies PluginCodeMessages;

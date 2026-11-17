@@ -25,6 +25,7 @@ from __future__ import annotations
 import argparse
 import importlib.util
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -42,6 +43,10 @@ MANIFEST = "mobsimlab-plugin.json"
 EXTRA_CORE_MODES = ["funicular"]
 # The web app's own project tabs (apps/web/src/shell/route.ts); plugin tabs come after them.
 CORE_TABS = ["simulator", "create", "schematic", "gis", "tables", "preferences"]
+# The web app's own basemaps (apps/web/src/map/basemaps.ts); plugin basemaps come after them.
+CORE_BASEMAPS = ["openfreemap-positron", "openfreemap-liberty", "openfreemap-bright", "eox-s2cloudless-2016"]
+# The hosts the browser may load map tiles from: MAP_ORIGINS in apps/api/src/app.setup.ts (the CSP).
+APP_SETUP = ROOT / "apps" / "api" / "src" / "app.setup.ts"
 
 
 def load_assumption_check():
@@ -68,6 +73,47 @@ def read_yaml(path: Path):
 def discover(root: Path = PLUGINS) -> list[Path]:
     """Plugin folders under `root`, sorted."""
     return sorted(p.parent for p in root.glob(f"*/{MANIFEST}"))
+
+
+def map_origins() -> set[str]:
+    """The origins in MAP_ORIGINS of apps/api/src/app.setup.ts: where the CSP lets the browser load tiles."""
+    text = APP_SETUP.read_text(encoding="utf-8")
+    found = re.search(r"export const MAP_ORIGINS = \[([^\]]*)\]", text)
+    return set(re.findall(r'"(https://[^"]+)"', found.group(1))) if found else set()
+
+
+def check_basemaps(pid: str, manifest: dict) -> list[str]:
+    """Check basemaps: bundled only, tiles from a host the CSP lists or the API, {date} with `date`."""
+    errors: list[str] = []
+    basemaps = manifest["contributes"].get("basemaps", [])
+    if basemaps and not manifest.get("bundled", False):
+        errors.append(f"{pid}: basemaps are for bundled plugins only")
+        return errors
+    origins = map_origins() if basemaps else set()
+    for b in basemaps:
+        if b["id"] in CORE_BASEMAPS:
+            errors.append(f"{pid}: basemap {b['id']} is a core basemap")
+        for url in b["tiles"]:
+            if "server" in b:
+                if not url.startswith(f"/api/basemaps/{b['server']}/tiles/"):
+                    errors.append(
+                        f"{pid}: basemap {b['id']}: tiles of server {b['server']} come from "
+                        f"/api/basemaps/{b['server']}/tiles/"
+                    )
+                continue
+            origin = "/".join(url.split("/")[:3])
+            if origin not in origins:
+                errors.append(
+                    f"{pid}: basemap {b['id']} loads tiles from {origin}, which MAP_ORIGINS does not list"
+                )
+            for part in ("{z}", "{x}", "{y}"):
+                if part not in url:
+                    errors.append(f"{pid}: basemap {b['id']}: a tile URL has no {part}")
+            if ("{date}" in url) != ("date" in b):
+                errors.append(
+                    f"{pid}: basemap {b['id']}: use {{date}} in the tile URLs exactly when `date` is set"
+                )
+    return errors
 
 
 def as_list(v) -> list:
@@ -262,6 +308,7 @@ def check_plugin(
 
     calc_ids = {x["id"] for x in c.get("calculations", [])}
     errors += check_code(pid, manifest, folder)
+    errors += check_basemaps(pid, manifest)
     converters = c.get("importers", []) + c.get("exporters", [])
     conv_ids = [x["id"] for x in converters]
     for cid in sorted({x for x in conv_ids if conv_ids.count(x) > 1}):
@@ -367,6 +414,7 @@ def check_plugin(
         "importers": c.get("importers", []),
         "exporters": c.get("exporters", []),
         "mapLayers": layers,
+        "basemaps": c.get("basemaps", []),
         "tabs": c.get("tabs", []),
         "parameters": {prm["key"]: {"label": prm["label"], "unit": prm["unit"]} for prm in params},
         "defaults": defaults,
@@ -409,6 +457,12 @@ def build(root: Path = PLUGINS) -> tuple[list[str], dict]:
                 errors.append(f"{entry['id']}: two plugins with the same id")
             ids.add(entry["id"])
             plugins.append(entry)
+    owners: dict[str, str] = {}
+    for p in plugins:
+        for b in p["basemaps"]:
+            if b["id"] in owners:
+                errors.append(f"{p['id']}: basemap {b['id']} is also contributed by {owners[b['id']]}")
+            owners[b["id"]] = p["id"]
     return errors, {"pluginApi": "1", "plugins": plugins}
 
 

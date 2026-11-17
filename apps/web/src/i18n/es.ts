@@ -450,6 +450,7 @@ export const es: Messages = {
   "map.aerial": "Aérea",
   "map.aerialNote":
     "Imágenes de satélite de unos 10 m por píxel: útiles para ver el uso del suelo, demasiado bastas para dibujar vías o bordillos.",
+  "map.imageryDate": "Fecha de la imagen",
   "map.projectLayers": "Capas del proyecto",
   "map.noLayers": "Las líneas y resultados que dibujes aparecen aquí.",
   "map.group.streetLines": "Líneas viales",

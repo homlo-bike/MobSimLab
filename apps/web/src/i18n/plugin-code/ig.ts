@@ -28,4 +28,15 @@ export const pluginCodeIg = {
   "pcode.saved": "Echekwala.",
   "pcode.installIntro":
     "Bulite faịlụ .msplugin. MobSimLab na-enyocha ya ma gosi ihe ọ na-agbakwunye tupu ịtinye ya. Plugin nwere ike ịgbakwunye ụzọ njem, ngwaọrụ, paramita na isi mmalite, ma rụọ koodu nke ha (ngụkọ, mbubata, mbupụ na peeji taabụ) n'ebe dịpụrụ adịpụ na-enweghị ịntanetị.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Foto ikuku dị ihe dịka mita 0.3 ruo 1 kwa pixel. Esri chọrọ igodo ArcGIS API site na akaụntụ ArcGIS Location Platform na ịnabata usoro ya. Taịl na-esi na MobSimLab a abịa, ya mere ihe nchọgharị anaghị ahụ igodo ahụ, a naghịkwa echekwa ha.",
+  "esri.key": "Igodo ArcGIS API",
+  "esri.accept": "Anabatara m usoro ojiji Esri maka MobSimLab a",
+  "esri.terms": "Usoro Esri",
+  "esri.save": "Chekwaa igodo",
+  "esri.remove": "Wepụ igodo",
+  "esri.saved":
+    "{name} chekwara igodo na-ejedebe na {end} na {date}. Esri World Imagery dị na nhọrọ ọkwa map.",
+  "esri.none": "Enweghị igodo echekwara: anaghị enye Esri World Imagery.",
 } satisfies PluginCodeMessages;

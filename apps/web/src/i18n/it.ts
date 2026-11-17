@@ -449,6 +449,7 @@ export const it: Messages = {
   "map.aerial": "Aerea",
   "map.aerialNote":
     "Immagini satellitari di circa 10 m per pixel: utili per vedere l’uso del suolo, troppo grossolane per disegnare binari o cordoli.",
+  "map.imageryDate": "Data dell'immagine",
   "map.projectLayers": "Livelli del progetto",
   "map.noLayers": "Le linee e i risultati che disegni compaiono qui.",
   "map.group.streetLines": "Linee stradali",

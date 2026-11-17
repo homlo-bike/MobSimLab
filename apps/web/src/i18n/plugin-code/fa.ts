@@ -26,4 +26,15 @@ export const pluginCodeFa = {
   "pcode.saved": "ذخیره شد.",
   "pcode.installIntro":
     "یک پروندهٔ ‎.msplugin بارگذاری کنید. MobSimLab آن را بررسی می‌کند و پیش از نصب نشان می‌دهد چه چیزی اضافه می‌کند. افزونه‌ها می‌توانند شیوه‌های حمل‌ونقل، ابزارها، پارامترها و منابع اضافه کنند و کد خودشان (محاسبات، ورود، خروج و صفحه‌های زبانه) را در محیطی ایزوله بدون دسترسی به اینترنت اجرا کنند.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "عکس‌های هوایی با حدود ۰٫۳ تا ۱ متر در هر پیکسل. Esri به کلید ArcGIS API از یک حساب ArcGIS Location Platform و پذیرش شرایطش نیاز دارد. کاشی‌ها از این MobSimLab می‌گذرند، پس مرورگرها هرگز کلید را نمی‌بینند و کاشی‌ها ذخیره نمی‌شوند.",
+  "esri.key": "کلید ArcGIS API",
+  "esri.accept": "شرایط استفاده Esri را برای این MobSimLab می‌پذیرم",
+  "esri.terms": "شرایط Esri",
+  "esri.save": "ذخیره کلید",
+  "esri.remove": "حذف کلید",
+  "esri.saved":
+    "کلیدی که به {end} ختم می‌شود را {name} در {date} ذخیره کرد. Esri World Imagery در انتخاب لایه‌های نقشه هست.",
+  "esri.none": "کلیدی ذخیره نشده است: Esri World Imagery ارائه نمی‌شود.",
 } satisfies PluginCodeMessages;

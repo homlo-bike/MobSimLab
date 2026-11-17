@@ -28,4 +28,15 @@ export const pluginCodeMr = {
   "pcode.saved": "जतन झाले.",
   "pcode.installIntro":
     ".msplugin फाइल अपलोड करा. MobSimLab ती तपासते आणि स्थापित करण्यापूर्वी ती काय जोडते ते दाखवते. प्लगइन वाहतूक प्रकार, साधने, पॅरामीटर आणि स्रोत जोडू शकतात आणि स्वतःचा कोड (गणना, आयात, निर्यात आणि टॅब पाने) इंटरनेटशिवाय सँडबॉक्समध्ये चालवू शकतात.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "प्रति पिक्सेल सुमारे 0.3 ते 1 मीटरची हवाई छायाचित्रे. Esri ला ArcGIS Location Platform खात्याची ArcGIS API की आणि अटींची स्वीकृती लागते. टाइल्स या MobSimLab मधून येतात, त्यामुळे ब्राउझरला की कधीच दिसत नाही, आणि टाइल्स जतन होत नाहीत.",
+  "esri.key": "ArcGIS API की",
+  "esri.accept": "मी या MobSimLab साठी Esri च्या वापराच्या अटी स्वीकारतो/स्वीकारते",
+  "esri.terms": "Esri च्या अटी",
+  "esri.save": "की जतन करा",
+  "esri.remove": "की काढा",
+  "esri.saved":
+    "{end} ने संपणारी की {name} यांनी {date} रोजी जतन केली. नकाशाच्या स्तर निवडीत Esri World Imagery उपलब्ध आहे.",
+  "esri.none": "कोणतीही की जतन नाही: Esri World Imagery दिली जात नाही.",
 } satisfies PluginCodeMessages;

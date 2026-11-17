@@ -1,4 +1,5 @@
 import type { LayerSpecification, StyleSpecification } from "maplibre-gl";
+import { activePlugins, type Plugin, type PluginBasemap, pluginBasemaps } from "../plugins/registry";
 
 /** A basemap the user can pick. Attribution is mandatory and always rendered. */
 export interface Basemap {
@@ -9,8 +10,16 @@ export interface Basemap {
   kind: "street" | "aerial";
   styleUrl: string;
   attribution: string;
-  /** For aerial basemaps: the imagery drawn under the labels of `styleUrl`. */
+  /** For aerial basemaps: the imagery drawn under the labels of `styleUrl`. Tile URLs may hold `{date}`. */
   imagery?: { id: string; tiles: string[]; tileSize: number; maxzoom: number };
+  /** Plugin basemaps: one sentence on the imagery (its resolution), shown instead of the core note. */
+  note?: string;
+  /** Daily imagery (plugin basemaps): the first day there is, and how many days the newest lags behind today. */
+  date?: { first: string; latencyDays: number };
+  /** The day picked for daily imagery (YYYY-MM-DD); the newest day when not set. */
+  day?: string;
+  /** Plugin basemaps whose tiles come through the API with an Admin's key (`esri`). */
+  server?: string;
 }
 
 const OSM_ATTRIBUTION =
@@ -71,9 +80,92 @@ export const BASEMAPS: readonly Basemap[] = [
   },
 ];
 
-/** Purpose: the basemap with an id, else the default. */
-export function basemapById(id: string | null | undefined): Basemap {
-  return BASEMAPS.find((b) => b.id === id) ?? DEFAULT_BASEMAP;
+/** Labels over plugin imagery: the OpenFreeMap Liberty style, as for the Sentinel-2 mosaic. */
+const PLUGIN_LABELS_STYLE = "https://tiles.openfreemap.org/styles/liberty";
+
+function escapeHtml(text: string): string {
+  return text.replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+}
+
+/** Purpose: a plugin's basemap as the layer control shows it, with its attribution and the labels' own. */
+export function pluginBasemap(b: PluginBasemap): Basemap {
+  const text = escapeHtml(b.attribution.text);
+  const credit = b.attribution.url
+    ? `<a href="${escapeHtml(b.attribution.url)}" target="_blank" rel="noopener">${text}</a>`
+    : text;
+  return {
+    id: b.id,
+    label: b.label,
+    kind: "aerial",
+    styleUrl: PLUGIN_LABELS_STYLE,
+    attribution: `${credit} · ${OSM_ATTRIBUTION}`,
+    imagery: { id: b.id, tiles: b.tiles, tileSize: b.tileSize, maxzoom: b.maxzoom },
+    ...(b.note ? { note: b.note } : {}),
+    ...(b.date ? { date: b.date } : {}),
+    ...(b.server ? { server: b.server } : {}),
+  };
+}
+
+/** Keyed basemaps the API offers now (an Admin saved their key), from `GET /api/basemaps`. */
+let serverBasemaps: ReadonlySet<string> = new Set();
+
+/**
+ * Purpose: ask the API which keyed basemaps (Esri) an Admin has set up, so the layer control offers them.
+ * Output: whether the answer changed what is offered. Without an API (static viewer) none are offered.
+ */
+export async function loadServerBasemaps(fetchImpl: typeof fetch = fetch): Promise<boolean> {
+  let next: Set<string> = new Set();
+  try {
+    const res = await fetchImpl("/api/basemaps", { credentials: "same-origin" });
+    if (res.ok) {
+      const body = (await res.json()) as { available?: unknown };
+      if (Array.isArray(body.available))
+        next = new Set(body.available.filter((x): x is string => typeof x === "string"));
+    }
+  } catch {
+    // No API here, or it cannot be reached: offer no keyed basemaps.
+  }
+  const changed = [...next].join() !== [...serverBasemaps].join();
+  serverBasemaps = next;
+  return changed;
+}
+
+/** Purpose: the basemaps to offer: the core's, then those of the plugins turned on (ADR-0036). */
+export function availableBasemaps(plugins: readonly Plugin[] = activePlugins()): Basemap[] {
+  const core = new Set(BASEMAPS.map((b) => b.id));
+  return [
+    ...BASEMAPS,
+    ...pluginBasemaps(plugins)
+      .filter((b) => !core.has(b.id) && (!b.server || serverBasemaps.has(b.server)))
+      .map(pluginBasemap),
+  ];
+}
+
+/** Purpose: the basemap with an id among `list`, else the default. */
+export function basemapById(
+  id: string | null | undefined,
+  list: readonly Basemap[] = availableBasemaps(),
+): Basemap {
+  return list.find((b) => b.id === id) ?? DEFAULT_BASEMAP;
+}
+
+/** Purpose: the newest day a daily basemap has (today in UTC less its lag), as YYYY-MM-DD; null if not daily. */
+export function newestDay(basemap: Basemap, now: Date = new Date()): string | null {
+  if (!basemap.date) return null;
+  const d = new Date(now.getTime() - basemap.date.latencyDays * 86_400_000);
+  return d.toISOString().slice(0, 10);
+}
+
+/**
+ * Purpose: the imagery's tile URLs for the picked day (or the newest one); the API's own paths (keyed basemaps)
+ * made absolute, as MapLibre needs.
+ */
+export function imageryTiles(basemap: Basemap, now: Date = new Date()): string[] {
+  const day = basemap.day ?? newestDay(basemap, now);
+  return (basemap.imagery?.tiles ?? []).map((t) => {
+    const url = day ? t.replaceAll("{date}", day) : t;
+    return url.startsWith("/") ? `${window.location.origin}${url}` : url;
+  });
 }
 
 /** Layer types of an OpenMapTiles style that are kept over imagery: names, and borders. */
@@ -94,7 +186,12 @@ export function basemapStyle(basemap: Basemap, loaded: StyleSpecification): Styl
     ...loaded,
     sources: {
       ...loaded.sources,
-      [img.id]: { type: "raster", tiles: img.tiles, tileSize: img.tileSize, maxzoom: img.maxzoom },
+      [img.id]: {
+        type: "raster",
+        tiles: imageryTiles(basemap),
+        tileSize: img.tileSize,
+        maxzoom: img.maxzoom,
+      },
     },
     layers: [
       { id: "background", type: "background", paint: { "background-color": "#1f2a1f" } },

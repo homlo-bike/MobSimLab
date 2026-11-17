@@ -62,6 +62,10 @@ export interface DB {
     allow_unsigned_plugins: Generated<boolean>;
     plugin_memory_mb: Generated<number>;
     plugin_time_s: Generated<number>;
+    /** ArcGIS API key for Esri World Imagery (db/migrations/0019_esri_imagery.sql); never sent to browsers. */
+    esri_api_key: string | null;
+    esri_terms_accepted_at: Date | null;
+    esri_terms_accepted_by: string | null;
   };
   "iam.user": {
     id: Generated<string>;

@@ -28,4 +28,15 @@ export const pluginCodeAr = {
   "pcode.saved": "تم الحفظ.",
   "pcode.installIntro":
     "ارفع ملف ‎.msplugin. يتحقق MobSimLab منه ويعرض ما يضيفه قبل التثبيت. يمكن للإضافات إضافة وسائط نقل وأدوات ومعاملات ومصادر، وتشغيل شيفرتها الخاصة (حسابات واستيراد وتصدير وصفحات تبويب) في بيئة معزولة دون وصول إلى الإنترنت.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "صور جوية بدقة نحو 0.3 إلى 1 م لكل بكسل. تطلب Esri مفتاح ArcGIS API من حساب ArcGIS Location Platform والموافقة على شروطها. تمر البلاطات عبر MobSimLab هذا، فلا ترى المتصفحات المفتاح أبدًا، ولا تُخزَّن.",
+  "esri.key": "مفتاح ArcGIS API",
+  "esri.accept": "أوافق على شروط استخدام Esri لـ MobSimLab هذا",
+  "esri.terms": "شروط Esri",
+  "esri.save": "حفظ المفتاح",
+  "esri.remove": "إزالة المفتاح",
+  "esri.saved":
+    "المفتاح المنتهي بـ {end} حفظه {name} في {date}. تظهر Esri World Imagery في عنصر طبقات الخريطة.",
+  "esri.none": "لا يوجد مفتاح محفوظ: لا تُعرض Esri World Imagery.",
 } satisfies PluginCodeMessages;

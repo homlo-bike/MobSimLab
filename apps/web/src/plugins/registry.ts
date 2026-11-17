@@ -69,6 +69,24 @@ export interface PluginMapLayer {
 }
 
 /**
+ * An aerial basemap a bundled plugin adds to the layer control: raster tiles under the place and street names.
+ * With `date`, the tile URLs hold `{date}` and the layer control offers a day. With `server`, the tiles come
+ * through the API (`/api/basemaps/<server>/tiles/...`), which holds the provider's key.
+ */
+export interface PluginBasemap {
+  id: string;
+  label: string;
+  note?: string;
+  tiles: string[];
+  tileSize: 256 | 512;
+  maxzoom: number;
+  attribution: { text: string; url?: string };
+  date?: { first: string; latencyDays: number };
+  /** Imagery the API fetches with a key an Admin saved; offered only once it is saved. */
+  server?: "esri";
+}
+
+/**
  * A project tab a plugin adds after the core tabs: `view` names a view built into the web app (bundled
  * plugins), `ui` the plugin's own page, shown in a sandboxed frame (installed plugins, ADR-0036 §6).
  */
@@ -106,6 +124,7 @@ export interface Plugin {
   importers?: PluginConverter[];
   exporters?: PluginConverter[];
   mapLayers?: PluginMapLayer[];
+  basemaps?: PluginBasemap[];
   tabs?: PluginTab[];
   parameters: Record<string, { label: string; unit: string }>;
   /** mode id → context option ("*" without one) → parameter key → range. */
@@ -132,6 +151,8 @@ export interface ProjectPlugin {
     parameters: number;
     calculations: string[];
     mapLayers: string[];
+    /** Labels of its aerial basemaps (older servers leave them out). */
+    basemaps?: string[];
     /** Labels of its importers, exporters and tabs (older servers leave them out). */
     importers?: string[];
     exporters?: string[];
@@ -251,6 +272,13 @@ export function pluginMapLayers(
   plugins: readonly Plugin[] = activePlugins(),
 ): PluginMapLayer[] {
   return plugins.flatMap((p) => (p.mapLayers ?? []).filter((l) => l.calculation === calculation));
+}
+
+/** Purpose: the aerial basemaps the plugins add, with the plugin that adds each. */
+export function pluginBasemaps(
+  plugins: readonly Plugin[] = activePlugins(),
+): (PluginBasemap & { plugin: string })[] {
+  return plugins.flatMap((p) => (p.basemaps ?? []).map((b) => ({ ...b, plugin: p.id })));
 }
 
 /** Purpose: the label of a context option, such as "Tricable gondola (3S)" for `3s`. */

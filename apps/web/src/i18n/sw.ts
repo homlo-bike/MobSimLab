@@ -448,6 +448,7 @@ export const sw: Messages = {
   "map.aerial": "Angani",
   "map.aerialNote":
     "Picha za setilaiti za takriban mita 10 kwa pikseli: nzuri kuona matumizi ya ardhi, hafifu mno kuchora reli au kingo za barabara.",
+  "map.imageryDate": "Tarehe ya picha",
   "map.projectLayers": "Tabaka za mradi",
   "map.noLayers": "Njia na matokeo unayochora huonekana hapa.",
   "map.group.streetLines": "Njia za barabarani",

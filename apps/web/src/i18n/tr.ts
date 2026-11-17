@@ -446,6 +446,7 @@ export const tr: Messages = {
   "map.aerial": "Hava",
   "map.aerialNote":
     "Piksel başına yaklaşık 10 m uydu görüntüsü: arazi kullanımını görmek için iyi, ray veya bordür çizmek için fazla kaba.",
+  "map.imageryDate": "Görüntü tarihi",
   "map.projectLayers": "Proje katmanları",
   "map.noLayers": "Çizdiğiniz hatlar ve sonuçlar burada görünür.",
   "map.group.streetLines": "Cadde hatları",

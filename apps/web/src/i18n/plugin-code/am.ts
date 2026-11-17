@@ -25,4 +25,14 @@ export const pluginCodeAm = {
   "pcode.saved": "ተቀምጧል።",
   "pcode.installIntro":
     "የ.msplugin ፋይል ይስቀሉ። MobSimLab ይፈትሸዋል፣ ከመጫኑ በፊትም ምን እንደሚጨምር ያሳያል። ተሰኪዎች የትራንስፖርት ዘዴዎችን፣ መሣሪያዎችን፣ መለኪያዎችንና ምንጮችን ሊጨምሩ፣ የራሳቸውንም ኮድ (ስሌቶች፣ ማስመጣት፣ መላክና የትር ገጾች) ኢንተርኔት በሌለው የተገለለ አካባቢ ሊያስኬዱ ይችላሉ።",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "በአንድ ፒክሰል ከ0.3 እስከ 1 ሜትር ገደማ የአየር ፎቶዎች። Esri ከArcGIS Location Platform መለያ የArcGIS API ቁልፍ እና ደንቦቹን መቀበል ይጠይቃል። ሰቆቹ በዚህ MobSimLab በኩል ስለሚመጡ አሳሾች ቁልፉን አያዩም፣ ሰቆቹም አይቀመጡም።",
+  "esri.key": "የArcGIS API ቁልፍ",
+  "esri.accept": "ለዚህ MobSimLab የEsri የአጠቃቀም ደንቦችን እቀበላለሁ",
+  "esri.terms": "የEsri ደንቦች",
+  "esri.save": "ቁልፍ አስቀምጥ",
+  "esri.remove": "ቁልፍ አስወግድ",
+  "esri.saved": "በ{end} የሚያልቅ ቁልፍ በ{name} በ{date} ተቀምጧል። Esri World Imagery በካርታው የንብርብር ምርጫ ውስጥ አለ።",
+  "esri.none": "ምንም ቁልፍ አልተቀመጠም፦ Esri World Imagery አይቀርብም።",
 } satisfies PluginCodeMessages;

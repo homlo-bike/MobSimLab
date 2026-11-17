@@ -452,6 +452,7 @@ export const fr: Messages = {
   "map.aerial": "Aérienne",
   "map.aerialNote":
     "Imagerie satellite d’environ 10 m par pixel : utile pour voir l’occupation du sol, trop grossière pour dessiner des voies ou des bordures.",
+  "map.imageryDate": "Date de l'image",
   "map.projectLayers": "Couches du projet",
   "map.noLayers": "Les lignes et résultats que vous dessinez apparaissent ici.",
   "map.group.streetLines": "Lignes routières",

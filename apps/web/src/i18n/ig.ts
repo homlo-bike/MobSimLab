@@ -448,6 +448,7 @@ export const ig: Messages = {
   "map.aerial": "Site n'elu",
   "map.aerialNote":
     "Foto satịlaịtị dị ihe dịka mita 10 kwa piksel: ọ dị mma ịhụ ka e si eji ala, ọ siri ike nke ukwuu iji see ụzọ ụgbọ oloko ma ọ bụ ọnụ okporo ụzọ.",
+  "map.imageryDate": "Ụbọchị onyonyo",
   "map.projectLayers": "Ọkwa ọrụ",
   "map.noLayers": "Ahịrị na nsonaazụ ị na-ese na-apụta ebe a.",
   "map.group.streetLines": "Ahịrị okporo ụzọ",

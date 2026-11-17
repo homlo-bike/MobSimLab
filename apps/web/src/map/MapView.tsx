@@ -9,7 +9,13 @@ import {
 import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { type Basemap, basemapStyle, rememberBasemap, rememberedBasemap } from "./basemaps";
+import {
+  type Basemap,
+  basemapStyle,
+  loadServerBasemaps,
+  rememberBasemap,
+  rememberedBasemap,
+} from "./basemaps";
 import { MapControls } from "./MapControls";
 import { applyHidden, markBasemap, type OverlayGroup, switchBasemap } from "./mapLayers";
 
@@ -93,8 +99,20 @@ export function MapView({ onReady }: Props) {
     if (map) applyHidden(map, hidden);
   }, [map, hidden]);
 
+  // Keyed basemaps (Esri) are offered once the API says an Admin has saved their key.
+  const [, setServerBasemaps] = useState(0);
+  useEffect(() => {
+    let live = true;
+    void loadServerBasemaps().then((changed) => {
+      if (live && changed) setServerBasemaps((n) => n + 1);
+    });
+    return () => {
+      live = false;
+    };
+  }, []);
+
   const pickBasemap = (b: Basemap) => {
-    if (b.id === basemap.id) return;
+    if (b.id === basemap.id && b.day === basemap.day) return;
     setBasemap(b);
     rememberBasemap(b.id);
     if (!map) return;

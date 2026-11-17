@@ -442,6 +442,7 @@ export const ja: Messages = {
   "map.aerial": "航空写真",
   "map.aerialNote":
     "1 ピクセル約 10 m の衛星画像：土地利用の把握には適していますが、線路や縁石を描くには粗すぎます。",
+  "map.imageryDate": "画像の日付",
   "map.projectLayers": "プロジェクトのレイヤー",
   "map.noLayers": "描いた路線や結果がここに表示されます。",
   "map.group.streetLines": "道路路線",

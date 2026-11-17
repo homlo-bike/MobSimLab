@@ -452,6 +452,7 @@ export const uz: Messages = {
   "map.aerial": "Aerofoto",
   "map.aerialNote":
     "Har piksel taxminan 10 m bo‘lgan sun’iy yo‘ldosh suratlari: yerdan foydalanishni ko‘rish uchun yaxshi, rels yoki bordyur chizish uchun juda qo‘pol.",
+  "map.imageryDate": "Tasvir sanasi",
   "map.projectLayers": "Loyiha qatlamlari",
   "map.noLayers": "Siz chizgan liniyalar va natijalar shu yerda ko‘rinadi.",
   "map.group.streetLines": "Ko‘cha liniyalari",

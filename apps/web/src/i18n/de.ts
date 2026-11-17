@@ -456,6 +456,7 @@ export const de: Messages = {
   "map.aerial": "Luftbild",
   "map.aerialNote":
     "Satellitenbilder mit etwa 10 m pro Pixel: gut, um die Landnutzung zu sehen, zu grob, um Gleise oder Bordsteine zu zeichnen.",
+  "map.imageryDate": "Aufnahmedatum",
   "map.projectLayers": "Projektebenen",
   "map.noLayers": "Die Linien und Ergebnisse, die du zeichnest, erscheinen hier.",
   "map.group.streetLines": "Straßenlinien",

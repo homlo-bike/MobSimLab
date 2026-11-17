@@ -28,4 +28,15 @@ export const pluginCodeRu = {
   "pcode.saved": "Сохранено.",
   "pcode.installIntro":
     "Загрузите файл .msplugin. MobSimLab проверит его и покажет, что он добавляет, до установки. Плагины могут добавлять виды транспорта, инструменты, параметры и источники и выполнять собственный код (расчёты, импорт, экспорт и страницы вкладок) в песочнице без доступа к интернету.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Аэрофотоснимки с разрешением около 0,3–1 м на пиксель. Esri требует ключ API ArcGIS из учётной записи ArcGIS Location Platform и согласие с условиями. Тайлы идут через этот MobSimLab, поэтому браузеры не видят ключ, и они не сохраняются.",
+  "esri.key": "Ключ API ArcGIS",
+  "esri.accept": "Я принимаю условия использования Esri для этого MobSimLab",
+  "esri.terms": "Условия Esri",
+  "esri.save": "Сохранить ключ",
+  "esri.remove": "Удалить ключ",
+  "esri.saved":
+    "Ключ, оканчивающийся на {end}, сохранил(а) {name} {date}. Esri World Imagery доступен в списке слоёв карты.",
+  "esri.none": "Ключ не сохранён: Esri World Imagery не предлагается.",
 } satisfies PluginCodeMessages;

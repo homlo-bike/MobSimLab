@@ -28,4 +28,15 @@ export const pluginCodeUz = {
   "pcode.saved": "Saqlandi.",
   "pcode.installIntro":
     ".msplugin faylini yuklang. MobSimLab uni tekshiradi va o‘rnatishdan oldin nima qo‘shishini ko‘rsatadi. Plaginlar transport turlari, vositalar, parametrlar va manbalar qo‘shishi hamda o‘z kodini (hisoblar, import, eksport va yorliq sahifalari) internetsiz qum qutisida ishga tushirishi mumkin.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Bir pikselga taxminan 0,3–1 m bo‘lgan aerofotosuratlar. Esri ArcGIS Location Platform hisobidan ArcGIS API kalitini va shartlariga roziligingizni talab qiladi. Plitkalar shu MobSimLab orqali keladi, shuning uchun brauzerlar kalitni hech qachon ko‘rmaydi va ular saqlanmaydi.",
+  "esri.key": "ArcGIS API kaliti",
+  "esri.accept": "Ushbu MobSimLab uchun Esri foydalanish shartlariga roziman",
+  "esri.terms": "Esri shartlari",
+  "esri.save": "Kalitni saqlash",
+  "esri.remove": "Kalitni olib tashlash",
+  "esri.saved":
+    "{end} bilan tugaydigan kalitni {name} {date} kuni saqladi. Esri World Imagery xarita qatlamlari tanlovida mavjud.",
+  "esri.none": "Kalit saqlanmagan: Esri World Imagery taklif qilinmaydi.",
 } satisfies PluginCodeMessages;

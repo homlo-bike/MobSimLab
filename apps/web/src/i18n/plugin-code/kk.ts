@@ -28,4 +28,15 @@ export const pluginCodeKk = {
   "pcode.saved": "Сақталды.",
   "pcode.installIntro":
     ".msplugin файлын жүктеңіз. MobSimLab оны тексеріп, орнатпас бұрын не қосатынын көрсетеді. Плагиндер көлік түрлерін, құралдарды, параметрлер мен дереккөздерді қосып, өз кодын (есептер, импорт, экспорт және қойынды беттері) интернетсіз құмсалғышта іске қоса алады.",
+  "esri.title": "Esri World Imagery",
+  "esri.intro":
+    "Бір пиксельге шамамен 0,3–1 м аэрофотосуреттер. Esri ArcGIS Location Platform тіркелгісінен ArcGIS API кілтін және шарттарын қабылдауды талап етеді. Тайлдар осы MobSimLab арқылы келеді, сондықтан браузерлер кілтті ешқашан көрмейді және олар сақталмайды.",
+  "esri.key": "ArcGIS API кілті",
+  "esri.accept": "Осы MobSimLab үшін Esri пайдалану шарттарын қабылдаймын",
+  "esri.terms": "Esri шарттары",
+  "esri.save": "Кілтті сақтау",
+  "esri.remove": "Кілтті жою",
+  "esri.saved":
+    "{end} деп аяқталатын кілтті {name} {date} күні сақтады. Esri World Imagery карта қабаттарын таңдауда бар.",
+  "esri.none": "Кілт сақталмаған: Esri World Imagery ұсынылмайды.",
 } satisfies PluginCodeMessages;

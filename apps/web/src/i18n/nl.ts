@@ -451,6 +451,7 @@ export const nl: Messages = {
   "map.aerial": "Luchtfoto",
   "map.aerialNote":
     "Satellietbeelden van ongeveer 10 m per pixel: goed om het grondgebruik te zien, te grof om spoor of stoepranden te tekenen.",
+  "map.imageryDate": "Opnamedatum",
   "map.projectLayers": "Projectlagen",
   "map.noLayers": "De lijnen en resultaten die je tekent verschijnen hier.",
   "map.group.streetLines": "Straatlijnen",

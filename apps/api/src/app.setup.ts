@@ -6,8 +6,16 @@ import helmet from "helmet";
 import type { AppConfig } from "./config/env";
 import { requestLogContext } from "./logging/context";
 
-/** The only other sites the browser loads from: the basemap tile servers. The static viewer's `_headers` matches. */
-export const MAP_ORIGINS = ["https://tiles.openfreemap.org", "https://tiles.maps.eox.at"];
+/**
+ * The only other sites the browser loads from: the basemap tile servers, including NASA GIBS for the bundled
+ * `org.mobsimlab.nasa-gibs` plugin (tools/plugins/check.py refuses a plugin basemap on a host not listed here).
+ * The static viewer's `_headers` matches.
+ */
+export const MAP_ORIGINS = [
+  "https://tiles.openfreemap.org",
+  "https://tiles.maps.eox.at",
+  "https://gibs.earthdata.nasa.gov",
+];
 
 /**
  * Purpose: HTTP middleware shared by the server and the tests: security headers and CSP (05 §3.4) and
@@ -27,7 +35,8 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
       contentSecurityPolicy: {
         directives: {
           "default-src": ["'self'"],
-          // Basemaps: OpenFreeMap styles and tiles, and EOX's Sentinel-2 aerial imagery (apps/web/src/map/basemaps.ts).
+          // Basemaps: OpenFreeMap styles and tiles, EOX's Sentinel-2 aerial imagery (apps/web/src/map/basemaps.ts) and
+          // NASA GIBS imagery from the bundled plugin.
           "img-src": ["'self'", "data:", "blob:", ...MAP_ORIGINS],
           "connect-src": ["'self'", ...MAP_ORIGINS],
           "worker-src": ["'self'", "blob:"],
