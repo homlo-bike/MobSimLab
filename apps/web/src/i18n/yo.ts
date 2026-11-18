@@ -12,6 +12,7 @@ import { mslabYo } from "./mslab/yo";
 import { workspaceUiYo } from "./workspace-ui/yo";
 import { pluginCodeYo } from "./plugin-code/yo";
 import { populationYo } from "./population/yo";
+import { resultsYo } from "./results/yo";
 import { pluginsYo } from "./plugins/yo";
 import type { Messages } from "./en";
 
@@ -525,6 +526,7 @@ export const yo: Messages = {
   ...workspaceUiYo,
   ...pluginCodeYo,
   ...populationYo,
+  ...resultsYo,
   ...roadYo,
   ...calendarYo,
   ...pluginsYo,

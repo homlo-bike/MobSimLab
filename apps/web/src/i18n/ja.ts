@@ -12,6 +12,7 @@ import { mslabJa } from "./mslab/ja";
 import { workspaceUiJa } from "./workspace-ui/ja";
 import { pluginCodeJa } from "./plugin-code/ja";
 import { populationJa } from "./population/ja";
+import { resultsJa } from "./results/ja";
 import { pluginsJa } from "./plugins/ja";
 import type { Messages } from "./en";
 
@@ -520,6 +521,7 @@ export const ja: Messages = {
   ...workspaceUiJa,
   ...pluginCodeJa,
   ...populationJa,
+  ...resultsJa,
   ...roadJa,
   ...calendarJa,
   ...pluginsJa,

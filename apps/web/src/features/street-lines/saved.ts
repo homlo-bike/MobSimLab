@@ -1,5 +1,6 @@
 /** A street line as the project saves it (drawing kind "street-lines"). */
 import type { StreetLineInput } from "../journey-planner/network";
+import { inputKey } from "../../projects/inputKey";
 import { fullTiming, MODES, type Timing } from "./modes";
 import { tileX, tileY } from "./tiles";
 import type { LineView, LonLat, PointKind, RoutingRules, VehicleProfile } from "./types";
@@ -33,10 +34,40 @@ export interface SavedStreetLine {
   /** The terminals the depot runs serve, as indexes into `points`. */
   depotStops: { out?: number; in?: number };
   /**
-   * The route as the tool last computed it, so the journey planner can ride the line before the tool opens.
-   * The tool routes the points again from the streets when it opens.
+   * The route as the tool last worked it out, saved with the project: the journey planner, Tables and the tool
+   * itself show it as it is. The tool routes the points again only when the planner changes the line, when
+   * `routedWith` no longer matches what the route depends on and the planner recalculates it, or for a line
+   * saved before routes had a fingerprint.
    */
   view: LineView;
+  /** Fingerprint of what `view` was routed from (`routeKey`); absent on lines saved before it was kept. */
+  routedWith?: string;
+}
+
+/** What a street line's route depends on besides the line itself, as the tool applies it (JSON texts). */
+export interface RouteSurroundings {
+  /** The street setups of the GIS tab. */
+  setups: string;
+  /** The project's delays in traffic; "" for the library's. */
+  delays: string;
+  /** The gates of the shared depot the line uses; "" without one, "gone" for a deleted one. */
+  gates: string;
+  /** Fingerprint of the railway topology for level crossings; "" without one. */
+  crossings: string;
+}
+
+/** Purpose: the fingerprint of everything a line's route is worked out from. */
+export function routeKey(
+  line: Pick<SavedStreetLine, "profile" | "rules" | "points" | "depot">,
+  around: RouteSurroundings,
+): string {
+  return inputKey({
+    profile: line.profile,
+    rules: line.rules,
+    points: line.points.map((p) => [p.lonlat, p.kind]),
+    depot: line.depot,
+    around,
+  });
 }
 
 /** The project's street lines; the street line tool edits one at a time. */

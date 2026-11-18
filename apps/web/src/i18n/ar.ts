@@ -12,6 +12,7 @@ import { mslabAr } from "./mslab/ar";
 import { workspaceUiAr } from "./workspace-ui/ar";
 import { pluginCodeAr } from "./plugin-code/ar";
 import { populationAr } from "./population/ar";
+import { resultsAr } from "./results/ar";
 import { pluginsAr } from "./plugins/ar";
 import type { Messages } from "./en";
 
@@ -516,6 +517,7 @@ export const ar: Messages = {
   ...workspaceUiAr,
   ...pluginCodeAr,
   ...populationAr,
+  ...resultsAr,
   ...roadAr,
   ...calendarAr,
   ...pluginsAr,

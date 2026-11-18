@@ -26,6 +26,7 @@ import {
 } from "../src/features/walk/model";
 import type { CoverageRequest, SpacingRequest, WalkEngine } from "../src/features/walk/types";
 import { WalkAnalysis } from "../src/features/walk/WalkAnalysis";
+import type { ResultsApi } from "../src/projects/results";
 
 /** A two-way line of three stops (one via point) at 50° N, 300 m apart, with one direction. */
 function view(): LineView {
@@ -265,6 +266,65 @@ describe("WalkAnalysis", () => {
     expect(req.street_cells_m).toBeNull();
     // On-foot distances join the flagged pairs once the walk network is loaded.
     expect(await screen.findByText(/150 m on foot/)).toBeTruthy();
+  });
+
+  it("saves the coverage and the spacing on foot with the project, and shows them on opening", async () => {
+    const log: Log = { spacing: [], xml: [] };
+    const store = new Map<string, { value: unknown; inputs: string; computedAt: string }>();
+    const results: ResultsApi = {
+      load: vi.fn(async (kind) => (store.get(kind) as never) ?? null),
+      save: vi.fn(async (kind, value, inputs) => {
+        store.set(kind, { value, inputs, computedAt: "2026-11-18T17:00:00.000Z" });
+        return "2026-11-18T17:00:00.000Z";
+      }),
+    };
+    const fetchTile = vi.fn(async (x: number, y: number) => `<osm tile="${x}/${y}"/>`);
+    render(
+      <WalkAnalysis
+        map={null}
+        streetLines={DOC}
+        railway={null}
+        loadWalk={fakeEngine(log)}
+        loadRail={noRail}
+        fetchTile={fetchTile}
+        fetchPeople={async () => GRID}
+        results={results}
+        canSave
+      />,
+    );
+    fireEvent.click(await screen.findByRole("button", { name: "Calculate walk coverage" }));
+    expect(await screen.findByText(/75 % of the 2,000 residents/)).toBeTruthy();
+    expect(await screen.findByText(/150 m on foot/)).toBeTruthy();
+    expect(store.has("walk-coverage")).toBe(true);
+    expect(store.has("stop-spacing")).toBe(true);
+    cleanup();
+
+    // Opened again: both show as saved, nothing is loaded or worked out again.
+    const again: Log = { spacing: [], xml: [] };
+    const tiles = vi.fn(async () => "<osm/>");
+    render(
+      <WalkAnalysis
+        map={null}
+        streetLines={DOC}
+        railway={null}
+        loadWalk={fakeEngine(again)}
+        loadRail={noRail}
+        fetchTile={tiles}
+        fetchPeople={async () => GRID}
+        results={results}
+        canSave
+      />,
+    );
+    expect(await screen.findByText(/75 % of the 2,000 residents/)).toBeTruthy();
+    expect(screen.getByText(/Saved with the project, worked out/)).toBeTruthy();
+    expect(await screen.findByText(/150 m on foot/)).toBeTruthy();
+    expect(tiles).not.toHaveBeenCalled();
+    expect(again.coverage).toBeUndefined();
+    expect(again.spacing).toHaveLength(0);
+
+    // A changed walk rule dates the saved coverage.
+    fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "10" } });
+    expect(await screen.findByText(/Out of date/)).toBeTruthy();
   });
 
   it("shows how far the calculation is, and cancels it", async () => {

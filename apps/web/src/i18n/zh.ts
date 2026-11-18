@@ -12,6 +12,7 @@ import { mslabZh } from "./mslab/zh";
 import { workspaceUiZh } from "./workspace-ui/zh";
 import { pluginCodeZh } from "./plugin-code/zh";
 import { populationZh } from "./population/zh";
+import { resultsZh } from "./results/zh";
 import { pluginsZh } from "./plugins/zh";
 import type { Messages } from "./en";
 
@@ -505,6 +506,7 @@ export const zh: Messages = {
   ...workspaceUiZh,
   ...pluginCodeZh,
   ...populationZh,
+  ...resultsZh,
   ...roadZh,
   ...calendarZh,
   ...pluginsZh,

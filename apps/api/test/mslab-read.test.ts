@@ -81,7 +81,7 @@ describe("mslab reader", () => {
   });
 
   it("refuses files from a newer MobSimLab", async () => {
-    for (const v of ["1.2.0", "2.0.0"]) {
+    for (const v of ["1.3.0", "2.0.0"]) {
       const files = resign(folder(join(FIXTURES, "1.0.0")), (m) => (m.formatVersion = v));
       await refused(writeZip(files), /newer MobSimLab/);
     }
@@ -112,6 +112,33 @@ describe("mslab reader", () => {
       writeZip(resign(unlisted, (m) => (m.formatVersion = "1.1.0"))),
       /holds map data but its manifest says it does not/,
     );
+  });
+
+  it("reads a file with saved results (format 1.2) and hands them over", async () => {
+    const files = folder(join(FIXTURES, "1.0.0"));
+    const result = {
+      kind: "noise",
+      inputs: "0123456789abcdef",
+      computedAt: "2026-11-18T17:00:00.000Z",
+      doc: { version: 1, value: { result: { kind: "done" } } },
+    };
+    files.set("results/noise.json", Buffer.from(JSON.stringify(result)));
+    const r = await read(writeZip(resign(files, (m) => (m.formatVersion = "1.2.0"))));
+    expect(r).toMatchObject({
+      formatVersion: "1.2.0",
+      results: [{ kind: "noise", file: "result-noise.json" }],
+      skipped: [],
+    });
+
+    const wrong = folder(join(FIXTURES, "1.0.0"));
+    wrong.set("results/noise.json", Buffer.from(JSON.stringify({ ...result, kind: "walk-coverage" })));
+    await refused(
+      writeZip(resign(wrong, (m) => (m.formatVersion = "1.2.0"))),
+      /holds a result of kind "walk-coverage"/,
+    );
+    const bad = folder(join(FIXTURES, "1.0.0"));
+    bad.set("results/noise.json", Buffer.from(JSON.stringify({ ...result, inputs: "not a fingerprint!" })));
+    await refused(writeZip(resign(bad, (m) => (m.formatVersion = "1.2.0"))), /results\/noise\.json/);
   });
 
   it("refuses changed, missing and extra files", async () => {

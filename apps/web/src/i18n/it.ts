@@ -12,6 +12,7 @@ import { mslabIt } from "./mslab/it";
 import { workspaceUiIt } from "./workspace-ui/it";
 import { pluginCodeIt } from "./plugin-code/it";
 import { populationIt } from "./population/it";
+import { resultsIt } from "./results/it";
 import { pluginsIt } from "./plugins/it";
 import type { Messages } from "./en";
 
@@ -528,6 +529,7 @@ export const it: Messages = {
   ...workspaceUiIt,
   ...pluginCodeIt,
   ...populationIt,
+  ...resultsIt,
   ...roadIt,
   ...calendarIt,
   ...pluginsIt,

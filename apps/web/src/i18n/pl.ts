@@ -12,6 +12,7 @@ import { mslabPl } from "./mslab/pl";
 import { workspaceUiPl } from "./workspace-ui/pl";
 import { pluginCodePl } from "./plugin-code/pl";
 import { populationPl } from "./population/pl";
+import { resultsPl } from "./results/pl";
 import { pluginsPl } from "./plugins/pl";
 import type { Messages } from "./en";
 
@@ -527,6 +528,7 @@ export const pl: Messages = {
   ...workspaceUiPl,
   ...pluginCodePl,
   ...populationPl,
+  ...resultsPl,
   ...roadPl,
   ...calendarPl,
   ...pluginsPl,

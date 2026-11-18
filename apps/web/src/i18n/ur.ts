@@ -12,6 +12,7 @@ import { mslabUr } from "./mslab/ur";
 import { workspaceUiUr } from "./workspace-ui/ur";
 import { pluginCodeUr } from "./plugin-code/ur";
 import { populationUr } from "./population/ur";
+import { resultsUr } from "./results/ur";
 import { pluginsUr } from "./plugins/ur";
 import type { Messages } from "./en";
 
@@ -528,6 +529,7 @@ export const ur: Messages = {
   ...workspaceUiUr,
   ...pluginCodeUr,
   ...populationUr,
+  ...resultsUr,
   ...roadUr,
   ...calendarUr,
   ...pluginsUr,

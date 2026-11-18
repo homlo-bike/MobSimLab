@@ -26,6 +26,7 @@ import { PopulationLayersController } from "./population/layers.controller";
 import { ProjectAreaController } from "./projects/area.controller";
 import { AreaFactsService } from "./projects/area-facts";
 import { ProjectAreaService } from "./projects/area.service";
+import { ProjectResultsController, ProjectResultsService } from "./projects/results";
 import { PopulationLayersModule } from "./population/layers.module";
 import { PopulationModule } from "./population/population.module";
 import { EconomyModule } from "./economy/economy.module";
@@ -87,6 +88,7 @@ export class AppModule {
         MslabController,
         PopulationLayersController,
         ProjectAreaController,
+        ProjectResultsController,
       ],
       providers: [
         AuditService,
@@ -104,6 +106,7 @@ export class AppModule {
         MslabService,
         MslabMapService,
         ProjectAreaService,
+        ProjectResultsService,
         AreaFactsService,
         ToolRunner,
         { provide: APP_GUARD, useClass: AccessGuard },

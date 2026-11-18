@@ -50,6 +50,8 @@ const json = (body: unknown, status = 200) =>
   new Response(JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 const refuse = (status: number, message: string) => json({ message, statusCode: status }, status);
 const NOT_HERE = "This is not available in the static viewer.";
+/** Where the climate comes from (apps/api/src/calendar/calendar.controller.ts `CLIMATE_SOURCE`). */
+const CLIMATE_SOURCE = { name: "Open-Meteo", url: "https://open-meteo.com/", licence: "CC BY 4.0" };
 
 /**
  * Purpose: answer the app's API requests from the static project files. Inputs: the browser's own fetch (for the
@@ -272,6 +274,30 @@ export function staticFetch(base: typeof fetch): typeof fetch {
         }
         return json({ run: { ...summary(r), progress: r.progress ?? null, result: r.result ?? null } });
       }
+      // Results the project's tools worked out (format 1.2), as the API answers them; the body is plain JSON.
+      if (rest === "/results") {
+        const kinds = (await names(e))
+          .map((n) => /^results\/([a-z][a-z0-9-]{1,39})\.json$/.exec(n)?.[1])
+          .filter((x): x is string => Boolean(x));
+        const files = await Promise.all(kinds.map((k) => file<Json>(at(e, `results/${k}.json`))));
+        return json({
+          results: files
+            .filter((f): f is Json => f !== null)
+            .map((f) => ({ kind: f.kind, inputs: f.inputs, computedAt: f.computedAt, bytes: 0 })),
+        });
+      }
+      const result = /^\/results\/([a-z][a-z0-9-]{1,39})$/.exec(rest);
+      if (result) {
+        const f = await file<Json>(at(e, `results/${result[1]}.json`));
+        if (!f) return refuse(404, "Nothing saved");
+        return new Response(JSON.stringify(f.doc), {
+          headers: {
+            "Content-Type": "application/octet-stream",
+            "X-Inputs": String(f.inputs ?? ""),
+            "X-Computed-At": String(f.computedAt ?? ""),
+          },
+        });
+      }
       if (rest === "/comments") return json({ comments: [] });
       if (rest.startsWith("/value-history")) return json({ history: [] });
       return refuse(404, NOT_HERE);
@@ -296,10 +322,37 @@ export function staticFetch(base: typeof fetch): typeof fetch {
       const w = e?.map ? await file<Json>(at(e, "map/water.json")) : null;
       return w ? json(w) : refuse(404, NOT_HERE);
     }
-    if (path.startsWith("/api/economy/") || path.startsWith("/api/benefits/")) {
+    if (
+      path.startsWith("/api/economy/") ||
+      path.startsWith("/api/benefits/") ||
+      path.startsWith("/api/calendar/")
+    ) {
       const e = await current();
       const ref = e?.map ? await file<Json>(at(e, "map/reference.json")) : null;
-      const hit = ref?.[`${path}${url.search}`] ?? ref?.[path];
+      // The facts the project kept, by the key the API keeps them under.
+      const facts = (ref?.["@facts"] ?? null) as Json | null;
+      const q = url.searchParams;
+      const key = factKeyOf(path, q);
+      if (facts && key && facts[key] !== undefined) {
+        const v = facts[key];
+        // As apps/api answers them (economy, benefits and calendar controllers).
+        if (path === "/api/economy/countries") return json({ countries: v });
+        if (path === "/api/calendar/holidays")
+          return json({
+            country: q.get("country")?.toUpperCase(),
+            year: Number(q.get("year")),
+            holidays: v,
+            source: { name: "Nager.Date", url: "https://date.nager.at/" },
+          });
+        if (path === "/api/calendar/climate") return json({ ...(v as Json), source: CLIMATE_SOURCE });
+        if (path === "/api/economy/indicators" || path === "/api/benefits/indicators") return json(v);
+      }
+      // The file keys answers by path and query without the open project, which the app adds to keep facts.
+      const rq = new URLSearchParams(url.search);
+      rq.delete("project");
+      rq.delete("osm");
+      const search = rq.size ? `?${rq.toString()}` : "";
+      const hit = ref?.[`${path}${search}`] ?? ref?.[path];
       return hit === undefined ? refuse(404, NOT_HERE) : json(hit);
     }
     return refuse(404, NOT_HERE);
@@ -328,6 +381,43 @@ export function staticFetch(base: typeof fetch): typeof fetch {
 }
 
 type Bbox = [number, number, number, number];
+
+/**
+ * Purpose: the key a fact is kept under for the project (apps/api/src/projects/data-cache.ts `factKey`), for a
+ * request the app makes; null for a request that is not a kept fact.
+ */
+export function factKeyOf(path: string, q: URLSearchParams): string | null {
+  const num = (k: string) => {
+    const v = q.get(k);
+    return v === null || v === "" || Number.isNaN(Number(v)) ? null : Number(v);
+  };
+  const lon = num("lon");
+  const lat = num("lat");
+  const code = q.get("code");
+  switch (path) {
+    case "/api/economy/country-at":
+      return lon === null || lat === null ? null : `country-at/${lon.toFixed(4)},${lat.toFixed(4)}`;
+    case "/api/economy/countries":
+      return "economy-countries";
+    case "/api/economy/indicators":
+      return code ? `economy/${code.toUpperCase()}/${num("base") ?? 2023}` : null;
+    case "/api/benefits/indicators":
+      return code ? `benefit-indicators/${code.toUpperCase()}` : null;
+    case "/api/benefits/osm-areas":
+      return lon === null || lat === null
+        ? null
+        : `osm-areas/${lon.toFixed(6)},${lat.toFixed(6)}${q.get("wide") === "1" ? "/wide" : ""}`;
+    case "/api/calendar/holidays": {
+      const country = q.get("country");
+      const year = num("year");
+      return country && year !== null ? `holidays/${country.toUpperCase()}/${year}` : null;
+    }
+    case "/api/calendar/climate":
+      return lon === null || lat === null ? null : `climate/${lat.toFixed(1)},${lon.toFixed(1)}`;
+    default:
+      return null;
+  }
+}
 
 /** Purpose: the people of a box on the saved grids' cells (nearest saved cell for each), as the API answers. */
 export function cut(grids: Grid[], bbox: Bbox): Grid {

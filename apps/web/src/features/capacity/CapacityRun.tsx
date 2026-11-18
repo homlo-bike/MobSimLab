@@ -24,6 +24,9 @@ import {
 } from "./ridership";
 import { type DemandRidership, demandStopBoardings } from "../demand/ridership";
 import { SavedRunBar, SavedRunsList } from "./SavedRuns";
+import { hashText, inputKey } from "../../projects/inputKey";
+import { type ResultsApi, useSavedResult } from "../../projects/results";
+import { SavedResultNotice } from "../../projects/SavedResultNotice";
 import {
   circuit,
   runStreetLine,
@@ -44,6 +47,23 @@ import type {
 export { explain, practicalMaximum, VERDICTS, verdictText } from "./capacityText";
 
 const NO_STREETS: readonly SavedStreetLine[] = [];
+
+/** The last test run in this browser, as the project keeps it, with the choices it was run with. */
+interface SavedTest {
+  run: Run;
+  lines: LineState[];
+  notes: string[];
+  streetResults: StreetLineResult[];
+  loads: Record<string, LineLoad>;
+  choices: {
+    source: "example" | "drawn" | "files";
+    period: string;
+    from: string;
+    to: string;
+    sweep: boolean;
+    withLoads: boolean;
+  };
+}
 const NO_BOARDINGS: Boardings = {};
 const DRAWN_PROBLEMS: Record<DrawnProblem, true> = { noTrack: true, noLines: true, errors: true };
 
@@ -76,6 +96,8 @@ interface Props {
   canRun?: boolean;
   /** Milliseconds between checks of runs that are still going (tests make it short). */
   pollMs?: number;
+  /** The project's saved results: the last test run in this browser shows again on opening. */
+  results?: ResultsApi | null;
 }
 
 /**
@@ -102,6 +124,7 @@ export function CapacityRun({
   runs = null,
   canRun = false,
   pollMs = 2000,
+  results = null,
 }: Props) {
   const { t, language } = useI18n();
   const drawn = drawnProblem(railway);
@@ -292,7 +315,74 @@ export function CapacityRun({
     setLoads(out);
   };
 
+  // What a test run works from: the network, the period and the settings. The last run in this browser is saved
+  // with the project and shows again on opening; it is out of date once any of these change.
+  const networkKey =
+    source === "example"
+      ? "example"
+      : source === "drawn"
+        ? hashText(JSON.stringify([railway, streetLines]))
+        : topology && linesFile
+          ? hashText(`${topology.name}|${topology.text}|${linesFile.text}`)
+          : null;
+  const capInputs =
+    networkKey === null
+      ? null
+      : inputKey({
+          source,
+          network: networkKey,
+          period,
+          from,
+          to,
+          sweep,
+          withLoads,
+          settings,
+          loads: withLoads
+            ? hashText(JSON.stringify([ridership?.doc ?? null, demandRidership, ownBoardings]))
+            : null,
+        });
+  const kept = useSavedResult<SavedTest>(results, "capacity-test", capInputs, canRun);
+  const [finished, setFinished] = useState<string | null>(null);
+  useEffect(() => {
+    if (!finished || !run) return;
+    kept.save(
+      {
+        run,
+        lines,
+        notes,
+        streetResults,
+        loads,
+        choices: { source, period, from, to, sweep, withLoads },
+      },
+      finished,
+    );
+    setFinished(null);
+    // Saved once, with the state the finished run left.
+  }, [finished]);
+  const restored = useRef(false);
+  useEffect(() => {
+    const s = kept.saved;
+    if (!s || restored.current) return;
+    restored.current = true;
+    if (run || busy) return;
+    const c = s.value.choices;
+    setSource(c.source);
+    setPeriod(c.period);
+    setFrom(c.from);
+    setTo(c.to);
+    setSweep(c.sweep);
+    setWithLoads(c.withLoads);
+    setRun(s.value.run);
+    setLines(s.value.lines);
+    setNotes(s.value.notes);
+    setStreetResults(s.value.streetResults);
+    setLoads(s.value.loads);
+    // Restored once, when the saved run has loaded.
+  }, [kept.saved]);
+
   const start = async () => {
+    const runKey = capInputs;
+    let failed = false;
     const w = periodWindow();
     if (!w) {
       setError(t("capacity.badPeriod"));
@@ -400,11 +490,13 @@ export function CapacityRun({
         }
       }
     } catch (err) {
+      failed = true;
       if (alive()) setError(err instanceof Error ? err.message : String(err));
     } finally {
       if (alive()) {
         setStatus(null);
         setProgress(null);
+        if (!failed && runKey) setFinished(runKey);
       }
     }
   };
@@ -599,6 +691,14 @@ export function CapacityRun({
           </button>
         )}
       </div>
+      {run && !viewing && kept.saved?.value.run === run && kept.state && (
+        <SavedResultNotice
+          state={kept.state}
+          computedAt={kept.saved.computedAt}
+          onRecalculate={ready && !busy ? () => void start() : null}
+          error={kept.error}
+        />
+      )}
       {runs && canRun && (
         <div className="space-y-1">
           <button

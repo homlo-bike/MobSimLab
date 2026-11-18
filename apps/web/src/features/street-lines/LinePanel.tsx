@@ -124,6 +124,8 @@ interface Props {
   crossingSource?: string | null;
   status: string | null;
   error: string | null;
+  /** Whether the saved route shown is out of date, with Recalculate; null when it is not. */
+  routeNotice?: React.ReactNode;
   actions: PanelActions;
   /** Facilities of the stops by point id. */
   stopFeatures?: Record<number, string[]>;
@@ -402,6 +404,7 @@ export function LinePanel(props: Props) {
       )}
       {view.points.length >= 2 && <Reliability view={view} />}
 
+      {props.routeNotice}
       {(props.status || props.error) && (
         <p
           className={`rounded px-2 py-1 text-xs ${props.error ? "bg-red-50 text-red-700" : "bg-slate-100 text-slate-700"}`}

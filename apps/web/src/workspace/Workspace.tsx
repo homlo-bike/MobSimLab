@@ -460,6 +460,10 @@ export function Workspace({
     () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
     [api, projectKey],
   );
+  const results = useMemo(
+    () => (projectKey && typeof api.results === "function" ? api.results(projectKey) : null),
+    [api, projectKey],
+  );
   const calendarRuns = useMemo(
     () => (projectKey && typeof api.calendarRuns === "function" ? api.calendarRuns(projectKey) : null),
     [api, projectKey],
@@ -1142,6 +1146,7 @@ export function Workspace({
                 onChange={(next) => drawings.set("regions", { regions: next } satisfies RegionsDoc)}
                 editable={editable}
                 currency={currency?.code ?? costInfo?.currency ?? null}
+                area={editable && typeof api.area === "function" ? api.area(projectId) : null}
               />
             </Suspense>
           )}
@@ -1462,6 +1467,8 @@ export function Workspace({
                           onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
                           currency={currency}
                           onEstimate={onCostEstimate}
+                          results={results}
+                          canSave={editable}
                         />
                       </LoadingScreen>
                     </div>
@@ -1483,6 +1490,8 @@ export function Workspace({
                           costs={costInfo}
                           onEstimate={onBenefitEstimate}
                           ridership={usedRidership}
+                          results={results}
+                          canSave={editable}
                         />
                       </LoadingScreen>
                     </div>
@@ -1567,6 +1576,8 @@ export function Workspace({
                           doc={drawings.doc<ScenariosDoc>("scenarios")}
                           currency={currency}
                           onChange={editable ? (d) => drawings.set("scenarios", d) : undefined}
+                          results={results}
+                          canSave={editable}
                         />
                       </LoadingScreen>
                     </div>
@@ -1724,6 +1735,7 @@ export function Workspace({
                   <CapacityRun
                     demandRidership={usedRidership}
                     runs={runs}
+                    results={results}
                     canRun={editable}
                     railway={railway}
                     streetLines={streetLines?.lines}
@@ -1805,6 +1817,8 @@ export function Workspace({
                       streetLines={streetLines}
                       railway={railway}
                       preferences={preferences?.values}
+                      results={results}
+                      canSave={editable}
                     />
                   </LoadingScreen>
                 </div>
@@ -1822,6 +1836,8 @@ export function Workspace({
                       preferences={preferences?.values}
                       scenarios={drawings.doc<ScenariosDoc>("scenarios")}
                       roadRuns={roadRuns}
+                      results={results}
+                      canSave={editable}
                     />
                   </LoadingScreen>
                 </div>

@@ -768,7 +768,7 @@ export const editorsEn = {
   "noise.mapIndicator": "Noise map indicator",
   "noise.screen": "Screen with OpenStreetMap buildings",
   "noise.compute": "Compute noise map",
-  "noise.computeAgain": "Compute again",
+  "noise.computeAgain": "Recalculate",
   "noise.mapLegend": "Noise map legend",
   "noise.table": "Buildings and residents by noise band",
   "noise.tableCaption":

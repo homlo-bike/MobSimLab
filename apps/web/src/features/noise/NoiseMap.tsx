@@ -1,5 +1,5 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { JobProgress } from "../../shell/JobProgress";
 import { formatInt, tNow, useI18n } from "../../i18n/i18n";
 import { loadRailEngine } from "../railways/engine";
@@ -22,6 +22,10 @@ import { coverPoints, type Design, designSources, hasLines, type RoadRunInput } 
 import { drawNoise, removeNoise } from "./mapLayer";
 import { NoiseResult } from "./NoiseResult";
 import { type Computed, type Difference, type Done, FROM_DB } from "./result";
+import { type NoiseChoices, noisePreferences, type SavedNoise } from "./saved";
+import { inputKey } from "../../projects/inputKey";
+import { type ResultsApi, useSavedResult } from "../../projects/results";
+import { SavedResultNotice } from "../../projects/SavedResultNotice";
 import type { SavedPluginLine } from "../../kits/saved";
 import { pluginSources } from "./sources";
 import { buildingsBbox, fetchPopulation, type PopulationFetcher, type PopulationSource } from "./population";
@@ -59,6 +63,10 @@ interface Props {
   scenarios?: ScenariosDoc | null;
   /** The project's saved road runs, for the simulated input. */
   roadRuns?: RoadRunsApi | null;
+  /** The project's saved results: the noise map shows on opening, and each new one replaces it. */
+  results?: ResultsApi | null;
+  /** The planner may replace the saved noise map (Owners and Editors). */
+  canSave?: boolean;
   /** Tests inject these. */
   runNoise?: NoiseRunner;
   loadRail?: RailEngineLoader;
@@ -136,6 +144,8 @@ export function NoiseMap({
   preferences,
   scenarios,
   roadRuns,
+  results = null,
+  canSave = false,
   runNoise = workerRunner,
   loadRail = loadRailEngine,
   fetchTile = fetchBuildingTile,
@@ -188,6 +198,51 @@ export function NoiseMap({
     [map],
   );
 
+  // What the noise map is worked out from: the choices above and the designs, plugin lines and noise
+  // preferences they use. A saved map worked out from other inputs is out of date.
+  const choices: NoiseChoices = { level, mainId, otherId, runIds, withBuildings, withTerrain };
+  const choicesKey = JSON.stringify(choices);
+  const noisePrefs = JSON.stringify(noisePreferences(preferences));
+  const otherDesign = other?.design ?? null;
+  const inputs = useMemo(
+    () =>
+      inputKey({
+        choices: JSON.parse(choicesKey) as NoiseChoices,
+        main: main.design,
+        other: otherDesign,
+        plugins: mainPoints.length || otherPoints.length ? pluginLines : null,
+        prefs: noisePrefs,
+      }),
+    // The designs are the saved documents, the same objects until they change.
+    [
+      choicesKey,
+      main.design.streetLines,
+      main.design.railway,
+      otherDesign?.streetLines,
+      otherDesign?.railway,
+      pluginLines,
+      noisePrefs,
+    ],
+  );
+  const kept = useSavedResult<SavedNoise>(results, "noise", inputs, canSave);
+  // The noise map saved with the project shows on opening, with the choices it was worked out with, until the
+  // planner recalculates it.
+  const shownSaved = useRef(false);
+  useEffect(() => {
+    const s = kept.saved;
+    if (!s || shownSaved.current) return;
+    shownSaved.current = true;
+    if (status.kind !== "idle") return;
+    const c = s.value.choices;
+    setLevel(c.level);
+    setMainId(c.mainId);
+    setOtherId(c.otherId);
+    setRunIds(c.runIds);
+    setWithBuildings(c.withBuildings);
+    setWithTerrain(c.withTerrain);
+    setStatus(s.value.result);
+  }, [kept.saved, status.kind]);
+
   // The finished road runs, once the simulated input is chosen.
   useEffect(() => {
     if (level !== "simulated" || runs || !roadRuns) return;
@@ -232,6 +287,9 @@ export function NoiseMap({
     run.current?.abort.abort();
     run.current = { abort, skip };
     const signal = abort.signal;
+    // The fingerprint of what this run works from, kept with its result.
+    const runInputs = inputs;
+    const runChoices = choices;
     const steps = 2 + (withBuildings ? 2 : 0) + (withTerrain ? 1 : 0) + (other ? 1 : 0);
     let index = 0;
     const step = (text: string, extra: Partial<Busy> = {}) => {
@@ -356,7 +414,7 @@ export function NoiseMap({
         difference = differenceOf(a.view, a.levels ?? null, r.levels ?? null);
         if (!difference) notes.push(tNow("noise.noDifference"));
       }
-      setStatus({
+      const done: Done = {
         kind: "done",
         level,
         main: { name: main.name, view: a.view, images: a.images, levels: a.levels ?? null },
@@ -365,7 +423,10 @@ export function NoiseMap({
         buildings,
         notes,
         people,
-      });
+      };
+      setStatus(done);
+      // Saved with the project, replacing the one before, so it shows again next time.
+      kept.save({ result: done, choices: runChoices }, runInputs);
     } catch (err) {
       if (signal.aborted) setStatus({ kind: "cancelled" });
       else setStatus({ kind: "error", text: err instanceof Error ? err.message : String(err) });
@@ -523,6 +584,14 @@ export function NoiseMap({
         {t(status.kind === "done" ? "noise.computeAgain" : "noise.compute")}
       </button>
       {!ready && <p className="text-xs text-slate-500">{t("noise.drawFirst")}</p>}
+      {status.kind === "done" && kept.saved?.value.result === status && kept.state && (
+        <SavedResultNotice
+          state={kept.state}
+          computedAt={kept.saved.computedAt}
+          onRecalculate={ready && !missingRun ? () => void compute() : null}
+          error={kept.error}
+        />
+      )}
       {/* The bar and then the result sit below the options: keep them in view when a run starts and ends. */}
       <div ref={progressRef} className="contents" />
       {status.kind === "busy" && (

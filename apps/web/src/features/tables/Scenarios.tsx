@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { inputKey } from "../../projects/inputKey";
+import { type ResultsApi, useLiveResult } from "../../projects/results";
 import { card, fmtMoney, fmtQty, num, td, th } from "../costs/CostTables";
 import type { Network, RailEngineLoader } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
@@ -28,6 +30,10 @@ interface Props {
   currency?: ProjectCurrency | null;
   /** Tests inject this. */
   loadRail?: RailEngineLoader;
+  /** The project's saved results: the figures of the saved scenarios. */
+  results?: ResultsApi | null;
+  /** The planner may replace the saved results (Owners and Editors). */
+  canSave?: boolean;
 }
 
 const int = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
@@ -91,6 +97,8 @@ export function Scenarios({
   onChange,
   currency = null,
   loadRail,
+  results = null,
+  canSave = false,
 }: Props) {
   const { t, language } = useI18n();
   const prefs = preferences?.values;
@@ -100,7 +108,6 @@ export function Scenarios({
   const list = doc?.scenarios ?? [];
   const [name, setName] = useState("");
   const [current, setCurrent] = useState<Figures | null>(null);
-  const [saved, setSaved] = useState<Record<string, Figures>>({});
   const [error, setError] = useState<string | null>(null);
 
   const currentKey = JSON.stringify([railway, streetLines, prefs]);
@@ -115,18 +122,27 @@ export function Scenarios({
     };
   }, [currentKey, loadRail]);
 
+  // The figures of the saved scenarios (every railway built by the engine) are saved with the project and
+  // worked out again when the scenarios or the preferences change.
   const savedKey = JSON.stringify([list.map((s) => s.id), prefs]);
-  useEffect(() => {
-    let live = true;
-    (async () => {
+  const savedInputs = useMemo(
+    () => (list.length ? inputKey({ scenarios: list, prefs: prefs ?? null }) : null),
+    // The scenario ids and the preferences stand for the scenarios: a scenario is never edited, only replaced.
+    [savedKey],
+  );
+  const measured = useLiveResult<Record<string, Figures>>(
+    results,
+    "scenario-measures",
+    savedInputs,
+    canSave,
+    async () => {
       const out: Record<string, Figures> = {};
       for (const s of list) out[s.id] = await measure(s.railway, s.streetLines, prefs, loadRail);
-      if (live) setSaved(out);
-    })().catch((e: unknown) => live && setError(e instanceof Error ? e.message : String(e)));
-    return () => {
-      live = false;
-    };
-  }, [savedKey, loadRail]);
+      return out;
+    },
+  );
+  const saved = measured.value ?? {};
+  const shownError = error ?? measured.error;
 
   const full = list.length >= MAX_SCENARIOS;
   const save = () => {
@@ -170,9 +186,9 @@ export function Scenarios({
           {full && <span className="text-sm text-slate-600">{t("scn.full", { max: MAX_SCENARIOS })}</span>}
         </form>
       )}
-      {error && (
+      {shownError && (
         <p role="alert" className="mt-3 text-sm text-red-700">
-          {t("scn.error", { error })}
+          {t("scn.error", { error: shownError })}
         </p>
       )}
       {list.length === 0 ? (

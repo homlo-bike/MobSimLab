@@ -1,7 +1,7 @@
 import { BadRequestException, Controller, Get, HttpException, Optional, Query, Req } from "@nestjs/common";
 import type { MslRequest } from "../auth/session.service";
 import { ProjectGate } from "../geodata/project-gate";
-import { factKey, ProjectDataCache } from "../projects/data-cache";
+import { factKey, keptFact, ProjectDataCache } from "../projects/data-cache";
 import { z } from "zod";
 import { OverpassError } from "../gateway/overpass.client";
 import { WorldBankError } from "../gateway/worldbank.client";
@@ -16,7 +16,9 @@ const atQuery = z.object({
 const economyQuery = z.object({
   code: z.string().regex(/^[A-Za-z]{2,3}$/),
   base: z.coerce.number().int().min(1960).max(2100).default(2023),
+  project: z.string().optional(),
 });
+const projectQuery = z.object({ project: z.string().optional() });
 
 /**
  * Country price levels and exchange rates for the cost tables (ADR-0039): the country of the project's
@@ -58,8 +60,12 @@ export class EconomyController {
   /** Purpose: the countries the World Bank has data for. Output: { countries: [{ iso3, iso2, name }] }. */
   @Get("countries")
   @Requires("instance.read")
-  async countries() {
-    return { countries: await upstream(() => this.economy.countries()) };
+  async countries(@Query() q: unknown, @Req() req: MslRequest) {
+    const { project } = parse(projectQuery, q);
+    const countries = await keptFact(this.gate, this.kept, req, project, factKey.economyCountries, () =>
+      upstream(() => this.economy.countries()),
+    );
+    return { countries };
   }
 
   /**
@@ -69,9 +75,12 @@ export class EconomyController {
    */
   @Get("indicators")
   @Requires("instance.read")
-  async indicators(@Query() q: unknown) {
-    const { code, base } = parse(economyQuery, q);
-    return upstream(() => this.economy.economy(code, base));
+  async indicators(@Query() q: unknown, @Req() req: MslRequest) {
+    const { code, base, project } = parse(economyQuery, q);
+    // Kept for the project (`?project=`), so the cost tables read the same figures every time.
+    return keptFact(this.gate, this.kept, req, project, factKey.economy(code, base), () =>
+      upstream(() => this.economy.economy(code, base)),
+    );
   }
 }
 

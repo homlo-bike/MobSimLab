@@ -18,6 +18,8 @@ import {
   type PluginsFile,
   PROJECT_SCHEMA,
   type ProjectFile,
+  RESULT_SCHEMA,
+  type ResultFile,
   RUN_SCHEMA,
 } from "./format.mts";
 import { migrate } from "./migrations.mts";
@@ -44,6 +46,12 @@ export interface ReadRun {
   replay: string | null;
 }
 
+/** A saved result (format 1.2) the API should keep, and the scratch file holding its `results/<kind>.json`. */
+export interface ReadResult {
+  kind: string;
+  file: string;
+}
+
 /** What the reader found: the project, what to save, and what it left out (with the reason). */
 export interface MslabReadResult {
   formatVersion: string;
@@ -53,6 +61,8 @@ export interface MslabReadResult {
   plugins: PluginsFile["plugins"];
   drawings: ReadDrawing[];
   runs: ReadRun[];
+  /** Saved results (format 1.2); absent from older readers' answers. */
+  results?: ReadResult[];
   skipped: string[];
 }
 
@@ -70,6 +80,7 @@ const check = {
   plugins: ajv.compile(PLUGINS_SCHEMA),
   drawing: ajv.compile(DRAWING_FILE_SCHEMA),
   run: ajv.compile(RUN_SCHEMA),
+  result: ajv.compile(RESULT_SCHEMA),
 };
 const docChecks = new Map<string, ReturnType<typeof ajv.compile>>();
 
@@ -166,6 +177,7 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
   const skipped: string[] = [];
   const drawings: ReadDrawing[] = [];
   const runIds = new Set<string>();
+  const results: ReadResult[] = [];
   let hasMap = false;
   for (const name of [...files.keys()].sort()) {
     if (
@@ -205,6 +217,16 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
       FILE_PATTERNS.runReplay.exec(name);
     if (r) {
       runIds.add(r[1]!);
+      continue;
+    }
+    const k = FILE_PATTERNS.result.exec(name);
+    if (k) {
+      const kind = k[1]!;
+      const result = json<ResultFile>(files, name, check.result);
+      if (result.kind !== kind) throw new MslabError(`${name} holds a result of kind "${result.kind}"`);
+      const file = `result-${kind}.json`;
+      ctx.write(file, files.get(name)!);
+      results.push({ kind, file });
       continue;
     }
     // Map data (format 1.1) is for the static viewer; this MobSimLab loads its own.
@@ -254,6 +276,7 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
     plugins,
     drawings,
     runs,
+    results,
     skipped,
   };
 }

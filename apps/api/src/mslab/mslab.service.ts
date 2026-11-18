@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { gunzipSync, gzipSync } from "node:zlib";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { BadRequestException, ForbiddenException, Inject, Injectable, Logger } from "@nestjs/common";
@@ -7,6 +8,7 @@ import { DATABASE, type Database } from "../db/database";
 import { BUNDLED } from "../plugins/validate";
 import { PROJECT_MODES } from "../projects/projects.controller";
 import { DRAWING_KINDS, isDrawingKind, MAX_DRAWING_BYTES } from "../projects/drawings";
+import { INPUTS_PATTERN, isResultKind, MAX_RESULT_BYTES } from "../projects/results";
 import { type ProjectActor, ProjectsService, type ProjectSummary } from "../projects/projects.service";
 import { ToolFailedError, ToolInputError, ToolRunner } from "../tool-runner/runner";
 import { writeZip } from "../tool-runner/zip.mts";
@@ -15,6 +17,7 @@ import {
   FINISHED_RUN_STATUSES,
   FORMAT_NAME,
   FORMAT_VERSION,
+  FORMAT_VERSION_MAP_ONLY,
   FORMAT_VERSION_WITHOUT_MAP,
   type Manifest,
   MAX_MSLAB_BYTES,
@@ -22,6 +25,7 @@ import {
   type PluginsFile,
   type ProjectFile,
   RUN_KINDS,
+  type ResultFile,
   type RunFile,
 } from "./format.mts";
 import type { MslabReadResult } from "./read.mts";
@@ -81,6 +85,10 @@ const readResult = z.object({
       }),
     )
     .max(2000),
+  results: z
+    .array(z.object({ kind: z.string().max(40), file: scratchName }))
+    .max(100)
+    .optional(),
   skipped: z.array(z.string().max(300)).max(500),
 }) satisfies z.ZodType<
   Omit<MslabReadResult, "project"> & { project: Omit<ProjectFile, "createdAt" | "updatedAt"> }
@@ -221,6 +229,32 @@ export class MslabService {
         doc: d.doc,
       });
 
+    // Results the project's tools worked out (format 1.2), so the project opens with them, also in the static
+    // viewer, without working them out again.
+    const results = await this.db
+      .selectFrom("project.result")
+      .select(["kind", "inputs", "body", "computed_at"])
+      .where("project_id", "=", id)
+      .orderBy("kind")
+      .execute();
+    let resultCount = 0;
+    for (const r of results) {
+      let doc: unknown;
+      try {
+        doc = JSON.parse(gunzipSync(r.body).toString("utf8"));
+      } catch {
+        continue;
+      }
+      const file: ResultFile = {
+        kind: r.kind,
+        inputs: r.inputs,
+        computedAt: r.computed_at.toISOString(),
+        doc,
+      };
+      files.push([FILES.result(r.kind), Buffer.from(JSON.stringify(file))]);
+      resultCount++;
+    }
+
     let runCount = 0;
     if (includeRuns) {
       const runs = await this.db
@@ -277,7 +311,11 @@ export class MslabService {
       for (const [name, body] of m.files) add(name, body);
       map = m.summary;
     }
-    const formatVersion = includeMap ? FORMAT_VERSION : FORMAT_VERSION_WITHOUT_MAP;
+    const formatVersion = resultCount
+      ? FORMAT_VERSION
+      : includeMap
+        ? FORMAT_VERSION_MAP_ONLY
+        : FORMAT_VERSION_WITHOUT_MAP;
     add(
       FILES.attribution,
       attribution(
@@ -304,7 +342,7 @@ export class MslabService {
       id,
       "project.exported",
       null,
-      { formatVersion, runs: runCount, map: map ? map.tiles : 0, bytes: bytes.length },
+      { formatVersion, runs: runCount, results: resultCount, map: map ? map.tiles : 0, bytes: bytes.length },
       this.db,
     );
     return { fileName: mslabFileName(p.name), bytes };
@@ -379,6 +417,26 @@ export class MslabService {
             )
               throw new BadRequestException(`simulation run ${m.id} is larger than a run may be`);
             runs.push({ m, input, network, lines, progress, result, replay });
+          }
+
+          const results: { kind: string; inputs: string; computedAt: Date; body: Buffer }[] = [];
+          for (const f of res.results ?? []) {
+            if (!isResultKind(f.kind)) {
+              skipped.push(`${f.kind}: this MobSimLab does not keep this kind of result`);
+              continue;
+            }
+            const file = JSON.parse((await scratch.read(f.file)).toString("utf8")) as ResultFile;
+            const body = gzipSync(JSON.stringify(file.doc));
+            if (
+              file.kind !== f.kind ||
+              !INPUTS_PATTERN.test(file.inputs) ||
+              Number.isNaN(Date.parse(file.computedAt)) ||
+              body.length > MAX_RESULT_BYTES
+            ) {
+              skipped.push(`${f.kind}: the saved result is not valid`);
+              continue;
+            }
+            results.push({ kind: f.kind, inputs: file.inputs, computedAt: new Date(file.computedAt), body });
           }
 
           const installed = await this.db
@@ -459,6 +517,18 @@ export class MslabService {
                   updated_at: now,
                 })
                 .execute();
+            for (const r of results)
+              await tx
+                .insertInto("project.result")
+                .values({
+                  project_id: p.id,
+                  kind: r.kind,
+                  inputs: r.inputs,
+                  body: r.body,
+                  computed_by: actor.userId,
+                  computed_at: r.computedAt,
+                })
+                .execute();
             for (const r of runs) {
               // New ids: the same file may be opened more than once on one instance.
               const run = await tx
@@ -506,6 +576,7 @@ export class MslabService {
                 drawings: drawings.map((d) => d.kind),
                 plugins: plugins.length,
                 runs: runs.length,
+                results: results.length,
                 skipped: skipped.length,
                 bytes: bytes.length,
               },

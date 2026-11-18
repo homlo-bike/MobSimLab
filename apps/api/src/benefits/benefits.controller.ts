@@ -5,21 +5,27 @@ import {
   Get,
   HttpCode,
   HttpException,
+  Optional,
   Post,
   Query,
+  Req,
 } from "@nestjs/common";
+import type { MslRequest } from "../auth/session.service";
+import { ProjectGate } from "../geodata/project-gate";
+import { factKey, keptFact, ProjectDataCache } from "../projects/data-cache";
 import { z } from "zod";
 import { OverpassError } from "../gateway/overpass.client";
 import { WorldBankError } from "../gateway/worldbank.client";
 import { Requires } from "../iam/requires";
 import { BenefitsService, OSM_AREA_SOURCE } from "./benefits.service";
 
-const codeQuery = z.object({ code: z.string().regex(/^[A-Za-z]{2,3}$/) });
+const codeQuery = z.object({ code: z.string().regex(/^[A-Za-z]{2,3}$/), project: z.string().optional() });
 const atQuery = z.object({
   lon: z.coerce.number().min(-180).max(180),
   lat: z.coerce.number().min(-89.999).max(89.999),
   /** `1`: also states and provinces, for the project area picker. */
   wide: z.enum(["0", "1"]).optional(),
+  project: z.string().optional(),
 });
 const lonLat = z.tuple([z.number().min(-180).max(180), z.number().min(-90).max(90)]);
 const populationBody = z.object({
@@ -36,7 +42,11 @@ const populationBody = z.object({
  */
 @Controller("api/benefits")
 export class BenefitsController {
-  constructor(private readonly benefits: BenefitsService) {}
+  constructor(
+    private readonly benefits: BenefitsService,
+    @Optional() private readonly gate?: ProjectGate,
+    @Optional() private readonly kept?: ProjectDataCache,
+  ) {}
 
   /**
    * Purpose: GDP per capita (local currency), employment ratio, share aged 0–14 and population of a country.
@@ -44,9 +54,12 @@ export class BenefitsController {
    */
   @Get("indicators")
   @Requires("instance.read")
-  async indicators(@Query() q: unknown) {
-    const { code } = parse(codeQuery, q);
-    return upstream(() => this.benefits.indicators(code));
+  async indicators(@Query() q: unknown, @Req() req: MslRequest) {
+    const { code, project } = parse(codeQuery, q);
+    // Kept for the project (`?project=`), so the benefit tables read the same figures every time.
+    return keptFact(this.gate, this.kept, req, project, factKey.benefitIndicators(code), () =>
+      upstream(() => this.benefits.indicators(code)),
+    );
   }
 
   /**
@@ -69,12 +82,17 @@ export class BenefitsController {
    */
   @Get("osm-areas")
   @Requires("instance.read")
-  async osmAreas(@Query() q: unknown) {
-    const { lon, lat, wide } = parse(atQuery, q);
-    return {
-      areas: await upstream(() => this.benefits.areasAt(lon, lat, wide === "1")),
-      source: OSM_AREA_SOURCE,
-    };
+  async osmAreas(@Query() q: unknown, @Req() req: MslRequest) {
+    const { lon, lat, wide, project } = parse(atQuery, q);
+    const areas = await keptFact(
+      this.gate,
+      this.kept,
+      req,
+      project,
+      factKey.osmAreas(lon, lat, wide === "1"),
+      () => upstream(() => this.benefits.areasAt(lon, lat, wide === "1")),
+    );
+    return { areas, source: OSM_AREA_SOURCE };
   }
 }
 

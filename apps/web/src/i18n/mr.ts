@@ -12,6 +12,7 @@ import { mslabMr } from "./mslab/mr";
 import { workspaceUiMr } from "./workspace-ui/mr";
 import { pluginCodeMr } from "./plugin-code/mr";
 import { populationMr } from "./population/mr";
+import { resultsMr } from "./results/mr";
 import { pluginsMr } from "./plugins/mr";
 import type { Messages } from "./en";
 
@@ -523,6 +524,7 @@ export const mr: Messages = {
   ...workspaceUiMr,
   ...pluginCodeMr,
   ...populationMr,
+  ...resultsMr,
   ...roadMr,
   ...calendarMr,
   ...pluginsMr,

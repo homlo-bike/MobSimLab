@@ -12,6 +12,7 @@ import { mslabBn } from "./mslab/bn";
 import { workspaceUiBn } from "./workspace-ui/bn";
 import { pluginCodeBn } from "./plugin-code/bn";
 import { populationBn } from "./population/bn";
+import { resultsBn } from "./results/bn";
 import { pluginsBn } from "./plugins/bn";
 import type { Messages } from "./en";
 
@@ -522,6 +523,7 @@ export const bn: Messages = {
   ...workspaceUiBn,
   ...pluginCodeBn,
   ...populationBn,
+  ...resultsBn,
   ...roadBn,
   ...calendarBn,
   ...pluginsBn,
