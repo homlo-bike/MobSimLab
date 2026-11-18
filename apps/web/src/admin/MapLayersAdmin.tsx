@@ -37,7 +37,7 @@ const AUTH_LABELS: Record<AuthType, MessageKey> = {
 };
 
 /**
- * WMS and WMTS map layers in Administration → Plugins (bundled plugin `org.mobsimlab.ogc-layers`): an Admin adds
+ * WMS, WMTS and XYZ map layers in Administration → Plugins (bundled plugin `org.mobsimlab.ogc-layers`): an Admin adds
  * a service with its sign-in details when it needs them, reads its layers and picks those to offer as a basemap
  * or as overlays, or removes a service. MobSimLab fetches the tiles with the sign-in details, so browsers never
  * see them, and the password or key is never shown again.

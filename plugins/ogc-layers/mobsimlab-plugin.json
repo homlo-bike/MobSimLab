@@ -1,8 +1,8 @@
 {
   "$schema": "../../contracts/plugin-manifest.schema.json",
   "id": "org.mobsimlab.ogc-layers",
-  "name": "WMS and WMTS map layers",
-  "description": "Map layers from WMS and WMTS services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them. Layers must be in Web Mercator.",
+  "name": "WMS, WMTS and XYZ map layers",
+  "description": "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.",
   "version": "0.1.0",
   "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
   "license": "AGPL-3.0-or-later",

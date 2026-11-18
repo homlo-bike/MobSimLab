@@ -38,7 +38,7 @@ export function addsLine(
 
 /**
  * Configuration panels of plugins that need one, by plugin id, shown to Admins in the plugin's window. Esri World
- * Imagery needs the instance's ArcGIS API key, WMS and WMTS map layers their services (docs/architecture/06-gis.md §8).
+ * Imagery needs the instance's ArcGIS API key, WMS, WMTS and XYZ map layers their services (docs/architecture/06-gis.md §8).
  */
 const CONFIG: Record<
   string,
@@ -163,9 +163,11 @@ export function ProjectPlugins({
         >
           <div className="flex flex-col gap-3 text-sm">
             {shown.description && <p className="m-0 text-slate-700">{shown.description}</p>}
-            <p className="m-0 text-xs text-slate-500">
-              {t("plugins.adds", { list: addsLine(shown.contributes, t) })}
-            </p>
+            {addsLine(shown.contributes, t) && (
+              <p className="m-0 text-xs text-slate-500">
+                {t("plugins.adds", { list: addsLine(shown.contributes, t) })}
+              </p>
+            )}
             {shown.permissions.length > 0 && (
               <p className="m-0 text-xs text-slate-500">
                 {t("plugins.uses", {
