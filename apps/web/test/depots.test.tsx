@@ -3,6 +3,7 @@ import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DepotEditor } from "../src/features/depots/DepotEditor";
+import { withTrackInYard, YardControl } from "../src/features/railways/YardControl";
 import {
   depotFit,
   depotGates,
@@ -10,6 +11,8 @@ import {
   moveLane,
   resizeLane,
   newDepot,
+  ringArea,
+  scaledOutline,
   snapToRing,
   toXY,
   withOutline,
@@ -287,6 +290,34 @@ describe("Depot tool", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Size the depot" }));
     await waitFor(() => expect(screen.getByText("60 × 40 m")).toBeTruthy());
+
+    // The outline (about 1.3 ha) is far bigger than the 2,400 m² the fleet needs: shrink it, keeping its shape.
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Shrink the outline to the area for 90° parking, keeping its shape, and lay out again",
+      }),
+    );
+    await waitFor(() => expect(ringArea(docs.at(-1)!.depots[0]!.boundary)).toBeCloseTo(2400, -1));
+    const shrunk = docs.at(-1)!.depots[0]!;
+    // The gate moved onto the new outline, the whole-outline zone shrank with it, and the slots were laid out again.
+    expect(shrunk.zones[0]!.ring).toEqual(shrunk.boundary);
+    expect(snapToRing(shrunk.boundary, shrunk.gates[0]!.lonlat)).toEqual(shrunk.gates[0]!.lonlat);
+    expect(engine.generate).toHaveBeenLastCalledWith(
+      expect.objectContaining({ boundary: shrunk.boundary, layout: null }),
+    );
+  });
+
+  it("scales an outline about its centre to an area", () => {
+    const half = scaledOutline(RING, ringArea(RING) / 4);
+    expect(ringArea(half)).toBeCloseTo(ringArea(RING) / 4, 0);
+    const mid = (r: [number, number][]) => [
+      r.reduce((s, p) => s + p[0], 0) / r.length,
+      r.reduce((s, p) => s + p[1], 0) / r.length,
+    ];
+    expect(mid(half)[0]).toBeCloseTo(mid(RING)[0]!, 7);
+    expect(mid(half)[1]).toBeCloseTo(mid(RING)[1]!, 7);
+    // Each side is half as long: same shape.
+    expect(toXY(half[0]!, half[1]!)[0]).toBeCloseTo(toXY(RING[0]!, RING[1]!)[0] / 2, 1);
   });
 });
 
@@ -314,16 +345,21 @@ describe("Stabling yards (rail depot type)", () => {
     switches: [],
   });
 
-  function YardHarness({ docs, start }: { docs: Network[]; start: Network | null }) {
-    const [rail, setRail] = useState<Network | null>(start);
+  function YardHarness({ docs, start, id }: { docs: Network[]; start: Network; id: number }) {
+    const [rail, setRail] = useState<Network>(start);
+    const view = {
+      tracks: [
+        { id: 2, length_m: 564, tracks: 2 },
+        { id: 3, length_m: 340, tracks: 2 },
+      ],
+      train_length_m: 45,
+    } as unknown as RailView;
     return (
-      <DepotEditor
-        map={fakeMap().map}
-        doc={null}
-        onDoc={() => {}}
-        loadEngine={async () => fakeEngine()}
-        railway={rail}
-        onRailway={(d) => {
+      <YardControl
+        track={rail.tracks.find((x) => x.id === id)!}
+        doc={rail}
+        view={view}
+        setDoc={(d) => {
           docs.push(d);
           setRail(d);
         }}
@@ -331,32 +367,37 @@ describe("Stabling yards (rail depot type)", () => {
     );
   }
 
-  it("groups the storage tracks into a yard with charging and cleaning", () => {
+  it("puts a storage track in a stabling yard, with charging, cleaning and how many trains it holds", () => {
     const docs: Network[] = [];
-    render(<YardHarness docs={docs} start={railway()} />);
-    fireEvent.click(screen.getByRole("button", { name: "New stabling yard" }));
+    const { unmount } = render(<YardHarness docs={docs} start={railway()} id={2} />);
+    const pick = (v: string) =>
+      fireEvent.change(screen.getByLabelText("Stabling yard"), { target: { value: v } });
+    pick("new");
     expect(docs.at(-1)!.yards).toEqual([
-      { id: 4, name: "Stabling yard 1", tracks: [2, 3], charging: false, cleaning: false },
+      { id: 4, name: "Stabling yard 1", tracks: [2], charging: false, cleaning: false },
     ]);
-    // Only storage tracks are offered.
-    expect(screen.queryByRole("checkbox", { name: "Track 1" })).toBeNull();
-    fireEvent.click(screen.getByRole("checkbox", { name: "Track 3" }));
+    // 564 m holds 12 trains of 45 m on each of its 2 tracks.
+    expect(screen.getByText("Holds 24 trains.")).toBeTruthy();
+    fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Jobar" } });
     fireEvent.click(screen.getByRole("checkbox", { name: "Trains charge here" }));
     fireEvent.click(screen.getByRole("checkbox", { name: "Trains are cleaned here" }));
-    expect(docs.at(-1)!.yards![0]).toMatchObject({ tracks: [2], charging: true, cleaning: true });
-    // A track in one yard cannot be in another.
-    fireEvent.click(screen.getByRole("button", { name: "New stabling yard" }));
-    expect(docs.at(-1)!.yards![1]).toMatchObject({ id: 5, tracks: [3] });
-    const taken = screen.getAllByRole("checkbox", { name: /Siding A/ });
-    expect((taken[1] as HTMLInputElement).disabled).toBe(true);
-    fireEvent.click(screen.getAllByRole("button", { name: "Remove stabling yard" })[0]!);
-    expect(docs.at(-1)!.yards!.map((y) => y.id)).toEqual([5]);
-  });
+    expect(docs.at(-1)!.yards![0]).toMatchObject({
+      name: "Jobar",
+      tracks: [2],
+      charging: true,
+      cleaning: true,
+    });
+    unmount();
 
-  it("asks for storage tracks first when the railway has none", () => {
-    render(<YardHarness docs={[]} start={null} />);
-    expect(screen.getByText("Draw storage tracks in the railway tool first.")).toBeTruthy();
-    expect(screen.queryByRole("button", { name: "New stabling yard" })).toBeNull();
+    // The second track joins the same yard: the yard holds both tracks' trains.
+    render(<YardHarness docs={docs} start={docs.at(-1)!} id={3} />);
+    pick("4");
+    expect(docs.at(-1)!.yards![0]!.tracks).toEqual([2, 3]);
+    expect(screen.getByText("Holds 38 trains.")).toBeTruthy();
+    // Taking the last track out of a yard removes the yard.
+    const one = withTrackInYard(docs.at(-1)!, 3, null, "");
+    expect(one.yards![0]!.tracks).toEqual([2]);
+    expect(withTrackInYard(one, 2, null, "").yards).toEqual([]);
   });
 
   it("labels storage tracks with their role and how many trains fit", () => {

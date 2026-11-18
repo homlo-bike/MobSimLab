@@ -15,19 +15,12 @@ export const depotsEn = {
   "depot.list": "Depots",
   "depot.none": "No depots yet.",
   "depot.add": "New depot",
-  "yard.list": "Stabling yards",
-  "yard.intro":
-    "Storage tracks of the railway grouped as a rail depot. Their tracks count as overnight stabling.",
-  "yard.noStorage": "Draw storage tracks in the railway tool first.",
-  "yard.none": "No stabling yards yet.",
   "yard.add": "New stabling yard",
   "yard.defaultName": "Stabling yard {n}",
   "yard.name": "Name",
-  "yard.tracks": "Storage tracks",
-  "yard.inOther": "in {name}",
   "yard.charging": "Trains charge here",
   "yard.cleaning": "Trains are cleaned here",
-  "yard.remove": "Remove stabling yard",
+  "yard.capacity": "Holds {n} trains.",
   "depot.newName": "Depot {n}",
   "depot.slotsN": "Slots: {n}",
   "depot.name": "Name",
@@ -104,6 +97,9 @@ export const depotsEn = {
   "depot.sizing": "Dynamic sizing",
   "depot.sizingNote":
     "The area the lines' fleet needs, and how many vehicles the outline holds, for each bay angle.",
+  "depot.shrink": "Shrink to this size",
+  "depot.shrinkTo":
+    "Shrink the outline to the area for {angle}° parking, keeping its shape, and lay out again",
   "depot.size": "Size the depot",
   "depot.sizingFor": "Vehicles: {n}; slots sized for {vehicle}.",
   "depot.col.angle": "Bays",
@@ -118,7 +114,6 @@ export const depotsEn = {
   "depot.line.none": "No depot",
   "depot.line.gone": "The depot this line used was deleted.",
   "depot.line.noDepots": "No depots yet. Draw one in the depot tool.",
-  "depot.line.open": "Open the depot tool",
 };
 
 /** A language's depot messages: every key of the English ones. */

@@ -13,19 +13,12 @@ export const depotsDe = {
   "depot.list": "Betriebshöfe",
   "depot.none": "Noch keine Betriebshöfe.",
   "depot.add": "Neuer Betriebshof",
-  "yard.list": "Abstellanlagen",
-  "yard.intro":
-    "Abstellgleise der Bahn, zu einem Bahnbetriebshof zusammengefasst. Ihre Gleise gelten als Nachtabstellung.",
-  "yard.noStorage": "Zeichne zuerst Abstellgleise im Bahn-Werkzeug.",
-  "yard.none": "Noch keine Abstellanlagen.",
   "yard.add": "Neue Abstellanlage",
   "yard.defaultName": "Abstellanlage {n}",
   "yard.name": "Name",
-  "yard.tracks": "Abstellgleise",
-  "yard.inOther": "in {name}",
   "yard.charging": "Züge laden hier",
   "yard.cleaning": "Züge werden hier gereinigt",
-  "yard.remove": "Abstellanlage entfernen",
+  "yard.capacity": "Fasst {n} Züge.",
   "depot.newName": "Betriebshof {n}",
   "depot.slotsN": "Stellplätze: {n}",
   "depot.name": "Name",
@@ -105,6 +98,9 @@ export const depotsDe = {
   "depot.sizing": "Dynamische Bemessung",
   "depot.sizingNote":
     "Die Fläche, die die Flotte der Linien braucht, und wie viele Fahrzeuge der Umriss fasst, für jeden Aufstellwinkel.",
+  "depot.shrink": "Auf diese Größe verkleinern",
+  "depot.shrinkTo":
+    "Umriss auf die Fläche für {angle}°-Aufstellung verkleinern, Form beibehalten, und neu anordnen",
   "depot.size": "Betriebshof bemessen",
   "depot.sizingFor": "Fahrzeuge: {n}; Stellplätze bemessen für {vehicle}.",
   "depot.col.angle": "Aufstellung",
@@ -119,5 +115,4 @@ export const depotsDe = {
   "depot.line.none": "Kein Betriebshof",
   "depot.line.gone": "Der Betriebshof dieser Linie wurde gelöscht.",
   "depot.line.noDepots": "Noch keine Betriebshöfe. Zeichnen Sie einen im Betriebshof-Werkzeug.",
-  "depot.line.open": "Betriebshof-Werkzeug öffnen",
 } satisfies DepotsMessages;

@@ -13,19 +13,12 @@ export const depotsEs = {
   "depot.list": "Cocheras",
   "depot.none": "Aún no hay cocheras.",
   "depot.add": "Nueva cochera",
-  "yard.list": "Patios de estacionamiento",
-  "yard.intro":
-    "Vías de estacionamiento del ferrocarril agrupadas como depósito ferroviario. Sus vías cuentan como estacionamiento nocturno.",
-  "yard.noStorage": "Dibuja primero vías de estacionamiento en la herramienta ferroviaria.",
-  "yard.none": "Aún no hay patios de estacionamiento.",
   "yard.add": "Nuevo patio de estacionamiento",
   "yard.defaultName": "Patio de estacionamiento {n}",
   "yard.name": "Nombre",
-  "yard.tracks": "Vías de estacionamiento",
-  "yard.inOther": "en {name}",
   "yard.charging": "Los trenes se cargan aquí",
   "yard.cleaning": "Los trenes se limpian aquí",
-  "yard.remove": "Quitar patio de estacionamiento",
+  "yard.capacity": "Caben {n} trenes.",
   "depot.newName": "Cochera {n}",
   "depot.slotsN": "Plazas: {n}",
   "depot.name": "Nombre",
@@ -105,6 +98,9 @@ export const depotsEs = {
   "depot.sizing": "Dimensionado dinámico",
   "depot.sizingNote":
     "La superficie que necesita la flota de las líneas y cuántos vehículos caben en el contorno, para cada ángulo de plaza.",
+  "depot.shrink": "Reducir a este tamaño",
+  "depot.shrinkTo":
+    "Reducir el contorno al área para estacionar a {angle}°, manteniendo su forma, y volver a distribuir",
   "depot.size": "Dimensionar la cochera",
   "depot.sizingFor": "Vehículos: {n}; plazas dimensionadas para {vehicle}.",
   "depot.col.angle": "Plazas",
@@ -119,5 +115,4 @@ export const depotsEs = {
   "depot.line.none": "Sin cochera",
   "depot.line.gone": "La cochera que usaba esta línea se eliminó.",
   "depot.line.noDepots": "Aún no hay cocheras. Dibuje una en la herramienta de cocheras.",
-  "depot.line.open": "Abrir la herramienta de cocheras",
 } satisfies DepotsMessages;

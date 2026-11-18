@@ -51,6 +51,8 @@ export const editorsVi = {
   "rail.storageRole.overnight": "Đỗ qua đêm",
   "rail.storageRole.both": "Chờ giữa chuyến và qua đêm",
   "rail.inYard": "Trong bãi đỗ tàu {name}",
+  "rail.yard": "Bãi đỗ tàu",
+  "rail.yardNone": "Không thuộc bãi đỗ",
   "rail.storageLabel": "{role} · chứa được {n} tàu",
   "rail.finish": "Hoàn tất (Enter)",
   "rail.cancel": "Hủy (Esc)",

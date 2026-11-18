@@ -13,19 +13,12 @@ export const depotsNl = {
   "depot.list": "Stallingen",
   "depot.none": "Nog geen stallingen.",
   "depot.add": "Nieuwe stalling",
-  "yard.list": "Opstelterreinen",
-  "yard.intro":
-    "Opstelsporen van de spoorlijn gegroepeerd als spoorwegdepot. Hun sporen tellen als nachtopstelling.",
-  "yard.noStorage": "Teken eerst opstelsporen in het spoorgereedschap.",
-  "yard.none": "Nog geen opstelterreinen.",
   "yard.add": "Nieuw opstelterrein",
   "yard.defaultName": "Opstelterrein {n}",
   "yard.name": "Naam",
-  "yard.tracks": "Opstelsporen",
-  "yard.inOther": "in {name}",
   "yard.charging": "Treinen laden hier",
   "yard.cleaning": "Treinen worden hier schoongemaakt",
-  "yard.remove": "Opstelterrein verwijderen",
+  "yard.capacity": "Biedt plaats aan {n} treinen.",
   "depot.newName": "Stalling {n}",
   "depot.slotsN": "Plaatsen: {n}",
   "depot.name": "Naam",
@@ -103,6 +96,9 @@ export const depotsNl = {
   "depot.sizing": "Dynamische dimensionering",
   "depot.sizingNote":
     "De oppervlakte die de vloot van de lijnen nodig heeft, en hoeveel voertuigen de omtrek bevat, per opstelhoek.",
+  "depot.shrink": "Verkleinen tot deze grootte",
+  "depot.shrinkTo":
+    "De omtrek verkleinen tot de oppervlakte voor parkeren onder {angle}°, met behoud van de vorm, en opnieuw indelen",
   "depot.size": "Stalling dimensioneren",
   "depot.sizingFor": "Voertuigen: {n}; plaatsen bemeten voor {vehicle}.",
   "depot.col.angle": "Opstelling",
@@ -117,5 +113,4 @@ export const depotsNl = {
   "depot.line.none": "Geen stalling",
   "depot.line.gone": "De stalling van deze lijn is verwijderd.",
   "depot.line.noDepots": "Nog geen stallingen. Teken er een in het stallingsgereedschap.",
-  "depot.line.open": "Stallingsgereedschap openen",
 } satisfies DepotsMessages;

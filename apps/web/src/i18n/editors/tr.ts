@@ -51,6 +51,8 @@ export const editorsTr = {
   "rail.storageRole.overnight": "Gece park",
   "rail.storageRole.both": "Seferler arası ve gece",
   "rail.inYard": "{name} park sahasında",
+  "rail.yard": "Park sahası",
+  "rail.yardNone": "Park sahasında değil",
   "rail.storageLabel": "{role} · {n} tren sığar",
   "rail.finish": "Bitir (Enter)",
   "rail.cancel": "İptal (Esc)",

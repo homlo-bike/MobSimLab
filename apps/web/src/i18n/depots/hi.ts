@@ -13,19 +13,12 @@ export const depotsHi = {
   "depot.list": "डिपो",
   "depot.none": "अभी कोई डिपो नहीं।",
   "depot.add": "नया डिपो",
-  "yard.list": "स्टेबलिंग यार्ड",
-  "yard.intro":
-    "रेलवे की भंडारण पटरियाँ एक रेल डिपो के रूप में समूहित। इनकी पटरियाँ रात्रि ठहराव गिनी जाती हैं।",
-  "yard.noStorage": "पहले रेलवे टूल में भंडारण पटरियाँ बनाएँ।",
-  "yard.none": "अभी कोई स्टेबलिंग यार्ड नहीं।",
   "yard.add": "नया स्टेबलिंग यार्ड",
   "yard.defaultName": "स्टेबलिंग यार्ड {n}",
   "yard.name": "नाम",
-  "yard.tracks": "भंडारण पटरियाँ",
-  "yard.inOther": "{name} में",
   "yard.charging": "ट्रेनें यहाँ चार्ज होती हैं",
   "yard.cleaning": "ट्रेनें यहाँ साफ़ होती हैं",
-  "yard.remove": "स्टेबलिंग यार्ड हटाएँ",
+  "yard.capacity": "{n} ट्रेनें खड़ी हो सकती हैं।",
   "depot.newName": "डिपो {n}",
   "depot.slotsN": "स्लॉट: {n}",
   "depot.name": "नाम",
@@ -103,6 +96,9 @@ export const depotsHi = {
   "depot.sizing": "गतिशील आकार निर्धारण",
   "depot.sizingNote":
     "लाइनों के बेड़े को चाहिए क्षेत्रफल, और सीमा में कितने वाहन समाते हैं, हर स्लॉट कोण के लिए।",
+  "depot.shrink": "इस आकार तक छोटा करें",
+  "depot.shrinkTo":
+    "आकार बनाए रखते हुए रूपरेखा को {angle}° पार्किंग के क्षेत्र तक छोटा करें और फिर से व्यवस्थित करें",
   "depot.size": "डिपो का आकार निकालें",
   "depot.sizingFor": "वाहन: {n}; स्लॉट का माप {vehicle} के लिए।",
   "depot.col.angle": "व्यवस्था",
@@ -117,5 +113,4 @@ export const depotsHi = {
   "depot.line.none": "कोई डिपो नहीं",
   "depot.line.gone": "इस लाइन का डिपो हटा दिया गया।",
   "depot.line.noDepots": "अभी कोई डिपो नहीं। डिपो टूल में एक बनाएँ।",
-  "depot.line.open": "डिपो टूल खोलें",
 } satisfies DepotsMessages;

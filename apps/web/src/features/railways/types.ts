@@ -112,7 +112,7 @@ export interface Track {
   storage_role?: StorageRole | null;
 }
 
-/** A stabling yard: storage tracks grouped as a rail depot (Depots tool). */
+/** A stabling yard: storage tracks grouped as a rail depot (railway tool, track inspector). */
 export interface Yard {
   id: number;
   name: string;

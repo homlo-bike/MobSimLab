@@ -51,6 +51,8 @@ export const editorsFa = {
   "rail.storageRole.overnight": "توقف شبانه",
   "rail.storageRole.both": "توقف بین سفرها و شبانه",
   "rail.inYard": "در محوطه توقف {name}",
+  "rail.yard": "پارکینگ قطار",
+  "rail.yardNone": "خارج از پارکینگ قطار",
   "rail.storageLabel": "{role} · {n} قطار جا می‌شود",
   "rail.finish": "پایان (Enter)",
   "rail.cancel": "لغو (Esc)",

@@ -51,6 +51,8 @@ export const editorsYo = {
   "rail.storageRole.overnight": "Ìdúró òru",
   "rail.storageRole.both": "Ìdúró àti òru",
   "rail.inYard": "Nínú àgbàlá ìdúró {name}",
+  "rail.yard": "Ibùdó ìdúró ọkọ̀ ojú irin",
+  "rail.yardNone": "Kò sí ní ibùdó ìdúró",
   "rail.storageLabel": "{role} · ọkọ̀ {n} lè wọ̀",
   "rail.finish": "Parí (Enter)",
   "rail.cancel": "Fagilé (Esc)",

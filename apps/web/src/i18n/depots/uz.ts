@@ -13,19 +13,12 @@ export const depotsUz = {
   "depot.list": "Parklar",
   "depot.none": "Hali parklar yo'q.",
   "depot.add": "Yangi park",
-  "yard.list": "Turish parklari",
-  "yard.intro":
-    "Temir yo'lning saqlash yo'llari temir yo'l deposi sifatida guruhlangan. Ularning yo'llari tungi turish hisoblanadi.",
-  "yard.noStorage": "Avval temir yo'l vositasida saqlash yo'llarini chizing.",
-  "yard.none": "Hozircha turish parklari yo'q.",
   "yard.add": "Yangi turish parki",
   "yard.defaultName": "Turish parki {n}",
   "yard.name": "Nomi",
-  "yard.tracks": "Saqlash yo'llari",
-  "yard.inOther": "{name} ichida",
   "yard.charging": "Poyezdlar bu yerda quvvatlanadi",
   "yard.cleaning": "Poyezdlar bu yerda tozalanadi",
-  "yard.remove": "Turish parkini o'chirish",
+  "yard.capacity": "{n} ta poyezd sigʻadi.",
   "depot.newName": "Park {n}",
   "depot.slotsN": "Joylar: {n}",
   "depot.name": "Nomi",
@@ -106,6 +99,9 @@ export const depotsUz = {
   "depot.sizing": "Dinamik o'lchash",
   "depot.sizingNote":
     "Yo'nalishlar parki uchun kerakli maydon va chegaraga nechta transport sig'ishi, har bir joy burchagi uchun.",
+  "depot.shrink": "Shu oʻlchamgacha kichraytirish",
+  "depot.shrinkTo":
+    "Shaklini saqlab, chegarani {angle}° turish maydonigacha kichraytirib, qayta joylashtirish",
   "depot.size": "Park o'lchamini hisoblash",
   "depot.sizingFor": "Transport: {n}; joylar {vehicle} ga mo'ljallangan.",
   "depot.col.angle": "Joylashuv",
@@ -120,5 +116,4 @@ export const depotsUz = {
   "depot.line.none": "Parksiz",
   "depot.line.gone": "Bu yo'nalish foydalangan park o'chirildi.",
   "depot.line.noDepots": "Hali parklar yo'q. Park vositasida bittasini chizing.",
-  "depot.line.open": "Park vositasini ochish",
 } satisfies DepotsMessages;

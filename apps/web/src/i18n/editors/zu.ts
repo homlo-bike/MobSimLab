@@ -52,6 +52,8 @@ export const editorsZu = {
   "rail.storageRole.overnight": "Ukupaka ebusuku",
   "rail.storageRole.both": "Ukulinda nobusuku",
   "rail.inYard": "Egcekeni lokupaka {name}",
+  "rail.yard": "Iyadi yokupaka izitimela",
+  "rail.yardNone": "Akukho eyadini",
   "rail.storageLabel": "{role} · kungena izitimela ezingu-{n}",
   "rail.finish": "Qeda (Enter)",
   "rail.cancel": "Khansela (Esc)",

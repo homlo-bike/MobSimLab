@@ -9,9 +9,7 @@ import type { PreferencesDoc } from "../../workspace/preferences";
 import type { SavedStreetLine } from "../street-lines/saved";
 import { MODES } from "../street-lines/modes";
 import type { LonLat, Mode } from "../street-lines/types";
-import type { Network } from "../railways/types";
 import { loadDepotEngine } from "./engine";
-import { YardEditor } from "./YardEditor";
 import {
   DEPOT_LAYERS,
   depotsGeoJson,
@@ -35,6 +33,7 @@ import {
   newId,
   resizeLane,
   ringArea,
+  scaledOutline,
   snapToRing,
   withOutline,
   ZONE_COLOR,
@@ -87,10 +86,6 @@ interface Props {
   prefs?: PreferencesDoc["values"];
   /** Depot layout module loader; tests inject a fake. */
   loadEngine?: DepotEngineLoader;
-  /** The project's railway drawing, for its stabling yards; `null` when there is none. */
-  railway?: Network | null;
-  /** Told about every change to the stabling yards (the railway drawing). */
-  onRailway?: (doc: Network) => void;
 }
 
 /**
@@ -111,8 +106,6 @@ export function DepotEditor({
   lines = NO_LINES,
   prefs,
   loadEngine = loadDepotEngine,
-  railway = null,
-  onRailway,
 }: Props) {
   const { t } = useI18n();
   const depots = doc?.depots ?? [];
@@ -347,6 +340,27 @@ export function DepotEditor({
     }, 20);
   };
 
+  // Shrink the outline to the area the fleet needs at one parking angle, keeping its shape, and lay it out again.
+  const shrink = (area_m2: number) => {
+    if (!engine || !selected) return;
+    setBusy("depot.busy.layout");
+    setTimeout(() => {
+      try {
+        const next = withOutline(selected, scaledOutline(selected.boundary, area_m2));
+        const nextInput = depotInput(next, lines, prefs);
+        const g = engine.generate({ ...nextInput, layout: null });
+        save(selected.id, { ...next, layout: g.layout });
+        setLayoutIssues(g.issues);
+        setSizing(engine.size({ ...nextInput, layout: g.layout }));
+        setLaneId(null);
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
+      }
+      setBusy(null);
+    }, 20);
+  };
+
   const drawing = tool.kind === "outline" || tool.kind === "zone";
   const using = selected ? linesOf(selected, lines) : [];
   // The vehicles of the lines using the depot, for the zones' "sized for", and the typical vehicle of each
@@ -444,8 +458,6 @@ export function DepotEditor({
           {t("depot.add")}
         </button>
       </section>
-
-      {onRailway && <YardEditor railway={railway} onRailway={onRailway} />}
 
       {selected && (
         <section
@@ -810,6 +822,9 @@ export function DepotEditor({
                       <th className="text-right font-normal">{t("depot.col.area")}</th>
                       <th className="text-right font-normal">{t("depot.col.rect")}</th>
                       <th className="text-right font-normal">{t("depot.col.holds")}</th>
+                      <th>
+                        <span className="sr-only">{t("depot.shrink")}</span>
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -827,6 +842,19 @@ export function DepotEditor({
                             {f ? `${Math.round(f.width_m)} × ${Math.round(f.depth_m)} m` : "–"}
                           </td>
                           <td className="text-right font-mono">{holds ? holds.vehicles : "–"}</td>
+                          <td className="text-right">
+                            {f && f.area_m2 < 0.98 * ringArea(selected.boundary) && (
+                              <button
+                                type="button"
+                                className="btn min-h-8 px-2 text-xs"
+                                disabled={busy !== null}
+                                aria-label={t("depot.shrinkTo", { angle })}
+                                onClick={() => shrink(f.area_m2)}
+                              >
+                                {t("depot.shrink")}
+                              </button>
+                            )}
+                          </td>
                         </tr>
                       );
                     })}

@@ -13,19 +13,12 @@ export const depotsFr = {
   "depot.list": "Dépôts",
   "depot.none": "Aucun dépôt pour l'instant.",
   "depot.add": "Nouveau dépôt",
-  "yard.list": "Faisceaux de garage",
-  "yard.intro":
-    "Voies de garage du réseau regroupées en dépôt ferroviaire. Leurs voies comptent comme garage de nuit.",
-  "yard.noStorage": "Dessinez d'abord des voies de garage dans l'outil ferroviaire.",
-  "yard.none": "Aucun faisceau de garage pour l'instant.",
   "yard.add": "Nouveau faisceau de garage",
   "yard.defaultName": "Faisceau de garage {n}",
   "yard.name": "Nom",
-  "yard.tracks": "Voies de garage",
-  "yard.inOther": "dans {name}",
   "yard.charging": "Les trains s'y rechargent",
   "yard.cleaning": "Les trains y sont nettoyés",
-  "yard.remove": "Supprimer le faisceau de garage",
+  "yard.capacity": "Accueille {n} trains.",
   "depot.newName": "Dépôt {n}",
   "depot.slotsN": "Places : {n}",
   "depot.name": "Nom",
@@ -105,6 +98,9 @@ export const depotsFr = {
   "depot.sizing": "Dimensionnement dynamique",
   "depot.sizingNote":
     "La surface dont la flotte des lignes a besoin, et le nombre de véhicules que le contour accueille, pour chaque angle de rangement.",
+  "depot.shrink": "Réduire à cette taille",
+  "depot.shrinkTo":
+    "Réduire le contour à la surface du stationnement à {angle}°, en gardant sa forme, et refaire la disposition",
   "depot.size": "Dimensionner le dépôt",
   "depot.sizingFor": "Véhicules : {n} ; places dimensionnées pour {vehicle}.",
   "depot.col.angle": "Rangement",
@@ -119,5 +115,4 @@ export const depotsFr = {
   "depot.line.none": "Aucun dépôt",
   "depot.line.gone": "Le dépôt utilisé par cette ligne a été supprimé.",
   "depot.line.noDepots": "Aucun dépôt pour l'instant. Tracez-en un dans l'outil dépôt.",
-  "depot.line.open": "Ouvrir l'outil dépôt",
 } satisfies DepotsMessages;

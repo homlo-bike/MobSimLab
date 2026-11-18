@@ -13,19 +13,12 @@ export const depotsIt = {
   "depot.list": "Depositi",
   "depot.none": "Ancora nessun deposito.",
   "depot.add": "Nuovo deposito",
-  "yard.list": "Fasci di ricovero",
-  "yard.intro":
-    "Binari di ricovero della ferrovia raggruppati come deposito ferroviario. I loro binari valgono come ricovero notturno.",
-  "yard.noStorage": "Disegna prima binari di ricovero nello strumento ferroviario.",
-  "yard.none": "Ancora nessun fascio di ricovero.",
   "yard.add": "Nuovo fascio di ricovero",
   "yard.defaultName": "Fascio di ricovero {n}",
   "yard.name": "Nome",
-  "yard.tracks": "Binari di ricovero",
-  "yard.inOther": "in {name}",
   "yard.charging": "I treni si ricaricano qui",
   "yard.cleaning": "I treni vengono puliti qui",
-  "yard.remove": "Rimuovi fascio di ricovero",
+  "yard.capacity": "Contiene {n} treni.",
   "depot.newName": "Deposito {n}",
   "depot.slotsN": "Stalli: {n}",
   "depot.name": "Nome",
@@ -104,6 +97,9 @@ export const depotsIt = {
   "depot.sizing": "Dimensionamento dinamico",
   "depot.sizingNote":
     "La superficie di cui ha bisogno la flotta delle linee e quanti veicoli contiene il perimetro, per ogni angolo degli stalli.",
+  "depot.shrink": "Riduci a questa dimensione",
+  "depot.shrinkTo":
+    "Riduci il perimetro all'area per la sosta a {angle}°, mantenendone la forma, e ridisponi",
   "depot.size": "Dimensiona il deposito",
   "depot.sizingFor": "Veicoli: {n}; stalli dimensionati per {vehicle}.",
   "depot.col.angle": "Stalli",
@@ -118,5 +114,4 @@ export const depotsIt = {
   "depot.line.none": "Nessun deposito",
   "depot.line.gone": "Il deposito usato da questa linea è stato eliminato.",
   "depot.line.noDepots": "Ancora nessun deposito. Disegnane uno nello strumento depositi.",
-  "depot.line.open": "Apri lo strumento depositi",
 } satisfies DepotsMessages;
