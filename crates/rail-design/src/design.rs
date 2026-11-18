@@ -1300,6 +1300,49 @@ mod tests {
     }
 
     #[test]
+    fn a_track_in_an_open_cutting_passes_under_a_street_level_track() {
+        let mut net = Network::new(RailMode::RegionalRail, [7.0, 50.9]);
+        net.tracks
+            .push(straight(1, (-400.0, 0.0), (400.0, 0.0), None));
+        let mut cut = straight(2, (0.0, -300.0), (0.0, 300.0), None);
+        cut.level = Level::Cutting;
+        net.tracks.push(cut);
+        let dz = build(&net, None);
+        assert_eq!(dz.crossings.len(), 1, "{:?}", dz.crossings);
+        assert_eq!(dz.crossings[0].kind, CrossingKind::GradeSeparated);
+        let g = dz.track(2).unwrap();
+        assert_eq!(g.level_at(g.length / 2.0), Some(Level::Cutting));
+        // Open, below the street, between a tunnel and the street.
+        assert!(!Level::Cutting.underground() && Level::Cutting.below_street());
+        let p = dz.track_params(2);
+        assert!(
+            Level::Underground.height_m(p) < Level::Cutting.height_m(p)
+                && Level::Cutting.height_m(p) < 0.0
+        );
+        // The map draws the trench and its walls on the cutting's own level.
+        let v = crate::view::view(&dz);
+        let z = Level::Cutting.order();
+        let has = |layer: &str, kind: &str| {
+            v["layers"][layer]["features"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|f| {
+                    f["properties"]["kind"] == kind
+                        && f["properties"]["z"] == z
+                        && f["properties"]["ref"] == 2
+                })
+        };
+        assert!(has("structures", "cutting"));
+        assert!(has("edges", "cutting_edge"));
+        assert!(
+            !dz.issues.iter().any(|i| i.severity == Severity::Error),
+            "{:?}",
+            dz.issues
+        );
+    }
+
+    #[test]
     fn a_flat_crossing_with_a_high_speed_line_is_an_error() {
         let mut net = Network::new(RailMode::HighSpeedRail, [7.0, 50.9]);
         net.tracks

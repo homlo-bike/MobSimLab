@@ -133,7 +133,9 @@
       "properties": {
         "from_m": { "$ref": "#/$defs/metres" },
         "to_m": { "$ref": "#/$defs/metres" },
-        "value": { "enum": ["underground2", "underground", "street", "elevated", "elevated2", "ramp"] }
+        "value": {
+          "enum": ["underground2", "underground", "cutting", "street", "elevated", "elevated2", "ramp"]
+        }
       }
     },
     "section": {

@@ -22,6 +22,8 @@ export const editorsZu = {
   "rail.clear": "Sula konke",
   "rail.level.underground2": "Ngaphansi komhlaba −2",
   "rail.level.underground": "Ngaphansi komhlaba −1",
+  "rail.level.cutting": "Umsele ovulekile",
+  "rail.level.cuttingShort": "Umsele",
   "rail.level.street": "Izinga lomgwaqo",
   "rail.level.streetShort": "Umgwaqo",
   "rail.level.elevated": "Phezulu +1",
@@ -167,6 +169,12 @@ export const editorsZu = {
   "rail.tunnel.cut_and_cover": "Umba bese umboza",
   "rail.tunnel.tbm": "Umhubhe obhobozwe ngomshini (TBM)",
   "rail.structure": "Kuphakanyiswe phezu kwe-",
+  "rail.existingStructure": "Isebenzisa kabusha isakhiwo esikhona",
+  "rail.existingStructureHint":
+    "Imihubhe yawo, amabhuloho nama-viaduct sekukhona (njengomhubhe wesitimela omdala) futhi kubalwa njengokulungiswa.",
+  "rail.existingStation": "Esakhiweni esikhona",
+  "rail.existingStationHint":
+    "Ibhokisi noma ihholo lesiteshi sekukhona; kubalwa ukulungiswa nokufakwa kwemishini.",
   "rail.structure.auto":
     "Okuzenzakalelayo (umzila ophakeme we-tram ne-metro, ibhuloho elide lemizila emikhulu)",
   "rail.structure.elevated": "Umzila ophakeme",
@@ -689,6 +697,7 @@ export const editorsZu = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Ngaphansi komhlaba",
+  "schematic.level.cutting": "Umsele ovulekile",
   "schematic.level.street": "Ezingeni lomgwaqo",
   "schematic.level.elevated": "Phezulu",
   "schematic.level.ramp": "Irampu",

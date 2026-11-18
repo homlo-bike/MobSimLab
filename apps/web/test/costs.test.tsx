@@ -212,6 +212,7 @@ describe("construction type of a stretch", () => {
     expect(structureOf("underground", {}, "metro")).toBe("cut_and_cover");
     expect(structureOf("underground2", {}, "metro")).toBe("tbm");
     expect(structureOf("underground", { tunnel: "tbm" }, "metro")).toBe("tbm");
+    expect(structureOf("cutting", { tunnel: "tbm" }, "tram")).toBe("cutting");
     expect(structureOf("underground2", { tunnel: "cut_and_cover" }, "tram")).toBe("cut_and_cover");
     expect(structureOf("elevated", {}, "tram")).toBe("elevated");
     expect(structureOf("elevated2", {}, "high_speed_rail")).toBe("viaduct");
@@ -259,6 +260,34 @@ describe("estimate", () => {
     });
     expect(e.items.some((x) => x.category === "cut_and_cover")).toBe(true);
     expect(e.items.some((x) => x.category === "tbm")).toBe(false);
+  });
+
+  it("costs a track and a station that re-use existing structures as refurbished", () => {
+    const net = railway({ existing: true });
+    net.stations[1] = { ...net.stations[1]!, existing: true };
+    const e = estimate({
+      railway: net,
+      view: railView(),
+      reports: { M1: REPORT },
+      streetLines: [],
+      prefs: {},
+      prices: UNIT,
+    });
+    const v = (key: string) => libraryValue(key, "metro");
+    const amount = (cat: string) => sum(e.items.filter((x) => x.category === cat).map((x) => x.amount));
+    // The tunnel and the ramp are refurbished; the stretch at street level is new.
+    expect(amount("tbm")[1]).toBeCloseTo(1.3 * v("cost.civil.refurbish_structure_per_km")[1] * 1e6);
+    expect(amount("ramp")[1]).toBeCloseTo(0.2 * v("cost.civil.refurbish_structure_per_km")[1] * 1e6);
+    expect(amount("at_grade")[1]).toBeCloseTo(0.5 * v("cost.civil.at_grade_per_km")[1] * 1e6);
+    expect(amount("stations")[1]).toBeCloseTo(
+      (v("cost.station.at_grade")[1] + v("cost.station.refurbish")[1]) * 1e6,
+    );
+    expect(e.items.find((x) => x.param === "cost.station.refurbish")!.label).toBe(
+      "Stations underground, deep, refurbished",
+    );
+    expect(v("cost.civil.refurbish_structure_per_km")[1]).toBeLessThan(
+      v("cost.civil.cut_and_cover_per_km")[1],
+    );
   });
 
   it("sizes the fleet, depot and service of a rail line", () => {

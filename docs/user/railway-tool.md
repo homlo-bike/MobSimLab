@@ -68,14 +68,15 @@ Where a track changes level, the tool adds a ramp next to the deeper or higher e
 
 Double track spreads smoothly to the station's track spacing where it meets a station.
 
-For the cost estimate in the Tables tab ([Cost tables](cost-tables.md)), a track with underground stretches has **Tunnel built by** (Auto, Cut and cover, Bored tunnel (TBM)) and a track with elevated stretches has **Raised on** (Auto, Elevated guideway, Viaduct, Bridge). Auto builds the first underground level by cut and cover and the second with a TBM, and raises tram, light rail and metro track on an elevated guideway and main-line track on a viaduct. To cost one part of a line differently, draw it as its own track.
+For the cost estimate in the Tables tab ([Cost tables](cost-tables.md)), a track with underground stretches has **Tunnel built by** (Auto, Cut and cover, Bored tunnel (TBM)) and a track with elevated stretches has **Raised on** (Auto, Elevated guideway, Viaduct, Bridge). Auto builds the first underground level by cut and cover and the second with a TBM, and raises tram, light rail and metro track on an elevated guideway and main-line track on a viaduct. To cost one part of a line differently, draw it as its own track. When a track runs through a structure that is already there, such as an old railway tunnel, tick **Re-uses an existing structure**: its tunnels, ramps, bridges and viaducts are then costed at the refurbishment rate (*Refurbishing an existing tunnel, bridge or viaduct*) instead of as new. A station has **In an existing structure** for an old station box or hall, costed at *Refurbishing an existing station structure*.
 
 ## Heights and gradients
 
 Once a drawing has tracks or stations, the tool loads the ground heights under them. They come from Copernicus GLO-30, the same source the cable car tool uses. Every track then gets a vertical profile:
 
 - The ground along the track is smoothed over 100 m. GLO-30 is a surface model, so this removes buildings and trees the track passes.
-- The rail top is the ground plus the height of the track's level: street level, elevated +1 or +2, or underground −1 or −2. Along a ramp it changes from one level to the other. The gradient follows from the rail top.
+- The rail top is the ground plus the height of the track's level: street level, elevated +1 or +2, underground −1 or −2, or an open cutting (Cut) half as deep as −1. Along a ramp it changes from one level to the other. The gradient follows from the rail top.
+- An **open cutting** is a trench below the street without a roof, such as the stretches between tunnels on an old railway alignment. It is drawn open on the map, streets and street-level tracks cross it on bridges (no level crossings), and the cost estimate prices it as an open cutting rather than a tunnel.
 - **Stations are always level.** Their rails sit at the average ground height under the station, plus the station's level. A track that starts or ends at a station, or at a switch on another track, meets that height exactly. It takes up the difference over a length that uses half the mode's maximum gradient.
 
 Select a track to see its profile: the rail top and the ground, the height range, and the steepest gradient against the mode's maximum. Select a station to see its rail height and the ground along it. The track topology for operations carries the gradients, so running times include them.

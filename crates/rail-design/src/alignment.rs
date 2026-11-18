@@ -93,10 +93,10 @@ pub struct Ramp {
 }
 
 impl Ramp {
-    /// Purpose: drawing order of a ramp: with the tunnel when it goes underground, else with the
-    /// viaduct.
+    /// Purpose: drawing order of a ramp: with the tunnel or cutting when it goes below the street, else
+    /// with the viaduct.
     pub fn order(&self) -> u8 {
-        if self.from.underground() || self.to.underground() {
+        if self.from.below_street() || self.to.below_street() {
             self.from.order().min(self.to.order())
         } else {
             self.from.order().max(self.to.order())

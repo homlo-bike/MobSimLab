@@ -482,6 +482,7 @@ export const WALK = { speedKmh: 4.5, detour: 1.3, minChangeS: 60, levelChangeS: 
 const LEVEL_NUMBER: Record<string, number> = {
   underground2: -2,
   underground: -1,
+  cutting: -0.5,
   street: 0,
   elevated: 1,
   elevated2: 2,

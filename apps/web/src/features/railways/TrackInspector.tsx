@@ -116,6 +116,20 @@ export function TrackInspector({ t: track, doc, view, sel, actions: a }: Props &
           </select>
         </Row>
       )}
+      {tv?.levels.some((z) => z.level !== "street") && (
+        <label className="flex items-start gap-2">
+          <input
+            type="checkbox"
+            className="mt-1"
+            checked={!!t.existing}
+            onChange={(e) => set((x) => ({ ...x, existing: e.target.checked || undefined }))}
+          />
+          <span>
+            {tr("rail.existingStructure")}
+            <span className="block text-xs text-slate-600">{tr("rail.existingStructureHint")}</span>
+          </span>
+        </label>
+      )}
       <Segmented<TrackUse>
         label={tr("rail.use")}
         value={t.use}

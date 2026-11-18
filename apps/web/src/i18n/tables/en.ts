@@ -72,6 +72,7 @@ export const tablesEn = {
   "net.structure.at_grade": "At street level or on its own formation",
   "net.stations.underground2": "Stations underground, deep",
   "net.stations.underground": "Stations underground",
+  "net.stations.cutting": "Stations in a cutting",
   "net.stations.street": "Stations at street level",
   "net.stations.elevated": "Stations elevated",
   "net.stations.elevated2": "Stations elevated, upper level",
@@ -280,6 +281,7 @@ export const tablesEn = {
   "cost.cat.viaduct": "Viaduct",
   "cost.cat.bridge": "Bridge",
   "cost.cat.ramp": "Ramp between levels",
+  "cost.cat.cutting": "Open cutting",
   "cost.cat.cut_and_cover": "Tunnel, cut and cover",
   "cost.cat.tbm": "Tunnel, bored (TBM)",
   "cost.cat.systems": "Track, power and signalling",
@@ -302,6 +304,8 @@ export const tablesEn = {
   "cost.x.stations.elevated": "Stations elevated",
   "cost.x.stations.underground": "Stations underground",
   "cost.x.stations.underground2": "Stations underground, deep",
+  "cost.x.stations.cutting": "Stations in a cutting",
+  "cost.x.refurbished": "{what}, refurbished",
   "cost.x.trains": "{train} × {units}, {m} m trains",
   "cost.x.depotFleet": "Depot and stabling for the fleet",
   "cost.x.crew": "Crew, per train-hour",
@@ -332,6 +336,7 @@ export const tablesEn = {
 
   // Unit costs of the assumption library (assumptions/parameters/costs.yaml); {year} is the price base year.
   "cost.p.cost.civil.at_grade_per_km": "Civil works at street level or on its own formation, double track",
+  "cost.p.cost.civil.cutting_per_km": "Open cutting (trench with retaining walls), double track",
   "cost.p.cost.civil.elevated_per_km": "Elevated guideway on columns, double track",
   "cost.p.cost.civil.viaduct_per_km": "Viaduct (long multi-span structure), double track",
   "cost.p.cost.civil.bridge_per_km": "Bridge over a river, road or railway, double track",
@@ -344,6 +349,10 @@ export const tablesEn = {
   "cost.p.cost.station.elevated": "Elevated station",
   "cost.p.cost.station.underground": "Underground station on the first level (cut and cover box)",
   "cost.p.cost.station.underground_deep": "Underground station on the second level (deep)",
+  "cost.p.cost.station.cutting": "Station in an open cutting",
+  "cost.p.cost.station.refurbish": "Refurbishing an existing station structure, each",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Refurbishing an existing tunnel, bridge or viaduct, double track",
   "cost.p.cost.switch_each": "Switch or crossing, each",
   "cost.p.cost.depot_per_train_m": "Depot and stabling per metre of rail fleet",
   "cost.p.cost.depot_per_bus": "Bus depot per bus",

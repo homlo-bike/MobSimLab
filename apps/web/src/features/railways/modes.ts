@@ -16,6 +16,7 @@ export const RAIL_MODES: { id: RailMode; label: MessageKey }[] = [
 export const LEVELS: { id: Level; short: string | MessageKey; label: MessageKey }[] = [
   { id: "underground2", short: "−2", label: "rail.level.underground2" },
   { id: "underground", short: "−1", label: "rail.level.underground" },
+  { id: "cutting", short: "rail.level.cuttingShort", label: "rail.level.cutting" },
   { id: "street", short: "rail.level.streetShort", label: "rail.level.street" },
   { id: "elevated", short: "+1", label: "rail.level.elevated" },
   { id: "elevated2", short: "+2", label: "rail.level.elevated2" },
@@ -39,6 +40,7 @@ export const COLORS = {
   ballast: "#d5cebf",
   paving: "#cdcfca",
   tunnel: "#3d4550",
+  cutting: "#8a6a45",
   deck: "#7a8ba0",
   platform: "#e8e0cb",
   platformEdge: "#d9a900",
