@@ -329,3 +329,43 @@ export const ZONE_LABEL: Record<ZoneKind, MessageKey> = {
   reserve: "depot.zone.reserve",
   circulation: "depot.zone.circulation",
 };
+
+/** Purpose: whether two rings are the same outline (same corners, in order, within about a centimetre). */
+function sameRing(a: LonLat[], b: LonLat[]): boolean {
+  return (
+    a.length === b.length && a.every((p, i) => Math.abs(p[0] - b[i]![0]) + Math.abs(p[1] - b[i]![1]) < 1e-7)
+  );
+}
+
+/**
+ * Purpose: a depot with a new outline. Gates move onto it; a zone drawn as the whole old outline becomes the whole
+ * new one; the laid-out lanes and aisles that no longer lie inside are removed, so the slots and capacity shown are
+ * those that fit. Zones the planner drew inside keep their shape (a check names any that now reach outside).
+ * Inputs: the depot; the new outline. Output: the changed depot.
+ */
+export function withOutline(d: SavedDepot, ring: LonLat[]): SavedDepot {
+  const inside = (p: LonLat) => insideOrOn(ring, p);
+  return {
+    ...d,
+    boundary: ring,
+    gates: d.gates.map((g) => ({ ...g, lonlat: snapToRing(ring, g.lonlat) })),
+    zones: d.zones.map((z) => (d.boundary.length >= 3 && sameRing(z.ring, d.boundary) ? { ...z, ring } : z)),
+    layout: d.layout && {
+      lanes: d.layout.lanes.filter((l) => l.slots.every((s) => inside(s.center))),
+      aisles: d.layout.aisles.filter((a) => a.coords.every(inside)),
+    },
+  };
+}
+
+/** Purpose: whether a point is inside a ring or on its edge (within half a metre). */
+function insideOrOn(ring: LonLat[], p: LonLat): boolean {
+  if (inRing(ring, p)) return true;
+  const [x, y] = toXY(p, snapToRing(ring, p));
+  return Math.hypot(x, y) < 0.5;
+}
+
+/** Purpose: the zones of a depot that reach outside its outline (1-based positions, as the panel numbers them). */
+export function zonesOutside(d: SavedDepot): number[] {
+  if (d.boundary.length < 3) return [];
+  return d.zones.flatMap((z, i) => (z.ring.some((p) => !insideOrOn(d.boundary, p)) ? [i + 1] : []));
+}

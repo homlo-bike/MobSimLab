@@ -39,6 +39,7 @@ export const depotsUz = {
   "depot.hint.gate": "Chegarada darvoza ko'chaga tutashgan joyni bosing.",
   "depot.remove": "Olib tashlash",
   "depot.zones": "Zonalar",
+  "depot.zoneOutside": "{n}-zona depo chegarasidan chiqib ketadi: uni qayta chizing yoki olib tashlang.",
   "depot.zonesNote":
     "To'xtash, quvvatlash (har bir joyda zaryadlovchi), ta'mirlash (tungi to'xtash uchun emas), zaxira transport uchun zaxira va harakat (faqat yurish uchun). Avtomatik joylashtirish to'xtash, quvvatlash, ta'mirlash va zaxira zonalarini to'ldiradi.",
   "depot.zoneKind": "Zona turi",

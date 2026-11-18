@@ -26,7 +26,7 @@ When the project has no lines yet, the tab says so and offers **Go to Create**.
 - **Status symbols** and **Station feature symbols** show or hide the symbols next to station names.
 - **Sea, lakes and rivers**: water from OpenStreetMap around the network, bent along with the stations so it stays where it belongs between them.
 - **Tariff zones and landmarks**: **Draw an area**, click the map at each corner, then **Finish**. Pick the area in the list to change its name, kind (tariff zone or landmark), colour, or remove it; drag its white corners on the map to change its shape. Tariff zones set the zones of a trip when the [fare revenue table](fare-revenue.md) uses zonal fares.
-- Use **−**, **+** and **Fit** to zoom.
+- Use **−** and **+** to zoom; the zoom level shows beside them. **Fit** fits the whole drawing to the page again.
 
 Moves, name places and rotations, statuses, areas, layers and switches are saved with the project. People who can only view the project see the map and can export it, but cannot change it.
 
@@ -50,7 +50,7 @@ For rail lines the vehicles, round trip, driving times and levels come from the 
 ## Export
 
 - **SVG**: the map as a vector file, for print shops and drawing programs.
-- **PNG**: an image at twice the screen size, for slides and messages.
+- **PNG**: an image at twice the screen size, for slides and messages. A very large network is drawn smaller, at most about 40 megapixels and 8,192 pixels a side, so that image viewers can open it.
 - **Print or PDF**: opens the print dialog with only the map; choose *Save as PDF* there for a PDF.
 
 Each export carries the project name, a legend of the lines, water, areas and symbols, and the date. It exports what is on screen: the network map with the layers that are on, or the strip map of the chosen line.

@@ -26,6 +26,8 @@ Under **Personal access token** in the AI agents panel, give the token a name, p
 
 ## What agents can do
 
+An agent sees only the tools its connection's scopes allow; the others are not listed.
+
 | Tool | What it does | Scope |
 |------|--------------|-------|
 | `list_scenarios`, `get_scenario` | Your agent scenarios and their stops, lines and validation | project:read |
@@ -46,6 +48,8 @@ Under **Personal access token** in the AI agents panel, give the token a name, p
 | `start_run` | The simulator tab's rail capacity run on the background worker, saved with the project | simulation:run |
 | `run_sweep` | The capacity run once per variant of its settings, in one job, with the Pareto front | simulation:run |
 | `get_run_status`, `cancel_run`, `rerun` | Follow a run and read its result; stop it; run it again in place | simulation:run |
+| `list_plugin_calculations` | The calculations that installed plugins add and the project has turned on, with their inputs and outputs | analysis:run |
+| `run_plugin_calculation` | Run one of those calculations on a scenario in MobSimLab's sandbox (no network, memory and time limits); its output is the plugin publisher's data | analysis:run |
 
 The headline is the 15-minute walk to the nearest stop or station (`walk_minutes` preset). The SDG 11.2.1 rule (500 m to any stop, 1000 m to rail and BRT), the per-mode catchment rule, the frequent-service rule and PTAL are available as secondary presets. Every result names the rule, the parameters and where the defaults come from.
 
@@ -82,10 +86,12 @@ Each variant is measured (verdict, trains needed, trains out at peak, unplaced t
 
 ## Seeing what agents did
 
-- **Connected agents and tokens** lists each app and token with its scopes, last use and its recent actions. **Disconnect** stops it at once.
+- **Connected agents and tokens** lists each app and token with its scopes, last use and its recent actions. **Disconnect** stops it at once, after you confirm.
+- A connection MobSimLab ends by itself (a sign-in code or refresh token used twice, which may mean it was stolen) is in the audit trail as *agent revoked automatically*, with the reason.
 - **Scenarios** lists agent scenarios with an *Agent* badge. **Show** draws its stops and lines on the map with the 15-minute walk catchment (green within 5 minutes, yellow 10, orange 15) and prints the coverage headline.
 - Every change an agent makes is in the audit trail with the app, the tool and a fingerprint of the arguments. Runs an agent starts, stops or reruns are in the project's audit trail with the app and the tool.
 - Admins can switch off **Let AI apps register themselves**; then no new app can register, and apps already registered or connected keep working until disconnected.
+- Admins see the **Registered AI apps** with how many agents each has connected, and can **Remove** an app none is connected through; it must register again to connect.
 
 ## How the walk is measured
 

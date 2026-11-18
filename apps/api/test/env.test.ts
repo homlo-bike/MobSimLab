@@ -58,6 +58,19 @@ describe("loadConfig", () => {
     );
   });
 
+  it("refuses to start when the OIDC client secret file exists but cannot be read", () => {
+    const denied = (p: string) => {
+      if (p.endsWith("oidc_client_secret")) throw Object.assign(new Error("EACCES"), { code: "EACCES" });
+      return reader(p);
+    };
+    expect(() => loadConfig(env, denied)).toThrow(/oidc_client_secret is not readable \(EACCES\)/);
+    const missing = (p: string) => {
+      if (p.endsWith("oidc_client_secret")) throw Object.assign(new Error("ENOENT"), { code: "ENOENT" });
+      return reader(p);
+    };
+    expect(loadConfig(env, missing).oidc).toBeUndefined();
+  });
+
   it("refuses short, example and low-variety secrets", () => {
     expect(secretProblem("session_secret", "short")).toMatch(/shorter/);
     expect(secretProblem("db_app_password", "changeme-changeme-changeme")).toMatch(/example/);

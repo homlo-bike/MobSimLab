@@ -236,9 +236,15 @@ export function CostTables({
       }),
     [railway, rail, streetLines, prefs, prices, t],
   );
+  // The appraisal waits for the country's figures and the railway's publication, so it never shows interim
+  // numbers (another currency, a shorter timeline) that change a moment later.
+  const settling =
+    (!econError && ((!!place && !code) || (!!code && !econ))) ||
+    (!!railway?.tracks.length && !rail && !railError);
   useEffect(() => {
+    if (settling) return;
     onEstimate?.(est, prices, code ?? null, conv.rate, econ?.country.income ?? null);
-  }, [est, prices, code, onEstimate, conv.rate, econ?.country.income]);
+  }, [settling, est, prices, code, onEstimate, conv.rate, econ?.country.income]);
   const money = (v: number) => fmtMoney(v, prices.currency);
   const range = (t: Triple) => `${money(t[0])} – ${money(t[2])}`;
   const editable = !!onPreferences;

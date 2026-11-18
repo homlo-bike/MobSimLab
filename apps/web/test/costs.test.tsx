@@ -440,6 +440,8 @@ describe("cost tables", () => {
     // The benefit tables get the estimate in CHF and the factor from EUR.
     await waitFor(() => expect(onEstimate.mock.lastCall?.[1].currency).toBe("CHF"));
     expect(onEstimate.mock.lastCall?.[3]).toBeCloseTo(0.9 / 0.92);
+    // Only once the country's figures are in: no interim estimate at other prices went out first.
+    for (const call of onEstimate.mock.calls) expect(call[2]).not.toBeNull();
   });
 
   it("draws the charts, sorts lines and opens and closes groups", async () => {

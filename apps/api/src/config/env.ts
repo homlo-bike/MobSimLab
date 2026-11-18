@@ -187,7 +187,14 @@ export function loadConfig(
   let oidcSecret: string | undefined;
   try {
     oidcSecret = readFile(join(dir, "oidc_client_secret")).trim() || undefined;
-  } catch {
+  } catch (e) {
+    // Only a missing file means "public client". A file that exists but cannot be read (wrong owner or mode)
+    // would otherwise turn the app into a public client whose every sign-in fails at the provider.
+    const code = (e as NodeJS.ErrnoException).code;
+    if (code && code !== "ENOENT")
+      problems.push(
+        `oidc_client_secret is not readable (${code}): it must be readable by the container user (uid 10001)`,
+      );
     oidcSecret = undefined;
   }
   let localLaunchKey: string | undefined;

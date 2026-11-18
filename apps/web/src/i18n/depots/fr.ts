@@ -38,6 +38,7 @@ export const depotsFr = {
   "depot.hint.gate": "Cliquez sur le contour là où le portail rejoint la rue.",
   "depot.remove": "Supprimer",
   "depot.zones": "Zones",
+  "depot.zoneOutside": "La zone {n} dépasse le contour du dépôt : redessinez-la ou supprimez-la.",
   "depot.zonesNote":
     "Remisage, recharge (un chargeur à chaque place), atelier (pas pour le remisage de nuit), réserve pour les véhicules de réserve et circulation (roulage seulement). La disposition automatique remplit les zones de remisage, recharge, atelier et réserve.",
   "depot.zoneKind": "Type de zone",

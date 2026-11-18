@@ -135,6 +135,20 @@ export function emptyNetwork(mode: Network["mode"], origin: [number, number]): N
   return { origin, mode, stations: [], tracks: [], switches: [] };
 }
 
+/**
+ * Purpose: whether nothing is drawn yet (no station, track, switch, own signal or line), so the drawing's origin
+ * can still move without moving anything.
+ */
+export function isEmptyDrawing(doc: Network): boolean {
+  return (
+    doc.stations.length === 0 &&
+    doc.tracks.length === 0 &&
+    doc.switches.length === 0 &&
+    (doc.signals?.length ?? 0) === 0 &&
+    (doc.lines?.length ?? 0) === 0
+  );
+}
+
 /** Purpose: add a station at a local position. Output: the document and the new station's id. */
 export function addStation(
   doc: Network,

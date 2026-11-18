@@ -84,6 +84,22 @@ export function holds(outer: readonly number[], inner: readonly number[]): boole
   return outer[0]! <= inner[0]! && outer[1]! <= inner[1]! && outer[2]! >= inner[2]! && outer[3]! >= inner[3]!;
 }
 
+/**
+ * Purpose: the part of box `inner` inside box `outer`, or null when they do not overlap. A box that pokes out of
+ * the project's import is answered from the import for the part it covers: the import is the planner's chosen
+ * data, and a request just past its edge (a margin around a schematic, a street tile at the edge) must not turn
+ * into a request to the public Overpass API for the whole box.
+ */
+export function clipTo(outer: readonly number[], inner: readonly number[]): Box | null {
+  const b: Box = [
+    Math.max(outer[0]!, inner[0]!),
+    Math.max(outer[1]!, inner[1]!),
+    Math.min(outer[2]!, inner[2]!),
+    Math.min(outer[3]!, inner[3]!),
+  ];
+  return b[0] < b[2] && b[1] < b[3] ? b : null;
+}
+
 /** The ways the live street-network queries ask for, as osmium tag filters (street-network.service.ts). */
 export const TILE_FILTERS = {
   road: [
@@ -137,8 +153,14 @@ export class GeodataReader {
     this.imports.onChange(fn);
   }
 
-  /** Purpose: the project's current OSM import when it holds the whole box, else null. */
-  private async osmFor(projectId: string, box: readonly number[]): Promise<ImportRun | null> {
+  /**
+   * Purpose: the project's current OSM import when it overlaps the box, with the part of the box it covers (all of
+   * it when the import holds the box); else null (no import, or the box is wholly outside it).
+   */
+  private async osmFor(
+    projectId: string,
+    box: readonly number[],
+  ): Promise<{ run: ImportRun; box: Box } | null> {
     let p = this.osmRun.get(projectId);
     if (!p) {
       p = this.imports.current(projectId, "osm");
@@ -146,16 +168,19 @@ export class GeodataReader {
       this.osmRun.set(projectId, p);
     }
     const run = await p;
-    return run && holds(run.bbox, box) ? run : null;
+    if (!run) return null;
+    const part = clipTo(run.bbox, box);
+    return part ? { run, box: part } : null;
   }
 
   /**
    * Purpose: OSM XML of one kind of way inside a box, cut from the project's extract, or null when the project's
    * import does not hold the box.
    */
-  async tileXml(projectId: string, kind: keyof typeof TILE_FILTERS, box: Box): Promise<string | null> {
-    const run = await this.osmFor(projectId, box);
-    if (!run) return null;
+  async tileXml(projectId: string, kind: keyof typeof TILE_FILTERS, wanted: Box): Promise<string | null> {
+    const hit = await this.osmFor(projectId, wanted);
+    if (!hit) return null;
+    const { run, box } = hit;
     return this.imports.osmTools.filteredXml(
       this.imports.extractPath(projectId, run.id),
       box,
@@ -165,9 +190,10 @@ export class GeodataReader {
   }
 
   /** Purpose: Overpass-style JSON of the buildings in a box (for `footprints` and `crossings`), or null. */
-  async buildings(projectId: string, box: Box): Promise<string | null> {
-    const run = await this.osmFor(projectId, box);
-    if (!run) return null;
+  async buildings(projectId: string, wanted: Box): Promise<string | null> {
+    const hit = await this.osmFor(projectId, wanted);
+    if (!hit) return null;
+    const { run, box } = hit;
     const { rows } = await sql<{ osm_type: string; osm_id: string; tags: Record<string, string>; g: string }>`
       SELECT osm_type, osm_id, tags, ST_AsGeoJSON(geom, 7) AS g FROM geo.osm_building
       WHERE import_id = ${run.id} AND geom && ST_MakeEnvelope(${box[0]}, ${box[1]}, ${box[2]}, ${box[3]}, 4326)
@@ -181,9 +207,10 @@ export class GeodataReader {
    * Purpose: Overpass-style JSON (`out tags center`) of the schools, universities, hospitals and clinics in a box,
    * for `places`, or null.
    */
-  async places(projectId: string, box: Box): Promise<string | null> {
-    const run = await this.osmFor(projectId, box);
-    if (!run) return null;
+  async places(projectId: string, wanted: Box): Promise<string | null> {
+    const hit = await this.osmFor(projectId, wanted);
+    if (!hit) return null;
+    const { run, box } = hit;
     const { rows } = await sql<{ osm_type: string; osm_id: string; tags: Record<string, string>; c: string }>`
       SELECT osm_type, osm_id, tags, ST_AsGeoJSON(ST_PointOnSurface(geom), 7) AS c FROM geo.osm_poi
       WHERE import_id = ${run.id} AND class IN ('education', 'health')
@@ -206,9 +233,10 @@ export class GeodataReader {
    * Purpose: Overpass-style JSON (`out tags geom`) of the water in a box, as `waterQuery` asks for it: water areas,
    * river areas, reservoirs, rivers and canals, and the coastline; or null.
    */
-  async water(projectId: string, box: Box): Promise<string | null> {
-    const run = await this.osmFor(projectId, box);
-    if (!run) return null;
+  async water(projectId: string, wanted: Box): Promise<string | null> {
+    const hit = await this.osmFor(projectId, wanted);
+    if (!hit) return null;
+    const { run, box } = hit;
     const env = sql`ST_MakeEnvelope(${box[0]}, ${box[1]}, ${box[2]}, ${box[3]}, 4326)`;
     const { rows } = await sql<{ osm_type: string; osm_id: string; tags: Record<string, string>; g: string }>`
       SELECT osm_type, osm_id, tags, ST_AsGeoJSON(geom, 7) AS g FROM geo.osm_water

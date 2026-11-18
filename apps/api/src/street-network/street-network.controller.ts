@@ -8,12 +8,14 @@ import {
   Query,
   Req,
   Optional,
+  UseInterceptors,
 } from "@nestjs/common";
 import type { MslRequest } from "../auth/session.service";
 import { OverpassError } from "../gateway/overpass.client";
 import { ProjectGate } from "../geodata/project-gate";
 import { ToolError } from "../geodata/osm-tools";
 import { Requires } from "../iam/requires";
+import { NoStoreOnError } from "./no-store-on-error";
 import { StreetNetworkService, TILE_ZOOM } from "./street-network.service";
 import { type Bbox, MAX_WATER_SPAN_DEG } from "./water";
 
@@ -23,6 +25,7 @@ import { type Bbox, MAX_WATER_SPAN_DEG } from "./water";
  * buildings, places and water come from that project's OpenStreetMap import where it covers them (ADR-0046).
  */
 @Controller("api/street-network")
+@UseInterceptors(NoStoreOnError)
 export class StreetNetworkController {
   constructor(
     private readonly streets: StreetNetworkService,

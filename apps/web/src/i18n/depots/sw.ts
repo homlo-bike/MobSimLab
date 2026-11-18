@@ -37,6 +37,7 @@ export const depotsSw = {
   "depot.hint.gate": "Bofya mpaka mahali lango linapokutana na barabara.",
   "depot.remove": "Ondoa",
   "depot.zones": "Kanda",
+  "depot.zoneOutside": "Eneo {n} linatoka nje ya mpaka wa bohari: lichore upya au liondoe.",
   "depot.zonesNote":
     "Maegesho, kuchaji (chaja kwenye kila nafasi), matengenezo (si kwa maegesho ya usiku), akiba kwa magari ya akiba, na mzunguko (kuendesha tu). Mpangilio wa kiotomatiki hujaza kanda za maegesho, kuchaji, matengenezo na akiba.",
   "depot.zoneKind": "Aina ya kanda",

@@ -37,6 +37,8 @@ export const depotsDe = {
   "depot.hint.gate": "Auf den Umriss klicken, wo das Tor auf die Straße trifft.",
   "depot.remove": "Entfernen",
   "depot.zones": "Zonen",
+  "depot.zoneOutside":
+    "Zone {n} reicht über den Umriss des Betriebshofs hinaus: neu zeichnen oder entfernen.",
   "depot.zonesNote":
     "Abstellen, Laden (ein Ladegerät an jedem Stellplatz), Werkstatt (nicht zum Abstellen über Nacht), Reserve für Ersatzfahrzeuge und Verkehrsfläche (nur Fahren). Das automatische Layout füllt die Abstell-, Lade-, Werkstatt- und Reservezonen.",
   "depot.zoneKind": "Art der Zone",

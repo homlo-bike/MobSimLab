@@ -166,6 +166,12 @@ export function AppraisalSection({
               sub={`FIRR ${total.firrShare >= 0.5 ? pct(total.firr[1]) : "–"}; fares less the operator's costs`}
             />
           </div>
+          <p className="mt-2 text-xs text-slate-600">
+            These four are the middle of the {result.draws} draws (the 50th percentile), with the 10th to 90th
+            percentile below each. The tables below use the medium case, every input at its medium value: ENPV{" "}
+            {money(total.central.enpv)}, benefit-cost ratio {ratio(total.central.bcr)}, FNPV{" "}
+            {money(total.central.fnpv)}.
+          </p>
           <Breakdown p={total.central} row={total} money={money} />
           <section className={card} aria-labelledby="appraisal-draws">
             <h3 id="appraisal-draws" className="caps m-0">
@@ -559,9 +565,11 @@ function SwitchingAndTests({ a, money }: { a: Appraisal; money: (v: number) => s
                 <td className={td}>{s.label}</td>
                 <td className={num}>{money(s.value)}</td>
                 <td className={num}>
-                  {s.change === null
-                    ? "–"
-                    : `${s.change >= 0 ? "+" : "−"}${Math.abs(s.change * 100).toFixed(1)} %`}
+                  {s.impossible
+                    ? "none: the ENPV stays below 0 even at zero"
+                    : s.change === null
+                      ? "–"
+                      : `${s.change >= 0 ? "+" : "−"}${Math.abs(s.change * 100).toFixed(1)} %`}
                 </td>
               </tr>
             ))}

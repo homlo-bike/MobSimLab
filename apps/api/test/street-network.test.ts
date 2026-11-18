@@ -159,6 +159,22 @@ describe("street tiles", () => {
     await app.close();
   });
 
+  it("answers an OpenStreetMap failure as JSON the browser does not keep", async () => {
+    const { c } = client([503, 503, 503]);
+    const mod = await Test.createTestingModule({ imports: [StreetNetworkModule] })
+      .overrideProvider(OverpassClient)
+      .useValue(c)
+      .compile();
+    const app = mod.createNestApplication();
+    await app.init();
+    const bad = await request(app.getHttpServer()).get("/api/street-network/tiles/14/8508/5489");
+    expect(bad.status).toBe(502);
+    expect(bad.headers["cache-control"]).toBe("no-store");
+    expect(bad.headers["content-type"]).toContain("application/json");
+    expect(bad.body.message).toMatch(/unavailable/);
+    await app.close();
+  });
+
   it("retries busy answers and gives up with 502", async () => {
     const ok = client([429, 504, XML]);
     await expect(ok.c.run("q")).resolves.toBe(XML);

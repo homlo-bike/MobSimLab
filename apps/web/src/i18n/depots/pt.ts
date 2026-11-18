@@ -36,6 +36,7 @@ export const depotsPt = {
   "depot.hint.gate": "Clique no contorno onde o portão encontra a rua.",
   "depot.remove": "Remover",
   "depot.zones": "Zonas",
+  "depot.zoneOutside": "A zona {n} sai do contorno da garagem: desenhe-a de novo ou remova-a.",
   "depot.zonesNote":
     "Estacionamento, recarga (um carregador em cada vaga), manutenção (não usada para pernoite), reserva para veículos reserva e circulação (só circulação). O arranjo automático preenche as zonas de estacionamento, recarga, manutenção e reserva.",
   "depot.zoneKind": "Tipo de zona",

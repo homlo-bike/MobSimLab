@@ -25,7 +25,7 @@ import { AuditService } from "../audit/audit.service";
 import { AuthRateLimit } from "../iam/rate-limit.service";
 import { Public, Requires } from "../iam/requires";
 import { AuthService } from "./auth.service";
-import { OidcNotConfiguredError, OidcService } from "./oidc.service";
+import { describeOidcError, OidcNotConfiguredError, OidcService } from "./oidc.service";
 import { ABSOLUTE_MS, type MslRequest, SessionService } from "./session.service";
 
 /**
@@ -46,7 +46,14 @@ export const preferencesBody = z.strictObject({
 });
 export type Preferences = z.infer<typeof preferencesBody>;
 
+/**
+ * Each sign-in flow has its own cookie, named after its state, so a sign-in started in a second tab (while the
+ * first waits at the provider for a password or consent) does not overwrite the first tab's flow.
+ */
 const FLOW_COOKIE = "msl_auth_flow";
+export function flowCookieName(state: string): string {
+  return `${FLOW_COOKIE}_${sha256(state).toString("base64url").slice(0, 16)}`;
+}
 const FLOW_MS = 10 * 60 * 1000;
 
 /** Sign-in, sign-out and "who am I" (05 §3.1). */
@@ -138,7 +145,7 @@ export class AuthController {
     } catch (e) {
       if (e instanceof OidcNotConfiguredError)
         throw new ServiceUnavailableException("sign-in is not configured");
-      this.log.error(`OIDC discovery failed: ${(e as Error).message}`);
+      this.log.error(`OIDC discovery failed: ${describeOidcError(e)}`);
       throw new ServiceUnavailableException("sign-in provider unavailable");
     }
     await this.db.deleteFrom("iam.auth_flow").where("expires_at", "<", new Date()).execute();
@@ -152,7 +159,10 @@ export class AuthController {
         expires_at: new Date(Date.now() + FLOW_MS),
       })
       .execute();
-    res.cookie(FLOW_COOKIE, r.state, { ...this.sessions.cookieOptions(FLOW_MS), path: "/api/auth" });
+    res.cookie(flowCookieName(r.state), r.state, {
+      ...this.sessions.cookieOptions(FLOW_MS),
+      path: "/api/auth",
+    });
     res.redirect(302, r.url.href);
   }
 
@@ -169,10 +179,12 @@ export class AuthController {
       this.security.warn(`sign-in refused: ${reason} (client ${this.sessions.ipHash(req.ip) ?? "unknown"})`);
       res.redirect(302, `/?signin=${encodeURIComponent(reason)}`);
     };
-    res.clearCookie(FLOW_COOKIE, { ...this.sessions.cookieOptions(), path: "/api/auth" });
     const state = typeof req.query.state === "string" ? req.query.state : "";
-    const cookieState = (req.cookies as Record<string, string> | undefined)?.[FLOW_COOKIE];
-    if (!state || state !== cookieState) return fail("invalid_request");
+    if (!state) return fail("invalid_request");
+    const cookieName = flowCookieName(state);
+    res.clearCookie(cookieName, { ...this.sessions.cookieOptions(), path: "/api/auth" });
+    const cookieState = (req.cookies as Record<string, string> | undefined)?.[cookieName];
+    if (state !== cookieState) return fail("invalid_request");
     const flow = await this.db
       .deleteFrom("iam.auth_flow")
       .where("state_hash", "=", sha256(state))
@@ -189,14 +201,14 @@ export class AuthController {
         codeVerifier: flow.code_verifier,
       });
     } catch (e) {
-      this.log.warn(`sign-in failed: ${(e as Error).message}`);
+      this.log.warn(`sign-in failed: ${describeOidcError(e)}`);
       return fail("provider_error");
     }
     const meta = { ipHash: this.sessions.ipHash(req.ip), requestId: req.requestId ?? null };
     const outcome = await this.auth.signIn(identity, meta);
     if (!outcome.ok) return fail(outcome.reason);
     if (req.session) await this.sessions.revoke(req.session.tokenHash);
-    const token = await this.sessions.create(outcome.userId);
+    const token = await this.sessions.create(outcome.userId, new Date(), identity.idToken);
     res.cookie(this.sessions.cookieName, token, this.sessions.cookieOptions(ABSOLUTE_MS));
     res.redirect(302, flow.return_to);
   }
@@ -235,8 +247,9 @@ export class AuthController {
   @Requires("session.own")
   async logout(@Req() req: MslRequest, @Res({ passthrough: true }) res: Response) {
     const s = req.session;
+    let idToken: string | null = null;
     if (s) {
-      await this.sessions.revoke(s.tokenHash);
+      idToken = await this.sessions.revoke(s.tokenHash);
       await this.audit.append({
         action: "auth.logout",
         objectType: "user",
@@ -247,7 +260,7 @@ export class AuthController {
       });
     }
     res.clearCookie(this.sessions.cookieName, this.sessions.cookieOptions());
-    const endSessionUrl = await this.oidc.endSessionUrl().catch(() => null);
+    const endSessionUrl = await this.oidc.endSessionUrl(idToken).catch(() => null);
     return { endSessionUrl };
   }
 }

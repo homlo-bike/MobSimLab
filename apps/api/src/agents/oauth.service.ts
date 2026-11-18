@@ -99,7 +99,8 @@ export class OAuthService {
       authorization_servers: [this.issuer()],
       scopes_supported: SCOPE_IDS,
       bearer_methods_supported: ["header"],
-      resource_name: `${inst.name} (MobSimLab)`,
+      resource_name:
+        inst.name.trim().toLowerCase() === "mobsimlab" ? "MobSimLab" : `${inst.name} (MobSimLab)`,
       resource_documentation: "https://github.com/homlo-bike/MobSimLab/blob/main/docs/user/ai-agents.md",
     };
   }
@@ -547,8 +548,26 @@ export class OAuthService {
   /** Purpose: end a connection and delete its tokens. */
   /** Purpose: a reused code or refresh token: revoke its connection and log it, as it may have been stolen. */
   private async replayed(connectionId: string, kind: "code" | "refresh token"): Promise<never> {
+    const c = await this.db
+      .selectFrom("agent.connection")
+      .select(["user_id", "name", "kind", "client_id"])
+      .where("id", "=", connectionId)
+      .executeTakeFirst();
     await this.revokeConnection(connectionId);
     this.security.warn(`agent ${kind} used twice; connection ${connectionId} revoked`);
+    // Kept in the audit trail too (not only the container log): the owner sees why the connection ended.
+    await this.audit.append({
+      action: "agent.revoked_automatically",
+      objectType: "agent_connection",
+      objectId: connectionId,
+      actorId: null,
+      before: c ? { name: c.name, kind: c.kind, client: c.client_id } : null,
+      after: {
+        revoked: true,
+        reason: `${kind} used twice (it may have been stolen)`,
+        user: c?.user_id ?? null,
+      },
+    });
     throw new OAuthError("invalid_grant", `${kind} already used; the connection was revoked`);
   }
 
@@ -721,13 +740,15 @@ export class OAuthService {
   ) {
     const c = await this.db
       .selectFrom("agent.connection")
-      .select(["id", "name"])
+      .select(["id", "name", "kind", "client_id", "scopes"])
       .where("id", "=", connectionId)
       .where("user_id", "=", userId)
       .where("revoked_at", "is", null)
       .executeTakeFirst();
     if (!c) return false;
     await this.revokeConnection(c.id);
+    // Which app or token was disconnected, so the audit entry stands on its own.
+    const what = { name: c.name, kind: c.kind, client: c.client_id, scopes: c.scopes };
     await this.audit.append({
       action: "agent.disconnected",
       objectType: "agent_connection",
@@ -735,9 +756,84 @@ export class OAuthService {
       actorId: userId,
       actorIpHash: meta.ipHash,
       requestId: meta.requestId,
-      before: { name: c.name },
+      before: what,
+      after: { ...what, revoked: true },
     });
     return true;
+  }
+
+  /**
+   * Purpose: the registered OAuth clients (Admins), with how many live connections each has.
+   * Output: newest first; names are what the apps registered, shown as text.
+   */
+  async clients() {
+    const rows = await this.db
+      .selectFrom("agent.client as c")
+      .leftJoin("agent.connection as n", (j) =>
+        j.onRef("n.client_id", "=", "c.id").on("n.revoked_at", "is", null),
+      )
+      .select((eb) => [
+        "c.id",
+        "c.name",
+        "c.registered_by",
+        "c.created_at",
+        "c.last_used_at",
+        eb.fn.count<string>("n.id").as("connections"),
+      ])
+      .groupBy(["c.id", "c.name", "c.registered_by", "c.created_at", "c.last_used_at"])
+      .orderBy("c.created_at", "desc")
+      .execute();
+    return rows.map((r) => ({
+      id: r.id,
+      name: r.name,
+      registeredBy: r.registered_by,
+      createdAt: r.created_at,
+      lastUsedAt: r.last_used_at,
+      connections: Number(r.connections),
+    }));
+  }
+
+  /**
+   * Purpose: delete a registered OAuth client that no live connection uses (Admins). Its revoked connections and
+   * pending consents go with it. Output: "deleted", "not_found" or "in_use". Side effects: audit record.
+   */
+  async deleteClient(
+    clientId: string,
+    actor: { userId: string; ipHash: string | null; requestId: string | null },
+  ): Promise<"deleted" | "not_found" | "in_use"> {
+    return this.db.transaction().execute(async (tx) => {
+      const c = await tx
+        .selectFrom("agent.client")
+        .select(["id", "name", "registered_by"])
+        .where("id", "=", clientId)
+        .forUpdate()
+        .executeTakeFirst();
+      if (!c) return "not_found";
+      const live = await tx
+        .selectFrom("agent.connection")
+        .select("id")
+        .where("client_id", "=", clientId)
+        .where("revoked_at", "is", null)
+        .executeTakeFirst();
+      if (live) return "in_use";
+      await tx.deleteFrom("agent.consent_request").where("client_id", "=", clientId).execute();
+      await tx.deleteFrom("agent.connection").where("client_id", "=", clientId).execute();
+      await tx.deleteFrom("agent.client").where("id", "=", clientId).execute();
+      await this.audit.append(
+        {
+          action: "agent.client_deleted",
+          objectType: "agent_client",
+          objectId: c.id,
+          actorId: actor.userId,
+          actorIpHash: actor.ipHash,
+          requestId: actor.requestId,
+          before: { client: c.id, name: c.name, registered_by: c.registered_by },
+          after: null,
+        },
+        tx,
+      );
+      return "deleted";
+    });
   }
 
   /** Purpose: instance agent settings (Admins). */

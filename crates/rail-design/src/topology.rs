@@ -1977,7 +1977,52 @@ fn generate_signals(
             out.push(sig);
         }
     };
-    for c in cands {
+    // The legs of a double junction or scissors crossover cross the other track inside the
+    // switch: the whole leg is one switch area for train detection, so a signal part-way along
+    // it would split that area and the layout could not be used (Damascus test, bug 8). A
+    // signal for trains coming off the leg's far end goes to that end, where the leg meets the
+    // track beyond (so trains leaving a depot through the junction still get a route); one for
+    // trains entering the leg from the switch is left out, the signals in front of the switch
+    // protect it.
+    let leg_of_junction = |seg: usize| {
+        let g = &segs[seg];
+        g.source.kind == "switch"
+            && dz.switch(g.source.id).is_some_and(|w| {
+                matches!(
+                    w.kind,
+                    crate::model::SwitchKind::DoubleJunction | crate::model::SwitchKind::Scissors
+                )
+            })
+    };
+    let mut moved: Vec<SecSignal> = Vec::new();
+    for mut c in cands {
+        if leg_of_junction(c.seg) && c.x > 0.5 && c.x < len[c.seg] - 0.5 {
+            if c.to {
+                continue;
+            }
+            // On the plain section beyond the leg's far end, at the end that meets the leg, so
+            // a train standing there (for example on a depot's storage track) starts its route
+            // at it; on the leg's end when nothing plain follows.
+            let beyond = node_of.get(&(c.seg, 1)).and_then(|id| {
+                nodes.iter().find(|n| &n.0 == id).and_then(|n| {
+                    n.2.iter()
+                        .find(|&&(si, _)| si != c.seg && segs[si].source.kind != "switch")
+                        .copied()
+                })
+            });
+            match beyond {
+                Some((si, e)) => {
+                    c.seg = si;
+                    c.to = e == 1;
+                    c.x = if e == 1 { len[si] } else { 0.0 };
+                    c.kind = main_kind(si);
+                }
+                None => c.x = len[c.seg],
+            }
+        }
+        moved.push(c);
+    }
+    for c in moved {
         if inside(c.seg, c.x, &areas) {
             continue;
         }

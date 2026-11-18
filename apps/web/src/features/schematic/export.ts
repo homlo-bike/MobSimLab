@@ -45,12 +45,23 @@ function sizeOf(svg: SVGSVGElement): [number, number] {
   return [Number(svg.getAttribute("width")) || 1200, Number(svg.getAttribute("height")) || 800];
 }
 
+/** Largest PNG: about 40 megapixels and 8,192 px a side, which common image viewers and browsers open. */
+const MAX_PNG_PIXELS = 40e6;
+const MAX_PNG_SIDE = 8192;
+
+/** Purpose: the scale for a PNG of a `w` × `h` drawing: `wanted`, or less so the image stays openable. */
+export function pngScale(w: number, h: number, wanted = 2): number {
+  return Math.min(wanted, MAX_PNG_SIDE / Math.max(w, h, 1), Math.sqrt(MAX_PNG_PIXELS / Math.max(w * h, 1)));
+}
+
 /**
- * Purpose: the SVG drawn into a PNG at `scale` times its size, on white.
+ * Purpose: the SVG drawn into a PNG at `scale` times its size (less for a very large drawing, see `pngScale`),
+ * on white.
  * Output: the PNG, or an error when the browser cannot draw it.
  */
-export async function pngBlob(svg: SVGSVGElement, scale = 2): Promise<Blob> {
+export async function pngBlob(svg: SVGSVGElement, wanted = 2): Promise<Blob> {
   const [w, h] = sizeOf(svg);
+  const scale = pngScale(w, h, wanted);
   const url = URL.createObjectURL(new Blob([svgText(svg)], { type: "image/svg+xml" }));
   try {
     const img = new Image();

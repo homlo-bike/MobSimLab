@@ -36,6 +36,7 @@ export const depotsId = {
   "depot.hint.gate": "Klik batas di tempat gerbang bertemu jalan.",
   "depot.remove": "Hapus",
   "depot.zones": "Zona",
+  "depot.zoneOutside": "Zona {n} keluar dari batas depo: gambar ulang atau hapus.",
   "depot.zonesNote":
     "Parkir, pengisian daya (pengisi daya di setiap petak), perawatan (tidak untuk parkir malam), cadangan untuk kendaraan cadangan, dan sirkulasi (hanya untuk melaju). Tata letak otomatis mengisi zona parkir, pengisian daya, perawatan dan cadangan.",
   "depot.zoneKind": "Jenis zona",

@@ -1,4 +1,4 @@
-import { gzipSync } from "node:zlib";
+import { createGzip } from "node:zlib";
 import {
   BadRequestException,
   ConflictException,
@@ -202,8 +202,12 @@ const EXAMPLE_NETWORK = "example:metro";
 /** Largest street tile text of a road run (db/migrations/0009_road_runs.sql). */
 const MAX_ROAD_NETWORK_CHARS = 64 * 1024 * 1024;
 
-/** Most street tiles one demand run may take (about 18 × 18 km at 50° N). */
-export const MAX_DEMAND_TILES = 160;
+/**
+ * Most street tiles one demand run may take: about 28 × 28 km at 50° N and 36 × 36 km at 33° N, a whole city
+ * network with its airport line. The tiles are compressed as they arrive, and the network column's size limit
+ * (`MAX_ROAD_NETWORK_CHARS`) still guards a very dense area.
+ */
+export const MAX_DEMAND_TILES = 320;
 
 /**
  * Purpose: the street tiles a demand run needs: the tile of every zone centre in the bundle (JSON text,
@@ -228,6 +232,41 @@ export function demandTiles(bundle: string): [number, number][] {
     if (seen.size > 4 * MAX_DEMAND_TILES) break;
   }
   return [...seen.values()].sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+}
+
+/**
+ * Purpose: build a gzipped JSON list of strings whose items arrive out of order (tiles fetched in parallel),
+ * compressing each one as soon as the items before it are in, so only the compressed list and the few items
+ * waiting for an earlier one are held in memory.
+ * Output: `put(index, text)` for each item 0…n−1, and `finish()`, which closes the list (items not yet put are
+ * left out) and gives the gzipped bytes.
+ */
+export function gzipList(): { put: (i: number, text: string) => void; finish: () => Promise<Buffer> } {
+  const gz = createGzip();
+  const chunks: Buffer[] = [];
+  gz.on("data", (c: Buffer) => chunks.push(c));
+  const ended = new Promise<void>((ok, fail) => {
+    gz.on("end", ok);
+    gz.on("error", fail);
+  });
+  gz.write("[");
+  const waiting = new Map<number, string>();
+  let written = 0;
+  return {
+    put: (i, text) => {
+      waiting.set(i, text);
+      while (waiting.has(written)) {
+        gz.write((written ? "," : "") + JSON.stringify(waiting.get(written)));
+        waiting.delete(written++);
+      }
+    },
+    finish: async () => {
+      waiting.clear();
+      gz.end("]");
+      await ended;
+      return Buffer.concat(chunks);
+    },
+  };
 }
 
 /** Message for a run whose worker stopped without settling it (a crash, a restart). */
@@ -668,14 +707,17 @@ export class RunsService {
           .executeTakeFirst()
       )?.status === "queued";
     try {
-      const xml = new Array<string>(tiles.length);
+      // The tiles go into one gzipped JSON list in order as they arrive, so the API holds them compressed, not
+      // the whole area's OSM XML at once.
+      const list = gzipList();
+      const put = list.put;
       let next = 0;
       let done = 0;
       let stopped = false;
       const worker = async () => {
         for (let i = next++; i < tiles.length && !stopped; i = next++) {
           const [x, y] = tiles[i]!;
-          xml[i] = await this.streets.tile(x, y);
+          put(i, await this.streets.tile(x, y));
           done++;
           if (done % 8 === 0 || done === tiles.length) {
             if (!(await open())) stopped = true;
@@ -688,7 +730,12 @@ export class RunsService {
           }
         }
       };
-      await Promise.all([worker(), worker(), worker(), worker()]);
+      let packed: Buffer;
+      try {
+        await Promise.all([worker(), worker(), worker(), worker()]);
+      } finally {
+        packed = await list.finish();
+      }
       if (stopped || !(await open())) return;
       await this.db
         .updateTable("simulation.run")
@@ -699,7 +746,7 @@ export class RunsService {
       if (!(await open())) return;
       // A city's street tiles are large; gzipped they fit the run's network column.
       const network = JSON.stringify({
-        tiles_gz: gzipSync(JSON.stringify(xml)).toString("base64"),
+        tiles_gz: packed.toString("base64"),
         bikes,
       });
       if (network.length > MAX_ROAD_NETWORK_CHARS) {

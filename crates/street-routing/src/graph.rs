@@ -351,7 +351,7 @@ impl RoadGraph {
         };
         let mut index: HashMap<i64, u32> = HashMap::new();
         for (w, info) in &road_ways {
-            let name = w.tags.get("name").or_else(|| w.tags.get("ref")).cloned();
+            let name = crate::osm::way_name(&w.tags);
             let lim = |k: &str, f: fn(&str) -> Option<f64>| w.tags.get(k).and_then(|v| f(v));
             let (mh, mw, ml) = (
                 lim("maxheight", parse_metres),
