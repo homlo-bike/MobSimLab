@@ -14,7 +14,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::journey::{Journey, Leg, Place, WaitKind, WalkKind};
 use crate::settings::Settings;
-use crate::timetable::{Route as RouteInfo, Timetable};
+use crate::timetable::{Route as RouteInfo, Timetable, Trip};
 
 const INF: u32 = u32::MAX;
 
@@ -195,6 +195,125 @@ pub fn normalise_name(name: &str) -> String {
         .join(" ")
 }
 
+/// Departure times with the index of their trip.
+type Departures = Vec<(u32, usize)>;
+
+/// Purpose: trips a passenger can stay on through an end stop. A vehicle that ends a trip at a stop and
+/// starts its next trip of the same line there (a circuit line turning at its end, or a loop line coming
+/// round) keeps its passengers, so riding on is one ride, not a change.
+/// Inputs: every trip (exact and expanded) and the stops (for station groups).
+/// Output: one joined trip (`<first>+<next>`) per trip that has a next trip: the next trip of the same
+/// vehicle block from the same stop or station when the trip has a `block_id`, otherwise the first trip of
+/// the same line and day type that leaves the stop where this one ends, no earlier than it arrives.
+fn through_trips(trips: &[Trip], stops: &[crate::timetable::Stop]) -> Vec<Trip> {
+    let station: HashMap<&str, &str> = stops
+        .iter()
+        .map(|s| {
+            (
+                s.stop_id.as_str(),
+                s.parent_station.as_deref().unwrap_or(s.stop_id.as_str()),
+            )
+        })
+        .collect();
+    let sorted = |t: &Trip| {
+        let mut st = t.stop_times.clone();
+        st.sort_by_key(|s| s.stop_sequence);
+        st
+    };
+    // Trips without a block, by (line, day type, first stop), in order of departure.
+    let mut starts: HashMap<(&str, &str, &str), Departures> = HashMap::new();
+    // Trips of a block, in order of departure.
+    let mut blocks: HashMap<(&str, &str), Departures> = HashMap::new();
+    for (i, t) in trips.iter().enumerate() {
+        let Some(first) = t.stop_times.iter().min_by_key(|s| s.stop_sequence) else {
+            continue;
+        };
+        match &t.block_id {
+            Some(b) => blocks
+                .entry((b.as_str(), t.service_id.as_str()))
+                .or_default()
+                .push((first.departure_time, i)),
+            None => starts
+                .entry((
+                    t.route_id.as_str(),
+                    t.service_id.as_str(),
+                    first.stop_id.as_str(),
+                ))
+                .or_default()
+                .push((first.departure_time, i)),
+        }
+    }
+    starts.values_mut().for_each(|v| v.sort_unstable());
+    blocks.values_mut().for_each(|v| v.sort_unstable());
+    let mut out = Vec::new();
+    for t in trips {
+        let st = sorted(t);
+        let (Some(first), Some(last)) = (st.first(), st.last()) else {
+            continue;
+        };
+        if st.len() < 2 {
+            continue;
+        }
+        let next = match &t.block_id {
+            Some(b) => blocks
+                .get(&(b.as_str(), t.service_id.as_str()))
+                .and_then(|v| {
+                    v.iter()
+                        .find(|&&(dep, _)| dep >= last.arrival_time && dep > first.departure_time)
+                })
+                .map(|&(_, j)| &trips[j])
+                .filter(|n| {
+                    n.route_id == t.route_id
+                        && n.stop_times
+                            .iter()
+                            .min_by_key(|s| s.stop_sequence)
+                            .is_some_and(|f| {
+                                station.get(f.stop_id.as_str())
+                                    == station.get(last.stop_id.as_str())
+                            })
+                }),
+            None => starts
+                .get(&(
+                    t.route_id.as_str(),
+                    t.service_id.as_str(),
+                    last.stop_id.as_str(),
+                ))
+                .and_then(|v| {
+                    let k = v.partition_point(|&(dep, _)| dep < last.arrival_time);
+                    v.get(k)
+                })
+                .map(|&(_, j)| &trips[j]),
+        };
+        let Some(next) = next else { continue };
+        let nst = sorted(next);
+        if nst.len() < 2 {
+            continue;
+        }
+        let mut stop_times = st.clone();
+        let mut rest = &nst[..];
+        if nst[0].stop_id == last.stop_id {
+            // Same stop: one call, arriving with this trip and leaving with the next.
+            let end = stop_times.last_mut().unwrap();
+            end.departure_time = nst[0].departure_time.max(end.arrival_time);
+            end.pickup_type = nst[0].pickup_type;
+            rest = &nst[1..];
+        }
+        stop_times.extend(rest.iter().cloned());
+        for (k, s) in stop_times.iter_mut().enumerate() {
+            s.stop_sequence = k as u32;
+        }
+        out.push(Trip {
+            trip_id: format!("{}+{}", t.trip_id, next.trip_id),
+            route_id: t.route_id.clone(),
+            direction_id: t.direction_id,
+            service_id: t.service_id.clone(),
+            block_id: t.block_id.clone(),
+            stop_times,
+        });
+    }
+    out
+}
+
 /// Mean Earth radius in metres.
 const EARTH_RADIUS_M: f64 = 6_371_008.8;
 
@@ -249,10 +368,14 @@ impl Planner {
         for p in &tt.frequency_patterns {
             all_trips.extend(p.expand());
         }
+        // Trips joined through an end stop come last and are not counted as trips of their own.
+        let own_trips = all_trips.len();
+        let through = through_trips(&all_trips, &tt.stops);
+        all_trips.extend(through);
         let mut by_seq: HashMap<Vec<usize>, Vec<TripData>> = HashMap::new();
         let mut n_trips = 0;
         let (mut first, mut last) = (INF, 0u32);
-        for t in &all_trips {
+        for (ti, t) in all_trips.iter().enumerate() {
             if let Some(sid) = &settings.service_id {
                 if &t.service_id != sid {
                     continue;
@@ -302,7 +425,9 @@ impl Planner {
             }
             first = first.min(dep[0]);
             last = last.max(*arr.last().unwrap());
-            n_trips += 1;
+            if ti < own_trips {
+                n_trips += 1;
+            }
             by_seq.entry(seq).or_default().push(TripData {
                 trip_id: t.trip_id.clone(),
                 route,

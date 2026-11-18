@@ -434,3 +434,85 @@ fn reach_leaves_unreachable_stops_empty() {
     let arrive = p.reach(ll(0.0, 0.0), 10 * H);
     assert_eq!(arrive[ids.iter().position(|s| s == "far").unwrap()], None);
 }
+
+/// A circuit line: direction 0 runs West – Mid – End, direction 1 turns at End and comes back by Hill.
+fn circuit() -> Timetable {
+    let mut out = pattern(
+        "c-0",
+        "C",
+        &[("w", 0), ("mid", 300), ("end", 300)],
+        day(10 * M, 10 * M),
+    );
+    let mut back = pattern(
+        "c-1",
+        "C",
+        &[("end", 0), ("hill", 400), ("w", 400)],
+        day(10 * M, 10 * M),
+    );
+    out.direction_id = 0;
+    back.direction_id = 1;
+    Timetable {
+        stops: vec![
+            stop("w", "West", 0.0, 0.0, None),
+            stop("mid", "Mid", 2000.0, 0.0, None),
+            stop("end", "End", 4000.0, 0.0, None),
+            stop("hill", "Hill", 4000.0, 3500.0, None),
+        ],
+        routes: vec![route("C", "bus")],
+        trips: vec![],
+        transfers: vec![],
+        frequency_patterns: vec![out, back],
+    }
+}
+
+#[test]
+fn riders_stay_on_board_where_a_circuit_line_turns() {
+    let p = Planner::new(&circuit(), Settings::default());
+    let js = depart(&p, ll(2000.0, 0.0), ll(4000.0, 3500.0), 10 * H);
+    let j = js.first().expect("a journey");
+    assert_consistent(j);
+    assert_eq!(j.rides, 1, "one ride through End, no change: {:?}", j.legs);
+    assert_eq!(j.transfers, 0);
+    let Some(Leg::Ride {
+        from, to, trip_id, ..
+    }) = j.legs.iter().find(|l| matches!(l, Leg::Ride { .. }))
+    else {
+        panic!("a ride");
+    };
+    assert_eq!((from.name.as_str(), to.name.as_str()), ("Mid", "Hill"));
+    assert!(trip_id.contains('+'), "the joined trip: {trip_id}");
+}
+
+#[test]
+fn riders_stay_on_board_of_a_train_that_continues_in_its_block() {
+    let trip = |id: &str, dir: u8, a: &str, b: &str, t: u32| Trip {
+        trip_id: id.into(),
+        route_id: "R".into(),
+        direction_id: dir,
+        service_id: "weekday".into(),
+        block_id: Some("train-1".into()),
+        stop_times: vec![st(a, 0, t, t), st(b, 1, t + 600, t + 600)],
+    };
+    let tt = Timetable {
+        stops: vec![
+            stop("a", "A", 0.0, 0.0, None),
+            stop("b", "B", 5000.0, 0.0, None),
+            stop("c", "C", 5000.0, 5000.0, None),
+        ],
+        routes: vec![route("R", "tram")],
+        trips: vec![
+            trip("r1", 0, "a", "b", 10 * H),
+            // The same train leaves B five minutes after it arrives, on to C.
+            trip("r2", 1, "b", "c", 10 * H + 900),
+        ],
+        transfers: vec![],
+        frequency_patterns: vec![],
+    };
+    let p = Planner::new(&tt, Settings::default());
+    let j = depart(&p, ll(0.0, 0.0), ll(5000.0, 5000.0), 9 * H + 55 * M)
+        .into_iter()
+        .next()
+        .expect("a journey");
+    assert_eq!(j.rides, 1, "{:?}", j.legs);
+    assert_eq!(j.arrive_s, 10 * H + 1500);
+}
