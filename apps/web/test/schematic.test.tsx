@@ -219,6 +219,19 @@ describe("Schematic tab", () => {
     expect(screen.getByText("125%")).toBeTruthy();
     fireEvent.click(fit);
     expect(screen.queryByText("125%")).toBeNull();
+    // ctrl + wheel zooms; dragging the empty page pans it.
+    const page = map.closest(".overflow-auto") as HTMLElement;
+    fireEvent.wheel(page, { deltaY: -100, ctrlKey: true });
+    expect(screen.getByText("125%")).toBeTruthy();
+    fireEvent.wheel(page, { deltaY: -100 });
+    expect(screen.getByText("125%")).toBeTruthy();
+    page.scrollLeft = 200;
+    fireEvent.pointerDown(map, { button: 0, clientX: 100, clientY: 100 });
+    fireEvent.pointerMove(page, { clientX: 60, clientY: 100 });
+    fireEvent.pointerUp(page, { clientX: 60, clientY: 100 });
+    // The browser's click after the drag is not a click on the page.
+    fireEvent.click(map);
+    expect(page.scrollLeft).toBe(240);
     expect(within(map).getByText("Bus 22 · Bus")).toBeTruthy();
     expect(map.querySelectorAll(`path[stroke-width="6"]`)).toHaveLength(4);
 

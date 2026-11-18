@@ -144,6 +144,21 @@ describe("Map data panel", () => {
     );
   });
 
+  it("says Geofabrik cannot be reached instead of that no region holds the area", async () => {
+    const api = fakeApi(
+      status({
+        area: { bbox: [6, 50, 8, 51], drawnBbox: [6, 50, 8, 51], bufferKm: 2, areaKm2: 15000 },
+        suggestedMethod: "geofabrik",
+      }),
+    );
+    api.regions = vi.fn(async () => {
+      throw new Error("Geofabrik is unreachable: connect ETIMEDOUT");
+    });
+    render(<MapDataPanel api={api} map={null} />);
+    expect((await screen.findByRole("alert")).textContent).toMatch(/Geofabrik is unreachable/);
+    expect(screen.queryByText("No Geofabrik region holds the whole area.")).toBeNull();
+  });
+
   it("starts the elevation import and hides imports from viewers", async () => {
     const api = fakeApi(status());
     render(<MapDataPanel api={api} map={null} />);

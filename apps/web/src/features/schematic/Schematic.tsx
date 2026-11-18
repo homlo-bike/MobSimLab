@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "../../i18n/i18n";
 import type { PluginLineInput } from "../journey-planner/network";
 import type { Network, RailEngineLoader } from "../railways/types";
@@ -95,6 +95,88 @@ export function Schematic({
   const [areaId, setAreaId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  // Zooming keeps the point under the pointer (or the middle of the view) in place, ctrl/⌘ + wheel zooms, and
+  // dragging the empty page pans it.
+  const scroller = useRef<HTMLDivElement>(null);
+  const anchor = useRef<{ fx: number; fy: number; ax: number; ay: number } | null>(null);
+  const zoomBy = (factor: number | null, at?: { x: number; y: number }) => {
+    const el = scroller.current;
+    if (el) {
+      const ax = at?.x ?? el.clientWidth / 2;
+      const ay = at?.y ?? el.clientHeight / 2;
+      anchor.current = {
+        fx: (el.scrollLeft + ax) / Math.max(1, el.scrollWidth),
+        fy: (el.scrollTop + ay) / Math.max(1, el.scrollHeight),
+        ax,
+        ay,
+      };
+    }
+    const scaleNow = () => {
+      const svg = svgRef.current;
+      const w = Number(svg?.getAttribute("width")) || 0;
+      const shown = svg?.getBoundingClientRect().width ?? 0;
+      return w && shown ? shown / w : 1;
+    };
+    setZoom((z) => (factor === null ? null : Math.min(4, Math.max(0.25, (z ?? scaleNow()) * factor))));
+  };
+  useLayoutEffect(() => {
+    const el = scroller.current;
+    const a = anchor.current;
+    anchor.current = null;
+    if (!el || !a) return;
+    el.scrollLeft = a.fx * el.scrollWidth - a.ax;
+    el.scrollTop = a.fy * el.scrollHeight - a.ay;
+  }, [zoom]);
+  const zoomNow = useRef(zoomBy);
+  zoomNow.current = zoomBy;
+  useEffect(() => {
+    const el = scroller.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault();
+      const r = el.getBoundingClientRect();
+      zoomNow.current(e.deltaY < 0 ? 1.25 : 1 / 1.25, { x: e.clientX - r.left, y: e.clientY - r.top });
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, []);
+  const pan = useRef<{ x: number; y: number; left: number; top: number; moved: boolean } | null>(null);
+  const onPanStart = (e: React.PointerEvent<HTMLDivElement>) => {
+    const tg = e.target as Element;
+    // Only the empty page: stations, labels and areas keep their own drag.
+    const empty = tg === e.currentTarget || tg.tagName === "svg" || tg.matches("svg > rect:first-child");
+    if (e.button !== 0 || !empty || !scroller.current) return;
+    pan.current = {
+      x: e.clientX,
+      y: e.clientY,
+      left: scroller.current.scrollLeft,
+      top: scroller.current.scrollTop,
+      moved: false,
+    };
+  };
+  const onPanMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    const p = pan.current;
+    const el = scroller.current;
+    if (!p || !el) return;
+    const dx = e.clientX - p.x;
+    const dy = e.clientY - p.y;
+    if (!p.moved && Math.hypot(dx, dy) < 5) return;
+    p.moved = true;
+    el.scrollLeft = p.left - dx;
+    el.scrollTop = p.top - dy;
+  };
+  const onPanEnd = () => {
+    const p = pan.current;
+    pan.current = null;
+    // A pan is not a click: it must not deselect a station or add an area corner.
+    if (p?.moved) {
+      // The click comes right after the pointer is released; drop the guard if none does.
+      const swallow = (ev: MouseEvent) => ev.stopPropagation();
+      window.addEventListener("click", swallow, { capture: true, once: true });
+      setTimeout(() => window.removeEventListener("click", swallow, { capture: true }), 0);
+    }
+  };
   const water = useWater(
     JSON.stringify(base.stations.map((s) => s.lonlat)),
     view === "network" && d.water !== false,
@@ -165,13 +247,20 @@ export function Schematic({
 
   return (
     <div className="flex h-full min-h-0 flex-col md:flex-row">
-      <div className="relative min-h-0 min-w-0 flex-1 overflow-auto bg-slate-100">
+      <div
+        ref={scroller}
+        className="relative min-h-0 min-w-0 flex-1 overflow-auto bg-slate-100"
+        onPointerDown={onPanStart}
+        onPointerMove={onPanMove}
+        onPointerUp={onPanEnd}
+        onPointerCancel={() => (pan.current = null)}
+      >
         <div className="sticky top-0 left-0 z-10 flex w-fit gap-1 p-2">
           <button
             type="button"
             className="icon-btn bg-white shadow"
             aria-label={t("schematic.zoomOut")}
-            onClick={() => setZoom((z) => Math.max(0.25, (z ?? 1) / 1.25))}
+            onClick={() => zoomBy(1 / 1.25)}
           >
             −
           </button>
@@ -188,7 +277,7 @@ export function Schematic({
             type="button"
             className="icon-btn bg-white shadow"
             aria-label={t("schematic.zoomIn")}
-            onClick={() => setZoom((z) => Math.min(4, (z ?? 1) * 1.25))}
+            onClick={() => zoomBy(1.25)}
           >
             +
           </button>
