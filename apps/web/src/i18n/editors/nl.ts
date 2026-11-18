@@ -1429,6 +1429,10 @@ export const editorsNl = {
   "rail.levelHeight": "Vlak, spoor op {rail} m boven zeeniveau · maaiveld langs het spoor {min}–{max} m",
   "rail.profileRange": "Spoor {min}–{max} m boven zeeniveau · steilste helling {steep} (max {limit} ‰)",
   "rail.profileAria": "Hoogteprofiel: maaiveld en bovenkant spoor langs het spoor",
+  "rail.levelProfileAria":
+    "Lengteprofiel uit de niveaus: bovenkant spoorstaaf ten opzichte van straatniveau langs het spoor",
+  "rail.levelProfileNote":
+    "Hoogtes uit de niveaus en hellingen van het spoor, ten opzichte van straatniveau (hier geen terreinhoogtes geladen).",
   "rail.profileLegend":
     "Doorgetrokken: bovenkant spoor. Gestreept: maaiveld (Copernicus GLO-30, afgevlakt). Hoogtes uit een oppervlaktemodel, ±4 m.",
 

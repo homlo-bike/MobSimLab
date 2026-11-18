@@ -1376,6 +1376,10 @@ export const editorsIg = {
   "rail.levelHeight": "Ewepụghị elu, ígwè dị m {rail} karịa oke osimiri · ala n’akụkụ ya m {min}–{max}",
   "rail.profileRange": "Ígwè m {min}–{max} karịa oke osimiri · mkpọda kacha ike {steep} (kacha {limit} ‰)",
   "rail.profileAria": "Profaịlụ ogologo: ala na elu ígwè n’ogologo ụzọ",
+  "rail.levelProfileAria":
+    "Profaịlụ ogologo site na ọkwa: elu ígwè ma e jiri ya tụnyere ọkwa okporo ụzọ n'ogologo ụzọ",
+  "rail.levelProfileNote":
+    "Ịdị elu site na ọkwa na mkpọda nke ụzọ, ma e jiri ya tụnyere ọkwa okporo ụzọ (ebubataghị ịdị elu ala ebe a).",
   "rail.profileLegend":
     "Ahịrị zuru oke: elu ígwè. Ahịrị kewara: ala (Copernicus GLO-30, emere ka ọ dị nro). Ịdị elu sitere na ụdị elu ala, ±4 m.",
 

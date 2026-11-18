@@ -1490,6 +1490,9 @@ export const editorsPl = {
   "rail.levelHeight": "Poziomo, szyny na {rail} m n.p.m. · teren wzdłuż {min}–{max} m",
   "rail.profileRange": "Szyny {min}–{max} m n.p.m. · największe pochylenie {steep} (maks. {limit} ‰)",
   "rail.profileAria": "Profil podłużny: teren i główka szyny wzdłuż toru",
+  "rail.levelProfileAria": "Profil podłużny z poziomów: główka szyny względem poziomu ulicy wzdłuż toru",
+  "rail.levelProfileNote":
+    "Wysokości z poziomów i ramp toru, względem poziomu ulicy (nie wczytano tu wysokości terenu).",
   "rail.profileLegend":
     "Ciągła: główka szyny. Przerywana: teren (Copernicus GLO-30, wygładzony). Wysokości z modelu powierzchni, ±4 m.",
 

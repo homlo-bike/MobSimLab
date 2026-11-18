@@ -1433,6 +1433,10 @@ export const editorsIt = {
   "rail.levelHeight": "In piano, binari a {rail} m s.l.m. · terreno lungo il tracciato {min}–{max} m",
   "rail.profileRange": "Binari a {min}–{max} m s.l.m. · pendenza massima {steep} (max {limit} ‰)",
   "rail.profileAria": "Profilo longitudinale: terreno e piano del ferro lungo il binario",
+  "rail.levelProfileAria":
+    "Profilo altimetrico dai livelli: piano del ferro rispetto al livello stradale lungo il binario",
+  "rail.levelProfileNote":
+    "Quote dai livelli e dalle rampe del binario, rispetto al livello stradale (qui non sono caricate le quote del terreno).",
   "rail.profileLegend":
     "Continua: piano del ferro. Tratteggiata: terreno (Copernicus GLO-30, smussato). Quote da un modello di superficie, ±4 m.",
 

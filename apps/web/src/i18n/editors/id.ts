@@ -1416,6 +1416,10 @@ export const editorsId = {
   "rail.profileRange":
     "Rel {min}–{max} m di atas permukaan laut · kelandaian tercuram {steep} (maks. {limit} ‰)",
   "rail.profileAria": "Profil memanjang: tanah dan kepala rel di sepanjang jalur",
+  "rail.levelProfileAria":
+    "Profil memanjang dari level: kepala rel terhadap permukaan jalan di sepanjang jalur",
+  "rail.levelProfileNote":
+    "Ketinggian dari level dan tanjakan jalur, relatif terhadap permukaan jalan (ketinggian medan belum dimuat di sini).",
   "rail.profileLegend":
     "Garis penuh: kepala rel. Putus-putus: tanah (Copernicus GLO-30, dihaluskan). Ketinggian dari model permukaan, ±4 m.",
 

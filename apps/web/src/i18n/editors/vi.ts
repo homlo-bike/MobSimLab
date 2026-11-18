@@ -1374,6 +1374,9 @@ export const editorsVi = {
   "rail.levelHeight": "Bằng phẳng, ray ở {rail} m trên mực nước biển · mặt đất dọc tuyến {min}–{max} m",
   "rail.profileRange": "Ray {min}–{max} m trên mực nước biển · dốc nhất {steep} (tối đa {limit} ‰)",
   "rail.profileAria": "Trắc dọc: mặt đất và đỉnh ray dọc theo đường",
+  "rail.levelProfileAria": "Trắc dọc theo các cao độ: mặt ray so với mặt đường dọc theo tuyến",
+  "rail.levelProfileNote":
+    "Độ cao theo các cao độ và dốc của tuyến, so với mặt đường (chưa tải độ cao địa hình ở đây).",
   "rail.profileLegend":
     "Nét liền: đỉnh ray. Nét đứt: mặt đất (Copernicus GLO-30, làm mượt). Độ cao từ mô hình bề mặt, ±4 m.",
 

@@ -363,6 +363,24 @@ describe("railway engine (WebAssembly)", () => {
     e.dispose();
   });
 
+  it("ramps a track between two levels at the gentlest gradient and gives its level profile", async () => {
+    const e = await loadRailEngine();
+    const net = sample("metro");
+    // The example's main track runs from an underground to an elevated station; take its level from
+    // the underground end so it ramps straight up from the ends, at the gentlest gradient that fits.
+    const main = net.tracks.find((t) => t.id === 3)!;
+    const flat = e.build(net, null).tracks.find((t) => t.id === 3)!;
+    main.level = "underground";
+    const tv = e.build(net, null).tracks.find((t) => t.id === 3)!;
+    expect(tv.ramps).toHaveLength(1);
+    expect(tv.ramps[0]!.gradient_permille!).toBeLessThan(flat.ramps[0]!.gradient_permille!);
+    expect(tv.ramps[0]!.length_m).toBeGreaterThan(flat.ramps[0]!.length_m);
+    const prof = tv.level_profile!;
+    expect(prof[0]![1]).toBeLessThan(0);
+    expect(prof[prof.length - 1]![1]).toBeGreaterThan(0);
+    e.dispose();
+  });
+
   it("finds a tram running along a street, keeps it to the street's speed limit and exports it", async () => {
     const e = await loadRailEngine();
     e.addStreetTile(streetTile(50.898, 50.902, { highway: "primary", name: "High Street", lanes: "4" }));

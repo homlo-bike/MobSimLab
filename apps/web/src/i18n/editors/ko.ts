@@ -1355,6 +1355,9 @@ export const editorsKo = {
   "rail.levelHeight": "수평, 레일 해발 {rail} m · 연변 지면 {min}–{max} m",
   "rail.profileRange": "레일 해발 {min}–{max} m · 최급 기울기 {steep}(최대 {limit} ‰)",
   "rail.profileAria": "종단면: 선로를 따라 지면과 레일 윗면",
+  "rail.levelProfileAria": "레벨에 따른 종단면: 선로를 따라 도로면 대비 레일면 높이",
+  "rail.levelProfileNote":
+    "선로의 레벨과 경사 구간에 따른 높이, 도로면 기준 (여기서는 지형 고도를 불러오지 않음).",
   "rail.profileLegend":
     "실선: 레일 윗면. 점선: 지면(Copernicus GLO-30, 평활화). 높이는 지표 모델 기준, ±4 m.",
 
