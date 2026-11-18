@@ -281,6 +281,10 @@ export const ar: Messages = {
 
   "tables.title": "الجداول",
   "tables.intro": "كل الحسابات الخاصة بالمشروع، لتقدير مدى جودة أدائه.",
+  "tables.sec.overview": "نظرة عامة",
+  "tables.sec.blocks": "دورات المركبات",
+  "tables.sec.departures": "المغادرات",
+  "tables.sec.prices": "الأسعار وتكاليف الوحدة",
 
   "prefs.title": "تفضيلات المشروع",
   "prefs.intro": "التفاصيل والإعدادات التي تنطبق على المشروع كله.",

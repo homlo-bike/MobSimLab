@@ -294,6 +294,10 @@ export const ta: Messages = {
 
   "tables.title": "அட்டவணைகள்",
   "tables.intro": "திட்டம் எவ்வளவு நன்றாகச் செயல்படும் என மதிப்பிட, அதைப் பற்றிய ஒவ்வொரு கணக்கீடும்.",
+  "tables.sec.overview": "கண்ணோட்டம்",
+  "tables.sec.blocks": "வாகனப் பணிகள்",
+  "tables.sec.departures": "புறப்பாடுகள்",
+  "tables.sec.prices": "விலைகளும் அலகுச் செலவுகளும்",
 
   "prefs.title": "திட்ட விருப்பங்கள்",
   "prefs.intro": "முழுத் திட்டத்திற்கும் பொருந்தும் விவரங்களும் அமைப்புகளும்.",

@@ -292,6 +292,10 @@ export const uz: Messages = {
 
   "tables.title": "Jadvallar",
   "tables.intro": "Loyiha qanchalik yaxshi ishlashini baholash uchun u haqidagi har bir hisob-kitob.",
+  "tables.sec.overview": "Umumiy koʻrinish",
+  "tables.sec.blocks": "Transport navbatlari",
+  "tables.sec.departures": "Joʻnashlar",
+  "tables.sec.prices": "Narxlar va birlik xarajatlari",
 
   "prefs.title": "Loyiha sozlamalari",
   "prefs.intro": "Butun loyihaga tegishli maʼlumotlar va sozlamalar.",

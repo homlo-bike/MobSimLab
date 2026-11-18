@@ -287,6 +287,10 @@ export const bn: Messages = {
 
   "tables.title": "সারণি",
   "tables.intro": "প্রকল্প সম্পর্কে সব গণনা, এটি কতটা ভালো কাজ করবে তা অনুমানের জন্য।",
+  "tables.sec.overview": "সারসংক্ষেপ",
+  "tables.sec.blocks": "যানের ডিউটি",
+  "tables.sec.departures": "ছাড়ার সময়",
+  "tables.sec.prices": "মূল্য ও একক খরচ",
 
   "prefs.title": "প্রকল্পের পছন্দ",
   "prefs.intro": "পুরো প্রকল্পে প্রযোজ্য বিবরণ ও সেটিংস।",

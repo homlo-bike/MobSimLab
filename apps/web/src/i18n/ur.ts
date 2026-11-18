@@ -288,6 +288,10 @@ export const ur: Messages = {
 
   "tables.title": "جدولیں",
   "tables.intro": "منصوبے کے بارے میں ہر حساب، یہ اندازہ لگانے کے لیے کہ یہ کتنی اچھی کارکردگی دکھائے گا۔",
+  "tables.sec.overview": "جائزہ",
+  "tables.sec.blocks": "گاڑیوں کی ڈیوٹیاں",
+  "tables.sec.departures": "روانگیاں",
+  "tables.sec.prices": "قیمتیں اور فی اکائی لاگت",
 
   "prefs.title": "منصوبے کی ترجیحات",
   "prefs.intro": "تفصیلات اور ترتیبات جو پورے منصوبے پر لاگو ہوتی ہیں۔",

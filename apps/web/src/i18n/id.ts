@@ -291,6 +291,10 @@ export const id: Messages = {
 
   "tables.title": "Tabel",
   "tables.intro": "Semua perhitungan untuk memperkirakan kinerja proyek.",
+  "tables.sec.overview": "Ikhtisar",
+  "tables.sec.blocks": "Blok kendaraan",
+  "tables.sec.departures": "Keberangkatan",
+  "tables.sec.prices": "Harga dan biaya satuan",
 
   "prefs.title": "Preferensi proyek",
   "prefs.intro": "Detail dan pengaturan yang berlaku untuk seluruh proyek.",

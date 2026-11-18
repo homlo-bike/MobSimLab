@@ -290,6 +290,10 @@ export const it: Messages = {
 
   "tables.title": "Tabelle",
   "tables.intro": "Tutti i calcoli per stimare le prestazioni del progetto.",
+  "tables.sec.overview": "Panoramica",
+  "tables.sec.blocks": "Turni macchina",
+  "tables.sec.departures": "Partenze",
+  "tables.sec.prices": "Prezzi e costi unitari",
 
   "prefs.title": "Preferenze del progetto",
   "prefs.intro": "Dettagli e impostazioni che valgono per tutto il progetto.",

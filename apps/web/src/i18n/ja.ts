@@ -285,6 +285,10 @@ export const ja: Messages = {
 
   "tables.title": "表",
   "tables.intro": "プロジェクトの性能を見積もるための、あらゆる計算。",
+  "tables.sec.overview": "概要",
+  "tables.sec.blocks": "車両運用",
+  "tables.sec.departures": "発車時刻",
+  "tables.sec.prices": "価格と単価",
 
   "prefs.title": "プロジェクト設定",
   "prefs.intro": "プロジェクト全体に適用される詳細と設定。",

@@ -289,6 +289,10 @@ export const ig: Messages = {
 
   "tables.title": "Tebụl",
   "tables.intro": "Ngụkọ niile gbasara ọrụ ahụ, iji tụọ otú ọ ga-esi rụọ ọrụ.",
+  "tables.sec.overview": "Nchịkọta",
+  "tables.sec.blocks": "Ọrụ ụgbọ",
+  "tables.sec.departures": "Mpụ",
+  "tables.sec.prices": "Ọnụahịa na ọnụ otu ihe",
 
   "prefs.title": "Mmasị ọrụ",
   "prefs.intro": "Nkọwa na ntọala metụtara ọrụ ahụ niile.",

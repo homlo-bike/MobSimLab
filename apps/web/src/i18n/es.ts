@@ -291,6 +291,10 @@ export const es: Messages = {
 
   "tables.title": "Tablas",
   "tables.intro": "Todos los cálculos del proyecto, para estimar lo bien que funcionará.",
+  "tables.sec.overview": "Resumen",
+  "tables.sec.blocks": "Servicios de vehículos",
+  "tables.sec.departures": "Salidas",
+  "tables.sec.prices": "Precios y costes unitarios",
 
   "prefs.title": "Preferencias del proyecto",
   "prefs.intro": "Datos y ajustes que se aplican a todo el proyecto.",

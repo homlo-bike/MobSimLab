@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { loadRailEngine, nextTask } from "../railways/engine";
+import { TablePart } from "../tables/sections";
 import { hashText } from "../../projects/inputKey";
 import { type ResultsApi, useLiveResult } from "../../projects/results";
 import { en } from "../../i18n/en";
@@ -302,84 +303,92 @@ export function CostTables({
           </p>
         ) : (
           <>
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <Tile
-                title={t("tbl.construction")}
-                value={money(construction[1])}
-                sub={t("cost.lowToHigh", { range: range(construction) })}
-              />
-              <Tile
-                title={t("cost.operatingTile")}
-                value={money(operating[1])}
-                sub={t("cost.lowToHigh", { range: range(operating) })}
-              />
-            </div>
-            <section className={card} aria-labelledby="cost-where">
-              <h3 id="cost-where" className="caps m-0">
-                {t("cost.where")}
-              </h3>
-              <div className="mt-3 grid gap-6 md:grid-cols-2">
-                <CompositionChart est={est} money={money} labelOf={modeLabel} />
-                <BarList
-                  label={t("cost.byType")}
-                  money={money}
-                  rows={CONSTRUCTION.map((c) => ({
-                    id: c,
-                    label: t(CATEGORY_LABEL[c]),
-                    value: sum(est.items.filter((x) => x.category === c).map((x) => x.amount)),
-                  }))}
+            <TablePart id="costs.overview">
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <Tile
+                  title={t("tbl.construction")}
+                  value={money(construction[1])}
+                  sub={t("cost.lowToHigh", { range: range(construction) })}
+                />
+                <Tile
+                  title={t("cost.operatingTile")}
+                  value={money(operating[1])}
+                  sub={t("cost.lowToHigh", { range: range(operating) })}
                 />
               </div>
-            </section>
-            <ByMode est={est} money={money} range={range} />
-            <ByLine est={est} money={money} range={range} />
-            <Breakdown
-              id="cost-construction-by-infrastructure-type"
-              title={t("cost.constructionByType")}
-              cats={CONSTRUCTION}
-              est={est}
-              money={money}
-            />
-            <Breakdown
-              id="cost-operating-cost-a-year"
-              title={t("cost.operatingYear")}
-              cats={OPERATING}
-              est={est}
-              money={money}
-              chart={
-                <BarList
-                  label={t("cost.operatingByKind")}
-                  money={money}
-                  rows={OPERATING.map((c) => ({
-                    id: c,
-                    label: t(CATEGORY_LABEL[c]),
-                    value: sum(est.items.filter((x) => x.category === c).map((x) => x.amount)),
-                  }))}
-                />
-              }
-            />
-            {est.notes.length > 0 && (
-              <ul className="mt-4 list-disc pl-5 text-sm text-slate-600">
-                {est.notes.map((n) => (
-                  <li key={n}>{n}</li>
-                ))}
-              </ul>
-            )}
+              <section className={card} aria-labelledby="cost-where">
+                <h3 id="cost-where" className="caps m-0">
+                  {t("cost.where")}
+                </h3>
+                <div className="mt-3 grid gap-6 md:grid-cols-2">
+                  <CompositionChart est={est} money={money} labelOf={modeLabel} />
+                  <BarList
+                    label={t("cost.byType")}
+                    money={money}
+                    rows={CONSTRUCTION.map((c) => ({
+                      id: c,
+                      label: t(CATEGORY_LABEL[c]),
+                      value: sum(est.items.filter((x) => x.category === c).map((x) => x.amount)),
+                    }))}
+                  />
+                </div>
+              </section>
+              <ByMode est={est} money={money} range={range} />
+              <ByLine est={est} money={money} range={range} />
+              {est.notes.length > 0 && (
+                <ul className="mt-4 list-disc pl-5 text-sm text-slate-600">
+                  {est.notes.map((n) => (
+                    <li key={n}>{n}</li>
+                  ))}
+                </ul>
+              )}
+            </TablePart>
+            <TablePart id="costs.construction">
+              <Breakdown
+                id="cost-construction-by-infrastructure-type"
+                title={t("cost.constructionByType")}
+                cats={CONSTRUCTION}
+                est={est}
+                money={money}
+              />
+            </TablePart>
+            <TablePart id="costs.operating">
+              <Breakdown
+                id="cost-operating-cost-a-year"
+                title={t("cost.operatingYear")}
+                cats={OPERATING}
+                est={est}
+                money={money}
+                chart={
+                  <BarList
+                    label={t("cost.operatingByKind")}
+                    money={money}
+                    rows={OPERATING.map((c) => ({
+                      id: c,
+                      label: t(CATEGORY_LABEL[c]),
+                      value: sum(est.items.filter((x) => x.category === c).map((x) => x.amount)),
+                    }))}
+                  />
+                }
+              />
+            </TablePart>
           </>
         )}
-        <PricesSection
-          econ={econ}
-          error={econError}
-          prices={local}
-          countries={countries}
-          code={code}
-          chosen={!!costs?.country}
-          editable={editable && !!onCosts}
-          onCountry={(c) => onCosts?.({ ...(costs ?? {}), country: c })}
-          prefs={prefs}
-          setPref={setPref}
-        />
-        {!empty && <UnitCosts est={est} prefs={prefs} editable={editable} setPref={setPref} />}
+        <TablePart id="costs.prices">
+          <PricesSection
+            econ={econ}
+            error={econError}
+            prices={local}
+            countries={countries}
+            code={code}
+            chosen={!!costs?.country}
+            editable={editable && !!onCosts}
+            onCountry={(c) => onCosts?.({ ...(costs ?? {}), country: c })}
+            prefs={prefs}
+            setPref={setPref}
+          />
+          {!empty && <UnitCosts est={est} prefs={prefs} editable={editable} setPref={setPref} />}
+        </TablePart>
       </section>
     </div>
   );

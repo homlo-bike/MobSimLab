@@ -289,6 +289,10 @@ export const vi: Messages = {
 
   "tables.title": "Bảng",
   "tables.intro": "Mọi tính toán để ước lượng hiệu quả của dự án.",
+  "tables.sec.overview": "Tổng quan",
+  "tables.sec.blocks": "Ca xe",
+  "tables.sec.departures": "Giờ xuất phát",
+  "tables.sec.prices": "Giá và đơn giá",
 
   "prefs.title": "Tùy chọn dự án",
   "prefs.intro": "Chi tiết và cài đặt áp dụng cho toàn bộ dự án.",

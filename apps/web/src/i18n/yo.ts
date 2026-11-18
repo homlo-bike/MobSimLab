@@ -286,6 +286,10 @@ export const yo: Messages = {
 
   "tables.title": "Àwọn tábìlì",
   "tables.intro": "Gbogbo ìṣirò nípa iṣẹ́ àkànṣe náà, láti ṣe àfojúsùn bí yóò ṣe ṣiṣẹ́ tó.",
+  "tables.sec.overview": "Àkópọ̀",
+  "tables.sec.blocks": "Iṣẹ́ àwọn ọkọ̀",
+  "tables.sec.departures": "Ìlọ",
+  "tables.sec.prices": "Iye àti iye owó ẹyọ kọ̀ọ̀kan",
 
   "prefs.title": "Àwọn àyànfẹ́ iṣẹ́ àkànṣe",
   "prefs.intro": "Àwọn àlàyé àti ètò tó kan gbogbo iṣẹ́ àkànṣe náà.",

@@ -288,6 +288,10 @@ export const tr: Messages = {
 
   "tables.title": "Tablolar",
   "tables.intro": "Projenin performansını tahmin etmek için tüm hesaplar.",
+  "tables.sec.overview": "Genel bakış",
+  "tables.sec.blocks": "Araç görevleri",
+  "tables.sec.departures": "Kalkışlar",
+  "tables.sec.prices": "Fiyatlar ve birim maliyetler",
 
   "prefs.title": "Proje tercihleri",
   "prefs.intro": "Tüm projeye uygulanan ayrıntılar ve ayarlar.",

@@ -475,3 +475,31 @@ describe("scenarios", () => {
     expect(screen.queryByRole("button", { name: "Save current design" })).toBeNull();
   });
 });
+
+describe("table sections", () => {
+  it("shows only the parts of the chosen section, and every part outside the Tables tab", async () => {
+    const { TablePart, TablesSection } = await import("../src/features/tables/sections");
+    const parts = (
+      <>
+        <TablePart id="costs.overview">
+          <p>Overview part</p>
+        </TablePart>
+        <TablePart id={["costs.overview", "costs.prices"]}>
+          <p>Shared part</p>
+        </TablePart>
+        <TablePart id="costs.prices">
+          <p>Prices part</p>
+        </TablePart>
+      </>
+    );
+    const { rerender } = render(
+      <TablesSection.Provider value="costs.prices">{parts}</TablesSection.Provider>,
+    );
+    const shown = (text: string) => !screen.getByText(text).closest("[hidden]");
+    expect([shown("Overview part"), shown("Shared part"), shown("Prices part")]).toEqual([false, true, true]);
+    rerender(<TablesSection.Provider value="costs.overview">{parts}</TablesSection.Provider>);
+    expect([shown("Overview part"), shown("Shared part"), shown("Prices part")]).toEqual([true, true, false]);
+    rerender(parts);
+    expect([shown("Overview part"), shown("Shared part"), shown("Prices part")]).toEqual([true, true, true]);
+  });
+});

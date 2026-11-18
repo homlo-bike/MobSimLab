@@ -289,6 +289,10 @@ export const sw: Messages = {
 
   "tables.title": "Majedwali",
   "tables.intro": "Kila hesabu kuhusu mradi, kukadiria utakavyofanya kazi.",
+  "tables.sec.overview": "Muhtasari",
+  "tables.sec.blocks": "Zamu za magari",
+  "tables.sec.departures": "Kuondoka",
+  "tables.sec.prices": "Bei na gharama za kipimo",
 
   "prefs.title": "Mapendeleo ya mradi",
   "prefs.intro": "Maelezo na mipangilio inayohusu mradi mzima.",

@@ -278,6 +278,10 @@ export const zh: Messages = {
 
   "tables.title": "表格",
   "tables.intro": "有关项目的所有计算，用于评估其表现。",
+  "tables.sec.overview": "概览",
+  "tables.sec.blocks": "车辆排班",
+  "tables.sec.departures": "发车时刻",
+  "tables.sec.prices": "价格和单位成本",
 
   "prefs.title": "项目偏好设置",
   "prefs.intro": "适用于整个项目的详细信息和设置。",

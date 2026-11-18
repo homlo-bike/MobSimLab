@@ -289,6 +289,10 @@ export const pl: Messages = {
 
   "tables.title": "Tabele",
   "tables.intro": "Wszystkie obliczenia do oszacowania działania projektu.",
+  "tables.sec.overview": "Przegląd",
+  "tables.sec.blocks": "Brygady pojazdów",
+  "tables.sec.departures": "Odjazdy",
+  "tables.sec.prices": "Ceny i koszty jednostkowe",
 
   "prefs.title": "Preferencje projektu",
   "prefs.intro": "Szczegóły i ustawienia obowiązujące w całym projekcie.",

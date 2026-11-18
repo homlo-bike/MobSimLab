@@ -291,6 +291,10 @@ export const nl: Messages = {
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle berekeningen over het project, om te schatten hoe goed het zal presteren.",
+  "tables.sec.overview": "Overzicht",
+  "tables.sec.blocks": "Voertuigomlopen",
+  "tables.sec.departures": "Vertrektijden",
+  "tables.sec.prices": "Prijzen en eenheidskosten",
 
   "prefs.title": "Projectvoorkeuren",
   "prefs.intro": "Gegevens en instellingen die voor het hele project gelden.",

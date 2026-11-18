@@ -284,6 +284,10 @@ export const ko: Messages = {
 
   "tables.title": "표",
   "tables.intro": "프로젝트 성능을 추정하기 위한 모든 계산.",
+  "tables.sec.overview": "개요",
+  "tables.sec.blocks": "차량 운용",
+  "tables.sec.departures": "출발 시각",
+  "tables.sec.prices": "가격과 단가",
 
   "prefs.title": "프로젝트 환경설정",
   "prefs.intro": "프로젝트 전체에 적용되는 세부 정보와 설정.",

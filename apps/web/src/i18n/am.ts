@@ -280,6 +280,10 @@ export const am: Messages = {
 
   "tables.title": "ሰንጠረዦች",
   "tables.intro": "ስለ ፕሮጀክቱ ያሉ ሁሉም ስሌቶች፣ ምን ያህል ጥሩ እንደሚሠራ ለመገመት።",
+  "tables.sec.overview": "አጠቃላይ እይታ",
+  "tables.sec.blocks": "የተሽከርካሪ ተራዎች",
+  "tables.sec.departures": "መነሻዎች",
+  "tables.sec.prices": "ዋጋዎች እና የአሃድ ወጪዎች",
 
   "prefs.title": "የፕሮጀክት ምርጫዎች",
   "prefs.intro": "ለመላው ፕሮጀክቱ የሚመለከቱ ዝርዝሮች እና ቅንብሮች።",

@@ -432,13 +432,13 @@ describe("project workspace", () => {
     expect(screen.queryByRole("toolbar", { name: "Street line tools" })).toBeNull();
     fireEvent.click(within(nav).getByRole("link", { name: "Tables" }));
     expect(screen.getByRole("region", { name: "Tables" })).toBeTruthy();
-    // The tables come in groups, one shown at a time, chosen from a list.
-    const groups = await screen.findByRole("tablist", { name: "Tables" });
-    expect(
-      within(groups)
-        .getAllByRole("tab")
-        .map((x) => x.textContent),
-    ).toEqual([
+    // The tables come in groups, one shown at a time, chosen from a side panel like Project preferences; the open
+    // group lists its sections, also one shown at a time.
+    const tablesNav = await screen.findByRole("navigation", { name: "Tables" });
+    const groups = within(tablesNav)
+      .getAllByRole("button")
+      .filter((b) => b.id.startsWith("tables-tab-"));
+    expect(groups.map((x) => x.textContent)).toEqual([
       "Summary",
       "Timetables",
       "Construction and operating costs",
@@ -448,11 +448,43 @@ describe("project workspace", () => {
       "Appraisal",
       "Compare scenarios",
     ]);
-    expect(within(groups).getByRole("tab", { name: "Summary" }).getAttribute("aria-selected")).toBe("true");
-    fireEvent.click(within(groups).getByRole("tab", { name: "Compare scenarios" }));
-    expect(within(groups).getByRole("tab", { name: "Compare scenarios" }).getAttribute("aria-selected")).toBe(
+    const group = (name: string) => groups.find((b) => b.textContent === name)!;
+    expect(group("Summary").getAttribute("aria-current")).toBe("true");
+    const summaryParts = within(tablesNav).getAllByRole("list", { name: "Summary" })[0]!;
+    expect(
+      within(summaryParts)
+        .getAllByRole("button")
+        .map((x) => x.textContent),
+    ).toEqual(["Overview", "Infrastructure quantities", "Service and fleet", "Energy and emissions"]);
+
+    fireEvent.click(group("Construction and operating costs"));
+    expect(group("Construction and operating costs").getAttribute("aria-current")).toBe("true");
+    const costParts = within(tablesNav).getAllByRole("list", {
+      name: "Construction and operating costs",
+    })[0]!;
+    expect(
+      within(costParts)
+        .getAllByRole("button")
+        .map((x) => x.textContent),
+    ).toEqual([
+      "Overview",
+      "Construction by infrastructure type",
+      "Operating cost a year",
+      "Prices and unit costs",
+    ]);
+    expect(within(costParts).getByRole("button", { name: "Overview" }).getAttribute("aria-current")).toBe(
       "true",
     );
+    fireEvent.click(within(costParts).getByRole("button", { name: "Prices and unit costs" }));
+    expect(
+      within(costParts).getByRole("button", { name: "Prices and unit costs" }).getAttribute("aria-current"),
+    ).toBe("true");
+    expect(
+      within(costParts).getByRole("button", { name: "Overview" }).getAttribute("aria-current"),
+    ).toBeNull();
+
+    fireEvent.click(group("Compare scenarios"));
+    expect(group("Compare scenarios").getAttribute("aria-current")).toBe("true");
     expect((document.getElementById("tables-network") as HTMLElement).hidden).toBe(true);
     expect((document.getElementById("tables-scenarios") as HTMLElement).hidden).toBe(false);
   });

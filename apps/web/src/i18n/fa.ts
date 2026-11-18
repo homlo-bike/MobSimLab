@@ -286,6 +286,10 @@ export const fa: Messages = {
 
   "tables.title": "جدول‌ها",
   "tables.intro": "همهٔ محاسبات برای برآورد عملکرد پروژه.",
+  "tables.sec.overview": "نمای کلی",
+  "tables.sec.blocks": "دوره‌های خودرو",
+  "tables.sec.departures": "حرکت‌ها",
+  "tables.sec.prices": "قیمت‌ها و هزینه‌های واحد",
 
   "prefs.title": "ترجیحات پروژه",
   "prefs.intro": "جزئیات و تنظیماتی که برای کل پروژه اعمال می‌شوند.",
