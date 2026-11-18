@@ -2,12 +2,16 @@ import { type ReactNode, useEffect, useId, useRef } from "react";
 import { useI18n } from "../i18n/i18n";
 import { CloseIcon } from "./icons";
 
+/** Open dialogs, innermost last: Escape closes only the innermost one. */
+const open: object[] = [];
+
 const FOCUSABLE =
   'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])';
 
 /**
  * A modal dialog: centred card on wider screens, bottom sheet on phones. Escape and the scrim close it,
- * focus moves in on open, stays inside while open, and returns to where it was on close.
+ * focus moves in on open, stays inside while open, and returns to where it was on close. Escape works even when
+ * focus has fallen out of the dialog (a clicked tab or button that was then removed leaves it on the page body).
  */
 export function Dialog({
   title,
@@ -36,7 +40,10 @@ export function Dialog({
     const first =
       el?.querySelector<HTMLElement>("[data-autofocus]") ?? el?.querySelector<HTMLElement>(FOCUSABLE);
     first?.focus();
+    const me = {};
+    open.push(me);
     const onKey = (e: KeyboardEvent) => {
+      if (open[open.length - 1] !== me) return;
       if (e.key === "Escape") {
         e.stopPropagation();
         close.current();
@@ -44,7 +51,10 @@ export function Dialog({
         const items = [...el.querySelectorAll<HTMLElement>(FOCUSABLE)];
         const [a, z] = [items[0], items[items.length - 1]];
         if (!a || !z) return;
-        if (e.shiftKey && document.activeElement === a) {
+        if (!el.contains(document.activeElement)) {
+          e.preventDefault();
+          (e.shiftKey ? z : a).focus();
+        } else if (e.shiftKey && document.activeElement === a) {
           e.preventDefault();
           z.focus();
         } else if (!e.shiftKey && document.activeElement === z) {
@@ -53,9 +63,10 @@ export function Dialog({
         }
       }
     };
-    el?.addEventListener("keydown", onKey);
+    document.addEventListener("keydown", onKey);
     return () => {
-      el?.removeEventListener("keydown", onKey);
+      document.removeEventListener("keydown", onKey);
+      open.splice(open.indexOf(me), 1);
       before?.focus?.();
     };
   }, []);

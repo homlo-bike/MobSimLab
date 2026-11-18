@@ -43,7 +43,11 @@ export const sigs = (v: RailView | null | undefined): SignalView[] => v?.signals
 
 export const sameAnchor = (a: Anchor, b: Anchor) => JSON.stringify(a) === JSON.stringify(b);
 
-/** Purpose: the level new points of a track get (its last point's, else the track's). */
+/**
+ * Purpose: the level the next points of a track being drawn get: the draft's level, which starts at the level of
+ * where the track began and changes with + / − or the panel's level buttons. (Taking the last point's level made
+ * + / − work only before the first point.)
+ */
 export function draftLevel(t: Track) {
-  return t.points[t.points.length - 1]?.level ?? t.level;
+  return t.level;
 }

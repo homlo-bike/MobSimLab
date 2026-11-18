@@ -340,6 +340,17 @@ describe("population layers", () => {
     });
     expect(Math.abs(b.body.populations.west - 1000)).toBeLessThan(2);
     expect(b.body.source.name).toBe("Census zones");
+    // A large network: 400 catchments of 200 corners (about 3 MB) is accepted, not refused as too large.
+    const circle = (cx: number) =>
+      Array.from({ length: 200 }, (_, k) => {
+        const a = (2 * Math.PI * Math.min(k, 198)) / 199;
+        return [cx + 0.004123456789 * Math.cos(a), 49.605 + 0.003123456789 * Math.sin(a)];
+      });
+    const many = await as("alice").post(`${base()}/catchments`, {
+      areas: Array.from({ length: 400 }, (_, i) => ({ id: `s${i}`, ring: circle(6.104 + (i % 10) * 0.001) })),
+    });
+    expect(many.status).toBe(200);
+    expect(Object.keys(many.body.populations)).toHaveLength(400);
     // No access, no project data.
     expect((await as("bob").post(`${base()}/grid`, { bbox: box })).status).toBe(404);
     // Back to WorldPop's live grid (stubbed: half a person per cell).

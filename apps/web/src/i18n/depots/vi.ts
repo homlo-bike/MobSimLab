@@ -36,6 +36,7 @@ export const depotsVi = {
   "depot.hint.gate": "Nhấp vào ranh giới tại chỗ cổng gặp đường phố.",
   "depot.remove": "Xóa",
   "depot.zones": "Khu",
+  "depot.zoneOutside": "Khu {n} vượt ra ngoài đường bao của bãi xe: vẽ lại hoặc xóa đi.",
   "depot.zonesNote":
     "Đỗ xe, sạc (một bộ sạc ở mỗi chỗ đỗ), bảo dưỡng (không dùng để đỗ qua đêm), dự phòng cho xe dự phòng và lưu thông (chỉ để chạy). Bố trí tự động lấp đầy các khu đỗ xe, sạc, bảo dưỡng và dự phòng.",
   "depot.zoneKind": "Loại khu",

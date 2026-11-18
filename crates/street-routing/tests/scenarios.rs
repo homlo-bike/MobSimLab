@@ -204,9 +204,21 @@ fn stop_on_the_wrong_side_of_a_one_way_street_is_an_error() {
     let g = o.graph();
     let mut line = StreetLine::new(bus(), RoutingRules::default());
     let bad = add(&mut line, &g, 200.0, 6.0, PointKind::Stop); // north side of an eastbound one-way
+    add(&mut line, &g, 50.0, 0.0, PointKind::Via);
     let v = line.view(&g);
     assert_eq!(v.points[0].status, Status::Error);
+    assert!(v.points[0]
+        .message
+        .as_deref()
+        .unwrap()
+        .contains("sidewalk cannot be served"));
     assert!(line.anchor(bad).is_none());
+    // The legs touching it say which point and why, not only "not on a usable road".
+    let leg = v.legs[0].message.as_deref().unwrap();
+    assert!(
+        leg.starts_with("Point 1:") && leg.contains("sidewalk cannot be served"),
+        "{leg}"
+    );
     // A BRT vehicle with doors on both sides can serve it.
     let mut brt = VehicleProfile::default_for(Mode::Brt);
     brt.doors_both_sides = true;
@@ -738,4 +750,45 @@ fn drawing_point_by_point_gives_the_same_route_as_routing_again() {
             "no detour left from drawing order"
         );
     }
+}
+
+#[test]
+fn point_on_the_far_half_of_a_divided_road_is_flagged() {
+    // A divided road: eastbound half at y = 10, westbound half at y = −10, joined only at the ends.
+    let mut o = Osm::new();
+    o.node(1, 0.0, 10.0, &[]);
+    o.node(2, 2000.0, 10.0, &[]);
+    o.node(3, 2000.0, -10.0, &[]);
+    o.node(4, 0.0, -10.0, &[]);
+    let half = [("highway", "primary"), ("oneway", "yes")];
+    o.way(&[1, 2], &half);
+    o.way(&[3, 4], &half);
+    o.way(&[2, 3], &[("highway", "primary")]);
+    o.way(&[4, 1], &[("highway", "primary")]);
+    let g = o.graph();
+    let leg0 = |far: bool| {
+        let mut line = StreetLine::new(bus(), RoutingRules::default());
+        add(&mut line, &g, 500.0, 12.0, PointKind::Via);
+        add(
+            &mut line,
+            &g,
+            800.0,
+            if far { -12.0 } else { 12.0 },
+            PointKind::Via,
+        );
+        line.view(&g).legs[0].clone()
+    };
+    let wrong = leg0(true);
+    assert_eq!(wrong.status, Status::Warning);
+    assert!(
+        wrong
+            .message
+            .as_deref()
+            .unwrap()
+            .contains("far half of a divided road"),
+        "{:?}",
+        wrong.message
+    );
+    let right = leg0(false);
+    assert_eq!(right.status, Status::Ok, "{:?}", right.message);
 }

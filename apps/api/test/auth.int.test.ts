@@ -44,6 +44,12 @@ describe("sign-in, setup mode and audit", () => {
 
   const server = () => app.getHttpServer();
   const origin = () => config.publicUrl.origin;
+  /** The flow cookie of a sign-in start: its name (one per flow) and value. */
+  const flowCookie = (res: request.Response): string => {
+    const raw = res.headers["set-cookie"] as unknown as string[] | undefined;
+    const c = raw?.find((s) => s.startsWith("msl_auth_flow_"));
+    return c?.split(";")[0] ?? "";
+  };
   const cookieValue = (res: request.Response, name: string): string | undefined => {
     const raw = res.headers["set-cookie"] as unknown as string[] | undefined;
     const c = raw?.find((s) => s.startsWith(`${name}=`));
@@ -57,10 +63,10 @@ describe("sign-in, setup mode and audit", () => {
     const authorize = new URL(start.headers.location as string);
     expect(authorize.searchParams.get("code_challenge_method")).toBe("S256");
     users.set(authorize.searchParams.get("nonce") ?? "", { sub, email, email_verified: true, name: sub });
-    const flow = cookieValue(start, "msl_auth_flow");
+    const flow = flowCookie(start);
     const idpRes = await fetch(authorize, { redirect: "manual" });
     const back = new URL(idpRes.headers.get("location") ?? "");
-    return request(server()).get(`${back.pathname}${back.search}`).set("Cookie", `msl_auth_flow=${flow}`);
+    return request(server()).get(`${back.pathname}${back.search}`).set("Cookie", flow);
   }
 
   const session = (res: request.Response) => `msl_session=${cookieValue(res, "msl_session")}`;
@@ -135,6 +141,21 @@ describe("sign-in, setup mode and audit", () => {
     expect(res.headers.location).toBe("/?signin=invalid_request");
   });
 
+  it("keeps a sign-in started in a first tab working after a second tab starts one", async () => {
+    const first = await request(server()).get("/api/auth/login");
+    const second = await request(server()).get("/api/auth/login");
+    const both = [flowCookie(first), flowCookie(second)].join("; ");
+    expect(flowCookie(first).split("=")[0]).not.toBe(flowCookie(second).split("=")[0]);
+    const authorize = new URL(first.headers.location as string);
+    users.set(authorize.searchParams.get("nonce") ?? "", { sub: "mallory" });
+    const idpRes = await fetch(authorize, { redirect: "manual" });
+    const back = new URL(idpRes.headers.get("location") ?? "");
+    const res = await request(server()).get(`${back.pathname}${back.search}`).set("Cookie", both);
+    // Past the state check: the sign-in rules decide, not "invalid_request".
+    expect(res.headers.location).not.toBe("/?signin=invalid_request");
+    expect(res.headers.location).not.toBe("/?signin=expired");
+  });
+
   it("runs the setup wizard with CSRF and Origin checks, then opens the instance", async () => {
     const sql = await db.superuser();
     const { rows } = await sql.query<{ email: string }>(
@@ -202,6 +223,10 @@ describe("sign-in, setup mode and audit", () => {
       .set("X-CSRF-Token", csrfToken);
     expect(out.status).toBe(200);
     expect(out.body.endSessionUrl).toContain("/endsession");
+    // The ID token goes back as id_token_hint, so providers such as Authentik return to MobSimLab.
+    const end = new URL(out.body.endSessionUrl as string);
+    expect(end.searchParams.get("id_token_hint")).toMatch(/^[\w-]+\.[\w-]+\.[\w-]*$/);
+    expect(end.searchParams.get("post_logout_redirect_uri")).toBe(`${origin()}/`);
     expect((await me(cookie)).user).toBeUndefined();
   });
 

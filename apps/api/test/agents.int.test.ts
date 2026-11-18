@@ -5,6 +5,8 @@ import { Test } from "@nestjs/testing";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { KEEP_ALIVE_MS } from "../src/agents/keep-alive";
+import { mcpKeepAlive } from "../src/agents/mcp.controller";
 import { TILE_SOURCE, type TileSource } from "../src/agents/network.service";
 import { AppModule } from "../src/app.module";
 import { configureApp } from "../src/app.setup";
@@ -273,6 +275,36 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
     );
   });
 
+  it("keeps a slow tool call alive with leading spaces, and the answer still parses", async () => {
+    mcpKeepAlive.everyMs = 1;
+    try {
+      const r = await request(server())
+        .post("/mcp")
+        .set("Authorization", `Bearer ${tokens.access_token}`)
+        .set("Accept", "application/json, text/event-stream")
+        .set("Content-Type", "application/json")
+        .buffer(true)
+        .parse((res, done) => {
+          let text = "";
+          res.on("data", (c: Buffer) => (text += c.toString()));
+          res.on("end", () => done(null, text));
+        })
+        .send({
+          jsonrpc: "2.0",
+          id: rpcId++,
+          method: "tools/call",
+          params: { name: "list_scenarios", arguments: {} },
+        });
+      expect(r.status).toBe(200);
+      expect(r.headers["content-type"]).toMatch(/^application\/json/);
+      const text = r.body as string;
+      expect(text.startsWith(" ")).toBe(true);
+      expect(JSON.parse(text).result.isError).not.toBe(true);
+    } finally {
+      mcpKeepAlive.everyMs = KEEP_ALIVE_MS;
+    }
+  });
+
   let scenario = "";
   it("creates a scenario, adds a routed bus line and a metro line, and audits it", async () => {
     const c = await tool(tokens.access_token, "create_scenario", {
@@ -495,6 +527,14 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
     const r = await tool(t.access_token, "create_scenario", { name: "nope" });
     expect(r.error).toBe(true);
     expect(r.text).toContain("scenario:write");
+    expect(r.text).toContain("reconnect");
+    // The tool list shows only what this connection may call.
+    const listed = ((await mcp(t.access_token, "tools/list")).body.result.tools as { name: string }[]).map(
+      (x) => x.name,
+    );
+    expect(listed).toContain("get_scenario");
+    expect(listed).not.toContain("create_scenario");
+    expect(listed).not.toContain("list_projects");
     // Re-consent narrowed the one connection of this client, so restore the full grant for later tests.
     const full = await connect("alice");
     tokens = (await exchange(new URL(full.decision.body.redirect).searchParams.get("code")!, full.verifier))
@@ -569,7 +609,16 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
       .type("form")
       .send({ grant_type: "refresh_token", refresh_token: tokens.refresh_token, client_id: clientId });
     expect(reuse.body.error).toBe("invalid_grant");
-    expect((await mcp(r1.body.access_token, "tools/list")).status).toBe(401);
+    const cut = await mcp(r1.body.access_token, "tools/list");
+    expect(cut.status).toBe(401);
+    expect(cut.body.error_description).toMatch(/invalid, expired or revoked/);
+    // The automatic revocation is in the audit trail, not only in the log.
+    const su = await db.superuser();
+    const { rows } = await su.query(
+      "SELECT after FROM audit.record WHERE action = 'agent.revoked_automatically' ORDER BY seq DESC LIMIT 1",
+    );
+    await su.end();
+    expect(rows[0]?.after).toMatchObject({ revoked: true });
   });
 
   it("personal access tokens work, only delete their own scenarios, and can be revoked", async () => {
@@ -590,8 +639,18 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
     const list = await as("alice").get("/api/agents/connections");
     const c = list.body.connections.find((x: { name: string }) => x.name === "CI");
     expect(c.recentActions.map((a: { tool: string }) => a.tool)).toContain("create_scenario");
+    // A token lacking a scope is told to create a new token, not to reconnect.
+    const noRun = await tool(pat.body.token, "measure_stop_spacing", { scenario_id: own.json.id });
+    expect(noRun.text).toContain("create a new token");
     expect((await as("alice").del(`/api/agents/connections/${c.id}`)).status).toBe(200);
     expect((await mcp(pat.body.token, "tools/list")).status).toBe(401);
+    // The audit entry says which token was disconnected.
+    const su = await db.superuser();
+    const { rows } = await su.query(
+      "SELECT after FROM audit.record WHERE action = 'agent.disconnected' ORDER BY seq DESC LIMIT 1",
+    );
+    await su.end();
+    expect(rows[0]?.after).toMatchObject({ name: "CI", kind: "pat", revoked: true });
   });
 
   it("does not let Viewers connect, and cuts a token when its user becomes a Viewer", async () => {
@@ -626,6 +685,25 @@ describe.skipIf(!WASM)("AI agent integration (ADR-0035)", () => {
     expect((await mcp(pat.body.token, "tools/list")).status).toBe(401);
     await sql.query("UPDATE iam.user SET instance_role = 'owner' WHERE email = 'alice@example.org'");
     await sql.end();
+  });
+
+  it("lets an Admin remove a registered app once no agent is connected through it", async () => {
+    const reg = await request(server())
+      .post("/oauth/register")
+      .send({ client_name: "<script>alert(1)</script>", redirect_uris: [REDIRECT] });
+    expect(reg.status).toBe(201);
+    const list = await as("alice").get("/api/agents/clients");
+    const mine = list.body.clients.find((c: { id: string }) => c.id === reg.body.client_id);
+    expect(mine).toMatchObject({ name: "<script>alert(1)</script>", connections: 0 });
+    // The client the other tests connect through is in use once an agent is connected through it.
+    const c = await connect("alice", "project:read");
+    await exchange(new URL(c.decision.body.redirect).searchParams.get("code")!, c.verifier);
+    const again = await as("alice").get("/api/agents/clients");
+    const used = again.body.clients.find((x: { id: string }) => x.id === clientId);
+    expect(used.connections).toBeGreaterThan(0);
+    expect((await as("alice").del(`/api/agents/clients/${clientId}`)).status).toBe(409);
+    expect((await as("alice").del(`/api/agents/clients/${reg.body.client_id}`)).status).toBe(200);
+    expect((await as("alice").del(`/api/agents/clients/${reg.body.client_id}`)).status).toBe(404);
   });
 
   it("lets an Admin switch off client registration", async () => {

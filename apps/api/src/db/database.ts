@@ -103,6 +103,8 @@ export interface DB {
     idle_expires_at: Date;
     absolute_expires_at: Date;
     revoked_at: Date | null;
+    /** The provider's ID token, kept only for `id_token_hint` at sign-out; null once revoked. */
+    id_token: Generated<string | null>;
   };
   "iam.group_mapping": {
     id: Generated<string>;

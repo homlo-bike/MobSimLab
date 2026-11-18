@@ -1,6 +1,6 @@
 import { tNow } from "../../i18n/i18n";
 import type { Timing } from "./modes";
-import type { LineView } from "./types";
+import type { DepotTripView, LineView } from "./types";
 
 /** Numbers in the panel's stat tiles. */
 export interface LineStats {
@@ -112,4 +112,18 @@ export function lineChecks(view: LineView): Check[] {
   }
   const rank: Record<Severity, number> = { error: 0, warn: 1, ok: 2, info: 3 };
   return out.sort((a, b) => rank[a.sev] - rank[b.sev]);
+}
+
+/**
+ * Purpose: the end stop a depot run goes to (pull-out) or comes from (pull-in) when the planner has not chosen one:
+ * the one with the shortest routed run, so buses do not run empty to the far end of the line.
+ * Inputs: the line's depot runs; which kind. Output: the end stop's point id, or undefined when there are no runs.
+ */
+export function nearestTerminal(trips: DepotTripView[], kind: DepotTripView["kind"]): number | undefined {
+  const routed = trips.filter((t) => t.kind === kind && t.status !== "error" && t.length_m > 0);
+  const best = routed.reduce<DepotTripView | undefined>(
+    (a, t) => (!a || t.length_m < a.length_m ? t : a),
+    undefined,
+  );
+  return best?.stop ?? trips[0]?.stop;
 }

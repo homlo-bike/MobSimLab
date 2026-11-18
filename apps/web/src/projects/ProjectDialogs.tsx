@@ -538,9 +538,22 @@ export function SaveMslabDialog({
           <button type="button" className="btn" onClick={onClose}>
             {t("common.cancel")}
           </button>
-          <a className="btn btn-pri" href={api.mslabUrl(project.id, runs, map)} download onClick={onClose}>
+          <button
+            type="button"
+            className="btn btn-pri"
+            onClick={() => {
+              // A real button for keyboards and screen readers; the download itself goes through a link.
+              const a = document.createElement("a");
+              a.href = api.mslabUrl(project.id, runs, map);
+              a.download = "";
+              document.body.append(a);
+              a.click();
+              a.remove();
+              onClose();
+            }}
+          >
             {t("mslab.save")}
-          </a>
+          </button>
         </>
       }
     >

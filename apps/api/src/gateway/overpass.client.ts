@@ -87,7 +87,14 @@ export class OverpassClient {
         if (!(timedOut || lastError.message.startsWith("retry"))) throw lastError;
       }
     }
-    throw lastError;
+    // After the last retry: say what happened in words, and that it is usually temporary.
+    const why = lastError.message.replace(/^retry: /, "");
+    throw new OverpassError(
+      `OpenStreetMap's Overpass service is busy or cannot be reached (${why}). This is usually temporary: ` +
+        "try again in a few minutes, or import the area's OpenStreetMap data into the project (Map data) so it is " +
+        "read from there.",
+      lastError.status,
+    );
   }
 
   private async once(query: string): Promise<string> {

@@ -19,7 +19,7 @@ import { vehicleById, vehiclesFor } from "./service";
 import { usedVehicles } from "../../workspace/preferences";
 import { useVehiclesOff } from "../../workspace/projectVehicles";
 import { usePublishChecks } from "../../shell/checks";
-import { lineChecks, lineStats, type Check, type Severity } from "./summary";
+import { lineChecks, lineStats, nearestTerminal, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, VehicleProfile } from "./types";
 import type { FitProblem } from "../depots/model";
 
@@ -110,6 +110,8 @@ interface Props {
   depotId?: string | null;
   /** The project's road depots, with why the line cannot use one (null: it can). */
   depots?: { id: string; name: string; problem: FitProblem }[];
+  /** Length of the line's vehicle, m, named when no depot slot fits it. */
+  vehicleLengthM?: number;
   /** Opens the depot tool. */
   onOpenDepots?: () => void;
   showRoads: boolean;
@@ -247,15 +249,19 @@ export function LinePanel(props: Props) {
     (x, y) => rank[x.sev] - rank[y.sev],
   );
   // In a project the checks go to the notifications button in the top bar; on its own the panel lists them.
+  // A line with no points yet is not a problem of the project (the tab was only opened), so it reports nothing.
   const checksElsewhere = usePublishChecks(
     "street",
     t("checks.streetLine", { name: props.lineName || t("street.untitled") }),
-    checks.map((c) => ({
+    (view.points.length === 0 ? [] : checks).map((c) => ({
       severity: c.sev === "warn" ? "warning" : c.sev,
       text: c.text,
       ...(c.point !== undefined ? { onShow: () => a.select(c.point!) } : {}),
     })),
   );
+  // "No slot fits" names the vehicle's length, so the planner sees why (a 13 m coach in 12 m slots).
+  const fitText = (p: Exclude<FitProblem, null>) =>
+    p === "depot.fit.size" && props.vehicleLengthM ? `${t(p)}: ${formatLength(props.vehicleLengthM)}` : t(p);
   const stops = view.points.filter((p) => p.kind !== "via");
   const name = (id: number | undefined) => {
     const p = view.points.find((q) => q.id === id);
@@ -264,8 +270,8 @@ export function LinePanel(props: Props) {
   const trip = (kind: "pull_out" | "pull_in", stop: number | undefined) =>
     view.depot_trips.find((t) => t.kind === kind && t.stop === stop);
   const terminals = [...new Set(view.depot_trips.map((t) => t.stop))];
-  const outStop = props.depotStops.out ?? terminals[0];
-  const inStop = props.depotStops.in ?? terminals[0];
+  const outStop = props.depotStops.out ?? nearestTerminal(view.depot_trips, "pull_out");
+  const inStop = props.depotStops.in ?? nearestTerminal(view.depot_trips, "pull_in");
 
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
@@ -347,6 +353,18 @@ export function LinePanel(props: Props) {
         )}
       </div>
 
+      {selected !== null && (
+        // While a point is open the tiles make room for it, but the totals stay readable, so the effect of an edit
+        // (a via point made a stop) shows at once.
+        <p className="m-0 border-t border-slate-200 pt-2 text-xs text-slate-600" aria-live="polite">
+          {t("street.stat.compact", {
+            length: formatLength(st.lengthM),
+            stops: st.stops,
+            cycle: Math.round(st.cycleMin),
+            vehicles: st.vehicles,
+          })}
+        </p>
+      )}
       {selected === null && (
         <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
           <Stat value={formatLength(st.lengthM)} label={t("street.stat.length")} />
@@ -398,7 +416,10 @@ export function LinePanel(props: Props) {
                 >
                   {p.kind === "via" ? (
                     <span className="flex h-5 w-5 items-center justify-center">
-                      <span className="h-3 w-3 rounded-full border-2" style={{ borderColor: mode.color }} />
+                      <span
+                        className="h-3 w-3 rounded-full border-2"
+                        style={{ borderColor: p.status === "error" ? "#dc2626" : mode.color }}
+                      />
                     </span>
                   ) : (
                     <span
@@ -428,6 +449,11 @@ export function LinePanel(props: Props) {
                     </span>
                   )}
                 </div>
+                {p.status === "error" && p.message && (
+                  <p className="ps-7 text-xs text-red-700" role="note">
+                    {p.message}
+                  </p>
+                )}
                 {sel && (
                   <div className="mt-1 flex flex-col gap-1 ps-7">
                     {p.kind !== "via" && (
@@ -581,14 +607,14 @@ export function LinePanel(props: Props) {
             <option value="">{t("depot.line.none")}</option>
             {(props.depots ?? []).map((d) => (
               <option key={d.id} value={d.id} disabled={d.problem !== null && d.id !== props.depotId}>
-                {d.problem ? `${d.name} (${t(d.problem)})` : d.name}
+                {d.problem ? `${d.name} (${fitText(d.problem)})` : d.name}
               </option>
             ))}
           </select>
         </label>
         {props.depotId && (props.depots ?? []).find((d) => d.id === props.depotId)?.problem && (
           <p className="text-xs text-amber-700">
-            {t((props.depots ?? []).find((d) => d.id === props.depotId)!.problem!)}
+            {fitText((props.depots ?? []).find((d) => d.id === props.depotId)!.problem!)}
           </p>
         )}
         {props.depotId && !(props.depots ?? []).some((d) => d.id === props.depotId) && (

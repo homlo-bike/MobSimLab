@@ -36,6 +36,7 @@ export const depotsHa = {
   "depot.hint.gate": "Danna iyaka inda kofa ta haɗu da titi.",
   "depot.remove": "Cire",
   "depot.zones": "Yankuna",
+  "depot.zoneOutside": "Yanki {n} ya fita wajen iyakar tasha: sake zana shi ko cire shi.",
   "depot.zonesNote":
     "Ajiye mota, caji (caja a kowane wuri), gyara (ba don ajiyar dare ba), ajiya don motocin ajiya, da zirga-zirga (tuƙi kawai). Tsari na atomatik yana cika yankunan ajiye mota, caji, gyara da ajiya.",
   "depot.zoneKind": "Irin yanki",

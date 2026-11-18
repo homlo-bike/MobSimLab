@@ -190,6 +190,23 @@ describe("vehicle blocks", () => {
     expect(pulls(patient)).toBeLessThan(pulls(blocks));
   });
 
+  it("keeps vehicles at the terminal when the depot's pull-out cannot be driven", () => {
+    const l = line(true);
+    const broken = {
+      ...l,
+      view: {
+        ...l.view,
+        depot_trips: l.view.depot_trips.map((t) =>
+          t.kind === "pull_out" ? { ...t, status: "error" as const, coords: [] } : t,
+        ),
+      },
+    };
+    const without = streetBlocks({ line: l, layoverMin: 5, hasDepot: false, maxWaitMin: 20 });
+    const blocks = streetBlocks({ line: broken, layoverMin: 5, hasDepot: true, maxWaitMin: 20 });
+    expect(blocks).toHaveLength(without.length);
+    expect(blocks.flatMap((b) => b.runs).some((r) => r.kind === "pull_in")).toBe(false);
+  });
+
   it("sizes the fleet with the spare share and counts hours and kilometres", () => {
     const run = (kind: "service" | "pull_out" | "pull_in", dep: number, arr: number, km: number) => ({
       kind,

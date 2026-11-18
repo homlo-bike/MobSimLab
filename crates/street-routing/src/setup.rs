@@ -359,11 +359,7 @@ pub fn street_infos(data: &OsmData) -> Vec<StreetInfo> {
             let t = &w.tags;
             Some(StreetInfo {
                 way: w.id,
-                name: t
-                    .get("name")
-                    .or_else(|| t.get("ref"))
-                    .cloned()
-                    .unwrap_or_default(),
+                name: crate::osm::way_name(t).unwrap_or_default(),
                 class: class.clone(),
                 main_road: main_road(class),
                 oneway: matches!(

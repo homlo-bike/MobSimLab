@@ -105,6 +105,25 @@ export class AgentsController {
     return this.oauth.settings();
   }
 
+  /** Purpose: the registered OAuth clients with their live connection counts (Admins). */
+  @Get("clients")
+  @Requires("agents.manage")
+  async clients() {
+    return { clients: await this.oauth.clients() };
+  }
+
+  /** Purpose: delete a registered OAuth client no live connection uses (Admins); 409 while one does. */
+  @Delete("clients/:id")
+  @Requires("agents.manage")
+  async deleteClient(@Param("id") id: string, @Req() req: MslRequest) {
+    if (id.length > 200) throw new NotFoundException();
+    const r = await this.oauth.deleteClient(id, this.meta(req));
+    if (r === "not_found") throw new NotFoundException();
+    if (r === "in_use")
+      throw new HttpException("This app still has connected agents: disconnect them first.", 409);
+    return { ok: true };
+  }
+
   /** Purpose: the user's scenarios (agent-made ones carry `origin: agent` and the client name). */
   @Get("scenarios")
   @Requires("agents.connect")
