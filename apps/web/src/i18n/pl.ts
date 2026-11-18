@@ -346,6 +346,8 @@ export const pl: Messages = {
   "prefs.paramsTitle": "Wszystkie parametry",
   "prefs.paramsIntro":
     "Każda wartość z biblioteki założeń. Ustaw własną dla wszystkich środków transportu lub dla jednego; wartość dla jednego ma pierwszeństwo przed wartością dla wszystkich. Wartość biblioteki widać obok.",
+  "prefs.paramsElsewhere":
+    "Wartości, które mają własną sekcję, ustawia się tam i nie ma ich tutaj: model popytu, opóźnienia i ruch drogowy (preferencje projektu), koszty, korzyści, ocena, energia i rozkłady jazdy (Tabele) oraz pasażerowie według typu dnia (Symulator, Przebieg kalendarza).",
   "prefs.paramsGroup": "Grupa",
   "prefs.paramsMode": "Środek transportu",
   "prefs.paramsAllModes": "Wszystkie środki transportu",

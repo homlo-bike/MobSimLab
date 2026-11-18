@@ -340,6 +340,8 @@ export const ko: Messages = {
   "prefs.paramsTitle": "모든 매개변수",
   "prefs.paramsIntro":
     "가정 라이브러리의 모든 값입니다. 모든 수단 또는 한 수단에 대해 직접 값을 정하세요. 한 수단의 값이 모든 수단의 값보다 우선합니다. 라이브러리 값은 옆에 표시됩니다.",
+  "prefs.paramsElsewhere":
+    "전용 섹션이 있는 값은 그곳에서 설정하며 여기에는 나오지 않습니다: 수요 모델, 지연과 도로 교통(프로젝트 환경설정), 비용, 편익, 평가, 에너지, 시간표(표), 요일 유형별 승객(시뮬레이터, 달력 실행).",
   "prefs.paramsGroup": "그룹",
   "prefs.paramsMode": "교통수단",
   "prefs.paramsAllModes": "모든 수단",

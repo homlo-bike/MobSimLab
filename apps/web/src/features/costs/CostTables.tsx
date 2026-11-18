@@ -34,6 +34,7 @@ import {
   sum,
 } from "./model";
 import { libraryValue, PARAMS, paramValue, prefId, type Triple } from "./params";
+import { SPARE_PREF } from "../../workspace/editedElsewhere";
 
 /** Cost tables settings (drawing kind `costs`): the country the planner chose for prices. */
 export interface CostsDoc {
@@ -1016,9 +1017,9 @@ function UnitCosts({
       used.set(`${x.param}|${mode}`, { key: x.param, mode });
     }
   used.set("cost.days_per_year|*", { key: "cost.days_per_year", mode: "*" });
-  for (const m of est.modes) {
-    used.set(`mode.spare_share|${m}`, { key: "mode.spare_share", mode: m });
-  }
+  // The spare vehicles of each mode are set in Tables → Timetables only.
+  used.delete(`${SPARE_PREF}|*`);
+  for (const m of est.modes) used.delete(`${SPARE_PREF}|${m}`);
   const rows = [...used.values()].sort(
     (a, b) => a.key.localeCompare(b.key) || modeLabel(a.mode).localeCompare(modeLabel(b.mode)),
   );

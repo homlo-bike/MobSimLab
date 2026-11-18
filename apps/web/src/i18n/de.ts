@@ -353,6 +353,8 @@ export const de: Messages = {
   "prefs.paramsTitle": "Alle Parameter",
   "prefs.paramsIntro":
     "Jeder Wert der Annahmenbibliothek. Lege eigene Werte für alle Verkehrsmittel oder für ein Verkehrsmittel fest; ein Wert für ein Verkehrsmittel hat Vorrang vor dem für alle. Der Wert der Bibliothek steht jeweils daneben.",
+  "prefs.paramsElsewhere":
+    "Werte mit einem eigenen Abschnitt werden dort eingestellt und stehen nicht hier: Nachfragemodell, Verspätungen und Straßenverkehr (Projekteinstellungen), Kosten, Nutzen, Bewertung, Energie und Fahrpläne (Tabellen) sowie Fahrgäste nach Tagesart (Simulator, Kalenderlauf).",
   "prefs.paramsGroup": "Gruppe",
   "prefs.paramsMode": "Verkehrsmittel",
   "prefs.paramsAllModes": "Alle Verkehrsmittel",

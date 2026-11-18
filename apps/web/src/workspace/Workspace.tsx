@@ -236,7 +236,6 @@ export function Workspace({
   onAbout,
   existingRailways = false,
   userId = null,
-  adminCsrf = null,
   onRefreshSession,
 }: {
   api: ProjectsApi;
@@ -252,8 +251,6 @@ export function Workspace({
   existingRailways?: boolean;
   /** The signed-in person, so they can edit and delete their own comments. */
   userId?: string | null;
-  /** The session's CSRF token when the signed-in person is an Admin: plugin settings in Project preferences. */
-  adminCsrf?: string | null;
   /** Load the session again (a fresh CSRF token), before saving again after a refused save. */
   onRefreshSession?: () => void;
 }) {
@@ -1341,7 +1338,6 @@ export function Workspace({
                 onPreferences={drawings.loaded ? (d) => drawings.set("preferences", d) : undefined}
                 plugins={plugins}
                 onSetPlugin={setPlugin}
-                adminCsrf={adminCsrf}
                 currency={currencyState}
                 fleet={drawings.loaded ? fleet : null}
                 onFleet={drawings.loaded ? (d) => drawings.set("fleet", d) : undefined}

@@ -341,6 +341,8 @@ export const en = {
   "prefs.paramsTitle": "All parameters",
   "prefs.paramsIntro":
     "Every value of the assumption library. Set your own for all modes or for one mode; a value for one mode wins over the one for all modes. The library's value stays beside each.",
+  "prefs.paramsElsewhere":
+    "Values with a section of their own are set there and not listed here: Demand model, Running time in traffic and Road simulation (Preferences), costs, benefits, appraisal, energy and timetables (Tables), and riders by day type (Simulator, Years).",
   "prefs.paramsGroup": "Group",
   "prefs.paramsMode": "Mode",
   "prefs.paramsAllModes": "All modes",

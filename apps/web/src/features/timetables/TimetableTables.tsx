@@ -37,6 +37,7 @@ import {
   type TripTimes,
 } from "./departures";
 import { type DayPublications, useRailPublications } from "./railPublish";
+import { SPARE_PREF, TERMINAL_WAIT_PREF } from "../../workspace/editedElsewhere";
 
 interface Props {
   railway: Network | null;
@@ -79,8 +80,8 @@ const DAY_IN_KEY: Record<DayTypeId, MessageKey> = {
   holiday: "tt.tbl.dayIn.holiday",
 };
 
-const WAIT_KEY = "timetable.max_terminal_wait_min";
-const SPARE_KEY = "mode.spare_share";
+const WAIT_KEY = TERMINAL_WAIT_PREF;
+const SPARE_KEY = SPARE_PREF;
 const int = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
 const hours = (s: number) =>
   `${Math.floor(s / 3600)} h ${String(Math.round((s % 3600) / 60)).padStart(2, "0")} min`;

@@ -347,6 +347,8 @@ export const ig: Messages = {
   "prefs.paramsTitle": "Paramita niile",
   "prefs.paramsIntro":
     "Uru ọ bụla nke ọbá echiche. Tọọ nke gị maka ụzọ niile ma ọ bụ otu ụzọ; uru otu ụzọ na-akarị nke ụzọ niile. Uru ọbá ahụ na-anọ n'akụkụ.",
+  "prefs.paramsElsewhere":
+    "Ụkpụrụ nwere ngalaba nke ha ka a na-edozi n'ebe ahụ, a naghị edepụta ha ebe a: ụdị ọchịchọ, igbu oge na okporo ụzọ (Mmasị ọrụ), ọnụ ahịa, uru, nyocha, ike na usoro oge (Tebụl), na ndị njem dị ka ụdị ụbọchị si dị (Simulator, Ọgụgụ kalenda).",
   "prefs.paramsGroup": "Otu",
   "prefs.paramsMode": "Ụzọ njem",
   "prefs.paramsAllModes": "Ụzọ niile",

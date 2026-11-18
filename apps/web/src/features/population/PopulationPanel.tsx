@@ -120,12 +120,7 @@ export function PopulationPanel({ map, panel, api, editable, onPrimaryChange }: 
   else
     content = (
       <>
-        <AreaSection
-          overview={overview}
-          editable={editable}
-          busy={busy}
-          onBuffer={(km) => run(async () => setOverview(await api.setBuffer(km)))}
-        />
+        <AreaSection overview={overview} />
         <section aria-labelledby="pop-primary" className="flex flex-col gap-1">
           <h3 id="pop-primary" className="font-semibold">
             {t("pop.primary.title")}
@@ -239,22 +234,9 @@ export function PopulationPanel({ map, panel, api, editable, onPrimaryChange }: 
   return panel ? createPortal(body, panel) : body;
 }
 
-function AreaSection({
-  overview,
-  editable,
-  busy,
-  onBuffer,
-}: {
-  overview: PopulationOverview;
-  editable: boolean;
-  busy: boolean;
-  onBuffer: (km: number) => void;
-}) {
+/** The project area's size here; its buffer is set in GIS → Map data only. */
+function AreaSection({ overview }: { overview: PopulationOverview }) {
   const { t } = useI18n();
-  const [km, setKm] = useState(String(overview.bufferKm));
-  useEffect(() => setKm(String(overview.bufferKm)), [overview.bufferKm]);
-  const value = Number(km);
-  const valid = km.trim() !== "" && Number.isFinite(value) && value >= 0 && value <= 50;
   const tooLarge = overview.areaKm2 !== null && overview.areaKm2 > overview.choices.maxAreaKm2;
   return (
     <section aria-labelledby="pop-area" className="flex flex-col gap-1">
@@ -273,31 +255,6 @@ function AreaSection({
           {t("pop.area.tooLarge", { max: formatInt(overview.choices.maxAreaKm2) })}
         </p>
       )}
-      <div className="mt-1 flex items-end gap-2">
-        <label className="text-sm">
-          <span className="font-medium">{t("pop.area.buffer")}</span>
-          <input
-            type="number"
-            min={0}
-            max={50}
-            step="any"
-            className="input mt-1 w-28"
-            value={km}
-            readOnly={!editable}
-            onChange={(e) => setKm(e.target.value)}
-          />
-        </label>
-        {editable && (
-          <button
-            type="button"
-            className="btn min-h-10"
-            disabled={busy || !valid || value === overview.bufferKm}
-            onClick={() => onBuffer(value)}
-          >
-            {t("pop.area.save")}
-          </button>
-        )}
-      </div>
     </section>
   );
 }

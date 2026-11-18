@@ -6915,10 +6915,7 @@
             "findings"
           ],
           "where": [
-            "street-line-tool",
-            "railway-tool",
-            "gis",
-            "analysis"
+            "gis"
           ]
         }
       ],

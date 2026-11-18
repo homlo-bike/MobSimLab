@@ -13,8 +13,8 @@ import {
   type Appraisal,
   type AppraisalDoc,
   type AppraisalRow,
+  appraisalSettingGroups,
   appraise,
-  EXTERNAL,
   libraryValue,
   mca,
   newId,
@@ -23,7 +23,6 @@ import {
   paramValue,
   POLICY,
   type Present,
-  SOCIAL_RATES,
   socialRateKey,
 } from "./model";
 
@@ -840,33 +839,6 @@ const GROUP_NAME: Record<string, string> = {
   "appraisal.discount.social_lower": "this project uses the rate for lower-middle and low-income countries",
 };
 
-/** The settings, in the order a planner thinks about them. */
-function settingGroups(income: string | null): { title: string; keys: string[] }[] {
-  return [
-    {
-      title: "Timeline",
-      keys: ["appraisal.build_years", "appraisal.period_years"],
-    },
-    {
-      title: "Discounting and prices",
-      keys: [
-        socialRateKey(income),
-        ...SOCIAL_RATES.filter((k) => k !== socialRateKey(income)),
-        "appraisal.discount.financial",
-        "appraisal.conversion_factor",
-      ],
-    },
-    {
-      title: "Asset lives: renewals and residual value",
-      keys: ["appraisal.life.civil", "appraisal.life.systems", "appraisal.life.vehicles"],
-    },
-    {
-      title: "Benefits",
-      keys: ["appraisal.vot_growth", ...EXTERNAL.map((k) => `appraisal.external.${k}`)],
-    },
-  ];
-}
-
 /** Modes with their own library value for a key, for the per-mode rows. */
 function modesOf(key: string): string[] {
   return Object.keys(PARAMS[key]?.values ?? {}).filter((m) => m !== "*");
@@ -896,10 +868,10 @@ function Settings({
       <p className="mt-1 text-xs text-slate-500">
         Setting a value replaces the medium; low and high move with it. Values marked “your choice” stay fixed
         in the Monte Carlo run. The social discount rate follows the World Bank's income group of the
-        project's country: {GROUP_NAME[used]}. The same values are in Project preferences → All parameters →
-        Appraisal. Sources and reasoning are in assumptions/DEFAULTS.md.
+        project's country: {GROUP_NAME[used]}. These values are set here only. Sources and reasoning are in
+        assumptions/DEFAULTS.md.
       </p>
-      {settingGroups(income).map((g) => (
+      {appraisalSettingGroups(income).map((g) => (
         <div key={g.title} className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[40rem] text-sm">
             <caption className="caps pb-1 text-left text-slate-700">{g.title}</caption>

@@ -348,6 +348,8 @@ export const nl: Messages = {
   "prefs.paramsTitle": "Alle parameters",
   "prefs.paramsIntro":
     "Elke waarde uit de aannamebibliotheek. Stel je eigen waarde in voor alle modaliteiten of voor één; een waarde voor één modaliteit gaat voor die voor alle. De waarde van de bibliotheek staat ernaast.",
+  "prefs.paramsElsewhere":
+    "Waarden met een eigen sectie stel je daar in en staan hier niet: vraagmodel, vertragingen en wegverkeer (projectvoorkeuren), kosten, baten, beoordeling, energie en dienstregelingen (Tabellen), en reizigers per dagtype (Simulator, Kalenderrun).",
   "prefs.paramsGroup": "Groep",
   "prefs.paramsMode": "Modaliteit",
   "prefs.paramsAllModes": "Alle modaliteiten",

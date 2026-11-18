@@ -347,6 +347,8 @@ export const sw: Messages = {
   "prefs.paramsTitle": "Vigezo vyote",
   "prefs.paramsIntro":
     "Kila thamani ya maktaba ya dhana. Weka yako kwa njia zote au kwa njia moja; thamani ya njia moja inatangulia ile ya njia zote. Thamani ya maktaba hubaki kando.",
+  "prefs.paramsElsewhere":
+    "Thamani zenye sehemu yake huwekwa huko na hazionyeshwi hapa: modeli ya mahitaji, ucheleweshaji na trafiki ya barabarani (Mapendeleo ya mradi), gharama, faida, tathmini, nishati na ratiba (Majedwali), na abiria kwa aina ya siku (Kiigaji, Kukokotoa kalenda).",
   "prefs.paramsGroup": "Kundi",
   "prefs.paramsMode": "Njia ya usafiri",
   "prefs.paramsAllModes": "Njia zote",

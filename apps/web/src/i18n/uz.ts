@@ -350,6 +350,8 @@ export const uz: Messages = {
   "prefs.paramsTitle": "Barcha parametrlar",
   "prefs.paramsIntro":
     "Farazlar kutubxonasining har bir qiymati. Barcha transport turlari yoki bittasi uchun o'z qiymatingizni bering; bitta turning qiymati barchasinikidan ustun. Kutubxona qiymati yonida turadi.",
+  "prefs.paramsElsewhere":
+    "O‘z bo‘limi bor qiymatlar o‘sha yerda o‘rnatiladi va bu yerda ko‘rsatilmaydi: talab modeli, kechikishlar va yo‘l harakati (Loyiha sozlamalari), xarajatlar, foydalar, baholash, energiya va jadvallar (Jadvallar), hamda kun turi bo‘yicha yo‘lovchilar (Simulyator, Kalendar bo‘yicha hisob).",
   "prefs.paramsGroup": "Guruh",
   "prefs.paramsMode": "Transport turi",
   "prefs.paramsAllModes": "Barcha turlar",
