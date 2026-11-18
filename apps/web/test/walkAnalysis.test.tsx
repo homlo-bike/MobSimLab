@@ -267,6 +267,32 @@ describe("WalkAnalysis", () => {
     expect(await screen.findByText(/150 m on foot/)).toBeTruthy();
   });
 
+  it("shows how far the calculation is, and cancels it", async () => {
+    const log: Log = { spacing: [], xml: [] };
+    // The first street tile never arrives, so the run waits in the tile step.
+    const fetchTile = vi.fn(() => new Promise<string>(() => {}));
+    render(
+      <WalkAnalysis
+        map={null}
+        streetLines={DOC}
+        railway={null}
+        loadWalk={fakeEngine(log)}
+        loadRail={noRail}
+        fetchTile={fetchTile}
+        fetchPeople={async () => GRID}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Calculate walk coverage" }));
+    const bar = await screen.findByRole("progressbar", { name: "Walk to a stop" });
+    expect(screen.getByText("Step 2 of 4")).toBeTruthy();
+    expect(Number(bar.getAttribute("aria-valuenow"))).toBeGreaterThanOrEqual(25);
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    expect(screen.queryByRole("progressbar")).toBeNull();
+    expect(
+      (screen.getByRole("button", { name: "Calculate walk coverage" }) as HTMLButtonElement).disabled,
+    ).toBe(false);
+  });
+
   it("falls back to the streets when the population is still downloading", async () => {
     const log: Log = { spacing: [], xml: [] };
     render(

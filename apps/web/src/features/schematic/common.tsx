@@ -66,10 +66,19 @@ export const GAP = 7;
 export const LABEL_SIZE = 13;
 export const SYMBOL_SIZE = 15;
 export const FONT = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
-export const INK = "#1e293b";
-export const MUTED = "#475569";
-export const WATER_FILL = "#cfe8f7";
-export const WATER_LINE = "#9fd0ee";
+/*
+ * The diagrams' own colours are CSS variables with the light colour as the fallback: on screen they follow dark
+ * mode (index.css), and exported files (export.ts) keep the light colours.
+ */
+export const PAPER = "var(--diagram-paper, #ffffff)";
+export const INK = "var(--diagram-ink, #1e293b)";
+export const MUTED = "var(--diagram-muted, #475569)";
+/** Small notes and axis labels. */
+export const NOTE = "var(--diagram-note, #64748b)";
+/** Rules and guide lines. */
+export const RULE = "var(--diagram-rule, #cbd5e1)";
+export const WATER_FILL = "var(--diagram-water, #cfe8f7)";
+export const WATER_LINE = "var(--diagram-water-line, #9fd0ee)";
 
 export const LAYER_LABEL: Record<Layer, MessageKey> = {
   bus: "schematic.layer.bus",
@@ -92,7 +101,7 @@ export const LEVEL_BANDS: readonly LevelBand[] = [
   "water",
 ];
 export const LEVEL_COLOR: Record<LevelBand, string> = {
-  underground: "#334155",
+  underground: "var(--diagram-underground, #334155)",
   street: "#a8a29e",
   elevated: "#7c3aed",
   ramp: "#cbd5e1",
@@ -194,7 +203,7 @@ export function legend(
             </g>
           );
         })}
-        <text x={PAD / 2} y={top + height - 10} fontSize={10} fill="#64748b">
+        <text x={PAD / 2} y={top + height - 10} fontSize={10} fill={NOTE}>
           {footer}
         </text>
       </g>

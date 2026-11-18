@@ -25,6 +25,8 @@ import {
   type Trip,
 } from "./model";
 import { withProject } from "../../geodata/projectData";
+import { fetchTileWithRetry } from "../../geodata/tileFetch";
+import { tNow } from "../../i18n/i18n";
 
 let wasmModule: Promise<typeof import("../../wasm/cargo-bike/cargo_bike_wasm.js")> | null = null;
 
@@ -58,6 +60,8 @@ export interface CargoBikeEngine {
     values: Record<string, number>,
     setups: StreetSetup[],
     onProgress?: (done: number, total: number) => void,
+    /** Aborted by Cancel: no more areas are loaded and the trip stops. */
+    signal?: AbortSignal,
   ): Promise<{ trip: Trip; go: Route; back: Route; snapM: [number, number] }>;
   rangeMap(origin: LonLat, values: Record<string, number>, radiusM?: number): Promise<{ reach: Reach[] }>;
   savings(trip: PerTrip, values: Record<string, number>, conv: Conversion | null): Promise<Savings>;
@@ -69,11 +73,13 @@ export interface CargoBikeEngine {
 const MAX_AMENITY_TILES = 120;
 
 /** Purpose: fetch one walk tile (OSM XML) from the API. */
-async function fetchWalkTile(x: number, y: number): Promise<string> {
-  const res = await fetch(withProject(`/api/street-network/walk-tiles/14/${x}/${y}`), {
+async function fetchWalkTile(x: number, y: number, signal?: AbortSignal): Promise<string> {
+  const res = await fetchTileWithRetry(withProject(`/api/street-network/walk-tiles/14/${x}/${y}`), {
     credentials: "same-origin",
+    signal,
   });
-  if (!res.ok) throw new TripError("tiles", `walk tile ${x}/${y}: ${res.status}`);
+  // Still busy after the retries: say so in words, with the tile and answer for a bug report.
+  if (!res.ok) throw new TripError("tiles", `${tNow("walk.osmUnavailable")} (tile ${x}/${y}: ${res.status})`);
   return res.text();
 }
 
@@ -110,7 +116,7 @@ export function cargoBikeEngine(): CargoBikeEngine {
       return JSON.parse(wasm.kits()) as { default: string; kits: Kit[] };
     },
 
-    async trip(start, destination, values, setups, onProgress) {
+    async trip(start, destination, values, setups, onProgress, signal) {
       const tiles = corridorTiles(start, destination);
       if (tiles.length > MAX_TILES) throw new TripError("too_far");
       const wasm = await initWasm();
@@ -119,9 +125,13 @@ export function cargoBikeEngine(): CargoBikeEngine {
       const xmls = await pool(
         tiles,
         6,
-        ([x, y]) => fetchWalkTile(x, y),
+        ([x, y]) => {
+          signal?.throwIfAborted();
+          return fetchWalkTile(x, y, signal);
+        },
         () => onProgress?.(++done, tiles.length),
       );
+      signal?.throwIfAborted();
       const router = new wasm.CargoBikeRouter();
       try {
         for (const xml of xmls) router.add_osm(xml);

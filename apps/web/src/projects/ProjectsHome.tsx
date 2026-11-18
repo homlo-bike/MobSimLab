@@ -26,10 +26,17 @@ export function Thumb({ id, className }: { id: string; className: string }) {
   const x2 = 40 + pick(12) * 200;
   return (
     <svg viewBox="0 0 280 96" aria-hidden="true" className={className} preserveAspectRatio="xMidYMid slice">
-      <rect width="280" height="96" fill="#eef1f4" />
+      <rect width="280" height="96" fill="var(--diagram-thumb, #eef1f4)" />
       <path d={`M0 ${y1} H${x2 - 30} L${x2} ${y1 - 20} H280`} stroke={a} strokeWidth="5" fill="none" />
       <path d={`M${x2} 0 V96`} stroke={b} strokeWidth="5" />
-      <circle cx={x2} cy={y1 - 20} r="6" fill="#fff" stroke="#0f172a" strokeWidth="3" />
+      <circle
+        cx={x2}
+        cy={y1 - 20}
+        r="6"
+        fill="var(--diagram-paper, #fff)"
+        stroke="var(--diagram-strong, #0f172a)"
+        strokeWidth="3"
+      />
     </svg>
   );
 }
@@ -458,11 +465,7 @@ export function ProjectsHome({
       )}
       {menu?.sheet && (
         <div className="fixed inset-0 z-50">
-          <div
-            className="absolute inset-0 bg-slate-900/35"
-            onClick={() => setMenu(null)}
-            aria-hidden="true"
-          />
+          <div className="absolute inset-0 bg-scrim/35" onClick={() => setMenu(null)} aria-hidden="true" />
           <div className="absolute inset-x-0 bottom-0 rounded-t-2xl bg-white pb-3 shadow-2xl">
             <div className="mx-auto mt-2 mb-2 h-1.5 w-10 rounded-full bg-slate-300" aria-hidden="true" />
             <div className="flex items-center gap-3 border-b border-slate-200 px-4 pb-2">

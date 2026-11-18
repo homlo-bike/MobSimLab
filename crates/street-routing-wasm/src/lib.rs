@@ -196,6 +196,22 @@ impl StreetLineEditor {
         Ok(self.view())
     }
 
+    /// Purpose: put a stop on the other sidewalk of its street. Returns the view.
+    pub fn switch_side(&mut self, id: u32) -> Result<String, JsError> {
+        let g = self.graph.as_ref().ok_or_else(not_ready)?;
+        self.line.switch_side(g, id).map_err(|e| JsError::new(&e))?;
+        Ok(self.view())
+    }
+
+    /// Purpose: metres the circuit would gain (positive) or save (negative) with the stop on the
+    /// other sidewalk; NaN when that cannot be worked out.
+    pub fn side_cost(&self, id: u32) -> f64 {
+        self.graph
+            .as_ref()
+            .and_then(|g| self.line.side_cost_m(g, id))
+            .unwrap_or(f64::NAN)
+    }
+
     /// Purpose: delete a point. Returns the view.
     pub fn delete_point(&mut self, id: u32) -> Result<String, JsError> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;

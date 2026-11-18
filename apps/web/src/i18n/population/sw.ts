@@ -37,6 +37,7 @@ export const populationSw = {
   "pop.upload.hint":
     "Gridi ya GeoTIFF (watu kwa kila kisanduku), kanda au nukta za GeoJSON zenye sehemu ya watu, au CSV ya nukta au thamani kwa kila kanda. Si zaidi ya MB {mb}.",
   "pop.upload.file": "Faili",
+  "pop.upload.choose": "Chagua faili",
   "pop.upload.unknown": "Chagua faili ya .tif, .geojson, .json au .csv.",
   "pop.upload.name": "Jina",
   "pop.upload.licence": "Leseni",

@@ -51,6 +51,8 @@ export const editorsKk = {
   "rail.element": "Элемент",
   "rail.doubleJunction": "Екі жолды желідегі екі жақты түйісу",
   "rail.scissors": "Қайшы тәрізді өтпе",
+  "rail.terrainFailed":
+    "Жер биіктіктері жүктелмеді: {reason}. Жүктелгеннен кейін еңістер мен станция биіктіктері шығады.",
   "rail.signals": "Бағдаршамдар",
   "rail.signalsSome":
     "{summary}. Олар жобадан құрылады және жоба өзгергенде бірге өзгереді. Бағдаршамды өзгерту немесе алып тастау үшін оны басыңыз, не қосу үшін бағдаршам құралын пайдаланыңыз; әр өзгеріс тексеріледі.",
@@ -366,6 +368,9 @@ export const editorsKk = {
   "street.pointKind": "{n} нүкте түрі",
   "street.deletePoint": "{n} нүктені жою",
   "street.delete": "Жою",
+  "street.sideSwitch": "Жақты ауыстыру",
+  "street.sideAdds": "Бұл аялдаманы қарсы тротуардан қызмет ету {length} қосады.",
+  "street.sideSaves": "Бұл аялдаманы қарсы тротуардан қызмет ету {length} үнемдейді.",
   "street.backTo1": "1 нүктеге оралу",
   "street.optimise": "Оңтайландыру",
   "street.optimiseTitle": "Ең қысқа айналым үшін әр аралық нүктеде жүру бағытын таңдау",

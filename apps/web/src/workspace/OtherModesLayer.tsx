@@ -129,8 +129,8 @@ const set = (map: MapLibreMap, id: string, data: object) =>
   (map.getSource(id) as GeoJSONSource | undefined)?.setData(data as never);
 
 /**
- * Purpose: on the Create tab, draw what the other modes hold (street lines, railway, depots, plugin lines) faded
- * under the tool in use, so the network stays in view. Only the tool in use edits: these layers answer no clicks.
+ * Purpose: on the map tabs, draw what the other modes hold (street lines, railway, depots, plugin lines) faded
+ * under the tool in use (or everything on GIS and Simulator), so the network stays in view. Only the tool in use edits: these layers answer no clicks.
  * Inputs: the tool in use ("street", "rail", "depots" or a plugin tool's id; null draws everything) and the saved
  * drawings. Side effects: adds `om-` sources and layers to the map, and removes them on close.
  */

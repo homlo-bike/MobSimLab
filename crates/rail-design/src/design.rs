@@ -428,7 +428,42 @@ pub fn build_with_choice(
                 ));
                 continue;
             };
-            match place(sw, parent, spec, mode_params(track_modes[&sw.track])) {
+            let mode = track_modes[&sw.track];
+            match place(sw, parent, spec, mode_params(mode)) {
+                Ok(g)
+                    if !g.fits
+                        && matches!(sw.kind, SwitchKind::Crossover | SwitchKind::Scissors) =>
+                {
+                    // The chosen turnout's legs cannot meet at this track spacing (the tram
+                    // default R 50 m 1:6 in a scissors at 3.00 m): build it from the first
+                    // turnout of the mode that fits, and say so, rather than block publishing.
+                    let other = d
+                        .turnouts_for(mode)
+                        .into_iter()
+                        .filter(|o| o.id != spec.id)
+                        .find_map(|o| {
+                            place(sw, parent, o, mode_params(mode))
+                                .ok()
+                                .filter(|x| x.fits)
+                        });
+                    match other {
+                        Some(x) => {
+                            switch_errors.push(Issue::info(
+                                format!(
+                                    "{}: built with {} because the legs of {} cannot meet at {:.2} m track centres.",
+                                    x.label,
+                                    d.switch(&x.element).map_or(x.element.as_str(), |o| o.label.as_str()),
+                                    spec.label,
+                                    parent.spacing_at(sw.s)
+                                ),
+                                x.toes.first().copied(),
+                                Some(sw.id),
+                            ));
+                            switches.push(x);
+                        }
+                        None => switches.push(g),
+                    }
+                }
                 Ok(g) => switches.push(g),
                 Err(e) => {
                     switch_errors.push(Issue::error(e, Some(at_s(&parent.centre, sw.s).p), sw.id))
@@ -1082,6 +1117,40 @@ mod tests {
             radius_end_m: None,
             directions: vec![],
             mode,
+        }
+    }
+
+    #[test]
+    fn default_crossovers_and_scissors_build_without_errors_for_every_mode() {
+        for mode in RailMode::ALL {
+            for kind in [SwitchKind::Crossover, SwitchKind::Scissors] {
+                let mut net = Network::new(mode, [7.0, 50.9]);
+                let mut t = straight(1, (0.0, 0.0), (1500.0, 0.0), None);
+                t.tracks = 2;
+                net.tracks.push(t);
+                net.switches.push(crate::model::Switch {
+                    id: 2,
+                    kind,
+                    track: 1,
+                    s: 400.0,
+                    element: defaults().mode(mode).default_turnout.clone(),
+                    side: 1,
+                    direction: 1,
+                    flip: false,
+                });
+                let dz = build(&net, None);
+                let errors: Vec<_> = dz
+                    .issues
+                    .iter()
+                    .filter(|i| i.ref_id == Some(2) && i.severity == Severity::Error)
+                    .map(|i| i.text.clone())
+                    .collect();
+                assert!(errors.is_empty(), "{mode:?} {kind:?}: {errors:?}");
+                assert!(
+                    dz.switches.iter().any(|s| s.id == 2 && s.fits),
+                    "{mode:?} {kind:?}"
+                );
+            }
         }
     }
 

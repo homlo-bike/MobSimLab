@@ -36,6 +36,7 @@ export const populationZh = {
   "pop.upload.hint":
     "GeoTIFF 栅格（每格人数）、带人数字段的 GeoJSON 分区或点，或包含点或分区数值的 CSV。最大 {mb} MB。",
   "pop.upload.file": "文件",
+  "pop.upload.choose": "选择文件",
   "pop.upload.unknown": "请选择 .tif、.geojson、.json 或 .csv 文件。",
   "pop.upload.name": "名称",
   "pop.upload.licence": "许可",

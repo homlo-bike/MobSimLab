@@ -38,6 +38,7 @@ export const populationIg = {
   "pop.upload.hint":
     "Grid GeoTIFF (mmadụ n'otu cell), mpaghara ma ọ bụ ntụpọ GeoJSON nwere ubi mmadụ, ma ọ bụ CSV nke ntụpọ ma ọ bụ uru maka mpaghara ọ bụla. MB {mb} kacha.",
   "pop.upload.file": "Faịlụ",
+  "pop.upload.choose": "Họrọ faịlụ",
   "pop.upload.unknown": "Họrọ faịlụ .tif, .geojson, .json ma ọ bụ .csv.",
   "pop.upload.name": "Aha",
   "pop.upload.licence": "Ikike",

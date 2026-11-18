@@ -7,6 +7,7 @@ import { currencyOf } from "../costs/currencies";
 import { convertTo, type ProjectCurrency } from "../costs/currency";
 import { economyApi, type EconomyApi } from "../costs/economy";
 import type { StreetSetup } from "../street-setup/types";
+import { JobProgress } from "../../shell/JobProgress";
 import { cargoBikeEngine, type CargoBikeEngine, TripError } from "./engine";
 import { amenityColour, classColour, clearCargoBike, drawCargoBike } from "./mapLayer";
 import {
@@ -121,6 +122,9 @@ export function CargoBikeTab({
   };
 
   const [busy, setBusy] = useState<string | null>(null);
+  // The trip under way (Cancel aborts it) and how many of its street areas have loaded.
+  const tripRun = useRef<AbortController | null>(null);
+  const [loaded, setLoaded] = useState<{ done: number; total: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [trip, setTrip] = useState<{ trip: Trip; go: Route; back: Route } | null>(null);
   const [reach, setReach] = useState<Reach[] | null>(null);
@@ -326,19 +330,34 @@ export function CargoBikeTab({
   const runTrip = async () => {
     if (!start || !destination) return;
     setError(null);
+    const ctl = new AbortController();
+    tripRun.current = ctl;
     setBusy(t("cb.loadingStreets", { done: 0, total: 0 }));
+    setLoaded({ done: 0, total: 0 });
     try {
-      const r = await engine.trip(start, destination, effective, setups, (done, total) =>
-        setBusy(t("cb.loadingStreets", { done, total })),
+      const r = await engine.trip(
+        start,
+        destination,
+        effective,
+        setups,
+        (done, total) => {
+          setBusy(t("cb.loadingStreets", { done, total }));
+          setLoaded({ done, total });
+        },
+        ctl.signal,
       );
       setTrip(r);
     } catch (e) {
+      // Cancelled: nothing to report.
+      if (ctl.signal.aborted) return;
       setError(
         e instanceof TripError && e.code !== "tiles"
           ? t(`cb.error.${e.code}` as MessageKey)
           : t("cb.error.failed", { error: e instanceof Error ? e.message : String(e) }),
       );
     } finally {
+      tripRun.current = null;
+      setLoaded(null);
       setBusy(null);
     }
   };
@@ -845,10 +864,24 @@ export function CargoBikeTab({
       {view === "trip" && tripView()}
       {view === "range" && rangeView()}
       {view === "savings" && savingsView()}
-      {busy && (
-        <p role="status" className="mt-3 text-sm text-slate-600">
-          {busy}
-        </p>
+      {busy && loaded ? (
+        // A trip: its street areas as a bar (step 1), then the route and heights (step 2), and Cancel.
+        <div className="mt-3">
+          <JobProgress
+            label={t("cb.calculateTrip")}
+            step={busy}
+            index={loaded.total > 0 && loaded.done >= loaded.total ? 2 : 1}
+            steps={2}
+            fraction={loaded.total > 0 && loaded.done < loaded.total ? loaded.done / loaded.total : null}
+            onCancel={() => tripRun.current?.abort()}
+          />
+        </div>
+      ) : (
+        busy && (
+          <p role="status" className="mt-3 text-sm text-slate-600">
+            {busy}
+          </p>
+        )
       )}
       {error && (
         <p role="alert" className="mt-3 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-900">
@@ -917,7 +950,7 @@ function BatteryChart({ trip }: { trip: Trip }) {
   return (
     <figure className="mt-3">
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={t("cb.chartAria")}>
-        <path d={ground} fill="#e2e8f0" />
+        <path d={ground} fill="var(--diagram-ground, #e2e8f0)" />
         <line x1={x(goLen)} x2={x(goLen)} y1={0} y2={H} stroke="#94a3b8" strokeDasharray="3 3" />
         <line x1={0} x2={W} y1={yB(usable)} y2={yB(usable)} stroke="#dc2626" strokeDasharray="4 3" />
         <path d={battery} fill="none" stroke="#15803d" strokeWidth={2} />

@@ -39,7 +39,9 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
           // Basemaps: OpenFreeMap styles and tiles, EOX's Sentinel-2 aerial imagery (apps/web/src/map/basemaps.ts) and
           // NASA GIBS imagery from the bundled plugin.
           "img-src": ["'self'", "data:", "blob:", ...MAP_ORIGINS],
-          "connect-src": ["'self'", ...MAP_ORIGINS],
+          // data: lets MapLibre load the pictures the app draws itself (population lattice, noise map) as image
+          // sources: it fetches their data: URLs. A data: URL carries its own bytes, so nothing leaves the page.
+          "connect-src": ["'self'", "data:", ...MAP_ORIGINS],
           "worker-src": ["'self'", "blob:"],
           "style-src": ["'self'"],
           // WebAssembly street router (ADR-0031) needs wasm compilation, not general eval.

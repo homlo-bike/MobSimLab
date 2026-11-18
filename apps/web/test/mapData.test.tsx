@@ -87,6 +87,21 @@ describe("map data requests", () => {
   });
 });
 
+describe("terrain requests", () => {
+  it("send the session's CSRF token", async () => {
+    const { setCsrfToken } = await import("../src/session/csrf");
+    const { fetchElevations } = await import("../src/terrain/terrain");
+    setCsrfToken("tok-1");
+    const fetchImpl = vi.fn(
+      async () => new Response(JSON.stringify({ elevationsM: [1], source: {} }), { status: 200 }),
+    );
+    await fetchElevations([[7.123, 50.456]], fetchImpl as unknown as typeof fetch);
+    const init = (fetchImpl.mock.calls[0] as unknown[])[1] as RequestInit;
+    expect((init.headers as Record<string, string>)["X-CSRF-Token"]).toBe("tok-1");
+    setCsrfToken(null);
+  });
+});
+
 describe("Map data panel", () => {
   it("asks for a drawing when the project has no area", async () => {
     render(<MapDataPanel api={fakeApi(status({ area: null }))} map={null} />);
@@ -120,6 +135,30 @@ describe("Map data panel", () => {
     expect(await screen.findByText("Cutting out the project area…")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
     await waitFor(() => expect(api.cancel).toHaveBeenCalledWith("run-1"));
+    // It answers at once: the bar says it is stopping, and Cancel is not offered twice.
+    expect(screen.getByText("Stopping after the current step…")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Cancel" })).toBeNull();
+  });
+
+  it("shows how far an import is with a progress bar", async () => {
+    const api = fakeApi(
+      status({
+        osm: {
+          current: null,
+          latest: run({
+            status: "running",
+            method: "overpass",
+            progress: { step: "download", done: 3, total: 12 },
+          }),
+        },
+      }),
+    );
+    render(<MapDataPanel api={api} map={null} />);
+    const bar = await screen.findByRole("progressbar", { name: "OpenStreetMap" });
+    // Overpass: download, join, write; a quarter of the tiles are in, so a twelfth of the whole job.
+    expect(screen.getByText("Step 1 of 3")).toBeTruthy();
+    expect(bar.getAttribute("aria-valuenow")).toBe("8");
+    expect(screen.getByText("Downloading 3 of 12…")).toBeTruthy();
   });
 
   it("offers Geofabrik regions for an area too large for Overpass", async () => {

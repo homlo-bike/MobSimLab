@@ -37,6 +37,7 @@ export const populationHi = {
   "pop.upload.hint":
     "एक GeoTIFF ग्रिड (प्रति सेल लोग), लोगों के फ़ील्ड वाले GeoJSON ज़ोन या बिंदु, या बिंदुओं या प्रति ज़ोन मानों की CSV। अधिकतम {mb} MB।",
   "pop.upload.file": "फ़ाइल",
+  "pop.upload.choose": "फ़ाइल चुनें",
   "pop.upload.unknown": ".tif, .geojson, .json या .csv फ़ाइल चुनें।",
   "pop.upload.name": "नाम",
   "pop.upload.licence": "लाइसेंस",

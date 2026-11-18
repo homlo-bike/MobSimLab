@@ -37,6 +37,7 @@ export const populationPt = {
   "pop.upload.hint":
     "Uma grelha GeoTIFF (pessoas por célula), zonas ou pontos GeoJSON com um campo de pessoas, ou um CSV de pontos ou de valores por zona. No máximo {mb} MB.",
   "pop.upload.file": "Ficheiro",
+  "pop.upload.choose": "Escolher um ficheiro",
   "pop.upload.unknown": "Escolha um ficheiro .tif, .geojson, .json ou .csv.",
   "pop.upload.name": "Nome",
   "pop.upload.licence": "Licença",

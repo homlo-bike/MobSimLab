@@ -75,7 +75,8 @@ const GLYPHS: Record<StationFeature | StationStatus, Glyph> = {
 };
 
 /** Disc colour: statuses in ink, features in blue (the usual colour of accessibility signs). */
-export const STATUS_COLOR = "#0f172a";
+/** Dark mode draws it lighter, so it shows on the dark diagram (schematic/common.tsx). */
+export const STATUS_COLOR = "var(--diagram-status, #0f172a)";
 export const FEATURE_COLOR = "#1d4ed8";
 
 /** Purpose: whether an id is a status (else a feature). */

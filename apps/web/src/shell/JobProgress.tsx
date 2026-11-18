@@ -23,7 +23,8 @@ export function JobProgress({
   steps: number;
   /** How far this step is, 0 to 1, or null when it cannot say. */
   fraction: number | null;
-  onCancel: () => void;
+  /** Stops the job; no Cancel button without it (a reader who may not stop it). */
+  onCancel?: () => void;
   skipLabel?: string;
   onSkip?: () => void;
 }) {
@@ -60,16 +61,20 @@ export function JobProgress({
           />
         )}
       </div>
-      <div className="flex flex-wrap justify-end gap-2">
-        {skipLabel && onSkip && (
-          <button type="button" className="btn min-h-9 text-xs" onClick={onSkip}>
-            {skipLabel}
-          </button>
-        )}
-        <button type="button" className="btn min-h-9 text-xs" onClick={onCancel}>
-          {t("job.cancel")}
-        </button>
-      </div>
+      {((skipLabel && onSkip) || onCancel) && (
+        <div className="flex flex-wrap justify-end gap-2">
+          {skipLabel && onSkip && (
+            <button type="button" className="btn min-h-9 text-xs" onClick={onSkip}>
+              {skipLabel}
+            </button>
+          )}
+          {onCancel && (
+            <button type="button" className="btn min-h-9 text-xs" onClick={onCancel}>
+              {t("job.cancel")}
+            </button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

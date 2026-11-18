@@ -5,6 +5,7 @@ import { pluginRuntime } from "./context";
 import type { PluginProjectData } from "./inputs";
 import { runCalculation } from "./PluginCalculations";
 import type { WorkerFactory } from "./runtime";
+import { isDark } from "../../shell/theme";
 
 /** A message from a tab page: `{ mobsimlab: 1, id, method, params }`. */
 interface Request {
@@ -95,7 +96,7 @@ export function PluginFrame({
       if (busy) return reply({ error: "busy: wait for the last request" });
       busy = true;
       try {
-        const theme = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        const theme = isDark() ? "dark" : "light";
         reply({
           result: await answer(
             plugin,

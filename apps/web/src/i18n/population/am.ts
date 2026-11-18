@@ -36,6 +36,7 @@ export const populationAm = {
   "pop.upload.hint":
     "የGeoTIFF ፍርግርግ (በሕዋስ ሰዎች)፣ የሰዎች መስክ ያላቸው የGeoJSON ዞኖች ወይም ነጥቦች፣ ወይም የነጥቦች ወይም በዞን እሴቶች CSV። ቢበዛ {mb} MB።",
   "pop.upload.file": "ፋይል",
+  "pop.upload.choose": "ፋይል ይምረጡ",
   "pop.upload.unknown": ".tif፣ .geojson፣ .json ወይም .csv ፋይል ይምረጡ።",
   "pop.upload.name": "ስም",
   "pop.upload.licence": "ፈቃድ",

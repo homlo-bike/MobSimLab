@@ -5,6 +5,7 @@ import { preloadLanguage } from "./i18n/i18n";
 import "./index.css";
 import { logUncaughtErrors } from "./logging/logger";
 import { STATIC_VIEWER } from "./static/mode";
+import { setTheme, storedTheme } from "./shell/theme";
 import { staticFetch } from "./static/shim";
 
 // The static viewer has no server: its stand-in answers the app's API requests from the site's project files.
@@ -13,6 +14,8 @@ if (STATIC_VIEWER) {
   window.fetch = staticFetch(base);
 }
 logUncaughtErrors();
+// The theme last used in this browser, until the account's own has loaded: no flash of the other one.
+setTheme(storedTheme());
 
 const root = document.getElementById("root");
 if (!root) throw new Error("#root element missing");

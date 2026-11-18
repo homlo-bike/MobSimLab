@@ -264,7 +264,7 @@ function ElevationProfile({ e }: { e: TrackElevation }) {
         aria-label={t("rail.profileAria")}
       >
         <path d={line(1)} fill="none" stroke="#a16207" strokeWidth={1} strokeDasharray="3 2" />
-        <path d={line(2)} fill="none" stroke="#1e293b" strokeWidth={1.5} />
+        <path d={line(2)} fill="none" stroke="var(--diagram-ink, #1e293b)" strokeWidth={1.5} />
       </svg>
       <p className="text-[11px] text-slate-500">{t("rail.profileLegend")}</p>
     </div>

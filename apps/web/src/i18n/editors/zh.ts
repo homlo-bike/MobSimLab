@@ -50,6 +50,7 @@ export const editorsZh = {
   "rail.element": "型号",
   "rail.doubleJunction": "双线上的双向分岔",
   "rail.scissors": "交叉渡线",
+  "rail.terrainFailed": "未能加载地面高程：{reason}。加载后将显示坡度和车站高程。",
   "rail.signals": "信号机",
   "rail.signalsSome":
     "{summary}。信号机根据设计自动生成，并随设计变化而更新。点击信号机可修改或删除，或用“信号机”工具添加；每次修改都会检查。",
@@ -336,6 +337,9 @@ export const editorsZh = {
   "street.pointKind": "点 {n} 的类型",
   "street.deletePoint": "删除点 {n}",
   "street.delete": "删除",
+  "street.sideSwitch": "换到对面",
+  "street.sideAdds": "从对面人行道停靠此站会多 {length}。",
+  "street.sideSaves": "从对面人行道停靠此站可省 {length}。",
   "street.backTo1": "返回点 1",
   "street.optimise": "优化",
   "street.optimiseTitle": "为每个途经点选择行驶方向，使环线最短",

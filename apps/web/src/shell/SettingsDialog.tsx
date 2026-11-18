@@ -138,6 +138,26 @@ export function SettingsDialog({
         </div>
       ) : (
         <div role="tabpanel" aria-label={t("user.appSettings")}>
+          <div className={`${group} mb-4`}>
+            <div className={`${row} flex-wrap py-2`}>
+              <span className="flex-1" id="settings-theme">
+                {t("settings.theme")}
+              </span>
+              <div className="seg min-w-60" role="radiogroup" aria-labelledby="settings-theme">
+                {(["auto", "light", "dark"] as const).map((v) => (
+                  <button
+                    key={v}
+                    type="button"
+                    role="radio"
+                    aria-checked={(preferences.theme ?? "auto") === v}
+                    onClick={() => onChange({ theme: v })}
+                  >
+                    {t(`settings.theme.${v}`)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
           <div className={group}>
             <Toggle
               label={t("settings.largerTargets")}

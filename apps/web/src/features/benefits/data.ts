@@ -7,6 +7,7 @@ import { BUILDING_TILE_ZOOM, buildingTiles } from "../noise/buildings";
 import type { BuildingIn, CountryFigures, PlaceIn } from "./model";
 import type { LonLat } from "./regions";
 import { withProject } from "../../geodata/projectData";
+import { csrfHeader } from "../../session/csrf";
 
 /** World Bank figures as the API answers them (benefits.service.ts). */
 export interface BenefitIndicators {
@@ -85,7 +86,7 @@ export function benefitsApi(
           : fetchImpl("/api/benefits/population", {
               method: "POST",
               credentials: "same-origin",
-              headers: { "Content-Type": "application/json" },
+              headers: { "Content-Type": "application/json", ...csrfHeader() },
               body: JSON.stringify({ areas }),
             }).then((r) => json<PopulationAnswer>(r)),
       ),

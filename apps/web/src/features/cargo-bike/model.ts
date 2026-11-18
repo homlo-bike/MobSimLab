@@ -219,11 +219,14 @@ export function destinationPoint(from: LonLat, bearingDeg: number, distM: number
 
 /**
  * Purpose: the walk tiles a trip between two points needs: a corridor `bufferM` wide either side of the
- * straight line, so the route can bend round rivers and main roads without loading a whole square.
+ * straight line, so the route can bend round rivers and main roads without loading a whole square. The corridor
+ * grows with the trip: half its length either side, from 400 m to 1.5 km, so a short trip loads one or a few
+ * tiles rather than a 3 km square round it.
  * Output: tiles `[x, y]`, without repeats; more than MAX_TILES means the destination is too far.
  */
-export function corridorTiles(a: LonLat, b: LonLat, bufferM = 1500): [number, number][] {
+export function corridorTiles(a: LonLat, b: LonLat, bufferM?: number): [number, number][] {
   const len = distanceM(a, b);
+  bufferM ??= Math.min(1500, Math.max(400, len / 2));
   const steps = Math.max(1, Math.ceil(len / 300));
   const seen = new Set<string>();
   const out: [number, number][] = [];

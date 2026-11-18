@@ -38,6 +38,7 @@ export const populationTa = {
   "pop.upload.hint":
     "ஒரு GeoTIFF கட்டம் (ஒரு கலத்திற்கு நபர்கள்), நபர் புலம் கொண்ட GeoJSON மண்டலங்கள் அல்லது புள்ளிகள், அல்லது புள்ளிகள் அல்லது மண்டல மதிப்புகளின் CSV. அதிகபட்சம் {mb} MB.",
   "pop.upload.file": "கோப்பு",
+  "pop.upload.choose": "கோப்பைத் தேர்ந்தெடுக்கவும்",
   "pop.upload.unknown": ".tif, .geojson, .json அல்லது .csv கோப்பைத் தேர்ந்தெடுங்கள்.",
   "pop.upload.name": "பெயர்",
   "pop.upload.licence": "உரிமம்",

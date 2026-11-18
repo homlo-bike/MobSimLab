@@ -51,6 +51,8 @@ export const editorsEs = {
   "rail.element": "Modelo",
   "rail.doubleJunction": "Bifurcación doble en vía doble",
   "rail.scissors": "Escape doble (en tijera)",
+  "rail.terrainFailed":
+    "No se cargaron las alturas del terreno: {reason}. Las pendientes y las alturas de las estaciones aparecerán cuando se carguen.",
   "rail.signals": "Señales",
   "rail.signalsSome":
     "{summary}. Se generan a partir del diseño y lo siguen cuando cambia. Haz clic en una señal para cambiarla o borrarla, o usa la herramienta Señal para añadir una; cada cambio se comprueba.",
@@ -369,6 +371,9 @@ export const editorsEs = {
   "street.pointKind": "Tipo del punto {n}",
   "street.deletePoint": "Borrar el punto {n}",
   "street.delete": "Borrar",
+  "street.sideSwitch": "Cambiar de lado",
+  "street.sideAdds": "Atender esta parada desde la otra acera añade {length}.",
+  "street.sideSaves": "Atender esta parada desde la otra acera ahorra {length}.",
   "street.backTo1": "vuelta al punto 1",
   "street.optimise": "Optimizar",
   "street.optimiseTitle": "Elegir el sentido de paso en cada punto de paso para el circuito más corto",

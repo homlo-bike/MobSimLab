@@ -56,6 +56,8 @@ export const editorsAr = {
   "rail.element": "الطراز",
   "rail.doubleJunction": "تفرّع مزدوج على سكة مزدوجة",
   "rail.scissors": "وصلة عبور مقصّية",
+  "rail.terrainFailed":
+    "لم يتم تحميل ارتفاعات الأرض: {reason}. ستظهر الانحدارات وارتفاعات المحطات بعد تحميلها.",
   "rail.signals": "الإشارات",
   "rail.signalsSome":
     "{summary}. تُولَّد من التصميم وتتبعه عند تغييره. انقر على إشارة لتغييرها أو حذفها، أو استخدم أداة الإشارة لإضافة واحدة؛ ويُفحص كل تغيير.",
@@ -401,6 +403,9 @@ export const editorsAr = {
   "street.pointKind": "نوع النقطة {n}",
   "street.deletePoint": "حذف النقطة {n}",
   "street.delete": "حذف",
+  "street.sideSwitch": "تبديل الجانب",
+  "street.sideAdds": "خدمة هذه المحطة من الرصيف الآخر تضيف {length}.",
+  "street.sideSaves": "خدمة هذه المحطة من الرصيف الآخر توفّر {length}.",
   "street.backTo1": "العودة إلى النقطة 1",
   "street.optimise": "تحسين",
   "street.optimiseTitle": "اختيار اتجاه السير عند كل نقطة عبور لأقصر دورة",

@@ -38,6 +38,7 @@ export const populationHa = {
   "pop.upload.hint":
     "Ragar GeoTIFF (mutane a kowane akwati), yankuna ko maki na GeoJSON masu filin mutane, ko CSV na maki ko ƙima ga kowane yanki. Mafi yawa MB {mb}.",
   "pop.upload.file": "Fayil",
+  "pop.upload.choose": "Zaɓi fayil",
   "pop.upload.unknown": "Zaɓi fayil .tif, .geojson, .json ko .csv.",
   "pop.upload.name": "Suna",
   "pop.upload.licence": "Lasisi",

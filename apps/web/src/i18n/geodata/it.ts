@@ -54,4 +54,23 @@ export const geodataIt = {
   "data.ownChoose": "Scegli un file GeoTIFF (fino a {max} MB)",
   "data.ownReplace": "Sostituisci con un altro GeoTIFF (fino a {max} MB)",
   "data.remove": "Rimuovi",
+  "area.title": "Area del progetto",
+  "area.intro":
+    "Cerca un luogo e spunta le regioni OpenStreetMap che il progetto copre. L'area del progetto è l'insieme di tutte. Al salvataggio OpenStreetMap, quote e popolazione dell'area vengono importate una volta e tutti gli strumenti le usano.",
+  "area.search": "Cerca un luogo, ad esempio Aleppo, Siria",
+  "area.lookingUp": "Ricerca delle regioni a {place}…",
+  "area.regionsAt": "Regioni a {place}",
+  "area.noRegions": "Nessuna regione con nome qui. Prova un altro luogo.",
+  "area.none":
+    "Nessuna regione scelta: l'area è il rettangolo attorno a tutto ciò che è disegnato, più un margine.",
+  "area.remove": "Rimuovi {name}",
+  "area.total": "Circa {area} km² in tutto",
+  "area.outline": "Contorno delle regioni scelte",
+  "area.save": "Salva area e importa i dati",
+  "area.saved": "Area salvata.",
+  "area.import.queued": "{what}: importazione avviata",
+  "area.import.current": "{what}: già importato",
+  "area.import.failed": "{what}: impossibile avviare. {reason}",
+  "area.seeMapData": "Segui le importazioni in GIS, Dati mappa.",
+  "data.areaRegions": "Area: {area} km², il rettangolo attorno a {names}",
 } satisfies GeodataMessages;

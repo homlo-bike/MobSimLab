@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { regionsHolding } from "../src/gateway/geofabrik.client";
+import { OverpassClient } from "../src/gateway/overpass.client";
 import { cutTiles, decodeValues, encodeValues, sample, tileBounds } from "../src/geodata/dem-tiles";
 import { DemUploadError, resampleDem } from "../src/geodata/dem-upload";
 import { clipTo, holds, toElement } from "../src/geodata/geodata-reader";
@@ -237,5 +238,31 @@ describe("own elevation grid", () => {
     await expect(resampleDem(read, [7, 50, 7.01, 50.01], { maxCells: 1e6 })).rejects.toThrow(
       /does not name its coordinate system/,
     );
+  });
+});
+
+describe("cancelling an import's download", () => {
+  // A request that only ends when its signal is aborted, as a long Overpass or Geofabrik download does.
+  const hanging = (calls: { n: number }) => (_url: unknown, init?: RequestInit) =>
+    new Promise<Response>((_res, rej) => {
+      calls.n++;
+      init?.signal?.addEventListener("abort", () => rej(new Error("aborted")));
+    });
+
+  it("stops the Overpass request under way and does not retry it", async () => {
+    const calls = { n: 0 };
+    const client = new OverpassClient({
+      fetchImpl: hanging(calls) as typeof fetch,
+      sleep: async () => undefined,
+      minIntervalMs: 0,
+      backoffMs: [1, 1],
+      timeoutMs: 60_000,
+    });
+    const ctrl = new AbortController();
+    const done = client.run("[out:xml];node(1);out;", ctrl.signal);
+    await new Promise((r) => setTimeout(r, 5));
+    ctrl.abort();
+    await expect(done).rejects.toMatchObject({ status: 499 });
+    expect(calls.n).toBe(1);
   });
 });

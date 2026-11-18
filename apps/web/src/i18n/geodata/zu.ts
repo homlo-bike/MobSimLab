@@ -54,4 +54,23 @@ export const geodataZu = {
   "data.ownChoose": "Khetha ifayela le-GeoTIFF (kuze kube ngu-{max} MB)",
   "data.ownReplace": "Shintsha ngenye i-GeoTIFF (kuze kube ngu-{max} MB)",
   "data.remove": "Susa",
+  "area.title": "Indawo yephrojekthi",
+  "area.intro":
+    "Sesha indawo bese umaka izifunda ze-OpenStreetMap ephrojekthi ezihlanganisayo. Indawo yephrojekthi yizo zonke ndawonye. Uma uyigcina, i-OpenStreetMap, ukuphakama nabantu bendawo kungeniswa kanye, futhi wonke amathuluzi akusebenzisa.",
+  "area.search": "Sesha indawo, njenge-Aleppo, eSyria",
+  "area.lookingUp": "Kusesha izifunda e-{place}…",
+  "area.regionsAt": "Izifunda e-{place}",
+  "area.noRegions": "Azikho izifunda ezinamagama lapha. Zama enye indawo.",
+  "area.none":
+    "Asikho isifunda esikhethiwe: indawo yibhokisi elizungeze konke okudwetshiwe, kanye nesikhala esingeziwe.",
+  "area.remove": "Susa i-{name}",
+  "area.total": "Cishe ama-km² angu-{area} sewonke",
+  "area.outline": "Umngcele wezifunda ezikhethiwe",
+  "area.save": "Gcina indawo bese ungenisa idatha",
+  "area.saved": "Indawo igciniwe.",
+  "area.import.queued": "{what}: ukungenisa kuqalile",
+  "area.import.current": "{what}: sekungenisiwe",
+  "area.import.failed": "{what}: akukwazanga ukuqala. {reason}",
+  "area.seeMapData": "Landela ukungenisa ku-GIS, Idatha yemephu.",
+  "data.areaRegions": "Indawo: ama-km² angu-{area}, ibhokisi elizungeze i-{names}",
 } satisfies GeodataMessages;

@@ -51,6 +51,8 @@ export const editorsIt = {
   "rail.element": "Elemento",
   "rail.doubleJunction": "Bivio a doppio binario",
   "rail.scissors": "Comunicazione a forbice",
+  "rail.terrainFailed":
+    "Le quote del terreno non sono state caricate: {reason}. Pendenze e quote delle stazioni seguiranno appena caricate.",
   "rail.signals": "Segnali",
   "rail.signalsSome":
     "{summary}. Generati dal progetto e lo seguono. Fai clic su un segnale per modificarlo o eliminarlo, oppure aggiungine con lo strumento Segnale. Ogni modifica viene verificata.",
@@ -371,6 +373,9 @@ export const editorsIt = {
   "street.pointKind": "Tipo del punto {n}",
   "street.deletePoint": "Elimina il punto {n}",
   "street.delete": "Elimina",
+  "street.sideSwitch": "Cambia lato",
+  "street.sideAdds": "Servire questa fermata dall’altro marciapiede aggiunge {length}.",
+  "street.sideSaves": "Servire questa fermata dall’altro marciapiede fa risparmiare {length}.",
   "street.backTo1": "ritorno al punto 1",
   "street.optimise": "Ottimizza",
   "street.optimiseTitle": "Scegli il senso di passaggio in ogni punto di passaggio per il giro più corto",

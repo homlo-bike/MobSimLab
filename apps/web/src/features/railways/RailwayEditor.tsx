@@ -18,6 +18,7 @@ import {
   type LocalConnection,
 } from "./doc";
 import { labelElement } from "./editorDom";
+import { drawServiceLines, removeServiceLines, serviceLinePaths, serviceLineStops } from "./linePaths";
 import {
   type Cursor,
   type Dragging,
@@ -49,7 +50,8 @@ import {
 } from "./RailPanel";
 import { RailToolPalette } from "./RailToolPalette";
 import { addLine, linesTrainLength, removeLine } from "./serviceLines";
-import { dayEngineLines, type DayPublications, publishDays } from "../timetables/railPublish";
+import { dayEngineLines, type DayPublications } from "../timetables/railPublish";
+import { DAY_TYPES } from "../../workspace/calendar";
 import type { ServiceCalendar } from "../../workspace/calendar";
 import type { Publication } from "./ServiceLinesPanel";
 import type {
@@ -91,6 +93,8 @@ const publishKey = (d: Network) => JSON.stringify(d);
 
 type Published = {
   result: ServicePublication | null;
+  /** The track topology of the build the lines were published on: places their trains on the drawn track. */
+  topology?: unknown;
   /** The publication of every day type with lines (weekday is `result`). */
   byDay?: DayPublications;
   error: string | null;
@@ -309,7 +313,7 @@ export function RailwayEditor({
   const lastView = useRef<RailView | null>(null);
   if (view) lastView.current = view;
 
-  const terrainNote = useTerrainHeights({ engine, view, draft, fetchHeights, setStreets });
+  const { terrainError, retryTerrain } = useTerrainHeights({ engine, view, draft, fetchHeights, setStreets });
 
   // A saved drawing opens with the map on it.
   const framed = useRef(initial === null);
@@ -366,6 +370,29 @@ export function RailwayEditor({
   useEffect(() => {
     if (map) showConnections(map, tool === "track" || dragging.current?.kind === "end");
   }, [map, tool, view]);
+  // The service lines on the map, like street lines: the tracks each line's trains use (from the last
+  // publication, faded once the drawing changed) and its stops numbered in calling order.
+  const linePaths = useMemo(
+    () =>
+      doc && view && published?.result
+        ? serviceLinePaths(doc, view, published.result.section_trains ?? [], published.topology ?? null)
+        : null,
+    [doc, view, published],
+  );
+  const lineStops = useMemo(
+    () => (doc && view ? serviceLineStops(doc, view) : { type: "FeatureCollection" as const, features: [] }),
+    [doc, view],
+  );
+  const linesStale = !!doc && !!published && published.key !== publishKey(doc);
+  useEffect(() => {
+    if (map && map.getSource("rd-tracks")) drawServiceLines(map, linePaths, lineStops, linesStale);
+  }, [map, linePaths, lineStops, linesStale]);
+  useEffect(() => {
+    if (!map) return;
+    return () => {
+      if (map.getStyle?.()) removeServiceLines(map);
+    };
+  }, [map]);
   useEffect(() => {
     if (!map) return;
     map.doubleClickZoom.disable();
@@ -633,22 +660,43 @@ export function RailwayEditor({
     toolChange,
   });
 
-  // Publishing: plan the service lines on the drawn track (timetable planner) for the journey planner.
-  const publish = () => {
+  // Publishing: plan the service lines on the drawn track (timetable planner) for the journey planner. It runs
+  // in steps (build the track, then each day type with lines), letting the page draw the progress bar between
+  // them, and ends with what came out or why it failed.
+  const [publishing, setPublishing] = useState<{ step: string; index: number; steps: number } | null>(null);
+  const publish = async () => {
     const e = engine.current;
-    if (!e || !doc) return;
+    if (!e || !doc || publishing) return;
+    const days = DAY_TYPES.filter((d) => dayEngineLines(doc, d, calendar, prefValues).length > 0);
+    const steps = 1 + Math.max(1, days.length);
+    const paint = () => new Promise<void>((r) => setTimeout(r, 0));
     let next: Published;
     try {
+      setPublishing({ step: tNow("capacity.building"), index: 1, steps });
+      await paint();
       // The engine plans on its last build: build the drawing without a draft first.
       e.build(doc, null);
       // Every day type with its own times and the calendar's peaks; the journey planner takes the weekday.
-      const result = e.publishLines(dayEngineLines(doc, "weekday", calendar, prefValues), "weekday");
-      const byDay = { ...publishDays(e, doc, calendar, undefined, prefValues), weekday: result };
-      next = { result, byDay, error: null, key: publishKey(doc) };
+      const byDay: DayPublications = {};
+      for (const [i, day] of (days.length ? days : (["weekday"] as const)).entries()) {
+        setPublishing({
+          step: `${tNow("rail.line.publish")} · ${tNow(`cal.day.${day}` as MessageKey)}`,
+          index: i + 2,
+          steps,
+        });
+        await paint();
+        byDay[day] = e.publishLines(dayEngineLines(doc, day, calendar, prefValues), day);
+      }
+      const result =
+        byDay.weekday ?? e.publishLines(dayEngineLines(doc, "weekday", calendar, prefValues), "weekday");
+      byDay.weekday = result;
+      next = { result, byDay, error: null, key: publishKey(doc), topology: e.topology() };
       onPublish?.(result.timetable);
     } catch (err) {
       next = { result: null, error: err instanceof Error ? err.message : String(err), key: publishKey(doc) };
       onPublish?.(null);
+    } finally {
+      setPublishing(null);
     }
     setPublished(next);
   };
@@ -658,8 +706,11 @@ export function RailwayEditor({
         ...(published.byDay ? { byDay: published.byDay } : {}),
         error: published.error,
         stale: !!doc && published.key !== publishKey(doc),
+        running: publishing,
       }
-    : null;
+    : publishing
+      ? { result: null, error: null, stale: false, running: publishing }
+      : null;
 
   const panelActions = {
     setTool: changeTool,
@@ -762,10 +813,19 @@ export function RailwayEditor({
       stationOpts={stationOpts}
       switchOpts={switchOpts}
       error={error}
-      streetNote={[streetNote, terrainNote].filter(Boolean).join(" ") || null}
+      streetNote={streetNote}
+      terrainError={terrainError}
+      onRetryTerrain={retryTerrain}
       existingRailways={existingRailways}
       actions={panelActions}
-      service={{ publication, publish, picking, setPicking: pickFor, designValues, calendar }}
+      service={{
+        publication,
+        publish: () => void publish(),
+        picking,
+        setPicking: pickFor,
+        designValues,
+        calendar,
+      }}
     />
   );
 

@@ -1,6 +1,7 @@
 import type { GeoJSONSource, Map as MapLibreMap, MapMouseEvent } from "maplibre-gl";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { type Place, searchPlaces } from "../../map/places";
 import { type BenefitsApi, benefitsApi, type OsmArea } from "./data";
 import {
   LAND_USES,
@@ -136,6 +137,7 @@ export function RegionEditor({
   editable,
   currency,
   api = DEFAULT_API,
+  search = searchPlaces,
 }: {
   map: MapLibreMap | null;
   panel: HTMLElement | null;
@@ -144,8 +146,14 @@ export function RegionEditor({
   editable: boolean;
   currency?: string | null;
   api?: BenefitsApi;
+  /** Place search for importing by name (the map's geocoder); replaced in tests. */
+  search?: typeof searchPlaces;
 }) {
   const [mode, setMode] = useState<Mode>({ kind: "idle" });
+  // Importing by name: the text, the places found, and any error.
+  const [query, setQuery] = useState("");
+  const [places, setPlaces] = useState<Place[] | null>(null);
+  const [placeError, setPlaceError] = useState<string | null>(null);
   const [selected, setSelected] = useState<string | null>(null);
   const [areas, setAreas] = useState<OsmArea[] | null>(null);
   const [areaError, setAreaError] = useState<string | null>(null);
@@ -172,6 +180,60 @@ export function RegionEditor({
     (map.getSource(DRAFT_SRC) as GeoJSONSource | undefined)?.setData(draftGeoJson(draft));
   }, [map, draft]);
 
+  // The OpenStreetMap areas containing a point (smallest first), for a tapped or a searched place.
+  const lookUp = useCallback(
+    (at: LonLat) => {
+      setMode({ kind: "import", at });
+      setAreas(null);
+      setAreaError(null);
+      api
+        .osmAreas(at)
+        .then(setAreas)
+        .catch((e: unknown) => setAreaError(e instanceof Error ? e.message : String(e)));
+    },
+    [api],
+  );
+
+  // Searching by name: places matching the text after a short pause, nearer the map centre first.
+  useEffect(() => {
+    if (mode.kind !== "import" || query.trim().length < 2) {
+      setPlaces(null);
+      setPlaceError(null);
+      return;
+    }
+    const ctl = new AbortController();
+    const timer = setTimeout(() => {
+      const c = map?.getCenter?.();
+      search(query, {
+        lang: typeof navigator !== "undefined" ? navigator.language : undefined,
+        near: c ? [c.lng, c.lat] : undefined,
+        signal: ctl.signal,
+      })
+        .then((p) => {
+          setPlaces(p);
+          setPlaceError(null);
+        })
+        .catch((e: unknown) => {
+          if (!ctl.signal.aborted) setPlaceError(e instanceof Error ? e.message : String(e));
+        });
+    }, 300);
+    return () => {
+      clearTimeout(timer);
+      ctl.abort();
+    };
+  }, [query, mode.kind, map, search]);
+
+  // A place chosen from the search: show it on the map and list the areas it lies in.
+  const choosePlace = (p: Place) => {
+    setPlaces(null);
+    setQuery(p.name);
+    if (map) {
+      if (p.bbox) map.fitBounds?.([p.bbox[0], p.bbox[1], p.bbox[2], p.bbox[3]], { padding: 40, maxZoom: 15 });
+      else map.easeTo?.({ center: p.lonLat, zoom: Math.max(map.getZoom(), 12) });
+    }
+    lookUp(p.lonLat);
+  };
+
   // Map clicks: add a point while drawing, pick a place while importing, else select a region.
   useEffect(() => {
     if (!map) return;
@@ -182,13 +244,7 @@ export function RegionEditor({
         return;
       }
       if (mode.kind === "import") {
-        setMode({ kind: "import", at });
-        setAreas(null);
-        setAreaError(null);
-        api
-          .osmAreas(at)
-          .then(setAreas)
-          .catch((e: unknown) => setAreaError(e instanceof Error ? e.message : String(e)));
+        lookUp(at);
         return;
       }
       const hits = map.getLayer(FILL) ? map.queryRenderedFeatures(ev.point, { layers: [FILL] }) : [];
@@ -202,7 +258,7 @@ export function RegionEditor({
       map.off("click", onClick);
       if (canvas) canvas.style.cursor = "";
     };
-  }, [map, mode, api]);
+  }, [map, mode, lookUp]);
 
   const region = regions.find((r) => r.id === selected) ?? null;
   const update = (id: string, patch: Partial<Region>) =>
@@ -256,6 +312,8 @@ export function RegionEditor({
             onClick={() => {
               setAreas(null);
               setAreaError(null);
+              setQuery("");
+              setPlaces(null);
               setMode({ kind: "import", at: null });
             }}
           >
@@ -297,7 +355,45 @@ export function RegionEditor({
           aria-label="Importing a region"
           className="rounded-xl border border-indigo-200 bg-indigo-50 p-3 text-sm"
         >
-          <p>Tap a place on the map to list the neighbourhoods, districts and other areas around it.</p>
+          <label className="flex flex-col gap-1">
+            <span className="font-medium">Search for a place</span>
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="For example: Aleppo"
+              autoFocus
+              className="min-h-10 rounded border border-slate-300 bg-white px-2"
+            />
+          </label>
+          {placeError && (
+            <p role="alert" className="mt-2 text-red-700">
+              {placeError}
+            </p>
+          )}
+          {places && places.length === 0 && <p className="mt-2 text-slate-600">No places found.</p>}
+          {places && places.length > 0 && (
+            <ul aria-label="Places found" className="mt-2 flex flex-col gap-1">
+              {places.map((p, i) => (
+                <li key={`${p.name}-${i}`}>
+                  <button
+                    type="button"
+                    className="flex min-h-11 w-full flex-col justify-center rounded-lg bg-white px-2 text-left hover:bg-indigo-100"
+                    onClick={() => choosePlace(p)}
+                  >
+                    <span className="truncate font-medium">{p.name}</span>
+                    <span className="truncate text-xs text-slate-500">
+                      {[p.kind, p.context].filter(Boolean).join(" · ")}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="mt-2 text-slate-600">
+            Pick a place, or tap the map, to list the neighbourhoods, districts, cities and regions it lies
+            in. Then choose the one that fits.
+          </p>
           {mode.at && !areas && !areaError && (
             <p role="status" className="mt-2 text-slate-600">
               Looking up areas…

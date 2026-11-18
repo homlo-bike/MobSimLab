@@ -51,6 +51,7 @@ export const editorsAm = {
   "rail.element": "አካል",
   "rail.doubleJunction": "በሁለት ሐዲድ ላይ ድርብ መጋጠሚያ",
   "rail.scissors": "የመቀስ መሻገሪያ",
+  "rail.terrainFailed": "የመሬት ከፍታዎች አልተጫኑም፦ {reason}። ሲጫኑ ተዳፋቶች እና የጣቢያ ከፍታዎች ይከተላሉ።",
   "rail.signals": "ምልክቶች",
   "rail.signalsSome":
     "{summary}። ከንድፉ የሚፈጠሩ ሲሆን ሲለወጥ ይከተሉታል። ለመቀየር ወይም ለመሰረዝ ምልክቱን ጠቅ ያድርጉ፣ ወይም አንድ ለማከል የምልክት መሣሪያውን ይጠቀሙ፤ እያንዳንዱ ለውጥ ይፈተሻል።",
@@ -359,6 +360,9 @@ export const editorsAm = {
   "street.pointKind": "የነጥብ {n} ዓይነት",
   "street.deletePoint": "ነጥብ {n} ሰርዝ",
   "street.delete": "ሰርዝ",
+  "street.sideSwitch": "ጎን ቀይር",
+  "street.sideAdds": "ይህን ፌርማታ ከሌላው የእግረኛ መንገድ ማገልገል {length} ይጨምራል።",
+  "street.sideSaves": "ይህን ፌርማታ ከሌላው የእግረኛ መንገድ ማገልገል {length} ይቆጥባል።",
   "street.backTo1": "ወደ ነጥብ 1 ተመለስ",
   "street.optimise": "አሻሽል",
   "street.optimiseTitle": "ለአጭሩ ዙር በእያንዳንዱ የማለፊያ ነጥብ የጉዞ አቅጣጫ ምረጥ",

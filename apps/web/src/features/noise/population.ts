@@ -1,3 +1,4 @@
+import { csrfHeader } from "../../session/csrf";
 import type { NoiseBuilding, NoisePopulation } from "./types";
 
 /**
@@ -34,7 +35,7 @@ export type PopulationFetcher = (bbox: [number, number, number, number]) => Prom
 export const fetchPopulation: PopulationFetcher = async (bbox) => {
   const res = await fetch("/api/population/grid", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...csrfHeader() },
     body: JSON.stringify({ bbox }),
   });
   if (res.status === 401) throw new Error("sign in to load it");

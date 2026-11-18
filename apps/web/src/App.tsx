@@ -8,6 +8,7 @@ import {
   useI18n,
 } from "./i18n/i18n";
 import { setLogSession } from "./logging/logger";
+import { setCsrfToken } from "./session/csrf";
 import { projectsApi } from "./projects/api";
 import { ProjectsHome } from "./projects/ProjectsHome";
 import { fetchMe, type Me, type Preferences, savePreferences } from "./session/api";
@@ -18,6 +19,7 @@ import { lazyNamed, LoadingScreen } from "./shell/lazy";
 import { useRoute } from "./shell/route";
 import { SettingsDialog } from "./shell/SettingsDialog";
 import { SignIn } from "./shell/SignIn";
+import { setTheme, storedTheme } from "./shell/theme";
 import { TopBar } from "./shell/TopBar";
 import { type SettingsSection, UserMenu } from "./shell/UserMenu";
 
@@ -61,7 +63,10 @@ export function App() {
 
   const csrf = me?.csrfToken;
   // Browser logs go to the API only while someone is signed in (ADR-0022).
-  useEffect(() => setLogSession(csrf ?? null), [csrf]);
+  useEffect(() => {
+    setLogSession(csrf ?? null);
+    setCsrfToken(csrf ?? null);
+  }, [csrf]);
   const savePrefs = useCallback(
     (patch: Preferences) => {
       setPrefs((p) => ({ ...p, ...patch }));
@@ -83,6 +88,11 @@ export function App() {
     html.toggle("larger-targets", Boolean(prefs.largerTargets));
     html.toggle("reduce-motion", Boolean(prefs.reduceMotion));
   }, [prefs.largerTargets, prefs.reduceMotion]);
+  // Light, dark, or the device's setting: the account's choice once loaded, else the one last used here.
+  useEffect(
+    () => setTheme(loaded && me?.user ? (prefs.theme ?? "auto") : storedTheme()),
+    [loaded, me, prefs.theme],
+  );
 
   return (
     <I18nProvider choice={choice} onChoose={choose}>
@@ -134,7 +144,7 @@ function Shell({
         />
       )}
       {(overlay?.kind === "admin" || overlay?.kind === "agents") && user && csrf && (
-        <div className="fixed inset-0 z-40 bg-slate-900/30">
+        <div className="fixed inset-0 z-40 bg-scrim/30">
           <LoadingScreen>
             {overlay.kind === "admin" ? (
               <AdminPanel role={user.role} userId={user.id} csrfToken={csrf} onClose={close} />
@@ -228,6 +238,8 @@ function Shell({
             onAbout={about}
             existingRailways={Boolean(prefs.existingRailways)}
             userId={user?.id ?? null}
+            adminCsrf={user && (user.role === "owner" || user.role === "admin") ? csrf : null}
+            onRefreshSession={reload}
           />
         </LoadingScreen>
         {setup}

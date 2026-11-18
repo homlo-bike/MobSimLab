@@ -18,6 +18,8 @@ const codeQuery = z.object({ code: z.string().regex(/^[A-Za-z]{2,3}$/) });
 const atQuery = z.object({
   lon: z.coerce.number().min(-180).max(180),
   lat: z.coerce.number().min(-89.999).max(89.999),
+  /** `1`: also states and provinces, for the project area picker. */
+  wide: z.enum(["0", "1"]).optional(),
 });
 const lonLat = z.tuple([z.number().min(-180).max(180), z.number().min(-90).max(90)]);
 const populationBody = z.object({
@@ -62,14 +64,17 @@ export class BenefitsController {
 
   /**
    * Purpose: the OpenStreetMap areas (administrative boundaries, neighbourhoods, named places) that contain a
-   * point, smallest first, with their outline, for importing a region in the GIS tab.
-   * Inputs: ?lon=&lat=. Output: `{areas: OsmArea[], source}`.
+   * point, smallest first, with their outline, for importing a region in the GIS tab and for picking the project
+   * area. Inputs: ?lon=&lat=&wide=1 (states and provinces too). Output: `{areas: OsmArea[], source}`.
    */
   @Get("osm-areas")
   @Requires("instance.read")
   async osmAreas(@Query() q: unknown) {
-    const { lon, lat } = parse(atQuery, q);
-    return { areas: await upstream(() => this.benefits.areasAt(lon, lat)), source: OSM_AREA_SOURCE };
+    const { lon, lat, wide } = parse(atQuery, q);
+    return {
+      areas: await upstream(() => this.benefits.areasAt(lon, lat, wide === "1")),
+      source: OSM_AREA_SOURCE,
+    };
   }
 }
 

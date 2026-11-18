@@ -51,6 +51,8 @@ export const editorsUz = {
   "rail.element": "Element",
   "rail.doubleJunction": "Ikki yoʻlli liniyada ikki tomonlama tutashma",
   "rail.scissors": "Qaychisimon oʻtish",
+  "rail.terrainFailed":
+    "Yer balandliklari yuklanmadi: {reason}. Yuklangach, qiyaliklar va bekat balandliklari chiqadi.",
   "rail.signals": "Svetoforlar",
   "rail.signalsSome":
     "{summary}. Ular loyihadan hosil qilinadi va loyiha oʻzgarganda u bilan birga oʻzgaradi. Svetoforni oʻzgartirish yoki olib tashlash uchun ustiga bosing yoki qoʻshish uchun svetofor vositasidan foydalaning; har bir oʻzgarish tekshiriladi.",
@@ -370,6 +372,9 @@ export const editorsUz = {
   "street.pointKind": "{n} nuqta turi",
   "street.deletePoint": "{n} nuqtani oʻchirish",
   "street.delete": "Oʻchirish",
+  "street.sideSwitch": "Tomonni almashtirish",
+  "street.sideAdds": "Bu bekatga qarshi yo‘lakdan xizmat ko‘rsatish {length} qo‘shadi.",
+  "street.sideSaves": "Bu bekatga qarshi yo‘lakdan xizmat ko‘rsatish {length} tejaydi.",
   "street.backTo1": "1 nuqtaga qaytish",
   "street.optimise": "Optimallashtirish",
   "street.optimiseTitle": "Eng qisqa aylanma uchun har bir oraliq nuqtada harakat yoʻnalishini tanlash",

@@ -37,6 +37,7 @@ export const populationRu = {
   "pop.upload.hint":
     "Сетка GeoTIFF (человек на ячейку), зоны или точки GeoJSON с полем численности либо CSV с точками или значениями по зонам. Не более {mb} МБ.",
   "pop.upload.file": "Файл",
+  "pop.upload.choose": "Выбрать файл",
   "pop.upload.unknown": "Выберите файл .tif, .geojson, .json или .csv.",
   "pop.upload.name": "Название",
   "pop.upload.licence": "Лицензия",

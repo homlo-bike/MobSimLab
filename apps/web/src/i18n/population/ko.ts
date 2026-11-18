@@ -37,6 +37,7 @@ export const populationKo = {
   "pop.upload.hint":
     "GeoTIFF 격자(셀당 인원), 인원 필드가 있는 GeoJSON 구역이나 점, 또는 점이나 구역별 값의 CSV. 최대 {mb} MB.",
   "pop.upload.file": "파일",
+  "pop.upload.choose": "파일 선택",
   "pop.upload.unknown": ".tif, .geojson, .json 또는 .csv 파일을 고르세요.",
   "pop.upload.name": "이름",
   "pop.upload.licence": "라이선스",

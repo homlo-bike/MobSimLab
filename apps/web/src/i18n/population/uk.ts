@@ -37,6 +37,7 @@ export const populationUk = {
   "pop.upload.hint":
     "Сітка GeoTIFF (осіб на клітинку), зони чи точки GeoJSON з полем кількості людей або CSV з точками чи значеннями за зонами. Щонайбільше {mb} МБ.",
   "pop.upload.file": "Файл",
+  "pop.upload.choose": "Вибрати файл",
   "pop.upload.unknown": "Виберіть файл .tif, .geojson, .json або .csv.",
   "pop.upload.name": "Назва",
   "pop.upload.licence": "Ліцензія",

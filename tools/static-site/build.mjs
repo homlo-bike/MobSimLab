@@ -39,7 +39,7 @@ const WASM = [
 /** Cloudflare Pages `_headers`: every path gets these. Keep the CSP in step with apps/api/src/app.setup.ts. */
 const MAP_ORIGINS = "https://tiles.openfreemap.org https://tiles.maps.eox.at https://gibs.earthdata.nasa.gov";
 const HEADERS = `/*
-  Content-Security-Policy: default-src 'self'; img-src 'self' data: blob: ${MAP_ORIGINS}; connect-src 'self' ${MAP_ORIGINS}; worker-src 'self' blob:; style-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'
+  Content-Security-Policy: default-src 'self'; img-src 'self' data: blob: ${MAP_ORIGINS}; connect-src 'self' data: ${MAP_ORIGINS}; worker-src 'self' blob:; style-src 'self'; script-src 'self' 'wasm-unsafe-eval'; object-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin

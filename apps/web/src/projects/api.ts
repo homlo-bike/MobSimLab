@@ -1,3 +1,4 @@
+import { projectAreaApi } from "../features/area/api";
 import { setPluginRuntime } from "../plugins/code/context";
 import type { PluginLimits } from "../plugins/code/runtime";
 import type { ProjectPlugin } from "../plugins/registry";
@@ -179,6 +180,8 @@ export function projectsApi(csrf: string) {
     population: (id: string) => projectPopulation(id, csrf),
     /** Comments on the project's objects: threads, replies, resolving. */
     comments: (id: string) => projectComments(id, csrf),
+    /** The project area from OpenStreetMap regions, and the imports its saving queues. */
+    area: (id: string) => projectAreaApi(id, csrf),
   };
 }
 export type ProjectsApi = ReturnType<typeof projectsApi>;

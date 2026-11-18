@@ -30,6 +30,7 @@ import {
 import { usedVehicles } from "../../workspace/preferences";
 import { useVehiclesOff } from "../../workspace/projectVehicles";
 import type { CatalogueTrain, LonLat, Network, RailView, ServiceLine, ServicePublication } from "./types";
+import { JobProgress } from "../../shell/JobProgress";
 
 /** The last publication, and whether the drawing changed since. */
 export interface Publication {
@@ -38,6 +39,8 @@ export interface Publication {
   byDay?: Partial<Record<DayTypeId, ServicePublication>>;
   error: string | null;
   stale: boolean;
+  /** While publishing: the step under way (building the track, then each day type), for the progress bar. */
+  running?: { step: string; index: number; steps: number } | null;
 }
 
 interface Props {
@@ -98,6 +101,10 @@ export function ServiceLinesPanel({
   const ready = lines.filter((l) => !lineProblem(doc, l));
   const report = (id: string) => publication?.result?.lines.find((r) => r.id === id) ?? null;
   const trips = publication?.result?.timetable.trips.length ?? 0;
+  const conflicts = (publication?.result?.lines ?? []).reduce(
+    (n, r) => n + (r.unplaced?.length ?? 0) + (r.shifted?.length ?? 0),
+    0,
+  );
 
   // The line whose stops are being picked on the map is the one open here.
   useEffect(() => {
@@ -174,7 +181,7 @@ export function ServiceLinesPanel({
         <button
           type="button"
           onClick={publish}
-          disabled={ready.length === 0 || view.counts.errors > 0}
+          disabled={ready.length === 0 || view.counts.errors > 0 || !!publication?.running}
           className="flex-1 rounded bg-emerald-800 px-2 py-1 text-white disabled:opacity-40"
         >
           {publication?.result && !publication.stale ? t("rail.line.publishAgain") : t("rail.line.publish")}
@@ -183,16 +190,53 @@ export function ServiceLinesPanel({
       {view.counts.errors > 0 && lines.length > 0 && (
         <p className="text-xs text-amber-800">{t("rail.line.fixFirst")}</p>
       )}
-      {publication?.error && <p className="text-xs text-red-700">{publication.error}</p>}
-      {publication?.result && (
-        <p className="text-xs text-slate-600" data-testid="lines-published">
-          {publication.stale
-            ? t("rail.line.stale")
-            : t("rail.line.published", {
-                lines: tn("rail.line.lines", publication.result.lines.length),
-                trips: tn("rail.line.trips", trips),
-              })}
+      {publication?.running && (
+        <JobProgress
+          label={t("rail.line.publish")}
+          step={publication.running.step}
+          index={publication.running.index}
+          steps={publication.running.steps}
+          fraction={null}
+        />
+      )}
+      {/* How the last publishing went, in one box: failed (red), published with conflicts (amber), or done
+          (green); faded once the drawing changed. */}
+      {!publication?.running && publication?.error && (
+        <p role="alert" className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800">
+          ✕ {publication.error}
         </p>
+      )}
+      {!publication?.running && publication?.result && (
+        <div
+          role="status"
+          data-testid="lines-published"
+          className={`rounded-lg border px-3 py-2 text-xs ${
+            publication.stale
+              ? "border-slate-200 bg-slate-50 text-slate-600"
+              : conflicts > 0
+                ? "border-amber-200 bg-amber-50 text-amber-900"
+                : "border-emerald-200 bg-emerald-50 text-emerald-950"
+          }`}
+        >
+          {publication.stale ? (
+            t("rail.line.stale")
+          ) : (
+            <>
+              <p>
+                <span aria-hidden="true">{conflicts > 0 ? "⚠ " : "✓ "}</span>
+                {t("rail.line.published", {
+                  lines: tn("rail.line.lines", publication.result.lines.length),
+                  trips: tn("rail.line.trips", trips),
+                })}
+              </p>
+              {conflicts > 0 && (
+                <p className="mt-0.5 font-medium">
+                  {t("rail.tdg.conflicts")} · {conflicts}
+                </p>
+              )}
+            </>
+          )}
+        </div>
       )}
       {publication?.result && !publication.stale && publication.result.notes.length > 0 && (
         <details className="text-xs text-slate-600">
@@ -432,12 +476,24 @@ function LineEditor({
               ? ` · ${name(l.stations[0]!)} → ${name(l.stations[l.stations.length - 1]!)} ${fmtTime(report.outbound_s)}`
               : ""}
           </p>
+          {/* A short summary: the conflicts as one count (listed in the time-distance graph) and the planner's
+              notes folded away, instead of one line per trip. */}
+          {report.unplaced.length + report.shifted.length > 0 && (
+            <p className="mt-1 font-medium text-amber-800">
+              {t("rail.tdg.conflicts")} · {report.unplaced.length + report.shifted.length}
+            </p>
+          )}
           {report.issues.length > 0 && (
-            <ul className="mt-1 list-disc ps-4 text-amber-800">
-              {report.issues.map((text, i) => (
-                <li key={i}>{text}</li>
-              ))}
-            </ul>
+            <details className="mt-1">
+              <summary className="cursor-pointer text-slate-600">
+                {t("rail.line.notes")} · {report.issues.length}
+              </summary>
+              <ul className="mt-1 max-h-48 list-disc overflow-y-auto ps-4 text-amber-800">
+                {report.issues.map((text, i) => (
+                  <li key={i}>{text}</li>
+                ))}
+              </ul>
+            </details>
           )}
           {published && report.trips > 0 && (
             <button
@@ -649,11 +705,18 @@ function CrossSection({ stop: s }: { stop: StopAccess }) {
     >
       {/* ground and rail */}
       <line x1={0} y1={base + 6} x2={W} y2={base + 6} stroke="#94a3b8" />
-      <rect x={left + 30} y={base} width={10} height={6} fill="#475569" />
-      <rect x={W - 40} y={base} width={10} height={6} fill="#475569" />
+      <rect x={left + 30} y={base} width={10} height={6} fill="var(--diagram-muted, #475569)" />
+      <rect x={W - 40} y={base} width={10} height={6} fill="var(--diagram-muted, #475569)" />
       {/* platform */}
-      <rect x={0} y={pTop} width={edge} height={base + 6 - pTop} fill="#e2e8f0" stroke="#94a3b8" />
-      <text x={6} y={Math.min(base, pTop + 13)} fontSize={10} fill="#334155">
+      <rect
+        x={0}
+        y={pTop}
+        width={edge}
+        height={base + 6 - pTop}
+        fill="var(--diagram-ground, #e2e8f0)"
+        stroke="#94a3b8"
+      />
+      <text x={6} y={Math.min(base, pTop + 13)} fontSize={10} fill="var(--diagram-muted-strong, #334155)">
         {t("rail.access.platformMm", { value: s.platform_height_mm })}
       </text>
       {/* train: floor, door opening and body */}
@@ -665,10 +728,16 @@ function CrossSection({ stop: s }: { stop: StopAccess }) {
         y={fTop}
         width={W - left - 48}
         height={Math.max(0, base - fTop - 2)}
-        fill="#cbd5e1"
+        fill="var(--diagram-rule, #cbd5e1)"
         opacity={0.5}
       />
-      <text x={W - 6} y={fTop - body + 14} fontSize={10} fill="#334155" textAnchor="end">
+      <text
+        x={W - 6}
+        y={fTop - body + 14}
+        fontSize={10}
+        fill="var(--diagram-muted-strong, #334155)"
+        textAnchor="end"
+      >
         {t("rail.access.floorMm", { value: s.floor_height_mm })}
         {s.floor_assumed ? " ⚠" : ""}
       </text>

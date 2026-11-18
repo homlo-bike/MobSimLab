@@ -51,6 +51,8 @@ export const editorsPt = {
   "rail.element": "Modelo",
   "rail.doubleJunction": "Bifurcação dupla em via dupla",
   "rail.scissors": "Travessão duplo (tesoura)",
+  "rail.terrainFailed":
+    "As altitudes do terreno não foram carregadas: {reason}. As inclinações e as altitudes das estações aparecem quando forem carregadas.",
   "rail.signals": "Sinais",
   "rail.signalsSome":
     "{summary}. Eles são gerados a partir do projeto e o acompanham quando ele muda. Clique em um sinal para alterá-lo ou excluí-lo, ou use a ferramenta Sinal para adicionar um; cada mudança é verificada.",
@@ -368,6 +370,9 @@ export const editorsPt = {
   "street.pointKind": "Tipo do ponto {n}",
   "street.deletePoint": "Excluir o ponto {n}",
   "street.delete": "Excluir",
+  "street.sideSwitch": "Mudar de lado",
+  "street.sideAdds": "Servir esta paragem a partir do outro passeio acrescenta {length}.",
+  "street.sideSaves": "Servir esta paragem a partir do outro passeio poupa {length}.",
   "street.backTo1": "volta ao ponto 1",
   "street.optimise": "Otimizar",
   "street.optimiseTitle": "Escolher o sentido em cada ponto de passagem para o circuito mais curto",

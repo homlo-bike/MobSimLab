@@ -65,7 +65,7 @@ export function ProfileView({
         aria-label={t(guideway ? "apm.profile" : "cable.profile")}
         direction="ltr"
       >
-        <path d={ground} fill="#e2e8f0" />
+        <path d={ground} fill="var(--diagram-ground, #e2e8f0)" />
         {blocks.map((b, i) => (
           <rect
             key={`b${i}`}
@@ -73,7 +73,7 @@ export function ProfileView({
             y={y(b.top)}
             width={Math.max(1, x(b.x1) - x(b.x0))}
             height={Math.max(0, y(b.g) - y(b.top))}
-            fill="#cbd5e1"
+            fill="var(--diagram-rule, #cbd5e1)"
             stroke="#94a3b8"
             strokeWidth={0.5}
           />
@@ -85,7 +85,7 @@ export function ProfileView({
             x2={x(t.at)}
             y1={y(t.g)}
             y2={y(t.g + t.h)}
-            stroke="#475569"
+            stroke="var(--diagram-muted, #475569)"
             strokeWidth={2}
           />
         ))}
