@@ -422,4 +422,5 @@ export const tablesAm = {
   "tt.tbl.departs": "ይነሳል",
   "tt.tbl.to": "ወደ",
   "tt.tbl.arrives": "ይደርሳል",
+  "cost.outsideRange": "ከቤተ መጻሕፍቱ ክልል ({low}–{high}) ውጭ ነው፦ እሴቱንና መለኪያውን ያረጋግጡ።",
 } satisfies TablesMessages;

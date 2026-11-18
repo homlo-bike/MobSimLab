@@ -427,4 +427,5 @@ export const tablesIg = {
   "tt.tbl.departs": "Na-apụ",
   "tt.tbl.to": "Ruo",
   "tt.tbl.arrives": "Na-eru",
+  "cost.outsideRange": "Ọ dị n'èzí oke ọbá akwụkwọ ({low}–{high}): lelee uru ahụ na nkeji ya.",
 } satisfies TablesMessages;

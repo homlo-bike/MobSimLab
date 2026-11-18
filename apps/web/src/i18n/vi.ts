@@ -15,6 +15,7 @@ import { populationVi } from "./population/vi";
 import { resultsVi } from "./results/vi";
 import { pluginsVi } from "./plugins/vi";
 import { streetPhotosVi } from "./street-photos/vi";
+import { pluginAdminVi } from "./plugin-admin/vi";
 import type { Messages } from "./en";
 
 /** Tiếng Việt */
@@ -536,4 +537,5 @@ export const vi: Messages = {
   ...calendarVi,
   ...pluginsVi,
   ...streetPhotosVi,
+  ...pluginAdminVi,
 };

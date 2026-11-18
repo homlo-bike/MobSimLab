@@ -13,6 +13,7 @@ import { mapLayerSecretPlace } from "../config/credentials-at-rest";
 import type { AppConfig } from "../config/env";
 import { DATABASE, type Database } from "../db/database";
 import type { ProjectActor } from "../projects/projects.service";
+import { OGC_PLUGIN, pluginsOff } from "../plugins/instance-off";
 import type { Tile } from "./esri.client";
 import { type OgcKind, type ResolvedLayer, tileUrl } from "./ogc";
 import { type OgcAuth, OgcClient, OgcError } from "./ogc.client";
@@ -384,8 +385,9 @@ export class MapLayersService implements OnApplicationBootstrap, OnModuleDestroy
     return this.list();
   }
 
-  /** Purpose: the layers members' maps offer, with tile paths through the API. */
+  /** Purpose: the layers members' maps offer, with tile paths through the API (none while the plugin is off). */
   async offers(): Promise<MapLayerOffer[]> {
+    if ((await pluginsOff(this.db)).has(OGC_PLUGIN)) return [];
     return (await this.rows()).flatMap((r) =>
       r.layers.map((l, i) => ({
         id: `ogc-${r.id}-${i}`,
@@ -405,6 +407,8 @@ export class MapLayersService implements OnApplicationBootstrap, OnModuleDestroy
 
   /** Purpose: one tile of a layer, fetched with the service's sign-in details. Throws TileError 404 if unknown. */
   async tile(serviceId: string, index: number, z: number, x: number, y: number): Promise<Tile> {
+    if ((await pluginsOff(this.db)).has(OGC_PLUGIN))
+      throw new OgcError("map layers are turned off on this MobSimLab", 404);
     const row = (await this.rows()).find((r) => r.id === serviceId);
     const layer = row?.layers[index];
     if (!row || !layer) throw new OgcError("no such map layer on this MobSimLab", 404);

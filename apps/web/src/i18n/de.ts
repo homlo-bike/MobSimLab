@@ -15,6 +15,7 @@ import { populationDe } from "./population/de";
 import { resultsDe } from "./results/de";
 import { pluginsDe } from "./plugins/de";
 import { streetPhotosDe } from "./street-photos/de";
+import { pluginAdminDe } from "./plugin-admin/de";
 import type { Messages } from "./en";
 
 /** Deutsch. */
@@ -549,4 +550,5 @@ export const de: Messages = {
   ...calendarDe,
   ...pluginsDe,
   ...streetPhotosDe,
+  ...pluginAdminDe,
 };

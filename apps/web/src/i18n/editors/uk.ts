@@ -1571,4 +1571,5 @@ export const editorsUk = {
   "spacing.straight": "Виміряно по прямій між станціями.",
   "spacing.onFootHint":
     "Розрахуйте вище пішу доступність, щоб додати пішу відстань між позначеними зупинками.",
+  "kit.savedWithProject": "Креслення зберігається разом із проєктом.",
 } satisfies EditorMessages;

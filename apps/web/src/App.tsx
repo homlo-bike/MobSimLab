@@ -215,7 +215,9 @@ function Shell({
     );
 
   const setup = me.instance.mode === "setup" && user.role === "owner" && csrf && (
-    <div className="fixed inset-x-0 top-14 bottom-0 z-30">
+    // The layer lets clicks through to the page; only the card itself takes them, so it never hides the page's
+    // own buttons (Damascus test: it covered the home page's project filters).
+    <div className="pointer-events-none fixed inset-x-0 top-14 bottom-0 z-30">
       <LoadingScreen>
         <SetupPanel name={me.instance.name} csrfToken={csrf} onFinished={reload} />
       </LoadingScreen>
@@ -234,6 +236,7 @@ function Shell({
             brand={brand}
             account={account}
             onTab={(tab) => go({ ...route, tab, fresh: route.fresh && tab === "create" }, route.fresh)}
+            onOpenProject={(id) => go({ page: "project", id, tab: route.tab, fresh: false })}
             onHome={home}
             onAbout={about}
             existingRailways={Boolean(prefs.existingRailways)}

@@ -876,7 +876,8 @@ export function RailwayEditor({
   return (
     <>
       <RailToolPalette tool={tool} onTool={changeTool} />
-      <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 flex max-w-[90%] -translate-x-1/2 flex-col items-center gap-1 text-sm">
+      {/* On phones the hints sit beside the tool palette, not over its lower tools; centred from md up. */}
+      <div className="pointer-events-none absolute right-3 bottom-8 left-[14.25rem] z-10 flex flex-col items-end gap-1 text-sm md:right-auto md:left-1/2 md:max-w-[90%] md:-translate-x-1/2 md:items-center">
         {(flash || (!ready && !error)) && (
           <p
             className="rounded-full px-3 py-1 text-white"
@@ -891,7 +892,7 @@ export function RailwayEditor({
             {note}
           </p>
         )}
-        <p className="rounded-full bg-white/95 px-3 py-1 text-slate-700 shadow" role="note">
+        <p className="rounded-2xl bg-white/95 px-3 py-1 text-slate-700 shadow md:rounded-full" role="note">
           {t(HINTS[tool])}
         </p>
       </div>

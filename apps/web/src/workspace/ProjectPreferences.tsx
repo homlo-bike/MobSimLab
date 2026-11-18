@@ -485,8 +485,7 @@ function PreferencesLayout({ projectId, sections }: { projectId: string; section
   return (
     <div ref={scroller} className="h-full overflow-y-auto bg-slate-50">
       <div className="mx-auto max-w-6xl px-4 pb-10 pt-6 md:px-8 md:pt-10">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("prefs.title")}</h1>
-        <p className="mt-1 text-slate-600">{t("prefs.intro")}</p>
+        <p className="text-slate-600">{t("prefs.intro")}</p>
         <div ref={top} className="md:mt-2 md:flex md:items-start md:gap-8">
           <nav
             aria-label={t("prefs.navLabel")}

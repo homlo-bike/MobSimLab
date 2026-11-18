@@ -433,4 +433,5 @@ export const tablesPt = {
   "tt.tbl.departs": "Parte",
   "tt.tbl.to": "Para",
   "tt.tbl.arrives": "Chega",
+  "cost.outsideRange": "Fora do intervalo da biblioteca ({low}–{high}): verifique o valor e a sua unidade.",
 } satisfies TablesMessages;

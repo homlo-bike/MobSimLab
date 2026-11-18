@@ -1495,4 +1495,5 @@ export const editorsTe = {
   "spacing.onFoot": "నడకలో {metres} మీ",
   "spacing.straight": "స్టేషన్ల మధ్య సరళ రేఖలో కొలవబడింది.",
   "spacing.onFootHint": "గుర్తించిన స్టాప్‌ల మధ్య నడక దూరాన్ని జోడించడానికి పైన నడక అందుబాటును లెక్కించండి.",
+  "kit.savedWithProject": "డ్రాయింగ్ ప్రాజెక్ట్‌తో పాటు సేవ్ అవుతుంది.",
 } satisfies EditorMessages;

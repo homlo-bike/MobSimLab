@@ -1541,4 +1541,5 @@ export const editorsTa = {
   "spacing.straight": "நிலையங்களுக்கு இடையே நேர்கோட்டில் அளக்கப்பட்டது.",
   "spacing.onFootHint":
     "குறிக்கப்பட்ட நிறுத்தங்களுக்கு இடையிலான நடை தூரத்தைச் சேர்க்க மேலே நடை அணுகலைக் கணக்கிடவும்.",
+  "kit.savedWithProject": "வரைபடம் திட்டத்துடன் சேமிக்கப்படுகிறது.",
 } satisfies EditorMessages;

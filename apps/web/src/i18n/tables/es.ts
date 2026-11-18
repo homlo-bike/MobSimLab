@@ -435,4 +435,5 @@ export const tablesEs = {
   "tt.tbl.departs": "Sale",
   "tt.tbl.to": "Hasta",
   "tt.tbl.arrives": "Llega",
+  "cost.outsideRange": "Fuera del rango de la biblioteca ({low}–{high}): comprueba el valor y su unidad.",
 } satisfies TablesMessages;

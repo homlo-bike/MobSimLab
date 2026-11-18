@@ -1518,4 +1518,5 @@ export const editorsSw = {
   "spacing.straight": "Imepimwa kwa mstari ulionyooka kati ya stesheni.",
   "spacing.onFootHint":
     "Kokotoa ufikiaji kwa miguu hapo juu ili kuongeza umbali wa kutembea kati ya vituo vilivyowekwa alama.",
+  "kit.savedWithProject": "Mchoro huhifadhiwa pamoja na mradi.",
 } satisfies EditorMessages;

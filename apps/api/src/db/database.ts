@@ -66,6 +66,8 @@ export interface DB {
     esri_api_key: string | null;
     esri_terms_accepted_at: Date | null;
     esri_terms_accepted_by: string | null;
+    /** Plugins an Admin turned off for the whole instance (db/migrations/0026_plugins_off.sql). */
+    plugins_off: ColumnType<string[], never, string[]>;
   };
   "iam.user": {
     id: Generated<string>;
@@ -281,6 +283,12 @@ export interface DB {
     edited_at: Date | null;
     resolved_at: Date | null;
     resolved_by: string | null;
+  };
+  /** Comments a person has read, for the notices of new comments (db/migrations/0026_comment_read.sql). */
+  "collab.comment_read": {
+    user_id: string;
+    comment_id: string;
+    read_at: Generated<Date>;
   };
   /** Files a run saves next to its result, such as a demand run's OD matrices (0012_demand_runs.sql). */
   "simulation.run_file": {

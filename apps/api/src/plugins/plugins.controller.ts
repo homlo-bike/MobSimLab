@@ -34,6 +34,7 @@ const keyBody = z.strictObject({
   publicKey: z.string().min(1).max(4000),
 });
 const settingsBody = z.strictObject({ allowUnsigned: z.boolean() });
+const onBody = z.strictObject({ enabled: z.boolean() });
 const limitsBody = z.strictObject({
   memoryMb: z.number().int().min(16, "at least 16 MB").max(2048, "at most 2048 MB"),
   timeS: z.number().int().min(1, "at least 1 second").max(600, "at most 600 seconds"),
@@ -131,6 +132,14 @@ export class PluginsController {
     const { force } = parse(uninstallBody, body);
     await this.plugins.uninstall(this.actor(req), parse(pluginId, id), parse(version, v), force ?? false);
     return { ok: true };
+  }
+
+  /** Purpose: turn a plugin on or off for the whole instance. Body: `{ enabled }`. Output: `{ off }`. */
+  @Put("admin/plugins/:id/enabled")
+  @Requires("plugins.manage")
+  async setOn(@Param("id") id: string, @Body() body: unknown, @Req() req: MslRequest) {
+    const { enabled } = parse(onBody, body);
+    return { off: await this.plugins.setOnForInstance(this.actor(req), parse(pluginId, id), enabled) };
   }
 
   /** Purpose: trust a publisher's public key. Body: `{ name, publicKey }` (PEM, ECDSA P-256 or Ed25519). */

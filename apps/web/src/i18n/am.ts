@@ -15,6 +15,7 @@ import { populationAm } from "./population/am";
 import { resultsAm } from "./results/am";
 import { pluginsAm } from "./plugins/am";
 import { streetPhotosAm } from "./street-photos/am";
+import { pluginAdminAm } from "./plugin-admin/am";
 import type { Messages } from "./en";
 
 /** Amharic. */
@@ -524,4 +525,5 @@ export const am: Messages = {
   ...calendarAm,
   ...pluginsAm,
   ...streetPhotosAm,
+  ...pluginAdminAm,
 };

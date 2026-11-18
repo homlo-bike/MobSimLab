@@ -101,6 +101,7 @@ export function ProjectPlugins({
               >
                 <span className="font-semibold">{p.name}</span>
                 <span className="w-full truncate text-xs text-slate-500">{addsLine(p.contributes, t)}</span>
+                {p.instanceOff && <span className="text-xs text-amber-800">{t("padmin.offByAdmin")}</span>}
                 {p.missing && (
                   <span className="text-xs text-amber-800">
                     {t("plugins.missing", { version: p.version })}
@@ -113,7 +114,9 @@ export function ProjectPlugins({
                 className="h-5 w-5 shrink-0"
                 aria-label={t("plugins.useIn", { name: p.name })}
                 checked={p.enabled}
-                disabled={!manage || busy !== null || (!p.bundled && p.versions.length === 0)}
+                disabled={
+                  !manage || busy !== null || p.instanceOff || (!p.bundled && p.versions.length === 0)
+                }
                 onChange={(e) =>
                   void run(
                     p.id,

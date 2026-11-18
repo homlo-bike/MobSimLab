@@ -430,4 +430,5 @@ export const tablesId = {
   "tt.tbl.departs": "Berangkat",
   "tt.tbl.to": "Ke",
   "tt.tbl.arrives": "Tiba",
+  "cost.outsideRange": "Di luar rentang pustaka ({low}–{high}): periksa nilai dan satuannya.",
 } satisfies TablesMessages;

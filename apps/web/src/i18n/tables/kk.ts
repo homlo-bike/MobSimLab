@@ -431,4 +431,5 @@ export const tablesKk = {
   "tt.tbl.departs": "Жөнелу",
   "tt.tbl.to": "Қайда",
   "tt.tbl.arrives": "Келу",
+  "cost.outsideRange": "Кітапхана ауқымынан ({low}–{high}) тыс: мәнді және оның бірлігін тексеріңіз.",
 } satisfies TablesMessages;

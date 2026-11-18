@@ -15,6 +15,7 @@ import { populationNl } from "./population/nl";
 import { resultsNl } from "./results/nl";
 import { pluginsNl } from "./plugins/nl";
 import { streetPhotosNl } from "./street-photos/nl";
+import { pluginAdminNl } from "./plugin-admin/nl";
 import type { Messages } from "./en";
 
 /** Nederlands. */
@@ -543,4 +544,5 @@ export const nl: Messages = {
   ...calendarNl,
   ...pluginsNl,
   ...streetPhotosNl,
+  ...pluginAdminNl,
 };

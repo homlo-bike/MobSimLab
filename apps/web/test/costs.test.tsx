@@ -4,7 +4,7 @@ import { CostTables, fmtMoney } from "../src/features/costs/CostTables";
 import { currencyOf } from "../src/features/costs/currencies";
 import { type CountryEconomy, type EconomyApi, pricesFrom } from "../src/features/costs/economy";
 import { estimate, perLine, structureOf, sum } from "../src/features/costs/model";
-import { libraryValue, paramValue } from "../src/features/costs/params";
+import { libraryValue, outsideLibraryRange, paramValue } from "../src/features/costs/params";
 import type { LineReport, Network, RailEngine, RailView, TrackView } from "../src/features/railways/types";
 import { lineInput, type SavedStreetLine, type StreetLinesDoc } from "../src/features/street-lines/saved";
 import { fleetRow, streetBlocks } from "../src/features/timetables/blocks";
@@ -546,6 +546,28 @@ describe("cost tables", () => {
     // Another country.
     fireEvent.change(screen.getByLabelText("Country"), { target: { value: "DEU" } });
     expect(onCosts).toHaveBeenCalledWith({ country: "DEU" });
+  });
+
+  it("warns when a project's unit cost is outside the library range", async () => {
+    render(
+      <CostTables
+        railway={railway()}
+        streetLines={STREET}
+        preferences={{ values: { "cost.civil.tbm_per_km.metro": 10 } }}
+        costs={null}
+        loadRail={loadRail}
+        api={fakeApi()}
+      />,
+    );
+    // 10 against 40–200 US$ million per km (the Damascus cut-and-cover slip).
+    expect(
+      await screen.findByText(/Outside the library range of 40–200: check the value and its unit\./),
+    ).toBeTruthy();
+    expect(outsideLibraryRange(10, [40, 80, 200])).toBe(true);
+    expect(outsideLibraryRange(120, [40, 80, 200])).toBe(false);
+    expect(outsideLibraryRange(250, [40, 80, 200])).toBe(true);
+    expect(outsideLibraryRange(undefined, [40, 80, 200])).toBe(false);
+    expect(outsideLibraryRange(3, [5, 5, 5])).toBe(false);
   });
 
   it("shows every amount in the project's currency, converted through the US dollar", async () => {

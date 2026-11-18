@@ -1533,4 +1533,5 @@ export const editorsEs = {
   "spacing.straight": "Medido en línea recta entre estaciones.",
   "spacing.onFootHint":
     "Calcule arriba la cobertura a pie para añadir la distancia a pie entre las paradas señaladas.",
+  "kit.savedWithProject": "El dibujo se guarda con el proyecto.",
 } satisfies EditorMessages;

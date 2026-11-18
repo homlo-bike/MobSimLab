@@ -579,7 +579,7 @@ export function WaterRouteEditor({
           plugin: found?.plugin.name ?? t("ferry.plugin"),
           context: contextLabel(doc.mode, doc.vessel),
         })}{" "}
-        {t("ferry.carLater")} {!saving && t("kit.keptHere")}
+        {t("ferry.carLater")} {t(onSave ? "kit.savedWithProject" : "kit.keptHere")}
       </p>
     </div>
   );

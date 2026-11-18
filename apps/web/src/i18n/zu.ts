@@ -15,6 +15,7 @@ import { populationZu } from "./population/zu";
 import { resultsZu } from "./results/zu";
 import { pluginsZu } from "./plugins/zu";
 import { streetPhotosZu } from "./street-photos/zu";
+import { pluginAdminZu } from "./plugin-admin/zu";
 import type { Messages } from "./en";
 
 /** isiZulu. */
@@ -546,4 +547,5 @@ export const zu: Messages = {
   ...calendarZu,
   ...pluginsZu,
   ...streetPhotosZu,
+  ...pluginAdminZu,
 };
