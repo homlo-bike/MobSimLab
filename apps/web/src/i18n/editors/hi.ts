@@ -1322,9 +1322,8 @@ export const editorsHi = {
     "लाइन M1 Westpark – Eastgate: पाँच स्टेशन, हर छोर पर एक डिपो, पीक में हर 5 मिनट और बाकी समय हर 10 मिनट।",
   "capacity.topologyFile": "ट्रैक टोपोलॉजी (JSON)",
   "capacity.linesFile": "लाइनें (JSON)",
-  "capacity.download": "ट्रैक टोपोलॉजी डाउनलोड करें (JSON)",
   "capacity.filesHelp":
-    "ट्रैक टोपोलॉजी रेलवे एडिटर की “{download}” है। लाइनों की फ़ाइल हर लाइन के स्टेशन, ट्रेन और सेवा उसी तरह सूचीबद्ध करती है जैसे टाइमटेबल प्लानर पढ़ता है (docs/user/simulator.md)।",
+    "ट्रैक टोपोलॉजी फ़ाइल contracts/rail-topology.schema.json का पालन करती है; इस प्रोजेक्ट में बनाई गई रेलवे के लिए “{drawn}” चुनें। लाइनों की फ़ाइल हर लाइन के स्टेशन, ट्रेन और सेवा उसी तरह सूचीबद्ध करती है जैसे टाइमटेबल प्लानर पढ़ता है (docs/user/simulator.md)।",
   "capacity.period": "अवधि",
   "capacity.from": "से",
   "capacity.to": "तक",

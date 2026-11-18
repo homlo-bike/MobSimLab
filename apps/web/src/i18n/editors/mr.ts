@@ -1319,9 +1319,8 @@ export const editorsMr = {
     "मार्ग M1 Westpark – Eastgate: पाच स्थानके, प्रत्येक टोकाला एक डेपो, गर्दीच्या वेळी दर 5 मि आणि इतर वेळी दर 10 मि.",
   "capacity.topologyFile": "रूळ टोपोलॉजी (JSON)",
   "capacity.linesFile": "मार्ग (JSON)",
-  "capacity.download": "रूळ टोपोलॉजी डाउनलोड करा (JSON)",
   "capacity.filesHelp":
-    "रूळ टोपोलॉजी म्हणजे रेल्वे संपादकातील “{download}”. मार्गांची फाइल प्रत्येक मार्गाची स्थानके, गाडी आणि सेवा, वेळापत्रक नियोजक वाचतो तशी सूचीबद्ध करते (docs/user/simulator.md).",
+    "ट्रॅक टोपोलॉजी फाइल contracts/rail-topology.schema.json नुसार असते; या प्रकल्पात काढलेल्या रेल्वेसाठी “{drawn}” निवडा. मार्गांची फाइल प्रत्येक मार्गाची स्थानके, गाडी आणि सेवा, वेळापत्रक नियोजक वाचतो तशी सूचीबद्ध करते (docs/user/simulator.md).",
   "capacity.period": "कालावधी",
   "capacity.from": "पासून",
   "capacity.to": "पर्यंत",

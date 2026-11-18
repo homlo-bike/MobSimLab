@@ -1362,9 +1362,8 @@ export const editorsDe = {
     "Linie M1 Westpark – Eastgate: fünf Stationen, an jedem Ende ein Depot, alle 5 min in den Spitzen und sonst alle 10 min.",
   "capacity.topologyFile": "Gleistopologie (JSON)",
   "capacity.linesFile": "Linien (JSON)",
-  "capacity.download": "Gleistopologie herunterladen (JSON)",
   "capacity.filesHelp":
-    "Die Gleistopologie ist „{download}“ im Bahn-Editor. Die Liniendatei listet für jede Linie Stationen, Zug und Takt, so wie der Fahrplaner sie liest (docs/user/simulator.md).",
+    "Die Gleistopologie-Datei folgt contracts/rail-topology.schema.json; für die in diesem Projekt gezeichnete Bahn wählen Sie „{drawn}“. Die Liniendatei listet für jede Linie Stationen, Zug und Takt, so wie der Fahrplaner sie liest (docs/user/simulator.md).",
   "capacity.period": "Zeitraum",
   "capacity.from": "Von",
   "capacity.to": "Bis",

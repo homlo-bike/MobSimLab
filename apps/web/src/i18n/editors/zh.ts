@@ -1245,9 +1245,8 @@ export const editorsZh = {
     "M1 线 Westpark – Eastgate：五座车站，两端各有一个车辆段，高峰每 5 分钟一班，其余时间每 10 分钟一班。",
   "capacity.topologyFile": "轨道拓扑（JSON）",
   "capacity.linesFile": "线路（JSON）",
-  "capacity.download": "下载轨道拓扑（JSON）",
   "capacity.filesHelp":
-    "轨道拓扑即铁路编辑器中的“{download}”。线路文件按时刻表规划器读取的格式列出每条线路的车站、列车和服务（docs/user/simulator.md）。",
+    "轨道拓扑文件遵循 contracts/rail-topology.schema.json；对于本项目中绘制的铁路，请选择“{drawn}”。线路文件按时刻表规划器读取的格式列出每条线路的车站、列车和服务（docs/user/simulator.md）。",
   "capacity.period": "时段",
   "capacity.from": "从",
   "capacity.to": "到",

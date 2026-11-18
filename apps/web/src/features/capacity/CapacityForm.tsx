@@ -116,7 +116,7 @@ export function NetworkPicker({
           {file(t("capacity.topologyFile"), topology, setTopology)}
           {file(t("capacity.linesFile"), linesFile, setLinesFile)}
           <p className="text-xs text-slate-600">
-            {withNodes(t("capacity.filesHelp"), { download: <em>{t("capacity.download")}</em> })}
+            {withNodes(t("capacity.filesHelp"), { drawn: <em>{t("capacity.drawn")}</em> })}
           </p>
         </div>
       )}

@@ -1291,9 +1291,8 @@ export const editorsVi = {
     "Tuyến M1 Westpark – Eastgate: năm ga, mỗi đầu một depot, 5 phút một chuyến giờ cao điểm và 10 phút một chuyến các giờ khác.",
   "capacity.topologyFile": "Cấu trúc đường ray (JSON)",
   "capacity.linesFile": "Tuyến (JSON)",
-  "capacity.download": "Tải cấu trúc đường ray (JSON)",
   "capacity.filesHelp":
-    "Cấu trúc đường ray là “{download}” trong trình chỉnh sửa đường sắt. Tệp tuyến liệt kê ga, tàu và dịch vụ của mỗi tuyến, theo cách bộ lập biểu đồ đọc (docs/user/simulator.md).",
+    "Tệp cấu trúc đường ray theo contracts/rail-topology.schema.json; với đường sắt vẽ trong dự án này, hãy chọn “{drawn}”. Tệp tuyến liệt kê ga, tàu và dịch vụ của mỗi tuyến, theo cách bộ lập biểu đồ đọc (docs/user/simulator.md).",
   "capacity.period": "Khoảng thời gian",
   "capacity.from": "Từ",
   "capacity.to": "Đến",

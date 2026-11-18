@@ -1403,9 +1403,8 @@ export const editorsPl = {
     "Linia M1 Westpark – Eastgate: pięć stacji, zajezdnia na każdym końcu, co 5 min w szczycie i co 10 min poza nim.",
   "capacity.topologyFile": "Topologia torów (JSON)",
   "capacity.linesFile": "Linie (JSON)",
-  "capacity.download": "Pobierz topologię torów (JSON)",
   "capacity.filesHelp":
-    "Topologia torów to „{download}” w edytorze kolei. Plik linii podaje dla każdej linii stacje, pociąg i kursowanie tak, jak czyta je planer rozkładu (docs/user/simulator.md).",
+    "Plik topologii torów jest zgodny z contracts/rail-topology.schema.json; dla kolei narysowanej w tym projekcie wybierz „{drawn}”. Plik linii podaje dla każdej linii stacje, pociąg i kursowanie tak, jak czyta je planer rozkładu (docs/user/simulator.md).",
   "capacity.period": "Okres",
   "capacity.from": "Od",
   "capacity.to": "Do",

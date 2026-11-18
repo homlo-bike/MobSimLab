@@ -2,7 +2,13 @@ import { act, cleanup, fireEvent, render, screen, within } from "@testing-librar
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BenefitTables, stationRows } from "../src/features/benefits/BenefitTables";
 import type { BenefitsApi, OsmArea } from "../src/features/benefits/data";
-import { catchmentTiles, countryFigures, loadTiles } from "../src/features/benefits/data";
+import {
+  benefitsApi,
+  catchmentTiles,
+  countryFigures,
+  loadTiles,
+  MAX_AREAS,
+} from "../src/features/benefits/data";
 import { compile, FormulaError, formulaProblem } from "../src/features/benefits/formula";
 import { FORMULAS, formulaText } from "../src/features/benefits/formulas";
 import {
@@ -14,6 +20,7 @@ import {
   estimate,
   type PlaceIn,
   prepare,
+  prepareValues,
   scenarios,
 } from "../src/features/benefits/model";
 import { networkOf, withoutRoutes } from "../src/features/benefits/network";
@@ -462,6 +469,31 @@ describe("benefit estimate", () => {
 });
 
 describe("data for the benefit tables", () => {
+  it("asks for the population of many station areas in batches the API takes", async () => {
+    const sizes: number[] = [];
+    const api = benefitsApi(undefined, async (areas) => {
+      sizes.push(areas.length);
+      return {
+        year: 2026,
+        populations: Object.fromEntries(areas.map((a) => [a.id, 10])),
+        failed: areas.length > 100 ? 0 : 1,
+        reasons: ["grid downloading"],
+        source: { name: "WorldPop", licence: "CC BY 4.0", url: "https://www.worldpop.org" },
+      };
+    });
+    const ring: LonLat[] = [
+      [0, 0],
+      [0, 1],
+      [1, 1],
+      [0, 0],
+    ];
+    const areas = Array.from({ length: 758 }, (_, i) => ({ id: `s${i}`, ring }));
+    const answer = await api.population(areas);
+    expect(sizes).toEqual([MAX_AREAS, 358]);
+    expect(Object.keys(answer.populations)).toHaveLength(758);
+    expect(answer).toMatchObject({ year: 2026, failed: 0, reasons: ["grid downloading"] });
+  });
+
   it("turns World Bank percentages into shares and finds the tiles around stations", async () => {
     expect(
       countryFigures({
@@ -556,6 +588,38 @@ describe("benefit tables", () => {
     fireEvent.change(box, { target: { value: "pop * 0.2" } });
     fireEvent.blur(box);
     expect(onDoc).toHaveBeenCalledWith({ formulas: { ridership_daily: "pop * 0.2" } });
+  });
+
+  it("does not prepare the zones again when a unit cost changes", async () => {
+    expect(
+      prepareValues({ "cost.bus.operating_per_hour": 40, "mode.catchment_m.tram": 500, "benefit.vot": 9 }),
+    ).toEqual({ "mode.catchment_m.tram": 500, "benefit.vot": 9 });
+    const reach = vi.fn(fakeReach);
+    // The project's other inputs stay the same objects, as in the workspace.
+    const timetable = network();
+    const regions: Region[] = [];
+    const costs = {
+      estimate: { items: [], lines: [], modes: [], notes: [] } as unknown as CostEstimate,
+      currency: "EUR",
+      country: "NLD",
+    };
+    const props = (values: Record<string, number>) => ({
+      timetable,
+      regions,
+      preferences: { values },
+      doc: null,
+      costs,
+      loadReach: reach,
+      draws: 30,
+    });
+    const api = fakeApi();
+    const { rerender } = render(<BenefitTables {...props({ "cost.x": 1 })} api={api} />);
+    expect(await screen.findByRole("heading", { name: "Ridership" }, { timeout: 5000 })).toBeTruthy();
+    const calls = reach.mock.calls.length;
+    expect(calls).toBeGreaterThan(0);
+    rerender(<BenefitTables {...props({ "cost.x": 2 })} api={api} />);
+    await new Promise((r) => setTimeout(r, 50));
+    expect(reach.mock.calls.length).toBe(calls);
   });
 
   it("says when there is nothing to estimate", () => {

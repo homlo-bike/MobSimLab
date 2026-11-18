@@ -1382,9 +1382,8 @@ export const editorsAr = {
     "الخط M1 ‏Westpark – Eastgate: خمس محطات، ومستودع عند كل طرف، كل 5 د في الذروة وكل 10 د في غيرها.",
   "capacity.topologyFile": "طوبولوجيا المسارات (JSON)",
   "capacity.linesFile": "الخطوط (JSON)",
-  "capacity.download": "تنزيل طوبولوجيا المسارات (JSON)",
   "capacity.filesHelp":
-    "طوبولوجيا المسارات هي «{download}» في محرر السكك الحديدية. ملف الخطوط يسرد لكل خط محطاته وقطاره وخدمته كما يقرؤها مخطِّط الجداول (docs/user/simulator.md).",
+    "يتبع ملف طوبولوجيا المسارات contracts/rail-topology.schema.json؛ وللسكك الحديدية المرسومة في هذا المشروع اختر «{drawn}». ملف الخطوط يسرد لكل خط محطاته وقطاره وخدمته كما يقرؤها مخطِّط الجداول (docs/user/simulator.md).",
   "capacity.period": "الفترة",
   "capacity.from": "من",
   "capacity.to": "إلى",

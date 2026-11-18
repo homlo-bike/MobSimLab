@@ -1397,9 +1397,8 @@ export const editorsUk = {
     "Лінія M1 Westpark – Eastgate: п’ять станцій, депо на кожному кінці, кожні 5 хв у години пік і кожні 10 хв в інший час.",
   "capacity.topologyFile": "Топологія колій (JSON)",
   "capacity.linesFile": "Лінії (JSON)",
-  "capacity.download": "Завантажити топологію колій (JSON)",
   "capacity.filesHelp":
-    "Топологія колій — це «{download}» у редакторі залізниці. Файл ліній перелічує для кожної лінії станції, поїзд і режим руху так, як їх читає планувальник розкладу (docs/user/simulator.md).",
+    "Файл топології колій відповідає contracts/rail-topology.schema.json; для залізниці, намальованої в цьому проєкті, виберіть «{drawn}». Файл ліній перелічує для кожної лінії станції, поїзд і режим руху так, як їх читає планувальник розкладу (docs/user/simulator.md).",
   "capacity.period": "Період",
   "capacity.from": "З",
   "capacity.to": "До",

@@ -1347,9 +1347,8 @@ export const editorsIt = {
     "Linea M1 Westpark – Eastgate: cinque stazioni, un deposito a ogni capo, ogni 5 min nelle ore di punta e ogni 10 min negli altri orari.",
   "capacity.topologyFile": "Topologia dei binari (JSON)",
   "capacity.linesFile": "Linee (JSON)",
-  "capacity.download": "Scarica topologia dei binari (JSON)",
   "capacity.filesHelp":
-    "La topologia dei binari è «{download}» dell’editor ferroviario. Il file delle linee elenca per ogni linea le stazioni, il treno e il servizio, come li legge il pianificatore dell’orario (docs/user/simulator.md).",
+    "Il file della topologia dei binari segue contracts/rail-topology.schema.json; per la ferrovia disegnata in questo progetto, scegli «{drawn}». Il file delle linee elenca per ogni linea le stazioni, il treno e il servizio, come li legge il pianificatore dell’orario (docs/user/simulator.md).",
   "capacity.period": "Periodo",
   "capacity.from": "Da",
   "capacity.to": "A",

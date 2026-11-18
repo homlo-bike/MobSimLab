@@ -1331,9 +1331,8 @@ export const editorsEn = {
     "Line M1 Westpark – Eastgate: five stations, a depot at each end, every 5 min in the peaks and every 10 min otherwise.",
   "capacity.topologyFile": "Track topology (JSON)",
   "capacity.linesFile": "Lines (JSON)",
-  "capacity.download": "Download track topology (JSON)",
   "capacity.filesHelp":
-    "The track topology is the railway editor’s {download}. The lines file lists each line’s stations, train and service, as the timetable planner reads it (docs/user/simulator.md).",
+    "The track topology file follows contracts/rail-topology.schema.json; for the railway drawn in this project, choose {drawn}. The lines file lists each line’s stations, train and service, as the timetable planner reads it (docs/user/simulator.md).",
   "capacity.period": "Period",
   "capacity.from": "From",
   "capacity.to": "To",

@@ -1272,9 +1272,8 @@ export const editorsKo = {
     "M1 노선 Westpark – Eastgate: 5개 역, 양 끝에 차량기지, 첨두에는 5분 간격, 그 외에는 10분 간격.",
   "capacity.topologyFile": "선로 토폴로지(JSON)",
   "capacity.linesFile": "노선(JSON)",
-  "capacity.download": "선로 토폴로지 내려받기(JSON)",
   "capacity.filesHelp":
-    "선로 토폴로지는 철도 편집기의 “{download}”입니다. 노선 파일은 시간표 계획기가 읽는 형식으로 각 노선의 역, 열차, 운행을 나열합니다(docs/user/simulator.md).",
+    "선로 토폴로지 파일은 contracts/rail-topology.schema.json 형식을 따릅니다. 이 프로젝트에서 그린 철도에는 “{drawn}”을 선택하세요. 노선 파일은 시간표 계획기가 읽는 형식으로 각 노선의 역, 열차, 운행을 나열합니다(docs/user/simulator.md).",
   "capacity.period": "시간대",
   "capacity.from": "시작",
   "capacity.to": "끝",

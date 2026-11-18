@@ -1284,9 +1284,8 @@ export const editorsAm = {
     "መስመር M1 Westpark – Eastgate፦ አምስት ጣቢያዎች፣ በእያንዳንዱ ጫፍ ዴፖ፣ በመጨናነቅ ጊዜ በየ5 ደቂቃ እና በሌላ ጊዜ በየ10 ደቂቃ።",
   "capacity.topologyFile": "የሀዲድ ቶፖሎጂ (JSON)",
   "capacity.linesFile": "መስመሮች (JSON)",
-  "capacity.download": "የሀዲድ ቶፖሎጂ አውርድ (JSON)",
   "capacity.filesHelp":
-    "የሀዲድ ቶፖሎጂው የባቡር አርታኢው “{download}” ነው። የመስመሮች ፋይሉ የእያንዳንዱን መስመር ጣቢያዎች፣ ባቡር እና አገልግሎት የሰዓት ሰሌዳ አቅጣጫ ሰጪው በሚያነበው መልኩ ይዘረዝራል (docs/user/simulator.md)።",
+    "የመስመር ቶፖሎጂ ፋይሉ contracts/rail-topology.schema.json ን ይከተላል፤ በዚህ ፕሮጀክት ለተሳለው የባቡር መስመር “{drawn}”ን ይምረጡ። የመስመሮች ፋይሉ የእያንዳንዱን መስመር ጣቢያዎች፣ ባቡር እና አገልግሎት የሰዓት ሰሌዳ አቅጣጫ ሰጪው በሚያነበው መልኩ ይዘረዝራል (docs/user/simulator.md)።",
   "capacity.period": "ጊዜ",
   "capacity.from": "ከ",
   "capacity.to": "እስከ",

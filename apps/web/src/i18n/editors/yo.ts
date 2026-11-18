@@ -1295,9 +1295,8 @@ export const editorsYo = {
     "Ìlà M1 Westpark – Eastgate: ibùdókọ̀ márùn-ún, ibi-ìpamọ́ ní òpin kọ̀ọ̀kan, ní gbogbo ìṣẹ́jú 5 nígbà ìkún àti ní gbogbo ìṣẹ́jú 10 ní àsìkò mìíràn.",
   "capacity.topologyFile": "Ìtòlẹ́sẹẹsẹ ojú irin (JSON)",
   "capacity.linesFile": "Àwọn ìlà (JSON)",
-  "capacity.download": "Ṣe ìgbàsílẹ̀ ìtòlẹ́sẹẹsẹ ojú irin (JSON)",
   "capacity.filesHelp":
-    "Ìtòlẹ́sẹẹsẹ ojú irin ni “{download}” ti olóòtú ojú irin. Fáìlì àwọn ìlà ń ka àwọn ibùdókọ̀, ọkọ̀ àti iṣẹ́ ìlà kọ̀ọ̀kan, bí olùṣètò àkókò-ìrìn ṣe ń kà wọ́n (docs/user/simulator.md).",
+    "Fáìlì ìtòlẹ́sẹẹsẹ ojú irin tẹ̀lé contracts/rail-topology.schema.json; fún ojú irin tí a yà nínú iṣẹ́ yìí, yan “{drawn}”. Fáìlì àwọn ìlà ń ka àwọn ibùdókọ̀, ọkọ̀ àti iṣẹ́ ìlà kọ̀ọ̀kan, bí olùṣètò àkókò-ìrìn ṣe ń kà wọ́n (docs/user/simulator.md).",
   "capacity.period": "Àkókò",
   "capacity.from": "Láti",
   "capacity.to": "Sí",

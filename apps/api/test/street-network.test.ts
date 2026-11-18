@@ -1,7 +1,8 @@
 import { Test } from "@nestjs/testing";
 import request from "supertest";
 import { describe, expect, it, vi } from "vitest";
-import { OverpassClient, overpassEndpoint } from "../src/gateway/overpass.client";
+import { OverpassClient, OverpassError, overpassEndpoint } from "../src/gateway/overpass.client";
+import type { GeodataReader } from "../src/geodata/geodata-reader";
 import {
   bikeAmenities,
   bikeAmenityKind,
@@ -14,6 +15,7 @@ import {
   placeQuery,
   places,
   railQuery,
+  StreetNetworkService,
   streetQuery,
   tileBbox,
 } from "../src/street-network/street-network.service";
@@ -184,6 +186,25 @@ describe("street tiles", () => {
     const notFound = client([400]);
     await expect(notFound.c.run("q")).rejects.toMatchObject({ status: 502 });
     expect(notFound.fetchImpl).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not advise importing OSM for a place outside the project's import", async () => {
+    const overpass = {
+      run: async () => {
+        throw new OverpassError("OpenStreetMap's Overpass service is busy ... import the area's data", 502);
+      },
+    } as unknown as OverpassClient;
+    const imported = (has: boolean) =>
+      ({
+        onChange: () => {},
+        buildings: async () => null,
+        hasOsm: async () => has,
+      }) as unknown as GeodataReader;
+    const outside = new StreetNetworkService(overpass, imported(true));
+    await expect(outside.buildingTile(1, 2, "p1")).rejects.toThrow(/outside the project's imported/);
+    await expect(outside.buildingTile(1, 2, "p1")).rejects.toMatchObject({ status: 502 });
+    const none = new StreetNetworkService(overpass, imported(false));
+    await expect(none.buildingTile(1, 2, "p1")).rejects.toThrow(/import the area/);
   });
 
   it("only accepts an https Overpass endpoint", () => {

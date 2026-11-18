@@ -544,9 +544,18 @@ export function Workspace({
   const benefitsDoc = drawings.doc<BenefitsDoc>("benefits");
   // Project preferences: assumption values the project changes, such as the delays in traffic.
   const preferences = drawings.doc<PreferencesDoc>("preferences");
-  const journeySettings = useMemo(() => journeySettingsFrom(preferences?.values), [preferences]);
+  // Kept by value, so editing another value (a unit cost) does not re-run what reads them.
+  const journeyJson = JSON.stringify(journeySettingsFrom(preferences?.values));
+  const journeySettings = useMemo(
+    () => JSON.parse(journeyJson) as ReturnType<typeof journeySettingsFrom>,
+    [journeyJson],
+  );
   // The street rules every street line follows (Project preferences).
-  const streetRules = useMemo(() => streetRulesFrom(preferences), [preferences]);
+  const streetRulesJson = JSON.stringify(streetRulesFrom(preferences));
+  const streetRules = useMemo(
+    () => JSON.parse(streetRulesJson) as ReturnType<typeof streetRulesFrom>,
+    [streetRulesJson],
+  );
   // Road depots shared by the street lines (depot tool).
   const depotsDoc = drawings.doc<DepotsDoc>("depots");
   // The currency all money is shown in, and its exchange rate (Project preferences).
