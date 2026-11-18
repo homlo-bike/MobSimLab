@@ -9,7 +9,7 @@
 
 use journey_planner::timetable::Timetable;
 use rail_dynamics::TrainParams;
-use rail_model::topology::{import_json, ImportOptions};
+use rail_model::topology::{import_json, ImportOptions, StorageRole};
 use rail_model::{Model, TrackUse};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -407,7 +407,26 @@ const RAMP_S: f64 = 3600.0;
 /// Inputs: the line and the compiled model (for the storage tracks and terminal platforms).
 /// Trains stable on the design's storage tracks; without any, in the terminal platforms overnight.
 pub fn line_spec(l: &ServiceLine, m: &Model) -> LineSpec {
+    line_spec_with_roles(l, m, &BTreeMap::new())
+}
+
+/// Purpose: [`line_spec`] with what the drawing says each storage track is for: an end-station
+/// siding marked for layover only holds no train overnight, so trains come to it from an
+/// overnight track before they are needed (Homlo, Damascus test). Tracks without a role hold
+/// trains overnight and between trips, as before.
+/// Inputs: the line, the model and the roles by track id. Output: the planner's line.
+pub fn line_spec_with_roles(
+    l: &ServiceLine,
+    m: &Model,
+    roles: &BTreeMap<String, StorageRole>,
+) -> LineSpec {
     let mv = mode_values(&l.mode);
+    let layover: Vec<String> = roles
+        .iter()
+        .filter(|(_, r)| **r == StorageRole::Layover)
+        .map(|(t, _)| t.clone())
+        .filter(|t| m.track(t).is_some())
+        .collect();
     let mut stabling: Vec<String> = m
         .tracks
         .iter()
@@ -447,6 +466,7 @@ pub fn line_spec(l: &ServiceLine, m: &Model) -> LineSpec {
             .filter(|x| x.is_finite() && (0.0..1.0).contains(x))
             .unwrap_or(0.05),
         stabling,
+        layover,
         bands: service_bands(l),
         return_offset_s: None,
     }
@@ -628,7 +648,10 @@ pub fn publish_service_with(
     let imp = import_json(topology_json, &ImportOptions::default())?;
     let m =
         Model::compile(&imp.spec).map_err(|e| format!("the track layout cannot be used: {e:?}"))?;
-    let specs: Vec<LineSpec> = lines.iter().map(|l| line_spec(l, &m)).collect();
+    let specs: Vec<LineSpec> = lines
+        .iter()
+        .map(|l| line_spec_with_roles(l, &m, &imp.storage_roles))
+        .collect();
     let mut params = PlanParams::default();
     if let Some(v) = opts.max_idle_s.filter(|v| v.is_finite() && *v >= 0.0) {
         params.max_idle_s = v;

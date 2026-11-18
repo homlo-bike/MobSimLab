@@ -59,6 +59,10 @@ pub struct LineSpec {
     pub supplement_share: f64,
     /// Storage tracks (depot and stabling sidings) the line's trains may use.
     pub stabling: Vec<String>,
+    /// Those of them where trains only wait between trips (end-station sidings): no train stays
+    /// there overnight, so trains come to them from an overnight track before they are needed.
+    #[serde(default)]
+    pub layover: Vec<String>,
     /// Service bands of the outbound direction (from [`crate::demand::bands`]).
     pub bands: Vec<Band>,
     /// Offset of the return direction's departures from the outbound ones, s.
