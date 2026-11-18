@@ -22,6 +22,8 @@ export const editorsNl = {
   "rail.clear": "Wissen",
   "rail.level.underground2": "Ondergronds −2",
   "rail.level.underground": "Ondergronds −1",
+  "rail.level.cutting": "Open uitgraving",
+  "rail.level.cuttingShort": "Uitgr.",
   "rail.level.street": "Straatniveau",
   "rail.level.streetShort": "Straat",
   "rail.level.elevated": "Verhoogd +1",
@@ -167,6 +169,11 @@ export const editorsNl = {
   "rail.tunnel.cut_and_cover": "Open bouwput",
   "rail.tunnel.tbm": "Geboorde tunnel (TBM)",
   "rail.structure": "Verhoogd op",
+  "rail.existingStructure": "Hergebruikt een bestaand kunstwerk",
+  "rail.existingStructureHint":
+    "De tunnels, bruggen en viaducten bestaan al (zoals een oude spoortunnel) en worden als renovatie gerekend.",
+  "rail.existingStation": "In een bestaand bouwwerk",
+  "rail.existingStationHint": "De stationsbak of -hal bestaat al; gerekend worden renovatie en afbouw.",
   "rail.structure.auto": "Automatisch (verhoogde baan voor tram en metro, viaduct voor hoofdlijnen)",
   "rail.structure.elevated": "Verhoogde baan",
   "rail.structure.viaduct": "Viaduct",
@@ -680,6 +687,7 @@ export const editorsNl = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Ondergronds",
+  "schematic.level.cutting": "Open uitgraving",
   "schematic.level.street": "Op straatniveau",
   "schematic.level.elevated": "Verhoogd",
   "schematic.level.ramp": "Helling",
@@ -1434,6 +1442,10 @@ export const editorsNl = {
   "rail.levelHeight": "Vlak, spoor op {rail} m boven zeeniveau · maaiveld langs het spoor {min}–{max} m",
   "rail.profileRange": "Spoor {min}–{max} m boven zeeniveau · steilste helling {steep} (max {limit} ‰)",
   "rail.profileAria": "Hoogteprofiel: maaiveld en bovenkant spoor langs het spoor",
+  "rail.levelProfileAria":
+    "Lengteprofiel uit de niveaus: bovenkant spoorstaaf ten opzichte van straatniveau langs het spoor",
+  "rail.levelProfileNote":
+    "Hoogtes uit de niveaus en hellingen van het spoor, ten opzichte van straatniveau (hier geen terreinhoogtes geladen).",
   "rail.profileLegend":
     "Doorgetrokken: bovenkant spoor. Gestreept: maaiveld (Copernicus GLO-30, afgevlakt). Hoogtes uit een oppervlaktemodel, ±4 m.",
 

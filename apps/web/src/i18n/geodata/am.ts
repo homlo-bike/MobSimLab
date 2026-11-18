@@ -68,5 +68,11 @@ export const geodataAm = {
   "area.import.current": "{what}፦ ቀድሞ መጥቷል",
   "area.import.failed": "{what}፦ መጀመር አልተቻለም። {reason}",
   "area.seeMapData": "ሂደቱን በGIS፣ የካርታ ውሂብ ይከታተሉ።",
+  "area.country": "አገር፦ {name}።",
+  "area.crossesBorder": "አካባቢው ድንበር ያቋርጣል፦ {countries}። በዓላትና ዋጋዎች የ{name} ናቸው።",
+  "data.liveNotice":
+    "{tiles} የካርታ ሰቆችና {heights} ከፍታዎች ከፕሮጀክቱ የገቡ መረጃዎች ውጭ በቀጥታ መጡ። አሁን በፕሮጀክቱ ተቀምጠዋል፤ ሙሉውን ስዕል እንዲሸፍን ማስገባቱን ያስፉ።",
+  "data.extendImport": "በካርታ መረጃ ማስገባቱን አስፋ",
+  "data.hideLive": "ደብቅ",
   "data.areaRegions": "አካባቢ፦ {area} ኪ.ሜ²፣ {names}ን የሚከብበው አራት ማዕዘን",
 } satisfies GeodataMessages;

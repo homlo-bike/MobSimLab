@@ -409,6 +409,7 @@ pub fn build_with_choice(
                 params: tp,
                 storage_radius: storage_radius(tp),
                 embedded,
+                keep_clear: &[],
             }));
         }
         for sw in &net.switches {
@@ -469,6 +470,46 @@ pub fn build_with_choice(
                     switch_errors.push(Issue::error(e, Some(at_s(&parent.centre, sw.s).p), sw.id))
                 }
             }
+        }
+    }
+    // A ramp from a track's ends should not run through switches on the track: fit those tracks
+    // again with the switches kept clear (their line stays the same, so the switches still fit).
+    for g in tracks.iter_mut() {
+        let clear: Vec<[f64; 2]> = switches
+            .iter()
+            .filter(|sw| sw.track == g.id)
+            .map(|sw| [sw.s0, sw.s1])
+            .collect();
+        let Some(t) = net.tracks.iter().find(|t| t.id == g.id) else {
+            continue;
+        };
+        if clear.is_empty()
+            || g.ramps.len() != 1
+            || !g
+                .ramps
+                .iter()
+                .any(|r| clear.iter().any(|c| c[1] > r.s0 && c[0] < r.s1))
+        {
+            continue;
+        }
+        let tm = track_modes[&t.id];
+        let tp = mode_params(tm);
+        let embedded = match t.bed {
+            Bed::Embedded => true,
+            Bed::Ballast => false,
+            Bed::Auto => tm.street_running(),
+        };
+        let again = fit(&FitInput {
+            track: t,
+            start: g.start,
+            end: g.end,
+            params: tp,
+            storage_radius: storage_radius(tp),
+            embedded,
+            keep_clear: &clear,
+        });
+        if again.centre.len() == g.centre.len() {
+            *g = again;
         }
     }
     let train_length = net
@@ -1256,6 +1297,49 @@ mod tests {
             .iter()
             .any(|i| i.text.contains("Only one train at a time")));
         assert!(!dz.issues.iter().any(|i| i.severity == Severity::Error));
+    }
+
+    #[test]
+    fn a_track_in_an_open_cutting_passes_under_a_street_level_track() {
+        let mut net = Network::new(RailMode::RegionalRail, [7.0, 50.9]);
+        net.tracks
+            .push(straight(1, (-400.0, 0.0), (400.0, 0.0), None));
+        let mut cut = straight(2, (0.0, -300.0), (0.0, 300.0), None);
+        cut.level = Level::Cutting;
+        net.tracks.push(cut);
+        let dz = build(&net, None);
+        assert_eq!(dz.crossings.len(), 1, "{:?}", dz.crossings);
+        assert_eq!(dz.crossings[0].kind, CrossingKind::GradeSeparated);
+        let g = dz.track(2).unwrap();
+        assert_eq!(g.level_at(g.length / 2.0), Some(Level::Cutting));
+        // Open, below the street, between a tunnel and the street.
+        assert!(!Level::Cutting.underground() && Level::Cutting.below_street());
+        let p = dz.track_params(2);
+        assert!(
+            Level::Underground.height_m(p) < Level::Cutting.height_m(p)
+                && Level::Cutting.height_m(p) < 0.0
+        );
+        // The map draws the trench and its walls on the cutting's own level.
+        let v = crate::view::view(&dz);
+        let z = Level::Cutting.order();
+        let has = |layer: &str, kind: &str| {
+            v["layers"][layer]["features"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .any(|f| {
+                    f["properties"]["kind"] == kind
+                        && f["properties"]["z"] == z
+                        && f["properties"]["ref"] == 2
+                })
+        };
+        assert!(has("structures", "cutting"));
+        assert!(has("edges", "cutting_edge"));
+        assert!(
+            !dz.issues.iter().any(|i| i.severity == Severity::Error),
+            "{:?}",
+            dz.issues
+        );
     }
 
     #[test]

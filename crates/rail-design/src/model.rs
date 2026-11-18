@@ -15,6 +15,8 @@ pub enum Level {
     Underground2,
     /// First underground level.
     Underground,
+    /// Open cutting: below the street but uncovered (a trench between tunnels), half as deep as level −1.
+    Cutting,
     /// Street level (at grade).
     Street,
     /// First elevated level (viaduct).
@@ -25,19 +27,25 @@ pub enum Level {
 
 impl Level {
     /// All levels, lowest first.
-    pub const ALL: [Level; 5] = [
+    pub const ALL: [Level; 6] = [
         Level::Underground2,
         Level::Underground,
+        Level::Cutting,
         Level::Street,
         Level::Elevated,
         Level::Elevated2,
     ];
-    /// Purpose: drawing order, 0 (lowest) to 4.
+    /// Purpose: drawing order, 0 (lowest) to 5; tracks of different orders cross without meeting.
     pub fn order(self) -> u8 {
         self as u8
     }
-    /// Purpose: below street level.
+    /// Purpose: in a tunnel or underground box (covered); an open cutting is below the street but not
+    /// underground.
     pub fn underground(self) -> bool {
+        self < Level::Cutting
+    }
+    /// Purpose: below street level, covered or not (tunnel or cutting).
+    pub fn below_street(self) -> bool {
         self < Level::Street
     }
     /// Purpose: above street level.
@@ -49,6 +57,7 @@ impl Level {
         match self {
             Level::Underground2 => -2.0 * p.underground_level_depth_m,
             Level::Underground => -p.underground_level_depth_m,
+            Level::Cutting => -0.5 * p.underground_level_depth_m,
             Level::Street => 0.0,
             Level::Elevated => p.elevated_level_height_m,
             Level::Elevated2 => 2.0 * p.elevated_level_height_m,
@@ -59,6 +68,7 @@ impl Level {
         match self {
             Level::Underground2 => "underground −2",
             Level::Underground => "underground −1",
+            Level::Cutting => "open cutting",
             Level::Street => "street level",
             Level::Elevated => "elevated +1",
             Level::Elevated2 => "elevated +2",

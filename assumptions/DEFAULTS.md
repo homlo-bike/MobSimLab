@@ -2733,6 +2733,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 15 | 35 | 80 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Retained cut (U-trough) or retained embankment; between at-grade and cut and cover costs. |
 
+### Open cutting (trench with retaining walls), double track
+
+`cost.civil.cutting_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 35 | 80 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | An open cutting below the street (a retained cut or U-trough without a roof), with drainage and road bridges over it; built like the trough of a ramp, so the same range as a ramp between levels. |
+
 ### Cut and cover tunnel, double track
 
 `cost.civil.cut_and_cover_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
@@ -2791,6 +2799,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 8 | 20 | 50 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation), [transit-costs-project](#src-transit-costs-project) | Platform deck, lifts, escalators and stairs. |
 
+### Station in an open cutting
+
+`cost.station.cutting` · unit: US$ million per station (2023, PPP) · used by: construction cost: stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 6 | 15 | 40 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Platforms in an open trench below the street with stairs, lifts and a footbridge or concourse at street level; between a station at street level and a first-level underground box, close to an elevated station. |
+
 ### Underground station on the first level (cut and cover box)
 
 `cost.station.underground` · unit: US$ million per station (2023, PPP) · used by: construction cost: stations
@@ -2806,6 +2822,22 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 60 | 120 | 300 | documented | unverified | [transit-costs-project](#src-transit-costs-project), [mobsimlab-derivation](#src-mobsimlab-derivation) | Deep boxes or mined caverns with long escalator shafts; Transit Costs Project names depth and station size as main cost drivers. |
+
+### Refurbishing an existing station structure, each
+
+`cost.station.refurbish` · unit: US$ million per station (2023, PPP) · used by: construction cost: stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 5 | 15 | 40 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A station the planner marks as re-using an existing structure (an old station box, hall or platforms): repairs, waterproofing, fire safety, access and fit-out instead of a new structure. About a quarter of a new first-level underground station; high values for deep or badly damaged structures. |
+
+### Refurbishing an existing tunnel, bridge or viaduct, double track
+
+`cost.civil.refurbish_structure_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 4 | 10 | 30 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | A track the planner marks as re-using an existing structure (such as an old railway tunnel): lining repairs, drainage, ventilation, fire safety and bearings instead of a new structure. About a seventh of a new cut and cover tunnel; high values for long-disused or damaged structures. |
 
 ### Switch or crossing, each
 

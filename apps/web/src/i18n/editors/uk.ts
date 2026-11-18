@@ -24,6 +24,8 @@ export const editorsUk = {
   "rail.clear": "Очистити все",
   "rail.level.underground2": "Підземний −2",
   "rail.level.underground": "Підземний −1",
+  "rail.level.cutting": "Відкрита виїмка",
+  "rail.level.cuttingShort": "Виїмка",
   "rail.level.street": "Рівень вулиці",
   "rail.level.streetShort": "Вулиця",
   "rail.level.elevated": "Естакада +1",
@@ -199,6 +201,11 @@ export const editorsUk = {
   "rail.tunnel.cut_and_cover": "Відкритий спосіб",
   "rail.tunnel.tbm": "Щитовий тунель (ТПМК)",
   "rail.structure": "Піднято на",
+  "rail.existingStructure": "Використовує наявну споруду",
+  "rail.existingStructureHint":
+    "Його тунелі, мости й віадуки вже є (наприклад, старий залізничний тунель) і рахуються як реконструкція.",
+  "rail.existingStation": "У наявній споруді",
+  "rail.existingStationHint": "Коробка чи зал станції вже є; рахуються реконструкція й оснащення.",
   "rail.structure.auto": "Авто (естакада для трамвая й метро, віадук для магістралей)",
   "rail.structure.elevated": "Естакада",
   "rail.structure.viaduct": "Віадук",
@@ -724,6 +731,7 @@ export const editorsUk = {
   "schematic.metres": "{n} м",
   "schematic.unknown": "–",
   "schematic.level.underground": "Під землею",
+  "schematic.level.cutting": "Відкрита виїмка",
   "schematic.level.street": "На рівні вулиці",
   "schematic.level.elevated": "На естакаді",
   "schematic.level.ramp": "Рампа",
@@ -1489,6 +1497,9 @@ export const editorsUk = {
   "rail.profileRange":
     "Рейки на висоті {min}–{max} м над рівнем моря · найбільший ухил {steep} (макс. {limit} ‰)",
   "rail.profileAria": "Поздовжній профіль: рельєф і головка рейки вздовж колії",
+  "rail.levelProfileAria": "Поздовжній профіль за рівнями: головка рейки відносно рівня вулиці вздовж колії",
+  "rail.levelProfileNote":
+    "Висоти за рівнями та рампами колії відносно рівня вулиці (висоти рельєфу тут не завантажено).",
   "rail.profileLegend":
     "Суцільна: головка рейки. Пунктир: рельєф (Copernicus GLO-30, згладжено). Висоти за моделлю поверхні, ±4 м.",
 

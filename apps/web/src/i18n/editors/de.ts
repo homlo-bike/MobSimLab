@@ -22,6 +22,8 @@ export const editorsDe = {
   "rail.clear": "Leeren",
   "rail.level.underground2": "Tunnel −2",
   "rail.level.underground": "Tunnel −1",
+  "rail.level.cutting": "Offener Einschnitt",
+  "rail.level.cuttingShort": "Einschn.",
   "rail.level.street": "Straßenebene",
   "rail.level.streetShort": "Straße",
   "rail.level.elevated": "Hochbahn +1",
@@ -167,6 +169,12 @@ export const editorsDe = {
   "rail.tunnel.cut_and_cover": "Offene Bauweise",
   "rail.tunnel.tbm": "Schildvortrieb (TBM)",
   "rail.structure": "Hochlage auf",
+  "rail.existingStructure": "Nutzt ein vorhandenes Bauwerk",
+  "rail.existingStructureHint":
+    "Seine Tunnel, Brücken und Viadukte gibt es schon (etwa ein alter Eisenbahntunnel); sie werden als Sanierung gerechnet.",
+  "rail.existingStation": "In einem vorhandenen Bauwerk",
+  "rail.existingStationHint":
+    "Stationskasten oder Halle gibt es schon; gerechnet werden Sanierung und Ausbau.",
   "rail.structure.auto": "Automatisch (Hochbahn für Tram und Metro, Viadukt für Hauptbahnen)",
   "rail.structure.elevated": "Hochbahntrasse",
   "rail.structure.viaduct": "Viadukt",
@@ -690,6 +698,7 @@ export const editorsDe = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Unterirdisch",
+  "schematic.level.cutting": "Offener Einschnitt",
   "schematic.level.street": "Straßenniveau",
   "schematic.level.elevated": "Hochlage",
   "schematic.level.ramp": "Rampe",
@@ -1452,6 +1461,10 @@ export const editorsDe = {
   "rail.levelHeight": "Eben, Schienen auf {rail} m über dem Meer · Gelände entlang {min}–{max} m",
   "rail.profileRange": "Schienen {min}–{max} m über dem Meer · steilste Stelle {steep} (max. {limit} ‰)",
   "rail.profileAria": "Höhenprofil: Gelände und Schienenoberkante entlang des Gleises",
+  "rail.levelProfileAria":
+    "Höhenprofil aus den Ebenen: Schienenoberkante gegenüber Straßenniveau entlang des Gleises",
+  "rail.levelProfileNote":
+    "Höhen aus den Ebenen und Rampen des Gleises, bezogen auf das Straßenniveau (hier keine Geländehöhen geladen).",
   "rail.profileLegend":
     "Durchgezogen: Schienenoberkante. Gestrichelt: Gelände (Copernicus GLO-30, geglättet). Höhen aus einem Oberflächenmodell, ±4 m.",
 

@@ -16,6 +16,7 @@ export const STRUCTURES: StructureCategory[] = [
   "viaduct",
   "bridge",
   "ramp",
+  "cutting",
   "cut_and_cover",
   "tbm",
 ];
@@ -28,11 +29,12 @@ export const STRUCTURE_LABEL: Record<StructureCategory, MessageKey> = {
 export const TUNNELS: StructureCategory[] = ["cut_and_cover", "tbm"];
 export const BRIDGES: StructureCategory[] = ["viaduct", "bridge"];
 
-export const LEVELS: Level[] = ["underground2", "underground", "street", "elevated", "elevated2"];
+export const LEVELS: Level[] = ["underground2", "underground", "cutting", "street", "elevated", "elevated2"];
 /** Message key of the station row of each level. */
 export const LEVEL_LABEL: Record<Level, MessageKey> = {
   underground2: "net.stations.underground2",
   underground: "net.stations.underground",
+  cutting: "net.stations.cutting",
   street: "net.stations.street",
   elevated: "net.stations.elevated",
   elevated2: "net.stations.elevated2",

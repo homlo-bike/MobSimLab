@@ -22,6 +22,8 @@ export const editorsFr = {
   "rail.clear": "Effacer",
   "rail.level.underground2": "Souterrain −2",
   "rail.level.underground": "Souterrain −1",
+  "rail.level.cutting": "Tranchée ouverte",
+  "rail.level.cuttingShort": "Tranch.",
   "rail.level.street": "Niveau de la rue",
   "rail.level.streetShort": "Rue",
   "rail.level.elevated": "Aérien +1",
@@ -167,6 +169,12 @@ export const editorsFr = {
   "rail.tunnel.cut_and_cover": "Tranchée couverte",
   "rail.tunnel.tbm": "Tunnel au tunnelier (TBM)",
   "rail.structure": "Surélevé sur",
+  "rail.existingStructure": "Réutilise un ouvrage existant",
+  "rail.existingStructureHint":
+    "Ses tunnels, ponts et viaducs existent déjà (comme un ancien tunnel ferroviaire) et sont chiffrés en réhabilitation.",
+  "rail.existingStation": "Dans un ouvrage existant",
+  "rail.existingStationHint":
+    "La boîte ou le hall de la station existe déjà ; on chiffre sa réhabilitation et son aménagement.",
   "rail.structure.auto": "Auto (voie aérienne pour tram et métro, viaduc pour les grandes lignes)",
   "rail.structure.elevated": "Voie aérienne",
   "rail.structure.viaduct": "Viaduc",
@@ -692,6 +700,7 @@ export const editorsFr = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Souterrain",
+  "schematic.level.cutting": "Tranchée ouverte",
   "schematic.level.street": "Au niveau de la rue",
   "schematic.level.elevated": "Aérien",
   "schematic.level.ramp": "Rampe",
@@ -1463,6 +1472,10 @@ export const editorsFr = {
   "rail.levelHeight": "Plat, rails à {rail} m d’altitude · terrain le long {min}–{max} m",
   "rail.profileRange": "Rails {min}–{max} m d’altitude · pente maximale {steep} (max. {limit} ‰)",
   "rail.profileAria": "Profil en long : terrain et dessus du rail le long de la voie",
+  "rail.levelProfileAria":
+    "Profil en long d'après les niveaux : dessus de rail par rapport au niveau de la rue le long de la voie",
+  "rail.levelProfileNote":
+    "Hauteurs d'après les niveaux et rampes de la voie, par rapport au niveau de la rue (pas d'altitudes du terrain chargées ici).",
   "rail.profileLegend":
     "Trait plein : dessus du rail. Tirets : terrain (Copernicus GLO-30, lissé). Altitudes d’un modèle de surface, ±4 m.",
 

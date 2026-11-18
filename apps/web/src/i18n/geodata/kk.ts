@@ -71,5 +71,11 @@ export const geodataKk = {
   "area.import.current": "{what}: бұрын импортталған",
   "area.import.failed": "{what}: бастау мүмкін болмады. {reason}",
   "area.seeMapData": "Импортты ГАЖ, Карта деректері бөлімінен бақылаңыз.",
+  "area.country": "Ел: {name}.",
+  "area.crossesBorder": "Аумақ шекарадан өтеді: {countries}. Мерекелер мен бағалар {name} бойынша алынады.",
+  "data.liveNotice":
+    "{tiles} карта тайлы және {heights} биіктік жобаның импортталған деректерінен тыс тікелей алынды. Енді олар жобада сақталады; бүкіл сызбаны қамту үшін импортты кеңейтіңіз.",
+  "data.extendImport": "Карта деректерінде импортты кеңейту",
+  "data.hideLive": "Жасыру",
   "data.areaRegions": "Аумақ: {area} км², {names} қоршайтын тіктөртбұрыш",
 } satisfies GeodataMessages;

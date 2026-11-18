@@ -71,5 +71,11 @@ export const geodataPl = {
   "area.import.current": "{what}: już zaimportowano",
   "area.import.failed": "{what}: nie udało się rozpocząć. {reason}",
   "area.seeMapData": "Postęp importów jest w GIS, Dane mapy.",
+  "area.country": "Kraj: {name}.",
+  "area.crossesBorder": "Obszar przekracza granicę: {countries}. Święta i ceny dotyczą kraju {name}.",
+  "data.liveNotice":
+    "{tiles} kafelków mapy i {heights} wysokości pobrano na żywo spoza zaimportowanych danych projektu. Są teraz zapisane w projekcie; rozszerz import, aby objął cały rysunek.",
+  "data.extendImport": "Rozszerz import w Danych mapy",
+  "data.hideLive": "Ukryj",
   "data.areaRegions": "Obszar: {area} km², prostokąt wokół {names}",
 } satisfies GeodataMessages;

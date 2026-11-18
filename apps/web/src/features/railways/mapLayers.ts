@@ -15,7 +15,8 @@ const EMPTY: FeatureCollection = { type: "FeatureCollection", features: [] };
 export const RAILS_ZOOM = 17.5;
 /** Below this zoom each alignment is one corridor line. */
 export const CORRIDOR_ZOOM = 12.5;
-const LEVEL_ORDERS = [0, 1, 2, 3, 4];
+/** Drawing orders of the levels (crates/rail-design `Level::order`): −2, −1, cutting, street, +1, +2. */
+const LEVEL_ORDERS = [0, 1, 2, 3, 4, 5];
 
 /** Layer of signal heads (answers clicks first: a signal stands beside a track). */
 export const SIGNAL_LAYER = `${P}signals`;
@@ -136,6 +137,8 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
             COLORS.tunnel,
             "deck",
             COLORS.deck,
+            "cutting",
+            COLORS.cutting,
             "ramp",
             ["case", ["get", "underground"], COLORS.tunnel, COLORS.deck],
             "paving",
@@ -149,6 +152,8 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
             ["case", ["get", "deep"], 0.16, 0.1],
             "deck",
             ["case", ["get", "deep"], 0.3, 0.2],
+            "cutting",
+            0.35,
             "ramp",
             0.22,
             0.85,
@@ -163,7 +168,15 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
         filter: atZ(z),
         layout: { "line-join": "round" },
         paint: {
-          "line-color": ["match", ["get", "kind"], ["tunnel_wall", "portal"], COLORS.tunnel, COLORS.deck],
+          "line-color": [
+            "match",
+            ["get", "kind"],
+            ["tunnel_wall", "portal"],
+            COLORS.tunnel,
+            "cutting_edge",
+            COLORS.cutting,
+            COLORS.deck,
+          ],
           "line-width": [
             "match",
             ["get", "kind"],
@@ -171,6 +184,8 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
             ["case", ["get", "deep"], 3.6, 2.4],
             "portal",
             3,
+            "cutting_edge",
+            2,
             1,
           ],
           "line-opacity": ["match", ["get", "kind"], "deck_edge", 0.8, 1],

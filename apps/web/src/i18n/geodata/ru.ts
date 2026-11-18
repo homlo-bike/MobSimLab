@@ -72,5 +72,12 @@ export const geodataRu = {
   "area.import.current": "{what}: уже импортировано",
   "area.import.failed": "{what}: не удалось начать. {reason}",
   "area.seeMapData": "Следите за импортом в ГИС, Данные карты.",
+  "area.country": "Страна: {name}.",
+  "area.crossesBorder":
+    "Область пересекает границу: {countries}. Праздники и цены берутся для страны {name}.",
+  "data.liveNotice":
+    "{tiles} тайлов карты и {heights} высот загружены напрямую вне импортированных данных проекта. Теперь они сохранены в проекте; расширьте импорт, чтобы он охватывал весь чертёж.",
+  "data.extendImport": "Расширить импорт в Данных карты",
+  "data.hideLive": "Скрыть",
   "data.areaRegions": "Территория: {area} км², прямоугольник вокруг {names}",
 } satisfies GeodataMessages;

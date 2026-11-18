@@ -72,5 +72,11 @@ export const geodataZu = {
   "area.import.current": "{what}: sekungenisiwe",
   "area.import.failed": "{what}: akukwazanga ukuqala. {reason}",
   "area.seeMapData": "Landela ukungenisa ku-GIS, Idatha yemephu.",
+  "area.country": "Izwe: {name}.",
+  "area.crossesBorder": "Indawo yeqa umngcele: {countries}. Amaholide namanani asebenzisa i-{name}.",
+  "data.liveNotice":
+    "Amathayela emephu angu-{tiles} nokuphakama okungu-{heights} kufike ngqo kusukela ngaphandle kwedatha yephrojekthi engenisiwe. Manje kugcinwe ephrojekthini; nweba ukungenisa ukuze kumboze wonke umdwebo.",
+  "data.extendImport": "Nweba ukungenisa ku-Data yemephu",
+  "data.hideLive": "Fihla",
   "data.areaRegions": "Indawo: ama-km² angu-{area}, ibhokisi elizungeze i-{names}",
 } satisfies GeodataMessages;

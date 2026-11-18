@@ -24,6 +24,8 @@ export const editorsEn = {
   "rail.clear": "Clear",
   "rail.level.underground2": "Underground −2",
   "rail.level.underground": "Underground −1",
+  "rail.level.cutting": "Open cutting",
+  "rail.level.cuttingShort": "Cut",
   "rail.level.street": "Street level",
   "rail.level.streetShort": "Street",
   "rail.level.elevated": "Elevated +1",
@@ -107,6 +109,9 @@ export const editorsEn = {
   "rail.levelHeight": "Level, rails at {rail} m above sea level · ground along it {min}–{max} m",
   "rail.profileRange": "Rails {min}–{max} m above sea level · steepest {steep} (max {limit} ‰)",
   "rail.profileAria": "Vertical profile: ground and rail top along the track",
+  "rail.levelProfileAria": "Vertical profile from the levels: rail top against street level along the track",
+  "rail.levelProfileNote":
+    "Heights from the track's levels and ramps, relative to street level (no terrain heights loaded here).",
   "rail.profileLegend":
     "Solid: rail top. Dashed: ground (Copernicus GLO-30, smoothed). Heights from a surface model, ±4 m.",
   "rail.unnamedStreet": "Unnamed street",
@@ -174,6 +179,12 @@ export const editorsEn = {
   "rail.tunnel.cut_and_cover": "Cut and cover",
   "rail.tunnel.tbm": "Bored tunnel (TBM)",
   "rail.structure": "Raised on",
+  "rail.existingStructure": "Re-uses an existing structure",
+  "rail.existingStructureHint":
+    "Its tunnels, bridges and viaducts already exist (such as an old railway tunnel) and are costed as refurbished.",
+  "rail.existingStation": "In an existing structure",
+  "rail.existingStationHint":
+    "The station box or hall already exists and is costed as refurbished and fitted out.",
   "rail.structure.auto": "Auto (elevated for tram and metro, viaduct for main lines)",
   "rail.structure.elevated": "Elevated guideway",
   "rail.structure.viaduct": "Viaduct",
@@ -680,6 +691,7 @@ export const editorsEn = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Underground",
+  "schematic.level.cutting": "Open cutting",
   "schematic.level.street": "Street level",
   "schematic.level.elevated": "Elevated",
   "schematic.level.ramp": "Ramp",

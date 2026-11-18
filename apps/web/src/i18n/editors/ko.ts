@@ -21,6 +21,8 @@ export const editorsKo = {
   "rail.clear": "모두 지우기",
   "rail.level.underground2": "지하 −2",
   "rail.level.underground": "지하 −1",
+  "rail.level.cutting": "개착 절토",
+  "rail.level.cuttingShort": "절토",
   "rail.level.street": "지상",
   "rail.level.streetShort": "지상",
   "rail.level.elevated": "고가 +1",
@@ -150,6 +152,10 @@ export const editorsKo = {
   "rail.tunnel.cut_and_cover": "개착식",
   "rail.tunnel.tbm": "TBM 굴착 터널",
   "rail.structure": "고가 구조",
+  "rail.existingStructure": "기존 구조물 재사용",
+  "rail.existingStructureHint": "터널·교량·고가교가 이미 있으며(옛 철도 터널 등) 개보수 비용으로 계산합니다.",
+  "rail.existingStation": "기존 구조물 내",
+  "rail.existingStationHint": "역 박스나 홀이 이미 있으며 개보수 및 설비 비용으로 계산합니다.",
   "rail.structure.auto": "자동 (트램·지하철은 고가 궤도, 간선은 고가교)",
   "rail.structure.elevated": "고가 궤도",
   "rail.structure.viaduct": "고가교(비아덕트)",
@@ -642,6 +648,7 @@ export const editorsKo = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "지하",
+  "schematic.level.cutting": "개착 절토",
   "schematic.level.street": "지상",
   "schematic.level.elevated": "고가",
   "schematic.level.ramp": "경사로",
@@ -1360,6 +1367,9 @@ export const editorsKo = {
   "rail.levelHeight": "수평, 레일 해발 {rail} m · 연변 지면 {min}–{max} m",
   "rail.profileRange": "레일 해발 {min}–{max} m · 최급 기울기 {steep}(최대 {limit} ‰)",
   "rail.profileAria": "종단면: 선로를 따라 지면과 레일 윗면",
+  "rail.levelProfileAria": "레벨에 따른 종단면: 선로를 따라 도로면 대비 레일면 높이",
+  "rail.levelProfileNote":
+    "선로의 레벨과 경사 구간에 따른 높이, 도로면 기준 (여기서는 지형 고도를 불러오지 않음).",
   "rail.profileLegend":
     "실선: 레일 윗면. 점선: 지면(Copernicus GLO-30, 평활화). 높이는 지표 모델 기준, ±4 m.",
 

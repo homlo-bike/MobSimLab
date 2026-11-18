@@ -22,6 +22,8 @@ export const editorsMr = {
   "rail.clear": "सर्व पुसा",
   "rail.level.underground2": "भूमिगत −2",
   "rail.level.underground": "भूमिगत −1",
+  "rail.level.cutting": "खुली कटिंग",
+  "rail.level.cuttingShort": "कटिंग",
   "rail.level.street": "रस्त्याची पातळी",
   "rail.level.streetShort": "रस्ता",
   "rail.level.elevated": "उन्नत +1",
@@ -167,6 +169,11 @@ export const editorsMr = {
   "rail.tunnel.cut_and_cover": "कट अँड कव्हर",
   "rail.tunnel.tbm": "बोअर केलेला बोगदा (TBM)",
   "rail.structure": "उंचावर कशावर",
+  "rail.existingStructure": "विद्यमान रचना पुन्हा वापरते",
+  "rail.existingStructureHint":
+    "त्याचे बोगदे, पूल आणि व्हायाडक्ट आधीच आहेत (जसे जुना रेल्वे बोगदा) आणि नूतनीकरण म्हणून खर्च धरला जातो.",
+  "rail.existingStation": "विद्यमान रचनेत",
+  "rail.existingStationHint": "स्थानकाचा बॉक्स किंवा हॉल आधीच आहे; नूतनीकरण व सज्जतेचा खर्च धरला जातो.",
   "rail.structure.auto": "आपोआप (ट्राम व मेट्रोसाठी उन्नत मार्ग, मुख्य मार्गांसाठी व्हायाडक्ट)",
   "rail.structure.elevated": "उन्नत मार्ग",
   "rail.structure.viaduct": "व्हायाडक्ट",
@@ -671,6 +678,7 @@ export const editorsMr = {
   "schematic.metres": "{n} मी",
   "schematic.unknown": "–",
   "schematic.level.underground": "भूमिगत",
+  "schematic.level.cutting": "खुली कटिंग",
   "schematic.level.street": "रस्त्याच्या पातळीवर",
   "schematic.level.elevated": "उन्नत",
   "schematic.level.ramp": "उतार",
@@ -1407,6 +1415,9 @@ export const editorsMr = {
   "rail.levelHeight": "सपाट, रूळ समुद्रसपाटीपासून {rail} मी उंच · बाजूची जमीन {min}–{max} मी",
   "rail.profileRange": "रूळ समुद्रसपाटीपासून {min}–{max} मी · सर्वात तीव्र चढ {steep} (कमाल {limit} ‰)",
   "rail.profileAria": "अनुदैर्ध्य प्रोफाइल: रुळाच्या बाजूने जमीन आणि रुळाचा वरचा भाग",
+  "rail.levelProfileAria": "स्तरांवरून उभा प्रोफाइल: रुळालगत रस्त्याच्या पातळीच्या तुलनेत रुळाचा वरचा भाग",
+  "rail.levelProfileNote":
+    "रुळाच्या स्तर आणि उतारांवरून उंची, रस्त्याच्या पातळीच्या सापेक्ष (येथे भूप्रदेशाची उंची लोड झालेली नाही).",
   "rail.profileLegend":
     "सलग: रुळाचा वरचा भाग. तुटक: जमीन (Copernicus GLO-30, गुळगुळीत). उंची पृष्ठभाग मॉडेलवरून, ±4 मी.",
 

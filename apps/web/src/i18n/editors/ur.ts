@@ -22,6 +22,8 @@ export const editorsUr = {
   "rail.clear": "سب صاف کریں",
   "rail.level.underground2": "زیر زمین −2",
   "rail.level.underground": "زیر زمین −1",
+  "rail.level.cutting": "کھلی کٹنگ",
+  "rail.level.cuttingShort": "کٹنگ",
   "rail.level.street": "سڑک کی سطح",
   "rail.level.streetShort": "سڑک",
   "rail.level.elevated": "بلند +1",
@@ -167,6 +169,11 @@ export const editorsUr = {
   "rail.tunnel.cut_and_cover": "کھدائی اور ڈھانپنا",
   "rail.tunnel.tbm": "مشین سے کھودی گئی سرنگ (TBM)",
   "rail.structure": "بلند کس پر",
+  "rail.existingStructure": "موجودہ ڈھانچہ دوبارہ استعمال کرتا ہے",
+  "rail.existingStructureHint":
+    "اس کی سرنگیں، پل اور وایاڈکٹ پہلے سے موجود ہیں (جیسے پرانی ریلوے سرنگ) اور تجدید کی لاگت لگتی ہے۔",
+  "rail.existingStation": "موجودہ ڈھانچے میں",
+  "rail.existingStationHint": "اسٹیشن باکس یا ہال پہلے سے موجود ہے؛ تجدید اور تنصیب کی لاگت لگتی ہے۔",
   "rail.structure.auto": "خودکار (ٹرام اور میٹرو کے لیے بلند راستہ، مرکزی لائنوں کے لیے وایاڈکٹ)",
   "rail.structure.elevated": "بلند راستہ",
   "rail.structure.viaduct": "وایاڈکٹ",
@@ -670,6 +677,7 @@ export const editorsUr = {
   "schematic.metres": "{n} میٹر",
   "schematic.unknown": "–",
   "schematic.level.underground": "زیر زمین",
+  "schematic.level.cutting": "کھلی کٹنگ",
   "schematic.level.street": "سڑک کی سطح",
   "schematic.level.elevated": "بلند",
   "schematic.level.ramp": "ڈھلوان",
@@ -1409,6 +1417,9 @@ export const editorsUr = {
   "rail.profileRange":
     "ریلیں سطح سمندر سے {min}–{max} میٹر اوپر · سب سے زیادہ ڈھلوان {steep} (زیادہ سے زیادہ {limit} ‰)",
   "rail.profileAria": "طولی خاکہ: پٹری کے ساتھ زمین اور ریل کی سطح",
+  "rail.levelProfileAria": "سطحوں سے عمودی پروفائل: پٹری کے ساتھ ریل کی سطح گلی کی سطح کے مقابلے میں",
+  "rail.levelProfileNote":
+    "پٹری کی سطحوں اور ڈھلوانوں سے اونچائیاں، گلی کی سطح کے لحاظ سے (یہاں زمین کی اونچائیاں لوڈ نہیں ہوئیں)۔",
   "rail.profileLegend":
     "مسلسل: ریل کی سطح۔ ٹوٹی لکیر: زمین (Copernicus GLO-30، ہموار)۔ بلندیاں سطحی ماڈل سے، ±4 میٹر۔",
 

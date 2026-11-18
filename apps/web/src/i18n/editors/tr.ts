@@ -21,6 +21,8 @@ export const editorsTr = {
   "rail.clear": "Tümünü temizle",
   "rail.level.underground2": "Yeraltı −2",
   "rail.level.underground": "Yeraltı −1",
+  "rail.level.cutting": "Açık yarma",
+  "rail.level.cuttingShort": "Yarma",
   "rail.level.street": "Cadde seviyesi",
   "rail.level.streetShort": "Cadde",
   "rail.level.elevated": "Viyadük +1",
@@ -151,6 +153,11 @@ export const editorsTr = {
   "rail.tunnel.cut_and_cover": "Aç-kapa",
   "rail.tunnel.tbm": "TBM ile delinmiş tünel",
   "rail.structure": "Yükseltildiği yapı",
+  "rail.existingStructure": "Mevcut bir yapıyı yeniden kullanır",
+  "rail.existingStructureHint":
+    "Tünelleri, köprüleri ve viyadükleri zaten var (eski bir demiryolu tüneli gibi) ve yenileme olarak maliyetlendirilir.",
+  "rail.existingStation": "Mevcut bir yapıda",
+  "rail.existingStationHint": "İstasyon kutusu veya holü zaten var; yenileme ve donatım maliyeti hesaplanır.",
   "rail.structure.auto": "Otomatik (tramvay ve metro için yükseltilmiş hat, ana hatlar için viyadük)",
   "rail.structure.elevated": "Yükseltilmiş hat",
   "rail.structure.viaduct": "Viyadük",
@@ -657,6 +664,7 @@ export const editorsTr = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Yeraltı",
+  "schematic.level.cutting": "Açık yarma",
   "schematic.level.street": "Sokak seviyesi",
   "schematic.level.elevated": "Viyadük",
   "schematic.level.ramp": "Rampa",
@@ -1395,6 +1403,9 @@ export const editorsTr = {
   "rail.profileRange":
     "Raylar deniz seviyesinden {min}–{max} m yukarıda · en dik eğim {steep} (en fazla {limit} ‰)",
   "rail.profileAria": "Boy kesit: hat boyunca arazi ve ray üstü",
+  "rail.levelProfileAria": "Seviyelerden boy kesit: hat boyunca ray üstünün sokak seviyesine göre yüksekliği",
+  "rail.levelProfileNote":
+    "Hattın seviyeleri ve rampalarından yükseklikler, sokak seviyesine göre (burada arazi yükseklikleri yüklenmedi).",
   "rail.profileLegend":
     "Düz çizgi: ray üstü. Kesikli: arazi (Copernicus GLO-30, yumuşatılmış). Yükseklikler bir yüzey modelinden, ±4 m.",
 

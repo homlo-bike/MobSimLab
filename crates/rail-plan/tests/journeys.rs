@@ -43,6 +43,7 @@ fn shuttle(m: &Model) -> LineSpec {
         turnback_s: 180.0,
         supplement_share: 0.05,
         stabling,
+        layover: Vec::new(),
         bands: vec![Band {
             from_s: 6.0 * 3600.0,
             to_s: 10.0 * 3600.0,

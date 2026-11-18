@@ -21,6 +21,8 @@ export const editorsId = {
   "rail.clear": "Hapus semua",
   "rail.level.underground2": "Bawah tanah −2",
   "rail.level.underground": "Bawah tanah −1",
+  "rail.level.cutting": "Galian terbuka",
+  "rail.level.cuttingShort": "Galian",
   "rail.level.street": "Permukaan jalan",
   "rail.level.streetShort": "Permukaan",
   "rail.level.elevated": "Layang +1",
@@ -166,6 +168,12 @@ export const editorsId = {
   "rail.tunnel.cut_and_cover": "Gali-tutup (cut and cover)",
   "rail.tunnel.tbm": "Terowongan bor (TBM)",
   "rail.structure": "Ditinggikan di atas",
+  "rail.existingStructure": "Memakai ulang struktur yang ada",
+  "rail.existingStructureHint":
+    "Terowongan, jembatan, dan viaduknya sudah ada (misalnya terowongan kereta lama) dan dihitung sebagai renovasi.",
+  "rail.existingStation": "Di struktur yang ada",
+  "rail.existingStationHint":
+    "Kotak atau aula stasiun sudah ada dan dihitung sebagai renovasi dan pelengkapan.",
   "rail.structure.auto": "Otomatis (jalur layang untuk trem dan metro, viaduk untuk jalur utama)",
   "rail.structure.elevated": "Jalur layang",
   "rail.structure.viaduct": "Viaduk",
@@ -672,6 +680,7 @@ export const editorsId = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Bawah tanah",
+  "schematic.level.cutting": "Galian terbuka",
   "schematic.level.street": "Permukaan jalan",
   "schematic.level.elevated": "Layang",
   "schematic.level.ramp": "Ramp",
@@ -1421,6 +1430,10 @@ export const editorsId = {
   "rail.profileRange":
     "Rel {min}–{max} m di atas permukaan laut · kelandaian tercuram {steep} (maks. {limit} ‰)",
   "rail.profileAria": "Profil memanjang: tanah dan kepala rel di sepanjang jalur",
+  "rail.levelProfileAria":
+    "Profil memanjang dari level: kepala rel terhadap permukaan jalan di sepanjang jalur",
+  "rail.levelProfileNote":
+    "Ketinggian dari level dan tanjakan jalur, relatif terhadap permukaan jalan (ketinggian medan belum dimuat di sini).",
   "rail.profileLegend":
     "Garis penuh: kepala rel. Putus-putus: tanah (Copernicus GLO-30, dihaluskan). Ketinggian dari model permukaan, ±4 m.",
 

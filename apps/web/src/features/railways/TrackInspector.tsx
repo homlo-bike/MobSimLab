@@ -116,6 +116,20 @@ export function TrackInspector({ t: track, doc, view, sel, actions: a }: Props &
           </select>
         </Row>
       )}
+      {tv?.levels.some((z) => z.level !== "street") && (
+        <label className="flex items-start gap-2">
+          <input
+            type="checkbox"
+            className="mt-1"
+            checked={!!t.existing}
+            onChange={(e) => set((x) => ({ ...x, existing: e.target.checked || undefined }))}
+          />
+          <span>
+            {tr("rail.existingStructure")}
+            <span className="block text-xs text-slate-600">{tr("rail.existingStructureHint")}</span>
+          </span>
+        </label>
+      )}
       <Segmented<TrackUse>
         label={tr("rail.use")}
         value={t.use}
@@ -226,7 +240,11 @@ export function TrackInspector({ t: track, doc, view, sel, actions: a }: Props &
           </tbody>
         </table>
       )}
-      {tv?.elevation && <ElevationProfile e={tv.elevation} />}
+      {tv?.elevation ? (
+        <ElevationProfile e={tv.elevation} />
+      ) : (
+        tv?.level_profile && tv.ramps.length > 0 && <LevelProfile pts={tv.level_profile} />
+      )}
       {tv && tv.ramps.length > 0 && (
         <ul className="text-xs text-slate-600">
           {tv.ramps.map((r, i) => (
@@ -237,6 +255,7 @@ export function TrackInspector({ t: track, doc, view, sel, actions: a }: Props &
                 dh: r.dh_m.toFixed(1),
                 length: fmtM(r.length_m),
               })}
+              {r.gradient_permille !== undefined && ` · ${r.gradient_permille.toFixed(1)} ‰`}
             </li>
           ))}
         </ul>
@@ -244,6 +263,37 @@ export function TrackInspector({ t: track, doc, view, sel, actions: a }: Props &
       <p className="text-xs text-slate-500">{tr("rail.trackHint")}</p>
       <Remove what={tr("rail.deleteTrack")} onClick={() => a.remove(t.id)} />
     </Section>
+  );
+}
+
+/**
+ * Purpose: a track's vertical profile from its levels and ramps, relative to street level, while there are
+ * no terrain heights: where the ramps are and how they climb.
+ */
+function LevelProfile({ pts }: { pts: [number, number][] }) {
+  const { t } = useI18n();
+  if (pts.length < 2) return null;
+  const len = pts[pts.length - 1]![0] || 1;
+  const hs = pts.map((p) => p[1]);
+  const lo = Math.min(0, ...hs);
+  const hi = Math.max(0, ...hs, lo + 1);
+  const W = 260;
+  const H = 70;
+  const y = (h: number) => (H - 4 - ((h - lo) / (hi - lo)) * (H - 8)).toFixed(1);
+  const d = pts.map((p, i) => `${i ? "L" : "M"}${((p[0] / len) * W).toFixed(1)},${y(p[1])}`).join(" ");
+  return (
+    <div className="space-y-1">
+      <svg
+        viewBox={`0 0 ${W} ${H}`}
+        className="h-[70px] w-full rounded bg-slate-50"
+        role="img"
+        aria-label={t("rail.levelProfileAria")}
+      >
+        <line x1={0} x2={W} y1={y(0)} y2={y(0)} stroke="#a16207" strokeWidth={1} strokeDasharray="3 2" />
+        <path d={d} fill="none" stroke="var(--diagram-ink, #1e293b)" strokeWidth={1.5} />
+      </svg>
+      <p className="text-[11px] text-slate-500">{t("rail.levelProfileNote")}</p>
+    </div>
   );
 }
 

@@ -22,6 +22,8 @@ export const editorsZu = {
   "rail.clear": "Sula konke",
   "rail.level.underground2": "Ngaphansi komhlaba −2",
   "rail.level.underground": "Ngaphansi komhlaba −1",
+  "rail.level.cutting": "Umsele ovulekile",
+  "rail.level.cuttingShort": "Umsele",
   "rail.level.street": "Izinga lomgwaqo",
   "rail.level.streetShort": "Umgwaqo",
   "rail.level.elevated": "Phezulu +1",
@@ -167,6 +169,12 @@ export const editorsZu = {
   "rail.tunnel.cut_and_cover": "Umba bese umboza",
   "rail.tunnel.tbm": "Umhubhe obhobozwe ngomshini (TBM)",
   "rail.structure": "Kuphakanyiswe phezu kwe-",
+  "rail.existingStructure": "Isebenzisa kabusha isakhiwo esikhona",
+  "rail.existingStructureHint":
+    "Imihubhe yawo, amabhuloho nama-viaduct sekukhona (njengomhubhe wesitimela omdala) futhi kubalwa njengokulungiswa.",
+  "rail.existingStation": "Esakhiweni esikhona",
+  "rail.existingStationHint":
+    "Ibhokisi noma ihholo lesiteshi sekukhona; kubalwa ukulungiswa nokufakwa kwemishini.",
   "rail.structure.auto":
     "Okuzenzakalelayo (umzila ophakeme we-tram ne-metro, ibhuloho elide lemizila emikhulu)",
   "rail.structure.elevated": "Umzila ophakeme",
@@ -689,6 +697,7 @@ export const editorsZu = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Ngaphansi komhlaba",
+  "schematic.level.cutting": "Umsele ovulekile",
   "schematic.level.street": "Ezingeni lomgwaqo",
   "schematic.level.elevated": "Phezulu",
   "schematic.level.ramp": "Irampu",
@@ -1457,6 +1466,10 @@ export const editorsZu = {
   "rail.profileRange":
     "Izinsimbi {min}–{max} m ngaphezu kolwandle · umthambeka omkhulu kakhulu {steep} (ubuningi {limit} ‰)",
   "rail.profileAria": "Iphrofayela yobude: umhlaba nengaphezulu lensimbi kulo lonke ulayini",
+  "rail.levelProfileAria":
+    "Iphrofayela eqondile evela emazingeni: phezulu kukaloliwe uma kuqhathaniswa nezinga lomgwaqo ngobude bomzila",
+  "rail.levelProfileNote":
+    "Ukuphakama okuvela emazingeni nasemithambekeni yomzila, uma kuqhathaniswa nezinga lomgwaqo (ukuphakama komhlaba akulayishiwe lapha).",
   "rail.profileLegend":
     "Umugqa oqinile: ingaphezulu lensimbi. Imigqa enezikhala: umhlaba (Copernicus GLO-30, wenziwe bushelelezi). Ukuphakama kusuka kumodeli yobuso, ±4 m.",
 

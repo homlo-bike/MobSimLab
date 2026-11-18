@@ -76,6 +76,17 @@
     ]
    }
   },
+  "cost.civil.cutting_per_km": {
+   "label": "Open cutting (trench with retaining walls), double track",
+   "unit": "US$ million per route-km (2023, PPP)",
+   "values": {
+    "*": [
+     15,
+     35,
+     80
+    ]
+   }
+  },
   "cost.civil.cut_and_cover_per_km": {
    "label": "Cut and cover tunnel, double track",
    "unit": "US$ million per route-km (2023, PPP)",
@@ -192,6 +203,17 @@
     ]
    }
   },
+  "cost.station.cutting": {
+   "label": "Station in an open cutting",
+   "unit": "US$ million per station (2023, PPP)",
+   "values": {
+    "*": [
+     6,
+     15,
+     40
+    ]
+   }
+  },
   "cost.station.underground": {
    "label": "Underground station on the first level (cut and cover box)",
    "unit": "US$ million per station (2023, PPP)",
@@ -211,6 +233,28 @@
      60,
      120,
      300
+    ]
+   }
+  },
+  "cost.station.refurbish": {
+   "label": "Refurbishing an existing station structure, each",
+   "unit": "US$ million per station (2023, PPP)",
+   "values": {
+    "*": [
+     5,
+     15,
+     40
+    ]
+   }
+  },
+  "cost.civil.refurbish_structure_per_km": {
+   "label": "Refurbishing an existing tunnel, bridge or viaduct, double track",
+   "unit": "US$ million per route-km (2023, PPP)",
+   "values": {
+    "*": [
+     4,
+     10,
+     30
     ]
    }
   },

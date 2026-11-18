@@ -24,6 +24,7 @@ import { StreetNetworkModule } from "./street-network/street-network.module";
 import { BenefitsModule } from "./benefits/benefits.module";
 import { PopulationLayersController } from "./population/layers.controller";
 import { ProjectAreaController } from "./projects/area.controller";
+import { AreaFactsService } from "./projects/area-facts";
 import { ProjectAreaService } from "./projects/area.service";
 import { PopulationLayersModule } from "./population/layers.module";
 import { PopulationModule } from "./population/population.module";
@@ -103,6 +104,7 @@ export class AppModule {
         MslabService,
         MslabMapService,
         ProjectAreaService,
+        AreaFactsService,
         ToolRunner,
         { provide: APP_GUARD, useClass: AccessGuard },
       ],

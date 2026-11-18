@@ -22,6 +22,8 @@ export const editorsIt = {
   "rail.clear": "Cancella tutto",
   "rail.level.underground2": "Sotterraneo −2",
   "rail.level.underground": "Sotterraneo −1",
+  "rail.level.cutting": "Trincea aperta",
+  "rail.level.cuttingShort": "Trincea",
   "rail.level.street": "A raso",
   "rail.level.streetShort": "Raso",
   "rail.level.elevated": "Sopraelevato +1",
@@ -167,6 +169,12 @@ export const editorsIt = {
   "rail.tunnel.cut_and_cover": "Trincea coperta (cut and cover)",
   "rail.tunnel.tbm": "Galleria scavata con TBM",
   "rail.structure": "Sopraelevata su",
+  "rail.existingStructure": "Riutilizza una struttura esistente",
+  "rail.existingStructureHint":
+    "Gallerie, ponti e viadotti esistono già (come una vecchia galleria ferroviaria) e sono stimati come riqualificazione.",
+  "rail.existingStation": "In una struttura esistente",
+  "rail.existingStationHint":
+    "Il cassone o l’atrio della stazione esiste già; si stimano riqualificazione e allestimento.",
   "rail.structure.auto": "Automatico (sopraelevata per tram e metro, viadotto per le linee principali)",
   "rail.structure.elevated": "Sopraelevata",
   "rail.structure.viaduct": "Viadotto",
@@ -681,6 +689,7 @@ export const editorsIt = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Sotterraneo",
+  "schematic.level.cutting": "Trincea aperta",
   "schematic.level.street": "A livello stradale",
   "schematic.level.elevated": "Sopraelevato",
   "schematic.level.ramp": "Rampa",
@@ -1438,6 +1447,10 @@ export const editorsIt = {
   "rail.levelHeight": "In piano, binari a {rail} m s.l.m. · terreno lungo il tracciato {min}–{max} m",
   "rail.profileRange": "Binari a {min}–{max} m s.l.m. · pendenza massima {steep} (max {limit} ‰)",
   "rail.profileAria": "Profilo longitudinale: terreno e piano del ferro lungo il binario",
+  "rail.levelProfileAria":
+    "Profilo altimetrico dai livelli: piano del ferro rispetto al livello stradale lungo il binario",
+  "rail.levelProfileNote":
+    "Quote dai livelli e dalle rampe del binario, rispetto al livello stradale (qui non sono caricate le quote del terreno).",
   "rail.profileLegend":
     "Continua: piano del ferro. Tratteggiata: terreno (Copernicus GLO-30, smussato). Quote da un modello di superficie, ±4 m.",
 

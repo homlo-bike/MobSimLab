@@ -68,5 +68,11 @@ export const geodataZh = {
   "area.import.current": "{what}：已导入",
   "area.import.failed": "{what}：无法开始。{reason}",
   "area.seeMapData": "在 GIS 的地图数据中查看导入进度。",
+  "area.country": "国家：{name}。",
+  "area.crossesBorder": "该区域跨越国界：{countries}。节假日和价格采用 {name}。",
+  "data.liveNotice":
+    "有 {tiles} 个地图瓦片和 {heights} 个高程是在项目导入数据之外实时获取的。现已保存在项目中；请扩大导入范围以覆盖整个绘图。",
+  "data.extendImport": "在地图数据中扩大导入",
+  "data.hideLive": "隐藏",
   "data.areaRegions": "区域：{area} 平方公里，{names} 的外接矩形",
 } satisfies GeodataMessages;

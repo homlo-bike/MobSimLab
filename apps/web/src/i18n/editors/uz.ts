@@ -22,6 +22,8 @@ export const editorsUz = {
   "rail.clear": "Hammasini tozalash",
   "rail.level.underground2": "Yer osti −2",
   "rail.level.underground": "Yer osti −1",
+  "rail.level.cutting": "Ochiq o‘yiq",
+  "rail.level.cuttingShort": "O‘yiq",
   "rail.level.street": "Koʻcha sathi",
   "rail.level.streetShort": "Koʻcha",
   "rail.level.elevated": "Estakada +1",
@@ -167,6 +169,11 @@ export const editorsUz = {
   "rail.tunnel.cut_and_cover": "Ochiq usul",
   "rail.tunnel.tbm": "Burg‘ulangan tunnel (TBM)",
   "rail.structure": "Ko‘tarilgan asos",
+  "rail.existingStructure": "Mavjud inshootdan qayta foydalanadi",
+  "rail.existingStructureHint":
+    "Uning tunnellari, ko‘priklari va viaduklari allaqachon bor (masalan, eski temir yo‘l tunneli) va ta’mir sifatida hisoblanadi.",
+  "rail.existingStation": "Mavjud inshootda",
+  "rail.existingStationHint": "Bekat qutisi yoki zali allaqachon bor; ta’mir va jihozlash hisoblanadi.",
   "rail.structure.auto": "Avto (tramvay va metro uchun estakada, magistrallar uchun viaduk)",
   "rail.structure.elevated": "Estakada",
   "rail.structure.viaduct": "Viaduk",
@@ -681,6 +688,7 @@ export const editorsUz = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Yer osti",
+  "schematic.level.cutting": "Ochiq o‘yiq",
   "schematic.level.street": "Ko‘cha sathi",
   "schematic.level.elevated": "Estakada",
   "schematic.level.ramp": "Pandus",
@@ -1433,6 +1441,10 @@ export const editorsUz = {
   "rail.levelHeight": "Tekis, relslar dengiz sathidan {rail} m balandda · yon atrofdagi yer {min}–{max} m",
   "rail.profileRange": "Relslar dengiz sathidan {min}–{max} m · eng tik nishab {steep} (eng ko‘pi {limit} ‰)",
   "rail.profileAria": "Bo‘ylama profil: yo‘l bo‘ylab yer va rels ustki qismi",
+  "rail.levelProfileAria":
+    "Darajalar bo'yicha bo'ylama profil: yo'l bo'ylab ko'cha sathiga nisbatan rels usti",
+  "rail.levelProfileNote":
+    "Yo'lning darajalari va qiyaliklaridan balandliklar, ko'cha sathiga nisbatan (bu yerda yer balandliklari yuklanmagan).",
   "rail.profileLegend":
     "Yaxlit: rels ustki qismi. Uzuq: yer (Copernicus GLO-30, tekislangan). Balandliklar sirt modelidan, ±4 m.",
 

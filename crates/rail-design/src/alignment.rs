@@ -87,13 +87,16 @@ pub struct Ramp {
     pub dh: f64,
     /// Length needed, m.
     pub length: f64,
+    /// Gradient of its straight part, ‰ (unsigned): the mode's maximum, or gentler where the
+    /// track's level comes from its ends and the clear length allows.
+    pub gradient_permille: f64,
 }
 
 impl Ramp {
-    /// Purpose: drawing order of a ramp: with the tunnel when it goes underground, else with the
-    /// viaduct.
+    /// Purpose: drawing order of a ramp: with the tunnel or cutting when it goes below the street, else
+    /// with the viaduct.
     pub fn order(&self) -> u8 {
-        if self.from.underground() || self.to.underground() {
+        if self.from.below_street() || self.to.below_street() {
             self.from.order().min(self.to.order())
         } else {
             self.from.order().max(self.to.order())
@@ -159,6 +162,51 @@ pub struct TrackGeo {
     pub end: Option<ResolvedAnchor>,
     /// Findings of the fitting.
     pub issues: Vec<Issue>,
+}
+
+/// Purpose: the levels of a track's two ends when its level comes from them: both ends at a
+/// level and different, no point with a level of its own, and the track's level that of one end
+/// (any other track level is the planner's override, ramped at the ends as drawn).
+fn derived_levels(t: &Track, start: Option<Level>, end: Option<Level>) -> Option<(Level, Level)> {
+    let (l0, l1) = (start?, end?);
+    (l0 != l1 && t.points.iter().all(|q| q.level.is_none()) && (t.level == l0 || t.level == l1))
+        .then_some((l0, l1))
+}
+
+/// Purpose: the longest stretch of `[0, length]` outside the `keep_clear` ranges, as (start, end).
+fn longest_clear(length: f64, keep_clear: &[[f64; 2]]) -> (f64, f64) {
+    let mut cuts: Vec<[f64; 2]> = keep_clear
+        .iter()
+        .map(|c| [c[0].min(c[1]).max(0.0), c[0].max(c[1]).min(length)])
+        .filter(|c| c[1] > c[0])
+        .collect();
+    cuts.sort_by(|a, b| a[0].total_cmp(&b[0]));
+    let (mut best, mut at) = ((0.0, 0.0), 0.0);
+    for c in cuts.iter().chain(std::iter::once(&[length, length])) {
+        if c[0] - at > best.1 - best.0 {
+            best = (at, c[0]);
+        }
+        at = f64::max(at, c[1]);
+    }
+    best
+}
+
+/// Purpose: the gentlest gradient (fraction) at which a ramp of height `dh` with vertical curves of
+/// radius `rv` fits in `len` (ramp length dh/g + rv·g), at most `max`; None when it does not fit.
+pub fn gentlest_gradient(dh: f64, len: f64, rv: f64, max: f64) -> Option<f64> {
+    if dh <= 0.0 || len <= 0.0 {
+        return None;
+    }
+    let g = if rv <= 0.0 {
+        dh / len
+    } else {
+        let disc = len * len - 4.0 * rv * dh;
+        if disc < 0.0 {
+            return None;
+        }
+        (len - disc.sqrt()) / (2.0 * rv)
+    };
+    (g <= max + 1e-9).then_some(g)
 }
 
 fn blend(u: f64) -> f64 {
@@ -334,6 +382,8 @@ pub struct FitInput<'a> {
     pub storage_radius: f64,
     /// Whether street-level stretches are embedded (no cant).
     pub embedded: bool,
+    /// Chainage ranges a ramp from the track's ends should stay off (switches on the track), m.
+    pub keep_clear: &'a [[f64; 2]],
 }
 
 /// Purpose: fit the alignment and derive its tracks, levels and ramps.
@@ -684,10 +734,44 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
                 to: levels[i],
                 dh,
                 length: len,
+                gradient_permille: g * 1000.0,
             },
             i,
             at,
         ));
+    }
+    // A track whose level comes from its ends (both ends at a level, no point with a level of
+    // its own, the track's level that of one end): one ramp at the gentlest gradient that fits the
+    // longest stretch clear of switches.
+    let derived = derived_levels(t, a.level, e_anchor.and_then(|e| e.level));
+    if let (Some((l0, l1)), [(r, _, at)]) = (derived, ramps.as_mut_slice()) {
+        let stretch = longest_clear(length, inp.keep_clear);
+        let (c0, c1) = stretch;
+        match gentlest_gradient(r.dh, c1 - c0, p.vertical_radius_m, g) {
+            Some(gx) => {
+                r.s0 = c0;
+                r.s1 = c1;
+                r.length = c1 - c0;
+                r.gradient_permille = gx * 1000.0;
+            }
+            None if r.length <= length + 0.5 && c1 - c0 < length - 0.5 => {
+                issues.push(Issue::error(
+                    format!(
+                        "Not enough clear length to go from {} to {}: the ramp needs {} at {:.1} ‰, but only {} is clear of switches ({} to {} along the track). Move the switch or lengthen the track.",
+                        l0.label(),
+                        l1.label(),
+                        fmt_m(r.length),
+                        p.max_gradient_permille,
+                        fmt_m(c1 - c0),
+                        fmt_m(c0),
+                        fmt_m(c1)
+                    ),
+                    Some(*at),
+                    t.id,
+                ));
+            }
+            None => {}
+        }
     }
     ramps.sort_by(|x, y| x.0.s0.total_cmp(&y.0.s0));
     for w in ramps.windows(2) {
@@ -703,7 +787,11 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
             ));
         }
     }
+    let derived_ramp = derived.and_then(|l| ramps.first().map(|r| (l, r.0.s0)));
     let flat_level = |x: f64| -> Level {
+        if let Some(((l0, l1), s0)) = derived_ramp {
+            return if x < s0 { l0 } else { l1 };
+        }
         for j in 0..n.saturating_sub(1) {
             if x >= vert_s[j] - 1e-6 && x <= vert_s[j + 1] + 1e-6 {
                 if levels[j] == levels[j + 1] {
@@ -854,6 +942,7 @@ mod tests {
             params: p,
             storage_radius: 190.0,
             embedded: false,
+            keep_clear: &[],
         })
     }
 
@@ -947,6 +1036,88 @@ mod tests {
         );
         assert_eq!(g.ramps.len(), 1);
         assert!(g.ramps[0].s0.abs() < 1e-6 && g.ramps[0].s1 > 30.0);
+    }
+
+    fn fit_between(t: &Track, l0: Level, l1: Level, len: f64, keep_clear: &[[f64; 2]]) -> TrackGeo {
+        let p = defaults().mode(RailMode::Metro);
+        let at = |x: f64, l: Level| ResolvedAnchor {
+            level: Some(l),
+            ..free(x, 0.0)
+        };
+        fit(&FitInput {
+            track: t,
+            start: at(0.0, l0),
+            end: Some(at(len, l1)),
+            params: p,
+            storage_radius: 190.0,
+            embedded: false,
+            keep_clear,
+        })
+    }
+
+    #[test]
+    fn a_track_between_two_levels_ramps_at_the_gentlest_gradient() {
+        let p = defaults().mode(RailMode::Metro);
+        let mut t = track(vec![], 1);
+        t.level = Level::Underground;
+        let g = fit_between(&t, Level::Underground, Level::Street, 1000.0, &[]);
+        assert_eq!(g.ramps.len(), 1, "{:?}", g.issues);
+        let r = &g.ramps[0];
+        // The whole track, at the gradient that just fits it.
+        assert!(r.s0.abs() < 1e-6 && (r.s1 - 1000.0).abs() < 1e-6);
+        let gx = r.gradient_permille / 1000.0;
+        assert!(gx < p.max_gradient());
+        assert!((r.dh / gx + p.vertical_radius_m * gx - 1000.0).abs() < 1e-6);
+        assert!(g.issues.iter().all(|i| !i.text.contains("Not enough")));
+        // A level of its own (not one of the ends) is the planner's: ramps at the maximum.
+        t.level = Level::Underground2;
+        let g = fit_between(&t, Level::Underground, Level::Street, 1000.0, &[]);
+        assert!(g
+            .ramps
+            .iter()
+            .all(|r| (r.gradient_permille - p.max_gradient_permille).abs() < 1e-6));
+    }
+
+    #[test]
+    fn a_ramp_from_the_ends_keeps_clear_of_switches() {
+        let p = defaults().mode(RailMode::Metro);
+        let mut t = track(vec![], 1);
+        t.level = Level::Underground;
+        let g = fit_between(
+            &t,
+            Level::Underground,
+            Level::Street,
+            1000.0,
+            &[[600.0, 660.0]],
+        );
+        let r = &g.ramps[0];
+        assert!(r.s0.abs() < 1e-6 && (r.s1 - 600.0).abs() < 1e-6, "{r:?}");
+        // Not enough room on either side of the switch: say how much is clear.
+        let need =
+            p.underground_level_depth_m / p.max_gradient() + p.vertical_radius_m * p.max_gradient();
+        let at = need * 0.6;
+        let g = fit_between(
+            &t,
+            Level::Underground,
+            Level::Street,
+            need * 1.3,
+            &[[at, at + 20.0]],
+        );
+        assert!(
+            g.issues
+                .iter()
+                .any(|i| i.text.contains("clear of switches")),
+            "{:?}",
+            g.issues
+        );
+    }
+
+    #[test]
+    fn gentlest_gradient_solves_the_ramp_length() {
+        assert!((gentlest_gradient(6.0, 600.0, 0.0, 0.04).unwrap() - 0.01).abs() < 1e-12);
+        assert!(gentlest_gradient(6.0, 100.0, 0.0, 0.04).is_none());
+        let g = gentlest_gradient(6.0, 600.0, 2000.0, 0.04).unwrap();
+        assert!((6.0 / g + 2000.0 * g - 600.0).abs() < 1e-9);
     }
 
     #[test]

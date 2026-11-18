@@ -24,6 +24,8 @@ export const editorsRu = {
   "rail.clear": "Очистить",
   "rail.level.underground2": "Подземный −2",
   "rail.level.underground": "Подземный −1",
+  "rail.level.cutting": "Открытая выемка",
+  "rail.level.cuttingShort": "Выемка",
   "rail.level.street": "Уровень улицы",
   "rail.level.streetShort": "Улица",
   "rail.level.elevated": "Эстакада +1",
@@ -199,6 +201,11 @@ export const editorsRu = {
   "rail.tunnel.cut_and_cover": "Открытый способ",
   "rail.tunnel.tbm": "Щитовой тоннель (ТПМК)",
   "rail.structure": "Поднято на",
+  "rail.existingStructure": "Использует существующее сооружение",
+  "rail.existingStructureHint":
+    "Его тоннели, мосты и виадуки уже есть (например, старый железнодорожный тоннель) и считаются как реконструкция.",
+  "rail.existingStation": "В существующем сооружении",
+  "rail.existingStationHint": "Коробка или зал станции уже есть; считаются реконструкция и оснащение.",
   "rail.structure.auto": "Авто (эстакада для трамвая и метро, виадук для магистралей)",
   "rail.structure.elevated": "Эстакада",
   "rail.structure.viaduct": "Виадук",
@@ -726,6 +733,7 @@ export const editorsRu = {
   "schematic.metres": "{n} м",
   "schematic.unknown": "–",
   "schematic.level.underground": "Под землёй",
+  "schematic.level.cutting": "Открытая выемка",
   "schematic.level.street": "На уровне улицы",
   "schematic.level.elevated": "На эстакаде",
   "schematic.level.ramp": "Рампа",
@@ -1494,6 +1502,10 @@ export const editorsRu = {
   "rail.profileRange":
     "Рельсы на высоте {min}–{max} м над уровнем моря · наибольший уклон {steep} (макс. {limit} ‰)",
   "rail.profileAria": "Продольный профиль: рельеф и головка рельса вдоль пути",
+  "rail.levelProfileAria":
+    "Продольный профиль по уровням: головка рельса относительно уровня улицы вдоль пути",
+  "rail.levelProfileNote":
+    "Высоты по уровням и рампам пути относительно уровня улицы (высоты рельефа здесь не загружены).",
   "rail.profileLegend":
     "Сплошная: головка рельса. Пунктир: рельеф (Copernicus GLO-30, сглажен). Высоты по модели поверхности, ±4 м.",
 

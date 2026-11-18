@@ -22,6 +22,8 @@ export const editorsHi = {
   "rail.clear": "सब साफ़ करें",
   "rail.level.underground2": "भूमिगत −2",
   "rail.level.underground": "भूमिगत −1",
+  "rail.level.cutting": "खुली कटिंग",
+  "rail.level.cuttingShort": "कटिंग",
   "rail.level.street": "सड़क स्तर",
   "rail.level.streetShort": "सड़क",
   "rail.level.elevated": "ऊँचा +1",
@@ -167,6 +169,11 @@ export const editorsHi = {
   "rail.tunnel.cut_and_cover": "कट एंड कवर",
   "rail.tunnel.tbm": "बोर की गई सुरंग (TBM)",
   "rail.structure": "ऊँचाई पर किस पर",
+  "rail.existingStructure": "मौजूदा संरचना का पुन: उपयोग",
+  "rail.existingStructureHint":
+    "इसकी सुरंगें, पुल और वायडक्ट पहले से हैं (जैसे पुरानी रेल सुरंग) और नवीनीकरण की लागत गिनी जाती है।",
+  "rail.existingStation": "मौजूदा संरचना में",
+  "rail.existingStationHint": "स्टेशन बॉक्स या हॉल पहले से है; नवीनीकरण और साज-सज्जा की लागत गिनी जाती है।",
   "rail.structure.auto": "स्वचालित (ट्राम और मेट्रो के लिए एलिवेटेड मार्ग, मुख्य लाइनों के लिए वायडक्ट)",
   "rail.structure.elevated": "एलिवेटेड मार्ग",
   "rail.structure.viaduct": "वायडक्ट",
@@ -669,6 +676,7 @@ export const editorsHi = {
   "schematic.metres": "{n} मी",
   "schematic.unknown": "–",
   "schematic.level.underground": "भूमिगत",
+  "schematic.level.cutting": "खुली कटिंग",
   "schematic.level.street": "सड़क स्तर",
   "schematic.level.elevated": "एलिवेटेड",
   "schematic.level.ramp": "रैंप",
@@ -1411,6 +1419,9 @@ export const editorsHi = {
   "rail.levelHeight": "समतल, पटरियाँ समुद्र तल से {rail} मी ऊपर · साथ में ज़मीन {min}–{max} मी",
   "rail.profileRange": "पटरियाँ समुद्र तल से {min}–{max} मी ऊपर · सबसे तीखी ढलान {steep} (अधिकतम {limit} ‰)",
   "rail.profileAria": "अनुदैर्ध्य प्रोफ़ाइल: ट्रैक के साथ ज़मीन और रेल का ऊपरी भाग",
+  "rail.levelProfileAria": "स्तरों से ऊर्ध्व प्रोफ़ाइल: पटरी के साथ सड़क स्तर की तुलना में रेल शीर्ष",
+  "rail.levelProfileNote":
+    "पटरी के स्तरों और ढलानों से ऊँचाइयाँ, सड़क स्तर के सापेक्ष (यहाँ भू-भाग की ऊँचाइयाँ लोड नहीं हुईं)।",
   "rail.profileLegend":
     "ठोस: रेल का ऊपरी भाग। डैश: ज़मीन (Copernicus GLO-30, समतल किया)। ऊँचाइयाँ सतह मॉडल से, ±4 मी।",
 

@@ -72,5 +72,11 @@ export const geodataIg = {
   "area.import.current": "{what}: ebubatala ya",
   "area.import.failed": "{what}: enweghị ike ịmalite. {reason}",
   "area.seeMapData": "Soro mbubata na GIS, Data maapụ.",
+  "area.country": "Mba: {name}.",
+  "area.crossesBorder": "Mpaghara a gafere oke: {countries}. Ezumike na ọnụahịa bụ nke {name}.",
+  "data.liveNotice":
+    "Taịl map {tiles} na ịdị elu {heights} si n'èzí data ebubatara nke ọrụ ahụ bịa ozugbo. Ugbu a, edobere ha n'ọrụ ahụ; gbasaa mbubata ka o kpuchie eserese niile.",
+  "data.extendImport": "Gbasaa mbubata na Data map",
+  "data.hideLive": "Zoo",
   "data.areaRegions": "Mpaghara: km² {area}, igbe gbara {names} gburugburu",
 } satisfies GeodataMessages;

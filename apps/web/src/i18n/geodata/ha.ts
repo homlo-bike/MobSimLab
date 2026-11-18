@@ -72,5 +72,11 @@ export const geodataHa = {
   "area.import.current": "{what}: an riga an shigo da shi",
   "area.import.failed": "{what}: bai iya farawa ba. {reason}",
   "area.seeMapData": "Bi shigowar a GIS, Bayanan taswira.",
+  "area.country": "Ƙasa: {name}.",
+  "area.crossesBorder": "Yankin ya ketare iyaka: {countries}. Hutu da farashi na {name} ne.",
+  "data.liveNotice":
+    "Tayal ɗin taswira {tiles} da tsayi {heights} sun zo kai tsaye daga wajen bayanan da aka shigo da su na aikin. Yanzu an ajiye su a aikin; faɗaɗa shigo da bayanai don ya rufe zane gaba ɗaya.",
+  "data.extendImport": "Faɗaɗa shigo da bayanai a Bayanan taswira",
+  "data.hideLive": "Ɓoye",
   "data.areaRegions": "Yanki: km² {area}, akwatin da ke kewaye da {names}",
 } satisfies GeodataMessages;

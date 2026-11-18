@@ -21,6 +21,8 @@ export const editorsYo = {
   "rail.clear": "Pa gbogbo rẹ̀ rẹ́",
   "rail.level.underground2": "Abẹ́ ilẹ̀ −2",
   "rail.level.underground": "Abẹ́ ilẹ̀ −1",
+  "rail.level.cutting": "Kòtò ṣíṣí",
+  "rail.level.cuttingShort": "Kòtò",
   "rail.level.street": "Ìpele òpópónà",
   "rail.level.streetShort": "Òpópónà",
   "rail.level.elevated": "Lókè +1",
@@ -151,6 +153,11 @@ export const editorsYo = {
   "rail.tunnel.cut_and_cover": "Gbẹ́ kí o bò",
   "rail.tunnel.tbm": "Ihò tí ẹ̀rọ gbẹ́ (TBM)",
   "rail.structure": "Gbé sókè lórí",
+  "rail.existingStructure": "Ń tún lo ilé tó wà tẹ́lẹ̀",
+  "rail.existingStructureHint":
+    "Àwọn ihò ojú ọ̀nà, afárá àti viaduct rẹ̀ ti wà tẹ́lẹ̀ (bí ihò ojú irin àtijọ́), a sì ń ka iye owó àtúnṣe.",
+  "rail.existingStation": "Nínú ilé tó wà tẹ́lẹ̀",
+  "rail.existingStationHint": "Àpótí tàbí gbọ̀ngàn ibùdó ti wà tẹ́lẹ̀; a ń ka iye àtúnṣe àti ìpèsè ohun èlò.",
   "rail.structure.auto": "Aládàáṣe (ọ̀nà gíga fún tram àti metro, afárá gígùn fún àwọn ìlà pàtàkì)",
   "rail.structure.elevated": "Ọ̀nà gíga",
   "rail.structure.viaduct": "Afárá gígùn olópó",
@@ -650,6 +657,7 @@ export const editorsYo = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Abẹ́ ilẹ̀",
+  "schematic.level.cutting": "Kòtò ṣíṣí",
   "schematic.level.street": "Ìpele òpópónà",
   "schematic.level.elevated": "Lókè",
   "schematic.level.ramp": "Ọ̀nà ìdagẹ̀rẹ̀",
@@ -1384,6 +1392,10 @@ export const editorsYo = {
   "rail.levelHeight": "Pẹrẹsẹ, irin wà ní m {rail} lókè òkun · ilẹ̀ lẹ́gbẹ̀ẹ́ rẹ̀ m {min}–{max}",
   "rail.profileRange": "Irin m {min}–{max} lókè òkun · gẹ̀rẹ̀gẹ̀rẹ̀ tó ga jù {steep} (tó pọ̀ jù {limit} ‰)",
   "rail.profileAria": "Àwòrán gígùn: ilẹ̀ àti orí irin ní gígùn ojú ọ̀nà",
+  "rail.levelProfileAria":
+    "Àwòrán gíga láti inú àwọn ìpele: òkè irin ní ìfiwéra pẹ̀lú ìpele ojú ọ̀nà ní gígùn ọ̀nà",
+  "rail.levelProfileNote":
+    "Gíga láti inú àwọn ìpele àti ìtẹ̀sí ọ̀nà, ní ìfiwéra pẹ̀lú ìpele ojú ọ̀nà (a kò tíì gbé gíga ilẹ̀ wọlé níbí).",
   "rail.profileLegend":
     "Ìlà kíkún: orí irin. Ìlà ẹlẹ́gbẹ́: ilẹ̀ (Copernicus GLO-30, a mú un dán). Gíga láti àwòṣe ojú ilẹ̀, ±4 m.",
 

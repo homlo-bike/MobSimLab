@@ -71,5 +71,11 @@ export const geodataBn = {
   "area.import.current": "{what}: আগেই আমদানি করা",
   "area.import.failed": "{what}: শুরু করা যায়নি। {reason}",
   "area.seeMapData": "আমদানির অগ্রগতি GIS, মানচিত্র ডেটায় দেখুন।",
+  "area.country": "দেশ: {name}।",
+  "area.crossesBorder": "এলাকাটি একটি সীমান্ত পার হয়: {countries}। ছুটি ও দাম {name}-এর ধরা হয়।",
+  "data.liveNotice":
+    "{tiles}টি মানচিত্র টাইল ও {heights}টি উচ্চতা প্রকল্পের আমদানি করা ডেটার বাইরে থেকে সরাসরি এসেছে। এখন সেগুলো প্রকল্পে রাখা আছে; পুরো অঙ্কন ঢাকতে আমদানি বাড়ান।",
+  "data.extendImport": "মানচিত্র ডেটায় আমদানি বাড়ান",
+  "data.hideLive": "লুকান",
   "data.areaRegions": "এলাকা: {area} বর্গ কিমি, {names}-এর চারপাশের আয়তক্ষেত্র",
 } satisfies GeodataMessages;

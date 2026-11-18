@@ -384,3 +384,30 @@ fn the_projects_acceleration_braking_and_supplement_replace_the_modes() {
     assert!((line_spec(&l, &m).supplement_share - 0.08).abs() < 1e-9);
     assert!((line_spec(&shuttle(), &m).supplement_share - 0.05).abs() < 1e-9);
 }
+
+#[test]
+fn a_siding_marked_for_layover_reaches_the_line() {
+    // A storage track marked for layover on the drawing becomes an end-station siding of the line
+    // (the import splits it at its signal); the planner brings trains to it from an overnight track.
+    use rail_model::topology::{import_json, ImportOptions};
+    let mut v: serde_json::Value = serde_json::from_str(&topology()).unwrap();
+    for s in v["sections"].as_array_mut().unwrap() {
+        if s["id"] == "t6.0.0" {
+            s["storage_role"] = "layover".into();
+        }
+    }
+    let imp = import_json(&v.to_string(), &ImportOptions::default()).unwrap();
+    let m = rail_model::Model::compile(&imp.spec).unwrap();
+    let spec = rail_plan::line_spec_with_roles(&shuttle(), &m, &imp.storage_roles);
+    assert!(!spec.layover.is_empty());
+    assert!(spec.layover.iter().all(|t| t.starts_with("t6.0.0")));
+    assert!(spec.layover.iter().all(|t| spec.stabling.contains(t)));
+    // Unmarked, no siding.
+    let imp = import_json(&topology(), &ImportOptions::default()).unwrap();
+    let m = rail_model::Model::compile(&imp.spec).unwrap();
+    assert!(
+        rail_plan::line_spec_with_roles(&shuttle(), &m, &imp.storage_roles)
+            .layover
+            .is_empty()
+    );
+}

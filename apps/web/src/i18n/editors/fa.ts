@@ -21,6 +21,8 @@ export const editorsFa = {
   "rail.clear": "پاک کردن همه",
   "rail.level.underground2": "زیرزمینی −2",
   "rail.level.underground": "زیرزمینی −1",
+  "rail.level.cutting": "ترانشهٔ باز",
+  "rail.level.cuttingShort": "ترانشه",
   "rail.level.street": "هم‌سطح خیابان",
   "rail.level.streetShort": "هم‌سطح",
   "rail.level.elevated": "روگذر +1",
@@ -151,6 +153,11 @@ export const editorsFa = {
   "rail.tunnel.cut_and_cover": "حفاری و پوشش (کند و پوش)",
   "rail.tunnel.tbm": "تونل حفاری‌شده (TBM)",
   "rail.structure": "مرتفع روی",
+  "rail.existingStructure": "از سازهٔ موجود دوباره استفاده می‌کند",
+  "rail.existingStructureHint":
+    "تونل‌ها، پل‌ها و پل‌راه‌های آن از پیش هستند (مثل تونل قدیمی راه‌آهن) و هزینهٔ بازسازی برایشان حساب می‌شود.",
+  "rail.existingStation": "در سازهٔ موجود",
+  "rail.existingStationHint": "جعبه یا سالن ایستگاه از پیش هست و هزینهٔ بازسازی و تجهیز آن حساب می‌شود.",
   "rail.structure.auto": "خودکار (مسیر مرتفع برای تراموا و مترو، پل‌راه برای خطوط اصلی)",
   "rail.structure.elevated": "مسیر مرتفع",
   "rail.structure.viaduct": "پل‌راه (ویادوکت)",
@@ -653,6 +660,7 @@ export const editorsFa = {
   "schematic.metres": "{n} متر",
   "schematic.unknown": "–",
   "schematic.level.underground": "زیرزمینی",
+  "schematic.level.cutting": "ترانشهٔ باز",
   "schematic.level.street": "هم‌سطح خیابان",
   "schematic.level.elevated": "روی پل",
   "schematic.level.ramp": "سطح شیب‌دار",
@@ -1380,6 +1388,9 @@ export const editorsFa = {
   "rail.levelHeight": "هموار، ریل‌ها در {rail} متر بالاتر از سطح دریا · زمین در امتداد آن {min}–{max} متر",
   "rail.profileRange": "ریل‌ها {min}–{max} متر بالاتر از سطح دریا · بیشترین شیب {steep} (حداکثر {limit} ‰)",
   "rail.profileAria": "نیمرخ طولی: زمین و سطح ریل در امتداد خط",
+  "rail.levelProfileAria": "نیمرخ طولی از ترازها: سطح ریل نسبت به تراز خیابان در طول خط",
+  "rail.levelProfileNote":
+    "ارتفاع‌ها از ترازها و رمپ‌های خط، نسبت به تراز خیابان (ارتفاع زمین اینجا بارگیری نشده است).",
   "rail.profileLegend":
     "پیوسته: سطح ریل. خط‌چین: زمین (Copernicus GLO-30، هموارشده). ارتفاع‌ها از یک مدل سطح، ±4 متر.",
 

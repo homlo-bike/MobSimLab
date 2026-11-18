@@ -1,0 +1,105 @@
+import { Inject, Injectable, Optional } from "@nestjs/common";
+import { DATABASE, type Database } from "../db/database";
+
+/** What a project's data cache holds: OpenStreetMap tiles, terrain heights, location facts. */
+export type CacheKind = "osm" | "height" | "facts";
+
+/** Where an answer came from, for the tools to say so: the project's import, its cache, or live. */
+export type DataSource = "import" | "cache" | "live";
+
+/** Most keys read or written in one statement. */
+const BATCH = 500;
+
+/**
+ * Data a project's tools fetched live because the project's imports did not hold it (#140 step 4): a street
+ * tile outside the OpenStreetMap import, a terrain height outside the elevation import, or a location fact
+ * (country, holidays, climate; step 3). Stored per project (`project.data_cache`, removed with the project)
+ * and served to every tool next time, so nothing is downloaded twice. A failing cache never fails a tool:
+ * reads then miss and writes are skipped.
+ */
+@Injectable()
+export class ProjectDataCache {
+  constructor(@Optional() @Inject(DATABASE) private readonly db?: Database) {}
+
+  /** Purpose: one cached answer, or null. */
+  async get(projectId: string, kind: CacheKind, key: string): Promise<string | null> {
+    return (await this.getMany(projectId, kind, [key])).get(key) ?? null;
+  }
+
+  /** Purpose: the cached answers among `keys`, by key. */
+  async getMany(projectId: string, kind: CacheKind, keys: readonly string[]): Promise<Map<string, string>> {
+    const out = new Map<string, string>();
+    if (!this.db || keys.length === 0) return out;
+    try {
+      for (let i = 0; i < keys.length; i += BATCH) {
+        const rows = await this.db
+          .selectFrom("project.data_cache")
+          .select(["key", "body"])
+          .where("project_id", "=", projectId)
+          .where("kind", "=", kind)
+          .where("key", "in", keys.slice(i, i + BATCH))
+          .execute();
+        for (const r of rows) out.set(r.key, r.body);
+      }
+    } catch {
+      // A cache that cannot be read is a miss.
+    }
+    return out;
+  }
+
+  /** Purpose: keep an answer for the project (replacing an older one). */
+  async put(projectId: string, kind: CacheKind, key: string, body: string): Promise<void> {
+    await this.putMany(projectId, kind, [[key, body]]);
+  }
+
+  /** Purpose: keep several answers for the project. */
+  async putMany(projectId: string, kind: CacheKind, entries: readonly [string, string][]): Promise<void> {
+    if (!this.db || entries.length === 0) return;
+    try {
+      for (let i = 0; i < entries.length; i += BATCH) {
+        await this.db
+          .insertInto("project.data_cache")
+          .values(
+            entries.slice(i, i + BATCH).map(([key, body]) => ({ project_id: projectId, kind, key, body })),
+          )
+          .onConflict((oc) =>
+            oc.columns(["project_id", "kind", "key"]).doUpdateSet((eb) => ({
+              body: eb.ref("excluded.body"),
+              fetched_at: new Date(),
+            })),
+          )
+          .execute();
+      }
+    } catch {
+      // Not kept this time; the tool fetches it again next time.
+    }
+  }
+
+  /**
+   * Purpose: a cached answer, else `fetch` it live and keep it for the project. Without a project, fetches.
+   * Output: the answer and where it came from.
+   */
+  async through(
+    projectId: string | undefined,
+    kind: CacheKind,
+    key: string,
+    fetch: () => Promise<string>,
+  ): Promise<{ body: string; source: DataSource }> {
+    if (projectId) {
+      const hit = await this.get(projectId, kind, key);
+      if (hit !== null) return { body: hit, source: "cache" };
+    }
+    const body = await fetch();
+    if (projectId) await this.put(projectId, kind, key, body);
+    return { body, source: "live" };
+  }
+}
+
+/** Keys of the location facts, shared by the endpoints that read them through and the area's look-up. */
+export const factKey = {
+  countryAt: (lon: number, lat: number) => `country-at/${lon.toFixed(4)},${lat.toFixed(4)}`,
+  holidays: (country: string, year: number) => `holidays/${country.toUpperCase()}/${year}`,
+  climate: (lat: number, lon: number) => `climate/${lat.toFixed(1)},${lon.toFixed(1)}`,
+  /** The countries of the project area with their shares (projects/area.service.ts `AreaCountries`). */
+  areaCountries: "area-countries",
+};

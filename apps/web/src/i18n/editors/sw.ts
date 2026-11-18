@@ -22,6 +22,8 @@ export const editorsSw = {
   "rail.clear": "Futa yote",
   "rail.level.underground2": "Chini ya ardhi −2",
   "rail.level.underground": "Chini ya ardhi −1",
+  "rail.level.cutting": "Mtaro wazi",
+  "rail.level.cuttingShort": "Mtaro",
   "rail.level.street": "Usawa wa barabara",
   "rail.level.streetShort": "Barabara",
   "rail.level.elevated": "Juu +1",
@@ -167,6 +169,12 @@ export const editorsSw = {
   "rail.tunnel.cut_and_cover": "Chimba na funika",
   "rail.tunnel.tbm": "Handaki lililotobolewa (TBM)",
   "rail.structure": "Imeinuliwa juu ya",
+  "rail.existingStructure": "Inatumia tena muundo uliopo",
+  "rail.existingStructureHint":
+    "Mahandaki, madaraja na viaduct zake tayari zipo (kama handaki la zamani la reli) na gharama ni ya ukarabati.",
+  "rail.existingStation": "Ndani ya muundo uliopo",
+  "rail.existingStationHint":
+    "Sanduku au ukumbi wa kituo tayari upo; gharama ni ya ukarabati na kuweka vifaa.",
   "rail.structure.auto": "Otomatiki (njia iliyoinuliwa kwa tramu na metro, daraja refu kwa njia kuu)",
   "rail.structure.elevated": "Njia iliyoinuliwa",
   "rail.structure.viaduct": "Daraja refu (viaduct)",
@@ -678,6 +686,7 @@ export const editorsSw = {
   "schematic.metres": "m {n}",
   "schematic.unknown": "–",
   "schematic.level.underground": "Chini ya ardhi",
+  "schematic.level.cutting": "Mtaro wazi",
   "schematic.level.street": "Usawa wa barabara",
   "schematic.level.elevated": "Juu ya nguzo",
   "schematic.level.ramp": "Mteremko",
@@ -1432,6 +1441,10 @@ export const editorsSw = {
   "rail.profileRange":
     "Reli m {min}–{max} juu ya usawa wa bahari · mteremko mkali zaidi {steep} (upeo {limit} ‰)",
   "rail.profileAria": "Wasifu wa urefu: ardhi na juu ya reli kando ya njia",
+  "rail.levelProfileAria":
+    "Wasifu wima kutoka kwa viwango: juu ya reli ukilinganisha na usawa wa barabara kando ya njia",
+  "rail.levelProfileNote":
+    "Urefu kutoka kwa viwango na miteremko ya njia, ukilinganisha na usawa wa barabara (urefu wa ardhi haujapakiwa hapa).",
   "rail.profileLegend":
     "Mstari kamili: juu ya reli. Mistari mifupi: ardhi (Copernicus GLO-30, iliyolainishwa). Miinuko kutoka modeli ya uso, ±4 m.",
 

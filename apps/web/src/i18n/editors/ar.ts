@@ -27,6 +27,8 @@ export const editorsAr = {
   "rail.clear": "مسح",
   "rail.level.underground2": "تحت الأرض −2",
   "rail.level.underground": "تحت الأرض −1",
+  "rail.level.cutting": "خندق مكشوف",
+  "rail.level.cuttingShort": "خندق",
   "rail.level.street": "مستوى الشارع",
   "rail.level.streetShort": "الشارع",
   "rail.level.elevated": "مرتفع +1",
@@ -200,6 +202,10 @@ export const editorsAr = {
   "rail.tunnel.cut_and_cover": "الحفر والردم",
   "rail.tunnel.tbm": "نفق محفور بآلة (TBM)",
   "rail.structure": "مرفوع على",
+  "rail.existingStructure": "يعيد استخدام منشأة قائمة",
+  "rail.existingStructureHint": "أنفاقه وجسوره موجودة أصلًا (مثل نفق سكة حديد قديم) وتُحسب تكلفتها كتجديد.",
+  "rail.existingStation": "في منشأة قائمة",
+  "rail.existingStationHint": "صندوق المحطة أو قاعتها موجود أصلًا، وتُحسب تكلفة تجديده وتجهيزه.",
   "rail.structure.auto": "تلقائي (مسار مرتفع للترام والمترو، جسر متعدد الفتحات للخطوط الرئيسية)",
   "rail.structure.elevated": "مسار مرتفع",
   "rail.structure.viaduct": "جسر متعدد الفتحات",
@@ -718,6 +724,7 @@ export const editorsAr = {
   "schematic.metres": "{n} م",
   "schematic.unknown": "–",
   "schematic.level.underground": "تحت الأرض",
+  "schematic.level.cutting": "خندق مكشوف",
   "schematic.level.street": "على مستوى الشارع",
   "schematic.level.elevated": "مرتفع",
   "schematic.level.ramp": "منحدر",
@@ -1474,6 +1481,9 @@ export const editorsAr = {
   "rail.levelHeight": "مستوٍ، القضبان على ارتفاع {rail} م فوق سطح البحر · الأرض على امتداده {min}–{max} م",
   "rail.profileRange": "القضبان على {min}–{max} م فوق سطح البحر · أشد انحدار {steep} (الحد {limit} ‰)",
   "rail.profileAria": "المقطع الطولي: الأرض وسطح القضيب على امتداد المسار",
+  "rail.levelProfileAria": "المقطع الطولي من المستويات: سطح القضبان مقارنة بمستوى الشارع على طول السكة",
+  "rail.levelProfileNote":
+    "الارتفاعات من مستويات السكة ومنحدراتها بالنسبة لمستوى الشارع (لم تُحمَّل ارتفاعات التضاريس هنا).",
   "rail.profileLegend":
     "متصل: سطح القضيب. متقطع: الأرض (Copernicus GLO-30، منعّمة). الارتفاعات من نموذج سطح، ±4 م.",
 

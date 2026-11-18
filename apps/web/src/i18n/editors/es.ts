@@ -22,6 +22,8 @@ export const editorsEs = {
   "rail.clear": "Borrar",
   "rail.level.underground2": "Subterráneo −2",
   "rail.level.underground": "Subterráneo −1",
+  "rail.level.cutting": "Trinchera abierta",
+  "rail.level.cuttingShort": "Trinch.",
   "rail.level.street": "A nivel de calle",
   "rail.level.streetShort": "Calle",
   "rail.level.elevated": "Elevado +1",
@@ -167,6 +169,12 @@ export const editorsEs = {
   "rail.tunnel.cut_and_cover": "Falso túnel (entre pantallas)",
   "rail.tunnel.tbm": "Túnel con tuneladora (TBM)",
   "rail.structure": "Elevado sobre",
+  "rail.existingStructure": "Reutiliza una estructura existente",
+  "rail.existingStructureHint":
+    "Sus túneles, puentes y viaductos ya existen (como un antiguo túnel ferroviario) y se costean como rehabilitación.",
+  "rail.existingStation": "En una estructura existente",
+  "rail.existingStationHint":
+    "La caja o el vestíbulo de la estación ya existe y se costea su rehabilitación y equipamiento.",
   "rail.structure.auto": "Automático (vía elevada para tranvía y metro, viaducto para líneas principales)",
   "rail.structure.elevated": "Vía elevada",
   "rail.structure.viaduct": "Viaducto",
@@ -681,6 +689,7 @@ export const editorsEs = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Subterráneo",
+  "schematic.level.cutting": "Trinchera abierta",
   "schematic.level.street": "A nivel de calle",
   "schematic.level.elevated": "Elevado",
   "schematic.level.ramp": "Rampa",
@@ -1446,6 +1455,10 @@ export const editorsEs = {
   "rail.profileRange":
     "Carriles a {min}–{max} m sobre el nivel del mar · pendiente máxima {steep} (máx. {limit} ‰)",
   "rail.profileAria": "Perfil longitudinal: terreno y cabeza del carril a lo largo de la vía",
+  "rail.levelProfileAria":
+    "Perfil longitudinal según los niveles: cabeza de carril respecto al nivel de calle a lo largo de la vía",
+  "rail.levelProfileNote":
+    "Alturas según los niveles y rampas de la vía, respecto al nivel de calle (aquí no hay alturas del terreno cargadas).",
   "rail.profileLegend":
     "Continua: cabeza del carril. Discontinua: terreno (Copernicus GLO-30, suavizado). Alturas de un modelo de superficie, ±4 m.",
 

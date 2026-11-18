@@ -21,6 +21,8 @@ export const editorsJa = {
   "rail.clear": "すべて消去",
   "rail.level.underground2": "地下 −2",
   "rail.level.underground": "地下 −1",
+  "rail.level.cutting": "開削（切通し）",
+  "rail.level.cuttingShort": "切通し",
   "rail.level.street": "地上",
   "rail.level.streetShort": "地上",
   "rail.level.elevated": "高架 +1",
@@ -151,6 +153,11 @@ export const editorsJa = {
   "rail.tunnel.cut_and_cover": "開削工法",
   "rail.tunnel.tbm": "シールドトンネル（TBM）",
   "rail.structure": "高架の構造",
+  "rail.existingStructure": "既存構造物を再利用",
+  "rail.existingStructureHint":
+    "トンネル・橋梁・高架橋は既にあり（旧鉄道トンネルなど）、改修費として計上します。",
+  "rail.existingStation": "既存構造物内",
+  "rail.existingStationHint": "駅の躯体やホールは既にあり、改修と設備工事の費用として計上します。",
   "rail.structure.auto": "自動（路面電車と地下鉄は高架橋、本線は高架橋梁）",
   "rail.structure.elevated": "高架軌道",
   "rail.structure.viaduct": "高架橋（ヴィアダクト）",
@@ -644,6 +651,7 @@ export const editorsJa = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "地下",
+  "schematic.level.cutting": "開削（切通し）",
   "schematic.level.street": "地上",
   "schematic.level.elevated": "高架",
   "schematic.level.ramp": "スロープ",
@@ -1360,6 +1368,9 @@ export const editorsJa = {
   "rail.levelHeight": "水平、レール面は海抜 {rail} m · 沿線の地面 {min}–{max} m",
   "rail.profileRange": "レール面 海抜 {min}–{max} m · 最急勾配 {steep}（上限 {limit} ‰）",
   "rail.profileAria": "縦断面：線路沿いの地面とレール面",
+  "rail.levelProfileAria": "レベルによる縦断面：線路に沿った地上面に対するレール面の高さ",
+  "rail.levelProfileNote":
+    "線路のレベルと勾配区間による高さ（地上面基準。ここでは地形の標高を読み込んでいません）。",
   "rail.profileLegend":
     "実線：レール面。破線：地面（Copernicus GLO-30、平滑化）。高さは表面モデルから、±4 m。",
 

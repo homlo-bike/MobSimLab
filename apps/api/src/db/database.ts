@@ -186,6 +186,13 @@ export interface DB {
     /** OpenStreetMap regions making up the project area (projects/project-area.ts `AreaRegion[]`). */
     area_regions: ColumnType<unknown, string | undefined, string>;
   };
+  "project.data_cache": {
+    project_id: string;
+    kind: "osm" | "height" | "facts";
+    key: string;
+    body: string;
+    fetched_at: Generated<Date>;
+  };
   "project.drawing": {
     project_id: string;
     kind: string;

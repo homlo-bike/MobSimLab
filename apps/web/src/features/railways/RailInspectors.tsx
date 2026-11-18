@@ -130,6 +130,18 @@ export function StationInspector({ st, doc, view, actions: a }: Props & { st: St
         options={levelOpts(t)}
         onChange={(level) => set((s) => ({ ...s, level }))}
       />
+      <label className="flex items-start gap-2">
+        <input
+          type="checkbox"
+          className="mt-1"
+          checked={!!st.existing}
+          onChange={(e) => set((s) => ({ ...s, existing: e.target.checked || undefined }))}
+        />
+        <span>
+          {t("rail.existingStation")}
+          <span className="block text-xs text-slate-600">{t("rail.existingStationHint")}</span>
+        </span>
+      </label>
       <Row label={t("rail.sidePlatforms")}>
         <Num
           label={t("rail.sidePlatforms")}

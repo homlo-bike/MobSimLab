@@ -21,6 +21,8 @@ export const editorsIg = {
   "rail.clear": "Hichapụ ha niile",
   "rail.level.underground2": "N'okpuru ala −2",
   "rail.level.underground": "N'okpuru ala −1",
+  "rail.level.cutting": "Ọwa mepere emepe",
+  "rail.level.cuttingShort": "Ọwa",
   "rail.level.street": "Ọkwa okporo ụzọ",
   "rail.level.streetShort": "Okporo ụzọ",
   "rail.level.elevated": "N'elu +1",
@@ -150,6 +152,11 @@ export const editorsIg = {
   "rail.tunnel.cut_and_cover": "Gwuo ma kpuchie",
   "rail.tunnel.tbm": "Ọwara igwe gwuru (TBM)",
   "rail.structure": "E bulitere ya n'elu",
+  "rail.existingStructure": "Na-eji ihe owuwu dị adị eme ihe ọzọ",
+  "rail.existingStructureHint":
+    "Ọwara, akwa mmiri na viaduct ya adịlarịị (dịka ọwara ụgbọ okporo ígwè ochie), a na-agụ ha dịka imezi ọhụrụ.",
+  "rail.existingStation": "N'ime ihe owuwu dị adị",
+  "rail.existingStationHint": "Igbe ma ọ bụ ụlọ nzukọ ọdụ ahụ adịlarịị; a na-agụ imezi na ịkwadebe ya.",
   "rail.structure.auto": "Akpaghị aka (ụzọ dị elu maka tram na metro, akwa mmiri ogologo maka ahịrị ndị isi)",
   "rail.structure.elevated": "Ụzọ dị elu",
   "rail.structure.viaduct": "Akwa ogologo nwere ogidi",
@@ -646,6 +653,7 @@ export const editorsIg = {
   "schematic.metres": "m {n}",
   "schematic.unknown": "–",
   "schematic.level.underground": "N'okpuru ala",
+  "schematic.level.cutting": "Ọwa mepere emepe",
   "schematic.level.street": "N'ogo okporo ụzọ",
   "schematic.level.elevated": "N'elu",
   "schematic.level.ramp": "Ụzọ mgbada",
@@ -1381,6 +1389,10 @@ export const editorsIg = {
   "rail.levelHeight": "Ewepụghị elu, ígwè dị m {rail} karịa oke osimiri · ala n’akụkụ ya m {min}–{max}",
   "rail.profileRange": "Ígwè m {min}–{max} karịa oke osimiri · mkpọda kacha ike {steep} (kacha {limit} ‰)",
   "rail.profileAria": "Profaịlụ ogologo: ala na elu ígwè n’ogologo ụzọ",
+  "rail.levelProfileAria":
+    "Profaịlụ ogologo site na ọkwa: elu ígwè ma e jiri ya tụnyere ọkwa okporo ụzọ n'ogologo ụzọ",
+  "rail.levelProfileNote":
+    "Ịdị elu site na ọkwa na mkpọda nke ụzọ, ma e jiri ya tụnyere ọkwa okporo ụzọ (ebubataghị ịdị elu ala ebe a).",
   "rail.profileLegend":
     "Ahịrị zuru oke: elu ígwè. Ahịrị kewara: ala (Copernicus GLO-30, emere ka ọ dị nro). Ịdị elu sitere na ụdị elu ala, ±4 m.",
 

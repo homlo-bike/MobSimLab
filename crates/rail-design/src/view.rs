@@ -127,6 +127,8 @@ pub fn view(dz: &Design) -> Value {
             "station_box"
         } else if st.level.elevated() {
             "deck"
+        } else if st.level == Level::Cutting {
+            "cutting"
         } else {
             "ballast"
         };
@@ -138,6 +140,8 @@ pub fn view(dz: &Design) -> Value {
         if st.level != Level::Street {
             let wall = if st.level.underground() {
                 "tunnel_wall"
+            } else if st.level == Level::Cutting {
+                "cutting_edge"
             } else {
                 "deck_edge"
             };
@@ -261,12 +265,15 @@ pub fn view(dz: &Design) -> Value {
             let order = match (z.level, z.ramp) {
                 (Some(l), _) => l.order(),
                 (None, Some(r)) => g.ramps[r].order(),
-                _ => 2,
+                _ => Level::Street.order(),
             };
             let centre = slice(&g.centre, z.s0, z.s1);
             let lvl = z.level;
             let underground = lvl.map_or_else(
-                || z.ramp.is_some_and(|r| g.ramps[r].order() < 2),
+                || {
+                    z.ramp
+                        .is_some_and(|r| g.ramps[r].order() < Level::Cutting.order())
+                },
                 |l| l.underground(),
             );
             let common = json!({"ref": g.id, "z": order, "mode": tm});
@@ -309,6 +316,30 @@ pub fn view(dz: &Design) -> Value {
                         );
                     }
                 }
+                Some(Level::Cutting) => {
+                    // An open cutting: the trench with its walls, the track bed in it.
+                    ly.polygon(
+                        "structures",
+                        &band(&centre, |q| half(q) + 0.3),
+                        props(json!({"kind": "cutting"})),
+                    );
+                    ly.polygon(
+                        "structures",
+                        &band(&centre, |q| half(q) - 0.4),
+                        props(json!({"kind": "ballast"})),
+                    );
+                    for sg in [1.0, -1.0] {
+                        let e: Vec<P2> = centre
+                            .iter()
+                            .map(|q| q.offset(sg * (half(q) + 0.3)))
+                            .collect();
+                        ly.line(
+                            "edges",
+                            &e,
+                            props(json!({"kind": "cutting_edge", "deep": false})),
+                        );
+                    }
+                }
                 Some(_) => {
                     let kind = if embedded { "paving" } else { "ballast" };
                     ly.polygon(
@@ -324,13 +355,24 @@ pub fn view(dz: &Design) -> Value {
                         &band(&centre, half),
                         props(json!({"kind": "ramp", "underground": underground})),
                     );
+                    // A ramp into an open cutting runs between cutting walls, not on a deck.
+                    let open_cut = !underground && (r.from.below_street() || r.to.below_street());
+                    let edge = if underground {
+                        "tunnel_wall"
+                    } else if open_cut {
+                        "cutting_edge"
+                    } else {
+                        "deck_edge"
+                    };
                     for sg in [1.0, -1.0] {
                         let e: Vec<P2> = centre.iter().map(|q| q.offset(sg * half(q))).collect();
-                        ly.line("edges", &e, props(json!({"kind": if underground {"tunnel_wall"} else {"deck_edge"}, "deep": false})));
+                        ly.line("edges", &e, props(json!({"kind": edge, "deep": false})));
                     }
-                    // Portal or abutment across the deep (or high) end.
+                    // Portal or abutment across the deep (or high) end; none where a cutting meets the street.
                     let deep_start = r.from.height_m(p).abs() >= r.to.height_m(p).abs();
-                    let q = if deep_start {
+                    let q = if open_cut {
+                        None
+                    } else if deep_start {
                         centre.first()
                     } else {
                         centre.last()
@@ -441,6 +483,8 @@ pub fn view(dz: &Design) -> Value {
             if lvl.is_some_and(|l| l != Level::Street) {
                 let kind = if lvl.is_some_and(|l| l.underground()) {
                     "tunnel"
+                } else if lvl == Some(Level::Cutting) {
+                    "cutting"
                 } else {
                     "deck"
                 };
@@ -829,7 +873,8 @@ pub fn view(dz: &Design) -> Value {
                     "deflection_deg": c.deflection.to_degrees(), "transition_m": c.transition, "speed_kmh": c.speed_kmh,
                     "cant_mm": c.cant_mm, "cant_deficiency_mm": c.cant_deficiency_mm,
                 })).collect::<Vec<_>>(),
-                "ramps": g.ramps.iter().map(|r| json!({"from": r.from, "to": r.to, "dh_m": r.dh, "length_m": r.length})).collect::<Vec<_>>(),
+                "ramps": g.ramps.iter().map(|r| json!({"from": r.from, "to": r.to, "dh_m": r.dh, "length_m": r.length, "gradient_permille": r.gradient_permille})).collect::<Vec<_>>(),
+                "level_profile": level_profile(g, dz.params_for(dz.track_mode(g.id))),
                 "levels": g.zones.iter().map(|z| json!({"from_m": z.s0, "to_m": z.s1, "level": level_name(z.level)})).collect::<Vec<_>>(),
                 "spread_m": [g.spread_start, g.spread_end],
                 "embedded": dz.doc_track(g.id).is_some_and(|t| dz.embedded(t)),
@@ -1029,4 +1074,31 @@ pub fn catalogue_for(mode: crate::params::RailMode) -> Value {
 /// Purpose: an empty document for a mode around an origin, as JSON.
 pub fn empty(mode: crate::params::RailMode, lon: f64, lat: f64) -> Network {
     Network::new(mode, [lon, lat])
+}
+
+/// Purpose: a track's heights from its levels and ramps, relative to street level, as
+/// [chainage m, height m] at each zone end: the vertical profile when there are no terrain heights.
+fn level_profile(g: &crate::alignment::TrackGeo, p: &crate::params::ModeParams) -> Vec<[f64; 2]> {
+    let mut out: Vec<[f64; 2]> = Vec::new();
+    for z in &g.zones {
+        let (h0, h1) = match (z.level, z.ramp.and_then(|r| g.ramps.get(r))) {
+            (Some(l), _) => (l.height_m(p), l.height_m(p)),
+            (None, Some(r)) => {
+                let at = |s: f64| {
+                    let k = ((s - r.s0) / (r.s1 - r.s0).max(1e-9)).clamp(0.0, 1.0);
+                    r.from.height_m(p) + (r.to.height_m(p) - r.from.height_m(p)) * k
+                };
+                (at(z.s0), at(z.s1))
+            }
+            _ => (0.0, 0.0),
+        };
+        let r2 = |v: f64| (v * 100.0).round() / 100.0;
+        if out.last().map_or(true, |l| {
+            (l[0] - r2(z.s0)).abs() > 1e-9 || (l[1] - r2(h0)).abs() > 1e-9
+        }) {
+            out.push([r2(z.s0), r2(h0)]);
+        }
+        out.push([r2(z.s1), r2(h1)]);
+    }
+    out
 }

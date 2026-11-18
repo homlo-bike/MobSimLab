@@ -198,3 +198,63 @@ fn published_timetable_is_consistent() {
         }
     }
 }
+
+#[test]
+fn trains_come_to_an_end_station_siding_from_an_overnight_track() {
+    // Homlo (Damascus test): trains go from the overnight depot to the end-station sidings before
+    // they are needed and wait there; when no longer needed they go back to the overnight depot.
+    // The Eastgate sidings as layover sidings, the Westpark depot for the night.
+    let m = model();
+    let mut line = common::metro_m1();
+    line.layover = vec!["es1".into(), "es2".into()];
+    let p = plan(m, &[line], &PlanParams::default()).unwrap();
+    for t in ["es1", "es2"] {
+        assert!(
+            p.stabling_start.get(t).map_or(true, |v| v.is_empty()),
+            "{:?}",
+            p.stabling_start
+        );
+        assert!(
+            p.stabling_end.get(t).map_or(true, |v| v.is_empty()),
+            "{:?}",
+            p.stabling_end
+        );
+    }
+    let sidings = [
+        Place::Storage(m.track("es1").unwrap()),
+        Place::Storage(m.track("es2").unwrap()),
+    ];
+    let mut runs: Vec<_> = p.runs.iter().collect();
+    runs.sort_by(|a, b| a.depart_s().total_cmp(&b.depart_s()));
+    let mut left = 0;
+    for (k, r) in runs.iter().enumerate() {
+        let Some(siding) = r
+            .calls
+            .first()
+            .map(|c| c.place)
+            .filter(|p| sidings.contains(p))
+        else {
+            continue;
+        };
+        // The train came to the siding on its previous run.
+        let before = runs[..k]
+            .iter()
+            .rev()
+            .find(|x| x.vehicle == r.vehicle)
+            .unwrap();
+        assert_eq!(
+            before.calls.last().map(|c| c.place),
+            Some(siding),
+            "{}",
+            r.name
+        );
+        left += 1;
+    }
+    let names: Vec<&str> = p.runs.iter().map(|r| r.name.as_str()).collect();
+    assert!(
+        left > 0,
+        "the sidings are not used: {names:?} {:?}",
+        p.issues
+    );
+    assert!(names.iter().any(|n| n.contains("-stage-")), "{names:?}");
+}

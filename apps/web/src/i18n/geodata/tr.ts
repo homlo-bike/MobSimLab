@@ -71,5 +71,11 @@ export const geodataTr = {
   "area.import.current": "{what}: zaten içe aktarıldı",
   "area.import.failed": "{what}: başlatılamadı. {reason}",
   "area.seeMapData": "İçe aktarmaları CBS, Harita verileri bölümünde izleyin.",
+  "area.country": "Ülke: {name}.",
+  "area.crossesBorder": "Alan bir sınırı geçiyor: {countries}. Tatiller ve fiyatlar {name} için alınır.",
+  "data.liveNotice":
+    "{tiles} harita karosu ve {heights} yükseklik, projenin içe aktarılan verilerinin dışından canlı olarak geldi. Artık projede saklanıyorlar; içe aktarmayı tüm çizimi kapsayacak şekilde genişletin.",
+  "data.extendImport": "Harita verilerinde içe aktarmayı genişlet",
+  "data.hideLive": "Gizle",
   "data.areaRegions": "Alan: {area} km², {names} çevresindeki dikdörtgen",
 } satisfies GeodataMessages;

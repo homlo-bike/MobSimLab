@@ -71,5 +71,11 @@ export const geodataUr = {
   "area.import.current": "{what}: پہلے سے درآمد شدہ",
   "area.import.failed": "{what}: شروع نہ ہو سکا۔ {reason}",
   "area.seeMapData": "درآمد کی پیش رفت GIS، نقشہ ڈیٹا میں دیکھیں۔",
+  "area.country": "ملک: {name}۔",
+  "area.crossesBorder": "علاقہ ایک سرحد پار کرتا ہے: {countries}۔ تعطیلات اور قیمتیں {name} کی لی جاتی ہیں۔",
+  "data.liveNotice":
+    "{tiles} نقشہ ٹائلیں اور {heights} اونچائیاں منصوبے کے درآمد شدہ ڈیٹا کے باہر سے براہ راست آئیں۔ اب یہ منصوبے میں محفوظ ہیں؛ درآمد کو پوری ڈرائنگ تک بڑھائیں۔",
+  "data.extendImport": "نقشہ ڈیٹا میں درآمد بڑھائیں",
+  "data.hideLive": "چھپائیں",
   "data.areaRegions": "علاقہ: {area} مربع کلومیٹر، {names} کے گرد مستطیل",
 } satisfies GeodataMessages;

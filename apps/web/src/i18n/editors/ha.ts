@@ -22,6 +22,8 @@ export const editorsHa = {
   "rail.clear": "Share duka",
   "rail.level.underground2": "Ƙarƙashin ƙasa −2",
   "rail.level.underground": "Ƙarƙashin ƙasa −1",
+  "rail.level.cutting": "Rami a buɗe",
+  "rail.level.cuttingShort": "Rami",
   "rail.level.street": "Matakin titi",
   "rail.level.streetShort": "Titi",
   "rail.level.elevated": "Sama +1",
@@ -167,6 +169,11 @@ export const editorsHa = {
   "rail.tunnel.cut_and_cover": "Haƙa da rufewa",
   "rail.tunnel.tbm": "Ramin da injin ya haƙa (TBM)",
   "rail.structure": "An ɗaga shi a kan",
+  "rail.existingStructure": "Yana sake amfani da tsarin da ke akwai",
+  "rail.existingStructureHint":
+    "Ramukansa, gadoji da gadojin sama suna nan tun da (kamar tsohon ramin jirgin ƙasa), ana lissafin kuɗin gyara.",
+  "rail.existingStation": "A cikin tsarin da ke akwai",
+  "rail.existingStationHint": "Akwatin tasha ko zauren yana nan; ana lissafin gyara da kayan aiki.",
   "rail.structure.auto": "Na atomatik (hanya mai tsayi don tram da metro, babbar gada don manyan layuka)",
   "rail.structure.elevated": "Hanya mai tsayi",
   "rail.structure.viaduct": "Babbar gada mai ginshiƙai",
@@ -669,6 +676,7 @@ export const editorsHa = {
   "schematic.metres": "m {n}",
   "schematic.unknown": "–",
   "schematic.level.underground": "Ƙarƙashin ƙasa",
+  "schematic.level.cutting": "Rami a buɗe",
   "schematic.level.street": "Matakin titi",
   "schematic.level.elevated": "Sama da ƙasa",
   "schematic.level.ramp": "Gangara",
@@ -1424,6 +1432,10 @@ export const editorsHa = {
   "rail.profileRange":
     "Layukan ƙarfe m {min}–{max} sama da teku · gangare mafi tsauri {steep} (mafi yawa {limit} ‰)",
   "rail.profileAria": "Bayanin tsayi: ƙasa da saman ƙarfe a tsawon layin",
+  "rail.levelProfileAria":
+    "Bayanin tsayi daga matakai: saman dogo idan aka kwatanta da matakin titi a tsawon layin",
+  "rail.levelProfileNote":
+    "Tsayi daga matakai da gangaren layin, idan aka kwatanta da matakin titi (ba a loda tsayin ƙasa a nan ba).",
   "rail.profileLegend":
     "Cikakken layi: saman ƙarfe. Layin tsinke: ƙasa (Copernicus GLO-30, an daidaita). Tsayi daga samfurin saman ƙasa, ±4 m.",
 

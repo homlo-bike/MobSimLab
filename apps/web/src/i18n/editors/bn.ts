@@ -22,6 +22,8 @@ export const editorsBn = {
   "rail.clear": "সব মুছুন",
   "rail.level.underground2": "ভূগর্ভ −2",
   "rail.level.underground": "ভূগর্ভ −1",
+  "rail.level.cutting": "খোলা কাটিং",
+  "rail.level.cuttingShort": "কাটিং",
   "rail.level.street": "রাস্তার স্তর",
   "rail.level.streetShort": "রাস্তা",
   "rail.level.elevated": "উঁচু +1",
@@ -166,6 +168,11 @@ export const editorsBn = {
   "rail.tunnel.cut_and_cover": "কাট অ্যান্ড কভার",
   "rail.tunnel.tbm": "বোরড টানেল (TBM)",
   "rail.structure": "উঁচুতে যার উপর",
+  "rail.existingStructure": "বিদ্যমান কাঠামো পুনরায় ব্যবহার করে",
+  "rail.existingStructureHint":
+    "এর সুড়ঙ্গ, সেতু ও ভায়াডাক্ট আগে থেকেই আছে (যেমন পুরোনো রেল সুড়ঙ্গ) এবং সংস্কারের খরচ ধরা হয়।",
+  "rail.existingStation": "বিদ্যমান কাঠামোর মধ্যে",
+  "rail.existingStationHint": "স্টেশন বক্স বা হল আগে থেকেই আছে; সংস্কার ও সজ্জার খরচ ধরা হয়।",
   "rail.structure.auto": "স্বয়ংক্রিয় (ট্রাম ও মেট্রোর জন্য এলিভেটেড পথ, প্রধান লাইনের জন্য ভায়াডাক্ট)",
   "rail.structure.elevated": "এলিভেটেড পথ",
   "rail.structure.viaduct": "ভায়াডাক্ট",
@@ -666,6 +673,7 @@ export const editorsBn = {
   "schematic.metres": "{n} মি",
   "schematic.unknown": "–",
   "schematic.level.underground": "ভূগর্ভস্থ",
+  "schematic.level.cutting": "খোলা কাটিং",
   "schematic.level.street": "রাস্তার স্তরে",
   "schematic.level.elevated": "উড়াল",
   "schematic.level.ramp": "র‍্যাম্প",
@@ -1400,6 +1408,9 @@ export const editorsBn = {
   "rail.profileRange":
     "রেল সমুদ্রপৃষ্ঠ থেকে {min}–{max} মি উপরে · সবচেয়ে খাড়া ঢাল {steep} (সর্বোচ্চ {limit} ‰)",
   "rail.profileAria": "অনুদৈর্ঘ্য প্রোফাইল: ট্র্যাক বরাবর মাটি ও রেলের উপরিভাগ",
+  "rail.levelProfileAria": "স্তর থেকে উল্লম্ব প্রোফাইল: লাইন বরাবর রাস্তার স্তরের তুলনায় রেলের উপরিভাগ",
+  "rail.levelProfileNote":
+    "লাইনের স্তর ও ঢাল থেকে উচ্চতা, রাস্তার স্তরের সাপেক্ষে (এখানে ভূখণ্ডের উচ্চতা লোড হয়নি)।",
   "rail.profileLegend":
     "একটানা: রেলের উপরিভাগ। ড্যাশ: মাটি (Copernicus GLO-30, মসৃণ করা)। উচ্চতা একটি পৃষ্ঠ মডেল থেকে, ±4 মি।",
 

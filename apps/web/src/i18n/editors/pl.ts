@@ -24,6 +24,8 @@ export const editorsPl = {
   "rail.clear": "Wyczyść wszystko",
   "rail.level.underground2": "Pod ziemią −2",
   "rail.level.underground": "Pod ziemią −1",
+  "rail.level.cutting": "Otwarty wykop",
+  "rail.level.cuttingShort": "Wykop",
   "rail.level.street": "Poziom ulicy",
   "rail.level.streetShort": "Ulica",
   "rail.level.elevated": "Estakada +1",
@@ -199,6 +201,11 @@ export const editorsPl = {
   "rail.tunnel.cut_and_cover": "Metoda odkrywkowa",
   "rail.tunnel.tbm": "Tunel drążony (TBM)",
   "rail.structure": "Wyniesione na",
+  "rail.existingStructure": "Wykorzystuje istniejącą konstrukcję",
+  "rail.existingStructureHint":
+    "Jego tunele, mosty i wiadukty już istnieją (np. stary tunel kolejowy) i są liczone jako remont.",
+  "rail.existingStation": "W istniejącej konstrukcji",
+  "rail.existingStationHint": "Komora lub hala stacji już istnieje; liczony jest remont i wyposażenie.",
   "rail.structure.auto": "Automatycznie (estakada dla tramwaju i metra, wiadukt dla linii głównych)",
   "rail.structure.elevated": "Estakada",
   "rail.structure.viaduct": "Wiadukt",
@@ -723,6 +730,7 @@ export const editorsPl = {
   "schematic.metres": "{n} m",
   "schematic.unknown": "–",
   "schematic.level.underground": "Pod ziemią",
+  "schematic.level.cutting": "Otwarty wykop",
   "schematic.level.street": "Na poziomie ulicy",
   "schematic.level.elevated": "Na estakadzie",
   "schematic.level.ramp": "Rampa",
@@ -1495,6 +1503,9 @@ export const editorsPl = {
   "rail.levelHeight": "Poziomo, szyny na {rail} m n.p.m. · teren wzdłuż {min}–{max} m",
   "rail.profileRange": "Szyny {min}–{max} m n.p.m. · największe pochylenie {steep} (maks. {limit} ‰)",
   "rail.profileAria": "Profil podłużny: teren i główka szyny wzdłuż toru",
+  "rail.levelProfileAria": "Profil podłużny z poziomów: główka szyny względem poziomu ulicy wzdłuż toru",
+  "rail.levelProfileNote":
+    "Wysokości z poziomów i ramp toru, względem poziomu ulicy (nie wczytano tu wysokości terenu).",
   "rail.profileLegend":
     "Ciągła: główka szyny. Przerywana: teren (Copernicus GLO-30, wygładzony). Wysokości z modelu powierzchni, ±4 m.",
 

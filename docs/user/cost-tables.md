@@ -6,7 +6,7 @@ The **Tables** tab estimates what the project costs to build and to run a year, 
 
 The tables read what is drawn in the project:
 
-- **Railways** from the railway tool: track length by construction type (street level, elevated guideway, viaduct, bridge, ramp, cut and cover tunnel, bored tunnel), track, power and signalling, switches, and stations by level. Set how tunnels and elevated stretches are built on each track in the railway tool (**Tunnel built by**, **Raised on**; see [Railway tool](railway-tool.md#draw-tracks)).
+- **Railways** from the railway tool: track length by construction type (street level, elevated guideway, viaduct, bridge, ramp, cut and cover tunnel, bored tunnel), track, power and signalling, switches, and stations by level. Set how tunnels and elevated stretches are built on each track in the railway tool (**Tunnel built by**, **Raised on**, **Re-uses an existing structure**; see [Railway tool](railway-tool.md#draw-tracks)). Tracks and stations in existing structures are listed as refurbished.
 - **Rail service lines**: the trains each line needs (from publishing its timetable) with reserves, their depot places, crew hours and running cost per car-km.
 - **Street lines**: stops, the bus lanes the line uses, trolley wires, vehicles for the timetable (one per vehicle block) with reserves, depot places and vehicle-hours (service hours a day at the line's headway).
 

@@ -22,6 +22,8 @@ export const editorsTe = {
   "rail.clear": "అన్నీ తుడిచివేయండి",
   "rail.level.underground2": "భూగర్భం −2",
   "rail.level.underground": "భూగర్భం −1",
+  "rail.level.cutting": "తెరిచిన కటింగ్",
+  "rail.level.cuttingShort": "కటింగ్",
   "rail.level.street": "వీధి స్థాయి",
   "rail.level.streetShort": "వీధి",
   "rail.level.elevated": "ఎత్తైన +1",
@@ -167,6 +169,11 @@ export const editorsTe = {
   "rail.tunnel.cut_and_cover": "కట్ అండ్ కవర్",
   "rail.tunnel.tbm": "బోర్ చేసిన సొరంగం (TBM)",
   "rail.structure": "ఎత్తులో దేనిపై",
+  "rail.existingStructure": "ఉన్న నిర్మాణాన్ని మళ్లీ ఉపయోగిస్తుంది",
+  "rail.existingStructureHint":
+    "దీని సొరంగాలు, వంతెనలు, వయాడక్ట్‌లు ఇప్పటికే ఉన్నాయి (పాత రైల్వే సొరంగం వంటివి); పునరుద్ధరణ ఖర్చుగా లెక్కిస్తారు.",
+  "rail.existingStation": "ఉన్న నిర్మాణంలో",
+  "rail.existingStationHint": "స్టేషన్ బాక్స్ లేదా హాల్ ఇప్పటికే ఉంది; పునరుద్ధరణ, అమరిక ఖర్చు లెక్కిస్తారు.",
   "rail.structure.auto": "ఆటో (ట్రామ్, మెట్రోకు ఎలివేటెడ్ మార్గం; ప్రధాన లైన్లకు వయాడక్ట్)",
   "rail.structure.elevated": "ఎలివేటెడ్ మార్గం",
   "rail.structure.viaduct": "వయాడక్ట్",
@@ -675,6 +682,7 @@ export const editorsTe = {
   "schematic.metres": "{n} మీ",
   "schematic.unknown": "–",
   "schematic.level.underground": "భూగర్భం",
+  "schematic.level.cutting": "తెరిచిన కటింగ్",
   "schematic.level.street": "వీధి స్థాయి",
   "schematic.level.elevated": "ఎత్తైన మార్గం",
   "schematic.level.ramp": "ర్యాంప్",
@@ -1413,6 +1421,9 @@ export const editorsTe = {
   "rail.profileRange":
     "పట్టాలు సముద్ర మట్టానికి {min}–{max} మీ · అత్యంత నిటారు వాలు {steep} (గరిష్ఠం {limit} ‰)",
   "rail.profileAria": "రేఖాంశ ప్రొఫైల్: ట్రాక్ వెంబడి నేల మరియు పట్టా పైభాగం",
+  "rail.levelProfileAria": "స్థాయిల నుండి నిలువు ప్రొఫైల్: ట్రాక్ వెంబడి వీధి స్థాయితో పోలిస్తే పట్టా పైభాగం",
+  "rail.levelProfileNote":
+    "ట్రాక్ స్థాయిలు మరియు ర్యాంప్‌ల నుండి ఎత్తులు, వీధి స్థాయికి సాపేక్షంగా (ఇక్కడ భూభాగ ఎత్తులు లోడ్ కాలేదు).",
   "rail.profileLegend":
     "నిండు గీత: పట్టా పైభాగం. చుక్కల గీత: నేల (Copernicus GLO-30, సున్నితం చేసినది). ఎత్తులు ఉపరితల నమూనా నుండి, ±4 మీ.",
 

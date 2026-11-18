@@ -258,6 +258,8 @@ struct Stack {
     capacity: usize,
     now: Vec<usize>,
     morning: Vec<usize>,
+    /// An end-station siding where trains only wait between trips: none stays overnight.
+    layover: bool,
 }
 
 /// Sections a run blocks, with start and end relative to its departure, s.
@@ -319,6 +321,7 @@ pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, Strin
                 capacity: cap,
                 now: Vec::new(),
                 morning: Vec::new(),
+                layover: lines.iter().any(|x| x.layover.contains(s)),
             });
         }
     }
@@ -338,6 +341,7 @@ pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, Strin
     };
     let trips = pl.trips();
     pl.construct(trips);
+    pl.clear_layovers();
     // Drop pull-outs that were taken back, renumbering the blocking intervals.
     let keep: Vec<bool> = pl.runs.iter().map(|r| !r.calls.is_empty()).collect();
     let mut new_index = vec![usize::MAX; pl.runs.len()];
@@ -1759,7 +1763,9 @@ impl<'a> Planner<'a> {
                 continue;
             }
             let has = !s.now.is_empty();
-            if !has && s.morning.len() >= s.capacity {
+            // A train comes out of the morning stabling, or, on an end-station siding, from an
+            // overnight track first (see `stage`).
+            if !has && (s.morning.len() >= s.capacity || s.layover && s.now.len() >= s.capacity) {
                 continue;
             }
             for d in [Dir::Up, Dir::Down] {
@@ -1770,8 +1776,15 @@ impl<'a> Planner<'a> {
                 for cand in origin_c.iter().filter(|c| !banned.contains(&c.0)) {
                     let e = 1 - trip.dir;
                     if let Some(fp) = self.depot_path(trip.line, e, &start, &[*cand], true) {
-                        // Reuse a train already out of the morning stabling first.
-                        let c = fp.cost + if has { 0.0 } else { 1.0e5 };
+                        // Reuse a train already out of the morning stabling first; then a new
+                        // one by way of an end-station siding, where it waits for its trip after
+                        // coming out early; then one straight from its overnight track.
+                        let c = fp.cost
+                            + match (has, s.layover) {
+                                (true, _) => 0.0,
+                                (false, true) => 0.5e5,
+                                (false, false) => 1.0e5,
+                            };
                         opts.push((c, si, fp));
                     }
                 }
@@ -1787,6 +1800,31 @@ impl<'a> Planner<'a> {
                 }
                 _ => None,
             });
+            // Every storage track of the line in use: say which, so the drawing can get more.
+            let mine: Vec<&Stack> = self
+                .stacks
+                .iter()
+                .filter(|s| l.stabling.contains(&self.m.tracks[s.track].id))
+                .filter(|s| !self.m.platforms.iter().any(|p| p.track == s.track))
+                .collect();
+            let full = !mine.is_empty()
+                && mine
+                    .iter()
+                    .all(|s| s.now.is_empty() && s.morning.len() >= s.capacity);
+            if full {
+                let names: Vec<String> = mine
+                    .iter()
+                    .map(|s| format!("{} ({} trains)", self.m.tracks[s.track].id, s.capacity))
+                    .collect();
+                return Err((
+                    format!(
+                        "every storage track is in use ({}): add storage tracks, or a siding at {}",
+                        names.join(", "),
+                        at.unwrap_or_else(|| "the end station".into())
+                    ),
+                    None,
+                ));
+            }
             return Err((
                 match at {
                     Some(name) => {
@@ -1802,6 +1840,20 @@ impl<'a> Planner<'a> {
         for (_, si, fp) in opts {
             let track = self.stacks[si].track;
             let origin = *fp.places.last().unwrap();
+            // An empty end-station siding: bring a train to it from an overnight track first.
+            if self.stacks[si].layover
+                && self.stacks[si].now.is_empty()
+                && !self.stage(trip.line, si, trip.dep - self.p.pull_out_margin_s - 600.0)
+            {
+                last = (
+                    format!(
+                        "no overnight track has a train to bring to the end-station siding {} in time",
+                        self.m.tracks[track].id
+                    ),
+                    None,
+                );
+                continue;
+            }
             // Pull-out must also leave a service path from that platform.
             let steps = route_steps(self.m, &fp.routes).unwrap_or_default();
             let adir = arrival_dir(self.m, &steps, origin).unwrap_or(Dir::Up);
@@ -1838,16 +1890,19 @@ impl<'a> Planner<'a> {
                 // The vehicle: the front train, or a new one in the morning stabling.
                 let s = &self.stacks[si];
                 let vehicle = s.now.last().copied().unwrap_or(self.vehicles.len());
+                // A train already there leaves once it has arrived.
+                let window = match s.now.last() {
+                    Some(&v) => self
+                        .p
+                        .max_depot_shift_s
+                        .min(ideal - self.vehicles[v].ready_s),
+                    None => self.p.max_depot_shift_s,
+                };
+                if window < 0.0 {
+                    continue;
+                }
                 let idx = self.runs.len();
-                match self.search_time(
-                    &mk,
-                    ideal,
-                    false,
-                    self.p.max_depot_shift_s,
-                    vehicle,
-                    None,
-                    idx,
-                ) {
+                match self.search_time(&mk, ideal, false, window, vehicle, None, idx) {
                     Ok((timing, t, _)) => {
                         let s = &mut self.stacks[si];
                         if s.now.pop().is_none() {
@@ -1887,6 +1942,338 @@ impl<'a> Planner<'a> {
         Err((format!("pull-out: {}", last.0), last.1))
     }
 
+    /// Purpose: the ways from a place to a storage track: straight on, or by way of one or two end
+    /// platforms of the line, where the train reverses (sidings and depots behind stub terminals
+    /// are entered from a platform). Output: each way's legs, cheapest way first.
+    fn shunt_ways(&self, line: usize, from: Place, to: usize) -> Vec<Vec<FoundPath>> {
+        let l = &self.lines[line];
+        let ends: Vec<PlatformId> = [l.calls.first(), l.calls.last()]
+            .into_iter()
+            .flatten()
+            .flat_map(|c| resolve(self.m, &c.pick).unwrap_or_default())
+            .collect();
+        let goal = vec![(Place::Storage(to), 0.0)];
+        let mut ways: Vec<(f64, Vec<FoundPath>)> = Vec::new();
+        // (place, directions it may leave in, cost so far, legs so far)
+        let mut front: Vec<(Place, Vec<Dir>, f64, Vec<FoundPath>)> =
+            vec![(from, vec![Dir::Up, Dir::Down], 0.0, Vec::new())];
+        for reversals in 0..3 {
+            let mut next = Vec::new();
+            for (at, dirs, cost, legs) in &front {
+                for &d in dirs {
+                    let start = departure_routes(self.m, *at, d);
+                    if start.is_empty() {
+                        continue;
+                    }
+                    if let Some(fp) = find_path(
+                        self.m,
+                        &start,
+                        std::slice::from_ref(&goal),
+                        self.p.max_routes,
+                    ) {
+                        let mut w = legs.clone();
+                        let c = cost + fp.cost;
+                        w.push(fp);
+                        ways.push((c, w));
+                    }
+                    if reversals == 2 {
+                        continue;
+                    }
+                    for &pf in &ends {
+                        let p = Place::Platform(pf);
+                        if p == *at {
+                            continue;
+                        }
+                        let Some(fp) =
+                            find_path(self.m, &start, &[vec![(p, 0.0)]], self.p.max_routes)
+                        else {
+                            continue;
+                        };
+                        let steps = route_steps(self.m, &fp.routes).unwrap_or_default();
+                        let Some(adir) = arrival_dir(self.m, &steps, p) else {
+                            continue;
+                        };
+                        let mut w = legs.clone();
+                        let c = cost + fp.cost;
+                        w.push(fp);
+                        next.push((p, vec![adir.reverse()], c, w));
+                    }
+                }
+            }
+            if !ways.is_empty() {
+                break;
+            }
+            front = next;
+        }
+        ways.sort_by(|a, b| a.0.total_cmp(&b.0));
+        ways.into_iter().map(|w| w.1).collect()
+    }
+
+    /// Purpose: move train `v`, standing at `from` and ready at `ready_s` after run `prev`, to the
+    /// storage track `to`, straight on or reversing in an end platform of the line.
+    /// Inputs: `by_s` = Some(time): arrive as close before it as possible; None: leave as soon as
+    /// the line has room (within 6 h). Run names start with `name`.
+    /// Output: the last run's index and the train's arrival direction, or None with nothing changed.
+    #[allow(clippy::too_many_arguments)]
+    fn shunt(
+        &mut self,
+        line: usize,
+        v: usize,
+        from: Place,
+        prev: Option<usize>,
+        ready_s: f64,
+        to: usize,
+        by_s: Option<f64>,
+        name: &str,
+        kind: RunKind,
+        direction: u8,
+    ) -> Option<(usize, Dir)> {
+        let turn = self.lines[line].turnback_s;
+        for legs in self.shunt_ways(line, from, to) {
+            // Running time of each leg (its first variant).
+            let mut times = Vec::new();
+            for (k, fp) in legs.iter().enumerate() {
+                let t = self
+                    .depot_variants(line, name, fp)
+                    .first()
+                    .and_then(|r| run_timing(self.m, r, k, &self.p.blocking).ok())
+                    .map(|x| x.profile.total_time_s());
+                times.push(t);
+            }
+            let Some(times) = times.into_iter().collect::<Option<Vec<f64>>>() else {
+                continue;
+            };
+            let total: f64 = times.iter().sum::<f64>() + turn * (legs.len() - 1) as f64;
+            // Saved state, to undo a way that fails half-way.
+            let n0 = self.runs.len();
+            let saved_prev = prev.map(|p| self.runs[p].clone());
+            let saved_v = self.vehicles[v].clone();
+            let saved_res = self.reserved.clone();
+            let mut at = (prev, ready_s, from, Dir::Up);
+            let mut ok = true;
+            for (k, fp) in legs.iter().enumerate() {
+                let (ideal, later, shift) = match (k, by_s) {
+                    (0, Some(by)) => {
+                        let ideal = by - total;
+                        if ideal < ready_s {
+                            ok = false;
+                            break;
+                        }
+                        (ideal, false, ideal - ready_s)
+                    }
+                    (_, Some(by)) => {
+                        let ideal = at.1 + turn;
+                        (ideal, true, (by - times[k] - ideal).max(0.0))
+                    }
+                    (0, None) => (ready_s + 60.0, true, 6.0 * 3600.0),
+                    (_, None) => (at.1 + turn, true, 6.0 * 3600.0),
+                };
+                let leg_name = if k == 0 {
+                    name.to_string()
+                } else {
+                    format!("{name}-{k}")
+                };
+                let mut placed = None;
+                for base in self.depot_variants(line, &leg_name, fp) {
+                    let mk = |t: f64| TrainRun {
+                        depart_s: t,
+                        ..base.clone()
+                    };
+                    let idx = self.runs.len();
+                    if let Ok((timing, t, prev_t)) =
+                        self.search_time(&mk, ideal, later, shift, v, at.0, idx)
+                    {
+                        placed = Some((mk(t), timing, prev_t));
+                        break;
+                    }
+                }
+                let Some((run, timing, prev_t)) = placed else {
+                    ok = false;
+                    break;
+                };
+                let dest = *fp.places.last().unwrap();
+                let calls = self.call_list(&[at.2, dest], &[None, None]);
+                let pr = PlannedRun {
+                    name: leg_name,
+                    line,
+                    kind,
+                    direction,
+                    vehicle: v,
+                    planned_depart_s: ideal,
+                    run,
+                    calls,
+                    blocking: Vec::new(),
+                };
+                let i = self.commit(pr, timing, at.0.zip(prev_t));
+                let steps = route_steps(self.m, &fp.routes).unwrap_or_default();
+                let adir = arrival_dir(self.m, &steps, dest).unwrap_or(Dir::Up);
+                self.vehicles[v] = Vehicle {
+                    at: dest,
+                    arrive_dir: adir,
+                    ready_s: self.runs[i].arrive_s(),
+                    last_run: i,
+                };
+                at = (Some(i), self.runs[i].arrive_s(), dest, adir);
+            }
+            if ok {
+                return at.0.map(|i| (i, at.3));
+            }
+            for i in (n0..self.runs.len()).rev() {
+                self.remove_index(i);
+            }
+            self.runs.truncate(n0);
+            if let (Some(p), Some(r)) = (prev, saved_prev) {
+                self.remove_index(p);
+                self.runs[p] = r;
+                self.add_index(p);
+            }
+            self.vehicles[v] = saved_v;
+            self.reserved = saved_res;
+        }
+        None
+    }
+
+    /// Purpose: bring a train from an overnight track to an end-station siding, early, while the line
+    /// has room, so it waits there until it is needed (Homlo, Damascus test: trains go from the
+    /// overnight depot to the end stations before their time comes).
+    /// Inputs: the line, the siding's stack and the time the train is needed there by, s.
+    /// Output: whether a train is now on the siding. Effect: the runs, the vehicle and both stacks.
+    fn stage(&mut self, line: usize, si: usize, by_s: f64) -> bool {
+        let lines = self.lines;
+        let l = &lines[line];
+        let target = self.stacks[si].track;
+        // From an hour before the line's first trip.
+        let day = l
+            .bands
+            .iter()
+            .map(|b| b.from_s)
+            .fold(f64::INFINITY, f64::min)
+            - 3600.0;
+        // Overnight tracks with a train standing, then those with a train left for the morning.
+        let mut srcs: Vec<usize> = (0..self.stacks.len())
+            .filter(|&oi| {
+                let o = &self.stacks[oi];
+                oi != si
+                    && !o.layover
+                    && l.stabling.contains(&self.m.tracks[o.track].id)
+                    && !self.m.platforms.iter().any(|p| p.track == o.track)
+                    && (!o.now.is_empty() || o.morning.len() < o.capacity)
+            })
+            .collect();
+        srcs.sort_by_key(|&oi| self.stacks[oi].now.is_empty());
+        for oi in srcs {
+            let from = Place::Storage(self.stacks[oi].track);
+            let (v, fresh) = match self.stacks[oi].now.last() {
+                Some(&v) => (v, false),
+                None => {
+                    self.vehicles.push(Vehicle {
+                        at: from,
+                        arrive_dir: Dir::Up,
+                        ready_s: 0.0,
+                        last_run: 0,
+                    });
+                    (self.vehicles.len() - 1, true)
+                }
+            };
+            let (prev, ready) = if fresh {
+                (None, day.min(by_s))
+            } else {
+                let ve = &self.vehicles[v];
+                (Some(ve.last_run), ve.ready_s)
+            };
+            let name = format!("{}-stage-{}", l.id, self.runs.len());
+            match self.shunt(
+                line,
+                v,
+                from,
+                prev,
+                ready,
+                target,
+                Some(by_s),
+                &name,
+                RunKind::PullOut,
+                0,
+            ) {
+                Some(_) => {
+                    let o = &mut self.stacks[oi];
+                    if fresh {
+                        o.morning.push(v);
+                    } else {
+                        o.now.pop();
+                    }
+                    self.stacks[si].now.push(v);
+                    return true;
+                }
+                None => {
+                    if fresh {
+                        self.vehicles.pop();
+                    }
+                }
+            }
+        }
+        false
+    }
+
+    /// Purpose: at the end of the day, take the trains left on end-station sidings to overnight
+    /// tracks, as soon as the line has room for each run (Homlo, Damascus test). A train that
+    /// cannot go stays on its siding, and the issues say so.
+    fn clear_layovers(&mut self) {
+        for si in 0..self.stacks.len() {
+            if !self.stacks[si].layover {
+                continue;
+            }
+            while let Some(&v) = self.stacks[si].now.last() {
+                let ve = self.vehicles[v].clone();
+                let line = self.runs[ve.last_run].line;
+                let lines = self.lines;
+                let l = &lines[line];
+                let direction = self.runs[ve.last_run].direction;
+                let mut done = false;
+                for oi in 0..self.stacks.len() {
+                    let o = &self.stacks[oi];
+                    if o.layover
+                        || o.now.len() >= o.capacity
+                        || !l.stabling.contains(&self.m.tracks[o.track].id)
+                    {
+                        continue;
+                    }
+                    let name = format!("{}-night-{}", l.id, self.runs.len());
+                    let to = o.track;
+                    if self
+                        .shunt(
+                            line,
+                            v,
+                            ve.at,
+                            Some(ve.last_run),
+                            ve.ready_s,
+                            to,
+                            None,
+                            &name,
+                            RunKind::PullIn,
+                            direction,
+                        )
+                        .is_some()
+                    {
+                        self.stacks[si].now.pop();
+                        self.stacks[oi].now.push(v);
+                        done = true;
+                        break;
+                    }
+                }
+                if !done {
+                    self.issues.push(Issue::NotStabled {
+                        vehicle: v,
+                        at: ve.at.id(self.m),
+                        reason:
+                            "no overnight track with room is reachable from the end-station siding"
+                                .into(),
+                    });
+                    break;
+                }
+            }
+        }
+    }
+
     /// Purpose: take a train from its last platform to stabling.
     fn pull_in(&mut self, v: usize) {
         let ve = self.vehicles[v].clone();
@@ -1903,7 +2290,10 @@ impl<'a> Planner<'a> {
             let e = 1 - self.runs[ve.last_run].direction;
             let end = [(Place::Storage(s.track), 0.0)];
             if let Some(fp) = self.depot_path(line, e, &start, &end, false) {
-                opts.push((fp.cost, si, fp));
+                // The overnight tracks first; an end-station siding when the line has no room to
+                // reach them now (the train goes on later, see `clear_layovers`).
+                let c = fp.cost + if s.layover { 1.0e5 } else { 0.0 };
+                opts.push((c, si, fp));
             }
         }
         opts.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap().then(a.1.cmp(&b.1)));

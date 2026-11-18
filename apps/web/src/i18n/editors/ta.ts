@@ -22,6 +22,8 @@ export const editorsTa = {
   "rail.clear": "அனைத்தையும் அழி",
   "rail.level.underground2": "நிலத்தடி −2",
   "rail.level.underground": "நிலத்தடி −1",
+  "rail.level.cutting": "திறந்த வெட்டு",
+  "rail.level.cuttingShort": "வெட்டு",
   "rail.level.street": "தெரு மட்டம்",
   "rail.level.streetShort": "தெரு",
   "rail.level.elevated": "உயர்த்தப்பட்டது +1",
@@ -167,6 +169,12 @@ export const editorsTa = {
   "rail.tunnel.cut_and_cover": "வெட்டி மூடுதல்",
   "rail.tunnel.tbm": "துளையிட்ட சுரங்கம் (TBM)",
   "rail.structure": "உயர்த்தப்பட்டது",
+  "rail.existingStructure": "இருக்கும் அமைப்பை மீண்டும் பயன்படுத்துகிறது",
+  "rail.existingStructureHint":
+    "இதன் சுரங்கங்கள், பாலங்கள், வயடக்ட்கள் ஏற்கனவே உள்ளன (பழைய ரயில் சுரங்கம் போல); புதுப்பிப்புச் செலவாகக் கணக்கிடப்படும்.",
+  "rail.existingStation": "இருக்கும் அமைப்பில்",
+  "rail.existingStationHint":
+    "நிலையப் பெட்டி அல்லது மண்டபம் ஏற்கனவே உள்ளது; புதுப்பிப்பு மற்றும் பொருத்துதல் செலவு கணக்கிடப்படும்.",
   "rail.structure.auto": "தானியங்கி (டிராம், மெட்ரோவுக்கு உயர்மட்டப் பாதை; முதன்மை வழித்தடங்களுக்கு வயடக்ட்)",
   "rail.structure.elevated": "உயர்மட்டப் பாதை",
   "rail.structure.viaduct": "வயடக்ட்",
@@ -693,6 +701,7 @@ export const editorsTa = {
   "schematic.metres": "{n} மீ",
   "schematic.unknown": "–",
   "schematic.level.underground": "நிலத்தடி",
+  "schematic.level.cutting": "திறந்த வெட்டு",
   "schematic.level.street": "தெரு மட்டம்",
   "schematic.level.elevated": "உயர்த்தப்பட்டது",
   "schematic.level.ramp": "சாய்தளம்",
@@ -1454,6 +1463,10 @@ export const editorsTa = {
   "rail.profileRange":
     "தண்டவாளங்கள் கடல் மட்டத்திலிருந்து {min}–{max} மீ · மிகச் செங்குத்தான சாய்வு {steep} (அதிகபட்சம் {limit} ‰)",
   "rail.profileAria": "நீள்வெட்டு: பாதையின் வழியே நிலமும் தண்டவாள மேற்பரப்பும்",
+  "rail.levelProfileAria":
+    "நிலைகளிலிருந்து செங்குத்து சுயவிவரம்: தடம் நெடுகிலும் தெரு மட்டத்துடன் ஒப்பிட்ட தண்டவாள மேல்பகுதி",
+  "rail.levelProfileNote":
+    "தடத்தின் நிலைகள் மற்றும் சரிவுகளிலிருந்து உயரங்கள், தெரு மட்டத்தைப் பொறுத்து (இங்கே நில உயரங்கள் ஏற்றப்படவில்லை).",
   "rail.profileLegend":
     "தொடர்கோடு: தண்டவாள மேற்பரப்பு. இடைக்கோடு: நிலம் (Copernicus GLO-30, மென்மையாக்கப்பட்டது). உயரங்கள் மேற்பரப்பு மாதிரியிலிருந்து, ±4 மீ.",
 

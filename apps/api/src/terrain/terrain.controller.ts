@@ -54,7 +54,12 @@ export class TerrainController {
     const { points, projectId } = parse(pointsBody, body);
     const project = await this.gate?.readable(req, projectId);
     const h = await upstream(() => this.terrain.heights(points as LonLat[], project));
-    return { elevationsM: h.values, source: mainSource(h.sources), sources: h.sources };
+    return {
+      elevationsM: h.values,
+      source: mainSource(h.sources),
+      sources: h.sources,
+      ...(project ? { liveCount: h.live ?? 0 } : {}),
+    };
   }
 
   /**

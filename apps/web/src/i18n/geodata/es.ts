@@ -72,5 +72,12 @@ export const geodataEs = {
   "area.import.current": "{what}: ya importado",
   "area.import.failed": "{what}: no se pudo iniciar. {reason}",
   "area.seeMapData": "Siga las importaciones en SIG, Datos del mapa.",
+  "area.country": "País: {name}.",
+  "area.crossesBorder":
+    "El área cruza una frontera: {countries}. Los festivos y los precios son los de {name}.",
+  "data.liveNotice":
+    "{tiles} teselas de mapa y {heights} alturas se obtuvieron en directo fuera de los datos importados del proyecto. Ahora se guardan en el proyecto; amplía la importación para cubrir todo el dibujo.",
+  "data.extendImport": "Ampliar la importación en Datos del mapa",
+  "data.hideLive": "Ocultar",
   "data.areaRegions": "Área: {area} km², el rectángulo alrededor de {names}",
 } satisfies GeodataMessages;
