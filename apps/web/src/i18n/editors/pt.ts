@@ -233,6 +233,8 @@ export const editorsPt = {
   "rail.line.publish": "Publicar horário",
   "rail.line.publishAgain": "Publicar novamente",
   "rail.line.fixFirst": "Corrija os erros em Verificações antes de publicar.",
+  "rail.line.fixFirstMenu":
+    "Corrija os erros antes de publicar. Estão em Verificações, o botão do sino no topo.",
   "rail.line.stale":
     "O desenho mudou desde a publicação. Publique novamente para atualizar o planejador de viagens.",
   "rail.line.published": "Publicado: {lines} · {trips}. Viaje neles em Simulador → Planejador de viagens.",

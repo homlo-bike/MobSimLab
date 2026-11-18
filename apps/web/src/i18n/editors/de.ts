@@ -233,6 +233,8 @@ export const editorsDe = {
   "rail.line.publish": "Fahrplan veröffentlichen",
   "rail.line.publishAgain": "Erneut veröffentlichen",
   "rail.line.fixFirst": "Beheben Sie vor dem Veröffentlichen die Fehler unter Prüfungen.",
+  "rail.line.fixFirstMenu":
+    "Beheben Sie vor dem Veröffentlichen die Fehler. Sie stehen unter Prüfungen, der Glocken-Schaltfläche oben.",
   "rail.line.stale":
     "Die Zeichnung hat sich seit dem Veröffentlichen geändert. Veröffentlichen Sie erneut, um den Reiseplaner zu aktualisieren.",
   "rail.line.published":

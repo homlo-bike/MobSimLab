@@ -270,6 +270,8 @@ export const editorsPl = {
   "rail.line.publish": "Opublikuj rozkład",
   "rail.line.publishAgain": "Opublikuj ponownie",
   "rail.line.fixFirst": "Przed publikacją popraw błędy kontroli.",
+  "rail.line.fixFirstMenu":
+    "Przed publikacją popraw błędy. Są wymienione w Kontrolach, pod przyciskiem dzwonka u góry.",
   "rail.line.stale":
     "Rysunek zmienił się od publikacji. Opublikuj ponownie, aby zaktualizować wyszukiwarkę podróży.",
   "rail.line.published": "Opublikowano {lines} · {trips}. Jedź w Symulator → Podróże.",

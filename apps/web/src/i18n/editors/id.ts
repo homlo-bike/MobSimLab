@@ -232,6 +232,8 @@ export const editorsId = {
   "rail.line.publish": "Terbitkan jadwal",
   "rail.line.publishAgain": "Terbitkan lagi",
   "rail.line.fixFirst": "Perbaiki galat pemeriksaan sebelum menerbitkan.",
+  "rail.line.fixFirstMenu":
+    "Perbaiki galat sebelum menerbitkan. Galat tercantum di Pemeriksaan, tombol lonceng di bagian atas.",
   "rail.line.stale": "Gambar berubah sejak diterbitkan. Terbitkan lagi untuk memperbarui pencari perjalanan.",
   "rail.line.published": "Diterbitkan {lines} · {trips}. Naiki di Simulator → Perjalanan.",
   "rail.line.notes": "Catatan",

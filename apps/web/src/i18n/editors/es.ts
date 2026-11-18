@@ -233,6 +233,8 @@ export const editorsEs = {
   "rail.line.publish": "Publicar horario",
   "rail.line.publishAgain": "Publicar de nuevo",
   "rail.line.fixFirst": "Corrige los errores de Comprobaciones antes de publicar.",
+  "rail.line.fixFirstMenu":
+    "Corrige los errores antes de publicar. Están en Comprobaciones, el botón de la campana de arriba.",
   "rail.line.stale":
     "El dibujo ha cambiado desde la publicación. Publica de nuevo para actualizar el planificador de viajes.",
   "rail.line.published":

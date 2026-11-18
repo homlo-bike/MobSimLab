@@ -213,6 +213,7 @@ export const editorsYo = {
   "rail.line.publish": "Tẹ àkókò ìrìn jáde",
   "rail.line.publishAgain": "Tún tẹ̀ ẹ́ jáde",
   "rail.line.fixFirst": "Ṣàtúnṣe àwọn àṣìṣe lábẹ́ Àwọn àyẹ̀wò ṣáájú títẹ̀ jáde.",
+  "rail.line.fixFirstMenu": "Ṣàtúnṣe àwọn àṣìṣe ṣáájú títẹ̀ jáde. Wọ́n wà lábẹ́ Àyẹ̀wò, bọ́tìnnì agogo lókè.",
   "rail.line.stale":
     "Àwòrán náà ti yí padà láti ìgbà tí a tẹ̀ ẹ́ jáde. Tún tẹ̀ ẹ́ jáde láti ṣe àtúnṣe olùṣètò ìrìn-àjò.",
   "rail.line.published": "A ti tẹ̀ ẹ́ jáde {lines} · {trips}. Wọ̀ wọ́n nínú Afarawé → Olùṣètò ìrìn-àjò.",

@@ -232,6 +232,8 @@ export const editorsHa = {
   "rail.line.publish": "Wallafa jadawali",
   "rail.line.publishAgain": "Sake wallafawa",
   "rail.line.fixFirst": "Gyara kurakurai ƙarƙashin Bincike kafin wallafawa.",
+  "rail.line.fixFirstMenu":
+    "Gyara kurakurai kafin wallafawa. Suna ƙarƙashin Bincike, maɓallin ƙararrawa a sama.",
   "rail.line.stale": "Zanen ya canza tun wallafawa. Sake wallafawa don sabunta mai tsara tafiya.",
   "rail.line.published": "An wallafa {lines} · {trips}. Hau su a Mai kwaikwayo → Mai tsara tafiya.",
   "rail.line.notes": "Bayanai",

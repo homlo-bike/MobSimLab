@@ -232,6 +232,8 @@ export const editorsNl = {
   "rail.line.publish": "Dienstregeling publiceren",
   "rail.line.publishAgain": "Opnieuw publiceren",
   "rail.line.fixFirst": "Los de fouten onder Controles op voordat je publiceert.",
+  "rail.line.fixFirstMenu":
+    "Los de fouten op voordat je publiceert. Ze staan onder Controles, de belknop bovenaan.",
   "rail.line.stale":
     "De tekening is veranderd sinds het publiceren. Publiceer opnieuw om de reisplanner bij te werken.",
   "rail.line.published": "{lines} · {trips} gepubliceerd. Reis ermee in Simulator → Reisplanner.",

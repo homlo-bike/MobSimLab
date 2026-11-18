@@ -235,6 +235,8 @@ export const editorsZu = {
   "rail.line.publish": "Shicilela uhlelo lwezikhathi",
   "rail.line.publishAgain": "Shicilela futhi",
   "rail.line.fixFirst": "Lungisa amaphutha angaphansi kokuthi Ukuhlola ngaphambi kokushicilela.",
+  "rail.line.fixFirstMenu":
+    "Lungisa amaphutha ngaphambi kokushicilela. Asohlwini ngaphansi kokuthi Ukuhlola, inkinobho yensimbi phezulu.",
   "rail.line.stale":
     "Umdwebo ushintshile kusukela ushicilelwe. Shicilela futhi ukuze ubuyekeze umhleli wohambo.",
   "rail.line.published": "Kushicilelwe {lines} · {trips}. Bagibele ku-Isilingisi → Umhleli wohambo.",

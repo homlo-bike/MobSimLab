@@ -17,7 +17,7 @@ import {
   trainsFor,
   updateLine,
 } from "./serviceLines";
-import { TimeDistanceGraph } from "./TimeDistanceGraph";
+import { shiftText, TimeDistanceGraph } from "./TimeDistanceGraph";
 import {
   type Access,
   type Grade,
@@ -57,6 +57,8 @@ interface Props {
   designValues?: Readonly<Record<string, number>> | null;
   /** The project calendar (peak windows of each day type); the default calendar when absent. */
   calendar?: ServiceCalendar;
+  /** The drawing's checks are under the Checks (bell) button of the project's top bar, not in this panel. */
+  checksInMenu?: boolean;
 }
 
 /** The default calendar (its day types' usual peaks). */
@@ -93,6 +95,7 @@ export function ServiceLinesPanel({
   show,
   designValues = null,
   calendar = NO_CALENDAR,
+  checksInMenu = false,
 }: Props) {
   const { t, tn } = useI18n();
   const lines = doc.lines ?? [];
@@ -188,7 +191,9 @@ export function ServiceLinesPanel({
         </button>
       </div>
       {view.counts.errors > 0 && lines.length > 0 && (
-        <p className="text-xs text-amber-800">{t("rail.line.fixFirst")}</p>
+        <p className="text-xs text-amber-800">
+          {t(checksInMenu ? "rail.line.fixFirstMenu" : "rail.line.fixFirst")}
+        </p>
       )}
       {publication?.running && (
         <JobProgress
@@ -230,9 +235,12 @@ export function ServiceLinesPanel({
                 })}
               </p>
               {conflicts > 0 && (
-                <p className="mt-0.5 font-medium">
-                  {t("rail.tdg.conflicts")} · {conflicts}
-                </p>
+                <details className="mt-0.5" data-testid="publish-conflicts">
+                  <summary className="cursor-pointer font-medium">
+                    {t("rail.tdg.conflicts")} · {conflicts}
+                  </summary>
+                  <PublishConflicts result={publication.result} lines={lines} />
+                </details>
               )}
             </>
           )}
@@ -251,6 +259,59 @@ export function ServiceLinesPanel({
         </details>
       )}
     </Section>
+  );
+}
+
+/**
+ * Purpose: the conflicts of a publication, line by line: the trips that could not run (and the trip in the way)
+ * and the departures moved to keep clear of other trains, with the time they now leave.
+ */
+function PublishConflicts({ result, lines }: { result: ServicePublication; lines: ServiceLine[] }) {
+  const { t } = useI18n();
+  const departs = new Map<string, number>();
+  for (const trip of result.timetable.trips) {
+    const first = trip.stop_times.reduce<number | null>(
+      (m, st) => (m === null || st.departure_time < m ? st.departure_time : m),
+      null,
+    );
+    if (first !== null) departs.set(trip.trip_id, first);
+  }
+  return (
+    <div className="mt-1 flex max-h-64 flex-col gap-2 overflow-y-auto">
+      {result.lines
+        .filter((r) => r.unplaced.length + r.shifted.length > 0)
+        .map((r) => {
+          const name = lines.find((l) => l.id === r.id)?.name || r.id;
+          return (
+            <section key={r.id} aria-label={name}>
+              <h4 className="font-semibold">
+                {name} · {r.unplaced.length + r.shifted.length}
+              </h4>
+              <ul className="flex flex-col gap-0.5 font-normal">
+                {r.unplaced.map((u) => (
+                  <li key={`u-${u.trip}`} className="text-red-800">
+                    {u.blocked_by
+                      ? t("rail.tdg.unplacedBy", { trip: u.trip, reason: u.reason, other: u.blocked_by })
+                      : t("rail.tdg.unplaced", { trip: u.trip, reason: u.reason })}
+                  </li>
+                ))}
+                {r.shifted.map((x) => {
+                  const at = departs.get(x.trip);
+                  return (
+                    <li key={`s-${x.trip}`}>
+                      {t("rail.tdg.shiftedRow", {
+                        trip: x.trip,
+                        time: at === undefined ? "—" : hhmm(at / 60),
+                        by: shiftText(x.by_s),
+                      })}
+                    </li>
+                  );
+                })}
+              </ul>
+            </section>
+          );
+        })}
+    </div>
   );
 }
 

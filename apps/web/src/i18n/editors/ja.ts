@@ -213,6 +213,8 @@ export const editorsJa = {
   "rail.line.publish": "時刻表を公開",
   "rail.line.publishAgain": "再公開",
   "rail.line.fixFirst": "公開する前にチェックのエラーを修正してください。",
+  "rail.line.fixFirstMenu":
+    "公開する前にエラーを修正してください。エラーは上部のベルのボタン「チェック」に表示されます。",
   "rail.line.stale": "公開後に図面が変更されました。経路検索に反映するには再公開してください。",
   "rail.line.published": "{lines} · {trips} を公開しました。シミュレーター → 経路検索で乗車できます。",
   "rail.line.notes": "注記",
