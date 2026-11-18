@@ -95,14 +95,20 @@ function stubApi(me: Me | Me[], overrides: Record<string, unknown> = {}) {
       if (key === "GET /api/projects?public=true") return reply({ projects: [] });
       if (key === "POST /api/projects")
         return reply(
-          { project: project(NEW, (body as { name: string }).name, "owner", { areaName: null }) },
+          {
+            project: project(NEW, (body as { name: string }).name, "owner", {
+              areaName: null,
+              modes: (body as { modes: string[] }).modes,
+            }),
+          },
           201,
         );
       const one = /^\/api\/projects\/([0-9a-f-]{36})$/.exec(url);
       if (one && method === "GET") {
-        const p = [...projects, project(NEW, "Riverside tram study", "owner", { areaName: null })].find(
-          (x) => x.id === one[1],
-        );
+        const p = [
+          ...projects,
+          project(NEW, "Riverside tram study", "owner", { areaName: null, modes: ["bus", "tram", "metro"] }),
+        ].find((x) => x.id === one[1]);
         return p ? reply({ project: p }) : reply({ message: "project not found" }, 404);
       }
       if (key === "PUT /api/auth/preferences") return reply({ preferences: body });
@@ -413,14 +419,19 @@ describe("project workspace", () => {
         .map((a) => a.textContent),
     ).toEqual(["Simulator", "Create", "Schematic", "GIS", "Tables", "Preferences", "Cargo bike"]);
     fireEvent.click(within(nav).getByRole("link", { name: "Create" }));
-    expect(await screen.findByRole("toolbar", { name: "Street line tools" })).toBeTruthy();
-    fireEvent.click(screen.getByRole("tab", { name: "Rail route" }));
+    // The project plans trams only: Create offers the rail tools and no street route.
     expect(await screen.findByRole("complementary", { name: "Rail route" })).toBeTruthy();
+    expect(screen.queryByRole("tab", { name: "Street route" })).toBeNull();
+    expect(screen.queryByRole("toolbar", { name: "Street line tools" })).toBeNull();
     fireEvent.click(within(nav).getByRole("link", { name: "Tables" }));
     expect(screen.getByRole("region", { name: "Tables" })).toBeTruthy();
     // The tables come in groups, one shown at a time, chosen from a list.
     const groups = await screen.findByRole("tablist", { name: "Tables" });
-    expect(within(groups).getAllByRole("tab").map((x) => x.textContent)).toEqual([
+    expect(
+      within(groups)
+        .getAllByRole("tab")
+        .map((x) => x.textContent),
+    ).toEqual([
       "Summary",
       "Timetables",
       "Construction and operating costs",
@@ -432,7 +443,9 @@ describe("project workspace", () => {
     ]);
     expect(within(groups).getByRole("tab", { name: "Summary" }).getAttribute("aria-selected")).toBe("true");
     fireEvent.click(within(groups).getByRole("tab", { name: "Compare scenarios" }));
-    expect(within(groups).getByRole("tab", { name: "Compare scenarios" }).getAttribute("aria-selected")).toBe("true");
+    expect(within(groups).getByRole("tab", { name: "Compare scenarios" }).getAttribute("aria-selected")).toBe(
+      "true",
+    );
     expect((document.getElementById("tables-network") as HTMLElement).hidden).toBe(true);
     expect((document.getElementById("tables-scenarios") as HTMLElement).hidden).toBe(false);
   });

@@ -22,7 +22,12 @@ export function usePlannedModes(): readonly string[] {
  * now (a line or track drawn before the plan changed keeps its mode visible and editable).
  * Inputs: every mode the editor knows (by id), the planned modes, the mode currently chosen.
  */
-export function offeredModes<T>(all: readonly T[], id: (m: T) => string, planned: readonly string[], current?: string) {
+export function offeredModes<T>(
+  all: readonly T[],
+  id: (m: T) => string,
+  planned: readonly string[],
+  current?: string,
+) {
   if (!planned.length) return [...all];
   const want = new Set(planned.map((m) => SAME_AS[m] ?? m));
   const shown = all.filter((m) => want.has(id(m)) || id(m) === current);

@@ -95,7 +95,7 @@ describe("plugins per project (ADR-0036 §9)", () => {
     expect(within(dialog).getByText("Uses: the project's network")).toBeTruthy();
     fireEvent.change(within(dialog).getByLabelText("Version of Water taxis"), { target: { value: "1.0.0" } });
     await waitFor(() => expect(onSet).toHaveBeenCalledWith("org.example.water-taxi", false, "1.0.0"));
-    fireEvent.keyDown(document, { key: "Escape" });
+    fireEvent.keyDown(dialog, { key: "Escape" });
     expect(screen.queryByRole("dialog")).toBeNull();
     fireEvent.click(screen.getByRole("switch", { name: "Use Water taxis in this project" }));
     await waitFor(() => expect(onSet).toHaveBeenCalledWith("org.example.water-taxi", true, "1.1.0"));
@@ -113,16 +113,28 @@ describe("a plugin's window in Project preferences", () => {
   it("shows an Admin the plugin's own settings: Esri's API key", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn(async () =>
-        new Response(
-          JSON.stringify({
-            esri: { configured: false, keyEnd: null, termsAcceptedAt: null, termsAcceptedBy: null, termsUrl: "https://www.esri.com/terms" },
-          }),
-          { status: 200, headers: { "Content-Type": "application/json" } },
-        ),
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              esri: {
+                configured: false,
+                keyEnd: null,
+                termsAcceptedAt: null,
+                termsAcceptedBy: null,
+                termsUrl: "https://www.esri.com/terms",
+              },
+            }),
+            { status: 200, headers: { "Content-Type": "application/json" } },
+          ),
       ),
     );
-    const esri = row({ id: "org.mobsimlab.esri-imagery", name: "Esri World Imagery", bundled: true, versions: [] });
+    const esri = row({
+      id: "org.mobsimlab.esri-imagery",
+      name: "Esri World Imagery",
+      bundled: true,
+      versions: [],
+    });
     render(<ProjectPlugins plugins={[esri]} manage onSet={vi.fn()} adminCsrf="csrf-1" />);
     fireEvent.click(screen.getByRole("button", { name: /Esri World Imagery/ }));
     const dialog = screen.getByRole("dialog", { name: "Esri World Imagery" });
@@ -130,7 +142,12 @@ describe("a plugin's window in Project preferences", () => {
   });
 
   it("does not show the settings to someone who is not an Admin", () => {
-    const esri = row({ id: "org.mobsimlab.esri-imagery", name: "Esri World Imagery", bundled: true, versions: [] });
+    const esri = row({
+      id: "org.mobsimlab.esri-imagery",
+      name: "Esri World Imagery",
+      bundled: true,
+      versions: [],
+    });
     render(<ProjectPlugins plugins={[esri]} manage onSet={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: /Esri World Imagery/ }));
     expect(screen.queryByLabelText("ArcGIS API key")).toBeNull();

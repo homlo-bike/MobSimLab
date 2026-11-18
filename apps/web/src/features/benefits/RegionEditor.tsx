@@ -391,8 +391,8 @@ export function RegionEditor({
             </ul>
           )}
           <p className="mt-2 text-slate-600">
-            Pick a place, or tap the map, to list the neighbourhoods, districts, cities and regions it lies in.
-            Then choose the one that fits.
+            Pick a place, or tap the map, to list the neighbourhoods, districts, cities and regions it lies
+            in. Then choose the one that fits.
           </p>
           {mode.at && !areas && !areaError && (
             <p role="status" className="mt-2 text-slate-600">

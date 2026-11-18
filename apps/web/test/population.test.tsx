@@ -165,7 +165,9 @@ describe("Population view", () => {
     // When it is done, the same place says what came in.
     api.overview = vi.fn(async () => ({
       ...small,
-      layers: [{ ...importing, status: "ready" as const, progress: null, peopleTotal: 1424741, featureCount: 13396 }],
+      layers: [
+        { ...importing, status: "ready" as const, progress: null, peopleTotal: 1424741, featureCount: 13396 },
+      ],
     }));
     fireEvent.click(within(import_).getByRole("button", { name: "Import" }));
     expect(await within(import_).findByText(/1,424,741 people in 13,396/)).toBeTruthy();

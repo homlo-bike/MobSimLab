@@ -717,7 +717,13 @@ describe("region editor", () => {
     };
     const osmAreas = vi.fn(async () => [city]);
     const search = vi.fn(async () => [
-      { name: "Aleppo", context: "Aleppo Governorate, Syria", kind: "city", lonLat: [37.16, 36.2] as [number, number], bbox: null },
+      {
+        name: "Aleppo",
+        context: "Aleppo Governorate, Syria",
+        kind: "city",
+        lonLat: [37.16, 36.2] as [number, number],
+        bbox: null,
+      },
     ]);
     const onChange = vi.fn();
     render(

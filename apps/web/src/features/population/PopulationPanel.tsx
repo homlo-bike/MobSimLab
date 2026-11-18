@@ -723,7 +723,10 @@ function LayerOutcome({ layer: l }: { layer: PopulationLayer }) {
       </p>
     );
   return (
-    <div role="status" className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-950">
+    <div
+      role="status"
+      className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-950"
+    >
       <p className="flex items-start gap-1.5 font-medium">
         <span aria-hidden="true">✓</span>
         <span className="min-w-0 break-words">{l.name}</span>
@@ -749,7 +752,9 @@ function LayerProgress({ layer: l }: { layer: PopulationLayer }) {
   const p = l.progress;
   const storing = p?.step === "store";
   const fraction =
-    !storing && p?.receivedBytes !== undefined && p.totalBytes ? Math.min(1, p.receivedBytes / p.totalBytes) : null;
+    !storing && p?.receivedBytes !== undefined && p.totalBytes
+      ? Math.min(1, p.receivedBytes / p.totalBytes)
+      : null;
   return (
     <JobProgress
       label={l.name}

@@ -760,12 +760,19 @@ describe("Street tiles and map helpers", () => {
 
 describe("a saved street route", () => {
   it("keeps a leg's saved route when routing it again fails for want of streets", () => {
-    const saved = sampleView(["end", "via", "end"]);
+    const saved = sampleView(["end_stop", "via", "end_stop"]);
     saved.legs[0]!.coords = [saved.points[0]!.lonlat, [7.0005, 50.0004], saved.points[1]!.lonlat];
     saved.legs[0]!.length_m = 520;
     // Routed again with the first leg's streets not loaded: straight and in error.
     const again = structuredClone(saved);
-    again.legs[0] = { ...again.legs[0]!, coords: [again.points[0]!.lonlat, again.points[1]!.lonlat], status: "error", message: "No route", length_m: 0, time_s: 0 };
+    again.legs[0] = {
+      ...again.legs[0]!,
+      coords: [again.points[0]!.lonlat, again.points[1]!.lonlat],
+      status: "error",
+      message: "No route",
+      length_m: 0,
+      time_s: 0,
+    };
     again.issues = ["No route"];
     again.length_m -= 520;
     const kept = keepRoutedLegs(again, saved);
@@ -776,7 +783,7 @@ describe("a saved street route", () => {
   });
 
   it("does not bring back the old route of a point that moved", () => {
-    const saved = sampleView(["end", "via", "end"]);
+    const saved = sampleView(["end_stop", "via", "end_stop"]);
     const moved = structuredClone(saved);
     moved.points[1]!.lonlat = [7.5, 50.5];
     moved.legs[0] = { ...moved.legs[0]!, status: "error", message: "No route" };
@@ -784,9 +791,16 @@ describe("a saved street route", () => {
   });
 
   it("loads the tiles under the whole line, not only those on screen", () => {
-    const view = sampleView(["end", "end"]);
-    view.legs[0]!.coords = [[7, 50], [7.2, 50]];
-    const keys = lineTiles({ points: view.points.map((p) => ({ lonlat: p.lonlat, kind: p.kind, name: null })), depot: null, view } as unknown as SavedStreetLine);
+    const view = sampleView(["end_stop", "end_stop"]);
+    view.legs[0]!.coords = [
+      [7, 50],
+      [7.2, 50],
+    ];
+    const keys = lineTiles({
+      points: view.points.map((p) => ({ lonlat: p.lonlat, kind: p.kind, name: null })),
+      depot: null,
+      view,
+    } as unknown as SavedStreetLine);
     expect(keys).toContain(`${tileX(7.2)}/${tileY(50)}`);
     expect(keys).toContain(`${tileX(7)}/${tileY(50)}`);
   });

@@ -73,7 +73,9 @@ describe("cargo bike model", () => {
     expect(corridorTiles(KOBLENZ, destinationPoint(KOBLENZ, 45, 120_000)).length).toBeGreaterThan(MAX_TILES);
     // A short trip loads a narrow corridor: fewer tiles than the 1.5 km one a long trip gets.
     const short = corridorTiles(KOBLENZ, destinationPoint(KOBLENZ, 90, 600));
-    expect(short.length).toBeLessThan(corridorTiles(KOBLENZ, destinationPoint(KOBLENZ, 90, 600), 1500).length);
+    expect(short.length).toBeLessThan(
+      corridorTiles(KOBLENZ, destinationPoint(KOBLENZ, 90, 600), 1500).length,
+    );
     expect(short.length).toBeLessThanOrEqual(4);
   });
 
@@ -270,7 +272,14 @@ describe("cargo bike tab", () => {
 
   it("stops loading streets when the trip is cancelled", async () => {
     const trip = vi.fn(
-      (_a: unknown, _b: unknown, _v: unknown, _s: unknown, progress: (d: number, t: number) => void, signal: AbortSignal) =>
+      (
+        _a: unknown,
+        _b: unknown,
+        _v: unknown,
+        _s: unknown,
+        progress: (d: number, t: number) => void,
+        signal: AbortSignal,
+      ) =>
         new Promise((_, reject) => {
           progress(1, 3);
           signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));

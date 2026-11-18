@@ -649,14 +649,16 @@ export function CapacityRun({
           fraction={progress.fraction}
           onCancel={stop}
         />
-      ) : shownStatus && (
-        <p role="status" className="flex items-center gap-2 text-sm text-slate-700">
-          <span
-            className="h-3 w-3 animate-spin rounded-full border-2 border-blue-700 border-t-transparent"
-            aria-hidden
-          />
-          {shownStatus}
-        </p>
+      ) : (
+        shownStatus && (
+          <p role="status" className="flex items-center gap-2 text-sm text-slate-700">
+            <span
+              className="h-3 w-3 animate-spin rounded-full border-2 border-blue-700 border-t-transparent"
+              aria-hidden
+            />
+            {shownStatus}
+          </p>
+        )
       )}
       {shownError && (
         <p

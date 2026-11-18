@@ -231,7 +231,9 @@ export function MapDataPanel({
     const at = p.step ? steps.indexOf(p.step) : 0;
     const index = r!.status === "queued" ? 1 : Math.max(0, at) + 1;
     const fraction =
-      r!.status !== "queued" && p.step === "download" && p.total ? Math.min(1, (p.done ?? 0) / p.total) : null;
+      r!.status !== "queued" && p.step === "download" && p.total
+        ? Math.min(1, (p.done ?? 0) / p.total)
+        : null;
     return (
       <div className="mt-2">
         <JobProgress

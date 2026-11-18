@@ -6,7 +6,12 @@ import type { Network, RailView, SectionTrains } from "./types";
 /** A section of the published topology: on a design track, with its chainages. */
 interface TopologySection {
   id: string;
-  source: { kind: "track" | "station" | "switch"; ref: number; index: number; chainage_m: [number, number] | null };
+  source: {
+    kind: "track" | "station" | "switch";
+    ref: number;
+    index: number;
+    chainage_m: [number, number] | null;
+  };
 }
 
 type Feature = { type: "Feature"; properties: Record<string, string | number>; geometry: object };
@@ -28,7 +33,10 @@ export function serviceLinePaths(
     ((topology as { sections?: TopologySection[] } | null)?.sections ?? []).map((s) => [s.id, s]),
   );
   const colors = new Map((doc.lines ?? []).map((l) => [l.id, { color: l.color, name: l.name || l.id }]));
-  const per = new Map<string, { track: number; line: string; parts: Parameters<typeof trackStretches>[0][number][] }>();
+  const per = new Map<
+    string,
+    { track: number; line: string; parts: Parameters<typeof trackStretches>[0][number][] }
+  >();
   for (const st of sectionTrains) {
     const sec = sections.get(st.section);
     if (!sec || sec.source.kind !== "track" || !sec.source.chainage_m) continue;
@@ -81,7 +89,12 @@ const STOPS = "rd-line-stops";
 const EMPTY: Collection = { type: "FeatureCollection", features: [] };
 
 /** Purpose: draw the service lines' paths and numbered stops over the railway (a stale path is drawn faded). */
-export function drawServiceLines(map: MapLibreMap, paths: Collection | null, stops: Collection, stale: boolean): void {
+export function drawServiceLines(
+  map: MapLibreMap,
+  paths: Collection | null,
+  stops: Collection,
+  stale: boolean,
+): void {
   if (!map.getSource(PATH)) {
     map.addSource(PATH, { type: "geojson", data: EMPTY });
     map.addSource(STOPS, { type: "geojson", data: EMPTY });

@@ -96,7 +96,7 @@ describe("terrain requests", () => {
       async () => new Response(JSON.stringify({ elevationsM: [1], source: {} }), { status: 200 }),
     );
     await fetchElevations([[7.123, 50.456]], fetchImpl as unknown as typeof fetch);
-    const init = fetchImpl.mock.calls[0]![1] as RequestInit;
+    const init = (fetchImpl.mock.calls[0] as unknown[])[1] as RequestInit;
     expect((init.headers as Record<string, string>)["X-CSRF-Token"]).toBe("tok-1");
     setCsrfToken(null);
   });

@@ -15,10 +15,14 @@ describe("fetching a tile from a busy OpenStreetMap", () => {
 
   it("gives up after a few tries, and does not retry a bad request", async () => {
     const busy = vi.fn(async () => answer(503));
-    expect((await fetchTileWithRetry("/t", {}, busy as unknown as typeof fetch, async () => {})).status).toBe(503);
+    expect((await fetchTileWithRetry("/t", {}, busy as unknown as typeof fetch, async () => {})).status).toBe(
+      503,
+    );
     expect(busy).toHaveBeenCalledTimes(4);
     const bad = vi.fn(async () => answer(400));
-    expect((await fetchTileWithRetry("/t", {}, bad as unknown as typeof fetch, async () => {})).status).toBe(400);
+    expect((await fetchTileWithRetry("/t", {}, bad as unknown as typeof fetch, async () => {})).status).toBe(
+      400,
+    );
     expect(bad).toHaveBeenCalledTimes(1);
   });
 });

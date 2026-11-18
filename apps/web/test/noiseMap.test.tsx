@@ -284,7 +284,9 @@ describe("noise map in the GIS tab", () => {
 
   it("leaves the buildings out unless asked for", async () => {
     const { estimate, fetchTile, fetchPeople } = setup(undefined, undefined, RESULT, { popWaitMs: 0 }, false);
-    expect((screen.getByLabelText("Screen with OpenStreetMap buildings") as HTMLInputElement).checked).toBe(false);
+    expect((screen.getByLabelText("Screen with OpenStreetMap buildings") as HTMLInputElement).checked).toBe(
+      false,
+    );
     fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
     await waitFor(() => expect(estimate).toHaveBeenCalled());
     expect(fetchTile).not.toHaveBeenCalled();

@@ -39,10 +39,12 @@ export function addsLine(
  * Configuration panels of plugins that need one, by plugin id, shown to Admins in the plugin's window. Esri World
  * Imagery needs the instance's ArcGIS API key (docs/architecture/06-gis.md §8).
  */
-const CONFIG: Record<string, (p: { csrfToken: string; run: (f: () => Promise<unknown>) => Promise<void> }) => ReactNode> =
-  {
-    "org.mobsimlab.esri-imagery": (p) => <EsriImageryAdmin {...p} />,
-  };
+const CONFIG: Record<
+  string,
+  (p: { csrfToken: string; run: (f: () => Promise<unknown>) => Promise<void> }) => ReactNode
+> = {
+  "org.mobsimlab.esri-imagery": (p) => <EsriImageryAdmin {...p} />,
+};
 
 /**
  * Plugins section of Project Preferences (ADR-0036 §9): every plugin of this MobSimLab, bundled or installed by an
@@ -110,7 +112,10 @@ export function ProjectPlugins({
       ) : (
         <ul className="m-0 mt-2 list-none p-0">
           {sorted.map((p) => (
-            <li key={p.id} className="flex items-center gap-3 border-t border-slate-100 py-1 first:border-t-0">
+            <li
+              key={p.id}
+              className="flex items-center gap-3 border-t border-slate-100 py-1 first:border-t-0"
+            >
               <button
                 type="button"
                 className="flex min-h-11 min-w-0 flex-1 flex-col items-start justify-center rounded-lg px-2 text-start hover:bg-slate-50"
@@ -123,7 +128,9 @@ export function ProjectPlugins({
                 <span className="font-semibold">{p.name}</span>
                 <span className="w-full truncate text-xs text-slate-500">{addsLine(p.contributes, t)}</span>
                 {p.missing && (
-                  <span className="text-xs text-amber-800">{t("plugins.missing", { version: p.version })}</span>
+                  <span className="text-xs text-amber-800">
+                    {t("plugins.missing", { version: p.version })}
+                  </span>
                 )}
               </button>
               <input
@@ -154,11 +161,15 @@ export function ProjectPlugins({
         >
           <div className="flex flex-col gap-3 text-sm">
             {shown.description && <p className="m-0 text-slate-700">{shown.description}</p>}
-            <p className="m-0 text-xs text-slate-500">{t("plugins.adds", { list: addsLine(shown.contributes, t) })}</p>
+            <p className="m-0 text-xs text-slate-500">
+              {t("plugins.adds", { list: addsLine(shown.contributes, t) })}
+            </p>
             {shown.permissions.length > 0 && (
               <p className="m-0 text-xs text-slate-500">
                 {t("plugins.uses", {
-                  list: shown.permissions.map((x) => (PERMISSION_LABELS[x] ? t(PERMISSION_LABELS[x]) : x)).join(", "),
+                  list: shown.permissions
+                    .map((x) => (PERMISSION_LABELS[x] ? t(PERMISSION_LABELS[x]) : x))
+                    .join(", "),
                 })}
               </p>
             )}

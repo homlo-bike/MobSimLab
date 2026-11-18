@@ -11,16 +11,27 @@ const view = {
     { id: 1, lonlat: [7, 50] },
     { id: 2, lonlat: [7.01, 50] },
   ],
-  tracks: [{ id: 9, length_m: 1000, centre: [[7, 50], [7.01, 50]] }],
+  tracks: [
+    {
+      id: 9,
+      length_m: 1000,
+      centre: [
+        [7, 50],
+        [7.01, 50],
+      ],
+    },
+  ],
 } as unknown as RailView;
 
 describe("service lines on the map", () => {
   it("numbers each line's stops in calling order at its stations", () => {
     const stops = serviceLineStops(doc, view).features;
-    expect(stops.map((f) => [f.properties.n, (f.geometry as { coordinates: number[] }).coordinates])).toEqual([
-      [1, [7.01, 50]],
-      [2, [7, 50]],
-    ]);
+    expect(stops.map((f) => [f.properties.n, (f.geometry as { coordinates: number[] }).coordinates])).toEqual(
+      [
+        [1, [7.01, 50]],
+        [2, [7, 50]],
+      ],
+    );
     expect(stops[0]!.properties.color).toBe("#c2410c");
   });
 
