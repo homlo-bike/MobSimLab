@@ -285,8 +285,10 @@ export function streetBlocks(input: StreetBlockInput): VehicleBlock[] {
     });
     inDepot.push({ block: w.block, backS: arr });
   };
-  // Pull-ins are possible from the vehicle's terminal only.
-  const canPullIn = (w: Waiting) => inFrom >= 0 && (w.next - 1 + n) % n === inFrom;
+  // Pull-ins are possible from the vehicle's terminal only, and only when vehicles can come out again: without a
+  // usable pull-out (its run failed, or it reaches no terminal) a vehicle sent in would be lost for the day, and
+  // every later trip would need a new one.
+  const canPullIn = (w: Waiting) => inFrom >= 0 && outTo >= 0 && (w.next - 1 + n) % n === inFrom;
 
   for (const t of trips) {
     // Vehicles that would wait too long for their next trip go back to the depot.
