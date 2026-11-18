@@ -380,7 +380,52 @@ fn service_day_filter() {
     };
     let p = Planner::new(&tt, s);
     assert_eq!(p.summary().trips, 0);
-    assert!(depart(&p, ll(0.0, 0.0), ll(4000.0, 0.0), 10 * H).is_empty());
+    // No trip runs on a weekday: the answer is the walk all the way.
+    let plan = p.plan(&Query {
+        from: ll(0.0, 0.0),
+        to: ll(4000.0, 0.0),
+        time_s: 10 * H,
+        mode: TimeMode::DepartAt,
+    });
+    assert!(plan.walk_only);
+    assert_eq!(plan.journeys.len(), 1);
+    assert_eq!(kinds(&plan.journeys[0]), ["walk"]);
+}
+
+#[test]
+fn a_walk_all_the_way_when_no_stop_is_in_reach() {
+    let p = Planner::new(&network(), Settings::default());
+    // 6 km south of the network: no stop within 1 km of A, and too far for the usual walk-only answer.
+    for mode in [TimeMode::DepartAt, TimeMode::ArriveBy] {
+        let plan = p.plan(&Query {
+            from: ll(0.0, -6000.0),
+            to: ll(4000.0, 0.0),
+            time_s: 10 * H,
+            mode,
+        });
+        assert!(plan.walk_only);
+        let j = &plan.journeys[0];
+        assert_eq!(kinds(j), ["walk"]);
+        // About 7.2 km straight, 1.3 × that on foot at 4.5 km/h: a little over two hours.
+        assert!(
+            j.total_s > 2 * H && j.total_s < 2 * H + 20 * M,
+            "{}",
+            j.total_s
+        );
+        if mode == TimeMode::ArriveBy {
+            assert_eq!(j.arrive_s, 10 * H);
+        } else {
+            assert_eq!(j.depart_s, 10 * H);
+        }
+    }
+    // A journey by transit is no walk-only answer.
+    let plan = p.plan(&Query {
+        from: ll(0.0, 0.0),
+        to: ll(4000.0, 0.0),
+        time_s: 10 * H,
+        mode: TimeMode::DepartAt,
+    });
+    assert!(!plan.walk_only);
 }
 
 fn st(stop: &str, seq: u32, arr: u32, dep: u32) -> StopTime {

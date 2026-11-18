@@ -873,6 +873,8 @@ export const editorsYo = {
   "jp.clickMap": "Tẹ máàpù…",
   "jp.pickMap": "Yàn án lórí máàpù",
   "jp.clear": "Pa gbogbo rẹ̀ rẹ́",
+  "jp.walkOnly":
+    "Kò sí ìrìn-àjò ọkọ̀ ìrìnnà gbogbo ènìyàn: A tàbí B jìnnà ju mítà {m} lọ sí ibùdókọ̀, tàbí kò sí iṣẹ́ ní àkókò yìí. Èyí ni rírìn ní gbogbo ọ̀nà.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Àkókò",
   "jp.departAt": "Gbéra ní",

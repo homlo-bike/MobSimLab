@@ -874,6 +874,8 @@ export const editorsFa = {
   "jp.clickMap": "روی نقشه کلیک کنید…",
   "jp.pickMap": "انتخاب روی نقشه",
   "jp.clear": "پاک کردن همه",
+  "jp.walkOnly":
+    "سفری با حمل‌ونقل عمومی نیست: A یا B بیش از {m} متر از ایستگاه فاصله دارد، یا در این زمان سرویسی نیست. این کل مسیر پیاده است.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "زمان",
   "jp.departAt": "حرکت در",

@@ -869,6 +869,8 @@ export const editorsVi = {
   "jp.clickMap": "nhấp vào bản đồ…",
   "jp.pickMap": "chọn trên bản đồ",
   "jp.clear": "Xóa tất cả",
+  "jp.walkOnly":
+    "Không có hành trình bằng giao thông công cộng: A hoặc B cách điểm dừng hơn {m} m, hoặc giờ này không có chuyến. Đây là quãng đường đi bộ toàn bộ.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Thời gian",
   "jp.departAt": "Khởi hành lúc",

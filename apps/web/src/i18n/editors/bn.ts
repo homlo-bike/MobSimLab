@@ -884,6 +884,8 @@ export const editorsBn = {
   "jp.clickMap": "মানচিত্রে ক্লিক করুন…",
   "jp.pickMap": "মানচিত্রে বেছে নিন",
   "jp.clear": "সব মুছুন",
+  "jp.walkOnly":
+    "গণপরিবহনে কোনো যাত্রা নেই: A বা B কোনো স্টপ থেকে {m} মি-এর বেশি দূরে, বা এই সময়ে কোনো সেবা নেই। এটি পুরো পথ হেঁটে।",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "সময়",
   "jp.departAt": "ছাড়ার সময়",

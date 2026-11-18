@@ -909,6 +909,8 @@ export const editorsIt = {
   "jp.clickMap": "fai clic sulla mappa…",
   "jp.pickMap": "scegli sulla mappa",
   "jp.clear": "Cancella tutto",
+  "jp.walkOnly":
+    "Nessun viaggio con i mezzi pubblici: A o B dista più di {m} m da una fermata, oppure a quest'ora non c'è servizio. Questo è il percorso tutto a piedi.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Orario",
   "jp.departAt": "Partenza alle",

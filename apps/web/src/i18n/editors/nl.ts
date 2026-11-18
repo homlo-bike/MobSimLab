@@ -908,6 +908,8 @@ export const editorsNl = {
   "jp.clickMap": "Klik op de kaart…",
   "jp.pickMap": "Kies op de kaart",
   "jp.clear": "Wissen",
+  "jp.walkOnly":
+    "Geen reis met het openbaar vervoer: A of B ligt meer dan {m} m van een halte, of er rijdt nu niets. Dit is de hele weg te voet.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Tijd",
   "jp.departAt": "Vertrek om",

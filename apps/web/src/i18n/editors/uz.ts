@@ -908,6 +908,8 @@ export const editorsUz = {
   "jp.clickMap": "xaritani bosing…",
   "jp.pickMap": "Xaritadan tanlash",
   "jp.clear": "Hammasini tozalash",
+  "jp.walkOnly":
+    "Jamoat transportida safar yo'q: A yoki B bekatdan {m} m dan uzoqda yoki bu vaqtda qatnov yo'q. Bu butun yo'l piyoda.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Vaqt",
   "jp.departAt": "Joʻnash vaqti",

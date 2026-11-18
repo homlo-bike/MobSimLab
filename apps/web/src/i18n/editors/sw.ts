@@ -906,6 +906,8 @@ export const editorsSw = {
   "jp.clickMap": "Bofya ramani…",
   "jp.pickMap": "Chagua kwenye ramani",
   "jp.clear": "Futa yote",
+  "jp.walkOnly":
+    "Hakuna safari kwa usafiri wa umma: A au B iko zaidi ya m {m} kutoka kituo, au hakuna huduma wakati huu. Hii ni kutembea njia yote.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Muda",
   "jp.departAt": "Ondoka saa",

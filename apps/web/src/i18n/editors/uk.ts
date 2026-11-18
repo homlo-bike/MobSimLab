@@ -952,6 +952,8 @@ export const editorsUk = {
   "jp.clickMap": "клацніть карту…",
   "jp.pickMap": "виберіть на карті",
   "jp.clear": "Очистити все",
+  "jp.walkOnly":
+    "Немає поїздки громадським транспортом: A або B далі ніж {m} м від зупинки, або в цей час немає рейсів. Це весь шлях пішки.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Час",
   "jp.departAt": "Відправлення о",

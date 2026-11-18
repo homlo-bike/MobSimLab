@@ -953,6 +953,8 @@ export const editorsPl = {
   "jp.clickMap": "kliknij mapę…",
   "jp.pickMap": "wybierz na mapie",
   "jp.clear": "Wyczyść wszystko",
+  "jp.walkOnly":
+    "Brak podróży transportem publicznym: A lub B jest dalej niż {m} m od przystanku albo o tej porze nic nie kursuje. To jest cała droga pieszo.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Czas",
   "jp.departAt": "Odjazd o",

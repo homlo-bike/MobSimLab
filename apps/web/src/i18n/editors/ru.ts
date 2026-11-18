@@ -954,6 +954,8 @@ export const editorsRu = {
   "jp.clickMap": "Нажмите на карту…",
   "jp.pickMap": "Выбрать на карте",
   "jp.clear": "Очистить",
+  "jp.walkOnly":
+    "Нет поездки на общественном транспорте: A или B дальше {m} м от остановки, или в это время нет рейсов. Это весь путь пешком.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Время",
   "jp.departAt": "Отправление в",

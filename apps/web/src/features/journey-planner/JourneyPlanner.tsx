@@ -630,6 +630,12 @@ export function JourneyPlanner({
 
         {timetable && (!a || !b) && <p className="text-slate-600">{t("jp.pickAB")}</p>}
 
+        {plan?.walk_only && journey && (
+          <p role="status" className="text-slate-600">
+            {t("jp.walkOnly", { m: settings.max_access_m ?? 1000 })}
+          </p>
+        )}
+
         {plan && !journey && (
           <p role="status" className="text-slate-600">
             {t(arriveBy ? "jp.noJourneyBefore" : "jp.noJourneyAfter", { m: settings.max_access_m ?? 1000 })}

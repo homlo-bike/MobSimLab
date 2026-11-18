@@ -921,6 +921,8 @@ export const editorsZu = {
   "jp.clickMap": "Chofoza imephu…",
   "jp.pickMap": "Khetha emephini",
   "jp.clear": "Sula konke",
+  "jp.walkOnly":
+    "Alukho uhambo ngezokuthutha zomphakathi: u-A noma u-B ungaphezu kwamamitha angu-{m} ukusuka esitobhini, noma ayikho insizakalo ngalesi sikhathi. Lokhu ukuhamba ngezinyawo yonke indlela.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Isikhathi",
   "jp.departAt": "Suka ngo-",

@@ -898,6 +898,8 @@ export const editorsKk = {
   "jp.clickMap": "картаны басыңыз…",
   "jp.pickMap": "Картадан таңдау",
   "jp.clear": "Барлығын тазалау",
+  "jp.walkOnly":
+    "Қоғамдық көлікпен сапар жоқ: A немесе B аялдамадан {m} м-ден алыс, не бұл уақытта қатынас жоқ. Бұл бүкіл жол жаяу.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Уақыт",
   "jp.departAt": "Жөнелу уақыты",

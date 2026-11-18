@@ -940,6 +940,8 @@ export const editorsAr = {
   "jp.clickMap": "انقر على الخريطة…",
   "jp.pickMap": "اختر على الخريطة",
   "jp.clear": "مسح",
+  "jp.walkOnly":
+    "لا توجد رحلة بالنقل العام: تبعد A أو B أكثر من {m} م عن أي محطة، أو لا توجد خدمة في هذا الوقت. هذا هو الطريق كله سيرًا على الأقدام.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "الوقت",
   "jp.departAt": "المغادرة في",

@@ -17,7 +17,7 @@ describe("own slots for a mode's typical vehicle", () => {
         [0.001, 0],
         [0.001, 0.001],
       ] as [number, number][],
-      angle_deg: 90,
+      angle_deg: 90 as const,
       vehicles_per_lane: null,
       vehicle: null as string | null,
       aisle_width_m: null,

@@ -897,6 +897,8 @@ export const editorsId = {
   "jp.clickMap": "klik peta…",
   "jp.pickMap": "pilih di peta",
   "jp.clear": "Hapus semua",
+  "jp.walkOnly":
+    "Tidak ada perjalanan dengan angkutan umum: A atau B lebih dari {m} m dari halte, atau tidak ada layanan saat ini. Ini adalah jalan kaki sepanjang rute.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Waktu",
   "jp.departAt": "Berangkat pukul",

@@ -175,6 +175,8 @@ export interface Journey {
 export interface Plan {
   query: Query;
   journeys: Journey[];
+  /** No journey by transit was found, so the one journey is a walk all the way. */
+  walk_only?: boolean;
 }
 
 export interface ProfilePoint {
