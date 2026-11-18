@@ -274,7 +274,6 @@ export function BenefitTables({
       live = false;
     };
     // A saved result read later, or saved by this effect, does not start it again.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prepared, timetable, loadReach, keptAcc.loaded, recalc]);
 
   const spending = useMemo(() => spendingFrom(costs?.estimate ?? null), [costs?.estimate]);

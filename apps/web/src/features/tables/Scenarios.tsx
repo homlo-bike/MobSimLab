@@ -128,7 +128,6 @@ export function Scenarios({
   const savedInputs = useMemo(
     () => (list.length ? inputKey({ scenarios: list, prefs: prefs ?? null }) : null),
     // The scenario ids and the preferences stand for the scenarios: a scenario is never edited, only replaced.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [savedKey],
   );
   const measured = useLiveResult<Record<string, Figures>>(

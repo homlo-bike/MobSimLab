@@ -358,7 +358,6 @@ export function CapacityRun({
     );
     setFinished(null);
     // Saved once, with the state the finished run left.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [finished]);
   const restored = useRef(false);
   useEffect(() => {
@@ -379,7 +378,6 @@ export function CapacityRun({
     setStreetResults(s.value.streetResults);
     setLoads(s.value.loads);
     // Restored once, when the saved run has loaded.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kept.saved]);
 
   const start = async () => {

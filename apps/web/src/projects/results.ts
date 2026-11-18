@@ -255,7 +255,6 @@ export function useLiveResult<T>(
       live = false;
     };
     // The saved result is read when the inputs change or once it has loaded, not when this saves a new one.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputs, kept.loaded]);
   return { value: inputs === null ? null : (value?.value ?? null), error };
 }

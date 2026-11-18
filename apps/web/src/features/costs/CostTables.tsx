@@ -153,7 +153,6 @@ export function CostTables({
   const railInputs = useMemo(
     () => (railway && railway.tracks.length ? hashText(railJson) : null),
     // The railway's JSON stands for the railway.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [railJson],
   );
   const built = useLiveResult<{ view: RailView; reports: Record<string, LineReport> }>(

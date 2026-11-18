@@ -302,7 +302,6 @@ export function StreetLineEditor({
       return v.points.every((p, i) => p.id === i + 1);
     },
     // The saved line is the one the editor opened with.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 

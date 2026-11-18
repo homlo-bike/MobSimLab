@@ -214,7 +214,6 @@ export function NoiseMap({
         prefs: noisePrefs,
       }),
     // The designs are the saved documents, the same objects until they change.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       choicesKey,
       main.design.streetLines,
