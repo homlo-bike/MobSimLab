@@ -31,6 +31,8 @@ const STEP_M: f64 = 5.0;
 const MIN_LENGTH_M: f64 = 30.0;
 /// Gaps without a street up to this length inside one stretch are bridged (a junction), m.
 const MAX_GAP_M: f64 = 15.0;
+/// Farthest apart the centre lines of the two halves of a dual carriageway can be, m.
+const DUAL_MAX_M: f64 = 40.0;
 
 /// How the tram shares the street.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
@@ -53,11 +55,12 @@ pub struct RunningStreet {
     pub name: String,
     /// OSM `highway` class.
     pub class: String,
-    /// Carriageway width used, m (OSM `width`, else lanes × lane width).
+    /// Carriageway width used, m (OSM `width`, else lanes × lane width; on a dual carriageway,
+    /// both halves and the median between them).
     pub width_m: f64,
-    /// Lanes used.
+    /// Lanes used (both halves of a dual carriageway).
     pub lanes: f64,
-    /// One-way street.
+    /// One-way street (false for one half of a dual carriageway: traffic runs both ways).
     pub oneway: bool,
     /// Buses use the street.
     pub bus: bool,
@@ -114,7 +117,13 @@ struct Local<'a> {
 
 /// Purpose: distance from `q` to a polyline and the unit direction of its nearest segment.
 fn near(pts: &[P2], q: P2) -> Option<(f64, P2)> {
-    let mut best: Option<(f64, P2)> = None;
+    near_point(pts, q).map(|(d, _, dir)| (d, dir))
+}
+
+/// Purpose: distance from `q` to a polyline, the nearest point on it and the unit direction of
+/// its nearest segment.
+fn near_point(pts: &[P2], q: P2) -> Option<(f64, P2, P2)> {
+    let mut best: Option<(f64, P2, P2)> = None;
     for w in pts.windows(2) {
         let ab = w[1].sub(w[0]);
         let l2 = ab.dot(ab);
@@ -122,9 +131,45 @@ fn near(pts: &[P2], q: P2) -> Option<(f64, P2)> {
             continue;
         }
         let t = (q.sub(w[0]).dot(ab) / l2).clamp(0.0, 1.0);
-        let d = w[0].add(ab.mul(t)).dist(q);
-        if best.map_or(true, |b: (f64, P2)| d < b.0) {
-            best = Some((d, ab.unit()));
+        let at = w[0].add(ab.mul(t));
+        let d = at.dist(q);
+        if best.map_or(true, |b: (f64, P2, P2)| d < b.0) {
+            best = Some((d, at, ab.unit()));
+        }
+    }
+    best
+}
+
+/// Purpose: the other half of a dual carriageway: a one-way street parallel to the one-way
+/// street `i` near `q`, with traffic the other way, at most `DUAL_MAX_M` from it. Returns the
+/// street and the distance between the two centre lines, m.
+fn dual_partner(
+    local: &[Local],
+    candidates: &[usize],
+    i: usize,
+    q: P2,
+    min_angle: f64,
+) -> Option<(usize, f64)> {
+    let a = &local[i];
+    if !a.st.oneway {
+        return None;
+    }
+    let (_, pa, da) = near_point(&a.pts, q)?;
+    let mut best: Option<(usize, f64)> = None;
+    for &j in candidates {
+        let b = &local[j];
+        if j == i || !b.st.oneway {
+            continue;
+        }
+        let Some((sep, _, db)) = near_point(&b.pts, pa) else {
+            continue;
+        };
+        if sep <= DUAL_MAX_M
+            && da.dot(db) < 0.0
+            && line_angle(da, db) < min_angle
+            && best.map_or(true, |x| sep < x.1)
+        {
+            best = Some((j, sep));
         }
     }
     best
@@ -222,12 +267,24 @@ pub fn street_running(dz: &mut Design, streets: &[Street]) {
                 continue;
             }
             let st = local[i].st;
-            let width = street_width(st, p);
-            let lanes = street_lanes(st, p);
             let mid = (a + b) / 2.0;
+            // A dual carriageway is mapped as two one-way streets: measure the whole street,
+            // both halves and the median between them, with traffic both ways.
+            let dual = dual_partner(&local, &near_streets, i, at_s(&g.centre, mid).p, min_angle);
+            let (width, lanes, oneway) = match dual {
+                Some((j, sep)) => {
+                    let other = local[j].st;
+                    (
+                        sep + (street_width(st, p) + street_width(other, p)) / 2.0,
+                        street_lanes(st, p) + street_lanes(other, p),
+                        false,
+                    )
+                }
+                None => (street_width(st, p), street_lanes(st, p), st.oneway),
+            };
             let ntracks = f64::from(g.ntracks.max(1));
             let tram_lane = g.spacing_at(mid) * (ntracks - 1.0) + p.clearance_marker_m;
-            let road_lanes = if st.oneway { 1.0 } else { 2.0 } * p.street_lane_width_m;
+            let road_lanes = if oneway { 1.0 } else { 2.0 } * p.street_lane_width_m;
             let running = match st.tram {
                 _ if st.class == "pedestrian" => Running::PedestrianZone,
                 Some(TramShare::OwnLane) => Running::Reserved,
@@ -375,7 +432,7 @@ pub fn street_running(dz: &mut Design, streets: &[Street]) {
                     class: st.class.clone(),
                     width_m: width,
                     lanes,
-                    oneway: st.oneway,
+                    oneway,
                     bus: st.bus,
                     trolley_wire: st.trolley_wire,
                     bike_lane: st.bike_lane,
@@ -531,6 +588,50 @@ mod tests {
             .iter()
             .any(|i| i.severity == Severity::Warning
                 && i.text.contains("shared with cars and buses")));
+    }
+
+    /// One half of a dual carriageway along the track at `y`, one-way towards +x or −x.
+    fn half(way: i64, y: f64, towards_plus_x: bool) -> Street {
+        let proj = LocalTm::new(ORIGIN[0], ORIGIN[1]);
+        let mut t: BTreeMap<String, String> = BTreeMap::new();
+        t.insert("highway".into(), "primary".into());
+        t.insert("name".into(), "Boulevard".into());
+        t.insert("oneway".into(), "yes".into());
+        let mut coords: Vec<[f64; 2]> = (-4..=4)
+            .map(|k| {
+                proj.to_lonlat(P2 {
+                    x: 50.0 * f64::from(k),
+                    y,
+                })
+            })
+            .collect();
+        if !towards_plus_x {
+            coords.reverse();
+        }
+        street_from_osm(way, &t, coords).expect("a street")
+    }
+
+    #[test]
+    fn a_tram_in_the_middle_of_a_dual_carriageway_measures_the_whole_street() {
+        let dz = build_with_streets(
+            &tram_line(RailMode::Tram),
+            None,
+            &[half(7, 3.0, true), half(8, -7.0, false)],
+        );
+        let r = &dz.street_running[0];
+        // Both halves (one lane each) and the median, not one 3.2 m lane.
+        assert!(r.street.width_m > 10.0, "{r:?}");
+        assert!(!r.street.oneway);
+        assert_eq!(r.running, Running::Reserved, "{r:?}");
+        // Two parallel one-way streets the same way are no dual carriageway.
+        let dz = build_with_streets(
+            &tram_line(RailMode::Tram),
+            None,
+            &[half(7, 3.0, true), half(8, -7.0, true)],
+        );
+        let r = &dz.street_running[0];
+        assert!(r.street.width_m < 4.0, "{r:?}");
+        assert_eq!(r.running, Running::Mixed);
     }
 
     #[test]
