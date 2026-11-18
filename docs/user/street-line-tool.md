@@ -80,11 +80,7 @@ Where the line crosses a railway on the level, buses wait while the barriers or 
 ## Directions and depot
 
 - Two **end stops** split the circuit into direction 0 and direction 1 (used for timetables and GTFS). One end stop, or none, makes a circular line.
-- Choose **Bus depot** in the tool palette (or press D) and click the depot gate; a shared depot can be picked under **Depot runs** instead. The tool routes a pull-out from the depot to each terminal and a pull-in from each terminal back, with the same rules. Pick which pull-out and pull-in to show; the grey dashed lines are the runs without passengers. The block builder (Phase 7) picks the ones each vehicle needs.
-
-## Saving
-
-Lines are not stored in the project yet. This arrives with the network design module.
+- Choose **Bus depot** in the tool palette (or press D) and click the depot gate; a shared depot can be picked under **Depot runs** instead. The tool routes a pull-out from the depot to each terminal and a pull-in from each terminal back, with the same rules. Until you pick, the pull-out and pull-in shown are the shortest ones, to and from the end stop nearest the depot. Pick which pull-out and pull-in to show; the grey dashed lines are the runs without passengers. The block builder (Phase 7) picks the ones each vehicle needs.
 
 ## Traffic and bus lanes
 

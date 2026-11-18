@@ -9,8 +9,11 @@ import {
   depotRules,
   moveLane,
   resizeLane,
+  newDepot,
   snapToRing,
   toXY,
+  withOutline,
+  zonesOutside,
 } from "../src/features/depots/model";
 import type { DepotEngine, DepotsDoc, Lane, Report, SavedDepot } from "../src/features/depots/types";
 import type { SavedStreetLine } from "../src/features/street-lines/saved";
@@ -82,6 +85,58 @@ const line = (mode: "bus" | "brt", length_m: number) =>
   ({ profile: { mode, length_m }, vehicle: null }) as unknown as SavedStreetLine;
 
 describe("Depot model", () => {
+  it("drawing the outline again keeps only the slots that fit and moves a whole-outline zone with it", () => {
+    const sq = (x0: number, y0: number, x1: number, y1: number): [number, number][] => [
+      [x0, y0],
+      [x1, y0],
+      [x1, y1],
+      [x0, y1],
+    ];
+    const old = sq(0, 0, 0.004, 0.004);
+    const slot = (id: string, x: number) => ({
+      id,
+      center: [x, 0.0005] as [number, number],
+      heading_deg: 0,
+      length_m: 12,
+      width_m: 3,
+      charger: false,
+    });
+    const zone = (id: string, ring: [number, number][]) => ({
+      id,
+      kind: "parking" as const,
+      ring,
+      angle_deg: 90 as const,
+      vehicles_per_lane: null,
+      vehicle: null,
+      aisle_width_m: null,
+      heading_deg: null,
+    });
+    const lane = (id: string, x: number) => ({
+      id,
+      zone: "z1",
+      kind: "parking" as const,
+      entry: [x, 0] as [number, number],
+      exit: [x, 0.002] as [number, number],
+      width_m: 3.5,
+      aisle_in: null,
+      aisle_out: null,
+      slots: [slot(`${id}s`, x)],
+    });
+    const d = {
+      ...newDepot("East"),
+      boundary: old,
+      zones: [zone("z1", old), zone("z2", sq(0.003, 0.003, 0.0035, 0.0035))],
+      layout: { lanes: [lane("near", 0.0005), lane("far", 0.0035)], aisles: [] },
+    };
+    const smaller = sq(0, 0, 0.001, 0.001);
+    const n = withOutline(d, smaller);
+    expect(n.boundary).toEqual(smaller);
+    expect(n.zones[0]!.ring).toEqual(smaller);
+    expect(n.layout!.lanes.map((l) => l.id)).toEqual(["near"]);
+    expect(zonesOutside(n)).toEqual([2]);
+    expect(zonesOutside(d)).toEqual([]);
+  });
+
   it("gives exits for pull-out and entrances for pull-in", () => {
     expect(depotGates(depot())).toEqual({
       exits: [

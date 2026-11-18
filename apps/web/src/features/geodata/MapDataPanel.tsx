@@ -108,6 +108,8 @@ export function MapDataPanel({
   const [stopping, setStopping] = useState<ReadonlySet<string>>(new Set());
   const [method, setMethod] = useState<Method | null>(null);
   const [regions, setRegions] = useState<GeofabrikRegion[] | null>(null);
+  /** Why Geofabrik's region list could not be had (it cannot be reached), so "no region holds the area" is not said. */
+  const [regionsError, setRegionsError] = useState<string | null>(null);
   const [region, setRegion] = useState("");
   const [planned, setPlanned] = useState(false);
   const [sending, setSending] = useState(false);
@@ -178,7 +180,7 @@ export function MapDataPanel({
       },
       (e: Error) => {
         setRegions([]);
-        setError(e.message);
+        setRegionsError(e.message);
       },
     );
   }, [api, chosen, regions, status?.area]);
@@ -389,6 +391,10 @@ export function MapDataPanel({
                   {regions === null ? (
                     <span role="status" className="text-slate-600">
                       {t("data.regionsLoading")}
+                    </span>
+                  ) : regionsError ? (
+                    <span role="alert" className="text-red-700">
+                      {regionsError}
                     </span>
                   ) : regions.length === 0 ? (
                     <span className="text-slate-600">{t("data.noRegions")}</span>

@@ -246,6 +246,24 @@ describe("appraisal", () => {
     expect(base.user * k + base.fares * k + base.external * k + base.gdp - base.costs).toBeCloseTo(0, 6);
   });
 
+  it("gives no switching value where a cost would have to fall below zero", () => {
+    // A heavy loss: even with no operating cost at all the ENPV stays below 0.
+    const heavy = appraise(
+      input(
+        lines.map((l) => ({ ...l, userDay: 0, annual: [0, 0, 0] })),
+        prefs,
+      ),
+      20,
+    );
+    const base = heavy.tests[0]!.result;
+    for (const s of heavy.switching) {
+      if (s.change !== null) expect(s.change).toBeGreaterThanOrEqual(-1);
+    }
+    const opex = heavy.switching.find((s) => s.id === "opex")!;
+    if (base.enpv + opex.value < 0) expect(opex).toMatchObject({ change: null, impossible: true });
+    expect(heavy.switching.some((s) => s.impossible)).toBe(true);
+  });
+
   it("runs the standard tests", () => {
     const by = Object.fromEntries(a.tests.map((t) => [t.id, t.result]));
     expect(by["capex20"]!.enpv).toBeLessThan(by["base"]!.enpv);

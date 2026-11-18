@@ -36,6 +36,7 @@ export const depotsZu = {
   "depot.hint.gate": "Chofoza umngcele lapho isango lihlangana nomgwaqo khona.",
   "depot.remove": "Susa",
   "depot.zones": "Izindawo",
+  "depot.zoneOutside": "Indawo {n} yeqa umngcele wedepho: yidwebe kabusha noma uyisuse.",
   "depot.zonesNote":
     "Ukupaka, ukushaja (ishaja esikhaleni ngasinye), ukulungisa (akusetshenziselwa ukupaka ebusuku), igcina lezimoto ezigciniwe, nokuhamba (ukushayela kuphela). Ukuhlela okuzenzakalelayo kugcwalisa izindawo zokupaka, zokushaja, zokulungisa nezokugcina.",
   "depot.zoneKind": "Uhlobo lwendawo",

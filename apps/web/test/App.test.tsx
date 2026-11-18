@@ -276,11 +276,19 @@ describe("projects home", () => {
     fireEvent.contextMenu(await screen.findByText("Lakeside network"));
     fireEvent.click(screen.getByRole("menuitem", { name: "Save as .mslab file" }));
     const dlg = screen.getByRole("dialog", { name: "Save as .mslab file" });
-    const save = within(dlg).getByRole("link", { name: "Save file" });
-    expect(save.getAttribute("href")).toBe(`/api/projects/${P1}/mslab`);
-    expect(save.hasAttribute("download")).toBe(true);
     fireEvent.click(within(dlg).getByLabelText(/Include saved simulation runs/));
-    expect(save.getAttribute("href")).toBe(`/api/projects/${P1}/mslab?runs=true`);
+    const clicked: HTMLAnchorElement[] = [];
+    const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (
+      this: HTMLAnchorElement,
+    ) {
+      clicked.push(this);
+    });
+    fireEvent.click(within(dlg).getByRole("button", { name: "Save file" }));
+    click.mockRestore();
+    expect(clicked.map((a) => [a.getAttribute("href"), a.hasAttribute("download")])).toEqual([
+      [`/api/projects/${P1}/mslab?runs=true`, true],
+    ]);
+    expect(screen.queryByRole("dialog", { name: "Save as .mslab file" })).toBeNull();
   });
 
   it("opens a .mslab file as a new project and says what was left out", async () => {

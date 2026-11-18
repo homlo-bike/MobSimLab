@@ -567,13 +567,26 @@ describe("railway engine (WebAssembly)", () => {
 });
 
 /** A map with only what the editor touches. */
-function fakeMap() {
+function fakeMap(center: { lng: number; lat: number } = { lng: ORIGIN[0], lat: ORIGIN[1] }) {
+  // One entry per event that calls every listener, so tests can fire an event the way the map does.
   const handlers = new Map<string, (ev: unknown) => void>();
+  const listeners = new Map<string, ((ev: unknown) => void)[]>();
+  const refresh = (t: string) => {
+    const fs = listeners.get(t) ?? [];
+    if (fs.length === 0) handlers.delete(t);
+    else handlers.set(t, (ev) => fs.forEach((f) => f(ev)));
+  };
   const map = {
-    on: (t: string, f: (ev: unknown) => void) => handlers.set(t, f),
-    off: (t: string) => handlers.delete(t),
+    on: (t: string, f: (ev: unknown) => void) => {
+      listeners.set(t, [...(listeners.get(t) ?? []), f]);
+      refresh(t);
+    },
+    off: (t: string, f?: (ev: unknown) => void) => {
+      listeners.set(t, f ? (listeners.get(t) ?? []).filter((g) => g !== f) : []);
+      refresh(t);
+    },
     getZoom: () => 16,
-    getCenter: () => ({ lng: ORIGIN[0], lat: ORIGIN[1] }),
+    getCenter: () => center,
     getBounds: () => ({
       getWest: () => ORIGIN[0] - 0.01,
       getEast: () => ORIGIN[0] + 0.01,
@@ -594,7 +607,7 @@ function fakeMap() {
       y: -(lat - ORIGIN[1]) * 111_000,
     }),
   };
-  return { map: map as unknown as MapLibreMap, handlers };
+  return { map: map as unknown as MapLibreMap, handlers, center };
 }
 
 describe("Railway editor", () => {
@@ -703,6 +716,79 @@ describe("Railway editor", () => {
         expect.objectContaining({ stations: [expect.anything()] }),
       ),
     );
+  });
+
+  it("moves an empty drawing's origin with the map, so a station far from where the map opened is not distorted", async () => {
+    const onDocChange = vi.fn();
+    const { map, handlers, center } = fakeMap({ lng: 10, lat: 50 });
+    render(
+      <RailwayEditor
+        map={map}
+        fetchTile={() => Promise.reject(new Error("offline"))}
+        loadEngine={loadRailEngine}
+        onDocChange={onDocChange}
+      />,
+    );
+    await waitFor(() => expect(screen.getByRole("button", { name: /Station/ })).toBeTruthy());
+    // The planner pans to the project's city, then places a station there.
+    center.lng = ORIGIN[0];
+    center.lat = ORIGIN[1];
+    act(() => handlers.get("moveend")!({}));
+    act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
+    await waitFor(() =>
+      expect(onDocChange).toHaveBeenLastCalledWith(
+        expect.objectContaining({ origin: ORIGIN, stations: [expect.anything()] }),
+      ),
+    );
+    // Once something is drawn, the origin stays put.
+    center.lng = 10;
+    act(() => handlers.get("moveend")!({}));
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 20));
+    });
+    expect(onDocChange).toHaveBeenLastCalledWith(expect.objectContaining({ origin: ORIGIN }));
+  });
+
+  it("wraps a negative station rotation instead of setting it to 0°", async () => {
+    const { handlers } = await opened();
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+    act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
+    const field = (await screen.findByRole("spinbutton", { name: "Rotation" })) as HTMLInputElement;
+    fireEvent.change(field, { target: { value: "-139" } });
+    await waitFor(() => expect(field.value).toBe("221"));
+  });
+
+  it("changes the level of the next points with + and − after the first point too", async () => {
+    const onDocChange = vi.fn();
+    const { map, handlers } = fakeMap();
+    render(
+      <RailwayEditor
+        map={map}
+        fetchTile={() => Promise.reject(new Error("offline"))}
+        loadEngine={loadRailEngine}
+        onDocChange={onDocChange}
+      />,
+    );
+    await waitFor(() => expect(screen.getByRole("button", { name: /^Track/ })).toBeTruthy());
+    fireEvent.click(screen.getByRole("button", { name: /^Track/ }));
+    const at = (dx: number) => ({
+      lngLat: { lng: ORIGIN[0] + dx, lat: ORIGIN[1] },
+      point: { x: dx * 1e5, y: 0 },
+    });
+    act(() => handlers.get("click")!(at(0)));
+    act(() => handlers.get("click")!(at(0.003)));
+    fireEvent.keyDown(window, { key: "+" });
+    act(() => handlers.get("click")!(at(0.006)));
+    act(() => handlers.get("click")!(at(0.009)));
+    fireEvent.keyDown(window, { key: "Enter" });
+    await waitFor(() =>
+      expect(onDocChange).toHaveBeenLastCalledWith(expect.objectContaining({ tracks: [expect.anything()] })),
+    );
+    const track = (onDocChange.mock.lastCall![0] as Network).tracks[0]!;
+    expect(track.points.map((p) => p.level)).toEqual(
+      ["street", "elevated", "elevated"].slice(0, track.points.length),
+    );
+    expect(track.points.some((p) => p.level === "elevated")).toBe(true);
   });
 
   it("places a station where the planner clicks", async () => {

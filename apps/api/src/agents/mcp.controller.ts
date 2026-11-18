@@ -17,6 +17,10 @@ import { buildMcpServer } from "./mcp.tools";
 import { SCOPE_IDS } from "./oauth";
 import { OAuthService } from "./oauth.service";
 import { ScenariosService } from "./scenarios.service";
+import { KEEP_ALIVE_MS, keepAlive } from "./keep-alive";
+
+/** The keep-alive interval of MCP tool calls (tests shorten it). */
+export const mcpKeepAlive = { everyMs: KEEP_ALIVE_MS };
 
 /**
  * The MCP endpoint (ADR-0035 §1): Streamable HTTP transport, stateless (a new server per request, JSON
@@ -55,9 +59,12 @@ export class McpController {
     const principal = m ? await this.oauth.resolve(m[1]!) : null;
     if (!principal) {
       res.setHeader("WWW-Authenticate", challenge(m ? "invalid_token" : undefined));
-      res
-        .status(401)
-        .json({ error: m ? "invalid_token" : "unauthorized", error_description: "Bearer token required" });
+      res.status(401).json({
+        error: m ? "invalid_token" : "unauthorized",
+        error_description: m
+          ? "The token is invalid, expired or revoked. Connect again, or create a new personal access token."
+          : "Bearer token required",
+      });
       return;
     }
     if (req.method !== "POST") {
@@ -84,6 +91,9 @@ export class McpController {
       simulation: { runs: this.runs, projects: this.projects },
       plugins: { plugins: this.plugins, code: this.pluginCode },
       instanceName: inst.name,
+      listing: ([req.body] as unknown[])
+        .flat()
+        .some((m) => (m as { method?: unknown } | null)?.method === "tools/list"),
       instanceUrl: this.config.publicUrl.origin,
       requestId: req.requestId,
     });
@@ -95,6 +105,13 @@ export class McpController {
       void transport.close();
       void server.close();
     });
+    // A tool call can run for minutes (coverage over a large area): keep the connection alive through proxies.
+    if (
+      ([req.body] as unknown[])
+        .flat()
+        .some((m) => (m as { method?: unknown } | null)?.method === "tools/call")
+    )
+      keepAlive(res, mcpKeepAlive.everyMs);
     try {
       await server.connect(transport);
       await transport.handleRequest(req, res, req.body);

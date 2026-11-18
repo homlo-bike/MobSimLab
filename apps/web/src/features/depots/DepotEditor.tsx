@@ -26,15 +26,18 @@ import {
   inRing,
   lineFleet,
   linesOf,
+  lineVehicle,
   moveLane,
   newDepot,
   newId,
   resizeLane,
   ringArea,
   snapToRing,
+  withOutline,
   ZONE_COLOR,
   ZONE_KINDS,
   ZONE_LABEL,
+  zonesOutside,
 } from "./model";
 import type {
   DepotEngine,
@@ -269,9 +272,8 @@ export function DepotEditor({
     setTool({ kind: "idle" });
     if (!d || tl.points.length < 3) return;
     if (tl.kind === "outline") {
-      // Gates stay on the outline.
-      const gates = d.gates.map((g) => ({ ...g, lonlat: snapToRing(tl.points, g.lonlat) }));
-      save(d.id, { ...d, boundary: tl.points, gates });
+      // Gates stay on the outline; slots that no longer fit go (see withOutline).
+      save(d.id, withOutline(d, tl.points));
     } else {
       const zone: Zone = {
         id: newId("z"),
@@ -345,6 +347,11 @@ export function DepotEditor({
   ]);
   const vehicleName = (key: string) => vehicleKeys.find(([k]) => k === key)?.[1] ?? key;
   const issues = [
+    ...(selected ? zonesOutside(selected) : []).map((n) => ({
+      severity: "warning" as const,
+      subject: null,
+      message: t("depot.zoneOutside", { n }),
+    })),
     ...layoutIssues,
     ...(report?.issues ?? []),
     ...(report?.capacity.issues ?? []).filter(
@@ -745,7 +752,11 @@ export function DepotEditor({
                         {line.name || t("depot.lineN", { n: index + 1 })}
                       </span>
                       <span className={`shrink-0 ${problem ? "text-red-700" : "text-slate-500"}`}>
-                        {problem ? t(problem) : t("depot.vehiclesN", { n: lineFleet(line, prefs) })}
+                        {problem
+                          ? problem === "depot.fit.size"
+                            ? `${t(problem)}: ${lineVehicle(line).length_m} m`
+                            : t(problem)
+                          : t("depot.vehiclesN", { n: lineFleet(line, prefs) })}
                       </span>
                     </li>
                   );

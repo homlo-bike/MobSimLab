@@ -12,9 +12,13 @@ import { createPortal } from "react-dom";
 import {
   type Basemap,
   basemapStyle,
-  loadServerBasemaps,
+  availableBasemaps,
+  DEFAULT_BASEMAP,
+  onServerBasemaps,
+  refreshServerBasemaps,
   rememberBasemap,
   rememberedBasemap,
+  rememberedBasemapId,
 } from "./basemaps";
 import { MapControls } from "./MapControls";
 import { applyHidden, markBasemap, type OverlayGroup, switchBasemap } from "./mapLayers";
@@ -99,16 +103,29 @@ export function MapView({ onReady }: Props) {
     if (map) applyHidden(map, hidden);
   }, [map, hidden]);
 
-  // Keyed basemaps (Esri) are offered once the API says an Admin has saved their key.
+  // Keyed basemaps (Esri) are offered once the API says an Admin has saved their key, also when the key is saved
+  // while this map is open. A keyed basemap picked before a reload comes back once it is offered again.
   const [, setServerBasemaps] = useState(0);
+  const pickNow = useRef<(b: Basemap) => void>(() => {});
+  const basemapNow = useRef(basemap);
+  basemapNow.current = basemap;
+  const restore = useRef(() => {});
+  restore.current = () => {
+    // Only on a ready map, so the style really switches; the map's load runs this again.
+    if (!map) return;
+    const wanted = rememberedBasemapId();
+    const offered = availableBasemaps().find((b) => b.id === wanted);
+    if (offered && basemapNow.current.id === DEFAULT_BASEMAP.id && wanted !== DEFAULT_BASEMAP.id)
+      pickNow.current(offered);
+  };
+  useEffect(() => restore.current(), [map]);
   useEffect(() => {
-    let live = true;
-    void loadServerBasemaps().then((changed) => {
-      if (live && changed) setServerBasemaps((n) => n + 1);
+    const stop = onServerBasemaps(() => {
+      setServerBasemaps((n) => n + 1);
+      restore.current();
     });
-    return () => {
-      live = false;
-    };
+    void refreshServerBasemaps();
+    return stop;
   }, []);
 
   const pickBasemap = (b: Basemap) => {
@@ -124,6 +141,7 @@ export function MapView({ onReady }: Props) {
     });
     map.addControl(attribution.current);
   };
+  pickNow.current = pickBasemap;
 
   // MapLibre's stylesheet sets `position: relative` on the map element and, being unlayered, beats
   // Tailwind's `absolute`; so the map fills an absolutely positioned wrapper instead.

@@ -41,6 +41,7 @@ export function Num({
   min = 0,
   step = 1,
   label,
+  wrap,
 }: {
   value: number;
   onChange: (v: number) => void;
@@ -48,24 +49,35 @@ export function Num({
   min?: number;
   step?: number;
   label: string;
+  /** An angle: any number is taken and wrapped into 0 … wrap (−139° becomes 221°) instead of clamped to `min`. */
+  wrap?: number;
 }) {
   return (
     <span className="flex items-center gap-1">
       <input
         type="number"
         aria-label={label}
-        min={min}
+        min={wrap ? undefined : min}
         step={step}
         value={Math.round(value * 10) / 10}
         onChange={(e) => {
+          // While a number is half typed (a lone "-"), the field reads "": keep the value until it is a number.
+          if (e.target.value.trim() === "") return;
           const v = Number(e.target.value);
-          if (Number.isFinite(v)) onChange(Math.max(min, v));
+          if (!Number.isFinite(v)) return;
+          onChange(wrapOrClamp(v, min, wrap));
         }}
         className="w-20 rounded border border-slate-300 px-1 py-0.5 text-end"
       />
       <span className="w-7 text-slate-500">{unit}</span>
     </span>
   );
+}
+
+/** Purpose: an angle wrapped into [0, wrap), or any other value held at `min`. */
+export function wrapOrClamp(v: number, min: number, wrap?: number): number {
+  if (wrap) return ((v % wrap) + wrap) % wrap;
+  return Math.max(min, v);
 }
 
 export function Segmented<T extends string | number>({

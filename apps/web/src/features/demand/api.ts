@@ -162,7 +162,7 @@ export interface DemandRunsApi {
 }
 
 /** Most street tiles one demand run may take (apps/api `MAX_DEMAND_TILES`). */
-export const MAX_DEMAND_TILES = 160;
+export const MAX_DEMAND_TILES = 320;
 
 /** Purpose: the web-mercator tile at zoom 14 holding a point (apps/api `tileOf`). */
 function tileOf(lon: number, lat: number): [number, number] {

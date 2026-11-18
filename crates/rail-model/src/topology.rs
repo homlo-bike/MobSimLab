@@ -904,6 +904,16 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
                 } else {
                     (area, s.chainage_m)
                 };
+            // A signal well inside a switch or crossing area (for example on a leg of a double
+            // junction) would split the area's detection section, and the whole layout would be
+            // refused. No train can wait there anyway: the signal is left out, with a note.
+            if sub.group.is_some() && at - sub.from > SIGNAL_SNAP_M && sub.to - at > SIGNAL_SNAP_M {
+                notes.push(format!(
+                    "signal {} stands inside the switch or crossing area of {} (at {:.0} m); it is left out: move it in front of the area",
+                    s.id, s.section, s.chainage_m
+                ));
+                continue;
+            }
             let kind = match s.kind.as_str() {
                 "main" => SignalKind::Main,
                 "block" => SignalKind::Block,

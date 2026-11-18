@@ -3,7 +3,7 @@ import { regionsHolding } from "../src/gateway/geofabrik.client";
 import { OverpassClient } from "../src/gateway/overpass.client";
 import { cutTiles, decodeValues, encodeValues, sample, tileBounds } from "../src/geodata/dem-tiles";
 import { DemUploadError, resampleDem } from "../src/geodata/dem-upload";
-import { holds, toElement } from "../src/geodata/geodata-reader";
+import { clipTo, holds, toElement } from "../src/geodata/geodata-reader";
 import { bufferReader } from "../src/population/geotiff";
 import { buildTiff } from "./support/tiff";
 import { areaQuery, osmBase, quarters, runtimeError, splitBox } from "../src/geodata/overpass-import";
@@ -171,6 +171,17 @@ describe("imported rows as Overpass elements", () => {
   it("checks that an import holds a box", () => {
     expect(holds([0, 0, 2, 2], [0.5, 0.5, 1, 1])).toBe(true);
     expect(holds([0, 0, 2, 2], [1, 1, 3, 1.5])).toBe(false);
+  });
+
+  it("answers a box that pokes out of the import from the part the import covers", () => {
+    // Damascus: the schematic asked for water up to 36.576° E, the import ends at 36.543° E.
+    expect(clipTo([36.2, 33.4, 36.543, 33.6], [36.25, 33.45, 36.576, 33.58])).toEqual([
+      36.25, 33.45, 36.543, 33.58,
+    ]);
+    expect(clipTo([0, 0, 2, 2], [0.5, 0.5, 1, 1])).toEqual([0.5, 0.5, 1, 1]);
+    // Wholly outside, or only touching an edge: not from the import.
+    expect(clipTo([0, 0, 2, 2], [3, 3, 4, 4])).toBeNull();
+    expect(clipTo([0, 0, 2, 2], [2, 0, 3, 1])).toBeNull();
   });
 });
 

@@ -50,7 +50,7 @@ export class SessionService {
    * Purpose: start a new session (always a new token, so login rotates the session).
    * Output: the cookie value. Side effects: inserts a session row.
    */
-  async create(userId: string, now = new Date()): Promise<string> {
+  async create(userId: string, now = new Date(), idToken?: string): Promise<string> {
     const token = randomBytes(32).toString("base64url");
     await this.db
       .insertInto("iam.session")
@@ -61,6 +61,7 @@ export class SessionService {
         idle_expires_at: new Date(now.getTime() + IDLE_MS),
         absolute_expires_at: new Date(now.getTime() + ABSOLUTE_MS),
         revoked_at: null,
+        id_token: idToken && idToken.length <= 16384 ? idToken : null,
       })
       .execute();
     return token;
@@ -97,13 +98,22 @@ export class SessionService {
     };
   }
 
-  /** Purpose: end a session server-side. */
-  async revoke(tokenHash: Buffer, now = new Date()): Promise<void> {
+  /**
+   * Purpose: end a session server-side.
+   * Output: the session's ID token, if one was kept (for the provider's end-session `id_token_hint`).
+   */
+  async revoke(tokenHash: Buffer, now = new Date()): Promise<string | null> {
+    const row = await this.db
+      .selectFrom("iam.session")
+      .select("id_token")
+      .where("token_hash", "=", tokenHash)
+      .executeTakeFirst();
     await this.db
       .updateTable("iam.session")
-      .set({ revoked_at: now })
+      .set({ revoked_at: now, id_token: null })
       .where("token_hash", "=", tokenHash)
       .execute();
+    return row?.id_token ?? null;
   }
 
   /** Purpose: CSRF token bound to the session (synchroniser token, sent back in `X-CSRF-Token`). */

@@ -122,6 +122,10 @@ sees the Docker gateway of its own network (`docker network inspect mobsimlab_de
   nginx as well sends two copies, and browsers then apply the stricter or neither.
 - **No caching of `/api`, `/oauth` or `/mcp`.** Their answers carry `Cache-Control: no-store`; do not add
   `proxy_cache` for them.
+- **No response buffering that waits for the whole answer on `/mcp`.** An AI tool call can run for several
+  minutes (coverage over a large area). MobSimLab then sends a space every 15 seconds so the proxy's read timeout
+  does not end the call, and sets `X-Accel-Buffering: no` so nginx passes them on. A proxy that buffers the whole
+  answer anyway needs a read timeout of at least the longest call.
 
 ## 5. Check it
 

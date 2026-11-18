@@ -36,6 +36,7 @@ export const depotsPl = {
   "depot.hint.gate": "Kliknij obrys tam, gdzie brama wychodzi na ulicę.",
   "depot.remove": "Usuń",
   "depot.zones": "Strefy",
+  "depot.zoneOutside": "Strefa {n} wychodzi poza obrys zajezdni: narysuj ją ponownie lub usuń.",
   "depot.zonesNote":
     "Postój, ładowanie (ładowarka przy każdym miejscu), warsztat (nie na postój nocny), rezerwa dla pojazdów zapasowych i ruch (tylko jazda). Automatyczny układ wypełnia strefy postoju, ładowania, warsztatu i rezerwy.",
   "depot.zoneKind": "Rodzaj strefy",

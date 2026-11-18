@@ -181,7 +181,6 @@ export const editorsTa = {
   "rail.switch": "சுவிட்சு",
   "rail.switchFacts": "நீளம் {length} · 1:{ratio} · R {radius} மீ · கிளையில் {speed} கி.மீ/ம · {at} இல்",
   "rail.positionAlong": "தண்டவாளத்தில் நிலை",
-  "rail.switchPosition": "சுவிட்சின் நிலை",
   "rail.otherSide": "மறுபக்கம்",
   "rail.reverse": "திசையைத் திருப்பு",
   "rail.mirror": "கண்ணாடி",
@@ -373,6 +372,8 @@ export const editorsTa = {
   "street.stat.cycle": "சுற்று: {run} இயக்கம்{crossings}, {dwell} நிற்றல், {layover} ஓய்வு",
   "street.stat.atCrossings": "(கிராசிங்குகளில் {min})",
   "street.stat.vehicles": "{headway} நிமிட இடைவெளிக்கான வாகனங்கள்",
+  "street.stat.compact":
+    "சுற்று {length} · {stops} நிறுத்தங்கள் · {cycle} நிமிட சுழற்சி · {vehicles} வாகனங்கள்",
   "street.points": "வழித்தடப் புள்ளிகள் · சுற்று வரிசை",
   "street.noPoints":
     "இன்னும் புள்ளிகள் இல்லை. புள்ளிகளைச் சேர் என்பதைத் தேர்ந்தெடுத்து தெருவைக் கிளிக் செய்யவும்.",
@@ -625,7 +626,7 @@ export const editorsTa = {
   "schematic.exportFailed": "ஏற்றுமதி தோல்வி: {error}",
   "schematic.zoomIn": "பெரிதாக்கு",
   "schematic.zoomOut": "சிறிதாக்கு",
-  "schematic.zoomFit": "பக்கத்துக்கு பொருத்து, உண்மை அளவு இடையே மாற்று",
+  "schematic.zoomFit": "பக்கத்துக்கு பொருத்து",
   "schematic.fit": "பொருத்து",
   "schematic.footer": "{project} · MobSimLab கொண்டு உருவாக்கிய திட்ட வரைபடம் · {date}",
   "schematic.diagramAria": "வலையமைப்பு திட்ட வரைபடம்",
@@ -1204,6 +1205,15 @@ export const editorsTa = {
   "agents.settings": "முகவர் அமைப்புகள்",
   "agents.settingsTitle": "நிகழ்வு அமைப்புகள்",
   "agents.registration": "AI செயலிகள் தாமாகப் பதிவுசெய்ய அனுமதி (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "{name} இணைப்பைத் துண்டிக்கவா? அது உடனே வேலை செய்வதை நிறுத்தும்; மீண்டும் பயன்படுத்த மறுபடி இணைக்கவும் அல்லது புதிய டோக்கனை உருவாக்கவும்.",
+  "agents.clientsTitle": "பதிவுசெய்த AI பயன்பாடுகள்",
+  "agents.noClients": "இன்னும் எந்த AI பயன்பாடும் பதிவு செய்யவில்லை.",
+  "agents.clientConnections": "{count} இணைந்துள்ளன",
+  "agents.clientDelete": "அகற்று",
+  "agents.clientInUse": "முதலில் அதன் முகவர்களின் இணைப்பைத் துண்டிக்கவும்.",
+  "agents.clientDeleteConfirm":
+    "பதிவுசெய்த பயன்பாடு {name} ஐ அகற்றவா? இணைக்க அது மீண்டும் பதிவு செய்ய வேண்டும்.",
   "admin.title": "நிர்வாகம்",
   "admin.users": "பயனர்கள்",
   "admin.signup": "பதிவு விதிகள்",

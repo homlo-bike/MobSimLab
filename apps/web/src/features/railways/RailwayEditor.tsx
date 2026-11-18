@@ -11,6 +11,7 @@ import {
   autoLeads,
   deleteElement,
   emptyNetwork,
+  isEmptyDrawing,
   newTrack,
   stationPlaces,
   resetSignals,
@@ -243,6 +244,27 @@ export function RailwayEditor({
     const c = map.getCenter();
     setDoc(emptyNetwork("metro", [c.lng, c.lat]));
   }, [map, doc]);
+  // Positions are local metres around the drawing's origin, which is only exact near it: an origin left where the
+  // map first opened (say over Europe) rotates and stretches a station drawn 2,500 km away. While nothing is drawn,
+  // the origin follows the map.
+  const draftNow = useRef(draft);
+  draftNow.current = draft;
+  useEffect(() => {
+    if (!map) return;
+    const follow = () => {
+      if (draftNow.current) return;
+      const c = map.getCenter();
+      setDoc((d) =>
+        d && isEmptyDrawing(d) && (d.origin[0] !== c.lng || d.origin[1] !== c.lat)
+          ? { ...d, origin: [c.lng, c.lat] }
+          : d,
+      );
+    };
+    map.on("moveend", follow);
+    return () => {
+      map.off("moveend", follow);
+    };
+  }, [map]);
   // Save every change; an empty drawing only once something was drawn or saved before.
   const docChanged = useRef(onDocChange);
   docChanged.current = onDocChange;

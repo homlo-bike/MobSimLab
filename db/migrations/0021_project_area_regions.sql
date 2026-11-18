@@ -1,4 +1,4 @@
--- 0020: the project area from OpenStreetMap regions (#140). A planner picks one or more OSM boundaries or named
+-- 0021: the project area from OpenStreetMap regions (#140). A planner picks one or more OSM boundaries or named
 -- places; the project area is their union, and imports (OSM, elevation, population) cover their box. Projects
 -- without regions keep the box round everything drawn, widened by area_buffer_km (projects/project-area.ts).
 -- Each entry: {id, name, kind, adminLevel, ring: [[lon, lat], ...], areaKm2}; rings are thinned to 1,500 points.

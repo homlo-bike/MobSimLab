@@ -36,6 +36,7 @@ export const depotsJa = {
   "depot.hint.gate": "外周上で門が道路に接する位置をクリックします。",
   "depot.remove": "削除",
   "depot.zones": "ゾーン",
+  "depot.zoneOutside": "ゾーン {n} が車庫の外形からはみ出しています。描き直すか削除してください。",
   "depot.zonesNote":
     "駐車、充電（各駐車枠に充電器）、整備（夜間駐車には使わない）、予備車用の予備、通路（走行のみ）。自動配置は駐車・充電・整備・予備のゾーンを埋めます。",
   "depot.zoneKind": "ゾーンの種類",

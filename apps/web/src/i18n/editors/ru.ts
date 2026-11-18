@@ -214,7 +214,6 @@ export const editorsRu = {
   "rail.switchFacts":
     "длина {length} · 1:{ratio} · R {radius} м · {speed} км/ч на боковой путь · у отметки {at}",
   "rail.positionAlong": "Положение на пути",
-  "rail.switchPosition": "Положение стрелки",
   "rail.otherSide": "Другая сторона",
   "rail.reverse": "Развернуть",
   "rail.mirror": "Отразить",
@@ -401,6 +400,7 @@ export const editorsRu = {
   "street.stat.cycle": "Оборот: {run} в пути{crossings}, {dwell} на остановках, {layover} отстоя",
   "street.stat.atCrossings": "({min} на переездах)",
   "street.stat.vehicles": "Машин при интервале {headway} мин",
+  "street.stat.compact": "круг {length} · остановок: {stops} · оборот {cycle} мин · машин: {vehicles}",
   "street.points": "Точки маршрута · порядок оборота",
   "street.noPoints": "Точек пока нет. Выберите «Добавить точку» и нажмите на улицу.",
   "street.viaN": "Промежуточная точка {n}",
@@ -655,7 +655,7 @@ export const editorsRu = {
   "schematic.exportFailed": "Не удалось экспортировать: {error}",
   "schematic.zoomIn": "Увеличить",
   "schematic.zoomOut": "Уменьшить",
-  "schematic.zoomFit": "Переключить между размером по странице и исходным размером",
+  "schematic.zoomFit": "По размеру страницы",
   "schematic.fit": "По размеру",
   "schematic.footer": "{project} · схема создана в MobSimLab · {date}",
   "schematic.diagramAria": "Схема сети",
@@ -1246,6 +1246,15 @@ export const editorsRu = {
   "agents.settingsTitle": "Настройки экземпляра",
   "agents.registration":
     "Разрешить ИИ-приложениям регистрироваться самим (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "Отключить {name}? Подключение сразу перестанет работать; чтобы снова пользоваться им, подключитесь заново или создайте новый токен.",
+  "agents.clientsTitle": "Зарегистрированные приложения ИИ",
+  "agents.noClients": "Ни одно приложение ИИ ещё не зарегистрировалось.",
+  "agents.clientConnections": "Подключено: {count}",
+  "agents.clientDelete": "Удалить",
+  "agents.clientInUse": "Сначала отключите его агентов.",
+  "agents.clientDeleteConfirm":
+    "Удалить зарегистрированное приложение {name}? Чтобы подключиться, ему придётся зарегистрироваться снова.",
   "admin.title": "Администрирование",
   "admin.users": "Пользователи",
   "admin.signup": "Правила регистрации",

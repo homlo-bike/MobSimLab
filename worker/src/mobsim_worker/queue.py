@@ -15,6 +15,12 @@ from typing import Any, Protocol
 
 from psycopg.types.json import Jsonb
 
+READY = """
+SELECT CASE WHEN to_regnamespace('pgboss') IS NULL OR NOT has_schema_privilege('pgboss', 'USAGE') THEN false
+            WHEN to_regclass('pgboss.job') IS NULL THEN false
+            ELSE has_table_privilege(to_regclass('pgboss.job'), 'UPDATE') END
+"""
+
 #: Queue name, as in apps/api/src/simulation/queue.ts (the schema there is ``pgboss``).
 RUN_QUEUE = "simulation-run"
 
@@ -88,6 +94,18 @@ class Queue:
         """
         self.conn = conn
         self.name = name
+
+    def ready(self) -> bool:
+        """Whether the API has set up pg-boss and granted the worker its table.
+
+        Asked before polling, so a fresh install does not fill the database log with
+        ``relation "pgboss.job" does not exist`` every few seconds until the first run is queued.
+
+        Returns:
+            True when ``pgboss.job`` exists and the worker may update it.
+        """
+        row = self.conn.execute(READY).fetchone()
+        return bool(row and row[0])
 
     def fetch(self) -> Job | None:
         """Take the next job, if any.

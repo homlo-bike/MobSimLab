@@ -181,7 +181,6 @@ export const editorsEs = {
   "rail.switch": "Desvío",
   "rail.switchFacts": "{length} de largo · 1:{ratio} · R {radius} m · {speed} km/h por la desviada · en {at}",
   "rail.positionAlong": "Posición a lo largo de la vía",
-  "rail.switchPosition": "Posición del desvío",
   "rail.otherSide": "Otro lado",
   "rail.reverse": "Invertir",
   "rail.mirror": "Reflejar",
@@ -362,6 +361,8 @@ export const editorsEs = {
   "street.stat.cycle": "Ciclo: {run} de recorrido{crossings}, {dwell} en paradas, {layover} de regulación",
   "street.stat.atCrossings": "({min} en pasos a nivel)",
   "street.stat.vehicles": "Vehículos para una frecuencia de {headway} min",
+  "street.stat.compact":
+    "{length} de circuito · {stops} paradas · ciclo de {cycle} min · {vehicles} vehículos",
   "street.points": "Puntos del recorrido · orden del circuito",
   "street.noPoints": "Aún no hay puntos. Elige Añadir punto y haz clic en una calle.",
   "street.viaN": "Punto de paso {n}",
@@ -613,7 +614,7 @@ export const editorsEs = {
   "schematic.exportFailed": "La exportación falló: {error}",
   "schematic.zoomIn": "Acercar",
   "schematic.zoomOut": "Alejar",
-  "schematic.zoomFit": "Alternar entre ajustar a la página y tamaño real",
+  "schematic.zoomFit": "Ajustar a la página",
   "schematic.fit": "Ajustar",
   "schematic.footer": "{project} · plano esquemático hecho con MobSimLab · {date}",
   "schematic.diagramAria": "Plano esquemático de la red",
@@ -1195,6 +1196,15 @@ export const editorsEs = {
   "agents.settingsTitle": "Ajustes de la instancia",
   "agents.registration":
     "Permitir que las aplicaciones de IA se registren solas (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "¿Desconectar {name}? Deja de funcionar al instante; para volver a usarlo, conéctelo de nuevo o cree un token nuevo.",
+  "agents.clientsTitle": "Aplicaciones de IA registradas",
+  "agents.noClients": "Ninguna aplicación de IA se ha registrado todavía.",
+  "agents.clientConnections": "{count} conectados",
+  "agents.clientDelete": "Quitar",
+  "agents.clientInUse": "Desconecte primero sus agentes.",
+  "agents.clientDeleteConfirm":
+    "¿Quitar la aplicación registrada {name}? Tendrá que registrarse de nuevo para conectarse.",
   "admin.title": "Administración",
   "admin.users": "Usuarios",
   "admin.signup": "Reglas de registro",

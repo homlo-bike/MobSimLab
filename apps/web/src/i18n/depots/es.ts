@@ -38,6 +38,7 @@ export const depotsEs = {
   "depot.hint.gate": "Haga clic en el contorno donde la puerta da a la calle.",
   "depot.remove": "Quitar",
   "depot.zones": "Zonas",
+  "depot.zoneOutside": "La zona {n} sale del contorno de la cochera: dibújela de nuevo o quítela.",
   "depot.zonesNote":
     "Estacionamiento, carga (un cargador en cada plaza), taller (no para estacionar de noche), reserva para vehículos de repuesto y circulación (solo para circular). La distribución automática llena las zonas de estacionamiento, carga, taller y reserva.",
   "depot.zoneKind": "Tipo de zona",

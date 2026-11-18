@@ -11,6 +11,8 @@ export interface OidcIdentity {
   emailVerified: boolean;
   name: string | null;
   groups: string[];
+  /** The raw ID token, kept with the session only to send as `id_token_hint` at sign-out. */
+  idToken?: string;
 }
 
 /** Values to keep between the redirect to the provider and the callback. */
@@ -19,6 +21,23 @@ export interface AuthRequest {
   state: string;
   nonce: string;
   codeVerifier: string;
+}
+
+/**
+ * Purpose: a log line for a failed sign-in step that names the provider's own answer. `openid-client` reports an
+ * OAuth error body only as "server responded with an error in the response body"; the useful part
+ * (`error` / `error_description`, for example `invalid_client`) is on the error object. Never includes tokens.
+ */
+export function describeOidcError(e: unknown): string {
+  if (!(e instanceof Error)) return String(e);
+  const x = e as Error & { error?: unknown; error_description?: unknown; status?: unknown; code?: unknown };
+  const parts: string[] = [];
+  if (typeof x.error === "string") parts.push(`error=${x.error}`);
+  if (typeof x.error_description === "string")
+    parts.push(`error_description=${x.error_description.slice(0, 300)}`);
+  if (typeof x.status === "number") parts.push(`status=${x.status}`);
+  if (parts.length === 0 && typeof x.code === "string") parts.push(`code=${x.code}`);
+  return parts.length > 0 ? `${e.message} (${parts.join(", ")})` : e.message;
 }
 
 /** Thrown when sign-in is not configured. */
@@ -107,16 +126,24 @@ export class OidcService {
       emailVerified: c.email_verified === true,
       name: typeof c.name === "string" ? c.name : null,
       groups,
+      idToken: tokens.id_token,
     };
   }
 
-  /** Purpose: the provider's end-session URL, if it has one (05 §3.1 logout). */
-  async endSessionUrl(): Promise<string | null> {
+  /**
+   * Purpose: the provider's end-session URL, if it has one (05 §3.1 logout).
+   * Inputs: the session's ID token, if kept. Providers such as Authentik only send the browser back to
+   * `post_logout_redirect_uri` when `id_token_hint` names the session; `client_id` is added for the others.
+   */
+  async endSessionUrl(idTokenHint?: string | null): Promise<string | null> {
     if (!this.config.oidc) return null;
     const cfg = await this.discover();
     if (!cfg.serverMetadata().end_session_endpoint) return null;
-    return oidc.buildEndSessionUrl(cfg, {
+    const params: Record<string, string> = {
       post_logout_redirect_uri: new URL("/", this.config.publicUrl).href,
-    }).href;
+      client_id: this.config.oidc.clientId,
+    };
+    if (idTokenHint) params.id_token_hint = idTokenHint;
+    return oidc.buildEndSessionUrl(cfg, params).href;
   }
 }

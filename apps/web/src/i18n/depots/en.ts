@@ -38,6 +38,7 @@ export const depotsEn = {
   "depot.hint.gate": "Click on the outline where the gate meets the street.",
   "depot.remove": "Remove",
   "depot.zones": "Zones",
+  "depot.zoneOutside": "Zone {n} reaches outside the depot outline: draw it again or remove it.",
   "depot.zonesNote":
     "Parking, charging (a charger at every slot), maintenance (not used for overnight parking), reserve for spares, and circulation (driving only). The auto layout fills the parking, charging, maintenance and reserve zones.",
   "depot.zoneKind": "Zone kind",

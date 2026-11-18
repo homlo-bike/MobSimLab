@@ -36,6 +36,7 @@ export const depotsKo = {
   "depot.hint.gate": "외곽선에서 출입문이 도로와 만나는 곳을 클릭하세요.",
   "depot.remove": "삭제",
   "depot.zones": "구역",
+  "depot.zoneOutside": "구역 {n}이(가) 차고지 경계 밖으로 나갑니다. 다시 그리거나 제거하세요.",
   "depot.zonesNote":
     "주차, 충전(주차면마다 충전기), 정비(야간 주차에 쓰지 않음), 예비 차량용 예비, 통행(주행 전용). 자동 배치는 주차·충전·정비·예비 구역을 채웁니다.",
   "depot.zoneKind": "구역 종류",

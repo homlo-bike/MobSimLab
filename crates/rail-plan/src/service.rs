@@ -448,6 +448,81 @@ fn issue_text(issue: &Issue, names: &PlatformNames) -> String {
     }
 }
 
+/// Purpose: what keeps the design's storage tracks from feeding a line: a storage track with no
+/// signal to leave by, or no storage track that reaches either end of the line.
+/// Output: sentences for the line's report (none when a storage track reaches a terminal, or the
+/// design has no storage track: its trains then stable in the terminal platforms by design).
+fn stabling_problems(m: &Model, spec: &LineSpec, l: &ServiceLine) -> Vec<String> {
+    let storage: Vec<usize> = (0..m.tracks.len())
+        .filter(|&t| {
+            m.tracks[t].usage == TrackUse::Storage && spec.stabling.contains(&m.tracks[t].id)
+        })
+        .collect();
+    if storage.is_empty() {
+        return Vec::new();
+    }
+    let max_routes = PlanParams::default().max_routes;
+    let mut out = Vec::new();
+    let mut leaves = Vec::new();
+    // A storage track split by a signal is several model tracks (`t166.0.0/0`, `/1`); it can be
+    // left when any of them can. Named as the planner drew it: "storage track 166".
+    let drawn = |t: usize| {
+        let id = &m.tracks[t].id;
+        let base = id.split('/').next().unwrap_or(id);
+        base.strip_prefix('t')
+            .and_then(|r| r.split('.').next())
+            .map_or(base.to_string(), |n| format!("storage track {n}"))
+    };
+    let mut stuck: Vec<String> = Vec::new();
+    let mut free: Vec<String> = Vec::new();
+    for &t in &storage {
+        let starts: Vec<_> = [rail_model::Dir::Up, rail_model::Dir::Down]
+            .into_iter()
+            .map(|d| departure_routes(m, Place::Storage(t), d))
+            .filter(|r| !r.is_empty())
+            .collect();
+        if starts.is_empty() {
+            stuck.push(drawn(t));
+        } else {
+            free.push(drawn(t));
+            leaves.push(starts);
+        }
+    }
+    stuck.sort();
+    stuck.dedup();
+    for name in stuck.into_iter().filter(|n| !free.contains(n)) {
+        out.push(format!(
+            "The {name} has no signal to leave by, so its trains cannot come out. A signal at its exit (in front of the switch that joins it to the line) lets them out."
+        ));
+    }
+    let terminals: Vec<(String, Vec<Place>)> = [l.stations.first(), l.stations.last()]
+        .into_iter()
+        .flatten()
+        .filter_map(|id| m.stations.iter().find(|s| &s.id == id))
+        .map(|st| {
+            (
+                st.name.clone(),
+                st.platforms.iter().map(|&p| Place::Platform(p)).collect(),
+            )
+        })
+        .collect();
+    let reached = |places: &[Place]| {
+        leaves.iter().flatten().any(|start| {
+            places
+                .iter()
+                .any(|&p| find_path(m, start, &[vec![(p, 0.0)]], max_routes).is_some())
+        })
+    };
+    if !leaves.is_empty() && !terminals.iter().any(|(_, ps)| reached(ps)) {
+        let names: Vec<&str> = terminals.iter().map(|(n, _)| n.as_str()).collect();
+        out.push(format!(
+            "No storage track reaches {}: the line's trains can only stay overnight in the terminal platforms, so it runs with few trains. Join a storage track to the line with a switch both ways, or check the signals between them.",
+            names.join(" or ")
+        ));
+    }
+    out
+}
+
 /// Platform labels for the issue texts.
 struct PlatformNames<'a> {
     m: &'a Model,
@@ -603,6 +678,13 @@ pub fn publish_service_with(
             (_, Some(i)) => reports[i].issues.push(issue_text(issue, &names)),
             (_, None) => notes.push(issue_text(issue, &names)),
         }
+    }
+    // Where trains can come from: a depot whose trains cannot reach the line is a design problem
+    // the timetable alone would only show as trips without a train (Damascus test, bug 9).
+    for (i, spec) in specs.iter().enumerate() {
+        reports[i]
+            .issues
+            .extend(stabling_problems(&m, spec, &lines[i]));
     }
     for (i, by_reason) in unplaced.into_iter().enumerate() {
         let mut blocked = false;

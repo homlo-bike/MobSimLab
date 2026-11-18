@@ -1,6 +1,7 @@
 import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { formatDateTime, useI18n } from "../i18n/i18n";
 import { get, send } from "../session/api";
+import { refreshServerBasemaps } from "../map/basemaps";
 
 /** The Esri key's status as `GET /api/admin/basemaps` gives it; the key itself never comes back. */
 export interface EsriStatus {
@@ -45,12 +46,15 @@ export function EsriImageryAdmin({
       setStatus(r.esri);
       setApiKey("");
       setAccept(false);
+      // Open maps offer Esri World Imagery at once, without a reload.
+      void refreshServerBasemaps();
     });
   };
   const remove = () =>
     void run(async () => {
       const r = await send<{ esri: EsriStatus }>("DELETE", "/api/admin/basemaps/esri", csrfToken);
       setStatus(r.esri);
+      void refreshServerBasemaps();
     });
 
   return (
