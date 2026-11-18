@@ -35,6 +35,12 @@
       "type": "string",
       "maxLength": 400
     },
+    "translations": {
+      "description": "Folder of the plugin's translations, relative to the manifest: one <language tag>.json per language (such as ar.json), each an object from an English text of the plugin (its name, description, and the labels, hints and notes of what it contributes) to that text in the language. The app shows the English text where a translation is missing. Bundled plugins translate every text into every language the app offers (tools/plugins/check.py).",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]+(/[A-Za-z0-9_-]+)*$",
+      "maxLength": 200
+    },
     "version": {
       "description": "SemVer.",
       "type": "string",

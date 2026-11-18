@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Picha za angani za takriban mita 0.3 hadi 1 kwa pikseli katika miji mingi, hafifu zaidi vijijini: wazi vya kutosha kuona njia za magari, kingo za barabara na reli. Tarehe za picha hutofautiana kwa mahali.",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery kama ramani ya msingi ya angani: picha za angani za takriban mita 0.3 hadi 1 kwa pikseli katika miji mingi, wazi vya kutosha kuona njia za magari, kingo za barabara na reli. Hutolewa baada ya Msimamizi kuhifadhi ufunguo wa ArcGIS API na kukubali masharti ya Esri chini ya Usimamizi → Programu-jalizi; vigae hupitia MobSimLab hii, kwa hivyo vivinjari haviuoni ufunguo kamwe, na havihifadhiwi."
+}

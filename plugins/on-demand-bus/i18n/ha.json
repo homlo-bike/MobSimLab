@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Sufuri bisa buƙata da ake zanawa da kayan aikin yankin sabis: zana yanki, saita buƙatu a kowace awa, rukunin motoci da lokutan sabis, ka sami motocin da ake buƙata, matsakaicin jira, lokacin tafiya da lokacin ƙofa zuwa ƙofa daga dabarun kimantawa mai ci gaba. Kwaikwayon rana yana tura kowane ajiyar wuri tafiya bayan tafiya (ADR-0042). Yankin yana bayyana a mai tsara tafiya.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "Ƙananan bas-bas da ake ajiyewa ta manhaja: zana yankin, saita rukunin motoci da lokuta.",
+  "On-demand bus": "Bas bisa buƙata"
+}

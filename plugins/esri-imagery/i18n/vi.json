@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Ảnh hàng không khoảng 0,3 đến 1 m mỗi điểm ảnh ở hầu hết các thành phố, thô hơn ở nông thôn: đủ nét để thấy làn xe, bó vỉa và đường ray. Ngày chụp khác nhau tùy nơi.",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery làm bản đồ nền ảnh hàng không: ảnh khoảng 0,3 đến 1 m mỗi điểm ảnh ở hầu hết các thành phố, đủ nét để thấy làn xe, bó vỉa và đường ray. Có sẵn khi Quản trị viên lưu khóa API ArcGIS và chấp nhận điều khoản của Esri trong Quản trị → Plugin; các ô bản đồ đi qua MobSimLab này nên trình duyệt không bao giờ thấy khóa, và các ô không được lưu."
+}

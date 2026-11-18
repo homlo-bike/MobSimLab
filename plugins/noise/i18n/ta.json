@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "சேவை வழித்தடங்களின் மதிப்பிடப்பட்ட இரைச்சல் (ADR-0038): தெரு வழித்தடங்களையும் இருப்புப்பாதைகளையும் வரையும்போது நேரடி இரைச்சல் பட்டை, வளைவுக் கீச்சொலி, பாலங்கள் மற்றும் சந்திகளுக்கான சோதனைகளுடன். CNOSSOS-EU சாலை மற்றும் இருப்புப்பாதை உமிழ்வு, இப்போதைக்குக் கட்டடங்கள் இல்லாத திறந்த வெளியில்.",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "வரையப்பட்ட வழித்தடங்களின் 4 மீ உயரத்தில் L_den மற்றும் L_night, திறந்த வெளி: இரு பக்கமும் பட்டைத் தூரங்கள், வரைபடத்துக்கான பெறுநர் கட்டம் மற்றும் சோதனைகள்.",
+  "Noise band": "இரைச்சல் பட்டை",
+  "Noise map": "இரைச்சல் வரைபடம்"
+}

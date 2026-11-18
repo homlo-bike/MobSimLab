@@ -373,7 +373,7 @@ export const yo: Messages = {
   "prefs.group.noise": "Ariwo",
   "prefs.traction.battery": "bátìrì",
   "prefs.traction.diesel": "díẹ́sẹ́lì",
-  "prefs.traction.hydrogen": "hydrogen",
+  "prefs.traction.hydrogen": "háídírójínì",
   "prefs.traction.cng": "gáàsì àdánidá (CNG)",
   "prefs.traction.electric": "iná mànàmáná",
   "report.title": "Ìròyìn àwọn àròsọ",

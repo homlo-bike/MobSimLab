@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "货运自行车",
+  "Cargo bike range": "货运自行车续航",
+  "Cargo bike savings": "货运自行车节省",
+  "Cargo bike trip and range": "货运自行车行程与续航",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "电动货运三轮车充一次电能往返多远（翻越坡地并优先走自行车道），以及与汽车相比能省多少（购置、燃料、税费、保险、停车、维护），在单独的标签页中显示。",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "从起点到目的地沿可骑行街道（优先走自行车道）的往返行程及地形上消耗的电量，以及显示自行车向各方向能往返多远的续航地图。",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "同样行程下货运自行车与汽车的年度成本对比：购置、能源、税费、保险、停车和维护，以起点所在国家的货币计。"
+}

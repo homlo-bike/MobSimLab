@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "GTFS 피드",
+  "GTFS import and export": "GTFS 가져오기와 내보내기",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "GTFS 피드(zip)를 하루 운행일의 기존 네트워크로 프로젝트에 읽어 들이고, 요청하면 지도 화면 범위로 잘라 여정 플래너가 계획 노선과 함께 이용하게 합니다. 또한 프로젝트 노선을 다른 도구용 GTFS 피드로 씁니다.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "하루 운행일의 정류장, 노선, 운행편(날짜를 지정하지 않으면 가장 운행이 많은 수요일). frequencies.txt는 배차 간격 패턴으로, 노선 유형은 교통수단으로 읽습니다.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "프로젝트 노선을 평일 GTFS 피드로: 정확한 운행편, 배차 간격 노선은 frequencies.txt로, 정류장 그룹은 역으로."
+}

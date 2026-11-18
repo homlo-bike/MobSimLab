@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "1ピクセルあたり約 30 m（この地図では 38 m）、1日分の衛星の通過から作成：地図の一部が空白または雲に覆われるため、別の日付を試してください。線路や縁石を描くには粗すぎます。",
+  "NASA GIBS imagery": "NASA GIBS 画像",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8・9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS トゥルーカラー",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA の Global Imagery Browse Services（GIBS）の衛星画像を、選んだ日の航空背景地図として表示します：1ピクセルあたり約 30 m の Harmonized Landsat Sentinel-2 と約 250 m の VIIRS。API キーは不要です。画像は道路や線路を見分けるには粗すぎます。",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "毎日の全世界の画像、1ピクセルあたり約 250 m（この地図では 306 m）、雲あり：地域の概観用のみ。"
+}

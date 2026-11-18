@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "ወዲያና ወዲህ የሚመላለስ የኬብል መኪና",
+    "Aerial tramway (reversible)": "ወዲያና ወዲህ የሚመላለስ የኬብል መኪና (ተገላቢጦሽ)",
+    "Bicable gondola (2S)": "ባለሁለት ኬብል ጎንዶላ (2S)",
+    "Cable car": "የኬብል መኪና",
+    "Cable cars": "የኬብል መኪናዎች",
+    "Funitel": "ፉኒቴል",
+    "Gondolas and aerial tramways: click stations, towers follow.": "ጎንዶላዎችና ተመላላሽ የኬብል መኪናዎች፦ ጣቢያዎችን ይጫኑ፣ ማማዎቹ ይከተላሉ።",
+    "Monocable detachable gondola (MGD)": "ባለአንድ ኬብል ተነጣይ ጎንዶላ (MGD)",
+    "Pulsed gondola": "በቡድን የሚሄድ ጎንዶላ",
+    "Ropeway system": "የኬብል መንገድ ሥርዓት",
+    "Tricable gondola (3S)": "ባለሦስት ኬብል ጎንዶላ (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "የከተማ የኬብል መንገዶች፦ ያለማቋረጥ የሚሄዱ ጎንዶላዎች (MGD፣ 2S፣ 3S፣ ፉኒቴል፣ በቡድን የሚሄዱ) እና ተመላላሽ የኬብል መኪናዎች፣ በቀጥተኛ ርዝመቶች መሣሪያ የሚሳሉ (ADR-0037)።"
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "የጭነት ብስክሌት",
+    "Cargo bike range": "የጭነት ብስክሌት ርቀት",
+    "Cargo bike savings": "የጭነት ብስክሌት ቁጠባ",
+    "Cargo bike trip and range": "የጭነት ብስክሌት ጉዞና ርቀት",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "የኤሌክትሪክ ባለሦስት ጎማ የጭነት ብስክሌት በአንድ የባትሪ ኃይል ምን ያህል ርቀት ሄዶ እንደሚመለስ፣ በኮረብቶች ላይና የብስክሌት መስመሮችን እየመረጠ፣ እንዲሁም ከመኪና ጋር ሲነጻጸር የሚያድነው (ግዢ፣ ነዳጅ፣ ግብር፣ መድን፣ ማቆሚያ፣ ጥገና)፣ በራሱ ትር ውስጥ።",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "ከመነሻ ነጥብ ወደ መድረሻ በብስክሌት በሚሄዱ መንገዶች (የብስክሌት መስመሮችን እየመረጠ) የደርሶ መልስ ጉዞ ከመሬቱ አቀማመጥ ጋር የሚውለው ባትሪ፣ እንዲሁም ብስክሌቱ በእያንዳንዱ አቅጣጫ ምን ያህል ሄዶ እንደሚመለስ የሚያሳይ የርቀት ካርታ።",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "ለተመሳሳይ ጉዞዎች የጭነት ብስክሌቱ ዓመታዊ ወጪ ከመኪና ጋር ሲነጻጸር፦ ግዢ፣ ኃይል፣ ግብር፣ መድን፣ ማቆሚያና ጥገና፣ በመነሻ ነጥቡ አገር ገንዘብ።"
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "ኤሌክትሪክ፣ ናፍጣ፣ የመጨረሻ ኃይልና CO2e በዓመት ለእያንዳንዱ መስመር፣ ለእያንዳንዱ የትራንስፖርት ዓይነትና ለመላው አውታር፣ በተሽከርካሪ-ኪ.ሜ እና በመቀመጫ-ኪ.ሜ ጥንካሬ ጋር።",
+    "Energy and emissions": "ኃይል እና ልቀቶች",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "የእያንዳንዱ መስመር የመጎተቻ ኃይልና የሙቀት አማቂ ጋዝ ልቀቶች በዓመት፣ ለእያንዳንዱ የትራንስፖርት ዓይነትና ለአውታሩ፣ እያንዳንዱ መስመር ከሚሄደው የተሽከርካሪ-ኪ.ሜ፦ ኤሌክትሪክ በንዑስ ጣቢያ ወይም በቻርጀር፣ ናፍጣ በሊትር፣ እና CO2e ከኤሌክትሪክ መረቡ የልቀት ጥንካሬና ከናፍጣ ከጉድጓድ እስከ ጎማ። በሰንጠረዦች ትር ውስጥ ይታያል።"
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "በአብዛኞቹ ከተሞች በፒክሰል ከ0.3 እስከ 1 ሜ ገደማ የሆኑ የአየር ላይ ፎቶዎች፣ በገጠር ደግሞ ሸካራ፦ የመኪና መስመሮችን፣ የእግረኛ መንገድ ጠርዞችንና ሐዲዶችን ለማየት በቂ ጥራት ያላቸው። የፎቶዎቹ ቀኖች በቦታ ይለያያሉ።",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery እንደ የአየር ላይ መሠረት ካርታ፦ በአብዛኞቹ ከተሞች በፒክሰል ከ0.3 እስከ 1 ሜ ገደማ የሆኑ የአየር ላይ ፎቶዎች፣ የመኪና መስመሮችን፣ የእግረኛ መንገድ ጠርዞችንና ሐዲዶችን ለማየት በቂ። አስተዳዳሪ በአስተዳደር → ተሰኪዎች ውስጥ የArcGIS API ቁልፍ አስቀምጦ የEsriን ውሎች ሲቀበል ይቀርባል፤ ሰቆቹ በዚህ MobSimLab በኩል ስለሚመጡ አሳሾች ቁልፉን በፍጹም አያዩትም፣ አይቀመጡምም።"
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "የኤሌክትሪክ ሃይድሮፎይል",
+    "Fast catamaran": "ፈጣን ካታማራን",
+    "Ferries": "ጀልባዎች",
+    "Ferry": "ጀልባ",
+    "Monohull water bus": "ባለአንድ ቀፎ የውሃ አውቶቡስ",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "በውሃ መንገድ መሣሪያ የሚሳሉ የተሳፋሪ ጀልባዎችና የውሃ አውቶቡሶች፦ መቆሚያዎችና መሸጋገሪያዎች ያሏቸው ወደቦች፣ በውሃ ላይ የሚሄዱ መንገዶች፣ የፍጥነት ቀጠናዎችና የመቆሚያ ፍተሻ (ADR-0037)። የመኪና ጀልባዎች በኋላ ይመጣሉ።",
+    "Vessel type": "የመርከብ ዓይነት",
+    "Water buses and crossings: click piers, shape the route over water.": "የውሃ አውቶቡሶችና መሻገሪያዎች፦ ወደቦችን ይጫኑ፣ በውሃ ላይ ያለውን መንገድ ይቅረጹ።"
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "የGTFS ምግብ",
+    "GTFS import and export": "GTFS ማስገባትና ማውጣት",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "የGTFS ምግብ (zip) ለአንድ የአገልግሎት ቀን እንደ ነባር አውታር ወደ ፕሮጀክቱ ያነባል፣ ከተጠየቀ በካርታው እይታ ተቆርጦ፣ የጉዞ እቅድ አውጪው ከታቀዱት መስመሮች ጋር እንዲጠቀምበት፤ እንዲሁም የፕሮጀክቱን መስመሮች ለሌሎች መሣሪያዎች እንደ GTFS ምግብ ይጽፋል።",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "የአንድ የአገልግሎት ቀን ማቆሚያዎች፣ መስመሮችና ጉዞዎች (ቀን ካልተሰጠ በጣም የተጨናነቀው ረቡዕ)፣ frequencies.txt እንደ የድግግሞሽ ቅጦችና የመስመር ዓይነቶች እንደ የትራንስፖርት ዓይነቶች።",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "የፕሮጀክቱ መስመሮች እንደ የሥራ ቀን GTFS ምግብ፦ ትክክለኛ ጉዞዎች፣ የድግግሞሽ መስመሮች እንደ frequencies.txt፣ ጣቢያዎች ለማቆሚያ ቡድኖች።"
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "በፒክሰል 30 ሜ ገደማ (በዚህ ካርታ ላይ 38 ሜ)፣ ከአንድ ቀን የሳተላይት ማለፊያዎች፦ የካርታው ክፍሎች ባዶ ወይም ደመናማ ናቸው፣ ስለዚህ ሌላ ቀን ይሞክሩ። ሐዲድ ወይም የእግረኛ መንገድ ጠርዝ ለመሳል በጣም ሸካራ ነው።",
+    "NASA GIBS imagery": "የNASA GIBS ምስሎች",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 እና 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS እውነተኛ ቀለም",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "ከNASA Global Imagery Browse Services (GIBS) የሳተላይት ምስሎች እንደ የአየር ላይ መሠረት ካርታዎች፣ ለሚመርጡት ቀን፦ Harmonized Landsat Sentinel-2 በፒክሰል 30 ሜ ገደማ እና VIIRS 250 ሜ ገደማ። የAPI ቁልፍ አያስፈልግም። ምስሎቹ መንገዶችን ወይም ሐዲዶችን ለማየት በጣም ሸካራ ናቸው።",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "መላው ዓለም በየቀኑ በፒክሰል 250 ሜ ገደማ (በዚህ ካርታ ላይ 306 ሜ)፣ ከደመና ጋር፦ ለአካባቢያዊ አውድ ብቻ።"
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "የአገልግሎት መስመሮች የሚገመት ጫጫታ (ADR-0038)፦ የመንገድ መስመሮችንና የባቡር ሐዲዶችን ሲስሉ በቀጥታ የሚታይ የጫጫታ ቀበቶ፣ የኩርባ ጩኸት፣ የድልድዮችና የመቀየሪያዎች ፍተሻዎች ያሉት። የCNOSSOS-EU የመንገድና የባቡር ልቀት፣ ለጊዜው ያለ ሕንፃዎች በክፍት ሜዳ።",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "የተሳሉ መስመሮች L_den እና L_night በ4 ሜ፣ ክፍት ሜዳ፦ በሁለቱም በኩል የቀበቶ ርቀቶች፣ ለካርታው የተቀባዮች ፍርግርግና ፍተሻዎች።",
+    "Noise band": "የጫጫታ ቀበቶ",
+    "Noise map": "የጫጫታ ካርታ"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "ከWMS፣ WMTS እና XYZ የሰቅ አገልግሎቶች የካርታ ንብርብሮች፣ እንደ መሠረት ካርታዎች ወይም ተደራቢዎች። አስተዳዳሪ በአስተዳደር → ተሰኪዎች ውስጥ አገልግሎትን ያክላል፣ ካስፈለገም የመግቢያ ዝርዝሮቹን፤ ሰቆቹ በዚህ MobSimLab በኩል ስለሚመጡ አሳሾች በፍጹም አያዩዋቸውም።",
+    "WMS, WMTS and XYZ map layers": "WMS፣ WMTS እና XYZ የካርታ ንብርብሮች"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "በአገልግሎት ቀጠና መሣሪያ የሚሳል በፍላጎት ላይ የተመሠረተ ትራንስፖርት፦ ቀጠና ይሳሉ፣ በሰዓት የሚመጡ ጥያቄዎችን፣ የተሽከርካሪ ብዛትንና የአገልግሎት ሰዓቶችን ያዘጋጁ፣ የሚያስፈልጉትን ተሽከርካሪዎች፣ አማካይ የጥበቃ፣ የጉዞና ከበር እስከ በር ጊዜን ከቀጣይ ግምት ቀመሮች ያግኙ። የቀኑ ማስመሰል እያንዳንዱን ቦታ ማስያዝ ጉዞ በጉዞ ይልካል (ADR-0042)። ቀጠናው በጉዞ እቅድ አውጪው ውስጥ ይታያል።",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "በመተግበሪያ የሚያዙ ሚኒባሶች፦ ቀጠናውን ይሳሉ፣ የተሽከርካሪ ብዛትንና ሰዓቶችን ያዘጋጁ።",
+    "On-demand bus": "በጥያቄ የሚሰራ አውቶቡስ"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "የPanoramax የመንገድ ፎቶዎች",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "በሰዎችና በሕዝባዊ ተቋማት የተጋሩ ፎቶዎች፣ ከእነሱ ካርታ መሥራትን በሚፈቅዱ ክፍት ፈቃዶች (በአብዛኛው CC BY-SA 4.0 ወይም Etalab 2.0)። አንዱን ሲጠቀሙ ፎቶ አንሺውን ይጥቀሱ።",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "ከPanoramax፣ ነጻና ክፍት የጋራ የመንገድ ፎቶ ሀብት፣ የመንገድ ደረጃ ፎቶዎች። ፎቶዎች የት እንደተነሱ ለማየት በካርታው ላይ የመንገድ ፎቶዎችን ይክፈቱ፣ ከዚያም በአቅራቢያው የተነሱ ፎቶዎችን ለማየት አንድ ነጥብ ይጫኑ። ፎቶዎቹ ከእነሱ ካርታ መሥራትን በሚፈቅዱ ክፍት ፈቃዶች ሥር ናቸው። ቁልፍ አያስፈልግም። ፎቶዎቹ በዚህ MobSimLab በኩል ይመጣሉ፣ አይቀመጡም ከፕሮጀክቱም ጋር አይቀመጡም።"
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "ከፍ ባለ መሄጃ ላይ በኬብል የሚጎተቱ አውቶማቲክ ተሳፋሪ ማጓጓዣዎች፣ በቀጥተኛ ርዝመቶች መሣሪያ የሚሳሉ፦ ሁለት ባቡሮች ያሏቸው ተመላላሾች፣ እና በእያንዳንዱ ጣቢያ የሚቆሙ ተነጣይ ባቡሮች ያሏቸው የተጠበቡ ዙሮች (ADR-0037 §7)። በራሳቸው የሚንቀሳቀሱ ማጓጓዣዎች የባቡር አርታዒውን ይፈልጋሉ፣ በኋላም ይመጣሉ።",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "በመሄጃ ላይ በኬብል የሚጎተቱ ተመላላሾችና ዙሮች፦ ጣቢያዎችን ይጫኑ፣ ምሰሶዎቹ ይከተላሉ።",
+    "People mover": "አውቶማቲክ ተሳፋሪ ማጓጓዣ",
+    "People mover shuttle": "ተመላላሽ አውቶማቲክ ተሳፋሪ ማጓጓዣ",
+    "People mover system": "የአውቶማቲክ ተሳፋሪ ማጓጓዣ ሥርዓት",
+    "People movers": "አውቶማቲክ ተሳፋሪ ማጓጓዣዎች",
+    "Pinched loop, detachable trains": "የተጠበበ ዙር፣ ተነጣይ ባቡሮች",
+    "Shuttle, two trains on a fixed rope": "ተመላላሽ፣ በቋሚ ኬብል ላይ ሁለት ባቡሮች"
+  }
+}

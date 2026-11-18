@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "చాలా నగరాల్లో పిక్సెల్‌కు సుమారు 0.3 నుండి 1 మీ వైమానిక ఫోటోలు, గ్రామీణ ప్రాంతాల్లో మందంగా: లేన్లు, కర్బ్‌లు మరియు పట్టాలు చూడటానికి సరిపడా స్పష్టంగా. ఫోటోల తేదీలు ప్రదేశాన్ని బట్టి మారుతాయి.",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "వైమానిక ఆధార మ్యాప్‌గా Esri World Imagery: చాలా నగరాల్లో పిక్సెల్‌కు సుమారు 0.3 నుండి 1 మీ వైమానిక ఫోటోలు, లేన్లు, కర్బ్‌లు మరియు పట్టాలు చూడటానికి సరిపడా స్పష్టంగా. ఒక అడ్మిన్ నిర్వహణ → ప్లగిన్‌లు కింద ArcGIS API కీని సేవ్ చేసి Esri నిబంధనలను అంగీకరించిన తర్వాత అందుబాటులో ఉంటుంది; టైల్స్ ఈ MobSimLab ద్వారా వస్తాయి, కాబట్టి బ్రౌజర్లు కీని ఎప్పుడూ చూడవు, మరియు అవి నిల్వ చేయబడవు."
+}

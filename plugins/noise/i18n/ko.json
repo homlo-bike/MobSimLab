@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "노선의 추정 소음(ADR-0038): 도로 노선과 철도를 그리는 동안 실시간 소음 띠를 보여 주고 곡선 스킬음, 교량, 분기기를 점검합니다. CNOSSOS-EU 도로·철도 방출이며 지금은 건물이 없는 자유 음장입니다.",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "그린 노선의 높이 4m 자유 음장에서의 L_den과 L_night: 양쪽 소음 띠 거리, 지도용 수음점 격자, 점검.",
+  "Noise band": "소음 띠",
+  "Noise map": "소음 지도"
+}

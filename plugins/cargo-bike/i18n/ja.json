@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "カーゴバイク",
+  "Cargo bike range": "カーゴバイクの航続距離",
+  "Cargo bike savings": "カーゴバイクによる節約",
+  "Cargo bike trip and range": "カーゴバイクの走行と航続距離",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "電動カーゴ三輪車が1回の充電でどこまで往復できるか（坂を越え、自転車レーンを優先）、そして車と比べてどれだけ節約できるか（購入、燃料、税金、保険、駐車、整備）を専用のタブで示します。",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "出発地から目的地まで自転車で通れる道（自転車レーンを優先）を往復するルートと地形に応じたバッテリー消費、そして各方向にどこまで往復できるかを示す航続距離マップ。",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "同じ移動について、カーゴバイクと車の年間費用の比較：購入、エネルギー、税金、保険、駐車、整備。出発地の国の通貨で示します。"
+}

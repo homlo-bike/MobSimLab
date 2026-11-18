@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "خوراک GTFS",
+  "GTFS import and export": "ورود و خروج GTFS",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "یک خوراک GTFS ‏(zip) را به‌عنوان شبکهٔ موجود برای یک روز خدمت در پروژه می‌خواند، در صورت درخواست بریده‌شده به نمای نقشه، تا مسیریاب سفر آن را همراه خطوط طراحی‌شده به کار گیرد؛ و خطوط پروژه را به‌صورت خوراک GTFS برای ابزارهای دیگر می‌نویسد.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "ایستگاه‌ها، مسیرها و سفرهای یک روز خدمت (شلوغ‌ترین چهارشنبه مگر آنکه تاریخی داده شود)، با frequencies.txt به‌عنوان الگوهای سرفاصله و نوع مسیرها به‌عنوان شیوه‌ها.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "خطوط پروژه به‌صورت خوراک GTFS روز کاری: سفرهای دقیق، خطوط سرفاصله‌ای در frequencies.txt، ایستگاه‌ها برای گروه‌های توقف."
+}

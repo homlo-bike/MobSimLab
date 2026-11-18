@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "Imoto yentambo eya iphindela",
+    "Aerial tramway (reversible)": "Imoto yentambo eya iphindela (ehlehlayo)",
+    "Bicable gondola (2S)": "I-gondola enezintambo ezimbili (2S)",
+    "Cable car": "Imoto yentambo",
+    "Cable cars": "Izimoto zentambo",
+    "Funitel": "I-Funitel",
+    "Gondolas and aerial tramways: click stations, towers follow.": "Ama-gondola nezimoto zentambo eziya ziphindela: chofoza iziteshi, imibhoshongo iyalandela.",
+    "Monocable detachable gondola (MGD)": "I-gondola yentambo eyodwa ekhumulekayo (MGD)",
+    "Pulsed gondola": "I-gondola ehamba ngamaqembu",
+    "Ropeway system": "Uhlelo lwemoto yentambo",
+    "Tricable gondola (3S)": "I-gondola enezintambo ezintathu (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "Izimoto zentambo zasedolobheni: ama-gondola ahamba ngaphandle kokuma (MGD, 2S, 3S, funitel, ahamba ngamaqembu) nezimoto zentambo eziya ziphindela, ezidwetshwa ngethuluzi lezikhala eziqondile (ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "Ibhayisikili lempahla",
+    "Cargo bike range": "Ibanga lebhayisikili lempahla",
+    "Cargo bike savings": "Ukonga ngebhayisikili lempahla",
+    "Cargo bike trip and range": "Uhambo nebanga lebhayisikili lempahla",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Ukuthi ibhayisikili lempahla elinamasondo amathathu likagesi lingaya libuye kude kangakanani ngokushaja ibhethri kanye, emagqumeni futhi likhetha imizila yamabhayisikili, nokuthi longa malini uma liqhathaniswa nemoto (ukuthenga, uphethiloli, intela, umshwalense, ukupaka, ukulungisa), kuthebhu yalo.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Uhambo lokuya nokubuya kusuka endaweni yokuqala kuya lapho uya khona emigwaqweni esebenziseka ngebhayisikili (likhetha imizila yamabhayisikili) nebhethri elisetshenziswe ezweni, kanye nemephu yebanga ebonisa ukuthi ibhayisikili lingaya libuye kude kangakanani kuzo zonke izinhlangothi.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Izindleko zonyaka zebhayisikili lempahla uma ziqhathaniswa nemoto ohambweni olufanayo: ukuthenga, amandla, intela, umshwalense, ukupaka nokulungisa, ngemali yezwe lendawo yokuqala."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "Ugesi, udizili, amandla okugcina ne-CO2e ngonyaka kulayini ngamunye, ohlotsheni ngalunye lwezokuthutha nakunethiwekhi yonke, kanye nobukhulu nge-km yemoto ngayinye nange-km yesihlalo ngasinye.",
+    "Energy and emissions": "Amandla nokukhishwa kwamagesi",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "Amandla okudonsa nokukhishwa kwamagesi abamba ukushisa kwelayini ngalinye ngonyaka, ohlotsheni ngalunye lwezokuthutha nakunethiwekhi, kusuka kuma-km ezimoto ahanjwa yilayini ngalinye: ugesi esiteshini esincane noma kushaja, udizili ngamalitha, ne-CO2e kusuka ebukhulwini bokukhishwa kwegridi nodizili kusuka emthonjeni kuya esondweni. Kuboniswa kuthebhu Amatafula."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Izithombe zasemoyeni ezicishe zibe ngamamitha angu-0.3 kuya ku-1 nge-pixel emadolobheni amaningi, ezingacacile kangako emaphandleni: zicace ngokwanele ukubona imizila, imiphetho yemigwaqo nojantshi. Izinsuku zezithombe ziyehluka ngokwendawo.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "I-Esri World Imagery njengemephu eyisisekelo yasemoyeni: izithombe zasemoyeni ezicishe zibe ngamamitha angu-0.3 kuya ku-1 nge-pixel emadolobheni amaningi, ezicace ngokwanele ukubona imizila, imiphetho yemigwaqo nojantshi. Inikezwa uma uMphathi esegcine ukhiye we-ArcGIS API futhi wamukela imigomo ye-Esri ngaphansi kokuthi Ukuphatha → Ama-plugin; amathayela adlula kule MobSimLab, ngakho iziphequluli azilokothi zibone ukhiye, futhi awagcinwa."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "Isikebhe sikagesi esinamaphiko asemanzini",
+    "Fast catamaran": "I-catamaran esheshayo",
+    "Ferries": "Izikebhe",
+    "Ferry": "Isikebhe",
+    "Monohull water bus": "Ibhasi lasemanzini elinomzimba owodwa",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "Izikebhe zabagibeli namabhasi asemanzini adwetshwa ngethuluzi lomzila wasemanzini: amachweba anezindawo zokumisa namabhuloho okugibela, imizila phezu kwamanzi, izindawo zesivinini nokuhlolwa kwezindawo zokumisa (ADR-0037). Izikebhe zezimoto zizofika kamuva.",
+    "Vessel type": "Uhlobo lomkhumbi",
+    "Water buses and crossings: click piers, shape the route over water.": "Amabhasi asemanzini nokuwela: chofoza amachweba, wakhe umzila phezu kwamanzi."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "Okuphakelwayo kwe-GTFS",
+    "GTFS import and export": "Ukungenisa nokukhipha i-GTFS",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Ifunda okuphakelwayo kwe-GTFS (zip) kuphrojekthi njengenethiwekhi ekhona yosuku olulodwa lwesevisi, enqunywe ekubukeni kwemephu uma kucelwe, ukuze umhleli wohambo ayisebenzise kanye nemigqa ehleliwe; futhi ibhala imigqa yephrojekthi njengokuphakelwayo kwe-GTFS kwamanye amathuluzi.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Izitobhi, imizila nohambo losuku olulodwa lwesevisi (uLwesithathu olumatasa kakhulu ngaphandle uma kunikezwe usuku), ne-frequencies.txt njengamaphethini emvamisa nezinhlobo zemizila njengezinhlobo zokuthutha.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Imigqa yephrojekthi njengokuphakelwayo kwe-GTFS kosuku lokusebenza: uhambo oluqondile, imigqa yemvamisa njenge-frequencies.txt, iziteshi zamaqembu ezitobhi."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Cishe amamitha angu-30 nge-pixel (amamitha angu-38 kule mephu), kusuka ekudluleni kwesathelayithi kosuku olulodwa: izingxenye zemephu azinalutho noma zinamafu, ngakho zama olunye usuku. Azicacile ngokwanele ukudweba ujantshi noma imiphetho yemigwaqo.",
+    "NASA GIBS imagery": "Izithombe ze-NASA GIBS",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 no-9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS umbala weqiniso",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "Izithombe zesathelayithi ezivela ku-Global Imagery Browse Services (GIBS) ye-NASA njengamamephu ayisisekelo asemoyeni, osukwini olukhethayo: i-Harmonized Landsat Sentinel-2 cishe ngamamitha angu-30 nge-pixel ne-VIIRS cishe ngamamitha angu-250. Akudingeki ukhiye we-API. Izithombe azicacile ngokwanele ukubona imigwaqo noma ujantshi.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Umhlaba wonke nsuku zonke cishe ngamamitha angu-250 nge-pixel (amamitha angu-306 kule mephu), namafu: okwesimo sesifunda kuphela."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Umsindo olinganiselwe wemigqa yesevisi (ADR-0038): ibhande lomsindo elibukhoma ngenkathi udweba imigqa yasemgwaqweni nojantshi, nokuhlolwa kokukhala kwamajika, amabhuloho nezishintshi. Ukukhishwa komgwaqo nojantshi kwe-CNOSSOS-EU, endaweni evulekile ngaphandle kwezakhiwo okwamanje.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "I-L_den ne-L_night yemigqa edwetshiwe ngamamitha angu-4, endaweni evulekile: amabanga ebhande nhlangothi zombili, igridi yabamukeli bemephu nokuhlolwa.",
+    "Noise band": "Ibhande lomsindo",
+    "Noise map": "Imephu yomsindo"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Izendlalelo zebalazwe ezivela kumasevisi amathayela e-WMS, WMTS ne-XYZ, njengamamephu ayisisekelo noma izendlalelo ezingaphezulu. UMphathi wengeza isevisi ngaphansi kokuthi Ukuphatha → Ama-plugin, nemininingwane yayo yokungena uma kudingeka; amathayela adlula kule MobSimLab, ngakho iziphequluli azilokothi ziyibone.",
+    "WMS, WMTS and XYZ map layers": "Izendlalelo zebalazwe ze-WMS, WMTS ne-XYZ"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Ezokuthutha eziphendula isidingo ezidwetshwa ngethuluzi lendawo yesevisi: dweba indawo, setha izicelo ngehora, izimoto namahora esevisi, bese uthola izimoto ezidingekayo, isikhathi esimaphakathi sokulinda, sohambo nesokusuka emnyango kuya emnyango ngamafomula okulinganisa okuqhubekayo. Ukulingisa usuku kuthumela konke ukubhuka uhambo ngohambo (ADR-0042). Indawo iyabonakala kumhleli wohambo.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "Amabhasi amancane abhukwa ngohlelo lokusebenza: dweba indawo, setha izimoto namahora.",
+    "On-demand bus": "Ibhasi ngesicelo"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Izithombe zemigwaqo ze-Panoramax",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "Izithombe ezabiwe ngabantu nezikhungo zikahulumeni, ngaphansi kwamalayisense avulekile (ikakhulukazi i-CC BY-SA 4.0 noma i-Etalab 2.0) avumela ukwenza amamephu ngazo. Bonga umthwebuli uma usebenzisa esisodwa.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Izithombe zezinga lomgwaqo ezivela ku-Panoramax, ingcebo yomphakathi yamahhala nevulekile yezithombe zemigwaqo. Vula Izithombe zemigwaqo emephini ukuze ubone lapho izithombe zathathwa khona, bese uchofoza iphoyinti ukuze ubone izithombe ezathathwa eduze kwalo. Izithombe zingaphansi kwamalayisense avulekile avumela ukwenza amamephu ngazo. Akudingeki ukhiye. Izithombe zidlula kule MobSimLab futhi azigcinwa noma zilondolozwe nephrojekthi."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "Izithuthi zabagibeli ezizenzakalelayo ezidonswa ngentambo emzileni ophakeme, ezidwetshwa ngethuluzi lezikhala eziqondile: eziya ziphindela ezinezitimela ezimbili, nezindingilizi ezicindezelwe ezinezitimela ezikhumulekayo ezima kuzo zonke iziteshi (ADR-0037 §7). Ezizihambisayo zidinga umhleli kajantshi futhi zizofika kamuva.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "Eziya ziphindela nezindingilizi ezidonswa ngentambo emzileni: chofoza iziteshi, izinsika ziyalandela.",
+    "People mover": "Isithuthi sabagibeli esizenzakalelayo",
+    "People mover shuttle": "Isithuthi sabagibeli esizenzakalelayo esiya siphindela",
+    "People mover system": "Uhlelo lwesithuthi sabagibeli esizenzakalelayo",
+    "People movers": "Izithuthi zabagibeli ezizenzakalelayo",
+    "Pinched loop, detachable trains": "Indingilizi ecindezelwe, izitimela ezikhumulekayo",
+    "Shuttle, two trains on a fixed rope": "Eya iphindela, izitimela ezimbili entanjeni engagudluki"
+  }
+}

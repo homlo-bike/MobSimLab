@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "GTFS ஊட்டம்",
+  "GTFS import and export": "GTFS இறக்குமதியும் ஏற்றுமதியும்",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "ஒரு GTFS ஊட்டத்தை (zip) ஒரு சேவை நாளுக்கான தற்போதைய வலையமைப்பாகத் திட்டத்தில் படிக்கிறது, கேட்டால் வரைபடக் காட்சிக்கு வெட்டி, பயணத் திட்டமிடுபவர் அதைத் திட்டமிட்ட வழித்தடங்களுடன் பயன்படுத்தும்படி; மேலும் திட்டத்தின் வழித்தடங்களை மற்ற கருவிகளுக்காக GTFS ஊட்டமாக எழுதுகிறது.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "ஒரு சேவை நாளின் நிறுத்தங்கள், வழிகள் மற்றும் பயணங்கள் (தேதி தரப்படாவிட்டால் மிகவும் நெரிசலான புதன்கிழமை), frequencies.txt அதிர்வெண் முறைகளாகவும் வழி வகைகள் போக்குவரத்து முறைகளாகவும்.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "திட்டத்தின் வழித்தடங்கள் வார நாள் GTFS ஊட்டமாக: துல்லியமான பயணங்கள், அதிர்வெண் வழித்தடங்கள் frequencies.txt ஆக, நிறுத்தக் குழுக்களுக்கு நிலையங்கள்."
+}

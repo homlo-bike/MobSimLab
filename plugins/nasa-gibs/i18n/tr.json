@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Piksel başına yaklaşık 30 m (bu haritada 38 m), bir günün uydu geçişlerinden: haritanın bazı kısımları boş ya da bulutlu, bu yüzden başka bir tarih deneyin. Ray ya da bordür çizmek için fazla kaba.",
+  "NASA GIBS imagery": "NASA GIBS görüntüleri",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 ve 9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS gerçek renk",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA'nın Global Imagery Browse Services (GIBS) uydu görüntüleri, seçtiğiniz bir gün için hava altlığı olarak: piksel başına yaklaşık 30 m'de Harmonized Landsat Sentinel-2 ve yaklaşık 250 m'de VIIRS. API anahtarı gerekmez. Görüntüler sokakları ya da rayları görmek için fazla kaba.",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Her gün tüm dünya, piksel başına yaklaşık 250 m'de (bu haritada 306 m), bulutlarla: yalnızca bölgesel bağlam için."
+}

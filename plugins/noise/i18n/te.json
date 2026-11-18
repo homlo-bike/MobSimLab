@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "సేవా లైన్ల అంచనా శబ్దం (ADR-0038): వీధి లైన్లు మరియు రైల్వేలు గీస్తున్నప్పుడు ప్రత్యక్ష శబ్ద పట్టీ, వంపు కీచు, వంతెనలు మరియు స్విచ్‌ల తనిఖీలతో. CNOSSOS-EU రోడ్డు మరియు రైల్వే ఉద్గారం, ప్రస్తుతానికి భవనాలు లేని బహిరంగ క్షేత్రంలో.",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "గీసిన లైన్ల 4 మీ వద్ద L_den మరియు L_night, బహిరంగ క్షేత్రం: రెండు వైపులా పట్టీ దూరాలు, మ్యాప్ కోసం రిసీవర్ గ్రిడ్ మరియు తనిఖీలు.",
+  "Noise band": "శబ్ద పట్టీ",
+  "Noise map": "శబ్ద మ్యాప్"
+}

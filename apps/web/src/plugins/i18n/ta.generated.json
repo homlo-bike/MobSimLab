@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "முன்னும் பின்னும் செல்லும் கம்பிவடப் பாதை",
+    "Aerial tramway (reversible)": "முன்னும் பின்னும் செல்லும் கம்பிவடப் பாதை (திரும்பும்)",
+    "Bicable gondola (2S)": "இரு கம்பிவட கோண்டோலா (2S)",
+    "Cable car": "கேபிள் கார்",
+    "Cable cars": "கேபிள் கார்கள்",
+    "Funitel": "ஃபுனிடெல்",
+    "Gondolas and aerial tramways: click stations, towers follow.": "கோண்டோலாக்களும் முன்னும் பின்னும் செல்லும் கம்பிவடப் பாதைகளும்: நிலையங்களைக் கிளிக் செய்யுங்கள், கோபுரங்கள் தானாக வரும்.",
+    "Monocable detachable gondola (MGD)": "ஒரு கம்பிவட பிரிக்கக்கூடிய கோண்டோலா (MGD)",
+    "Pulsed gondola": "துடிப்பு கோண்டோலா",
+    "Ropeway system": "கம்பிவட அமைப்பு",
+    "Tricable gondola (3S)": "மூன்று கம்பிவட கோண்டோலா (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "நகர கம்பிவடப் பாதைகள்: தொடர்ந்து இயங்கும் கோண்டோலாக்கள் (MGD, 2S, 3S, ஃபுனிடெல், துடிப்பு) மற்றும் முன்னும் பின்னும் செல்லும் கம்பிவடப் பாதைகள், நேர் இடைவெளிக் கருவியால் வரையப்படுகின்றன (ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "சரக்கு மிதிவண்டி",
+    "Cargo bike range": "சரக்கு மிதிவண்டியின் வரம்பு",
+    "Cargo bike savings": "சரக்கு மிதிவண்டியின் சேமிப்பு",
+    "Cargo bike trip and range": "சரக்கு மிதிவண்டி பயணமும் வரம்பும்",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "ஒரு மின்சார சரக்கு மூன்று சக்கர வண்டி ஒரு பேட்டரி சார்ஜில் எவ்வளவு தூரம் சென்று திரும்பும், மலைகள் மீது மிதிவண்டிப் பாதைகளை விரும்பி, மற்றும் காருடன் ஒப்பிடும்போது அது எவ்வளவு சேமிக்கிறது (வாங்குதல், எரிபொருள், வரி, காப்பீடு, நிறுத்தம், பராமரிப்பு), அதன் சொந்தத் தாவலில்.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "தொடக்கப் புள்ளியிலிருந்து சேருமிடம் வரை மிதிவண்டி செல்லக்கூடிய தெருக்களில் (மிதிவண்டிப் பாதைகளை விரும்பி) சென்று திரும்பும் பயணம் மற்றும் நிலப்பரப்பில் செலவான பேட்டரி, மேலும் ஒவ்வொரு திசையிலும் மிதிவண்டி எவ்வளவு தூரம் சென்று திரும்பும் என்பதைக் காட்டும் வரம்பு வரைபடம்.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "அதே பயணங்களுக்குக் காருடன் ஒப்பிடும்போது சரக்கு மிதிவண்டியின் ஆண்டுச் செலவு: வாங்குதல், ஆற்றல், வரி, காப்பீடு, நிறுத்தம் மற்றும் பராமரிப்பு, தொடக்கப் புள்ளியின் நாட்டு நாணயத்தில்."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "ஒவ்வொரு வழித்தடம், ஒவ்வொரு போக்குவரத்து முறை மற்றும் முழு வலையமைப்புக்கும் ஆண்டுக்கு மின்சாரம், டீசல், இறுதி ஆற்றல் மற்றும் CO2e, ஒரு வாகன-கி.மீ மற்றும் ஒரு இருக்கை-கி.மீக்கான செறிவுடன்.",
+    "Energy and emissions": "ஆற்றல் மற்றும் உமிழ்வுகள்",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "ஒவ்வொரு வழித்தடத்தின் ஆண்டு இழுவை ஆற்றல் மற்றும் பசுமை இல்ல வாயு உமிழ்வுகள், ஒவ்வொரு முறைக்கும் வலையமைப்புக்கும், ஒவ்வொரு வழித்தடமும் ஓடும் வாகன-கி.மீ இலிருந்து: துணை மின்நிலையம் அல்லது சார்ஜரில் மின்சாரம், லிட்டரில் டீசல், மற்றும் மின்கட்டமைப்பின் உமிழ்வு செறிவு மற்றும் டீசலின் கிணறு-முதல்-சக்கரம் வரை இலிருந்து CO2e. அட்டவணைகள் தாவலில் காட்டப்படும்."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "பெரும்பாலான நகரங்களில் ஒரு பிக்சலுக்கு சுமார் 0.3 முதல் 1 மீ வான்வழிப் படங்கள், கிராமப்புறங்களில் தடிமனாக: பாதைகள், நடைபாதை விளிம்புகள் மற்றும் தண்டவாளங்களைப் பார்க்கப் போதுமான தெளிவு. படங்களின் தேதிகள் இடத்துக்கு இடம் மாறுபடும்.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "வான்வழி அடிப்படை வரைபடமாக Esri World Imagery: பெரும்பாலான நகரங்களில் ஒரு பிக்சலுக்கு சுமார் 0.3 முதல் 1 மீ வான்வழிப் படங்கள், பாதைகள், நடைபாதை விளிம்புகள் மற்றும் தண்டவாளங்களைப் பார்க்கப் போதுமான தெளிவு. ஒரு நிர்வாகி நிர்வாகம் → செருகுநிரல்கள் இல் ArcGIS API சாவியைச் சேமித்து Esri விதிமுறைகளை ஏற்றவுடன் கிடைக்கும்; ஓடுகள் இந்த MobSimLab வழியாக வருவதால் உலாவிகள் சாவியை ஒருபோதும் பார்க்காது, அவை சேமிக்கப்படுவதுமில்லை."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "மின்சார ஹைட்ரோஃபாயில்",
+    "Fast catamaran": "வேகமான இரட்டை உடற்படகு",
+    "Ferries": "படகுகள்",
+    "Ferry": "படகு",
+    "Monohull water bus": "ஒற்றை உடல் நீர்ப் பேருந்து",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "நீர்வழிக் கருவியால் வரையப்படும் பயணிகள் படகுகளும் நீர்ப் பேருந்துகளும்: நிறுத்துமிடங்களும் ஏறுபாலங்களும் கொண்ட துறைகள், நீர் மீதான வழிகள், வேக மண்டலங்கள் மற்றும் நிறுத்துமிடச் சோதனை (ADR-0037). கார் படகுகள் பின்னர் வரும்.",
+    "Vessel type": "கப்பல் வகை",
+    "Water buses and crossings: click piers, shape the route over water.": "நீர்ப் பேருந்துகளும் கடப்புகளும்: துறைகளைக் கிளிக் செய்யுங்கள், நீர் மீது வழியை வடிவமையுங்கள்."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "GTFS ஊட்டம்",
+    "GTFS import and export": "GTFS இறக்குமதியும் ஏற்றுமதியும்",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "ஒரு GTFS ஊட்டத்தை (zip) ஒரு சேவை நாளுக்கான தற்போதைய வலையமைப்பாகத் திட்டத்தில் படிக்கிறது, கேட்டால் வரைபடக் காட்சிக்கு வெட்டி, பயணத் திட்டமிடுபவர் அதைத் திட்டமிட்ட வழித்தடங்களுடன் பயன்படுத்தும்படி; மேலும் திட்டத்தின் வழித்தடங்களை மற்ற கருவிகளுக்காக GTFS ஊட்டமாக எழுதுகிறது.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "ஒரு சேவை நாளின் நிறுத்தங்கள், வழிகள் மற்றும் பயணங்கள் (தேதி தரப்படாவிட்டால் மிகவும் நெரிசலான புதன்கிழமை), frequencies.txt அதிர்வெண் முறைகளாகவும் வழி வகைகள் போக்குவரத்து முறைகளாகவும்.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "திட்டத்தின் வழித்தடங்கள் வார நாள் GTFS ஊட்டமாக: துல்லியமான பயணங்கள், அதிர்வெண் வழித்தடங்கள் frequencies.txt ஆக, நிறுத்தக் குழுக்களுக்கு நிலையங்கள்."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "ஒரு பிக்சலுக்கு சுமார் 30 மீ (இந்த வரைபடத்தில் 38 மீ), ஒரு நாளின் செயற்கைக்கோள் கடப்புகளிலிருந்து: வரைபடத்தின் சில பகுதிகள் வெறுமையாக அல்லது மேகமூட்டமாக உள்ளன, எனவே வேறு தேதியை முயலுங்கள். தண்டவாளங்கள் அல்லது விளிம்புகளை வரைய மிகத் தடிமன்.",
+    "NASA GIBS imagery": "NASA GIBS படங்கள்",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 மற்றும் 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS உண்மை நிறம்",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA வின் Global Imagery Browse Services (GIBS) இலிருந்து செயற்கைக்கோள் படங்கள் வான்வழி அடிப்படை வரைபடங்களாக, நீங்கள் தேர்ந்தெடுக்கும் நாளுக்கு: ஒரு பிக்சலுக்கு சுமார் 30 மீ இல் Harmonized Landsat Sentinel-2 மற்றும் சுமார் 250 மீ இல் VIIRS. API சாவி தேவையில்லை. தெருக்கள் அல்லது தண்டவாளங்களைப் பார்க்கப் படங்கள் மிகத் தடிமன்.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "ஒவ்வொரு நாளும் முழு உலகம் ஒரு பிக்சலுக்கு சுமார் 250 மீ இல் (இந்த வரைபடத்தில் 306 மீ), மேகங்களுடன்: பிராந்தியச் சூழலுக்கு மட்டும்."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "சேவை வழித்தடங்களின் மதிப்பிடப்பட்ட இரைச்சல் (ADR-0038): தெரு வழித்தடங்களையும் இருப்புப்பாதைகளையும் வரையும்போது நேரடி இரைச்சல் பட்டை, வளைவுக் கீச்சொலி, பாலங்கள் மற்றும் சந்திகளுக்கான சோதனைகளுடன். CNOSSOS-EU சாலை மற்றும் இருப்புப்பாதை உமிழ்வு, இப்போதைக்குக் கட்டடங்கள் இல்லாத திறந்த வெளியில்.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "வரையப்பட்ட வழித்தடங்களின் 4 மீ உயரத்தில் L_den மற்றும் L_night, திறந்த வெளி: இரு பக்கமும் பட்டைத் தூரங்கள், வரைபடத்துக்கான பெறுநர் கட்டம் மற்றும் சோதனைகள்.",
+    "Noise band": "இரைச்சல் பட்டை",
+    "Noise map": "இரைச்சல் வரைபடம்"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS, WMTS மற்றும் XYZ ஓடு சேவைகளிலிருந்து வரைபட அடுக்குகள், அடிப்படை வரைபடங்களாக அல்லது மேலடுக்குகளாக. நிர்வாகி நிர்வாகம் → செருகுநிரல்கள் இல் சேவையைச் சேர்க்கிறார், தேவைப்பட்டால் உள்நுழைவு விவரங்களுடன்; ஓடுகள் இந்த MobSimLab வழியாக வருவதால் உலாவிகள் அவற்றை ஒருபோதும் பார்க்காது.",
+    "WMS, WMTS and XYZ map layers": "WMS, WMTS மற்றும் XYZ வரைபட அடுக்குகள்"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "சேவை மண்டலக் கருவியால் வரையப்படும் தேவைக்கேற்ற போக்குவரத்து: ஒரு மண்டலத்தை வரையுங்கள், மணிக்குக் கோரிக்கைகள், வாகனத் தொகுப்பு மற்றும் சேவை நேரங்களை அமையுங்கள், தொடர் தோராய சூத்திரங்களிலிருந்து தேவையான வாகனங்கள், சராசரிக் காத்திருப்பு, பயண மற்றும் வீட்டிலிருந்து வீடு வரை நேரத்தைப் பெறுங்கள். நாள் உருவகப்படுத்தல் ஒவ்வொரு முன்பதிவையும் பயணம் பயணமாக அனுப்புகிறது (ADR-0042). மண்டலம் பயணத் திட்டமிடுபவரில் தெரியும்.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "செயலி மூலம் முன்பதிவு செய்யப்படும் சிற்றுந்துகள்: மண்டலத்தை வரையுங்கள், வாகனத் தொகுப்பையும் நேரங்களையும் அமையுங்கள்.",
+    "On-demand bus": "தேவைக்கேற்ற பேருந்து"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Panoramax தெருப் படங்கள்",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "மக்களும் பொது அமைப்புகளும் பகிர்ந்த படங்கள், அவற்றிலிருந்து வரைபடமாக்கலை அனுமதிக்கும் திறந்த உரிமங்களின் கீழ் (பெரும்பாலும் CC BY-SA 4.0 அல்லது Etalab 2.0). ஒன்றைப் பயன்படுத்தும்போது ஆசிரியருக்குக் கடன் கொடுங்கள்.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Panoramax இலிருந்து தெரு நிலைப் படங்கள், தெருப் படங்களின் கட்டற்ற திறந்த பொதுச் சொத்து. படங்கள் எங்கு எடுக்கப்பட்டன என்று பார்க்க வரைபடத்தில் தெருப் படங்களைத் திறங்கள், பின்னர் ஒரு புள்ளியைக் கிளிக் செய்து அதன் அருகே எடுக்கப்பட்ட படங்களைப் பாருங்கள். படங்கள் அவற்றிலிருந்து வரைபடமாக்கலை அனுமதிக்கும் திறந்த உரிமங்களின் கீழ் உள்ளன. சாவி தேவையில்லை. படங்கள் இந்த MobSimLab வழியாக வருகின்றன, சேமிக்கப்படுவதில்லை, திட்டத்துடனும் வைக்கப்படுவதில்லை."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "உயர்த்தப்பட்ட வழிகாட்டிப் பாதையில் கம்பிவடத்தால் இழுக்கப்படும் தானியங்கி மக்கள் நகர்த்திகள், நேர் இடைவெளிக் கருவியால் வரையப்படுகின்றன: இரண்டு ரயில்களுடன் முன்னும் பின்னும் செல்லும் வண்டிகள், மற்றும் ஒவ்வொரு நிலையத்திலும் நிற்கும் பிரிக்கக்கூடிய ரயில்களுடன் சுருக்கிய வளையங்கள் (ADR-0037 §7). சுய இயக்க மக்கள் நகர்த்திகளுக்கு இருப்புப்பாதைத் தொகுப்பி தேவை, அவை பின்னர் வரும்.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "வழிகாட்டிப் பாதையில் கம்பிவடத்தால் இழுக்கப்படும் முன்னும் பின்னும் செல்லும் வண்டிகளும் வளையங்களும்: நிலையங்களைக் கிளிக் செய்யுங்கள், தூண்கள் தானாக வரும்.",
+    "People mover": "மக்கள் நகர்த்தி",
+    "People mover shuttle": "மக்கள் நகர்த்தி முன்னும் பின்னும் செல்லும் வண்டி",
+    "People mover system": "மக்கள் நகர்த்தி அமைப்பு",
+    "People movers": "மக்கள் நகர்த்திகள்",
+    "Pinched loop, detachable trains": "சுருக்கிய வளையம், பிரிக்கக்கூடிய ரயில்கள்",
+    "Shuttle, two trains on a fixed rope": "முன்னும் பின்னும் செல்லும் வண்டி, நிலையான கம்பிவடத்தில் இரண்டு ரயில்கள்"
+  }
+}

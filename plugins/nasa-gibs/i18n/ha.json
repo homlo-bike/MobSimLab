@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Kusan mita 30 a kowane pikisel (mita 38 a wannan taswira), daga wucewar tauraron ɗan adam na rana ɗaya: wasu sassan taswirar babu komai ko akwai gajimare, don haka gwada wata rana. Ba su da kyau sosai don zana layin dogo ko gefen titi.",
+  "NASA GIBS imagery": "Hotunan NASA GIBS",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 da 9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS launi na gaskiya",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "Hotunan tauraron ɗan adam daga Global Imagery Browse Services (GIBS) na NASA a matsayin taswirorin tushe na sama, don ranar da ka zaɓa: Harmonized Landsat Sentinel-2 na kusan mita 30 a kowane pikisel da VIIRS na kusan mita 250. Ba a buƙatar maɓallin API. Hotunan ba su da kyau sosai don ganin tituna ko layin dogo.",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Duniya gaba ɗaya kowace rana a kusan mita 250 a kowane pikisel (mita 306 a wannan taswira), tare da gajimare: don yanayin yanki kawai."
+}

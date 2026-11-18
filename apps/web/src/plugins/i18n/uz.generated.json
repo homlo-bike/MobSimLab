@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "Borib-keluvchi osma yoʻl",
+    "Aerial tramway (reversible)": "Borib-keluvchi osma yoʻl (qaytuvchi)",
+    "Bicable gondola (2S)": "Ikki arqonli gondola (2S)",
+    "Cable car": "Osma yoʻl",
+    "Cable cars": "Osma yoʻllar",
+    "Funitel": "Funitel",
+    "Gondolas and aerial tramways: click stations, towers follow.": "Gondolalar va borib-keluvchi osma yoʻllar: bekatlarni bosing, minoralar oʻzi qoʻyiladi.",
+    "Monocable detachable gondola (MGD)": "Bir arqonli ajraladigan gondola (MGD)",
+    "Pulsed gondola": "Guruhli gondola",
+    "Ropeway system": "Osma yoʻl tizimi",
+    "Tricable gondola (3S)": "Uch arqonli gondola (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "Shahar osma yoʻllari: uzluksiz harakatlanuvchi gondolalar (MGD, 2S, 3S, funitel, guruhli) va borib-keluvchi osma yoʻllar, toʻgʻri oraliqlar toʻplami bilan chiziladi (ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "Yuk velosipedi",
+    "Cargo bike range": "Yuk velosipedining yurish masofasi",
+    "Cargo bike savings": "Yuk velosipedi bilan tejash",
+    "Cargo bike trip and range": "Yuk velosipedi safari va masofasi",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Elektr yuk uch gʻildiraklisi bir marta zaryad bilan qancha uzoqqa borib qaytishi, tepaliklar osha va velosiped yoʻlaklarini afzal koʻrgan holda, hamda avtomobilga nisbatan qancha tejashi (sotib olish, yoqilgʻi, soliq, sugʻurta, toʻxtash joyi, xizmat koʻrsatish), alohida varaqda.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Boshlangʻich nuqtadan manzilgacha velosipedda yurish mumkin boʻlgan koʻchalar boʻylab (velosiped yoʻlaklarini afzal koʻrgan holda) borib-qaytish va relyefda sarflangan batareya, hamda velosiped har bir yoʻnalishda qancha uzoqqa borib qaytishini koʻrsatuvchi masofa xaritasi.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Xuddi shu safarlar uchun yuk velosipedining avtomobilga nisbatan yillik xarajati: sotib olish, energiya, soliq, sugʻurta, toʻxtash joyi va xizmat koʻrsatish, boshlangʻich nuqta mamlakati valyutasida."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "Har bir yoʻnalish, har bir transport turi va butun tarmoq uchun yiliga elektr energiyasi, dizel, yakuniy energiya va CO2e, transport-km va oʻrin-km boshiga intensivlik bilan.",
+    "Energy and emissions": "Energiya va chiqindilar",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "Har bir yoʻnalishning yillik tortish energiyasi va issiqxona gazlari chiqindilari, har bir transport turi va tarmoq uchun, har bir yoʻnalish bosadigan transport-km asosida: podstansiya yoki quvvatlash qurilmasidagi elektr energiyasi, litrdagi dizel va elektr tarmogʻining chiqindi intensivligi hamda dizelning quduqdan gʻildirakkacha boʻlgan CO2e. Jadvallar varagʻida koʻrsatiladi."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Koʻpchilik shaharlarda piksel boshiga taxminan 0,3–1 m li aerofotosuratlar, qishloqda dagʻalroq: tasma, bordyur va relslarni koʻrish uchun yetarlicha aniq. Suratlar sanasi joyga qarab farq qiladi.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Aerofoto asos xarita sifatida Esri World Imagery: koʻpchilik shaharlarda piksel boshiga taxminan 0,3–1 m li aerofotosuratlar, tasma, bordyur va relslarni koʻrish uchun yetarlicha aniq. Administrator Boshqaruv → Plaginlar boʻlimida ArcGIS API kalitini saqlab, Esri shartlarini qabul qilgach taklif etiladi; plitkalar shu MobSimLab orqali keladi, shuning uchun brauzerlar kalitni hech qachon koʻrmaydi, ular saqlanmaydi ham."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "Elektr suv qanotli kema",
+    "Fast catamaran": "Tezyurar katamaran",
+    "Ferries": "Paromlar",
+    "Ferry": "Parom",
+    "Monohull water bus": "Bir korpusli suv avtobusi",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "Suv yoʻli toʻplami bilan chiziladigan yoʻlovchi paromlari va suv avtobuslari: toʻxtash joylari va trapli pristanlar, suv ustidagi yoʻnalishlar, tezlik zonalari va toʻxtash joyi tekshiruvi (ADR-0037). Avtomobil paromlari keyinroq qoʻshiladi.",
+    "Vessel type": "Kema turi",
+    "Water buses and crossings: click piers, shape the route over water.": "Suv avtobuslari va kechuvlar: pristanlarni bosing, suv ustida yoʻnalishni shakllantiring."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "GTFS manbasi",
+    "GTFS import and export": "GTFS import va eksport",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "GTFS manbasini (zip) loyihaga bir xizmat kuni uchun mavjud tarmoq sifatida oʻqiydi, soʻralsa xarita koʻrinishiga qirqib, safar rejalashtiruvchi uni rejalashtirilgan yoʻnalishlar bilan birga ishlatishi uchun; hamda loyiha yoʻnalishlarini boshqa vositalar uchun GTFS manbasi sifatida yozadi.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Bir xizmat kunining bekatlari, yoʻnalishlari va reyslari (sana berilmasa eng gavjum chorshanba), frequencies.txt chastota namunalari va yoʻnalish turlari transport turlari sifatida.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Loyiha yoʻnalishlari ish kuni GTFS manbasi sifatida: aniq reyslar, chastotali yoʻnalishlar frequencies.txt sifatida, bekat guruhlari uchun stansiyalar."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Piksel boshiga taxminan 30 m (bu xaritada 38 m), bir kunlik sunʼiy yoʻldosh oʻtishlaridan: xaritaning ayrim qismlari boʻsh yoki bulutli, shuning uchun boshqa sanani sinab koʻring. Relslar yoki bordyurlarni chizish uchun juda dagʻal.",
+    "NASA GIBS imagery": "NASA GIBS tasvirlari",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 va 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS haqiqiy rang",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA Global Imagery Browse Services (GIBS) dan sunʼiy yoʻldosh tasvirlari aerofoto asos xaritalar sifatida, siz tanlagan kun uchun: piksel boshiga taxminan 30 m li Harmonized Landsat Sentinel-2 va taxminan 250 m li VIIRS. API kaliti kerak emas. Tasvirlar koʻchalar yoki relslarni koʻrish uchun juda dagʻal.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Har kuni butun dunyo piksel boshiga taxminan 250 m da (bu xaritada 306 m), bulutlar bilan: faqat mintaqaviy kontekst uchun."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Xizmat yoʻnalishlarining taxminiy shovqini (ADR-0038): koʻcha yoʻnalishlari va temir yoʻllarni chizayotganda jonli shovqin tasmasi, burilishdagi chiyillash, koʻpriklar va strelkalar tekshiruvlari bilan. CNOSSOS-EU yoʻl va temir yoʻl chiqarishi, hozircha binolarsiz ochiq maydonda.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "Chizilgan yoʻnalishlarning 4 m balandlikdagi L_den va L_night qiymatlari, ochiq maydon: ikki tomondagi tasma masofalari, xarita uchun qabul qiluvchilar toʻri va tekshiruvlar.",
+    "Noise band": "Shovqin tasmasi",
+    "Noise map": "Shovqin xaritasi"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS, WMTS va XYZ plitka xizmatlaridan xarita qatlamlari, asos xarita yoki ustki qatlam sifatida. Administrator Boshqaruv → Plaginlar boʻlimida xizmat qoʻshadi, kerak boʻlsa kirish maʼlumotlari bilan; plitkalar shu MobSimLab orqali keladi, shuning uchun brauzerlar ularni hech qachon koʻrmaydi.",
+    "WMS, WMTS and XYZ map layers": "WMS, WMTS va XYZ xarita qatlamlari"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Xizmat zonasi toʻplami bilan chiziladigan talab boʻyicha transport: zonani belgilang, soatiga soʻrovlar, park va xizmat soatlarini kiriting va uzluksiz yaqinlashish formulalaridan kerakli transport vositalari, oʻrtacha kutish, yoʻl va eshikdan eshikkacha vaqtni oling. Kun simulyatsiyasi har bir buyurtmani reysma-reys joʻnatadi (ADR-0042). Zona safar rejalashtiruvchida koʻrinadi.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "Ilova orqali buyurtma qilinadigan mikroavtobuslar: zonani belgilang, park va soatlarni kiriting.",
+    "On-demand bus": "Talab boʻyicha avtobus"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Panoramax koʻcha suratlari",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "Odamlar va davlat tashkilotlari ulashgan suratlar, ulardan xarita tuzishga ruxsat beruvchi ochiq litsenziyalar ostida (asosan CC BY-SA 4.0 yoki Etalab 2.0). Birini ishlatganingizda muallifni koʻrsating.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Panoramax dan koʻcha darajasidagi suratlar, koʻcha suratlarining erkin va ochiq umumiy boyligi. Suratlar qayerda olinganini koʻrish uchun xaritada Koʻcha suratlarini oching, soʻng uning yaqinida olingan suratlarni koʻrish uchun nuqtani bosing. Suratlar ulardan xarita tuzishga ruxsat beruvchi ochiq litsenziyalar ostida. Kalit kerak emas. Suratlar shu MobSimLab orqali keladi va saqlanmaydi, loyiha bilan ham yozilmaydi."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "Koʻtarilgan yoʻl ustida arqon bilan tortiladigan avtomatik yoʻlovchi tashuvchilar, toʻgʻri oraliqlar toʻplami bilan chiziladi: ikki poyezdli borib-keluvchilar va har bir stansiyada toʻxtaydigan ajraladigan poyezdli siqilgan halqalar (ADR-0037 §7). Oʻzi harakatlanuvchilari uchun temir yoʻl muharriri kerak, ular keyinroq qoʻshiladi.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "Yoʻl ustida arqon bilan tortiladigan borib-keluvchilar va halqalar: stansiyalarni bosing, tayanchlar oʻzi qoʻyiladi.",
+    "People mover": "Avtomatik yoʻlovchi tashuvchi",
+    "People mover shuttle": "Borib-keluvchi avtomatik yoʻlovchi tashuvchi",
+    "People mover system": "Avtomatik yoʻlovchi tashuvchi tizimi",
+    "People movers": "Avtomatik yoʻlovchi tashuvchilar",
+    "Pinched loop, detachable trains": "Siqilgan halqa, ajraladigan poyezdlar",
+    "Shuttle, two trains on a fixed rope": "Borib-keluvchi, qoʻzgʻalmas arqonda ikki poyezd"
+  }
+}

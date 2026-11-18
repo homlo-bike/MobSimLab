@@ -3,6 +3,7 @@
   "id": "org.mobsimlab.gtfs",
   "name": "GTFS import and export",
   "description": "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.",
+  "translations": "i18n",
   "version": "0.1.0",
   "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
   "license": "AGPL-3.0-or-later",

@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Foto udara sekitar 0,3 hingga 1 m per piksel di sebagian besar kota, lebih kasar di pedesaan: cukup tajam untuk melihat lajur, tepi trotoar, dan rel. Tanggal foto berbeda menurut tempat.",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery sebagai peta dasar udara: foto udara sekitar 0,3 hingga 1 m per piksel di sebagian besar kota, cukup tajam untuk melihat lajur, tepi trotoar, dan rel. Tersedia setelah Admin menyimpan kunci API ArcGIS dan menyetujui ketentuan Esri di Administrasi → Plugin; ubin melewati MobSimLab ini sehingga peramban tidak pernah melihat kuncinya, dan ubin tidak disimpan."
+}

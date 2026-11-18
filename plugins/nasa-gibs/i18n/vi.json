@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Khoảng 30 m mỗi điểm ảnh (38 m trên bản đồ này), từ các lượt bay qua của vệ tinh trong một ngày: một phần bản đồ trống hoặc có mây, hãy thử ngày khác. Quá thô để vẽ đường ray hay bó vỉa.",
+  "NASA GIBS imagery": "Ảnh NASA GIBS",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 và 9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS màu thật",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "Ảnh vệ tinh từ Global Imagery Browse Services (GIBS) của NASA làm bản đồ nền, cho ngày bạn chọn: Harmonized Landsat Sentinel-2 khoảng 30 m mỗi điểm ảnh và VIIRS khoảng 250 m. Không cần khóa API. Ảnh quá thô để thấy đường phố hay đường ray.",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Toàn thế giới mỗi ngày ở khoảng 250 m mỗi điểm ảnh (306 m trên bản đồ này), có mây: chỉ để xem bối cảnh khu vực."
+}

@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Livelli di mappa da servizi di tessere WMS, WMTS e XYZ, come mappe di base o sovrapposizioni. Un amministratore aggiunge un servizio in Amministrazione → Plugin, con le credenziali se servono; le tessere passano da questo MobSimLab, quindi i browser non le vedono mai.",
+  "WMS, WMTS and XYZ map layers": "Livelli di mappa WMS, WMTS e XYZ"
+}

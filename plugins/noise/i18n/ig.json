@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Mkpọtụ e mere atụmatụ nke ahịrị ọrụ (ADR-0038): eriri mkpọtụ ozugbo mgbe a na-ese ahịrị okporo ụzọ na ụzọ ụgbọ oloko, ya na nlele maka mkpọtụ ntụgharị, àkwà mmiri na mgbanwe ụzọ. Mwepụta okporo ụzọ na ụzọ ụgbọ oloko CNOSSOS-EU, n'ubi mepere emepe na-enweghị ụlọ ugbu a.",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den na L_night nke ahịrị a sere na mita 4, ubi mepere emepe: anya eriri n'akụkụ abụọ, grid ndị na-anata maka maapụ na nlele.",
+  "Noise band": "Eriri mkpọtụ",
+  "Noise map": "Map mkpọtụ"
+}

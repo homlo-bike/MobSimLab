@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "కార్గో సైకిల్",
+  "Cargo bike range": "కార్గో సైకిల్ పరిధి",
+  "Cargo bike savings": "కార్గో సైకిల్ పొదుపు",
+  "Cargo bike trip and range": "కార్గో సైకిల్ ప్రయాణం మరియు పరిధి",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "విద్యుత్ కార్గో ట్రైసైకిల్ ఒక బ్యాటరీ ఛార్జ్‌తో ఎంత దూరం వెళ్లి తిరిగి రాగలదో, కొండల మీదుగా సైకిల్ లేన్లకు ప్రాధాన్యం ఇస్తూ, మరియు కారుతో పోలిస్తే అది ఎంత పొదుపు చేస్తుందో (కొనుగోలు, ఇంధనం, పన్ను, బీమా, పార్కింగ్, నిర్వహణ), దాని స్వంత ట్యాబ్‌లో.",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "ప్రారంభ స్థానం నుండి గమ్యానికి సైకిల్ వెళ్లగల వీధుల్లో (సైకిల్ లేన్లకు ప్రాధాన్యం ఇస్తూ) వెళ్లి రావడం మరియు భూభాగంపై ఖర్చయిన బ్యాటరీ, మరియు ప్రతి దిశలో సైకిల్ ఎంత దూరం వెళ్లి రాగలదో చూపే పరిధి మ్యాప్.",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "అవే ప్రయాణాలకు కారుతో పోలిస్తే కార్గో సైకిల్ వార్షిక ఖర్చు: కొనుగోలు, శక్తి, పన్ను, బీమా, పార్కింగ్ మరియు నిర్వహణ, ప్రారంభ స్థానం ఉన్న దేశపు కరెన్సీలో."
+}

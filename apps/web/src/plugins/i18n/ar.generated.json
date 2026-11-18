@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "التلفريك المكوكي",
+    "Aerial tramway (reversible)": "تلفريك مكوكي (ذهاب وإياب)",
+    "Bicable gondola (2S)": "جندول ثنائي الكابل (2S)",
+    "Cable car": "التلفريك",
+    "Cable cars": "التلفريك",
+    "Funitel": "فونيتيل",
+    "Gondolas and aerial tramways: click stations, towers follow.": "الجندولات والتلفريك المكوكي: انقر المحطات، والأبراج تتبعها.",
+    "Monocable detachable gondola (MGD)": "جندول أحادي الكابل قابل للفصل (MGD)",
+    "Pulsed gondola": "جندول نبضي",
+    "Ropeway system": "نظام التلفريك",
+    "Tricable gondola (3S)": "جندول ثلاثي الكابل (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "تلفريك حضري: جندولات مستمرة (MGD و2S و3S وفونيتيل ونبضي) وتلفريك مكوكي ذهاب وإياب، تُرسم بأداة الامتدادات المستقيمة (ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "دراجة الشحن",
+    "Cargo bike range": "مدى دراجة الشحن",
+    "Cargo bike savings": "وفورات دراجة الشحن",
+    "Cargo bike trip and range": "رحلة دراجة الشحن ومداها",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "إلى أي مدى تصل دراجة شحن كهربائية ثلاثية العجلات ذهابًا وإيابًا بشحنة بطارية واحدة، عبر التلال مع تفضيل مسارات الدراجات، وكم توفّر مقارنةً بالسيارة (الشراء والوقود والضريبة والتأمين والوقوف والصيانة)، في تبويب خاص بها.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "رحلة ذهاب وإياب من نقطة بداية إلى وجهة على شوارع صالحة للدراجات (مع تفضيل مسارات الدراجات) مع البطارية المستهلكة على التضاريس، وخريطة مدى تبيّن إلى أي حد تصل الدراجة ذهابًا وإيابًا في كل اتجاه.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "التكلفة السنوية لدراجة الشحن مقارنةً بالسيارة للرحلات نفسها: الشراء والطاقة والضريبة والتأمين والوقوف والصيانة، بعملة بلد نقطة البداية."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "الكهرباء والديزل والطاقة النهائية وCO2e سنويًا لكل خط ولكل وسيلة وللشبكة كلها، مع الكثافة لكل كم-مركبة ولكل كم-مقعد.",
+    "Energy and emissions": "الطاقة والانبعاثات",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "طاقة الجر وانبعاثات غازات الدفيئة لكل خط سنويًا، لكل وسيلة وللشبكة، من الكيلومترات التي يقطعها كل خط: الكهرباء عند المحطة الفرعية أو الشاحن، والديزل باللترات، وCO2e من كثافة انبعاثات الشبكة الكهربائية ومن الديزل من البئر إلى العجلة. تظهر في تبويب الجداول."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "صور جوية بدقة نحو 0.3 إلى 1 م لكل بكسل في معظم المدن، وأقل دقة في الريف: واضحة بما يكفي لرؤية الحارات والأرصفة والسكك. تختلف تواريخ الصور من مكان إلى آخر.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery كخريطة أساس جوية: صور جوية بدقة نحو 0.3 إلى 1 م لكل بكسل في معظم المدن، واضحة بما يكفي لرؤية الحارات والأرصفة والسكك. تُتاح بعد أن يحفظ مسؤول مفتاح ArcGIS API ويقبل شروط Esri في الإدارة ← الإضافات؛ تمر البلاطات عبر MobSimLab هذا، فلا ترى المتصفحات المفتاح أبدًا، ولا تُخزَّن."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "قارب هيدروفويل كهربائي",
+    "Fast catamaran": "قارب سريع ثنائي البدن",
+    "Ferries": "العبّارات",
+    "Ferry": "العبّارة",
+    "Monohull water bus": "حافلة مائية أحادية البدن",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "عبّارات ركاب وحافلات مائية تُرسم بأداة المسارات المائية: أرصفة بمراسٍ وممرات صعود، ومسارات فوق الماء، ومناطق سرعة، وفحص للمراسي (ADR-0037). عبّارات السيارات لاحقًا.",
+    "Vessel type": "نوع السفينة",
+    "Water buses and crossings: click piers, shape the route over water.": "الحافلات المائية والمعابر: انقر الأرصفة، وشكّل المسار فوق الماء."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "موجز GTFS",
+    "GTFS import and export": "استيراد GTFS وتصديره",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "يقرأ موجز GTFS (ملف zip) إلى المشروع كشبكة قائمة ليوم خدمة واحد، مقصوصًا على عرض الخريطة عند الطلب، ليستخدمه مخطط الرحلات مع الخطوط المخطط لها؛ ويكتب خطوط المشروع كموجز GTFS لأدوات أخرى.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "المحطات والخطوط ورحلات يوم خدمة واحد (أكثر أيام الأربعاء ازدحامًا ما لم يُحدَّد تاريخ)، مع frequencies.txt كأنماط تواتر وأنواع الخطوط كوسائل نقل.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "خطوط المشروع كموجز GTFS ليوم عمل: رحلات دقيقة، وخطوط التواتر في frequencies.txt، ومحطات لمجموعات المواقف."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "نحو 30 م لكل بكسل (38 م على هذه الخريطة)، من مرور الأقمار الصناعية في يوم واحد: بعض أجزاء الخريطة فارغة أو غائمة، فجرّب تاريخًا آخر. أقل دقة من أن تُرسم عليها السكك أو الأرصفة.",
+    "NASA GIBS imagery": "صور NASA GIBS",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 و9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS بالألوان الحقيقية",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "صور أقمار صناعية من خدمات تصفح الصور العالمية لدى NASA (GIBS) كخرائط أساس جوية، ليوم تختاره: Harmonized Landsat Sentinel-2 بدقة نحو 30 م لكل بكسل وVIIRS بدقة نحو 250 م. لا حاجة إلى مفتاح API. الصور أقل دقة من أن تُرى بها الشوارع أو السكك.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "العالم كله كل يوم بدقة نحو 250 م لكل بكسل (306 م على هذه الخريطة)، مع الغيوم: للسياق الإقليمي فقط."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "الضوضاء المقدّرة لخطوط الخدمة (ADR-0038): نطاق ضوضاء مباشر أثناء رسم خطوط الشوارع والسكك الحديدية، مع فحوص لصرير المنعطفات والجسور والتحويلات. انبعاثات الطرق والسكك وفق CNOSSOS-EU، في مجال حر دون مبانٍ حاليًا.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den وL_night للخطوط المرسومة على ارتفاع 4 م في مجال حر: مسافات النطاق على الجانبين، وشبكة مستقبلات للخريطة، وفحوص.",
+    "Noise band": "نطاق الضوضاء",
+    "Noise map": "خريطة الضوضاء"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "طبقات خريطة من خدمات بلاطات WMS وWMTS وXYZ، كخرائط أساس أو طبقات علوية. يضيف المسؤول خدمة في الإدارة ← الإضافات، مع بيانات تسجيل الدخول إن لزم؛ تمر البلاطات عبر MobSimLab هذا، فلا تراها المتصفحات أبدًا.",
+    "WMS, WMTS and XYZ map layers": "طبقات خريطة WMS وWMTS وXYZ"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "نقل حسب الطلب يُرسم بأداة منطقة الخدمة: حدّد منطقة، واضبط عدد الطلبات في الساعة والأسطول وساعات الخدمة، لتحصل على عدد المركبات اللازمة ومتوسط الانتظار ومدة الركوب والزمن من الباب إلى الباب من معادلات التقريب المستمر. تُرسل محاكاة اليوم كل حجز رحلةً رحلة (ADR-0042). تظهر المنطقة في مخطط الرحلات.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "حافلات صغيرة تُحجز بالتطبيق: حدّد المنطقة، واضبط الأسطول والساعات.",
+    "On-demand bus": "حافلة عند الطلب"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "صور شوارع Panoramax",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "صور يشاركها أفراد وجهات عامة، بتراخيص مفتوحة (غالبًا CC BY-SA 4.0 أو Etalab 2.0) تسمح بالرسم منها. انسب الصورة إلى صاحبها حين تستخدمها.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "صور على مستوى الشارع من Panoramax، المشاع الحر والمفتوح لصور الشوارع. افتح صور الشوارع على الخريطة لترى أين التُقطت الصور، ثم انقر نقطة لترى الصور الملتقطة بقربها. الصور بتراخيص مفتوحة تسمح بالرسم منها. لا حاجة إلى مفتاح. تمر الصور عبر MobSimLab هذا ولا تُخزَّن ولا تُحفظ مع المشروع."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "نواقل ركاب آلية تجرّها الكابلات على مسار مرتفع، تُرسم بأداة الامتدادات المستقيمة: مكوكات بقطارين، وحلقات مضغوطة بقطارات قابلة للفصل تتوقف في كل محطة (ADR-0037 §7). نواقل الركاب ذاتية الدفع تحتاج إلى محرر السكك الحديدية وستأتي لاحقًا.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "مكوكات وحلقات تجرّها الكابلات على مسار: انقر المحطات، والدعامات تتبعها.",
+    "People mover": "ناقل الركاب الآلي",
+    "People mover shuttle": "مكوك ناقل الركاب الآلي",
+    "People mover system": "نظام ناقل الركاب الآلي",
+    "People movers": "نواقل الركاب الآلية",
+    "Pinched loop, detachable trains": "حلقة مضغوطة، قطارات قابلة للفصل",
+    "Shuttle, two trains on a fixed rope": "مكوك، قطاران على كابل ثابت"
+  }
+}

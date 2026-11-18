@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "Umpan GTFS",
+  "GTFS import and export": "Impor dan ekspor GTFS",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Membaca umpan GTFS (zip) ke dalam proyek sebagai jaringan yang ada untuk satu hari layanan, dipotong ke tampilan peta jika diminta, agar perencana perjalanan menggunakannya bersama jalur yang direncanakan; dan menulis jalur proyek sebagai umpan GTFS untuk alat lain.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Halte, rute, dan perjalanan satu hari layanan (Rabu tersibuk kecuali tanggal diberikan), dengan frequencies.txt sebagai pola frekuensi dan jenis rute sebagai moda.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Jalur proyek sebagai umpan GTFS hari kerja: perjalanan persis, jalur frekuensi sebagai frequencies.txt, stasiun untuk kelompok halte."
+}

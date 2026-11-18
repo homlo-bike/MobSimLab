@@ -60,6 +60,8 @@ export interface PluginSummary {
   permissions: string[];
   dependsOn: Record<string, string>;
   contributes: PluginContributions;
+  /** Language tag → English text → translation, for the name, description and contributions. */
+  translations?: Record<string, Record<string, string>>;
   /** It brings WebAssembly code or tab pages of its own, which run in the sandbox (ADR-0036 Phase 2). */
   runsCode: boolean;
   /** Installed plugins only. */
@@ -95,6 +97,8 @@ export interface ProjectPlugin {
   versions: string[];
   permissions: string[];
   contributes: PluginContributions;
+  /** Language tag → English text → translation, for the name, description and contributions. */
+  translations?: Record<string, Record<string, string>>;
   /** The project pins a version that is no longer installed; its objects stay but the plugin is off. */
   missing: boolean;
   /** An Admin turned the plugin off for the whole MobSimLab: it is off here and cannot be turned on. */
@@ -137,6 +141,7 @@ function summary(e: PluginEntry, dependsOn: Record<string, string> = {}): Omit<P
     permissions: e.permissions,
     dependsOn,
     contributes: contributions(e),
+    ...(e.translations ? { translations: e.translations } : {}),
     runsCode: !e.bundled && (e.tiers.includes("compute") || e.tiers.includes("ui")),
   };
 }
@@ -669,6 +674,7 @@ export class PluginsService {
       versions: [],
       permissions: e.permissions,
       contributes: contributions(e),
+      ...(e.translations ? { translations: e.translations } : {}),
       missing: false,
     }));
     const byId = new Map<string, { version: string; entry: PluginEntry; sha256: string }[]>();
@@ -715,6 +721,7 @@ export class PluginsService {
               tabs: [],
             },
         missing,
+        ...(e?.translations ? { translations: e.translations } : {}),
         ...(off.has(id) ? { instanceOff: true } : {}),
         ...(enabled && e ? { entry: e, sha256: found!.sha256 } : {}),
       });

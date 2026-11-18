@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "GTFS フィード",
+  "GTFS import and export": "GTFS のインポートとエクスポート",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "GTFS フィード（zip）を1運行日分の既存ネットワークとしてプロジェクトに読み込み、必要なら地図の表示範囲で切り出して、経路検索が計画路線と合わせて利用できるようにします。また、プロジェクトの路線を他のツール向けの GTFS フィードとして書き出します。",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "1運行日分の停留所、路線、便（日付の指定がなければ最も便数の多い水曜日）。frequencies.txt は運行間隔パターンとして、路線種別は交通手段として読み込みます。",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "プロジェクトの路線を平日の GTFS フィードとして：正確な便、運行間隔の路線は frequencies.txt、停留所グループには駅。"
+}

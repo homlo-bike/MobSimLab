@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "কার্গো সাইকেল",
+  "Cargo bike range": "কার্গো সাইকেলের পাল্লা",
+  "Cargo bike savings": "কার্গো সাইকেলে সাশ্রয়",
+  "Cargo bike trip and range": "কার্গো সাইকেলের যাত্রা ও পাল্লা",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "একটি বৈদ্যুতিক কার্গো ট্রাইসাইকেল এক চার্জে কত দূর গিয়ে ফিরে আসতে পারে, পাহাড় পেরিয়ে এবং সাইকেল লেন পছন্দ করে, আর গাড়ির তুলনায় কত সাশ্রয় করে (কেনা, জ্বালানি, কর, বিমা, পার্কিং, রক্ষণাবেক্ষণ), নিজস্ব ট্যাবে।",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "শুরুর বিন্দু থেকে গন্তব্যে সাইকেল-চলাচলযোগ্য রাস্তায় (সাইকেল লেন পছন্দ করে) আসা-যাওয়ার যাত্রা ও ভূপ্রকৃতিতে খরচ হওয়া ব্যাটারি, এবং সাইকেলটি প্রতিটি দিকে কত দূর গিয়ে ফিরতে পারে তার পাল্লা মানচিত্র।",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "একই যাত্রার জন্য গাড়ির তুলনায় কার্গো সাইকেলের বার্ষিক খরচ: কেনা, শক্তি, কর, বিমা, পার্কিং ও রক্ষণাবেক্ষণ, শুরুর বিন্দুর দেশের মুদ্রায়।"
+}

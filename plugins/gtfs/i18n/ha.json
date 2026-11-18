@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "Ciyarwar GTFS",
+  "GTFS import and export": "Shigo da fitar da GTFS",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Yana karanta ciyarwar GTFS (zip) cikin aikin a matsayin hanyar sadarwa da ke akwai don rana ɗaya ta sabis, an yanke ta zuwa ganin taswira idan an buƙata, domin mai tsara tafiya ya bi ta tare da layukan da aka tsara; kuma yana rubuta layukan aikin a matsayin ciyarwar GTFS don wasu kayan aiki.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Tasoshi, hanyoyi da tafiye-tafiyen rana ɗaya ta sabis (Laraba mafi cunkoso sai dai idan an ba da kwanan wata), tare da frequencies.txt a matsayin tsarin yawan tafiya da nau'ikan hanya a matsayin nau'ikan sufuri.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Layukan aikin a matsayin ciyarwar GTFS ta ranar aiki: tafiye-tafiye daidai, layukan yawan tafiya a matsayin frequencies.txt, tashoshi don rukunin tasoshi."
+}
