@@ -1509,4 +1509,5 @@ export const editorsHa = {
   "spacing.straight": "An auna a layi madaidaici tsakanin tashoshi.",
   "spacing.onFootHint":
     "Ƙididdige isa da ƙafa a sama don ƙara nisan tafiya tsakanin tasoshin da aka yi wa alama.",
+  "kit.savedWithProject": "Ana adana zanen tare da aikin.",
 } satisfies EditorMessages;

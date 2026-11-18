@@ -431,4 +431,5 @@ export const tablesHa = {
   "tt.tbl.departs": "Tashi",
   "tt.tbl.to": "Zuwa",
   "tt.tbl.arrives": "Isowa",
+  "cost.outsideRange": "A wajen iyakar ɗakin bayanai ({low}–{high}): duba ƙimar da ma'auninta.",
 } satisfies TablesMessages;

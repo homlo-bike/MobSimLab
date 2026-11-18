@@ -1462,4 +1462,5 @@ export const editorsVi = {
   "spacing.onFoot": "{metres} m đi bộ",
   "spacing.straight": "Đo theo đường thẳng giữa các nhà ga.",
   "spacing.onFootHint": "Tính độ phủ đi bộ ở trên để thêm quãng đi bộ giữa các trạm được đánh dấu.",
+  "kit.savedWithProject": "Bản vẽ được lưu cùng dự án.",
 } satisfies EditorMessages;

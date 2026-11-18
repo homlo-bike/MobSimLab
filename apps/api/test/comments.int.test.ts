@@ -196,6 +196,43 @@ describe("comments", () => {
     }
   });
 
+  it("lists new comments and replies by others in the bell until they are read", async () => {
+    const first = (
+      await as("bob").post(url(), { objectType: "station", objectId: "7", body: "Platform too short" })
+    ).body.comment;
+    const mine = await as("alice").get("/api/comments/new");
+    expect(mine.status).toBe(200);
+    const notice = mine.body.comments.find((c: { id: string }) => c.id === first.id);
+    expect(notice).toMatchObject({ projectId: project, projectName: "Riverside", objectType: "station" });
+    expect(mine.body.total).toBeGreaterThanOrEqual(1);
+    // Not one's own comments, and nothing for people who are not members.
+    const bobs = (await as("bob").get("/api/comments/new")).body.comments;
+    expect(bobs.some((c: { id: string }) => c.id === first.id)).toBe(false);
+    expect((await as("erin").get("/api/comments/new")).body).toEqual({ total: 0, comments: [] });
+
+    expect((await as("alice").post("/api/comments/read", { ids: [first.id] })).status).toBe(201);
+    const after = (await as("alice").get("/api/comments/new")).body.comments;
+    expect(after.some((c: { id: string }) => c.id === first.id)).toBe(false);
+    // The read mark is per person: the Commenter still sees the Editor's comment.
+    const carols = (await as("carol").get("/api/comments/new")).body.comments;
+    expect(carols.some((c: { id: string }) => c.id === first.id)).toBe(true);
+
+    const reply = (
+      await as("carol").post(url(), {
+        objectType: "station",
+        objectId: "7",
+        body: "Agreed",
+        parentId: first.id,
+      })
+    ).body.comment;
+    const again = (await as("alice").get("/api/comments/new")).body.comments;
+    expect(again.find((c: { id: string }) => c.id === reply.id)).toMatchObject({ parentId: first.id });
+
+    expect((await as("alice").post("/api/comments/read", { all: true })).status).toBe(201);
+    expect((await as("alice").get("/api/comments/new")).body).toEqual({ total: 0, comments: [] });
+    expect((await as("alice").post("/api/comments/read", { ids: ["nope"] })).status).toBe(400);
+  });
+
   it("stops a Commenter from writing once their role is lowered to Viewer", async () => {
     await as("alice").put(`/api/projects/${project}/members/${browsers.carol?.id}`, { role: "viewer" });
     expect((await as("carol").post(url(), { objectType: "signal", objectId: "2", body: "hi" })).status).toBe(

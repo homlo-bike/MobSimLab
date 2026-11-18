@@ -1479,4 +1479,5 @@ export const editorsTr = {
   "spacing.straight": "İstasyonlar arasında düz çizgiyle ölçüldü.",
   "spacing.onFootHint":
     "İşaretli duraklar arasındaki yürüme mesafesini eklemek için yukarıda yürüme kapsamını hesaplayın.",
+  "kit.savedWithProject": "Çizim projeyle birlikte kaydedilir.",
 } satisfies EditorMessages;

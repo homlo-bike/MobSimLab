@@ -1490,4 +1490,5 @@ export const editorsUr = {
   "spacing.straight": "اسٹیشنوں کے درمیان سیدھی لکیر میں ناپا گیا۔",
   "spacing.onFootHint":
     "نشان زدہ اسٹاپوں کے درمیان پیدل فاصلہ شامل کرنے کے لیے اوپر پیدل رسائی کا حساب لگائیں۔",
+  "kit.savedWithProject": "ڈرائنگ منصوبے کے ساتھ محفوظ ہوتی ہے۔",
 } satisfies EditorMessages;

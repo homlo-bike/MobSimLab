@@ -1444,4 +1444,5 @@ export const editorsAm = {
   "spacing.onFoot": "በእግር {metres} ሜ",
   "spacing.straight": "በጣቢያዎች መካከል በቀጥታ መስመር የተለካ።",
   "spacing.onFootHint": "በምልክት በተደረጉ ፌርማታዎች መካከል ያለውን የእግር ርቀት ለመጨመር ከላይ የእግር ተደራሽነትን ያስሉ።",
+  "kit.savedWithProject": "ስዕሉ ከፕሮጀክቱ ጋር ይቀመጣል።",
 } satisfies EditorMessages;

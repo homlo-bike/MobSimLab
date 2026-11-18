@@ -1546,4 +1546,5 @@ export const editorsZu = {
   "spacing.straight": "Kukalwe ngomugqa oqondile phakathi kweziteshi.",
   "spacing.onFootHint":
     "Bala ukufinyeleleka ngezinyawo ngenhla ukuze wengeze ibanga lokuhamba phakathi kwezitobhi eziphawuliwe.",
+  "kit.savedWithProject": "Umdwebo ugcinwa nephrojekthi.",
 } satisfies EditorMessages;

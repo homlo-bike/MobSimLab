@@ -1488,4 +1488,5 @@ export const editorsMr = {
   "spacing.onFoot": "{metres} मी चालत",
   "spacing.straight": "स्थानकांमध्ये सरळ रेषेत मोजले.",
   "spacing.onFootHint": "चिन्हांकित थांब्यांमधील चालण्याचे अंतर जोडण्यासाठी वर चालण्याची व्याप्ती मोजा.",
+  "kit.savedWithProject": "रेखाचित्र प्रकल्पासोबत जतन केले जाते.",
 } satisfies EditorMessages;

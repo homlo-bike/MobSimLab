@@ -497,6 +497,23 @@ describe("project workspace", () => {
     expect(screen.queryByRole("toolbar", { name: "Street line tools" })).toBeNull();
   });
 
+  it("tells a Commenter they can comment, not only view", async () => {
+    const P5 = "66666666-6666-4666-8666-666666666666";
+    projects.push(project(P5, "Shared for comments", "commenter"));
+    try {
+      stubApi(owner);
+      window.history.replaceState(null, "", `/projects/${P5}/create`);
+      render(<App />);
+      expect(
+        await screen.findByText(/comment on its stations, tracks, lines and depots, but not change/),
+      ).toBeTruthy();
+      expect(screen.getAllByText("Can comment").length).toBeGreaterThan(0);
+      expect(screen.queryByText(/You can look at this project but not change it/)).toBeNull();
+    } finally {
+      projects.pop();
+    }
+  });
+
   it("says when a project cannot be opened", async () => {
     stubApi(owner);
     window.history.replaceState(null, "", "/projects/99999999-9999-4999-8999-999999999999/simulator");

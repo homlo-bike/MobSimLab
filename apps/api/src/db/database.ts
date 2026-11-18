@@ -284,6 +284,12 @@ export interface DB {
     resolved_at: Date | null;
     resolved_by: string | null;
   };
+  /** Comments a person has read, for the notices of new comments (db/migrations/0026_comment_read.sql). */
+  "collab.comment_read": {
+    user_id: string;
+    comment_id: string;
+    read_at: Generated<Date>;
+  };
   /** Files a run saves next to its result, such as a demand run's OD matrices (0012_demand_runs.sql). */
   "simulation.run_file": {
     run_id: string;

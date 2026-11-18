@@ -1520,4 +1520,5 @@ export const editorsNl = {
   "spacing.straight": "Gemeten in een rechte lijn tussen stations.",
   "spacing.onFootHint":
     "Bereken hierboven de loopdekking om de loopafstand tussen gemarkeerde haltes toe te voegen.",
+  "kit.savedWithProject": "De tekening wordt met het project opgeslagen.",
 } satisfies EditorMessages;

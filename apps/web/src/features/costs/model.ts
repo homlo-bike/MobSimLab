@@ -299,6 +299,39 @@ function streetVehicles(l: SavedStreetLine, layoverMin: number, maxWaitMin: numb
   return blocks.length ? blocks.length : null;
 }
 
+/**
+ * Purpose: the hours each line's vehicles run on a weekday, worked out as the estimate does but without the
+ * prices, so the calendar runs can count heating and air conditioning before the Tables tab has been opened.
+ * Inputs: the railway (its service lines), their weekday publication reports, the street lines and the
+ * project's values. Output: one entry per line with a service: its mode and vehicle-hours (trains for rail).
+ */
+export function weekdayServiceHours(
+  railway: Network | null,
+  reports: readonly LineReport[],
+  streetLines: readonly SavedStreetLine[],
+  prefs: Record<string, number> | undefined,
+): { mode: string; hours: number }[] {
+  const out: { mode: string; hours: number }[] = [];
+  const byId = new Map(reports.map((r) => [r.id, r] as const));
+  for (const l of railway?.lines ?? []) {
+    const r = byId.get(l.id);
+    if (!r || !trainById(l.vehicle) || r.trains === 0) continue;
+    const runS = ((r.outbound_s ?? 0) + (r.return_s ?? r.outbound_s ?? 0)) / 2;
+    out.push({ mode: lineMode(railway!, l), hours: (r.trips * runS) / 3600 });
+  }
+  for (const l of streetLines) {
+    if (l.view.points.length < 2) continue;
+    const timing = fullTiming(l.timing);
+    const stats = lineStats(l.view, timing);
+    const vehicles =
+      streetVehicles(l, timing.layoverMin, paramValue("timetable.max_terminal_wait_min", "*", prefs)[1]) ??
+      stats.vehicles;
+    if (vehicles > 0)
+      out.push({ mode: l.profile.mode, hours: dayService(timing, stats.cycleMin).vehicleHours });
+  }
+  return out;
+}
+
 export function estimate(input: EstimateInput): Estimate {
   const { railway, view, reports, streetLines, prefs, prices } = input;
   const t: Translate = input.t ?? ((key, vars) => translate("en", key, vars));

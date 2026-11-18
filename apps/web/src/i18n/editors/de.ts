@@ -1539,4 +1539,5 @@ export const editorsDe = {
   "spacing.straight": "Luftlinie zwischen den Stationen gemessen.",
   "spacing.onFootHint":
     "Berechnen Sie oben die Fußweg-Abdeckung, um die Fußwegstrecke zwischen markierten Haltestellen zu ergänzen.",
+  "kit.savedWithProject": "Die Zeichnung wird mit dem Projekt gespeichert.",
 } satisfies EditorMessages;

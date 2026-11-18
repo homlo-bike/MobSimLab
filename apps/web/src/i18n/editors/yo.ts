@@ -1466,4 +1466,5 @@ export const editorsYo = {
   "spacing.onFoot": "m {metres} ní ẹsẹ̀",
   "spacing.straight": "A wọ̀n ní ìlà títọ́ láàrin àwọn ibùdó.",
   "spacing.onFootHint": "Ṣírò àrọ́wọ́tó ẹlẹ́sẹ̀ lókè láti fi ìjìnnà ẹsẹ̀ kún un láàrin àwọn ibùdókọ̀ tí a sàmì sí.",
+  "kit.savedWithProject": "A ń fi àwòrán náà pamọ́ pẹ̀lú iṣẹ́ àkànṣe náà.",
 } satisfies EditorMessages;

@@ -18,6 +18,23 @@ export interface CostParam {
 export const PARAMS = (data as unknown as { params: Record<string, CostParam> }).params;
 export type ParamKey = keyof typeof PARAMS & string;
 
+/**
+ * Purpose: whether a project's own unit cost lies outside the library's range, so the cost tables and the
+ * assumptions report can warn about it (a typo or a unit slip changes the appraisal unnoticed; Damascus test: a
+ * cut-and-cover tunnel at 10 against 35–150 US$ million per km).
+ * Inputs: the project's value (undefined: none, nothing to warn) and the library's [low, central, high].
+ * Output: true below low or above high; false for a single library value (low = high).
+ */
+export function outsideLibraryRange(
+  value: number | undefined,
+  library: readonly [number, number, number],
+): boolean {
+  if (value === undefined || !Number.isFinite(value)) return false;
+  const [low, , high] = library;
+  if (low === high) return false;
+  return value < low || value > high;
+}
+
 /** Purpose: the library's values of a parameter for a mode (the mode's entry, else the global one). */
 export function libraryValue(key: string, mode: string): Triple {
   const p = PARAMS[key];

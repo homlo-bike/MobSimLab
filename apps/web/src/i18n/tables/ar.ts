@@ -434,4 +434,5 @@ export const tablesAr = {
   "tt.tbl.departs": "المغادرة",
   "tt.tbl.to": "إلى",
   "tt.tbl.arrives": "الوصول",
+  "cost.outsideRange": "خارج نطاق المكتبة ({low}–{high}): تحقّق من القيمة ووحدتها.",
 } satisfies TablesMessages;

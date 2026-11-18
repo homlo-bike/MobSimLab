@@ -423,4 +423,5 @@ export const tablesJa = {
   "tt.tbl.departs": "発時刻",
   "tt.tbl.to": "着",
   "tt.tbl.arrives": "着時刻",
+  "cost.outsideRange": "ライブラリの範囲（{low}–{high}）外です：値と単位を確認してください。",
 } satisfies TablesMessages;

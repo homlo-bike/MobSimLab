@@ -1550,4 +1550,5 @@ export const editorsFr = {
   "spacing.straight": "Mesuré à vol d'oiseau entre les stations.",
   "spacing.onFootHint":
     "Calculez la couverture à pied ci-dessus pour ajouter la distance à pied entre les arrêts signalés.",
+  "kit.savedWithProject": "Le dessin est enregistré avec le projet.",
 } satisfies EditorMessages;

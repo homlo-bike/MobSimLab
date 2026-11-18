@@ -456,6 +456,7 @@ export const tablesEn = {
   "tt.tbl.departs": "Departs",
   "tt.tbl.to": "To",
   "tt.tbl.arrives": "Arrives",
+  "cost.outsideRange": "Outside the library range of {low}–{high}: check the value and its unit.",
 } as const;
 
 /** Keys of the tables messages. */

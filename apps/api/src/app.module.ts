@@ -15,7 +15,7 @@ import { PanoramaxClient } from "./street-photos/panoramax.client";
 import { StreetPhotosController } from "./street-photos/street-photos.controller";
 import { StreetPhotosService } from "./street-photos/street-photos.service";
 import { AuthService } from "./auth/auth.service";
-import { CommentsController } from "./comments/comments.controller";
+import { CommentNoticesController, CommentsController } from "./comments/comments.controller";
 import { CommentsService } from "./comments/comments.service";
 import { OidcService } from "./auth/oidc.service";
 import { SessionService } from "./auth/session.service";
@@ -85,6 +85,7 @@ export class AppModule {
         AdminController,
         ProjectsController,
         CommentsController,
+        CommentNoticesController,
         PluginsController,
         BasemapsController,
         MapLayersController,

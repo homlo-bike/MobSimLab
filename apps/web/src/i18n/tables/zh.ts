@@ -419,4 +419,5 @@ export const tablesZh = {
   "tt.tbl.departs": "出发",
   "tt.tbl.to": "至",
   "tt.tbl.arrives": "到达",
+  "cost.outsideRange": "超出资料库范围（{low}–{high}）：请检查数值及其单位。",
 } satisfies TablesMessages;

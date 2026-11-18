@@ -426,4 +426,5 @@ export const tablesUr = {
   "tt.tbl.departs": "روانگی",
   "tt.tbl.to": "تک",
   "tt.tbl.arrives": "آمد",
+  "cost.outsideRange": "لائبریری کی حد ({low}–{high}) سے باہر: قدر اور اس کی اکائی جانچیں۔",
 } satisfies TablesMessages;

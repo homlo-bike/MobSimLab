@@ -436,4 +436,5 @@ export const tablesTa = {
   "tt.tbl.departs": "புறப்படுகிறது",
   "tt.tbl.to": "வரை",
   "tt.tbl.arrives": "வந்தடைகிறது",
+  "cost.outsideRange": "நூலக வரம்புக்கு ({low}–{high}) வெளியே: மதிப்பையும் அதன் அலகையும் சரிபார்க்கவும்.",
 } satisfies TablesMessages;

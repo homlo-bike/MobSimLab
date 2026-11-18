@@ -1579,4 +1579,5 @@ export const editorsPl = {
   "spacing.straight": "Mierzone w linii prostej między stacjami.",
   "spacing.onFootHint":
     "Oblicz powyżej dostępność pieszą, aby dodać odległość pieszo między oznaczonymi przystankami.",
+  "kit.savedWithProject": "Rysunek jest zapisywany razem z projektem.",
 } satisfies EditorMessages;

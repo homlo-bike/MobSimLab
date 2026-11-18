@@ -1438,4 +1438,5 @@ export const editorsKo = {
   "spacing.onFoot": "도보 {metres} m",
   "spacing.straight": "역 사이를 직선으로 측정했습니다.",
   "spacing.onFootHint": "위에서 도보 접근성을 계산하면 표시된 정류장 사이의 도보 거리가 추가됩니다.",
+  "kit.savedWithProject": "도면은 프로젝트와 함께 저장됩니다.",
 } satisfies EditorMessages;

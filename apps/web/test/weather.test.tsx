@@ -5,6 +5,7 @@ import { CalendarRun } from "../src/features/calendar-run/CalendarRun";
 import { type CalendarPlan, periodsFor, weatherPeriods } from "../src/features/calendar-run/model";
 import {
   above,
+  hvacFullKwhFromService,
   hvacFullKwhPerDay,
   hvacLoad,
   switchKwhPerFrostDay,
@@ -139,6 +140,20 @@ describe("weather model", () => {
     // 300 days a year: 100 bus hours at 15 kW and 10 metro unit-hours at 80 kW.
     expect(hvacFullKwhPerDay(est, undefined)).toBeCloseTo(1500 + 800);
     expect(hvacFullKwhPerDay(null, undefined)).toBeNull();
+  });
+
+  it("works out heating and cooling power from the timetables when the Tables tab has not run", () => {
+    // 50 tram train-hours at 40 kW and 100 bus hours at 15 kW a weekday.
+    expect(
+      hvacFullKwhFromService(
+        [
+          { mode: "tram", hours: 50 },
+          { mode: "bus", hours: 100 },
+        ],
+        undefined,
+      ),
+    ).toBeCloseTo(2000 + 1500);
+    expect(hvacFullKwhFromService([], undefined)).toBeNull();
   });
 });
 

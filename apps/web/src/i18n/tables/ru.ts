@@ -438,4 +438,5 @@ export const tablesRu = {
   "tt.tbl.departs": "Отправление",
   "tt.tbl.to": "Куда",
   "tt.tbl.arrives": "Прибытие",
+  "cost.outsideRange": "Вне диапазона библиотеки ({low}–{high}): проверьте значение и единицу измерения.",
 } satisfies TablesMessages;

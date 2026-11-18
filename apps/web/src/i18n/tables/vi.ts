@@ -427,4 +427,5 @@ export const tablesVi = {
   "tt.tbl.departs": "Khởi hành",
   "tt.tbl.to": "Đến",
   "tt.tbl.arrives": "Đến nơi",
+  "cost.outsideRange": "Nằm ngoài phạm vi thư viện ({low}–{high}): hãy kiểm tra giá trị và đơn vị.",
 } satisfies TablesMessages;

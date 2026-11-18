@@ -1463,4 +1463,5 @@ export const editorsFa = {
   "spacing.straight": "در خط مستقیم بین ایستگاه‌ها اندازه‌گیری شده است.",
   "spacing.onFootHint":
     "پوشش پیاده را در بالا محاسبه کنید تا فاصله‌ی پیاده بین ایستگاه‌های علامت‌خورده افزوده شود.",
+  "kit.savedWithProject": "نقشه همراه پروژه ذخیره می‌شود.",
 } satisfies EditorMessages;

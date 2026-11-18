@@ -437,4 +437,5 @@ export const tablesSw = {
   "tt.tbl.departs": "Inaondoka",
   "tt.tbl.to": "Hadi",
   "tt.tbl.arrives": "Inafika",
+  "cost.outsideRange": "Nje ya kiwango cha maktaba ({low}–{high}): kagua thamani na kipimo chake.",
 } satisfies TablesMessages;

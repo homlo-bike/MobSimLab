@@ -44,6 +44,22 @@ export const commentsEn = {
   "comments.group.service-line": "Rail service lines",
   "comments.group.street-line": "Street lines",
   "comments.group.depot": "Depots",
+  "comments.canComment": "Can comment",
+  "comments.canCommentNote":
+    "You can read this project and comment on its stations, tracks, lines and depots, but not change the network. Ask the owner for Editor access if you need to change it.",
+  "comments.notices": "New comments",
+  "comments.newCount.one": "{count} new comment",
+  "comments.newCount.other": "{count} new comments",
+  "comments.markAllRead": "Mark all as read",
+  "comments.noticeComment": "{name} commented on {object}",
+  "comments.noticeReply": "{name} replied on {object}",
+  "comments.kind.station": "Station",
+  "comments.kind.track": "Track",
+  "comments.kind.switch": "Switch",
+  "comments.kind.signal": "Signal",
+  "comments.kind.service-line": "Rail service line",
+  "comments.kind.street-line": "Street line",
+  "comments.kind.depot": "Depot",
 };
 
 /** A language's comment messages: every key of the English ones. */
