@@ -39,6 +39,7 @@ export const calendarNl = {
   "cal.weekendDays": "{first} en {second}",
   "cal.weekendHint":
     "Elke weekenddag heeft hieronder een eigen dienstdag en aantal dagen. Standaard is het gebruikelijke weekend in het land van het project.",
+  "cal.weekendSource": "Gebruikelijke weekenden per land uit de weekgegevens van Unicode CLDR.",
   "cal.counts": "Dagen per dagtype",
   "cal.countsIntro":
     "Geteld uit de kalender. Typ een getal om uw eigen te gebruiken; het krijgt een rand en ↺ gaat terug naar het getelde.",

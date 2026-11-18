@@ -39,6 +39,7 @@ export const calendarZu = {
   "cal.weekendDays": "{first} no-{second}",
   "cal.weekendHint":
     "Usuku ngalunye lwempelasonto lunosuku lwalo lwesevisi nenani lezinsuku ngezansi. Okuzenzakalelayo yimpelasonto evamile ezweni lephrojekthi.",
+  "cal.weekendSource": "Izimpelasonto ezijwayelekile ngezwe kusuka kudatha yesonto ye-Unicode CLDR.",
   "cal.counts": "Izinsuku ngohlobo losuku",
   "cal.countsIntro":
     "Kubalwe kusuka ekhalendeni. Thayipha inombolo ukuze usebenzise eyakho; izoba nohlaka futhi ↺ ibuyisa ebaliwe.",

@@ -38,6 +38,7 @@ export const calendarKo = {
   "cal.weekendDays": "{first}과 {second}",
   "cal.weekendHint":
     "주말의 각 요일은 아래에 자체 운행일과 일수가 있습니다. 기본값은 프로젝트 국가의 일반적인 주말입니다.",
+  "cal.weekendSource": "국가별 일반 주말은 Unicode CLDR 주간 데이터에서 가져옵니다.",
   "cal.counts": "요일 유형별 일수",
   "cal.countsIntro":
     "달력에서 센 값입니다. 숫자를 입력하면 직접 정한 값을 씁니다. 테두리로 표시되며 ↺로 센 값으로 돌아갑니다.",

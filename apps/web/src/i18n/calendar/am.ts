@@ -37,6 +37,7 @@ export const calendarAm = {
   "cal.weekendDays": "{first} እና {second}",
   "cal.weekendHint":
     "እያንዳንዱ የሳምንት መጨረሻ ቀን ከታች የራሱ የአገልግሎት ቀን እና የቀናት ብዛት አለው። ነባሪው በፕሮጀክቱ አገር የተለመደው የሳምንት መጨረሻ ነው።",
+  "cal.weekendSource": "በአገር የተለመዱ የሳምንት መጨረሻዎች ከ Unicode CLDR የሳምንት መረጃ።",
   "cal.counts": "ቀኖች በቀን ዓይነት",
   "cal.countsIntro": "ከቀን መቁጠሪያው የተቆጠሩ። የራስዎን ለመጠቀም ቁጥር ይጻፉ፤ ክፈፍ ይኖረዋል፣ ↺ ደግሞ የተቆጠረውን ይመልሳል።",
   "cal.total": "ጠቅላላ",

@@ -39,6 +39,7 @@ export const calendarFr = {
   "cal.weekendDays": "{first} et {second}",
   "cal.weekendHint":
     "Chaque jour du week-end a plus bas sa propre journée de service et son nombre de jours. Par défaut, le week-end habituel du pays du projet.",
+  "cal.weekendSource": "Week-ends habituels par pays issus des données de semaine Unicode CLDR.",
   "cal.counts": "Jours par type de jour",
   "cal.countsIntro":
     "Comptés à partir du calendrier. Saisissez un nombre pour utiliser le vôtre ; il est encadré et ↺ revient au nombre compté.",

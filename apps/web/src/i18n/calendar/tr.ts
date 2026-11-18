@@ -38,6 +38,7 @@ export const calendarTr = {
   "cal.weekendDays": "{first} ve {second}",
   "cal.weekendHint":
     "Her hafta sonu gününün aşağıda kendi hizmet günü ve gün sayısı vardır. Varsayılan, projenin ülkesindeki olağan hafta sonudur.",
+  "cal.weekendSource": "Ülkelere göre olağan hafta sonları Unicode CLDR hafta verilerinden.",
   "cal.counts": "Gün türüne göre günler",
   "cal.countsIntro":
     "Takvimden sayıldı. Kendi sayınızı kullanmak için bir sayı yazın; çerçevelenir ve ↺ sayılana döner.",

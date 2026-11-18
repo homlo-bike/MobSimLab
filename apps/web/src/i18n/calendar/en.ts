@@ -41,6 +41,7 @@ export const calendarEn = {
   "cal.weekendDays": "{first} and {second}",
   "cal.weekendHint":
     "Each weekend day has its own service day and day count below. The default is the usual weekend in the project's country.",
+  "cal.weekendSource": "Usual weekends by country from the Unicode CLDR week data.",
   "cal.counts": "Days per day type",
   "cal.countsIntro":
     "Counted from the calendar. Type a number to use your own; it is outlined and ↺ goes back to the counted one.",

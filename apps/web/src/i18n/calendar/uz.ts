@@ -38,6 +38,7 @@ export const calendarUz = {
   "cal.weekendDays": "{first} va {second}",
   "cal.weekendHint":
     "Har bir dam olish kunining pastda o‘z xizmat kuni va kunlar soni bor. Standart — loyiha mamlakatidagi odatiy dam olish kunlari.",
+  "cal.weekendSource": "Mamlakatlar boʻyicha odatiy dam olish kunlari Unicode CLDR hafta maʼlumotlaridan.",
   "cal.counts": "Kun turlari bo‘yicha kunlar",
   "cal.countsIntro":
     "Kalendardan hisoblangan. O‘zingiznikini ishlatish uchun son kiriting; u ramkaga olinadi va ↺ hisoblanganini qaytaradi.",

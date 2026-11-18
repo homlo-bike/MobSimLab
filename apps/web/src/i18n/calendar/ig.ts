@@ -38,6 +38,7 @@ export const calendarIg = {
   "cal.weekendDays": "{first} na {second}",
   "cal.weekendHint":
     "Ụbọchị ọ bụla nke ngwụcha izu nwere ụbọchị ọrụ na ọnụ ọgụgụ ụbọchị nke ya n'okpuru. Ndabara bụ ngwụcha izu a na-ahụkarị na mba ọrụ ahụ.",
+  "cal.weekendSource": "Ngwụcha izu a na-ahụkarị n'obodo ọ bụla sitere na data izu Unicode CLDR.",
   "cal.counts": "Ụbọchị dị ka ụdị ụbọchị",
   "cal.countsIntro":
     "Agụrụ site na kalenda. Pịa nọmba iji jiri nke gị; a ga-etinye ya n'okpokoro, ↺ na-eweghachi nke agụrụ.",

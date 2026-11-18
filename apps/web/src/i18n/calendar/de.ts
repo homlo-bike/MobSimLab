@@ -39,6 +39,7 @@ export const calendarDe = {
   "cal.weekendDays": "{first} und {second}",
   "cal.weekendHint":
     "Jeder Wochenendtag hat unten seinen eigenen Betriebstag und seine Zahl der Tage. Standard ist das übliche Wochenende im Land des Projekts.",
+  "cal.weekendSource": "Übliche Wochenenden je Land aus den Wochendaten von Unicode CLDR.",
   "cal.counts": "Tage je Tagestyp",
   "cal.countsIntro":
     "Aus dem Kalender gezählt. Geben Sie eine Zahl ein, um Ihre eigene zu verwenden; sie wird umrandet, und ↺ kehrt zur gezählten zurück.",

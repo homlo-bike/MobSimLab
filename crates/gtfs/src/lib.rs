@@ -628,41 +628,48 @@ pub struct ExportInput {
     pub weekend: Option<Weekend>,
 }
 
-/// The two days of the weekend, as days of the week (0 Sunday to 6 Saturday).
+/// The days of the weekend, as days of the week (0 Sunday to 6 Saturday).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Weekend {
     /// The main rest day: the `sunday` service runs on it.
     pub rest: u8,
-    /// The other weekend day: the `saturday` service runs on it.
-    pub second: u8,
+    /// The other weekend day: the `saturday` service runs on it; absent: a one-day weekend.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub second: Option<u8>,
 }
 
 impl Default for Weekend {
     fn default() -> Self {
-        Self { rest: 0, second: 6 }
+        Self {
+            rest: 0,
+            second: Some(6),
+        }
     }
 }
 
 impl Weekend {
-    /// Purpose: the weekend if both days are days of the week and differ, else Saturday and Sunday.
+    /// Purpose: the weekend if its days are days of the week and differ, else Saturday and Sunday.
     fn valid(self) -> Self {
-        if self.rest < 7 && self.second < 7 && self.rest != self.second {
+        let second_ok = !matches!(self.second, Some(s) if s >= 7 || s == self.rest);
+        if self.rest < 7 && second_ok {
             self
         } else {
             Self::default()
         }
     }
-    /// Purpose: `calendar.txt`'s Monday-to-Sunday columns with a 1 on one day of the week (0 Sunday).
-    fn columns(day: u8) -> [&'static str; 7] {
+    /// Purpose: `calendar.txt`'s Monday-to-Sunday columns with a 1 on one day of the week (0 Sunday), if any.
+    fn columns(day: Option<u8>) -> [&'static str; 7] {
         let mut c = ["0"; 7];
-        c[(usize::from(day) + 6) % 7] = "1";
+        if let Some(day) = day {
+            c[(usize::from(day) + 6) % 7] = "1";
+        }
         c
     }
     /// Purpose: the service that runs on a day of the week (0 Sunday).
     fn service(self, day: u8) -> &'static str {
         if day == self.rest {
             "sunday"
-        } else if day == self.second {
+        } else if Some(day) == self.second {
             "saturday"
         } else {
             "weekday"
@@ -822,11 +829,11 @@ pub fn export(input: &ExportInput) -> BTreeMap<String, String> {
                     let mut r = vec![s.to_string()];
                     let days = match *s {
                         "saturday" => Weekend::columns(weekend.second),
-                        "sunday" => Weekend::columns(weekend.rest),
+                        "sunday" => Weekend::columns(Some(weekend.rest)),
                         "holiday" => ["0"; 7],
                         _ => {
                             let mut c = ["1"; 7];
-                            for d in [weekend.rest, weekend.second] {
+                            for d in std::iter::once(weekend.rest).chain(weekend.second) {
                                 c[(usize::from(d) + 6) % 7] = "0";
                             }
                             c

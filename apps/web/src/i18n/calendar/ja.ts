@@ -38,6 +38,7 @@ export const calendarJa = {
   "cal.weekendDays": "{first}と{second}",
   "cal.weekendHint":
     "週末の各曜日には、下に専用の運行日と日数があります。既定はプロジェクトの国の一般的な週末です。",
+  "cal.weekendSource": "国ごとの通常の週末は Unicode CLDR の週データによります。",
   "cal.counts": "日種別ごとの日数",
   "cal.countsIntro":
     "カレンダーから数えた値です。数字を入力すると独自の値を使います。枠で示され、↺ で数えた値に戻ります。",

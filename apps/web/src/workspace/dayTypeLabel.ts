@@ -39,7 +39,8 @@ export function dayTypeName(
   language: string,
   t: (key: MessageKey) => string,
 ): string {
-  if (dt === "saturday") return weekdayName(weekend.second, language, t);
+  if (dt === "saturday")
+    return weekend.second === undefined ? t("cal.day.saturday") : weekdayName(weekend.second, language, t);
   if (dt === "sunday") return weekdayName(weekend.rest, language, t);
   return t(KEY[dt]);
 }
@@ -59,7 +60,8 @@ export function useDayTypeText(): (dt: DayTypeId, keys: Record<DayTypeId, Messag
   const { t, language } = useI18n();
   const weekend = useContext(WeekendContext);
   return (dt, keys) =>
-    (dt === "saturday" && weekend.second !== 6) || (dt === "sunday" && weekend.rest !== 0)
+    (dt === "saturday" && weekend.second !== undefined && weekend.second !== 6) ||
+    (dt === "sunday" && weekend.rest !== 0)
       ? dayTypeName(dt, weekend, language, t)
       : t(keys[dt]);
 }
@@ -70,7 +72,7 @@ const ENGLISH_DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "F
 export function englishDayTypeNames(weekend: Weekend): Record<DayTypeId, string> {
   return {
     weekday: "Weekday",
-    saturday: ENGLISH_DAYS[weekend.second] ?? "Saturday",
+    saturday: (weekend.second === undefined ? undefined : ENGLISH_DAYS[weekend.second]) ?? "Saturday",
     sunday: ENGLISH_DAYS[weekend.rest] ?? "Sunday",
     holiday: "Public holiday",
   };

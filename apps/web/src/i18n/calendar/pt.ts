@@ -39,6 +39,7 @@ export const calendarPt = {
   "cal.weekendDays": "{first} e {second}",
   "cal.weekendHint":
     "Cada dia do fim de semana tem abaixo o seu próprio dia de serviço e número de dias. O padrão é o fim de semana habitual no país do projeto.",
+  "cal.weekendSource": "Fins de semana habituais por país, dos dados semanais do Unicode CLDR.",
   "cal.counts": "Dias por tipo de dia",
   "cal.countsIntro":
     "Contados a partir do calendário. Escreva um número para usar o seu; fica destacado e ↺ volta ao contado.",

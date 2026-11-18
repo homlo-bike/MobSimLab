@@ -52,25 +52,25 @@ export interface ServiceCalendar {
 }
 
 /**
- * The two days of the weekend, as days of the week (0 Sunday to 6 Saturday). The main rest day's dates are the
+ * The days of the weekend, as days of the week (0 Sunday to 6 Saturday). The main rest day's dates are the
  * "sunday" day type and the other day's the "saturday" one, so a Friday and Saturday weekend runs its Sunday
- * service on Fridays.
+ * service on Fridays. A one-day weekend has no "saturday" days.
  */
 export interface Weekend {
   /** The main rest day (Sunday in most countries, Friday in a Friday and Saturday weekend). */
   rest: number;
-  /** The other weekend day. */
-  second: number;
+  /** The other weekend day; absent: a one-day weekend. */
+  second?: number;
 }
 
 /** The weekend of most countries: Saturday and Sunday. */
 export const SATURDAY_SUNDAY: Weekend = { rest: 0, second: 6 };
 /** The weekend of most Arab countries: Friday and Saturday. */
 export const FRIDAY_SATURDAY: Weekend = { rest: 5, second: 6 };
-/** The weekends the planner can choose. */
-export const WEEKENDS: readonly Weekend[] = [SATURDAY_SUNDAY, FRIDAY_SATURDAY];
+/** The weekends the planner can choose from, as days of the week; the country sets which one is the rest day. */
+export const WEEKEND_DAYS: readonly (readonly number[])[] = [[6, 0], [5, 6], [4, 5], [0], [5], [6]];
 
-/** Countries (ISO alpha-2) whose weekend is Friday and Saturday. */
+/** Countries (ISO alpha-2) whose weekend is Friday and Saturday, for browsers without the Unicode week data. */
 const FRIDAY_SATURDAY_COUNTRIES = new Set([
   "BD",
   "BH",
@@ -90,14 +90,69 @@ const FRIDAY_SATURDAY_COUNTRIES = new Set([
   "YE",
 ]);
 
+const isDay = (d: unknown): d is number => typeof d === "number" && Number.isInteger(d) && d >= 0 && d < 7;
 const isWeekend = (w: unknown): w is Weekend =>
   !!w &&
   typeof w === "object" &&
-  WEEKENDS.some((x) => x.rest === (w as Weekend).rest && x.second === (w as Weekend).second);
+  isDay((w as Weekend).rest) &&
+  ((w as Weekend).second === undefined ||
+    (isDay((w as Weekend).second) && (w as Weekend).second !== (w as Weekend).rest));
 
-/** Purpose: the usual weekend in a country (ISO alpha-2); Saturday and Sunday when unknown. */
+/**
+ * Purpose: the weekend days of a country (ISO alpha-2) from the Unicode CLDR week data, which the browser's Intl
+ * API holds (0 Sunday to 6 Saturday); null when the country is not valid or the browser has no week data.
+ */
+export function cldrWeekendDays(country: string | null | undefined): number[] | null {
+  if (!country || !/^[A-Za-z]{2}$/.test(country)) return null;
+  try {
+    const locale = new Intl.Locale(`und-${country.toUpperCase()}`) as Intl.Locale & {
+      getWeekInfo?: () => { weekend?: number[] };
+      weekInfo?: { weekend?: number[] };
+    };
+    const info = locale.getWeekInfo?.() ?? locale.weekInfo;
+    // Intl numbers the days 1 Monday to 7 Sunday.
+    const days = [...new Set((info?.weekend ?? []).map((d) => d % 7))].filter(isDay);
+    return days.length >= 1 && days.length <= 2 ? days : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Purpose: a weekend from its days in a country: the main rest day is Sunday if it is one of them, else Saturday in
+ * Israel (the Sabbath), else Friday, else the later day.
+ */
+export function weekendFromDays(days: readonly number[], country?: string | null): Weekend {
+  const set = [...new Set(days)].filter(isDay);
+  if (set.length === 0) return SATURDAY_SUNDAY;
+  if (set.length === 1) return { rest: set[0]! };
+  const rest = set.includes(0)
+    ? 0
+    : country?.toUpperCase() === "IL" && set.includes(6)
+      ? 6
+      : set.includes(5)
+        ? 5
+        : set[set.length - 1]!;
+  return { rest, second: set.find((d) => d !== rest) };
+}
+
+/** Purpose: the days of a weekend, in the order of a week that starts on Monday. */
+export function weekendDays(w: Weekend): number[] {
+  return (w.second === undefined ? [w.rest] : [w.rest, w.second]).sort(
+    (a, b) => ((a + 6) % 7) - ((b + 6) % 7),
+  );
+}
+
+/**
+ * Purpose: the usual weekend in a country (ISO alpha-2), from the Unicode CLDR week data (`cldrWeekendDays`);
+ * Saturday and Sunday when unknown.
+ */
 export function countryWeekend(country: string | null | undefined): Weekend {
-  return country && FRIDAY_SATURDAY_COUNTRIES.has(country.toUpperCase()) ? FRIDAY_SATURDAY : SATURDAY_SUNDAY;
+  const days = cldrWeekendDays(country);
+  if (days) return weekendFromDays(days, country);
+  return country && FRIDAY_SATURDAY_COUNTRIES.has(country.toUpperCase())
+    ? weekendFromDays([5, 6], country)
+    : SATURDAY_SUNDAY;
 }
 
 /** Purpose: the calendar's weekend: the planner's choice, else the usual one in its country. */
@@ -105,14 +160,14 @@ export function weekendOf(cal: ServiceCalendar): Weekend {
   return isWeekend(cal.weekend) ? cal.weekend : countryWeekend(cal.country);
 }
 
-/** Purpose: whether two weekends are the same days. */
+/** Purpose: whether two weekends are the same days with the same rest day. */
 export function sameWeekend(a: Weekend, b: Weekend): boolean {
   return a.rest === b.rest && a.second === b.second;
 }
 
 /** Purpose: the calendar with the planner's weekend (kept even when it is the country's usual one). */
 export function withWeekend(cal: ServiceCalendar, w: Weekend): ServiceCalendar {
-  return { ...cal, weekend: { rest: w.rest, second: w.second } };
+  return { ...cal, weekend: w.second === undefined ? { rest: w.rest } : { rest: w.rest, second: w.second } };
 }
 
 /** Simulation years of the project, inclusive. */
@@ -230,7 +285,7 @@ export function dayTypeOf(date: string, cal: ServiceCalendar, holidays: readonly
   if (holidays.includes(date)) return "holiday";
   const wd = new Date(`${date}T00:00:00Z`).getUTCDay();
   const w = weekendOf(cal);
-  return wd === w.second ? "saturday" : wd === w.rest ? "sunday" : "weekday";
+  return wd === w.rest ? "sunday" : wd === w.second ? "saturday" : "weekday";
 }
 
 /** Purpose: every date of a year, YYYY-MM-DD. */

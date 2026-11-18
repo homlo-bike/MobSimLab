@@ -35,6 +35,7 @@ export const calendarZh = {
   "cal.weekend": "周末",
   "cal.weekendDays": "{first}和{second}",
   "cal.weekendHint": "下方每个周末日都有自己的运营日和天数。默认是项目所在国家的通常周末。",
+  "cal.weekendSource": "各国通常的周末取自 Unicode CLDR 周数据。",
   "cal.counts": "各日类型天数",
   "cal.countsIntro": "根据日历计算。输入数字即可使用您自己的数值；它会被加框，↺ 恢复为计算值。",
   "cal.total": "合计",

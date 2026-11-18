@@ -37,6 +37,7 @@ export const calendarVi = {
   "cal.weekendDays": "{first} và {second}",
   "cal.weekendHint":
     "Mỗi ngày cuối tuần có ngày phục vụ và số ngày riêng bên dưới. Mặc định là cuối tuần thông thường ở quốc gia của dự án.",
+  "cal.weekendSource": "Ngày cuối tuần thông thường theo quốc gia từ dữ liệu tuần của Unicode CLDR.",
   "cal.counts": "Số ngày theo loại ngày",
   "cal.countsIntro": "Đếm từ lịch. Nhập một số để dùng số của bạn; số đó được viền và ↺ trở về số đã đếm.",
   "cal.total": "Tổng",

@@ -25,7 +25,9 @@ import {
   withCountryCustoms,
   observesEid,
   withWeekend,
-  WEEKENDS,
+  WEEKEND_DAYS,
+  weekendDays,
+  weekendFromDays,
   weekendOf,
   sameWeekend,
   yearList,
@@ -131,6 +133,13 @@ export function CalendarSection({
   const rows = holidayRows(view, year);
   const weekend = weekendOf(view);
   const label = (dt: DayTypeId) => dayTypeName(dt, weekend, language, t);
+  // The weekends to choose from: the calendar's own first, then the others, each with the country's rest day.
+  const choices = [
+    weekend,
+    ...WEEKEND_DAYS.map((d) => weekendFromDays(d, country)).filter(
+      (w) => weekendDays(w).join() !== weekendDays(weekend).join(),
+    ),
+  ];
   return (
     <section
       aria-labelledby="pp-calendar"
@@ -192,28 +201,25 @@ export function CalendarSection({
             <select
               id="pp-cal-weekend"
               aria-describedby="pp-cal-weekend-hint"
-              value={WEEKENDS.findIndex((w) => sameWeekend(w, weekend))}
+              value={choices.findIndex((w) => sameWeekend(w, weekend))}
               disabled={!editable}
               onChange={(e) => {
-                const w = WEEKENDS[Number(e.target.value)];
+                const w = choices[Number(e.target.value)];
                 if (w) setCal(withWeekend(view, w));
               }}
             >
-              {WEEKENDS.map((w, i) => (
-                <option key={i} value={i}>
-                  {t("cal.weekendDays", {
-                    // In the order of a week that starts on Monday: Friday and Saturday, Saturday and Sunday.
-                    ...(() => {
-                      const [a, b] = [w.rest, w.second].sort((x, y) => ((x + 6) % 7) - ((y + 6) % 7));
-                      return { first: weekdayName(a!, language, t), second: weekdayName(b!, language, t) };
-                    })(),
-                  })}
-                </option>
-              ))}
+              {choices.map((w, i) => {
+                const [a, b] = weekendDays(w).map((d) => weekdayName(d, language, t));
+                return (
+                  <option key={i} value={i}>
+                    {b === undefined ? a : t("cal.weekendDays", { first: a!, second: b })}
+                  </option>
+                );
+              })}
             </select>
           </div>
           <span id="pp-cal-weekend-hint" className="text-slate-500">
-            {t("cal.weekendHint")}
+            {t("cal.weekendHint")} {t("cal.weekendSource")}
           </span>
         </div>
       </div>

@@ -23,6 +23,7 @@ import {
   DEFAULT_WINDOW,
   parseClock,
   yearList,
+  cldrWeekendDays,
   countryWeekend,
   eidHolidays,
   FRIDAY_SATURDAY,
@@ -166,6 +167,22 @@ describe("weekend and Eid", () => {
     expect(weekendOf({ country: "SY", weekend: { rest: 3, second: 3 } })).toEqual(FRIDAY_SATURDAY);
   });
 
+  it("reads each country's weekend from the Unicode CLDR week data, one-day weekends too", () => {
+    expect(cldrWeekendDays("SY")?.sort()).toEqual([5, 6]);
+    expect(countryWeekend("AE")).toEqual({ rest: 0, second: 6 });
+    expect(countryWeekend("AF")).toEqual({ rest: 5, second: 4 });
+    // The Sabbath is Israel's main rest day.
+    expect(countryWeekend("IL")).toEqual({ rest: 6, second: 5 });
+    expect(countryWeekend("IR")).toEqual({ rest: 5 });
+    expect(countryWeekend("IN")).toEqual({ rest: 0 });
+    expect(cldrWeekendDays("not a country")).toBeNull();
+    // In a one-day weekend every other day is a weekday.
+    const ir = withWeekend({}, { rest: 5 });
+    expect(dayTypeOf("2026-11-20", ir, [])).toBe("sunday");
+    expect(dayTypeOf("2026-11-21", ir, [])).toBe("weekday");
+    expect(countDays(2026, ir, [])).toEqual({ weekday: 313, saturday: 0, sunday: 52, holiday: 0 });
+  });
+
   it("dates Eid al-Fitr and Eid al-Adha from the Umm al-Qura calendar", () => {
     expect(eidHolidays(2026).map((h) => h.date)).toEqual([
       "2026-03-20",
@@ -278,12 +295,13 @@ describe("calendar section", () => {
     await waitFor(() => expect(doc.calendar?.fetched?.["2026"]).toHaveLength(8));
     expect(doc.calendar?.weekend).toEqual(FRIDAY_SATURDAY);
     rerender(<CalendarSection preferences={doc} {...props} />);
-    expect(screen.getByLabelText("Weekend")).toHaveProperty("value", "1");
+    expect(screen.getByLabelText("Weekend")).toHaveProperty("value", "0");
     expect(screen.getByText("Eid al-Adha (day 4)", { exact: false })).toBeTruthy();
     // Friday is the Sunday day type: 52 Fridays in 2026 less two Eid days (20 March, 29 May).
     expect(screen.getByLabelText("2026 · Friday")).toHaveProperty("value", "50");
     // The planner can go back to a Saturday and Sunday weekend.
-    fireEvent.change(screen.getByLabelText("Weekend"), { target: { value: "0" } });
+    expect(screen.getByRole("option", { name: "Saturday and Sunday" })).toHaveProperty("value", "1");
+    fireEvent.change(screen.getByLabelText("Weekend"), { target: { value: "1" } });
     expect(doc.calendar?.weekend).toEqual({ rest: 0, second: 6 });
   });
 

@@ -38,6 +38,7 @@ export const calendarSw = {
   "cal.weekendDays": "{first} na {second}",
   "cal.weekendHint":
     "Kila siku ya wikendi ina siku yake ya huduma na idadi ya siku hapa chini. Chaguo-msingi ni wikendi ya kawaida katika nchi ya mradi.",
+  "cal.weekendSource": "Wikendi za kawaida kwa kila nchi kutoka data ya wiki ya Unicode CLDR.",
   "cal.counts": "Siku kwa aina ya siku",
   "cal.countsIntro":
     "Zimehesabiwa kutoka kalenda. Andika namba ili kutumia yako; itawekewa fremu na ↺ inarudisha iliyohesabiwa.",

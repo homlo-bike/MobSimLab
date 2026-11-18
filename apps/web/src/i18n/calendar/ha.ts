@@ -39,6 +39,7 @@ export const calendarHa = {
   "cal.weekendDays": "{first} da {second}",
   "cal.weekendHint":
     "Kowace ranar ƙarshen mako tana da ranar sabis da adadin kwanakinta a ƙasa. Na asali shi ne ƙarshen mako da aka saba a ƙasar aikin.",
+  "cal.weekendSource": "Ƙarshen mako na yau da kullum na kowace ƙasa daga bayanan mako na Unicode CLDR.",
   "cal.counts": "Ranaku bisa irin rana",
   "cal.countsIntro":
     "An ƙidaya daga kalanda. Rubuta lamba don amfani da naka; za a yi mata firam kuma ↺ yana mayar da wadda aka ƙidaya.",

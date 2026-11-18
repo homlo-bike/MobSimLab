@@ -38,6 +38,7 @@ export const calendarYo = {
   "cal.weekendDays": "{first} àti {second}",
   "cal.weekendHint":
     "Ọjọ́ kọ̀ọ̀kan òpin ọ̀sẹ̀ ní ọjọ́ iṣẹ́ àti iye ọjọ́ tirẹ̀ nísàlẹ̀. Àìyípadà ni òpin ọ̀sẹ̀ tí ó wọ́pọ̀ ní orílẹ̀-èdè iṣẹ́ náà.",
+  "cal.weekendSource": "Ìparí ọ̀sẹ̀ tí ó wọ́pọ̀ ní orílẹ̀-èdè kọ̀ọ̀kan láti inú dátà ọ̀sẹ̀ Unicode CLDR.",
   "cal.counts": "Àwọn ọjọ́ gẹ́gẹ́ bí irú ọjọ́",
   "cal.countsIntro":
     "A kà wọ́n láti inú kàlẹ́ńdà. Tẹ nọ́ńbà kan láti lo tìrẹ; yóò ní férémù, ↺ yóò sì dá èyí tí a kà padà.",

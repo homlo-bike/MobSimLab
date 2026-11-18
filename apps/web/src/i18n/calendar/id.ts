@@ -38,6 +38,7 @@ export const calendarId = {
   "cal.weekendDays": "{first} dan {second}",
   "cal.weekendHint":
     "Setiap hari akhir pekan punya hari layanan dan jumlah hari sendiri di bawah. Bawaannya adalah akhir pekan yang lazim di negara proyek.",
+  "cal.weekendSource": "Akhir pekan yang lazim per negara dari data minggu Unicode CLDR.",
   "cal.counts": "Hari per jenis hari",
   "cal.countsIntro":
     "Dihitung dari kalender. Ketik angka untuk memakai angka Anda sendiri; angka itu diberi garis tepi dan ↺ kembali ke hasil hitungan.",

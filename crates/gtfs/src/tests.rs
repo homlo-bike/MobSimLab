@@ -384,7 +384,10 @@ fn export_runs_the_weekend_services_on_a_friday_and_saturday_weekend() {
         feed_version: "v1".into(),
         // 1 January 2027 is a Friday, 2 January a Saturday, 4 January a Monday.
         holidays: vec!["20270101".into(), "20270102".into(), "20270104".into()],
-        weekend: Some(Weekend { rest: 5, second: 6 }),
+        weekend: Some(Weekend {
+            rest: 5,
+            second: Some(6),
+        }),
     });
     let cal = csv::parse(&files["calendar.txt"]);
     let days = |id: &str| {
@@ -425,4 +428,60 @@ fn export_runs_the_weekend_services_on_a_friday_and_saturday_weekend() {
             "weekday 20270104",
         ]
     );
+}
+
+#[test]
+fn export_runs_no_saturday_service_on_a_one_day_weekend() {
+    let got = import(&ImportInput {
+        files: feed(),
+        date: None,
+        bbox: Some([12.9, 51.9, 13.1, 52.1]),
+    })
+    .unwrap();
+    let mut tt = got.timetable.clone();
+    let base = tt.trips[0].clone();
+    for day in ["weekday", "saturday", "sunday"] {
+        let mut t = base.clone();
+        t.trip_id = format!("{}~{day}", base.trip_id);
+        t.service_id = day.into();
+        tt.trips.push(t);
+    }
+    let files = export(&ExportInput {
+        timetable: tt,
+        agency_name: "Study".into(),
+        agency_url: "https://example.org".into(),
+        agency_timezone: "Asia/Tehran".into(),
+        lang: "en".into(),
+        start_date: "20270101".into(),
+        end_date: "20271231".into(),
+        route_types: BTreeMap::new(),
+        feed_version: "v1".into(),
+        holidays: vec![],
+        weekend: Some(Weekend {
+            rest: 5,
+            second: None,
+        }),
+    });
+    let cal = csv::parse(&files["calendar.txt"]);
+    let days = |id: &str| {
+        let r = cal
+            .rows
+            .iter()
+            .find(|r| cal.get(r, "service_id") == id)
+            .unwrap();
+        [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday",
+        ]
+        .map(|c| cal.get(r, c).to_string())
+        .concat()
+    };
+    assert_eq!(days("weekday"), "1111011");
+    assert_eq!(days("saturday"), "0000000");
+    assert_eq!(days("sunday"), "0000100");
 }

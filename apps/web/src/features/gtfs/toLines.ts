@@ -240,10 +240,11 @@ export function toRailLine(
     });
     d = {
       ...nd,
-      stations: nd.stations.map((st): Station =>
-        st.id === id
-          ? { ...st, rotation_deg: ((angle % 360) + 360) % 360, ...(mode !== d.mode ? { mode } : {}) }
-          : st,
+      stations: nd.stations.map(
+        (st): Station =>
+          st.id === id
+            ? { ...st, rotation_deg: ((angle % 360) + 360) % 360, ...(mode !== d.mode ? { mode } : {}) }
+            : st,
       ),
     };
     ids.push(id);
