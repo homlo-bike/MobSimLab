@@ -72,20 +72,16 @@ export async function inBatches<A>(
   ask: (batch: A[]) => Promise<PopulationAnswer>,
 ): Promise<PopulationAnswer> {
   if (areas.length <= MAX_AREAS) return ask(areas);
-  let out: PopulationAnswer | null = null;
-  for (let i = 0; i < areas.length; i += MAX_AREAS) {
-    const a = await ask(areas.slice(i, i + MAX_AREAS));
-    out = out
-      ? {
-          year: out.year ?? a.year,
-          populations: { ...out.populations, ...a.populations },
-          failed: out.failed + a.failed,
-          reasons: [...new Set([...out.reasons, ...a.reasons])],
-          source: out.year === null && a.year !== null ? a.source : out.source,
-        }
-      : a;
-  }
-  return out!;
+  const answers: PopulationAnswer[] = [];
+  for (let i = 0; i < areas.length; i += MAX_AREAS) answers.push(await ask(areas.slice(i, i + MAX_AREAS)));
+  const first = answers.find((a) => a.year !== null) ?? answers[0]!;
+  return {
+    year: first.year,
+    populations: Object.assign({}, ...answers.map((a) => a.populations)) as PopulationAnswer["populations"],
+    failed: answers.reduce((n, a) => n + a.failed, 0),
+    reasons: [...new Set(answers.flatMap((a) => a.reasons))],
+    source: first.source,
+  };
 }
 
 /**
