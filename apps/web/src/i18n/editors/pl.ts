@@ -809,6 +809,8 @@ export const editorsPl = {
   "noise.screen": "Ekranuj budynkami OpenStreetMap",
   "noise.compute": "Oblicz mapę hałasu",
   "noise.computeAgain": "Oblicz ponownie",
+  "noise.savedAt": "Zapisano z projektem, obliczono {when}. Przelicz ponownie po zmianie projektu.",
+  "noise.saveFailed": "Nie udało się zapisać mapy hałasu z projektem: {error}",
   "noise.mapLegend": "Legenda mapy hałasu",
   "noise.table": "Budynki i mieszkańcy według pasa hałasu",
   "noise.tableCaption":

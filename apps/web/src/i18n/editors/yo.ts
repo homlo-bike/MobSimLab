@@ -732,6 +732,8 @@ export const editorsYo = {
   "noise.screen": "Dènà pẹ̀lú àwọn ilé OpenStreetMap",
   "noise.compute": "Ṣírò máàpù ariwo",
   "noise.computeAgain": "Tún un ṣírò",
+  "noise.savedAt": "A fi pamọ́ pẹ̀lú iṣẹ́ akanṣe, a ṣírò rẹ̀ ní {when}. Tún ṣírò lẹ́yìn tí o bá yí àwòrán padà.",
+  "noise.saveFailed": "A kò lè fi máàpù ariwo pamọ́ pẹ̀lú iṣẹ́ akanṣe: {error}",
   "noise.mapLegend": "Àlàyé máàpù ariwo",
   "noise.table": "Àwọn ilé àti olùgbé nípa agbègbè ariwo",
   "noise.tableCaption":

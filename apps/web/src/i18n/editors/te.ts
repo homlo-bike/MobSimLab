@@ -759,6 +759,9 @@ export const editorsTe = {
   "noise.screen": "OpenStreetMap భవనాలతో అడ్డు",
   "noise.compute": "శబ్ద మ్యాప్ లెక్కించండి",
   "noise.computeAgain": "మళ్లీ లెక్కించండి",
+  "noise.savedAt":
+    "ప్రాజెక్ట్‌తో సేవ్ చేయబడింది, {when}న లెక్కించబడింది. డిజైన్ మార్చిన తర్వాత మళ్లీ లెక్కించండి.",
+  "noise.saveFailed": "శబ్ద మ్యాప్‌ను ప్రాజెక్ట్‌తో సేవ్ చేయలేకపోయాం: {error}",
   "noise.mapLegend": "శబ్ద మ్యాప్ సూచిక",
   "noise.table": "శబ్ద పట్టీ ప్రకారం భవనాలు, నివాసులు",
   "noise.tableCaption":

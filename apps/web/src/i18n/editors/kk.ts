@@ -757,6 +757,8 @@ export const editorsKk = {
   "noise.screen": "OpenStreetMap ғимараттарымен бөгеу",
   "noise.compute": "Шу картасын есептеу",
   "noise.computeAgain": "Қайта есептеу",
+  "noise.savedAt": "Жобамен бірге сақталды, {when} есептелді. Жобаны өзгерткен соң қайта есептеңіз.",
+  "noise.saveFailed": "Шу картасын жобамен бірге сақтау мүмкін болмады: {error}",
   "noise.mapLegend": "Шу картасы белгілері",
   "noise.table": "Шу белдеуі бойынша ғимараттар мен тұрғындар",
   "noise.tableCaption":

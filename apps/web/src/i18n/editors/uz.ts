@@ -766,6 +766,9 @@ export const editorsUz = {
   "noise.screen": "OpenStreetMap binolari bilan toʻsish",
   "noise.compute": "Shovqin xaritasini hisoblash",
   "noise.computeAgain": "Qayta hisoblash",
+  "noise.savedAt":
+    "Loyiha bilan saqlangan, {when} da hisoblangan. Loyihani o‘zgartirgandan keyin qayta hisoblang.",
+  "noise.saveFailed": "Shovqin xaritasini loyiha bilan saqlab bo‘lmadi: {error}",
   "noise.mapLegend": "Shovqin xaritasi belgilari",
   "noise.table": "Shovqin chizigʻi boʻyicha binolar va aholi",
   "noise.tableCaption":

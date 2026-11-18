@@ -722,6 +722,8 @@ export const editorsKo = {
   "noise.screen": "OpenStreetMap 건물로 차폐",
   "noise.compute": "소음 지도 계산",
   "noise.computeAgain": "다시 계산",
+  "noise.savedAt": "프로젝트와 함께 저장됨, {when}에 계산함. 설계를 바꾼 뒤에는 다시 계산하세요.",
+  "noise.saveFailed": "소음 지도를 프로젝트에 저장하지 못했습니다: {error}",
   "noise.mapLegend": "소음 지도 범례",
   "noise.table": "소음 띠별 건물과 거주자",
   "noise.tableCaption":

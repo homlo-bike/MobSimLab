@@ -737,6 +737,8 @@ export const editorsFa = {
   "noise.screen": "مانع با ساختمان‌های OpenStreetMap",
   "noise.compute": "محاسبهٔ نقشهٔ صدا",
   "noise.computeAgain": "محاسبهٔ دوباره",
+  "noise.savedAt": "با پروژه ذخیره شد، محاسبه در {when}. پس از تغییر طرح دوباره محاسبه کنید.",
+  "noise.saveFailed": "نقشهٔ نوفه با پروژه ذخیره نشد: {error}",
   "noise.mapLegend": "راهنمای نقشهٔ صدا",
   "noise.table": "ساختمان‌ها و ساکنان بر اساس نوار صدا",
   "noise.tableCaption":

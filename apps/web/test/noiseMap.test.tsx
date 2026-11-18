@@ -21,6 +21,8 @@ import { MAP_REACH_M, NoiseMap, projectSources } from "../src/features/noise/Noi
 import { buildingsBbox, type PopulationAnswer } from "../src/features/noise/population";
 import { MAX_TERRAIN_POINTS, loadTerrain, terrainPlan } from "../src/features/noise/terrain";
 import type { NoiseBuilding, NoiseEngine, NoiseInput, NoiseView } from "../src/features/noise/types";
+import type { Done } from "../src/features/noise/result";
+import { type NoiseResultApi, noiseFromJson, noiseResultApi, noiseToJson } from "../src/features/noise/saved";
 import type { RailEngineLoader } from "../src/features/railways/types";
 import type { StreetLinesDoc } from "../src/features/street-lines/saved";
 import type { LineView } from "../src/features/street-lines/types";
@@ -246,6 +248,7 @@ describe("noise map in the GIS tab", () => {
     waits: { popWaitMs: number; popPollMs?: number } = { popWaitMs: 0 },
     // Most of these tests are about the buildings, so they start with the option ticked.
     screenBuildings = true,
+    saved: NoiseResultApi | null = null,
   ) {
     const estimate = vi.fn((input: NoiseInput) => (input ? { ...result, terrain: true } : result));
     const engine: NoiseEngine = {
@@ -277,6 +280,8 @@ describe("noise map in the GIS tab", () => {
         fetchTerrain={fetchTerrain}
         fetchPeople={fetchPeople}
         screenBuildings={screenBuildings}
+        saved={saved}
+        canSave
       />,
     );
     return { estimate, fetchTile, fetchTerrain, fetchPeople, map };
@@ -317,6 +322,36 @@ describe("noise map in the GIS tab", () => {
     expect(
       screen.getByRole("table", { name: "Buildings and residents by noise band" }).textContent,
     ).toContain("50–54 dB");
+  });
+
+  it("saves each new noise map with the project and shows the saved one on opening", async () => {
+    let kept: Done | null = null;
+    const saved: NoiseResultApi = {
+      load: vi.fn(async () => null),
+      save: vi.fn(async (r: Done) => {
+        kept = r;
+        return "2026-11-18T17:00:00.000Z";
+      }),
+    };
+    const { estimate } = setup(undefined, undefined, RESULT, { popWaitMs: 0 }, false, saved);
+    fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
+    await waitFor(() => expect(estimate).toHaveBeenCalled());
+    await waitFor(() => expect(saved.save).toHaveBeenCalledTimes(1));
+    expect(await screen.findByText(/Saved with the project/)).toBeTruthy();
+    // Through the saved format and back, as on opening the project again.
+    const back = noiseFromJson(noiseToJson(kept!))!;
+    expect(back.main.images!.lden).toBeInstanceOf(Uint8Array);
+    expect([...back.main.images!.lden]).toEqual([...kept!.main.images!.lden]);
+    cleanup();
+    const reopened: NoiseResultApi = {
+      load: vi.fn(async () => ({ result: back, computedAt: "2026-11-18T17:00:00.000Z" })),
+      save: vi.fn(async () => null),
+    };
+    const again = setup(undefined, undefined, RESULT, { popWaitMs: 0 }, false, reopened);
+    expect(await screen.findByText(/Saved with the project/)).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Recalculate" })).toBeTruthy();
+    expect(again.estimate).not.toHaveBeenCalled();
+    expect(drawNoise).toHaveBeenCalled();
   });
 
   it("can leave the buildings out", async () => {
@@ -446,5 +481,49 @@ describe("noise map in the GIS tab", () => {
     fireEvent.click(await screen.findByRole("button", { name: "Use the building size instead" }));
     await waitFor(() => expect(skipped.estimate).toHaveBeenCalled());
     expect(skipped.estimate.mock.calls[0]![0].population).toBeNull();
+  });
+});
+
+describe("the noise map saved with the project", () => {
+  it("sends it gzip-compressed and reads it back", async () => {
+    let body: ArrayBuffer | null = null;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (_url: string, init?: RequestInit) => {
+        if (init?.method === "PUT") {
+          body = await new Response(init.body as Blob).arrayBuffer();
+          return new Response(JSON.stringify({ computedAt: "2026-11-18T17:00:00.000Z" }), { status: 200 });
+        }
+        return body
+          ? new Response(body, { status: 200, headers: { "X-Computed-At": "2026-11-18T17:00:00.000Z" } })
+          : new Response("", { status: 404 });
+      }),
+    );
+    const api = noiseResultApi("00000000-0000-4000-8000-000000000001", "csrf");
+    expect(await api.load()).toBeNull();
+    const levels = new Float32Array([55.5, Number.NaN]);
+    const done: Done = {
+      kind: "done",
+      level: "planned",
+      main: {
+        name: "Current design",
+        view: RESULT,
+        images: { lden: new Uint8Array([1, 2, 3, 4]), lnight: new Uint8Array([5, 6, 7, 8]) },
+        levels: { lden: levels, lnight: levels },
+      },
+      other: null,
+      difference: null,
+      buildings: null,
+      notes: [],
+      people: null,
+    };
+    expect(await api.save(done)).toBe("2026-11-18T17:00:00.000Z");
+    expect([...new Uint8Array(body!).slice(0, 2)]).toEqual([0x1f, 0x8b]);
+    const back = await api.load();
+    expect(back?.computedAt).toBe("2026-11-18T17:00:00.000Z");
+    expect([...back!.result.main.images!.lnight]).toEqual([5, 6, 7, 8]);
+    expect(back!.result.main.levels!.lden[0]).toBe(55.5);
+    expect(Number.isNaN(back!.result.main.levels!.lden[1])).toBe(true);
+    vi.unstubAllGlobals();
   });
 });

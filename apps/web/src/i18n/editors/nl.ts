@@ -765,6 +765,9 @@ export const editorsNl = {
   "noise.screen": "Afschermen met OpenStreetMap-gebouwen",
   "noise.compute": "Geluidskaart berekenen",
   "noise.computeAgain": "Opnieuw berekenen",
+  "noise.savedAt":
+    "Opgeslagen bij het project, berekend op {when}. Bereken opnieuw na een wijziging van het ontwerp.",
+  "noise.saveFailed": "De geluidskaart kon niet bij het project worden opgeslagen: {error}",
   "noise.mapLegend": "Legenda van de geluidskaart",
   "noise.table": "Gebouwen en bewoners per geluidsband",
   "noise.tableCaption":

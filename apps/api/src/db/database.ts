@@ -193,6 +193,13 @@ export interface DB {
     body: string;
     fetched_at: Generated<Date>;
   };
+  /** The project's saved noise map (db/migrations/0023_noise_result.sql): gzip-compressed JSON. */
+  "project.noise_result": {
+    project_id: string;
+    body: Buffer;
+    computed_by: string | null;
+    computed_at: Generated<Date>;
+  };
   "project.drawing": {
     project_id: string;
     kind: string;

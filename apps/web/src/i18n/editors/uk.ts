@@ -810,6 +810,8 @@ export const editorsUk = {
   "noise.screen": "Екранувати будівлями OpenStreetMap",
   "noise.compute": "Обчислити карту шуму",
   "noise.computeAgain": "Обчислити знову",
+  "noise.savedAt": "Збережено в проєкті, розраховано {when}. Перерахуйте після зміни проєкту.",
+  "noise.saveFailed": "Не вдалося зберегти карту шуму в проєкті: {error}",
   "noise.mapLegend": "Легенда карти шуму",
   "noise.table": "Будівлі й мешканці за смугами шуму",
   "noise.tableCaption":

@@ -803,6 +803,8 @@ export const editorsAr = {
   "noise.screen": "الحجب بمباني OpenStreetMap",
   "noise.compute": "حساب خريطة الضوضاء",
   "noise.computeAgain": "إعادة الحساب",
+  "noise.savedAt": "محفوظة مع المشروع، حُسبت في {when}. أعد الحساب بعد تغيير التصميم.",
+  "noise.saveFailed": "تعذّر حفظ خريطة الضوضاء مع المشروع: {error}",
   "noise.mapLegend": "مفتاح خريطة الضوضاء",
   "noise.table": "المباني والسكان حسب نطاق الضوضاء",
   "noise.tableCaption":

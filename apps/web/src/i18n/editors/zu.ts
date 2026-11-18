@@ -776,6 +776,8 @@ export const editorsZu = {
   "noise.screen": "Vikela ngezakhiwo ze-OpenStreetMap",
   "noise.compute": "Bala imephu yomsindo",
   "noise.computeAgain": "Bala futhi",
+  "noise.savedAt": "Kugcinwe nephrojekthi, kwabalwa ngo-{when}. Bala kabusha ngemva kokushintsha idizayini.",
+  "noise.saveFailed": "Imephu yomsindo ayikwazanga ukugcinwa nephrojekthi: {error}",
   "noise.mapLegend": "Incazelo yemephu yomsindo",
   "noise.table": "Izakhiwo nezakhamuzi ngebhande lomsindo",
   "noise.tableCaption":

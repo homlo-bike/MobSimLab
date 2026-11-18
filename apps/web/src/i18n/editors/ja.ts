@@ -725,6 +725,8 @@ export const editorsJa = {
   "noise.screen": "OpenStreetMap の建物で遮蔽",
   "noise.compute": "騒音マップを計算",
   "noise.computeAgain": "再計算",
+  "noise.savedAt": "プロジェクトに保存済み（{when} に計算）。設計を変えたら再計算してください。",
+  "noise.saveFailed": "騒音マップをプロジェクトに保存できませんでした: {error}",
   "noise.mapLegend": "騒音マップの凡例",
   "noise.table": "騒音帯別の建物数と居住者数",
   "noise.tableCaption": "最も影響を受ける側の騒音レベル別の建物と居住者（{count} 棟中 {reached} 棟が範囲内）",

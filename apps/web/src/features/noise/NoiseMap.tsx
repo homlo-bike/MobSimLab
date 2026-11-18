@@ -22,6 +22,7 @@ import { coverPoints, type Design, designSources, hasLines, type RoadRunInput } 
 import { drawNoise, removeNoise } from "./mapLayer";
 import { NoiseResult } from "./NoiseResult";
 import { type Computed, type Difference, type Done, FROM_DB } from "./result";
+import type { NoiseResultApi } from "./saved";
 import type { SavedPluginLine } from "../../kits/saved";
 import { pluginSources } from "./sources";
 import { buildingsBbox, fetchPopulation, type PopulationFetcher, type PopulationSource } from "./population";
@@ -59,6 +60,10 @@ interface Props {
   scenarios?: ScenariosDoc | null;
   /** The project's saved road runs, for the simulated input. */
   roadRuns?: RoadRunsApi | null;
+  /** The noise map saved with the project: shown on opening, replaced by each new one. */
+  saved?: NoiseResultApi | null;
+  /** The planner may replace the saved noise map (Owners and Editors). */
+  canSave?: boolean;
   /** Tests inject these. */
   runNoise?: NoiseRunner;
   loadRail?: RailEngineLoader;
@@ -136,6 +141,8 @@ export function NoiseMap({
   preferences,
   scenarios,
   roadRuns,
+  saved: savedApi = null,
+  canSave = false,
   runNoise = workerRunner,
   loadRail = loadRailEngine,
   fetchTile = fetchBuildingTile,
@@ -155,6 +162,9 @@ export function NoiseMap({
   const [withBuildings, setWithBuildings] = useState(screenBuildings);
   const [withTerrain, setWithTerrain] = useState(true);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  // When the noise map shown was worked out and saved with the project, and why saving failed.
+  const [savedAt, setSavedAt] = useState<string | null>(null);
+  const [saveError, setSaveError] = useState<string | null>(null);
   // The run under way: aborting it cancels the run; `skip` ends the wait for WorldPop.
   const run = useRef<{ abort: AbortController; skip: AbortController } | null>(null);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -187,6 +197,23 @@ export function NoiseMap({
     },
     [map],
   );
+
+  // The noise map saved with the project shows on opening, until the planner recalculates it.
+  useEffect(() => {
+    if (!savedApi) return;
+    let live = true;
+    savedApi
+      .load()
+      .then((r) => {
+        if (!live || !r) return;
+        setStatus((s) => (s.kind === "idle" ? r.result : s));
+        setSavedAt(r.computedAt);
+      })
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [savedApi]);
 
   // The finished road runs, once the simulated input is chosen.
   useEffect(() => {
@@ -356,7 +383,7 @@ export function NoiseMap({
         difference = differenceOf(a.view, a.levels ?? null, r.levels ?? null);
         if (!difference) notes.push(tNow("noise.noDifference"));
       }
-      setStatus({
+      const done: Done = {
         kind: "done",
         level,
         main: { name: main.name, view: a.view, images: a.images, levels: a.levels ?? null },
@@ -365,7 +392,16 @@ export function NoiseMap({
         buildings,
         notes,
         people,
-      });
+      };
+      setStatus(done);
+      setSavedAt(null);
+      setSaveError(null);
+      // Saved with the project, replacing the one before, so it shows again next time.
+      if (savedApi && canSave)
+        savedApi.save(done).then(
+          (at) => setSavedAt(at ?? new Date().toISOString()),
+          (err: unknown) => setSaveError(err instanceof Error ? err.message : String(err)),
+        );
     } catch (err) {
       if (signal.aborted) setStatus({ kind: "cancelled" });
       else setStatus({ kind: "error", text: err instanceof Error ? err.message : String(err) });
@@ -523,6 +559,16 @@ export function NoiseMap({
         {t(status.kind === "done" ? "noise.computeAgain" : "noise.compute")}
       </button>
       {!ready && <p className="text-xs text-slate-500">{t("noise.drawFirst")}</p>}
+      {status.kind === "done" && savedAt && (
+        <p className="text-xs text-slate-600" role="status">
+          {t("noise.savedAt", { when: new Date(savedAt).toLocaleString() })}
+        </p>
+      )}
+      {saveError && (
+        <p className="text-xs text-red-700" role="alert">
+          {t("noise.saveFailed", { error: saveError })}
+        </p>
+      )}
       {/* The bar and then the result sit below the options: keep them in view when a run starts and ends. */}
       <div ref={progressRef} className="contents" />
       {status.kind === "busy" && (

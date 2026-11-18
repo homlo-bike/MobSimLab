@@ -460,6 +460,10 @@ export function Workspace({
     () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
     [api, projectKey],
   );
+  const noiseResult = useMemo(
+    () => (projectKey && typeof api.noiseResult === "function" ? api.noiseResult(projectKey) : null),
+    [api, projectKey],
+  );
   const calendarRuns = useMemo(
     () => (projectKey && typeof api.calendarRuns === "function" ? api.calendarRuns(projectKey) : null),
     [api, projectKey],
@@ -1822,6 +1826,8 @@ export function Workspace({
                       preferences={preferences?.values}
                       scenarios={drawings.doc<ScenariosDoc>("scenarios")}
                       roadRuns={roadRuns}
+                      saved={noiseResult}
+                      canSave={editable}
                     />
                   </LoadingScreen>
                 </div>

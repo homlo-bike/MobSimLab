@@ -752,6 +752,8 @@ export const editorsHi = {
   "noise.screen": "OpenStreetMap इमारतों से ओट",
   "noise.compute": "शोर मानचित्र की गणना करें",
   "noise.computeAgain": "फिर से गणना करें",
+  "noise.savedAt": "प्रोजेक्ट के साथ सहेजा गया, {when} को गणना की गई। डिज़ाइन बदलने के बाद दोबारा गणना करें।",
+  "noise.saveFailed": "शोर का नक्शा प्रोजेक्ट के साथ सहेजा नहीं जा सका: {error}",
   "noise.mapLegend": "शोर मानचित्र संकेत",
   "noise.table": "शोर पट्टी के अनुसार इमारतें और निवासी",
   "noise.tableCaption":

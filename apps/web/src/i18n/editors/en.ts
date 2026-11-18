@@ -768,7 +768,9 @@ export const editorsEn = {
   "noise.mapIndicator": "Noise map indicator",
   "noise.screen": "Screen with OpenStreetMap buildings",
   "noise.compute": "Compute noise map",
-  "noise.computeAgain": "Compute again",
+  "noise.computeAgain": "Recalculate",
+  "noise.savedAt": "Saved with the project, worked out {when}. Recalculate after changing the design.",
+  "noise.saveFailed": "The noise map could not be saved with the project: {error}",
   "noise.mapLegend": "Noise map legend",
   "noise.table": "Buildings and residents by noise band",
   "noise.tableCaption":

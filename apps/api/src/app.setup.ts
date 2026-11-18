@@ -88,6 +88,8 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
   app.use("/api/projects/:id/population/catchments", json({ limit: "4mb" }));
   app.use("/api/benefits/population", json({ limit: "4mb" }));
   app.use("/api/projects/:id/simulation-runs", json({ limit: "16mb" }));
+  // The project's noise map (GIS, Map data) is saved as gzip-compressed JSON, at most 64 MB.
+  app.use("/api/projects/:id/noise-result", raw({ type: "application/octet-stream", limit: "64mb" }));
   // Plugin packages (ADR-0036 §9) are uploaded as the raw .msplugin file, at most 10 MB.
   app.use("/api/admin/plugins", raw({ type: "application/octet-stream", limit: "10mb" }));
   // A .mslab project file (ADR-0021) is uploaded as the raw file, at most 200 MB; the sandboxed reader checks it.

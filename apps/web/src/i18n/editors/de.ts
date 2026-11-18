@@ -776,6 +776,9 @@ export const editorsDe = {
   "noise.screen": "Mit OpenStreetMap-Gebäuden abschirmen",
   "noise.compute": "Lärmkarte berechnen",
   "noise.computeAgain": "Erneut berechnen",
+  "noise.savedAt":
+    "Mit dem Projekt gespeichert, berechnet am {when}. Nach Änderungen am Entwurf neu berechnen.",
+  "noise.saveFailed": "Die Lärmkarte konnte nicht mit dem Projekt gespeichert werden: {error}",
   "noise.mapLegend": "Legende der Lärmkarte",
   "noise.table": "Gebäude und Bewohner nach Lärmband",
   "noise.tableCaption":

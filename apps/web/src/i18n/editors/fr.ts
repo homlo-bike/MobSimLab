@@ -778,6 +778,9 @@ export const editorsFr = {
   "noise.screen": "Écran par les bâtiments OpenStreetMap",
   "noise.compute": "Calculer la carte de bruit",
   "noise.computeAgain": "Recalculer",
+  "noise.savedAt":
+    "Enregistrée avec le projet, calculée le {when}. Recalculez après avoir modifié le projet.",
+  "noise.saveFailed": "La carte du bruit n'a pas pu être enregistrée avec le projet : {error}",
   "noise.mapLegend": "Légende de la carte de bruit",
   "noise.table": "Bâtiments et habitants par bande de bruit",
   "noise.tableCaption":
