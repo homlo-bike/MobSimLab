@@ -45,6 +45,7 @@ import { networkOf } from "./network";
 import { libraryValue, PARAMS, paramModes, paramValue, prefId, type Triple } from "./params";
 import type { Region } from "./regions";
 import { accessByScenario, spendingFrom } from "./run";
+import { RIDER_SHARE_PREFS } from "../../workspace/editedElsewhere";
 
 interface Props {
   /** The published network: street lines (`street:<i>`), rail lines (`rail:<id>`) and plugin lines. */
@@ -714,7 +715,8 @@ function Parameters({
   editable: boolean;
   setPref: (id: string, v: number | null) => void;
 }) {
-  const keys = Object.keys(PARAMS);
+  // Riders by day type are set in Simulator → Calendar run only.
+  const keys = Object.keys(PARAMS).filter((k) => !(RIDER_SHARE_PREFS as readonly string[]).includes(k));
   return (
     <details className={card}>
       <summary className="cursor-pointer">

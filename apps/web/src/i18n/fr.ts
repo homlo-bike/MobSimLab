@@ -350,6 +350,8 @@ export const fr: Messages = {
   "prefs.paramsTitle": "Tous les paramètres",
   "prefs.paramsIntro":
     "Chaque valeur de la bibliothèque d'hypothèses. Définissez la vôtre pour tous les modes ou pour un mode ; une valeur pour un mode l'emporte sur celle pour tous les modes. La valeur de la bibliothèque reste affichée à côté.",
+  "prefs.paramsElsewhere":
+    "Les valeurs qui ont leur propre section s'y règlent et ne figurent pas ici : modèle de demande, retards et trafic routier (préférences du projet), coûts, bénéfices, évaluation, énergie et horaires (Tableaux), et voyageurs par type de jour (Simulateur, Calcul sur le calendrier).",
   "prefs.paramsGroup": "Groupe",
   "prefs.paramsMode": "Mode",
   "prefs.paramsAllModes": "Tous les modes",

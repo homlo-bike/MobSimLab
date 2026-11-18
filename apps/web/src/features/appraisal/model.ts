@@ -749,3 +749,30 @@ export function newId(): string {
 export function ridershipGrowth(mode: string, own: Record<string, number> | undefined): number {
   return fareValue("fare.ridership_growth", own, mode)[1];
 }
+
+/** Purpose: the Appraisal settings of the Tables tab, by group, in the order a planner thinks about them. */
+export function appraisalSettingGroups(income: string | null): { title: string; keys: string[] }[] {
+  return [
+    {
+      title: "Timeline",
+      keys: ["appraisal.build_years", "appraisal.period_years"],
+    },
+    {
+      title: "Discounting and prices",
+      keys: [
+        socialRateKey(income),
+        ...SOCIAL_RATES.filter((k) => k !== socialRateKey(income)),
+        "appraisal.discount.financial",
+        "appraisal.conversion_factor",
+      ],
+    },
+    {
+      title: "Asset lives: renewals and residual value",
+      keys: ["appraisal.life.civil", "appraisal.life.systems", "appraisal.life.vehicles"],
+    },
+    {
+      title: "Benefits",
+      keys: ["appraisal.vot_growth", ...EXTERNAL.map((k) => `appraisal.external.${k}`)],
+    },
+  ];
+}

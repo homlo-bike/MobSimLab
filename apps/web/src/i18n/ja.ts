@@ -341,6 +341,8 @@ export const ja: Messages = {
   "prefs.paramsTitle": "すべてのパラメータ",
   "prefs.paramsIntro":
     "前提値ライブラリのすべての値。全モード共通または特定モードの値を設定できます。特定モードの値が全モード共通の値より優先されます。ライブラリの値は横に表示されます。",
+  "prefs.paramsElsewhere":
+    "専用のセクションがある値はそこで設定し、ここには表示しません。需要モデル、遅延と道路交通（プロジェクト設定）、費用、便益、評価、エネルギー、時刻表（表）、日種別の乗客数（シミュレーター、カレンダー実行）です。",
   "prefs.paramsGroup": "グループ",
   "prefs.paramsMode": "モード",
   "prefs.paramsAllModes": "全モード",

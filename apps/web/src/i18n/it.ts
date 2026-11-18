@@ -347,6 +347,8 @@ export const it: Messages = {
   "prefs.paramsTitle": "Tutti i parametri",
   "prefs.paramsIntro":
     "Ogni valore della libreria delle ipotesi. Imposta il tuo per tutti i modi o per un modo; il valore di un modo prevale su quello per tutti i modi. Il valore della libreria resta accanto.",
+  "prefs.paramsElsewhere":
+    "I valori che hanno una sezione propria si impostano lì e non compaiono qui: modello di domanda, ritardi e traffico stradale (preferenze del progetto), costi, benefici, valutazione, energia e orari (Tabelle), e passeggeri per tipo di giorno (Simulatore, Calcolo del calendario).",
   "prefs.paramsGroup": "Gruppo",
   "prefs.paramsMode": "Modo",
   "prefs.paramsAllModes": "Tutti i modi",

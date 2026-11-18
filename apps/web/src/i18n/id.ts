@@ -349,6 +349,8 @@ export const id: Messages = {
   "prefs.paramsTitle": "Semua parameter",
   "prefs.paramsIntro":
     "Setiap nilai pustaka asumsi. Tetapkan nilai Anda untuk semua moda atau untuk satu moda; nilai satu moda mengalahkan nilai untuk semua moda. Nilai pustaka tetap di sampingnya.",
+  "prefs.paramsElsewhere":
+    "Nilai yang punya bagian sendiri diatur di sana dan tidak tercantum di sini: model permintaan, keterlambatan dan lalu lintas jalan (Preferensi proyek), biaya, manfaat, penilaian, energi dan jadwal (Tabel), serta penumpang menurut jenis hari (Simulator, Jalankan kalender).",
   "prefs.paramsGroup": "Kelompok",
   "prefs.paramsMode": "Moda",
   "prefs.paramsAllModes": "Semua moda",

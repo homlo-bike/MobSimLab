@@ -348,6 +348,8 @@ export const ha: Messages = {
   "prefs.paramsTitle": "Duk sigogi",
   "prefs.paramsIntro":
     "Kowace ƙima ta ɗakin zato. Saka naka don duk hanyoyi ko don hanya ɗaya; ƙimar hanya ɗaya ta fi ta duk hanyoyi. Ƙimar ɗakin tana gefe.",
+  "prefs.paramsElsewhere":
+    "Ƙimomin da ke da sashe nasu ana saita su a can, ba a lissafa su a nan ba: tsarin buƙata, jinkiri da zirga-zirgar hanya (Zaɓuɓɓukan aiki), kuɗaɗe, fa'idodi, kimantawa, makamashi da jadawalin lokaci (Teburori), da fasinjoji bisa nau'in rana (Na'urar kwaikwayo, Lissafin kalanda).",
   "prefs.paramsGroup": "Rukuni",
   "prefs.paramsMode": "Hanyar sufuri",
   "prefs.paramsAllModes": "Duk hanyoyi",

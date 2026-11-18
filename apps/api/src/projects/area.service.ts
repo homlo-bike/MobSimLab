@@ -100,7 +100,17 @@ export class ProjectAreaService {
         .executeTakeFirstOrThrow();
       await tx
         .updateTable("project.project")
-        .set({ area_regions: JSON.stringify(body.regions), updated_at: new Date() })
+        // The regions name the area (Preferences has no separate area name to type).
+        .set({
+          area_regions: JSON.stringify(body.regions),
+          area_name: body.regions.length
+            ? body.regions
+                .map((r) => r.name)
+                .join(", ")
+                .slice(0, 200)
+            : null,
+          updated_at: new Date(),
+        })
         .where("id", "=", projectId)
         .execute();
       const names = (v: unknown) =>

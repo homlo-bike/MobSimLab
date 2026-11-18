@@ -344,6 +344,8 @@ export const yo: Messages = {
   "prefs.paramsTitle": "Gbogbo àwọn pàrámítà",
   "prefs.paramsIntro":
     "Gbogbo iye inú ibi-ìkàwé àròsọ. Ṣètò tìrẹ fún gbogbo ọ̀nà tàbí fún ọ̀nà kan; iye ọ̀nà kan ló borí ti gbogbo ọ̀nà. Iye ibi-ìkàwé wà lẹ́gbẹ̀ẹ́.",
+  "prefs.paramsElsewhere":
+    "Àwọn iye tí ó ní apá tirẹ̀ ni a ń ṣètò níbẹ̀, a kò sì tò wọ́n síbí: àwòṣe ìbéèrè, ìdádúró àti ìrìnnà ọ̀nà (Àwọn àyànfẹ́ iṣẹ́ akanṣe), iye owó, àǹfààní, ìgbéyẹ̀wò, agbára àti àkókò ìrìn (Àwọn tábìlì), àti àwọn arìnrìn-àjò gẹ́gẹ́ bí irú ọjọ́ (Simulator, Ìṣirò kàlẹ́ńdà).",
   "prefs.paramsGroup": "Ẹgbẹ́",
   "prefs.paramsMode": "Ọ̀nà ìrìnnà",
   "prefs.paramsAllModes": "Gbogbo ọ̀nà",

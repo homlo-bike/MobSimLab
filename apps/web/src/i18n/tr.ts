@@ -345,6 +345,8 @@ export const tr: Messages = {
   "prefs.paramsTitle": "Tüm parametreler",
   "prefs.paramsIntro":
     "Varsayım kütüphanesinin her değeri. Tüm türler veya tek bir tür için kendi değerinizi girin; bir türün değeri tüm türler için olandan önce gelir. Kütüphanenin değeri yanında kalır.",
+  "prefs.paramsElsewhere":
+    "Kendi bölümü olan değerler orada ayarlanır ve burada listelenmez: talep modeli, gecikmeler ve yol trafiği (Proje tercihleri), maliyetler, faydalar, değerlendirme, enerji ve tarifeler (Tablolar) ile gün türüne göre yolcular (Simülatör, Takvim çalıştırması).",
   "prefs.paramsGroup": "Grup",
   "prefs.paramsMode": "Ulaşım türü",
   "prefs.paramsAllModes": "Tüm türler",

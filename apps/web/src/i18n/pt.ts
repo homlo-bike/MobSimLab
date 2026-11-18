@@ -348,6 +348,8 @@ export const pt: Messages = {
   "prefs.paramsTitle": "Todos os parâmetros",
   "prefs.paramsIntro":
     "Cada valor da biblioteca de pressupostos. Defina o seu para todos os modos ou para um modo; o valor de um modo prevalece sobre o de todos os modos. O valor da biblioteca fica ao lado.",
+  "prefs.paramsElsewhere":
+    "Os valores que têm uma secção própria definem-se lá e não aparecem aqui: modelo de procura, atrasos e tráfego rodoviário (preferências do projeto), custos, benefícios, avaliação, energia e horários (Tabelas), e passageiros por tipo de dia (Simulador, Cálculo do calendário).",
   "prefs.paramsGroup": "Grupo",
   "prefs.paramsMode": "Modo",
   "prefs.paramsAllModes": "Todos os modos",

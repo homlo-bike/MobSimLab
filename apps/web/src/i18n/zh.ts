@@ -331,6 +331,8 @@ export const zh: Messages = {
   "prefs.paramsTitle": "全部参数",
   "prefs.paramsIntro":
     "假设库中的每个值。可为所有方式或单一方式设置自己的值；单一方式的值优先于所有方式的值。库中的值显示在旁边。",
+  "prefs.paramsElsewhere":
+    "有专门部分的数值在那里设置，不在此列出：需求模型、延误和道路交通（项目偏好），成本、效益、评估、能源和时刻表（表格），以及按日类型的乘客（模拟器，日历运行）。",
   "prefs.paramsGroup": "分组",
   "prefs.paramsMode": "交通方式",
   "prefs.paramsAllModes": "所有方式",

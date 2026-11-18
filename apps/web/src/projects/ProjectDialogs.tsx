@@ -76,7 +76,6 @@ export function NewProjectDialog({
 }) {
   const { t } = useI18n();
   const [name, setName] = useState("");
-  const [area, setArea] = useState("");
   const [from, setFrom] = useState<"empty" | "copy">("empty");
   const [source, setSource] = useState(projects[0]?.id ?? "");
   const [modes, setModes] = useState<string[]>(["bus", "tram"]);
@@ -87,13 +86,11 @@ export function NewProjectDialog({
     e.preventDefault();
     setBusy(true);
     setError(null);
-    // Without a typed area name, the picked regions name the area.
-    const areaName =
-      area.trim() ||
-      regions
-        .map((r) => r.name)
-        .join(", ")
-        .slice(0, 200);
+    // The picked OpenStreetMap regions name the area.
+    const areaName = regions
+      .map((r) => r.name)
+      .join(", ")
+      .slice(0, 200);
     try {
       let p: Project;
       if (from === "copy" && source) {
@@ -148,19 +145,6 @@ export function NewProjectDialog({
             onChange={(e) => setName(e.target.value)}
           />
         </div>
-        <label className={label} htmlFor="np-area">
-          {t("new.area")}
-        </label>
-        <div className="field">
-          <input
-            id="np-area"
-            maxLength={200}
-            placeholder={t("new.areaPlaceholder")}
-            value={area}
-            onChange={(e) => setArea(e.target.value)}
-          />
-        </div>
-        <p className="mt-1.5 text-xs text-slate-500">{t("new.areaNote")}</p>
         <div className={label}>{t("area.title")}</div>
         <AreaPicker value={regions} onChange={setRegions} disabled={busy} />
         <div className={label} id="np-from">

@@ -353,6 +353,8 @@ export const zu: Messages = {
   "prefs.paramsTitle": "Wonke amapharamitha",
   "prefs.paramsIntro":
     "Yonke inani lomtapo wemibono. Setha elakho lazo zonke izindlela noma indlela eyodwa; inani lendlela eyodwa liphambili kunelazo zonke. Inani lomtapo lihlala eceleni.",
+  "prefs.paramsElsewhere":
+    "Amanani anesigaba sawo asethwa lapho futhi awabhalwanga lapha: imodeli yesidingo, ukubambezeleka nethrafikhi yomgwaqo (Okuncamelayo kwephrojekthi), izindleko, izinzuzo, ukuhlola, amandla namashejuli (Amathebula), nabagibeli ngohlobo losuku (Isilingisi, Ukusebenza kwekhalenda).",
   "prefs.paramsGroup": "Iqembu",
   "prefs.paramsMode": "Indlela yokuthutha",
   "prefs.paramsAllModes": "Zonke izindlela",

@@ -33,6 +33,7 @@ import { DemandParamsSection } from "./DemandParams";
 import { StationsSection } from "./StationsSection";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
+import { OFF_PEAK_PREF } from "./editedElsewhere";
 
 /**
  * Preferences tab (mockup "Project preferences"): the project's name, description, study area and modes, which
@@ -84,13 +85,11 @@ export function ProjectPreferences({
   const areaApi = useMemo(() => api.area?.(project.id) ?? null, [api, project.id]);
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description);
-  const [area, setArea] = useState(project.areaName ?? "");
   const [modes, setModes] = useState(project.modes);
   const [state, setState] = useState<"idle" | "saving" | "saved" | { error: string }>("idle");
   const dirty =
     name.trim() !== project.name ||
     description.trim() !== project.description ||
-    (area.trim() || null) !== project.areaName ||
     [...modes].sort().join() !== [...project.modes].sort().join();
   const save = async (e: FormEvent) => {
     e.preventDefault();
@@ -100,7 +99,6 @@ export function ProjectPreferences({
         await api.update(project.id, {
           name: name.trim(),
           description: description.trim(),
-          areaName: area.trim() || null,
           modes,
         }),
       );
@@ -148,12 +146,6 @@ export function ProjectPreferences({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
-            <label className={label} htmlFor="pp-area">
-              {t("new.area")}
-            </label>
-            <div className="field">
-              <input id="pp-area" maxLength={200} value={area} onChange={(e) => setArea(e.target.value)} />
-            </div>
             <div className={label}>{t("new.modes")}</div>
             <ModePicker value={modes} onChange={setModes} />
           </fieldset>
@@ -597,7 +589,6 @@ function PreferencesLayout({ projectId, sections }: { projectId: string; section
 }
 
 /** Off-peak traffic of the road simulation, as a share of each street's peak value. */
-const OFF_PEAK_PREF = "road.off_peak_traffic_share";
 const OFF_PEAK_LIBRARY = roadValue(OFF_PEAK_PREF, "*", undefined)[1];
 
 const pct = (share: number) => String(Math.round(share * 1000) / 10);

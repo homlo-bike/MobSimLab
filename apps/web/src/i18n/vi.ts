@@ -346,6 +346,8 @@ export const vi: Messages = {
   "prefs.paramsTitle": "Tất cả tham số",
   "prefs.paramsIntro":
     "Mọi giá trị trong thư viện giả định. Đặt giá trị của bạn cho mọi phương thức hoặc cho một phương thức; giá trị của một phương thức được ưu tiên hơn giá trị cho mọi phương thức. Giá trị thư viện hiển thị bên cạnh.",
+  "prefs.paramsElsewhere":
+    "Các giá trị có mục riêng được đặt ở đó và không liệt kê ở đây: mô hình nhu cầu, độ trễ và giao thông đường bộ (Tùy chọn dự án), chi phí, lợi ích, thẩm định, năng lượng và lịch chạy (Bảng), và hành khách theo loại ngày (Trình mô phỏng, Chạy theo lịch).",
   "prefs.paramsGroup": "Nhóm",
   "prefs.paramsMode": "Phương thức",
   "prefs.paramsAllModes": "Mọi phương thức",

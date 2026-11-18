@@ -15,6 +15,7 @@ import {
   withChoice,
   withPref,
 } from "./preferences";
+import { hasOwnSection } from "./editedElsewhere";
 import { ReasonField } from "./ReasonField";
 
 /** The library's group names as message keys. */
@@ -55,6 +56,11 @@ const MODE_CHOICES: { id: string; label: MessageKey }[] = [
 const num = (v: number) => String(Number(v.toPrecision(6)));
 const HEX = /^#[0-9a-f]{6}$/i;
 
+/** The library's parameters without a section of their own: each value is set in one place only. */
+const SHOWN_PARAMS = LIBRARY_PARAMS.filter((p) => !hasOwnSection(p.id));
+/** The groups that still have parameters here. */
+const SHOWN_GROUPS = PARAM_GROUPS.filter((g) => SHOWN_PARAMS.some((p) => p.group === g));
+
 /** Purpose: whether the project changes any value of a parameter (any mode, any traction). */
 function changedParam(p: LibraryParam, doc: PreferencesDoc | null): boolean {
   const own = (id: string) => id === p.id || id.startsWith(`${p.id}.`);
@@ -77,10 +83,10 @@ export function ParametersSection({
   const { t } = useI18n();
   const groupId = useId();
   const modeId = useId();
-  const [group, setGroup] = useState<string>(PARAM_GROUPS[0] ?? "Modes");
+  const [group, setGroup] = useState<string>(SHOWN_GROUPS[0] ?? "Modes");
   const [mode, setMode] = useState<string>("*");
   const groupName = (g: string) => (GROUP_LABEL[g] ? t(GROUP_LABEL[g]) : g);
-  const params = LIBRARY_PARAMS.filter((p) => p.group === group);
+  const params = SHOWN_PARAMS.filter((p) => p.group === group);
   return (
     <section
       aria-labelledby="pp-params"
@@ -90,6 +96,7 @@ export function ParametersSection({
         {t("prefs.paramsTitle")}
       </h2>
       <p className="mt-1 text-sm text-slate-600">{t("prefs.paramsIntro")}</p>
+      <p className="mt-1 text-sm text-slate-600">{t("prefs.paramsElsewhere")}</p>
       <div className="mt-2 flex flex-wrap gap-x-4">
         <div className="min-w-56 flex-1">
           <label className="mt-2 mb-1.5 block font-semibold" htmlFor={groupId}>
@@ -97,8 +104,8 @@ export function ParametersSection({
           </label>
           <div className="field">
             <select id={groupId} value={group} onChange={(e) => setGroup(e.target.value)}>
-              {PARAM_GROUPS.map((g) => {
-                const n = LIBRARY_PARAMS.filter((p) => p.group === g && changedParam(p, preferences)).length;
+              {SHOWN_GROUPS.map((g) => {
+                const n = SHOWN_PARAMS.filter((p) => p.group === g && changedParam(p, preferences)).length;
                 return (
                   <option key={g} value={g}>
                     {groupName(g)}
