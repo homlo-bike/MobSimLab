@@ -83,7 +83,7 @@ pub fn prepare(input: &DepotInput, layout: &Layout) -> Prepared {
     let mut lane_vehicle = Vec::new();
     for l in &layout.lanes {
         let zone = input.zones.iter().find(|z| z.id == l.zone);
-        let v = design_vehicle(zone, &input.vehicles);
+        let v = design_vehicle(zone, &input.vehicles, &input.fleet);
         let b = body(&v, input.rules.turning_circle_m);
         let entry = proj.xy(l.entry);
         let exit = proj.xy(l.exit);
