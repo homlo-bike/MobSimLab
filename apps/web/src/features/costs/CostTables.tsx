@@ -1,5 +1,7 @@
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { loadRailEngine } from "../railways/engine";
+import { hashText } from "../../projects/inputKey";
+import { type ResultsApi, useLiveResult } from "../../projects/results";
 import { en } from "../../i18n/en";
 import { hasMessage, type Translate, type TranslatePlural, useI18n, withNodes } from "../../i18n/i18n";
 import { tablesEn } from "../../i18n/tables/en";
@@ -61,6 +63,10 @@ interface Props {
     rate: number,
     income: string | null,
   ) => void;
+  /** The project's saved results: the railway quantities the tables price, built again when the railway changes. */
+  results?: ResultsApi | null;
+  /** The planner may replace the saved results (Owners and Editors). */
+  canSave?: boolean;
   /** Tests inject these. */
   loadRail?: RailEngineLoader;
   api?: EconomyApi;
@@ -130,47 +136,51 @@ export function CostTables({
   onEstimate,
   loadRail = loadRailEngine,
   api = DEFAULT_API,
+  results = null,
+  canSave = false,
 }: Props) {
   const { t } = useI18n();
   const modeLabel = useModeLabel();
   const prefs = preferences?.values;
-  const [rail, setRail] = useState<{ view: RailView; reports: Record<string, LineReport> } | null>(null);
-  const [railError, setRailError] = useState<string | null>(null);
   const [placeCode, setPlaceCode] = useState<string | null>(null);
   const [econ, setEcon] = useState<CountryEconomy | null>(null);
   const [econError, setEconError] = useState<string | null>(null);
   const [countries, setCountries] = useState<WbCountry[]>([]);
 
-  // The railway as the engine builds it, and its service lines as published.
+  // The railway as the engine builds it, and its service lines as published: saved with the project, and
+  // built again when the railway changes.
   const railJson = JSON.stringify(railway);
-  useEffect(() => {
-    let live = true;
-    setRailError(null);
-    if (!railway || !railway.tracks.length) {
-      setRail(null);
-      return;
-    }
-    (async () => {
+  const railInputs = useMemo(
+    () => (railway && railway.tracks.length ? hashText(railJson) : null),
+    // The railway's JSON stands for the railway.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [railJson],
+  );
+  const built = useLiveResult<{ view: RailView; reports: Record<string, LineReport> }>(
+    results,
+    "cost-quantities",
+    railInputs,
+    canSave,
+    async () => {
       const engine = await loadRail();
       try {
-        const view = engine.build(railway, null);
+        const view = engine.build(railway!, null);
         const reports: Record<string, LineReport> = {};
-        const lines = engineLines(railway);
+        const lines = engineLines(railway!);
         if (lines.length)
           try {
             for (const r of engine.publishLines(lines, "weekday").lines) reports[r.id] = r;
           } catch {
             // Lines that cannot be published are listed in the notes.
           }
-        if (live) setRail({ view, reports });
+        return { view, reports };
       } finally {
         engine.dispose();
       }
-    })().catch((e: unknown) => live && setRailError(e instanceof Error ? e.message : String(e)));
-    return () => {
-      live = false;
-    };
-  }, [railJson, loadRail]);
+    },
+  );
+  const rail = built.value;
+  const railError = built.error;
 
   // Where the project is: the railway's origin, else the first street line's first point.
   const place = railway?.origin ?? streetLines?.lines[0]?.points[0]?.lonlat ?? null;

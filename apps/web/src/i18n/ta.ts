@@ -12,6 +12,7 @@ import { mslabTa } from "./mslab/ta";
 import { workspaceUiTa } from "./workspace-ui/ta";
 import { pluginCodeTa } from "./plugin-code/ta";
 import { populationTa } from "./population/ta";
+import { resultsTa } from "./results/ta";
 import { pluginsTa } from "./plugins/ta";
 import type { Messages } from "./en";
 
@@ -537,6 +538,7 @@ export const ta: Messages = {
   ...workspaceUiTa,
   ...pluginCodeTa,
   ...populationTa,
+  ...resultsTa,
   ...roadTa,
   ...calendarTa,
   ...pluginsTa,

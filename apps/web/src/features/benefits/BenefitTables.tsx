@@ -1,4 +1,7 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { inputKey } from "../../projects/inputKey";
+import { type ResultsApi, useSavedResult } from "../../projects/results";
+import { SavedResultNotice } from "../../projects/SavedResultNotice";
 import { fmtMoney, modeLabel } from "../costs/CostTables";
 import type { Estimate as CostEstimate } from "../costs/model";
 import { loadWasmReach } from "../journey-planner/engine";
@@ -64,6 +67,10 @@ interface Props {
   onEstimate?: (e: Estimate | null) => void;
   /** The demand model run the planner picked for ridership; null for the formula estimate. */
   ridership?: DemandRidership | null;
+  /** The project's saved results: the travel times with and without each line show on opening. */
+  results?: ResultsApi | null;
+  /** The planner may replace the saved travel times (Owners and Editors). */
+  canSave?: boolean;
   /** Tests inject these. */
   api?: BenefitsApi;
   loadReach?: ReachLoader;
@@ -134,6 +141,8 @@ export function BenefitTables({
   costs,
   onEstimate,
   ridership = null,
+  results = null,
+  canSave = false,
   api = DEFAULT_API,
   loadReach = loadWasmReach,
   draws,
@@ -215,18 +224,58 @@ export function BenefitTables({
     });
   }, [timetable, net, tiles, pop, popError, country, regions, prepPrefs]);
 
+  // The travel times with and without each line (the journey planner step) are saved with the project: they
+  // show again on opening while the zones and the timetable are the same. Out of date, they still show until
+  // the planner recalculates them, as long as they cover the same zones.
+  const accInputs = useMemo(
+    () =>
+      prepared && timetable
+        ? inputKey({
+            zones: prepared.zones,
+            net: prepared.net,
+            walk: prepared.walk,
+            timetable,
+            prefs: prepPrefs,
+          })
+        : null,
+    [prepared, timetable, prepPrefs],
+  );
+  const keptAcc = useSavedResult<Map<string, ZoneAccess[]>>(results, "benefit-access", accInputs, canSave);
+  const [recalc, setRecalc] = useState(0);
+  const lastRecalc = useRef(0);
   useEffect(() => {
     let live = true;
-    setAcc(null);
     setAccError(null);
-    if (!prepared || !timetable) return;
+    if (!prepared || !timetable || !keptAcc.loaded) {
+      setAcc(null);
+      return;
+    }
+    const forced = recalc !== lastRecalc.current;
+    lastRecalc.current = recalc;
+    const s = keptAcc.saved;
+    const fits =
+      s instanceof Object &&
+      s.value instanceof Map &&
+      [...s.value.values()].every((zones) => zones.length === prepared.zones.length);
+    if (!forced && s && fits) {
+      setAcc(s.value);
+      return;
+    }
+    setAcc(null);
+    const keyNow = accInputs!;
     accessByScenario(prepared, timetable, loadReach, prepPrefs)
-      .then((a) => live && setAcc(a))
+      .then((a) => {
+        if (!live) return;
+        setAcc(a);
+        keptAcc.save(a, keyNow);
+      })
       .catch((e: unknown) => live && setAccError(e instanceof Error ? e.message : String(e)));
     return () => {
       live = false;
     };
-  }, [prepared, timetable, loadReach]);
+    // A saved result read later, or saved by this effect, does not start it again.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [prepared, timetable, loadReach, keptAcc.loaded, recalc]);
 
   const spending = useMemo(() => spendingFrom(costs?.estimate ?? null), [costs?.estimate]);
   const formulaEst: Estimate | null = useMemo(() => {
@@ -277,6 +326,16 @@ export function BenefitTables({
             <p role="status" className="mt-4 text-sm text-slate-500">
               {status}
             </p>
+          )}
+          {acc && keptAcc.saved?.value === acc && keptAcc.state && (
+            <div className="mt-3">
+              <SavedResultNotice
+                state={keptAcc.state}
+                computedAt={keptAcc.saved.computedAt}
+                onRecalculate={() => setRecalc((n) => n + 1)}
+                error={keptAcc.error}
+              />
+            </div>
           )}
           {accError && (
             <p role="alert" className="mt-3 text-sm text-red-700">

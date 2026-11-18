@@ -12,6 +12,7 @@ import { mslabSw } from "./mslab/sw";
 import { workspaceUiSw } from "./workspace-ui/sw";
 import { pluginCodeSw } from "./plugin-code/sw";
 import { populationSw } from "./population/sw";
+import { resultsSw } from "./results/sw";
 import { pluginsSw } from "./plugins/sw";
 import type { Messages } from "./en";
 
@@ -529,6 +530,7 @@ export const sw: Messages = {
   ...workspaceUiSw,
   ...pluginCodeSw,
   ...populationSw,
+  ...resultsSw,
   ...roadSw,
   ...calendarSw,
   ...pluginsSw,

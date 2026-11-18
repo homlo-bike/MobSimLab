@@ -711,8 +711,6 @@ export const editorsZh = {
   "noise.screen": "用 OpenStreetMap 建筑物遮挡",
   "noise.compute": "计算噪声地图",
   "noise.computeAgain": "重新计算",
-  "noise.savedAt": "已随项目保存，计算于 {when}。修改设计后请重新计算。",
-  "noise.saveFailed": "无法随项目保存噪声地图：{error}",
   "noise.mapLegend": "噪声地图图例",
   "noise.table": "按噪声带统计的建筑物和居民",
   "noise.tableCaption": "按最受影响一侧旁的声级统计的建筑物及其居民（{count} 栋中 {reached} 栋在范围内）",

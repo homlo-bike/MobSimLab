@@ -6,7 +6,7 @@
 import { BUILDING_TILE_ZOOM, buildingTiles } from "../noise/buildings";
 import type { BuildingIn, CountryFigures, PlaceIn } from "./model";
 import type { LonLat } from "./regions";
-import { withProject } from "../../geodata/projectData";
+import { withProject, withProjectFacts } from "../../geodata/projectData";
 import { csrfHeader } from "../../session/csrf";
 
 /** World Bank figures as the API answers them (benefits.service.ts). */
@@ -104,7 +104,8 @@ export function benefitsApi(
   const get = <T>(path: string) =>
     once(path, () => fetchImpl(path, { credentials: "same-origin" }).then((r) => json<T>(r)));
   return {
-    indicators: (code) => get<BenefitIndicators>(`/api/benefits/indicators?code=${encodeURIComponent(code)}`),
+    indicators: (code) =>
+      get<BenefitIndicators>(withProjectFacts(`/api/benefits/indicators?code=${encodeURIComponent(code)}`)),
     population: (areas) =>
       once(`pop:${JSON.stringify(areas)}`, () =>
         inBatches(areas, (batch) =>
@@ -127,9 +128,9 @@ export function benefitsApi(
         withProject(`/api/street-network/place-tiles/${BUILDING_TILE_ZOOM}/${x}/${y}`),
       ).then((r) => r.places ?? []),
     osmAreas: ([lon, lat]) =>
-      get<{ areas: OsmArea[] }>(`/api/benefits/osm-areas?lon=${lon.toFixed(6)}&lat=${lat.toFixed(6)}`).then(
-        (r) => r.areas,
-      ),
+      get<{ areas: OsmArea[] }>(
+        withProjectFacts(`/api/benefits/osm-areas?lon=${lon.toFixed(6)}&lat=${lat.toFixed(6)}`),
+      ).then((r) => r.areas),
   };
 }
 

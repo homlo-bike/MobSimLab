@@ -12,6 +12,7 @@ import { mslabId } from "./mslab/id";
 import { workspaceUiId } from "./workspace-ui/id";
 import { pluginCodeId } from "./plugin-code/id";
 import { populationId } from "./population/id";
+import { resultsId } from "./results/id";
 import { pluginsId } from "./plugins/id";
 import type { Messages } from "./en";
 
@@ -530,6 +531,7 @@ export const id: Messages = {
   ...workspaceUiId,
   ...pluginCodeId,
   ...populationId,
+  ...resultsId,
   ...roadId,
   ...calendarId,
   ...pluginsId,

@@ -22,7 +22,8 @@ import { buildingsBbox, type PopulationAnswer } from "../src/features/noise/popu
 import { MAX_TERRAIN_POINTS, loadTerrain, terrainPlan } from "../src/features/noise/terrain";
 import type { NoiseBuilding, NoiseEngine, NoiseInput, NoiseView } from "../src/features/noise/types";
 import type { Done } from "../src/features/noise/result";
-import { type NoiseResultApi, noiseFromJson, noiseResultApi, noiseToJson } from "../src/features/noise/saved";
+import type { SavedNoise } from "../src/features/noise/saved";
+import { projectResults, type ResultsApi, resultFromJson, resultToJson } from "../src/projects/results";
 import type { RailEngineLoader } from "../src/features/railways/types";
 import type { StreetLinesDoc } from "../src/features/street-lines/saved";
 import type { LineView } from "../src/features/street-lines/types";
@@ -248,7 +249,7 @@ describe("noise map in the GIS tab", () => {
     waits: { popWaitMs: number; popPollMs?: number } = { popWaitMs: 0 },
     // Most of these tests are about the buildings, so they start with the option ticked.
     screenBuildings = true,
-    saved: NoiseResultApi | null = null,
+    results: ResultsApi | null = null,
   ) {
     const estimate = vi.fn((input: NoiseInput) => (input ? { ...result, terrain: true } : result));
     const engine: NoiseEngine = {
@@ -280,7 +281,7 @@ describe("noise map in the GIS tab", () => {
         fetchTerrain={fetchTerrain}
         fetchPeople={fetchPeople}
         screenBuildings={screenBuildings}
-        saved={saved}
+        results={results}
         canSave
       />,
     );
@@ -325,33 +326,39 @@ describe("noise map in the GIS tab", () => {
   });
 
   it("saves each new noise map with the project and shows the saved one on opening", async () => {
-    let kept: Done | null = null;
-    const saved: NoiseResultApi = {
+    let kept: { value: SavedNoise; inputs: string } | null = null;
+    const results: ResultsApi = {
       load: vi.fn(async () => null),
-      save: vi.fn(async (r: Done) => {
-        kept = r;
+      save: vi.fn(async (_kind, value, inputs) => {
+        kept = { value: value as SavedNoise, inputs };
         return "2026-11-18T17:00:00.000Z";
       }),
     };
-    const { estimate } = setup(undefined, undefined, RESULT, { popWaitMs: 0 }, false, saved);
+    const { estimate } = setup(undefined, undefined, RESULT, { popWaitMs: 0 }, false, results);
     fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
     await waitFor(() => expect(estimate).toHaveBeenCalled());
-    await waitFor(() => expect(saved.save).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(results.save).toHaveBeenCalledTimes(1));
+    expect(vi.mocked(results.save).mock.calls[0]![0]).toBe("noise");
     expect(await screen.findByText(/Saved with the project/)).toBeTruthy();
     // Through the saved format and back, as on opening the project again.
-    const back = noiseFromJson(noiseToJson(kept!))!;
-    expect(back.main.images!.lden).toBeInstanceOf(Uint8Array);
-    expect([...back.main.images!.lden]).toEqual([...kept!.main.images!.lden]);
+    const back = resultFromJson<SavedNoise>(resultToJson(kept!.value))!;
+    expect(back.result.main.images!.lden).toBeInstanceOf(Uint8Array);
+    expect([...back.result.main.images!.lden]).toEqual([...kept!.value.result.main.images!.lden]);
     cleanup();
-    const reopened: NoiseResultApi = {
-      load: vi.fn(async () => ({ result: back, computedAt: "2026-11-18T17:00:00.000Z" })),
-      save: vi.fn(async () => null),
-    };
-    const again = setup(undefined, undefined, RESULT, { popWaitMs: 0 }, false, reopened);
-    expect(await screen.findByText(/Saved with the project/)).toBeTruthy();
+    const reopen = (inputs: string) =>
+      ({
+        load: vi.fn(async () => ({ value: back, inputs, computedAt: "2026-11-18T17:00:00.000Z" })),
+        save: vi.fn(async () => null),
+      }) as unknown as ResultsApi;
+    const again = setup(undefined, undefined, RESULT, { popWaitMs: 0 }, false, reopen(kept!.inputs));
+    expect(await screen.findByText(/Saved with the project, worked out/)).toBeTruthy();
     expect(screen.getByRole("button", { name: "Recalculate" })).toBeTruthy();
     expect(again.estimate).not.toHaveBeenCalled();
     expect(drawNoise).toHaveBeenCalled();
+    cleanup();
+    // Worked out from other inputs (the design changed since), it shows as out of date.
+    setup(undefined, undefined, RESULT, { popWaitMs: 0 }, false, reopen("older"));
+    expect(await screen.findByText(/Out of date/)).toBeTruthy();
   });
 
   it("can leave the buildings out", async () => {
@@ -495,12 +502,15 @@ describe("the noise map saved with the project", () => {
           return new Response(JSON.stringify({ computedAt: "2026-11-18T17:00:00.000Z" }), { status: 200 });
         }
         return body
-          ? new Response(body, { status: 200, headers: { "X-Computed-At": "2026-11-18T17:00:00.000Z" } })
+          ? new Response(body, {
+              status: 200,
+              headers: { "X-Computed-At": "2026-11-18T17:00:00.000Z", "X-Inputs": "abc" },
+            })
           : new Response("", { status: 404 });
       }),
     );
-    const api = noiseResultApi("00000000-0000-4000-8000-000000000001", "csrf");
-    expect(await api.load()).toBeNull();
+    const api = projectResults("00000000-0000-4000-8000-000000000001");
+    expect(await api.load("noise")).toBeNull();
     const levels = new Float32Array([55.5, Number.NaN]);
     const done: Done = {
       kind: "done",
@@ -517,13 +527,22 @@ describe("the noise map saved with the project", () => {
       notes: [],
       people: null,
     };
-    expect(await api.save(done)).toBe("2026-11-18T17:00:00.000Z");
+    expect(await api.save("noise", done, "abc")).toBe("2026-11-18T17:00:00.000Z");
     expect([...new Uint8Array(body!).slice(0, 2)]).toEqual([0x1f, 0x8b]);
-    const back = await api.load();
+    const back = await api.load<Done>("noise");
     expect(back?.computedAt).toBe("2026-11-18T17:00:00.000Z");
-    expect([...back!.result.main.images!.lnight]).toEqual([5, 6, 7, 8]);
-    expect(back!.result.main.levels!.lden[0]).toBe(55.5);
-    expect(Number.isNaN(back!.result.main.levels!.lden[1])).toBe(true);
+    expect(back?.inputs).toBe("abc");
+    expect([...back!.value.main.images!.lnight]).toEqual([5, 6, 7, 8]);
+    expect(back!.value.main.levels!.lden[0]).toBe(55.5);
+    expect(Number.isNaN(back!.value.main.levels!.lden[1])).toBe(true);
+    // The static viewer serves the saved result as plain JSON.
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => new Response(resultToJson(done), { status: 200, headers: { "X-Inputs": "abc" } })),
+    );
+    expect((await projectResults("p").load<Done>("noise"))?.value.main.images!.lden).toBeInstanceOf(
+      Uint8Array,
+    );
     vi.unstubAllGlobals();
   });
 });

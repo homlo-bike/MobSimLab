@@ -764,9 +764,6 @@ export const editorsSw = {
   "noise.screen": "Zuia kwa majengo ya OpenStreetMap",
   "noise.compute": "Kokotoa ramani ya kelele",
   "noise.computeAgain": "Kokotoa tena",
-  "noise.savedAt":
-    "Imehifadhiwa pamoja na mradi, ilikokotolewa {when}. Kokotoa upya baada ya kubadilisha muundo.",
-  "noise.saveFailed": "Ramani ya kelele haikuweza kuhifadhiwa pamoja na mradi: {error}",
   "noise.mapLegend": "Ufunguo wa ramani ya kelele",
   "noise.table": "Majengo na wakazi kwa ukanda wa kelele",
   "noise.tableCaption":

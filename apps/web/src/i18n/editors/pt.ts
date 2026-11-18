@@ -765,8 +765,6 @@ export const editorsPt = {
   "noise.screen": "Barreira pelos edifícios do OpenStreetMap",
   "noise.compute": "Calcular mapa de ruído",
   "noise.computeAgain": "Calcular de novo",
-  "noise.savedAt": "Guardado com o projeto, calculado em {when}. Recalcule depois de mudar o desenho.",
-  "noise.saveFailed": "Não foi possível guardar o mapa de ruído com o projeto: {error}",
   "noise.mapLegend": "Legenda do mapa de ruído",
   "noise.table": "Edifícios e moradores por faixa de ruído",
   "noise.tableCaption":

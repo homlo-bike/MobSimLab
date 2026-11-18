@@ -9,7 +9,7 @@ import { projectComments } from "../features/comments/api";
 import { projectDemandRuns } from "../features/demand/api";
 import { projectPopulation } from "../features/population/api";
 import { projectRoadRuns } from "../features/road-sim/api";
-import { noiseResultApi } from "../features/noise/saved";
+import { projectResults } from "./results";
 import { projectGeodata } from "../features/geodata/api";
 import { projectCalendarRuns } from "../features/calendar-run/api";
 import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
@@ -174,8 +174,8 @@ export function projectsApi(csrf: string) {
     runs: (id: string) => projectRuns(id, csrf),
     /** The project's road simulation runs (SUMO) on the background worker, with their replays. */
     roadRuns: (id: string) => projectRoadRuns(id, csrf),
-    /** The project's noise map saved with it (GIS tab, Map data). */
-    noiseResult: (id: string) => noiseResultApi(id, csrf),
+    /** Results the project's tools worked out, saved with it (noise map, walk coverage…). */
+    results: (id: string) => projectResults(id),
     /** The project's OpenStreetMap and elevation imports (GIS tab, Map data). */
     geodata: (id: string) => projectGeodata(id, csrf),
     /** The project's calendar runs: many years, one date or a row of dates (ADR-0020). */

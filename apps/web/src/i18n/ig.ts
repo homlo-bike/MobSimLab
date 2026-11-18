@@ -12,6 +12,7 @@ import { mslabIg } from "./mslab/ig";
 import { workspaceUiIg } from "./workspace-ui/ig";
 import { pluginCodeIg } from "./plugin-code/ig";
 import { populationIg } from "./population/ig";
+import { resultsIg } from "./results/ig";
 import { pluginsIg } from "./plugins/ig";
 import type { Messages } from "./en";
 
@@ -528,6 +529,7 @@ export const ig: Messages = {
   ...workspaceUiIg,
   ...pluginCodeIg,
   ...populationIg,
+  ...resultsIg,
   ...roadIg,
   ...calendarIg,
   ...pluginsIg,

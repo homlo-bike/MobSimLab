@@ -22,7 +22,22 @@ const SITE: Record<string, unknown> = {
     ],
   },
   [`/projects/${ID}/manifest.json`]: {
-    files: { "data/railway.json": {}, [`runs/${RUN}/run.json`]: {}, "map/population.json": {} },
+    files: {
+      "data/railway.json": {},
+      [`runs/${RUN}/run.json`]: {},
+      "map/population.json": {},
+      "map/reference.json": {},
+      "results/noise.json": {},
+    },
+  },
+  [`/projects/${ID}/results/noise.json`]: {
+    kind: "noise",
+    inputs: "0123456789abcdef",
+    computedAt: "2026-11-16T10:02:00.000Z",
+    doc: { version: 1, value: { result: { kind: "done" } } },
+  },
+  [`/projects/${ID}/map/reference.json`]: {
+    "@facts": { "holidays/DE/2027": [{ date: "2027-01-01", name: "New Year" }] },
   },
   [`/projects/${ID}/data/railway.json`]: {
     kind: "railway",
@@ -62,6 +77,20 @@ const base: typeof fetch = async (input) => {
 describe("static viewer", () => {
   const api = staticFetch(base);
   const getJson = async (path: string) => (await api(path)).json();
+
+  it("serves the results saved with the project and the facts it kept", async () => {
+    expect((await getJson(`/api/projects/${ID}/results`)).results).toMatchObject([
+      { kind: "noise", inputs: "0123456789abcdef" },
+    ]);
+    const res = await api(`/api/projects/${ID}/results/noise`);
+    expect(res.headers.get("X-Inputs")).toBe("0123456789abcdef");
+    expect(await res.json()).toEqual({ version: 1, value: { result: { kind: "done" } } });
+    expect((await api(`/api/projects/${ID}/results/walk-coverage`)).status).toBe(404);
+    window.history.pushState({}, "", `/projects/${ID}`);
+    const h = await getJson(`/api/calendar/holidays?country=DE&year=2027&project=${ID}`);
+    expect(h).toMatchObject({ country: "DE", year: 2027, holidays: [{ name: "New Year" }] });
+    window.history.pushState({}, "", "/");
+  });
 
   it("lists the site's projects and opens them read-only", async () => {
     expect((await getJson("/api/projects")).projects).toMatchObject([{ id: ID, myRole: "viewer" }]);

@@ -7,8 +7,8 @@ import { createApp, testConfig } from "./support/app";
 import { startDatabase, type TestDatabase } from "./support/database";
 import { cookieValue, signIn, startIdp, type TestIdp } from "./support/idp";
 
-/** Integration: the project's noise map, saved with the project and read back by its members. */
-describe("saved noise map", () => {
+/** Integration: results the project's tools worked out, saved with the project and read back by its members. */
+describe("saved results", () => {
   let db: TestDatabase;
   let idp: TestIdp;
   let app: NestExpressApplication;
@@ -39,7 +39,8 @@ describe("saved noise map", () => {
   };
 
   let project = "";
-  const url = () => `/api/projects/${project}/noise-result`;
+  const url = (kind = "noise", inputs?: string) =>
+    `/api/projects/${project}/results/${kind}${inputs === undefined ? "" : `?inputs=${inputs}`}`;
 
   beforeAll(async () => {
     db = await startDatabase();
@@ -78,15 +79,17 @@ describe("saved noise map", () => {
 
   it("has none until one is worked out", async () => {
     expect((await as("alice").get(url())).status).toBe(404);
+    expect((await as("alice").get(`/api/projects/${project}/results`)).body.results).toEqual([]);
   });
 
-  it("keeps the latest noise map and gives it to every member as it was sent", async () => {
-    const first = gzipSync(JSON.stringify({ version: 1, n: 1 }));
-    expect((await as("alice").putRaw(url(), first)).status).toBe(200);
-    const second = gzipSync(JSON.stringify({ version: 1, n: 2 }));
-    const saved = await as("alice").putRaw(url(), second);
+  it("keeps the latest result of each kind with its fingerprint and gives it to every member as it was sent", async () => {
+    const first = gzipSync(JSON.stringify({ version: 1, value: 1 }));
+    expect((await as("alice").putRaw(url("noise", "aaaa"), first)).status).toBe(200);
+    const second = gzipSync(JSON.stringify({ version: 1, value: 2 }));
+    const saved = await as("alice").putRaw(url("noise", "bbbb"), second);
     expect(saved.status).toBe(200);
     expect(typeof saved.body.computedAt).toBe("string");
+    expect((await as("alice").putRaw(url("walk-coverage", "cccc"), first)).status).toBe(200);
     const res = await as("dave")
       .get(url())
       .buffer(true)
@@ -97,11 +100,22 @@ describe("saved noise map", () => {
       });
     expect(res.status).toBe(200);
     expect(Buffer.compare(res.body as Buffer, second)).toBe(0);
+    expect(res.headers["x-inputs"]).toBe("bbbb");
     expect(res.headers["x-computed-at"]).toBeTruthy();
+    const list = (await as("dave").get(`/api/projects/${project}/results`)).body.results as {
+      kind: string;
+      inputs: string;
+    }[];
+    expect(list.map((r) => [r.kind, r.inputs])).toEqual([
+      ["noise", "bbbb"],
+      ["walk-coverage", "cccc"],
+    ]);
   });
 
-  it("lets only Owners and Editors replace it, and only with gzip", async () => {
-    expect((await as("dave").putRaw(url(), gzipSync("{}"))).status).toBe(403);
-    expect((await as("alice").putRaw(url(), Buffer.from("{}"))).status).toBe(400);
+  it("lets only Owners and Editors replace it, only with gzip, a fingerprint and a known kind", async () => {
+    expect((await as("dave").putRaw(url("noise", "dddd"), gzipSync("{}"))).status).toBe(403);
+    expect((await as("alice").putRaw(url("noise", "dddd"), Buffer.from("{}"))).status).toBe(400);
+    expect((await as("alice").putRaw(url("noise", "no spaces"), gzipSync("{}"))).status).toBe(400);
+    expect((await as("alice").putRaw(url("timetable-x", "dddd"), gzipSync("{}"))).status).toBe(404);
   });
 });

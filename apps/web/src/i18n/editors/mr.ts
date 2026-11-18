@@ -755,8 +755,6 @@ export const editorsMr = {
   "noise.screen": "OpenStreetMap इमारतींनी आडोसा",
   "noise.compute": "आवाज नकाशा मोजा",
   "noise.computeAgain": "पुन्हा मोजा",
-  "noise.savedAt": "प्रकल्पासोबत जतन केले, {when} रोजी गणना केली. आराखडा बदलल्यावर पुन्हा गणना करा.",
-  "noise.saveFailed": "आवाजाचा नकाशा प्रकल्पासोबत जतन करता आला नाही: {error}",
   "noise.mapLegend": "आवाज नकाशाची सूची",
   "noise.table": "आवाजाच्या पट्ट्यानुसार इमारती आणि रहिवासी",
   "noise.tableCaption":

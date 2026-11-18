@@ -16,6 +16,8 @@
  *   map/water.json             (1.1, optional) sea, lakes and rivers of the area
  *   map/population.json        (1.1, optional) people per cell over the area
  *   map/reference.json         (1.1, optional) country figures for the cost and benefit tables, by API path
+ *   results/<kind>.json        (1.2) a result the project's tools worked out (noise map, walk coverage…), with the
+ *                              fingerprint of what it was worked out from
  *   ATTRIBUTION.md             generated: what the file holds and the sources it refers to
  *
  * The map data (`map/`) is there only when the person ticks "Include map data", for the static viewer
@@ -28,7 +30,10 @@
  */
 
 /** Current format version (semantic): a new minor version only adds, a new major version needs a migration. */
-export const FORMAT_VERSION = "1.1.0";
+export const FORMAT_VERSION = "1.2.0";
+
+/** The version a file with map data and no saved results is saved as, so that MobSimLab 1.1 readers open it. */
+export const FORMAT_VERSION_MAP_ONLY = "1.1.0";
 
 /** The version a file without map data is saved as, so that MobSimLab 1.0 readers still open it. */
 export const FORMAT_VERSION_WITHOUT_MAP = "1.0.0";
@@ -85,6 +90,7 @@ export const FILES = {
   runNetwork: (id: string) => `runs/${id}/network.txt`,
   runLines: (id: string) => `runs/${id}/lines.txt`,
   runReplay: (id: string) => `runs/${id}/replay.json.gz`,
+  result: (kind: string) => `results/${kind}.json`,
 } as const;
 
 /** Kinds of map tile a file may carry (format 1.1), as the street network API serves them. */
@@ -116,6 +122,7 @@ export const FILE_PATTERNS = {
   runNetwork: /^runs\/([0-9a-f-]{36})\/network\.txt$/,
   runLines: /^runs\/([0-9a-f-]{36})\/lines\.txt$/,
   runReplay: /^runs\/([0-9a-f-]{36})\/replay\.json\.gz$/,
+  result: /^results\/([a-z][a-z0-9-]{1,39})\.json$/,
   map: /^map\/(?:(?:area|water|population|reference)\.json|(?:streets|walk|rail)\/\d{1,5}-\d{1,5}\.xml|(?:buildings|places|bike-amenities)\/\d{1,5}-\d{1,5}\.json)$/,
 } as const;
 
@@ -153,6 +160,16 @@ export interface DrawingFile {
   kind: string;
   schemaVersion: number;
   updatedAt: string;
+  doc: unknown;
+}
+
+/** `results/<kind>.json` (format 1.2). */
+export interface ResultFile {
+  kind: string;
+  /** Fingerprint of what the result was worked out from. */
+  inputs: string;
+  computedAt: string;
+  /** The result as the web app saved it (JSON). */
   doc: unknown;
 }
 
@@ -332,6 +349,27 @@ export const RUN_SCHEMA = {
   },
 } as const;
 
+/** JSON Schema of `results/<kind>.json` (format 1.2). */
+export const RESULT_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: `${ID}result.schema.json`,
+  title: "A result the project's tools worked out (results/<kind>.json)",
+  type: "object",
+  required: ["kind", "inputs", "computedAt", "doc"],
+  additionalProperties: false,
+  properties: {
+    kind: { type: "string", pattern: "^[a-z][a-z0-9-]{1,39}$" },
+    inputs: {
+      description:
+        "Fingerprint of what the result was worked out from; another fingerprint means out of date.",
+      type: "string",
+      pattern: "^[A-Za-z0-9._:-]{0,200}$",
+    },
+    computedAt: isoDate,
+    doc: { description: "The result as the web app saved it." },
+  },
+} as const;
+
 /** The hand-written schemas, by file name in `contracts/mslab/`. */
 export const FILE_SCHEMAS = {
   "manifest.schema.json": MANIFEST_SCHEMA,
@@ -339,6 +377,7 @@ export const FILE_SCHEMAS = {
   "plugins.schema.json": PLUGINS_SCHEMA,
   "drawing.schema.json": DRAWING_FILE_SCHEMA,
   "run.schema.json": RUN_SCHEMA,
+  "result.schema.json": RESULT_SCHEMA,
 } as const;
 
 /** Purpose: [major, minor, patch] of a semantic version string. */

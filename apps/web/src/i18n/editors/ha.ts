@@ -753,8 +753,6 @@ export const editorsHa = {
   "noise.screen": "Kariya da gine-ginen OpenStreetMap",
   "noise.compute": "Lissafa taswirar hayaniya",
   "noise.computeAgain": "Sake lissafawa",
-  "noise.savedAt": "An adana tare da aikin, an lissafa a {when}. Sake lissafawa bayan canza zane.",
-  "noise.saveFailed": "Ba a iya adana taswirar hayaniya tare da aikin ba: {error}",
   "noise.mapLegend": "Mabuɗin taswirar hayaniya",
   "noise.table": "Gine-gine da mazauna bisa yankin hayaniya",
   "noise.tableCaption":

@@ -756,8 +756,6 @@ export const editorsId = {
   "noise.screen": "Redam dengan bangunan OpenStreetMap",
   "noise.compute": "Hitung peta kebisingan",
   "noise.computeAgain": "Hitung ulang",
-  "noise.savedAt": "Disimpan bersama proyek, dihitung pada {when}. Hitung ulang setelah mengubah desain.",
-  "noise.saveFailed": "Peta kebisingan tidak dapat disimpan bersama proyek: {error}",
   "noise.mapLegend": "Legenda peta kebisingan",
   "noise.table": "Bangunan dan penghuni per pita kebisingan",
   "noise.tableCaption":

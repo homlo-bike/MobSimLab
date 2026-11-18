@@ -1,4 +1,5 @@
 import { Inject, Injectable, Optional } from "@nestjs/common";
+import type { MslRequest } from "../auth/session.service";
 import { DATABASE, type Database } from "../db/database";
 
 /** What a project's data cache holds: OpenStreetMap tiles, terrain heights, location facts. */
@@ -102,4 +103,36 @@ export const factKey = {
   climate: (lat: number, lon: number) => `climate/${lat.toFixed(1)},${lon.toFixed(1)}`,
   /** The countries of the project area with their shares (projects/area.service.ts `AreaCountries`). */
   areaCountries: "area-countries",
+  /** The countries the World Bank has data for (cost tables). */
+  economyCountries: "economy-countries",
+  /** A country's price level, exchange rate and currency and the US GDP deflator (cost tables). */
+  economy: (code: string, base: number) => `economy/${code.toUpperCase()}/${base}`,
+  /** A country's GDP per capita, employment, age shares and population (benefit tables). */
+  benefitIndicators: (code: string) => `benefit-indicators/${code.toUpperCase()}`,
+  /** The OpenStreetMap areas around a point (regions, project area picker). */
+  osmAreas: (lon: number, lat: number, wide: boolean) =>
+    `osm-areas/${lon.toFixed(6)},${lat.toFixed(6)}${wide ? "/wide" : ""}`,
 };
+
+/** Who may read a project's kept facts: the project gate (`?project=`) as the endpoints use it. */
+interface FactGate {
+  readable(req: MslRequest, project: unknown): Promise<string | undefined>;
+}
+
+/**
+ * Purpose: an answer kept for the project named by `?project=` (read once from the provider, then from the
+ * project), else fetched live. Without a project, the gate or the cache, fetches live.
+ */
+export async function keptFact<T>(
+  gate: FactGate | undefined,
+  kept: ProjectDataCache | undefined,
+  req: MslRequest,
+  project: string | undefined,
+  key: string,
+  live: () => Promise<T>,
+): Promise<T> {
+  const projectId = await gate?.readable(req, project);
+  if (!projectId || !kept) return live();
+  const r = await kept.through(projectId, "facts", key, async () => JSON.stringify(await live()));
+  return JSON.parse(r.body) as T;
+}

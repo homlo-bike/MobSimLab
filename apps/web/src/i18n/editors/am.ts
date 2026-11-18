@@ -741,8 +741,6 @@ export const editorsAm = {
   "noise.screen": "በ OpenStreetMap ሕንፃዎች ከልል",
   "noise.compute": "የጫጫታ ካርታ አስላ",
   "noise.computeAgain": "እንደገና አስላ",
-  "noise.savedAt": "ከፕሮጀክቱ ጋር ተቀምጧል፣ {when} ላይ ተሰልቷል። ንድፉን ከቀየሩ በኋላ እንደገና ያስሉ።",
-  "noise.saveFailed": "የጫጫታ ካርታው ከፕሮጀክቱ ጋር ሊቀመጥ አልቻለም፦ {error}",
   "noise.mapLegend": "የጫጫታ ካርታ መግለጫ",
   "noise.table": "ሕንፃዎችና ነዋሪዎች በጫጫታ ቀጠና",
   "noise.tableCaption": "ሕንፃዎችና ነዋሪዎቻቸው በጣም በተጋለጠው ጎን አጠገብ ባለው ደረጃ ({count} ሕንፃዎች ውስጥ {reached} በክልል ውስጥ)",

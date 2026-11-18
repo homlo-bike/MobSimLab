@@ -730,8 +730,6 @@ export const editorsVi = {
   "noise.screen": "Che chắn bằng công trình OpenStreetMap",
   "noise.compute": "Tính bản đồ tiếng ồn",
   "noise.computeAgain": "Tính lại",
-  "noise.savedAt": "Đã lưu cùng dự án, tính lúc {when}. Tính lại sau khi thay đổi thiết kế.",
-  "noise.saveFailed": "Không thể lưu bản đồ tiếng ồn cùng dự án: {error}",
   "noise.mapLegend": "Chú giải bản đồ tiếng ồn",
   "noise.table": "Công trình và cư dân theo dải tiếng ồn",
   "noise.tableCaption":

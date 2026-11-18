@@ -12,6 +12,7 @@ import { mslabVi } from "./mslab/vi";
 import { workspaceUiVi } from "./workspace-ui/vi";
 import { pluginCodeVi } from "./plugin-code/vi";
 import { populationVi } from "./population/vi";
+import { resultsVi } from "./results/vi";
 import { pluginsVi } from "./plugins/vi";
 import type { Messages } from "./en";
 
@@ -525,6 +526,7 @@ export const vi: Messages = {
   ...workspaceUiVi,
   ...pluginCodeVi,
   ...populationVi,
+  ...resultsVi,
   ...roadVi,
   ...calendarVi,
   ...pluginsVi,

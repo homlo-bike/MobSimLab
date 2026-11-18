@@ -75,6 +75,13 @@ Format 1.1.0 adds the optional `map/` folder (`includes.map` in the manifest), w
 ticks "Include map data" for the static viewer (docs/user/static-viewer.md). Files without it are still saved
 as 1.0.0, so older readers open them.
 
+Format 1.2.0 adds `results/<kind>.json`: the results the project's tools worked out (noise map, walk coverage,
+stop spacing, benefit access, cost quantities, scenario figures, the last capacity test), each with the
+fingerprint of its inputs and when it was worked out (`project.result`, apps/api/src/projects/results.ts).
+They are always written when the project has any, so an opened file shows them without working them out
+again, and marks a result out of date when its inputs no longer match. Files without results are saved as
+1.1.0 or 1.0.0 as before.
+
 - JSON Schemas for every file are published, so other tools can read and write `.mslab`.
 - **Import** always creates a new project owned by the person who opens it, with new ids. It runs in the sandboxed tool-runner (`apps/api/src/tool-runner`) with ZIP limits (200 MB file, 5000 entries, 70 MB per file, 512 MB unpacked, compression ratio), checks the checksums and every file against its schema, and applies forward migrations (`apps/api/src/mslab/migrations.mts`); the API then checks every drawing again against the editor's outline. Drawings of tools or plugins this instance lacks are left out and listed.
 - Reference data (OSM, rasters) is **not** included by default (size, and it can be re-imported); the manifest records what was used (source, timestamp, bbox) so it can be rebuilt. Optional "full export" includes it.

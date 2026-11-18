@@ -748,8 +748,6 @@ export const editorsBn = {
   "noise.screen": "OpenStreetMap ভবন দিয়ে আড়াল",
   "noise.compute": "শব্দ মানচিত্র গণনা করুন",
   "noise.computeAgain": "আবার গণনা করুন",
-  "noise.savedAt": "প্রকল্পের সঙ্গে সংরক্ষিত, {when}-এ হিসাব করা। নকশা বদলানোর পর আবার হিসাব করুন।",
-  "noise.saveFailed": "শব্দের মানচিত্র প্রকল্পের সঙ্গে সংরক্ষণ করা যায়নি: {error}",
   "noise.mapLegend": "শব্দ মানচিত্রের সংকেত",
   "noise.table": "শব্দের বলয় অনুযায়ী ভবন ও বাসিন্দা",
   "noise.tableCaption":

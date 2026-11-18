@@ -766,8 +766,6 @@ export const editorsIt = {
   "noise.screen": "Scherma con gli edifici di OpenStreetMap",
   "noise.compute": "Calcola la mappa del rumore",
   "noise.computeAgain": "Ricalcola",
-  "noise.savedAt": "Salvata con il progetto, calcolata il {when}. Ricalcola dopo aver cambiato il progetto.",
-  "noise.saveFailed": "Impossibile salvare la mappa del rumore con il progetto: {error}",
   "noise.mapLegend": "Legenda della mappa del rumore",
   "noise.table": "Edifici e residenti per fascia di rumore",
   "noise.tableCaption":

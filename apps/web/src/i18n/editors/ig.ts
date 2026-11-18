@@ -728,8 +728,6 @@ export const editorsIg = {
   "noise.screen": "Gbochie site n'ụlọ OpenStreetMap",
   "noise.compute": "Gụkọọ maapụ mkpọtụ",
   "noise.computeAgain": "Gụkọọ ọzọ",
-  "noise.savedAt": "Echekwara ya na ọrụ ahụ, gbakọọ ya na {when}. Gbakọọ ọzọ mgbe ịgbanwere nhazi.",
-  "noise.saveFailed": "Enweghị ike ịchekwa maapụ mkpọtụ na ọrụ ahụ: {error}",
   "noise.mapLegend": "Nkọwa maapụ mkpọtụ",
   "noise.table": "Ụlọ na ndị bi na ya site na mpaghara mkpọtụ",
   "noise.tableCaption":

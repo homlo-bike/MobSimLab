@@ -460,8 +460,8 @@ export function Workspace({
     () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
     [api, projectKey],
   );
-  const noiseResult = useMemo(
-    () => (projectKey && typeof api.noiseResult === "function" ? api.noiseResult(projectKey) : null),
+  const results = useMemo(
+    () => (projectKey && typeof api.results === "function" ? api.results(projectKey) : null),
     [api, projectKey],
   );
   const calendarRuns = useMemo(
@@ -1466,6 +1466,8 @@ export function Workspace({
                           onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
                           currency={currency}
                           onEstimate={onCostEstimate}
+                          results={results}
+                          canSave={editable}
                         />
                       </LoadingScreen>
                     </div>
@@ -1487,6 +1489,8 @@ export function Workspace({
                           costs={costInfo}
                           onEstimate={onBenefitEstimate}
                           ridership={usedRidership}
+                          results={results}
+                          canSave={editable}
                         />
                       </LoadingScreen>
                     </div>
@@ -1571,6 +1575,8 @@ export function Workspace({
                           doc={drawings.doc<ScenariosDoc>("scenarios")}
                           currency={currency}
                           onChange={editable ? (d) => drawings.set("scenarios", d) : undefined}
+                          results={results}
+                          canSave={editable}
                         />
                       </LoadingScreen>
                     </div>
@@ -1728,6 +1734,7 @@ export function Workspace({
                   <CapacityRun
                     demandRidership={usedRidership}
                     runs={runs}
+                    results={results}
                     canRun={editable}
                     railway={railway}
                     streetLines={streetLines?.lines}
@@ -1809,6 +1816,8 @@ export function Workspace({
                       streetLines={streetLines}
                       railway={railway}
                       preferences={preferences?.values}
+                      results={results}
+                      canSave={editable}
                     />
                   </LoadingScreen>
                 </div>
@@ -1826,7 +1835,7 @@ export function Workspace({
                       preferences={preferences?.values}
                       scenarios={drawings.doc<ScenariosDoc>("scenarios")}
                       roadRuns={roadRuns}
-                      saved={noiseResult}
+                      results={results}
                       canSave={editable}
                     />
                   </LoadingScreen>

@@ -132,8 +132,11 @@ export function economyApi(fetchImpl: typeof fetch = (...a) => fetch(...a)): Eco
       once<PlaceCountry>(
         withProjectFacts(`/api/economy/country-at?lon=${lon.toFixed(4)}&lat=${lat.toFixed(4)}`),
       ),
-    countries: () => once<{ countries: WbCountry[] }>("/api/economy/countries").then((r) => r.countries),
+    countries: () =>
+      once<{ countries: WbCountry[] }>(withProjectFacts("/api/economy/countries")).then((r) => r.countries),
     indicators: (code, baseYear) =>
-      once<CountryEconomy>(`/api/economy/indicators?code=${encodeURIComponent(code)}&base=${baseYear}`),
+      once<CountryEconomy>(
+        withProjectFacts(`/api/economy/indicators?code=${encodeURIComponent(code)}&base=${baseYear}`),
+      ),
   };
 }

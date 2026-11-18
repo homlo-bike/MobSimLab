@@ -812,8 +812,6 @@ export const editorsRu = {
   "noise.screen": "Экранировать зданиями OpenStreetMap",
   "noise.compute": "Рассчитать шумовую карту",
   "noise.computeAgain": "Рассчитать заново",
-  "noise.savedAt": "Сохранено в проекте, рассчитано {when}. Пересчитайте после изменения проекта.",
-  "noise.saveFailed": "Не удалось сохранить карту шума в проекте: {error}",
   "noise.mapLegend": "Легенда шумовой карты",
   "noise.table": "Здания и жители по шумовым полосам",
   "noise.tableCaption":

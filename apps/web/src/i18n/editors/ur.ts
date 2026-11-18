@@ -753,8 +753,6 @@ export const editorsUr = {
   "noise.screen": "OpenStreetMap عمارتوں سے آڑ",
   "noise.compute": "شور کا نقشہ حساب کریں",
   "noise.computeAgain": "دوبارہ حساب کریں",
-  "noise.savedAt": "پروجیکٹ کے ساتھ محفوظ، {when} کو حساب کیا گیا۔ ڈیزائن بدلنے کے بعد دوبارہ حساب کریں۔",
-  "noise.saveFailed": "شور کا نقشہ پروجیکٹ کے ساتھ محفوظ نہیں ہو سکا: {error}",
   "noise.mapLegend": "شور کے نقشے کی علامات",
   "noise.table": "شور کی پٹی کے مطابق عمارتیں اور رہائشی",
   "noise.tableCaption":

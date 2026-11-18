@@ -742,9 +742,6 @@ export const editorsTr = {
   "noise.screen": "OpenStreetMap binalarıyla perdele",
   "noise.compute": "Gürültü haritasını hesapla",
   "noise.computeAgain": "Yeniden hesapla",
-  "noise.savedAt":
-    "Projeyle kaydedildi, {when} tarihinde hesaplandı. Tasarımı değiştirdikten sonra yeniden hesaplayın.",
-  "noise.saveFailed": "Gürültü haritası projeyle kaydedilemedi: {error}",
   "noise.mapLegend": "Gürültü haritası açıklaması",
   "noise.table": "Gürültü bandına göre binalar ve sakinler",
   "noise.tableCaption":
