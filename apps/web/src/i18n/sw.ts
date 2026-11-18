@@ -231,6 +231,7 @@ export const sw: Messages = {
   "save.takeTheirs": "Tumia yao",
   "save.loadFailed": "Michoro ya mradi haikupakia: {error}",
   "save.retry": "Jaribu tena",
+  "save.restored": "Mabadiliko yasiyohifadhiwa ya kifaa hiki yamerejeshwa",
   "drawing.street-lines": "njia ya barabarani",
   "drawing.railway": "reli",
   "drawing.street-setups": "mipangilio ya barabara",

@@ -238,6 +238,7 @@ export const de: Messages = {
   "save.takeTheirs": "Die andere übernehmen",
   "save.loadFailed": "Die Zeichnungen des Projekts wurden nicht geladen: {error}",
   "save.retry": "Erneut versuchen",
+  "save.restored": "Ungespeicherte Änderungen von diesem Gerät wiederhergestellt",
   "drawing.street-lines": "die Buslinie",
   "drawing.railway": "die Bahnanlage",
   "drawing.street-setups": "die Straßeneinstellungen",

@@ -229,6 +229,7 @@ export const fa: Messages = {
   "save.takeTheirs": "گرفتن نسخهٔ آن‌ها",
   "save.loadFailed": "بارگیری نقشه‌های پروژه ممکن نشد: {error}",
   "save.retry": "تلاش دوباره",
+  "save.restored": "تغییرات ذخیره‌نشده این دستگاه بازیابی شد",
   "drawing.street-lines": "خطوط خیابانی",
   "drawing.railway": "راه‌آهن",
   "drawing.street-setups": "پیکربندی خیابان‌ها",

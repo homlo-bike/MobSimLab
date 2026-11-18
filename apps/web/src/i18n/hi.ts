@@ -232,6 +232,7 @@ export const hi: Messages = {
   "save.takeTheirs": "उनका इस्तेमाल करें",
   "save.loadFailed": "प्रोजेक्ट के चित्र लोड नहीं हुए: {error}",
   "save.retry": "फिर कोशिश करें",
+  "save.restored": "इस डिवाइस के बिना सहेजे बदलाव वापस लाए गए",
   "drawing.street-lines": "सड़क लाइन",
   "drawing.railway": "रेलवे",
   "drawing.street-setups": "सड़क सेटअप",

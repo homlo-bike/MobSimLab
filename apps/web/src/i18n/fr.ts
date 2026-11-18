@@ -235,6 +235,7 @@ export const fr: Messages = {
   "save.takeTheirs": "Prendre la sienne",
   "save.loadFailed": "Les dessins du projet ne se sont pas chargés : {error}",
   "save.retry": "Réessayer",
+  "save.restored": "Modifications non enregistrées de cet appareil restaurées",
   "drawing.street-lines": "la ligne de bus",
   "drawing.railway": "le réseau ferré",
   "drawing.street-setups": "les réglages des rues",

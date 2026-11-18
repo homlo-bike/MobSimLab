@@ -1,6 +1,7 @@
 import { act, cleanup, renderHook, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { type Drawing, DrawingConflict, type DrawingKind, DrawingSaveError } from "../src/projects/drawings";
+import { memoryDrafts } from "../src/workspace/localDraft";
 import { useDrawings } from "../src/workspace/useDrawings";
 
 afterEach(() => {
@@ -194,5 +195,54 @@ describe("project drawings", () => {
     expect(h.result.current.canUndo).toBe(false);
     act(() => h.result.current.undo());
     expect(h.result.current.doc("railway")).toEqual({ stations: [9] });
+  });
+});
+
+describe("unsaved changes kept on this device (#136.2)", () => {
+  const openWith = async (
+    api: ReturnType<typeof fakeApi>["api"],
+    drafts: ReturnType<typeof memoryDrafts>,
+  ) => {
+    const h = renderHook(() => useDrawings(api, "p1", true, drafts));
+    await waitFor(() => expect(h.result.current.loaded).toBe(true));
+    return h;
+  };
+
+  it("keeps a change on the device until the server has it", async () => {
+    const { api } = fakeApi({ railway: drawing("railway", { stations: [] }, 4) });
+    api.saveDrawing.mockRejectedValueOnce(new DrawingSaveError("Session expired", false));
+    const drafts = memoryDrafts();
+    const h = await openWith(api, drafts);
+    vi.useFakeTimers();
+    act(() => h.result.current.set("railway", { stations: [1] }));
+    await act(() => vi.advanceTimersByTimeAsync(1000));
+    expect(h.result.current.status).toBe("failed");
+    expect(drafts.all.get("p1/railway")).toMatchObject({ doc: { stations: [1] }, baseVersion: 4 });
+    act(() => h.result.current.retry());
+    await act(() => vi.advanceTimersByTimeAsync(1000));
+    expect(h.result.current.status).toBe("saved");
+    expect(drafts.all.has("p1/railway")).toBe(false);
+  });
+
+  it("brings an unsaved change back after a reload and saves it", async () => {
+    const { api, store } = fakeApi({ railway: drawing("railway", { stations: [] }, 4) });
+    const drafts = memoryDrafts();
+    await drafts.put("p1", { kind: "railway", doc: { stations: [7] }, baseVersion: 4, at: Date.now() });
+    const h = await openWith(api, drafts);
+    expect(h.result.current.doc("railway")).toEqual({ stations: [7] });
+    expect(h.result.current.restored).toBe(1);
+    await waitFor(() => expect(store.railway?.doc).toEqual({ stations: [7] }));
+  });
+
+  it("asks which to keep when someone saved since the change was made", async () => {
+    const { api } = fakeApi({ railway: drawing("railway", { stations: ["theirs"] }, 6) });
+    const drafts = memoryDrafts();
+    await drafts.put("p1", { kind: "railway", doc: { stations: ["mine"] }, baseVersion: 4, at: Date.now() });
+    const h = await openWith(api, drafts);
+    expect(h.result.current.status).toBe("conflict");
+    expect(h.result.current.doc("railway")).toEqual({ stations: ["mine"] });
+    act(() => h.result.current.takeTheirs());
+    expect(h.result.current.doc("railway")).toEqual({ stations: ["theirs"] });
+    await waitFor(() => expect(drafts.all.has("p1/railway")).toBe(false));
   });
 });

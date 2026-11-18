@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { type Drawing, DrawingConflict, type DrawingKind, DrawingSaveError } from "../projects/drawings";
+import { DRAFT_MAX_AGE_MS, type DraftStore, indexedDbDrafts } from "./localDraft";
 
 /** How the project's drawings stand against the server, worst first. */
 export type SaveStatus = "conflict" | "failed" | "offline" | "saving" | "saved";
@@ -26,6 +27,8 @@ interface Entry {
   clash: Drawing | null | undefined;
   error: string | null;
   timer: ReturnType<typeof setTimeout> | undefined;
+  /** Writes the local draft a moment after the last change. */
+  draftTimer: ReturnType<typeof setTimeout> | undefined;
 }
 
 /** One change the person can undo: a drawing before and after it. */
@@ -60,6 +63,8 @@ const MAX_STEPS = 100;
 
 /** Wait after the last change before saving, ms. */
 const SAVE_DELAY_MS = 800;
+/** Wait after the last change before writing the local draft, ms. */
+const DRAFT_DELAY_MS = 250;
 const RETRY_MAX_MS = 30_000;
 
 const empty = (): Entry => ({
@@ -74,6 +79,7 @@ const empty = (): Entry => ({
   clash: undefined,
   error: null,
   timer: undefined,
+  draftTimer: undefined,
 });
 
 /** What the hook needs of the projects API. */
@@ -94,9 +100,18 @@ export interface DrawingsApi {
  * keeps their own drawing or takes the other one.
  * Inputs: the projects API, project id, and whether the caller may edit (viewers never save).
  * Output: the documents and their save status, and the actions on them.
- * Side effects: GET and PUT `/api/projects/:id/drawings`; warns before the page closes with unsaved changes.
+ * Unsaved changes are also kept on this device (IndexedDB) until the server has them, and come back after a
+ * reload or a crash: as unsaved changes when the server still has the version they started from, else as a
+ * clash the person settles with Keep mine or Use theirs.
+ * Side effects: GET and PUT `/api/projects/:id/drawings`; reads and writes the device's drafts; warns before the
+ * page closes with unsaved changes.
  */
-export function useDrawings(api: DrawingsApi, projectId: string, editable: boolean) {
+export function useDrawings(
+  api: DrawingsApi,
+  projectId: string,
+  editable: boolean,
+  drafts: DraftStore | null = defaultDrafts(),
+) {
   const entries = useRef(new Map<DrawingKind, Entry>());
   const session = useRef(0);
   const [loaded, setLoaded] = useState(false);
@@ -107,8 +122,24 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
   const undoStack = useRef<Step[]>([]);
   const redoStack = useRef<Step[]>([]);
   const settle = useRef<{ kind: DrawingKind; until: number } | null>(null);
-  const live = useRef({ api, projectId, editable });
-  live.current = { api, projectId, editable };
+  const live = useRef({ api, projectId, editable, drafts });
+  live.current = { api, projectId, editable, drafts };
+  const [restored, setRestored] = useState(0);
+
+  /** Keep the unsaved document on this device; forget it once the server has it. */
+  const keepDraft = (kind: DrawingKind, e: Entry) => {
+    clearTimeout(e.draftTimer);
+    const { drafts: store, projectId: pid } = live.current;
+    if (!store) return;
+    e.draftTimer = setTimeout(() => {
+      e.draftTimer = undefined;
+      const pending = e.dirty || e.inFlight || e.clash !== undefined || !!e.error;
+      const done = pending
+        ? store.put(pid, { kind, doc: e.doc, baseVersion: e.version, at: Date.now() })
+        : store.remove(pid, kind);
+      done.catch(() => undefined);
+    }, DRAFT_DELAY_MS);
+  };
 
   const entry = (kind: DrawingKind) => {
     let e = entries.current.get(kind);
@@ -140,6 +171,7 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
           e.failures = 0;
           e.error = null;
           if (e.dirty) push(kind);
+          else keepDraft(kind, e);
           tick();
         },
         (err: unknown) => {
@@ -178,6 +210,7 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
     if (!live.current.editable) return;
     const was = e.dirty;
     e.dirty = true;
+    keepDraft(kind, e);
     if (e.clash === undefined && e.failures === 0) {
       clearTimeout(e.timer);
       e.timer = setTimeout(() => push(kind), SAVE_DELAY_MS);
@@ -232,8 +265,12 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
     settle.current = null;
     setLoaded(false);
     setLoadError(null);
-    live.current.api.drawings(projectId).then(
-      (all) => {
+    setRestored(0);
+    const store = live.current.drafts;
+    const local =
+      store && live.current.editable ? store.list(projectId).catch(() => []) : Promise.resolve([]);
+    Promise.all([live.current.api.drawings(projectId), local]).then(
+      ([all, kept]) => {
         if (session.current !== mine) return;
         for (const [k, d] of Object.entries(all) as [DrawingKind, Drawing][]) {
           const e = entry(k);
@@ -241,6 +278,30 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
           e.json = JSON.stringify(d.doc);
           e.version = d.version;
         }
+        // Changes left on this device by a reload, a closed tab or a crash.
+        let back = 0;
+        for (const draft of kept) {
+          const e = entry(draft.kind);
+          const json = JSON.stringify(draft.doc);
+          if (Date.now() - draft.at > DRAFT_MAX_AGE_MS || json === e.json) {
+            store?.remove(projectId, draft.kind).catch(() => undefined);
+            continue;
+          }
+          back++;
+          const server = all[draft.kind];
+          if ((server?.version ?? null) === draft.baseVersion) {
+            // The server still has the version the change started from: it is simply unsaved.
+            e.doc = draft.doc;
+            e.dirty = true;
+            e.timer = setTimeout(() => push(draft.kind), SAVE_DELAY_MS);
+          } else {
+            // Someone saved since: the person chooses, as with any clash.
+            e.doc = draft.doc;
+            e.version = draft.baseVersion;
+            e.clash = server ?? null;
+          }
+        }
+        setRestored(back);
         setLoaded(true);
       },
       (err: unknown) => {
@@ -251,6 +312,13 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
     return () => {
       for (const [k, e] of map.current) {
         clearTimeout(e.timer);
+        // The draft is written now rather than lost with the timer.
+        if (e.draftTimer !== undefined && (e.dirty || e.inFlight)) {
+          clearTimeout(e.draftTimer);
+          live.current.drafts
+            ?.put(projectId, { kind: k, doc: e.doc, baseVersion: e.version, at: Date.now() })
+            .catch(() => undefined);
+        }
         if (e.dirty && !e.inFlight && e.clash === undefined && live.current.editable)
           void live.current.api.saveDrawing(projectId, k, e.doc, e.version).catch(() => undefined);
       }
@@ -283,6 +351,8 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
     loadError,
     /** Try loading again after a failure. */
     reload: () => setAttempt((n) => n + 1),
+    /** How many drawings came back from this device's unsaved changes when the project opened. */
+    restored,
     status,
     /** The first save error the server gave, when it will not help to try again. */
     error: all.find(([, e]) => e.error)?.[1].error ?? null,
@@ -340,9 +410,17 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
       e.clash = undefined;
       e.dirty = false;
       e.generation++;
+      keepDraft(clashAt[0], e);
       tick();
     },
   };
 }
 
 export type Drawings = ReturnType<typeof useDrawings>;
+
+/** The device's draft store, opened once. */
+let shared: DraftStore | null | undefined;
+function defaultDrafts(): DraftStore | null {
+  if (shared === undefined) shared = indexedDbDrafts();
+  return shared;
+}

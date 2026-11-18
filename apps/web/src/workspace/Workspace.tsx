@@ -1802,6 +1802,14 @@ export function Workspace({
 function SaveStatus({ drawings, onRetry }: { drawings: Drawings; onRetry: () => void }) {
   const { t } = useI18n();
   const s = drawings.status;
+  // Changes kept on this device came back on opening: say so for a while.
+  const [restoredNote, setRestoredNote] = useState(false);
+  useEffect(() => {
+    if (!drawings.restored) return;
+    setRestoredNote(true);
+    const timer = setTimeout(() => setRestoredNote(false), 10_000);
+    return () => clearTimeout(timer);
+  }, [drawings.restored]);
   if (s === "conflict") return null;
   // A refused save never reads as saved: it says so, with a way to try again.
   if (s === "failed")
@@ -1820,13 +1828,15 @@ function SaveStatus({ drawings, onRetry }: { drawings: Drawings; onRetry: () => 
       </span>
     );
   const text =
-    s === "saved"
-      ? t("save.saved")
-      : s === "saving"
-        ? t("save.saving")
-        : s === "offline"
-          ? t("save.offline")
-          : t("save.failed", { error: drawings.error ?? "" });
+    restoredNote && (s === "saved" || s === "saving")
+      ? t("save.restored")
+      : s === "saved"
+        ? t("save.saved")
+        : s === "saving"
+          ? t("save.saving")
+          : s === "offline"
+            ? t("save.offline")
+            : t("save.failed", { error: drawings.error ?? "" });
   return (
     <span
       role="status"

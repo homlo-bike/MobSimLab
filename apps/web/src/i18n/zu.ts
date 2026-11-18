@@ -235,6 +235,7 @@ export const zu: Messages = {
   "save.takeTheirs": "Sebenzisa okwabo",
   "save.loadFailed": "Imidwebo yephrojekthi ayilayishanga: {error}",
   "save.retry": "Zama futhi",
+  "save.restored": "Izinguquko ezingagcinwanga zale divayisi zibuyisiwe",
   "drawing.street-lines": "umugqa womgwaqo",
   "drawing.railway": "ujantshi",
   "drawing.street-setups": "ukusethwa kwemigwaqo",

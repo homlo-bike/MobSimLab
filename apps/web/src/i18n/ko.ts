@@ -228,6 +228,7 @@ export const ko: Messages = {
   "save.takeTheirs": "상대방 것 사용",
   "save.loadFailed": "프로젝트 도면을 불러올 수 없습니다: {error}",
   "save.retry": "다시 시도",
+  "save.restored": "이 기기의 저장되지 않은 변경 사항을 복원했습니다",
   "drawing.street-lines": "도로 노선",
   "drawing.railway": "철도",
   "drawing.street-setups": "도로 설정",

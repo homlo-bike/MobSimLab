@@ -232,6 +232,7 @@ export const pl: Messages = {
   "save.takeTheirs": "Weź tamtą",
   "save.loadFailed": "Nie udało się wczytać rysunków projektu: {error}",
   "save.retry": "Spróbuj ponownie",
+  "save.restored": "Przywrócono niezapisane zmiany z tego urządzenia",
   "drawing.street-lines": "linie drogowe",
   "drawing.railway": "kolej",
   "drawing.street-setups": "konfigurację ulic",
