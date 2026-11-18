@@ -383,6 +383,8 @@ export interface Switching {
   value: number;
   /** Change (share) of the item that brings the ENPV to 0; null when no change can. */
   change: number | null;
+  /** The change that would be needed takes the item below zero (a cost more than 100 % lower): there is none. */
+  impossible?: boolean;
 }
 
 export interface Scenario {
@@ -582,12 +584,13 @@ export function appraise(input: AppraisalInput, draws = 200, seed = 0xa9a1): App
   tornado.sort((a, b) => Math.abs(b.high - b.low) - Math.abs(a.high - a.low));
   // Switching values: how far one item can change before the ENPV reaches 0 (it is linear in each).
   const r = base.result;
-  const sw = (id: Switching["id"], label: string, value: number, cost: boolean): Switching => ({
-    id,
-    label,
-    value,
-    change: value > 0 ? (cost ? r.enpv / value : -r.enpv / value) : null,
-  });
+  const sw = (id: Switching["id"], label: string, value: number, cost: boolean): Switching => {
+    const change = value > 0 ? (cost ? r.enpv / value : -r.enpv / value) : null;
+    // A cost would have to fall more than 100 % (or a benefit turn negative): no switching value exists.
+    return change !== null && change < -1
+      ? { id, label, value, change: null, impossible: true }
+      : { id, label, value, change };
+  };
   const switching = [
     sw("capex", "Construction cost, renewals and residual value", r.capital, true),
     sw("opex", "Operating cost", r.operating, true),

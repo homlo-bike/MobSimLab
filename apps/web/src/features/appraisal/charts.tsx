@@ -265,7 +265,15 @@ export function CashFlowChart({
           )}
         </div>
         <div className="mt-1 flex justify-between text-xs tabular-nums text-slate-500">
-          <span>Year 1 · lowest {money(cmin)}</span>
+          <span>
+            Year 1 · {money(cum[0] ?? 0)}
+            {cum.length > 1 && cmin < (cum[0] ?? 0) && (
+              <>
+                {" "}
+                · lowest {money(cmin)} in year {cum.indexOf(cmin) + 1}
+              </>
+            )}
+          </span>
           <span>
             Year {n} · {money(cum[cum.length - 1] ?? 0)}
           </span>
