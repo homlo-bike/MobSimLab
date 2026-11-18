@@ -6,7 +6,8 @@ import { type CountryEconomy, type EconomyApi, pricesFrom } from "../src/feature
 import { estimate, perLine, structureOf, sum } from "../src/features/costs/model";
 import { libraryValue, paramValue } from "../src/features/costs/params";
 import type { LineReport, Network, RailEngine, RailView, TrackView } from "../src/features/railways/types";
-import type { StreetLinesDoc } from "../src/features/street-lines/saved";
+import { lineInput, type SavedStreetLine, type StreetLinesDoc } from "../src/features/street-lines/saved";
+import { fleetRow, streetBlocks } from "../src/features/timetables/blocks";
 import type { LineView } from "../src/features/street-lines/types";
 
 afterEach(cleanup);
@@ -325,6 +326,81 @@ describe("estimate", () => {
     const totals = perLine(e).get("street:0")!;
     expect(totals.construction[1]).toBeGreaterThan(0);
     expect(totals.operating[1]).toBeGreaterThan(0);
+  });
+
+  it("counts a street line's vehicles from its vehicle blocks, as the Timetables tab does", () => {
+    // Two directions of 16 min running each: the circuit (32 min + 1 min dwell + 10 min layover = 43 min) over the
+    // 10 min peak headway gives 5 vehicles, but a vehicle that arrives at :21 waits for the :30 departure, so
+    // each one takes 30 min a direction and the blocks need 6.
+    const base = streetView();
+    const leg = (index: number, from: number, to: number) => ({ index, from, to, time_s: 480, length_m: 1500 });
+    const view = {
+      ...base,
+      time_s: 1920,
+      legs: [leg(0, 1, 2), leg(1, 2, 3), leg(2, 3, 2), leg(3, 2, 1)],
+      directions: [
+        { direction: 0, stops: [1, 2, 3], legs: [0, 1], length_m: 3000, time_s: 960 },
+        { direction: 1, stops: [3, 2, 1], legs: [2, 3], length_m: 3000, time_s: 960 },
+      ],
+      depot_trips: [],
+    } as unknown as LineView;
+    const line = {
+      ...STREET.lines[0]!,
+      timing: { headwayMin: 10, offPeakHeadwayMin: 20, dwellS: 20, layoverMin: 5 },
+      view,
+    } as unknown as SavedStreetLine;
+    const e = estimate({ railway: null, view: null, reports: {}, streetLines: [line], prefs: {}, prices: UNIT });
+    const wait = paramValue("timetable.max_terminal_wait_min", "*", {})[1];
+    const blocks = streetBlocks({ line: lineInput(line)!, layoverMin: 5, hasDepot: false, maxWaitMin: wait });
+    const row = fleetRow("Route 7", "trolleybus", blocks, paramValue("mode.spare_share", "trolleybus", {})[1]);
+    expect(e.lines[0]!.inService).toBe(blocks.length);
+    expect(e.lines[0]!.inService).toBeGreaterThan(5);
+    expect(e.lines[0]!.fleet).toBe(row.fleet);
+  });
+
+  it("gives a track and a station only to the lines that run on them", () => {
+    // M1 runs West–East on track 10; M2 runs East–North on track 11, a tunnel, and many more trips.
+    const net = railway();
+    const north = { ...net.stations[1]!, id: 3, name: "North", x: 2000, y: 2000 };
+    const tunnel = {
+      ...net.tracks[0]!,
+      id: 11,
+      name: "Tunnel",
+      start: { type: "station" as const, station: 2, end: 1, tracks: [0, 1] },
+      end: { type: "station" as const, station: 3, end: 0, tracks: [0, 1] },
+    };
+    const m2 = { ...net.lines![0]!, id: "M2", name: "M2", stations: [2, 3] };
+    const view = railView();
+    const tunnelView = {
+      ...view.tracks[0]!,
+      id: 11,
+      levels: [{ from_m: 0, to_m: 2000, level: "underground2" }],
+    } as unknown as TrackView;
+    const e = estimate({
+      railway: { ...net, stations: [...net.stations, north], tracks: [...net.tracks, tunnel], lines: [net.lines![0]!, m2] },
+      view: {
+        ...view,
+        tracks: [...view.tracks, tunnelView],
+        stations: [...view.stations, { id: 3, lonlat: [4.929, 52.388], mode: "metro" }],
+      } as unknown as RailView,
+      reports: { M1: REPORT, M2: { ...REPORT, id: "M2", trips: 2000 } },
+      streetLines: [],
+      prefs: {},
+      prices: UNIT,
+    });
+    const t = perLine(e);
+    const tbm = libraryValue("cost.civil.tbm_per_km", "metro")[1] * 1e6;
+    // M1's own track has 1.3 km of tunnel, M2's 2 km; East is shared by both.
+    const m1 = t.get("rail:M1")!.construction[1];
+    const m2c = t.get("rail:M2")!.construction[1];
+    expect(m2c - m1).toBeGreaterThan(0.6 * tbm);
+    // M1 alone runs on Main, so it carries all of Main, though M2 runs ten times its train-km.
+    const main = sum(e.items.filter((x) => x.label.includes("Main")).map((x) => x.amount))[1];
+    expect(m1).toBeGreaterThan(main);
+    const tunnelOnly = e.items.filter((x) => x.category === "tbm" && x.label.includes("Tunnel"));
+    expect(tunnelOnly[0]!.parts).toEqual([{ quantity: 2, lines: ["rail:M2"] }]);
+    const stations = e.items.filter((x) => x.category === "stations");
+    expect(stations.flatMap((x) => x.parts ?? []).find((p) => p.lines.length === 2)).toBeTruthy();
   });
 
   it("splits shared infrastructure between rail lines by train-km, and keeps unused track apart", () => {

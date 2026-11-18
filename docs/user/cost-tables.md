@@ -8,7 +8,7 @@ The tables read what is drawn in the project:
 
 - **Railways** from the railway tool: track length by construction type (street level, elevated guideway, viaduct, bridge, ramp, cut and cover tunnel, bored tunnel), track, power and signalling, switches, and stations by level. Set how tunnels and elevated stretches are built on each track in the railway tool (**Tunnel built by**, **Raised on**; see [Railway tool](railway-tool.md#draw-tracks)).
 - **Rail service lines**: the trains each line needs (from publishing its timetable) with reserves, their depot places, crew hours and running cost per car-km.
-- **Street lines**: stops, the bus lanes the line uses, trolley wires, vehicles for the headway with reserves, depot places and vehicle-hours (service hours a day at the line's headway).
+- **Street lines**: stops, the bus lanes the line uses, trolley wires, vehicles for the timetable (one per vehicle block) with reserves, depot places and vehicle-hours (service hours a day at the line's headway).
 
 On top come design and management and a contingency (shares of the infrastructure), infrastructure upkeep a year (a share of its construction cost) and administration and overheads (a share of the operating cost). Land is not included. Cable car and ferry lines are not costed yet.
 
@@ -17,7 +17,7 @@ On top come design and management and a contingency (shares of the infrastructur
 - **Construction** and **Operating, a year**: the medium estimate with the range from low to high.
 - **Where the construction money goes**: a stacked bar per mode (and the total) split into track and structures, systems and street works, stations, vehicles and depots, and design and contingency; beside it, construction by infrastructure type, largest first, with the low to high range as a line. Hover or tab to a bar for its numbers.
 - **Per mode**: construction and operating cost of each mode and the total.
-- **Per line**: length, fleet, construction and operating cost. Click a column heading in this table or in **Per mode** to sort by it. Rail lines that share track split its cost by their train-km; track no line uses yet has its own row.
+- **Per line**: length, fleet, construction and operating cost. Click a column heading in this table or in **Per mode** to sort by it. Each track, station and switch is costed to the rail lines that run on it; lines that share one split its cost by their train-km. Track no line uses yet has its own row. A street line's fleet is its vehicle blocks on a weekday (as in **Timetables**) plus the spare share.
 - **Construction by infrastructure type** and **Operating cost a year**: every item with its quantity, unit cost and the low, medium and high amounts, grouped by mode and kind. Click a mode or a kind to open or close it, or use **Expand all** and **Collapse all**; **Largest first** orders the groups and items by their medium estimate.
 
 Switch between the country's currency and US dollars at the top.
