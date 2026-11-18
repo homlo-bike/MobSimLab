@@ -8,7 +8,7 @@ Benchmark your network: how long does it take to get from A to B, and how does t
 2. Choose the network to route on:
    - the **street line** you drew in the street line tool (draw it first, then open the planner; it runs at its headway off-peak and twice as often in the peaks, which are the project's weekday peaks from **Project preferences → Calendar and years** (by default 07:00–09:00 and 16:00–19:00), from its first to its last departure), and/or
    - the **rail lines** published in the railway tool (see _Rail timetables_ below): they appear under **Network** as _Rail lines from the railway tool_, and the checkbox leaves them out.
-3. Click **A**, then click the map; then the same for **B**. Drag the markers to move them.
+3. Click **A**, then click the map; **B** is armed next, so click the map again for it. Until both are chosen you can click **A** or **B** to pick it again or drag its marker. Once both are chosen they stay as they are; **Clear** removes them and starts over with A.
 4. Pick **Depart at** or **Arrive by** and a time.
 
 ## What you see
@@ -34,6 +34,8 @@ Changing within a station is the walk between the two stops plus 60 s for stairs
 ## Walking and changing
 
 Until the walking network exists, a walk is the straight-line distance × 1.3 at 4.5 km/h. Under **Walking and changing** you can set the walking speed, the longest walk to a stop (1000 m) and at a change (400 m), how far apart two stops with the same name may be and still be one station (600 m), the time to change at one stop (60 s) and the most vehicles in a journey. Changing between two platforms of one station adds 60 s for stairs or lifts unless the timetable gives the time. Where a vehicle ends its trip and goes on as the same line's next trip from the same stop (a bus line turning at its end, a loop line coming round, or a train continuing in its vehicle block), you stay on board: it counts as one ride, with the time at the end stop as time in the vehicle. All defaults are in the assumption library (`demand.walk_speed_kmh`, `journey.*`).
+
+When no journey by public transport exists (A or B is farther from every stop than the longest walk to a stop, or nothing runs at that time), the planner shows the walk all the way instead, however long, and says why.
 
 ## Limits
 

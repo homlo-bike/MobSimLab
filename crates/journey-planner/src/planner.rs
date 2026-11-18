@@ -53,6 +53,10 @@ pub struct ProfileQuery {
 pub struct Plan {
     pub query: Query,
     pub journeys: Vec<Journey>,
+    /// No journey by transit was found (A or B too far from a stop, or no service), so the one journey is
+    /// a walk all the way, however long.
+    #[serde(default)]
+    pub walk_only: bool,
 }
 
 /// One point of a time-of-day profile.
@@ -641,9 +645,45 @@ impl Planner {
             }
             TimeMode::ArriveBy => self.arrive_by(q.from, q.to, q.time_s),
         };
+        if !journeys.is_empty() {
+            return Plan {
+                query: q.clone(),
+                journeys,
+                walk_only: false,
+            };
+        }
+        // Nothing by transit: walking all the way is still an answer.
+        let (oxy, dxy) = (self.xy(q.from), self.xy(q.to));
+        let direct_m = self.dist(oxy, dxy);
+        let dur = self.settings.walk_s(direct_m);
+        let depart = match q.mode {
+            TimeMode::DepartAt => q.time_s,
+            TimeMode::ArriveBy => q.time_s.saturating_sub(dur),
+        };
+        let place = |name: &str, p: [f64; 2]| Place {
+            name: name.into(),
+            stop_id: None,
+            platform_code: None,
+            lon: p[0],
+            lat: p[1],
+        };
+        let mut j = Journey::from_legs(
+            depart,
+            depart,
+            vec![Leg::Walk {
+                kind: WalkKind::Direct,
+                from: place("A", q.from),
+                to: place("B", q.to),
+                start_s: depart,
+                end_s: depart + dur,
+                distance_m: self.settings.walk_m(direct_m),
+            }],
+        );
+        j.query_s = q.time_s;
         Plan {
             query: q.clone(),
-            journeys,
+            journeys: vec![j],
+            walk_only: true,
         }
     }
 

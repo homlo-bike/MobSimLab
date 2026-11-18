@@ -241,6 +241,11 @@ describe("mslab project files", () => {
     } finally {
       await su.end();
     }
+
+    // Opening the same file again: Bob already has a project with that name, so the new one gets a number.
+    const second = await as("bob").upload("/api/projects/import", file);
+    expect(second.status).toBe(201);
+    expect(second.body.project.name).toBe("Lakeside ÿ network (2)");
   });
 
   it("saves the map data of the project area for the static viewer when asked, and leaves it out on opening", async () => {

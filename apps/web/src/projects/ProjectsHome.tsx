@@ -1,4 +1,5 @@
 import { type MouseEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { SchematicThumb } from "../features/schematic/thumb";
 import { type Translate, useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { EyeIcon, MoreIcon, PlusIcon, SearchIcon } from "../shell/icons";
@@ -15,8 +16,36 @@ type Dialogs =
 
 const LINE_COLOURS = ["#1d4ed8", "#c81e1e", "#c2410c", "#0f766e", "#7c3aed", "#475569"];
 
-/** Purpose: a small deterministic "network" drawing per project, so cards are easy to tell apart. */
-export function Thumb({ id, className }: { id: string; className: string }) {
+/**
+ * Purpose: the project card's picture: the network as the Schematic tab last drew it, or, before it has lines,
+ * a small deterministic "network" drawing per project, so cards are easy to tell apart.
+ */
+export function Thumb({
+  id,
+  thumb,
+  className,
+}: {
+  id: string;
+  thumb?: SchematicThumb | null;
+  className: string;
+}) {
+  if (thumb?.lines.length)
+    return (
+      <svg
+        viewBox={`0 0 ${thumb.w} ${thumb.h}`}
+        aria-hidden="true"
+        className={className}
+        preserveAspectRatio="xMidYMid meet"
+        data-thumb="schematic"
+      >
+        <rect width={thumb.w} height={thumb.h} fill="var(--diagram-paper, #fff)" />
+        <g fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          {thumb.lines.map((l, k) => (
+            <polyline key={k} points={l.points.map((p) => p.join(",")).join(" ")} stroke={l.color} />
+          ))}
+        </g>
+      </svg>
+    );
   let h = 0;
   for (const c of id) h = (h * 31 + c.charCodeAt(0)) >>> 0;
   const pick = (n: number) => ((h >>> n) & 0xff) / 255;
@@ -283,7 +312,11 @@ export function ProjectsHome({
           onClick={() => open(p)}
           aria-describedby={`meta-${p.id}`}
         >
-          <Thumb id={p.id} className="h-10 w-14 shrink-0 rounded-lg md:h-24 md:w-full md:rounded-none" />
+          <Thumb
+            id={p.id}
+            thumb={p.thumb}
+            className="h-10 w-14 shrink-0 rounded-lg md:h-24 md:w-full md:rounded-none"
+          />
           <span className="block min-w-0 md:px-3 md:pt-2.5 md:pb-3 md:pe-12">
             <span className="block truncate font-semibold">{p.name}</span>
             <span id={`meta-${p.id}`} className="flex items-center gap-1 truncate text-xs text-slate-500">

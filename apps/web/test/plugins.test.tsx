@@ -180,7 +180,7 @@ describe("Plugins tab of Administration", () => {
     );
     render(<AdminPanel role="admin" userId="u1" csrfToken="csrf-1" onClose={() => {}} />);
     fireEvent.click(screen.getByRole("tab", { name: "Plugins" }));
-    expect(await screen.findByText("No plugins installed yet.")).toBeTruthy();
+    expect(await screen.findByText("No 3rd party plugins installed yet.")).toBeTruthy();
     const file = new File([new Uint8Array([80, 75, 5, 6])], "taxi.msplugin");
     fireEvent.change(screen.getByLabelText("Choose a .msplugin file"), { target: { files: [file] } });
     expect((await screen.findByRole("alert")).textContent).toMatch(/not signed/);

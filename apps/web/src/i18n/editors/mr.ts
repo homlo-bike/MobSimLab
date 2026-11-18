@@ -901,6 +901,9 @@ export const editorsMr = {
   "jp.joined.other": " · {count} थांबे नावाने स्थानकांशी जोडले",
   "jp.clickMap": "नकाशावर क्लिक करा…",
   "jp.pickMap": "नकाशावर निवडा",
+  "jp.clear": "सर्व पुसा",
+  "jp.walkOnly":
+    "सार्वजनिक वाहतुकीने प्रवास नाही: A किंवा B थांब्यापासून {m} मी पेक्षा दूर आहे, किंवा या वेळी सेवा नाही. हा संपूर्ण रस्ता पायी आहे.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "वेळ",
   "jp.departAt": "निघण्याची वेळ",

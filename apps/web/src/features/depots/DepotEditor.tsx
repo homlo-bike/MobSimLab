@@ -8,7 +8,7 @@ import type { MessageKey } from "../../i18n/messages";
 import type { PreferencesDoc } from "../../workspace/preferences";
 import type { SavedStreetLine } from "../street-lines/saved";
 import { MODES } from "../street-lines/modes";
-import type { LonLat } from "../street-lines/types";
+import type { LonLat, Mode } from "../street-lines/types";
 import { loadDepotEngine } from "./engine";
 import {
   DEPOT_LAYERS,
@@ -26,6 +26,7 @@ import {
   inRing,
   lineFleet,
   linesOf,
+  typicalVehicle,
   lineVehicle,
   moveLane,
   newDepot,
@@ -362,11 +363,20 @@ export function DepotEditor({
 
   const drawing = tool.kind === "outline" || tool.kind === "zone";
   const using = selected ? linesOf(selected, lines) : [];
-  // The vehicles of the lines using the depot, for the zones' "sized for".
+  // The vehicles of the lines using the depot, for the zones' "sized for", and the typical vehicle of each
+  // mode the depot takes, so a mode (intercity coaches, say) can have its own slots before its lines use it.
   const vehicleKeys: [string, string][] = (input?.vehicles ?? []).map((v) => [
     v.key,
-    `${v.name} (${v.length_m} m)`,
+    `${v.name || t("street.vehicleTypical", { mode: t(MODES[v.key.split(":")[1] as Mode]?.label ?? "mode.bus") })} (${v.length_m} m)`,
   ]);
+  for (const m of selected?.modes ?? []) {
+    const v = typicalVehicle(m);
+    if (!vehicleKeys.some(([k]) => k === v.key))
+      vehicleKeys.push([
+        v.key,
+        `${t("street.vehicleTypical", { mode: t(MODES[m].label) })} (${v.length_m} m)`,
+      ]);
+  }
   const vehicleName = (key: string) => vehicleKeys.find(([k]) => k === key)?.[1] ?? key;
   const issues = [
     ...(selected ? zonesOutside(selected) : []).map((n) => ({

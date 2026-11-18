@@ -8,7 +8,8 @@ use crate::geom::{
     bbox, boxes_near, clean_ring, contains, inside_margin, line_span, rect, ring_distance, V2,
 };
 use crate::model::{
-    bearing_deg, heading_rad, Aisle, DepotInput, Lane, Layout, Proj, Rules, Slot, Zone, ZoneKind,
+    bearing_deg, heading_rad, Aisle, DepotInput, FleetGroup, Lane, Layout, Proj, Rules, Slot, Zone,
+    ZoneKind,
 };
 use crate::vehicle::{body, Body, VehicleSpec};
 use serde::Serialize;
@@ -56,8 +57,14 @@ pub fn typical_bus() -> VehicleSpec {
     }
 }
 
-/// Purpose: the vehicle a zone's slots are sized for: the zone's choice, else the longest the depot holds.
-pub fn design_vehicle(zone: Option<&Zone>, vehicles: &[VehicleSpec]) -> VehicleSpec {
+/// Purpose: the vehicle a zone's slots are sized for: the zone's choice, else the longest vehicle of the
+/// depot's lines (`fleet`). A vehicle only a zone chose (a mode's typical coach, for its own slots) does not
+/// size the other zones.
+pub fn design_vehicle(
+    zone: Option<&Zone>,
+    vehicles: &[VehicleSpec],
+    fleet: &[FleetGroup],
+) -> VehicleSpec {
     if let Some(k) = zone.and_then(|z| z.vehicle.as_deref()) {
         if let Some(v) = vehicles.iter().find(|v| v.key == k) {
             return v.clone();
@@ -65,6 +72,7 @@ pub fn design_vehicle(zone: Option<&Zone>, vehicles: &[VehicleSpec]) -> VehicleS
     }
     vehicles
         .iter()
+        .filter(|v| fleet.iter().any(|g| g.vehicle == v.key))
         .max_by(|a, b| {
             a.length_m
                 .total_cmp(&b.length_m)
@@ -437,7 +445,7 @@ pub fn generate(input: &DepotInput) -> Generated {
         if ring.len() < 3 {
             continue;
         }
-        let v = design_vehicle(Some(zone), &input.vehicles);
+        let v = design_vehicle(Some(zone), &input.vehicles, &input.fleet);
         let b = body(&v, rules.turning_circle_m);
         let default_per_lane = if zone.kind == ZoneKind::Maintenance {
             1

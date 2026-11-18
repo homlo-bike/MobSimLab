@@ -921,6 +921,9 @@ export const editorsEs = {
   "jp.joined.other": " · {count} paradas unidas a una estación por su nombre",
   "jp.clickMap": "Haz clic en el mapa…",
   "jp.pickMap": "Elegir en el mapa",
+  "jp.clear": "Borrar",
+  "jp.walkOnly":
+    "No hay viaje en transporte público: A o B está a más de {m} m de una parada, o no hay servicio a esta hora. Este es el recorrido completo a pie.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Hora",
   "jp.departAt": "Salida a las",
