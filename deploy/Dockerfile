@@ -83,9 +83,11 @@ LABEL org.opencontainers.image.source="https://github.com/homlo-bike/MobSimLab" 
 # osmium-tool (GPL-3.0) and osm2pgsql (GPL-2.0) import a project's OpenStreetMap data (ADR-0046); they run as
 # separate programs, never linked into MobSimLab. libatomic1: the eclipse-sumo wheel's netconvert and sumo link
 # against libatomic.so.1, which the slim image lacks (road runs failed with "libatomic.so.1: cannot open shared
-# object file").
+# object file"). The sumo program is built with its GUI libraries, so it also needs the system's X11 and OpenGL
+# client libraries (libX11, libXext, libXrender, libGL) and libexpat, which the wheel does not bundle; nothing
+# draws on a screen, they only have to load.
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates xz-utils curl osmium-tool osm2pgsql \
-      libatomic1 \
+      libatomic1 libx11-6 libxext6 libxrender1 libgl1 libexpat1 \
  && rm -rf /var/lib/apt/lists/*
 
 # s6-overlay (ISC). Each archive is checked against the checksum published with the release.
