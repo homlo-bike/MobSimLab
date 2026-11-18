@@ -13,6 +13,8 @@ import type { StreetLinesDoc } from "../street-lines/saved";
 import type { PreferencesDoc } from "../../workspace/preferences";
 import type { Triple } from "../benefits/params";
 import { type LineFact, lineFacts } from "./lineFacts";
+import { ropewayLines, type RopewayLine } from "./ropeways";
+import type { SavedPluginLine } from "../../kits/saved";
 import {
   BRIDGES,
   LEVEL_LABEL,
@@ -30,6 +32,8 @@ import { TablePart } from "./sections";
 interface Props {
   railway: Network | null;
   streetLines: StreetLinesDoc | null;
+  /** The plugin tools' lines by tool id (the cable cars are listed). */
+  pluginLines?: Readonly<Record<string, SavedPluginLine>>;
   preferences: PreferencesDoc | null;
   /** Saves the project's own values (the energy section's grid intensity and battery bus share). */
   onPreferences?: (d: PreferencesDoc) => void;
@@ -63,6 +67,7 @@ const plural = (tn: TranslatePlural, key: "net.modes", n: number) => tn(key, n, 
 export function NetworkTables({
   railway,
   streetLines,
+  pluginLines,
   preferences,
   onPreferences,
   riders = null,
@@ -75,6 +80,7 @@ export function NetworkTables({
   const { build, error } = useRailBuild(railway, loadRail, fetchHeights);
   const prefs = preferences?.values;
   const lines = streetLines?.lines ?? [];
+  const ropeways = useMemo(() => ropewayLines(pluginLines), [pluginLines]);
   const facts = useMemo(
     () =>
       lineFacts({
@@ -83,9 +89,10 @@ export function NetworkTables({
         reports: build?.reports ?? {},
         streetLines: lines,
         prefs,
+        ropeways,
         t,
       }),
-    [railway, build, lines, prefs, t],
+    [railway, build, lines, prefs, ropeways, t],
   );
   const q = useMemo(() => quantities(railway, build?.view ?? null, lines, t), [railway, build, lines, t]);
   const waiting = !!railway?.tracks.length && !build && !error;
@@ -114,7 +121,7 @@ export function NetworkTables({
       ) : (
         <>
           <TablePart id="network.summary">
-            <Summary facts={facts} q={q} />
+            <Summary facts={facts} q={q} ropeways={ropeways} />
           </TablePart>
           <TablePart id="network.infrastructure">
             <Infrastructure q={q} terrain={build?.terrain ?? null} />
@@ -140,7 +147,7 @@ export function NetworkTables({
 }
 
 /** Purpose: the project at a glance: size, fleet and service, in total and per mode. */
-function Summary({ facts, q }: { facts: LineFact[]; q: Quantities }) {
+function Summary({ facts, q, ropeways }: { facts: LineFact[]; q: Quantities; ropeways: RopewayLine[] }) {
   const { t, tn } = useI18n();
   const modeLabel = useModeLabel();
   const km = kmIn(t);
@@ -148,6 +155,8 @@ function Summary({ facts, q }: { facts: LineFact[]; q: Quantities }) {
   const streetKm = sumOf(q.street, (s) => s.routeKm);
   const stations = sumOf(q.rail, (r) => sumOf(LEVELS, (l) => r.stations[l]));
   const stops = sumOf(q.street, (s) => s.stops);
+  const ropeKm = sumOf(ropeways, (r) => r.lengthKm);
+  const ropeStations = sumOf(ropeways, (r) => r.stations);
   const tunnels = sumOf(q.rail, (r) => sumOf(TUNNELS, (s) => r.byStructure[s]));
   const bridges = sumOf(q.rail, (r) => sumOf(BRIDGES, (s) => r.byStructure[s]));
   const modes = [
@@ -165,13 +174,17 @@ function Summary({ facts, q }: { facts: LineFact[]; q: Quantities }) {
         <Tile title={t("tbl.lines")} value={int(facts.length)} sub={plural(tn, "net.modes", modes.length)} />
         <Tile
           title={t("tbl.routeLength")}
-          value={km(railKm + streetKm)}
-          sub={t("net.routeSub", { rail: km(railKm), street: km(streetKm) })}
+          value={km(railKm + streetKm + ropeKm)}
+          sub={
+            ropeKm > 0
+              ? t("net.routeSubCable", { rail: km(railKm), street: km(streetKm), cable: km(ropeKm) })
+              : t("net.routeSub", { rail: km(railKm), street: km(streetKm) })
+          }
         />
         <Tile
           title={t("net.stationsAndStops")}
-          value={int(stations + stops)}
-          sub={t("net.stationsSub", { stations: int(stations), stops: int(stops) })}
+          value={int(stations + ropeStations + stops)}
+          sub={t("net.stationsSub", { stations: int(stations + ropeStations), stops: int(stops) })}
         />
         <Tile title={t("tbl.fleetSpares")} value={int(fleet)} sub={t("net.inServiceSub", { n: int(peak) })} />
         <Tile
@@ -209,14 +222,21 @@ function Summary({ facts, q }: { facts: LineFact[]; q: Quantities }) {
               {modes.map((m) => {
                 const r = q.rail.find((x) => x.mode === m);
                 const ss = q.street.filter((x) => x.mode === m);
+                const rs = ropeways.filter((x) => x.mode === m);
                 const fs = facts.filter((f) => f.mode === m);
                 return (
                   <tr key={m} className="border-b border-slate-100">
                     <td className={td}>{modeLabel(m)}</td>
                     <td className={num}>{int(fs.length)}</td>
-                    <td className={num}>{km((r?.routeKm ?? 0) + sumOf(ss, (s) => s.routeKm))}</td>
                     <td className={num}>
-                      {int((r ? sumOf(LEVELS, (l) => r.stations[l]) : 0) + sumOf(ss, (s) => s.stops))}
+                      {km((r?.routeKm ?? 0) + sumOf(ss, (s) => s.routeKm) + sumOf(rs, (x) => x.lengthKm))}
+                    </td>
+                    <td className={num}>
+                      {int(
+                        (r ? sumOf(LEVELS, (l) => r.stations[l]) : 0) +
+                          sumOf(ss, (s) => s.stops) +
+                          sumOf(rs, (x) => x.stations),
+                      )}
                     </td>
                     <td className={num}>{int(sumOf(fs, (f) => f.fleet))}</td>
                     <td className={num}>{int(sumOf(fs, (f) => f.kmPerYear))}</td>
@@ -492,7 +512,11 @@ function ServiceAndFleet({ facts, riders }: { facts: LineFact[]; riders: Record<
                         {f.speedKmh !== null && sub(t("tbl.u.kmh", { v: fmtQty(f.speedKmh) }))}
                       </td>
                       <td className={num}>
-                        {f.peakHeadwayMin === null ? dash : min(f.peakHeadwayMin)}
+                        {f.peakHeadwayMin === null
+                          ? dash
+                          : f.peakHeadwayMin < 1
+                            ? t("tbl.u.s", { v: fmtQty(f.peakHeadwayMin * 60) })
+                            : min(f.peakHeadwayMin)}
                         {f.offpeakHeadwayMin !== null &&
                           sub(t("net.offPeak", { min: fmtQty(f.offpeakHeadwayMin) }))}
                       </td>
@@ -518,7 +542,9 @@ function ServiceAndFleet({ facts, riders }: { facts: LineFact[]; riders: Record<
                               ? "net.assumed"
                               : f.kind === "rail"
                                 ? "net.perTrain"
-                                : "net.perVehicle",
+                                : f.kind === "ropeway"
+                                  ? "net.perCabin"
+                                  : "net.perVehicle",
                           ),
                         )}
                       </td>

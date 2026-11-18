@@ -14,12 +14,13 @@ import { fullTiming } from "../street-lines/modes";
 import { dayService, vehicleById } from "../street-lines/service";
 import { lineStats } from "../street-lines/summary";
 import { type Translate, translate } from "../../i18n/i18n";
+import type { RopewayLine } from "./ropeways";
 
 /** One line of the project, rail or street, with what it offers. */
 export interface LineFact {
-  /** "rail:<line id>" or "street:<index>", as in the cost estimate. */
+  /** "rail:<line id>", "street:<index>" or "plugin:<tool id>" (cable cars), as in the cost estimate. */
   id: string;
-  kind: "rail" | "street";
+  kind: "rail" | "street" | "ropeway";
   name: string;
   mode: string;
   color: string;
@@ -67,19 +68,21 @@ export interface LineFactsInput {
   reports: Record<string, LineReport>;
   streetLines: SavedStreetLine[];
   prefs: Record<string, number> | undefined;
+  /** The cable car lines of the plugin tools. */
+  ropeways?: readonly RopewayLine[];
   /** Translates the names and problems; English when absent. */
   t?: Translate;
 }
 
 /**
- * Purpose: the facts of every line of the project, rail service lines first, then street lines.
+ * Purpose: the facts of every line of the project, rail service lines first, then street lines, then cable cars.
  * Inputs: the railway and its build with the published service lines, the street lines, the project values, the translator.
  * Output: one fact sheet per line, in the order of the cost estimate.
  */
 export function lineFacts(input: LineFactsInput): LineFact[] {
-  const { railway, view, reports, streetLines, prefs } = input;
+  const { railway, view, reports, streetLines, prefs, ropeways = [] } = input;
   const t: Translate = input.t ?? ((key, vars) => translate("en", key, vars));
-  const est = estimate({ railway, view, reports, streetLines, prefs, prices: BASE_PRICES, t });
+  const est = estimate({ railway, view, reports, streetLines, prefs, prices: BASE_PRICES, ropeways, t });
   const summary = new Map<string, LineSummary>(est.lines.map((l) => [l.id, l]));
   const out: LineFact[] = [];
 
@@ -165,5 +168,38 @@ export function lineFacts(input: LineFactsInput): LineFact[] {
       problem: s.inService > 0 ? null : t("net.problem.noService"),
     });
   });
+
+  for (const r of ropeways) {
+    const s = summary.get(r.id);
+    if (!s) continue;
+    const tripMin = r.tripS / 60;
+    out.push({
+      id: r.id,
+      kind: "ropeway",
+      name: r.name,
+      mode: r.mode,
+      color: r.color,
+      lengthKm: r.lengthKm,
+      stops: r.stations,
+      spacingM: r.stations > 1 ? (r.lengthKm * 1000) / (r.stations - 1) : null,
+      tripMin,
+      speedKmh: tripMin > 0 ? r.lengthKm / (tripMin / 60) : null,
+      peakHeadwayMin: r.headwayS / 60,
+      offpeakHeadwayMin: null,
+      firstMin: r.firstS / 60,
+      lastMin: r.lastS / 60,
+      serviceHours: Math.max(0, r.lastS - r.firstS) / 3600,
+      tripsPerDay: r.tripsPerDay,
+      inService: s.inService,
+      fleet: s.fleet,
+      vehicle: null,
+      placesPerVehicle: r.placesPerCabin,
+      placesAssumed: false,
+      capacityPerHour: (3600 / r.headwayS) * r.placesPerCabin,
+      hoursPerYear: s.hoursPerYear,
+      kmPerYear: s.kmPerYear,
+      problem: null,
+    });
+  }
   return out;
 }
