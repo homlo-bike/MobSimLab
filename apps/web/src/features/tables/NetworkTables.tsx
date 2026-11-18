@@ -13,6 +13,7 @@ import type { StreetLinesDoc } from "../street-lines/saved";
 import type { PreferencesDoc } from "../../workspace/preferences";
 import type { Triple } from "../benefits/params";
 import { type LineFact, lineFacts } from "./lineFacts";
+import { activePlugins } from "../../plugins/registry";
 import { ropewayLines, type RopewayLine } from "./ropeways";
 import type { SavedPluginLine } from "../../kits/saved";
 import {
@@ -80,7 +81,9 @@ export function NetworkTables({
   const { build, error } = useRailBuild(railway, loadRail, fetchHeights);
   const prefs = preferences?.values;
   const lines = streetLines?.lines ?? [];
-  const ropeways = useMemo(() => ropewayLines(pluginLines), [pluginLines]);
+  // The cable car plugin may be turned off for the project: its lines then leave the tables.
+  const plugins = activePlugins();
+  const ropeways = useMemo(() => ropewayLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
   const facts = useMemo(
     () =>
       lineFacts({

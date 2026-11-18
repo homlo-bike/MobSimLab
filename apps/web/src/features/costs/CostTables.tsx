@@ -39,6 +39,7 @@ import {
 import { libraryValue, outsideLibraryRange, PARAMS, paramValue, prefId, type Triple } from "./params";
 import { SPARE_PREF } from "../../workspace/editedElsewhere";
 import type { SavedPluginLine } from "../../kits/saved";
+import { activePlugins } from "../../plugins/registry";
 import { ropewayLines } from "../tables/ropeways";
 
 /** Cost tables settings (drawing kind `costs`): the country the planner chose for prices. */
@@ -242,7 +243,9 @@ export function CostTables({
         : { ...local, currency: conv.currency, ppp: local.ppp * conv.rate, fx: local.fx * conv.rate },
     [local, conv.currency, conv.rate],
   );
-  const ropeways = useMemo(() => ropewayLines(pluginLines), [pluginLines]);
+  // The cable car plugin may be turned off for the project: its lines then leave the tables.
+  const plugins = activePlugins();
+  const ropeways = useMemo(() => ropewayLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
   const est = useMemo(
     () =>
       estimate({

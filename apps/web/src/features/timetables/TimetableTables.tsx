@@ -32,6 +32,7 @@ import {
   type VehicleBlock,
 } from "./blocks";
 import type { SavedPluginLine } from "../../kits/saved";
+import { activePlugins } from "../../plugins/registry";
 import { ropewayLines, type RopewayLine } from "../tables/ropeways";
 import { railLineFor } from "./dayTypes";
 import { feedHolidays, mergeDays, streetDay } from "./feed";
@@ -215,7 +216,9 @@ export function TimetableTables({
   const calKey = JSON.stringify(calendarFrom(preferences));
   const cal = useMemo(() => JSON.parse(calKey) as ServiceCalendar, [calKey]);
   const { publications, busy, error } = useRailPublications(railway, cal, options, prefs, loadRail);
-  const ropeways = useMemo(() => ropewayLines(pluginLines), [pluginLines]);
+  // The cable car plugin may be turned off for the project: its lines then leave the tables.
+  const plugins = activePlugins();
+  const ropeways = useMemo(() => ropewayLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
   const byDay = useMemo(
     () =>
       Object.fromEntries(

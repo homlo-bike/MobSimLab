@@ -115,6 +115,14 @@ describe("cable car lines in the tables", () => {
     // 19 hours, a cabin every 12 s each way.
     expect(r!.tripsPerDay).toBe(2 * (19 * 300 + 1));
     expect(r!.placesPerCabin).toBe(10);
+    // With the cable car plugin turned off, its line is left out of the tables and the costs.
+    expect(
+      ropewayLines(
+        gondola(),
+        DAY,
+        PLUGINS.filter((p) => !p.defaults.cable_car),
+      ),
+    ).toEqual([]);
     // Lines that are not cable cars, or not finished, are left out.
     expect(ropewayLines({ x: { ...gondola()["cable-car"]!, noise: null } }, DAY)).toEqual([]);
   });
@@ -177,6 +185,15 @@ describe("cable car lines in the tables", () => {
     const own = perLine(e).get("plugin:cable-car")!;
     expect(own.construction[1]).toBeGreaterThan(0);
     expect(own.operating[1]).toBeGreaterThan(0);
+  });
+
+  it("hides the cable car everywhere in Tables when its plugin is off", () => {
+    setActivePlugins(PLUGINS.filter((p) => !p.defaults.cable_car));
+    render(<NetworkTables railway={null} streetLines={null} pluginLines={gondola()} preferences={null} />);
+    expect(screen.getByText(/Nothing to measure yet/)).toBeTruthy();
+    cleanup();
+    render(<TimetableTables railway={null} streetLines={null} pluginLines={gondola()} preferences={null} />);
+    expect(screen.queryByText("C1 Qasioun cable car")).toBeNull();
   });
 
   it("shows the cable car in the summary and the service table", () => {

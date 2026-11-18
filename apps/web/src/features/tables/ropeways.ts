@@ -61,7 +61,7 @@ export function ropewayParam(
 /**
  * Purpose: the cable car lines saved with the project, with their service on a day.
  * Inputs: the saved plugin lines by tool id, the service day (the project's by default).
- * Output: one entry per complete cable car or aerial tramway line, in tool order.
+ * Output: one entry per complete cable car or aerial tramway line whose plugin is on, in tool order.
  */
 export function ropewayLines(
   tools: Readonly<Record<string, SavedPluginLine>> | null | undefined,
@@ -74,6 +74,8 @@ export function ropewayLines(
     const line = saved.line;
     if (!x || x.kit !== "straight-spans" || !ROPEWAY_MODES.has(x.mode) || !line) continue;
     if (x.stations.length < 2 || !(x.headway_s > 0) || !(x.trip_time_s > 0)) continue;
+    // A plugin the project has turned off takes its lines out of the tables and the costs.
+    if (!findMode(x.mode, plugins)) continue;
     let lengthM = 0;
     for (let i = 1; i < x.stations.length; i++)
       lengthM += distanceKm(x.stations[i - 1]!.lonlat, x.stations[i]!.lonlat) * 1000;
