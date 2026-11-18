@@ -1,12 +1,24 @@
+import { gunzipSync } from "node:zlib";
 import { BadRequestException } from "@nestjs/common";
 import { describe, expect, it } from "vitest";
 import { tileOf } from "../src/simulation/road";
-import { demandTiles, MAX_DEMAND_TILES } from "../src/simulation/runs.service";
+import { demandTiles, gzipList, MAX_DEMAND_TILES } from "../src/simulation/runs.service";
 
 const bundle = (centroids: unknown[]) =>
   JSON.stringify({ version: 1, zones: centroids.map((c, i) => ({ id: `z${i}`, centroid: c })) });
 
 describe("demand run street tiles", () => {
+  it("packs tiles that arrive out of order into one gzipped list, in order", async () => {
+    const list = gzipList();
+    list.put(2, "<osm>c</osm>");
+    list.put(0, '<osm a="1">a</osm>');
+    list.put(1, "<osm>b</osm>");
+    const text = gunzipSync(await list.finish()).toString();
+    expect(JSON.parse(text)).toEqual(['<osm a="1">a</osm>', "<osm>b</osm>", "<osm>c</osm>"]);
+    const empty = gzipList();
+    expect(JSON.parse(gunzipSync(await empty.finish()).toString())).toEqual([]);
+  });
+
   it("takes the tile of every zone centre and the tiles around it, once each", () => {
     const tiles = demandTiles(
       bundle([
