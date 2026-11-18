@@ -380,7 +380,12 @@ export class RunsService {
     });
     // A demand run is queued once its streets are loaded, in the background (they can take minutes).
     if (demand)
-      void this.prepareDemand(id, demand.tiles, input.kind === "demand" ? input.gbfsUrl : undefined);
+      void this.prepareDemand(
+        id,
+        projectId,
+        demand.tiles,
+        input.kind === "demand" ? input.gbfsUrl : undefined,
+      );
     else await this.enqueue(id);
     return this.get(actor, projectId, id);
   }
@@ -450,7 +455,12 @@ export class RunsService {
       .where("network", "=", "{}")
       .executeTakeFirst();
     if (stored?.kind === "demand")
-      void this.prepareDemand(runId, demandTiles(stored.lines), (stored.input as StoredInput).gbfsUrl);
+      void this.prepareDemand(
+        runId,
+        projectId,
+        demandTiles(stored.lines),
+        (stored.input as StoredInput).gbfsUrl,
+      );
     else await this.enqueue(runId);
     return this.get(actor, projectId, runId);
   }
@@ -691,13 +701,19 @@ export class RunsService {
   }
 
   /**
-   * Purpose: load the OpenStreetMap street tiles of a queued demand run in the background, store them gzipped
+   * Purpose: load the OpenStreetMap street tiles of a queued demand run in the background (from the project's OSM
+   * import where it has one, as the street line tool does), store them gzipped
    * in its network (worker `jobs/demand.py` `street_tiles`) with the bike parkings and shared-bike stations of
    * the same tiles and of the GBFS feed (`bikes`), and queue it. The run's progress counts the tiles. A run
    * stopped meanwhile is left as it is; a run whose streets cannot be loaded fails with the reason. Bike points
    * that cannot be loaded are left out with a note in the result.
    */
-  private async prepareDemand(id: string, tiles: [number, number][], gbfsUrl?: string): Promise<void> {
+  private async prepareDemand(
+    id: string,
+    projectId: string,
+    tiles: [number, number][],
+    gbfsUrl?: string,
+  ): Promise<void> {
     const open = async () =>
       (
         await this.db
@@ -717,7 +733,8 @@ export class RunsService {
       const worker = async () => {
         for (let i = next++; i < tiles.length && !stopped; i = next++) {
           const [x, y] = tiles[i]!;
-          put(i, await this.streets.tile(x, y));
+          // The project's own OSM import where it has one, as the street line tool reads it; Overpass otherwise.
+          put(i, await this.streets.tile(x, y, projectId));
           done++;
           if (done % 8 === 0 || done === tiles.length) {
             if (!(await open())) stopped = true;

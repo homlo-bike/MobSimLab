@@ -316,7 +316,8 @@ export function DrawsChart({
   const x = (v: number) => ((v - lo) / span) * 100;
   const marks: [string, number][] = [
     ["Low (P10)", p[0]],
-    ["Medium (P50)", p[1]],
+    // Not the medium case, which the tables use: the middle of the draws.
+    ["Middle of the draws (P50)", p[1]],
     ["High (P90)", p[2]],
   ];
   return (

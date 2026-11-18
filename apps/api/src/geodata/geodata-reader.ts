@@ -173,6 +173,17 @@ export class GeodataReader {
     return part ? { run, box: part } : null;
   }
 
+  /** Purpose: whether the project has imported OpenStreetMap data (whatever area it covers). */
+  async hasOsm(projectId: string): Promise<boolean> {
+    let p = this.osmRun.get(projectId);
+    if (!p) {
+      p = this.imports.current(projectId, "osm");
+      p.catch(() => this.osmRun.delete(projectId));
+      this.osmRun.set(projectId, p);
+    }
+    return !!(await p);
+  }
+
   /**
    * Purpose: OSM XML of one kind of way inside a box, cut from the project's extract, or null when the project's
    * import does not hold the box.

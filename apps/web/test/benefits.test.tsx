@@ -2,7 +2,13 @@ import { act, cleanup, fireEvent, render, screen, within } from "@testing-librar
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BenefitTables, stationRows } from "../src/features/benefits/BenefitTables";
 import type { BenefitsApi, OsmArea } from "../src/features/benefits/data";
-import { catchmentTiles, countryFigures, loadTiles } from "../src/features/benefits/data";
+import {
+  benefitsApi,
+  catchmentTiles,
+  countryFigures,
+  loadTiles,
+  MAX_AREAS,
+} from "../src/features/benefits/data";
 import { compile, FormulaError, formulaProblem } from "../src/features/benefits/formula";
 import { FORMULAS, formulaText } from "../src/features/benefits/formulas";
 import {
@@ -463,6 +469,31 @@ describe("benefit estimate", () => {
 });
 
 describe("data for the benefit tables", () => {
+  it("asks for the population of many station areas in batches the API takes", async () => {
+    const sizes: number[] = [];
+    const api = benefitsApi(undefined, async (areas) => {
+      sizes.push(areas.length);
+      return {
+        year: 2026,
+        populations: Object.fromEntries(areas.map((a) => [a.id, 10])),
+        failed: areas.length > 100 ? 0 : 1,
+        reasons: ["grid downloading"],
+        source: { name: "WorldPop", licence: "CC BY 4.0", url: "https://www.worldpop.org" },
+      };
+    });
+    const ring: LonLat[] = [
+      [0, 0],
+      [0, 1],
+      [1, 1],
+      [0, 0],
+    ];
+    const areas = Array.from({ length: 758 }, (_, i) => ({ id: `s${i}`, ring }));
+    const answer = await api.population(areas);
+    expect(sizes).toEqual([MAX_AREAS, 358]);
+    expect(Object.keys(answer.populations)).toHaveLength(758);
+    expect(answer).toMatchObject({ year: 2026, failed: 0, reasons: ["grid downloading"] });
+  });
+
   it("turns World Bank percentages into shares and finds the tiles around stations", async () => {
     expect(
       countryFigures({
