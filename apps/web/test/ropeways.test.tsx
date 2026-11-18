@@ -222,3 +222,49 @@ describe("cable car lines in the tables", () => {
     );
   });
 });
+
+describe("cable car unit costs in the plugin", () => {
+  it("prices the Damascus cable car from the bundled values", () => {
+    const ropeways = ropewayLines(gondola(), DAY);
+    const e = estimate({
+      railway: null,
+      view: null,
+      reports: {},
+      streetLines: [],
+      prefs: {},
+      prices: BASE_PRICES,
+      ropeways,
+    });
+    const rate = (param: string) => e.items.find((x) => x.param === param)!.rate[1] / 1e6;
+    expect(rate("ropeway.cost.station_each")).toBeCloseTo(13 * BASE_PRICES.ppp * BASE_PRICES.escalation);
+    expect(rate("ropeway.cost.line_per_km")).toBeCloseTo(14 * BASE_PRICES.ppp * BASE_PRICES.escalation);
+    expect(rate("ropeway.cost.cabin_each")).toBeCloseTo(0.06 * BASE_PRICES.fx * BASE_PRICES.escalation);
+    const own = perLine(e).get("plugin:cable-car")!;
+    // Two stations and 785 m of rope with design and contingency, plus 24 cabins: about US$ 54 M.
+    expect(own.construction[1] / 1e6 / BASE_PRICES.ppp).toBeGreaterThan(45);
+    expect(own.construction[1] / 1e6 / BASE_PRICES.ppp).toBeLessThan(60);
+  });
+
+  it("uses the tricable values for a 3S line", () => {
+    const tools = gondola();
+    tools["cable-car"]!.noise = {
+      ...tools["cable-car"]!.noise!,
+      system: "3s",
+    } as (typeof tools)["cable-car"]["noise"];
+    const e = estimate({
+      railway: null,
+      view: null,
+      reports: {},
+      streetLines: [],
+      prefs: {},
+      prices: BASE_PRICES,
+      ropeways: ropewayLines(tools, DAY),
+    });
+    expect(e.items.find((x) => x.param === "ropeway.cost.line_per_km")!.library?.values).toEqual([
+      12, 18, 30,
+    ]);
+    expect(e.items.find((x) => x.param === "ropeway.cost.cabin_each")!.library?.values).toEqual([
+      0.3, 0.4, 0.6,
+    ]);
+  });
+});
