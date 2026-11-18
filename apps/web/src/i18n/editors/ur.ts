@@ -233,6 +233,7 @@ export const editorsUr = {
   "rail.line.publish": "ٹائم ٹیبل شائع کریں",
   "rail.line.publishAgain": "دوبارہ شائع کریں",
   "rail.line.fixFirst": "شائع کرنے سے پہلے جانچ کی خرابیاں درست کریں۔",
+  "rail.line.fixFirstMenu": "شائع کرنے سے پہلے خرابیاں درست کریں۔ وہ اوپر گھنٹی کے بٹن، جانچیں، میں درج ہیں۔",
   "rail.line.stale": "شائع کرنے کے بعد ڈرائنگ بدل گئی۔ سفر منصوبہ ساز کو تازہ کرنے کے لیے دوبارہ شائع کریں۔",
   "rail.line.published": "شائع ہوا {lines} · {trips}۔ سمیولیٹر → سفر منصوبہ ساز میں ان پر سواری کریں۔",
   "rail.line.notes": "نوٹس",

@@ -265,7 +265,14 @@ export function RailPanel(props: Props) {
         <ObjectComments type={kind} id={sel.id} />
       )}
 
-      <ServiceLinesPanel doc={doc} view={view} setDoc={a.setDoc} show={a.showIssue} {...props.service} />
+      <ServiceLinesPanel
+        doc={doc}
+        view={view}
+        setDoc={a.setDoc}
+        show={a.showIssue}
+        checksInMenu={checksElsewhere}
+        {...props.service}
+      />
 
       <SwitchesSection
         doc={doc}

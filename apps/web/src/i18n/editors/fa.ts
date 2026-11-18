@@ -213,6 +213,8 @@ export const editorsFa = {
   "rail.line.publish": "انتشار جدول زمانی",
   "rail.line.publishAgain": "انتشار دوباره",
   "rail.line.fixFirst": "پیش از انتشار، خطاهای بررسی را رفع کنید.",
+  "rail.line.fixFirstMenu":
+    "پیش از انتشار، خطاها را رفع کنید. آن‌ها در بررسی‌ها، دکمهٔ زنگ در بالا، فهرست شده‌اند.",
   "rail.line.stale": "نقشه پس از انتشار تغییر کرده است. برای به‌روزرسانی مسیریاب دوباره منتشر کنید.",
   "rail.line.published": "{lines} · {trips} منتشر شد. در شبیه‌ساز ← سفرها سوار شوید.",
   "rail.line.notes": "یادداشت‌ها",

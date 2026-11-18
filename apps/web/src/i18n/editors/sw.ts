@@ -233,6 +233,8 @@ export const editorsSw = {
   "rail.line.publish": "Chapisha ratiba",
   "rail.line.publishAgain": "Chapisha tena",
   "rail.line.fixFirst": "Rekebisha hitilafu chini ya Ukaguzi kabla ya kuchapisha.",
+  "rail.line.fixFirstMenu":
+    "Rekebisha hitilafu kabla ya kuchapisha. Zimeorodheshwa chini ya Ukaguzi, kitufe cha kengele juu.",
   "rail.line.stale": "Mchoro umebadilika tangu kuchapishwa. Chapisha tena ili kusasisha kipanga safari.",
   "rail.line.published": "Zimechapishwa {lines} · {trips}. Zipande kwenye Kiigaji → Kipanga safari.",
   "rail.line.notes": "Madokezo",

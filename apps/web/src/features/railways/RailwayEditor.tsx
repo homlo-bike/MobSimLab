@@ -279,11 +279,34 @@ export function RailwayEditor({
   const docChanged = useRef(onDocChange);
   docChanged.current = onDocChange;
   const drawn = useRef(initial !== null);
+  // A drag (a station, switch, signal or handle) is one change to undo: while it is under way the drawing is
+  // only shown here, and sent once it ends.
+  const holding = useRef(false);
+  const [released, setReleased] = useState(0);
+  const hold = useCallback((on: boolean) => {
+    if (holding.current === on) return;
+    holding.current = on;
+    if (!on) setReleased((n) => n + 1);
+  }, []);
+  // A drag ends when the button is let go, wherever that is (also outside the map).
   useEffect(() => {
-    if (!doc) return;
+    const end = () => hold(false);
+    window.addEventListener("pointerup", end, true);
+    window.addEventListener("pointercancel", end, true);
+    window.addEventListener("mouseup", end, true);
+    window.addEventListener("touchend", end, true);
+    return () => {
+      window.removeEventListener("pointerup", end, true);
+      window.removeEventListener("pointercancel", end, true);
+      window.removeEventListener("mouseup", end, true);
+      window.removeEventListener("touchend", end, true);
+    };
+  }, [hold]);
+  useEffect(() => {
+    if (!doc || holding.current) return;
     drawn.current ||= doc.stations.length + doc.tracks.length + doc.switches.length > 0;
     if (drawn.current) docChanged.current?.(doc);
-  }, [doc]);
+  }, [doc, released]);
 
   // Read through a ref so the callbacks built on it keep their identity while the drawing changes:
   // the edit handles are rebuilt when they change, which would end a drag after its first step.
@@ -552,6 +575,7 @@ export function RailwayEditor({
     engine,
     latest,
     dragging,
+    hold,
     say,
     setDoc,
     setSel,
@@ -575,6 +599,7 @@ export function RailwayEditor({
     sel,
     latest,
     dragging,
+    hold,
     setDoc,
     setSel,
     connLocal,

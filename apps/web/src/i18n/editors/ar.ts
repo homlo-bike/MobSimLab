@@ -271,6 +271,7 @@ export const editorsAr = {
   "rail.line.publish": "نشر الجدول",
   "rail.line.publishAgain": "النشر مرة أخرى",
   "rail.line.fixFirst": "أصلح الأخطاء في الفحوصات قبل النشر.",
+  "rail.line.fixFirstMenu": "أصلح الأخطاء قبل النشر. تجدها في الفحوص، زر الجرس في الأعلى.",
   "rail.line.stale": "تغيّر الرسم منذ النشر. انشر مرة أخرى لتحديث مخطِّط الرحلات.",
   "rail.line.published": "تم نشر {lines} · {trips}. اركبها من المحاكي ← مخطِّط الرحلات.",
   "rail.line.notes": "ملاحظات",

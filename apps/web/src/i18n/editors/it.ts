@@ -233,6 +233,8 @@ export const editorsIt = {
   "rail.line.publish": "Pubblica l'orario",
   "rail.line.publishAgain": "Pubblica di nuovo",
   "rail.line.fixFirst": "Correggi gli errori delle verifiche prima di pubblicare.",
+  "rail.line.fixFirstMenu":
+    "Correggi gli errori prima di pubblicare. Sono elencati in Controlli, il pulsante con la campanella in alto.",
   "rail.line.stale":
     "Il disegno è cambiato dopo la pubblicazione. Pubblica di nuovo per aggiornare il calcolo dei percorsi.",
   "rail.line.published": "Pubblicati {lines} · {trips}. Viaggia in Simulatore → Viaggi.",

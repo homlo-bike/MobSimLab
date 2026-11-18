@@ -228,6 +228,7 @@ export const editorsAm = {
   "rail.line.publish": "የጊዜ ሰሌዳ አትም",
   "rail.line.publishAgain": "እንደገና አትም",
   "rail.line.fixFirst": "ከማተምዎ በፊት በፍተሻዎች ስር ያሉ ስህተቶችን ያስተካክሉ።",
+  "rail.line.fixFirstMenu": "ከማተምዎ በፊት ስህተቶቹን ያስተካክሉ። ከላይ ባለው የደወል አዝራር፣ ፍተሻዎች ስር ተዘርዝረዋል።",
   "rail.line.stale": "ከታተመ በኋላ ስዕሉ ተቀይሯል። የጉዞ እቅድ አውጪውን ለማዘመን እንደገና ያትሙ።",
   "rail.line.published": "ታትሟል {lines} · {trips}። በማስመሰያ → የጉዞ እቅድ አውጪ ውስጥ ይሳፈሩባቸው።",
   "rail.line.notes": "ማስታወሻዎች",

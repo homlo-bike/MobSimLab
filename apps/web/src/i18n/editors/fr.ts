@@ -233,6 +233,8 @@ export const editorsFr = {
   "rail.line.publish": "Publier l’horaire",
   "rail.line.publishAgain": "Publier à nouveau",
   "rail.line.fixFirst": "Corrigez les erreurs sous Vérifications avant de publier.",
+  "rail.line.fixFirstMenu":
+    "Corrigez les erreurs avant de publier. Elles sont listées sous Vérifications, le bouton cloche en haut.",
   "rail.line.stale":
     "Le dessin a changé depuis la publication. Publiez à nouveau pour mettre à jour le calculateur d’itinéraires.",
   "rail.line.published":

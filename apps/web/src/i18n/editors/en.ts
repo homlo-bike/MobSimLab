@@ -243,6 +243,8 @@ export const editorsEn = {
   "rail.line.publish": "Publish timetable",
   "rail.line.publishAgain": "Publish again",
   "rail.line.fixFirst": "Fix the errors under Checks before publishing.",
+  "rail.line.fixFirstMenu":
+    "Fix the errors before publishing. They are listed under Checks, the bell button at the top.",
   "rail.line.stale": "The drawing changed since publishing. Publish again to update the journey planner.",
   "rail.line.published": "Published {lines} · {trips}. Ride them in Simulator → Journey planner.",
   "rail.line.notes": "Notes",

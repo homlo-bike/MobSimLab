@@ -19,7 +19,7 @@ function tickStep(min: number): number {
 }
 
 /** Purpose: "+2 min" or "−1.5 min" for a shift in seconds. */
-function shiftText(s: number): string {
+export function shiftText(s: number): string {
   const m = Math.round((s / 60) * 10) / 10;
   return `${m >= 0 ? "+" : "−"}${Math.abs(m)} min`;
 }

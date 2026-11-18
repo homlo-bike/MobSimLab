@@ -213,6 +213,8 @@ export const editorsVi = {
   "rail.line.publish": "Xuất bản lịch chạy",
   "rail.line.publishAgain": "Xuất bản lại",
   "rail.line.fixFirst": "Hãy sửa các lỗi kiểm tra trước khi xuất bản.",
+  "rail.line.fixFirstMenu":
+    "Hãy sửa các lỗi trước khi xuất bản. Các lỗi được liệt kê trong Kiểm tra, nút chuông ở trên cùng.",
   "rail.line.stale": "Bản vẽ đã thay đổi kể từ khi xuất bản. Xuất bản lại để cập nhật mục tìm hành trình.",
   "rail.line.published": "Đã xuất bản {lines} · {trips}. Đi thử trong Mô phỏng → Hành trình.",
   "rail.line.notes": "Ghi chú",

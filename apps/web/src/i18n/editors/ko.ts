@@ -211,6 +211,7 @@ export const editorsKo = {
   "rail.line.publish": "시간표 게시",
   "rail.line.publishAgain": "다시 게시",
   "rail.line.fixFirst": "게시하기 전에 검사 오류를 수정하세요.",
+  "rail.line.fixFirstMenu": "게시하기 전에 오류를 수정하세요. 오류는 위쪽 종 모양 버튼인 검사에 있습니다.",
   "rail.line.stale": "게시 후 도면이 변경되었습니다. 경로 검색에 반영하려면 다시 게시하세요.",
   "rail.line.published": "{lines} · {trips}을(를) 게시했습니다. 시뮬레이터 → 경로 검색에서 탈 수 있습니다.",
   "rail.line.notes": "참고",

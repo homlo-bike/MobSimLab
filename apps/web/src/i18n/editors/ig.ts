@@ -212,6 +212,7 @@ export const editorsIg = {
   "rail.line.publish": "Bipụta usoro oge",
   "rail.line.publishAgain": "Bipụta ọzọ",
   "rail.line.fixFirst": "Dozie njehie n'okpuru Nyocha tupu ibipụta.",
+  "rail.line.fixFirstMenu": "Dozie njehie tupu ibipụta. Ha dị n'okpuru Nlele, bọtịnụ mgbịrịgba dị n'elu.",
   "rail.line.stale": "Eserese ahụ agbanweela kemgbe ebipụtara ya. Bipụta ọzọ iji melite onye nhazi njem.",
   "rail.line.published": "Ebipụtara {lines} · {trips}. Bata ha na Ihe ịṅomi → Onye nhazi njem.",
   "rail.line.notes": "Ndetu",

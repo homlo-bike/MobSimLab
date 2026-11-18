@@ -209,6 +209,7 @@ export const editorsZh = {
   "rail.line.publish": "发布时刻表",
   "rail.line.publishAgain": "重新发布",
   "rail.line.fixFirst": "发布前请先修正“检查”中的错误。",
+  "rail.line.fixFirstMenu": "发布前请先修正错误。错误列在顶部铃铛按钮“检查”中。",
   "rail.line.stale": "发布后图纸已更改。请重新发布以更新出行规划器。",
   "rail.line.published": "已发布 {lines} · {trips}。可在 模拟器 → 出行规划器 中乘坐。",
   "rail.line.notes": "说明",

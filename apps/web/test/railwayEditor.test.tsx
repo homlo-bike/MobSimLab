@@ -727,6 +727,52 @@ describe("Railway editor", () => {
     expect(onDocChange).toHaveBeenLastCalledWith(expect.objectContaining({ stations: [], tracks: [] }));
   });
 
+  it("sends a dragged station once, when the drag ends, so the drag is one change to undo", async () => {
+    const [saved] = addStation(lineAcross("tram"), [0, 0], {
+      level: "street",
+      sides: 2,
+      islands: 0,
+      platformLength: 40,
+      name: "Old Town",
+    });
+    const id = saved.stations[0]!.id;
+    const onDocChange = vi.fn();
+    const { map, handlers } = fakeMap();
+    // The station is under the pointer wherever it is.
+    (map as unknown as { queryRenderedFeatures: () => unknown[] }).queryRenderedFeatures = () => [
+      { properties: { ref: id } },
+    ];
+    render(
+      <RailwayEditor
+        map={map}
+        fetchTile={() => Promise.reject(new Error("offline"))}
+        loadEngine={loadRailEngine}
+        initial={saved}
+        onDocChange={onDocChange}
+      />,
+    );
+    await waitFor(() => expect(onDocChange).toHaveBeenLastCalledWith(saved));
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
+    const at = (dx: number) => ({ lngLat: { lng: ORIGIN[0] + dx, lat: ORIGIN[1] }, point: { x: 0, y: 0 } });
+    act(() => handlers.get("click")!(at(0)));
+    const frame = () => act(async () => await new Promise((r) => requestAnimationFrame(() => r())));
+    const x = () => {
+      const d = onDocChange.mock.lastCall![0] as Network;
+      return d.stations.find((s) => s.id === id)!.x;
+    };
+    const calls = onDocChange.mock.calls.length;
+    act(() => handlers.get("mousedown")!({ ...at(0), preventDefault: () => undefined }));
+    for (const dx of [0.0001, 0.0002, 0.0003]) {
+      act(() => handlers.get("mousemove")!(at(dx)));
+      await frame();
+    }
+    // Nothing is sent while the station is moving.
+    expect(onDocChange.mock.calls.length).toBe(calls);
+    act(() => handlers.get("mouseup")!({}));
+    await waitFor(() => expect(onDocChange.mock.calls.length).toBe(calls + 1));
+    expect(x()).toBeGreaterThan(15);
+  });
+
   it("saves a new drawing only once something is drawn", async () => {
     const onDocChange = vi.fn();
     const { map, handlers } = fakeMap();

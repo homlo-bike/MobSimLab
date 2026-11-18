@@ -213,6 +213,8 @@ export const editorsTr = {
   "rail.line.publish": "Tarifeyi yayımla",
   "rail.line.publishAgain": "Yeniden yayımla",
   "rail.line.fixFirst": "Yayımlamadan önce denetim hatalarını düzeltin.",
+  "rail.line.fixFirstMenu":
+    "Yayımlamadan önce hataları düzeltin. Hatalar üstteki zil düğmesinde, Denetimler altında listelenir.",
   "rail.line.stale":
     "Çizim yayımlandıktan sonra değişti. Yolculuk planlayıcıyı güncellemek için yeniden yayımlayın.",
   "rail.line.published": "{lines} · {trips} yayımlandı. Simülatör → Yolculuklar'da binin.",

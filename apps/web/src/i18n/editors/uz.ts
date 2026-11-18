@@ -232,6 +232,8 @@ export const editorsUz = {
   "rail.line.publish": "Jadvalni eʼlon qilish",
   "rail.line.publishAgain": "Qayta eʼlon qilish",
   "rail.line.fixFirst": "Eʼlon qilishdan oldin tekshiruv xatolarini tuzating.",
+  "rail.line.fixFirstMenu":
+    "Eʼlon qilishdan oldin xatolarni tuzating. Ular yuqoridagi qo'ng'iroqcha tugmasi, Tekshiruvlar ostida.",
   "rail.line.stale":
     "Eʼlon qilingandan keyin chizma oʻzgardi. Safar rejalashtiruvchisini yangilash uchun qayta eʼlon qiling.",
   "rail.line.published":

@@ -18,6 +18,7 @@ export function useEditHandles({
   sel,
   latest,
   dragging,
+  hold,
   setDoc,
   setSel,
   connLocal,
@@ -31,6 +32,8 @@ export function useEditHandles({
   sel: Selection | null;
   latest: LatestRef;
   dragging: DraggingRef;
+  /** Holds the drawing back while a handle is dragged, so the drag is one change to undo. */
+  hold: (on: boolean) => void;
   setDoc: Dispatch<SetStateAction<Network | null>>;
   setSel: Dispatch<SetStateAction<Selection | null>>;
   connLocal: (a: Anchor) => LocalConnection | null;
@@ -132,6 +135,7 @@ export function useEditHandles({
         setDoc((d) => d && update(d, "tracks", t.id, () => next));
       };
       m.on("dragstart", () => {
+        hold(true);
         if (h.kind === "end" || h.kind === "start") {
           dragging.current = { kind: "end" };
           showConnections(map, true);
@@ -144,6 +148,7 @@ export function useEditHandles({
       m.on("dragend", () => {
         cancelAnimationFrame(frame);
         apply(true);
+        hold(false);
         if (dragging.current?.kind === "end") {
           dragging.current = null;
           showConnections(map, latest.current.tool === "track");
@@ -156,7 +161,7 @@ export function useEditHandles({
       cancelAnimationFrame(frame);
       made.forEach((m) => m.remove());
     };
-  }, [map, handleKey, sel?.pi, connLocal, connectionAt, trackEndAt, minLead]);
+  }, [map, hold, handleKey, sel?.pi, connLocal, connectionAt, trackEndAt, minLead]);
   // Keep handles on the fitted geometry while not being dragged.
   useEffect(() => {
     for (const h of handles) {

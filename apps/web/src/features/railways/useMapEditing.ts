@@ -42,6 +42,7 @@ export function useMapEditing({
   engine,
   latest,
   dragging,
+  hold,
   say,
   setDoc,
   setSel,
@@ -61,6 +62,8 @@ export function useMapEditing({
   engine: MutableRefObject<RailEngine | null>;
   latest: LatestRef;
   dragging: DraggingRef;
+  /** Holds the drawing back while a drag is under way, so the drag is one change to undo. */
+  hold: (on: boolean) => void;
   say: (m: string) => void;
   setDoc: Dispatch<SetStateAction<Network | null>>;
   setSel: Dispatch<SetStateAction<Selection | null>>;
@@ -321,11 +324,13 @@ export function useMapEditing({
       } else return;
       ev.preventDefault();
       map.dragPan.disable();
+      hold(true);
     };
     const onUp = () => {
       if (dragging.current && dragging.current.kind !== "end") {
         dragging.current = null;
         map.dragPan.enable();
+        hold(false);
       }
     };
     map.on("click", onClick);
@@ -341,5 +346,5 @@ export function useMapEditing({
       map.off("mouseup", onUp);
       cancelAnimationFrame(frame);
     };
-  }, [map, connectionAt, trackEndAt, connLocal, finishDraft, minLead, pxToM, startDraft]);
+  }, [map, hold, connectionAt, trackEndAt, connLocal, finishDraft, minLead, pxToM, startDraft]);
 }
