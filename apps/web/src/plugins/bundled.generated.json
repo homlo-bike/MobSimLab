@@ -176,6 +176,22 @@
         "ropeway.capacity_ceiling_pphpd": {
           "label": "Capacity ceiling of any ropeway",
           "unit": "p/h/dir"
+        },
+        "ropeway.cost.station_each": {
+          "label": "Cable car station",
+          "unit": "US$ million per station (2023, PPP)"
+        },
+        "ropeway.cost.line_per_km": {
+          "label": "Cable car rope, towers and drives",
+          "unit": "US$ million per km (2023, PPP)"
+        },
+        "ropeway.cost.cabin_each": {
+          "label": "Cable car cabin",
+          "unit": "US$ million each (2023, market)"
+        },
+        "ropeway.cost.station_hour": {
+          "label": "Cable car staff and energy per station and hour open",
+          "unit": "US$ per hour (2023, PPP)"
         }
       },
       "defaults": {
@@ -270,6 +286,26 @@
               "low": 4500,
               "central": 6000,
               "high": 8000
+            },
+            "ropeway.cost.station_each": {
+              "low": 8,
+              "central": 13,
+              "high": 25
+            },
+            "ropeway.cost.line_per_km": {
+              "low": 7,
+              "central": 14,
+              "high": 20
+            },
+            "ropeway.cost.cabin_each": {
+              "low": 0.04,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "ropeway.cost.station_hour": {
+              "low": 100,
+              "central": 200,
+              "high": 350
             }
           },
           "2s": {
@@ -362,6 +398,26 @@
               "low": 4500,
               "central": 6000,
               "high": 8000
+            },
+            "ropeway.cost.station_each": {
+              "low": 8,
+              "central": 13,
+              "high": 25
+            },
+            "ropeway.cost.line_per_km": {
+              "low": 7,
+              "central": 14,
+              "high": 20
+            },
+            "ropeway.cost.cabin_each": {
+              "low": 0.04,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "ropeway.cost.station_hour": {
+              "low": 100,
+              "central": 200,
+              "high": 350
             }
           },
           "3s": {
@@ -454,6 +510,26 @@
               "low": 4500,
               "central": 6000,
               "high": 8000
+            },
+            "ropeway.cost.station_each": {
+              "low": 8,
+              "central": 13,
+              "high": 25
+            },
+            "ropeway.cost.line_per_km": {
+              "low": 12,
+              "central": 18,
+              "high": 30
+            },
+            "ropeway.cost.cabin_each": {
+              "low": 0.3,
+              "central": 0.4,
+              "high": 0.6
+            },
+            "ropeway.cost.station_hour": {
+              "low": 100,
+              "central": 200,
+              "high": 350
             }
           },
           "funitel": {
@@ -546,6 +622,26 @@
               "low": 4500,
               "central": 6000,
               "high": 8000
+            },
+            "ropeway.cost.station_each": {
+              "low": 8,
+              "central": 13,
+              "high": 25
+            },
+            "ropeway.cost.line_per_km": {
+              "low": 7,
+              "central": 14,
+              "high": 20
+            },
+            "ropeway.cost.cabin_each": {
+              "low": 0.04,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "ropeway.cost.station_hour": {
+              "low": 100,
+              "central": 200,
+              "high": 350
             }
           },
           "pulsed": {
@@ -638,6 +734,26 @@
               "low": 4500,
               "central": 6000,
               "high": 8000
+            },
+            "ropeway.cost.station_each": {
+              "low": 8,
+              "central": 13,
+              "high": 25
+            },
+            "ropeway.cost.line_per_km": {
+              "low": 7,
+              "central": 14,
+              "high": 20
+            },
+            "ropeway.cost.cabin_each": {
+              "low": 0.04,
+              "central": 0.06,
+              "high": 0.1
+            },
+            "ropeway.cost.station_hour": {
+              "low": 100,
+              "central": 200,
+              "high": 350
             }
           }
         },
@@ -732,6 +848,26 @@
               "low": 4500,
               "central": 6000,
               "high": 8000
+            },
+            "ropeway.cost.station_each": {
+              "low": 8,
+              "central": 13,
+              "high": 25
+            },
+            "ropeway.cost.line_per_km": {
+              "low": 7,
+              "central": 14,
+              "high": 20
+            },
+            "ropeway.cost.cabin_each": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
+            "ropeway.cost.station_hour": {
+              "low": 100,
+              "central": 200,
+              "high": 350
             }
           }
         }

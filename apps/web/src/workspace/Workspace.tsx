@@ -1468,6 +1468,7 @@ export function Workspace({
                           <NetworkTables
                             railway={railway}
                             streetLines={streetLines}
+                            pluginLines={pluginSaved}
                             preferences={preferences}
                             onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                             riders={riders}
@@ -1486,6 +1487,7 @@ export function Workspace({
                             projectName={project.name}
                             railway={railway}
                             streetLines={streetLines}
+                            pluginLines={pluginSaved}
                             preferences={preferences}
                             onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                           />
@@ -1501,6 +1503,7 @@ export function Workspace({
                           <CostTables
                             railway={railway}
                             streetLines={streetLines}
+                            pluginLines={pluginSaved}
                             preferences={preferences}
                             onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                             costs={drawings.doc<CostsDoc>("costs")}

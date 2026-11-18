@@ -4,7 +4,7 @@ import { paramValue, prefId } from "../costs/params";
 import { loadWasmGtfs } from "../gtfs/engine";
 import { gtfsAvailable, saveFeed } from "../gtfs/GtfsSection";
 import type { GtfsEngineLoader } from "../gtfs/types";
-import { prefixTimetable } from "../journey-planner/network";
+import { pluginLineTimetable, prefixTimetable } from "../journey-planner/network";
 import type { Timetable } from "../journey-planner/types";
 import { lineMode } from "../railways/serviceLines";
 import type { Network, RailEngineLoader } from "../railways/types";
@@ -22,7 +22,18 @@ import { type PreferencesDoc, withPref } from "../../workspace/preferences";
 import { type Translate, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { useModeLabel } from "../schematic/common";
-import { blockSummary, fleetRow, railBlocks, streetBlocks, type BlockRun, type VehicleBlock } from "./blocks";
+import {
+  blockSummary,
+  fleetRow,
+  type FleetRow,
+  railBlocks,
+  streetBlocks,
+  type BlockRun,
+  type VehicleBlock,
+} from "./blocks";
+import type { SavedPluginLine } from "../../kits/saved";
+import { activePlugins } from "../../plugins/registry";
+import { ropewayLines, type RopewayLine } from "../tables/ropeways";
 import { railLineFor } from "./dayTypes";
 import { feedHolidays, mergeDays, streetDay } from "./feed";
 import {
@@ -43,6 +54,8 @@ import { SPARE_PREF, TERMINAL_WAIT_PREF } from "../../workspace/editedElsewhere"
 interface Props {
   railway: Network | null;
   streetLines: StreetLinesDoc | null;
+  /** The plugin tools' lines by tool id (the cable cars are listed). */
+  pluginLines?: Readonly<Record<string, SavedPluginLine>>;
   preferences: PreferencesDoc | null;
   /** Saves the project's own values (longest terminal wait, spare share); absent when read only. */
   onPreferences?: (d: PreferencesDoc) => void;
@@ -65,6 +78,8 @@ interface LineBlocks {
   blocks: VehicleBlock[];
   /** The line's timetable on the day type, with that day's service id, for the GTFS download. */
   timetable: Timetable | null;
+  /** A cable car: its cabins stay on the line, so it has no vehicle blocks. */
+  ropeway?: RopewayLine;
 }
 
 /** Day type names on screen, and as they read inside a sentence. */
@@ -96,6 +111,7 @@ function linesOn(
   cal: ServiceCalendar,
   maxWaitMin: number,
   t: Translate,
+  ropeways: readonly RopewayLine[] = [],
 ): LineBlocks[] {
   const out: LineBlocks[] = [];
   const pub = publications[day];
@@ -135,6 +151,22 @@ function linesOn(
       timetable: timetable && prefixTimetable(timetable, `s${i}:`),
     });
   }
+  // Cable cars run the same service on every day type.
+  for (const r of ropeways) {
+    const timetable = pluginLineTimetable(r.line);
+    out.push({
+      key: r.id,
+      name: r.name,
+      color: r.color,
+      mode: r.mode,
+      units: 1,
+      // A continuous gondola has a cabin every few seconds: no departure list.
+      trips: timetable && r.operation !== "continuous" ? routeTrips(timetable, r.id) : [],
+      blocks: [],
+      timetable,
+      ropeway: r,
+    });
+  }
   return out;
 }
 
@@ -171,6 +203,7 @@ export function TimetableTables({
   preferences,
   onPreferences,
   projectName = "",
+  pluginLines,
   loadRail,
   loadGtfs = loadWasmGtfs,
 }: Props) {
@@ -183,12 +216,18 @@ export function TimetableTables({
   const calKey = JSON.stringify(calendarFrom(preferences));
   const cal = useMemo(() => JSON.parse(calKey) as ServiceCalendar, [calKey]);
   const { publications, busy, error } = useRailPublications(railway, cal, options, prefs, loadRail);
+  // The cable car plugin may be turned off for the project: its lines then leave the tables.
+  const plugins = activePlugins();
+  const ropeways = useMemo(() => ropewayLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
   const byDay = useMemo(
     () =>
       Object.fromEntries(
-        DAY_TYPES.map((d) => [d, linesOn(d, railway, publications, streetLines, cal, maxWaitMin, t)]),
+        DAY_TYPES.map((d) => [
+          d,
+          linesOn(d, railway, publications, streetLines, cal, maxWaitMin, t, ropeways),
+        ]),
       ) as Record<DayTypeId, LineBlocks[]>,
-    [railway, publications, streetLines, cal, maxWaitMin, t],
+    [railway, publications, streetLines, cal, maxWaitMin, t, ropeways],
   );
   const lines = byDay[day];
 
@@ -297,6 +336,31 @@ export function TimetableTables({
   );
 }
 
+/** Purpose: a cable car's service in a sentence: its cabins stay on the line, so it has no blocks. */
+function ropewayNote(t: Translate, r: RopewayLine): string {
+  const every =
+    r.headwayS < 60
+      ? t("tbl.u.s", { v: fmtQty(r.headwayS) })
+      : t("tbl.u.min", { v: fmtQty(r.headwayS / 60) });
+  return t("tt.tbl.ropeway", { every, from: clockS(r.firstS), to: clockS(r.lastS) });
+}
+
+/** Purpose: a cable car's row of the fleet table: the cabins on the line all day and the reserve. */
+function ropewayFleetRow(r: RopewayLine): FleetRow {
+  return {
+    line: r.name,
+    mode: r.mode,
+    blocks: r.inService,
+    units: 1,
+    spareShare: r.inService > 0 ? r.fleet / r.inService - 1 : 0,
+    fleet: r.fleet,
+    trips: r.tripsPerDay,
+    vehicleHours: r.cabinHoursPerDay,
+    serviceKm: r.cabinKmPerDay,
+    emptyKm: 0,
+  };
+}
+
 /** Purpose: the departures of one line and direction: stops down, trips across. */
 function Departures({ lines, day }: { lines: LineBlocks[]; day: DayTypeId }) {
   const [chosen, setChosen] = useState<string | null>(null);
@@ -326,7 +390,11 @@ function Departures({ lines, day }: { lines: LineBlocks[]; day: DayTypeId }) {
           </select>
         </label>
       )}
-      {!grids.length && <p className="mt-2 text-sm text-slate-600">{t("tt.tbl.noTrips")}</p>}
+      {line?.ropeway && line.ropeway.operation === "continuous" ? (
+        <p className="mt-2 text-sm text-slate-600">{ropewayNote(t, line.ropeway)}</p>
+      ) : (
+        !grids.length && <p className="mt-2 text-sm text-slate-600">{t("tt.tbl.noTrips")}</p>
+      )}
       {grids.map((g) => {
         const from = g.stops[0]?.name ?? "";
         const to = g.stops[g.stops.length - 1]?.name ?? "";
@@ -386,9 +454,12 @@ function VehicleBlocks({
   const line = lines.find((l) => l.key === chosen) ?? lines[0] ?? null;
   const rows = lines.map((l) => ({
     l,
-    f: fleetRow(l.name, l.mode, l.blocks, paramValue(SPARE_KEY, l.mode, prefs)[1], l.units),
+    f: l.ropeway
+      ? ropewayFleetRow(l.ropeway)
+      : fleetRow(l.name, l.mode, l.blocks, paramValue(SPARE_KEY, l.mode, prefs)[1], l.units),
   }));
-  const modes = [...new Set(lines.map((l) => l.mode))];
+  // Cable cars keep their reserve cabins from the cable car's own values.
+  const modes = [...new Set(lines.filter((l) => !l.ropeway).map((l) => l.mode))];
   const waitLib = paramValue(WAIT_KEY, "*", undefined)[1];
   const { t } = useI18n();
   const dayText = useDayTypeText();
@@ -518,6 +589,7 @@ function BlockList({ line, day }: { line: LineBlocks; day: DayTypeId }) {
   const [open, setOpen] = useState<number | null>(null);
   const { t } = useI18n();
   const dayText = useDayTypeText();
+  if (line.ropeway) return <p className="mt-2 text-sm text-slate-600">{ropewayNote(t, line.ropeway)}</p>;
   if (!line.blocks.length)
     return (
       <p className="mt-2 text-sm text-slate-600">
