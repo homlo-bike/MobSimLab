@@ -363,6 +363,36 @@ describe("project area", () => {
     expect(boxOf([])).toBeNull();
   });
 
+  it("counts the plugin lines: ferry piers, via points and speed zones, cable car stations", () => {
+    const pts = drawnPoints({
+      "plugin-lines": {
+        tools: {
+          ferry: {
+            doc: {
+              piers: [{ lonlat: [35.497, 33.903] }, { lonlat: [35.643, 34.122] }],
+              calls: [
+                { pier: 0, via: [] },
+                { pier: 1, via: [[35.4, 34.0]] },
+              ],
+              zones: [
+                {
+                  ring: [
+                    [35.49, 33.8],
+                    [35.51, 33.8],
+                    [35.5, 33.81],
+                  ],
+                },
+              ],
+            },
+          },
+          "cable-car": { doc: { stations: [{ lonlat: [35.6, 34.3] }] } },
+          broken: { doc: null },
+        },
+      },
+    });
+    expect(boxOf(pts)).toEqual([35.4, 33.8, 35.643, 34.3]);
+  });
+
   it("widens the box by the buffer in kilometres", () => {
     const b = bufferedBox([7, 50, 7.1, 50.1], 2);
     expect(50 - b[1]).toBeCloseTo(2 / 111.32, 6);
