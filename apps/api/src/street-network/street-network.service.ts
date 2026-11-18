@@ -1,6 +1,6 @@
 import { Injectable, Optional } from "@nestjs/common";
 import { DESTINATION_FILTERS, type DestinationPoint, destinationCategories } from "../agents/destinations";
-import { OverpassClient } from "../gateway/overpass.client";
+import { OverpassClient, OverpassError } from "../gateway/overpass.client";
 import { GeodataReader } from "../geodata/geodata-reader";
 import { type Bbox, waterQuery, waterShapes } from "./water";
 
@@ -643,7 +643,20 @@ export class StreetNetworkService {
         .finally(() => this.pending.delete(key));
       this.pending.set(key, p);
     }
-    const xml = await p;
+    let xml: string;
+    try {
+      xml = await p;
+    } catch (e) {
+      // With an import, the place asked for lies outside it: importing again is not the advice to give.
+      if (e instanceof OverpassError && fromImport && projectId && (await this.imported?.hasOsm(projectId)))
+        throw new OverpassError(
+          "This place is outside the project's imported OpenStreetMap area, and OpenStreetMap's Overpass " +
+            "service is busy or cannot be reached for it. Try again in a few minutes, or import a larger area " +
+            "(Map data).",
+          e.status,
+        );
+      throw e;
+    }
     this.remember(key, xml);
     return xml;
   }

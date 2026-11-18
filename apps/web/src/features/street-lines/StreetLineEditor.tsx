@@ -18,7 +18,14 @@ import {
 import { depotElement, pointElement } from "./markers";
 import { fullTiming, MODES, type Timing } from "./modes";
 import { profileWith, vehicleById } from "./service";
-import { keepRoutedLegs, lineBounds, lineTiles, type SavedStreetLine, streetLineColor } from "./saved";
+import {
+  keepRoutedLegs,
+  lineBounds,
+  lineTiles,
+  routesMore,
+  type SavedStreetLine,
+  streetLineColor,
+} from "./saved";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
 import type { StreetLineInput } from "../journey-planner/network";
 import { depotFit, depotGates, lineVehicle } from "../depots/model";
@@ -682,6 +689,8 @@ export function StreetLineEditor({
       : null;
   const savedKey = saved && pending.current === null ? JSON.stringify(saved) : null;
   const lastKey = useRef<string | null>(null);
+  // The route as last saved; streets that load later and find more of it save it again.
+  const savedRoute = useRef(initial?.view ?? null);
   useEffect(() => {
     if (!savedKey || savedKey === lastKey.current) return;
     const first = lastKey.current === null;
@@ -691,8 +700,20 @@ export function StreetLineEditor({
     // Opening the tool is not a change; the first state after opening is only saved for a new drawing, or
     // for a line that was never routed (one made from an imported GTFS route).
     if (first && initial !== null && initial.view.points.length > 0) return;
-    if (drawn.current) saveTo.current?.({ ...line, view: latestView.current });
+    if (drawn.current) {
+      savedRoute.current = latestView.current;
+      saveTo.current?.({ ...line, view: latestView.current });
+    }
   }, [savedKey]);
+
+  // Tables, costs and the appraisal read the saved route, so a route that more streets complete is saved
+  // too, not only the planner's changes. A route with parts still missing never replaces a fuller one.
+  useEffect(() => {
+    const before = savedRoute.current;
+    if (!lastKey.current || lastKey.current !== savedKey || !before || !routesMore(view, before)) return;
+    savedRoute.current = view;
+    saveTo.current?.({ ...(JSON.parse(lastKey.current) as Omit<SavedStreetLine, "view">), view });
+  }, [view, savedKey]);
 
   /** A via point that becomes a stop joins a stop nearby, or is named after what is around it. */
   const setKind = (id: number, kind: PointKind) =>
