@@ -15,7 +15,10 @@ import {
   loadServerBasemaps,
   rememberBasemap,
   rememberedBasemap,
+  themedBasemap,
 } from "./basemaps";
+import { isDark, useDark } from "../shell/theme";
+import { applyMapTheme } from "./darkLayers";
 import { MapControls } from "./MapControls";
 import { applyHidden, markBasemap, type OverlayGroup, switchBasemap } from "./mapLayers";
 
@@ -54,10 +57,18 @@ export function MapView({ onReady }: Props) {
   const attribution = useRef<AttributionControl | null>(null);
   const hiddenNow = useRef(hidden);
   hiddenNow.current = hidden;
+  const dark = useDark();
+  /** The style the map draws now, so a theme change only reloads a basemap that has a dark design. */
+  const drawn = useRef<string | null>(null);
+  /** Whether the basemap drawn now is a dark one, so the project's layers are drawn for it. */
+  const darkMap = dark && Boolean(basemap.darkStyleUrl);
+  const darkMapNow = useRef(darkMap);
+  darkMapNow.current = darkMap;
 
   useEffect(() => {
     if (!container.current) return;
-    const first = basemap;
+    const first = themedBasemap(basemap, isDark());
+    drawn.current = first.styleUrl;
     const map = new MapLibreMap({
       container: container.current,
       style: first.styleUrl,
@@ -85,6 +96,7 @@ export function MapView({ onReady }: Props) {
     // Tools add their layers as they open: hide the new ones of hidden groups too.
     map.on?.("styledata", () => {
       if (hiddenNow.current.size) applyHidden(map, hiddenNow.current);
+      applyMapTheme(map, darkMapNow.current);
     });
     return () => {
       ready.current?.(null);
@@ -111,12 +123,28 @@ export function MapView({ onReady }: Props) {
     };
   }, []);
 
+  useEffect(() => {
+    if (map) applyMapTheme(map, darkMap);
+  }, [map, darkMap]);
+
+  // Dark mode switched on or off: draw the basemap's other design, if it has one.
+  useEffect(() => {
+    if (!map) return;
+    const shown = themedBasemap(basemap, dark);
+    if (shown.styleUrl === drawn.current) return;
+    drawn.current = shown.styleUrl;
+    switchBasemap(map, shown, () => applyHidden(map, hiddenNow.current));
+    // Only the theme: picking a basemap switches it below.
+  }, [map, dark]);
+
   const pickBasemap = (b: Basemap) => {
     if (b.id === basemap.id && b.day === basemap.day) return;
     setBasemap(b);
     rememberBasemap(b.id);
     if (!map) return;
-    switchBasemap(map, b, () => applyHidden(map, hiddenNow.current));
+    const shown = themedBasemap(b, dark);
+    drawn.current = shown.styleUrl;
+    switchBasemap(map, shown, () => applyHidden(map, hiddenNow.current));
     if (attribution.current) map.removeControl(attribution.current);
     attribution.current = new AttributionControl({
       compact: b.kind === "aerial",
@@ -128,7 +156,7 @@ export function MapView({ onReady }: Props) {
   // MapLibre's stylesheet sets `position: relative` on the map element and, being unlayered, beats
   // Tailwind's `absolute`; so the map fills an absolutely positioned wrapper instead.
   return (
-    <div className="absolute inset-0">
+    <div className={`absolute inset-0${darkMap ? " map-dark" : ""}`}>
       <div ref={container} className="h-full w-full" data-testid="map" />
       {host &&
         createPortal(

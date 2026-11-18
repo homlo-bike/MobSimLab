@@ -24,6 +24,8 @@ export interface Preferences {
   /** "system" follows the device or browser; otherwise a language tag. */
   language?: string;
   units?: "auto" | "metric" | "imperial";
+  /** "auto" follows the device or browser; otherwise always light or dark. */
+  theme?: "auto" | "light" | "dark";
   largerTargets?: boolean;
   reduceMotion?: boolean;
   /** Load and draw existing railways from OpenStreetMap in the railway tool (off when absent). */

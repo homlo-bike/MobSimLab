@@ -649,11 +649,18 @@ function CrossSection({ stop: s }: { stop: StopAccess }) {
     >
       {/* ground and rail */}
       <line x1={0} y1={base + 6} x2={W} y2={base + 6} stroke="#94a3b8" />
-      <rect x={left + 30} y={base} width={10} height={6} fill="#475569" />
-      <rect x={W - 40} y={base} width={10} height={6} fill="#475569" />
+      <rect x={left + 30} y={base} width={10} height={6} fill="var(--diagram-muted, #475569)" />
+      <rect x={W - 40} y={base} width={10} height={6} fill="var(--diagram-muted, #475569)" />
       {/* platform */}
-      <rect x={0} y={pTop} width={edge} height={base + 6 - pTop} fill="#e2e8f0" stroke="#94a3b8" />
-      <text x={6} y={Math.min(base, pTop + 13)} fontSize={10} fill="#334155">
+      <rect
+        x={0}
+        y={pTop}
+        width={edge}
+        height={base + 6 - pTop}
+        fill="var(--diagram-ground, #e2e8f0)"
+        stroke="#94a3b8"
+      />
+      <text x={6} y={Math.min(base, pTop + 13)} fontSize={10} fill="var(--diagram-muted-strong, #334155)">
         {t("rail.access.platformMm", { value: s.platform_height_mm })}
       </text>
       {/* train: floor, door opening and body */}
@@ -665,10 +672,16 @@ function CrossSection({ stop: s }: { stop: StopAccess }) {
         y={fTop}
         width={W - left - 48}
         height={Math.max(0, base - fTop - 2)}
-        fill="#cbd5e1"
+        fill="var(--diagram-rule, #cbd5e1)"
         opacity={0.5}
       />
-      <text x={W - 6} y={fTop - body + 14} fontSize={10} fill="#334155" textAnchor="end">
+      <text
+        x={W - 6}
+        y={fTop - body + 14}
+        fontSize={10}
+        fill="var(--diagram-muted-strong, #334155)"
+        textAnchor="end"
+      >
         {t("rail.access.floorMm", { value: s.floor_height_mm })}
         {s.floor_assumed ? " ⚠" : ""}
       </text>

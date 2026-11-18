@@ -18,6 +18,7 @@ import { lazyNamed, LoadingScreen } from "./shell/lazy";
 import { useRoute } from "./shell/route";
 import { SettingsDialog } from "./shell/SettingsDialog";
 import { SignIn } from "./shell/SignIn";
+import { setTheme, storedTheme } from "./shell/theme";
 import { TopBar } from "./shell/TopBar";
 import { type SettingsSection, UserMenu } from "./shell/UserMenu";
 
@@ -83,6 +84,11 @@ export function App() {
     html.toggle("larger-targets", Boolean(prefs.largerTargets));
     html.toggle("reduce-motion", Boolean(prefs.reduceMotion));
   }, [prefs.largerTargets, prefs.reduceMotion]);
+  // Light, dark, or the device's setting: the account's choice once loaded, else the one last used here.
+  useEffect(
+    () => setTheme(loaded && me?.user ? (prefs.theme ?? "auto") : storedTheme()),
+    [loaded, me, prefs.theme],
+  );
 
   return (
     <I18nProvider choice={choice} onChoose={choose}>
@@ -134,7 +140,7 @@ function Shell({
         />
       )}
       {(overlay?.kind === "admin" || overlay?.kind === "agents") && user && csrf && (
-        <div className="fixed inset-0 z-40 bg-slate-900/30">
+        <div className="fixed inset-0 z-40 bg-scrim/30">
           <LoadingScreen>
             {overlay.kind === "admin" ? (
               <AdminPanel role={user.role} userId={user.id} csrfToken={csrf} onClose={close} />

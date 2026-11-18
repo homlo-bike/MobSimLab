@@ -14,7 +14,9 @@ export function svgText(svg: SVGSVGElement): string {
   copy.querySelectorAll("[style]").forEach((n) => n.removeAttribute("style"));
   // Selection rings and drag handles are not part of the map.
   copy.querySelectorAll("[data-ui]").forEach((n) => n.remove());
-  return `<?xml version="1.0" encoding="UTF-8"?>\n${new XMLSerializer().serializeToString(copy)}`;
+  // Colours that follow dark mode on screen (`var(--diagram-…, light)`): the file keeps the light one.
+  const text = new XMLSerializer().serializeToString(copy).replace(/var\(--[\w-]+,\s*([^)]+)\)/g, "$1");
+  return `<?xml version="1.0" encoding="UTF-8"?>\n${text}`;
 }
 
 /** Purpose: a file name from a title: letters, digits and dashes. */

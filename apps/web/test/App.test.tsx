@@ -848,6 +848,30 @@ describe("user menu and settings", () => {
     );
   });
 
+  it("switches to dark mode and saves the choice to the account", async () => {
+    const calls = stubApi(owner);
+    render(<App />);
+    fireEvent.click(await screen.findByRole("button", { name: "Account and settings" }));
+    fireEvent.click(screen.getByRole("menuitem", { name: /App settings/ }));
+    const group = screen.getByRole("radiogroup", { name: "Appearance" });
+    expect(within(group).getByRole("radio", { name: "System" }).getAttribute("aria-checked")).toBe("true");
+    fireEvent.click(within(group).getByRole("radio", { name: "Dark" }));
+    expect(document.documentElement.classList.contains("dark")).toBe(true);
+    expect(document.documentElement.style.colorScheme).toBe("dark");
+    await waitFor(() =>
+      expect(calls.find((c) => c.url === "/api/auth/preferences")?.body).toEqual({ theme: "dark" }),
+    );
+    fireEvent.click(within(group).getByRole("radio", { name: "Light" }));
+    expect(document.documentElement.classList.contains("dark")).toBe(false);
+  });
+
+  it("opens in the theme saved on the account", async () => {
+    stubApi({ ...owner, user: { ...owner.user!, preferences: { theme: "dark" } } });
+    render(<App />);
+    expect(await screen.findByRole("heading", { name: "Projects" })).toBeTruthy();
+    await waitFor(() => expect(document.documentElement.classList.contains("dark")).toBe(true));
+  });
+
   it("keeps existing railways off until the planner turns them on", async () => {
     const calls = stubApi(owner);
     render(<App />);

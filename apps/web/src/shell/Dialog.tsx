@@ -62,7 +62,7 @@ export function Dialog({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center md:items-start md:p-6 md:pt-[8vh]">
-      <div className="absolute inset-0 bg-slate-900/45" onClick={onClose} aria-hidden="true" />
+      <div className="absolute inset-0 bg-scrim/45" onClick={onClose} aria-hidden="true" />
       <div
         ref={box}
         role="dialog"

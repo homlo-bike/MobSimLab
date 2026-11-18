@@ -9,6 +9,8 @@ export interface Basemap {
   /** "street" maps are drawn from OpenStreetMap; "aerial" shows imagery under the place and street names. */
   kind: "street" | "aerial";
   styleUrl: string;
+  /** The style drawn instead in dark mode (App settings), when the basemap has a dark design. */
+  darkStyleUrl?: string;
   attribution: string;
   /** For aerial basemaps: the imagery drawn under the labels of `styleUrl`. Tile URLs may hold `{date}`. */
   imagery?: { id: string; tiles: string[]; tileSize: number; maxzoom: number };
@@ -28,16 +30,22 @@ const OSM_ATTRIBUTION =
   'Data from <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>';
 
 /**
- * Default basemap: OpenFreeMap Positron (free, no key). Data © OpenStreetMap contributors (ODbL),
- * schema by OpenMapTiles. See docs/compliance/license-compliance-report.md §6.
+ * Default basemap: OpenFreeMap Positron (free, no key), and OpenFreeMap Dark in dark mode. Data © OpenStreetMap
+ * contributors (ODbL), schema by OpenMapTiles. See docs/compliance/license-compliance-report.md §6.
  */
 export const DEFAULT_BASEMAP: Basemap = {
   id: "openfreemap-positron",
   label: "OpenFreeMap Positron",
   kind: "street",
   styleUrl: "https://tiles.openfreemap.org/styles/positron",
+  darkStyleUrl: "https://tiles.openfreemap.org/styles/dark",
   attribution: OSM_ATTRIBUTION,
 };
+
+/** Purpose: the basemap as drawn in the page's theme: its dark style in dark mode, when it has one. */
+export function themedBasemap(basemap: Basemap, dark: boolean): Basemap {
+  return dark && basemap.darkStyleUrl ? { ...basemap, styleUrl: basemap.darkStyleUrl } : basemap;
+}
 
 /**
  * The basemaps in the layer control (docs/architecture/06-gis.md §8): the three OpenFreeMap styles and the

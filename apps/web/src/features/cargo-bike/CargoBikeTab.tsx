@@ -917,7 +917,7 @@ function BatteryChart({ trip }: { trip: Trip }) {
   return (
     <figure className="mt-3">
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full" role="img" aria-label={t("cb.chartAria")}>
-        <path d={ground} fill="#e2e8f0" />
+        <path d={ground} fill="var(--diagram-ground, #e2e8f0)" />
         <line x1={x(goLen)} x2={x(goLen)} y1={0} y2={H} stroke="#94a3b8" strokeDasharray="3 3" />
         <line x1={0} x2={W} y1={yB(usable)} y2={yB(usable)} stroke="#dc2626" strokeDasharray="4 3" />
         <path d={battery} fill="none" stroke="#15803d" strokeWidth={2} />
