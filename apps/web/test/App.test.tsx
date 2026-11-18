@@ -497,6 +497,23 @@ describe("project workspace", () => {
     expect((await screen.findByText("Saved")).getAttribute("role")).toBe("status");
   });
 
+  it("reopens Create on the drawn railway after a reload, not on the chooser", async () => {
+    const rail = {
+      kind: "railway",
+      schemaVersion: 1,
+      doc: { mode: "tram", origin: [7, 50], stations: [{ id: 1 }], tracks: [], switches: [], signals: [] },
+      version: 2,
+      updatedAt: "2026-11-03T10:00:00Z",
+      updatedBy: { id: "u1", displayName: "Alice Smith" },
+    };
+    stubApi(owner, { [`GET /api/projects/${P1}/drawings`]: { drawings: { railway: rail } } });
+    // The address still says the project is new (a reload right after creating it).
+    window.history.replaceState(null, "", `/projects/${P1}/create?new=1`);
+    render(<App />);
+    expect(await screen.findByRole("complementary", { name: "Rail route" })).toBeTruthy();
+    expect(screen.queryByRole("region", { name: "What do you want to build first?" })).toBeNull();
+  });
+
   it("asks which drawing to keep when someone else saved first", async () => {
     window.localStorage.setItem(`mobsimlab.streetSetups.${P1}`, JSON.stringify([{ way: 7 }]));
     const theirs = {

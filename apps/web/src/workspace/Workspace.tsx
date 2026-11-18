@@ -233,6 +233,7 @@ export function Workspace({
   existingRailways = false,
   userId = null,
   adminCsrf = null,
+  onRefreshSession,
 }: {
   api: ProjectsApi;
   projectId: string;
@@ -249,6 +250,8 @@ export function Workspace({
   userId?: string | null;
   /** The session's CSRF token when the signed-in person is an Admin: plugin settings in Project preferences. */
   adminCsrf?: string | null;
+  /** Load the session again (a fresh CSRF token), before saving again after a refused save. */
+  onRefreshSession?: () => void;
 }) {
   const { t } = useI18n();
   const [project, setProject] = useState<Project | null>(null);
@@ -323,7 +326,25 @@ export function Workspace({
     () => (costInfo ? { currency: costInfo.currency, perIntl: costInfo.perIntl } : null),
     [costInfo?.currency, costInfo?.perIntl],
   );
-  const [build, setBuild] = useState<Build | null>(null);
+  // The Create tool last used in this project, remembered in this browser so a reload reopens it.
+  const [build, setBuildState] = useState<Build | null>(() => {
+    try {
+      return localStorage.getItem(`msl.create.tool.${projectId}`);
+    } catch {
+      return null;
+    }
+  });
+  const setBuild = useCallback(
+    (b: Build | null) => {
+      setBuildState(b);
+      try {
+        if (b) localStorage.setItem(`msl.create.tool.${projectId}`, b);
+      } catch {
+        // Storage blocked: the tool is simply not remembered.
+      }
+    },
+    [projectId],
+  );
   // The street line being edited, as the tool last routed it, so the journey planner can ride it.
   const [line, setLine] = useState<StreetLineInput | null>(null);
   // Which street line the tool edits (the number of saved lines for a new one), and a count of switches
@@ -457,6 +478,13 @@ export function Workspace({
 
   // What is drawn in the project, saved with it a moment after each change.
   const drawings = useDrawings(api, projectId, editable);
+  // A new session (Try again after a refused save loads it) sends what was refused once more.
+  const firstApi = useRef(api);
+  useEffect(() => {
+    if (api !== firstApi.current && drawings.status === "failed") drawings.retry();
+    firstApi.current = api;
+    // Only a new API client (a new CSRF token) is a reason to try again.
+  }, [api]);
   const streetLines = drawings.doc<StreetLinesDoc>("street-lines");
   const railway = drawings.doc<Network>("railway");
   // Cable car, people mover and ferry lines of the plugin tools, per tool: the drawing, the line the journey
@@ -768,7 +796,15 @@ export function Workspace({
           </span>
         )}
       </span>
-      {project && editable && drawings.loaded && <SaveStatus drawings={drawings} />}
+      {project && editable && drawings.loaded && (
+        <SaveStatus
+          drawings={drawings}
+          onRetry={() => {
+            onRefreshSession?.();
+            drawings.retry();
+          }}
+        />
+      )}
       {tabs}
     </TopBar>
   );
@@ -828,9 +864,32 @@ export function Workspace({
   // planned hides the street lines, no rail mode the railway; a tool with something drawn in it stays.
   const planned = project?.modes ?? NO_MODES;
   const showStreet = plansStreet(planned) || savedStreet.length > 0;
-  const showRail = plansRail(planned) || Boolean(railway?.tracks.length || railway?.stations.length);
-  // Create: a new project starts with the chooser; an existing one with the rail or street tool last used.
-  const chosen: Build | null = build ?? (fresh ? null : showStreet ? "street" : showRail ? "rail" : null);
+  const hasRail = Boolean(railway?.tracks.length || railway?.stations.length);
+  const showRail = plansRail(planned) || hasRail;
+  // Create: a new project starts with the chooser (never one with drawings, even when the address still says
+  // it is new after a reload); an existing one with the tool last used, else the one that has something drawn.
+  const remembered =
+    build === "street" || build === "depots"
+      ? showStreet
+        ? build
+        : null
+      : build === "rail"
+        ? showRail
+          ? build
+          : null
+        : build;
+  const drawn = savedStreet.length > 0 || hasRail;
+  const chosen: Build | null =
+    remembered ??
+    (fresh && !drawn
+      ? null
+      : hasRail && savedStreet.length === 0
+        ? "rail"
+        : showStreet
+          ? "street"
+          : showRail
+            ? "rail"
+            : null);
   const chosenPlugin = PLUGIN_TOOLS.find((x) => x.id === chosen) ?? null;
   const panelLabel =
     tab === "simulator"
@@ -1740,10 +1799,26 @@ export function Workspace({
 }
 
 /** Purpose: how the project's drawings stand against the server, beside the project name. */
-function SaveStatus({ drawings }: { drawings: Drawings }) {
+function SaveStatus({ drawings, onRetry }: { drawings: Drawings; onRetry: () => void }) {
   const { t } = useI18n();
   const s = drawings.status;
   if (s === "conflict") return null;
+  // A refused save never reads as saved: it says so, with a way to try again.
+  if (s === "failed")
+    return (
+      <span className="flex min-w-0 items-center gap-1.5 text-xs text-red-700">
+        <span
+          role="status"
+          className="max-w-56 truncate"
+          title={t("save.failed", { error: drawings.error ?? "" })}
+        >
+          {t("save.failed", { error: drawings.error ?? "" })}
+        </span>
+        <button type="button" className="btn min-h-8 shrink-0 px-2 text-xs" onClick={onRetry}>
+          {t("save.retry")}
+        </button>
+      </span>
+    );
   const text =
     s === "saved"
       ? t("save.saved")
@@ -1757,7 +1832,7 @@ function SaveStatus({ drawings }: { drawings: Drawings }) {
       role="status"
       title={text}
       data-tour="save"
-      className={`hidden max-w-56 truncate text-xs sm:inline ${s === "failed" || s === "offline" ? "text-red-700" : "text-slate-500"}`}
+      className={`hidden max-w-56 truncate text-xs sm:inline ${s === "offline" ? "text-red-700" : "text-slate-500"}`}
     >
       {text}
     </span>

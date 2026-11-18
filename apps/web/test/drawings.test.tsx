@@ -124,6 +124,13 @@ describe("project drawings", () => {
     await act(() => vi.advanceTimersByTimeAsync(1000));
     expect(h.result.current.status).toBe("failed");
     expect(h.result.current.error).toBe("the drawing is too large to save");
+    // It stays "not saved" until Try again sends it, and only then reads as saved.
+    await act(() => vi.advanceTimersByTimeAsync(5000));
+    expect(h.result.current.status).toBe("failed");
+    await act(async () => h.result.current.retry());
+    await act(() => vi.advanceTimersByTimeAsync(100));
+    expect(api.saveDrawing).toHaveBeenCalledTimes(4);
+    expect(h.result.current.status).toBe("saved");
   });
 
   it("sends a waiting change when the project closes", async () => {
