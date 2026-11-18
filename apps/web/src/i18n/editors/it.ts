@@ -973,6 +973,7 @@ export const editorsIt = {
   "kit.issueWhere": "{level}, {where}: ",
   "kit.parameter": "Parametro {name}",
   "kit.lineName": "Nome della linea",
+  "kit.lines": "Linee del progetto ({n})",
   "kit.tool": "Strumento",
   "kit.select": "Seleziona",
   "kit.summary": "Riepilogo",
@@ -1109,6 +1110,8 @@ export const editorsIt = {
   "drt.method":
     "Stimato con formule di approssimazione continua (Daganzo 1978) per una zona con richieste distribuite in modo uniforme. Simula la giornata per assegnare ogni prenotazione.",
   "ferry.defaultName": "Traghetto 1",
+  "ferry.lines": "Linee di traghetto del progetto ({n})",
+  "ferry.lineN": "Traghetto {n}",
   "ferry.plugin": "Traghetto",
   "ferry.engineFailed": "Impossibile avviare il kit traghetto: {error}",
   "ferry.starting": "Avvio del kit traghetto…",

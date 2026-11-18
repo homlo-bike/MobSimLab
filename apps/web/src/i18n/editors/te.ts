@@ -958,6 +958,7 @@ export const editorsTe = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "పరామితి {name}",
   "kit.lineName": "మార్గం పేరు",
+  "kit.lines": "ప్రాజెక్ట్‌లోని మార్గాలు ({n})",
   "kit.tool": "సాధనం",
   "kit.select": "ఎంచుకోండి",
   "kit.summary": "సారాంశం",
@@ -1088,6 +1089,8 @@ export const editorsTe = {
   "drt.method":
     "సమానంగా విస్తరించిన అభ్యర్థనల జోన్‌కు నిరంతర ఉజ్జాయింపు సూత్రాలతో (Daganzo 1978) అంచనా. ప్రతి బుకింగ్‌ను కేటాయించడానికి రోజును అనుకరించండి.",
   "ferry.defaultName": "ఫెర్రీ 1",
+  "ferry.lines": "ప్రాజెక్ట్‌లోని ఫెర్రీ మార్గాలు ({n})",
+  "ferry.lineN": "ఫెర్రీ {n}",
   "ferry.plugin": "ఫెర్రీ",
   "ferry.engineFailed": "ఫెర్రీ కిట్ ప్రారంభం కాలేదు: {error}",
   "ferry.starting": "ఫెర్రీ కిట్ ప్రారంభమవుతోంది…",

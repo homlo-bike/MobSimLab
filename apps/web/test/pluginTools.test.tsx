@@ -28,8 +28,8 @@ import { pluginLineTimetable, type PluginLineInput } from "../src/features/journ
 import { loadKits, spanSystem, vesselType } from "../src/kits/engine";
 import { SpanLineEditor, removeStation, type SpanDoc, type TerrainLoader } from "../src/kits/SpanLineEditor";
 import { sectionGround, type TerrainProfiles } from "../src/terrain/terrain";
-import { WaterRouteEditor, removePier, type WaterDoc } from "../src/kits/WaterRouteEditor";
-import type { SavedPluginLine } from "../src/kits/saved";
+import { WaterRouteEditor, removePier, sharedPier, type WaterDoc } from "../src/kits/WaterRouteEditor";
+import { newToolLineKey, toolLineKeys, type SavedPluginLine } from "../src/kits/saved";
 import {
   centralValues,
   contextLabel,
@@ -435,5 +435,80 @@ describe("editors", () => {
       speedKn: null,
     };
     expect(removePier(w, 1).calls.map((c) => c.pier)).toEqual([0, 1]);
+  });
+
+  it("keeps several ferry lines apart and shares a pier placed on another line's pier", async () => {
+    const tools = { ferry: 1, "ferry-3": 1, "ferry-2": 1, "cable-car": 1, "ferry-x": 1 };
+    expect(toolLineKeys(tools, "ferry")).toEqual(["ferry", "ferry-2", "ferry-3"]);
+    expect(newToolLineKey(tools, "ferry")).toBe("ferry-4");
+    expect(newToolLineKey({ "cable-car": 1 }, "ferry")).toBe("ferry");
+    const pier = { name: "Jounieh port", lonlat: east(0), berths: 1, gangways: 1 };
+    expect(sharedPier(east(40), [pier])?.name).toBe("Jounieh port");
+    expect(sharedPier(east(100), [pier])).toBeNull();
+    // The line the journey planner rides carries the line's own id, not the tool's.
+    const water: WaterDoc = {
+      name: "F2",
+      mode: "ferry",
+      vessel: "monohull",
+      piers: [
+        { name: "A", lonlat: east(0), berths: 1, gangways: 1 },
+        { name: "B", lonlat: east(2000), berths: 1, gangways: 1 },
+      ],
+      calls: [
+        { pier: 0, via: [] },
+        { pier: 1, via: [] },
+      ],
+      zones: [],
+      headwayMin: 15,
+      layoverS: null,
+      paxPerCall: null,
+      speedKn: null,
+    };
+    const onSave = vi.fn();
+    const onPick = vi.fn();
+    render(
+      <WaterRouteEditor
+        map={null}
+        tool={ferryTool}
+        storageKey="k-f2"
+        initial={water}
+        onSave={onSave}
+        lineId="ferry-2"
+        lines={[
+          { id: "ferry", name: "F1" },
+          { id: "ferry-2", name: "F2" },
+        ]}
+        onPickLine={onPick}
+        onNewLine={() => {}}
+        onDeleteLine={() => {}}
+      />,
+    );
+    await waitFor(() => expect(onSave).toHaveBeenCalled());
+    expect((onSave.mock.lastCall![0] as SavedPluginLine).line?.id).toBe("ferry-2");
+    fireEvent.change(screen.getByLabelText("Ferry lines in the project (2)"), { target: { value: "ferry" } });
+    expect(onPick).toHaveBeenCalledWith("ferry");
+  });
+  it("lists the cable car lines and saves each under its own id", async () => {
+    const onLine = vi.fn();
+    const onNew = vi.fn();
+    render(
+      <SpanLineEditor
+        map={null}
+        tool={cableTool}
+        storageKey="k-cable-2"
+        onLineChange={onLine}
+        lineId="cable-car-2"
+        lines={[
+          { id: "cable-car", name: "C1" },
+          { id: "cable-car-2", name: "C2" },
+        ]}
+        onPickLine={() => {}}
+        onNewLine={onNew}
+        onDeleteLine={() => {}}
+      />,
+    );
+    expect(await screen.findByLabelText("Lines in the project (2)")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "New line" }));
+    expect(onNew).toHaveBeenCalled();
   });
 });

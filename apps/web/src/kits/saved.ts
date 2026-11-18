@@ -51,3 +51,21 @@ export interface SavedPluginLine {
 export interface PluginLinesDoc {
   tools: Record<string, SavedPluginLine>;
 }
+
+/**
+ * Purpose: the keys of one plugin tool's lines in the "plugin-lines" drawing, in order: the tool id for its first
+ * line, then `<tool id>-2`, `<tool id>-3`… for more lines (ferry: several routes in one project).
+ * Inputs: the saved lines by key, the tool id. Output: the keys of that tool's lines, first line first.
+ */
+export function toolLineKeys(tools: Record<string, unknown>, toolId: string): string[] {
+  const n = (k: string) => (k === toolId ? 1 : Number(k.slice(toolId.length + 1)));
+  return Object.keys(tools)
+    .filter((k) => k === toolId || new RegExp(`^${toolId.replace(/[^a-z0-9-]/g, "")}-[0-9]+$`).test(k))
+    .sort((a, b) => n(a) - n(b));
+}
+
+/** Purpose: a key for a new line of a plugin tool, not used yet (the tool id when the tool has no line). */
+export function newToolLineKey(tools: Record<string, unknown>, toolId: string): string {
+  if (!(toolId in tools)) return toolId;
+  for (let i = 2; ; i++) if (!(`${toolId}-${i}` in tools)) return `${toolId}-${i}`;
+}

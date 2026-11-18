@@ -1019,6 +1019,7 @@ export const editorsUk = {
   "kit.issueWhere": "{level}, {where}: ",
   "kit.parameter": "Параметр {name}",
   "kit.lineName": "Назва лінії",
+  "kit.lines": "Лінії проєкту ({n})",
   "kit.tool": "Інструмент",
   "kit.select": "Вибрати",
   "kit.summary": "Підсумок",
@@ -1157,6 +1158,8 @@ export const editorsUk = {
   "drt.method":
     "Оцінено формулами неперервного наближення (Daganzo 1978) для зони з рівномірно розподіленими замовленнями. Змоделюйте день, щоб розподілити кожне замовлення.",
   "ferry.defaultName": "Пором 1",
+  "ferry.lines": "Поромні лінії проєкту ({n})",
+  "ferry.lineN": "Пором {n}",
   "ferry.plugin": "Пором",
   "ferry.engineFailed": "Не вдалося запустити набір порома: {error}",
   "ferry.starting": "Запуск набору порома…",

@@ -919,6 +919,7 @@ export const editorsJa = {
   "kit.issueWhere": "{level}、{where}：",
   "kit.parameter": "パラメーター {name}",
   "kit.lineName": "系統名",
+  "kit.lines": "プロジェクトの路線（{n}）",
   "kit.tool": "ツール",
   "kit.select": "選択",
   "kit.summary": "概要",
@@ -1045,6 +1046,8 @@ export const editorsJa = {
   "drt.method":
     "需要が均一に分布する区域について連続近似式（Daganzo 1978）で推計しています。1日をシミュレーションすると予約を1件ずつ配車します。",
   "ferry.defaultName": "フェリー 1",
+  "ferry.lines": "プロジェクトのフェリー航路（{n}）",
+  "ferry.lineN": "フェリー {n}",
   "ferry.plugin": "フェリー",
   "ferry.engineFailed": "フェリーキットを起動できませんでした：{error}",
   "ferry.starting": "フェリーキットを起動中…",
