@@ -920,6 +920,7 @@ export const editorsZu = {
   "jp.joined.other": " · iziteshi ezingu-{count} zixhunywe neziteshi ngegama",
   "jp.clickMap": "Chofoza imephu…",
   "jp.pickMap": "Khetha emephini",
+  "jp.clear": "Sula konke",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Isikhathi",
   "jp.departAt": "Suka ngo-",

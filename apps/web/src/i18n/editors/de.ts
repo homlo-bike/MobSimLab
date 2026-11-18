@@ -920,6 +920,7 @@ export const editorsDe = {
   "jp.joined.other": " · {count} Haltestellen über den Namen mit einer Station verbunden",
   "jp.clickMap": "In die Karte klicken…",
   "jp.pickMap": "In der Karte wählen",
+  "jp.clear": "Zurücksetzen",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Zeit",
   "jp.departAt": "Abfahrt um",

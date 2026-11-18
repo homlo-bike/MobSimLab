@@ -951,6 +951,7 @@ export const editorsUk = {
   "jp.joined.other": " · {count} зупинки приєднано до станцій за назвою",
   "jp.clickMap": "клацніть карту…",
   "jp.pickMap": "виберіть на карті",
+  "jp.clear": "Очистити все",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Час",
   "jp.departAt": "Відправлення о",

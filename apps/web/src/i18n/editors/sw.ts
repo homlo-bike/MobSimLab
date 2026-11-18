@@ -905,6 +905,7 @@ export const editorsSw = {
   "jp.joined.other": " · vituo {count} vimeunganishwa na stesheni kwa jina",
   "jp.clickMap": "Bofya ramani…",
   "jp.pickMap": "Chagua kwenye ramani",
+  "jp.clear": "Futa yote",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Muda",
   "jp.departAt": "Ondoka saa",

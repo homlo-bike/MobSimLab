@@ -922,6 +922,7 @@ export const editorsTa = {
   "jp.joined.other": " · {count} நிறுத்தங்கள் பெயரால் நிலையங்களுடன் இணைக்கப்பட்டன",
   "jp.clickMap": "வரைபடத்தைக் கிளிக் செய்யவும்…",
   "jp.pickMap": "வரைபடத்தில் தேர்ந்தெடு",
+  "jp.clear": "அனைத்தையும் அழி",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "நேரம்",
   "jp.departAt": "புறப்படும் நேரம்",

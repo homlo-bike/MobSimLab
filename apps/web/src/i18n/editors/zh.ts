@@ -840,6 +840,7 @@ export const editorsZh = {
   "jp.joined.other": " · {count} 个站点按名称并入车站",
   "jp.clickMap": "点击地图…",
   "jp.pickMap": "在地图上选择",
+  "jp.clear": "清空",
   "jp.pointButton": "{point}：{label}",
   "jp.time": "时间",
   "jp.departAt": "出发于",

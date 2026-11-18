@@ -891,6 +891,7 @@ export const editorsHi = {
   "jp.joined.other": " · {count} स्टॉप नाम से स्टेशनों से जुड़े",
   "jp.clickMap": "मानचित्र पर क्लिक करें…",
   "jp.pickMap": "मानचित्र पर चुनें",
+  "jp.clear": "सब साफ़ करें",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "समय",
   "jp.departAt": "प्रस्थान",

@@ -414,6 +414,22 @@ describe("Schematic tab", () => {
     }
   });
 
+  it("keeps a small picture of the network in the saved edits for the project card", () => {
+    const onDoc = vi.fn();
+    render(
+      <Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={null} onDoc={onDoc} projectName="A" />,
+    );
+    expect(onDoc).toHaveBeenCalledWith(
+      expect.objectContaining({
+        thumb: expect.objectContaining({ w: 280, h: 96, lines: expect.arrayContaining([expect.anything()]) }),
+      }),
+    );
+    // Read-only: nothing is saved.
+    onDoc.mockClear();
+    render(<Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={null} projectName="B" />);
+    expect(onDoc).not.toHaveBeenCalled();
+  });
+
   it("opens a line's strip map when the line is clicked on the network map", () => {
     render(<Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={null} projectName="A" />);
     const map = screen.getByRole("img", { name: "Schematic network map" });

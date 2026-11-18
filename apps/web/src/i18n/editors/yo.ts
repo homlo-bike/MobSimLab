@@ -872,6 +872,7 @@ export const editorsYo = {
   "jp.joined.other": " · ibùdókọ̀ {count} ni a so mọ́ ibùdókọ̀ nípa orúkọ",
   "jp.clickMap": "Tẹ máàpù…",
   "jp.pickMap": "Yàn án lórí máàpù",
+  "jp.clear": "Pa gbogbo rẹ̀ rẹ́",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Àkókò",
   "jp.departAt": "Gbéra ní",

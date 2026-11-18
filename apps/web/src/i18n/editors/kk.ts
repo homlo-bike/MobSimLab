@@ -897,6 +897,7 @@ export const editorsKk = {
   "jp.joined.other": " · {count} аялдама атауы бойынша станцияларға қосылды",
   "jp.clickMap": "картаны басыңыз…",
   "jp.pickMap": "Картадан таңдау",
+  "jp.clear": "Барлығын тазалау",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Уақыт",
   "jp.departAt": "Жөнелу уақыты",

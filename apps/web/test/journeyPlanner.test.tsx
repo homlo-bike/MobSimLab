@@ -18,6 +18,9 @@ vi.mock("maplibre-gl", () => ({
     getLngLat() {
       return { lng: 0, lat: 0 };
     }
+    setDraggable() {
+      return this;
+    }
     remove() {}
   },
 }));
@@ -351,6 +354,28 @@ describe("JourneyPlanner panel", () => {
     expect((screen.getByLabelText("Time of day") as HTMLInputElement).value).toBe("10:00");
     fireEvent.click(screen.getByRole("button", { name: "Show as table" }));
     expect(screen.getAllByRole("row").length).toBeGreaterThan(100);
+  });
+
+  it("keeps A and B once both are chosen, until they are cleared", async () => {
+    const { loader } = fakeLoader();
+    const map = fakeMap();
+    render(<JourneyPlanner map={map.map} loadPlanner={loader} railLines={exampleCity([10, 50])} />);
+    fireEvent.click(screen.getByRole("button", { name: /^A: / }));
+    act(() => map.click(offset([10, 50], -2600, -300)));
+    act(() => map.click(offset([10, 50], 300, 1650)));
+    await waitFor(() => expect(screen.getByTestId("total").textContent).toBe("21 min"));
+    const a = screen.getByRole("button", { name: /^A: / });
+    const b = screen.getByRole("button", { name: /^B: / });
+    const before = [a.getAttribute("aria-label"), b.getAttribute("aria-label")];
+    // Both chosen: the buttons are off and another map click changes nothing.
+    expect((a as HTMLButtonElement).disabled).toBe(true);
+    expect((b as HTMLButtonElement).disabled).toBe(true);
+    act(() => map.click(offset([10, 50], 0, 0)));
+    expect([a.getAttribute("aria-label"), b.getAttribute("aria-label")]).toEqual(before);
+    // Clear starts over with A.
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+    expect(screen.getByRole("button", { name: "A: Click the map…" })).toBeTruthy();
+    expect(screen.getByRole("button", { name: "B: Pick on the map" })).toBeTruthy();
   });
 
   it("plans with the project's walking speed and change times, under the panel's own", async () => {

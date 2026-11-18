@@ -1,3 +1,4 @@
+import type { SchematicThumb } from "../features/schematic/thumb";
 import { projectAreaApi } from "../features/area/api";
 import { setPluginRuntime } from "../plugins/code/context";
 import type { PluginLimits } from "../plugins/code/runtime";
@@ -31,6 +32,8 @@ export interface Project {
   createdAt: string;
   updatedAt: string;
   archivedAt: string | null;
+  /** The network as the Schematic tab last drew it, for the card; absent or null until it has lines. */
+  thumb?: SchematicThumb | null;
 }
 
 export interface Member {

@@ -856,6 +856,7 @@ export const editorsKo = {
   "jp.joined.other": " · 이름으로 역에 묶은 정류장 {count}",
   "jp.clickMap": "지도를 클릭…",
   "jp.pickMap": "지도에서 선택",
+  "jp.clear": "모두 지우기",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "시각",
   "jp.departAt": "출발",

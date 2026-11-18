@@ -349,9 +349,10 @@ export function JourneyPlanner({
     return { name: z.name, wait: z.simulated?.wait_s ?? z.view.wait_s!, ride };
   }, [a, b, shownZones]);
 
-  // Picking A and B by clicking the map.
+  // Picking A and B by clicking the map. Once both are chosen they stay until the planner clears them.
+  const done = !!a && !!b;
   const pickRef = useRef(picking);
-  pickRef.current = picking;
+  pickRef.current = done ? null : picking;
   useEffect(() => {
     if (!map) return;
     const onClick = (e: MapMouseEvent) => {
@@ -374,8 +375,8 @@ export function JourneyPlanner({
   useEffect(() => {
     if (!map) return;
     const canvas = map.getCanvas?.();
-    if (canvas) canvas.style.cursor = picking ? "crosshair" : "";
-  }, [map, picking]);
+    if (canvas) canvas.style.cursor = picking && !done ? "crosshair" : "";
+  }, [map, picking, done]);
 
   // Draggable A and B markers.
   const markers = useRef<{ a?: Marker; b?: Marker }>({});
@@ -393,9 +394,10 @@ export function JourneyPlanner({
       }
       if (m) {
         m.setLngLat(pos);
+        m.setDraggable(!(a && b));
         continue;
       }
-      const nm = new Marker({ element: pinElement(key.toUpperCase()), draggable: true })
+      const nm = new Marker({ element: pinElement(key.toUpperCase()), draggable: !(a && b) })
         .setLngLat(pos)
         .addTo(map);
       nm.on("dragend", () => {
@@ -546,6 +548,7 @@ export function JourneyPlanner({
                 type="button"
                 aria-pressed={picking === k}
                 aria-label={t("jp.pointButton", { point: k.toUpperCase(), label })}
+                disabled={done}
                 onClick={() => setPicking(picking === k ? null : k)}
                 className={`flex h-11 items-center gap-2.5 px-3 text-start ${k === "a" ? "border-b border-slate-200" : ""} ${picking === k ? "bg-blue-50" : "bg-white hover:bg-slate-50"}`}
               >
@@ -559,6 +562,19 @@ export function JourneyPlanner({
             );
           })}
         </div>
+        {(a || b) && (
+          <button
+            type="button"
+            className="self-start text-xs text-blue-700 underline"
+            onClick={() => {
+              setA(null);
+              setB(null);
+              setPicking("a");
+            }}
+          >
+            {t("jp.clear")}
+          </button>
+        )}
         <div className="flex flex-wrap items-center gap-2">
           <div role="radiogroup" aria-label={t("jp.time")} className="flex rounded-lg bg-slate-100 p-[3px]">
             {(

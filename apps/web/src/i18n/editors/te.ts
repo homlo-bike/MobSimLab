@@ -896,6 +896,7 @@ export const editorsTe = {
   "jp.joined.other": " · {count} స్టాప్‌లు పేరుతో స్టేషన్లకు అనుసంధానమయ్యాయి",
   "jp.clickMap": "మ్యాప్‌పై క్లిక్ చేయండి…",
   "jp.pickMap": "మ్యాప్‌పై ఎంచుకోండి",
+  "jp.clear": "అన్నీ తుడిచివేయండి",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "సమయం",
   "jp.departAt": "బయలుదేరే సమయం",

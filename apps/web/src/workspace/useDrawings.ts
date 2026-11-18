@@ -55,6 +55,13 @@ export const UNDOABLE: ReadonlySet<DrawingKind> = new Set<DrawingKind>([
   "cargo-bike",
   "schematic",
 ]);
+/** Purpose: a schematic document without its card picture, to compare the planner's edits only. */
+function withoutThumb(doc: unknown): unknown {
+  if (!doc || typeof doc !== "object") return doc;
+  const rest: Record<string, unknown> = { ...(doc as Record<string, unknown>) };
+  delete rest.thumb;
+  return rest;
+}
 /** Changes to one drawing closer together than this are one step (a drag sends many), ms. */
 const STEP_JOIN_MS = 1000;
 /** After an undo or redo the tool opens again from the drawing; what it sends back meanwhile is not a new step, ms. */
@@ -222,6 +229,9 @@ export function useDrawings(
   const record = (kind: DrawingKind, doc: unknown) => {
     const before = entries.current.get(kind)?.doc ?? null;
     if (JSON.stringify(before) === JSON.stringify(doc)) return;
+    // The schematic's card picture follows the drawing by itself: a change of it alone is no step to undo.
+    if (kind === "schematic" && JSON.stringify(withoutThumb(before)) === JSON.stringify(withoutThumb(doc)))
+      return;
     const now = Date.now();
     const s = settle.current;
     if (s && s.kind === kind && now < s.until) return;

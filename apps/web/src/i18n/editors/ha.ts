@@ -896,6 +896,7 @@ export const editorsHa = {
   "jp.joined.other": " · tashoshi {count} an haɗa su da tashoshi bisa suna",
   "jp.clickMap": "Danna taswira…",
   "jp.pickMap": "Zaɓa a taswira",
+  "jp.clear": "Share duka",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Lokaci",
   "jp.departAt": "Tashi a",

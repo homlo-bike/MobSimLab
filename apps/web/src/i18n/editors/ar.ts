@@ -939,6 +939,7 @@ export const editorsAr = {
   "jp.joined.other": " · {count} محطة رُبطت بمحطة رئيسية بالاسم",
   "jp.clickMap": "انقر على الخريطة…",
   "jp.pickMap": "اختر على الخريطة",
+  "jp.clear": "مسح",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "الوقت",
   "jp.departAt": "المغادرة في",

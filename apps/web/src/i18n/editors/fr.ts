@@ -923,6 +923,7 @@ export const editorsFr = {
   "jp.joined.other": " · {count} arrêts reliés à une station par leur nom",
   "jp.clickMap": "Cliquez sur la carte…",
   "jp.pickMap": "Choisir sur la carte",
+  "jp.clear": "Effacer",
   "jp.pointButton": "{point} : {label}",
   "jp.time": "Heure",
   "jp.departAt": "Départ à",

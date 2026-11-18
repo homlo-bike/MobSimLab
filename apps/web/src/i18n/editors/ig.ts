@@ -867,6 +867,7 @@ export const editorsIg = {
   "jp.joined.other": " · ebe nkwụsị {count} ejikọtara n'ọdụ site n'aha",
   "jp.clickMap": "Pịa maapụ…",
   "jp.pickMap": "Họrọ na maapụ",
+  "jp.clear": "Hichapụ ha niile",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Oge",
   "jp.departAt": "Pụọ na",

@@ -873,6 +873,7 @@ export const editorsFa = {
   "jp.joined.other": " · {count} ایستگاه بر اساس نام به ایستگاه‌ها پیوست",
   "jp.clickMap": "روی نقشه کلیک کنید…",
   "jp.pickMap": "انتخاب روی نقشه",
+  "jp.clear": "پاک کردن همه",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "زمان",
   "jp.departAt": "حرکت در",

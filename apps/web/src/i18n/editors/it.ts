@@ -908,6 +908,7 @@ export const editorsIt = {
   "jp.joined.other": " · {count} fermate unite alle stazioni per nome",
   "jp.clickMap": "fai clic sulla mappa…",
   "jp.pickMap": "scegli sulla mappa",
+  "jp.clear": "Cancella tutto",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Orario",
   "jp.departAt": "Partenza alle",

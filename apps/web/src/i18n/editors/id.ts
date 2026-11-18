@@ -896,6 +896,7 @@ export const editorsId = {
   "jp.joined.other": " · {count} halte digabung ke stasiun berdasarkan nama",
   "jp.clickMap": "klik peta…",
   "jp.pickMap": "pilih di peta",
+  "jp.clear": "Hapus semua",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Waktu",
   "jp.departAt": "Berangkat pukul",

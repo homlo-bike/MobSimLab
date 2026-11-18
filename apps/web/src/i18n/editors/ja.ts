@@ -857,6 +857,7 @@ export const editorsJa = {
   "jp.joined.other": " · 名前で駅に結び付けた停留所 {count}",
   "jp.clickMap": "地図をクリック…",
   "jp.pickMap": "地図で選ぶ",
+  "jp.clear": "すべて消去",
   "jp.pointButton": "{point}：{label}",
   "jp.time": "時刻",
   "jp.departAt": "出発",

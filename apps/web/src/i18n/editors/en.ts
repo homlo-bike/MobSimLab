@@ -902,6 +902,7 @@ export const editorsEn = {
   "jp.joined.other": " · {count} stops joined to a station by name",
   "jp.clickMap": "Click the map…",
   "jp.pickMap": "Pick on the map",
+  "jp.clear": "Clear",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Time",
   "jp.departAt": "Depart at",

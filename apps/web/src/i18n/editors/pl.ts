@@ -952,6 +952,7 @@ export const editorsPl = {
   "jp.joined.other": " · {count} przystanku połączonego ze stacjami według nazwy",
   "jp.clickMap": "kliknij mapę…",
   "jp.pickMap": "wybierz na mapie",
+  "jp.clear": "Wyczyść wszystko",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Czas",
   "jp.departAt": "Odjazd o",

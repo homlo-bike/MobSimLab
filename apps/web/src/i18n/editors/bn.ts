@@ -883,6 +883,7 @@ export const editorsBn = {
   "jp.joined.other": " · {count}টি স্টপ নাম দিয়ে স্টেশনের সাথে যুক্ত",
   "jp.clickMap": "মানচিত্রে ক্লিক করুন…",
   "jp.pickMap": "মানচিত্রে বেছে নিন",
+  "jp.clear": "সব মুছুন",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "সময়",
   "jp.departAt": "ছাড়ার সময়",

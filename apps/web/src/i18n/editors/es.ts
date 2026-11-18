@@ -910,6 +910,7 @@ export const editorsEs = {
   "jp.joined.other": " · {count} paradas unidas a una estación por su nombre",
   "jp.clickMap": "Haz clic en el mapa…",
   "jp.pickMap": "Elegir en el mapa",
+  "jp.clear": "Borrar",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Hora",
   "jp.departAt": "Salida a las",

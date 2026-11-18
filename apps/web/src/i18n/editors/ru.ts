@@ -953,6 +953,7 @@ export const editorsRu = {
   "jp.joined.other": " · {count} остановки связаны со станцией по названию",
   "jp.clickMap": "Нажмите на карту…",
   "jp.pickMap": "Выбрать на карте",
+  "jp.clear": "Очистить",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Время",
   "jp.departAt": "Отправление в",

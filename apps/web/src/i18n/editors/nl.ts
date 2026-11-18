@@ -907,6 +907,7 @@ export const editorsNl = {
   "jp.joined.other": " · {count} haltes op naam aan een station gekoppeld",
   "jp.clickMap": "Klik op de kaart…",
   "jp.pickMap": "Kies op de kaart",
+  "jp.clear": "Wissen",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Tijd",
   "jp.departAt": "Vertrek om",

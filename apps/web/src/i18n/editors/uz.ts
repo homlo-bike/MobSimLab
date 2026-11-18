@@ -907,6 +907,7 @@ export const editorsUz = {
   "jp.joined.other": " · {count} ta bekat nom boʻyicha stansiyalarga ulangan",
   "jp.clickMap": "xaritani bosing…",
   "jp.pickMap": "Xaritadan tanlash",
+  "jp.clear": "Hammasini tozalash",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Vaqt",
   "jp.departAt": "Joʻnash vaqti",

@@ -891,6 +891,7 @@ export const editorsMr = {
   "jp.joined.other": " · {count} थांबे नावाने स्थानकांशी जोडले",
   "jp.clickMap": "नकाशावर क्लिक करा…",
   "jp.pickMap": "नकाशावर निवडा",
+  "jp.clear": "सर्व पुसा",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "वेळ",
   "jp.departAt": "निघण्याची वेळ",

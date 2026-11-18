@@ -550,6 +550,64 @@
             ],
             "additionalProperties": {}
           }
+        },
+        "thumb": {
+          "type": "object",
+          "properties": {
+            "w": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 1000
+            },
+            "h": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 1000
+            },
+            "lines": {
+              "maxItems": 100,
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "color": {
+                    "type": "string",
+                    "pattern": "^#[0-9a-fA-F]{6}$"
+                  },
+                  "points": {
+                    "minItems": 2,
+                    "maxItems": 200,
+                    "type": "array",
+                    "items": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "items": false,
+                      "minItems": 2,
+                      "maxItems": 2
+                    }
+                  }
+                },
+                "required": [
+                  "color",
+                  "points"
+                ],
+                "additionalProperties": false
+              }
+            }
+          },
+          "required": [
+            "w",
+            "h",
+            "lines"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [

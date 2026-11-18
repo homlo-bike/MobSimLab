@@ -870,6 +870,7 @@ export const editorsAm = {
   "jp.joined.other": " · {count} ማቆሚያዎች በስም ከጣቢያዎች ጋር ተገናኝተዋል",
   "jp.clickMap": "ካርታውን ጠቅ ያድርጉ…",
   "jp.pickMap": "በካርታው ላይ ይምረጡ",
+  "jp.clear": "ሁሉንም አጽዳ",
   "jp.pointButton": "{point}፦ {label}",
   "jp.time": "ጊዜ",
   "jp.departAt": "መነሻ በ",

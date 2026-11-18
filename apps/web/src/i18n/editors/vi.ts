@@ -868,6 +868,7 @@ export const editorsVi = {
   "jp.joined.other": " · {count} điểm dừng được gộp vào ga theo tên",
   "jp.clickMap": "nhấp vào bản đồ…",
   "jp.pickMap": "chọn trên bản đồ",
+  "jp.clear": "Xóa tất cả",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Thời gian",
   "jp.departAt": "Khởi hành lúc",
