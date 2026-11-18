@@ -120,7 +120,9 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
   const scopeOf = new WeakMap<object, Scope>();
   if (d.listing) {
     const register = server.registerTool.bind(server) as (...a: unknown[]) => { disable(): void };
-    (server as unknown as { registerTool: (...a: unknown[]) => unknown }).registerTool = (...a: unknown[]) => {
+    (server as unknown as { registerTool: (...a: unknown[]) => unknown }).registerTool = (
+      ...a: unknown[]
+    ) => {
       const tool = register(...a);
       const handler = a[a.length - 1];
       const s = typeof handler === "function" ? scopeOf.get(handler) : undefined;
