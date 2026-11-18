@@ -56,10 +56,49 @@ fn bands_follow_the_peaks_and_the_service_day() {
         .iter()
         .map(|b| (b.from_s / 3600.0, b.to_s / 3600.0, b.headway_s))
         .collect();
+    // A gradual start and finish (Homlo, Damascus test): twice the off-peak headway at the start,
+    // steps to and from the peak (each ramp takes half the short off-peak hour here), and twice
+    // the off-peak headway again at the end of the day.
     assert_eq!(
         got,
-        vec![(6.0, 7.0, 1200.0), (7.0, 9.0, 600.0), (9.0, 10.0, 1200.0)]
+        vec![
+            (6.0, 6.25, 2400.0),
+            (6.25, 6.5, 1800.0),
+            (6.5, 6.75, 1020.0),
+            (6.75, 7.0, 780.0),
+            (7.0, 9.0, 600.0),
+            (9.0, 9.25, 780.0),
+            (9.25, 9.5, 1020.0),
+            (9.5, 9.75, 1800.0),
+            (9.75, 10.0, 2400.0),
+        ]
     );
+}
+
+#[test]
+fn a_long_off_peak_runs_at_its_headway_between_the_ramps() {
+    let mut l = shuttle();
+    l.first_s = 5.0 * 3600.0;
+    l.last_s = 24.0 * 3600.0;
+    l.peaks = vec![[7.0 * 3600.0, 9.0 * 3600.0], [16.0 * 3600.0, 19.0 * 3600.0]];
+    let b = service_bands(&l);
+    let at = |h: f64| {
+        b.iter()
+            .find(|x| x.from_s <= h * 3600.0 && h * 3600.0 < x.to_s)
+            .map(|x| x.headway_s)
+    };
+    assert_eq!(at(5.1), Some(2400.0));
+    assert_eq!(at(6.2), Some(1020.0));
+    assert_eq!(at(8.0), Some(600.0));
+    assert_eq!(at(12.0), Some(1200.0));
+    assert_eq!(at(15.7), Some(780.0));
+    assert_eq!(at(17.0), Some(600.0));
+    assert_eq!(at(21.0), Some(1200.0));
+    assert_eq!(at(23.8), Some(2400.0));
+    // The bands cover the day without gaps.
+    for w in b.windows(2) {
+        assert!((w[0].to_s - w[1].from_s).abs() < 1e-6);
+    }
 }
 
 #[test]
@@ -82,8 +121,10 @@ fn train_estimates_are_plausible_for_a_metro() {
 fn a_line_drawn_on_the_design_reaches_the_journey_planner() {
     let out = publish_service(&topology(), &[shuttle()], "weekday").unwrap();
     let r = &out.lines[0];
-    // 6–7 and 9–10 every 20 min, 7–9 every 10 min: 3 + 12 + 3 = 18 departures each way.
-    assert_eq!(r.trips, 36, "{:?}", r.issues);
+    // 7–9 every 10 min (12), and the ramps of the short off-peak hours either side, each band
+    // from its start: 06:00 (40 min), 06:15 (30), 06:30 (17), 06:45 and 06:58 (13); 09:00 and
+    // 09:13 (13), 09:15 (17), 09:30 (30), 09:45 (40): 22 departures each way.
+    assert_eq!(r.trips, 44, "{:?}", r.issues);
     assert!(r.trains >= 1);
     let run = r.outbound_s.unwrap();
     assert!(run > 30.0 && run < 900.0, "{run}");
@@ -93,7 +134,7 @@ fn a_line_drawn_on_the_design_reaches_the_journey_planner() {
     assert_eq!(tt.routes[0].route_id, "M7");
     assert_eq!(tt.routes[0].mode, "metro");
     assert_eq!(tt.routes[0].route_color.as_deref(), Some("1d4ed8"));
-    assert_eq!(tt.trips.len(), 36);
+    assert_eq!(tt.trips.len(), 44);
     let names: std::collections::BTreeSet<&str> =
         tt.stops.iter().map(|s| s.stop_name.as_str()).collect();
     assert_eq!(
@@ -318,7 +359,7 @@ fn trains_per_hour_on_each_section_follow_the_timetable() {
         .map(|s| s.hours.iter().sum::<u32>())
         .max()
         .unwrap();
-    assert!(total <= 36, "{total}");
+    assert!(total <= 44, "{total}");
 }
 
 #[test]
