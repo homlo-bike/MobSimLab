@@ -1375,8 +1375,7 @@ export function Workspace({
         {!onMap && tab === "tables" && (
           <div ref={tablesScroll} className="min-h-0 flex-1 overflow-y-auto bg-slate-50">
             <section aria-label={t("tables.title")} className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-10">
-              <h1 className="text-2xl font-semibold tracking-tight">{t("tables.title")}</h1>
-              <p className="mt-1 text-slate-600">{t("tables.intro")}</p>
+              <p className="text-slate-600">{t("tables.intro")}</p>
               {project && drawings.loaded ? (
                 <div className="mt-6 md:flex md:items-start md:gap-8">
                   {/* One group of tables at a time, chosen here: a list beside them on wide screens, a row on top on
