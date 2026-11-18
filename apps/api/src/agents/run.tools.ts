@@ -59,7 +59,9 @@ const network = z
     z.strictObject({ kind: z.literal("example") }),
     z.strictObject({
       kind: z.literal("files"),
-      topology: text.describe("the railway editor's topology export (JSON text)"),
+      topology: text.describe(
+        "a track topology in the format of contracts/rail-topology.schema.json (JSON text)",
+      ),
       topology_name: fileName,
       lines: text.describe("the lines file (JSON text)"),
       lines_name: fileName,
@@ -70,7 +72,7 @@ const network = z
     }),
   ])
   .describe(
-    "the railway to run: the example metro, the railway editor's files, or the network of a saved run of this project",
+    "the railway to run: the example metro, a track topology with a lines file, or the network of a saved run of this project",
   );
 
 const params = capacityParams.describe(

@@ -20,7 +20,7 @@ import {
   pluginBasemap,
 } from "../src/map/basemaps";
 import { MapControls } from "../src/map/MapControls";
-import { applyHidden, groupOf, groupsOnMap } from "../src/map/mapLayers";
+import { applyHidden, groupOf, groupsOnMap, switchBasemap } from "../src/map/mapLayers";
 
 afterEach(() => {
   cleanup();
@@ -128,6 +128,21 @@ describe("basemaps and project layers", () => {
     expect(rememberedBasemapId()).toBe("esri-world-imagery");
     expect(basemapById(rememberedBasemapId()).id).toBe(DEFAULT_BASEMAP.id);
     localStorage.clear();
+  });
+
+  it("switches the basemap while another style is still loading", () => {
+    // MapLibre throws "Style is not done loading" from listImages then; that blanked every project page.
+    const setStyle = vi.fn();
+    const map = {
+      listImages: () => {
+        throw new Error("Style is not done loading");
+      },
+      getImage: vi.fn(),
+      setStyle,
+      once: vi.fn(),
+    } as unknown as MapLibreMap;
+    expect(() => switchBasemap(map, DEFAULT_BASEMAP)).not.toThrow();
+    expect(setStyle).toHaveBeenCalledWith(DEFAULT_BASEMAP.styleUrl, expect.anything());
   });
 
   it("escapes a plugin's attribution", () => {

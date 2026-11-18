@@ -1,7 +1,7 @@
 /**
  * Station features and special statuses (ADR-0041 §7): what planners record about a station or stop in the
  * Create tab (step-free access, ramps, elevators, escalators and so on) and the special role they can give it
- * in the Schematic tab (central station, central bus station, airport, seaport and so on). Each has a symbol
+ * in the Schematic tab (central station, central bus station, airport, seaport, closed, under construction and so on). Each has a symbol
  * drawn the same way on the maps, in exports and in the panels.
  */
 import type { MessageKey } from "../../i18n/messages";
@@ -28,6 +28,8 @@ export const STATION_STATUSES = [
   "hospital",
   "university",
   "stadium",
+  "closed",
+  "under_construction",
 ] as const;
 export type StationStatus = (typeof STATION_STATUSES)[number];
 
@@ -63,6 +65,10 @@ const GLYPHS: Record<StationFeature | StationStatus, Glyph> = {
   hospital: { d: "M12 5v14M5 12h14" },
   university: { d: "M2 9l10-5 10 5-10 5zM6 11v5c3 2 9 2 12 0v-5" },
   stadium: { d: "M3 10a9 4 0 1 0 18 0a9 4 0 1 0-18 0M3 10v4a9 4 0 0 0 18 0v-4" },
+  /** A cross: the station is closed. */
+  closed: { d: "M6 6l12 12M18 6L6 18" },
+  /** A traffic cone: the station is being built. */
+  under_construction: { d: "M10 4h4l4.5 15h-13zM8.2 10h7.6M6.8 14.5h10.4M4 19h16" },
   step_free: { d: "M12 3.5a1.5 1.5 0 1 0 0 .1M11 7v6h5l2 5M11 10h5M8.5 11a5 5 0 1 0 7 6.5" },
   ramp: { d: "M3 19h18L3 10z" },
   elevator: { d: "M5 3h14v18H5zM9 9l3-3 3 3M9 15l3 3 3-3" },

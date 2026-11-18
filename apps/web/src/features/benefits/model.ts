@@ -247,6 +247,20 @@ export function catchments(tt: Timetable, prefs: PrepareInput["prefs"]): { id: s
   }));
 }
 
+/** Prefixes of the project values that `prepare` and `access` read: catchments, walking and benefit values. */
+const PREPARE_KEYS = ["benefit.", "mode.catchment_m", "journey.", "demand.walk_speed_kmh"];
+
+/**
+ * Purpose: the project values `prepare` and `access` read, without the rest (unit costs, fares, timetables),
+ * so editing a cost does not prepare the zones and reach the stations again (the Tables tab froze for a
+ * minute on the Damascus network after each unit-cost edit). Input: the project's values. Output: a subset.
+ */
+export function prepareValues(prefs: PrepareInput["prefs"]): Record<string, number> {
+  return Object.fromEntries(
+    Object.entries(prefs ?? {}).filter(([k]) => PREPARE_KEYS.some((p) => k.startsWith(p))),
+  );
+}
+
 /** Purpose: the people, jobs and places of every station's zone, and the buildings near the lines. */
 export function prepare(input: PrepareInput): Prepared {
   const { prefs, country, regions } = input;
