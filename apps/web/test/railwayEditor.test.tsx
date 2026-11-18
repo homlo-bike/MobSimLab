@@ -825,6 +825,26 @@ describe("Railway editor", () => {
     expect(new Set(seen).size).toBe(4);
   });
 
+  it("keeps a platform at every station and turns a station with [ and ]", async () => {
+    const { handlers } = await opened();
+    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
+    act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
+    await screen.findByDisplayValue("Riverside");
+    const num = (name: string) => screen.getByRole("spinbutton", { name }) as HTMLInputElement;
+    // An island and no side platforms; taking the island away leaves one side platform, never 0 + 0.
+    fireEvent.change(num("Side platforms"), { target: { value: "0" } });
+    fireEvent.change(num("Island platforms"), { target: { value: "1" } });
+    fireEvent.change(num("Side platforms"), { target: { value: "0" } });
+    await waitFor(() => expect(num("Side platforms").value).toBe("0"));
+    fireEvent.change(num("Island platforms"), { target: { value: "0" } });
+    await waitFor(() => expect(num("Side platforms").value).toBe("1"));
+    const before = Number(num("Rotation").value);
+    fireEvent.keyDown(window, { key: "]" });
+    await waitFor(() => expect(Number(num("Rotation").value)).toBe((before + 5) % 360));
+    fireEvent.keyDown(window, { key: "{", shiftKey: true });
+    await waitFor(() => expect(Number(num("Rotation").value)).toBe((before + 350) % 360));
+  });
+
   it("stays in the track tool after drawing a track", async () => {
     const { handlers } = await opened();
     fireEvent.click(screen.getByRole("button", { name: "Clear" }));
@@ -1044,8 +1064,13 @@ describe("Railway editor", () => {
     fireEvent.change(dayType, { target: { value: "weekday" } });
 
     fireEvent.click(screen.getByRole("button", { name: "Publish timetable" }));
-    const done = await screen.findByTestId("lines-published");
+    // Publishing plans every day type with the real engine, one step after another; on a slow CI runner that
+    // takes longer than the default one second.
+    const done = await screen.findByTestId("lines-published", {}, { timeout: 15_000 });
     expect(done.textContent).toMatch(/Published 1 line · \d+ trips/);
+    // The outcome is announced in one box, and the progress bar is gone.
+    expect(done.getAttribute("role")).toBe("status");
+    expect(screen.queryByRole("progressbar", { name: "Publish timetable" })).toBeNull();
     expect(screen.getByTestId("line-report").textContent).toMatch(
       /\d+ trips · \d+ trains? · Riverside → Northgate/,
     );

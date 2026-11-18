@@ -51,6 +51,8 @@ export const editorsSw = {
   "rail.element": "Kipengele",
   "rail.doubleJunction": "Makutano mawili kwenye reli mbili",
   "rail.scissors": "Kivuko cha mkasi",
+  "rail.terrainFailed":
+    "Miinuko ya ardhi haikupakia: {reason}. Miteremko na miinuko ya vituo itafuata ikishapakia.",
   "rail.signals": "Ishara",
   "rail.signalsSome":
     "{summary}. Zinatengenezwa kutoka kwenye usanifu na kuufuata unapobadilika. Bofya ishara kuibadilisha au kuifuta, au tumia zana ya Ishara kuongeza moja; kila badiliko linakaguliwa.",
@@ -367,6 +369,9 @@ export const editorsSw = {
   "street.pointKind": "Aina ya nukta {n}",
   "street.deletePoint": "Futa nukta {n}",
   "street.delete": "Futa",
+  "street.sideSwitch": "Badilisha upande",
+  "street.sideAdds": "Kuhudumia kituo hiki kutoka kando nyingine kunaongeza {length}.",
+  "street.sideSaves": "Kuhudumia kituo hiki kutoka kando nyingine kunaokoa {length}.",
   "street.backTo1": "rudi kwenye nukta 1",
   "street.optimise": "Boresha",
   "street.optimiseTitle": "Chagua mwelekeo wa safari kwenye kila nukta ya kupitia kwa mzunguko mfupi zaidi",

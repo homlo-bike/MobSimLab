@@ -50,6 +50,7 @@ export const editorsKo = {
   "rail.element": "요소",
   "rail.doubleJunction": "복선 분기",
   "rail.scissors": "시저스 크로싱",
+  "rail.terrainFailed": "지면 높이를 불러오지 못했습니다: {reason}. 불러오면 경사와 역 높이가 표시됩니다.",
   "rail.signals": "신호기",
   "rail.signalsSome":
     "{summary}. 설계에서 생성되며 설계를 바꾸면 따라 바뀝니다. 신호기를 클릭해 변경하거나 삭제하고, 신호기 도구로 추가하세요. 모든 변경 사항은 검사됩니다.",
@@ -341,6 +342,9 @@ export const editorsKo = {
   "street.pointKind": "점 {n} 종류",
   "street.deletePoint": "점 {n} 삭제",
   "street.delete": "삭제",
+  "street.sideSwitch": "반대편으로",
+  "street.sideAdds": "이 정류장을 반대편 보도에서 운행하면 {length} 늘어납니다.",
+  "street.sideSaves": "이 정류장을 반대편 보도에서 운행하면 {length} 줄어듭니다.",
   "street.backTo1": "점 1로 돌아감",
   "street.optimise": "최적화",
   "street.optimiseTitle": "순환이 가장 짧아지도록 각 경유점에서의 진행 방향 선택",

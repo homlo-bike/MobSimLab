@@ -1,4 +1,5 @@
 import { hasMessage, type Translate, useI18n } from "../../i18n/i18n";
+import { offeredModes, usePlannedModes } from "../../projects/plannedModes";
 import { LEVELS, RAIL_MODES } from "./modes";
 import type { RailMode } from "./types";
 
@@ -135,6 +136,8 @@ export function Remove({ onClick, what }: { onClick: () => void; what: string })
  */
 export function ModeRow({ value, onChange }: { value: RailMode; onChange: (m: RailMode) => void }) {
   const { t } = useI18n();
+  // Only the railway systems the project plans to use (Project preferences), and this element's own.
+  const planned = usePlannedModes();
   return (
     <Row label={t("rail.system")}>
       <select
@@ -143,7 +146,7 @@ export function ModeRow({ value, onChange }: { value: RailMode; onChange: (m: Ra
         onChange={(e) => onChange(e.target.value as RailMode)}
         className={input}
       >
-        {RAIL_MODES.map((m) => (
+        {offeredModes(RAIL_MODES, (m) => m.id, planned, value).map((m) => (
           <option key={m.id} value={m.id}>
             {t(m.label)}
           </option>

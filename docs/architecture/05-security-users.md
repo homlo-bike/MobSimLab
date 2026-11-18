@@ -88,7 +88,7 @@ Two layers:
 
 ### 3.4 Browser security
 
-- CSP: `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'` (Tailwind/MapLibre need inline styles; no inline scripts) `; img-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`. All map tiles go through the backend tile proxy or allowlisted origins added to `img-src`/`connect-src` by admin config.
+- CSP: `default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'` (Tailwind/MapLibre need inline styles; no inline scripts) `; img-src 'self' data: blob:; worker-src 'self' blob:; connect-src 'self' data:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'`. All map tiles go through the backend tile proxy or allowlisted origins added to `img-src`/`connect-src` by admin config.
 - CSRF: a synchroniser token derived from the session (HMAC with `session_secret`), sent in `X-CSRF-Token` on all state-changing requests, plus `SameSite=Lax` and an `Origin` (or `Referer`) check that refuses state-changing requests from other origins or with neither header.
 - Headers via helmet: HSTS (when HTTPS), `X-Content-Type-Options`, `Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` minimal, `Cross-Origin-Opener-Policy: same-origin`.
 - WebSocket: same-origin check, session cookie auth, per-message size limits.

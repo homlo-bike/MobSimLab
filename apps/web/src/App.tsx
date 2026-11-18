@@ -8,6 +8,7 @@ import {
   useI18n,
 } from "./i18n/i18n";
 import { setLogSession } from "./logging/logger";
+import { setCsrfToken } from "./session/csrf";
 import { projectsApi } from "./projects/api";
 import { ProjectsHome } from "./projects/ProjectsHome";
 import { fetchMe, type Me, type Preferences, savePreferences } from "./session/api";
@@ -62,7 +63,10 @@ export function App() {
 
   const csrf = me?.csrfToken;
   // Browser logs go to the API only while someone is signed in (ADR-0022).
-  useEffect(() => setLogSession(csrf ?? null), [csrf]);
+  useEffect(() => {
+    setLogSession(csrf ?? null);
+    setCsrfToken(csrf ?? null);
+  }, [csrf]);
   const savePrefs = useCallback(
     (patch: Preferences) => {
       setPrefs((p) => ({ ...p, ...patch }));
@@ -234,6 +238,8 @@ function Shell({
             onAbout={about}
             existingRailways={Boolean(prefs.existingRailways)}
             userId={user?.id ?? null}
+            adminCsrf={user && (user.role === "owner" || user.role === "admin") ? csrf : null}
+            onRefreshSession={reload}
           />
         </LoadingScreen>
         {setup}

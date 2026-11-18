@@ -37,6 +37,7 @@ export const populationAr = {
   "pop.upload.hint":
     "شبكة GeoTIFF (أشخاص لكل خلية)، أو مناطق أو نقاط GeoJSON بحقل لعدد الأشخاص، أو ملف CSV لنقاط أو قيم لكل منطقة. {mb} ميغابايت على الأكثر.",
   "pop.upload.file": "الملف",
+  "pop.upload.choose": "اختر ملفًا",
   "pop.upload.unknown": "اختر ملف ‎.tif أو ‎.geojson أو ‎.json أو ‎.csv.",
   "pop.upload.name": "الاسم",
   "pop.upload.licence": "الترخيص",

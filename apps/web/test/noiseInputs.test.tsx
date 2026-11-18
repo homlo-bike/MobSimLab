@@ -630,7 +630,8 @@ describe("noise map panel: inputs, comparison and export", () => {
     expect(table.textContent).toContain("Every 5 min");
     expect(table.textContent).toContain("+1");
     expect(screen.getByLabelText("Noise map legend").textContent).toContain("+5 to +10");
-    expect(screen.getByRole("button", { name: "Export contours (GeoJSON)" })).toBeTruthy();
+    // The result offers no exports: they were not asked for.
+    expect(screen.queryByRole("button", { name: /Export/ })).toBeNull();
   });
 
   it("asks for a road run for the simulated input and loads its scenario and replay", async () => {

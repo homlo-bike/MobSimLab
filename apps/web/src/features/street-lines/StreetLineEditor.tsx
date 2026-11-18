@@ -11,13 +11,14 @@ import {
   drawRoads,
   ensureLayers,
   HIT_LAYER,
+  OTHERS_HIT_LAYER,
   removeLayers,
   setLineColor,
 } from "./mapLayers";
 import { depotElement, pointElement } from "./markers";
 import { fullTiming, MODES, type Timing } from "./modes";
 import { profileWith, vehicleById } from "./service";
-import { lineBounds, type SavedStreetLine } from "./saved";
+import { keepRoutedLegs, lineBounds, lineTiles, type SavedStreetLine } from "./saved";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
 import type { StreetLineInput } from "../journey-planner/network";
 import { depotFit, depotGates, lineVehicle } from "../depots/model";
@@ -118,6 +119,8 @@ interface Props {
   defaultName?: string;
   /** The project's other street lines, drawn faded under this one. */
   otherLines?: readonly SavedStreetLine[];
+  /** Called with a saved line's id when the planner clicks it on the map (Select tool), to edit it instead. */
+  onPickLine?: (id: string) => void;
   /** The list of the project's lines (switch, add, delete), shown at the top of the panel. */
   lineList?: React.ReactNode;
   /** Noise engine loader (noise plugin); tests inject a fake. */
@@ -157,6 +160,7 @@ export function StreetLineEditor({
   onSave,
   defaultName,
   otherLines = NO_LINES,
+  onPickLine,
   lineList = null,
   loadNoise = loadWasmNoise,
   noiseAvailable = noiseCalculationIn("street-line-tool"),
@@ -199,6 +203,14 @@ export function StreetLineEditor({
   // Latest values for map and keyboard handlers registered once.
   const latest = useRef({ tool, view, selected });
   latest.current = { tool, view, selected };
+  // The palette's Bus depot opens the shared depot editor when the workspace has one; otherwise it places
+  // the line's own depot gate. The panel's "move depot" still places the line's own gate either way.
+  const openDepots = useRef(onOpenDepots);
+  openDepots.current = onOpenDepots;
+  const pickTool = useCallback((t: Tool) => {
+    if (t === "depot" && openDepots.current) openDepots.current();
+    else setTool(t);
+  }, []);
 
   const run = useCallback((f: (e: StreetEngine) => LineView) => {
     const e = engine.current;
@@ -274,7 +286,8 @@ export function StreetLineEditor({
       if (saved.depot) v = e.setDepot(saved.depot);
       const idAt = (i: number | undefined) => (i === undefined ? undefined : v.points[i]?.id);
       setDepotStops({ out: idAt(saved.depotStops.out), in: idAt(saved.depotStops.in) });
-      return v;
+      // A leg whose streets are still missing keeps the route it was saved with, not a dashed straight line.
+      return keepRoutedLegs(v, saved.view);
     });
   }, [ready, run]);
 
@@ -307,6 +320,9 @@ export function StreetLineEditor({
 
   // Streets: load the tiles on screen whenever the map stops moving, then rebuild once per batch.
   const tiles = useRef(new Set<string>());
+  // The tiles under a saved line, loaded with the first view whatever the zoom: routing it again needs all of
+  // its streets, not only those on screen.
+  const lineTileKeys = useRef<string[]>(initial ? lineTiles(initial) : []);
   const [zoomedOut, setZoomedOut] = useState(false);
   useEffect(() => {
     if (!map || !profile) return;
@@ -322,11 +338,14 @@ export function StreetLineEditor({
       }
       const tooFar = map.getZoom() < MIN_LOAD_ZOOM;
       setZoomedOut(tooFar);
-      if (tooFar) return;
+      const line = lineTileKeys.current;
+      lineTileKeys.current = [];
+      if (tooFar && !line.length) return;
       const b = map.getBounds();
-      const want = tilesFor([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()])
-        .map(([x, y]) => `${x}/${y}`)
-        .filter((k) => !tiles.current.has(k));
+      const onScreen = tooFar
+        ? []
+        : tilesFor([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]).map(([x, y]) => `${x}/${y}`);
+      const want = [...new Set([...line, ...onScreen])].filter((k) => !tiles.current.has(k));
       if (!want.length) return;
       busy = true;
       want.forEach((k) => tiles.current.add(k));
@@ -356,7 +375,7 @@ export function StreetLineEditor({
           reason ??= err instanceof Error ? err.message : null;
         }
       });
-      if (added) run((eng) => eng.rebuild());
+      if (added) run((eng) => keepRoutedLegs(eng.rebuild(), initial?.view));
       setReady(e.ready());
       setStatus(failed ? `${reason ?? tNow("rail.streetsFailed")} ${tNow("rail.moveMap")}` : null);
       if (again) {
@@ -440,7 +459,11 @@ export function StreetLineEditor({
     if (map && map.getSource("sl-others"))
       drawOtherLines(
         map,
-        otherLines.map((l) => ({ view: l.view, color: MODES[l.profile.mode]?.color ?? MODES.bus.color })),
+        otherLines.map((l) => ({
+          view: l.view,
+          color: MODES[l.profile.mode]?.color ?? MODES.bus.color,
+          id: l.id,
+        })),
       );
   }, [map, otherLines, rules?.traffic_side]);
 
@@ -448,6 +471,9 @@ export function StreetLineEditor({
     if (map && map.getSource("sl-roads"))
       drawRoads(map, showRoads && engine.current ? engine.current.usableRoads() : null);
   }, [map, profile, ready, showRoads, rules?.traffic_side]);
+
+  const pickLine = useRef(onPickLine);
+  pickLine.current = onPickLine;
 
   // Map clicks: add or insert a point, place the depot, or clear the selection.
   useEffect(() => {
@@ -472,12 +498,68 @@ export function StreetLineEditor({
         const seq = hit === undefined ? v.points.length : Number(hit) + 1;
         run((e) => e.insertPoint(seq, at, "via"));
       } else if (t === "select") {
-        setSelected(null);
+        // Another line under the click: edit that one.
+        const { x, y } = ev.point;
+        const box: [[number, number], [number, number]] = [
+          [x - 4, y - 4],
+          [x + 4, y + 4],
+        ];
+        const other = map.getLayer(OTHERS_HIT_LAYER)
+          ? map.queryRenderedFeatures(box, { layers: [OTHERS_HIT_LAYER] })[0]?.properties?.line
+          : null;
+        if (typeof other === "string" && pickLine.current) pickLine.current(other);
+        else setSelected(null);
       }
     };
+    // Select: press on the line and drag to pull a new via point out of it (the map does not pan meanwhile).
+    let pull: { seq: number; x: number; y: number } | null = null;
+    const onDown = (ev: MapMouseEvent) => {
+      if (latest.current.tool !== "select" || !map.getLayer(HIT_LAYER)) return;
+      const { x, y } = ev.point;
+      const hit = map.queryRenderedFeatures(
+        [
+          [x - 3, y - 3],
+          [x + 3, y + 3],
+        ],
+        { layers: [HIT_LAYER] },
+      )[0]?.properties?.index;
+      if (hit === undefined) return;
+      pull = { seq: Number(hit) + 1, x, y };
+      map.dragPan.disable();
+    };
+    const onUp = (ev: MapMouseEvent) => {
+      if (!pull) return;
+      const p = pull;
+      pull = null;
+      map.dragPan.enable();
+      if (Math.hypot(ev.point.x - p.x, ev.point.y - p.y) < 5) return;
+      run((e) => e.insertPoint(p.seq, [ev.lngLat.lng, ev.lngLat.lat], "via"));
+    };
+    // Lines that can be clicked or pulled show a pointer.
+    const onHover = (ev: MapMouseEvent) => {
+      if (latest.current.tool !== "select" || pull) return;
+      const layers = [HIT_LAYER, OTHERS_HIT_LAYER].filter((l) => map.getLayer(l));
+      const { x, y } = ev.point;
+      const over = layers.length
+        ? map.queryRenderedFeatures(
+            [
+              [x - 3, y - 3],
+              [x + 3, y + 3],
+            ],
+            { layers },
+          ).length > 0
+        : false;
+      map.getCanvas().style.cursor = over ? "pointer" : "";
+    };
     map.on("click", onClick);
+    map.on("mousedown", onDown);
+    map.on("mouseup", onUp);
+    map.on("mousemove", onHover);
     return () => {
       map.off("click", onClick);
+      map.off("mousedown", onDown);
+      map.off("mouseup", onUp);
+      map.off("mousemove", onHover);
     };
   }, [map, run]);
 
@@ -534,18 +616,19 @@ export function StreetLineEditor({
       if (key === "v") setTool("select");
       else if (key === "p") setTool("add");
       else if (key === "h") setTool("pan");
-      else if (key === "d") setTool("depot");
+      else if (key === "d") pickTool("depot");
       else if ((ev.key === "Delete" || ev.key === "Backspace") && sel !== null) {
         run((e) => e.deletePoint(sel));
         setSelected(null);
       } else if (ev.key === "Escape") {
-        setSelected(null);
-        setTool((t) => (t === "depot" ? "select" : t));
+        // First stop what is going on (adding points, placing the depot, panning), then clear the selection.
+        if (latest.current.tool !== "select") setTool("select");
+        else setSelected(null);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [run]);
+  }, [run, pickTool]);
 
   // Other tools see this line's stops, so a station drawn next to one takes its name.
   useEffect(() => publishPlaces("street", stopPlaces(view)), [view]);
@@ -661,6 +744,11 @@ export function StreetLineEditor({
     setTiming,
     select: setSelected,
     setKind,
+    switchSide: (id) => run((e) => e.switchSide(id)),
+    sideCost: (id) => {
+      const c = engine.current?.sideCost(id);
+      return c === undefined || Number.isNaN(c) ? null : c;
+    },
     setPointName,
     deletePoint: (id) => {
       run((e) => e.deletePoint(id));
@@ -742,7 +830,7 @@ export function StreetLineEditor({
 
   return (
     <>
-      <ToolPalette tool={tool} onTool={setTool} />
+      <ToolPalette tool={tool} onTool={pickTool} />
       <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 flex max-w-[90%] -translate-x-1/2 flex-col items-center gap-1 text-sm">
         {notice && <p className="rounded-full bg-slate-900/85 px-3 py-1 text-white">{notice}</p>}
         {note && (

@@ -38,6 +38,7 @@ export const populationJa = {
   "pop.upload.hint":
     "GeoTIFF グリッド (セルあたりの人数)、人数フィールドを持つ GeoJSON のゾーンや点、または点やゾーン別の値の CSV。最大 {mb} MB。",
   "pop.upload.file": "ファイル",
+  "pop.upload.choose": "ファイルを選択",
   "pop.upload.unknown": ".tif、.geojson、.json、.csv のいずれかのファイルを選んでください。",
   "pop.upload.name": "名前",
   "pop.upload.licence": "ライセンス",

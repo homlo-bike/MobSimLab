@@ -51,6 +51,8 @@ export const editorsDe = {
   "rail.element": "Bauform",
   "rail.doubleJunction": "Doppelte Abzweigung auf zweigleisiger Strecke",
   "rail.scissors": "Doppelter Gleiswechsel",
+  "rail.terrainFailed":
+    "Geländehöhen wurden nicht geladen: {reason}. Neigungen und Stationshöhen folgen, sobald sie geladen sind.",
   "rail.signals": "Signale",
   "rail.signalsSome":
     "{summary}. Sie werden aus dem Entwurf erzeugt und folgen ihm bei Änderungen. Klicken Sie auf ein Signal, um es zu ändern oder zu löschen, oder fügen Sie mit dem Signal-Werkzeug eines hinzu; jede Änderung wird geprüft.",
@@ -376,6 +378,10 @@ export const editorsDe = {
   "street.pointKind": "Art von Punkt {n}",
   "street.deletePoint": "Punkt {n} löschen",
   "street.delete": "Löschen",
+  "street.sideSwitch": "Seite wechseln",
+  "street.sideAdds":
+    "Diese Haltestelle von der anderen Straßenseite zu bedienen verlängert die Linie um {length}.",
+  "street.sideSaves": "Diese Haltestelle von der anderen Straßenseite zu bedienen spart {length}.",
   "street.backTo1": "zurück zu Punkt 1",
   "street.optimise": "Optimieren",
   "street.optimiseTitle": "An jedem Wegpunkt die Fahrtrichtung für den kürzesten Umlauf wählen",

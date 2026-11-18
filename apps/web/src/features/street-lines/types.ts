@@ -172,6 +172,10 @@ export interface StreetEngine {
   deletePoint(id: number): LineView;
   clear(): LineView;
   setKind(id: number, kind: PointKind): LineView;
+  /** Puts a stop on the other sidewalk of its street. */
+  switchSide(id: number): LineView;
+  /** Metres the circuit gains (positive) or saves (negative) with the stop on the other sidewalk; NaN when unknown. */
+  sideCost(id: number): number;
   setName(id: number, name: string): LineView;
   setDepot(lonlat: LonLat): LineView;
   clearDepot(): LineView;

@@ -84,6 +84,8 @@ export interface OverpassFetchOptions {
   progress?: (done: number, total: number) => void | Promise<void>;
   /** Checked between tiles; throwing stops the fetch (cancelled import). */
   checkCancelled?: () => void | Promise<void>;
+  /** Aborted when the import is cancelled: stops the tile request under way. */
+  signal?: AbortSignal;
 }
 
 export interface OverpassFetchResult {
@@ -135,7 +137,7 @@ export async function fetchArea(
     if (xml === null) {
       let failure: string | null;
       try {
-        xml = await client.run(query);
+        xml = await client.run(query, o.signal);
         failure = runtimeError(xml);
       } catch (e) {
         const tooBig = e instanceof OverpassError && (e.status === 504 || /too large/.test(e.message));

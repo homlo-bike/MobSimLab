@@ -53,6 +53,8 @@ export const editorsUk = {
   "rail.element": "Елемент",
   "rail.doubleJunction": "Двоколійне відгалуження",
   "rail.scissors": "Перехресний з'їзд",
+  "rail.terrainFailed":
+    "Висоти рельєфу не завантажилися: {reason}. Ухили та висоти станцій з’являться після завантаження.",
   "rail.signals": "Світлофори",
   "rail.signalsSome":
     "{summary}. Згенеровано з проєкту, вони змінюються разом із ним. Клацніть світлофор, щоб змінити чи видалити його, або додайте інструментом «Світлофор». Кожну зміну перевіряють.",
@@ -407,6 +409,9 @@ export const editorsUk = {
   "street.pointKind": "Тип точки {n}",
   "street.deletePoint": "Видалити точку {n}",
   "street.delete": "Видалити",
+  "street.sideSwitch": "Інший бік",
+  "street.sideAdds": "Обслуговування зупинки з іншого тротуару додає {length}.",
+  "street.sideSaves": "Обслуговування зупинки з іншого тротуару заощаджує {length}.",
   "street.backTo1": "назад до точки 1",
   "street.optimise": "Оптимізувати",
   "street.optimiseTitle": "Вибрати напрямок проїзду через кожну проміжну точку для найкоротшого кола",

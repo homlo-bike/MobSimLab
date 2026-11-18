@@ -51,6 +51,8 @@ export const editorsHa = {
   "rail.element": "Abu",
   "rail.doubleJunction": "Mahaɗa biyu a kan dogo biyu",
   "rail.scissors": "Mahaɗar almakashi",
+  "rail.terrainFailed":
+    "Tsayin ƙasa bai loda ba: {reason}. Gangara da tsayin tashoshi za su biyo bayan sun loda.",
   "rail.signals": "Alamomi",
   "rail.signalsSome":
     "{summary}. Ana samar da su daga tsarin kuma suna bin sa idan ya canza. Danna alama don canza ta ko share ta, ko yi amfani da kayan aikin Alama don ƙara ɗaya; ana duba kowane canji.",
@@ -363,6 +365,9 @@ export const editorsHa = {
   "street.pointKind": "Nau'in wuri {n}",
   "street.deletePoint": "Share wuri {n}",
   "street.delete": "Share",
+  "street.sideSwitch": "Sauya gefe",
+  "street.sideAdds": "Yi wa wannan tasha hidima daga ɗayan gefen hanya yana ƙara {length}.",
+  "street.sideSaves": "Yi wa wannan tasha hidima daga ɗayan gefen hanya yana rage {length}.",
   "street.backTo1": "komawa wuri 1",
   "street.optimise": "Inganta",
   "street.optimiseTitle": "Zaɓi alƙiblar tafiya a kowane wurin wucewa don mafi gajeren zagaye",

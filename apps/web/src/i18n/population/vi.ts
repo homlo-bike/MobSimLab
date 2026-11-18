@@ -37,6 +37,7 @@ export const populationVi = {
   "pop.upload.hint":
     "Lưới GeoTIFF (số người mỗi ô), vùng hoặc điểm GeoJSON có trường số người, hoặc CSV gồm các điểm hoặc giá trị theo vùng. Tối đa {mb} MB.",
   "pop.upload.file": "Tệp",
+  "pop.upload.choose": "Chọn tệp",
   "pop.upload.unknown": "Chọn một tệp .tif, .geojson, .json hoặc .csv.",
   "pop.upload.name": "Tên",
   "pop.upload.licence": "Giấy phép",

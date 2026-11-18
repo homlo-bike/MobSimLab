@@ -636,23 +636,41 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
         }
         let (h0, h1) = (levels[i - 1].height_m(p), levels[i].height_m(p));
         let dh = (h1 - h0).abs();
-        let len = dh / g + p.vertical_radius_m * g;
+        let rv = p.vertical_radius_m;
+        let len = dh / g + rv * g;
         let deep_prev = h0.abs() >= h1.abs();
-        let (s0, s1) = if deep_prev {
+        let (mut s0, mut s1) = if deep_prev {
             (vert_s[i - 1], vert_s[i - 1] + len)
         } else {
             (vert_s[i] - len, vert_s[i])
         };
+        // Against the deeper end it would run past the track's end (a level change at a short
+        // lead before a station): end it at the other point instead, or slide it onto the track.
+        if s0 < -0.5 || s1 > length + 0.5 {
+            let (a0, a1) = if deep_prev {
+                (vert_s[i] - len, vert_s[i])
+            } else {
+                (vert_s[i - 1], vert_s[i - 1] + len)
+            };
+            if a0 >= -0.5 && a1 <= length + 0.5 {
+                (s0, s1) = (a0, a1);
+            } else if len <= length + 0.5 {
+                s0 = s0.clamp(0.0, (length - len).max(0.0));
+                s1 = s0 + len;
+            }
+        }
         let at = verts[if deep_prev { i - 1 } else { i }];
         if s0 < -0.5 || s1 > length + 0.5 {
             issues.push(Issue::error(
                 format!(
-                    "Not enough length to go from {} to {}: the ramp needs {} at {:.1} ‰ with {} vertical curves.",
+                    "Not enough length to go from {} to {}: the ramp needs {} at {:.1} ‰ with {} vertical curves, but the track is {} long ({} short). Lengthen the track or move a level change to a station further away.",
                     levels[i - 1].label(),
                     levels[i].label(),
                     fmt_m(len),
                     p.max_gradient_permille,
-                    fmt_m(p.vertical_radius_m)
+                    fmt_m(p.vertical_radius_m),
+                    fmt_m(length),
+                    fmt_m(len - length)
                 ),
                 Some(at),
                 t.id,
@@ -905,6 +923,29 @@ mod tests {
         assert_eq!(g.lines.len(), 2);
         let mid = crate::geom::at_s(&g.lines[0], 500.0).p;
         assert!((mid.y - p.track_centre_m / 2.0).abs() < 1e-6);
+    }
+
+    #[test]
+    fn a_level_change_next_to_the_track_end_ramps_into_the_track() {
+        // Street level at the start, underground from a point 30 m in (a short lead before a
+        // station): the ramp cannot sit before that point, so it runs on into the track.
+        let pis = vec![Pi {
+            x: 30.0,
+            y: 0.0,
+            radius_m: None,
+            level: Some(Level::Underground),
+        }];
+        let t = track(pis, 1);
+        let g = fit_metro(&t, P2::new(1000.0, 0.0));
+        assert!(
+            !g.issues
+                .iter()
+                .any(|i| i.text.contains("Not enough length")),
+            "{:?}",
+            g.issues
+        );
+        assert_eq!(g.ramps.len(), 1);
+        assert!(g.ramps[0].s0.abs() < 1e-6 && g.ramps[0].s1 > 30.0);
     }
 
     #[test]

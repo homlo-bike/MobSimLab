@@ -51,6 +51,8 @@ export const editorsZu = {
   "rail.element": "Ingxenye",
   "rail.doubleJunction": "Ukuhlangana okuphindwe kabili kujantshi ophindwe kabili",
   "rail.scissors": "Isiwela sesikelo",
+  "rail.terrainFailed":
+    "Ukuphakama komhlabathi akulayishekanga: {reason}. Imithambeka nokuphakama kweziteshi kuzolandela uma sekulayishiwe.",
   "rail.signals": "Amasiginali",
   "rail.signalsSome":
     "{summary}. Akhiqizwa kusuka ekuklameni futhi ayakulandela uma kushintsha. Chofoza isiginali ukuze uyishintshe noma uyisuse, noma usebenzise ithuluzi leSiginali ukuze wengeze eyodwa; zonke izinguquko ziyahlolwa.",
@@ -376,6 +378,9 @@ export const editorsZu = {
   "street.pointKind": "Uhlobo lwephoyinti {n}",
   "street.deletePoint": "Susa iphoyinti {n}",
   "street.delete": "Susa",
+  "street.sideSwitch": "Shintsha uhlangothi",
+  "street.sideAdds": "Ukusebenzela lesi siteshi usuka kolunye uhlangothi lwendlela kwengeza {length}.",
+  "street.sideSaves": "Ukusebenzela lesi siteshi usuka kolunye uhlangothi lwendlela konga {length}.",
   "street.backTo1": "buyela ephoyintini 1",
   "street.optimise": "Thuthukisa",
   "street.optimiseTitle":

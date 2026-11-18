@@ -134,8 +134,15 @@ export function StationInspector({ st, doc, view, actions: a }: Props & { st: St
         <Num
           label={t("rail.sidePlatforms")}
           unit=""
+          // A station needs a platform: without an island, at least one side platform.
+          min={st.island_platforms > 0 ? 0 : 1}
           value={st.side_platforms}
-          onChange={(v) => set((s) => ({ ...s, side_platforms: Math.min(2, Math.round(v)) }))}
+          onChange={(v) =>
+            set((s) => ({
+              ...s,
+              side_platforms: Math.max(s.island_platforms > 0 ? 0 : 1, Math.min(2, Math.round(v))),
+            }))
+          }
         />
       </Row>
       <Row label={t("rail.islandPlatforms")}>
@@ -143,7 +150,17 @@ export function StationInspector({ st, doc, view, actions: a }: Props & { st: St
           label={t("rail.islandPlatforms")}
           unit=""
           value={st.island_platforms}
-          onChange={(v) => set((s) => ({ ...s, island_platforms: Math.min(4, Math.round(v)) }))}
+          onChange={(v) =>
+            set((s) => {
+              const island = Math.min(3, Math.round(v));
+              // Taking the last island away leaves a side platform, never 0 + 0.
+              return {
+                ...s,
+                island_platforms: island,
+                side_platforms: island > 0 ? s.side_platforms : Math.max(1, s.side_platforms),
+              };
+            })
+          }
         />
       </Row>
       <Row label={t("rail.platformLength")}>

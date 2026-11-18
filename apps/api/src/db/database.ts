@@ -183,6 +183,8 @@ export interface DB {
     deleted_at: Date | null;
     /** Buffer round the box of everything drawn, km (projects/project-area.ts). */
     area_buffer_km: Generated<number>;
+    /** OpenStreetMap regions making up the project area (projects/project-area.ts `AreaRegion[]`). */
+    area_regions: ColumnType<unknown, string | undefined, string>;
   };
   "project.drawing": {
     project_id: string;

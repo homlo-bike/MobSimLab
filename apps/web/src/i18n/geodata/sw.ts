@@ -54,4 +54,23 @@ export const geodataSw = {
   "data.ownChoose": "Chagua faili ya GeoTIFF (hadi MB {max})",
   "data.ownReplace": "Badilisha kwa GeoTIFF nyingine (hadi MB {max})",
   "data.remove": "Ondoa",
+  "area.title": "Eneo la mradi",
+  "area.intro":
+    "Tafuta mahali na uweke alama kwenye maeneo ya OpenStreetMap ambayo mradi unahusu. Eneo la mradi ni yote kwa pamoja. Ukihifadhi, OpenStreetMap, miinuko na idadi ya watu wa eneo huingizwa mara moja, na zana zote huzitumia.",
+  "area.search": "Tafuta mahali, kama Aleppo, Syria",
+  "area.lookingUp": "Inatafuta maeneo ya {place}…",
+  "area.regionsAt": "Maeneo ya {place}",
+  "area.noRegions": "Hakuna maeneo yenye majina hapa. Jaribu mahali pengine.",
+  "area.none":
+    "Hakuna eneo lililochaguliwa: eneo ni mstatili unaozunguka kila kilichochorwa, pamoja na nafasi ya ziada.",
+  "area.remove": "Ondoa {name}",
+  "area.total": "Takriban km² {area} kwa jumla",
+  "area.outline": "Mpaka wa maeneo yaliyochaguliwa",
+  "area.save": "Hifadhi eneo na uingize data",
+  "area.saved": "Eneo limehifadhiwa.",
+  "area.import.queued": "{what}: uingizaji umeanza",
+  "area.import.current": "{what}: tayari imeingizwa",
+  "area.import.failed": "{what}: haikuweza kuanza. {reason}",
+  "area.seeMapData": "Fuatilia uingizaji katika GIS, Data ya ramani.",
+  "data.areaRegions": "Eneo: km² {area}, mstatili unaozunguka {names}",
 } satisfies GeodataMessages;

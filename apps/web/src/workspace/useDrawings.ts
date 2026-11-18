@@ -310,6 +310,17 @@ export function useDrawings(api: DrawingsApi, projectId: string, editable: boole
     redo: () => step(redoStack.current, undoStack.current, "after"),
     /** Purpose: save now instead of after the pause. */
     flush,
+    /** Purpose: after a refused save (say an expired session), send every unsaved drawing again. */
+    retry: () => {
+      for (const [k, e] of entries.current) {
+        if (!e.error) continue;
+        e.error = null;
+        e.failures = 0;
+        e.dirty = true;
+        push(k);
+      }
+      tick();
+    },
     /** Purpose: after a clash, save this person's drawing over the other one. */
     keepMine: () => {
       if (!clashAt) return;

@@ -56,6 +56,24 @@ export const geodataEn = {
   "data.ownChoose": "Choose a GeoTIFF file (up to {max} MB)",
   "data.ownReplace": "Replace with another GeoTIFF (up to {max} MB)",
   "data.remove": "Remove",
+  "area.title": "Project area",
+  "area.intro":
+    "Search a place and tick the OpenStreetMap regions the project covers. The project area is all of them together. Saving it imports OpenStreetMap, elevation and population for the area once, and every tool uses them.",
+  "area.search": "Search a place, such as Aleppo, Syria",
+  "area.lookingUp": "Looking up the regions at {place}…",
+  "area.regionsAt": "Regions at {place}",
+  "area.noRegions": "No named regions here. Try another place.",
+  "area.none": "No region chosen: the area is the box around everything drawn, plus a buffer.",
+  "area.remove": "Remove {name}",
+  "area.total": "About {area} km² in all",
+  "area.outline": "Outline of the chosen regions",
+  "area.save": "Save area and import data",
+  "area.saved": "Area saved.",
+  "area.import.queued": "{what}: import started",
+  "area.import.current": "{what}: already imported",
+  "area.import.failed": "{what}: could not start. {reason}",
+  "area.seeMapData": "Follow the imports in GIS, Map data.",
+  "data.areaRegions": "Area: {area} km², the box around {names}",
 };
 
 /** A language's Map data messages: every key of the English ones. */

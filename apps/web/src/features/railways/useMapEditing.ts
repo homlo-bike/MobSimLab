@@ -171,10 +171,15 @@ export function useMapEditing({
           if (hit.tracks !== 2) return say(tNow("rail.say.doubleOnly"));
           const t = (catalogue?.turnouts ?? s.view?.turnouts)?.find((x) => x.id === element);
           const len = t ? 2 * (t.length_a_m ?? 0) + hit.spacing * (t.crossing_ratio_n ?? 0) : 0;
+          // Keep it on the parallel stretch: not past the track's ends, nor where the tracks spread
+          // towards a platform (both are errors the planner then has to fix by dragging).
+          const g = s.view?.tracks.find((x) => x.id === hit.track);
+          const [lo, hi] = g ? [g.spread_m[0], g.length_m - g.spread_m[1] - len] : [-Infinity, Infinity];
+          const at = hit.s - len / 2;
           const [d, id] = addSwitch(s.doc, {
             kind: s.switchOpts.scissors ? "scissors" : "crossover",
             track: hit.track,
-            s: hit.s - len / 2,
+            s: hi >= lo ? Math.min(Math.max(at, lo), hi) : at,
             element,
             side: 1,
           });

@@ -1,4 +1,6 @@
 import { type FormEvent, useEffect, useState } from "react";
+import { AreaPicker } from "../features/area/AreaPicker";
+import type { AreaRegion } from "../features/area/api";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { Dialog } from "../shell/Dialog";
@@ -78,20 +80,35 @@ export function NewProjectDialog({
   const [from, setFrom] = useState<"empty" | "copy">("empty");
   const [source, setSource] = useState(projects[0]?.id ?? "");
   const [modes, setModes] = useState<string[]>(["bus", "tram"]);
+  const [regions, setRegions] = useState<AreaRegion[]>([]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setBusy(true);
     setError(null);
+    // Without a typed area name, the picked regions name the area.
+    const areaName =
+      area.trim() ||
+      regions
+        .map((r) => r.name)
+        .join(", ")
+        .slice(0, 200);
     try {
       let p: Project;
       if (from === "copy" && source) {
         p = await api.duplicate(source, name.trim());
-        if (area.trim()) p = await api.update(p.id, { areaName: area.trim() });
+        if (areaName) p = await api.update(p.id, { areaName });
       } else {
-        p = await api.create({ name: name.trim(), areaName: area.trim() || null, modes });
+        p = await api.create({ name: name.trim(), areaName: areaName || null, modes });
       }
+      // The picked regions become the project area and its data is imported in the background (#140). The
+      // project exists already, so a refused area is set again in Preferences rather than stopping here.
+      if (regions.length)
+        await api
+          .area(p.id)
+          .set(regions, true)
+          .catch(() => undefined);
       onCreated(p);
     } catch (err) {
       setError(message(err));
@@ -144,6 +161,8 @@ export function NewProjectDialog({
           />
         </div>
         <p className="mt-1.5 text-xs text-slate-500">{t("new.areaNote")}</p>
+        <div className={label}>{t("area.title")}</div>
+        <AreaPicker value={regions} onChange={setRegions} disabled={busy} />
         <div className={label} id="np-from">
           {t("new.startFrom")}
         </div>

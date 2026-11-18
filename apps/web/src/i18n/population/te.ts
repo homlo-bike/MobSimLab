@@ -37,6 +37,7 @@ export const populationTe = {
   "pop.upload.hint":
     "GeoTIFF గ్రిడ్ (ఒక్కో గడికి వ్యక్తులు), వ్యక్తుల ఫీల్డ్ ఉన్న GeoJSON మండలాలు లేదా బిందువులు, లేదా బిందువులు లేదా మండలానికి విలువల CSV. గరిష్ఠంగా {mb} MB.",
   "pop.upload.file": "ఫైల్",
+  "pop.upload.choose": "ఫైల్‌ను ఎంచుకోండి",
   "pop.upload.unknown": ".tif, .geojson, .json లేదా .csv ఫైల్‌ను ఎంచుకోండి.",
   "pop.upload.name": "పేరు",
   "pop.upload.licence": "లైసెన్స్",

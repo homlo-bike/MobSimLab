@@ -51,6 +51,8 @@ export const editorsNl = {
   "rail.element": "Type",
   "rail.doubleJunction": "Dubbele aftakking op dubbelspoor",
   "rail.scissors": "Dubbele overloop (schaarwissel)",
+  "rail.terrainFailed":
+    "Terreinhoogtes zijn niet geladen: {reason}. Hellingen en stationshoogtes volgen zodra ze geladen zijn.",
   "rail.signals": "Seinen",
   "rail.signalsSome":
     "{summary}. Ze worden uit het ontwerp gegenereerd en volgen het als het verandert. Klik op een sein om het te wijzigen of te verwijderen, of voeg er een toe met het gereedschap Sein; elke wijziging wordt gecontroleerd.",
@@ -367,6 +369,9 @@ export const editorsNl = {
   "street.pointKind": "Soort van punt {n}",
   "street.deletePoint": "Punt {n} verwijderen",
   "street.delete": "Verwijderen",
+  "street.sideSwitch": "Andere kant",
+  "street.sideAdds": "Deze halte vanaf het andere trottoir bedienen kost {length} extra.",
+  "street.sideSaves": "Deze halte vanaf het andere trottoir bedienen bespaart {length}.",
   "street.backTo1": "terug naar punt 1",
   "street.optimise": "Optimaliseren",
   "street.optimiseTitle": "Kies bij elk viapunt de rijrichting voor de kortste omloop",

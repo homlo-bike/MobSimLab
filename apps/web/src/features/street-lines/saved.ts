@@ -1,6 +1,7 @@
 /** A street line as the project saves it (drawing kind "street-lines"). */
 import type { StreetLineInput } from "../journey-planner/network";
 import { fullTiming, MODES, type Timing } from "./modes";
+import { tileX, tileY } from "./tiles";
 import type { LineView, LonLat, PointKind, RoutingRules, VehicleProfile } from "./types";
 
 /** One point as the planner placed it; `name` only when the planner named it (otherwise the street's name). */
@@ -70,4 +71,54 @@ export function lineBounds(line: SavedStreetLine): [number, number, number, numb
   const xs = pts.map((p) => p[0]);
   const ys = pts.map((p) => p[1]);
   return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
+}
+
+/**
+ * Purpose: the street tiles a saved line runs over, as "x/y" keys: under its route and its points, so all of its
+ * streets load when it opens, not only those on screen (a long line opens zoomed to its first point).
+ * At most `max` tiles, nearest the line's points first.
+ */
+export function lineTiles(line: SavedStreetLine, max = 64): string[] {
+  const keys = new Set<string>();
+  const add = ([lon, lat]: LonLat) => keys.add(`${tileX(lon)}/${tileY(lat)}`);
+  line.points.forEach((p) => add(p.lonlat));
+  if (line.depot) add(line.depot);
+  for (const leg of line.view?.legs ?? []) leg.coords.forEach(add);
+  return [...keys].slice(0, max);
+}
+
+const same = (a: LonLat | undefined, b: LonLat | undefined) =>
+  !!a && !!b && Math.abs(a[0] - b[0]) < 1e-7 && Math.abs(a[1] - b[1]) < 1e-7;
+
+/**
+ * Purpose: a line routed again on opening, with every leg that failed now but was routed when it was saved put
+ * back as saved (same two points), so streets that have not loaded yet never turn a saved route into dashed
+ * straight lines. Totals follow the legs put back; their errors leave the issues.
+ */
+export function keepRoutedLegs(view: LineView, saved: LineView | null | undefined): LineView {
+  if (!saved?.legs.length) return view;
+  const at = (v: LineView, id: number) => v.points.find((p) => p.id === id)?.lonlat;
+  let dLength = 0;
+  let dTime = 0;
+  const dropped = new Set<string>();
+  const legs = view.legs.map((leg) => {
+    if (leg.status !== "error") return leg;
+    const [a, b] = [at(view, leg.from), at(view, leg.to)];
+    const old = saved.legs.find(
+      (s) => s.status !== "error" && same(at(saved, s.from), a) && same(at(saved, s.to), b),
+    );
+    if (!old) return leg;
+    dLength += old.length_m - leg.length_m;
+    dTime += old.time_s - leg.time_s;
+    if (leg.message) dropped.add(leg.message);
+    return { ...old, index: leg.index, from: leg.from, to: leg.to };
+  });
+  if (!dropped.size && legs.every((l, i) => l === view.legs[i])) return view;
+  return {
+    ...view,
+    legs,
+    length_m: view.length_m + dLength,
+    time_s: view.time_s + dTime,
+    issues: view.issues.filter((m) => !dropped.has(m)),
+  };
 }

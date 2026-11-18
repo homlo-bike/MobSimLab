@@ -38,6 +38,7 @@ export const populationZu = {
   "pop.upload.hint":
     "Igridi ye-GeoTIFF (abantu ngeseli ngalinye), izindawo noma amaphoyinti e-GeoJSON anenkambu yabantu, noma i-CSV yamaphoyinti noma amanani ngendawo ngayinye. Ubuningi ngu-{mb} MB.",
   "pop.upload.file": "Ifayela",
+  "pop.upload.choose": "Khetha ifayela",
   "pop.upload.unknown": "Khetha ifayela le-.tif, .geojson, .json noma .csv.",
   "pop.upload.name": "Igama",
   "pop.upload.licence": "Ilayisensi",

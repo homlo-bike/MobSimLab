@@ -71,6 +71,12 @@ describe("cargo bike model", () => {
     expect(new Set(near.map((t) => t.join("/"))).size).toBe(near.length);
     expect(near).toContainEqual(tileOf(KOBLENZ));
     expect(corridorTiles(KOBLENZ, destinationPoint(KOBLENZ, 45, 120_000)).length).toBeGreaterThan(MAX_TILES);
+    // A short trip loads a narrow corridor: fewer tiles than the 1.5 km one a long trip gets.
+    const short = corridorTiles(KOBLENZ, destinationPoint(KOBLENZ, 90, 600));
+    expect(short.length).toBeLessThan(
+      corridorTiles(KOBLENZ, destinationPoint(KOBLENZ, 90, 600), 1500).length,
+    );
+    expect(short.length).toBeLessThanOrEqual(4);
   });
 
   it("thins a line and keeps both ends", () => {
@@ -260,7 +266,32 @@ describe("cargo bike tab", () => {
       { bike_mass_kg: 35, battery_wh: 900, "savings.bike_price_eur": 4000 },
       [],
       expect.any(Function),
+      expect.any(AbortSignal),
     );
+  });
+
+  it("stops loading streets when the trip is cancelled", async () => {
+    const trip = vi.fn(
+      (
+        _a: unknown,
+        _b: unknown,
+        _v: unknown,
+        _s: unknown,
+        progress: (d: number, t: number) => void,
+        signal: AbortSignal,
+      ) =>
+        new Promise((_, reject) => {
+          progress(1, 3);
+          signal.addEventListener("abort", () => reject(new DOMException("Aborted", "AbortError")));
+        }),
+    );
+    setup({ trip } as never);
+    fireEvent.click(await screen.findByRole("button", { name: "Calculate the trip there and back" }));
+    expect(await screen.findByRole("progressbar")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    await waitFor(() => expect(screen.queryByRole("progressbar")).toBeNull());
+    expect(screen.queryByRole("alert")).toBeNull();
+    expect((trip.mock.calls[0]![5] as AbortSignal).aborted).toBe(true);
   });
 
   it("explains a destination that is too far", async () => {
@@ -283,6 +314,7 @@ describe("cargo bike tab", () => {
         expect.objectContaining({ battery_wh: 1200, bike_mass_kg: 35 }),
         [],
         expect.any(Function),
+        expect.any(AbortSignal),
       ),
     );
   });
@@ -335,6 +367,7 @@ describe("cargo bike tab", () => {
         { bike_mass_kg: 40, battery_wh: 1800, "savings.bike_price_eur": 4700 },
         [],
         expect.any(Function),
+        expect.any(AbortSignal),
       ),
     );
   });

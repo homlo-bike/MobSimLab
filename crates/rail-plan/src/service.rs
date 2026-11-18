@@ -529,6 +529,14 @@ struct PlatformNames<'a> {
 }
 
 impl PlatformNames<'_> {
+    /// The station a platform belongs to (its id when unknown).
+    fn station_of(&self, id: &str) -> String {
+        self.m.platform(id).map_or(id.to_string(), |p| {
+            let pf = &self.m.platforms[p as usize];
+            self.m.stations[pf.station as usize].name.clone()
+        })
+    }
+
     fn platform(&self, id: &str) -> String {
         self.m.platform(id).map_or(id.to_string(), |p| {
             let pf = &self.m.platforms[p as usize];
@@ -631,6 +639,9 @@ pub fn publish_service_with(
     let mut shifted = vec![0usize; lines.len()];
     // Trips that could not run, per line and reason (a busy day can drop hundreds for one reason).
     let mut unplaced: Vec<BTreeMap<String, Vec<String>>> = vec![BTreeMap::new(); lines.len()];
+    // Trips that used another platform than usual, counted per line and station: one line each
+    // instead of one per trip.
+    let mut platform_changes: Vec<BTreeMap<String, usize>> = vec![BTreeMap::new(); lines.len()];
     for issue in &p.issues {
         let line = issue_line(issue, &ids);
         match (issue, line) {
@@ -659,6 +670,10 @@ pub fn publish_service_with(
                     .entry(reason.clone())
                     .or_default()
                     .push(trip.clone())
+            }
+            (Issue::PlatformChange { used, .. }, Some(i)) => {
+                let at = names.station_of(used);
+                *platform_changes[i].entry(at).or_default() += 1;
             }
             (_, Some(i)) => reports[i].issues.push(issue_text(issue, &names)),
             (_, None) => notes.push(issue_text(issue, &names)),
@@ -695,9 +710,17 @@ pub fn publish_service_with(
         }
         if no_train {
             reports[i].issues.push(
-                "No train was free to start some trips: the terminal platforms are full. A storage track joined to a terminal holds spare trains."
+                "No train was free to start some trips: trains cannot turn at the terminal named above, or its platforms are full. Add a crossover before the terminal so trains reach the departure platform, or a storage track joined to it; a storage track that only reaches the arrival platform does not help."
                     .into(),
             );
+        }
+    }
+    for (i, by_station) in platform_changes.into_iter().enumerate() {
+        for (station, n) in by_station {
+            reports[i].issues.push(format!(
+                "At {station}, {n} trip{} used another platform than usual.",
+                if n == 1 { "" } else { "s" }
+            ));
         }
     }
     for (i, n) in shifted.into_iter().enumerate() {
@@ -892,7 +915,16 @@ pub struct Reach {
 /// Inputs: the topology export (JSON text) and two station part ids (`st<id>`).
 /// Output: the answer; Err when the design cannot be used for operations.
 pub fn station_reachable(topology_json: &str, from: &str, to: &str) -> Result<Reach, String> {
-    let imp = import_json(topology_json, &ImportOptions::default())?;
+    // Whether two stations are joined by track does not depend on the design's other errors (a
+    // crossover elsewhere that does not fit, a ramp too short): check the track as drawn, so a
+    // service line can get its stops while the planner still fixes unrelated problems. Publishing
+    // still refuses a design with errors.
+    let mut t: serde_json::Value =
+        serde_json::from_str(topology_json).map_err(|e| format!("topology: {e}"))?;
+    if let Some(o) = t.as_object_mut() {
+        o.insert("valid".into(), serde_json::Value::Bool(true));
+    }
+    let imp = import_json(&t.to_string(), &ImportOptions::default())?;
     let m =
         Model::compile(&imp.spec).map_err(|e| format!("the track layout cannot be used: {e:?}"))?;
     let platforms = |id: &str| -> Option<Vec<u32>> {

@@ -246,6 +246,12 @@ export class ProjectsService {
       const { row, viaPublic } = await this.load(actor, id, "read", tx);
       if (viaPublic) throw new ForbiddenException("public projects are read-only; ask the owner for access");
       const copyName = name ?? `${row.name} (copy)`.slice(0, 200);
+      // The OpenStreetMap regions of the area come along; imported data does not.
+      const area = await tx
+        .selectFrom("project.project")
+        .select("area_regions")
+        .where("id", "=", id)
+        .executeTakeFirstOrThrow();
       const p = await tx
         .insertInto("project.project")
         .values({
@@ -253,6 +259,7 @@ export class ProjectsService {
           description: row.description,
           area_name: row.area_name,
           modes: row.modes,
+          area_regions: JSON.stringify(area.area_regions ?? []),
           copied_from: id,
           updated_at: new Date(),
           archived_at: null,

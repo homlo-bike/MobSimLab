@@ -1469,8 +1469,21 @@ impl<'a> Planner<'a> {
         }
         opts.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap().then(a.1.cmp(&b.1)));
         if opts.is_empty() {
+            // Name the terminal, so the planner knows where trains cannot turn.
+            let at = origin_c.iter().find_map(|c| match c.0 {
+                Place::Platform(pf) => {
+                    let st = &self.m.stations[self.m.platforms[pf as usize].station as usize];
+                    Some(self.m.groups[st.group as usize].name.clone())
+                }
+                _ => None,
+            });
             return Err((
-                "no stabling track reaches a free first platform".into(),
+                match at {
+                    Some(name) => {
+                        format!("no stabling track reaches a free first platform at {name}")
+                    }
+                    None => "no stabling track reaches a free first platform".into(),
+                },
                 None,
             ));
         }

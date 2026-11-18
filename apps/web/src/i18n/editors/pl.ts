@@ -53,6 +53,8 @@ export const editorsPl = {
   "rail.element": "Element",
   "rail.doubleJunction": "Rozgałęzienie dwutorowe",
   "rail.scissors": "Przejazd nożycowy",
+  "rail.terrainFailed":
+    "Nie wczytano wysokości terenu: {reason}. Pochylenia i wysokości stacji pojawią się po ich wczytaniu.",
   "rail.signals": "Sygnalizatory",
   "rail.signalsSome":
     "{summary}. Generowane z projektu i podążają za nim. Kliknij sygnalizator, aby go zmienić lub usunąć, albo dodaj go narzędziem Sygnalizator. Każda zmiana jest sprawdzana.",
@@ -407,6 +409,9 @@ export const editorsPl = {
   "street.pointKind": "Rodzaj punktu {n}",
   "street.deletePoint": "Usuń punkt {n}",
   "street.delete": "Usuń",
+  "street.sideSwitch": "Zmień stronę",
+  "street.sideAdds": "Obsługa tego przystanku z drugiego chodnika dodaje {length}.",
+  "street.sideSaves": "Obsługa tego przystanku z drugiego chodnika oszczędza {length}.",
   "street.backTo1": "powrót do punktu 1",
   "street.optimise": "Optymalizuj",
   "street.optimiseTitle": "Wybierz kierunek przejazdu przez każdy punkt pośredni, aby obieg był najkrótszy",

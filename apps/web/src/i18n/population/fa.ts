@@ -37,6 +37,7 @@ export const populationFa = {
   "pop.upload.hint":
     "یک شبکهٔ GeoTIFF (نفر در هر سلول)، پهنه‌ها یا نقطه‌های GeoJSON با فیلد جمعیت، یا یک CSV از نقطه‌ها یا مقدارهای هر پهنه. حداکثر {mb} مگابایت.",
   "pop.upload.file": "پرونده",
+  "pop.upload.choose": "انتخاب پرونده",
   "pop.upload.unknown": "یک پروندهٔ ‎.tif، ‎.geojson، ‎.json یا ‎.csv انتخاب کنید.",
   "pop.upload.name": "نام",
   "pop.upload.licence": "مجوز",

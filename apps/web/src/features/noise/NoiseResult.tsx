@@ -1,7 +1,5 @@
 import { formatInt, useI18n } from "../../i18n/i18n";
-import { download } from "../schematic/export";
-import { DIFFERENCE, differenceClass, exposureRows } from "./difference";
-import { contoursGeoJson, csv, type ExportClass } from "./export";
+import { DIFFERENCE, exposureRows } from "./difference";
 import { LEGEND } from "./mapLayer";
 import { type Done, FROM_DB } from "./result";
 import type { Indicator, NoiseExposure } from "./types";
@@ -20,48 +18,9 @@ function signed(n: number, text: (n: number) => string): string {
   return "0";
 }
 
-/** Purpose: a file name part from a scenario name. */
-function slug(s: string): string {
-  return (
-    s
-      .normalize("NFKD")
-      .replace(/[^\p{L}\p{N}]+/gu, "-")
-      .replace(/^-+|-+$/g, "")
-      .toLowerCase() || "scenario"
-  );
-}
-
-/** The bands of the noise map from the lowest shown, as export classes. */
-function bandClasses(indicator: Indicator): ExportClass[] {
-  const bands = LEGEND.filter((l) => l.from_db >= FROM_DB[indicator]);
-  return bands.map((b, i) => {
-    const to = bands[i + 1]?.from_db ?? null;
-    return {
-      test: (v: number) => v >= b.from_db && (to === null || v < to),
-      properties: { from_db: b.from_db, to_db: to },
-    };
-  });
-}
-
-/** The classes of the difference map that are drawn, as export classes. */
-function differenceClasses(): ExportClass[] {
-  return DIFFERENCE.flatMap((c, i) =>
-    c.color
-      ? [
-          {
-            test: (v: number) => differenceClass(v) === i,
-            properties: { change_from_db: c.from_db, change_to_db: DIFFERENCE[i + 1]?.from_db ?? null },
-          },
-        ]
-      : [],
-  );
-}
-
 /**
  * Purpose: the noise map's result in the side panel: the legend with the input level, buildings and residents
- * per band (in both scenarios and the change when comparing), notes, and the exports: contours as GeoJSON and
- * the table as CSV.
- * Side effects: the export buttons start downloads.
+ * per band (in both scenarios and the change when comparing), and notes.
  */
 export function NoiseResult({ result, indicator }: { result: Done; indicator: Indicator }) {
   const { t } = useI18n();
@@ -73,85 +32,6 @@ export function NoiseResult({ result, indicator }: { result: Done; indicator: In
   const levelText = t(`noise.level.${main.view.input_level ?? result.level}`);
   const band = (from: number, i: number, n: number) =>
     i === n - 1 ? t("noise.dbOrMore", { db: from }) : t("noise.dbRange", { from, to: from + 4 });
-
-  function exportContours() {
-    const img = main.view.image;
-    if (!img) return;
-    const values = compared ? difference!.levels[indicator] : main.levels?.[indicator];
-    if (!values) return;
-    const fc = contoursGeoJson(
-      { values, width: img.width, height: img.height, corners: img.coordinates },
-      compared ? differenceClasses() : bandClasses(indicator),
-      {
-        indicator: NAMES[indicator],
-        scenario: main.name,
-        compared_to: compared ? other!.name : null,
-        input_level: main.view.input_level ?? result.level,
-      },
-    );
-    const name = compared ? `${slug(main.name)}-vs-${slug(other!.name)}` : slug(main.name);
-    download(
-      new Blob([JSON.stringify(fc)], { type: "application/geo+json" }),
-      `noise-${name}-${NAMES[indicator].replace("_", "")}.geojson`,
-    );
-  }
-
-  function exportTable() {
-    if (!exposure) return;
-    const level = main.view.input_level ?? result.level;
-    const header = compared
-      ? [
-          "indicator",
-          "band_from_db",
-          "band_to_db",
-          "buildings",
-          "buildings_compared",
-          "buildings_change",
-          "residents",
-          "residents_compared",
-          "residents_change",
-          "input_level",
-          "scenario",
-          "compared_to",
-        ]
-      : ["indicator", "band_from_db", "band_to_db", "buildings", "residents", "input_level", "scenario"];
-    const out: (string | number | null)[][] = [];
-    for (const ind of ["lden", "lnight"] as const) {
-      const bands = exposure[ind].from_db;
-      const to = (i: number) => bands[i + 1] ?? null;
-      if (compared && otherExposure)
-        exposureRows(exposure, otherExposure, ind).forEach((r, i) =>
-          out.push([
-            NAMES[ind],
-            r.from_db,
-            to(i),
-            r.buildings[0],
-            r.buildings[1],
-            r.buildings[0] - r.buildings[1],
-            r.people?.[0] ?? null,
-            r.people?.[1] ?? null,
-            r.people ? r.people[0] - r.people[1] : null,
-            level,
-            main.name,
-            other!.name,
-          ]),
-        );
-      else
-        bands.forEach((from, i) =>
-          out.push([
-            NAMES[ind],
-            from,
-            to(i),
-            exposure[ind].buildings[i] ?? 0,
-            exposure.people ? (exposure[ind].people[i] ?? 0) : null,
-            level,
-            main.name,
-          ]),
-        );
-    }
-    const name = compared ? `${slug(main.name)}-vs-${slug(other!.name)}` : slug(main.name);
-    download(new Blob([csv(header, out)], { type: "text/csv" }), `noise-table-${name}.csv`);
-  }
 
   return (
     <>
@@ -263,19 +143,6 @@ export function NoiseResult({ result, indicator }: { result: Done; indicator: In
             }`
           : ""}
       </p>
-      <div className="flex flex-wrap gap-2">
-        <button
-          type="button"
-          className="btn min-h-10 flex-1"
-          disabled={!main.view.image || !(compared ? difference : main.levels)}
-          onClick={exportContours}
-        >
-          {t("noise.exportContours")}
-        </button>
-        <button type="button" className="btn min-h-10 flex-1" disabled={!exposure} onClick={exportTable}>
-          {t("noise.exportTable")}
-        </button>
-      </div>
     </>
   );
 

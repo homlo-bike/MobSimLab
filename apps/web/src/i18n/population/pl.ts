@@ -37,6 +37,7 @@ export const populationPl = {
   "pop.upload.hint":
     "Siatka GeoTIFF (osoby na komórkę), strefy lub punkty GeoJSON z polem liczby osób albo CSV z punktami lub wartościami na strefę. Najwyżej {mb} MB.",
   "pop.upload.file": "Plik",
+  "pop.upload.choose": "Wybierz plik",
   "pop.upload.unknown": "Wybierz plik .tif, .geojson, .json lub .csv.",
   "pop.upload.name": "Nazwa",
   "pop.upload.licence": "Licencja",

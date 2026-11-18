@@ -37,6 +37,7 @@ export const populationUz = {
   "pop.upload.hint":
     "GeoTIFF to‘ri (katakdagi odamlar), odamlar maydoni bor GeoJSON zonalari yoki nuqtalari yoxud nuqtalar yoki zona qiymatlari CSV fayli. Ko‘pi bilan {mb} MB.",
   "pop.upload.file": "Fayl",
+  "pop.upload.choose": "Faylni tanlash",
   "pop.upload.unknown": ".tif, .geojson, .json yoki .csv faylini tanlang.",
   "pop.upload.name": "Nomi",
   "pop.upload.licence": "Litsenziya",

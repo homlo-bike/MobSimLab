@@ -51,6 +51,8 @@ export const editorsMr = {
   "rail.element": "घटक",
   "rail.doubleJunction": "दुहेरी रुळावर दुहेरी जंक्शन",
   "rail.scissors": "कात्री क्रॉसओव्हर",
+  "rail.terrainFailed":
+    "जमिनीच्या उंची लोड झाल्या नाहीत: {reason}. त्या लोड झाल्यावर उतार आणि स्थानकांच्या उंची दिसतील.",
   "rail.signals": "सिग्नल",
   "rail.signalsSome":
     "{summary}. हे रचनेतून तयार होतात आणि रचना बदलल्यावर तिच्यासोबत बदलतात. सिग्नल बदलण्यासाठी किंवा काढण्यासाठी त्यावर क्लिक करा, किंवा एक जोडण्यासाठी सिग्नल साधन वापरा; प्रत्येक बदल तपासला जातो.",
@@ -362,6 +364,9 @@ export const editorsMr = {
   "street.pointKind": "बिंदू {n} चा प्रकार",
   "street.deletePoint": "बिंदू {n} हटवा",
   "street.delete": "हटवा",
+  "street.sideSwitch": "बाजू बदला",
+  "street.sideAdds": "हा थांबा दुसऱ्या पदपथावरून सेवा दिल्यास {length} वाढते.",
+  "street.sideSaves": "हा थांबा दुसऱ्या पदपथावरून सेवा दिल्यास {length} वाचते.",
   "street.backTo1": "बिंदू 1 कडे परत",
   "street.optimise": "सुधारा",
   "street.optimiseTitle": "सर्वात लहान फेरीसाठी प्रत्येक मार्गबिंदूवर प्रवासाची दिशा निवडा",

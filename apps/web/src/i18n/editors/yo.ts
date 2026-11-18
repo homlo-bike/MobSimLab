@@ -50,6 +50,8 @@ export const editorsYo = {
   "rail.element": "Ẹ̀yà",
   "rail.doubleJunction": "Ìsopọ̀ méjì lórí ojú irin méjì",
   "rail.scissors": "Ìkọjá àlùmọ́gàjí",
+  "rail.terrainFailed":
+    "Àwọn gíga ilẹ̀ kò ṣí: {reason}. Àwọn ìtẹ̀sí àti gíga ibùdókọ̀ yóò tẹ̀lé nígbà tí wọ́n bá ṣí.",
   "rail.signals": "Àwọn àmì",
   "rail.signalsSome":
     "{summary}. A ṣẹ̀dá wọn láti inú àpẹrẹ, wọ́n sì ń tẹ̀lé e nígbà tó bá yí padà. Tẹ àmì kan láti yí i padà tàbí pa á rẹ́, tàbí lo irinṣẹ́ Àmì láti fi ọ̀kan kún un; a ń ṣàyẹ̀wò gbogbo àyípadà.",
@@ -346,6 +348,9 @@ export const editorsYo = {
   "street.pointKind": "Irú ojúàmì {n}",
   "street.deletePoint": "Pa ojúàmì {n} rẹ́",
   "street.delete": "Pa rẹ́",
+  "street.sideSwitch": "Yí ẹ̀gbẹ́ padà",
+  "street.sideAdds": "Síṣe iṣẹ́ ibùdókọ̀ yìí láti ẹ̀gbẹ́ ọ̀nà kejì ń fi {length} kún un.",
+  "street.sideSaves": "Síṣe iṣẹ́ ibùdókọ̀ yìí láti ẹ̀gbẹ́ ọ̀nà kejì ń dín {length} kù.",
   "street.backTo1": "padà sí ojúàmì 1",
   "street.optimise": "Mú un dára jù",
   "street.optimiseTitle": "Yan ìdarí ìrìn ní ojúàmì ìkọjá kọ̀ọ̀kan fún ìyípo tó kúrú jù",

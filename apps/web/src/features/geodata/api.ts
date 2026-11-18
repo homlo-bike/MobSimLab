@@ -54,7 +54,14 @@ export interface ImportPair {
 /** What `GET /api/projects/:id/geodata` answers. */
 export interface GeodataStatus {
   canImport: boolean;
-  area: { bbox: Box; drawnBbox: Box; bufferKm: number; areaKm2: number } | null;
+  area: {
+    bbox: Box;
+    drawnBbox: Box;
+    bufferKm: number;
+    areaKm2: number;
+    /** The OpenStreetMap regions the project area is made of (#140); empty when it follows the drawing. */
+    regions?: { id: string; name: string; ring: [number, number][] }[];
+  } | null;
   osm: ImportPair;
   dem: ImportPair;
   demUpload: ImportPair;

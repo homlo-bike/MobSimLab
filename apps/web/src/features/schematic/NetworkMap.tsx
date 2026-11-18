@@ -279,6 +279,10 @@ export function NetworkMap({
     LABEL_SIZE,
   );
   const sel = selected !== null && shown.has(selected) ? selected : null;
+  // While a station is being moved the pop-up gets out of the way, so the drawing under it stays in view;
+  // it comes back next to the station where it is dropped. A plain click still opens it.
+  const moving =
+    drag !== null && Math.hypot(drag.at[0] - pos[drag.i]![0], drag.at[1] - pos[drag.i]![1]) > unit * 0.02;
 
   // The pop-up sits next to the station, in screen pixels of the drawing as shown.
   useLayoutEffect(() => {
@@ -556,7 +560,7 @@ export function NetworkMap({
         )}
         <g>{leg.node}</g>
       </svg>
-      {sel !== null && !draft && (
+      {sel !== null && !draft && !moving && (
         <StationPopup
           net={net}
           station={sel}

@@ -37,6 +37,7 @@ export const populationBn = {
   "pop.upload.hint":
     "একটি GeoTIFF গ্রিড (প্রতি ঘরে মানুষ), মানুষের ক্ষেত্রসহ GeoJSON অঞ্চল বা বিন্দু, অথবা বিন্দু বা অঞ্চলভিত্তিক মানের CSV। সর্বোচ্চ {mb} MB।",
   "pop.upload.file": "ফাইল",
+  "pop.upload.choose": "ফাইল বেছে নিন",
   "pop.upload.unknown": "একটি .tif, .geojson, .json বা .csv ফাইল বেছে নিন।",
   "pop.upload.name": "নাম",
   "pop.upload.licence": "লাইসেন্স",

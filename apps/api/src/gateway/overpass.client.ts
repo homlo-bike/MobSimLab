@@ -64,23 +64,26 @@ export class OverpassClient {
   /**
    * Purpose: run one Overpass QL query.
    * Output: the response body. Throws OverpassError after the last retry.
-   * Side effects: one outbound HTTPS request at a time, spaced by `minIntervalMs`.
+   * Side effects: one outbound HTTPS request at a time, spaced by `minIntervalMs`. An aborted `signal` stops
+   * the request under way and any retry (an import cancelled by the planner).
    */
-  run(query: string): Promise<string> {
-    const next = this.queue.then(() => this.attempts(query));
+  run(query: string, signal?: AbortSignal): Promise<string> {
+    const next = this.queue.then(() => this.attempts(query, signal));
     this.queue = next.catch(() => undefined);
     return next;
   }
 
-  private async attempts(query: string): Promise<string> {
+  private async attempts(query: string, signal?: AbortSignal): Promise<string> {
     let lastError = new OverpassError("Overpass request failed", 502);
     for (const backoff of [0, ...this.o.backoffMs]) {
+      if (signal?.aborted) throw new OverpassError("Overpass request cancelled", 499);
       if (backoff) await this.o.sleep(backoff + Math.random() * (backoff / 2));
+      if (signal?.aborted) throw new OverpassError("Overpass request cancelled", 499);
       const wait = this.last + this.o.minIntervalMs - Date.now();
       if (wait > 0) await this.o.sleep(wait);
       this.last = Date.now();
       try {
-        return await this.once(query);
+        return await this.once(query, signal);
       } catch (e) {
         lastError = e instanceof OverpassError ? e : new OverpassError(String(e), 502);
         const timedOut = lastError.status === 504 && this.o.retryTimeouts;
@@ -97,9 +100,11 @@ export class OverpassClient {
     );
   }
 
-  private async once(query: string): Promise<string> {
+  private async once(query: string, signal?: AbortSignal): Promise<string> {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), this.o.timeoutMs);
+    const stop = () => ctrl.abort();
+    signal?.addEventListener("abort", stop, { once: true });
     try {
       const res = await this.o.fetchImpl(this.o.endpoint, {
         method: "POST",
@@ -118,10 +123,12 @@ export class OverpassClient {
       return body;
     } catch (e) {
       if (e instanceof OverpassError) throw e;
+      if (signal?.aborted) throw new OverpassError("Overpass request cancelled", 499);
       if (ctrl.signal.aborted) throw new OverpassError("Overpass request timed out", 504);
       throw new OverpassError(`retry: ${e instanceof Error ? e.message : String(e)}`, 502);
     } finally {
       clearTimeout(timer);
+      signal?.removeEventListener("abort", stop);
     }
   }
 }

@@ -14,6 +14,7 @@ import { type Translate, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { TimeInput } from "../railways/ServiceLinesPanel";
 import { formatLength } from "./geojson";
+import { offeredModes, usePlannedModes } from "../../projects/plannedModes";
 import { MODE_ORDER, MODES, type Timing } from "./modes";
 import { vehicleById, vehiclesFor } from "./service";
 import { usedVehicles } from "../../workspace/preferences";
@@ -46,6 +47,9 @@ export interface PanelActions {
   setTiming: (t: Timing) => void;
   select: (id: number | null) => void;
   setKind: (id: number, kind: PointKind) => void;
+  /** Put a stop on the other sidewalk; and what that would change in the circuit's length (m, null unknown). */
+  switchSide: (id: number) => void;
+  sideCost: (id: number) => number | null;
   setPointName: (id: number, name: string) => void;
   /** Facilities of a stop (step-free access, elevators and so on). */
   setPointFeatures: (id: number, features: string[]) => void;
@@ -217,6 +221,7 @@ function NumberField({
 export function LinePanel(props: Props) {
   const { t } = useI18n();
   const vehiclesOff = useVehiclesOff();
+  const planned = usePlannedModes();
   const { view, profile, timing, selected, actions: a } = props;
   // The day type whose times and headways the fields below show and change.
   const [day, setDay] = useState<DayTypeId>("weekday");
@@ -273,6 +278,9 @@ export function LinePanel(props: Props) {
   const outStop = props.depotStops.out ?? nearestTerminal(view.depot_trips, "pull_out");
   const inStop = props.depotStops.in ?? nearestTerminal(view.depot_trips, "pull_in");
 
+  // Only the street modes the project plans to use (Project preferences), and the line's own.
+  const modeChoices = offeredModes(MODE_ORDER, (m) => m, planned, profile.mode);
+
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
       <div className="flex flex-col gap-1">
@@ -282,7 +290,7 @@ export function LinePanel(props: Props) {
           aria-label={t("street.mode")}
           className="flex rounded border border-slate-300 bg-slate-50 p-0.5"
         >
-          {MODE_ORDER.map((m) => (
+          {modeChoices.map((m) => (
             <button
               key={m}
               type="button"
@@ -474,6 +482,7 @@ export function LinePanel(props: Props) {
                         t={t}
                       />
                     )}
+                    {p.kind !== "via" && <StopSide id={p.id} actions={a} t={t} />}
                     <div className="flex items-center gap-1">
                       <span
                         role="group"
@@ -763,6 +772,30 @@ export function LinePanel(props: Props) {
         </label>
         <p className="text-xs text-slate-500">{t("street.rulesNote")}</p>
       </Section>
+    </div>
+  );
+}
+
+/**
+ * Purpose: the sidewalk a stop is served from: what serving it from the other one would add or save, and a
+ * button to switch (a stop on the far kerb of a side street can force a loop round the block).
+ */
+function StopSide({ id, actions: a, t }: { id: number; actions: PanelActions; t: Translate }) {
+  const cost = a.sideCost(id);
+  return (
+    <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+      {cost !== null && Math.abs(cost) >= 5 && (
+        <span className={cost < 0 ? "text-amber-800" : ""}>
+          {t(cost < 0 ? "street.sideSaves" : "street.sideAdds", { length: formatLength(Math.abs(cost)) })}
+        </span>
+      )}
+      <button
+        type="button"
+        className="rounded border border-slate-300 bg-white px-1.5 py-0.5"
+        onClick={() => a.switchSide(id)}
+      >
+        {t("street.sideSwitch")}
+      </button>
     </div>
   );
 }

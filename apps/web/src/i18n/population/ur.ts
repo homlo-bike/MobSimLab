@@ -37,6 +37,7 @@ export const populationUr = {
   "pop.upload.hint":
     "ایک GeoTIFF گرڈ (فی خانہ افراد)، افراد کے فیلڈ والے GeoJSON زون یا پوائنٹ، یا پوائنٹس یا فی زون اقدار کی CSV۔ زیادہ سے زیادہ {mb} MB۔",
   "pop.upload.file": "فائل",
+  "pop.upload.choose": "فائل منتخب کریں",
   "pop.upload.unknown": "‎.tif، ‎.geojson، ‎.json یا ‎.csv فائل منتخب کریں۔",
   "pop.upload.name": "نام",
   "pop.upload.licence": "لائسنس",

@@ -38,6 +38,7 @@ export const populationDe = {
   "pop.upload.hint":
     "Ein GeoTIFF-Raster (Personen je Zelle), GeoJSON-Zonen oder -Punkte mit einem Personenfeld oder eine CSV mit Punkten oder Werten je Zone. Höchstens {mb} MB.",
   "pop.upload.file": "Datei",
+  "pop.upload.choose": "Datei wählen",
   "pop.upload.unknown": "Wählen Sie eine .tif-, .geojson-, .json- oder .csv-Datei.",
   "pop.upload.name": "Name",
   "pop.upload.licence": "Lizenz",

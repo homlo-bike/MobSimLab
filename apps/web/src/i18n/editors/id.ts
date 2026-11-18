@@ -50,6 +50,8 @@ export const editorsId = {
   "rail.element": "Elemen",
   "rail.doubleJunction": "Percabangan jalur ganda",
   "rail.scissors": "Wesel gunting",
+  "rail.terrainFailed":
+    "Ketinggian tanah tidak termuat: {reason}. Kemiringan dan ketinggian stasiun akan muncul setelah termuat.",
   "rail.signals": "Sinyal",
   "rail.signalsSome":
     "{summary}. Dibuat dari desain dan mengikuti perubahannya. Klik sinyal untuk mengubah atau menghapusnya, atau tambahkan dengan alat Sinyal. Setiap perubahan diperiksa.",
@@ -364,6 +366,9 @@ export const editorsId = {
   "street.pointKind": "Jenis titik {n}",
   "street.deletePoint": "Hapus titik {n}",
   "street.delete": "Hapus",
+  "street.sideSwitch": "Pindah sisi",
+  "street.sideAdds": "Melayani halte ini dari trotoar seberang menambah {length}.",
+  "street.sideSaves": "Melayani halte ini dari trotoar seberang menghemat {length}.",
   "street.backTo1": "kembali ke titik 1",
   "street.optimise": "Optimalkan",
   "street.optimiseTitle": "Pilih arah lewat setiap titik lewat agar putaran terpendek",

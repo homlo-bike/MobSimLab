@@ -7,6 +7,7 @@ import { loadRailEngine } from "../railways/engine";
 import type { Network, RailEngineLoader } from "../railways/types";
 import { fetchWalkTile, loadWalkEngine } from "../street-lines/engine";
 import type { StreetLinesDoc } from "../street-lines/saved";
+import { JobProgress } from "../../shell/JobProgress";
 import { drawWalk, type GapPoint, removeWalk, type SpacingPair } from "./mapLayer";
 import {
   BAND_COLORS,
@@ -55,7 +56,8 @@ const GAPS = 10;
 
 type Coverage =
   | { kind: "idle" }
-  | { kind: "busy"; step: string }
+  /** Step `index` of `steps`, `fraction` of the way through it (null when it cannot say). */
+  | { kind: "busy"; step: string; index: number; steps: number; fraction: number | null }
   | {
       kind: "done";
       minutes: number;
@@ -100,6 +102,8 @@ export function WalkAnalysis({
   const [spacing, setSpacing] = useState<LineSpacing[] | null>(null);
   // The engine with the walk network of the last calculation (on-foot distances for the spacing).
   const engine = useRef<WalkEngine | null>(null);
+  // Bumped by every run and by Cancel: a run that is no longer the latest stops at its next step.
+  const runId = useRef(0);
   const [graphVersion, setGraphVersion] = useState(0);
 
   // The railway's stations where they are built (the rail engine places them).
@@ -219,8 +223,13 @@ export function WalkAnalysis({
 
   async function compute() {
     const limit = Math.min(MAX_MINUTES, Math.max(MIN_MINUTES, Math.round(minutes)));
+    const id = ++runId.current;
+    const alive = () => id === runId.current;
+    // Four steps: the stops, the street tiles (counted), the population, the coverage itself.
+    const busy = (index: number, step: string, fraction: number | null = null) =>
+      setCoverage({ kind: "busy", step, index, steps: 4, fraction });
     try {
-      setCoverage({ kind: "busy", step: tNow("walk.collecting") });
+      busy(1, tNow("walk.collecting"));
       const stops = network.stops;
       if (!stops.length) {
         setCoverage({ kind: "error", text: tNow("walk.drawFirst") });
@@ -241,13 +250,12 @@ export function WalkAnalysis({
       try {
         let done = 0;
         for (const [x, y] of tiles) {
-          setCoverage({
-            kind: "busy",
-            step: tNow("walk.loadingTiles", { done, count: tiles.length }),
-          });
+          if (!alive()) return e.dispose();
+          busy(2, tNow("walk.loadingTiles", { done, count: tiles.length }), done / tiles.length);
           e.addOsm(await fetchTile(x, y));
           done++;
         }
+        if (!alive()) return e.dispose();
         e.build();
       } catch (err) {
         e.dispose();
@@ -260,7 +268,7 @@ export function WalkAnalysis({
       const notes: string[] = [];
       let people: PopulationSource | null = null;
       let demand = null;
-      setCoverage({ kind: "busy", step: tNow("walk.loadingPopulation") });
+      busy(3, tNow("walk.loadingPopulation"));
       try {
         const a = await fetchPeople(area);
         if (a.status === "ready") {
@@ -274,8 +282,9 @@ export function WalkAnalysis({
         notes.push(tNow("walk.popUnavailable", { reason: err instanceof Error ? err.message : String(err) }));
       }
       if (!demand) people = null;
+      if (!alive()) return;
 
-      setCoverage({ kind: "busy", step: tNow("walk.computing") });
+      busy(4, tNow("walk.computing"));
       await new Promise((r) => setTimeout(r, 30));
       const points = stopPoints(stops);
       const result = e.coverage({
@@ -296,11 +305,16 @@ export function WalkAnalysis({
             stops: result.stops_off_network.map((id) => names.get(id)?.name ?? id).join(", "),
           }),
         );
+      if (!alive()) return;
       setCoverage({ kind: "done", minutes: limit, result, catchment, people, notes });
     } catch (err) {
-      setCoverage({ kind: "error", text: err instanceof Error ? err.message : String(err) });
+      if (alive()) setCoverage({ kind: "error", text: err instanceof Error ? err.message : String(err) });
     }
   }
+  const cancel = () => {
+    runId.current++;
+    setCoverage({ kind: "idle" });
+  };
 
   const flyTo = (at: LonLat) => map?.flyTo({ center: at, zoom: Math.max(map.getZoom(), 15.5) });
   const hasStops = network.stops.length > 0;
@@ -339,9 +353,14 @@ export function WalkAnalysis({
         </button>
         {!hasStops && <p className="text-xs text-slate-500">{t("walk.drawFirst")}</p>}
         {coverage.kind === "busy" && (
-          <p role="status" className="text-xs text-slate-600">
-            {coverage.step}
-          </p>
+          <JobProgress
+            label={t("walk.title")}
+            step={coverage.step}
+            index={coverage.index}
+            steps={coverage.steps}
+            fraction={coverage.fraction}
+            onCancel={cancel}
+          />
         )}
         {coverage.kind === "error" && (
           <p className="rounded bg-red-50 px-2 py-1 text-xs text-red-700">{coverage.text}</p>

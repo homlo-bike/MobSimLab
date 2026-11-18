@@ -37,6 +37,7 @@ export const populationYo = {
   "pop.upload.hint":
     "Àwọ̀n GeoTIFF (ènìyàn fún sẹ́ẹ̀lì kọ̀ọ̀kan), àwọn agbègbè tàbí kókó GeoJSON pẹ̀lú pápá ènìyàn, tàbí CSV ti àwọn kókó tàbí iye fún agbègbè kọ̀ọ̀kan. MB {mb} jù lọ.",
   "pop.upload.file": "Fáìlì",
+  "pop.upload.choose": "Yan fáìlì",
   "pop.upload.unknown": "Yan fáìlì .tif, .geojson, .json tàbí .csv.",
   "pop.upload.name": "Orúkọ",
   "pop.upload.licence": "Ìwé àṣẹ",

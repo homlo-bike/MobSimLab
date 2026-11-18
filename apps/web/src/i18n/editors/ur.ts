@@ -51,6 +51,8 @@ export const editorsUr = {
   "rail.element": "عنصر",
   "rail.doubleJunction": "دوہری پٹری پر دوہرا جنکشن",
   "rail.scissors": "قینچی کراس اوور",
+  "rail.terrainFailed":
+    "زمین کی بلندیاں لوڈ نہیں ہوئیں: {reason}۔ ڈھلوانیں اور اسٹیشن کی بلندیاں لوڈ ہونے کے بعد آئیں گی۔",
   "rail.signals": "سگنل",
   "rail.signalsSome":
     "{summary}۔ یہ ڈیزائن سے بنتے ہیں اور ڈیزائن بدلنے پر اس کے ساتھ بدلتے ہیں۔ کسی سگنل کو بدلنے یا ہٹانے کے لیے اس پر کلک کریں، یا ایک شامل کرنے کے لیے سگنل کا آلہ استعمال کریں؛ ہر تبدیلی جانچی جاتی ہے۔",
@@ -362,6 +364,9 @@ export const editorsUr = {
   "street.pointKind": "نقطہ {n} کی قسم",
   "street.deletePoint": "نقطہ {n} حذف کریں",
   "street.delete": "حذف کریں",
+  "street.sideSwitch": "سمت بدلیں",
+  "street.sideAdds": "اس اسٹاپ کو دوسرے فٹ پاتھ سے چلانے پر {length} بڑھ جاتا ہے۔",
+  "street.sideSaves": "اس اسٹاپ کو دوسرے فٹ پاتھ سے چلانے پر {length} بچتا ہے۔",
   "street.backTo1": "نقطہ 1 پر واپس",
   "street.optimise": "بہتر بنائیں",
   "street.optimiseTitle": "سب سے چھوٹے چکر کے لیے ہر راستے کے نقطے پر سفر کی سمت چنیں",

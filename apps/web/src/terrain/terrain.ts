@@ -5,6 +5,7 @@
  * OpenStreetMap data first (ADR-0046). Answers are cached per request for the session.
  */
 import { dataProject } from "../geodata/projectData";
+import { csrfHeader } from "../session/csrf";
 
 export type LonLat = [number, number];
 
@@ -71,7 +72,8 @@ async function post<T>(path: string, body: unknown, fetchImpl: typeof fetch): Pr
   const p = (async () => {
     const res = await fetchImpl(path, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      // The API checks the session's CSRF token on every POST; without it the heights were refused (403).
+      headers: { "Content-Type": "application/json", ...csrfHeader() },
       credentials: "same-origin",
       body: JSON.stringify(body),
     });

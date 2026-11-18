@@ -37,6 +37,7 @@ export const populationKk = {
   "pop.upload.hint":
     "GeoTIFF торы (ұяшықтағы адамдар), адам өрісі бар GeoJSON аймақтары не нүктелері, немесе нүктелердің не аймақ мәндерінің CSV файлы. Ең көбі {mb} МБ.",
   "pop.upload.file": "Файл",
+  "pop.upload.choose": "Файлды таңдау",
   "pop.upload.unknown": ".tif, .geojson, .json немесе .csv файлын таңдаңыз.",
   "pop.upload.name": "Атауы",
   "pop.upload.licence": "Лицензия",
