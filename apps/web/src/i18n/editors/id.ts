@@ -1508,4 +1508,5 @@ export const editorsId = {
   "spacing.straight": "Diukur dalam garis lurus antarstasiun.",
   "spacing.onFootHint":
     "Hitung cakupan jalan kaki di atas untuk menambahkan jarak jalan kaki antara halte yang ditandai.",
+  "kit.savedWithProject": "Gambar disimpan bersama proyek.",
 } satisfies EditorMessages;

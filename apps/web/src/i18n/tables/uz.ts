@@ -438,4 +438,6 @@ export const tablesUz = {
   "tt.tbl.departs": "Joʻnaydi",
   "tt.tbl.to": "Qayerga",
   "tt.tbl.arrives": "Yetib keladi",
+  "cost.outsideRange":
+    "Kutubxona oraligʻidan ({low}–{high}) tashqarida: qiymat va uning birligini tekshiring.",
 } satisfies TablesMessages;

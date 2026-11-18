@@ -92,7 +92,7 @@ import {
   UndoIcon,
 } from "../shell/icons";
 import { ChecksProvider } from "../shell/checks";
-import { ChecksMenu } from "../shell/ChecksMenu";
+import { COMMENT_KIND, ChecksMenu } from "../shell/ChecksMenu";
 import { OtherModesLayer } from "./OtherModesLayer";
 import { type CoreTab, type Tab, TABS } from "../shell/route";
 import { HelpMenu } from "../shell/HelpMenu";
@@ -127,7 +127,15 @@ import { PluginFrame } from "../plugins/code/PluginFrame";
 import { clearPluginCode } from "../plugins/code/runtime";
 import { STATIC_TABS, STATIC_VIEWER } from "../static/mode";
 import { CommentsProvider } from "../features/comments/Comments";
+import { ObjectComments, objectKey } from "../features/comments/Comments";
 import { commentableObjects, CommentsPanel } from "../features/comments/CommentsPanel";
+import {
+  type CommentNotice,
+  openCommentsLater,
+  takePendingComments,
+  useCommentNotices,
+} from "../features/comments/notices";
+import { Dialog } from "../shell/Dialog";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
 
 // Editors and screens downloaded when first opened, so opening a project fetches only the tab shown.
@@ -222,6 +230,7 @@ export function Workspace({
   onTab,
   onHome,
   onAbout,
+  onOpenProject,
   existingRailways = false,
   userId = null,
   onRefreshSession,
@@ -235,6 +244,8 @@ export function Workspace({
   onTab: (t: Tab) => void;
   onHome: () => void;
   onAbout: () => void;
+  /** Open another project (a notice of a new comment there was chosen in the bell). */
+  onOpenProject?: (id: string) => void;
   /** Draw existing railways from OpenStreetMap in the railway tool (app setting). */
   existingRailways?: boolean;
   /** The signed-in person, so they can edit and delete their own comments. */
@@ -347,6 +358,11 @@ export function Workspace({
   // The track topology last built in the railway tool, so street lines wait at its level crossings.
   const [railTopology, setRailTopology] = useState<unknown>(null);
   const [touring, setTouring] = useState(false);
+  // The object whose comments show in a dialog: a notice in the bell was chosen.
+  const [commentsOf, setCommentsOf] = useState<{ type: CommentNotice["objectType"]; id: string } | null>(
+    null,
+  );
+  useEffect(() => setCommentsOf(takePendingComments(projectId)), [projectId]);
   useEffect(() => {
     setLine(null);
     setStreetIndex(0);
@@ -436,6 +452,8 @@ export function Workspace({
 
   const onMap = MAP_TABS.includes(tab);
   const editable = project ? can.edit(project) : false;
+  // A Commenter cannot change the network but can comment: the badge and the Create tab say so.
+  const commenter = !editable && project?.myRole === "commenter" && !project.viaPublic;
   const projectKey = project?.id ?? null;
   const runs = useMemo(
     () => (projectKey && typeof api.runs === "function" ? api.runs(projectKey) : null),
@@ -446,6 +464,12 @@ export function Workspace({
     () => (projectKey && typeof api.comments === "function" ? api.comments(projectKey) : null),
     [api, projectKey],
   );
+  // New comments and replies on all the person's projects, for the bell.
+  const noticesApi = useMemo(
+    () => (typeof api.commentNotices === "function" ? api.commentNotices() : null),
+    [api],
+  );
+  const notices = useCommentNotices(noticesApi);
   const roadRuns = useMemo(
     () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
     [api, projectKey],
@@ -569,6 +593,41 @@ export function Workspace({
   );
   // Road depots shared by the street lines (depot tool).
   const depotsDoc = drawings.doc<DepotsDoc>("depots");
+  // The names of the objects that can carry comments, for the bell's notices and the comments dialog.
+  const commentLabels = useMemo(
+    () =>
+      new Map(
+        commentableObjects(t, railway, streetLines, depotsDoc).map((o) => [objectKey(o.type, o.id), o.label]),
+      ),
+    [t, railway, streetLines, depotsDoc],
+  );
+  const noticeLabel = useCallback(
+    (n: CommentNotice) =>
+      n.projectId === projectId ? (commentLabels.get(objectKey(n.objectType, n.objectId)) ?? null) : null,
+    [commentLabels, projectId],
+  );
+  // A chosen notice opens its object's comments, here or in its own project, and is then read.
+  const openNotice = useCallback(
+    (n: CommentNotice) => {
+      if (n.projectId === projectId) setCommentsOf({ type: n.objectType, id: n.objectId });
+      else {
+        openCommentsLater(n.projectId, n.objectType, n.objectId);
+        onOpenProject?.(n.projectId);
+      }
+    },
+    [projectId, onOpenProject],
+  );
+  // While an object's comments are open, its new comments count as read.
+  const { comments: noticeList, markRead } = notices;
+  useEffect(() => {
+    if (!commentsOf) return;
+    const ids = noticeList
+      .filter(
+        (n) => n.projectId === projectId && n.objectType === commentsOf.type && n.objectId === commentsOf.id,
+      )
+      .map((n) => n.id);
+    if (ids.length) markRead({ ids });
+  }, [commentsOf, noticeList, markRead, projectId]);
   // The currency all money is shown in, and its exchange rate (Project preferences).
   const currencyState = useProjectCurrency(preferences, ECONOMY);
   // The country at the project's location, for the calendar's public holidays (Project preferences).
@@ -801,7 +860,7 @@ export function Workspace({
                 </button>
               </>
             )}
-            <ChecksMenu />
+            <ChecksMenu notices={notices} onOpenNotice={openNotice} objectLabel={noticeLabel} />
             <HelpMenu onTour={() => setTouring(true)} />
           </>
         )
@@ -813,7 +872,9 @@ export function Workspace({
       <span className="flex min-w-0 items-center gap-2 rounded-lg border border-slate-200 px-2.5 py-1.5 text-slate-700">
         <span className="truncate font-medium">{project?.name ?? "…"}</span>
         {project && !editable && (
-          <span className="tag bg-slate-100 text-slate-700">{t("project.viewOnly")}</span>
+          <span className="tag bg-slate-100 text-slate-700">
+            {commenter ? t("comments.canComment") : t("project.viewOnly")}
+          </span>
         )}
         {project?.visibility === "public" && (
           <span className="tag bg-blue-50 text-blue-800" title={t("project.publicNote")}>
@@ -1775,8 +1836,12 @@ export function Workspace({
               )}
               {tab === "create" && !editable && (
                 <div className="px-4 py-5 md:px-5">
-                  <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>
-                  <p className="mt-1 text-slate-600">{t("create.readOnly")}</p>
+                  <h2 className="text-lg font-semibold">
+                    {commenter ? t("comments.canComment") : t("create.readOnlyTitle")}
+                  </h2>
+                  <p className="mt-1 text-slate-600">
+                    {commenter ? t("comments.canCommentNote") : t("create.readOnly")}
+                  </p>
                   {drawings.loaded && (
                     <div className="mt-5 border-t border-slate-200 pt-5">
                       <CommentsPanel objects={commentableObjects(t, railway, streetLines, depotsDoc)} />
@@ -1830,6 +1895,17 @@ export function Workspace({
       </main>
       {bottomTabs}
       {touring && <Tour steps={PROJECT_TOUR} onTab={onTab} onClose={() => setTouring(false)} />}
+      {commentsOf && project && (
+        <Dialog
+          title={
+            commentLabels.get(objectKey(commentsOf.type, commentsOf.id)) ?? t(COMMENT_KIND[commentsOf.type])
+          }
+          subtitle={`${t(COMMENT_KIND[commentsOf.type])} · ${t("comments.title")}`}
+          onClose={() => setCommentsOf(null)}
+        >
+          <ObjectComments type={commentsOf.type} id={commentsOf.id} />
+        </Dialog>
+      )}
     </div>
   );
   // The catalogue vehicles the project does not use (Project preferences → Vehicles), and the modes it plans to

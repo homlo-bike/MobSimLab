@@ -422,4 +422,5 @@ export const tablesFa = {
   "tt.tbl.departs": "حرکت",
   "tt.tbl.to": "به",
   "tt.tbl.arrives": "رسیدن",
+  "cost.outsideRange": "خارج از بازهٔ کتابخانه ({low}–{high}): مقدار و واحد آن را بررسی کنید.",
 } satisfies TablesMessages;

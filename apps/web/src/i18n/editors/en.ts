@@ -1499,6 +1499,7 @@ export const editorsEn = {
   "spacing.straight": "Measured in a straight line between stations.",
   "spacing.onFootHint":
     "Calculate the walk coverage above to add the distance on foot between flagged stops.",
+  "kit.savedWithProject": "The drawing is saved with the project.",
 } as const;
 
 /** Keys of the editor messages. */

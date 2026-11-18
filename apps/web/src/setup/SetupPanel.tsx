@@ -38,7 +38,7 @@ export function SetupPanel({
   return (
     <section
       aria-label={t("setup.wizard")}
-      className="absolute top-4 left-4 z-10 w-80 rounded border border-slate-300 bg-white p-4 text-sm shadow"
+      className="pointer-events-auto absolute inset-x-4 bottom-20 z-10 max-h-[calc(100%-6rem)] overflow-auto rounded border border-slate-300 bg-white p-4 text-sm shadow md:inset-x-auto md:end-4 md:bottom-8 md:w-80"
     >
       <h2 className="mb-2 font-semibold">{t("setup.wizardTitle")}</h2>
       <p className="mb-3 text-slate-600">{t("setup.wizardIntro")}</p>

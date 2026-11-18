@@ -436,4 +436,5 @@ export const tablesPl = {
   "tt.tbl.departs": "Odjazd",
   "tt.tbl.to": "Dokąd",
   "tt.tbl.arrives": "Przyjazd",
+  "cost.outsideRange": "Poza zakresem biblioteki ({low}–{high}): sprawdź wartość i jej jednostkę.",
 } satisfies TablesMessages;

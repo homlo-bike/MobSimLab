@@ -1493,4 +1493,5 @@ export const editorsHi = {
   "spacing.onFoot": "{metres} मी पैदल",
   "spacing.straight": "स्टेशनों के बीच सीधी रेखा में मापा गया।",
   "spacing.onFootHint": "चिह्नित स्टॉपों के बीच पैदल दूरी जोड़ने के लिए ऊपर पैदल कवरेज की गणना करें।",
+  "kit.savedWithProject": "ड्रॉइंग परियोजना के साथ सहेजी जाती है।",
 } satisfies EditorMessages;

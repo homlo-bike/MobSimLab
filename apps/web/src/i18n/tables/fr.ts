@@ -439,4 +439,6 @@ export const tablesFr = {
   "tt.tbl.departs": "Départ",
   "tt.tbl.to": "À",
   "tt.tbl.arrives": "Arrivée",
+  "cost.outsideRange":
+    "Hors de la plage de la bibliothèque ({low}–{high}) : vérifiez la valeur et son unité.",
 } satisfies TablesMessages;

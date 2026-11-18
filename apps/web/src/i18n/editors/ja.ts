@@ -1440,4 +1440,5 @@ export const editorsJa = {
   "spacing.onFoot": "徒歩 {metres} m",
   "spacing.straight": "駅間を直線で計測しています。",
   "spacing.onFootHint": "上で徒歩圏カバー率を計算すると、指摘された停留所間の徒歩距離が加わります。",
+  "kit.savedWithProject": "図面はプロジェクトと一緒に保存されます。",
 } satisfies EditorMessages;

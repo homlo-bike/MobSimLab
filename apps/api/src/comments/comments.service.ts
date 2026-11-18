@@ -5,6 +5,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
+import { sql } from "kysely";
 import { DATABASE, type Database } from "../db/database";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
 
@@ -38,6 +39,19 @@ export interface ProjectComment {
   editedAt: string | null;
   resolvedAt: string | null;
   resolvedBy: { id: string; displayName: string | null } | null;
+}
+
+/** How far back the notices of new comments look. */
+export const NOTICE_DAYS = 30;
+/** Most new comments one notices request lists (the total still counts them all, up to `NOTICE_COUNT_CAP`). */
+export const MAX_NOTICES = 50;
+/** The count of new comments stops here; the bell shows "99+" well before. */
+export const NOTICE_COUNT_CAP = 1000;
+
+/** A new comment or reply on one of the caller's projects, for the bell (`GET /api/comments/new`). */
+export interface CommentNotice extends ProjectComment {
+  projectId: string;
+  projectName: string;
 }
 
 const iso = (d: Date | null) => (d ? d.toISOString() : null);
@@ -210,6 +224,111 @@ export class CommentsService {
         tx,
       );
     });
+  }
+
+  /**
+   * Purpose: the new comments and replies on the projects the caller is a member of: written by someone else in
+   * the last `NOTICE_DAYS` days, after the caller joined the project, and not yet read by the caller. Projects in
+   * the bin or archived are left out, and so are public projects the caller only opens through their link.
+   * Output: up to `MAX_NOTICES`, newest first, and the total (capped at `NOTICE_COUNT_CAP`). Reads only.
+   */
+  async notices(userId: string): Promise<{ total: number; comments: CommentNotice[] }> {
+    const base = this.db
+      .selectFrom("collab.comment as c")
+      .innerJoin("project.member as m", (j) =>
+        j.onRef("m.project_id", "=", "c.project_id").on("m.user_id", "=", userId),
+      )
+      .innerJoin("project.project as p", "p.id", "c.project_id")
+      .where("p.deleted_at", "is", null)
+      .where("p.archived_at", "is", null)
+      .where((eb) => eb.or([eb("c.author_id", "is", null), eb("c.author_id", "!=", userId)]))
+      .whereRef("c.created_at", ">", "m.created_at")
+      .where("c.created_at", ">", sql<Date>`now() - make_interval(days => ${NOTICE_DAYS})`)
+      .where((eb) =>
+        eb.not(
+          eb.exists(
+            eb
+              .selectFrom("collab.comment_read as r")
+              .select("r.comment_id")
+              .whereRef("r.comment_id", "=", "c.id")
+              .where("r.user_id", "=", userId),
+          ),
+        ),
+      );
+    const counted = await this.db
+      .selectFrom(base.select("c.id").limit(NOTICE_COUNT_CAP).as("x"))
+      .select((eb) => eb.fn.countAll<number>().as("n"))
+      .executeTakeFirstOrThrow();
+    const rows = await base
+      .leftJoin("iam.user as a", "a.id", "c.author_id")
+      .leftJoin("iam.user as rb", "rb.id", "c.resolved_by")
+      .select([
+        "c.id",
+        "c.project_id",
+        "p.name as project_name",
+        "c.object_type",
+        "c.object_id",
+        "c.parent_id",
+        "c.body",
+        "c.author_id",
+        "c.created_at",
+        "c.edited_at",
+        "c.resolved_at",
+        "c.resolved_by",
+        "a.display_name as author_name",
+        "rb.display_name as resolved_by_name",
+      ])
+      .orderBy("c.created_at", "desc")
+      .orderBy("c.id", "desc")
+      .limit(MAX_NOTICES)
+      .execute();
+    return {
+      total: Number(counted.n),
+      comments: rows.map((r) => ({
+        ...this.comment(r),
+        projectId: r.project_id,
+        projectName: r.project_name,
+      })),
+    };
+  }
+
+  /**
+   * Purpose: mark comments as read by the caller, so they leave the bell: the given ids, or every new comment
+   * (`all`). Ids of comments on projects the caller is not a member of are ignored. Side effect: writes
+   * `collab.comment_read` rows (once per comment).
+   */
+  async markRead(userId: string, input: { ids?: string[]; all?: boolean }): Promise<void> {
+    let ids = input.ids ?? [];
+    if (input.all) {
+      // Every comment that can be new, not only the first page the bell shows.
+      const rest = await this.db
+        .selectFrom("collab.comment as c")
+        .innerJoin("project.member as m", (j) =>
+          j.onRef("m.project_id", "=", "c.project_id").on("m.user_id", "=", userId),
+        )
+        .select("c.id")
+        .where((eb) => eb.or([eb("c.author_id", "is", null), eb("c.author_id", "!=", userId)]))
+        .whereRef("c.created_at", ">", "m.created_at")
+        .where("c.created_at", ">", sql<Date>`now() - make_interval(days => ${NOTICE_DAYS})`)
+        .limit(NOTICE_COUNT_CAP)
+        .execute();
+      ids = [...new Set([...ids, ...rest.map((r) => r.id)])];
+    }
+    if (ids.length === 0) return;
+    const allowed = await this.db
+      .selectFrom("collab.comment as c")
+      .innerJoin("project.member as m", (j) =>
+        j.onRef("m.project_id", "=", "c.project_id").on("m.user_id", "=", userId),
+      )
+      .select("c.id")
+      .where("c.id", "in", ids)
+      .execute();
+    if (allowed.length === 0) return;
+    await this.db
+      .insertInto("collab.comment_read")
+      .values(allowed.map((r) => ({ user_id: userId, comment_id: r.id })))
+      .onConflict((oc) => oc.columns(["user_id", "comment_id"]).doNothing())
+      .execute();
   }
 
   // ---------------------------------------------------------------------------------------------------------

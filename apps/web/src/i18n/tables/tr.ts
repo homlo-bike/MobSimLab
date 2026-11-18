@@ -427,4 +427,5 @@ export const tablesTr = {
   "tt.tbl.departs": "Kalkış",
   "tt.tbl.to": "Nereye",
   "tt.tbl.arrives": "Varış",
+  "cost.outsideRange": "Kütüphane aralığının ({low}–{high}) dışında: değeri ve birimini kontrol edin.",
 } satisfies TablesMessages;

@@ -115,3 +115,38 @@ export class CommentsController {
     return { ok: true };
   }
 }
+
+const readBody = z.union([
+  z.strictObject({ ids: z.array(uuid).min(1).max(200) }),
+  z.strictObject({ all: z.literal(true) }),
+]);
+
+/**
+ * The notices of new comments and replies on the caller's projects, for the bell in a project's top bar: list
+ * them and mark them read.
+ */
+@Controller("api/comments")
+export class CommentNoticesController {
+  constructor(private readonly comments: CommentsService) {}
+
+  private userId(req: MslRequest): string {
+    const s = req.session;
+    if (!s) throw new ForbiddenException();
+    return s.actor.userId;
+  }
+
+  /** Purpose: the caller's new comments, newest first, and how many there are. */
+  @Get("new")
+  @Requires("projects.read")
+  async list(@Req() req: MslRequest) {
+    return await this.comments.notices(this.userId(req));
+  }
+
+  /** Purpose: mark comments as read. Body: `{ ids }` or `{ all: true }`. */
+  @Post("read")
+  @Requires("projects.read")
+  async read(@Body() b: unknown, @Req() req: MslRequest) {
+    await this.comments.markRead(this.userId(req), parse(readBody, b));
+    return { ok: true };
+  }
+}

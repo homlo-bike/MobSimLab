@@ -1400,4 +1400,5 @@ export const editorsZh = {
   "spacing.onFoot": "步行 {metres} 米",
   "spacing.straight": "按车站之间的直线测量。",
   "spacing.onFootHint": "在上方计算步行覆盖率后，会补充所标出站点之间的步行距离。",
+  "kit.savedWithProject": "图纸随项目一起保存。",
 } satisfies EditorMessages;

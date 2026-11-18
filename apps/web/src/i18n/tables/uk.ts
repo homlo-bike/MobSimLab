@@ -439,4 +439,5 @@ export const tablesUk = {
   "tt.tbl.departs": "Відправлення",
   "tt.tbl.to": "Куди",
   "tt.tbl.arrives": "Прибуття",
+  "cost.outsideRange": "Поза діапазоном бібліотеки ({low}–{high}): перевірте значення та одиницю виміру.",
 } satisfies TablesMessages;

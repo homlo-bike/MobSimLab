@@ -1553,4 +1553,5 @@ export const editorsAr = {
   "spacing.onFoot": "{metres} م مشيًا",
   "spacing.straight": "مقيسة في خط مستقيم بين المحطات.",
   "spacing.onFootHint": "احسب تغطية المشي أعلاه لإضافة مسافة المشي بين المحطات المعلَّمة.",
+  "kit.savedWithProject": "يُحفظ الرسم مع المشروع.",
 } satisfies EditorMessages;
