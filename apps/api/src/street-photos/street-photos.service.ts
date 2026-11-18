@@ -1,4 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
+import { DATABASE, type Database } from "../db/database";
+import { pluginsOff } from "../plugins/instance-off";
 import { PanoramaxClient, validPanoramaxRef } from "./panoramax.client";
 import { PhotoError } from "./outbound";
 import type { PhotoImage, PhotoSize, StreetPhoto } from "./types";
@@ -6,6 +8,9 @@ import type { PhotoImage, PhotoSize, StreetPhoto } from "./types";
 /** The street photo sources the API knows (the `provider` of a plugin's `streetPhotos`). */
 export const PHOTO_PROVIDERS = ["panoramax"] as const;
 export type PhotoProvider = (typeof PHOTO_PROVIDERS)[number];
+
+/** The bundled plugin of each source: an Admin may turn it off for the whole instance. */
+const PLUGIN_OF: Record<PhotoProvider, string> = { panoramax: "org.mobsimlab.panoramax" };
 
 /** Purpose: whether a string names a street photo source the API knows. */
 export function isPhotoProvider(v: string): v is PhotoProvider {
@@ -19,15 +24,26 @@ export function isPhotoProvider(v: string): v is PhotoProvider {
  */
 @Injectable()
 export class StreetPhotosService {
-  constructor(private readonly panoramax: PanoramaxClient) {}
+  constructor(
+    private readonly panoramax: PanoramaxClient,
+    @Inject(DATABASE) private readonly db: Database,
+  ) {}
 
-  /** Purpose: the sources members can use now. Panoramax needs no key, so it is always there. */
+  /** Purpose: the sources members can use now: Panoramax needs no key, so unless an Admin turned it off. */
   async available(): Promise<PhotoProvider[]> {
-    return ["panoramax"];
+    const off = await pluginsOff(this.db);
+    return PHOTO_PROVIDERS.filter((p) => !off.has(PLUGIN_OF[p]));
+  }
+
+  /** Purpose: refuse a source whose plugin an Admin turned off. Throws PhotoError 404. */
+  private async check(provider: PhotoProvider): Promise<void> {
+    if ((await pluginsOff(this.db)).has(PLUGIN_OF[provider]))
+      throw new PhotoError("street photos from this source are turned off on this MobSimLab", 404);
   }
 
   /** Purpose: the photos within `radiusM` metres of a point, nearest first. */
   async near(provider: PhotoProvider, at: [number, number], radiusM: number): Promise<StreetPhoto[]> {
+    await this.check(provider);
     switch (provider) {
       case "panoramax":
         return this.panoramax.near(at, radiusM);
@@ -45,6 +61,7 @@ export class StreetPhotosService {
   /** Purpose: one picture of a photo, passed on and not stored. Throws PhotoError. */
   async image(provider: PhotoProvider, ref: string, size: PhotoSize): Promise<PhotoImage> {
     if (!this.validRef(provider, ref)) throw new PhotoError("no such photo", 400);
+    await this.check(provider);
     switch (provider) {
       case "panoramax":
         return this.panoramax.image(ref, size);

@@ -231,3 +231,32 @@ export const CameraIcon = (p: P) => (
     <circle cx="12" cy="13.5" r="3.5" />
   </Icon>
 );
+export const SatelliteIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="m9 6 3-3 4 4-3 3M14 15l3-3 4 4-3 3" />
+    <path d="m9.5 10.5 4 4M11 9l4 4-2 2-4-4z" />
+    <path d="M5 15a4 4 0 0 0 4 4M3 15a6 6 0 0 0 6 6" />
+  </Icon>
+);
+export const BoltIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M13 2 4 14h7l-1 8 9-12h-7z" />
+  </Icon>
+);
+export const SoundIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M4 10v4h3l5 4V6L7 10z" />
+    <path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" />
+  </Icon>
+);
+export const PuzzleIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M5 7h3.5a2 2 0 1 1 4 0H16v3.5a2 2 0 1 1 0 4V18h-3.5a2 2 0 1 0-4 0H5v-3.5a2 2 0 1 0 0-4z" />
+  </Icon>
+);
+export const ExternalIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M14 4h6v6M20 4l-9 9" />
+    <path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" />
+  </Icon>
+);

@@ -15,6 +15,7 @@ import { populationFr } from "./population/fr";
 import { resultsFr } from "./results/fr";
 import { pluginsFr } from "./plugins/fr";
 import { streetPhotosFr } from "./street-photos/fr";
+import { pluginAdminFr } from "./plugin-admin/fr";
 import type { Messages } from "./en";
 
 /** Français. */
@@ -546,4 +547,5 @@ export const fr: Messages = {
   ...calendarFr,
   ...pluginsFr,
   ...streetPhotosFr,
+  ...pluginAdminFr,
 };

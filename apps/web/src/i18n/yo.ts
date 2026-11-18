@@ -15,6 +15,7 @@ import { populationYo } from "./population/yo";
 import { resultsYo } from "./results/yo";
 import { pluginsYo } from "./plugins/yo";
 import { streetPhotosYo } from "./street-photos/yo";
+import { pluginAdminYo } from "./plugin-admin/yo";
 import type { Messages } from "./en";
 
 /** Yorùbá. */
@@ -536,4 +537,5 @@ export const yo: Messages = {
   ...calendarYo,
   ...pluginsYo,
   ...streetPhotosYo,
+  ...pluginAdminYo,
 };

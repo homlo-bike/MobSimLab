@@ -1,10 +1,10 @@
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("maplibre-gl", () => ({ Marker: undefined }));
 
-import { MapLayersAdmin, type MapLayerService } from "../src/admin/MapLayersAdmin";
+import { MapLayersConfig, type MapLayerService } from "../src/admin/MapLayersAdmin";
 import {
   availableBasemaps,
   availableOverlays,
@@ -183,8 +183,7 @@ describe("WMS, WMTS and XYZ services in Administration", () => {
         return new Response(JSON.stringify({ services }), { status: 200 });
       }),
     );
-    const run = async (f: () => Promise<unknown>) => void (await f());
-    render(<MapLayersAdmin csrfToken="csrf-1" run={run} />);
+    render(<MapLayersConfig csrfToken="csrf-1" meta="" onClose={() => {}} />);
     expect(await screen.findByText("No services added yet.")).toBeTruthy();
     fireEvent.change(screen.getByLabelText("Service type"), { target: { value: "wmts" } });
     fireEvent.change(screen.getByLabelText("Service address"), {
@@ -247,15 +246,27 @@ describe("WMS, WMTS and XYZ services in Administration", () => {
         return new Response(JSON.stringify({ services: [{ ...svc }] }), { status: 200 });
       }),
     );
-    render(<MapLayersAdmin csrfToken="csrf-1" run={async (f) => void (await f())} />);
+    const onClose = vi.fn();
+    const { unmount } = render(<MapLayersConfig csrfToken="csrf-1" meta="" onClose={onClose} />);
     expect(await screen.findByText("Built in")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Remove OpenTopoMap" })).toBeNull();
+    // Hiding waits for Accept changes.
     fireEvent.click(screen.getByRole("button", { name: "Hide OpenTopoMap" }));
-    expect(await screen.findByText("Hidden")).toBeTruthy();
+    expect(screen.getByText("Hidden")).toBeTruthy();
+    expect(calls.some((c) => c.init?.method === "PUT")).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: "Accept changes" }));
+    await waitFor(() => expect(onClose).toHaveBeenCalled());
     const put = calls.find((c) => c.init?.method === "PUT")!;
     expect(put.url).toBe(`/api/admin/map-layers/${SID}/hidden`);
     expect(JSON.parse(String(put.init?.body))).toEqual({ hidden: true });
-    fireEvent.click(screen.getByRole("button", { name: "Show OpenTopoMap again" }));
-    expect(await screen.findByRole("button", { name: "Hide OpenTopoMap" })).toBeTruthy();
+    // The service's site is linked at the bottom.
+    expect(screen.getByRole("link", { name: /OpenTopoMap/ }).getAttribute("href")).toBe(
+      "https://a.tile.opentopomap.org",
+    );
+    unmount();
+    render(<MapLayersConfig csrfToken="csrf-1" meta="" onClose={() => {}} />);
+    fireEvent.click(await screen.findByRole("button", { name: "Show OpenTopoMap again" }));
+    fireEvent.click(screen.getByRole("button", { name: "Undo" }));
+    expect(screen.getByRole("button", { name: "Show OpenTopoMap again" })).toBeTruthy();
   });
 });

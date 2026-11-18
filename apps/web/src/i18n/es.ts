@@ -15,6 +15,7 @@ import { populationEs } from "./population/es";
 import { resultsEs } from "./results/es";
 import { pluginsEs } from "./plugins/es";
 import { streetPhotosEs } from "./street-photos/es";
+import { pluginAdminEs } from "./plugin-admin/es";
 import type { Messages } from "./en";
 
 /** Español. */
@@ -543,4 +544,5 @@ export const es: Messages = {
   ...calendarEs,
   ...pluginsEs,
   ...streetPhotosEs,
+  ...pluginAdminEs,
 };
