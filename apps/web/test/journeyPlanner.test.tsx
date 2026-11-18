@@ -389,10 +389,10 @@ describe("JourneyPlanner panel", () => {
           total_s: 7500,
           legs: [
             {
-              type: "walk",
-              kind: "direct",
-              from: { name: "A", stop_id: null, platform_code: null, lon: 10, lat: 50 },
-              to: { name: "B", stop_id: null, platform_code: null, lon: 10.1, lat: 50 },
+              type: "walk" as const,
+              kind: "direct" as const,
+              from: { name: "A", lon: 10, lat: 50 },
+              to: { name: "B", lon: 10.1, lat: 50 },
               start_s: q.time_s,
               end_s: q.time_s + 7500,
               distance_m: 9300,
