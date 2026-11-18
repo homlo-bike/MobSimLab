@@ -36,6 +36,7 @@ export const depotsIg = {
   "depot.hint.gate": "Pịa oke ebe ọnụ ụzọ zutere okporo ụzọ.",
   "depot.remove": "Wepụ",
   "depot.zones": "Mpaghara",
+  "depot.zoneOutside": "Mpaghara {n} gafere oke ebe nchekwa ụgbọ: see ya ọzọ ma ọ bụ wepụ ya.",
   "depot.zonesNote":
     "Nkwụsị, ịchaji (chaja n'ohere ọ bụla), mmezi (ọ bụghị maka nkwụsị abalị), nchekwa maka ụgbọ nchekwa, na mgagharị (ịnya naanị). Nhazi akpaaka na-ejupụta mpaghara nkwụsị, ịchaji, mmezi na nchekwa.",
   "depot.zoneKind": "Ụdị mpaghara",

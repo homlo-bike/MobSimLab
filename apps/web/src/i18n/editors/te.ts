@@ -357,6 +357,8 @@ export const editorsTe = {
   "street.stat.cycle": "చక్రం: {run} నడక{crossings}, {dwell} ఆగడం, {layover} విరామం",
   "street.stat.atCrossings": "(క్రాసింగ్‌ల వద్ద {min})",
   "street.stat.vehicles": "{headway} నిమిషాల విరామానికి వాహనాలు",
+  "street.stat.compact":
+    "సర్క్యూట్ {length} · {stops} స్టాప్‌లు · {cycle} నిమిషాల చక్రం · {vehicles} వాహనాలు",
   "street.points": "మార్గ బిందువులు · చక్ర క్రమం",
   "street.noPoints": "ఇంకా బిందువులు లేవు. బిందువులు జోడించండి ఎంచుకుని వీధిపై క్లిక్ చేయండి.",
   "street.viaN": "మార్గ బిందువు {n}",
@@ -601,7 +603,7 @@ export const editorsTe = {
   "schematic.exportFailed": "ఎగుమతి విఫలమైంది: {error}",
   "schematic.zoomIn": "పెద్దది చేయి",
   "schematic.zoomOut": "చిన్నది చేయి",
-  "schematic.zoomFit": "పేజీకి సరిపోయే, అసలు పరిమాణం మధ్య మార్చండి",
+  "schematic.zoomFit": "పేజీకి సరిపెట్టు",
   "schematic.fit": "సరిపోయేలా",
   "schematic.footer": "{project} · MobSimLab తో చేసిన రేఖాచిత్రం · {date}",
   "schematic.diagramAria": "నెట్‌వర్క్ రేఖాచిత్రం",

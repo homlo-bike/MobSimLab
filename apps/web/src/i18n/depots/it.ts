@@ -37,6 +37,7 @@ export const depotsIt = {
   "depot.hint.gate": "Fai clic sul perimetro dove il cancello incontra la strada.",
   "depot.remove": "Rimuovi",
   "depot.zones": "Zone",
+  "depot.zoneOutside": "La zona {n} esce dal contorno del deposito: ridisegnala o rimuovila.",
   "depot.zonesNote":
     "Rimessaggio, ricarica (un caricatore a ogni stallo), officina (non per il rimessaggio notturno), riserva per i veicoli di scorta e circolazione (solo marcia). La disposizione automatica riempie le zone di rimessaggio, ricarica, officina e riserva.",
   "depot.zoneKind": "Tipo di zona",

@@ -130,6 +130,22 @@ export async function loadServerBasemaps(fetchImpl: typeof fetch = fetch): Promi
   return changed;
 }
 
+const serverListeners = new Set<() => void>();
+
+/**
+ * Purpose: hear when the keyed basemaps on offer change (an Admin saved or removed a key), so open maps offer
+ * them without a reload. Output: a function that stops listening.
+ */
+export function onServerBasemaps(listener: () => void): () => void {
+  serverListeners.add(listener);
+  return () => serverListeners.delete(listener);
+}
+
+/** Purpose: ask the API again which keyed basemaps it offers and tell the open maps when that changed. */
+export async function refreshServerBasemaps(fetchImpl: typeof fetch = fetch): Promise<void> {
+  if (await loadServerBasemaps(fetchImpl)) for (const f of [...serverListeners]) f();
+}
+
 /** Purpose: the basemaps to offer: the core's, then those of the plugins turned on (ADR-0036). */
 export function availableBasemaps(plugins: readonly Plugin[] = activePlugins()): Basemap[] {
   const core = new Set(BASEMAPS.map((b) => b.id));
@@ -209,6 +225,15 @@ export function rememberedBasemap(): Basemap {
     return basemapById(localStorage.getItem(STORAGE_KEY));
   } catch {
     return DEFAULT_BASEMAP;
+  }
+}
+
+/** Purpose: the id of the basemap last picked in this browser, even one not offered yet (Esri before the API says). */
+export function rememberedBasemapId(): string | null {
+  try {
+    return localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return null;
   }
 }
 

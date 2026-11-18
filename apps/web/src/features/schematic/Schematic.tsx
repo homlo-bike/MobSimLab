@@ -179,9 +179,10 @@ export function Schematic({
             type="button"
             className="icon-btn bg-white px-3 shadow"
             aria-label={t("schematic.zoomFit")}
-            onClick={() => setZoom((z) => (z === null ? 1 : null))}
+            aria-pressed={zoom === null}
+            onClick={() => setZoom(null)}
           >
-            {zoom === null ? t("schematic.fit") : `${Math.round(zoom * 100)}%`}
+            {t("schematic.fit")}
           </button>
           <button
             type="button"
@@ -191,6 +192,11 @@ export function Schematic({
           >
             +
           </button>
+          {zoom !== null && (
+            <span className="self-center rounded bg-white/80 px-2 text-sm text-slate-700" aria-live="polite">
+              {Math.round(zoom * 100)}%
+            </span>
+          )}
         </div>
         <div className="px-3 pb-6 md:px-6">
           {view === "network" ? (

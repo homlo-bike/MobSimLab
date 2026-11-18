@@ -366,6 +366,8 @@ export const editorsDe = {
   "street.stat.cycle": "Umlauf: {run} Fahrt{crossings}, {dwell} Haltezeit, {layover} Wendezeit",
   "street.stat.atCrossings": "({min} an Bahnübergängen)",
   "street.stat.vehicles": "Fahrzeuge für einen {headway}-min-Takt",
+  "street.stat.compact":
+    "{length} Umlauf · {stops} Haltestellen · {cycle} min Umlaufzeit · {vehicles} Fahrzeuge",
   "street.points": "Routenpunkte · Reihenfolge im Umlauf",
   "street.noPoints": "Noch keine Punkte. Wählen Sie „Punkt hinzufügen“ und klicken Sie auf eine Straße.",
   "street.viaN": "Wegpunkt {n}",
@@ -615,7 +617,7 @@ export const editorsDe = {
   "schematic.exportFailed": "Export fehlgeschlagen: {error}",
   "schematic.zoomIn": "Vergrößern",
   "schematic.zoomOut": "Verkleinern",
-  "schematic.zoomFit": "Zwischen Seitenbreite und Originalgröße wechseln",
+  "schematic.zoomFit": "An die Seite anpassen",
   "schematic.fit": "Einpassen",
   "schematic.footer": "{project} · Schema erstellt mit MobSimLab · {date}",
   "schematic.diagramAria": "Schematischer Liniennetzplan",

@@ -45,7 +45,7 @@ import { LineList } from "../src/features/street-lines/LineList";
 import { dayService, vehicleById, vehiclesFor } from "../src/features/street-lines/service";
 import { setProjectServiceDay } from "../src/features/journey-planner/network";
 import { StreetLineEditor } from "../src/features/street-lines/StreetLineEditor";
-import { lineChecks, lineStats } from "../src/features/street-lines/summary";
+import { lineChecks, lineStats, nearestTerminal } from "../src/features/street-lines/summary";
 import { tilesFor, tileX, tileY } from "../src/features/street-lines/tiles";
 import type { LineView, PointKind, StreetEngine, VehicleProfile } from "../src/features/street-lines/types";
 
@@ -277,6 +277,8 @@ describe("Street line editor", () => {
     fireEvent.click(kinds.querySelectorAll("button")[1]!);
     expect(engine.setKind).toHaveBeenCalledWith(2, "stop");
     expect(screen.getByDisplayValue("Street 2")).toBeTruthy();
+    // The totals stay readable while the point is open.
+    expect(screen.getByText(/circuit · \d+ stops · \d+ min cycle/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Delete point 2" }));
     expect(engine.deletePoint).toHaveBeenCalledWith(2);
     expect(screen.queryByText("Street 3")).toBeNull();
@@ -676,6 +678,33 @@ describe("Street line list", () => {
 });
 
 describe("Line summary", () => {
+  it("runs to and from the end stop nearest the depot unless the planner chose one", () => {
+    const trip = (
+      kind: "pull_out" | "pull_in",
+      stop: number,
+      length_m: number,
+      status: "ok" | "error" = "ok",
+    ) => ({
+      kind,
+      stop,
+      coords: [],
+      length_m,
+      time_s: 0,
+      crossing_wait_s: 0,
+      status,
+      message: null,
+    });
+    const trips = [
+      trip("pull_out", 1, 14_300),
+      trip("pull_out", 9, 1_700),
+      trip("pull_in", 1, 900, "error"),
+      trip("pull_in", 9, 1_800),
+    ];
+    expect(nearestTerminal(trips, "pull_out")).toBe(9);
+    expect(nearestTerminal(trips, "pull_in")).toBe(9);
+    expect(nearestTerminal([], "pull_out")).toBeUndefined();
+  });
+
   it("counts the expected wait at level crossings in the running time", () => {
     const s = lineStats(withCrossing(sampleView(["end_stop", "via", "stop"]), "assumed"), DEFAULT_TIMING);
     expect(s.crossingMin).toBeCloseTo(1.7 / 60);

@@ -13,6 +13,10 @@ import {
   imageryTiles,
   loadServerBasemaps,
   newestDay,
+  onServerBasemaps,
+  refreshServerBasemaps,
+  rememberBasemap,
+  rememberedBasemapId,
   pluginBasemap,
 } from "../src/map/basemaps";
 import { MapControls } from "../src/map/MapControls";
@@ -104,6 +108,26 @@ describe("basemaps and project layers", () => {
       throw new TypeError("offline");
     }) as unknown as typeof fetch;
     expect(await loadServerBasemaps(down)).toBe(false);
+  });
+
+  it("tells open maps when an Admin's key changes what is offered, and keeps a keyed pick across reloads", async () => {
+    const answer = (available: string[]) =>
+      vi.fn(
+        async () => new Response(JSON.stringify({ available }), { status: 200 }),
+      ) as unknown as typeof fetch;
+    const heard = vi.fn();
+    const stop = onServerBasemaps(heard);
+    await refreshServerBasemaps(answer(["esri"]));
+    await refreshServerBasemaps(answer(["esri"]));
+    expect(heard).toHaveBeenCalledTimes(1);
+    stop();
+    await refreshServerBasemaps(answer([]));
+    expect(heard).toHaveBeenCalledTimes(1);
+    // Picked before a reload, Esri is not offered yet when the map opens; its id is kept to restore it then.
+    rememberBasemap("esri-world-imagery");
+    expect(rememberedBasemapId()).toBe("esri-world-imagery");
+    expect(basemapById(rememberedBasemapId()).id).toBe(DEFAULT_BASEMAP.id);
+    localStorage.clear();
   });
 
   it("escapes a plugin's attribution", () => {

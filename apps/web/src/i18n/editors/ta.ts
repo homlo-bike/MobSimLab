@@ -370,6 +370,8 @@ export const editorsTa = {
   "street.stat.cycle": "சுற்று: {run} இயக்கம்{crossings}, {dwell} நிற்றல், {layover} ஓய்வு",
   "street.stat.atCrossings": "(கிராசிங்குகளில் {min})",
   "street.stat.vehicles": "{headway} நிமிட இடைவெளிக்கான வாகனங்கள்",
+  "street.stat.compact":
+    "சுற்று {length} · {stops} நிறுத்தங்கள் · {cycle} நிமிட சுழற்சி · {vehicles} வாகனங்கள்",
   "street.points": "வழித்தடப் புள்ளிகள் · சுற்று வரிசை",
   "street.noPoints":
     "இன்னும் புள்ளிகள் இல்லை. புள்ளிகளைச் சேர் என்பதைத் தேர்ந்தெடுத்து தெருவைக் கிளிக் செய்யவும்.",
@@ -619,7 +621,7 @@ export const editorsTa = {
   "schematic.exportFailed": "ஏற்றுமதி தோல்வி: {error}",
   "schematic.zoomIn": "பெரிதாக்கு",
   "schematic.zoomOut": "சிறிதாக்கு",
-  "schematic.zoomFit": "பக்கத்துக்கு பொருத்து, உண்மை அளவு இடையே மாற்று",
+  "schematic.zoomFit": "பக்கத்துக்கு பொருத்து",
   "schematic.fit": "பொருத்து",
   "schematic.footer": "{project} · MobSimLab கொண்டு உருவாக்கிய திட்ட வரைபடம் · {date}",
   "schematic.diagramAria": "வலையமைப்பு திட்ட வரைபடம்",

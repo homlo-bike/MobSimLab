@@ -19,7 +19,7 @@ import { vehicleById, vehiclesFor } from "./service";
 import { usedVehicles } from "../../workspace/preferences";
 import { useVehiclesOff } from "../../workspace/projectVehicles";
 import { usePublishChecks } from "../../shell/checks";
-import { lineChecks, lineStats, type Check, type Severity } from "./summary";
+import { lineChecks, lineStats, nearestTerminal, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, VehicleProfile } from "./types";
 import type { FitProblem } from "../depots/model";
 
@@ -265,8 +265,8 @@ export function LinePanel(props: Props) {
   const trip = (kind: "pull_out" | "pull_in", stop: number | undefined) =>
     view.depot_trips.find((t) => t.kind === kind && t.stop === stop);
   const terminals = [...new Set(view.depot_trips.map((t) => t.stop))];
-  const outStop = props.depotStops.out ?? terminals[0];
-  const inStop = props.depotStops.in ?? terminals[0];
+  const outStop = props.depotStops.out ?? nearestTerminal(view.depot_trips, "pull_out");
+  const inStop = props.depotStops.in ?? nearestTerminal(view.depot_trips, "pull_in");
 
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
@@ -348,6 +348,18 @@ export function LinePanel(props: Props) {
         )}
       </div>
 
+      {selected !== null && (
+        // While a point is open the tiles make room for it, but the totals stay readable, so the effect of an edit
+        // (a via point made a stop) shows at once.
+        <p className="m-0 border-t border-slate-200 pt-2 text-xs text-slate-600" aria-live="polite">
+          {t("street.stat.compact", {
+            length: formatLength(st.lengthM),
+            stops: st.stops,
+            cycle: Math.round(st.cycleMin),
+            vehicles: st.vehicles,
+          })}
+        </p>
+      )}
       {selected === null && (
         <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
           <Stat value={formatLength(st.lengthM)} label={t("street.stat.length")} />

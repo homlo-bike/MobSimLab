@@ -36,6 +36,7 @@ export const depotsNl = {
   "depot.hint.gate": "Klik op de omtrek waar de poort op de straat uitkomt.",
   "depot.remove": "Verwijderen",
   "depot.zones": "Zones",
+  "depot.zoneOutside": "Zone {n} steekt buiten de omtrek van de remise: teken hem opnieuw of verwijder hem.",
   "depot.zonesNote":
     "Stallen, laden (een lader bij elke plaats), werkplaats (niet voor stallen 's nachts), reserve voor reservevoertuigen en verkeersruimte (alleen rijden). De automatische indeling vult de zones voor stallen, laden, werkplaats en reserve.",
   "depot.zoneKind": "Soort zone",

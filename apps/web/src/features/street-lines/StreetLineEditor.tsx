@@ -41,6 +41,7 @@ import { useNoise } from "../noise/useNoise";
 import { loadWasmNoise } from "../noise/engine";
 import type {
   DelayShares,
+  DepotTripView,
   EngineLoader,
   LineView,
   LonLat,
@@ -50,6 +51,7 @@ import type {
   TileFetcher,
   VehicleProfile,
 } from "./types";
+import { nearestTerminal } from "./summary";
 
 const EMPTY_VIEW: LineView = {
   points: [],
@@ -415,8 +417,9 @@ export function StreetLineEditor({
     timing.lastMin,
   ]);
   const terminals = [...new Set(view.depot_trips.map((t) => t.stop))];
-  const pick = (s: number | undefined) => (s !== undefined && terminals.includes(s) ? s : terminals[0]);
-  const shownDepot = { out: pick(depotStops.out), in: pick(depotStops.in) };
+  const pick = (s: number | undefined, kind: DepotTripView["kind"]) =>
+    s !== undefined && terminals.includes(s) ? s : nearestTerminal(view.depot_trips, kind);
+  const shownDepot = { out: pick(depotStops.out, "pull_out"), in: pick(depotStops.in, "pull_in") };
 
   // Layers live as long as the editor, the map and the driving side.
   useEffect(() => {

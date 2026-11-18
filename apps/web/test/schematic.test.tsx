@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fileName } from "../src/features/schematic/export";
+import { fileName, pngScale } from "../src/features/schematic/export";
 import { defaultOrigin, edgesOf, layout, snapToNeighbours } from "../src/features/schematic/layout";
 import { layerOf, linesAt, schematicNetwork } from "../src/features/schematic/lines";
 import { bundles, octiRoute, offsetPolyline, pathD, placeLabels } from "../src/features/schematic/paths";
@@ -187,6 +187,13 @@ describe("schematic network", () => {
     expect(fileName("Lakeside 2030 / Netz", "svg")).toBe("lakeside-2030-netz.svg");
     expect(fileName("", "png")).toBe("schematic.png");
   });
+
+  it("keeps a PNG of a large network small enough to open", () => {
+    expect(pngScale(1200, 800)).toBe(2);
+    const s = pngScale(7181, 6075);
+    expect(7181 * s * 6075 * s).toBeLessThanOrEqual(40e6 + 1);
+    expect(Math.max(7181, 6075) * s).toBeLessThanOrEqual(8192);
+  });
 });
 
 describe("Schematic tab", () => {
@@ -203,6 +210,15 @@ describe("Schematic tab", () => {
     );
     const map = screen.getByRole("img", { name: "Schematic network map" });
     expect(within(map).getByText("M1 · Metro")).toBeTruthy();
+    // "Fit" always fits; the zoom level shows beside the buttons.
+    const fit = screen.getByRole("button", { name: "Fit to page" });
+    expect(fit.getAttribute("aria-pressed")).toBe("true");
+    fireEvent.click(screen.getByRole("button", { name: "Zoom in" }));
+    expect(fit.textContent).toBe("Fit");
+    expect(fit.getAttribute("aria-pressed")).toBe("false");
+    expect(screen.getByText("125%")).toBeTruthy();
+    fireEvent.click(fit);
+    expect(screen.queryByText("125%")).toBeNull();
     expect(within(map).getByText("Bus 22 · Bus")).toBeTruthy();
     expect(map.querySelectorAll(`path[stroke-width="6"]`)).toHaveLength(4);
 

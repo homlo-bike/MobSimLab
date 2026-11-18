@@ -366,6 +366,8 @@ export const editorsZu = {
   "street.stat.cycle": "Umjikelezo: {run} ukuhamba{crossings}, {dwell} ukuma, {layover} ikhefu",
   "street.stat.atCrossings": "({min} eziweleni)",
   "street.stat.vehicles": "Izimoto zesikhawu semizuzu engu-{headway}",
+  "street.stat.compact":
+    "umjikelezo {length} · izitobhi {stops} · umjikelezo wemizuzu {cycle} · izimoto {vehicles}",
   "street.points": "Amaphoyinti omzila · ukulandelana komjikelezo",
   "street.noPoints": "Awekho amaphoyinti okwamanje. Khetha Engeza amaphoyinti bese uchofoza umgwaqo.",
   "street.viaN": "Iphoyinti lokudlula {n}",
@@ -615,7 +617,7 @@ export const editorsZu = {
   "schematic.exportFailed": "Ukukhipha kuhlulekile: {error}",
   "schematic.zoomIn": "Sondeza",
   "schematic.zoomOut": "Hlehlisa",
-  "schematic.zoomFit": "Shintsha phakathi kokulingana nekhasi nosayizi wangempela",
+  "schematic.zoomFit": "Lingana nekhasi",
   "schematic.fit": "Lingana",
   "schematic.footer": "{project} · imephu yomdwebo eyenziwe nge-MobSimLab · {date}",
   "schematic.diagramAria": "Imephu yomdwebo yenethiwekhi",

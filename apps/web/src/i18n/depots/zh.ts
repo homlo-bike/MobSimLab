@@ -36,6 +36,7 @@ export const depotsZh = {
   "depot.hint.gate": "在边界上点击大门与道路相接的位置。",
   "depot.remove": "删除",
   "depot.zones": "分区",
+  "depot.zoneOutside": "区域 {n} 超出了车场轮廓：请重新绘制或删除。",
   "depot.zonesNote":
     "停车、充电（每个车位一台充电机）、维修（不用于夜间停放）、备用车辆的预留区和通行区（仅行驶）。自动布局会填满停车、充电、维修和预留分区。",
   "depot.zoneKind": "分区类型",

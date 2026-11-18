@@ -36,6 +36,7 @@ export const depotsTr = {
   "depot.hint.gate": "Sınırda kapının sokağa açıldığı yere tıklayın.",
   "depot.remove": "Kaldır",
   "depot.zones": "Bölgeler",
+  "depot.zoneOutside": "Bölge {n} garaj sınırının dışına taşıyor: yeniden çizin veya kaldırın.",
   "depot.zonesNote":
     "Park, şarj (her yerde bir şarj cihazı), bakım (gece parkı için kullanılmaz), yedek araçlar için rezerv ve dolaşım (yalnızca sürüş). Otomatik yerleşim park, şarj, bakım ve rezerv bölgelerini doldurur.",
   "depot.zoneKind": "Bölge türü",

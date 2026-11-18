@@ -37,6 +37,7 @@ export const depotsYo = {
   "depot.hint.gate": "Tẹ ààlà níbi tí ẹnu ọ̀nà ti pàdé òpópónà.",
   "depot.remove": "Yọ kúrò",
   "depot.zones": "Àwọn agbègbè",
+  "depot.zoneOutside": "Agbègbè {n} kọjá ààlà ibùdó ọkọ̀: tún un yà tàbí yọ ọ́ kúrò.",
   "depot.zonesNote":
     "Ìdúrósí, gbígba agbára (ẹ̀rọ agbára ní àyè kọ̀ọ̀kan), àtúnṣe (kì í ṣe fún ìdúrósí òru), ìpamọ́ fún ọkọ̀ àfipamọ́, àti ìrìnkiri (wíwakọ̀ nìkan). Ìtò aládàáṣe ń kún àwọn agbègbè ìdúrósí, gbígba agbára, àtúnṣe àti ìpamọ́.",
   "depot.zoneKind": "Irú agbègbè",

@@ -336,6 +336,8 @@ export const editorsFa = {
   "street.stat.cycle": "دور: {run} حرکت{crossings}، {dwell} توقف، {layover} برگشت",
   "street.stat.atCrossings": " ({min} در تقاطع‌های هم‌سطح)",
   "street.stat.vehicles": "خودرو برای هر {headway} دقیقه",
+  "street.stat.compact":
+    "مسیر رفت‌وبرگشت {length} · {stops} ایستگاه · چرخهٔ {cycle} دقیقه · {vehicles} وسیله",
   "street.points": "نقاط مسیر · ترتیب دور",
   "street.noPoints": "هنوز نقطه‌ای نیست. «افزودن نقطه» را انتخاب و روی خیابان کلیک کنید.",
   "street.viaN": "گذر {n}",
@@ -579,7 +581,7 @@ export const editorsFa = {
   "schematic.exportFailed": "خروجی گرفتن ناموفق بود: {error}",
   "schematic.zoomIn": "بزرگ‌نمایی",
   "schematic.zoomOut": "کوچک‌نمایی",
-  "schematic.zoomFit": "جابه‌جایی میان اندازهٔ صفحه و اندازهٔ واقعی",
+  "schematic.zoomFit": "اندازهٔ صفحه",
   "schematic.fit": "اندازهٔ صفحه",
   "schematic.footer": "{project} · نقشهٔ شماتیک ساخته‌شده با MobSimLab · {date}",
   "schematic.diagramAria": "نقشهٔ شماتیک شبکه",

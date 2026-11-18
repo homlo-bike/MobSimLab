@@ -358,6 +358,8 @@ export const editorsPt = {
   "street.stat.cycle": "Ciclo: {run} de percurso{crossings}, {dwell} de parada, {layover} de regulação",
   "street.stat.atCrossings": "({min} em passagens de nível)",
   "street.stat.vehicles": "Veículos para um intervalo de {headway} min",
+  "street.stat.compact":
+    "{length} de circuito · {stops} paradas · ciclo de {cycle} min · {vehicles} veículos",
   "street.points": "Pontos do trajeto · ordem do circuito",
   "street.noPoints": "Ainda sem pontos. Escolha Adicionar ponto e clique em uma rua.",
   "street.viaN": "Ponto de passagem {n}",
@@ -605,7 +607,7 @@ export const editorsPt = {
   "schematic.exportFailed": "A exportação falhou: {error}",
   "schematic.zoomIn": "Aproximar",
   "schematic.zoomOut": "Afastar",
-  "schematic.zoomFit": "Alternar entre ajustar à página e tamanho real",
+  "schematic.zoomFit": "Ajustar à página",
   "schematic.fit": "Ajustar",
   "schematic.footer": "{project} · esquema feito com MobSimLab · {date}",
   "schematic.diagramAria": "Mapa esquemático da rede",
