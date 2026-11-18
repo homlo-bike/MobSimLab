@@ -122,9 +122,11 @@ fn a_line_drawn_on_the_design_reaches_the_journey_planner() {
     let out = publish_service(&topology(), &[shuttle()], "weekday").unwrap();
     let r = &out.lines[0];
     // 7–9 every 10 min (12), and the ramps of the short off-peak hours either side, each band
-    // from its start: 06:00 (40 min), 06:15 (30), 06:30 (17), 06:45 and 06:58 (13); 09:00 and
-    // 09:13 (13), 09:15 (17), 09:30 (30), 09:45 (40): 22 departures each way.
-    assert_eq!(r.trips, 44, "{:?}", r.issues);
+    // from its start: 06:00 (40 min), 06:15 (30), 06:30 (17), 06:45 (13); 09:00 (13), 09:15 (17),
+    // 09:30 (30), 09:45 (40): 20 departures out. 06:58 and 09:13 are left out, two minutes before
+    // the next band's first train (Damascus test, bug 25). The return trips' pattern starts
+    // later in the first band and leaves out one more: 19 back.
+    assert_eq!(r.trips, 39, "{:?}", r.issues);
     assert!(r.trains >= 1);
     let run = r.outbound_s.unwrap();
     assert!(run > 30.0 && run < 900.0, "{run}");
@@ -134,7 +136,7 @@ fn a_line_drawn_on_the_design_reaches_the_journey_planner() {
     assert_eq!(tt.routes[0].route_id, "M7");
     assert_eq!(tt.routes[0].mode, "metro");
     assert_eq!(tt.routes[0].route_color.as_deref(), Some("1d4ed8"));
-    assert_eq!(tt.trips.len(), 44);
+    assert_eq!(tt.trips.len(), 39);
     let names: std::collections::BTreeSet<&str> =
         tt.stops.iter().map(|s| s.stop_name.as_str()).collect();
     assert_eq!(

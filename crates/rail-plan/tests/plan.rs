@@ -258,3 +258,35 @@ fn trains_come_to_an_end_station_siding_from_an_overnight_track() {
     );
     assert!(names.iter().any(|n| n.contains("-stage-")), "{names:?}");
 }
+
+#[test]
+fn a_headway_step_keeps_the_trains_apart() {
+    // Damascus test, bug 25: each band of a gradual start or a ramp to a peak started its own
+    // pattern at the band's start, so a train could follow the last one of the band before by a
+    // minute or two, and the two got in each other's way.
+    let mut l = common::metro_m1();
+    let band = |a: f64, b: f64, h: f64| rail_plan::Band {
+        from_s: a * 3600.0,
+        to_s: b * 3600.0,
+        headway_s: h,
+    };
+    l.bands = vec![
+        band(5.0, 5.4, 1200.0),
+        band(5.4, 6.0, 840.0),
+        band(6.0, 8.0, 600.0),
+    ];
+    let p = plan(model(), &[l.clone()], &PlanParams::default()).unwrap();
+    let mut deps: Vec<f64> = p
+        .runs
+        .iter()
+        .filter(|r| r.kind == RunKind::Service && r.direction == 0)
+        .map(|r| r.planned_depart_s)
+        .collect();
+    deps.sort_by(f64::total_cmp);
+    assert!(deps.len() > 10);
+    // The 05:00 band's last train (05:20) is four minutes before the 05:24 band's first: it is
+    // left out. No two trains are closer than half the shortest headway.
+    for w in deps.windows(2) {
+        assert!(w[1] - w[0] >= 300.0 - 1e-6, "outbound departures {w:?}");
+    }
+}

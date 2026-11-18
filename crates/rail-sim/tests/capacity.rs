@@ -51,12 +51,17 @@ fn the_sweep_finds_the_practical_maximum() {
     let run = capacity_run(&m, &lines, &p).unwrap();
     let hs = sweep_headways(&lines[0], &p, true);
     assert_eq!(hs, vec![240.0, 180.0, 150.0, 120.0]);
-    // Every 4 minutes no longer fits the Westpark turn-backs.
-    let pt = sweep_point(&m, &lines, &p, 0, 240.0).unwrap();
-    assert_eq!(pt.verdict, Verdict::NotEnoughCapacity);
-    assert!(pt.unplaced > 0);
-    let points = [&run.lines[0].planned, &pt];
-    assert_eq!(practical_maximum(&points), Some(12.0));
+    // Every 4 minutes still fits; every 3 minutes no longer fits the Westpark turn-backs. (Every
+    // 4 minutes used to lose a trip only because the ramp into the peak put two trains five
+    // seconds apart, Damascus test, bug 25.)
+    let four = sweep_point(&m, &lines, &p, 0, 240.0).unwrap();
+    assert_eq!(four.verdict, Verdict::NearLimit);
+    assert_eq!(four.unplaced, 0);
+    let three = sweep_point(&m, &lines, &p, 0, 180.0).unwrap();
+    assert_eq!(three.verdict, Verdict::NotEnoughCapacity);
+    assert!(three.unplaced > 0);
+    let points = [&run.lines[0].planned, &four, &three];
+    assert_eq!(practical_maximum(&points), Some(15.0));
 }
 
 #[test]
@@ -97,8 +102,8 @@ fn cut_plan(peak_headway_s: f64) -> (Model, rail_plan::Plan) {
 
 #[test]
 fn trains_stabled_on_neighbouring_sidings_start_on_their_own_siding() {
-    // Every 4 minutes the plan stables trains on both Eastgate sidings behind switch ess.
-    let (m, p) = cut_plan(240.0);
+    // Every 3.5 minutes the plan stables trains on both Eastgate sidings behind switch ess.
+    let (m, p) = cut_plan(210.0);
     assert!(p.stabling_start["es1"].len() == 1 && p.stabling_start["es2"].len() == 1);
     let mut sim = NetworkSim::new(&m, &p, NetParams::default()).unwrap();
     sim.run_until(10.0 * 3600.0).unwrap();
