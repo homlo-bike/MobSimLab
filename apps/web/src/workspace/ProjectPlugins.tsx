@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useState } from "react";
 import { EsriImageryAdmin } from "../admin/EsriImageryAdmin";
+import { MapLayersAdmin } from "../admin/MapLayersAdmin";
 import { Dialog } from "../shell/Dialog";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
@@ -37,13 +38,14 @@ export function addsLine(
 
 /**
  * Configuration panels of plugins that need one, by plugin id, shown to Admins in the plugin's window. Esri World
- * Imagery needs the instance's ArcGIS API key (docs/architecture/06-gis.md §8).
+ * Imagery needs the instance's ArcGIS API key, WMS and WMTS map layers their services (docs/architecture/06-gis.md §8).
  */
 const CONFIG: Record<
   string,
   (p: { csrfToken: string; run: (f: () => Promise<unknown>) => Promise<void> }) => ReactNode
 > = {
   "org.mobsimlab.esri-imagery": (p) => <EsriImageryAdmin {...p} />,
+  "org.mobsimlab.ogc-layers": (p) => <MapLayersAdmin {...p} />,
 };
 
 /**

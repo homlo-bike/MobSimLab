@@ -8,6 +8,9 @@ import { AuthController } from "./auth/auth.controller";
 import { BasemapsController } from "./basemaps/basemaps.controller";
 import { BasemapsService } from "./basemaps/basemaps.service";
 import { EsriImageryClient } from "./basemaps/esri.client";
+import { MapLayersController } from "./basemaps/map-layers.controller";
+import { MapLayersService } from "./basemaps/map-layers.service";
+import { OgcClient } from "./basemaps/ogc.client";
 import { AuthService } from "./auth/auth.service";
 import { CommentsController } from "./comments/comments.controller";
 import { CommentsService } from "./comments/comments.service";
@@ -78,6 +81,7 @@ export class AppModule {
         CommentsController,
         PluginsController,
         BasemapsController,
+        MapLayersController,
         RunsController,
         MslabController,
         PopulationLayersController,
@@ -88,6 +92,8 @@ export class AppModule {
         AuthService,
         BasemapsService,
         { provide: EsriImageryClient, useFactory: () => new EsriImageryClient() },
+        MapLayersService,
+        { provide: OgcClient, useFactory: () => new OgcClient() },
         CommentsService,
         OidcService,
         ProjectsService,

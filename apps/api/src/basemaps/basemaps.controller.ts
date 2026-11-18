@@ -18,6 +18,7 @@ import { Requires } from "../iam/requires";
 import type { ProjectActor } from "../projects/projects.service";
 import { BasemapsService } from "./basemaps.service";
 import { TileError, validTile } from "./esri.client";
+import { MapLayersService } from "./map-layers.service";
 
 const esriBody = z.strictObject({
   // ArcGIS API keys are long tokens of letters, digits and a few signs.
@@ -45,6 +46,7 @@ function parse<T>(schema: z.ZodType<T>, value: unknown): T {
 export class BasemapsController {
   constructor(
     private readonly basemaps: BasemapsService,
+    private readonly mapLayers: MapLayersService,
     private readonly sessions: SessionService,
   ) {}
 
@@ -82,11 +84,15 @@ export class BasemapsController {
     return { esri: await this.basemaps.esriStatus() };
   }
 
-  /** Purpose: the keyed basemaps members can pick (`["esri"]` once an Admin has saved the key). */
+  /**
+   * Purpose: the keyed basemaps members can pick (`["esri"]` once an Admin has saved the key), and the WMS and
+   * WMTS layers Admins added (`layers`, tiles through `/api/map-layers/`).
+   */
   @Get("basemaps")
   @Requires("instance.read")
   async available() {
-    return { available: await this.basemaps.available() };
+    const [available, layers] = await Promise.all([this.basemaps.available(), this.mapLayers.offers()]);
+    return { available, layers };
   }
 
   /** Purpose: one Esri World Imagery tile, fetched with the saved key and not stored. */

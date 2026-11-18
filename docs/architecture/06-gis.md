@@ -187,7 +187,7 @@ Built-in layers: roads, buildings, vehicles, stops, stations, railways, bridges,
 | Sentinel-2 Cloudless 2018+ | EOX WMTS | Disabled; admin must acknowledge non-commercial licence |
 | Esri World Imagery | Esri ArcGIS Location Platform (`ibasemaps-api.arcgis.com`), bundled plugin `org.mobsimlab.esri-imagery`, tiles through `/api/basemaps/esri/tiles/{z}/{y}/{x}` | Off until an Admin saves an ArcGIS API key and accepts Esri's terms (*Administration → Plugins*); the key stays on the server and tiles are not stored |
 | Offline styles | PMTiles/MBTiles on the data volume, served by the API | For air-gapped installs |
-| External WMTS / WMS / XYZ | Admin or project config | Optional username/password, proxied (C-18) |
+| External WMS / WMTS / XYZ | Services an Admin adds under *Administration → Plugins* (bundled plugin `org.mobsimlab.ogc-layers`, table `plugin.map_layer_service`), tiles through `/api/map-layers/<service>/<layer>/tiles/{z}/{x}/{y}` | Off until an Admin adds a service and picks its layers, each shown as a basemap or as an overlay over any basemap. Optional sign-in (user name and password, a key in the address or in a header) stays on the server and is never returned, logged, audited or exported; https addresses of public hosts only; layers must be in Web Mercator (WMS: EPSG:3857 or an older code; WMTS: a tile matrix set on the Web Mercator grid); tiles are not stored (C-18) |
 
 Protected layers are always proxied by the `gateway` tile proxy which injects credentials server-side, enforces allowlists, caches tiles (respecting provider terms; Esri tiles are not cached), and rate-limits.
 

@@ -13,7 +13,17 @@ export interface Basemap {
   darkStyleUrl?: string;
   attribution: string;
   /** For aerial basemaps: the imagery drawn under the labels of `styleUrl`. Tile URLs may hold `{date}`. */
-  imagery?: { id: string; tiles: string[]; tileSize: number; maxzoom: number };
+  imagery?: {
+    id: string;
+    tiles: string[];
+    tileSize: number;
+    maxzoom: number;
+    minzoom?: number;
+    /** [west, south, east, north]: the map asks for no tiles outside. */
+    bounds?: [number, number, number, number];
+  };
+  /** Shown in the layer control instead of "Aerial" or "Street map" (WMS, WMTS or XYZ for an Admin's service). */
+  tag?: string;
   /** Plugin basemaps: one sentence on the imagery (its resolution), shown instead of the core note. */
   note?: string;
   /** Daily imagery (plugin basemaps): the first day there is, and how many days the newest lags behind today. */
@@ -117,24 +127,98 @@ export function pluginBasemap(b: PluginBasemap): Basemap {
 /** Keyed basemaps the API offers now (an Admin saved their key), from `GET /api/basemaps`. */
 let serverBasemaps: ReadonlySet<string> = new Set();
 
+/** The plugin whose WMS and WMTS layers an Admin adds; a project that turns it off shows none of them. */
+export const OGC_PLUGIN = "org.mobsimlab.ogc-layers";
+
+/** A WMS, WMTS or XYZ layer an Admin added (`layers` of `GET /api/basemaps`); its tiles come through the API. */
+export interface ServiceLayer {
+  id: string;
+  label: string;
+  service: string;
+  kind: "wms" | "wmts" | "xyz";
+  showAs: "basemap" | "overlay";
+  tiles: string[];
+  tileSize: number;
+  minzoom: number;
+  maxzoom: number;
+  bounds?: [number, number, number, number];
+  attribution: string;
+}
+
+/** The WMS and WMTS layers the API offers now. */
+let serviceLayers: readonly ServiceLayer[] = [];
+
+function isServiceLayer(x: unknown): x is ServiceLayer {
+  const l = x as Partial<ServiceLayer> | null;
+  return (
+    typeof l?.id === "string" &&
+    /^ogc-[0-9a-f-]+-\d+$/.test(l.id) &&
+    typeof l.label === "string" &&
+    (l.showAs === "basemap" || l.showAs === "overlay") &&
+    Array.isArray(l.tiles) &&
+    l.tiles.every((t) => typeof t === "string" && t.startsWith("/api/map-layers/")) &&
+    typeof l.tileSize === "number" &&
+    typeof l.minzoom === "number" &&
+    typeof l.maxzoom === "number" &&
+    typeof l.attribution === "string"
+  );
+}
+
+/** Purpose: an Admin's WMS or WMTS layer as a basemap: its tiles under the OpenFreeMap Liberty labels. */
+export function serviceBasemap(l: ServiceLayer): Basemap {
+  return {
+    id: l.id,
+    label: l.label,
+    kind: "aerial",
+    tag: l.kind.toUpperCase(),
+    styleUrl: PLUGIN_LABELS_STYLE,
+    attribution: `${escapeHtml(l.attribution)} · ${OSM_ATTRIBUTION}`,
+    imagery: {
+      id: l.id,
+      tiles: l.tiles,
+      tileSize: l.tileSize,
+      minzoom: l.minzoom,
+      maxzoom: l.maxzoom,
+      ...(l.bounds ? { bounds: l.bounds } : {}),
+    },
+    note: "",
+  };
+}
+
+/** Purpose: whether the open project uses the WMS and WMTS layers plugin. */
+function serviceLayersOn(plugins: readonly Plugin[]): boolean {
+  return plugins.some((p) => p.id === OGC_PLUGIN);
+}
+
+/** Purpose: the WMS and WMTS layers to offer as overlays over any basemap, when the project uses the plugin. */
+export function availableOverlays(plugins: readonly Plugin[] = activePlugins()): ServiceLayer[] {
+  return serviceLayersOn(plugins) ? serviceLayers.filter((l) => l.showAs === "overlay") : [];
+}
+
 /**
- * Purpose: ask the API which keyed basemaps (Esri) an Admin has set up, so the layer control offers them.
+ * Purpose: ask the API which keyed basemaps (Esri) and WMS or WMTS layers an Admin has set up, so the layer
+ * control offers them.
  * Output: whether the answer changed what is offered. Without an API (static viewer) none are offered.
  */
 export async function loadServerBasemaps(fetchImpl: typeof fetch = fetch): Promise<boolean> {
   let next: Set<string> = new Set();
+  let layers: ServiceLayer[] = [];
   try {
     const res = await fetchImpl("/api/basemaps", { credentials: "same-origin" });
     if (res.ok) {
-      const body = (await res.json()) as { available?: unknown };
+      const body = (await res.json()) as { available?: unknown; layers?: unknown };
       if (Array.isArray(body.available))
         next = new Set(body.available.filter((x): x is string => typeof x === "string"));
+      if (Array.isArray(body.layers)) layers = body.layers.filter(isServiceLayer);
     }
   } catch {
     // No API here, or it cannot be reached: offer no keyed basemaps.
   }
-  const changed = [...next].join() !== [...serverBasemaps].join();
+  const changed =
+    [...next].join() !== [...serverBasemaps].join() ||
+    JSON.stringify(layers) !== JSON.stringify(serviceLayers);
   serverBasemaps = next;
+  serviceLayers = layers;
   return changed;
 }
 
@@ -162,6 +246,9 @@ export function availableBasemaps(plugins: readonly Plugin[] = activePlugins()):
     ...pluginBasemaps(plugins)
       .filter((b) => !core.has(b.id) && (!b.server || serverBasemaps.has(b.server)))
       .map(pluginBasemap),
+    ...(serviceLayersOn(plugins)
+      ? serviceLayers.filter((l) => l.showAs === "basemap").map(serviceBasemap)
+      : []),
   ];
 }
 
@@ -215,6 +302,8 @@ export function basemapStyle(basemap: Basemap, loaded: StyleSpecification): Styl
         tiles: imageryTiles(basemap),
         tileSize: img.tileSize,
         maxzoom: img.maxzoom,
+        ...(img.minzoom ? { minzoom: img.minzoom } : {}),
+        ...(img.bounds ? { bounds: img.bounds } : {}),
       },
     },
     layers: [

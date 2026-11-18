@@ -41,6 +41,48 @@ export const pluginCodeEn = {
   "esri.saved":
     "Key ending {end} saved by {name} on {date}. Esri World Imagery is offered in the map's layer control.",
   "esri.none": "No key saved: Esri World Imagery is not offered.",
+  "map.overlays": "Overlays",
+  "maplayers.title": "WMS, WMTS and XYZ map layers",
+  "maplayers.intro":
+    "Add map layers from WMS, WMTS or XYZ tile services, such as topographic maps or land cover. Members see them in the map's layer control in projects that use this plugin. The tiles come through this MobSimLab, so browsers never see the sign-in details, and they are not stored. Layers must be offered in Web Mercator (EPSG:3857).",
+  "maplayers.none": "No services added yet.",
+  "maplayers.layers": "Layers: {list}",
+  "maplayers.asBasemap": "Basemap",
+  "maplayers.asOverlay": "Overlay",
+  "maplayers.authNone": "No sign-in",
+  "maplayers.authBasic": "User name and password",
+  "maplayers.authQuery": "Key in the address",
+  "maplayers.authHeader": "Key in a header",
+  "maplayers.remove": "Remove",
+  "maplayers.removeName": "Remove {name}",
+  "maplayers.addedBy": "added by {name} on {date}",
+  "maplayers.add": "Add a service",
+  "maplayers.kind": "Service type",
+  "maplayers.url": "Service address",
+  "maplayers.xyz": "XYZ tiles",
+  "maplayers.maxzoom": "Deepest zoom",
+  "maplayers.xyzNote":
+    "A tile address with {z}, {x} and {y}, such as https://a.tile.opentopomap.org/{z}/{x}/{y}.png. Use {-y} for rows counted from the south (TMS).",
+  "maplayers.auth": "Sign-in",
+  "maplayers.user": "User name",
+  "maplayers.password": "Password",
+  "maplayers.param": "Parameter name",
+  "maplayers.header": "Header name",
+  "maplayers.key": "Key",
+  "maplayers.secretNote":
+    "The password or key stays on the server: it is never shown again, sent to browsers or included in exports.",
+  "maplayers.read": "Read layers",
+  "maplayers.check": "Check address",
+  "maplayers.reading": "Reading…",
+  "maplayers.pick": "Layers to add",
+  "maplayers.noUsable": "None of this service's layers can be drawn on the map.",
+  "maplayers.name": "Name in the layer control",
+  "maplayers.attribution": "Attribution (who the data comes from)",
+  "maplayers.showAs": "Show as",
+  "maplayers.basemapNote": "A basemap is drawn under the place and street names, instead of the street map.",
+  "maplayers.overlayNote":
+    "An overlay is drawn over any basemap, under the project's own layers, and can be switched on and off.",
+  "maplayers.save": "Add to the map",
 } as const;
 
 export type PluginCodeMessages = Record<keyof typeof pluginCodeEn, string>;
