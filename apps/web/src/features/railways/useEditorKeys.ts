@@ -42,12 +42,9 @@ export function useEditorKeys({
       if (s.draft) {
         if (ev.key === "+" || ev.key === "=" || ev.key === "-" || ev.key === "_") {
           const up = ev.key === "+" || ev.key === "=";
-          setDraft({
-            ...s.draft,
-            level: shiftLevel(draftLevel(s.draft), up ? 1 : -1),
-            points: s.draft.points,
-          });
-          setTrackOpts((o) => ({ ...o, level: shiftLevel(draftLevel(s.draft!), up ? 1 : -1) }));
+          const level = shiftLevel(draftLevel(s.draft), up ? 1 : -1);
+          setDraft({ ...s.draft, level });
+          setTrackOpts((o) => ({ ...o, level }));
           ev.preventDefault();
           return;
         }

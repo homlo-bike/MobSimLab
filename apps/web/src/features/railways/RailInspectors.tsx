@@ -159,8 +159,9 @@ export function StationInspector({ st, doc, view, actions: a }: Props & { st: St
         <Num
           label={t("rail.rotation")}
           unit="°"
+          wrap={360}
           value={st.rotation_deg}
-          onChange={(v) => set((s) => ({ ...s, rotation_deg: v % 360 }))}
+          onChange={(v) => set((s) => ({ ...s, rotation_deg: v }))}
         />
       </Row>
       <span className="text-slate-700">{t("station.features")}</span>
