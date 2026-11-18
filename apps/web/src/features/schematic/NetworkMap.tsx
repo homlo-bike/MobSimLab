@@ -494,7 +494,10 @@ export function NetworkMap({
                 stroke={interchange ? INK : (here[0]?.color ?? INK)}
                 strokeWidth={interchange ? 2.5 : 3}
                 style={editable ? { cursor: drag?.i === i ? "grabbing" : "grab" } : { cursor: "pointer" }}
-                onClick={(e) => e.stopPropagation()}
+                // While an area is drawn, a click on a station adds a corner there (it reaches the page).
+                onClick={(e) => {
+                  if (!draft) e.stopPropagation();
+                }}
                 onPointerDown={(e) => {
                   if (draft) return;
                   onSelect(i);
@@ -528,8 +531,9 @@ export function NetworkMap({
                 transform={rot ? `rotate(${-rot} ${lx} ${ly})` : undefined}
                 style={{ cursor: "pointer", userSelect: "none" }}
                 onClick={(e) => {
+                  if (draft) return;
                   e.stopPropagation();
-                  if (!draft) onSelect(i);
+                  onSelect(i);
                 }}
               >
                 {st.name}

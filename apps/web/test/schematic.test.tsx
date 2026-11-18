@@ -380,6 +380,40 @@ describe("Schematic tab", () => {
     expect(screen.queryByRole("button", { name: "Finish" })).toBeNull();
   });
 
+  it("adds an area corner when a click while drawing lands on a station", () => {
+    // jsdom has no SVG geometry: map screen points to the drawing one to one.
+    const proto = SVGElement.prototype as unknown as { getScreenCTM?: () => unknown };
+    const had = proto.getScreenCTM;
+    const hadPoint = globalThis.DOMPoint;
+    proto.getScreenCTM = () => ({ inverse: () => ({}) });
+    globalThis.DOMPoint = class {
+      constructor(
+        public x: number,
+        public y: number,
+      ) {}
+      matrixTransform() {
+        return { x: this.x, y: this.y };
+      }
+    } as unknown as typeof DOMPoint;
+    try {
+      render(
+        <Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={null} onDoc={vi.fn()} projectName="A" />,
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Draw an area" }));
+      const map = screen.getByRole("img", { name: "Schematic network map" });
+      const circles = map.querySelectorAll("circle[data-station]");
+      const labels = map.querySelectorAll("text[data-station]");
+      fireEvent.click(circles[0]!, { clientX: 10, clientY: 10 });
+      fireEvent.click(labels[1]!, { clientX: 50, clientY: 10 });
+      fireEvent.click(circles[0]!, { clientX: 10, clientY: 60 });
+      // Three corners, so the area can be finished, and no station pop-up opened.
+      expect((screen.getByRole("button", { name: "Finish" }) as HTMLButtonElement).disabled).toBe(false);
+    } finally {
+      proto.getScreenCTM = had;
+      globalThis.DOMPoint = hadPoint;
+    }
+  });
+
   it("opens a line's strip map when the line is clicked on the network map", () => {
     render(<Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={null} projectName="A" />);
     const map = screen.getByRole("img", { name: "Schematic network map" });

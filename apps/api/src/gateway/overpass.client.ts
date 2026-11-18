@@ -3,7 +3,7 @@ import { z } from "zod";
 /**
  * Overpass API client: the first provider of the outbound gateway (ADR-0017).
  * Rules from 06-gis §2.3: configurable HTTPS endpoint, identifying User-Agent, one request at a
- * time with a minimum interval, retries with backoff and jitter on 429/502/503/504 and timeouts,
+ * time with a minimum interval (a query backing off before a retry lets the others go first), retries with backoff and jitter on 429/502/503/504 and timeouts,
  * a timeout and a response size limit. Read-only queries only.
  * Private-range blocking, per-provider health and the admin UI arrive with the full gateway module.
  */
@@ -64,11 +64,22 @@ export class OverpassClient {
   /**
    * Purpose: run one Overpass QL query.
    * Output: the response body. Throws OverpassError after the last retry.
-   * Side effects: one outbound HTTPS request at a time, spaced by `minIntervalMs`. An aborted `signal` stops
-   * the request under way and any retry (an import cancelled by the planner).
+   * Side effects: one outbound HTTPS request at a time, spaced by `minIntervalMs`. A query waiting to retry
+   * gives up its turn while it backs off, so the next queries are not held up behind it. An aborted `signal`
+   * stops the request under way and any retry (an import cancelled by the planner).
    */
   run(query: string, signal?: AbortSignal): Promise<string> {
-    const next = this.queue.then(() => this.attempts(query, signal));
+    return this.attempts(query, signal);
+  }
+
+  /** Purpose: run `f` when no other request is under way, at least `minIntervalMs` after the last one. */
+  private inTurn<T>(f: () => Promise<T>): Promise<T> {
+    const next = this.queue.then(async () => {
+      const wait = this.last + this.o.minIntervalMs - Date.now();
+      if (wait > 0) await this.o.sleep(wait);
+      this.last = Date.now();
+      return f();
+    });
     this.queue = next.catch(() => undefined);
     return next;
   }
@@ -79,13 +90,14 @@ export class OverpassClient {
       if (signal?.aborted) throw new OverpassError("Overpass request cancelled", 499);
       if (backoff) await this.o.sleep(backoff + Math.random() * (backoff / 2));
       if (signal?.aborted) throw new OverpassError("Overpass request cancelled", 499);
-      const wait = this.last + this.o.minIntervalMs - Date.now();
-      if (wait > 0) await this.o.sleep(wait);
-      this.last = Date.now();
       try {
-        return await this.once(query, signal);
+        return await this.inTurn(() => {
+          if (signal?.aborted) throw new OverpassError("Overpass request cancelled", 499);
+          return this.once(query, signal);
+        });
       } catch (e) {
         lastError = e instanceof OverpassError ? e : new OverpassError(String(e), 502);
+        if (lastError.status === 499) throw lastError;
         const timedOut = lastError.status === 504 && this.o.retryTimeouts;
         if (!(timedOut || lastError.message.startsWith("retry"))) throw lastError;
       }
