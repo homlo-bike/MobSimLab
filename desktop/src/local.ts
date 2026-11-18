@@ -7,6 +7,8 @@ import {
   mkdirSync,
   openSync,
   readFileSync,
+  renameSync,
+  rmSync,
   type WriteStream,
   writeFileSync,
 } from "node:fs";
@@ -28,8 +30,19 @@ const SECRETS = {
   session_secret: () => randomBytes(32).toString("base64"),
 };
 
+/**
+ * The system's keychain (Electron safeStorage: Keychain on macOS, DPAPI on Windows, the Secret Service on Linux).
+ * With it, the master key that encrypts saved API keys is kept on disk only encrypted by the keychain.
+ */
+export interface Keychain {
+  encrypt(text: string): Buffer;
+  decrypt(data: Buffer): string;
+}
+
 export interface LocalOptions {
   runtime: Runtime;
+  /** Absent when the system has no keychain: the master key is then a file readable only by this user. */
+  keychain?: Keychain;
   /** Folder for the database, files, logs and secrets (the app's user-data folder). */
   dataDir: string;
   /** AI agents (MCP) switched on. */
@@ -54,6 +67,8 @@ export class LocalStack {
   private worker?: ChildProcess;
   private pgStarted = false;
   private stopping = false;
+  /** The master key, when the keychain keeps it; given to the API on its standard input, never in a file. */
+  private masterKey?: string;
   /** Called when the API or the worker stops by itself. */
   onCrash?: (what: string, code: number | null) => void;
 
@@ -82,6 +97,7 @@ export class LocalStack {
     for (const d of [this.o.dataDir, this.secretsDir, this.logDir, join(this.o.dataDir, "data")])
       mkdirSync(d, { recursive: true, mode: 0o700 });
     this.writeSecrets();
+    this.protectMasterKey();
     this.apiPort = await freePort(DEFAULT_API_PORT);
     this.dbPort = await freePort(DEFAULT_DB_PORT, this.apiPort);
 
@@ -114,7 +130,8 @@ export class LocalStack {
     status("Starting MobSimLab…");
     this.api = this.longRun("api", this.o.runtime.node, [join("dist", "main.js")], {
       cwd: this.o.runtime.api,
-      env: this.apiEnv(),
+      env: this.masterKey ? { ...this.apiEnv(), MOBSIMLAB_MASTER_KEY_STDIN: "true" } : this.apiEnv(),
+      input: this.masterKey,
     });
     this.worker = this.longRun("worker", this.o.runtime.python, ["-m", "mobsim_worker.main"], {
       env: this.workerEnv(),
@@ -139,9 +156,43 @@ export class LocalStack {
     }
   }
 
+  /**
+   * With a keychain, keeps the master key only as `master_key.keychain` (encrypted by the keychain): a plain
+   * `master_key` from an earlier version is moved there and removed. A key the keychain can no longer open (the
+   * system's keychain was reset) is kept aside as `master_key.keychain.unreadable` and a new key is made; saved
+   * API keys must then be entered again.
+   */
+  private protectMasterKey(): void {
+    const kc = this.o.keychain;
+    if (!kc) return;
+    const plain = join(this.secretsDir, "master_key");
+    const sealed = join(this.secretsDir, "master_key.keychain");
+    if (existsSync(sealed)) {
+      try {
+        this.masterKey = kc.decrypt(readFileSync(sealed)).trim();
+      } catch {
+        renameSync(sealed, `${sealed}.unreadable`);
+      }
+    }
+    if (!this.masterKey) {
+      const old = existsSync(plain) ? readFileSync(plain, "utf8").trim() : "";
+      this.masterKey = old || SECRETS.master_key();
+      writeFileSync(`${sealed}.tmp`, kc.encrypt(this.masterKey), { mode: 0o600 });
+      renameSync(`${sealed}.tmp`, sealed);
+    }
+    rmSync(plain, { force: true });
+  }
+
   /** Creates missing secrets (never overwrites one) and a new launch key for this start. */
   private writeSecrets(): void {
     for (const [name, make] of Object.entries(SECRETS)) {
+      // The keychain keeps the master key (protectMasterKey); no plain file is made for it then.
+      if (
+        name === "master_key" &&
+        this.o.keychain &&
+        existsSync(join(this.secretsDir, "master_key.keychain"))
+      )
+        continue;
       const f = join(this.secretsDir, name);
       if (!existsSync(f) || !readFileSync(f, "utf8").trim()) writeFileSync(f, make(), { mode: 0o600 });
     }
@@ -333,21 +384,26 @@ GRANT USAGE ON SCHEMA public TO mobsimlab_app, mobsimlab_worker;
     return createWriteStream(join(this.logDir, `${name}.log`), { flags: "a", mode: 0o600 });
   }
 
-  /** Starts a long-running process; its output goes to `<logs>/<name>.log`. */
+  /** Starts a long-running process; its output goes to `<logs>/<name>.log`. `input` is written to its stdin. */
   private longRun(
     name: string,
     cmd: string,
     args: string[],
-    o: { cwd?: string; env?: NodeJS.ProcessEnv } = {},
+    o: { cwd?: string; env?: NodeJS.ProcessEnv; input?: string } = {},
   ) {
     const log = this.logStream(name);
     log.write(`\n--- ${new Date().toISOString()} start ${name}\n`);
     const child = spawn(cmd, args, {
       cwd: o.cwd,
       env: o.env ?? this.commonEnv(),
-      stdio: ["ignore", "pipe", "pipe"],
+      stdio: [o.input === undefined ? "ignore" : "pipe", "pipe", "pipe"],
       windowsHide: true,
     });
+    if (o.input !== undefined) {
+      // A child that stops at once closes its input; that shows in its own log, not as an error here.
+      child.stdin?.on("error", () => {});
+      child.stdin?.end(o.input);
+    }
     child.stdout?.pipe(log, { end: false });
     child.stderr?.pipe(log, { end: false });
     child.on("exit", (code) => {

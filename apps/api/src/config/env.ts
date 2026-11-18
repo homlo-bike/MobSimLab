@@ -29,7 +29,8 @@ const SECRET_SOURCES: Record<ApiSecretName, (dir: string) => string[]> = {
 /**
  * Secrets the operator may leave out. Without session_secret, a random key is made at each start, kept in memory
  * only: CSRF tokens then end at a restart (people reload the page) and audit IP hashes do not match across restarts.
- * master_key is not used by any code yet.
+ * master_key encrypts stored API keys and passwords (config/credential-vault.ts); without it the API makes one on
+ * its first start and keeps it in the data volume.
  */
 const OPTIONAL_SECRETS = new Set<ApiSecretName>(["master_key", "session_secret"]);
 
@@ -81,8 +82,16 @@ export interface AppConfig {
   logging?: LoggingConfig;
   /** Token-bucket limits (05 §3.5), in requests per minute. */
   rateLimits: { authPerMinute: number; writesPerMinute: number };
-  /** master_key is absent unless the operator provided it; session_secret is random per start if not provided. */
+  /**
+   * master_key is absent unless the operator provided it (then the API makes one in `credentialKeyFile`);
+   * session_secret is random per start if not provided.
+   */
   secrets: { db_app_password: string; session_secret: string; master_key?: string };
+  /**
+   * Where the API keeps the master key it made itself when the operator provides none (in the data volume, apart
+   * from the database). Absent: `/data/secrets/master_key`.
+   */
+  credentialKeyFile?: string;
   /**
    * Desktop app, "Use on this computer" (local mode): the key the desktop app adds to its own requests so that its
    * single local Owner is signed in without a provider (`POST /api/auth/local`). Absent on a server.
@@ -137,6 +146,9 @@ const envSchema = z.object({
   MOBSIMLAB_LISTEN_HOST: z.preprocess(emptyToUndefined, z.ipv4().or(z.ipv6()).optional()),
   MOBSIMLAB_AGENTS_ENABLED: z.enum(["true", "false"]).default("true"),
   MOBSIMLAB_MAP_LAYER_DEFAULTS: z.enum(["true", "false"]).default("true"),
+  MOBSIMLAB_DATA_DIR: z.string().min(1).default("/data"),
+  // Desktop app: the master key comes on standard input (kept in the system's keychain, never in a file).
+  MOBSIMLAB_MASTER_KEY_STDIN: z.enum(["true", "false"]).default("false"),
 });
 
 /** Loopback host names the desktop app's local mode may use. */
@@ -166,11 +178,12 @@ export function secretProblem(name: ApiSecretName, value: string): string | null
  * Purpose: load and validate configuration at start-up.
  * Inputs: environment variables and a file reader (injectable for tests).
  * Output: AppConfig. Throws ConfigError listing every problem, so the operator can fix all at once.
- * Side effects: reads secret files.
+ * Side effects: reads secret files (and standard input with MOBSIMLAB_MASTER_KEY_STDIN=true).
  */
 export function loadConfig(
   env: NodeJS.ProcessEnv = process.env,
   readFile: (path: string) => string = (p) => readFileSync(p, "utf8"),
+  readStdin: () => string = () => readFileSync(0, "utf8"),
 ): AppConfig {
   const problems: string[] = [];
   const parsed = envSchema.safeParse(env);
@@ -189,6 +202,12 @@ export function loadConfig(
     const p = secretProblem(name, value);
     if (p) problems.push(p);
     secrets[name] = value;
+  }
+  if (parsed.success && parsed.data.MOBSIMLAB_MASTER_KEY_STDIN === "true") {
+    const value = readStdin().trim();
+    const p = value ? secretProblem("master_key", value) : "master_key was not given on standard input";
+    if (p) problems.push(p);
+    else secrets.master_key = value;
   }
   let oidcSecret: string | undefined;
   try {
@@ -265,6 +284,7 @@ export function loadConfig(
       session_secret: secrets.session_secret ?? randomBytes(32).toString("base64"),
       master_key: secrets.master_key,
     },
+    credentialKeyFile: join(d.MOBSIMLAB_DATA_DIR, "secrets", "master_key"),
     localLaunchKey,
     listenHost: d.MOBSIMLAB_LISTEN_HOST,
     agentsDisabled: d.MOBSIMLAB_AGENTS_ENABLED === "false" ? true : undefined,

@@ -101,7 +101,7 @@ Two layers:
 ### 3.6 Secrets and credentials
 
 - Instance secrets come from Docker secrets files; never from images or defaults.
-- **Provider credentials** (Overpass auth, WMS username/password, API keys) use envelope encryption (ADR-0016): a random data key per credential encrypted with the master key (AES-256-GCM, key ID stored), master key from the `master_key` secret. Rotation command re-wraps data keys. Credentials are write-only in the UI and never sent to the browser.
+- **Provider credentials** (Overpass auth, WMS username/password, API keys) use envelope encryption (ADR-0016): a random data key per credential encrypted with the master key (AES-256-GCM, key ID stored), master key from the `master_key` secret (or, without one, a key the API makes in its data volume; in the desktop app, kept by the system's keychain). Providing a new `master_key` re-wraps stored credentials at the next start. Credentials are write-only in the UI and never sent to the browser.
 - Logs redact secrets; error messages never include connection strings.
 
 ### 3.7 Outbound requests (SSRF)

@@ -4,6 +4,7 @@
 # The secret files you must create are the two database passwords, db_password and db_admin_password
 # (deploy/scripts/init-secrets makes both). The mobsimlab container creates the database and its roles itself.
 # master_key and session_secret are optional: add them as secrets only if you want to provide them (.env.example).
+# master_key encrypts the API keys Admins save; without it MobSimLab makes one in the mobsimlab-data volume.
 # Keep your secret files somewhere else? Set MOBSIMLAB_SECRETS_PATH in .env; do not edit the /run/secrets paths below,
 # they are where Docker puts the files inside the containers.
 name: mobsimlab

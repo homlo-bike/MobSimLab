@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import {
   Inject,
   Injectable,
@@ -7,6 +8,8 @@ import {
 } from "@nestjs/common";
 import { AuditService } from "../audit/audit.service";
 import { APP_CONFIG } from "../config/config.module";
+import { CredentialVault } from "../config/credential-vault";
+import { mapLayerSecretPlace } from "../config/credentials-at-rest";
 import type { AppConfig } from "../config/env";
 import { DATABASE, type Database } from "../db/database";
 import type { ProjectActor } from "../projects/projects.service";
@@ -121,6 +124,7 @@ export class MapLayersService implements OnApplicationBootstrap, OnModuleDestroy
     @Inject(DATABASE) private readonly db: Database,
     private readonly audit: AuditService,
     private readonly ogc: OgcClient,
+    private readonly vault: CredentialVault,
   ) {}
 
   /** Purpose: add the services MobSimLab comes with in the background, so a slow service never holds up the start. */
@@ -270,16 +274,19 @@ export class MapLayersService implements OnApplicationBootstrap, OnModuleDestroy
    */
   async add(actor: ProjectActor, s: NewService): Promise<MapLayerServiceView[]> {
     const layers = await this.resolve(s.kind, s.url, s.auth, s.maxzoom ?? XYZ_MAX_ZOOM, s.layers);
+    const id = randomUUID();
     await this.db.transaction().execute(async (tx) => {
       const row = await tx
         .insertInto("plugin.map_layer_service")
         .values({
+          id,
           kind: s.kind,
           name: s.name,
           url: s.url,
           auth_type: s.auth.type,
           auth_name: s.auth.type === "none" ? null : s.auth.name,
-          auth_secret: s.auth.type === "none" ? null : s.auth.secret,
+          auth_secret:
+            s.auth.type === "none" ? null : this.vault.encrypt(s.auth.secret, mapLayerSecretPlace(id)),
           show_as: s.showAs,
           attribution: s.attribution,
           layers: JSON.stringify(layers),
@@ -426,12 +433,25 @@ export class MapLayersService implements OnApplicationBootstrap, OnModuleDestroy
       auth:
         r.auth_type === "none" || r.auth_name === null || r.auth_secret === null
           ? { type: "none" }
-          : { type: r.auth_type, name: r.auth_name, secret: r.auth_secret },
+          : { type: r.auth_type, name: r.auth_name, secret: this.openSecret(r.id, r.name, r.auth_secret) },
       showAs: r.show_as,
       attribution: r.attribution,
       layers: r.layers as ResolvedLayer[],
     }));
     this.cached = { rows: out, at: Date.now() };
     return out;
+  }
+
+  /**
+   * Purpose: a service's stored password or key in plain text. One that cannot be read (its master key is gone)
+   * is logged by the service's name, never shown, and sent as an empty value, so the service refuses the tiles.
+   */
+  private openSecret(id: string, name: string, stored: string): string {
+    try {
+      return this.vault.decrypt(stored, mapLayerSecretPlace(id));
+    } catch {
+      this.log.warn(`the sign-in of map service "${name}" cannot be read with this MobSimLab's master key`);
+      return "";
+    }
   }
 }

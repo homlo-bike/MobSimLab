@@ -20,6 +20,7 @@ import { CommentsService } from "./comments/comments.service";
 import { OidcService } from "./auth/oidc.service";
 import { SessionService } from "./auth/session.service";
 import { ConfigModule } from "./config/config.module";
+import { CredentialsAtRest } from "./config/credentials-at-rest";
 import type { AppConfig } from "./config/env";
 import { HealthController } from "./health/health.controller";
 import { LoggingModule } from "./logging/logging.module";
@@ -97,6 +98,7 @@ export class AppModule {
       providers: [
         AuditService,
         AuthService,
+        CredentialsAtRest,
         BasemapsService,
         { provide: EsriImageryClient, useFactory: () => new EsriImageryClient() },
         MapLayersService,

@@ -7,6 +7,7 @@ import {
   type OnApplicationShutdown,
 } from "@nestjs/common";
 import { createDatabase, DATABASE, type Database } from "../db/database";
+import { CredentialVault, vaultFor } from "./credential-vault";
 import type { AppConfig } from "./env";
 
 /** Injection token for the validated configuration. */
@@ -22,7 +23,7 @@ class DatabaseLifecycle implements OnApplicationShutdown {
   }
 }
 
-/** Provides the configuration and the database to every module. */
+/** Provides the configuration, the database and the credential vault to every module. */
 @Global()
 @Module({})
 export class ConfigModule {
@@ -36,9 +37,14 @@ export class ConfigModule {
       providers: [
         { provide: APP_CONFIG, useValue: config },
         { provide: DATABASE, useFactory: () => createDatabase(config) },
+        {
+          provide: CredentialVault,
+          useFactory: () =>
+            vaultFor(config.secrets.master_key, config.credentialKeyFile ?? "/data/secrets/master_key"),
+        },
         DatabaseLifecycle,
       ],
-      exports: [APP_CONFIG, DATABASE],
+      exports: [APP_CONFIG, DATABASE, CredentialVault],
     };
   }
 }

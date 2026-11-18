@@ -1,5 +1,7 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
 import { AuditService } from "../audit/audit.service";
+import { CredentialVault } from "../config/credential-vault";
+import { ESRI_KEY_PLACE } from "../config/credentials-at-rest";
 import { DATABASE, type Database } from "../db/database";
 import type { ProjectActor } from "../projects/projects.service";
 import { EsriImageryClient, type Tile, TileError } from "./esri.client";
@@ -22,16 +24,19 @@ const KEY_CACHE_MS = 30_000;
 
 /**
  * Keyed basemaps (docs/architecture/06-gis.md §8): Esri World Imagery, whose ArcGIS key an Admin saves after
- * accepting Esri's terms. Tiles come through the API so browsers never see the key; they are not stored.
+ * accepting Esri's terms. The key is stored encrypted (config/credential-vault.ts). Tiles come through the API so
+ * browsers never see the key; they are not stored.
  */
 @Injectable()
 export class BasemapsService {
+  private readonly log = new Logger("Basemaps");
   private cached: { key: string | null; at: number } | null = null;
 
   constructor(
     @Inject(DATABASE) private readonly db: Database,
     private readonly audit: AuditService,
     private readonly esri: EsriImageryClient,
+    private readonly vault: CredentialVault,
   ) {}
 
   /** Purpose: the Esri key's status for the Admin screen. */
@@ -43,7 +48,7 @@ export class BasemapsService {
       .executeTakeFirstOrThrow();
     return {
       configured: r.esri_api_key !== null,
-      keyEnd: r.esri_api_key ? r.esri_api_key.slice(-4) : null,
+      keyEnd: r.esri_api_key ? (this.open(r.esri_api_key)?.slice(-4) ?? null) : null,
       termsAcceptedAt: r.esri_api_key ? (r.esri_terms_accepted_at?.toISOString() ?? null) : null,
       termsAcceptedBy: r.esri_api_key ? (r.display_name ?? r.email ?? null) : null,
       termsUrl: ESRI_TERMS_URL,
@@ -70,7 +75,7 @@ export class BasemapsService {
       await tx
         .updateTable("iam.instance")
         .set({
-          esri_api_key: apiKey,
+          esri_api_key: this.vault.encrypt(apiKey, ESRI_KEY_PLACE),
           esri_terms_accepted_at: now,
           esri_terms_accepted_by: actor.userId,
           updated_at: now,
@@ -137,7 +142,20 @@ export class BasemapsService {
   private async esriKey(): Promise<string | null> {
     if (this.cached && Date.now() - this.cached.at < KEY_CACHE_MS) return this.cached.key;
     const r = await this.db.selectFrom("iam.instance").select("esri_api_key").executeTakeFirstOrThrow();
-    this.cached = { key: r.esri_api_key, at: Date.now() };
-    return r.esri_api_key;
+    const key = r.esri_api_key ? this.open(r.esri_api_key) : null;
+    this.cached = { key, at: Date.now() };
+    return key;
+  }
+
+  /** Purpose: the stored key in plain text, or null (logged, never shown) when it cannot be read. */
+  private open(stored: string): string | null {
+    try {
+      return this.vault.decrypt(stored, ESRI_KEY_PLACE);
+    } catch {
+      this.log.warn(
+        "the saved Esri key cannot be read with this MobSimLab's master key; an Admin should save it again",
+      );
+      return null;
+    }
   }
 }

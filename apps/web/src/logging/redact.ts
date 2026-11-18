@@ -30,6 +30,10 @@ const MAX_ITEMS = 100;
 /** Credentials written inline, as in an `Authorization` header value. */
 const INLINE_CREDENTIAL = /\b(Bearer|Basic)\s+[A-Za-z0-9._~+/=-]+/gi;
 
+/** Keys in a web address's query, as in `?token=…`, `&apikey=…` or `&key=…`. */
+const QUERY_CREDENTIAL =
+  /([?&;][A-Za-z0-9_.-]*(?:key|token|secret|password|passwd|sig|signature|credential)[A-Za-z0-9_.-]*=)[^&#\s"'<>]+/gi;
+
 /**
  * Purpose: whether a field name holds a secret.
  * Inputs: field name. Output: true when the name, lower-cased and without `-` and `_`, contains a deny-list word.
@@ -60,7 +64,7 @@ export function redact(value: unknown, depth = 0): unknown {
   return out;
 }
 
-/** Purpose: mask inline credentials (`Bearer …`, `Basic …`) in a text. */
+/** Purpose: mask inline credentials (`Bearer …`, `Basic …`) and keys in web addresses (`?token=…`) in a text. */
 export function redactText(text: string): string {
-  return text.replace(INLINE_CREDENTIAL, `$1 ${REDACTED}`);
+  return text.replace(INLINE_CREDENTIAL, `$1 ${REDACTED}`).replace(QUERY_CREDENTIAL, `$1${REDACTED}`);
 }

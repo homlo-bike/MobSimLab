@@ -8,6 +8,8 @@ import { readCapabilities } from "../src/basemaps/ogc";
 import type { BuiltinService } from "../src/basemaps/builtin-layers";
 import { MapLayersService } from "../src/basemaps/map-layers.service";
 import { OgcClient, OgcError } from "../src/basemaps/ogc.client";
+import { CredentialVault } from "../src/config/credential-vault";
+import { CredentialsAtRest } from "../src/config/credentials-at-rest";
 import type { AppConfig } from "../src/config/env";
 import { createApp, testConfig } from "./support/app";
 import { startDatabase, type TestDatabase } from "./support/database";
@@ -112,6 +114,29 @@ describe("Esri World Imagery", () => {
     expect(rows[0].after).not.toContain(KEY);
   });
 
+  it("stores the key encrypted, and encrypts a key saved before encryption at the next start", async () => {
+    const su = await db.superuser();
+    const stored = async () =>
+      (await su.query("SELECT esri_api_key FROM iam.instance")).rows[0].esri_api_key as string;
+    const sealed = await stored();
+    expect(sealed.startsWith("msv1:")).toBe(true);
+    expect(sealed).not.toContain(KEY);
+    expect(sealed).not.toContain(Buffer.from(KEY).toString("base64").slice(0, 12));
+
+    // A value moved to another place does not read there.
+    const vault = app.get(CredentialVault);
+    expect(() => vault.decrypt(sealed, "plugin.map_layer_service.auth_secret:x")).toThrow();
+
+    // A key from an older release, in plain text, is encrypted by the start-up pass and still works.
+    await su.query("UPDATE iam.instance SET esri_api_key = $1", [KEY]);
+    expect(await app.get(CredentialsAtRest).reseal()).toBe(1);
+    const again = await stored();
+    expect(again.startsWith("msv1:")).toBe(true);
+    expect(vault.decrypt(again, "iam.instance.esri_api_key")).toBe(KEY);
+    expect(await app.get(CredentialsAtRest).reseal()).toBe(0);
+    await su.end();
+  });
+
   it("serves tiles to members through the API with the saved key", async () => {
     const tile = vi
       .spyOn(EsriImageryClient.prototype, "tile")
@@ -207,6 +232,23 @@ describe("Esri World Imagery", () => {
       await su.end();
       expect(rows.map((r: { action: string }) => r.action)).toEqual(["instance.map_layer_service_added"]);
       expect(rows[0].after).not.toContain(SECRET);
+      // The password is stored encrypted.
+      const su2 = await db.superuser();
+      const stored = (await su2.query("SELECT auth_secret FROM plugin.map_layer_service")).rows[0]
+        .auth_secret;
+      await su2.end();
+      expect(stored.startsWith("msv1:")).toBe(true);
+      expect(stored).not.toContain(SECRET);
+      // A key belongs in the sign-in fields, not in the address, which is kept as typed.
+      expect(
+        (
+          await as("alice").post("/api/admin/map-layers/inspect", {
+            kind: "xyz",
+            url: "https://t.example.org/{z}/{x}/{y}.png?apikey=abc123",
+            auth: { type: "none" },
+          })
+        ).status,
+      ).toBe(400);
       caps.mockRestore();
     });
 
