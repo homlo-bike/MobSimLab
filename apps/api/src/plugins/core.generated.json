@@ -519,6 +519,118 @@
               }
             }
           },
+          "streetPhotos": {
+            "description": "Street-level photo sources: their coverage drawn on the map while the Street photos panel is open, and the photos taken near a point the planner clicks. Bundled plugins only. The API looks the photos up and passes the pictures on (it implements each `provider`); the browser loads only the coverage tiles, from a host the CSP lists or from the API. Photos are never stored or saved with a project.",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "label",
+                "provider",
+                "coverage",
+                "attribution",
+                "pageName"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9-]*$"
+                },
+                "label": {
+                  "type": "string",
+                  "maxLength": 60
+                },
+                "provider": {
+                  "description": "The photo service the API knows how to search: its search and picture addresses are built into the API (apps/api/src/street-photos).",
+                  "enum": [
+                    "panoramax",
+                    "mapillary"
+                  ]
+                },
+                "note": {
+                  "description": "One sentence in the Street photos panel about the source, such as who takes the photos and their licence.",
+                  "type": "string",
+                  "maxLength": 300
+                },
+                "coverage": {
+                  "description": "Vector tiles showing where photos were taken: lines of photo sequences and points of single photos, each from a named source layer.",
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "tiles",
+                    "minzoom",
+                    "maxzoom",
+                    "lines"
+                  ],
+                  "properties": {
+                    "tiles": {
+                      "description": "Tile URL templates with {z}, {x} and {y}: https URLs on a host the CSP lists, or, with `server`, the API's own path /api/street-photos/<provider>/tiles/.",
+                      "type": "array",
+                      "minItems": 1,
+                      "maxItems": 4,
+                      "items": {
+                        "type": "string",
+                        "pattern": "^(https://[A-Za-z0-9.-]+|/api/street-photos/[a-z]+/tiles)/[A-Za-z0-9_./{}-]+$"
+                      }
+                    },
+                    "minzoom": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 22
+                    },
+                    "maxzoom": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 22
+                    },
+                    "lines": {
+                      "description": "Source layer with the lines of photo sequences, and from which zoom it is drawn.",
+                      "$ref": "#/$defs/streetPhotoLayer"
+                    },
+                    "points": {
+                      "description": "Source layer with one point per photo, and from which zoom it is drawn.",
+                      "$ref": "#/$defs/streetPhotoLayer"
+                    }
+                  }
+                },
+                "color": {
+                  "description": "Colour of the coverage on the map, as #rrggbb.",
+                  "type": "string",
+                  "pattern": "^#[0-9a-f]{6}$"
+                },
+                "attribution": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "text"
+                  ],
+                  "properties": {
+                    "text": {
+                      "type": "string",
+                      "maxLength": 200
+                    },
+                    "url": {
+                      "type": "string",
+                      "pattern": "^https://[^\\s\"<>]+$"
+                    }
+                  }
+                },
+                "pageName": {
+                  "description": "The name of the service's own photo viewer, for the link that opens a photo there (\"Open in …\").",
+                  "type": "string",
+                  "maxLength": 40
+                },
+                "server": {
+                  "description": "The source needs a key an Admin saves under Administration → Plugins (keys stay on the server): offered only once it is saved, and the coverage tiles come through /api/street-photos/<provider>/tiles/.",
+                  "enum": [
+                    "mapillary"
+                  ]
+                }
+              }
+            }
+          },
           "panels": {
             "$ref": "#/$defs/reserved"
           },
@@ -740,6 +852,25 @@
             }
           }
         ]
+      },
+      "streetPhotoLayer": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "sourceLayer",
+          "minzoom"
+        ],
+        "properties": {
+          "sourceLayer": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,40}$"
+          },
+          "minzoom": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 22
+          }
+        }
       },
       "reserved": {
         "description": "Contribution point of a later phase of ADR-0036; no entries are accepted yet.",
@@ -1511,6 +1642,7 @@
       "exporters": [],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "ropeway.line_speed_ms": {
@@ -2351,6 +2483,7 @@
         }
       ],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [
         {
           "id": "cargo-bike",
@@ -5730,6 +5863,7 @@
       "exporters": [],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "energy.electric_share": {
@@ -6464,6 +6598,7 @@
           "server": "esri"
         }
       ],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {},
       "defaults": {}
@@ -6540,6 +6675,7 @@
       "exporters": [],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "ferry.service_speed_kn": {
@@ -6784,6 +6920,7 @@
       ],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {},
       "defaults": {}
@@ -6867,6 +7004,7 @@
           }
         }
       ],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {},
       "defaults": {}
@@ -7011,6 +7149,7 @@
         }
       ],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "noise.receiver_height_m": {
@@ -10737,6 +10876,7 @@
       "exporters": [],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {},
       "defaults": {}
@@ -10788,6 +10928,7 @@
       "exporters": [],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "drt.speed_kmh": {
@@ -10898,6 +11039,63 @@
       }
     },
     {
+      "id": "org.mobsimlab.panoramax",
+      "name": "Panoramax street photos",
+      "description": "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data"
+      ],
+      "permissions": [],
+      "modes": [],
+      "contexts": [],
+      "tools": [],
+      "calculations": [],
+      "importers": [],
+      "exporters": [],
+      "mapLayers": [],
+      "basemaps": [],
+      "streetPhotos": [
+        {
+          "id": "panoramax",
+          "label": "Panoramax",
+          "provider": "panoramax",
+          "note": "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.",
+          "coverage": {
+            "tiles": [
+              "https://api.panoramax.xyz/api/map/{z}/{x}/{y}.mvt"
+            ],
+            "minzoom": 0,
+            "maxzoom": 15,
+            "lines": {
+              "sourceLayer": "sequences",
+              "minzoom": 7
+            },
+            "points": {
+              "sourceLayer": "pictures",
+              "minzoom": 15
+            }
+          },
+          "color": "#e2541b",
+          "attribution": {
+            "text": "Panoramax",
+            "url": "https://panoramax.fr"
+          },
+          "pageName": "Panoramax"
+        }
+      ],
+      "tabs": [],
+      "parameters": {},
+      "defaults": {}
+    },
+    {
       "id": "org.mobsimlab.people-mover",
       "name": "People movers",
       "description": "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.",
@@ -10980,6 +11178,7 @@
       "exporters": [],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "people_mover.line_speed_ms": {

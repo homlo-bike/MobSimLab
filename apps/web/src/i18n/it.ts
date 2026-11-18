@@ -14,6 +14,7 @@ import { pluginCodeIt } from "./plugin-code/it";
 import { populationIt } from "./population/it";
 import { resultsIt } from "./results/it";
 import { pluginsIt } from "./plugins/it";
+import { streetPhotosIt } from "./street-photos/it";
 import type { Messages } from "./en";
 
 /** Italiano */
@@ -533,4 +534,5 @@ export const it: Messages = {
   ...roadIt,
   ...calendarIt,
   ...pluginsIt,
+  ...streetPhotosIt,
 };

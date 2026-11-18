@@ -14,6 +14,7 @@ import { pluginCodeEs } from "./plugin-code/es";
 import { populationEs } from "./population/es";
 import { resultsEs } from "./results/es";
 import { pluginsEs } from "./plugins/es";
+import { streetPhotosEs } from "./street-photos/es";
 import type { Messages } from "./en";
 
 /** Español. */
@@ -537,4 +538,5 @@ export const es: Messages = {
   ...roadEs,
   ...calendarEs,
   ...pluginsEs,
+  ...streetPhotosEs,
 };

@@ -14,6 +14,7 @@ import { pluginCodeAr } from "./plugin-code/ar";
 import { populationAr } from "./population/ar";
 import { resultsAr } from "./results/ar";
 import { pluginsAr } from "./plugins/ar";
+import { streetPhotosAr } from "./street-photos/ar";
 import type { Messages } from "./en";
 
 /** العربية (right to left). */
@@ -521,4 +522,5 @@ export const ar: Messages = {
   ...roadAr,
   ...calendarAr,
   ...pluginsAr,
+  ...streetPhotosAr,
 };

@@ -14,6 +14,7 @@ import { pluginCodeTa } from "./plugin-code/ta";
 import { populationTa } from "./population/ta";
 import { resultsTa } from "./results/ta";
 import { pluginsTa } from "./plugins/ta";
+import { streetPhotosTa } from "./street-photos/ta";
 import type { Messages } from "./en";
 
 /** தமிழ் */
@@ -542,4 +543,5 @@ export const ta: Messages = {
   ...roadTa,
   ...calendarTa,
   ...pluginsTa,
+  ...streetPhotosTa,
 };

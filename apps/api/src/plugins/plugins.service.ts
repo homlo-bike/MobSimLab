@@ -33,6 +33,7 @@ export interface PluginContributions {
   calculations: string[];
   mapLayers: string[];
   basemaps: string[];
+  streetPhotos: string[];
   importers: string[];
   exporters: string[];
   tabs: string[];
@@ -112,6 +113,7 @@ function contributions(e: PluginEntry): PluginContributions {
     calculations: (e.calculations as { label?: string; id: string }[]).map((c) => c.label ?? c.id),
     mapLayers: (e.mapLayers as { label?: string; id: string }[]).map((l) => l.label ?? l.id),
     basemaps: ((e.basemaps ?? []) as { label?: string; id: string }[]).map((b) => b.label ?? b.id),
+    streetPhotos: ((e.streetPhotos ?? []) as { label?: string; id: string }[]).map((b) => b.label ?? b.id),
     importers: ((e.importers ?? []) as { label?: string; id: string }[]).map((l) => l.label ?? l.id),
     exporters: ((e.exporters ?? []) as { label?: string; id: string }[]).map((l) => l.label ?? l.id),
     tabs: (e.tabs ?? []).map((t) => t.label),
@@ -654,6 +656,7 @@ export class PluginsService {
               calculations: [],
               mapLayers: [],
               basemaps: [],
+              streetPhotos: [],
               importers: [],
               exporters: [],
               tabs: [],

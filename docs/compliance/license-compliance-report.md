@@ -114,6 +114,7 @@
 | NASA GIBS imagery (HLS, VIIRS) | NASA data, no restrictions on use; HLS Sentinel-2 contains modified Copernicus Sentinel data (free and open) | On (bundled plugin `org.mobsimlab.nasa-gibs`) | Acknowledge NASA GIBS; Copernicus and USGS credits in the attribution |
 | Sentinel-2 cloudless 2018+ (EOX) | CC BY-NC-SA 4.0 | **Off** | Admin must acknowledge non-commercial terms; commercial users need EOX licence |
 | Esri World Imagery | Esri terms of use, ArcGIS API key (ArcGIS Location Platform) | **Off** until an Admin saves a key and accepts Esri's terms (bundled plugin `org.mobsimlab.esri-imagery`) | Admin-supplied key kept on the server; "Powered by Esri" and "Esri, Maxar, Earthstar Geographics, and the GIS User Community" on the map; tiles passed through, not stored (the browser keeps them no longer than Esri's own max-age) |
+| Panoramax street photos | Each photo's own open licence, mostly CC BY-SA 4.0 or Etalab 2.0 (both allow mapping from the photos) | On (bundled plugin `org.mobsimlab.panoramax`), no key | The panel shows each photo's author and licence with a link to it on Panoramax, and credits Panoramax; pictures passed through the API, not stored, not saved with projects or in `.mslab` exports |
 | Open-Elevation (public API) | Service; software GPL-2.0 | Optional | Respect rate limits |
 | Elevation-API.eu | Service terms **Verify** | Optional | |
 | Mobility Database catalog | **Verify** catalog data licence; individual feeds have own licences | Optional | Record each feed's licence in Source registry |

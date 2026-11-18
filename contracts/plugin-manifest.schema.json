@@ -438,6 +438,91 @@
             }
           }
         },
+        "streetPhotos": {
+          "description": "Street-level photo sources: their coverage drawn on the map while the Street photos panel is open, and the photos taken near a point the planner clicks. Bundled plugins only. The API looks the photos up and passes the pictures on (it implements each `provider`); the browser loads only the coverage tiles, from a host the CSP lists or from the API. Photos are never stored or saved with a project.",
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "label", "provider", "coverage", "attribution", "pageName"],
+            "properties": {
+              "id": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9-]*$"
+              },
+              "label": {
+                "type": "string",
+                "maxLength": 60
+              },
+              "provider": {
+                "description": "The photo service the API knows how to search: its search and picture addresses are built into the API (apps/api/src/street-photos).",
+                "enum": ["panoramax", "mapillary"]
+              },
+              "note": {
+                "description": "One sentence in the Street photos panel about the source, such as who takes the photos and their licence.",
+                "type": "string",
+                "maxLength": 300
+              },
+              "coverage": {
+                "description": "Vector tiles showing where photos were taken: lines of photo sequences and points of single photos, each from a named source layer.",
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["tiles", "minzoom", "maxzoom", "lines"],
+                "properties": {
+                  "tiles": {
+                    "description": "Tile URL templates with {z}, {x} and {y}: https URLs on a host the CSP lists, or, with `server`, the API's own path /api/street-photos/<provider>/tiles/.",
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 4,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^(https://[A-Za-z0-9.-]+|/api/street-photos/[a-z]+/tiles)/[A-Za-z0-9_./{}-]+$"
+                    }
+                  },
+                  "minzoom": { "type": "integer", "minimum": 0, "maximum": 22 },
+                  "maxzoom": { "type": "integer", "minimum": 0, "maximum": 22 },
+                  "lines": {
+                    "description": "Source layer with the lines of photo sequences, and from which zoom it is drawn.",
+                    "$ref": "#/$defs/streetPhotoLayer"
+                  },
+                  "points": {
+                    "description": "Source layer with one point per photo, and from which zoom it is drawn.",
+                    "$ref": "#/$defs/streetPhotoLayer"
+                  }
+                }
+              },
+              "color": {
+                "description": "Colour of the coverage on the map, as #rrggbb.",
+                "type": "string",
+                "pattern": "^#[0-9a-f]{6}$"
+              },
+              "attribution": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": ["text"],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "maxLength": 200
+                  },
+                  "url": {
+                    "type": "string",
+                    "pattern": "^https://[^\\s\"<>]+$"
+                  }
+                }
+              },
+              "pageName": {
+                "description": "The name of the service's own photo viewer, for the link that opens a photo there (\"Open in …\").",
+                "type": "string",
+                "maxLength": 40
+              },
+              "server": {
+                "description": "The source needs a key an Admin saves under Administration → Plugins (keys stay on the server): offered only once it is saved, and the coverage tiles come through /api/street-photos/<provider>/tiles/.",
+                "enum": ["mapillary"]
+              }
+            }
+          }
+        },
         "panels": {
           "$ref": "#/$defs/reserved"
         },
@@ -629,6 +714,15 @@
           }
         }
       ]
+    },
+    "streetPhotoLayer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceLayer", "minzoom"],
+      "properties": {
+        "sourceLayer": { "type": "string", "pattern": "^[A-Za-z0-9_-]{1,40}$" },
+        "minzoom": { "type": "integer", "minimum": 0, "maximum": 22 }
+      }
     },
     "reserved": {
       "description": "Contribution point of a later phase of ADR-0036; no entries are accepted yet.",

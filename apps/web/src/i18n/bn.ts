@@ -14,6 +14,7 @@ import { pluginCodeBn } from "./plugin-code/bn";
 import { populationBn } from "./population/bn";
 import { resultsBn } from "./results/bn";
 import { pluginsBn } from "./plugins/bn";
+import { streetPhotosBn } from "./street-photos/bn";
 import type { Messages } from "./en";
 
 /** বাংলা। */
@@ -527,4 +528,5 @@ export const bn: Messages = {
   ...roadBn,
   ...calendarBn,
   ...pluginsBn,
+  ...streetPhotosBn,
 };

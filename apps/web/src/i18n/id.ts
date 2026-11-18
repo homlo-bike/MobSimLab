@@ -14,6 +14,7 @@ import { pluginCodeId } from "./plugin-code/id";
 import { populationId } from "./population/id";
 import { resultsId } from "./results/id";
 import { pluginsId } from "./plugins/id";
+import { streetPhotosId } from "./street-photos/id";
 import type { Messages } from "./en";
 
 /** Bahasa Indonesia */
@@ -535,4 +536,5 @@ export const id: Messages = {
   ...roadId,
   ...calendarId,
   ...pluginsId,
+  ...streetPhotosId,
 };

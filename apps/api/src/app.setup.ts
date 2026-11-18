@@ -16,6 +16,8 @@ export const MAP_ORIGINS = [
   "https://tiles.openfreemap.org",
   "https://tiles.maps.eox.at",
   "https://gibs.earthdata.nasa.gov",
+  // Panoramax street photo coverage (vector tiles); the photos themselves come through the API.
+  "https://api.panoramax.xyz",
 ];
 
 /**

@@ -14,6 +14,7 @@ import { pluginCodePt } from "./plugin-code/pt";
 import { populationPt } from "./population/pt";
 import { resultsPt } from "./results/pt";
 import { pluginsPt } from "./plugins/pt";
+import { streetPhotosPt } from "./street-photos/pt";
 import type { Messages } from "./en";
 
 /** Português (Brazilian spelling, the most widely used). */
@@ -537,4 +538,5 @@ export const pt: Messages = {
   ...roadPt,
   ...calendarPt,
   ...pluginsPt,
+  ...streetPhotosPt,
 };

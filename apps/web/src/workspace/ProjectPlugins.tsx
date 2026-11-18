@@ -15,7 +15,7 @@ export const PERMISSION_LABELS: Record<string, MessageKey> = {
   "write:scenario": "plugins.perm.writeScenario",
 };
 
-/** Purpose: what a plugin adds, as one line: modes, tools, calculations, map layers, basemaps and parameters. */
+/** Purpose: what a plugin adds, as one line: modes, tools, calculations, map layers, basemaps, street photos and parameters. */
 export function addsLine(
   c: ProjectPlugin["contributes"],
   t: (k: MessageKey, v?: Record<string, string | number>) => string,
@@ -26,6 +26,7 @@ export function addsLine(
     ...c.calculations,
     ...c.mapLayers,
     ...(c.basemaps ?? []),
+    ...(c.streetPhotos ?? []),
     ...(c.importers ?? []),
     ...(c.exporters ?? []),
     ...(c.tabs ?? []),

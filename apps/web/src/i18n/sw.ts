@@ -14,6 +14,7 @@ import { pluginCodeSw } from "./plugin-code/sw";
 import { populationSw } from "./population/sw";
 import { resultsSw } from "./results/sw";
 import { pluginsSw } from "./plugins/sw";
+import { streetPhotosSw } from "./street-photos/sw";
 import type { Messages } from "./en";
 
 /** Kiswahili. */
@@ -534,4 +535,5 @@ export const sw: Messages = {
   ...roadSw,
   ...calendarSw,
   ...pluginsSw,
+  ...streetPhotosSw,
 };

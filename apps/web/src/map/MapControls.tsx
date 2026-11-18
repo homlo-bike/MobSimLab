@@ -2,12 +2,14 @@ import { type Map as MapLibreMap, Marker } from "maplibre-gl";
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
-import { CloseIcon, LayersIcon, SearchIcon } from "../shell/icons";
+import { CameraIcon, CloseIcon, LayersIcon, SearchIcon } from "../shell/icons";
 import { availableBasemaps, availableOverlays, type Basemap, newestDay } from "./basemaps";
 import { groupsOnMap, OVERLAY_GROUPS, type OverlayGroup } from "./mapLayers";
 import { type Place, searchPlaces } from "./places";
+import { StreetPhotoPanel } from "./StreetPhotoPanel";
+import { onStreetPhotoSources, refreshStreetPhotoSources, streetPhotoSources } from "./streetPhotos";
 
-type Open = "search" | "layers" | null;
+type Open = "search" | "layers" | "photos" | null;
 
 /**
  * Purpose: the map's own buttons above the zoom buttons: place search, and the layer control (which basemap,
@@ -34,6 +36,14 @@ export function MapControls({
   const { t } = useI18n();
   const [open, setOpen] = useState<Open>(null);
   const root = useRef<HTMLDivElement>(null);
+  // Street photos (plugins such as Panoramax): offered once the API says it serves the source.
+  const [, setSources] = useState(0);
+  useEffect(() => {
+    const stop = onStreetPhotoSources(() => setSources((n) => n + 1));
+    void refreshStreetPhotoSources();
+    return stop;
+  }, []);
+  const photos = streetPhotoSources().length > 0;
 
   // Close on Escape and on a click elsewhere on the page (not on the map itself, so the planner can pan).
   useEffect(() => {
@@ -74,11 +84,14 @@ export function MapControls({
       <div className="maplibregl-ctrl-group">
         {button("search", t("map.search"), <SearchIcon size={17} />, "map-search")}
         {button("layers", t("map.layers"), <LayersIcon size={17} />, "map-layers")}
+        {photos && button("photos", t("photos.button"), <CameraIcon size={17} />, "map-photos")}
       </div>
       {open && (
         <div className="absolute top-0 right-full mr-2 max-h-[38vh] w-80 overflow-y-auto md:max-h-[70vh] max-w-[calc(100vw-4.5rem)] rounded-xl border border-slate-200 bg-white text-sm text-slate-900 shadow-xl">
           {open === "search" ? (
             <PlaceSearch map={map} onClose={() => setOpen(null)} />
+          ) : open === "photos" ? (
+            <StreetPhotoPanel map={map} onClose={() => setOpen(null)} />
           ) : (
             <LayerPanel
               map={map}
