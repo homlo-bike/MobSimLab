@@ -25,6 +25,7 @@ import {
   TUNNELS,
 } from "./quantities";
 import { type HeightsFetcher, useRailBuild } from "./railBuild";
+import { TablePart } from "./sections";
 
 interface Props {
   railway: Network | null;
@@ -112,17 +113,25 @@ export function NetworkTables({
         </section>
       ) : (
         <>
-          <Summary facts={facts} q={q} />
-          <Infrastructure q={q} terrain={build?.terrain ?? null} />
-          <ServiceAndFleet facts={facts} riders={riders} />
+          <TablePart id="network.summary">
+            <Summary facts={facts} q={q} />
+          </TablePart>
+          <TablePart id="network.infrastructure">
+            <Infrastructure q={q} terrain={build?.terrain ?? null} />
+          </TablePart>
+          <TablePart id="network.service">
+            <ServiceAndFleet facts={facts} riders={riders} />
+          </TablePart>
           {energyInTables() && (
-            <EnergySection
-              facts={facts}
-              preferences={preferences}
-              onPreferences={onPreferences}
-              loadEngine={loadEnergy}
-              onEstimate={onEnergy}
-            />
+            <TablePart id="network.energy">
+              <EnergySection
+                facts={facts}
+                preferences={preferences}
+                onPreferences={onPreferences}
+                loadEngine={loadEnergy}
+                onEstimate={onEnergy}
+              />
+            </TablePart>
           )}
         </>
       )}

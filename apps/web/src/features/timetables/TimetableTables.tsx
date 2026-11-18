@@ -37,6 +37,7 @@ import {
   type TripTimes,
 } from "./departures";
 import { type DayPublications, useRailPublications } from "./railPublish";
+import { TablePart } from "../tables/sections";
 import { SPARE_PREF, TERMINAL_WAIT_PREF } from "../../workspace/editedElsewhere";
 
 interface Props {
@@ -277,15 +278,19 @@ export function TimetableTables({
         </p>
       ) : (
         <>
-          <VehicleBlocks
-            lines={lines}
-            day={day}
-            busy={busy}
-            prefs={prefs}
-            editable={editable}
-            setPref={setPref}
-          />
-          <Departures lines={lines} day={day} />
+          <TablePart id="timetables.blocks">
+            <VehicleBlocks
+              lines={lines}
+              day={day}
+              busy={busy}
+              prefs={prefs}
+              editable={editable}
+              setPref={setPref}
+            />
+          </TablePart>
+          <TablePart id="timetables.departures">
+            <Departures lines={lines} day={day} />
+          </TablePart>
         </>
       )}
     </section>

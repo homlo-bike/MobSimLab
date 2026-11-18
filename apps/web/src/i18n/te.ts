@@ -289,6 +289,10 @@ export const te: Messages = {
 
   "tables.title": "పట్టికలు",
   "tables.intro": "ప్రాజెక్టు గురించి ప్రతి లెక్క, అది ఎంత బాగా పనిచేస్తుందో అంచనా వేయడానికి.",
+  "tables.sec.overview": "అవలోకనం",
+  "tables.sec.blocks": "వాహన డ్యూటీలు",
+  "tables.sec.departures": "బయలుదేరే సమయాలు",
+  "tables.sec.prices": "ధరలు మరియు యూనిట్ ఖర్చులు",
 
   "prefs.title": "ప్రాజెక్టు ప్రాధాన్యతలు",
   "prefs.intro": "మొత్తం ప్రాజెక్టుకు వర్తించే వివరాలు మరియు సెట్టింగ్‌లు.",

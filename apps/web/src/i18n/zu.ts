@@ -295,6 +295,10 @@ export const zu: Messages = {
   "tables.title": "Amatafula",
   "tables.intro":
     "Zonke izibalo mayelana nephrojekthi, ukuze kulinganiswe ukuthi izosebenza kahle kangakanani.",
+  "tables.sec.overview": "Uhlolojikelele",
+  "tables.sec.blocks": "Imisebenzi yezimoto",
+  "tables.sec.departures": "Ukusuka",
+  "tables.sec.prices": "Amanani nezindleko zeyunithi",
 
   "prefs.title": "Okuthandwayo kwephrojekthi",
   "prefs.intro": "Imininingwane nezilungiselelo ezisebenza kuyo yonke iphrojekthi.",

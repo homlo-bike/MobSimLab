@@ -283,6 +283,10 @@ export const en = {
 
   "tables.title": "Tables",
   "tables.intro": "Every calculation about the project, to estimate how well it will perform.",
+  "tables.sec.overview": "Overview",
+  "tables.sec.blocks": "Vehicle blocks",
+  "tables.sec.departures": "Departures",
+  "tables.sec.prices": "Prices and unit costs",
 
   "prefs.title": "Project preferences",
   "prefs.intro": "Details and settings that apply to the whole project.",

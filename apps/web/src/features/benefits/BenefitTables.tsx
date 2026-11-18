@@ -48,6 +48,7 @@ import { networkOf } from "./network";
 import { libraryValue, PARAMS, paramModes, paramValue, prefId, type Triple } from "./params";
 import type { Region } from "./regions";
 import { accessByScenario, spendingFrom } from "./run";
+import { TablePart } from "../tables/sections";
 import { RIDER_SHARE_PREFS } from "../../workspace/editedElsewhere";
 
 interface Props {
@@ -341,59 +342,77 @@ export function BenefitTables({
               Travel times could not be worked out: {accError}
             </p>
           )}
-          <Sources ind={ind} indError={indError} pop={pop} popError={popError} tiles={tiles} est={est} />
+          <TablePart id="benefits.summary">
+            <Sources ind={ind} indError={indError} pop={pop} popError={popError} tiles={tiles} est={est} />
+          </TablePart>
           {est && row && (
             <>
-              <label className="mt-5 flex flex-wrap items-center gap-2 text-sm">
-                <span className="font-medium">Show</span>
-                <select className="input min-h-10" value={row.id} onChange={(e) => setScope(e.target.value)}>
-                  {est.rows.map((r) => (
-                    <option key={r.id} value={r.id}>
-                      {r.scope === "total"
-                        ? "All lines"
-                        : r.scope === "mode"
-                          ? `All ${modeLabel(r.name)} lines`
-                          : r.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <MetricTable
-                title="Ridership"
-                metrics={["ridership_daily", "ridership_annual"]}
-                row={row}
-                value={value}
-              />
-              <MetricTable
-                title="In the appraisal"
-                note="Extra GDP a year once the lines run: the agglomeration effect of UK appraisal guidance (TAG A2.4)."
-                metrics={IN_APPRAISAL}
-                row={row}
-                value={value}
-              />
-              <MetricTable
-                title="Wider context, not added to the appraisal"
-                note="Earnings and land values largely capitalise the same time savings, and spending impacts are not net benefits, so adding them to the GDP growth would count benefits twice."
-                metrics={CONTEXT}
-                row={row}
-                value={value}
-              />
-              <AccessTable row={row} />
-              {prepared && <PerStation prepared={prepared} row={row} />}
-              <PerLine est={est} money={money} />
+              <TablePart id={["benefits.summary", "benefits.access"]}>
+                <label className="mt-5 flex flex-wrap items-center gap-2 text-sm">
+                  <span className="font-medium">Show</span>
+                  <select
+                    className="input min-h-10"
+                    value={row.id}
+                    onChange={(e) => setScope(e.target.value)}
+                  >
+                    {est.rows.map((r) => (
+                      <option key={r.id} value={r.id}>
+                        {r.scope === "total"
+                          ? "All lines"
+                          : r.scope === "mode"
+                            ? `All ${modeLabel(r.name)} lines`
+                            : r.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </TablePart>
+              <TablePart id="benefits.summary">
+                <MetricTable
+                  title="Ridership"
+                  metrics={["ridership_daily", "ridership_annual"]}
+                  row={row}
+                  value={value}
+                />
+                <MetricTable
+                  title="In the appraisal"
+                  note="Extra GDP a year once the lines run: the agglomeration effect of UK appraisal guidance (TAG A2.4)."
+                  metrics={IN_APPRAISAL}
+                  row={row}
+                  value={value}
+                />
+                <MetricTable
+                  title="Wider context, not added to the appraisal"
+                  note="Earnings and land values largely capitalise the same time savings, and spending impacts are not net benefits, so adding them to the GDP growth would count benefits twice."
+                  metrics={CONTEXT}
+                  row={row}
+                  value={value}
+                />
+              </TablePart>
+              <TablePart id="benefits.access">
+                <AccessTable row={row} />
+                {prepared && <PerStation prepared={prepared} row={row} />}
+              </TablePart>
+              <TablePart id="benefits.lines">
+                <PerLine est={est} money={money} />
+              </TablePart>
             </>
           )}
           {est && est.notes.length > 0 && (
-            <ul className="mt-4 list-disc pl-5 text-sm text-slate-600">
-              {est.notes.map((n) => (
-                <li key={n}>{n}</li>
-              ))}
-            </ul>
+            <TablePart id="benefits.summary">
+              <ul className="mt-4 list-disc pl-5 text-sm text-slate-600">
+                {est.notes.map((n) => (
+                  <li key={n}>{n}</li>
+                ))}
+              </ul>
+            </TablePart>
           )}
         </>
       )}
-      <Formulas doc={doc} onDoc={onDoc} />
-      <Parameters prefs={prefs} editable={editable} setPref={setPref} />
+      <TablePart id="benefits.settings">
+        <Formulas doc={doc} onDoc={onDoc} />
+        <Parameters prefs={prefs} editable={editable} setPref={setPref} />
+      </TablePart>
     </section>
   );
 }

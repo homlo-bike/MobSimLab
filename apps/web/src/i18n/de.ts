@@ -296,6 +296,10 @@ export const de: Messages = {
 
   "tables.title": "Tabellen",
   "tables.intro": "Alle Berechnungen zum Projekt, um abzuschätzen, wie gut es funktionieren wird.",
+  "tables.sec.overview": "Überblick",
+  "tables.sec.blocks": "Fahrzeugumläufe",
+  "tables.sec.departures": "Abfahrten",
+  "tables.sec.prices": "Preise und Einheitskosten",
 
   "prefs.title": "Projekteinstellungen",
   "prefs.intro": "Angaben und Einstellungen, die für das ganze Projekt gelten.",

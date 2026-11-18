@@ -288,6 +288,10 @@ export const hi: Messages = {
 
   "tables.title": "तालिकाएँ",
   "tables.intro": "प्रोजेक्ट से जुड़ी हर गणना, यह अनुमान लगाने के लिए कि यह कितना अच्छा प्रदर्शन करेगा।",
+  "tables.sec.overview": "सारांश",
+  "tables.sec.blocks": "वाहन ड्यूटी",
+  "tables.sec.departures": "प्रस्थान",
+  "tables.sec.prices": "कीमतें और इकाई लागत",
 
   "prefs.title": "प्रोजेक्ट प्राथमिकताएँ",
   "prefs.intro": "पूरे प्रोजेक्ट पर लागू होने वाले विवरण और सेटिंग्स।",

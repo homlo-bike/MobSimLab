@@ -287,6 +287,10 @@ export const kk: Messages = {
 
   "tables.title": "Кестелер",
   "tables.intro": "Жобаның қаншалықты жақсы жұмыс істейтінін бағалау үшін ол туралы әр есептеу.",
+  "tables.sec.overview": "Шолу",
+  "tables.sec.blocks": "Көлік кезектері",
+  "tables.sec.departures": "Жөнелтулер",
+  "tables.sec.prices": "Бағалар және бірлік құны",
 
   "prefs.title": "Жоба параметрлері",
   "prefs.intro": "Бүкіл жобаға қатысты мәліметтер мен баптаулар.",

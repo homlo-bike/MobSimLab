@@ -121,6 +121,8 @@ import { type Drawings, useDrawings } from "./useDrawings";
 import type { EnergyEstimate } from "../features/energy/types";
 import { setPluginRuntime } from "../plugins/code/context";
 import { PluginCalculations } from "../plugins/code/PluginCalculations";
+import { TablePart, TablesSection } from "../features/tables/sections";
+import { shownPart, TablesNav } from "../features/tables/TablesNav";
 import { PluginFrame } from "../plugins/code/PluginFrame";
 import { clearPluginCode } from "../plugins/code/runtime";
 import { STATIC_TABS, STATIC_VIEWER } from "../static/mode";
@@ -198,20 +200,6 @@ const NO_MODES: string[] = [];
 /** The modifier key of shortcuts as the keyboard shows it. */
 const MOD_KEY =
   typeof navigator !== "undefined" && /Mac|iP(hone|ad)/.test(navigator.platform) ? "⌘" : "Ctrl+";
-/**
- * The groups of the Tables tab, shown one at a time. Labels come from the groups' own headings: translated where
- * the heading is, in English where the section's heading is still English only.
- */
-const TABLE_GROUPS: { id: string; key?: MessageKey; label?: string }[] = [
-  { id: "network", key: "net.summary" },
-  { id: "timetables", key: "tt.tbl.title" },
-  { id: "costs", key: "cost.title" },
-  { id: "benefits", label: "Economic and social benefits" },
-  { id: "demand", label: "Demand model" },
-  { id: "fares", label: "Fare revenue" },
-  { id: "appraisal", label: "Appraisal" },
-  { id: "scenarios", key: "scn.title" },
-];
 /** "street", "rail", "depots", or the id of a plugin tool (cable car, ferry…). */
 type Build = string;
 /** The economy API for the project's currency rate. */
@@ -262,6 +250,8 @@ export function Workspace({
   const [sim, setSim] = useState<SimView>("test");
   // The group of tables shown in the Tables tab, and its scrolling area (back to the top on a change).
   const [tablesView, setTablesView] = useState("network");
+  // The section chosen in each group of the Tables tab; a group opens on its first section.
+  const [tablesParts, setTablesParts] = useState<Record<string, string>>({});
   const tablesScroll = useRef<HTMLDivElement>(null);
   const [gis, setGis] = useState<GisView>("streets");
   // The cost tables' estimate, currency and country, for the benefit tables.
@@ -1392,196 +1382,189 @@ export function Workspace({
                   {/* One group of tables at a time, chosen here: a list beside them on wide screens, a row on top on
                       narrow ones. Every group stays mounted (only hidden), because the appraisal reads the costs,
                       benefits and fares the other groups work out. */}
-                  <nav className="-mx-4 mb-4 overflow-x-auto px-4 md:sticky md:top-0 md:mx-0 md:mb-0 md:w-56 md:shrink-0 md:overflow-visible md:px-0">
-                    <div role="tablist" aria-label={t("tables.title")} className="flex gap-1 md:flex-col">
-                      {TABLE_GROUPS.map((g) => (
-                        <button
-                          key={g.id}
-                          id={`tables-tab-${g.id}`}
-                          type="button"
-                          role="tab"
-                          aria-selected={tablesView === g.id}
-                          aria-controls={`tables-${g.id}`}
-                          onClick={() => {
-                            setTablesView(g.id);
-                            tablesScroll.current?.scrollTo?.({ top: 0 });
-                          }}
-                          className={`min-h-11 shrink-0 rounded-[10px] px-3 text-start text-sm font-medium whitespace-nowrap md:whitespace-normal ${
-                            tablesView === g.id
-                              ? "bg-slate-900 text-white"
-                              : "text-slate-700 hover:bg-slate-200/60"
-                          }`}
-                        >
-                          {g.key ? t(g.key) : g.label}
-                        </button>
-                      ))}
+                  <TablesNav
+                    t={t}
+                    view={tablesView}
+                    parts={tablesParts}
+                    onGroup={(g) => {
+                      setTablesView(g);
+                      tablesScroll.current?.scrollTo?.({ top: 0 });
+                    }}
+                    onPart={(g, part) => {
+                      setTablesView(g);
+                      setTablesParts((p) => ({ ...p, [g]: part }));
+                      tablesScroll.current?.scrollTo?.({ top: 0 });
+                    }}
+                  />
+                  <TablesSection.Provider value={shownPart(tablesView, tablesParts)}>
+                    <div className="min-w-0 flex-1">
+                      <div
+                        id="tables-network"
+                        role="region"
+                        aria-labelledby="tables-tab-network"
+                        hidden={tablesView !== "network"}
+                      >
+                        <LoadingScreen>
+                          <NetworkTables
+                            railway={railway}
+                            streetLines={streetLines}
+                            preferences={preferences}
+                            onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                            riders={riders}
+                            onEnergy={setEnergyEst}
+                          />
+                        </LoadingScreen>
+                      </div>
+                      <div
+                        id="tables-timetables"
+                        role="region"
+                        aria-labelledby="tables-tab-timetables"
+                        hidden={tablesView !== "timetables"}
+                      >
+                        <LoadingScreen>
+                          <TimetableTables
+                            projectName={project.name}
+                            railway={railway}
+                            streetLines={streetLines}
+                            preferences={preferences}
+                            onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                          />
+                        </LoadingScreen>
+                      </div>
+                      <div
+                        id="tables-costs"
+                        role="region"
+                        aria-labelledby="tables-tab-costs"
+                        hidden={tablesView !== "costs"}
+                      >
+                        <LoadingScreen>
+                          <CostTables
+                            railway={railway}
+                            streetLines={streetLines}
+                            preferences={preferences}
+                            onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                            costs={drawings.doc<CostsDoc>("costs")}
+                            onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
+                            currency={currency}
+                            onEstimate={onCostEstimate}
+                            results={results}
+                            canSave={editable}
+                          />
+                        </LoadingScreen>
+                      </div>
+                      <div
+                        id="tables-benefits"
+                        role="region"
+                        aria-labelledby="tables-tab-benefits"
+                        hidden={tablesView !== "benefits"}
+                      >
+                        <LoadingScreen>
+                          <BenefitTables
+                            api={benefitsApiOfProject}
+                            timetable={networkTimetable}
+                            regions={regions}
+                            preferences={preferences}
+                            onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                            doc={benefitsDoc}
+                            onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
+                            costs={costInfo}
+                            onEstimate={onBenefitEstimate}
+                            ridership={usedRidership}
+                            results={results}
+                            canSave={editable}
+                          />
+                        </LoadingScreen>
+                      </div>
+                      <div
+                        id="tables-demand"
+                        role="region"
+                        aria-labelledby="tables-tab-demand"
+                        hidden={tablesView !== "demand"}
+                      >
+                        <LoadingScreen>
+                          <DemandSection
+                            timetable={networkTimetable}
+                            regions={regions}
+                            preferences={preferences}
+                            doc={drawings.doc<DemandDoc>("demand")}
+                            onDoc={editable ? (d) => drawings.set("demand", d) : undefined}
+                            costs={costInfo}
+                            runs={demandRuns}
+                            canRun={editable}
+                            streetSetups={setups}
+                            stopAccess={stopAccess}
+                            onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                            api={benefitsApiOfProject}
+                          />
+                        </LoadingScreen>
+                        <TablePart id="demand.results">
+                          <PluginCalculations
+                            data={{ timetable: networkTimetable, streetLines: streetLines?.lines ?? [] }}
+                          />
+                        </TablePart>
+                      </div>
+                      <div
+                        id="tables-fares"
+                        role="region"
+                        aria-labelledby="tables-tab-fares"
+                        hidden={tablesView !== "fares"}
+                      >
+                        <LoadingScreen>
+                          <FareTables
+                            benefits={benefitEst}
+                            railway={railway}
+                            streetLines={streetLines}
+                            pluginLines={pluginLineList}
+                            prefs={preferences?.values}
+                            schematic={drawings.doc<SchematicDoc>("schematic")}
+                            boardings={benefitsDoc?.boardings}
+                            prices={farePrices}
+                            doc={drawings.doc<FaresDoc>("fares")}
+                            onDoc={editable ? (d) => drawings.set("fares", d) : undefined}
+                            onInput={setFareInput}
+                          />
+                        </LoadingScreen>
+                      </div>
+                      <div
+                        id="tables-appraisal"
+                        role="region"
+                        aria-labelledby="tables-tab-appraisal"
+                        hidden={tablesView !== "appraisal"}
+                      >
+                        <LoadingScreen>
+                          <AppraisalSection
+                            costs={appraisalCosts}
+                            benefits={benefitEst}
+                            fares={fareInput}
+                            demand={usedRidership}
+                            preferences={preferences}
+                            onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
+                            doc={drawings.doc<AppraisalDoc>("appraisal")}
+                            onDoc={editable ? (d) => drawings.set("appraisal", d) : undefined}
+                          />
+                        </LoadingScreen>
+                      </div>
+                      <div
+                        id="tables-scenarios"
+                        role="region"
+                        aria-labelledby="tables-tab-scenarios"
+                        hidden={tablesView !== "scenarios"}
+                      >
+                        <LoadingScreen>
+                          <Scenarios
+                            railway={railway}
+                            streetLines={streetLines}
+                            preferences={preferences}
+                            doc={drawings.doc<ScenariosDoc>("scenarios")}
+                            currency={currency}
+                            onChange={editable ? (d) => drawings.set("scenarios", d) : undefined}
+                            results={results}
+                            canSave={editable}
+                          />
+                        </LoadingScreen>
+                      </div>
                     </div>
-                  </nav>
-                  <div className="min-w-0 flex-1">
-                    <div
-                      id="tables-network"
-                      role="tabpanel"
-                      aria-labelledby="tables-tab-network"
-                      hidden={tablesView !== "network"}
-                    >
-                      <LoadingScreen>
-                        <NetworkTables
-                          railway={railway}
-                          streetLines={streetLines}
-                          preferences={preferences}
-                          onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                          riders={riders}
-                          onEnergy={setEnergyEst}
-                        />
-                      </LoadingScreen>
-                    </div>
-                    <div
-                      id="tables-timetables"
-                      role="tabpanel"
-                      aria-labelledby="tables-tab-timetables"
-                      hidden={tablesView !== "timetables"}
-                    >
-                      <LoadingScreen>
-                        <TimetableTables
-                          projectName={project.name}
-                          railway={railway}
-                          streetLines={streetLines}
-                          preferences={preferences}
-                          onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                        />
-                      </LoadingScreen>
-                    </div>
-                    <div
-                      id="tables-costs"
-                      role="tabpanel"
-                      aria-labelledby="tables-tab-costs"
-                      hidden={tablesView !== "costs"}
-                    >
-                      <LoadingScreen>
-                        <CostTables
-                          railway={railway}
-                          streetLines={streetLines}
-                          preferences={preferences}
-                          onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                          costs={drawings.doc<CostsDoc>("costs")}
-                          onCosts={editable ? (d) => drawings.set("costs", d) : undefined}
-                          currency={currency}
-                          onEstimate={onCostEstimate}
-                          results={results}
-                          canSave={editable}
-                        />
-                      </LoadingScreen>
-                    </div>
-                    <div
-                      id="tables-benefits"
-                      role="tabpanel"
-                      aria-labelledby="tables-tab-benefits"
-                      hidden={tablesView !== "benefits"}
-                    >
-                      <LoadingScreen>
-                        <BenefitTables
-                          api={benefitsApiOfProject}
-                          timetable={networkTimetable}
-                          regions={regions}
-                          preferences={preferences}
-                          onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                          doc={benefitsDoc}
-                          onDoc={editable ? (d) => drawings.set("benefits", d) : undefined}
-                          costs={costInfo}
-                          onEstimate={onBenefitEstimate}
-                          ridership={usedRidership}
-                          results={results}
-                          canSave={editable}
-                        />
-                      </LoadingScreen>
-                    </div>
-                    <div
-                      id="tables-demand"
-                      role="tabpanel"
-                      aria-labelledby="tables-tab-demand"
-                      hidden={tablesView !== "demand"}
-                    >
-                      <LoadingScreen>
-                        <DemandSection
-                          timetable={networkTimetable}
-                          regions={regions}
-                          preferences={preferences}
-                          doc={drawings.doc<DemandDoc>("demand")}
-                          onDoc={editable ? (d) => drawings.set("demand", d) : undefined}
-                          costs={costInfo}
-                          runs={demandRuns}
-                          canRun={editable}
-                          streetSetups={setups}
-                          stopAccess={stopAccess}
-                          onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                          api={benefitsApiOfProject}
-                        />
-                      </LoadingScreen>
-                      <PluginCalculations
-                        data={{ timetable: networkTimetable, streetLines: streetLines?.lines ?? [] }}
-                      />
-                    </div>
-                    <div
-                      id="tables-fares"
-                      role="tabpanel"
-                      aria-labelledby="tables-tab-fares"
-                      hidden={tablesView !== "fares"}
-                    >
-                      <LoadingScreen>
-                        <FareTables
-                          benefits={benefitEst}
-                          railway={railway}
-                          streetLines={streetLines}
-                          pluginLines={pluginLineList}
-                          prefs={preferences?.values}
-                          schematic={drawings.doc<SchematicDoc>("schematic")}
-                          boardings={benefitsDoc?.boardings}
-                          prices={farePrices}
-                          doc={drawings.doc<FaresDoc>("fares")}
-                          onDoc={editable ? (d) => drawings.set("fares", d) : undefined}
-                          onInput={setFareInput}
-                        />
-                      </LoadingScreen>
-                    </div>
-                    <div
-                      id="tables-appraisal"
-                      role="tabpanel"
-                      aria-labelledby="tables-tab-appraisal"
-                      hidden={tablesView !== "appraisal"}
-                    >
-                      <LoadingScreen>
-                        <AppraisalSection
-                          costs={appraisalCosts}
-                          benefits={benefitEst}
-                          fares={fareInput}
-                          demand={usedRidership}
-                          preferences={preferences}
-                          onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
-                          doc={drawings.doc<AppraisalDoc>("appraisal")}
-                          onDoc={editable ? (d) => drawings.set("appraisal", d) : undefined}
-                        />
-                      </LoadingScreen>
-                    </div>
-                    <div
-                      id="tables-scenarios"
-                      role="tabpanel"
-                      aria-labelledby="tables-tab-scenarios"
-                      hidden={tablesView !== "scenarios"}
-                    >
-                      <LoadingScreen>
-                        <Scenarios
-                          railway={railway}
-                          streetLines={streetLines}
-                          preferences={preferences}
-                          doc={drawings.doc<ScenariosDoc>("scenarios")}
-                          currency={currency}
-                          onChange={editable ? (d) => drawings.set("scenarios", d) : undefined}
-                          results={results}
-                          canSave={editable}
-                        />
-                      </LoadingScreen>
-                    </div>
-                  </div>
+                  </TablesSection.Provider>
                 </div>
               ) : (
                 <p role="status" className="mt-6 text-slate-500">

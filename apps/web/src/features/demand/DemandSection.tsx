@@ -31,6 +31,7 @@ import {
 import { centreTile, loadZoneData, MAX_ZONE_TILES, type ZoneData } from "./load";
 import { demandValue, demandValues } from "./params";
 import { CalibrationResult, ObservedCard, observedForRun } from "./Calibration";
+import { TablePart } from "../tables/sections";
 import {
   activeZones,
   type DemandDoc,
@@ -420,144 +421,148 @@ export function DemandSection({
         preferences → Demand model.
       </p>
 
-      <div className={card}>
-        <h3 className="caps m-0">Zones</h3>
-        <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
-          <span
-            className="rounded-full bg-slate-100 px-3 py-1 font-medium text-slate-700"
-            data-testid="zone-source"
-          >
-            {doc?.source === "own"
-              ? `Your ${fmt(zones.length)} zones`
-              : auto.res === null
-                ? "Automatic hexagons"
-                : `${fmt(zones.length)} automatic hexagons (H3 size ${auto.res}, about ${fmt(
-                    zones.length ? (zones.reduce((a, z) => a + zoneKm2(z), 0) / zones.length) * 100 : 0,
-                  )} ha each)`}
-          </span>
-          {editable && (
-            <>
-              <button type="button" className="btn min-h-10" onClick={() => fileInput.current?.click()}>
-                Upload zones (GeoJSON)
-              </button>
-              <input
-                ref={fileInput}
-                type="file"
-                accept=".geojson,.json,application/geo+json,application/json"
-                className="hidden"
-                aria-label="Zones file"
-                onChange={(e) => {
-                  const f = e.target.files?.[0];
-                  if (f) void upload(f);
-                  e.target.value = "";
-                }}
-              />
-            </>
-          )}
-          {zones.length > 0 && (
-            <button
-              type="button"
-              className="btn min-h-10"
-              onClick={() => download("zones.geojson", zonesToGeoJson(zones), "application/geo+json")}
+      <TablePart id="demand.zones">
+        <div className={card}>
+          <h3 className="caps m-0">Zones</h3>
+          <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+            <span
+              className="rounded-full bg-slate-100 px-3 py-1 font-medium text-slate-700"
+              data-testid="zone-source"
             >
-              Download zones
-            </button>
-          )}
-        </div>
-        <p className="mt-2 text-sm text-slate-500">
-          {doc?.source === "own"
-            ? "Draw, reshape, rename and delete your zones in the GIS tab (Demand zones), or upload a new file. A GeoJSON property named like a value below (population, workers, jobs, students…) fills that value."
-            : `Hexagons cover the model area, at most ${fmt(maxZones)} of them. Make them your own in the GIS tab (Demand zones) to draw, reshape, rename or delete zones.`}
-        </p>
-        {uploadError && (
-          <p role="alert" className="mt-2 text-sm text-red-700">
-            {uploadError}
-          </p>
-        )}
-        {uploadNotes.length > 0 && (
-          <ul className="mt-2 list-disc pl-5 text-sm text-slate-600">
-            {uploadNotes.map((n) => (
-              <li key={n}>{n}</li>
-            ))}
-          </ul>
-        )}
-        {zones.length > 0 && (
-          <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
-            <button
-              type="button"
-              className="btn min-h-10"
-              disabled={loading !== null}
-              onClick={() => void loadData()}
-            >
-              {current ? "Estimate zone values again" : "Estimate zone values"}
-            </button>
-            {loading !== null && (
-              <span role="status" className="text-slate-500">
-                Loading WorldPop people and OpenStreetMap buildings and places… {fmt(loading * 100)} %
-              </span>
+              {doc?.source === "own"
+                ? `Your ${fmt(zones.length)} zones`
+                : auto.res === null
+                  ? "Automatic hexagons"
+                  : `${fmt(zones.length)} automatic hexagons (H3 size ${auto.res}, about ${fmt(
+                      zones.length ? (zones.reduce((a, z) => a + zoneKm2(z), 0) / zones.length) * 100 : 0,
+                    )} ha each)`}
+            </span>
+            {editable && (
+              <>
+                <button type="button" className="btn min-h-10" onClick={() => fileInput.current?.click()}>
+                  Upload zones (GeoJSON)
+                </button>
+                <input
+                  ref={fileInput}
+                  type="file"
+                  accept=".geojson,.json,application/geo+json,application/json"
+                  className="hidden"
+                  aria-label="Zones file"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) void upload(f);
+                    e.target.value = "";
+                  }}
+                />
+              </>
             )}
-            {loadError && (
-              <span role="alert" className="text-red-700">
-                {loadError}
-              </span>
+            {zones.length > 0 && (
+              <button
+                type="button"
+                className="btn min-h-10"
+                onClick={() => download("zones.geojson", zonesToGeoJson(zones), "application/geo+json")}
+              >
+                Download zones
+              </button>
             )}
           </div>
-        )}
-        {current && <DataNotes data={current} estimated={estimated} />}
-        {zones.length > 0 && (
-          <ZoneTable zones={zones} estimated={estimated} editable={editable} onValues={setValues} />
-        )}
-      </div>
-
-      <ObservedCard doc={doc} onDoc={onDoc} lineNames={lineNames} stopNames={stopNames} />
-
-      <div className={card}>
-        <h3 className="caps m-0">Run</h3>
-        {blocker ? (
-          <p className="mt-2 text-sm text-slate-600">{blocker}</p>
-        ) : (
-          <p className="mt-2 text-sm text-slate-600">
-            {fmt(zones.length)} zones, {fmt(transit.lines.length)} lines and {fmt(transit.stops.length)}{" "}
-            stops. The server adds the OpenStreetMap streets of the zones. A run of a few hundred zones takes
-            about a minute.
+          <p className="mt-2 text-sm text-slate-500">
+            {doc?.source === "own"
+              ? "Draw, reshape, rename and delete your zones in the GIS tab (Demand zones), or upload a new file. A GeoJSON property named like a value below (population, workers, jobs, students…) fills that value."
+              : `Hexagons cover the model area, at most ${fmt(maxZones)} of them. Make them your own in the GIS tab (Demand zones) to draw, reshape, rename or delete zones.`}
           </p>
-        )}
-        <GbfsField doc={doc} onDoc={onDoc} />
-        <div className="mt-3 flex flex-wrap items-center gap-2">
-          {canRun && runs && (
-            <button
-              type="button"
-              className="btn btn-pri min-h-10"
-              disabled={!!blocker || sending || loading !== null}
-              onClick={() => void start()}
-            >
-              {sending ? "Starting…" : "Run the demand model"}
-            </button>
+          {uploadError && (
+            <p role="alert" className="mt-2 text-sm text-red-700">
+              {uploadError}
+            </p>
           )}
-          {viewing && isOpen(viewing) && canRun && (
-            <button type="button" className="btn min-h-10" onClick={() => void cancel()}>
-              Stop
-            </button>
+          {uploadNotes.length > 0 && (
+            <ul className="mt-2 list-disc pl-5 text-sm text-slate-600">
+              {uploadNotes.map((n) => (
+                <li key={n}>{n}</li>
+              ))}
+            </ul>
+          )}
+          {zones.length > 0 && (
+            <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
+              <button
+                type="button"
+                className="btn min-h-10"
+                disabled={loading !== null}
+                onClick={() => void loadData()}
+              >
+                {current ? "Estimate zone values again" : "Estimate zone values"}
+              </button>
+              {loading !== null && (
+                <span role="status" className="text-slate-500">
+                  Loading WorldPop people and OpenStreetMap buildings and places… {fmt(loading * 100)} %
+                </span>
+              )}
+              {loadError && (
+                <span role="alert" className="text-red-700">
+                  {loadError}
+                </span>
+              )}
+            </div>
+          )}
+          {current && <DataNotes data={current} estimated={estimated} />}
+          {zones.length > 0 && (
+            <ZoneTable zones={zones} estimated={estimated} editable={editable} onValues={setValues} />
           )}
         </div>
-        {runError && (
-          <p role="alert" className="mt-2 text-sm text-red-700">
-            {runError}
-          </p>
-        )}
-        {viewing && <RunStatusLine run={viewing} />}
-        {saved.length > 0 && (
-          <SavedRuns
-            saved={saved}
-            viewingId={viewingId}
-            onView={view}
-            onRemove={canRun ? remove : undefined}
-          />
-        )}
-      </div>
+
+        <ObservedCard doc={doc} onDoc={onDoc} lineNames={lineNames} stopNames={stopNames} />
+      </TablePart>
+
+      <TablePart id="demand.run">
+        <div className={card}>
+          <h3 className="caps m-0">Run</h3>
+          {blocker ? (
+            <p className="mt-2 text-sm text-slate-600">{blocker}</p>
+          ) : (
+            <p className="mt-2 text-sm text-slate-600">
+              {fmt(zones.length)} zones, {fmt(transit.lines.length)} lines and {fmt(transit.stops.length)}{" "}
+              stops. The server adds the OpenStreetMap streets of the zones. A run of a few hundred zones
+              takes about a minute.
+            </p>
+          )}
+          <GbfsField doc={doc} onDoc={onDoc} />
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            {canRun && runs && (
+              <button
+                type="button"
+                className="btn btn-pri min-h-10"
+                disabled={!!blocker || sending || loading !== null}
+                onClick={() => void start()}
+              >
+                {sending ? "Starting…" : "Run the demand model"}
+              </button>
+            )}
+            {viewing && isOpen(viewing) && canRun && (
+              <button type="button" className="btn min-h-10" onClick={() => void cancel()}>
+                Stop
+              </button>
+            )}
+          </div>
+          {runError && (
+            <p role="alert" className="mt-2 text-sm text-red-700">
+              {runError}
+            </p>
+          )}
+          {viewing && <RunStatusLine run={viewing} />}
+          {saved.length > 0 && (
+            <SavedRuns
+              saved={saved}
+              viewingId={viewingId}
+              onView={view}
+              onRemove={canRun ? remove : undefined}
+            />
+          )}
+        </div>
+      </TablePart>
 
       {result && viewing && (
-        <>
+        <TablePart id="demand.results">
           <RidershipChoice runId={viewing.id} doc={doc} onDoc={onDoc} />
           <Results
             result={result}
@@ -566,7 +571,7 @@ export function DemandSection({
             preferences={preferences}
             onPreferences={onPreferences}
           />
-        </>
+        </TablePart>
       )}
     </section>
   );

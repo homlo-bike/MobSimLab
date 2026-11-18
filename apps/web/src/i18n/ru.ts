@@ -291,6 +291,10 @@ export const ru: Messages = {
 
   "tables.title": "Таблицы",
   "tables.intro": "Все расчёты по проекту для оценки его эффективности.",
+  "tables.sec.overview": "Обзор",
+  "tables.sec.blocks": "Выходы подвижного состава",
+  "tables.sec.departures": "Отправления",
+  "tables.sec.prices": "Цены и удельные затраты",
 
   "prefs.title": "Параметры проекта",
   "prefs.intro": "Сведения и настройки, которые действуют для всего проекта.",

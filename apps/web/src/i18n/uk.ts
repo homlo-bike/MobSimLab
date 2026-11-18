@@ -291,6 +291,10 @@ export const uk: Messages = {
 
   "tables.title": "Таблиці",
   "tables.intro": "Усі розрахунки для оцінки ефективності проєкту.",
+  "tables.sec.overview": "Огляд",
+  "tables.sec.blocks": "Випуски рухомого складу",
+  "tables.sec.departures": "Відправлення",
+  "tables.sec.prices": "Ціни та питомі витрати",
 
   "prefs.title": "Параметри проєкту",
   "prefs.intro": "Відомості й налаштування для всього проєкту.",

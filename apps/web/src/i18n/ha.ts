@@ -290,6 +290,10 @@ export const ha: Messages = {
 
   "tables.title": "Teburori",
   "tables.intro": "Kowace ƙididdiga game da aikin, don kimanta yadda zai yi aiki.",
+  "tables.sec.overview": "Taƙaitawa",
+  "tables.sec.blocks": "Ayyukan motoci",
+  "tables.sec.departures": "Tashi",
+  "tables.sec.prices": "Farashi da kuɗin kowane raka'a",
 
   "prefs.title": "Zaɓuɓɓukan aiki",
   "prefs.intro": "Bayanai da saitunan da suka shafi dukan aikin.",

@@ -9,6 +9,7 @@ import type { DemandRidership } from "../demand/ridership";
 import type { FareInput } from "../fares/model";
 import { type PreferencesDoc, withPref } from "../../workspace/preferences";
 import { appraisalLines, mcaLines } from "./inputs";
+import { TablePart } from "../tables/sections";
 import {
   type Appraisal,
   type AppraisalDoc,
@@ -134,79 +135,87 @@ export function AppraisalSection({
       )}
       {result && total && (
         <>
-          {[...result.notes, ...(currencyNote ? [currencyNote] : [])].map((n) => (
-            <p key={n} className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
-              {n}
+          <TablePart id="appraisal.results">
+            {[...result.notes, ...(currencyNote ? [currencyNote] : [])].map((n) => (
+              <p key={n} className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                {n}
+              </p>
+            ))}
+            <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+              <Tile
+                title="Economic net present value"
+                value={money(total.enpv[1])}
+                sub={`${money(total.enpv[0])} – ${money(total.enpv[2])}; above 0 in ${Math.round(total.positive * 100)} % of draws`}
+              />
+              <Tile
+                title="Benefit-cost ratio"
+                value={ratio(total.bcr[1])}
+                sub={`${ratio(total.bcr[0])} – ${ratio(total.bcr[2])}`}
+              />
+              <Tile
+                title="Economic rate of return"
+                value={total.errShare >= 0.5 ? pct(total.err[1]) : "–"}
+                sub={
+                  total.errShare >= 0.5
+                    ? `${pct(total.err[0])} – ${pct(total.err[2])}`
+                    : "no rate brings the ENPV to 0 in most draws"
+                }
+              />
+              <Tile
+                title="Financial net present value"
+                value={money(total.fnpv[1])}
+                sub={`FIRR ${total.firrShare >= 0.5 ? pct(total.firr[1]) : "–"}; fares less the operator's costs`}
+              />
+            </div>
+            <p className="mt-2 text-xs text-slate-600">
+              These four are the middle of the {result.draws} draws (the 50th percentile), with the 10th to
+              90th percentile below each. The tables below use the medium case, every input at its medium
+              value: ENPV {money(total.central.enpv)}, benefit-cost ratio {ratio(total.central.bcr)}, FNPV{" "}
+              {money(total.central.fnpv)}.
             </p>
-          ))}
-          <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <Tile
-              title="Economic net present value"
-              value={money(total.enpv[1])}
-              sub={`${money(total.enpv[0])} – ${money(total.enpv[2])}; above 0 in ${Math.round(total.positive * 100)} % of draws`}
-            />
-            <Tile
-              title="Benefit-cost ratio"
-              value={ratio(total.bcr[1])}
-              sub={`${ratio(total.bcr[0])} – ${ratio(total.bcr[2])}`}
-            />
-            <Tile
-              title="Economic rate of return"
-              value={total.errShare >= 0.5 ? pct(total.err[1]) : "–"}
-              sub={
-                total.errShare >= 0.5
-                  ? `${pct(total.err[0])} – ${pct(total.err[2])}`
-                  : "no rate brings the ENPV to 0 in most draws"
-              }
-            />
-            <Tile
-              title="Financial net present value"
-              value={money(total.fnpv[1])}
-              sub={`FIRR ${total.firrShare >= 0.5 ? pct(total.firr[1]) : "–"}; fares less the operator's costs`}
-            />
-          </div>
-          <p className="mt-2 text-xs text-slate-600">
-            These four are the middle of the {result.draws} draws (the 50th percentile), with the 10th to 90th
-            percentile below each. The tables below use the medium case, every input at its medium value: ENPV{" "}
-            {money(total.central.enpv)}, benefit-cost ratio {ratio(total.central.bcr)}, FNPV{" "}
-            {money(total.central.fnpv)}.
-          </p>
-          <Breakdown p={total.central} row={total} money={money} />
-          <section className={card} aria-labelledby="appraisal-draws">
-            <h3 id="appraisal-draws" className="caps m-0">
-              How sure is the result
-            </h3>
-            <p className="mt-1 text-xs text-slate-500">
-              ENPV of each of the {result.draws} draws. It is above 0 in {Math.round(total.positive * 100)} %
-              of them.
-            </p>
-            <DrawsChart draws={total.enpvDraws} p={total.enpv} money={money} />
-          </section>
-          <Rows rows={result.rows} money={money} />
-          <CashFlow a={result} base={total.central} money={money} />
-          <Tornado a={result} base={total.central.enpv} money={money} perIntl={perIntl} />
-          <SwitchingAndTests a={result} money={money} />
+            <Breakdown p={total.central} row={total} money={money} />
+            <Rows rows={result.rows} money={money} />
+            <CashFlow a={result} base={total.central} money={money} />
+          </TablePart>
+          <TablePart id="appraisal.uncertainty">
+            <section className={card} aria-labelledby="appraisal-draws">
+              <h3 id="appraisal-draws" className="caps m-0">
+                How sure is the result
+              </h3>
+              <p className="mt-1 text-xs text-slate-500">
+                ENPV of each of the {result.draws} draws. It is above 0 in {Math.round(total.positive * 100)}{" "}
+                % of them.
+              </p>
+              <DrawsChart draws={total.enpvDraws} p={total.enpv} money={money} />
+            </section>
+            <Tornado a={result} base={total.central.enpv} money={money} perIntl={perIntl} />
+            <SwitchingAndTests a={result} money={money} />
+          </TablePart>
           {mcaResult && (
-            <Mca
-              result={mcaResult}
-              doc={doc}
-              onDoc={onDoc}
-              prefs={prefs}
-              editable={editable}
-              setValue={setValue}
-              money={money}
-            />
+            <TablePart id="appraisal.mca">
+              <Mca
+                result={mcaResult}
+                doc={doc}
+                onDoc={onDoc}
+                prefs={prefs}
+                editable={editable}
+                setValue={setValue}
+                money={money}
+              />
+            </TablePart>
           )}
         </>
       )}
-      <Settings
-        prefs={prefs}
-        perIntl={perIntl}
-        currency={currency}
-        income={income}
-        editable={editable}
-        setValue={setValue}
-      />
+      <TablePart id="appraisal.settings">
+        <Settings
+          prefs={prefs}
+          perIntl={perIntl}
+          currency={currency}
+          income={income}
+          editable={editable}
+          setValue={setValue}
+        />
+      </TablePart>
     </section>
   );
 }

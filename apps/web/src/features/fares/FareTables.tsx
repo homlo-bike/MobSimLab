@@ -8,6 +8,7 @@ import { defaultOrigin, layout } from "../schematic/layout";
 import { schematicNetwork } from "../schematic/lines";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import type { Triple } from "../benefits/params";
+import { TablePart } from "../tables/sections";
 import {
   FARE_PARAMS,
   type FareEstimate,
@@ -159,74 +160,80 @@ export function FareTables({
         high are the 10th, 50th and 90th percentile over the ranges of the values that describe how people
         travel; the fares, pass price and discounts you set stay fixed.
       </p>
-      <label className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-        <span className="font-medium">Fare structure</span>
-        <select
-          className="input min-h-10"
-          value={structure}
-          disabled={!editable}
-          onChange={(e) => setDoc({ structure: e.target.value as FareStructure })}
-        >
-          {STRUCTURES.map((s) => (
-            <option key={s} value={s}>
-              {STRUCTURE_LABEL[s]}
-            </option>
-          ))}
-        </select>
-      </label>
-      {structure === "zonal" && (
-        <p className={`mt-2 text-sm ${zones.length ? "text-slate-600" : "text-amber-700"}`}>
-          {zones.length
-            ? `${zones.length} tariff ${zones.length === 1 ? "zone" : "zones"} from the Schematic network map. A stop outside every zone counts as a zone of its own.`
-            : "No tariff zones yet: draw them on the Schematic tab's network map. Until then every trip is in one zone."}
-        </p>
-      )}
+      <TablePart id="fares.settings">
+        <label className="mt-4 flex flex-wrap items-center gap-2 text-sm">
+          <span className="font-medium">Fare structure</span>
+          <select
+            className="input min-h-10"
+            value={structure}
+            disabled={!editable}
+            onChange={(e) => setDoc({ structure: e.target.value as FareStructure })}
+          >
+            {STRUCTURES.map((s) => (
+              <option key={s} value={s}>
+                {STRUCTURE_LABEL[s]}
+              </option>
+            ))}
+          </select>
+        </label>
+        {structure === "zonal" && (
+          <p className={`mt-2 text-sm ${zones.length ? "text-slate-600" : "text-amber-700"}`}>
+            {zones.length
+              ? `${zones.length} tariff ${zones.length === 1 ? "zone" : "zones"} from the Schematic network map. A stop outside every zone counts as a zone of its own.`
+              : "No tariff zones yet: draw them on the Schematic tab's network map. Until then every trip is in one zone."}
+          </p>
+        )}
+      </TablePart>
       {status && (
         <p role="status" className="mt-4 text-sm text-slate-500">
           {status}
         </p>
       )}
-      {benefits && prices && !est && (
-        <p className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-slate-600">
-          No lines with a ridership estimate yet.
-        </p>
-      )}
-      {est && total && (
-        <>
-          <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-            <Tile
-              title="Fare revenue, first year"
-              value={money(total.net[1])}
-              sub={`${money(total.net[0])} – ${money(total.net[2])}, after collection costs`}
-            />
-            <Tile
-              title="Boardings a year"
-              value={compact(total.riders[1])}
-              sub={`after the fare's effect; ${compact(total.estimate[1])} in the ridership estimate`}
-            />
-            <Tile
-              title="Average fare paid"
-              value={fare(total.paid[1])}
-              sub={`per boarding; single fare ${fare(total.single[1])}`}
-            />
-            <Tile
-              title={`Fare revenue over ${YEARS} years`}
-              value={money(est.years.reduce((s, y) => s + y.net[1], 0))}
-              sub="medium, undiscounted, in today's prices"
-            />
-          </div>
-          <PerLine est={est} structure={structure} money={money} fare={fare} />
-          <ByYear est={est} money={money} />
-        </>
-      )}
-      <Settings
-        structure={structure}
-        own={own}
-        perIntl={prices?.perIntl ?? 1}
-        currency={currency}
-        editable={editable}
-        setValue={setValue}
-      />
+      <TablePart id="fares.revenue">
+        {benefits && prices && !est && (
+          <p className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-slate-600">
+            No lines with a ridership estimate yet.
+          </p>
+        )}
+        {est && total && (
+          <>
+            <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
+              <Tile
+                title="Fare revenue, first year"
+                value={money(total.net[1])}
+                sub={`${money(total.net[0])} – ${money(total.net[2])}, after collection costs`}
+              />
+              <Tile
+                title="Boardings a year"
+                value={compact(total.riders[1])}
+                sub={`after the fare's effect; ${compact(total.estimate[1])} in the ridership estimate`}
+              />
+              <Tile
+                title="Average fare paid"
+                value={fare(total.paid[1])}
+                sub={`per boarding; single fare ${fare(total.single[1])}`}
+              />
+              <Tile
+                title={`Fare revenue over ${YEARS} years`}
+                value={money(est.years.reduce((s, y) => s + y.net[1], 0))}
+                sub="medium, undiscounted, in today's prices"
+              />
+            </div>
+            <PerLine est={est} structure={structure} money={money} fare={fare} />
+            <ByYear est={est} money={money} />
+          </>
+        )}
+      </TablePart>
+      <TablePart id="fares.settings">
+        <Settings
+          structure={structure}
+          own={own}
+          perIntl={prices?.perIntl ?? 1}
+          currency={currency}
+          editable={editable}
+          setValue={setValue}
+        />
+      </TablePart>
     </section>
   );
 }
