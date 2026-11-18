@@ -50,6 +50,8 @@ export const editorsHa = {
   "rail.storageRole.overnight": "Ajiye cikin dare",
   "rail.storageRole.both": "Jira da dare",
   "rail.inYard": "A filin ajiye {name}",
+  "rail.yard": "Wurin ajiye jiragen ƙasa",
+  "rail.yardNone": "Ba a wurin ajiya ba",
   "rail.storageLabel": "{role} · jirage {n} sun isa",
   "rail.finish": "Gama (Enter)",
   "rail.cancel": "Soke (Esc)",

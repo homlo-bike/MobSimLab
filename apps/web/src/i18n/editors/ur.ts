@@ -50,6 +50,8 @@ export const editorsUr = {
   "rail.storageRole.overnight": "رات بھر پارکنگ",
   "rail.storageRole.both": "وقفہ اور رات بھر",
   "rail.inYard": "اسٹیبلنگ یارڈ {name} میں",
+  "rail.yard": "اسٹیبلنگ یارڈ",
+  "rail.yardNone": "کسی یارڈ میں نہیں",
   "rail.storageLabel": "{role} · {n} ٹرینیں سما سکتی ہیں",
   "rail.finish": "مکمل کریں (Enter)",
   "rail.cancel": "منسوخ کریں (Esc)",

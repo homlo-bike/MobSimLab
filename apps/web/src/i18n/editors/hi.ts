@@ -50,6 +50,8 @@ export const editorsHi = {
   "rail.storageRole.overnight": "रात्रि ठहराव",
   "rail.storageRole.both": "ठहराव और रात्रि",
   "rail.inYard": "स्टेबलिंग यार्ड {name} में",
+  "rail.yard": "स्टेबलिंग यार्ड",
+  "rail.yardNone": "किसी यार्ड में नहीं",
   "rail.storageLabel": "{role} · {n} ट्रेनें समाती हैं",
   "rail.finish": "पूरा करें (Enter)",
   "rail.cancel": "रद्द करें (Esc)",

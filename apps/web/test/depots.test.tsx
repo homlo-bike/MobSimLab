@@ -3,7 +3,7 @@ import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DepotEditor } from "../src/features/depots/DepotEditor";
-import { YardEditor, type YardBuild } from "../src/features/depots/YardEditor";
+import { withTrackInYard, YardControl } from "../src/features/railways/YardControl";
 import {
   depotFit,
   depotGates,
@@ -345,16 +345,21 @@ describe("Stabling yards (rail depot type)", () => {
     switches: [],
   });
 
-  function YardHarness({ docs, start }: { docs: Network[]; start: Network | null }) {
-    const [rail, setRail] = useState<Network | null>(start);
+  function YardHarness({ docs, start, id }: { docs: Network[]; start: Network; id: number }) {
+    const [rail, setRail] = useState<Network>(start);
+    const view = {
+      tracks: [
+        { id: 2, length_m: 564, tracks: 2 },
+        { id: 3, length_m: 340, tracks: 2 },
+      ],
+      train_length_m: 45,
+    } as unknown as RailView;
     return (
-      <DepotEditor
-        map={fakeMap().map}
-        doc={null}
-        onDoc={() => {}}
-        loadEngine={async () => fakeEngine()}
-        railway={rail}
-        onRailway={(d) => {
+      <YardControl
+        track={rail.tracks.find((x) => x.id === id)!}
+        doc={rail}
+        view={view}
+        setDoc={(d) => {
           docs.push(d);
           setRail(d);
         }}
@@ -362,65 +367,37 @@ describe("Stabling yards (rail depot type)", () => {
     );
   }
 
-  it("says how many trains each yard holds and warns when the lines use more", async () => {
-    const net = railway();
-    net.yards = [
-      { id: 7, name: "Jobar", tracks: [2], charging: false, cleaning: false },
-      { id: 8, name: "Qadam", tracks: [3], charging: false, cleaning: false },
-    ];
-    const build = async (): Promise<YardBuild> => ({
-      tracks: [
-        { id: 2, length_m: 564, tracks: 2 },
-        { id: 3, length_m: 340, tracks: 2 },
-      ],
-      train_length_m: 45,
-      trains: 24,
-    });
-    render(<YardEditor railway={net} onRailway={() => {}} build={build} />);
-    // 564 m holds 12 trains of 45 m on each of 2 tracks, 340 m holds 7.
-    expect(await screen.findByText("Holds 24 trains.")).toBeTruthy();
-    expect(screen.getByText("Holds 14 trains.")).toBeTruthy();
-    expect(screen.getByTestId("yard-capacity").textContent).toBe(
-      "The yards hold 38 trains of 45 m, the longest train of the lines. The lines use 24 trains on a weekday.",
-    );
-    expect(screen.queryByText(/fewer trains than the lines use/)).toBeNull();
-    cleanup();
-    render(
-      <YardEditor
-        railway={net}
-        onRailway={() => {}}
-        build={async () => ({ ...(await build()), trains: 40 })}
-      />,
-    );
-    expect(await screen.findByText(/fewer trains than the lines use/)).toBeTruthy();
-  });
-
-  it("groups the storage tracks into a yard with charging and cleaning", () => {
+  it("puts a storage track in a stabling yard, with charging, cleaning and how many trains it holds", () => {
     const docs: Network[] = [];
-    render(<YardHarness docs={docs} start={railway()} />);
-    fireEvent.click(screen.getByRole("button", { name: "New stabling yard" }));
+    const { unmount } = render(<YardHarness docs={docs} start={railway()} id={2} />);
+    const pick = (v: string) =>
+      fireEvent.change(screen.getByLabelText("Stabling yard"), { target: { value: v } });
+    pick("new");
     expect(docs.at(-1)!.yards).toEqual([
-      { id: 4, name: "Stabling yard 1", tracks: [2, 3], charging: false, cleaning: false },
+      { id: 4, name: "Stabling yard 1", tracks: [2], charging: false, cleaning: false },
     ]);
-    // Only storage tracks are offered.
-    expect(screen.queryByRole("checkbox", { name: "Track 1" })).toBeNull();
-    fireEvent.click(screen.getByRole("checkbox", { name: "Track 3" }));
+    // 564 m holds 12 trains of 45 m on each of its 2 tracks.
+    expect(screen.getByText("Holds 24 trains.")).toBeTruthy();
+    fireEvent.change(screen.getByLabelText("Name"), { target: { value: "Jobar" } });
     fireEvent.click(screen.getByRole("checkbox", { name: "Trains charge here" }));
     fireEvent.click(screen.getByRole("checkbox", { name: "Trains are cleaned here" }));
-    expect(docs.at(-1)!.yards![0]).toMatchObject({ tracks: [2], charging: true, cleaning: true });
-    // A track in one yard cannot be in another.
-    fireEvent.click(screen.getByRole("button", { name: "New stabling yard" }));
-    expect(docs.at(-1)!.yards![1]).toMatchObject({ id: 5, tracks: [3] });
-    const taken = screen.getAllByRole("checkbox", { name: /Siding A/ });
-    expect((taken[1] as HTMLInputElement).disabled).toBe(true);
-    fireEvent.click(screen.getAllByRole("button", { name: "Remove stabling yard" })[0]!);
-    expect(docs.at(-1)!.yards!.map((y) => y.id)).toEqual([5]);
-  });
+    expect(docs.at(-1)!.yards![0]).toMatchObject({
+      name: "Jobar",
+      tracks: [2],
+      charging: true,
+      cleaning: true,
+    });
+    unmount();
 
-  it("asks for storage tracks first when the railway has none", () => {
-    render(<YardHarness docs={[]} start={null} />);
-    expect(screen.getByText("Draw storage tracks in the railway tool first.")).toBeTruthy();
-    expect(screen.queryByRole("button", { name: "New stabling yard" })).toBeNull();
+    // The second track joins the same yard: the yard holds both tracks' trains.
+    render(<YardHarness docs={docs} start={docs.at(-1)!} id={3} />);
+    pick("4");
+    expect(docs.at(-1)!.yards![0]!.tracks).toEqual([2, 3]);
+    expect(screen.getByText("Holds 38 trains.")).toBeTruthy();
+    // Taking the last track out of a yard removes the yard.
+    const one = withTrackInYard(docs.at(-1)!, 3, null, "");
+    expect(one.yards![0]!.tracks).toEqual([2]);
+    expect(withTrackInYard(one, 2, null, "").yards).toEqual([]);
   });
 
   it("labels storage tracks with their role and how many trains fit", () => {

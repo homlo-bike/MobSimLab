@@ -49,6 +49,8 @@ export const editorsZh = {
   "rail.storageRole.overnight": "夜间停放",
   "rail.storageRole.both": "折返停留和夜间",
   "rail.inYard": "在停车场 {name}",
+  "rail.yard": "停车场",
+  "rail.yardNone": "不在停车场",
   "rail.storageLabel": "{role} · 可停 {n} 列",
   "rail.finish": "完成（Enter）",
   "rail.cancel": "取消（Esc）",

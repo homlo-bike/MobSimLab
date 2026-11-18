@@ -50,6 +50,8 @@ export const editorsAm = {
   "rail.storageRole.overnight": "የሌሊት ማቆሚያ",
   "rail.storageRole.both": "ቆይታ እና ሌሊት",
   "rail.inYard": "በማቆሚያ ግቢ {name} ውስጥ",
+  "rail.yard": "የባቡር ማቆሚያ",
+  "rail.yardNone": "በማቆሚያ ውስጥ አይደለም",
   "rail.storageLabel": "{role} · {n} ባቡሮች ይበቃሉ",
   "rail.finish": "ጨርስ (Enter)",
   "rail.cancel": "ሰርዝ (Esc)",

@@ -50,6 +50,8 @@ export const editorsTa = {
   "rail.storageRole.overnight": "இரவு நிறுத்தம்",
   "rail.storageRole.both": "காத்திருப்பும் இரவும்",
   "rail.inYard": "நிறுத்து முற்றம் {name} இல்",
+  "rail.yard": "நிறுத்த யார்டு",
+  "rail.yardNone": "எந்த யார்டிலும் இல்லை",
   "rail.storageLabel": "{role} · {n} ரயில்கள் பொருந்தும்",
   "rail.finish": "முடி (Enter)",
   "rail.cancel": "ரத்துசெய் (Esc)",

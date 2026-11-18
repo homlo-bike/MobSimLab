@@ -49,6 +49,8 @@ export const editorsJa = {
   "rail.storageRole.overnight": "夜間留置",
   "rail.storageRole.both": "折り返し待機と夜間",
   "rail.inYard": "留置線群 {name}",
+  "rail.yard": "留置線群",
+  "rail.yardNone": "留置線群に含めない",
   "rail.storageLabel": "{role} · {n} 編成収容",
   "rail.finish": "完了（Enter）",
   "rail.cancel": "キャンセル（Esc）",

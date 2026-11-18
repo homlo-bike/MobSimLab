@@ -50,6 +50,8 @@ export const editorsPt = {
   "rail.storageRole.overnight": "Estacionamento noturno",
   "rail.storageRole.both": "Regulação e noturno",
   "rail.inYard": "No pátio de estacionamento {name}",
+  "rail.yard": "Pátio de estacionamento",
+  "rail.yardNone": "Fora de pátio",
   "rail.storageLabel": "{role} · cabem {n} comboios",
   "rail.finish": "Concluir (Enter)",
   "rail.cancel": "Cancelar (Esc)",

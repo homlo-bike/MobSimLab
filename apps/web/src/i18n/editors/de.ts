@@ -50,6 +50,8 @@ export const editorsDe = {
   "rail.storageRole.overnight": "Abstellen über Nacht",
   "rail.storageRole.both": "Wenden und über Nacht",
   "rail.inYard": "In Abstellanlage {name}",
+  "rail.yard": "Abstellanlage",
+  "rail.yardNone": "In keiner Abstellanlage",
   "rail.storageLabel": "{role} · {n} Züge passen",
   "rail.finish": "Fertig (Enter)",
   "rail.cancel": "Abbrechen (Esc)",

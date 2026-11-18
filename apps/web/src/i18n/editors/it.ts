@@ -50,6 +50,8 @@ export const editorsIt = {
   "rail.storageRole.overnight": "Ricovero notturno",
   "rail.storageRole.both": "Sosta e notte",
   "rail.inYard": "Nel fascio di ricovero {name}",
+  "rail.yard": "Deposito",
+  "rail.yardNone": "Non in un deposito",
   "rail.storageLabel": "{role} · ci stanno {n} treni",
   "rail.finish": "Termina (Invio)",
   "rail.cancel": "Annulla (Esc)",

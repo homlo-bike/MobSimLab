@@ -52,6 +52,8 @@ export const editorsPl = {
   "rail.storageRole.overnight": "Postój nocny",
   "rail.storageRole.both": "Postój między kursami i nocny",
   "rail.inYard": "Na stacji postojowej {name}",
+  "rail.yard": "Stacja postojowa",
+  "rail.yardNone": "Poza stacją postojową",
   "rail.storageLabel": "{role} · mieści {n} pociągów",
   "rail.finish": "Zakończ (Enter)",
   "rail.cancel": "Anuluj (Esc)",

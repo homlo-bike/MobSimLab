@@ -50,6 +50,8 @@ export const editorsEs = {
   "rail.storageRole.overnight": "Estacionamiento nocturno",
   "rail.storageRole.both": "Regulación y nocturno",
   "rail.inYard": "En el patio de estacionamiento {name}",
+  "rail.yard": "Cochera",
+  "rail.yardNone": "Fuera de cochera",
   "rail.storageLabel": "{role} · caben {n} trenes",
   "rail.finish": "Terminar (Intro)",
   "rail.cancel": "Cancelar (Esc)",

@@ -49,6 +49,8 @@ export const editorsIg = {
   "rail.storageRole.overnight": "Nkwụsị abalị",
   "rail.storageRole.both": "Nchere na abalị",
   "rail.inYard": "N'ogige nkwụsị {name}",
+  "rail.yard": "Ebe nchekwa ụgbọ oloko",
+  "rail.yardNone": "Ọ nọghị n'ebe nchekwa",
   "rail.storageLabel": "{role} · ụgbọ {n} ga-adaba",
   "rail.finish": "Mechaa (Enter)",
   "rail.cancel": "Kagbuo (Esc)",

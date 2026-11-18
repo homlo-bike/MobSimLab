@@ -1065,8 +1065,6 @@ export function Workspace({
                 onDoc={(d) => drawings.set("depots", d)}
                 lines={savedStreet}
                 prefs={preferences?.values}
-                railway={railway ?? null}
-                onRailway={(d) => drawings.set("railway", d)}
               />
             </Suspense>
           )}

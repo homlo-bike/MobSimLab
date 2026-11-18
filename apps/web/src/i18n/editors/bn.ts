@@ -50,6 +50,8 @@ export const editorsBn = {
   "rail.storageRole.overnight": "রাতের পার্কিং",
   "rail.storageRole.both": "বিরতি ও রাত",
   "rail.inYard": "স্টেবলিং ইয়ার্ড {name}-এ",
+  "rail.yard": "স্টেবলিং ইয়ার্ড",
+  "rail.yardNone": "কোনো ইয়ার্ডে নয়",
   "rail.storageLabel": "{role} · {n}টি ট্রেন ধরে",
   "rail.finish": "শেষ করুন (Enter)",
   "rail.cancel": "বাতিল (Esc)",

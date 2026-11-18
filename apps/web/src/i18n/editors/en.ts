@@ -52,6 +52,8 @@ export const editorsEn = {
   "rail.storageRole.overnight": "Overnight stabling",
   "rail.storageRole.both": "Layover and overnight",
   "rail.inYard": "In stabling yard {name}",
+  "rail.yard": "Stabling yard",
+  "rail.yardNone": "Not in a stabling yard",
   "rail.storageLabel": "{role} · {n} trains fit",
   "rail.finish": "Finish (Enter)",
   "rail.cancel": "Cancel (Esc)",

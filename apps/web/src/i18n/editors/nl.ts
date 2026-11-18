@@ -50,6 +50,8 @@ export const editorsNl = {
   "rail.storageRole.overnight": "Nachtopstelling",
   "rail.storageRole.both": "Keertijd en nacht",
   "rail.inYard": "In opstelterrein {name}",
+  "rail.yard": "Opstelterrein",
+  "rail.yardNone": "Niet in een opstelterrein",
   "rail.storageLabel": "{role} · {n} treinen passen",
   "rail.finish": "Klaar (Enter)",
   "rail.cancel": "Annuleren (Esc)",

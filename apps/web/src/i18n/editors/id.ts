@@ -49,6 +49,8 @@ export const editorsId = {
   "rail.storageRole.overnight": "Parkir malam",
   "rail.storageRole.both": "Jeda dan malam",
   "rail.inYard": "Di emplasemen {name}",
+  "rail.yard": "Depo simpan",
+  "rail.yardNone": "Tidak di depo simpan",
   "rail.storageLabel": "{role} · muat {n} kereta",
   "rail.finish": "Selesai (Enter)",
   "rail.cancel": "Batal (Esc)",

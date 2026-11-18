@@ -50,6 +50,8 @@ export const editorsKk = {
   "rail.storageRole.overnight": "Түнгі тұрақ",
   "rail.storageRole.both": "Рейстер арасы және түнгі",
   "rail.inYard": "{name} тұрақ паркінде",
+  "rail.yard": "Тұрақ паркі",
+  "rail.yardNone": "Тұрақ паркінде емес",
   "rail.storageLabel": "{role} · {n} пойыз сыяды",
   "rail.finish": "Аяқтау (Enter)",
   "rail.cancel": "Бас тарту (Esc)",

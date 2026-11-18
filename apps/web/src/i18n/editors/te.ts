@@ -50,6 +50,8 @@ export const editorsTe = {
   "rail.storageRole.overnight": "రాత్రి నిలుపుదల",
   "rail.storageRole.both": "విరామం మరియు రాత్రి",
   "rail.inYard": "స్టేబ్లింగ్ యార్డ్ {name} లో",
+  "rail.yard": "స్టేబ్లింగ్ యార్డ్",
+  "rail.yardNone": "ఏ యార్డులోనూ లేదు",
   "rail.storageLabel": "{role} · {n} రైళ్లు పడతాయి",
   "rail.finish": "ముగించండి (Enter)",
   "rail.cancel": "రద్దు చేయండి (Esc)",
