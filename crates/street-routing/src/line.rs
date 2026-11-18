@@ -379,16 +379,6 @@ impl StreetLine {
         self.resnap(g, seq);
         let n = self.points.len();
         self.reroute_after_edit(g, &[(seq + n - 1) % n, seq]);
-        // A stop clicked on the street itself, not clearly on one sidewalk: serve it from the side
-        // that makes the circuit shorter, rather than from whichever side the click fell on.
-        if kind.is_stop() {
-            let near_centre = g
-                .nearest_segment(self.points[seq].click, &self.profile, self.rules.max_snap_m)
-                .is_some_and(|(sid, pr)| pr.dist < g.segments[sid as usize].width_m / 4.0);
-            if near_centre && self.side_cost_m(g, id).is_some_and(|d| d < -1.0) {
-                let _ = self.switch_side(g, id);
-            }
-        }
         id
     }
 
