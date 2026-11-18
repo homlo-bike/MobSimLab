@@ -51,6 +51,8 @@ export const editorsNl = {
   "rail.element": "Type",
   "rail.doubleJunction": "Dubbele aftakking op dubbelspoor",
   "rail.scissors": "Dubbele overloop (schaarwissel)",
+  "rail.terrainFailed":
+    "Terreinhoogtes zijn niet geladen: {reason}. Hellingen en stationshoogtes volgen zodra ze geladen zijn.",
   "rail.signals": "Seinen",
   "rail.signalsSome":
     "{summary}. Ze worden uit het ontwerp gegenereerd en volgen het als het verandert. Klik op een sein om het te wijzigen of te verwijderen, of voeg er een toe met het gereedschap Sein; elke wijziging wordt gecontroleerd.",

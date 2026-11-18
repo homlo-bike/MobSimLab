@@ -50,6 +50,8 @@ export const editorsTr = {
   "rail.element": "Öğe",
   "rail.doubleJunction": "Çift hat ayrılması",
   "rail.scissors": "Makaslı çapraz geçiş",
+  "rail.terrainFailed":
+    "Arazi yükseklikleri yüklenemedi: {reason}. Eğimler ve istasyon yükseklikleri yüklendiğinde gelecek.",
   "rail.signals": "Sinyaller",
   "rail.signalsSome":
     "{summary}. Tasarımdan üretilir ve tasarımı izler. Değiştirmek veya silmek için bir sinyale tıklayın ya da Sinyal aracıyla ekleyin. Her değişiklik denetlenir.",

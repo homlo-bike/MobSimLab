@@ -53,6 +53,8 @@ export const editorsEn = {
   "rail.element": "Element",
   "rail.doubleJunction": "Double junction on double track",
   "rail.scissors": "Scissors crossover",
+  "rail.terrainFailed":
+    "Ground heights did not load: {reason}. Gradients and station heights follow once they load.",
   "rail.signals": "Signals",
   "rail.signalsSome":
     "{summary}. They are generated from the design and follow it as it changes. Click a signal to change or delete it, or use the Signal tool to add one; each change is checked.",

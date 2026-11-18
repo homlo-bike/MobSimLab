@@ -265,6 +265,17 @@ export function RailPanel(props: Props) {
 
       <LevelCrossingsSection view={view} streetNote={props.streetNote} actions={a} />
 
+      {props.terrainError && (
+        <div role="status" className="flex flex-wrap items-center gap-2 text-xs text-amber-800">
+          <p>{t("rail.terrainFailed", { reason: props.terrainError })}</p>
+          {props.onRetryTerrain && (
+            <button type="button" className="btn" onClick={props.onRetryTerrain}>
+              {t("save.retry")}
+            </button>
+          )}
+        </div>
+      )}
+
       {checksElsewhere ? (
         props.error && <p className="text-red-700">{props.error}</p>
       ) : (

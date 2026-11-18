@@ -53,6 +53,8 @@ export const editorsPl = {
   "rail.element": "Element",
   "rail.doubleJunction": "Rozgałęzienie dwutorowe",
   "rail.scissors": "Przejazd nożycowy",
+  "rail.terrainFailed":
+    "Nie wczytano wysokości terenu: {reason}. Pochylenia i wysokości stacji pojawią się po ich wczytaniu.",
   "rail.signals": "Sygnalizatory",
   "rail.signalsSome":
     "{summary}. Generowane z projektu i podążają za nim. Kliknij sygnalizator, aby go zmienić lub usunąć, albo dodaj go narzędziem Sygnalizator. Każda zmiana jest sprawdzana.",

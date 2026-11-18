@@ -50,6 +50,8 @@ export const editorsYo = {
   "rail.element": "Ẹ̀yà",
   "rail.doubleJunction": "Ìsopọ̀ méjì lórí ojú irin méjì",
   "rail.scissors": "Ìkọjá àlùmọ́gàjí",
+  "rail.terrainFailed":
+    "Àwọn gíga ilẹ̀ kò ṣí: {reason}. Àwọn ìtẹ̀sí àti gíga ibùdókọ̀ yóò tẹ̀lé nígbà tí wọ́n bá ṣí.",
   "rail.signals": "Àwọn àmì",
   "rail.signalsSome":
     "{summary}. A ṣẹ̀dá wọn láti inú àpẹrẹ, wọ́n sì ń tẹ̀lé e nígbà tó bá yí padà. Tẹ àmì kan láti yí i padà tàbí pa á rẹ́, tàbí lo irinṣẹ́ Àmì láti fi ọ̀kan kún un; a ń ṣàyẹ̀wò gbogbo àyípadà.",

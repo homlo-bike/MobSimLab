@@ -51,6 +51,8 @@ export const editorsUz = {
   "rail.element": "Element",
   "rail.doubleJunction": "Ikki yoʻlli liniyada ikki tomonlama tutashma",
   "rail.scissors": "Qaychisimon oʻtish",
+  "rail.terrainFailed":
+    "Yer balandliklari yuklanmadi: {reason}. Yuklangach, qiyaliklar va bekat balandliklari chiqadi.",
   "rail.signals": "Svetoforlar",
   "rail.signalsSome":
     "{summary}. Ular loyihadan hosil qilinadi va loyiha oʻzgarganda u bilan birga oʻzgaradi. Svetoforni oʻzgartirish yoki olib tashlash uchun ustiga bosing yoki qoʻshish uchun svetofor vositasidan foydalaning; har bir oʻzgarish tekshiriladi.",

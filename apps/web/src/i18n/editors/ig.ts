@@ -50,6 +50,7 @@ export const editorsIg = {
   "rail.element": "Akụkụ",
   "rail.doubleJunction": "Njikọ abụọ n'ụzọ ígwè abụọ",
   "rail.scissors": "Ngafe mkpa",
+  "rail.terrainFailed": "Ogo ala ebughị: {reason}. Mkpọda na ogo ọdụ ga-eso ozugbo ha bujuru.",
   "rail.signals": "Akara",
   "rail.signalsSome":
     "{summary}. A na-emepụta ha site na nhazi ma ha na-eso ya mgbe ọ gbanwere. Pịa akara iji gbanwee ya ma ọ bụ hichapụ ya, ma ọ bụ jiri ngwá ọrụ Akara tinye otu; a na-enyocha mgbanwe ọ bụla.",

@@ -50,6 +50,8 @@ export const editorsVi = {
   "rail.element": "Thành phần",
   "rail.doubleJunction": "Nút rẽ nhánh đường đôi",
   "rail.scissors": "Ghi chéo kéo",
+  "rail.terrainFailed":
+    "Không tải được độ cao mặt đất: {reason}. Độ dốc và độ cao nhà ga sẽ có khi tải xong.",
   "rail.signals": "Tín hiệu",
   "rail.signalsSome":
     "{summary}. Được tạo từ thiết kế và tự cập nhật theo thiết kế. Nhấp vào tín hiệu để thay đổi hoặc xóa, hoặc thêm bằng công cụ Tín hiệu. Mọi thay đổi đều được kiểm tra.",

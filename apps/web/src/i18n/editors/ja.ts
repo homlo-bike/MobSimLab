@@ -50,6 +50,8 @@ export const editorsJa = {
   "rail.element": "要素",
   "rail.doubleJunction": "複線の両渡り分岐",
   "rail.scissors": "シーサスクロッシング",
+  "rail.terrainFailed":
+    "地面の標高を読み込めませんでした：{reason}。読み込まれると勾配と駅の標高が表示されます。",
   "rail.signals": "信号機",
   "rail.signalsSome":
     "{summary}。設計から生成され、設計を変えると追従します。信号機をクリックして変更・削除するか、信号機ツールで追加してください。変更はすべてチェックされます。",

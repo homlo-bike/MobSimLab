@@ -291,7 +291,7 @@ export function RailwayEditor({
   const lastView = useRef<RailView | null>(null);
   if (view) lastView.current = view;
 
-  const terrainNote = useTerrainHeights({ engine, view, draft, fetchHeights, setStreets });
+  const { terrainError, retryTerrain } = useTerrainHeights({ engine, view, draft, fetchHeights, setStreets });
 
   // A saved drawing opens with the map on it.
   const framed = useRef(initial === null);
@@ -665,7 +665,8 @@ export function RailwayEditor({
         await paint();
         byDay[day] = e.publishLines(dayEngineLines(doc, day, calendar, prefValues), day);
       }
-      const result = byDay.weekday ?? e.publishLines(dayEngineLines(doc, "weekday", calendar, prefValues), "weekday");
+      const result =
+        byDay.weekday ?? e.publishLines(dayEngineLines(doc, "weekday", calendar, prefValues), "weekday");
       byDay.weekday = result;
       next = { result, byDay, error: null, key: publishKey(doc), topology: e.topology() };
       onPublish?.(result.timetable);
@@ -790,10 +791,19 @@ export function RailwayEditor({
       stationOpts={stationOpts}
       switchOpts={switchOpts}
       error={error}
-      streetNote={[streetNote, terrainNote].filter(Boolean).join(" ") || null}
+      streetNote={streetNote}
+      terrainError={terrainError}
+      onRetryTerrain={retryTerrain}
       existingRailways={existingRailways}
       actions={panelActions}
-      service={{ publication, publish: () => void publish(), picking, setPicking: pickFor, designValues, calendar }}
+      service={{
+        publication,
+        publish: () => void publish(),
+        picking,
+        setPicking: pickFor,
+        designValues,
+        calendar,
+      }}
     />
   );
 

@@ -20,7 +20,8 @@ export const fetchTerrainHeights = (points: LonLat[]) => fetchElevations(points)
 /**
  * Purpose: terrain heights under the tracks and stations (ADR-0033 decision 18): after a build, the
  * tiles it still needs are fetched from the shared terrain source, and one rebuild follows each batch.
- * Output: a note when heights did not load. Side effects: bumps `setStreets` after each batch.
+ * Output: why heights did not load (null when they did) and `retry`, which asks again for the missing tiles.
+ * Side effects: bumps `setStreets` after each batch.
  */
 export function useTerrainHeights({
   engine,
@@ -36,7 +37,8 @@ export function useTerrainHeights({
   setStreets: Dispatch<SetStateAction<number>>;
 }) {
   const terrainBusy = useRef(false);
-  const [terrainNote, setTerrainNote] = useState<string | null>(null);
+  const [terrainError, setTerrainError] = useState<string | null>(null);
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
     const e = engine.current;
     if (!view || !e?.missingTerrainTiles || !e.terrainTilePoints || !e.addTerrainTile || draft) return;
@@ -74,15 +76,11 @@ export function useTerrainHeights({
             added++;
           }
         }
-        setTerrainNote(
-          failed
-            ? `${failed} Gradients and station heights follow once the terrain heights load; edit the drawing to try again.`
-            : null,
-        );
+        setTerrainError(failed);
         if (added) setStreets((n) => n + 1);
       });
     }, 400);
     return () => clearTimeout(timer);
-  }, [view, draft, fetchHeights]);
-  return terrainNote;
+  }, [view, draft, fetchHeights, attempt]);
+  return { terrainError, retryTerrain: () => setAttempt((n) => n + 1) };
 }

@@ -51,6 +51,8 @@ export const editorsPt = {
   "rail.element": "Modelo",
   "rail.doubleJunction": "Bifurcação dupla em via dupla",
   "rail.scissors": "Travessão duplo (tesoura)",
+  "rail.terrainFailed":
+    "As altitudes do terreno não foram carregadas: {reason}. As inclinações e as altitudes das estações aparecem quando forem carregadas.",
   "rail.signals": "Sinais",
   "rail.signalsSome":
     "{summary}. Eles são gerados a partir do projeto e o acompanham quando ele muda. Clique em um sinal para alterá-lo ou excluí-lo, ou use a ferramenta Sinal para adicionar um; cada mudança é verificada.",

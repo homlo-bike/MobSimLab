@@ -50,6 +50,8 @@ export const editorsId = {
   "rail.element": "Elemen",
   "rail.doubleJunction": "Percabangan jalur ganda",
   "rail.scissors": "Wesel gunting",
+  "rail.terrainFailed":
+    "Ketinggian tanah tidak termuat: {reason}. Kemiringan dan ketinggian stasiun akan muncul setelah termuat.",
   "rail.signals": "Sinyal",
   "rail.signalsSome":
     "{summary}. Dibuat dari desain dan mengikuti perubahannya. Klik sinyal untuk mengubah atau menghapusnya, atau tambahkan dengan alat Sinyal. Setiap perubahan diperiksa.",

@@ -51,6 +51,8 @@ export const editorsDe = {
   "rail.element": "Bauform",
   "rail.doubleJunction": "Doppelte Abzweigung auf zweigleisiger Strecke",
   "rail.scissors": "Doppelter Gleiswechsel",
+  "rail.terrainFailed":
+    "Geländehöhen wurden nicht geladen: {reason}. Neigungen und Stationshöhen folgen, sobald sie geladen sind.",
   "rail.signals": "Signale",
   "rail.signalsSome":
     "{summary}. Sie werden aus dem Entwurf erzeugt und folgen ihm bei Änderungen. Klicken Sie auf ein Signal, um es zu ändern oder zu löschen, oder fügen Sie mit dem Signal-Werkzeug eines hinzu; jede Änderung wird geprüft.",

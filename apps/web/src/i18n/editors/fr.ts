@@ -51,6 +51,8 @@ export const editorsFr = {
   "rail.element": "Modèle",
   "rail.doubleJunction": "Double bifurcation sur voie double",
   "rail.scissors": "Traversée-jonction double (bretelle croisée)",
+  "rail.terrainFailed":
+    "Les altitudes du terrain n’ont pas été chargées : {reason}. Les pentes et les altitudes des stations suivront dès leur chargement.",
   "rail.signals": "Signaux",
   "rail.signalsSome":
     "{summary}. Ils sont générés à partir du projet et le suivent quand il change. Cliquez sur un signal pour le modifier ou le supprimer, ou utilisez l’outil Signal pour en ajouter un ; chaque modification est vérifiée.",

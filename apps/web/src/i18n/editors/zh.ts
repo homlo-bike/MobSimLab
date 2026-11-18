@@ -50,6 +50,7 @@ export const editorsZh = {
   "rail.element": "型号",
   "rail.doubleJunction": "双线上的双向分岔",
   "rail.scissors": "交叉渡线",
+  "rail.terrainFailed": "未能加载地面高程：{reason}。加载后将显示坡度和车站高程。",
   "rail.signals": "信号机",
   "rail.signalsSome":
     "{summary}。信号机根据设计自动生成，并随设计变化而更新。点击信号机可修改或删除，或用“信号机”工具添加；每次修改都会检查。",

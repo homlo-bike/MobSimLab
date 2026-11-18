@@ -53,6 +53,9 @@ export interface RailPanelActions {
 export interface RailPanelProps {
   /** Why streets (and so level crossings) are missing, if they are. */
   streetNote?: string | null;
+  /** Why terrain heights did not load (a 403, a timeout…); shown with a retry, apart from the street note. */
+  terrainError?: string | null;
+  onRetryTerrain?: () => void;
   /** Existing railways from OpenStreetMap are loaded (app setting). */
   existingRailways?: boolean;
   doc: Network;
