@@ -40,7 +40,8 @@ import {
   showConnections,
 } from "./mapLayers";
 import { freeTrackEnds, joinAtFreeEnds, type TrackEnd } from "./trackEnds";
-import { COLORS } from "./modes";
+import { COLORS, RAIL_MODES } from "./modes";
+import { offeredModes, usePlannedModes } from "../../projects/plannedModes";
 import {
   RailPanel,
   type NewStationOpts,
@@ -184,6 +185,11 @@ export function RailwayEditor({
   const vehiclesOff = useVehiclesOff();
   const [ready, setReady] = useState(false);
   const [doc, setDoc] = useState<Network | null>(initial);
+  // A new drawing's mode: the first rail mode the project plans to use (metro when the plan names none).
+  const planned = usePlannedModes();
+  const plannedRail = offeredModes(RAIL_MODES, (m) => m.id, planned);
+  const newMode: RailMode =
+    planned.length && plannedRail.length < RAIL_MODES.length ? plannedRail[0]!.id : "metro";
   const [draft, setDraft] = useState<Track | null>(null);
   const [cursor, setCursor] = useState<Cursor | null>(null);
   const [tool, setTool] = useState<RailTool>("station");
@@ -242,8 +248,8 @@ export function RailwayEditor({
   useEffect(() => {
     if (!map || doc) return;
     const c = map.getCenter();
-    setDoc(emptyNetwork("metro", [c.lng, c.lat]));
-  }, [map, doc]);
+    setDoc(emptyNetwork(newMode, [c.lng, c.lat]));
+  }, [map, doc, newMode]);
   // Positions are local metres around the drawing's origin, which is only exact near it: an origin left where the
   // map first opened (say over Europe) rotates and stretches a station drawn 2,500 km away. While nothing is drawn,
   // the origin follows the map.
@@ -761,7 +767,7 @@ export function RailwayEditor({
     clear: () => {
       if (!map) return;
       const c = map.getCenter();
-      setDoc(emptyNetwork(doc?.mode ?? "metro", [c.lng, c.lat]));
+      setDoc(emptyNetwork(doc?.mode ?? newMode, [c.lng, c.lat]));
       setSel(null);
       setDraft(null);
       setTool("station");

@@ -22,6 +22,7 @@ import {
   prepare,
   prepareValues,
   scenarios,
+  shareOfTotal,
 } from "../src/features/benefits/model";
 import { networkOf, withoutRoutes } from "../src/features/benefits/network";
 import { distanceM as metres } from "../src/map/geo";
@@ -367,8 +368,20 @@ describe("benefit estimate", () => {
     // People who gain access to the hospital near East.
     expect(total.access.gaining.hospital).toBeGreaterThan(0);
     expect(total.access.after.jobs).toBeGreaterThan(total.access.before.jobs);
+    // Each mode gets its lines' GDP growth, and the lines add up to the total.
+    const gdp = (id: string) => e.rows.find((r) => r.id === id)!.values.gdp;
+    expect(gdp("mode:metro")).toEqual(gdp("rail:M1"));
+    expect((gdp("rail:M1")[1] + gdp("street:0")[1]) / total.values.gdp[1]).toBeCloseTo(1, 1);
     const again = await run();
     expect(again.e.rows[4]!.values).toEqual(total.values);
+  });
+
+  it("splits the network's GDP growth between lines by what each adds on its own", () => {
+    // Removing either of two parallel lines loses little, removing a link loses much: alone they claim 30 + 30
+    // + 90 = 150, but the network gives 100.
+    expect(shareOfTotal([30, 30, 90], 100)).toEqual([20, 20, 60]);
+    expect(shareOfTotal([-5, 10], 50)).toEqual([0, 50]);
+    expect(shareOfTotal([0, 0], 50)).toEqual([0, 0]);
   });
 
   it("lists the people and jobs near each station, per line, mode and in total", async () => {

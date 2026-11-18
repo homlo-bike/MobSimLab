@@ -196,6 +196,8 @@ describe("Map data panel", () => {
     render(<MapDataPanel api={api} map={null} />);
     expect((await screen.findByRole("alert")).textContent).toMatch(/Geofabrik is unreachable/);
     expect(screen.queryByText("No Geofabrik region holds the whole area.")).toBeNull();
+    // The method no longer stays on Geofabrik: the area is too large for Overpass, so it is the file upload.
+    expect((screen.getByLabelText("Get the data from") as HTMLSelectElement).value).toBe("upload");
   });
 
   it("starts the elevation import and hides imports from viewers", async () => {
