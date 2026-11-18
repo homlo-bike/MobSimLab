@@ -95,11 +95,14 @@ export function FareTables({
   );
   const [ox, oy] = sd.origin ?? defaultOrigin(net);
   const straighten = sd.straighten !== false;
-  const pos = useMemo(
-    () => layout(net, [ox, oy], sd.pins, straighten).pos,
-    [net, ox, oy, sd.pins, straighten],
-  );
   const zones = (sd.areas ?? []).filter((a) => a.kind === "zone" && a.points.length >= 3);
+  // The network map's layout places the stations in the tariff zones; it takes seconds on a network with
+  // hundreds of stops (bug 21), so it runs only when there are zones.
+  const hasZones = zones.length > 0;
+  const pos = useMemo(
+    () => (hasZones ? layout(net, [ox, oy], sd.pins, straighten).pos : []),
+    [hasZones, net, ox, oy, sd.pins, straighten],
+  );
   const trips = useMemo(
     () => lineTrips(net, pos, sd.areas ?? [], benefits?.stations ?? {}, boardings),
     [net, pos, sd.areas, benefits, boardings],

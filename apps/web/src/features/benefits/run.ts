@@ -27,6 +27,9 @@ export async function accessByScenario(
   const out = new Map<string, ZoneAccess[]>();
   const stopsOf = P.zones.map((z) => P.net.stations.find((s) => s.id === z.id)?.stopIds ?? []);
   for (const s of scenarios(P.net)) {
+    // One scenario at a time, letting the page answer in between: a network with hundreds of stops
+    // takes about a second per scenario (the Tables tab froze on the Damascus network, bug 21).
+    await new Promise<void>((r) => setTimeout(r, 0));
     const part = scenarioTimetable(tt, s);
     if (!part) {
       out.set(s.key, access(P.zones, matrix(P.zones, stopsOf, null, P.walk), prefs));

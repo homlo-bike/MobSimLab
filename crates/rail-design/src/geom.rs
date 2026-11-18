@@ -379,7 +379,12 @@ impl<'a> Grid<'a> {
                     } else {
                         0.0
                     };
-                    let d = p.dist(q0.p.add(ab.mul(t)));
+                    let e = p.sub(q0.p.add(ab.mul(t)));
+                    // Squared first: `hypot` is slow in WebAssembly and most segments are far.
+                    if e.dot(e) > r * r * (1.0 + 1e-9) + 1e-9 {
+                        continue;
+                    }
+                    let d = e.len();
                     if d <= r {
                         f(owner, d, q0.s + (q1.s - q0.s) * t);
                     }

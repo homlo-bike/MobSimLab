@@ -15,6 +15,13 @@ function initWasm() {
 }
 
 /**
+ * Purpose: wait for the browser's next task, so it can paint and answer input between long engine steps
+ * (building and publishing a large railway takes a second or more each; the Tables tab froze on the
+ * Damascus network, bug 21).
+ */
+export const nextTask = () => new Promise<void>((r) => setTimeout(r, 0));
+
+/**
  * Purpose: load the rail-design WebAssembly module and create an engine.
  * Output: the engine; every edit sends the whole document to `build`.
  * Dependencies: apps/web/src/wasm/rail-design, built by tools/wasm/build-rail-design.sh.

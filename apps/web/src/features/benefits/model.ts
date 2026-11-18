@@ -247,6 +247,51 @@ export function catchments(tt: Timetable, prefs: PrepareInput["prefs"]): { id: s
   }));
 }
 
+/**
+ * Purpose: the stations that may be within their catchment of a point, found on a grid of squares
+ * at least as wide as the largest catchment, so the zones of a network with hundreds of stops do not
+ * measure every 50 m cell against every stop (the Tables tab froze on the Damascus network, bug 21).
+ * Input: the stations with their catchment radius, m. Output: a function giving, for a point, the
+ * indexes of the stations in its square and the eight around it, in ascending order; every station
+ * whose catchment holds the point is among them (all stations for a network spread over more than
+ * two degrees of latitude).
+ */
+export function stationsAround(st: readonly { at: LonLat; radius: number }[]): (p: LonLat) => number[] {
+  const lats = st.map((s) => s.at[1]);
+  // Across more than two degrees of latitude the flat squares stop being safe: check every station.
+  if (!st.length || Math.max(...lats) - Math.min(...lats) > 2) {
+    const every = st.map((_, i) => i);
+    return () => every;
+  }
+  const lat0 = lats.reduce((a, v) => a + v, 0) / st.length;
+  // A margin for the flat projection across a city or region; the distances themselves are measured
+  // on the sphere by the caller.
+  const size = Math.max(1, ...st.map((s) => s.radius)) * 1.25 + 100;
+  const kx = 111_320 * Math.max(0.01, Math.cos((lat0 * Math.PI) / 180));
+  const sq = (p: LonLat): [number, number] => [
+    Math.floor((p[0] * kx) / size),
+    Math.floor((p[1] * 110_574) / size),
+  ];
+  const grid = new Map<string, number[]>();
+  st.forEach((s, i) => {
+    const [x, y] = sq(s.at);
+    const k = `${x},${y}`;
+    const list = grid.get(k);
+    if (list) list.push(i);
+    else grid.set(k, [i]);
+  });
+  return (p) => {
+    const [x, y] = sq(p);
+    const out: number[] = [];
+    for (let dx = -1; dx <= 1; dx++)
+      for (let dy = -1; dy <= 1; dy++) {
+        const list = grid.get(`${x + dx},${y + dy}`);
+        if (list) out.push(...list);
+      }
+    return out.sort((a, b) => a - b);
+  };
+}
+
 /** Prefixes of the project values that `prepare` and `access` read: catchments, walking and benefit values. */
 const PREPARE_KEYS = ["benefit.", "mode.catchment_m", "journey.", "demand.walk_speed_kmh"];
 
@@ -267,12 +312,14 @@ export function prepare(input: PrepareInput): Prepared {
   const notes: string[] = [];
   const net = networkOf(input.timetable, sameNameStationM(prefs));
   const st = net.stations.map((s) => ({ ...s, radius: catchment(s.modes, prefs) }));
+  const around = stationsAround(st);
   const nearest = (p: LonLat): { i: number; d: number } | null => {
     let best: { i: number; d: number } | null = null;
-    st.forEach((s, i) => {
+    for (const i of around(p)) {
+      const s = st[i]!;
       const d = distanceM(p, s.at);
       if (d <= s.radius && (!best || d < best.d)) best = { i, d };
-    });
+    }
     return best;
   };
 
@@ -371,10 +418,7 @@ export function prepare(input: PrepareInput): Prepared {
     for (let x = x0; x <= e; x += step.x)
       for (let y = y0; y <= n; y += step.y) {
         const at: LonLat = [x + step.x / 2, y + step.y / 2];
-        const circles: number[] = [];
-        st.forEach((z, i) => {
-          if (distanceM(at, z.at) <= z.radius) circles.push(i);
-        });
+        const circles = around(at).filter((i) => distanceM(at, st[i]!.at) <= st[i]!.radius);
         if (!circles.length) continue;
         const zone = nearest(at)!.i;
         for (const c of circles) nCells.set(c, (nCells.get(c) ?? 0) + 1);

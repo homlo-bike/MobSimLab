@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { loadRailEngine } from "../railways/engine";
+import { loadRailEngine, nextTask } from "../railways/engine";
 import { engineLines } from "../railways/serviceLines";
 import type {
   EngineServiceLine,
@@ -83,8 +83,18 @@ export function useRailPublications(
     (async () => {
       const engine = await loadRail();
       try {
+        await nextTask();
+        if (!live) return;
         engine.build(railway!, null);
-        const publications = publishDays(engine, railway!, cal, options, values);
+        // One day type at a time, letting the page answer in between: each takes a second or more on
+        // a large network (the Tables tab froze on the Damascus network, bug 21).
+        const publications: DayPublications = {};
+        for (const [day, dayLines] of lines) {
+          if (!dayLines.length) continue;
+          await nextTask();
+          if (!live) return;
+          publications[day] = engine.publishLines(dayLines, day, options);
+        }
         if (live) setState({ key, publications, error: null });
       } catch (err) {
         fail(err);

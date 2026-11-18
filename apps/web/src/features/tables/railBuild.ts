@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { fetchElevations } from "../../terrain/terrain";
-import { loadRailEngine } from "../railways/engine";
+import { loadRailEngine, nextTask } from "../railways/engine";
 import { engineLines } from "../railways/serviceLines";
 import type { Timetable } from "../journey-planner/types";
 import type { LineReport, LonLat, Network, RailEngine, RailEngineLoader, RailView } from "../railways/types";
@@ -59,7 +59,10 @@ export async function buildRailway(
 ): Promise<Omit<RailBuild, "terrain">> {
   const engine = await loadRail();
   try {
+    // Building and publishing are a second or more each on a large railway: the page answers in between.
+    await nextTask();
     const view = engine.build(railway, null);
+    await nextTask();
     return { view, ...publish(engine, railway) };
   } finally {
     engine.dispose();

@@ -23,6 +23,7 @@ import {
   prepareValues,
   scenarios,
   shareOfTotal,
+  stationsAround,
 } from "../src/features/benefits/model";
 import { networkOf, withoutRoutes } from "../src/features/benefits/network";
 import { distanceM as metres } from "../src/map/geo";
@@ -290,6 +291,33 @@ describe("stations and lines", () => {
     const tt = projectTimetable([], rail, []);
     expect(tt!.routes.map((r) => r.route_id)).toEqual(["rail:M1"]);
     expect(projectTimetable([], null, [])).toBeNull();
+  });
+});
+
+describe("stations around a point", () => {
+  it("finds every station whose catchment holds a point, in order, without measuring them all", () => {
+    const rand = seeded(7);
+    const st = Array.from({ length: 300 }, () => ({
+      at: [36.2 + rand() * 0.3, 33.4 + rand() * 0.25] as LonLat,
+      radius: 300 + rand() * 500,
+    }));
+    const around = stationsAround(st);
+    let fewer = 0;
+    for (let k = 0; k < 2000; k++) {
+      const p: LonLat = [36.15 + rand() * 0.4, 33.35 + rand() * 0.35];
+      const got = around(p);
+      const want = st.flatMap((s, i) => (metres(p, s.at) <= s.radius ? [i] : []));
+      expect(got.filter((i) => metres(p, st[i]!.at) <= st[i]!.radius)).toEqual(want);
+      expect([...got].sort((a, b) => a - b)).toEqual(got);
+      if (got.length < st.length / 4) fewer++;
+    }
+    expect(fewer).toBeGreaterThan(1900);
+    // Spread over many degrees of latitude: every station.
+    const far = stationsAround([
+      { at: [0, 0], radius: 500 },
+      { at: [10, 40], radius: 500 },
+    ]);
+    expect(far([5, 20])).toEqual([0, 1]);
   });
 });
 
