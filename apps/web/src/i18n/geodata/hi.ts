@@ -71,5 +71,12 @@ export const geodataHi = {
   "area.import.current": "{what}: पहले से आयातित",
   "area.import.failed": "{what}: शुरू नहीं हो सका। {reason}",
   "area.seeMapData": "आयात की प्रगति GIS, मानचित्र डेटा में देखें।",
+  "area.country": "देश: {name}।",
+  "area.crossesBorder":
+    "क्षेत्र एक सीमा पार करता है: {countries}। छुट्टियाँ और कीमतें {name} की ली जाती हैं।",
+  "data.liveNotice":
+    "{tiles} मानचित्र टाइलें और {heights} ऊँचाइयाँ परियोजना के आयातित डेटा के बाहर से सीधे आईं। अब वे परियोजना में रखी हैं; पूरे चित्र को ढकने के लिए आयात बढ़ाएँ।",
+  "data.extendImport": "मानचित्र डेटा में आयात बढ़ाएँ",
+  "data.hideLive": "छिपाएँ",
   "data.areaRegions": "क्षेत्र: {area} वर्ग किमी, {names} के चारों ओर का आयत",
 } satisfies GeodataMessages;

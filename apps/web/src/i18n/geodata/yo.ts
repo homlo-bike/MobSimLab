@@ -71,5 +71,11 @@ export const geodataYo = {
   "area.import.current": "{what}: a ti mú un wọlé tẹ́lẹ̀",
   "area.import.failed": "{what}: kò lè bẹ̀rẹ̀. {reason}",
   "area.seeMapData": "Tẹ̀lé mímú wọlé ní GIS, Dátà máàpù.",
+  "area.country": "Orílẹ̀-èdè: {name}.",
+  "area.crossesBorder": "Agbègbè náà rékọjá ààlà: {countries}. Ọjọ́ ìsinmi àti iye owó jẹ́ ti {name}.",
+  "data.liveNotice":
+    "Àwọn tile máàpù {tiles} àti gíga {heights} wá ní tààrà láti ìta dátà tí a gbé wọlé fún iṣẹ́ náà. A ti fi wọ́n pamọ́ sínú iṣẹ́ náà báyìí; fẹ ìgbéwọlé gbòòrò kí ó bo gbogbo àwòrán.",
+  "data.extendImport": "Fẹ ìgbéwọlé gbòòrò nínú Dátà máàpù",
+  "data.hideLive": "Fi pamọ́",
   "data.areaRegions": "Agbègbè: km² {area}, àpótí tó yí {names} ká",
 } satisfies GeodataMessages;

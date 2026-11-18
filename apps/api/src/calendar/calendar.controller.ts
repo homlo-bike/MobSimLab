@@ -1,4 +1,7 @@
-import { BadRequestException, Controller, Get, HttpException, Query } from "@nestjs/common";
+import { BadRequestException, Controller, Get, HttpException, Optional, Query, Req } from "@nestjs/common";
+import type { MslRequest } from "../auth/session.service";
+import { ProjectGate } from "../geodata/project-gate";
+import { factKey, ProjectDataCache } from "../projects/data-cache";
 import { z } from "zod";
 import { NagerClient, NagerError } from "../gateway/nager.client";
 import { OpenMeteoClient, OpenMeteoError } from "../gateway/openmeteo.client";
@@ -7,11 +10,13 @@ import { Requires } from "../iam/requires";
 const holidaysQuery = z.object({
   country: z.string().regex(/^[A-Za-z]{2}$/),
   year: z.coerce.number().int().min(1900).max(2200),
+  project: z.string().optional(),
 });
 
 const climateQuery = z.object({
   lat: z.coerce.number().min(-90).max(90),
   lon: z.coerce.number().min(-180).max(180),
+  project: z.string().optional(),
 });
 
 /** Where the climate comes from, for the source note: the data is CC BY 4.0 and must be credited. */
@@ -35,7 +40,22 @@ export class CalendarController {
   constructor(
     private readonly nager: NagerClient,
     private readonly openMeteo: OpenMeteoClient,
+    @Optional() private readonly gate?: ProjectGate,
+    @Optional() private readonly kept?: ProjectDataCache,
   ) {}
+
+  /** Purpose: an answer kept for the project (`?project=`), else fetched live and kept (#140 step 3). */
+  private async through<T>(
+    req: MslRequest,
+    project: string | undefined,
+    key: string,
+    live: () => Promise<T>,
+  ): Promise<T> {
+    const projectId = await this.gate?.readable(req, project);
+    if (!projectId || !this.kept) return live();
+    const r = await this.kept.through(projectId, "facts", key, async () => JSON.stringify(await live()));
+    return JSON.parse(r.body) as T;
+  }
 
   /**
    * Purpose: the monthly climate (1991–2020) at the project's location, for weather day types.
@@ -44,11 +64,15 @@ export class CalendarController {
    */
   @Get("climate")
   @Requires("instance.read")
-  async climate(@Query() q: unknown) {
+  async climate(@Query() q: unknown, @Req() req: MslRequest) {
     const r = climateQuery.safeParse(q);
     if (!r.success) throw new BadRequestException(z.prettifyError(r.error));
     try {
-      return { ...(await this.openMeteo.climate(r.data.lat, r.data.lon)), source: CLIMATE_SOURCE };
+      const { lat, lon, project } = r.data;
+      const climate = await this.through(req, project, factKey.climate(lat, lon), () =>
+        this.openMeteo.climate(lat, lon),
+      );
+      return { ...climate, source: CLIMATE_SOURCE };
     } catch (e) {
       if (e instanceof OpenMeteoError)
         throw new HttpException(
@@ -66,12 +90,14 @@ export class CalendarController {
    */
   @Get("holidays")
   @Requires("instance.read")
-  async holidays(@Query() q: unknown) {
+  async holidays(@Query() q: unknown, @Req() req: MslRequest) {
     const r = holidaysQuery.safeParse(q);
     if (!r.success) throw new BadRequestException(z.prettifyError(r.error));
     const country = r.data.country.toUpperCase();
     try {
-      const holidays = await this.nager.holidays(country, r.data.year);
+      const holidays = await this.through(req, r.data.project, factKey.holidays(country, r.data.year), () =>
+        this.nager.holidays(country, r.data.year),
+      );
       return { country, year: r.data.year, holidays, source: HOLIDAY_SOURCE };
     } catch (e) {
       if (e instanceof NagerError)

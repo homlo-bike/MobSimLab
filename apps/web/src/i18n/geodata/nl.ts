@@ -72,5 +72,12 @@ export const geodataNl = {
   "area.import.current": "{what}: al geïmporteerd",
   "area.import.failed": "{what}: kon niet starten. {reason}",
   "area.seeMapData": "Volg de imports in GIS, Kaartgegevens.",
+  "area.country": "Land: {name}.",
+  "area.crossesBorder":
+    "Het gebied gaat over een grens: {countries}. Feestdagen en prijzen gelden voor {name}.",
+  "data.liveNotice":
+    "{tiles} kaarttegels en {heights} hoogtes kwamen live van buiten de geïmporteerde projectgegevens. Ze blijven nu bij het project; breid de import uit zodat die de hele tekening dekt.",
+  "data.extendImport": "Import uitbreiden in Kaartgegevens",
+  "data.hideLive": "Verbergen",
   "data.areaRegions": "Gebied: {area} km², de rechthoek om {names}",
 } satisfies GeodataMessages;

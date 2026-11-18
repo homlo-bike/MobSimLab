@@ -19,11 +19,21 @@ export interface AreaImport {
   reason?: string;
 }
 
+/** A country of the project area, with its share of the area (apps/api/src/projects/area-facts.ts). */
+export interface AreaCountry {
+  iso2: string;
+  iso3: string | null;
+  name: string;
+  share: number;
+}
+
 /** What `GET /api/projects/:id/area` answers. */
 export interface AreaView {
   regions: AreaRegion[];
   bbox: [number, number, number, number] | null;
   areaKm2: number | null;
+  /** The area's countries, looked up once; the first is the project's country. Null until looked up. */
+  countries?: { main: AreaCountry | null; countries: AreaCountry[] } | null;
 }
 
 export interface ProjectAreaApi {

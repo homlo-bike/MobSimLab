@@ -70,5 +70,11 @@ export const geodataAr = {
   "area.import.current": "{what}: مستورد بالفعل",
   "area.import.failed": "{what}: تعذّر البدء. {reason}",
   "area.seeMapData": "تابع الاستيراد في نظم المعلومات الجغرافية، بيانات الخريطة.",
+  "area.country": "الدولة: {name}.",
+  "area.crossesBorder": "تعبر المنطقة حدودًا: {countries}. تُستخدم العطلات والأسعار الخاصة بـ {name}.",
+  "data.liveNotice":
+    "جاءت {tiles} بلاطة خريطة و{heights} ارتفاعًا مباشرةً من خارج بيانات المشروع المستوردة. صارت محفوظة في المشروع الآن؛ وسّع الاستيراد ليغطي الرسم كله.",
+  "data.extendImport": "توسيع الاستيراد في بيانات الخريطة",
+  "data.hideLive": "إخفاء",
   "data.areaRegions": "المنطقة: {area} كم²، المستطيل المحيط بـ {names}",
 } satisfies GeodataMessages;

@@ -11,6 +11,7 @@ import {
   UseInterceptors,
 } from "@nestjs/common";
 import type { MslRequest } from "../auth/session.service";
+import type { DataSource } from "../projects/data-cache";
 import { OverpassError } from "../gateway/overpass.client";
 import { ProjectGate } from "../geodata/project-gate";
 import { ToolError } from "../geodata/osm-tools";
@@ -49,7 +50,7 @@ export class StreetNetworkController {
     const [x, y] = parseTile(xs, ys);
     const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.tile(x, y, projectId);
+      return await this.streets.tile(x, y, projectId, sourceHeader(req));
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap streets are unavailable right now", e.status);
@@ -77,7 +78,7 @@ export class StreetNetworkController {
     const [x, y] = parseTile(xs, ys);
     const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.walkTile(x, y, projectId);
+      return await this.streets.walkTile(x, y, projectId, sourceHeader(req));
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap streets are unavailable right now", e.status);
@@ -105,7 +106,7 @@ export class StreetNetworkController {
     const [x, y] = parseTile(xs, ys);
     const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.railTile(x, y, projectId);
+      return await this.streets.railTile(x, y, projectId, sourceHeader(req));
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap railways are unavailable right now", e.status);
@@ -133,7 +134,7 @@ export class StreetNetworkController {
     const [x, y] = parseTile(xs, ys);
     const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.buildingTile(x, y, projectId);
+      return await this.streets.buildingTile(x, y, projectId, sourceHeader(req));
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap buildings are unavailable right now", e.status);
@@ -159,7 +160,7 @@ export class StreetNetworkController {
     const [x, y] = parseTile(xs, ys);
     const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.placeTile(x, y, projectId);
+      return await this.streets.placeTile(x, y, projectId, sourceHeader(req));
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap places are unavailable right now", e.status);
@@ -184,7 +185,7 @@ export class StreetNetworkController {
     const b = parseBbox(bbox);
     const projectId = await this.gate?.readable(req, project);
     try {
-      return await this.streets.water(b, projectId);
+      return await this.streets.water(b, projectId, sourceHeader(req));
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap water is unavailable right now", e.status);
@@ -248,4 +249,15 @@ function parseTile(xs: string, ys: string): [number, number] {
     throw new BadRequestException("Invalid tile");
   }
   return [x!, y!];
+}
+
+/** Header saying where map data came from: the project's import, its cache, or live (#140 step 5). */
+export const DATA_SOURCE_HEADER = "X-MSL-Data-Source";
+
+/** Purpose: a callback that sets the data source header on the request's response. */
+function sourceHeader(req: MslRequest): (s: DataSource) => void {
+  return (s) => {
+    const res = (req as { res?: { setHeader?: (k: string, v: string) => void; headersSent?: boolean } }).res;
+    if (res?.setHeader && !res.headersSent) res.setHeader(DATA_SOURCE_HEADER, s);
+  };
 }

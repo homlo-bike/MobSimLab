@@ -1,3 +1,4 @@
+import { ProjectDataCache } from "../projects/data-cache";
 import { Injectable, Optional } from "@nestjs/common";
 import { CopernicusDemClient, DemError, TERRAIN_SOURCE } from "../gateway/copernicus-dem.client";
 import { OPEN_ELEVATION_SOURCE, OpenElevationClient } from "../gateway/open-elevation.client";
@@ -81,7 +82,12 @@ export type HeightSource = Record<string, unknown> & { verticalAccuracyM?: numbe
 export interface Heights {
   values: Array<number | null>;
   sources: HeightSource[];
+  /** How many heights were read live because neither the project's import nor its cache held them. */
+  live?: number;
 }
+
+/** Purpose: the cache key of a point: lon,lat to 5 decimals (about a metre). */
+const heightKey = (p: LonLat) => `${p[0].toFixed(5)},${p[1].toFixed(5)}`;
 
 /**
  * Purpose: the source to show next to a result: the least accurate of those used (C-09 shows the accuracy
@@ -109,6 +115,7 @@ export class TerrainService {
     private readonly overpass: OverpassClient,
     @Optional() private readonly imported?: GeodataReader,
     @Optional() private readonly fallback?: OpenElevationClient,
+    @Optional() private readonly kept?: ProjectDataCache,
   ) {}
 
   /**
@@ -166,6 +173,18 @@ export class TerrainService {
       r.values.forEach((v, i) => (values[i] = v));
       sources.push(...(r.sources as HeightSource[]));
     }
+    // Outside the import: heights read live for the project before (#140 step 4).
+    if (projectId && this.kept) {
+      const want = values.flatMap((v, i) => (v === undefined ? [i] : []));
+      const hits = await this.kept.getMany(projectId, "height", [
+        ...new Set(want.map((i) => heightKey(points[i]!))),
+      ]);
+      for (const i of want) {
+        const h = hits.get(heightKey(points[i]!));
+        if (h !== undefined) values[i] = h === "" ? null : Number(h);
+      }
+      if (hits.size) sources.push(TERRAIN_SOURCE);
+    }
     const rest = values.flatMap((v, i) => (v === undefined ? [i] : []));
     if (rest.length) {
       try {
@@ -178,9 +197,14 @@ export class TerrainService {
         rest.forEach((i, k) => (values[i] = zs[k] ?? null));
         sources.push(OPEN_ELEVATION_SOURCE);
       }
+      if (projectId && this.kept) {
+        const entries = new Map(rest.map((i) => [heightKey(points[i]!), String(values[i] ?? "")]));
+        await this.kept.putMany(projectId, "height", [...entries]);
+      }
     }
     const seen = new Set<string>();
     return {
+      live: rest.length,
       values: values.map((v) => v ?? null),
       sources: sources.filter((s) => {
         const k = `${String(s.id ?? s.name)}|${String(s.retrievedAt ?? "")}`;

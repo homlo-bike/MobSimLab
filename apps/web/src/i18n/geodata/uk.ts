@@ -72,5 +72,11 @@ export const geodataUk = {
   "area.import.current": "{what}: уже імпортовано",
   "area.import.failed": "{what}: не вдалося розпочати. {reason}",
   "area.seeMapData": "Стежте за імпортом у ГІС, Дані карти.",
+  "area.country": "Країна: {name}.",
+  "area.crossesBorder": "Область перетинає кордон: {countries}. Свята й ціни беруться для країни {name}.",
+  "data.liveNotice":
+    "{tiles} тайлів карти та {heights} висот завантажено напряму поза імпортованими даними проєкту. Тепер вони збережені в проєкті; розширте імпорт, щоб він охоплював усе креслення.",
+  "data.extendImport": "Розширити імпорт у Даних карти",
+  "data.hideLive": "Сховати",
   "data.areaRegions": "Територія: {area} км², прямокутник навколо {names}",
 } satisfies GeodataMessages;

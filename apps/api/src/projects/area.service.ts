@@ -1,9 +1,10 @@
-import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, Optional } from "@nestjs/common";
 import { z } from "zod";
 import { DATABASE, type Database } from "../db/database";
 import { GeodataService } from "../geodata/geodata.service";
 import { bboxAreaKm2 } from "../geodata/settings";
 import { PopulationLayersService } from "../population/layers.service";
+import { type AreaCountries, AreaFactsService } from "./area-facts";
 import { type AreaRegion, type Bbox, MAX_AREA_REGIONS, projectArea } from "./project-area";
 import { type ProjectActor, ProjectsService } from "./projects.service";
 
@@ -44,6 +45,8 @@ export interface AreaView {
   /** The box imports cover, or null when there are no regions and nothing is drawn. */
   bbox: Bbox | null;
   areaKm2: number | null;
+  /** The area's countries, looked up once (#140 step 3); null until they are. More than one: it crosses a border. */
+  countries?: AreaCountries | null;
 }
 
 const covers = (outer: readonly number[] | null | undefined, inner: Bbox) =>
@@ -61,16 +64,21 @@ export class ProjectAreaService {
     private readonly projects: ProjectsService,
     private readonly geodata: GeodataService,
     private readonly population: PopulationLayersService,
+    @Optional() private readonly facts?: AreaFactsService,
   ) {}
 
   /** Purpose: the project's regions and the box imports cover. Every member. */
   async get(actor: ProjectActor, projectId: string): Promise<AreaView> {
     await this.projects.access(actor, projectId, "read");
     const area = await projectArea(this.db, projectId);
+    const countries = this.facts ? await this.facts.countries(projectId, area?.bbox ?? null) : null;
+    // Not looked up yet for this area (an older project, or the drawing grew): look up once, in the background.
+    if (this.facts && area && !countries) this.facts.lookUp(projectId);
     return {
       regions: area?.regions ?? [],
       bbox: area?.bbox ?? null,
       areaKm2: area ? Math.round(bboxAreaKm2(area.bbox) * 10) / 10 : null,
+      countries,
     };
   }
 
@@ -110,6 +118,8 @@ export class ProjectAreaService {
       );
     });
     const imports = body.import && body.regions.length ? await this.queueImports(actor, projectId) : [];
+    // A new area: look up its country, holidays and climate once, in the background.
+    this.facts?.lookUp(projectId, true);
     return { ...(await this.get(actor, projectId)), imports };
   }
 
