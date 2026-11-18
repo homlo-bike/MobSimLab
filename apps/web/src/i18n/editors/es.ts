@@ -1352,9 +1352,8 @@ export const editorsEs = {
     "Línea M1 Westpark – Eastgate: cinco estaciones, un depósito en cada extremo, cada 5 min en las horas punta y cada 10 min el resto del tiempo.",
   "capacity.topologyFile": "Topología de vías (JSON)",
   "capacity.linesFile": "Líneas (JSON)",
-  "capacity.download": "Descargar topología de vías (JSON)",
   "capacity.filesHelp":
-    "La topología de vías es «{download}» del editor ferroviario. El archivo de líneas indica para cada línea las estaciones, el tren y el servicio, tal como los lee el planificador de horarios (docs/user/simulator.md).",
+    "El archivo de topología de vías sigue contracts/rail-topology.schema.json; para el ferrocarril dibujado en este proyecto, elija «{drawn}». El archivo de líneas indica para cada línea las estaciones, el tren y el servicio, tal como los lee el planificador de horarios (docs/user/simulator.md).",
   "capacity.period": "Periodo",
   "capacity.from": "Desde",
   "capacity.to": "Hasta",

@@ -1340,9 +1340,8 @@ export const editorsUz = {
     "M1 liniya Westpark – Eastgate: beshta bekat, har uchida depo, tig‘izlikda har 5 daq, boshqa vaqtda har 10 daq.",
   "capacity.topologyFile": "Yo‘l topologiyasi (JSON)",
   "capacity.linesFile": "Liniyalar (JSON)",
-  "capacity.download": "Yo‘l topologiyasini yuklab olish (JSON)",
   "capacity.filesHelp":
-    "Yo‘l topologiyasi — temir yo‘l muharriridagi “{download}”. Liniyalar fayli har bir liniyaning bekatlari, poyezdi va qatnovini jadval rejalovchisi o‘qiydigan shaklda sanab beradi (docs/user/simulator.md).",
+    "Yo‘l topologiyasi fayli contracts/rail-topology.schema.json formatiga mos keladi; ushbu loyihada chizilgan temir yo‘l uchun “{drawn}” ni tanlang. Liniyalar fayli har bir liniyaning bekatlari, poyezdi va qatnovini jadval rejalovchisi o‘qiydigan shaklda sanab beradi (docs/user/simulator.md).",
   "capacity.period": "Davr",
   "capacity.from": "Dan",
   "capacity.to": "Gacha",

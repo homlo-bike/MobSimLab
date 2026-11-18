@@ -1338,9 +1338,8 @@ export const editorsSw = {
     "Njia M1 Westpark – Eastgate: stesheni tano, karakana kila mwisho, kila dak 5 wakati wa msongamano na kila dak 10 nyakati nyingine.",
   "capacity.topologyFile": "Topolojia ya reli (JSON)",
   "capacity.linesFile": "Njia (JSON)",
-  "capacity.download": "Pakua topolojia ya reli (JSON)",
   "capacity.filesHelp":
-    "Topolojia ya reli ni “{download}” ya kihariri cha reli. Faili la njia linaorodhesha stesheni, treni na huduma ya kila njia, jinsi mpangaji wa ratiba anavyozisoma (docs/user/simulator.md).",
+    "Faili ya topolojia ya njia inafuata contracts/rail-topology.schema.json; kwa reli iliyochorwa katika mradi huu, chagua “{drawn}”. Faili la njia linaorodhesha stesheni, treni na huduma ya kila njia, jinsi mpangaji wa ratiba anavyozisoma (docs/user/simulator.md).",
   "capacity.period": "Kipindi",
   "capacity.from": "Kuanzia",
   "capacity.to": "Hadi",

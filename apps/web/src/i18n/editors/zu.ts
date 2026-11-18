@@ -1361,9 +1361,8 @@ export const editorsZu = {
     "Ulayini M1 Westpark – Eastgate: iziteshi ezinhlanu, idepho ekugcineni ngakunye, njalo ngemizuzu engu-5 ngesikhathi sesiminyaminya nanjalo ngemizuzu engu-10 ngezinye izikhathi.",
   "capacity.topologyFile": "Isakhiwo sojantshi (JSON)",
   "capacity.linesFile": "Olayini (JSON)",
-  "capacity.download": "Landa isakhiwo sojantshi (JSON)",
   "capacity.filesHelp":
-    "Isakhiwo sojantshi yi-“{download}” yomhleli wojantshi. Ifayela lolayini libala iziteshi, isitimela nensizakalo yolayini ngamunye, njengoba umhleli wezikhathi zokuhamba ezifunda (docs/user/simulator.md).",
+    "Ifayela le-topology yojantshi lilandela i-contracts/rail-topology.schema.json; kujantshi odwetshwe kule phrojekthi, khetha “{drawn}”. Ifayela lolayini libala iziteshi, isitimela nensizakalo yolayini ngamunye, njengoba umhleli wezikhathi zokuhamba ezifunda (docs/user/simulator.md).",
   "capacity.period": "Isikhathi",
   "capacity.from": "Kusukela",
   "capacity.to": "Kuze kube",

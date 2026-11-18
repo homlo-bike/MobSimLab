@@ -1330,9 +1330,8 @@ export const editorsHa = {
     "Layi M1 Westpark – Eastgate: tasoshi biyar, ma’ajiya a kowane ƙarshe, kowane mint. 5 a lokacin cunkoso da kowane mint. 10 a sauran lokaci.",
   "capacity.topologyFile": "Tsarin layin dogo (JSON)",
   "capacity.linesFile": "Layuka (JSON)",
-  "capacity.download": "Sauke tsarin layin dogo (JSON)",
   "capacity.filesHelp":
-    "Tsarin layin dogo shi ne “{download}” na editan layin dogo. Fayil ɗin layuka yana lissafa tasoshi, jirgi da sabis na kowane layi, kamar yadda mai tsara jadawali yake karanta su (docs/user/simulator.md).",
+    "Fayil ɗin tsarin layin dogo yana bin contracts/rail-topology.schema.json; don layin dogon da aka zana a wannan aikin, zaɓi “{drawn}”. Fayil ɗin layuka yana lissafa tasoshi, jirgi da sabis na kowane layi, kamar yadda mai tsara jadawali yake karanta su (docs/user/simulator.md).",
   "capacity.period": "Lokaci",
   "capacity.from": "Daga",
   "capacity.to": "Zuwa",

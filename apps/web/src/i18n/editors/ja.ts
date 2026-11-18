@@ -1271,9 +1271,8 @@ export const editorsJa = {
     "M1 線 Westpark – Eastgate：5 駅、両端に車両基地、ラッシュ時は 5 分ごと、それ以外は 10 分ごと。",
   "capacity.topologyFile": "線路トポロジー（JSON）",
   "capacity.linesFile": "路線（JSON）",
-  "capacity.download": "線路トポロジーをダウンロード（JSON）",
   "capacity.filesHelp":
-    "線路トポロジーは鉄道エディタの「{download}」です。路線ファイルには、ダイヤ作成が読む形式で各路線の駅、列車、運行が並びます（docs/user/simulator.md）。",
+    "線路トポロジーのファイルは contracts/rail-topology.schema.json に従います。このプロジェクトで描いた鉄道には「{drawn}」を選んでください。路線ファイルには、ダイヤ作成が読む形式で各路線の駅、列車、運行が並びます（docs/user/simulator.md）。",
   "capacity.period": "時間帯",
   "capacity.from": "開始",
   "capacity.to": "終了",

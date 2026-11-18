@@ -1317,9 +1317,8 @@ export const editorsUr = {
     "لائن M1 ‏Westpark – Eastgate: پانچ اسٹیشن، ہر سرے پر ایک ڈپو، رش میں ہر 5 منٹ اور باقی وقت ہر 10 منٹ۔",
   "capacity.topologyFile": "پٹری کی ٹوپولوجی (JSON)",
   "capacity.linesFile": "لائنیں (JSON)",
-  "capacity.download": "پٹری کی ٹوپولوجی ڈاؤن لوڈ کریں (JSON)",
   "capacity.filesHelp":
-    "پٹری کی ٹوپولوجی ریلوے ایڈیٹر کی ”{download}“ ہے۔ لائنوں کی فائل ہر لائن کے اسٹیشن، ٹرین اور سروس اسی طرح درج کرتی ہے جیسے ٹائم ٹیبل پلانر پڑھتا ہے (docs/user/simulator.md)۔",
+    "ٹریک ٹوپولوجی فائل contracts/rail-topology.schema.json کے مطابق ہوتی ہے؛ اس پروجیکٹ میں بنائی گئی ریلوے کے لیے “{drawn}” منتخب کریں۔ لائنوں کی فائل ہر لائن کے اسٹیشن، ٹرین اور سروس اسی طرح درج کرتی ہے جیسے ٹائم ٹیبل پلانر پڑھتا ہے (docs/user/simulator.md)۔",
   "capacity.period": "مدت",
   "capacity.from": "سے",
   "capacity.to": "تک",
