@@ -11,7 +11,7 @@ import { cleanFeatures, type StationFeature } from "../stations/features";
 import { lineStats } from "../street-lines/summary";
 import { lineMode } from "../railways/serviceLines";
 import { MODES } from "../street-lines/modes";
-import type { StreetLinesDoc } from "../street-lines/saved";
+import { streetLineColor, type StreetLinesDoc } from "../street-lines/saved";
 import type { LonLat } from "../street-lines/types";
 import { distanceM } from "../../map/geo";
 import { paramNumber, type PreferencesDoc, sameNameStationM } from "../../workspace/preferences";
@@ -275,7 +275,7 @@ function rawLines(
       id: `street:${i}`,
       name: l.name,
       mode: l.profile.mode,
-      color: MODES[l.profile.mode]?.color ?? MODES.bus.color,
+      color: streetLineColor(l),
       stops,
       service: {
         // The journey planner runs street lines at half their headway in the peak.

@@ -39,6 +39,8 @@ import { ToolPalette } from "../features/street-lines/ToolPalette";
 import {
   lineInput,
   newLineId,
+  nextLineColor,
+  withLineColors,
   type SavedStreetLine,
   type StreetLinesDoc,
 } from "../features/street-lines/saved";
@@ -598,12 +600,13 @@ export function Workspace({
     forgetSetups(projectId);
   }, [drawings.loaded, editable, projectId]);
   const savedStreet = streetLines?.lines ?? NO_STREET_LINES;
-  // Street lines saved before lines had ids get one, so their comments stay with them (Owners and Editors save).
+  // Street lines saved before lines had ids get one, so their comments stay with them, and before lines had
+  // colours a colour of their own, so lines of one mode can be told apart (Owners and Editors save).
   useEffect(() => {
-    if (!drawings.loaded || !editable || !streetLines?.lines.some((l) => !l.id)) return;
+    if (!drawings.loaded || !editable || !streetLines?.lines.some((l) => !l.id || !l.color)) return;
     drawings.set("street-lines", {
       ...streetLines,
-      lines: streetLines.lines.map((l) => (l.id ? l : { ...l, id: newLineId() })),
+      lines: withLineColors(streetLines.lines.map((l) => (l.id ? l : { ...l, id: newLineId() }))),
     } satisfies StreetLinesDoc);
   }, [drawings.loaded, editable, streetLines]);
   const editedStreet = Math.min(streetIndex, savedStreet.length);
@@ -970,6 +973,10 @@ export function Workspace({
                 initial={savedStreet[editedStreet] ?? null}
                 onSave={saveStreet}
                 defaultName={t("street.lineN", { n: editedStreet + 1 })}
+                defaultColor={
+                  withLineColors(savedStreet)[editedStreet]?.color ??
+                  nextLineColor(savedStreet.map((l) => l.color))
+                }
                 otherLines={otherStreet}
                 onPickLine={(id) => {
                   const i = savedStreet.findIndex((l) => l.id === id);

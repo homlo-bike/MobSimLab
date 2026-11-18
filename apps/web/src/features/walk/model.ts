@@ -5,7 +5,7 @@
 import data from "./defaults.generated.json";
 import { paramNumber } from "../../workspace/preferences";
 import type { Network, RailView } from "../railways/types";
-import type { StreetLinesDoc } from "../street-lines/saved";
+import { streetLineColor, type StreetLinesDoc } from "../street-lines/saved";
 import { MODES } from "../street-lines/modes";
 import type { DemandPoint, LonLat, StopPoint, WalkSettings } from "./types";
 
@@ -129,7 +129,7 @@ export function streetNetwork(doc: StreetLinesDoc | null): ProjectNetwork {
       id: `street-${i}`,
       name: l.name || `${i + 1}`,
       mode: l.profile.mode,
-      color: MODES[l.profile.mode]?.color ?? MODES.bus.color,
+      color: streetLineColor(l),
       kind: "street",
       directions: directions.map((d) => ({ ...d, route: d.route && d.route.length >= 2 ? d.route : null })),
     });

@@ -18,7 +18,7 @@ import {
 import { depotElement, pointElement } from "./markers";
 import { fullTiming, MODES, type Timing } from "./modes";
 import { profileWith, vehicleById } from "./service";
-import { keepRoutedLegs, lineBounds, lineTiles, type SavedStreetLine } from "./saved";
+import { keepRoutedLegs, lineBounds, lineTiles, type SavedStreetLine, streetLineColor } from "./saved";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
 import type { StreetLineInput } from "../journey-planner/network";
 import { depotFit, depotGates, lineVehicle } from "../depots/model";
@@ -117,6 +117,8 @@ interface Props {
   onSave?: (line: SavedStreetLine) => void;
   /** Name for a new line (the project's other lines have theirs). */
   defaultName?: string;
+  /** Colour of a new line (the next one no line uses). */
+  defaultColor?: string;
   /** The project's other street lines, drawn faded under this one. */
   otherLines?: readonly SavedStreetLine[];
   /** Called with a saved line's id when the planner clicks it on the map (Select tool), to edit it instead. */
@@ -159,6 +161,7 @@ export function StreetLineEditor({
   initial = null,
   onSave,
   defaultName,
+  defaultColor,
   otherLines = NO_LINES,
   onPickLine,
   lineList = null,
@@ -182,6 +185,8 @@ export function StreetLineEditor({
   const [timing, setTiming] = useState<Timing>(fullTiming(initial?.timing));
   const [vehicle, setVehicle] = useState<string | null>(vehicleById(initial?.vehicle)?.id ?? null);
   const [lineName, setLineName] = useState(initial?.name ?? defaultName ?? tNow("street.defaultName"));
+  // The line's own colour; absent (a line saved before lines had colours, no default given): its mode's.
+  const [lineColor, setOwnColor] = useState<string | null>(initial?.color ?? defaultColor ?? null);
   const [tool, setTool] = useState<Tool>("add");
   const [selected, setSelected] = useState<number | null>(null);
   const [depotStops, setDepotStops] = useState<{ out?: number; in?: number }>({});
@@ -409,7 +414,7 @@ export function StreetLineEditor({
     run((e) => e.setSettings(profile, r));
   }, [projectRulesKey, profile !== null, rules !== null, run]);
 
-  const color = profile ? MODES[profile.mode].color : MODES.bus.color;
+  const color = lineColor ?? (profile ? MODES[profile.mode].color : MODES.bus.color);
   const lineChanged = useRef(onLineChange);
   lineChanged.current = onLineChange;
   useEffect(() => {
@@ -461,7 +466,7 @@ export function StreetLineEditor({
         map,
         otherLines.map((l) => ({
           view: l.view,
-          color: MODES[l.profile.mode]?.color ?? MODES.bus.color,
+          color: streetLineColor(l),
           id: l.id,
         })),
       );
@@ -654,6 +659,7 @@ export function StreetLineEditor({
     profile && rules
       ? {
           name: lineName,
+          ...(lineColor ? { color: lineColor } : {}),
           profile,
           vehicle,
           rules,
@@ -726,6 +732,7 @@ export function StreetLineEditor({
 
   const actions: PanelActions = {
     setName: setLineName,
+    setColor: setOwnColor,
     setPointFeatures: (id, f) => setStopFeatures((m) => ({ ...m, [id]: f })),
     setMode: (m) => {
       if (!engine.current || !rules) return;
@@ -782,6 +789,7 @@ export function StreetLineEditor({
   const sidePanel = profile && rules && (
     <LinePanel
       lineName={lineName}
+      lineColor={color}
       view={view}
       profile={profile}
       timing={timing}
