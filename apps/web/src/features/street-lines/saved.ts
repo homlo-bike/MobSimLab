@@ -71,3 +71,19 @@ export function lineBounds(line: SavedStreetLine): [number, number, number, numb
   const ys = pts.map((p) => p[1]);
   return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
 }
+
+/**
+ * Whether `now` routes more of the same points than `before`: more legs found, or as many legs and more depot runs.
+ * Streets that load after a line was saved can complete its route; the editor then saves the fuller route,
+ * which Tables, costs and the appraisal read. A route with fewer parts found never replaces a saved one.
+ */
+export function routesMore(now: LineView, before: LineView): boolean {
+  if (now.points.length !== before.points.length) return false;
+  const found = (v: LineView) => [
+    v.legs.filter((l) => l.status !== "error").length,
+    v.depot_trips.filter((d) => d.status !== "error").length,
+  ];
+  const [legs, runs] = found(now);
+  const [legsBefore, runsBefore] = found(before);
+  return legs! > legsBefore! || (legs === legsBefore && runs! > runsBefore!);
+}

@@ -40,7 +40,7 @@ import {
 } from "../src/features/street-lines/geojson";
 import { clearPlaces, publishPlaces } from "../src/features/naming/registry";
 import { DEFAULT_TIMING } from "../src/features/street-lines/modes";
-import type { SavedStreetLine } from "../src/features/street-lines/saved";
+import { routesMore, type SavedStreetLine } from "../src/features/street-lines/saved";
 import { LineList } from "../src/features/street-lines/LineList";
 import { dayService, vehicleById, vehiclesFor } from "../src/features/street-lines/service";
 import { setProjectServiceDay } from "../src/features/journey-planner/network";
@@ -444,6 +444,61 @@ describe("Street line saved with the project", () => {
     expect(line.points[0]).toMatchObject({ name: "Harbour" });
     expect(line.points.at(-1)).toMatchObject({ kind: "via", name: null });
     expect(line.view.points).toHaveLength(line.points.length);
+  });
+
+  it("saves the route again when more streets complete it, but not a route with fewer legs found", async () => {
+    const engine = fakeEngine();
+    // The streets load before any point is placed, so the saved points are routed alone.
+    const build = engine.rebuild;
+    engine.rebuild = vi.fn(() => (build(), engine.clear()));
+    const onSave = vi.fn();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    // Saved while the streets around its last point had not loaded: that leg was not found.
+    const broken = sampleView(["end_stop", "via", "stop"]);
+    broken.legs = broken.legs.map((l, i) => (i === 2 ? { ...l, status: "error" as const, length_m: 0 } : l));
+    broken.length_m = 800;
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={{ ...saved, view: broken }}
+        onSave={onSave}
+      />,
+    );
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const line = onSave.mock.calls[0]![0] as SavedStreetLine;
+    expect(line.view.length_m).toBe(1200);
+    expect(line.name).toBe("Harbour shuttle");
+    expect(line.points).toHaveLength(3);
+
+    // The same route found again is not a change.
+    await new Promise((r) => setTimeout(r, 20));
+    expect(onSave).toHaveBeenCalledTimes(1);
+  });
+
+  it("opens a line saved with its whole route without saving it", async () => {
+    const engine = fakeEngine();
+    const onSave = vi.fn();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    const missing = sampleView(["end_stop", "via", "stop"]);
+    missing.legs = missing.legs.map((l, i) => (i === 2 ? { ...l, status: "error" as const } : l));
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={saved}
+        onSave={onSave}
+      />,
+    );
+    await waitFor(() => expect(engine.insertPoint).toHaveBeenCalledTimes(3));
+    await new Promise((r) => setTimeout(r, 20));
+    expect(onSave).not.toHaveBeenCalled();
+    expect(routesMore(missing, saved.view)).toBe(false);
+    expect(routesMore(saved.view, missing)).toBe(true);
   });
 
   it("runs to and from a shared depot's gates and saves the depot by id", async () => {
