@@ -4,6 +4,14 @@ import { formatDateTime, tNow, useI18n } from "../i18n/i18n";
 import { get, send } from "../session/api";
 import { clearScenario, type ScenarioView, showScenario } from "./scenarioLayer";
 
+/** A registered OAuth client, as Admins see it. */
+interface AgentClient {
+  id: string;
+  name: string;
+  registeredBy: "dynamic" | "admin";
+  connections: number;
+}
+
 interface Info {
   mcpUrl: string;
   scopes: { id: string; label: string }[];
@@ -58,6 +66,7 @@ export function AgentsPanel({
   const [connections, setConnections] = useState<Connection[]>([]);
   const [scenarios, setScenarios] = useState<ScenarioRow[]>([]);
   const [registration, setRegistration] = useState<boolean | null>(null);
+  const [clients, setClients] = useState<AgentClient[]>([]);
   const [newToken, setNewToken] = useState<string | null>(null);
   const [shown, setShown] = useState<{ id: string; coverage: Coverage | null } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -78,10 +87,12 @@ export function AgentsPanel({
         setInfo(await get<Info>("/api/agents/info"));
         setConnections((await get<{ connections: Connection[] }>("/api/agents/connections")).connections);
         setScenarios((await get<{ scenarios: ScenarioRow[] }>("/api/agents/scenarios")).scenarios);
-        if (admin)
+        if (admin) {
           setRegistration(
             (await get<{ dynamicRegistration: boolean }>("/api/agents/settings")).dynamicRegistration,
           );
+          setClients((await get<{ clients: AgentClient[] }>("/api/agents/clients")).clients);
+        }
       }),
     [run, admin],
   );
@@ -162,12 +173,14 @@ export function AgentsPanel({
                     <button
                       type="button"
                       className="ms-auto rounded border border-slate-300 px-2 py-0.5"
-                      onClick={() =>
+                      onClick={() => {
+                        // Disconnecting takes effect at once and cannot be undone (a new connection is needed).
+                        if (!window.confirm(t("agents.disconnectConfirm", { name: c.name }))) return;
                         void run(async () => {
                           await send("DELETE", `/api/agents/connections/${c.id}`, csrfToken);
                           await reload();
-                        })
-                      }
+                        });
+                      }}
                     >
                       {t("agents.disconnect")}
                     </button>
@@ -300,6 +313,36 @@ export function AgentsPanel({
               />
               {t("agents.registration")}
             </label>
+            <h4 className="mt-2 font-medium">{t("agents.clientsTitle")}</h4>
+            {clients.length === 0 && <p className="text-slate-600">{t("agents.noClients")}</p>}
+            <ul className="space-y-1">
+              {clients.map((c) => (
+                <li key={c.id} className="flex items-center gap-2">
+                  {/* The name is what the app registered: shown as text, never as markup. */}
+                  <span className="min-w-0 flex-1 truncate" title={c.name}>
+                    {c.name}
+                  </span>
+                  <span className="text-slate-500">
+                    {t("agents.clientConnections", { count: c.connections })}
+                  </span>
+                  <button
+                    type="button"
+                    className="rounded border border-slate-300 px-2 py-0.5 disabled:opacity-50"
+                    disabled={c.connections > 0}
+                    title={c.connections > 0 ? t("agents.clientInUse") : undefined}
+                    onClick={() => {
+                      if (!window.confirm(t("agents.clientDeleteConfirm", { name: c.name }))) return;
+                      void run(async () => {
+                        await send("DELETE", `/api/agents/clients/${encodeURIComponent(c.id)}`, csrfToken);
+                        await reload();
+                      });
+                    }}
+                  >
+                    {t("agents.clientDelete")}
+                  </button>
+                </li>
+              ))}
+            </ul>
           </section>
         )}
       </div>

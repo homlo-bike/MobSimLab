@@ -1244,6 +1244,15 @@ export const editorsPl = {
   "agents.settingsTitle": "Ustawienia instancji",
   "agents.registration":
     "Pozwól aplikacjom AI rejestrować się samodzielnie (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "Odłączyć {name}? Przestaje działać natychmiast; aby użyć ponownie, połącz się jeszcze raz lub utwórz nowy token.",
+  "agents.clientsTitle": "Zarejestrowane aplikacje AI",
+  "agents.noClients": "Żadna aplikacja AI jeszcze się nie zarejestrowała.",
+  "agents.clientConnections": "Połączeni: {count}",
+  "agents.clientDelete": "Usuń",
+  "agents.clientInUse": "Najpierw odłącz jej agentów.",
+  "agents.clientDeleteConfirm":
+    "Usunąć zarejestrowaną aplikację {name}? Aby się połączyć, musi zarejestrować się ponownie.",
   "admin.title": "Administracja",
   "admin.users": "Użytkownicy",
   "admin.signup": "Zasady rejestracji",

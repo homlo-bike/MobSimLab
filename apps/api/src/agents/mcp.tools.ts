@@ -39,6 +39,8 @@ export interface ToolDeps {
   /** Calculations of installed plugins (plugin.tools.ts). */
   plugins?: Pick<PluginToolDeps, "plugins" | "code">;
   instanceName: string;
+  /** The request lists tools (`tools/list`): tools out of the connection's scopes are left out. */
+  listing?: boolean;
   /** Origin of this instance, e.g. `https://mobsimlab.example.org`. */
   instanceUrl?: string;
   requestId?: string;
@@ -77,9 +79,16 @@ const demandPoints = z
  * Every tool checks its scope, runs the same services as the web app and returns JSON text. Text people typed
  * (names, descriptions) comes back as data fields only.
  */
+/** Purpose: the server title: "MobSimLab", with the instance's name when it has its own ("MobSimLab · Acme"). */
+export function instanceTitle(name: string): string {
+  return name.trim() && name.trim().toLowerCase() !== "mobsimlab"
+    ? `MobSimLab · ${name.trim()}`
+    : "MobSimLab";
+}
+
 export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
   const server = new McpServer(
-    { name: "mobsimlab", title: `MobSimLab · ${d.instanceName}`, version: TOOLS_VERSION },
+    { name: "mobsimlab", title: instanceTitle(d.instanceName), version: TOOLS_VERSION },
     {
       instructions:
         "MobSimLab is a public transport planning simulator. Work in agent scenarios: create_scenario, then " +
@@ -99,8 +108,26 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
   );
   const need = (s: Scope) => {
     if (!p.scopes.includes(s))
-      throw new ToolRefusal(`this connection lacks the ${s} permission; reconnect to grant it`);
+      throw new ToolRefusal(
+        p.clientId
+          ? `this connection lacks the ${s} permission; reconnect to grant it`
+          : `this personal access token lacks the ${s} permission; create a new token that has it`,
+      );
   };
+  // tools/list shows only the tools this connection may call: each tool's handler comes from `run` below, which
+  // remembers its scope, and when this server answers a listing, a tool whose scope the connection lacks is
+  // registered disabled (hidden). For a call it stays enabled, so the agent learns which permission is missing.
+  const scopeOf = new WeakMap<object, Scope>();
+  if (d.listing) {
+    const register = server.registerTool.bind(server) as (...a: unknown[]) => { disable(): void };
+    (server as unknown as { registerTool: (...a: unknown[]) => unknown }).registerTool = (...a: unknown[]) => {
+      const tool = register(...a);
+      const handler = a[a.length - 1];
+      const s = typeof handler === "function" ? scopeOf.get(handler) : undefined;
+      if (s && !p.scopes.includes(s)) tool.disable();
+      return tool;
+    };
+  }
   const actor = (tool: string) => ({
     userId: p.userId,
     connectionId: p.connectionId,
@@ -109,9 +136,8 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
     requestId: d.requestId ?? null,
     role: p.role,
   });
-  const run =
-    <A>(scope: Scope, fn: (args: A) => Promise<unknown>) =>
-    async (args: A): Promise<CallToolResult> => {
+  const run = <A>(scope: Scope, fn: (args: A) => Promise<unknown>) => {
+    const handler = async (args: A): Promise<CallToolResult> => {
       try {
         need(scope);
         // Each call has its own values: the library's, or those of the project a scenario it loads is linked to.
@@ -132,6 +158,9 @@ export function buildMcpServer(p: AgentPrincipal, d: ToolDeps): McpServer {
         throw e;
       }
     };
+    scopeOf.set(handler, scope);
+    return handler;
+  };
   /** A scenario's document, with the values of the project it is linked to in use for the rest of the call. */
   const scenario = async (id: string, tool: string) => {
     const s = await d.scenarios.get(p.userId, id);

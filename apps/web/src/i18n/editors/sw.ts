@@ -1181,6 +1181,15 @@ export const editorsSw = {
   "agents.settings": "Mipangilio ya mawakala",
   "agents.settingsTitle": "Mipangilio ya mfumo",
   "agents.registration": "Ruhusu programu za AI kujisajili zenyewe (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "Tenganisha {name}? Itaacha kufanya kazi mara moja; ili kuitumia tena, unganisha upya au unda tokeni mpya.",
+  "agents.clientsTitle": "Programu za AI zilizosajiliwa",
+  "agents.noClients": "Bado hakuna programu ya AI iliyosajiliwa.",
+  "agents.clientConnections": "{count} zimeunganishwa",
+  "agents.clientDelete": "Ondoa",
+  "agents.clientInUse": "Tenganisha mawakala wake kwanza.",
+  "agents.clientDeleteConfirm":
+    "Ondoa programu iliyosajiliwa {name}? Itahitaji kusajiliwa upya ili kuunganishwa.",
   "admin.title": "Usimamizi",
   "admin.users": "Watumiaji",
   "admin.signup": "Kanuni za usajili",

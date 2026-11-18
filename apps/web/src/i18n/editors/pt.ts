@@ -1184,6 +1184,15 @@ export const editorsPt = {
   "agents.settings": "Configurações de agentes",
   "agents.settingsTitle": "Configurações da instância",
   "agents.registration": "Deixar apps de IA se registrarem sozinhos (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "Desconectar {name}? Deixa de funcionar imediatamente; para usar de novo, conecte novamente ou crie um novo token.",
+  "agents.clientsTitle": "Aplicativos de IA registrados",
+  "agents.noClients": "Nenhum aplicativo de IA se registrou ainda.",
+  "agents.clientConnections": "{count} conectados",
+  "agents.clientDelete": "Remover",
+  "agents.clientInUse": "Desconecte primeiro os seus agentes.",
+  "agents.clientDeleteConfirm":
+    "Remover o aplicativo registrado {name}? Ele terá de se registrar de novo para se conectar.",
   "admin.title": "Administração",
   "admin.users": "Usuários",
   "admin.signup": "Regras de cadastro",

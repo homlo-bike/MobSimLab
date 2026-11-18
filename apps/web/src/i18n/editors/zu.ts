@@ -1200,6 +1200,15 @@ export const editorsZu = {
   "agents.settings": "Izilungiselelo zama-ejenti",
   "agents.settingsTitle": "Izilungiselelo zohlelo",
   "agents.registration": "Vumela izinhlelo ze-AI ukuthi zizibhalise (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "Nqamula i-{name}? Izoyeka ukusebenza ngokushesha; ukuze uyisebenzise futhi, xhuma kabusha noma wenze ithokheni entsha.",
+  "agents.clientsTitle": "Izinhlelo zokusebenza ze-AI ezibhalisiwe",
+  "agents.noClients": "Alukho uhlelo lokusebenza lwe-AI olubhalisile okwamanje.",
+  "agents.clientConnections": "{count} ixhunyiwe",
+  "agents.clientDelete": "Susa",
+  "agents.clientInUse": "Qala unqamule ama-ejenti alo.",
+  "agents.clientDeleteConfirm":
+    "Susa uhlelo olubhalisiwe {name}? Kuzodingeka lubhalise kabusha ukuze luxhume.",
   "admin.title": "Ukuphatha",
   "admin.users": "Abasebenzisi",
   "admin.signup": "Imithetho yokubhalisa",

@@ -1150,6 +1150,15 @@ export const editorsTr = {
   "agents.settingsTitle": "Kurulum ayarları",
   "agents.registration":
     "Yapay zekâ uygulamalarının kendini kaydetmesine izin ver (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "{name} bağlantısı kesilsin mi? Hemen çalışmayı bırakır; yeniden kullanmak için tekrar bağlanın veya yeni bir belirteç oluşturun.",
+  "agents.clientsTitle": "Kayıtlı yapay zekâ uygulamaları",
+  "agents.noClients": "Henüz hiçbir yapay zekâ uygulaması kaydolmadı.",
+  "agents.clientConnections": "{count} bağlı",
+  "agents.clientDelete": "Kaldır",
+  "agents.clientInUse": "Önce ajanlarının bağlantısını kesin.",
+  "agents.clientDeleteConfirm":
+    "Kayıtlı uygulama {name} kaldırılsın mı? Bağlanmak için yeniden kaydolması gerekir.",
   "admin.title": "Yönetim",
   "admin.users": "Kullanıcılar",
   "admin.signup": "Kayıt kuralları",

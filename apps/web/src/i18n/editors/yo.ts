@@ -1140,6 +1140,15 @@ export const editorsYo = {
   "agents.settingsTitle": "Ètò ètò",
   "agents.registration":
     "Gba àwọn áàpù AI láàyè láti forúkọ ara wọn sílẹ̀ (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "Ṣé kí a gé ìsopọ̀ {name}? Yóò dáwọ́ iṣẹ́ dúró lẹ́sẹ̀kẹsẹ̀; láti lò ó lẹ́ẹ̀kan sí i, tún so ó pọ̀ tàbí ṣẹ̀dá token tuntun.",
+  "agents.clientsTitle": "Àwọn áàpù AI tí a forúkọ sílẹ̀",
+  "agents.noClients": "Kò sí áàpù AI tí ó ti forúkọ sílẹ̀ síbẹ̀.",
+  "agents.clientConnections": "{count} ti so pọ̀",
+  "agents.clientDelete": "Yọ kúrò",
+  "agents.clientInUse": "Kọ́kọ́ gé ìsopọ̀ àwọn aṣojú rẹ̀.",
+  "agents.clientDeleteConfirm":
+    "Ṣé kí a yọ áàpù tí a forúkọ sílẹ̀ {name} kúrò? Ó ní láti tún forúkọ sílẹ̀ kí ó tó lè so pọ̀.",
   "admin.title": "Ìṣàkóso",
   "admin.users": "Àwọn olùlò",
   "admin.signup": "Òfin ìforúkọsílẹ̀",

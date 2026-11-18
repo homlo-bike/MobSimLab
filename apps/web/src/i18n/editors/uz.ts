@@ -1185,6 +1185,15 @@ export const editorsUz = {
   "agents.settingsTitle": "Nusxa sozlamalari",
   "agents.registration":
     "AI ilovalariga oʻzini roʻyxatdan oʻtkazishga ruxsat berish (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "{name} uzilsinmi? U darhol ishlashdan to'xtaydi; qayta foydalanish uchun yana ulaning yoki yangi token yarating.",
+  "agents.clientsTitle": "Ro'yxatdan o'tgan sun'iy intellekt ilovalari",
+  "agents.noClients": "Hali hech qanday sun'iy intellekt ilovasi ro'yxatdan o'tmagan.",
+  "agents.clientConnections": "{count} ta ulangan",
+  "agents.clientDelete": "Olib tashlash",
+  "agents.clientInUse": "Avval uning agentlarini uzing.",
+  "agents.clientDeleteConfirm":
+    "Ro'yxatdan o'tgan {name} ilovasi olib tashlansinmi? Ulanish uchun u qayta ro'yxatdan o'tishi kerak.",
   "admin.title": "Boshqaruv",
   "admin.users": "Foydalanuvchilar",
   "admin.signup": "Roʻyxatdan oʻtish qoidalari",

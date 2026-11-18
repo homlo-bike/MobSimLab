@@ -1199,6 +1199,15 @@ export const editorsTa = {
   "agents.settings": "முகவர் அமைப்புகள்",
   "agents.settingsTitle": "நிகழ்வு அமைப்புகள்",
   "agents.registration": "AI செயலிகள் தாமாகப் பதிவுசெய்ய அனுமதி (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "{name} இணைப்பைத் துண்டிக்கவா? அது உடனே வேலை செய்வதை நிறுத்தும்; மீண்டும் பயன்படுத்த மறுபடி இணைக்கவும் அல்லது புதிய டோக்கனை உருவாக்கவும்.",
+  "agents.clientsTitle": "பதிவுசெய்த AI பயன்பாடுகள்",
+  "agents.noClients": "இன்னும் எந்த AI பயன்பாடும் பதிவு செய்யவில்லை.",
+  "agents.clientConnections": "{count} இணைந்துள்ளன",
+  "agents.clientDelete": "அகற்று",
+  "agents.clientInUse": "முதலில் அதன் முகவர்களின் இணைப்பைத் துண்டிக்கவும்.",
+  "agents.clientDeleteConfirm":
+    "பதிவுசெய்த பயன்பாடு {name} ஐ அகற்றவா? இணைக்க அது மீண்டும் பதிவு செய்ய வேண்டும்.",
   "admin.title": "நிர்வாகம்",
   "admin.users": "பயனர்கள்",
   "admin.signup": "பதிவு விதிகள்",

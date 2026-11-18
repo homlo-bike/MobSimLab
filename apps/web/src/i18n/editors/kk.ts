@@ -1176,6 +1176,15 @@ export const editorsKk = {
   "agents.settingsTitle": "Дана баптаулары",
   "agents.registration":
     "AI қолданбаларына өздігінен тіркелуге рұқсат беру (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "{name} ажыратылсын ба? Ол бірден жұмысын тоқтатады; қайта пайдалану үшін қайта қосылыңыз немесе жаңа токен жасаңыз.",
+  "agents.clientsTitle": "Тіркелген ЖИ қолданбалары",
+  "agents.noClients": "Әзірге бірде-бір ЖИ қолданбасы тіркелмеген.",
+  "agents.clientConnections": "{count} қосылған",
+  "agents.clientDelete": "Жою",
+  "agents.clientInUse": "Алдымен оның агенттерін ажыратыңыз.",
+  "agents.clientDeleteConfirm":
+    "Тіркелген {name} қолданбасы жойылсын ба? Қосылу үшін ол қайта тіркелуі керек.",
   "admin.title": "Әкімшілік",
   "admin.users": "Пайдаланушылар",
   "admin.signup": "Тіркелу ережелері",

@@ -1190,6 +1190,15 @@ export const editorsEs = {
   "agents.settingsTitle": "Ajustes de la instancia",
   "agents.registration":
     "Permitir que las aplicaciones de IA se registren solas (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "¿Desconectar {name}? Deja de funcionar al instante; para volver a usarlo, conéctelo de nuevo o cree un token nuevo.",
+  "agents.clientsTitle": "Aplicaciones de IA registradas",
+  "agents.noClients": "Ninguna aplicación de IA se ha registrado todavía.",
+  "agents.clientConnections": "{count} conectados",
+  "agents.clientDelete": "Quitar",
+  "agents.clientInUse": "Desconecte primero sus agentes.",
+  "agents.clientDeleteConfirm":
+    "¿Quitar la aplicación registrada {name}? Tendrá que registrarse de nuevo para conectarse.",
   "admin.title": "Administración",
   "admin.users": "Usuarios",
   "admin.signup": "Reglas de registro",

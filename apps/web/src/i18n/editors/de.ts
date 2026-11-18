@@ -1202,6 +1202,15 @@ export const editorsDe = {
   "agents.settings": "Agenten-Einstellungen",
   "agents.settingsTitle": "Einstellungen der Instanz",
   "agents.registration": "KI-Apps dürfen sich selbst registrieren (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "{name} trennen? Die Verbindung endet sofort; um sie wieder zu nutzen, verbinden Sie erneut oder erstellen ein neues Token.",
+  "agents.clientsTitle": "Registrierte KI-Apps",
+  "agents.noClients": "Noch keine KI-App hat sich registriert.",
+  "agents.clientConnections": "{count} verbunden",
+  "agents.clientDelete": "Entfernen",
+  "agents.clientInUse": "Trennen Sie zuerst ihre Agenten.",
+  "agents.clientDeleteConfirm":
+    "Die registrierte App {name} entfernen? Sie muss sich zum Verbinden neu registrieren.",
   "admin.title": "Verwaltung",
   "admin.users": "Nutzer",
   "admin.signup": "Registrierungsregeln",

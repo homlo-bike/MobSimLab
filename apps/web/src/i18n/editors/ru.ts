@@ -1241,6 +1241,15 @@ export const editorsRu = {
   "agents.settingsTitle": "Настройки экземпляра",
   "agents.registration":
     "Разрешить ИИ-приложениям регистрироваться самим (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "Отключить {name}? Подключение сразу перестанет работать; чтобы снова пользоваться им, подключитесь заново или создайте новый токен.",
+  "agents.clientsTitle": "Зарегистрированные приложения ИИ",
+  "agents.noClients": "Ни одно приложение ИИ ещё не зарегистрировалось.",
+  "agents.clientConnections": "Подключено: {count}",
+  "agents.clientDelete": "Удалить",
+  "agents.clientInUse": "Сначала отключите его агентов.",
+  "agents.clientDeleteConfirm":
+    "Удалить зарегистрированное приложение {name}? Чтобы подключиться, ему придётся зарегистрироваться снова.",
   "admin.title": "Администрирование",
   "admin.users": "Пользователи",
   "admin.signup": "Правила регистрации",

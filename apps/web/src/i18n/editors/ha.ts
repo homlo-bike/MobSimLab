@@ -1172,6 +1172,15 @@ export const editorsHa = {
   "agents.settings": "Saitunan wakilai",
   "agents.settingsTitle": "Saitunan tsarin",
   "agents.registration": "Bari manhajojin AI su yi wa kansu rajista (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "A cire haɗin {name}? Zai daina aiki nan take; don sake amfani da shi, sake haɗawa ko ƙirƙiri sabon token.",
+  "agents.clientsTitle": "Manhajojin AI da aka yi rajista",
+  "agents.noClients": "Babu wata manhajar AI da ta yi rajista tukuna.",
+  "agents.clientConnections": "{count} an haɗa",
+  "agents.clientDelete": "Cire",
+  "agents.clientInUse": "Ka cire haɗin wakilansa da farko.",
+  "agents.clientDeleteConfirm":
+    "A cire manhajar da aka yi rajista {name}? Dole ne ta sake yin rajista kafin ta haɗu.",
   "admin.title": "Gudanarwa",
   "admin.users": "Masu amfani",
   "admin.signup": "Dokokin rajista",

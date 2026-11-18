@@ -1176,6 +1176,15 @@ export const editorsId = {
   "agents.settings": "Pengaturan agen",
   "agents.settingsTitle": "Pengaturan instans",
   "agents.registration": "Izinkan aplikasi AI mendaftar sendiri (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "Putuskan {name}? Langsung berhenti bekerja; untuk memakainya lagi, sambungkan lagi atau buat token baru.",
+  "agents.clientsTitle": "Aplikasi AI terdaftar",
+  "agents.noClients": "Belum ada aplikasi AI yang mendaftar.",
+  "agents.clientConnections": "{count} tersambung",
+  "agents.clientDelete": "Hapus",
+  "agents.clientInUse": "Putuskan agen-agennya terlebih dahulu.",
+  "agents.clientDeleteConfirm":
+    "Hapus aplikasi terdaftar {name}? Aplikasi harus mendaftar lagi untuk tersambung.",
   "admin.title": "Administrasi",
   "admin.users": "Pengguna",
   "admin.signup": "Aturan pendaftaran",

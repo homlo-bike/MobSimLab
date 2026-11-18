@@ -1207,6 +1207,15 @@ export const editorsFr = {
   "agents.settingsTitle": "Paramètres de l’instance",
   "agents.registration":
     "Laisser les applications d’IA s’enregistrer elles-mêmes (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "Déconnecter {name} ? Cela cesse de fonctionner immédiatement ; pour le réutiliser, reconnectez-le ou créez un nouveau jeton.",
+  "agents.clientsTitle": "Applications d'IA enregistrées",
+  "agents.noClients": "Aucune application d'IA ne s'est encore enregistrée.",
+  "agents.clientConnections": "{count} connectés",
+  "agents.clientDelete": "Retirer",
+  "agents.clientInUse": "Déconnectez d'abord ses agents.",
+  "agents.clientDeleteConfirm":
+    "Retirer l'application enregistrée {name} ? Elle devra s'enregistrer à nouveau pour se connecter.",
   "admin.title": "Administration",
   "admin.users": "Utilisateurs",
   "admin.signup": "Règles d’inscription",

@@ -1238,6 +1238,15 @@ export const editorsUk = {
   "agents.settingsTitle": "Налаштування екземпляра",
   "agents.registration":
     "Дозволити ШІ-застосункам реєструватися самостійно (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "Від'єднати {name}? Підключення одразу перестане працювати; щоб знову ним користуватися, під'єднайте його знову або створіть новий токен.",
+  "agents.clientsTitle": "Зареєстровані застосунки ШІ",
+  "agents.noClients": "Жоден застосунок ШІ ще не зареєструвався.",
+  "agents.clientConnections": "Під'єднано: {count}",
+  "agents.clientDelete": "Вилучити",
+  "agents.clientInUse": "Спершу від'єднайте його агентів.",
+  "agents.clientDeleteConfirm":
+    "Вилучити зареєстрований застосунок {name}? Щоб під'єднатися, йому доведеться зареєструватися знову.",
   "admin.title": "Адміністрування",
   "admin.users": "Користувачі",
   "admin.signup": "Правила реєстрації",

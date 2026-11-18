@@ -1186,6 +1186,15 @@ export const editorsNl = {
   "agents.settings": "Instellingen voor agents",
   "agents.settingsTitle": "Instellingen van de instantie",
   "agents.registration": "AI-apps zichzelf laten registreren (OAuth Dynamic Client Registration)",
+  "agents.disconnectConfirm":
+    "{name} loskoppelen? Het werkt meteen niet meer; om het weer te gebruiken, maakt u opnieuw verbinding of een nieuw token aan.",
+  "agents.clientsTitle": "Geregistreerde AI-apps",
+  "agents.noClients": "Er heeft zich nog geen AI-app geregistreerd.",
+  "agents.clientConnections": "{count} verbonden",
+  "agents.clientDelete": "Verwijderen",
+  "agents.clientInUse": "Koppel eerst de agents ervan los.",
+  "agents.clientDeleteConfirm":
+    "De geregistreerde app {name} verwijderen? Hij moet zich opnieuw registreren om verbinding te maken.",
   "admin.title": "Beheer",
   "admin.users": "Gebruikers",
   "admin.signup": "Aanmeldregels",

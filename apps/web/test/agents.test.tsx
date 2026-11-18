@@ -58,6 +58,34 @@ describe("agent consent page", () => {
   });
 });
 
+describe("agent consent page: hostile app names", () => {
+  it("shows an app name made of markup as plain text, never as markup", async () => {
+    window.history.replaceState(null, "", "/agents/consent?request=msl_cr_abc");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(
+        async () =>
+          new Response(
+            JSON.stringify({
+              client: {
+                name: "<script>alert(1)</script>",
+                uri: null,
+                redirectHost: "evil.example",
+                verified: false,
+              },
+              scopes: [{ id: "project:read", label: "Read" }],
+              allowed: true,
+              reason: null,
+            }),
+          ),
+      ),
+    );
+    const { container } = render(<ConsentPage me={me} />);
+    expect(await screen.findByText("<script>alert(1)</script>")).toBeTruthy();
+    expect(container.querySelector("script")).toBeNull();
+  });
+});
+
 describe("scenario layer", () => {
   it("draws routed lines and stops", () => {
     const g = scenarioToGeoJson({
