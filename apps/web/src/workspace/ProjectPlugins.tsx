@@ -1,5 +1,4 @@
-import { type ReactNode, useCallback, useState } from "react";
-import { EsriImageryAdmin } from "../admin/EsriImageryAdmin";
+import { useState } from "react";
 import { Dialog } from "../shell/Dialog";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
@@ -36,35 +35,22 @@ export function addsLine(
 }
 
 /**
- * Configuration panels of plugins that need one, by plugin id, shown to Admins in the plugin's window. Esri World
- * Imagery needs the instance's ArcGIS API key (docs/architecture/06-gis.md §8).
- */
-const CONFIG: Record<
-  string,
-  (p: { csrfToken: string; run: (f: () => Promise<unknown>) => Promise<void> }) => ReactNode
-> = {
-  "org.mobsimlab.esri-imagery": (p) => <EsriImageryAdmin {...p} />,
-};
-
-/**
  * Plugins section of Project Preferences (ADR-0036 §9): every plugin of this MobSimLab, bundled or installed by an
  * Admin, as a short list by name with a switch to use it in this project. Clicking a plugin opens its window: what
- * it does and adds, what it reads, its version, and its settings when it has some (an Admin's, such as Esri's API
- * key). Only the project's Owner turns plugins on or off; turning one off hides its tools and keeps what was drawn.
+ * it does and adds, what it reads and its version. A plugin's own settings (such as Esri's API key) are only in
+ * Administration → Plugins. Only the project's Owner turns plugins on or off; turning one off hides its tools and
+ * keeps what was drawn.
  */
 export function ProjectPlugins({
   plugins,
   manage,
   onSet,
-  adminCsrf = null,
 }: {
   plugins: readonly ProjectPlugin[] | null;
   /** The caller owns the project. */
   manage: boolean;
   /** Turn a plugin on or off, with a version for installed plugins; resolves to the new list. */
   onSet: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
-  /** The session's CSRF token when the caller is an Admin of this MobSimLab: they see plugins' settings. */
-  adminCsrf?: string | null;
 }) {
   const { t } = useI18n();
   const [busy, setBusy] = useState<string | null>(null);
@@ -81,16 +67,6 @@ export function ProjectPlugins({
       setBusy(null);
     }
   };
-  // Errors of a plugin's own settings show in its window.
-  const [configError, setConfigError] = useState<string | null>(null);
-  const runConfig = useCallback(async (f: () => Promise<unknown>) => {
-    setConfigError(null);
-    try {
-      await f();
-    } catch (e) {
-      setConfigError((e as Error).message);
-    }
-  }, []);
   const sorted = plugins ? [...plugins].sort((a, b) => a.name.localeCompare(b.name)) : null;
   const shown = sorted?.find((p) => p.id === open) ?? null;
   return (
@@ -120,10 +96,7 @@ export function ProjectPlugins({
                 type="button"
                 className="flex min-h-11 min-w-0 flex-1 flex-col items-start justify-center rounded-lg px-2 text-start hover:bg-slate-50"
                 aria-haspopup="dialog"
-                onClick={() => {
-                  setConfigError(null);
-                  setOpen(p.id);
-                }}
+                onClick={() => setOpen(p.id)}
               >
                 <span className="font-semibold">{p.name}</span>
                 <span className="w-full truncate text-xs text-slate-500">{addsLine(p.contributes, t)}</span>
@@ -209,17 +182,6 @@ export function ProjectPlugins({
               />
               {t("plugins.useIn", { name: shown.name })}
             </label>
-            {/* The plugin's own settings, for Admins of this MobSimLab. */}
-            {adminCsrf && CONFIG[shown.id] && (
-              <div className="rounded-xl border border-slate-200 p-3">
-                {configError && (
-                  <p role="alert" className="mb-2 rounded bg-red-50 px-3 py-2 text-sm text-red-800">
-                    {configError}
-                  </p>
-                )}
-                {CONFIG[shown.id]!({ csrfToken: adminCsrf, run: runConfig })}
-              </div>
-            )}
           </div>
         </Dialog>
       )}

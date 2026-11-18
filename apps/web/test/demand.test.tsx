@@ -512,8 +512,10 @@ describe("Demand model section", () => {
       source: "own",
       zones: [{ ...own.zones![0]!, values: { population: 750 } }],
     });
-    fireEvent.click(screen.getByRole("button", { name: "Delete zone Zone o1" }));
-    expect(onDoc).toHaveBeenLastCalledWith({ source: "own", zones: [] });
+    // Zone names, deleting and the automatic-or-own choice are in GIS → Demand zones only.
+    expect(screen.queryByRole("button", { name: "Delete zone Zone o1" })).toBeNull();
+    expect(screen.queryByLabelText("Name of zone o1")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Use automatic hexagons" })).toBeNull();
   });
 });
 

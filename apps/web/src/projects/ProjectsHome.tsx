@@ -62,7 +62,7 @@ const isPhone = () =>
 /**
  * The projects home (mockups "Projects home", desktop, tablet and phone): own projects, projects shared with the
  * person that they can edit, view-only projects, and archived ones; a New project card; and on each project a
- * menu with Open, Rename, Share, Manage access, Duplicate, Save as .mslab file, Archive and Delete, by right-click, the ⋯ button, the
+ * menu with Open, Rename, Share (or Manage access when not the Owner), Duplicate, Save as .mslab file, Archive and Delete, by right-click, the ⋯ button, the
  * keyboard context-menu key, or a long press on touch screens.
  */
 export function ProjectsHome({
@@ -224,8 +224,12 @@ export function ProjectsHome({
     return [
       item("menu.open", () => onOpen(p)),
       can.edit(p) && item("menu.rename", () => setDialog({ kind: "rename", project: p })),
-      can.manage(p) && item("menu.share", () => setDialog({ kind: "share", project: p, focus: "invite" })),
-      !p.viaPublic && item("menu.access", () => setDialog({ kind: "share", project: p, focus: "access" })),
+      // One entry for the share window: "Share" for the Owner, who invites people; "Manage access" for the others,
+      // who see who has access and can leave.
+      can.manage(p)
+        ? item("menu.share", () => setDialog({ kind: "share", project: p, focus: "invite" }))
+        : !p.viaPublic &&
+          item("menu.access", () => setDialog({ kind: "share", project: p, focus: "access" })),
       canCreate &&
         !p.viaPublic &&
         item(

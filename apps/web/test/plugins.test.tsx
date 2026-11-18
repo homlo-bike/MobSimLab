@@ -110,38 +110,7 @@ describe("plugins per project (ADR-0036 §9)", () => {
 });
 
 describe("a plugin's window in Project preferences", () => {
-  it("shows an Admin the plugin's own settings: Esri's API key", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(
-            JSON.stringify({
-              esri: {
-                configured: false,
-                keyEnd: null,
-                termsAcceptedAt: null,
-                termsAcceptedBy: null,
-                termsUrl: "https://www.esri.com/terms",
-              },
-            }),
-            { status: 200, headers: { "Content-Type": "application/json" } },
-          ),
-      ),
-    );
-    const esri = row({
-      id: "org.mobsimlab.esri-imagery",
-      name: "Esri World Imagery",
-      bundled: true,
-      versions: [],
-    });
-    render(<ProjectPlugins plugins={[esri]} manage onSet={vi.fn()} adminCsrf="csrf-1" />);
-    fireEvent.click(screen.getByRole("button", { name: /Esri World Imagery/ }));
-    const dialog = screen.getByRole("dialog", { name: "Esri World Imagery" });
-    expect(await within(dialog).findByLabelText("ArcGIS API key")).toBeTruthy();
-  });
-
-  it("does not show the settings to someone who is not an Admin", () => {
+  it("never shows a plugin's own settings: Esri's API key is only in Administration", () => {
     const esri = row({
       id: "org.mobsimlab.esri-imagery",
       name: "Esri World Imagery",
@@ -150,6 +119,7 @@ describe("a plugin's window in Project preferences", () => {
     });
     render(<ProjectPlugins plugins={[esri]} manage onSet={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: /Esri World Imagery/ }));
+    expect(screen.getByRole("dialog", { name: "Esri World Imagery" })).toBeTruthy();
     expect(screen.queryByLabelText("ArcGIS API key")).toBeNull();
   });
 });

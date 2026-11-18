@@ -47,7 +47,6 @@ export function ProjectPreferences({
   onPreferences,
   plugins = null,
   onSetPlugin,
-  adminCsrf = null,
   currency = NO_CURRENCY,
   fleet = null,
   onFleet,
@@ -66,8 +65,6 @@ export function ProjectPreferences({
   plugins?: readonly ProjectPlugin[] | null;
   /** Turn a plugin on or off for the project (Owners). */
   onSetPlugin?: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
-  /** The session's CSRF token when the caller is an Admin: plugins' own settings (such as Esri's API key). */
-  adminCsrf?: string | null;
   /** The project's currency and its exchange rate. */
   currency?: CurrencyState;
   /** The project's own vehicles and its fleet; null while loading. */
@@ -212,14 +209,7 @@ export function ProjectPreferences({
             id: "plugins",
             group: "project",
             title: "plugins.title",
-            node: (
-              <ProjectPlugins
-                plugins={plugins}
-                manage={can.manage(project)}
-                onSet={onSetPlugin}
-                adminCsrf={adminCsrf}
-              />
-            ),
+            node: <ProjectPlugins plugins={plugins} manage={can.manage(project)} onSet={onSetPlugin} />,
           } as const,
         ]
       : []),

@@ -238,7 +238,6 @@ function Shell({
             onAbout={about}
             existingRailways={Boolean(prefs.existingRailways)}
             userId={user?.id ?? null}
-            adminCsrf={user && (user.role === "owner" || user.role === "admin") ? csrf : null}
             onRefreshSession={reload}
           />
         </LoadingScreen>

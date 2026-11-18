@@ -393,15 +393,9 @@ export function DemandSection({
       setUploadError(message(e));
     }
   };
+  // Zone shapes, names and whether they are automatic or the planner's own are set in GIS → Demand zones only;
+  // here the zones get their values.
   const setValues = (id: string, values: ZoneValues) => onDoc?.(withZoneValues(doc, id, values));
-  const setName = (id: string, name: string) => {
-    if (doc?.source !== "own") return;
-    onDoc?.({ ...doc, zones: (doc.zones ?? []).map((z) => (z.id === id ? { ...z, name } : z)) });
-  };
-  const removeZone = (id: string) => {
-    if (doc?.source !== "own") return;
-    onDoc?.({ ...doc, zones: (doc.zones ?? []).filter((z) => z.id !== id) });
-  };
 
   const result = viewing?.status === "done" ? viewing.result : null;
   const lineNames = useMemo(
@@ -458,24 +452,6 @@ export function DemandSection({
                   e.target.value = "";
                 }}
               />
-              {doc?.source !== "own" && zones.length > 0 && (
-                <button
-                  type="button"
-                  className="btn min-h-10"
-                  onClick={() => onDoc?.({ ...(doc ?? {}), source: "own", zones })}
-                >
-                  Make these zones my own
-                </button>
-              )}
-              {doc?.source === "own" && (
-                <button
-                  type="button"
-                  className="btn min-h-10"
-                  onClick={() => onDoc?.({ ...doc, source: "auto" })}
-                >
-                  Use automatic hexagons
-                </button>
-              )}
             </>
           )}
           {zones.length > 0 && (
@@ -490,8 +466,8 @@ export function DemandSection({
         </div>
         <p className="mt-2 text-sm text-slate-500">
           {doc?.source === "own"
-            ? "Draw, reshape and delete your zones in the GIS tab (Demand zones), or upload a new file. A GeoJSON property named like a value below (population, workers, jobs, students…) fills that value."
-            : `Hexagons cover the model area, at most ${fmt(maxZones)} of them. Make them your own to draw, reshape or delete zones in the GIS tab.`}
+            ? "Draw, reshape, rename and delete your zones in the GIS tab (Demand zones), or upload a new file. A GeoJSON property named like a value below (population, workers, jobs, students…) fills that value."
+            : `Hexagons cover the model area, at most ${fmt(maxZones)} of them. Make them your own in the GIS tab (Demand zones) to draw, reshape, rename or delete zones.`}
         </p>
         {uploadError && (
           <p role="alert" className="mt-2 text-sm text-red-700">
@@ -529,15 +505,7 @@ export function DemandSection({
         )}
         {current && <DataNotes data={current} estimated={estimated} />}
         {zones.length > 0 && (
-          <ZoneTable
-            zones={zones}
-            estimated={estimated}
-            own={doc?.source === "own"}
-            editable={editable}
-            onValues={setValues}
-            onName={setName}
-            onRemove={removeZone}
-          />
+          <ZoneTable zones={zones} estimated={estimated} editable={editable} onValues={setValues} />
         )}
       </div>
 
@@ -627,19 +595,13 @@ function DataNotes({ data, estimated }: { data: ZoneData; estimated: Estimated |
 function ZoneTable({
   zones,
   estimated,
-  own,
   editable,
   onValues,
-  onName,
-  onRemove,
 }: {
   zones: DemandZone[];
   estimated: Estimated | null;
-  own: boolean;
   editable: boolean;
   onValues: (id: string, v: ZoneValues) => void;
-  onName: (id: string, name: string) => void;
-  onRemove: (id: string) => void;
 }) {
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState("");
@@ -688,7 +650,6 @@ function ZoneTable({
               >
                 Centre
               </th>
-              {own && editable && <th className={th} aria-label="Delete" />}
             </tr>
           </thead>
           <tbody>
@@ -697,22 +658,7 @@ function ZoneTable({
               const src = estimated?.sources[z.id] ?? {};
               return (
                 <tr key={z.id} className="border-b border-slate-100">
-                  <td className={td}>
-                    {own && editable ? (
-                      <input
-                        className="input min-h-9 w-36"
-                        aria-label={`Name of zone ${z.id}`}
-                        defaultValue={z.name}
-                        onBlur={(ev) =>
-                          ev.target.value.trim() &&
-                          ev.target.value !== z.name &&
-                          onName(z.id, ev.target.value.trim())
-                        }
-                      />
-                    ) : (
-                      z.name
-                    )}
-                  </td>
+                  <td className={td}>{z.name} </td>
                   {ZONE_FIELDS.map((f) => (
                     <td key={f.key} className={num}>
                       <ValueCell
@@ -737,18 +683,6 @@ function ZoneTable({
                       }}
                     />
                   </td>
-                  {own && editable && (
-                    <td className={td}>
-                      <button
-                        type="button"
-                        className="text-sm text-red-700 underline"
-                        aria-label={`Delete zone ${z.name}`}
-                        onClick={() => onRemove(z.id)}
-                      >
-                        Delete
-                      </button>
-                    </td>
-                  )}
                 </tr>
               );
             })}

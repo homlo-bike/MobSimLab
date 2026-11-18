@@ -254,7 +254,6 @@ describe("projects home", () => {
       "Open",
       "Rename",
       "Share",
-      "Manage access",
       "Duplicate",
       "Save as .mslab file",
       "Archive",
