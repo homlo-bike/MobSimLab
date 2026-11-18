@@ -45,6 +45,9 @@ class HostControl implements IControl {
   }
 }
 
+/** How long the map waits for the API's keyed basemaps before tools get it with the default basemap. */
+const SERVER_WAIT_MS = 5000;
+
 /**
  * Purpose: full-size MapLibre map with the basemap last picked in this browser and its attribution, the
  * place search and the layer control (basemaps and the project's layers) above the zoom buttons.
@@ -92,10 +95,26 @@ export function MapView({ onReady }: Props) {
     setHost(el);
     map.addControl(new NavigationControl(), "top-right");
     map.addControl(new ScaleControl({ unit: "metric" }), "bottom-left");
+    let gone = false;
+    const asked = refreshServerBasemaps();
     map.on?.("load", () => {
       markBasemap(map);
-      setMap(map);
-      ready.current?.(map);
+      const give = () => {
+        setMap(map);
+        ready.current?.(map);
+      };
+      // A remembered basemap is drawn before the tools get the map: their layers added while its style
+      // loads threw "Style is not done loading" and blanked the page (Damascus bug 14).
+      const decide = () => {
+        if (gone) return;
+        if (restore.current(map)) map.once("style.load", give);
+        else give();
+      };
+      // A keyed basemap (Esri) is offered once the API answers, so wait for that answer, a few seconds at most.
+      const wanted = rememberedBasemapId();
+      if (wanted && wanted !== DEFAULT_BASEMAP.id && !availableBasemaps().some((b) => b.id === wanted))
+        void Promise.race([asked, new Promise((r) => setTimeout(r, SERVER_WAIT_MS))]).then(decide);
+      else decide();
     });
     // Tools add their layers as they open: hide the new ones of hidden groups too.
     map.on?.("styledata", () => {
@@ -103,6 +122,7 @@ export function MapView({ onReady }: Props) {
       applyMapTheme(map, darkMapNow.current);
     });
     return () => {
+      gone = true;
       ready.current?.(null);
       setMap(null);
       setHost(null);
@@ -118,25 +138,27 @@ export function MapView({ onReady }: Props) {
   // Keyed basemaps (Esri) are offered once the API says an Admin has saved their key, also when the key is saved
   // while this map is open. A keyed basemap picked before a reload comes back once it is offered again.
   const [, setServerBasemaps] = useState(0);
-  const pickNow = useRef<(b: Basemap) => void>(() => {});
+  const pickNow = useRef<(b: Basemap, on: MapLibreMap | null) => void>(() => {});
   const basemapNow = useRef(basemap);
   basemapNow.current = basemap;
-  const restore = useRef(() => {});
-  restore.current = () => {
-    // Only on a ready map, so the style really switches; the map's load runs this again.
-    if (!map) return;
+  /** Draws the remembered basemap if it is offered and not drawn yet; true when it starts switching. */
+  const restore = useRef<(on?: MapLibreMap | null) => boolean>(() => false);
+  restore.current = (on = map) => {
+    // Only on a loaded map, so the style really switches; the map's load runs this again.
+    if (!on) return false;
     const wanted = rememberedBasemapId();
     const offered = availableBasemaps().find((b) => b.id === wanted);
-    if (offered && basemapNow.current.id === DEFAULT_BASEMAP.id && wanted !== DEFAULT_BASEMAP.id)
-      pickNow.current(offered);
+    if (!offered || basemapNow.current.id !== DEFAULT_BASEMAP.id || wanted === DEFAULT_BASEMAP.id)
+      return false;
+    pickNow.current(offered, on);
+    return true;
   };
-  useEffect(() => restore.current(), [map]);
+  useEffect(() => void restore.current(), [map]);
   useEffect(() => {
     const stop = onServerBasemaps(() => {
       setServerBasemaps((n) => n + 1);
       restore.current();
     });
-    void refreshServerBasemaps();
     return stop;
   }, []);
 
@@ -154,7 +176,7 @@ export function MapView({ onReady }: Props) {
     // Only the theme: picking a basemap switches it below.
   }, [map, dark]);
 
-  const pickBasemap = (b: Basemap) => {
+  const pickBasemap = (b: Basemap, on: MapLibreMap | null = map) => {
     const now = basemapNow.current;
     if (b.id === now.id && b.day === now.day) return;
     // Now, not on the next render: the restore can run twice before it (map load, then the server's
@@ -162,16 +184,16 @@ export function MapView({ onReady }: Props) {
     basemapNow.current = b;
     setBasemap(b);
     rememberBasemap(b.id);
-    if (!map) return;
+    if (!on) return;
     const shown = themedBasemap(b, dark);
     drawn.current = shown.styleUrl;
-    switchBasemap(map, shown, () => applyHidden(map, hiddenNow.current));
-    if (attribution.current) map.removeControl(attribution.current);
+    switchBasemap(on, shown, () => applyHidden(on, hiddenNow.current));
+    if (attribution.current) on.removeControl(attribution.current);
     attribution.current = new AttributionControl({
       compact: b.kind === "aerial",
       customAttribution: b.attribution,
     });
-    map.addControl(attribution.current);
+    on.addControl(attribution.current);
   };
   pickNow.current = pickBasemap;
 
@@ -185,7 +207,7 @@ export function MapView({ onReady }: Props) {
           <MapControls
             map={map}
             basemap={basemap}
-            onBasemap={pickBasemap}
+            onBasemap={(b) => pickBasemap(b)}
             hidden={hidden}
             onHidden={setHidden}
           />,
