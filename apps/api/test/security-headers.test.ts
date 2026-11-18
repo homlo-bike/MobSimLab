@@ -85,6 +85,16 @@ describe("security headers and HTTPS", () => {
     const r = await request(untrusted.getHttpServer()).get("/api/health").set("X-Forwarded-Proto", "http");
     expect(r.status).toBe(200);
     await untrusted.close();
+
+    // A trusted list that does not cover the proxy: the header is ignored, never a 308 to the same URL.
+    const wrongList = await createApp(
+      testConfig({ publicUrl: new URL("https://plans.example.org"), trustedProxies: ["10.9.8.7"] }),
+    );
+    for (const proto of ["https", "http"]) {
+      const w = await request(wrongList.getHttpServer()).get("/api/health").set("X-Forwarded-Proto", proto);
+      expect(w.status).toBe(200);
+    }
+    await wrongList.close();
   });
 
   it("logs refused cross-origin writes as security warnings, with the client address hashed", async () => {

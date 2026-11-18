@@ -1,3 +1,4 @@
+import { Logger } from "@nestjs/common";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import { populationSettings } from "./population/layers.service";
 import cookieParser from "cookie-parser";
@@ -106,11 +107,25 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
 /**
  * Purpose: middleware that redirects a request the trusted reverse proxy received over plain http to the same path
  * on the https public address (308 keeps the method and body). Only `X-Forwarded-Proto` from a trusted proxy
- * counts (Express `req.protocol`), so a direct request is never redirected.
+ * counts, so a direct request is never redirected. A header from an address outside MOBSIMLAB_TRUSTED_PROXIES is
+ * ignored (and logged once): Express then reports "http" for every request, and redirecting on that would loop.
  */
 export function redirectToHttps(publicUrl: URL) {
+  let warned = false;
   return (req: Request, res: Response, next: NextFunction): void => {
-    if (req.protocol !== "http" || !req.header("x-forwarded-proto")) return next();
+    if (!req.header("x-forwarded-proto")) return next();
+    const trust = req.app.get("trust proxy fn") as ((addr: string, i: number) => boolean) | undefined;
+    if (!trust?.(req.socket.remoteAddress ?? "", 0)) {
+      if (!warned) {
+        warned = true;
+        new Logger("security").warn(
+          "X-Forwarded-Proto came from a proxy that is not in MOBSIMLAB_TRUSTED_PROXIES; it is ignored. " +
+            "Add the reverse proxy's address so the client address and https are taken from it.",
+        );
+      }
+      return next();
+    }
+    if (req.protocol !== "http") return next();
     // The path is appended as text, so a path such as `//other.host/` stays on this host (no open redirect).
     const path = req.originalUrl.startsWith("/") ? req.originalUrl : `/${req.originalUrl}`;
     res.redirect(308, `${publicUrl.origin}${path}`);
