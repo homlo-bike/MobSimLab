@@ -54,6 +54,8 @@ export const editorsUk = {
   "rail.storageRole.overnight": "Нічний відстій",
   "rail.storageRole.both": "Відстій між рейсами і нічний",
   "rail.inYard": "У парку відстою {name}",
+  "rail.yard": "Відстійний парк",
+  "rail.yardNone": "Не у відстійному парку",
   "rail.storageLabel": "{role} · вміщується поїздів: {n}",
   "rail.finish": "Завершити (Enter)",
   "rail.cancel": "Скасувати (Esc)",

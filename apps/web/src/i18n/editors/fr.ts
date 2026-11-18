@@ -52,6 +52,8 @@ export const editorsFr = {
   "rail.storageRole.overnight": "Garage de nuit",
   "rail.storageRole.both": "Battement et nuit",
   "rail.inYard": "Dans le faisceau de garage {name}",
+  "rail.yard": "Faisceau de garage",
+  "rail.yardNone": "Hors faisceau de garage",
   "rail.storageLabel": "{role} · {n} trains tiennent",
   "rail.finish": "Terminer (Entrée)",
   "rail.cancel": "Annuler (Échap)",

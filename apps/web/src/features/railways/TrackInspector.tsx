@@ -1,6 +1,7 @@
 import { useI18n, withNodes } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { update } from "./doc";
+import { YardControl } from "./YardControl";
 import { COLORS, fmtM, fmtTime, LEVEL_LABEL, POWER } from "./modes";
 import { field, input, levelOpts, ModeRow, Remove, Row, Section, Segmented } from "./panelControls";
 import type { RailPanelProps as Props } from "./railPanelTypes";
@@ -158,14 +159,7 @@ export function TrackInspector({ t: track, doc, view, sel, actions: a }: Props &
           </select>
         </Row>
       )}
-      {t.use === "storage" &&
-        (doc.yards ?? [])
-          .filter((y) => y.tracks.includes(t.id))
-          .map((y) => (
-            <p key={y.id} className="text-xs text-slate-600">
-              {tr("rail.inYard", { name: y.name })}
-            </p>
-          ))}
+      {t.use === "storage" && <YardControl track={t} doc={doc} view={view} setDoc={a.setDoc} />}
       {pi && sel?.pi !== undefined && (
         <div className="flex flex-col gap-2 rounded border border-amber-300 bg-amber-50 p-2">
           <b>{tr("rail.pointN", { n: sel.pi + 1 })}</b>

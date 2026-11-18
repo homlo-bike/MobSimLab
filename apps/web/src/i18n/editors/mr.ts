@@ -52,6 +52,8 @@ export const editorsMr = {
   "rail.storageRole.overnight": "रात्रीचा थांबा",
   "rail.storageRole.both": "थांबा आणि रात्र",
   "rail.inYard": "स्टेबलिंग यार्ड {name} मध्ये",
+  "rail.yard": "स्टेबलिंग यार्ड",
+  "rail.yardNone": "कोणत्याही यार्डमध्ये नाही",
   "rail.storageLabel": "{role} · {n} गाड्या बसतात",
   "rail.finish": "पूर्ण करा (Enter)",
   "rail.cancel": "रद्द करा (Esc)",

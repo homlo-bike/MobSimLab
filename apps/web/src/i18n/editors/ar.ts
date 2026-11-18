@@ -57,6 +57,8 @@ export const editorsAr = {
   "rail.storageRole.overnight": "المبيت ليلًا",
   "rail.storageRole.both": "الانتظار والمبيت ليلًا",
   "rail.inYard": "في ساحة المبيت {name}",
+  "rail.yard": "ساحة مبيت",
+  "rail.yardNone": "ليس في ساحة مبيت",
   "rail.storageLabel": "{role} · تتسع لـ {n} قطارات",
   "rail.finish": "إنهاء (Enter)",
   "rail.cancel": "إلغاء (Esc)",

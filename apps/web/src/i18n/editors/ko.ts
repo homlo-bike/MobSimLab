@@ -51,6 +51,8 @@ export const editorsKo = {
   "rail.storageRole.overnight": "야간 유치",
   "rail.storageRole.both": "대기 및 야간",
   "rail.inYard": "유치장 {name}",
+  "rail.yard": "유치선",
+  "rail.yardNone": "유치선 아님",
   "rail.storageLabel": "{role} · {n}편성 수용",
   "rail.finish": "완료(Enter)",
   "rail.cancel": "취소(Esc)",

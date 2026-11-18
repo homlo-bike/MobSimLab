@@ -52,6 +52,8 @@ export const editorsSw = {
   "rail.storageRole.overnight": "Kulala usiku",
   "rail.storageRole.both": "Kusubiri na usiku",
   "rail.inYard": "Katika yadi ya kulaza {name}",
+  "rail.yard": "Yadi ya kulaza treni",
+  "rail.yardNone": "Haiko kwenye yadi",
   "rail.storageLabel": "{role} · treni {n} zinatosha",
   "rail.finish": "Maliza (Enter)",
   "rail.cancel": "Ghairi (Esc)",

@@ -54,6 +54,8 @@ export const editorsRu = {
   "rail.storageRole.overnight": "Ночной отстой",
   "rail.storageRole.both": "Отстой между рейсами и ночной",
   "rail.inYard": "В парке отстоя {name}",
+  "rail.yard": "Отстойный парк",
+  "rail.yardNone": "Не в отстойном парке",
   "rail.storageLabel": "{role} · помещается поездов: {n}",
   "rail.finish": "Готово (Enter)",
   "rail.cancel": "Отмена (Esc)",

@@ -52,6 +52,8 @@ export const editorsUz = {
   "rail.storageRole.overnight": "Tungi turish",
   "rail.storageRole.both": "Reyslar orasi va tungi",
   "rail.inYard": "{name} turish parkida",
+  "rail.yard": "Turar joy",
+  "rail.yardNone": "Turar joyda emas",
   "rail.storageLabel": "{role} · {n} ta poyezd sig'adi",
   "rail.finish": "Tugatish (Enter)",
   "rail.cancel": "Bekor qilish (Esc)",
