@@ -228,6 +228,13 @@ describe("appraisal", () => {
     expect(a.years).toHaveLength(34);
   });
 
+  it("gives no benefit-cost ratio for a line without costs (a ferry is not costed yet)", () => {
+    const free = line({ spending: { civil: Z, systems: Z, vehicles: Z, operating: Z } });
+    const r = appraise(input([free], PREFS), 20).rows.find((x) => x.id === "rail:a")!;
+    expect(r.central.bcr).toBeNull();
+    expect(r.bcr.every((v) => Number.isNaN(v))).toBe(true);
+  });
+
   it("finds switching values that bring the ENPV to 0", () => {
     const base = a.tests[0]!.result;
     const capex = a.switching.find((s) => s.id === "capex")!;
