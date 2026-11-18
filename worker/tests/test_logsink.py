@@ -36,6 +36,10 @@ def test_secret_names_and_inline_credentials_are_redacted() -> None:
         "note": f"used Bearer {REDACTED}",
         "n": 3,
     }
+    assert (
+        redact("GET https://t.example.org/1?token=abc&f=png")
+        == f"GET https://t.example.org/1?token={REDACTED}&f=png"
+    )
     event = redact_event(None, "warning", {"event": "x", "password": "p"})
     assert event == {"event": "x", "password": REDACTED}
 

@@ -8,10 +8,11 @@ import {
   Menu,
   type MenuItemConstructorOptions,
   net,
+  safeStorage,
   session,
   shell,
 } from "electron";
-import { LocalStack } from "./local";
+import { type Keychain, LocalStack } from "./local";
 import { runtimeAt } from "./runtime";
 import { normaliseServerUrl, probeServer, readSettings, type Settings, writeSettings } from "./settings";
 
@@ -63,6 +64,7 @@ async function open(): Promise<void> {
       stack = new LocalStack({
         runtime,
         dataDir: join(app.getPath("userData"), "local"),
+        keychain: keychain(),
         agents: settings.agents,
         status: (text) => panel?.webContents.send("desktop:status", text),
       });
@@ -95,6 +97,18 @@ async function open(): Promise<void> {
   } else {
     showPanel("onboarding");
   }
+}
+
+/**
+ * Purpose: the system's keychain for the master key that encrypts saved API keys, or undefined when there is
+ * none. On Linux without a keyring service Electron falls back to a fixed key ("basic_text"), which protects
+ * nothing, so the key then stays a file readable only by this user, as before.
+ */
+function keychain(): Keychain | undefined {
+  if (!safeStorage.isEncryptionAvailable()) return undefined;
+  if (process.platform === "linux" && safeStorage.getSelectedStorageBackend() === "basic_text")
+    return undefined;
+  return { encrypt: (t) => safeStorage.encryptString(t), decrypt: (b) => safeStorage.decryptString(b) };
 }
 
 /** Purpose: the window that shows MobSimLab's web app (local or a server). No Node access, no preload. */

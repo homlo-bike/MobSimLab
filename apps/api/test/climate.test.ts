@@ -53,6 +53,20 @@ describe("Open-Meteo client", () => {
     expect(() => openMeteoSettings({ MOBSIMLAB_OPENMETEO_URL: "http://meteo.example" })).toThrow();
   });
 
+  it("prefers the key in the secret file to the environment", () => {
+    const files: Record<string, string> = { "/s/openmeteo_api_key": "from-file\n" };
+    const read = (p: string) => {
+      if (!(p in files)) throw Object.assign(new Error("missing"), { code: "ENOENT" });
+      return files[p]!;
+    };
+    expect(
+      openMeteoSettings({ MOBSIMLAB_SECRETS_DIR: "/s", MOBSIMLAB_OPENMETEO_APIKEY: "from-env" }, read).apiKey,
+    ).toBe("from-file");
+    expect(
+      openMeteoSettings({ MOBSIMLAB_SECRETS_DIR: "/t", MOBSIMLAB_OPENMETEO_APIKEY: "from-env" }, read).apiKey,
+    ).toBe("from-env");
+  });
+
   it("works out each month's averages and spreads, skipping missing days", () => {
     const d = daily();
     const months = monthlyClimate(

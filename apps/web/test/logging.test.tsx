@@ -67,11 +67,11 @@ describe("browser logs", () => {
     setLogSession("csrf-1");
     getLogger("api").error(
       { headers: { authorization: "Bearer abc" }, password: "p" },
-      "call failed: Bearer abc",
+      "call failed: Bearer abc at https://t.example.org/1/2/3.png?key=k1",
     );
     await flushLogs();
     expect(sent()[0]).toMatchObject({
-      message: "call failed: Bearer [REDACTED]",
+      message: "call failed: Bearer [REDACTED] at https://t.example.org/1/2/3.png?key=[REDACTED]",
       context: { headers: { authorization: "[REDACTED]" }, password: "[REDACTED]" },
     });
   });
