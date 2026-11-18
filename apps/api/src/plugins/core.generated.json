@@ -10714,6 +10714,34 @@
       }
     },
     {
+      "id": "org.mobsimlab.ogc-layers",
+      "name": "WMS, WMTS and XYZ map layers",
+      "description": "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data"
+      ],
+      "permissions": [],
+      "modes": [],
+      "contexts": [],
+      "tools": [],
+      "calculations": [],
+      "importers": [],
+      "exporters": [],
+      "mapLayers": [],
+      "basemaps": [],
+      "tabs": [],
+      "parameters": {},
+      "defaults": {}
+    },
+    {
       "id": "org.mobsimlab.on-demand-bus",
       "name": "On-demand bus",
       "description": "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.",

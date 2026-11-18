@@ -13,6 +13,7 @@ import {
   type Basemap,
   basemapStyle,
   availableBasemaps,
+  availableOverlays,
   DEFAULT_BASEMAP,
   onServerBasemaps,
   refreshServerBasemaps,
@@ -21,10 +22,12 @@ import {
   rememberedBasemapId,
   themedBasemap,
 } from "./basemaps";
+import { activePlugins } from "../plugins/registry";
 import { isDark, useDark } from "../shell/theme";
 import { applyMapTheme } from "./darkLayers";
 import { MapControls } from "./MapControls";
 import { applyHidden, markBasemap, type OverlayGroup, switchBasemap } from "./mapLayers";
+import { applyOverlays, rememberOverlays, rememberedOverlays } from "./overlays";
 
 // MapLibre 6 looks for its worker next to its own module, which does not exist once Vite bundles it.
 setWorkerUrl(workerUrl);
@@ -61,6 +64,8 @@ export function MapView({ onReady }: Props) {
   const [host, setHost] = useState<HTMLElement | null>(null);
   const [basemap, setBasemap] = useState<Basemap>(rememberedBasemap);
   const [hidden, setHidden] = useState<ReadonlySet<OverlayGroup>>(() => new Set());
+  /** The WMS and WMTS overlays shown (ids of layers an Admin added). */
+  const [overlays, setOverlays] = useState<ReadonlySet<string>>(rememberedOverlays);
   const attribution = useRef<AttributionControl | null>(null);
   const hiddenNow = useRef(hidden);
   hiddenNow.current = hidden;
@@ -166,6 +171,28 @@ export function MapView({ onReady }: Props) {
     if (map) applyMapTheme(map, darkMap);
   }, [map, darkMap]);
 
+  // WMS and WMTS overlays: drawn when picked, also once the API offers them or the project's plugins change.
+  const [serverVersion, setServerVersion] = useState(0);
+  useEffect(() => onServerBasemaps(() => setServerVersion((n) => n + 1)), []);
+  const activeNow = activePlugins();
+  useEffect(() => {
+    if (!map) return;
+    const draw = () => {
+      try {
+        applyOverlays(map, availableOverlays(), overlays);
+      } catch {
+        // The style is loading (a basemap switch): the switch's own load draws them.
+      }
+    };
+    draw();
+    map.on?.("style.load", draw);
+    return () => void map.off?.("style.load", draw);
+  }, [map, overlays, serverVersion, activeNow]);
+  const pickOverlays = (ids: ReadonlySet<string>) => {
+    setOverlays(ids);
+    rememberOverlays(ids);
+  };
+
   // Dark mode switched on or off: draw the basemap's other design, if it has one.
   useEffect(() => {
     if (!map) return;
@@ -210,6 +237,8 @@ export function MapView({ onReady }: Props) {
             onBasemap={(b) => pickBasemap(b)}
             hidden={hidden}
             onHidden={setHidden}
+            overlays={overlays}
+            onOverlays={pickOverlays}
           />,
           host,
         )}

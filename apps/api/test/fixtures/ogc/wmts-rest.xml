@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Capabilities xmlns="http://www.opengis.net/wmts/1.0" xmlns:ows="http://www.opengis.net/ows/1.1" version="1.0.0">
+  <ows:ServiceIdentification><ows:Title>Land cover</ows:Title></ows:ServiceIdentification>
+  <ows:ServiceProvider><ows:ProviderName>Example Drive</ows:ProviderName></ows:ServiceProvider>
+  <Contents>
+    <Layer>
+      <ows:Title>Land cover 2020</ows:Title>
+      <ows:WGS84BoundingBox><ows:LowerCorner>35.7 33.3</ows:LowerCorner><ows:UpperCorner>36.6 33.7</ows:UpperCorner></ows:WGS84BoundingBox>
+      <ows:Identifier>a1b2_c3d4</ows:Identifier>
+      <Style isDefault="true"><ows:Identifier>default</ows:Identifier></Style>
+      <Format>image/png</Format>
+      <Dimension><ows:Identifier>Time</ows:Identifier><Default>2020-01-01</Default><Value>2020-01-01</Value></Dimension>
+      <TileMatrixSetLink><TileMatrixSet>EPSG4326</TileMatrixSet></TileMatrixSetLink>
+      <TileMatrixSetLink><TileMatrixSet>EPSG3857</TileMatrixSet></TileMatrixSetLink>
+      <ResourceURL format="image/png" resourceType="tile" template="https://tiles.example.com/v3/ogc/wmts/abc/{Style}/{Time}/{TileMatrixSet}/{TileMatrix}/{TileRow}/{TileCol}.png"/>
+    </Layer>
+    <TileMatrixSet>
+      <ows:Identifier>EPSG4326</ows:Identifier>
+      <ows:SupportedCRS>urn:ogc:def:crs:EPSG::4326</ows:SupportedCRS>
+      <TileMatrix><ows:Identifier>0</ows:Identifier><ScaleDenominator>279541132.0143589</ScaleDenominator><TopLeftCorner>90 -180</TopLeftCorner><TileWidth>256</TileWidth><TileHeight>256</TileHeight><MatrixWidth>2</MatrixWidth><MatrixHeight>1</MatrixHeight></TileMatrix>
+    </TileMatrixSet>
+    <TileMatrixSet>
+      <ows:Identifier>EPSG3857</ows:Identifier>
+      <ows:SupportedCRS>urn:ogc:def:crs:EPSG::3857</ows:SupportedCRS>
+      <TileMatrix><ows:Identifier>0</ows:Identifier><ScaleDenominator>559082264.0287178</ScaleDenominator><TopLeftCorner>-20037508.3427892 20037508.3427892</TopLeftCorner><TileWidth>256</TileWidth><TileHeight>256</TileHeight><MatrixWidth>1</MatrixWidth><MatrixHeight>1</MatrixHeight></TileMatrix>
+      <TileMatrix><ows:Identifier>1</ows:Identifier><ScaleDenominator>279541132.0143589</ScaleDenominator><TopLeftCorner>-20037508.3427892 20037508.3427892</TopLeftCorner><TileWidth>256</TileWidth><TileHeight>256</TileHeight><MatrixWidth>2</MatrixWidth><MatrixHeight>2</MatrixHeight></TileMatrix>
+      <TileMatrix><ows:Identifier>2</ows:Identifier><ScaleDenominator>139770566.00717944</ScaleDenominator><TopLeftCorner>-20037508.3427892 20037508.3427892</TopLeftCorner><TileWidth>256</TileWidth><TileHeight>256</TileHeight><MatrixWidth>4</MatrixWidth><MatrixHeight>4</MatrixHeight></TileMatrix>
+    </TileMatrixSet>
+  </Contents>
+</Capabilities>

@@ -134,9 +134,11 @@ export function ProjectPlugins({
         >
           <div className="flex flex-col gap-3 text-sm">
             {shown.description && <p className="m-0 text-slate-700">{shown.description}</p>}
-            <p className="m-0 text-xs text-slate-500">
-              {t("plugins.adds", { list: addsLine(shown.contributes, t) })}
-            </p>
+            {addsLine(shown.contributes, t) && (
+              <p className="m-0 text-xs text-slate-500">
+                {t("plugins.adds", { list: addsLine(shown.contributes, t) })}
+              </p>
+            )}
             {shown.permissions.length > 0 && (
               <p className="m-0 text-xs text-slate-500">
                 {t("plugins.uses", {
