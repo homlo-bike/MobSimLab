@@ -181,6 +181,10 @@ export const editorsUr = {
   "rail.switch": "سوئچ",
   "rail.switchFacts":
     "لمبائی {length} · 1:{ratio} · R {radius} میٹر · شاخ پر {speed} کلومیٹر/گھنٹہ · {at} پر",
+  "rail.switches": "سوئچ",
+  "rail.switchesNone": "ابھی کوئی سوئچ نہیں۔ ٹرن آؤٹ یا کراس اوور ٹول سے ایک لگائیں۔",
+  "rail.switchItem": "{track} پر {at} پر {kind}",
+  "rail.kind.doubleJunction": "ڈبل جنکشن",
   "rail.positionAlong": "پٹری پر مقام",
   "rail.otherSide": "دوسری طرف",
   "rail.reverse": "سمت الٹیں",

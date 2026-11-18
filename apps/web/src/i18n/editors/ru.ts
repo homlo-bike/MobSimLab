@@ -213,6 +213,10 @@ export const editorsRu = {
   "rail.switch": "Стрелка",
   "rail.switchFacts":
     "длина {length} · 1:{ratio} · R {radius} м · {speed} км/ч на боковой путь · у отметки {at}",
+  "rail.switches": "Стрелочные переводы",
+  "rail.switchesNone": "Стрелок пока нет. Поставьте стрелку инструментом «Стрелка» или «Съезд».",
+  "rail.switchItem": "{kind} на {track}, {at}",
+  "rail.kind.doubleJunction": "Двухпутное ответвление",
   "rail.positionAlong": "Положение на пути",
   "rail.otherSide": "Другая сторона",
   "rail.reverse": "Развернуть",

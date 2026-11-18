@@ -3,7 +3,7 @@ import type { MessageKey } from "../../i18n/messages";
 import { COLORS, fmtM } from "./modes";
 import { Section } from "./panelControls";
 import type { RailPanelActions } from "./railPanelTypes";
-import type { IssueView, Network, RailView, Severity, SignalKind, Slip } from "./types";
+import type { IssueView, LonLat, Network, RailView, Severity, SignalKind, Slip, SwitchKind } from "./types";
 
 const CHIP: Record<Severity, string> = {
   ok: COLORS.ok,
@@ -26,6 +26,90 @@ const PROTECTION = {
   path_gates: "rail.gates",
   marked: "rail.markedCrossing",
 } as const satisfies Record<string, MessageKey>;
+
+/** Each kind of switch in the switch list. */
+const SWITCH_KIND = {
+  turnout: "rail.tool.turnout",
+  double_junction: "rail.kind.doubleJunction",
+  crossover: "rail.tool.crossover",
+  scissors: "rail.scissors",
+} as const satisfies Record<SwitchKind, MessageKey>;
+
+/** Purpose: the point at a chainage (m) along a centre line of longitude and latitude; null for an empty line. */
+export function pointAlong(line: readonly LonLat[], s: number): LonLat | null {
+  const first = line[0];
+  if (!first) return null;
+  const R = 6_371_000;
+  let done = 0;
+  for (let i = 1; i < line.length; i++) {
+    const a = line[i - 1]!;
+    const b = line[i]!;
+    const k = Math.cos((((a[1] + b[1]) / 2) * Math.PI) / 180);
+    const d = Math.hypot((b[0] - a[0]) * k, b[1] - a[1]) * ((Math.PI / 180) * R);
+    if (d > 0 && done + d >= s) {
+      const f = Math.max(0, (s - done) / d);
+      return [a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f];
+    }
+    done += d;
+  }
+  return line[line.length - 1]!;
+}
+
+/**
+ * Purpose: every switch of the drawing (turnouts, double junctions, crossovers) with its track and position,
+ * so a switch can be picked from the panel; a click selects it and shows it on the map.
+ */
+export function SwitchesSection({
+  doc,
+  view,
+  selected,
+  actions: a,
+}: {
+  doc: Network;
+  view: RailView;
+  selected: number | null;
+  actions: RailPanelActions;
+}) {
+  const { t } = useI18n();
+  const list = [...doc.switches].sort((x, y) => x.track - y.track || x.s - y.s);
+  return (
+    <Section title={list.length ? `${t("rail.switches")} · ${list.length}` : t("rail.switches")}>
+      {list.length === 0 ? (
+        <p className="text-xs text-slate-600">{t("rail.switchesNone")}</p>
+      ) : (
+        <ul className="flex max-h-60 flex-col gap-0.5 overflow-y-auto" aria-label={t("rail.switches")}>
+          {list.map((sw) => {
+            const track = doc.tracks.find((x) => x.id === sw.track);
+            const centre = view.tracks.find((x) => x.id === sw.track)?.centre ?? [];
+            const sv = view.switches.find((x) => x.id === sw.id);
+            const at = pointAlong(centre, sv?.s0 ?? sw.s);
+            return (
+              <li key={sw.id}>
+                <button
+                  type="button"
+                  aria-current={selected === sw.id ? "true" : undefined}
+                  onClick={() => a.showIssue(at, sw.id)}
+                  className={`flex w-full items-start gap-2 rounded px-1 py-0.5 text-start hover:bg-slate-100 ${
+                    selected === sw.id ? "bg-blue-50 font-medium" : ""
+                  }`}
+                >
+                  <span className="font-mono text-xs text-slate-500">{sw.id}</span>
+                  <span>
+                    {t("rail.switchItem", {
+                      kind: t(SWITCH_KIND[sw.kind]),
+                      track: track?.name || t("rail.trackN", { id: sw.track }),
+                      at: fmtM(sw.s),
+                    })}
+                  </span>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+      )}
+    </Section>
+  );
+}
 
 /** Purpose: counts of the plan's signals by kind, for the panel. */
 function signalSummary(tn: TranslatePlural, list: RailView["signals"]): string {
