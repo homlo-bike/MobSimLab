@@ -161,13 +161,15 @@ pub fn find_path(
             });
         }
         let depth = parent[&(r, k)].2;
-        // Advance a call inside this route.
+        // Advance a call inside this route. The route limit counts from the last call, so a long
+        // line with many stops finds the path whenever each stop reaches the next, as the editor
+        // checks them one pair at a time (Damascus test, bug 16).
         for &(place, pen) in &calls[k] {
             if reaches(m, r, place).is_some() {
                 let c = cost + pen;
                 if best.get(&(r, k + 1)).map_or(true, |&b| c < b - 1e-9) {
                     best.insert((r, k + 1), c);
-                    parent.insert((r, k + 1), (Some((r, k)), Some(place), depth));
+                    parent.insert((r, k + 1), (Some((r, k)), Some(place), 1));
                     heap.push(Item(c, seq, r, k + 1));
                     seq += 1;
                 }

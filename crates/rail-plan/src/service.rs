@@ -499,9 +499,22 @@ fn clock(s: f64) -> String {
 /// Purpose: the issue in words for the editor.
 fn issue_text(issue: &Issue, names: &PlatformNames) -> String {
     match issue {
-        Issue::NoPath { direction, .. } => format!(
+        Issue::NoPath {
+            direction,
+            reason: None,
+            ..
+        } => format!(
             "No track connects the stops {}. Check that the stations are joined by track in the order of the stops.",
             if *direction == 0 { "in the line's direction" } else { "in the return direction" }
+        ),
+        Issue::NoPath {
+            direction,
+            reason: Some(why),
+            ..
+        } => format!(
+            "Track joins the stops {}, but trains cannot run along it: {}.",
+            if *direction == 0 { "in the line's direction" } else { "in the return direction" },
+            names.reason(why)
         ),
         Issue::Unplaced { trip, reason, .. } => format!("Trip {trip} could not run: {reason}."),
         Issue::Shifted { run, by_s } => format!(
@@ -601,6 +614,20 @@ struct PlatformNames<'a> {
 }
 
 impl PlatformNames<'_> {
+    /// A planner reason with each platform id in it named as the editor shows it.
+    fn reason(&self, why: &str) -> String {
+        why.split(' ')
+            .map(|w| {
+                if self.m.platform(w).is_some() {
+                    self.platform(w)
+                } else {
+                    w.to_string()
+                }
+            })
+            .collect::<Vec<_>>()
+            .join(" ")
+    }
+
     /// The station a platform belongs to (its id when unknown).
     fn station_of(&self, id: &str) -> String {
         self.m.platform(id).map_or(id.to_string(), |p| {

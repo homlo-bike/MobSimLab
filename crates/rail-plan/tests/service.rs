@@ -411,3 +411,36 @@ fn a_siding_marked_for_layover_reaches_the_line() {
             .is_empty()
     );
 }
+
+#[test]
+fn a_gradient_the_train_cannot_climb_is_reported_as_such_not_as_missing_track() {
+    // Damascus test, bug 16: T4's track joins every pair of stops (the editor's check), but a
+    // stretch too steep for the tram made the planner say "No track connects the stops".
+    let mut t: serde_json::Value = serde_json::from_str(&topology()).unwrap();
+    for s in t["sections"].as_array_mut().unwrap() {
+        let (id, len) = (
+            s["id"].as_str().unwrap().to_string(),
+            s["length_m"].as_f64().unwrap(),
+        );
+        let g = match id.as_str() {
+            "t3.0.0" | "t3.1.0" => 400.0,
+            "t3.0.2" | "t3.1.1" => -400.0,
+            _ => continue,
+        };
+        s["gradient_permille"] = serde_json::json!([{ "from_m": 0.0, "to_m": len, "value": g }]);
+    }
+    let out = publish_service(&t.to_string(), &[shuttle()], "weekday").unwrap();
+    let r = &out.lines[0];
+    assert!(
+        !r.issues.iter().any(|i| i.starts_with("No track connects")),
+        "{:?}",
+        r.issues
+    );
+    assert!(
+        r.issues
+            .iter()
+            .any(|i| i.starts_with("Track joins the stops") && i.contains("stalls on a gradient")),
+        "{:?}",
+        r.issues
+    );
+}

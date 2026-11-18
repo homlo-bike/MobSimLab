@@ -1545,6 +1545,7 @@ fn assess_signals(
                 area = g.purpose.label(dz)
             ),
             Area::Platform => "No starter signal at the end of a platform track: the generated one was removed. Trains cannot be held at the platform, so the line ahead is not protected. Reset the signals, or place a main signal at the platform end.".into(),
+            Area::StorageExit => "No signal at the exit of a storage track: the generated one was removed. Trains put away there have no signal to leave by, so they cannot come out. Reset the signals, or place a shunting signal where the storage track joins the line.".into(),
             Area::Block => {
                 let p = dz.params_for(segs[g.seg].mode);
                 let behind = next(g.seg, g.x, g.to, false).unwrap_or(g.x.min(sections[g.seg].length_m - g.x));
@@ -1731,6 +1732,8 @@ enum Area {
     LevelCrossing(String),
     /// The end of a platform track (starter signal).
     Platform,
+    /// The exit of a storage track joined straight to a running track.
+    StorageExit,
     /// Plain line (block signal).
     Block,
     /// Announcing a main signal at braking distance (distant signal).
@@ -1750,6 +1753,7 @@ impl Area {
             Area::Crossing(id) => format!("the crossing {id}"),
             Area::LevelCrossing(id) => format!("the level crossing {id}"),
             Area::Platform => "the platform end".into(),
+            Area::StorageExit => "the exit of a storage track".into(),
             Area::Block => "plain line".into(),
             Area::Distant => "the approach to a main signal".into(),
             Area::Speed => "a speed restriction".into(),
@@ -2099,6 +2103,41 @@ fn generate_signals(
                     },
                 );
             }
+        }
+    }
+    // Exits of storage tracks joined straight to a running track (a siding beyond a terminal
+    // station's end, with no switch): the signals in front of a switch do not cover them, so a
+    // train put away there would have no signal to leave by (Damascus test, bug 15). On any
+    // signalling system, trams included, since a route starts only at a signal.
+    for i in (0..segs.len()).filter(|&i| storage(i)) {
+        for e in [0usize, 1] {
+            let Some(n) = node_of
+                .get(&(i, e))
+                .and_then(|id| nodes.iter().find(|n| &n.0 == id))
+            else {
+                continue;
+            };
+            let others: Vec<usize> = n.2.iter().map(|x| x.0).filter(|&s| s != i).collect();
+            let plain_join = !others.is_empty()
+                && others
+                    .iter()
+                    .all(|&s| !storage(s) && segs[s].source.kind != "switch");
+            let to = e == 1;
+            let x = if to { len[i] } else { 0.0 };
+            if !plain_join || inside(i, x, &areas) || out.iter().any(|o| o.seg == i && o.to == to) {
+                continue;
+            }
+            push(
+                &mut out,
+                SecSignal {
+                    seg: i,
+                    x,
+                    to,
+                    kind: SignalKind::Shunting,
+                    purpose: Area::StorageExit,
+                    speed_kmh: None,
+                },
+            );
         }
     }
     // Block signals on plain running line.
