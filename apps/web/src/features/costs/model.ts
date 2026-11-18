@@ -408,7 +408,13 @@ export function estimate(input: EstimateInput): Estimate {
       );
     const stationsBy = new Map<
       string,
-      { mode: string; level: Level; existing: boolean; n: number; parts: { quantity: number; lines: string[] }[] }
+      {
+        mode: string;
+        level: Level;
+        existing: boolean;
+        n: number;
+        parts: { quantity: number; lines: string[] }[];
+      }
     >();
     for (const sv of view.stations) {
       const st = railway.stations.find((s) => s.id === sv.id);
