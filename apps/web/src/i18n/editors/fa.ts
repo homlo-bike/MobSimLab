@@ -163,7 +163,6 @@ export const editorsFa = {
   "rail.switch": "سوزن",
   "rail.switchFacts": "طول {length} · 1:{ratio} · R {radius} m · {speed} km/h در شاخهٔ انحرافی · {at}",
   "rail.positionAlong": "موقعیت در طول ریل",
-  "rail.switchPosition": "موقعیت سوزن",
   "rail.otherSide": "سمت دیگر",
   "rail.reverse": "وارونه",
   "rail.mirror": "قرینه",

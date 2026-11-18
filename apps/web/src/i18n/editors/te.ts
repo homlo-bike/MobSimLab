@@ -179,7 +179,6 @@ export const editorsTe = {
   "rail.switch": "స్విచ్",
   "rail.switchFacts": "పొడవు {length} · 1:{ratio} · R {radius} మీ · శాఖపై {speed} కి.మీ/గం · {at} వద్ద",
   "rail.positionAlong": "పట్టాపై స్థానం",
-  "rail.switchPosition": "స్విచ్ స్థానం",
   "rail.otherSide": "మరో వైపు",
   "rail.reverse": "దిశ తిప్పండి",
   "rail.mirror": "అద్దం",

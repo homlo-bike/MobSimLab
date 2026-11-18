@@ -177,7 +177,6 @@ export const editorsAm = {
   "rail.switch": "መቀየሪያ",
   "rail.switchFacts": "ርዝመት {length} · 1:{ratio} · R {radius} ሜ · {speed} ኪሜ/ሰ በቅርንጫፍ · በ {at}",
   "rail.positionAlong": "በሐዲዱ ላይ ያለ ቦታ",
-  "rail.switchPosition": "የመቀየሪያ ቦታ",
   "rail.otherSide": "ሌላኛው ጎን",
   "rail.reverse": "አቅጣጫ ቀይር",
   "rail.mirror": "መስታወት",

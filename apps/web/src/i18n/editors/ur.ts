@@ -180,7 +180,6 @@ export const editorsUr = {
   "rail.switchFacts":
     "لمبائی {length} · 1:{ratio} · R {radius} میٹر · شاخ پر {speed} کلومیٹر/گھنٹہ · {at} پر",
   "rail.positionAlong": "پٹری پر مقام",
-  "rail.switchPosition": "سوئچ کا مقام",
   "rail.otherSide": "دوسری طرف",
   "rail.reverse": "سمت الٹیں",
   "rail.mirror": "آئینہ",

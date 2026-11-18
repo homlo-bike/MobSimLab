@@ -179,7 +179,6 @@ export const editorsHi = {
   "rail.switch": "स्विच",
   "rail.switchFacts": "लंबाई {length} · 1:{ratio} · R {radius} मी · शाखा पर {speed} किमी/घं · {at} पर",
   "rail.positionAlong": "पटरी पर स्थिति",
-  "rail.switchPosition": "स्विच की स्थिति",
   "rail.otherSide": "दूसरी ओर",
   "rail.reverse": "दिशा उलटें",
   "rail.mirror": "दर्पण",

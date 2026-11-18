@@ -186,7 +186,6 @@ export const editorsEn = {
   "rail.switch": "Switch",
   "rail.switchFacts": "{length} long · 1:{ratio} · R {radius} m · {speed} km/h diverging · at {at}",
   "rail.positionAlong": "Position along track",
-  "rail.switchPosition": "Switch position",
   "rail.otherSide": "Other side",
   "rail.reverse": "Reverse",
   "rail.mirror": "Mirror",

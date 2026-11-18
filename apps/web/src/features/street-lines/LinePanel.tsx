@@ -247,10 +247,11 @@ export function LinePanel(props: Props) {
     (x, y) => rank[x.sev] - rank[y.sev],
   );
   // In a project the checks go to the notifications button in the top bar; on its own the panel lists them.
+  // A line with no points yet is not a problem of the project (the tab was only opened), so it reports nothing.
   const checksElsewhere = usePublishChecks(
     "street",
     t("checks.streetLine", { name: props.lineName || t("street.untitled") }),
-    checks.map((c) => ({
+    (view.points.length === 0 ? [] : checks).map((c) => ({
       severity: c.sev === "warn" ? "warning" : c.sev,
       text: c.text,
       ...(c.point !== undefined ? { onShow: () => a.select(c.point!) } : {}),

@@ -163,7 +163,6 @@ export const editorsVi = {
   "rail.switch": "Ghi",
   "rail.switchFacts": "dài {length} · 1:{ratio} · R {radius} m · {speed} km/h nhánh rẽ · {at}",
   "rail.positionAlong": "Vị trí dọc đường ray",
-  "rail.switchPosition": "Vị trí ghi",
   "rail.otherSide": "Phía bên kia",
   "rail.reverse": "Đảo chiều",
   "rail.mirror": "Lật đối xứng",

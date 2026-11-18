@@ -179,7 +179,6 @@ export const editorsSw = {
   "rail.switch": "Swichi",
   "rail.switchFacts": "urefu {length} · 1:{ratio} · R {radius} m · {speed} km/h tawini · katika {at}",
   "rail.positionAlong": "Mahali kando ya reli",
-  "rail.switchPosition": "Mahali pa swichi",
   "rail.otherSide": "Upande mwingine",
   "rail.reverse": "Geuza mwelekeo",
   "rail.mirror": "Kioo",

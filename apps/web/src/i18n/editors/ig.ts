@@ -163,7 +163,6 @@ export const editorsIg = {
   "rail.switch": "Ihe ntụgharị",
   "rail.switchFacts": "ogologo {length} · 1:{ratio} · R {radius} m · {speed} km/h n'alaka · na {at}",
   "rail.positionAlong": "Ọnọdụ n'ụzọ ígwè",
-  "rail.switchPosition": "Ọnọdụ ihe ntụgharị",
   "rail.otherSide": "Akụkụ nke ọzọ",
   "rail.reverse": "Gbanwee ụzọ",
   "rail.mirror": "Enyo",

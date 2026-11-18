@@ -163,7 +163,6 @@ export const editorsJa = {
   "rail.switch": "分岐器",
   "rail.switchFacts": "長さ {length} · 1:{ratio} · R {radius} m · 分岐側 {speed} km/h · {at}",
   "rail.positionAlong": "線路上の位置",
-  "rail.switchPosition": "分岐器の位置",
   "rail.otherSide": "反対側",
   "rail.reverse": "向きを反転",
   "rail.mirror": "左右反転",

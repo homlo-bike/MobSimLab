@@ -178,7 +178,6 @@ export const editorsId = {
   "rail.switch": "Wesel",
   "rail.switchFacts": "{length} panjang · 1:{ratio} · R {radius} m · {speed} km/j di sisi belok · {at}",
   "rail.positionAlong": "Posisi di sepanjang rel",
-  "rail.switchPosition": "Posisi wesel",
   "rail.otherSide": "Sisi lain",
   "rail.reverse": "Balik",
   "rail.mirror": "Cerminkan",

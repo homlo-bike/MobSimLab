@@ -57,7 +57,7 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
   app.use((_req: Request, res: Response, next: NextFunction) => {
     res.setHeader(
       "Permissions-Policy",
-      "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), bluetooth=(), interest-cohort=()",
+      "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()",
     );
     next();
   });

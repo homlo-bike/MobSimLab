@@ -179,7 +179,6 @@ export const editorsMr = {
   "rail.switch": "स्विच",
   "rail.switchFacts": "लांबी {length} · 1:{ratio} · R {radius} मी · फाट्यावर {speed} किमी/ता · {at} येथे",
   "rail.positionAlong": "रुळावरील स्थान",
-  "rail.switchPosition": "स्विचचे स्थान",
   "rail.otherSide": "दुसरी बाजू",
   "rail.reverse": "दिशा उलटा",
   "rail.mirror": "आरसा",

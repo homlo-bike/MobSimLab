@@ -212,7 +212,6 @@ export const editorsRu = {
   "rail.switchFacts":
     "длина {length} · 1:{ratio} · R {radius} м · {speed} км/ч на боковой путь · у отметки {at}",
   "rail.positionAlong": "Положение на пути",
-  "rail.switchPosition": "Положение стрелки",
   "rail.otherSide": "Другая сторона",
   "rail.reverse": "Развернуть",
   "rail.mirror": "Отразить",

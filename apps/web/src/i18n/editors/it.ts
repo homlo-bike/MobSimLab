@@ -179,7 +179,6 @@ export const editorsIt = {
   "rail.switch": "Deviatoio",
   "rail.switchFacts": "lungo {length} · 1:{ratio} · R {radius} m · {speed} km/h in deviata · {at}",
   "rail.positionAlong": "Posizione lungo il binario",
-  "rail.switchPosition": "Posizione del deviatoio",
   "rail.otherSide": "Altro lato",
   "rail.reverse": "Inverti",
   "rail.mirror": "Specchia",

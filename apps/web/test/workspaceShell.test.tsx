@@ -218,6 +218,16 @@ describe("Settings", () => {
     );
   });
 
+  it("closes with Escape even when focus has left the dialog", () => {
+    const onClose = vi.fn();
+    render(
+      <SettingsDialog me={me(false)} section="app" preferences={{}} onChange={() => {}} onClose={onClose} />,
+    );
+    (document.activeElement as HTMLElement | null)?.blur();
+    fireEvent.keyDown(document.body, { key: "Escape" });
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
   it("has no Server tab on a server, and Plugins only for Owners and Admins", async () => {
     vi.stubGlobal(
       "fetch",

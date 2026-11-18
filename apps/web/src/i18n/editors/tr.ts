@@ -163,7 +163,6 @@ export const editorsTr = {
   "rail.switch": "Makas",
   "rail.switchFacts": "{length} uzunluk · 1:{ratio} · R {radius} m · sapan kolda {speed} km/sa · {at}",
   "rail.positionAlong": "Ray boyunca konum",
-  "rail.switchPosition": "Makas konumu",
   "rail.otherSide": "Diğer taraf",
   "rail.reverse": "Ters çevir",
   "rail.mirror": "Aynala",

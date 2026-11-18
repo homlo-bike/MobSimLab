@@ -179,7 +179,6 @@ export const editorsFr = {
   "rail.switch": "Aiguillage",
   "rail.switchFacts": "longueur {length} · 1:{ratio} · R {radius} m · {speed} km/h en déviation · à {at}",
   "rail.positionAlong": "Position le long de la voie",
-  "rail.switchPosition": "Position de l’aiguillage",
   "rail.otherSide": "Autre côté",
   "rail.reverse": "Inverser",
   "rail.mirror": "Symétrie",

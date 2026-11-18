@@ -64,7 +64,9 @@ def work(
         connector: Opens a database connection.
     """
     backoff = 1.0
-    waiting = False
+    # Until the run queue is known to exist, ask for it without touching it (see Queue.ready).
+    waiting = True
+    told = False
     while not stop.is_set():
         try:
             with connector(cfg) as conn:
@@ -72,12 +74,16 @@ def work(
                 backoff = 1.0
                 while not stop.is_set():
                     try:
+                        if waiting and not queue.ready():
+                            if not told:
+                                log.info("waiting for the API to set up the run queue")
+                                told = True
+                            stop.wait(IDLE_WAIT_S * 5)
+                            continue
                         job = queue.fetch()
                     except (psycopg.errors.UndefinedTable, psycopg.errors.InsufficientPrivilege):
                         # pg-boss is installed by the API when it queues the first run.
-                        if not waiting:
-                            log.info("waiting for the API to set up the run queue")
-                            waiting = True
+                        waiting = True
                         stop.wait(IDLE_WAIT_S * 5)
                         continue
                     waiting = False

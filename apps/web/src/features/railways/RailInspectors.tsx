@@ -219,7 +219,7 @@ export function SwitchInspector({ sw, doc, view, actions: a }: Props & { sw: Swi
       )}
       <Row label={t("rail.positionAlong")}>
         <Num
-          label={t("rail.switchPosition")}
+          label={t("rail.positionAlong")}
           unit="m"
           value={sw.s}
           onChange={(s) => set((x) => ({ ...x, s }))}

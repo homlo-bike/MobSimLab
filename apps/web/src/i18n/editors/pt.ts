@@ -179,7 +179,6 @@ export const editorsPt = {
   "rail.switch": "AMV",
   "rail.switchFacts": "{length} de comprimento · 1:{ratio} · R {radius} m · {speed} km/h no desvio · em {at}",
   "rail.positionAlong": "Posição ao longo da via",
-  "rail.switchPosition": "Posição do AMV",
   "rail.otherSide": "Outro lado",
   "rail.reverse": "Inverter",
   "rail.mirror": "Espelhar",

@@ -163,7 +163,6 @@ export const editorsKo = {
   "rail.switch": "분기기",
   "rail.switchFacts": "길이 {length} · 1:{ratio} · R {radius} m · 분기 측 {speed} km/h · {at}",
   "rail.positionAlong": "선로상 위치",
-  "rail.switchPosition": "분기기 위치",
   "rail.otherSide": "반대쪽",
   "rail.reverse": "방향 반전",
   "rail.mirror": "좌우 반전",

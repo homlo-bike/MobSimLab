@@ -179,7 +179,6 @@ export const editorsNl = {
   "rail.switch": "Wissel",
   "rail.switchFacts": "{length} lang · 1:{ratio} · R {radius} m · {speed} km/h afbuigend · bij {at}",
   "rail.positionAlong": "Positie langs het spoor",
-  "rail.switchPosition": "Positie van de wissel",
   "rail.otherSide": "Andere kant",
   "rail.reverse": "Omkeren",
   "rail.mirror": "Spiegelen",

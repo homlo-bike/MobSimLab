@@ -179,7 +179,6 @@ export const editorsEs = {
   "rail.switch": "Desvío",
   "rail.switchFacts": "{length} de largo · 1:{ratio} · R {radius} m · {speed} km/h por la desviada · en {at}",
   "rail.positionAlong": "Posición a lo largo de la vía",
-  "rail.switchPosition": "Posición del desvío",
   "rail.otherSide": "Otro lado",
   "rail.reverse": "Invertir",
   "rail.mirror": "Reflejar",

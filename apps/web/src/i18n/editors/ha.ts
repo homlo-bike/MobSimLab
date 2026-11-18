@@ -179,7 +179,6 @@ export const editorsHa = {
   "rail.switch": "Makunni",
   "rail.switchFacts": "tsawo {length} · 1:{ratio} · R {radius} m · {speed} km/h a reshe · a {at}",
   "rail.positionAlong": "Wuri a kan dogo",
-  "rail.switchPosition": "Wurin makunni",
   "rail.otherSide": "Ɗayan gefe",
   "rail.reverse": "Juya alƙibla",
   "rail.mirror": "Madubi",

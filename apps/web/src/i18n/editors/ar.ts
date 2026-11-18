@@ -213,7 +213,6 @@ export const editorsAr = {
   "rail.switchFacts":
     "الطول {length} · 1:{ratio} · نصف القطر {radius} م · {speed} كم/س في الاتجاه المنحرف · عند {at}",
   "rail.positionAlong": "الموضع على السكة",
-  "rail.switchPosition": "موضع المحوّل",
   "rail.otherSide": "الجهة الأخرى",
   "rail.reverse": "عكس",
   "rail.mirror": "انعكاس",

@@ -211,7 +211,6 @@ export const editorsUk = {
   "rail.switch": "Стрілка",
   "rail.switchFacts": "довжина {length} · 1:{ratio} · R {radius} м · {speed} км/год на відхилений · {at}",
   "rail.positionAlong": "Положення вздовж колії",
-  "rail.switchPosition": "Положення стрілки",
   "rail.otherSide": "Інший бік",
   "rail.reverse": "Розвернути",
   "rail.mirror": "Віддзеркалити",

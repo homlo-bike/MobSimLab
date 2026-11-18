@@ -161,7 +161,6 @@ export const editorsZh = {
   "rail.switch": "道岔",
   "rail.switchFacts": "长 {length} · 1:{ratio} · 半径 {radius} 米 · 侧向 {speed} 公里/小时 · 位于 {at}",
   "rail.positionAlong": "沿轨道位置",
-  "rail.switchPosition": "道岔位置",
   "rail.otherSide": "另一侧",
   "rail.reverse": "反向",
   "rail.mirror": "镜像",

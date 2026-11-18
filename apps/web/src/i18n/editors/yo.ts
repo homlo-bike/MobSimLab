@@ -163,7 +163,6 @@ export const editorsYo = {
   "rail.switch": "Ìyípadà",
   "rail.switchFacts": "gígùn {length} · 1:{ratio} · R {radius} m · {speed} km/h ní ẹ̀ka · ní {at}",
   "rail.positionAlong": "Ipò lórí ojú irin",
-  "rail.switchPosition": "Ipò ìyípadà",
   "rail.otherSide": "Ẹ̀gbẹ́ kejì",
   "rail.reverse": "Yí ìdarí padà",
   "rail.mirror": "Dígí",

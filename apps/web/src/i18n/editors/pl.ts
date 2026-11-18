@@ -211,7 +211,6 @@ export const editorsPl = {
   "rail.switch": "Rozjazd",
   "rail.switchFacts": "długość {length} · 1:{ratio} · R {radius} m · {speed} km/h na zwrotnym · {at}",
   "rail.positionAlong": "Położenie wzdłuż toru",
-  "rail.switchPosition": "Położenie rozjazdu",
   "rail.otherSide": "Druga strona",
   "rail.reverse": "Odwróć",
   "rail.mirror": "Odbij lustrzanie",

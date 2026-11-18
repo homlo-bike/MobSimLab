@@ -179,7 +179,6 @@ export const editorsDe = {
   "rail.switch": "Weiche",
   "rail.switchFacts": "{length} lang · 1:{ratio} · R {radius} m · {speed} km/h im Abzweig · bei {at}",
   "rail.positionAlong": "Lage am Gleis",
-  "rail.switchPosition": "Lage der Weiche",
   "rail.otherSide": "Andere Seite",
   "rail.reverse": "Umkehren",
   "rail.mirror": "Spiegeln",

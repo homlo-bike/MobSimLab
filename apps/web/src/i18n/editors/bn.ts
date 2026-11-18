@@ -179,7 +179,6 @@ export const editorsBn = {
   "rail.switch": "সুইচ",
   "rail.switchFacts": "দৈর্ঘ্য {length} · 1:{ratio} · R {radius} মি · শাখায় {speed} কিমি/ঘ · {at}-এ",
   "rail.positionAlong": "লাইনে অবস্থান",
-  "rail.switchPosition": "সুইচের অবস্থান",
   "rail.otherSide": "অন্য দিক",
   "rail.reverse": "দিক উল্টান",
   "rail.mirror": "আয়না",

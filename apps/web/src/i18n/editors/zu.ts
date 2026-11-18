@@ -180,7 +180,6 @@ export const editorsZu = {
   "rail.switch": "Isishintshi",
   "rail.switchFacts": "ubude {length} · 1:{ratio} · R {radius} m · {speed} km/h egatsheni · ku-{at}",
   "rail.positionAlong": "Indawo kujantshi",
-  "rail.switchPosition": "Indawo yesishintshi",
   "rail.otherSide": "Olunye uhlangothi",
   "rail.reverse": "Phendula isiqondiso",
   "rail.mirror": "Isibuko",

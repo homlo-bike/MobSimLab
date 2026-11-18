@@ -179,7 +179,6 @@ export const editorsTa = {
   "rail.switch": "சுவிட்சு",
   "rail.switchFacts": "நீளம் {length} · 1:{ratio} · R {radius} மீ · கிளையில் {speed} கி.மீ/ம · {at} இல்",
   "rail.positionAlong": "தண்டவாளத்தில் நிலை",
-  "rail.switchPosition": "சுவிட்சின் நிலை",
   "rail.otherSide": "மறுபக்கம்",
   "rail.reverse": "திசையைத் திருப்பு",
   "rail.mirror": "கண்ணாடி",

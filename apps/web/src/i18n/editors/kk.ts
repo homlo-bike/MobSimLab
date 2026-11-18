@@ -179,7 +179,6 @@ export const editorsKk = {
   "rail.switch": "Бағыттама",
   "rail.switchFacts": "Ұзындығы {length} · 1:{ratio} · R {radius} м · тармақта {speed} км/сағ · {at}",
   "rail.positionAlong": "Жолдағы орны",
-  "rail.switchPosition": "Бағыттама орны",
   "rail.otherSide": "Екінші жақ",
   "rail.reverse": "Кері бұру",
   "rail.mirror": "Айна",

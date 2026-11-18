@@ -128,6 +128,23 @@ fn restriction_kind(tags: &Tags) -> Option<RestrictionKind> {
     }
 }
 
+/// The name to show for a way: its `name`, else its `ref`. OSM placeholders for an unnamed road ("unmarked",
+/// "unnamed", "noname", "no name", "unknown") are not names, so they never become a stop or street name.
+pub fn way_name(tags: &Tags) -> Option<String> {
+    let real = |v: &&String| {
+        let v = v.trim().to_lowercase();
+        !v.is_empty()
+            && !matches!(
+                v.as_str(),
+                "unmarked" | "unnamed" | "noname" | "no name" | "unknown"
+            )
+    };
+    tags.get("name")
+        .filter(real)
+        .or_else(|| tags.get("ref").filter(real))
+        .cloned()
+}
+
 /// Purpose: parse OSM XML text.
 /// Output: nodes, ways and bus-relevant turn restrictions; an error string on malformed XML.
 pub fn parse_osm_xml(xml: &str) -> Result<OsmData, String> {
@@ -272,6 +289,17 @@ mod tests {
         assert_eq!(d.nodes[1].tags["highway"], "turning_circle");
         assert_eq!(d.ways[0].nodes, vec![1, 2]);
         assert_eq!(d.ways[0].tags["name"], "A & B");
+        assert_eq!(way_name(&d.ways[0].tags).as_deref(), Some("A & B"));
+        let tags = |kv: &[(&str, &str)]| -> Tags {
+            kv.iter()
+                .map(|(k, v)| (k.to_string(), v.to_string()))
+                .collect()
+        };
+        assert_eq!(way_name(&tags(&[("name", "unmarked")])), None);
+        assert_eq!(
+            way_name(&tags(&[("name", "Unnamed"), ("ref", "M5")])).as_deref(),
+            Some("M5")
+        );
         assert_eq!(
             d.restrictions.len(),
             1,

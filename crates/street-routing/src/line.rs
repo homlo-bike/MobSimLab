@@ -809,13 +809,22 @@ impl StreetLine {
             return format!("Point {}", seq + 1);
         };
         let arc = &g.arcs[a.arc as usize];
-        let Some(street) = arc.name.clone() else {
-            return format!("Stop {}", seq + 1);
-        };
-        // Near a junction with another named street: "A / B" (06 §9.3 rule 4).
         let node = if a.t < 0.5 { arc.from } else { arc.to };
         let here = g.point_on_arc(a.arc, a.t);
-        if dist(here, g.nodes[node as usize].xy) < 40.0 {
+        let near_junction = dist(here, g.nodes[node as usize].xy) < 40.0;
+        let Some(street) = arc.name.clone() else {
+            // An unnamed street near a named one takes the named street's name rather than a number.
+            let named = near_junction
+                .then(|| {
+                    g.out[node as usize]
+                        .iter()
+                        .find_map(|&o| g.arcs[o as usize].name.clone())
+                })
+                .flatten();
+            return named.unwrap_or_else(|| format!("Stop {}", seq + 1));
+        };
+        // Near a junction with another named street: "A / B" (06 §9.3 rule 4).
+        if near_junction {
             let cross = g.out[node as usize]
                 .iter()
                 .filter_map(|&o| g.arcs[o as usize].name.as_ref())

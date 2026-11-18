@@ -179,7 +179,6 @@ export const editorsUz = {
   "rail.switch": "Strelka",
   "rail.switchFacts": "Uzunligi {length} · 1:{ratio} · R {radius} m · tarmoqda {speed} km/s · {at} da",
   "rail.positionAlong": "Yoʻldagi joylashuv",
-  "rail.switchPosition": "Strelka joylashuvi",
   "rail.otherSide": "Boshqa tomon",
   "rail.reverse": "Teskari",
   "rail.mirror": "Oyna",
