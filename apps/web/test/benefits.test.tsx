@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BenefitTables, stationRows } from "../src/features/benefits/BenefitTables";
 import type { BenefitsApi, OsmArea } from "../src/features/benefits/data";
@@ -703,5 +703,43 @@ describe("region editor", () => {
     expect(onChange.mock.calls[0]![0]).toMatchObject([
       { name: "Oud-West", source: "osm", osmId: "r42", values: {} },
     ]);
+  });
+
+  it("imports an area found by searching for a place by name", async () => {
+    const { map } = fakeMap();
+    const city: OsmArea = {
+      id: "r1",
+      name: "Aleppo",
+      kind: "city",
+      adminLevel: 8,
+      ring: [at(0, 0), at(900, 0), at(900, 900), at(0, 0)],
+      areaKm2: 190,
+    };
+    const osmAreas = vi.fn(async () => [city]);
+    const search = vi.fn(async () => [
+      { name: "Aleppo", context: "Aleppo Governorate, Syria", kind: "city", lonLat: [37.16, 36.2] as [number, number], bbox: null },
+    ]);
+    const onChange = vi.fn();
+    render(
+      <RegionEditor
+        map={map as never}
+        panel={null}
+        regions={[]}
+        onChange={onChange}
+        editable
+        api={fakeApi({ osmAreas })}
+        search={search}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Import from OpenStreetMap" }));
+    fireEvent.change(screen.getByRole("searchbox", { name: "Search for a place" }), {
+      target: { value: "Aleppo" },
+    });
+    const found = await screen.findByRole("list", { name: "Places found" });
+    fireEvent.click(within(found).getByRole("button", { name: /Aleppo Governorate, Syria/ }));
+    expect(search).toHaveBeenCalledWith("Aleppo", expect.anything());
+    expect(osmAreas).toHaveBeenCalledWith([37.16, 36.2]);
+    fireEvent.click(await screen.findByRole("button", { name: /city 8/ }));
+    expect(onChange.mock.calls[0]![0]).toMatchObject([{ name: "Aleppo", source: "osm", osmId: "r1" }]);
   });
 });

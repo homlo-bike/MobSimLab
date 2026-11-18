@@ -81,8 +81,11 @@ LABEL org.opencontainers.image.source="https://github.com/homlo-bike/MobSimLab" 
       org.opencontainers.image.title="MobSimLab"
 
 # osmium-tool (GPL-3.0) and osm2pgsql (GPL-2.0) import a project's OpenStreetMap data (ADR-0046); they run as
-# separate programs, never linked into MobSimLab.
+# separate programs, never linked into MobSimLab. libatomic1: the eclipse-sumo wheel's netconvert and sumo link
+# against libatomic.so.1, which the slim image lacks (road runs failed with "libatomic.so.1: cannot open shared
+# object file").
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates xz-utils curl osmium-tool osm2pgsql \
+      libatomic1 \
  && rm -rf /var/lib/apt/lists/*
 
 # s6-overlay (ISC). Each archive is checked against the checksum published with the release.
@@ -100,6 +103,9 @@ COPY --from=node-build /usr/local/bin/node /usr/local/bin/node
 COPY --from=node-build /out/api /app/api
 COPY --from=node-build /out/web /app/web
 COPY --from=py-build /app/venv /app/venv
+# Fail the build, not a planner's road run, when a SUMO program cannot start (a shared library missing).
+RUN /app/venv/bin/python -c "import os, subprocess, sumo; b = os.path.join(os.path.dirname(sumo.__file__), 'bin'); \
+    [subprocess.run([os.path.join(b, x), '--version'], check=True, stdout=subprocess.DEVNULL) for x in ('netconvert', 'sumo')]"
 COPY db/migrations /app/db/migrations
 COPY tools/osm/mobsimlab-flex.lua tools/osm/tag_mapping.lua /app/osm/
 COPY deploy/bin /app/bin

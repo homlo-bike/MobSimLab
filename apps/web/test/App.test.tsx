@@ -418,6 +418,23 @@ describe("project workspace", () => {
     expect(await screen.findByRole("complementary", { name: "Rail route" })).toBeTruthy();
     fireEvent.click(within(nav).getByRole("link", { name: "Tables" }));
     expect(screen.getByRole("region", { name: "Tables" })).toBeTruthy();
+    // The tables come in groups, one shown at a time, chosen from a list.
+    const groups = await screen.findByRole("tablist", { name: "Tables" });
+    expect(within(groups).getAllByRole("tab").map((x) => x.textContent)).toEqual([
+      "Summary",
+      "Timetables",
+      "Construction and operating costs",
+      "Economic and social benefits",
+      "Demand model",
+      "Fare revenue",
+      "Appraisal",
+      "Compare scenarios",
+    ]);
+    expect(within(groups).getByRole("tab", { name: "Summary" }).getAttribute("aria-selected")).toBe("true");
+    fireEvent.click(within(groups).getByRole("tab", { name: "Compare scenarios" }));
+    expect(within(groups).getByRole("tab", { name: "Compare scenarios" }).getAttribute("aria-selected")).toBe("true");
+    expect((document.getElementById("tables-network") as HTMLElement).hidden).toBe(true);
+    expect((document.getElementById("tables-scenarios") as HTMLElement).hidden).toBe(false);
   });
 
   it("shows view-only projects without the editing tools", async () => {

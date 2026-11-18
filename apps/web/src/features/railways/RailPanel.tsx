@@ -3,6 +3,7 @@ import { usePublishChecks } from "../../shell/checks";
 import { hasMessage, type Translate, useI18n } from "../../i18n/i18n";
 import { signalById } from "./doc";
 import { field, input, levelOpts, Num, Row, Section, Segmented, Stat } from "./panelControls";
+import { offeredModes, usePlannedModes } from "../../projects/plannedModes";
 import { POWER, RAIL_MODES } from "./modes";
 import {
   ChecksSection,
@@ -33,6 +34,8 @@ export type {
  */
 export function RailPanel(props: Props) {
   const { t } = useI18n();
+  // Only the railway systems the project plans to use (Project preferences), and the one chosen now.
+  const planned = usePlannedModes();
   const { doc, view, tool, sel, draft, actions: a } = props;
   const p = view.params;
   const kind = sel
@@ -63,7 +66,7 @@ export function RailPanel(props: Props) {
       <label className="flex flex-col gap-1">
         <span className="text-xs text-slate-600">{t("rail.modeForNew")}</span>
         <select value={doc.mode} onChange={(e) => a.setMode(e.target.value as RailMode)} className={field}>
-          {RAIL_MODES.map((m) => (
+          {offeredModes(RAIL_MODES, (m) => m.id, planned, doc.mode).map((m) => (
             <option key={m.id} value={m.id}>
               {t(m.label)}
             </option>

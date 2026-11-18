@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { JobProgress } from "../../shell/JobProgress";
 import { parseClock } from "../journey-planner/format";
 import { useI18n } from "../../i18n/i18n";
 import { paramValue } from "../benefits/params";
@@ -123,6 +124,16 @@ export function CapacityRun({
   // The project's values (All parameters) under the settings changed for this run.
   const settings = useMemo(() => ({ ...projectRunSettings(prefs), ...advanced }), [prefs, advanced]);
   const [status, setStatus] = useState<string | null>(null);
+  // How far the run in this browser is: the step (from 1) of the steps it will take, and how far into it.
+  type Phase = "build" | "load" | "plan" | "sweep" | "loads";
+  const [progress, setProgress] = useState<{ index: number; steps: number; fraction: number | null } | null>(
+    null,
+  );
+  const phases = useRef<Phase[]>([]);
+  const phase = (p: Phase, fraction: number | null = null) => {
+    const i = phases.current.indexOf(p);
+    if (i >= 0) setProgress({ index: i + 1, steps: phases.current.length, fraction });
+  };
   const [error, setError] = useState<string | null>(null);
   const [run, setRun] = useState<Run | null>(null);
   const [lines, setLines] = useState<LineState[]>([]);
@@ -256,6 +267,7 @@ export function CapacityRun({
       }),
     );
     if (!withLoads || !ridership) return;
+    phase("loads");
     setStatus(t("capacity.loads.estimating"));
     const z = await ensureZones()!.catch(() => ({ zones: [], notes: [] }) as RidershipZones);
     if (!alive()) return;
@@ -301,6 +313,16 @@ export function CapacityRun({
         : source === "drawn"
           ? `drawn|${JSON.stringify(railway)}`
           : `${topology!.name}|${topology!.text.length}|${linesFile!.text}`;
+    // The steps this run will take, so the bar can say how far along it is.
+    const fresh = railOn && engine.current?.key !== key;
+    phases.current = [
+      ...(fresh && source === "drawn" ? (["build"] as const) : []),
+      ...(fresh ? (["load"] as const) : []),
+      ...(railOn ? (["plan"] as const) : []),
+      ...(railOn && sweep ? (["sweep"] as const) : []),
+      ...(source === "drawn" && withLoads && ridership ? (["loads"] as const) : []),
+    ];
+    setProgress(null);
     try {
       if (!railOn) {
         await drawnExtras(w, [], alive);
@@ -314,6 +336,7 @@ export function CapacityRun({
         else if (source === "files")
           src = { kind: "files", topology: topology!.text, lines: linesFile!.text };
         else {
+          phase("build");
           setStatus(t("capacity.building"));
           const built = await buildDrawn(railway, undefined, undefined, prefs);
           if (!alive()) return;
@@ -323,6 +346,7 @@ export function CapacityRun({
           }
           src = { kind: "files", ...built };
         }
+        phase("load");
         setStatus(t("capacity.loading"));
         const e = await loadEngine(src);
         if (!alive()) return e.dispose();
@@ -332,6 +356,7 @@ export function CapacityRun({
       const params = { ...settings, ...w };
       setNotes(await e.notes());
       const infos = await e.lines();
+      phase("plan");
       setStatus(t("capacity.planning"));
       const r = await e.run(params);
       if (!alive()) return;
@@ -352,6 +377,8 @@ export function CapacityRun({
           const hs = await e.sweepHeadways(params, li, works);
           for (let j = 0; j < hs.length; j++) {
             if (!alive()) return;
+            // Each line is an equal share of the sweep; within it, the headways tried so far.
+            phase("sweep", (k + j / hs.length) / states.length);
             setStatus(
               t("capacity.trying", {
                 line: states[k]!.info.name,
@@ -375,7 +402,10 @@ export function CapacityRun({
     } catch (err) {
       if (alive()) setError(err instanceof Error ? err.message : String(err));
     } finally {
-      if (alive()) setStatus(null);
+      if (alive()) {
+        setStatus(null);
+        setProgress(null);
+      }
     }
   };
 
@@ -500,6 +530,7 @@ export function CapacityRun({
     // The worker finishes its current step; later results are ignored and the sweep ends.
     generation.current++;
     setStatus(null);
+    setProgress(null);
     setLines((ls) => ls.map((l) => ({ ...l, sweeping: false })));
   };
 
@@ -561,7 +592,8 @@ export function CapacityRun({
         >
           {run && !viewing ? t("capacity.runAgain") : t("capacity.run")}
         </button>
-        {busy && (
+        {/* With a progress bar, its Cancel stops the run. */}
+        {busy && !progress && (
           <button type="button" className="btn" onClick={stop}>
             {t("capacity.stop")}
           </button>
@@ -608,7 +640,16 @@ export function CapacityRun({
           when={when}
         />
       )}
-      {shownStatus && (
+      {!viewing && status && progress ? (
+        <JobProgress
+          label={t("capacity.title")}
+          step={status}
+          index={progress.index}
+          steps={progress.steps}
+          fraction={progress.fraction}
+          onCancel={stop}
+        />
+      ) : shownStatus && (
         <p role="status" className="flex items-center gap-2 text-sm text-slate-700">
           <span
             className="h-3 w-3 animate-spin rounded-full border-2 border-blue-700 border-t-transparent"

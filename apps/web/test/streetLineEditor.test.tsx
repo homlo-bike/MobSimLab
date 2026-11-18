@@ -40,7 +40,7 @@ import {
 } from "../src/features/street-lines/geojson";
 import { clearPlaces, publishPlaces } from "../src/features/naming/registry";
 import { DEFAULT_TIMING } from "../src/features/street-lines/modes";
-import type { SavedStreetLine } from "../src/features/street-lines/saved";
+import { keepRoutedLegs, lineTiles, type SavedStreetLine } from "../src/features/street-lines/saved";
 import { LineList } from "../src/features/street-lines/LineList";
 import { dayService, vehicleById, vehiclesFor } from "../src/features/street-lines/service";
 import { setProjectServiceDay } from "../src/features/journey-planner/network";
@@ -360,6 +360,28 @@ describe("Street line editor", () => {
     act(() => handlers.get("click")!({ lngLat: { lng: 7.412, lat: 43.73 }, point: { x: 1, y: 1 } }));
     expect(engine.setDepot).toHaveBeenCalledWith([7.412, 43.73]);
     expect(screen.getByRole("button", { name: /Select and move/ }).getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("opens the shared depot editor from the palette's Bus depot when the workspace has one", async () => {
+    const engine = fakeEngine();
+    const { map } = fakeMap(15);
+    const onOpenDepots = vi.fn();
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={vi.fn(async () => "<osm/>")}
+        onOpenDepots={onOpenDepots}
+      />,
+    );
+    await waitFor(() => expect(screen.getByRole("radiogroup", { name: "Mode" })).toBeTruthy());
+    fireEvent.click(screen.getByRole("button", { name: /Bus depot/ }));
+    expect(onOpenDepots).toHaveBeenCalledTimes(1);
+    fireEvent.keyDown(window, { key: "d" });
+    expect(onOpenDepots).toHaveBeenCalledTimes(2);
+    // No line-own depot gate is being placed.
+    expect(screen.getByRole("button", { name: /Bus depot/ }).getAttribute("aria-pressed")).toBe("false");
+    expect(engine.setDepot).not.toHaveBeenCalled();
   });
 
   it("shows the mode first, right under the tool choice, and no rules of its own", async () => {
@@ -733,5 +755,39 @@ describe("Street tiles and map helpers", () => {
     expect(formatLength(1250)).toBe("1.25 km");
     expect(formatTime(45)).toBe("45 s");
     expect(formatTime(600)).toBe("10 min");
+  });
+});
+
+describe("a saved street route", () => {
+  it("keeps a leg's saved route when routing it again fails for want of streets", () => {
+    const saved = sampleView(["end", "via", "end"]);
+    saved.legs[0]!.coords = [saved.points[0]!.lonlat, [7.0005, 50.0004], saved.points[1]!.lonlat];
+    saved.legs[0]!.length_m = 520;
+    // Routed again with the first leg's streets not loaded: straight and in error.
+    const again = structuredClone(saved);
+    again.legs[0] = { ...again.legs[0]!, coords: [again.points[0]!.lonlat, again.points[1]!.lonlat], status: "error", message: "No route", length_m: 0, time_s: 0 };
+    again.issues = ["No route"];
+    again.length_m -= 520;
+    const kept = keepRoutedLegs(again, saved);
+    expect(kept.legs[0]!.status).toBe("ok");
+    expect(kept.legs[0]!.coords).toHaveLength(3);
+    expect(kept.length_m).toBe(saved.length_m);
+    expect(kept.issues).toEqual([]);
+  });
+
+  it("does not bring back the old route of a point that moved", () => {
+    const saved = sampleView(["end", "via", "end"]);
+    const moved = structuredClone(saved);
+    moved.points[1]!.lonlat = [7.5, 50.5];
+    moved.legs[0] = { ...moved.legs[0]!, status: "error", message: "No route" };
+    expect(keepRoutedLegs(moved, saved).legs[0]!.status).toBe("error");
+  });
+
+  it("loads the tiles under the whole line, not only those on screen", () => {
+    const view = sampleView(["end", "end"]);
+    view.legs[0]!.coords = [[7, 50], [7.2, 50]];
+    const keys = lineTiles({ points: view.points.map((p) => ({ lonlat: p.lonlat, kind: p.kind, name: null })), depot: null, view } as unknown as SavedStreetLine);
+    expect(keys).toContain(`${tileX(7.2)}/${tileY(50)}`);
+    expect(keys).toContain(`${tileX(7)}/${tileY(50)}`);
   });
 });

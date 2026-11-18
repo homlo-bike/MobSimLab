@@ -37,6 +37,7 @@ export const populationEs = {
   "pop.upload.hint":
     "Una cuadrícula GeoTIFF (personas por celda), zonas o puntos GeoJSON con un campo de personas, o un CSV de puntos o de valores por zona. Como máximo {mb} MB.",
   "pop.upload.file": "Archivo",
+  "pop.upload.choose": "Elegir un archivo",
   "pop.upload.unknown": "Elija un archivo .tif, .geojson, .json o .csv.",
   "pop.upload.name": "Nombre",
   "pop.upload.licence": "Licencia",

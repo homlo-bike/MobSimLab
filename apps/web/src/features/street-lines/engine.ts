@@ -18,6 +18,7 @@ import type {
   VehicleProfile,
 } from "./types";
 import { withProject } from "../../geodata/projectData";
+import { fetchTileWithRetry } from "../../geodata/tileFetch";
 
 let wasmModule: Promise<typeof import("../../wasm/street-routing/street_routing_wasm.js")> | null = null;
 
@@ -81,7 +82,7 @@ export const loadStreetInfos: StreetInfoLoader = async () => {
 
 /** Purpose: fetch one street tile from the API (OSM streets, fetched and cached server-side). */
 export const fetchStreetTile: TileFetcher = async (x, y) => {
-  const res = await fetch(withProject(`/api/street-network/tiles/14/${x}/${y}`));
+  const res = await fetchTileWithRetry(withProject(`/api/street-network/tiles/14/${x}/${y}`));
   if (res.status === 401) throw new Error(tNow("street.osmUnauthorised"));
   if (!res.ok)
     throw new Error(res.status === 400 ? tNow("rail.osmInvalidTile") : tNow("street.osmUnavailable"));
@@ -112,7 +113,7 @@ export const loadWalkEngine: WalkEngineLoader = async () => {
 
 /** Purpose: fetch the walkable ways of one zoom-14 tile from the API (OSM, fetched and cached server-side). */
 export const fetchWalkTile: WalkTileFetcher = async (x, y) => {
-  const res = await fetch(withProject(`/api/street-network/walk-tiles/14/${x}/${y}`));
+  const res = await fetchTileWithRetry(withProject(`/api/street-network/walk-tiles/14/${x}/${y}`));
   if (res.status === 401) throw new Error(tNow("street.osmUnauthorised"));
   if (!res.ok)
     throw new Error(res.status === 400 ? tNow("rail.osmInvalidTile") : tNow("walk.osmUnavailable"));

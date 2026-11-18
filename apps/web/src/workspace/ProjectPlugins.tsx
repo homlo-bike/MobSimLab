@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { type ReactNode, useCallback, useState } from "react";
+import { EsriImageryAdmin } from "../admin/EsriImageryAdmin";
+import { Dialog } from "../shell/Dialog";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import type { ProjectPlugin } from "../plugins/registry";
@@ -34,24 +36,38 @@ export function addsLine(
 }
 
 /**
+ * Configuration panels of plugins that need one, by plugin id, shown to Admins in the plugin's window. Esri World
+ * Imagery needs the instance's ArcGIS API key (docs/architecture/06-gis.md §8).
+ */
+const CONFIG: Record<string, (p: { csrfToken: string; run: (f: () => Promise<unknown>) => Promise<void> }) => ReactNode> =
+  {
+    "org.mobsimlab.esri-imagery": (p) => <EsriImageryAdmin {...p} />,
+  };
+
+/**
  * Plugins section of Project Preferences (ADR-0036 §9): every plugin of this MobSimLab, bundled or installed by an
- * Admin, with a switch to use it in this project and, for installed plugins, the version. Only the project's
- * Owner changes them; turning a plugin off hides its tools and keeps what was drawn with it.
+ * Admin, as a short list by name with a switch to use it in this project. Clicking a plugin opens its window: what
+ * it does and adds, what it reads, its version, and its settings when it has some (an Admin's, such as Esri's API
+ * key). Only the project's Owner turns plugins on or off; turning one off hides its tools and keeps what was drawn.
  */
 export function ProjectPlugins({
   plugins,
   manage,
   onSet,
+  adminCsrf = null,
 }: {
   plugins: readonly ProjectPlugin[] | null;
   /** The caller owns the project. */
   manage: boolean;
   /** Turn a plugin on or off, with a version for installed plugins; resolves to the new list. */
   onSet: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
+  /** The session's CSRF token when the caller is an Admin of this MobSimLab: they see plugins' settings. */
+  adminCsrf?: string | null;
 }) {
   const { t } = useI18n();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [open, setOpen] = useState<string | null>(null);
   const run = async (id: string, enabled: boolean, version?: string) => {
     setBusy(id);
     setError(null);
@@ -63,6 +79,18 @@ export function ProjectPlugins({
       setBusy(null);
     }
   };
+  // Errors of a plugin's own settings show in its window.
+  const [configError, setConfigError] = useState<string | null>(null);
+  const runConfig = useCallback(async (f: () => Promise<unknown>) => {
+    setConfigError(null);
+    try {
+      await f();
+    } catch (e) {
+      setConfigError((e as Error).message);
+    }
+  }, []);
+  const sorted = plugins ? [...plugins].sort((a, b) => a.name.localeCompare(b.name)) : null;
+  const shown = sorted?.find((p) => p.id === open) ?? null;
   return (
     <section
       aria-labelledby="pp-plugins"
@@ -77,85 +105,113 @@ export function ProjectPlugins({
           {error}
         </p>
       )}
-      {plugins === null ? (
+      {sorted === null ? (
         <p className="mt-3 text-sm text-slate-500">{t("common.loading")}</p>
       ) : (
         <ul className="m-0 mt-2 list-none p-0">
-          {plugins.map((p) => {
-            const switchId = `pp-plugin-${p.id}`;
-            return (
-              <li
-                key={p.id}
-                className="flex flex-wrap items-start gap-x-3 gap-y-1 border-t border-slate-100 py-3 first:border-t-0"
+          {sorted.map((p) => (
+            <li key={p.id} className="flex items-center gap-3 border-t border-slate-100 py-1 first:border-t-0">
+              <button
+                type="button"
+                className="flex min-h-11 min-w-0 flex-1 flex-col items-start justify-center rounded-lg px-2 text-start hover:bg-slate-50"
+                aria-haspopup="dialog"
+                onClick={() => {
+                  setConfigError(null);
+                  setOpen(p.id);
+                }}
               >
-                <div className="min-w-48 flex-1">
-                  <label htmlFor={switchId} className="font-semibold">
-                    {p.name}
-                  </label>
-                  <div className="text-xs text-slate-500">
-                    {p.bundled ? t("plugins.bundled") : t("plugins.by", { publisher: p.publisher.name })}
-                    {" · "}
-                    {t("plugins.versionN", { version: p.version })}
-                  </div>
-                  {p.description && <p className="m-0 mt-1 text-sm text-slate-600">{p.description}</p>}
-                  <p className="m-0 mt-1 text-xs text-slate-500">
-                    {t("plugins.adds", { list: addsLine(p.contributes, t) })}
-                  </p>
-                  {p.permissions.length > 0 && (
-                    <p className="m-0 mt-0.5 text-xs text-slate-500">
-                      {t("plugins.uses", {
-                        list: p.permissions
-                          .map((x) => (PERMISSION_LABELS[x] ? t(PERMISSION_LABELS[x]) : x))
-                          .join(", "),
-                      })}
-                    </p>
-                  )}
-                  {p.missing && (
-                    <p className="m-0 mt-1 text-sm text-amber-800">
-                      {t("plugins.missing", { version: p.version })}
-                    </p>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  {!p.bundled && p.versions.length > 0 && (
-                    <select
-                      aria-label={t("plugins.versionOf", { name: p.name })}
-                      className="min-h-10 rounded-[10px] border border-slate-300 bg-white px-2"
-                      disabled={!manage || busy !== null}
-                      value={p.versions.includes(p.version) ? p.version : ""}
-                      onChange={(e) => void run(p.id, p.enabled, e.target.value)}
-                    >
-                      {!p.versions.includes(p.version) && <option value="">{p.version}</option>}
-                      {[...p.versions].reverse().map((v) => (
-                        <option key={v} value={v}>
-                          {v}
-                        </option>
-                      ))}
-                    </select>
-                  )}
-                  <input
-                    id={switchId}
-                    type="checkbox"
-                    role="switch"
-                    className="h-5 w-5"
-                    aria-label={t("plugins.useIn", { name: p.name })}
-                    checked={p.enabled}
-                    disabled={!manage || busy !== null || (!p.bundled && p.versions.length === 0)}
-                    onChange={(e) =>
-                      void run(
-                        p.id,
-                        e.target.checked,
-                        p.bundled || !p.versions.includes(p.version) ? undefined : p.version,
-                      )
-                    }
-                  />
-                </div>
-              </li>
-            );
-          })}
+                <span className="font-semibold">{p.name}</span>
+                <span className="w-full truncate text-xs text-slate-500">{addsLine(p.contributes, t)}</span>
+                {p.missing && (
+                  <span className="text-xs text-amber-800">{t("plugins.missing", { version: p.version })}</span>
+                )}
+              </button>
+              <input
+                type="checkbox"
+                role="switch"
+                className="h-5 w-5 shrink-0"
+                aria-label={t("plugins.useIn", { name: p.name })}
+                checked={p.enabled}
+                disabled={!manage || busy !== null || (!p.bundled && p.versions.length === 0)}
+                onChange={(e) =>
+                  void run(
+                    p.id,
+                    e.target.checked,
+                    p.bundled || !p.versions.includes(p.version) ? undefined : p.version,
+                  )
+                }
+              />
+            </li>
+          ))}
         </ul>
       )}
       {!manage && <p className="mt-3 text-sm text-slate-500">{t("plugins.ownerOnly")}</p>}
+      {shown && (
+        <Dialog
+          title={shown.name}
+          subtitle={`${shown.bundled ? t("plugins.bundled") : t("plugins.by", { publisher: shown.publisher.name })} · ${t("plugins.versionN", { version: shown.version })}`}
+          onClose={() => setOpen(null)}
+        >
+          <div className="flex flex-col gap-3 text-sm">
+            {shown.description && <p className="m-0 text-slate-700">{shown.description}</p>}
+            <p className="m-0 text-xs text-slate-500">{t("plugins.adds", { list: addsLine(shown.contributes, t) })}</p>
+            {shown.permissions.length > 0 && (
+              <p className="m-0 text-xs text-slate-500">
+                {t("plugins.uses", {
+                  list: shown.permissions.map((x) => (PERMISSION_LABELS[x] ? t(PERMISSION_LABELS[x]) : x)).join(", "),
+                })}
+              </p>
+            )}
+            {shown.missing && (
+              <p className="m-0 text-amber-800">{t("plugins.missing", { version: shown.version })}</p>
+            )}
+            {!shown.bundled && shown.versions.length > 0 && (
+              <select
+                aria-label={t("plugins.versionOf", { name: shown.name })}
+                className="input w-full"
+                disabled={!manage || busy !== null}
+                value={shown.versions.includes(shown.version) ? shown.version : ""}
+                onChange={(e) => void run(shown.id, shown.enabled, e.target.value)}
+              >
+                {!shown.versions.includes(shown.version) && <option value="">{shown.version}</option>}
+                {[...shown.versions].reverse().map((v) => (
+                  <option key={v} value={v}>
+                    {v}
+                  </option>
+                ))}
+              </select>
+            )}
+            <label className="flex items-center gap-2 font-medium">
+              <input
+                type="checkbox"
+                role="switch"
+                className="h-5 w-5"
+                checked={shown.enabled}
+                disabled={!manage || busy !== null || (!shown.bundled && shown.versions.length === 0)}
+                onChange={(e) =>
+                  void run(
+                    shown.id,
+                    e.target.checked,
+                    shown.bundled || !shown.versions.includes(shown.version) ? undefined : shown.version,
+                  )
+                }
+              />
+              {t("plugins.useIn", { name: shown.name })}
+            </label>
+            {/* The plugin's own settings, for Admins of this MobSimLab. */}
+            {adminCsrf && CONFIG[shown.id] && (
+              <div className="rounded-xl border border-slate-200 p-3">
+                {configError && (
+                  <p role="alert" className="mb-2 rounded bg-red-50 px-3 py-2 text-sm text-red-800">
+                    {configError}
+                  </p>
+                )}
+                {CONFIG[shown.id]!({ csrfToken: adminCsrf, run: runConfig })}
+              </div>
+            )}
+          </div>
+        </Dialog>
+      )}
     </section>
   );
 }

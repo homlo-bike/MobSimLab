@@ -152,6 +152,8 @@ export class GeofabrikClient {
   async download(
     region: GeofabrikRegion,
     progress?: (bytes: number, total: number | null) => void,
+    /** Aborted when the import is cancelled: stops the download under way and removes the partial file. */
+    signal?: AbortSignal,
   ): Promise<string> {
     if (!region.pbfUrl.startsWith(`${this.o.baseUrl}/`))
       throw new GeofabrikError("The region's download is not on the Geofabrik server", 400);
@@ -163,7 +165,7 @@ export class GeofabrikClient {
       // not downloaded yet
     }
     await mkdir(this.o.dir, { recursive: true });
-    const res = await this.get(region.pbfUrl, 6 * 3600 * 1000);
+    const res = await this.get(region.pbfUrl, 6 * 3600 * 1000, signal);
     const declared = Number(res.headers.get("content-length") ?? 0) || null;
     if (declared && declared > this.o.maxBytes)
       throw new GeofabrikError(
@@ -182,10 +184,13 @@ export class GeofabrikClient {
       },
     });
     try {
-      await pipeline(Readable.fromWeb(res.body as WebReadableStream), count, createWriteStream(part));
+      await pipeline(Readable.fromWeb(res.body as WebReadableStream), count, createWriteStream(part), {
+        signal,
+      });
       await rename(part, file);
     } catch (e) {
       await rm(part, { force: true });
+      if (signal?.aborted) throw new GeofabrikError("Download cancelled", 499);
       throw e instanceof GeofabrikError
         ? e
         : new GeofabrikError(`Download failed: ${(e as Error).message}`, 502);
@@ -220,10 +225,13 @@ export class GeofabrikClient {
     return parsed;
   }
 
-  private async get(url: string, timeoutMs: number): Promise<Response> {
+  private async get(url: string, timeoutMs: number, signal?: AbortSignal): Promise<Response> {
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), Math.max(timeoutMs, this.o.timeoutMs));
     timer.unref();
+    // A cancelled import also stops the request (and, through the same signal, the body being read).
+    if (signal?.aborted) ctrl.abort();
+    else signal?.addEventListener("abort", () => ctrl.abort(), { once: true });
     try {
       const res = await this.o.fetchImpl(url, {
         headers: { "User-Agent": USER_AGENT },
@@ -234,6 +242,7 @@ export class GeofabrikClient {
       return res;
     } catch (e) {
       if (e instanceof GeofabrikError) throw e;
+      if (signal?.aborted) throw new GeofabrikError("Download cancelled", 499);
       throw new GeofabrikError(
         ctrl.signal.aborted
           ? "Geofabrik did not answer in time"

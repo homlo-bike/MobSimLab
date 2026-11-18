@@ -38,6 +38,7 @@ export const populationId = {
   "pop.upload.hint":
     "Grid GeoTIFF (orang per sel), zona atau titik GeoJSON dengan kolom jumlah orang, atau CSV berisi titik atau nilai per zona. Paling besar {mb} MB.",
   "pop.upload.file": "Berkas",
+  "pop.upload.choose": "Pilih berkas",
   "pop.upload.unknown": "Pilih berkas .tif, .geojson, .json, atau .csv.",
   "pop.upload.name": "Nama",
   "pop.upload.licence": "Lisensi",

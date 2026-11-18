@@ -4,7 +4,6 @@ import type { MessageKey } from "../i18n/messages";
 import { DELAY_PREFS, MAX_DELAY_SHARE, type PreferencesDoc, prefValue, withPref } from "./preferences";
 import { can, type Project, type ProjectsApi } from "../projects/api";
 import { ModePicker } from "../projects/ProjectDialogs";
-import { Placeholder } from "./Placeholder";
 import type { ProjectPlugin } from "../plugins/registry";
 import { ProjectPlugins } from "./ProjectPlugins";
 import { ReasonField } from "./ReasonField";
@@ -38,6 +37,7 @@ export function ProjectPreferences({
   onPreferences,
   plugins = null,
   onSetPlugin,
+  adminCsrf = null,
   currency = NO_CURRENCY,
   fleet = null,
   onFleet,
@@ -56,6 +56,8 @@ export function ProjectPreferences({
   plugins?: readonly ProjectPlugin[] | null;
   /** Turn a plugin on or off for the project (Owners). */
   onSetPlugin?: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
+  /** The session's CSRF token when the caller is an Admin: plugins' own settings (such as Esri's API key). */
+  adminCsrf?: string | null;
   /** The project's currency and its exchange rate. */
   currency?: CurrencyState;
   /** The project's own vehicles and its fleet; null while loading. */
@@ -189,7 +191,14 @@ export function ProjectPreferences({
             id: "plugins",
             group: "project",
             title: "plugins.title",
-            node: <ProjectPlugins plugins={plugins} manage={can.manage(project)} onSet={onSetPlugin} />,
+            node: (
+              <ProjectPlugins
+                plugins={plugins}
+                manage={can.manage(project)}
+                onSet={onSetPlugin}
+                adminCsrf={adminCsrf}
+              />
+            ),
           } as const,
         ]
       : []),
@@ -389,16 +398,6 @@ export function ProjectPreferences({
           currency={currency.chosen}
           loadHistory={loadHistory}
         />
-      ),
-    },
-    {
-      id: "more",
-      group: "assumptions",
-      title: "prefs.moreTitle",
-      node: (
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 md:p-6">
-          <Placeholder title="prefs.moreTitle" intro="prefs.moreIntro" items={["prefs.calendar"]} />
-        </div>
       ),
     },
   ];

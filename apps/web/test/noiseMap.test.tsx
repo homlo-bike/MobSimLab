@@ -244,6 +244,8 @@ describe("noise map in the GIS tab", () => {
     ),
     result: NoiseView = RESULT,
     waits: { popWaitMs: number; popPollMs?: number } = { popWaitMs: 0 },
+    // Most of these tests are about the buildings, so they start with the option ticked.
+    screenBuildings = true,
   ) {
     const estimate = vi.fn((input: NoiseInput) => (input ? { ...result, terrain: true } : result));
     const engine: NoiseEngine = {
@@ -274,10 +276,21 @@ describe("noise map in the GIS tab", () => {
         fetchTile={fetchTile}
         fetchTerrain={fetchTerrain}
         fetchPeople={fetchPeople}
+        screenBuildings={screenBuildings}
       />,
     );
     return { estimate, fetchTile, fetchTerrain, fetchPeople, map };
   }
+
+  it("leaves the buildings out unless asked for", async () => {
+    const { estimate, fetchTile, fetchPeople } = setup(undefined, undefined, RESULT, { popWaitMs: 0 }, false);
+    expect((screen.getByLabelText("Screen with OpenStreetMap buildings") as HTMLInputElement).checked).toBe(false);
+    fireEvent.click(screen.getByRole("button", { name: "Compute noise map" }));
+    await waitFor(() => expect(estimate).toHaveBeenCalled());
+    expect(fetchTile).not.toHaveBeenCalled();
+    expect(fetchPeople).not.toHaveBeenCalled();
+    expect(estimate.mock.calls[0]![0].buildings).toEqual([]);
+  });
 
   it("computes the map with the buildings round the lines and counts them by band", async () => {
     const { estimate, fetchTile, map } = setup();

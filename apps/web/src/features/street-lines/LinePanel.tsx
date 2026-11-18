@@ -14,6 +14,7 @@ import { type Translate, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { TimeInput } from "../railways/ServiceLinesPanel";
 import { formatLength } from "./geojson";
+import { offeredModes, usePlannedModes } from "../../projects/plannedModes";
 import { MODE_ORDER, MODES, type Timing } from "./modes";
 import { vehicleById, vehiclesFor } from "./service";
 import { usedVehicles } from "../../workspace/preferences";
@@ -215,6 +216,7 @@ function NumberField({
 export function LinePanel(props: Props) {
   const { t } = useI18n();
   const vehiclesOff = useVehiclesOff();
+  const planned = usePlannedModes();
   const { view, profile, timing, selected, actions: a } = props;
   // The day type whose times and headways the fields below show and change.
   const [day, setDay] = useState<DayTypeId>("weekday");
@@ -267,6 +269,9 @@ export function LinePanel(props: Props) {
   const outStop = props.depotStops.out ?? terminals[0];
   const inStop = props.depotStops.in ?? terminals[0];
 
+  // Only the street modes the project plans to use (Project preferences), and the line's own.
+  const modeChoices = offeredModes(MODE_ORDER, (m) => m, planned, profile.mode);
+
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
       <div className="flex flex-col gap-1">
@@ -276,7 +281,7 @@ export function LinePanel(props: Props) {
           aria-label={t("street.mode")}
           className="flex rounded border border-slate-300 bg-slate-50 p-0.5"
         >
-          {MODE_ORDER.map((m) => (
+          {modeChoices.map((m) => (
             <button
               key={m}
               type="button"

@@ -37,6 +37,7 @@ export const populationTr = {
   "pop.upload.hint":
     "Bir GeoTIFF ızgarası (hücre başına kişi), kişi alanı olan GeoJSON bölgeleri veya noktaları ya da nokta veya bölge başına değer içeren bir CSV. En fazla {mb} MB.",
   "pop.upload.file": "Dosya",
+  "pop.upload.choose": "Dosya seç",
   "pop.upload.unknown": "Bir .tif, .geojson, .json veya .csv dosyası seçin.",
   "pop.upload.name": "Ad",
   "pop.upload.licence": "Lisans",

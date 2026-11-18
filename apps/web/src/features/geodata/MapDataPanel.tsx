@@ -2,6 +2,7 @@ import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useI18n } from "../../i18n/i18n";
+import { JobProgress } from "../../shell/JobProgress";
 import type { Box, GeodataApi, GeodataStatus, GeofabrikRegion, ImportRun } from "./api";
 
 const SRC = "geodata-area";
@@ -55,6 +56,28 @@ function removeArea(map: MapLibreMap) {
 
 const busy = (r: ImportRun | null | undefined) => r?.status === "queued" || r?.status === "running";
 
+type ImportStep = NonNullable<ImportRun["progress"]["step"]>;
+const ALL_STEPS: ImportStep[] = ["download", "merge", "extract", "database"];
+/**
+ * Purpose: the steps an import goes through, in order (apps/api geodata.service.ts), so its bar can say how far
+ * it is: Overpass tiles are downloaded, joined and written; a Geofabrik extract is downloaded, cut out and
+ * written; an uploaded file is cut out and written; elevation is downloaded cell by cell, or an uploaded grid
+ * is read and written. A step the list does not expect falls back to every step.
+ */
+function importSteps(r: ImportRun): ImportStep[] {
+  const known: ImportStep[] =
+    r.kind === "dem"
+      ? ["download"]
+      : r.kind === "dem_upload"
+        ? ["extract", "database"]
+        : r.method === "overpass"
+          ? ["download", "merge", "database"]
+          : r.method === "geofabrik"
+            ? ["download", "extract", "database"]
+            : ["extract", "database"];
+  return r.progress.step && !known.includes(r.progress.step) ? ALL_STEPS : known;
+}
+
 /**
  * The Map data view of the GIS tab (ADR-0046): the project area (the box around everything drawn plus the
  * buffer), and the OpenStreetMap and elevation imports of it, with their state, source and licence. Owners and
@@ -76,6 +99,8 @@ export function MapDataPanel({
   const { t, language: locale } = useI18n();
   const [status, setStatus] = useState<GeodataStatus | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // Imports the planner asked to cancel, shown as stopping until the server reports them finished.
+  const [stopping, setStopping] = useState<ReadonlySet<string>>(new Set());
   const [method, setMethod] = useState<Method | null>(null);
   const [regions, setRegions] = useState<GeofabrikRegion[] | null>(null);
   const [region, setRegion] = useState("");
@@ -197,23 +222,49 @@ export function MapDataPanel({
     return null;
   };
 
-  const runningLine = (r: ImportRun | null) =>
-    busy(r) && (
-      <div className="mt-2 flex items-center gap-2 rounded-lg bg-slate-100 px-3 py-2 text-sm text-slate-700">
-        <span role="status" className="min-w-0 flex-1">
-          {progress(r!)}
-        </span>
-        {status?.canImport && (
-          <button
-            type="button"
-            className="btn-ghost btn min-h-9"
-            onClick={() => run(() => api.cancel(r!.id))}
-          >
-            {t("data.cancel")}
-          </button>
-        )}
+  const runningLine = (r: ImportRun | null) => {
+    if (!busy(r)) return null;
+    // Cancel answers at once; the server stops the download under way and the next poll shows it cancelled.
+    const isStopping = stopping.has(r!.id);
+    const p = r!.progress;
+    const steps = importSteps(r!);
+    const at = p.step ? steps.indexOf(p.step) : 0;
+    const index = r!.status === "queued" ? 1 : Math.max(0, at) + 1;
+    const fraction =
+      r!.status !== "queued" && p.step === "download" && p.total ? Math.min(1, (p.done ?? 0) / p.total) : null;
+    return (
+      <div className="mt-2">
+        <JobProgress
+          label={t(r!.kind === "osm" ? "data.osm" : "data.dem")}
+          step={isStopping ? t("capacity.stopping") : progress(r!)}
+          index={index}
+          steps={steps.length}
+          fraction={fraction}
+          onCancel={
+            status?.canImport && !isStopping
+              ? () => {
+                  const id = r!.id;
+                  setStopping((x) => new Set(x).add(id));
+                  void run(async () => {
+                    try {
+                      await api.cancel(id);
+                    } catch (e) {
+                      // The cancel did not go through: show the run as it is, with its Cancel again.
+                      setStopping((x) => {
+                        const next = new Set(x);
+                        next.delete(id);
+                        return next;
+                      });
+                      throw e;
+                    }
+                  });
+                }
+              : undefined
+          }
+        />
       </div>
     );
+  };
 
   const osm = status?.osm;
   const dem = status?.dem;

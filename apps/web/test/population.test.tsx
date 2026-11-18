@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { PopulationApi, PopulationLayer, PopulationOverview } from "../src/features/population/api";
@@ -141,5 +141,41 @@ describe("Population view", () => {
   it("warns when the project area is too large to import", async () => {
     render(<PopulationPanel map={noMap} api={fakeApi([])} editable onPrimaryChange={() => undefined} />);
     expect(await screen.findByText(/Imports cover at most/)).toBeTruthy();
+  });
+  it("shows the import it started under the button: its progress, then what it brought", async () => {
+    const importing = layer({
+      id: "wp",
+      name: "WorldPop 2026",
+      source: "worldpop",
+      kind: "grid",
+      status: "importing",
+      progress: { step: "download", receivedBytes: 50e6, totalBytes: 100e6 },
+    });
+    const api = fakeApi([importing]);
+    const small = { ...(await api.overview()), areaKm2: 90 };
+    api.overview = vi.fn(async () => small);
+    (api.startImport as ReturnType<typeof vi.fn>).mockResolvedValue(importing);
+    render(<PopulationPanel map={noMap} api={api} editable onPrimaryChange={() => undefined} />);
+    fireEvent.click(await screen.findByRole("button", { name: "Import" }));
+    const import_ = await screen.findByRole("region", { name: "Import for the project area" });
+    // Half downloaded, step 1 of 2 (download, then storing the cells): a quarter of the whole import.
+    const bar = await within(import_).findByRole("progressbar", { name: "WorldPop 2026" });
+    expect(bar.getAttribute("aria-valuenow")).toBe("25");
+
+    // When it is done, the same place says what came in.
+    api.overview = vi.fn(async () => ({
+      ...small,
+      layers: [{ ...importing, status: "ready" as const, progress: null, peopleTotal: 1424741, featureCount: 13396 }],
+    }));
+    fireEvent.click(within(import_).getByRole("button", { name: "Import" }));
+    expect(await within(import_).findByText(/1,424,741 people in 13,396/)).toBeTruthy();
+    expect(within(import_).queryByRole("progressbar")).toBeNull();
+  });
+
+  it("opens the file picker from a button like the others", async () => {
+    render(<PopulationPanel map={noMap} api={fakeApi([])} editable onPrimaryChange={() => undefined} />);
+    const choose = await screen.findByRole("button", { name: "Choose a file" });
+    expect(choose.className).toContain("btn");
+    expect((screen.getByLabelText("File") as HTMLInputElement).className).toContain("sr-only");
   });
 });

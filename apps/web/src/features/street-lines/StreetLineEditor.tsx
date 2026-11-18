@@ -17,7 +17,7 @@ import {
 import { depotElement, pointElement } from "./markers";
 import { fullTiming, MODES, type Timing } from "./modes";
 import { profileWith, vehicleById } from "./service";
-import { lineBounds, type SavedStreetLine } from "./saved";
+import { keepRoutedLegs, lineBounds, lineTiles, type SavedStreetLine } from "./saved";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
 import type { StreetLineInput } from "../journey-planner/network";
 import { depotFit, depotGates } from "../depots/model";
@@ -197,6 +197,14 @@ export function StreetLineEditor({
   // Latest values for map and keyboard handlers registered once.
   const latest = useRef({ tool, view, selected });
   latest.current = { tool, view, selected };
+  // The palette's Bus depot opens the shared depot editor when the workspace has one; otherwise it places
+  // the line's own depot gate. The panel's "move depot" still places the line's own gate either way.
+  const openDepots = useRef(onOpenDepots);
+  openDepots.current = onOpenDepots;
+  const pickTool = useCallback((t: Tool) => {
+    if (t === "depot" && openDepots.current) openDepots.current();
+    else setTool(t);
+  }, []);
 
   const run = useCallback((f: (e: StreetEngine) => LineView) => {
     const e = engine.current;
@@ -272,7 +280,8 @@ export function StreetLineEditor({
       if (saved.depot) v = e.setDepot(saved.depot);
       const idAt = (i: number | undefined) => (i === undefined ? undefined : v.points[i]?.id);
       setDepotStops({ out: idAt(saved.depotStops.out), in: idAt(saved.depotStops.in) });
-      return v;
+      // A leg whose streets are still missing keeps the route it was saved with, not a dashed straight line.
+      return keepRoutedLegs(v, saved.view);
     });
   }, [ready, run]);
 
@@ -305,6 +314,9 @@ export function StreetLineEditor({
 
   // Streets: load the tiles on screen whenever the map stops moving, then rebuild once per batch.
   const tiles = useRef(new Set<string>());
+  // The tiles under a saved line, loaded with the first view whatever the zoom: routing it again needs all of
+  // its streets, not only those on screen.
+  const lineTileKeys = useRef<string[]>(initial ? lineTiles(initial) : []);
   const [zoomedOut, setZoomedOut] = useState(false);
   useEffect(() => {
     if (!map || !profile) return;
@@ -320,11 +332,14 @@ export function StreetLineEditor({
       }
       const tooFar = map.getZoom() < MIN_LOAD_ZOOM;
       setZoomedOut(tooFar);
-      if (tooFar) return;
+      const line = lineTileKeys.current;
+      lineTileKeys.current = [];
+      if (tooFar && !line.length) return;
       const b = map.getBounds();
-      const want = tilesFor([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()])
-        .map(([x, y]) => `${x}/${y}`)
-        .filter((k) => !tiles.current.has(k));
+      const onScreen = tooFar
+        ? []
+        : tilesFor([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]).map(([x, y]) => `${x}/${y}`);
+      const want = [...new Set([...line, ...onScreen])].filter((k) => !tiles.current.has(k));
       if (!want.length) return;
       busy = true;
       want.forEach((k) => tiles.current.add(k));
@@ -354,7 +369,7 @@ export function StreetLineEditor({
           reason ??= err instanceof Error ? err.message : null;
         }
       });
-      if (added) run((eng) => eng.rebuild());
+      if (added) run((eng) => keepRoutedLegs(eng.rebuild(), initial?.view));
       setReady(e.ready());
       setStatus(failed ? `${reason ?? tNow("rail.streetsFailed")} ${tNow("rail.moveMap")}` : null);
       if (again) {
@@ -531,7 +546,7 @@ export function StreetLineEditor({
       if (key === "v") setTool("select");
       else if (key === "p") setTool("add");
       else if (key === "h") setTool("pan");
-      else if (key === "d") setTool("depot");
+      else if (key === "d") pickTool("depot");
       else if ((ev.key === "Delete" || ev.key === "Backspace") && sel !== null) {
         run((e) => e.deletePoint(sel));
         setSelected(null);
@@ -542,7 +557,7 @@ export function StreetLineEditor({
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [run]);
+  }, [run, pickTool]);
 
   // Other tools see this line's stops, so a station drawn next to one takes its name.
   useEffect(() => publishPlaces("street", stopPlaces(view)), [view]);
@@ -738,7 +753,7 @@ export function StreetLineEditor({
 
   return (
     <>
-      <ToolPalette tool={tool} onTool={setTool} />
+      <ToolPalette tool={tool} onTool={pickTool} />
       <div className="pointer-events-none absolute bottom-8 left-1/2 z-10 flex max-w-[90%] -translate-x-1/2 flex-col items-center gap-1 text-sm">
         {notice && <p className="rounded-full bg-slate-900/85 px-3 py-1 text-white">{notice}</p>}
         {note && (

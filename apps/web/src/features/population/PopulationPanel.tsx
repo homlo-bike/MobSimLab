@@ -1,7 +1,8 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
-import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { formatInt, useI18n } from "../../i18n/i18n";
+import { JobProgress } from "../../shell/JobProgress";
 import type {
   Confidence,
   FileOptions,
@@ -43,6 +44,9 @@ export function PopulationPanel({ map, panel, api, editable, onPrimaryChange }: 
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [attempt, setAttempt] = useState(0);
+  // The layers this panel just started, shown under the button that started them until they are done.
+  const [lastImport, setLastImport] = useState<string | null>(null);
+  const [lastUpload, setLastUpload] = useState<string | null>(null);
 
   useEffect(() => {
     if (!api) return;
@@ -151,9 +155,10 @@ export function PopulationPanel({ map, panel, api, editable, onPrimaryChange }: 
           <ImportSection
             overview={overview}
             busy={busy}
+            latest={overview.layers.find((l) => l.id === lastImport) ?? null}
             onImport={(req) =>
               run(async () => {
-                await api.startImport(req);
+                setLastImport((await api.startImport(req)).id);
                 await refresh();
               })
             }
@@ -163,9 +168,10 @@ export function PopulationPanel({ map, panel, api, editable, onPrimaryChange }: 
           <UploadSection
             overview={overview}
             busy={busy}
+            latest={overview.layers.find((l) => l.id === lastUpload) ?? null}
             onUpload={(details, file, bytes) =>
               run(async () => {
-                await api.upload(details, file, bytes);
+                setLastUpload((await api.upload(details, file, bytes)).id);
                 await refresh();
               })
             }
@@ -299,10 +305,13 @@ function AreaSection({
 function ImportSection({
   overview,
   busy,
+  latest,
   onImport,
 }: {
   overview: PopulationOverview;
   busy: boolean;
+  /** The layer this section last started: its progress, then what it brought or why it failed. */
+  latest: PopulationLayer | null;
   onImport: (req: Parameters<PopulationApi["startImport"]>[0]) => void;
 }) {
   const { t } = useI18n();
@@ -391,6 +400,7 @@ function ImportSection({
       >
         {t("pop.import.start")}
       </button>
+      {latest && <LayerOutcome layer={latest} />}
     </section>
   );
 }
@@ -450,13 +460,17 @@ function FieldSelect({
 function UploadSection({
   overview,
   busy,
+  latest,
   onUpload,
 }: {
   overview: PopulationOverview;
   busy: boolean;
+  /** The layer this section last uploaded: its progress, then what it brought or why it failed. */
+  latest: PopulationLayer | null;
   onUpload: (details: LayerDetails, file: FileOptions, bytes: Blob) => void;
 }) {
   const { t } = useI18n();
+  const fileRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const [format, setFormat] = useState<FileFormat | null>(null);
   const [fields, setFields] = useState<string[]>([]);
@@ -532,15 +546,26 @@ function UploadSection({
         {t("pop.upload.title")}
       </h3>
       <p className="text-xs text-slate-500">{t("pop.upload.hint", { mb: overview.choices.maxUploadMb })}</p>
-      <label className="text-sm">
-        <span className="font-medium">{t("pop.upload.file")}</span>
+      {/* The browser's own file control does not follow the app's buttons: a button opens it instead. */}
+      <div className="flex flex-wrap items-center gap-2 text-sm">
         <input
+          ref={fileRef}
           type="file"
-          className="mt-1 block w-full text-sm"
+          className="sr-only"
+          aria-label={t("pop.upload.file")}
           accept=".tif,.tiff,.geojson,.json,.csv,.tsv,.txt"
           onChange={(e) => void choose(e.target.files?.[0] ?? null)}
         />
-      </label>
+        <button
+          type="button"
+          className="btn min-h-10"
+          disabled={busy}
+          onClick={() => fileRef.current?.click()}
+        >
+          {t("pop.upload.choose")}
+        </button>
+        {file && <span className="min-w-0 truncate text-slate-700">{file.name}</span>}
+      </div>
       {file && !format && <p className="text-sm text-amber-800">{t("pop.upload.unknown")}</p>}
       {file && format && (
         <>
@@ -679,7 +704,60 @@ function UploadSection({
           </button>
         </>
       )}
+      {latest && <LayerOutcome layer={latest} />}
     </section>
+  );
+}
+
+/**
+ * Purpose: right under Import or Upload, what the layer just started is doing and how it ended: a progress bar
+ * while it imports (download, then storing the cells), then its name and the people it brought, or why it failed.
+ */
+function LayerOutcome({ layer: l }: { layer: PopulationLayer }) {
+  const { t } = useI18n();
+  if (l.status === "importing") return <LayerProgress layer={l} />;
+  if (l.status === "failed")
+    return (
+      <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
+        {t("pop.status.failed", { error: l.error ?? "" })}
+      </p>
+    );
+  return (
+    <div role="status" className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-950">
+      <p className="flex items-start gap-1.5 font-medium">
+        <span aria-hidden="true">✓</span>
+        <span className="min-w-0 break-words">{l.name}</span>
+        {l.isPrimary && (
+          <span className="ms-auto shrink-0 rounded bg-violet-100 px-1.5 py-0.5 text-xs font-normal text-violet-900">
+            {t("pop.layer.primary")}
+          </span>
+        )}
+      </p>
+      <p>
+        {t("pop.layer.people", {
+          people: formatInt(Math.round(l.peopleTotal)),
+          n: formatInt(l.featureCount),
+        })}
+      </p>
+    </div>
+  );
+}
+
+/** Purpose: a layer's import as a progress bar: step 1 downloads (filled by the bytes when known), step 2 stores. */
+function LayerProgress({ layer: l }: { layer: PopulationLayer }) {
+  const { t } = useI18n();
+  const p = l.progress;
+  const storing = p?.step === "store";
+  const fraction =
+    !storing && p?.receivedBytes !== undefined && p.totalBytes ? Math.min(1, p.receivedBytes / p.totalBytes) : null;
+  return (
+    <JobProgress
+      label={l.name}
+      step={progressText(l, t)}
+      index={storing ? 2 : 1}
+      steps={2}
+      fraction={fraction}
+    />
   );
 }
 
@@ -739,9 +817,9 @@ function LayerCard({
         )}
       </div>
       {l.status === "importing" && (
-        <p role="status" className="mt-1 text-slate-600">
-          {progressText(l, t)}
-        </p>
+        <div className="mt-1">
+          <LayerProgress layer={l} />
+        </div>
       )}
       {l.status === "failed" && (
         <p role="alert" className="mt-1 text-red-700">

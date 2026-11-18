@@ -960,6 +960,9 @@ describe("Railway editor", () => {
     fireEvent.click(screen.getByRole("button", { name: "Publish timetable" }));
     const done = await screen.findByTestId("lines-published");
     expect(done.textContent).toMatch(/Published 1 line · \d+ trips/);
+    // The outcome is announced in one box, and the progress bar is gone.
+    expect(done.getAttribute("role")).toBe("status");
+    expect(screen.queryByRole("progressbar", { name: "Publish timetable" })).toBeNull();
     expect(screen.getByTestId("line-report").textContent).toMatch(
       /\d+ trips · \d+ trains? · Riverside → Northgate/,
     );

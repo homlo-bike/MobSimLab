@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AdminPanel } from "../src/admin/AdminPanel";
 import {
@@ -87,10 +87,16 @@ describe("plugins per project (ADR-0036 §9)", () => {
   it("lets the Owner turn a plugin on with the chosen version, and shows it read-only to others", async () => {
     const onSet = vi.fn(async () => {});
     const { rerender } = render(<ProjectPlugins plugins={[row({})]} manage onSet={onSet} />);
-    expect(screen.getByText("By Example Transit Lab · Version 1.1.0")).toBeTruthy();
-    expect(screen.getByText("Uses: the project's network")).toBeTruthy();
-    fireEvent.change(screen.getByLabelText("Version of Water taxis"), { target: { value: "1.0.0" } });
+    // A short list: the name opens the plugin's window with its details and version.
+    expect(screen.queryByText("Uses: the project's network")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /Water taxis/ }));
+    const dialog = screen.getByRole("dialog", { name: "Water taxis" });
+    expect(within(dialog).getByText("By Example Transit Lab · Version 1.1.0")).toBeTruthy();
+    expect(within(dialog).getByText("Uses: the project's network")).toBeTruthy();
+    fireEvent.change(within(dialog).getByLabelText("Version of Water taxis"), { target: { value: "1.0.0" } });
     await waitFor(() => expect(onSet).toHaveBeenCalledWith("org.example.water-taxi", false, "1.0.0"));
+    fireEvent.keyDown(document, { key: "Escape" });
+    expect(screen.queryByRole("dialog")).toBeNull();
     fireEvent.click(screen.getByRole("switch", { name: "Use Water taxis in this project" }));
     await waitFor(() => expect(onSet).toHaveBeenCalledWith("org.example.water-taxi", true, "1.1.0"));
 
@@ -100,6 +106,34 @@ describe("plugins per project (ADR-0036 §9)", () => {
     expect((screen.getByRole("switch") as HTMLInputElement).disabled).toBe(true);
     expect(screen.getByText(/Version 0.9.0 was removed/)).toBeTruthy();
     expect(screen.getByText("Only the project's Owner can turn plugins on or off.")).toBeTruthy();
+  });
+});
+
+describe("a plugin's window in Project preferences", () => {
+  it("shows an Admin the plugin's own settings: Esri's API key", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () =>
+        new Response(
+          JSON.stringify({
+            esri: { configured: false, keyEnd: null, termsAcceptedAt: null, termsAcceptedBy: null, termsUrl: "https://www.esri.com/terms" },
+          }),
+          { status: 200, headers: { "Content-Type": "application/json" } },
+        ),
+      ),
+    );
+    const esri = row({ id: "org.mobsimlab.esri-imagery", name: "Esri World Imagery", bundled: true, versions: [] });
+    render(<ProjectPlugins plugins={[esri]} manage onSet={vi.fn()} adminCsrf="csrf-1" />);
+    fireEvent.click(screen.getByRole("button", { name: /Esri World Imagery/ }));
+    const dialog = screen.getByRole("dialog", { name: "Esri World Imagery" });
+    expect(await within(dialog).findByLabelText("ArcGIS API key")).toBeTruthy();
+  });
+
+  it("does not show the settings to someone who is not an Admin", () => {
+    const esri = row({ id: "org.mobsimlab.esri-imagery", name: "Esri World Imagery", bundled: true, versions: [] });
+    render(<ProjectPlugins plugins={[esri]} manage onSet={vi.fn()} />);
+    fireEvent.click(screen.getByRole("button", { name: /Esri World Imagery/ }));
+    expect(screen.queryByLabelText("ArcGIS API key")).toBeNull();
   });
 });
 

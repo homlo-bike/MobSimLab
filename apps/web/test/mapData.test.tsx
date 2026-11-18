@@ -120,6 +120,26 @@ describe("Map data panel", () => {
     expect(await screen.findByText("Cutting out the project area…")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
     await waitFor(() => expect(api.cancel).toHaveBeenCalledWith("run-1"));
+    // It answers at once: the bar says it is stopping, and Cancel is not offered twice.
+    expect(screen.getByText("Stopping after the current step…")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Cancel" })).toBeNull();
+  });
+
+  it("shows how far an import is with a progress bar", async () => {
+    const api = fakeApi(
+      status({
+        osm: {
+          current: null,
+          latest: run({ status: "running", method: "overpass", progress: { step: "download", done: 3, total: 12 } }),
+        },
+      }),
+    );
+    render(<MapDataPanel api={api} map={null} />);
+    const bar = await screen.findByRole("progressbar", { name: "OpenStreetMap" });
+    // Overpass: download, join, write; a quarter of the tiles are in, so a twelfth of the whole job.
+    expect(screen.getByText("Step 1 of 3")).toBeTruthy();
+    expect(bar.getAttribute("aria-valuenow")).toBe("8");
+    expect(screen.getByText("Downloading 3 of 12…")).toBeTruthy();
   });
 
   it("offers Geofabrik regions for an area too large for Overpass", async () => {

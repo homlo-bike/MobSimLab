@@ -69,6 +69,11 @@ interface Props {
   popWaitMs?: number;
   /** How often to ask whether the WorldPop download is done, ms. */
   popPollMs?: number;
+  /**
+   * Whether "Screen with OpenStreetMap buildings" starts ticked. Off by default: the map is computed from the lines
+   * and the terrain alone, and buildings (their screening and the residents per band) are an option.
+   */
+  screenBuildings?: boolean;
 }
 
 /** Purpose: `p`, or a rejection with the signal's reason as soon as it aborts (the request itself runs on). */
@@ -138,6 +143,7 @@ export function NoiseMap({
   fetchPeople = fetchPopulation,
   popWaitMs = POP_WAIT_MS,
   popPollMs = POP_POLL_MS,
+  screenBuildings = false,
 }: Props) {
   const { t } = useI18n();
   const [indicator, setIndicator] = useState<Indicator>("lden");
@@ -146,11 +152,12 @@ export function NoiseMap({
   const [otherId, setOtherId] = useState("");
   const [runIds, setRunIds] = useState<[string, string]>(["", ""]);
   const [runs, setRuns] = useState<RoadRun[] | null>(null);
-  const [withBuildings, setWithBuildings] = useState(true);
+  const [withBuildings, setWithBuildings] = useState(screenBuildings);
   const [withTerrain, setWithTerrain] = useState(true);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   // The run under way: aborting it cancels the run; `skip` ends the wait for WorldPop.
   const run = useRef<{ abort: AbortController; skip: AbortController } | null>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
 
   const saved = scenarios?.scenarios ?? [];
   const design = (id: string): { name: string; design: Design } | null => {
@@ -212,6 +219,12 @@ export function NoiseMap({
     else
       drawBuildings(map, status.buildings, status.main.view.building_levels, indicator, FROM_DB[indicator]);
   }, [map, status, indicator]);
+
+  // Bring the progress bar, then the result, into view: they appear below the fold of a long panel.
+  useEffect(() => {
+    if (status.kind === "busy" || status.kind === "done")
+      progressRef.current?.nextElementSibling?.scrollIntoView?.({ block: "nearest", behavior: "smooth" });
+  }, [status.kind]);
 
   async function compute() {
     const abort = new AbortController();
@@ -510,6 +523,8 @@ export function NoiseMap({
         {t(status.kind === "done" ? "noise.computeAgain" : "noise.compute")}
       </button>
       {!ready && <p className="text-xs text-slate-500">{t("noise.drawFirst")}</p>}
+      {/* The bar and then the result sit below the options: keep them in view when a run starts and ends. */}
+      <div ref={progressRef} className="contents" />
       {status.kind === "busy" && (
         <JobProgress
           label={t("noise.map")}

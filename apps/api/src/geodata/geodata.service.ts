@@ -145,6 +145,8 @@ export class GeodataService implements OnApplicationBootstrap {
   private readonly overpass: OverpassClient;
   private chain: Promise<void> = Promise.resolve();
   private readonly cancelled = new Set<string>();
+  /** One per running import: aborted on Cancel, so a download under way stops at once, not at the next step. */
+  private readonly aborts = new Map<string, AbortController>();
   /** Called when an import finishes, so readers drop what they cached for the project. */
   private readonly listeners: Array<(projectId: string) => void> = [];
 
@@ -380,7 +382,10 @@ export class GeodataService implements OnApplicationBootstrap {
       WHERE id = ${importId} AND project_id = ${projectId} RETURNING *`.execute(this.db);
     const row = rows[0];
     if (!row) throw new NotFoundException("import not found");
-    if (row.status === "running") this.cancelled.add(importId);
+    if (row.status === "running") {
+      this.cancelled.add(importId);
+      this.aborts.get(importId)?.abort();
+    }
     return toRun(row);
   }
 
@@ -426,12 +431,14 @@ export class GeodataService implements OnApplicationBootstrap {
         SELECT status FROM geo.import WHERE id = ${id}`.execute(this.db);
       if (rows[0]?.status !== "queued") return;
       await this.mark(id, { status: "running", started: true });
+      this.aborts.set(id, new AbortController());
       try {
         await job();
       } catch (e) {
         await this.fail(id, e);
       } finally {
         this.cancelled.delete(id);
+        this.aborts.delete(id);
       }
     });
   }
@@ -467,6 +474,7 @@ export class GeodataService implements OnApplicationBootstrap {
           endpoint: overpassEndpoint(),
           progress: (done, total) => this.mark(run.id, { progress: { step: "download", done, total } }),
           checkCancelled: () => this.check(run.id),
+          signal: this.aborts.get(run.id)?.signal,
         });
         Object.assign(stats, {
           tiles: fetched.tiles,
@@ -489,13 +497,17 @@ export class GeodataService implements OnApplicationBootstrap {
         if (run.method === "geofabrik") {
           await this.mark(run.id, { progress: { step: "download" } });
           let lastMark = 0;
-          source = await this.geofabrik.download(o.region!, (bytes, total) => {
-            if (Date.now() - lastMark < 2_000) return;
-            lastMark = Date.now();
-            void this.mark(run.id, {
-              progress: { step: "download", done: bytes, total: total ?? undefined },
-            });
-          });
+          source = await this.geofabrik.download(
+            o.region!,
+            (bytes, total) => {
+              if (Date.now() - lastMark < 2_000) return;
+              lastMark = Date.now();
+              void this.mark(run.id, {
+                progress: { step: "download", done: bytes, total: total ?? undefined },
+              });
+            },
+            this.aborts.get(run.id)?.signal,
+          );
         }
         this.check(run.id);
         await this.mark(run.id, { progress: { step: "extract" } });
@@ -737,7 +749,8 @@ export class GeodataService implements OnApplicationBootstrap {
   }
 
   private async fail(id: string, e: unknown): Promise<void> {
-    const cancelled = e instanceof Cancelled;
+    // A request aborted by Cancel fails with its client's error; it is still a cancellation.
+    const cancelled = e instanceof Cancelled || this.cancelled.has(id);
     if (!cancelled) this.log.warn(`Import ${id} failed: ${(e as Error).message}`);
     await sql`
       UPDATE geo.import SET status = ${cancelled ? "cancelled" : "failed"}, finished_at = now(),
