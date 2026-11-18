@@ -1803,6 +1803,19 @@ impl<'a> Planner<'a> {
         }
     }
 
+    /// Purpose: a place as the planner's notes name it: the station of a platform (with the
+    /// platform id), or the storage track's id.
+    fn place_name(&self, place: Place) -> String {
+        match place {
+            Place::Platform(p) => {
+                let pf = &self.m.platforms[p as usize];
+                let st = &self.m.stations[pf.station as usize];
+                format!("{} ({})", st.name, pf.id)
+            }
+            Place::Storage(t) => self.m.tracks[t].id.clone(),
+        }
+    }
+
     /// Purpose: bring a train from stabling to the origin of a trip.
     /// Output: (pull-out run index, vehicle), or Err with the reason and blocker.
     fn pull_out(
@@ -1893,8 +1906,19 @@ impl<'a> Planner<'a> {
             ));
         }
         let mut last = ("".to_string(), None);
+        // Each option once in order of cost; one whose platform's way out is taken at the
+        // departure is passed over while other options are left, and tried again (without that
+        // preference) after all of them. Dropping it outright left trips with no train and no
+        // reason when the options after it failed (Damascus test, bug 20).
         let mut opts_left = opts.len();
-        for (_, si, fp) in opts {
+        let mut queue: Vec<(usize, FoundPath, bool)> = opts
+            .into_iter()
+            .map(|(_, si, fp)| (si, fp, false))
+            .collect();
+        let mut qi = 0;
+        while qi < queue.len() {
+            let (si, fp, retry) = queue[qi].clone();
+            qi += 1;
             let track = self.stacks[si].track;
             let origin = *fp.places.last().unwrap();
             // An empty end-station siding: bring a train to it from an overnight track first.
@@ -1913,26 +1937,61 @@ impl<'a> Planner<'a> {
             }
             // Pull-out must also leave a service path from that platform.
             let steps = route_steps(self.m, &fp.routes).unwrap_or_default();
-            let adir = arrival_dir(self.m, &steps, origin).unwrap_or(Dir::Up);
-            let Some(first) = self
-                .trip_path(trip.line, trip.dir, origin, adir.reverse(), &[])
-                .and_then(|p| p.routes.first().copied())
-            else {
+            // A train from the line turns back at the terminal; one from a siding beyond the
+            // terminal's far end arrives facing the line already and runs straight on (Damascus
+            // test, bug 20). `adir` is then the direction it is treated as having arrived in, so
+            // the trip leaves in its reverse.
+            let arrived = arrival_dir(self.m, &steps, origin).unwrap_or(Dir::Up);
+            let way_on = [arrived, arrived.reverse()].into_iter().find_map(|a| {
+                self.trip_path(trip.line, trip.dir, origin, a.reverse(), &[])
+                    .and_then(|p| p.routes.first().copied())
+                    .map(|r| (a, r))
+            });
+            let Some((adir, first)) = way_on else {
+                last = (
+                    format!(
+                        "a train from {} reaches {} with no way on to start the trip",
+                        self.m.tracks[track].id,
+                        self.place_name(origin)
+                    ),
+                    None,
+                );
                 continue;
             };
             // Prefer a platform whose way out is free at the departure.
-            if !self.way_out_free(trip.line, first, trip.dep) && opts_left > 1 {
+            if !retry && opts_left > 1 && !self.way_out_free(trip.line, first, trip.dep) {
                 opts_left -= 1;
+                queue.push((si, fp, true));
+                last = (
+                    format!(
+                        "the way out of {} is taken at the departure",
+                        self.place_name(origin)
+                    ),
+                    None,
+                );
                 continue;
             }
             let name = format!("{}-po", trip.name);
             let variants = self.depot_variants(trip.line, &name, &fp);
             if variants.is_empty() {
+                last = (
+                    format!(
+                        "no run can be built from {} to {}",
+                        self.m.tracks[track].id,
+                        self.place_name(origin)
+                    ),
+                    None,
+                );
                 continue;
             }
             for base in variants {
-                let probe = run_timing(self.m, &base, 0, &self.p.blocking);
-                let Ok(probe) = probe else { continue };
+                let probe = match run_timing(self.m, &base, 0, &self.p.blocking) {
+                    Ok(p) => p,
+                    Err(e) => {
+                        last = (e, None);
+                        continue;
+                    }
+                };
                 let dur = probe.profile.total_time_s();
                 let ideal = trip.dep - self.p.pull_out_margin_s - dur;
                 let base2 = TrainRun {
@@ -1956,6 +2015,13 @@ impl<'a> Planner<'a> {
                     None => self.p.max_depot_shift_s,
                 };
                 if window < 0.0 {
+                    last = (
+                        format!(
+                            "the next train on {} is not back there in time",
+                            self.m.tracks[track].id
+                        ),
+                        None,
+                    );
                     continue;
                 }
                 let idx = self.runs.len();

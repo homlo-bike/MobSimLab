@@ -164,3 +164,63 @@ fn a_siding_joined_straight_to_a_terminal_end_gets_a_signal_to_leave_by() {
         assert!(out, "{} has no signal to leave by", m.tracks[i].id);
     }
 }
+
+#[test]
+fn trains_from_a_siding_beyond_a_terminal_run_straight_on_into_service() {
+    // Damascus test, bug 20: a train coming out of a layover siding beyond a tram terminal's far
+    // end reaches the platform facing the line already. The planner made it turn back towards the
+    // siding, found no way on, and dropped the trip with an empty reason ("pull-out: .").
+    let mut net = sample(RailMode::Tram, 7.0, 50.9);
+    let st = net.stations.iter().find(|s| s.id == 1).unwrap().clone();
+    let siding: rail_design::model::Track = serde_json::from_value(serde_json::json!({
+        "id": 99,
+        "use": "storage",
+        "level": "street",
+        "tracks": 2,
+        "start": { "type": "station", "station": 1, "end": 0, "tracks": [0, 1] },
+        "end": { "type": "free", "x": st.x - 250.0, "y": st.y, "level": "street" },
+        "points": [],
+    }))
+    .unwrap();
+    net.tracks.push(siding);
+    let t = topology(&build(&net, None));
+    assert!(t.valid, "{:?}", t.errors);
+    let line = rail_plan::ServiceLine {
+        id: "T1".into(),
+        name: "T1".into(),
+        color: None,
+        stations: vec!["st1".into(), "st2".into()],
+        vehicle: rail_plan::ServiceVehicle {
+            id: "tram".into(),
+            name: "Tram".into(),
+            length_m: 30.0,
+            top_speed_kmh: 70.0,
+            power_kw: Some(420.0),
+            empty_mass_t: None,
+            capacity: 200.0,
+        },
+        units: 1,
+        mode: "tram".into(),
+        first_s: 6.0 * 3600.0,
+        last_s: 8.0 * 3600.0,
+        peak_headway_s: 600.0,
+        offpeak_headway_s: 600.0,
+        peaks: vec![],
+        dwell_s: None,
+        turnback_s: None,
+        accel_ms2: None,
+        decel_ms2: None,
+        supplement_share: None,
+    };
+    let out = rail_plan::publish_service(&serde_json::to_string(&t).unwrap(), &[line], "weekday")
+        .unwrap();
+    let r = &out.lines[0];
+    assert!(
+        !r.issues
+            .iter()
+            .any(|i| i.contains("pull-out: .") || i.contains("no way on")),
+        "{:?}",
+        r.issues
+    );
+    assert!(r.trips > 0, "{:?}", r.issues);
+}
