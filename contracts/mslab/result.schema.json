@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/result.schema.json",
+  "title": "A result the project's tools worked out (results/<kind>.json)",
+  "type": "object",
+  "required": [
+    "kind",
+    "inputs",
+    "computedAt",
+    "doc"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{1,39}$"
+    },
+    "inputs": {
+      "description": "Fingerprint of what the result was worked out from; another fingerprint means out of date.",
+      "type": "string",
+      "pattern": "^[A-Za-z0-9._:-]{0,200}$"
+    },
+    "computedAt": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 40
+    },
+    "doc": {
+      "description": "The result as the web app saved it."
+    }
+  }
+}

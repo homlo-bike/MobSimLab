@@ -193,6 +193,15 @@ export interface DB {
     body: string;
     fetched_at: Generated<Date>;
   };
+  /** Results the project's tools worked out (db/migrations/0023_project_results.sql): gzip-compressed JSON. */
+  "project.result": {
+    project_id: string;
+    kind: string;
+    inputs: string;
+    body: Buffer;
+    computed_by: string | null;
+    computed_at: Generated<Date>;
+  };
   "project.drawing": {
     project_id: string;
     kind: string;
@@ -287,6 +296,25 @@ export interface DB {
     role: ProjectRole;
     added_by: string | null;
     created_at: Generated<Date>;
+  };
+  /** WMS and WMTS services an Admin added as map layers (db/migrations/0023_map_layer_services.sql). */
+  "plugin.map_layer_service": {
+    id: Generated<string>;
+    kind: "wms" | "wmts" | "xyz";
+    name: string;
+    url: string;
+    auth_type: "none" | "basic" | "query" | "header";
+    auth_name: string | null;
+    /** Password or key; never sent to browsers, logged or audited. */
+    auth_secret: string | null;
+    show_as: "basemap" | "overlay";
+    attribution: string;
+    layers: ColumnType<unknown, string, never>;
+    /** Id of a service MobSimLab comes with (builtin-layers.ts); null for an Admin's. */
+    builtin: string | null;
+    hidden: Generated<boolean>;
+    added_by: string | null;
+    added_at: Generated<Date>;
   };
   "plugin.trusted_key": {
     id: Generated<string>;

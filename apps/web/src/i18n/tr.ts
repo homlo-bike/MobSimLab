@@ -12,6 +12,7 @@ import { mslabTr } from "./mslab/tr";
 import { workspaceUiTr } from "./workspace-ui/tr";
 import { pluginCodeTr } from "./plugin-code/tr";
 import { populationTr } from "./population/tr";
+import { resultsTr } from "./results/tr";
 import { pluginsTr } from "./plugins/tr";
 import { streetPhotosTr } from "./street-photos/tr";
 import type { Messages } from "./en";
@@ -529,6 +530,7 @@ export const tr: Messages = {
   ...workspaceUiTr,
   ...pluginCodeTr,
   ...populationTr,
+  ...resultsTr,
   ...roadTr,
   ...calendarTr,
   ...pluginsTr,

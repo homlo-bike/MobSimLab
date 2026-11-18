@@ -12,6 +12,7 @@ import { mslabHi } from "./mslab/hi";
 import { workspaceUiHi } from "./workspace-ui/hi";
 import { pluginCodeHi } from "./plugin-code/hi";
 import { populationHi } from "./population/hi";
+import { resultsHi } from "./results/hi";
 import { pluginsHi } from "./plugins/hi";
 import { streetPhotosHi } from "./street-photos/hi";
 import type { Messages } from "./en";
@@ -527,6 +528,7 @@ export const hi: Messages = {
   ...workspaceUiHi,
   ...pluginCodeHi,
   ...populationHi,
+  ...resultsHi,
   ...roadHi,
   ...calendarHi,
   ...pluginsHi,

@@ -163,6 +163,10 @@ pub enum Issue {
         line: String,
         /// Direction.
         direction: u8,
+        /// Why trains cannot run it when track does join the stops (a platform too short for the
+        /// train, a gradient it cannot climb); None when no track joins them.
+        #[serde(skip_serializing_if = "Option::is_none")]
+        reason: Option<String>,
     },
     /// A trip could not be placed.
     Unplaced {
@@ -687,14 +691,15 @@ impl<'a> Planner<'a> {
             let mut blocks: [Vec<(TdsId, f64, f64)>; 2] = [Vec::new(), Vec::new()];
             for dir in 0..2u8 {
                 match self.template_run(li, dir) {
-                    Some((t, b)) => {
+                    Ok((t, b)) => {
                         t_run[dir as usize] = t;
                         blocks[dir as usize] = b;
                     }
-                    None => {
+                    Err(reason) => {
                         self.issues.push(Issue::NoPath {
                             line: self.lines[li].id.clone(),
                             direction: dir,
+                            reason,
                         });
                         t_run[dir as usize] = f64::NAN;
                     }
@@ -967,21 +972,34 @@ impl<'a> Planner<'a> {
 
     /// Purpose: nominal running time of a line direction and the sections it blocks (start and end
     /// relative to its departure), from the best origin platform.
-    fn template_run(&self, line: usize, dir: u8) -> Option<(f64, Blocks)> {
+    /// Output: Err with why trains cannot run it when the track joins the stops but no run along it
+    /// can be built or timed (a platform too short for the train, a gradient it cannot climb); Err
+    /// with None when no track joins the stops.
+    fn template_run(&self, line: usize, dir: u8) -> Result<(f64, Blocks), Option<String>> {
         let mut best: Option<(f64, f64, Blocks)> = None;
+        let mut why: Option<String> = None;
         for (pl, _) in self.candidates(line, dir, 0) {
             for d in [Dir::Up, Dir::Down] {
                 let Some(path) = self.trip_path(line, dir, pl, d, &[]) else {
                     continue;
                 };
                 let dw = self.dwells(line, dir);
-                let Ok((run, _)) =
-                    self.build_run(line, "template", &path.routes, &path.places, &dw, 0.0)
-                else {
-                    continue;
-                };
-                let Ok(t) = run_timing(self.m, &run, 0, &self.p.blocking) else {
-                    continue;
+                let built = self.build_run(line, "template", &path.routes, &path.places, &dw, 0.0);
+                let timed = built
+                    .as_ref()
+                    .map_err(|e| e.clone())
+                    .and_then(|(run, _)| run_timing(self.m, run, 0, &self.p.blocking));
+                let t = match timed {
+                    Ok(t) => t,
+                    Err(e) => {
+                        let e = e.trim_start_matches("template: ");
+                        let stuck = built
+                            .as_ref()
+                            .ok()
+                            .and_then(|(_, pos)| self.stuck_after(e, pl, &path.places, pos));
+                        why.get_or_insert(stuck.unwrap_or_else(|| e.to_string()));
+                        continue;
+                    }
                 };
                 let total = t.profile.total_time_s();
                 if best.as_ref().map_or(true, |(c, _, _)| path.cost < *c) {
@@ -994,7 +1012,46 @@ impl<'a> Planner<'a> {
                 }
             }
         }
-        best.map(|(_, t, b)| (t, b))
+        best.map(|(_, t, b)| (t, b)).ok_or(why)
+    }
+
+    /// Purpose: a run that stalls on a gradient, said where: the station it last left and how far
+    /// beyond it. Inputs: the timing error, the origin, the places of the path and the head's stop
+    /// position at each. Output: the sentence, or None for any other error.
+    fn stuck_after(
+        &self,
+        err: &str,
+        origin: Place,
+        places: &[Place],
+        pos: &[f64],
+    ) -> Option<String> {
+        let x: f64 = err
+            .strip_prefix("the train cannot move at ")?
+            .split(' ')
+            .next()?
+            .parse()
+            .ok()?;
+        let k = pos.iter().take_while(|&&p| p <= x).count();
+        let (from, at) = match k {
+            0 => (origin, 0.0),
+            _ => (places[k - 1], pos[k - 1]),
+        };
+        let name = |pl: Place| match pl {
+            Place::Platform(p) => {
+                let st = self.m.platforms[p as usize].station;
+                self.m.stations[st as usize].name.clone()
+            }
+            Place::Storage(t) => self.m.tracks[t].id.clone(),
+        };
+        let between = match places.get(k) {
+            Some(&next) => format!("between {} and {}", name(from), name(next)),
+            None => format!("after {}", name(from)),
+        };
+        Some(format!(
+            "the train stalls on a gradient too steep for it {between}, about {:.0} m after {}. The track checks warn where the track is steeper than the maximum: change the level there, or the heights of the station and track",
+            (x - at).max(0.0),
+            name(from)
+        ))
     }
 
     /// Purpose: the phase of a line (ADR-0032 §3 step 4a, lines sharing track): a shift of all its

@@ -12,6 +12,7 @@ import { mslabDe } from "./mslab/de";
 import { workspaceUiDe } from "./workspace-ui/de";
 import { pluginCodeDe } from "./plugin-code/de";
 import { populationDe } from "./population/de";
+import { resultsDe } from "./results/de";
 import { pluginsDe } from "./plugins/de";
 import { streetPhotosDe } from "./street-photos/de";
 import type { Messages } from "./en";
@@ -539,6 +540,7 @@ export const de: Messages = {
   ...workspaceUiDe,
   ...pluginCodeDe,
   ...populationDe,
+  ...resultsDe,
   ...roadDe,
   ...calendarDe,
   ...pluginsDe,

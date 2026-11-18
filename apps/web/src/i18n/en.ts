@@ -12,6 +12,7 @@ import { pluginCodeEn } from "./plugin-code/en";
 import { roadEn } from "./road/en";
 import { calendarEn } from "./calendar/en";
 import { populationEn } from "./population/en";
+import { resultsEn } from "./results/en";
 import { pluginsEn } from "./plugins";
 import { streetPhotosEn } from "./street-photos/en";
 
@@ -524,6 +525,7 @@ export const en = {
   ...roadEn,
   ...calendarEn,
   ...populationEn,
+  ...resultsEn,
   ...pluginsEn,
   ...streetPhotosEn,
 } as const;

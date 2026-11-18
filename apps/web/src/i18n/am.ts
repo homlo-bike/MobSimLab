@@ -12,6 +12,7 @@ import { mslabAm } from "./mslab/am";
 import { workspaceUiAm } from "./workspace-ui/am";
 import { pluginCodeAm } from "./plugin-code/am";
 import { populationAm } from "./population/am";
+import { resultsAm } from "./results/am";
 import { pluginsAm } from "./plugins/am";
 import { streetPhotosAm } from "./street-photos/am";
 import type { Messages } from "./en";
@@ -514,6 +515,7 @@ export const am: Messages = {
   ...workspaceUiAm,
   ...pluginCodeAm,
   ...populationAm,
+  ...resultsAm,
   ...roadAm,
   ...calendarAm,
   ...pluginsAm,

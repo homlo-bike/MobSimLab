@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger, Optional } from "@nestjs/common";
 import { DATABASE, type Database } from "../db/database";
+import { BenefitsService } from "../benefits/benefits.service";
 import { EconomyService, type PlaceCountry } from "../economy/economy.service";
 import { NagerClient } from "../gateway/nager.client";
 import { OpenMeteoClient } from "../gateway/openmeteo.client";
@@ -23,6 +24,12 @@ export interface AreaCountries {
   /** Largest first; more than one when the area crosses a border. */
   countries: AreaCountry[];
 }
+
+/**
+ * Price base year the cost tables ask the economy figures for (the library's `cost.price_base_year`,
+ * apps/web/src/features/costs/defaults.generated.json; a test keeps the two the same).
+ */
+export const PRICE_BASE_YEAR = 2023;
 
 /** Shortest time between two look-ups of one project's facts that did not change its area, ms. */
 const RETRY_MS = 10 * 60_000;
@@ -79,7 +86,8 @@ function inRing([x, y]: [number, number], ring: readonly [number, number][]): bo
 /**
  * The location facts of the project area, looked up once and kept on the project (#140 step 3): its countries
  * (the main one by share of the area, and a note when the area crosses a border), the main country's public
- * holidays for this year and the next, and the climate at the area's centre. Kept in the project's data cache
+ * holidays for this year and the next, the climate at the area's centre, and the main country's figures the
+ * tables use (currency, exchange rate and price levels, GDP per capita, employment, population). Kept in the project's data cache
  * under the keys the calendar and economy endpoints read through, so the tools find them there.
  */
 @Injectable()
@@ -95,6 +103,7 @@ export class AreaFactsService {
     @Optional() private readonly economy?: EconomyService,
     @Optional() private readonly nager?: NagerClient,
     @Optional() private readonly openMeteo?: OpenMeteoClient,
+    @Optional() private readonly benefits?: BenefitsService,
   ) {}
 
   /** Purpose: the countries kept for the project's current area, or null (not looked up yet, or the area changed). */
@@ -151,6 +160,24 @@ export class AreaFactsService {
             JSON.stringify(await this.nager!.holidays(main.iso2, y)),
           ),
         );
+    // The main country's figures, under the code the tables ask with (ISO alpha-3, else alpha-2).
+    const code = main ? (main.iso3 ?? main.iso2) : null;
+    if (code && this.economy) {
+      tries.push(
+        this.kept.through(projectId, "facts", factKey.economyCountries, async () =>
+          JSON.stringify(await this.economy!.countries()),
+        ),
+        this.kept.through(projectId, "facts", factKey.economy(code, PRICE_BASE_YEAR), async () =>
+          JSON.stringify(await this.economy!.economy(code, PRICE_BASE_YEAR)),
+        ),
+      );
+    }
+    if (code && this.benefits)
+      tries.push(
+        this.kept.through(projectId, "facts", factKey.benefitIndicators(code), async () =>
+          JSON.stringify(await this.benefits!.indicators(code)),
+        ),
+      );
     if (this.openMeteo) {
       const [w, s, e, n] = area.bbox;
       const lat = Math.round(((s + n) / 2) * 10) / 10;

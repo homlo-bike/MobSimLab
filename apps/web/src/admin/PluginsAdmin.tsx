@@ -4,6 +4,7 @@ import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
 import { addsLine, PERMISSION_LABELS } from "../workspace/ProjectPlugins";
 import { EsriImageryAdmin } from "./EsriImageryAdmin";
+import { MapLayersAdmin } from "./MapLayersAdmin";
 
 /** One plugin version as `GET /api/admin/plugins` lists it. */
 interface PluginRow {
@@ -401,6 +402,7 @@ export function PluginsAdmin({
         )}
       </section>
       <EsriImageryAdmin csrfToken={csrfToken} run={run} />
+      <MapLayersAdmin csrfToken={csrfToken} run={run} />
     </div>
   );
 }

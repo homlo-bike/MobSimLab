@@ -12,6 +12,7 @@ import { mslabNl } from "./mslab/nl";
 import { workspaceUiNl } from "./workspace-ui/nl";
 import { pluginCodeNl } from "./plugin-code/nl";
 import { populationNl } from "./population/nl";
+import { resultsNl } from "./results/nl";
 import { pluginsNl } from "./plugins/nl";
 import { streetPhotosNl } from "./street-photos/nl";
 import type { Messages } from "./en";
@@ -533,6 +534,7 @@ export const nl: Messages = {
   ...workspaceUiNl,
   ...pluginCodeNl,
   ...populationNl,
+  ...resultsNl,
   ...roadNl,
   ...calendarNl,
   ...pluginsNl,

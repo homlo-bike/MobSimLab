@@ -3,7 +3,7 @@ import { type FormEvent, useEffect, useRef, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { CameraIcon, CloseIcon, LayersIcon, SearchIcon } from "../shell/icons";
-import { availableBasemaps, type Basemap, newestDay } from "./basemaps";
+import { availableBasemaps, availableOverlays, type Basemap, newestDay } from "./basemaps";
 import { groupsOnMap, OVERLAY_GROUPS, type OverlayGroup } from "./mapLayers";
 import { type Place, searchPlaces } from "./places";
 import { StreetPhotoPanel } from "./StreetPhotoPanel";
@@ -21,12 +21,17 @@ export function MapControls({
   onBasemap,
   hidden,
   onHidden,
+  overlays = new Set<string>(),
+  onOverlays = () => {},
 }: {
   map: MapLibreMap | null;
   basemap: Basemap;
   onBasemap: (b: Basemap) => void;
   hidden: ReadonlySet<OverlayGroup>;
   onHidden: (h: ReadonlySet<OverlayGroup>) => void;
+  /** The WMS and WMTS overlays shown, by id. */
+  overlays?: ReadonlySet<string>;
+  onOverlays?: (ids: ReadonlySet<string>) => void;
 }) {
   const { t } = useI18n();
   const [open, setOpen] = useState<Open>(null);
@@ -94,6 +99,8 @@ export function MapControls({
               onBasemap={onBasemap}
               hidden={hidden}
               onHidden={onHidden}
+              overlays={overlays}
+              onOverlays={onOverlays}
               onClose={() => setOpen(null)}
             />
           )}
@@ -252,6 +259,8 @@ function LayerPanel({
   onBasemap,
   hidden,
   onHidden,
+  overlays,
+  onOverlays,
   onClose,
 }: {
   map: MapLibreMap | null;
@@ -259,6 +268,8 @@ function LayerPanel({
   onBasemap: (b: Basemap) => void;
   hidden: ReadonlySet<OverlayGroup>;
   onHidden: (h: ReadonlySet<OverlayGroup>) => void;
+  overlays: ReadonlySet<string>;
+  onOverlays: (ids: ReadonlySet<string>) => void;
   onClose: () => void;
 }) {
   const { t } = useI18n();
@@ -274,6 +285,7 @@ function LayerPanel({
     return () => void map.off("styledata", update);
   }, [map]);
 
+  const offered = availableOverlays();
   const flip = (g: OverlayGroup) => {
     const next = new Set(hidden);
     if (next.has(g)) next.delete(g);
@@ -297,9 +309,9 @@ function LayerPanel({
             />
             <span className="min-w-0 flex-1">{b.label}</span>
             <span
-              className={`tag ${b.kind === "aerial" ? "bg-emerald-100 text-emerald-900" : "bg-slate-100 text-slate-700"}`}
+              className={`tag ${b.tag ? "bg-sky-100 text-sky-900" : b.kind === "aerial" ? "bg-emerald-100 text-emerald-900" : "bg-slate-100 text-slate-700"}`}
             >
-              {t(b.kind === "aerial" ? "map.aerial" : "map.streetMap")}
+              {b.tag ?? t(b.kind === "aerial" ? "map.aerial" : "map.streetMap")}
             </span>
           </label>
         ))}
@@ -319,10 +331,32 @@ function LayerPanel({
             />
           </label>
         )}
-        {basemap.kind === "aerial" && (
+        {basemap.kind === "aerial" && basemap.note !== "" && (
           <p className="mt-1 text-xs text-slate-600">{basemap.note ?? t("map.aerialNote")}</p>
         )}
       </fieldset>
+      {offered.length > 0 && (
+        <fieldset className="border-t border-slate-100 px-3 pt-2 pb-2">
+          <legend className="caps float-left w-full pb-1">{t("map.overlays")}</legend>
+          {offered.map((l) => (
+            <label key={l.id} className="clear-both flex min-h-10 cursor-pointer items-center gap-2.5">
+              <input
+                type="checkbox"
+                checked={overlays.has(l.id)}
+                onChange={() => {
+                  const next = new Set(overlays);
+                  if (next.has(l.id)) next.delete(l.id);
+                  else next.add(l.id);
+                  onOverlays(next);
+                }}
+                className="h-4 w-4 accent-blue-700"
+              />
+              <span className="min-w-0 flex-1">{l.label}</span>
+              <span className="tag bg-sky-100 text-sky-900">{l.kind.toUpperCase()}</span>
+            </label>
+          ))}
+        </fieldset>
+      )}
       <fieldset className="border-t border-slate-100 px-3 pt-2 pb-3">
         <legend className="caps float-left w-full pb-1">{t("map.projectLayers")}</legend>
         {present.length === 0 && <p className="clear-both text-xs text-slate-500">{t("map.noLayers")}</p>}

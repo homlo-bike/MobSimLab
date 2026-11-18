@@ -12,6 +12,7 @@ import { mslabUz } from "./mslab/uz";
 import { workspaceUiUz } from "./workspace-ui/uz";
 import { pluginCodeUz } from "./plugin-code/uz";
 import { populationUz } from "./population/uz";
+import { resultsUz } from "./results/uz";
 import { pluginsUz } from "./plugins/uz";
 import { streetPhotosUz } from "./street-photos/uz";
 import type { Messages } from "./en";
@@ -535,6 +536,7 @@ export const uz: Messages = {
   ...workspaceUiUz,
   ...pluginCodeUz,
   ...populationUz,
+  ...resultsUz,
   ...roadUz,
   ...calendarUz,
   ...pluginsUz,

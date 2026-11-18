@@ -12,6 +12,7 @@ import { mslabFa } from "./mslab/fa";
 import { workspaceUiFa } from "./workspace-ui/fa";
 import { pluginCodeFa } from "./plugin-code/fa";
 import { populationFa } from "./population/fa";
+import { resultsFa } from "./results/fa";
 import { pluginsFa } from "./plugins/fa";
 import { streetPhotosFa } from "./street-photos/fa";
 import type { Messages } from "./en";
@@ -525,6 +526,7 @@ export const fa: Messages = {
   ...workspaceUiFa,
   ...pluginCodeFa,
   ...populationFa,
+  ...resultsFa,
   ...roadFa,
   ...calendarFa,
   ...pluginsFa,

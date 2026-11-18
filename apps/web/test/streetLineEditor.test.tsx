@@ -43,6 +43,7 @@ import { DEFAULT_TIMING } from "../src/features/street-lines/modes";
 import {
   keepRoutedLegs,
   lineTiles,
+  routeKey,
   routesMore,
   type SavedStreetLine,
 } from "../src/features/street-lines/saved";
@@ -419,6 +420,9 @@ describe("Street line editor", () => {
   });
 });
 
+/** What a line's route depends on in a project without street setups, delays, shared depot or railway. */
+const AROUND = { setups: "[]", delays: "", gates: "", crossings: "" };
+
 describe("Street line saved with the project", () => {
   const saved: SavedStreetLine = {
     name: "Harbour shuttle",
@@ -449,7 +453,7 @@ describe("Street line saved with the project", () => {
     view: sampleView(["end_stop", "via", "stop"]),
   };
 
-  it("routes the saved points again once the streets have loaded, without saving on open", async () => {
+  it("routes a line saved before routes had a fingerprint again once, and saves it with one", async () => {
     const engine = fakeEngine();
     const onSave = vi.fn();
     const { map, handlers } = fakeMap(15);
@@ -478,12 +482,14 @@ describe("Street line saved with the project", () => {
     expect(engine.setName).toHaveBeenCalledWith(1, "Harbour");
     expect(engine.setDepot).toHaveBeenCalledWith([7.412, 43.73]);
     expect(screen.getByDisplayValue("Harbour shuttle")).toBeTruthy();
-    expect(onSave).not.toHaveBeenCalled();
+    // Saved once, with the fingerprint of what the route was worked out from, so it opens as saved next time.
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    expect((onSave.mock.calls[0]![0] as SavedStreetLine).routedWith).toMatch(/^[0-9a-f]{16}$/);
 
     // The planner's next change is saved, with the names they gave and the route for the journey planner.
     act(() => handlers.get("click")!({ lngLat: { lng: 7.42, lat: 43.735 }, point: { x: 10, y: 10 } }));
-    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
-    const line = onSave.mock.calls[0]![0] as SavedStreetLine;
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(2));
+    const line = onSave.mock.calls[1]![0] as SavedStreetLine;
     expect(line).toMatchObject({ name: "Harbour shuttle", timing: { headwayMin: 7.5 } });
     expect(line.points[0]).toMatchObject({ name: "Harbour" });
     expect(line.points.at(-1)).toMatchObject({ kind: "via", name: null });
@@ -522,27 +528,74 @@ describe("Street line saved with the project", () => {
     expect(onSave).toHaveBeenCalledTimes(1);
   });
 
-  it("opens a line saved with its whole route without saving it", async () => {
+  it("opens a line saved with its whole route and fingerprint without routing or saving it", async () => {
     const engine = fakeEngine();
+    // Like the engine: streets loaded before any point is given route nothing.
+    const build = engine.rebuild;
+    engine.rebuild = vi.fn(() => (build(), engine.clear()));
     const onSave = vi.fn();
-    const { map } = fakeMap(15);
+    const { map, handlers } = fakeMap(15);
     Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
     const missing = sampleView(["end_stop", "via", "stop"]);
     missing.legs = missing.legs.map((l, i) => (i === 2 ? { ...l, status: "error" as const } : l));
+    const fresh = { ...saved, routedWith: routeKey(saved, AROUND) };
     render(
       <StreetLineEditor
         map={map}
         loadEngine={async () => engine}
         fetchTile={async () => "<osm/>"}
-        initial={saved}
+        initial={fresh}
         onSave={onSave}
       />,
     );
-    await waitFor(() => expect(engine.insertPoint).toHaveBeenCalledTimes(3));
+    // The saved route shows as it is: its points and the leg warning.
+    expect(await screen.findByText("Street 1")).toBeTruthy();
+    expect(screen.getByText(/Turning round adds 900 m/)).toBeTruthy();
+    await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
     await new Promise((r) => setTimeout(r, 20));
+    expect(engine.insertPoint).not.toHaveBeenCalled();
     expect(onSave).not.toHaveBeenCalled();
+    expect(screen.queryByText(/Out of date/)).toBeNull();
     expect(routesMore(missing, saved.view)).toBe(false);
     expect(routesMore(saved.view, missing)).toBe(true);
+
+    // The planner's first change gives the engine the line, applies the change and saves the new route.
+    act(() => handlers.get("click")!({ lngLat: { lng: 7.42, lat: 43.735 }, point: { x: 10, y: 10 } }));
+    expect(engine.insertPoint).toHaveBeenCalledTimes(4);
+    expect(engine.insertPoint).toHaveBeenNthCalledWith(1, 0, [7.411, 43.731], "end_stop");
+    expect(engine.setName).toHaveBeenCalledWith(1, "Harbour");
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const line = onSave.mock.calls[0]![0] as SavedStreetLine;
+    expect(line.points).toHaveLength(4);
+    expect(line.points[0]).toMatchObject({ name: "Harbour" });
+    expect(line.routedWith).toMatch(/^[0-9a-f]{16}$/);
+  });
+
+  it("shows a saved route as out of date when what it depends on changed, and recalculates it", async () => {
+    const engine = fakeEngine();
+    const build = engine.rebuild;
+    engine.rebuild = vi.fn(() => (build(), engine.clear()));
+    const onSave = vi.fn();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    const old = { ...saved, routedWith: routeKey(saved, AROUND) };
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={old}
+        onSave={onSave}
+        delays={{ mixed_traffic: 0.4, bus_lane: 0.05 }}
+      />,
+    );
+    expect(await screen.findByText(/Out of date/)).toBeTruthy();
+    expect(engine.insertPoint).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button", { name: "Recalculate" }));
+    expect(engine.insertPoint).toHaveBeenCalledTimes(3);
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    expect((onSave.mock.calls[0]![0] as SavedStreetLine).routedWith).not.toBe(old.routedWith);
+    expect(screen.queryByText(/Out of date/)).toBeNull();
   });
 
   it("runs to and from a shared depot's gates and saves the depot by id", async () => {

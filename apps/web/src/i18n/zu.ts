@@ -12,6 +12,7 @@ import { mslabZu } from "./mslab/zu";
 import { workspaceUiZu } from "./workspace-ui/zu";
 import { pluginCodeZu } from "./plugin-code/zu";
 import { populationZu } from "./population/zu";
+import { resultsZu } from "./results/zu";
 import { pluginsZu } from "./plugins/zu";
 import { streetPhotosZu } from "./street-photos/zu";
 import type { Messages } from "./en";
@@ -536,6 +537,7 @@ export const zu: Messages = {
   ...workspaceUiZu,
   ...pluginCodeZu,
   ...populationZu,
+  ...resultsZu,
   ...roadZu,
   ...calendarZu,
   ...pluginsZu,

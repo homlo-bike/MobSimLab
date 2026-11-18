@@ -12,6 +12,7 @@ import { mslabKo } from "./mslab/ko";
 import { workspaceUiKo } from "./workspace-ui/ko";
 import { pluginCodeKo } from "./plugin-code/ko";
 import { populationKo } from "./population/ko";
+import { resultsKo } from "./results/ko";
 import { pluginsKo } from "./plugins/ko";
 import { streetPhotosKo } from "./street-photos/ko";
 import type { Messages } from "./en";
@@ -519,6 +520,7 @@ export const ko: Messages = {
   ...workspaceUiKo,
   ...pluginCodeKo,
   ...populationKo,
+  ...resultsKo,
   ...roadKo,
   ...calendarKo,
   ...pluginsKo,

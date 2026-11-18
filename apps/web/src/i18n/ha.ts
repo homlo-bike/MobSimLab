@@ -12,6 +12,7 @@ import { mslabHa } from "./mslab/ha";
 import { workspaceUiHa } from "./workspace-ui/ha";
 import { pluginCodeHa } from "./plugin-code/ha";
 import { populationHa } from "./population/ha";
+import { resultsHa } from "./results/ha";
 import { pluginsHa } from "./plugins/ha";
 import { streetPhotosHa } from "./street-photos/ha";
 import type { Messages } from "./en";
@@ -531,6 +532,7 @@ export const ha: Messages = {
   ...workspaceUiHa,
   ...pluginCodeHa,
   ...populationHa,
+  ...resultsHa,
   ...roadHa,
   ...calendarHa,
   ...pluginsHa,

@@ -12,6 +12,7 @@ import { mslabKk } from "./mslab/kk";
 import { workspaceUiKk } from "./workspace-ui/kk";
 import { pluginCodeKk } from "./plugin-code/kk";
 import { populationKk } from "./population/kk";
+import { resultsKk } from "./results/kk";
 import { pluginsKk } from "./plugins/kk";
 import { streetPhotosKk } from "./street-photos/kk";
 import type { Messages } from "./en";
@@ -528,6 +529,7 @@ export const kk: Messages = {
   ...workspaceUiKk,
   ...pluginCodeKk,
   ...populationKk,
+  ...resultsKk,
   ...roadKk,
   ...calendarKk,
   ...pluginsKk,

@@ -149,7 +149,7 @@ export class MslabMapService {
     if (population) add(MAP_FILES.population, JSON.stringify(population));
 
     // Country figures for the cost and benefit tables, keyed by the API path the browser asks for.
-    add(MAP_FILES.reference, JSON.stringify(await this.reference(area.bbox, input.docs)));
+    add(MAP_FILES.reference, JSON.stringify(await this.reference(input.projectId, area.bbox, input.docs)));
 
     const areaFile: MapAreaFile = {
       bbox: area.bbox,
@@ -201,8 +201,29 @@ export class MslabMapService {
    * the area's centre, the country list, and the price and benefit figures of that country and of the
    * country the cost tables were set to. Figures that cannot be loaded are left out; the tables then say so.
    */
-  private async reference(bbox: Bbox, docs: Record<string, unknown>): Promise<Record<string, unknown>> {
+  private async reference(
+    projectId: string,
+    bbox: Bbox,
+    docs: Record<string, unknown>,
+  ): Promise<Record<string, unknown>> {
     const out: Record<string, unknown> = {};
+    // Every fact the project kept (country, holidays, climate, price levels, GDP…), by its key
+    // (projects/data-cache.ts `factKey`), for the viewer to answer the same questions the same way.
+    const kept = await this.db
+      .selectFrom("project.data_cache")
+      .select(["key", "body"])
+      .where("project_id", "=", projectId)
+      .where("kind", "=", "facts")
+      .execute()
+      .catch(() => []);
+    const facts: Record<string, unknown> = {};
+    for (const f of kept)
+      try {
+        facts[f.key] = JSON.parse(f.body);
+      } catch {
+        // Not JSON: left out.
+      }
+    if (kept.length) out[FACTS_KEY] = facts;
     const tryAdd = async (path: string, f: () => Promise<unknown>) => {
       try {
         out[path] = await f();
@@ -233,6 +254,9 @@ export class MslabMapService {
     return out;
   }
 }
+
+/** Key of `map/reference.json` holding the project's kept facts by fact key (static viewer, shim.ts). */
+export const FACTS_KEY = "@facts";
 
 /** Purpose: the country the cost tables convert to when the planner chose one (Tables tab), else null. */
 function costsCountry(costs: unknown): string | null {

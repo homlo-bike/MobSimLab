@@ -8,6 +8,9 @@ import { AuthController } from "./auth/auth.controller";
 import { BasemapsController } from "./basemaps/basemaps.controller";
 import { BasemapsService } from "./basemaps/basemaps.service";
 import { EsriImageryClient } from "./basemaps/esri.client";
+import { MapLayersController } from "./basemaps/map-layers.controller";
+import { MapLayersService } from "./basemaps/map-layers.service";
+import { OgcClient } from "./basemaps/ogc.client";
 import { PanoramaxClient } from "./street-photos/panoramax.client";
 import { StreetPhotosController } from "./street-photos/street-photos.controller";
 import { StreetPhotosService } from "./street-photos/street-photos.service";
@@ -26,6 +29,7 @@ import { PopulationLayersController } from "./population/layers.controller";
 import { ProjectAreaController } from "./projects/area.controller";
 import { AreaFactsService } from "./projects/area-facts";
 import { ProjectAreaService } from "./projects/area.service";
+import { ProjectResultsController, ProjectResultsService } from "./projects/results";
 import { PopulationLayersModule } from "./population/layers.module";
 import { PopulationModule } from "./population/population.module";
 import { EconomyModule } from "./economy/economy.module";
@@ -82,17 +86,21 @@ export class AppModule {
         CommentsController,
         PluginsController,
         BasemapsController,
+        MapLayersController,
         StreetPhotosController,
         RunsController,
         MslabController,
         PopulationLayersController,
         ProjectAreaController,
+        ProjectResultsController,
       ],
       providers: [
         AuditService,
         AuthService,
         BasemapsService,
         { provide: EsriImageryClient, useFactory: () => new EsriImageryClient() },
+        MapLayersService,
+        { provide: OgcClient, useFactory: () => new OgcClient() },
         StreetPhotosService,
         { provide: PanoramaxClient, useFactory: () => new PanoramaxClient() },
         CommentsService,
@@ -104,6 +112,7 @@ export class AppModule {
         MslabService,
         MslabMapService,
         ProjectAreaService,
+        ProjectResultsService,
         AreaFactsService,
         ToolRunner,
         { provide: APP_GUARD, useClass: AccessGuard },

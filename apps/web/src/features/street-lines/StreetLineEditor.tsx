@@ -1,8 +1,10 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { activeLanguage, tNow, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
+import { hashText } from "../../projects/inputKey";
+import { SavedResultNotice } from "../../projects/SavedResultNotice";
 import { fetchStreetTile, loadWasmEngine } from "./engine";
 import { LinePanel, type PanelActions } from "./LinePanel";
 import {
@@ -22,6 +24,8 @@ import {
   keepRoutedLegs,
   lineBounds,
   lineTiles,
+  routeKey,
+  type RouteSurroundings,
   routesMore,
   type SavedStreetLine,
   streetLineColor,
@@ -69,6 +73,25 @@ const EMPTY_VIEW: LineView = {
   crossing_wait_s: 0,
 };
 
+/**
+ * Purpose: a saved route with its points numbered 1, 2, 3… in order, as an engine that is given the points in
+ * order numbers them, so the planner's first change applies to the same points once the engine holds the line.
+ */
+function numbered(view: LineView): LineView {
+  const ids = new Map(view.points.map((p, i) => [p.id, i + 1]));
+  const id = (n: number) => ids.get(n) ?? n;
+  return {
+    ...view,
+    points: view.points.map((p, i) => ({ ...p, id: i + 1 })),
+    legs: view.legs.map((l) => ({ ...l, from: id(l.from), to: id(l.to) })),
+    directions: view.directions.map((d) => ({ ...d, stops: d.stops.map(id) })),
+    station_groups: view.station_groups.map((g) => ({ ...g, stops: g.stops.map(id) })),
+    depot_trips: view.depot_trips.map((t) => ({ ...t, stop: id(t.stop) })),
+  };
+}
+
+const NO_SURROUNDINGS: RouteSurroundings = { setups: "", delays: "", gates: "", crossings: "" };
+
 const HINTS: Record<Tool, MessageKey> = {
   select: "street.hint.select",
   add: "street.hint.add",
@@ -112,7 +135,11 @@ interface Props {
   streetSetups?: readonly StreetSetup[];
   /** The project's delays in traffic (Project preferences); the library's when absent. */
   delays?: DelayShares | null;
-  /** The line saved with the project; its points are routed again once the streets around it have loaded. */
+  /**
+   * The line saved with the project. Its saved route shows as it is and is routed again only when the planner
+   * changes the line or recalculates an out-of-date route (a line saved before routes had a fingerprint is
+   * routed again once the streets around it have loaded, and saved with one).
+   */
   initial?: SavedStreetLine | null;
   /** Told about the line after every change the planner makes, so the project can save it. */
   onSave?: (line: SavedStreetLine) => void;
@@ -167,13 +194,25 @@ export function StreetLineEditor({
 }: Props) {
   const { t } = useI18n();
   const engine = useRef<StreetEngine | null>(null);
+  // A saved route with a fingerprint opens as saved: the engine is given the line only when the planner changes
+  // it or recalculates it (`hydrated`). A new line, or one saved before routes had a fingerprint, is routed by
+  // the engine from the start.
+  const savedRoute0 = initial && initial.view.points.length > 0 && initial.routedWith ? initial : null;
+  const hydrated = useRef(savedRoute0 === null);
+  const [asSaved, setAsSaved] = useState(savedRoute0 !== null);
   // The saved line until it has been routed again; nothing is saved before that.
-  const pending = useRef(initial);
+  const pending = useRef(savedRoute0 ? null : initial);
   // Names the planner gave (or the naming rules chose), by point id; other points take the street's name.
-  const named = useRef(new Map<number, string>());
+  const named = useRef<Map<number, string>>(
+    new Map((savedRoute0?.points ?? []).flatMap((p, i) => (p.name ? [[i + 1, p.name] as const] : []))),
+  );
   // Facilities of stops by point id, saved with the points.
-  const [stopFeatures, setStopFeatures] = useState<Record<number, string[]>>({});
-  const [view, setView] = useState<LineView>(EMPTY_VIEW);
+  const [stopFeatures, setStopFeatures] = useState<Record<number, string[]>>(() =>
+    Object.fromEntries(
+      (savedRoute0?.points ?? []).flatMap((p, i) => (p.features?.length ? [[i + 1, p.features]] : [])),
+    ),
+  );
+  const [view, setView] = useState<LineView>(() => (savedRoute0 ? numbered(savedRoute0.view) : EMPTY_VIEW));
   const [ready, setReady] = useState(false);
   const [profile, setProfile] = useState<VehicleProfile | null>(null);
   const [rules, setRules] = useState<RoutingRules | null>(null);
@@ -184,13 +223,43 @@ export function StreetLineEditor({
   const [lineColor, setOwnColor] = useState<string | null>(initial?.color ?? defaultColor ?? null);
   const [tool, setTool] = useState<Tool>("add");
   const [selected, setSelected] = useState<number | null>(null);
-  const [depotStops, setDepotStops] = useState<{ out?: number; in?: number }>({});
+  const [depotStops, setDepotStops] = useState<{ out?: number; in?: number }>(() => {
+    const d = savedRoute0?.depotStops;
+    return {
+      ...(d?.out !== undefined && { out: d.out + 1 }),
+      ...(d?.in !== undefined && { in: d.in + 1 }),
+    };
+  });
   const [depotId, setDepotId] = useState<string | null>(initial?.depotId ?? null);
   const [showDepot, setShowDepot] = useState(true);
   const [showRoads, setShowRoads] = useState(false);
   const [status, setStatus] = useState<string | null>(tNow("street.starting"));
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
+
+  // What the route depends on besides the line: as the props give it now, and as the engine last applied it.
+  const sharedDepot = depotId ? (depots.find((d) => d.id === depotId) ?? null) : null;
+  const gatesKey = depotId ? (sharedDepot ? JSON.stringify(depotGates(sharedDepot)) : "gone") : "";
+  const setupsJson = JSON.stringify(streetSetups);
+  const delaysJson = delays ? JSON.stringify(delays) : "";
+  const topologyText = railTopology ? JSON.stringify(railTopology) : "";
+  const crossingsKey = useMemo(() => (topologyText ? hashText(topologyText) : ""), [topologyText]);
+  const projectRulesKey = JSON.stringify(projectRules ?? {});
+  const applied = useRef<RouteSurroundings>({ ...NO_SURROUNDINGS });
+  const [routedAround, setRoutedAround] = useState<RouteSurroundings>(NO_SURROUNDINGS);
+  const gatesNow = useRef(gatesKey);
+  gatesNow.current = gatesKey;
+  // Whether the saved route shown no longer matches what it depends on.
+  const savedStale =
+    asSaved && savedRoute0
+      ? routeKey(
+          {
+            ...savedRoute0,
+            rules: { ...savedRoute0.rules, ...(JSON.parse(projectRulesKey) as ProjectRules) },
+          },
+          { setups: setupsJson, delays: delaysJson, gates: gatesKey, crossings: crossingsKey },
+        ) !== savedRoute0.routedWith
+      : false;
 
   // The project's rules as the engine loads; later changes are applied by the effect below.
   const projectRulesNow = useRef(projectRules);
@@ -208,17 +277,66 @@ export function StreetLineEditor({
     else setTool(t);
   }, []);
 
-  const run = useCallback((f: (e: StreetEngine) => LineView) => {
-    const e = engine.current;
-    if (!e) return;
-    try {
-      setNote(null);
-      setView(f(e));
-      setError(null);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
-    }
-  }, []);
+  /**
+   * Gives the engine the saved line, in order, with its names and depot: the route is worked out again. Output:
+   * whether the engine numbered the points as the saved route shown (1, 2, 3…), so a change can follow.
+   */
+  const hydrate = useCallback(
+    (e: StreetEngine): boolean => {
+      hydrated.current = true;
+      setAsSaved(false);
+      const saved = savedRoute0;
+      if (!saved) return true;
+      let v = e.view();
+      saved.points.forEach((p, i) => {
+        v = e.insertPoint(i, p.lonlat, p.kind);
+        const id = v.points[i]?.id;
+        if (id !== undefined && p.name) v = e.setName(id, p.name);
+      });
+      if (saved.depot) v = e.setDepot(saved.depot);
+      else if (gatesNow.current && gatesNow.current !== "gone") {
+        const g = JSON.parse(gatesNow.current) as ReturnType<typeof depotGates>;
+        v = e.setDepotGates(g.exits, g.entrances);
+        applied.current.gates = gatesNow.current;
+      }
+      return v.points.every((p, i) => p.id === i + 1);
+    },
+    // The saved line is the one the editor opened with.
+    [],
+  );
+
+  /**
+   * Applies `f` to the engine and shows the line it gives. `edit`: a change the planner makes (a saved line
+   * shown as saved goes to the engine first); otherwise a setting the engine keeps, while a saved route shown
+   * stays as it is.
+   */
+  const run = useCallback(
+    (f: (e: StreetEngine) => LineView, edit = true) => {
+      const e = engine.current;
+      if (!e) return;
+      try {
+        setNote(null);
+        if (!hydrated.current) {
+          if (!edit) {
+            f(e);
+            return;
+          }
+          if (!hydrate(e)) {
+            // The engine numbered the points otherwise: show the line it routed; the change is not applied.
+            setView(e.view());
+            setRoutedAround({ ...applied.current });
+            return;
+          }
+        }
+        setView(f(e));
+        setRoutedAround({ ...applied.current });
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : String(err));
+      }
+    },
+    [hydrate],
+  );
 
   useEffect(() => {
     let alive = true;
@@ -291,29 +409,31 @@ export function StreetLineEditor({
 
   // A shared depot: the depot runs start at its exit gates and end at its entrance gates, again whenever
   // the depot's gates change. A depot deleted from the project leaves the line without depot runs.
-  const sharedDepot = depotId ? (depots.find((d) => d.id === depotId) ?? null) : null;
-  const gatesKey = depotId ? (sharedDepot ? JSON.stringify(depotGates(sharedDepot)) : "gone") : "";
   useEffect(() => {
     if (!ready || pending.current || !gatesKey) return;
-    if (gatesKey === "gone") run((e) => e.clearDepot());
+    applied.current.gates = gatesKey;
+    if (gatesKey === "gone") run((e) => e.clearDepot(), false);
     else {
       const g = JSON.parse(gatesKey) as ReturnType<typeof depotGates>;
-      run((e) => e.setDepotGates(g.exits, g.entrances));
+      run((e) => e.setDepotGates(g.exits, g.entrances), false);
     }
   }, [gatesKey, ready, run]);
 
   // Street setups from the GIS tab: bus lanes and separation change running times and checks.
-  const setupsJson = JSON.stringify(streetSetups);
   useEffect(() => {
     if (!profile) return;
-    run((e) => e.setStreetSetups(JSON.parse(setupsJson) as StreetSetup[]));
+    applied.current.setups = setupsJson;
+    run((e) => e.setStreetSetups(JSON.parse(setupsJson) as StreetSetup[]), false);
   }, [setupsJson, profile !== null, run]);
 
   // The project's delays in traffic: running times on main roads and in painted bus lanes.
-  const delaysJson = delays ? JSON.stringify(delays) : "";
   useEffect(() => {
     if (!profile || !delaysJson) return;
-    run((e) => (e.setDelayShares ? e.setDelayShares(JSON.parse(delaysJson) as DelayShares) : e.view()));
+    applied.current.delays = delaysJson;
+    run(
+      (e) => (e.setDelayShares ? e.setDelayShares(JSON.parse(delaysJson) as DelayShares) : e.view()),
+      false,
+    );
   }, [delaysJson, profile !== null, run]);
 
   // Streets: load the tiles on screen whenever the map stops moving, then rebuild once per batch.
@@ -373,7 +493,7 @@ export function StreetLineEditor({
           reason ??= err instanceof Error ? err.message : null;
         }
       });
-      if (added) run((eng) => keepRoutedLegs(eng.rebuild(), initial?.view));
+      if (added) run((eng) => keepRoutedLegs(eng.rebuild(), initial?.view), false);
       setReady(e.ready());
       setStatus(failed ? `${reason ?? tNow("rail.streetsFailed")} ${tNow("rail.moveMap")}` : null);
       if (again) {
@@ -391,20 +511,19 @@ export function StreetLineEditor({
   }, [map, profile !== null, fetchTile, run]);
 
   // Level crossings: from the railway tool's drawing, with the service its topology assumes.
-  const topologyText = railTopology ? JSON.stringify(railTopology) : "";
   useEffect(() => {
     if (!profile) return;
-    run((e) => e.setLevelCrossings(topologyText, ""));
-  }, [profile !== null, topologyText, run]);
+    applied.current.crossings = crossingsKey;
+    run((e) => e.setLevelCrossings(topologyText, ""), false);
+  }, [profile !== null, topologyText, crossingsKey, run]);
 
   // The project's street rules, again whenever they change in the project preferences.
-  const projectRulesKey = JSON.stringify(projectRules ?? {});
   useEffect(() => {
     if (!profile || !rules) return;
     const r = { ...rules, ...(JSON.parse(projectRulesKey) as ProjectRules) };
     if (JSON.stringify(r) === JSON.stringify(rules)) return;
     setRules(r);
-    run((e) => e.setSettings(profile, r));
+    run((e) => e.setSettings(profile, r), false);
   }, [projectRulesKey, profile !== null, rules !== null, run]);
 
   const color = lineColor ?? (profile ? MODES[profile.mode].color : MODES.bus.color);
@@ -648,7 +767,7 @@ export function StreetLineEditor({
   const latestView = useRef(view);
   latestView.current = view;
   const ids = new Map(view.points.map((p, i) => [p.id, i]));
-  const saved: Omit<SavedStreetLine, "view"> | null =
+  const drawnNow: Omit<SavedStreetLine, "view" | "routedWith"> | null =
     profile && rules
       ? {
           name: lineName,
@@ -671,6 +790,11 @@ export function StreetLineEditor({
           },
         }
       : null;
+  // The route goes with the fingerprint of what it was worked out from: as saved while the saved route shows.
+  const saved: Omit<SavedStreetLine, "view"> | null = drawnNow && {
+    ...drawnNow,
+    routedWith: asSaved && savedRoute0 ? savedRoute0.routedWith : routeKey(drawnNow, routedAround),
+  };
   const savedKey = saved && pending.current === null ? JSON.stringify(saved) : null;
   const lastKey = useRef<string | null>(null);
   // The route as last saved; streets that load later and find more of it save it again.
@@ -681,9 +805,10 @@ export function StreetLineEditor({
     lastKey.current = savedKey;
     const line = JSON.parse(savedKey) as Omit<SavedStreetLine, "view">;
     drawn.current ||= line.points.length > 0 || line.depot !== null || !!line.depotId;
-    // Opening the tool is not a change; the first state after opening is only saved for a new drawing, or
-    // for a line that was never routed (one made from an imported GTFS route).
-    if (first && initial !== null && initial.view.points.length > 0) return;
+    // Opening the tool is not a change; the first state after opening is only saved for a new drawing, for a
+    // line that was never routed (one made from an imported GTFS route), or for a line saved before routes had
+    // a fingerprint (routed again on opening, and saved with one so it opens as saved from then on).
+    if (first && initial !== null && initial.view.points.length > 0 && initial.routedWith) return;
     if (drawn.current) {
       savedRoute.current = latestView.current;
       saveTo.current?.({ ...line, view: latestView.current });
@@ -811,6 +936,9 @@ export function StreetLineEditor({
       crossingSource={railTopology ? t("street.drawingSource") : null}
       status={null}
       error={error}
+      routeNotice={
+        savedStale ? <SavedResultNotice state="stale" onRecalculate={() => run((e) => e.view())} /> : null
+      }
       actions={actions}
       stopFeatures={stopFeatures}
     />

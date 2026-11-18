@@ -8,6 +8,9 @@ import type { Network, RailEngineLoader } from "../railways/types";
 import { fetchWalkTile, loadWalkEngine } from "../street-lines/engine";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import { JobProgress } from "../../shell/JobProgress";
+import { hashText, inputKey } from "../../projects/inputKey";
+import { type ResultsApi, useSavedResult } from "../../projects/results";
+import { SavedResultNotice } from "../../projects/SavedResultNotice";
 import { drawWalk, type GapPoint, removeWalk, type SpacingPair } from "./mapLayer";
 import {
   BAND_COLORS,
@@ -44,6 +47,10 @@ interface Props {
   railway: Network | null;
   /** Project preferences: `analysis.walk_rule_minutes`, `demand.walk_speed_kmh`, `walk.crossing_delay_s`. */
   preferences?: Record<string, number>;
+  /** The project's saved results: the coverage and the stop spacing show on opening, each new one replaces them. */
+  results?: ResultsApi | null;
+  /** The planner may replace the saved results (Owners and Editors). */
+  canSave?: boolean;
   /** Tests inject these. */
   loadWalk?: WalkEngineLoader;
   loadRail?: RailEngineLoader;
@@ -54,18 +61,27 @@ interface Props {
 /** Gaps listed and drawn. */
 const GAPS = 10;
 
+/** A finished walk coverage, as shown and as saved with the project. */
+interface CoverageDone {
+  kind: "done";
+  minutes: number;
+  result: CoverageResult;
+  catchment: CatchmentGeoJson;
+  people: PopulationSource | null;
+  notes: string[];
+}
+
+/** The saved walk coverage with the step-free choice it was worked out with. */
+interface SavedCoverage {
+  coverage: CoverageDone;
+  stepFree: boolean;
+}
+
 type Coverage =
   | { kind: "idle" }
   /** Step `index` of `steps`, `fraction` of the way through it (null when it cannot say). */
   | { kind: "busy"; step: string; index: number; steps: number; fraction: number | null }
-  | {
-      kind: "done";
-      minutes: number;
-      result: CoverageResult;
-      catchment: CatchmentGeoJson;
-      people: PopulationSource | null;
-      notes: string[];
-    }
+  | CoverageDone
   | { kind: "error"; text: string };
 
 /** Spacing of one direction of a line. */
@@ -92,6 +108,8 @@ export function WalkAnalysis({
   loadRail = loadRailEngine,
   fetchTile = fetchWalkTile,
   fetchPeople = fetchPopulation,
+  results = null,
+  canSave = false,
 }: Props) {
   const { t } = useI18n();
   const [minutes, setMinutes] = useState(() => ruleMinutes(preferences));
@@ -133,6 +151,30 @@ export function WalkAnalysis({
   const network = useMemo(() => mergeNetworks(streetNetwork(streetLines), rail), [streetKey, rail]);
   const names = useMemo(() => new Map(network.stops.map((s) => [s.id, s])), [network]);
 
+  // What the coverage and the spacing are worked out from: the lines and stations, the walk settings and the
+  // walk rule. Saved results worked out from other inputs are out of date.
+  const linesKey = useMemo(() => hashText(`${streetKey}\n${railKey}`), [streetKey, railKey]);
+  const limitNow = Math.min(MAX_MINUTES, Math.max(MIN_MINUTES, Math.round(minutes)));
+  const coverageInputs = inputKey({
+    lines: linesKey,
+    settings: walkSettings(preferences, stepFree),
+    minutes: limitNow,
+  });
+  const spacingInputs = inputKey({ lines: linesKey, settings: walkSettings(preferences, stepFree) });
+  const keptCoverage = useSavedResult<SavedCoverage>(results, "walk-coverage", coverageInputs, canSave);
+  const keptSpacing = useSavedResult<LineSpacing[]>(results, "stop-spacing", spacingInputs, canSave);
+  // The saved coverage shows on opening with its walk rule and step-free choice, until it is worked out again.
+  const shownSaved = useRef(false);
+  useEffect(() => {
+    const s = keptCoverage.saved;
+    if (!s || shownSaved.current) return;
+    shownSaved.current = true;
+    if (coverage.kind !== "idle") return;
+    setMinutes(s.value.coverage.minutes);
+    setStepFree(s.value.stepFree);
+    setCoverage(s.value.coverage);
+  }, [keptCoverage.saved, coverage.kind]);
+
   useEffect(
     () => () => {
       engine.current?.dispose();
@@ -149,7 +191,15 @@ export function WalkAnalysis({
       setSpacing([]);
       return;
     }
+    // Without the walk network of a run, the stop spacing saved on foot stays while it matches.
+    if (!engine.current && keptSpacing.state === "current" && keptSpacing.saved) {
+      setSpacing(keptSpacing.saved.value);
+      return;
+    }
+    if (!keptSpacing.loaded) return;
     const settings = walkSettings(preferences, stepFree);
+    const onFoot = engine.current !== null;
+    const keyNow = spacingInputs;
     void (async () => {
       const own = engine.current ? null : await loadWalk();
       const e = engine.current ?? own!;
@@ -172,7 +222,11 @@ export function WalkAnalysis({
             out.push({ line, direction: i, result });
           });
         }
-        if (live) setSpacing(out);
+        if (live) {
+          setSpacing(out);
+          // Spacing on foot needs the walk network of a run: saved, so it shows again without one.
+          if (onFoot) keptSpacing.save(out, keyNow);
+        }
       } catch {
         if (live) setSpacing([]);
       } finally {
@@ -182,7 +236,7 @@ export function WalkAnalysis({
     return () => {
       live = false;
     };
-  }, [network, names, graphVersion, loadWalk]);
+  }, [network, names, graphVersion, loadWalk, keptSpacing.loaded, keptSpacing.state, spacingInputs]);
 
   const gaps: GapPoint[] = useMemo(
     () =>
@@ -224,6 +278,7 @@ export function WalkAnalysis({
   async function compute() {
     const limit = Math.min(MAX_MINUTES, Math.max(MIN_MINUTES, Math.round(minutes)));
     const id = ++runId.current;
+    const runInputs = coverageInputs;
     const alive = () => id === runId.current;
     // Four steps: the stops, the street tiles (counted), the population, the coverage itself.
     const busy = (index: number, step: string, fraction: number | null = null) =>
@@ -306,7 +361,9 @@ export function WalkAnalysis({
           }),
         );
       if (!alive()) return;
-      setCoverage({ kind: "done", minutes: limit, result, catchment, people, notes });
+      const done: CoverageDone = { kind: "done", minutes: limit, result, catchment, people, notes };
+      setCoverage(done);
+      keptCoverage.save({ coverage: done, stepFree }, runInputs);
     } catch (err) {
       if (alive()) setCoverage({ kind: "error", text: err instanceof Error ? err.message : String(err) });
     }
@@ -365,6 +422,16 @@ export function WalkAnalysis({
         {coverage.kind === "error" && (
           <p className="rounded bg-red-50 px-2 py-1 text-xs text-red-700">{coverage.text}</p>
         )}
+        {coverage.kind === "done" &&
+          keptCoverage.saved?.value.coverage === coverage &&
+          keptCoverage.state && (
+            <SavedResultNotice
+              state={keptCoverage.state}
+              computedAt={keptCoverage.saved.computedAt}
+              onRecalculate={hasStops ? () => void compute() : null}
+              error={keptCoverage.error}
+            />
+          )}
         {coverage.kind === "done" && r && (
           <>
             <p className="rounded bg-blue-50 px-2 py-1.5 text-sm text-blue-950" role="status">

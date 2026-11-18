@@ -92,6 +92,11 @@ export interface AppConfig {
   listenHost?: string;
   /** AI agent endpoints (`/mcp`, OAuth) switched off. The desktop app's local mode starts with them off. */
   agentsDisabled?: boolean;
+  /**
+   * The WMS, WMTS and XYZ services MobSimLab comes with (basemaps/builtin-layers.ts) are not added. They are added
+   * unless `MOBSIMLAB_MAP_LAYER_DEFAULTS=false` (an instance without internet access, or tests).
+   */
+  mapLayerDefaultsOff?: boolean;
 }
 
 /** The OIDC provider used for the first login (more providers are added in the setup wizard later). */
@@ -131,6 +136,7 @@ const envSchema = z.object({
   MOBSIMLAB_LOCAL_MODE: z.enum(["true", "false"]).default("false"),
   MOBSIMLAB_LISTEN_HOST: z.preprocess(emptyToUndefined, z.ipv4().or(z.ipv6()).optional()),
   MOBSIMLAB_AGENTS_ENABLED: z.enum(["true", "false"]).default("true"),
+  MOBSIMLAB_MAP_LAYER_DEFAULTS: z.enum(["true", "false"]).default("true"),
 });
 
 /** Loopback host names the desktop app's local mode may use. */
@@ -262,6 +268,7 @@ export function loadConfig(
     localLaunchKey,
     listenHost: d.MOBSIMLAB_LISTEN_HOST,
     agentsDisabled: d.MOBSIMLAB_AGENTS_ENABLED === "false" ? true : undefined,
+    mapLayerDefaultsOff: d.MOBSIMLAB_MAP_LAYER_DEFAULTS === "false" ? true : undefined,
   };
 }
 

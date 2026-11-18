@@ -2,6 +2,7 @@ import type { GeoJSONSource, Map as MapLibreMap, MapMouseEvent } from "maplibre-
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { type Place, searchPlaces } from "../../map/places";
+import type { AreaImport, ProjectAreaApi } from "../area/api";
 import { type BenefitsApi, benefitsApi, type OsmArea } from "./data";
 import {
   LAND_USES,
@@ -30,7 +31,45 @@ interface FeatureCollection {
   }[];
 }
 
-type Mode = { kind: "idle" } | { kind: "draw"; points: LonLat[] } | { kind: "import"; at: LonLat | null };
+type Mode =
+  | { kind: "idle" }
+  | { kind: "draw"; points: LonLat[] }
+  | { kind: "import"; at: LonLat | null }
+  /** An imported area that reaches outside the project area: ask before adding it to the area. */
+  | { kind: "outside"; area: OsmArea };
+
+/** Most regions a project area joins (apps/api/src/projects/project-area.ts `MAX_AREA_REGIONS`). */
+const MAX_AREA_REGIONS = 10;
+
+/** Purpose: whether a ring has a point outside a box `[west, south, east, north]`. */
+export function reachesOutside(
+  ring: readonly LonLat[],
+  bbox: readonly [number, number, number, number],
+): boolean {
+  const [w, s, e, n] = bbox;
+  return ring.some(([x, y]) => x < w || x > e || y < s || y > n);
+}
+
+const IMPORT_NAMES: Record<AreaImport["kind"], string> = {
+  osm: "OpenStreetMap",
+  dem: "terrain heights",
+  population: "population",
+};
+
+/** Purpose: one line on the downloads queued for the larger project area. */
+function importsNote(imports: readonly AreaImport[]): string {
+  const queued = imports.filter((i) => i.status === "queued").map((i) => IMPORT_NAMES[i.kind]);
+  const failed = imports.filter((i) => i.status === "failed");
+  const parts: string[] = [];
+  parts.push(
+    queued.length
+      ? `The project area now includes it. Downloading ${queued.join(", ")} for it (see Map data).`
+      : "The project area now includes it. Its map data is already downloaded.",
+  );
+  for (const f of failed)
+    parts.push(`${IMPORT_NAMES[f.kind]} could not start: ${f.reason ?? "unknown reason"}.`);
+  return parts.join(" ");
+}
 
 const DEFAULT_API = benefitsApi();
 
@@ -138,6 +177,7 @@ export function RegionEditor({
   currency,
   api = DEFAULT_API,
   search = searchPlaces,
+  area = null,
 }: {
   map: MapLibreMap | null;
   panel: HTMLElement | null;
@@ -148,6 +188,11 @@ export function RegionEditor({
   api?: BenefitsApi;
   /** Place search for importing by name (the map's geocoder); replaced in tests. */
   search?: typeof searchPlaces;
+  /**
+   * The project area, to ask before importing a region that reaches outside it and then add the region to it
+   * (which downloads the map data the larger area needs). Null: regions are imported without asking.
+   */
+  area?: ProjectAreaApi | null;
 }) {
   const [mode, setMode] = useState<Mode>({ kind: "idle" });
   // Importing by name: the text, the places found, and any error.
@@ -157,6 +202,9 @@ export function RegionEditor({
   const [selected, setSelected] = useState<string | null>(null);
   const [areas, setAreas] = useState<OsmArea[] | null>(null);
   const [areaError, setAreaError] = useState<string | null>(null);
+  // Adding a region to the project area: running, and what came of it.
+  const [extending, setExtending] = useState(false);
+  const [extendNote, setExtendNote] = useState<{ ok: boolean; text: string } | null>(null);
 
   useEffect(() => {
     if (!map) return;
@@ -273,14 +321,63 @@ export function RegionEditor({
     const ring = [...mode.points, mode.points[0]!];
     add({ id: newId(), name: `Region ${regions.length + 1}`, ring, source: "drawn", values: {} });
   };
-  const importArea = (a: OsmArea) => {
+  const addImported = (a: OsmArea) =>
+    add({ id: newId(), name: a.name, ring: a.ring, source: "osm", osmId: a.id, values: {} });
+  const importArea = async (a: OsmArea) => {
     const existing = regions.find((r) => r.osmId === a.id);
     if (existing) {
       setSelected(existing.id);
       setMode({ kind: "idle" });
       return;
     }
-    add({ id: newId(), name: a.name, ring: a.ring, source: "osm", osmId: a.id, values: {} });
+    setExtendNote(null);
+    if (area) {
+      // A region reaching outside the project area needs map data that may not be downloaded yet: ask first.
+      const view = await area.get().catch(() => null);
+      if (view?.bbox && reachesOutside(a.ring, view.bbox)) {
+        setMode({ kind: "outside", area: a });
+        return;
+      }
+    }
+    addImported(a);
+  };
+  // Add the region to the project area too, which queues the downloads the larger area needs.
+  const extendArea = async (a: OsmArea) => {
+    if (!area) return;
+    setExtending(true);
+    try {
+      const view = await area.get();
+      const next = view.regions.some((r) => r.id === a.id)
+        ? view.regions
+        : [
+            ...view.regions,
+            {
+              id: a.id,
+              name: a.name,
+              kind: a.kind,
+              adminLevel: a.adminLevel,
+              ring: a.ring,
+              areaKm2: a.areaKm2,
+            },
+          ];
+      if (next.length > MAX_AREA_REGIONS) {
+        setExtendNote({
+          ok: false,
+          text: `The project area already joins ${MAX_AREA_REGIONS} regions, the most it can. Change it in Project preferences.`,
+        });
+        return;
+      }
+      addImported(a);
+      const r = await area.set(next, true);
+      setExtendNote({ ok: !r.imports.some((i) => i.status === "failed"), text: importsNote(r.imports) });
+    } catch (e) {
+      setExtendNote({
+        ok: false,
+        text: `The project area could not be changed: ${e instanceof Error ? e.message : String(e)}`,
+      });
+    } finally {
+      setExtending(false);
+    }
   };
   const show = (r: Region) => {
     setSelected(r.id);
@@ -414,7 +511,7 @@ export function RegionEditor({
                   <button
                     type="button"
                     className="flex min-h-11 w-full items-center gap-2 rounded-lg bg-white px-2 text-left hover:bg-indigo-100"
-                    onClick={() => importArea(a)}
+                    onClick={() => void importArea(a)}
                   >
                     <span className="min-w-0 flex-1 truncate font-medium">{a.name}</span>
                     <span className="shrink-0 text-xs text-slate-500">
@@ -431,6 +528,52 @@ export function RegionEditor({
             Cancel
           </button>
         </section>
+      )}
+      {mode.kind === "outside" && (
+        <section
+          aria-label="Region outside the project area"
+          className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm"
+        >
+          <p>
+            <span className="font-medium">{mode.area.name}</span> reaches outside the project area, so the map
+            data downloaded for the project may not cover it. Add it to the project area? This downloads the
+            OpenStreetMap data, terrain heights and population the larger area needs.
+          </p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="btn btn-pri min-h-10"
+              disabled={extending}
+              onClick={() => void extendArea(mode.area)}
+            >
+              {extending ? "Adding…" : "Add to project area"}
+            </button>
+            <button
+              type="button"
+              className="btn min-h-10"
+              disabled={extending}
+              onClick={() => addImported(mode.area)}
+            >
+              Import without changing the area
+            </button>
+            <button
+              type="button"
+              className="btn min-h-10"
+              disabled={extending}
+              onClick={() => setMode({ kind: "idle" })}
+            >
+              Cancel
+            </button>
+          </div>
+        </section>
+      )}
+      {extendNote && (
+        <p
+          role={extendNote.ok ? "status" : "alert"}
+          className={extendNote.ok ? "text-sm" : "text-sm text-red-700"}
+        >
+          {extendNote.text}
+        </p>
       )}
       {region && mode.kind === "idle" && (
         <RegionForm

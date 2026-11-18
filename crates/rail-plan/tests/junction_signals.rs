@@ -129,3 +129,38 @@ fn trams_running_straight_on_the_two_tracks_of_a_junction_pass_each_other() {
         tracks(crossing)
     );
 }
+
+#[test]
+fn a_siding_joined_straight_to_a_terminal_end_gets_a_signal_to_leave_by() {
+    // Damascus test, bug 15: a double layover siding beyond a tram terminal's free end, joined to
+    // the platform tracks with no switch, got no exit signal, so its trains could not come out.
+    let mut net = sample(RailMode::Tram, 7.0, 50.9);
+    let st = net.stations.iter().find(|s| s.id == 1).unwrap().clone();
+    let siding: rail_design::model::Track = serde_json::from_value(serde_json::json!({
+        "id": 99,
+        "use": "storage",
+        "level": "street",
+        "tracks": 2,
+        "start": { "type": "station", "station": 1, "end": 0, "tracks": [0, 1] },
+        "end": { "type": "free", "x": st.x - 250.0, "y": st.y, "level": "street" },
+        "points": [],
+        "storage_role": "layover"
+    }))
+    .unwrap();
+    net.tracks.push(siding);
+    let t = topology(&build(&net, None));
+    assert!(t.valid, "{:?}", t.errors);
+    let json = serde_json::to_string(&t).unwrap();
+    let imp = import_json(&json, &ImportOptions::default()).unwrap();
+    let m = Model::compile(&imp.spec).unwrap();
+    let siding: Vec<usize> = (0..m.tracks.len())
+        .filter(|&i| m.tracks[i].usage == TrackUse::Storage && m.tracks[i].id.starts_with("t99."))
+        .collect();
+    assert_eq!(siding.len(), 2, "both tracks of the siding");
+    for i in siding {
+        let out = [Dir::Up, Dir::Down]
+            .into_iter()
+            .any(|d| !departure_routes(&m, Place::Storage(i), d).is_empty());
+        assert!(out, "{} has no signal to leave by", m.tracks[i].id);
+    }
+}
