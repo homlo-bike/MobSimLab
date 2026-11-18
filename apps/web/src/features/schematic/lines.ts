@@ -10,7 +10,6 @@ import type { Level, Network, RailMode } from "../railways/types";
 import { cleanFeatures, type StationFeature } from "../stations/features";
 import { lineStats } from "../street-lines/summary";
 import { lineMode } from "../railways/serviceLines";
-import { MODES } from "../street-lines/modes";
 import { streetLineColor, type StreetLinesDoc } from "../street-lines/saved";
 import type { LonLat } from "../street-lines/types";
 import { distanceM } from "../../map/geo";

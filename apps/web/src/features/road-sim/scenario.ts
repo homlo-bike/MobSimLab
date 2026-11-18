@@ -8,7 +8,6 @@ import { depotInput, lineVehicle } from "../depots/model";
 import type { DepotEngine, SavedDepot } from "../depots/types";
 import { projectServiceDay, servicePeriods } from "../journey-planner/network";
 import { fullTiming } from "../street-lines/modes";
-import { MODES } from "../street-lines/modes";
 import { type SavedStreetLine, streetLineColor } from "../street-lines/saved";
 import { lineServiceDay } from "../street-lines/service";
 import type { StreetSetup } from "../street-setup/types";

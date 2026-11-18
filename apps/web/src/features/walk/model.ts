@@ -6,7 +6,6 @@ import data from "./defaults.generated.json";
 import { paramNumber } from "../../workspace/preferences";
 import type { Network, RailView } from "../railways/types";
 import { streetLineColor, type StreetLinesDoc } from "../street-lines/saved";
-import { MODES } from "../street-lines/modes";
 import type { DemandPoint, LonLat, StopPoint, WalkSettings } from "./types";
 
 interface ModeValues {

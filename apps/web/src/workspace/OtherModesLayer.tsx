@@ -4,7 +4,6 @@ import type { SavedDepot } from "../features/depots/types";
 import { loadRailEngine } from "../features/railways/engine";
 import type { Network, RailEngineLoader } from "../features/railways/types";
 import { legsToGeoJson } from "../features/street-lines/geojson";
-import { MODES } from "../features/street-lines/modes";
 import { type SavedStreetLine, streetLineColor } from "../features/street-lines/saved";
 import type { SavedPluginLine } from "../kits/saved";
 
