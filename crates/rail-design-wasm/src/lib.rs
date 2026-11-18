@@ -19,6 +19,7 @@ use rail_design::proj::LocalTm;
 use rail_design::street::{street_from_osm, Street};
 use rail_design::terrain::Terrain;
 use rail_design::{build_with_choice, Design, Network, RailMode};
+use std::cell::OnceCell;
 use std::collections::{BTreeMap, HashMap};
 use street_routing::osm::Tags;
 use street_routing::StreetSetup;
@@ -46,6 +47,9 @@ pub struct RailDesigner {
     values: BTreeMap<String, f64>,
     switch_choice: SwitchChoice,
     terrain: Terrain,
+    /// The topology of the last build as JSON, worked out on first use: publishing every day type
+    /// and checking station pairs would otherwise export it again each time (bug 21).
+    topology_json: OnceCell<String>,
 }
 
 impl Default for RailDesigner {
@@ -69,6 +73,7 @@ impl RailDesigner {
             values: BTreeMap::new(),
             switch_choice: SwitchChoice::default(),
             terrain: Terrain::new(),
+            topology_json: OnceCell::new(),
         }
     }
 
@@ -116,6 +121,7 @@ impl RailDesigner {
         );
         let v = rail_design::view::view(&d);
         self.design = Some(d);
+        self.topology_json = OnceCell::new();
         Ok(v.to_string())
     }
 
@@ -298,9 +304,18 @@ impl RailDesigner {
     /// (`contracts/rail-topology.schema.json`); "null" before the first build.
     pub fn topology(&self) -> String {
         self.design.as_ref().map_or("null".into(), |d| {
-            serde_json::to_string(&rail_design::topology::topology(d))
-                .unwrap_or_else(|_| "null".into())
+            self.topology_of(d)
+                .map_or_else(|_| "null".into(), str::to_string)
         })
+    }
+
+    /// Purpose: the topology of the last build as JSON, kept until the next build.
+    fn topology_of(&self, d: &Design) -> Result<&str, JsError> {
+        if let Some(t) = self.topology_json.get() {
+            return Ok(t);
+        }
+        let t = serde_json::to_string(&rail_design::topology::topology(d)).map_err(js)?;
+        Ok(self.topology_json.get_or_init(|| t))
     }
 
     /// Purpose: plan the service lines drawn in the editor on the last built design and publish them
@@ -314,9 +329,9 @@ impl RailDesigner {
             .as_ref()
             .ok_or_else(|| JsError::new("Nothing is drawn yet."))?;
         let lines: Vec<rail_plan::ServiceLine> = serde_json::from_str(lines).map_err(js)?;
-        let topo = serde_json::to_string(&rail_design::topology::topology(d)).map_err(js)?;
+        let topo = self.topology_of(d)?;
         let out =
-            rail_plan::publish_service(&topo, &lines, service_id).map_err(|e| JsError::new(&e))?;
+            rail_plan::publish_service(topo, &lines, service_id).map_err(|e| JsError::new(&e))?;
         serde_json::to_string(&out).map_err(js)
     }
 
@@ -335,8 +350,8 @@ impl RailDesigner {
             .ok_or_else(|| JsError::new("Nothing is drawn yet."))?;
         let lines: Vec<rail_plan::ServiceLine> = serde_json::from_str(lines).map_err(js)?;
         let opts: rail_plan::PublishOptions = serde_json::from_str(options).map_err(js)?;
-        let topo = serde_json::to_string(&rail_design::topology::topology(d)).map_err(js)?;
-        let out = rail_plan::publish_service_with(&topo, &lines, service_id, &opts)
+        let topo = self.topology_of(d)?;
+        let out = rail_plan::publish_service_with(topo, &lines, service_id, &opts)
             .map_err(|e| JsError::new(&e))?;
         serde_json::to_string(&out).map_err(js)
     }
@@ -349,8 +364,8 @@ impl RailDesigner {
             .design
             .as_ref()
             .ok_or_else(|| JsError::new("Nothing is drawn yet."))?;
-        let topo = serde_json::to_string(&rail_design::topology::topology(d)).map_err(js)?;
-        let r = rail_plan::station_reachable(&topo, &format!("st{from}"), &format!("st{to}"))
+        let topo = self.topology_of(d)?;
+        let r = rail_plan::station_reachable(topo, &format!("st{from}"), &format!("st{to}"))
             .map_err(|e| JsError::new(&e))?;
         serde_json::to_string(&r).map_err(js)
     }

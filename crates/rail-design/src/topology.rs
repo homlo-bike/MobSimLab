@@ -597,6 +597,9 @@ fn ranges<T: Clone + PartialEq>(span: [f64; 2], items: &[(f64, f64, T)]) -> Vec<
 const FOULING_SEARCH_M: f64 = 400.0;
 
 /// Purpose: shortest distance from a point to a polyline.
+/// The fouling search asks this every half metre along every route near a switch, so it compares
+/// squared distances and takes one square root: `hypot` per segment is slow in WebAssembly, where
+/// the Tables tab runs it (bug 21).
 fn dist_to_polyline(q: P2, pts: &[P2]) -> f64 {
     pts.windows(2)
         .map(|w| {
@@ -608,9 +611,11 @@ fn dist_to_polyline(q: P2, pts: &[P2]) -> f64 {
             } else {
                 (q.sub(a).dot(ab) / l2).clamp(0.0, 1.0)
             };
-            q.dist(a.add(ab.mul(t)))
+            let d = q.sub(a.add(ab.mul(t)));
+            d.dot(d)
         })
         .fold(f64::INFINITY, f64::min)
+        .sqrt()
 }
 
 /// A section on a walked route: (segment, distance where the route enters it, walked from the

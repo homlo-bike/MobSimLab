@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useState } from "react";
-import { loadRailEngine } from "../railways/engine";
+import { loadRailEngine, nextTask } from "../railways/engine";
 import { hashText } from "../../projects/inputKey";
 import { type ResultsApi, useLiveResult } from "../../projects/results";
 import { en } from "../../i18n/en";
@@ -163,11 +163,14 @@ export function CostTables({
     async () => {
       const engine = await loadRail();
       try {
+        // Building and publishing are a second or more each on a large railway: the page answers in between.
+        await nextTask();
         const view = engine.build(railway!, null);
         const reports: Record<string, LineReport> = {};
         const lines = engineLines(railway!);
         if (lines.length)
           try {
+            await nextTask();
             for (const r of engine.publishLines(lines, "weekday").lines) reports[r.id] = r;
           } catch {
             // Lines that cannot be published are listed in the notes.

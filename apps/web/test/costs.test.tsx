@@ -585,8 +585,11 @@ describe("cost tables", () => {
     );
     const chart = await screen.findByRole("figure", { name: "Construction cost by mode and cost group" });
     await waitFor(() => expect(within(chart).getAllByRole("img").length).toBeGreaterThan(3));
-    fireEvent.focus(within(chart).getAllByRole("img")[0]!);
-    expect(screen.getByRole("tooltip").textContent).toContain("Track and structures");
+    // The railway is built a moment after the street lines are costed (the page answers in between).
+    await waitFor(() => {
+      fireEvent.focus(within(chart).getAllByRole("img")[0]!);
+      expect(screen.getByRole("tooltip").textContent).toContain("Track and structures");
+    });
     expect(screen.getByRole("figure", { name: "Construction cost by infrastructure type" })).toBeTruthy();
 
     // Sort lines by name: A–Z, then Z–A.

@@ -28,15 +28,19 @@
 //!    that leaves later. Trains are added to the morning stabling only where
 //!    the track is empty at that moment.
 
+use std::cell::RefCell;
 use std::collections::{BTreeMap, BinaryHeap, HashMap, HashSet};
 
 use rail_dynamics::Stop;
 use rail_model::{Dir, Model, PlatformId, RouteId, TdsId};
 use serde::Serialize;
 
-use crate::blocking::{route_steps, run_timing, Blocking, BlockingParams, RunTiming, TrainRun};
+use crate::blocking::{
+    route_steps, run_profile, timing_with_profile, Blocking, BlockingParams, RunTiming, TrainRun,
+};
 use crate::line::{resolve, LineSpec};
 use crate::path::{arrival_dir, departure_routes, find_path, stop_at, Candidate, FoundPath, Place};
+use rail_dynamics::SpeedProfile;
 
 /// Planner settings.
 #[derive(Clone, Debug, PartialEq, Serialize)]
@@ -288,6 +292,26 @@ struct Planner<'a> {
     stacks: Vec<Stack>,
     /// Departure routes reserved for trains standing in a platform: (vehicle, start, end) per section.
     reserved: BTreeMap<TdsId, Vec<(usize, f64, f64)>>,
+    /// Speed profiles already worked out, by [`profile_key`]: the search for a free slot tries a
+    /// run at many departure times, and the profile does not change with the time.
+    profiles: RefCell<HashMap<String, SpeedProfile>>,
+    /// Trip paths already found ([`Planner::trip_path`]), by line, direction, origin, departure
+    /// direction and banned places.
+    paths: RefCell<TripPaths>,
+    /// Depot paths already found ([`Planner::depot_path`]), dropped with the trip paths.
+    depot_paths: RefCell<DepotPaths>,
+}
+
+type TripPaths = HashMap<(usize, u8, Place, Dir, Vec<Place>), Option<FoundPath>>;
+type DepotPaths = HashMap<(usize, u8, Vec<RouteId>, Vec<(Place, u64)>, bool), Option<FoundPath>>;
+
+/// Purpose: what a run's speed profile depends on ([`run_profile`]), as a map key: everything
+/// but its name, departure time and how long it stays at the end.
+fn profile_key(r: &TrainRun) -> String {
+    format!(
+        "{:?}|{:?}|{:?}|{:?}|{:?}|{}|{:?}",
+        r.train, r.routes, r.start_m, r.end_m, r.stops, r.stop_at_end, r.supplement_share
+    )
 }
 
 /// Purpose: plan a day of service for a set of lines.
@@ -342,6 +366,9 @@ pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, Strin
         vehicles: Vec::new(),
         stacks,
         reserved: BTreeMap::new(),
+        profiles: RefCell::new(HashMap::new()),
+        paths: RefCell::new(HashMap::new()),
+        depot_paths: RefCell::new(HashMap::new()),
     };
     let trips = pl.trips();
     pl.construct(trips);
@@ -536,7 +563,45 @@ impl<'a> Planner<'a> {
     }
 
     /// Purpose: the service path of a trip from an origin place, with platforms banned.
+    /// The search depends on the platforms the line remembers, so the answers kept in
+    /// [`Planner::paths`] are dropped whenever those change ([`Planner::set_platform`]).
     fn trip_path(
+        &self,
+        line: usize,
+        dir: u8,
+        origin: Place,
+        depart_dir: Dir,
+        banned: &[Place],
+    ) -> Option<FoundPath> {
+        let key = (line, dir, origin, depart_dir, banned.to_vec());
+        if let Some(found) = self.paths.borrow().get(&key) {
+            return found.clone();
+        }
+        let found = self.find_trip_path(line, dir, origin, depart_dir, banned);
+        self.paths.borrow_mut().insert(key, found.clone());
+        found
+    }
+
+    /// Purpose: remember the platform a line direction uses at a call (`None`: its last call, the
+    /// terminal it arrives in), dropping the kept trip paths when it changes.
+    fn set_platform(&mut self, line: usize, dir: u8, call: Option<usize>, pid: PlatformId) {
+        let old = match call {
+            Some(k) => self.memory.insert((line, dir, k), pid),
+            None => self.ends.insert((line, dir), pid),
+        };
+        if old != Some(pid) {
+            self.forget_paths();
+        }
+    }
+
+    /// Purpose: drop the kept trip and depot paths, after the remembered platforms changed.
+    fn forget_paths(&self) {
+        self.paths.borrow_mut().clear();
+        self.depot_paths.borrow_mut().clear();
+    }
+
+    /// Purpose: [`Planner::trip_path`] without the kept answers.
+    fn find_trip_path(
         &self,
         line: usize,
         dir: u8,
@@ -615,6 +680,25 @@ impl<'a> Planner<'a> {
     /// at its start (a pull-in). Output: the path, its places being the platforms passed and then the
     /// end; the plain shortest path when no path along the line is short enough.
     fn depot_path(
+        &self,
+        line: usize,
+        e: u8,
+        start: &[RouteId],
+        end: &[Candidate],
+        to_terminal: bool,
+    ) -> Option<FoundPath> {
+        let ends: Vec<(Place, u64)> = end.iter().map(|&(p, c)| (p, c.to_bits())).collect();
+        let key = (line, e, start.to_vec(), ends, to_terminal);
+        if let Some(found) = self.depot_paths.borrow().get(&key) {
+            return found.clone();
+        }
+        let found = self.find_depot_path(line, e, start, end, to_terminal);
+        self.depot_paths.borrow_mut().insert(key, found.clone());
+        found
+    }
+
+    /// Purpose: [`Planner::depot_path`] without the kept answers.
+    fn find_depot_path(
         &self,
         line: usize,
         e: u8,
@@ -739,17 +823,26 @@ impl<'a> Planner<'a> {
                 })
                 .collect();
             let buf = self.p.min_buffer_s;
+            // The pairs of outbound and return blockings of one section outside the end stations,
+            // found once: the pattern search below asks for thousands of offsets (bug 21).
+            let pairs: Vec<(f64, f64, f64, f64)> = blocks[0]
+                .iter()
+                .filter(|b| !end_tds.contains(&b.0))
+                .flat_map(|&(t0, s0, e0)| {
+                    blocks[1]
+                        .iter()
+                        .filter(move |b| b.0 == t0)
+                        .map(move |&(_, s1, e1)| (s0, e0, s1, e1))
+                })
+                .collect();
             let meets_at = |off: f64, e: f64, h: f64| -> bool {
-                for &(t0, s0, e0) in blocks[0].iter().filter(|b| !end_tds.contains(&b.0)) {
-                    for &(t1, s1, e1) in blocks[1].iter().filter(|b| b.0 == t0) {
-                        let _ = t1;
-                        let (a0, a1) = (s0 - buf, e0 + e / 2.0 + buf);
-                        let (b0, b1) = (off + s1, off + e1 + e / 2.0);
-                        for k in -4..=4 {
-                            let d = k as f64 * h;
-                            if a0 < b1 + d && b0 + d < a1 {
-                                return true;
-                            }
+                for &(s0, e0, s1, e1) in &pairs {
+                    let (a0, a1) = (s0 - buf, e0 + e / 2.0 + buf);
+                    let (b0, b1) = (off + s1, off + e1 + e / 2.0);
+                    for k in -4..=4 {
+                        let d = k as f64 * h;
+                        if a0 < b1 + d && b0 + d < a1 {
+                            return true;
                         }
                     }
                 }
@@ -900,17 +993,14 @@ impl<'a> Planner<'a> {
         let set = |pl: &mut Planner, p: &FoundPath, dir: u8| {
             for (k, x) in p.places.iter().enumerate() {
                 if let Place::Platform(pid) = *x {
-                    if k + 1 < last {
-                        pl.memory.insert((line, dir, k + 1), pid);
-                    } else {
-                        pl.ends.insert((line, dir), pid);
-                    }
+                    pl.set_platform(line, dir, (k + 1 < last).then_some(k + 1), pid);
                 }
             }
         };
         let clear = |pl: &mut Planner| {
             pl.memory.retain(|k, _| k.0 != line);
             pl.ends.retain(|k, _| k.0 != line);
+            pl.forget_paths();
         };
         let ret = |pl: &Planner, p: &FoundPath, dir: u8| -> Option<FoundPath> {
             let end = *p.places.last()?;
@@ -988,7 +1078,7 @@ impl<'a> Planner<'a> {
                 let timed = built
                     .as_ref()
                     .map_err(|e| e.clone())
-                    .and_then(|(run, _)| run_timing(self.m, run, 0, &self.p.blocking));
+                    .and_then(|(run, _)| self.timing(run, 0));
                 let t = match timed {
                     Ok(t) => t,
                     Err(e) => {
@@ -1189,7 +1279,7 @@ impl<'a> Planner<'a> {
             occupy_until_s: None,
             supplement_share: self.lines[line].supplement_share,
         };
-        if let Ok(t) = run_timing(self.m, &run, 0, &self.p.blocking) {
+        if let Ok(t) = self.timing(&run, 0) {
             for b in t.blocking {
                 self.reserved
                     .entry(b.tds)
@@ -1280,7 +1370,7 @@ impl<'a> Planner<'a> {
             occupy_until_s: None,
             supplement_share: self.lines[line].supplement_share,
         };
-        match run_timing(self.m, &run, 0, &self.p.blocking) {
+        match self.timing(&run, 0) {
             Ok(t) => self.overlaps(&t.blocking, usize::MAX, None).2.is_none(),
             Err(_) => false,
         }
@@ -1327,6 +1417,28 @@ impl<'a> Planner<'a> {
         }
     }
 
+    /// Purpose: [`crate::blocking::run_timing`] with the speed profile worked out once per run
+    /// shape (see [`Planner::profiles`]). Inputs and output as for `run_timing`.
+    fn timing(&self, run: &TrainRun, index: usize) -> Result<RunTiming, String> {
+        let key = profile_key(run);
+        let known = self.profiles.borrow().get(&key).cloned();
+        let profile = match known {
+            Some(p) => p,
+            None => {
+                let p = run_profile(self.m, run)?;
+                self.profiles.borrow_mut().insert(key, p.clone());
+                p
+            }
+        };
+        Ok(timing_with_profile(
+            self.m,
+            run,
+            profile,
+            index,
+            &self.p.blocking,
+        ))
+    }
+
     fn add_index(&mut self, run: usize) {
         for b in &self.runs[run].blocking {
             self.index
@@ -1365,8 +1477,7 @@ impl<'a> Planner<'a> {
                 break;
             }
             let run = mk(t);
-            let timing =
-                run_timing(self.m, &run, index_as, &self.p.blocking).map_err(|e| (e, None))?;
+            let timing = self.timing(&run, index_as).map_err(|e| (e, None))?;
             let (l, e, who) = self.overlaps(&timing.blocking, vehicle, None);
             if who.is_some() {
                 last_who = who;
@@ -1382,7 +1493,7 @@ impl<'a> Planner<'a> {
             if let Some(pr) = prev {
                 let mut r = self.runs[pr].run.clone();
                 r.occupy_until_s = Some(t);
-                let pt = run_timing(self.m, &r, pr, &self.p.blocking).map_err(|e| (e, None))?;
+                let pt = self.timing(&r, pr).map_err(|e| (e, None))?;
                 let (_, _, who) = self.overlaps(&pt.blocking, vehicle, Some(pr));
                 if who.is_some() {
                     return Err((
@@ -1773,9 +1884,7 @@ impl<'a> Planner<'a> {
             let Place::Platform(pid) = *pl else { continue };
             let key = (trip.line, trip.dir, k + 1);
             match self.memory.get(&key) {
-                None => {
-                    self.memory.insert(key, pid);
-                }
+                None => self.set_platform(key.0, key.1, Some(key.2), pid),
                 Some(&u) if u != pid && k + 1 < n => {
                     self.issues.push(Issue::PlatformChange {
                         trip: trip.name.clone(),
@@ -1985,7 +2094,7 @@ impl<'a> Planner<'a> {
                 continue;
             }
             for base in variants {
-                let probe = match run_timing(self.m, &base, 0, &self.p.blocking) {
+                let probe = match self.timing(&base, 0) {
                     Ok(p) => p,
                     Err(e) => {
                         last = (e, None);
@@ -2159,7 +2268,7 @@ impl<'a> Planner<'a> {
                 let t = self
                     .depot_variants(line, name, fp)
                     .first()
-                    .and_then(|r| run_timing(self.m, r, k, &self.p.blocking).ok())
+                    .and_then(|r| self.timing(r, k).ok())
                     .map(|x| x.profile.total_time_s());
                 times.push(t);
             }

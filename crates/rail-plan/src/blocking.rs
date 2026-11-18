@@ -193,6 +193,17 @@ pub fn run_timing(
     index: usize,
     p: &BlockingParams,
 ) -> Result<RunTiming, String> {
+    let profile = run_profile(model, tr)?;
+    Ok(timing_with_profile(model, tr, profile, index, p))
+}
+
+/// Purpose: the speed profile of a run (times relative to its departure), the slow part of
+/// [`run_timing`]. It does not depend on the departure time or on how long the train stays at
+/// the end of its path (`depart_s`, `occupy_until_s`), so a planner trying a run at many times
+/// can work it out once.
+/// Inputs: model and run. Output: the profile with street delays and the supplement, or Err as
+/// for [`run_timing`].
+pub fn run_profile(model: &Model, tr: &TrainRun) -> Result<SpeedProfile, String> {
     if tr.routes.is_empty() {
         return Err(format!("{}: no routes", tr.name));
     }
@@ -221,6 +232,18 @@ pub fn run_timing(
     if tr.supplement_share > 0.0 {
         profile = profile.with_supplement(tr.supplement_share);
     }
+    Ok(profile)
+}
+
+/// Purpose: [`run_timing`] from the run's speed profile ([`run_profile`] of the same run, at any
+/// departure time): the blocking times at the run's own departure.
+pub fn timing_with_profile(
+    model: &Model,
+    tr: &TrainRun,
+    profile: SpeedProfile,
+    index: usize,
+    p: &BlockingParams,
+) -> RunTiming {
     let path_len = tr.start_m + profile.length_m();
     let arrive_end = tr.depart_s + profile.total_time_s();
     let occupy_until = tr.occupy_until_s.unwrap_or(arrive_end).max(arrive_end);
@@ -332,11 +355,11 @@ pub fn run_timing(
         }
         entry_pos = exit_pos;
     }
-    Ok(RunTiming {
+    RunTiming {
         profile,
         depart_s: tr.depart_s,
         blocking,
-    })
+    }
 }
 
 /// Purpose: running and blocking times of many train runs.
