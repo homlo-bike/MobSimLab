@@ -221,6 +221,10 @@ export const editorsAr = {
   "rail.switch": "المحوّل",
   "rail.switchFacts":
     "الطول {length} · 1:{ratio} · نصف القطر {radius} م · {speed} كم/س في الاتجاه المنحرف · عند {at}",
+  "rail.switches": "المحوّلات",
+  "rail.switchesNone": "لا محوّلات بعد. ضع واحدًا بأداة المحوّل أو أداة الوصلة التبادلية.",
+  "rail.switchItem": "{kind} على {track} عند {at}",
+  "rail.kind.doubleJunction": "تفرّع مزدوج",
   "rail.positionAlong": "الموضع على السكة",
   "rail.otherSide": "الجهة الأخرى",
   "rail.reverse": "عكس",
@@ -1470,6 +1474,9 @@ export const editorsAr = {
   "rail.levelHeight": "مستوٍ، القضبان على ارتفاع {rail} م فوق سطح البحر · الأرض على امتداده {min}–{max} م",
   "rail.profileRange": "القضبان على {min}–{max} م فوق سطح البحر · أشد انحدار {steep} (الحد {limit} ‰)",
   "rail.profileAria": "المقطع الطولي: الأرض وسطح القضيب على امتداد المسار",
+  "rail.levelProfileAria": "المقطع الطولي من المستويات: سطح القضبان مقارنة بمستوى الشارع على طول السكة",
+  "rail.levelProfileNote":
+    "الارتفاعات من مستويات السكة ومنحدراتها بالنسبة لمستوى الشارع (لم تُحمَّل ارتفاعات التضاريس هنا).",
   "rail.profileLegend":
     "متصل: سطح القضيب. متقطع: الأرض (Copernicus GLO-30، منعّمة). الارتفاعات من نموذج سطح، ±4 م.",
 

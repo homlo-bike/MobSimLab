@@ -55,6 +55,7 @@ import { RailToolPalette } from "./RailToolPalette";
 import { addLine, linesTrainLength, removeLine } from "./serviceLines";
 import { dayEngineLines, type DayPublications } from "../timetables/railPublish";
 import { DAY_TYPES } from "../../workspace/calendar";
+import { useDayTypeLabel } from "../../workspace/dayTypeLabel";
 import type { ServiceCalendar } from "../../workspace/calendar";
 import type { Publication } from "./ServiceLinesPanel";
 import type {
@@ -182,6 +183,7 @@ export function RailwayEditor({
   onPublish,
 }: Props) {
   const { t } = useI18n();
+  const dayLabel = useDayTypeLabel();
   const engine = useRef<RailEngine | null>(null);
   // Catalogue trains the project does not use (Project preferences → Vehicles).
   const vehiclesOff = useVehiclesOff();
@@ -697,7 +699,7 @@ export function RailwayEditor({
       const byDay: DayPublications = {};
       for (const [i, day] of (days.length ? days : (["weekday"] as const)).entries()) {
         setPublishing({
-          step: `${tNow("rail.line.publish")} · ${tNow(`cal.day.${day}` as MessageKey)}`,
+          step: `${tNow("rail.line.publish")} · ${dayLabel(day)}`,
           index: i + 2,
           steps,
         });

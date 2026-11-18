@@ -71,5 +71,11 @@ export const geodataVi = {
   "area.import.current": "{what}: đã nhập",
   "area.import.failed": "{what}: không thể bắt đầu. {reason}",
   "area.seeMapData": "Theo dõi việc nhập trong GIS, Dữ liệu bản đồ.",
+  "area.country": "Quốc gia: {name}.",
+  "area.crossesBorder": "Khu vực vượt qua biên giới: {countries}. Ngày lễ và giá dùng theo {name}.",
+  "data.liveNotice":
+    "{tiles} ô bản đồ và {heights} độ cao được lấy trực tiếp ngoài dữ liệu đã nhập của dự án. Giờ chúng được lưu trong dự án; hãy mở rộng dữ liệu nhập để phủ toàn bộ bản vẽ.",
+  "data.extendImport": "Mở rộng dữ liệu nhập trong Dữ liệu bản đồ",
+  "data.hideLive": "Ẩn",
   "data.areaRegions": "Khu vực: {area} km², hình chữ nhật quanh {names}",
 } satisfies GeodataMessages;

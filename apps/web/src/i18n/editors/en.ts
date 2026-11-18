@@ -107,6 +107,9 @@ export const editorsEn = {
   "rail.levelHeight": "Level, rails at {rail} m above sea level · ground along it {min}–{max} m",
   "rail.profileRange": "Rails {min}–{max} m above sea level · steepest {steep} (max {limit} ‰)",
   "rail.profileAria": "Vertical profile: ground and rail top along the track",
+  "rail.levelProfileAria": "Vertical profile from the levels: rail top against street level along the track",
+  "rail.levelProfileNote":
+    "Heights from the track's levels and ramps, relative to street level (no terrain heights loaded here).",
   "rail.profileLegend":
     "Solid: rail top. Dashed: ground (Copernicus GLO-30, smoothed). Heights from a surface model, ±4 m.",
   "rail.unnamedStreet": "Unnamed street",
@@ -194,6 +197,10 @@ export const editorsEn = {
     "Click a point to edit it. Drag the square handles to change the straight out of a station or switch.",
   "rail.switch": "Switch",
   "rail.switchFacts": "{length} long · 1:{ratio} · R {radius} m · {speed} km/h diverging · at {at}",
+  "rail.switches": "Switches",
+  "rail.switchesNone": "No switches yet. Place one with the Turnout or Crossover tool.",
+  "rail.switchItem": "{kind} on {track} at {at}",
+  "rail.kind.doubleJunction": "Double junction",
   "rail.positionAlong": "Position along track",
   "rail.otherSide": "Other side",
   "rail.reverse": "Reverse",

@@ -187,6 +187,10 @@ export const editorsUz = {
     "Tahrirlash uchun nuqtaga bosing. Stansiya yoki strelkadan toʻgʻri qismni oʻzgartirish uchun kvadrat tutqichni torting.",
   "rail.switch": "Strelka",
   "rail.switchFacts": "Uzunligi {length} · 1:{ratio} · R {radius} m · tarmoqda {speed} km/s · {at} da",
+  "rail.switches": "Strelkalar",
+  "rail.switchesNone": "Hali strelka yo‘q. Strelka yoki O‘tish vositasi bilan qo‘ying.",
+  "rail.switchItem": "{track} da {at} nuqtada {kind}",
+  "rail.kind.doubleJunction": "Ikki yo‘lli tarmoqlanish",
   "rail.positionAlong": "Yoʻldagi joylashuv",
   "rail.otherSide": "Boshqa tomon",
   "rail.reverse": "Teskari",
@@ -1429,6 +1433,10 @@ export const editorsUz = {
   "rail.levelHeight": "Tekis, relslar dengiz sathidan {rail} m balandda · yon atrofdagi yer {min}–{max} m",
   "rail.profileRange": "Relslar dengiz sathidan {min}–{max} m · eng tik nishab {steep} (eng ko‘pi {limit} ‰)",
   "rail.profileAria": "Bo‘ylama profil: yo‘l bo‘ylab yer va rels ustki qismi",
+  "rail.levelProfileAria":
+    "Darajalar bo'yicha bo'ylama profil: yo'l bo'ylab ko'cha sathiga nisbatan rels usti",
+  "rail.levelProfileNote":
+    "Yo'lning darajalari va qiyaliklaridan balandliklar, ko'cha sathiga nisbatan (bu yerda yer balandliklari yuklanmagan).",
   "rail.profileLegend":
     "Yaxlit: rels ustki qismi. Uzuq: yer (Copernicus GLO-30, tekislangan). Balandliklar sirt modelidan, ±4 m.",
 

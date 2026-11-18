@@ -171,6 +171,10 @@ export const editorsJa = {
     "点をクリックして編集します。四角いハンドルをドラッグすると、駅や分岐器からの直線区間を変更できます。",
   "rail.switch": "分岐器",
   "rail.switchFacts": "長さ {length} · 1:{ratio} · R {radius} m · 分岐側 {speed} km/h · {at}",
+  "rail.switches": "分岐器",
+  "rail.switchesNone": "分岐器はまだありません。分岐器またはわたり線ツールで配置します。",
+  "rail.switchItem": "{track}の{at}にある{kind}",
+  "rail.kind.doubleJunction": "複線分岐",
   "rail.positionAlong": "線路上の位置",
   "rail.otherSide": "反対側",
   "rail.reverse": "向きを反転",
@@ -1356,6 +1360,9 @@ export const editorsJa = {
   "rail.levelHeight": "水平、レール面は海抜 {rail} m · 沿線の地面 {min}–{max} m",
   "rail.profileRange": "レール面 海抜 {min}–{max} m · 最急勾配 {steep}（上限 {limit} ‰）",
   "rail.profileAria": "縦断面：線路沿いの地面とレール面",
+  "rail.levelProfileAria": "レベルによる縦断面：線路に沿った地上面に対するレール面の高さ",
+  "rail.levelProfileNote":
+    "線路のレベルと勾配区間による高さ（地上面基準。ここでは地形の標高を読み込んでいません）。",
   "rail.profileLegend":
     "実線：レール面。破線：地面（Copernicus GLO-30、平滑化）。高さは表面モデルから、±4 m。",
 

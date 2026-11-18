@@ -187,6 +187,10 @@ export const editorsPt = {
     "Clique em um ponto para editá-lo. Arraste as alças quadradas para mudar a reta de saída de uma estação ou AMV.",
   "rail.switch": "AMV",
   "rail.switchFacts": "{length} de comprimento · 1:{ratio} · R {radius} m · {speed} km/h no desvio · em {at}",
+  "rail.switches": "Aparelhos de mudança de via",
+  "rail.switchesNone": "Ainda sem aparelhos. Coloque um com a ferramenta Desvio ou Travessão.",
+  "rail.switchItem": "{kind} em {track} a {at}",
+  "rail.kind.doubleJunction": "Bifurcação dupla",
   "rail.positionAlong": "Posição ao longo da via",
   "rail.otherSide": "Outro lado",
   "rail.reverse": "Inverter",
@@ -1430,6 +1434,10 @@ export const editorsPt = {
   "rail.profileRange":
     "Trilhos a {min}–{max} m acima do nível do mar · rampa máxima {steep} (máx. {limit} ‰)",
   "rail.profileAria": "Perfil longitudinal: terreno e topo do trilho ao longo da via",
+  "rail.levelProfileAria":
+    "Perfil longitudinal pelos níveis: topo do carril face ao nível da rua ao longo da via",
+  "rail.levelProfileNote":
+    "Alturas pelos níveis e rampas da via, em relação ao nível da rua (sem alturas do terreno carregadas aqui).",
   "rail.profileLegend":
     "Contínua: topo do trilho. Tracejada: terreno (Copernicus GLO-30, suavizado). Alturas de um modelo de superfície, ±4 m.",
 

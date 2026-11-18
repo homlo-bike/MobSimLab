@@ -72,5 +72,12 @@ export const geodataDe = {
   "area.import.current": "{what}: bereits importiert",
   "area.import.failed": "{what}: konnte nicht starten. {reason}",
   "area.seeMapData": "Den Fortschritt sehen Sie unter GIS, Kartendaten.",
+  "area.country": "Land: {name}.",
+  "area.crossesBorder":
+    "Das Gebiet überschreitet eine Grenze: {countries}. Feiertage und Preise gelten für {name}.",
+  "data.liveNotice":
+    "{tiles} Kartenkacheln und {heights} Höhen kamen live von außerhalb der importierten Projektdaten. Sie bleiben jetzt im Projekt; erweitere den Import, damit er die ganze Zeichnung abdeckt.",
+  "data.extendImport": "Import in Kartendaten erweitern",
+  "data.hideLive": "Ausblenden",
   "data.areaRegions": "Gebiet: {area} km², das Rechteck um {names}",
 } satisfies GeodataMessages;

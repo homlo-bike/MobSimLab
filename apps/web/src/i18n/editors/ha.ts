@@ -187,6 +187,10 @@ export const editorsHa = {
     "Danna wuri don gyara shi. Ja hannayen murabba'i don canza miƙaƙƙen sashe daga tasha ko makunni.",
   "rail.switch": "Makunni",
   "rail.switchFacts": "tsawo {length} · 1:{ratio} · R {radius} m · {speed} km/h a reshe · a {at}",
+  "rail.switches": "Masu sauya hanya",
+  "rail.switchesNone": "Babu mai sauya hanya tukuna. Saka ɗaya da kayan aikin Turnout ko Crossover.",
+  "rail.switchItem": "{kind} a kan {track} a {at}",
+  "rail.kind.doubleJunction": "Mahaɗa biyu",
   "rail.positionAlong": "Wuri a kan dogo",
   "rail.otherSide": "Ɗayan gefe",
   "rail.reverse": "Juya alƙibla",
@@ -1420,6 +1424,10 @@ export const editorsHa = {
   "rail.profileRange":
     "Layukan ƙarfe m {min}–{max} sama da teku · gangare mafi tsauri {steep} (mafi yawa {limit} ‰)",
   "rail.profileAria": "Bayanin tsayi: ƙasa da saman ƙarfe a tsawon layin",
+  "rail.levelProfileAria":
+    "Bayanin tsayi daga matakai: saman dogo idan aka kwatanta da matakin titi a tsawon layin",
+  "rail.levelProfileNote":
+    "Tsayi daga matakai da gangaren layin, idan aka kwatanta da matakin titi (ba a loda tsayin ƙasa a nan ba).",
   "rail.profileLegend":
     "Cikakken layi: saman ƙarfe. Layin tsinke: ƙasa (Copernicus GLO-30, an daidaita). Tsayi daga samfurin saman ƙasa, ±4 m.",
 

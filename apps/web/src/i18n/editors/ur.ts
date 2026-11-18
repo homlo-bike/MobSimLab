@@ -188,6 +188,10 @@ export const editorsUr = {
   "rail.switch": "سوئچ",
   "rail.switchFacts":
     "لمبائی {length} · 1:{ratio} · R {radius} میٹر · شاخ پر {speed} کلومیٹر/گھنٹہ · {at} پر",
+  "rail.switches": "سوئچ",
+  "rail.switchesNone": "ابھی کوئی سوئچ نہیں۔ ٹرن آؤٹ یا کراس اوور ٹول سے ایک لگائیں۔",
+  "rail.switchItem": "{track} پر {at} پر {kind}",
+  "rail.kind.doubleJunction": "ڈبل جنکشن",
   "rail.positionAlong": "پٹری پر مقام",
   "rail.otherSide": "دوسری طرف",
   "rail.reverse": "سمت الٹیں",
@@ -1405,6 +1409,9 @@ export const editorsUr = {
   "rail.profileRange":
     "ریلیں سطح سمندر سے {min}–{max} میٹر اوپر · سب سے زیادہ ڈھلوان {steep} (زیادہ سے زیادہ {limit} ‰)",
   "rail.profileAria": "طولی خاکہ: پٹری کے ساتھ زمین اور ریل کی سطح",
+  "rail.levelProfileAria": "سطحوں سے عمودی پروفائل: پٹری کے ساتھ ریل کی سطح گلی کی سطح کے مقابلے میں",
+  "rail.levelProfileNote":
+    "پٹری کی سطحوں اور ڈھلوانوں سے اونچائیاں، گلی کی سطح کے لحاظ سے (یہاں زمین کی اونچائیاں لوڈ نہیں ہوئیں)۔",
   "rail.profileLegend":
     "مسلسل: ریل کی سطح۔ ٹوٹی لکیر: زمین (Copernicus GLO-30، ہموار)۔ بلندیاں سطحی ماڈل سے، ±4 میٹر۔",
 

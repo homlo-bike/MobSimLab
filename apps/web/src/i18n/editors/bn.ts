@@ -186,6 +186,10 @@ export const editorsBn = {
     "সম্পাদনা করতে একটি বিন্দুতে ক্লিক করুন। স্টেশন বা সুইচ থেকে সোজা অংশ বদলাতে বর্গাকার হাতল টানুন।",
   "rail.switch": "সুইচ",
   "rail.switchFacts": "দৈর্ঘ্য {length} · 1:{ratio} · R {radius} মি · শাখায় {speed} কিমি/ঘ · {at}-এ",
+  "rail.switches": "সুইচ",
+  "rail.switchesNone": "এখনো কোনো সুইচ নেই। টার্নআউট বা ক্রসওভার টুল দিয়ে একটি বসান।",
+  "rail.switchItem": "{track}-এ {at}-এ {kind}",
+  "rail.kind.doubleJunction": "ডাবল জংশন",
   "rail.positionAlong": "লাইনে অবস্থান",
   "rail.otherSide": "অন্য দিক",
   "rail.reverse": "দিক উল্টান",
@@ -1396,6 +1400,9 @@ export const editorsBn = {
   "rail.profileRange":
     "রেল সমুদ্রপৃষ্ঠ থেকে {min}–{max} মি উপরে · সবচেয়ে খাড়া ঢাল {steep} (সর্বোচ্চ {limit} ‰)",
   "rail.profileAria": "অনুদৈর্ঘ্য প্রোফাইল: ট্র্যাক বরাবর মাটি ও রেলের উপরিভাগ",
+  "rail.levelProfileAria": "স্তর থেকে উল্লম্ব প্রোফাইল: লাইন বরাবর রাস্তার স্তরের তুলনায় রেলের উপরিভাগ",
+  "rail.levelProfileNote":
+    "লাইনের স্তর ও ঢাল থেকে উচ্চতা, রাস্তার স্তরের সাপেক্ষে (এখানে ভূখণ্ডের উচ্চতা লোড হয়নি)।",
   "rail.profileLegend":
     "একটানা: রেলের উপরিভাগ। ড্যাশ: মাটি (Copernicus GLO-30, মসৃণ করা)। উচ্চতা একটি পৃষ্ঠ মডেল থেকে, ±4 মি।",
 

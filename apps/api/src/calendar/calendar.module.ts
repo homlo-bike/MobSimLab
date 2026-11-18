@@ -10,5 +10,6 @@ import { CalendarController } from "./calendar.controller";
     { provide: NagerClient, useFactory: () => new NagerClient() },
     { provide: OpenMeteoClient, useFactory: () => new OpenMeteoClient() },
   ],
+  exports: [NagerClient, OpenMeteoClient],
 })
 export class CalendarModule {}

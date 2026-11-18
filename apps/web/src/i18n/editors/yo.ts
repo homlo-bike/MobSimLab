@@ -171,6 +171,10 @@ export const editorsYo = {
     "Tẹ ojúàmì kan láti ṣàtúnṣe rẹ̀. Fa àwọn ìmúdání onígun mẹ́rin láti yí apá títọ́ láti ibùdókọ̀ tàbí ìyípadà padà.",
   "rail.switch": "Ìyípadà",
   "rail.switchFacts": "gígùn {length} · 1:{ratio} · R {radius} m · {speed} km/h ní ẹ̀ka · ní {at}",
+  "rail.switches": "Àwọn ìyípadà ọ̀nà",
+  "rail.switchesNone": "Kò sí ìyípadà ọ̀nà síbẹ̀. Fi ọ̀kan sí pẹ̀lú irinṣẹ́ Turnout tàbí Crossover.",
+  "rail.switchItem": "{kind} lórí {track} ní {at}",
+  "rail.kind.doubleJunction": "Ìsopọ̀ méjì",
   "rail.positionAlong": "Ipò lórí ojú irin",
   "rail.otherSide": "Ẹ̀gbẹ́ kejì",
   "rail.reverse": "Yí ìdarí padà",
@@ -1380,6 +1384,10 @@ export const editorsYo = {
   "rail.levelHeight": "Pẹrẹsẹ, irin wà ní m {rail} lókè òkun · ilẹ̀ lẹ́gbẹ̀ẹ́ rẹ̀ m {min}–{max}",
   "rail.profileRange": "Irin m {min}–{max} lókè òkun · gẹ̀rẹ̀gẹ̀rẹ̀ tó ga jù {steep} (tó pọ̀ jù {limit} ‰)",
   "rail.profileAria": "Àwòrán gígùn: ilẹ̀ àti orí irin ní gígùn ojú ọ̀nà",
+  "rail.levelProfileAria":
+    "Àwòrán gíga láti inú àwọn ìpele: òkè irin ní ìfiwéra pẹ̀lú ìpele ojú ọ̀nà ní gígùn ọ̀nà",
+  "rail.levelProfileNote":
+    "Gíga láti inú àwọn ìpele àti ìtẹ̀sí ọ̀nà, ní ìfiwéra pẹ̀lú ìpele ojú ọ̀nà (a kò tíì gbé gíga ilẹ̀ wọlé níbí).",
   "rail.profileLegend":
     "Ìlà kíkún: orí irin. Ìlà ẹlẹ́gbẹ́: ilẹ̀ (Copernicus GLO-30, a mú un dán). Gíga láti àwòṣe ojú ilẹ̀, ±4 m.",
 

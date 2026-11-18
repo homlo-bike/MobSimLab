@@ -11,6 +11,7 @@ import {
   ExistingSection,
   LevelCrossingsSection,
   SignalsSection,
+  SwitchesSection,
   StreetRunningSection,
 } from "./RailNetworkSections";
 import { SignalInspector, StationInspector, SwitchInspector } from "./RailInspectors";
@@ -265,6 +266,13 @@ export function RailPanel(props: Props) {
       )}
 
       <ServiceLinesPanel doc={doc} view={view} setDoc={a.setDoc} show={a.showIssue} {...props.service} />
+
+      <SwitchesSection
+        doc={doc}
+        view={view}
+        selected={kind === "switch" && sel ? sel.id : null}
+        actions={a}
+      />
 
       <SignalsSection view={view} actions={a} />
 

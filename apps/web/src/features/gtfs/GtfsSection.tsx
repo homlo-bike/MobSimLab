@@ -8,6 +8,7 @@ import { loadWasmGtfs } from "./engine";
 import { convertibleRoutes } from "./toLines";
 import type { GtfsEngineLoader, GtfsFeed, GtfsNetworkDoc } from "./types";
 import { readZip, writeZip } from "./zip";
+import type { Weekend } from "../../workspace/calendar";
 
 /** At most this many feeds, and this much JSON, fit in the project (the drawing's limits in the API). */
 export const MAX_FEEDS = 5;
@@ -45,13 +46,18 @@ export function feedFileName(project: string): string {
  * Purpose: export a timetable as a GTFS feed and let the browser save it (`<project>-gtfs.zip`), valid for a
  * year from today.
  * Inputs: the GTFS engine loader, the timetable (service ids weekday, saturday, sunday, holiday), the project
- * name, the feed language and the public holidays (YYYYMMDD) on which the holiday service runs.
+ * name, the feed language, the public holidays (YYYYMMDD) on which the holiday service runs and the weekend.
  * Side effects: loads the GTFS engine; starts a file save.
  */
 export async function saveFeed(
   loadEngine: GtfsEngineLoader,
   timetable: Timetable,
-  { projectName, lang, holidays }: { projectName: string; lang: string; holidays?: string[] },
+  {
+    projectName,
+    lang,
+    holidays,
+    weekend,
+  }: { projectName: string; lang: string; holidays?: string[]; weekend?: Weekend },
 ): Promise<void> {
   const engine = await loadEngine();
   const today = new Date();
@@ -66,6 +72,7 @@ export async function saveFeed(
     route_types: pluginRouteTypes(),
     feed_version: today.toISOString(),
     ...(holidays?.length ? { holidays } : {}),
+    ...(weekend ? { weekend: { rest: weekend.rest, second: weekend.second } } : {}),
   });
   const url = URL.createObjectURL(new Blob([writeZip(files) as BlobPart], { type: "application/zip" }));
   const a = document.createElement("a");
@@ -76,7 +83,11 @@ export async function saveFeed(
 }
 
 /** The project's own lines on every day type for the download, with the public holidays (YYYYMMDD). */
-export type AllDayFeed = () => Promise<{ timetable: Timetable | null; holidays: string[] }>;
+export type AllDayFeed = () => Promise<{
+  timetable: Timetable | null;
+  holidays: string[];
+  weekend?: Weekend;
+}>;
 
 /**
  * Purpose: the GTFS plugin in the journey planner: import a feed (zip) as the existing network of one
@@ -167,7 +178,9 @@ export function GtfsSection({
       await saveFeed(loadEngine, all?.timetable ?? ownLines, {
         projectName,
         lang,
-        ...(all?.timetable ? { holidays: all.holidays } : {}),
+        ...(all?.timetable
+          ? { holidays: all.holidays, ...(all.weekend ? { weekend: all.weekend } : {}) }
+          : {}),
       });
     } catch (e) {
       setError(t("jp.gtfs.exportFailed", { error: e instanceof Error ? e.message : String(e) }));

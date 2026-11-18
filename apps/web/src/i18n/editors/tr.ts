@@ -171,6 +171,10 @@ export const editorsTr = {
     "Düzenlemek için bir noktaya tıklayın. İstasyon veya makastan çıkan düz bölümü değiştirmek için kare tutamaçları sürükleyin.",
   "rail.switch": "Makas",
   "rail.switchFacts": "{length} uzunluk · 1:{ratio} · R {radius} m · sapan kolda {speed} km/sa · {at}",
+  "rail.switches": "Makaslar",
+  "rail.switchesNone": "Henüz makas yok. Makas veya Makas bağlantısı aracıyla bir tane yerleştirin.",
+  "rail.switchItem": "{track} üzerinde {at} noktasında {kind}",
+  "rail.kind.doubleJunction": "Çift hat ayrımı",
   "rail.positionAlong": "Ray boyunca konum",
   "rail.otherSide": "Diğer taraf",
   "rail.reverse": "Ters çevir",
@@ -1391,6 +1395,9 @@ export const editorsTr = {
   "rail.profileRange":
     "Raylar deniz seviyesinden {min}–{max} m yukarıda · en dik eğim {steep} (en fazla {limit} ‰)",
   "rail.profileAria": "Boy kesit: hat boyunca arazi ve ray üstü",
+  "rail.levelProfileAria": "Seviyelerden boy kesit: hat boyunca ray üstünün sokak seviyesine göre yüksekliği",
+  "rail.levelProfileNote":
+    "Hattın seviyeleri ve rampalarından yükseklikler, sokak seviyesine göre (burada arazi yükseklikleri yüklenmedi).",
   "rail.profileLegend":
     "Düz çizgi: ray üstü. Kesikli: arazi (Copernicus GLO-30, yumuşatılmış). Yükseklikler bir yüzey modelinden, ±4 m.",
 

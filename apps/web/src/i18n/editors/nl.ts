@@ -187,6 +187,10 @@ export const editorsNl = {
     "Klik op een punt om het te bewerken. Sleep de vierkante grepen om het rechte stuk uit een station of wissel te veranderen.",
   "rail.switch": "Wissel",
   "rail.switchFacts": "{length} lang · 1:{ratio} · R {radius} m · {speed} km/h afbuigend · bij {at}",
+  "rail.switches": "Wissels",
+  "rail.switchesNone": "Nog geen wissels. Plaats er een met het gereedschap Wissel of Overloopwissel.",
+  "rail.switchItem": "{kind} op {track} bij {at}",
+  "rail.kind.doubleJunction": "Dubbele aftakking",
   "rail.positionAlong": "Positie langs het spoor",
   "rail.otherSide": "Andere kant",
   "rail.reverse": "Omkeren",
@@ -1430,6 +1434,10 @@ export const editorsNl = {
   "rail.levelHeight": "Vlak, spoor op {rail} m boven zeeniveau · maaiveld langs het spoor {min}–{max} m",
   "rail.profileRange": "Spoor {min}–{max} m boven zeeniveau · steilste helling {steep} (max {limit} ‰)",
   "rail.profileAria": "Hoogteprofiel: maaiveld en bovenkant spoor langs het spoor",
+  "rail.levelProfileAria":
+    "Lengteprofiel uit de niveaus: bovenkant spoorstaaf ten opzichte van straatniveau langs het spoor",
+  "rail.levelProfileNote":
+    "Hoogtes uit de niveaus en hellingen van het spoor, ten opzichte van straatniveau (hier geen terreinhoogtes geladen).",
   "rail.profileLegend":
     "Doorgetrokken: bovenkant spoor. Gestreept: maaiveld (Copernicus GLO-30, afgevlakt). Hoogtes uit een oppervlaktemodel, ±4 m.",
 

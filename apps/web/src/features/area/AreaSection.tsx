@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
-import { type AreaImport, type AreaRegion, type ProjectAreaApi } from "./api";
+import { type AreaCountry, type AreaImport, type AreaRegion, type ProjectAreaApi } from "./api";
 import { AreaPicker } from "./AreaPicker";
 
 const IMPORT_NAMES: Record<AreaImport["kind"], MessageKey> = {
@@ -42,6 +42,7 @@ export function AreaSection({ api, editable }: { api: ProjectAreaApi; editable: 
   const [regions, setRegions] = useState<AreaRegion[]>([]);
   const [state, setState] = useState<"idle" | "saving" | "saved" | { error: string }>("idle");
   const [imports, setImports] = useState<AreaImport[]>([]);
+  const [countries, setCountries] = useState<AreaCountry[]>([]);
   useEffect(() => {
     let live = true;
     api
@@ -50,6 +51,7 @@ export function AreaSection({ api, editable }: { api: ProjectAreaApi; editable: 
         if (!live) return;
         setSaved(a.regions ?? []);
         setRegions(a.regions ?? []);
+        setCountries(a.countries?.countries ?? []);
       })
       .catch((e: unknown) => live && setState({ error: e instanceof Error ? e.message : String(e) }));
     return () => {
@@ -111,6 +113,16 @@ export function AreaSection({ api, editable }: { api: ProjectAreaApi; editable: 
         </div>
       ) : (
         <p className="mt-4 text-sm text-slate-500">{t("prefs.readOnly")}</p>
+      )}
+      {countries.length > 0 && (
+        <p className="mt-3 text-sm text-slate-600">
+          {countries.length === 1
+            ? t("area.country", { name: countries[0]!.name })
+            : t("area.crossesBorder", {
+                countries: countries.map((c) => `${c.name} ${Math.round(c.share * 100)} %`).join(", "),
+                name: countries[0]!.name,
+              })}
+        </p>
       )}
       <AreaImports imports={imports} />
     </section>

@@ -1,4 +1,7 @@
-import { BadRequestException, Controller, Get, HttpException, Query } from "@nestjs/common";
+import { BadRequestException, Controller, Get, HttpException, Optional, Query, Req } from "@nestjs/common";
+import type { MslRequest } from "../auth/session.service";
+import { ProjectGate } from "../geodata/project-gate";
+import { factKey, ProjectDataCache } from "../projects/data-cache";
 import { z } from "zod";
 import { OverpassError } from "../gateway/overpass.client";
 import { WorldBankError } from "../gateway/worldbank.client";
@@ -8,6 +11,7 @@ import { COUNTRY_SOURCE, EconomyService } from "./economy.service";
 const atQuery = z.object({
   lon: z.coerce.number().min(-180).max(180),
   lat: z.coerce.number().min(-89.999).max(89.999),
+  project: z.string().optional(),
 });
 const economyQuery = z.object({
   code: z.string().regex(/^[A-Za-z]{2,3}$/),
@@ -21,7 +25,11 @@ const economyQuery = z.object({
  */
 @Controller("api/economy")
 export class EconomyController {
-  constructor(private readonly economy: EconomyService) {}
+  constructor(
+    private readonly economy: EconomyService,
+    @Optional() private readonly gate?: ProjectGate,
+    @Optional() private readonly kept?: ProjectDataCache,
+  ) {}
 
   /**
    * Purpose: the country a point lies in.
@@ -29,9 +37,22 @@ export class EconomyController {
    */
   @Get("country-at")
   @Requires("instance.read")
-  async countryAt(@Query() q: unknown) {
-    const { lon, lat } = parse(atQuery, q);
-    return { ...(await upstream(() => this.economy.countryAt(lon, lat))), source: COUNTRY_SOURCE };
+  async countryAt(@Query() q: unknown, @Req() req: MslRequest) {
+    const { lon, lat, project } = parse(atQuery, q);
+    const live = () => upstream(() => this.economy.countryAt(lon, lat));
+    // Kept for the project (`?project=`), so it is looked up once (#140 step 3).
+    const projectId = await this.gate?.readable(req, project);
+    const place =
+      projectId && this.kept
+        ? (JSON.parse(
+            (
+              await this.kept.through(projectId, "facts", factKey.countryAt(lon, lat), async () =>
+                JSON.stringify(await live()),
+              )
+            ).body,
+          ) as Awaited<ReturnType<typeof live>>)
+        : await live();
+    return { ...place, source: COUNTRY_SOURCE };
   }
 
   /** Purpose: the countries the World Bank has data for. Output: { countries: [{ iso3, iso2, name }] }. */

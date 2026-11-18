@@ -72,5 +72,11 @@ export const geodataJa = {
   "area.import.current": "{what}：取り込み済み",
   "area.import.failed": "{what}：開始できませんでした。{reason}",
   "area.seeMapData": "取り込みの進み具合は GIS の地図データで確認できます。",
+  "area.country": "国：{name}。",
+  "area.crossesBorder": "エリアは国境をまたいでいます：{countries}。祝日と価格は{name}のものを使います。",
+  "data.liveNotice":
+    "{tiles} 枚の地図タイルと {heights} 件の標高を、プロジェクトの取り込みデータの外からライブで取得しました。今後はプロジェクトに保存されます。図面全体を覆うよう取り込みを広げてください。",
+  "data.extendImport": "地図データで取り込みを広げる",
+  "data.hideLive": "閉じる",
   "data.areaRegions": "範囲：{area} km²、{names} を囲む矩形",
 } satisfies GeodataMessages;

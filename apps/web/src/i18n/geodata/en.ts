@@ -73,6 +73,12 @@ export const geodataEn = {
   "area.import.current": "{what}: already imported",
   "area.import.failed": "{what}: could not start. {reason}",
   "area.seeMapData": "Follow the imports in GIS, Map data.",
+  "area.country": "Country: {name}.",
+  "area.crossesBorder": "The area crosses a border: {countries}. Holidays and prices use {name}.",
+  "data.liveNotice":
+    "{tiles} map tiles and {heights} heights came live from outside the project's imported data. They are kept for the project now; extend the import to cover the whole drawing.",
+  "data.extendImport": "Extend the import in Map data",
+  "data.hideLive": "Hide",
   "data.areaRegions": "Area: {area} km², the box around {names}",
 };
 

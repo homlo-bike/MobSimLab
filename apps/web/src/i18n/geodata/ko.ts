@@ -71,5 +71,11 @@ export const geodataKo = {
   "area.import.current": "{what}: 이미 가져옴",
   "area.import.failed": "{what}: 시작하지 못했습니다. {reason}",
   "area.seeMapData": "가져오기 진행 상황은 GIS의 지도 데이터에서 확인하세요.",
+  "area.country": "국가: {name}.",
+  "area.crossesBorder": "영역이 국경을 넘습니다: {countries}. 공휴일과 가격은 {name} 기준입니다.",
+  "data.liveNotice":
+    "지도 타일 {tiles}개와 고도 {heights}개를 프로젝트 가져오기 데이터 밖에서 실시간으로 받았습니다. 이제 프로젝트에 보관됩니다. 전체 도면을 덮도록 가져오기를 넓히세요.",
+  "data.extendImport": "지도 데이터에서 가져오기 넓히기",
+  "data.hideLive": "숨기기",
   "data.areaRegions": "영역: {area} km², {names}을(를) 둘러싼 사각형",
 } satisfies GeodataMessages;

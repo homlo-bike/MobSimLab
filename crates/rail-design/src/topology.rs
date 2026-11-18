@@ -905,8 +905,8 @@ pub fn topology(dz: &Design) -> Topology {
                         .map(|(w, l)| (w[0], w[1], rd(*l)))
                         .collect()
                 });
-                // From the vertical profile when there is terrain, else the ramps at the
-                // maximum gradient.
+                // From the vertical profile when there is terrain, else the ramps at their
+                // gradient.
                 let gr: Vec<(f64, f64, f64)> = match dz.heights.tracks.get(&g.id) {
                     Some(prof) => crate::terrain::gradient_ranges(prof),
                     None => g
@@ -914,7 +914,7 @@ pub fn topology(dz: &Design) -> Topology {
                         .iter()
                         .map(|r| {
                             let up = r.to.order() > r.from.order();
-                            let v = p.max_gradient_permille;
+                            let v = (r.gradient_permille * 10.0).round() / 10.0;
                             (r.s0, r.s1, if up { v } else { -v })
                         })
                         .collect(),

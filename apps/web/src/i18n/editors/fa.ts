@@ -171,6 +171,10 @@ export const editorsFa = {
     "برای ویرایش روی یک نقطه کلیک کنید. دستگیره‌های مربعی را بکشید تا بخش مستقیم خروجی از ایستگاه یا سوزن تغییر کند.",
   "rail.switch": "سوزن",
   "rail.switchFacts": "طول {length} · 1:{ratio} · R {radius} m · {speed} km/h در شاخهٔ انحرافی · {at}",
+  "rail.switches": "سوزن‌ها",
+  "rail.switchesNone": "هنوز سوزنی نیست. با ابزار سوزن یا تقاطع یکی بگذارید.",
+  "rail.switchItem": "{kind} روی {track} در {at}",
+  "rail.kind.doubleJunction": "انشعاب دوخطه",
   "rail.positionAlong": "موقعیت در طول ریل",
   "rail.otherSide": "سمت دیگر",
   "rail.reverse": "وارونه",
@@ -1376,6 +1380,9 @@ export const editorsFa = {
   "rail.levelHeight": "هموار، ریل‌ها در {rail} متر بالاتر از سطح دریا · زمین در امتداد آن {min}–{max} متر",
   "rail.profileRange": "ریل‌ها {min}–{max} متر بالاتر از سطح دریا · بیشترین شیب {steep} (حداکثر {limit} ‰)",
   "rail.profileAria": "نیمرخ طولی: زمین و سطح ریل در امتداد خط",
+  "rail.levelProfileAria": "نیمرخ طولی از ترازها: سطح ریل نسبت به تراز خیابان در طول خط",
+  "rail.levelProfileNote":
+    "ارتفاع‌ها از ترازها و رمپ‌های خط، نسبت به تراز خیابان (ارتفاع زمین اینجا بارگیری نشده است).",
   "rail.profileLegend":
     "پیوسته: سطح ریل. خط‌چین: زمین (Copernicus GLO-30، هموارشده). ارتفاع‌ها از یک مدل سطح، ±4 متر.",
 

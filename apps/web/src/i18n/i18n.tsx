@@ -172,6 +172,11 @@ export function formatInt(n: number): string {
   return Math.round(n).toLocaleString(active, { numberingSystem: "latn" });
 }
 
+/** Purpose: the language the page shows now, outside React (such as in map handlers). */
+export function activeLanguage(): Language {
+  return active;
+}
+
 export function tNow(key: MessageKey, vars?: Vars): string {
   return translate(active, key, vars);
 }

@@ -187,6 +187,10 @@ export const editorsEs = {
     "Haz clic en un punto para editarlo. Arrastra los tiradores cuadrados para cambiar la recta de salida de una estación o desvío.",
   "rail.switch": "Desvío",
   "rail.switchFacts": "{length} de largo · 1:{ratio} · R {radius} m · {speed} km/h por la desviada · en {at}",
+  "rail.switches": "Desvíos",
+  "rail.switchesNone": "Aún no hay desvíos. Coloque uno con la herramienta Desvío o Escape.",
+  "rail.switchItem": "{kind} en {track} a {at}",
+  "rail.kind.doubleJunction": "Bifurcación doble",
   "rail.positionAlong": "Posición a lo largo de la vía",
   "rail.otherSide": "Otro lado",
   "rail.reverse": "Invertir",
@@ -1442,6 +1446,10 @@ export const editorsEs = {
   "rail.profileRange":
     "Carriles a {min}–{max} m sobre el nivel del mar · pendiente máxima {steep} (máx. {limit} ‰)",
   "rail.profileAria": "Perfil longitudinal: terreno y cabeza del carril a lo largo de la vía",
+  "rail.levelProfileAria":
+    "Perfil longitudinal según los niveles: cabeza de carril respecto al nivel de calle a lo largo de la vía",
+  "rail.levelProfileNote":
+    "Alturas según los niveles y rampas de la vía, respecto al nivel de calle (aquí no hay alturas del terreno cargadas).",
   "rail.profileLegend":
     "Continua: cabeza del carril. Discontinua: terreno (Copernicus GLO-30, suavizado). Alturas de un modelo de superficie, ±4 m.",
 

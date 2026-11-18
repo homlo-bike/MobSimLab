@@ -220,6 +220,10 @@ export const editorsRu = {
   "rail.switch": "Стрелка",
   "rail.switchFacts":
     "длина {length} · 1:{ratio} · R {radius} м · {speed} км/ч на боковой путь · у отметки {at}",
+  "rail.switches": "Стрелочные переводы",
+  "rail.switchesNone": "Стрелок пока нет. Поставьте стрелку инструментом «Стрелка» или «Съезд».",
+  "rail.switchItem": "{kind} на {track}, {at}",
+  "rail.kind.doubleJunction": "Двухпутное ответвление",
   "rail.positionAlong": "Положение на пути",
   "rail.otherSide": "Другая сторона",
   "rail.reverse": "Развернуть",
@@ -1490,6 +1494,10 @@ export const editorsRu = {
   "rail.profileRange":
     "Рельсы на высоте {min}–{max} м над уровнем моря · наибольший уклон {steep} (макс. {limit} ‰)",
   "rail.profileAria": "Продольный профиль: рельеф и головка рельса вдоль пути",
+  "rail.levelProfileAria":
+    "Продольный профиль по уровням: головка рельса относительно уровня улицы вдоль пути",
+  "rail.levelProfileNote":
+    "Высоты по уровням и рампам пути относительно уровня улицы (высоты рельефа здесь не загружены).",
   "rail.profileLegend":
     "Сплошная: головка рельса. Пунктир: рельеф (Copernicus GLO-30, сглажен). Высоты по модели поверхности, ±4 м.",
 

@@ -44,6 +44,8 @@ pub struct StreetLineEditor {
     line: StreetLine,
     setups: Vec<StreetSetup>,
     delays: DelayShares,
+    /// Language of the street names (`name:<lang>`); empty: the local `name`.
+    language: String,
 }
 
 impl Default for StreetLineEditor {
@@ -63,6 +65,7 @@ impl StreetLineEditor {
             graph: None,
             setups: Vec::new(),
             delays: DelayShares::default(),
+            language: String::new(),
             line: StreetLine::new(
                 VehicleProfile::default_for(Mode::Bus),
                 RoutingRules::default(),
@@ -72,9 +75,16 @@ impl StreetLineEditor {
 
     /// Purpose: add streets (OSM XML for one tile) to the network. Call `rebuild` afterwards.
     pub fn add_osm(&mut self, osm_xml: &str) -> Result<(), JsError> {
-        let d = parse_osm_xml(osm_xml).map_err(|e| JsError::new(&e))?;
+        let mut d = parse_osm_xml(osm_xml).map_err(|e| JsError::new(&e))?;
+        street_routing::osm::prefer_language(&mut d, &self.language);
         self.data.merge(d);
         Ok(())
+    }
+
+    /// Purpose: name streets, and the stops named after them, in a language where OSM has it (`name:en`).
+    /// Side effects: applies to the streets added afterwards.
+    pub fn set_language(&mut self, lang: &str) {
+        self.language = lang.to_string();
     }
 
     /// Purpose: rebuild the road network from all streets added so far and re-route the line.

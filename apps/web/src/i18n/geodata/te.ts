@@ -72,5 +72,12 @@ export const geodataTe = {
   "area.import.current": "{what}: ఇప్పటికే దిగుమతి అయింది",
   "area.import.failed": "{what}: మొదలవలేదు. {reason}",
   "area.seeMapData": "దిగుమతి పురోగతిని GIS, మ్యాప్ డేటాలో చూడండి.",
+  "area.country": "దేశం: {name}.",
+  "area.crossesBorder":
+    "ప్రాంతం ఒక సరిహద్దును దాటుతుంది: {countries}. సెలవులు మరియు ధరలు {name} వి తీసుకుంటారు.",
+  "data.liveNotice":
+    "{tiles} మ్యాప్ టైల్స్ మరియు {heights} ఎత్తులు ప్రాజెక్ట్ దిగుమతి డేటా బయటి నుండి నేరుగా వచ్చాయి. ఇప్పుడు అవి ప్రాజెక్ట్‌లో ఉంచబడ్డాయి; మొత్తం డ్రాయింగ్‌ను కవర్ చేయడానికి దిగుమతిని విస్తరించండి.",
+  "data.extendImport": "మ్యాప్ డేటాలో దిగుమతిని విస్తరించు",
+  "data.hideLive": "దాచు",
   "data.areaRegions": "ప్రాంతం: {area} చ.కి.మీ, {names} చుట్టూ దీర్ఘచతురస్రం",
 } satisfies GeodataMessages;

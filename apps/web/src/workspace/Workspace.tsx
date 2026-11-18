@@ -9,7 +9,7 @@ import type { BenefitsDoc } from "../features/benefits/formulas";
 import { benefitsApi } from "../features/benefits/data";
 import type { Region, RegionsDoc } from "../features/benefits/regions";
 import { MapDataPanel } from "../features/geodata/MapDataPanel";
-import { setDataProject } from "../geodata/projectData";
+import { type LiveData, setDataProject, watchLiveData } from "../geodata/projectData";
 import { projectTimetable } from "../features/benefits/timetable";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { economyApi, type Prices } from "../features/costs/economy";
@@ -39,6 +39,8 @@ import { ToolPalette } from "../features/street-lines/ToolPalette";
 import {
   lineInput,
   newLineId,
+  nextLineColor,
+  withLineColors,
   type SavedStreetLine,
   type StreetLinesDoc,
 } from "../features/street-lines/saved";
@@ -97,7 +99,8 @@ import { HelpMenu } from "../shell/HelpMenu";
 import { lazyNamed, LoadingScreen } from "../shell/lazy";
 import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
-import { calendarFrom, serviceDayFor } from "./calendar";
+import { calendarFrom, serviceDayFor, weekendOf } from "./calendar";
+import { WeekendContext } from "./dayTypeLabel";
 import {
   delaysFrom,
   designTextsFrom,
@@ -371,7 +374,11 @@ export function Workspace({
   }, [api, projectId]);
 
   // A project opens with the map on its area (the regions picked for it, or around its drawing).
-  useAreaZoom(map, projectId, typeof api.area === "function" ? (id: string) => api.area(id).get() : null);
+  const areaView = useAreaZoom(
+    map,
+    projectId,
+    typeof api.area === "function" ? (id: string) => api.area(id).get() : null,
+  );
 
   // The map tools read this project's imported OpenStreetMap and elevation data where it has some (ADR-0046).
   const geodata = useMemo(() => api.geodata(projectId), [api, projectId]);
@@ -482,6 +489,15 @@ export function Workspace({
 
   // What is drawn in the project, saved with it a moment after each change.
   const drawings = useDrawings(api, projectId, editable);
+  // Map data the tools read live, outside the project's imports (#140 step 5): said once, with a way to the
+  // import in Map data; it shows again when more is read live after the planner hid it.
+  const [liveData, setLiveData] = useState<LiveData>({ tiles: 0, heights: 0 });
+  const [liveSeen, setLiveSeen] = useState<LiveData>({ tiles: 0, heights: 0 });
+  useEffect(() => watchLiveData(setLiveData), []);
+  useEffect(() => setLiveSeen({ tiles: 0, heights: 0 }), [projectId]);
+  const liveNote =
+    (liveData.tiles > liveSeen.tiles || liveData.heights > liveSeen.heights) &&
+    (liveData.tiles > 0 || liveData.heights > 0);
   // A new session (Try again after a refused save loads it) sends what was refused once more.
   const firstApi = useRef(api);
   useEffect(() => {
@@ -566,7 +582,9 @@ export function Workspace({
   const currencyState = useProjectCurrency(preferences, ECONOMY);
   // The country at the project's location, for the calendar's public holidays (Project preferences).
   const place = railway?.origin ?? streetLines?.lines[0]?.points[0]?.lonlat ?? null;
-  const placeCountry = usePlaceCountry(place);
+  // The project's country: the main one of its area, looked up once (#140 step 3); else at the drawing.
+  const drawnCountry = usePlaceCountry(areaView?.countries?.main ? null : place);
+  const placeCountry = areaView?.countries?.main?.iso2 ?? drawnCountry;
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
@@ -575,6 +593,9 @@ export function Workspace({
   // The project's weekday service day (Calendar and years): the tools' peak windows, and the first and last
   // departure of lines without their own. Set before the tools render; back to the default when the project closes.
   const weekdayJson = JSON.stringify(serviceDayFor(calendarFrom(preferences), "weekday"));
+  // The project's weekend names the Saturday and Sunday day types in every tool (Friday and Saturday in Syria).
+  const weekendJson = JSON.stringify(weekendOf(calendarFrom(preferences)));
+  const weekend = useMemo(() => JSON.parse(weekendJson) as ReturnType<typeof weekendOf>, [weekendJson]);
   useMemo(() => setProjectServiceDay(JSON.parse(weekdayJson) as ServiceDay), [weekdayJson]);
   useEffect(() => () => setProjectServiceDay(null), []);
   const textsJson = JSON.stringify(designTextsFrom(preferences));
@@ -607,12 +628,13 @@ export function Workspace({
     forgetSetups(projectId);
   }, [drawings.loaded, editable, projectId]);
   const savedStreet = streetLines?.lines ?? NO_STREET_LINES;
-  // Street lines saved before lines had ids get one, so their comments stay with them (Owners and Editors save).
+  // Street lines saved before lines had ids get one, so their comments stay with them, and before lines had
+  // colours a colour of their own, so lines of one mode can be told apart (Owners and Editors save).
   useEffect(() => {
-    if (!drawings.loaded || !editable || !streetLines?.lines.some((l) => !l.id)) return;
+    if (!drawings.loaded || !editable || !streetLines?.lines.some((l) => !l.id || !l.color)) return;
     drawings.set("street-lines", {
       ...streetLines,
-      lines: streetLines.lines.map((l) => (l.id ? l : { ...l, id: newLineId() })),
+      lines: withLineColors(streetLines.lines.map((l) => (l.id ? l : { ...l, id: newLineId() }))),
     } satisfies StreetLinesDoc);
   }, [drawings.loaded, editable, streetLines]);
   const editedStreet = Math.min(streetIndex, savedStreet.length);
@@ -952,6 +974,24 @@ export function Workspace({
           </button>
         </div>
       )}
+      {liveNote && (
+        <div
+          role="status"
+          className="flex flex-wrap items-center gap-3 border-b border-sky-200 bg-sky-50 px-4 py-2 text-sm text-sky-950"
+        >
+          <p className="min-w-48 flex-1">
+            {t("data.liveNotice", { tiles: liveData.tiles, heights: liveData.heights })}
+          </p>
+          {tab !== "gis" && (
+            <button type="button" className="btn min-h-10" onClick={() => onTab("gis")}>
+              {t("data.extendImport")}
+            </button>
+          )}
+          <button type="button" className="btn btn-ghost min-h-10" onClick={() => setLiveSeen(liveData)}>
+            {t("data.hideLive")}
+          </button>
+        </div>
+      )}
       <main className="relative flex min-h-0 flex-1 flex-col overflow-clip md:flex-row">
         <div className={`relative min-h-0 min-w-0 flex-1 ${onMap ? "" : "hidden"}`}>
           <MapView onReady={setMap} />
@@ -979,6 +1019,10 @@ export function Workspace({
                 initial={savedStreet[editedStreet] ?? null}
                 onSave={saveStreet}
                 defaultName={t("street.lineN", { n: editedStreet + 1 })}
+                defaultColor={
+                  withLineColors(savedStreet)[editedStreet]?.color ??
+                  nextLineColor(savedStreet.map((l) => l.color))
+                }
                 otherLines={otherStreet}
                 onPickLine={(id) => {
                   const i = savedStreet.findIndex((l) => l.id === id);
@@ -1192,6 +1236,7 @@ export function Workspace({
                   return {
                     timetable,
                     holidays: feedHolidays(cal, today, new Date(today.getTime() + 365 * 86_400_000)),
+                    weekend: weekendOf(cal),
                   };
                 }}
                 {...(editable ? { onEditGtfsRoute: (f: string, r: string) => void editGtfsRoute(f, r) } : {})}
@@ -1799,16 +1844,18 @@ export function Workspace({
   // use, reach the line tools.
   return (
     <PlannedModesProvider value={planned}>
-      <VehiclesOffContext.Provider value={vehiclesOff}>
-        <CommentsProvider
-          api={commentsApi}
-          canComment={project ? can.comment(project) : false}
-          isOwner={project ? can.manage(project) : false}
-          userId={userId}
-        >
-          <ChecksProvider key={projectId}>{body}</ChecksProvider>
-        </CommentsProvider>
-      </VehiclesOffContext.Provider>
+      <WeekendContext.Provider value={weekend}>
+        <VehiclesOffContext.Provider value={vehiclesOff}>
+          <CommentsProvider
+            api={commentsApi}
+            canComment={project ? can.comment(project) : false}
+            isOwner={project ? can.manage(project) : false}
+            userId={userId}
+          >
+            <ChecksProvider key={projectId}>{body}</ChecksProvider>
+          </CommentsProvider>
+        </VehiclesOffContext.Provider>
+      </WeekendContext.Provider>
     </PlannedModesProvider>
   );
 }

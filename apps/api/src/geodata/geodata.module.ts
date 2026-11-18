@@ -2,6 +2,7 @@ import { Global, Module } from "@nestjs/common";
 import { AuditService } from "../audit/audit.service";
 import { SessionService } from "../auth/session.service";
 import { CopernicusDemClient } from "../gateway/copernicus-dem.client";
+import { ProjectDataCache } from "../projects/data-cache";
 import { ProjectsService } from "../projects/projects.service";
 import { GeodataController } from "./geodata.controller";
 import { GeodataReader } from "./geodata-reader";
@@ -23,8 +24,9 @@ import { ProjectGate } from "./project-gate";
     GeodataService,
     ProjectGate,
     GeodataReader,
+    ProjectDataCache,
     { provide: CopernicusDemClient, useFactory: () => new CopernicusDemClient() },
   ],
-  exports: [GeodataService, GeodataReader, ProjectGate, ProjectsService],
+  exports: [GeodataService, GeodataReader, ProjectGate, ProjectsService, ProjectDataCache],
 })
 export class GeodataModule {}

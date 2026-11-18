@@ -187,6 +187,10 @@ export const editorsMr = {
     "संपादित करण्यासाठी बिंदूवर क्लिक करा. स्थानक किंवा स्विचपासूनचा सरळ भाग बदलण्यासाठी चौकोनी हँडल ओढा.",
   "rail.switch": "स्विच",
   "rail.switchFacts": "लांबी {length} · 1:{ratio} · R {radius} मी · फाट्यावर {speed} किमी/ता · {at} येथे",
+  "rail.switches": "स्विच",
+  "rail.switchesNone": "अजून स्विच नाही. टर्नआउट किंवा क्रॉसओव्हर साधनाने एक ठेवा.",
+  "rail.switchItem": "{track} वर {at} येथे {kind}",
+  "rail.kind.doubleJunction": "दुहेरी जंक्शन",
   "rail.positionAlong": "रुळावरील स्थान",
   "rail.otherSide": "दुसरी बाजू",
   "rail.reverse": "दिशा उलटा",
@@ -1403,6 +1407,9 @@ export const editorsMr = {
   "rail.levelHeight": "सपाट, रूळ समुद्रसपाटीपासून {rail} मी उंच · बाजूची जमीन {min}–{max} मी",
   "rail.profileRange": "रूळ समुद्रसपाटीपासून {min}–{max} मी · सर्वात तीव्र चढ {steep} (कमाल {limit} ‰)",
   "rail.profileAria": "अनुदैर्ध्य प्रोफाइल: रुळाच्या बाजूने जमीन आणि रुळाचा वरचा भाग",
+  "rail.levelProfileAria": "स्तरांवरून उभा प्रोफाइल: रुळालगत रस्त्याच्या पातळीच्या तुलनेत रुळाचा वरचा भाग",
+  "rail.levelProfileNote":
+    "रुळाच्या स्तर आणि उतारांवरून उंची, रस्त्याच्या पातळीच्या सापेक्ष (येथे भूप्रदेशाची उंची लोड झालेली नाही).",
   "rail.profileLegend":
     "सलग: रुळाचा वरचा भाग. तुटक: जमीन (Copernicus GLO-30, गुळगुळीत). उंची पृष्ठभाग मॉडेलवरून, ±4 मी.",
 

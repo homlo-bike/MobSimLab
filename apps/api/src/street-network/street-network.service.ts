@@ -1,3 +1,4 @@
+import { type DataSource, ProjectDataCache } from "../projects/data-cache";
 import { Injectable, Optional } from "@nestjs/common";
 import { DESTINATION_FILTERS, type DestinationPoint, destinationCategories } from "../agents/destinations";
 import { OverpassClient, OverpassError } from "../gateway/overpass.client";
@@ -481,44 +482,50 @@ function tileBox(x: number, y: number): [number, number, number, number] {
 export class StreetNetworkService {
   private readonly cache = new Map<string, string>();
   private readonly pending = new Map<string, Promise<string>>();
+  /** Project keys in `cache` that came from the project's data cache (fetched live before), not its import. */
+  private readonly fromCache = new Set<string>();
 
   constructor(
     private readonly overpass: OverpassClient,
     @Optional() private readonly imported?: GeodataReader,
+    @Optional() private readonly kept?: ProjectDataCache,
   ) {
     imported?.onChange((projectId) => this.forgetProject(projectId));
   }
 
   /** Purpose: OSM XML for the streets of tile x/y at TILE_ZOOM. Side effects: may call Overpass. */
-  tile(x: number, y: number, projectId?: string): Promise<string> {
+  tile(x: number, y: number, projectId?: string, source?: (s: DataSource) => void): Promise<string> {
     return this.cached(
       `road/${x}/${y}`,
       () => streetQuery(TILE_ZOOM, x, y),
       undefined,
       projectId && (() => this.imported!.tileXml(projectId, "road", tileBox(x, y))),
       projectId,
+      source,
     );
   }
 
   /** Purpose: OSM XML for the railway tracks of tile x/y at TILE_ZOOM. Side effects: may call Overpass. */
-  railTile(x: number, y: number, projectId?: string): Promise<string> {
+  railTile(x: number, y: number, projectId?: string, source?: (s: DataSource) => void): Promise<string> {
     return this.cached(
       `rail/${x}/${y}`,
       () => railQuery(TILE_ZOOM, x, y),
       undefined,
       projectId && (() => this.imported!.tileXml(projectId, "rail", tileBox(x, y))),
       projectId,
+      source,
     );
   }
 
   /** Purpose: OSM XML for the walkable ways of tile x/y at TILE_ZOOM. Side effects: may call Overpass. */
-  walkTile(x: number, y: number, projectId?: string): Promise<string> {
+  walkTile(x: number, y: number, projectId?: string, source?: (s: DataSource) => void): Promise<string> {
     return this.cached(
       `walk/${x}/${y}`,
       () => walkQuery(TILE_ZOOM, x, y),
       undefined,
       projectId && (() => this.imported!.tileXml(projectId, "walk", tileBox(x, y))),
       projectId,
+      source,
     );
   }
 
@@ -526,13 +533,14 @@ export class StreetNetworkService {
    * Purpose: the building footprints of tile x/y at TILE_ZOOM as JSON `{buildings: BuildingFootprint[]}`.
    * Side effects: may call Overpass.
    */
-  buildingTile(x: number, y: number, projectId?: string): Promise<string> {
+  buildingTile(x: number, y: number, projectId?: string, source?: (s: DataSource) => void): Promise<string> {
     return this.cached(
       `building/${x}/${y}`,
       () => buildingQuery(TILE_ZOOM, x, y),
       (json) => JSON.stringify({ buildings: footprints(json) }),
       projectId && (() => this.imported!.buildings(projectId, tileBox(x, y))),
       projectId,
+      source,
     );
   }
 
@@ -540,13 +548,14 @@ export class StreetNetworkService {
    * Purpose: the schools, universities, hospitals and clinics of tile x/y at TILE_ZOOM as JSON
    * `{places: PlacePoint[]}`. Side effects: may call Overpass.
    */
-  placeTile(x: number, y: number, projectId?: string): Promise<string> {
+  placeTile(x: number, y: number, projectId?: string, source?: (s: DataSource) => void): Promise<string> {
     return this.cached(
       `place/${x}/${y}`,
       () => placeQuery(TILE_ZOOM, x, y),
       (json) => JSON.stringify({ places: places(json) }),
       projectId && (() => this.imported!.places(projectId, tileBox(x, y))),
       projectId,
+      source,
     );
   }
 
@@ -555,13 +564,14 @@ export class StreetNetworkService {
    * Inputs: `[west, south, east, north]`, already checked and rounded by the controller.
    * Side effects: may call Overpass.
    */
-  water(b: Bbox, projectId?: string): Promise<string> {
+  water(b: Bbox, projectId?: string, source?: (s: DataSource) => void): Promise<string> {
     return this.cached(
       `water/${b.join(",")}`,
       () => waterQuery(b),
       (json) => JSON.stringify(waterShapes(json, b)),
       projectId && (() => this.imported!.water(projectId, b)),
       projectId,
+      source,
     );
   }
 
@@ -603,7 +613,11 @@ export class StreetNetworkService {
 
   /** Purpose: forget what was cached from a project's import (called when the import changes). */
   forgetProject(projectId: string): void {
-    for (const k of [...this.cache.keys()]) if (k.startsWith(`${projectId}:`)) this.cache.delete(k);
+    for (const k of [...this.cache.keys()])
+      if (k.startsWith(`${projectId}:`)) {
+        this.cache.delete(k);
+        this.fromCache.delete(k);
+      }
   }
 
   /**
@@ -616,16 +630,29 @@ export class StreetNetworkService {
     convert: (body: string) => string = (b) => b,
     fromImport?: (() => Promise<string | null>) | "" | undefined,
     projectId?: string,
+    source?: (s: DataSource) => void,
   ): Promise<string> {
-    if (fromImport && projectId) {
-      const key = `${projectId}:${liveKey}`;
-      const hit = this.cache.get(key);
-      if (hit !== undefined) return hit;
+    const projectKey = projectId ? `${projectId}:${liveKey}` : null;
+    if (fromImport && projectId && projectKey) {
+      const hit = this.cache.get(projectKey);
+      if (hit !== undefined) {
+        source?.(this.fromCache.has(projectKey) ? "cache" : "import");
+        return hit;
+      }
       const body = await fromImport();
       if (body !== null) {
         const out = convert(body);
-        this.remember(key, out);
+        this.remember(projectKey, out);
+        source?.("import");
         return out;
+      }
+      // Outside the import: what was fetched live for the project before (#140 step 4).
+      const kept = await this.kept?.get(projectId, "osm", liveKey);
+      if (kept != null) {
+        this.remember(projectKey, kept);
+        this.fromCache.add(projectKey);
+        source?.("cache");
+        return kept;
       }
     }
     const key = liveKey;
@@ -633,6 +660,11 @@ export class StreetNetworkService {
     if (hit !== undefined) {
       this.cache.delete(key);
       this.cache.set(key, hit);
+      if (fromImport && projectId && projectKey) {
+        await this.kept?.put(projectId, "osm", liveKey, hit);
+        this.fromCache.add(projectKey);
+      }
+      source?.("live");
       return hit;
     }
     let p = this.pending.get(key);
@@ -658,11 +690,22 @@ export class StreetNetworkService {
       throw e;
     }
     this.remember(key, xml);
+    if (fromImport && projectId && projectKey) {
+      // Kept for the project, so every tool reads it from there next time.
+      await this.kept?.put(projectId, "osm", liveKey, xml);
+      this.remember(projectKey, xml);
+      this.fromCache.add(projectKey);
+    }
+    source?.("live");
     return xml;
   }
 
   private remember(key: string, value: string): void {
     this.cache.set(key, value);
-    while (this.cache.size > CACHE_TILES) this.cache.delete(this.cache.keys().next().value as string);
+    while (this.cache.size > CACHE_TILES) {
+      const old = this.cache.keys().next().value as string;
+      this.cache.delete(old);
+      this.fromCache.delete(old);
+    }
   }
 }

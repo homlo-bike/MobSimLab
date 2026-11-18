@@ -71,5 +71,11 @@ export const geodataMr = {
   "area.import.current": "{what}: आधीच आयात केलेले",
   "area.import.failed": "{what}: सुरू होऊ शकले नाही. {reason}",
   "area.seeMapData": "आयातीची प्रगती GIS, नकाशा डेटा येथे पाहा.",
+  "area.country": "देश: {name}.",
+  "area.crossesBorder": "क्षेत्र सीमा ओलांडतो: {countries}. सुट्या आणि किमती {name} च्या वापरल्या जातात.",
+  "data.liveNotice":
+    "{tiles} नकाशा टाइल्स आणि {heights} उंची प्रकल्पाच्या आयात केलेल्या डेटाबाहेरून थेट आल्या. आता त्या प्रकल्पात ठेवल्या आहेत; संपूर्ण रेखाचित्र व्यापण्यासाठी आयात वाढवा.",
+  "data.extendImport": "नकाशा डेटामध्ये आयात वाढवा",
+  "data.hideLive": "लपवा",
   "data.areaRegions": "क्षेत्र: {area} चौ. किमी, {names} भोवतीचा आयत",
 } satisfies GeodataMessages;

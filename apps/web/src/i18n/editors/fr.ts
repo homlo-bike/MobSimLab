@@ -187,6 +187,10 @@ export const editorsFr = {
     "Cliquez sur un point pour le modifier. Faites glisser les poignées carrées pour modifier l’alignement droit en sortie de station ou d’aiguillage.",
   "rail.switch": "Aiguillage",
   "rail.switchFacts": "longueur {length} · 1:{ratio} · R {radius} m · {speed} km/h en déviation · à {at}",
+  "rail.switches": "Aiguillages",
+  "rail.switchesNone": "Pas encore d’aiguillage. Placez-en un avec l’outil Aiguillage ou Communication.",
+  "rail.switchItem": "{kind} sur {track} à {at}",
+  "rail.kind.doubleJunction": "Bifurcation double",
   "rail.positionAlong": "Position le long de la voie",
   "rail.otherSide": "Autre côté",
   "rail.reverse": "Inverser",
@@ -1459,6 +1463,10 @@ export const editorsFr = {
   "rail.levelHeight": "Plat, rails à {rail} m d’altitude · terrain le long {min}–{max} m",
   "rail.profileRange": "Rails {min}–{max} m d’altitude · pente maximale {steep} (max. {limit} ‰)",
   "rail.profileAria": "Profil en long : terrain et dessus du rail le long de la voie",
+  "rail.levelProfileAria":
+    "Profil en long d'après les niveaux : dessus de rail par rapport au niveau de la rue le long de la voie",
+  "rail.levelProfileNote":
+    "Hauteurs d'après les niveaux et rampes de la voie, par rapport au niveau de la rue (pas d'altitudes du terrain chargées ici).",
   "rail.profileLegend":
     "Trait plein : dessus du rail. Tirets : terrain (Copernicus GLO-30, lissé). Altitudes d’un modèle de surface, ±4 m.",
 

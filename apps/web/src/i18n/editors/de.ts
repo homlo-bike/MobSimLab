@@ -187,6 +187,10 @@ export const editorsDe = {
     "Klicken Sie auf einen Punkt, um ihn zu bearbeiten. Ziehen Sie die quadratischen Griffe, um die Gerade aus einer Station oder Weiche zu ändern.",
   "rail.switch": "Weiche",
   "rail.switchFacts": "{length} lang · 1:{ratio} · R {radius} m · {speed} km/h im Abzweig · bei {at}",
+  "rail.switches": "Weichen",
+  "rail.switchesNone": "Noch keine Weichen. Setzen Sie eine mit dem Werkzeug Weiche oder Gleisverbindung.",
+  "rail.switchItem": "{kind} auf {track} bei {at}",
+  "rail.kind.doubleJunction": "Doppelte Abzweigung",
   "rail.positionAlong": "Lage am Gleis",
   "rail.otherSide": "Andere Seite",
   "rail.reverse": "Umkehren",
@@ -1448,6 +1452,10 @@ export const editorsDe = {
   "rail.levelHeight": "Eben, Schienen auf {rail} m über dem Meer · Gelände entlang {min}–{max} m",
   "rail.profileRange": "Schienen {min}–{max} m über dem Meer · steilste Stelle {steep} (max. {limit} ‰)",
   "rail.profileAria": "Höhenprofil: Gelände und Schienenoberkante entlang des Gleises",
+  "rail.levelProfileAria":
+    "Höhenprofil aus den Ebenen: Schienenoberkante gegenüber Straßenniveau entlang des Gleises",
+  "rail.levelProfileNote":
+    "Höhen aus den Ebenen und Rampen des Gleises, bezogen auf das Straßenniveau (hier keine Geländehöhen geladen).",
   "rail.profileLegend":
     "Durchgezogen: Schienenoberkante. Gestrichelt: Gelände (Copernicus GLO-30, geglättet). Höhen aus einem Oberflächenmodell, ±4 m.",
 

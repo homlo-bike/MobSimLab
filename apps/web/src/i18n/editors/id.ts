@@ -186,6 +186,10 @@ export const editorsId = {
     "Klik titik untuk mengeditnya. Seret pegangan persegi untuk mengubah bagian lurus dari stasiun atau wesel.",
   "rail.switch": "Wesel",
   "rail.switchFacts": "{length} panjang · 1:{ratio} · R {radius} m · {speed} km/j di sisi belok · {at}",
+  "rail.switches": "Wesel",
+  "rail.switchesNone": "Belum ada wesel. Pasang dengan alat Wesel atau Crossover.",
+  "rail.switchItem": "{kind} di {track} pada {at}",
+  "rail.kind.doubleJunction": "Percabangan ganda",
   "rail.positionAlong": "Posisi di sepanjang rel",
   "rail.otherSide": "Sisi lain",
   "rail.reverse": "Balik",
@@ -1417,6 +1421,10 @@ export const editorsId = {
   "rail.profileRange":
     "Rel {min}–{max} m di atas permukaan laut · kelandaian tercuram {steep} (maks. {limit} ‰)",
   "rail.profileAria": "Profil memanjang: tanah dan kepala rel di sepanjang jalur",
+  "rail.levelProfileAria":
+    "Profil memanjang dari level: kepala rel terhadap permukaan jalan di sepanjang jalur",
+  "rail.levelProfileNote":
+    "Ketinggian dari level dan tanjakan jalur, relatif terhadap permukaan jalan (ketinggian medan belum dimuat di sini).",
   "rail.profileLegend":
     "Garis penuh: kepala rel. Putus-putus: tanah (Copernicus GLO-30, dihaluskan). Ketinggian dari model permukaan, ±4 m.",
 

@@ -188,6 +188,10 @@ export const editorsZu = {
     "Chofoza iphoyinti ukuze ulihlele. Donsa izibambo ezingunxande ukuze ushintshe ingxenye eqondile kusuka esiteshini noma esishintshini.",
   "rail.switch": "Isishintshi",
   "rail.switchFacts": "ubude {length} · 1:{ratio} · R {radius} m · {speed} km/h egatsheni · ku-{at}",
+  "rail.switches": "Amaswishi",
+  "rail.switchesNone": "Awekho amaswishi okwamanje. Faka elilodwa ngethuluzi le-Turnout noma le-Crossover.",
+  "rail.switchItem": "{kind} ku-{track} ku-{at}",
+  "rail.kind.doubleJunction": "Ihlanganiso eliphindwe kabili",
   "rail.positionAlong": "Indawo kujantshi",
   "rail.otherSide": "Olunye uhlangothi",
   "rail.reverse": "Phendula isiqondiso",
@@ -1453,6 +1457,10 @@ export const editorsZu = {
   "rail.profileRange":
     "Izinsimbi {min}–{max} m ngaphezu kolwandle · umthambeka omkhulu kakhulu {steep} (ubuningi {limit} ‰)",
   "rail.profileAria": "Iphrofayela yobude: umhlaba nengaphezulu lensimbi kulo lonke ulayini",
+  "rail.levelProfileAria":
+    "Iphrofayela eqondile evela emazingeni: phezulu kukaloliwe uma kuqhathaniswa nezinga lomgwaqo ngobude bomzila",
+  "rail.levelProfileNote":
+    "Ukuphakama okuvela emazingeni nasemithambekeni yomzila, uma kuqhathaniswa nezinga lomgwaqo (ukuphakama komhlaba akulayishiwe lapha).",
   "rail.profileLegend":
     "Umugqa oqinile: ingaphezulu lensimbi. Imigqa enezikhala: umhlaba (Copernicus GLO-30, wenziwe bushelelezi). Ukuphakama kusuka kumodeli yobuso, ±4 m.",
 

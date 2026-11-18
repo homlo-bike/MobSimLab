@@ -409,6 +409,7 @@ pub fn build_with_choice(
                 params: tp,
                 storage_radius: storage_radius(tp),
                 embedded,
+                keep_clear: &[],
             }));
         }
         for sw in &net.switches {
@@ -469,6 +470,46 @@ pub fn build_with_choice(
                     switch_errors.push(Issue::error(e, Some(at_s(&parent.centre, sw.s).p), sw.id))
                 }
             }
+        }
+    }
+    // A ramp from a track's ends should not run through switches on the track: fit those tracks
+    // again with the switches kept clear (their line stays the same, so the switches still fit).
+    for g in tracks.iter_mut() {
+        let clear: Vec<[f64; 2]> = switches
+            .iter()
+            .filter(|sw| sw.track == g.id)
+            .map(|sw| [sw.s0, sw.s1])
+            .collect();
+        let Some(t) = net.tracks.iter().find(|t| t.id == g.id) else {
+            continue;
+        };
+        if clear.is_empty()
+            || g.ramps.len() != 1
+            || !g
+                .ramps
+                .iter()
+                .any(|r| clear.iter().any(|c| c[1] > r.s0 && c[0] < r.s1))
+        {
+            continue;
+        }
+        let tm = track_modes[&t.id];
+        let tp = mode_params(tm);
+        let embedded = match t.bed {
+            Bed::Embedded => true,
+            Bed::Ballast => false,
+            Bed::Auto => tm.street_running(),
+        };
+        let again = fit(&FitInput {
+            track: t,
+            start: g.start,
+            end: g.end,
+            params: tp,
+            storage_radius: storage_radius(tp),
+            embedded,
+            keep_clear: &clear,
+        });
+        if again.centre.len() == g.centre.len() {
+            *g = again;
         }
     }
     let train_length = net

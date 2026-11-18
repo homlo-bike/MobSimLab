@@ -4,8 +4,7 @@ import type { SavedDepot } from "../features/depots/types";
 import { loadRailEngine } from "../features/railways/engine";
 import type { Network, RailEngineLoader } from "../features/railways/types";
 import { legsToGeoJson } from "../features/street-lines/geojson";
-import { MODES } from "../features/street-lines/modes";
-import type { SavedStreetLine } from "../features/street-lines/saved";
+import { type SavedStreetLine, streetLineColor } from "../features/street-lines/saved";
 import type { SavedPluginLine } from "../kits/saved";
 
 /** Ids of the read-only layers: no tool's prefix, so no tool removes them and no click reaches them. */
@@ -72,7 +71,7 @@ const EMPTY = fc([]);
 export function streetLinesGeoJson(lines: readonly SavedStreetLine[]) {
   const out: Feature[] = [];
   for (const l of lines) {
-    const color = MODES[l.profile.mode]?.color ?? MODES.bus.color;
+    const color = streetLineColor(l);
     for (const f of legsToGeoJson(l.view).features) out.push({ ...f, properties: { color } } as Feature);
     for (const p of l.view.points)
       if (p.kind !== "via")

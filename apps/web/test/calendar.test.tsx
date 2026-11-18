@@ -23,6 +23,14 @@ import {
   DEFAULT_WINDOW,
   parseClock,
   yearList,
+  cldrWeekendDays,
+  countryWeekend,
+  eidHolidays,
+  FRIDAY_SATURDAY,
+  weekendOf,
+  withCountryCustoms,
+  withEid,
+  withWeekend,
   type CalendarApi,
   type ServiceCalendar,
 } from "../src/workspace/calendar";
@@ -140,6 +148,84 @@ describe("project calendar", () => {
   });
 });
 
+describe("weekend and Eid", () => {
+  it("runs the Sunday service on Fridays and the Saturday one on Saturdays in a Friday and Saturday weekend", () => {
+    const cal = withWeekend({}, FRIDAY_SATURDAY);
+    expect(dayTypeOf("2027-01-01", cal, [])).toBe("sunday"); // Friday
+    expect(dayTypeOf("2027-01-02", cal, [])).toBe("saturday");
+    expect(dayTypeOf("2027-01-03", cal, [])).toBe("weekday"); // Sunday
+    const c = countDays(2027, cal, []);
+    expect(c).toEqual({ weekday: 260, saturday: 52, sunday: 53, holiday: 0 });
+  });
+
+  it("takes the country's usual weekend unless the planner chose one", () => {
+    expect(countryWeekend("sy")).toEqual(FRIDAY_SATURDAY);
+    expect(countryWeekend("DE")).toEqual({ rest: 0, second: 6 });
+    expect(weekendOf({ country: "SY" })).toEqual(FRIDAY_SATURDAY);
+    expect(weekendOf({ country: "SY", weekend: { rest: 0, second: 6 } })).toEqual({ rest: 0, second: 6 });
+    // A broken value falls back to the country's.
+    expect(weekendOf({ country: "SY", weekend: { rest: 3, second: 3 } })).toEqual(FRIDAY_SATURDAY);
+  });
+
+  it("reads each country's weekend from the Unicode CLDR week data, one-day weekends too", () => {
+    expect(cldrWeekendDays("SY")?.sort()).toEqual([5, 6]);
+    expect(countryWeekend("AE")).toEqual({ rest: 0, second: 6 });
+    expect(countryWeekend("AF")).toEqual({ rest: 5, second: 4 });
+    // The Sabbath is Israel's main rest day.
+    expect(countryWeekend("IL")).toEqual({ rest: 6, second: 5 });
+    expect(countryWeekend("IR")).toEqual({ rest: 5 });
+    expect(countryWeekend("IN")).toEqual({ rest: 0 });
+    expect(cldrWeekendDays("not a country")).toBeNull();
+    // In a one-day weekend every other day is a weekday.
+    const ir = withWeekend({}, { rest: 5 });
+    expect(dayTypeOf("2026-11-20", ir, [])).toBe("sunday");
+    expect(dayTypeOf("2026-11-21", ir, [])).toBe("weekday");
+    expect(countDays(2026, ir, [])).toEqual({ weekday: 313, saturday: 0, sunday: 52, holiday: 0 });
+  });
+
+  it("dates Eid al-Fitr and Eid al-Adha from the Umm al-Qura calendar", () => {
+    expect(eidHolidays(2026).map((h) => h.date)).toEqual([
+      "2026-03-20",
+      "2026-03-21",
+      "2026-03-22",
+      "2026-05-27",
+      "2026-05-28",
+      "2026-05-29",
+      "2026-05-30",
+    ]);
+    expect(eidHolidays(2026)[0]).toMatchObject({ name: "Eid al-Fitr", localName: "عيد الفطر" });
+  });
+
+  it("adds the Eid days only where the country observes Eid and the list lacks them", () => {
+    const sy = [{ date: "2026-01-01", name: "New Year's Day" }];
+    expect(withEid("SY", 2026, sy)).toHaveLength(8);
+    expect(withEid("DE", 2026, sy)).toHaveLength(1);
+    // A list with Eid al-Fitr on another day (moon sighting) keeps its own; Eid al-Adha is still added.
+    const tr = [{ date: "2026-03-19", name: "Ramadan Feast" }];
+    expect(withEid("TR", 2026, tr).map((h) => h.date)).toEqual([
+      "2026-03-19",
+      "2026-05-27",
+      "2026-05-28",
+      "2026-05-29",
+      "2026-05-30",
+    ]);
+  });
+
+  it("fills in a saved calendar's weekend and Eid days once, and leaves other countries alone", () => {
+    const cal: ServiceCalendar = { fetched: { "2026": [{ date: "2026-01-01", name: "New Year's Day" }] } };
+    const sy = withCountryCustoms(cal, "SY");
+    expect(sy.weekend).toEqual(FRIDAY_SATURDAY);
+    expect(sy.fetched?.["2026"]).toHaveLength(8);
+    expect(withCountryCustoms(sy, "SY")).toBe(sy);
+    expect(withCountryCustoms(cal, "DE")).toBe(cal);
+    // The planner's own weekend stays.
+    expect(withCountryCustoms({ weekend: { rest: 0, second: 6 } }, "SY").weekend).toEqual({
+      rest: 0,
+      second: 6,
+    });
+  });
+});
+
 describe("calendar section", () => {
   afterEach(cleanup);
   const today = new Date("2027-03-01T12:00:00Z");
@@ -194,6 +280,29 @@ describe("calendar section", () => {
     // An own count is kept and marked.
     fireEvent.change(screen.getByLabelText("2027 · Sunday"), { target: { value: "40" } });
     expect(doc.calendar?.counts).toEqual({ "2027": { sunday: 40 } });
+  });
+
+  it("gives a Syrian project a Friday and Saturday weekend and the Eid days", async () => {
+    const syApi: CalendarApi = {
+      holidays: vi.fn(async () => [{ date: "2026-01-01", name: "New Year's Day" }]),
+    };
+    let doc: PreferencesDoc = withSimulationYears(null, { first: 2026, last: 2026 });
+    const onPreferences = vi.fn((d: PreferencesDoc) => {
+      doc = d;
+    });
+    const props = { editable: true, onPreferences, detectedCountry: "sy", api: syApi, today };
+    const { rerender } = render(<CalendarSection preferences={doc} {...props} />);
+    await waitFor(() => expect(doc.calendar?.fetched?.["2026"]).toHaveLength(8));
+    expect(doc.calendar?.weekend).toEqual(FRIDAY_SATURDAY);
+    rerender(<CalendarSection preferences={doc} {...props} />);
+    expect(screen.getByLabelText("Weekend")).toHaveProperty("value", "0");
+    expect(screen.getByText("Eid al-Adha (day 4)", { exact: false })).toBeTruthy();
+    // Friday is the Sunday day type: 52 Fridays in 2026 less two Eid days (20 March, 29 May).
+    expect(screen.getByLabelText("2026 · Friday")).toHaveProperty("value", "50");
+    // The planner can go back to a Saturday and Sunday weekend.
+    expect(screen.getByRole("option", { name: "Saturday and Sunday" })).toHaveProperty("value", "1");
+    fireEvent.change(screen.getByLabelText("Weekend"), { target: { value: "1" } });
+    expect(doc.calendar?.weekend).toEqual({ rest: 0, second: 6 });
   });
 
   it("sets a day type's service hours and peaks, and goes back to the default", () => {

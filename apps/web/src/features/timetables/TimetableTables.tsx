@@ -10,7 +10,14 @@ import { lineMode } from "../railways/serviceLines";
 import type { Network, RailEngineLoader } from "../railways/types";
 import { fullTiming } from "../street-lines/modes";
 import type { StreetLinesDoc } from "../street-lines/saved";
-import { calendarFrom, DAY_TYPES, type DayTypeId, type ServiceCalendar } from "../../workspace/calendar";
+import {
+  calendarFrom,
+  DAY_TYPES,
+  type DayTypeId,
+  type ServiceCalendar,
+  weekendOf,
+} from "../../workspace/calendar";
+import { englishDayTypeNames, useDayTypeText } from "../../workspace/dayTypeLabel";
 import { type PreferencesDoc, withPref } from "../../workspace/preferences";
 import { type Translate, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
@@ -57,14 +64,6 @@ interface LineBlocks {
   /** The line's timetable on the day type, with that day's service id, for the GTFS download. */
   timetable: Timetable | null;
 }
-
-/** Day type names in the downloads (CSV and print), which stay in English. */
-export const DAY_LABEL: Record<DayTypeId, string> = {
-  weekday: "Weekday",
-  saturday: "Saturday",
-  sunday: "Sunday",
-  holiday: "Public holiday",
-};
 
 /** Day type names on screen, and as they read inside a sentence. */
 const DAY_KEY: Record<DayTypeId, MessageKey> = {
@@ -174,6 +173,7 @@ export function TimetableTables({
   loadGtfs = loadWasmGtfs,
 }: Props) {
   const { t } = useI18n();
+  const dayText = useDayTypeText();
   const prefs = preferences?.values;
   const maxWaitMin = paramValue(WAIT_KEY, "*", prefs)[1];
   const options = useMemo(() => ({ max_idle_s: maxWaitMin * 60 }), [maxWaitMin]);
@@ -203,7 +203,13 @@ export function TimetableTables({
   const downloadCsv = () =>
     downloadText(`${base}-timetables.csv`, timetableCsv(rows()), "text/csv;charset=utf-8");
   const print = () =>
-    printDocument(printableTimetable(rows(), DAY_LABEL, `${projectName || "MobSimLab"} timetables`));
+    printDocument(
+      printableTimetable(
+        rows(),
+        englishDayTypeNames(weekendOf(cal)),
+        `${projectName || "MobSimLab"} timetables`,
+      ),
+    );
   const exporter = gtfsAvailable().exporter;
   const downloadGtfs = async () => {
     setFailed(null);
@@ -215,6 +221,7 @@ export function TimetableTables({
         projectName,
         lang: "en",
         holidays: feedHolidays(cal, today, new Date(today.getTime() + 365 * 86_400_000)),
+        weekend: weekendOf(cal),
       });
     } catch (e) {
       setFailed(e instanceof Error ? e.message : String(e));
@@ -236,7 +243,7 @@ export function TimetableTables({
           >
             {DAY_TYPES.map((d) => (
               <option key={d} value={d}>
-                {t(DAY_KEY[d])}
+                {dayText(d, DAY_KEY)}
               </option>
             ))}
           </select>
@@ -290,11 +297,12 @@ function Departures({ lines, day }: { lines: LineBlocks[]; day: DayTypeId }) {
   const line = lines.find((l) => l.key === chosen) ?? lines[0] ?? null;
   const grids = useMemo(() => (line ? directionGrids(line.trips) : []), [line]);
   const { t } = useI18n();
+  const dayText = useDayTypeText();
   const modeLabel = useModeLabel();
   return (
     <section className={card} aria-labelledby="departures-title">
       <h3 id="departures-title" className="caps m-0">
-        {t("tt.tbl.departures", { day: t(DAY_IN_KEY[day]) })}
+        {t("tt.tbl.departures", { day: dayText(day, DAY_IN_KEY) })}
       </h3>
       {line && (
         <label className="mt-2 flex flex-wrap items-center gap-2 text-sm">
@@ -377,11 +385,12 @@ function VehicleBlocks({
   const modes = [...new Set(lines.map((l) => l.mode))];
   const waitLib = paramValue(WAIT_KEY, "*", undefined)[1];
   const { t } = useI18n();
+  const dayText = useDayTypeText();
   const modeLabel = useModeLabel();
   return (
     <section className={card} aria-labelledby="blocks-title">
       <h3 id="blocks-title" className="caps m-0">
-        {t("tt.tbl.blocksTitle", { day: t(DAY_IN_KEY[day]) })}
+        {t("tt.tbl.blocksTitle", { day: dayText(day, DAY_IN_KEY) })}
       </h3>
       <p className="mt-1 text-sm text-slate-600">{t("tt.tbl.blocksIntro")}</p>
       <div className="mt-3 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm">
@@ -502,9 +511,12 @@ const KIND: Record<BlockRun["kind"], MessageKey> = {
 function BlockList({ line, day }: { line: LineBlocks; day: DayTypeId }) {
   const [open, setOpen] = useState<number | null>(null);
   const { t } = useI18n();
+  const dayText = useDayTypeText();
   if (!line.blocks.length)
     return (
-      <p className="mt-2 text-sm text-slate-600">{t("tt.tbl.lineNoTrips", { day: t(DAY_IN_KEY[day]) })}</p>
+      <p className="mt-2 text-sm text-slate-600">
+        {t("tt.tbl.lineNoTrips", { day: dayText(day, DAY_IN_KEY) })}
+      </p>
     );
   return (
     <div className="mt-2 overflow-x-auto">

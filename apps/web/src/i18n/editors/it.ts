@@ -187,6 +187,10 @@ export const editorsIt = {
     "Fai clic su un punto per modificarlo. Trascina le maniglie quadrate per cambiare il tratto rettilineo in uscita da una stazione o da un deviatoio.",
   "rail.switch": "Deviatoio",
   "rail.switchFacts": "lungo {length} · 1:{ratio} · R {radius} m · {speed} km/h in deviata · {at}",
+  "rail.switches": "Deviatoi",
+  "rail.switchesNone": "Ancora nessun deviatoio. Inseriscine uno con lo strumento Deviatoio o Comunicazione.",
+  "rail.switchItem": "{kind} su {track} a {at}",
+  "rail.kind.doubleJunction": "Bivio doppio",
   "rail.positionAlong": "Posizione lungo il binario",
   "rail.otherSide": "Altro lato",
   "rail.reverse": "Inverti",
@@ -1434,6 +1438,10 @@ export const editorsIt = {
   "rail.levelHeight": "In piano, binari a {rail} m s.l.m. · terreno lungo il tracciato {min}–{max} m",
   "rail.profileRange": "Binari a {min}–{max} m s.l.m. · pendenza massima {steep} (max {limit} ‰)",
   "rail.profileAria": "Profilo longitudinale: terreno e piano del ferro lungo il binario",
+  "rail.levelProfileAria":
+    "Profilo altimetrico dai livelli: piano del ferro rispetto al livello stradale lungo il binario",
+  "rail.levelProfileNote":
+    "Quote dai livelli e dalle rampe del binario, rispetto al livello stradale (qui non sono caricate le quote del terreno).",
   "rail.profileLegend":
     "Continua: piano del ferro. Tratteggiata: terreno (Copernicus GLO-30, smussato). Quote da un modello di superficie, ±4 m.",
 
