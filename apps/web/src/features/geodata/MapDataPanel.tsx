@@ -170,7 +170,11 @@ export function MapDataPanel({
   const accuracyValue = own.accuracy.trim() === "" ? null : Number(own.accuracy);
   const ownValid = accuracyValue === null || (Number.isFinite(accuracyValue) && accuracyValue >= 0);
 
-  const chosen: Method = method ?? status?.suggestedMethod ?? "overpass";
+  const tooLarge = !!status?.area && status.area.areaKm2 > status.limits.overpassMaxKm2;
+  const suggested: Method = status?.suggestedMethod ?? "overpass";
+  // Until the planner picks one: the suggested method, but not Geofabrik once it cannot be reached.
+  const chosen: Method =
+    method ?? (suggested === "geofabrik" && regionsError ? (tooLarge ? "upload" : "overpass") : suggested);
   useEffect(() => {
     if (chosen !== "geofabrik" || regions !== null || !status?.area) return;
     api.regions().then(
@@ -280,7 +284,6 @@ export function MapDataPanel({
   const demUpload = status?.demUpload;
   const ownGrid = demUpload?.current ?? null;
   const rows = osm?.current?.stats.rows ?? {};
-  const tooLarge = !!status?.area && status.area.areaKm2 > status.limits.overpassMaxKm2;
 
   const body = (
     <div className="flex flex-col gap-4 px-4 pt-1 pb-6 md:px-5">
@@ -380,6 +383,11 @@ export function MapDataPanel({
                   </select>
                 </span>
               </label>
+              {chosen !== "geofabrik" && regionsError && (
+                <p role="alert" className="text-sm text-red-700">
+                  {regionsError}
+                </p>
+              )}
               {chosen === "overpass" && tooLarge && (
                 <p className="text-sm text-amber-900">
                   {t("data.tooLarge", { area: num(status.area.areaKm2) })}
