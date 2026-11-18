@@ -524,7 +524,14 @@ export function Workspace({
   const railway = drawings.doc<Network>("railway");
   // Cable car, people mover and ferry lines of the plugin tools, per tool: the drawing, the line the journey
   // planner rides and the shape the noise map needs.
-  const pluginSaved = drawings.doc<PluginLinesDoc>("plugin-lines")?.tools ?? NO_PLUGIN_LINES;
+  // Lines drawn with the tools of a plugin that is now off stay in the project but are not shown or counted
+  // until the plugin is on again.
+  const pluginDoc = drawings.doc<PluginLinesDoc>("plugin-lines")?.tools ?? NO_PLUGIN_LINES;
+  const pluginSaved = useMemo(() => {
+    const on = new Set(PLUGIN_TOOLS.map((x) => x.id));
+    const kept = Object.entries(pluginDoc).filter(([id]) => on.has(id));
+    return kept.length === Object.keys(pluginDoc).length ? pluginDoc : Object.fromEntries(kept);
+  }, [pluginDoc, PLUGIN_TOOLS]);
   const pluginLines: Record<string, PluginLineInput | null> = Object.fromEntries(
     Object.entries(pluginSaved).map(([id, x]) => [id, x.line]),
   );
