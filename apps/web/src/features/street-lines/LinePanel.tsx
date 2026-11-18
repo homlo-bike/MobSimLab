@@ -110,6 +110,8 @@ interface Props {
   depotId?: string | null;
   /** The project's road depots, with why the line cannot use one (null: it can). */
   depots?: { id: string; name: string; problem: FitProblem }[];
+  /** Length of the line's vehicle, m, named when no depot slot fits it. */
+  vehicleLengthM?: number;
   /** Opens the depot tool. */
   onOpenDepots?: () => void;
   showRoads: boolean;
@@ -257,6 +259,9 @@ export function LinePanel(props: Props) {
       ...(c.point !== undefined ? { onShow: () => a.select(c.point!) } : {}),
     })),
   );
+  // "No slot fits" names the vehicle's length, so the planner sees why (a 13 m coach in 12 m slots).
+  const fitText = (p: Exclude<FitProblem, null>) =>
+    p === "depot.fit.size" && props.vehicleLengthM ? `${t(p)}: ${formatLength(props.vehicleLengthM)}` : t(p);
   const stops = view.points.filter((p) => p.kind !== "via");
   const name = (id: number | undefined) => {
     const p = view.points.find((q) => q.id === id);
@@ -602,14 +607,14 @@ export function LinePanel(props: Props) {
             <option value="">{t("depot.line.none")}</option>
             {(props.depots ?? []).map((d) => (
               <option key={d.id} value={d.id} disabled={d.problem !== null && d.id !== props.depotId}>
-                {d.problem ? `${d.name} (${t(d.problem)})` : d.name}
+                {d.problem ? `${d.name} (${fitText(d.problem)})` : d.name}
               </option>
             ))}
           </select>
         </label>
         {props.depotId && (props.depots ?? []).find((d) => d.id === props.depotId)?.problem && (
           <p className="text-xs text-amber-700">
-            {t((props.depots ?? []).find((d) => d.id === props.depotId)!.problem!)}
+            {fitText((props.depots ?? []).find((d) => d.id === props.depotId)!.problem!)}
           </p>
         )}
         {props.depotId && !(props.depots ?? []).some((d) => d.id === props.depotId) && (

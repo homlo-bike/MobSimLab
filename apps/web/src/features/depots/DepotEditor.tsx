@@ -26,6 +26,7 @@ import {
   inRing,
   lineFleet,
   linesOf,
+  lineVehicle,
   moveLane,
   newDepot,
   newId,
@@ -751,7 +752,11 @@ export function DepotEditor({
                         {line.name || t("depot.lineN", { n: index + 1 })}
                       </span>
                       <span className={`shrink-0 ${problem ? "text-red-700" : "text-slate-500"}`}>
-                        {problem ? t(problem) : t("depot.vehiclesN", { n: lineFleet(line, prefs) })}
+                        {problem
+                          ? problem === "depot.fit.size"
+                            ? `${t(problem)}: ${lineVehicle(line).length_m} m`
+                            : t(problem)
+                          : t("depot.vehiclesN", { n: lineFleet(line, prefs) })}
                       </span>
                     </li>
                   );

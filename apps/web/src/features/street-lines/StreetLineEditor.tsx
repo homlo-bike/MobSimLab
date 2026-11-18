@@ -20,7 +20,7 @@ import { profileWith, vehicleById } from "./service";
 import { lineBounds, type SavedStreetLine } from "./saved";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
 import type { StreetLineInput } from "../journey-planner/network";
-import { depotFit, depotGates } from "../depots/model";
+import { depotFit, depotGates, lineVehicle } from "../depots/model";
 import type { SavedDepot } from "../depots/types";
 import type { StreetSetup } from "../street-setup/types";
 import { basemapLabels, featuresFromLabels, preferTransitKind } from "../naming/labels";
@@ -703,6 +703,7 @@ export function StreetLineEditor({
       depotStops={shownDepot}
       depotId={depotId}
       depots={depots.map((d) => ({ id: d.id, name: d.name, problem: depotFit(d, { profile, vehicle }) }))}
+      vehicleLengthM={lineVehicle({ profile, vehicle }).length_m}
       onOpenDepots={onOpenDepots}
       showDepot={showDepot}
       showRoads={showRoads}

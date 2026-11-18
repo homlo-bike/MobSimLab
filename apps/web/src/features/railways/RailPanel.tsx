@@ -47,12 +47,23 @@ export function RailPanel(props: Props) {
             : null
     : null;
   const issues = [...view.issues, ...(props.extraIssues ?? [])];
+  // Name what a check is about, so the list says where without clicking each one.
+  const about = (id: number | null): string | undefined => {
+    if (id === null) return undefined;
+    const st = doc.stations.find((x) => x.id === id);
+    if (st) return st.name || `${t("rail.station")} ${id}`;
+    const tr = doc.tracks.find((x) => x.id === id);
+    if (tr) return tr.name || t("rail.trackN", { id });
+    if (doc.switches.some((x) => x.id === id)) return `${t("rail.switch")} ${id}`;
+    return undefined;
+  };
   // In a project the checks go to the notifications button in the top bar; on its own the panel lists them.
   const checksElsewhere = usePublishChecks("rail", t("checks.railway"), [
     ...(props.error ? [{ severity: "error" as const, text: props.error }] : []),
     ...issues.map((i) => ({
       severity: i.severity,
       text: i.text,
+      ...(about(i.ref_id) ? { detail: about(i.ref_id) } : {}),
       ...(i.at || i.ref_id ? { onShow: () => a.showIssue(i.at, i.ref_id) } : {}),
     })),
   ]);

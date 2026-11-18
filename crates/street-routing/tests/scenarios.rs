@@ -751,3 +751,44 @@ fn drawing_point_by_point_gives_the_same_route_as_routing_again() {
         );
     }
 }
+
+#[test]
+fn point_on_the_far_half_of_a_divided_road_is_flagged() {
+    // A divided road: eastbound half at y = 10, westbound half at y = −10, joined only at the ends.
+    let mut o = Osm::new();
+    o.node(1, 0.0, 10.0, &[]);
+    o.node(2, 2000.0, 10.0, &[]);
+    o.node(3, 2000.0, -10.0, &[]);
+    o.node(4, 0.0, -10.0, &[]);
+    let half = [("highway", "primary"), ("oneway", "yes")];
+    o.way(&[1, 2], &half);
+    o.way(&[3, 4], &half);
+    o.way(&[2, 3], &[("highway", "primary")]);
+    o.way(&[4, 1], &[("highway", "primary")]);
+    let g = o.graph();
+    let leg0 = |far: bool| {
+        let mut line = StreetLine::new(bus(), RoutingRules::default());
+        add(&mut line, &g, 500.0, 12.0, PointKind::Via);
+        add(
+            &mut line,
+            &g,
+            800.0,
+            if far { -12.0 } else { 12.0 },
+            PointKind::Via,
+        );
+        line.view(&g).legs[0].clone()
+    };
+    let wrong = leg0(true);
+    assert_eq!(wrong.status, Status::Warning);
+    assert!(
+        wrong
+            .message
+            .as_deref()
+            .unwrap()
+            .contains("far half of a divided road"),
+        "{:?}",
+        wrong.message
+    );
+    let right = leg0(false);
+    assert_eq!(right.status, Status::Ok, "{:?}", right.message);
+}

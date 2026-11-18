@@ -13,6 +13,10 @@ use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::HashMap;
 
+/// A leg longer than this many times the straight distance between its points (and over twice the detour
+/// threshold longer) is reported as a likely wrong-side point.
+const WRONG_SIDE_RATIO: f64 = 2.5;
+
 /// Role of a route point.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -45,6 +49,7 @@ pub enum Status {
 
 /// A point the planner placed.
 #[derive(Debug, Clone)]
+
 pub struct RoutePoint {
     /// Stable id for the UI.
     pub id: u32,
@@ -742,6 +747,22 @@ impl StreetLine {
                     "Turning round adds {:.0} m ({:.0} m instead of {:.0} m). Consider putting the end stop where \
                      the vehicle can turn: a bus station, turning loop, roundabout or a block it can drive round.",
                     extra, path.length_m, d
+                ));
+            }
+        }
+        // A leg far longer than the straight line usually means a point snapped to the far half of a divided road
+        // (or a one-way street against the line), which the turning check above cannot see: each half is its own
+        // way, so even "with U-turns" the bus must go round.
+        if status == Status::Ok {
+            let crow = dist(g.point_on_arc(a.arc, a.t), g.point_on_arc(b.arc, b.t));
+            if path.length_m > WRONG_SIDE_RATIO * crow
+                && path.length_m - crow > 2.0 * self.rules.detour_warn_m
+            {
+                status = Status::Warning;
+                message = Some(format!(
+                    "This leg is {:.0} m for {:.0} m in a straight line. If the next point is on the far half of a \
+                     divided road, or on a one-way street the wrong way, move it to the side the vehicle drives on.",
+                    path.length_m, crow
                 ));
             }
         }
