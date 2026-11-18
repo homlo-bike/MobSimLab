@@ -4,9 +4,8 @@ import type { Database } from "../db/database";
 /**
  * The project area (06-gis §1, §3): the box round everything drawn in the project, widened by the project's
  * buffer (`project.project.area_buffer_km`, default 2 km, 0 to 50). Reference data such as population is
- * imported for this box. Drawn means the street lines, the railway design, the road depots, the GIS regions,
- * the cargo bike route and the plugin lines (ferry piers, via points and speed zones; cable car and people mover
- * stations); the railway is stored in metres on a transverse Mercator centred on its origin
+ * imported for this box. Drawn means the street lines, the railway design, the road depots, the GIS regions
+ * and the cargo bike route; the railway is stored in metres on a transverse Mercator centred on its origin
  * (crates/rail-design/src/proj.rs), which is converted back here.
  */
 
@@ -80,12 +79,6 @@ export function drawnPoints(docs: Record<string, unknown>): LonLat[] {
     for (const z of arr(depot.zones)) arr(obj(z).ring).forEach(add);
   }
   for (const r of arr(obj(docs.regions).regions)) arr(obj(r).ring).forEach(add);
-  for (const tool of Object.values(obj(obj(docs["plugin-lines"]).tools))) {
-    const doc = obj(obj(tool).doc);
-    for (const p of [...arr(doc.piers), ...arr(doc.stations)]) add(obj(p).lonlat);
-    for (const c of arr(doc.calls)) arr(obj(c).via).forEach(add);
-    for (const z of arr(doc.zones)) arr(obj(z).ring).forEach(add);
-  }
   const bike = obj(docs["cargo-bike"]);
   add(bike.start);
   add(bike.destination);
@@ -184,7 +177,7 @@ export async function projectArea(
     .selectFrom("project.drawing")
     .select(["kind", "doc"])
     .where("project_id", "=", projectId)
-    .where("kind", "in", ["street-lines", "railway", "depots", "regions", "cargo-bike", "plugin-lines"])
+    .where("kind", "in", ["street-lines", "railway", "depots", "regions", "cargo-bike"])
     .execute();
   const docs: Record<string, unknown> = {};
   for (const r of rows) docs[r.kind] = r.doc;
