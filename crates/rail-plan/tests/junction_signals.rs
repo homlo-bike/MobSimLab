@@ -86,3 +86,46 @@ fn a_signal_inside_a_junction_leg_is_left_out_instead_of_refusing_the_layout() {
         imp.notes
     );
 }
+
+#[test]
+fn trams_running_straight_on_the_two_tracks_of_a_junction_pass_each_other() {
+    // Damascus test, bug 9: a crossover or double junction was one detection section over both
+    // tracks, so a tram running straight on one track blocked every tram on the other one.
+    let t = topology(&build(&depot_by_double_junction(), None));
+    let imp = import_json(
+        &serde_json::to_string(&t).unwrap(),
+        &ImportOptions::default(),
+    )
+    .unwrap();
+    let m = Model::compile(&imp.spec).unwrap();
+    let tracks = |tds: &rail_model::Tds| -> Vec<String> {
+        tds.pieces
+            .iter()
+            .map(|&p| m.tracks[m.pieces[p as usize].track].id.clone())
+            .collect()
+    };
+    for tds in m.tds.iter().filter(|x| x.id.starts_with("sw")) {
+        let tr = tracks(tds);
+        assert!(
+            !(tr.iter().any(|x| x.starts_with("t3.0."))
+                && tr.iter().any(|x| x.starts_with("t3.1."))),
+            "{} covers both tracks of the line: {tr:?}",
+            tds.id
+        );
+    }
+    // The junction's leg from the far track crosses the near track at grade: they share a section,
+    // which the near track's own leg (a parallel move) is not part of.
+    let crossing = m
+        .tds
+        .iter()
+        .find(|x| {
+            let tr = tracks(x);
+            tr.iter().any(|s| s.starts_with("w5.1")) && tr.iter().any(|s| s.starts_with("t3.0."))
+        })
+        .expect("the far leg crosses the near track");
+    assert!(
+        !tracks(crossing).iter().any(|s| s.starts_with("w5.0")),
+        "{:?}",
+        tracks(crossing)
+    );
+}

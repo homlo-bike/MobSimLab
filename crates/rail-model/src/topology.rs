@@ -330,6 +330,46 @@ fn point_along(geometry: &[[f64; 2]], length_m: f64, at_m: f64) -> Option<[f64; 
     geometry.last().copied()
 }
 
+/// Half the length of the area where a leg of a double junction crosses the other track at grade, m.
+const JUNCTION_DIAMOND_M: f64 = 10.0;
+
+/// Purpose: where two drawn lines cross. Inputs: each line's points and its length, m (the drawn
+/// length is scaled to it). Output: the distance along each line, m, of their first crossing; None
+/// when they do not cross (touching at an end does not count).
+fn crossing_along(a: &[[f64; 2]], la: f64, b: &[[f64; 2]], lb: f64) -> Option<(f64, f64)> {
+    let len = |g: &[[f64; 2]]| -> f64 {
+        g.windows(2)
+            .map(|w| (w[1][0] - w[0][0]).hypot(w[1][1] - w[0][1]))
+            .sum()
+    };
+    let (ga, gb) = (len(a), len(b));
+    if ga <= 0.0 || gb <= 0.0 {
+        return None;
+    }
+    let mut da = 0.0;
+    for p in a.windows(2) {
+        let sa = (p[1][0] - p[0][0]).hypot(p[1][1] - p[0][1]);
+        let mut db = 0.0;
+        for q in b.windows(2) {
+            let sb = (q[1][0] - q[0][0]).hypot(q[1][1] - q[0][1]);
+            let (dx, dy) = (p[1][0] - p[0][0], p[1][1] - p[0][1]);
+            let (ex, ey) = (q[1][0] - q[0][0], q[1][1] - q[0][1]);
+            let d = dx * ey - dy * ex;
+            if d.abs() > 1e-12 {
+                let (rx, ry) = (q[0][0] - p[0][0], q[0][1] - p[0][1]);
+                let u = (rx * ey - ry * ex) / d;
+                let v = (rx * dy - ry * dx) / d;
+                if u > 1e-6 && u < 1.0 - 1e-6 && v > 1e-6 && v < 1.0 - 1e-6 {
+                    return Some(((da + u * sa) * la / ga, (db + v * sb) * lb / gb));
+                }
+            }
+            db += sb;
+        }
+        da += sa;
+    }
+    None
+}
+
 /// Purpose: overlap for a signal from the approach speed (DB Ril 819.0202 classes,
 /// `signalling.overlap_31_40_m`, `_41_60_m`, `_above_60_m` central values).
 pub fn overlap_for_speed(kmh: f64) -> f64 {
@@ -440,16 +480,100 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
         .flat_map(|s| s.nodes.iter().map(move |n| (n.as_str(), s)))
         .collect();
     for sw in t.switches.iter().filter(|s| !s.fouling_points.is_empty()) {
-        // Fouling points from the export: the area runs from the node to each point.
-        let key = format!("sw{}", sw.id);
-        groups.find(&key);
+        // Fouling points from the export: the area runs from the node to each point. A switch of
+        // several nodes (a crossover, a double junction) has an area per node, so trains running
+        // straight on the two tracks pass each other; a train crossing over occupies both. A leg
+        // between two nodes is split in the middle; a leg that crosses the other track at grade
+        // (a double junction) shares a crossing area with it.
+        let key = |node: &str| match sw.nodes.iter().position(|n| n == node) {
+            Some(k) if sw.nodes.len() > 1 => format!("sw{}.{k}", sw.id),
+            _ => format!("sw{}", sw.id),
+        };
+        for n in &sw.nodes {
+            groups.find(&key(n));
+        }
+        for leg in &sw.legs {
+            let i = sec(leg)?;
+            let s = &t.sections[i];
+            let len = s.length_m;
+            let (a, b) = (sw.nodes.contains(&s.from), sw.nodes.contains(&s.to));
+            if sw.nodes.len() == 1 || !(a || b) {
+                zones[i].push((0.0, len, Some(key(sw.nodes.first().map_or("", |n| n)))));
+                continue;
+            }
+            if a && b {
+                zones[i].push((0.0, len / 2.0, Some(key(&s.from))));
+                zones[i].push((len / 2.0, len, Some(key(&s.to))));
+                continue;
+            }
+            let node = if a { &s.from } else { &s.to };
+            // Where the leg crosses a track of another node of the switch.
+            let mut cut: Option<(f64, f64)> = None;
+            for f in sw.fouling_points.iter().filter(|f| &f.node != node) {
+                for other in [&f.section, &f.at_section] {
+                    if sw.legs.contains(other) {
+                        continue;
+                    }
+                    let j = sec(other)?;
+                    let o = &t.sections[j];
+                    let Some((x, y)) = crossing_along(&s.geometry, len, &o.geometry, o.length_m)
+                    else {
+                        continue;
+                    };
+                    let ck = format!("sw{}.x{}", sw.id, leg);
+                    groups.find(&ck);
+                    let mut lo = (y - JUNCTION_DIAMOND_M).max(0.0);
+                    let mut hi = (y + JUNCTION_DIAMOND_M).min(o.length_m);
+                    // The crossing starts where that node's own area on the track ends: a train on
+                    // the other node's diverging leg does not reach it, so the two parallel moves of
+                    // a double junction (one leg in, the other out) pass each other.
+                    if f.section == *other && f.at_section == f.section {
+                        let d = f.distance_m.max(opt.switch_toe_m).min(o.length_m);
+                        if o.from == f.node && d < hi {
+                            lo = lo.max(d);
+                        } else if o.to == f.node && o.length_m - d > lo {
+                            hi = hi.min(o.length_m - d);
+                        }
+                    }
+                    if !zones[j]
+                        .iter()
+                        .any(|z| (z.0, z.1, z.2.as_deref()) == (lo, hi, Some(&ck)))
+                    {
+                        zones[j].push((lo, hi, Some(ck.clone())));
+                    }
+                    let near = if a { x } else { len - x };
+                    if cut.map_or(true, |c| near < c.0) {
+                        cut = Some((near, x));
+                        let (l0, l1) = (
+                            (x - JUNCTION_DIAMOND_M).max(0.0),
+                            (x + JUNCTION_DIAMOND_M).min(len),
+                        );
+                        zones[i].retain(|z| z.2.as_deref() != Some(&ck));
+                        zones[i].push((l0, l1, Some(ck.clone())));
+                    }
+                }
+            }
+            match cut {
+                None => zones[i].push((0.0, len, Some(key(node)))),
+                Some((_, x)) => {
+                    let z = if a {
+                        (0.0, (x - JUNCTION_DIAMOND_M).max(0.0))
+                    } else {
+                        ((x + JUNCTION_DIAMOND_M).min(len), len)
+                    };
+                    zones[i].push((z.0, z.1, Some(key(node))));
+                }
+            }
+        }
         for f in &sw.fouling_points {
+            let key = key(&f.node);
             let i = sec(&f.section)?;
             let s = &t.sections[i];
             let len = s.length_m;
             let at_from = s.from == f.node;
-            if sw.legs.contains(&s.id) {
-                zones[i].push((0.0, len, Some(key.clone())));
+            // The legs' areas are set above.
+            if sw.legs.contains(&s.id) && sw.nodes.len() > 1 {
+                continue;
             }
             if f.at_section == f.section {
                 let d = f.distance_m.max(opt.switch_toe_m).min(len);
