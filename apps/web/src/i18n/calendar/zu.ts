@@ -33,6 +33,13 @@ export const calendarZu = {
   "cal.add": "Engeza usuku lweholide",
   "cal.source":
     "Amaholide omphakathi avela ku-Nager.Date (date.nager.at). Iphrojekthi igcina ikhophi yayo nezinguquko zakho.",
+  "cal.eidSource":
+    "Uma zingekho ohlwini, i-Eid al-Fitr ne-Eid al-Adha zengezwa kusukela kukhalenda ye-Umm al-Qura. Ngokuya ngokubonakala kwenyanga, usuku lwangempela lungaba ngolwangaphambili noma ngolwangemuva.",
+  "cal.weekend": "Impelasonto",
+  "cal.weekendDays": "{first} no-{second}",
+  "cal.weekendHint":
+    "Usuku ngalunye lwempelasonto lunosuku lwalo lwesevisi nenani lezinsuku ngezansi. Okuzenzakalelayo yimpelasonto evamile ezweni lephrojekthi.",
+  "cal.weekendSource": "Izimpelasonto ezijwayelekile ngezwe kusuka kudatha yesonto ye-Unicode CLDR.",
   "cal.counts": "Izinsuku ngohlobo losuku",
   "cal.countsIntro":
     "Kubalwe kusuka ekhalendeni. Thayipha inombolo ukuze usebenzise eyakho; izoba nohlaka futhi ↺ ibuyisa ebaliwe.",

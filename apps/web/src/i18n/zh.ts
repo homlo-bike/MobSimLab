@@ -224,6 +224,7 @@ export const zh: Messages = {
   "save.takeTheirs": "使用对方的",
   "save.loadFailed": "项目图纸未能加载：{error}",
   "save.retry": "重试",
+  "save.restored": "已恢复此设备上未保存的更改",
   "drawing.street-lines": "道路线路",
   "drawing.railway": "铁路",
   "drawing.street-setups": "街道设置",

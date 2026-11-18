@@ -1,8 +1,10 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, renderHook, screen, waitFor } from "@testing-library/react";
+import type { Map as MapLibreMap } from "maplibre-gl";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AreaPicker } from "../src/features/area/AreaPicker";
 import { AreaSection } from "../src/features/area/AreaSection";
-import type { AreaRegion, ProjectAreaApi } from "../src/features/area/api";
+import type { AreaRegion, AreaView, ProjectAreaApi } from "../src/features/area/api";
+import { useAreaZoom } from "../src/features/area/useAreaZoom";
 import type { Place } from "../src/map/places";
 
 afterEach(cleanup);
@@ -82,5 +84,51 @@ describe("project area picker (#140)", () => {
     expect(screen.getByText("OpenStreetMap: import started")).toBeTruthy();
     expect(screen.getByText("Elevation: already imported")).toBeTruthy();
     expect(screen.getByText("Population: could not start. The area is too big")).toBeTruthy();
+  });
+});
+
+describe("Opening a project puts the map on its area", () => {
+  function fakeMap() {
+    const handlers = new Map<string, () => void>();
+    return {
+      handlers,
+      map: {
+        once: (ev: string, f: () => void) => handlers.set(ev, f),
+        off: (ev: string) => handlers.delete(ev),
+        fitBounds: vi.fn(),
+      },
+    };
+  }
+  const view = (bbox: [number, number, number, number] | null): AreaView => ({
+    regions: [],
+    bbox,
+    areaKm2: null,
+  });
+
+  it("zooms to the area once it has loaded", async () => {
+    const { map } = fakeMap();
+    const load = vi.fn(async () => view([37.0, 36.1, 37.3, 36.3]));
+    renderHook(() => useAreaZoom(map as unknown as MapLibreMap, "p1", load));
+    await waitFor(() => expect(map.fitBounds).toHaveBeenCalledTimes(1));
+    expect(load).toHaveBeenCalledWith("p1");
+    expect(map.fitBounds.mock.calls[0]![0]).toEqual([
+      [37.0, 36.1],
+      [37.3, 36.3],
+    ]);
+  });
+
+  it("leaves the map alone when something moved it first or there is no area", async () => {
+    const { map, handlers } = fakeMap();
+    let done!: (v: AreaView) => void;
+    const load = vi.fn(() => new Promise<AreaView>((r) => (done = r)));
+    renderHook(() => useAreaZoom(map as unknown as MapLibreMap, "p1", load));
+    handlers.get("movestart")!();
+    await act(async () => done(view([0, 0, 1, 1])));
+    expect(map.fitBounds).not.toHaveBeenCalled();
+
+    const other = fakeMap();
+    renderHook(() => useAreaZoom(other.map as unknown as MapLibreMap, "p2", async () => view(null)));
+    await act(async () => {});
+    expect(other.map.fitBounds).not.toHaveBeenCalled();
   });
 });

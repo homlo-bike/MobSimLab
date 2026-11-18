@@ -8,8 +8,7 @@ import { depotInput, lineVehicle } from "../depots/model";
 import type { DepotEngine, SavedDepot } from "../depots/types";
 import { projectServiceDay, servicePeriods } from "../journey-planner/network";
 import { fullTiming } from "../street-lines/modes";
-import { MODES } from "../street-lines/modes";
-import type { SavedStreetLine } from "../street-lines/saved";
+import { type SavedStreetLine, streetLineColor } from "../street-lines/saved";
 import { lineServiceDay } from "../street-lines/service";
 import type { StreetSetup } from "../street-setup/types";
 import type { PreferencesDoc } from "../../workspace/preferences";
@@ -83,7 +82,7 @@ export function roadLine(
     index,
     name: line.name || `Street line ${index + 1}`,
     mode,
-    color: MODES[mode]?.color ?? MODES.bus.color,
+    color: streetLineColor(line),
     vehicle: {
       length_m: veh.length_m,
       width_m: veh.width_m,

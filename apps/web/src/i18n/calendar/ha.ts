@@ -33,6 +33,13 @@ export const calendarHa = {
   "cal.add": "Ƙara ranar hutu",
   "cal.source":
     "Hutun gwamnati daga Nager.Date (date.nager.at). Aikin yana riƙe da nasa kwafi tare da canje-canjenka.",
+  "cal.eidSource":
+    "Idan babu su a jerin, ana ƙara Sallah Ƙarama da Sallah Babba daga kalandar Umm al-Qura. Dangane da ganin wata, ainihin ranar na iya zama kwana ɗaya kafin ko bayan haka.",
+  "cal.weekend": "Ƙarshen mako",
+  "cal.weekendDays": "{first} da {second}",
+  "cal.weekendHint":
+    "Kowace ranar ƙarshen mako tana da ranar sabis da adadin kwanakinta a ƙasa. Na asali shi ne ƙarshen mako da aka saba a ƙasar aikin.",
+  "cal.weekendSource": "Ƙarshen mako na yau da kullum na kowace ƙasa daga bayanan mako na Unicode CLDR.",
   "cal.counts": "Ranaku bisa irin rana",
   "cal.countsIntro":
     "An ƙidaya daga kalanda. Rubuta lamba don amfani da naka; za a yi mata firam kuma ↺ yana mayar da wadda aka ƙidaya.",

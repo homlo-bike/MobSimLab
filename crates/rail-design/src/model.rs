@@ -98,6 +98,9 @@ pub struct Network {
     /// Slips the planner put into diamond crossings.
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub slips: Vec<crate::slip::Slip>,
+    /// Stabling yards.
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub yards: Vec<Yard>,
 }
 
 impl Network {
@@ -114,6 +117,7 @@ impl Network {
             signals: None,
             signals_removed: vec![],
             slips: vec![],
+            yards: vec![],
         }
     }
     /// Purpose: the next free id.
@@ -121,7 +125,8 @@ impl Network {
         let s = self.stations.iter().map(|o| o.id);
         let t = self.tracks.iter().map(|o| o.id);
         let w = self.switches.iter().map(|o| o.id);
-        s.chain(t).chain(w).max().unwrap_or(0) + 1
+        let y = self.yards.iter().map(|o| o.id);
+        s.chain(t).chain(w).chain(y).max().unwrap_or(0) + 1
     }
 }
 
@@ -334,6 +339,40 @@ pub struct Track {
     /// switch), else the network's mode. Tracks of different modes may cross on one level.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub mode: Option<RailMode>,
+    /// What trains stand on a storage track for; `None` leaves it to the planner to infer.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub storage_role: Option<StorageRole>,
+}
+
+/// What a storage track is for.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum StorageRole {
+    /// Short turnback layovers between trips.
+    Layover,
+    /// Trains standing overnight.
+    Overnight,
+    /// Both.
+    Both,
+}
+
+/// A stabling yard: storage tracks grouped as a rail depot.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+pub struct Yard {
+    /// Id.
+    pub id: u32,
+    /// Name.
+    #[serde(default)]
+    pub name: String,
+    /// Storage track ids in the yard.
+    #[serde(default)]
+    pub tracks: Vec<u32>,
+    /// Trains can charge there.
+    #[serde(default)]
+    pub charging: bool,
+    /// Trains are cleaned there.
+    #[serde(default)]
+    pub cleaning: bool,
 }
 
 fn is_default<T: Default + PartialEq>(v: &T) -> bool {

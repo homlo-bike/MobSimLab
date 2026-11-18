@@ -1,5 +1,6 @@
 import { useI18n } from "../../i18n/i18n";
 import { DAY_TYPES, type DayTypeId } from "../../workspace/calendar";
+import { useDayTypeLabel } from "../../workspace/dayTypeLabel";
 
 /**
  * Purpose: which day type a line's times and headways below apply to, and whether that day runs as on a
@@ -21,6 +22,7 @@ export function DayTypeChoice({
   editable?: boolean;
 }) {
   const { t } = useI18n();
+  const dayLabel = useDayTypeLabel();
   return (
     <div className="flex flex-col gap-1">
       <label className="flex items-center justify-between gap-2">
@@ -33,7 +35,7 @@ export function DayTypeChoice({
         >
           {DAY_TYPES.map((d) => (
             <option key={d} value={d}>
-              {t(`cal.day.${d}`)}
+              {dayLabel(d)}
             </option>
           ))}
         </select>

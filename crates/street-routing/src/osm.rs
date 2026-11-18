@@ -145,6 +145,22 @@ pub fn way_name(tags: &Tags) -> Option<String> {
         .cloned()
 }
 
+/// Purpose: name the ways in one language where OSM has it (`name:<lang>`, such as `name:en`), so streets and the
+/// stops named after them read in the planner's language; ways without it keep their `name`.
+/// Side effects: replaces the `name` tag of those ways.
+pub fn prefer_language(data: &mut OsmData, lang: &str) {
+    let lang = lang.trim();
+    if lang.is_empty() {
+        return;
+    }
+    let key = format!("name:{lang}");
+    for w in &mut data.ways {
+        if let Some(v) = w.tags.get(&key).filter(|v| !v.trim().is_empty()).cloned() {
+            w.tags.insert("name".into(), v);
+        }
+    }
+}
+
 /// Purpose: parse OSM XML text.
 /// Output: nodes, ways and bus-relevant turn restrictions; an error string on malformed XML.
 pub fn parse_osm_xml(xml: &str) -> Result<OsmData, String> {
@@ -333,5 +349,20 @@ mod tests {
         t.insert("restriction".into(), "no_right_turn".into());
         t.insert("restriction:bus".into(), "only_straight_on".into());
         assert_eq!(restriction_kind(&t), Some(RestrictionKind::Only));
+    }
+
+    #[test]
+    fn prefers_the_name_in_the_planners_language() {
+        let mut d = parse_osm_xml(
+            r#"<osm><node id="1" lat="33.5" lon="36.3"/><node id="2" lat="33.5" lon="36.31"/>
+          <way id="10"><nd ref="1"/><nd ref="2"/><tag k="highway" v="primary"/><tag k="name" v="شارع بغداد"/><tag k="name:en" v="Baghdad Street"/></way>
+          <way id="11"><nd ref="1"/><nd ref="2"/><tag k="highway" v="primary"/><tag k="name" v="شارع الثورة"/></way></osm>"#,
+        )
+        .unwrap();
+        prefer_language(&mut d, "de");
+        assert_eq!(d.ways[0].tags["name"], "شارع بغداد");
+        prefer_language(&mut d, "en");
+        assert_eq!(d.ways[0].tags["name"], "Baghdad Street");
+        assert_eq!(d.ways[1].tags["name"], "شارع الثورة");
     }
 }

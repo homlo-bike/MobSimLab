@@ -31,6 +31,13 @@ export const calendarPl = {
   "cal.addName": "Nazwa",
   "cal.add": "Dodaj dzień wolny",
   "cal.source": "Święta z Nager.Date (date.nager.at). Projekt przechowuje własną kopię z Twoimi zmianami.",
+  "cal.eidSource":
+    "Jeśli brak ich na liście, Id al-Fitr i Id al-Adha są dodawane według kalendarza Umm al-Kura. Zależnie od obserwacji księżyca faktyczny dzień może wypaść dzień wcześniej lub później.",
+  "cal.weekend": "Weekend",
+  "cal.weekendDays": "{first} i {second}",
+  "cal.weekendHint":
+    "Każdy dzień weekendu ma poniżej własny dzień kursowania i liczbę dni. Domyślnie zwykły weekend w kraju projektu.",
+  "cal.weekendSource": "Typowe weekendy w poszczególnych krajach z danych tygodnia Unicode CLDR.",
   "cal.counts": "Dni według typu dnia",
   "cal.countsIntro":
     "Policzone z kalendarza. Wpisz liczbę, aby użyć własnej; zostanie obramowana, a ↺ przywraca policzoną.",

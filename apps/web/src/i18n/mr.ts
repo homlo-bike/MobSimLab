@@ -231,6 +231,7 @@ export const mr: Messages = {
   "save.takeTheirs": "त्यांचे वापरा",
   "save.loadFailed": "प्रकल्पाची रेखाचित्रे लोड झाली नाहीत: {error}",
   "save.retry": "पुन्हा प्रयत्न करा",
+  "save.restored": "या उपकरणावरील जतन न केलेले बदल परत आणले",
   "drawing.street-lines": "रस्ता मार्ग",
   "drawing.railway": "रेल्वे",
   "drawing.street-setups": "रस्त्यांची रचना",

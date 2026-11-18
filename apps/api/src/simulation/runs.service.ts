@@ -16,7 +16,7 @@ import { type DB, DATABASE, type Database, type RunKind, type RunStatus } from "
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
 import { GbfsClient, GbfsError } from "../gateway/gbfs.client";
 import { OverpassError } from "../gateway/overpass.client";
-import { type BikeAccess, StreetNetworkService } from "../street-network/street-network.service";
+import { type BikeAccess, StreetNetworkService, TILE_ZOOM } from "../street-network/street-network.service";
 import type { CapacitySettings, SweepDesign, SweepMetric } from "./params";
 import { type JobState, RunQueue } from "./queue";
 import { MAX_ROAD_TILES, type RoadScenario, type RoadSettings, roadTiles, tileOf } from "./road";
@@ -722,6 +722,7 @@ export class RunsService {
           .where("id", "=", id)
           .executeTakeFirst()
       )?.status === "queued";
+    let failedTile: string | undefined;
     try {
       // The tiles go into one gzipped JSON list in order as they arrive, so the API holds them compressed, not
       // the whole area's OSM XML at once.
@@ -734,7 +735,15 @@ export class RunsService {
         for (let i = next++; i < tiles.length && !stopped; i = next++) {
           const [x, y] = tiles[i]!;
           // The project's own OSM import where it has one, as the street line tool reads it; Overpass otherwise.
-          put(i, await this.streets.tile(x, y, projectId));
+          let xml: string;
+          try {
+            xml = await this.streets.tile(x, y, projectId);
+          } catch (e) {
+            // Name the tile that failed and why in the log; the run's reason stays the same.
+            failedTile ??= `tile ${TILE_ZOOM}/${x}/${y} of ${tiles.length}: ${e instanceof Error ? e.message : String(e)}`;
+            throw e;
+          }
+          put(i, xml);
           done++;
           if (done % 8 === 0 || done === tiles.length) {
             if (!(await open())) stopped = true;
@@ -783,7 +792,7 @@ export class RunsService {
           : e instanceof ServiceUnavailableException
             ? "the run could not be queued; try again in a moment"
             : `the streets of the model area could not be loaded: ${e instanceof Error ? e.message : String(e)}`;
-      this.log.warn(`demand run ${id}: ${reason}`);
+      this.log.warn(`demand run ${id}: ${reason}${failedTile ? ` (${failedTile})` : ""}`);
       await this.settle(id, "failed", reason).catch(() => undefined);
     }
   }

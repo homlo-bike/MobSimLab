@@ -33,7 +33,7 @@ Changing within a station is the walk between the two stops plus 60 s for stairs
 
 ## Walking and changing
 
-Until the walking network exists, a walk is the straight-line distance × 1.3 at 4.5 km/h. Under **Walking and changing** you can set the walking speed, the longest walk to a stop (1000 m) and at a change (400 m), how far apart two stops with the same name may be and still be one station (600 m), the time to change at one stop (60 s) and the most vehicles in a journey. Changing between two platforms of one station adds 60 s for stairs or lifts unless the timetable gives the time. All defaults are in the assumption library (`demand.walk_speed_kmh`, `journey.*`).
+Until the walking network exists, a walk is the straight-line distance × 1.3 at 4.5 km/h. Under **Walking and changing** you can set the walking speed, the longest walk to a stop (1000 m) and at a change (400 m), how far apart two stops with the same name may be and still be one station (600 m), the time to change at one stop (60 s) and the most vehicles in a journey. Changing between two platforms of one station adds 60 s for stairs or lifts unless the timetable gives the time. Where a vehicle ends its trip and goes on as the same line's next trip from the same stop (a bus line turning at its end, a loop line coming round, or a train continuing in its vehicle block), you stay on board: it counts as one ride, with the time at the end stop as time in the vehicle. All defaults are in the assumption library (`demand.walk_speed_kmh`, `journey.*`).
 
 ## Limits
 

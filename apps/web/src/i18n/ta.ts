@@ -234,6 +234,7 @@ export const ta: Messages = {
   "save.takeTheirs": "அவர்களுடையதைப் பயன்படுத்து",
   "save.loadFailed": "திட்டத்தின் வரைபடங்கள் ஏற்றப்படவில்லை: {error}",
   "save.retry": "மீண்டும் முயற்சி",
+  "save.restored": "இந்தச் சாதனத்தின் சேமிக்காத மாற்றங்கள் மீட்கப்பட்டன",
   "drawing.street-lines": "தெரு வழித்தடம்",
   "drawing.railway": "ரயில்பாதை",
   "drawing.street-setups": "தெரு அமைப்புகள்",

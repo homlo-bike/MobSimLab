@@ -17,6 +17,8 @@ import {
 } from "../src/features/depots/model";
 import type { DepotEngine, DepotsDoc, Lane, Report, SavedDepot } from "../src/features/depots/types";
 import type { SavedStreetLine } from "../src/features/street-lines/saved";
+import { storageLabels, storageRole, trainsThatFit } from "../src/features/railways/storage";
+import type { Network, RailView, Track } from "../src/features/railways/types";
 
 afterEach(cleanup);
 
@@ -285,5 +287,99 @@ describe("Depot tool", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Size the depot" }));
     await waitFor(() => expect(screen.getByText("60 × 40 m")).toBeTruthy());
+  });
+});
+
+describe("Stabling yards (rail depot type)", () => {
+  const track = (id: number, use: "running" | "storage", name = ""): Track =>
+    ({
+      id,
+      name,
+      start: { type: "free", x: 0, y: 0 },
+      end: { type: "free", x: 100, y: 0 },
+      points: [],
+      tracks: 1,
+      level: "street",
+      power: "auto",
+      use,
+      bed: "auto",
+      lead_start_m: 30,
+      lead_end_m: 30,
+    }) as Track;
+  const railway = (): Network => ({
+    origin: [7.4, 43.7],
+    mode: "tram",
+    stations: [],
+    tracks: [track(1, "running"), track(2, "storage", "Siding A"), track(3, "storage")],
+    switches: [],
+  });
+
+  function YardHarness({ docs, start }: { docs: Network[]; start: Network | null }) {
+    const [rail, setRail] = useState<Network | null>(start);
+    return (
+      <DepotEditor
+        map={fakeMap().map}
+        doc={null}
+        onDoc={() => {}}
+        loadEngine={async () => fakeEngine()}
+        railway={rail}
+        onRailway={(d) => {
+          docs.push(d);
+          setRail(d);
+        }}
+      />
+    );
+  }
+
+  it("groups the storage tracks into a yard with charging and cleaning", () => {
+    const docs: Network[] = [];
+    render(<YardHarness docs={docs} start={railway()} />);
+    fireEvent.click(screen.getByRole("button", { name: "New stabling yard" }));
+    expect(docs.at(-1)!.yards).toEqual([
+      { id: 4, name: "Stabling yard 1", tracks: [2, 3], charging: false, cleaning: false },
+    ]);
+    // Only storage tracks are offered.
+    expect(screen.queryByRole("checkbox", { name: "Track 1" })).toBeNull();
+    fireEvent.click(screen.getByRole("checkbox", { name: "Track 3" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "Trains charge here" }));
+    fireEvent.click(screen.getByRole("checkbox", { name: "Trains are cleaned here" }));
+    expect(docs.at(-1)!.yards![0]).toMatchObject({ tracks: [2], charging: true, cleaning: true });
+    // A track in one yard cannot be in another.
+    fireEvent.click(screen.getByRole("button", { name: "New stabling yard" }));
+    expect(docs.at(-1)!.yards![1]).toMatchObject({ id: 5, tracks: [3] });
+    const taken = screen.getAllByRole("checkbox", { name: /Siding A/ });
+    expect((taken[1] as HTMLInputElement).disabled).toBe(true);
+    fireEvent.click(screen.getAllByRole("button", { name: "Remove stabling yard" })[0]!);
+    expect(docs.at(-1)!.yards!.map((y) => y.id)).toEqual([5]);
+  });
+
+  it("asks for storage tracks first when the railway has none", () => {
+    render(<YardHarness docs={[]} start={null} />);
+    expect(screen.getByText("Draw storage tracks in the railway tool first.")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "New stabling yard" })).toBeNull();
+  });
+
+  it("labels storage tracks with their role and how many trains fit", () => {
+    const net = railway();
+    net.tracks[1]!.storage_role = "layover";
+    net.yards = [{ id: 9, name: "Yard", tracks: [3], charging: false, cleaning: false }];
+    expect(storageRole(net.tracks[0]!, net.yards)).toBeNull();
+    expect(storageRole(net.tracks[1]!, net.yards)).toBe("layover");
+    expect(storageRole(net.tracks[2]!, net.yards)).toBe("overnight");
+    expect(trainsThatFit(130, 2, 32)).toBe(8);
+    expect(trainsThatFit(130, 1, 0)).toBe(0);
+    const tv = (id: number) => ({
+      id,
+      length_m: 100,
+      tracks: 1,
+      centre: [
+        [7.4, 43.7],
+        [7.402, 43.7],
+      ],
+    });
+    const view = { tracks: [1, 2, 3].map(tv), train_length_m: 45 } as unknown as RailView;
+    const labels = storageLabels(net, view, (role, n) => `${role ?? "storage"} ${n}`);
+    expect(labels.features.map((f) => f.properties.label)).toEqual(["layover 2", "overnight 2"]);
+    expect((labels.features[0]!.geometry.coordinates as number[])[0]).toBeCloseTo(7.401, 6);
   });
 });

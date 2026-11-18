@@ -32,6 +32,13 @@ export const calendarKo = {
   "cal.add": "휴일 추가",
   "cal.source":
     "공휴일 출처: Nager.Date(date.nager.at). 프로젝트는 변경 사항이 반영된 자체 사본을 보관합니다.",
+  "cal.eidSource":
+    "목록에 없으면 이드 알피트르와 이드 알아드하를 움 알쿠라 달력에 따라 추가합니다. 달의 관측에 따라 실제 날짜가 하루 앞당겨지거나 늦어질 수 있습니다.",
+  "cal.weekend": "주말",
+  "cal.weekendDays": "{first}과 {second}",
+  "cal.weekendHint":
+    "주말의 각 요일은 아래에 자체 운행일과 일수가 있습니다. 기본값은 프로젝트 국가의 일반적인 주말입니다.",
+  "cal.weekendSource": "국가별 일반 주말은 Unicode CLDR 주간 데이터에서 가져옵니다.",
   "cal.counts": "요일 유형별 일수",
   "cal.countsIntro":
     "달력에서 센 값입니다. 숫자를 입력하면 직접 정한 값을 씁니다. 테두리로 표시되며 ↺로 센 값으로 돌아갑니다.",

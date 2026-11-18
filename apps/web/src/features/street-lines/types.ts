@@ -163,6 +163,8 @@ export interface LineView {
 export interface StreetEngine {
   /** Adds the streets of one tile (OSM XML); call `rebuild` after a batch. */
   addOsm(xml: string): void;
+  /** Names the streets added afterwards in a language where OSM has it (`name:en`); absent in test engines. */
+  setLanguage?(lang: string): void;
   /** Rebuilds the network from all tiles so far and re-routes the line. */
   rebuild(): LineView;
   ready(): boolean;

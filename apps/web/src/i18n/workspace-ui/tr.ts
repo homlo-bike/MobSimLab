@@ -17,13 +17,10 @@ export const workspaceUiTr = {
   "tour.checks.body":
     "Zil tüm modların denetimlerini, önce hatalar olmak üzere listeler: karayolu hatları, demiryolu, depolar ve eklentilerin hatları. Nerede olduğunu görmek için birini seçin.",
   "settings.serverTab": "Sunucu",
-  "settings.pluginsTab": "Eklentiler",
   "settings.server.local":
     "MobSimLab bu bilgisayarda çalışıyor. Bunun yerine bu uygulamayı arka planda çalışan bir MobSimLab sunucusuna, örneğin Docker sunucusuna bağlayabilirsiniz.",
   "settings.server.address": "Sunucu adresi",
   "settings.server.connect": "Bağlan",
   "settings.server.note":
     "Uygulama sunucuyu denetler ve geçmeden önce sorar. Bu bilgisayardaki projeler burada kalır: onları .mslab dosyası olarak kaydedip taşıyın. Uygulamanın Ayarlar'ından (⌘, veya Ctrl+,) geri dönebilirsiniz.",
-  "settings.plugins.intro":
-    "Bu MobSimLab için eklenti kurun. Ardından her proje bunları kendi Proje tercihlerinde açar veya kapatır.",
 } satisfies WorkspaceUiMessages;

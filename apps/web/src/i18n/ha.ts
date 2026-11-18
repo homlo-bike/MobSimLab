@@ -232,6 +232,7 @@ export const ha: Messages = {
   "save.takeTheirs": "Yi amfani da nasu",
   "save.loadFailed": "Zane-zanen aikin ba su loda ba: {error}",
   "save.retry": "Sake gwadawa",
+  "save.restored": "An dawo da canje-canjen da ba a ajiye ba daga wannan na'ura",
   "drawing.street-lines": "layin titi",
   "drawing.railway": "layin dogo",
   "drawing.street-setups": "tsarin tituna",

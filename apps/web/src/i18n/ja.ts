@@ -229,6 +229,7 @@ export const ja: Messages = {
   "save.takeTheirs": "相手のものを使う",
   "save.loadFailed": "プロジェクトの図面を読み込めませんでした：{error}",
   "save.retry": "再試行",
+  "save.restored": "この端末の未保存の変更を復元しました",
   "drawing.street-lines": "道路路線",
   "drawing.railway": "鉄道",
   "drawing.street-setups": "道路設定",

@@ -232,6 +232,7 @@ export const te: Messages = {
   "save.takeTheirs": "వారిది ఉపయోగించండి",
   "save.loadFailed": "ప్రాజెక్టు చిత్రాలు లోడ్ కాలేదు: {error}",
   "save.retry": "మళ్లీ ప్రయత్నించండి",
+  "save.restored": "ఈ పరికరంలో సేవ్ చేయని మార్పులు పునరుద్ధరించబడ్డాయి",
   "drawing.street-lines": "వీధి మార్గం",
   "drawing.railway": "రైల్వే",
   "drawing.street-setups": "వీధి అమరికలు",

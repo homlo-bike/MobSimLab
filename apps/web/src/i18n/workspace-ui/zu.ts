@@ -17,13 +17,10 @@ export const workspaceUiZu = {
   "tour.checks.body":
     "Insimbi ibala ukuhlola kwazo zonke izindlela, amaphutha kuqala: olayini bomgwaqo, ujantshi, amadepho nolayini bama-plugin. Khetha okukodwa ukuze ubone ukuthi kukuphi.",
   "settings.serverTab": "Iseva",
-  "settings.pluginsTab": "Ama-plugin",
   "settings.server.local":
     "I-MobSimLab isebenza kule khompyutha. Esikhundleni salokho ungaxhuma lolu hlelo neseva ye-MobSimLab esebenza ngemuva, njengeseva ye-Docker.",
   "settings.server.address": "Ikheli leseva",
   "settings.server.connect": "Xhuma",
   "settings.server.note":
     "Uhlelo luhlola iseva futhi lubuze ngaphambi kokushintsha. Amaphrojekthi akule khompyutha ahlala lapha: wahambise ngokuwagcina njengamafayela e-.mslab. Ungabuyela kuZilungiselelo zohlelo (⌘, noma Ctrl+,).",
-  "settings.plugins.intro":
-    "Faka ama-plugin ale MobSimLab. Bese iphrojekthi ngayinye iyawavula noma iwavale kuZintandokazi zayo zephrojekthi.",
 } satisfies WorkspaceUiMessages;

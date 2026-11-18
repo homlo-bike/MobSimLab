@@ -232,6 +232,7 @@ export const ur: Messages = {
   "save.takeTheirs": "ان کا استعمال کریں",
   "save.loadFailed": "منصوبے کی ڈرائنگز لوڈ نہیں ہوئیں: {error}",
   "save.retry": "دوبارہ کوشش کریں",
+  "save.restored": "اس آلے کی غیر محفوظ تبدیلیاں بحال ہو گئیں",
   "drawing.street-lines": "سڑک کی لائن",
   "drawing.railway": "ریلوے",
   "drawing.street-setups": "سڑکوں کی ترتیب",

@@ -232,6 +232,7 @@ export const ig: Messages = {
   "save.takeTheirs": "Jiri nke ha",
   "save.loadFailed": "Ihe osise ọrụ ahụ ebughị: {error}",
   "save.retry": "Nwaa ọzọ",
+  "save.restored": "Eweghachiri mgbanwe a na-echekwaghị site na ngwaọrụ a",
   "drawing.street-lines": "ahịrị okporo ụzọ",
   "drawing.railway": "ụzọ ụgbọ oloko",
   "drawing.street-setups": "nhazi okporo ụzọ",

@@ -230,6 +230,7 @@ export const yo: Messages = {
   "save.takeTheirs": "Lo tiwọn",
   "save.loadFailed": "Àwọn àwòrán iṣẹ́ àkànṣe náà kò gbé wọlé: {error}",
   "save.retry": "Gbìyànjú lẹ́ẹ̀kan sí i",
+  "save.restored": "A ti dá àwọn àyípadà tí a kò fi pamọ́ láti ẹ̀rọ yìí padà",
   "drawing.street-lines": "ìlà òpópónà",
   "drawing.railway": "ọ̀nà ojú irin",
   "drawing.street-setups": "ètò òpópónà",

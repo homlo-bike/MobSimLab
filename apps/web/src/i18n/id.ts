@@ -233,6 +233,7 @@ export const id: Messages = {
   "save.takeTheirs": "Ambil milik mereka",
   "save.loadFailed": "Tidak dapat memuat gambar proyek: {error}",
   "save.retry": "Coba lagi",
+  "save.restored": "Perubahan yang belum disimpan di perangkat ini dipulihkan",
   "drawing.street-lines": "jalur jalan",
   "drawing.railway": "jalur kereta",
   "drawing.street-setups": "pengaturan jalan",

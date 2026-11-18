@@ -40,6 +40,7 @@ const CHIP: Record<Severity, string> = {
 /** Edits the panel can ask for; the editor applies them to the engine. */
 export interface PanelActions {
   setName: (name: string) => void;
+  setColor: (color: string) => void;
   setMode: (mode: Mode) => void;
   setProfile: (p: VehicleProfile) => void;
   /** A catalogue vehicle by id, or null for the mode's typical vehicle. */
@@ -100,6 +101,8 @@ function clock(s: number): string {
 
 interface Props {
   lineName: string;
+  /** The line's colour (#rrggbb). */
+  lineColor: string;
   view: LineView;
   profile: VehicleProfile;
   timing: Timing;
@@ -307,14 +310,24 @@ export function LinePanel(props: Props) {
       </div>
       {props.lineList}
       <h2 className="text-xl font-semibold">{props.lineName || t("street.untitled")}</h2>
-      <label className="flex flex-col gap-1">
-        <span className="text-xs text-slate-600">{t("rail.line.name")}</span>
+      <div className="flex items-end gap-2">
+        <label className="flex flex-1 flex-col gap-1">
+          <span className="text-xs text-slate-600">{t("rail.line.name")}</span>
+          <input
+            value={props.lineName}
+            onChange={(e) => a.setName(e.target.value)}
+            className="rounded border border-slate-300 bg-slate-50 px-2 py-1.5"
+          />
+        </label>
         <input
-          value={props.lineName}
-          onChange={(e) => a.setName(e.target.value)}
-          className="rounded border border-slate-300 bg-slate-50 px-2 py-1.5"
+          type="color"
+          aria-label={t("rail.line.colour")}
+          title={t("rail.line.colour")}
+          value={props.lineColor}
+          onChange={(e) => a.setColor(e.target.value)}
+          className="h-9 w-10 rounded border border-slate-300"
         />
-      </label>
+      </div>
       <div className="flex flex-col gap-1">
         <label className="flex flex-col gap-1">
           <span className="text-xs text-slate-600">{t("street.vehicle")}</span>
