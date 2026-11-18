@@ -80,5 +80,6 @@ export const pluginCodeZh = {
   "maplayers.showAs": "显示为",
   "maplayers.basemapNote": "底图绘制在地名和街道名下方，替代街道地图。",
   "maplayers.overlayNote": "叠加层绘制在任意底图之上、项目图层之下，可以打开或关闭。",
+  "maplayers.missing": "要添加，请至少选择一个图层，并填写名称和数据来源。",
   "maplayers.save": "添加到地图",
 } satisfies PluginCodeMessages;

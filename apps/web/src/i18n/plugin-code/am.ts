@@ -80,5 +80,6 @@ export const pluginCodeAm = {
   "maplayers.showAs": "አሳይ እንደ",
   "maplayers.basemapNote": "የመሠረት ካርታ በመንገድ ካርታው ፈንታ ከቦታና ከመንገድ ስሞች በታች ይሳላል።",
   "maplayers.overlayNote": "ተደራቢ በማንኛውም የመሠረት ካርታ ላይ፣ ከፕሮጀክቱ ንብርብሮች በታች ይሳላል፤ ሊበራና ሊጠፋ ይችላል።",
+  "maplayers.missing": "ለማከል ቢያንስ አንድ ንብርብር ይምረጡ እና ስሙን እና የመረጃ ምንጩን ይሙሉ።",
   "maplayers.save": "ወደ ካርታ አክል",
 } satisfies PluginCodeMessages;

@@ -12,7 +12,10 @@ export interface BuiltinService {
   showAs: ShowAs;
   /** The layers' names in the service's capabilities (XYZ: `tiles`). */
   layers: string[];
-  /** XYZ: the deepest zoom level the service has. */
+  /**
+   * XYZ: the deepest zoom level the service has. WMS and WMTS: the deepest zoom to ask the service for, when it
+   * draws deeper tiles that are not usable (the map enlarges the last good ones).
+   */
   maxzoom?: number;
 }
 
@@ -39,6 +42,8 @@ export const BUILTIN_SERVICES: readonly BuiltinService[] = [
     attribution: "Map data © OpenStreetMap contributors · Map service © mundialis",
     showAs: "basemap",
     layers: ["osm_europe"],
+    // Deeper tiles carry an "API key required" mark (tested 2026-11-18): the map enlarges zoom 14 instead.
+    maxzoom: 14,
   },
   {
     id: "ellipsis-natural-background",

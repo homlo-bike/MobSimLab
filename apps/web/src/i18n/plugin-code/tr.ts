@@ -86,5 +86,6 @@ export const pluginCodeTr = {
   "maplayers.basemapNote": "Altlık harita, sokak haritası yerine yer ve sokak adlarının altında çizilir.",
   "maplayers.overlayNote":
     "Bindirme, her altlık haritanın üstünde ve projenin katmanlarının altında çizilir; açılıp kapatılabilir.",
+  "maplayers.missing": "Eklemek için en az bir katman seçin, adı ve kaynak bilgisini doldurun.",
   "maplayers.save": "Haritaya ekle",
 } satisfies PluginCodeMessages;

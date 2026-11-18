@@ -85,5 +85,6 @@ export const pluginCodeYo = {
   "maplayers.basemapNote": "A ń ya máàpù ìpìlẹ̀ sábẹ́ orúkọ àwọn ibi àti òpópónà, dípò máàpù òpópónà.",
   "maplayers.overlayNote":
     "A ń ya ìbòlé sórí máàpù ìpìlẹ̀ èyíkéyìí, sábẹ́ àwọn ìpele iṣẹ́ àkànṣe, a sì lè tàn án tàbí pa á.",
+  "maplayers.missing": "Láti fi kún un, yan ìpele kan ó kéré tán kí o sì kọ orúkọ àti orísun dátà.",
   "maplayers.save": "Ṣàfikún sí máàpù",
 } satisfies PluginCodeMessages;

@@ -85,5 +85,6 @@ export const pluginCodeVi = {
   "maplayers.showAs": "Hiển thị dạng",
   "maplayers.basemapNote": "Bản đồ nền được vẽ dưới tên địa điểm và đường phố, thay cho bản đồ đường phố.",
   "maplayers.overlayNote": "Lớp phủ được vẽ trên mọi bản đồ nền, dưới các lớp của dự án, và có thể bật tắt.",
+  "maplayers.missing": "Để thêm, hãy chọn ít nhất một lớp và điền tên cùng nguồn dữ liệu.",
   "maplayers.save": "Thêm vào bản đồ",
 } satisfies PluginCodeMessages;

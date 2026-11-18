@@ -88,6 +88,7 @@ export const pluginCodeEn = {
   "maplayers.basemapNote": "A basemap is drawn under the place and street names, instead of the street map.",
   "maplayers.overlayNote":
     "An overlay is drawn over any basemap, under the project's own layers, and can be switched on and off.",
+  "maplayers.missing": "To add, pick at least one layer and fill in the name and attribution.",
   "maplayers.save": "Add to the map",
 } as const;
 

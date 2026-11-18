@@ -87,5 +87,6 @@ export const pluginCodeFr = {
     "Un fond de carte est dessiné sous les noms de lieux et de rues, à la place du plan.",
   "maplayers.overlayNote":
     "Une superposition est dessinée sur n’importe quel fond de carte, sous les couches du projet, et peut être activée ou désactivée.",
+  "maplayers.missing": "Pour ajouter, choisissez au moins une couche et renseignez le nom et l'attribution.",
   "maplayers.save": "Ajouter à la carte",
 } satisfies PluginCodeMessages;

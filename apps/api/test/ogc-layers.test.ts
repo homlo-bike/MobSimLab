@@ -279,6 +279,37 @@ describe("OGC client", () => {
     expect(e.message).not.toContain(SECRET);
   });
 
+  it("shows the service's own reason for a failed answer, without the key", async () => {
+    const reason = async (body: string, type: string) => {
+      const client = new OgcClient({
+        fetchImpl: answer(body, {
+          status: 400,
+          headers: { "content-type": type },
+        }) as unknown as typeof fetch,
+        resolveImpl: publicDns,
+      });
+      return (
+        (await client
+          .capabilities("wmts", "https://maps.example.org/wmts", {
+            type: "query",
+            name: "token",
+            secret: SECRET,
+          })
+          .catch((x: unknown) => x)) as OgcError
+      ).message;
+    };
+    expect(await reason('{"status":400,"message":"Given path does not exist."}', "application/json")).toBe(
+      "the service answered 400: Given path does not exist.",
+    );
+    expect(
+      await reason(
+        `<ows:ExceptionReport><ows:Exception><ows:ExceptionText>Bad token ${SECRET}\n</ows:ExceptionText></ows:Exception></ows:ExceptionReport>`,
+        "application/xml",
+      ),
+    ).toBe("the service answered 400: Bad token …");
+    expect(await reason("<html>Bad</html>", "text/html")).toBe("the service answered 400");
+  });
+
   it("passes images on and refuses a WMS exception sent with status 200", async () => {
     const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47]);
     const ok = new OgcClient({

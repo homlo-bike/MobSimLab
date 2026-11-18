@@ -127,7 +127,10 @@ export class OgcClient {
     const res = await this.get(url, auth, true, "application/xml, text/xml, */*");
     if (res.status === 401 || res.status === 403)
       throw new OgcError("the service refused access: check the sign-in details", 502);
-    if (!res.ok) throw new OgcError(`the service answered ${res.status}`, 502);
+    if (!res.ok) {
+      const why = await this.reason(res, auth);
+      throw new OgcError(`the service answered ${res.status}${why ? `: ${why}` : ""}`, 502);
+    }
     const text = (await this.limited(res, this.o.maxCapabilitiesBytes, "capabilities document")).toString(
       "utf8",
     );
@@ -215,6 +218,34 @@ export class OgcClient {
         timeout ? 504 : 502,
       );
     }
+  }
+
+  /**
+   * Purpose: the service's own short reason for a failed answer (a JSON `message`, an OGC exception text or plain
+   * text), so the Admin sees why. At most 200 characters, one line, and never the password or key.
+   */
+  private async reason(res: Response, auth: OgcAuth): Promise<string> {
+    let text: string;
+    try {
+      text = (await this.limited(res, 16 * 1024, "error")).toString("utf8");
+    } catch {
+      return "";
+    }
+    const type = (res.headers.get("content-type") ?? "").toLowerCase();
+    let why = "";
+    if (type.includes("json")) {
+      try {
+        const m = (JSON.parse(text) as { message?: unknown; error?: unknown }) ?? {};
+        why = typeof m.message === "string" ? m.message : typeof m.error === "string" ? m.error : "";
+      } catch {
+        why = "";
+      }
+    } else if (type.includes("xml")) {
+      why = /<(?:\w+:)?(?:ServiceException|ExceptionText)\b[^>]*>([^<]*)</.exec(text)?.[1] ?? "";
+    } else if (type.startsWith("text/plain")) why = text;
+    why = why.replace(/[\p{Cc}\s]+/gu, " ").trim();
+    if (auth.type !== "none" && auth.secret) why = why.split(auth.secret).join("…");
+    return why.length > 200 ? `${why.slice(0, 199)}…` : why;
   }
 
   /** Purpose: refuse hosts that resolve inside a private network (SSRF), remembering good hosts for a while. */

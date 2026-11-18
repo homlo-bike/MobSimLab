@@ -87,5 +87,6 @@ export const pluginCodeNl = {
     "Een basiskaart wordt onder de plaats- en straatnamen getekend, in plaats van de stratenkaart.",
   "maplayers.overlayNote":
     "Een overlay wordt over elke basiskaart getekend, onder de lagen van het project, en kan aan en uit.",
+  "maplayers.missing": "Kies om toe te voegen minstens één laag en vul de naam en de bronvermelding in.",
   "maplayers.save": "Aan de kaart toevoegen",
 } satisfies PluginCodeMessages;

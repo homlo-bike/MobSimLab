@@ -202,9 +202,11 @@ export function MapLayersAdmin({
                   )}
                 </p>
                 <p className="m-0 truncate font-mono text-xs text-slate-500">{s.address}</p>
-                <p className="m-0 text-xs text-slate-500">
-                  {t("maplayers.layers", { list: s.layers.map((l) => l.title).join(", ") })}
-                </p>
+                {s.kind !== "xyz" && (
+                  <p className="m-0 text-xs text-slate-500">
+                    {t("maplayers.layers", { list: s.layers.map((l) => l.title).join(", ") })}
+                  </p>
+                )}
                 <p className="m-0 text-xs text-slate-500">
                   {t(AUTH_LABELS[s.auth.type])}
                   {s.auth.name ? ` (${s.auth.name})` : ""}
@@ -272,7 +274,7 @@ export function MapLayersAdmin({
                 step={1}
                 className={`${input} w-24`}
                 value={maxzoom}
-                onChange={(e) => changed(setMaxzoom)(e.target.value)}
+                onChange={(e) => setMaxzoom(e.target.value)}
               />
             </label>
           )}
@@ -407,6 +409,9 @@ export function MapLayersAdmin({
           >
             {t("maplayers.save")}
           </button>
+          {!busy && (picked.length === 0 || !name.trim() || !attribution.trim()) && (
+            <p className="m-0 text-xs text-slate-500">{t("maplayers.missing")}</p>
+          )}
         </div>
       )}
     </section>

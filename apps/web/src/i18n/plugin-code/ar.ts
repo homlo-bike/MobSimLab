@@ -86,5 +86,6 @@ export const pluginCodeAr = {
   "maplayers.basemapNote": "تُرسم خريطة الأساس تحت أسماء الأماكن والشوارع بدلًا من خريطة الشوارع.",
   "maplayers.overlayNote":
     "تُرسم الطبقة العلوية فوق أي خريطة أساس وتحت طبقات المشروع، ويمكن تشغيلها وإيقافها.",
+  "maplayers.missing": "للإضافة، اختر طبقة واحدة على الأقل واملأ الاسم ومصدر البيانات.",
   "maplayers.save": "إضافة إلى الخريطة",
 } satisfies PluginCodeMessages;

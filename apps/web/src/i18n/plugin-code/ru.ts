@@ -86,5 +86,6 @@ export const pluginCodeRu = {
   "maplayers.basemapNote": "Подложка рисуется под названиями мест и улиц вместо карты улиц.",
   "maplayers.overlayNote":
     "Наложение рисуется поверх любой подложки, под слоями проекта, и его можно включать и выключать.",
+  "maplayers.missing": "Чтобы добавить, выберите хотя бы один слой и заполните название и источник данных.",
   "maplayers.save": "Добавить на карту",
 } satisfies PluginCodeMessages;

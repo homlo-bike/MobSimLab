@@ -86,5 +86,6 @@ export const pluginCodeUz = {
   "maplayers.basemapNote": "Asosiy xarita ko‘cha xaritasi o‘rniga joy va ko‘cha nomlari ostida chiziladi.",
   "maplayers.overlayNote":
     "Ustki qatlam istalgan asosiy xarita ustida, loyiha qatlamlari ostida chiziladi va uni yoqib-o‘chirish mumkin.",
+  "maplayers.missing": "Qoʻshish uchun kamida bitta qatlamni tanlang va nomi hamda manbasini kiriting.",
   "maplayers.save": "Xaritaga qo‘shish",
 } satisfies PluginCodeMessages;

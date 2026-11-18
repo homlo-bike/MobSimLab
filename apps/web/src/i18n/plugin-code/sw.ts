@@ -87,5 +87,6 @@ export const pluginCodeSw = {
     "Ramani ya msingi huchorwa chini ya majina ya maeneo na mitaa, badala ya ramani ya mitaa.",
   "maplayers.overlayNote":
     "Tabaka la juu huchorwa juu ya ramani yoyote ya msingi, chini ya tabaka za mradi, na linaweza kuwashwa na kuzimwa.",
+  "maplayers.missing": "Ili kuongeza, chagua angalau safu moja na ujaze jina na chanzo cha data.",
   "maplayers.save": "Ongeza kwenye ramani",
 } satisfies PluginCodeMessages;

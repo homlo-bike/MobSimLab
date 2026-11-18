@@ -158,13 +158,11 @@ export class MapLayersService implements OnApplicationBootstrap, OnModuleDestroy
     for (const b of services) {
       if (have.has(b.id)) continue;
       try {
-        const layers = await this.resolve(
-          b.kind,
-          b.url,
-          { type: "none" },
-          b.maxzoom ?? XYZ_MAX_ZOOM,
-          b.layers,
-        );
+        const deepest = b.maxzoom ?? XYZ_MAX_ZOOM;
+        const layers = (await this.resolve(b.kind, b.url, { type: "none" }, deepest, b.layers)).map((l) => ({
+          ...l,
+          maxzoom: Math.max(l.minzoom, Math.min(l.maxzoom, deepest)),
+        }));
         await this.db
           .insertInto("plugin.map_layer_service")
           .values({

@@ -87,5 +87,7 @@ export const pluginCodeZu = {
     "Ibalazwe eliyisisekelo lidwetshwa ngaphansi kwamagama ezindawo nemigwaqo, esikhundleni sebalazwe lemigwaqo.",
   "maplayers.overlayNote":
     "Okumbozayo kudwetshwa phezu kwanoma yiliphi ibalazwe eliyisisekelo, ngaphansi kwezendlalelo zephrojekthi, futhi kungavulwa kuvalwe.",
+  "maplayers.missing":
+    "Ukuze wengeze, khetha okungenani isendlalelo esisodwa bese ugcwalisa igama nomthombo wedatha.",
   "maplayers.save": "Engeza ebalazweni",
 } satisfies PluginCodeMessages;

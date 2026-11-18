@@ -86,5 +86,6 @@ export const pluginCodeJa = {
   "maplayers.basemapNote": "ベースマップは道路地図の代わりに、地名や道路名の下に描かれます。",
   "maplayers.overlayNote":
     "オーバーレイはどのベースマップの上にも、プロジェクトのレイヤーの下に描かれ、オン・オフできます。",
+  "maplayers.missing": "追加するには、レイヤーを1つ以上選び、名前と出典を入力してください。",
   "maplayers.save": "地図に追加",
 } satisfies PluginCodeMessages;

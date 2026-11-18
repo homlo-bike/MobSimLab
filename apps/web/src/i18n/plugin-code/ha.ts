@@ -87,5 +87,6 @@ export const pluginCodeHa = {
     "Ana zana taswirar tushe a ƙarƙashin sunayen wurare da tituna, a madadin taswirar tituna.",
   "maplayers.overlayNote":
     "Ana zana lulluɓi a kan kowace taswirar tushe, a ƙarƙashin layukan aikin, kuma ana iya kunnawa da kashewa.",
+  "maplayers.missing": "Don ƙarawa, zaɓi aƙalla layi ɗaya kuma ka cika suna da tushen bayanai.",
   "maplayers.save": "Ƙara zuwa taswira",
 } satisfies PluginCodeMessages;

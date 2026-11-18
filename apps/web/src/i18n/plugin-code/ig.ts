@@ -86,5 +86,6 @@ export const pluginCodeIg = {
   "maplayers.basemapNote": "A na-ese maapụ ntọala n'okpuru aha ebe na okporo ụzọ, n'ọnọdụ maapụ okporo ụzọ.",
   "maplayers.overlayNote":
     "A na-ese ihe mkpuchi n'elu maapụ ntọala ọ bụla, n'okpuru ọkwa nke ọrụ, ma enwere ike ịgbanye ma ọ bụ gbanyụọ ya.",
+  "maplayers.missing": "Iji tinye, họrọ opekata mpe otu oyi akwa ma dejupụta aha na ebe data si.",
   "maplayers.save": "Tinye na maapụ",
 } satisfies PluginCodeMessages;

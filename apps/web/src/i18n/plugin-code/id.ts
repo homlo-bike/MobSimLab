@@ -86,5 +86,6 @@ export const pluginCodeId = {
   "maplayers.basemapNote": "Peta dasar digambar di bawah nama tempat dan jalan, menggantikan peta jalan.",
   "maplayers.overlayNote":
     "Lapisan atas digambar di atas peta dasar apa pun, di bawah lapisan proyek, dan dapat dinyalakan atau dimatikan.",
+  "maplayers.missing": "Untuk menambahkan, pilih setidaknya satu lapisan dan isi nama serta atribusi.",
   "maplayers.save": "Tambahkan ke peta",
 } satisfies PluginCodeMessages;

@@ -86,5 +86,6 @@ export const pluginCodePl = {
   "maplayers.basemapNote": "Mapa bazowa jest rysowana pod nazwami miejsc i ulic, zamiast mapy ulic.",
   "maplayers.overlayNote":
     "Nakładka jest rysowana nad dowolną mapą bazową, pod warstwami projektu, i można ją włączać i wyłączać.",
+  "maplayers.missing": "Aby dodać, wybierz co najmniej jedną warstwę i wpisz nazwę oraz źródło danych.",
   "maplayers.save": "Dodaj do mapy",
 } satisfies PluginCodeMessages;

@@ -87,5 +87,6 @@ export const pluginCodeIt = {
     "Una mappa di base è disegnata sotto i nomi di luoghi e strade, al posto della mappa stradale.",
   "maplayers.overlayNote":
     "Una sovrapposizione è disegnata sopra qualsiasi mappa di base, sotto i livelli del progetto, e si può accendere e spegnere.",
+  "maplayers.missing": "Per aggiungere, scegli almeno un livello e compila nome e attribuzione.",
   "maplayers.save": "Aggiungi alla mappa",
 } satisfies PluginCodeMessages;

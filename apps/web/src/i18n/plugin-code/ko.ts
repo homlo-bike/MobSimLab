@@ -86,5 +86,6 @@ export const pluginCodeKo = {
   "maplayers.basemapNote": "배경 지도는 거리 지도 대신 지명과 도로명 아래에 그려집니다.",
   "maplayers.overlayNote":
     "오버레이는 모든 배경 지도 위, 프로젝트 레이어 아래에 그려지며 켜고 끌 수 있습니다.",
+  "maplayers.missing": "추가하려면 레이어를 하나 이상 고르고 이름과 출처를 입력하세요.",
   "maplayers.save": "지도에 추가",
 } satisfies PluginCodeMessages;

@@ -267,6 +267,7 @@ describe("Esri World Imagery", () => {
           attribution: "© Example contributors",
           showAs: "basemap",
           layers: ["TOPO-OSM-WMS"],
+          maxzoom: 9,
         },
         // A layer the service does not have (yet): skipped, tried again later.
         {
@@ -283,7 +284,9 @@ describe("Esri World Imagery", () => {
       expect(listed).toHaveLength(1);
       expect(listed[0]).toMatchObject({ name: "Example topo", builtin: true, hidden: false, addedBy: null });
       expect(caps).toHaveBeenCalledWith("wms", "https://maps.example.org/osm/service", { type: "none" });
-      expect((await as("bob").get("/api/basemaps")).body.layers).toHaveLength(1);
+      const offered = (await as("bob").get("/api/basemaps")).body.layers;
+      expect(offered).toHaveLength(1);
+      expect(offered[0].maxzoom).toBe(9);
 
       // Remove hides it, so the next start does not add it again; it can be shown again.
       const id = listed[0].id;

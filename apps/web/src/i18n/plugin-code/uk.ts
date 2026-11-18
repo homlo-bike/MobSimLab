@@ -86,5 +86,6 @@ export const pluginCodeUk = {
   "maplayers.basemapNote": "Підкладка малюється під назвами місць і вулиць замість карти вулиць.",
   "maplayers.overlayNote":
     "Накладання малюється поверх будь-якої підкладки, під шарами проєкту, і його можна вмикати й вимикати.",
+  "maplayers.missing": "Щоб додати, виберіть принаймні один шар і заповніть назву та джерело даних.",
   "maplayers.save": "Додати на карту",
 } satisfies PluginCodeMessages;

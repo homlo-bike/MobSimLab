@@ -84,5 +84,6 @@ export const pluginCodeFa = {
   "maplayers.basemapNote": "نقشهٔ پایه زیر نام مکان‌ها و خیابان‌ها و به‌جای نقشهٔ خیابان‌ها کشیده می‌شود.",
   "maplayers.overlayNote":
     "لایهٔ رویی روی هر نقشهٔ پایه و زیر لایه‌های پروژه کشیده می‌شود و می‌توان آن را روشن و خاموش کرد.",
+  "maplayers.missing": "برای افزودن، دست‌کم یک لایه را انتخاب کنید و نام و منبع داده را پر کنید.",
   "maplayers.save": "افزودن به نقشه",
 } satisfies PluginCodeMessages;

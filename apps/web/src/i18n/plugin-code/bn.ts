@@ -85,5 +85,6 @@ export const pluginCodeBn = {
   "maplayers.basemapNote": "ভিত্তি মানচিত্র রাস্তার মানচিত্রের বদলে স্থান ও রাস্তার নামের নিচে আঁকা হয়।",
   "maplayers.overlayNote":
     "ওভারলে যেকোনো ভিত্তি মানচিত্রের ওপরে ও প্রকল্পের স্তরের নিচে আঁকা হয়, এবং চালু-বন্ধ করা যায়।",
+  "maplayers.missing": "যোগ করতে অন্তত একটি স্তর বাছুন এবং নাম ও তথ্যসূত্র পূরণ করুন।",
   "maplayers.save": "মানচিত্রে যোগ করুন",
 } satisfies PluginCodeMessages;

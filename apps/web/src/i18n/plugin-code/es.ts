@@ -87,5 +87,6 @@ export const pluginCodeEs = {
     "Un mapa base se dibuja bajo los nombres de lugares y calles, en lugar del callejero.",
   "maplayers.overlayNote":
     "Una superposición se dibuja sobre cualquier mapa base, bajo las capas del proyecto, y se puede activar o desactivar.",
+  "maplayers.missing": "Para añadir, elige al menos una capa y rellena el nombre y la atribución.",
   "maplayers.save": "Añadir al mapa",
 } satisfies PluginCodeMessages;

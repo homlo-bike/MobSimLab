@@ -86,5 +86,6 @@ export const pluginCodeTe = {
   "maplayers.basemapNote": "ఆధార మ్యాప్ వీధి మ్యాప్‌కు బదులుగా స్థల, వీధి పేర్ల కింద గీయబడుతుంది.",
   "maplayers.overlayNote":
     "ఓవర్‌లే ఏ ఆధార మ్యాప్ పైనైనా, ప్రాజెక్టు పొరల కింద గీయబడుతుంది; దాన్ని ఆన్ ఆఫ్ చేయవచ్చు.",
+  "maplayers.missing": "జోడించడానికి కనీసం ఒక పొరను ఎంచుకుని పేరు మరియు డేటా మూలాన్ని నింపండి.",
   "maplayers.save": "మ్యాప్‌కు జోడించు",
 } satisfies PluginCodeMessages;

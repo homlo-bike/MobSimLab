@@ -87,5 +87,6 @@ export const pluginCodePt = {
     "Um mapa base é desenhado sob os nomes de lugares e ruas, no lugar do mapa de ruas.",
   "maplayers.overlayNote":
     "Uma sobreposição é desenhada sobre qualquer mapa base, sob as camadas do projeto, e pode ser ligada e desligada.",
+  "maplayers.missing": "Para adicionar, escolha pelo menos uma camada e preencha o nome e a atribuição.",
   "maplayers.save": "Adicionar ao mapa",
 } satisfies PluginCodeMessages;

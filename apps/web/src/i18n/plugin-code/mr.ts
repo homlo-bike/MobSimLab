@@ -86,5 +86,6 @@ export const pluginCodeMr = {
   "maplayers.basemapNote": "आधार नकाशा रस्ता नकाशाऐवजी ठिकाणे व रस्त्यांच्या नावांखाली काढला जातो.",
   "maplayers.overlayNote":
     "आच्छादन कोणत्याही आधार नकाशावर आणि प्रकल्पाच्या स्तरांखाली काढले जाते, आणि ते चालू-बंद करता येते.",
+  "maplayers.missing": "जोडण्यासाठी किमान एक स्तर निवडा आणि नाव व डेटाचा स्रोत भरा.",
   "maplayers.save": "नकाशात जोडा",
 } satisfies PluginCodeMessages;

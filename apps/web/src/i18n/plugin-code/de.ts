@@ -87,5 +87,6 @@ export const pluginCodeDe = {
     "Eine Grundkarte wird unter den Orts- und Straßennamen gezeichnet, anstelle der Straßenkarte.",
   "maplayers.overlayNote":
     "Eine Überlagerung wird über jeder Grundkarte und unter den Ebenen des Projekts gezeichnet und lässt sich ein- und ausschalten.",
+  "maplayers.missing": "Zum Hinzufügen mindestens eine Ebene wählen und Name und Quellenangabe ausfüllen.",
   "maplayers.save": "Zur Karte hinzufügen",
 } satisfies PluginCodeMessages;
