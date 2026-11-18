@@ -1,5 +1,4 @@
-import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
-import type { Map as MapLibreMap } from "maplibre-gl";
+import { cleanup } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
 afterEach(cleanup);
@@ -37,12 +36,9 @@ vi.mock("../src/features/noise/mapLayer", () => ({
   ],
 }));
 
-import { fmtBand } from "../src/features/noise/NoiseSection";
 import { noiseCalculationIn } from "../src/features/noise/plugin";
 import { railSources, streetLineSources } from "../src/features/noise/sources";
-import type { NoiseEngine, NoiseInput, NoiseView } from "../src/features/noise/types";
-import { StreetLineEditor } from "../src/features/street-lines/StreetLineEditor";
-import type { LineView, StreetEngine, VehicleProfile } from "../src/features/street-lines/types";
+import type { LineView, VehicleProfile } from "../src/features/street-lines/types";
 import type { Network, RailView } from "../src/features/railways/types";
 
 const profile: VehicleProfile = {
@@ -94,31 +90,6 @@ function lineView(): LineView {
     time_s: 108,
   };
 }
-
-const RESULT: NoiseView = {
-  lden: { threshold_db: 55, typical_m: [31, 38, 46], max_m: 52, max_at: [7.001, 50.0004], probes: 40 },
-  lnight: { threshold_db: 50, typical_m: [12, 12, 12], max_m: 15, max_at: null, probes: 40 },
-  checks: [
-    {
-      severity: "info",
-      text: "The 55 dB L_den band is widest here: 52 m from the line",
-      at: [7.001, 50],
-      line: null,
-    },
-  ],
-  image: {
-    width: 4,
-    height: 2,
-    cell_m: 10,
-    coordinates: [
-      [7, 50.001],
-      [7.01, 50.001],
-      [7.01, 50],
-      [7, 50],
-    ],
-  },
-  input_level: "planned",
-};
 
 describe("noise sources", () => {
   it("turns each street line leg into a source with its speed, stops and flows", () => {
@@ -181,92 +152,11 @@ describe("noise sources", () => {
     ]);
   });
 
-  it("formats the band with its range", () => {
-    expect(fmtBand(RESULT.lden)).toBe("about 40 m (30–45 m)");
-    expect(fmtBand(RESULT.lnight)).toBe("12 m");
-  });
-
   it("is offered where the noise plugin's manifest says", () => {
-    expect(noiseCalculationIn("street-line-tool")).toBe(true);
-    expect(noiseCalculationIn("railway-tool")).toBe(true);
+    // Noise is worked out for the whole project in GIS, Map data only.
     expect(noiseCalculationIn("gis")).toBe(true);
+    expect(noiseCalculationIn("street-line-tool")).toBe(false);
+    expect(noiseCalculationIn("railway-tool")).toBe(false);
     expect(noiseCalculationIn("ferry-tool")).toBe(false);
-  });
-});
-
-function streetEngine(): StreetEngine {
-  const view = lineView();
-  return {
-    addOsm: vi.fn(),
-    rebuild: vi.fn(() => view),
-    ready: () => true,
-    view: () => view,
-    insertPoint: vi.fn(() => view),
-    movePoint: vi.fn(() => view),
-    deletePoint: vi.fn(() => view),
-    clear: vi.fn(() => view),
-    setKind: vi.fn(() => view),
-    switchSide: vi.fn(() => view),
-    sideCost: vi.fn(() => 260),
-    setName: vi.fn(() => view),
-    setDepot: vi.fn(() => view),
-    setDepotGates: vi.fn(() => view),
-    clearDepot: vi.fn(() => view),
-    optimise: vi.fn(() => view),
-    setSettings: vi.fn(() => view),
-    setStreetSetups: vi.fn(() => view),
-    setLevelCrossings: vi.fn(() => view),
-    usableRoads: () => ({ type: "FeatureCollection", features: [] }),
-    defaultProfile: (mode) => ({ ...profile, mode }),
-    defaultRules: () => ({
-      traffic_side: "right",
-      detour_warn_m: 500,
-      detour_warn_ratio: 0.25,
-      grouping_distance_m: 150,
-      max_snap_m: 150,
-    }),
-    dispose: vi.fn(),
-  };
-}
-
-describe("noise band in the street line tool", () => {
-  it("estimates the drawn line when the toggle is on and adds its checks", async () => {
-    const estimate = vi.fn<(input: NoiseInput) => NoiseView>(() => RESULT);
-    const noise: NoiseEngine = { estimate, image: vi.fn(() => new Uint8Array(32)), dispose: vi.fn() };
-    const map = {
-      on: vi.fn(),
-      off: vi.fn(),
-      getZoom: () => 15,
-      getBounds: () => ({ getWest: () => 7, getSouth: () => 50, getEast: () => 7.01, getNorth: () => 50.01 }),
-      getSource: () => undefined,
-      getLayer: () => undefined,
-      queryRenderedFeatures: () => [],
-      getCanvas: () => ({ style: {} }),
-    } as unknown as MapLibreMap;
-    render(
-      <StreetLineEditor
-        map={map}
-        loadEngine={async () => streetEngine()}
-        fetchTile={async () => "<osm/>"}
-        loadNoise={async () => noise}
-        noiseAvailable
-      />,
-    );
-    await waitFor(() => expect(screen.getByLabelText("Noise")).toBeTruthy());
-    expect(estimate).not.toHaveBeenCalled();
-    await act(async () => fireEvent.click(screen.getByLabelText("Show noise band")));
-    await waitFor(() => expect(estimate).toHaveBeenCalled(), { timeout: 2000 });
-    const input = estimate.mock.calls.at(-1)![0];
-    expect(input.lines).toHaveLength(3);
-    expect(input.lines[0]!.flows.day).toBe(6);
-    await waitFor(() => expect(screen.getByText("about 40 m (30–45 m)")).toBeTruthy());
-    expect(screen.getByText(/Noise: The 55 dB L_den band is widest here/)).toBeTruthy();
-    expect(drawNoise).toHaveBeenCalled();
-    // Night service changes the estimate.
-    const night = screen.getByLabelText("Night 23–07");
-    await act(async () => fireEvent.change(night, { target: { value: "4" } }));
-    await waitFor(() => expect(estimate.mock.calls.at(-1)![0].lines[0]!.flows.night).toBe(4), {
-      timeout: 2000,
-    });
   });
 });

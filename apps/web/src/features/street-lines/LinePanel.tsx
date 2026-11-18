@@ -127,10 +127,6 @@ interface Props {
   status: string | null;
   error: string | null;
   actions: PanelActions;
-  /** The noise plugin's section (toggle, band, legend), when the plugin is installed. */
-  noise?: React.ReactNode;
-  /** Checks from plugins (noise), added to the line's own. */
-  extraChecks?: Check[];
   /** Facilities of the stops by point id. */
   stopFeatures?: Record<number, string[]>;
 }
@@ -253,9 +249,7 @@ export function LinePanel(props: Props) {
       ? [{ sev: "error" as const, text: t("rail.line.headwayMin") }]
       : []),
   ];
-  const checks = [...serviceChecks, ...lineChecks(view), ...(props.extraChecks ?? [])].sort(
-    (x, y) => rank[x.sev] - rank[y.sev],
-  );
+  const checks = [...serviceChecks, ...lineChecks(view)].sort((x, y) => rank[x.sev] - rank[y.sev]);
   // In a project the checks go to the notifications button in the top bar; on its own the panel lists them.
   // A line with no points yet is not a problem of the project (the tab was only opened), so it reports nothing.
   const checksElsewhere = usePublishChecks(
@@ -409,7 +403,6 @@ export function LinePanel(props: Props) {
         </div>
       )}
       {view.points.length >= 2 && <Reliability view={view} />}
-      {props.noise}
 
       {(props.status || props.error) && (
         <p

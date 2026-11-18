@@ -41,12 +41,6 @@ import {
 } from "../naming/names";
 import { placesOtherThan, publishPlaces } from "../naming/registry";
 import { ToolPalette, type Tool } from "./ToolPalette";
-import { NoiseSection } from "../noise/NoiseSection";
-import { noiseCalculationIn } from "../noise/plugin";
-import { noiseCheckText, streetLineSources } from "../noise/sources";
-import type { Flows, Indicator, NoiseEngineLoader } from "../noise/types";
-import { useNoise } from "../noise/useNoise";
-import { loadWasmNoise } from "../noise/engine";
 import type {
   DelayShares,
   DepotTripView,
@@ -132,10 +126,6 @@ interface Props {
   onPickLine?: (id: string) => void;
   /** The list of the project's lines (switch, add, delete), shown at the top of the panel. */
   lineList?: React.ReactNode;
-  /** Noise engine loader (noise plugin); tests inject a fake. */
-  loadNoise?: NoiseEngineLoader;
-  /** Offer the noise band; defaults to whether the noise plugin is installed. */
-  noiseAvailable?: boolean;
   /** The project's shared road depots; the line pulls out of and in to one of them through its gates. */
   depots?: readonly SavedDepot[];
   /** Opens the depot tool (Create tab), to draw a depot. */
@@ -172,8 +162,6 @@ export function StreetLineEditor({
   otherLines = NO_LINES,
   onPickLine,
   lineList = null,
-  loadNoise = loadWasmNoise,
-  noiseAvailable = noiseCalculationIn("street-line-tool"),
   depots = NO_DEPOTS,
   onOpenDepots,
 }: Props) {
@@ -203,10 +191,6 @@ export function StreetLineEditor({
   const [status, setStatus] = useState<string | null>(tNow("street.starting"));
   const [error, setError] = useState<string | null>(null);
   const [note, setNote] = useState<string | null>(null);
-  const [noiseOn, setNoiseOn] = useState(false);
-  const [indicator, setIndicator] = useState<Indicator>("lden");
-  const [offPeak, setOffPeak] = useState<Omit<Flows, "day">>({ evening: 3, night: 1 });
-  const [electric, setElectric] = useState(false);
 
   // The project's rules as the engine loads; later changes are applied by the effect below.
   const projectRulesNow = useRef(projectRules);
@@ -806,13 +790,6 @@ export function StreetLineEditor({
     setShowRoads,
   };
 
-  const dayFlow = timing.headwayMin > 0 ? 60 / timing.headwayMin : 0;
-  const noiseInput =
-    noiseOn && profile && view.legs.length
-      ? { lines: streetLineSources(view, profile, { day: dayFlow, ...offPeak }, electric) }
-      : null;
-  const noise = useNoise(map, noiseAvailable && noiseOn, noiseInput, indicator, loadNoise, "sl-roads");
-
   const notice = zoomedOut && !ready ? t("street.zoomStreet") : zoomedOut ? t("street.zoomArea") : status;
 
   const sidePanel = profile && rules && (
@@ -837,31 +814,6 @@ export function StreetLineEditor({
       error={error}
       actions={actions}
       stopFeatures={stopFeatures}
-      noise={
-        noiseAvailable && (
-          <NoiseSection
-            on={noiseOn}
-            setOn={setNoiseOn}
-            indicator={indicator}
-            setIndicator={setIndicator}
-            flows={{ day: dayFlow, ...offPeak }}
-            setFlows={(f) => setOffPeak({ evening: f.evening, night: f.night })}
-            flowsLabel={t("street.noiseFlows")}
-            dayFrom={t("street.dayFrom", { headway: timing.headwayMin })}
-            electric={{
-              value: electric || profile.mode === "trolleybus",
-              onChange: setElectric,
-              fixed: profile.mode === "trolleybus",
-            }}
-            view={noise.view}
-            error={noise.error}
-          />
-        )
-      }
-      extraChecks={noise.view?.checks.map((c) => ({
-        sev: c.severity === "warning" ? "warn" : "info",
-        text: noiseCheckText(c),
-      }))}
     />
   );
 
