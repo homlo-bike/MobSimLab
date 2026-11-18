@@ -41,6 +41,24 @@ describe("loadConfig", () => {
     expect(loadConfig(env, (p) => both[p] ?? reader("x")).secrets.db_app_password).toBe(strong(32));
   });
 
+  it("takes master_key from standard input when the desktop app gives it there, and keeps a made one in the data folder", () => {
+    const only: Record<string, string> = { "/s/db_password": strong(40) };
+    const c = loadConfig(
+      { ...env, MOBSIMLAB_MASTER_KEY_STDIN: "true", MOBSIMLAB_DATA_DIR: "/d" },
+      (p) => only[p] ?? reader("x"),
+      () => `${strong()}\n`,
+    );
+    expect(c.secrets.master_key).toBe(strong());
+    expect(c.credentialKeyFile).toBe("/d/secrets/master_key");
+    expect(() =>
+      loadConfig(
+        { ...env, MOBSIMLAB_MASTER_KEY_STDIN: "true" },
+        (p) => only[p] ?? reader("x"),
+        () => "",
+      ),
+    ).toThrow(/standard input/);
+  });
+
   it("starts without master_key and session_secret, and uses them only when provided", () => {
     const only: Record<string, string> = { "/s/db_password": strong(40) };
     const a = loadConfig(env, (p) => only[p] ?? reader("x"));

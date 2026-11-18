@@ -6,7 +6,7 @@ import { loadConfig } from "../src/config/env";
 import { toLogRow } from "../src/logging/db.transport";
 import { createLogger, LOG_LINE, type LogLevel, type LogLine, toLogLine } from "../src/logging/logger";
 import { NestWinstonLogger } from "../src/logging/nest-logger";
-import { isSecretKey, REDACT_KEYS, REDACTED, redact } from "../src/logging/redact";
+import { isSecretKey, REDACT_KEYS, REDACTED, redact, redactText } from "../src/logging/redact";
 
 const REPO = join(__dirname, "..", "..", "..");
 
@@ -74,6 +74,22 @@ describe("log redaction", () => {
       nested: { headers: { authorization: REDACTED, accept: "json" }, list: [{ token: REDACTED }] },
       note: `sent Bearer ${REDACTED} to the server`,
     });
+  });
+
+  it("masks keys in web addresses and keeps the rest of the address", () => {
+    expect(
+      redactText(
+        "GET https://tiles.example.org/1/2/3?token=abc.def&f=png failed; see https://e.org/a?apikey=x#t",
+      ),
+    ).toBe(
+      `GET https://tiles.example.org/1/2/3?token=${REDACTED}&f=png failed; see https://e.org/a?apikey=${REDACTED}#t`,
+    );
+    expect(redactText("https://m.example.org/wms?map=topo&access_token=q1")).toBe(
+      `https://m.example.org/wms?map=topo&access_token=${REDACTED}`,
+    );
+    expect(redactText("https://m.example.org/wms?layers=a&styles=")).toBe(
+      "https://m.example.org/wms?layers=a&styles=",
+    );
   });
 
   it("survives reference cycles and errors", () => {

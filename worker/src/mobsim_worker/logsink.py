@@ -56,6 +56,12 @@ MAX_CONTEXT = 12_000
 
 _MAX_DEPTH = 8
 _INLINE_CREDENTIAL = re.compile(r"\b(Bearer|Basic)\s+[A-Za-z0-9._~+/=-]+", re.IGNORECASE)
+#: Keys in a web address's query, as in ``?token=…``, ``&apikey=…`` or ``&key=…``.
+_QUERY_CREDENTIAL = re.compile(
+    r"([?&;][A-Za-z0-9_.-]*(?:key|token|secret|password|passwd|sig|signature|credential)[A-Za-z0-9_.-]*=)"
+    r"[^&#\s\"'<>]+",
+    re.IGNORECASE,
+)
 
 APPEND = "SELECT logs.append_worker(%(level)s, %(module)s, %(message)s, %(run)s, %(context)s::jsonb)"
 
@@ -87,7 +93,7 @@ def redact(value: Any, depth: int = 0) -> Any:
         The value with secret fields replaced by ``REDACTED`` and inline credentials masked.
     """
     if isinstance(value, str):
-        return _INLINE_CREDENTIAL.sub(rf"\1 {REDACTED}", value)
+        return _QUERY_CREDENTIAL.sub(rf"\1{REDACTED}", _INLINE_CREDENTIAL.sub(rf"\1 {REDACTED}", value))
     if depth >= _MAX_DEPTH:
         return "[TRUNCATED]"
     if isinstance(value, dict):

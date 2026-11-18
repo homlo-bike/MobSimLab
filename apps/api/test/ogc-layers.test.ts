@@ -15,7 +15,14 @@ import {
   tileBox,
   tileUrl,
 } from "../src/basemaps/ogc";
-import { OgcClient, OgcError, requestUrl, serviceUrlAllowed, signed } from "../src/basemaps/ogc.client";
+import {
+  keyInQuery,
+  OgcClient,
+  OgcError,
+  requestUrl,
+  serviceUrlAllowed,
+  signed,
+} from "../src/basemaps/ogc.client";
 import { parseXml, XmlError } from "../src/basemaps/xml";
 
 const fixture = (name: string) => readFileSync(join(__dirname, "fixtures", "ogc", name), "utf8");
@@ -64,6 +71,13 @@ describe("Service addresses", () => {
     expect(serviceUrlAllowed("https://127.0.0.1/wms")).toBe(false);
     expect(serviceUrlAllowed("https://geoserver.internal/wms")).toBe(false);
     expect(serviceUrlAllowed("https://user:pw@ows.example.de/wms")).toBe(false);
+  });
+
+  it("finds a key in a typed address's query", () => {
+    expect(keyInQuery("https://t.example.org/{z}/{x}/{y}.png?apikey=abc")).toBe(true);
+    expect(keyInQuery("https://t.example.org/{z}/{x}/{y}.png?access_token=abc")).toBe(true);
+    expect(keyInQuery("https://maps.example.org/wms?key=abc")).toBe(true);
+    expect(keyInQuery("https://maps.example.org/wms?map=/srv/topo.map&layers=a")).toBe(false);
   });
 
   it("shows only host and path, never a key in the query", () => {

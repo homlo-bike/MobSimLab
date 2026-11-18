@@ -12,6 +12,7 @@ import {
   serviceBase,
 } from "./ogc";
 import { maxAgeOf, type Tile, TileError } from "./esri.client";
+import { isSecretKey } from "../logging/redact";
 
 /**
  * Reads WMS and WMTS services for the map layers an Admin adds (bundled plugin `org.mobsimlab.ogc-layers`): their
@@ -55,6 +56,24 @@ const RESOLVE_CACHE_MS = 5 * 60_000;
 export function serviceUrlAllowed(raw: string): boolean {
   // XYZ templates: judge the address of a real tile.
   return gbfsUrlAllowed(fillXyz(raw.trim(), 0, 0, 0));
+}
+
+/**
+ * Purpose: whether an address an Admin typed carries a key in its query (`?apikey=…`, `?token=…`, `?key=…`). The
+ * address is stored as typed and kept in plain text, so a key belongs in the sign-in fields (as a query parameter),
+ * where it is encrypted and never sent back.
+ */
+export function keyInQuery(raw: string): boolean {
+  let u: URL;
+  try {
+    u = new URL(fillXyz(raw.trim(), 0, 0, 0));
+  } catch {
+    return false;
+  }
+  return [...u.searchParams.keys()].some((k) => {
+    const n = k.toLowerCase().replace(/[-_]/g, "");
+    return isSecretKey(k) || /(key|sig|signature)$/.test(n);
+  });
 }
 
 /**

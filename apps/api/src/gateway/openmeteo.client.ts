@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { z } from "zod";
 
 /**
@@ -7,8 +9,8 @@ import { z } from "zod";
  * minimum. The project keeps its own copy, so a run does not depend on the service.
  *
  * Licence: the data is CC BY 4.0 (credit "Weather data by Open-Meteo.com"). The free API is for
- * non-commercial use; a commercial installation sets its own endpoint and key (`MOBSIMLAB_OPENMETEO_URL`,
- * `MOBSIMLAB_OPENMETEO_APIKEY`). Same outbound rules as the other providers: https endpoint, identifying
+ * non-commercial use; a commercial installation sets its own endpoint and key (`MOBSIMLAB_OPENMETEO_URL`, and
+ * the secret file `openmeteo_api_key`). Same outbound rules as the other providers: https endpoint, identifying
  * User-Agent, timeout, size limit, retries with backoff on 429/5xx and timeouts. Answers are cached for a day.
  */
 
@@ -66,8 +68,15 @@ export interface Climate {
   months: MonthClimate[];
 }
 
-/** Purpose: the endpoint and key from `MOBSIMLAB_OPENMETEO_URL` (https only) and `MOBSIMLAB_OPENMETEO_APIKEY`. */
-export function openMeteoSettings(env: NodeJS.ProcessEnv = process.env): {
+/**
+ * Purpose: the endpoint from `MOBSIMLAB_OPENMETEO_URL` (https only) and the key from the secret file
+ * `openmeteo_api_key` in the secrets folder, or else from `MOBSIMLAB_OPENMETEO_APIKEY` (older installs; a file
+ * keeps the key out of the container's environment, which `docker inspect` shows).
+ */
+export function openMeteoSettings(
+  env: NodeJS.ProcessEnv = process.env,
+  readFile: (path: string) => string = (p) => readFileSync(p, "utf8"),
+): {
   endpoint: string;
   apiKey: string | null;
 } {
@@ -78,7 +87,13 @@ export function openMeteoSettings(env: NodeJS.ProcessEnv = process.env): {
         .parse(v)
         .replace(/\/+$/, "")
     : DEFAULT_OPENMETEO_URL;
-  return { endpoint, apiKey: env.MOBSIMLAB_OPENMETEO_APIKEY?.trim() || null };
+  let fromFile = "";
+  try {
+    fromFile = readFile(join(env.MOBSIMLAB_SECRETS_DIR || "/run/secrets", "openmeteo_api_key")).trim();
+  } catch {
+    // no secret file
+  }
+  return { endpoint, apiKey: fromFile || env.MOBSIMLAB_OPENMETEO_APIKEY?.trim() || null };
 }
 
 const series = z.array(z.number().nullable()).max(20_000);

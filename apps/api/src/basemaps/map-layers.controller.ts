@@ -21,7 +21,7 @@ import type { ProjectActor } from "../projects/projects.service";
 import { TileError, validTile } from "./esri.client";
 import { MapLayersService } from "./map-layers.service";
 import { isXyzTemplate, MAX_ZOOM } from "./ogc";
-import { serviceUrlAllowed } from "./ogc.client";
+import { keyInQuery, serviceUrlAllowed } from "./ogc.client";
 
 /** A secret is one line: no line breaks or other control characters. */
 const secret = z
@@ -75,9 +75,17 @@ const auth = z.discriminatedUnion("type", [
 ]);
 
 const kind = z.enum(["wms", "wmts", "xyz"]);
-const address = z.string().trim().max(2000, "the service address is too long").refine(serviceUrlAllowed, {
-  message: "the service address must be an https address of a public server, without a user name or password",
-});
+const address = z
+  .string()
+  .trim()
+  .max(2000, "the service address is too long")
+  .refine(serviceUrlAllowed, {
+    message:
+      "the service address must be an https address of a public server, without a user name or password",
+  })
+  .refine((u) => !keyInQuery(u), {
+    message: 'leave the key out of the address: choose "Key in the address" under sign-in and enter it there',
+  });
 
 /** XYZ tiles need {z}, {x} and {y} in the address. */
 const xyzNeedsTemplate = (b: { kind: string; url: string }) => b.kind !== "xyz" || isXyzTemplate(b.url);
