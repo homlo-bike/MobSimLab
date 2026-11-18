@@ -1146,6 +1146,7 @@ export function Workspace({
                 onChange={(next) => drawings.set("regions", { regions: next } satisfies RegionsDoc)}
                 editable={editable}
                 currency={currency?.code ?? costInfo?.currency ?? null}
+                area={editable && typeof api.area === "function" ? api.area(projectId) : null}
               />
             </Suspense>
           )}
