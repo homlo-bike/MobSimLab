@@ -216,7 +216,9 @@ describe("Map data panel", () => {
   it("saves the buffer around the drawing", async () => {
     const api = fakeApi(status());
     render(<MapDataPanel api={api} map={null} />);
-    const field = await screen.findByLabelText("Buffer (km)");
+    const field = (await screen.findByLabelText("Buffer (km)")) as HTMLInputElement;
+    // The panel fills in the saved buffer after it first draws; typing before that would be overwritten.
+    await waitFor(() => expect(field.value).toBe("2"));
     fireEvent.change(field, { target: { value: "5" } });
     fireEvent.click(screen.getByRole("button", { name: "Save buffer" }));
     await waitFor(() => expect(api.setBuffer).toHaveBeenCalledWith(5));
