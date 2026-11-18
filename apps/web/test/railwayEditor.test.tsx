@@ -978,7 +978,9 @@ describe("Railway editor", () => {
     fireEvent.change(dayType, { target: { value: "weekday" } });
 
     fireEvent.click(screen.getByRole("button", { name: "Publish timetable" }));
-    const done = await screen.findByTestId("lines-published");
+    // Publishing plans every day type with the real engine, one step after another; on a slow CI runner that
+    // takes longer than the default one second.
+    const done = await screen.findByTestId("lines-published", {}, { timeout: 15_000 });
     expect(done.textContent).toMatch(/Published 1 line · \d+ trips/);
     // The outcome is announced in one box, and the progress bar is gone.
     expect(done.getAttribute("role")).toBe("status");
