@@ -137,10 +137,13 @@ def check_street_photos(pid: str, manifest: dict) -> list[str]:
                 origin = "/".join(url.split("/")[:3])
                 if origin not in origins:
                     errors.append(
-                        f"{pid}: street photos {sp['id']} loads tiles from {origin}, which MAP_ORIGINS does not list"
+                        f"{pid}: street photos {sp['id']} loads tiles from {origin}, "
+                        "which MAP_ORIGINS does not list"
                     )
                 if "server" in sp:
-                    errors.append(f"{pid}: street photos {sp['id']}: a keyed source's tiles come through the API")
+                    errors.append(
+                        f"{pid}: street photos {sp['id']}: a keyed source's tiles come through the API"
+                    )
             for part in ("{z}", "{x}", "{y}"):
                 if part not in url:
                     errors.append(f"{pid}: street photos {sp['id']}: a tile URL has no {part}")
@@ -503,7 +506,9 @@ def build(root: Path = PLUGINS) -> tuple[list[str], dict]:
         for sp in p["streetPhotos"]:
             for key in (f"id {sp['id']}", f"provider {sp['provider']}"):
                 if key in photo_owners:
-                    errors.append(f"{p['id']}: street photos {key} is also contributed by {photo_owners[key]}")
+                    errors.append(
+                        f"{p['id']}: street photos {key} is also contributed by {photo_owners[key]}"
+                    )
                 photo_owners[key] = p["id"]
     return errors, {"pluginApi": "1", "plugins": plugins}
 
