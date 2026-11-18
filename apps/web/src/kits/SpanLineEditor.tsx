@@ -747,7 +747,7 @@ export function SpanLineEditor({
           plugin: found?.plugin.name ?? t(w("cable.plugin", "apm.plugin")),
           context: contextLabel(doc.mode, doc.system),
         })}{" "}
-        {t("kit.keptHere")}
+        {!saving && t("kit.keptHere")}
       </p>
     </div>
   );

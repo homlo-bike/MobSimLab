@@ -352,6 +352,7 @@ export interface AppraisalRow {
   central: Present;
   /** Monte Carlo 10th, 50th and 90th percentiles. */
   enpv: Triple;
+  /** NaN when no draw has costs to divide by. */
   bcr: Triple;
   err: Triple;
   fnpv: Triple;
@@ -531,6 +532,7 @@ export function appraise(input: AppraisalInput, draws = 200, seed = 0xa9a1): App
     const rates = (xs: (number | null)[]) => xs.filter((x): x is number => x !== null);
     const err = rates(res.map((r) => r.err));
     const firr = rates(res.map((r) => r.firr));
+    const bcrs = rates(res.map((r) => r.bcr));
     return {
       id: s.id,
       scope: s.scope,
@@ -540,7 +542,8 @@ export function appraise(input: AppraisalInput, draws = 200, seed = 0xa9a1): App
       timeline: c.tl,
       central: c.result,
       enpv: p10p50p90(res.map((r) => r.enpv)),
-      bcr: p10p50p90(rates(res.map((r) => r.bcr))),
+      // A line without costs has no ratio in any draw: NaN shows as "–", not as 0.
+      bcr: bcrs.length ? p10p50p90(bcrs) : [NaN, NaN, NaN],
       err: p10p50p90(err),
       fnpv: p10p50p90(res.map((r) => r.fnpv)),
       firr: p10p50p90(firr),
