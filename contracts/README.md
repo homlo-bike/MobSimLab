@@ -4,7 +4,7 @@ JSON Schemas for data that one part of MobSimLab produces and another consumes. 
 
 | Schema | Producer | Consumer | Check |
 |--------|----------|----------|-------|
-| [rail-topology.schema.json](rail-topology.schema.json) | `crates/rail-design` (`topology` module; the railway tool's **Download track topology**) | Railway operations (ADR-0032): routes, timetables, reservations | `cargo run -p rail-design --example topology -- DIR`, then `tools/contracts/check_rail_topology.py DIR/*.json` |
+| [rail-topology.schema.json](rail-topology.schema.json) | `crates/rail-design` (`topology` module; the simulator builds it from the drawn railway) | Railway operations (ADR-0032): routes, timetables, reservations | `cargo run -p rail-design --example topology -- DIR`, then `tools/contracts/check_rail_topology.py DIR/*.json` |
 | [level-crossing-closures.schema.json](level-crossing-closures.schema.json) | `crates/rail-plan` (`closures` module; `--example level_crossing_closures`) | Street line tool: expected wait at level crossings in bus running times | `crates/rail-plan/tests/closures.rs`, `crates/street-routing/src/crossings.rs` |
 | [published-timetable.schema.json](published-timetable.schema.json) | `crates/rail-plan` (`journeys` module; `cargo run -p rail-plan --example publish_journeys -- TOPOLOGY LINES`), the web app's street lines | Journey planner (ADR-0034): `crates/journey-planner`, the panel's **Add rail timetable (JSON)** | `cargo test -p rail-plan --test journeys` |
 | [log-redaction.json](log-redaction.json) | The log redaction deny-list (ADR-0022) | The API's, web app's and worker's loggers (`apps/api/src/logging/redact.ts`, `apps/web/src/logging/redact.ts`, `worker/src/mobsim_worker/logsink.py`) | `apps/api/test/logging.test.ts` |

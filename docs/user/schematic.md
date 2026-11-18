@@ -21,7 +21,7 @@ When the project has no lines yet, the tab says so and offers **Go to Create**.
 - **Round the corners**: rounded bends between stations.
 - **Snap to 45° while dragging**: a dragged station lines up with its neighbours.
 - **Drag a station** to move it. It stays where you put it, also when lines are added; the others are laid out around it. **Reset layout** puts every station back.
-- **Click a station** to open its pop-up: how many stops and platforms it has, the lines that call there (click one to open its strip map), the features recorded in Create, and its **Special status** (central station, central bus station, airport, seaport, park and ride, hospital, university, stadium). There you also choose where its name goes (**Name position**) and turn a long name (**Name rotation**, −90° to 90°). **Let the layout place it** forgets a move. Esc, a click outside or × closes the pop-up.
+- **Click a station** to open its pop-up: how many stops and platforms it has, the lines that call there (click one to open its strip map), the features recorded in Create, and its **Special status** (central station, central bus station, airport, seaport, park and ride, hospital, university, stadium, closed, under construction). There you also choose where its name goes (**Name position**) and turn a long name (**Name rotation**, −90° to 90°). **Let the layout place it** forgets a move. Esc, a click outside or × closes the pop-up.
 - **Click a line** to open its strip map.
 - **Status symbols** and **Station feature symbols** show or hide the symbols next to station names.
 - **Sea, lakes and rivers**: water from OpenStreetMap around the network, bent along with the stations so it stays where it belongs between them.

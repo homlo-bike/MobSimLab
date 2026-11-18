@@ -32,6 +32,9 @@ was left out.
 A file saved by a newer MobSimLab with a newer file format is refused; update MobSimLab first. Files of older
 formats are upgraded as they are opened.
 
+During the beta, [examples/projects](../../examples/projects/README.md) holds a test project to open this way: a tram
+and bus network for Damascus.
+
 ## Safety
 
 Files are checked before anything is saved: every file inside must match the checksum in the manifest and the

@@ -64,6 +64,7 @@ import { metres } from "../src/features/railways/mapLayers";
 import { clearPlaces, publishPlaces } from "../src/features/naming/registry";
 import { fmtM, fmtTime, shiftLevel } from "../src/features/railways/modes";
 import { RailwayEditor } from "../src/features/railways/RailwayEditor";
+import { PlannedModesProvider } from "../src/projects/plannedModes";
 import {
   addLine,
   engineLines,
@@ -660,6 +661,21 @@ describe("Railway editor", () => {
     if (mode) await screen.findByText(/0 errors/);
     return { map, handlers, engine: () => engine! };
   }
+
+  it("starts a new drawing in the first rail mode the project plans to use", async () => {
+    const { map } = fakeMap();
+    render(
+      <PlannedModesProvider value={["bus", "tram"]}>
+        <RailwayEditor
+          map={map}
+          fetchTile={() => Promise.reject(new Error("offline"))}
+          loadEngine={loadRailEngine}
+        />
+      </PlannedModesProvider>,
+    );
+    const mode = (await screen.findByLabelText("Mode for new stations and tracks")) as HTMLSelectElement;
+    expect(mode.value).toBe("tram");
+  });
 
   it("checks the drawing against the project's design rules for its mode", async () => {
     const { map } = fakeMap();

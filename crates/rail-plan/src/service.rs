@@ -319,23 +319,21 @@ pub fn train_params_with(
     }
 }
 
-/// Purpose: service bands from the first and last departure, the peaks and both headways.
+/// Purpose: the headway bands of a service day, with the gradual start and finish a railway runs:
+/// the first half hour at twice the off-peak headway, then one and a half times it, then off-peak;
+/// in the hour before each peak, two steps from the off-peak towards the peak headway so the peak
+/// headway runs from the peak's start; in the hour after it, two steps back; and the day ends in
+/// reverse of how it started, while the trains go back to the depot. Ramps share an off-peak
+/// stretch shorter than two hours. Headways are rounded to whole minutes.
+/// Inputs: the line. Output: the bands, in time order.
 pub fn service_bands(l: &ServiceLine) -> Vec<Band> {
-    let mut out = Vec::new();
     let peak = l.peak_headway_s.max(60.0);
     let off = l.offpeak_headway_s.max(60.0);
+    // The plain bands: (from, to, peak?).
+    let mut plain: Vec<(f64, f64, bool)> = Vec::new();
     let mut t = l.first_s;
     let mut peaks = l.peaks.clone();
     peaks.sort_by(|a, b| a[0].total_cmp(&b[0]));
-    let mut push = |from_s: f64, to_s: f64, headway_s: f64| {
-        if to_s > from_s {
-            out.push(Band {
-                from_s,
-                to_s,
-                headway_s,
-            });
-        }
-    };
     for [a, b] in peaks {
         let from = a.max(l.first_s);
         let to = b.min(l.last_s);
@@ -343,13 +341,67 @@ pub fn service_bands(l: &ServiceLine) -> Vec<Band> {
             continue;
         }
         let from = from.max(t);
-        push(t, from, off);
-        push(from, to, peak);
+        if from > t {
+            plain.push((t, from, false));
+        }
+        plain.push((from, to, true));
         t = to;
     }
-    push(t, l.last_s, off);
+    if l.last_s > t {
+        plain.push((t, l.last_s, false));
+    }
+    let round = |h: f64| ((h / 60.0).round() * 60.0).max(60.0);
+    let mut out: Vec<Band> = Vec::new();
+    let mut push = |from_s: f64, to_s: f64, h: f64| {
+        if to_s - from_s < 1.0 {
+            return;
+        }
+        let headway_s = round(h);
+        match out.last_mut() {
+            Some(b) if (b.headway_s - headway_s).abs() < 1e-6 && (b.to_s - from_s).abs() < 1e-6 => {
+                b.to_s = to_s
+            }
+            _ => out.push(Band {
+                from_s,
+                to_s,
+                headway_s,
+            }),
+        }
+    };
+    let ramp_peak = (off - peak).abs() >= 60.0;
+    for (k, &(from, to, is_peak)) in plain.iter().enumerate() {
+        if is_peak {
+            push(from, to, peak);
+            continue;
+        }
+        let r = (RAMP_S).min((to - from) / 2.0);
+        // The ramp at the start of this off-peak stretch: the day's start or after a peak.
+        let (a, b) = if k == 0 {
+            (2.0 * off, 1.5 * off)
+        } else if ramp_peak {
+            (peak + (off - peak) / 3.0, peak + 2.0 * (off - peak) / 3.0)
+        } else {
+            (off, off)
+        };
+        // The ramp at its end: before a peak, or the day's end.
+        let (c, d) = if k + 1 == plain.len() {
+            (1.5 * off, 2.0 * off)
+        } else if ramp_peak {
+            (off + (peak - off) / 3.0, off + 2.0 * (peak - off) / 3.0)
+        } else {
+            (off, off)
+        };
+        push(from, from + r / 2.0, a);
+        push(from + r / 2.0, from + r, b);
+        push(from + r, to - r, off);
+        push(to - r, to - r / 2.0, c);
+        push(to - r / 2.0, to, d);
+    }
     out
 }
+
+/// How long a gradual start, finish or change to and from a peak takes, s.
+const RAMP_S: f64 = 3600.0;
 
 /// Purpose: the planner's line from an editor line.
 /// Inputs: the line and the compiled model (for the storage tracks and terminal platforms).

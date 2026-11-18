@@ -28,7 +28,7 @@
 //!    that leaves later. Trains are added to the morning stabling only where
 //!    the track is empty at that moment.
 
-use std::collections::{BTreeMap, BinaryHeap, HashMap};
+use std::collections::{BTreeMap, BinaryHeap, HashMap, HashSet};
 
 use rail_dynamics::Stop;
 use rail_model::{Dir, Model, PlatformId, RouteId, TdsId};
@@ -260,6 +260,9 @@ struct Stack {
     morning: Vec<usize>,
 }
 
+/// Sections a run blocks, with start and end relative to its departure, s.
+type Blocks = Vec<(TdsId, f64, f64)>;
+
 /// A conflict that stops a placement: (other run, section).
 type Blocker = Option<(usize, TdsId)>;
 
@@ -272,6 +275,9 @@ struct Planner<'a> {
     index: BTreeMap<TdsId, Vec<(usize, f64, f64)>>,
     issues: Vec<Issue>,
     memory: HashMap<(usize, u8, usize), PlatformId>,
+    /// The terminal platform each line direction arrives in: the one its trains leave from on the
+    /// track the other direction runs on.
+    ends: HashMap<(usize, u8), PlatformId>,
     vehicles: Vec<Vehicle>,
     stacks: Vec<Stack>,
     /// Departure routes reserved for trains standing in a platform: (vehicle, start, end) per section.
@@ -325,6 +331,7 @@ pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, Strin
         index: BTreeMap::new(),
         issues: Vec::new(),
         memory: HashMap::new(),
+        ends: HashMap::new(),
         vehicles: Vec::new(),
         stacks,
         reserved: BTreeMap::new(),
@@ -390,6 +397,7 @@ struct Pattern {
 /// round-trip running time modulo the headway, so a separation can need
 /// extra running time; this is how the Swiss periodic timetable sets running
 /// times to fit the cycle.
+#[allow(clippy::too_many_arguments)]
 fn periodic_pattern(
     h: f64,
     offsets: &[f64],
@@ -398,6 +406,7 @@ fn periodic_pattern(
     t_back: f64,
     turnback: f64,
     target: f64,
+    meets: &dyn Fn(f64, f64) -> bool,
 ) -> Pattern {
     let circ = |x: f64| {
         let r = x.rem_euclid(h);
@@ -405,8 +414,8 @@ fn periodic_pattern(
     };
     // Layover from an arrival at `a` (relative to the departure grid) to the first departure it can make.
     let layover = |a: f64| (-(a + turnback)).rem_euclid(h) + turnback;
-    // Lexicographic key: (too close, fleet, -separation, extra time, offset).
-    type Key = (f64, f64, f64, f64, f64);
+    // Lexicographic key: (too close, the directions meet, fleet, -separation, extra time, offset).
+    type Key = (f64, f64, f64, f64, f64, f64);
     let mut best: Option<(Key, Pattern)> = None;
     // Free search on a 5 s grid, or only the given offsets with the given extra time.
     let grid: Vec<f64> = (0..(h / 5.0).ceil() as usize)
@@ -427,6 +436,7 @@ fn periodic_pattern(
             // Separation counts in 10 s steps, so a fraction of a second never costs extra time.
             let key = (
                 (sep < target) as u8 as f64,
+                meets(off, e) as u8 as f64,
                 fleet,
                 -(sep / 10.0).floor(),
                 e,
@@ -483,10 +493,21 @@ impl<'a> Planner<'a> {
     fn candidates(&self, line: usize, dir: u8, i: usize) -> Vec<Candidate> {
         // Terminal platforms alternate with the turn-backs; only through calls keep a platform.
         let last = self.cands[line][dir as usize].len() - 1;
-        let mem = if i == 0 || i == last {
+        let mem = if i == 0 {
             None
+        } else if i == last {
+            self.ends.get(&(line, dir)).copied()
         } else {
             self.memory.get(&(line, dir, i)).copied()
+        };
+        // The track the other direction stops on here: running on it too puts both directions on one
+        // track of a double track, where every train meets the one coming the other way (Damascus T1).
+        let other = if i == 0 || i == last {
+            None
+        } else {
+            self.memory
+                .get(&(line, 1 - dir, last - i))
+                .map(|&p| self.m.platforms[p as usize].track)
         };
         self.cands[line][dir as usize][i]
             .iter()
@@ -497,6 +518,9 @@ impl<'a> Planner<'a> {
                     Some(x) if x == pid => pen = 0.0,
                     Some(_) => pen += self.p.change_penalty_m,
                     None => {}
+                }
+                if mem.is_none() && other == Some(self.m.platforms[pid as usize].track) {
+                    pen += self.p.change_penalty_m;
                 }
                 (Place::Platform(pid), pen)
             })
@@ -575,6 +599,66 @@ impl<'a> Planner<'a> {
         ))
     }
 
+    /// Purpose: the path of a depot run along the line, through the platforms the line's trains use
+    /// when they run the same way, so a train going to or from the depot runs on the right track behind
+    /// the service trains instead of the shortest way, which can be against them (Damascus T1, bug 9).
+    /// Inputs: the line, the direction `e` of travel, the routes the run can start with, the candidates
+    /// for its end, and whether it ends at the end of direction `e` (a pull-out to a terminal) or starts
+    /// at its start (a pull-in). Output: the path, its places being the platforms passed and then the
+    /// end; the plain shortest path when no path along the line is short enough.
+    fn depot_path(
+        &self,
+        line: usize,
+        e: u8,
+        start: &[RouteId],
+        end: &[Candidate],
+        to_terminal: bool,
+    ) -> Option<FoundPath> {
+        let shortest = find_path(self.m, start, &[end.to_vec()], self.p.max_routes)?;
+        let last = self.cands[line][e as usize].len() - 1;
+        let via: Vec<Place> = (1..last)
+            .filter_map(|i| self.memory.get(&(line, e, i)).map(|&p| Place::Platform(p)))
+            .collect();
+        let limit = shortest.cost * 1.5 + 1000.0;
+        // The longest stretch of the line first.
+        for k in (1..=via.len()).rev() {
+            let part = if to_terminal {
+                &via[via.len() - k..]
+            } else {
+                &via[..k]
+            };
+            let mut calls: Vec<Vec<Candidate>> = part.iter().map(|&p| vec![(p, 0.0)]).collect();
+            calls.push(end.to_vec());
+            if let Some(fp) = find_path(self.m, start, &calls, self.p.max_routes) {
+                if fp.cost <= limit {
+                    return Some(fp);
+                }
+            }
+        }
+        Some(shortest)
+    }
+
+    /// Purpose: the runs a depot run can make along its path: straight through first, then stopping at
+    /// the platforms it passes for the line's dwell, as a service train does, so it can follow one along
+    /// the line instead of catching it up. Inputs: the line, the run's name and its path (the last place
+    /// is its end). Output: the runs, without a departure time.
+    fn depot_variants(&self, line: usize, name: &str, fp: &FoundPath) -> Vec<TrainRun> {
+        let end = *fp.places.last().unwrap();
+        let mut out = Vec::new();
+        if let Ok((plain, _)) = self.build_run(line, name, &fp.routes, &[end], &[], 0.0) {
+            out.push(plain);
+        }
+        if fp.places.len() > 1 {
+            let mut dw = vec![Some(self.lines[line].dwell_s); fp.places.len() - 1];
+            dw.push(None);
+            if let Ok((stopping, _)) = self.build_run(line, name, &fp.routes, &fp.places, &dw, 0.0)
+            {
+                out.push(stopping);
+            }
+        }
+        out
+    }
+
     /// Purpose: dwell per call of a trip (None = pass), destination excluded.
     fn dwells(&self, line: usize, dir: u8) -> Vec<Option<f64>> {
         let l = &self.lines[line];
@@ -591,11 +675,18 @@ impl<'a> Planner<'a> {
     /// Purpose: generate trips with nominal times and match them into circulations.
     fn trips(&mut self) -> Vec<Trip> {
         let mut trips = Vec::new();
+        // Nominal occupation of the lines phased so far, per section, sorted by start.
+        let mut placed: HashMap<TdsId, Vec<(f64, f64)>> = HashMap::new();
         for li in 0..self.lines.len() {
+            self.seed_tracks(li);
             let mut t_run = [0.0f64; 2];
+            let mut blocks: [Vec<(TdsId, f64, f64)>; 2] = [Vec::new(), Vec::new()];
             for dir in 0..2u8 {
-                match self.template(li, dir) {
-                    Some(t) => t_run[dir as usize] = t,
+                match self.template_run(li, dir) {
+                    Some((t, b)) => {
+                        t_run[dir as usize] = t;
+                        blocks[dir as usize] = b;
+                    }
                     None => {
                         self.issues.push(Issue::NoPath {
                             line: self.lines[li].id.clone(),
@@ -620,6 +711,41 @@ impl<'a> Planner<'a> {
                 .iter()
                 .map(|b| b.headway_s)
                 .fold(f64::INFINITY, f64::min);
+            // Whether the two directions meet on track they share outside the end stations (a double
+            // junction whose crossing move is the line's own, a single-track stretch), for a return
+            // offset and headway; the pattern avoids it (Damascus T2, bug 9).
+            let end_tds: HashSet<TdsId> = [0, self.cands[li][0].len() - 1]
+                .iter()
+                .flat_map(|&i| self.cands[li][0][i].iter())
+                .flat_map(|&p| {
+                    let st = self.m.platforms[p as usize].station;
+                    self.m.stations[st as usize].platforms.clone()
+                })
+                .flat_map(|p| {
+                    let tr = self.m.platforms[p as usize].track;
+                    self.m
+                        .track_pieces(tr)
+                        .iter()
+                        .map(|&pc| self.m.pieces[pc as usize].tds)
+                })
+                .collect();
+            let buf = self.p.min_buffer_s;
+            let meets_at = |off: f64, e: f64, h: f64| -> bool {
+                for &(t0, s0, e0) in blocks[0].iter().filter(|b| !end_tds.contains(&b.0)) {
+                    for &(t1, s1, e1) in blocks[1].iter().filter(|b| b.0 == t0) {
+                        let _ = t1;
+                        let (a0, a1) = (s0 - buf, e0 + e / 2.0 + buf);
+                        let (b0, b1) = (off + s1, off + e1 + e / 2.0);
+                        for k in -4..=4 {
+                            let d = k as f64 * h;
+                            if a0 < b1 + d && b0 + d < a1 {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                false
+            };
             let base = periodic_pattern(
                 h_min,
                 &[0.0],
@@ -628,6 +754,7 @@ impl<'a> Planner<'a> {
                 t_run[1],
                 l.turnback_s,
                 self.p.terminal_separation_s,
+                &|o, e| meets_at(o, e, h_min),
             );
             for b in &l.bands {
                 let ratio = b.headway_s / h_min;
@@ -648,6 +775,7 @@ impl<'a> Planner<'a> {
                             t_run[1],
                             l.turnback_s,
                             self.p.terminal_separation_s,
+                            &|o, e| meets_at(o, e, b.headway_s),
                         )
                     }
                     None => periodic_pattern(
@@ -658,6 +786,7 @@ impl<'a> Planner<'a> {
                         t_run[1],
                         l.turnback_s,
                         self.p.terminal_separation_s,
+                        &|o, e| meets_at(o, e, b.headway_s),
                     ),
                 };
                 for dir in 0..2u8 {
@@ -708,13 +837,134 @@ impl<'a> Planner<'a> {
                     }
                 }
             }
+            // Shift the whole line into the gaps of the lines before it on shared track.
+            let phase = self.line_phase(&trips[first..], &blocks, h_min, &placed);
+            for t in &mut trips[first..] {
+                t.dep += phase;
+                t.arr += phase;
+            }
+            for t in &trips[first..] {
+                for &(tds, s0, e0) in &blocks[t.dir as usize] {
+                    placed
+                        .entry(tds)
+                        .or_default()
+                        .push((t.dep + s0, t.dep + e0));
+                }
+            }
+            for v in placed.values_mut() {
+                v.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap());
+            }
         }
         trips
     }
 
-    /// Purpose: nominal running time of a line direction, from the best origin platform.
-    fn template(&self, line: usize, dir: u8) -> Option<f64> {
-        let mut best: Option<(f64, f64)> = None;
+    /// Purpose: choose the platforms of a line before its trips, so its two directions run on
+    /// different tracks of a double track and each terminal platform leads out on the other direction's
+    /// track. Chosen trip by trip, the first train of a direction takes the best platforms with no
+    /// thought for the return: at Ahmad Kiftaro (Damascus T1) it arrived in the platform whose way out
+    /// joins the track it came in on, so every return train met the next train coming in (bug 9).
+    /// Inputs: the line. Effect: the remembered platform of each call and the terminal platforms.
+    fn seed_tracks(&mut self, line: usize) {
+        let n = self.cands[line][0].len();
+        if n < 2 {
+            return;
+        }
+        let last = n - 1;
+        // The detection sections a path runs over, outside its two end stations: where trains of
+        // the two directions would meet.
+        let sections = |pl: &Planner, p: &FoundPath| -> HashSet<TdsId> {
+            let Ok(steps) = route_steps(pl.m, &p.routes) else {
+                return HashSet::new();
+            };
+            let ends: Vec<usize> = [p.places.first(), p.places.last()]
+                .iter()
+                .flatten()
+                .map(|x| x.range(pl.m).0)
+                .collect();
+            steps
+                .iter()
+                .map(|st| &pl.m.pieces[st.piece as usize])
+                .filter(|pc| !ends.contains(&pc.track))
+                .map(|pc| pc.tds)
+                .collect()
+        };
+        let set = |pl: &mut Planner, p: &FoundPath, dir: u8| {
+            for (k, x) in p.places.iter().enumerate() {
+                if let Place::Platform(pid) = *x {
+                    if k + 1 < last {
+                        pl.memory.insert((line, dir, k + 1), pid);
+                    } else {
+                        pl.ends.insert((line, dir), pid);
+                    }
+                }
+            }
+        };
+        let clear = |pl: &mut Planner| {
+            pl.memory.retain(|k, _| k.0 != line);
+            pl.ends.retain(|k, _| k.0 != line);
+        };
+        let ret = |pl: &Planner, p: &FoundPath, dir: u8| -> Option<FoundPath> {
+            let end = *p.places.last()?;
+            let steps = route_steps(pl.m, &p.routes).ok()?;
+            let d = arrival_dir(pl.m, &steps, end)?.reverse();
+            pl.trip_path(line, 1 - dir, end, d, &[])
+        };
+        // Outbound paths to try: the best from each first platform, and each with one of its places
+        // banned (another platform at a station, or another terminal platform).
+        let mut outs: Vec<FoundPath> = Vec::new();
+        for (start, _) in self.candidates(line, 0, 0) {
+            for d in [Dir::Up, Dir::Down] {
+                let Some(first) = self.trip_path(line, 0, start, d, &[]) else {
+                    continue;
+                };
+                for pl in first.places.clone() {
+                    if let Some(alt) = self.trip_path(line, 0, start, d, &[pl]) {
+                        if !outs.iter().any(|o| o.routes == alt.routes) {
+                            outs.push(alt);
+                        }
+                    }
+                }
+                if !outs.iter().any(|o| o.routes == first.routes) {
+                    outs.push(first);
+                }
+            }
+        }
+        // (sections shared, cost, out path, back path)
+        let mut best: Option<(usize, f64, FoundPath, FoundPath)> = None;
+        for out in outs {
+            clear(self);
+            set(self, &out, 0);
+            let Some(back) = ret(self, &out, 0) else {
+                continue;
+            };
+            set(self, &back, 1);
+            let so = sections(self, &out);
+            let sb = sections(self, &back);
+            let mut sh = so.intersection(&sb).count();
+            // The next outbound trip, from where the return ends, should run as this one does.
+            match ret(self, &back, 1) {
+                Some(again) => sh += sections(self, &again).intersection(&sb).count(),
+                None => sh += 1000,
+            }
+            let cost = out.cost + back.cost;
+            if best
+                .as_ref()
+                .map_or(true, |b| (sh, cost) < (b.0, b.1 - 1e-6))
+            {
+                best = Some((sh, cost, out, back));
+            }
+        }
+        clear(self);
+        if let Some((_, _, out, back)) = best {
+            set(self, &out, 0);
+            set(self, &back, 1);
+        }
+    }
+
+    /// Purpose: nominal running time of a line direction and the sections it blocks (start and end
+    /// relative to its departure), from the best origin platform.
+    fn template_run(&self, line: usize, dir: u8) -> Option<(f64, Blocks)> {
+        let mut best: Option<(f64, f64, Blocks)> = None;
         for (pl, _) in self.candidates(line, dir, 0) {
             for d in [Dir::Up, Dir::Down] {
                 let Some(path) = self.trip_path(line, dir, pl, d, &[]) else {
@@ -730,12 +980,71 @@ impl<'a> Planner<'a> {
                     continue;
                 };
                 let total = t.profile.total_time_s();
-                if best.map_or(true, |(c, _)| path.cost < c) {
-                    best = Some((path.cost, total));
+                if best.as_ref().map_or(true, |(c, _, _)| path.cost < *c) {
+                    let blocks = t
+                        .blocking
+                        .iter()
+                        .map(|b| (b.tds, b.start_s, b.end_s))
+                        .collect();
+                    best = Some((path.cost, total, blocks));
                 }
             }
         }
-        best.map(|(_, t)| t)
+        best.map(|(_, t, b)| (t, b))
+    }
+
+    /// Purpose: the phase of a line (ADR-0032 §3 step 4a, lines sharing track): a shift of all its
+    /// departures, less than its shortest headway, so its trains run in the gaps of the lines already
+    /// phased on the sections they share, instead of every line leaving its terminals at the same times.
+    /// Inputs: the line's trips (unshifted), the sections each direction blocks relative to departure,
+    /// and the nominal occupation of the lines phased before it. Output: the shift, s, on a 10 s grid:
+    /// the least overlap (with the minimum buffer), then the smallest shift.
+    fn line_phase(
+        &self,
+        trips: &[Trip],
+        blocks: &[Vec<(TdsId, f64, f64)>; 2],
+        h: f64,
+        placed: &HashMap<TdsId, Vec<(f64, f64)>>,
+    ) -> f64 {
+        if placed.is_empty() || !h.is_finite() || h <= 0.0 {
+            return 0.0;
+        }
+        let shared = |d: usize| blocks[d].iter().any(|b| placed.contains_key(&b.0));
+        if !shared(0) && !shared(1) {
+            return 0.0;
+        }
+        let buf = self.p.min_buffer_s;
+        let overlap = |phi: f64| -> f64 {
+            let mut sum = 0.0;
+            for t in trips {
+                for &(tds, s0, e0) in &blocks[t.dir as usize] {
+                    let Some(v) = placed.get(&tds) else { continue };
+                    let (s, e) = (t.dep + phi + s0 - buf, t.dep + phi + e0 + buf);
+                    // Intervals are sorted by start; none of them is longer than a run.
+                    let hi = v.partition_point(|x| x.0 < e);
+                    for x in v[..hi].iter().rev() {
+                        if x.0 < s - 3600.0 {
+                            break;
+                        }
+                        let o = e.min(x.1) - s.max(x.0);
+                        if o > 0.0 {
+                            sum += o;
+                        }
+                    }
+                }
+            }
+            sum
+        };
+        let mut best = (overlap(0.0), 0.0);
+        let mut phi = 10.0;
+        while phi < h - 1e-6 && best.0 > 0.0 {
+            let o = overlap(phi);
+            if o < best.0 - 1e-6 {
+                best = (o, phi);
+            }
+            phi += 10.0;
+        }
+        best.1
     }
 
     fn vehicle_of(&self, run: usize) -> usize {
@@ -1459,7 +1768,8 @@ impl<'a> Planner<'a> {
                     continue;
                 }
                 for cand in origin_c.iter().filter(|c| !banned.contains(&c.0)) {
-                    if let Some(fp) = find_path(self.m, &start, &[vec![*cand]], self.p.max_routes) {
+                    let e = 1 - trip.dir;
+                    if let Some(fp) = self.depot_path(trip.line, e, &start, &[*cand], true) {
                         // Reuse a train already out of the morning stabling first.
                         let c = fp.cost + if has { 0.0 } else { 1.0e5 };
                         opts.push((c, si, fp));
@@ -1491,7 +1801,7 @@ impl<'a> Planner<'a> {
         let mut opts_left = opts.len();
         for (_, si, fp) in opts {
             let track = self.stacks[si].track;
-            let origin = fp.places[0];
+            let origin = *fp.places.last().unwrap();
             // Pull-out must also leave a service path from that platform.
             let steps = route_steps(self.m, &fp.routes).unwrap_or_default();
             let adir = arrival_dir(self.m, &steps, origin).unwrap_or(Dir::Up);
@@ -1507,69 +1817,71 @@ impl<'a> Planner<'a> {
                 continue;
             }
             let name = format!("{}-po", trip.name);
-            let Ok((base, _)) = self.build_run(trip.line, &name, &fp.routes, &[origin], &[], 0.0)
-            else {
+            let variants = self.depot_variants(trip.line, &name, &fp);
+            if variants.is_empty() {
                 continue;
-            };
-            let probe = run_timing(self.m, &base, 0, &self.p.blocking);
-            let Ok(probe) = probe else { continue };
-            let dur = probe.profile.total_time_s();
-            let ideal = trip.dep - self.p.pull_out_margin_s - dur;
-            let base2 = TrainRun {
-                occupy_until_s: Some(trip.dep),
-                ..base
-            };
-            let mk = |t: f64| TrainRun {
-                depart_s: t,
-                occupy_until_s: Some(trip.dep.max(t + dur)),
-                ..base2.clone()
-            };
-            // The vehicle: the front train, or a new one in the morning stabling.
-            let s = &self.stacks[si];
-            let vehicle = s.now.last().copied().unwrap_or(self.vehicles.len());
-            let idx = self.runs.len();
-            match self.search_time(
-                &mk,
-                ideal,
-                false,
-                self.p.max_depot_shift_s,
-                vehicle,
-                None,
-                idx,
-            ) {
-                Ok((timing, t, _)) => {
-                    let s = &mut self.stacks[si];
-                    if s.now.pop().is_none() {
-                        s.morning.push(vehicle);
-                        self.vehicles.push(Vehicle {
-                            at: Place::Storage(track),
-                            arrive_dir: Dir::Up,
-                            ready_s: 0.0,
-                            last_run: 0,
-                        });
+            }
+            for base in variants {
+                let probe = run_timing(self.m, &base, 0, &self.p.blocking);
+                let Ok(probe) = probe else { continue };
+                let dur = probe.profile.total_time_s();
+                let ideal = trip.dep - self.p.pull_out_margin_s - dur;
+                let base2 = TrainRun {
+                    occupy_until_s: Some(trip.dep),
+                    ..base
+                };
+                let mk = |t: f64| TrainRun {
+                    depart_s: t,
+                    occupy_until_s: Some(trip.dep.max(t + dur)),
+                    ..base2.clone()
+                };
+                // The vehicle: the front train, or a new one in the morning stabling.
+                let s = &self.stacks[si];
+                let vehicle = s.now.last().copied().unwrap_or(self.vehicles.len());
+                let idx = self.runs.len();
+                match self.search_time(
+                    &mk,
+                    ideal,
+                    false,
+                    self.p.max_depot_shift_s,
+                    vehicle,
+                    None,
+                    idx,
+                ) {
+                    Ok((timing, t, _)) => {
+                        let s = &mut self.stacks[si];
+                        if s.now.pop().is_none() {
+                            s.morning.push(vehicle);
+                            self.vehicles.push(Vehicle {
+                                at: Place::Storage(track),
+                                arrive_dir: Dir::Up,
+                                ready_s: 0.0,
+                                last_run: 0,
+                            });
+                        }
+                        let calls = self.call_list(&[Place::Storage(track), origin], &[None, None]);
+                        let pr = PlannedRun {
+                            name,
+                            line: trip.line,
+                            kind: RunKind::PullOut,
+                            direction: trip.dir,
+                            vehicle,
+                            planned_depart_s: ideal,
+                            run: mk(t),
+                            calls,
+                            blocking: Vec::new(),
+                        };
+                        let i = self.commit(pr, timing, None);
+                        self.vehicles[vehicle] = Vehicle {
+                            at: origin,
+                            arrive_dir: adir,
+                            ready_s: self.runs[i].arrive_s(),
+                            last_run: i,
+                        };
+                        return Ok((i, vehicle));
                     }
-                    let calls = self.call_list(&[Place::Storage(track), origin], &[None, None]);
-                    let pr = PlannedRun {
-                        name,
-                        line: trip.line,
-                        kind: RunKind::PullOut,
-                        direction: trip.dir,
-                        vehicle,
-                        planned_depart_s: ideal,
-                        run: mk(t),
-                        calls,
-                        blocking: Vec::new(),
-                    };
-                    let i = self.commit(pr, timing, None);
-                    self.vehicles[vehicle] = Vehicle {
-                        at: origin,
-                        arrive_dir: adir,
-                        ready_s: self.runs[i].arrive_s(),
-                        last_run: i,
-                    };
-                    return Ok((i, vehicle));
+                    Err(e) => last = e,
                 }
-                Err(e) => last = e,
             }
         }
         Err((format!("pull-out: {}", last.0), last.1))
@@ -1588,12 +1900,9 @@ impl<'a> Planner<'a> {
             if !l.stabling.contains(&self.m.tracks[s.track].id) || s.now.len() >= s.capacity {
                 continue;
             }
-            if let Some(fp) = find_path(
-                self.m,
-                &start,
-                &[vec![(Place::Storage(s.track), 0.0)]],
-                self.p.max_routes,
-            ) {
+            let e = 1 - self.runs[ve.last_run].direction;
+            let end = [(Place::Storage(s.track), 0.0)];
+            if let Some(fp) = self.depot_path(line, e, &start, &end, false) {
                 opts.push((fp.cost, si, fp));
             }
         }
@@ -1603,57 +1912,55 @@ impl<'a> Planner<'a> {
         for (_, si, fp) in opts {
             let track = self.stacks[si].track;
             let name = format!("{}-pi", self.runs[ve.last_run].name);
-            let Ok((base, _)) =
-                self.build_run(line, &name, &fp.routes, &[Place::Storage(track)], &[], 0.0)
-            else {
-                continue;
-            };
-            let mk = |t: f64| TrainRun {
-                depart_s: t,
-                ..base.clone()
-            };
-            let idx = self.runs.len();
-            // Later first (the train waits for a gap); if it cannot wait that
-            // long in its platform, leave earlier, after a short margin.
-            let found = self
-                .search_time(
-                    &mk,
-                    ideal,
-                    true,
-                    self.p.max_depot_shift_s,
-                    v,
-                    Some(ve.last_run),
-                    idx,
-                )
-                .or_else(|_| {
-                    let room = (ideal - ve.ready_s - 60.0).max(0.0);
-                    self.search_time(&mk, ideal, false, room, v, Some(ve.last_run), idx)
-                });
-            match found {
-                Ok((timing, t, prev_t)) => {
-                    let calls = self.call_list(&[ve.at, Place::Storage(track)], &[None, None]);
-                    let pr = PlannedRun {
-                        name,
-                        line,
-                        kind: RunKind::PullIn,
-                        direction: self.runs[ve.last_run].direction,
-                        vehicle: v,
-                        planned_depart_s: ideal,
-                        run: mk(t),
-                        calls,
-                        blocking: Vec::new(),
-                    };
-                    let i = self.commit(pr, timing, Some(ve.last_run).zip(prev_t));
-                    self.stacks[si].now.push(v);
-                    self.vehicles[v] = Vehicle {
-                        at: Place::Storage(track),
-                        arrive_dir: dir,
-                        ready_s: self.runs[i].arrive_s(),
-                        last_run: i,
-                    };
-                    return;
+            let variants = self.depot_variants(line, &name, &fp);
+            for base in variants {
+                let mk = |t: f64| TrainRun {
+                    depart_s: t,
+                    ..base.clone()
+                };
+                let idx = self.runs.len();
+                // Later first (the train waits for a gap); if it cannot wait that
+                // long in its platform, leave earlier, after a short margin.
+                let found = self
+                    .search_time(
+                        &mk,
+                        ideal,
+                        true,
+                        self.p.max_depot_shift_s,
+                        v,
+                        Some(ve.last_run),
+                        idx,
+                    )
+                    .or_else(|_| {
+                        let room = (ideal - ve.ready_s - 60.0).max(0.0);
+                        self.search_time(&mk, ideal, false, room, v, Some(ve.last_run), idx)
+                    });
+                match found {
+                    Ok((timing, t, prev_t)) => {
+                        let calls = self.call_list(&[ve.at, Place::Storage(track)], &[None, None]);
+                        let pr = PlannedRun {
+                            name,
+                            line,
+                            kind: RunKind::PullIn,
+                            direction: self.runs[ve.last_run].direction,
+                            vehicle: v,
+                            planned_depart_s: ideal,
+                            run: mk(t),
+                            calls,
+                            blocking: Vec::new(),
+                        };
+                        let i = self.commit(pr, timing, Some(ve.last_run).zip(prev_t));
+                        self.stacks[si].now.push(v);
+                        self.vehicles[v] = Vehicle {
+                            at: Place::Storage(track),
+                            arrive_dir: dir,
+                            ready_s: self.runs[i].arrive_s(),
+                            last_run: i,
+                        };
+                        return;
+                    }
+                    Err(e) => why = e.0,
                 }
-                Err(e) => why = e.0,
             }
         }
         self.issues.push(Issue::NotStabled {
@@ -1661,5 +1968,21 @@ impl<'a> Planner<'a> {
             at: ve.at.id(self.m),
             reason: why,
         });
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn the_pattern_keeps_the_two_directions_apart_where_they_share_track() {
+        // Without the check, the best offset puts the two directions in the junction together.
+        let free = periodic_pattern(600.0, &[0.0], 0.0, 1500.0, 1500.0, 240.0, 120.0, &|_, _| {
+            false
+        });
+        let meets = move |off: f64, _e: f64| (off - free.offset_s).rem_euclid(600.0) < 120.0;
+        let p = periodic_pattern(600.0, &[0.0], 0.0, 1500.0, 1500.0, 240.0, 120.0, &meets);
+        assert!(!meets(p.offset_s, p.extra_s), "{p:?}");
     }
 }

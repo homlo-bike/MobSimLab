@@ -36,6 +36,7 @@ import {
   type Prepared,
   type Zone,
   prepare,
+  prepareValues,
   type Row,
   type ZoneAccess,
 } from "./model";
@@ -152,9 +153,12 @@ export function BenefitTables({
   const [scope, setScope] = useState("total");
 
   const sameNameM = sameNameStationM(prefs);
+  // Only the values the zones and reach depend on; a unit cost or fare edit must not prepare them again.
+  const prepKey = JSON.stringify(prepareValues(prefs));
+  const prepPrefs = useMemo(() => JSON.parse(prepKey) as Record<string, number>, [prepKey]);
   const net = useMemo(() => (timetable ? networkOf(timetable, sameNameM) : null), [timetable, sameNameM]);
   // Catchment circles: the key changes only when stations or catchment sizes change.
-  const areas = useMemo(() => (timetable ? catchments(timetable, prefs) : []), [timetable, prefs]);
+  const areas = useMemo(() => (timetable ? catchments(timetable, prepPrefs) : []), [timetable, prepPrefs]);
   const areasKey = JSON.stringify(areas);
 
   const code = costs?.country ?? null;
@@ -206,16 +210,16 @@ export function BenefitTables({
       worldpop: pop?.populations ?? {},
       country,
       regions,
-      prefs,
+      prefs: prepPrefs,
     });
-  }, [timetable, net, tiles, pop, popError, country, regions, prefs]);
+  }, [timetable, net, tiles, pop, popError, country, regions, prepPrefs]);
 
   useEffect(() => {
     let live = true;
     setAcc(null);
     setAccError(null);
     if (!prepared || !timetable) return;
-    accessByScenario(prepared, timetable, loadReach, prefs)
+    accessByScenario(prepared, timetable, loadReach, prepPrefs)
       .then((a) => live && setAcc(a))
       .catch((e: unknown) => live && setAccError(e instanceof Error ? e.message : String(e)));
     return () => {

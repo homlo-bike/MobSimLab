@@ -247,6 +247,20 @@ export function catchments(tt: Timetable, prefs: PrepareInput["prefs"]): { id: s
   }));
 }
 
+/** Prefixes of the project values that `prepare` and `access` read: catchments, walking and benefit values. */
+const PREPARE_KEYS = ["benefit.", "mode.catchment_m", "journey.", "demand.walk_speed_kmh"];
+
+/**
+ * Purpose: the project values `prepare` and `access` read, without the rest (unit costs, fares, timetables),
+ * so editing a cost does not prepare the zones and reach the stations again (the Tables tab froze for a
+ * minute on the Damascus network after each unit-cost edit). Input: the project's values. Output: a subset.
+ */
+export function prepareValues(prefs: PrepareInput["prefs"]): Record<string, number> {
+  return Object.fromEntries(
+    Object.entries(prefs ?? {}).filter(([k]) => PREPARE_KEYS.some((p) => k.startsWith(p))),
+  );
+}
+
 /** Purpose: the people, jobs and places of every station's zone, and the buildings near the lines. */
 export function prepare(input: PrepareInput): Prepared {
   const { prefs, country, regions } = input;
@@ -630,6 +644,16 @@ export function decay(d: number, r: number, inner: number): number {
 }
 
 /** Purpose: the estimate per line, per mode and in total. */
+/**
+ * Purpose: split a network's total between its lines in proportion to what each adds on its own (the network
+ * with and without the line), so the lines add up to the total. Negative own values count as nothing.
+ * Output: one value per line; all 0 when no line adds anything.
+ */
+export function shareOfTotal(own: readonly number[], total: number): number[] {
+  const sum = own.reduce((s, v) => s + Math.max(0, v), 0);
+  return own.map((v) => (sum > 0 ? (total * Math.max(0, v)) / sum : 0));
+}
+
 export function estimate(input: EstimateInput): Estimate {
   const { prepared: P, prefs, country } = input;
   const notes = [...P.notes];
@@ -910,6 +934,25 @@ export function estimate(input: EstimateInput): Estimate {
       R.operation_jobs.push(gpw > 0 ? fns.operation_jobs({ operation_gdp: og, gdp_per_worker: gpw }) : 0);
     });
   }
+
+  // GDP growth of the lines adds up to the network's: each draw's total is split between the lines by what each
+  // adds on its own (the network with and without it), and a mode gets the sum of its lines.
+  const totalAt = scopes.findIndex((s) => s.scope === "total");
+  const lineAt = scopes.flatMap((s, i) => (s.scope === "line" ? [i] : []));
+  if (totalAt >= 0 && lineAt.length)
+    for (let d = 0; d < draws; d++) {
+      const split = shareOfTotal(
+        lineAt.map((i) => results[i]!.gdp[d] ?? 0),
+        results[totalAt]!.gdp[d] ?? 0,
+      );
+      lineAt.forEach((i, k) => (results[i]!.gdp[d] = split[k]!));
+      scopes.forEach((s, i) => {
+        if (s.scope !== "mode") return;
+        results[i]!.gdp[d] = lineAt
+          .filter((j) => scopes[j]!.mode === s.mode)
+          .reduce((sum, j) => sum + results[j]!.gdp[d]!, 0);
+      });
+    }
 
   const rows: Row[] = scopes.map((s, i) => ({
     id: s.id,

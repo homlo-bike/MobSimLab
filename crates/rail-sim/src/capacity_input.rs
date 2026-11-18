@@ -136,7 +136,13 @@ mod tests {
         let (m, _) = compile_network(&topo).unwrap();
         let lines = parse_lines(&drawn_shuttle(&["st1", "st2"]), &m).unwrap();
         assert_eq!(lines[0].id, "M7");
-        assert_eq!(lines[0].bands[1].headway_s, 600.0);
+        // The peak (07:00–09:00) runs at the peak headway; the ramps lie either side of it.
+        let peak = lines[0]
+            .bands
+            .iter()
+            .find(|b| b.from_s <= 25200.0 && 25200.0 < b.to_s)
+            .unwrap();
+        assert_eq!((peak.to_s, peak.headway_s), (32400.0, 600.0));
         let p = crate::capacity::CapacityParams {
             from_s: 25200.0,
             to_s: 32400.0,

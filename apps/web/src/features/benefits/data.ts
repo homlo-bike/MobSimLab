@@ -58,6 +58,32 @@ async function json<T>(res: Response): Promise<T> {
   return (await res.json()) as T;
 }
 
+/** The most station areas the API takes in one population request (its schema's limit). */
+export const MAX_AREAS = 400;
+
+/**
+ * Purpose: the population of any number of station areas, asked `MAX_AREAS` at a time, one request after
+ * another, and merged into one answer (a network with 758 stops and bus stops got 400 Bad Request).
+ * Inputs: the areas and one request. Output: the merged answer; failures and reasons add up, the year and
+ * source are the first answered batch's.
+ */
+export async function inBatches<A>(
+  areas: A[],
+  ask: (batch: A[]) => Promise<PopulationAnswer>,
+): Promise<PopulationAnswer> {
+  if (areas.length <= MAX_AREAS) return ask(areas);
+  const answers: PopulationAnswer[] = [];
+  for (let i = 0; i < areas.length; i += MAX_AREAS) answers.push(await ask(areas.slice(i, i + MAX_AREAS)));
+  const first = answers.find((a) => a.year !== null) ?? answers[0]!;
+  return {
+    year: first.year,
+    populations: Object.assign({}, ...answers.map((a) => a.populations)) as PopulationAnswer["populations"],
+    failed: answers.reduce((n, a) => n + a.failed, 0),
+    reasons: [...new Set(answers.flatMap((a) => a.reasons))],
+    source: first.source,
+  };
+}
+
 /**
  * Purpose: the benefit API over HTTP, with answers kept for the session. `population`, when given, answers
  * the station catchments instead of the live WorldPop route (the project's own population layer).
@@ -81,14 +107,16 @@ export function benefitsApi(
     indicators: (code) => get<BenefitIndicators>(`/api/benefits/indicators?code=${encodeURIComponent(code)}`),
     population: (areas) =>
       once(`pop:${JSON.stringify(areas)}`, () =>
-        population
-          ? population(areas)
-          : fetchImpl("/api/benefits/population", {
-              method: "POST",
-              credentials: "same-origin",
-              headers: { "Content-Type": "application/json", ...csrfHeader() },
-              body: JSON.stringify({ areas }),
-            }).then((r) => json<PopulationAnswer>(r)),
+        inBatches(areas, (batch) =>
+          population
+            ? population(batch)
+            : fetchImpl("/api/benefits/population", {
+                method: "POST",
+                credentials: "same-origin",
+                headers: { "Content-Type": "application/json", ...csrfHeader() },
+                body: JSON.stringify({ areas: batch }),
+              }).then((r) => json<PopulationAnswer>(r)),
+        ),
       ),
     buildingTile: (x, y) =>
       get<{ buildings?: BuildingIn[] }>(
