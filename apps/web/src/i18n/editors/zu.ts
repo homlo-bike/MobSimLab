@@ -377,6 +377,9 @@ export const editorsZu = {
   "street.pointKind": "Uhlobo lwephoyinti {n}",
   "street.deletePoint": "Susa iphoyinti {n}",
   "street.delete": "Susa",
+  "street.sideSwitch": "Shintsha uhlangothi",
+  "street.sideAdds": "Ukusebenzela lesi siteshi usuka kolunye uhlangothi lwendlela kwengeza {length}.",
+  "street.sideSaves": "Ukusebenzela lesi siteshi usuka kolunye uhlangothi lwendlela konga {length}.",
   "street.backTo1": "buyela ephoyintini 1",
   "street.optimise": "Thuthukisa",
   "street.optimiseTitle":

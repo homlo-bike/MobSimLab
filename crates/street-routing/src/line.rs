@@ -379,6 +379,16 @@ impl StreetLine {
         self.resnap(g, seq);
         let n = self.points.len();
         self.reroute_after_edit(g, &[(seq + n - 1) % n, seq]);
+        // A stop clicked on the street itself, not clearly on one sidewalk: serve it from the side
+        // that makes the circuit shorter, rather than from whichever side the click fell on.
+        if kind.is_stop() {
+            let near_centre = g
+                .nearest_segment(self.points[seq].click, &self.profile, self.rules.max_snap_m)
+                .is_some_and(|(sid, pr)| pr.dist < g.segments[sid as usize].width_m / 4.0);
+            if near_centre && self.side_cost_m(g, id).is_some_and(|d| d < -1.0) {
+                let _ = self.switch_side(g, id);
+            }
+        }
         id
     }
 
@@ -390,6 +400,64 @@ impl StreetLine {
         let n = self.points.len();
         self.reroute_after_edit(g, &[(i + n - 1) % n, i]);
         Ok(())
+    }
+
+    /// Purpose: move a stop to the sidewalk across the street (its click mirrored over the
+    /// centreline), re-snapping and re-routing as a move does.
+    /// Output: Err for an unknown id, a via point, or a stop not near a usable road.
+    pub fn switch_side(&mut self, g: &RoadGraph, id: u32) -> Result<(), String> {
+        let i = self.index_of(id)?;
+        if !self.points[i].kind.is_stop() {
+            return Err("Only stops have a side.".into());
+        }
+        let click = self
+            .other_side_click(g, i)
+            .ok_or_else(|| "This stop is not next to a usable road.".to_string())?;
+        self.points[i].click = click;
+        self.resnap(g, i);
+        let n = self.points.len();
+        self.reroute_after_edit(g, &[(i + n - 1) % n, i]);
+        Ok(())
+    }
+
+    /// Purpose: how much longer (positive) or shorter (negative) the whole circuit would be with
+    /// the stop on the other sidewalk, in metres; None when that side cannot be served or a leg
+    /// fails either way. Side effects: none (works on a copy).
+    pub fn side_cost_m(&self, g: &RoadGraph, id: u32) -> Option<f64> {
+        let now = self.circuit_length_m()?;
+        let mut other = self.clone();
+        other.switch_side(g, id).ok()?;
+        let i = other.index_of(id).ok()?;
+        if other.points[i].error.is_some() {
+            return None;
+        }
+        Some(other.circuit_length_m()? - now)
+    }
+
+    /// The routed length of the whole circuit, or None while a leg has no route.
+    fn circuit_length_m(&self) -> Option<f64> {
+        if self.points.len() < 2 {
+            return None;
+        }
+        self.legs
+            .iter()
+            .map(|l| l.path.as_ref().map(|p| p.length_m))
+            .sum()
+    }
+
+    /// Where a click on the other sidewalk of the stop's street would be.
+    fn other_side_click(&self, g: &RoadGraph, i: usize) -> Option<(f64, f64)> {
+        let p = &self.points[i];
+        let (seg_id, pr) = g.nearest_segment(p.click, &self.profile, self.rules.max_snap_m)?;
+        let seg = &g.segments[seg_id as usize];
+        let (sa, sb) = (g.nodes[seg.a as usize].xy, g.nodes[seg.b as usize].xy);
+        let (dx, dy) = (sb.0 - sa.0, sb.1 - sa.1);
+        let len = dx.hypot(dy).max(1e-9);
+        // Left normal of a → b; the stop goes to the opposite side of where it is now.
+        let (nx, ny) = (-dy / len, dx / len);
+        let to = if pr.cross > 0.0 { -1.0 } else { 1.0 };
+        let off = (seg.width_m / 2.0 + 1.5) * to;
+        Some((pr.q.0 + nx * off, pr.q.1 + ny * off))
     }
 
     /// Purpose: delete a point; re-routes the leg that now joins its neighbours.

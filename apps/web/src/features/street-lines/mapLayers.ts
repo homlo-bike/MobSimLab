@@ -11,6 +11,8 @@ import type { LineView } from "./types";
 
 /** Layer that receives clicks on the route (to insert a point into a leg). */
 export const HIT_LAYER = "sl-legs-hit";
+/** Layer that receives clicks on the project's other lines (to switch to one of them). */
+export const OTHERS_HIT_LAYER = "sl-others-hit";
 
 const EMPTY: FeatureCollection = { type: "FeatureCollection", features: [] };
 const SOURCES = ["sl-others", "sl-roads", "sl-depot", "sl-groups", "sl-bays", "sl-legs"];
@@ -27,6 +29,7 @@ const LAYERS = [
   "sl-legs-error",
   "sl-legs-arrows",
   HIT_LAYER,
+  OTHERS_HIT_LAYER,
 ];
 const DEPOT_COLOR = "#6b7280";
 /** The mockup's warning colour, for the band under a leg with a warning. */
@@ -169,11 +172,20 @@ export function ensureLayers(map: MapLibreMap, color: string, trafficSide: "righ
       },
     });
   }
+  // Wide, invisible targets: 16 px with a mouse, 24 px on touch screens.
+  const hitWidth =
+    typeof window !== "undefined" && window.matchMedia?.("(pointer: coarse)").matches ? 24 : 16;
+  map.addLayer({
+    id: OTHERS_HIT_LAYER,
+    type: "line",
+    source: "sl-others",
+    paint: { "line-color": "#000000", "line-opacity": 0, "line-width": hitWidth },
+  });
   map.addLayer({
     id: HIT_LAYER,
     type: "line",
     source: "sl-legs",
-    paint: { "line-color": "#000000", "line-opacity": 0, "line-width": 16 },
+    paint: { "line-color": "#000000", "line-opacity": 0, "line-width": hitWidth },
   });
 }
 
@@ -202,11 +214,17 @@ export function drawRoads(map: MapLibreMap, roads: object | null): void {
 }
 
 /** Purpose: draw the project's other street lines faded, from their saved routes, in their mode colours. */
-export function drawOtherLines(map: MapLibreMap, lines: { view: LineView; color: string }[]): void {
+export function drawOtherLines(
+  map: MapLibreMap,
+  lines: { view: LineView; color: string; id?: string }[],
+): void {
   set(map, "sl-others", {
     type: "FeatureCollection",
     features: lines.flatMap((l) =>
-      legsToGeoJson(l.view).features.map((f) => ({ ...f, properties: { color: l.color } })),
+      legsToGeoJson(l.view).features.map((f) => ({
+        ...f,
+        properties: { color: l.color, line: l.id ?? null },
+      })),
     ),
   });
 }

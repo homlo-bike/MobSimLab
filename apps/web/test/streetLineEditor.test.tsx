@@ -165,6 +165,8 @@ function fakeEngine(): StreetEngine {
     setKind: vi.fn((id: number, kind: PointKind) =>
       update(view.points.map((p) => (p.id === id ? kind : p.kind))),
     ),
+    switchSide: vi.fn(() => view),
+    sideCost: vi.fn(() => 260),
     setName: vi.fn(() => view),
     setDepot: vi.fn(() => view),
     setDepotGates: vi.fn(() => view),
@@ -280,6 +282,21 @@ describe("Street line editor", () => {
     fireEvent.click(screen.getByRole("button", { name: "Delete point 2" }));
     expect(engine.deletePoint).toHaveBeenCalledWith(2);
     expect(screen.queryByText("Street 3")).toBeNull();
+  });
+
+  it("says what a stop's sidewalk costs and switches it; Esc leaves a tool before the selection", async () => {
+    const { engine } = await opened();
+    await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
+    fireEvent.click(screen.getByText("Street 3"));
+    expect(screen.getByText("Serving this stop from the other sidewalk adds 260 m.")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Switch side" }));
+    expect(engine.switchSide).toHaveBeenCalledWith(3);
+    // Esc with the Add point tool on: back to Select, the stop stays selected; Esc again clears it.
+    fireEvent.keyDown(window, { key: "p" });
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(screen.getByRole("button", { name: "Switch side" })).toBeTruthy();
+    fireEvent.keyDown(window, { key: "Escape" });
+    expect(screen.queryByRole("button", { name: "Switch side" })).toBeNull();
   });
 
   it("names a new stop after the stop next to it, so they are one stop", async () => {

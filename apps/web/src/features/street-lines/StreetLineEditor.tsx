@@ -11,6 +11,7 @@ import {
   drawRoads,
   ensureLayers,
   HIT_LAYER,
+  OTHERS_HIT_LAYER,
   removeLayers,
   setLineColor,
 } from "./mapLayers";
@@ -116,6 +117,8 @@ interface Props {
   defaultName?: string;
   /** The project's other street lines, drawn faded under this one. */
   otherLines?: readonly SavedStreetLine[];
+  /** Called with a saved line's id when the planner clicks it on the map (Select tool), to edit it instead. */
+  onPickLine?: (id: string) => void;
   /** The list of the project's lines (switch, add, delete), shown at the top of the panel. */
   lineList?: React.ReactNode;
   /** Noise engine loader (noise plugin); tests inject a fake. */
@@ -155,6 +158,7 @@ export function StreetLineEditor({
   onSave,
   defaultName,
   otherLines = NO_LINES,
+  onPickLine,
   lineList = null,
   loadNoise = loadWasmNoise,
   noiseAvailable = noiseCalculationIn("street-line-tool"),
@@ -452,7 +456,11 @@ export function StreetLineEditor({
     if (map && map.getSource("sl-others"))
       drawOtherLines(
         map,
-        otherLines.map((l) => ({ view: l.view, color: MODES[l.profile.mode]?.color ?? MODES.bus.color })),
+        otherLines.map((l) => ({
+          view: l.view,
+          color: MODES[l.profile.mode]?.color ?? MODES.bus.color,
+          id: l.id,
+        })),
       );
   }, [map, otherLines, rules?.traffic_side]);
 
@@ -460,6 +468,9 @@ export function StreetLineEditor({
     if (map && map.getSource("sl-roads"))
       drawRoads(map, showRoads && engine.current ? engine.current.usableRoads() : null);
   }, [map, profile, ready, showRoads, rules?.traffic_side]);
+
+  const pickLine = useRef(onPickLine);
+  pickLine.current = onPickLine;
 
   // Map clicks: add or insert a point, place the depot, or clear the selection.
   useEffect(() => {
@@ -484,12 +495,68 @@ export function StreetLineEditor({
         const seq = hit === undefined ? v.points.length : Number(hit) + 1;
         run((e) => e.insertPoint(seq, at, "via"));
       } else if (t === "select") {
-        setSelected(null);
+        // Another line under the click: edit that one.
+        const { x, y } = ev.point;
+        const box: [[number, number], [number, number]] = [
+          [x - 4, y - 4],
+          [x + 4, y + 4],
+        ];
+        const other = map.getLayer(OTHERS_HIT_LAYER)
+          ? map.queryRenderedFeatures(box, { layers: [OTHERS_HIT_LAYER] })[0]?.properties?.line
+          : null;
+        if (typeof other === "string" && pickLine.current) pickLine.current(other);
+        else setSelected(null);
       }
     };
+    // Select: press on the line and drag to pull a new via point out of it (the map does not pan meanwhile).
+    let pull: { seq: number; x: number; y: number } | null = null;
+    const onDown = (ev: MapMouseEvent) => {
+      if (latest.current.tool !== "select" || !map.getLayer(HIT_LAYER)) return;
+      const { x, y } = ev.point;
+      const hit = map.queryRenderedFeatures(
+        [
+          [x - 3, y - 3],
+          [x + 3, y + 3],
+        ],
+        { layers: [HIT_LAYER] },
+      )[0]?.properties?.index;
+      if (hit === undefined) return;
+      pull = { seq: Number(hit) + 1, x, y };
+      map.dragPan.disable();
+    };
+    const onUp = (ev: MapMouseEvent) => {
+      if (!pull) return;
+      const p = pull;
+      pull = null;
+      map.dragPan.enable();
+      if (Math.hypot(ev.point.x - p.x, ev.point.y - p.y) < 5) return;
+      run((e) => e.insertPoint(p.seq, [ev.lngLat.lng, ev.lngLat.lat], "via"));
+    };
+    // Lines that can be clicked or pulled show a pointer.
+    const onHover = (ev: MapMouseEvent) => {
+      if (latest.current.tool !== "select" || pull) return;
+      const layers = [HIT_LAYER, OTHERS_HIT_LAYER].filter((l) => map.getLayer(l));
+      const { x, y } = ev.point;
+      const over = layers.length
+        ? map.queryRenderedFeatures(
+            [
+              [x - 3, y - 3],
+              [x + 3, y + 3],
+            ],
+            { layers },
+          ).length > 0
+        : false;
+      map.getCanvas().style.cursor = over ? "pointer" : "";
+    };
     map.on("click", onClick);
+    map.on("mousedown", onDown);
+    map.on("mouseup", onUp);
+    map.on("mousemove", onHover);
     return () => {
       map.off("click", onClick);
+      map.off("mousedown", onDown);
+      map.off("mouseup", onUp);
+      map.off("mousemove", onHover);
     };
   }, [map, run]);
 
@@ -551,8 +618,9 @@ export function StreetLineEditor({
         run((e) => e.deletePoint(sel));
         setSelected(null);
       } else if (ev.key === "Escape") {
-        setSelected(null);
-        setTool((t) => (t === "depot" ? "select" : t));
+        // First stop what is going on (adding points, placing the depot, panning), then clear the selection.
+        if (latest.current.tool !== "select") setTool("select");
+        else setSelected(null);
       }
     };
     window.addEventListener("keydown", onKey);
@@ -673,6 +741,11 @@ export function StreetLineEditor({
     setTiming,
     select: setSelected,
     setKind,
+    switchSide: (id) => run((e) => e.switchSide(id)),
+    sideCost: (id) => {
+      const c = engine.current?.sideCost(id);
+      return c === undefined || Number.isNaN(c) ? null : c;
+    },
     setPointName,
     deletePoint: (id) => {
       run((e) => e.deletePoint(id));

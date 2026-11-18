@@ -908,6 +908,10 @@ export function Workspace({
                 onSave={saveStreet}
                 defaultName={t("street.lineN", { n: editedStreet + 1 })}
                 otherLines={otherStreet}
+                onPickLine={(id) => {
+                  const i = savedStreet.findIndex((l) => l.id === id);
+                  if (i >= 0) switchStreet(i);
+                }}
                 lineList={
                   <LineList
                     names={savedStreet.map((l) => l.name)}

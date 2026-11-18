@@ -739,3 +739,30 @@ fn drawing_point_by_point_gives_the_same_route_as_routing_again() {
         );
     }
 }
+
+#[test]
+fn a_stop_switches_sidewalk_and_says_what_its_side_costs() {
+    let g = grid().graph();
+    let mut line = StreetLine::new(bus(), RoutingRules::default());
+    let a = add(&mut line, &g, 100.0, 192.0, PointKind::Stop); // south sidewalk of Row 1: eastbound
+    add(&mut line, &g, 500.0, 405.0, PointKind::Stop);
+    assert_eq!(heading_deg(&g, &line, a), 0.0);
+    let cost = line
+        .side_cost_m(&g, a)
+        .expect("the other side can be served");
+    let before: f64 = line.view(&g).legs.iter().map(|l| l.length_m).sum();
+    line.switch_side(&g, a).unwrap();
+    assert_eq!(
+        heading_deg(&g, &line, a),
+        180.0,
+        "now on the north sidewalk, westbound"
+    );
+    let after: f64 = line.view(&g).legs.iter().map(|l| l.length_m).sum();
+    assert!(
+        (after - before - cost).abs() < 1.0,
+        "{after} - {before} vs {cost}"
+    );
+    // And back again: the cost is the same the other way round.
+    let back = line.side_cost_m(&g, a).unwrap();
+    assert!((back + cost).abs() < 1.0, "{back} vs {cost}");
+}

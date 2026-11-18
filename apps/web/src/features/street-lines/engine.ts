@@ -53,6 +53,8 @@ export const loadWasmEngine: EngineLoader = async () => {
     deletePoint: (id) => v(ed.delete_point(id)),
     clear: () => v(ed.clear()),
     setKind: (id, kind) => v(ed.set_kind(id, kind)),
+    switchSide: (id) => v(ed.switch_side(id)),
+    sideCost: (id) => ed.side_cost(id),
     setName: (id, name) => v(ed.set_name(id, name)),
     setDepot: ([lon, lat]) => v(ed.set_depot(lon, lat)),
     clearDepot: () => v(ed.clear_depot()),

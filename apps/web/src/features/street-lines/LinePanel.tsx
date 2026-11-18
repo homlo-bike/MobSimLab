@@ -47,6 +47,9 @@ export interface PanelActions {
   setTiming: (t: Timing) => void;
   select: (id: number | null) => void;
   setKind: (id: number, kind: PointKind) => void;
+  /** Put a stop on the other sidewalk; and what that would change in the circuit's length (m, null unknown). */
+  switchSide: (id: number) => void;
+  sideCost: (id: number) => number | null;
   setPointName: (id: number, name: string) => void;
   /** Facilities of a stop (step-free access, elevators and so on). */
   setPointFeatures: (id: number, features: string[]) => void;
@@ -453,6 +456,7 @@ export function LinePanel(props: Props) {
                         t={t}
                       />
                     )}
+                    {p.kind !== "via" && <StopSide id={p.id} actions={a} t={t} />}
                     <div className="flex items-center gap-1">
                       <span
                         role="group"
@@ -742,6 +746,30 @@ export function LinePanel(props: Props) {
         </label>
         <p className="text-xs text-slate-500">{t("street.rulesNote")}</p>
       </Section>
+    </div>
+  );
+}
+
+/**
+ * Purpose: the sidewalk a stop is served from: what serving it from the other one would add or save, and a
+ * button to switch (a stop on the far kerb of a side street can force a loop round the block).
+ */
+function StopSide({ id, actions: a, t }: { id: number; actions: PanelActions; t: Translate }) {
+  const cost = a.sideCost(id);
+  return (
+    <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+      {cost !== null && Math.abs(cost) >= 5 && (
+        <span className={cost < 0 ? "text-amber-800" : ""}>
+          {t(cost < 0 ? "street.sideSaves" : "street.sideAdds", { length: formatLength(Math.abs(cost)) })}
+        </span>
+      )}
+      <button
+        type="button"
+        className="rounded border border-slate-300 bg-white px-1.5 py-0.5"
+        onClick={() => a.switchSide(id)}
+      >
+        {t("street.sideSwitch")}
+      </button>
     </div>
   );
 }

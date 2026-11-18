@@ -379,6 +379,9 @@ export const editorsFr = {
   "street.pointKind": "Type du point {n}",
   "street.deletePoint": "Supprimer le point {n}",
   "street.delete": "Supprimer",
+  "street.sideSwitch": "Changer de côté",
+  "street.sideAdds": "Desservir cet arrêt depuis l’autre trottoir ajoute {length}.",
+  "street.sideSaves": "Desservir cet arrêt depuis l’autre trottoir fait gagner {length}.",
   "street.backTo1": "retour au point 1",
   "street.optimise": "Optimiser",
   "street.optimiseTitle":
