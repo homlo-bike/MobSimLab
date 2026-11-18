@@ -69,3 +69,14 @@ export function newToolLineKey(tools: Record<string, unknown>, toolId: string): 
   if (!(toolId in tools)) return toolId;
   for (let i = 2; ; i++) if (!(`${toolId}-${i}` in tools)) return `${toolId}-${i}`;
 }
+
+/**
+ * Purpose: the tool a saved plugin line belongs to, from its key: `ferry` and `ferry-2` both belong to the
+ * ferry tool. Inputs: the line's key, the ids of the tools to match. Output: the tool id, or null when the key
+ * belongs to none of them (for example a tool whose plugin is off).
+ */
+export function lineToolId(key: string, toolIds: Iterable<string>): string | null {
+  for (const id of toolIds)
+    if (key === id || (key.startsWith(`${id}-`) && /^[0-9]+$/.test(key.slice(id.length + 1)))) return id;
+  return null;
+}

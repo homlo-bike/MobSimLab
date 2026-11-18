@@ -29,7 +29,7 @@ import { loadKits, spanSystem, vesselType } from "../src/kits/engine";
 import { SpanLineEditor, removeStation, type SpanDoc, type TerrainLoader } from "../src/kits/SpanLineEditor";
 import { sectionGround, type TerrainProfiles } from "../src/terrain/terrain";
 import { WaterRouteEditor, removePier, sharedPier, type WaterDoc } from "../src/kits/WaterRouteEditor";
-import { newToolLineKey, toolLineKeys, type SavedPluginLine } from "../src/kits/saved";
+import { lineToolId, newToolLineKey, toolLineKeys, type SavedPluginLine } from "../src/kits/saved";
 import {
   centralValues,
   contextLabel,
@@ -442,6 +442,10 @@ describe("editors", () => {
     expect(toolLineKeys(tools, "ferry")).toEqual(["ferry", "ferry-2", "ferry-3"]);
     expect(newToolLineKey(tools, "ferry")).toBe("ferry-4");
     expect(newToolLineKey({ "cable-car": 1 }, "ferry")).toBe("ferry");
+    expect(lineToolId("ferry-2", ["cable-car", "ferry"])).toBe("ferry");
+    expect(lineToolId("cable-car", ["cable-car", "ferry"])).toBe("cable-car");
+    expect(lineToolId("ferry-2", ["cable-car"])).toBeNull();
+    expect(lineToolId("ferry-x", ["ferry"])).toBeNull();
     const pier = { name: "Jounieh port", lonlat: east(0), berths: 1, gangways: 1 };
     expect(sharedPier(east(40), [pier])?.name).toBe("Jounieh port");
     expect(sharedPier(east(100), [pier])).toBeNull();
