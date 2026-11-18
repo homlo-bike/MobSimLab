@@ -652,6 +652,8 @@ export const editorsTa = {
   "station.symbol.hospital": "மருத்துவமனை",
   "station.symbol.university": "பல்கலைக்கழகம்",
   "station.symbol.stadium": "விளையாட்டரங்கம்",
+  "station.symbol.closed": "மூடப்பட்டது",
+  "station.symbol.under_construction": "கட்டுமானத்தில்",
   "schematic.showStatuses": "நிலை குறியீடுகள்",
   "schematic.showFeatures": "நிலைய வசதி குறியீடுகள்",
   "schematic.showWater": "கடல், ஏரிகள், ஆறுகள்",

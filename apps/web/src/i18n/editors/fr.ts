@@ -651,6 +651,8 @@ export const editorsFr = {
   "station.symbol.hospital": "Hôpital",
   "station.symbol.university": "Université",
   "station.symbol.stadium": "Stade",
+  "station.symbol.closed": "Fermée",
+  "station.symbol.under_construction": "En construction",
   "schematic.showStatuses": "Symboles de statut",
   "schematic.showFeatures": "Symboles des équipements de station",
   "schematic.showWater": "Mer, lacs et rivières",

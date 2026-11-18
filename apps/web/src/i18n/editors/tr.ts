@@ -616,6 +616,8 @@ export const editorsTr = {
   "station.symbol.hospital": "Hastane",
   "station.symbol.university": "Üniversite",
   "station.symbol.stadium": "Stadyum",
+  "station.symbol.closed": "Kapalı",
+  "station.symbol.under_construction": "Yapım aşamasında",
   "schematic.showStatuses": "Durum simgeleri",
   "schematic.showFeatures": "İstasyon donanımı simgeleri",
   "schematic.showWater": "Deniz, göller ve nehirler",

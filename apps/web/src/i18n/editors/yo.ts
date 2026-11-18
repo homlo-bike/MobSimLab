@@ -609,6 +609,8 @@ export const editorsYo = {
   "station.symbol.hospital": "Ilé ìwòsàn",
   "station.symbol.university": "Yunifásítì",
   "station.symbol.stadium": "Pápá ìṣeré",
+  "station.symbol.closed": "Ti pa",
+  "station.symbol.under_construction": "Wọ́n ń kọ́ ọ lọ́wọ́",
   "schematic.showStatuses": "Àmì ipò",
   "schematic.showFeatures": "Àmì ohun èlò ibùdókọ̀",
   "schematic.showWater": "Òkun, adágún àti odò",

@@ -638,6 +638,8 @@ export const editorsPt = {
   "station.symbol.hospital": "Hospital",
   "station.symbol.university": "Universidade",
   "station.symbol.stadium": "Estádio",
+  "station.symbol.closed": "Fechada",
+  "station.symbol.under_construction": "Em construção",
   "schematic.showStatuses": "Símbolos de status",
   "schematic.showFeatures": "Símbolos de equipamentos das estações",
   "schematic.showWater": "Mar, lagos e rios",

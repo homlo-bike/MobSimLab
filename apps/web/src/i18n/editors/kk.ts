@@ -631,6 +631,8 @@ export const editorsKk = {
   "station.symbol.hospital": "Аурухана",
   "station.symbol.university": "Университет",
   "station.symbol.stadium": "Стадион",
+  "station.symbol.closed": "Жабық",
+  "station.symbol.under_construction": "Салынуда",
   "schematic.showStatuses": "Мәртебе белгілері",
   "schematic.showFeatures": "Станция жабдықтарының белгілері",
   "schematic.showWater": "Теңіз, көлдер мен өзендер",

@@ -606,6 +606,8 @@ export const editorsVi = {
   "station.symbol.hospital": "Bệnh viện",
   "station.symbol.university": "Đại học",
   "station.symbol.stadium": "Sân vận động",
+  "station.symbol.closed": "Đã đóng cửa",
+  "station.symbol.under_construction": "Đang xây dựng",
   "schematic.showStatuses": "Ký hiệu trạng thái",
   "schematic.showFeatures": "Ký hiệu tiện ích nhà ga",
   "schematic.showWater": "Biển, hồ và sông",

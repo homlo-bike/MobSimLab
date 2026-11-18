@@ -625,6 +625,8 @@ export const editorsBn = {
   "station.symbol.hospital": "হাসপাতাল",
   "station.symbol.university": "বিশ্ববিদ্যালয়",
   "station.symbol.stadium": "স্টেডিয়াম",
+  "station.symbol.closed": "বন্ধ",
+  "station.symbol.under_construction": "নির্মাণাধীন",
   "schematic.showStatuses": "অবস্থার প্রতীক",
   "schematic.showFeatures": "স্টেশন সুবিধার প্রতীক",
   "schematic.showWater": "সমুদ্র, হ্রদ ও নদী",

@@ -601,6 +601,8 @@ export const editorsKo = {
   "station.symbol.hospital": "병원",
   "station.symbol.university": "대학교",
   "station.symbol.stadium": "경기장",
+  "station.symbol.closed": "폐쇄",
+  "station.symbol.under_construction": "공사 중",
   "schematic.showStatuses": "상태 기호",
   "schematic.showFeatures": "역 시설 기호",
   "schematic.showWater": "바다, 호수, 강",

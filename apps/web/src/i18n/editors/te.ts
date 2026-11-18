@@ -634,6 +634,8 @@ export const editorsTe = {
   "station.symbol.hospital": "ఆసుపత్రి",
   "station.symbol.university": "విశ్వవిద్యాలయం",
   "station.symbol.stadium": "స్టేడియం",
+  "station.symbol.closed": "మూసివేయబడింది",
+  "station.symbol.under_construction": "నిర్మాణంలో ఉంది",
   "schematic.showStatuses": "స్థితి గుర్తులు",
   "schematic.showFeatures": "స్టేషన్ సౌకర్యాల గుర్తులు",
   "schematic.showWater": "సముద్రం, సరస్సులు, నదులు",

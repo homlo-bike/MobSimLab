@@ -682,6 +682,8 @@ export const editorsPl = {
   "station.symbol.hospital": "Szpital",
   "station.symbol.university": "Uniwersytet",
   "station.symbol.stadium": "Stadion",
+  "station.symbol.closed": "Zamknięta",
+  "station.symbol.under_construction": "W budowie",
   "schematic.showStatuses": "Symbole statusu",
   "schematic.showFeatures": "Symbole wyposażenia stacji",
   "schematic.showWater": "Morze, jeziora i rzeki",

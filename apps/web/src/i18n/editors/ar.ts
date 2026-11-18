@@ -677,6 +677,8 @@ export const editorsAr = {
   "station.symbol.hospital": "مستشفى",
   "station.symbol.university": "جامعة",
   "station.symbol.stadium": "ملعب",
+  "station.symbol.closed": "مغلقة",
+  "station.symbol.under_construction": "قيد الإنشاء",
   "schematic.showStatuses": "رموز الحالة",
   "schematic.showFeatures": "رموز مرافق المحطات",
   "schematic.showWater": "البحر والبحيرات والأنهار",

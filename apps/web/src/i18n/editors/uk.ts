@@ -683,6 +683,8 @@ export const editorsUk = {
   "station.symbol.hospital": "Лікарня",
   "station.symbol.university": "Університет",
   "station.symbol.stadium": "Стадіон",
+  "station.symbol.closed": "Закрита",
+  "station.symbol.under_construction": "Будується",
   "schematic.showStatuses": "Символи статусу",
   "schematic.showFeatures": "Символи оснащення станцій",
   "schematic.showWater": "Море, озера й річки",

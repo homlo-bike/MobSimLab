@@ -270,6 +270,14 @@ describe("Schematic tab", () => {
     expect(onDoc).toHaveBeenLastCalledWith(
       expect.objectContaining({ statuses: { centraal: ["central_station"] } }),
     );
+    // A station can also be marked closed or under construction.
+    for (const [name, id] of [
+      ["Closed", "closed"],
+      ["Under construction", "under_construction"],
+    ]) {
+      fireEvent.click(within(pop).getByRole("button", { name }));
+      expect(onDoc).toHaveBeenLastCalledWith(expect.objectContaining({ statuses: { centraal: [id] } }));
+    }
     fireEvent.change(within(pop).getByRole("combobox", { name: "Name rotation" }), {
       target: { value: "-45" },
     });
@@ -290,7 +298,7 @@ describe("Schematic tab", () => {
       pins: {},
       labels: {},
       origin: [4.9, 52.37],
-      statuses: { centraal: ["airport"] },
+      statuses: { centraal: ["airport", "under_construction"] },
       rotate: { "amstel oost": 90 },
       areas: [
         {
@@ -312,6 +320,7 @@ describe("Schematic tab", () => {
     const map = () => screen.getByRole("img", { name: "Schematic network map" });
     const titles = () => [...map().querySelectorAll("title")].map((x) => x.textContent);
     expect(titles()).toContain("Airport");
+    expect(titles()).toContain("Under construction");
     expect(within(map()).getAllByText("Old town")).toHaveLength(1);
     expect(within(map()).getByText("Old town · Landmark")).toBeTruthy();
     const amstel = within(map()).getByText("Amstel Oost", { selector: "text" });

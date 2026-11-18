@@ -619,6 +619,8 @@ export const editorsAm = {
   "station.symbol.hospital": "ሆስፒታል",
   "station.symbol.university": "ዩኒቨርሲቲ",
   "station.symbol.stadium": "ስታዲየም",
+  "station.symbol.closed": "ዝግ",
+  "station.symbol.under_construction": "በግንባታ ላይ",
   "schematic.showStatuses": "የሁኔታ ምልክቶች",
   "schematic.showFeatures": "የጣቢያ አገልግሎት ምልክቶች",
   "schematic.showWater": "ባሕር፣ ሐይቆችና ወንዞች",
