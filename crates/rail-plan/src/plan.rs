@@ -1755,6 +1755,34 @@ impl<'a> Planner<'a> {
         });
     }
 
+    /// Purpose: whether a path stops, at a station it passes through, on the track the line's
+    /// other direction stops on there instead of its own: on double track it would run against the
+    /// trains coming the other way, from the station before to the one after, and often all the
+    /// way to the end (Damascus test, bug 25). Such a path is no alternative to the usual one.
+    /// Inputs: the line, the direction and the path's places (calls after the origin, the last
+    /// being the destination). Output: true when it does.
+    fn against_the_other_way(&self, line: usize, dir: u8, places: &[Place]) -> bool {
+        let last = self.cands[line][dir as usize].len() - 1;
+        places.iter().enumerate().any(|(k, pl)| {
+            let i = k + 1;
+            let Place::Platform(pid) = *pl else {
+                return false;
+            };
+            if i >= last {
+                return false;
+            }
+            let own = self.memory.get(&(line, dir, i)).copied();
+            let other = self.memory.get(&(line, 1 - dir, last - i)).copied();
+            match (own, other) {
+                (Some(o), Some(x)) => {
+                    let track = |p: PlatformId| self.m.platforms[p as usize].track;
+                    o != pid && track(x) == track(pid) && track(o) != track(pid)
+                }
+                _ => false,
+            }
+        })
+    }
+
     /// Purpose: place a trip from a given origin with its train; commits on success.
     #[allow(clippy::too_many_arguments)]
     fn try_trip(
@@ -1774,7 +1802,9 @@ impl<'a> Planner<'a> {
         if let Some(best) = self.trip_path(trip.line, trip.dir, origin, depart_dir, &[]) {
             for pl in &best.places {
                 if let Some(alt) = self.trip_path(trip.line, trip.dir, origin, depart_dir, &[*pl]) {
-                    if !attempts.iter().any(|a| a.routes == alt.routes) && alt.routes != best.routes
+                    if !attempts.iter().any(|a| a.routes == alt.routes)
+                        && alt.routes != best.routes
+                        && !self.against_the_other_way(trip.line, trip.dir, &alt.places)
                     {
                         attempts.push(alt);
                     }
@@ -2512,26 +2542,34 @@ impl<'a> Planner<'a> {
         let line = self.runs[ve.last_run].line;
         let lines = self.lines;
         let l = &lines[line];
-        let dir = ve.arrive_dir.reverse();
-        let start = departure_routes(self.m, ve.at, dir);
-        let mut opts: Vec<(f64, usize, FoundPath)> = Vec::new();
+        // Back the way it came, or straight on into a siding beyond the terminal's far end: only
+        // turning back sent trains at one end of the line to the sidings at the other end, empty
+        // along the whole line against the service (Damascus test, bug 25).
+        let starts: Vec<(Dir, Vec<RouteId>)> = [ve.arrive_dir.reverse(), ve.arrive_dir]
+            .into_iter()
+            .map(|d| (d, departure_routes(self.m, ve.at, d)))
+            .filter(|(_, r)| !r.is_empty())
+            .collect();
+        let mut opts: Vec<(f64, usize, FoundPath, Dir)> = Vec::new();
         for (si, s) in self.stacks.iter().enumerate() {
             if !l.stabling.contains(&self.m.tracks[s.track].id) || s.now.len() >= s.capacity {
                 continue;
             }
             let e = 1 - self.runs[ve.last_run].direction;
             let end = [(Place::Storage(s.track), 0.0)];
-            if let Some(fp) = self.depot_path(line, e, &start, &end, false) {
-                // The overnight tracks first; an end-station siding when the line has no room to
-                // reach them now (the train goes on later, see `clear_layovers`).
-                let c = fp.cost + if s.layover { 1.0e5 } else { 0.0 };
-                opts.push((c, si, fp));
+            for (d, start) in &starts {
+                if let Some(fp) = self.depot_path(line, e, start, &end, false) {
+                    // The overnight tracks first; an end-station siding when the line has no room
+                    // to reach them now (the train goes on later, see `clear_layovers`).
+                    let c = fp.cost + if s.layover { 1.0e5 } else { 0.0 };
+                    opts.push((c, si, fp, *d));
+                }
             }
         }
         opts.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap().then(a.1.cmp(&b.1)));
         let ideal = ve.ready_s + l.turnback_s;
         let mut why = "no stabling track with room is reachable".to_string();
-        for (_, si, fp) in opts {
+        for (_, si, fp, dir) in opts {
             let track = self.stacks[si].track;
             let name = format!("{}-pi", self.runs[ve.last_run].name);
             let variants = self.depot_variants(line, &name, &fp);
