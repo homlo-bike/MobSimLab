@@ -14,6 +14,7 @@ import {
   estimate,
   type PlaceIn,
   prepare,
+  prepareValues,
   scenarios,
 } from "../src/features/benefits/model";
 import { networkOf, withoutRoutes } from "../src/features/benefits/network";
@@ -556,6 +557,38 @@ describe("benefit tables", () => {
     fireEvent.change(box, { target: { value: "pop * 0.2" } });
     fireEvent.blur(box);
     expect(onDoc).toHaveBeenCalledWith({ formulas: { ridership_daily: "pop * 0.2" } });
+  });
+
+  it("does not prepare the zones again when a unit cost changes", async () => {
+    expect(
+      prepareValues({ "cost.bus.operating_per_hour": 40, "mode.catchment_m.tram": 500, "benefit.vot": 9 }),
+    ).toEqual({ "mode.catchment_m.tram": 500, "benefit.vot": 9 });
+    const reach = vi.fn(fakeReach);
+    // The project's other inputs stay the same objects, as in the workspace.
+    const timetable = network();
+    const regions: Region[] = [];
+    const costs = {
+      estimate: { items: [], lines: [], modes: [], notes: [] } as unknown as CostEstimate,
+      currency: "EUR",
+      country: "NLD",
+    };
+    const props = (values: Record<string, number>) => ({
+      timetable,
+      regions,
+      preferences: { values },
+      doc: null,
+      costs,
+      loadReach: reach,
+      draws: 30,
+    });
+    const api = fakeApi();
+    const { rerender } = render(<BenefitTables {...props({ "cost.x": 1 })} api={api} />);
+    expect(await screen.findByRole("heading", { name: "Ridership" }, { timeout: 5000 })).toBeTruthy();
+    const calls = reach.mock.calls.length;
+    expect(calls).toBeGreaterThan(0);
+    rerender(<BenefitTables {...props({ "cost.x": 2 })} api={api} />);
+    await new Promise((r) => setTimeout(r, 50));
+    expect(reach.mock.calls.length).toBe(calls);
   });
 
   it("says when there is nothing to estimate", () => {
