@@ -82,8 +82,8 @@ export function ProfileChart({ points, selected, peaks, onSelect }: Props) {
           const xb = Math.min(W - PAD.r, x(b));
           return xb > xa ? (
             <g key={a}>
-              <rect x={xa} y={PAD.t} width={xb - xa} height={ih} fill="#f1f5f9" />
-              <text x={xa + 3} y={PAD.t + 9} fontSize={8} fill="#64748b">
+              <rect x={xa} y={PAD.t} width={xb - xa} height={ih} fill="var(--diagram-band, #f1f5f9)" />
+              <text x={xa + 3} y={PAD.t + 9} fontSize={8} fill="var(--diagram-note, #64748b)">
                 {t("jp.peak")}
               </text>
             </g>
@@ -93,19 +93,44 @@ export function ProfileChart({ points, selected, peaks, onSelect }: Props) {
           .filter((m, i, a) => a.indexOf(m) === i)
           .map((m) => (
             <g key={m}>
-              <line x1={PAD.l} x2={W - PAD.r} y1={y(m)} y2={y(m)} stroke={m === 0 ? "#cbd5e1" : "#eef2f6"} />
-              <text x={PAD.l - 4} y={y(m) + 3} textAnchor="end" fontSize={8} fill="#64748b">
+              <line
+                x1={PAD.l}
+                x2={W - PAD.r}
+                y1={y(m)}
+                y2={y(m)}
+                stroke={m === 0 ? "var(--diagram-rule, #cbd5e1)" : "var(--diagram-grid, #eef2f6)"}
+              />
+              <text
+                x={PAD.l - 4}
+                y={y(m) + 3}
+                textAnchor="end"
+                fontSize={8}
+                fill="var(--diagram-note, #64748b)"
+              >
                 {m}
               </text>
             </g>
           ))}
         {ticks.map((t) => (
-          <text key={t} x={x(t)} y={HGT - 5} textAnchor="middle" fontSize={8} fill="#64748b">
+          <text
+            key={t}
+            x={x(t)}
+            y={HGT - 5}
+            textAnchor="middle"
+            fontSize={8}
+            fill="var(--diagram-note, #64748b)"
+          >
             {clock(t)}
           </text>
         ))}
         <path d={path(raw)} fill="none" stroke="#94a3b8" strokeWidth={1} strokeLinejoin="round" />
-        <path d={path(avg)} fill="none" stroke="#0f172a" strokeWidth={2} strokeLinejoin="round" />
+        <path
+          d={path(avg)}
+          fill="none"
+          stroke="var(--diagram-strong, #0f172a)"
+          strokeWidth={2}
+          strokeLinejoin="round"
+        />
         {selected !== null && selected >= t0 && selected <= t1 && (
           <line
             x1={x(selected)}
@@ -121,8 +146,8 @@ export function ProfileChart({ points, selected, peaks, onSelect }: Props) {
             cx={x(hp.time_s)}
             cy={y(hp.journey.total_s / 60)}
             r={3.5}
-            fill="#0f172a"
-            stroke="#fff"
+            fill="var(--diagram-strong, #0f172a)"
+            stroke="var(--diagram-paper, #fff)"
             strokeWidth={1.5}
           />
         )}

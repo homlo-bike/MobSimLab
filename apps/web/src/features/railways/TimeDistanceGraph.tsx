@@ -112,16 +112,28 @@ function Chart({ graph, range, lineName }: { graph: TdGraph; range: [number, num
           </defs>
           {ticks.map((s) => (
             <g key={s}>
-              <line x1={x(s)} x2={x(s)} y1={PAD.t} y2={PAD.t + ih} stroke="#eef2f6" />
-              <text x={x(s)} y={H - 8} textAnchor="middle" fontSize={11} fill="#64748b">
+              <line x1={x(s)} x2={x(s)} y1={PAD.t} y2={PAD.t + ih} stroke="var(--diagram-grid, #eef2f6)" />
+              <text x={x(s)} y={H - 8} textAnchor="middle" fontSize={11} fill="var(--diagram-note, #64748b)">
                 {hhmm(s / 60)}
               </text>
             </g>
           ))}
           {graph.stations.map((st) => (
             <g key={st.station_id}>
-              <line x1={PAD.l} x2={W - PAD.r} y1={y(st.km)} y2={y(st.km)} stroke="#cbd5e1" />
-              <text x={PAD.l - 6} y={y(st.km) + 4} textAnchor="end" fontSize={11} fill="#334155">
+              <line
+                x1={PAD.l}
+                x2={W - PAD.r}
+                y1={y(st.km)}
+                y2={y(st.km)}
+                stroke="var(--diagram-rule, #cbd5e1)"
+              />
+              <text
+                x={PAD.l - 6}
+                y={y(st.km) + 4}
+                textAnchor="end"
+                fontSize={11}
+                fill="var(--diagram-muted-strong, #334155)"
+              >
                 {st.name.length > 18 ? `${st.name.slice(0, 17)}…` : st.name}
                 <title>{`${st.name} · ${st.km.toFixed(1)} km`}</title>
               </text>

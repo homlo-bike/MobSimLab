@@ -134,7 +134,7 @@ export function Tour({
           }}
         />
       ) : (
-        <div className="fixed inset-0 bg-slate-900/55" />
+        <div className="fixed inset-0 bg-scrim/55" />
       )}
       <div
         ref={card}

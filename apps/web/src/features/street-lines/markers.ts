@@ -57,9 +57,11 @@ export function pointElement(
       top: "50%",
       transform: "translateY(-50%)",
       whiteSpace: "nowrap",
-      color: "#1b2125",
+      color: "var(--map-label, #1b2125)",
       font: "600 12px Barlow, system-ui, sans-serif",
-      textShadow: "0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff",
+      // On a dark basemap the name is light on a dark halo (MapView, index.css `.map-dark`).
+      textShadow:
+        "0 0 3px var(--map-halo, #fff), 0 0 3px var(--map-halo, #fff), 0 0 3px var(--map-halo, #fff)",
       pointerEvents: "none",
     });
     el.appendChild(span);

@@ -68,6 +68,11 @@ export function markBasemap(map: MapLibreMap): void {
   });
 }
 
+/** Purpose: the ids of the basemap's own layers (not those tools added); undefined before `markBasemap`. */
+export function basemapLayers(map: MapLibreMap): ReadonlySet<string> | undefined {
+  return baseOf.get(map)?.layers;
+}
+
 /**
  * Purpose: draw another basemap under the project's layers.
  * Inputs: the map (style loaded, `markBasemap` called), the basemap, and a callback once it has loaded.

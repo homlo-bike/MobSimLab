@@ -236,7 +236,13 @@ export function CashFlowChart({
               strokeWidth="1"
               vectorEffect="non-scaling-stroke"
             />
-            <path d={path} fill="none" stroke="#0f172a" strokeWidth="2" vectorEffect="non-scaling-stroke" />
+            <path
+              d={path}
+              fill="none"
+              stroke="var(--diagram-strong, #0f172a)"
+              strokeWidth="2"
+              vectorEffect="non-scaling-stroke"
+            />
           </svg>
           {cum.map((v, i) => (
             <Mark

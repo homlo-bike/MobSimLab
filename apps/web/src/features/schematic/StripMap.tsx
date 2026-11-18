@@ -16,6 +16,9 @@ import {
   LEVEL_LABEL,
   type LevelBand,
   MUTED,
+  NOTE,
+  PAPER,
+  RULE,
   type SchematicDoc,
   sized,
   textOn,
@@ -56,8 +59,8 @@ function minutes(v: number): number {
 
 /** Px of ground drawn under the lowest point of the slice. */
 const SOIL_PX = 16;
-export const EARTH = "#dccbab";
-export const EARTH_LINE = "#8a6a3f";
+export const EARTH = "var(--diagram-earth, #dccbab)";
+export const EARTH_LINE = "var(--diagram-earth-line, #8a6a3f)";
 
 /**
  * Purpose: how to draw a line's ground as a side view of a slice along the line: length and height to the
@@ -382,7 +385,7 @@ export function StripMap({
       className="max-w-none rounded-xl bg-white shadow-sm"
       fontFamily={FONT}
     >
-      <rect width={width} height={height} fill="#ffffff" />
+      <rect width={width} height={height} fill={PAPER} />
       <rect x={left / 2} y={20} rx={8} width={badgeW} height={32} fill={line.color} />
       <text x={left / 2 + 12} y={42} fontSize={18} fontWeight={700} fill={fg}>
         {line.name}
@@ -399,7 +402,7 @@ export function StripMap({
           const y = factsTop + Math.floor(i / factCols) * 40;
           return (
             <g key={label}>
-              <text x={x} y={y} fontSize={10.5} fill="#64748b">
+              <text x={x} y={y} fontSize={10.5} fill={NOTE}>
                 {label}
               </text>
               <text x={x} y={y + 18} fontSize={15} fontWeight={700} fill={INK}>
@@ -446,7 +449,7 @@ export function StripMap({
               cx={x}
               cy={bandY}
               r={c.length ? 9 : 7}
-              fill="#ffffff"
+              fill={PAPER}
               stroke={c.length ? INK : line.color}
               strokeWidth={c.length ? 3 : 3.5}
             />
@@ -477,7 +480,7 @@ export function StripMap({
                   );
                 if (it.kind === "walk")
                   return (
-                    <text key={`w-${it.layer}`} x={ix + 2} y={iy + 12.5} fontSize={10} fill="#64748b">
+                    <text key={`w-${it.layer}`} x={ix + 2} y={iy + 12.5} fontSize={10} fill={NOTE}>
                       {it.text}
                     </text>
                   );
@@ -518,7 +521,7 @@ export function StripMap({
       })}
 
       {/* What each section runs on. */}
-      <text x={left / 2} y={levelTop} fontSize={10.5} fill="#64748b">
+      <text x={left / 2} y={levelTop} fontSize={10.5} fill={NOTE}>
         {t("schematic.row.level")}
       </text>
       {line.levels.map((sec, k) => {
@@ -559,7 +562,7 @@ export function StripMap({
       ))}
 
       {/* Which stations are step-free. */}
-      <text x={left / 2} y={stepTop} fontSize={10.5} fill="#64748b">
+      <text x={left / 2} y={stepTop} fontSize={10.5} fill={NOTE}>
         {t("schematic.fact.stepFree")}
       </text>
       {stepLines.map((l, i) => (
@@ -569,7 +572,7 @@ export function StripMap({
       ))}
 
       {/* The ground along the line. */}
-      <text x={left / 2} y={elevTop} fontSize={10.5} fill="#64748b">
+      <text x={left / 2} y={elevTop} fontSize={10.5} fill={NOTE}>
         {profile === null
           ? t("schematic.row.elevationLoading")
           : chart
@@ -586,7 +589,7 @@ export function StripMap({
                 y1={elevTop + 20}
                 x2={px(m)}
                 y2={py(chart.stationH[k] ?? chart.hi) - 5}
-                stroke="#cbd5e1"
+                stroke={RULE}
                 strokeWidth={1}
                 strokeDasharray="2 3"
               />
@@ -603,12 +606,12 @@ export function StripMap({
                 cy={py(h)}
                 r={4}
                 fill={line.color}
-                stroke="#ffffff"
+                stroke={PAPER}
                 strokeWidth={1.5}
               />
             );
           })}
-          <text x={left / 2} y={gradTop} fontSize={10.5} fill="#64748b">
+          <text x={left / 2} y={gradTop} fontSize={10.5} fill={NOTE}>
             {t("schematic.row.gradient", { step: PROFILE_STEP_M })}
           </text>
           {chart.gradients.map((g, k) => {
@@ -619,7 +622,7 @@ export function StripMap({
                 <text x={x} y={y} fontSize={11.5} fontWeight={700} textAnchor="middle" fill={INK}>
                   {pct(g.average)}
                 </text>
-                <text x={x} y={y + 11} fontSize={9.5} textAnchor="middle" fill="#64748b">
+                <text x={x} y={y + 11} fontSize={9.5} textAnchor="middle" fill={NOTE}>
                   {t("schematic.gradientMax", { n: pct(g.steepest) })}
                 </text>
               </g>
@@ -634,12 +637,12 @@ export function StripMap({
           x={left / 2}
           y={height - 36 - (notes.length - 1 - i) * 17}
           fontSize={10}
-          fill="#64748b"
+          fill={NOTE}
         >
           {x}
         </text>
       ))}
-      <text x={left / 2} y={height - 14} fontSize={10} fill="#64748b">
+      <text x={left / 2} y={height - 14} fontSize={10} fill={NOTE}>
         {footer}
       </text>
     </svg>

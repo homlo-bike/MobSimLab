@@ -70,9 +70,10 @@ export function labelElement(name: string): HTMLElement {
   Object.assign(el.style, {
     pointerEvents: "none",
     whiteSpace: "nowrap",
-    color: "#1f2937",
+    color: "var(--map-label, #1f2937)",
     font: "600 12px system-ui, sans-serif",
-    textShadow: "0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff",
+    // On a dark basemap the name is light on a dark halo (MapView, index.css `.map-dark`).
+    textShadow: "0 0 3px var(--map-halo, #fff), 0 0 3px var(--map-halo, #fff), 0 0 3px var(--map-halo, #fff)",
   });
   return el;
 }

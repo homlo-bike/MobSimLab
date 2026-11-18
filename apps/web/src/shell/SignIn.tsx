@@ -39,7 +39,7 @@ export function SignIn({
   const pending = refusal === "pending_approval";
   return (
     <div className="flex h-full overflow-y-auto bg-white">
-      <div className="relative hidden flex-1 overflow-hidden bg-slate-900 p-12 text-white md:block">
+      <div className="relative hidden flex-1 overflow-hidden bg-[#0f172a] p-12 text-[#fff] md:block">
         <svg
           viewBox="0 0 640 800"
           aria-hidden="true"
@@ -63,7 +63,7 @@ export function SignIn({
         <div className="relative text-xl font-bold">{instanceName}</div>
         <div className="absolute end-12 bottom-12 start-12">
           <p className="max-w-md text-[34px] leading-tight font-bold tracking-tight">{t("signin.tagline")}</p>
-          <p className="mt-2.5 text-slate-300">{t("signin.openSource")}</p>
+          <p className="mt-2.5 text-[#cbd5e1]">{t("signin.openSource")}</p>
         </div>
       </div>
       <main className="flex w-full flex-col justify-center px-6 py-10 md:w-[560px] md:flex-none md:px-[72px]">
