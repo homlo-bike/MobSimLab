@@ -25,6 +25,12 @@ export const depotsYo = {
   "yard.charging": "Àwọn ọkọ̀ ń gba agbára síbí",
   "yard.cleaning": "Wọ́n ń fọ àwọn ọkọ̀ síbí",
   "yard.remove": "Yọ àgbàlá ìdúró kúrò",
+  "yard.capacity": "Ó gba ọkọ̀ ojú irin {n}.",
+  "yard.capacityAll":
+    "Àwọn ibùdó gba ọkọ̀ ojú irin {n} tí ó gùn tó {length} m, èyí tí ó gùn jù lọ nínú àwọn ọ̀nà.",
+  "yard.needed": "Àwọn ọ̀nà ń lo ọkọ̀ ojú irin {n} ní ọjọ́ iṣẹ́.",
+  "yard.short":
+    "Àwọn ibùdó gba ọkọ̀ díẹ̀ ju èyí tí àwọn ọ̀nà ń lò lọ, nítorí náà àwọn kan ń sùn sí ibòmíràn, bí ní pèpéle ìbùdó ìparí.",
   "depot.newName": "Ibùdó {n}",
   "depot.slotsN": "Àyè: {n}",
   "depot.name": "Orúkọ",

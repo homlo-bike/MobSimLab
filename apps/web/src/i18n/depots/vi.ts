@@ -26,6 +26,11 @@ export const depotsVi = {
   "yard.charging": "Tàu sạc điện ở đây",
   "yard.cleaning": "Tàu được vệ sinh ở đây",
   "yard.remove": "Xóa bãi đỗ tàu",
+  "yard.capacity": "Chứa được {n} đoàn tàu.",
+  "yard.capacityAll": "Các bãi chứa được {n} đoàn tàu dài {length} m, đoàn dài nhất của các tuyến.",
+  "yard.needed": "Các tuyến dùng {n} đoàn tàu vào ngày thường.",
+  "yard.short":
+    "Các bãi chứa ít tàu hơn số tàu các tuyến dùng, nên một số tàu đỗ qua đêm ở nơi khác, như ở ke ga đầu cuối.",
   "depot.newName": "Bãi đỗ {n}",
   "depot.slotsN": "Chỗ đỗ: {n}",
   "depot.name": "Tên",

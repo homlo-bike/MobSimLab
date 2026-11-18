@@ -26,6 +26,11 @@ export const depotsHa = {
   "yard.charging": "Ana caji jirage a nan",
   "yard.cleaning": "Ana tsaftace jirage a nan",
   "yard.remove": "Cire filin ajiye jirage",
+  "yard.capacity": "Yana ɗaukar jiragen ƙasa {n}.",
+  "yard.capacityAll": "Wuraren ajiya suna ɗaukar jiragen ƙasa {n} na m {length}, mafi tsawo a layukan.",
+  "yard.needed": "Layukan suna amfani da jiragen ƙasa {n} a ranar aiki.",
+  "yard.short":
+    "Wuraren ajiya suna ɗaukar jiragen ƙasa ƙasa da waɗanda layukan ke amfani da su, don haka wasu suna kwana a wani wuri, kamar a dandalin tasha ta ƙarshe.",
   "depot.newName": "Tashar ajiye {n}",
   "depot.slotsN": "Wurare: {n}",
   "depot.name": "Suna",

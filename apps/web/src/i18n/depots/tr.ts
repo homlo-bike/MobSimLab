@@ -26,6 +26,11 @@ export const depotsTr = {
   "yard.charging": "Trenler burada şarj olur",
   "yard.cleaning": "Trenler burada temizlenir",
   "yard.remove": "Park sahasını kaldır",
+  "yard.capacity": "{n} tren alır.",
+  "yard.capacityAll": "Park sahaları hatların en uzun treni olan {length} m'lik trenden {n} tane alır.",
+  "yard.needed": "Hatlar hafta içi {n} tren kullanır.",
+  "yard.short":
+    "Park sahaları hatların kullandığından az tren alır; bazı trenler geceyi başka yerde, örneğin son durak peronlarında geçirir.",
   "depot.newName": "Garaj {n}",
   "depot.slotsN": "Yerler: {n}",
   "depot.name": "Ad",

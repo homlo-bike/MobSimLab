@@ -26,6 +26,11 @@ export const depotsPt = {
   "yard.charging": "Os comboios carregam aqui",
   "yard.cleaning": "Os comboios são limpos aqui",
   "yard.remove": "Remover pátio de estacionamento",
+  "yard.capacity": "Comporta {n} trens.",
+  "yard.capacityAll": "Os pátios comportam {n} trens de {length} m, o trem mais longo das linhas.",
+  "yard.needed": "As linhas usam {n} trens em dia útil.",
+  "yard.short":
+    "Os pátios comportam menos trens do que as linhas usam: alguns trens pernoitam em outro lugar, como nas plataformas terminais.",
   "depot.newName": "Garagem {n}",
   "depot.slotsN": "Vagas: {n}",
   "depot.name": "Nome",

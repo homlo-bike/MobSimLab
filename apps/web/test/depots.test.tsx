@@ -3,6 +3,7 @@ import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { DepotEditor } from "../src/features/depots/DepotEditor";
+import { YardEditor, type YardBuild } from "../src/features/depots/YardEditor";
 import {
   depotFit,
   depotGates,
@@ -330,6 +331,39 @@ describe("Stabling yards (rail depot type)", () => {
       />
     );
   }
+
+  it("says how many trains each yard holds and warns when the lines use more", async () => {
+    const net = railway();
+    net.yards = [
+      { id: 7, name: "Jobar", tracks: [2], charging: false, cleaning: false },
+      { id: 8, name: "Qadam", tracks: [3], charging: false, cleaning: false },
+    ];
+    const build = async (): Promise<YardBuild> => ({
+      tracks: [
+        { id: 2, length_m: 564, tracks: 2 },
+        { id: 3, length_m: 340, tracks: 2 },
+      ],
+      train_length_m: 45,
+      trains: 24,
+    });
+    render(<YardEditor railway={net} onRailway={() => {}} build={build} />);
+    // 564 m holds 12 trains of 45 m on each of 2 tracks, 340 m holds 7.
+    expect(await screen.findByText("Holds 24 trains.")).toBeTruthy();
+    expect(screen.getByText("Holds 14 trains.")).toBeTruthy();
+    expect(screen.getByTestId("yard-capacity").textContent).toBe(
+      "The yards hold 38 trains of 45 m, the longest train of the lines. The lines use 24 trains on a weekday.",
+    );
+    expect(screen.queryByText(/fewer trains than the lines use/)).toBeNull();
+    cleanup();
+    render(
+      <YardEditor
+        railway={net}
+        onRailway={() => {}}
+        build={async () => ({ ...(await build()), trains: 40 })}
+      />,
+    );
+    expect(await screen.findByText(/fewer trains than the lines use/)).toBeTruthy();
+  });
 
   it("groups the storage tracks into a yard with charging and cleaning", () => {
     const docs: Network[] = [];

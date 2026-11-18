@@ -26,6 +26,11 @@ export const depotsEs = {
   "yard.charging": "Los trenes se cargan aquí",
   "yard.cleaning": "Los trenes se limpian aquí",
   "yard.remove": "Quitar patio de estacionamiento",
+  "yard.capacity": "Caben {n} trenes.",
+  "yard.capacityAll": "En las cocheras caben {n} trenes de {length} m, el tren más largo de las líneas.",
+  "yard.needed": "Las líneas usan {n} trenes en día laborable.",
+  "yard.short":
+    "En las cocheras caben menos trenes de los que usan las líneas: algunos pasan la noche en otro sitio, como en andenes terminales.",
   "depot.newName": "Cochera {n}",
   "depot.slotsN": "Plazas: {n}",
   "depot.name": "Nombre",

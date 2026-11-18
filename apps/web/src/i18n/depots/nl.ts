@@ -26,6 +26,12 @@ export const depotsNl = {
   "yard.charging": "Treinen laden hier",
   "yard.cleaning": "Treinen worden hier schoongemaakt",
   "yard.remove": "Opstelterrein verwijderen",
+  "yard.capacity": "Biedt plaats aan {n} treinen.",
+  "yard.capacityAll":
+    "De opstelterreinen bieden plaats aan {n} treinen van {length} m, de langste trein van de lijnen.",
+  "yard.needed": "De lijnen gebruiken op een werkdag {n} treinen.",
+  "yard.short":
+    "De opstelterreinen bieden plaats aan minder treinen dan de lijnen gebruiken; sommige treinen staan 's nachts elders, zoals aan eindperrons.",
   "depot.newName": "Stalling {n}",
   "depot.slotsN": "Plaatsen: {n}",
   "depot.name": "Naam",

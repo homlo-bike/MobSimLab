@@ -25,6 +25,11 @@ export const depotsJa = {
   "yard.charging": "列車はここで充電します",
   "yard.cleaning": "列車はここで清掃されます",
   "yard.remove": "留置線群を削除",
+  "yard.capacity": "{n} 編成を収容。",
+  "yard.capacityAll": "留置線には路線で最も長い {length} m の編成が {n} 編成入ります。",
+  "yard.needed": "平日、路線は {n} 編成を使います。",
+  "yard.short":
+    "留置線に入る編成数が路線の使用編成数より少ないため、一部の編成は終端駅のホームなど別の場所で夜を過ごします。",
   "depot.newName": "車庫 {n}",
   "depot.slotsN": "駐車枠：{n}",
   "depot.name": "名前",

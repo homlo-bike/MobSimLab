@@ -26,6 +26,12 @@ export const depotsPl = {
   "yard.charging": "Pociągi ładują się tutaj",
   "yard.cleaning": "Pociągi są tu sprzątane",
   "yard.remove": "Usuń stację postojową",
+  "yard.capacity": "Mieści {n} pociągów.",
+  "yard.capacityAll":
+    "Stacje postojowe mieszczą {n} pociągów o długości {length} m, najdłuższego pociągu linii.",
+  "yard.needed": "Linie używają w dzień roboczy {n} pociągów.",
+  "yard.short":
+    "Stacje postojowe mieszczą mniej pociągów, niż używają linie; część pociągów nocuje gdzie indziej, np. przy peronach krańcowych.",
   "depot.newName": "Zajezdnia {n}",
   "depot.slotsN": "Miejsca: {n}",
   "depot.name": "Nazwa",

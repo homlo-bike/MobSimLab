@@ -26,6 +26,11 @@ export const depotsId = {
   "yard.charging": "Kereta mengisi daya di sini",
   "yard.cleaning": "Kereta dibersihkan di sini",
   "yard.remove": "Hapus emplasemen penyimpanan",
+  "yard.capacity": "Menampung {n} kereta.",
+  "yard.capacityAll": "Depo menampung {n} kereta sepanjang {length} m, kereta terpanjang di lintas.",
+  "yard.needed": "Lintas memakai {n} kereta pada hari kerja.",
+  "yard.short":
+    "Depo menampung lebih sedikit kereta daripada yang dipakai lintas, sehingga sebagian kereta bermalam di tempat lain, misalnya di peron terminal.",
   "depot.newName": "Depo {n}",
   "depot.slotsN": "Petak: {n}",
   "depot.name": "Nama",

@@ -26,6 +26,11 @@ export const depotsDe = {
   "yard.charging": "Züge laden hier",
   "yard.cleaning": "Züge werden hier gereinigt",
   "yard.remove": "Abstellanlage entfernen",
+  "yard.capacity": "Fasst {n} Züge.",
+  "yard.capacityAll": "Die Abstellanlagen fassen {n} Züge von {length} m, dem längsten Zug der Linien.",
+  "yard.needed": "Die Linien setzen werktags {n} Züge ein.",
+  "yard.short":
+    "Die Abstellanlagen fassen weniger Züge, als die Linien einsetzen; manche Züge stehen nachts woanders, etwa an Endbahnsteigen.",
   "depot.newName": "Betriebshof {n}",
   "depot.slotsN": "Stellplätze: {n}",
   "depot.name": "Name",

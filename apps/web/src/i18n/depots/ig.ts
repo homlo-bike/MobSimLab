@@ -26,6 +26,11 @@ export const depotsIg = {
   "yard.charging": "A na-achaja ụgbọ ebe a",
   "yard.cleaning": "A na-ehicha ụgbọ ebe a",
   "yard.remove": "Wepụ ogige nkwụsị",
+  "yard.capacity": "Ọ na-ejide ụgbọ oloko {n}.",
+  "yard.capacityAll": "Ebe nchekwa na-ejide ụgbọ oloko {n} nke m {length}, nke kachasị ogologo n'ahịrị.",
+  "yard.needed": "Ahịrị na-eji ụgbọ oloko {n} n'ụbọchị ọrụ.",
+  "yard.short":
+    "Ebe nchekwa na-ejide ụgbọ oloko ole na-erughị nke ahịrị na-eji, ya mere ụfọdụ na-anọ abalị ebe ọzọ, dịka n'elu ikpo okwu ọdụ ikpeazụ.",
   "depot.newName": "Ebe nchekwa {n}",
   "depot.slotsN": "Ohere: {n}",
   "depot.name": "Aha",

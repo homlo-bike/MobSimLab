@@ -26,6 +26,12 @@ export const depotsUz = {
   "yard.charging": "Poyezdlar bu yerda quvvatlanadi",
   "yard.cleaning": "Poyezdlar bu yerda tozalanadi",
   "yard.remove": "Turish parkini o'chirish",
+  "yard.capacity": "{n} ta poyezd sigʻadi.",
+  "yard.capacityAll":
+    "Turar joylarga yoʻnalishlarning eng uzun poyezdi — {length} m li poyezddan {n} ta sigʻadi.",
+  "yard.needed": "Ish kunida yoʻnalishlar {n} ta poyezddan foydalanadi.",
+  "yard.short":
+    "Turar joylarga yoʻnalishlar foydalanadigandan kamroq poyezd sigʻadi, shuning uchun baʼzi poyezdlar tunni boshqa joyda, masalan oxirgi platformalarda oʻtkazadi.",
   "depot.newName": "Park {n}",
   "depot.slotsN": "Joylar: {n}",
   "depot.name": "Nomi",

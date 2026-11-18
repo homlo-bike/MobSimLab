@@ -25,6 +25,11 @@ export const depotsKo = {
   "yard.charging": "열차가 여기서 충전합니다",
   "yard.cleaning": "열차가 여기서 청소됩니다",
   "yard.remove": "유치장 삭제",
+  "yard.capacity": "열차 {n}대 수용.",
+  "yard.capacityAll": "차량기지에 노선 최장 열차인 {length} m 열차 {n}대가 들어갑니다.",
+  "yard.needed": "평일에 노선은 열차 {n}대를 씁니다.",
+  "yard.short":
+    "차량기지 수용 대수가 노선 사용 대수보다 적어 일부 열차는 종착역 승강장 등 다른 곳에서 밤을 보냅니다.",
   "depot.newName": "차고지 {n}",
   "depot.slotsN": "주차면: {n}",
   "depot.name": "이름",

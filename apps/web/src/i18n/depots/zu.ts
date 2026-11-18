@@ -26,6 +26,12 @@ export const depotsZu = {
   "yard.charging": "Izitimela zishajwa lapha",
   "yard.cleaning": "Izitimela zihlanzwa lapha",
   "yard.remove": "Susa igceke lokupaka",
+  "yard.capacity": "Ithatha izitimela ezingu-{n}.",
+  "yard.capacityAll":
+    "Amayadi athatha izitimela ezingu-{n} ezingu-{length} m, isitimela eside kunazo zonke semigqa.",
+  "yard.needed": "Imigqa isebenzisa izitimela ezingu-{n} ngosuku lomsebenzi.",
+  "yard.short":
+    "Amayadi athatha izitimela ezimbalwa kunalezo ezisetshenziswa imigqa, ngakho ezinye izitimela zilala kwenye indawo, njengasezinkundleni zokugcina.",
   "depot.newName": "Isiteshi {n}",
   "depot.slotsN": "Izikhala: {n}",
   "depot.name": "Igama",

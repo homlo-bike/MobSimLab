@@ -28,6 +28,11 @@ export const depotsEn = {
   "yard.charging": "Trains charge here",
   "yard.cleaning": "Trains are cleaned here",
   "yard.remove": "Remove stabling yard",
+  "yard.capacity": "Holds {n} trains.",
+  "yard.capacityAll": "The yards hold {n} trains of {length} m, the longest train of the lines.",
+  "yard.needed": "The lines use {n} trains on a weekday.",
+  "yard.short":
+    "The yards hold fewer trains than the lines use, so some trains stand overnight elsewhere, such as at terminal platforms.",
   "depot.newName": "Depot {n}",
   "depot.slotsN": "Slots: {n}",
   "depot.name": "Name",

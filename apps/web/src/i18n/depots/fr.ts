@@ -26,6 +26,11 @@ export const depotsFr = {
   "yard.charging": "Les trains s'y rechargent",
   "yard.cleaning": "Les trains y sont nettoyés",
   "yard.remove": "Supprimer le faisceau de garage",
+  "yard.capacity": "Accueille {n} trains.",
+  "yard.capacityAll": "Les faisceaux accueillent {n} trains de {length} m, le plus long train des lignes.",
+  "yard.needed": "Les lignes utilisent {n} trains un jour de semaine.",
+  "yard.short":
+    "Les faisceaux accueillent moins de trains que les lignes n'en utilisent : certains trains passent la nuit ailleurs, par exemple aux quais des terminus.",
   "depot.newName": "Dépôt {n}",
   "depot.slotsN": "Places : {n}",
   "depot.name": "Nom",

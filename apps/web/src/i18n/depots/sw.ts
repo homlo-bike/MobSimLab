@@ -26,6 +26,11 @@ export const depotsSw = {
   "yard.charging": "Treni huchajiwa hapa",
   "yard.cleaning": "Treni husafishwa hapa",
   "yard.remove": "Ondoa yadi ya kulaza",
+  "yard.capacity": "Inabeba treni {n}.",
+  "yard.capacityAll": "Yadi zinabeba treni {n} za m {length}, treni ndefu zaidi ya njia.",
+  "yard.needed": "Njia zinatumia treni {n} siku ya kazi.",
+  "yard.short":
+    "Yadi zinabeba treni chache kuliko zinazotumiwa na njia, kwa hiyo baadhi ya treni hulala mahali pengine, kama kwenye majukwaa ya mwisho.",
   "depot.newName": "Karakana {n}",
   "depot.slotsN": "Nafasi: {n}",
   "depot.name": "Jina",
