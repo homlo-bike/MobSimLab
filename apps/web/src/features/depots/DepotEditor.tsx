@@ -9,7 +9,9 @@ import type { PreferencesDoc } from "../../workspace/preferences";
 import type { SavedStreetLine } from "../street-lines/saved";
 import { MODES } from "../street-lines/modes";
 import type { LonLat } from "../street-lines/types";
+import type { Network } from "../railways/types";
 import { loadDepotEngine } from "./engine";
+import { YardEditor } from "./YardEditor";
 import {
   DEPOT_LAYERS,
   depotsGeoJson,
@@ -84,6 +86,10 @@ interface Props {
   prefs?: PreferencesDoc["values"];
   /** Depot layout module loader; tests inject a fake. */
   loadEngine?: DepotEngineLoader;
+  /** The project's railway drawing, for its stabling yards; `null` when there is none. */
+  railway?: Network | null;
+  /** Told about every change to the stabling yards (the railway drawing). */
+  onRailway?: (doc: Network) => void;
 }
 
 /**
@@ -104,6 +110,8 @@ export function DepotEditor({
   lines = NO_LINES,
   prefs,
   loadEngine = loadDepotEngine,
+  railway = null,
+  onRailway,
 }: Props) {
   const { t } = useI18n();
   const depots = doc?.depots ?? [];
@@ -426,6 +434,8 @@ export function DepotEditor({
           {t("depot.add")}
         </button>
       </section>
+
+      {onRailway && <YardEditor railway={railway} onRailway={onRailway} />}
 
       {selected && (
         <section

@@ -15,6 +15,8 @@ export type RailMode =
 export type Level = "underground2" | "underground" | "street" | "elevated" | "elevated2";
 export type Power = "auto" | "overhead" | "third_rail" | "none";
 export type TrackUse = "running" | "storage";
+/** What trains stand on a storage track for. */
+export type StorageRole = "layover" | "overnight" | "both";
 export type Bed = "auto" | "ballast" | "embedded";
 /** How underground stretches are built; auto: cut and cover on the first level, TBM on the second. */
 export type TunnelMethod = "auto" | "cut_and_cover" | "tbm";
@@ -98,6 +100,18 @@ export interface Track {
   directions?: ("forward" | "back" | "both")[];
   /** Railway system; absent = that of the station or switch it starts from, else the network's. */
   mode?: RailMode | null;
+  /** Storage tracks: what trains stand there for; absent = not set (inferred). */
+  storage_role?: StorageRole | null;
+}
+
+/** A stabling yard: storage tracks grouped as a rail depot (Depots tool). */
+export interface Yard {
+  id: number;
+  name: string;
+  /** Storage track ids. */
+  tracks: number[];
+  charging: boolean;
+  cleaning: boolean;
 }
 
 export interface Switch {
@@ -147,6 +161,8 @@ export interface Network {
   signals_removed?: SignalKey[];
   /** Slips the planner put into diamond crossings. */
   slips?: Slip[];
+  /** Stabling yards. */
+  yards?: Yard[];
   /** Service lines run on the design; absent until the planner adds one. */
   lines?: ServiceLine[] | null;
 }

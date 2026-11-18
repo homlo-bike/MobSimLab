@@ -456,6 +456,7 @@ mod tests {
             radius_end_m: None,
             directions: vec![],
             mode: None,
+            storage_role: None,
         });
         net
     }

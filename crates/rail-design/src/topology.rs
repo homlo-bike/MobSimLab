@@ -19,7 +19,7 @@
 use crate::design::{CrossingKind, Design};
 use crate::geom::{nearest, simplify, slice, with_headings, Sample, P2};
 use crate::issue::Severity;
-use crate::model::{Level, TrackUse};
+use crate::model::{Level, StorageRole, TrackUse};
 use crate::params::RailMode;
 use serde::Serialize;
 use std::collections::BTreeMap;
@@ -221,6 +221,9 @@ pub struct Section {
     /// `running` or `storage`.
     #[serde(rename = "use")]
     pub usage: &'static str,
+    /// What trains stand on a storage section for, as the planner set it; absent: infer.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub storage_role: Option<StorageRole>,
     /// Electrification.
     pub power: Power,
     /// Train control (`signalling.system`): `line_of_sight`, `fixed_block`, or the moving-block
@@ -487,6 +490,20 @@ pub struct LevelCrossingOut {
 pub struct DepotGroup {
     /// Id.
     pub id: String,
+    /// `rail_yard` when a track of the group is in a stabling yard, else `siding`.
+    pub kind: &'static str,
+    /// The stabling yard's id (rail yards only).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub yard: Option<u32>,
+    /// The stabling yard's name (rail yards only).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Trains can charge there (rail yards only).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub charging: Option<bool>,
+    /// Trains are cleaned there (rail yards only).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cleaning: Option<bool>,
     /// Track ids.
     pub tracks: Vec<u32>,
     /// Section ids.
@@ -978,6 +995,9 @@ pub fn topology(dz: &Design) -> Topology {
             mode: s.mode,
             gauge_mm: p.gauge_mm,
             usage,
+            storage_role: doc
+                .filter(|t| t.usage == TrackUse::Storage)
+                .and_then(|t| t.storage_role),
             power,
             train_protection: p.signalling_system.clone(),
             levels,
@@ -1315,8 +1335,22 @@ pub fn topology(dz: &Design) -> Topology {
         tracks.dedup();
         let mut ids: Vec<String> = members.iter().map(|m| segs[*m].id.clone()).collect();
         ids.sort();
+        let yard = dz
+            .network
+            .yards
+            .iter()
+            .find(|y| y.tracks.iter().any(|t| tracks.contains(t)));
         depot_groups.push(DepotGroup {
             id: format!("d{}", tracks.first().copied().unwrap_or(0)),
+            kind: if yard.is_some() {
+                "rail_yard"
+            } else {
+                "siding"
+            },
+            yard: yard.map(|y| y.id),
+            name: yard.map(|y| y.name.clone()),
+            charging: yard.map(|y| y.charging),
+            cleaning: yard.map(|y| y.cleaning),
             tracks,
             sections: ids,
             length_m: rd(members.iter().map(|m| sections[*m].length_m).sum()),
@@ -2270,7 +2304,63 @@ mod tests {
             assert_eq!(t.platform_edges.len(), 4, "{m:?}");
             assert_eq!(t.depot_groups.len(), 1, "{m:?}");
             assert_eq!(t.depot_groups[0].tracks, vec![6]);
+            assert_eq!(t.depot_groups[0].kind, "siding");
         }
+    }
+
+    #[test]
+    fn stabling_yards_and_storage_roles_reach_the_export() {
+        use crate::model::{StorageRole, Yard};
+        let mut net = sample(RailMode::Tram, 7.0, 50.9);
+        let id = net.next_id();
+        net.yards.push(Yard {
+            id,
+            name: "North yard".into(),
+            tracks: vec![6],
+            charging: true,
+            cleaning: false,
+        });
+        net.tracks
+            .iter_mut()
+            .find(|t| t.id == 6)
+            .unwrap()
+            .storage_role = Some(StorageRole::Overnight);
+        let t = topology(&build(&net, None));
+        let g = &t.depot_groups[0];
+        assert_eq!(
+            (g.kind, g.yard, g.name.as_deref(), g.charging, g.cleaning),
+            (
+                "rail_yard",
+                Some(id),
+                Some("North yard"),
+                Some(true),
+                Some(false)
+            )
+        );
+        let json = serde_json::to_value(&t).unwrap();
+        let roles: Vec<_> = json["sections"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .filter_map(|s| s.get("storage_role"))
+            .collect();
+        assert!(!roles.is_empty() && roles.iter().all(|r| *r == "overnight"));
+        // A running track's role is not exported.
+        net.tracks
+            .iter_mut()
+            .find(|t| t.usage == TrackUse::Running)
+            .unwrap()
+            .storage_role = Some(StorageRole::Layover);
+        let t = topology(&build(&net, None));
+        let json = serde_json::to_value(&t).unwrap();
+        assert!(json["sections"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .all(|s| s.get("storage_role").is_none_or(|r| *r == "overnight")));
+        // The drawing keeps the fields only when set.
+        let doc = serde_json::to_value(sample(RailMode::Tram, 7.0, 50.9)).unwrap();
+        assert!(doc.get("yards").is_none());
     }
 
     #[test]

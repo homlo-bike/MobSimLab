@@ -192,6 +192,10 @@
         "mode": { "$ref": "#/$defs/mode" },
         "gauge_mm": { "type": "number", "exclusiveMinimum": 0 },
         "use": { "enum": ["running", "storage"] },
+        "storage_role": {
+          "enum": ["layover", "overnight", "both"],
+          "description": "Storage sections only: what trains stand there for, as the planner set it (layover between trips, overnight, or both). Absent: not set, infer it."
+        },
         "train_protection": {
           "enum": ["line_of_sight", "fixed_block", "cbtc", "etcs_l2"],
           "description": "Train control of the section's railway system (signalling.system): driving on sight, fixed blocks with lineside signals, or moving block with cab signalling (CBTC, ETCS Level 2)."
@@ -575,9 +579,17 @@
     "depot_group": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["id", "tracks", "sections", "length_m"],
+      "required": ["id", "kind", "tracks", "sections", "length_m"],
       "properties": {
         "id": { "type": "string", "pattern": "^d\\d+$" },
+        "kind": {
+          "enum": ["rail_yard", "siding"],
+          "description": "rail_yard: a track of the group is in a stabling yard of the drawing (its tracks count as overnight stabling); siding: loose storage tracks."
+        },
+        "yard": { "type": "integer", "minimum": 1, "description": "rail_yard only: the yard's document id." },
+        "name": { "type": "string", "description": "rail_yard only: the yard's name." },
+        "charging": { "type": "boolean", "description": "rail_yard only: trains can charge there." },
+        "cleaning": { "type": "boolean", "description": "rail_yard only: trains are cleaned there." },
         "tracks": { "type": "array", "items": { "type": "integer", "minimum": 1 }, "minItems": 1 },
         "sections": { "type": "array", "items": { "$ref": "#/$defs/section_id" }, "minItems": 1 },
         "length_m": { "$ref": "#/$defs/metres" }

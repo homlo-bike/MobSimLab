@@ -35,7 +35,13 @@ const STATION_NAMES = [
 
 /** Purpose: the next free id (ids are unique across stations, tracks, switches and signals). */
 export function nextId(doc: Network): number {
-  const ids = [...doc.stations, ...doc.tracks, ...doc.switches, ...(doc.signals ?? [])].map((o) => o.id);
+  const ids = [
+    ...doc.stations,
+    ...doc.tracks,
+    ...doc.switches,
+    ...(doc.signals ?? []),
+    ...(doc.yards ?? []),
+  ].map((o) => o.id);
   return ids.length ? Math.max(...ids) + 1 : 1;
 }
 

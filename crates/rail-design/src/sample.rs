@@ -43,6 +43,7 @@ fn track(id: u32, start: Anchor, end: Option<Anchor>, level: Level) -> Track {
         radius_end_m: None,
         directions: vec![],
         mode: None,
+        storage_role: None,
     }
 }
 
