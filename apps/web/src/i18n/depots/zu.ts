@@ -113,5 +113,4 @@ export const depotsZu = {
   "depot.line.none": "Asikho isiteshi",
   "depot.line.gone": "Isiteshi obesisetshenziswa yilo mzila sisusiwe.",
   "depot.line.noDepots": "Azikho iziteshi okwamanje. Dweba esisodwa ethuluzini lesiteshi.",
-  "depot.line.open": "Vula ithuluzi lesiteshi",
 } satisfies DepotsMessages;

@@ -110,5 +110,4 @@ export const depotsJa = {
   "depot.line.none": "車庫なし",
   "depot.line.gone": "この路線が使っていた車庫は削除されました。",
   "depot.line.noDepots": "まだ車庫はありません。車庫ツールで描いてください。",
-  "depot.line.open": "車庫ツールを開く",
 } satisfies DepotsMessages;

@@ -110,5 +110,4 @@ export const depotsKo = {
   "depot.line.none": "차고지 없음",
   "depot.line.gone": "이 노선이 쓰던 차고지가 삭제되었습니다.",
   "depot.line.noDepots": "아직 차고지가 없습니다. 차고지 도구에서 그리세요.",
-  "depot.line.open": "차고지 도구 열기",
 } satisfies DepotsMessages;

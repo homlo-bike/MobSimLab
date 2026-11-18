@@ -115,5 +115,4 @@ export const depotsDe = {
   "depot.line.none": "Kein Betriebshof",
   "depot.line.gone": "Der Betriebshof dieser Linie wurde gelöscht.",
   "depot.line.noDepots": "Noch keine Betriebshöfe. Zeichnen Sie einen im Betriebshof-Werkzeug.",
-  "depot.line.open": "Betriebshof-Werkzeug öffnen",
 } satisfies DepotsMessages;

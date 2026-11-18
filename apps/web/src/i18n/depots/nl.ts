@@ -113,5 +113,4 @@ export const depotsNl = {
   "depot.line.none": "Geen stalling",
   "depot.line.gone": "De stalling van deze lijn is verwijderd.",
   "depot.line.noDepots": "Nog geen stallingen. Teken er een in het stallingsgereedschap.",
-  "depot.line.open": "Stallingsgereedschap openen",
 } satisfies DepotsMessages;

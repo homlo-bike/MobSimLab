@@ -113,5 +113,4 @@ export const depotsHi = {
   "depot.line.none": "कोई डिपो नहीं",
   "depot.line.gone": "इस लाइन का डिपो हटा दिया गया।",
   "depot.line.noDepots": "अभी कोई डिपो नहीं। डिपो टूल में एक बनाएँ।",
-  "depot.line.open": "डिपो टूल खोलें",
 } satisfies DepotsMessages;

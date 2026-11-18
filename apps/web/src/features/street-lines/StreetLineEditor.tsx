@@ -829,7 +829,6 @@ export function StreetLineEditor({
       depotId={depotId}
       depots={depots.map((d) => ({ id: d.id, name: d.name, problem: depotFit(d, { profile, vehicle }) }))}
       vehicleLengthM={lineVehicle({ profile, vehicle }).length_m}
-      onOpenDepots={onOpenDepots}
       showDepot={showDepot}
       showRoads={showRoads}
       crossingSource={railTopology ? t("street.drawingSource") : null}

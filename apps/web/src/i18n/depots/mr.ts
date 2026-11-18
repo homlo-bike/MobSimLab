@@ -113,5 +113,4 @@ export const depotsMr = {
   "depot.line.none": "आगार नाही",
   "depot.line.gone": "या मार्गाचे आगार हटवले गेले.",
   "depot.line.noDepots": "अजून कोणतेही आगार नाही. आगार साधनात एक काढा.",
-  "depot.line.open": "आगार साधन उघडा",
 } satisfies DepotsMessages;

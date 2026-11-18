@@ -112,5 +112,4 @@ export const depotsHa = {
   "depot.line.none": "Babu tashar ajiye",
   "depot.line.gone": "An share tashar ajiye da wannan hanya ke amfani da ita.",
   "depot.line.noDepots": "Babu tashar ajiye tukuna. Zana ɗaya a kayan aikin tashar ajiye.",
-  "depot.line.open": "Buɗe kayan aikin tashar ajiye",
 } satisfies DepotsMessages;

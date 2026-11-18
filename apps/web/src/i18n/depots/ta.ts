@@ -114,5 +114,4 @@ export const depotsTa = {
   "depot.line.none": "பணிமனை இல்லை",
   "depot.line.gone": "இந்த வழித்தடம் பயன்படுத்திய பணிமனை அழிக்கப்பட்டது.",
   "depot.line.noDepots": "இன்னும் பணிமனைகள் இல்லை. பணிமனைக் கருவியில் ஒன்றை வரையுங்கள்.",
-  "depot.line.open": "பணிமனைக் கருவியைத் திற",
 } satisfies DepotsMessages;

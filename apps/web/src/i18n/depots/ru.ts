@@ -113,5 +113,4 @@ export const depotsRu = {
   "depot.line.none": "Без парка",
   "depot.line.gone": "Парк, который использовала эта линия, удалён.",
   "depot.line.noDepots": "Парков пока нет. Нарисуйте парк в инструменте парков.",
-  "depot.line.open": "Открыть инструмент парков",
 } satisfies DepotsMessages;

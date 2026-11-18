@@ -114,5 +114,4 @@ export const depotsSw = {
   "depot.line.none": "Hakuna karakana",
   "depot.line.gone": "Karakana iliyotumiwa na njia hii imefutwa.",
   "depot.line.noDepots": "Bado hakuna karakana. Chora moja katika zana ya karakana.",
-  "depot.line.open": "Fungua zana ya karakana",
 } satisfies DepotsMessages;

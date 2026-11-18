@@ -110,5 +110,4 @@ export const depotsZh = {
   "depot.line.none": "无车场",
   "depot.line.gone": "这条线路使用的车场已被删除。",
   "depot.line.noDepots": "还没有车场。请在车场工具中绘制一个。",
-  "depot.line.open": "打开车场工具",
 } satisfies DepotsMessages;

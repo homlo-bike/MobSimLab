@@ -111,5 +111,4 @@ export const depotsYo = {
   "depot.line.none": "Kò sí ibùdó",
   "depot.line.gone": "A ti pa ibùdó tí ọ̀nà yìí ń lò rẹ́.",
   "depot.line.noDepots": "Kò sí ibùdó kankan síbẹ̀. Ya ọ̀kan nínú irinṣẹ́ ibùdó.",
-  "depot.line.open": "Ṣí irinṣẹ́ ibùdó",
 } satisfies DepotsMessages;

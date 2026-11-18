@@ -119,8 +119,6 @@ interface Props {
   depots?: { id: string; name: string; problem: FitProblem }[];
   /** Length of the line's vehicle, m, named when no depot slot fits it. */
   vehicleLengthM?: number;
-  /** Opens the depot tool. */
-  onOpenDepots?: () => void;
   showRoads: boolean;
   /** Where the level crossings come from ("railway tool drawing"), or null when there is no railway. */
   crossingSource?: string | null;
@@ -643,15 +641,6 @@ export function LinePanel(props: Props) {
           <p className="text-xs text-amber-700">{t("depot.line.gone")}</p>
         )}
         {!(props.depots ?? []).length && <p className="text-xs text-slate-600">{t("depot.line.noDepots")}</p>}
-        {props.onOpenDepots && (
-          <button
-            type="button"
-            className="w-fit rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-            onClick={props.onOpenDepots}
-          >
-            {t("depot.line.open")}
-          </button>
-        )}
         {!view.depot ? null : (
           <>
             {terminals.length === 0 && <p className="text-xs text-slate-600">{t("street.addStopsDepot")}</p>}

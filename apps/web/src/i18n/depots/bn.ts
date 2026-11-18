@@ -112,5 +112,4 @@ export const depotsBn = {
   "depot.line.none": "কোনো ডিপো নেই",
   "depot.line.gone": "এই লাইনের ডিপো মুছে ফেলা হয়েছে।",
   "depot.line.noDepots": "এখনো কোনো ডিপো নেই। ডিপো টুলে একটি আঁকুন।",
-  "depot.line.open": "ডিপো টুল খুলুন",
 } satisfies DepotsMessages;

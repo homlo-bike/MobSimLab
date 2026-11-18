@@ -113,5 +113,4 @@ export const depotsPt = {
   "depot.line.none": "Sem garagem",
   "depot.line.gone": "A garagem que esta linha usava foi excluída.",
   "depot.line.noDepots": "Ainda não há garagens. Desenhe uma na ferramenta de garagens.",
-  "depot.line.open": "Abrir a ferramenta de garagens",
 } satisfies DepotsMessages;

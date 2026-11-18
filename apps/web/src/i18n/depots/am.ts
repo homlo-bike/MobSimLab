@@ -110,5 +110,4 @@ export const depotsAm = {
   "depot.line.none": "ማቆሚያ ጣቢያ የለም",
   "depot.line.gone": "ይህ መስመር ይጠቀምበት የነበረው ማቆሚያ ጣቢያ ተሰርዟል።",
   "depot.line.noDepots": "እስካሁን ማቆሚያ ጣቢያ የለም። በማቆሚያ ጣቢያ መሳሪያው አንድ ይሳሉ።",
-  "depot.line.open": "የማቆሚያ ጣቢያ መሳሪያውን ክፈት",
 } satisfies DepotsMessages;

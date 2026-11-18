@@ -112,5 +112,4 @@ export const depotsId = {
   "depot.line.none": "Tanpa depo",
   "depot.line.gone": "Depo yang dipakai trayek ini telah dihapus.",
   "depot.line.noDepots": "Belum ada depo. Gambar satu di alat depo.",
-  "depot.line.open": "Buka alat depo",
 } satisfies DepotsMessages;

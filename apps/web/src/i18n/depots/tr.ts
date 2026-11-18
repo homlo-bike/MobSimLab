@@ -112,5 +112,4 @@ export const depotsTr = {
   "depot.line.none": "Garaj yok",
   "depot.line.gone": "Bu hattın kullandığı garaj silindi.",
   "depot.line.noDepots": "Henüz garaj yok. Garaj aracında bir tane çizin.",
-  "depot.line.open": "Garaj aracını aç",
 } satisfies DepotsMessages;

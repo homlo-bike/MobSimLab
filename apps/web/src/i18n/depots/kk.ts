@@ -114,5 +114,4 @@ export const depotsKk = {
   "depot.line.none": "Парксіз",
   "depot.line.gone": "Бұл желі пайдаланған парк жойылды.",
   "depot.line.noDepots": "Әзірге парктер жоқ. Парк құралында біреуін сызыңыз.",
-  "depot.line.open": "Парк құралын ашу",
 } satisfies DepotsMessages;

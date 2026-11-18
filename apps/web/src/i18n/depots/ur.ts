@@ -111,5 +111,4 @@ export const depotsUr = {
   "depot.line.none": "کوئی ڈپو نہیں",
   "depot.line.gone": "اس لائن کا ڈپو حذف کر دیا گیا۔",
   "depot.line.noDepots": "ابھی کوئی ڈپو نہیں۔ ڈپو کے آلے میں ایک بنائیں۔",
-  "depot.line.open": "ڈپو کا آلہ کھولیں",
 } satisfies DepotsMessages;

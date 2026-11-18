@@ -111,5 +111,4 @@ export const depotsAr = {
   "depot.line.none": "بلا مرأب",
   "depot.line.gone": "حُذف المرأب الذي كان هذا الخط يستخدمه.",
   "depot.line.noDepots": "لا توجد مرائب بعد. ارسم واحدًا في أداة المرائب.",
-  "depot.line.open": "افتح أداة المرائب",
 } satisfies DepotsMessages;

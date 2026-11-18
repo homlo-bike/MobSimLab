@@ -111,5 +111,4 @@ export const depotsVi = {
   "depot.line.none": "Không có bãi đỗ",
   "depot.line.gone": "Bãi đỗ tuyến này dùng đã bị xóa.",
   "depot.line.noDepots": "Chưa có bãi đỗ nào. Hãy vẽ một bãi trong công cụ bãi đỗ.",
-  "depot.line.open": "Mở công cụ bãi đỗ",
 } satisfies DepotsMessages;

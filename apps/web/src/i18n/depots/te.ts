@@ -113,5 +113,4 @@ export const depotsTe = {
   "depot.line.none": "డిపో లేదు",
   "depot.line.gone": "ఈ మార్గం వాడిన డిపో తొలగించబడింది.",
   "depot.line.noDepots": "ఇంకా డిపోలు లేవు. డిపో సాధనంలో ఒకటి గీయండి.",
-  "depot.line.open": "డిపో సాధనం తెరవండి",
 } satisfies DepotsMessages;

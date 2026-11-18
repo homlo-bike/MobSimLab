@@ -112,5 +112,4 @@ export const depotsFa = {
   "depot.line.none": "بدون پارکینگ",
   "depot.line.gone": "پارکینگی که این خط استفاده می‌کرد حذف شد.",
   "depot.line.noDepots": "هنوز پارکینگی نیست. یکی را در ابزار پارکینگ بکشید.",
-  "depot.line.open": "باز کردن ابزار پارکینگ",
 } satisfies DepotsMessages;

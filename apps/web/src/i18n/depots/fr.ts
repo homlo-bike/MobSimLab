@@ -115,5 +115,4 @@ export const depotsFr = {
   "depot.line.none": "Aucun dépôt",
   "depot.line.gone": "Le dépôt utilisé par cette ligne a été supprimé.",
   "depot.line.noDepots": "Aucun dépôt pour l'instant. Tracez-en un dans l'outil dépôt.",
-  "depot.line.open": "Ouvrir l'outil dépôt",
 } satisfies DepotsMessages;

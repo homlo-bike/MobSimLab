@@ -115,5 +115,4 @@ export const depotsEs = {
   "depot.line.none": "Sin cochera",
   "depot.line.gone": "La cochera que usaba esta línea se eliminó.",
   "depot.line.noDepots": "Aún no hay cocheras. Dibuje una en la herramienta de cocheras.",
-  "depot.line.open": "Abrir la herramienta de cocheras",
 } satisfies DepotsMessages;

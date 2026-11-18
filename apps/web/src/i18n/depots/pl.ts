@@ -113,5 +113,4 @@ export const depotsPl = {
   "depot.line.none": "Bez zajezdni",
   "depot.line.gone": "Zajezdnia używana przez tę linię została usunięta.",
   "depot.line.noDepots": "Nie ma jeszcze zajezdni. Narysuj ją w narzędziu zajezdni.",
-  "depot.line.open": "Otwórz narzędzie zajezdni",
 } satisfies DepotsMessages;

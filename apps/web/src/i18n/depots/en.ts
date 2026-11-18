@@ -114,7 +114,6 @@ export const depotsEn = {
   "depot.line.none": "No depot",
   "depot.line.gone": "The depot this line used was deleted.",
   "depot.line.noDepots": "No depots yet. Draw one in the depot tool.",
-  "depot.line.open": "Open the depot tool",
 };
 
 /** A language's depot messages: every key of the English ones. */

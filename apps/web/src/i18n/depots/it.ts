@@ -114,5 +114,4 @@ export const depotsIt = {
   "depot.line.none": "Nessun deposito",
   "depot.line.gone": "Il deposito usato da questa linea è stato eliminato.",
   "depot.line.noDepots": "Ancora nessun deposito. Disegnane uno nello strumento depositi.",
-  "depot.line.open": "Apri lo strumento depositi",
 } satisfies DepotsMessages;

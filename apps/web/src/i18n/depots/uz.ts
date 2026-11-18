@@ -116,5 +116,4 @@ export const depotsUz = {
   "depot.line.none": "Parksiz",
   "depot.line.gone": "Bu yo'nalish foydalangan park o'chirildi.",
   "depot.line.noDepots": "Hali parklar yo'q. Park vositasida bittasini chizing.",
-  "depot.line.open": "Park vositasini ochish",
 } satisfies DepotsMessages;

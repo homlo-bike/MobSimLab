@@ -111,5 +111,4 @@ export const depotsIg = {
   "depot.line.none": "Enweghị ebe nchekwa",
   "depot.line.gone": "E hichapụla ebe nchekwa ụzọ a na-eji.",
   "depot.line.noDepots": "Enweghị ebe nchekwa ọ bụla ka ugbu a. See otu na ngwá ọrụ ebe nchekwa.",
-  "depot.line.open": "Mepee ngwá ọrụ ebe nchekwa",
 } satisfies DepotsMessages;
