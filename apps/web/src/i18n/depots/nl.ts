@@ -109,6 +109,9 @@ export const depotsNl = {
   "depot.sizing": "Dynamische dimensionering",
   "depot.sizingNote":
     "De oppervlakte die de vloot van de lijnen nodig heeft, en hoeveel voertuigen de omtrek bevat, per opstelhoek.",
+  "depot.shrink": "Verkleinen tot deze grootte",
+  "depot.shrinkTo":
+    "De omtrek verkleinen tot de oppervlakte voor parkeren onder {angle}°, met behoud van de vorm, en opnieuw indelen",
   "depot.size": "Stalling dimensioneren",
   "depot.sizingFor": "Voertuigen: {n}; plaatsen bemeten voor {vehicle}.",
   "depot.col.angle": "Opstelling",

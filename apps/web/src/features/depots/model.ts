@@ -357,6 +357,35 @@ export function withOutline(d: SavedDepot, ring: LonLat[]): SavedDepot {
   };
 }
 
+/**
+ * Purpose: an outline scaled about its centre to an area, keeping its shape (the planner's plot of land), for
+ * shrinking a depot drawn too big to the area Dynamic sizing says the fleet needs.
+ * Inputs: the outline (at least three corners); the area, m². Output: the scaled outline (the same when empty).
+ */
+export function scaledOutline(ring: LonLat[], area_m2: number): LonLat[] {
+  const now = ringArea(ring);
+  if (ring.length < 3 || !(now > 0) || !(area_m2 > 0)) return ring;
+  const o = ring[0]!;
+  const xy = ring.map((p) => toXY(o, p));
+  // The centroid of the polygon, so the outline shrinks towards its middle.
+  let a = 0;
+  let cx = 0;
+  let cy = 0;
+  for (let i = 0; i < xy.length; i++) {
+    const [x1, y1] = xy[i]!;
+    const [x2, y2] = xy[(i + 1) % xy.length]!;
+    const c = x1 * y2 - x2 * y1;
+    a += c;
+    cx += (x1 + x2) * c;
+    cy += (y1 + y2) * c;
+  }
+  if (a === 0) return ring;
+  cx /= 3 * a;
+  cy /= 3 * a;
+  const k = Math.sqrt(area_m2 / now);
+  return xy.map(([x, y]) => toLL(o, cx + (x - cx) * k, cy + (y - cy) * k));
+}
+
 /** Purpose: whether a point is inside a ring or on its edge (within half a metre). */
 function insideOrOn(ring: LonLat[], p: LonLat): boolean {
   if (inRing(ring, p)) return true;

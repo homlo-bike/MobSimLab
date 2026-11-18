@@ -108,6 +108,8 @@ export const depotsHa = {
   "depot.sizing": "Kimanta girma mai sauyawa",
   "depot.sizingNote":
     "Fadin da rundunar motocin hanyoyin ke buƙata, da motoci nawa iyakar ke ɗauka, ga kowane kusurwar wuri.",
+  "depot.shrink": "Rage zuwa wannan girma",
+  "depot.shrinkTo": "Rage iyaka zuwa faɗin ajiye motoci na {angle}°, a riƙe siffarsa, sannan a sake tsarawa",
   "depot.size": "Kimanta girman tashar",
   "depot.sizingFor": "Motoci: {n}; an auna wurare don {vehicle}.",
   "depot.col.angle": "Tsari",

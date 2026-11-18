@@ -109,6 +109,9 @@ export const depotsEn = {
   "depot.sizing": "Dynamic sizing",
   "depot.sizingNote":
     "The area the lines' fleet needs, and how many vehicles the outline holds, for each bay angle.",
+  "depot.shrink": "Shrink to this size",
+  "depot.shrinkTo":
+    "Shrink the outline to the area for {angle}° parking, keeping its shape, and lay out again",
   "depot.size": "Size the depot",
   "depot.sizingFor": "Vehicles: {n}; slots sized for {vehicle}.",
   "depot.col.angle": "Bays",

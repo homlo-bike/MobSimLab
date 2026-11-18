@@ -11,6 +11,8 @@ import {
   moveLane,
   resizeLane,
   newDepot,
+  ringArea,
+  scaledOutline,
   snapToRing,
   toXY,
   withOutline,
@@ -288,6 +290,34 @@ describe("Depot tool", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Size the depot" }));
     await waitFor(() => expect(screen.getByText("60 × 40 m")).toBeTruthy());
+
+    // The outline (about 1.3 ha) is far bigger than the 2,400 m² the fleet needs: shrink it, keeping its shape.
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: "Shrink the outline to the area for 90° parking, keeping its shape, and lay out again",
+      }),
+    );
+    await waitFor(() => expect(ringArea(docs.at(-1)!.depots[0]!.boundary)).toBeCloseTo(2400, -1));
+    const shrunk = docs.at(-1)!.depots[0]!;
+    // The gate moved onto the new outline, the whole-outline zone shrank with it, and the slots were laid out again.
+    expect(shrunk.zones[0]!.ring).toEqual(shrunk.boundary);
+    expect(snapToRing(shrunk.boundary, shrunk.gates[0]!.lonlat)).toEqual(shrunk.gates[0]!.lonlat);
+    expect(engine.generate).toHaveBeenLastCalledWith(
+      expect.objectContaining({ boundary: shrunk.boundary, layout: null }),
+    );
+  });
+
+  it("scales an outline about its centre to an area", () => {
+    const half = scaledOutline(RING, ringArea(RING) / 4);
+    expect(ringArea(half)).toBeCloseTo(ringArea(RING) / 4, 0);
+    const mid = (r: [number, number][]) => [
+      r.reduce((s, p) => s + p[0], 0) / r.length,
+      r.reduce((s, p) => s + p[1], 0) / r.length,
+    ];
+    expect(mid(half)[0]).toBeCloseTo(mid(RING)[0]!, 7);
+    expect(mid(half)[1]).toBeCloseTo(mid(RING)[1]!, 7);
+    // Each side is half as long: same shape.
+    expect(toXY(half[0]!, half[1]!)[0]).toBeCloseTo(toXY(RING[0]!, RING[1]!)[0] / 2, 1);
   });
 });
 

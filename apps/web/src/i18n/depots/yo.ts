@@ -107,6 +107,8 @@ export const depotsYo = {
   "depot.linesNote": "Yan ibùdó nínú irinṣẹ́ ọ̀nà òpópónà, lábẹ́ Ìrìn ibùdó. Ọkọ̀ pẹ̀lú àfipamọ́.",
   "depot.sizing": "Ìṣírò ìwọ̀n aláyípadà",
   "depot.sizingNote": "Ilẹ̀ tí ẹgbẹ́ ọkọ̀ àwọn ọ̀nà nílò, àti iye ọkọ̀ tí ààlà gbà, fún igun àyè kọ̀ọ̀kan.",
+  "depot.shrink": "Dín kù sí ìwọ̀n yìí",
+  "depot.shrinkTo": "Dín ààlà kù sí agbègbè ìdúró {angle}°, pa ìrísí rẹ̀ mọ́, kí o tún ṣètò",
   "depot.size": "Ṣírò ìwọ̀n ibùdó",
   "depot.sizingFor": "Ọkọ̀: {n}; àyè wọ̀n fún {vehicle}.",
   "depot.col.angle": "Ìtò",

@@ -108,6 +108,8 @@ export const depotsId = {
   "depot.sizing": "Penentuan ukuran dinamis",
   "depot.sizingNote":
     "Luas yang dibutuhkan armada trayek, dan berapa kendaraan yang muat dalam batas, untuk setiap sudut petak.",
+  "depot.shrink": "Perkecil ke ukuran ini",
+  "depot.shrinkTo": "Perkecil garis batas ke luas untuk parkir {angle}°, bentuknya tetap, lalu tata ulang",
   "depot.size": "Hitung ukuran depo",
   "depot.sizingFor": "Kendaraan: {n}; petak diukur untuk {vehicle}.",
   "depot.col.angle": "Susunan",

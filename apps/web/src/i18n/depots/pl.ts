@@ -109,6 +109,9 @@ export const depotsPl = {
   "depot.sizing": "Wymiarowanie dynamiczne",
   "depot.sizingNote":
     "Powierzchnia potrzebna flocie linii i liczba pojazdów mieszczących się w obrysie, dla każdego kąta ustawienia.",
+  "depot.shrink": "Zmniejsz do tego rozmiaru",
+  "depot.shrinkTo":
+    "Zmniejsz obrys do powierzchni dla postoju pod kątem {angle}°, zachowując kształt, i rozmieść ponownie",
   "depot.size": "Wymiaruj zajezdnię",
   "depot.sizingFor": "Pojazdy: {n}; miejsca wymiarowane dla {vehicle}.",
   "depot.col.angle": "Ustawienie",

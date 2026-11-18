@@ -109,6 +109,9 @@ export const depotsZu = {
   "depot.sizing": "Ukulinganisa okuguqukayo",
   "depot.sizingNote":
     "Indawo ethuthwayo izimoto zemizila ezidingayo, nokuthi zingaki izimoto umngcele ozithwalayo, ku-engeli ngayinye yesikhala.",
+  "depot.shrink": "Nciphisa kube yilobu bukhulu",
+  "depot.shrinkTo":
+    "Nciphisa umngcele ube yindawo yokupaka ka-{angle}°, ugcine isimo sawo, bese uhlela kabusha",
   "depot.size": "Linganisa isiteshi",
   "depot.sizingFor": "Izimoto: {n}; izikhala zilinganiselwe i-{vehicle}.",
   "depot.col.angle": "Ukuhlelwa",

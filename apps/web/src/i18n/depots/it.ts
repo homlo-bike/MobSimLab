@@ -109,6 +109,9 @@ export const depotsIt = {
   "depot.sizing": "Dimensionamento dinamico",
   "depot.sizingNote":
     "La superficie di cui ha bisogno la flotta delle linee e quanti veicoli contiene il perimetro, per ogni angolo degli stalli.",
+  "depot.shrink": "Riduci a questa dimensione",
+  "depot.shrinkTo":
+    "Riduci il perimetro all'area per la sosta a {angle}°, mantenendone la forma, e ridisponi",
   "depot.size": "Dimensiona il deposito",
   "depot.sizingFor": "Veicoli: {n}; stalli dimensionati per {vehicle}.",
   "depot.col.angle": "Stalli",

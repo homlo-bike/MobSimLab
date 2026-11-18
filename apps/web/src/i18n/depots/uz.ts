@@ -112,6 +112,9 @@ export const depotsUz = {
   "depot.sizing": "Dinamik o'lchash",
   "depot.sizingNote":
     "Yo'nalishlar parki uchun kerakli maydon va chegaraga nechta transport sig'ishi, har bir joy burchagi uchun.",
+  "depot.shrink": "Shu oʻlchamgacha kichraytirish",
+  "depot.shrinkTo":
+    "Shaklini saqlab, chegarani {angle}° turish maydonigacha kichraytirib, qayta joylashtirish",
   "depot.size": "Park o'lchamini hisoblash",
   "depot.sizingFor": "Transport: {n}; joylar {vehicle} ga mo'ljallangan.",
   "depot.col.angle": "Joylashuv",

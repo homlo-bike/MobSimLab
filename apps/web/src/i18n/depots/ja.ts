@@ -105,6 +105,8 @@ export const depotsJa = {
   "depot.linesNote": "道路路線ツールの「回送」で車庫を選びます。車両数は予備車を含みます。",
   "depot.sizing": "動的な規模算定",
   "depot.sizingNote": "各路線の車両に必要な面積と、外周に収まる車両数を、駐車枠の角度ごとに示します。",
+  "depot.shrink": "このサイズに縮小",
+  "depot.shrinkTo": "形を保ったまま外形を {angle}° 駐車に必要な面積まで縮小し、配置し直す",
   "depot.size": "車庫の規模を算定",
   "depot.sizingFor": "車両：{n}。駐車枠の基準は {vehicle}。",
   "depot.col.angle": "配置",

@@ -110,6 +110,9 @@ export const depotsDe = {
   "depot.sizing": "Dynamische Bemessung",
   "depot.sizingNote":
     "Die Fläche, die die Flotte der Linien braucht, und wie viele Fahrzeuge der Umriss fasst, für jeden Aufstellwinkel.",
+  "depot.shrink": "Auf diese Größe verkleinern",
+  "depot.shrinkTo":
+    "Umriss auf die Fläche für {angle}°-Aufstellung verkleinern, Form beibehalten, und neu anordnen",
   "depot.size": "Betriebshof bemessen",
   "depot.sizingFor": "Fahrzeuge: {n}; Stellplätze bemessen für {vehicle}.",
   "depot.col.angle": "Aufstellung",

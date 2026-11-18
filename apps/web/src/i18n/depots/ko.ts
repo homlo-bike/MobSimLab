@@ -105,6 +105,8 @@ export const depotsKo = {
   "depot.linesNote": "도로 노선 도구의 회송 운행에서 차고지를 고르세요. 차량 수에는 예비 차량이 포함됩니다.",
   "depot.sizing": "동적 규모 산정",
   "depot.sizingNote": "노선 차량에 필요한 면적과 외곽선에 들어가는 차량 수를 주차 각도별로 보여 줍니다.",
+  "depot.shrink": "이 크기로 줄이기",
+  "depot.shrinkTo": "모양을 유지한 채 외곽선을 {angle}° 주차 면적으로 줄이고 다시 배치",
   "depot.size": "차고지 규모 산정",
   "depot.sizingFor": "차량: {n}; 주차면 기준 {vehicle}.",
   "depot.col.angle": "배치",

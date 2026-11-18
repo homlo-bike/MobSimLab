@@ -104,6 +104,8 @@ export const depotsZh = {
   "depot.linesNote": "在道路线路工具的“进出场运行”中选择车场。车辆数包含备用车。",
   "depot.sizing": "动态规模计算",
   "depot.sizingNote": "各线路车队所需的面积，以及边界可容纳的车辆数，按每种车位角度列出。",
+  "depot.shrink": "缩小到此尺寸",
+  "depot.shrinkTo": "保持形状，将轮廓缩小到 {angle}° 停放所需面积并重新布置",
   "depot.size": "计算车场规模",
   "depot.sizingFor": "车辆：{n}；车位按 {vehicle} 设计。",
   "depot.col.angle": "车位排列",

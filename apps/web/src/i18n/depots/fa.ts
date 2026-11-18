@@ -108,6 +108,8 @@ export const depotsFa = {
   "depot.sizing": "اندازه‌گذاری پویا",
   "depot.sizingNote":
     "مساحتی که ناوگان خطوط لازم دارد و تعداد خودروهایی که مرز جا می‌دهد، برای هر زاویهٔ پارک.",
+  "depot.shrink": "کوچک کردن به این اندازه",
+  "depot.shrinkTo": "کوچک کردن مرز به مساحت پارک {angle} درجه با حفظ شکل و چیدمان دوباره",
   "depot.size": "اندازه‌گذاری پارکینگ",
   "depot.sizingFor": "خودروها: {n}؛ جاها برای {vehicle}.",
   "depot.col.angle": "چیدمان",

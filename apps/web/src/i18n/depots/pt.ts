@@ -108,6 +108,9 @@ export const depotsPt = {
   "depot.sizing": "Dimensionamento dinâmico",
   "depot.sizingNote":
     "A área de que a frota das linhas precisa e quantos veículos o contorno comporta, para cada ângulo de vaga.",
+  "depot.shrink": "Reduzir a este tamanho",
+  "depot.shrinkTo":
+    "Reduzir o contorno à área para estacionamento a {angle}°, mantendo a forma, e dispor de novo",
   "depot.size": "Dimensionar a garagem",
   "depot.sizingFor": "Veículos: {n}; vagas dimensionadas para {vehicle}.",
   "depot.col.angle": "Vagas",

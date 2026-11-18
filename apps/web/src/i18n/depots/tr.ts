@@ -108,6 +108,8 @@ export const depotsTr = {
   "depot.sizing": "Dinamik boyutlandırma",
   "depot.sizingNote":
     "Hatların filosunun ihtiyaç duyduğu alan ve sınırın kaç araç aldığı, her yer açısı için.",
+  "depot.shrink": "Bu boyuta küçült",
+  "depot.shrinkTo": "Dış hattı biçimini koruyarak {angle}° park alanına küçült ve yeniden yerleştir",
   "depot.size": "Garajı boyutlandır",
   "depot.sizingFor": "Araçlar: {n}; yerler {vehicle} için boyutlandırıldı.",
   "depot.col.angle": "Yerleşim",

@@ -110,6 +110,9 @@ export const depotsEs = {
   "depot.sizing": "Dimensionado dinámico",
   "depot.sizingNote":
     "La superficie que necesita la flota de las líneas y cuántos vehículos caben en el contorno, para cada ángulo de plaza.",
+  "depot.shrink": "Reducir a este tamaño",
+  "depot.shrinkTo":
+    "Reducir el contorno al área para estacionar a {angle}°, manteniendo su forma, y volver a distribuir",
   "depot.size": "Dimensionar la cochera",
   "depot.sizingFor": "Vehículos: {n}; plazas dimensionadas para {vehicle}.",
   "depot.col.angle": "Plazas",

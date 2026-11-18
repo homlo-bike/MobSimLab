@@ -107,6 +107,8 @@ export const depotsVi = {
   "depot.sizing": "Tính quy mô động",
   "depot.sizingNote":
     "Diện tích đoàn xe của các tuyến cần, và ranh giới chứa được bao nhiêu xe, cho từng góc đỗ.",
+  "depot.shrink": "Thu nhỏ về kích thước này",
+  "depot.shrinkTo": "Thu nhỏ đường bao về diện tích đỗ {angle}°, giữ nguyên hình dạng, rồi bố trí lại",
   "depot.size": "Tính quy mô bãi đỗ",
   "depot.sizingFor": "Xe: {n}; chỗ đỗ theo cỡ {vehicle}.",
   "depot.col.angle": "Cách xếp",

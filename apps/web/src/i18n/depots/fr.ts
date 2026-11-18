@@ -110,6 +110,9 @@ export const depotsFr = {
   "depot.sizing": "Dimensionnement dynamique",
   "depot.sizingNote":
     "La surface dont la flotte des lignes a besoin, et le nombre de véhicules que le contour accueille, pour chaque angle de rangement.",
+  "depot.shrink": "Réduire à cette taille",
+  "depot.shrinkTo":
+    "Réduire le contour à la surface du stationnement à {angle}°, en gardant sa forme, et refaire la disposition",
   "depot.size": "Dimensionner le dépôt",
   "depot.sizingFor": "Véhicules : {n} ; places dimensionnées pour {vehicle}.",
   "depot.col.angle": "Rangement",

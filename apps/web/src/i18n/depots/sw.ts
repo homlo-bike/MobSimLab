@@ -110,6 +110,8 @@ export const depotsSw = {
   "depot.sizing": "Ukadiriaji wa ukubwa unaobadilika",
   "depot.sizingNote":
     "Eneo ambalo kundi la magari la njia linahitaji, na magari mangapi mpaka unachukua, kwa kila pembe ya nafasi.",
+  "depot.shrink": "Punguza hadi ukubwa huu",
+  "depot.shrinkTo": "Punguza mpaka hadi eneo la maegesho ya {angle}°, ukihifadhi umbo lake, na upange upya",
   "depot.size": "Kadiria ukubwa wa karakana",
   "depot.sizingFor": "Magari: {n}; nafasi zimepimwa kwa {vehicle}.",
   "depot.col.angle": "Mpangilio",

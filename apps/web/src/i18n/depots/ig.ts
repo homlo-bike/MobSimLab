@@ -107,6 +107,8 @@ export const depotsIg = {
     "Họrọ ebe nchekwa na ngwá ọrụ ụzọ okporo, n'okpuru Njem ebe nchekwa. Ụgbọ gụnyere nchekwa.",
   "depot.sizing": "Ntụle nha na-agbanwe agbanwe",
   "depot.sizingNote": "Ebe ụgbọ ụzọ ndị ahụ chọrọ, na ole ụgbọ oke na-ejide, maka akụkụ ohere ọ bụla.",
+  "depot.shrink": "Belata ruo nha",
+  "depot.shrinkTo": "Belata oke ruo mpaghara maka ịdọba {angle}°, debe ọdịdị ya, ma hazie ọzọ",
   "depot.size": "Tụọ nha ebe nchekwa",
   "depot.sizingFor": "Ụgbọ: {n}; e tụrụ ohere maka {vehicle}.",
   "depot.col.angle": "Nhazi",
