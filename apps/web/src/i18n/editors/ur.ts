@@ -629,6 +629,8 @@ export const editorsUr = {
   "station.symbol.hospital": "ہسپتال",
   "station.symbol.university": "جامعہ",
   "station.symbol.stadium": "اسٹیڈیم",
+  "station.symbol.closed": "بند",
+  "station.symbol.under_construction": "زیر تعمیر",
   "schematic.showStatuses": "حیثیت کی علامات",
   "schematic.showFeatures": "اسٹیشن سہولیات کی علامات",
   "schematic.showWater": "سمندر، جھیلیں اور دریا",

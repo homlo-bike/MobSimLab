@@ -648,6 +648,8 @@ export const editorsZu = {
   "station.symbol.hospital": "Isibhedlela",
   "station.symbol.university": "Inyuvesi",
   "station.symbol.stadium": "Inkundla",
+  "station.symbol.closed": "Kuvaliwe",
+  "station.symbol.under_construction": "Kusakhiwa",
   "schematic.showStatuses": "Izimpawu zesimo",
   "schematic.showFeatures": "Izimpawu zezinsiza zesiteshi",
   "schematic.showWater": "Ulwandle, amachibi nemifula",

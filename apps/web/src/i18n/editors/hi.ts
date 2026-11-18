@@ -628,6 +628,8 @@ export const editorsHi = {
   "station.symbol.hospital": "अस्पताल",
   "station.symbol.university": "विश्वविद्यालय",
   "station.symbol.stadium": "स्टेडियम",
+  "station.symbol.closed": "बंद",
+  "station.symbol.under_construction": "निर्माणाधीन",
   "schematic.showStatuses": "स्थिति प्रतीक",
   "schematic.showFeatures": "स्टेशन सुविधा प्रतीक",
   "schematic.showWater": "समुद्र, झीलें और नदियाँ",

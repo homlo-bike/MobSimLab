@@ -630,6 +630,8 @@ export const editorsMr = {
   "station.symbol.hospital": "रुग्णालय",
   "station.symbol.university": "विद्यापीठ",
   "station.symbol.stadium": "स्टेडियम",
+  "station.symbol.closed": "बंद",
+  "station.symbol.under_construction": "बांधकाम सुरू",
   "schematic.showStatuses": "स्थिती चिन्हे",
   "schematic.showFeatures": "स्थानक सुविधा चिन्हे",
   "schematic.showWater": "समुद्र, तलाव आणि नद्या",

@@ -612,6 +612,8 @@ export const editorsFa = {
   "station.symbol.hospital": "بیمارستان",
   "station.symbol.university": "دانشگاه",
   "station.symbol.stadium": "ورزشگاه",
+  "station.symbol.closed": "بسته",
+  "station.symbol.under_construction": "در دست ساخت",
   "schematic.showStatuses": "نمادهای وضعیت",
   "schematic.showFeatures": "نمادهای امکانات ایستگاه",
   "schematic.showWater": "دریا، دریاچه‌ها و رودها",

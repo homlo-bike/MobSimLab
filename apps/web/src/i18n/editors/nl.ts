@@ -639,6 +639,8 @@ export const editorsNl = {
   "station.symbol.hospital": "Ziekenhuis",
   "station.symbol.university": "Universiteit",
   "station.symbol.stadium": "Stadion",
+  "station.symbol.closed": "Gesloten",
+  "station.symbol.under_construction": "In aanbouw",
   "schematic.showStatuses": "Statussymbolen",
   "schematic.showFeatures": "Symbolen voor stationsvoorzieningen",
   "schematic.showWater": "Zee, meren en rivieren",

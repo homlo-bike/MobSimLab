@@ -592,6 +592,8 @@ export const editorsZh = {
   "station.symbol.hospital": "医院",
   "station.symbol.university": "大学",
   "station.symbol.stadium": "体育场",
+  "station.symbol.closed": "已关闭",
+  "station.symbol.under_construction": "在建",
   "schematic.showStatuses": "状态符号",
   "schematic.showFeatures": "车站设施符号",
   "schematic.showWater": "海洋、湖泊和河流",

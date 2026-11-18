@@ -637,6 +637,8 @@ export const editorsSw = {
   "station.symbol.hospital": "Hospitali",
   "station.symbol.university": "Chuo kikuu",
   "station.symbol.stadium": "Uwanja wa michezo",
+  "station.symbol.closed": "Imefungwa",
+  "station.symbol.under_construction": "Inajengwa",
   "schematic.showStatuses": "Alama za hadhi",
   "schematic.showFeatures": "Alama za huduma za stesheni",
   "schematic.showWater": "Bahari, maziwa na mito",

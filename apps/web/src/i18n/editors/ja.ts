@@ -603,6 +603,8 @@ export const editorsJa = {
   "station.symbol.hospital": "病院",
   "station.symbol.university": "大学",
   "station.symbol.stadium": "スタジアム",
+  "station.symbol.closed": "閉鎖中",
+  "station.symbol.under_construction": "建設中",
   "schematic.showStatuses": "ステータス記号",
   "schematic.showFeatures": "駅設備の記号",
   "schematic.showWater": "海・湖・川",

@@ -685,6 +685,8 @@ export const editorsRu = {
   "station.symbol.hospital": "Больница",
   "station.symbol.university": "Университет",
   "station.symbol.stadium": "Стадион",
+  "station.symbol.closed": "Закрыта",
+  "station.symbol.under_construction": "Строится",
   "schematic.showStatuses": "Символы статуса",
   "schematic.showFeatures": "Символы оснащения станций",
   "schematic.showWater": "Море, озёра и реки",

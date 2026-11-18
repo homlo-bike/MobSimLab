@@ -640,6 +640,8 @@ export const editorsUz = {
   "station.symbol.hospital": "Kasalxona",
   "station.symbol.university": "Universitet",
   "station.symbol.stadium": "Stadion",
+  "station.symbol.closed": "Yopiq",
+  "station.symbol.under_construction": "Qurilmoqda",
   "schematic.showStatuses": "Maqom belgilari",
   "schematic.showFeatures": "Bekat jihozlari belgilari",
   "schematic.showWater": "Dengiz, ko‘llar va daryolar",

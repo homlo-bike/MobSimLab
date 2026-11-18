@@ -631,6 +631,8 @@ export const editorsId = {
   "station.symbol.hospital": "Rumah sakit",
   "station.symbol.university": "Universitas",
   "station.symbol.stadium": "Stadion",
+  "station.symbol.closed": "Ditutup",
+  "station.symbol.under_construction": "Sedang dibangun",
   "schematic.showStatuses": "Simbol status",
   "schematic.showFeatures": "Simbol fasilitas stasiun",
   "schematic.showWater": "Laut, danau, dan sungai",

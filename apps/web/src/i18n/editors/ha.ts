@@ -628,6 +628,8 @@ export const editorsHa = {
   "station.symbol.hospital": "Asibiti",
   "station.symbol.university": "Jami'a",
   "station.symbol.stadium": "Filin wasa",
+  "station.symbol.closed": "A rufe",
+  "station.symbol.under_construction": "Ana kan ginawa",
   "schematic.showStatuses": "Alamomin matsayi",
   "schematic.showFeatures": "Alamomin kayan aikin tasha",
   "schematic.showWater": "Teku, tafkuna da koguna",

@@ -605,6 +605,8 @@ export const editorsIg = {
   "station.symbol.hospital": "Ụlọ ọgwụ",
   "station.symbol.university": "Mahadum",
   "station.symbol.stadium": "Ámá egwuregwu",
+  "station.symbol.closed": "Emechiri",
+  "station.symbol.under_construction": "Ana-ewu ya",
   "schematic.showStatuses": "Akara ọnọdụ",
   "schematic.showFeatures": "Akara ihe dị n'ọdụ",
   "schematic.showWater": "Oké osimiri, ọdọ mmiri na osimiri",
