@@ -164,6 +164,22 @@ describe("Panoramax street photos", () => {
       panorama: false,
     });
     expect(panoramaxPhoto({ id: PIC, collection: COL }, [1, 2])).toBeNull();
+    // As Panoramax answers today: no field of view, only the picture size; a null azimuth.
+    const at = (dims: number[]) =>
+      panoramaxPhoto(
+        {
+          id: PIC,
+          collection: COL,
+          geometry: { type: "Point", coordinates: [1, 2] },
+          properties: {
+            "view:azimuth": null,
+            "pers:interior_orientation": { sensor_array_dimensions: dims },
+          },
+        },
+        [1, 2],
+      );
+    expect(at([5760, 2880])).toMatchObject({ panorama: true, heading: null });
+    expect(at([4000, 3000])).toMatchObject({ panorama: false });
   });
 
   it("measures distances and boxes in metres", () => {

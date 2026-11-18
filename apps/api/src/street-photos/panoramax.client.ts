@@ -85,9 +85,15 @@ export function panoramaxPhoto(item: StacItem, at: [number, number]): StreetPhot
   const lat = c[1];
   const p = item.properties ?? {};
   const azimuth = Number(p["view:azimuth"]);
-  const fov = Number(
-    (p["pers:interior_orientation"] as { field_of_view?: unknown } | undefined)?.field_of_view,
-  );
+  const orientation = p["pers:interior_orientation"] as
+    { field_of_view?: unknown; sensor_array_dimensions?: unknown } | undefined;
+  const fov = Number(orientation?.field_of_view);
+  // Most items give no field of view, only the picture size: a 2:1 picture is an equirectangular 360° panorama.
+  const dims = orientation?.sensor_array_dimensions;
+  const twoToOne =
+    Array.isArray(dims) && typeof dims[0] === "number" && typeof dims[1] === "number" && dims[1] > 0
+      ? Math.abs(dims[0] / dims[1] - 2) < 0.01
+      : false;
   const takenAt = text(p.datetime);
   return {
     provider: "panoramax",
@@ -99,7 +105,7 @@ export function panoramaxPhoto(item: StacItem, at: [number, number]): StreetPhot
     author: authorOf(item),
     licence: licenceOf(item),
     heading: Number.isFinite(azimuth) && p["view:azimuth"] !== null ? ((azimuth % 360) + 360) % 360 : null,
-    panorama: fov === 360,
+    panorama: orientation?.field_of_view != null && Number.isFinite(fov) ? fov === 360 : twoToOne,
     pageUrl: `${PANORAMAX_VIEWER}#focus=pic&pic=${id}&map=19/${lat.toFixed(6)}/${lon.toFixed(6)}`,
   };
 }
