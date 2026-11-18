@@ -32,6 +32,12 @@ export const calendarUz = {
   "cal.add": "Bayram kunini qo‘shish",
   "cal.source":
     "Rasmiy bayramlar Nager.Date (date.nager.at) dan. Loyiha o‘zgarishlaringiz bilan o‘z nusxasini saqlaydi.",
+  "cal.eidSource":
+    "Ro‘yxatda bo‘lmasa, Ramazon hayiti va Qurbon hayiti Umm al-Quro taqvimi bo‘yicha qo‘shiladi. Oy ko‘rinishiga qarab haqiqiy kun bir kun oldin yoki keyin bo‘lishi mumkin.",
+  "cal.weekend": "Dam olish kunlari",
+  "cal.weekendDays": "{first} va {second}",
+  "cal.weekendHint":
+    "Har bir dam olish kunining pastda o‘z xizmat kuni va kunlar soni bor. Standart — loyiha mamlakatidagi odatiy dam olish kunlari.",
   "cal.counts": "Kun turlari bo‘yicha kunlar",
   "cal.countsIntro":
     "Kalendardan hisoblangan. O‘zingiznikini ishlatish uchun son kiriting; u ramkaga olinadi va ↺ hisoblanganini qaytaradi.",

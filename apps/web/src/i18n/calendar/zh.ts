@@ -30,6 +30,11 @@ export const calendarZh = {
   "cal.addName": "名称",
   "cal.add": "添加休息日",
   "cal.source": "公共假日来自 Nager.Date（date.nager.at）。项目保留一份含您修改的副本。",
+  "cal.eidSource":
+    "如果列表中没有，开斋节和古尔邦节按乌姆古拉历补入。根据新月观测，实际日期可能早一天或晚一天。",
+  "cal.weekend": "周末",
+  "cal.weekendDays": "{first}和{second}",
+  "cal.weekendHint": "下方每个周末日都有自己的运营日和天数。默认是项目所在国家的通常周末。",
   "cal.counts": "各日类型天数",
   "cal.countsIntro": "根据日历计算。输入数字即可使用您自己的数值；它会被加框，↺ 恢复为计算值。",
   "cal.total": "合计",

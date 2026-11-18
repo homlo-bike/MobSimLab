@@ -32,6 +32,12 @@ export const calendarIg = {
   "cal.add": "Tinye ụbọchị ezumike",
   "cal.source":
     "Ezumike ọha si na Nager.Date (date.nager.at). Ọrụ ahụ na-edebe mbipụta nke ya ya na mgbanwe gị.",
+  "cal.eidSource":
+    "Ọ bụrụ na ha anọghị na ndepụta ahụ, a na-agbakwunye Eid al-Fitr na Eid al-Adha site na kalenda Umm al-Qura. Dabere na ọhụhụ ọnwa, ezigbo ụbọchị nwere ike ịbụ otu ụbọchị tupu ma ọ bụ mgbe e mesịrị.",
+  "cal.weekend": "Ngwụcha izu",
+  "cal.weekendDays": "{first} na {second}",
+  "cal.weekendHint":
+    "Ụbọchị ọ bụla nke ngwụcha izu nwere ụbọchị ọrụ na ọnụ ọgụgụ ụbọchị nke ya n'okpuru. Ndabara bụ ngwụcha izu a na-ahụkarị na mba ọrụ ahụ.",
   "cal.counts": "Ụbọchị dị ka ụdị ụbọchị",
   "cal.countsIntro":
     "Agụrụ site na kalenda. Pịa nọmba iji jiri nke gị; a ga-etinye ya n'okpokoro, ↺ na-eweghachi nke agụrụ.",

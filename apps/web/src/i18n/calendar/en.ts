@@ -35,6 +35,12 @@ export const calendarEn = {
   "cal.add": "Add day off",
   "cal.source":
     "Public holidays from Nager.Date (date.nager.at). The project keeps its own copy with your changes.",
+  "cal.eidSource":
+    "Where the list lacks them, Eid al-Fitr and Eid al-Adha are added from the Umm al-Qura calendar. With the moon sighting the actual day can be a day earlier or later.",
+  "cal.weekend": "Weekend",
+  "cal.weekendDays": "{first} and {second}",
+  "cal.weekendHint":
+    "Each weekend day has its own service day and day count below. The default is the usual weekend in the project's country.",
   "cal.counts": "Days per day type",
   "cal.countsIntro":
     "Counted from the calendar. Type a number to use your own; it is outlined and ↺ goes back to the counted one.",

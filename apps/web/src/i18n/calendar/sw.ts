@@ -32,6 +32,12 @@ export const calendarSw = {
   "cal.add": "Ongeza sikukuu",
   "cal.source":
     "Sikukuu za umma kutoka Nager.Date (date.nager.at). Mradi unahifadhi nakala yake pamoja na mabadiliko yako.",
+  "cal.eidSource":
+    "Zisipokuwa kwenye orodha, Eid al-Fitr na Eid al-Adha huongezwa kutoka kalenda ya Umm al-Qura. Kulingana na kuonekana kwa mwezi, siku halisi inaweza kuwa siku moja kabla au baada.",
+  "cal.weekend": "Wikendi",
+  "cal.weekendDays": "{first} na {second}",
+  "cal.weekendHint":
+    "Kila siku ya wikendi ina siku yake ya huduma na idadi ya siku hapa chini. Chaguo-msingi ni wikendi ya kawaida katika nchi ya mradi.",
   "cal.counts": "Siku kwa aina ya siku",
   "cal.countsIntro":
     "Zimehesabiwa kutoka kalenda. Andika namba ili kutumia yako; itawekewa fremu na ↺ inarudisha iliyohesabiwa.",

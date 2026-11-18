@@ -33,6 +33,12 @@ export const calendarDe = {
   "cal.add": "Freien Tag hinzufügen",
   "cal.source":
     "Feiertage von Nager.Date (date.nager.at). Das Projekt behält eine eigene Kopie mit Ihren Änderungen.",
+  "cal.eidSource":
+    "Fehlen sie in der Liste, werden Eid al-Fitr und Eid al-Adha nach dem Umm-al-Qura-Kalender ergänzt. Je nach Mondsichtung kann der tatsächliche Tag einen Tag früher oder später liegen.",
+  "cal.weekend": "Wochenende",
+  "cal.weekendDays": "{first} und {second}",
+  "cal.weekendHint":
+    "Jeder Wochenendtag hat unten seinen eigenen Betriebstag und seine Zahl der Tage. Standard ist das übliche Wochenende im Land des Projekts.",
   "cal.counts": "Tage je Tagestyp",
   "cal.countsIntro":
     "Aus dem Kalender gezählt. Geben Sie eine Zahl ein, um Ihre eigene zu verwenden; sie wird umrandet, und ↺ kehrt zur gezählten zurück.",

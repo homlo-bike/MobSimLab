@@ -31,6 +31,12 @@ export const calendarVi = {
   "cal.addName": "Tên",
   "cal.add": "Thêm ngày nghỉ",
   "cal.source": "Ngày lễ từ Nager.Date (date.nager.at). Dự án giữ bản sao riêng kèm các thay đổi của bạn.",
+  "cal.eidSource":
+    "Nếu danh sách thiếu, Eid al-Fitr và Eid al-Adha được thêm theo lịch Umm al-Qura. Tùy việc nhìn thấy trăng, ngày thực tế có thể sớm hoặc muộn một ngày.",
+  "cal.weekend": "Cuối tuần",
+  "cal.weekendDays": "{first} và {second}",
+  "cal.weekendHint":
+    "Mỗi ngày cuối tuần có ngày phục vụ và số ngày riêng bên dưới. Mặc định là cuối tuần thông thường ở quốc gia của dự án.",
   "cal.counts": "Số ngày theo loại ngày",
   "cal.countsIntro": "Đếm từ lịch. Nhập một số để dùng số của bạn; số đó được viền và ↺ trở về số đã đếm.",
   "cal.total": "Tổng",

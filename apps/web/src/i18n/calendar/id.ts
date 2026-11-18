@@ -32,6 +32,12 @@ export const calendarId = {
   "cal.add": "Tambah hari libur",
   "cal.source":
     "Hari libur nasional dari Nager.Date (date.nager.at). Proyek menyimpan salinannya sendiri beserta perubahan Anda.",
+  "cal.eidSource":
+    "Jika tidak ada dalam daftar, Idulfitri dan Iduladha ditambahkan dari kalender Umm al-Qura. Tergantung rukyat hilal, hari sebenarnya bisa sehari lebih awal atau lebih lambat.",
+  "cal.weekend": "Akhir pekan",
+  "cal.weekendDays": "{first} dan {second}",
+  "cal.weekendHint":
+    "Setiap hari akhir pekan punya hari layanan dan jumlah hari sendiri di bawah. Bawaannya adalah akhir pekan yang lazim di negara proyek.",
   "cal.counts": "Hari per jenis hari",
   "cal.countsIntro":
     "Dihitung dari kalender. Ketik angka untuk memakai angka Anda sendiri; angka itu diberi garis tepi dan ↺ kembali ke hasil hitungan.",

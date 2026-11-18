@@ -33,6 +33,12 @@ export const calendarFr = {
   "cal.add": "Ajouter un jour chômé",
   "cal.source":
     "Jours fériés de Nager.Date (date.nager.at). Le projet en garde sa propre copie avec vos modifications.",
+  "cal.eidSource":
+    "S’ils manquent dans la liste, l’Aïd al-Fitr et l’Aïd al-Adha sont ajoutés d’après le calendrier Umm al-Qura. Selon l’observation de la lune, le jour réel peut être un jour plus tôt ou plus tard.",
+  "cal.weekend": "Week-end",
+  "cal.weekendDays": "{first} et {second}",
+  "cal.weekendHint":
+    "Chaque jour du week-end a plus bas sa propre journée de service et son nombre de jours. Par défaut, le week-end habituel du pays du projet.",
   "cal.counts": "Jours par type de jour",
   "cal.countsIntro":
     "Comptés à partir du calendrier. Saisissez un nombre pour utiliser le vôtre ; il est encadré et ↺ revient au nombre compté.",

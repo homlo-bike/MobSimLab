@@ -32,6 +32,12 @@ export const calendarJa = {
   "cal.add": "休日を追加",
   "cal.source":
     "祝日は Nager.Date（date.nager.at）から取得。プロジェクトは変更を含む独自のコピーを保持します。",
+  "cal.eidSource":
+    "一覧にない場合、イード・アル＝フィトルとイード・アル＝アドハーをウンム・アル＝クラー暦から追加します。月の観測により、実際の日付が1日前後することがあります。",
+  "cal.weekend": "週末",
+  "cal.weekendDays": "{first}と{second}",
+  "cal.weekendHint":
+    "週末の各曜日には、下に専用の運行日と日数があります。既定はプロジェクトの国の一般的な週末です。",
   "cal.counts": "日種別ごとの日数",
   "cal.countsIntro":
     "カレンダーから数えた値です。数字を入力すると独自の値を使います。枠で示され、↺ で数えた値に戻ります。",

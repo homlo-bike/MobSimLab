@@ -22,19 +22,18 @@ import {
   withHolidayRemoved,
   withServiceWindow,
   withSimulationYears,
+  withCountryCustoms,
+  observesEid,
+  withWeekend,
+  WEEKENDS,
+  weekendOf,
+  sameWeekend,
   yearList,
 } from "./calendar";
+import { dayTypeName, weekdayName } from "./dayTypeLabel";
 import type { PreferencesDoc } from "./preferences";
 
 const DEFAULT_API = calendarApi();
-
-/** Message key of each day type's name. */
-export const DAY_TYPE_LABEL = {
-  weekday: "cal.day.weekday",
-  saturday: "cal.day.saturday",
-  sunday: "cal.day.sunday",
-  holiday: "cal.day.holiday",
-} as const satisfies Record<DayTypeId, string>;
 
 /**
  * Purpose: the Preferences section of the project calendar (ADR-0020): the simulation years, the country (and
@@ -78,15 +77,22 @@ export function CalendarSection({
     () => (country ? list.filter((y) => !cal.fetched?.[String(y)] && !session[`${country}/${y}`]) : []),
     [country, years.first, years.last, cal.fetched, session],
   );
-  // The calendar with the session's holidays for years the project has no copy of.
+  // The calendar with the session's holidays for years the project has no copy of, and the country's weekend
+  // and Eid days where the project has not saved them yet.
   const view = useMemo(() => {
     let c = cal;
     for (const y of list) {
       const s = session[`${country}/${y}`];
       if (!c.fetched?.[String(y)] && s) c = withFetched(c, y, s);
     }
-    return c;
+    return withCountryCustoms(c, country);
   }, [cal, session, country, years.first, years.last]);
+
+  // A project saved before the country's weekend and Eid days were known keeps them once the planner can edit.
+  const customs = withCountryCustoms(cal, country);
+  useEffect(() => {
+    if (editable && customs !== cal) onPreferences(withCalendar(latest.current, customs));
+  }, [editable, JSON.stringify(customs) !== JSON.stringify(cal)]);
 
   useEffect(() => {
     if (!missing.length || !/^[A-Z]{2}$/.test(country)) return;
@@ -100,7 +106,7 @@ export function CalendarSection({
         if (editable && (now.country ?? detectedCountry ?? "").toUpperCase() === country) {
           let next = now;
           for (const [y, days] of got) next = withFetched(next, y, days);
-          onPreferences(withCalendar(latest.current, next));
+          onPreferences(withCalendar(latest.current, withCountryCustoms(next, country)));
         } else
           setSession((s) => ({ ...s, ...Object.fromEntries(got.map(([y, d]) => [`${country}/${y}`, d])) }));
       })
@@ -123,6 +129,8 @@ export function CalendarSection({
     }
   };
   const rows = holidayRows(view, year);
+  const weekend = weekendOf(view);
+  const label = (dt: DayTypeId) => dayTypeName(dt, weekend, language, t);
   return (
     <section
       aria-labelledby="pp-calendar"
@@ -176,6 +184,38 @@ export function CalendarSection({
           editable={editable}
           onChange={(v) => setCal({ ...cal, region: v ? v.toUpperCase() : undefined })}
         />
+        <div className="flex flex-col gap-1 text-sm">
+          <label htmlFor="pp-cal-weekend" className="font-medium">
+            {t("cal.weekend")}
+          </label>
+          <div className="field">
+            <select
+              id="pp-cal-weekend"
+              aria-describedby="pp-cal-weekend-hint"
+              value={WEEKENDS.findIndex((w) => sameWeekend(w, weekend))}
+              disabled={!editable}
+              onChange={(e) => {
+                const w = WEEKENDS[Number(e.target.value)];
+                if (w) setCal(withWeekend(view, w));
+              }}
+            >
+              {WEEKENDS.map((w, i) => (
+                <option key={i} value={i}>
+                  {t("cal.weekendDays", {
+                    // In the order of a week that starts on Monday: Friday and Saturday, Saturday and Sunday.
+                    ...(() => {
+                      const [a, b] = [w.rest, w.second].sort((x, y) => ((x + 6) % 7) - ((y + 6) % 7));
+                      return { first: weekdayName(a!, language, t), second: weekdayName(b!, language, t) };
+                    })(),
+                  })}
+                </option>
+              ))}
+            </select>
+          </div>
+          <span id="pp-cal-weekend-hint" className="text-slate-500">
+            {t("cal.weekendHint")}
+          </span>
+        </div>
       </div>
 
       <div className="mt-5 flex flex-wrap items-center gap-2">
@@ -255,6 +295,7 @@ export function CalendarSection({
         <AddHoliday year={year} onAdd={(date, name) => setCal(withHolidayAdded(cal, { date, name }))} />
       )}
       <p className="mt-2 text-xs text-slate-500">{t("cal.source")}</p>
+      {observesEid(country) && <p className="mt-1 text-xs text-slate-500">{t("cal.eidSource")}</p>}
 
       <h3 className="mt-5 font-semibold">{t("cal.service")}</h3>
       <p className="mt-1 text-sm text-slate-600">{t("cal.serviceIntro")}</p>
@@ -269,7 +310,7 @@ export function CalendarSection({
         {DAY_TYPES.map((dt) => (
           <ServiceDayFields
             key={dt}
-            label={t(DAY_TYPE_LABEL[dt])}
+            label={label(dt)}
             window={serviceWindowOf(cal, dt)}
             own={!!cal.days?.[dt]}
             editable={editable}
@@ -289,7 +330,7 @@ export function CalendarSection({
               </th>
               {DAY_TYPES.map((dt) => (
                 <th key={dt} scope="col" className="py-1 text-end font-medium">
-                  {t(DAY_TYPE_LABEL[dt])}
+                  {label(dt)}
                 </th>
               ))}
               <th scope="col" className="py-1 text-end font-medium">
@@ -314,7 +355,7 @@ export function CalendarSection({
                   {DAY_TYPES.map((dt) => (
                     <td key={dt} className="py-1 text-end">
                       <CountField
-                        label={`${y} · ${t(DAY_TYPE_LABEL[dt])}`}
+                        label={`${y} · ${label(dt)}`}
                         value={c.used[dt]}
                         counted={c.counted[dt]}
                         own={!!c.own[dt]}

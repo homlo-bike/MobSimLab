@@ -50,6 +50,11 @@ export interface GtfsExportOptions {
   feed_version: string;
   /** Public holidays in the validity, YYYYMMDD: the `holiday` service runs instead of the day's usual one. */
   holidays?: string[];
+  /**
+   * The weekend as days of the week (0 Sunday to 6 Saturday): the `sunday` service runs on the main rest day and
+   * the `saturday` one on the other weekend day; absent: Saturday and Sunday.
+   */
+  weekend?: { rest: number; second: number };
 }
 
 export interface GtfsEngine {
