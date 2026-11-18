@@ -51,10 +51,10 @@ export async function signIn(
     name: sub,
     ...extra,
   });
-  const flow = cookieValue(start, "msl_auth_flow");
+  // One flow cookie per sign-in, named after its state (`msl_auth_flow_<id>`).
+  const raw = start.headers["set-cookie"] as unknown as string[] | undefined;
+  const flow = raw?.find((c) => c.startsWith("msl_auth_flow_"))?.split(";")[0] ?? "";
   const idpRes = await fetch(authorize, { redirect: "manual" });
   const back = new URL(idpRes.headers.get("location") ?? "");
-  return request(app.getHttpServer())
-    .get(`${back.pathname}${back.search}`)
-    .set("Cookie", `msl_auth_flow=${flow}`);
+  return request(app.getHttpServer()).get(`${back.pathname}${back.search}`).set("Cookie", flow);
 }
