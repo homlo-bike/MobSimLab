@@ -23,6 +23,7 @@ export type Category =
   | "viaduct"
   | "bridge"
   | "ramp"
+  | "cutting"
   | "cut_and_cover"
   | "tbm"
   | "systems"
@@ -44,6 +45,7 @@ export const CATEGORY_LABEL: Record<Category, MessageKey> = {
   viaduct: "cost.cat.viaduct",
   bridge: "cost.cat.bridge",
   ramp: "cost.cat.ramp",
+  cutting: "cost.cat.cutting",
   cut_and_cover: "cost.cat.cut_and_cover",
   tbm: "cost.cat.tbm",
   systems: "cost.cat.systems",
@@ -66,6 +68,7 @@ export const CONSTRUCTION: Category[] = [
   "viaduct",
   "bridge",
   "ramp",
+  "cutting",
   "cut_and_cover",
   "tbm",
   "systems",
@@ -81,7 +84,7 @@ export const OPERATING: Category[] = ["service", "maintenance", "overheads"];
 
 /** Construction structures of a track stretch. */
 export type StructureCategory =
-  "at_grade" | "elevated" | "viaduct" | "bridge" | "ramp" | "cut_and_cover" | "tbm";
+  "at_grade" | "elevated" | "viaduct" | "bridge" | "ramp" | "cutting" | "cut_and_cover" | "tbm";
 
 /** One line of the estimate. Money is in the project's currency, today's prices. */
 export interface CostItem {
@@ -169,6 +172,7 @@ export function structureOf(
 ): StructureCategory {
   if (level === "ramp") return "ramp";
   if (level === "street") return "at_grade";
+  if (level === "cutting") return "cutting";
   if (level === "underground" || level === "underground2") {
     if (track.tunnel === "cut_and_cover" || track.tunnel === "tbm") return track.tunnel;
     return level === "underground2" ? "tbm" : "cut_and_cover";
@@ -183,6 +187,7 @@ const CIVIL_PARAM: Record<StructureCategory, string> = {
   viaduct: "cost.civil.viaduct_per_km",
   bridge: "cost.civil.bridge_per_km",
   ramp: "cost.civil.ramp_per_km",
+  cutting: "cost.civil.cutting_per_km",
   cut_and_cover: "cost.civil.cut_and_cover_per_km",
   tbm: "cost.civil.tbm_per_km",
 };
@@ -198,6 +203,7 @@ const STATION_PARAM: Record<Level, string> = {
   elevated2: "cost.station.elevated",
   underground: "cost.station.underground",
   underground2: "cost.station.underground_deep",
+  cutting: "cost.station.cutting",
 };
 
 const STATION_LABEL: Record<Level, MessageKey> = {
@@ -206,6 +212,7 @@ const STATION_LABEL: Record<Level, MessageKey> = {
   elevated2: "cost.x.stations.elevated",
   underground: "cost.x.stations.underground",
   underground2: "cost.x.stations.underground2",
+  cutting: "cost.x.stations.cutting",
 };
 
 /**

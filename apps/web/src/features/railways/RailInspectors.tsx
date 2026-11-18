@@ -135,12 +135,7 @@ export function StationInspector({ st, doc, view, actions: a }: Props & { st: St
           type="checkbox"
           className="mt-1"
           checked={!!st.existing}
-          onChange={(e) =>
-            set((s) => {
-              const { existing: _, ...rest } = s;
-              return e.target.checked ? { ...rest, existing: true } : rest;
-            })
-          }
+          onChange={(e) => set((s) => ({ ...s, existing: e.target.checked || undefined }))}
         />
         <span>
           {t("rail.existingStation")}

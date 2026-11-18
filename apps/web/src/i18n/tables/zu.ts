@@ -64,6 +64,7 @@ export const tablesZu = {
   "net.structure.at_grade": "Ezingeni lomhlaba noma emzileni wawo",
   "net.stations.underground2": "Iziteshi ezingaphansi komhlaba, ezijulile",
   "net.stations.underground": "Iziteshi ezingaphansi komhlaba",
+  "net.stations.cutting": "Iziteshi emseleni",
   "net.stations.street": "Iziteshi ezingeni lomhlaba",
   "net.stations.elevated": "Iziteshi eziphakanyisiwe",
   "net.stations.elevated2": "Iziteshi eziphakanyisiwe, izinga eliphezulu",
@@ -262,6 +263,7 @@ export const tablesZu = {
   "cost.cat.viaduct": "Ibhuloho elide",
   "cost.cat.bridge": "Ibhuloho",
   "cost.cat.ramp": "Umqansa phakathi kwamazinga",
+  "cost.cat.cutting": "Umsele ovulekile",
   "cost.cat.cut_and_cover": "Umhubhe, owembiwe-wamboziwe",
   "cost.cat.tbm": "Umhubhe, obhoboziwe (TBM)",
   "cost.cat.systems": "Ujantshi, amandla nezimpawu",
@@ -282,6 +284,7 @@ export const tablesZu = {
   "cost.x.stations.elevated": "Iziteshi eziphakanyisiwe",
   "cost.x.stations.underground": "Iziteshi ezingaphansi komhlaba",
   "cost.x.stations.underground2": "Iziteshi ezingaphansi komhlaba, ezijulile",
+  "cost.x.stations.cutting": "Iziteshi emseleni",
   "cost.x.refurbished": "{what}, kulungisiwe",
   "cost.x.trains": "{train} × {units}, izitimela ezingu-{m} m",
   "cost.x.depotFleet": "Idepho nendawo yokupaka yezimoto",
@@ -311,6 +314,7 @@ export const tablesZu = {
   "cost.unit.vehicleHours": "amahora emoto / unyaka",
   "cost.p.cost.civil.at_grade_per_km":
     "Imisebenzi yokwakha ezingeni lomhlaba noma emzileni wawo, ujantshi omubili",
+  "cost.p.cost.civil.cutting_per_km": "Umsele ovulekile (onezindonga zokubamba), umzila ophindwe kabili",
   "cost.p.cost.civil.elevated_per_km": "Umzila ophakanyisiwe ezinsikeni, ujantshi omubili",
   "cost.p.cost.civil.viaduct_per_km":
     "Ibhuloho elide (isakhiwo eside esinezikhala eziningi), ujantshi omubili",
@@ -326,6 +330,7 @@ export const tablesZu = {
   "cost.p.cost.station.underground":
     "Isiteshi esingaphansi komhlaba sezinga lokuqala (ibhokisi elimbiwe-lamboziwe)",
   "cost.p.cost.station.underground_deep": "Isiteshi esingaphansi komhlaba sezinga lesibili (esijulile)",
+  "cost.p.cost.station.cutting": "Isiteshi emseleni ovulekile",
   "cost.p.cost.station.refurbish": "Ukulungiswa kwesakhiwo sesiteshi esikhona, ngasinye",
   "cost.p.cost.civil.refurbish_structure_per_km":
     "Ukulungiswa komhubhe, ibhuloho noma i-viaduct ekhona, umzila ophindwe kabili",

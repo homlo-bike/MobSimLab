@@ -161,6 +161,26 @@
       check: unverified
       rationale: Retained cut (U-trough) or retained embankment; between at-grade and cut and cover costs.
 
+- key: cost.civil.cutting_per_km
+  label: Open cutting (trench with retaining walls), double track
+  group: Cost
+  unit: US$ million per route-km (2023, PPP)
+  used_by:
+    - "construction cost: civil works"
+  values:
+    - context:
+        mode: "*"
+      low: 15
+      central: 35
+      high: 80
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "An open cutting below the street (a retained cut or U-trough without a roof), with drainage and road
+        bridges over it; built like the trough of a ramp, so the same range as a ramp between levels."
+
 - key: cost.civil.cut_and_cover_per_km
   label: Cut and cover tunnel, double track
   group: Cost
@@ -391,6 +411,26 @@
         - transit-costs-project
       check: unverified
       rationale: Platform deck, lifts, escalators and stairs.
+
+- key: cost.station.cutting
+  label: Station in an open cutting
+  group: Cost
+  unit: US$ million per station (2023, PPP)
+  used_by:
+    - "construction cost: stations"
+  values:
+    - context:
+        mode: "*"
+      low: 6
+      central: 15
+      high: 40
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Platforms in an open trench below the street with stairs, lifts and a footbridge or concourse at street
+        level; between a station at street level and a first-level underground box, close to an elevated station."
 
 - key: cost.station.underground
   label: Underground station on the first level (cut and cover box)

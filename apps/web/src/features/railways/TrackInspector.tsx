@@ -122,12 +122,7 @@ export function TrackInspector({ t: track, doc, view, sel, actions: a }: Props &
             type="checkbox"
             className="mt-1"
             checked={!!t.existing}
-            onChange={(e) =>
-              set((x) => {
-                const { existing: _, ...rest } = x;
-                return e.target.checked ? { ...rest, existing: true } : rest;
-              })
-            }
+            onChange={(e) => set((x) => ({ ...x, existing: e.target.checked || undefined }))}
           />
           <span>
             {tr("rail.existingStructure")}

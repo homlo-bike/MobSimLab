@@ -75,7 +75,8 @@ For the cost estimate in the Tables tab ([Cost tables](cost-tables.md)), a track
 Once a drawing has tracks or stations, the tool loads the ground heights under them. They come from Copernicus GLO-30, the same source the cable car tool uses. Every track then gets a vertical profile:
 
 - The ground along the track is smoothed over 100 m. GLO-30 is a surface model, so this removes buildings and trees the track passes.
-- The rail top is the ground plus the height of the track's level: street level, elevated +1 or +2, or underground −1 or −2. Along a ramp it changes from one level to the other. The gradient follows from the rail top.
+- The rail top is the ground plus the height of the track's level: street level, elevated +1 or +2, underground −1 or −2, or an open cutting (Cut) half as deep as −1. Along a ramp it changes from one level to the other. The gradient follows from the rail top.
+- An **open cutting** is a trench below the street without a roof, such as the stretches between tunnels on an old railway alignment. It is drawn open on the map, streets and street-level tracks cross it on bridges (no level crossings), and the cost estimate prices it as an open cutting rather than a tunnel.
 - **Stations are always level.** Their rails sit at the average ground height under the station, plus the station's level. A track that starts or ends at a station, or at a switch on another track, meets that height exactly. It takes up the difference over a length that uses half the mode's maximum gradient.
 
 Select a track to see its profile: the rail top and the ground, the height range, and the steepest gradient against the mode's maximum. Select a station to see its rail height and the ground along it. The track topology for operations carries the gradients, so running times include them.

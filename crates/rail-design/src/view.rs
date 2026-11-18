@@ -127,6 +127,8 @@ pub fn view(dz: &Design) -> Value {
             "station_box"
         } else if st.level.elevated() {
             "deck"
+        } else if st.level == Level::Cutting {
+            "cutting"
         } else {
             "ballast"
         };
@@ -138,6 +140,8 @@ pub fn view(dz: &Design) -> Value {
         if st.level != Level::Street {
             let wall = if st.level.underground() {
                 "tunnel_wall"
+            } else if st.level == Level::Cutting {
+                "cutting_edge"
             } else {
                 "deck_edge"
             };
@@ -261,12 +265,15 @@ pub fn view(dz: &Design) -> Value {
             let order = match (z.level, z.ramp) {
                 (Some(l), _) => l.order(),
                 (None, Some(r)) => g.ramps[r].order(),
-                _ => 2,
+                _ => Level::Street.order(),
             };
             let centre = slice(&g.centre, z.s0, z.s1);
             let lvl = z.level;
             let underground = lvl.map_or_else(
-                || z.ramp.is_some_and(|r| g.ramps[r].order() < 2),
+                || {
+                    z.ramp
+                        .is_some_and(|r| g.ramps[r].order() < Level::Cutting.order())
+                },
                 |l| l.underground(),
             );
             let common = json!({"ref": g.id, "z": order, "mode": tm});
@@ -309,6 +316,30 @@ pub fn view(dz: &Design) -> Value {
                         );
                     }
                 }
+                Some(Level::Cutting) => {
+                    // An open cutting: the trench with its walls, the track bed in it.
+                    ly.polygon(
+                        "structures",
+                        &band(&centre, |q| half(q) + 0.3),
+                        props(json!({"kind": "cutting"})),
+                    );
+                    ly.polygon(
+                        "structures",
+                        &band(&centre, |q| half(q) - 0.4),
+                        props(json!({"kind": "ballast"})),
+                    );
+                    for sg in [1.0, -1.0] {
+                        let e: Vec<P2> = centre
+                            .iter()
+                            .map(|q| q.offset(sg * (half(q) + 0.3)))
+                            .collect();
+                        ly.line(
+                            "edges",
+                            &e,
+                            props(json!({"kind": "cutting_edge", "deep": false})),
+                        );
+                    }
+                }
                 Some(_) => {
                     let kind = if embedded { "paving" } else { "ballast" };
                     ly.polygon(
@@ -324,13 +355,24 @@ pub fn view(dz: &Design) -> Value {
                         &band(&centre, half),
                         props(json!({"kind": "ramp", "underground": underground})),
                     );
+                    // A ramp into an open cutting runs between cutting walls, not on a deck.
+                    let open_cut = !underground && (r.from.below_street() || r.to.below_street());
+                    let edge = if underground {
+                        "tunnel_wall"
+                    } else if open_cut {
+                        "cutting_edge"
+                    } else {
+                        "deck_edge"
+                    };
                     for sg in [1.0, -1.0] {
                         let e: Vec<P2> = centre.iter().map(|q| q.offset(sg * half(q))).collect();
-                        ly.line("edges", &e, props(json!({"kind": if underground {"tunnel_wall"} else {"deck_edge"}, "deep": false})));
+                        ly.line("edges", &e, props(json!({"kind": edge, "deep": false})));
                     }
-                    // Portal or abutment across the deep (or high) end.
+                    // Portal or abutment across the deep (or high) end; none where a cutting meets the street.
                     let deep_start = r.from.height_m(p).abs() >= r.to.height_m(p).abs();
-                    let q = if deep_start {
+                    let q = if open_cut {
+                        None
+                    } else if deep_start {
                         centre.first()
                     } else {
                         centre.last()
@@ -441,6 +483,8 @@ pub fn view(dz: &Design) -> Value {
             if lvl.is_some_and(|l| l != Level::Street) {
                 let kind = if lvl.is_some_and(|l| l.underground()) {
                     "tunnel"
+                } else if lvl == Some(Level::Cutting) {
+                    "cutting"
                 } else {
                     "deck"
                 };

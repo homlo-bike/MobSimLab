@@ -5777,6 +5777,20 @@
    }
   },
   {
+   "id": "cost.civil.cutting_per_km",
+   "label": "Open cutting (trench with retaining walls), double track",
+   "group": "Cost",
+   "unit": "US$ million per route-km (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     15,
+     35,
+     80
+    ]
+   }
+  },
+  {
    "id": "cost.civil.cut_and_cover_per_km",
    "label": "Cut and cover tunnel, double track",
    "group": "Cost",
@@ -5907,6 +5921,20 @@
      8,
      20,
      50
+    ]
+   }
+  },
+  {
+   "id": "cost.station.cutting",
+   "label": "Station in an open cutting",
+   "group": "Cost",
+   "unit": "US$ million per station (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     6,
+     15,
+     40
     ]
    }
   },

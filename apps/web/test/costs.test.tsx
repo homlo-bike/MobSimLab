@@ -212,6 +212,7 @@ describe("construction type of a stretch", () => {
     expect(structureOf("underground", {}, "metro")).toBe("cut_and_cover");
     expect(structureOf("underground2", {}, "metro")).toBe("tbm");
     expect(structureOf("underground", { tunnel: "tbm" }, "metro")).toBe("tbm");
+    expect(structureOf("cutting", { tunnel: "tbm" }, "tram")).toBe("cutting");
     expect(structureOf("underground2", { tunnel: "cut_and_cover" }, "tram")).toBe("cut_and_cover");
     expect(structureOf("elevated", {}, "tram")).toBe("elevated");
     expect(structureOf("elevated2", {}, "high_speed_rail")).toBe("viaduct");

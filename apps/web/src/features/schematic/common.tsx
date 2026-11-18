@@ -91,9 +91,10 @@ export const LAYER_LABEL: Record<Layer, MessageKey> = {
 };
 
 /** How the strip map groups what a line runs on, with its colour and name. */
-export type LevelBand = "underground" | "street" | "elevated" | "ramp" | "aerial" | "water";
+export type LevelBand = "underground" | "cutting" | "street" | "elevated" | "ramp" | "aerial" | "water";
 export const LEVEL_BANDS: readonly LevelBand[] = [
   "underground",
+  "cutting",
   "street",
   "elevated",
   "ramp",
@@ -102,6 +103,7 @@ export const LEVEL_BANDS: readonly LevelBand[] = [
 ];
 export const LEVEL_COLOR: Record<LevelBand, string> = {
   underground: "var(--diagram-underground, #334155)",
+  cutting: "#8a6a45",
   street: "#a8a29e",
   elevated: "#7c3aed",
   ramp: "#cbd5e1",
@@ -110,6 +112,7 @@ export const LEVEL_COLOR: Record<LevelBand, string> = {
 };
 export const LEVEL_LABEL: Record<LevelBand, MessageKey> = {
   underground: "schematic.level.underground",
+  cutting: "schematic.level.cutting",
   street: "schematic.level.street",
   elevated: "schematic.level.elevated",
   ramp: "schematic.level.ramp",

@@ -2403,6 +2403,24 @@
     "*": 0
    }
   },
+  "cost.civil.cutting_per_km": {
+   "used_by": [
+    "construction cost: civil works"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "An open cutting below the street (a retained cut or U-trough without a roof), with drainage and road bridges over it; built like the trough of a ramp, so the same range as a ramp between levels."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
   "cost.civil.cut_and_cover_per_km": {
    "used_by": [
     "construction cost: civil works"
@@ -2607,6 +2625,24 @@
       "transit-costs-project"
      ],
      "rationale": "Platform deck, lifts, escalators and stairs."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "cost.station.cutting": {
+   "used_by": [
+    "construction cost: stations"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Platforms in an open trench below the street with stairs, lifts and a footbridge or concourse at street level; between a station at street level and a first-level underground box, close to an elevated station."
     }
    ],
    "modes": {

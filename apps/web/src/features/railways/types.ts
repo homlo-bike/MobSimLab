@@ -12,7 +12,8 @@ export type RailMode =
   | "regional_rail"
   | "long_distance_rail"
   | "high_speed_rail";
-export type Level = "underground2" | "underground" | "street" | "elevated" | "elevated2";
+/** Levels lowest first; a cutting is below the street but open (a trench between tunnels). */
+export type Level = "underground2" | "underground" | "cutting" | "street" | "elevated" | "elevated2";
 export type Power = "auto" | "overhead" | "third_rail" | "none";
 export type TrackUse = "running" | "storage";
 /** What trains stand on a storage track for. */

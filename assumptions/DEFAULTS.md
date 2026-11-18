@@ -2733,6 +2733,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 15 | 35 | 80 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Retained cut (U-trough) or retained embankment; between at-grade and cut and cover costs. |
 
+### Open cutting (trench with retaining walls), double track
+
+`cost.civil.cutting_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 15 | 35 | 80 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | An open cutting below the street (a retained cut or U-trough without a roof), with drainage and road bridges over it; built like the trough of a ramp, so the same range as a ramp between levels. |
+
 ### Cut and cover tunnel, double track
 
 `cost.civil.cut_and_cover_per_km` · unit: US$ million per route-km (2023, PPP) · used by: construction cost: civil works
@@ -2790,6 +2798,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
 | all | 8 | 20 | 50 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation), [transit-costs-project](#src-transit-costs-project) | Platform deck, lifts, escalators and stairs. |
+
+### Station in an open cutting
+
+`cost.station.cutting` · unit: US$ million per station (2023, PPP) · used by: construction cost: stations
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 6 | 15 | 40 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Platforms in an open trench below the street with stairs, lifts and a footbridge or concourse at street level; between a station at street level and a first-level underground box, close to an elevated station. |
 
 ### Underground station on the first level (cut and cover box)
 
