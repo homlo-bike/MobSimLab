@@ -15,6 +15,7 @@ import { populationHi } from "./population/hi";
 import { resultsHi } from "./results/hi";
 import { pluginsHi } from "./plugins/hi";
 import { streetPhotosHi } from "./street-photos/hi";
+import { pluginAdminHi } from "./plugin-admin/hi";
 import type { Messages } from "./en";
 
 /** हिन्दी। */
@@ -537,4 +538,5 @@ export const hi: Messages = {
   ...calendarHi,
   ...pluginsHi,
   ...streetPhotosHi,
+  ...pluginAdminHi,
 };

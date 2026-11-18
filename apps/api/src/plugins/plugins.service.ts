@@ -13,6 +13,7 @@ import { DATABASE, type Database } from "../db/database";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
 import { ToolRunner } from "../tool-runner/runner";
 import { prepareCode, type StoredFile } from "./code/store";
+import { forgetPluginsOff, pluginsOff } from "./instance-off";
 import { checkChecksums, checkSignature, parsePublicKey, sha256, type SignatureStatus } from "./signature";
 import {
   BUNDLED,
@@ -96,6 +97,8 @@ export interface ProjectPlugin {
   contributes: PluginContributions;
   /** The project pins a version that is no longer installed; its objects stay but the plugin is off. */
   missing: boolean;
+  /** An Admin turned the plugin off for the whole MobSimLab: it is off here and cannot be turned on. */
+  instanceOff?: boolean;
   /** The registry entry, for enabled installed plugins (the web app has the bundled ones). */
   entry?: PluginEntry;
   /** SHA-256 of the package of an enabled installed plugin: the address of its tab pages (`/api/plugin-ui/<hash>/`). */
@@ -183,7 +186,7 @@ export class PluginsService {
         .execute(),
       this.db
         .selectFrom("iam.instance")
-        .select(["allow_unsigned_plugins", "plugin_memory_mb", "plugin_time_s"])
+        .select(["allow_unsigned_plugins", "plugin_memory_mb", "plugin_time_s", "plugins_off"])
         .executeTakeFirstOrThrow(),
       this.usage(),
     ]);
@@ -222,6 +225,8 @@ export class PluginsService {
       developmentMode: this.config.developmentMode,
       allowUnsigned: this.config.developmentMode && inst.allow_unsigned_plugins,
       limits: { memoryMb: inst.plugin_memory_mb, timeS: inst.plugin_time_s } satisfies PluginLimits,
+      /** Plugins turned off for the whole instance. */
+      off: inst.plugins_off,
     };
   }
 
@@ -478,6 +483,50 @@ export class PluginsService {
   }
 
   /**
+   * Purpose: turn a plugin on or off for the whole instance. Admins and Owners. A plugin that is off is off in
+   * every project (projects keep their own choice for when it is on again) and its basemaps are not offered.
+   * Output: the plugins that are off. Side effects: audit `instance.plugin_enabled` / `instance.plugin_disabled`.
+   */
+  async setOnForInstance(actor: PluginActor, pluginId: string, on: boolean): Promise<string[]> {
+    return this.db.transaction().execute(async (tx) => {
+      const known =
+        BUNDLED.some((b) => b.id === pluginId) ||
+        (await tx
+          .selectFrom("plugin.package")
+          .select("plugin_id")
+          .where("plugin_id", "=", pluginId)
+          .executeTakeFirst()) !== undefined;
+      const before = await tx
+        .selectFrom("iam.instance")
+        .select("plugins_off")
+        .forUpdate()
+        .executeTakeFirstOrThrow();
+      if (!known && !before.plugins_off.includes(pluginId))
+        throw new NotFoundException("that plugin is not installed");
+      const off = on
+        ? before.plugins_off.filter((x) => x !== pluginId)
+        : [...new Set([...before.plugins_off, pluginId])].sort();
+      if (off.length === before.plugins_off.length && off.every((x, i) => x === before.plugins_off[i]))
+        return off;
+      await tx.updateTable("iam.instance").set({ plugins_off: off, updated_at: new Date() }).execute();
+      await this.audit.append(
+        {
+          action: on ? "instance.plugin_enabled" : "instance.plugin_disabled",
+          objectType: "instance",
+          actorId: actor.userId,
+          actorIpHash: actor.ipHash,
+          requestId: actor.requestId,
+          before: { plugin: pluginId, enabled: !before.plugins_off.includes(pluginId) },
+          after: { plugin: pluginId, enabled: on },
+        },
+        tx,
+      );
+      forgetPluginsOff(this.db);
+      return off;
+    });
+  }
+
+  /**
    * Purpose: the plugins a project can use, with whether each is on and which version. Any member may read it;
    * bundled plugins are on unless the Owner turned them off, installed ones are off until the Owner turns them on.
    */
@@ -515,6 +564,8 @@ export class PluginsService {
             `version ${version ?? ""} of ${pluginId} is not installed`.replace("  ", " "),
           );
       }
+      if (enabled && cur.instanceOff)
+        throw new ConflictException(`an administrator turned ${cur.name} off for this MobSimLab`);
       if (enabled) {
         const deps = cur.bundled
           ? {}
@@ -600,9 +651,10 @@ export class PluginsService {
   }
 
   private async projectList(db: Database, projectId: string): Promise<ProjectPlugin[]> {
-    const [rows, pkgs] = await Promise.all([
+    const [rows, pkgs, off] = await Promise.all([
       db.selectFrom("project.plugin").selectAll().where("project_id", "=", projectId).execute(),
       db.selectFrom("plugin.package").select(["plugin_id", "version", "entry", "sha256"]).execute(),
+      pluginsOff(db, true),
     ]);
     const choice = new Map(rows.map((r) => [r.plugin_id, r]));
     const out: ProjectPlugin[] = BUNDLED.map((e) => ({
@@ -611,7 +663,8 @@ export class PluginsService {
       description: e.description,
       publisher: e.publisher,
       bundled: true,
-      enabled: choice.get(e.id)?.enabled ?? true,
+      enabled: !off.has(e.id) && (choice.get(e.id)?.enabled ?? true),
+      ...(off.has(e.id) ? { instanceOff: true } : {}),
       version: e.version,
       versions: [],
       permissions: e.permissions,
@@ -636,7 +689,7 @@ export class PluginsService {
       const missing = Boolean(row?.version) && !versions.includes(row!.version!);
       if (!found && !row) continue;
       const e = found?.entry;
-      const enabled = Boolean(row?.enabled) && !missing;
+      const enabled = Boolean(row?.enabled) && !missing && !off.has(id);
       out.push({
         id,
         name: e?.name ?? id,
@@ -662,6 +715,7 @@ export class PluginsService {
               tabs: [],
             },
         missing,
+        ...(off.has(id) ? { instanceOff: true } : {}),
         ...(enabled && e ? { entry: e, sha256: found!.sha256 } : {}),
       });
     }

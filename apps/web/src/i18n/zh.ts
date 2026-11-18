@@ -15,6 +15,7 @@ import { populationZh } from "./population/zh";
 import { resultsZh } from "./results/zh";
 import { pluginsZh } from "./plugins/zh";
 import { streetPhotosZh } from "./street-photos/zh";
+import { pluginAdminZh } from "./plugin-admin/zh";
 import type { Messages } from "./en";
 
 /** 中文（简体）. */
@@ -516,4 +517,5 @@ export const zh: Messages = {
   ...calendarZh,
   ...pluginsZh,
   ...streetPhotosZh,
+  ...pluginAdminZh,
 };

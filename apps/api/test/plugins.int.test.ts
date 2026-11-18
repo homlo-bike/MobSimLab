@@ -190,6 +190,52 @@ describe("plugins", () => {
     expect(copied.find((p: { id: string }) => p.id === "org.mobsimlab.noise").enabled).toBe(false);
   });
 
+  it("lets an Admin turn a plugin off for the whole instance: off in every project and its maps", async () => {
+    const path = "/api/admin/plugins/org.mobsimlab.panoramax/enabled";
+    expect((await as("bob").put(path, { enabled: false })).status).toBe(403);
+    expect(
+      (await as("dave").put("/api/admin/plugins/org.example.nothing/enabled", { enabled: false })).status,
+    ).toBe(404);
+    const offRes = await as("dave").put(path, { enabled: false });
+    expect(offRes.status).toBe(200);
+    expect(offRes.body.off).toEqual(["org.mobsimlab.panoramax"]);
+    expect((await as("dave").get("/api/admin/plugins")).body.off).toEqual(["org.mobsimlab.panoramax"]);
+
+    // Off in the project, and its Owner cannot turn it on; the street photo source is gone.
+    const pano = (await as("bob").get(`/api/projects/${project}/plugins`)).body.plugins.find(
+      (p: { id: string }) => p.id === "org.mobsimlab.panoramax",
+    );
+    expect(pano).toMatchObject({ enabled: false, instanceOff: true });
+    expect(
+      (await as("bob").put(`/api/projects/${project}/plugins/org.mobsimlab.panoramax`, { enabled: true }))
+        .status,
+    ).toBe(409);
+    expect((await as("bob").get("/api/street-photos")).body.available).toEqual([]);
+    expect(
+      (await as("bob").get("/api/street-photos/panoramax/near?lon=2.35&lat=48.85&radius=50")).status,
+    ).toBe(404);
+
+    // Map layers off: no layers offered, no tiles.
+    await as("dave").put("/api/admin/plugins/org.mobsimlab.ogc-layers/enabled", { enabled: false });
+    expect((await as("bob").get("/api/basemaps")).body.layers).toEqual([]);
+
+    // On again: the project's own choice comes back.
+    await as("dave").put("/api/admin/plugins/org.mobsimlab.ogc-layers/enabled", { enabled: true });
+    const onRes = await as("dave").put(path, { enabled: true });
+    expect(onRes.body.off).toEqual([]);
+    const back = (await as("bob").get(`/api/projects/${project}/plugins`)).body.plugins.find(
+      (p: { id: string }) => p.id === "org.mobsimlab.panoramax",
+    );
+    expect(back.enabled).toBe(true);
+    expect(back.instanceOff).toBeUndefined();
+    expect((await as("bob").get("/api/street-photos")).body.available).toEqual(["panoramax"]);
+
+    const audit = (await as("alice").get("/api/admin/audit?limit=200")).body;
+    const actions = JSON.stringify(audit);
+    expect(actions).toContain("instance.plugin_disabled");
+    expect(actions).toContain("instance.plugin_enabled");
+  });
+
   it("refuses to remove a version projects use, unless the Admin confirms", async () => {
     const used = await as("dave").del("/api/admin/plugins/org.example.water-taxi/1.0.0");
     expect(used.status).toBe(409);

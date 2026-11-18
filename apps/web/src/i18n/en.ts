@@ -15,6 +15,7 @@ import { populationEn } from "./population/en";
 import { resultsEn } from "./results/en";
 import { pluginsEn } from "./plugins";
 import { streetPhotosEn } from "./street-photos/en";
+import { pluginAdminEn } from "./plugin-admin/en";
 
 /** English: the source language. Every other language must have every key (the type checker enforces it). */
 export const en = {
@@ -532,6 +533,7 @@ export const en = {
   ...resultsEn,
   ...pluginsEn,
   ...streetPhotosEn,
+  ...pluginAdminEn,
 } as const;
 
 export type MessageKey = keyof typeof en;

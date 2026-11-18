@@ -106,6 +106,11 @@ describe("plugins per project (ADR-0036 §9)", () => {
     expect((screen.getByRole("switch") as HTMLInputElement).disabled).toBe(true);
     expect(screen.getByText(/Version 0.9.0 was removed/)).toBeTruthy();
     expect(screen.getByText("Only the project's Owner can turn plugins on or off.")).toBeTruthy();
+
+    // An Admin turned it off for the whole MobSimLab: off here too, and the Owner cannot turn it on.
+    rerender(<ProjectPlugins plugins={[row({ enabled: false, instanceOff: true })]} manage onSet={onSet} />);
+    expect((screen.getByRole("switch") as HTMLInputElement).disabled).toBe(true);
+    expect(screen.getByText("Turned off for this MobSimLab by an administrator.")).toBeTruthy();
   });
 });
 
@@ -135,6 +140,8 @@ describe("Plugins tab of Administration", () => {
         if (url.startsWith("/api/admin/users")) body = { users: [] };
         if (url === "/api/admin/plugins")
           body = { bundled: [], installed: [], keys: [], developmentMode: false, allowUnsigned: false };
+        if (url === "/api/admin/basemaps")
+          body = { esri: { configured: false, termsUrl: "https://esri.test" } };
         if (url === "/api/admin/plugins/inspect")
           body = {
             inspection: {
@@ -150,7 +157,8 @@ describe("Plugins tab of Administration", () => {
     );
     render(<AdminPanel role="admin" userId="u1" csrfToken="csrf-1" onClose={() => {}} />);
     fireEvent.click(screen.getByRole("tab", { name: "Plugins" }));
-    expect(await screen.findByText("No 3rd party plugins installed yet.")).toBeTruthy();
+    fireEvent.click(await screen.findByRole("button", { name: "Install a plugin" }));
+    const install = screen.getByRole("dialog", { name: "Install a plugin" });
     const file = new File([new Uint8Array([80, 75, 5, 6])], "taxi.msplugin");
     fireEvent.change(screen.getByLabelText("Choose a .msplugin file"), { target: { files: [file] } });
     expect((await screen.findByRole("alert")).textContent).toMatch(/not signed/);
@@ -159,6 +167,9 @@ describe("Plugins tab of Administration", () => {
       "application/octet-stream",
     );
     expect(screen.queryByRole("button", { name: "Install" })).toBeNull();
+    fireEvent.click(within(install).getByRole("button", { name: "Close" }));
+
+    fireEvent.click(screen.getByRole("button", { name: "Publishers and limits" }));
 
     fireEvent.change(screen.getByLabelText("Publisher name"), { target: { value: "Example Transit Lab" } });
     fireEvent.change(screen.getByLabelText("Public key"), {
@@ -168,5 +179,79 @@ describe("Plugins tab of Administration", () => {
     await waitFor(() => expect(calls.some((c) => c.url === "/api/admin/plugin-keys")).toBe(true));
     // Unsigned plugins are offered only in development mode.
     expect(screen.queryByText(/Allow unsigned plugins/)).toBeNull();
+  });
+});
+
+describe("Plugin list of Administration", () => {
+  const bundled = (id: string, name: string) => ({
+    id,
+    name,
+    description: `${name} does things.`,
+    version: "0.1.0",
+    publisher: { name: "MobSimLab contributors" },
+    license: "AGPL-3.0-or-later",
+    dataLicense: "CC-BY-4.0",
+    bundled: true,
+    tiers: ["data"],
+    permissions: [],
+    contributes: { modes: [], tools: [], parameters: 0, calculations: [], mapLayers: [] },
+    projects: 2,
+  });
+
+  it("lists each plugin with Configure and a switch that turns it off for the whole MobSimLab", async () => {
+    const calls: { url: string; init?: RequestInit }[] = [];
+    let off: string[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, init?: RequestInit) => {
+        calls.push({ url, init });
+        let body: unknown = { ok: true };
+        if (url.startsWith("/api/admin/users")) body = { users: [] };
+        if (url === "/api/admin/plugins")
+          body = {
+            bundled: [
+              bundled("org.mobsimlab.panoramax", "Panoramax street photos"),
+              bundled("org.mobsimlab.esri-imagery", "Esri World Imagery"),
+            ],
+            installed: [],
+            keys: [],
+            developmentMode: false,
+            allowUnsigned: false,
+            off,
+          };
+        if (url === "/api/admin/basemaps")
+          body = { esri: { configured: false, termsUrl: "https://esri.test" } };
+        if (url.endsWith("/enabled")) {
+          off = JSON.parse(String(init?.body)).enabled ? [] : ["org.mobsimlab.panoramax"];
+          body = { off };
+        }
+        if (url === "/api/basemaps") body = { available: [], layers: [] };
+        return new Response(JSON.stringify(body), { status: 200 });
+      }),
+    );
+    render(<AdminPanel role="admin" userId="u1" csrfToken="csrf-1" onClose={() => {}} />);
+    fireEvent.click(screen.getByRole("tab", { name: "Plugins" }));
+    const sw = await screen.findByRole("switch", { name: "Use Panoramax street photos on this MobSimLab" });
+    expect(sw.getAttribute("aria-checked")).toBe("true");
+    // Sorted by name, and Esri says it needs a key.
+    const items = screen.getAllByRole("listitem").map((li) => li.textContent ?? "");
+    expect(items[0]).toMatch(/^Esri World Imagery.*Needs an API key/);
+    expect(items[1]).toMatch(/^Panoramax street photos/);
+
+    fireEvent.click(sw);
+    await waitFor(() => expect(sw.getAttribute("aria-checked")).toBe("false"));
+    const put = calls.find((c) => c.url.endsWith("/enabled"))!;
+    expect(put.url).toBe("/api/admin/plugins/org.mobsimlab.panoramax/enabled");
+    expect(JSON.parse(String(put.init?.body))).toEqual({ enabled: false });
+    expect(screen.getByText("Off in every project")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Configure Panoramax street photos" }));
+    const dialog = screen.getByRole("dialog", { name: "Panoramax street photos" });
+    expect(dialog.textContent).toMatch(/Panoramax street photos does things\./);
+    expect(screen.getByRole("link", { name: /^Panoramax$/ }).getAttribute("href")).toBe(
+      "https://panoramax.fr",
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Accept changes" }));
+    await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
   });
 });

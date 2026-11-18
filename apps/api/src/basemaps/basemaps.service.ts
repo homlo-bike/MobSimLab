@@ -4,6 +4,7 @@ import { CredentialVault } from "../config/credential-vault";
 import { ESRI_KEY_PLACE } from "../config/credentials-at-rest";
 import { DATABASE, type Database } from "../db/database";
 import type { ProjectActor } from "../projects/projects.service";
+import { ESRI_PLUGIN, pluginsOff } from "../plugins/instance-off";
 import { EsriImageryClient, type Tile, TileError } from "./esri.client";
 
 /** Where Admins read Esri's terms before saving a key. */
@@ -55,8 +56,9 @@ export class BasemapsService {
     };
   }
 
-  /** Purpose: the keyed basemaps members can use now (an Admin has saved their key). */
+  /** Purpose: the keyed basemaps members can use now (an Admin has saved their key and not turned the plugin off). */
   async available(): Promise<string[]> {
+    if ((await pluginsOff(this.db)).has(ESRI_PLUGIN)) return [];
     return (await this.esriKey()) ? ["esri"] : [];
   }
 
@@ -134,6 +136,8 @@ export class BasemapsService {
 
   /** Purpose: one Esri imagery tile, fetched with the saved key. Throws TileError 404 when no key is saved. */
   async esriTile(z: number, x: number, y: number): Promise<Tile> {
+    if ((await pluginsOff(this.db)).has(ESRI_PLUGIN))
+      throw new TileError("Esri World Imagery is turned off on this MobSimLab", 404);
     const key = await this.esriKey();
     if (!key) throw new TileError("Esri World Imagery is not set up on this MobSimLab", 404);
     return this.esri.tile(key, z, x, y);

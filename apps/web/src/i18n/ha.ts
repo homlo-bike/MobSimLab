@@ -15,6 +15,7 @@ import { populationHa } from "./population/ha";
 import { resultsHa } from "./results/ha";
 import { pluginsHa } from "./plugins/ha";
 import { streetPhotosHa } from "./street-photos/ha";
+import { pluginAdminHa } from "./plugin-admin/ha";
 import type { Messages } from "./en";
 
 /** Hausa. */
@@ -541,4 +542,5 @@ export const ha: Messages = {
   ...calendarHa,
   ...pluginsHa,
   ...streetPhotosHa,
+  ...pluginAdminHa,
 };

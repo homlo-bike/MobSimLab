@@ -66,6 +66,8 @@ export interface DB {
     esri_api_key: string | null;
     esri_terms_accepted_at: Date | null;
     esri_terms_accepted_by: string | null;
+    /** Plugins an Admin turned off for the whole instance (db/migrations/0026_plugins_off.sql). */
+    plugins_off: ColumnType<string[], never, string[]>;
   };
   "iam.user": {
     id: Generated<string>;

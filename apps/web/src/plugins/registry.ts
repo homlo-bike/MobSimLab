@@ -191,6 +191,8 @@ export interface ProjectPlugin {
     tabs?: string[];
   };
   missing: boolean;
+  /** An Admin turned the plugin off for the whole MobSimLab: it is off here and cannot be turned on. */
+  instanceOff?: boolean;
   /** Registry entry of an installed plugin the project has turned on. */
   entry?: Plugin;
   /** Package hash of an installed plugin the project has turned on: where its tab pages are served. */

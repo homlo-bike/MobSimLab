@@ -15,6 +15,7 @@ import { populationTe } from "./population/te";
 import { resultsTe } from "./results/te";
 import { pluginsTe } from "./plugins/te";
 import { streetPhotosTe } from "./street-photos/te";
+import { pluginAdminTe } from "./plugin-admin/te";
 import type { Messages } from "./en";
 
 /** తెలుగు */
@@ -536,4 +537,5 @@ export const te: Messages = {
   ...calendarTe,
   ...pluginsTe,
   ...streetPhotosTe,
+  ...pluginAdminTe,
 };

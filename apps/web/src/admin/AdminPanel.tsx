@@ -82,9 +82,9 @@ export function AdminPanel({
       aria-label={t("admin.title")}
       className="absolute inset-4 z-20 flex flex-col rounded border border-slate-300 bg-white text-sm shadow-lg"
     >
-      <header className="flex items-center gap-3 border-b border-slate-200 px-4 py-2">
+      <header className="flex flex-wrap items-center gap-3 border-b border-slate-200 px-4 py-2">
         <h2 className="font-semibold">{t("admin.title")}</h2>
-        <nav role="tablist" className="flex gap-1">
+        <nav role="tablist" className="flex flex-wrap gap-1">
           {(
             [
               ["users", t("admin.users")],
