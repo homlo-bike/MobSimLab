@@ -5,6 +5,8 @@ import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import { EsriImageryClient } from "../src/basemaps/esri.client";
 import { readCapabilities } from "../src/basemaps/ogc";
+import type { BuiltinService } from "../src/basemaps/builtin-layers";
+import { MapLayersService } from "../src/basemaps/map-layers.service";
 import { OgcClient, OgcError } from "../src/basemaps/ogc.client";
 import type { AppConfig } from "../src/config/env";
 import { createApp, testConfig } from "./support/app";
@@ -250,6 +252,50 @@ describe("Esri World Imagery", () => {
       expect((await as("bob").del(`/api/admin/map-layers/${id}`)).status).toBe(403);
       expect((await as("alice").del(`/api/admin/map-layers/${id}`)).body).toEqual({ services: [] });
       expect((await as("bob").get("/api/basemaps")).body.layers).toEqual([]);
+    });
+
+    it("adds the built-in services once, and hides them instead of removing them", async () => {
+      const caps = vi
+        .spyOn(OgcClient.prototype, "capabilities")
+        .mockImplementation(async () => readCapabilities("wms", wms));
+      const builtins: BuiltinService[] = [
+        {
+          id: "example-topo",
+          kind: "wms",
+          url: "https://maps.example.org/osm/service",
+          name: "Example topo",
+          attribution: "© Example contributors",
+          showAs: "basemap",
+          layers: ["TOPO-OSM-WMS"],
+        },
+        // A layer the service does not have (yet): skipped, tried again later.
+        {
+          ...service,
+          id: "example-gone",
+          url: "https://maps.example.org/gone",
+          layers: ["Gone"],
+        } as BuiltinService,
+      ];
+      const layers = app.get(MapLayersService);
+      await layers.addBuiltins(builtins);
+      await layers.addBuiltins(builtins);
+      const listed = (await as("alice").get("/api/admin/map-layers")).body.services;
+      expect(listed).toHaveLength(1);
+      expect(listed[0]).toMatchObject({ name: "Example topo", builtin: true, hidden: false, addedBy: null });
+      expect(caps).toHaveBeenCalledWith("wms", "https://maps.example.org/osm/service", { type: "none" });
+      expect((await as("bob").get("/api/basemaps")).body.layers).toHaveLength(1);
+
+      // Remove hides it, so the next start does not add it again; it can be shown again.
+      const id = listed[0].id;
+      expect((await as("alice").del(`/api/admin/map-layers/${id}`)).body.services[0].hidden).toBe(true);
+      await layers.addBuiltins(builtins);
+      expect((await as("alice").get("/api/admin/map-layers")).body.services).toHaveLength(1);
+      expect((await as("bob").get("/api/basemaps")).body.layers).toEqual([]);
+      expect((await as("bob").put(`/api/admin/map-layers/${id}/hidden`, { hidden: false })).status).toBe(403);
+      const shown = await as("alice").put(`/api/admin/map-layers/${id}/hidden`, { hidden: false });
+      expect(shown.body.services[0].hidden).toBe(false);
+      expect((await as("bob").get("/api/basemaps")).body.layers).toHaveLength(1);
+      caps.mockRestore();
     });
   });
 });

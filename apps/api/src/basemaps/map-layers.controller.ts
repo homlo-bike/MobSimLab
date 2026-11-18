@@ -9,6 +9,7 @@ import {
   HttpException,
   Param,
   Post,
+  Put,
   Req,
   Res,
 } from "@nestjs/common";
@@ -183,6 +184,14 @@ export class MapLayersController {
   @Requires("plugins.manage")
   async remove(@Param("id") id: string, @Req() req: MslRequest) {
     return { services: await this.layers.remove(this.actor(req), parse(uuid, id)) };
+  }
+
+  /** Purpose: hide a service from the maps, or show it again. Body: `{ hidden }`. */
+  @Put("admin/map-layers/:id/hidden")
+  @Requires("plugins.manage")
+  async hide(@Param("id") id: string, @Body() body: unknown, @Req() req: MslRequest) {
+    const b = parse(z.strictObject({ hidden: z.boolean() }), body);
+    return { services: await this.layers.setHidden(this.actor(req), parse(uuid, id), b.hidden) };
   }
 
   /** Purpose: one tile of an added layer, fetched with the service's sign-in details and not stored. */

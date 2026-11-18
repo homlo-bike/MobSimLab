@@ -20,6 +20,10 @@ export interface MapLayerService {
   layers: { id: string; title: string }[];
   addedAt: string;
   addedBy: string | null;
+  /** MobSimLab comes with this service: it can be hidden, not removed. */
+  builtin: boolean;
+  /** Hidden from the maps by an Admin. */
+  hidden: boolean;
 }
 
 /** What `POST /api/admin/map-layers/inspect` reads from a service. */
@@ -150,6 +154,18 @@ export function MapLayersAdmin({
       void refreshServerBasemaps();
     });
 
+  const setHidden = (id: string, hidden: boolean) =>
+    void run(async () => {
+      const r = await send<{ services: MapLayerService[] }>(
+        "PUT",
+        `/api/admin/map-layers/${id}/hidden`,
+        csrfToken,
+        { hidden },
+      );
+      setServices(r.services);
+      void refreshServerBasemaps();
+    });
+
   const input = "rounded border border-slate-300 px-2 py-1";
   return (
     <section aria-labelledby="ap-maplayers" className="flex flex-col gap-2">
@@ -162,13 +178,28 @@ export function MapLayersAdmin({
       ) : (
         <ul className="m-0 flex list-none flex-col gap-2 p-0">
           {services.map((s) => (
-            <li key={s.id} className="flex items-start gap-2 rounded border border-slate-200 p-2">
+            <li
+              key={s.id}
+              className={`flex items-start gap-2 rounded border border-slate-200 p-2 ${s.hidden ? "opacity-60" : ""}`}
+            >
               <div className="min-w-0 flex-1">
                 <p className="m-0 font-medium">
                   {s.name} <span className="tag bg-sky-100 text-sky-900">{s.kind.toUpperCase()}</span>{" "}
                   <span className="tag bg-slate-100 text-slate-700">
                     {t(s.showAs === "basemap" ? "maplayers.asBasemap" : "maplayers.asOverlay")}
                   </span>
+                  {s.builtin && (
+                    <>
+                      {" "}
+                      <span className="tag bg-emerald-100 text-emerald-900">{t("maplayers.builtin")}</span>
+                    </>
+                  )}
+                  {s.hidden && (
+                    <>
+                      {" "}
+                      <span className="tag bg-amber-100 text-amber-900">{t("maplayers.hiddenTag")}</span>
+                    </>
+                  )}
                 </p>
                 <p className="m-0 truncate font-mono text-xs text-slate-500">{s.address}</p>
                 <p className="m-0 text-xs text-slate-500">
@@ -176,18 +207,32 @@ export function MapLayersAdmin({
                 </p>
                 <p className="m-0 text-xs text-slate-500">
                   {t(AUTH_LABELS[s.auth.type])}
-                  {s.auth.name ? ` (${s.auth.name})` : ""} ·{" "}
-                  {t("maplayers.addedBy", { name: s.addedBy ?? "", date: formatDateTime(s.addedAt) })}
+                  {s.auth.name ? ` (${s.auth.name})` : ""}
+                  {s.builtin
+                    ? ""
+                    : ` · ${t("maplayers.addedBy", { name: s.addedBy ?? "", date: formatDateTime(s.addedAt) })}`}
                 </p>
               </div>
-              <button
-                type="button"
-                className="shrink-0 rounded border border-slate-300 px-2"
-                aria-label={t("maplayers.removeName", { name: s.name })}
-                onClick={() => remove(s.id)}
-              >
-                {t("maplayers.remove")}
-              </button>
+              {s.builtin || s.hidden ? (
+                <button
+                  type="button"
+                  className="shrink-0 rounded border border-slate-300 px-2"
+                  aria-label={t(s.hidden ? "maplayers.showName" : "maplayers.hideName", { name: s.name })}
+                  onClick={() => setHidden(s.id, !s.hidden)}
+                >
+                  {t(s.hidden ? "maplayers.show" : "maplayers.hide")}
+                </button>
+              ) : null}
+              {!s.builtin && (
+                <button
+                  type="button"
+                  className="shrink-0 rounded border border-slate-300 px-2"
+                  aria-label={t("maplayers.removeName", { name: s.name })}
+                  onClick={() => remove(s.id)}
+                >
+                  {t("maplayers.remove")}
+                </button>
+              )}
             </li>
           ))}
         </ul>

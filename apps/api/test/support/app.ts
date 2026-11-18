@@ -24,6 +24,8 @@ export function testConfig(over: Partial<AppConfig> = {}): AppConfig {
     secrets: { ...TEST_SECRETS },
     // Setup mode only lets the named person claim the instance; the integration tests' first user is alice.
     bootstrapOwnerSubject: "alice",
+    // Tests never reach the services MobSimLab comes with.
+    mapLayerDefaultsOff: true,
     ...over,
   };
 }

@@ -19,6 +19,10 @@ CREATE TABLE plugin.map_layer_service (
   attribution text NOT NULL CHECK (length(btrim(attribution)) BETWEEN 1 AND 300),
   -- The picked layers as read from the capabilities: [{id, title, tileSize, minzoom, maxzoom, bounds?, wms|wmts}].
   layers      jsonb NOT NULL CHECK (jsonb_typeof(layers) = 'array' AND jsonb_array_length(layers) BETWEEN 1 AND 20),
+  -- Services MobSimLab comes with (apps/api/src/basemaps/builtin-layers.ts): their id, added on first start.
+  builtin     text UNIQUE CHECK (builtin IS NULL OR builtin ~ '^[a-z0-9-]{1,64}$'),
+  -- Hidden by an Admin: not offered on maps. Built-in services are hidden instead of removed, so they stay away.
+  hidden      boolean NOT NULL DEFAULT false,
   added_by    uuid REFERENCES iam."user" (id) ON DELETE SET NULL,
   added_at    timestamptz NOT NULL DEFAULT now(),
   CONSTRAINT map_layer_auth_complete CHECK (
@@ -27,4 +31,4 @@ CREATE TABLE plugin.map_layer_service (
   )
 );
 
-GRANT SELECT, INSERT, DELETE ON plugin.map_layer_service TO mobsimlab_app;
+GRANT SELECT, INSERT, UPDATE, DELETE ON plugin.map_layer_service TO mobsimlab_app;

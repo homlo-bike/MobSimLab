@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
+import { BUILTIN_SERVICES } from "../src/basemaps/builtin-layers";
 import { TileError } from "../src/basemaps/esri.client";
 import { addressOf } from "../src/basemaps/map-layers.service";
 import {
@@ -365,5 +366,18 @@ describe("XYZ tiles", () => {
       .catch((x: unknown) => x);
     expect((e as OgcError).status).toBe(502);
     expect((e as OgcError).message).not.toContain(SECRET);
+  });
+});
+
+describe("built-in map layers", () => {
+  it("are public https services the API may read, with stable ids and their layers named", () => {
+    expect(new Set(BUILTIN_SERVICES.map((b) => b.id)).size).toBe(BUILTIN_SERVICES.length);
+    for (const b of BUILTIN_SERVICES) {
+      expect(b.id).toMatch(/^[a-z0-9-]{1,64}$/);
+      expect(serviceUrlAllowed(b.url)).toBe(true);
+      expect(b.kind !== "xyz" || isXyzTemplate(b.url)).toBe(true);
+      expect(b.layers.length).toBeGreaterThan(0);
+      expect(b.attribution.length).toBeGreaterThan(0);
+    }
   });
 });

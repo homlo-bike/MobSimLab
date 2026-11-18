@@ -175,6 +175,8 @@ describe("WMS, WMTS and XYZ services in Administration", () => {
               layers: [{ id: "lc2020", title: "Land cover 2020" }],
               addedAt: "2026-11-18T17:00:00Z",
               addedBy: "Alice",
+              builtin: false,
+              hidden: false,
             },
           ];
         if (url === "/api/basemaps") return new Response(JSON.stringify({ available: [] }), { status: 200 });
@@ -218,5 +220,42 @@ describe("WMS, WMTS and XYZ services in Administration", () => {
     expect((add.init?.headers as Record<string, string>)["X-CSRF-Token"]).toBe("csrf-1");
     expect(screen.queryByDisplayValue(SECRET)).toBeNull();
     expect(screen.queryByText(new RegExp(SECRET))).toBeNull();
+  });
+
+  it("hides a built-in service instead of removing it, and shows it again", async () => {
+    const svc: MapLayerService = {
+      id: SID,
+      kind: "xyz",
+      name: "OpenTopoMap",
+      address: "a.tile.opentopomap.org/{z}/{x}/{y}.png",
+      auth: { type: "none", name: null },
+      showAs: "basemap",
+      attribution: "© OpenTopoMap",
+      layers: [{ id: "tiles", title: "a.tile.opentopomap.org" }],
+      addedAt: "2026-11-18T17:00:00Z",
+      addedBy: null,
+      builtin: true,
+      hidden: false,
+    };
+    const calls: { url: string; init?: RequestInit }[] = [];
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, init?: RequestInit) => {
+        calls.push({ url, init });
+        if (init?.method === "PUT") svc.hidden = JSON.parse(String(init.body)).hidden;
+        if (url === "/api/basemaps") return new Response(JSON.stringify({ available: [] }), { status: 200 });
+        return new Response(JSON.stringify({ services: [{ ...svc }] }), { status: 200 });
+      }),
+    );
+    render(<MapLayersAdmin csrfToken="csrf-1" run={async (f) => void (await f())} />);
+    expect(await screen.findByText("Built in")).toBeTruthy();
+    expect(screen.queryByRole("button", { name: "Remove OpenTopoMap" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Hide OpenTopoMap" }));
+    expect(await screen.findByText("Hidden")).toBeTruthy();
+    const put = calls.find((c) => c.init?.method === "PUT")!;
+    expect(put.url).toBe(`/api/admin/map-layers/${SID}/hidden`);
+    expect(JSON.parse(String(put.init?.body))).toEqual({ hidden: true });
+    fireEvent.click(screen.getByRole("button", { name: "Show OpenTopoMap again" }));
+    expect(await screen.findByRole("button", { name: "Hide OpenTopoMap" })).toBeTruthy();
   });
 });

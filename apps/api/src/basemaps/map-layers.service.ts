@@ -1,10 +1,19 @@
-import { Inject, Injectable } from "@nestjs/common";
+import {
+  Inject,
+  Injectable,
+  Logger,
+  type OnApplicationBootstrap,
+  type OnModuleDestroy,
+} from "@nestjs/common";
 import { AuditService } from "../audit/audit.service";
+import { APP_CONFIG } from "../config/config.module";
+import type { AppConfig } from "../config/env";
 import { DATABASE, type Database } from "../db/database";
 import type { ProjectActor } from "../projects/projects.service";
 import type { Tile } from "./esri.client";
 import { type OgcKind, type ResolvedLayer, tileUrl } from "./ogc";
 import { type OgcAuth, OgcClient, OgcError } from "./ogc.client";
+import { BUILTIN_SERVICES, type BuiltinService } from "./builtin-layers";
 
 /** How a service's layers are drawn: as a basemap under the place names, or over any basemap. */
 export type ShowAs = "basemap" | "overlay";
@@ -22,6 +31,10 @@ export interface MapLayerServiceView {
   layers: { id: string; title: string }[];
   addedAt: string;
   addedBy: string | null;
+  /** MobSimLab comes with this service: it can be hidden, not removed. */
+  builtin: boolean;
+  /** Hidden by an Admin: not offered on maps. */
+  hidden: boolean;
 }
 
 /** A layer as members' maps get it from `GET /api/basemaps`: tiles through the API, never the service's address. */
@@ -78,6 +91,9 @@ export const XYZ_MAX_ZOOM = 18;
 /** How long the API keeps the services in memory between tiles; adding or removing one clears this at once. */
 const CACHE_MS = 30_000;
 
+/** How often the API tries again to add a built-in service it could not read (the service was down). */
+const BUILTIN_RETRY_MS = 10 * 60_000;
+
 /** Purpose: the address without its query (which may hold a key), for screens and the audit log. */
 export function addressOf(url: string): string {
   try {
@@ -94,14 +110,106 @@ export function addressOf(url: string): string {
  * the details on the server and does not store the tiles.
  */
 @Injectable()
-export class MapLayersService {
+export class MapLayersService implements OnApplicationBootstrap, OnModuleDestroy {
+  private readonly log = new Logger("MapLayers");
   private cached: { rows: Row[]; at: number } | null = null;
+  private retry: NodeJS.Timeout | null = null;
+  private adding: Promise<void> | null = null;
 
   constructor(
+    @Inject(APP_CONFIG) private readonly config: AppConfig,
     @Inject(DATABASE) private readonly db: Database,
     private readonly audit: AuditService,
     private readonly ogc: OgcClient,
   ) {}
+
+  /** Purpose: add the services MobSimLab comes with in the background, so a slow service never holds up the start. */
+  onApplicationBootstrap(): void {
+    if (this.config.mapLayerDefaultsOff) return;
+    void this.addBuiltins();
+    this.retry = setInterval(() => void this.addBuiltins(), BUILTIN_RETRY_MS);
+    this.retry.unref();
+  }
+
+  onModuleDestroy(): void {
+    if (this.retry) clearInterval(this.retry);
+  }
+
+  /**
+   * Purpose: add each service MobSimLab comes with that this MobSimLab lacks, read from its capabilities. One that
+   * cannot be read now is tried again later; once all are in, no more tries. A hidden one stays as it is.
+   */
+  addBuiltins(services: readonly BuiltinService[] = BUILTIN_SERVICES): Promise<void> {
+    this.adding ??= this.addMissing(services).finally(() => (this.adding = null));
+    return this.adding;
+  }
+
+  private async addMissing(services: readonly BuiltinService[]): Promise<void> {
+    const have = new Set(
+      (
+        await this.db
+          .selectFrom("plugin.map_layer_service")
+          .select("builtin")
+          .where("builtin", "is not", null)
+          .execute()
+      ).map((r) => r.builtin),
+    );
+    let missing = 0;
+    for (const b of services) {
+      if (have.has(b.id)) continue;
+      try {
+        const layers = await this.resolve(
+          b.kind,
+          b.url,
+          { type: "none" },
+          b.maxzoom ?? XYZ_MAX_ZOOM,
+          b.layers,
+        );
+        await this.db
+          .insertInto("plugin.map_layer_service")
+          .values({
+            kind: b.kind,
+            name: b.name,
+            url: b.url,
+            auth_type: "none",
+            show_as: b.showAs,
+            attribution: b.attribution,
+            layers: JSON.stringify(layers),
+            builtin: b.id,
+          })
+          .onConflict((oc) => oc.column("builtin").doNothing())
+          .execute();
+        this.cached = null;
+      } catch (e) {
+        missing++;
+        this.log.warn(
+          `built-in map layer ${b.id} not added yet: ${e instanceof Error ? e.message : String(e)}`,
+        );
+      }
+    }
+    if (missing === 0 && this.retry) {
+      clearInterval(this.retry);
+      this.retry = null;
+    }
+  }
+
+  /** Purpose: the picked layers of a service, read from its capabilities. Throws OgcError 400 for a missing one. */
+  private async resolve(
+    kind: OgcKind,
+    url: string,
+    auth: OgcAuth,
+    maxzoom: number,
+    ids: string[],
+  ): Promise<ResolvedLayer[]> {
+    const c = await this.read(kind, url, auth, maxzoom);
+    return ids.map((id) => {
+      const found = c.layers.find((l) => l.id === id);
+      if (!found) throw new OgcError(`the service has no layer ${id}`, 400);
+      if (!found.layer)
+        throw new OgcError(`${found.title}: ${found.problem ?? "the map cannot draw it"}`, 400);
+      return found.layer;
+    });
+  }
 
   /** Purpose: the services for the Admin screen, newest first. */
   async list(): Promise<MapLayerServiceView[]> {
@@ -119,6 +227,8 @@ export class MapLayersService {
         "s.attribution",
         "s.layers",
         "s.added_at",
+        "s.builtin",
+        "s.hidden",
         "u.display_name",
         "u.email",
       ])
@@ -135,6 +245,8 @@ export class MapLayersService {
       layers: (r.layers as ResolvedLayer[]).map((l) => ({ id: l.id, title: l.title })),
       addedAt: r.added_at.toISOString(),
       addedBy: r.display_name ?? r.email ?? null,
+      builtin: r.builtin !== null,
+      hidden: r.hidden,
     }));
   }
 
@@ -159,15 +271,7 @@ export class MapLayersService {
    * password or key, nor the address's query).
    */
   async add(actor: ProjectActor, s: NewService): Promise<MapLayerServiceView[]> {
-    const c = await this.read(s.kind, s.url, s.auth, s.maxzoom ?? XYZ_MAX_ZOOM);
-    const layers: ResolvedLayer[] = [];
-    for (const id of s.layers) {
-      const found = c.layers.find((l) => l.id === id);
-      if (!found) throw new OgcError(`the service has no layer ${id}`, 400);
-      if (!found.layer)
-        throw new OgcError(`${found.title}: ${found.problem ?? "the map cannot draw it"}`, 400);
-      layers.push(found.layer);
-    }
+    const layers = await this.resolve(s.kind, s.url, s.auth, s.maxzoom ?? XYZ_MAX_ZOOM, s.layers);
     await this.db.transaction().execute(async (tx) => {
       const row = await tx
         .insertInto("plugin.map_layer_service")
@@ -209,8 +313,17 @@ export class MapLayersService {
     return this.list();
   }
 
-  /** Purpose: remove a service; its layers leave the maps at once. Side effects: audit `…_removed`. */
+  /**
+   * Purpose: remove a service; its layers leave the maps at once. A built-in service is hidden instead, so it is
+   * not added again at the next start. Side effects: audit `…_removed` (or `…_hidden`).
+   */
   async remove(actor: ProjectActor, id: string): Promise<MapLayerServiceView[]> {
+    const row = await this.db
+      .selectFrom("plugin.map_layer_service")
+      .select("builtin")
+      .where("id", "=", id)
+      .executeTakeFirst();
+    if (row?.builtin) return this.setHidden(actor, id, true);
     await this.db.transaction().execute(async (tx) => {
       const gone = await tx
         .deleteFrom("plugin.map_layer_service")
@@ -227,6 +340,37 @@ export class MapLayersService {
           actorIpHash: actor.ipHash,
           requestId: actor.requestId,
           before: { kind: gone.kind, name: gone.name, address: addressOf(gone.url) },
+        },
+        tx,
+      );
+    });
+    this.cached = null;
+    return this.list();
+  }
+
+  /**
+   * Purpose: hide a service from the maps, or show it again. Side effects: audit `instance.map_layer_service_hidden`
+   * or `…_shown`.
+   */
+  async setHidden(actor: ProjectActor, id: string, hidden: boolean): Promise<MapLayerServiceView[]> {
+    await this.db.transaction().execute(async (tx) => {
+      const changed = await tx
+        .updateTable("plugin.map_layer_service")
+        .set({ hidden })
+        .where("id", "=", id)
+        .where("hidden", "=", !hidden)
+        .returning(["kind", "name", "url"])
+        .executeTakeFirst();
+      if (!changed) return;
+      await this.audit.append(
+        {
+          action: hidden ? "instance.map_layer_service_hidden" : "instance.map_layer_service_shown",
+          objectType: "map_layer_service",
+          objectId: id,
+          actorId: actor.userId,
+          actorIpHash: actor.ipHash,
+          requestId: actor.requestId,
+          after: { kind: changed.kind, name: changed.name, address: addressOf(changed.url), hidden },
         },
         tx,
       );
@@ -273,6 +417,7 @@ export class MapLayersService {
     const rows = await this.db
       .selectFrom("plugin.map_layer_service")
       .selectAll()
+      .where("hidden", "=", false)
       .orderBy("added_at", "asc")
       .execute();
     const out: Row[] = rows.map((r) => ({

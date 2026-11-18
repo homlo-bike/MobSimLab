@@ -301,6 +301,9 @@ export interface DB {
     show_as: "basemap" | "overlay";
     attribution: string;
     layers: ColumnType<unknown, string, never>;
+    /** Id of a service MobSimLab comes with (builtin-layers.ts); null for an Admin's. */
+    builtin: string | null;
+    hidden: Generated<boolean>;
     added_by: string | null;
     added_at: Generated<Date>;
   };
