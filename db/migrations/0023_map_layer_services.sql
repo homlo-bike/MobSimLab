@@ -1,4 +1,4 @@
--- 0022: WMS, WMTS and XYZ tile services as map layers (bundled plugin org.mobsimlab.ogc-layers). An Admin adds
+-- 0023: WMS, WMTS and XYZ tile services as map layers (bundled plugin org.mobsimlab.ogc-layers). An Admin adds
 -- a service (its address, and its sign-in details when it needs them) and picks its layers; members see them in
 -- the map's layer control. The API fetches the tiles with the sign-in details, so browsers never see them, and
 -- passes them on without storing them. `auth_secret` (a password or key) is never returned by the API, written to

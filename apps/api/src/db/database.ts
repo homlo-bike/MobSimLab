@@ -288,7 +288,7 @@ export interface DB {
     added_by: string | null;
     created_at: Generated<Date>;
   };
-  /** WMS and WMTS services an Admin added as map layers (db/migrations/0022_map_layer_services.sql). */
+  /** WMS and WMTS services an Admin added as map layers (db/migrations/0023_map_layer_services.sql). */
   "plugin.map_layer_service": {
     id: Generated<string>;
     kind: "wms" | "wmts" | "xyz";
