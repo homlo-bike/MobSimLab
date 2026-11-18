@@ -54,4 +54,23 @@ export const geodataId = {
   "data.ownChoose": "Pilih file GeoTIFF (hingga {max} MB)",
   "data.ownReplace": "Ganti dengan GeoTIFF lain (hingga {max} MB)",
   "data.remove": "Hapus",
+  "area.title": "Wilayah proyek",
+  "area.intro":
+    "Cari tempat dan centang wilayah OpenStreetMap yang dicakup proyek. Wilayah proyek adalah gabungan semuanya. Saat disimpan, OpenStreetMap, ketinggian, dan penduduk wilayah diimpor sekali, dan semua alat memakainya.",
+  "area.search": "Cari tempat, misalnya Aleppo, Suriah",
+  "area.lookingUp": "Mencari wilayah di {place}…",
+  "area.regionsAt": "Wilayah di {place}",
+  "area.noRegions": "Tidak ada wilayah bernama di sini. Coba tempat lain.",
+  "area.none":
+    "Tidak ada wilayah dipilih: wilayahnya adalah kotak di sekitar semua yang digambar, ditambah penyangga.",
+  "area.remove": "Hapus {name}",
+  "area.total": "Sekitar {area} km² seluruhnya",
+  "area.outline": "Garis batas wilayah terpilih",
+  "area.save": "Simpan wilayah dan impor data",
+  "area.saved": "Wilayah disimpan.",
+  "area.import.queued": "{what}: impor dimulai",
+  "area.import.current": "{what}: sudah diimpor",
+  "area.import.failed": "{what}: tidak bisa dimulai. {reason}",
+  "area.seeMapData": "Pantau impor di GIS, Data peta.",
+  "data.areaRegions": "Wilayah: {area} km², kotak di sekitar {names}",
 } satisfies GeodataMessages;

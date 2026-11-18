@@ -22,8 +22,8 @@ function ring(b: Box): [number, number][] {
   ];
 }
 
-/** Purpose: draw the project area (dashed) on the map, or clear it. */
-function drawArea(map: MapLibreMap, b: Box | null) {
+/** Purpose: draw the project area (dashed) and the outlines of its OpenStreetMap regions on the map, or clear it. */
+function drawArea(map: MapLibreMap, b: Box | null, regions: readonly { ring: [number, number][] }[] = []) {
   const data = {
     type: "FeatureCollection" as const,
     features: b
@@ -33,6 +33,11 @@ function drawArea(map: MapLibreMap, b: Box | null) {
             properties: {},
             geometry: { type: "LineString" as const, coordinates: ring(b) },
           },
+          ...regions.map((r) => ({
+            type: "Feature" as const,
+            properties: {},
+            geometry: { type: "LineString" as const, coordinates: r.ring },
+          })),
         ]
       : [],
   };
@@ -143,7 +148,7 @@ export function MapDataPanel({
 
   useEffect(() => {
     if (!map) return;
-    const draw = () => drawArea(map, status?.area?.bbox ?? null);
+    const draw = () => drawArea(map, status?.area?.bbox ?? null, status?.area?.regions);
     if (map.isStyleLoaded()) draw();
     else map.once("load", draw);
   }, [map, status]);
@@ -293,7 +298,12 @@ export function MapDataPanel({
       )}
       {status?.area && (
         <p className="text-sm text-slate-700">
-          {t("data.area", { area: num(status.area.areaKm2), buffer: num(status.area.bufferKm) })}
+          {status.area.regions?.length
+            ? t("data.areaRegions", {
+                area: num(status.area.areaKm2),
+                names: status.area.regions.map((r) => r.name).join(", "),
+              })
+            : t("data.area", { area: num(status.area.areaKm2), buffer: num(status.area.bufferKm) })}
         </p>
       )}
       {status?.area && status.canImport && (

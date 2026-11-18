@@ -16,13 +16,33 @@ export const DEFAULT_AREA_BUFFER_KM = 2;
 /** Largest buffer, km (also checked by the database). */
 export const MAX_AREA_BUFFER_KM = 50;
 
+/** An OpenStreetMap region the planner picked as (part of) the project area (#140). */
+export interface AreaRegion {
+  /** `r123` for a relation, `w123` for a way. */
+  id: string;
+  name: string;
+  kind: string;
+  adminLevel: number | null;
+  /** Outer ring `[lon, lat]`, closed. */
+  ring: [number, number][];
+  areaKm2: number;
+}
+
+/** Most regions a project area joins. */
+export const MAX_AREA_REGIONS = 10;
+
 /** The project area. */
 export interface ProjectArea {
-  /** The drawn box widened by the buffer, `[west, south, east, north]` in degrees. */
+  /**
+   * The box imports cover, `[west, south, east, north]` in degrees: the regions' box joined with the drawn box
+   * widened by the buffer; without regions, the drawn box widened by the buffer.
+   */
   bbox: Bbox;
-  /** The box round everything drawn. */
+  /** The box that must be covered: the box round everything drawn, joined with the regions' box. */
   drawnBbox: Bbox;
   bufferKm: number;
+  /** The OpenStreetMap regions the area is made of (their union); empty when the area follows the drawing. */
+  regions: AreaRegion[];
 }
 
 type LonLat = [number, number];
@@ -101,6 +121,32 @@ export function boxOf(points: LonLat[]): Bbox | null {
   return [w, s, e, n];
 }
 
+/** Purpose: the box round two boxes, either of which may be missing. */
+export function joinBoxes(a: Bbox | null, b: Bbox | null): Bbox | null {
+  if (!a) return b;
+  if (!b) return a;
+  return [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])];
+}
+
+/** Purpose: the regions of a stored `area_regions` value; malformed entries are skipped. */
+export function storedRegions(v: unknown): AreaRegion[] {
+  const out: AreaRegion[] = [];
+  for (const x of arr(v)) {
+    const r = obj(x);
+    const ring = arr(r.ring).filter(isLonLat) as [number, number][];
+    if (typeof r.id !== "string" || typeof r.name !== "string" || ring.length < 4) continue;
+    out.push({
+      id: r.id,
+      name: r.name,
+      kind: typeof r.kind === "string" ? r.kind : "area",
+      adminLevel: typeof r.adminLevel === "number" ? r.adminLevel : null,
+      ring: ring.map((p) => [p[0], p[1]]),
+      areaKm2: typeof r.areaKm2 === "number" ? r.areaKm2 : 0,
+    });
+  }
+  return out;
+}
+
 /**
  * Purpose: a box widened by `km` on every side (metres to degrees at the box's widest latitude), clamped to
  * valid longitudes and latitudes.
@@ -119,7 +165,8 @@ export function bufferedBox(b: Bbox, km: number): Bbox {
 
 /**
  * Purpose: a project's area. Inputs: database, project id, an optional buffer (else the project's own).
- * Output: the area, or null when nothing is drawn yet. The caller checks access first.
+ * Output: the area, or null when the project has no regions and nothing is drawn yet. The caller checks access
+ * first.
  */
 export async function projectArea(
   db: Database,
@@ -134,16 +181,20 @@ export async function projectArea(
     .execute();
   const docs: Record<string, unknown> = {};
   for (const r of rows) docs[r.kind] = r.doc;
-  const drawnBbox = boxOf(drawnPoints(docs));
-  if (!drawnBbox) return null;
-  let km = bufferKm;
-  if (km === undefined) {
-    const p = await db
-      .selectFrom("project.project")
-      .select("area_buffer_km as km")
-      .where("id", "=", projectId)
-      .executeTakeFirst();
-    km = p ? Number(p.km) : DEFAULT_AREA_BUFFER_KM;
-  }
-  return { bbox: bufferedBox(drawnBbox, km), drawnBbox, bufferKm: km };
+  const drawn = boxOf(drawnPoints(docs));
+  const p = await db
+    .selectFrom("project.project")
+    .select(["area_buffer_km as km", "area_regions"])
+    .where("id", "=", projectId)
+    .executeTakeFirst();
+  const regions = storedRegions(p?.area_regions);
+  const regionBox = boxOf(regions.flatMap((r) => r.ring));
+  if (!drawn && !regionBox) return null;
+  const km = bufferKm ?? (p ? Number(p.km) : DEFAULT_AREA_BUFFER_KM);
+  return {
+    bbox: joinBoxes(regionBox, drawn && bufferedBox(drawn, km))!,
+    drawnBbox: joinBoxes(regionBox, drawn)!,
+    bufferKm: km,
+    regions,
+  };
 }

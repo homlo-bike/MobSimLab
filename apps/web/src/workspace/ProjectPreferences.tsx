@@ -1,4 +1,14 @@
-import { type FormEvent, type ReactNode, useCallback, useId, useLayoutEffect, useRef, useState } from "react";
+import {
+  type FormEvent,
+  type ReactNode,
+  useCallback,
+  useId,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { AreaSection } from "../features/area/AreaSection";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { DELAY_PREFS, MAX_DELAY_SHARE, type PreferencesDoc, prefValue, withPref } from "./preferences";
@@ -74,6 +84,7 @@ export function ProjectPreferences({
   const { t } = useI18n();
   const editable = can.edit(project);
   const loadHistory = useCallback(() => allValueHistory(api, project.id), [api, project.id]);
+  const areaApi = useMemo(() => api.area?.(project.id) ?? null, [api, project.id]);
   const [name, setName] = useState(project.name);
   const [description, setDescription] = useState(project.description);
   const [area, setArea] = useState(project.areaName ?? "");
@@ -172,6 +183,16 @@ export function ProjectPreferences({
         </form>
       ),
     },
+    ...(areaApi
+      ? [
+          {
+            id: "area",
+            group: "project",
+            title: "area.title",
+            node: <AreaSection api={areaApi} editable={editable} />,
+          } satisfies PrefSection,
+        ]
+      : []),
     {
       id: "currency",
       group: "project",

@@ -54,4 +54,23 @@ export const geodataHa = {
   "data.ownChoose": "Zaɓi fayil na GeoTIFF (har zuwa MB {max})",
   "data.ownReplace": "Maye gurbinsa da wani GeoTIFF (har zuwa MB {max})",
   "data.remove": "Cire",
+  "area.title": "Yankin aiki",
+  "area.intro":
+    "Nemi wuri ka zaɓi yankunan OpenStreetMap da aikin ya ƙunsa. Yankin aikin shi ne dukansu tare. Idan ka ajiye, ana shigo da OpenStreetMap, tsayin ƙasa da yawan jama'a na yankin sau ɗaya, kuma duk kayan aiki suna amfani da su.",
+  "area.search": "Nemi wuri, misali Aleppo, Siriya",
+  "area.lookingUp": "Ana neman yankuna a {place}…",
+  "area.regionsAt": "Yankuna a {place}",
+  "area.noRegions": "Babu yankuna masu suna a nan. Gwada wani wuri.",
+  "area.none":
+    "Ba a zaɓi yanki ba: yankin shi ne akwatin da ke kewaye da duk abin da aka zana, da ƙarin tazara.",
+  "area.remove": "Cire {name}",
+  "area.total": "Kusan km² {area} gaba ɗaya",
+  "area.outline": "Iyakar yankunan da aka zaɓa",
+  "area.save": "Ajiye yanki ka shigo da bayanai",
+  "area.saved": "An ajiye yanki.",
+  "area.import.queued": "{what}: an fara shigowa",
+  "area.import.current": "{what}: an riga an shigo da shi",
+  "area.import.failed": "{what}: bai iya farawa ba. {reason}",
+  "area.seeMapData": "Bi shigowar a GIS, Bayanan taswira.",
+  "data.areaRegions": "Yanki: km² {area}, akwatin da ke kewaye da {names}",
 } satisfies GeodataMessages;

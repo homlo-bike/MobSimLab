@@ -125,12 +125,16 @@ export const OSM_AREA_SOURCE = {
 
 const PLACE_KINDS = "city|town|village|borough|suburb|quarter|neighbourhood|district|city_block";
 
-/** Purpose: Overpass QL for the administrative areas and named places that contain a point, with geometry. */
-export function areasQuery(lon: number, lat: number): string {
+/**
+ * Purpose: Overpass QL for the administrative areas and named places that contain a point, with geometry.
+ * `wide` also takes states and provinces (admin levels 4 and 5), for picking a project area (#140).
+ */
+export function areasQuery(lon: number, lat: number, wide = false): string {
   const f = (x: number) => x.toFixed(6);
+  const levels = wide ? "^([4-9]|1[01])$" : "^([6-9]|1[01])$";
   return (
-    `[out:json][timeout:60][maxsize:67108864];is_in(${f(lat)},${f(lon)})->.a;` +
-    `(rel(pivot.a)["boundary"="administrative"]["admin_level"~"^([6-9]|1[01])$"];` +
+    `[out:json][timeout:${wide ? 120 : 60}][maxsize:${wide ? 268435456 : 67108864}];is_in(${f(lat)},${f(lon)})->.a;` +
+    `(rel(pivot.a)["boundary"="administrative"]["admin_level"~"${levels}"];` +
     `rel(pivot.a)["place"~"^(${PLACE_KINDS})$"];` +
     `way(pivot.a)["place"~"^(${PLACE_KINDS})$"];` +
     `way(pivot.a)["landuse"]["name"];);out geom;`
@@ -326,7 +330,7 @@ export class BenefitsService {
   }
 
   /** Purpose: the OpenStreetMap areas (boundaries, neighbourhoods, named places) that contain a point. */
-  async areasAt(lon: number, lat: number): Promise<OsmArea[]> {
-    return parseAreas(await this.overpass.run(areasQuery(lon, lat)));
+  async areasAt(lon: number, lat: number, wide = false): Promise<OsmArea[]> {
+    return parseAreas(await this.overpass.run(areasQuery(lon, lat, wide)));
   }
 }
