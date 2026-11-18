@@ -155,7 +155,11 @@ export function MapView({ onReady }: Props) {
   }, [map, dark]);
 
   const pickBasemap = (b: Basemap) => {
-    if (b.id === basemap.id && b.day === basemap.day) return;
+    const now = basemapNow.current;
+    if (b.id === now.id && b.day === now.day) return;
+    // Now, not on the next render: the restore can run twice before it (map load, then the server's
+    // basemaps), and a second switch while the first style loads blanked the page (Damascus bug 14).
+    basemapNow.current = b;
     setBasemap(b);
     rememberBasemap(b.id);
     if (!map) return;

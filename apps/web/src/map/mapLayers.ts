@@ -81,7 +81,14 @@ export function basemapLayers(map: MapLibreMap): ReadonlySet<string> | undefined
  */
 export function switchBasemap(map: MapLibreMap, basemap: Basemap, onLoaded?: () => void): void {
   const base = baseOf.get(map) ?? { sources: new Set<string>(), layers: new Set<string>() };
-  const images = (typeof map.listImages === "function" ? map.listImages() : [])
+  // A style still loading (another switch a moment ago) has no images to list yet; MapLibre throws then.
+  let listed: string[];
+  try {
+    listed = typeof map.listImages === "function" ? map.listImages() : [];
+  } catch {
+    listed = [];
+  }
+  const images = listed
     .filter((id) => groupOf(id) !== null)
     .map((id) => [id, map.getImage(id)] as const)
     .filter(([, img]) => !!img);
