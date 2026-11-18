@@ -286,11 +286,31 @@ function keptOverImagery(l: LayerSpecification): boolean {
 }
 
 /**
+ * Purpose: a style whose OpenFreeMap sources give no credit of their own. Their tile description carries a credit
+ * that differs from the basemap's `attribution` only in its links, and MapLibre showed both, one over the other
+ * (Damascus phone test). A credit in the style's source takes the place of the tile description's, and an empty
+ * one is not shown, so the basemap's `attribution` (which names the OpenStreetMap contributors) is the only one.
+ */
+function withoutTileCredits(style: StyleSpecification): StyleSpecification {
+  const sources: StyleSpecification["sources"] = {};
+  let changed = false;
+  for (const [id, src] of Object.entries(style.sources ?? {})) {
+    const url = "url" in src && typeof src.url === "string" ? src.url : "";
+    if (src.type === "vector" && url.startsWith("https://tiles.openfreemap.org/")) {
+      sources[id] = { ...src, attribution: "" };
+      changed = true;
+    } else sources[id] = src;
+  }
+  return changed ? { ...style, sources } : style;
+}
+
+/**
  * Purpose: the style a basemap draws, from the style loaded from its `styleUrl`.
  * Street basemaps are used as they come. Aerial basemaps keep the vector source (place and street names,
  * which the naming rules also read) and its labels and borders, and draw the imagery under them.
  */
-export function basemapStyle(basemap: Basemap, loaded: StyleSpecification): StyleSpecification {
+export function basemapStyle(basemap: Basemap, given: StyleSpecification): StyleSpecification {
+  const loaded = withoutTileCredits(given);
   const img = basemap.imagery;
   if (!img) return loaded;
   return {

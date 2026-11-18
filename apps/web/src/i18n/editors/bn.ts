@@ -1482,4 +1482,5 @@ export const editorsBn = {
   "spacing.onFoot": "হেঁটে {metres} মি",
   "spacing.straight": "স্টেশনগুলোর মধ্যে সরলরেখায় মাপা।",
   "spacing.onFootHint": "চিহ্নিত স্টপগুলোর মধ্যে হাঁটার দূরত্ব যোগ করতে ওপরে হাঁটার আওতা হিসাব করুন।",
+  "kit.savedWithProject": "অঙ্কনটি প্রকল্পের সঙ্গে সংরক্ষিত হয়।",
 } satisfies EditorMessages;

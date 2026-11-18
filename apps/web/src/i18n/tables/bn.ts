@@ -426,4 +426,5 @@ export const tablesBn = {
   "tt.tbl.departs": "ছাড়ে",
   "tt.tbl.to": "পর্যন্ত",
   "tt.tbl.arrives": "পৌঁছায়",
+  "cost.outsideRange": "লাইব্রেরির সীমার ({low}–{high}) বাইরে: মান ও তার একক যাচাই করুন।",
 } satisfies TablesMessages;

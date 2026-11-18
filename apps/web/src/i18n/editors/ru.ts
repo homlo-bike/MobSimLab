@@ -1578,4 +1578,5 @@ export const editorsRu = {
   "spacing.straight": "Измерено по прямой между станциями.",
   "spacing.onFootHint":
     "Рассчитайте выше пешую доступность, чтобы добавить пешее расстояние между отмеченными остановками.",
+  "kit.savedWithProject": "Чертёж сохраняется вместе с проектом.",
 } satisfies EditorMessages;

@@ -1518,4 +1518,5 @@ export const editorsUz = {
   "spacing.straight": "Stansiyalar orasida to'g'ri chiziq bo'yicha o'lchangan.",
   "spacing.onFootHint":
     "Belgilangan bekatlar orasidagi piyoda masofani qo'shish uchun yuqorida piyoda qamrovni hisoblang.",
+  "kit.savedWithProject": "Chizma loyiha bilan birga saqlanadi.",
 } satisfies EditorMessages;

@@ -436,4 +436,6 @@ export const tablesIt = {
   "tt.tbl.departs": "Parte",
   "tt.tbl.to": "A",
   "tt.tbl.arrives": "Arriva",
+  "cost.outsideRange":
+    "Fuori dall'intervallo della libreria ({low}–{high}): controlla il valore e la sua unità.",
 } satisfies TablesMessages;

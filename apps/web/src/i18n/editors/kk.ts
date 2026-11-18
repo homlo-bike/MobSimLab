@@ -1507,4 +1507,5 @@ export const editorsKk = {
   "spacing.straight": "Станциялар арасы түзу сызықпен өлшенген.",
   "spacing.onFootHint":
     "Белгіленген аялдамалар арасындағы жаяу қашықтықты қосу үшін жоғарыда жаяу қолжетімділікті есептеңіз.",
+  "kit.savedWithProject": "Сызба жобамен бірге сақталады.",
 } satisfies EditorMessages;

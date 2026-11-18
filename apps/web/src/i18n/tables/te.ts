@@ -429,4 +429,5 @@ export const tablesTe = {
   "tt.tbl.departs": "బయలుదేరుతుంది",
   "tt.tbl.to": "వరకు",
   "tt.tbl.arrives": "చేరుతుంది",
+  "cost.outsideRange": "లైబ్రరీ పరిధి ({low}–{high}) వెలుపల: విలువను, దాని యూనిట్‌ను తనిఖీ చేయండి.",
 } satisfies TablesMessages;

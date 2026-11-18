@@ -421,4 +421,5 @@ export const tablesKo = {
   "tt.tbl.departs": "출발",
   "tt.tbl.to": "도착지",
   "tt.tbl.arrives": "도착",
+  "cost.outsideRange": "라이브러리 범위({low}–{high})를 벗어났습니다: 값과 단위를 확인하세요.",
 } satisfies TablesMessages;

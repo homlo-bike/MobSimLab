@@ -430,4 +430,6 @@ export const tablesNl = {
   "tt.tbl.departs": "Vertrekt",
   "tt.tbl.to": "Naar",
   "tt.tbl.arrives": "Komt aan",
+  "cost.outsideRange":
+    "Buiten het bereik van de bibliotheek ({low}–{high}): controleer de waarde en de eenheid.",
 } satisfies TablesMessages;

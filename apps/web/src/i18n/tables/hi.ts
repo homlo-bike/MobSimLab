@@ -426,4 +426,5 @@ export const tablesHi = {
   "tt.tbl.departs": "प्रस्थान",
   "tt.tbl.to": "तक",
   "tt.tbl.arrives": "आगमन",
+  "cost.outsideRange": "लाइब्रेरी की सीमा ({low}–{high}) से बाहर: मान और उसकी इकाई जाँचें।",
 } satisfies TablesMessages;

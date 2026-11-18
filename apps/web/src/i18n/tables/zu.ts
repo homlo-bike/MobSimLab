@@ -441,4 +441,5 @@ export const tablesZu = {
   "tt.tbl.departs": "Iyasuka",
   "tt.tbl.to": "Kuya",
   "tt.tbl.arrives": "Iyafika",
+  "cost.outsideRange": "Ingaphandle kobubanzi bomtapo ({low}–{high}): hlola inani neyunithi yalo.",
 } satisfies TablesMessages;

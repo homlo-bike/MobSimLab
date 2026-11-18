@@ -430,4 +430,5 @@ export const tablesMr = {
   "tt.tbl.departs": "सुटते",
   "tt.tbl.to": "कुठे",
   "tt.tbl.arrives": "पोहोचते",
+  "cost.outsideRange": "लायब्ररीच्या श्रेणीबाहेर ({low}–{high}): मूल्य आणि त्याचे एकक तपासा.",
 } satisfies TablesMessages;

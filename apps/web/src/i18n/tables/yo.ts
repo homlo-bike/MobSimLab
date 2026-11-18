@@ -427,4 +427,5 @@ export const tablesYo = {
   "tt.tbl.departs": "Ń lọ",
   "tt.tbl.to": "Sí",
   "tt.tbl.arrives": "Ń dé",
+  "cost.outsideRange": "Ó wà lóde ààlà ibi ìkówèsí ({low}–{high}): ṣàyẹ̀wò iye náà àti ẹ̀yà rẹ̀.",
 } satisfies TablesMessages;

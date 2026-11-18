@@ -1525,4 +1525,5 @@ export const editorsIt = {
   "spacing.straight": "Misurata in linea d'aria tra le stazioni.",
   "spacing.onFootHint":
     "Calcola sopra la copertura a piedi per aggiungere la distanza a piedi tra le fermate segnalate.",
+  "kit.savedWithProject": "Il disegno viene salvato con il progetto.",
 } satisfies EditorMessages;

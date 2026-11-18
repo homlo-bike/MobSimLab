@@ -204,6 +204,7 @@ export function staticFetch(base: typeof fetch): typeof fetch {
 
     if (method !== "GET") return refuse(403, "The static viewer is read-only.");
 
+    if (path === "/api/comments/new") return json({ total: 0, comments: [] });
     if (path === "/api/projects")
       return json({ projects: url.searchParams.has("public") ? [] : (await index()).map(project) });
 

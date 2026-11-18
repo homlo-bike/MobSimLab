@@ -36,7 +36,7 @@ import {
   perLine,
   sum,
 } from "./model";
-import { libraryValue, PARAMS, paramValue, prefId, type Triple } from "./params";
+import { libraryValue, outsideLibraryRange, PARAMS, paramValue, prefId, type Triple } from "./params";
 import { SPARE_PREF } from "../../workspace/editedElsewhere";
 
 /** Cost tables settings (drawing kind `costs`): the country the planner chose for prices. */
@@ -1092,6 +1092,11 @@ function UnitCosts({
                       editable={editable}
                       onCommit={(v) => setPref(id, v)}
                     />
+                    {outsideLibraryRange(ownV, lib) && (
+                      <span role="note" className="mt-1 block text-xs font-medium text-amber-800">
+                        ⚠ {t("cost.outsideRange", { low: sig(lib[0]), high: sig(lib[2]) })}
+                      </span>
+                    )}
                   </td>
                 </tr>
               );

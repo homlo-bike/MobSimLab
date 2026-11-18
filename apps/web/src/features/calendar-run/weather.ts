@@ -222,6 +222,20 @@ export function hvacFullKwhPerDay(
   );
 }
 
+/**
+ * Purpose: heating and air-conditioning power at full load of the vehicles in service on a day, kW·h per day,
+ * from each line's vehicle-hours a weekday (`weekdayServiceHours`), for when the Tables tab's estimate is not
+ * there (on-board heating and air conditioning came out as 0 MWh in the Damascus multi-year run).
+ * Output: null when no line runs.
+ */
+export function hvacFullKwhFromService(
+  service: readonly { mode: string; hours: number }[],
+  prefs: PreferencesDoc["values"] | undefined,
+): number | null {
+  if (!service.length) return null;
+  return service.reduce((s, l) => s + l.hours * libValue("energy.hvac_power_kw", l.mode, prefs), 0);
+}
+
 /** Purpose: the energy switch heating needs on one frost day, kWh. */
 export function switchKwhPerFrostDay(switches: number, w: WeatherSettings): number {
   return w.switchHeating ? switches * w.switchKw * w.switchHours : 0;

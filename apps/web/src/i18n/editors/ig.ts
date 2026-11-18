@@ -1463,4 +1463,5 @@ export const editorsIg = {
   "spacing.onFoot": "m {metres} n'ụkwụ",
   "spacing.straight": "A tụrụ ya n'ahịrị kwụ ọtọ n'etiti ọdụ.",
   "spacing.onFootHint": "Gbakọọ nnweta ije ụkwụ n'elu iji tinye anya ije ụkwụ n'etiti ebe nkwụsị akara.",
+  "kit.savedWithProject": "A na-echekwa ihe osise ahụ ya na ọrụ ahụ.",
 } satisfies EditorMessages;
