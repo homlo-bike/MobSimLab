@@ -204,9 +204,21 @@ fn stop_on_the_wrong_side_of_a_one_way_street_is_an_error() {
     let g = o.graph();
     let mut line = StreetLine::new(bus(), RoutingRules::default());
     let bad = add(&mut line, &g, 200.0, 6.0, PointKind::Stop); // north side of an eastbound one-way
+    add(&mut line, &g, 50.0, 0.0, PointKind::Via);
     let v = line.view(&g);
     assert_eq!(v.points[0].status, Status::Error);
+    assert!(v.points[0]
+        .message
+        .as_deref()
+        .unwrap()
+        .contains("sidewalk cannot be served"));
     assert!(line.anchor(bad).is_none());
+    // The legs touching it say which point and why, not only "not on a usable road".
+    let leg = v.legs[0].message.as_deref().unwrap();
+    assert!(
+        leg.starts_with("Point 1:") && leg.contains("sidewalk cannot be served"),
+        "{leg}"
+    );
     // A BRT vehicle with doors on both sides can serve it.
     let mut brt = VehicleProfile::default_for(Mode::Brt);
     brt.doors_both_sides = true;

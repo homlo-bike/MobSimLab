@@ -398,7 +398,10 @@ export function LinePanel(props: Props) {
                 >
                   {p.kind === "via" ? (
                     <span className="flex h-5 w-5 items-center justify-center">
-                      <span className="h-3 w-3 rounded-full border-2" style={{ borderColor: mode.color }} />
+                      <span
+                        className="h-3 w-3 rounded-full border-2"
+                        style={{ borderColor: p.status === "error" ? "#dc2626" : mode.color }}
+                      />
                     </span>
                   ) : (
                     <span
@@ -428,6 +431,11 @@ export function LinePanel(props: Props) {
                     </span>
                   )}
                 </div>
+                {p.status === "error" && p.message && (
+                  <p className="ps-7 text-xs text-red-700" role="note">
+                    {p.message}
+                  </p>
+                )}
                 {sel && (
                   <div className="mt-1 flex flex-col gap-1 ps-7">
                     {p.kind !== "via" && (

@@ -15,7 +15,10 @@ export function pointElement(
 ): HTMLElement {
   const el = document.createElement("div");
   el.setAttribute("role", "button");
-  el.setAttribute("aria-label", tNow("street.marker", { n: p.seq + 1, name: p.name }));
+  el.setAttribute(
+    "aria-label",
+    `${tNow("street.marker", { n: p.seq + 1, name: p.name })}${p.status === "error" && p.message ? `. ${p.message}` : ""}`,
+  );
   el.title = `${p.seq + 1}. ${p.name}${p.message ? ` — ${p.message}` : ""}`;
   const via = p.kind === "via";
   const end = p.kind === "end_stop";

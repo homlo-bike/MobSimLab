@@ -682,11 +682,22 @@ impl StreetLine {
             return;
         }
         let (Some(a), Some(b)) = (self.points[i].anchor, self.points[j].anchor) else {
+            // Name the point and say why, so the planner can fix that point (for example a stop
+            // on the sidewalk the doors don't open to) instead of guessing.
+            let (k, p) = if self.points[i].anchor.is_none() {
+                (i, &self.points[i])
+            } else {
+                (j, &self.points[j])
+            };
+            let why = p
+                .error
+                .clone()
+                .unwrap_or_else(|| "It is not on a usable road.".into());
             self.legs[i] = Leg {
                 path: None,
                 direct_m: None,
                 status: Status::Error,
-                message: Some("A point of this leg is not on a usable road.".into()),
+                message: Some(format!("Point {}: {why}", k + 1)),
             };
             return;
         };
