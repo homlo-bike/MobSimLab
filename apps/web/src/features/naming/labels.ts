@@ -99,7 +99,11 @@ export function featuresFromLabels(labels: readonly RenderedLabel[], at: LonLat)
     seen.add(key);
     const names: Record<string, string> = {};
     for (const [k, v] of Object.entries(l.properties))
-      if (k.startsWith("name:") && typeof v === "string") names[k] = v;
+      if (typeof v === "string" && v.trim()) {
+        if (k.startsWith("name:")) names[k] = v;
+        // OpenMapTiles also gives the English name as `name_en`.
+        else if (k === "name_en") names["name:en"] ??= v;
+      }
     out.push({
       id: `${l.sourceLayer}/${i}`,
       category,

@@ -1,6 +1,6 @@
 import type { Map as MapLibreMap, MapMouseEvent } from "maplibre-gl";
 import { type Dispatch, type MutableRefObject, type SetStateAction, useEffect } from "react";
-import { tNow } from "../../i18n/i18n";
+import { activeLanguage, tNow } from "../../i18n/i18n";
 import { basemapLabels, featuresFromLabels, preferTransitKind } from "../naming/labels";
 import { describeChoice, nameForNewPlace } from "../naming/names";
 import { placesOtherThan } from "../naming/registry";
@@ -123,6 +123,7 @@ export function useMapEditing({
             places.map((p) => p.name),
           ),
           radiusM: s.stationGroupingM,
+          language: activeLanguage(),
         });
         setNote(describeChoice(choice, "station"));
         const [d, id] = addStation(s.doc, at, {

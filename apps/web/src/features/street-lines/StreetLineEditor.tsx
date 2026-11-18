@@ -1,7 +1,7 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { tNow, useI18n } from "../../i18n/i18n";
+import { activeLanguage, tNow, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { fetchStreetTile, loadWasmEngine } from "./engine";
 import { LinePanel, type PanelActions } from "./LinePanel";
@@ -234,6 +234,8 @@ export function StreetLineEditor({
     loadEngine()
       .then((e) => {
         if (!alive) return e.dispose();
+        // Streets, and the stops named after them, in the page's language where OSM has it (name:en).
+        e.setLanguage?.(activeLanguage());
         engine.current = e;
         const saved = pending.current;
         const p = saved?.profile ?? e.defaultProfile("bus");
@@ -701,7 +703,13 @@ export function StreetLineEditor({
       if (was !== "via" || kind === "via" || !p) return v;
       const places = [...placesOtherThan("street"), ...stopPlaces(v).filter((q) => q.id !== `street:${id}`)];
       const features = preferTransitKind(featuresFromLabels(basemapLabels(map, p.lonlat), p.lonlat), "bus");
-      const choice = nameForNewPlace(p.lonlat, { places, features, fallback: p.name, radiusM: groupingM });
+      const choice = nameForNewPlace(p.lonlat, {
+        places,
+        features,
+        fallback: p.name,
+        radiusM: groupingM,
+        language: activeLanguage(),
+      });
       if (choice.name !== p.name) v = nameIt(e, id, choice.name);
       setNote(describeChoice(choice, "stop"));
       return v;

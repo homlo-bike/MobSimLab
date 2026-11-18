@@ -45,6 +45,7 @@ export const loadWasmEngine: EngineLoader = async () => {
   const v = (json: string): LineView => JSON.parse(json) as LineView;
   const engine: StreetEngine = {
     addOsm: (xml) => ed.add_osm(xml),
+    setLanguage: (lang) => ed.set_language(lang),
     rebuild: () => v(ed.rebuild()),
     ready: () => ed.ready(),
     view: () => v(ed.view()),
