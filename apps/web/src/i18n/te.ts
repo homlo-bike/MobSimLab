@@ -13,6 +13,7 @@ import { workspaceUiTe } from "./workspace-ui/te";
 import { pluginCodeTe } from "./plugin-code/te";
 import { populationTe } from "./population/te";
 import { pluginsTe } from "./plugins/te";
+import { streetPhotosTe } from "./street-photos/te";
 import type { Messages } from "./en";
 
 /** తెలుగు */
@@ -528,4 +529,5 @@ export const te: Messages = {
   ...roadTe,
   ...calendarTe,
   ...pluginsTe,
+  ...streetPhotosTe,
 };

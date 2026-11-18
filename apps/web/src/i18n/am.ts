@@ -13,6 +13,7 @@ import { workspaceUiAm } from "./workspace-ui/am";
 import { pluginCodeAm } from "./plugin-code/am";
 import { populationAm } from "./population/am";
 import { pluginsAm } from "./plugins/am";
+import { streetPhotosAm } from "./street-photos/am";
 import type { Messages } from "./en";
 
 /** Amharic. */
@@ -516,4 +517,5 @@ export const am: Messages = {
   ...roadAm,
   ...calendarAm,
   ...pluginsAm,
+  ...streetPhotosAm,
 };

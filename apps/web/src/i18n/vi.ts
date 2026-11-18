@@ -13,6 +13,7 @@ import { workspaceUiVi } from "./workspace-ui/vi";
 import { pluginCodeVi } from "./plugin-code/vi";
 import { populationVi } from "./population/vi";
 import { pluginsVi } from "./plugins/vi";
+import { streetPhotosVi } from "./street-photos/vi";
 import type { Messages } from "./en";
 
 /** Tiếng Việt */
@@ -528,4 +529,5 @@ export const vi: Messages = {
   ...roadVi,
   ...calendarVi,
   ...pluginsVi,
+  ...streetPhotosVi,
 };

@@ -112,6 +112,36 @@ describe("plugin checks (ADR-0036)", () => {
       "org.example.water-taxi: basemaps are for bundled plugins only",
     );
 
+    // The API implements each street photo source, so they ship with MobSimLab too.
+    const photos = checkPlugin(
+      samplePlugin({
+        contributes: {
+          modes: [{ id: "water_taxi", file: "modes/water_taxi.json" }],
+          parameters: [{ file: "assumptions/parameters.yaml" }],
+          sources: [{ file: "assumptions/sources.yaml" }],
+          streetPhotos: [
+            {
+              id: "example-photos",
+              label: "Example photos",
+              provider: "panoramax",
+              coverage: {
+                tiles: ["https://api.panoramax.xyz/api/map/{z}/{x}/{y}.mvt"],
+                minzoom: 0,
+                maxzoom: 15,
+                lines: { sourceLayer: "sequences", minzoom: 7 },
+              },
+              attribution: { text: "Example" },
+              pageName: "Example",
+            },
+          ],
+        },
+      }),
+      [],
+    );
+    expect(photos.ok ? [] : photos.errors).toContain(
+      "org.example.water-taxi: street photo sources are for bundled plugins only",
+    );
+
     const clash = checkPlugin(samplePlugin({}, "org.example.other"), [
       {
         id: "org.example.water-taxi",

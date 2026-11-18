@@ -225,3 +225,9 @@ export const RedoIcon = (p: P) => (
     <path d="M20 9H10a6 6 0 0 0 0 12h3" />
   </Icon>
 );
+export const CameraIcon = (p: P) => (
+  <Icon {...p}>
+    <path d="M4 8h3l1.5-2h7L17 8h3v11H4z" />
+    <circle cx="12" cy="13.5" r="3.5" />
+  </Icon>
+);

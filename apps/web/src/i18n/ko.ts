@@ -13,6 +13,7 @@ import { workspaceUiKo } from "./workspace-ui/ko";
 import { pluginCodeKo } from "./plugin-code/ko";
 import { populationKo } from "./population/ko";
 import { pluginsKo } from "./plugins/ko";
+import { streetPhotosKo } from "./street-photos/ko";
 import type { Messages } from "./en";
 
 /** 한국어 */
@@ -521,4 +522,5 @@ export const ko: Messages = {
   ...roadKo,
   ...calendarKo,
   ...pluginsKo,
+  ...streetPhotosKo,
 };

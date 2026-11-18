@@ -13,6 +13,7 @@ import { roadEn } from "./road/en";
 import { calendarEn } from "./calendar/en";
 import { populationEn } from "./population/en";
 import { pluginsEn } from "./plugins";
+import { streetPhotosEn } from "./street-photos/en";
 
 /** English: the source language. Every other language must have every key (the type checker enforces it). */
 export const en = {
@@ -524,6 +525,7 @@ export const en = {
   ...calendarEn,
   ...populationEn,
   ...pluginsEn,
+  ...streetPhotosEn,
 } as const;
 
 export type MessageKey = keyof typeof en;

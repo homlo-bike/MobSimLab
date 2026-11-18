@@ -13,6 +13,7 @@ import { workspaceUiPl } from "./workspace-ui/pl";
 import { pluginCodePl } from "./plugin-code/pl";
 import { populationPl } from "./population/pl";
 import { pluginsPl } from "./plugins/pl";
+import { streetPhotosPl } from "./street-photos/pl";
 import type { Messages } from "./en";
 
 /** Polski */
@@ -530,4 +531,5 @@ export const pl: Messages = {
   ...roadPl,
   ...calendarPl,
   ...pluginsPl,
+  ...streetPhotosPl,
 };

@@ -1,0 +1,34 @@
+{
+  "$schema": "../../contracts/plugin-manifest.schema.json",
+  "id": "org.mobsimlab.panoramax",
+  "name": "Panoramax street photos",
+  "description": "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.",
+  "version": "0.1.0",
+  "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
+  "license": "AGPL-3.0-or-later",
+  "dataLicense": "CC-BY-4.0",
+  "engines": { "mobsimlab": ">=0.1 <1", "pluginApi": "1" },
+  "bundled": true,
+  "tiers": ["data"],
+  "contributes": {
+    "streetPhotos": [
+      {
+        "id": "panoramax",
+        "label": "Panoramax",
+        "provider": "panoramax",
+        "note": "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.",
+        "coverage": {
+          "tiles": ["https://api.panoramax.xyz/api/map/{z}/{x}/{y}.mvt"],
+          "minzoom": 0,
+          "maxzoom": 15,
+          "lines": { "sourceLayer": "sequences", "minzoom": 7 },
+          "points": { "sourceLayer": "pictures", "minzoom": 15 }
+        },
+        "color": "#e2541b",
+        "attribution": { "text": "Panoramax", "url": "https://panoramax.fr" },
+        "pageName": "Panoramax"
+      }
+    ]
+  },
+  "permissions": []
+}

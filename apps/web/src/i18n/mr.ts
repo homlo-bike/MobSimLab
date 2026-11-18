@@ -13,6 +13,7 @@ import { workspaceUiMr } from "./workspace-ui/mr";
 import { pluginCodeMr } from "./plugin-code/mr";
 import { populationMr } from "./population/mr";
 import { pluginsMr } from "./plugins/mr";
+import { streetPhotosMr } from "./street-photos/mr";
 import type { Messages } from "./en";
 
 /** मराठी */
@@ -526,4 +527,5 @@ export const mr: Messages = {
   ...roadMr,
   ...calendarMr,
   ...pluginsMr,
+  ...streetPhotosMr,
 };

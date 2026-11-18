@@ -13,6 +13,7 @@ import { workspaceUiFa } from "./workspace-ui/fa";
 import { pluginCodeFa } from "./plugin-code/fa";
 import { populationFa } from "./population/fa";
 import { pluginsFa } from "./plugins/fa";
+import { streetPhotosFa } from "./street-photos/fa";
 import type { Messages } from "./en";
 
 /** فارسی */
@@ -527,4 +528,5 @@ export const fa: Messages = {
   ...roadFa,
   ...calendarFa,
   ...pluginsFa,
+  ...streetPhotosFa,
 };

@@ -13,6 +13,7 @@ import { workspaceUiUr } from "./workspace-ui/ur";
 import { pluginCodeUr } from "./plugin-code/ur";
 import { populationUr } from "./population/ur";
 import { pluginsUr } from "./plugins/ur";
+import { streetPhotosUr } from "./street-photos/ur";
 import type { Messages } from "./en";
 
 /** اردو */
@@ -531,4 +532,5 @@ export const ur: Messages = {
   ...roadUr,
   ...calendarUr,
   ...pluginsUr,
+  ...streetPhotosUr,
 };

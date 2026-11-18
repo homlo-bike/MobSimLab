@@ -191,6 +191,18 @@ Built-in layers: roads, buildings, vehicles, stops, stations, railways, bridges,
 
 Protected layers are always proxied by the `gateway` tile proxy which injects credentials server-side, enforces allowlists, caches tiles (respecting provider terms; Esri tiles are not cached), and rate-limits.
 
+### 8.1 Street photos
+
+Street-level photos help planners check a street before drawing on it: lanes, kerbs, tram track, stops. They come from plugins with a `streetPhotos` contribution (bundled only, because the API implements each source):
+
+| Source | Plugin | Key | How |
+|--------|--------|-----|-----|
+| Panoramax, the federated open street photo commons (photos mostly CC BY-SA 4.0 or Etalab 2.0, which allow mapping from them) | `org.mobsimlab.panoramax` | None | Coverage as vector tiles from `api.panoramax.xyz` (in `MAP_ORIGINS`); photos near a point from the meta-catalog's STAC search, through `/api/street-photos/panoramax/near`; pictures through `/api/street-photos/panoramax/photos/<collection>_<picture>/<thumb or sd>` |
+
+The map's **Street photos** button opens a panel that draws the source's coverage (sequence lines, and from zoom 15 one dot per photo). While it is open, a click on the map goes to the panel, not to the open tool, and lists the photos within 30 m, nearest first, with date, author, distance, licence and a link to the source's own viewer. Closing the panel gives the tool its clicks back.
+
+The API reads picture addresses from the catalogue and fetches them with the outbound gateway's rules (ADR-0017): https on public hosts only, checked after every name lookup and after each of at most three redirects, images only, a size limit. So the browser never contacts the federation's picture hosts. Nothing is stored: photos are not cached by the API, not saved with a project and not in `.mslab` exports. The static viewer has no API, so it offers no street photos.
+
 ## 9. Network design tools
 
 ### 9.1 Railway alignment

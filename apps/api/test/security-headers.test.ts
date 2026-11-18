@@ -17,7 +17,7 @@ describe("security headers and HTTPS", () => {
     expect(res.headers["content-security-policy"]).toContain("object-src 'none'");
     // The aerial basemap's tiles must be allowed, or the browser blocks them.
     expect(res.headers["content-security-policy"]).toContain(
-      "connect-src 'self' data: https://tiles.openfreemap.org https://tiles.maps.eox.at https://gibs.earthdata.nasa.gov",
+      "connect-src 'self' data: https://tiles.openfreemap.org https://tiles.maps.eox.at https://gibs.earthdata.nasa.gov https://api.panoramax.xyz",
     );
     expect(res.headers["strict-transport-security"]).toMatch(/max-age=\d+/);
     expect(res.headers["x-content-type-options"]).toBe("nosniff");
@@ -43,7 +43,9 @@ describe("security headers and HTTPS", () => {
       join(__dirname, "..", "..", "..", "tools", "static-site", "build.mjs"),
       "utf8",
     );
-    expect(build).toContain(`const MAP_ORIGINS = "${MAP_ORIGINS.join(" ")}"`);
+    expect(build.replace(/const MAP_ORIGINS =\s+"/, 'const MAP_ORIGINS = "')).toContain(
+      `const MAP_ORIGINS = "${MAP_ORIGINS.join(" ")}"`,
+    );
     expect(build).toContain("frame-ancestors 'none'");
   });
 

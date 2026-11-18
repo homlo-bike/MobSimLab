@@ -13,6 +13,7 @@ import { workspaceUiYo } from "./workspace-ui/yo";
 import { pluginCodeYo } from "./plugin-code/yo";
 import { populationYo } from "./population/yo";
 import { pluginsYo } from "./plugins/yo";
+import { streetPhotosYo } from "./street-photos/yo";
 import type { Messages } from "./en";
 
 /** Yorùbá. */
@@ -528,4 +529,5 @@ export const yo: Messages = {
   ...roadYo,
   ...calendarYo,
   ...pluginsYo,
+  ...streetPhotosYo,
 };

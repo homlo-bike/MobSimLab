@@ -86,6 +86,8 @@ export interface PluginEntry {
   mapLayers: unknown[];
   /** Aerial basemaps (bundled plugins only: their tile hosts must be in the app's CSP). */
   basemaps: unknown[];
+  /** Street photo sources (bundled plugins only: the API implements each provider). */
+  streetPhotos: unknown[];
   parameters: Record<string, { label: string; unit: string }>;
   defaults: Record<string, Record<string, Record<string, Range>>>;
 }
@@ -510,6 +512,7 @@ export function checkPlugin(
       tabs?: PluginEntry["tabs"];
       mapLayers?: { id: string; calculation: string; style: string }[];
       basemaps?: unknown[];
+      streetPhotos?: unknown[];
     };
   };
   const pid = m.id;
@@ -518,6 +521,8 @@ export function checkPlugin(
   if (!options.bundled) {
     // The browser may load tiles only from the hosts in the CSP (MAP_ORIGINS), so basemaps ship with the app.
     if (c.basemaps?.length) errors.push(`${pid}: basemaps are for bundled plugins only`);
+    // The API implements each street photo source, so they ship with the app too.
+    if (c.streetPhotos?.length) errors.push(`${pid}: street photo sources are for bundled plugins only`);
     if (m.bundled) errors.push(`${pid}: only plugins that ship with MobSimLab may say "bundled"`);
     if (m.publisher.url !== undefined && !/^https:\/\/[^\s]+$/.test(m.publisher.url))
       errors.push(`${pid}: the publisher URL must start with https://`);
@@ -706,6 +711,7 @@ export function checkPlugin(
     tabs: c.tabs ?? [],
     mapLayers: layers,
     basemaps: c.basemaps ?? [],
+    streetPhotos: c.streetPhotos ?? [],
     parameters: Object.fromEntries(
       params.map((p) => [p.key!, { label: p.label as string, unit: p.unit as string }]),
     ),

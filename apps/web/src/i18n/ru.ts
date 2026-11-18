@@ -13,6 +13,7 @@ import { workspaceUiRu } from "./workspace-ui/ru";
 import { pluginCodeRu } from "./plugin-code/ru";
 import { populationRu } from "./population/ru";
 import { pluginsRu } from "./plugins/ru";
+import { streetPhotosRu } from "./street-photos/ru";
 import type { Messages } from "./en";
 
 /** Русский. */
@@ -535,4 +536,5 @@ export const ru: Messages = {
   ...roadRu,
   ...calendarRu,
   ...pluginsRu,
+  ...streetPhotosRu,
 };

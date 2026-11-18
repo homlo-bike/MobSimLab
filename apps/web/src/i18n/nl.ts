@@ -13,6 +13,7 @@ import { workspaceUiNl } from "./workspace-ui/nl";
 import { pluginCodeNl } from "./plugin-code/nl";
 import { populationNl } from "./population/nl";
 import { pluginsNl } from "./plugins/nl";
+import { streetPhotosNl } from "./street-photos/nl";
 import type { Messages } from "./en";
 
 /** Nederlands. */
@@ -535,4 +536,5 @@ export const nl: Messages = {
   ...roadNl,
   ...calendarNl,
   ...pluginsNl,
+  ...streetPhotosNl,
 };

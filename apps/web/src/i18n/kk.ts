@@ -13,6 +13,7 @@ import { workspaceUiKk } from "./workspace-ui/kk";
 import { pluginCodeKk } from "./plugin-code/kk";
 import { populationKk } from "./population/kk";
 import { pluginsKk } from "./plugins/kk";
+import { streetPhotosKk } from "./street-photos/kk";
 import type { Messages } from "./en";
 
 /** Қазақша */
@@ -530,4 +531,5 @@ export const kk: Messages = {
   ...roadKk,
   ...calendarKk,
   ...pluginsKk,
+  ...streetPhotosKk,
 };

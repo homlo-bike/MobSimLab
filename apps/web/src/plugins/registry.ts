@@ -86,6 +86,35 @@ export interface PluginBasemap {
   server?: "esri";
 }
 
+/** A source layer of a street photo source's coverage tiles, drawn from `minzoom` on. */
+export interface StreetPhotoLayer {
+  sourceLayer: string;
+  minzoom: number;
+}
+
+/**
+ * A street-level photo source a bundled plugin adds (Panoramax): its coverage, drawn while the map's Street photos
+ * panel is open, and the photos near a clicked point, which the API looks up (`/api/street-photos/<provider>`).
+ * With `server`, the source needs a key an Admin saved and is offered only once it is saved.
+ */
+export interface PluginStreetPhotos {
+  id: string;
+  label: string;
+  provider: string;
+  note?: string;
+  coverage: {
+    tiles: string[];
+    minzoom: number;
+    maxzoom: number;
+    lines: StreetPhotoLayer;
+    points?: StreetPhotoLayer;
+  };
+  color?: string;
+  attribution: { text: string; url?: string };
+  pageName: string;
+  server?: string;
+}
+
 /**
  * A project tab a plugin adds after the core tabs: `view` names a view built into the web app (bundled
  * plugins), `ui` the plugin's own page, shown in a sandboxed frame (installed plugins, ADR-0036 §6).
@@ -125,6 +154,7 @@ export interface Plugin {
   exporters?: PluginConverter[];
   mapLayers?: PluginMapLayer[];
   basemaps?: PluginBasemap[];
+  streetPhotos?: PluginStreetPhotos[];
   tabs?: PluginTab[];
   parameters: Record<string, { label: string; unit: string }>;
   /** mode id → context option ("*" without one) → parameter key → range. */
@@ -153,6 +183,8 @@ export interface ProjectPlugin {
     mapLayers: string[];
     /** Labels of its aerial basemaps (older servers leave them out). */
     basemaps?: string[];
+    /** Labels of its street photo sources (older servers leave them out). */
+    streetPhotos?: string[];
     /** Labels of its importers, exporters and tabs (older servers leave them out). */
     importers?: string[];
     exporters?: string[];
@@ -272,6 +304,13 @@ export function pluginMapLayers(
   plugins: readonly Plugin[] = activePlugins(),
 ): PluginMapLayer[] {
   return plugins.flatMap((p) => (p.mapLayers ?? []).filter((l) => l.calculation === calculation));
+}
+
+/** Purpose: the street photo sources the plugins add, with the plugin that adds each. */
+export function pluginStreetPhotos(
+  plugins: readonly Plugin[] = activePlugins(),
+): (PluginStreetPhotos & { plugin: string })[] {
+  return plugins.flatMap((p) => (p.streetPhotos ?? []).map((s) => ({ ...s, plugin: p.id })));
 }
 
 /** Purpose: the aerial basemaps the plugins add, with the plugin that adds each. */

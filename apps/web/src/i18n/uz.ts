@@ -13,6 +13,7 @@ import { workspaceUiUz } from "./workspace-ui/uz";
 import { pluginCodeUz } from "./plugin-code/uz";
 import { populationUz } from "./population/uz";
 import { pluginsUz } from "./plugins/uz";
+import { streetPhotosUz } from "./street-photos/uz";
 import type { Messages } from "./en";
 
 /** Oʻzbekcha */
@@ -537,4 +538,5 @@ export const uz: Messages = {
   ...roadUz,
   ...calendarUz,
   ...pluginsUz,
+  ...streetPhotosUz,
 };

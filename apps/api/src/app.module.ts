@@ -8,6 +8,9 @@ import { AuthController } from "./auth/auth.controller";
 import { BasemapsController } from "./basemaps/basemaps.controller";
 import { BasemapsService } from "./basemaps/basemaps.service";
 import { EsriImageryClient } from "./basemaps/esri.client";
+import { PanoramaxClient } from "./street-photos/panoramax.client";
+import { StreetPhotosController } from "./street-photos/street-photos.controller";
+import { StreetPhotosService } from "./street-photos/street-photos.service";
 import { AuthService } from "./auth/auth.service";
 import { CommentsController } from "./comments/comments.controller";
 import { CommentsService } from "./comments/comments.service";
@@ -79,6 +82,7 @@ export class AppModule {
         CommentsController,
         PluginsController,
         BasemapsController,
+        StreetPhotosController,
         RunsController,
         MslabController,
         PopulationLayersController,
@@ -89,6 +93,8 @@ export class AppModule {
         AuthService,
         BasemapsService,
         { provide: EsriImageryClient, useFactory: () => new EsriImageryClient() },
+        StreetPhotosService,
+        { provide: PanoramaxClient, useFactory: () => new PanoramaxClient() },
         CommentsService,
         OidcService,
         ProjectsService,

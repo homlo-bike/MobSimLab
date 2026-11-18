@@ -13,6 +13,7 @@ import { workspaceUiIg } from "./workspace-ui/ig";
 import { pluginCodeIg } from "./plugin-code/ig";
 import { populationIg } from "./population/ig";
 import { pluginsIg } from "./plugins/ig";
+import { streetPhotosIg } from "./street-photos/ig";
 import type { Messages } from "./en";
 
 /** Igbo. */
@@ -531,4 +532,5 @@ export const ig: Messages = {
   ...roadIg,
   ...calendarIg,
   ...pluginsIg,
+  ...streetPhotosIg,
 };

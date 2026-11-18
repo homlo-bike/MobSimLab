@@ -13,6 +13,7 @@ import { workspaceUiFr } from "./workspace-ui/fr";
 import { pluginCodeFr } from "./plugin-code/fr";
 import { populationFr } from "./population/fr";
 import { pluginsFr } from "./plugins/fr";
+import { streetPhotosFr } from "./street-photos/fr";
 import type { Messages } from "./en";
 
 /** Français. */
@@ -538,4 +539,5 @@ export const fr: Messages = {
   ...roadFr,
   ...calendarFr,
   ...pluginsFr,
+  ...streetPhotosFr,
 };

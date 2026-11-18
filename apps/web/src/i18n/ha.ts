@@ -13,6 +13,7 @@ import { workspaceUiHa } from "./workspace-ui/ha";
 import { pluginCodeHa } from "./plugin-code/ha";
 import { populationHa } from "./population/ha";
 import { pluginsHa } from "./plugins/ha";
+import { streetPhotosHa } from "./street-photos/ha";
 import type { Messages } from "./en";
 
 /** Hausa. */
@@ -533,4 +534,5 @@ export const ha: Messages = {
   ...roadHa,
   ...calendarHa,
   ...pluginsHa,
+  ...streetPhotosHa,
 };

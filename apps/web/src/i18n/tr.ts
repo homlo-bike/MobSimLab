@@ -13,6 +13,7 @@ import { workspaceUiTr } from "./workspace-ui/tr";
 import { pluginCodeTr } from "./plugin-code/tr";
 import { populationTr } from "./population/tr";
 import { pluginsTr } from "./plugins/tr";
+import { streetPhotosTr } from "./street-photos/tr";
 import type { Messages } from "./en";
 
 /** Türkçe */
@@ -531,4 +532,5 @@ export const tr: Messages = {
   ...roadTr,
   ...calendarTr,
   ...pluginsTr,
+  ...streetPhotosTr,
 };

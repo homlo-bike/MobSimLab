@@ -116,6 +116,39 @@ def check_basemaps(pid: str, manifest: dict) -> list[str]:
     return errors
 
 
+def check_street_photos(pid: str, manifest: dict) -> list[str]:
+    """Check street photo sources: bundled only, coverage tiles from a host the CSP lists or the API."""
+    errors: list[str] = []
+    sources = manifest["contributes"].get("streetPhotos", [])
+    if sources and not manifest.get("bundled", False):
+        errors.append(f"{pid}: street photo sources are for bundled plugins only")
+        return errors
+    origins = map_origins() if sources else set()
+    for sp in sources:
+        cov = sp["coverage"]
+        for url in cov["tiles"]:
+            if url.startswith("/api/"):
+                if "server" not in sp or not url.startswith(f"/api/street-photos/{sp['provider']}/tiles/"):
+                    errors.append(
+                        f"{pid}: street photos {sp['id']}: tiles from the API need `server` and come from "
+                        f"/api/street-photos/{sp['provider']}/tiles/"
+                    )
+            else:
+                origin = "/".join(url.split("/")[:3])
+                if origin not in origins:
+                    errors.append(
+                        f"{pid}: street photos {sp['id']} loads tiles from {origin}, which MAP_ORIGINS does not list"
+                    )
+                if "server" in sp:
+                    errors.append(f"{pid}: street photos {sp['id']}: a keyed source's tiles come through the API")
+            for part in ("{z}", "{x}", "{y}"):
+                if part not in url:
+                    errors.append(f"{pid}: street photos {sp['id']}: a tile URL has no {part}")
+        if cov["minzoom"] > cov["maxzoom"]:
+            errors.append(f"{pid}: street photos {sp['id']}: minzoom is deeper than maxzoom")
+    return errors
+
+
 def as_list(v) -> list:
     """A context value as a list."""
     return v if isinstance(v, list) else [v]
@@ -309,6 +342,7 @@ def check_plugin(
     calc_ids = {x["id"] for x in c.get("calculations", [])}
     errors += check_code(pid, manifest, folder)
     errors += check_basemaps(pid, manifest)
+    errors += check_street_photos(pid, manifest)
     converters = c.get("importers", []) + c.get("exporters", [])
     conv_ids = [x["id"] for x in converters]
     for cid in sorted({x for x in conv_ids if conv_ids.count(x) > 1}):
@@ -415,6 +449,7 @@ def check_plugin(
         "exporters": c.get("exporters", []),
         "mapLayers": layers,
         "basemaps": c.get("basemaps", []),
+        "streetPhotos": c.get("streetPhotos", []),
         "tabs": c.get("tabs", []),
         "parameters": {prm["key"]: {"label": prm["label"], "unit": prm["unit"]} for prm in params},
         "defaults": defaults,
@@ -463,6 +498,13 @@ def build(root: Path = PLUGINS) -> tuple[list[str], dict]:
             if b["id"] in owners:
                 errors.append(f"{p['id']}: basemap {b['id']} is also contributed by {owners[b['id']]}")
             owners[b["id"]] = p["id"]
+    photo_owners: dict[str, str] = {}
+    for p in plugins:
+        for sp in p["streetPhotos"]:
+            for key in (f"id {sp['id']}", f"provider {sp['provider']}"):
+                if key in photo_owners:
+                    errors.append(f"{p['id']}: street photos {key} is also contributed by {photo_owners[key]}")
+                photo_owners[key] = p["id"]
     return errors, {"pluginApi": "1", "plugins": plugins}
 
 

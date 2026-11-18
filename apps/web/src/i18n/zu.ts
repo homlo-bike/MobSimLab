@@ -13,6 +13,7 @@ import { workspaceUiZu } from "./workspace-ui/zu";
 import { pluginCodeZu } from "./plugin-code/zu";
 import { populationZu } from "./population/zu";
 import { pluginsZu } from "./plugins/zu";
+import { streetPhotosZu } from "./street-photos/zu";
 import type { Messages } from "./en";
 
 /** isiZulu. */
@@ -538,4 +539,5 @@ export const zu: Messages = {
   ...roadZu,
   ...calendarZu,
   ...pluginsZu,
+  ...streetPhotosZu,
 };

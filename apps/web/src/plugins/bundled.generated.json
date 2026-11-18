@@ -102,6 +102,7 @@
       "exporters": [],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "ropeway.line_speed_ms": {
@@ -942,6 +943,7 @@
         }
       ],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [
         {
           "id": "cargo-bike",
@@ -4321,6 +4323,7 @@
       "exporters": [],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "energy.electric_share": {
@@ -5055,6 +5058,7 @@
           "server": "esri"
         }
       ],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {},
       "defaults": {}
@@ -5131,6 +5135,7 @@
       "exporters": [],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "ferry.service_speed_kn": {
@@ -5375,6 +5380,7 @@
       ],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {},
       "defaults": {}
@@ -5458,6 +5464,7 @@
           }
         }
       ],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {},
       "defaults": {}
@@ -5602,6 +5609,7 @@
         }
       ],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "noise.receiver_height_m": {
@@ -9351,6 +9359,7 @@
       "exporters": [],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "drt.speed_kmh": {
@@ -9461,6 +9470,63 @@
       }
     },
     {
+      "id": "org.mobsimlab.panoramax",
+      "name": "Panoramax street photos",
+      "description": "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.",
+      "version": "0.1.0",
+      "publisher": {
+        "name": "MobSimLab contributors",
+        "url": "https://github.com/homlo-bike/MobSimLab"
+      },
+      "license": "AGPL-3.0-or-later",
+      "dataLicense": "CC-BY-4.0",
+      "bundled": true,
+      "tiers": [
+        "data"
+      ],
+      "permissions": [],
+      "modes": [],
+      "contexts": [],
+      "tools": [],
+      "calculations": [],
+      "importers": [],
+      "exporters": [],
+      "mapLayers": [],
+      "basemaps": [],
+      "streetPhotos": [
+        {
+          "id": "panoramax",
+          "label": "Panoramax",
+          "provider": "panoramax",
+          "note": "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.",
+          "coverage": {
+            "tiles": [
+              "https://api.panoramax.xyz/api/map/{z}/{x}/{y}.mvt"
+            ],
+            "minzoom": 0,
+            "maxzoom": 15,
+            "lines": {
+              "sourceLayer": "sequences",
+              "minzoom": 7
+            },
+            "points": {
+              "sourceLayer": "pictures",
+              "minzoom": 15
+            }
+          },
+          "color": "#e2541b",
+          "attribution": {
+            "text": "Panoramax",
+            "url": "https://panoramax.fr"
+          },
+          "pageName": "Panoramax"
+        }
+      ],
+      "tabs": [],
+      "parameters": {},
+      "defaults": {}
+    },
+    {
       "id": "org.mobsimlab.people-mover",
       "name": "People movers",
       "description": "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.",
@@ -9543,6 +9609,7 @@
       "exporters": [],
       "mapLayers": [],
       "basemaps": [],
+      "streetPhotos": [],
       "tabs": [],
       "parameters": {
         "people_mover.line_speed_ms": {

@@ -13,6 +13,7 @@ import { workspaceUiJa } from "./workspace-ui/ja";
 import { pluginCodeJa } from "./plugin-code/ja";
 import { populationJa } from "./population/ja";
 import { pluginsJa } from "./plugins/ja";
+import { streetPhotosJa } from "./street-photos/ja";
 import type { Messages } from "./en";
 
 /** 日本語 */
@@ -523,4 +524,5 @@ export const ja: Messages = {
   ...roadJa,
   ...calendarJa,
   ...pluginsJa,
+  ...streetPhotosJa,
 };
