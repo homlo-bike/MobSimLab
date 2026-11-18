@@ -280,6 +280,7 @@ export const tablesNl = {
   "cost.x.stations.elevated": "Stations verhoogd",
   "cost.x.stations.underground": "Stations ondergronds",
   "cost.x.stations.underground2": "Stations ondergronds, diep",
+  "cost.x.refurbished": "{what}, gerenoveerd",
   "cost.x.trains": "{train} × {units}, treinen van {m} m",
   "cost.x.depotFleet": "Stalling en opstelterrein voor de vloot",
   "cost.x.crew": "Personeel, per treinuur",
@@ -318,6 +319,9 @@ export const tablesNl = {
   "cost.p.cost.station.elevated": "Verhoogd station",
   "cost.p.cost.station.underground": "Ondergronds station op het eerste niveau (bak in open bouwput)",
   "cost.p.cost.station.underground_deep": "Ondergronds station op het tweede niveau (diep)",
+  "cost.p.cost.station.refurbish": "Renovatie van een bestaand stationsbouwwerk, per stuk",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Renovatie van een bestaande tunnel, brug of viaduct, dubbelspoor",
   "cost.p.cost.switch_each": "Wissel of kruising, per stuk",
   "cost.p.cost.depot_per_train_m": "Stalling en opstelterrein per meter spoorvloot",
   "cost.p.cost.depot_per_bus": "Busstalling per bus",

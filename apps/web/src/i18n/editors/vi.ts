@@ -151,6 +151,11 @@ export const editorsVi = {
   "rail.tunnel.cut_and_cover": "Đào hở rồi lấp",
   "rail.tunnel.tbm": "Hầm khoan (TBM)",
   "rail.structure": "Nâng cao trên",
+  "rail.existingStructure": "Tận dụng kết cấu hiện có",
+  "rail.existingStructureHint":
+    "Hầm, cầu và cầu cạn đã có sẵn (như một hầm đường sắt cũ) và được tính chi phí cải tạo.",
+  "rail.existingStation": "Trong kết cấu hiện có",
+  "rail.existingStationHint": "Hộp ga hoặc sảnh ga đã có sẵn; tính chi phí cải tạo và trang bị.",
   "rail.structure.auto": "Tự động (đường trên cao cho tàu điện và metro, cầu cạn cho tuyến chính)",
   "rail.structure.elevated": "Đường trên cao",
   "rail.structure.viaduct": "Cầu cạn",

@@ -166,6 +166,11 @@ export const editorsBn = {
   "rail.tunnel.cut_and_cover": "কাট অ্যান্ড কভার",
   "rail.tunnel.tbm": "বোরড টানেল (TBM)",
   "rail.structure": "উঁচুতে যার উপর",
+  "rail.existingStructure": "বিদ্যমান কাঠামো পুনরায় ব্যবহার করে",
+  "rail.existingStructureHint":
+    "এর সুড়ঙ্গ, সেতু ও ভায়াডাক্ট আগে থেকেই আছে (যেমন পুরোনো রেল সুড়ঙ্গ) এবং সংস্কারের খরচ ধরা হয়।",
+  "rail.existingStation": "বিদ্যমান কাঠামোর মধ্যে",
+  "rail.existingStationHint": "স্টেশন বক্স বা হল আগে থেকেই আছে; সংস্কার ও সজ্জার খরচ ধরা হয়।",
   "rail.structure.auto": "স্বয়ংক্রিয় (ট্রাম ও মেট্রোর জন্য এলিভেটেড পথ, প্রধান লাইনের জন্য ভায়াডাক্ট)",
   "rail.structure.elevated": "এলিভেটেড পথ",
   "rail.structure.viaduct": "ভায়াডাক্ট",

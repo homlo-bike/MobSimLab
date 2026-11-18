@@ -167,6 +167,11 @@ export const editorsMr = {
   "rail.tunnel.cut_and_cover": "कट अँड कव्हर",
   "rail.tunnel.tbm": "बोअर केलेला बोगदा (TBM)",
   "rail.structure": "उंचावर कशावर",
+  "rail.existingStructure": "विद्यमान रचना पुन्हा वापरते",
+  "rail.existingStructureHint":
+    "त्याचे बोगदे, पूल आणि व्हायाडक्ट आधीच आहेत (जसे जुना रेल्वे बोगदा) आणि नूतनीकरण म्हणून खर्च धरला जातो.",
+  "rail.existingStation": "विद्यमान रचनेत",
+  "rail.existingStationHint": "स्थानकाचा बॉक्स किंवा हॉल आधीच आहे; नूतनीकरण व सज्जतेचा खर्च धरला जातो.",
   "rail.structure.auto": "आपोआप (ट्राम व मेट्रोसाठी उन्नत मार्ग, मुख्य मार्गांसाठी व्हायाडक्ट)",
   "rail.structure.elevated": "उन्नत मार्ग",
   "rail.structure.viaduct": "व्हायाडक्ट",

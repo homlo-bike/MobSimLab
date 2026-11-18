@@ -282,6 +282,7 @@ export const tablesSw = {
   "cost.x.stations.elevated": "Stesheni zilizoinuliwa",
   "cost.x.stations.underground": "Stesheni za chini ya ardhi",
   "cost.x.stations.underground2": "Stesheni za chini ya ardhi, za kina",
+  "cost.x.refurbished": "{what}, imekarabatiwa",
   "cost.x.trains": "{train} × {units}, treni za m {m}",
   "cost.x.depotFleet": "Karakana na maegesho ya kundi la magari",
   "cost.x.crew": "Wafanyakazi, kwa treni-saa",
@@ -322,6 +323,9 @@ export const tablesSw = {
   "cost.p.cost.station.underground":
     "Stesheni ya chini ya ardhi ya ngazi ya kwanza (sanduku la kata-na-funika)",
   "cost.p.cost.station.underground_deep": "Stesheni ya chini ya ardhi ya ngazi ya pili (ya kina)",
+  "cost.p.cost.station.refurbish": "Ukarabati wa muundo wa kituo uliopo, kila kimoja",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Ukarabati wa handaki, daraja au viaduct iliyopo, njia mbili",
   "cost.p.cost.switch_each": "Makutano au kivuko, kila moja",
   "cost.p.cost.depot_per_train_m": "Karakana na maegesho kwa kila mita ya kundi la magari la reli",
   "cost.p.cost.depot_per_bus": "Karakana ya mabasi kwa kila basi",

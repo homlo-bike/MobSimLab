@@ -167,6 +167,11 @@ export const editorsUz = {
   "rail.tunnel.cut_and_cover": "Ochiq usul",
   "rail.tunnel.tbm": "Burg‘ulangan tunnel (TBM)",
   "rail.structure": "Ko‘tarilgan asos",
+  "rail.existingStructure": "Mavjud inshootdan qayta foydalanadi",
+  "rail.existingStructureHint":
+    "Uning tunnellari, ko‘priklari va viaduklari allaqachon bor (masalan, eski temir yo‘l tunneli) va ta’mir sifatida hisoblanadi.",
+  "rail.existingStation": "Mavjud inshootda",
+  "rail.existingStationHint": "Bekat qutisi yoki zali allaqachon bor; ta’mir va jihozlash hisoblanadi.",
   "rail.structure.auto": "Avto (tramvay va metro uchun estakada, magistrallar uchun viaduk)",
   "rail.structure.elevated": "Estakada",
   "rail.structure.viaduct": "Viaduk",

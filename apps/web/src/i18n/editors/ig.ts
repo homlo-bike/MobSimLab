@@ -150,6 +150,11 @@ export const editorsIg = {
   "rail.tunnel.cut_and_cover": "Gwuo ma kpuchie",
   "rail.tunnel.tbm": "Ọwara igwe gwuru (TBM)",
   "rail.structure": "E bulitere ya n'elu",
+  "rail.existingStructure": "Na-eji ihe owuwu dị adị eme ihe ọzọ",
+  "rail.existingStructureHint":
+    "Ọwara, akwa mmiri na viaduct ya adịlarịị (dịka ọwara ụgbọ okporo ígwè ochie), a na-agụ ha dịka imezi ọhụrụ.",
+  "rail.existingStation": "N'ime ihe owuwu dị adị",
+  "rail.existingStationHint": "Igbe ma ọ bụ ụlọ nzukọ ọdụ ahụ adịlarịị; a na-agụ imezi na ịkwadebe ya.",
   "rail.structure.auto": "Akpaghị aka (ụzọ dị elu maka tram na metro, akwa mmiri ogologo maka ahịrị ndị isi)",
   "rail.structure.elevated": "Ụzọ dị elu",
   "rail.structure.viaduct": "Akwa ogologo nwere ogidi",

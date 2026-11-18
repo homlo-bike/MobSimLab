@@ -283,6 +283,7 @@ export const tablesUz = {
   "cost.x.stations.elevated": "Estakada stansiyalari",
   "cost.x.stations.underground": "Yer osti stansiyalari",
   "cost.x.stations.underground2": "Yer osti stansiyalari, chuqur",
+  "cost.x.refurbished": "{what}, ta’mirlangan",
   "cost.x.trains": "{train} × {units}, {m} m li poyezdlar",
   "cost.x.depotFleet": "Park uchun depo va turish joyi",
   "cost.x.crew": "Xodimlar, poyezd-soat uchun",
@@ -322,6 +323,9 @@ export const tablesUz = {
   "cost.p.cost.station.elevated": "Estakada stansiyasi",
   "cost.p.cost.station.underground": "Birinchi sath yer osti stansiyasi (ochiq usuldagi quti)",
   "cost.p.cost.station.underground_deep": "Ikkinchi sath yer osti stansiyasi (chuqur)",
+  "cost.p.cost.station.refurbish": "Mavjud bekat inshootini ta’mirlash, har biri",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Mavjud tunnel, ko‘prik yoki viadukni ta’mirlash, qo‘sh yo‘l",
   "cost.p.cost.switch_each": "Tutashuv yoki kesishma, har biri",
   "cost.p.cost.depot_per_train_m": "Temir yoʻl parkining har metri uchun depo va turish joyi",
   "cost.p.cost.depot_per_bus": "Har bir avtobus uchun avtobus deposi",

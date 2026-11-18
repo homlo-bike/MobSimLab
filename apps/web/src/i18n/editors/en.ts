@@ -174,6 +174,12 @@ export const editorsEn = {
   "rail.tunnel.cut_and_cover": "Cut and cover",
   "rail.tunnel.tbm": "Bored tunnel (TBM)",
   "rail.structure": "Raised on",
+  "rail.existingStructure": "Re-uses an existing structure",
+  "rail.existingStructureHint":
+    "Its tunnels, bridges and viaducts already exist (such as an old railway tunnel) and are costed as refurbished.",
+  "rail.existingStation": "In an existing structure",
+  "rail.existingStationHint":
+    "The station box or hall already exists and is costed as refurbished and fitted out.",
   "rail.structure.auto": "Auto (elevated for tram and metro, viaduct for main lines)",
   "rail.structure.elevated": "Elevated guideway",
   "rail.structure.viaduct": "Viaduct",

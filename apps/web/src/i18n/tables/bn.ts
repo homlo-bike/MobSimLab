@@ -277,6 +277,7 @@ export const tablesBn = {
   "cost.x.stations.elevated": "উঁচু স্টেশন",
   "cost.x.stations.underground": "ভূগর্ভস্থ স্টেশন",
   "cost.x.stations.underground2": "ভূগর্ভস্থ স্টেশন, গভীর",
+  "cost.x.refurbished": "{what}, সংস্কারকৃত",
   "cost.x.trains": "{train} × {units}, {m} মি ট্রেন",
   "cost.x.depotFleet": "বহরের জন্য ডিপো ও রাখার জায়গা",
   "cost.x.crew": "কর্মী, প্রতি ট্রেন-ঘণ্টা",
@@ -315,6 +316,9 @@ export const tablesBn = {
   "cost.p.cost.station.elevated": "উঁচু স্টেশন",
   "cost.p.cost.station.underground": "প্রথম স্তরের ভূগর্ভস্থ স্টেশন (কাট-অ্যান্ড-কভার বাক্স)",
   "cost.p.cost.station.underground_deep": "দ্বিতীয় স্তরের ভূগর্ভস্থ স্টেশন (গভীর)",
+  "cost.p.cost.station.refurbish": "বিদ্যমান স্টেশন কাঠামো সংস্কার, প্রতিটি",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "বিদ্যমান সুড়ঙ্গ, সেতু বা ভায়াডাক্ট সংস্কার, ডাবল ট্র্যাক",
   "cost.p.cost.switch_each": "সংযোগ বা ক্রসিং, প্রতিটি",
   "cost.p.cost.depot_per_train_m": "রেল বহরের প্রতি মিটারে ডিপো ও রাখার জায়গা",
   "cost.p.cost.depot_per_bus": "প্রতি বাসে বাস ডিপো",

@@ -286,6 +286,7 @@ export const tablesUk = {
   "cost.x.stations.elevated": "Станції естакадні",
   "cost.x.stations.underground": "Станції підземні",
   "cost.x.stations.underground2": "Станції підземні, глибокі",
+  "cost.x.refurbished": "{what}, реконструкція",
   "cost.x.trains": "{train} × {units}, потяги по {m} м",
   "cost.x.depotFleet": "Депо й відстій для парку",
   "cost.x.crew": "Бригади, за поїздо-годину",
@@ -325,6 +326,9 @@ export const tablesUk = {
   "cost.p.cost.station.elevated": "Естакадна станція",
   "cost.p.cost.station.underground": "Підземна станція першого рівня (котлован відкритого способу)",
   "cost.p.cost.station.underground_deep": "Підземна станція другого рівня (глибока)",
+  "cost.p.cost.station.refurbish": "Реконструкція наявної споруди станції, за одиницю",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Реконструкція наявного тунелю, мосту чи віадука, двоколійна",
   "cost.p.cost.switch_each": "Стрілка або перетин, за штуку",
   "cost.p.cost.depot_per_train_m": "Депо й відстій на метр залізничного парку",
   "cost.p.cost.depot_per_bus": "Автобусний парк на автобус",

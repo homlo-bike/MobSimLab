@@ -277,6 +277,7 @@ export const tablesId = {
   "cost.x.stations.elevated": "Stasiun layang",
   "cost.x.stations.underground": "Stasiun bawah tanah",
   "cost.x.stations.underground2": "Stasiun bawah tanah, dalam",
+  "cost.x.refurbished": "{what}, direnovasi",
   "cost.x.trains": "{train} × {units}, kereta {m} m",
   "cost.x.depotFleet": "Depo dan tempat parkir armada",
   "cost.x.crew": "Awak, per kereta-jam",
@@ -317,6 +318,9 @@ export const tablesId = {
   "cost.p.cost.station.elevated": "Stasiun layang",
   "cost.p.cost.station.underground": "Stasiun bawah tanah di level pertama (kotak galian-timbun)",
   "cost.p.cost.station.underground_deep": "Stasiun bawah tanah di level kedua (dalam)",
+  "cost.p.cost.station.refurbish": "Renovasi struktur stasiun yang ada, per unit",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Renovasi terowongan, jembatan atau viaduk yang ada, jalur ganda",
   "cost.p.cost.switch_each": "Wesel atau persilangan, per buah",
   "cost.p.cost.depot_per_train_m": "Depo dan tempat parkir per meter armada rel",
   "cost.p.cost.depot_per_bus": "Depo bus per bus",

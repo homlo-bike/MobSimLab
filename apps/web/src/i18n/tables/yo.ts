@@ -277,6 +277,7 @@ export const tablesYo = {
   "cost.x.stations.elevated": "Àwọn ibùdókọ̀ gíga",
   "cost.x.stations.underground": "Àwọn ibùdókọ̀ abẹ́lẹ̀",
   "cost.x.stations.underground2": "Àwọn ibùdókọ̀ abẹ́lẹ̀, jíjìn",
+  "cost.x.refurbished": "{what}, tí a tún ṣe",
   "cost.x.trains": "{train} × {units}, ọkọ̀ ojú irin {m} m",
   "cost.x.depotFleet": "Ibùdó ọkọ̀ àti ibi ìdúró fún àwọn ọkọ̀",
   "cost.x.crew": "Òṣìṣẹ́, fún wákàtí ọkọ̀ ojú irin kọ̀ọ̀kan",
@@ -316,6 +317,9 @@ export const tablesYo = {
   "cost.p.cost.station.elevated": "Ibùdókọ̀ gíga",
   "cost.p.cost.station.underground": "Ibùdókọ̀ abẹ́lẹ̀ ìpele àkọ́kọ́ (àpótí gbẹ́-kí-o-bò)",
   "cost.p.cost.station.underground_deep": "Ibùdókọ̀ abẹ́lẹ̀ ìpele kejì (jíjìn)",
+  "cost.p.cost.station.refurbish": "Àtúnṣe ilé ibùdó tó wà tẹ́lẹ̀, ọ̀kọ̀ọ̀kan",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Àtúnṣe ihò ojú ọ̀nà, afárá tàbí viaduct tó wà tẹ́lẹ̀, ọ̀nà méjì",
   "cost.p.cost.switch_each": "Ìsopọ̀ tàbí ìkọjá, ọ̀kọ̀ọ̀kan",
   "cost.p.cost.depot_per_train_m": "Ibùdó ọkọ̀ àti ibi ìdúró fún mítà kọ̀ọ̀kan ti àwọn ọkọ̀ ojú irin",
   "cost.p.cost.depot_per_bus": "Ibùdó bọ́ọ̀sì fún bọ́ọ̀sì kọ̀ọ̀kan",

@@ -199,6 +199,11 @@ export const editorsUk = {
   "rail.tunnel.cut_and_cover": "Відкритий спосіб",
   "rail.tunnel.tbm": "Щитовий тунель (ТПМК)",
   "rail.structure": "Піднято на",
+  "rail.existingStructure": "Використовує наявну споруду",
+  "rail.existingStructureHint":
+    "Його тунелі, мости й віадуки вже є (наприклад, старий залізничний тунель) і рахуються як реконструкція.",
+  "rail.existingStation": "У наявній споруді",
+  "rail.existingStationHint": "Коробка чи зал станції вже є; рахуються реконструкція й оснащення.",
   "rail.structure.auto": "Авто (естакада для трамвая й метро, віадук для магістралей)",
   "rail.structure.elevated": "Естакада",
   "rail.structure.viaduct": "Віадук",

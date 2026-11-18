@@ -434,6 +434,48 @@
         Deep boxes or mined caverns with long escalator shafts; Transit Costs Project names depth and station
         size as main cost drivers.
 
+- key: cost.station.refurbish
+  label: Refurbishing an existing station structure, each
+  group: Cost
+  unit: US$ million per station (2023, PPP)
+  used_by:
+    - "construction cost: stations"
+  values:
+    - context:
+        mode: "*"
+      low: 5
+      central: 15
+      high: 40
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "A station the planner marks as re-using an existing structure (an old station box, hall or platforms):
+        repairs, waterproofing, fire safety, access and fit-out instead of a new structure. About a quarter of a
+        new first-level underground station; high values for deep or badly damaged structures."
+
+- key: cost.civil.refurbish_structure_per_km
+  label: Refurbishing an existing tunnel, bridge or viaduct, double track
+  group: Cost
+  unit: US$ million per route-km (2023, PPP)
+  used_by:
+    - "construction cost: civil works"
+  values:
+    - context:
+        mode: "*"
+      low: 4
+      central: 10
+      high: 30
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "A track the planner marks as re-using an existing structure (such as an old railway tunnel): lining
+        repairs, drainage, ventilation, fire safety and bearings instead of a new structure. About a seventh of a
+        new cut and cover tunnel; high values for long-disused or damaged structures."
+
 - key: cost.switch_each
   label: Switch or crossing, each
   group: Cost

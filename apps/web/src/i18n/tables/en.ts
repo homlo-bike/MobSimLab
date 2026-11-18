@@ -302,6 +302,7 @@ export const tablesEn = {
   "cost.x.stations.elevated": "Stations elevated",
   "cost.x.stations.underground": "Stations underground",
   "cost.x.stations.underground2": "Stations underground, deep",
+  "cost.x.refurbished": "{what}, refurbished",
   "cost.x.trains": "{train} × {units}, {m} m trains",
   "cost.x.depotFleet": "Depot and stabling for the fleet",
   "cost.x.crew": "Crew, per train-hour",
@@ -344,6 +345,9 @@ export const tablesEn = {
   "cost.p.cost.station.elevated": "Elevated station",
   "cost.p.cost.station.underground": "Underground station on the first level (cut and cover box)",
   "cost.p.cost.station.underground_deep": "Underground station on the second level (deep)",
+  "cost.p.cost.station.refurbish": "Refurbishing an existing station structure, each",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Refurbishing an existing tunnel, bridge or viaduct, double track",
   "cost.p.cost.switch_each": "Switch or crossing, each",
   "cost.p.cost.depot_per_train_m": "Depot and stabling per metre of rail fleet",
   "cost.p.cost.depot_per_bus": "Bus depot per bus",

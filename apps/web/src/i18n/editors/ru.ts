@@ -199,6 +199,11 @@ export const editorsRu = {
   "rail.tunnel.cut_and_cover": "Открытый способ",
   "rail.tunnel.tbm": "Щитовой тоннель (ТПМК)",
   "rail.structure": "Поднято на",
+  "rail.existingStructure": "Использует существующее сооружение",
+  "rail.existingStructureHint":
+    "Его тоннели, мосты и виадуки уже есть (например, старый железнодорожный тоннель) и считаются как реконструкция.",
+  "rail.existingStation": "В существующем сооружении",
+  "rail.existingStationHint": "Коробка или зал станции уже есть; считаются реконструкция и оснащение.",
   "rail.structure.auto": "Авто (эстакада для трамвая и метро, виадук для магистралей)",
   "rail.structure.elevated": "Эстакада",
   "rail.structure.viaduct": "Виадук",

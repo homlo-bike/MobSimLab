@@ -199,6 +199,11 @@ export const editorsPl = {
   "rail.tunnel.cut_and_cover": "Metoda odkrywkowa",
   "rail.tunnel.tbm": "Tunel drążony (TBM)",
   "rail.structure": "Wyniesione na",
+  "rail.existingStructure": "Wykorzystuje istniejącą konstrukcję",
+  "rail.existingStructureHint":
+    "Jego tunele, mosty i wiadukty już istnieją (np. stary tunel kolejowy) i są liczone jako remont.",
+  "rail.existingStation": "W istniejącej konstrukcji",
+  "rail.existingStationHint": "Komora lub hala stacji już istnieje; liczony jest remont i wyposażenie.",
   "rail.structure.auto": "Automatycznie (estakada dla tramwaju i metra, wiadukt dla linii głównych)",
   "rail.structure.elevated": "Estakada",
   "rail.structure.viaduct": "Wiadukt",

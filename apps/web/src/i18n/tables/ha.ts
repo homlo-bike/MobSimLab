@@ -279,6 +279,7 @@ export const tablesHa = {
   "cost.x.stations.elevated": "Tashoshin sama",
   "cost.x.stations.underground": "Tashoshin ƙarƙashin ƙasa",
   "cost.x.stations.underground2": "Tashoshin ƙarƙashin ƙasa, masu zurfi",
+  "cost.x.refurbished": "{what}, an gyara",
   "cost.x.trains": "{train} × {units}, jirage na m {m}",
   "cost.x.depotFleet": "Wurin ajiye motoci da filin ajiya don rukunin motoci",
   "cost.x.crew": "Ma'aikata, kowace jirgi-awa",
@@ -318,6 +319,8 @@ export const tablesHa = {
   "cost.p.cost.station.elevated": "Tashar sama",
   "cost.p.cost.station.underground": "Tashar ƙarƙashin ƙasa ta mataki na farko (akwatin yanka-da-rufe)",
   "cost.p.cost.station.underground_deep": "Tashar ƙarƙashin ƙasa ta mataki na biyu (mai zurfi)",
+  "cost.p.cost.station.refurbish": "Gyaran tsarin tasha da ke akwai, kowanne",
+  "cost.p.cost.civil.refurbish_structure_per_km": "Gyaran rami, gada ko gadar sama da ke akwai, layi biyu",
   "cost.p.cost.switch_each": "Mahaɗa ko mashiga, kowanne",
   "cost.p.cost.depot_per_train_m":
     "Wurin ajiye motoci da filin ajiya kowace mita na rukunin motocin layin dogo",

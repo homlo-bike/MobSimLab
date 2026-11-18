@@ -284,6 +284,7 @@ export const tablesFr = {
   "cost.x.stations.elevated": "Gares aériennes",
   "cost.x.stations.underground": "Gares souterraines",
   "cost.x.stations.underground2": "Gares souterraines, profondes",
+  "cost.x.refurbished": "{what}, réhabilité",
   "cost.x.trains": "{train} × {units}, trains de {m} m",
   "cost.x.depotFleet": "Dépôt et remisage pour le parc",
   "cost.x.crew": "Personnel, par heure-train",
@@ -324,6 +325,9 @@ export const tablesFr = {
   "cost.p.cost.station.elevated": "Gare aérienne",
   "cost.p.cost.station.underground": "Gare souterraine au premier niveau (boîte en tranchée couverte)",
   "cost.p.cost.station.underground_deep": "Gare souterraine au second niveau (profonde)",
+  "cost.p.cost.station.refurbish": "Réhabilitation d’une station existante, l’unité",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Réhabilitation d’un tunnel, pont ou viaduc existant, double voie",
   "cost.p.cost.switch_each": "Aiguillage ou traversée, l’unité",
   "cost.p.cost.depot_per_train_m": "Dépôt et remisage par mètre de parc ferroviaire",
   "cost.p.cost.depot_per_bus": "Dépôt de bus par bus",

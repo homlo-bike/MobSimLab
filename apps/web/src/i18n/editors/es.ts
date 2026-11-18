@@ -167,6 +167,12 @@ export const editorsEs = {
   "rail.tunnel.cut_and_cover": "Falso túnel (entre pantallas)",
   "rail.tunnel.tbm": "Túnel con tuneladora (TBM)",
   "rail.structure": "Elevado sobre",
+  "rail.existingStructure": "Reutiliza una estructura existente",
+  "rail.existingStructureHint":
+    "Sus túneles, puentes y viaductos ya existen (como un antiguo túnel ferroviario) y se costean como rehabilitación.",
+  "rail.existingStation": "En una estructura existente",
+  "rail.existingStationHint":
+    "La caja o el vestíbulo de la estación ya existe y se costea su rehabilitación y equipamiento.",
   "rail.structure.auto": "Automático (vía elevada para tranvía y metro, viaducto para líneas principales)",
   "rail.structure.elevated": "Vía elevada",
   "rail.structure.viaduct": "Viaducto",

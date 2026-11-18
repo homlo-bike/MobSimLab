@@ -167,6 +167,11 @@ export const editorsNl = {
   "rail.tunnel.cut_and_cover": "Open bouwput",
   "rail.tunnel.tbm": "Geboorde tunnel (TBM)",
   "rail.structure": "Verhoogd op",
+  "rail.existingStructure": "Hergebruikt een bestaand kunstwerk",
+  "rail.existingStructureHint":
+    "De tunnels, bruggen en viaducten bestaan al (zoals een oude spoortunnel) en worden als renovatie gerekend.",
+  "rail.existingStation": "In een bestaand bouwwerk",
+  "rail.existingStationHint": "De stationsbak of -hal bestaat al; gerekend worden renovatie en afbouw.",
   "rail.structure.auto": "Automatisch (verhoogde baan voor tram en metro, viaduct voor hoofdlijnen)",
   "rail.structure.elevated": "Verhoogde baan",
   "rail.structure.viaduct": "Viaduct",

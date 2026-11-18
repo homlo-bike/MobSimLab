@@ -167,6 +167,12 @@ export const editorsPt = {
   "rail.tunnel.cut_and_cover": "Vala coberta (cut and cover)",
   "rail.tunnel.tbm": "Túnel escavado com TBM",
   "rail.structure": "Elevado sobre",
+  "rail.existingStructure": "Reutiliza uma estrutura existente",
+  "rail.existingStructureHint":
+    "Os seus túneis, pontes e viadutos já existem (como um antigo túnel ferroviário) e são orçados como reabilitação.",
+  "rail.existingStation": "Numa estrutura existente",
+  "rail.existingStationHint":
+    "A caixa ou o átrio da estação já existe; orça-se a reabilitação e o equipamento.",
   "rail.structure.auto": "Automático (via elevada para elétrico e metro, viaduto para linhas principais)",
   "rail.structure.elevated": "Via elevada",
   "rail.structure.viaduct": "Viaduto",

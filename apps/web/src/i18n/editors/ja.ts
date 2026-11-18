@@ -151,6 +151,11 @@ export const editorsJa = {
   "rail.tunnel.cut_and_cover": "開削工法",
   "rail.tunnel.tbm": "シールドトンネル（TBM）",
   "rail.structure": "高架の構造",
+  "rail.existingStructure": "既存構造物を再利用",
+  "rail.existingStructureHint":
+    "トンネル・橋梁・高架橋は既にあり（旧鉄道トンネルなど）、改修費として計上します。",
+  "rail.existingStation": "既存構造物内",
+  "rail.existingStationHint": "駅の躯体やホールは既にあり、改修と設備工事の費用として計上します。",
   "rail.structure.auto": "自動（路面電車と地下鉄は高架橋、本線は高架橋梁）",
   "rail.structure.elevated": "高架軌道",
   "rail.structure.viaduct": "高架橋（ヴィアダクト）",

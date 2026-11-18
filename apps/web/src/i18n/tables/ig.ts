@@ -276,6 +276,7 @@ export const tablesIg = {
   "cost.x.stations.elevated": "Ọdụ ebuliri elu",
   "cost.x.stations.underground": "Ọdụ n'okpuru ala",
   "cost.x.stations.underground2": "Ọdụ n'okpuru ala, miri emi",
+  "cost.x.refurbished": "{what}, emeziri ọhụrụ",
   "cost.x.trains": "{train} × {units}, ụgbọ oloko {m} m",
   "cost.x.depotFleet": "Ebe ndọba ụgbọ na ebe nchekwa maka ụgbọ niile",
   "cost.x.crew": "Ndị ọrụ, kwa awa ụgbọ oloko",
@@ -316,6 +317,9 @@ export const tablesIg = {
   "cost.p.cost.station.elevated": "Ọdụ ebuliri elu",
   "cost.p.cost.station.underground": "Ọdụ n'okpuru ala ọkwa mbụ (igbe gwuo-kpuchie)",
   "cost.p.cost.station.underground_deep": "Ọdụ n'okpuru ala ọkwa nke abụọ (miri emi)",
+  "cost.p.cost.station.refurbish": "Imezi ọhụrụ nke ụlọ ọdụ dị adị, nke ọ bụla",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Imezi ọhụrụ nke ọwara, akwa mmiri ma ọ bụ viaduct dị adị, ụzọ abụọ",
   "cost.p.cost.switch_each": "Njikọ ma ọ bụ ngafe, nke ọ bụla",
   "cost.p.cost.depot_per_train_m": "Ebe ndọba ụgbọ na ebe nchekwa kwa mita nke ụgbọ ụzọ ígwè niile",
   "cost.p.cost.depot_per_bus": "Ebe ndọba bọs kwa bọs",

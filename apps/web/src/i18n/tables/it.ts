@@ -281,6 +281,7 @@ export const tablesIt = {
   "cost.x.stations.elevated": "Stazioni sopraelevate",
   "cost.x.stations.underground": "Stazioni sotterranee",
   "cost.x.stations.underground2": "Stazioni sotterranee, profonde",
+  "cost.x.refurbished": "{what}, riqualificato",
   "cost.x.trains": "{train} × {units}, treni da {m} m",
   "cost.x.depotFleet": "Deposito e ricovero per la flotta",
   "cost.x.crew": "Personale, per treno-ora",
@@ -320,6 +321,9 @@ export const tablesIt = {
   "cost.p.cost.station.elevated": "Stazione sopraelevata",
   "cost.p.cost.station.underground": "Stazione sotterranea al primo livello (scatolare in artificiale)",
   "cost.p.cost.station.underground_deep": "Stazione sotterranea al secondo livello (profonda)",
+  "cost.p.cost.station.refurbish": "Riqualificazione di una stazione esistente, cadauna",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Riqualificazione di galleria, ponte o viadotto esistente, binario doppio",
   "cost.p.cost.switch_each": "Scambio o incrocio, cadauno",
   "cost.p.cost.depot_per_train_m": "Deposito e ricovero per metro di flotta ferroviaria",
   "cost.p.cost.depot_per_bus": "Deposito bus per autobus",

@@ -167,6 +167,12 @@ export const editorsDe = {
   "rail.tunnel.cut_and_cover": "Offene Bauweise",
   "rail.tunnel.tbm": "Schildvortrieb (TBM)",
   "rail.structure": "Hochlage auf",
+  "rail.existingStructure": "Nutzt ein vorhandenes Bauwerk",
+  "rail.existingStructureHint":
+    "Seine Tunnel, Brücken und Viadukte gibt es schon (etwa ein alter Eisenbahntunnel); sie werden als Sanierung gerechnet.",
+  "rail.existingStation": "In einem vorhandenen Bauwerk",
+  "rail.existingStationHint":
+    "Stationskasten oder Halle gibt es schon; gerechnet werden Sanierung und Ausbau.",
   "rail.structure.auto": "Automatisch (Hochbahn für Tram und Metro, Viadukt für Hauptbahnen)",
   "rail.structure.elevated": "Hochbahntrasse",
   "rail.structure.viaduct": "Viadukt",

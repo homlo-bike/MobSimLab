@@ -167,6 +167,11 @@ export const editorsHa = {
   "rail.tunnel.cut_and_cover": "Haƙa da rufewa",
   "rail.tunnel.tbm": "Ramin da injin ya haƙa (TBM)",
   "rail.structure": "An ɗaga shi a kan",
+  "rail.existingStructure": "Yana sake amfani da tsarin da ke akwai",
+  "rail.existingStructureHint":
+    "Ramukansa, gadoji da gadojin sama suna nan tun da (kamar tsohon ramin jirgin ƙasa), ana lissafin kuɗin gyara.",
+  "rail.existingStation": "A cikin tsarin da ke akwai",
+  "rail.existingStationHint": "Akwatin tasha ko zauren yana nan; ana lissafin gyara da kayan aiki.",
   "rail.structure.auto": "Na atomatik (hanya mai tsayi don tram da metro, babbar gada don manyan layuka)",
   "rail.structure.elevated": "Hanya mai tsayi",
   "rail.structure.viaduct": "Babbar gada mai ginshiƙai",

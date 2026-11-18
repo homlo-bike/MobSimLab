@@ -151,6 +151,11 @@ export const editorsYo = {
   "rail.tunnel.cut_and_cover": "Gbẹ́ kí o bò",
   "rail.tunnel.tbm": "Ihò tí ẹ̀rọ gbẹ́ (TBM)",
   "rail.structure": "Gbé sókè lórí",
+  "rail.existingStructure": "Ń tún lo ilé tó wà tẹ́lẹ̀",
+  "rail.existingStructureHint":
+    "Àwọn ihò ojú ọ̀nà, afárá àti viaduct rẹ̀ ti wà tẹ́lẹ̀ (bí ihò ojú irin àtijọ́), a sì ń ka iye owó àtúnṣe.",
+  "rail.existingStation": "Nínú ilé tó wà tẹ́lẹ̀",
+  "rail.existingStationHint": "Àpótí tàbí gbọ̀ngàn ibùdó ti wà tẹ́lẹ̀; a ń ka iye àtúnṣe àti ìpèsè ohun èlò.",
   "rail.structure.auto": "Aládàáṣe (ọ̀nà gíga fún tram àti metro, afárá gígùn fún àwọn ìlà pàtàkì)",
   "rail.structure.elevated": "Ọ̀nà gíga",
   "rail.structure.viaduct": "Afárá gígùn olópó",

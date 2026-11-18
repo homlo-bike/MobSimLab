@@ -282,6 +282,7 @@ export const tablesTa = {
   "cost.x.stations.elevated": "உயர்த்தப்பட்ட நிலையங்கள்",
   "cost.x.stations.underground": "நிலத்தடி நிலையங்கள்",
   "cost.x.stations.underground2": "நிலத்தடி நிலையங்கள், ஆழமானவை",
+  "cost.x.refurbished": "{what}, புதுப்பிக்கப்பட்டது",
   "cost.x.trains": "{train} × {units}, {m} மீ. ரயில்கள்",
   "cost.x.depotFleet": "வாகனத் தொகுப்புக்குப் பணிமனை மற்றும் நிறுத்துமிடம்",
   "cost.x.crew": "பணியாளர்கள், ஒரு ரயில்-மணிக்கு",
@@ -323,6 +324,9 @@ export const tablesTa = {
   "cost.p.cost.station.elevated": "உயர்த்தப்பட்ட நிலையம்",
   "cost.p.cost.station.underground": "முதல் நிலை நிலத்தடி நிலையம் (கட்-அண்ட்-கவர் பெட்டி)",
   "cost.p.cost.station.underground_deep": "இரண்டாம் நிலை நிலத்தடி நிலையம் (ஆழமானது)",
+  "cost.p.cost.station.refurbish": "இருக்கும் நிலைய அமைப்பைப் புதுப்பித்தல், ஒன்றுக்கு",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "இருக்கும் சுரங்கம், பாலம் அல்லது வயடக்ட் புதுப்பித்தல், இரட்டைப் பாதை",
   "cost.p.cost.switch_each": "சந்திப்பு அல்லது கடவை, ஒவ்வொன்றும்",
   "cost.p.cost.depot_per_train_m": "ரயில் வாகனத் தொகுப்பின் ஒரு மீட்டருக்குப் பணிமனை மற்றும் நிறுத்துமிடம்",
   "cost.p.cost.depot_per_bus": "ஒரு பேருந்துக்குப் பேருந்துப் பணிமனை",

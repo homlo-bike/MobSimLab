@@ -64,6 +64,8 @@ export interface Station {
   mode?: RailMode | null;
   /** Facilities (step-free access, elevators and so on; `stations/features.tsx`), shown in the Schematic tab. */
   features?: string[];
+  /** The station re-uses an existing structure (an old station box or hall): costed as refurbished, not new. */
+  existing?: boolean;
 }
 
 export type Anchor =
@@ -93,6 +95,11 @@ export interface Track {
   tunnel?: TunnelMethod;
   /** What carries the track's elevated stretches (cost estimate); absent = auto. */
   structure?: Structure;
+  /**
+   * The track re-uses an existing structure (an old railway tunnel, bridge or viaduct): its stretches off street
+   * level are costed as refurbished, not new; absent = new.
+   */
+  existing?: boolean;
   lead_start_m: number;
   lead_end_m: number;
   radius_start_m?: number | null;

@@ -167,6 +167,12 @@ export const editorsSw = {
   "rail.tunnel.cut_and_cover": "Chimba na funika",
   "rail.tunnel.tbm": "Handaki lililotobolewa (TBM)",
   "rail.structure": "Imeinuliwa juu ya",
+  "rail.existingStructure": "Inatumia tena muundo uliopo",
+  "rail.existingStructureHint":
+    "Mahandaki, madaraja na viaduct zake tayari zipo (kama handaki la zamani la reli) na gharama ni ya ukarabati.",
+  "rail.existingStation": "Ndani ya muundo uliopo",
+  "rail.existingStationHint":
+    "Sanduku au ukumbi wa kituo tayari upo; gharama ni ya ukarabati na kuweka vifaa.",
   "rail.structure.auto": "Otomatiki (njia iliyoinuliwa kwa tramu na metro, daraja refu kwa njia kuu)",
   "rail.structure.elevated": "Njia iliyoinuliwa",
   "rail.structure.viaduct": "Daraja refu (viaduct)",

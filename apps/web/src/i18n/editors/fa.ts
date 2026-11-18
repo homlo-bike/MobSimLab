@@ -151,6 +151,11 @@ export const editorsFa = {
   "rail.tunnel.cut_and_cover": "حفاری و پوشش (کند و پوش)",
   "rail.tunnel.tbm": "تونل حفاری‌شده (TBM)",
   "rail.structure": "مرتفع روی",
+  "rail.existingStructure": "از سازهٔ موجود دوباره استفاده می‌کند",
+  "rail.existingStructureHint":
+    "تونل‌ها، پل‌ها و پل‌راه‌های آن از پیش هستند (مثل تونل قدیمی راه‌آهن) و هزینهٔ بازسازی برایشان حساب می‌شود.",
+  "rail.existingStation": "در سازهٔ موجود",
+  "rail.existingStationHint": "جعبه یا سالن ایستگاه از پیش هست و هزینهٔ بازسازی و تجهیز آن حساب می‌شود.",
   "rail.structure.auto": "خودکار (مسیر مرتفع برای تراموا و مترو، پل‌راه برای خطوط اصلی)",
   "rail.structure.elevated": "مسیر مرتفع",
   "rail.structure.viaduct": "پل‌راه (ویادوکت)",

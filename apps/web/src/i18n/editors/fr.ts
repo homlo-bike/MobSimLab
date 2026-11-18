@@ -167,6 +167,12 @@ export const editorsFr = {
   "rail.tunnel.cut_and_cover": "Tranchée couverte",
   "rail.tunnel.tbm": "Tunnel au tunnelier (TBM)",
   "rail.structure": "Surélevé sur",
+  "rail.existingStructure": "Réutilise un ouvrage existant",
+  "rail.existingStructureHint":
+    "Ses tunnels, ponts et viaducs existent déjà (comme un ancien tunnel ferroviaire) et sont chiffrés en réhabilitation.",
+  "rail.existingStation": "Dans un ouvrage existant",
+  "rail.existingStationHint":
+    "La boîte ou le hall de la station existe déjà ; on chiffre sa réhabilitation et son aménagement.",
   "rail.structure.auto": "Auto (voie aérienne pour tram et métro, viaduc pour les grandes lignes)",
   "rail.structure.elevated": "Voie aérienne",
   "rail.structure.viaduct": "Viaduc",

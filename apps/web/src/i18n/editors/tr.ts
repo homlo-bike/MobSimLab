@@ -151,6 +151,11 @@ export const editorsTr = {
   "rail.tunnel.cut_and_cover": "Aç-kapa",
   "rail.tunnel.tbm": "TBM ile delinmiş tünel",
   "rail.structure": "Yükseltildiği yapı",
+  "rail.existingStructure": "Mevcut bir yapıyı yeniden kullanır",
+  "rail.existingStructureHint":
+    "Tünelleri, köprüleri ve viyadükleri zaten var (eski bir demiryolu tüneli gibi) ve yenileme olarak maliyetlendirilir.",
+  "rail.existingStation": "Mevcut bir yapıda",
+  "rail.existingStationHint": "İstasyon kutusu veya holü zaten var; yenileme ve donatım maliyeti hesaplanır.",
   "rail.structure.auto": "Otomatik (tramvay ve metro için yükseltilmiş hat, ana hatlar için viyadük)",
   "rail.structure.elevated": "Yükseltilmiş hat",
   "rail.structure.viaduct": "Viyadük",

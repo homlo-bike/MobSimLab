@@ -167,6 +167,12 @@ export const editorsZu = {
   "rail.tunnel.cut_and_cover": "Umba bese umboza",
   "rail.tunnel.tbm": "Umhubhe obhobozwe ngomshini (TBM)",
   "rail.structure": "Kuphakanyiswe phezu kwe-",
+  "rail.existingStructure": "Isebenzisa kabusha isakhiwo esikhona",
+  "rail.existingStructureHint":
+    "Imihubhe yawo, amabhuloho nama-viaduct sekukhona (njengomhubhe wesitimela omdala) futhi kubalwa njengokulungiswa.",
+  "rail.existingStation": "Esakhiweni esikhona",
+  "rail.existingStationHint":
+    "Ibhokisi noma ihholo lesiteshi sekukhona; kubalwa ukulungiswa nokufakwa kwemishini.",
   "rail.structure.auto":
     "Okuzenzakalelayo (umzila ophakeme we-tram ne-metro, ibhuloho elide lemizila emikhulu)",
   "rail.structure.elevated": "Umzila ophakeme",

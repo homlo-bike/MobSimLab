@@ -167,6 +167,11 @@ export const editorsTe = {
   "rail.tunnel.cut_and_cover": "కట్ అండ్ కవర్",
   "rail.tunnel.tbm": "బోర్ చేసిన సొరంగం (TBM)",
   "rail.structure": "ఎత్తులో దేనిపై",
+  "rail.existingStructure": "ఉన్న నిర్మాణాన్ని మళ్లీ ఉపయోగిస్తుంది",
+  "rail.existingStructureHint":
+    "దీని సొరంగాలు, వంతెనలు, వయాడక్ట్‌లు ఇప్పటికే ఉన్నాయి (పాత రైల్వే సొరంగం వంటివి); పునరుద్ధరణ ఖర్చుగా లెక్కిస్తారు.",
+  "rail.existingStation": "ఉన్న నిర్మాణంలో",
+  "rail.existingStationHint": "స్టేషన్ బాక్స్ లేదా హాల్ ఇప్పటికే ఉంది; పునరుద్ధరణ, అమరిక ఖర్చు లెక్కిస్తారు.",
   "rail.structure.auto": "ఆటో (ట్రామ్, మెట్రోకు ఎలివేటెడ్ మార్గం; ప్రధాన లైన్లకు వయాడక్ట్)",
   "rail.structure.elevated": "ఎలివేటెడ్ మార్గం",
   "rail.structure.viaduct": "వయాడక్ట్",

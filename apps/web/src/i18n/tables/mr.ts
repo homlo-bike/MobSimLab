@@ -280,6 +280,7 @@ export const tablesMr = {
   "cost.x.stations.elevated": "उन्नत स्थानके",
   "cost.x.stations.underground": "भूमिगत स्थानके",
   "cost.x.stations.underground2": "भूमिगत स्थानके, खोल",
+  "cost.x.refurbished": "{what}, नूतनीकृत",
   "cost.x.trains": "{train} × {units}, {m} मी च्या गाड्या",
   "cost.x.depotFleet": "ताफ्यासाठी डेपो आणि उभे करण्याची जागा",
   "cost.x.crew": "कर्मचारी, प्रति गाडी-तास",
@@ -319,6 +320,9 @@ export const tablesMr = {
   "cost.p.cost.station.elevated": "उन्नत स्थानक",
   "cost.p.cost.station.underground": "पहिल्या स्तरावरील भूमिगत स्थानक (कट-अँड-कव्हर पेटी)",
   "cost.p.cost.station.underground_deep": "दुसऱ्या स्तरावरील भूमिगत स्थानक (खोल)",
+  "cost.p.cost.station.refurbish": "विद्यमान स्थानक रचनेचे नूतनीकरण, प्रत्येकी",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "विद्यमान बोगदा, पूल किंवा व्हायाडक्ट नूतनीकरण, दुहेरी मार्ग",
   "cost.p.cost.switch_each": "सांधा किंवा छेद, प्रत्येकी",
   "cost.p.cost.depot_per_train_m": "रेल्वे ताफ्याच्या प्रति मीटर डेपो आणि उभे करण्याची जागा",
   "cost.p.cost.depot_per_bus": "प्रति बस बस डेपो",

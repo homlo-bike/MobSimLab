@@ -167,6 +167,11 @@ export const editorsHi = {
   "rail.tunnel.cut_and_cover": "कट एंड कवर",
   "rail.tunnel.tbm": "बोर की गई सुरंग (TBM)",
   "rail.structure": "ऊँचाई पर किस पर",
+  "rail.existingStructure": "मौजूदा संरचना का पुन: उपयोग",
+  "rail.existingStructureHint":
+    "इसकी सुरंगें, पुल और वायडक्ट पहले से हैं (जैसे पुरानी रेल सुरंग) और नवीनीकरण की लागत गिनी जाती है।",
+  "rail.existingStation": "मौजूदा संरचना में",
+  "rail.existingStationHint": "स्टेशन बॉक्स या हॉल पहले से है; नवीनीकरण और साज-सज्जा की लागत गिनी जाती है।",
   "rail.structure.auto": "स्वचालित (ट्राम और मेट्रो के लिए एलिवेटेड मार्ग, मुख्य लाइनों के लिए वायडक्ट)",
   "rail.structure.elevated": "एलिवेटेड मार्ग",
   "rail.structure.viaduct": "वायडक्ट",

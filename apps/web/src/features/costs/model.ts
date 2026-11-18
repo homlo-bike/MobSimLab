@@ -187,6 +187,11 @@ const CIVIL_PARAM: Record<StructureCategory, string> = {
   tbm: "cost.civil.tbm_per_km",
 };
 
+/** Refurbishing an existing tunnel, bridge or viaduct a track re-uses, per route-km. */
+const REFURBISH_STRUCTURE = "cost.civil.refurbish_structure_per_km";
+/** Refurbishing and fitting out an existing station structure, per station. */
+const REFURBISH_STATION = "cost.station.refurbish";
+
 const STATION_PARAM: Record<Level, string> = {
   street: "cost.station.at_grade",
   elevated: "cost.station.elevated",
@@ -346,11 +351,21 @@ export function estimate(input: EstimateInput): Estimate {
         byStructure.set(s, (byStructure.get(s) ?? 0) + Math.max(0, z.to_m - z.from_m) / 1000);
       }
       if (!tv.levels.length) byStructure.set(structureOf(doc.level, doc, mode), tv.length_m / 1000);
+      // A track through an existing tunnel, bridge or viaduct pays for refurbishing it, not for a new one.
+      const reused = t("cost.x.refurbished", { what });
       for (const [s, lenKm] of byStructure) {
-        const p = CIVIL_PARAM[s];
-        add(s, mode, null, what, lenKm, t("cost.unit.km"), p, mul(prod(v(p, mode), factor), ppp * 1e6), [
-          { quantity: lenKm, lines: trackUsers(tv.id) },
-        ]);
+        const p = doc.existing && s !== "at_grade" ? REFURBISH_STRUCTURE : CIVIL_PARAM[s];
+        add(
+          s,
+          mode,
+          null,
+          p === REFURBISH_STRUCTURE ? reused : what,
+          lenKm,
+          t("cost.unit.km"),
+          p,
+          mul(prod(v(p, mode), factor), ppp * 1e6),
+          [{ quantity: lenKm, lines: trackUsers(tv.id) }],
+        );
       }
       add(
         "systems",
@@ -386,13 +401,14 @@ export function estimate(input: EstimateInput): Estimate {
       );
     const stationsBy = new Map<
       string,
-      { mode: string; level: Level; n: number; parts: { quantity: number; lines: string[] }[] }
+      { mode: string; level: Level; existing: boolean; n: number; parts: { quantity: number; lines: string[] }[] }
     >();
     for (const sv of view.stations) {
       const st = railway.stations.find((s) => s.id === sv.id);
       const level = st?.level ?? "street";
-      const key = `${sv.mode}|${level}`;
-      const e = stationsBy.get(key) ?? { mode: sv.mode, level, n: 0, parts: [] };
+      const existing = !!st?.existing;
+      const key = `${sv.mode}|${level}|${existing}`;
+      const e = stationsBy.get(key) ?? { mode: sv.mode, level, existing, n: 0, parts: [] };
       e.n += 1;
       e.parts.push({
         quantity: 1,
@@ -401,12 +417,14 @@ export function estimate(input: EstimateInput): Estimate {
       stationsBy.set(key, e);
     }
     for (const e of stationsBy.values()) {
-      const p = STATION_PARAM[e.level];
+      // A station in an existing structure pays for refurbishing and fitting it out, not for a new one.
+      const p = e.existing ? REFURBISH_STATION : STATION_PARAM[e.level];
+      const label = t(STATION_LABEL[e.level]);
       add(
         "stations",
         e.mode,
         null,
-        t(STATION_LABEL[e.level]),
+        e.existing ? t("cost.x.refurbished", { what: label }) : label,
         e.n,
         t("cost.unit.each"),
         p,

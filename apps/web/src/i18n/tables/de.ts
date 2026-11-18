@@ -281,6 +281,7 @@ export const tablesDe = {
   "cost.x.stations.elevated": "Stationen in Hochlage",
   "cost.x.stations.underground": "Stationen unterirdisch",
   "cost.x.stations.underground2": "Stationen unterirdisch, tief",
+  "cost.x.refurbished": "{what}, saniert",
   "cost.x.trains": "{train} × {units}, Züge von {m} m",
   "cost.x.depotFleet": "Betriebshof und Abstellung für die Flotte",
   "cost.x.crew": "Personal, pro Zugstunde",
@@ -321,6 +322,9 @@ export const tablesDe = {
   "cost.p.cost.station.underground":
     "Unterirdische Station auf der ersten Ebene (Kasten in offener Bauweise)",
   "cost.p.cost.station.underground_deep": "Unterirdische Station auf der zweiten Ebene (tief)",
+  "cost.p.cost.station.refurbish": "Sanierung eines vorhandenen Stationsbauwerks, je Stück",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Sanierung eines vorhandenen Tunnels, einer Brücke oder eines Viadukts, zweigleisig",
   "cost.p.cost.switch_each": "Weiche oder Kreuzung, je Stück",
   "cost.p.cost.depot_per_train_m": "Betriebshof und Abstellung je Meter Bahnflotte",
   "cost.p.cost.depot_per_bus": "Busbetriebshof je Bus",

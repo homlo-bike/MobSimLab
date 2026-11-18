@@ -214,6 +214,28 @@
     ]
    }
   },
+  "cost.station.refurbish": {
+   "label": "Refurbishing an existing station structure, each",
+   "unit": "US$ million per station (2023, PPP)",
+   "values": {
+    "*": [
+     5,
+     15,
+     40
+    ]
+   }
+  },
+  "cost.civil.refurbish_structure_per_km": {
+   "label": "Refurbishing an existing tunnel, bridge or viaduct, double track",
+   "unit": "US$ million per route-km (2023, PPP)",
+   "values": {
+    "*": [
+     4,
+     10,
+     30
+    ]
+   }
+  },
   "cost.switch_each": {
    "label": "Switch or crossing, each",
    "unit": "US$ million each (2023, PPP)",

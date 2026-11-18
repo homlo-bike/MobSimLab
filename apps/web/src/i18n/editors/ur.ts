@@ -167,6 +167,11 @@ export const editorsUr = {
   "rail.tunnel.cut_and_cover": "کھدائی اور ڈھانپنا",
   "rail.tunnel.tbm": "مشین سے کھودی گئی سرنگ (TBM)",
   "rail.structure": "بلند کس پر",
+  "rail.existingStructure": "موجودہ ڈھانچہ دوبارہ استعمال کرتا ہے",
+  "rail.existingStructureHint":
+    "اس کی سرنگیں، پل اور وایاڈکٹ پہلے سے موجود ہیں (جیسے پرانی ریلوے سرنگ) اور تجدید کی لاگت لگتی ہے۔",
+  "rail.existingStation": "موجودہ ڈھانچے میں",
+  "rail.existingStationHint": "اسٹیشن باکس یا ہال پہلے سے موجود ہے؛ تجدید اور تنصیب کی لاگت لگتی ہے۔",
   "rail.structure.auto": "خودکار (ٹرام اور میٹرو کے لیے بلند راستہ، مرکزی لائنوں کے لیے وایاڈکٹ)",
   "rail.structure.elevated": "بلند راستہ",
   "rail.structure.viaduct": "وایاڈکٹ",

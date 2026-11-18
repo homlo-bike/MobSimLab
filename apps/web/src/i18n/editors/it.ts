@@ -167,6 +167,12 @@ export const editorsIt = {
   "rail.tunnel.cut_and_cover": "Trincea coperta (cut and cover)",
   "rail.tunnel.tbm": "Galleria scavata con TBM",
   "rail.structure": "Sopraelevata su",
+  "rail.existingStructure": "Riutilizza una struttura esistente",
+  "rail.existingStructureHint":
+    "Gallerie, ponti e viadotti esistono già (come una vecchia galleria ferroviaria) e sono stimati come riqualificazione.",
+  "rail.existingStation": "In una struttura esistente",
+  "rail.existingStationHint":
+    "Il cassone o l’atrio della stazione esiste già; si stimano riqualificazione e allestimento.",
   "rail.structure.auto": "Automatico (sopraelevata per tram e metro, viadotto per le linee principali)",
   "rail.structure.elevated": "Sopraelevata",
   "rail.structure.viaduct": "Viadotto",

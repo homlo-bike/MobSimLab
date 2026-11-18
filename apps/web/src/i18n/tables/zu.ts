@@ -282,6 +282,7 @@ export const tablesZu = {
   "cost.x.stations.elevated": "Iziteshi eziphakanyisiwe",
   "cost.x.stations.underground": "Iziteshi ezingaphansi komhlaba",
   "cost.x.stations.underground2": "Iziteshi ezingaphansi komhlaba, ezijulile",
+  "cost.x.refurbished": "{what}, kulungisiwe",
   "cost.x.trains": "{train} × {units}, izitimela ezingu-{m} m",
   "cost.x.depotFleet": "Idepho nendawo yokupaka yezimoto",
   "cost.x.crew": "Abasebenzi, ngehora lesitimela",
@@ -325,6 +326,9 @@ export const tablesZu = {
   "cost.p.cost.station.underground":
     "Isiteshi esingaphansi komhlaba sezinga lokuqala (ibhokisi elimbiwe-lamboziwe)",
   "cost.p.cost.station.underground_deep": "Isiteshi esingaphansi komhlaba sezinga lesibili (esijulile)",
+  "cost.p.cost.station.refurbish": "Ukulungiswa kwesakhiwo sesiteshi esikhona, ngasinye",
+  "cost.p.cost.civil.refurbish_structure_per_km":
+    "Ukulungiswa komhubhe, ibhuloho noma i-viaduct ekhona, umzila ophindwe kabili",
   "cost.p.cost.switch_each": "Isihlanganiso noma indawo yokuwela, ngayinye",
   "cost.p.cost.depot_per_train_m": "Idepho nendawo yokupaka ngemitha ngayinye yezimoto zesitimela",
   "cost.p.cost.depot_per_bus": "Idepho yamabhasi ngebhasi ngalinye",

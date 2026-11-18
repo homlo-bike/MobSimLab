@@ -167,6 +167,11 @@ export const editorsKk = {
   "rail.tunnel.cut_and_cover": "Ашық әдіс (қазып жабу)",
   "rail.tunnel.tbm": "Бұрғыланған туннель (TBM)",
   "rail.structure": "Көтерілген негіз",
+  "rail.existingStructure": "Бар құрылысты қайта пайдаланады",
+  "rail.existingStructureHint":
+    "Оның туннельдері, көпірлері мен виадуктары бар (мысалы, ескі темір жол туннелі), жөндеу ретінде есептеледі.",
+  "rail.existingStation": "Бар құрылыста",
+  "rail.existingStationHint": "Бекет қорабы не залы бар; жөндеу мен жабдықтау ретінде есептеледі.",
   "rail.structure.auto": "Автоматты (трамвай мен метроға эстакада, магистральдарға виадук)",
   "rail.structure.elevated": "Эстакада",
   "rail.structure.viaduct": "Виадук",

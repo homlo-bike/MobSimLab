@@ -166,6 +166,12 @@ export const editorsId = {
   "rail.tunnel.cut_and_cover": "Gali-tutup (cut and cover)",
   "rail.tunnel.tbm": "Terowongan bor (TBM)",
   "rail.structure": "Ditinggikan di atas",
+  "rail.existingStructure": "Memakai ulang struktur yang ada",
+  "rail.existingStructureHint":
+    "Terowongan, jembatan, dan viaduknya sudah ada (misalnya terowongan kereta lama) dan dihitung sebagai renovasi.",
+  "rail.existingStation": "Di struktur yang ada",
+  "rail.existingStationHint":
+    "Kotak atau aula stasiun sudah ada dan dihitung sebagai renovasi dan pelengkapan.",
   "rail.structure.auto": "Otomatis (jalur layang untuk trem dan metro, viaduk untuk jalur utama)",
   "rail.structure.elevated": "Jalur layang",
   "rail.structure.viaduct": "Viaduk",
