@@ -1197,6 +1197,50 @@ mod tests {
     }
 
     #[test]
+    fn a_tram_scissors_too_tight_for_its_diamond_is_two_mirrored_crossovers_of_its_own_turnout() {
+        let mode = RailMode::Tram;
+        let mut net = Network::new(mode, [7.0, 50.9]);
+        let mut t = straight(1, (0.0, 0.0), (1500.0, 0.0), None);
+        t.tracks = 2;
+        net.tracks.push(t);
+        let element = defaults().mode(mode).default_turnout.clone();
+        net.switches.push(crate::model::Switch {
+            id: 2,
+            kind: SwitchKind::Scissors,
+            track: 1,
+            s: 400.0,
+            element: element.clone(),
+            side: 1,
+            direction: 1,
+            flip: false,
+        });
+        let dz = build(&net, None);
+        let sw = dz.switches.iter().find(|s| s.id == 2).unwrap();
+        assert!(sw.fits);
+        assert_eq!(sw.element, element, "built with the project's own turnout");
+        assert!(sw.diamonds.is_empty(), "no diamond between the tracks");
+        assert_eq!(sw.paths.len(), 2);
+        // Four separate blade tips: two on each track, none shared by the two crossovers.
+        assert_eq!(sw.toes.len(), 4);
+        for i in 0..4 {
+            for j in i + 1..4 {
+                assert!(sw.toes[i].dist(sw.toes[j]) > 1.0, "{:?}", sw.toes);
+            }
+        }
+        // The two crossovers lean opposite ways: trains cross from either track in either direction.
+        let lean = |k: usize| {
+            let p = &sw.paths[k];
+            let (a, b) = (p[0].p, p[p.len() - 1].p);
+            ((b.y - a.y) * (b.x - a.x)).signum()
+        };
+        assert_ne!(lean(0), lean(1));
+        assert!(!dz
+            .issues
+            .iter()
+            .any(|i| i.ref_id == Some(2) && i.text.contains("built with")));
+    }
+
+    #[test]
     fn a_crossover_running_into_a_curve_ends_on_both_tracks() {
         let mut net = Network::new(RailMode::RegionalRail, [7.0, 50.9]);
         let mut t = straight(1, (-600.0, 0.0), (300.0, 600.0), None);
