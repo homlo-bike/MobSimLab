@@ -100,8 +100,8 @@ export interface CostItem {
   param: string | null;
   /**
    * Shared items (`line` null) only: which lines run on which part of the quantity, such as a track's
-   * kilometres or one station of a station count. A part no line runs on stays with the mode; without parts
-   * the item is shared by all of its mode's lines.
+   * kilometres or one station of a station count. A part no line runs through, and an item without parts, is
+   * shared by all of its mode's lines.
    */
   parts?: { quantity: number; lines: string[] }[];
 }
@@ -734,8 +734,8 @@ export function isConstruction(c: Category): boolean {
 
 /**
  * Purpose: totals per line. Items of one line count for it; a track, station or switch is split between the
- * lines that run on it by vehicle- or train-km, and a mode's other shared items (overheads) between all of
- * its lines; what no line runs on stays unassigned in its mode.
+ * lines that run on it by vehicle- or train-km, and a mode's other shared items (overheads, depot and storage
+ * tracks no line runs through) between all of its lines; a mode without lines keeps its share unassigned.
  * Output: by line id ("" for unassigned per mode, keyed `:<mode>`), construction and operating a year.
  */
 export function perLine(e: Estimate): Map<string, { construction: Triple; operating: Triple }> {
@@ -758,7 +758,9 @@ export function perLine(e: Estimate): Map<string, { construction: Triple; operat
     for (const part of parts) {
       const share = x.quantity > 0 ? part.quantity / x.quantity : 0;
       if (!(share > 0)) continue;
-      const users = modeLines.filter((l) => part.lines.includes(l.id));
+      // A part no line runs through (a depot or storage track, a siding) serves all of the mode's lines.
+      const own = modeLines.filter((l) => part.lines.includes(l.id));
+      const users = own.length ? own : modeLines;
       const total = users.reduce((s, l) => s + l.kmPerYear, 0);
       if (!total) {
         bump(`:${x.mode}`, x, share);
