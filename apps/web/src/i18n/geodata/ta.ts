@@ -72,5 +72,12 @@ export const geodataTa = {
   "area.import.current": "{what}: ஏற்கெனவே இறக்குமதியானது",
   "area.import.failed": "{what}: தொடங்க முடியவில்லை. {reason}",
   "area.seeMapData": "இறக்குமதியை GIS, வரைபடத் தரவில் பார்க்கவும்.",
+  "area.country": "நாடு: {name}.",
+  "area.crossesBorder":
+    "பகுதி ஒரு எல்லையைக் கடக்கிறது: {countries}. விடுமுறைகளும் விலைகளும் {name} நாட்டுடையவை.",
+  "data.liveNotice":
+    "{tiles} வரைபட ஓடுகளும் {heights} உயரங்களும் திட்டத்தின் இறக்குமதி தரவுக்கு வெளியிலிருந்து நேரடியாக வந்தன. இப்போது அவை திட்டத்தில் வைக்கப்பட்டுள்ளன; முழு வரைபடத்தையும் உள்ளடக்க இறக்குமதியை விரிவாக்குங்கள்.",
+  "data.extendImport": "வரைபடத் தரவில் இறக்குமதியை விரிவாக்கு",
+  "data.hideLive": "மறை",
   "data.areaRegions": "பகுதி: {area} ச.கி.மீ, {names} ஐச் சுற்றிய செவ்வகம்",
 } satisfies GeodataMessages;

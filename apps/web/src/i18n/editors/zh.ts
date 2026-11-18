@@ -1331,6 +1331,8 @@ export const editorsZh = {
   "rail.levelHeight": "平坡，轨面海拔 {rail} 米 · 沿线地面 {min}–{max} 米",
   "rail.profileRange": "轨面海拔 {min}–{max} 米 · 最大坡度 {steep}（上限 {limit} ‰）",
   "rail.profileAria": "纵断面：沿轨道的地面和轨顶",
+  "rail.levelProfileAria": "按层级的纵断面：沿线轨顶相对街面的高度",
+  "rail.levelProfileNote": "按线路层级和坡道得出的高度，相对街面（此处未加载地形高程）。",
   "rail.profileLegend": "实线：轨顶。虚线：地面（Copernicus GLO-30，已平滑）。高程来自表面模型，±4 米。",
 
   "walk.title": "步行到站",

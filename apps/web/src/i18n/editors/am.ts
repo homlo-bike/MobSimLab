@@ -1371,6 +1371,8 @@ export const editorsAm = {
   "rail.levelHeight": "ደልዳላ፣ ሀዲዶች ከባሕር ጠለል በላይ {rail} ሜ · በጎኑ ያለው መሬት {min}–{max} ሜ",
   "rail.profileRange": "ሀዲዶች ከባሕር ጠለል በላይ {min}–{max} ሜ · በጣም ቁልቁል ዝቅታ {steep} (ከፍተኛ {limit} ‰)",
   "rail.profileAria": "የርዝመት ገጽታ፦ በሀዲዱ ላይ ያለ መሬት እና የሀዲድ አናት",
+  "rail.levelProfileAria": "ከደረጃዎች የተገኘ ቁመታዊ መገለጫ፦ በሀዲዱ ርዝመት ከመንገድ ደረጃ አንጻር የሀዲድ ላይኛው",
+  "rail.levelProfileNote": "ከሀዲዱ ደረጃዎችና ዳገቶች የተገኙ ከፍታዎች፣ ከመንገድ ደረጃ አንጻር (የመሬት ከፍታ እዚህ አልተጫነም)።",
   "rail.profileLegend": "ሙሉ መስመር፦ የሀዲድ አናት። ነጠብጣብ፦ መሬት (Copernicus GLO-30፣ የተለሰለሰ)። ከፍታዎች ከገጽ ሞዴል፣ ±4 ሜ።",
 
   "walk.title": "ወደ ፌርማታ በእግር",

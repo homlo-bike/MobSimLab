@@ -1360,6 +1360,9 @@ export const editorsJa = {
   "rail.levelHeight": "水平、レール面は海抜 {rail} m · 沿線の地面 {min}–{max} m",
   "rail.profileRange": "レール面 海抜 {min}–{max} m · 最急勾配 {steep}（上限 {limit} ‰）",
   "rail.profileAria": "縦断面：線路沿いの地面とレール面",
+  "rail.levelProfileAria": "レベルによる縦断面：線路に沿った地上面に対するレール面の高さ",
+  "rail.levelProfileNote":
+    "線路のレベルと勾配区間による高さ（地上面基準。ここでは地形の標高を読み込んでいません）。",
   "rail.profileLegend":
     "実線：レール面。破線：地面（Copernicus GLO-30、平滑化）。高さは表面モデルから、±4 m。",
 

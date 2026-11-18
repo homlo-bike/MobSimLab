@@ -72,5 +72,11 @@ export const geodataFa = {
   "area.import.current": "{what}: قبلاً وارد شده",
   "area.import.failed": "{what}: آغاز نشد. {reason}",
   "area.seeMapData": "پیشرفت را در GIS، داده‌های نقشه دنبال کنید.",
+  "area.country": "کشور: {name}.",
+  "area.crossesBorder": "این محدوده از مرز می‌گذرد: {countries}. تعطیلات و قیمت‌ها از {name} گرفته می‌شود.",
+  "data.liveNotice":
+    "{tiles} کاشی نقشه و {heights} ارتفاع به‌صورت زنده از بیرون داده‌های واردشده پروژه آمد. اکنون در پروژه نگه داشته می‌شوند؛ ورود داده را گسترش دهید تا کل نقشه‌کشی را بپوشاند.",
+  "data.extendImport": "گسترش ورود داده در داده‌های نقشه",
+  "data.hideLive": "پنهان کردن",
   "data.areaRegions": "محدوده: {area} کیلومتر مربع، مستطیل دور {names}",
 } satisfies GeodataMessages;

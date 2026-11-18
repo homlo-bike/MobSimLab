@@ -4,6 +4,7 @@
  * the planner's own values on top. Calendar runs split each day type into ordinary, hot, very hot and cold days
  * from it (features/calendar-run/weather.ts). The climate is the same every simulation year.
  */
+import { withProjectFacts } from "../geodata/projectData";
 import type { PreferencesDoc } from "./preferences";
 
 /** One month's air temperatures, °C. */
@@ -133,9 +134,12 @@ export function climateFetcher(fetchImpl: typeof fetch = (...a) => fetch(...a)):
     const key = `${lat.toFixed(1)},${lon.toFixed(1)}`;
     const hit = cache.get(key);
     if (hit) return hit;
-    const p = fetchImpl(`/api/calendar/climate?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}`, {
-      credentials: "same-origin",
-    }).then(async (res) => {
+    const p = fetchImpl(
+      withProjectFacts(`/api/calendar/climate?lat=${lat.toFixed(2)}&lon=${lon.toFixed(2)}`),
+      {
+        credentials: "same-origin",
+      },
+    ).then(async (res) => {
       if (!res.ok) {
         const msg = await res
           .json()

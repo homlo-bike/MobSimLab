@@ -72,5 +72,11 @@ export const geodataSw = {
   "area.import.current": "{what}: tayari imeingizwa",
   "area.import.failed": "{what}: haikuweza kuanza. {reason}",
   "area.seeMapData": "Fuatilia uingizaji katika GIS, Data ya ramani.",
+  "area.country": "Nchi: {name}.",
+  "area.crossesBorder": "Eneo linavuka mpaka: {countries}. Sikukuu na bei ni za {name}.",
+  "data.liveNotice":
+    "Vigae {tiles} vya ramani na miinuko {heights} vilikuja moja kwa moja kutoka nje ya data iliyoingizwa ya mradi. Sasa vimehifadhiwa kwenye mradi; panua uingizaji ili ufunike mchoro wote.",
+  "data.extendImport": "Panua uingizaji kwenye Data ya ramani",
+  "data.hideLive": "Ficha",
   "data.areaRegions": "Eneo: km² {area}, mstatili unaozunguka {names}",
 } satisfies GeodataMessages;

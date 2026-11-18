@@ -4,7 +4,7 @@
  * over); see apps/api/src/terrain. With a project open, it reads the project's imported elevation and
  * OpenStreetMap data first (ADR-0046). Answers are cached per request for the session.
  */
-import { dataProject } from "../geodata/projectData";
+import { dataProject, noteLiveHeights } from "../geodata/projectData";
 import { csrfHeader } from "../session/csrf";
 
 export type LonLat = [number, number];
@@ -84,7 +84,9 @@ async function post<T>(path: string, body: unknown, fetchImpl: typeof fetch): Pr
         .catch(() => undefined);
       throw new Error(msg ?? `Terrain heights failed (${res.status})`);
     }
-    return (await res.json()) as T;
+    const out = (await res.json()) as T & { liveCount?: number };
+    noteLiveHeights(out.liveCount ?? 0);
+    return out;
   })();
   p.catch(() => cache.delete(key));
   if (cache.size >= CACHE_SIZE) cache.delete(cache.keys().next().value!);

@@ -72,5 +72,11 @@ export const geodataId = {
   "area.import.current": "{what}: sudah diimpor",
   "area.import.failed": "{what}: tidak bisa dimulai. {reason}",
   "area.seeMapData": "Pantau impor di GIS, Data peta.",
+  "area.country": "Negara: {name}.",
+  "area.crossesBorder": "Area melintasi perbatasan: {countries}. Hari libur dan harga memakai {name}.",
+  "data.liveNotice":
+    "{tiles} ubin peta dan {heights} ketinggian diambil langsung dari luar data impor proyek. Kini disimpan di proyek; perluas impor agar mencakup seluruh gambar.",
+  "data.extendImport": "Perluas impor di Data peta",
+  "data.hideLive": "Sembunyikan",
   "data.areaRegions": "Wilayah: {area} km², kotak di sekitar {names}",
 } satisfies GeodataMessages;

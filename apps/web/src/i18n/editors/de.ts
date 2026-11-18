@@ -1452,6 +1452,10 @@ export const editorsDe = {
   "rail.levelHeight": "Eben, Schienen auf {rail} m über dem Meer · Gelände entlang {min}–{max} m",
   "rail.profileRange": "Schienen {min}–{max} m über dem Meer · steilste Stelle {steep} (max. {limit} ‰)",
   "rail.profileAria": "Höhenprofil: Gelände und Schienenoberkante entlang des Gleises",
+  "rail.levelProfileAria":
+    "Höhenprofil aus den Ebenen: Schienenoberkante gegenüber Straßenniveau entlang des Gleises",
+  "rail.levelProfileNote":
+    "Höhen aus den Ebenen und Rampen des Gleises, bezogen auf das Straßenniveau (hier keine Geländehöhen geladen).",
   "rail.profileLegend":
     "Durchgezogen: Schienenoberkante. Gestrichelt: Gelände (Copernicus GLO-30, geglättet). Höhen aus einem Oberflächenmodell, ±4 m.",
 

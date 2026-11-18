@@ -72,5 +72,11 @@ export const geodataPt = {
   "area.import.current": "{what}: já importado",
   "area.import.failed": "{what}: não foi possível iniciar. {reason}",
   "area.seeMapData": "Acompanhe as importações em SIG, Dados do mapa.",
+  "area.country": "País: {name}.",
+  "area.crossesBorder": "A área atravessa uma fronteira: {countries}. Feriados e preços usam {name}.",
+  "data.liveNotice":
+    "{tiles} mosaicos de mapa e {heights} altitudes vieram em direto de fora dos dados importados do projeto. Ficam agora guardados no projeto; alargue a importação para cobrir todo o desenho.",
+  "data.extendImport": "Alargar a importação em Dados do mapa",
+  "data.hideLive": "Ocultar",
   "data.areaRegions": "Área: {area} km², o retângulo em torno de {names}",
 } satisfies GeodataMessages;

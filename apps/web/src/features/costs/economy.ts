@@ -2,6 +2,7 @@
  * Country price levels and exchange rates for the cost tables (ADR-0039): the API reads the country of a
  * point from the OpenStreetMap boundaries and the World Bank's indicators for it (apps/api/src/economy).
  */
+import { withProjectFacts } from "../../geodata/projectData";
 import { currencyOf } from "./currencies";
 
 export type LonLat = [number, number];
@@ -128,7 +129,9 @@ export function economyApi(fetchImpl: typeof fetch = (...a) => fetch(...a)): Eco
   };
   return {
     countryAt: ([lon, lat]) =>
-      once<PlaceCountry>(`/api/economy/country-at?lon=${lon.toFixed(4)}&lat=${lat.toFixed(4)}`),
+      once<PlaceCountry>(
+        withProjectFacts(`/api/economy/country-at?lon=${lon.toFixed(4)}&lat=${lat.toFixed(4)}`),
+      ),
     countries: () => once<{ countries: WbCountry[] }>("/api/economy/countries").then((r) => r.countries),
     indicators: (code, baseYear) =>
       once<CountryEconomy>(`/api/economy/indicators?code=${encodeURIComponent(code)}&base=${baseYear}`),

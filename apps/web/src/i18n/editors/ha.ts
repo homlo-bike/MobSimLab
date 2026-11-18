@@ -1424,6 +1424,10 @@ export const editorsHa = {
   "rail.profileRange":
     "Layukan ƙarfe m {min}–{max} sama da teku · gangare mafi tsauri {steep} (mafi yawa {limit} ‰)",
   "rail.profileAria": "Bayanin tsayi: ƙasa da saman ƙarfe a tsawon layin",
+  "rail.levelProfileAria":
+    "Bayanin tsayi daga matakai: saman dogo idan aka kwatanta da matakin titi a tsawon layin",
+  "rail.levelProfileNote":
+    "Tsayi daga matakai da gangaren layin, idan aka kwatanta da matakin titi (ba a loda tsayin ƙasa a nan ba).",
   "rail.profileLegend":
     "Cikakken layi: saman ƙarfe. Layin tsinke: ƙasa (Copernicus GLO-30, an daidaita). Tsayi daga samfurin saman ƙasa, ±4 m.",
 

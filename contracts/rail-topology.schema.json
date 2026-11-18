@@ -215,7 +215,7 @@
         "levels": { "type": "array", "items": { "$ref": "#/$defs/range_level" }, "minItems": 1 },
         "speed_kmh": { "type": "array", "items": { "$ref": "#/$defs/range_number" } },
         "gradient_permille": {
-          "description": "Gradient in per mille, positive rising from `from` to `to`: from the vertical profile over the terrain heights, as stretches of constant gradient (level stretches left out); without terrain, the ramps at the mode's maximum.",
+          "description": "Gradient in per mille, positive rising from `from` to `to`: from the vertical profile over the terrain heights, as stretches of constant gradient (level stretches left out); without terrain, the ramps at their gradient (the mode's maximum, or gentler where a track's level comes from its ends).",
           "type": "array",
           "items": { "$ref": "#/$defs/range_number" }
         },

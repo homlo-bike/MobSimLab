@@ -1395,6 +1395,9 @@ export const editorsTr = {
   "rail.profileRange":
     "Raylar deniz seviyesinden {min}–{max} m yukarıda · en dik eğim {steep} (en fazla {limit} ‰)",
   "rail.profileAria": "Boy kesit: hat boyunca arazi ve ray üstü",
+  "rail.levelProfileAria": "Seviyelerden boy kesit: hat boyunca ray üstünün sokak seviyesine göre yüksekliği",
+  "rail.levelProfileNote":
+    "Hattın seviyeleri ve rampalarından yükseklikler, sokak seviyesine göre (burada arazi yükseklikleri yüklenmedi).",
   "rail.profileLegend":
     "Düz çizgi: ray üstü. Kesikli: arazi (Copernicus GLO-30, yumuşatılmış). Yükseklikler bir yüzey modelinden, ±4 m.",
 

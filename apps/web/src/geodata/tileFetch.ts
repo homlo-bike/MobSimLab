@@ -4,6 +4,8 @@
  * of 7 tiles failed on "walk tile …: 502").
  */
 
+import { noteSource } from "./projectData";
+
 /** Waits before each new try of a tile the server could not get yet, ms. */
 const RETRY_MS = [1_000, 3_000, 8_000];
 
@@ -22,7 +24,10 @@ export async function fetchTileWithRetry(
     const last = attempt >= RETRY_MS.length;
     try {
       const res = await fetchImpl(url, init);
-      if (last || ![429, 502, 503, 504].includes(res.status)) return res;
+      if (last || ![429, 502, 503, 504].includes(res.status)) {
+        noteSource(res);
+        return res;
+      }
     } catch (err) {
       // A cancelled request (its signal aborted) is not tried again.
       if (last || init.signal?.aborted) throw err;

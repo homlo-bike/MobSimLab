@@ -72,5 +72,12 @@ export const geodataFr = {
   "area.import.current": "{what} : déjà importé",
   "area.import.failed": "{what} : n'a pas pu démarrer. {reason}",
   "area.seeMapData": "Suivez les imports dans SIG, Données cartographiques.",
+  "area.country": "Pays : {name}.",
+  "area.crossesBorder":
+    "La zone traverse une frontière : {countries}. Les jours fériés et les prix sont ceux de {name}.",
+  "data.liveNotice":
+    "{tiles} tuiles de carte et {heights} altitudes ont été lues en direct hors des données importées du projet. Elles sont désormais gardées pour le projet ; étendez l'import pour couvrir tout le dessin.",
+  "data.extendImport": "Étendre l'import dans Données cartographiques",
+  "data.hideLive": "Masquer",
   "data.areaRegions": "Zone : {area} km², le rectangle autour de {names}",
 } satisfies GeodataMessages;

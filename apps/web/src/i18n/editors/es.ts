@@ -1446,6 +1446,10 @@ export const editorsEs = {
   "rail.profileRange":
     "Carriles a {min}–{max} m sobre el nivel del mar · pendiente máxima {steep} (máx. {limit} ‰)",
   "rail.profileAria": "Perfil longitudinal: terreno y cabeza del carril a lo largo de la vía",
+  "rail.levelProfileAria":
+    "Perfil longitudinal según los niveles: cabeza de carril respecto al nivel de calle a lo largo de la vía",
+  "rail.levelProfileNote":
+    "Alturas según los niveles y rampas de la vía, respecto al nivel de calle (aquí no hay alturas del terreno cargadas).",
   "rail.profileLegend":
     "Continua: cabeza del carril. Discontinua: terreno (Copernicus GLO-30, suavizado). Alturas de un modelo de superficie, ±4 m.",
 

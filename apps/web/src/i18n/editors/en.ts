@@ -107,6 +107,9 @@ export const editorsEn = {
   "rail.levelHeight": "Level, rails at {rail} m above sea level · ground along it {min}–{max} m",
   "rail.profileRange": "Rails {min}–{max} m above sea level · steepest {steep} (max {limit} ‰)",
   "rail.profileAria": "Vertical profile: ground and rail top along the track",
+  "rail.levelProfileAria": "Vertical profile from the levels: rail top against street level along the track",
+  "rail.levelProfileNote":
+    "Heights from the track's levels and ramps, relative to street level (no terrain heights loaded here).",
   "rail.profileLegend":
     "Solid: rail top. Dashed: ground (Copernicus GLO-30, smoothed). Heights from a surface model, ±4 m.",
   "rail.unnamedStreet": "Unnamed street",

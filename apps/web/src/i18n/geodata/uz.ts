@@ -72,5 +72,12 @@ export const geodataUz = {
   "area.import.current": "{what}: allaqachon import qilingan",
   "area.import.failed": "{what}: boshlab bo‘lmadi. {reason}",
   "area.seeMapData": "Importni GIS, Xarita ma’lumotlari bo‘limida kuzating.",
+  "area.country": "Mamlakat: {name}.",
+  "area.crossesBorder":
+    "Hudud chegarani kesib o'tadi: {countries}. Bayramlar va narxlar {name} bo'yicha olinadi.",
+  "data.liveNotice":
+    "{tiles} ta xarita plitkasi va {heights} ta balandlik loyihaning import qilingan ma'lumotlaridan tashqaridan to'g'ridan-to'g'ri olindi. Endi ular loyihada saqlanadi; butun chizmani qamrab olish uchun importni kengaytiring.",
+  "data.extendImport": "Xarita ma'lumotlarida importni kengaytirish",
+  "data.hideLive": "Yashirish",
   "data.areaRegions": "Hudud: {area} km², {names} ni o‘rab turgan to‘rtburchak",
 } satisfies GeodataMessages;

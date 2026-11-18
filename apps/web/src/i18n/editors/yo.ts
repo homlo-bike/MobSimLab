@@ -1384,6 +1384,10 @@ export const editorsYo = {
   "rail.levelHeight": "Pẹrẹsẹ, irin wà ní m {rail} lókè òkun · ilẹ̀ lẹ́gbẹ̀ẹ́ rẹ̀ m {min}–{max}",
   "rail.profileRange": "Irin m {min}–{max} lókè òkun · gẹ̀rẹ̀gẹ̀rẹ̀ tó ga jù {steep} (tó pọ̀ jù {limit} ‰)",
   "rail.profileAria": "Àwòrán gígùn: ilẹ̀ àti orí irin ní gígùn ojú ọ̀nà",
+  "rail.levelProfileAria":
+    "Àwòrán gíga láti inú àwọn ìpele: òkè irin ní ìfiwéra pẹ̀lú ìpele ojú ọ̀nà ní gígùn ọ̀nà",
+  "rail.levelProfileNote":
+    "Gíga láti inú àwọn ìpele àti ìtẹ̀sí ọ̀nà, ní ìfiwéra pẹ̀lú ìpele ojú ọ̀nà (a kò tíì gbé gíga ilẹ̀ wọlé níbí).",
   "rail.profileLegend":
     "Ìlà kíkún: orí irin. Ìlà ẹlẹ́gbẹ́: ilẹ̀ (Copernicus GLO-30, a mú un dán). Gíga láti àwòṣe ojú ilẹ̀, ±4 m.",
 

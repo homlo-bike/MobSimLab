@@ -1432,6 +1432,10 @@ export const editorsSw = {
   "rail.profileRange":
     "Reli m {min}–{max} juu ya usawa wa bahari · mteremko mkali zaidi {steep} (upeo {limit} ‰)",
   "rail.profileAria": "Wasifu wa urefu: ardhi na juu ya reli kando ya njia",
+  "rail.levelProfileAria":
+    "Wasifu wima kutoka kwa viwango: juu ya reli ukilinganisha na usawa wa barabara kando ya njia",
+  "rail.levelProfileNote":
+    "Urefu kutoka kwa viwango na miteremko ya njia, ukilinganisha na usawa wa barabara (urefu wa ardhi haujapakiwa hapa).",
   "rail.profileLegend":
     "Mstari kamili: juu ya reli. Mistari mifupi: ardhi (Copernicus GLO-30, iliyolainishwa). Miinuko kutoka modeli ya uso, ±4 m.",
 

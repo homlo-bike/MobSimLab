@@ -1457,6 +1457,10 @@ export const editorsZu = {
   "rail.profileRange":
     "Izinsimbi {min}–{max} m ngaphezu kolwandle · umthambeka omkhulu kakhulu {steep} (ubuningi {limit} ‰)",
   "rail.profileAria": "Iphrofayela yobude: umhlaba nengaphezulu lensimbi kulo lonke ulayini",
+  "rail.levelProfileAria":
+    "Iphrofayela eqondile evela emazingeni: phezulu kukaloliwe uma kuqhathaniswa nezinga lomgwaqo ngobude bomzila",
+  "rail.levelProfileNote":
+    "Ukuphakama okuvela emazingeni nasemithambekeni yomzila, uma kuqhathaniswa nezinga lomgwaqo (ukuphakama komhlaba akulayishiwe lapha).",
   "rail.profileLegend":
     "Umugqa oqinile: ingaphezulu lensimbi. Imigqa enezikhala: umhlaba (Copernicus GLO-30, wenziwe bushelelezi). Ukuphakama kusuka kumodeli yobuso, ±4 m.",
 

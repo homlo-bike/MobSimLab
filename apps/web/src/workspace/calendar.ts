@@ -1,3 +1,4 @@
+import { withProjectFacts } from "../geodata/projectData";
 import { DEFAULT_SERVICE_DAY, type ServiceDay } from "../features/journey-planner/network";
 import type { PreferencesDoc } from "./preferences";
 
@@ -486,7 +487,9 @@ export function calendarApi(fetchImpl: typeof fetch = (...a) => fetch(...a)): Ca
       const hit = cache.get(key);
       if (hit) return hit;
       const p = fetchImpl(
-        `/api/calendar/holidays?country=${encodeURIComponent(country)}&year=${encodeURIComponent(year)}`,
+        withProjectFacts(
+          `/api/calendar/holidays?country=${encodeURIComponent(country)}&year=${encodeURIComponent(year)}`,
+        ),
         { credentials: "same-origin" },
       ).then(async (res) => {
         if (!res.ok) {

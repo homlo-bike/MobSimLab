@@ -387,7 +387,9 @@ export interface TrackView {
   length_m: number;
   tracks: number;
   curves: CurveView[];
-  ramps: { from: Level; to: Level; dh_m: number; length_m: number }[];
+  ramps: { from: Level; to: Level; dh_m: number; length_m: number; gradient_permille?: number }[];
+  /** Heights from the levels and ramps, relative to street level: [chainage m, height m]. */
+  level_profile?: [number, number][];
   levels: { from_m: number; to_m: number; level: Level | "ramp" }[];
   spread_m: [number, number];
   mode: RailMode;

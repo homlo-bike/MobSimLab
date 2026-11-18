@@ -9,7 +9,7 @@ import type { BenefitsDoc } from "../features/benefits/formulas";
 import { benefitsApi } from "../features/benefits/data";
 import type { Region, RegionsDoc } from "../features/benefits/regions";
 import { MapDataPanel } from "../features/geodata/MapDataPanel";
-import { setDataProject } from "../geodata/projectData";
+import { type LiveData, setDataProject, watchLiveData } from "../geodata/projectData";
 import { projectTimetable } from "../features/benefits/timetable";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { economyApi, type Prices } from "../features/costs/economy";
@@ -374,7 +374,11 @@ export function Workspace({
   }, [api, projectId]);
 
   // A project opens with the map on its area (the regions picked for it, or around its drawing).
-  useAreaZoom(map, projectId, typeof api.area === "function" ? (id: string) => api.area(id).get() : null);
+  const areaView = useAreaZoom(
+    map,
+    projectId,
+    typeof api.area === "function" ? (id: string) => api.area(id).get() : null,
+  );
 
   // The map tools read this project's imported OpenStreetMap and elevation data where it has some (ADR-0046).
   const geodata = useMemo(() => api.geodata(projectId), [api, projectId]);
@@ -485,6 +489,15 @@ export function Workspace({
 
   // What is drawn in the project, saved with it a moment after each change.
   const drawings = useDrawings(api, projectId, editable);
+  // Map data the tools read live, outside the project's imports (#140 step 5): said once, with a way to the
+  // import in Map data; it shows again when more is read live after the planner hid it.
+  const [liveData, setLiveData] = useState<LiveData>({ tiles: 0, heights: 0 });
+  const [liveSeen, setLiveSeen] = useState<LiveData>({ tiles: 0, heights: 0 });
+  useEffect(() => watchLiveData(setLiveData), []);
+  useEffect(() => setLiveSeen({ tiles: 0, heights: 0 }), [projectId]);
+  const liveNote =
+    (liveData.tiles > liveSeen.tiles || liveData.heights > liveSeen.heights) &&
+    (liveData.tiles > 0 || liveData.heights > 0);
   // A new session (Try again after a refused save loads it) sends what was refused once more.
   const firstApi = useRef(api);
   useEffect(() => {
@@ -569,7 +582,9 @@ export function Workspace({
   const currencyState = useProjectCurrency(preferences, ECONOMY);
   // The country at the project's location, for the calendar's public holidays (Project preferences).
   const place = railway?.origin ?? streetLines?.lines[0]?.points[0]?.lonlat ?? null;
-  const placeCountry = usePlaceCountry(place);
+  // The project's country: the main one of its area, looked up once (#140 step 3); else at the drawing.
+  const drawnCountry = usePlaceCountry(areaView?.countries?.main ? null : place);
+  const placeCountry = areaView?.countries?.main?.iso2 ?? drawnCountry;
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
@@ -956,6 +971,24 @@ export function Workspace({
           <p className="min-w-48 flex-1">{t("save.loadFailed", { error: drawings.loadError })}</p>
           <button type="button" className="btn min-h-10" onClick={drawings.reload}>
             {t("save.retry")}
+          </button>
+        </div>
+      )}
+      {liveNote && (
+        <div
+          role="status"
+          className="flex flex-wrap items-center gap-3 border-b border-sky-200 bg-sky-50 px-4 py-2 text-sm text-sky-950"
+        >
+          <p className="min-w-48 flex-1">
+            {t("data.liveNotice", { tiles: liveData.tiles, heights: liveData.heights })}
+          </p>
+          {tab !== "gis" && (
+            <button type="button" className="btn min-h-10" onClick={() => onTab("gis")}>
+              {t("data.extendImport")}
+            </button>
+          )}
+          <button type="button" className="btn btn-ghost min-h-10" onClick={() => setLiveSeen(liveData)}>
+            {t("data.hideLive")}
           </button>
         </div>
       )}
