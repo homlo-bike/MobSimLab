@@ -1,4 +1,4 @@
-import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -228,40 +228,12 @@ describe("Settings", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("has no Server tab on a server, and Plugins only for Owners and Admins", async () => {
-    vi.stubGlobal(
-      "fetch",
-      vi.fn(
-        async () =>
-          new Response(
-            JSON.stringify({
-              bundled: [],
-              installed: [],
-              keys: [],
-              developmentMode: false,
-              allowUnsigned: false,
-            }),
-            { status: 200 },
-          ),
-      ),
-    );
-    const { unmount } = render(
+  it("has no Server tab on a server, and no Plugins tab: plugins are managed in Administration", () => {
+    render(
       <SettingsDialog me={me(false)} section="app" preferences={{}} onChange={() => {}} onClose={() => {}} />,
     );
     expect(screen.queryByRole("tab", { name: "Server" })).toBeNull();
-    fireEvent.click(screen.getByRole("tab", { name: "Plugins" }));
-    expect(await screen.findByText("No plugins installed yet.")).toBeTruthy();
-    unmount();
-    render(
-      <SettingsDialog
-        me={me(false, "user")}
-        section="plugins"
-        preferences={{}}
-        onChange={() => {}}
-        onClose={() => {}}
-      />,
-    );
     expect(screen.queryByRole("tab", { name: "Plugins" })).toBeNull();
-    await act(async () => {});
+    expect(screen.getByRole("tab", { name: "App settings" }).getAttribute("aria-selected")).toBe("true");
   });
 });

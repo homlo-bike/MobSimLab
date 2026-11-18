@@ -230,6 +230,7 @@ export const bn: Messages = {
   "save.takeTheirs": "তাঁদেরটা ব্যবহার করুন",
   "save.loadFailed": "প্রকল্পের আঁকাগুলো লোড হয়নি: {error}",
   "save.retry": "আবার চেষ্টা করুন",
+  "save.restored": "এই ডিভাইসের অসংরক্ষিত পরিবর্তন ফিরিয়ে আনা হয়েছে",
   "drawing.street-lines": "রাস্তার লাইন",
   "drawing.railway": "রেলপথ",
   "drawing.street-setups": "রাস্তার বিন্যাস",

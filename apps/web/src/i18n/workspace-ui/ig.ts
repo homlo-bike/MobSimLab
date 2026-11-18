@@ -17,13 +17,10 @@ export const workspaceUiIg = {
   "tour.checks.body":
     "Mgbịrịgba ahụ na-edepụta nlele ụzọ niile, njehie na mbụ: ahịrị okporo ụzọ, ụzọ ụgbọ oloko, ebe nchekwa ụgbọ na ahịrị ngwa mgbakwunye. Họrọ otu iji hụ ebe ọ dị.",
   "settings.serverTab": "Sava",
-  "settings.pluginsTab": "Ngwa mgbakwunye",
   "settings.server.local":
     "MobSimLab na-arụ ọrụ na kọmputa a. Kama nke ahụ, ị nwere ike jikọọ ngwa a na sava MobSimLab na-arụ ọrụ n'azụ, dịka sava Docker.",
   "settings.server.address": "Adreesị sava",
   "settings.server.connect": "Jikọọ",
   "settings.server.note":
     "Ngwa ahụ na-enyocha sava ahụ ma jụọ tupu ọ gbanwee. Ọrụ ndị dị na kọmputa a na-anọ ebe a: bufee ha site n'ichekwa ha dịka faịlụ .mslab. Ị nwere ike ịlaghachi na Ntọala ngwa ahụ (⌘, ma ọ bụ Ctrl+,).",
-  "settings.plugins.intro":
-    "Wụnye ngwa mgbakwunye maka MobSimLab a. Mgbe ahụ ọrụ ọ bụla na-agbanye ma ọ bụ gbanyụọ ha na Mmasị ọrụ ya.",
 } satisfies WorkspaceUiMessages;

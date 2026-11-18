@@ -1117,6 +1117,7 @@ mod tests {
             radius_end_m: None,
             directions: vec![],
             mode,
+            storage_role: None,
         }
     }
 

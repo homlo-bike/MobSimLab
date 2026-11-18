@@ -16,12 +16,10 @@ export const workspaceUiAm = {
   "tour.checks.body":
     "ደወሉ የሁሉንም ሁነታዎች ፍተሻዎች ይዘረዝራል፣ ስህተቶች መጀመሪያ፦ የመንገድ መስመሮች፣ የባቡር ሐዲድ፣ ዴፖዎች እና የተሰኪዎች መስመሮች። የት እንዳለ ለማየት አንዱን ይምረጡ።",
   "settings.serverTab": "አገልጋይ",
-  "settings.pluginsTab": "ተሰኪዎች",
   "settings.server.local":
     "MobSimLab በዚህ ኮምፒውተር ላይ እየሰራ ነው። በምትኩ ይህን መተግበሪያ ከበስተጀርባ ከሚሰራ የMobSimLab አገልጋይ፣ ለምሳሌ ከDocker አገልጋይ ጋር ማገናኘት ይችላሉ።",
   "settings.server.address": "የአገልጋይ አድራሻ",
   "settings.server.connect": "አገናኝ",
   "settings.server.note":
     "መተግበሪያው አገልጋዩን ይፈትሻል እና ከመቀየሩ በፊት ይጠይቃል። በዚህ ኮምፒውተር ላይ ያሉ ፕሮጀክቶች እዚህ ይቆያሉ፦ እንደ .mslab ፋይሎች በማስቀመጥ ያንቀሳቅሷቸው። በመተግበሪያው ቅንብሮች (⌘, ወይም Ctrl+,) ውስጥ መመለስ ይችላሉ።",
-  "settings.plugins.intro": "ለዚህ MobSimLab ተሰኪዎችን ይጫኑ። ከዚያ እያንዳንዱ ፕሮጀክት በፕሮጀክት ምርጫዎቹ ውስጥ ያበራቸዋል ወይም ያጠፋቸዋል።",
 } satisfies WorkspaceUiMessages;

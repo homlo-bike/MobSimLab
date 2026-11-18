@@ -17,13 +17,10 @@ export const workspaceUiUz = {
   "tour.checks.body":
     "Qoʻngʻiroqcha barcha rejimlar tekshiruvlarini koʻrsatadi, avval xatolar: koʻcha liniyalari, temir yoʻl, depolar va plaginlar liniyalari. Qayerdaligini koʻrish uchun bittasini tanlang.",
   "settings.serverTab": "Server",
-  "settings.pluginsTab": "Plaginlar",
   "settings.server.local":
     "MobSimLab shu kompyuterda ishlamoqda. Buning oʻrniga ilovani fonda ishlaydigan MobSimLab serveriga, masalan, Docker serveriga ulashingiz mumkin.",
   "settings.server.address": "Server manzili",
   "settings.server.connect": "Ulash",
   "settings.server.note":
     "Ilova serverni tekshiradi va almashtirishdan oldin soʻraydi. Shu kompyuterdagi loyihalar shu yerda qoladi: ularni .mslab fayllari sifatida saqlab koʻchiring. Ilova sozlamalarida (⌘, yoki Ctrl+,) qaytishingiz mumkin.",
-  "settings.plugins.intro":
-    "Ushbu MobSimLab uchun plaginlar oʻrnating. Keyin har bir loyiha ularni oʻz Loyiha sozlamalarida yoqadi yoki oʻchiradi.",
 } satisfies WorkspaceUiMessages;

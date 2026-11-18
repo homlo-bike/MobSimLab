@@ -225,6 +225,7 @@ export const am: Messages = {
   "save.takeTheirs": "የእነሱን ተጠቀም",
   "save.loadFailed": "የፕሮጀክቱ ስዕሎች አልተጫኑም፦ {error}",
   "save.retry": "እንደገና ሞክር",
+  "save.restored": "በዚህ መሣሪያ ላይ ያልተቀመጡ ለውጦች ተመልሰዋል",
   "drawing.street-lines": "የመንገድ መስመር",
   "drawing.railway": "የባቡር መስመር",
   "drawing.street-setups": "የመንገድ ቅንብሮች",

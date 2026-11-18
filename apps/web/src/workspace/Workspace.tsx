@@ -113,6 +113,7 @@ import { VehiclesOffContext } from "./projectVehicles";
 import { EMPTY_FLEET, fleetFrom, type FleetDoc } from "../features/fleet/model";
 import { setOwnVehicles } from "../features/fleet/registry";
 import type { DelayShares } from "../features/street-lines/types";
+import { useAreaZoom } from "../features/area/useAreaZoom";
 import { type Drawings, useDrawings } from "./useDrawings";
 import type { EnergyEstimate } from "../features/energy/types";
 import { setPluginRuntime } from "../plugins/code/context";
@@ -368,6 +369,9 @@ export function Workspace({
     setMissing(false);
     api.get(projectId).then(setProject, () => setMissing(true));
   }, [api, projectId]);
+
+  // A project opens with the map on its area (the regions picked for it, or around its drawing).
+  useAreaZoom(map, projectId, typeof api.area === "function" ? (id: string) => api.area(id).get() : null);
 
   // The map tools read this project's imported OpenStreetMap and elevation data where it has some (ADR-0046).
   const geodata = useMemo(() => api.geodata(projectId), [api, projectId]);
@@ -1017,6 +1021,8 @@ export function Workspace({
                 onDoc={(d) => drawings.set("depots", d)}
                 lines={savedStreet}
                 prefs={preferences?.values}
+                railway={railway ?? null}
+                onRailway={(d) => drawings.set("railway", d)}
               />
             </Suspense>
           )}
@@ -1811,6 +1817,14 @@ export function Workspace({
 function SaveStatus({ drawings, onRetry }: { drawings: Drawings; onRetry: () => void }) {
   const { t } = useI18n();
   const s = drawings.status;
+  // Changes kept on this device came back on opening: say so for a while.
+  const [restoredNote, setRestoredNote] = useState(false);
+  useEffect(() => {
+    if (!drawings.restored) return;
+    setRestoredNote(true);
+    const timer = setTimeout(() => setRestoredNote(false), 10_000);
+    return () => clearTimeout(timer);
+  }, [drawings.restored]);
   if (s === "conflict") return null;
   // A refused save never reads as saved: it says so, with a way to try again.
   if (s === "failed")
@@ -1829,13 +1843,15 @@ function SaveStatus({ drawings, onRetry }: { drawings: Drawings; onRetry: () => 
       </span>
     );
   const text =
-    s === "saved"
-      ? t("save.saved")
-      : s === "saving"
-        ? t("save.saving")
-        : s === "offline"
-          ? t("save.offline")
-          : t("save.failed", { error: drawings.error ?? "" });
+    restoredNote && (s === "saved" || s === "saving")
+      ? t("save.restored")
+      : s === "saved"
+        ? t("save.saved")
+        : s === "saving"
+          ? t("save.saving")
+          : s === "offline"
+            ? t("save.offline")
+            : t("save.failed", { error: drawings.error ?? "" });
   return (
     <span
       role="status"

@@ -4,7 +4,7 @@ import { update } from "./doc";
 import { COLORS, fmtM, fmtTime, LEVEL_LABEL, POWER } from "./modes";
 import { field, input, levelOpts, ModeRow, Remove, Row, Section, Segmented } from "./panelControls";
 import type { RailPanelProps as Props } from "./railPanelTypes";
-import type { Power, Structure, Track, TrackElevation, TrackUse, TunnelMethod } from "./types";
+import type { Power, StorageRole, Structure, Track, TrackElevation, TrackUse, TunnelMethod } from "./types";
 
 const VERTEX: Record<string, MessageKey> = {
   leadstart: "rail.curve.outOfStart",
@@ -18,6 +18,9 @@ const TUNNEL_OPTS: TunnelMethod[] = ["auto", "cut_and_cover", "tbm"];
 
 /** Structures for a track's elevated stretches (cost estimate). */
 const STRUCTURE_OPTS: Structure[] = ["auto", "elevated", "viaduct", "bridge"];
+
+/** What trains stand on a storage track for. */
+const STORAGE_ROLES: StorageRole[] = ["layover", "overnight", "both"];
 
 export function TrackInspector({ t: track, doc, view, sel, actions: a }: Props & { t: Track }) {
   const { t: tr } = useI18n();
@@ -122,6 +125,33 @@ export function TrackInspector({ t: track, doc, view, sel, actions: a }: Props &
         ]}
         onChange={(use) => set((x) => ({ ...x, use }))}
       />
+      {t.use === "storage" && (
+        <Row label={tr("rail.storageRole")}>
+          <select
+            aria-label={tr("rail.storageRole")}
+            value={t.storage_role ?? ""}
+            onChange={(e) =>
+              set((x) => ({ ...x, storage_role: (e.target.value || null) as StorageRole | null }))
+            }
+            className={input}
+          >
+            <option value="">{tr("rail.storageRole.auto")}</option>
+            {STORAGE_ROLES.map((o) => (
+              <option key={o} value={o}>
+                {tr(`rail.storageRole.${o}`)}
+              </option>
+            ))}
+          </select>
+        </Row>
+      )}
+      {t.use === "storage" &&
+        (doc.yards ?? [])
+          .filter((y) => y.tracks.includes(t.id))
+          .map((y) => (
+            <p key={y.id} className="text-xs text-slate-600">
+              {tr("rail.inYard", { name: y.name })}
+            </p>
+          ))}
       {pi && sel?.pi !== undefined && (
         <div className="flex flex-col gap-2 rounded border border-amber-300 bg-amber-50 p-2">
           <b>{tr("rail.pointN", { n: sel.pi + 1 })}</b>

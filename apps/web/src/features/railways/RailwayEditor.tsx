@@ -34,11 +34,13 @@ import { placesOtherThan, publishPlaces } from "../naming/registry";
 import {
   CONNECTION_LAYER,
   drawRail,
+  drawStorageLabels,
   drawTrackEnds,
   ensureRailLayers,
   removeRailLayers,
   showConnections,
 } from "./mapLayers";
+import { storageLabels } from "./storage";
 import { freeTrackEnds, joinAtFreeEnds, type TrackEnd } from "./trackEnds";
 import { COLORS, RAIL_MODES } from "./modes";
 import { offeredModes, usePlannedModes } from "../../projects/plannedModes";
@@ -373,6 +375,15 @@ export function RailwayEditor({
   useEffect(() => {
     if (map && view && map.getSource("rd-tracks")) drawRail(map, view, selection);
   }, [map, view, selection]);
+  useEffect(() => {
+    if (!map || !view || !doc || !map.getSource("rd-tracks")) return;
+    drawStorageLabels(
+      map,
+      storageLabels(doc, view, (role, n) =>
+        t("rail.storageLabel", { role: t(role ? `rail.storageRole.${role}` : "rail.storage"), n }),
+      ),
+    );
+  }, [map, view, doc, t]);
   useEffect(() => {
     if (map) showConnections(map, tool === "track" || dragging.current?.kind === "end");
   }, [map, tool, view]);

@@ -233,6 +233,7 @@ export const uk: Messages = {
   "save.takeTheirs": "Взяти їхню",
   "save.loadFailed": "Не вдалося завантажити креслення проєкту: {error}",
   "save.retry": "Повторити",
+  "save.restored": "Незбережені зміни з цього пристрою відновлено",
   "drawing.street-lines": "вуличні лінії",
   "drawing.railway": "залізницю",
   "drawing.street-setups": "налаштування вулиць",

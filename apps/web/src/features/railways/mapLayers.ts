@@ -31,6 +31,8 @@ export const HIT_LAYERS = [SIGNAL_LAYER].concat(
   [`${P}corridors`],
 );
 export const CONNECTION_LAYER = `${P}connections`;
+/** Labels of storage tracks: role and how many trains fit. */
+export const STORAGE_LABEL_LAYER = `${P}storage-labels`;
 /** Free ends of drawn tracks a new track can start or end at. */
 export const TRACK_END_LAYER = `${P}track-ends`;
 
@@ -78,6 +80,7 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
   map.addSource(`${P}issues`, { type: "geojson", data: EMPTY });
   map.addSource(`${P}selection`, { type: "geojson", data: EMPTY });
   map.addSource(TRACK_END_LAYER, { type: "geojson", data: EMPTY });
+  map.addSource(STORAGE_LABEL_LAYER, { type: "geojson", data: EMPTY });
   const layers: LayerSpecification[] = [];
   // Existing railways from OpenStreetMap, under the design: solid in use, dashed under
   // construction, faint when disused or preserved.
@@ -427,6 +430,15 @@ export function ensureRailLayers(map: MapLibreMap, lat: number): void {
       },
     },
     {
+      // Storage tracks: what trains stand there for and how many fit.
+      id: STORAGE_LABEL_LAYER,
+      type: "symbol",
+      source: STORAGE_LABEL_LAYER,
+      minzoom: 14,
+      layout: { "text-field": ["get", "label"], "text-size": 11, "text-offset": [0, 1.2] },
+      paint: { "text-color": COLORS.storage, "text-halo-color": "#fff", "text-halo-width": 1.5 },
+    },
+    {
       id: TRACK_END_LAYER,
       type: "circle",
       source: TRACK_END_LAYER,
@@ -454,6 +466,11 @@ export function drawRail(map: MapLibreMap, view: RailView, selection: FeatureCol
     (map.getSource(`${P}${n}`) as GeoJSONSource | undefined)?.setData(view.layers[n]);
   (map.getSource(`${P}issues`) as GeoJSONSource | undefined)?.setData(issuesToGeoJson(view.issues));
   (map.getSource(`${P}selection`) as GeoJSONSource | undefined)?.setData(selection);
+}
+
+/** Purpose: label the storage tracks. Side effects: replaces the source's data. */
+export function drawStorageLabels(map: MapLibreMap, labels: FeatureCollection): void {
+  (map.getSource(STORAGE_LABEL_LAYER) as GeoJSONSource | undefined)?.setData(labels);
 }
 
 /** Purpose: show or hide the connection points (while drawing track). */

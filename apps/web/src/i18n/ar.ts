@@ -225,6 +225,7 @@ export const ar: Messages = {
   "save.takeTheirs": "استخدام نسختهم",
   "save.loadFailed": "لم يتم تحميل رسومات المشروع: {error}",
   "save.retry": "إعادة المحاولة",
+  "save.restored": "استُعيدت التغييرات غير المحفوظة من هذا الجهاز",
   "drawing.street-lines": "خط الشارع",
   "drawing.railway": "السكة الحديدية",
   "drawing.street-setups": "إعدادات الشوارع",

@@ -1,5 +1,4 @@
-import { type FormEvent, useCallback, useState } from "react";
-import { PluginsAdmin } from "../admin/PluginsAdmin";
+import { type FormEvent, useState } from "react";
 import { LANGUAGES, useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import type { Me, Preferences } from "../session/api";
@@ -54,9 +53,7 @@ export function SettingsDialog({
   const languageName = LANGUAGES.find((l) => l.tag === language)?.native ?? language;
   // The desktop app on this computer can connect to a MobSimLab server instead (such as one in Docker).
   const local = Boolean(me.instance.local);
-  const managesPlugins = user.role === "owner" || user.role === "admin";
-  const shown: SettingsSection =
-    (tab === "server" && !local) || (tab === "plugins" && !managesPlugins) ? "app" : tab;
+  const shown: SettingsSection = tab === "server" && !local ? "app" : tab;
   const group = "overflow-hidden rounded-xl border border-slate-200";
   const row = "flex min-h-13 items-center gap-3 border-b border-slate-200 bg-white px-4 last:border-b-0";
 
@@ -90,21 +87,9 @@ export function SettingsDialog({
             {t("settings.serverTab")}
           </button>
         )}
-        {managesPlugins && (
-          <button
-            type="button"
-            role="tab"
-            aria-selected={shown === "plugins"}
-            onClick={() => setTab("plugins")}
-          >
-            {t("settings.pluginsTab")}
-          </button>
-        )}
       </div>
       {shown === "server" ? (
         <ServerSettings />
-      ) : shown === "plugins" ? (
-        <PluginSettings me={me} />
       ) : shown === "user" ? (
         <div role="tabpanel" aria-label={t("user.userSettings")}>
           <div className={group}>
@@ -224,31 +209,6 @@ function ServerSettings() {
         </div>
       </form>
       <p className="mt-3 text-xs text-slate-500">{t("settings.server.note")}</p>
-    </div>
-  );
-}
-
-/** Purpose: the Plugins tab (Owners and Admins): install, update and remove plugins for this MobSimLab. */
-function PluginSettings({ me }: { me: Me }) {
-  const { t } = useI18n();
-  const [error, setError] = useState<string | null>(null);
-  const run = useCallback(async (f: () => Promise<unknown>) => {
-    setError(null);
-    try {
-      await f();
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  }, []);
-  return (
-    <div role="tabpanel" aria-label={t("settings.pluginsTab")} className="text-sm">
-      <p className="mb-3 text-slate-700">{t("settings.plugins.intro")}</p>
-      {error && (
-        <p role="alert" className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-red-800">
-          {error}
-        </p>
-      )}
-      <PluginsAdmin csrfToken={me.csrfToken ?? ""} run={run} actorRole={me.user?.role ?? ""} />
     </div>
   );
 }

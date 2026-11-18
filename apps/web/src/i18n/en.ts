@@ -227,6 +227,7 @@ export const en = {
   "save.takeTheirs": "Use theirs",
   "save.loadFailed": "The project's drawings did not load: {error}",
   "save.retry": "Try again",
+  "save.restored": "Unsaved changes from this device restored",
   "drawing.street-lines": "street line",
   "drawing.railway": "railway",
   "drawing.street-setups": "street setups",

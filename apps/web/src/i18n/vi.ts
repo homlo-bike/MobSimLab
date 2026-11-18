@@ -230,6 +230,7 @@ export const vi: Messages = {
   "save.takeTheirs": "Lấy bản của họ",
   "save.loadFailed": "Không thể tải bản vẽ dự án: {error}",
   "save.retry": "Thử lại",
+  "save.restored": "Đã khôi phục các thay đổi chưa lưu trên thiết bị này",
   "drawing.street-lines": "tuyến đường phố",
   "drawing.railway": "đường sắt",
   "drawing.street-setups": "cấu hình đường phố",

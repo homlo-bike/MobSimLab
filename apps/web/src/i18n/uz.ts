@@ -234,6 +234,7 @@ export const uz: Messages = {
   "save.takeTheirs": "Ularnikini olish",
   "save.loadFailed": "Loyiha chizmalari yuklanmadi: {error}",
   "save.retry": "Qayta urinish",
+  "save.restored": "Bu qurilmadagi saqlanmagan o‘zgarishlar tiklandi",
   "drawing.street-lines": "koʻcha yoʻnalishi",
   "drawing.railway": "temir yoʻl",
   "drawing.street-setups": "koʻchalar sozlamasi",

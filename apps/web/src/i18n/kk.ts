@@ -231,6 +231,7 @@ export const kk: Messages = {
   "save.takeTheirs": "Олардікін алу",
   "save.loadFailed": "Жоба сызбалары жүктелмеді: {error}",
   "save.retry": "Қайталау",
+  "save.restored": "Осы құрылғыдағы сақталмаған өзгерістер қалпына келтірілді",
   "drawing.street-lines": "көше бағыты",
   "drawing.railway": "теміржол",
   "drawing.street-setups": "көше баптаулары",

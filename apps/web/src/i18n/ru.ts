@@ -233,6 +233,7 @@ export const ru: Messages = {
   "save.takeTheirs": "Взять их версию",
   "save.loadFailed": "Чертежи проекта не загрузились: {error}",
   "save.retry": "Повторить",
+  "save.restored": "Несохранённые изменения с этого устройства восстановлены",
   "drawing.street-lines": "уличная линия",
   "drawing.railway": "железная дорога",
   "drawing.street-setups": "профили улиц",

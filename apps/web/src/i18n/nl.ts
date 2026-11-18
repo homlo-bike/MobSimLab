@@ -234,6 +234,7 @@ export const nl: Messages = {
   "save.takeTheirs": "Hun versie gebruiken",
   "save.loadFailed": "De tekeningen van het project zijn niet geladen: {error}",
   "save.retry": "Opnieuw proberen",
+  "save.restored": "Niet-opgeslagen wijzigingen van dit apparaat hersteld",
   "drawing.street-lines": "de buslijn",
   "drawing.railway": "de spoorlijn",
   "drawing.street-setups": "de straatinstellingen",

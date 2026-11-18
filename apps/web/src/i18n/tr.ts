@@ -232,6 +232,7 @@ export const tr: Messages = {
   "save.takeTheirs": "Onlarınkini al",
   "save.loadFailed": "Proje çizimleri yüklenemedi: {error}",
   "save.retry": "Yeniden dene",
+  "save.restored": "Bu cihazdaki kaydedilmemiş değişiklikler geri yüklendi",
   "drawing.street-lines": "karayolu hatları",
   "drawing.railway": "demiryolu",
   "drawing.street-setups": "sokak düzenleri",
