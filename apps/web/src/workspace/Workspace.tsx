@@ -39,6 +39,8 @@ import { ToolPalette } from "../features/street-lines/ToolPalette";
 import {
   lineInput,
   newLineId,
+  nextLineColor,
+  withLineColors,
   type SavedStreetLine,
   type StreetLinesDoc,
 } from "../features/street-lines/saved";
@@ -97,7 +99,8 @@ import { HelpMenu } from "../shell/HelpMenu";
 import { lazyNamed, LoadingScreen } from "../shell/lazy";
 import { TopBar } from "../shell/TopBar";
 import { PROJECT_TOUR, Tour } from "../shell/Tour";
-import { calendarFrom, serviceDayFor } from "./calendar";
+import { calendarFrom, serviceDayFor, weekendOf } from "./calendar";
+import { WeekendContext } from "./dayTypeLabel";
 import {
   delaysFrom,
   designTextsFrom,
@@ -575,6 +578,9 @@ export function Workspace({
   // The project's weekday service day (Calendar and years): the tools' peak windows, and the first and last
   // departure of lines without their own. Set before the tools render; back to the default when the project closes.
   const weekdayJson = JSON.stringify(serviceDayFor(calendarFrom(preferences), "weekday"));
+  // The project's weekend names the Saturday and Sunday day types in every tool (Friday and Saturday in Syria).
+  const weekendJson = JSON.stringify(weekendOf(calendarFrom(preferences)));
+  const weekend = useMemo(() => JSON.parse(weekendJson) as ReturnType<typeof weekendOf>, [weekendJson]);
   useMemo(() => setProjectServiceDay(JSON.parse(weekdayJson) as ServiceDay), [weekdayJson]);
   useEffect(() => () => setProjectServiceDay(null), []);
   const textsJson = JSON.stringify(designTextsFrom(preferences));
@@ -607,12 +613,13 @@ export function Workspace({
     forgetSetups(projectId);
   }, [drawings.loaded, editable, projectId]);
   const savedStreet = streetLines?.lines ?? NO_STREET_LINES;
-  // Street lines saved before lines had ids get one, so their comments stay with them (Owners and Editors save).
+  // Street lines saved before lines had ids get one, so their comments stay with them, and before lines had
+  // colours a colour of their own, so lines of one mode can be told apart (Owners and Editors save).
   useEffect(() => {
-    if (!drawings.loaded || !editable || !streetLines?.lines.some((l) => !l.id)) return;
+    if (!drawings.loaded || !editable || !streetLines?.lines.some((l) => !l.id || !l.color)) return;
     drawings.set("street-lines", {
       ...streetLines,
-      lines: streetLines.lines.map((l) => (l.id ? l : { ...l, id: newLineId() })),
+      lines: withLineColors(streetLines.lines.map((l) => (l.id ? l : { ...l, id: newLineId() }))),
     } satisfies StreetLinesDoc);
   }, [drawings.loaded, editable, streetLines]);
   const editedStreet = Math.min(streetIndex, savedStreet.length);
@@ -979,6 +986,10 @@ export function Workspace({
                 initial={savedStreet[editedStreet] ?? null}
                 onSave={saveStreet}
                 defaultName={t("street.lineN", { n: editedStreet + 1 })}
+                defaultColor={
+                  withLineColors(savedStreet)[editedStreet]?.color ??
+                  nextLineColor(savedStreet.map((l) => l.color))
+                }
                 otherLines={otherStreet}
                 onPickLine={(id) => {
                   const i = savedStreet.findIndex((l) => l.id === id);
@@ -1192,6 +1203,7 @@ export function Workspace({
                   return {
                     timetable,
                     holidays: feedHolidays(cal, today, new Date(today.getTime() + 365 * 86_400_000)),
+                    weekend: weekendOf(cal),
                   };
                 }}
                 {...(editable ? { onEditGtfsRoute: (f: string, r: string) => void editGtfsRoute(f, r) } : {})}
@@ -1799,16 +1811,18 @@ export function Workspace({
   // use, reach the line tools.
   return (
     <PlannedModesProvider value={planned}>
-      <VehiclesOffContext.Provider value={vehiclesOff}>
-        <CommentsProvider
-          api={commentsApi}
-          canComment={project ? can.comment(project) : false}
-          isOwner={project ? can.manage(project) : false}
-          userId={userId}
-        >
-          <ChecksProvider key={projectId}>{body}</ChecksProvider>
-        </CommentsProvider>
-      </VehiclesOffContext.Provider>
+      <WeekendContext.Provider value={weekend}>
+        <VehiclesOffContext.Provider value={vehiclesOff}>
+          <CommentsProvider
+            api={commentsApi}
+            canComment={project ? can.comment(project) : false}
+            isOwner={project ? can.manage(project) : false}
+            userId={userId}
+          >
+            <ChecksProvider key={projectId}>{body}</ChecksProvider>
+          </CommentsProvider>
+        </VehiclesOffContext.Provider>
+      </WeekendContext.Provider>
     </PlannedModesProvider>
   );
 }

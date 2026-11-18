@@ -221,6 +221,10 @@ export const editorsAr = {
   "rail.switch": "المحوّل",
   "rail.switchFacts":
     "الطول {length} · 1:{ratio} · نصف القطر {radius} م · {speed} كم/س في الاتجاه المنحرف · عند {at}",
+  "rail.switches": "المحوّلات",
+  "rail.switchesNone": "لا محوّلات بعد. ضع واحدًا بأداة المحوّل أو أداة الوصلة التبادلية.",
+  "rail.switchItem": "{kind} على {track} عند {at}",
+  "rail.kind.doubleJunction": "تفرّع مزدوج",
   "rail.positionAlong": "الموضع على السكة",
   "rail.otherSide": "الجهة الأخرى",
   "rail.reverse": "عكس",

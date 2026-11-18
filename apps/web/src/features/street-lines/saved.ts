@@ -18,6 +18,8 @@ export interface SavedStreetLine {
   /** Stable id, so comments stay on the line when lines before it are deleted; absent on lines saved before ids. */
   id?: string;
   name: string;
+  /** The line's own colour (#rrggbb) on the map, the schematic and in the legends; absent: its mode's colour. */
+  color?: string | null;
   profile: VehicleProfile;
   /** The catalogue vehicle (vehicles.ts id); null or absent for the mode's typical vehicle. */
   vehicle?: string | null;
@@ -42,6 +44,49 @@ export interface StreetLinesDoc {
   lines: SavedStreetLine[];
 }
 
+/** Colours given to street lines in turn, so lines of one mode can be told apart. */
+export const STREET_LINE_COLORS = [
+  "#b91c1c",
+  "#1d4ed8",
+  "#15803d",
+  "#7e22ce",
+  "#c2410c",
+  "#0e7490",
+  "#a16207",
+  "#be185d",
+  "#4d7c0f",
+  "#475569",
+] as const;
+
+const HEX = /^#[0-9a-fA-F]{6}$/;
+
+/** Purpose: a street line's colour: its own, else its mode's. */
+export function streetLineColor(line: Pick<SavedStreetLine, "color" | "profile">): string {
+  return line.color && HEX.test(line.color)
+    ? line.color
+    : (MODES[line.profile.mode]?.color ?? MODES.bus.color);
+}
+
+/** Purpose: the first line colour no line uses yet (in turn once all are used). */
+export function nextLineColor(used: readonly (string | null | undefined)[]): string {
+  const taken = new Set(used.filter((c): c is string => !!c).map((c) => c.toLowerCase()));
+  return (
+    STREET_LINE_COLORS.find((c) => !taken.has(c)) ??
+    STREET_LINE_COLORS[used.length % STREET_LINE_COLORS.length]!
+  );
+}
+
+/** Purpose: the lines with a colour of their own for each line that has none yet, in turn from the unused ones. */
+export function withLineColors(lines: readonly SavedStreetLine[]): SavedStreetLine[] {
+  const used = lines.map((l) => (l.color && HEX.test(l.color) ? l.color : null));
+  return lines.map((l, i) => {
+    if (used[i]) return l;
+    const color = nextLineColor(used);
+    used[i] = color;
+    return { ...l, color };
+  });
+}
+
 /** Purpose: a new street line id. */
 export function newLineId(): string {
   return crypto.randomUUID();
@@ -54,7 +99,7 @@ export function lineInput(line: SavedStreetLine | undefined): StreetLineInput | 
   return {
     name: line.name,
     mode: line.profile.mode,
-    color: MODES[line.profile.mode]?.color ?? MODES.bus.color,
+    color: streetLineColor(line),
     view: line.view,
     dwellS: t.dwellS,
     headwayMin: t.headwayMin,

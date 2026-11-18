@@ -31,6 +31,13 @@ export const calendarAm = {
   "cal.addName": "ስም",
   "cal.add": "የበዓል ቀን አክል",
   "cal.source": "የሕዝብ በዓላት ከNager.Date (date.nager.at)። ፕሮጀክቱ ከለውጦችዎ ጋር የራሱን ቅጂ ይይዛል።",
+  "cal.eidSource":
+    "ዝርዝሩ ከሌላቸው ዒድ አል-ፊጥር እና ዒድ አል-አድሐ ከኡም አል-ቁራ ቀን መቁጠሪያ ይታከላሉ። በጨረቃ እይታ ትክክለኛው ቀን አንድ ቀን ቀደም ወይም ዘግይቶ ሊሆን ይችላል።",
+  "cal.weekend": "የሳምንት መጨረሻ",
+  "cal.weekendDays": "{first} እና {second}",
+  "cal.weekendHint":
+    "እያንዳንዱ የሳምንት መጨረሻ ቀን ከታች የራሱ የአገልግሎት ቀን እና የቀናት ብዛት አለው። ነባሪው በፕሮጀክቱ አገር የተለመደው የሳምንት መጨረሻ ነው።",
+  "cal.weekendSource": "በአገር የተለመዱ የሳምንት መጨረሻዎች ከ Unicode CLDR የሳምንት መረጃ።",
   "cal.counts": "ቀኖች በቀን ዓይነት",
   "cal.countsIntro": "ከቀን መቁጠሪያው የተቆጠሩ። የራስዎን ለመጠቀም ቁጥር ይጻፉ፤ ክፈፍ ይኖረዋል፣ ↺ ደግሞ የተቆጠረውን ይመልሳል።",
   "cal.total": "ጠቅላላ",

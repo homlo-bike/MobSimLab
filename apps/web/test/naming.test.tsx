@@ -82,6 +82,19 @@ describe("basemap labels", () => {
     expect(suggestNames(at, features, { language: "en" })[0]!.name).toBe("Alex");
   });
 
+  it("names a street in English from OpenMapTiles' name_en when the page is in English", () => {
+    const features = featuresFromLabels(
+      [
+        label("transportation_name", { class: "primary", name: "شارع بغداد", name_en: "Baghdad Street" }, [
+          m(20),
+        ]),
+      ],
+      at,
+    );
+    expect(suggestNames(at, features)[0]!.name).toBe("شارع بغداد");
+    expect(suggestNames(at, features, { language: "en" })[0]!.name).toBe("Baghdad Street");
+  });
+
   it("takes a rail station's label for a station and a bus stop's for a stop", () => {
     const features = featuresFromLabels(
       [

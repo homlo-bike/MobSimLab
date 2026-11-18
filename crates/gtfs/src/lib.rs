@@ -622,6 +622,59 @@ pub struct ExportInput {
     /// `weekday`, `saturday` or `sunday` one (`calendar_dates.txt`).
     #[serde(default)]
     pub holidays: Vec<String>,
+    /// The weekend: the `sunday` service runs on the main rest day and the `saturday` one on the other
+    /// weekend day; absent: Saturday and Sunday.
+    #[serde(default)]
+    pub weekend: Option<Weekend>,
+}
+
+/// The days of the weekend, as days of the week (0 Sunday to 6 Saturday).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Weekend {
+    /// The main rest day: the `sunday` service runs on it.
+    pub rest: u8,
+    /// The other weekend day: the `saturday` service runs on it; absent: a one-day weekend.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub second: Option<u8>,
+}
+
+impl Default for Weekend {
+    fn default() -> Self {
+        Self {
+            rest: 0,
+            second: Some(6),
+        }
+    }
+}
+
+impl Weekend {
+    /// Purpose: the weekend if its days are days of the week and differ, else Saturday and Sunday.
+    fn valid(self) -> Self {
+        let second_ok = !matches!(self.second, Some(s) if s >= 7 || s == self.rest);
+        if self.rest < 7 && second_ok {
+            self
+        } else {
+            Self::default()
+        }
+    }
+    /// Purpose: `calendar.txt`'s Monday-to-Sunday columns with a 1 on one day of the week (0 Sunday), if any.
+    fn columns(day: Option<u8>) -> [&'static str; 7] {
+        let mut c = ["0"; 7];
+        if let Some(day) = day {
+            c[(usize::from(day) + 6) % 7] = "1";
+        }
+        c
+    }
+    /// Purpose: the service that runs on a day of the week (0 Sunday).
+    fn service(self, day: u8) -> &'static str {
+        if day == self.rest {
+            "sunday"
+        } else if Some(day) == self.second {
+            "saturday"
+        } else {
+            "weekday"
+        }
+    }
 }
 
 fn en() -> String {
@@ -746,8 +799,9 @@ pub fn export(input: &ExportInput) -> BTreeMap<String, String> {
         ),
     );
 
-    // Services: the day types run on their days (`saturday`, `sunday`; `holiday` only on the holidays); any
-    // other service, `weekday` among them, Monday to Friday over the feed's validity.
+    // Services: the day types run on their days (`saturday`, `sunday` as the weekend sets them; `holiday` only on
+    // the holidays); any other service, `weekday` among them, on the other days over the feed's validity.
+    let weekend = input.weekend.unwrap_or_default().valid();
     let services: BTreeSet<&str> = tt
         .trips
         .iter()
@@ -774,10 +828,16 @@ pub fn export(input: &ExportInput) -> BTreeMap<String, String> {
                 .map(|s| {
                     let mut r = vec![s.to_string()];
                     let days = match *s {
-                        "saturday" => ["0", "0", "0", "0", "0", "1", "0"],
-                        "sunday" => ["0", "0", "0", "0", "0", "0", "1"],
+                        "saturday" => Weekend::columns(weekend.second),
+                        "sunday" => Weekend::columns(Some(weekend.rest)),
                         "holiday" => ["0"; 7],
-                        _ => ["1", "1", "1", "1", "1", "0", "0"],
+                        _ => {
+                            let mut c = ["1"; 7];
+                            for d in std::iter::once(weekend.rest).chain(weekend.second) {
+                                c[(usize::from(d) + 6) % 7] = "0";
+                            }
+                            c
+                        }
                     };
                     r.extend(days.map(String::from));
                     r.push(input.start_date.clone());
@@ -802,12 +862,9 @@ pub fn export(input: &ExportInput) -> BTreeMap<String, String> {
         hol.sort();
         hol.dedup();
         for d in hol {
-            let usual = match day_of(d).map(weekday_col) {
-                Some("saturday") => "saturday",
-                Some("sunday") => "sunday",
-                Some(_) => "weekday",
-                None => continue,
-            };
+            let Some(day) = day_of(d) else { continue };
+            // Day 0 (1970-01-01) was a Thursday: day of the week with 0 for Sunday.
+            let usual = weekend.service(((day + 4).rem_euclid(7)) as u8);
             dates.push(vec!["holiday".to_string(), d.clone(), "1".into()]);
             if services.contains(usual) {
                 dates.push(vec![usual.to_string(), d.clone(), "2".into()]);

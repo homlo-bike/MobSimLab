@@ -32,6 +32,13 @@ export const calendarTr = {
   "cal.add": "Tatil günü ekle",
   "cal.source":
     "Resmî tatiller Nager.Date’ten (date.nager.at). Proje, değişikliklerinizle birlikte kendi kopyasını tutar.",
+  "cal.eidSource":
+    "Listede yoksa Ramazan Bayramı ve Kurban Bayramı Ümmü’l-Kura takvimine göre eklenir. Hilalin görülmesine göre gerçek gün bir gün önce veya sonra olabilir.",
+  "cal.weekend": "Hafta sonu",
+  "cal.weekendDays": "{first} ve {second}",
+  "cal.weekendHint":
+    "Her hafta sonu gününün aşağıda kendi hizmet günü ve gün sayısı vardır. Varsayılan, projenin ülkesindeki olağan hafta sonudur.",
+  "cal.weekendSource": "Ülkelere göre olağan hafta sonları Unicode CLDR hafta verilerinden.",
   "cal.counts": "Gün türüne göre günler",
   "cal.countsIntro":
     "Takvimden sayıldı. Kendi sayınızı kullanmak için bir sayı yazın; çerçevelenir ve ↺ sayılana döner.",

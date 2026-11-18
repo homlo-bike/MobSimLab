@@ -47,6 +47,127 @@ export interface ServiceCalendar {
   days?: Partial<Record<DayTypeId, ServiceWindow>>;
   /** The planner's own number of days per day type, by year ("2027"); absent: counted from the calendar. */
   counts?: Record<string, Partial<Record<DayTypeId, number>>>;
+  /** The weekend; absent: the usual one in the calendar's country, else Saturday and Sunday. */
+  weekend?: Weekend;
+}
+
+/**
+ * The days of the weekend, as days of the week (0 Sunday to 6 Saturday). The main rest day's dates are the
+ * "sunday" day type and the other day's the "saturday" one, so a Friday and Saturday weekend runs its Sunday
+ * service on Fridays. A one-day weekend has no "saturday" days.
+ */
+export interface Weekend {
+  /** The main rest day (Sunday in most countries, Friday in a Friday and Saturday weekend). */
+  rest: number;
+  /** The other weekend day; absent: a one-day weekend. */
+  second?: number;
+}
+
+/** The weekend of most countries: Saturday and Sunday. */
+export const SATURDAY_SUNDAY: Weekend = { rest: 0, second: 6 };
+/** The weekend of most Arab countries: Friday and Saturday. */
+export const FRIDAY_SATURDAY: Weekend = { rest: 5, second: 6 };
+/** The weekends the planner can choose from, as days of the week; the country sets which one is the rest day. */
+export const WEEKEND_DAYS: readonly (readonly number[])[] = [[6, 0], [5, 6], [4, 5], [0], [5], [6]];
+
+/** Countries (ISO alpha-2) whose weekend is Friday and Saturday, for browsers without the Unicode week data. */
+const FRIDAY_SATURDAY_COUNTRIES = new Set([
+  "BD",
+  "BH",
+  "DZ",
+  "EG",
+  "IL",
+  "IQ",
+  "JO",
+  "KW",
+  "LY",
+  "MV",
+  "OM",
+  "QA",
+  "SA",
+  "SD",
+  "SY",
+  "YE",
+]);
+
+const isDay = (d: unknown): d is number => typeof d === "number" && Number.isInteger(d) && d >= 0 && d < 7;
+const isWeekend = (w: unknown): w is Weekend =>
+  !!w &&
+  typeof w === "object" &&
+  isDay((w as Weekend).rest) &&
+  ((w as Weekend).second === undefined ||
+    (isDay((w as Weekend).second) && (w as Weekend).second !== (w as Weekend).rest));
+
+/**
+ * Purpose: the weekend days of a country (ISO alpha-2) from the Unicode CLDR week data, which the browser's Intl
+ * API holds (0 Sunday to 6 Saturday); null when the country is not valid or the browser has no week data.
+ */
+export function cldrWeekendDays(country: string | null | undefined): number[] | null {
+  if (!country || !/^[A-Za-z]{2}$/.test(country)) return null;
+  try {
+    const locale = new Intl.Locale(`und-${country.toUpperCase()}`) as Intl.Locale & {
+      getWeekInfo?: () => { weekend?: number[] };
+      weekInfo?: { weekend?: number[] };
+    };
+    const info = locale.getWeekInfo?.() ?? locale.weekInfo;
+    // Intl numbers the days 1 Monday to 7 Sunday.
+    const days = [...new Set((info?.weekend ?? []).map((d) => d % 7))].filter(isDay);
+    return days.length >= 1 && days.length <= 2 ? days : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Purpose: a weekend from its days in a country: the main rest day is Sunday if it is one of them, else Saturday in
+ * Israel (the Sabbath), else Friday, else the later day.
+ */
+export function weekendFromDays(days: readonly number[], country?: string | null): Weekend {
+  const set = [...new Set(days)].filter(isDay);
+  if (set.length === 0) return SATURDAY_SUNDAY;
+  if (set.length === 1) return { rest: set[0]! };
+  const rest = set.includes(0)
+    ? 0
+    : country?.toUpperCase() === "IL" && set.includes(6)
+      ? 6
+      : set.includes(5)
+        ? 5
+        : set[set.length - 1]!;
+  return { rest, second: set.find((d) => d !== rest) };
+}
+
+/** Purpose: the days of a weekend, in the order of a week that starts on Monday. */
+export function weekendDays(w: Weekend): number[] {
+  return (w.second === undefined ? [w.rest] : [w.rest, w.second]).sort(
+    (a, b) => ((a + 6) % 7) - ((b + 6) % 7),
+  );
+}
+
+/**
+ * Purpose: the usual weekend in a country (ISO alpha-2), from the Unicode CLDR week data (`cldrWeekendDays`);
+ * Saturday and Sunday when unknown.
+ */
+export function countryWeekend(country: string | null | undefined): Weekend {
+  const days = cldrWeekendDays(country);
+  if (days) return weekendFromDays(days, country);
+  return country && FRIDAY_SATURDAY_COUNTRIES.has(country.toUpperCase())
+    ? weekendFromDays([5, 6], country)
+    : SATURDAY_SUNDAY;
+}
+
+/** Purpose: the calendar's weekend: the planner's choice, else the usual one in its country. */
+export function weekendOf(cal: ServiceCalendar): Weekend {
+  return isWeekend(cal.weekend) ? cal.weekend : countryWeekend(cal.country);
+}
+
+/** Purpose: whether two weekends are the same days with the same rest day. */
+export function sameWeekend(a: Weekend, b: Weekend): boolean {
+  return a.rest === b.rest && a.second === b.second;
+}
+
+/** Purpose: the calendar with the planner's weekend (kept even when it is the country's usual one). */
+export function withWeekend(cal: ServiceCalendar, w: Weekend): ServiceCalendar {
+  return { ...cal, weekend: w.second === undefined ? { rest: w.rest } : { rest: w.rest, second: w.second } };
 }
 
 /** Simulation years of the project, inclusive. */
@@ -156,14 +277,15 @@ export function holidaysFor(
 }
 
 /**
- * Purpose: the day type of a date: a counted holiday is "holiday" whatever the weekday, else Saturday, Sunday
- * or weekday.
+ * Purpose: the day type of a date: a counted holiday is "holiday" whatever the weekday; the weekend's main rest
+ * day is "sunday" and its other day "saturday" (`weekendOf`); every other day is a weekday.
  * Inputs: date YYYY-MM-DD, the calendar, the year's counted holidays (`holidaysFor`).
  */
-export function dayTypeOf(date: string, _cal: ServiceCalendar, holidays: readonly string[]): DayTypeId {
+export function dayTypeOf(date: string, cal: ServiceCalendar, holidays: readonly string[]): DayTypeId {
   if (holidays.includes(date)) return "holiday";
   const wd = new Date(`${date}T00:00:00Z`).getUTCDay();
-  return wd === 6 ? "saturday" : wd === 0 ? "sunday" : "weekday";
+  const w = weekendOf(cal);
+  return wd === w.rest ? "sunday" : wd === w.second ? "saturday" : "weekday";
 }
 
 /** Purpose: every date of a year, YYYY-MM-DD. */
@@ -388,4 +510,172 @@ const SHARED = calendarApi();
 /** Purpose: a country's public holidays in a year, fetched once per session. */
 export function fetchPublicHolidays(country: string, year: number): Promise<Holiday[]> {
   return SHARED.holidays(country, year);
+}
+
+/**
+ * Countries (ISO alpha-2) where Eid al-Fitr and Eid al-Adha are public holidays. Where the fetched holidays
+ * (Nager.Date) lack them, the calendar adds them (`withEid`).
+ */
+const EID_COUNTRIES = new Set([
+  "AE",
+  "AF",
+  "AL",
+  "AZ",
+  "BD",
+  "BF",
+  "BH",
+  "BN",
+  "DJ",
+  "DZ",
+  "EG",
+  "GM",
+  "GN",
+  "ID",
+  "IQ",
+  "IR",
+  "JO",
+  "KG",
+  "KM",
+  "KW",
+  "LB",
+  "LY",
+  "MA",
+  "ML",
+  "MR",
+  "MV",
+  "MY",
+  "NE",
+  "NG",
+  "OM",
+  "PK",
+  "PS",
+  "QA",
+  "SA",
+  "SD",
+  "SL",
+  "SN",
+  "SO",
+  "SY",
+  "TD",
+  "TJ",
+  "TN",
+  "TR",
+  "UZ",
+  "YE",
+]);
+
+/** The two Eids: Hijri month, first day and number of days off. */
+const EIDS = [
+  { name: "Eid al-Fitr", localName: "عيد الفطر", month: 10, day: 1, days: 3 },
+  { name: "Eid al-Adha", localName: "عيد الأضحى", month: 12, day: 10, days: 4 },
+] as const;
+
+let hijri: Intl.DateTimeFormat | null | undefined;
+/** Purpose: the Umm al-Qura month and day of a date, or null where the browser has no Islamic calendar. */
+function hijriOf(date: string): { month: number; day: number } | null {
+  if (hijri === undefined) {
+    try {
+      const f = new Intl.DateTimeFormat("en-u-ca-islamic-umalqura-nu-latn", {
+        month: "numeric",
+        day: "numeric",
+        timeZone: "UTC",
+      });
+      hijri = f.resolvedOptions().calendar.startsWith("islamic") ? f : null;
+    } catch {
+      hijri = null;
+    }
+  }
+  if (!hijri) return null;
+  const parts = hijri.formatToParts(new Date(`${date}T00:00:00Z`));
+  const n = (type: string) => Number(parts.find((p) => p.type === type)?.value);
+  return { month: n("month"), day: n("day") };
+}
+
+/**
+ * Purpose: the days off of Eid al-Fitr (3 days from 1 Shawwal) and Eid al-Adha (4 days from 10 Dhu al-Hijjah)
+ * in a Gregorian year, from the Umm al-Qura calendar. Where the moon is sighted, the actual day can be one
+ * earlier or later. Empty where the browser has no Islamic calendar.
+ */
+export function eidHolidays(year: number): Holiday[] {
+  const out: Holiday[] = [];
+  for (const date of datesOf(year)) {
+    const h = hijriOf(date);
+    if (!h) return [];
+    for (const e of EIDS) {
+      const k = h.day - e.day;
+      if (h.month === e.month && k >= 0 && k < e.days)
+        out.push({
+          date,
+          name: k === 0 ? e.name : `${e.name} (day ${k + 1})`,
+          localName: k === 0 ? e.localName : `${e.localName} (${k + 1})`,
+        });
+    }
+  }
+  return out;
+}
+
+/** Purpose: whether Eid al-Fitr and Eid al-Adha are public holidays in a country (ISO alpha-2). */
+export function observesEid(country: string | null | undefined): boolean {
+  return !!country && EID_COUNTRIES.has(country.toUpperCase());
+}
+
+/**
+ * Purpose: a year's fetched holidays with the Eid days added where the country observes Eid and the list has
+ * neither a holiday within two days of an Eid's first day nor a holiday named after it. Other countries'
+ * lists are returned as they are.
+ */
+export function withEid(
+  country: string | null | undefined,
+  year: number,
+  days: readonly Holiday[],
+): Holiday[] {
+  if (!observesEid(country)) return [...days];
+  const eid = eidHolidays(year);
+  const out = [...days];
+  for (const e of EIDS) {
+    const mine = eid.filter((h) => h.name.startsWith(e.name));
+    const first = mine[0];
+    if (!first) continue;
+    const t0 = Date.parse(`${first.date}T00:00:00Z`);
+    const named = new RegExp(
+      e.name === "Eid al-Fitr"
+        ? "fitr|ramazan|ramadan|lebaran|aidilfitri"
+        : "adha|kurban|qurban|aidiladha|sacrifice",
+      "i",
+    );
+    const listed = days.some(
+      (h) =>
+        named.test(`${h.name} ${h.localName ?? ""}`) ||
+        Math.abs(Date.parse(`${h.date}T00:00:00Z`) - t0) <= 2 * 86_400_000,
+    );
+    if (!listed) out.push(...mine.filter((h) => !out.some((x) => x.date === h.date)));
+  }
+  return out.sort((a, b) => a.date.localeCompare(b.date));
+}
+
+/**
+ * Purpose: the calendar with what the country's customs add when the planner has not set them: its usual weekend
+ * and, in each year with fetched holidays, the Eid days the list lacks (`withEid`). Unchanged for a country
+ * whose customs are the defaults, or when there is nothing to add.
+ */
+export function withCountryCustoms(
+  cal: ServiceCalendar,
+  country: string | null | undefined,
+): ServiceCalendar {
+  let next = cal;
+  if (!cal.weekend && country && !sameWeekend(countryWeekend(country), SATURDAY_SUNDAY))
+    next = withWeekend(next, countryWeekend(country));
+  if (observesEid(country) && cal.fetched) {
+    const fetched = { ...cal.fetched };
+    let changed = false;
+    for (const [y, days] of Object.entries(cal.fetched)) {
+      const full = withEid(country, Number(y), days);
+      if (full.length !== days.length) {
+        fetched[y] = full;
+        changed = true;
+      }
+    }
+    if (changed) next = { ...next, fetched };
+  }
+  return next;
 }

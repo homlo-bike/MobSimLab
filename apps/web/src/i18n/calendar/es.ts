@@ -33,6 +33,13 @@ export const calendarEs = {
   "cal.add": "Añadir día libre",
   "cal.source":
     "Días festivos de Nager.Date (date.nager.at). El proyecto guarda su propia copia con sus cambios.",
+  "cal.eidSource":
+    "Si faltan en la lista, Eid al-Fitr y Eid al-Adha se añaden según el calendario Umm al-Qura. Según el avistamiento de la luna, el día real puede ser un día antes o después.",
+  "cal.weekend": "Fin de semana",
+  "cal.weekendDays": "{first} y {second}",
+  "cal.weekendHint":
+    "Cada día del fin de semana tiene abajo su propio día de servicio y su número de días. Por defecto, el fin de semana habitual del país del proyecto.",
+  "cal.weekendSource": "Fines de semana habituales por país, de los datos semanales de Unicode CLDR.",
   "cal.counts": "Días por tipo de día",
   "cal.countsIntro":
     "Contados a partir del calendario. Escriba un número para usar el suyo; queda resaltado y ↺ vuelve al contado.",

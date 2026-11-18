@@ -10,7 +10,7 @@ import { isOpen, type RunStatus, type ServerNetwork } from "../capacity/server";
 import type { Verdict } from "../capacity/types";
 import type { Network, RailEngineLoader } from "../railways/types";
 import { libraryValue as benefitLibrary } from "../benefits/params";
-import { DAY_TYPE_LABEL } from "../../workspace/CalendarSection";
+import { useDayTypeLabel } from "../../workspace/dayTypeLabel";
 import { calendarFrom, DAY_TYPES, simulationYearsFrom } from "../../workspace/calendar";
 import { climateFrom, monthsOf } from "../../workspace/climate";
 import { projectRunSettings } from "../capacity/projectSettings";
@@ -118,6 +118,7 @@ export function CalendarRun({
   pollMs?: number;
 }) {
   const { t, language } = useI18n();
+  const dayLabel = useDayTypeLabel();
   const id = useId();
   const prefs = preferences?.values;
   const cal = calendarFrom(preferences);
@@ -358,7 +359,7 @@ export function CalendarRun({
         {(Object.keys(RIDER_SHARE) as (keyof typeof RIDER_SHARE)[]).map((dt) => (
           <ShareField
             key={dt}
-            label={t(DAY_TYPE_LABEL[dt])}
+            label={dayLabel(dt)}
             library={benefitLibrary(RIDER_SHARE[dt])[1]}
             value={prefValue(preferences, RIDER_SHARE[dt])}
             editable={canRun && !!onPreferences}
@@ -509,6 +510,7 @@ export function CalendarRun({
 /** Purpose: how many days of each day type the chosen periods have, and the expected weather days, as lines. */
 function DayCountSummary({ periods }: { periods: ReturnType<typeof periodsFor> }) {
   const { t, language } = useI18n();
+  const dayLabel = useDayTypeLabel();
   const sum = (match: (key: string) => boolean) =>
     periods.reduce(
       (s, p) => s + Object.entries(p.counts).reduce((a, [k, n]) => a + (match(k) ? n : 0), 0),
@@ -526,7 +528,7 @@ function DayCountSummary({ periods }: { periods: ReturnType<typeof periodsFor> }
     <div className="text-sm text-slate-700">
       <p>
         {DAY_TYPES.filter((dt) => total[dt] > 0)
-          .map((dt) => `${t(DAY_TYPE_LABEL[dt])}: ${fmt(total[dt])}`)
+          .map((dt) => `${dayLabel(dt)}: ${fmt(total[dt])}`)
           .join(" · ")}
       </p>
       {VARIANTS.some((v) => weather[v] > 0) && (
@@ -545,6 +547,7 @@ function DayCountSummary({ periods }: { periods: ReturnType<typeof periodsFor> }
 /** Purpose: a saved run: progress, then each day type's day and each period's figures. */
 function RunView({ run }: { run: CalendarRunDetail }) {
   const { t, language } = useI18n();
+  const dayLabel = useDayTypeLabel();
   const num = (v: number | null | undefined, digits = 0) =>
     v === null || v === undefined
       ? "–"
@@ -572,12 +575,12 @@ function RunView({ run }: { run: CalendarRunDetail }) {
   const stepText = (x: Extract<NonNullable<typeof p>, { step: "day" }>) =>
     x.variant
       ? t("calrun.step.variant", {
-          day: t(DAY_TYPE_LABEL[x.day_type]),
+          day: dayLabel(x.day_type),
           variant: t(VARIANT_LABEL[x.variant]),
           n: x.n,
           total: x.total,
         })
-      : t("calrun.step.day", { day: t(DAY_TYPE_LABEL[x.day_type]), n: x.n, total: x.total });
+      : t("calrun.step.day", { day: dayLabel(x.day_type), n: x.n, total: x.total });
   const hhmm = (sec: number) =>
     `${String(Math.floor(sec / 3600) % 24).padStart(2, "0")}:${String(Math.floor((sec % 3600) / 60)).padStart(2, "0")}`;
   const punctOf = (rail: RailDay | undefined) =>
@@ -648,7 +651,7 @@ function RunView({ run }: { run: CalendarRunDetail }) {
                 const rows = [
                   <tr key={dt} className="border-t border-slate-100">
                     <th scope="row" className="py-1 text-start font-semibold">
-                      {t(DAY_TYPE_LABEL[dt])}
+                      {dayLabel(dt)}
                       {d.rail?.verdict && (
                         <span className="block text-xs font-normal text-slate-600">
                           {verdictText(d.rail.verdict as Verdict, t).title}
@@ -730,7 +733,7 @@ function RunView({ run }: { run: CalendarRunDetail }) {
                     {r.mode !== "years" && (
                       <span className="block text-xs font-normal text-slate-500">
                         {DAY_TYPES.filter((dt) => x.counts[dt] > 0)
-                          .map((dt) => t(DAY_TYPE_LABEL[dt]))
+                          .map((dt) => dayLabel(dt))
                           .join(", ")}
                       </span>
                     )}
