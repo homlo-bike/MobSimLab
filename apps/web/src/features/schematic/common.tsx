@@ -9,6 +9,7 @@ import { MODES } from "../street-lines/modes";
 import type { LonLat } from "../street-lines/types";
 import type { Pt } from "./layout";
 import type { Layer, SchematicLine, SectionLevel } from "./lines";
+import type { SchematicThumb } from "./thumb";
 
 /** A shape the planner drew on the network map: a tariff zone or a landmark such as the old town. */
 export interface SchematicArea {
@@ -51,6 +52,8 @@ export interface SchematicDoc {
   showAreas?: boolean;
   /** Mode layers switched off. */
   hidden?: Layer[];
+  /** The network as last drawn, small, for the project card (written by the network map). */
+  thumb?: SchematicThumb;
 }
 
 export const EMPTY_SCHEMATIC: SchematicDoc = { pins: {}, labels: {} };

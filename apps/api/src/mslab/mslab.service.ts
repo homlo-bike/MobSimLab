@@ -108,6 +108,20 @@ function sha256(data: Buffer): string {
   return createHash("sha256").update(data).digest("hex");
 }
 
+/**
+ * Purpose: a project name not in `taken`: the name itself, else the name with the first free number from 2,
+ * "Name (2)", "Name (3)"…, cut to the 200 characters a name may have.
+ */
+export function freeName(name: string, taken: string[]): string {
+  const used = new Set(taken.map((n) => n.trim()));
+  if (!used.has(name.trim())) return name;
+  for (let k = 2; ; k++) {
+    const suffix = ` (${k})`;
+    const n = `${name.slice(0, 200 - suffix.length)}${suffix}`;
+    if (!used.has(n)) return n;
+  }
+}
+
 /** Purpose: a file name for a project: its name with only safe characters. */
 export function mslabFileName(name: string): string {
   const base = name
@@ -391,10 +405,22 @@ export class MslabService {
           );
           const newId = await this.db.transaction().execute(async (tx) => {
             const now = new Date();
+            // A name the importer already uses gets a number: "Damascus (2)", "Damascus (3)"…
+            const taken = await tx
+              .selectFrom("project.project as p")
+              .innerJoin("project.member as m", "m.project_id", "p.id")
+              .select("p.name")
+              .where("m.user_id", "=", actor.userId)
+              .where("p.deleted_at", "is", null)
+              .execute();
+            const name = freeName(
+              res.project.name,
+              taken.map((r) => r.name),
+            );
             const p = await tx
               .insertInto("project.project")
               .values({
-                name: res.project.name,
+                name,
                 description: res.project.description,
                 area_name: res.project.areaName,
                 modes,
@@ -465,7 +491,7 @@ export class MslabService {
               p.id,
               "project.created",
               null,
-              { name: res.project.name, imported: true },
+              { name, imported: true },
               tx,
             );
             await this.projects.logProject(

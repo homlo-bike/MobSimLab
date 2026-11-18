@@ -113,7 +113,7 @@ pub fn size(input: &DepotInput) -> Sizing {
         .filter_map(|g| input.vehicles.iter().find(|v| v.key == g.vehicle))
         .max_by(|a, b| a.length_m.total_cmp(&b.length_m))
         .cloned()
-        .unwrap_or_else(|| crate::layout::design_vehicle(None, &input.vehicles));
+        .unwrap_or_else(|| crate::layout::design_vehicle(None, &input.vehicles, &input.fleet));
     let per_lane = input.rules.vehicles_per_lane.round().max(1.0) as u32;
     let mut footprints: Vec<Footprint> = ANGLES
         .iter()

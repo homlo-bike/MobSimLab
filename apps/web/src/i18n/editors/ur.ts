@@ -898,6 +898,9 @@ export const editorsUr = {
   "jp.joined.other": " · {count} اسٹاپ نام سے اسٹیشنوں سے جڑے",
   "jp.clickMap": "نقشے پر کلک کریں…",
   "jp.pickMap": "نقشے پر چنیں",
+  "jp.clear": "سب صاف کریں",
+  "jp.walkOnly":
+    "پبلک ٹرانسپورٹ سے کوئی سفر نہیں: A یا B کسی اسٹاپ سے {m} میٹر سے زیادہ دور ہے، یا اس وقت کوئی سروس نہیں۔ یہ پورا راستہ پیدل ہے۔",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "وقت",
   "jp.departAt": "روانگی",

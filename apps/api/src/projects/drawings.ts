@@ -116,6 +116,21 @@ const schematic = z.looseObject({
     )
     .max(200)
     .optional(),
+  /** A small picture of the network for the project card, written when the Schematic tab draws it. */
+  thumb: z
+    .object({
+      w: z.number().min(1).max(1000),
+      h: z.number().min(1).max(1000),
+      lines: z
+        .array(
+          z.object({
+            color: z.string().regex(/^#[0-9a-fA-F]{6}$/),
+            points: z.array(point).min(2).max(200),
+          }),
+        )
+        .max(100),
+    })
+    .optional(),
 });
 
 /**

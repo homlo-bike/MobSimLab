@@ -863,6 +863,9 @@ export const editorsKo = {
   "jp.joined.other": " · 이름으로 역에 묶은 정류장 {count}",
   "jp.clickMap": "지도를 클릭…",
   "jp.pickMap": "지도에서 선택",
+  "jp.clear": "모두 지우기",
+  "jp.walkOnly":
+    "대중교통 경로가 없습니다. A 또는 B가 정류장에서 {m} m 넘게 떨어져 있거나 이 시간에 운행이 없습니다. 전체 구간을 걸어가는 경우입니다.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "시각",
   "jp.departAt": "출발",

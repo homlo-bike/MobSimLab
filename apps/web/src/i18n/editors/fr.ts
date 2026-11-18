@@ -932,6 +932,9 @@ export const editorsFr = {
   "jp.joined.other": " · {count} arrêts reliés à une station par leur nom",
   "jp.clickMap": "Cliquez sur la carte…",
   "jp.pickMap": "Choisir sur la carte",
+  "jp.clear": "Effacer",
+  "jp.walkOnly":
+    "Aucun trajet en transport public : A ou B est à plus de {m} m d'un arrêt, ou il n'y a pas de service à cette heure. Voici le trajet entièrement à pied.",
   "jp.pointButton": "{point} : {label}",
   "jp.time": "Heure",
   "jp.departAt": "Départ à",

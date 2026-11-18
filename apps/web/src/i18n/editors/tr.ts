@@ -886,6 +886,9 @@ export const editorsTr = {
   "jp.joined.other": " · {count} durak adlarına göre istasyonlarla birleştirildi",
   "jp.clickMap": "haritaya tıklayın…",
   "jp.pickMap": "haritada seç",
+  "jp.clear": "Tümünü temizle",
+  "jp.walkOnly":
+    "Toplu taşımayla yolculuk yok: A veya B bir duraktan {m} m'den uzak ya da bu saatte sefer yok. Bu, yolun tamamının yürüyüşüdür.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Saat",
   "jp.departAt": "Kalkış",

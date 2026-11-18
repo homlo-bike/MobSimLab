@@ -875,6 +875,9 @@ export const editorsIg = {
   "jp.joined.other": " · ebe nkwụsị {count} ejikọtara n'ọdụ site n'aha",
   "jp.clickMap": "Pịa maapụ…",
   "jp.pickMap": "Họrọ na maapụ",
+  "jp.clear": "Hichapụ ha niile",
+  "jp.walkOnly":
+    "Enweghị njem n'ụgbọ njem ọha: A ma ọ bụ B dị karịa mita {m} site n'ebe nkwụsị, ma ọ bụ enweghị ọrụ n'oge a. Nke a bụ ije ụkwụ n'ụzọ niile.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Oge",
   "jp.departAt": "Pụọ na",

@@ -865,6 +865,9 @@ export const editorsJa = {
   "jp.joined.other": " · 名前で駅に結び付けた停留所 {count}",
   "jp.clickMap": "地図をクリック…",
   "jp.pickMap": "地図で選ぶ",
+  "jp.clear": "すべて消去",
+  "jp.walkOnly":
+    "公共交通での経路はありません。A または B が停留所から {m} m 以上離れているか、この時間に運行がありません。全行程を歩いた場合です。",
   "jp.pointButton": "{point}：{label}",
   "jp.time": "時刻",
   "jp.departAt": "出発",

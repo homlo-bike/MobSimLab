@@ -914,6 +914,9 @@ export const editorsEn = {
   "jp.joined.other": " · {count} stops joined to a station by name",
   "jp.clickMap": "Click the map…",
   "jp.pickMap": "Pick on the map",
+  "jp.clear": "Clear",
+  "jp.walkOnly":
+    "No journey by public transport: A or B is more than {m} m from a stop, or there is no service at this time. This is the walk all the way.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Time",
   "jp.departAt": "Depart at",

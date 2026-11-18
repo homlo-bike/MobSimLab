@@ -303,3 +303,66 @@ fn too_small_a_depot_reports_a_shortfall() {
     let need = &depot_layout::size(&d).footprints[0];
     assert!(need.area_m2 > 3500.0, "{need:?}");
 }
+
+/// Intercity coaches get their own slots: a zone sized for a coach no line uses yet holds coach-length
+/// slots, while the other zones stay sized for the lines' 12 m buses.
+#[test]
+fn a_zone_for_coaches_gets_its_own_slots() {
+    let p = Proj::around(&[ORIGIN]);
+    let zones = vec![
+        zone(
+            "park",
+            ZoneKind::Parking,
+            ring(&p, &[(10., 10.), (150., 10.), (150., 70.), (10., 70.)]),
+            90.0,
+            None,
+        ),
+        zone(
+            "coaches",
+            ZoneKind::Parking,
+            ring(&p, &[(10., 80.), (150., 80.), (150., 125.), (10., 125.)]),
+            90.0,
+            Some("mode:intercity_bus:13"),
+        ),
+    ];
+    let mut d = depot(
+        &[(0., 0.), (180., 0.), (180., 140.), (0., 140.)],
+        &[
+            (180., 30., GateKind::Entrance),
+            (180., 110., GateKind::Exit),
+        ],
+        zones,
+        vec![FleetGroup {
+            line: "street:1".into(),
+            name: "Line 2".into(),
+            vehicle: "e12".into(),
+            count: 6,
+            charging: false,
+        }],
+    );
+    d.vehicles.retain(|v| v.key == "e12");
+    d.vehicles.push(VehicleSpec {
+        key: "mode:intercity_bus:13".into(),
+        name: "Typical intercity bus".into(),
+        length_m: 13.0,
+        width_m: 2.55,
+        articulations: 0,
+        axles_m: None,
+        turning_circle_m: None,
+    });
+    let g = generate(&d);
+    let longest = |zone: &str| {
+        g.layout
+            .lanes
+            .iter()
+            .filter(|l| l.zone == zone)
+            .flat_map(|l| l.slots.iter().map(|s| s.length_m))
+            .fold(0.0_f64, f64::max)
+    };
+    assert!(longest("coaches") >= 13.0, "{:?}", g.issues);
+    assert!(
+        longest("park") > 12.0 && longest("park") < 13.0,
+        "the bus zone is sized for the 12 m bus, not the coach: {}",
+        longest("park")
+    );
+}

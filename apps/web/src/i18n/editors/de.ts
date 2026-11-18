@@ -929,6 +929,9 @@ export const editorsDe = {
   "jp.joined.other": " · {count} Haltestellen über den Namen mit einer Station verbunden",
   "jp.clickMap": "In die Karte klicken…",
   "jp.pickMap": "In der Karte wählen",
+  "jp.clear": "Zurücksetzen",
+  "jp.walkOnly":
+    "Keine Verbindung mit dem öffentlichen Verkehr: A oder B liegt mehr als {m} m von einer Haltestelle entfernt, oder zu dieser Zeit fährt nichts. Das ist der Fußweg für die ganze Strecke.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Zeit",
   "jp.departAt": "Abfahrt um",

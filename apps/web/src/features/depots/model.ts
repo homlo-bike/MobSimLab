@@ -101,6 +101,22 @@ export function linesOf(depot: SavedDepot, lines: readonly SavedStreetLine[]) {
   return lines.map((line, index) => ({ line, index })).filter((x) => x.line.depotId === depot.id);
 }
 
+/** Length of each street mode's typical vehicle, m (Rust street-routing `VehicleProfile::default_for`). */
+export const TYPICAL_LENGTH_M: Record<Mode, number> = { bus: 12, brt: 18, trolleybus: 18, intercity_bus: 13 };
+
+/**
+ * Purpose: the typical vehicle of a mode, as a street line without a catalogue vehicle has it (same key), so a
+ * depot can give a mode its own slots before any line of that mode uses it.
+ */
+export function typicalVehicle(mode: Mode): VehicleSpec {
+  const spec: VehicleSpec & { battery?: boolean } = lineVehicle({
+    profile: { mode, length_m: TYPICAL_LENGTH_M[mode] } as SavedStreetLine["profile"],
+    vehicle: null,
+  });
+  delete spec.battery;
+  return spec;
+}
+
 /**
  * Purpose: what the depot layout functions need for a depot: the saved depot, the vehicles and fleet of the
  * lines that use it and the project values. The road simulation builds its depot request with this too.
@@ -123,6 +139,12 @@ export function depotInput(
       count: lineFleet(line, prefs),
       charging: battery,
     });
+  }
+  // A zone sized for a mode's typical vehicle (an intercity coach's own slots, say) keeps it with no line yet.
+  for (const mode of depot.modes) {
+    const spec = typicalVehicle(mode);
+    if (!vehicles.has(spec.key) && depot.zones.some((z) => z.vehicle === spec.key))
+      vehicles.set(spec.key, spec);
   }
   return {
     boundary: depot.boundary,

@@ -20,6 +20,9 @@ vi.mock("maplibre-gl", () => ({
     getLngLat() {
       return { lng: 0, lat: 0 };
     }
+    setDraggable() {
+      return this;
+    }
     remove() {}
   },
 }));

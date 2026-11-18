@@ -44,6 +44,18 @@ export interface ProjectSummary {
   createdAt: string;
   updatedAt: string;
   archivedAt: string | null;
+  /**
+   * The project's network as the Schematic tab last drew it, small, for the project card; null until the
+   * Schematic tab has drawn lines.
+   */
+  thumb: SchematicThumb | null;
+}
+
+/** A small picture of the schematic network: its lines as polylines in a `w` × `h` box. */
+export interface SchematicThumb {
+  w: number;
+  h: number;
+  lines: { color: string; points: [number, number][] }[];
 }
 
 /** One person with access, for the share dialog. */
@@ -684,6 +696,9 @@ export class ProjectsService {
         sql<number>`(SELECT count(*)::int FROM project.member c WHERE c.project_id = p.id)`.as(
           "member_count",
         ),
+        sql<SchematicThumb | null>`(SELECT d.doc->'thumb' FROM project.drawing d WHERE d.project_id = p.id AND d.kind = 'schematic')`.as(
+          "thumb",
+        ),
       ])
       .where("p.deleted_at", "is", null);
   }
@@ -771,6 +786,7 @@ export class ProjectsService {
       owner_id: string;
       owner_name: string | null;
       member_count: number;
+      thumb?: SchematicThumb | null;
     },
     role: ProjectRole,
     viaPublic: boolean,
@@ -789,6 +805,7 @@ export class ProjectsService {
       createdAt: r.created_at.toISOString(),
       updatedAt: r.updated_at.toISOString(),
       archivedAt: iso(r.archived_at),
+      thumb: r.thumb ?? null,
     };
   }
 

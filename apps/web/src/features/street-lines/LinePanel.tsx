@@ -475,6 +475,11 @@ export function LinePanel(props: Props) {
                     {p.message}
                   </p>
                 )}
+                {leg?.status === "error" && leg.message && (
+                  <p className="ps-7 text-xs text-red-700" role="note">
+                    {leg.message}
+                  </p>
+                )}
                 {sel && (
                   <div className="mt-1 flex flex-col gap-1 ps-7">
                     {p.kind !== "via" && (

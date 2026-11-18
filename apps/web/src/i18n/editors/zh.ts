@@ -847,6 +847,8 @@ export const editorsZh = {
   "jp.joined.other": " · {count} 个站点按名称并入车站",
   "jp.clickMap": "点击地图…",
   "jp.pickMap": "在地图上选择",
+  "jp.clear": "清空",
+  "jp.walkOnly": "没有公共交通行程：A 或 B 距离站点超过 {m} 米，或此时没有服务。这是全程步行。",
   "jp.pointButton": "{point}：{label}",
   "jp.time": "时间",
   "jp.departAt": "出发于",

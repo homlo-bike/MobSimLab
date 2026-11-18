@@ -899,6 +899,9 @@ export const editorsHi = {
   "jp.joined.other": " · {count} स्टॉप नाम से स्टेशनों से जुड़े",
   "jp.clickMap": "मानचित्र पर क्लिक करें…",
   "jp.pickMap": "मानचित्र पर चुनें",
+  "jp.clear": "सब साफ़ करें",
+  "jp.walkOnly":
+    "सार्वजनिक परिवहन से कोई यात्रा नहीं: A या B किसी स्टॉप से {m} मी से अधिक दूर है, या इस समय कोई सेवा नहीं है। यह पूरा रास्ता पैदल है।",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "समय",
   "jp.departAt": "प्रस्थान",

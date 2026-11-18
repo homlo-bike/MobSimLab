@@ -904,6 +904,9 @@ export const editorsHa = {
   "jp.joined.other": " · tashoshi {count} an haɗa su da tashoshi bisa suna",
   "jp.clickMap": "Danna taswira…",
   "jp.pickMap": "Zaɓa a taswira",
+  "jp.clear": "Share duka",
+  "jp.walkOnly":
+    "Babu tafiya da sufurin jama'a: A ko B ya fi mita {m} nesa da tasha, ko babu sabis a wannan lokaci. Wannan tafiya ce da ƙafa gaba ɗaya.",
   "jp.pointButton": "{point}: {label}",
   "jp.time": "Lokaci",
   "jp.departAt": "Tashi a",

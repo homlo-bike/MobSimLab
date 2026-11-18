@@ -877,6 +877,9 @@ export const editorsAm = {
   "jp.joined.other": " · {count} ማቆሚያዎች በስም ከጣቢያዎች ጋር ተገናኝተዋል",
   "jp.clickMap": "ካርታውን ጠቅ ያድርጉ…",
   "jp.pickMap": "በካርታው ላይ ይምረጡ",
+  "jp.clear": "ሁሉንም አጽዳ",
+  "jp.walkOnly":
+    "በሕዝብ ማመላለሻ ጉዞ የለም፦ A ወይም B ከማቆሚያ ከ{m} ሜ በላይ ይርቃል፣ ወይም በዚህ ሰዓት አገልግሎት የለም። ይህ ሙሉውን መንገድ በእግር ነው።",
   "jp.pointButton": "{point}፦ {label}",
   "jp.time": "ጊዜ",
   "jp.departAt": "መነሻ በ",

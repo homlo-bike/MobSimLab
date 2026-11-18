@@ -2,7 +2,14 @@
  * The network diagram (FR-SCH-01, ADR-0041): every visible line, stations to drag and click, names to place
  * and rotate, status and feature symbols, water for orientation and the planner's tariff zones and landmarks.
  */
-import { type PointerEvent as ReactPointerEvent, useLayoutEffect, useMemo, useRef, useState } from "react";
+import {
+  type PointerEvent as ReactPointerEvent,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { useI18n } from "../../i18n/i18n";
 import { type StationFeature, type StationStatus, SymbolMark, symbolLabel } from "../stations/features";
 import {
@@ -28,6 +35,7 @@ import type { Layer, SchematicNetwork } from "./lines";
 import { bundles, LABEL_DIRS, offsetPolyline, pathD, placeLabels } from "./paths";
 import { StationPopup } from "./StationPopup";
 import { symbolsAt } from "./StripMap";
+import { schematicThumb } from "./thumb";
 import { warp, type WaterShapes } from "./water";
 
 /** An area being drawn: its corners so far, metres from the origin. */
@@ -249,6 +257,16 @@ export function NetworkMap({
   };
 
   const drawn = lines.map((l) => ({ line: l, ...offsetPolyline(l, sp, bundle, GAP, straighten) }));
+  // The project card shows the network as drawn here: keep its small picture up to date in the saved edits.
+  const thumb = JSON.stringify(schematicThumb(drawn.map((x) => ({ color: x.line.color, pts: x.pts }))));
+  const savedThumb = JSON.stringify(doc.thumb ?? null);
+  // Each new picture is sent once, so a save still on its way is not sent again.
+  const sentThumb = useRef(savedThumb);
+  useEffect(() => {
+    if (!editable || drag || cornerDrag || thumb === savedThumb || thumb === sentThumb.current) return;
+    sentThumb.current = thumb;
+    onDoc({ thumb: JSON.parse(thumb) ?? undefined });
+  }, [editable, drag, cornerDrag, thumb, savedThumb, onDoc]);
   const radiusOf = (i: number): number => {
     const nb = neighbours(i);
     const most = Math.max(
@@ -494,7 +512,10 @@ export function NetworkMap({
                 stroke={interchange ? INK : (here[0]?.color ?? INK)}
                 strokeWidth={interchange ? 2.5 : 3}
                 style={editable ? { cursor: drag?.i === i ? "grabbing" : "grab" } : { cursor: "pointer" }}
-                onClick={(e) => e.stopPropagation()}
+                // While an area is drawn, a click on a station adds a corner there (it reaches the page).
+                onClick={(e) => {
+                  if (!draft) e.stopPropagation();
+                }}
                 onPointerDown={(e) => {
                   if (draft) return;
                   onSelect(i);
@@ -528,8 +549,9 @@ export function NetworkMap({
                 transform={rot ? `rotate(${-rot} ${lx} ${ly})` : undefined}
                 style={{ cursor: "pointer", userSelect: "none" }}
                 onClick={(e) => {
+                  if (draft) return;
                   e.stopPropagation();
-                  if (!draft) onSelect(i);
+                  onSelect(i);
                 }}
               >
                 {st.name}
