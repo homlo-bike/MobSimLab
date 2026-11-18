@@ -17,13 +17,10 @@ export const workspaceUiFr = {
   "tour.checks.body":
     "La cloche liste les vérifications de tous les modes, erreurs d’abord : lignes routières, voie ferrée, dépôts et lignes des extensions. Choisissez-en une pour voir où elle se trouve.",
   "settings.serverTab": "Serveur",
-  "settings.pluginsTab": "Extensions",
   "settings.server.local":
     "MobSimLab fonctionne sur cet ordinateur. Vous pouvez plutôt connecter cette application à un serveur MobSimLab qui tourne en arrière-plan, comme le serveur Docker.",
   "settings.server.address": "Adresse du serveur",
   "settings.server.connect": "Se connecter",
   "settings.server.note":
     "L’application vérifie le serveur et demande avant de basculer. Les projets de cet ordinateur restent ici : déplacez-les en les enregistrant en fichiers .mslab. Vous pouvez revenir dans les Réglages de l’application (⌘, ou Ctrl+,).",
-  "settings.plugins.intro":
-    "Installez des extensions pour ce MobSimLab. Chaque projet les active ou les désactive ensuite dans ses Préférences du projet.",
 } satisfies WorkspaceUiMessages;

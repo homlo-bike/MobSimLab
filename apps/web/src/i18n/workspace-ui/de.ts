@@ -17,13 +17,10 @@ export const workspaceUiDe = {
   "tour.checks.body":
     "Die Glocke listet die Prüfungen aller Modi auf, Fehler zuerst: Straßenlinien, Bahn, Depots und die Linien der Plugins. Wählen Sie eine aus, um zu sehen, wo sie liegt.",
   "settings.serverTab": "Server",
-  "settings.pluginsTab": "Plugins",
   "settings.server.local":
     "MobSimLab läuft auf diesem Computer. Sie können diese App stattdessen mit einem MobSimLab-Server verbinden, der im Hintergrund läuft, etwa dem Docker-Server.",
   "settings.server.address": "Serveradresse",
   "settings.server.connect": "Verbinden",
   "settings.server.note":
     "Die App prüft den Server und fragt vor dem Wechsel nach. Projekte auf diesem Computer bleiben hier: Übertragen Sie sie als .mslab-Dateien. Zurückwechseln können Sie in den Einstellungen der App (⌘, oder Strg+,).",
-  "settings.plugins.intro":
-    "Installieren Sie Plugins für dieses MobSimLab. Jedes Projekt schaltet sie dann in seinen Projekteinstellungen ein oder aus.",
 } satisfies WorkspaceUiMessages;

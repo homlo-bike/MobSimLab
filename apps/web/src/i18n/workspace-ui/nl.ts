@@ -17,13 +17,10 @@ export const workspaceUiNl = {
   "tour.checks.body":
     "De bel toont de controles van alle modi, fouten eerst: straatlijnen, de spoorweg, depots en de lijnen van plug-ins. Kies er een om te zien waar het is.",
   "settings.serverTab": "Server",
-  "settings.pluginsTab": "Plug-ins",
   "settings.server.local":
     "MobSimLab draait op deze computer. U kunt deze app in plaats daarvan verbinden met een MobSimLab-server die op de achtergrond draait, zoals de Docker-server.",
   "settings.server.address": "Serveradres",
   "settings.server.connect": "Verbinden",
   "settings.server.note":
     "De app controleert de server en vraagt het voordat hij overschakelt. Projecten op deze computer blijven hier: verplaats ze door ze als .mslab-bestanden op te slaan. Terugschakelen kan in de Instellingen van de app (⌘, of Ctrl+,).",
-  "settings.plugins.intro":
-    "Installeer plug-ins voor deze MobSimLab. Elk project zet ze daarna aan of uit in zijn Projectvoorkeuren.",
 } satisfies WorkspaceUiMessages;

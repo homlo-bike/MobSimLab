@@ -16,13 +16,10 @@ export const workspaceUiSw = {
   "tour.checks.body":
     "Kengele inaorodhesha ukaguzi wa njia zote, makosa kwanza: laini za barabarani, reli, bohari na laini za programu-jalizi. Chagua mmoja kuona ulipo.",
   "settings.serverTab": "Seva",
-  "settings.pluginsTab": "Programu-jalizi",
   "settings.server.local":
     "MobSimLab inaendeshwa kwenye kompyuta hii. Badala yake unaweza kuunganisha programu hii na seva ya MobSimLab inayoendeshwa chinichini, kama seva ya Docker.",
   "settings.server.address": "Anwani ya seva",
   "settings.server.connect": "Unganisha",
   "settings.server.note":
     "Programu hukagua seva na kuuliza kabla ya kubadilisha. Miradi iliyo kwenye kompyuta hii inabaki hapa: ihamishe kwa kuihifadhi kama faili za .mslab. Unaweza kurudi katika Mipangilio ya programu (⌘, au Ctrl+,).",
-  "settings.plugins.intro":
-    "Sakinisha programu-jalizi kwa MobSimLab hii. Kisha kila mradi huziwasha au kuzizima katika Mapendeleo ya mradi wake.",
 } satisfies WorkspaceUiMessages;

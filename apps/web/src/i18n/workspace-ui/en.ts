@@ -17,15 +17,12 @@ export const workspaceUiEn = {
   "tour.checks.body":
     "The bell lists the checks of every mode, errors first: street lines, the railway, depots and the plugins’ lines. Pick one to see where it is.",
   "settings.serverTab": "Server",
-  "settings.pluginsTab": "Plugins",
   "settings.server.local":
     "MobSimLab runs on this computer. You can connect this app to a MobSimLab server running in the background instead, such as the Docker server.",
   "settings.server.address": "Server address",
   "settings.server.connect": "Connect",
   "settings.server.note":
     "The app checks the server and asks before it switches. Projects on this computer stay here: move them by saving them as .mslab files. You can switch back in the app’s Settings (⌘, or Ctrl+,).",
-  "settings.plugins.intro":
-    "Install plugins for this MobSimLab. Each project then turns them on or off in its Project preferences.",
 } as const;
 
 export type WorkspaceUiMessages = Record<keyof typeof workspaceUiEn, string>;

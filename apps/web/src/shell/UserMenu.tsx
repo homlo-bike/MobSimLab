@@ -16,7 +16,7 @@ export function initials(name: string | null | undefined): string {
   return letters.toUpperCase();
 }
 
-export type SettingsSection = "user" | "app" | "server" | "plugins";
+export type SettingsSection = "user" | "app" | "server";
 
 /**
  * The account button and its menu: user settings, app settings, connected agents, admin settings (Owners and

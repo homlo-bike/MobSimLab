@@ -16,13 +16,10 @@ export const workspaceUiUr = {
   "tour.checks.body":
     "گھنٹی تمام طریقوں کی جانچیں دکھاتی ہے، پہلے غلطیاں: سڑک لائنیں، ریلوے، ڈپو اور پلگ اِنز کی لائنیں۔ کوئی ایک چنیں تاکہ دیکھ سکیں وہ کہاں ہے۔",
   "settings.serverTab": "سرور",
-  "settings.pluginsTab": "پلگ اِنز",
   "settings.server.local":
     "MobSimLab اس کمپیوٹر پر چل رہا ہے۔ اس کے بجائے آپ اس ایپ کو پس منظر میں چلنے والے MobSimLab سرور سے جوڑ سکتے ہیں، جیسے Docker سرور۔",
   "settings.server.address": "سرور کا پتا",
   "settings.server.connect": "جوڑیں",
   "settings.server.note":
     "ایپ سرور کی جانچ کرتی ہے اور بدلنے سے پہلے پوچھتی ہے۔ اس کمپیوٹر کے پراجیکٹ یہیں رہتے ہیں: انہیں ‎.mslab فائلوں کے طور پر محفوظ کر کے منتقل کریں۔ آپ ایپ کی ترتیبات (⌘, یا Ctrl+,) میں واپس جا سکتے ہیں۔",
-  "settings.plugins.intro":
-    "اس MobSimLab کے لیے پلگ اِنز انسٹال کریں۔ پھر ہر پراجیکٹ انہیں اپنی پراجیکٹ ترجیحات میں آن یا آف کرتا ہے۔",
 } satisfies WorkspaceUiMessages;
