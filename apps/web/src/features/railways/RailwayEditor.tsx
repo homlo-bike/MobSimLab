@@ -188,7 +188,8 @@ export function RailwayEditor({
   // A new drawing's mode: the first rail mode the project plans to use (metro when the plan names none).
   const planned = usePlannedModes();
   const plannedRail = offeredModes(RAIL_MODES, (m) => m.id, planned);
-  const newMode: RailMode = planned.length && plannedRail.length < RAIL_MODES.length ? plannedRail[0]!.id : "metro";
+  const newMode: RailMode =
+    planned.length && plannedRail.length < RAIL_MODES.length ? plannedRail[0]!.id : "metro";
   const [draft, setDraft] = useState<Track | null>(null);
   const [cursor, setCursor] = useState<Cursor | null>(null);
   const [tool, setTool] = useState<RailTool>("station");

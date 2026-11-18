@@ -648,7 +648,11 @@ describe("Railway editor", () => {
     const { map } = fakeMap();
     render(
       <PlannedModesProvider value={["bus", "tram"]}>
-        <RailwayEditor map={map} fetchTile={() => Promise.reject(new Error("offline"))} loadEngine={loadRailEngine} />
+        <RailwayEditor
+          map={map}
+          fetchTile={() => Promise.reject(new Error("offline"))}
+          loadEngine={loadRailEngine}
+        />
       </PlannedModesProvider>,
     );
     const mode = (await screen.findByLabelText("Mode for new stations and tracks")) as HTMLSelectElement;

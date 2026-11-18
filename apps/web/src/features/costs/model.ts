@@ -225,7 +225,11 @@ export function lineTracks(railway: Network, view: RailView): Map<string, Set<nu
     graph.set(b, [...(graph.get(b) ?? []), { to: a, m, track }]);
   };
   const node = (a: Network["tracks"][number]["start"] | null, track: number, end: number) =>
-    a?.type === "station" ? `st:${a.station}` : a?.type === "switch" ? `sw:${a.switch}` : `free:${track}:${end}`;
+    a?.type === "station"
+      ? `st:${a.station}`
+      : a?.type === "switch"
+        ? `sw:${a.switch}`
+        : `free:${track}:${end}`;
   for (const tr of railway.tracks) {
     const len = lengthOf.get(tr.id) ?? 0;
     // The track's ends and the switches standing on it, in order along it.
@@ -528,7 +532,8 @@ export function estimate(input: EstimateInput): Estimate {
     const spare = v("mode.spare_share", mode);
     // Vehicles in service: one per vehicle block of the weekday timetable, as the Timetables tab counts them
     // (the circuit time over the headway leaves out the time a vehicle waits for its next departure).
-    const vehicles = streetVehicles(l, timing.layoverMin, v("timetable.max_terminal_wait_min", "*")[1]) ?? stats.vehicles;
+    const vehicles =
+      streetVehicles(l, timing.layoverMin, v("timetable.max_terminal_wait_min", "*")[1]) ?? stats.vehicles;
     // A small tolerance keeps 20 × 1.15 at 23, not 24 (as the vehicle blocks' fleet).
     const fleet = spare.map((s) => Math.ceil(vehicles * (1 + s) - 1e-9)) as Triple;
     // Vehicle-hours a weekday from the line's own service day: peak and off-peak headways, first to last.

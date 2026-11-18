@@ -333,7 +333,13 @@ describe("estimate", () => {
     // 10 min peak headway gives 5 vehicles, but a vehicle that arrives at :21 waits for the :30 departure, so
     // each one takes 30 min a direction and the blocks need 6.
     const base = streetView();
-    const leg = (index: number, from: number, to: number) => ({ index, from, to, time_s: 480, length_m: 1500 });
+    const leg = (index: number, from: number, to: number) => ({
+      index,
+      from,
+      to,
+      time_s: 480,
+      length_m: 1500,
+    });
     const view = {
       ...base,
       time_s: 1920,
@@ -349,10 +355,22 @@ describe("estimate", () => {
       timing: { headwayMin: 10, offPeakHeadwayMin: 20, dwellS: 20, layoverMin: 5 },
       view,
     } as unknown as SavedStreetLine;
-    const e = estimate({ railway: null, view: null, reports: {}, streetLines: [line], prefs: {}, prices: UNIT });
+    const e = estimate({
+      railway: null,
+      view: null,
+      reports: {},
+      streetLines: [line],
+      prefs: {},
+      prices: UNIT,
+    });
     const wait = paramValue("timetable.max_terminal_wait_min", "*", {})[1];
     const blocks = streetBlocks({ line: lineInput(line)!, layoverMin: 5, hasDepot: false, maxWaitMin: wait });
-    const row = fleetRow("Route 7", "trolleybus", blocks, paramValue("mode.spare_share", "trolleybus", {})[1]);
+    const row = fleetRow(
+      "Route 7",
+      "trolleybus",
+      blocks,
+      paramValue("mode.spare_share", "trolleybus", {})[1],
+    );
     expect(e.lines[0]!.inService).toBe(blocks.length);
     expect(e.lines[0]!.inService).toBeGreaterThan(5);
     expect(e.lines[0]!.fleet).toBe(row.fleet);
@@ -377,7 +395,12 @@ describe("estimate", () => {
       levels: [{ from_m: 0, to_m: 2000, level: "underground2" }],
     } as unknown as TrackView;
     const e = estimate({
-      railway: { ...net, stations: [...net.stations, north], tracks: [...net.tracks, tunnel], lines: [net.lines![0]!, m2] },
+      railway: {
+        ...net,
+        stations: [...net.stations, north],
+        tracks: [...net.tracks, tunnel],
+        lines: [net.lines![0]!, m2],
+      },
       view: {
         ...view,
         tracks: [...view.tracks, tunnelView],
