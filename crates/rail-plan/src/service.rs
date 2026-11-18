@@ -810,7 +810,16 @@ pub struct Reach {
 /// Inputs: the topology export (JSON text) and two station part ids (`st<id>`).
 /// Output: the answer; Err when the design cannot be used for operations.
 pub fn station_reachable(topology_json: &str, from: &str, to: &str) -> Result<Reach, String> {
-    let imp = import_json(topology_json, &ImportOptions::default())?;
+    // Whether two stations are joined by track does not depend on the design's other errors (a
+    // crossover elsewhere that does not fit, a ramp too short): check the track as drawn, so a
+    // service line can get its stops while the planner still fixes unrelated problems. Publishing
+    // still refuses a design with errors.
+    let mut t: serde_json::Value =
+        serde_json::from_str(topology_json).map_err(|e| format!("topology: {e}"))?;
+    if let Some(o) = t.as_object_mut() {
+        o.insert("valid".into(), serde_json::Value::Bool(true));
+    }
+    let imp = import_json(&t.to_string(), &ImportOptions::default())?;
     let m =
         Model::compile(&imp.spec).map_err(|e| format!("the track layout cannot be used: {e:?}"))?;
     let platforms = |id: &str| -> Option<Vec<u32>> {

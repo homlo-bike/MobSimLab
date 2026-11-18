@@ -71,6 +71,17 @@ export function useEditorKeys({
         );
         return;
       }
+      // [ and ] turn the selected station by 5° (Shift: 15°).
+      if ((ev.key === "[" || ev.key === "]" || ev.key === "{" || ev.key === "}") && s.sel && s.doc) {
+        const st = s.doc.stations.find((x) => x.id === s.sel!.id);
+        if (st) {
+          const step = (ev.key === "]" || ev.key === "}" ? 1 : -1) * (ev.shiftKey ? 15 : 5);
+          const deg = (((Math.round(st.rotation_deg) + step) % 360) + 360) % 360;
+          setDoc(update(s.doc, "stations", st.id, (x) => ({ ...x, rotation_deg: deg })));
+          ev.preventDefault();
+          return;
+        }
+      }
       if ((ev.key === "Delete" || ev.key === "Backspace") && s.sel && s.doc) {
         ev.preventDefault();
         if (s.sel.pi !== undefined) {

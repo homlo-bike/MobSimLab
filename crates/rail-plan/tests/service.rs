@@ -181,6 +181,17 @@ fn stations_joined_by_track_are_reachable_in_both_directions() {
 }
 
 #[test]
+fn stations_stay_reachable_while_the_design_has_unrelated_errors() {
+    // A service line gets its stops while the planner still fixes other errors (a crossover
+    // that does not fit elsewhere); only publishing needs an error-free design.
+    use rail_plan::station_reachable;
+    let mut t: serde_json::Value = serde_json::from_str(&topology()).unwrap();
+    t["valid"] = serde_json::Value::Bool(false);
+    t["errors"] = serde_json::json!(["Crossover 7: the tracks are 3.00 m apart, too close"]);
+    assert!(station_reachable(&t.to_string(), "st1", "st2").unwrap().ok);
+}
+
+#[test]
 fn trams_leave_their_stops_although_they_drive_on_sight() {
     // Trams drive on sight: the design tool places signals only in front of switch areas and
     // crossings, none at the stops, yet a tram line over the editor's example must publish.

@@ -44,6 +44,36 @@ export function handleElement(kind: string, selected: boolean): HTMLElement {
       : tNow("rail.handle.track", { kind: kind.replace("_", " ") }),
   );
   const lead = kind === "lead_start" || kind === "lead_end";
+  if (kind === "rotate") {
+    // The rotation grip: a 28 px target round a 14 px dot, so a near miss still grabs it instead of
+    // panning the map; the dot grows under the pointer.
+    Object.assign(el.style, {
+      width: "28px",
+      height: "28px",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      cursor: "grab",
+      touchAction: "none",
+    });
+    const dot = document.createElement("div");
+    Object.assign(dot.style, {
+      width: "14px",
+      height: "14px",
+      boxSizing: "border-box",
+      borderRadius: "50%",
+      background: COLORS.accent,
+      border: "2px solid #ffffff",
+      boxShadow: selected ? `0 0 0 3px #f59e0b` : "0 1px 3px rgba(0,0,0,.45)",
+      transition: "transform 80ms",
+      pointerEvents: "none",
+    });
+    el.appendChild(dot);
+    el.addEventListener("pointerenter", () => (dot.style.transform = "scale(1.35)"));
+    el.addEventListener("pointerleave", () => (dot.style.transform = ""));
+    el.title = tNow("rail.handle.rotateHint");
+    return el;
+  }
   Object.assign(el.style, {
     width: kind === "rotate" ? "16px" : "13px",
     height: kind === "rotate" ? "16px" : "13px",

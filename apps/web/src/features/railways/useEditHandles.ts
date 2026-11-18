@@ -46,6 +46,17 @@ export function useEditHandles({
     .map((h) => ("track" in h ? `${h.track}:${h.kind}:${h.index}` : `r${h.station}`))
     .join("|");
   const markers = useRef(new Map<string, Marker>());
+  // Whether Shift is held while a handle is dragged (rotation snaps to 15°).
+  const shiftHeld = useRef(false);
+  useEffect(() => {
+    const on = (ev: KeyboardEvent) => (shiftHeld.current = ev.shiftKey);
+    window.addEventListener("keydown", on);
+    window.addEventListener("keyup", on);
+    return () => {
+      window.removeEventListener("keydown", on);
+      window.removeEventListener("keyup", on);
+    };
+  }, []);
   useEffect(() => {
     if (!map) return;
     const made = new Map<string, Marker>();
@@ -71,7 +82,9 @@ export function useEditHandles({
         if ("station" in h) {
           const st = s.doc.stations.find((x) => x.id === h.station);
           if (!st) return;
-          const deg = Math.round((Math.atan2(at[1] - st.y, at[0] - st.x) * 180) / Math.PI - 90);
+          const raw = (Math.atan2(at[1] - st.y, at[0] - st.x) * 180) / Math.PI - 90;
+          // Shift snaps to 15° steps.
+          const deg = shiftHeld.current ? Math.round(raw / 15) * 15 : Math.round(raw);
           setDoc(
             (d) =>
               d &&
