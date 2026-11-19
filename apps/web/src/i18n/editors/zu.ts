@@ -986,6 +986,7 @@ export const editorsZu = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "Ipharamitha {name}",
   "kit.lineName": "Igama lomugqa",
+  "kit.lines": "Imigqa kuphrojekthi ({n})",
   "kit.tool": "Ithuluzi",
   "kit.select": "Khetha",
   "kit.summary": "Isifinyezo",
@@ -1122,6 +1123,8 @@ export const editorsZu = {
   "drt.method":
     "Kulinganiswe ngamafomula okulinganisa okuqhubekayo (Daganzo 1978) endaweni enezicelo ezisabalele ngokulinganayo. Lingisa usuku ukuze wabe konke ukubhuka.",
   "ferry.defaultName": "Isikebhe 1",
+  "ferry.lines": "Imigqa yezikebhe kuphrojekthi ({n})",
+  "ferry.lineN": "Isikebhe {n}",
   "ferry.plugin": "isikebhe",
   "ferry.engineFailed": "Ikhithi yesikebhe ayiqalanga: {error}",
   "ferry.starting": "Iqala ikhithi yesikebhe…",

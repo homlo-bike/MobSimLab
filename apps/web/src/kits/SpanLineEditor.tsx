@@ -7,6 +7,7 @@ import type { PluginLineInput } from "../features/journey-planner/network";
 import { centralValues, contextLabel, findMode, type PluginMode, type PluginTool } from "../plugins/registry";
 import { loadKits, spanSystem } from "./engine";
 import { fmtDur, fmtInt, fmtLen } from "./format";
+import { LinePicker, type LineList, sharedStop } from "./LinePicker";
 import { Issues, Stat } from "./Issues";
 import {
   drawKit,
@@ -89,7 +90,7 @@ export function withTerrain(
 
 type Tool = "add" | "select";
 
-interface Props {
+interface Props extends LineList {
   map: MapLibreMap | null;
   panel?: HTMLElement | null;
   /** The plugin tool (straight spans kit) with the modes it draws. */
@@ -159,6 +160,12 @@ export function SpanLineEditor({
   initial = null,
   onSave,
   loadTerrain = defaultTerrain,
+  lineId,
+  lines,
+  onPickLine,
+  onNewLine,
+  onDeleteLine,
+  otherStops = [],
 }: Props) {
   const { t, tn } = useI18n();
   const [kits, setKits] = useState<Kits | null>(null);
@@ -292,7 +299,7 @@ export function SpanLineEditor({
         dwell_s: fwd[n - 1 - k]!.dwell_s,
       }));
       line = {
-        id: tool.id,
+        id: lineId ?? tool.id,
         name: doc.name,
         mode: doc.mode,
         color,
@@ -323,7 +330,7 @@ export function SpanLineEditor({
             }
           : null,
     });
-  }, [view, doc, color, tool.id, system.operation, system.station_rope_height_m]);
+  }, [view, doc, color, tool.id, lineId, system.operation, system.station_rope_height_m]);
 
   // Map layers.
   useEffect(() => {
@@ -366,19 +373,22 @@ export function SpanLineEditor({
   }, [map, doc.stations, color, selected]);
 
   // Clicks add stations.
-  const latest = useRef({ mode });
-  latest.current = { mode };
+  const latest = useRef({ mode, otherStops });
+  latest.current = { mode, otherStops };
   useEffect(() => {
     if (!map) return;
     const onClick = (e: MapMouseEvent) => {
       if (latest.current.mode !== "add") return;
-      const lonlat: LonLat = [e.lngLat.lng, e.lngLat.lat];
+      const at: LonLat = [e.lngLat.lng, e.lngLat.lat];
+      // On a station of another line: the same station, so the journey planner changes there.
+      const shared = sharedStop(at, latest.current.otherStops);
+      const lonlat = shared ? shared.lonlat : at;
       setDoc((d) => ({
         ...d,
         stations: [
           ...d.stations,
           {
-            name: tNow("cable.station", { n: d.stations.length + 1 }),
+            name: shared ? shared.name : tNow("cable.station", { n: d.stations.length + 1 }),
             lonlat,
             kind: "intermediate",
             boarding: false,
@@ -415,6 +425,12 @@ export function SpanLineEditor({
   const reversible = system.operation === "reversible";
   const body = (
     <div className="flex flex-col gap-3 px-4 pt-1 pb-5 text-sm md:px-5">
+      <LinePicker
+        label={t("kit.lines", { n: lines?.length ?? 0 })}
+        current={lineId ?? tool.id}
+        name={doc.name}
+        list={{ lines, onPickLine, onNewLine, onDeleteLine }}
+      />
       <div className="flex flex-wrap items-center gap-2">
         <input
           aria-label={t("kit.lineName")}

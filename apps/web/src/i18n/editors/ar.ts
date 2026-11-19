@@ -1007,6 +1007,7 @@ export const editorsAr = {
   "kit.issueWhere": "{level}، {where}:",
   "kit.parameter": "المعامل {name}",
   "kit.lineName": "اسم الخط",
+  "kit.lines": "الخطوط في المشروع ({n})",
   "kit.tool": "الأداة",
   "kit.select": "تحديد",
   "kit.summary": "الملخص",
@@ -1143,6 +1144,8 @@ export const editorsAr = {
   "drt.method":
     "تقدير بصيغ التقريب المتصل (Daganzo 1978) لمنطقة تتوزع فيها الطلبات بالتساوي. حاكِ اليوم لتوزيع كل حجز.",
   "ferry.defaultName": "العبّارة 1",
+  "ferry.lines": "خطوط العبّارات في المشروع ({n})",
+  "ferry.lineN": "العبّارة {n}",
   "ferry.plugin": "العبّارة",
   "ferry.engineFailed": "لم تبدأ عُدّة العبّارة: {error}",
   "ferry.starting": "جارٍ تشغيل عُدّة العبّارة…",

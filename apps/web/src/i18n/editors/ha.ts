@@ -960,6 +960,7 @@ export const editorsHa = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "Ma'auni {name}",
   "kit.lineName": "Sunan layi",
+  "kit.lines": "Layuka a cikin aikin ({n})",
   "kit.tool": "Kayan aiki",
   "kit.select": "Zaɓa",
   "kit.summary": "Taƙaitawa",
@@ -1092,6 +1093,8 @@ export const editorsHa = {
   "drt.method":
     "An ƙiyasta da dabarun kimantawa mai ci gaba (Daganzo 1978) ga yanki mai buƙatu a warwatse daidai. Kwaikwayi ranar don raba kowace buƙata.",
   "ferry.defaultName": "Jirgin ruwa 1",
+  "ferry.lines": "Layukan jirgin ruwa a cikin aikin ({n})",
+  "ferry.lineN": "Jirgin ruwa {n}",
   "ferry.plugin": "jirgin ruwa",
   "ferry.engineFailed": "Kayan jirgin ruwa bai fara ba: {error}",
   "ferry.starting": "Ana fara kayan jirgin ruwa…",

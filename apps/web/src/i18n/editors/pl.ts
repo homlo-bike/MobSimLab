@@ -1020,6 +1020,7 @@ export const editorsPl = {
   "kit.issueWhere": "{level}, {where}: ",
   "kit.parameter": "Parametr {name}",
   "kit.lineName": "Nazwa linii",
+  "kit.lines": "Linie w projekcie ({n})",
   "kit.tool": "Narzędzie",
   "kit.select": "Zaznacz",
   "kit.summary": "Podsumowanie",
@@ -1162,6 +1163,8 @@ export const editorsPl = {
   "drt.method":
     "Oszacowano wzorami przybliżenia ciągłego (Daganzo 1978) dla strefy z równomiernie rozłożonymi zamówieniami. Zasymuluj dzień, aby przydzielić każde zamówienie.",
   "ferry.defaultName": "Prom 1",
+  "ferry.lines": "Linie promowe w projekcie ({n})",
+  "ferry.lineN": "Prom {n}",
   "ferry.plugin": "Prom",
   "ferry.engineFailed": "Nie udało się uruchomić zestawu promowego: {error}",
   "ferry.starting": "Uruchamianie zestawu promowego…",

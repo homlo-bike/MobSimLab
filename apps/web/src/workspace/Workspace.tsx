@@ -60,8 +60,10 @@ import { forgetSetups, loadSetups } from "../features/street-setup/model";
 import type { StreetSetup } from "../features/street-setup/types";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
-import type { PluginLinesDoc, SavedPluginLine } from "../kits/saved";
+import { newToolLineKey, type PluginLinesDoc, type SavedPluginLine, toolLineKeys } from "../kits/saved";
 import type { SpanDoc } from "../kits/SpanLineEditor";
+import type { LineList as KitLineList } from "../kits/LinePicker";
+import type { LonLat, Pier } from "../kits/types";
 import type { WaterDoc } from "../kits/WaterRouteEditor";
 import type { DemandZone } from "../kits/ZoneEditor";
 import { MapView } from "../map/MapView";
@@ -71,6 +73,7 @@ import {
   pluginTabs,
   type ProjectPlugin,
   pluginsOfProject,
+  type PluginTool,
   pluginTools,
   setActivePlugins,
 } from "../plugins/registry";
@@ -532,6 +535,13 @@ export function Workspace({
     drawings.set("plugin-lines", {
       tools: { ...(drawings.doc<PluginLinesDoc>("plugin-lines")?.tools ?? {}), [id]: saved },
     } satisfies PluginLinesDoc);
+  const deletePluginLine = (id: string) => {
+    const tools = { ...(drawings.doc<PluginLinesDoc>("plugin-lines")?.tools ?? {}) };
+    delete tools[id];
+    drawings.set("plugin-lines", { tools } satisfies PluginLinesDoc);
+  };
+  // The line of each water route tool open in the editor (ferry: several lines per project), by tool id.
+  const [pluginLinePick, setPluginLinePick] = useState<Record<string, string>>({});
   // The trains of the rail service lines as last published in the railway tool, for the journey planner.
   const railLines = drawings.doc<Timetable>("rail-timetable");
   // Existing networks imported from GTFS feeds (GTFS plugin), for the journey planner.
@@ -978,6 +988,41 @@ export function Workspace({
             ? "rail"
             : null);
   const chosenPlugin = PLUGIN_TOOLS.find((x) => x.id === chosen) ?? null;
+  // Line tools (ferry, cable car, people mover) have a line list: the keys of the tool's lines, and the one open
+  // (the first by default, or a new one not saved yet).
+  const lineTool = chosenPlugin && chosenPlugin.kit !== "service-zone" ? chosenPlugin : null;
+  const toolKeys = lineTool ? toolLineKeys(pluginSaved, lineTool.id) : [];
+  const picked = lineTool ? pluginLinePick[lineTool.id] : undefined;
+  const lineKey = lineTool
+    ? picked && (toolKeys.includes(picked) || !(picked in pluginSaved))
+      ? picked
+      : (toolKeys[0] ?? lineTool.id)
+    : null;
+  const lineList = (tool: PluginTool, key: string): KitLineList => ({
+    lineId: key,
+    lines: [
+      ...toolKeys.map((k) => ({
+        id: k,
+        name: (pluginSaved[k]?.doc as { name?: string } | undefined)?.name || k,
+      })),
+      ...(toolKeys.includes(key) ? [] : [{ id: key, name: t("ferry.lineN", { n: toolKeys.length + 1 }) }]),
+    ],
+    onPickLine: (k) => setPluginLinePick((p) => ({ ...p, [tool.id]: k })),
+    onNewLine: () => setPluginLinePick((p) => ({ ...p, [tool.id]: newToolLineKey(pluginSaved, tool.id) })),
+    onDeleteLine: toolKeys.includes(key)
+      ? () => {
+          deletePluginLine(key);
+          setPluginLinePick((p) => ({ ...p, [tool.id]: "" }));
+        }
+      : undefined,
+    otherStops: toolKeys
+      .filter((k) => k !== key)
+      .flatMap((k) => {
+        const d = pluginSaved[k]?.doc as
+          { piers?: Pier[]; stations?: { name: string; lonlat: LonLat }[] } | undefined;
+        return [...(d?.piers ?? []), ...(d?.stations ?? [])];
+      }),
+  });
   const panelLabel =
     tab === "simulator"
       ? tabLabel("simulator")
@@ -1052,7 +1097,7 @@ export function Workspace({
           {project && drawings.loaded && (tab === "create" || tab === "gis" || tab === "simulator") && (
             <OtherModesLayer
               map={map}
-              active={tab === "create" && editable ? chosen : null}
+              active={tab === "create" && editable ? (lineKey ?? chosen) : null}
               railway={railway}
               streetLines={savedStreet}
               depots={depotsDoc?.depots ?? NO_DEPOTS}
@@ -1149,13 +1194,19 @@ export function Workspace({
             chosenPlugin?.kit === "straight-spans" && (
               <Suspense fallback={null}>
                 <SpanLineEditor
-                  key={`${projectId}-${chosenPlugin.id}-${drawings.generation("plugin-lines")}`}
+                  key={`${projectId}-${lineKey}-${drawings.generation("plugin-lines")}`}
                   map={map}
                   panel={panel}
                   tool={chosenPlugin}
-                  storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
-                  initial={pluginSaved[chosenPlugin.id]?.doc as Partial<SpanDoc> | undefined}
-                  onSave={(x) => savePluginLine(chosenPlugin.id, x)}
+                  storageKey={`mobsimlab:${lineKey}:${projectId}`}
+                  initial={
+                    (pluginSaved[lineKey!]?.doc as Partial<SpanDoc> | undefined) ??
+                    (lineKey !== chosenPlugin.id
+                      ? { name: t("ferry.lineN", { n: toolKeys.length + 1 }) }
+                      : undefined)
+                  }
+                  onSave={(x) => savePluginLine(lineKey!, x)}
+                  {...lineList(chosenPlugin, lineKey!)}
                 />
               </Suspense>
             )}
@@ -1178,13 +1229,19 @@ export function Workspace({
             chosenPlugin?.kit === "water-route" && (
               <Suspense fallback={null}>
                 <WaterRouteEditor
-                  key={`${projectId}-${chosenPlugin.id}-${drawings.generation("plugin-lines")}`}
+                  key={`${projectId}-${lineKey}-${drawings.generation("plugin-lines")}`}
                   map={map}
                   panel={panel}
                   tool={chosenPlugin}
-                  storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
-                  initial={pluginSaved[chosenPlugin.id]?.doc as Partial<WaterDoc> | undefined}
-                  onSave={(x) => savePluginLine(chosenPlugin.id, x)}
+                  storageKey={`mobsimlab:${lineKey}:${projectId}`}
+                  initial={
+                    (pluginSaved[lineKey!]?.doc as Partial<WaterDoc> | undefined) ??
+                    (lineKey !== chosenPlugin.id
+                      ? { name: t("ferry.lineN", { n: toolKeys.length + 1 }) }
+                      : undefined)
+                  }
+                  onSave={(x) => savePluginLine(lineKey!, x)}
+                  {...lineList(chosenPlugin, lineKey!)}
                 />
               </Suspense>
             )}
