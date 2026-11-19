@@ -62,4 +62,16 @@ export const areaIg = {
   "aw.pop.box": "Igbe gbara mpaghara ọrụ gburugburu: km² {km2}.",
   "aw.tiles.other": "taịl maapụ {count}",
   "aw.count.other": "ọdịdị {count}",
+  "aw.out.title": "Ibudata data maapụ na mpụga mpaghara ọrụ ahụ?",
+  "aw.out.note": "Mpaghara {name} gafere mpaghara ọrụ ahụ. Akụkụ ya dị n'èzí chọrọ data maapụ ọhụrụ.",
+  "aw.out.part": "Akụkụ dị n'èzí",
+  "aw.out.km2": "ihe dị ka {km2} km²",
+  "aw.out.detail": "Ọkwa nkọwa maka akụkụ dị n'èzí",
+  "aw.out.overLimit":
+    "Ya na ya, mpaghara ọrụ ahụ nwere data maapụ karịa {mb} MB nke otu ọrụ nwere ike ijide. Họrọ naanị okporo ụzọ ndị bụ isi na ụzọ ụgbọ oloko, ma ọ bụ mee ka mpaghara ahụ dị obere na Mmasị ọrụ.",
+  "aw.out.adds":
+    "Ibudata na-agbakwunye mpaghara ahụ na mpaghara ọrụ dịka polygon ọhụrụ, nke ị nwere ike idezi ma emechaa na windo mpaghara.",
+  "aw.out.keep": "Debe mpaghara ahụ, ebudatala",
+  "aw.out.download": "Budata {mb} MB",
+  "aw.out.downloading": "Na-ebudata…",
 } satisfies AreaMessages;

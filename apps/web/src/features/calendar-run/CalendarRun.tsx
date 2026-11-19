@@ -6,6 +6,12 @@ import type { SavedStreetLine } from "../street-lines/saved";
 import { weekdayServiceHours } from "../costs/model";
 import { dayShares } from "../timetables/feed";
 import { useRailPublications } from "../timetables/railPublish";
+import { loadWasmEnergy } from "../energy/engine";
+import { energyInputs } from "../energy/EnergySection";
+import { energyInTables } from "../energy/params";
+import type { EnergyEngine, EnergyEngineLoader } from "../energy/types";
+import { lineFacts } from "../tables/lineFacts";
+import { activePlugins } from "../../plugins/registry";
 import { verdictText } from "../capacity/CapacityRun";
 import { isOpen, type RunStatus, type ServerNetwork } from "../capacity/server";
 import type { Verdict } from "../capacity/types";
@@ -95,6 +101,7 @@ export function CalendarRun({
   onOpenPreferences,
   buildDrawn = buildDrawnNetwork,
   loadRail,
+  loadEnergy = loadWasmEnergy,
   streetLines = NO_STREET_LINES,
   today = new Date(),
   pollMs = 2000,
@@ -116,6 +123,8 @@ export function CalendarRun({
   buildDrawn?: typeof buildDrawnNetwork;
   /** Rail engine loader for the day types' publications; tests inject one. */
   loadRail?: RailEngineLoader;
+  /** Energy engine loader, for the energy when the Tables tab has not worked it out; tests inject one. */
+  loadEnergy?: EnergyEngineLoader;
   today?: Date;
   pollMs?: number;
 }) {
@@ -142,13 +151,48 @@ export function CalendarRun({
   const calKey = JSON.stringify(cal);
   const waitMin = paramValue("timetable.max_terminal_wait_min", "*", prefs)[1];
   const publishOptions = useMemo(() => ({ max_idle_s: waitMin * 60 }), [waitMin]);
-  const { publications } = useRailPublications(railway, cal, publishOptions, prefs, loadRail);
+  const { publications, view } = useRailPublications(railway, cal, publishOptions, prefs, loadRail);
   const shares = useMemo(
     () => dayShares(railway, streetLines, cal, publications),
     // The calendar is compared by its content.
     [railway, streetLines, calKey, publications],
   );
-  const figures = useMemo(() => dayFigures(tables, prefs, shares), [tables, prefs, shares]);
+  // The energy a year from the weekday timetables when the Tables tab has not worked it out, so the Energy
+  // column is filled without opening Tables (it showed "–" in every year of the Damascus multi-year run).
+  const ownEnergyWanted = tables.energy === null && energyInTables(activePlugins());
+  const [energyEngine, setEnergyEngine] = useState<EnergyEngine | null>(null);
+  useEffect(() => {
+    if (!ownEnergyWanted || energyEngine) return;
+    let live = true;
+    loadEnergy().then(
+      (e) => live && setEnergyEngine(e),
+      // Without the engine the column stays "–" and the panel points to the Tables tab.
+      () => undefined,
+    );
+    return () => {
+      live = false;
+    };
+  }, [ownEnergyWanted, energyEngine, loadEnergy]);
+  const ownEnergy = useMemo(() => {
+    if (!ownEnergyWanted || !energyEngine) return null;
+    // Rail lines need the built design (station positions) and their weekday timetables.
+    if (railway?.lines?.length && (!view || !publications.weekday)) return null;
+    const facts = lineFacts({
+      railway,
+      view,
+      reports: Object.fromEntries((publications.weekday?.lines ?? []).map((r) => [r.id, r])),
+      streetLines: [...streetLines],
+      prefs,
+    }).filter((f) => f.kmPerYear > 0);
+    if (!facts.length) return null;
+    try {
+      return { energy: energyEngine.estimate(energyInputs(facts, prefs)), energyLines: facts };
+    } catch {
+      return null;
+    }
+  }, [ownEnergyWanted, energyEngine, railway, view, publications, streetLines, prefs]);
+  const withEnergy = useMemo(() => (ownEnergy ? { ...tables, ...ownEnergy } : tables), [tables, ownEnergy]);
+  const figures = useMemo(() => dayFigures(withEnergy, prefs, shares), [withEnergy, prefs, shares]);
   // Heating and air conditioning from the Tables tab's estimate, or else from the weekday timetables, so it is
   // counted even when Tables has not been opened (it came out as 0 MWh in the Damascus multi-year run).
   const weekdayReports = publications.weekday?.lines;

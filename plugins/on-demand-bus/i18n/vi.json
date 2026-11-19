@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Vận tải theo yêu cầu vẽ bằng bộ công cụ vùng phục vụ: khoanh một vùng, đặt số yêu cầu mỗi giờ, đội xe và giờ phục vụ, rồi nhận số xe cần, thời gian chờ, đi xe và từ cửa đến cửa trung bình từ công thức xấp xỉ liên tục. Mô phỏng cả ngày điều phối từng lượt đặt theo từng chuyến (ADR-0042). Vùng hiển thị trong công cụ lập hành trình.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "Xe buýt nhỏ đặt qua ứng dụng: khoanh vùng, đặt đội xe và giờ.",
+  "On-demand bus": "Xe buýt theo yêu cầu"
+}

@@ -6,6 +6,7 @@ import { commentsUk } from "./comments/uk";
 import { depotsUk } from "./depots/uk";
 import { geodataUk } from "./geodata/uk";
 import { tablesUk } from "./tables/uk";
+import { economicsUk } from "./economics/uk";
 import { fleetUk } from "./fleet/uk";
 import { timetablesUk } from "./timetables/uk";
 import { areaUk } from "./area/uk";
@@ -85,6 +86,8 @@ export const uk: Messages = {
   "settings.title": "Налаштування",
   "settings.back": "Назад до налаштувань",
   "settings.displayName": "Відображуване ім'я",
+  "shell.thisComputer": "Цей комп'ютер",
+  "shell.localUser": "Локальний користувач",
   "settings.email": "Електронна пошта",
   "settings.role": "Роль",
   "settings.language": "Мова",
@@ -532,6 +535,7 @@ export const uk: Messages = {
   ...depotsUk,
   ...geodataUk,
   ...tablesUk,
+  ...economicsUk,
   ...fleetUk,
   ...timetablesUk,
   ...commentsUk,

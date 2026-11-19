@@ -64,4 +64,17 @@ export const areaSw = {
   "aw.tiles.other": "vigae {count} vya ramani",
   "aw.count.one": "poligoni {count}",
   "aw.count.other": "poligoni {count}",
+  "aw.out.title": "Pakua data ya ramani nje ya eneo la mradi?",
+  "aw.out.note":
+    "Eneo {name} linavuka nje ya eneo la mradi. Sehemu yake ya nje inahitaji data mpya ya ramani.",
+  "aw.out.part": "Sehemu ya nje",
+  "aw.out.km2": "takriban {km2} km²",
+  "aw.out.detail": "Kiwango cha undani kwa sehemu ya nje",
+  "aw.out.overLimit":
+    "Pamoja nalo, eneo la mradi lina data ya ramani zaidi ya MB {mb} ambazo mradi unaruhusiwa. Chagua barabara kuu na reli pekee, au punguza eneo katika Mapendeleo ya mradi.",
+  "aw.out.adds":
+    "Kupakua kunaongeza eneo hili kwenye eneo la mradi kama poligoni mpya, ambayo unaweza kuhariri baadaye kwenye dirisha la eneo.",
+  "aw.out.keep": "Weka eneo, bila kupakua",
+  "aw.out.download": "Pakua MB {mb}",
+  "aw.out.downloading": "Inapakua…",
 } satisfies AreaMessages;

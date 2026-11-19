@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "Sepeda kargo",
+  "Cargo bike range": "Jangkauan sepeda kargo",
+  "Cargo bike savings": "Penghematan sepeda kargo",
+  "Cargo bike trip and range": "Perjalanan dan jangkauan sepeda kargo",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Seberapa jauh sepeda kargo roda tiga listrik bisa pergi dan kembali dengan satu kali isi baterai, melewati bukit dan mengutamakan jalur sepeda, dan berapa yang dihematnya dibanding mobil (pembelian, bahan bakar, pajak, asuransi, parkir, perawatan), di tabnya sendiri.",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Perjalanan pulang-pergi dari titik awal ke tujuan di jalan yang bisa dilalui sepeda (mengutamakan jalur sepeda) dengan baterai yang terpakai sesuai medan, dan peta jangkauan seberapa jauh sepeda bisa pergi dan kembali ke segala arah.",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Biaya tahunan sepeda kargo dibanding mobil untuk perjalanan yang sama: pembelian, energi, pajak, asuransi, parkir, dan perawatan, dalam mata uang negara titik awal."
+}

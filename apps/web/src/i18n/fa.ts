@@ -6,6 +6,7 @@ import { commentsFa } from "./comments/fa";
 import { depotsFa } from "./depots/fa";
 import { geodataFa } from "./geodata/fa";
 import { tablesFa } from "./tables/fa";
+import { economicsFa } from "./economics/fa";
 import { fleetFa } from "./fleet/fa";
 import { timetablesFa } from "./timetables/fa";
 import { areaFa } from "./area/fa";
@@ -82,6 +83,8 @@ export const fa: Messages = {
   "settings.title": "تنظیمات",
   "settings.back": "بازگشت به تنظیمات",
   "settings.displayName": "نام نمایشی",
+  "shell.thisComputer": "این رایانه",
+  "shell.localUser": "کاربر محلی",
   "settings.email": "ایمیل",
   "settings.role": "نقش",
   "settings.language": "زبان",
@@ -525,6 +528,7 @@ export const fa: Messages = {
   ...depotsFa,
   ...geodataFa,
   ...tablesFa,
+  ...economicsFa,
   ...fleetFa,
   ...timetablesFa,
   ...commentsFa,

@@ -67,4 +67,17 @@ export const areaIt = {
   "aw.tiles.other": "{count} tasselli di mappa",
   "aw.count.one": "{count} poligono",
   "aw.count.other": "{count} poligoni",
+  "aw.out.title": "Scaricare dati cartografici fuori dall'area del progetto?",
+  "aw.out.note":
+    "La regione {name} esce dall'area del progetto. La sua parte esterna richiede nuovi dati cartografici.",
+  "aw.out.part": "Parte esterna",
+  "aw.out.km2": "circa {km2} km²",
+  "aw.out.detail": "Dettaglio per la parte esterna",
+  "aw.out.overLimit":
+    "Con essa, l'area del progetto contiene più dati cartografici dei {mb} MB consentiti a un progetto. Scegli solo strade principali e ferrovie, oppure riduci l'area nelle preferenze del progetto.",
+  "aw.out.adds":
+    "Il download aggiunge la regione all'area del progetto come nuovo poligono, modificabile in seguito nella finestra dell'area.",
+  "aw.out.keep": "Mantieni la regione, senza download",
+  "aw.out.download": "Scarica {mb} MB",
+  "aw.out.downloading": "Download in corso…",
 } satisfies AreaMessages;

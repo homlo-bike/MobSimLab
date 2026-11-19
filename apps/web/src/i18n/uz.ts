@@ -6,6 +6,7 @@ import { commentsUz } from "./comments/uz";
 import { depotsUz } from "./depots/uz";
 import { geodataUz } from "./geodata/uz";
 import { tablesUz } from "./tables/uz";
+import { economicsUz } from "./economics/uz";
 import { fleetUz } from "./fleet/uz";
 import { timetablesUz } from "./timetables/uz";
 import { areaUz } from "./area/uz";
@@ -85,6 +86,8 @@ export const uz: Messages = {
   "settings.title": "Sozlamalar",
   "settings.back": "Sozlamalarga qaytish",
   "settings.displayName": "Koʻrsatiladigan ism",
+  "shell.thisComputer": "Ushbu kompyuter",
+  "shell.localUser": "Mahalliy foydalanuvchi",
   "settings.email": "E-pochta",
   "settings.role": "Rol",
   "settings.language": "Til",
@@ -535,6 +538,7 @@ export const uz: Messages = {
   ...depotsUz,
   ...geodataUz,
   ...tablesUz,
+  ...economicsUz,
   ...fleetUz,
   ...timetablesUz,
   ...commentsUz,

@@ -62,4 +62,17 @@ export const areaKo = {
   "aw.pop.box": "프로젝트 구역을 둘러싼 사각형: {km2} km².",
   "aw.tiles.other": "지도 타일 {count}개",
   "aw.count.other": "다각형 {count}개",
+  "aw.out.title": "프로젝트 영역 밖의 지도 데이터를 다운로드할까요?",
+  "aw.out.note":
+    "지역 {name}이(가) 프로젝트 영역 밖으로 벗어납니다. 바깥 부분에는 새 지도 데이터가 필요합니다.",
+  "aw.out.part": "바깥 부분",
+  "aw.out.km2": "약 {km2} km²",
+  "aw.out.detail": "바깥 부분의 상세 수준",
+  "aw.out.overLimit":
+    "이 지역을 더하면 프로젝트 영역의 지도 데이터가 프로젝트당 허용되는 {mb} MB를 넘습니다. 주요 도로와 철도만 선택하거나 프로젝트 환경설정에서 영역을 줄이세요.",
+  "aw.out.adds":
+    "다운로드하면 이 지역이 새 다각형으로 프로젝트 영역에 추가되며, 나중에 영역 창에서 편집할 수 있습니다.",
+  "aw.out.keep": "지역 유지, 다운로드 안 함",
+  "aw.out.download": "{mb} MB 다운로드",
+  "aw.out.downloading": "다운로드 중…",
 } satisfies AreaMessages;

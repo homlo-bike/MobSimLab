@@ -68,4 +68,17 @@ export const areaPl = {
   "aw.count.few": "{count} wielokąty",
   "aw.count.many": "{count} wielokątów",
   "aw.count.other": "{count} wielokąta",
+  "aw.out.title": "Pobrać dane mapy poza obszarem projektu?",
+  "aw.out.note":
+    "Region {name} wychodzi poza obszar projektu. Jego zewnętrzna część wymaga nowych danych mapy.",
+  "aw.out.part": "Część zewnętrzna",
+  "aw.out.km2": "około {km2} km²",
+  "aw.out.detail": "Szczegółowość części zewnętrznej",
+  "aw.out.overLimit":
+    "Wtedy obszar projektu zawiera więcej danych mapy niż {mb} MB dozwolone dla projektu. Wybierz tylko główne drogi i linie kolejowe albo zmniejsz obszar w ustawieniach projektu.",
+  "aw.out.adds":
+    "Pobranie dodaje region do obszaru projektu jako nowy wielokąt, który można później edytować w oknie obszaru.",
+  "aw.out.keep": "Zachowaj region bez pobierania",
+  "aw.out.download": "Pobierz {mb} MB",
+  "aw.out.downloading": "Pobieranie…",
 } satisfies AreaMessages;

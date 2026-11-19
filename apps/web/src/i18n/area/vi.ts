@@ -62,4 +62,16 @@ export const areaVi = {
   "aw.pop.box": "Hình chữ nhật quanh khu vực dự án: {km2} km².",
   "aw.tiles.other": "{count} ô bản đồ",
   "aw.count.other": "{count} đa giác",
+  "aw.out.title": "Tải dữ liệu bản đồ bên ngoài khu vực dự án?",
+  "aw.out.note": "Vùng {name} vượt ra ngoài khu vực dự án. Phần bên ngoài cần dữ liệu bản đồ mới.",
+  "aw.out.part": "Phần bên ngoài",
+  "aw.out.km2": "khoảng {km2} km²",
+  "aw.out.detail": "Mức chi tiết cho phần bên ngoài",
+  "aw.out.overLimit":
+    "Khi thêm vùng này, khu vực dự án chứa nhiều dữ liệu bản đồ hơn mức {mb} MB cho phép của một dự án. Hãy chọn chỉ đường chính và đường sắt, hoặc thu nhỏ khu vực trong Tùy chọn dự án.",
+  "aw.out.adds":
+    "Tải xuống sẽ thêm vùng này vào khu vực dự án thành một đa giác mới, bạn có thể sửa sau trong cửa sổ khu vực.",
+  "aw.out.keep": "Giữ vùng, không tải xuống",
+  "aw.out.download": "Tải xuống {mb} MB",
+  "aw.out.downloading": "Đang tải xuống…",
 } satisfies AreaMessages;

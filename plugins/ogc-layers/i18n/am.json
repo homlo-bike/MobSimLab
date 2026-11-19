@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "ከWMS፣ WMTS እና XYZ የሰቅ አገልግሎቶች የካርታ ንብርብሮች፣ እንደ መሠረት ካርታዎች ወይም ተደራቢዎች። አስተዳዳሪ በአስተዳደር → ተሰኪዎች ውስጥ አገልግሎትን ያክላል፣ ካስፈለገም የመግቢያ ዝርዝሮቹን፤ ሰቆቹ በዚህ MobSimLab በኩል ስለሚመጡ አሳሾች በፍጹም አያዩዋቸውም።",
+  "WMS, WMTS and XYZ map layers": "WMS፣ WMTS እና XYZ የካርታ ንብርብሮች"
+}

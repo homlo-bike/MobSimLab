@@ -62,4 +62,17 @@ export const areaUz = {
   "aw.pop.box": "Loyiha hududi atrofidagi to‘rtburchak: {km2} km².",
   "aw.tiles.other": "{count} ta xarita plitkasi",
   "aw.count.other": "{count} ta ko‘pburchak",
+  "aw.out.title": "Loyiha hududidan tashqaridagi xarita maʼlumotlari yuklab olinsinmi?",
+  "aw.out.note":
+    "{name} hududi loyiha hududidan tashqariga chiqadi. Uning tashqi qismi uchun yangi xarita maʼlumotlari kerak.",
+  "aw.out.part": "Tashqi qism",
+  "aw.out.km2": "taxminan {km2} km²",
+  "aw.out.detail": "Tashqi qism tafsiloti",
+  "aw.out.overLimit":
+    "U bilan loyiha hududida bitta loyihaga ruxsat etilgan {mb} MB dan ko‘p xarita maʼlumotlari bo‘ladi. Faqat asosiy yo‘llar va temir yo‘llarni tanlang yoki loyiha sozlamalarida hududni kichraytiring.",
+  "aw.out.adds":
+    "Yuklab olish hududni loyiha hududiga yangi ko‘pburchak sifatida qo‘shadi, uni keyinroq hudud oynasida tahrirlash mumkin.",
+  "aw.out.keep": "Hududni saqlash, yuklab olmaslik",
+  "aw.out.download": "{mb} MB yuklab olish",
+  "aw.out.downloading": "Yuklab olinmoqda…",
 } satisfies AreaMessages;

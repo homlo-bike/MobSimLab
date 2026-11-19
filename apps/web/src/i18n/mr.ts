@@ -6,6 +6,7 @@ import { commentsMr } from "./comments/mr";
 import { depotsMr } from "./depots/mr";
 import { geodataMr } from "./geodata/mr";
 import { tablesMr } from "./tables/mr";
+import { economicsMr } from "./economics/mr";
 import { fleetMr } from "./fleet/mr";
 import { timetablesMr } from "./timetables/mr";
 import { areaMr } from "./area/mr";
@@ -85,6 +86,8 @@ export const mr: Messages = {
   "settings.title": "सेटिंग्ज",
   "settings.back": "सेटिंग्जकडे परत",
   "settings.displayName": "प्रदर्शित नाव",
+  "shell.thisComputer": "हा संगणक",
+  "shell.localUser": "स्थानिक वापरकर्ता",
   "settings.email": "ई-मेल",
   "settings.role": "भूमिका",
   "settings.language": "भाषा",
@@ -524,6 +527,7 @@ export const mr: Messages = {
   ...depotsMr,
   ...geodataMr,
   ...tablesMr,
+  ...economicsMr,
   ...fleetMr,
   ...timetablesMr,
   ...commentsMr,

@@ -90,6 +90,8 @@ export interface PluginEntry {
   streetPhotos: unknown[];
   parameters: Record<string, { label: string; unit: string }>;
   defaults: Record<string, Record<string, Record<string, Range>>>;
+  /** Language tag → English text of the plugin → that text in the language (the manifest's `translations`). */
+  translations?: Record<string, Record<string, string>>;
 }
 
 /** The core's own ids and the bundled plugins, from tools/plugins/check.py --render. */
@@ -425,6 +427,81 @@ export function checkCode(
   return errors;
 }
 
+/**
+ * Purpose: every English text of a plugin the app shows (tools/plugins/check.py `plugin_texts`): its name and
+ * description, and the labels, hints and notes of its modes, contexts, tools, calculations, importers, exporters,
+ * tabs, map layers, basemaps and street photo sources.
+ */
+export function pluginTexts(
+  m: { name: string; description?: string; contributes: Record<string, unknown> },
+  modes: readonly { label?: string }[],
+  layers: readonly unknown[],
+): Set<string> {
+  const texts = new Set<string>([m.name, m.description ?? ""]);
+  const add = (x: unknown, fields: readonly string[]) => {
+    if (!isRecord(x)) return;
+    for (const f of fields) if (typeof x[f] === "string") texts.add(x[f]);
+  };
+  for (const md of modes) add(md, ["label"]);
+  for (const x of asArray(m.contributes.contexts)) {
+    add(x, ["label"]);
+    if (isRecord(x)) for (const o of asArray(x.options)) add(o, ["label"]);
+  }
+  for (const kind of ["tools", "calculations", "importers", "exporters", "tabs", "basemaps", "streetPhotos"])
+    for (const x of asArray(m.contributes[kind])) add(x, ["label", "hint", "description", "note"]);
+  for (const x of layers) add(x, ["label"]);
+  texts.delete("");
+  return texts;
+}
+
+const asArray = (v: unknown): unknown[] => (Array.isArray(v) ? v : []);
+
+/**
+ * Purpose: read a plugin's translations: one `<tag>.json` per language in the manifest's `translations` folder,
+ * each mapping English texts of the plugin to the language. Keys that are not texts of the plugin are errors.
+ * Output: language tag → English text → translation; problems go to `errors`.
+ */
+function readTranslations(
+  pid: string,
+  folder: string | undefined,
+  texts: ReadonlySet<string>,
+  files: ReadonlyMap<string, Buffer>,
+  errors: string[],
+): Record<string, Record<string, string>> {
+  const out: Record<string, Record<string, string>> = {};
+  if (!folder) return out;
+  const prefix = `${folder}/`;
+  const found = [...files.keys()].filter((p) => p.startsWith(prefix) && p.endsWith(".json")).sort();
+  if (!found.length) errors.push(`${pid}: the translations folder ${folder} has no <language>.json files`);
+  for (const path of found) {
+    const tag = path.slice(prefix.length, -".json".length);
+    if (!/^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$/.test(tag) || tag === "en") {
+      errors.push(`${pid}: ${path}: not a language tag other than en`);
+      continue;
+    }
+    let data: unknown;
+    try {
+      data = JSON.parse(files.get(path)!.toString("utf8"));
+    } catch {
+      errors.push(`${path} is not valid JSON`);
+      continue;
+    }
+    if (!isRecord(data)) {
+      errors.push(`${pid}: ${path} must be an object`);
+      continue;
+    }
+    const lang: Record<string, string> = {};
+    for (const [k, v] of Object.entries(data)) {
+      if (!texts.has(k)) errors.push(`${pid}: ${path}: ${JSON.stringify(k)} is not a text of the plugin`);
+      else if (typeof v !== "string" || !v.trim())
+        errors.push(`${pid}: ${path}: the translation of ${JSON.stringify(k)} is empty`);
+      else lang[k] = v;
+    }
+    out[tag] = lang;
+  }
+  return out;
+}
+
 /** Result of checking a plugin: errors for the Admin, or the registry entry. */
 export type CheckResult =
   { ok: true; manifest: Record<string, unknown>; entry: PluginEntry } | { ok: false; errors: string[] };
@@ -490,6 +567,7 @@ export function checkPlugin(
     id: string;
     name: string;
     description?: string;
+    translations?: string;
     version: string;
     publisher: { name: string; url?: string };
     license: string;
@@ -659,6 +737,7 @@ export function checkPlugin(
   }
   for (const sid of Object.keys(sources).sort())
     if (!used.has(sid)) errors.push(`${pid}: source ${sid} defined but never used`);
+  const translations = readTranslations(pid, m.translations, pluginTexts(m, modes, layers), files, errors);
   if (errors.length) return { ok: false, errors };
 
   const defaults: PluginEntry["defaults"] = {};
@@ -716,6 +795,7 @@ export function checkPlugin(
       params.map((p) => [p.key!, { label: p.label as string, unit: p.unit as string }]),
     ),
     defaults,
+    translations,
   };
   return { ok: true, manifest, entry };
 }

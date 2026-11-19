@@ -6,6 +6,7 @@ import { commentsYo } from "./comments/yo";
 import { depotsYo } from "./depots/yo";
 import { geodataYo } from "./geodata/yo";
 import { tablesYo } from "./tables/yo";
+import { economicsYo } from "./economics/yo";
 import { fleetYo } from "./fleet/yo";
 import { timetablesYo } from "./timetables/yo";
 import { areaYo } from "./area/yo";
@@ -84,6 +85,8 @@ export const yo: Messages = {
   "settings.title": "Ètò",
   "settings.back": "Padà sí ètò",
   "settings.displayName": "Orúkọ ìfihàn",
+  "shell.thisComputer": "Kọ̀ǹpútà yìí",
+  "shell.localUser": "Olùmúlò agbègbè",
   "settings.email": "Ímeèlì",
   "settings.role": "Ipa",
   "settings.language": "Èdè",
@@ -374,7 +377,7 @@ export const yo: Messages = {
   "prefs.group.noise": "Ariwo",
   "prefs.traction.battery": "bátìrì",
   "prefs.traction.diesel": "díẹ́sẹ́lì",
-  "prefs.traction.hydrogen": "hydrogen",
+  "prefs.traction.hydrogen": "háídírójínì",
   "prefs.traction.cng": "gáàsì àdánidá (CNG)",
   "prefs.traction.electric": "iná mànàmáná",
   "report.title": "Ìròyìn àwọn àròsọ",
@@ -526,6 +529,7 @@ export const yo: Messages = {
   ...depotsYo,
   ...geodataYo,
   ...tablesYo,
+  ...economicsYo,
   ...fleetYo,
   ...timetablesYo,
   ...commentsYo,

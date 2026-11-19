@@ -4,6 +4,7 @@ import { commentsEn } from "./comments/en";
 import { depotsEn } from "./depots/en";
 import { geodataEn } from "./geodata/en";
 import { tablesEn } from "./tables/en";
+import { economicsEn } from "./economics/en";
 import { fleetEn } from "./fleet/en";
 import { timetablesEn } from "./timetables/en";
 import { areaEn } from "./area/en";
@@ -83,6 +84,8 @@ export const en = {
   "settings.title": "Settings",
   "settings.back": "Back to settings",
   "settings.displayName": "Display name",
+  "shell.thisComputer": "This computer",
+  "shell.localUser": "Local user",
   "settings.email": "E-mail",
   "settings.role": "Role",
   "settings.language": "Language",
@@ -522,6 +525,7 @@ export const en = {
   ...depotsEn,
   ...geodataEn,
   ...tablesEn,
+  ...economicsEn,
   ...fleetEn,
   ...timetablesEn,
   ...commentsEn,

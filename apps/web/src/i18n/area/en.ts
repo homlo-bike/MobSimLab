@@ -66,6 +66,18 @@ export const areaEn = {
   "aw.data.area": "Project area: {names}. The imports cover the box around it, {area} km².",
   "aw.pop.none": "No project area yet. Draw it in Project preferences.",
   "aw.pop.box": "The box around the project area: {km2} km².",
+  "aw.out.title": "Download map data outside the project area?",
+  "aw.out.note": "The region {name} reaches outside the project area. Its outside part needs new map data.",
+  "aw.out.part": "Outside part",
+  "aw.out.km2": "about {km2} km²",
+  "aw.out.detail": "Detail for the outside part",
+  "aw.out.overLimit":
+    "With it, the project area holds more map data than the {mb} MB a project may hold. Pick main roads and railways only, or make the area smaller in Project preferences.",
+  "aw.out.adds":
+    "Download adds the region to the project area as a new polygon, which you can edit later in the area window.",
+  "aw.out.keep": "Keep the region, no download",
+  "aw.out.download": "Download {mb} MB",
+  "aw.out.downloading": "Downloading…",
 } as const;
 
 type AreaKey = keyof typeof areaEn;

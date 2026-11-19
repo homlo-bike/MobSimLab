@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Ƙiyasin hayaniyar layukan sabis (ADR-0038): zirin hayaniya kai tsaye yayin zana layukan titi da layin dogo, tare da duba ƙarar lanƙwasa, gadoji da maɓallan canza hanya. Fitar hayaniyar hanya da layin dogo ta CNOSSOS-EU, a filin buɗaɗɗe ba tare da gine-gine ba a yanzu.",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den da L_night na layukan da aka zana a mita 4, filin buɗaɗɗe: nisan zirin a ɓangarorin biyu, grid na masu karɓa don taswira da bincike.",
+  "Noise band": "Zirin hayaniya",
+  "Noise map": "Taswirar hayaniya"
+}

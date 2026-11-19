@@ -63,4 +63,17 @@ export const areaJa = {
   "aw.pop.box": "プロジェクト範囲を囲む矩形: {km2} km²。",
   "aw.tiles.other": "地図タイル {count} 枚",
   "aw.count.other": "ポリゴン {count} 個",
+  "aw.out.title": "プロジェクト範囲外の地図データをダウンロードしますか？",
+  "aw.out.note":
+    "地域 {name} はプロジェクト範囲の外まで広がっています。外側の部分には新しい地図データが必要です。",
+  "aw.out.part": "外側の部分",
+  "aw.out.km2": "約 {km2} km²",
+  "aw.out.detail": "外側の部分の詳細度",
+  "aw.out.overLimit":
+    "これを加えると、プロジェクト範囲の地図データが 1 プロジェクトの上限 {mb} MB を超えます。「幹線道路と鉄道のみ」を選ぶか、プロジェクト設定で範囲を小さくしてください。",
+  "aw.out.adds":
+    "ダウンロードすると、この地域が新しいポリゴンとしてプロジェクト範囲に追加されます。後で範囲ウィンドウで編集できます。",
+  "aw.out.keep": "地域を残し、ダウンロードしない",
+  "aw.out.download": "{mb} MB をダウンロード",
+  "aw.out.downloading": "ダウンロード中…",
 } satisfies AreaMessages;

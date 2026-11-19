@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "サービスエリアキットで描くデマンド交通：エリアを囲み、1時間あたりの予約数、車両数、運行時間を設定すると、連続近似式から必要な車両数、平均待ち時間、乗車時間、ドアツードアの所要時間が求まります。1日のシミュレーションではすべての予約を便ごとに配車します（ADR-0042）。エリアは経路検索に表示されます。",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "アプリで予約するミニバス：エリアを囲み、車両数と運行時間を設定します。",
+  "On-demand bus": "デマンドバス"
+}

@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "Вантажний велосипед",
+  "Cargo bike range": "Запас ходу вантажного велосипеда",
+  "Cargo bike savings": "Заощадження з вантажним велосипедом",
+  "Cargo bike trip and range": "Поїздка і запас ходу вантажного велосипеда",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Як далеко електричний вантажний трицикл доїде туди й назад на одному заряді, через пагорби й надаючи перевагу велодоріжкам, і скільки він заощаджує порівняно з автомобілем (купівля, пальне, податки, страхування, паркування, обслуговування), на окремій вкладці.",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Поїздка туди й назад від початкової точки до мети вулицями, придатними для велосипеда (з перевагою велодоріжок), з витратою батареї за рельєфом, і карта запасу ходу: як далеко велосипед доїде туди й назад у кожному напрямку.",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Річні витрати на вантажний велосипед порівняно з автомобілем для тих самих поїздок: купівля, енергія, податки, страхування, паркування й обслуговування, у валюті країни початкової точки."
+}

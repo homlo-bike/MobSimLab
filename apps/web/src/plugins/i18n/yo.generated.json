@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "Ọkọ̀ okùn alọ-àtibọ̀",
+    "Aerial tramway (reversible)": "Ọkọ̀ okùn alọ-àtibọ̀ (ẹlẹ́yìnpadà)",
+    "Bicable gondola (2S)": "Gondola olókùn méjì (2S)",
+    "Cable car": "Ọkọ̀ okùn",
+    "Cable cars": "Àwọn ọkọ̀ okùn",
+    "Funitel": "Funitel",
+    "Gondolas and aerial tramways: click stations, towers follow.": "Gondola àti ọkọ̀ okùn alọ-àtibọ̀: tẹ àwọn ibùdókọ̀, àwọn ilé-ìṣọ́ á tẹ̀lé.",
+    "Monocable detachable gondola (MGD)": "Gondola olókùn kan tí a lè yọ (MGD)",
+    "Pulsed gondola": "Gondola onígbì",
+    "Ropeway system": "Ètò ọkọ̀ okùn",
+    "Tricable gondola (3S)": "Gondola olókùn mẹ́ta (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "Àwọn ọkọ̀ okùn ìlú: gondola tí kì í dúró (MGD, 2S, 3S, funitel, onígbì) àti ọkọ̀ okùn alọ-àtibọ̀, tí a yà pẹ̀lú irinṣẹ́ àwọn àlàfo títọ́ (ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "Kẹ̀kẹ́ ẹrù",
+    "Cargo bike range": "Ìjìnnà kẹ̀kẹ́ ẹrù",
+    "Cargo bike savings": "Ìfipamọ́ kẹ̀kẹ́ ẹrù",
+    "Cargo bike trip and range": "Ìrìnàjò àti ìjìnnà kẹ̀kẹ́ ẹrù",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Bí kẹ̀kẹ́ ẹrù oníkẹ̀kẹ́ mẹ́ta oníná ṣe lè lọ jìnnà tó, kí ó sì padà, lórí agbára bátìrì kan, lórí òkè, ó sì ń fẹ́ràn ọ̀nà kẹ̀kẹ́, àti ohun tí ó ń fipamọ́ ní ìfiwéra pẹ̀lú mọ́tò (rírà, epo, owó-orí, ìbánigbófò, ibùdó ọkọ̀, àtúnṣe), nínú táàbù tirẹ̀.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Ìrìnàjò lọ-àti-bọ̀ láti ibi ìbẹ̀rẹ̀ dé ibi tí a ń lọ lórí àwọn òpópónà tí kẹ̀kẹ́ lè gbà (ó ń fẹ́ràn ọ̀nà kẹ̀kẹ́) pẹ̀lú bátìrì tí a lò lórí ilẹ̀, àti máàpù ìjìnnà tí ó fi bí kẹ̀kẹ́ ṣe lè lọ jìnnà tó kí ó padà ní gbogbo ìhà hàn.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Iye owó ọdọọdún kẹ̀kẹ́ ẹrù ní ìfiwéra pẹ̀lú mọ́tò fún àwọn ìrìnàjò kan náà: rírà, agbára, owó-orí, ìbánigbófò, ibùdó ọkọ̀ àti àtúnṣe, ní owó orílẹ̀-èdè ibi ìbẹ̀rẹ̀."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "Iná mànàmáná, díẹ́sẹ́lì, agbára ìkẹyìn àti CO2e lọ́dún fún ìlà kọ̀ọ̀kan, fún irú ọkọ̀ kọ̀ọ̀kan àti fún gbogbo nẹ́tíwọ̀ọ̀kì, pẹ̀lú ìwọ̀n fún km ọkọ̀ kọ̀ọ̀kan àti km ìjókòó kọ̀ọ̀kan.",
+    "Energy and emissions": "Agbára iná àti èéfín",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "Agbára ìfàmọ́ra àti èéfín gáàsì ìgbóná ayé ti ìlà kọ̀ọ̀kan lọ́dún, fún irú ọkọ̀ kọ̀ọ̀kan àti fún nẹ́tíwọ̀ọ̀kì, láti inú km ọkọ̀ tí ìlà kọ̀ọ̀kan ń rìn: iná mànàmáná ní ibùdó iná kékeré tàbí ẹ̀rọ ìgbaná, díẹ́sẹ́lì ní lítà, àti CO2e láti ìwọ̀n èéfín ẹ̀rọ iná àti díẹ́sẹ́lì láti kànga dé kẹ̀kẹ́. A ń fi hàn nínú táàbù Àwọn tábìlì."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Àwọn fọ́tò láti òfuurufú tí ó tó mítà 0.3 sí 1 fún píksẹ́lì kan ní ọ̀pọ̀ ìlú, tí kò mọ́ tó ní ìgbèríko: wọ́n mọ́ tó láti rí àwọn ọ̀nà ọkọ̀, etí òpópónà àti ojú irin. Ọjọ́ àwọn fọ́tò yàtọ̀ láti ibì kan sí òmíràn.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery gẹ́gẹ́ bí máàpù ìpìlẹ̀ láti òfuurufú: àwọn fọ́tò tí ó tó mítà 0.3 sí 1 fún píksẹ́lì kan ní ọ̀pọ̀ ìlú, tí ó mọ́ tó láti rí àwọn ọ̀nà ọkọ̀, etí òpópónà àti ojú irin. A ń fún un nígbà tí Alákòóso bá fi kọ́kọ́rọ́ ArcGIS API pamọ́ tí ó sì gba àwọn òfin Esri ní Ìṣàkóso → Àwọn àfikún; àwọn táìlì ń gba inú MobSimLab yìí kọjá, nítorí náà àwọn aṣàwákiri kì í rí kọ́kọ́rọ́ náà rárá, a kò sì ń tọ́jú wọn."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "Ọkọ̀ ojú omi oníyẹ̀ẹ́ oníná",
+    "Fast catamaran": "Katamaran tí ó yára",
+    "Ferries": "Àwọn ọkọ̀ ojú omi",
+    "Ferry": "Ọkọ̀ ojú omi",
+    "Monohull water bus": "Bọ́ọ̀sì ojú omi olókè kan",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "Ọkọ̀ ojú omi èrò àti bọ́ọ̀sì ojú omi tí a yà pẹ̀lú irinṣẹ́ ọ̀nà omi: èbúté pẹ̀lú ibùdúró àti afárá ìwọlé, ọ̀nà lórí omi, agbègbè ìyára àti àyẹ̀wò ibùdúró (ADR-0037). Ọkọ̀ ojú omi mọ́tò yóò dé lẹ́yìn náà.",
+    "Vessel type": "Irú ọkọ̀ ojú omi",
+    "Water buses and crossings: click piers, shape the route over water.": "Bọ́ọ̀sì ojú omi àti ìsọdá: tẹ àwọn èbúté, ṣe ọ̀nà lórí omi."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "Ìfúnni GTFS",
+    "GTFS import and export": "Gbígbé GTFS wọlé àti jáde",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Ó ń ka ìfúnni GTFS (zip) sínú iṣẹ́ àkànṣe gẹ́gẹ́ bí nẹ́tíwọ̀ọ̀kì tí ó wà fún ọjọ́ iṣẹ́ kan, tí a gé sí ìwò máàpù tí a bá béèrè, kí olùṣètò ìrìnàjò lè lò ó pẹ̀lú àwọn ìlà tí a ṣètò; ó sì ń kọ àwọn ìlà iṣẹ́ àkànṣe gẹ́gẹ́ bí ìfúnni GTFS fún àwọn irinṣẹ́ míràn.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Àwọn ibùdúró, ọ̀nà àti ìrìnàjò ọjọ́ iṣẹ́ kan (Ọjọ́rú tí ó kún jùlọ àyàfi tí a bá fún ní ọjọ́), pẹ̀lú frequencies.txt gẹ́gẹ́ bí àpẹẹrẹ ìgbà àti irú ọ̀nà gẹ́gẹ́ bí irú ọkọ̀.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Àwọn ìlà iṣẹ́ àkànṣe gẹ́gẹ́ bí ìfúnni GTFS ọjọ́ iṣẹ́: ìrìnàjò pàtó, ìlà onígbà gẹ́gẹ́ bí frequencies.txt, ibùdókọ̀ fún ẹgbẹ́ ibùdúró."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Ó tó mítà 30 fún píksẹ́lì kan (mítà 38 lórí máàpù yìí), láti ìkọjá sátẹ́láìtì ọjọ́ kan: àwọn apá kan máàpù ṣófo tàbí ní ìkùukùu, nítorí náà gbìyànjú ọjọ́ míràn. Kò mọ́ tó láti ya ojú irin tàbí etí òpópónà.",
+    "NASA GIBS imagery": "Àwọn àwòrán NASA GIBS",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 àti 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS àwọ̀ òtítọ́",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "Àwọn àwòrán sátẹ́láìtì láti Global Imagery Browse Services (GIBS) ti NASA gẹ́gẹ́ bí máàpù ìpìlẹ̀ láti òfuurufú, fún ọjọ́ tí o bá yàn: Harmonized Landsat Sentinel-2 ní nǹkan bí mítà 30 fún píksẹ́lì àti VIIRS ní nǹkan bí mítà 250. A kò nílò kọ́kọ́rọ́ API. Àwọn àwòrán kò mọ́ tó láti rí òpópónà tàbí ojú irin.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Gbogbo ayé lójoojúmọ́ ní nǹkan bí mítà 250 fún píksẹ́lì (mítà 306 lórí máàpù yìí), pẹ̀lú ìkùukùu: fún àyíká agbègbè nìkan."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Ariwo tí a fojú díwọ̀n ti àwọn ìlà iṣẹ́ (ADR-0038): ìgbànú ariwo lójú ẹsẹ̀ nígbà tí a bá ń ya ìlà òpópónà àti ojú irin, pẹ̀lú àyẹ̀wò fún ariwo ìkọ̀rọ̀, afárá àti ìyípadà ọ̀nà. Ìtújáde ọ̀nà àti ojú irin CNOSSOS-EU, ní pápá ṣíṣí láìsí ilé fún báyìí.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den àti L_night ti àwọn ìlà tí a yà ní mítà 4, pápá ṣíṣí: ìjìnnà ìgbànú ní ẹ̀gbẹ́ méjèèjì, àwọ̀n olùgbà fún máàpù àti àyẹ̀wò.",
+    "Noise band": "Ìgbànú ariwo",
+    "Noise map": "Máàpù ariwo"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Àwọn ìpele máàpù láti iṣẹ́ táìlì WMS, WMTS àti XYZ, gẹ́gẹ́ bí máàpù ìpìlẹ̀ tàbí ìbòrí. Alákòóso ń fi iṣẹ́ kan kún ní Ìṣàkóso → Àwọn àfikún, pẹ̀lú àlàyé ìwọlé rẹ̀ tí ó bá yẹ; àwọn táìlì ń gba inú MobSimLab yìí kọjá, nítorí náà àwọn aṣàwákiri kì í rí wọn rárá.",
+    "WMS, WMTS and XYZ map layers": "Àwọn ìpele máàpù WMS, WMTS àti XYZ"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Ìrìnnà tí ó ń dáhùn sí ìbéèrè tí a yà pẹ̀lú irinṣẹ́ agbègbè iṣẹ́: ya agbègbè kan, ṣètò ìbéèrè fún wákàtí kan, iye ọkọ̀ àti wákàtí iṣẹ́, kí o sì gba iye ọkọ̀ tí a nílò, ìdúró àpapọ̀, àkókò ìrìn àti àkókò láti ilẹ̀kùn dé ilẹ̀kùn láti inú àwọn fọ́múlà ìṣirò àtẹ̀léra. Ìṣàfarawé ọjọ́ ń rán gbogbo ìforúkọsílẹ̀ lọ ní ìrìnàjò kan lẹ́yìn òmíràn (ADR-0042). Agbègbè náà ń hàn nínú olùṣètò ìrìnàjò.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "Àwọn bọ́ọ̀sì kékeré tí a ń forúkọsílẹ̀ nípasẹ̀ áàpù: ya agbègbè, ṣètò iye ọkọ̀ àti wákàtí.",
+    "On-demand bus": "Bọ́ọ̀sì ìbéèrè"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Àwọn fọ́tò òpópónà Panoramax",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "Àwọn fọ́tò tí àwọn ènìyàn àti àwọn ilé-iṣẹ́ ìjọba pín, lábẹ́ ìwé-àṣẹ ṣíṣí (púpọ̀ jùlọ CC BY-SA 4.0 tàbí Etalab 2.0) tí ó gbà láàyè láti ya máàpù láti inú wọn. Dárúkọ ẹni tó ya fọ́tò nígbà tí o bá lo ọ̀kan.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Àwọn fọ́tò ìpele òpópónà láti Panoramax, àkójọ àjùmọ̀ní ọ̀fẹ́ àti ṣíṣí ti fọ́tò òpópónà. Ṣí Àwọn fọ́tò òpópónà lórí máàpù láti rí ibi tí a ti ya fọ́tò, lẹ́yìn náà tẹ ibì kan láti rí àwọn fọ́tò tí a yà nítòsí rẹ̀. Àwọn fọ́tò wà lábẹ́ ìwé-àṣẹ ṣíṣí tí ó gbà láàyè láti ya máàpù láti inú wọn. A kò nílò kọ́kọ́rọ́. Àwọn fọ́tò ń gba inú MobSimLab yìí kọjá, a kò sì ń tọ́jú wọn tàbí fi wọ́n pamọ́ pẹ̀lú iṣẹ́ àkànṣe."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "Àwọn ọkọ̀ èrò aládàáṣe tí okùn ń fà lórí ọ̀nà gíga, tí a yà pẹ̀lú irinṣẹ́ àwọn àlàfo títọ́: alọ-àtibọ̀ pẹ̀lú ọkọ̀ ojú irin méjì, àti àyíká tí a fún pọ̀ pẹ̀lú ọkọ̀ ojú irin tí a lè yọ tí ó ń dúró ní gbogbo ibùdókọ̀ (ADR-0037 §7). Àwọn tí ó ń wa ara wọn nílò olóòtú ojú irin, wọn yóò sì dé lẹ́yìn náà.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "Alọ-àtibọ̀ àti àyíká tí okùn ń fà lórí ọ̀nà: tẹ àwọn ibùdókọ̀, àwọn òpó á tẹ̀lé.",
+    "People mover": "Ọkọ̀ èrò aládàáṣe",
+    "People mover shuttle": "Ọkọ̀ èrò aládàáṣe alọ-àtibọ̀",
+    "People mover system": "Ètò ọkọ̀ èrò aládàáṣe",
+    "People movers": "Àwọn ọkọ̀ èrò aládàáṣe",
+    "Pinched loop, detachable trains": "Àyíká tí a fún pọ̀, ọkọ̀ ojú irin tí a lè yọ",
+    "Shuttle, two trains on a fixed rope": "Alọ-àtibọ̀, ọkọ̀ ojú irin méjì lórí okùn tí kò yí"
+  }
+}

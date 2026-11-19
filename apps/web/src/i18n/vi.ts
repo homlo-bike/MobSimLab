@@ -6,6 +6,7 @@ import { commentsVi } from "./comments/vi";
 import { depotsVi } from "./depots/vi";
 import { geodataVi } from "./geodata/vi";
 import { tablesVi } from "./tables/vi";
+import { economicsVi } from "./economics/vi";
 import { fleetVi } from "./fleet/vi";
 import { timetablesVi } from "./timetables/vi";
 import { areaVi } from "./area/vi";
@@ -84,6 +85,8 @@ export const vi: Messages = {
   "settings.title": "Cài đặt",
   "settings.back": "Quay lại cài đặt",
   "settings.displayName": "Tên hiển thị",
+  "shell.thisComputer": "Máy tính này",
+  "shell.localUser": "Người dùng cục bộ",
   "settings.email": "Email",
   "settings.role": "Vai trò",
   "settings.language": "Ngôn ngữ",
@@ -526,6 +529,7 @@ export const vi: Messages = {
   ...depotsVi,
   ...geodataVi,
   ...tablesVi,
+  ...economicsVi,
   ...fleetVi,
   ...timetablesVi,
   ...commentsVi,

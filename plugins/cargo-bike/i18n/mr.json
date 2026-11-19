@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "मालवाहू सायकल",
+  "Cargo bike range": "मालवाहू सायकलची पल्ला",
+  "Cargo bike savings": "मालवाहू सायकलमुळे बचत",
+  "Cargo bike trip and range": "मालवाहू सायकलचा प्रवास आणि पल्ला",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "एक विद्युत मालवाहू तीनचाकी एका बॅटरी चार्जवर किती दूर जाऊन परत येऊ शकते, टेकड्यांवरून आणि सायकल मार्गांना प्राधान्य देत, आणि गाडीच्या तुलनेत ती किती बचत करते (खरेदी, इंधन, कर, विमा, पार्किंग, देखभाल), स्वतःच्या टॅबमध्ये.",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "सुरुवातीच्या बिंदूपासून गंतव्यापर्यंत सायकल चालवता येणाऱ्या रस्त्यांवरून (सायकल मार्गांना प्राधान्य देत) जाऊन-येऊन प्रवास आणि भूप्रदेशावर वापरलेली बॅटरी, आणि सायकल प्रत्येक दिशेने किती दूर जाऊन परत येते याचा पल्ला नकाशा.",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "त्याच प्रवासांसाठी गाडीच्या तुलनेत मालवाहू सायकलचा वार्षिक खर्च: खरेदी, ऊर्जा, कर, विमा, पार्किंग आणि देखभाल, सुरुवातीच्या बिंदूच्या देशाच्या चलनात."
+}

@@ -6,6 +6,7 @@ import { commentsZh } from "./comments/zh";
 import { depotsZh } from "./depots/zh";
 import { geodataZh } from "./geodata/zh";
 import { tablesZh } from "./tables/zh";
+import { economicsZh } from "./economics/zh";
 import { fleetZh } from "./fleet/zh";
 import { timetablesZh } from "./timetables/zh";
 import { areaZh } from "./area/zh";
@@ -82,6 +83,8 @@ export const zh: Messages = {
   "settings.title": "设置",
   "settings.back": "返回设置",
   "settings.displayName": "显示名称",
+  "shell.thisComputer": "此电脑",
+  "shell.localUser": "本地用户",
   "settings.email": "电子邮件",
   "settings.role": "角色",
   "settings.language": "语言",
@@ -506,6 +509,7 @@ export const zh: Messages = {
   ...depotsZh,
   ...geodataZh,
   ...tablesZh,
+  ...economicsZh,
   ...fleetZh,
   ...timetablesZh,
   ...commentsZh,

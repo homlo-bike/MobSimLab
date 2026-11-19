@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "约每像素 30 米（本图上为 38 米），来自一天的卫星过境：地图的部分区域为空或有云，请换个日期。太粗，无法绘制轨道或路缘。",
+  "NASA GIBS imagery": "NASA GIBS 影像",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 和 9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS 真彩色",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "来自 NASA 全球影像浏览服务（GIBS）的卫星影像作为航拍底图，可选择日期：Harmonized Landsat Sentinel-2 约每像素 30 米，VIIRS 约 250 米。无需 API 密钥。影像太粗，无法看清街道或轨道。",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "每天覆盖全球，约每像素 250 米（本图上为 306 米），带云层：仅供区域背景参考。"
+}

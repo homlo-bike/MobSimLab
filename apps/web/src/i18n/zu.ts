@@ -6,6 +6,7 @@ import { commentsZu } from "./comments/zu";
 import { depotsZu } from "./depots/zu";
 import { geodataZu } from "./geodata/zu";
 import { tablesZu } from "./tables/zu";
+import { economicsZu } from "./economics/zu";
 import { fleetZu } from "./fleet/zu";
 import { timetablesZu } from "./timetables/zu";
 import { areaZu } from "./area/zu";
@@ -84,6 +85,8 @@ export const zu: Messages = {
   "settings.title": "Izilungiselelo",
   "settings.back": "Buyela ezilungiselelweni",
   "settings.displayName": "Igama lokubonisa",
+  "shell.thisComputer": "Le khompyutha",
+  "shell.localUser": "Umsebenzisi wasendaweni",
   "settings.email": "I-imeyili",
   "settings.role": "Indima",
   "settings.language": "Ulimi",
@@ -536,6 +539,7 @@ export const zu: Messages = {
   ...depotsZu,
   ...geodataZu,
   ...tablesZu,
+  ...economicsZu,
   ...fleetZu,
   ...timetablesZu,
   ...commentsZu,

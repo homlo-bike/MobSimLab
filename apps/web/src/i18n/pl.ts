@@ -6,6 +6,7 @@ import { commentsPl } from "./comments/pl";
 import { depotsPl } from "./depots/pl";
 import { geodataPl } from "./geodata/pl";
 import { tablesPl } from "./tables/pl";
+import { economicsPl } from "./economics/pl";
 import { fleetPl } from "./fleet/pl";
 import { timetablesPl } from "./timetables/pl";
 import { areaPl } from "./area/pl";
@@ -85,6 +86,8 @@ export const pl: Messages = {
   "settings.title": "Ustawienia",
   "settings.back": "Wróć do ustawień",
   "settings.displayName": "Wyświetlana nazwa",
+  "shell.thisComputer": "Ten komputer",
+  "shell.localUser": "Użytkownik lokalny",
   "settings.email": "E-mail",
   "settings.role": "Rola",
   "settings.language": "Język",
@@ -528,6 +531,7 @@ export const pl: Messages = {
   ...depotsPl,
   ...geodataPl,
   ...tablesPl,
+  ...economicsPl,
   ...fleetPl,
   ...timetablesPl,
   ...commentsPl,

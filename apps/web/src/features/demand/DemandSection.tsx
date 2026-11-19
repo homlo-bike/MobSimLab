@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { en } from "../../i18n/en";
-import { RAIL_MODES } from "../railways/modes";
-import { MODES as STREET_MODES } from "../street-lines/modes";
+import { useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
+import { useModeLabel } from "../schematic/common";
 import { type BenefitIndicators, type BenefitsApi, benefitsApi, countryFigures } from "../benefits/data";
 import type { Region } from "../benefits/regions";
 import type { Timetable } from "../journey-planner/types";
@@ -80,37 +80,44 @@ const td = "px-2 py-1.5 align-top";
 const num = "px-2 py-1.5 text-right align-top tabular-nums whitespace-nowrap";
 const PAGE = 25;
 
-const MODE_LABEL: Record<Mode, string> = {
-  transit: "Public transport",
-  car: "Car",
-  walk: "Walking",
-  cycle: "Cycling",
+const MODE_LABEL: Record<Mode, MessageKey> = {
+  transit: "dem.mode.transit",
+  car: "dem.mode.car",
+  walk: "dem.mode.walk",
+  cycle: "dem.mode.cycle",
 };
-const PURPOSE_LABEL: Record<string, string> = {
-  hbw: "Home–work",
-  hbe: "Home–education",
-  hbo: "Home–other",
-  nhb: "Not from home",
+const PURPOSE_LABEL: Record<string, MessageKey> = {
+  hbw: "dem.purpose.hbw",
+  hbe: "dem.purpose.hbe",
+  hbo: "dem.purpose.hbo",
+  nhb: "dem.purpose.nhb",
 };
-const PERIOD_LABEL: Record<string, string> = {
-  am: "Morning peak",
-  md: "Midday",
-  pm: "Evening peak",
-  ev: "Evening",
-  nt: "Night",
+const PERIOD_LABEL: Record<string, MessageKey> = {
+  am: "dem.period.am",
+  md: "dem.period.md",
+  pm: "dem.period.pm",
+  ev: "dem.period.ev",
+  nt: "dem.period.nt",
 };
-const SOURCE_LABEL: Record<ValueSource, string> = {
-  own: "your value",
-  worldpop: "WorldPop",
-  buildings: "OpenStreetMap buildings",
-  places: "OpenStreetMap places",
-  country: "World Bank share",
-  none: "not known",
+const SOURCE_LABEL: Record<ValueSource, MessageKey> = {
+  own: "dem.src.own",
+  worldpop: "dem.src.worldpop",
+  buildings: "dem.src.buildings",
+  places: "dem.src.places",
+  country: "dem.src.country",
+  none: "dem.src.none",
 };
-const STEP_LABEL: Record<string, string> = {
-  skims: "Travel times",
-  feedback: "Trips and car traffic",
-  "transit assignment": "Public transport loads",
+const STATUS_LABEL: Record<string, MessageKey | undefined> = {
+  queued: "dem.st.queued",
+  running: "dem.st.running",
+  done: "dem.st.done",
+  failed: "dem.st.failed",
+  cancelled: "dem.st.cancelled",
+};
+const STEP_LABEL: Record<string, MessageKey> = {
+  skims: "dem.step.skims",
+  feedback: "dem.step.feedback",
+  "transit assignment": "dem.step.assignment",
 };
 
 function fmt(v: number | null | undefined, digits = 0): string {
@@ -124,13 +131,6 @@ function pct(part: number, whole: number): string {
 
 function message(e: unknown): string {
   return e instanceof Error ? e.message : String(e);
-}
-
-/** Purpose: a mode's name, as the cost tables give it (the Tables tab is in English for now). */
-function modeLabel(mode: string): string {
-  const key =
-    RAIL_MODES.find((m) => m.id === mode)?.label ?? STREET_MODES[mode as keyof typeof STREET_MODES]?.label;
-  return key ? en[key] : mode.replace(/_/g, " ");
 }
 
 /** Purpose: a zone's values without one of them. */
@@ -174,6 +174,7 @@ export function DemandSection({
   api = DEFAULT_API,
   pollMs = 3000,
 }: Props) {
+  const { t } = useI18n();
   const editable = !!onDoc;
   const buffer = demandValue("demand.area_buffer_m", preferences);
   const maxZones = demandValue("demand.zone_max_count", preferences);
@@ -300,13 +301,13 @@ export function DemandSection({
   }, [country.gdpPerCapita, costs?.currency, costs?.ppp, rate]);
 
   const blocker = !transit.lines.length
-    ? "Publish a line first: the model needs stops, running times and headways."
+    ? t("dem.block.noLines")
     : !zones.length
-      ? "There are no zones."
+      ? t("dem.block.noZones")
       : !economy
         ? indError
-          ? `World Bank figures are unavailable (${indError}), so values of time cannot be set.`
-          : "Waiting for the cost tables' country and the World Bank figures (values of time come from GDP per person)."
+          ? t("dem.block.noWorldBank", { error: indError })
+          : t("dem.block.waiting")
         : null;
 
   const start = async () => {
@@ -331,9 +332,7 @@ export function DemandSection({
       // The server loads the streets around the zones; it takes at most MAX_DEMAND_TILES tiles.
       const tiles = demandTiles(bundle.zones.map((z) => z.centroid));
       if (tiles.length > MAX_DEMAND_TILES) {
-        setRunError(
-          `The zones cover too large an area for one run (${tiles.length} street tiles, at most ${MAX_DEMAND_TILES}). Use a smaller buffer in Project preferences, or fewer zones.`,
-        );
+        setRunError(t("dem.tooLarge", { tiles: tiles.length, max: MAX_DEMAND_TILES }));
         return;
       }
       const r = await runs.start(
@@ -389,7 +388,7 @@ export function DemandSection({
     try {
       const { zones: own, notes } = zonesFromGeoJson(await f.text());
       onDoc?.({ ...(doc ?? { source: "auto" }), source: "own", zones: own });
-      setUploadNotes([`${own.length} zones read from ${f.name}.`, ...notes]);
+      setUploadNotes([t("dem.zonesRead", { count: own.length, file: f.name }), ...notes]);
     } catch (e) {
       setUploadError(message(e));
     }
@@ -412,42 +411,41 @@ export function DemandSection({
   return (
     <section aria-labelledby="demand-title" className="mt-10">
       <h2 id="demand-title" className="text-xl font-semibold tracking-tight">
-        Demand model
+        {t("dem.title")}
       </h2>
-      <p className="mt-1 max-w-3xl text-slate-600">
-        A four-step model of a weekday (trip generation, distribution, mode choice and assignment) over the
-        model area: everywhere within {fmt(buffer)} m of the published lines. It runs on the server with
-        AequilibraE for the morning peak, midday, evening peak and evening. Every value it uses is in Project
-        preferences → Demand model.
-      </p>
+      <p className="mt-1 max-w-3xl text-slate-600">{t("dem.intro", { buffer: fmt(buffer) })}</p>
 
       <TablePart id="demand.zones">
         <div className={card}>
-          <h3 className="caps m-0">Zones</h3>
+          <h3 className="caps m-0">{t("dem.zones")}</h3>
           <div className="mt-3 flex flex-wrap items-center gap-2 text-sm">
             <span
               className="rounded-full bg-slate-100 px-3 py-1 font-medium text-slate-700"
               data-testid="zone-source"
             >
               {doc?.source === "own"
-                ? `Your ${fmt(zones.length)} zones`
+                ? t("dem.yourZones", { count: fmt(zones.length) })
                 : auto.res === null
-                  ? "Automatic hexagons"
-                  : `${fmt(zones.length)} automatic hexagons (H3 size ${auto.res}, about ${fmt(
-                      zones.length ? (zones.reduce((a, z) => a + zoneKm2(z), 0) / zones.length) * 100 : 0,
-                    )} ha each)`}
+                  ? t("dem.autoHex")
+                  : t("dem.autoHexCount", {
+                      count: fmt(zones.length),
+                      res: auto.res,
+                      ha: fmt(
+                        zones.length ? (zones.reduce((a, z) => a + zoneKm2(z), 0) / zones.length) * 100 : 0,
+                      ),
+                    })}
             </span>
             {editable && (
               <>
                 <button type="button" className="btn min-h-10" onClick={() => fileInput.current?.click()}>
-                  Upload zones (GeoJSON)
+                  {t("dem.upload")}
                 </button>
                 <input
                   ref={fileInput}
                   type="file"
                   accept=".geojson,.json,application/geo+json,application/json"
                   className="hidden"
-                  aria-label="Zones file"
+                  aria-label={t("dem.zonesFile")}
                   onChange={(e) => {
                     const f = e.target.files?.[0];
                     if (f) void upload(f);
@@ -462,14 +460,12 @@ export function DemandSection({
                 className="btn min-h-10"
                 onClick={() => download("zones.geojson", zonesToGeoJson(zones), "application/geo+json")}
               >
-                Download zones
+                {t("dem.download")}
               </button>
             )}
           </div>
           <p className="mt-2 text-sm text-slate-500">
-            {doc?.source === "own"
-              ? "Draw, reshape, rename and delete your zones in the GIS tab (Demand zones), or upload a new file. A GeoJSON property named like a value below (population, workers, jobs, students…) fills that value."
-              : `Hexagons cover the model area, at most ${fmt(maxZones)} of them. Make them your own in the GIS tab (Demand zones) to draw, reshape, rename or delete zones.`}
+            {doc?.source === "own" ? t("dem.ownHint") : t("dem.autoHint", { max: fmt(maxZones) })}
           </p>
           {uploadError && (
             <p role="alert" className="mt-2 text-sm text-red-700">
@@ -491,11 +487,11 @@ export function DemandSection({
                 disabled={loading !== null}
                 onClick={() => void loadData()}
               >
-                {current ? "Estimate zone values again" : "Estimate zone values"}
+                {current ? t("dem.estimateAgain") : t("dem.estimate")}
               </button>
               {loading !== null && (
                 <span role="status" className="text-slate-500">
-                  Loading WorldPop people and OpenStreetMap buildings and places… {fmt(loading * 100)} %
+                  {t("dem.loading", { pct: fmt(loading * 100) })}
                 </span>
               )}
               {loadError && (
@@ -516,14 +512,16 @@ export function DemandSection({
 
       <TablePart id="demand.run">
         <div className={card}>
-          <h3 className="caps m-0">Run</h3>
+          <h3 className="caps m-0">{t("dem.run")}</h3>
           {blocker ? (
             <p className="mt-2 text-sm text-slate-600">{blocker}</p>
           ) : (
             <p className="mt-2 text-sm text-slate-600">
-              {fmt(zones.length)} zones, {fmt(transit.lines.length)} lines and {fmt(transit.stops.length)}{" "}
-              stops. The server adds the OpenStreetMap streets of the zones. A run of a few hundred zones
-              takes about a minute.
+              {t("dem.runSummary", {
+                zones: fmt(zones.length),
+                lines: fmt(transit.lines.length),
+                stops: fmt(transit.stops.length),
+              })}
             </p>
           )}
           <GbfsField doc={doc} onDoc={onDoc} />
@@ -535,12 +533,12 @@ export function DemandSection({
                 disabled={!!blocker || sending || loading !== null}
                 onClick={() => void start()}
               >
-                {sending ? "Starting…" : "Run the demand model"}
+                {sending ? t("dem.starting") : t("dem.runModel")}
               </button>
             )}
             {viewing && isOpen(viewing) && canRun && (
               <button type="button" className="btn min-h-10" onClick={() => void cancel()}>
-                Stop
+                {t("dem.stop")}
               </button>
             )}
           </div>
@@ -578,14 +576,15 @@ export function DemandSection({
 }
 
 function DataNotes({ data, estimated }: { data: ZoneData; estimated: Estimated | null }) {
+  const { t } = useI18n();
   const notes = [
-    data.popYear ? `People: WorldPop ${data.popYear} (CC BY 4.0).` : null,
+    data.popYear ? t("dem.data.people", { year: data.popYear }) : null,
     ...data.popReasons.map((r) => `WorldPop: ${r}`),
     data.capped
-      ? `The model area needs ${data.loaded.size + data.failed + data.capped} tiles of OpenStreetMap buildings; the ${MAX_ZONE_TILES} nearest its centre were loaded.`
+      ? t("dem.data.capped", { tiles: data.loaded.size + data.failed + data.capped, max: MAX_ZONE_TILES })
       : null,
-    data.failed ? `${data.failed} tiles of buildings and places could not be loaded.` : null,
-    ...(estimated?.notes ?? []),
+    data.failed ? t("dem.data.failed", { count: data.failed }) : null,
+    ...(estimated?.notes ?? []).map((n) => t(n.key, n.vars)),
   ].filter((n): n is string => !!n);
   if (!notes.length) return null;
   return (
@@ -608,6 +607,7 @@ function ZoneTable({
   editable: boolean;
   onValues: (id: string, v: ZoneValues) => void;
 }) {
+  const { t } = useI18n();
   const [page, setPage] = useState(0);
   const [query, setQuery] = useState("");
   const shown = useMemo(() => {
@@ -623,7 +623,7 @@ function ZoneTable({
     <div className="mt-4">
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <label className="flex items-center gap-2">
-          <span className="font-medium">Find a zone</span>
+          <span className="font-medium">{t("dem.findZone")}</span>
           <input
             className="input min-h-10"
             value={query}
@@ -633,27 +633,20 @@ function ZoneTable({
             }}
           />
         </label>
-        <span className="text-slate-500">
-          {estimated
-            ? "Grey values are estimated; type a number to use your own, clear it to go back to the estimate."
-            : "Estimate zone values to see the people, jobs and places of each zone, or type your own."}
-        </span>
+        <span className="text-slate-500">{estimated ? t("dem.greyHint") : t("dem.estimateHint")}</span>
       </div>
       <div className="mt-2 overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Zone</th>
+              <th className={th}>{t("dem.col.zone")}</th>
               {ZONE_FIELDS.map((f) => (
-                <th key={f.key} className={`${th} text-right`} title={f.unit}>
-                  {f.label}
+                <th key={f.key} className={`${th} text-right`} title={t(`dem.zu.${f.key}`)}>
+                  {t(`dem.zf.${f.key}`)}
                 </th>
               ))}
-              <th
-                className={th}
-                title="Centre zones draw more trips and cost more to park in; left unticked, the job density decides."
-              >
-                Centre
+              <th className={th} title={t("dem.centreHint")}>
+                {t("dem.col.centre")}
               </th>
             </tr>
           </thead>
@@ -679,7 +672,7 @@ function ZoneTable({
                   <td className={td}>
                     <input
                       type="checkbox"
-                      aria-label={`Zone ${z.name} is a centre zone`}
+                      aria-label={t("dem.isCentre", { zone: z.name })}
                       checked={z.values.cbd === true}
                       disabled={!editable}
                       onChange={(ev) => {
@@ -697,18 +690,16 @@ function ZoneTable({
       {pages > 1 && (
         <div className="mt-2 flex items-center gap-2 text-sm">
           <button type="button" className="btn min-h-9" disabled={p === 0} onClick={() => setPage(p - 1)}>
-            Previous
+            {t("dem.prev")}
           </button>
-          <span>
-            Page {p + 1} of {pages} ({fmt(shown.length)} zones)
-          </span>
+          <span>{t("dem.page", { page: p + 1, pages, count: fmt(shown.length) })}</span>
           <button
             type="button"
             className="btn min-h-9"
             disabled={p >= pages - 1}
             onClick={() => setPage(p + 1)}
           >
-            Next
+            {t("dem.next")}
           </button>
         </div>
       )}
@@ -731,9 +722,14 @@ function ValueCell({
   editable: boolean;
   onValues: (id: string, v: ZoneValues) => void;
 }) {
+  const { t } = useI18n();
   const own = zone.values[field];
   const hasOwn = typeof own === "number" && Number.isFinite(own);
-  const title = hasOwn ? "Your value" : source ? `From ${SOURCE_LABEL[source]}` : undefined;
+  const title = hasOwn
+    ? t("dem.yourValue")
+    : source
+      ? t("dem.from", { source: t(SOURCE_LABEL[source]) })
+      : undefined;
   if (!editable)
     return <span className={hasOwn ? "font-medium" : "text-slate-500"}>{fmt(hasOwn ? own : estimate)}</span>;
   return (
@@ -741,7 +737,7 @@ function ValueCell({
       key={`${zone.id}-${field}-${hasOwn ? own : "x"}`}
       inputMode="decimal"
       className={`input min-h-9 w-24 text-right ${hasOwn ? "font-medium" : "text-slate-500"}`}
-      aria-label={`${ZONE_FIELDS.find((f) => f.key === field)!.label} in zone ${zone.name}`}
+      aria-label={t("dem.valueIn", { value: t(`dem.zf.${field}`), zone: zone.name })}
       title={title}
       placeholder={estimate === undefined ? "" : fmt(estimate)}
       defaultValue={hasOwn ? String(own) : ""}
@@ -764,27 +760,34 @@ function ValueCell({
 }
 
 function RunStatusLine({ run }: { run: DemandRunDetail }) {
+  const { t } = useI18n();
   const p = run.progress;
+  const step = STEP_LABEL[String(p?.step ?? "")];
+  const period = p?.period ? PERIOD_LABEL[String(p.period)] : undefined;
   const text =
     run.status === "queued"
       ? p?.step === "streets" && typeof p.done === "number" && typeof p.of === "number"
-        ? `Loading the OpenStreetMap streets of the zones: ${p.done} of ${p.of} tiles…`
+        ? t("dem.status.streets", { done: p.done, of: p.of })
         : p?.step === "bikes"
-          ? "Loading the bike parkings and shared-bike stations…"
-          : "Waiting for the server…"
+          ? t("dem.status.bikes")
+          : t("dem.status.waiting")
       : run.status === "running"
-        ? `Running: ${STEP_LABEL[String(p?.step ?? "")] ?? "preparing"}${
-            p?.period ? `, ${PERIOD_LABEL[String(p.period)]?.toLowerCase() ?? String(p.period)}` : ""
-          }${typeof p?.round === "number" ? `, round ${p.round + 1}` : ""}${
-            typeof p?.calibration_round === "number" && typeof p.calibration_rounds === "number"
-              ? ` (calibration round ${p.calibration_round} of at most ${p.calibration_rounds})`
-              : ""
-          }…`
+        ? t("dem.status.running", {
+            step: [
+              step ? t(step) : t("dem.status.preparing"),
+              ...(p?.period ? [period ? t(period) : String(p.period)] : []),
+              ...(typeof p?.round === "number" ? [t("dem.status.round", { n: p.round + 1 })] : []),
+            ].join(", "),
+            calibration:
+              typeof p?.calibration_round === "number" && typeof p.calibration_rounds === "number"
+                ? t("dem.status.calibration", { n: p.calibration_round, of: p.calibration_rounds })
+                : "",
+          })
         : run.status === "failed"
-          ? `The run failed: ${run.error ?? "no reason given"}`
+          ? t("dem.status.failed", { error: run.error ?? t("dem.status.noReason") })
           : run.status === "cancelled"
-            ? "The run was stopped."
-            : `Run of ${new Date(run.finishedAt ?? run.createdAt).toLocaleString("en")}.`;
+            ? t("dem.status.stopped")
+            : t("dem.status.done", { when: new Date(run.finishedAt ?? run.createdAt).toLocaleString("en") });
   return (
     <p
       role="status"
@@ -806,9 +809,10 @@ function SavedRuns({
   onView: (id: string) => void;
   onRemove?: (id: string) => void;
 }) {
+  const { t } = useI18n();
   return (
     <details className="mt-3 text-sm">
-      <summary className="cursor-pointer font-medium">Saved runs ({saved.length})</summary>
+      <summary className="cursor-pointer font-medium">{t("dem.savedRuns", { count: saved.length })}</summary>
       <ul className="mt-2 flex flex-col gap-1">
         {saved.map((r) => (
           <li key={r.id} className="flex flex-wrap items-center gap-2">
@@ -820,12 +824,16 @@ function SavedRuns({
               {new Date(r.createdAt).toLocaleString("en")}
             </button>
             <span className="text-slate-500">
-              {r.status}, {fmt(r.network.zones)} zones, {fmt(r.network.lines)} lines
-              {r.createdBy?.displayName ? `, by ${r.createdBy.displayName}` : ""}
+              {t("dem.savedRun", {
+                status: STATUS_LABEL[r.status] ? t(STATUS_LABEL[r.status]!) : r.status,
+                zones: fmt(r.network.zones),
+                lines: fmt(r.network.lines),
+              })}
+              {r.createdBy?.displayName ? t("dem.by", { name: r.createdBy.displayName }) : ""}
             </span>
             {onRemove && !isOpen(r) && (
               <button type="button" className="text-red-700 underline" onClick={() => onRemove(r.id)}>
-                Delete
+                {t("dem.delete")}
               </button>
             )}
           </li>
@@ -848,8 +856,10 @@ function Results({
   preferences: PreferencesDoc | null;
   onPreferences?: (doc: PreferencesDoc) => void;
 }) {
-  const t = result.totals;
-  const periods = Object.keys(t.by_period);
+  const { t } = useI18n();
+  const modeLabel = useModeLabel();
+  const tot = result.totals;
+  const periods = Object.keys(tot.by_period);
   const lines = result.transit.lines.map((l) => {
     let boardings = 0;
     let peak = 0;
@@ -867,45 +877,50 @@ function Results({
     .slice(0, 15);
   const crowded = result.road.links.filter((l) => l[3] >= 0.9).length;
   return (
-    <div className={card} aria-label="Demand model results">
+    <div className={card} aria-label={t("dem.results.label")}>
       <div className="flex flex-wrap items-center gap-2">
-        <h3 className="caps m-0">Results</h3>
+        <h3 className="caps m-0">{t("dem.results")}</h3>
         {result.uncalibrated && (
           <span
             className="rounded-full bg-amber-100 px-3 py-0.5 text-xs font-semibold text-amber-900"
-            title="No observed mode shares or counts were used: the numbers come from library values only. Add observed data above to calibrate."
+            title={t("dem.uncalHint")}
           >
-            Uncalibrated
+            {t("dem.uncal")}
           </span>
         )}
       </div>
       <p className="mt-2 text-sm text-slate-600">
-        {fmt(t.trips)} trips a weekday in {fmt(result.zones_count)} zones;{" "}
-        {pct(t.by_mode.transit ?? 0, t.trips)} by public transport. Mean car trip {fmt(t.car_km, 1)} km, walk{" "}
-        {fmt(t.walk_min, 1)} min, bike ride {fmt(t.cycle_min, 1)} min.
+        {t("dem.summary", {
+          trips: fmt(tot.trips),
+          zones: fmt(result.zones_count),
+          share: pct(tot.by_mode.transit ?? 0, tot.trips),
+          car: fmt(tot.car_km, 1),
+          walk: fmt(tot.walk_min, 1),
+          bike: fmt(tot.cycle_min, 1),
+        })}
       </p>
 
-      <h4 className="mt-4 font-medium">Trips by mode and period</h4>
+      <h4 className="mt-4 font-medium">{t("dem.byModePeriod")}</h4>
       <div className="mt-1 overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Period</th>
+              <th className={th}>{t("dem.col.period")}</th>
               {MODES.map((m) => (
                 <th key={m} className={`${th} text-right`}>
-                  {MODE_LABEL[m]}
+                  {t(MODE_LABEL[m])}
                 </th>
               ))}
-              <th className={`${th} text-right`}>Public transport share</th>
+              <th className={`${th} text-right`}>{t("dem.col.ptShare")}</th>
             </tr>
           </thead>
           <tbody>
             {periods.map((p) => {
-              const row = t.by_period[p]!;
+              const row = tot.by_period[p]!;
               const all = MODES.reduce((a, m) => a + (row[m] ?? 0), 0);
               return (
                 <tr key={p} className="border-b border-slate-100">
-                  <td className={td}>{PERIOD_LABEL[p] ?? p}</td>
+                  <td className={td}>{PERIOD_LABEL[p] ? t(PERIOD_LABEL[p]!) : p}</td>
                   {MODES.map((m) => (
                     <td key={m} className={num}>
                       {fmt(row[m])}
@@ -916,38 +931,38 @@ function Results({
               );
             })}
             <tr className="font-medium">
-              <td className={td}>Weekday</td>
+              <td className={td}>{t("dem.weekday")}</td>
               {MODES.map((m) => (
                 <td key={m} className={num}>
-                  {fmt(t.by_mode[m])}
+                  {fmt(tot.by_mode[m])}
                 </td>
               ))}
-              <td className={num}>{pct(t.by_mode.transit ?? 0, t.trips)}</td>
+              <td className={num}>{pct(tot.by_mode.transit ?? 0, tot.trips)}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <h4 className="mt-4 font-medium">Trips by purpose</h4>
+      <h4 className="mt-4 font-medium">{t("dem.byPurpose")}</h4>
       <div className="mt-1 overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Purpose</th>
+              <th className={th}>{t("dem.col.purpose")}</th>
               {MODES.map((m) => (
                 <th key={m} className={`${th} text-right`}>
-                  {MODE_LABEL[m]}
+                  {t(MODE_LABEL[m])}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {PURPOSES.filter((p) => t.by_purpose[p]).map((p) => (
+            {PURPOSES.filter((p) => tot.by_purpose[p]).map((p) => (
               <tr key={p} className="border-b border-slate-100">
-                <td className={td}>{PURPOSE_LABEL[p]}</td>
+                <td className={td}>{PURPOSE_LABEL[p] ? t(PURPOSE_LABEL[p]!) : p}</td>
                 {MODES.map((m) => (
                   <td key={m} className={num}>
-                    {fmt(t.by_purpose[p]![m])}
+                    {fmt(tot.by_purpose[p]![m])}
                   </td>
                 ))}
               </tr>
@@ -956,22 +971,19 @@ function Results({
         </table>
       </div>
 
-      <h4 className="mt-4 font-medium">Lines</h4>
+      <h4 className="mt-4 font-medium">{t("dem.lines")}</h4>
       <div className="mt-1 overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Line</th>
-              <th className={th}>Mode</th>
-              <th className={`${th} text-right`}>Boardings a weekday</th>
-              <th
-                className={`${th} text-right`}
-                title="Riders an hour on the busiest stretch in the morning peak"
-              >
-                Peak load an hour
+              <th className={th}>{t("dem.col.line")}</th>
+              <th className={th}>{t("dem.col.mode")}</th>
+              <th className={`${th} text-right`}>{t("dem.col.boardingsWeekday")}</th>
+              <th className={`${th} text-right`} title={t("dem.peakHint")}>
+                {t("dem.col.peak")}
               </th>
-              <th className={`${th} text-right`} title="Riders a weekday on the busiest stretch">
-                Busiest stretch a day
+              <th className={`${th} text-right`} title={t("dem.busiestHint")}>
+                {t("dem.col.busiest")}
               </th>
             </tr>
           </thead>
@@ -991,13 +1003,13 @@ function Results({
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         <div>
-          <h4 className="font-medium">Busiest stops</h4>
+          <h4 className="font-medium">{t("dem.busiestStops")}</h4>
           <table className="mt-1 min-w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200">
-                <th className={th}>Stop</th>
-                <th className={`${th} text-right`}>Boardings</th>
-                <th className={`${th} text-right`}>Alightings</th>
+                <th className={th}>{t("dem.col.stop")}</th>
+                <th className={`${th} text-right`}>{t("dem.col.boardings")}</th>
+                <th className={`${th} text-right`}>{t("dem.col.alightings")}</th>
               </tr>
             </thead>
             <tbody>
@@ -1012,13 +1024,13 @@ function Results({
           </table>
         </div>
         <div>
-          <h4 className="font-medium">Strongest public transport desire lines</h4>
+          <h4 className="font-medium">{t("dem.desire")}</h4>
           <table className="mt-1 min-w-full text-sm">
             <thead>
               <tr className="border-b border-slate-200">
-                <th className={th}>From</th>
-                <th className={th}>To</th>
-                <th className={`${th} text-right`}>Riders a weekday</th>
+                <th className={th}>{t("dem.col.from")}</th>
+                <th className={th}>{t("dem.col.to")}</th>
+                <th className={`${th} text-right`}>{t("dem.col.ridersWeekday")}</th>
               </tr>
             </thead>
             <tbody>
@@ -1034,8 +1046,7 @@ function Results({
         </div>
       </div>
       <p className="mt-4 text-sm text-slate-600">
-        Roads: {fmt(result.road.links.length)} street links carry cars; {fmt(crowded)} reach 90 % of their
-        capacity in some period.
+        {t("dem.roads", { links: fmt(result.road.links.length), crowded: fmt(crowded) })}
       </p>
       {result.calibration && (
         <CalibrationResult c={result.calibration} preferences={preferences} onPreferences={onPreferences} />
@@ -1051,7 +1062,7 @@ function Results({
       <div className="mt-4 flex flex-wrap items-center gap-3 text-sm">
         {fileUrl && result.files.includes("od.omx") && (
           <a className="btn min-h-10" href={fileUrl} download="od.omx">
-            Download trip tables (OMX)
+            {t("dem.downloadOmx")}
           </a>
         )}
         <span className="text-slate-500">{result.attribution}</span>
@@ -1062,6 +1073,7 @@ function Results({
 
 /** The GBFS feed of the project's shared-bike scheme: stations it lists are added to OpenStreetMap's. */
 function GbfsField({ doc, onDoc }: { doc: DemandDoc | null; onDoc?: (doc: DemandDoc) => void }) {
+  const { t } = useI18n();
   const [error, setError] = useState<string | null>(null);
   const saved = doc?.gbfsUrl ?? "";
   if (!onDoc && !saved) return null;
@@ -1069,7 +1081,7 @@ function GbfsField({ doc, onDoc }: { doc: DemandDoc | null; onDoc?: (doc: Demand
     const v = raw.trim();
     if (v === saved) return;
     if (v && !/^https:\/\/[^\s/]+\.[^\s]+$/.test(v)) {
-      setError("Enter an https address, such as https://example.com/gbfs.json.");
+      setError(t("dem.gbfsInvalid"));
       return;
     }
     setError(null);
@@ -1081,7 +1093,7 @@ function GbfsField({ doc, onDoc }: { doc: DemandDoc | null; onDoc?: (doc: Demand
   return (
     <div className="mt-3 text-sm">
       <label className="block">
-        <span className="font-medium">Shared-bike feed (GBFS)</span>
+        <span className="font-medium">{t("dem.gbfs")}</span>
         <input
           key={saved}
           type="url"
@@ -1093,10 +1105,7 @@ function GbfsField({ doc, onDoc }: { doc: DemandDoc | null; onDoc?: (doc: Demand
           onBlur={(e) => save(e.target.value)}
         />
       </label>
-      <p className="mt-1 text-slate-500">
-        Optional. Its stations are used with the shared-bike stations and bike parkings OpenStreetMap has in
-        the zones.
-      </p>
+      <p className="mt-1 text-slate-500">{t("dem.gbfsHint")}</p>
       {error && (
         <p role="alert" className="mt-1 text-red-700">
           {error}
@@ -1108,28 +1117,26 @@ function GbfsField({ doc, onDoc }: { doc: DemandDoc | null; onDoc?: (doc: Demand
 
 /** What cycle lanes, bike parkings, shared bikes, pedestrian streets and stops with steps did in the run. */
 function Catchment({ c }: { c: NonNullable<DemandResult["catchment"]> }) {
+  const { t } = useI18n();
   const rows: [string, string][] = [
     [
-      "Cycle lanes and tracks",
-      `${fmt(c.cycle_lane_km, 1)} km of lanes, ${fmt(c.cycle_track_km, 1)} km of tracks`,
+      t("dem.c.cycle"),
+      t("dem.c.cycleV", { lanes: fmt(c.cycle_lane_km, 1), tracks: fmt(c.cycle_track_km, 1) }),
     ],
-    ["Pedestrian streets", `${fmt(c.pedestrian_km, 1)} km`],
-    ["Bike parkings", fmt(c.bike_parkings)],
-    ["Shared-bike stations", fmt(c.shared_bike_stations)],
+    [t("dem.c.pedestrian"), t("dem.c.km", { v: fmt(c.pedestrian_km, 1) })],
+    [t("dem.c.parkings"), fmt(c.bike_parkings)],
+    [t("dem.c.sharedStations"), fmt(c.shared_bike_stations)],
+    [t("dem.c.steps"), t("dem.c.stepsV", { steps: fmt(c.stops_with_steps), free: fmt(c.stops_step_free) })],
+    [t("dem.c.sharedTrips"), fmt(c.shared_bike_trips)],
     [
-      "Stops with steps",
-      `${fmt(c.stops_with_steps)} recorded without step-free access, ${fmt(c.stops_step_free)} with it`,
+      t("dem.c.sharedTransit"),
+      t("dem.c.sharedTransitV", { to: fmt(c.shared_bike_to_transit), from: fmt(c.shared_bike_from_transit) }),
     ],
-    ["Trips on a shared bike", fmt(c.shared_bike_trips)],
-    [
-      "Shared bike to or from public transport",
-      `${fmt(c.shared_bike_to_transit)} to a stop, ${fmt(c.shared_bike_from_transit)} from a stop`,
-    ],
-    ["Bike and ride", `${fmt(c.bike_and_ride)} riders cycle to a stop and park`],
+    [t("dem.c.bikeRide"), t("dem.c.bikeRideV", { count: fmt(c.bike_and_ride) })],
   ];
   return (
     <div className="mt-4">
-      <h4 className="m-0 text-sm font-semibold">Catchment, a weekday</h4>
+      <h4 className="m-0 text-sm font-semibold">{t("dem.c.title")}</h4>
       <table className="mt-2 w-full text-sm">
         <tbody>
           {rows.map(([k, v]) => (
@@ -1159,6 +1166,7 @@ function RidershipChoice({
   doc: DemandDoc | null;
   onDoc?: (doc: DemandDoc) => void;
 }) {
+  const { t } = useI18n();
   const used = doc?.ridershipRun === runId;
   const other = !!doc?.ridershipRun && !used;
   const set = (id: string | null) => {
@@ -1168,25 +1176,21 @@ function RidershipChoice({
     onDoc?.(next);
   };
   return (
-    <div className={card} aria-label="Ridership used in the project">
-      <h3 className="caps m-0">Ridership in the project</h3>
+    <div className={card} aria-label={t("dem.rid.label")}>
+      <h3 className="caps m-0">{t("dem.rid.title")}</h3>
       <p className="mt-2 text-sm text-slate-600">
-        {used
-          ? "This run's boardings are the ridership of the Tables tab, the service table's Riders column, the fare revenue table and the system test's passenger loads."
-          : other
-            ? "Another run's boardings are the project's ridership."
-            : "The project's ridership comes from the Tables tab's formula estimate. Use this run's boardings instead?"}{" "}
-        Boardings you typed in the system test still come first.
+        {used ? t("dem.rid.used") : other ? t("dem.rid.other") : t("dem.rid.formula")}{" "}
+        {t("dem.rid.typedFirst")}
       </p>
       {onDoc && (
         <div className="mt-3 flex flex-wrap gap-2">
           {used ? (
             <button type="button" className="btn min-h-10" onClick={() => set(null)}>
-              Go back to the formula estimate
+              {t("dem.rid.back")}
             </button>
           ) : (
             <button type="button" className="btn btn-pri min-h-10" onClick={() => set(runId)}>
-              Use this run for ridership
+              {t("dem.rid.use")}
             </button>
           )}
         </div>

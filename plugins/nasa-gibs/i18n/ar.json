@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "نحو 30 م لكل بكسل (38 م على هذه الخريطة)، من مرور الأقمار الصناعية في يوم واحد: بعض أجزاء الخريطة فارغة أو غائمة، فجرّب تاريخًا آخر. أقل دقة من أن تُرسم عليها السكك أو الأرصفة.",
+  "NASA GIBS imagery": "صور NASA GIBS",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 و9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS بالألوان الحقيقية",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "صور أقمار صناعية من خدمات تصفح الصور العالمية لدى NASA (GIBS) كخرائط أساس جوية، ليوم تختاره: Harmonized Landsat Sentinel-2 بدقة نحو 30 م لكل بكسل وVIIRS بدقة نحو 250 م. لا حاجة إلى مفتاح API. الصور أقل دقة من أن تُرى بها الشوارع أو السكك.",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "العالم كله كل يوم بدقة نحو 250 م لكل بكسل (306 م على هذه الخريطة)، مع الغيوم: للسياق الإقليمي فقط."
+}

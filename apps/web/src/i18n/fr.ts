@@ -6,6 +6,7 @@ import { commentsFr } from "./comments/fr";
 import { depotsFr } from "./depots/fr";
 import { geodataFr } from "./geodata/fr";
 import { tablesFr } from "./tables/fr";
+import { economicsFr } from "./economics/fr";
 import { fleetFr } from "./fleet/fr";
 import { timetablesFr } from "./timetables/fr";
 import { areaFr } from "./area/fr";
@@ -86,6 +87,8 @@ export const fr: Messages = {
   "settings.title": "Réglages",
   "settings.back": "Retour aux réglages",
   "settings.displayName": "Nom affiché",
+  "shell.thisComputer": "Cet ordinateur",
+  "shell.localUser": "Utilisateur local",
   "settings.email": "E-mail",
   "settings.role": "Rôle",
   "settings.language": "Langue",
@@ -536,6 +539,7 @@ export const fr: Messages = {
   ...depotsFr,
   ...geodataFr,
   ...tablesFr,
+  ...economicsFr,
   ...fleetFr,
   ...timetablesFr,
   ...commentsFr,

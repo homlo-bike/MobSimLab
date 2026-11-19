@@ -6,6 +6,7 @@ import { commentsHi } from "./comments/hi";
 import { depotsHi } from "./depots/hi";
 import { geodataHi } from "./geodata/hi";
 import { tablesHi } from "./tables/hi";
+import { economicsHi } from "./economics/hi";
 import { fleetHi } from "./fleet/hi";
 import { timetablesHi } from "./timetables/hi";
 import { areaHi } from "./area/hi";
@@ -85,6 +86,8 @@ export const hi: Messages = {
   "settings.title": "सेटिंग्स",
   "settings.back": "सेटिंग्स पर वापस जाएँ",
   "settings.displayName": "प्रदर्शित नाम",
+  "shell.thisComputer": "यह कंप्यूटर",
+  "shell.localUser": "स्थानीय उपयोगकर्ता",
   "settings.email": "ईमेल",
   "settings.role": "भूमिका",
   "settings.language": "भाषा",
@@ -527,6 +530,7 @@ export const hi: Messages = {
   ...depotsHi,
   ...geodataHi,
   ...tablesHi,
+  ...economicsHi,
   ...fleetHi,
   ...timetablesHi,
   ...commentsHi,

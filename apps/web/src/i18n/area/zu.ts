@@ -65,4 +65,17 @@ export const areaZu = {
   "aw.tiles.other": "amathayela emephu angu-{count}",
   "aw.count.one": "i-polygon engu-{count}",
   "aw.count.other": "ama-polygon angu-{count}",
+  "aw.out.title": "Landa idatha yemephu ngaphandle kwendawo yephrojekthi?",
+  "aw.out.note":
+    "Isifunda {name} sidlulela ngaphandle kwendawo yephrojekthi. Ingxenye yaso engaphandle idinga idatha entsha yemephu.",
+  "aw.out.part": "Ingxenye engaphandle",
+  "aw.out.km2": "cishe ku-{km2} km²",
+  "aw.out.detail": "Izinga lemininingwane lengxenye engaphandle",
+  "aw.out.overLimit":
+    "Uma kunaso, indawo yephrojekthi inedatha yemephu engaphezu kwe-{mb} MB ephrojekthi engaba nayo. Khetha imigwaqo emikhulu nezitimela kuphela, noma wenze indawo ibe ncane kokuncanyelwayo kwephrojekthi.",
+  "aw.out.adds":
+    "Ukulanda kwengeza isifunda endaweni yephrojekthi njengepholigoni entsha, ongayihlela kamuva efasiteleni lendawo.",
+  "aw.out.keep": "Gcina isifunda, ungalandi",
+  "aw.out.download": "Landa u-{mb} MB",
+  "aw.out.downloading": "Iyalanda…",
 } satisfies AreaMessages;

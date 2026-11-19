@@ -22,6 +22,7 @@ import { SignIn } from "./shell/SignIn";
 import { setTheme, storedTheme } from "./shell/theme";
 import { TopBar } from "./shell/TopBar";
 import { type SettingsSection, UserMenu } from "./shell/UserMenu";
+import { serverName } from "./shell/serverNames";
 
 // Screens downloaded when first opened, so the sign-in page and the projects list load quickly.
 const AdminPanel = lazyNamed(() => import("./admin/AdminPanel"), "AdminPanel");
@@ -124,7 +125,7 @@ function Shell({
   const user = me?.user;
   const csrf = me?.csrfToken ?? "";
   const api = useMemo(() => projectsApi(csrf), [csrf]);
-  const brand = me?.instance.name ?? "MobSimLab";
+  const brand = me ? serverName(t, me.instance.name) : "MobSimLab";
   const refusal = new URLSearchParams(window.location.search).get("signin");
   useEffect(() => {
     document.title = brand;

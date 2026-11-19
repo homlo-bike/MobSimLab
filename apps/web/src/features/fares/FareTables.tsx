@@ -1,9 +1,11 @@
 import { useEffect, useMemo } from "react";
+import { type Translate, useI18n } from "../../i18n/i18n";
+import { paramLabel, paramUnit } from "../../i18n/params";
 import type { Estimate as BenefitEstimate } from "../benefits/model";
-import { card, fmtMoney, modeLabel, num, td, th, Tile } from "../costs/CostTables";
+import { card, fmtMoney, num, td, th, Tile } from "../costs/CostTables";
 import type { PluginLineInput } from "../journey-planner/network";
 import type { Network } from "../railways/types";
-import { EMPTY_SCHEMATIC, type SchematicDoc } from "../schematic/common";
+import { EMPTY_SCHEMATIC, type SchematicDoc, useModeLabel } from "../schematic/common";
 import { defaultOrigin, layout } from "../schematic/layout";
 import { schematicNetwork } from "../schematic/lines";
 import type { StreetLinesDoc } from "../street-lines/saved";
@@ -86,6 +88,8 @@ export function FareTables({
   draws,
   onInput,
 }: Props) {
+  const { t, tn } = useI18n();
+  const modeLabel = useModeLabel();
   const structure: FareStructure = doc?.structure ?? "flat";
   const own = doc?.values;
   const sd = schematic ?? EMPTY_SCHEMATIC;
@@ -142,27 +146,17 @@ export function FareTables({
   };
   const total = est?.rows.find((r) => r.id === "total") ?? null;
 
-  const status = !benefits
-    ? "Waiting for the ridership estimate in the benefit tables above…"
-    : !prices
-      ? "Waiting for the cost tables to find the project's country and currency…"
-      : null;
+  const status = !benefits ? t("fare.waitBenefits") : !prices ? t("fare.waitCosts") : null;
 
   return (
     <section aria-labelledby="fare-title" className="mt-10">
       <h2 id="fare-title" className="text-xl font-semibold tracking-tight">
-        Fare revenue
+        {t("fare.title")}
       </h2>
-      <p className="mt-1 max-w-3xl text-slate-600">
-        Fares a year: the boardings of the ridership estimate times the average fare riders pay, after passes,
-        discounts and the fare's effect on ridership, less fare evasion and the cost of collecting fares.
-        Default fares follow the price level of the project's country (World Bank PPP factor). Low, medium and
-        high are the 10th, 50th and 90th percentile over the ranges of the values that describe how people
-        travel; the fares, pass price and discounts you set stay fixed.
-      </p>
+      <p className="mt-1 max-w-3xl text-slate-600">{t("fare.intro")}</p>
       <TablePart id="fares.settings">
         <label className="mt-4 flex flex-wrap items-center gap-2 text-sm">
-          <span className="font-medium">Fare structure</span>
+          <span className="font-medium">{t("fare.structure")}</span>
           <select
             className="input min-h-10"
             value={structure}
@@ -171,16 +165,14 @@ export function FareTables({
           >
             {STRUCTURES.map((s) => (
               <option key={s} value={s}>
-                {STRUCTURE_LABEL[s]}
+                {t(STRUCTURE_LABEL[s])}
               </option>
             ))}
           </select>
         </label>
         {structure === "zonal" && (
           <p className={`mt-2 text-sm ${zones.length ? "text-slate-600" : "text-amber-700"}`}>
-            {zones.length
-              ? `${zones.length} tariff ${zones.length === 1 ? "zone" : "zones"} from the Schematic network map. A stop outside every zone counts as a zone of its own.`
-              : "No tariff zones yet: draw them on the Schematic tab's network map. Until then every trip is in one zone."}
+            {zones.length ? tn("fare.zonesFromMap", zones.length) : t("fare.noZones")}
           </p>
         )}
       </TablePart>
@@ -192,40 +184,41 @@ export function FareTables({
       <TablePart id="fares.revenue">
         {benefits && prices && !est && (
           <p className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-slate-600">
-            No lines with a ridership estimate yet.
+            {t("fare.noLines")}
           </p>
         )}
         {est && total && (
           <>
             <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
               <Tile
-                title="Fare revenue, first year"
+                title={t("fare.tile.firstYear")}
                 value={money(total.net[1])}
-                sub={`${money(total.net[0])} – ${money(total.net[2])}, after collection costs`}
+                sub={t("fare.tile.firstYearSub", { low: money(total.net[0]), high: money(total.net[2]) })}
               />
               <Tile
-                title="Boardings a year"
+                title={t("fare.tile.boardings")}
                 value={compact(total.riders[1])}
-                sub={`after the fare's effect; ${compact(total.estimate[1])} in the ridership estimate`}
+                sub={t("fare.tile.boardingsSub", { estimate: compact(total.estimate[1]) })}
               />
               <Tile
-                title="Average fare paid"
+                title={t("fare.tile.avgFare")}
                 value={fare(total.paid[1])}
-                sub={`per boarding; single fare ${fare(total.single[1])}`}
+                sub={t("fare.tile.avgFareSub", { fare: fare(total.single[1]) })}
               />
               <Tile
-                title={`Fare revenue over ${YEARS} years`}
+                title={t("fare.tile.overYears", { years: YEARS })}
                 value={money(est.years.reduce((s, y) => s + y.net[1], 0))}
-                sub="medium, undiscounted, in today's prices"
+                sub={t("fare.tile.overYearsSub")}
               />
             </div>
-            <PerLine est={est} structure={structure} money={money} fare={fare} />
-            <ByYear est={est} money={money} />
+            <PerLine t={t} modeLabel={modeLabel} est={est} structure={structure} money={money} fare={fare} />
+            <ByYear t={t} est={est} money={money} />
           </>
         )}
       </TablePart>
       <TablePart id="fares.settings">
         <Settings
+          t={t}
           structure={structure}
           own={own}
           perIntl={prices?.perIntl ?? 1}
@@ -238,7 +231,7 @@ export function FareTables({
   );
 }
 
-function Range({ t, f }: { t: Triple; f: (v: number) => string }) {
+function Range({ v: t, f }: { v: Triple; f: (v: number) => string }) {
   return (
     <>
       <span className="font-semibold">{f(t[1])}</span>
@@ -250,11 +243,15 @@ function Range({ t, f }: { t: Triple; f: (v: number) => string }) {
 }
 
 function PerLine({
+  t,
+  modeLabel,
   est,
   structure,
   money,
   fare,
 }: {
+  t: Translate;
+  modeLabel: (mode: string) => string;
   est: FareEstimate;
   structure: FareStructure;
   money: (v: number) => string;
@@ -263,24 +260,21 @@ function PerLine({
   return (
     <section className={card} aria-labelledby="fare-lines">
       <h3 id="fare-lines" className="caps m-0">
-        First year per line
+        {t("fare.perLine")}
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        A line's trips are spread between its stops by the boardings at both ends; trip length is along the
-        line. Medium, with low – high below.
-      </p>
+      <p className="mt-1 text-xs text-slate-500">{t("fare.perLineNote")}</p>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full min-w-[52rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Line</th>
-              <th className={`${th} text-right`}>Boardings a year</th>
-              <th className={`${th} text-right`}>Average trip</th>
-              <th className={`${th} text-right`}>Single fare</th>
-              <th className={`${th} text-right`}>Paid per boarding</th>
-              <th className={`${th} text-right`}>Fares paid</th>
-              <th className={`${th} text-right`}>Collection cost</th>
-              <th className={`${th} text-right`}>Fare revenue</th>
+              <th className={th}>{t("fare.col.line")}</th>
+              <th className={`${th} text-right`}>{t("fare.col.boardingsYear")}</th>
+              <th className={`${th} text-right`}>{t("fare.col.avgTrip")}</th>
+              <th className={`${th} text-right`}>{t("fare.col.single")}</th>
+              <th className={`${th} text-right`}>{t("fare.col.paidPerBoarding")}</th>
+              <th className={`${th} text-right`}>{t("fare.col.paid")}</th>
+              <th className={`${th} text-right`}>{t("fare.col.collection")}</th>
+              <th className={`${th} text-right`}>{t("fare.col.revenue")}</th>
             </tr>
           </thead>
           <tbody>
@@ -299,33 +293,35 @@ function PerLine({
                       />
                     )}
                     {r.scope === "total"
-                      ? "All lines"
+                      ? t("fare.allLines")
                       : r.scope === "mode"
-                        ? `All ${modeLabel(r.name)} lines`
+                        ? t("fare.allModeLines", { mode: modeLabel(r.name) })
                         : r.name}
                   </span>
                 </td>
                 <td className={num}>
-                  <Range t={r.riders} f={compact} />
+                  <Range v={r.riders} f={compact} />
                 </td>
                 <td className={num}>
-                  {r.avgKm === null ? "–" : `${sig(r.avgKm)} km`}
+                  {r.avgKm === null ? "–" : t("fare.km", { v: sig(r.avgKm) })}
                   {structure === "zonal" && r.avgZones !== null && (
-                    <span className="block text-xs text-slate-500">{sig(r.avgZones)} zones</span>
+                    <span className="block text-xs text-slate-500">
+                      {t("fare.zones", { v: sig(r.avgZones) })}
+                    </span>
                   )}
                 </td>
                 <td className={num}>{fare(r.single[1])}</td>
                 <td className={num}>
-                  <Range t={r.paid} f={fare} />
+                  <Range v={r.paid} f={fare} />
                 </td>
                 <td className={num}>
-                  <Range t={r.gross} f={money} />
+                  <Range v={r.gross} f={money} />
                 </td>
                 <td className={num}>
-                  <Range t={r.collection} f={money} />
+                  <Range v={r.collection} f={money} />
                 </td>
                 <td className={num}>
-                  <Range t={r.net} f={money} />
+                  <Range v={r.net} f={money} />
                 </td>
               </tr>
             ))}
@@ -336,26 +332,23 @@ function PerLine({
   );
 }
 
-function ByYear({ est, money }: { est: FareEstimate; money: (v: number) => string }) {
+function ByYear({ t, est, money }: { t: Translate; est: FareEstimate; money: (v: number) => string }) {
   const years = est.years.filter((y) => SHOWN_YEARS.includes(y.year));
   return (
     <section className={card} aria-labelledby="fare-years">
       <h3 id="fare-years" className="caps m-0">
-        Year by year, all lines
+        {t("fare.byYear")}
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        Years after opening, in today's prices: ridership grows each year, fares change by the yearly change
-        above inflation and ridership answers the change through the fare elasticity.
-      </p>
+      <p className="mt-1 text-xs text-slate-500">{t("fare.byYearNote")}</p>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full min-w-[36rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Year</th>
-              <th className={`${th} text-right`}>Boardings</th>
-              <th className={`${th} text-right`}>Fares paid</th>
-              <th className={`${th} text-right`}>Collection cost</th>
-              <th className={`${th} text-right`}>Fare revenue</th>
+              <th className={th}>{t("fare.col.year")}</th>
+              <th className={`${th} text-right`}>{t("fare.col.boardings")}</th>
+              <th className={`${th} text-right`}>{t("fare.col.paid")}</th>
+              <th className={`${th} text-right`}>{t("fare.col.collection")}</th>
+              <th className={`${th} text-right`}>{t("fare.col.revenue")}</th>
             </tr>
           </thead>
           <tbody>
@@ -363,16 +356,16 @@ function ByYear({ est, money }: { est: FareEstimate; money: (v: number) => strin
               <tr key={y.year} className="border-b border-slate-100">
                 <td className={td}>{y.year}</td>
                 <td className={num}>
-                  <Range t={y.riders} f={compact} />
+                  <Range v={y.riders} f={compact} />
                 </td>
                 <td className={num}>
-                  <Range t={y.gross} f={money} />
+                  <Range v={y.gross} f={money} />
                 </td>
                 <td className={num}>
-                  <Range t={y.collection} f={money} />
+                  <Range v={y.collection} f={money} />
                 </td>
                 <td className={num}>
-                  <Range t={y.net} f={money} />
+                  <Range v={y.net} f={money} />
                 </td>
               </tr>
             ))}
@@ -384,26 +377,27 @@ function ByYear({ est, money }: { est: FareEstimate; money: (v: number) => strin
 }
 
 /** The settings, in the order a planner thinks about them. */
-function settingGroups(structure: FareStructure): { title: string; keys: string[] }[] {
+function settingGroups(t: Translate, structure: FareStructure): { title: string; keys: string[] }[] {
   return [
-    { title: `Fares: ${STRUCTURE_LABEL[structure].toLowerCase()}`, keys: STRUCTURE_KEYS[structure] },
+    { title: t(STRUCTURE_LABEL[structure]), keys: STRUCTURE_KEYS[structure] },
     {
-      title: "Tickets and passes",
+      title: t("fare.group.tickets"),
       keys: ["fare.pass.trip_share", "fare.pass.price_in_fares", "fare.pass.trips_per_month"],
     },
     {
-      title: "Discount groups",
+      title: t("fare.group.discounts"),
       keys: GROUPS.flatMap((g) => [`fare.concession.${g}.share`, `fare.concession.${g}.discount`]),
     },
     {
-      title: "Ridership and later years",
+      title: t("fare.group.ridership"),
       keys: ["fare.elasticity", "fare.ridership_growth", "fare.real_increase"],
     },
-    { title: "Losses", keys: ["fare.evasion_share", "fare.collection_cost_share"] },
+    { title: t("fare.group.losses"), keys: ["fare.evasion_share", "fare.collection_cost_share"] },
   ];
 }
 
 function Settings({
+  t,
   structure,
   own,
   perIntl,
@@ -411,6 +405,7 @@ function Settings({
   editable,
   setValue,
 }: {
+  t: Translate;
   structure: FareStructure;
   own: Record<string, number> | undefined;
   perIntl: number;
@@ -421,28 +416,26 @@ function Settings({
   return (
     <section className={card} aria-labelledby="fare-settings">
       <h3 id="fare-settings" className="caps m-0">
-        Fare settings
+        {t("fare.settings")}
       </h3>
       <p className="mt-1 text-xs text-slate-500">
-        Setting a value replaces the medium; low and high move with it. Fares are in{" "}
-        {currency ?? "local currency"}; the library's are converted from 2023 international dollars. Values
-        marked “your choice” stay fixed in the low – high range. Sources and reasoning are in
-        assumptions/DEFAULTS.md.
+        {t("fare.settingsNote", { currency: currency ?? t("fare.localCurrency") })}
       </p>
-      {settingGroups(structure).map((g) => (
+      {settingGroups(t, structure).map((g) => (
         <div key={g.title} className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[40rem] text-sm">
             <caption className="caps pb-1 text-left text-slate-700">{g.title}</caption>
             <thead>
               <tr className="border-b border-slate-200">
-                <th className={th}>Value</th>
-                <th className={`${th} text-right`}>Library low – medium – high</th>
-                <th className={`${th} text-right`}>This project</th>
+                <th className={th}>{t("fare.col.value")}</th>
+                <th className={`${th} text-right`}>{t("fare.col.library")}</th>
+                <th className={`${th} text-right`}>{t("fare.col.project")}</th>
               </tr>
             </thead>
             <tbody>
               {g.keys.map((k) => (
                 <SettingRow
+                  t={t}
                   key={k}
                   k={k}
                   own={own}
@@ -461,6 +454,7 @@ function Settings({
 }
 
 function SettingRow({
+  t,
   k,
   own,
   perIntl,
@@ -468,6 +462,7 @@ function SettingRow({
   editable,
   setValue,
 }: {
+  t: Translate;
   k: string;
   own: Record<string, number> | undefined;
   perIntl: number;
@@ -484,16 +479,19 @@ function SettingRow({
   const mine = own?.[k];
   const shown = mine === undefined ? undefined : Number((mine * k1).toPrecision(6));
   const f = (v: number) => (money ? fmtFare(v, currency) : sig(v));
-  const unit = money
-    ? p.unit.replace(/US\$/, currency ?? "local currency").replace(/ \(2023, PPP\)/, "")
-    : p.unit;
+  const { language } = useI18n();
+  const label = paramLabel(language, k, p.label);
+  const unit = paramUnit(language, money ? p.unit.replace(/ \(2023, PPP\)/, "") : p.unit).replace(
+    /US\$/,
+    currency ?? t("fare.localCurrency"),
+  );
   return (
     <tr className="border-b border-slate-100">
       <td className={td}>
-        {p.label}
+        {label}
         <span className="block text-xs text-slate-500">
           {unit}
-          {POLICY.has(k) ? " · your choice" : ""}
+          {POLICY.has(k) ? t("fare.yourChoice") : ""}
         </span>
       </td>
       <td className={num}>
@@ -506,7 +504,7 @@ function SettingRow({
             type="number"
             step="any"
             className="input w-28 text-right"
-            aria-label={p.label}
+            aria-label={label}
             defaultValue={shown ?? ""}
             placeholder={money ? used.toFixed(2) : sig(used)}
             onBlur={(e) => {

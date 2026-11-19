@@ -60,4 +60,15 @@ export const areaAm = {
   "aw.pop.box": "በፕሮጀክት ክልሉ ዙሪያ ያለው አራት ማዕዘን፦ {km2} ኪሜ²።",
   "aw.tiles.other": "{count} የካርታ ሰሌዳዎች",
   "aw.count.other": "{count} ባለብዙ ጎኖች",
+  "aw.out.title": "ከፕሮጀክቱ ክልል ውጭ ያለ የካርታ ውሂብ ይውረድ?",
+  "aw.out.note": "ክልሉ {name} ከፕሮጀክቱ ክልል ውጭ ይዘልቃል። የውጭው ክፍሉ አዲስ የካርታ ውሂብ ያስፈልገዋል።",
+  "aw.out.part": "የውጭ ክፍል",
+  "aw.out.km2": "ወደ {km2} ኪ.ሜ²",
+  "aw.out.detail": "ለውጭው ክፍል የዝርዝር ደረጃ",
+  "aw.out.overLimit":
+    "ከእርሱ ጋር የፕሮጀክቱ ክልል አንድ ፕሮጀክት ሊይዝ ከሚችለው {mb} MB በላይ የካርታ ውሂብ ይይዛል። ዋና መንገዶችንና የባቡር መስመሮችን ብቻ ይምረጡ፣ ወይም በፕሮጀክት ምርጫዎች ክልሉን ያሳንሱ።",
+  "aw.out.adds": "ማውረድ ክልሉን እንደ አዲስ ባለብዙ ጎን ወደ ፕሮጀክቱ ክልል ያክላል፤ በኋላ በክልል መስኮቱ ማስተካከል ይችላሉ።",
+  "aw.out.keep": "ክልሉን አቆይ፣ አታውርድ",
+  "aw.out.download": "{mb} MB አውርድ",
+  "aw.out.downloading": "በማውረድ ላይ…",
 } satisfies AreaMessages;

@@ -66,4 +66,17 @@ export const areaDe = {
   "aw.tiles.other": "{count} Kartenkacheln",
   "aw.count.one": "{count} Polygon",
   "aw.count.other": "{count} Polygone",
+  "aw.out.title": "Kartendaten außerhalb des Projektgebiets herunterladen?",
+  "aw.out.note":
+    "Das Gebiet {name} reicht über das Projektgebiet hinaus. Für den äußeren Teil werden neue Kartendaten gebraucht.",
+  "aw.out.part": "Äußerer Teil",
+  "aw.out.km2": "etwa {km2} km²",
+  "aw.out.detail": "Detailgrad für den äußeren Teil",
+  "aw.out.overLimit":
+    "Damit enthält das Projektgebiet mehr Kartendaten als die {mb} MB, die ein Projekt haben darf. Wählen Sie „Nur Hauptstraßen und Bahnstrecken“ oder verkleinern Sie das Gebiet in den Projekteinstellungen.",
+  "aw.out.adds":
+    "Herunterladen fügt das Gebiet als neues Polygon zum Projektgebiet hinzu; Sie können es später im Gebietsfenster bearbeiten.",
+  "aw.out.keep": "Gebiet behalten, nicht herunterladen",
+  "aw.out.download": "{mb} MB herunterladen",
+  "aw.out.downloading": "Wird heruntergeladen…",
 } satisfies AreaMessages;

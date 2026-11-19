@@ -6,6 +6,7 @@ import { commentsAr } from "./comments/ar";
 import { depotsAr } from "./depots/ar";
 import { geodataAr } from "./geodata/ar";
 import { tablesAr } from "./tables/ar";
+import { economicsAr } from "./economics/ar";
 import { fleetAr } from "./fleet/ar";
 import { timetablesAr } from "./timetables/ar";
 import { areaAr } from "./area/ar";
@@ -82,6 +83,8 @@ export const ar: Messages = {
   "settings.title": "الإعدادات",
   "settings.back": "العودة إلى الإعدادات",
   "settings.displayName": "الاسم المعروض",
+  "shell.thisComputer": "هذا الحاسوب",
+  "shell.localUser": "المستخدم المحلي",
   "settings.email": "البريد الإلكتروني",
   "settings.role": "الدور",
   "settings.language": "اللغة",
@@ -517,6 +520,7 @@ export const ar: Messages = {
   ...depotsAr,
   ...geodataAr,
   ...tablesAr,
+  ...economicsAr,
   ...fleetAr,
   ...timetablesAr,
   ...commentsAr,

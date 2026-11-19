@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "往复式索道",
+    "Aerial tramway (reversible)": "往复式索道（可逆）",
+    "Bicable gondola (2S)": "双索循环式缆车（2S）",
+    "Cable car": "索道",
+    "Cable cars": "索道",
+    "Funitel": "Funitel 双线索道",
+    "Gondolas and aerial tramways: click stations, towers follow.": "缆车和往复式索道：点击车站，支架自动跟随。",
+    "Monocable detachable gondola (MGD)": "单线可脱挂式缆车（MGD）",
+    "Pulsed gondola": "脉动式缆车",
+    "Ropeway system": "索道系统",
+    "Tricable gondola (3S)": "三索循环式缆车（3S）",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "城市索道：连续运行的缆车（MGD、2S、3S、Funitel、脉动式）和可逆往复式索道，用直线跨距工具绘制（ADR-0037）。"
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "货运自行车",
+    "Cargo bike range": "货运自行车续航",
+    "Cargo bike savings": "货运自行车节省",
+    "Cargo bike trip and range": "货运自行车行程与续航",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "电动货运三轮车充一次电能往返多远（翻越坡地并优先走自行车道），以及与汽车相比能省多少（购置、燃料、税费、保险、停车、维护），在单独的标签页中显示。",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "从起点到目的地沿可骑行街道（优先走自行车道）的往返行程及地形上消耗的电量，以及显示自行车向各方向能往返多远的续航地图。",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "同样行程下货运自行车与汽车的年度成本对比：购置、能源、税费、保险、停车和维护，以起点所在国家的货币计。"
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "每条线路、每种方式和全网每年的电力、柴油、终端能源和 CO2e，以及每车公里和每座位公里的强度。",
+    "Energy and emissions": "能源和排放",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "每条线路每年的牵引能耗和温室气体排放，按方式和全网统计，基于每条线路的车公里：变电站或充电桩处的电力、以升计的柴油，以及按电网排放强度和柴油“油井到车轮”计算的 CO2e。显示在“表格”标签页中。"
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "大多数城市约每像素 0.3 至 1 米的航拍照片，乡村较粗：足以看清车道、路缘和轨道。拍摄日期因地而异。",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery 作为航拍底图：大多数城市约每像素 0.3 至 1 米的航拍照片，足以看清车道、路缘和轨道。管理员在“管理 → 插件”中保存 ArcGIS API 密钥并接受 Esri 的条款后即可使用；图块经由本 MobSimLab 传输，浏览器永远看不到密钥，且不会被保存。"
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "电动水翼船",
+    "Fast catamaran": "高速双体船",
+    "Ferries": "渡轮",
+    "Ferry": "渡轮",
+    "Monohull water bus": "单体水上巴士",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "用水上航线工具绘制的客运渡轮和水上巴士：带泊位和登船桥的码头、水上航线、限速区和泊位检查（ADR-0037）。汽车渡轮以后推出。",
+    "Vessel type": "船型",
+    "Water buses and crossings: click piers, shape the route over water.": "水上巴士和渡运：点击码头，在水面上调整航线。"
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "GTFS 数据",
+    "GTFS import and export": "GTFS 导入和导出",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "将 GTFS 数据（zip）读入项目，作为某一服务日的现有线网，可按需裁剪到地图视图，使行程规划器连同规划线路一起使用；并将项目的线路写成 GTFS 数据供其他工具使用。",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "某一服务日的站点、线路和班次（未指定日期时取最繁忙的星期三），frequencies.txt 作为发车间隔模式，线路类型作为交通方式。",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "项目线路作为工作日 GTFS 数据：精确班次、以 frequencies.txt 表示的间隔线路、以车站表示的站点组。"
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "约每像素 30 米（本图上为 38 米），来自一天的卫星过境：地图的部分区域为空或有云，请换个日期。太粗，无法绘制轨道或路缘。",
+    "NASA GIBS imagery": "NASA GIBS 影像",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 和 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS 真彩色",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "来自 NASA 全球影像浏览服务（GIBS）的卫星影像作为航拍底图，可选择日期：Harmonized Landsat Sentinel-2 约每像素 30 米，VIIRS 约 250 米。无需 API 密钥。影像太粗，无法看清街道或轨道。",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "每天覆盖全球，约每像素 250 米（本图上为 306 米），带云层：仅供区域背景参考。"
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "线路的噪声估算（ADR-0038）：绘制街道线路和铁路时实时显示噪声带，并检查弯道尖啸、桥梁和道岔。采用 CNOSSOS-EU 道路和铁路排放，目前为无建筑物的自由声场。",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "所绘线路在 4 米高度、自由声场下的 L_den 和 L_night：两侧的噪声带距离、地图用的接收点网格以及检查。",
+    "Noise band": "噪声带",
+    "Noise map": "噪声地图"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "来自 WMS、WMTS 和 XYZ 图块服务的地图图层，可作为底图或叠加层。管理员在“管理 → 插件”中添加服务，必要时附上登录信息；图块经由本 MobSimLab 传输，浏览器永远看不到这些信息。",
+    "WMS, WMTS and XYZ map layers": "WMS、WMTS 和 XYZ 地图图层"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "用服务区工具绘制的需求响应式交通：圈出服务区，设置每小时请求数、车队和服务时段，按连续近似公式得出所需车辆、平均等待、乘车和门到门时间。全天模拟逐班次调度每一笔预约（ADR-0042）。服务区显示在行程规划器中。",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "通过应用预约的小巴：圈出服务区，设置车队和时段。",
+    "On-demand bus": "需求响应公交"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Panoramax 街景照片",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "由个人和公共机构分享的照片，采用允许据此制图的开放许可（多为 CC BY-SA 4.0 或 Etalab 2.0）。使用时请注明作者。",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "来自 Panoramax（自由开放的街景照片共享资源）的街景照片。在地图上打开“街景照片”可查看照片拍摄位置，再点击某一点可查看其附近拍摄的照片。照片采用允许据此制图的开放许可。无需密钥。照片经由本 MobSimLab 传输，不会被保存，也不会随项目存储。"
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "高架导轨上的缆索牵引自动旅客捷运，用直线跨距工具绘制：两列车的穿梭线，以及列车可脱挂、每站停靠的收束环线（ADR-0037 §7）。自驱动的旅客捷运需要铁路编辑器，以后推出。",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "导轨上缆索牵引的穿梭线和环线：点击车站，墩柱自动跟随。",
+    "People mover": "旅客捷运",
+    "People mover shuttle": "旅客捷运穿梭线",
+    "People mover system": "旅客捷运系统",
+    "People movers": "旅客捷运",
+    "Pinched loop, detachable trains": "收束环线，可脱挂列车",
+    "Shuttle, two trains on a fixed rope": "穿梭线，两列车挂在固定缆索上"
+  }
+}

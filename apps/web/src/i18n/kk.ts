@@ -6,6 +6,7 @@ import { commentsKk } from "./comments/kk";
 import { depotsKk } from "./depots/kk";
 import { geodataKk } from "./geodata/kk";
 import { tablesKk } from "./tables/kk";
+import { economicsKk } from "./economics/kk";
 import { fleetKk } from "./fleet/kk";
 import { timetablesKk } from "./timetables/kk";
 import { areaKk } from "./area/kk";
@@ -84,6 +85,8 @@ export const kk: Messages = {
   "settings.title": "Баптаулар",
   "settings.back": "Баптауларға оралу",
   "settings.displayName": "Көрсетілетін аты",
+  "shell.thisComputer": "Осы компьютер",
+  "shell.localUser": "Жергілікті пайдаланушы",
   "settings.email": "Электрондық пошта",
   "settings.role": "Рөл",
   "settings.language": "Тіл",
@@ -528,6 +531,7 @@ export const kk: Messages = {
   ...depotsKk,
   ...geodataKk,
   ...tablesKk,
+  ...economicsKk,
   ...fleetKk,
   ...timetablesKk,
   ...commentsKk,

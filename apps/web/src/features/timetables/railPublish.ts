@@ -7,6 +7,7 @@ import type {
   PublishOptions,
   RailEngine,
   RailEngineLoader,
+  RailView,
   ServicePublication,
 } from "../railways/types";
 import { DAY_TYPES, type DayTypeId, serviceDayFor, type ServiceCalendar } from "../../workspace/calendar";
@@ -56,7 +57,8 @@ const NONE: DayPublications = {};
  * Inputs: the railway document, the project calendar (peak windows), the publish settings, the project's
  * preference values; the engine loader
  * (tests inject one).
- * Output: the publication per day type, empty while it runs or without lines, and an error message.
+ * Output: the publication per day type, empty while it runs or without lines, the built design (null until
+ * then), and an error message.
  * Side effects: loads the rail engine (WebAssembly).
  */
 export function useRailPublications(
@@ -65,10 +67,11 @@ export function useRailPublications(
   options: PublishOptions,
   values?: Readonly<Record<string, number>> | null,
   loadRail: RailEngineLoader = loadRailEngine,
-): { publications: DayPublications; busy: boolean; error: string | null } {
+): { publications: DayPublications; view: RailView | null; busy: boolean; error: string | null } {
   const [state, setState] = useState<{
     key: string;
     publications: DayPublications;
+    view: RailView | null;
     error: string | null;
   } | null>(null);
   const lines = railway ? DAY_TYPES.map((d) => [d, dayEngineLines(railway, d, cal, values)] as const) : [];
@@ -78,14 +81,20 @@ export function useRailPublications(
     if (none) return;
     let live = true;
     const fail = (err: unknown) => {
-      if (live) setState({ key, publications: {}, error: err instanceof Error ? err.message : String(err) });
+      if (live)
+        setState({
+          key,
+          publications: {},
+          view: null,
+          error: err instanceof Error ? err.message : String(err),
+        });
     };
     (async () => {
       const engine = await loadRail();
       try {
         await nextTask();
         if (!live) return;
-        engine.build(railway!, null);
+        const view = engine.build(railway!, null);
         // One day type at a time, letting the page answer in between: each takes a second or more on
         // a large network (the Tables tab froze on the Damascus network, bug 21).
         const publications: DayPublications = {};
@@ -95,7 +104,7 @@ export function useRailPublications(
           if (!live) return;
           publications[day] = engine.publishLines(dayLines, day, options);
         }
-        if (live) setState({ key, publications, error: null });
+        if (live) setState({ key, publications, view, error: null });
       } catch (err) {
         fail(err);
       } finally {
@@ -107,7 +116,12 @@ export function useRailPublications(
     };
     // The key holds every input.
   }, [key, none, loadRail]);
-  if (none) return { publications: NONE, busy: false, error: null };
+  if (none) return { publications: NONE, view: null, busy: false, error: null };
   const current = state?.key === key ? state : null;
-  return { publications: current?.publications ?? NONE, busy: !current, error: current?.error ?? null };
+  return {
+    publications: current?.publications ?? NONE,
+    view: current?.view ?? null,
+    busy: !current,
+    error: current?.error ?? null,
+  };
 }

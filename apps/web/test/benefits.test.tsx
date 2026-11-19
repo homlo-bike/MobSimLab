@@ -35,6 +35,9 @@ import { accessByScenario, groupOf, spendingFrom } from "../src/features/benefit
 import { projectTimetable } from "../src/features/benefits/timetable";
 import type { Estimate as CostEstimate } from "../src/features/costs/model";
 import type { LonLat, ReachLoader, Timetable } from "../src/features/journey-planner/types";
+import { type Note, translate } from "../src/i18n/i18n";
+
+const inEnglish = (notes: Note[]) => notes.map((n) => translate("en", n.key, n.vars));
 
 afterEach(cleanup);
 
@@ -504,7 +507,7 @@ describe("benefit estimate", () => {
     const r = await run({ wp: Object.fromEntries(catchments(tt, undefined).map((a) => [a.id, null])) });
     expect(r.P.popSource.worldpop).toBe(0);
     expect(r.P.popSource.buildings).toBeGreaterThan(0);
-    expect(r.P.notes.join(" ")).toContain("WorldPop is unavailable");
+    expect(inEnglish(r.P.notes).join(" ")).toContain("WorldPop is unavailable");
     // 10 buildings of 400 m² × 4 floors per station at 35 m² per person.
     const people = r.P.zones.reduce((s, z) => s + z.pop, 0);
     expect(people).toBeCloseTo((4 * 10 * 400 * 4) / 35, -1);

@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "Okuphakelwayo kwe-GTFS",
+  "GTFS import and export": "Ukungenisa nokukhipha i-GTFS",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Ifunda okuphakelwayo kwe-GTFS (zip) kuphrojekthi njengenethiwekhi ekhona yosuku olulodwa lwesevisi, enqunywe ekubukeni kwemephu uma kucelwe, ukuze umhleli wohambo ayisebenzise kanye nemigqa ehleliwe; futhi ibhala imigqa yephrojekthi njengokuphakelwayo kwe-GTFS kwamanye amathuluzi.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Izitobhi, imizila nohambo losuku olulodwa lwesevisi (uLwesithathu olumatasa kakhulu ngaphandle uma kunikezwe usuku), ne-frequencies.txt njengamaphethini emvamisa nezinhlobo zemizila njengezinhlobo zokuthutha.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Imigqa yephrojekthi njengokuphakelwayo kwe-GTFS kosuku lokusebenza: uhambo oluqondile, imigqa yemvamisa njenge-frequencies.txt, iziteshi zamaqembu ezitobhi."
+}

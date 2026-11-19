@@ -6,6 +6,7 @@ import { commentsSw } from "./comments/sw";
 import { depotsSw } from "./depots/sw";
 import { geodataSw } from "./geodata/sw";
 import { tablesSw } from "./tables/sw";
+import { economicsSw } from "./economics/sw";
 import { fleetSw } from "./fleet/sw";
 import { timetablesSw } from "./timetables/sw";
 import { areaSw } from "./area/sw";
@@ -84,6 +85,8 @@ export const sw: Messages = {
   "settings.title": "Mipangilio",
   "settings.back": "Rudi kwenye mipangilio",
   "settings.displayName": "Jina linaloonyeshwa",
+  "shell.thisComputer": "Kompyuta hii",
+  "shell.localUser": "Mtumiaji wa ndani",
   "settings.email": "Barua pepe",
   "settings.role": "Jukumu",
   "settings.language": "Lugha",
@@ -530,6 +533,7 @@ export const sw: Messages = {
   ...depotsSw,
   ...geodataSw,
   ...tablesSw,
+  ...economicsSw,
   ...fleetSw,
   ...timetablesSw,
   ...commentsSw,

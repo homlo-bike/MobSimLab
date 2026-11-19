@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "Nguồn dữ liệu GTFS",
+  "GTFS import and export": "Nhập và xuất GTFS",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Đọc một nguồn GTFS (zip) vào dự án như mạng lưới hiện có cho một ngày phục vụ, cắt theo khung bản đồ nếu được yêu cầu, để công cụ lập hành trình dùng nó cùng các tuyến quy hoạch; và ghi các tuyến của dự án thành nguồn GTFS cho công cụ khác.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Điểm dừng, tuyến và chuyến của một ngày phục vụ (thứ Tư đông chuyến nhất nếu không cho ngày), với frequencies.txt là mẫu tần suất và loại tuyến là phương thức.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Các tuyến của dự án thành nguồn GTFS ngày thường: chuyến chính xác, tuyến tần suất trong frequencies.txt, ga cho nhóm điểm dừng."
+}

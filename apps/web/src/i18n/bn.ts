@@ -6,6 +6,7 @@ import { commentsBn } from "./comments/bn";
 import { depotsBn } from "./depots/bn";
 import { geodataBn } from "./geodata/bn";
 import { tablesBn } from "./tables/bn";
+import { economicsBn } from "./economics/bn";
 import { fleetBn } from "./fleet/bn";
 import { timetablesBn } from "./timetables/bn";
 import { areaBn } from "./area/bn";
@@ -85,6 +86,8 @@ export const bn: Messages = {
   "settings.title": "সেটিংস",
   "settings.back": "সেটিংসে ফিরে যান",
   "settings.displayName": "প্রদর্শিত নাম",
+  "shell.thisComputer": "এই কম্পিউটার",
+  "shell.localUser": "স্থানীয় ব্যবহারকারী",
   "settings.email": "ইমেল",
   "settings.role": "ভূমিকা",
   "settings.language": "ভাষা",
@@ -523,6 +526,7 @@ export const bn: Messages = {
   ...depotsBn,
   ...geodataBn,
   ...tablesBn,
+  ...economicsBn,
   ...fleetBn,
   ...timetablesBn,
   ...commentsBn,

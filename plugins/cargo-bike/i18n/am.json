@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "የጭነት ብስክሌት",
+  "Cargo bike range": "የጭነት ብስክሌት ርቀት",
+  "Cargo bike savings": "የጭነት ብስክሌት ቁጠባ",
+  "Cargo bike trip and range": "የጭነት ብስክሌት ጉዞና ርቀት",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "የኤሌክትሪክ ባለሦስት ጎማ የጭነት ብስክሌት በአንድ የባትሪ ኃይል ምን ያህል ርቀት ሄዶ እንደሚመለስ፣ በኮረብቶች ላይና የብስክሌት መስመሮችን እየመረጠ፣ እንዲሁም ከመኪና ጋር ሲነጻጸር የሚያድነው (ግዢ፣ ነዳጅ፣ ግብር፣ መድን፣ ማቆሚያ፣ ጥገና)፣ በራሱ ትር ውስጥ።",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "ከመነሻ ነጥብ ወደ መድረሻ በብስክሌት በሚሄዱ መንገዶች (የብስክሌት መስመሮችን እየመረጠ) የደርሶ መልስ ጉዞ ከመሬቱ አቀማመጥ ጋር የሚውለው ባትሪ፣ እንዲሁም ብስክሌቱ በእያንዳንዱ አቅጣጫ ምን ያህል ሄዶ እንደሚመለስ የሚያሳይ የርቀት ካርታ።",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "ለተመሳሳይ ጉዞዎች የጭነት ብስክሌቱ ዓመታዊ ወጪ ከመኪና ጋር ሲነጻጸር፦ ግዢ፣ ኃይል፣ ግብር፣ መድን፣ ማቆሚያና ጥገና፣ በመነሻ ነጥቡ አገር ገንዘብ።"
+}

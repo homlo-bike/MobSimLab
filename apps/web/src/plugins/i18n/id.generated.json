@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "Kereta gantung bolak-balik",
+    "Aerial tramway (reversible)": "Kereta gantung bolak-balik (reversibel)",
+    "Bicable gondola (2S)": "Gondola dua kabel (2S)",
+    "Cable car": "Kereta gantung",
+    "Cable cars": "Kereta gantung",
+    "Funitel": "Funitel",
+    "Gondolas and aerial tramways: click stations, towers follow.": "Gondola dan kereta gantung bolak-balik: klik stasiun, menara mengikuti.",
+    "Monocable detachable gondola (MGD)": "Gondola satu kabel yang dapat dilepas (MGD)",
+    "Pulsed gondola": "Gondola berdenyut",
+    "Ropeway system": "Sistem kereta gantung",
+    "Tricable gondola (3S)": "Gondola tiga kabel (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "Kereta gantung perkotaan: gondola berjalan terus (MGD, 2S, 3S, funitel, berdenyut) dan kereta gantung bolak-balik, digambar dengan kit bentang lurus (ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "Sepeda kargo",
+    "Cargo bike range": "Jangkauan sepeda kargo",
+    "Cargo bike savings": "Penghematan sepeda kargo",
+    "Cargo bike trip and range": "Perjalanan dan jangkauan sepeda kargo",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Seberapa jauh sepeda kargo roda tiga listrik bisa pergi dan kembali dengan satu kali isi baterai, melewati bukit dan mengutamakan jalur sepeda, dan berapa yang dihematnya dibanding mobil (pembelian, bahan bakar, pajak, asuransi, parkir, perawatan), di tabnya sendiri.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Perjalanan pulang-pergi dari titik awal ke tujuan di jalan yang bisa dilalui sepeda (mengutamakan jalur sepeda) dengan baterai yang terpakai sesuai medan, dan peta jangkauan seberapa jauh sepeda bisa pergi dan kembali ke segala arah.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Biaya tahunan sepeda kargo dibanding mobil untuk perjalanan yang sama: pembelian, energi, pajak, asuransi, parkir, dan perawatan, dalam mata uang negara titik awal."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "Listrik, diesel, energi akhir, dan CO2e per tahun per jalur, per moda, dan untuk jaringan, dengan intensitas per kendaraan-km dan per tempat-km.",
+    "Energy and emissions": "Energi dan emisi",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "Energi traksi dan emisi gas rumah kaca setiap jalur per tahun, per moda dan untuk jaringan, dari kendaraan-km yang dijalani tiap jalur: listrik di gardu induk atau pengisi daya, diesel dalam liter, dan CO2e dari intensitas emisi jaringan listrik dan diesel dari sumur ke roda. Ditampilkan di tab Tabel."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Foto udara sekitar 0,3 hingga 1 m per piksel di sebagian besar kota, lebih kasar di pedesaan: cukup tajam untuk melihat lajur, tepi trotoar, dan rel. Tanggal foto berbeda menurut tempat.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery sebagai peta dasar udara: foto udara sekitar 0,3 hingga 1 m per piksel di sebagian besar kota, cukup tajam untuk melihat lajur, tepi trotoar, dan rel. Tersedia setelah Admin menyimpan kunci API ArcGIS dan menyetujui ketentuan Esri di Administrasi → Plugin; ubin melewati MobSimLab ini sehingga peramban tidak pernah melihat kuncinya, dan ubin tidak disimpan."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "Hidrofoil listrik",
+    "Fast catamaran": "Katamaran cepat",
+    "Ferries": "Feri",
+    "Ferry": "Feri",
+    "Monohull water bus": "Bus air lambung tunggal",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "Feri penumpang dan bus air yang digambar dengan kit rute air: dermaga dengan tambatan dan jembatan naik, rute di atas air, zona kecepatan, dan pemeriksaan tambatan (ADR-0037). Feri mobil menyusul.",
+    "Vessel type": "Jenis kapal",
+    "Water buses and crossings: click piers, shape the route over water.": "Bus air dan penyeberangan: klik dermaga, bentuk rute di atas air."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "Umpan GTFS",
+    "GTFS import and export": "Impor dan ekspor GTFS",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Membaca umpan GTFS (zip) ke dalam proyek sebagai jaringan yang ada untuk satu hari layanan, dipotong ke tampilan peta jika diminta, agar perencana perjalanan menggunakannya bersama jalur yang direncanakan; dan menulis jalur proyek sebagai umpan GTFS untuk alat lain.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Halte, rute, dan perjalanan satu hari layanan (Rabu tersibuk kecuali tanggal diberikan), dengan frequencies.txt sebagai pola frekuensi dan jenis rute sebagai moda.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Jalur proyek sebagai umpan GTFS hari kerja: perjalanan persis, jalur frekuensi sebagai frequencies.txt, stasiun untuk kelompok halte."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Sekitar 30 m per piksel (38 m di peta ini), dari lintasan satelit satu hari: sebagian peta kosong atau berawan, jadi coba tanggal lain. Terlalu kasar untuk menggambar rel atau tepi trotoar.",
+    "NASA GIBS imagery": "Citra NASA GIBS",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 dan 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS warna asli",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "Citra satelit dari Global Imagery Browse Services (GIBS) NASA sebagai peta dasar udara, untuk hari yang Anda pilih: Harmonized Landsat Sentinel-2 sekitar 30 m per piksel dan VIIRS sekitar 250 m. Tidak perlu kunci API. Citra terlalu kasar untuk melihat jalan atau rel.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Seluruh dunia setiap hari sekitar 250 m per piksel (306 m di peta ini), dengan awan: hanya untuk konteks regional."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Perkiraan kebisingan jalur layanan (ADR-0038): pita kebisingan langsung saat menggambar jalur jalan dan rel, dengan pemeriksaan decit tikungan, jembatan, dan wesel. Emisi jalan dan rel CNOSSOS-EU, untuk saat ini di medan bebas tanpa bangunan.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den dan L_night jalur yang digambar pada ketinggian 4 m, medan bebas: jarak pita di kedua sisi, kisi penerima untuk peta, dan pemeriksaan.",
+    "Noise band": "Pita kebisingan",
+    "Noise map": "Peta kebisingan"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Lapisan peta dari layanan ubin WMS, WMTS, dan XYZ, sebagai peta dasar atau lapisan atas. Admin menambahkan layanan di Administrasi → Plugin, dengan detail masuknya jika perlu; ubin melewati MobSimLab ini sehingga peramban tidak pernah melihatnya.",
+    "WMS, WMTS and XYZ map layers": "Lapisan peta WMS, WMTS, dan XYZ"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Angkutan responsif permintaan yang digambar dengan kit zona layanan: gambar zona, atur permintaan per jam, armada, dan jam layanan, lalu dapatkan kendaraan yang dibutuhkan, rata-rata waktu tunggu, waktu perjalanan, dan waktu dari pintu ke pintu dari rumus aproksimasi kontinu. Simulasi hari mengirim setiap pemesanan perjalanan demi perjalanan (ADR-0042). Zona tampil di perencana perjalanan.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "Minibus yang dipesan lewat aplikasi: gambar zona, atur armada dan jam.",
+    "On-demand bus": "Bus sesuai permintaan"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Foto jalan Panoramax",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "Foto yang dibagikan oleh orang dan lembaga publik, dengan lisensi terbuka (kebanyakan CC BY-SA 4.0 atau Etalab 2.0) yang mengizinkan pemetaan darinya. Sebutkan pembuatnya saat Anda menggunakannya.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Foto setingkat jalan dari Panoramax, kekayaan bersama foto jalan yang bebas dan terbuka. Buka Foto jalan di peta untuk melihat tempat foto diambil, lalu klik sebuah titik untuk melihat foto yang diambil di dekatnya. Foto berlisensi terbuka yang mengizinkan pemetaan darinya. Tidak perlu kunci. Foto melewati MobSimLab ini dan tidak disimpan atau disertakan dalam proyek."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "People mover otomatis yang ditarik kabel di jalur layang, digambar dengan kit bentang lurus: ulang-alik dengan dua kereta, dan putaran terjepit dengan kereta yang dapat dilepas yang berhenti di setiap stasiun (ADR-0037 §7). People mover bertenaga sendiri memerlukan editor rel dan menyusul.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "Ulang-alik dan putaran yang ditarik kabel di jalur: klik stasiun, pilar mengikuti.",
+    "People mover": "People mover",
+    "People mover shuttle": "Ulang-alik people mover",
+    "People mover system": "Sistem people mover",
+    "People movers": "People mover",
+    "Pinched loop, detachable trains": "Putaran terjepit, kereta dapat dilepas",
+    "Shuttle, two trains on a fixed rope": "Ulang-alik, dua kereta pada kabel tetap"
+  }
+}

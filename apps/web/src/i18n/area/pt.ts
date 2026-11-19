@@ -65,4 +65,17 @@ export const areaPt = {
   "aw.tiles.other": "{count} blocos de mapa",
   "aw.count.one": "{count} polígono",
   "aw.count.other": "{count} polígonos",
+  "aw.out.title": "Baixar dados de mapa fora da área do projeto?",
+  "aw.out.note":
+    "A região {name} ultrapassa a área do projeto. A parte de fora precisa de novos dados de mapa.",
+  "aw.out.part": "Parte de fora",
+  "aw.out.km2": "cerca de {km2} km²",
+  "aw.out.detail": "Detalhe da parte de fora",
+  "aw.out.overLimit":
+    "Com ela, a área do projeto tem mais dados de mapa do que os {mb} MB permitidos por projeto. Escolha só vias principais e ferrovias, ou reduza a área nas preferências do projeto.",
+  "aw.out.adds":
+    "Baixar adiciona a região à área do projeto como um novo polígono, que pode ser editado depois na janela da área.",
+  "aw.out.keep": "Manter a região, sem baixar",
+  "aw.out.download": "Baixar {mb} MB",
+  "aw.out.downloading": "Baixando…",
 } satisfies AreaMessages;

@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "用服务区工具绘制的需求响应式交通：圈出服务区，设置每小时请求数、车队和服务时段，按连续近似公式得出所需车辆、平均等待、乘车和门到门时间。全天模拟逐班次调度每一笔预约（ADR-0042）。服务区显示在行程规划器中。",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "通过应用预约的小巴：圈出服务区，设置车队和时段。",
+  "On-demand bus": "需求响应公交"
+}

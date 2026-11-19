@@ -67,4 +67,17 @@ export const areaEs = {
   "aw.tiles.other": "{count} teselas de mapa",
   "aw.count.one": "{count} polígono",
   "aw.count.other": "{count} polígonos",
+  "aw.out.title": "¿Descargar datos de mapa fuera del área del proyecto?",
+  "aw.out.note":
+    "La región {name} sale del área del proyecto. Su parte exterior necesita nuevos datos de mapa.",
+  "aw.out.part": "Parte exterior",
+  "aw.out.km2": "unos {km2} km²",
+  "aw.out.detail": "Detalle de la parte exterior",
+  "aw.out.overLimit":
+    "Con ella, el área del proyecto contiene más datos de mapa que los {mb} MB que puede tener un proyecto. Elija solo vías principales y ferrocarriles, o reduzca el área en las preferencias del proyecto.",
+  "aw.out.adds":
+    "Descargar añade la región al área del proyecto como un polígono nuevo, que podrá editar después en la ventana del área.",
+  "aw.out.keep": "Conservar la región, sin descargar",
+  "aw.out.download": "Descargar {mb} MB",
+  "aw.out.downloading": "Descargando…",
 } satisfies AreaMessages;

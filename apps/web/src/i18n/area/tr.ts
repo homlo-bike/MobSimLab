@@ -62,4 +62,17 @@ export const areaTr = {
   "aw.pop.box": "Proje alanının çevresindeki dikdörtgen: {km2} km².",
   "aw.tiles.other": "{count} harita karosu",
   "aw.count.other": "{count} çokgen",
+  "aw.out.title": "Proje alanının dışındaki harita verileri indirilsin mi?",
+  "aw.out.note":
+    "{name} bölgesi proje alanının dışına taşıyor. Dışarıdaki kısmı için yeni harita verileri gerekiyor.",
+  "aw.out.part": "Dışarıdaki kısım",
+  "aw.out.km2": "yaklaşık {km2} km²",
+  "aw.out.detail": "Dışarıdaki kısmın ayrıntısı",
+  "aw.out.overLimit":
+    "Bununla proje alanı, bir projenin tutabileceği {mb} MB'tan fazla harita verisi içerir. Yalnızca ana yollar ve demiryollarını seçin ya da alanı Proje tercihlerinde küçültün.",
+  "aw.out.adds":
+    "İndirme, bölgeyi proje alanına yeni bir çokgen olarak ekler; bunu daha sonra alan penceresinde düzenleyebilirsiniz.",
+  "aw.out.keep": "Bölgeyi tut, indirme",
+  "aw.out.download": "{mb} MB indir",
+  "aw.out.downloading": "İndiriliyor…",
 } satisfies AreaMessages;

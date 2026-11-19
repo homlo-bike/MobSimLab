@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "Xe đạp chở hàng",
+  "Cargo bike range": "Tầm đi của xe đạp chở hàng",
+  "Cargo bike savings": "Tiết kiệm nhờ xe đạp chở hàng",
+  "Cargo bike trip and range": "Chuyến đi và tầm đi của xe đạp chở hàng",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Xe ba bánh chở hàng chạy điện đi và về được bao xa với một lần sạc pin, qua đồi dốc và ưu tiên làn xe đạp, và tiết kiệm được bao nhiêu so với ô tô (mua xe, nhiên liệu, thuế, bảo hiểm, đỗ xe, bảo dưỡng), trong thẻ riêng.",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Chuyến đi khứ hồi từ điểm xuất phát đến điểm đến trên các phố xe đạp đi được (ưu tiên làn xe đạp) với lượng pin dùng theo địa hình, và bản đồ tầm đi cho thấy xe đi và về được bao xa theo mọi hướng.",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Chi phí hằng năm của xe đạp chở hàng so với ô tô cho cùng các chuyến đi: mua xe, năng lượng, thuế, bảo hiểm, đỗ xe và bảo dưỡng, theo tiền tệ của nước có điểm xuất phát."
+}

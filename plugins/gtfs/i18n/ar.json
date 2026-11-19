@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "موجز GTFS",
+  "GTFS import and export": "استيراد GTFS وتصديره",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "يقرأ موجز GTFS (ملف zip) إلى المشروع كشبكة قائمة ليوم خدمة واحد، مقصوصًا على عرض الخريطة عند الطلب، ليستخدمه مخطط الرحلات مع الخطوط المخطط لها؛ ويكتب خطوط المشروع كموجز GTFS لأدوات أخرى.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "المحطات والخطوط ورحلات يوم خدمة واحد (أكثر أيام الأربعاء ازدحامًا ما لم يُحدَّد تاريخ)، مع frequencies.txt كأنماط تواتر وأنواع الخطوط كوسائل نقل.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "خطوط المشروع كموجز GTFS ليوم عمل: رحلات دقيقة، وخطوط التواتر في frequencies.txt، ومحطات لمجموعات المواقف."
+}

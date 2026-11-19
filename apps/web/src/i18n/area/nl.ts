@@ -65,4 +65,17 @@ export const areaNl = {
   "aw.tiles.other": "{count} kaarttegels",
   "aw.count.one": "{count} polygoon",
   "aw.count.other": "{count} polygonen",
+  "aw.out.title": "Kaartgegevens buiten het projectgebied downloaden?",
+  "aw.out.note":
+    "De regio {name} reikt buiten het projectgebied. Het deel daarbuiten heeft nieuwe kaartgegevens nodig.",
+  "aw.out.part": "Deel daarbuiten",
+  "aw.out.km2": "ongeveer {km2} km²",
+  "aw.out.detail": "Detail voor het deel daarbuiten",
+  "aw.out.overLimit":
+    "Daarmee bevat het projectgebied meer kaartgegevens dan de {mb} MB die een project mag hebben. Kies alleen hoofdwegen en spoorlijnen, of maak het gebied kleiner in de projectvoorkeuren.",
+  "aw.out.adds":
+    "Downloaden voegt de regio als nieuwe polygoon toe aan het projectgebied; u kunt die later in het gebiedsvenster bewerken.",
+  "aw.out.keep": "Regio houden, niet downloaden",
+  "aw.out.download": "{mb} MB downloaden",
+  "aw.out.downloading": "Bezig met downloaden…",
 } satisfies AreaMessages;

@@ -62,4 +62,16 @@ export const areaYo = {
   "aw.pop.box": "Onígun mẹ́rin tó yí agbègbè iṣẹ́ akanṣe ká: km² {km2}.",
   "aw.tiles.other": "táìlì máàpù {count}",
   "aw.count.other": "àwòrán onígun {count}",
+  "aw.out.title": "Ṣe kí a gba dátà máàpù jáde lóde agbègbè iṣẹ́ náà?",
+  "aw.out.note": "Agbègbè {name} kọjá agbègbè iṣẹ́ náà. Apá rẹ̀ tí ó wà lóde nílò dátà máàpù tuntun.",
+  "aw.out.part": "Apá òde",
+  "aw.out.km2": "ní nǹkan bí {km2} km²",
+  "aw.out.detail": "Ìpele àlàyé fún apá òde",
+  "aw.out.overLimit":
+    "Pẹ̀lú rẹ̀, agbègbè iṣẹ́ náà ní dátà máàpù ju {mb} MB tí iṣẹ́ kan lè ní lọ. Yan àwọn ọ̀nà pàtàkì àti ojú-irin nìkan, tàbí dín agbègbè náà kù nínú Àwọn ààyò iṣẹ́.",
+  "aw.out.adds":
+    "Gbígbà jáde yóò fi agbègbè náà kún agbègbè iṣẹ́ gẹ́gẹ́ bí polygon tuntun, tí o lè ṣàtúnṣe lẹ́yìn náà nínú fèrèsé agbègbè.",
+  "aw.out.keep": "Pa agbègbè mọ́, má ṣe gbà jáde",
+  "aw.out.download": "Gba {mb} MB jáde",
+  "aw.out.downloading": "Ó ń gbà jáde…",
 } satisfies AreaMessages;

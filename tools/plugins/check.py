@@ -17,7 +17,9 @@ contexts, tools, tabs, parameter labels and the resolved values per mode and con
 (low, central, high). A plugin without modes of its own (a calculation such as the energy estimate) gets its
 values per core mode. It also writes apps/api/src/plugins/core.generated.json, which the API uses to check
 plugins an Admin uploads: the manifest and mode schemas, the core mode ids, parameter keys and source ids,
-and the bundled plugins.
+and the bundled plugins, and apps/web/src/plugins/i18n/<tag>.generated.json: per language the bundled
+plugins' translations (plugin id → English text → translation), which the web app loads with the language.
+A bundled plugin must translate every text it shows into every language of the app.
 """
 
 from __future__ import annotations
@@ -47,6 +49,11 @@ CORE_TABS = ["simulator", "create", "schematic", "gis", "tables", "preferences"]
 CORE_BASEMAPS = ["openfreemap-positron", "openfreemap-liberty", "openfreemap-bright", "eox-s2cloudless-2016"]
 # The hosts the browser may load map tiles from: MAP_ORIGINS in apps/api/src/app.setup.ts (the CSP).
 APP_SETUP = ROOT / "apps" / "api" / "src" / "app.setup.ts"
+# The web app's languages besides English: the keys of LOADERS in apps/web/src/i18n/messages.ts.
+MESSAGES_TS = ROOT / "apps" / "web" / "src" / "i18n" / "messages.ts"
+# Where the bundled plugins' translations go, one file per language, loaded with the language's messages.
+TEXTS_OUT = ROOT / "apps" / "web" / "src" / "plugins" / "i18n"
+LANGUAGE_TAG = re.compile(r"^[a-z]{2,3}(-[A-Za-z0-9]{2,8})*$")
 
 
 def load_assumption_check():
@@ -150,6 +157,74 @@ def check_street_photos(pid: str, manifest: dict) -> list[str]:
         if cov["minzoom"] > cov["maxzoom"]:
             errors.append(f"{pid}: street photos {sp['id']}: minzoom is deeper than maxzoom")
     return errors
+
+
+def app_languages() -> list[str]:
+    """The tags of the languages the web app is translated into, besides English (messages.ts LOADERS)."""
+    text = MESSAGES_TS.read_text(encoding="utf-8")
+    block = text.split("const LOADERS = {", 1)[1].split("}", 1)[0]
+    return re.findall(r"^\s*([a-z]{2,3}):", block, flags=re.M)
+
+
+def plugin_texts(manifest: dict, modes: list[dict], layers: list[dict]) -> set[str]:
+    """Every English text of a plugin the app shows.
+
+    Its name and description, and the labels, hints and notes of its modes, contexts, tools, calculations,
+    importers, exporters, tabs, map layers, basemaps and street photo sources.
+    """
+    c = manifest["contributes"]
+    texts = {manifest["name"], manifest.get("description", "")}
+    for m in modes:
+        texts.add(m.get("label", ""))
+    for x in c.get("contexts", []):
+        texts.add(x.get("label", ""))
+        texts |= {o.get("label", "") for o in x.get("options", [])}
+    for kind in ("tools", "calculations", "importers", "exporters", "tabs", "basemaps", "streetPhotos"):
+        for x in c.get(kind, []):
+            texts |= {x.get(f, "") for f in ("label", "hint", "description", "note")}
+    for x in layers:
+        texts.add(x.get("label", ""))
+    return {s for s in texts if s}
+
+
+def check_translations(
+    pid: str, folder: Path, manifest: dict, texts: set[str], languages: list[str]
+) -> tuple[list[str], dict[str, dict[str, str]]]:
+    """Read and check a plugin's translations (the `translations` folder, one <tag>.json per language).
+
+    Every key is one of the plugin's texts and every value a text. A bundled plugin translates every text into
+    every language of the app. Output: (errors, language tag → English text → translation).
+    """
+    errors: list[str] = []
+    out: dict[str, dict[str, str]] = {}
+    rel = manifest.get("translations")
+    if rel:
+        d = folder / rel
+        if not d.is_dir():
+            return [f"{pid}: translations folder {rel} does not exist"], {}
+        for f in sorted(d.glob("*.json")):
+            tag = f.stem
+            if not LANGUAGE_TAG.match(tag) or tag == "en":
+                errors.append(f"{pid}: {rel}/{f.name}: not a language tag other than en")
+                continue
+            data = read_json(f)
+            if not isinstance(data, dict):
+                errors.append(f"{pid}: {rel}/{f.name} must be an object")
+                continue
+            for k, v in data.items():
+                if k not in texts:
+                    errors.append(f"{pid}: {rel}/{f.name}: {k!r} is not a text of the plugin")
+                if not isinstance(v, str) or not v.strip():
+                    errors.append(f"{pid}: {rel}/{f.name}: the translation of {k!r} is empty")
+            out[tag] = {k: data[k] for k in sorted(data) if k in texts and isinstance(data[k], str)}
+    if manifest.get("bundled"):
+        for tag in languages:
+            missing = sorted(texts - set(out.get(tag, {})))
+            if missing:
+                errors.append(
+                    f"{pid}: {len(missing)} texts not translated into {tag}, such as {missing[0]!r}"
+                )
+    return errors, out
 
 
 def as_list(v) -> list:
@@ -409,6 +484,10 @@ def check_plugin(
                             errors.append(f"{pid}: {prm['key']}: {o} is not an option of {k}")
     for sid in sorted(set(sources) - used):
         errors.append(f"{pid}: source {sid} defined but never used")
+    terrs, translations = check_translations(
+        pid, folder, manifest, plugin_texts(manifest, modes, layers), app_languages()
+    )
+    errors += terrs
     if errors:
         return errors, None
 
@@ -456,6 +535,7 @@ def check_plugin(
         "tabs": c.get("tabs", []),
         "parameters": {prm["key"]: {"label": prm["label"], "unit": prm["unit"]} for prm in params},
         "defaults": defaults,
+        "translations": translations,
     }
     return errors, entry
 
@@ -518,6 +598,24 @@ def render(registry: dict) -> str:
     return json.dumps(registry, indent=2, ensure_ascii=False) + "\n"
 
 
+def web_registry(registry: dict) -> dict:
+    """The web app's registry: the plugins without their translations, which come per language."""
+    return {
+        **registry,
+        "plugins": [{k: v for k, v in p.items() if k != "translations"} for p in registry["plugins"]],
+    }
+
+
+def web_texts(registry: dict) -> dict[str, dict]:
+    """Per language tag, the bundled plugins' translations: plugin id → English text → translation."""
+    out: dict[str, dict] = {tag: {} for tag in app_languages()}
+    for p in registry["plugins"]:
+        for tag, texts in p.get("translations", {}).items():
+            if tag in out and texts:
+                out[tag][p["id"]] = texts
+    return out
+
+
 def core_for_api(registry: dict) -> dict:
     """What the API's plugin install check needs: contracts, core ids and the bundled plugins."""
     chk = load_assumption_check()
@@ -543,7 +641,9 @@ def main() -> int:
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    outputs = {OUT: render(registry), API_OUT: render(core_for_api(registry))}
+    outputs = {OUT: render(web_registry(registry)), API_OUT: render(core_for_api(registry))}
+    for tag, texts in web_texts(registry).items():
+        outputs[TEXTS_OUT / f"{tag}.generated.json"] = render(texts)
     for path, text in outputs.items():
         if args.render:
             path.parent.mkdir(parents=True, exist_ok=True)

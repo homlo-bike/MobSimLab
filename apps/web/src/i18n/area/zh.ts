@@ -56,4 +56,15 @@ export const areaZh = {
   "aw.pop.box": "项目范围的外接矩形：{km2} 平方公里。",
   "aw.tiles.other": "{count} 个地图瓦片",
   "aw.count.other": "{count} 个多边形",
+  "aw.out.title": "下载项目区域外的地图数据？",
+  "aw.out.note": "区域 {name} 超出了项目区域。其外部部分需要新的地图数据。",
+  "aw.out.part": "外部部分",
+  "aw.out.km2": "约 {km2} km²",
+  "aw.out.detail": "外部部分的详细程度",
+  "aw.out.overLimit":
+    "加上它后，项目区域的地图数据将超过每个项目允许的 {mb} MB。请选择“仅主要道路和铁路”，或在项目设置中缩小区域。",
+  "aw.out.adds": "下载会把该区域作为新多边形加入项目区域，之后可在区域窗口中编辑。",
+  "aw.out.keep": "保留区域，不下载",
+  "aw.out.download": "下载 {mb} MB",
+  "aw.out.downloading": "正在下载…",
 } satisfies AreaMessages;

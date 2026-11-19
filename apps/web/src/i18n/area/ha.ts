@@ -62,4 +62,16 @@ export const areaHa = {
   "aw.pop.box": "Akwatin da ke kewaye da yankin aiki: km² {km2}.",
   "aw.tiles.other": "tayil {count} na taswira",
   "aw.count.other": "siffofi {count}",
+  "aw.out.title": "A sauke bayanan taswira a wajen yankin aikin?",
+  "aw.out.note": "Yankin {name} ya wuce yankin aikin. Sashensa na waje yana bukatar sabbin bayanan taswira.",
+  "aw.out.part": "Sashen waje",
+  "aw.out.km2": "kusan {km2} km²",
+  "aw.out.detail": "Matakin cikakken bayani na sashen waje",
+  "aw.out.overLimit":
+    "Da shi, yankin aikin yana da bayanan taswira fiye da MB {mb} da aiki ɗaya zai iya riƙewa. Zaɓi manyan hanyoyi da layukan dogo kawai, ko rage yankin a Zaɓuɓɓukan aiki.",
+  "aw.out.adds":
+    "Saukewa yana ƙara yankin ga yankin aikin a matsayin sabon polygon, wanda za ka iya gyarawa daga baya a tagar yanki.",
+  "aw.out.keep": "Riƙe yankin, ba saukewa",
+  "aw.out.download": "Sauke MB {mb}",
+  "aw.out.downloading": "Ana saukewa…",
 } satisfies AreaMessages;

@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "పిక్సెల్‌కు సుమారు 30 మీ (ఈ మ్యాప్‌లో 38 మీ), ఒక రోజు ఉపగ్రహ పాస్‌ల నుండి: మ్యాప్‌లోని కొన్ని భాగాలు ఖాళీగా లేదా మేఘావృతంగా ఉంటాయి, కాబట్టి మరో తేదీ ప్రయత్నించండి. పట్టాలు లేదా కర్బ్‌లు గీయడానికి చాలా మందంగా ఉంటుంది.",
+  "NASA GIBS imagery": "NASA GIBS చిత్రాలు",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 మరియు 9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS నిజ రంగు",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA యొక్క Global Imagery Browse Services (GIBS) నుండి ఉపగ్రహ చిత్రాలు వైమానిక ఆధార మ్యాప్‌లుగా, మీరు ఎంచుకునే రోజు కోసం: పిక్సెల్‌కు సుమారు 30 మీ వద్ద Harmonized Landsat Sentinel-2 మరియు సుమారు 250 మీ వద్ద VIIRS. API కీ అవసరం లేదు. వీధులు లేదా పట్టాలు చూడటానికి చిత్రాలు చాలా మందంగా ఉంటాయి.",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "ప్రతి రోజు మొత్తం ప్రపంచం పిక్సెల్‌కు సుమారు 250 మీ వద్ద (ఈ మ్యాప్‌లో 306 మీ), మేఘాలతో: ప్రాంతీయ సందర్భం కోసం మాత్రమే."
+}

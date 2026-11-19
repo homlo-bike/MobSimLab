@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "በአብዛኞቹ ከተሞች በፒክሰል ከ0.3 እስከ 1 ሜ ገደማ የሆኑ የአየር ላይ ፎቶዎች፣ በገጠር ደግሞ ሸካራ፦ የመኪና መስመሮችን፣ የእግረኛ መንገድ ጠርዞችንና ሐዲዶችን ለማየት በቂ ጥራት ያላቸው። የፎቶዎቹ ቀኖች በቦታ ይለያያሉ።",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery እንደ የአየር ላይ መሠረት ካርታ፦ በአብዛኞቹ ከተሞች በፒክሰል ከ0.3 እስከ 1 ሜ ገደማ የሆኑ የአየር ላይ ፎቶዎች፣ የመኪና መስመሮችን፣ የእግረኛ መንገድ ጠርዞችንና ሐዲዶችን ለማየት በቂ። አስተዳዳሪ በአስተዳደር → ተሰኪዎች ውስጥ የArcGIS API ቁልፍ አስቀምጦ የEsriን ውሎች ሲቀበል ይቀርባል፤ ሰቆቹ በዚህ MobSimLab በኩል ስለሚመጡ አሳሾች ቁልፉን በፍጹም አያዩትም፣ አይቀመጡምም።"
+}

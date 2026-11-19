@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "বেশিরভাগ শহরে প্রতি পিক্সেলে প্রায় 0.3 থেকে 1 মি-এর আকাশ ছবি, গ্রামাঞ্চলে মোটা: লেন, কার্ব ও রেলপথ দেখার মতো যথেষ্ট স্পষ্ট। ছবির তারিখ জায়গাভেদে আলাদা।",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "আকাশ ভিত্তি মানচিত্র হিসেবে Esri World Imagery: বেশিরভাগ শহরে প্রতি পিক্সেলে প্রায় 0.3 থেকে 1 মি-এর আকাশ ছবি, লেন, কার্ব ও রেলপথ দেখার মতো যথেষ্ট স্পষ্ট। কোনো অ্যাডমিন প্রশাসন → প্লাগইন-এ ArcGIS API কী সংরক্ষণ করে Esri-র শর্ত মেনে নিলে দেওয়া হয়; টাইলগুলো এই MobSimLab হয়ে আসে, তাই ব্রাউজার কখনো কী দেখে না, আর সেগুলো সংরক্ষিত হয় না।"
+}

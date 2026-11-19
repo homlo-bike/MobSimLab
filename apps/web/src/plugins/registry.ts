@@ -1,4 +1,5 @@
 import bundled from "./bundled.generated.json";
+import { pluginText } from "./texts";
 
 /** A transport mode contributed by a plugin (contracts/plugin-mode.schema.json). */
 export interface PluginMode {
@@ -159,6 +160,8 @@ export interface Plugin {
   parameters: Record<string, { label: string; unit: string }>;
   /** mode id → context option ("*" without one) → parameter key → range. */
   defaults: Record<string, Record<string, Record<string, Range>>>;
+  /** Installed plugins: language tag → English text → translation (bundled ones load theirs per language). */
+  translations?: Record<string, Record<string, string>>;
 }
 
 /** The plugins bundled with this build (ADR-0036 §8), from apps/web/src/plugins/bundled.generated.json. */
@@ -197,6 +200,60 @@ export interface ProjectPlugin {
   entry?: Plugin;
   /** Package hash of an installed plugin the project has turned on: where its tab pages are served. */
   sha256?: string;
+  /** Language tag → English text → translation (older servers leave it out). */
+  translations?: Record<string, Record<string, string>>;
+}
+
+const localized = new WeakMap<Plugin, Map<string, Plugin>>();
+
+/**
+ * Purpose: a plugin with its texts in a language (name, description, and the labels, hints and notes of its
+ * modes, contexts, tools, calculations, converters, tabs, map layers, basemaps and street photo sources).
+ * Output: the same plugin for English; else a copy, made once per plugin and language.
+ */
+export function localizePlugin(p: Plugin, tag: string): Plugin {
+  if (tag === "en") return p;
+  const per = localized.get(p) ?? new Map<string, Plugin>();
+  localized.set(p, per);
+  const have = per.get(tag);
+  if (have) return have;
+  const tr = (s: string) => pluginText(p, s, tag);
+  const opt = (s: string | undefined) => (s === undefined ? s : tr(s));
+  const texts = <T extends { label: string; hint?: string; description?: string; note?: string }>(
+    x: T,
+  ): T => ({
+    ...x,
+    label: tr(x.label),
+    ...(x.hint !== undefined ? { hint: tr(x.hint) } : {}),
+    ...(x.description !== undefined ? { description: opt(x.description) } : {}),
+    ...(x.note !== undefined ? { note: opt(x.note) } : {}),
+  });
+  const out: Plugin = {
+    ...p,
+    name: tr(p.name),
+    description: tr(p.description),
+    modes: p.modes.map(texts),
+    contexts: p.contexts.map((c) => ({
+      ...c,
+      label: tr(c.label),
+      options: c.options.map((o) => ({ ...o, label: tr(o.label) })),
+    })),
+    tools: p.tools.map(texts),
+    ...(p.calculations ? { calculations: p.calculations.map(texts) } : {}),
+    ...(p.importers ? { importers: p.importers.map(texts) } : {}),
+    ...(p.exporters ? { exporters: p.exporters.map(texts) } : {}),
+    ...(p.mapLayers ? { mapLayers: p.mapLayers.map(texts) } : {}),
+    ...(p.basemaps ? { basemaps: p.basemaps.map(texts) } : {}),
+    ...(p.streetPhotos ? { streetPhotos: p.streetPhotos.map(texts) } : {}),
+    ...(p.tabs ? { tabs: p.tabs.map(texts) } : {}),
+  };
+  per.set(tag, out);
+  return out;
+}
+
+/** Purpose: plugins with their texts in a language (see `localizePlugin`). */
+export function localizePlugins(plugins: readonly Plugin[], tag: string): Plugin[] {
+  return plugins.map((p) => localizePlugin(p, tag));
 }
 
 let active: readonly Plugin[] = PLUGINS;

@@ -67,4 +67,17 @@ export const areaFr = {
   "aw.tiles.other": "{count} tuiles de carte",
   "aw.count.one": "{count} polygone",
   "aw.count.other": "{count} polygones",
+  "aw.out.title": "Télécharger des données cartographiques hors de la zone du projet ?",
+  "aw.out.note":
+    "La région {name} dépasse la zone du projet. Sa partie extérieure nécessite de nouvelles données cartographiques.",
+  "aw.out.part": "Partie extérieure",
+  "aw.out.km2": "environ {km2} km²",
+  "aw.out.detail": "Détail de la partie extérieure",
+  "aw.out.overLimit":
+    "Avec elle, la zone du projet contient plus de données cartographiques que les {mb} Mo autorisés par projet. Choisissez uniquement les routes principales et les voies ferrées, ou réduisez la zone dans les préférences du projet.",
+  "aw.out.adds":
+    "Le téléchargement ajoute la région à la zone du projet sous forme de nouveau polygone, modifiable ensuite dans la fenêtre de la zone.",
+  "aw.out.keep": "Garder la région, sans téléchargement",
+  "aw.out.download": "Télécharger {mb} Mo",
+  "aw.out.downloading": "Téléchargement…",
 } satisfies AreaMessages;

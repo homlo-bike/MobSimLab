@@ -3,6 +3,7 @@
  * hexagons over it, and the planner's own zones uploaded as GeoJSON and edited in the Tables tab and the GIS
  * tab. Saved with the project as the `demand` drawing.
  */
+import { tNow } from "../../i18n/i18n";
 import type { Timetable } from "../journey-planner/types";
 import { inRing, type LonLat, ringAreaM2, ringCentre } from "../benefits/regions";
 
@@ -388,7 +389,7 @@ export function zonesFromGeoJson(text: string): { zones: DemandZone[]; notes: st
   try {
     raw = JSON.parse(text);
   } catch {
-    throw new Error("The file is not GeoJSON (it is not JSON).");
+    throw new Error(tNow("dem.file.notJson"));
   }
   const fc = raw as { type?: unknown; features?: unknown };
   const features: Feature[] =
@@ -397,7 +398,7 @@ export function zonesFromGeoJson(text: string): { zones: DemandZone[]; notes: st
       : fc?.type === "Feature"
         ? [fc as Feature]
         : [];
-  if (!features.length) throw new Error("The file has no GeoJSON features.");
+  if (!features.length) throw new Error(tNow("dem.file.noFeatures"));
   const notes: string[] = [];
   const zones: DemandZone[] = [];
   const ids = new Set<string>();
@@ -429,12 +430,12 @@ export function zonesFromGeoJson(text: string): { zones: DemandZone[]; notes: st
     }
     zones.push({ id, name: String(pick(NAME_KEYS) ?? id).slice(0, 120), ring: thinRing(ring), values });
     if (zones.length >= MAX_ZONES) {
-      if (features.length > i + 1) notes.push(`Only the first ${MAX_ZONES} zones were taken.`);
+      if (features.length > i + 1) notes.push(tNow("dem.file.capped", { max: MAX_ZONES }));
       break;
     }
   }
-  if (skipped) notes.push(`${skipped} features were not polygons and were skipped.`);
-  if (!zones.length) throw new Error("The file has no polygon zones.");
+  if (skipped) notes.push(tNow("dem.file.skipped", { count: skipped }));
+  if (!zones.length) throw new Error(tNow("dem.file.noPolygons"));
   return { zones, notes };
 }
 

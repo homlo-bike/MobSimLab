@@ -6,6 +6,7 @@ import { commentsJa } from "./comments/ja";
 import { depotsJa } from "./depots/ja";
 import { geodataJa } from "./geodata/ja";
 import { tablesJa } from "./tables/ja";
+import { economicsJa } from "./economics/ja";
 import { fleetJa } from "./fleet/ja";
 import { timetablesJa } from "./timetables/ja";
 import { areaJa } from "./area/ja";
@@ -86,6 +87,8 @@ export const ja: Messages = {
   "settings.title": "設定",
   "settings.back": "設定に戻る",
   "settings.displayName": "表示名",
+  "shell.thisComputer": "このコンピューター",
+  "shell.localUser": "ローカルユーザー",
   "settings.email": "メールアドレス",
   "settings.role": "役割",
   "settings.language": "言語",
@@ -521,6 +524,7 @@ export const ja: Messages = {
   ...depotsJa,
   ...geodataJa,
   ...tablesJa,
+  ...economicsJa,
   ...fleetJa,
   ...timetablesJa,
   ...commentsJa,

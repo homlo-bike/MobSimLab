@@ -3,7 +3,9 @@
  * tables' ridership, GDP growth and access, the demand run's users' benefit and car-km saved, and the fare
  * revenue table's ridership growth.
  */
+import { tNow } from "../../i18n/i18n";
 import type { Estimate as BenefitEstimate } from "../benefits/model";
+import { modeLabel } from "../costs/CostTables";
 import { paramValue as benefitValue, type Triple } from "../benefits/params";
 import { spendingFrom } from "../benefits/run";
 import type { Estimate as CostEstimate } from "../costs/model";
@@ -60,7 +62,7 @@ export function appraisalLines(
     const mode = key.slice(1);
     out.push({
       id: key,
-      name: `Shared ${mode} items no line runs on yet`,
+      name: tNow("apr.shared", { mode: modeLabel(mode) }),
       mode,
       color: "#94a3b8",
       shown: false,

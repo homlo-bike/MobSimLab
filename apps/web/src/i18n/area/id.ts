@@ -62,4 +62,16 @@ export const areaId = {
   "aw.pop.box": "Persegi panjang di sekitar area proyek: {km2} km².",
   "aw.tiles.other": "{count} petak peta",
   "aw.count.other": "{count} poligon",
+  "aw.out.title": "Unduh data peta di luar area proyek?",
+  "aw.out.note": "Wilayah {name} melewati batas area proyek. Bagian luarnya memerlukan data peta baru.",
+  "aw.out.part": "Bagian luar",
+  "aw.out.km2": "sekitar {km2} km²",
+  "aw.out.detail": "Tingkat detail bagian luar",
+  "aw.out.overLimit":
+    "Dengan wilayah ini, area proyek memuat lebih banyak data peta daripada {mb} MB yang boleh dimiliki satu proyek. Pilih hanya jalan utama dan rel kereta, atau perkecil area di Preferensi proyek.",
+  "aw.out.adds":
+    "Unduhan menambahkan wilayah ini ke area proyek sebagai poligon baru, yang dapat Anda sunting nanti di jendela area.",
+  "aw.out.keep": "Simpan wilayah, tanpa unduhan",
+  "aw.out.download": "Unduh {mb} MB",
+  "aw.out.downloading": "Mengunduh…",
 } satisfies AreaMessages;
