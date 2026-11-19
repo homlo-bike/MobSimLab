@@ -1,7 +1,7 @@
 import { createContext, type ReactNode, useContext, useEffect, useId, useMemo, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { useI18n } from "../i18n/i18n";
-import { paramLabel, paramUnit } from "../i18n/params";
+import { isolate, paramLabel, paramUnit } from "../i18n/params";
 import type { MessageKey } from "../i18n/messages";
 import { RATE_PREF } from "../features/costs/currency";
 import { outsideLibraryRange } from "../features/costs/params";
@@ -356,13 +356,13 @@ function ReportLine({
   const library = Array.isArray(lib)
     ? lib[0] !== lib[2]
       ? t("prefs.rulesLibraryRange", {
-          value: fmtNum(lib[1]),
-          low: fmtNum(lib[0]),
-          high: fmtNum(lib[2]),
-          unit,
+          value: isolate(fmtNum(lib[1])),
+          low: isolate(fmtNum(lib[0])),
+          high: isolate(fmtNum(lib[2])),
+          unit: isolate(unit),
         })
-      : t("prefs.rulesLibrary", { value: fmtNum(lib[1]), unit })
-    : t("prefs.rulesLibrary", { value: lib, unit });
+      : t("prefs.rulesLibrary", { value: isolate(fmtNum(lib[1])), unit: isolate(unit) })
+    : t("prefs.rulesLibrary", { value: isolate(String(lib)), unit: isolate(unit) });
   // A unit cost the project set outside the library's range is flagged, as in the cost tables.
   const outside =
     r.param.group === "Cost" &&
@@ -378,7 +378,7 @@ function ReportLine({
           <span className="font-normal text-slate-500">· {scope}</span>
         </span>
         <span className="tabular-nums">
-          {children} {unit}
+          <bdi>{children}</bdi> <bdi>{unit}</bdi>
         </span>
         {r.changed && (
           <span className="rounded bg-amber-100 px-1.5 text-xs font-semibold text-amber-900">

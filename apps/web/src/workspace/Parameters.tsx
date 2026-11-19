@@ -1,6 +1,6 @@
 import { useId, useState } from "react";
 import { useI18n } from "../i18n/i18n";
-import { paramLabel, paramUnit } from "../i18n/params";
+import { isolate, paramLabel, paramUnit } from "../i18n/params";
 import type { MessageKey } from "../i18n/messages";
 import { RAIL_MODES } from "../features/railways/modes";
 import { MODE_ORDER, MODES } from "../features/street-lines/modes";
@@ -244,16 +244,24 @@ function ParamField({
               commit(e.target.value);
             }}
             onBlur={() => setText(null)}
+            dir="ltr"
             className="text-end"
           />
         </div>
-        <span className="w-16 text-sm text-slate-600">{unit}</span>
+        <span className="w-16 text-sm text-slate-600">
+          <bdi>{unit}</bdi>
+        </span>
       </div>
     );
     library =
       low !== high
-        ? t("prefs.rulesLibraryRange", { value: num(central), low: num(low), high: num(high), unit })
-        : t("prefs.rulesLibrary", { value: num(central), unit });
+        ? t("prefs.rulesLibraryRange", {
+            value: isolate(num(central)),
+            low: isolate(num(low)),
+            high: isolate(num(high)),
+            unit: isolate(unit),
+          })
+        : t("prefs.rulesLibrary", { value: isolate(num(central)), unit: isolate(unit) });
   } else {
     const central = String(lib);
     const shown = (own ?? fromAll ?? central) as string;
@@ -292,7 +300,7 @@ function ParamField({
           />
         </div>
       );
-    library = t("prefs.rulesLibrary", { value: central, unit });
+    library = t("prefs.rulesLibrary", { value: isolate(central), unit: isolate(unit) });
   }
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-slate-100 py-3 first:border-t-0">
