@@ -5,7 +5,7 @@ import { tNow, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { currencyOf } from "../costs/currencies";
 import { convertTo, type ProjectCurrency } from "../costs/currency";
-import { economyApi, type EconomyApi } from "../costs/economy";
+import { countryName, economyApi, type EconomyApi } from "../costs/economy";
 import type { StreetSetup } from "../street-setup/types";
 import { JobProgress } from "../../shell/JobProgress";
 import { cargoBikeEngine, type CargoBikeEngine, TripError } from "./engine";
@@ -100,7 +100,7 @@ export function CargoBikeTab({
   /** The project's currency (Project preferences); null keeps the start point's country's. */
   currency?: ProjectCurrency | null;
 }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const engine = useMemo(() => engineIn ?? cargoBikeEngine(), [engineIn]);
   const economy = useMemo(() => economyIn ?? economyApi(), [economyIn]);
   const [view, setView] = useState<View>("trip");
@@ -130,6 +130,7 @@ export function CargoBikeTab({
   const [reach, setReach] = useState<Reach[] | null>(null);
   const [country, setCountry] = useState<{
     name: string | null;
+    iso2?: string | null;
     currency: string | null;
     conv: Conversion | null;
     /** Units of the country's currency (EUR without a country) per US$, for the project's currency. */
@@ -171,6 +172,7 @@ export function CargoBikeTab({
         if (live)
           setCountry({
             name: place.name,
+            iso2: place.iso2,
             currency: currencyOf(place.iso3),
             conv,
             perUsd: conv ? (mine.fx?.value ?? null) : null,
@@ -724,7 +726,10 @@ export function CargoBikeTab({
     <div>
       <p className="mt-2 text-sm text-slate-600">
         {conv
-          ? t("cb.country", { country: country.name ?? "", currency })
+          ? t("cb.country", {
+              country: country.name ? countryName({ iso2: country.iso2, name: country.name }, language) : "",
+              currency,
+            })
           : start
             ? t("cb.countryUnknown")
             : t("cb.countryNoStart")}

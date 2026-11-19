@@ -2,6 +2,7 @@ import { readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { LIBRARY_PARAMS } from "../src/workspace/preferences";
+import { isolate } from "../src/i18n/params";
 
 /** The translated parameter names and units, one file per language. */
 const DIR = join(__dirname, "../src/i18n/params");
@@ -40,4 +41,12 @@ describe("parameter texts", () => {
       });
     });
   }
+});
+
+describe("isolate", () => {
+  it("keeps a number or unit in its own direction inside right-to-left text", () => {
+    expect(isolate("-20")).toBe("⁨-20⁩");
+    expect(isolate("°C")).toBe("⁨°C⁩");
+    expect(isolate("")).toBe("");
+  });
 });

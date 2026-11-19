@@ -20,6 +20,7 @@ import {
   type Prices,
   pricesFrom,
   type WbCountry,
+  countryName,
 } from "./economy";
 import { convertTo, type ProjectCurrency } from "./currency";
 import { BarList, CompositionChart, InlineBar, totalsOf } from "./charts";
@@ -145,7 +146,7 @@ export function CostTables({
   results = null,
   canSave = false,
 }: Props) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const modeLabel = useModeLabel();
   const prefs = preferences?.values;
   const [placeCode, setPlaceCode] = useState<string | null>(null);
@@ -284,7 +285,9 @@ export function CostTables({
           {t("cost.title")}
         </h2>
         <p className="mt-1 max-w-3xl text-slate-600">
-          {t("cost.intro", { country: econ ? econ.country.name : t("cost.projectCountry") })}
+          {t("cost.intro", {
+            country: econ ? countryName(econ.country, language) : t("cost.projectCountry"),
+          })}
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <span className="text-xs text-slate-500">
@@ -913,7 +916,7 @@ function PricesSection({
 }) {
   const own = (id: string) => (typeof prefs?.[id] === "number" ? prefs[id] : undefined);
   const iso3 = econ?.country.iso3 ?? code ?? "";
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const cur = prices.currency ?? t("cost.localCurrency");
   return (
     <section className={card} aria-labelledby="cost-prices">
@@ -934,13 +937,16 @@ function PricesSection({
         >
           <option value="">{t("cost.fromLocation")}</option>
           {econ && !countries.some((c) => c.iso3 === econ.country.iso3) && (
-            <option value={econ.country.iso3}>{econ.country.name}</option>
+            <option value={econ.country.iso3}>{countryName(econ.country, language)}</option>
           )}
-          {countries.map((c) => (
-            <option key={c.iso3} value={c.iso3}>
-              {c.name}
-            </option>
-          ))}
+          {countries
+            .map((c) => ({ iso3: c.iso3, name: countryName(c, language) }))
+            .sort((a, b) => a.name.localeCompare(b.name, language))
+            .map((c) => (
+              <option key={c.iso3} value={c.iso3}>
+                {c.name}
+              </option>
+            ))}
         </select>
         {!chosen && econ && <span className="text-xs text-slate-500">{t("cost.foundAtLocation")}</span>}
       </div>
