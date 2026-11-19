@@ -532,7 +532,17 @@ export function Workspace({
   const railway = drawings.doc<Network>("railway");
   // Cable car, people mover and ferry lines of the plugin tools, per tool: the drawing, the line the journey
   // planner rides and the shape the noise map needs.
-  const pluginSaved = drawings.doc<PluginLinesDoc>("plugin-lines")?.tools ?? NO_PLUGIN_LINES;
+  // Lines drawn with the tools of a plugin that is now off stay in the project but are not shown or counted
+  // until the plugin is on again. A tool's further lines are kept under `<tool id>-2`, `<tool id>-3`…
+  const pluginDoc = drawings.doc<PluginLinesDoc>("plugin-lines")?.tools ?? NO_PLUGIN_LINES;
+  const toolOn = useMemo(() => {
+    const on = new Set(PLUGIN_TOOLS.map((x) => x.id));
+    return (key: string) => on.has(key) || on.has(key.replace(/-[0-9]+$/, ""));
+  }, [PLUGIN_TOOLS]);
+  const pluginSaved = useMemo(() => {
+    const kept = Object.entries(pluginDoc).filter(([key]) => toolOn(key));
+    return kept.length === Object.keys(pluginDoc).length ? pluginDoc : Object.fromEntries(kept);
+  }, [pluginDoc, toolOn]);
   const pluginLines: Record<string, PluginLineInput | null> = Object.fromEntries(
     Object.entries(pluginSaved).map(([id, x]) => [id, x.line]),
   );
@@ -1041,7 +1051,11 @@ export function Workspace({
               : t("create.street")
         : tabLabel(pluginTab ? pluginTab.id : "gis");
   const pluginLineList = Object.values(pluginLines).filter((l): l is PluginLineInput => l !== null);
-  const demandZoneList = Object.values(demandZones).filter((z): z is DemandZone => z !== null);
+  // On-demand zones of a plugin that is now off are left out of the journey planner too.
+  const demandZoneList = Object.entries(demandZones)
+    .filter(([id]) => toolOn(id))
+    .map(([, z]) => z)
+    .filter((z): z is DemandZone => z !== null);
 
   const body = (
     <div className="flex h-full flex-col overflow-clip">
