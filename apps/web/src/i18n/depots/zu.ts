@@ -6,7 +6,7 @@ export const depotsZu = {
   "create.depots": "Iziteshi zokupaka",
   "depot.title": "Iziteshi zokupaka amabhasi",
   "depot.intro":
-    "Iziteshi zokupaka zemizila yamabhasi, i-BRT, amabhasi kagesi anezintambo namabhasi aphakathi kwamadolobha, ezisetshenziswa ngokuhlanganyela yiyo yonke imizila izimoto zayo ezingena kuzo. Dweba umngcele, ubeke amasango kuwo, udwebe izindawo bese uvumela ukuhlela okuzenzakalelayo kuzigcwalise ngemizila yokudlula.",
+    "Iziteshi zokupaka zemizila yamabhasi, i-BRT, amabhasi entambo namabhasi aphakathi kwamadolobha, ezisetshenziswa ngokuhlanganyela yiyo yonke imizila izimoto zayo ezingena kuzo. Dweba umngcele, ubeke amasango kuwo, udwebe izindawo bese uvumela ukuhlela okuzenzakalelayo kuzigcwalise ngemizila yokudlula.",
   "depot.failed": "Ukuhlolwa kwesiteshi kuhlulekile: {error}",
   "depot.busy.layout": "Kuhlelwa isiteshi…",
   "depot.busy.size": "Kulinganiswa usayizi wesiteshi…",
