@@ -20,6 +20,18 @@ export interface WbCountry {
   income?: string | null;
 }
 
+/** Purpose: a country's name in the app language (from its ISO 3166 code), or the World Bank's English name. */
+export function countryName(c: { iso2?: string | null; name: string }, language: string): string {
+  try {
+    const n = c.iso2
+      ? new Intl.DisplayNames([language], { type: "region", fallback: "none" }).of(c.iso2.toUpperCase())
+      : undefined;
+    return n || c.name;
+  } catch {
+    return c.name;
+  }
+}
+
 export interface CountryEconomy {
   country: WbCountry;
   /** PPP conversion factor, GDP: local currency units per international $. */

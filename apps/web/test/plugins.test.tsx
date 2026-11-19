@@ -12,6 +12,7 @@ import {
   setActivePlugins,
 } from "../src/plugins/registry";
 import { ProjectPlugins } from "../src/workspace/ProjectPlugins";
+import { energyInTables } from "../src/features/energy/params";
 
 const contributes = {
   modes: ["Water taxi"],
@@ -253,5 +254,14 @@ describe("Plugin list of Administration", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Accept changes" }));
     await waitFor(() => expect(screen.queryByRole("dialog")).toBeNull());
+  });
+});
+
+describe("a plugin that is off", () => {
+  it("takes the energy section out of the Tables tab", () => {
+    expect(energyInTables()).toBe(true);
+    setActivePlugins(PLUGINS.filter((p) => p.id !== "org.mobsimlab.energy"));
+    expect(energyInTables()).toBe(false);
+    setActivePlugins(PLUGINS);
   });
 });
