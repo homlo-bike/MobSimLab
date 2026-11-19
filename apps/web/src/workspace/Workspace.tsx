@@ -60,7 +60,13 @@ import { forgetSetups, loadSetups } from "../features/street-setup/model";
 import type { StreetSetup } from "../features/street-setup/types";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
-import { newToolLineKey, type PluginLinesDoc, type SavedPluginLine, toolLineKeys } from "../kits/saved";
+import {
+  lineToolId,
+  newToolLineKey,
+  type PluginLinesDoc,
+  type SavedPluginLine,
+  toolLineKeys,
+} from "../kits/saved";
 import type { SpanDoc } from "../kits/SpanLineEditor";
 import type { LineList as KitLineList } from "../kits/LinePicker";
 import type { LonLat, Pier } from "../kits/types";
@@ -536,8 +542,8 @@ export function Workspace({
   // until the plugin is on again. A tool's further lines are kept under `<tool id>-2`, `<tool id>-3`…
   const pluginDoc = drawings.doc<PluginLinesDoc>("plugin-lines")?.tools ?? NO_PLUGIN_LINES;
   const toolOn = useMemo(() => {
-    const on = new Set(PLUGIN_TOOLS.map((x) => x.id));
-    return (key: string) => on.has(key) || on.has(key.replace(/-[0-9]+$/, ""));
+    const on = PLUGIN_TOOLS.map((x) => x.id);
+    return (key: string) => lineToolId(key, on) !== null;
   }, [PLUGIN_TOOLS]);
   const pluginSaved = useMemo(() => {
     const kept = Object.entries(pluginDoc).filter(([key]) => toolOn(key));
