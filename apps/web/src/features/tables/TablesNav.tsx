@@ -2,13 +2,9 @@ import type { MessageKey } from "../../i18n/messages";
 import type { Translate } from "../../i18n/i18n";
 import { energyInTables } from "../energy/params";
 
-/**
- * A name in the Tables tab's side panel: a message key where the heading is translated, else English text where the
- * group's headings are still English only.
- */
+/** A name in the Tables tab's side panel, as a message key. */
 interface TableLabel {
-  key?: MessageKey;
-  label?: string;
+  key: MessageKey;
 }
 /**
  * The groups of the Tables tab, shown one at a time, and the sections of each group, listed under the open group in the side panel like Project preferences and shown one
@@ -45,46 +41,46 @@ export const TABLE_GROUPS: (TableLabel & { id: string; sections: (TableLabel & {
   },
   {
     id: "benefits",
-    label: "Economic and social benefits",
+    key: "tnav.benefits",
     sections: [
-      { id: "benefits.summary", label: "Ridership and benefits" },
-      { id: "benefits.access", label: "Access and people near stations" },
-      { id: "benefits.lines", label: "Per line and mode" },
-      { id: "benefits.settings", label: "Formulas and parameters" },
+      { id: "benefits.summary", key: "tnav.benefits.summary" },
+      { id: "benefits.access", key: "tnav.benefits.access" },
+      { id: "benefits.lines", key: "tnav.benefits.lines" },
+      { id: "benefits.settings", key: "tnav.benefits.settings" },
     ],
   },
   {
     id: "demand",
-    label: "Demand model",
+    key: "tnav.demand",
     sections: [
-      { id: "demand.zones", label: "Zones and counts" },
-      { id: "demand.run", label: "Run" },
-      { id: "demand.results", label: "Results" },
+      { id: "demand.zones", key: "tnav.demand.zones" },
+      { id: "demand.run", key: "tnav.demand.run" },
+      { id: "demand.results", key: "tnav.results" },
     ],
   },
   {
     id: "fares",
-    label: "Fare revenue",
+    key: "tnav.fares",
     sections: [
-      { id: "fares.revenue", label: "Revenue" },
-      { id: "fares.settings", label: "Fare settings" },
+      { id: "fares.revenue", key: "tnav.fares.revenue" },
+      { id: "fares.settings", key: "tnav.fares.settings" },
     ],
   },
   {
     id: "appraisal",
-    label: "Appraisal",
+    key: "tnav.appraisal",
     sections: [
-      { id: "appraisal.results", label: "Results" },
-      { id: "appraisal.uncertainty", label: "Uncertainty and tests" },
-      { id: "appraisal.mca", label: "Multi-criteria analysis" },
-      { id: "appraisal.settings", label: "Appraisal settings" },
+      { id: "appraisal.results", key: "tnav.results" },
+      { id: "appraisal.uncertainty", key: "tnav.appraisal.uncertainty" },
+      { id: "appraisal.mca", key: "tnav.appraisal.mca" },
+      { id: "appraisal.settings", key: "tnav.appraisal.settings" },
     ],
   },
   { id: "scenarios", key: "scn.title", sections: [] },
 ];
 
 /** Purpose: the sections of a group the side panel lists (the energy section only when its plugin is on). */
-export function groupParts(group: string): { id: string; key?: MessageKey; label?: string }[] {
+export function groupParts(group: string): { id: string; key: MessageKey }[] {
   const g = TABLE_GROUPS.find((x) => x.id === group);
   return (g?.sections ?? []).filter((s) => s.id !== "network.energy" || energyInTables());
 }
@@ -119,7 +115,7 @@ export function TablesNav({
   onGroup: (group: string) => void;
   onPart: (group: string, part: string) => void;
 }) {
-  const name = (l: TableLabel) => (l.key ? t(l.key) : (l.label ?? ""));
+  const name = (l: TableLabel) => t(l.key);
   const current = shownPart(view, parts);
   const partButton = (group: string, s: { id: string } & TableLabel, phone: boolean) => (
     <button

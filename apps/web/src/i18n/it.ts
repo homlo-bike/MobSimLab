@@ -6,6 +6,7 @@ import { commentsIt } from "./comments/it";
 import { depotsIt } from "./depots/it";
 import { geodataIt } from "./geodata/it";
 import { tablesIt } from "./tables/it";
+import { economicsIt } from "./economics/it";
 import { fleetIt } from "./fleet/it";
 import { timetablesIt } from "./timetables/it";
 import { mslabIt } from "./mslab/it";
@@ -83,6 +84,8 @@ export const it: Messages = {
   "settings.title": "Impostazioni",
   "settings.back": "Torna alle impostazioni",
   "settings.displayName": "Nome visualizzato",
+  "shell.thisComputer": "Questo computer",
+  "shell.localUser": "Utente locale",
   "settings.email": "Email",
   "settings.role": "Ruolo",
   "settings.language": "Lingua",
@@ -528,6 +531,7 @@ export const it: Messages = {
   ...depotsIt,
   ...geodataIt,
   ...tablesIt,
+  ...economicsIt,
   ...fleetIt,
   ...timetablesIt,
   ...commentsIt,

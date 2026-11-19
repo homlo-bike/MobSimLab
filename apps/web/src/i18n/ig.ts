@@ -6,6 +6,7 @@ import { commentsIg } from "./comments/ig";
 import { depotsIg } from "./depots/ig";
 import { geodataIg } from "./geodata/ig";
 import { tablesIg } from "./tables/ig";
+import { economicsIg } from "./economics/ig";
 import { fleetIg } from "./fleet/ig";
 import { timetablesIg } from "./timetables/ig";
 import { mslabIg } from "./mslab/ig";
@@ -83,6 +84,8 @@ export const ig: Messages = {
   "settings.title": "Ntọala",
   "settings.back": "Laghachi na ntọala",
   "settings.displayName": "Aha ngosi",
+  "shell.thisComputer": "Kọmputa a",
+  "shell.localUser": "Onye ọrụ mpaghara",
   "settings.email": "Email",
   "settings.role": "Ọrụ",
   "settings.language": "Asụsụ",
@@ -528,6 +531,7 @@ export const ig: Messages = {
   ...depotsIg,
   ...geodataIg,
   ...tablesIg,
+  ...economicsIg,
   ...fleetIg,
   ...timetablesIg,
   ...commentsIg,

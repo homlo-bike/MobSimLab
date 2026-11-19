@@ -1,4 +1,5 @@
 import { loadPluginTexts } from "../plugins/texts";
+import { loadParamTexts } from "./params";
 import { en, type MessageKey, type Messages, type PluralKey } from "./en";
 
 export type { MessageKey, Messages, PluralKey };
@@ -56,7 +57,8 @@ export function messagesOf(tag: string): Messages | undefined {
 }
 
 /**
- * Purpose: download a language's messages once and keep them, with the bundled plugins' translations.
+ * Purpose: download a language's messages once and keep them, with the bundled plugins' translations and the
+ * parameter names.
  * Output: the messages; English for a tag without its own file. A failed download can be tried again.
  */
 export function loadMessages(tag: string): Promise<Messages> {
@@ -64,7 +66,7 @@ export function loadMessages(tag: string): Promise<Messages> {
   if (have) return Promise.resolve(have);
   const load = (LOADERS as Record<string, (() => Promise<Messages>) | undefined>)[tag];
   if (!load) return Promise.resolve(en);
-  pending[tag] ??= Promise.all([load(), loadPluginTexts(tag)]).then(
+  pending[tag] ??= Promise.all([load(), loadPluginTexts(tag), loadParamTexts(tag)]).then(
     ([m]) => (loaded[tag] = m),
     (e: unknown) => {
       pending[tag] = undefined;

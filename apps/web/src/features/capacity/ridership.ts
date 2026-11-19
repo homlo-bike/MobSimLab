@@ -3,6 +3,7 @@
  * the Tables tab's ridership estimate (ADR-0040, the `ridership_daily` formula over the people, jobs and
  * students near each station), or the planner's own number for a station or stop, which takes priority.
  */
+import { tNow } from "../../i18n/i18n";
 import {
   benefitsApi,
   type BenefitsApi,
@@ -72,7 +73,7 @@ export async function loadZones(
     regions: input.regions,
     prefs: input.prefs,
   });
-  return { zones: p.zones, notes: p.notes };
+  return { zones: p.zones, notes: p.notes.map((n) => tNow(n.key, n.vars)) };
 }
 
 /**

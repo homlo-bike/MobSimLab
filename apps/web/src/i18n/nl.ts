@@ -6,6 +6,7 @@ import { commentsNl } from "./comments/nl";
 import { depotsNl } from "./depots/nl";
 import { geodataNl } from "./geodata/nl";
 import { tablesNl } from "./tables/nl";
+import { economicsNl } from "./economics/nl";
 import { fleetNl } from "./fleet/nl";
 import { timetablesNl } from "./timetables/nl";
 import { mslabNl } from "./mslab/nl";
@@ -84,6 +85,8 @@ export const nl: Messages = {
   "settings.title": "Instellingen",
   "settings.back": "Terug naar instellingen",
   "settings.displayName": "Weergavenaam",
+  "shell.thisComputer": "Deze computer",
+  "shell.localUser": "Lokale gebruiker",
   "settings.email": "E-mail",
   "settings.role": "Rol",
   "settings.language": "Taal",
@@ -532,6 +535,7 @@ export const nl: Messages = {
   ...depotsNl,
   ...geodataNl,
   ...tablesNl,
+  ...economicsNl,
   ...fleetNl,
   ...timetablesNl,
   ...commentsNl,

@@ -98,6 +98,12 @@ export function storeChoice(choice: LanguageChoice): void {
 }
 
 type Vars = Record<string, string | number>;
+
+/** A note worked out away from the screen, kept as its message so it shows in the language on screen. */
+export interface Note {
+  key: MessageKey;
+  vars?: Vars;
+}
 export type Translate = (key: MessageKey, vars?: Vars) => string;
 
 export type TranslatePlural = (key: PluralKey, count: number, vars?: Vars) => string;
