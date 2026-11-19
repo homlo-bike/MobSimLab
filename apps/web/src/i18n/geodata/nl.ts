@@ -15,7 +15,7 @@ export const geodataNl = {
     "De tekening reikt nu buiten het geïmporteerde gebied. Vernieuw om het nieuwe gebied te importeren.",
   "data.method": "Gegevens ophalen uit",
   "data.method.overpass": "Overpass (gebieden tot {max} km²)",
-  "data.method.geofabrik": "Een Geofabrik-regio",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Een .osm.pbf-bestand",
   "data.region": "Regio",
   "data.regionsLoading": "Regio’s zoeken…",

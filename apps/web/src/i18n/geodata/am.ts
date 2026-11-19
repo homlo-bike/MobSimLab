@@ -14,7 +14,7 @@ export const geodataAm = {
   "data.outside": "ሥዕሉ አሁን ከመጣው አካባቢ ውጭ ይዘልቃል። አዲሱን አካባቢ ለማስመጣት ያድሱ።",
   "data.method": "ውሂቡን ከዚህ ያግኙ",
   "data.method.overpass": "Overpass (እስከ {max} ኪ.ሜ² ያሉ አካባቢዎች)",
-  "data.method.geofabrik": "የGeofabrik ክልል",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "የ.osm.pbf ፋይል",
   "data.region": "ክልል",
   "data.regionsLoading": "ክልሎችን በመፈለግ ላይ…",

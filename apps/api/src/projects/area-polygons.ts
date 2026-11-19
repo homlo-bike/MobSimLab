@@ -273,3 +273,98 @@ export function areaLimitMb(env: NodeJS.ProcessEnv = process.env): number {
     ? v
     : DEFAULT_AREA_MAX_MB;
 }
+
+/** Purpose: the area of some polygons, km² (overlapping polygons counted again). */
+export function polygonsKm2(polygons: readonly { ring: readonly LonLat[] }[]): number {
+  return polygons.reduce((s, p) => s + ringAreaKm2(p.ring), 0);
+}
+
+/** Purpose: whether a box `[west, south, east, north]` overlaps any of the polygons. */
+export function boxMeetsPolygons(
+  box: readonly number[],
+  polygons: readonly { ring: readonly LonLat[] }[],
+): boolean {
+  return polygons.some((p) => ringMeetsBox(p.ring, box));
+}
+
+/**
+ * Purpose: fast point-in-area tests for points on rows, such as the cells of a population grid: the stretches
+ * of each row inside the polygons are worked out once per latitude (scanline) and then looked up.
+ */
+export class AreaIndex {
+  private readonly rows = new Map<number, number[]>();
+  private readonly box: [number, number, number, number] | null;
+
+  constructor(private readonly polygons: readonly { ring: readonly LonLat[] }[]) {
+    this.box = polygonsBox(polygons);
+  }
+
+  /** Purpose: whether a point lies inside any polygon (even-odd per polygon). */
+  contains(x: number, y: number): boolean {
+    const b = this.box;
+    if (!b || x < b[0] || x > b[2] || y < b[1] || y > b[3]) return false;
+    let spans = this.rows.get(y);
+    if (!spans) {
+      spans = this.spans(y);
+      if (this.rows.size > 20_000) this.rows.clear();
+      this.rows.set(y, spans);
+    }
+    for (let i = 0; i + 1 < spans.length; i += 2) if (x >= spans[i]! && x < spans[i + 1]!) return true;
+    return false;
+  }
+
+  /** The stretches `[x0, x1, x2, x3, ...]` of the row at latitude y inside each polygon. */
+  private spans(y: number): number[] {
+    const out: number[] = [];
+    for (const p of this.polygons) {
+      const xs: number[] = [];
+      const r = p.ring;
+      for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+        const [xi, yi] = r[i]!;
+        const [xj, yj] = r[j]!;
+        if (yi > y !== yj > y) xs.push(((xj - xi) * (y - yi)) / (yj - yi) + xi);
+      }
+      xs.sort((a, b) => a - b);
+      out.push(...xs);
+    }
+    // Pairs from different polygons may overlap; each pair is tested on its own, so no merging is needed.
+    return out;
+  }
+}
+
+/**
+ * Purpose: the polygons as a GeoJSON MultiPolygon feature, the file `osmium extract --polygon` reads.
+ */
+export function polygonsGeoJson(polygons: readonly { ring: readonly LonLat[] }[]): string {
+  return JSON.stringify({
+    type: "FeatureCollection",
+    features: [
+      {
+        type: "Feature",
+        properties: {},
+        geometry: {
+          type: "MultiPolygon",
+          coordinates: polygons.map((p) => [p.ring.map(([x, y]) => [x, y])]),
+        },
+      },
+    ],
+  });
+}
+
+/**
+ * Purpose: whether the polygons of an earlier import cover the area now: each polygon is one of the earlier
+ * ones, or every corner of it lies in one of them.
+ */
+export function polygonsCover(
+  earlier: readonly { ring: readonly LonLat[] }[],
+  now: readonly { ring: readonly LonLat[] }[],
+): boolean {
+  if (!earlier.length) return false;
+  const same = (a: readonly LonLat[], b: readonly LonLat[]) =>
+    a.length === b.length && a.every((p, i) => p[0] === b[i]![0] && p[1] === b[i]![1]);
+  return now.every(
+    (p) =>
+      earlier.some((e) => same(e.ring, p.ring)) ||
+      p.ring.every((c) => earlier.some((e) => pointInRing(c, e.ring))),
+  );
+}

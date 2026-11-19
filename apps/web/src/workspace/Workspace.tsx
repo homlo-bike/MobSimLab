@@ -12,6 +12,7 @@ import { MapDataPanel } from "../features/geodata/MapDataPanel";
 import { type LiveData, setDataProject, watchLiveData } from "../geodata/projectData";
 import { projectTimetable } from "../features/benefits/timetable";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
+import { AreaChecks } from "../features/area/AreaChecks";
 import { economyApi, type Prices } from "../features/costs/economy";
 import { useProjectCurrency } from "../features/costs/currency";
 import type { Estimate as CostEstimate } from "../features/costs/model";
@@ -2004,7 +2005,21 @@ export function Workspace({
             isOwner={project ? can.manage(project) : false}
             userId={userId}
           >
-            <ChecksProvider key={projectId}>{body}</ChecksProvider>
+            <ChecksProvider key={projectId}>
+              {body}
+              {areaView && (
+                <AreaChecks
+                  polygons={areaView.polygons}
+                  docs={{
+                    streetLines,
+                    railway,
+                    depots: depotsDoc,
+                    cargoBike: drawings.doc<CargoBikeDoc>("cargo-bike"),
+                    pluginLines: drawings.doc<PluginLinesDoc>("plugin-lines"),
+                  }}
+                />
+              )}
+            </ChecksProvider>
           </CommentsProvider>
         </VehiclesOffContext.Provider>
       </WeekendContext.Provider>

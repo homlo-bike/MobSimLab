@@ -57,9 +57,9 @@ export const areaSw = {
   "aw.none": "Hakuna eneo la mradi bado. Chora moja ili zana ziwe na data ya ramani.",
   "aw.saved": "Eneo limehifadhiwa.",
   "aw.data.noArea": "Kwanza chora eneo la mradi katika Mapendeleo ya mradi: uingizaji hulifunika.",
-  "aw.data.area": "Eneo la mradi: {names}. Uingizaji hufunika mstatili unaolizunguka, km² {area}.",
+  "aw.data.area": "Eneo la mradi: {names}. Uingizaji unahusu poligoni hizi pekee, km² {area}.",
   "aw.pop.none": "Hakuna eneo la mradi bado. Lichore katika Mapendeleo ya mradi.",
-  "aw.pop.box": "Mstatili unaozunguka eneo la mradi: km² {km2}.",
+  "aw.pop.box": "Poligoni za eneo la mradi: km² {km2}. Uingizaji unazihusu hizo pekee.",
   "aw.tiles.one": "kigae {count} cha ramani",
   "aw.tiles.other": "vigae {count} vya ramani",
   "aw.count.one": "poligoni {count}",
@@ -77,4 +77,14 @@ export const areaSw = {
   "aw.out.keep": "Weka eneo, bila kupakua",
   "aw.out.download": "Pakua MB {mb}",
   "aw.out.downloading": "Inapakua…",
+  "aw.data.regions": "Maeneo ya Geofabrik",
+  "aw.data.regionsHelp":
+    "Upakuaji mmoja kwa kila nchi ambayo poligoni zinafika, kila mmoja ukikatwa kwa poligoni.",
+  "aw.outside.streetLine": "Mstari {name} unavuka nje ya eneo la mradi, ambako hakuna data ya ramani.",
+  "aw.outside.pluginLine": "Mstari {name} unavuka nje ya eneo la mradi, ambako hakuna data ya ramani.",
+  "aw.outside.railway": "Reli inavuka nje ya eneo la mradi, ambako hakuna data ya ramani.",
+  "aw.outside.depot": "Bohari {name} inavuka nje ya eneo la mradi, ambako hakuna data ya ramani.",
+  "aw.outside.cargoBike":
+    "Njia ya baiskeli ya mizigo inavuka nje ya eneo la mradi, ambako hakuna data ya ramani.",
+  "aw.outside.fix": "Panua eneo katika Mapendeleo ya mradi, Eneo la mradi.",
 } satisfies AreaMessages;

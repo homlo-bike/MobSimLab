@@ -59,10 +59,9 @@ export const areaEs = {
   "aw.saved": "Área guardada.",
   "aw.data.noArea":
     "Dibuje primero el área del proyecto en Preferencias del proyecto: las importaciones la cubren.",
-  "aw.data.area":
-    "Área del proyecto: {names}. Las importaciones cubren el rectángulo que la rodea, {area} km².",
+  "aw.data.area": "Área del proyecto: {names}. Las importaciones cubren solo estos polígonos, {area} km².",
   "aw.pop.none": "Aún no hay área del proyecto. Dibújela en Preferencias del proyecto.",
-  "aw.pop.box": "El rectángulo alrededor del área del proyecto: {km2} km².",
+  "aw.pop.box": "Los polígonos del área del proyecto: {km2} km². Las importaciones cubren solo ellos.",
   "aw.tiles.one": "{count} tesela de mapa",
   "aw.tiles.other": "{count} teselas de mapa",
   "aw.count.one": "{count} polígono",
@@ -80,4 +79,13 @@ export const areaEs = {
   "aw.out.keep": "Conservar la región, sin descargar",
   "aw.out.download": "Descargar {mb} MB",
   "aw.out.downloading": "Descargando…",
+  "aw.data.regions": "Regiones de Geofabrik",
+  "aw.data.regionsHelp": "Una descarga por cada país que tocan los polígonos, recortada a los polígonos.",
+  "aw.outside.streetLine": "La línea {name} sale del área del proyecto, donde no hay datos de mapa.",
+  "aw.outside.pluginLine": "La línea {name} sale del área del proyecto, donde no hay datos de mapa.",
+  "aw.outside.railway": "El ferrocarril sale del área del proyecto, donde no hay datos de mapa.",
+  "aw.outside.depot": "La cochera {name} sale del área del proyecto, donde no hay datos de mapa.",
+  "aw.outside.cargoBike":
+    "La ruta en bicicleta de carga sale del área del proyecto, donde no hay datos de mapa.",
+  "aw.outside.fix": "Amplíe el área en Preferencias del proyecto, Área del proyecto.",
 } satisfies AreaMessages;

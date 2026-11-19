@@ -15,7 +15,7 @@ export const geodataFa = {
     "نقشه اکنون از محدودهٔ درون‌ریزی‌شده بیرون می‌زند. برای درون‌ریزی محدودهٔ تازه، به‌روزرسانی کنید.",
   "data.method": "گرفتن داده از",
   "data.method.overpass": "Overpass (محدوده‌ها تا {max} کیلومتر مربع)",
-  "data.method.geofabrik": "یک منطقهٔ Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "یک فایل ‎.osm.pbf",
   "data.region": "منطقه",
   "data.regionsLoading": "در حال جستجوی مناطق…",

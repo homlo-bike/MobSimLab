@@ -14,7 +14,7 @@ export const geodataHi = {
   "data.outside": "चित्र अब आयात किए गए क्षेत्र से बाहर जाता है। नया क्षेत्र आयात करने के लिए ताज़ा करें।",
   "data.method": "डेटा यहाँ से लें",
   "data.method.overpass": "Overpass ({max} वर्ग किमी तक के क्षेत्र)",
-  "data.method.geofabrik": "एक Geofabrik क्षेत्र",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "एक .osm.pbf फ़ाइल",
   "data.region": "क्षेत्र",
   "data.regionsLoading": "क्षेत्र खोजे जा रहे हैं…",

@@ -98,6 +98,19 @@ export class OsmTools {
   }
 
   /**
+   * Purpose: cut an OSM file to the project area's polygons (a GeoJSON file, area-polygons.ts
+   * `polygonsGeoJson`). `smart` keeps whole ways and multipolygons that cross the edge, so roads and buildings at
+   * the edge are complete.
+   */
+  async extractPolygons(input: string, polygonFile: string, output: string): Promise<void> {
+    await runTool(
+      "osmium",
+      ["extract", "--overwrite", "-s", "smart", "-p", polygonFile, "-o", output, input],
+      { timeoutMs: this.timeoutMs },
+    );
+  }
+
+  /**
    * Purpose: cut an OSM file to a box. `smart` keeps whole ways and multipolygons that cross the edge, so
    * roads and buildings at the edge are complete.
    */
