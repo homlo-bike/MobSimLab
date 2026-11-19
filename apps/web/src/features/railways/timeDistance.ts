@@ -1,3 +1,4 @@
+import type { EngineMsg } from "../../i18n/engine";
 import type { ServicePublication, StationKm } from "./types";
 
 /** One point of a train's path in the graph: time (s after midnight) and distance from the first terminal (km). */
@@ -23,7 +24,7 @@ export interface TdGraph {
   stations: StationKm[];
   trains: TdTrain[];
   shifted: { trip: string; by_s: number; depart_s: number | null }[];
-  unplaced: { trip: string; reason: string; blocked_by: string | null }[];
+  unplaced: { trip: string; reason: string; reason_msg?: EngineMsg; blocked_by: string | null }[];
 }
 
 /** Time windows of the graph, s after midnight; the peaks match the planner's default peaks. */

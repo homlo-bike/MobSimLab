@@ -20,7 +20,7 @@
 
 use crate::design::Design;
 use crate::geom::{at_s, nearest, P2};
-use crate::issue::Issue;
+use crate::issue::{msg, Issue};
 use crate::model::Network;
 use serde::{Deserialize, Serialize};
 
@@ -266,9 +266,13 @@ pub fn check(dz: &mut Design) {
     for s in &signals {
         if locate(dz, &s.at).is_none() {
             iss.push(Issue::warning(
-                format!(
-                    "Signal {} is no longer on a track (its track, station or switch changed). Delete it, or reset the signals.",
-                    if s.name.is_empty() { s.id.to_string() } else { s.name.clone() }
+                msg!(
+                    "rail.signal.off_track",
+                    signal = if s.name.is_empty() {
+                        s.id.to_string()
+                    } else {
+                        s.name.clone()
+                    }
                 ),
                 None,
                 s.id,

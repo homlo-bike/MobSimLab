@@ -23,7 +23,7 @@
 use crate::alignment::TrackGeo;
 use crate::design::Design;
 use crate::geom::{at_s, nearest, P2};
-use crate::issue::{fmt_m, Issue};
+use crate::issue::{fmt_m, msg, Issue};
 use crate::model::{Anchor, Level};
 use crate::params::ModeParams;
 use std::collections::BTreeMap;
@@ -412,16 +412,20 @@ pub fn profiles(dz: &mut Design, terrain: &Terrain) {
             });
         let rail = mean + st.level.height_m(&p);
         let fall = hi - lo;
-        let text = format!(
-            "{} is level with its rails at {:.1} m above sea level; the ground along it lies between {:.1} and {:.1} m.",
-            doc.name, rail, lo, hi
+        let text = msg!(
+            "rail.terrain.station_height",
+            station = doc.name.clone(),
+            rail = format!("{rail:.1} m"),
+            low = format!("{lo:.1}"),
+            high = format!("{hi:.1} m")
         );
         if st.level == Level::Street && fall > 2.0 * p.terrain_street_level_tolerance_m {
             issues.push(Issue::warning(
-                format!(
-                    "{text} At street level the ground falls {:.1} m along the station, so the street round it has to be regraded by up to {:.1} m. Move the station to flatter ground or build it elevated or underground.",
-                    fall,
-                    fall / 2.0
+                msg!(
+                    "rail.terrain.station_street_falls",
+                    height = text,
+                    fall = format!("{fall:.1} m"),
+                    regrade = format!("{:.1} m", fall / 2.0)
                 ),
                 Some(st.centre),
                 st.id,
@@ -542,20 +546,22 @@ fn track_profile(
             .unwrap_or(a);
         let tie = (l0 > 0.0 && s[a] < l0) || (l1 > 0.0 && s[i] > g.length - l1);
         let why = if tie {
-            "Part of it comes from meeting the level station or the switch at the end of the track; give the track more length there or move the station."
+            msg!("rail.terrain.steep_tie_in")
         } else {
-            "The ground is this steep here. Change the level (elevated or underground) or route the track along the slope. Heights come from a surface model, so buildings and trees can still show through."
+            msg!("rail.terrain.steep_ground")
         };
         issues.push(Issue::warning(
-            format!(
-                "The track {} at up to {:.1} ‰ over {} (km {:.2}–{:.2}); the maximum is {:.1} ‰. {why}",
-                if grade[worst] > 0.0 { "climbs" } else { "falls" },
-                grade[worst].abs(),
-                fmt_m(s[i] - s[a]),
-                s[a] / 1000.0,
-                s[i] / 1000.0,
-                p.max_gradient_permille
-            ),
+            crate::issue::Msg::new(if grade[worst] > 0.0 {
+                "rail.terrain.track_climbs"
+            } else {
+                "rail.terrain.track_falls"
+            })
+            .arg("gradient", format!("{:.1} ‰", grade[worst].abs()))
+            .arg("length", fmt_m(s[i] - s[a]))
+            .arg("from", format!("{:.2}", s[a] / 1000.0))
+            .arg("to", format!("{:.2}", s[i] / 1000.0))
+            .arg("max", format!("{:.1} ‰", p.max_gradient_permille))
+            .arg("why", why),
             Some(at_s(&g.centre, (s[worst] + s[worst + 1]) / 2.0).p),
             id,
         ));
@@ -584,13 +590,14 @@ fn track_profile(
         }
         let d = rail[worst] - sm[worst];
         issues.push(Issue::warning(
-            format!(
-                "Street-level track runs up to {:.1} m {} the ground over {} to meet the level station or switch at its end (tolerance {:.1} m). The street has to be regraded here; move the station or change the level.",
-                d.abs(),
-                if d > 0.0 { "above" } else { "below" },
-                fmt_m(s[i - 1] - s[a]),
-                tol
-            ),
+            crate::issue::Msg::new(if d > 0.0 {
+                "rail.terrain.street_track_above"
+            } else {
+                "rail.terrain.street_track_below"
+            })
+            .arg("height", format!("{:.1} m", d.abs()))
+            .arg("length", fmt_m(s[i - 1] - s[a]))
+            .arg("tolerance", format!("{tol:.1} m")),
             Some(at_s(&g.centre, s[worst]).p),
             id,
         ));

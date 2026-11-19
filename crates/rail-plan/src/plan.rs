@@ -28,6 +28,7 @@
 //!    that leaves later. Trains are added to the morning stabling only where
 //!    the track is empty at that moment.
 
+use engine_msg::{msg, Msg};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, BinaryHeap, HashMap, HashSet};
 
@@ -161,6 +162,24 @@ impl PlannedRun {
     }
 }
 
+/// Purpose: an error of the template run (run name "template") without the run name in front.
+fn without_run_name(e: Msg) -> Msg {
+    if e.text_arg("run") != Some("template") {
+        return e;
+    }
+    match e.key.as_str() {
+        "rail.plan.cannot_move" => msg!(
+            "rail.plan.cannot_move_here",
+            position = e.text_arg("position").unwrap_or_default()
+        ),
+        "rail.plan.run_failed" => msg!(
+            "rail.plan.detail",
+            detail = e.text_arg("detail").unwrap_or_default()
+        ),
+        _ => e,
+    }
+}
+
 /// Something the planner reports.
 #[derive(Clone, Debug, PartialEq, Serialize)]
 pub enum Issue {
@@ -173,14 +192,14 @@ pub enum Issue {
         /// Why trains cannot run it when track does join the stops (a platform too short for the
         /// train, a gradient it cannot climb); None when no track joins them.
         #[serde(skip_serializing_if = "Option::is_none")]
-        reason: Option<String>,
+        reason: Option<Msg>,
     },
     /// A trip could not be placed.
     Unplaced {
         /// Trip id.
         trip: String,
         /// Why.
-        reason: String,
+        reason: Msg,
         /// The run that blocks it, if a conflict.
         blocked_by: Option<String>,
         /// The section where, if a conflict.
@@ -209,7 +228,7 @@ pub enum Issue {
         /// Where it stays.
         at: String,
         /// Why.
-        reason: String,
+        reason: Msg,
     },
 }
 
@@ -673,7 +692,7 @@ impl<'a> Planner<'a> {
         places: &[Place],
         dwell: &[Option<f64>],
         depart_s: f64,
-    ) -> Result<(TrainRun, Vec<f64>), String> {
+    ) -> Result<(TrainRun, Vec<f64>), Msg> {
         let l = &self.lines[line];
         let steps = route_steps(self.m, routes)?;
         let mut pos = Vec::new();
@@ -1314,9 +1333,9 @@ impl<'a> Planner<'a> {
         &self,
         line: usize,
         dir: u8,
-    ) -> Result<(f64, Blocks, Vec<RouteId>), Option<String>> {
+    ) -> Result<(f64, Blocks, Vec<RouteId>), Option<Msg>> {
         let mut best: Option<(f64, f64, Blocks, Vec<RouteId>)> = None;
-        let mut why: Option<String> = None;
+        let mut why: Option<Msg> = None;
         for (pl, _) in self.candidates(line, dir, 0) {
             for d in [Dir::Up, Dir::Down] {
                 let Some(path) = self.trip_path(line, dir, pl, d, &[]) else {
@@ -1331,12 +1350,11 @@ impl<'a> Planner<'a> {
                 let t = match timed {
                     Ok(t) => t,
                     Err(e) => {
-                        let e = e.trim_start_matches("template: ");
                         let stuck = built
                             .as_ref()
                             .ok()
-                            .and_then(|(_, pos)| self.stuck_after(e, pl, &path.places, pos));
-                        why.get_or_insert(stuck.unwrap_or_else(|| e.to_string()));
+                            .and_then(|(_, pos)| self.stuck_after(&e, pl, &path.places, pos));
+                        why.get_or_insert(stuck.unwrap_or_else(|| without_run_name(e)));
                         continue;
                     }
                 };
@@ -1357,17 +1375,13 @@ impl<'a> Planner<'a> {
     /// Purpose: a run that stalls on a gradient, said where: the station it last left and how far
     /// beyond it. Inputs: the timing error, the origin, the places of the path and the head's stop
     /// position at each. Output: the sentence, or None for any other error.
-    fn stuck_after(
-        &self,
-        err: &str,
-        origin: Place,
-        places: &[Place],
-        pos: &[f64],
-    ) -> Option<String> {
+    fn stuck_after(&self, err: &Msg, origin: Place, places: &[Place], pos: &[f64]) -> Option<Msg> {
+        if err.key != "rail.plan.cannot_move" {
+            return None;
+        }
         let x: f64 = err
-            .strip_prefix("the train cannot move at ")?
-            .split(' ')
-            .next()?
+            .text_arg("position")?
+            .trim_end_matches(" m")
             .parse()
             .ok()?;
         let k = pos.iter().take_while(|&&p| p <= x).count();
@@ -1382,15 +1396,20 @@ impl<'a> Planner<'a> {
             }
             Place::Storage(t) => self.m.tracks[t].id.clone(),
         };
-        let between = match places.get(k) {
-            Some(&next) => format!("between {} and {}", name(from), name(next)),
-            None => format!("after {}", name(from)),
-        };
-        Some(format!(
-            "the train stalls on a gradient too steep for it {between}, about {:.0} m after {}. The track checks warn where the track is steeper than the maximum: change the level there, or the heights of the station and track",
-            (x - at).max(0.0),
-            name(from)
-        ))
+        let distance = format!("{:.0} m", (x - at).max(0.0));
+        Some(match places.get(k) {
+            Some(&next) => msg!(
+                "rail.plan.stalls_between",
+                from = name(from),
+                to = name(next),
+                distance = distance
+            ),
+            None => msg!(
+                "rail.plan.stalls_after",
+                from = name(from),
+                distance = distance
+            ),
+        })
     }
 
     /// Purpose: the phase of a line (ADR-0032 §3 step 4a, lines sharing track): a shift of all its
@@ -1697,7 +1716,7 @@ impl<'a> Planner<'a> {
 
     /// Purpose: [`crate::blocking::run_timing`] with the speed profile worked out once per run
     /// shape (see [`Planner::profiles`]). Inputs and output as for `run_timing`.
-    fn timing(&self, run: &TrainRun, index: usize) -> Result<RunTiming, String> {
+    fn timing(&self, run: &TrainRun, index: usize) -> Result<RunTiming, Msg> {
         let key = profile_key(run);
         let known = self.profiles.borrow().get(&key).cloned();
         let profile = match known {
@@ -1747,7 +1766,7 @@ impl<'a> Planner<'a> {
         vehicle: usize,
         prev: Option<usize>,
         index_as: usize,
-    ) -> Result<(RunTiming, f64, Option<RunTiming>), (String, Blocker)> {
+    ) -> Result<(RunTiming, f64, Option<RunTiming>), (Msg, Blocker)> {
         let mut t = ideal;
         let mut last_who: Blocker = None;
         for _ in 0..60 {
@@ -1774,17 +1793,14 @@ impl<'a> Planner<'a> {
                 let pt = self.timing(&r, pr).map_err(|e| (e, None))?;
                 let (_, _, who) = self.overlaps(&pt.blocking, vehicle, Some(pr));
                 if who.is_some() {
-                    return Err((
-                        "the train cannot wait in its platform that long".into(),
-                        who,
-                    ));
+                    return Err((msg!("rail.plan.cannot_wait"), who));
                 }
                 prev_t = Some(pt);
             }
             return Ok((timing, t, prev_t));
         }
         Err((
-            format!("no conflict-free slot within {max_shift:.0} s"),
+            msg!("rail.plan.no_slot", shift = format!("{max_shift:.0} s")),
             last_who,
         ))
     }
@@ -1971,7 +1987,7 @@ impl<'a> Planner<'a> {
             None => {
                 // A train from stabling: the one pulled out ahead, then each first platform it can reach.
                 let mut banned: Vec<Place> = Vec::new();
-                let mut first_err: Option<(String, Blocker)> = None;
+                let mut first_err: Option<(Msg, Blocker)> = None;
                 let mut pre = pre_origin;
                 loop {
                     let got = match pre.take() {
@@ -2013,7 +2029,8 @@ impl<'a> Planner<'a> {
                             }
                         }
                         Err((reason, who)) => {
-                            let e = first_err.unwrap_or((format!("no train: {reason}"), who));
+                            let e = first_err
+                                .unwrap_or((msg!("rail.plan.no_train", reason = reason), who));
                             self.unplaced(trip, e.0, e.1);
                             return Err(None);
                         }
@@ -2023,7 +2040,7 @@ impl<'a> Planner<'a> {
         }
     }
 
-    fn unplaced(&mut self, trip: &Trip, reason: String, who: Blocker) {
+    fn unplaced(&mut self, trip: &Trip, reason: Msg, who: Blocker) {
         let (b, s) = self.blocker_text(who);
         self.issues.push(Issue::Unplaced {
             trip: trip.name.clone(),
@@ -2073,7 +2090,7 @@ impl<'a> Planner<'a> {
         vehicle: usize,
         prev_run: usize,
         hold_until: f64,
-    ) -> Result<(), (String, Blocker)> {
+    ) -> Result<(), (Msg, Blocker)> {
         let prev = Some(prev_run);
         // Paths to try: the best, then each with one of its platforms banned.
         let mut attempts: Vec<FoundPath> = Vec::new();
@@ -2090,8 +2107,8 @@ impl<'a> Planner<'a> {
             }
             attempts.insert(0, best);
         }
-        let mut last_err: (String, Blocker) = ("no path through the calls".to_string(), None);
-        let mut first_err: Option<(String, Blocker)> = None;
+        let mut last_err: (Msg, Blocker) = (msg!("rail.plan.no_path_calls"), None);
+        let mut first_err: Option<(Msg, Blocker)> = None;
         // Each path is searched for its earliest conflict-free departure; the one
         // that departs earliest wins (another platform before a later departure).
         let mut best: Option<(f64, usize, TrainRun, RunTiming, Option<RunTiming>)> = None;
@@ -2239,7 +2256,7 @@ impl<'a> Planner<'a> {
         &mut self,
         trip: &Trip,
         banned: &[Place],
-    ) -> Result<(usize, usize), (String, Blocker)> {
+    ) -> Result<(usize, usize), (Msg, Blocker)> {
         let lines = self.lines;
         let l = &lines[trip.line];
         let origin_c = self.candidates(trip.line, trip.dir, 0);
@@ -2313,25 +2330,26 @@ impl<'a> Planner<'a> {
                     .map(|s| format!("{} ({} trains)", self.m.tracks[s.track].id, s.capacity))
                     .collect();
                 return Err((
-                    format!(
-                        "every storage track is in use ({}): add storage tracks, or a siding at {}",
-                        names.join(", "),
-                        at.unwrap_or_else(|| "the end station".into())
-                    ),
+                    match at {
+                        Some(at) => msg!(
+                            "rail.plan.storage_full_at",
+                            tracks = names.join(", "),
+                            station = at
+                        ),
+                        None => msg!("rail.plan.storage_full", tracks = names.join(", ")),
+                    },
                     None,
                 ));
             }
             return Err((
                 match at {
-                    Some(name) => {
-                        format!("no stabling track reaches a free first platform at {name}")
-                    }
-                    None => "no stabling track reaches a free first platform".into(),
+                    Some(name) => msg!("rail.plan.no_stabling_reaches_at", station = name),
+                    None => msg!("rail.plan.no_stabling_reaches"),
                 },
                 None,
             ));
         }
-        let mut last = ("".to_string(), None);
+        let mut last = (msg!("rail.plan.detail", detail = ""), None);
         // Each option once in order of cost; one whose platform's way out is taken at the
         // departure is passed over while other options are left, and tried again (without that
         // preference) after all of them. Dropping it outright left trips with no train and no
@@ -2353,9 +2371,9 @@ impl<'a> Planner<'a> {
                 && !self.stage(trip.line, si, trip.dep - self.p.pull_out_margin_s - 600.0)
             {
                 last = (
-                    format!(
-                        "no overnight track has a train to bring to the end-station siding {} in time",
-                        self.m.tracks[track].id
+                    msg!(
+                        "rail.plan.no_train_for_siding",
+                        track = self.m.tracks[track].id.clone()
                     ),
                     None,
                 );
@@ -2374,10 +2392,10 @@ impl<'a> Planner<'a> {
             });
             let Some((adir, first)) = way_on else {
                 last = (
-                    format!(
-                        "a train from {} reaches {} with no way on to start the trip",
-                        self.m.tracks[track].id,
-                        self.place_name(origin)
+                    msg!(
+                        "rail.plan.no_way_on",
+                        track = self.m.tracks[track].id.clone(),
+                        to = self.place_name(origin)
                     ),
                     None,
                 );
@@ -2388,10 +2406,7 @@ impl<'a> Planner<'a> {
                 opts_left -= 1;
                 queue.push((si, fp, true));
                 last = (
-                    format!(
-                        "the way out of {} is taken at the departure",
-                        self.place_name(origin)
-                    ),
+                    msg!("rail.plan.way_out_taken", place = self.place_name(origin)),
                     None,
                 );
                 continue;
@@ -2400,10 +2415,10 @@ impl<'a> Planner<'a> {
             let variants = self.depot_variants(trip.line, &name, &fp);
             if variants.is_empty() {
                 last = (
-                    format!(
-                        "no run can be built from {} to {}",
-                        self.m.tracks[track].id,
-                        self.place_name(origin)
+                    msg!(
+                        "rail.plan.no_run_built",
+                        track = self.m.tracks[track].id.clone(),
+                        to = self.place_name(origin)
                     ),
                     None,
                 );
@@ -2456,9 +2471,9 @@ impl<'a> Planner<'a> {
                 };
                 if window < 0.0 {
                     last = (
-                        format!(
-                            "the next train on {} is not back there in time",
-                            self.m.tracks[track].id
+                        msg!(
+                            "rail.plan.next_train_late",
+                            track = self.m.tracks[track].id.clone()
                         ),
                         None,
                     );
@@ -2504,7 +2519,7 @@ impl<'a> Planner<'a> {
                 }
             }
         }
-        Err((format!("pull-out: {}", last.0), last.1))
+        Err((msg!("rail.plan.pull_out", reason = last.0), last.1))
     }
 
     /// Purpose: the ways from a place to a storage track: straight on, or by way of one or two end
@@ -2829,9 +2844,7 @@ impl<'a> Planner<'a> {
                     self.issues.push(Issue::NotStabled {
                         vehicle: v,
                         at: ve.at.id(self.m),
-                        reason:
-                            "no overnight track with room is reachable from the end-station siding"
-                                .into(),
+                        reason: msg!("rail.plan.no_overnight_from_siding"),
                     });
                     break;
                 }
@@ -2871,7 +2884,7 @@ impl<'a> Planner<'a> {
         }
         opts.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap().then(a.1.cmp(&b.1)));
         let ideal = ve.ready_s + l.turnback_s;
-        let mut why = "no stabling track with room is reachable".to_string();
+        let mut why = msg!("rail.plan.no_stabling_room");
         for (_, si, fp, dir) in opts {
             let track = self.stacks[si].track;
             let name = format!("{}-pi", self.runs[ve.last_run].name);

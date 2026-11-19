@@ -3,7 +3,7 @@
 
 use crate::alignment::{fit, FitInput, ResolvedAnchor, TrackGeo};
 use crate::geom::{at_s, poly_cross, BBox, Grid, Sample, P2};
-use crate::issue::{fmt_m, Issue, Severity};
+use crate::issue::{fmt_m, msg, Issue, Severity};
 use crate::model::{Anchor, Bed, Network, Station, SwitchKind, Track, TrackUse};
 use crate::params::{defaults, ModeParams, RailMode};
 use crate::proj::LocalTm;
@@ -443,7 +443,7 @@ pub fn build_with_choice(
             };
             let Some(spec) = d.switch(&sw.element) else {
                 switch_errors.push(Issue::error(
-                    format!("Unknown catalogue element {}.", sw.element),
+                    msg!("rail.switch.unknown_element", element = sw.element.clone()),
                     None,
                     sw.id,
                 ));
@@ -470,12 +470,14 @@ pub fn build_with_choice(
                     match other {
                         Some(x) => {
                             switch_errors.push(Issue::info(
-                                format!(
-                                    "{}: built with {} because the legs of {} cannot meet at {:.2} m track centres.",
-                                    x.label,
-                                    d.switch(&x.element).map_or(x.element.as_str(), |o| o.label.as_str()),
-                                    spec.label,
-                                    parent.spacing_at(sw.s)
+                                msg!(
+                                    "rail.switch.built_with_legs",
+                                    switch = x.label.clone(),
+                                    built = d
+                                        .switch(&x.element)
+                                        .map_or(x.element.as_str(), |o| o.label.as_str()),
+                                    chosen = spec.label.clone(),
+                                    spacing = format!("{:.2} m", parent.spacing_at(sw.s))
                                 ),
                                 x.toes.first().copied(),
                                 Some(sw.id),
@@ -519,11 +521,13 @@ pub fn build_with_choice(
                         None => match overlapping() {
                             Some(x) => {
                                 switch_errors.push(Issue::info(
-                                    format!(
-                                        "{}: built with {} because two crossovers in a row with {} do not fit on the straight track here.",
-                                        x.label,
-                                        d.switch(&x.element).map_or(x.element.as_str(), |o| o.label.as_str()),
-                                        spec.label,
+                                    msg!(
+                                        "rail.switch.built_with_scissors",
+                                        switch = x.label.clone(),
+                                        built = d
+                                            .switch(&x.element)
+                                            .map_or(x.element.as_str(), |o| o.label.as_str()),
+                                        chosen = spec.label.clone()
                                     ),
                                     x.toes.first().copied(),
                                     Some(sw.id),
@@ -642,7 +646,8 @@ fn finish_issues(dz: &mut Design) {
             0,
             Issue {
                 severity: Severity::Ok,
-                text: "No sharp corners or impossible connections: every curve meets the minimum radius, every switch is a catalogue element on straight track, every level change has a ramp within the maximum gradient.".into(),
+                msg: msg!("rail.design.all_ok"),
+                text: msg!("rail.design.all_ok").english(),
                 at: None,
                 ref_id: None,
             },
@@ -659,49 +664,45 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
     // Track ends.
     for t in &net.tracks {
         let Some(g) = dz.track(t.id) else {
-            iss.push(Issue::warning(
-                "This track lost its start connection (the station, its tracks or the switch changed). Delete it or draw it again.",
-                None,
-                t.id,
-            ));
+            iss.push(Issue::warning(msg!("rail.track.lost_start"), None, t.id));
             continue;
         };
         let end_at = g.centre.last().map(|q| q.p);
         let joined = |end: u8| dz.joins.iter().any(|j| j.track == t.id && j.end == end);
         if matches!(t.start, Anchor::Free { .. }) && t.usage == TrackUse::Running && !joined(0) {
             iss.push(Issue::warning(
-                "Open track start. Connect it to a station or a switch, or set the track to storage to end it at a buffer stop.",
+                msg!("rail.track.open_start"),
                 g.centre.first().map(|q| q.p),
                 t.id,
             ));
         }
         match &t.end {
-            Some(a) if !matches!(a, Anchor::Free { .. }) && g.end.is_none() => iss.push(Issue::warning(
-                "This track lost its end connection (the station or its tracks changed). Drag the end onto a connection point.",
-                end_at,
-                t.id,
-            )),
+            Some(a) if !matches!(a, Anchor::Free { .. }) && g.end.is_none() => {
+                iss.push(Issue::warning(msg!("rail.track.lost_end"), end_at, t.id))
+            }
             Some(Anchor::Station { .. }) | Some(Anchor::Switch { .. }) => {}
-            _ if t.usage == TrackUse::Running && draft != Some(t.id) && !joined(1) => iss.push(Issue::warning(
-                "Open track end. Connect it to a station or a switch, or set the track to storage to end it at a buffer stop.",
-                end_at,
-                t.id,
-            )),
+            _ if t.usage == TrackUse::Running && draft != Some(t.id) && !joined(1) => {
+                iss.push(Issue::warning(msg!("rail.track.open_end"), end_at, t.id))
+            }
             _ => {}
         }
         let train = dz.train_length_for(dz.track_mode(t.id));
         if t.usage == TrackUse::Storage && g.length - 10.0 < train {
             iss.push(Issue::warning(
-                format!(
-                    "{} holds {}, shorter than one {} train.",
-                    if t.name.is_empty() {
-                        "Storage track"
-                    } else {
-                        &t.name
-                    },
-                    fmt_m(g.length - 10.0),
-                    fmt_m(train)
-                ),
+                if t.name.is_empty() {
+                    msg!(
+                        "rail.track.storage_short_unnamed",
+                        length = fmt_m(g.length - 10.0),
+                        train = fmt_m(train)
+                    )
+                } else {
+                    msg!(
+                        "rail.track.storage_short",
+                        name = t.name.clone(),
+                        length = fmt_m(g.length - 10.0),
+                        train = fmt_m(train)
+                    )
+                },
                 end_at,
                 t.id,
             ));
@@ -726,15 +727,26 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                 continue;
             };
             let (pt, po) = (dz.params_for(tm), dz.params_for(om));
-            let text = format!(
-                "This {} track joins a {} {what}. They are separate railway systems; join tracks of one system, or let them cross.",
-                pt.label, po.label
-            );
+            let text = if what == "station" {
+                msg!(
+                    "rail.track.joins_other_system_station",
+                    mode = tm.label_msg(),
+                    other = om.label_msg()
+                )
+            } else {
+                msg!(
+                    "rail.track.joins_other_system_switch",
+                    mode = tm.label_msg(),
+                    other = om.label_msg()
+                )
+            };
             if (pt.gauge_mm - po.gauge_mm).abs() > 0.5 {
                 iss.push(Issue::error(
-                    format!(
-                        "{text} The gauges differ ({} and {} mm).",
-                        pt.gauge_mm, po.gauge_mm
+                    msg!(
+                        "rail.track.joins_other_gauge",
+                        joins = text,
+                        gauge = pt.gauge_mm.to_string(),
+                        other_gauge = po.gauge_mm.to_string()
                     ),
                     g.centre.first().map(|q| q.p),
                     t.id,
@@ -753,9 +765,10 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
         let name = &sw.label;
         if !sw.fits {
             iss.push(Issue::error(
-                format!(
-                    "{name}: the tracks are {:.2} m apart, too close for the catalogue turnouts' legs to meet. Use a flatter turnout, or widen the track spacing.",
-                    g.spacing_at(sw.s0)
+                msg!(
+                    "rail.switch.too_close",
+                    name = name,
+                    spacing = format!("{:.2} m", g.spacing_at(sw.s0))
                 ),
                 at,
                 sw.id,
@@ -763,39 +776,35 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
         }
         if !on_straight(g, sw.s0, sw.s1) {
             iss.push(Issue::error(
-                format!("{name} sits on a curve. Catalogue switches go on straight track."),
+                msg!("rail.switch.on_curve", name = name),
                 at,
                 sw.id,
             ));
         }
         if in_spread(g, sw.s0, sw.s1) {
             iss.push(Issue::error(
-                format!("{name} is where the tracks spread towards the platforms. Move it onto parallel track."),
+                msg!("rail.switch.in_spread", name = name),
                 at,
                 sw.id,
             ));
         }
         if g.ramps.iter().any(|r| !(sw.s1 < r.s0 || sw.s0 > r.s1)) {
             iss.push(Issue::warning(
-                format!("{name} is on a ramp. Switches should not sit on a gradient change or vertical curve."),
+                msg!("rail.switch.on_ramp", name = name),
                 at,
                 sw.id,
             ));
         }
         if sw.s0 < -0.5 || sw.s1 > g.length + 0.5 {
             iss.push(Issue::error(
-                format!("{name} runs past the end of the track."),
+                msg!("rail.switch.past_end", name = name),
                 at,
                 sw.id,
             ));
         }
         for o in &dz.switches {
             if o.id > sw.id && o.track == sw.track && !(o.s1 < sw.s0 || o.s0 > sw.s1) {
-                iss.push(Issue::error(
-                    "Two switches overlap. Move one along the track.",
-                    at,
-                    sw.id,
-                ));
+                iss.push(Issue::error(msg!("rail.switch.overlap"), at, sw.id));
             }
         }
     }
@@ -848,7 +857,7 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                     CrossingKind::GradeSeparated
                 } else if la.is_none() || lb.is_none() {
                     iss.push(Issue::error(
-                        "Two tracks cross on a ramp at the same height. Change one track's level.",
+                        msg!("rail.crossing.ramp_same_height"),
                         Some(h.p),
                         b.id,
                     ));
@@ -856,32 +865,38 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                 } else {
                     if ma == RailMode::HighSpeedRail || mb == RailMode::HighSpeedRail {
                         iss.push(Issue::error(
-                            "Flat crossing with a high-speed track. Make one track a flyover or a dive-under.",
+                            msg!("rail.crossing.flat_high_speed"),
                             Some(h.p),
                             b.id,
                         ));
                     } else if h.angle < (1.0 / flattest).atan() {
                         iss.push(Issue::error(
-                            format!("Diamond crossing too flat ({deg:.1}°). The catalogue's flattest diamond is 1:{flattest}."),
+                            msg!(
+                                "rail.crossing.diamond_too_flat",
+                                angle = format!("{deg:.1}°"),
+                                ratio = format!("1:{flattest}")
+                            ),
                             Some(h.p),
                             b.id,
                         ));
                     } else if ma != mb {
                         iss.push(Issue::info(
-                            format!(
-                                "{} and {} cross at {deg:.0}° on {}: one shared diamond with sleepers under both systems' rails. Only one train at a time may occupy it, from either line.",
-                                pa.label,
-                                pb.label,
-                                la.map_or("a ramp", |l| l.label())
+                            msg!(
+                                "rail.crossing.shared_diamond",
+                                mode = ma.label_msg(),
+                                other = mb.label_msg(),
+                                angle = format!("{deg:.0}°"),
+                                level = la.map_or(msg!("rail.level.ramp"), |l| l.label_msg())
                             ),
                             Some(h.p),
                             Some(b.id),
                         ));
                     } else {
                         iss.push(Issue::info(
-                            format!(
-                                "Diamond crossing at {deg:.0}° on {}: the two tracks share one piece of trackwork.",
-                                la.map_or("a ramp", |l| l.label())
+                            msg!(
+                                "rail.crossing.diamond",
+                                angle = format!("{deg:.0}°"),
+                                level = la.map_or(msg!("rail.level.ramp"), |l| l.label_msg())
                             ),
                             Some(h.p),
                             Some(b.id),
@@ -901,12 +916,12 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                     };
                     if wired(a.id) && wired(b.id) && pa.electrification != pb.electrification {
                         iss.push(Issue::warning(
-                            format!(
-                                "The overhead lines of {} ({}) and {} ({}) cross: the crossing needs an insulated crossing of the contact wires with a neutral section.",
-                                pa.label,
-                                supply(&pa.electrification),
-                                pb.label,
-                                supply(&pb.electrification)
+                            msg!(
+                                "rail.crossing.overhead_systems",
+                                mode = ma.label_msg(),
+                                supply = supply(&pa.electrification),
+                                other = mb.label_msg(),
+                                other_supply = supply(&pb.electrification)
                             ),
                             Some(h.p),
                             b.id,
@@ -914,9 +929,12 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                     }
                     if (pa.gauge_mm - pb.gauge_mm).abs() > 0.5 {
                         iss.push(Issue::warning(
-                            format!(
-                                "{} ({} mm) and {} ({} mm) cross on one level with different gauges: the diamond needs a special frog for each gauge and a lower speed over it.",
-                                pa.label, pa.gauge_mm, pb.label, pb.gauge_mm
+                            msg!(
+                                "rail.crossing.gauges_differ",
+                                mode = ma.label_msg(),
+                                gauge = pa.gauge_mm.to_string(),
+                                other = mb.label_msg(),
+                                other_gauge = pb.gauge_mm.to_string()
                             ),
                             Some(h.p),
                             b.id,
@@ -991,9 +1009,10 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
     }
     for ((a, b), (dd, at)) in worst {
         iss.push(Issue::error(
-            format!(
-                "Tracks of two alignments only {dd:.2} m apart; they need at least {:.2} m between track centres (clearance marker).",
-                need(a, b)
+            msg!(
+                "rail.track.clearance",
+                distance = format!("{dd:.2} m"),
+                needed = format!("{:.2} m", need(a, b))
             ),
             Some(at),
             b,
@@ -1016,9 +1035,13 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
             });
             if let Some(q) = hit {
                 iss.push(Issue::error(
-                    format!(
-                        "This track runs through station {} on the same level. Connect it to the station's tracks, or change its level.",
-                        net.stations.iter().find(|s| s.id == st.id).map_or("", |s| s.name.as_str())
+                    msg!(
+                        "rail.track.through_station",
+                        station = net
+                            .stations
+                            .iter()
+                            .find(|s| s.id == st.id)
+                            .map_or("", |s| s.name.as_str())
                     ),
                     Some(q.p),
                     g.id,
@@ -1032,12 +1055,12 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
         let tolerance = dz.params_for(dz.station_mode(doc)).stopping_tolerance_m;
         if doc.platform_length_m < train + tolerance {
             iss.push(Issue::error(
-                format!(
-                    "{}: platform {} is too short for a {} train plus {} stopping tolerance.",
-                    doc.name,
-                    fmt_m(doc.platform_length_m),
-                    fmt_m(train),
-                    fmt_m(tolerance)
+                msg!(
+                    "rail.station.platform_short",
+                    station = doc.name.clone(),
+                    platform = fmt_m(doc.platform_length_m),
+                    train = fmt_m(train),
+                    tolerance = fmt_m(tolerance)
                 ),
                 Some(st.centre),
                 st.id,
@@ -1068,10 +1091,19 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                 .iter()
                 .any(|id| dz.track(*id).is_some_and(|g| g.ntracks == 2));
             let pos = st.point(if e == 1 { st.half_len } else { -st.half_len }, 0.0);
-            let name = format!("{} {} end", doc.name, if e == 1 { "ahead" } else { "rear" });
             if double && !has_crossover {
                 iss.push(Issue::error(
-                    format!("{name} is a terminus with no crossover on the approach: trains cannot change track to turn back."),
+                    if e == 1 {
+                        msg!(
+                            "rail.station.terminus_no_crossover_ahead",
+                            station = doc.name.clone()
+                        )
+                    } else {
+                        msg!(
+                            "rail.station.terminus_no_crossover_rear",
+                            station = doc.name.clone()
+                        )
+                    },
                     Some(pos),
                     st.id,
                 ));

@@ -1,6 +1,7 @@
 //! Design check results shown on the map and in the issue list (06 §9.2).
 
 use crate::geom::P2;
+pub use engine_msg::{msg, Msg};
 use serde::Serialize;
 
 /// How serious a finding is.
@@ -22,8 +23,10 @@ pub enum Severity {
 pub struct Issue {
     /// Severity.
     pub severity: Severity,
-    /// Plain-language message with the numbers and what to do.
+    /// Plain-language message with the numbers and what to do, in English.
     pub text: String,
+    /// The same message as a catalog key and values, for the app to show in the user's language.
+    pub msg: Msg,
     /// Where on the map, local metres.
     #[serde(skip)]
     pub at: Option<P2>,
@@ -33,28 +36,31 @@ pub struct Issue {
 
 impl Issue {
     /// Purpose: an error at a place on an element.
-    pub fn error(text: impl Into<String>, at: Option<P2>, ref_id: u32) -> Self {
+    pub fn error(msg: Msg, at: Option<P2>, ref_id: u32) -> Self {
         Self {
             severity: Severity::Error,
-            text: text.into(),
+            text: msg.english(),
+            msg,
             at,
             ref_id: Some(ref_id),
         }
     }
     /// Purpose: a warning at a place on an element.
-    pub fn warning(text: impl Into<String>, at: Option<P2>, ref_id: u32) -> Self {
+    pub fn warning(msg: Msg, at: Option<P2>, ref_id: u32) -> Self {
         Self {
             severity: Severity::Warning,
-            text: text.into(),
+            text: msg.english(),
+            msg,
             at,
             ref_id: Some(ref_id),
         }
     }
     /// Purpose: information at a place on an element.
-    pub fn info(text: impl Into<String>, at: Option<P2>, ref_id: Option<u32>) -> Self {
+    pub fn info(msg: Msg, at: Option<P2>, ref_id: Option<u32>) -> Self {
         Self {
             severity: Severity::Info,
-            text: text.into(),
+            text: msg.english(),
+            msg,
             at,
             ref_id,
         }

@@ -1,4 +1,5 @@
 import { cleanFeatures, STATION_FEATURES, SymbolPicker } from "../stations/features";
+import { useEngineText } from "../../i18n/engine";
 import { useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { update, updateSignal } from "./doc";
@@ -22,6 +23,7 @@ export function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Sig
   const set = (f: (x: Signal) => Signal) => a.setDoc(updateSignal(doc, sg.id, f, view.signals));
   const sv = view.signals.find((x) => x.id === sg.id);
   const notes = view.issues.filter((i) => i.ref_id === sg.id);
+  const issueText = useEngineText();
   const where =
     sg.at.type === "track"
       ? t("rail.signalOnTrack", { track: sg.at.track, at: fmtM(sg.at.s) })
@@ -41,7 +43,7 @@ export function SignalInspector({ sg, doc, view, actions: a }: Props & { sg: Sig
           key={k}
           className={`text-xs ${i.severity === "error" ? "text-red-700" : i.severity === "warning" ? "text-amber-700" : "text-slate-600"}`}
         >
-          {i.text}
+          {issueText(i)}
         </p>
       ))}
       <Row label={t("rail.kind")}>

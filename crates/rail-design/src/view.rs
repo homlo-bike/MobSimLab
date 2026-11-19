@@ -909,7 +909,7 @@ pub fn view(dz: &Design) -> Value {
     let issues: Vec<Value> = dz
         .issues
         .iter()
-        .map(|i| json!({"severity": i.severity, "text": i.text, "at": i.at.map(|a| ly.ll(a)), "ref_id": i.ref_id}))
+        .map(|i| json!({"severity": i.severity, "text": i.text, "msg": i.msg, "at": i.at.map(|a| ly.ll(a)), "ref_id": i.ref_id}))
         .collect();
 
     let all: Vec<P2> = dz

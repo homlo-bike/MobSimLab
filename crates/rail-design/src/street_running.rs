@@ -20,9 +20,9 @@
 
 use crate::design::Design;
 use crate::geom::{at_s, BBox, P2};
-use crate::issue::Issue;
+use crate::issue::{msg, Issue, Msg};
 use crate::model::Level;
-use crate::street::{Street, TramShare};
+use crate::street::{street_class, Street, TramShare};
 use serde::Serialize;
 
 /// Spacing of the samples along the track, m.
@@ -309,41 +309,40 @@ pub fn street_running(dz: &mut Design, streets: &[Street]) {
                 })
                 .map(|sg| sg.id)
                 .collect();
-            let name = if st.name.is_empty() {
-                format!("an unnamed {} street", st.class.replace('_', " "))
+            let name: Msg = if st.name.is_empty() {
+                msg!(
+                    "rail.street.unnamed_street",
+                    class = street_class(&st.class)
+                )
             } else {
-                st.name.clone()
+                msg!("rail.street.named", name = st.name.clone())
             };
             let at = Some(at_s(&g.centre, mid).p);
             let len = b - a;
             let how = match running {
-                Running::Reserved if set => format!(
-                    "in its own lane{} (set in the GIS tab)",
-                    if st.separated {
-                        ", separated from the traffic"
-                    } else {
-                        ""
-                    }
-                ),
-                Running::Reserved => format!(
-                    "in its own lane ({tram_lane:.1} m), with a road lane each way beside it"
-                ),
-                Running::Mixed if set => format!(
-                    "in the traffic lanes, shared with cars{} (set in the GIS tab)",
-                    if st.bus { " and buses" } else { "" },
-                ),
-                Running::Mixed => format!(
-                    "in the traffic lanes, shared with cars{}: the street is about {width:.1} m wide and a tram lane with road lanes beside it needs {:.1} m",
-                    if st.bus { " and buses" } else { "" },
-                    tram_lane + road_lanes
-                ),
-                Running::PedestrianZone => "through a pedestrian zone".to_string(),
+                Running::Reserved if set && st.separated => {
+                    msg!("rail.street_running.own_lane_separated_set")
+                }
+                Running::Reserved if set => msg!("rail.street_running.own_lane_set"),
+                Running::Reserved => {
+                    msg!(
+                        "rail.street_running.own_lane",
+                        width = format!("{tram_lane:.1} m")
+                    )
+                }
+                Running::Mixed if set && st.bus => msg!("rail.street_running.mixed_bus_set"),
+                Running::Mixed if set => msg!("rail.street_running.mixed_set"),
+                Running::Mixed => crate::issue::Msg::new(if st.bus {
+                    "rail.street_running.mixed_bus_narrow"
+                } else {
+                    "rail.street_running.mixed_narrow"
+                })
+                .arg("width", format!("{width:.1} m"))
+                .arg("needed", format!("{:.1} m", tram_lane + road_lanes)),
+                Running::PedestrianZone => msg!("rail.street_running.pedestrian_zone"),
             };
-            let speed = if p.design_speed_kmh > limit + 0.5 {
-                format!(", at up to {limit:.0} km/h (the street's speed limit)")
-            } else {
-                String::new()
-            };
+            let fast = p.design_speed_kmh > limit + 0.5;
+            let limit_text = format!("{limit:.0} km/h");
             let busy = matches!(
                 st.class.as_str(),
                 "trunk" | "primary" | "secondary" | "trunk_link" | "primary_link"
@@ -355,33 +354,63 @@ pub fn street_running(dz: &mut Design, streets: &[Street]) {
             };
             if running == Running::Mixed && busy {
                 iss.push(Issue::warning(
-                    format!(
-                        "The tram runs {len:.0} m along {name} {how}. On a main road the tram is held up in traffic jams and can be stuck in gridlock, so it runs late (about {:.0} % longer here at peak). Give it its own lane, separated from the traffic, in the GIS tab (move parking or a road lane), or use traffic signals that let the tram go first.",
-                        delay * 100.0
+                    msg!(
+                        "rail.street_running.mixed_main_road",
+                        length = format!("{len:.0} m"),
+                        name = name.clone(),
+                        how = how.clone(),
+                        delay = format!("{:.0} %", delay * 100.0)
                     ),
                     at,
                     g.id,
                 ));
             } else if running == Running::Reserved && busy && !st.separated {
                 iss.push(Issue::info(
-                    format!(
-                        "The tram runs {len:.0} m along {name} {how}{speed}. The lane is only painted, so turning, parking and loading cars still get in the way (about {:.0} % longer here at peak); a kerb or separate track bed (separation in the GIS tab) keeps them out.",
-                        delay * 100.0
-                    ),
+                    if fast {
+                        msg!(
+                            "rail.street_running.painted_lane_limited",
+                            length = format!("{len:.0} m"),
+                            name = name.clone(),
+                            how = how.clone(),
+                            limit = limit_text.clone(),
+                            delay = format!("{:.0} %", delay * 100.0)
+                        )
+                    } else {
+                        msg!(
+                            "rail.street_running.painted_lane",
+                            length = format!("{len:.0} m"),
+                            name = name.clone(),
+                            how = how.clone(),
+                            delay = format!("{:.0} %", delay * 100.0)
+                        )
+                    },
                     at,
                     Some(g.id),
                 ));
             } else {
                 iss.push(Issue::info(
-                    format!("The tram runs {len:.0} m along {name} {how}{speed}."),
+                    if fast {
+                        msg!(
+                            "rail.street_running.runs_along_limited",
+                            length = format!("{len:.0} m"),
+                            name = name.clone(),
+                            how = how.clone(),
+                            limit = limit_text.clone()
+                        )
+                    } else {
+                        msg!(
+                            "rail.street_running.runs_along",
+                            length = format!("{len:.0} m"),
+                            name = name.clone(),
+                            how = how.clone()
+                        )
+                    },
                     at,
                     Some(g.id),
                 ));
             }
             if running == Running::Mixed && !st.bike_lane {
-                let text = format!(
-                    "Cyclists on {name} ride along the tram rails: a wheel caught in the groove is a common cause of falls. A bike lane beside the track (GIS tab) keeps them off the rails."
-                );
+                let text = msg!("rail.street_running.cyclists_rails", name = name.clone());
                 iss.push(if busy {
                     Issue::warning(text, at, g.id)
                 } else {
@@ -396,19 +425,22 @@ pub fn street_running(dz: &mut Design, streets: &[Street]) {
                     continue;
                 };
                 let text = if doc.island_platforms > 0 && running != Running::PedestrianZone {
-                    format!(
-                        "Tram stop {} on {name} has an island platform in the middle of the street: passengers reach it over the road lanes, so it needs a signalled pedestrian crossing at its end.",
-                        doc.name
+                    msg!(
+                        "rail.street_running.stop_island",
+                        stop = doc.name.clone(),
+                        name = name.clone()
                     )
                 } else if running == Running::Mixed {
-                    format!(
-                        "Tram stop {} on {name}: passengers board from the pavement (a kerb stop), and road traffic waits behind the tram while it stands at the stop.",
-                        doc.name
+                    msg!(
+                        "rail.street_running.stop_kerb",
+                        stop = doc.name.clone(),
+                        name = name.clone()
                     )
                 } else {
-                    format!(
-                        "Tram stop {} on {name}: passengers board from platforms beside the tracks.",
-                        doc.name
+                    msg!(
+                        "rail.street_running.stop_platforms",
+                        stop = doc.name.clone(),
+                        name = name.clone()
                     )
                 };
                 iss.push(Issue::info(text, Some(sg.centre), Some(*sid)));

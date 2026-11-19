@@ -1,3 +1,4 @@
+import { useEngineText } from "../../i18n/engine";
 import { Fragment, type ReactNode, useMemo, useState } from "react";
 import { card, fmtQty, num, type Sort, SortHeader, sorted, td, th, Tile } from "../costs/CostTables";
 import { EnergySection } from "../energy/EnergySection";
@@ -79,6 +80,7 @@ export function NetworkTables({
   fetchHeights,
 }: Props) {
   const { t } = useI18n();
+  const engineText = useEngineText();
   const { build, error } = useRailBuild(railway, loadRail, fetchHeights);
   const prefs = preferences?.values;
   const lines = streetLines?.lines ?? [];
@@ -97,8 +99,9 @@ export function NetworkTables({
         ropeways,
         ferries,
         t,
+        engineText,
       }),
-    [railway, build, lines, prefs, ropeways, ferries, t],
+    [railway, build, lines, prefs, ropeways, ferries, t, engineText],
   );
   const q = useMemo(() => quantities(railway, build?.view ?? null, lines, t), [railway, build, lines, t]);
   const waiting = !!railway?.tracks.length && !build && !error;

@@ -13,7 +13,7 @@
 
 use crate::design::Design;
 use crate::geom::{poly_cross, BBox, Sample, P2};
-use crate::issue::Issue;
+use crate::issue::{msg, Issue, Msg};
 use crate::model::Level;
 use crate::params::defaults;
 use crate::params::{ModeParams, RailMode};
@@ -94,6 +94,14 @@ impl PathUse {
     /// Purpose: whether cyclists use the path.
     pub fn cycle(self) -> bool {
         matches!(self, PathUse::Cycle | PathUse::FootCycle)
+    }
+    /// Purpose: the users as a message (shown in the user's language).
+    pub fn label_msg(self) -> Msg {
+        Msg::new(match self {
+            PathUse::Foot => "rail.street.users.foot",
+            PathUse::Cycle => "rail.street.users.cycle",
+            PathUse::FootCycle => "rail.street.users.foot_cycle",
+        })
     }
     /// Purpose: the users in words ("people on foot and cyclists").
     pub fn label(self) -> &'static str {
@@ -468,18 +476,19 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                 }
                 let order = g.order_at(s);
                 let level = g.level_at(s);
-                let name = if !st.name.is_empty() {
-                    st.name.clone()
+                let name: Msg = if !st.name.is_empty() {
+                    msg!("rail.street.named", name = st.name.clone())
                 } else if st.path.is_some() {
-                    format!("an unnamed {}", st.class.replace('_', " "))
+                    msg!("rail.street.unnamed_path", class = street_class(&st.class))
                 } else {
-                    format!("an unnamed {} street", st.class.replace('_', " "))
+                    msg!(
+                        "rail.street.unnamed_street",
+                        class = street_class(&st.class)
+                    )
                 };
                 if level.is_none() && order == Level::Street.order() {
                     iss.push(Issue::error(
-                        format!(
-                            "{name} crosses the track on its ramp, where the track is neither at street level nor deep or high enough to pass under or over the street. Move the ramp away from the street."
-                        ),
+                        msg!("rail.street.crosses_ramp", name = name.clone()),
                         Some(h.p),
                         g.id,
                     ));
@@ -528,51 +537,74 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                 };
                 // Crossings outside the usual rules are possible with special safety measures,
                 // so they are warnings that say which measures, not errors.
-                let mut special: Vec<(&'static str, String)> = Vec::new();
+                let mut special: Vec<(&'static str, Msg)> = Vec::new();
                 if p.level_crossing_permitted == "no" {
-                    special.push(("mode", format!(
-                        "{} track crosses {name} on the level. {} lines normally have no level crossings. This one needs full barriers, obstacle detection and train protection that stops trains while the crossing is not clear. Consider {}.",
-                        p.label, p.label,
-                        if st.path.is_some() { "a footbridge or an underpass" } else { "taking the track under or over the street" }
-                    )));
+                    special.push((
+                        "mode",
+                        if st.path.is_some() {
+                            msg!(
+                                "rail.street.mode_no_crossing_path",
+                                mode = mode.label_msg(),
+                                name = name.clone()
+                            )
+                        } else {
+                            msg!(
+                                "rail.street.mode_no_crossing_street",
+                                mode = mode.label_msg(),
+                                name = name.clone()
+                            )
+                        },
+                    ));
                 }
                 if third_rail {
-                    special.push(("third_rail", format!(
-                        "This track crosses {name} on the level with a third rail, which would be live where road vehicles and people cross. It needs a gap in the third rail across the crossing (trains coast over it) with insulated ends and fencing, or overhead line on this stretch."
-                    )));
+                    special.push((
+                        "third_rail",
+                        msg!("rail.street.third_rail", name = name.clone()),
+                    ));
                 }
                 if matches!(st.class.as_str(), "motorway" | "motorway_link") {
-                    special.push(("motorway", format!(
-                        "{name} is a motorway, and motorways normally have no level crossings. This one needs full barriers across every lane, obstacle detection and advance warning signs and signals well before the crossing. Consider a bridge."
-                    )));
+                    special.push((
+                        "motorway",
+                        msg!("rail.street.motorway", name = name.clone()),
+                    ));
                 }
                 if line_speed > p.level_crossing_max_speed_kmh + 0.5 {
-                    special.push(("line_speed", format!(
-                        "The line speed over the level crossing with {name} is {line_speed:.0} km/h, above the usual limit of {:.0} km/h. It needs full barriers with obstacle detection tied to the signals, so trains stop while the crossing is not clear, or a lower speed there.",
-                        p.level_crossing_max_speed_kmh
-                    )));
+                    special.push((
+                        "line_speed",
+                        msg!(
+                            "rail.street.line_speed",
+                            name = name.clone(),
+                            speed = format!("{line_speed:.0} km/h"),
+                            limit = format!("{:.0} km/h", p.level_crossing_max_speed_kmh)
+                        ),
+                    ));
                 }
                 let standard = special.is_empty();
                 let special_measures: Vec<&'static str> = special.iter().map(|x| x.0).collect();
                 iss.extend(
                     special
                         .into_iter()
-                        .map(|(_, text)| Issue::warning(text, Some(h.p), g.id)),
+                        .map(|(_, m)| Issue::warning(m, Some(h.p), g.id)),
                 );
                 let cycle_angle = p.level_crossing_cycle_min_angle_deg;
                 if st.path.is_some_and(|u| u.cycle()) && deg < cycle_angle {
                     iss.push(Issue::warning(
-                        format!(
-                            "{name} crosses the track at {deg:.0}°, flatter than {cycle_angle:.0}°: a bicycle wheel can drop into the gap beside the rail and the rider falls. Bend the path so it meets the track nearer a right angle."
+                        msg!(
+                            "rail.street.cycle_angle",
+                            name = name.clone(),
+                            angle = format!("{deg:.0}°"),
+                            limit = format!("{cycle_angle:.0}°")
                         ),
                         Some(h.p),
                         g.id,
                     ));
                 } else if !(mode.street_running() && embedded) && h.angle < min_angle {
                     iss.push(Issue::warning(
-                        format!(
-                            "{name} crosses the track at {deg:.0}°, flatter than {:.0}°: the crossing is long and drivers cannot see along the line. Cross nearer to a right angle.",
-                            p.level_crossing_min_angle_deg
+                        msg!(
+                            "rail.street.flat_angle",
+                            name = name.clone(),
+                            angle = format!("{deg:.0}°"),
+                            limit = format!("{:.0}°", p.level_crossing_min_angle_deg)
                         ),
                         Some(h.p),
                         g.id,
@@ -583,16 +615,20 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                     let label = sys.map_or(p.electrification.clone(), |s| s.label.clone());
                     if sys.is_some_and(|s| s.current == "ac") {
                         iss.push(Issue::warning(
-                            format!(
-                                "The trolleybus wires on {name} cannot cross the railway's overhead line ({label}): trolleybuses lower their poles and cross on battery here."
+                            msg!(
+                                "rail.street.trolley_ac",
+                                name = name.clone(),
+                                system = label.clone()
                             ),
                             Some(h.p),
                             g.id,
                         ));
                     } else {
                         iss.push(Issue::warning(
-                            format!(
-                                "The trolleybus wires on {name} cross the railway's overhead line ({label}): this needs an insulated crossing of the trolleybus and railway wires."
+                            msg!(
+                                "rail.street.trolley_dc",
+                                name = name.clone(),
+                                system = label.clone()
                             ),
                             Some(h.p),
                             g.id,
@@ -601,27 +637,36 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
                 }
                 {
                     let how = match protection {
-                        Protection::Barriers => format!(
-                            "barriers close the street {warning:.0} s before a train ({:.0} m before the crossing at {line_speed:.0} km/h)",
-                            warning * line_speed / 3.6
+                        Protection::Barriers => msg!(
+                            "rail.street.how.barriers",
+                            warning = format!("{warning:.0} s"),
+                            distance = format!("{:.0} m", warning * line_speed / 3.6),
+                            speed = format!("{line_speed:.0} km/h")
                         ),
-                        Protection::TrafficSignals => {
-                            "traffic signals stop road traffic for the tram".to_string()
+                        Protection::TrafficSignals => msg!("rail.street.how.traffic_signals"),
+                        Protection::PathGates => {
+                            msg!(
+                                "rail.street.how.path_gates",
+                                warning = format!("{warning:.0} s")
+                            )
                         }
-                        Protection::PathGates => format!(
-                            "lights and pedestrian gates or a maze close the path {warning:.0} s before a train"
-                        ),
-                        Protection::Marked => {
-                            "a marked crossing with warning signs, where people look out for the tram".to_string()
-                        }
+                        Protection::Marked => msg!("rail.street.how.marked"),
                     };
                     let text = match st.path {
-                        Some(u) => format!(
-                            "Path crossing with {name} for {} at {deg:.0}°: {how}. They wait {keep_clear:.1} m from the crossing point.",
-                            u.label()
+                        Some(u) => msg!(
+                            "rail.street.path_crossing",
+                            name = name.clone(),
+                            users = u.label_msg(),
+                            angle = format!("{deg:.0}°"),
+                            how = how,
+                            distance = format!("{keep_clear:.1} m")
                         ),
-                        None => format!(
-                            "Level crossing with {name} at {deg:.0}°: {how}. Buses and other road vehicles wait {keep_clear:.1} m from the crossing point and never stop on the track."
+                        None => msg!(
+                            "rail.street.level_crossing",
+                            name = name.clone(),
+                            angle = format!("{deg:.0}°"),
+                            how = how,
+                            distance = format!("{keep_clear:.1} m")
                         ),
                     };
                     iss.push(Issue::info(text, Some(h.p), Some(g.id)));
@@ -664,6 +709,41 @@ pub fn level_crossings(dz: &mut Design, streets: &[Street]) {
     dz.level_crossings = out;
     dz.issues.extend(iss);
 }
+
+/// Purpose: a street's OpenStreetMap class as a message, or its words when the class is not a common one.
+pub(crate) fn street_class(class: &str) -> engine_msg::Arg {
+    if STREET_CLASSES.contains(&class) {
+        Msg::new(&format!("osm.highway.{class}")).into()
+    } else {
+        class.replace('_', " ").into()
+    }
+}
+
+/// OpenStreetMap street and path classes the messages name in the user's language.
+const STREET_CLASSES: [&str; 22] = [
+    "motorway",
+    "motorway_link",
+    "trunk",
+    "trunk_link",
+    "primary",
+    "primary_link",
+    "secondary",
+    "secondary_link",
+    "tertiary",
+    "tertiary_link",
+    "unclassified",
+    "residential",
+    "living_street",
+    "service",
+    "pedestrian",
+    "track",
+    "road",
+    "busway",
+    "footway",
+    "cycleway",
+    "path",
+    "bridleway",
+];
 
 #[cfg(test)]
 mod tests {
