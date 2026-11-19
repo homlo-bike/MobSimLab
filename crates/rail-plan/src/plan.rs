@@ -79,13 +79,13 @@ pub struct PlanParams {
 
 impl Default for PlanParams {
     /// Purpose: metro planning defaults (min buffer from the assumption library's
-    /// metro value, 2 min shift, 15 min for depot moves, 20 min idle limit).
+    /// metro value, 4 min shift (2 min left too many trips out where lines of different headways share track, Damascus test), 15 min for depot moves, 20 min idle limit).
     fn default() -> Self {
         Self {
             blocking: BlockingParams::default(),
             min_buffer_s: 20.0,
             stop_margin_m: 5.0,
-            max_shift_s: 120.0,
+            max_shift_s: 240.0,
             max_depot_shift_s: 900.0,
             max_idle_s: 1200.0,
             alternative_penalty_m: 500.0,
