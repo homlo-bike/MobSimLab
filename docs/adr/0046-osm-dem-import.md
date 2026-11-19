@@ -18,9 +18,11 @@ a fallback, an Open-Elevation fallback, and every limit adjustable.
 
 ## Decision
 
-1. **Area.** The project area is the box around every coordinate in the project's drawings, grown by the
-   project's buffer. An import records the box it covered. When the drawing reaches outside it, the panel says so
-   and the planner refreshes; nothing imports by itself.
+1. **Area.** The project area is the polygons the planner draws in the area window (New project, Select area;
+   Preferences, Edit area), each with a detail setting (Full, or Main roads and railways only). Since 2026-11-19
+   there is no buffer and no area from the drawing. An import records the box it covered, which is the box round the
+   polygons until imports follow the polygons themselves. Nothing outside the polygons imports by itself: a GIS
+   region reaching outside asks before downloading, and editing the area asks before downloading new parts.
 2. **Two OpenStreetMap paths, one result.** Areas up to `MOBSIMLAB_OSM_OVERPASS_MAX_KM2` (400 km²) come from the
    Overpass API in tiles (`MOBSIMLAB_OSM_OVERPASS_TILE_KM`, split into quarters on a timeout or size error down to
    `..._MIN_TILE_KM`, one request every `..._INTERVAL_S`, cached for `MOBSIMLAB_OSM_CACHE_DAYS`). Larger areas, up
@@ -57,5 +59,5 @@ a fallback, an Open-Elevation fallback, and every limit adjustable.
 
 - A project's map data has a fixed date until the planner refreshes it, and works when the public servers are down.
 - The data volume holds the Geofabrik downloads and each project's extract; the database holds the tables.
-- The project area and its buffer are shared with the population import (`projects/project-area.ts`); changing
-  the buffer in either view changes it for both, and the Map data view then asks for a refresh.
+- The project area is shared with the population import (`projects/project-area.ts`); it is changed only in the
+  area window, and the Map data view then asks for a refresh.

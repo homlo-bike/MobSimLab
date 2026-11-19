@@ -6,9 +6,6 @@ export const geodataPl = {
   "data.title": "Dane mapy",
   "data.intro":
     "OpenStreetMap i wysokości dla tego projektu, zapisane z projektem. Narzędzia ulic, kolei, budynków, wód i terenu czytają je, zamiast za każdym razem pytać OpenStreetMap i serwer wysokości.",
-  "data.noArea":
-    "Najpierw narysuj coś w projekcie: import obejmuje prostokąt wokół wszystkiego, co narysowano, plus bufor.",
-  "data.area": "Obszar: {area} km², prostokąt wokół wszystkiego, co narysowano, plus {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Wysokości",
   "data.notImported": "Jeszcze nie zaimportowano.",
@@ -55,18 +52,6 @@ export const geodataPl = {
   "data.ownReplace": "Zastąp innym plikiem GeoTIFF (do {max} MB)",
   "data.remove": "Usuń",
   "area.title": "Obszar projektu",
-  "area.intro":
-    "Wyszukaj miejsce i zaznacz regiony OpenStreetMap, które obejmuje projekt. Obszar projektu to wszystkie razem. Zapisanie go raz importuje dla obszaru OpenStreetMap, wysokości i ludność, a wszystkie narzędzia z nich korzystają.",
-  "area.search": "Szukaj miejsca, np. Aleppo, Syria",
-  "area.lookingUp": "Wyszukiwanie regionów w {place}…",
-  "area.regionsAt": "Regiony w {place}",
-  "area.noRegions": "Brak nazwanych regionów. Spróbuj innego miejsca.",
-  "area.none": "Nie wybrano regionu: obszar to prostokąt wokół wszystkiego, co narysowano, plus bufor.",
-  "area.remove": "Usuń {name}",
-  "area.total": "Łącznie około {area} km²",
-  "area.outline": "Zarys wybranych regionów",
-  "area.save": "Zapisz obszar i importuj dane",
-  "area.saved": "Obszar zapisany.",
   "area.import.queued": "{what}: import rozpoczęty",
   "area.import.current": "{what}: już zaimportowano",
   "area.import.failed": "{what}: nie udało się rozpocząć. {reason}",
@@ -77,5 +62,4 @@ export const geodataPl = {
     "{tiles} kafelków mapy i {heights} wysokości pobrano na żywo spoza zaimportowanych danych projektu. Są teraz zapisane w projekcie; rozszerz import, aby objął cały rysunek.",
   "data.extendImport": "Rozszerz import w Danych mapy",
   "data.hideLive": "Ukryj",
-  "data.areaRegions": "Obszar: {area} km², prostokąt wokół {names}",
 } satisfies GeodataMessages;

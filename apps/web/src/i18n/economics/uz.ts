@@ -245,8 +245,6 @@ export const economicsUz = {
   "reg.importFailed": "{what} ni boshlab bo‘lmadi: {reason}.",
   "reg.unknownReason": "noma’lum sabab",
   "reg.defaultName": "Hudud {n}",
-  "reg.areaFull":
-    "Loyiha hududi allaqachon eng ko‘p {max} ta hududni birlashtiradi; buni Loyiha sozlamalarida o‘zgartiring.",
   "reg.areaFailed": "Loyiha hududini o‘zgartirib bo‘lmadi: {error}",
   "reg.title": "Hududlar",
   "reg.intro":
@@ -269,11 +267,6 @@ export const economicsUz = {
   "reg.noAreas": "Bu yerda nomli maydonlar yo‘q. Boshqa joyni sinab ko‘ring yoki o‘zingiz chizing.",
   "reg.km2": "{v} km²",
   "reg.outside": "Loyiha hududidan tashqaridagi hudud",
-  "reg.outsideNote":
-    "{name} loyiha hududidan chiqib ketadi, shuning uchun loyiha uchun yuklab olingan xarita ma’lumotlari uni qamramasligi mumkin. Loyiha hududiga qo‘shilsinmi? Kattaroq maydon uchun OpenStreetMap, relyef balandligi va aholi yuklab olinadi.",
-  "reg.adding": "Qo‘shilmoqda…",
-  "reg.addToArea": "Loyiha hududiga qo‘shish",
-  "reg.importOnly": "Hududni o‘zgartirmasdan import",
   "reg.inProject": "Bu loyihadagi hududlar",
   "reg.count": "Hududlar · {count}",
   "reg.none": "Hali yo‘q: foyda jadvallari hamma joyda manba ma’lumotlaridan foydalanadi.",

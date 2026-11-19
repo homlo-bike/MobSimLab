@@ -26,7 +26,6 @@ import { type Bbox, PopulationService } from "./population.service";
 import { uploadMeta } from "./uploads";
 
 const uuid = z.uuid();
-const bufferBody = z.strictObject({ bufferKm: z.number().min(0).max(50) });
 const primaryBody = z.strictObject({ layerId: z.uuid().nullable() });
 const patchBody = layerDetails.partial().refine((b) => Object.keys(b).length > 0, "nothing to change");
 const lonLat = z.tuple([z.number().min(-180).max(180), z.number().min(-90).max(90)]);
@@ -84,13 +83,6 @@ export class PopulationLayersController {
   @Requires("projects.read")
   async overview(@Param("id") id: string, @Req() req: MslRequest) {
     return this.layers.overview(this.actor(req), parse(uuid, id));
-  }
-
-  /** Purpose: change the buffer round everything drawn. Body: `{ bufferKm }` (0 to 50). */
-  @Put("area")
-  @Requires("projects.read")
-  async setBuffer(@Param("id") id: string, @Body() body: unknown, @Req() req: MslRequest) {
-    return this.layers.setBuffer(this.actor(req), parse(uuid, id), parse(bufferBody, body).bufferKm);
   }
 
   /**

@@ -9,6 +9,7 @@ import { tablesMr } from "./tables/mr";
 import { economicsMr } from "./economics/mr";
 import { fleetMr } from "./fleet/mr";
 import { timetablesMr } from "./timetables/mr";
+import { areaMr } from "./area/mr";
 import { mslabMr } from "./mslab/mr";
 import { workspaceUiMr } from "./workspace-ui/mr";
 import { pluginCodeMr } from "./plugin-code/mr";
@@ -482,6 +483,7 @@ export const mr: Messages = {
   "map.group.noise": "आवाज नकाशा",
   "map.group.journey": "प्रवास नियोजक",
   "map.group.agents": "AI एजंट परिस्थिती",
+  "map.group.projectArea": "प्रकल्प क्षेत्र",
   "help.menu": "मदत",
   "help.tour": "ओळख फेरी घ्या",
   "help.tourHint": "प्रकल्पाच्या टॅब आणि साधनांची छोटी फेरी",
@@ -531,6 +533,7 @@ export const mr: Messages = {
   ...timetablesMr,
   ...commentsMr,
   ...mslabMr,
+  ...areaMr,
   ...workspaceUiMr,
   ...pluginCodeMr,
   ...populationMr,

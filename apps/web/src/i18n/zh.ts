@@ -9,6 +9,7 @@ import { tablesZh } from "./tables/zh";
 import { economicsZh } from "./economics/zh";
 import { fleetZh } from "./fleet/zh";
 import { timetablesZh } from "./timetables/zh";
+import { areaZh } from "./area/zh";
 import { mslabZh } from "./mslab/zh";
 import { workspaceUiZh } from "./workspace-ui/zh";
 import { pluginCodeZh } from "./plugin-code/zh";
@@ -466,6 +467,7 @@ export const zh: Messages = {
   "map.group.noise": "噪声地图",
   "map.group.journey": "出行规划",
   "map.group.agents": "AI 智能体场景",
+  "map.group.projectArea": "项目范围",
   "help.menu": "帮助",
   "help.tour": "开始导览",
   "help.tourHint": "简要浏览项目的选项卡和工具",
@@ -513,6 +515,7 @@ export const zh: Messages = {
   ...timetablesZh,
   ...commentsZh,
   ...mslabZh,
+  ...areaZh,
   ...workspaceUiZh,
   ...pluginCodeZh,
   ...populationZh,

@@ -10,11 +10,6 @@ export const populationPt = {
   "pop.failed": "Não foi possível carregar as camadas de população: {error}",
   "pop.retry": "Tentar de novo",
   "pop.area.title": "Área do projeto",
-  "pop.area.none":
-    "Desenhe primeiro uma linha, uma ferrovia, um depósito ou uma região: a área do projeto é o retângulo em torno de tudo o que foi desenhado.",
-  "pop.area.box": "O retângulo em torno de tudo o que foi desenhado, alargado pela margem: {km2} km².",
-  "pop.area.buffer": "Margem (km)",
-  "pop.area.save": "Guardar margem",
   "pop.area.tooLarge": "As importações cobrem no máximo {max} km²; reduza a margem ou desenhe menos.",
   "pop.primary.title": "População usada pelo projeto",
   "pop.primary.hint": "O mapa de ruído, a análise a pé e as tabelas de benefícios leem esta camada.",

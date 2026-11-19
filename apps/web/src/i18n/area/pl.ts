@@ -1,0 +1,84 @@
+import type { AreaMessages } from "./en";
+
+/** Project area messages (pl). */
+export const areaPl = {
+  "aw.title": "Obszar projektu",
+  "aw.editing": "Edycja obszaru projektu {name}",
+  "aw.search": "Wyszukaj miejsce, aby przesunąć mapę, np. Homs",
+  "aw.tools": "Narzędzia rysowania",
+  "aw.draw": "Rysuj wielokąt",
+  "aw.edit": "Edytuj punkty",
+  "aw.pan": "Przesuń",
+  "aw.hint.draw":
+    "Kliknij, aby dodać wierzchołki. Kliknij pierwszy wierzchołek lub naciśnij Enter, aby zamknąć wielokąt. Backspace usuwa ostatni wierzchołek.",
+  "aw.hint.edit":
+    "Kliknij wielokąt, aby go zaznaczyć. Przeciągnij wierzchołek, aby go przesunąć, przeciągnij punkt środkowy, aby dodać wierzchołek, kliknij dwukrotnie wierzchołek, aby go usunąć.",
+  "aw.hint.pan": "Przeciągnij, aby przesunąć mapę. Kliknij wielokąt, aby go zaznaczyć.",
+  "aw.statArea": "Powierzchnia",
+  "aw.statDownload": "Szacowane pobieranie",
+  "aw.mb": "{mb} MB",
+  "aw.limit": "Limit {mb} MB",
+  "aw.overLimit":
+    "Obszar zawiera więcej danych mapy niż {mb} MB dozwolone dla projektu. Zmniejsz go albo ustaw wielokąty wzdłuż tras na tylko główne drogi i koleje.",
+  "aw.polygons": "Wielokąty",
+  "aw.empty":
+    "Brak wielokątów. Narysuj jeden wokół każdego miejsca objętego projektem i wąski wzdłuż każdej trasy międzymiastowej.",
+  "aw.detail.full": "Pełny",
+  "aw.detail.main": "Tylko główne drogi i koleje",
+  "aw.polyLine": "{detail} · {area} km²",
+  "aw.name": "Nazwa",
+  "aw.detail": "Szczegółowość",
+  "aw.fullHelp": "Ulice, ścieżki, budynki, szkoły i szpitale, ludność w siatce 100 m, teren.",
+  "aw.mainHelp":
+    "Autostrady, drogi ekspresowe i główne, koleje, teren, ludność w siatce 1 km. Bez budynków: miejscowości na trasie narysuj jako Pełny, aby mieć mapę hałasu i dojścia piesze.",
+  "aw.delete": "Usuń wielokąt",
+  "aw.newName": "Obszar {n}",
+  "aw.save": "Zapisz obszar",
+  "aw.confirm.title": "Pobrać dane mapy dla nowych części?",
+  "aw.confirm.body":
+    "Nowe lub zmienione: {list}. Potrzebują około {mb} MB. Usunięte części nie są już używane. Nic nie zostanie pobrane, dopóki nie potwierdzisz.",
+  "aw.confirm.item": "{name} ({detail}, {area} km²)",
+  "aw.confirm.back": "Wróć do mapy",
+  "aw.confirm.save": "Zapisz i pobierz {mb} MB",
+  "aw.select": "Wybierz obszar",
+  "aw.selectHint": "Narysuj granice projektu na mapie. Dane mapy są pobierane tylko wewnątrz nich.",
+  "aw.change": "Zmień obszar",
+  "aw.download": "około {mb} MB danych mapy",
+  "aw.outline": "Zarys obszaru projektu",
+  "aw.prefsIntro":
+    "Wielokąty narysowane wokół projektu. Dane mapy są pobierane tylko wewnątrz nich, ze szczegółowością każdego wielokąta.",
+  "aw.dataFrom": "Dane mapy z {date}",
+  "aw.noData": "Dane mapy jeszcze nie pobrane",
+  "aw.editArea": "Edytuj obszar",
+  "aw.drawArea": "Narysuj obszar",
+  "aw.refresh": "Odśwież dane mapy",
+  "aw.refreshHelp":
+    "Odświeżenie pobiera aktualne dane OpenStreetMap dla tego samego obszaru; do tego czasu plan zachowuje datę swoich danych.",
+  "aw.none": "Brak obszaru projektu. Narysuj go, aby narzędzia miały dane mapy.",
+  "aw.saved": "Obszar zapisany.",
+  "aw.data.noArea": "Najpierw narysuj obszar projektu w Preferencjach projektu: importy go obejmują.",
+  "aw.data.area": "Obszar projektu: {names}. Importy obejmują prostokąt wokół niego, {area} km².",
+  "aw.pop.none": "Brak obszaru projektu. Narysuj go w Preferencjach projektu.",
+  "aw.pop.box": "Prostokąt wokół obszaru projektu: {km2} km².",
+  "aw.tiles.one": "{count} kafelek mapy",
+  "aw.tiles.few": "{count} kafelki mapy",
+  "aw.tiles.many": "{count} kafelków mapy",
+  "aw.tiles.other": "{count} kafelka mapy",
+  "aw.count.one": "{count} wielokąt",
+  "aw.count.few": "{count} wielokąty",
+  "aw.count.many": "{count} wielokątów",
+  "aw.count.other": "{count} wielokąta",
+  "aw.out.title": "Pobrać dane mapy poza obszarem projektu?",
+  "aw.out.note":
+    "Region {name} wychodzi poza obszar projektu. Jego zewnętrzna część wymaga nowych danych mapy.",
+  "aw.out.part": "Część zewnętrzna",
+  "aw.out.km2": "około {km2} km²",
+  "aw.out.detail": "Szczegółowość części zewnętrznej",
+  "aw.out.overLimit":
+    "Wtedy obszar projektu zawiera więcej danych mapy niż {mb} MB dozwolone dla projektu. Wybierz tylko główne drogi i linie kolejowe albo zmniejsz obszar w ustawieniach projektu.",
+  "aw.out.adds":
+    "Pobranie dodaje region do obszaru projektu jako nowy wielokąt, który można później edytować w oknie obszaru.",
+  "aw.out.keep": "Zachowaj region bez pobierania",
+  "aw.out.download": "Pobierz {mb} MB",
+  "aw.out.downloading": "Pobieranie…",
+} satisfies AreaMessages;

@@ -242,8 +242,6 @@ export const economicsEn = {
   "reg.importFailed": "{what} could not start: {reason}.",
   "reg.unknownReason": "unknown reason",
   "reg.defaultName": "Region {n}",
-  "reg.areaFull":
-    "The project area already joins {max} regions, the most it can. Change it in Project preferences.",
   "reg.areaFailed": "The project area could not be changed: {error}",
   "reg.title": "Regions",
   "reg.intro":
@@ -266,11 +264,6 @@ export const economicsEn = {
   "reg.noAreas": "No named areas here. Try another place, or draw one.",
   "reg.km2": "{v} km²",
   "reg.outside": "Region outside the project area",
-  "reg.outsideNote":
-    "{name} reaches outside the project area, so the map data downloaded for the project may not cover it. Add it to the project area? This downloads the OpenStreetMap data, terrain heights and population the larger area needs.",
-  "reg.adding": "Adding…",
-  "reg.addToArea": "Add to project area",
-  "reg.importOnly": "Import without changing the area",
   "reg.inProject": "Regions in this project",
   "reg.count": "Regions · {count}",
   "reg.none": "None yet: the benefit tables use the sourced data everywhere.",

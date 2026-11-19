@@ -6,9 +6,6 @@ export const geodataDe = {
   "data.title": "Kartendaten",
   "data.intro":
     "OpenStreetMap und Höhendaten für dieses Projekt, im Projekt gespeichert. Die Straßen-, Bahn-, Gebäude-, Gewässer- und Geländewerkzeuge lesen sie, statt jedes Mal OpenStreetMap und den Höhenserver zu fragen.",
-  "data.noArea":
-    "Zeichnen Sie zuerst etwas im Projekt: Der Import umfasst das Rechteck um alles Gezeichnete plus einen Puffer.",
-  "data.area": "Gebiet: {area} km², das Rechteck um alles Gezeichnete plus {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Höhen",
   "data.notImported": "Noch nicht importiert.",
@@ -56,18 +53,6 @@ export const geodataDe = {
   "data.ownReplace": "Durch ein anderes GeoTIFF ersetzen (bis {max} MB)",
   "data.remove": "Entfernen",
   "area.title": "Projektgebiet",
-  "area.intro":
-    "Suchen Sie einen Ort und haken Sie die OpenStreetMap-Gebiete an, die das Projekt umfasst. Das Projektgebiet ist alle zusammen. Beim Speichern werden OpenStreetMap, Höhen und Bevölkerung einmal für das Gebiet importiert, und alle Werkzeuge nutzen sie.",
-  "area.search": "Ort suchen, etwa Aleppo, Syrien",
-  "area.lookingUp": "Gebiete bei {place} werden gesucht…",
-  "area.regionsAt": "Gebiete bei {place}",
-  "area.noRegions": "Hier gibt es keine benannten Gebiete. Versuchen Sie einen anderen Ort.",
-  "area.none": "Kein Gebiet gewählt: Das Gebiet ist das Rechteck um alles Gezeichnete plus ein Puffer.",
-  "area.remove": "{name} entfernen",
-  "area.total": "Insgesamt etwa {area} km²",
-  "area.outline": "Umriss der gewählten Gebiete",
-  "area.save": "Gebiet speichern und Daten importieren",
-  "area.saved": "Gebiet gespeichert.",
   "area.import.queued": "{what}: Import gestartet",
   "area.import.current": "{what}: bereits importiert",
   "area.import.failed": "{what}: konnte nicht starten. {reason}",
@@ -79,5 +64,4 @@ export const geodataDe = {
     "{tiles} Kartenkacheln und {heights} Höhen kamen live von außerhalb der importierten Projektdaten. Sie bleiben jetzt im Projekt; erweitere den Import, damit er die ganze Zeichnung abdeckt.",
   "data.extendImport": "Import in Kartendaten erweitern",
   "data.hideLive": "Ausblenden",
-  "data.areaRegions": "Gebiet: {area} km², das Rechteck um {names}",
 } satisfies GeodataMessages;

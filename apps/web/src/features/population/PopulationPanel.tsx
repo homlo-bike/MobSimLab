@@ -234,7 +234,7 @@ export function PopulationPanel({ map, panel, api, editable, onPrimaryChange }: 
   return panel ? createPortal(body, panel) : body;
 }
 
-/** The project area's size here; its buffer is set in GIS → Map data only. */
+/** The size of the box round the project area, which the import covers; the area is drawn in Project preferences. */
 function AreaSection({ overview }: { overview: PopulationOverview }) {
   const { t } = useI18n();
   const tooLarge = overview.areaKm2 !== null && overview.areaKm2 > overview.choices.maxAreaKm2;
@@ -245,10 +245,10 @@ function AreaSection({ overview }: { overview: PopulationOverview }) {
       </h3>
       {overview.area ? (
         <p className="text-sm text-slate-600">
-          {t("pop.area.box", { km2: formatInt(Math.round(overview.areaKm2 ?? 0)) })}
+          {t("aw.pop.box", { km2: formatInt(Math.round(overview.areaKm2 ?? 0)) })}
         </p>
       ) : (
-        <p className="text-sm text-amber-800">{t("pop.area.none")}</p>
+        <p className="text-sm text-amber-800">{t("aw.pop.none")}</p>
       )}
       {tooLarge && (
         <p className="text-sm text-amber-800">

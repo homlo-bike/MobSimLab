@@ -8,9 +8,6 @@ export const geodataEn = {
   "data.title": "Map data",
   "data.intro":
     "OpenStreetMap and elevation for this project, kept with the project. The street, railway, building, water and terrain tools read them instead of asking OpenStreetMap and the elevation server every time.",
-  "data.noArea":
-    "Draw something in the project first: the import covers the box around everything drawn, plus a buffer.",
-  "data.area": "Area: {area} km², the box around everything drawn plus {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Elevation",
   "data.notImported": "Not imported yet.",
@@ -57,18 +54,6 @@ export const geodataEn = {
   "data.ownReplace": "Replace with another GeoTIFF (up to {max} MB)",
   "data.remove": "Remove",
   "area.title": "Project area",
-  "area.intro":
-    "Search a place and tick the OpenStreetMap regions the project covers. The project area is all of them together. Saving it imports OpenStreetMap, elevation and population for the area once, and every tool uses them.",
-  "area.search": "Search a place, such as Aleppo, Syria",
-  "area.lookingUp": "Looking up the regions at {place}…",
-  "area.regionsAt": "Regions at {place}",
-  "area.noRegions": "No named regions here. Try another place.",
-  "area.none": "No region chosen: the area is the box around everything drawn, plus a buffer.",
-  "area.remove": "Remove {name}",
-  "area.total": "About {area} km² in all",
-  "area.outline": "Outline of the chosen regions",
-  "area.save": "Save area and import data",
-  "area.saved": "Area saved.",
   "area.import.queued": "{what}: import started",
   "area.import.current": "{what}: already imported",
   "area.import.failed": "{what}: could not start. {reason}",
@@ -79,7 +64,6 @@ export const geodataEn = {
     "{tiles} map tiles and {heights} heights came live from outside the project's imported data. They are kept for the project now; extend the import to cover the whole drawing.",
   "data.extendImport": "Extend the import in Map data",
   "data.hideLive": "Hide",
-  "data.areaRegions": "Area: {area} km², the box around {names}",
 };
 
 /** A language's Map data messages: every key of the English ones. */

@@ -1,6 +1,7 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useRef, useState } from "react";
 import type { AreaView } from "./api";
+import { AREA_CHANGED, drawAreaLayer } from "./areaLayer";
 
 /**
  * Purpose: put the map on the project's area (the regions picked for it, or around its drawing) when a
@@ -8,7 +9,8 @@ import type { AreaView } from "./api";
  * planner. Runs again for a new map (another tab) or another project.
  * Inputs: the map, the project id and how to read its area (`null` when it cannot be read).
  * Output: the area as last read (its countries too), or null before.
- * Side effects: reads the area from the server; moves the map once.
+ * Side effects: reads the area from the server, and again when it is saved (`notifyAreaChanged`); draws its
+ * edges as the Project area layer (areaLayer.ts); moves the map once.
  */
 export function useAreaZoom(
   map: MapLibreMap | null,
@@ -27,9 +29,27 @@ export function useAreaZoom(
       moved = true;
     };
     map.once?.("movestart", onMove);
+    const draw = (a: AreaView) => {
+      const go = () => drawAreaLayer(map, a.polygons ?? []);
+      if (typeof map.isStyleLoaded !== "function" || map.isStyleLoaded()) go();
+      else map.once?.("load", go);
+    };
+    const reload = () => {
+      read(projectId)
+        .then((a) => {
+          if (!live) return;
+          setArea({ projectId, view: a });
+          draw(a);
+        })
+        .catch(() => {});
+    };
+    window.addEventListener(AREA_CHANGED, reload);
     read(projectId)
       .then((a) => {
-        if (live) setArea({ projectId, view: a });
+        if (live) {
+          setArea({ projectId, view: a });
+          draw(a);
+        }
         const b = a.bbox;
         if (!live || moved || !b) return;
         map.fitBounds(
@@ -44,6 +64,7 @@ export function useAreaZoom(
     return () => {
       live = false;
       map.off?.("movestart", onMove);
+      window.removeEventListener(AREA_CHANGED, reload);
     };
   }, [map, projectId]);
   return area?.projectId === projectId ? area.view : null;

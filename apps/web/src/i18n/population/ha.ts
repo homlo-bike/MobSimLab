@@ -10,11 +10,6 @@ export const populationHa = {
   "pop.failed": "Ba a iya loda layukan yawan jama'a ba: {error}",
   "pop.retry": "Sake gwadawa",
   "pop.area.title": "Yankin aiki",
-  "pop.area.none":
-    "Fara zana layi, layin dogo, tasha ko yanki: yankin aiki shi ne murabba'in da ya kewaye duk abin da aka zana.",
-  "pop.area.box": "Murabba'in da ya kewaye duk abin da aka zana, an faɗaɗa shi da gefe: km² {km2}.",
-  "pop.area.buffer": "Gefe (km)",
-  "pop.area.save": "Ajiye gefe",
   "pop.area.tooLarge": "Shigo da bayanai yana rufe km² {max} a mafi yawa; rage gefe ko ka zana ƙasa.",
   "pop.primary.title": "Yawan jama'ar da aikin ke amfani da shi",
   "pop.primary.hint":

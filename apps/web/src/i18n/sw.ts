@@ -9,6 +9,7 @@ import { tablesSw } from "./tables/sw";
 import { economicsSw } from "./economics/sw";
 import { fleetSw } from "./fleet/sw";
 import { timetablesSw } from "./timetables/sw";
+import { areaSw } from "./area/sw";
 import { mslabSw } from "./mslab/sw";
 import { workspaceUiSw } from "./workspace-ui/sw";
 import { pluginCodeSw } from "./plugin-code/sw";
@@ -485,6 +486,7 @@ export const sw: Messages = {
   "map.group.noise": "Ramani ya kelele",
   "map.group.journey": "Kipanga safari",
   "map.group.agents": "Hali ya wakala wa AI",
+  "map.group.projectArea": "Eneo la mradi",
   "help.menu": "Msaada",
   "help.tour": "Anza ziara",
   "help.tourHint": "Matembezi mafupi kupitia vichupo na zana za mradi",
@@ -537,6 +539,7 @@ export const sw: Messages = {
   ...timetablesSw,
   ...commentsSw,
   ...mslabSw,
+  ...areaSw,
   ...workspaceUiSw,
   ...pluginCodeSw,
   ...populationSw,

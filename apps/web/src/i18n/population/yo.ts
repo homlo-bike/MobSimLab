@@ -10,11 +10,6 @@ export const populationYo = {
   "pop.failed": "A kò lè gbé àwọn ìpele iye ènìyàn: {error}",
   "pop.retry": "Gbìyànjú lẹ́ẹ̀kan sí i",
   "pop.area.title": "Agbègbè iṣẹ́",
-  "pop.area.none":
-    "Kọ́kọ́ ya ọ̀nà kan, ọ̀nà ojú irin, ibùdó tàbí agbègbè kan: agbègbè iṣẹ́ ni onígun mẹ́rin tó yí gbogbo ohun tí a yà ká.",
-  "pop.area.box": "Onígun mẹ́rin tó yí gbogbo ohun tí a yà ká, tí a fẹ̀ pẹ̀lú ààlà: km² {km2}.",
-  "pop.area.buffer": "Ààlà (km)",
-  "pop.area.save": "Fi ààlà pamọ́",
   "pop.area.tooLarge": "Ìmúwọlé bo km² {max} jù lọ; dín ààlà kù tàbí ya díẹ̀.",
   "pop.primary.title": "Iye ènìyàn tí iṣẹ́ náà ń lò",
   "pop.primary.hint": "Máàpù ariwo, ìtúpalẹ̀ ìrìn ẹsẹ̀ àti àwọn tábìlì àǹfààní ń ka ìpele yìí.",

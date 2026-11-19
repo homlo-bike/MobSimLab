@@ -1281,7 +1281,6 @@ export function Workspace({
             <MapDataPanel
               key={projectId}
               api={geodata}
-              map={map}
               panel={panel}
               onOsmImport={(id) => setDataProject(projectId, id)}
             />

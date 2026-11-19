@@ -9,6 +9,7 @@ import { tablesIt } from "./tables/it";
 import { economicsIt } from "./economics/it";
 import { fleetIt } from "./fleet/it";
 import { timetablesIt } from "./timetables/it";
+import { areaIt } from "./area/it";
 import { mslabIt } from "./mslab/it";
 import { workspaceUiIt } from "./workspace-ui/it";
 import { pluginCodeIt } from "./plugin-code/it";
@@ -486,6 +487,7 @@ export const it: Messages = {
   "map.group.noise": "Mappa del rumore",
   "map.group.journey": "Pianificatore di viaggio",
   "map.group.agents": "Scenario dell’agente IA",
+  "map.group.projectArea": "Area del progetto",
   "help.menu": "Aiuto",
   "help.tour": "Fai il tour",
   "help.tourHint": "Un breve giro tra le schede e gli strumenti del progetto",
@@ -536,6 +538,7 @@ export const it: Messages = {
   ...timetablesIt,
   ...commentsIt,
   ...mslabIt,
+  ...areaIt,
   ...workspaceUiIt,
   ...pluginCodeIt,
   ...populationIt,

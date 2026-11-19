@@ -18,6 +18,7 @@ import {
   FORMAT_NAME,
   FORMAT_VERSION,
   FORMAT_VERSION_MAP_ONLY,
+  FORMAT_VERSION_RESULTS,
   FORMAT_VERSION_WITHOUT_MAP,
   type Manifest,
   MAX_MSLAB_BYTES,
@@ -29,6 +30,7 @@ import {
   type RunFile,
 } from "./format.mts";
 import type { MslabReadResult } from "./read.mts";
+import { storedPolygons } from "../projects/area-polygons";
 import { type MapDataSummary, MslabMapService } from "./map-data";
 
 /** The API's version, written into each file's manifest. */
@@ -64,6 +66,17 @@ const readResult = z.object({
     description: z.string().max(2000),
     areaName: z.string().max(200).nullable(),
     modes: z.array(z.string().max(40)).max(20),
+    areaPolygons: z
+      .array(
+        z.object({
+          id: z.string().max(41),
+          name: z.string().max(200),
+          detail: z.enum(["full", "main"]),
+          ring: z.array(z.tuple([z.number(), z.number()])).max(2001),
+        }),
+      )
+      .max(50)
+      .optional(),
   }),
   plugins: z
     .array(
@@ -182,7 +195,16 @@ export class MslabService {
       throw new ForbiddenException("public projects are read-only; ask the owner for access");
     const p = await this.db
       .selectFrom("project.project")
-      .select(["id", "name", "description", "area_name", "modes", "created_at", "updated_at"])
+      .select([
+        "id",
+        "name",
+        "description",
+        "area_name",
+        "modes",
+        "created_at",
+        "updated_at",
+        "area_polygons",
+      ])
       .where("id", "=", id)
       .executeTakeFirstOrThrow();
     const drawings = await this.db
@@ -216,6 +238,8 @@ export class MslabService {
       createdAt: p.created_at.toISOString(),
       updatedAt: p.updated_at.toISOString(),
     };
+    const polygons = storedPolygons(p.area_polygons);
+    if (polygons.length) project.areaPolygons = polygons;
     add(FILES.project, project);
     const pluginsFile: PluginsFile = {
       plugins: plugins.map((r) => ({ id: r.plugin_id, enabled: r.enabled, version: r.version })),
@@ -311,11 +335,13 @@ export class MslabService {
       for (const [name, body] of m.files) add(name, body);
       map = m.summary;
     }
-    const formatVersion = resultCount
+    const formatVersion = polygons.length
       ? FORMAT_VERSION
-      : includeMap
-        ? FORMAT_VERSION_MAP_ONLY
-        : FORMAT_VERSION_WITHOUT_MAP;
+      : resultCount
+        ? FORMAT_VERSION_RESULTS
+        : includeMap
+          ? FORMAT_VERSION_MAP_ONLY
+          : FORMAT_VERSION_WITHOUT_MAP;
     add(
       FILES.attribution,
       attribution(
@@ -481,6 +507,7 @@ export class MslabService {
                 name,
                 description: res.project.description,
                 area_name: res.project.areaName,
+                area_polygons: JSON.stringify(storedPolygons(res.project.areaPolygons)),
                 modes,
                 copied_from: null,
                 updated_at: now,

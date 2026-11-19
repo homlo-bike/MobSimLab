@@ -240,8 +240,6 @@ export const economicsTr = {
   "reg.importFailed": "{what} başlatılamadı: {reason}.",
   "reg.unknownReason": "bilinmeyen neden",
   "reg.defaultName": "Bölge {n}",
-  "reg.areaFull":
-    "Proje alanı zaten en fazla olan {max} bölgeyi birleştiriyor. Proje ayarlarından değiştirin.",
   "reg.areaFailed": "Proje alanı değiştirilemedi: {error}",
   "reg.title": "Bölgeler",
   "reg.intro":
@@ -264,11 +262,6 @@ export const economicsTr = {
   "reg.noAreas": "Burada adı olan alan yok. Başka bir yer deneyin veya bir tane çizin.",
   "reg.km2": "{v} km²",
   "reg.outside": "Proje alanı dışındaki bölge",
-  "reg.outsideNote":
-    "{name} proje alanının dışına taşıyor, bu yüzden proje için indirilen harita verileri onu kapsamayabilir. Proje alanına eklensin mi? Bu, daha büyük alanın ihtiyaç duyduğu OpenStreetMap verilerini, arazi yüksekliklerini ve nüfusu indirir.",
-  "reg.adding": "Ekleniyor…",
-  "reg.addToArea": "Proje alanına ekle",
-  "reg.importOnly": "Alanı değiştirmeden içe aktar",
   "reg.inProject": "Bu projedeki bölgeler",
   "reg.count": "Bölgeler · {count}",
   "reg.none": "Henüz yok: fayda tabloları her yerde kaynak verileri kullanıyor.",

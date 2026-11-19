@@ -248,7 +248,6 @@ export const economicsPl = {
   "reg.importFailed": "Nie udało się uruchomić: {what}: {reason}.",
   "reg.unknownReason": "nieznany powód",
   "reg.defaultName": "Region {n}",
-  "reg.areaFull": "Obszar projektu łączy już {max} regionów, to maksimum. Zmień go w ustawieniach projektu.",
   "reg.areaFailed": "Nie udało się zmienić obszaru projektu: {error}",
   "reg.title": "Regiony",
   "reg.intro":
@@ -271,11 +270,6 @@ export const economicsPl = {
   "reg.noAreas": "Nie ma tu nazwanych obszarów. Spróbuj w innym miejscu albo narysuj obszar.",
   "reg.km2": "{v} km²",
   "reg.outside": "Region poza obszarem projektu",
-  "reg.outsideNote":
-    "{name} wykracza poza obszar projektu, więc pobrane dla projektu dane mapy mogą go nie obejmować. Dodać go do obszaru projektu? Zostaną pobrane dane OpenStreetMap, wysokości terenu i ludność potrzebne większemu obszarowi.",
-  "reg.adding": "Dodawanie…",
-  "reg.addToArea": "Dodaj do obszaru projektu",
-  "reg.importOnly": "Importuj bez zmiany obszaru",
   "reg.inProject": "Regiony w tym projekcie",
   "reg.count": "Regiony · {count}",
   "reg.none": "Jeszcze żadnych: tabele korzyści wszędzie używają danych źródłowych.",

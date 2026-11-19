@@ -228,7 +228,6 @@ export const economicsAm = {
   "reg.importFailed": "{what}ን መጀመር አልተቻለም፦ {reason}።",
   "reg.unknownReason": "ያልታወቀ ምክንያት",
   "reg.defaultName": "አካባቢ {n}",
-  "reg.areaFull": "የፕሮጀክቱ አካባቢ ቀድሞውንም ከፍተኛውን {max} አካባቢዎች ያጣምራል፤ ይህን በፕሮጀክት ቅንብሮች ውስጥ ይቀይሩ።",
   "reg.areaFailed": "የፕሮጀክቱን አካባቢ መቀየር አልተቻለም፦ {error}",
   "reg.title": "አካባቢዎች",
   "reg.intro":
@@ -250,11 +249,6 @@ export const economicsAm = {
   "reg.noAreas": "እዚህ ስም ያላቸው አካባቢዎች የሉም። ሌላ ቦታ ይሞክሩ ወይም አንዱን ይሳሉ።",
   "reg.km2": "{v} ኪ.ሜ²",
   "reg.outside": "ከፕሮጀክቱ አካባቢ ውጭ ያለ አካባቢ",
-  "reg.outsideNote":
-    "{name} ከፕሮጀክቱ አካባቢ ውጭ ይዘልቃል፣ ስለዚህ ለፕሮጀክቱ የወረደው የካርታ መረጃ ላይሸፍነው ይችላል። ወደ ፕሮጀክቱ አካባቢ ይጨመር? OpenStreetMap፣ የመሬት ከፍታ እና ሕዝብ ለትልቁ አካባቢ ይወርዳሉ።",
-  "reg.adding": "በመጨመር ላይ…",
-  "reg.addToArea": "ወደ ፕሮጀክቱ አካባቢ ጨምር",
-  "reg.importOnly": "አካባቢውን ሳይቀይሩ ያስገቡ",
   "reg.inProject": "በዚህ ፕሮጀክት ውስጥ ያሉ አካባቢዎች",
   "reg.count": "አካባቢዎች · {count}",
   "reg.none": "ገና የለም፦ የጥቅሞች ሰንጠረዦች በሁሉም ቦታ የምንጭ መረጃን ይጠቀማሉ።",

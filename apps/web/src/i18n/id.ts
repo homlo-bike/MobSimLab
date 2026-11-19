@@ -9,6 +9,7 @@ import { tablesId } from "./tables/id";
 import { economicsId } from "./economics/id";
 import { fleetId } from "./fleet/id";
 import { timetablesId } from "./timetables/id";
+import { areaId } from "./area/id";
 import { mslabId } from "./mslab/id";
 import { workspaceUiId } from "./workspace-ui/id";
 import { pluginCodeId } from "./plugin-code/id";
@@ -487,6 +488,7 @@ export const id: Messages = {
   "map.group.noise": "Peta kebisingan",
   "map.group.journey": "Perencana perjalanan",
   "map.group.agents": "Skenario agen AI",
+  "map.group.projectArea": "Area proyek",
   "help.menu": "Bantuan",
   "help.tour": "Ikuti tur",
   "help.tourHint": "Jalan singkat melalui tab dan alat proyek",
@@ -538,6 +540,7 @@ export const id: Messages = {
   ...timetablesId,
   ...commentsId,
   ...mslabId,
+  ...areaId,
   ...workspaceUiId,
   ...pluginCodeId,
   ...populationId,

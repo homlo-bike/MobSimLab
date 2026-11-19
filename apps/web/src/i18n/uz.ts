@@ -9,6 +9,7 @@ import { tablesUz } from "./tables/uz";
 import { economicsUz } from "./economics/uz";
 import { fleetUz } from "./fleet/uz";
 import { timetablesUz } from "./timetables/uz";
+import { areaUz } from "./area/uz";
 import { mslabUz } from "./mslab/uz";
 import { workspaceUiUz } from "./workspace-ui/uz";
 import { pluginCodeUz } from "./plugin-code/uz";
@@ -489,6 +490,7 @@ export const uz: Messages = {
   "map.group.noise": "Shovqin xaritasi",
   "map.group.journey": "Sayohat rejalashtiruvchi",
   "map.group.agents": "SI agenti stsenariysi",
+  "map.group.projectArea": "Loyiha hududi",
   "help.menu": "Yordam",
   "help.tour": "Tanishuv sayohati",
   "help.tourHint": "Loyiha yorliqlari va vositalari bo‘ylab qisqa sayohat",
@@ -542,6 +544,7 @@ export const uz: Messages = {
   ...timetablesUz,
   ...commentsUz,
   ...mslabUz,
+  ...areaUz,
   ...workspaceUiUz,
   ...pluginCodeUz,
   ...populationUz,

@@ -9,6 +9,7 @@ import { tablesKo } from "./tables/ko";
 import { economicsKo } from "./economics/ko";
 import { fleetKo } from "./fleet/ko";
 import { timetablesKo } from "./timetables/ko";
+import { areaKo } from "./area/ko";
 import { mslabKo } from "./mslab/ko";
 import { workspaceUiKo } from "./workspace-ui/ko";
 import { pluginCodeKo } from "./plugin-code/ko";
@@ -478,6 +479,7 @@ export const ko: Messages = {
   "map.group.noise": "소음 지도",
   "map.group.journey": "경로 계획",
   "map.group.agents": "AI 에이전트 시나리오",
+  "map.group.projectArea": "프로젝트 구역",
   "help.menu": "도움말",
   "help.tour": "둘러보기",
   "help.tourHint": "프로젝트의 탭과 도구를 짧게 둘러봅니다",
@@ -526,6 +528,7 @@ export const ko: Messages = {
   ...timetablesKo,
   ...commentsKo,
   ...mslabKo,
+  ...areaKo,
   ...workspaceUiKo,
   ...pluginCodeKo,
   ...populationKo,

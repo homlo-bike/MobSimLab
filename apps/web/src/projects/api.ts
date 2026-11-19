@@ -1,5 +1,5 @@
 import type { SchematicThumb } from "../features/schematic/thumb";
-import { projectAreaApi } from "../features/area/api";
+import { areaEstimator, projectAreaApi } from "../features/area/api";
 import { setPluginRuntime } from "../plugins/code/context";
 import type { PluginLimits } from "../plugins/code/runtime";
 import type { ProjectPlugin } from "../plugins/registry";
@@ -191,6 +191,8 @@ export function projectsApi(csrf: string) {
     commentNotices: () => commentNoticesApi(csrf),
     /** The project area from OpenStreetMap regions, and the imports its saving queues. */
     area: (id: string) => projectAreaApi(id, csrf),
+    /** What a drawn area would hold, before the project exists (New project, Select area). */
+    estimateArea: areaEstimator(csrf),
   };
 }
 export type ProjectsApi = ReturnType<typeof projectsApi>;

@@ -212,10 +212,10 @@ export class GeodataService implements OnApplicationBootstrap {
     const covers = (r: ImportRun | null) =>
       !!r &&
       !!area &&
-      r.bbox[0] <= area.drawnBbox[0] &&
-      r.bbox[1] <= area.drawnBbox[1] &&
-      r.bbox[2] >= area.drawnBbox[2] &&
-      r.bbox[3] >= area.drawnBbox[3];
+      r.bbox[0] <= area.bbox[0] &&
+      r.bbox[1] <= area.bbox[1] &&
+      r.bbox[2] >= area.bbox[2] &&
+      r.bbox[3] >= area.bbox[3];
     const osm = of("osm");
     const dem = of("dem");
     const demUpload = of("dem_upload");
@@ -704,7 +704,7 @@ export class GeodataService implements OnApplicationBootstrap {
     const area = await projectArea(this.db, projectId);
     if (!area)
       throw new BadRequestException(
-        "Draw something in the project first: the import covers the box around it",
+        "Draw the project area first (Project preferences, Project area): the import covers it",
       );
     return area;
   }
@@ -714,13 +714,13 @@ export class GeodataService implements OnApplicationBootstrap {
     projectId: string,
     kind: ImportKind,
     method: ImportMethod,
-    area: { bbox: Box; bufferKm: number },
+    area: { bbox: Box },
     options: Record<string, unknown>,
   ): Promise<ImportRun> {
     const run = await this.db.transaction().execute(async (tx) => {
       const { rows } = await sql<Row>`
         INSERT INTO geo.import (project_id, kind, method, bbox, buffer_km, options, requested_by)
-        VALUES (${projectId}, ${kind}, ${method}, ${area.bbox}::double precision[], ${area.bufferKm},
+        VALUES (${projectId}, ${kind}, ${method}, ${area.bbox}::double precision[], 0,
                 ${JSON.stringify(options)}::jsonb, ${actor.userId})
         RETURNING *`.execute(tx);
       await this.projects.logProject(

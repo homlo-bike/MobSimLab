@@ -9,6 +9,7 @@ import { tablesNl } from "./tables/nl";
 import { economicsNl } from "./economics/nl";
 import { fleetNl } from "./fleet/nl";
 import { timetablesNl } from "./timetables/nl";
+import { areaNl } from "./area/nl";
 import { mslabNl } from "./mslab/nl";
 import { workspaceUiNl } from "./workspace-ui/nl";
 import { pluginCodeNl } from "./plugin-code/nl";
@@ -488,6 +489,7 @@ export const nl: Messages = {
   "map.group.noise": "Geluidskaart",
   "map.group.journey": "Reisplanner",
   "map.group.agents": "Scenario van de AI-agent",
+  "map.group.projectArea": "Projectgebied",
   "help.menu": "Help",
   "help.tour": "Rondleiding volgen",
   "help.tourHint": "Een korte rondgang langs de tabbladen en tools van het project",
@@ -540,6 +542,7 @@ export const nl: Messages = {
   ...timetablesNl,
   ...commentsNl,
   ...mslabNl,
+  ...areaNl,
   ...workspaceUiNl,
   ...pluginCodeNl,
   ...populationNl,

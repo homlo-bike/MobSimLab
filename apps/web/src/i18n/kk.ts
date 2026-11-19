@@ -9,6 +9,7 @@ import { tablesKk } from "./tables/kk";
 import { economicsKk } from "./economics/kk";
 import { fleetKk } from "./fleet/kk";
 import { timetablesKk } from "./timetables/kk";
+import { areaKk } from "./area/kk";
 import { mslabKk } from "./mslab/kk";
 import { workspaceUiKk } from "./workspace-ui/kk";
 import { pluginCodeKk } from "./plugin-code/kk";
@@ -483,6 +484,7 @@ export const kk: Messages = {
   "map.group.noise": "Шу картасы",
   "map.group.journey": "Сапар жоспарлағыш",
   "map.group.agents": "ЖИ агентінің сценарийі",
+  "map.group.projectArea": "Жоба аумағы",
   "help.menu": "Анықтама",
   "help.tour": "Таныстыру турын бастау",
   "help.tourHint": "Жобаның қойындылары мен құралдары бойынша қысқа тур",
@@ -535,6 +537,7 @@ export const kk: Messages = {
   ...timetablesKk,
   ...commentsKk,
   ...mslabKk,
+  ...areaKk,
   ...workspaceUiKk,
   ...pluginCodeKk,
   ...populationKk,

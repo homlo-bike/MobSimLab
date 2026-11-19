@@ -237,8 +237,6 @@ export const economicsYo = {
   "reg.importFailed": "Kò lè bẹ̀rẹ̀ {what}: {reason}.",
   "reg.unknownReason": "ìdí tí a kò mọ̀",
   "reg.defaultName": "Agbègbè {n}",
-  "reg.areaFull":
-    "Agbègbè iṣẹ́ àkànṣe ti so agbègbè {max} pọ̀ tó pọ̀jùlọ tẹ́lẹ̀; yí ìyẹn padà nínú Ètò iṣẹ́ àkànṣe.",
   "reg.areaFailed": "Kò lè yí agbègbè iṣẹ́ àkànṣe padà: {error}",
   "reg.title": "Àwọn agbègbè",
   "reg.intro":
@@ -261,11 +259,6 @@ export const economicsYo = {
   "reg.noAreas": "Kò sí agbègbè tí ó ní orúkọ níbí. Gbìyànjú ibòmíràn tàbí yà ọ̀kan.",
   "reg.km2": "km² {v}",
   "reg.outside": "Agbègbè ní òde agbègbè iṣẹ́ àkànṣe",
-  "reg.outsideNote":
-    "{name} kọjá sí òde agbègbè iṣẹ́ àkànṣe, nítorí náà dátà máàpù tí a ṣe ìgbàsílẹ̀ fún iṣẹ́ àkànṣe lè má bò ó. Ṣé kí a fi kún agbègbè iṣẹ́ àkànṣe? A ó ṣe ìgbàsílẹ̀ OpenStreetMap, gíga ilẹ̀ àti iye ènìyàn fún agbègbè tí ó tóbi jù.",
-  "reg.adding": "Ó ń fi kún…",
-  "reg.addToArea": "Fi kún agbègbè iṣẹ́ àkànṣe",
-  "reg.importOnly": "Gbé wọlé láìyí agbègbè padà",
   "reg.inProject": "Àwọn agbègbè nínú iṣẹ́ àkànṣe yìí",
   "reg.count": "Àwọn agbègbè · {count}",
   "reg.none": "Kò sí síbẹ̀: àwọn tábìlì àǹfààní ń lo dátà orísun níbi gbogbo.",

@@ -139,23 +139,26 @@ describe("population layers", () => {
     throw new Error("import did not finish");
   };
 
-  it("has no area until something is drawn, then the box round it widened by the buffer", async () => {
+  it("has no area until one is drawn, then the box round its polygons", async () => {
     project = (await as("alice").post("/api/projects", { name: "Population" })).body.project.id;
     const empty = (await as("alice").get(base())).body;
-    expect(empty).toMatchObject({ area: null, bufferKm: 2, layers: [] });
+    expect(empty).toMatchObject({ area: null, layers: [] });
     expect((await as("alice").post(`${base()}/imports`, { source: "ghsl" })).status).toBe(400);
-    const saved = await as("alice").put(`/api/projects/${project}/drawings/street-lines`, {
-      doc: { lines: [{ points: [{ lonlat: [6.1, 49.6] }, { lonlat: [6.12, 49.61] }] }] },
-      baseVersion: null,
+    const [w, s, e, n] = [6.086, 49.591, 6.134, 49.619];
+    const ring = [
+      [w, s],
+      [e, s],
+      [e, n],
+      [w, n],
+      [w, s],
+    ];
+    const saved = await as("alice").put(`/api/projects/${project}/area`, {
+      polygons: [{ id: "a1", name: "Area", detail: "full", ring }],
+      import: false,
     });
     expect(saved.status).toBe(200);
     const o = (await as("alice").get(base())).body;
-    expect(o.area.drawnBbox).toEqual([6.1, 49.6, 6.12, 49.61]);
-    expect(o.area.bbox[1]).toBeCloseTo(49.6 - 2 / 111.32, 6);
-    const changed = (await as("alice").put(`${base()}/area`, { bufferKm: 1 })).body;
-    expect(changed.bufferKm).toBe(1);
-    expect(changed.area.bbox[1]).toBeCloseTo(49.6 - 1 / 111.32, 6);
-    expect((await as("alice").put(`${base()}/area`, { bufferKm: 51 })).status).toBe(400);
+    expect(o.area.bbox).toEqual([w, s, e, n]);
     // Someone without access cannot tell the project exists.
     expect((await as("bob").get(base())).status).toBe(404);
   });

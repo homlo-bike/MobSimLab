@@ -10,11 +10,6 @@ export const populationDe = {
   "pop.failed": "Die Bevölkerungsebenen konnten nicht geladen werden: {error}",
   "pop.retry": "Erneut versuchen",
   "pop.area.title": "Projektgebiet",
-  "pop.area.none":
-    "Zeichnen Sie zuerst eine Linie, eine Bahnstrecke, einen Betriebshof oder ein Gebiet: Das Projektgebiet ist das Rechteck um alles Gezeichnete.",
-  "pop.area.box": "Das Rechteck um alles Gezeichnete, erweitert um den Puffer: {km2} km².",
-  "pop.area.buffer": "Puffer (km)",
-  "pop.area.save": "Puffer speichern",
   "pop.area.tooLarge":
     "Importe umfassen höchstens {max} km²; verkleinern Sie den Puffer oder zeichnen Sie weniger.",
   "pop.primary.title": "Vom Projekt verwendete Bevölkerung",
