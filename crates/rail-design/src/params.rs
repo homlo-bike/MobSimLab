@@ -86,6 +86,19 @@ impl RailMode {
         }
     }
 
+    /// Purpose: the mode's name as a message (shown in the user's language).
+    pub fn label_msg(self) -> engine_msg::Msg {
+        engine_msg::Msg::new(match self {
+            RailMode::Tram => "rail.mode.tram",
+            RailMode::LightRail => "rail.mode.light_rail",
+            RailMode::Metro => "rail.mode.metro",
+            RailMode::CommuterRail => "rail.mode.commuter_rail",
+            RailMode::RegionalRail => "rail.mode.regional_rail",
+            RailMode::LongDistanceRail => "rail.mode.long_distance_rail",
+            RailMode::HighSpeedRail => "rail.mode.high_speed_rail",
+        })
+    }
+
     /// Purpose: whether the mode usually runs in streets (embedded track, no cant there).
     pub fn street_running(self) -> bool {
         matches!(self, RailMode::Tram | RailMode::LightRail)

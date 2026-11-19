@@ -115,10 +115,10 @@ export const editorsZu = {
   "rail.stops.other": "iziteshi ezingu-{count}",
   "rail.levelCrossings": "Iziwela zikajantshi nomgwaqo",
   "rail.levelCrossingsNote":
-    "Lapho ujantshi wezinga lomgwaqo uwela umgwaqo osetshenziswa amabhasi, amabhasi kagesi nezinye izimoto. Ujantshi uvala umgwaqo ngaphambi kwesitimela ngasinye; izimoto zilinda emigqeni yokumisa.",
+    "Lapho ujantshi wezinga lomgwaqo uwela umgwaqo osetshenziswa amabhasi, amabhasi entambo nezinye izimoto. Ujantshi uvala umgwaqo ngaphambi kwesitimela ngasinye; izimoto zilinda emigqeni yokumisa.",
   "rail.barriers": "izithiyo",
   "rail.trafficSignals": "amarobhothi",
-  "rail.trolleyWire": "intambo yebhasi likagesi",
+  "rail.trolleyWire": "intambo yebhasi lentambo",
   "rail.specialSafety": "izinyathelo ezikhethekile zokuphepha",
   "rail.checks": "Ukuhlola",
   "rail.errors.one": "iphutha elingu-{count}",
@@ -558,9 +558,9 @@ export const editorsZu = {
     "Akukho ukubambezeleka kwesiminyaminya okucatshangwayo kulolu hlobo lomgwaqo; kubalwa emigwaqweni emikhulu.",
   "setup.v.busSeparated": "Umzila webhasi ohlukanisiwe: isiminyaminya asiwabambezeli amabhasi.",
   "setup.v.busPainted":
-    "Umzila webhasi odwetshwe ngopende: izimoto eziphendukayo neziyamayo zisavimba, cishe u-{pct} % wesikhathi sohambo esengeziwe samabhasi namabhasi kagesi ngesikhathi esiphezulu. Wuhlukanise ukuze uvimbe izimoto.",
+    "Umzila webhasi odwetshwe ngopende: izimoto eziphendukayo neziyamayo zisavimba, cishe u-{pct} % wesikhathi sohambo esengeziwe samabhasi namabhasi entambo ngesikhathi esiphezulu. Wuhlukanise ukuze uvimbe izimoto.",
   "setup.v.busMixed":
-    "Amabhasi namabhasi kagesi ahamba esiminyaminyeni somgwaqo omkhulu: cishe u-{pct} % wesikhathi sohambo esengeziwe ngesikhathi esiphezulu, futhi abambezeleka uma isiminyaminya sinyuka. Umzila webhasi uyakuxazulula lokhu.",
+    "Amabhasi namabhasi entambo ahamba esiminyaminyeni somgwaqo omkhulu: cishe u-{pct} % wesikhathi sohambo esengeziwe ngesikhathi esiphezulu, futhi abambezeleka uma isiminyaminya sinyuka. Umzila webhasi uyakuxazulula lokhu.",
   "setup.v.tramSeparated": "Umzila wayo, ohlukaniswe nesiminyaminya: kuyathembeka.",
   "setup.v.tramPaintedMain":
     "Umzila wayo, odwetshwe ngopende kuphela: izimoto zisawuwela futhi zime kuwo, cishe u-{pct} % owengeziwe ngesikhathi esiphezulu. Wuhlukanise ngonqenqema noma ngombhede kajantshi.",

@@ -9,7 +9,7 @@
 //! maximum gradient and the vertical curve radius (point 3).
 
 use crate::geom::{slice, Sample, P2};
-use crate::issue::{fmt_m, Issue};
+use crate::issue::{fmt_m, msg, Issue};
 use crate::model::{Level, Track, TrackUse};
 use crate::params::ModeParams;
 use std::f64::consts::PI;
@@ -485,7 +485,7 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
         }
         if d.abs() > 2.6 {
             issues.push(Issue::error(
-                "Turn too sharp to fit a curve. Move the point or add one more.",
+                msg!("rail.alignment.turn_too_sharp"),
                 Some(a1),
                 t.id,
             ));
@@ -617,31 +617,39 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
         };
         if r < min_r * 0.995 {
             let what = if storage {
-                "storage track".to_string()
+                msg!("rail.alignment.for_storage_track")
             } else {
-                format!("{} km/h", p.design_speed_kmh)
-            };
-            let squeezed = if v.k < 0.999 {
-                " (not enough room between the points)"
-            } else {
-                ""
+                msg!(
+                    "rail.alignment.for_speed",
+                    speed = format!("{} km/h", p.design_speed_kmh)
+                )
             };
             issues.push(Issue::error(
-                format!(
-                    "Curve radius {} is below the {} minimum for {what}{squeezed}.",
-                    fmt_m(r),
-                    fmt_m(min_r)
-                ),
+                if v.k < 0.999 {
+                    msg!(
+                        "rail.alignment.radius_below_minimum_squeezed",
+                        radius = fmt_m(r),
+                        minimum = fmt_m(min_r),
+                        what = what
+                    )
+                } else {
+                    msg!(
+                        "rail.alignment.radius_below_minimum",
+                        radius = fmt_m(r),
+                        minimum = fmt_m(min_r),
+                        what = what
+                    )
+                },
                 Some(verts[i]),
                 t.id,
             ));
         } else if !storage && r < p.recommended_radius_m * 0.995 {
             issues.push(Issue::warning(
-                format!(
-                    "Curve radius {} is below the recommended {}; trains slow to {} km/h here.",
-                    fmt_m(r),
-                    fmt_m(p.recommended_radius_m),
-                    cs.speed_kmh
+                msg!(
+                    "rail.alignment.radius_below_recommended",
+                    radius = fmt_m(r),
+                    recommended = fmt_m(p.recommended_radius_m),
+                    speed = format!("{} km/h", cs.speed_kmh)
                 ),
                 Some(verts[i]),
                 t.id,
@@ -712,15 +720,15 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
         let at = verts[if deep_prev { i - 1 } else { i }];
         if s0 < -0.5 || s1 > length + 0.5 {
             issues.push(Issue::error(
-                format!(
-                    "Not enough length to go from {} to {}: the ramp needs {} at {:.1} ‰ with {} vertical curves, but the track is {} long ({} short). Lengthen the track or move a level change to a station further away.",
-                    levels[i - 1].label(),
-                    levels[i].label(),
-                    fmt_m(len),
-                    p.max_gradient_permille,
-                    fmt_m(p.vertical_radius_m),
-                    fmt_m(length),
-                    fmt_m(len - length)
+                msg!(
+                    "rail.alignment.ramp_too_long",
+                    from = levels[i - 1].label_msg(),
+                    to = levels[i].label_msg(),
+                    ramp = fmt_m(len),
+                    gradient = format!("{:.1} ‰", p.max_gradient_permille),
+                    vertical_radius = fmt_m(p.vertical_radius_m),
+                    length = fmt_m(length),
+                    short = fmt_m(len - length)
                 ),
                 Some(at),
                 t.id,
@@ -756,15 +764,15 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
             }
             None if r.length <= length + 0.5 && c1 - c0 < length - 0.5 => {
                 issues.push(Issue::error(
-                    format!(
-                        "Not enough clear length to go from {} to {}: the ramp needs {} at {:.1} ‰, but only {} is clear of switches ({} to {} along the track). Move the switch or lengthen the track.",
-                        l0.label(),
-                        l1.label(),
-                        fmt_m(r.length),
-                        p.max_gradient_permille,
-                        fmt_m(c1 - c0),
-                        fmt_m(c0),
-                        fmt_m(c1)
+                    msg!(
+                        "rail.alignment.ramp_not_clear",
+                        from = l0.label_msg(),
+                        to = l1.label_msg(),
+                        ramp = fmt_m(r.length),
+                        gradient = format!("{:.1} ‰", p.max_gradient_permille),
+                        clear = fmt_m(c1 - c0),
+                        start = fmt_m(c0),
+                        end = fmt_m(c1)
                     ),
                     Some(*at),
                     t.id,
@@ -777,10 +785,10 @@ pub fn fit(inp: &FitInput) -> TrackGeo {
     for w in ramps.windows(2) {
         if w[1].0.s0 < w[0].0.s1 - 0.5 {
             issues.push(Issue::error(
-                format!(
-                    "Two level changes overlap (ramps of {} and {}). Move the points further apart.",
-                    fmt_m(w[0].0.length),
-                    fmt_m(w[1].0.length)
+                msg!(
+                    "rail.alignment.ramps_overlap",
+                    first = fmt_m(w[0].0.length),
+                    second = fmt_m(w[1].0.length)
                 ),
                 Some(w[1].2),
                 t.id,

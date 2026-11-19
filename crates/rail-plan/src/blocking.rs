@@ -18,6 +18,7 @@
 //! departure time. Overlap sections are
 //! blocked until the head passes (or, after a stop, leaves) the exit signal.
 
+use engine_msg::{msg, Msg};
 use rail_dynamics::{run, RunOptions, Segment, SpeedProfile, Stop, TrainParams};
 use rail_model::{Model, RouteId, Step, TdsId};
 use serde::Serialize;
@@ -119,14 +120,14 @@ impl RunTiming {
 
 /// Purpose: the steps of a sequence of routes, checking that each follows the previous.
 /// Output: concatenated steps, or Err naming the first break.
-pub fn route_steps(model: &Model, routes: &[RouteId]) -> Result<Vec<Step>, String> {
+pub fn route_steps(model: &Model, routes: &[RouteId]) -> Result<Vec<Step>, Msg> {
     let mut steps = Vec::new();
     for (i, &r) in routes.iter().enumerate() {
         if i > 0 && !model.next_routes(routes[i - 1]).contains(&r) {
-            return Err(format!(
-                "route {} does not follow route {}",
-                model.routes[r as usize].id,
-                model.routes[routes[i - 1] as usize].id
+            return Err(msg!(
+                "rail.plan.route_break",
+                route = model.routes[r as usize].id.clone(),
+                previous = model.routes[routes[i - 1] as usize].id.clone()
             ));
         }
         steps.extend_from_slice(&model.routes[r as usize].steps);
@@ -197,15 +198,32 @@ pub fn run_timing(
     Ok(timing_with_profile(model, tr, profile, index, p))
 }
 
+/// Purpose: an error of the running-time calculation as a message: a train that stalls says where,
+/// any other error keeps its words.
+pub(crate) fn run_error(run: &str, e: &str) -> Msg {
+    match e
+        .strip_prefix("the train cannot move at ")
+        .and_then(|r| r.split(' ').next())
+        .and_then(|x| x.parse::<f64>().ok())
+    {
+        Some(x) => msg!(
+            "rail.plan.cannot_move",
+            run = run,
+            position = format!("{x:.0} m")
+        ),
+        None => msg!("rail.plan.run_failed", run = run, detail = e),
+    }
+}
+
 /// Purpose: the speed profile of a run (times relative to its departure), the slow part of
 /// [`run_timing`]. It does not depend on the departure time or on how long the train stays at
 /// the end of its path (`depart_s`, `occupy_until_s`), so a planner trying a run at many times
 /// can work it out once.
 /// Inputs: model and run. Output: the profile with street delays and the supplement, or Err as
 /// for [`run_timing`].
-pub fn run_profile(model: &Model, tr: &TrainRun) -> Result<SpeedProfile, String> {
+pub fn run_profile(model: &Model, tr: &TrainRun) -> Result<SpeedProfile, Msg> {
     if tr.routes.is_empty() {
-        return Err(format!("{}: no routes", tr.name));
+        return Err(msg!("rail.plan.no_routes", run = tr.name.clone()));
     }
     let steps = route_steps(model, &tr.routes)?;
     let mut segs = segments_from(model, &steps, tr.start_m);
@@ -225,8 +243,7 @@ pub fn run_profile(model: &Model, tr: &TrainRun) -> Result<SpeedProfile, String>
         stop_at_end: tr.stop_at_end,
         step_m: 1.0,
     };
-    let mut profile =
-        run(&tr.train, &segs, &stops, &opt).map_err(|e| format!("{}: {e}", tr.name))?;
+    let mut profile = run(&tr.train, &segs, &stops, &opt).map_err(|e| run_error(&tr.name, &e))?;
     // Trams in street traffic: the expected delay at peak (`street.mixed_traffic_delay_share`).
     profile = profile.with_delays(&delays_from(model, &steps, tr.start_m));
     if tr.supplement_share > 0.0 {

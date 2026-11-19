@@ -1,3 +1,4 @@
+import type { EngineText } from "../../i18n/engine";
 /**
  * The facts of each line of a project, for the network tables (summary, service and fleet) and for any
  * other view that needs a line's length, stops, running time, speed, frequency, fleet or capacity.
@@ -75,6 +76,8 @@ export interface LineFactsInput {
   ferries?: readonly FerryLine[];
   /** Translates the names and problems; English when absent. */
   t?: Translate;
+  /** Shows an engine finding in the app language (English without it). */
+  engineText?: (finding: EngineText) => string;
 }
 
 /**
@@ -137,7 +140,9 @@ export function lineFacts(input: LineFactsInput): LineFact[] {
       kmPerYear: s.kmPerYear,
       problem: running
         ? null
-        : (r?.issues[0] ?? t(train ? "net.problem.unpublished" : "net.problem.noTrain")),
+        : ((r?.issues[0] !== undefined
+            ? (input.engineText ?? ((f) => f.text))({ text: r.issues[0], msg: r.issue_msgs?.[0] })
+            : undefined) ?? t(train ? "net.problem.unpublished" : "net.problem.noTrain")),
     });
   }
 

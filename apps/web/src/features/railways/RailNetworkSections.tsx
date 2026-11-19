@@ -1,3 +1,4 @@
+import { useEngineText } from "../../i18n/engine";
 import { type Translate, type TranslatePlural, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { COLORS, fmtM } from "./modes";
@@ -281,6 +282,7 @@ export function ChecksSection({
   actions: RailPanelActions;
 }) {
   const { t, tn } = useI18n();
+  const issueText = useEngineText();
   return (
     <Section
       title={`${t("rail.checks")} · ${tn("rail.errors", view.counts.errors)} · ${tn("rail.warnings", view.counts.warnings)}`}
@@ -300,7 +302,7 @@ export function ChecksSection({
                 style={{ background: CHIP[i.severity] }}
                 aria-label={t(`severity.${i.severity}`)}
               />
-              <span>{i.text}</span>
+              <span>{issueText(i)}</span>
             </button>
           </li>
         ))}

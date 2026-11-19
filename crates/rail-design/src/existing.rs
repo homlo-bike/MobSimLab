@@ -18,7 +18,7 @@
 
 use crate::design::Design;
 use crate::geom::{at_s, poly_cross, BBox, P2};
-use crate::issue::Issue;
+use crate::issue::{msg, Issue, Msg};
 use crate::model::{Anchor, Level};
 use crate::params::RailMode;
 use serde::{Deserialize, Serialize};
@@ -155,20 +155,20 @@ impl ExistingRail {
         }
     }
 
-    /// Purpose: a name for messages.
-    pub fn label(&self) -> String {
+    /// Purpose: a name for messages, as a message of the engine catalog.
+    pub fn label_msg(&self) -> Msg {
         let what = match self.kind.as_str() {
-            "tram" => "tram line",
-            "light_rail" => "light rail line",
-            "subway" => "metro line",
-            "narrow_gauge" => "narrow gauge railway",
-            _ if !self.service.is_empty() => "siding",
-            _ => "railway",
+            "tram" => "rail.existing.tram",
+            "light_rail" => "rail.existing.light_rail",
+            "subway" => "rail.existing.metro",
+            "narrow_gauge" => "rail.existing.narrow_gauge",
+            _ if !self.service.is_empty() => "rail.existing.siding",
+            _ => "rail.existing.railway",
         };
         if self.name.is_empty() {
-            format!("the existing {what}")
+            Msg::new(what)
         } else {
-            format!("the existing {what} {}", self.name)
+            Msg::new(&format!("{what}_named")).arg("name", self.name.clone())
         }
     }
 
@@ -348,15 +348,21 @@ pub fn check(dz: &mut Design) {
         let mode = dz.track_mode(j.track);
         let p = dz.params_for(mode);
         let r = &e.rail;
-        let what = r.label();
-        let where_ = if j.end == 0 { "start" } else { "end" };
+        let what = r.label_msg();
+        let where_ = if j.end == 0 {
+            msg!("rail.existing.track_start")
+        } else {
+            msg!("rail.existing.track_end")
+        };
         if !r.gauge_mm.is_empty() && !r.gauge_mm.iter().any(|g| (g - p.gauge_mm).abs() < 1.0) {
             let gauges: Vec<String> = r.gauge_mm.iter().map(|g| format!("{g:.0} mm")).collect();
             iss.push(Issue::error(
-                format!(
-                    "The track {where_} joins {what}, but its gauge ({:.0} mm) differs from the existing track ({}). Trains cannot run from one to the other: use the existing gauge, dual gauge track, or keep the lines apart.",
-                    p.gauge_mm,
-                    gauges.join(" and ")
+                msg!(
+                    "rail.existing.gauge_differs",
+                    track = where_.clone(),
+                    existing = what.clone(),
+                    gauge = format!("{:.0} mm", p.gauge_mm),
+                    existing_gauge = gauges.join(" / ")
                 ),
                 Some(j.p),
                 j.track,
@@ -374,10 +380,12 @@ pub fn check(dz: &mut Design) {
                 && theirs != RailMode::Metro);
         if !compatible {
             iss.push(Issue::warning(
-                format!(
-                    "The track {where_} joins {what}, a different railway system ({} track joining {}). Through running needs vehicles built for both, such as tram-trains, and matching platforms and signalling.",
-                    p.label,
-                    theirs.id().replace('_', " ")
+                msg!(
+                    "rail.existing.other_system",
+                    track = where_.clone(),
+                    existing = what.clone(),
+                    mode = mode.label_msg(),
+                    existing_mode = theirs.label_msg()
                 ),
                 Some(j.p),
                 j.track,
@@ -399,31 +407,30 @@ pub fn check(dz: &mut Design) {
                 .zip(r.voltage_v)
                 .is_some_and(|(a, b)| (a - b).abs() > 1.0);
         if power_differs || volt_differs {
+            let kind = if theirs_power == "contact_line" {
+                msg!("rail.existing.overhead_line")
+            } else {
+                msg!("rail.existing.conductor_rail")
+            };
             let theirs_text = match (theirs_power, r.voltage_v) {
-                ("no", _) => "not electrified".to_string(),
-                (k, Some(v)) => format!(
-                    "{} at {}",
-                    if k == "contact_line" {
-                        "overhead line"
-                    } else {
-                        "conductor rail"
-                    },
-                    if v >= 1000.0 {
+                ("no", _) => msg!("rail.existing.not_electrified"),
+                (_, Some(v)) => msg!(
+                    "rail.existing.power_at",
+                    kind = kind,
+                    voltage = if v >= 1000.0 {
                         format!("{:.0} kV", v / 1000.0)
                     } else {
                         format!("{v:.0} V")
                     }
                 ),
-                (k, None) => (if k == "contact_line" {
-                    "overhead line"
-                } else {
-                    "conductor rail"
-                })
-                .to_string(),
+                (_, None) => kind,
             };
             iss.push(Issue::warning(
-                format!(
-                    "The track {where_} joins {what}, which is {theirs_text}, unlike this track. Trains running through need to change power system (dual-system or battery vehicles), and the join needs a system separation section."
+                msg!(
+                    "rail.existing.power_differs",
+                    track = where_.clone(),
+                    existing = what.clone(),
+                    power = theirs_text
                 ),
                 Some(j.p),
                 j.track,
@@ -431,9 +438,11 @@ pub fn check(dz: &mut Design) {
         }
         if j.angle_deg > JOIN_ANGLE_DEG && !j.continues {
             iss.push(Issue::warning(
-                format!(
-                    "The track {where_} meets {what} at {:.0}°. A turnout leaves the existing track at a few degrees: draw the new track so it runs alongside the existing one where it joins.",
-                    j.angle_deg
+                msg!(
+                    "rail.existing.join_angle",
+                    track = where_.clone(),
+                    existing = what.clone(),
+                    angle = format!("{:.0}°", j.angle_deg)
                 ),
                 Some(j.p),
                 j.track,
@@ -441,11 +450,9 @@ pub fn check(dz: &mut Design) {
         }
         iss.push(Issue::info(
             if j.continues {
-                format!("The track {where_} continues {what}.")
+                msg!("rail.existing.continues", track = where_, existing = what)
             } else {
-                format!(
-                    "The track {where_} joins {what}: a new turnout goes into the existing track there."
-                )
+                msg!("rail.existing.joins", track = where_, existing = what)
             },
             Some(j.p),
             Some(j.track),
@@ -461,7 +468,7 @@ pub fn check(dz: &mut Design) {
             .iter()
             .filter(|e| e.rail.status == "active" && e.bbox.overlaps(&tb, 5.0))
         {
-            let what = e.rail.label();
+            let what = e.rail.label_msg();
             let their_level = e.rail.level();
             let mut hits = Vec::new();
             poly_cross(&cp, &e.pts, |h, i, _| hits.push((h, i)));
@@ -488,16 +495,20 @@ pub fn check(dz: &mut Design) {
                 // existing track, no interlocking.
                 iss.push(if trams {
                     Issue::info(
-                        format!(
-                            "This track crosses {what} on the level, at {angle:.0}°: a diamond crossing goes into the existing track."
+                        msg!(
+                            "rail.existing.tram_crossing",
+                            existing = what.clone(),
+                            angle = format!("{angle:.0}°")
                         ),
                         Some(h.p),
                         Some(g.id),
                     )
                 } else {
                     Issue::warning(
-                        format!(
-                            "This track crosses {what} on the same level, at {angle:.0}°. That needs a diamond crossing built into the existing track and an interlocking shared with its operator. Take the new track over or under it."
+                        msg!(
+                            "rail.existing.level_crossing",
+                            existing = what.clone(),
+                            angle = format!("{angle:.0}°")
                         ),
                         Some(h.p),
                         g.id,
@@ -510,9 +521,10 @@ pub fn check(dz: &mut Design) {
             let report = |a: f64, b: f64, iss: &mut Vec<Issue>| {
                 if b - a >= ON_TOP_MIN_M {
                     iss.push(Issue::warning(
-                        format!(
-                            "This track lies on top of {what} for {:.0} m. The track is already there: join the existing track instead of drawing it again, or move the new track beside it.",
-                            b - a
+                        msg!(
+                            "rail.existing.on_top",
+                            existing = what.clone(),
+                            length = format!("{:.0} m", b - a)
                         ),
                         Some(at_s(&g.centre, (a + b) / 2.0).p),
                         g.id,

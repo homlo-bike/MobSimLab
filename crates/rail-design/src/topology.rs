@@ -1509,8 +1509,8 @@ fn assess_signals(
     placed: &[Placed],
     removed: &dyn Fn(&crate::signal::Signal) -> bool,
 ) -> Vec<crate::issue::Issue> {
-    use crate::issue::{fmt_m, Issue};
-    use crate::signal::{braking_m, label, same_signal, system_of, SignalKind, System};
+    use crate::issue::{fmt_m, msg, Issue};
+    use crate::signal::{braking_m, same_signal, system_of, SignalKind, System};
     let mut out = Vec::new();
     let at = |a: &crate::signal::SignalAt| crate::signal::locate(dz, a).map(|x| x.0);
     let speed = |seg: usize, x: f64| {
@@ -1545,27 +1545,27 @@ fn assess_signals(
             continue;
         }
         let text = match &g.purpose {
-            Area::Switch(_) | Area::Crossing(_) | Area::LevelCrossing(_) => format!(
-                "No signal in front of {area}: the generated signal there was removed. Trains are not stopped before {area}, so one can run into a train crossing it. Reset the signals, or place a signal at the edge of {area}.",
-                area = g.purpose.label(dz)
-            ),
-            Area::Platform => "No starter signal at the end of a platform track: the generated one was removed. Trains cannot be held at the platform, so the line ahead is not protected. Reset the signals, or place a main signal at the platform end.".into(),
-            Area::StorageExit => "No signal at the exit of a storage track: the generated one was removed. Trains put away there have no signal to leave by, so they cannot come out. Reset the signals, or place a shunting signal where the storage track joins the line.".into(),
+            Area::Switch(_) | Area::Crossing(_) | Area::LevelCrossing(_) => {
+                msg!("rail.signal.removed_area", area = g.purpose.label())
+            }
+            Area::Platform => msg!("rail.signal.removed_starter"),
+            Area::StorageExit => msg!("rail.signal.removed_storage_exit"),
             Area::Block => {
                 let p = dz.params_for(segs[g.seg].mode);
-                let behind = next(g.seg, g.x, g.to, false).unwrap_or(g.x.min(sections[g.seg].length_m - g.x));
+                let behind = next(g.seg, g.x, g.to, false)
+                    .unwrap_or(g.x.min(sections[g.seg].length_m - g.x));
                 let ahead = next(g.seg, g.x, g.to, true).unwrap_or(0.0);
-                format!(
-                    "A block signal was removed: the block grows to {} where {} is enough at {} km/h. Trains must keep further apart, so fewer fit per hour. Reset the signals, or place a block signal there.",
-                    fmt_m(behind + ahead),
-                    fmt_m(crate::signal::block_length_m(p, speed(g.seg, g.x))),
-                    speed(g.seg, g.x).round()
+                msg!(
+                    "rail.signal.removed_block",
+                    block = fmt_m(behind + ahead),
+                    enough = fmt_m(crate::signal::block_length_m(p, speed(g.seg, g.x))),
+                    speed = format!("{} km/h", speed(g.seg, g.x).round())
                 )
             }
-            Area::Distant => "A distant signal was removed: trains get no warning that the main signal ahead may show stop, so they must approach it slowly enough to stop on sight. Reset the signals, or place a distant signal at braking distance before it.".into(),
-            Area::Speed => format!(
-                "A speed signal was removed: the drop to {} km/h is not signed, so a driver may run into it too fast. Reset the signals, or place a speed signal there.",
-                g.speed_kmh.unwrap_or(0.0).round()
+            Area::Distant => msg!("rail.signal.removed_distant"),
+            Area::Speed => msg!(
+                "rail.signal.removed_speed",
+                speed = format!("{} km/h", g.speed_kmh.unwrap_or(0.0).round())
             ),
         };
         out.push(Issue::warning(text, at(&d.at), d.id));
@@ -1573,7 +1573,11 @@ fn assess_signals(
 
     // The planner's signals.
     for sg in planner {
-        let name = label(sg);
+        let name = if sg.name.is_empty() {
+            sg.id.to_string()
+        } else {
+            sg.name.clone()
+        };
         let Some((seg, x)) = to_section(dz, segs, &sg.at) else {
             continue;
         };
@@ -1590,11 +1594,10 @@ fn assess_signals(
             .find(|(a, b, _)| x > a + 0.5 && x < b - 0.5)
         {
             out.push(Issue::error(
-                format!(
-                    "{} stands inside {}. A train stopped at it blocks {} for every other train. Move it to the edge, before it.",
-                    capitalise(&name),
-                    a.2.label(dz),
-                    a.2.label(dz)
+                msg!(
+                    "rail.signal.inside_area",
+                    signal = name.clone(),
+                    area = a.2.label()
                 ),
                 here,
                 sg.id,
@@ -1609,11 +1612,11 @@ fn assess_signals(
         };
         if let Some(a) = gen.areas[seg].iter().find(|(a, b, _)| *a < hi && *b > lo) {
             out.push(Issue::warning(
-                format!(
-                    "A {} train stopped at {} reaches back into {}, so it blocks it while it waits. Move the signal further on, or take it out.",
-                    fmt_m(train),
-                    name,
-                    a.2.label(dz)
+                msg!(
+                    "rail.signal.train_reaches_back",
+                    train = fmt_m(train),
+                    signal = name.clone(),
+                    area = a.2.label()
                 ),
                 here,
                 sg.id,
@@ -1626,10 +1629,10 @@ fn assess_signals(
                 && matches!(sg.kind, SignalKind::Block | SignalKind::Distant)
             {
                 out.push(Issue::warning(
-                    format!(
-                        "{} protects {} but is not a main signal, so it cannot set a route into it. Make it a main signal.",
-                        capitalise(&name),
-                        g.purpose.label(dz)
+                    msg!(
+                        "rail.signal.not_main",
+                        signal = name.clone(),
+                        area = g.purpose.label()
                     ),
                     here,
                     sg.id,
@@ -1640,9 +1643,7 @@ fn assess_signals(
         // A signal of the planner's own, on plain line.
         if sys == System::LineOfSight {
             out.push(Issue::info(
-                format!(
-                    "Trams drive on sight, so {name} does not let them follow each other closer. It is only needed in front of switches and crossings."
-                ),
+                msg!("rail.signal.line_of_sight", signal = name.clone()),
                 here,
                 Some(sg.id),
             ));
@@ -1657,39 +1658,39 @@ fn assess_signals(
         let behind = next(seg, x, to, false);
         if let Some(d) = ahead.filter(|d| *d < brake) {
             out.push(Issue::warning(
-                format!(
-                    "The next signal is only {} beyond {}, less than the {} a train needs to stop from {} km/h. A train passing {} cannot stop at the next one if it shows stop. Move them apart, or announce it with a distant signal.",
-                    fmt_m(d),
-                    name,
-                    fmt_m(brake),
-                    kmh.round(),
-                    name
+                msg!(
+                    "rail.signal.next_too_close",
+                    distance = fmt_m(d),
+                    signal = name.clone(),
+                    braking = fmt_m(brake),
+                    speed = format!("{} km/h", kmh.round())
                 ),
                 here,
                 sg.id,
             ));
         } else if let Some(d) = behind.filter(|d| *d < brake) {
             out.push(Issue::warning(
-                format!(
-                    "{} is only {} beyond the signal before it, less than the {} a train needs to stop from {} km/h. Move them apart, or announce it with a distant signal.",
-                    capitalise(&name),
-                    fmt_m(d),
-                    fmt_m(brake),
-                    kmh.round()
+                msg!(
+                    "rail.signal.previous_too_close",
+                    signal = name.clone(),
+                    distance = fmt_m(d),
+                    braking = fmt_m(brake),
+                    speed = format!("{} km/h", kmh.round())
                 ),
                 here,
                 sg.id,
             ));
         } else {
-            let blocks = match (behind, ahead) {
-                (Some(b), Some(a)) => format!(" into blocks of {} and {}", fmt_m(b), fmt_m(a)),
-                _ => String::new(),
-            };
             out.push(Issue::info(
-                format!(
-                    "{} splits the line{blocks}, so trains can follow each other closer and more fit per hour.",
-                    capitalise(&name)
-                ),
+                match (behind, ahead) {
+                    (Some(b), Some(a)) => msg!(
+                        "rail.signal.splits_line_blocks",
+                        signal = name.clone(),
+                        behind = fmt_m(b),
+                        ahead = fmt_m(a)
+                    ),
+                    _ => msg!("rail.signal.splits_line", signal = name.clone()),
+                },
                 here,
                 Some(sg.id),
             ));
@@ -1704,13 +1705,6 @@ fn speed_at(s: &Section, x: f64) -> Option<f64> {
         .iter()
         .find(|r| x >= r.from_m - 1e-6 && x <= r.to_m + 1e-6)
         .map(|r| r.value)
-}
-
-/// Purpose: a sentence's first letter in upper case.
-fn capitalise(s: &str) -> String {
-    let mut c = s.chars();
-    c.next()
-        .map_or(String::new(), |f| f.to_uppercase().chain(c).collect())
 }
 
 /// A generated signal on a section.
@@ -1749,19 +1743,17 @@ enum Area {
 
 impl Area {
     /// Purpose: the area in a sentence ("switch 5", "the crossing x3-7-0").
-    fn label(&self, dz: &Design) -> String {
+    fn label(&self) -> engine_msg::Msg {
+        use engine_msg::msg;
         match self {
-            Area::Switch(id) => {
-                let _ = dz;
-                format!("switch {id}")
-            }
-            Area::Crossing(id) => format!("the crossing {id}"),
-            Area::LevelCrossing(id) => format!("the level crossing {id}"),
-            Area::Platform => "the platform end".into(),
-            Area::StorageExit => "the exit of a storage track".into(),
-            Area::Block => "plain line".into(),
-            Area::Distant => "the approach to a main signal".into(),
-            Area::Speed => "a speed restriction".into(),
+            Area::Switch(id) => msg!("rail.area.switch", id = id.to_string()),
+            Area::Crossing(id) => msg!("rail.area.crossing", id = id.to_string()),
+            Area::LevelCrossing(id) => msg!("rail.area.level_crossing", id = id.to_string()),
+            Area::Platform => msg!("rail.area.platform"),
+            Area::StorageExit => msg!("rail.area.storage_exit"),
+            Area::Block => msg!("rail.area.block"),
+            Area::Distant => msg!("rail.area.distant"),
+            Area::Speed => msg!("rail.area.speed"),
         }
     }
 }

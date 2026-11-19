@@ -7,6 +7,7 @@
 //! running resistance or braking. Those come from the mode's assumptions (`mode.acceleration_ms2`,
 //! `mode.service_decel_ms2`, see `assumptions/DEFAULTS.md`) and the estimates in [`train_params`].
 
+use engine_msg::{msg, Msg};
 use journey_planner::timetable::Timetable;
 use rail_dynamics::TrainParams;
 use rail_model::topology::{import_json, ImportOptions, StorageRole};
@@ -109,8 +110,10 @@ pub struct LineReport {
     pub return_s: Option<f64>,
     /// Trains the line needs (distinct vehicles of its trips).
     pub trains: usize,
-    /// What went wrong or was changed, in words.
+    /// What went wrong or was changed, in words (English).
     pub issues: Vec<String>,
+    /// The same as messages, one per entry of `issues`, for the app to show in the user's language.
+    pub issue_msgs: Vec<Msg>,
     /// The stations of the first outbound trip with their distance from the first terminal along the
     /// track, for the time-distance graph. Empty when no outbound trip runs.
     pub stations: Vec<StationKm>,
@@ -145,8 +148,10 @@ pub struct ShiftedTrip {
 pub struct UnplacedTrip {
     /// Trip id.
     pub trip: String,
-    /// Why, in words.
+    /// Why, in words (English).
     pub reason: String,
+    /// The same as a message, for the app to show in the user's language.
+    pub reason_msg: Msg,
     /// The trip in the way, for a conflict.
     pub blocked_by: Option<String>,
 }
@@ -497,39 +502,61 @@ fn clock(s: f64) -> String {
 }
 
 /// Purpose: the issue in words for the editor.
-fn issue_text(issue: &Issue, names: &PlatformNames) -> String {
+fn issue_text(issue: &Issue, names: &PlatformNames) -> Msg {
     match issue {
         Issue::NoPath {
             direction,
             reason: None,
             ..
-        } => format!(
-            "No track connects the stops {}. Check that the stations are joined by track in the order of the stops.",
-            if *direction == 0 { "in the line's direction" } else { "in the return direction" }
-        ),
+        } => {
+            if *direction == 0 {
+                msg!("rail.plan.no_track_outbound")
+            } else {
+                msg!("rail.plan.no_track_return")
+            }
+        }
         Issue::NoPath {
             direction,
             reason: Some(why),
             ..
-        } => format!(
-            "Track joins the stops {}, but trains cannot run along it: {}.",
-            if *direction == 0 { "in the line's direction" } else { "in the return direction" },
-            names.reason(why)
-        ),
-        Issue::Unplaced { trip, reason, .. } => format!("Trip {trip} could not run: {reason}."),
-        Issue::Shifted { run, by_s } => format!(
-            "{run} {} by {} s to keep clear of another train.",
-            if *by_s >= 0.0 { "leaves later" } else { "leaves earlier" },
-            by_s.abs().round()
-        ),
-        Issue::PlatformChange { trip, usual, used } => format!(
-            "{trip} uses platform {} instead of {}.",
-            names.platform(used),
-            names.platform(usual)
-        ),
-        Issue::NotStabled { vehicle, at, reason } => {
-            format!("Train {vehicle} stays overnight at {at}: {reason}.")
+        } => {
+            let why = why.clone().map_text(&|t| names.reason(t));
+            if *direction == 0 {
+                msg!("rail.plan.cannot_run_outbound", reason = why)
+            } else {
+                msg!("rail.plan.cannot_run_return", reason = why)
+            }
         }
+        Issue::Unplaced { trip, reason, .. } => {
+            msg!(
+                "rail.plan.trip_not_run",
+                trip = trip,
+                reason = reason.clone()
+            )
+        }
+        Issue::Shifted { run, by_s } => Msg::new(if *by_s >= 0.0 {
+            "rail.plan.leaves_later"
+        } else {
+            "rail.plan.leaves_earlier"
+        })
+        .arg("run", run)
+        .arg("by", format!("{} s", by_s.abs().round())),
+        Issue::PlatformChange { trip, usual, used } => msg!(
+            "rail.plan.platform_change",
+            trip = trip,
+            used = names.platform(used),
+            usual = names.platform(usual)
+        ),
+        Issue::NotStabled {
+            vehicle,
+            at,
+            reason,
+        } => msg!(
+            "rail.plan.not_stabled",
+            train = vehicle.to_string(),
+            at = at,
+            reason = reason.clone()
+        ),
     }
 }
 
@@ -537,7 +564,7 @@ fn issue_text(issue: &Issue, names: &PlatformNames) -> String {
 /// signal to leave by, or no storage track that reaches either end of the line.
 /// Output: sentences for the line's report (none when a storage track reaches a terminal, or the
 /// design has no storage track: its trains then stable in the terminal platforms by design).
-fn stabling_problems(m: &Model, spec: &LineSpec, l: &ServiceLine) -> Vec<String> {
+fn stabling_problems(m: &Model, spec: &LineSpec, l: &ServiceLine) -> Vec<Msg> {
     let storage: Vec<usize> = (0..m.tracks.len())
         .filter(|&t| {
             m.tracks[t].usage == TrackUse::Storage && spec.stabling.contains(&m.tracks[t].id)
@@ -576,9 +603,7 @@ fn stabling_problems(m: &Model, spec: &LineSpec, l: &ServiceLine) -> Vec<String>
     stuck.sort();
     stuck.dedup();
     for name in stuck.into_iter().filter(|n| !free.contains(n)) {
-        out.push(format!(
-            "The {name} has no signal to leave by, so its trains cannot come out. A signal at its exit (in front of the switch that joins it to the line) lets them out."
-        ));
+        out.push(msg!("rail.plan.storage_no_exit_signal", track = name));
     }
     let terminals: Vec<(String, Vec<Place>)> = [l.stations.first(), l.stations.last()]
         .into_iter()
@@ -600,9 +625,9 @@ fn stabling_problems(m: &Model, spec: &LineSpec, l: &ServiceLine) -> Vec<String>
     };
     if !leaves.is_empty() && !terminals.iter().any(|(_, ps)| reached(ps)) {
         let names: Vec<&str> = terminals.iter().map(|(n, _)| n.as_str()).collect();
-        out.push(format!(
-            "No storage track reaches {}: the line's trains can only stay overnight in the terminal platforms, so it runs with few trains. Join a storage track to the line with a switch both ways, or check the signals between them.",
-            names.join(" or ")
+        out.push(msg!(
+            "rail.plan.no_storage_reaches",
+            stations = names.join(" / ")
         ));
     }
     out
@@ -726,6 +751,7 @@ pub fn publish_service_with(
                 return_s: first(1),
                 trains: trains.len(),
                 issues: Vec::new(),
+                issue_msgs: Vec::new(),
                 stations: service()
                     .filter(|r| r.direction == 0)
                     .min_by(|a, b| a.depart_s().total_cmp(&b.depart_s()))
@@ -737,10 +763,12 @@ pub fn publish_service_with(
         })
         .collect();
     let mut notes: Vec<String> = Vec::new();
+    let mut note_msgs: Vec<Msg> = Vec::new();
     // Many small shifts say little each; count them per line instead.
     let mut shifted = vec![0usize; lines.len()];
     // Trips that could not run, per line and reason (a busy day can drop hundreds for one reason).
-    let mut unplaced: Vec<BTreeMap<String, Vec<String>>> = vec![BTreeMap::new(); lines.len()];
+    let mut unplaced: Vec<BTreeMap<String, (Msg, Vec<String>)>> =
+        vec![BTreeMap::new(); lines.len()];
     // Trips that used another platform than usual, counted per line and station: one line each
     // instead of one per trip.
     let mut platform_changes: Vec<BTreeMap<String, usize>> = vec![BTreeMap::new(); lines.len()];
@@ -765,83 +793,90 @@ pub fn publish_service_with(
             ) => {
                 reports[i].unplaced.push(UnplacedTrip {
                     trip: trip.clone(),
-                    reason: reason.clone(),
+                    reason: reason.english(),
+                    reason_msg: reason.clone(),
                     blocked_by: blocked_by.clone(),
                 });
                 unplaced[i]
-                    .entry(reason.clone())
-                    .or_default()
+                    .entry(reason.english())
+                    .or_insert_with(|| (reason.clone(), Vec::new()))
+                    .1
                     .push(trip.clone())
             }
             (Issue::PlatformChange { used, .. }, Some(i)) => {
                 let at = names.station_of(used);
                 *platform_changes[i].entry(at).or_default() += 1;
             }
-            (_, Some(i)) => reports[i].issues.push(issue_text(issue, &names)),
-            (_, None) => notes.push(issue_text(issue, &names)),
+            (_, Some(i)) => reports[i].issue_msgs.push(issue_text(issue, &names)),
+            (_, None) => note_msgs.push(issue_text(issue, &names)),
         }
     }
     // Where trains can come from: a depot whose trains cannot reach the line is a design problem
     // the timetable alone would only show as trips without a train (Damascus test, bug 9).
     for (i, spec) in specs.iter().enumerate() {
         reports[i]
-            .issues
+            .issue_msgs
             .extend(stabling_problems(&m, spec, &lines[i]));
     }
     for (i, by_reason) in unplaced.into_iter().enumerate() {
         let mut blocked = false;
         let mut no_train = false;
-        for (reason, trips) in by_reason {
-            blocked |= reason.contains("conflict-free");
-            no_train |= reason.contains("stabling");
-            reports[i].issues.push(if trips.len() == 1 {
-                format!("Trip {} could not run: {reason}.", trips[0])
+        for (text, (reason, trips)) in by_reason {
+            blocked |= text.contains("conflict-free");
+            no_train |= text.contains("stabling");
+            reports[i].issue_msgs.push(if trips.len() == 1 {
+                msg!("rail.plan.trip_not_run", trip = &trips[0], reason = reason)
             } else {
-                format!(
-                    "{} trips could not run ({} first): {reason}.",
-                    trips.len(),
-                    trips[0]
+                msg!(
+                    "rail.plan.trips_not_run",
+                    count = trips.len().to_string(),
+                    first = &trips[0],
+                    reason = reason
                 )
             });
         }
         if blocked {
-            reports[i].issues.push(
-                "Trains get in each other's way on the track. Crossovers next to the terminals let trains turn without blocking the other track; otherwise run less often."
-                    .into(),
-            );
+            reports[i]
+                .issue_msgs
+                .push(msg!("rail.plan.trains_in_the_way"));
         }
         if no_train {
-            reports[i].issues.push(
-                "No train was free to start some trips: trains cannot turn at the terminal named above, or its platforms are full. Add a crossover before the terminal so trains reach the departure platform, or a storage track joined to it; a storage track that only reaches the arrival platform does not help."
-                    .into(),
-            );
+            reports[i].issue_msgs.push(msg!("rail.plan.no_free_train"));
         }
     }
     for (i, by_station) in platform_changes.into_iter().enumerate() {
         for (station, n) in by_station {
-            reports[i].issues.push(format!(
-                "At {station}, {n} trip{} used another platform than usual.",
-                if n == 1 { "" } else { "s" }
-            ));
+            reports[i].issue_msgs.push(if n == 1 {
+                msg!("rail.plan.platform_changes_one", station = station)
+            } else {
+                msg!(
+                    "rail.plan.platform_changes",
+                    station = station,
+                    count = n.to_string()
+                )
+            });
         }
     }
     for (i, n) in shifted.into_iter().enumerate() {
         if n > 0 {
-            reports[i].issues.push(format!(
-                "{n} departure{} moved from the clock-face times to keep clear of other trains.",
-                if n == 1 { "" } else { "s" }
-            ));
+            reports[i].issue_msgs.push(if n == 1 {
+                msg!("rail.plan.shifted_one")
+            } else {
+                msg!("rail.plan.shifted", count = n.to_string())
+            });
         }
     }
     for (r, l) in reports.iter_mut().zip(lines) {
-        if r.trips == 0 && r.issues.is_empty() {
-            r.issues.push(format!(
-                "No trips between {} and {}.",
-                clock(l.first_s),
-                clock(l.last_s)
+        if r.trips == 0 && r.issue_msgs.is_empty() {
+            r.issue_msgs.push(msg!(
+                "rail.plan.no_trips",
+                from = clock(l.first_s),
+                to = clock(l.last_s)
             ));
         }
+        r.issues = r.issue_msgs.iter().map(Msg::english).collect();
     }
+    notes.extend(note_msgs.iter().map(Msg::english));
     notes.extend(imp.notes.iter().filter(|n| !n.is_empty()).cloned());
     notes.extend(jt.notes);
     let section_trains = section_trains(&m, &p, &ids);

@@ -63,6 +63,17 @@ impl Level {
             Level::Elevated2 => 2.0 * p.elevated_level_height_m,
         }
     }
+    /// Purpose: display name as a message (shown in the user's language).
+    pub fn label_msg(self) -> engine_msg::Msg {
+        engine_msg::Msg::new(match self {
+            Level::Underground2 => "rail.level.underground2",
+            Level::Underground => "rail.level.underground",
+            Level::Cutting => "rail.level.cutting",
+            Level::Street => "rail.level.street",
+            Level::Elevated => "rail.level.elevated",
+            Level::Elevated2 => "rail.level.elevated2",
+        })
+    }
     /// Purpose: display name.
     pub fn label(self) -> &'static str {
         match self {

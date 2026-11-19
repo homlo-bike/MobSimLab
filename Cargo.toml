@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+  "crates/engine-msg",
   "crates/rail-model",
   "crates/rail-dynamics",
   "crates/rail-plan",

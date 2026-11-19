@@ -17,7 +17,7 @@
 
 use crate::design::{CrossingKind, Design};
 use crate::geom::{at_s, P2};
-use crate::issue::Issue;
+use crate::issue::{msg, Issue, Msg};
 use crate::params::{defaults, Element};
 use serde::{Deserialize, Serialize};
 
@@ -102,7 +102,7 @@ pub fn check(dz: &mut Design) {
             .unwrap_or(0);
         let Some(c) = dz.crossings.iter().find(|c| c.id == slip.crossing) else {
             iss.push(Issue::warning(
-                "A slip lost its crossing: the tracks crossing there changed. Choose the slip again in the crossing list.",
+                msg!("rail.slip.lost_crossing"),
                 None,
                 first_track,
             ));
@@ -110,12 +110,9 @@ pub fn check(dz: &mut Design) {
         };
         let at = Some(c.p);
         let [ta, tb] = c.tracks;
-        let fail = |text: String, iss: &mut Vec<Issue>| iss.push(Issue::error(text, at, ta));
+        let fail = |text: Msg, iss: &mut Vec<Issue>| iss.push(Issue::error(text, at, ta));
         if c.kind != CrossingKind::Diamond {
-            fail(
-                "A slip needs the two tracks to cross on one level.".into(),
-                &mut iss,
-            );
+            fail(msg!("rail.slip.needs_one_level"), &mut iss);
             continue;
         }
         let Some(spec) = defaults()
@@ -123,7 +120,7 @@ pub fn check(dz: &mut Design) {
             .filter(|s| matches!(s.element, Element::SingleSlip | Element::DoubleSlip))
         else {
             fail(
-                format!("{} is not a slip in the catalogue.", slip.element),
+                msg!("rail.slip.not_a_slip", element = slip.element.clone()),
                 &mut iss,
             );
             continue;
@@ -141,18 +138,18 @@ pub fn check(dz: &mut Design) {
         let mut ok = true;
         if ga.ntracks != 1 || gb.ntracks != 1 {
             fail(
-                format!("{} joins two single tracks. Where double tracks cross, use a double junction or a crossover instead.", spec.label),
+                msg!("rail.slip.single_tracks", slip = spec.label.clone()),
                 &mut iss,
             );
             ok = false;
         }
         if dz.track_mode(tb) != mode {
             fail(
-                format!(
-                    "{} joins tracks of one railway system; here {} crosses {}.",
-                    spec.label,
-                    dz.track_params(ta).label,
-                    dz.track_params(tb).label
+                msg!(
+                    "rail.slip.one_system",
+                    slip = spec.label.clone(),
+                    mode = mode.label_msg(),
+                    other = dz.track_mode(tb).label_msg()
                 ),
                 &mut iss,
             );
@@ -162,12 +159,13 @@ pub fn check(dz: &mut Design) {
             let want = (1.0 / n).atan();
             if (c.angle - want).abs().to_degrees() > ANGLE_TOL_DEG {
                 fail(
-                    format!(
-                        "{} is built for tracks crossing at 1:{n:.0} ({:.1}°). These tracks cross at 1:{:.1} ({:.1}°): change the angle between them.",
-                        spec.label,
-                        want.to_degrees(),
-                        1.0 / c.angle.tan().max(1e-6),
-                        c.angle.to_degrees()
+                    msg!(
+                        "rail.slip.wrong_angle",
+                        slip = spec.label.clone(),
+                        ratio = format!("1:{n:.0}"),
+                        angle = format!("{:.1}°", want.to_degrees()),
+                        actual_ratio = format!("1:{:.1}", 1.0 / c.angle.tan().max(1e-6)),
+                        actual_angle = format!("{:.1}°", c.angle.to_degrees())
                     ),
                     &mut iss,
                 );
@@ -181,9 +179,10 @@ pub fn check(dz: &mut Design) {
         };
         if curved(ga, sa) || curved(gb, sb) {
             fail(
-                format!(
-                    "{} needs straight track for {:.0} m each side of the crossing. Move the curves away from it.",
-                    spec.label, half
+                msg!(
+                    "rail.slip.needs_straight",
+                    slip = spec.label.clone(),
+                    length = format!("{half:.0} m")
                 ),
                 &mut iss,
             );
@@ -191,10 +190,10 @@ pub fn check(dz: &mut Design) {
         }
         if ok && !spec.typical_modes.is_empty() && !spec.typical_modes.contains(&mode) {
             iss.push(Issue::warning(
-                format!(
-                    "{} is a main line element, not usually built for {} track.",
-                    spec.label,
-                    dz.track_params(ta).label
+                msg!(
+                    "rail.slip.main_line_element",
+                    slip = spec.label.clone(),
+                    mode = mode.label_msg()
                 ),
                 at,
                 ta,
@@ -244,17 +243,24 @@ pub fn check(dz: &mut Design) {
         let curves = chosen.iter().map(|&i| all[i].2.clone()).collect();
         if ok {
             let what = if spec.element == Element::DoubleSlip {
-                "Double slip"
+                msg!("rail.slip.double")
             } else {
-                "Single slip"
+                msg!("rail.slip.single")
             };
             iss.push(Issue::info(
-                format!(
-                    "{what} ({}): trains can also turn between the two tracks here{}.",
-                    spec.label,
-                    spec.diverging_speed_kmh
-                        .map_or(String::new(), |v| format!(" at up to {v:.0} km/h"))
-                ),
+                match spec.diverging_speed_kmh {
+                    Some(v) => msg!(
+                        "rail.slip.turn_between_speed",
+                        what = what,
+                        slip = spec.label.clone(),
+                        speed = format!("{v:.0} km/h")
+                    ),
+                    None => msg!(
+                        "rail.slip.turn_between",
+                        what = what,
+                        slip = spec.label.clone()
+                    ),
+                },
                 at,
                 Some(ta),
             ));

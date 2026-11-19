@@ -1,5 +1,6 @@
 import { ObjectComments } from "../comments/Comments";
 import { usePublishChecks } from "../../shell/checks";
+import { useEngineText } from "../../i18n/engine";
 import { hasMessage, type Translate, useI18n } from "../../i18n/i18n";
 import { signalById } from "./doc";
 import { field, input, levelOpts, Num, Row, Section, Segmented, Stat } from "./panelControls";
@@ -35,6 +36,7 @@ export type {
  */
 export function RailPanel(props: Props) {
   const { t } = useI18n();
+  const issueText = useEngineText();
   // Only the railway systems the project plans to use (Project preferences), and the one chosen now.
   const planned = usePlannedModes();
   const { doc, view, tool, sel, draft, actions: a } = props;
@@ -66,7 +68,7 @@ export function RailPanel(props: Props) {
     ...(props.error ? [{ severity: "error" as const, text: props.error }] : []),
     ...issues.map((i) => ({
       severity: i.severity,
-      text: i.text,
+      text: issueText(i),
       ...(about(i.ref_id) ? { detail: about(i.ref_id) } : {}),
       ...(i.at || i.ref_id ? { onShow: () => a.showIssue(i.at, i.ref_id) } : {}),
     })),

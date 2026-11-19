@@ -1,3 +1,4 @@
+import { useEngineText } from "../../i18n/engine";
 import { useEffect, useState } from "react";
 import { CommentBadge, ObjectComments } from "../comments/Comments";
 import { type Translate, useI18n } from "../../i18n/i18n";
@@ -268,6 +269,7 @@ export function ServiceLinesPanel({
  */
 function PublishConflicts({ result, lines }: { result: ServicePublication; lines: ServiceLine[] }) {
   const { t } = useI18n();
+  const engineText = useEngineText();
   const departs = new Map<string, number>();
   for (const trip of result.timetable.trips) {
     const first = trip.stop_times.reduce<number | null>(
@@ -291,8 +293,15 @@ function PublishConflicts({ result, lines }: { result: ServicePublication; lines
                 {r.unplaced.map((u) => (
                   <li key={`u-${u.trip}`} className="text-red-800">
                     {u.blocked_by
-                      ? t("rail.tdg.unplacedBy", { trip: u.trip, reason: u.reason, other: u.blocked_by })
-                      : t("rail.tdg.unplaced", { trip: u.trip, reason: u.reason })}
+                      ? t("rail.tdg.unplacedBy", {
+                          trip: u.trip,
+                          reason: engineText({ text: u.reason, msg: u.reason_msg }),
+                          other: u.blocked_by,
+                        })
+                      : t("rail.tdg.unplaced", {
+                          trip: u.trip,
+                          reason: engineText({ text: u.reason, msg: u.reason_msg }),
+                        })}
                   </li>
                 ))}
                 {r.shifted.map((x) => {
@@ -342,6 +351,7 @@ function LineEditor({
   calendar: ServiceCalendar;
 }) {
   const { t, tn } = useI18n();
+  const engineText = useEngineText();
   const [graph, setGraph] = useState(false);
   const mode = lineMode(doc, l);
   const vehiclesOff = useVehiclesOff();
@@ -551,7 +561,7 @@ function LineEditor({
               </summary>
               <ul className="mt-1 max-h-48 list-disc overflow-y-auto ps-4 text-amber-800">
                 {report.issues.map((text, i) => (
-                  <li key={i}>{text}</li>
+                  <li key={i}>{engineText({ text, msg: report.issue_msgs?.[i] })}</li>
                 ))}
               </ul>
             </details>

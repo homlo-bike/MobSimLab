@@ -8,6 +8,7 @@
 //! Dijkstra runs over (route, places passed); the cost is the length run plus
 //! the penalties of the places chosen.
 
+use engine_msg::{msg, Msg};
 use std::cmp::Ordering;
 use std::collections::{BTreeMap, BinaryHeap};
 
@@ -262,19 +263,25 @@ pub fn stop_at(
     place: Place,
     train_length_m: f64,
     margin_m: f64,
-) -> Result<f64, String> {
+) -> Result<f64, Msg> {
     match place {
         Place::Platform(p) => m.stop_position(steps, p, train_length_m, margin_m),
         Place::Storage(t) => {
             let len = m.tracks[t].length_m;
             if len < train_length_m + margin_m {
-                return Err(format!("storage track {} is too short", m.tracks[t].id));
+                return Err(msg!(
+                    "rail.plan.storage_short",
+                    track = m.tracks[t].id.clone()
+                ));
             }
             let a = m.locate(steps, t, 0.0);
             let b = m.locate(steps, t, len);
             match (a, b) {
                 (Some(a), Some(b)) => Ok(a.max(b) - margin_m),
-                _ => Err(format!("the path does not reach {}", m.tracks[t].id)),
+                _ => Err(msg!(
+                    "rail.plan.path_misses_track",
+                    track = m.tracks[t].id.clone()
+                )),
             }
         }
     }

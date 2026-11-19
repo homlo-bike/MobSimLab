@@ -167,7 +167,7 @@ export const zu: Messages = {
   "mode.rail": "Kojantshi",
   "mode.bus": "Ibhasi",
   "mode.brt": "BRT",
-  "mode.trolleybus": "Ibhasi likagesi",
+  "mode.trolleybus": "Ibhasi lentambo",
   "mode.intercity_bus": "Ibhasi phakathi kwamadolobha",
   "mode.tram": "Ithremu",
   "mode.light_rail": "Isitimela esilula",
@@ -270,7 +270,7 @@ export const zu: Messages = {
   "create.chooseIntro": "Ungangeza olunye uhlobo kamuva. Imizila ekhona iyabonakala ngesikhathi usebenza.",
   "create.street": "Umzila womgwaqo",
   "create.streetHint":
-    "Ibhasi, BRT, ibhasi likagesi, ibhasi phakathi kwamadolobha. Ilandela inethiwekhi yemigwaqo.",
+    "Ibhasi, BRT, ibhasi lentambo, ibhasi phakathi kwamadolobha. Ilandela inethiwekhi yemigwaqo.",
   "create.rail": "Umzila kajantshi",
   "create.railHint":
     "Ithremu, isitimela esilula, i-metro, sabagibeli, sesifunda, phakathi kwamadolobha, esisheshayo. Dweba ojantshi, iziteshi nezishintshi.",
@@ -313,7 +313,7 @@ export const zu: Messages = {
   "prefs.readOnly": "Abanikazi nabaHleli kuphela abangashintsha lokhu.",
   "prefs.delayTitle": "Isikhathi sokuhamba esiminyaminyeni",
   "prefs.delayIntro":
-    "Isikhathi esengeziwe sokuhamba esilindelekile ngesikhathi esiphezulu samabhasi, i-BRT, amabhasi kagesi namathremu emigwaqweni emikhulu, njengengxenye yesikhathi sokuhamba ngomkhawulo wesivinini. Isetshenziswa ithuluzi lomugqa womgwaqo, ithuluzi likajantshi nethebhu ye-GIS.",
+    "Isikhathi esengeziwe sokuhamba esilindelekile ngesikhathi esiphezulu samabhasi, i-BRT, amabhasi entambo namathremu emigwaqweni emikhulu, njengengxenye yesikhathi sokuhamba ngomkhawulo wesivinini. Isetshenziswa ithuluzi lomugqa womgwaqo, ithuluzi likajantshi nethebhu ye-GIS.",
   "prefs.delayMixed": "Esiminyaminyeni esijwayelekile somgwaqo omkhulu",
   "prefs.delayLane": "Emzileni webhasi noma wethremu odwetshwe ngopende",
   "prefs.delayDefault": "Umtapo wolwazi wemicabango: {value} %",

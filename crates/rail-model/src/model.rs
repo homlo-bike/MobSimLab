@@ -1104,21 +1104,24 @@ impl Model {
         platform: PlatformId,
         train_length_m: f64,
         margin_m: f64,
-    ) -> Result<f64, String> {
+    ) -> Result<f64, engine_msg::Msg> {
         let p = &self.platforms[platform as usize];
         if p.length_m() + EPS < train_length_m + margin_m {
-            return Err(format!(
-                "platform {} is {:.0} m, train needs {:.0} m",
-                p.id,
-                p.length_m(),
-                train_length_m + margin_m
+            return Err(engine_msg::msg!(
+                "rail.plan.platform_short",
+                platform = p.id.clone(),
+                length = format!("{:.0} m", p.length_m()),
+                needed = format!("{:.0} m", train_length_m + margin_m)
             ));
         }
         let a = self.locate(steps, p.track, p.from_m);
         let b = self.locate(steps, p.track, p.to_m);
         match (a, b) {
             (Some(a), Some(b)) => Ok(a.max(b) - margin_m),
-            _ => Err(format!("the path does not run along platform {}", p.id)),
+            _ => Err(engine_msg::msg!(
+                "rail.plan.path_misses_platform",
+                platform = p.id.clone()
+            )),
         }
     }
 

@@ -1,5 +1,6 @@
 /** The railway design document (Rust `rail_design::model`) and the view returned by the engine. */
 
+import type { EngineMsg } from "../../i18n/engine";
 import type { DayServices } from "../timetables/dayTypes";
 import type { Timetable } from "../journey-planner/types";
 import type { StreetSetup } from "../street-setup/types";
@@ -261,13 +262,16 @@ export interface LineReport {
   outbound_s: number | null;
   return_s: number | null;
   trains: number;
+  /** What went wrong or was changed, in English. */
   issues: string[];
+  /** The same as engine messages, one per entry of `issues` (missing from reports published before them). */
+  issue_msgs?: EngineMsg[];
   /** Stations of the first outbound trip with their distance along the track, for the time-distance graph. */
   stations: StationKm[];
   /** Trips moved from their clock-face departure to keep clear of other trains. */
   shifted: { trip: string; by_s: number }[];
   /** Trips that could not run, with the reason and, for a conflict, the trip in the way. */
-  unplaced: { trip: string; reason: string; blocked_by: string | null }[];
+  unplaced: { trip: string; reason: string; reason_msg?: EngineMsg; blocked_by: string | null }[];
 }
 
 /** A station of a line and its distance from the first terminal along the track (Rust `rail_plan::StationKm`). */
@@ -352,7 +356,10 @@ export type Severity = "error" | "warning" | "info" | "ok";
 
 export interface IssueView {
   severity: Severity;
+  /** The finding in English. */
   text: string;
+  /** The finding as an engine message, for the app language. */
+  msg?: EngineMsg | null;
   at: LonLat | null;
   ref_id: number | null;
 }

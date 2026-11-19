@@ -126,10 +126,10 @@ pub fn place(
     parent: &TrackGeo,
     spec: &SwitchSpec,
     p: &ModeParams,
-) -> Result<SwitchGeo, String> {
-    let t = spec
-        .turnout_geometry()
-        .ok_or_else(|| format!("{} is not a turnout with complete geometry.", spec.id))?;
+) -> Result<SwitchGeo, engine_msg::Msg> {
+    let t = spec.turnout_geometry().ok_or_else(|| {
+        engine_msg::msg!("rail.switch.incomplete_geometry", element = spec.id.clone())
+    })?;
     let d = if sw.direction < 0 { -1.0 } else { 1.0 };
     // The local x runs along the parent's centre line, not along the tangent at the start: on
     // a track that curves within the switch, its ends stay on the tracks they join.
@@ -180,7 +180,7 @@ pub fn place(
         }
         SwitchKind::DoubleJunction => {
             if !double {
-                return Err("A double junction needs a double track.".into());
+                return Err(engine_msg::msg!("rail.switch.junction_needs_double"));
             }
             // Computed for a branch to the left, then mirrored. The far turnout's leg runs
             // parallel to the near one, one track spacing behind it, and crosses the near track
@@ -210,7 +210,7 @@ pub fn place(
         }
         SwitchKind::Crossover | SwitchKind::Scissors => {
             if !double {
-                return Err("Crossovers join the two tracks of a double track.".into());
+                return Err(engine_msg::msg!("rail.switch.crossover_needs_double"));
             }
             let scissors = sw.kind == SwitchKind::Scissors;
             // Catalogue rule: the two turnout legs must meet between the tracks
