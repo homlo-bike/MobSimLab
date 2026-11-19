@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "Vélo cargo",
+  "Cargo bike range": "Autonomie du vélo cargo",
+  "Cargo bike savings": "Économies du vélo cargo",
+  "Cargo bike trip and range": "Trajet et autonomie du vélo cargo",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Jusqu'où un triporteur cargo électrique va et revient avec une charge de batterie, par les côtes et en privilégiant les pistes cyclables, et ce qu'il fait économiser par rapport à une voiture (achat, carburant, taxes, assurance, stationnement, entretien), dans son propre onglet.",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Aller-retour d'un point de départ à une destination par des rues praticables à vélo (en privilégiant les pistes cyclables) avec la batterie consommée selon le relief, et une carte d'autonomie de la distance aller-retour dans chaque direction.",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Coût annuel du vélo cargo par rapport à une voiture pour les mêmes trajets : achat, énergie, taxes, assurance, stationnement et entretien, dans la monnaie du pays du point de départ."
+}

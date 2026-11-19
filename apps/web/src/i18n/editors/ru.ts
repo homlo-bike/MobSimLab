@@ -1022,6 +1022,7 @@ export const editorsRu = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "Параметр {name}",
   "kit.lineName": "Название линии",
+  "kit.lines": "Линии проекта ({n})",
   "kit.tool": "Инструмент",
   "kit.select": "Выбрать",
   "kit.summary": "Сводка",
@@ -1159,6 +1160,8 @@ export const editorsRu = {
   "drt.method":
     "Оценено формулами непрерывного приближения (Daganzo 1978) для зоны с равномерно распределёнными заказами. Смоделируйте день, чтобы распределить каждый заказ.",
   "ferry.defaultName": "Паром 1",
+  "ferry.lines": "Паромные линии проекта ({n})",
+  "ferry.lineN": "Паром {n}",
   "ferry.plugin": "паром",
   "ferry.engineFailed": "Набор парома не запустился: {error}",
   "ferry.starting": "Запуск набора парома…",

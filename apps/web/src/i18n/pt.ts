@@ -6,6 +6,7 @@ import { commentsPt } from "./comments/pt";
 import { depotsPt } from "./depots/pt";
 import { geodataPt } from "./geodata/pt";
 import { tablesPt } from "./tables/pt";
+import { economicsPt } from "./economics/pt";
 import { fleetPt } from "./fleet/pt";
 import { timetablesPt } from "./timetables/pt";
 import { mslabPt } from "./mslab/pt";
@@ -84,6 +85,8 @@ export const pt: Messages = {
   "settings.title": "Configurações",
   "settings.back": "Voltar às configurações",
   "settings.displayName": "Nome de exibição",
+  "shell.thisComputer": "Este computador",
+  "shell.localUser": "Usuário local",
   "settings.email": "E-mail",
   "settings.role": "Função",
   "settings.language": "Idioma",
@@ -532,6 +535,7 @@ export const pt: Messages = {
   ...depotsPt,
   ...geodataPt,
   ...tablesPt,
+  ...economicsPt,
   ...fleetPt,
   ...timetablesPt,
   ...commentsPt,

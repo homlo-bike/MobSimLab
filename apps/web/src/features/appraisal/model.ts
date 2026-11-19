@@ -9,6 +9,8 @@
  * Every value comes from the assumption library (assumptions/parameters/appraisal.yaml) unless the project set
  * its own in Project preferences.
  */
+import type { Note } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 import data from "./defaults.generated.json";
 import { p10p50p90, seeded, triangular, type Triple } from "../benefits/params";
 import type { Spending } from "../benefits/model";
@@ -402,7 +404,7 @@ export interface Appraisal {
   switching: Switching[];
   tests: Scenario[];
   draws: number;
-  notes: string[];
+  notes: Note[];
 }
 
 /** Labels of the inputs that are not parameters. */
@@ -488,7 +490,7 @@ function tornadoNames(lines: AppraisalLine[], income: string | null, withDemand:
  */
 export function appraise(input: AppraisalInput, draws = 200, seed = 0xa9a1): Appraisal {
   const n = Math.max(20, draws);
-  const notes: string[] = [];
+  const notes: Note[] = [];
   const rowsOf = scopes(input.lines);
   const maxPeriod = Math.max(1, ...rowsOf.map((s) => timeline(s.lines, central, input.prefs).period));
   // Fare revenue by line and year of operation, one set per draw (the same random numbers as the costs).
@@ -557,12 +559,8 @@ export function appraise(input: AppraisalInput, draws = 200, seed = 0xa9a1): App
   const all = input.lines;
   const base = run(all, central, centralFares(central));
   const withDemand = all.some((l) => l.userDay !== null);
-  if (!withDemand)
-    notes.push(
-      "No demand run is picked for ridership in the Demand section, so the users' benefit and the car-km saved are not counted.",
-    );
-  if (!input.fares)
-    notes.push("Fare revenue is not counted until the fare revenue table has priced the lines.");
+  if (!withDemand) notes.push({ key: "apr.note.noDemand" });
+  if (!input.fares) notes.push({ key: "apr.note.noFares" });
   // Tornado: each value at its low and its high, the others at their central.
   const tornado: TornadoBar[] = [];
   for (const name of tornadoNames(all, input.income, withDemand)) {
@@ -754,14 +752,14 @@ export function ridershipGrowth(mode: string, own: Record<string, number> | unde
 }
 
 /** Purpose: the Appraisal settings of the Tables tab, by group, in the order a planner thinks about them. */
-export function appraisalSettingGroups(income: string | null): { title: string; keys: string[] }[] {
+export function appraisalSettingGroups(income: string | null): { title: MessageKey; keys: string[] }[] {
   return [
     {
-      title: "Timeline",
+      title: "apr.group.timeline",
       keys: ["appraisal.build_years", "appraisal.period_years"],
     },
     {
-      title: "Discounting and prices",
+      title: "apr.group.discounting",
       keys: [
         socialRateKey(income),
         ...SOCIAL_RATES.filter((k) => k !== socialRateKey(income)),
@@ -770,11 +768,11 @@ export function appraisalSettingGroups(income: string | null): { title: string; 
       ],
     },
     {
-      title: "Asset lives: renewals and residual value",
+      title: "apr.group.lives",
       keys: ["appraisal.life.civil", "appraisal.life.systems", "appraisal.life.vehicles"],
     },
     {
-      title: "Benefits",
+      title: "apr.group.benefits",
       keys: ["appraisal.vot_growth", ...EXTERNAL.map((k) => `appraisal.external.${k}`)],
     },
   ];

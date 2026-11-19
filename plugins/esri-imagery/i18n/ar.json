@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "صور جوية بدقة نحو 0.3 إلى 1 م لكل بكسل في معظم المدن، وأقل دقة في الريف: واضحة بما يكفي لرؤية الحارات والأرصفة والسكك. تختلف تواريخ الصور من مكان إلى آخر.",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery كخريطة أساس جوية: صور جوية بدقة نحو 0.3 إلى 1 م لكل بكسل في معظم المدن، واضحة بما يكفي لرؤية الحارات والأرصفة والسكك. تُتاح بعد أن يحفظ مسؤول مفتاح ArcGIS API ويقبل شروط Esri في الإدارة ← الإضافات؛ تمر البلاطات عبر MobSimLab هذا، فلا ترى المتصفحات المفتاح أبدًا، ولا تُخزَّن."
+}

@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "Маятниковая канатная дорога",
+    "Aerial tramway (reversible)": "Маятниковая канатная дорога (реверсивная)",
+    "Bicable gondola (2S)": "Двухканатная гондольная дорога (2S)",
+    "Cable car": "Канатная дорога",
+    "Cable cars": "Канатные дороги",
+    "Funitel": "Фунитель",
+    "Gondolas and aerial tramways: click stations, towers follow.": "Гондольные и маятниковые дороги: щёлкайте станции, опоры встают сами.",
+    "Monocable detachable gondola (MGD)": "Одноканатная гондольная дорога с отцепляемыми кабинами (MGD)",
+    "Pulsed gondola": "Пульсирующая гондольная дорога",
+    "Ropeway system": "Тип канатной дороги",
+    "Tricable gondola (3S)": "Трёхканатная гондольная дорога (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "Городские канатные дороги: гондольные с непрерывным движением (MGD, 2S, 3S, фунитель, пульсирующие) и реверсивные маятниковые, рисуются набором прямых пролётов (ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "Грузовой велосипед",
+    "Cargo bike range": "Запас хода грузового велосипеда",
+    "Cargo bike savings": "Экономия с грузовым велосипедом",
+    "Cargo bike trip and range": "Поездка и запас хода грузового велосипеда",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Как далеко электрический грузовой трицикл доедет туда и обратно на одной зарядке, по холмам и предпочитая велодорожки, и сколько он экономит по сравнению с автомобилем (покупка, топливо, налоги, страховка, парковка, обслуживание), на отдельной вкладке.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Поездка туда и обратно от начальной точки до цели по улицам, пригодным для велосипеда (предпочитая велодорожки), с расходом батареи по рельефу, и карта запаса хода: как далеко велосипед доедет туда и обратно в каждом направлении.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Годовые затраты на грузовой велосипед по сравнению с автомобилем для тех же поездок: покупка, энергия, налоги, страховка, парковка и обслуживание, в валюте страны начальной точки."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "Электроэнергия, дизель, конечная энергия и CO2e за год по линиям, по видам транспорта и для сети, с интенсивностью на машино-км и место-км.",
+    "Energy and emissions": "Энергия и выбросы",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "Тяговая энергия и выбросы парниковых газов каждой линии за год, по видам транспорта и для сети, по машино-км каждой линии: электроэнергия на подстанции или зарядной станции, дизель в литрах и CO2e по интенсивности выбросов энергосистемы и дизеля от скважины до колеса. Показывается на вкладке «Таблицы»."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Аэрофотоснимки примерно 0,3–1 м на пиксель в большинстве городов, грубее за городом: достаточно чётко, чтобы видеть полосы, бордюры и пути. Даты съёмки зависят от места.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery как аэрофотоподложка: снимки примерно 0,3–1 м на пиксель в большинстве городов, достаточно чётко, чтобы видеть полосы, бордюры и пути. Доступно, когда администратор сохранит ключ ArcGIS API и примет условия Esri в разделе «Администрирование → Плагины»; тайлы идут через этот MobSimLab, поэтому браузеры никогда не видят ключ, и не сохраняются."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "Электрическое судно на подводных крыльях",
+    "Fast catamaran": "Скоростной катамаран",
+    "Ferries": "Паромы",
+    "Ferry": "Паром",
+    "Monohull water bus": "Однокорпусный речной трамвай",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "Пассажирские паромы и речные трамваи рисуются набором водных маршрутов: причалы с местами стоянки и сходнями, маршруты по воде, скоростные зоны и проверка мест стоянки (ADR-0037). Автомобильные паромы появятся позже.",
+    "Vessel type": "Тип судна",
+    "Water buses and crossings: click piers, shape the route over water.": "Речные трамваи и переправы: щёлкайте причалы, задавайте маршрут по воде."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "Фид GTFS",
+    "GTFS import and export": "Импорт и экспорт GTFS",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Загружает фид GTFS (zip) в проект как существующую сеть на один день обслуживания, при желании обрезанную по виду карты, чтобы планировщик поездок ездил по ней вместе с планируемыми линиями; и записывает линии проекта как фид GTFS для других программ.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Остановки, маршруты и рейсы одного дня обслуживания (самой загруженной среды, если дата не задана), с frequencies.txt как схемами интервалов и типами маршрутов как видами транспорта.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Линии проекта как фид GTFS на будний день: точные рейсы, линии с интервалами в frequencies.txt, станции для групп остановок."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Примерно 30 м на пиксель (38 м на этой карте), по пролётам спутников за один день: части карты пусты или в облаках, попробуйте другую дату. Слишком грубо, чтобы рисовать пути или бордюры.",
+    "NASA GIBS imagery": "Снимки NASA GIBS",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 и 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS в естественных цветах",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "Спутниковые снимки Global Imagery Browse Services (GIBS) NASA как аэроподложки, на выбранный день: Harmonized Landsat Sentinel-2 примерно 30 м на пиксель и VIIRS примерно 250 м. Ключ API не нужен. Снимки слишком грубые, чтобы различать улицы или пути.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Весь мир каждый день примерно 250 м на пиксель (306 м на этой карте), с облаками: только для регионального обзора."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Оценка шума линий (ADR-0038): шумовая полоса в реальном времени при рисовании уличных линий и железных дорог, с проверками скрипа в кривых, мостов и стрелок. Излучение дорог и железных дорог по CNOSSOS-EU, пока в свободном поле без зданий.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den и L_night нарисованных линий на высоте 4 м, свободное поле: расстояния полосы с обеих сторон, сетка приёмников для карты и проверки.",
+    "Noise band": "Шумовая полоса",
+    "Noise map": "Шумовая карта"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Слои карты из тайловых сервисов WMS, WMTS и XYZ как подложки или наложения. Администратор добавляет сервис в разделе «Администрирование → Плагины», при необходимости с данными для входа; тайлы идут через этот MobSimLab, поэтому браузеры их никогда не видят.",
+    "WMS, WMTS and XYZ map layers": "Слои карты WMS, WMTS и XYZ"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Транспорт по запросу рисуется набором зоны обслуживания: очертите зону, задайте заявки в час, парк и часы работы и получите нужное число машин, среднее ожидание, время в пути и время от двери до двери по формулам непрерывного приближения. Симуляция дня распределяет каждую заявку рейс за рейсом (ADR-0042). Зона видна в планировщике поездок.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "Микроавтобусы по заявке через приложение: очертите зону, задайте парк и часы.",
+    "On-demand bus": "Автобус по запросу"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Фото улиц Panoramax",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "Фото, которыми делятся люди и государственные организации, под открытыми лицензиями (чаще всего CC BY-SA 4.0 или Etalab 2.0), разрешающими картографирование по ним. Указывайте автора, когда используете фото.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Уличные фото из Panoramax, свободного и открытого общего достояния уличных фото. Откройте «Фото улиц» на карте, чтобы увидеть, где сделаны фото, затем щёлкните точку, чтобы увидеть фото рядом с ней. Фото под открытыми лицензиями, разрешающими картографирование по ним. Ключ не нужен. Фото идут через этот MobSimLab и не сохраняются ни отдельно, ни в проекте."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "Автоматические пипл-муверы на канатной тяге на эстакаде, рисуются набором прямых пролётов: челноки с двумя поездами и суженные петли с отцепляемыми поездами, останавливающимися на каждой станции (ADR-0037 §7). Пипл-муверам с собственным приводом нужен редактор железной дороги, они появятся позже.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "Челноки и петли на канатной тяге по путепроводу: щёлкайте станции, опоры встают сами.",
+    "People mover": "Пипл-мувер",
+    "People mover shuttle": "Челнок пипл-мувера",
+    "People mover system": "Система пипл-мувера",
+    "People movers": "Пипл-муверы",
+    "Pinched loop, detachable trains": "Суженная петля, отцепляемые поезда",
+    "Shuttle, two trains on a fixed rope": "Челнок, два поезда на неподвижном канате"
+  }
+}

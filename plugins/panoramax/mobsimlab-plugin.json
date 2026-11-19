@@ -3,6 +3,7 @@
   "id": "org.mobsimlab.panoramax",
   "name": "Panoramax street photos",
   "description": "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.",
+  "translations": "i18n",
   "version": "0.1.0",
   "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
   "license": "AGPL-3.0-or-later",

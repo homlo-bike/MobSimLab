@@ -987,6 +987,7 @@ export const editorsDe = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "Parameter {name}",
   "kit.lineName": "Linienname",
+  "kit.lines": "Linien im Projekt ({n})",
   "kit.tool": "Werkzeug",
   "kit.select": "Auswählen",
   "kit.summary": "Übersicht",
@@ -1122,6 +1123,8 @@ export const editorsDe = {
   "drt.method":
     "Geschätzt mit Formeln der kontinuierlichen Näherung (Daganzo 1978) für ein Gebiet mit gleichmäßig verteilten Anfragen. Simulieren Sie den Tag, um jede Buchung zu disponieren.",
   "ferry.defaultName": "Fähre 1",
+  "ferry.lines": "Fährlinien im Projekt ({n})",
+  "ferry.lineN": "Fähre {n}",
   "ferry.plugin": "Fähre",
   "ferry.engineFailed": "Das Fähren-Kit ist nicht gestartet: {error}",
   "ferry.starting": "Fähren-Kit wird gestartet…",

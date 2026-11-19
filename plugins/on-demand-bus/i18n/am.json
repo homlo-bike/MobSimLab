@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "በአገልግሎት ቀጠና መሣሪያ የሚሳል በፍላጎት ላይ የተመሠረተ ትራንስፖርት፦ ቀጠና ይሳሉ፣ በሰዓት የሚመጡ ጥያቄዎችን፣ የተሽከርካሪ ብዛትንና የአገልግሎት ሰዓቶችን ያዘጋጁ፣ የሚያስፈልጉትን ተሽከርካሪዎች፣ አማካይ የጥበቃ፣ የጉዞና ከበር እስከ በር ጊዜን ከቀጣይ ግምት ቀመሮች ያግኙ። የቀኑ ማስመሰል እያንዳንዱን ቦታ ማስያዝ ጉዞ በጉዞ ይልካል (ADR-0042)። ቀጠናው በጉዞ እቅድ አውጪው ውስጥ ይታያል።",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "በመተግበሪያ የሚያዙ ሚኒባሶች፦ ቀጠናውን ይሳሉ፣ የተሽከርካሪ ብዛትንና ሰዓቶችን ያዘጋጁ።",
+  "On-demand bus": "በጥያቄ የሚሰራ አውቶቡስ"
+}

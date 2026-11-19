@@ -3,6 +3,7 @@
   "id": "org.mobsimlab.aerial-lift",
   "name": "Cable cars",
   "description": "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).",
+  "translations": "i18n",
   "version": "0.1.0",
   "publisher": { "name": "MobSimLab contributors", "url": "https://github.com/homlo-bike/MobSimLab" },
   "license": "AGPL-3.0-or-later",

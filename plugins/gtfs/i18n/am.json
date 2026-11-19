@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "የGTFS ምግብ",
+  "GTFS import and export": "GTFS ማስገባትና ማውጣት",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "የGTFS ምግብ (zip) ለአንድ የአገልግሎት ቀን እንደ ነባር አውታር ወደ ፕሮጀክቱ ያነባል፣ ከተጠየቀ በካርታው እይታ ተቆርጦ፣ የጉዞ እቅድ አውጪው ከታቀዱት መስመሮች ጋር እንዲጠቀምበት፤ እንዲሁም የፕሮጀክቱን መስመሮች ለሌሎች መሣሪያዎች እንደ GTFS ምግብ ይጽፋል።",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "የአንድ የአገልግሎት ቀን ማቆሚያዎች፣ መስመሮችና ጉዞዎች (ቀን ካልተሰጠ በጣም የተጨናነቀው ረቡዕ)፣ frequencies.txt እንደ የድግግሞሽ ቅጦችና የመስመር ዓይነቶች እንደ የትራንስፖርት ዓይነቶች።",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "የፕሮጀክቱ መስመሮች እንደ የሥራ ቀን GTFS ምግብ፦ ትክክለኛ ጉዞዎች፣ የድግግሞሽ መስመሮች እንደ frequencies.txt፣ ጣቢያዎች ለማቆሚያ ቡድኖች።"
+}

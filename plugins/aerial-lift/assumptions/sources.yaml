@@ -46,3 +46,41 @@
   access: paywalled
   retrieved: 2026-11-02
   checked_via: none
+
+- id: idfm-cable-c1-cost
+  title: Île-de-France Mobilités, Câble C1, combien coûtera ce projet ? (€138 M including the cabins)
+  publisher: Île-de-France Mobilités
+  url: https://www.iledefrance-mobilites.fr/le-reseau/projets/cablec1/questions/combien-coutera-ce-projet-
+  licence: © Île-de-France Mobilités; numbers cited as facts
+  access: free
+  retrieved: 2026-11-18
+  checked_via: search-snippet
+
+- id: tisseo-teleo-cost
+  title: Téléo, Toulouse 3S urban ropeway (budget grown from €54 M to €93 M)
+  publisher: remontees-mecaniques.net
+  url: https://remontees-mecaniques.net/bdd/reportage-3s-teleo-poma-8102.html
+  licence: © remontees-mecaniques.net; numbers cited as facts
+  access: free
+  retrieved: 2026-11-18
+  checked_via: search-snippet
+  kind: secondary
+
+- id: cablebus-line-1-cost
+  title: Cablebús (Mexico City), Line 1 investment of MXN 2.93 bn for 9.2 km and 6 stations
+  publisher: Wikipedia
+  url: https://en.wikipedia.org/wiki/Cableb%C3%BAs
+  licence: CC BY-SA 4.0; numbers cited as facts
+  access: free
+  retrieved: 2026-11-18
+  checked_via: search-snippet
+  kind: secondary
+
+- id: la-art-final-eir
+  title: Los Angeles Aerial Rapid Transit, final environmental impact report (O&M about $8–10 M a year)
+  publisher: Metro (Los Angeles County Metropolitan Transportation Authority), via CEQAnet
+  url: https://files.ceqanet.opr.ca.gov/264989-5/attachment/6ABDVrTa5RmnOmM1W8nmQznfIHUHX-_ydOYFBSH5PHPq3dwZpVZUNgZ4nIkObgjV2w2SnbAnw4kRUeLN0
+  licence: public record; numbers cited as facts
+  access: free
+  retrieved: 2026-11-18
+  checked_via: search-snippet

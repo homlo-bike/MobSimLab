@@ -972,6 +972,7 @@ export const editorsPt = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "Parâmetro {name}",
   "kit.lineName": "Nome da linha",
+  "kit.lines": "Linhas do projeto ({n})",
   "kit.tool": "Ferramenta",
   "kit.select": "Selecionar",
   "kit.summary": "Resumo",
@@ -1105,6 +1106,8 @@ export const editorsPt = {
   "drt.method":
     "Estimado com fórmulas de aproximação contínua (Daganzo 1978) para uma zona com pedidos distribuídos por igual. Simule o dia para atribuir cada reserva.",
   "ferry.defaultName": "Balsa 1",
+  "ferry.lines": "Linhas de balsa do projeto ({n})",
+  "ferry.lineN": "Balsa {n}",
   "ferry.plugin": "balsa",
   "ferry.engineFailed": "O kit de balsa não iniciou: {error}",
   "ferry.starting": "Iniciando o kit de balsa…",

@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Ọkwa maapụ sitere na ọrụ taịl WMS, WMTS na XYZ, dịka maapụ ntọala ma ọ bụ ọkwa n'elu. Onye nchịkwa na-agbakwunye ọrụ n'okpuru Nchịkwa → Ngwa mgbakwunye, ya na nkọwa nbanye ya ma ọ dị mkpa; taịl na-esi na MobSimLab a abịa, ya mere ihe nchọgharị anaghị ahụ ha ma ọlị.",
+  "WMS, WMTS and XYZ map layers": "Ọkwa maapụ WMS, WMTS na XYZ"
+}

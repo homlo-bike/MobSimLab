@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Sekitar 30 m per piksel (38 m di peta ini), dari lintasan satelit satu hari: sebagian peta kosong atau berawan, jadi coba tanggal lain. Terlalu kasar untuk menggambar rel atau tepi trotoar.",
+  "NASA GIBS imagery": "Citra NASA GIBS",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 dan 9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS warna asli",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "Citra satelit dari Global Imagery Browse Services (GIBS) NASA sebagai peta dasar udara, untuk hari yang Anda pilih: Harmonized Landsat Sentinel-2 sekitar 30 m per piksel dan VIIRS sekitar 250 m. Tidak perlu kunci API. Citra terlalu kasar untuk melihat jalan atau rel.",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Seluruh dunia setiap hari sekitar 250 m per piksel (306 m di peta ini), dengan awan: hanya untuk konteks regional."
+}

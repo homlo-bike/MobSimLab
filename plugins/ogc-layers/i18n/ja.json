@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS・WMTS・XYZ タイルサービスの地図レイヤーを、背景地図またはオーバーレイとして表示します。管理者が「管理 → プラグイン」でサービスを追加し、必要ならログイン情報も設定します。タイルはこの MobSimLab を経由するため、ブラウザーがそれを見ることはありません。",
+  "WMS, WMTS and XYZ map layers": "WMS・WMTS・XYZ 地図レイヤー"
+}

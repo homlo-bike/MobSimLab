@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "Жүк велосипеді",
+  "Cargo bike range": "Жүк велосипедінің жүріс қоры",
+  "Cargo bike savings": "Жүк велосипедімен үнемдеу",
+  "Cargo bike trip and range": "Жүк велосипедінің сапары мен жүріс қоры",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Электрлі жүк үшдөңгелегі бір зарядпен қаншалықты алысқа барып қайтатыны, төбелер арқылы және велосипед жолдарын таңдап, әрі көлікпен салыстырғанда қанша үнемдейтіні (сатып алу, отын, салық, сақтандыру, тұрақ, қызмет көрсету), жеке қойындыда.",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Бастапқы нүктеден межелі жерге дейін велосипедпен жүруге болатын көшелермен (велосипед жолдарын таңдап) барып-қайту сапары және жер бедерінде жұмсалған батарея, сондай-ақ велосипед әр бағытта қаншалықты алысқа барып қайтатынын көрсететін жүріс қорының картасы.",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Сол сапарлар үшін жүк велосипедінің көлікпен салыстырғандағы жылдық шығыны: сатып алу, энергия, салық, сақтандыру, тұрақ және қызмет көрсету, бастапқы нүкте елінің валютасында."
+}

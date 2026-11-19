@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Kelele inayokadiriwa ya njia za huduma (ADR-0038): ukanda wa kelele wa moja kwa moja wakati wa kuchora njia za barabarani na reli, pamoja na ukaguzi wa mlio wa kona, madaraja na swichi. Utoaji wa barabara na reli wa CNOSSOS-EU, kwa sasa katika uwanja huru bila majengo.",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den na L_night za njia zilizochorwa kwa mita 4, uwanja huru: umbali wa ukanda pande zote mbili, gridi ya vipokezi kwa ramani na ukaguzi.",
+  "Noise band": "Ukanda wa kelele",
+  "Noise map": "Ramani ya kelele"
+}

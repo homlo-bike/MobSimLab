@@ -971,6 +971,7 @@ export const editorsUz = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "{name} parametri",
   "kit.lineName": "Liniya nomi",
+  "kit.lines": "Loyihadagi liniyalar ({n})",
   "kit.tool": "Vosita",
   "kit.select": "Tanlash",
   "kit.summary": "Xulosa",
@@ -1104,6 +1105,8 @@ export const editorsUz = {
   "drt.method":
     "Buyurtmalari teng taqsimlangan hudud uchun uzluksiz yaqinlashish formulalari (Daganzo 1978) bilan baholandi. Har bir buyurtmani taqsimlash uchun kunni modellang.",
   "ferry.defaultName": "Parom 1",
+  "ferry.lines": "Loyihadagi parom liniyalari ({n})",
+  "ferry.lineN": "Parom {n}",
   "ferry.plugin": "parom",
   "ferry.engineFailed": "Parom toʻplami ishga tushmadi: {error}",
   "ferry.starting": "Parom toʻplami ishga tushmoqda…",

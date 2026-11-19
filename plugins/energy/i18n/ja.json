@@ -1,0 +1,5 @@
+{
+  "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "路線ごと、交通手段ごと、ネットワーク全体の年間の電力、軽油、最終エネルギー、CO2e。車両キロあたりと座席キロあたりの原単位も示します。",
+  "Energy and emissions": "エネルギーと排出量",
+  "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "各路線の年間の走行エネルギーと温室効果ガス排出量を、交通手段ごととネットワーク全体で、各路線の車両キロから求めます：変電所または充電器での電力、リットル単位の軽油、そして電力網の排出係数と軽油の Well-to-Wheel による CO2e。「表」タブに表示されます。"
+}

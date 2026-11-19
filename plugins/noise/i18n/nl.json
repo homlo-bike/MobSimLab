@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Geschat geluid van de lijnen (ADR-0038): een live geluidsband tijdens het tekenen van straatlijnen en spoorlijnen, met controles op booggepiep, bruggen en wissels. Weg- en spooremissie volgens CNOSSOS-EU, voorlopig in vrij veld zonder gebouwen.",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den en L_night van de getekende lijnen op 4 m, vrij veld: bandafstanden aan weerszijden, een ontvangerraster voor de kaart en controles.",
+  "Noise band": "Geluidsband",
+  "Noise map": "Geluidskaart"
+}

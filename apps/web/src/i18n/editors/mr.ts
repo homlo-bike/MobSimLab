@@ -955,6 +955,7 @@ export const editorsMr = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "मापदंड {name}",
   "kit.lineName": "मार्गाचे नाव",
+  "kit.lines": "प्रकल्पातील मार्ग ({n})",
   "kit.tool": "साधन",
   "kit.select": "निवडा",
   "kit.summary": "सारांश",
@@ -1085,6 +1086,8 @@ export const editorsMr = {
   "drt.method":
     "समान पसरलेल्या मागण्यांच्या क्षेत्रासाठी सतत अंदाज सूत्रांनी (Daganzo 1978) अंदाज. प्रत्येक बुकिंग वाटण्यासाठी दिवसाचे अनुकरण करा.",
   "ferry.defaultName": "फेरी 1",
+  "ferry.lines": "प्रकल्पातील फेरी मार्ग ({n})",
+  "ferry.lineN": "फेरी {n}",
   "ferry.plugin": "फेरी",
   "ferry.engineFailed": "फेरी किट सुरू झाले नाही: {error}",
   "ferry.starting": "फेरी किट सुरू होत आहे…",

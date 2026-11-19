@@ -930,6 +930,7 @@ export const editorsVi = {
   "kit.issueWhere": "{level}, {where}: ",
   "kit.parameter": "Tham số {name}",
   "kit.lineName": "Tên tuyến",
+  "kit.lines": "Các tuyến trong dự án ({n})",
   "kit.tool": "Công cụ",
   "kit.select": "Chọn",
   "kit.summary": "Tóm tắt",
@@ -1059,6 +1060,8 @@ export const editorsVi = {
   "drt.method":
     "Ước tính bằng công thức xấp xỉ liên tục (Daganzo 1978) cho vùng có yêu cầu phân bố đều. Mô phỏng một ngày để điều phối từng lượt đặt.",
   "ferry.defaultName": "Phà 1",
+  "ferry.lines": "Các tuyến phà trong dự án ({n})",
+  "ferry.lineN": "Phà {n}",
   "ferry.plugin": "Phà",
   "ferry.engineFailed": "Không thể khởi động bộ công cụ phà: {error}",
   "ferry.starting": "Đang khởi động bộ công cụ phà…",

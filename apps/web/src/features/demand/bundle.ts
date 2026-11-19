@@ -8,6 +8,7 @@
  * (ADR-0040): people from WorldPop, workers and children from the World Bank shares, jobs from the floor area of
  * OpenStreetMap buildings, and schools, universities, hospitals and clinics from OpenStreetMap places.
  */
+import type { Note } from "../../i18n/i18n";
 import type { Timetable } from "../journey-planner/types";
 import { type BuildingIn, catchment, classify, type CountryFigures, type PlaceIn } from "../benefits/model";
 import { paramValue } from "../benefits/params";
@@ -252,7 +253,7 @@ export interface Estimated {
   zones: BundleZone[];
   /** Per zone id and value: where it came from. */
   sources: Record<string, Partial<Record<ZoneField, ValueSource>>>;
-  notes: string[];
+  notes: Note[];
 }
 
 /** Purpose: which zone holds each point, with a grid over the zones' boxes. */
@@ -287,13 +288,11 @@ export function estimateZones(input: EstimateInput): Estimated {
   const { zones, prefs, country, regions } = input;
   const values = prefs?.values;
   const central = (key: string) => paramValue(key, "*", values)[1];
-  const notes: string[] = [];
+  const notes: Note[] = [];
   const under15 = country.under15 ?? 0.18;
   const workerShare = country.employmentRatio15 !== null ? country.employmentRatio15 * (1 - under15) : 0.45;
-  if (country.under15 === null)
-    notes.push("No World Bank share of children: 18 % of residents are counted as children.");
-  if (country.employmentRatio15 === null)
-    notes.push("No World Bank employment ratio: 45 % of residents are counted as workers.");
+  if (country.under15 === null) notes.push({ key: "dem.note.noChildren" });
+  if (country.employmentRatio15 === null) notes.push({ key: "ben.note.noEmployment" });
 
   const locate = zoneLocator(zones);
   const homes = zones.map(() => 0);
@@ -389,11 +388,8 @@ export function estimateZones(input: EstimateInput): Estimated {
     sources[z.id] = src;
     return zone;
   });
-  if (uncovered)
-    notes.push(
-      `${uncovered} zones are beyond the OpenStreetMap buildings and places loaded: their jobs equal their workers and they have no schools, hospitals or clinics unless you enter them.`,
-    );
-  if (noPeople) notes.push(`${noPeople} zones have nobody living in them.`);
+  if (uncovered) notes.push({ key: "dem.note.uncovered", vars: { count: uncovered } });
+  if (noPeople) notes.push({ key: "dem.note.noPeople", vars: { count: noPeople } });
   return { zones: out, sources, notes };
 }
 

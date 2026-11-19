@@ -117,7 +117,7 @@ export function withDemandRidership(
       },
     };
   });
-  const when = r.finishedAt ? ` of ${new Date(r.finishedAt).toLocaleDateString("en")}` : "";
+  const when = r.finishedAt ? new Date(r.finishedAt).toLocaleDateString("en") : "";
   return {
     ...est,
     rows,
@@ -127,7 +127,16 @@ export function withDemandRidership(
     },
     notes: [
       ...est.notes,
-      `Ridership is the demand model run${when}${r.uncalibrated ? " (uncalibrated)" : ""}, with the formula's low–high spread.`,
+      {
+        key: when
+          ? r.uncalibrated
+            ? "dem.note.runOfUncal"
+            : "dem.note.runOf"
+          : r.uncalibrated
+            ? "dem.note.runUncal"
+            : "dem.note.run",
+        vars: { date: when },
+      },
     ],
   };
 }

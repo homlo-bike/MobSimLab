@@ -6,6 +6,7 @@ import { commentsUr } from "./comments/ur";
 import { depotsUr } from "./depots/ur";
 import { geodataUr } from "./geodata/ur";
 import { tablesUr } from "./tables/ur";
+import { economicsUr } from "./economics/ur";
 import { fleetUr } from "./fleet/ur";
 import { timetablesUr } from "./timetables/ur";
 import { mslabUr } from "./mslab/ur";
@@ -84,6 +85,8 @@ export const ur: Messages = {
   "settings.title": "ترتیبات",
   "settings.back": "ترتیبات پر واپس",
   "settings.displayName": "ظاہری نام",
+  "shell.thisComputer": "یہ کمپیوٹر",
+  "shell.localUser": "مقامی صارف",
   "settings.email": "ای میل",
   "settings.role": "کردار",
   "settings.language": "زبان",
@@ -528,6 +531,7 @@ export const ur: Messages = {
   ...depotsUr,
   ...geodataUr,
   ...tablesUr,
+  ...economicsUr,
   ...fleetUr,
   ...timetablesUr,
   ...commentsUr,

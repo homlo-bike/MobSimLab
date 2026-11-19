@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "카고 자전거",
+  "Cargo bike range": "카고 자전거 주행 거리",
+  "Cargo bike savings": "카고 자전거 절감액",
+  "Cargo bike trip and range": "카고 자전거 이동과 주행 거리",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "전기 카고 세발자전거가 배터리 한 번 충전으로 언덕을 넘고 자전거 도로를 우선하며 얼마나 멀리 갔다 올 수 있는지, 그리고 자동차와 비교해 얼마나 절약하는지(구입, 연료, 세금, 보험, 주차, 정비)를 별도 탭에서 보여 줍니다.",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "출발지에서 목적지까지 자전거가 다닐 수 있는 길(자전거 도로 우선)로 왕복하는 경로와 지형에 따른 배터리 사용량, 그리고 자전거가 모든 방향으로 얼마나 멀리 갔다 올 수 있는지 보여 주는 주행 거리 지도.",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "같은 이동에 대한 카고 자전거와 자동차의 연간 비용 비교: 구입, 에너지, 세금, 보험, 주차, 정비. 출발지 국가의 통화로 표시합니다."
+}

@@ -6,6 +6,7 @@ import { commentsTa } from "./comments/ta";
 import { depotsTa } from "./depots/ta";
 import { geodataTa } from "./geodata/ta";
 import { tablesTa } from "./tables/ta";
+import { economicsTa } from "./economics/ta";
 import { fleetTa } from "./fleet/ta";
 import { timetablesTa } from "./timetables/ta";
 import { mslabTa } from "./mslab/ta";
@@ -84,6 +85,8 @@ export const ta: Messages = {
   "settings.title": "அமைப்புகள்",
   "settings.back": "அமைப்புகளுக்குத் திரும்பு",
   "settings.displayName": "காட்சிப் பெயர்",
+  "shell.thisComputer": "இந்தக் கணினி",
+  "shell.localUser": "உள்ளூர் பயனர்",
   "settings.email": "மின்னஞ்சல்",
   "settings.role": "பங்கு",
   "settings.language": "மொழி",
@@ -537,6 +540,7 @@ export const ta: Messages = {
   ...depotsTa,
   ...geodataTa,
   ...tablesTa,
+  ...economicsTa,
   ...fleetTa,
   ...timetablesTa,
   ...commentsTa,

@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Lapisan peta dari layanan ubin WMS, WMTS, dan XYZ, sebagai peta dasar atau lapisan atas. Admin menambahkan layanan di Administrasi → Plugin, dengan detail masuknya jika perlu; ubin melewati MobSimLab ini sehingga peramban tidak pernah melihatnya.",
+  "WMS, WMTS and XYZ map layers": "Lapisan peta WMS, WMTS, dan XYZ"
+}

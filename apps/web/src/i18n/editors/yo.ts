@@ -933,6 +933,7 @@ export const editorsYo = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "Pàrámítà {name}",
   "kit.lineName": "Orúkọ ìlà",
+  "kit.lines": "Àwọn ìlà nínú iṣẹ́ náà ({n})",
   "kit.tool": "Irinṣẹ́",
   "kit.select": "Yàn",
   "kit.summary": "Àkópọ̀",
@@ -1060,6 +1061,8 @@ export const editorsYo = {
   "drt.method":
     "A ṣe ìṣirò pẹ̀lú àwọn àgbékalẹ̀ ìsúnmọ́ tẹ̀síwájú (Daganzo 1978) fún agbègbè tí ìbéèrè tàn káàkiri déédéé. Ṣe àfarawé ọjọ́ náà láti pín ìbéèrè kọ̀ọ̀kan.",
   "ferry.defaultName": "Ọkọ̀ ojú omi 1",
+  "ferry.lines": "Àwọn ìlà ọkọ̀ ojú omi nínú iṣẹ́ náà ({n})",
+  "ferry.lineN": "Ọkọ̀ ojú omi {n}",
   "ferry.plugin": "ọkọ̀ ojú omi",
   "ferry.engineFailed": "Ohun-èlò ọkọ̀ ojú omi kò bẹ̀rẹ̀: {error}",
   "ferry.starting": "Ó ń bẹ̀rẹ̀ ohun-èlò ọkọ̀ ojú omi…",

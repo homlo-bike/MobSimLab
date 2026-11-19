@@ -3,8 +3,7 @@ import { loadRailEngine, nextTask } from "../railways/engine";
 import { TablePart } from "../tables/sections";
 import { hashText } from "../../projects/inputKey";
 import { type ResultsApi, useLiveResult } from "../../projects/results";
-import { en } from "../../i18n/en";
-import { hasMessage, type Translate, type TranslatePlural, useI18n, withNodes } from "../../i18n/i18n";
+import { hasMessage, tNow, type Translate, type TranslatePlural, useI18n, withNodes } from "../../i18n/i18n";
 import { tablesEn } from "../../i18n/tables/en";
 import { useModeLabel } from "../schematic/common";
 import { RAIL_MODES } from "../railways/modes";
@@ -21,6 +20,7 @@ import {
   type Prices,
   pricesFrom,
   type WbCountry,
+  countryName,
 } from "./economy";
 import { convertTo, type ProjectCurrency } from "./currency";
 import { BarList, CompositionChart, InlineBar, totalsOf } from "./charts";
@@ -38,6 +38,9 @@ import {
 } from "./model";
 import { libraryValue, outsideLibraryRange, PARAMS, paramValue, prefId, type Triple } from "./params";
 import { SPARE_PREF } from "../../workspace/editedElsewhere";
+import type { SavedPluginLine } from "../../kits/saved";
+import { activePlugins } from "../../plugins/registry";
+import { ropewayLines } from "../tables/ropeways";
 
 /** Cost tables settings (drawing kind `costs`): the country the planner chose for prices. */
 export interface CostsDoc {
@@ -47,6 +50,8 @@ export interface CostsDoc {
 interface Props {
   railway: Network | null;
   streetLines: StreetLinesDoc | null;
+  /** The plugin tools' lines by tool id (the cable cars are priced). */
+  pluginLines?: Readonly<Record<string, SavedPluginLine>>;
   preferences: PreferencesDoc | null;
   onPreferences?: (doc: PreferencesDoc) => void;
   costs: CostsDoc | null;
@@ -76,11 +81,11 @@ interface Props {
 const DEFAULT_API = economyApi();
 const BASE_YEAR = libraryValue("cost.price_base_year", "*")[1];
 
-/** Purpose: a mode's name in English, for the tables that are still in English (fares, benefits). */
+/** Purpose: a mode's name in the language on screen, for code outside a component (see `useModeLabel`). */
 export function modeLabel(mode: string): string {
   const key =
     RAIL_MODES.find((m) => m.id === mode)?.label ?? STREET_MODES[mode as keyof typeof STREET_MODES]?.label;
-  return key ? en[key] : mode.replace(/_/g, " ");
+  return key ? tNow(key) : mode.replace(/_/g, " ");
 }
 
 /** Purpose: money in a short form, such as "€1.2 bn" or "1.2 bn local currency". */
@@ -129,6 +134,7 @@ export function fmtQty(q: number): string {
 export function CostTables({
   railway,
   streetLines,
+  pluginLines,
   preferences,
   onPreferences,
   costs,
@@ -140,7 +146,7 @@ export function CostTables({
   results = null,
   canSave = false,
 }: Props) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const modeLabel = useModeLabel();
   const prefs = preferences?.values;
   const [placeCode, setPlaceCode] = useState<string | null>(null);
@@ -237,6 +243,9 @@ export function CostTables({
         : { ...local, currency: conv.currency, ppp: local.ppp * conv.rate, fx: local.fx * conv.rate },
     [local, conv.currency, conv.rate],
   );
+  // The cable car plugin may be turned off for the project: its lines then leave the tables.
+  const plugins = activePlugins();
+  const ropeways = useMemo(() => ropewayLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
   const est = useMemo(
     () =>
       estimate({
@@ -246,9 +255,10 @@ export function CostTables({
         streetLines: streetLines?.lines ?? [],
         prefs,
         prices,
+        ropeways,
         t,
       }),
-    [railway, rail, streetLines, prefs, prices, t],
+    [railway, rail, streetLines, prefs, prices, ropeways, t],
   );
   // The appraisal waits for the country's figures and the railway's publication, so it never shows interim
   // numbers (another currency, a shorter timeline) that change a moment later.
@@ -275,7 +285,9 @@ export function CostTables({
           {t("cost.title")}
         </h2>
         <p className="mt-1 max-w-3xl text-slate-600">
-          {t("cost.intro", { country: econ ? econ.country.name : t("cost.projectCountry") })}
+          {t("cost.intro", {
+            country: econ ? countryName(econ.country, language) : t("cost.projectCountry"),
+          })}
         </p>
         <div className="mt-4 flex flex-wrap items-center gap-3">
           <span className="text-xs text-slate-500">
@@ -904,7 +916,7 @@ function PricesSection({
 }) {
   const own = (id: string) => (typeof prefs?.[id] === "number" ? prefs[id] : undefined);
   const iso3 = econ?.country.iso3 ?? code ?? "";
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const cur = prices.currency ?? t("cost.localCurrency");
   return (
     <section className={card} aria-labelledby="cost-prices">
@@ -925,13 +937,16 @@ function PricesSection({
         >
           <option value="">{t("cost.fromLocation")}</option>
           {econ && !countries.some((c) => c.iso3 === econ.country.iso3) && (
-            <option value={econ.country.iso3}>{econ.country.name}</option>
+            <option value={econ.country.iso3}>{countryName(econ.country, language)}</option>
           )}
-          {countries.map((c) => (
-            <option key={c.iso3} value={c.iso3}>
-              {c.name}
-            </option>
-          ))}
+          {countries
+            .map((c) => ({ iso3: c.iso3, name: countryName(c, language) }))
+            .sort((a, b) => a.name.localeCompare(b.name, language))
+            .map((c) => (
+              <option key={c.iso3} value={c.iso3}>
+                {c.name}
+              </option>
+            ))}
         </select>
         {!chosen && econ && <span className="text-xs text-slate-500">{t("cost.foundAtLocation")}</span>}
       </div>
@@ -1017,6 +1032,12 @@ function PricesSection({
 }
 
 /** The unit costs the estimate uses, editable per mode. */
+/** Purpose: a plugin parameter's values with the project's own central value, low and high in proportion. */
+function scaled(lib: Triple, own: number | undefined): Triple {
+  if (own === undefined) return lib;
+  return lib[1] !== 0 ? (lib.map((v) => (v * own) / lib[1]) as Triple) : [own, own, own];
+}
+
 function UnitCosts({
   est,
   prefs,
@@ -1030,12 +1051,12 @@ function UnitCosts({
 }) {
   const { t } = useI18n();
   const modeLabel = useModeLabel();
-  const used = new Map<string, { key: string; mode: string }>();
+  const used = new Map<string, { key: string; mode: string; library?: CostItem["library"] }>();
   for (const x of est.items)
     if (x.param) {
       const shared = x.param.endsWith("_share");
       const mode = shared ? "*" : x.mode;
-      used.set(`${x.param}|${mode}`, { key: x.param, mode });
+      used.set(`${x.param}|${mode}`, { key: x.param, mode, library: x.library });
     }
   used.set("cost.days_per_year|*", { key: "cost.days_per_year", mode: "*" });
   // The spare vehicles of each mode are set in Tables → Timetables only.
@@ -1061,13 +1082,14 @@ function UnitCosts({
             </tr>
           </thead>
           <tbody>
-            {rows.map(({ key, mode }) => {
-              const p = PARAMS[key];
+            {rows.map(({ key, mode, library }) => {
+              // A plugin's parameter (cable cars) brings its own name, unit and values.
+              const p = PARAMS[key] ?? library;
               if (!p) return null;
-              const lib = libraryValue(key, mode);
+              const lib = PARAMS[key] ? libraryValue(key, mode) : library!.values;
               const id = prefId(key, mode);
               const ownV = prefs?.[id];
-              const now = paramValue(key, mode, prefs);
+              const now = PARAMS[key] ? paramValue(key, mode, prefs) : scaled(lib, ownV);
               const label = paramLabel(t, key, p.label);
               return (
                 <tr key={`${key}|${mode}`} className="border-b border-slate-100">

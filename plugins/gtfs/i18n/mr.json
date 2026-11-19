@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "GTFS फीड",
+  "GTFS import and export": "GTFS आयात आणि निर्यात",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "एक GTFS फीड (zip) एका सेवा दिवसासाठी विद्यमान जाळे म्हणून प्रकल्पात वाचतो, सांगितल्यास नकाशा दृश्यापुरता कापून, जेणेकरून प्रवास नियोजक तो नियोजित मार्गांसोबत वापरेल; आणि प्रकल्पाचे मार्ग इतर साधनांसाठी GTFS फीड म्हणून लिहितो.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "एका सेवा दिवसाचे थांबे, मार्ग आणि फेऱ्या (तारीख दिली नसल्यास सर्वात व्यस्त बुधवार), frequencies.txt वारंवारता नमुने आणि मार्ग प्रकार साधने म्हणून.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "प्रकल्पाचे मार्ग कामकाजाच्या दिवसाचा GTFS फीड म्हणून: अचूक फेऱ्या, वारंवारता मार्ग frequencies.txt म्हणून, थांबा गटांसाठी स्थानके."
+}

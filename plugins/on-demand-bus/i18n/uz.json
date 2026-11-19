@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Xizmat zonasi toʻplami bilan chiziladigan talab boʻyicha transport: zonani belgilang, soatiga soʻrovlar, park va xizmat soatlarini kiriting va uzluksiz yaqinlashish formulalaridan kerakli transport vositalari, oʻrtacha kutish, yoʻl va eshikdan eshikkacha vaqtni oling. Kun simulyatsiyasi har bir buyurtmani reysma-reys joʻnatadi (ADR-0042). Zona safar rejalashtiruvchida koʻrinadi.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "Ilova orqali buyurtma qilinadigan mikroavtobuslar: zonani belgilang, park va soatlarni kiriting.",
+  "On-demand bus": "Talab boʻyicha avtobus"
+}

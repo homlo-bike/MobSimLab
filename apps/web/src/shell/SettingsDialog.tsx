@@ -6,6 +6,7 @@ import { Dialog } from "./Dialog";
 import { BackIcon } from "./icons";
 import { LanguageList } from "./LanguagePicker";
 import type { SettingsSection } from "./UserMenu";
+import { serverName } from "./serverNames";
 
 /** An on/off switch with a visible label. */
 function Toggle({ label, on, onChange }: { label: string; on: boolean; onChange: (v: boolean) => void }) {
@@ -95,7 +96,9 @@ export function SettingsDialog({
           <div className={group}>
             <div className={row}>
               <span className="flex-1">{t("settings.displayName")}</span>
-              <span className="truncate text-slate-500">{user.displayName ?? "—"}</span>
+              <span className="truncate text-slate-500">
+                {user.displayName ? serverName(t, user.displayName) : "—"}
+              </span>
             </div>
             <div className={row}>
               <span className="flex-1">{t("settings.email")}</span>

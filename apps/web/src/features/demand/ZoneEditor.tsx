@@ -1,6 +1,7 @@
 import type { GeoJSONSource, Map as MapLibreMap, MapMouseEvent } from "maplibre-gl";
 import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { useI18n } from "../../i18n/i18n";
 import type { LonLat } from "../benefits/regions";
 import type { Timetable } from "../journey-planner/types";
 import type { PreferencesDoc } from "../../workspace/preferences";
@@ -143,6 +144,7 @@ export function DemandZoneEditor({
   /** Absent for people who may not edit the project. */
   onDoc?: (doc: DemandDoc) => void;
 }) {
+  const { t, tn } = useI18n();
   const editable = !!onDoc;
   const buffer = demandValue("demand.area_buffer_m", preferences);
   const maxZones = demandValue("demand.zone_max_count", preferences);
@@ -206,7 +208,10 @@ export function DemandZoneEditor({
     if (mode.id) setOwn(ownZones.map((z) => (z.id === mode.id ? { ...z, ring } : z)));
     else {
       const id = newId();
-      setOwn([...ownZones, { id, name: `Zone ${ownZones.length + 1}`, ring, values: {} }]);
+      setOwn([
+        ...ownZones,
+        { id, name: t("dzone.defaultName", { n: ownZones.length + 1 }), ring, values: {} },
+      ]);
       setSelected(id);
     }
     setMode({ kind: "idle" });
@@ -215,18 +220,15 @@ export function DemandZoneEditor({
   const body = (
     <div className="flex flex-col gap-4 px-4 pt-1 pb-6 md:px-5">
       <div>
-        <h2 className="text-lg font-semibold">Demand zones</h2>
-        <p className="mt-1 text-sm text-slate-600">
-          The zones of the demand model. Enter people, jobs and places of a zone in the Tables tab (Demand
-          model).
-        </p>
+        <h2 className="text-lg font-semibold">{t("dzone.title")}</h2>
+        <p className="mt-1 text-sm text-slate-600">{t("dzone.intro")}</p>
       </div>
       <p className="text-sm text-slate-600" data-testid="zone-count">
         {own
-          ? `${zones.length} zones of your own.`
+          ? t("dzone.own", { count: zones.length })
           : zones.length
-            ? `${zones.length} automatic hexagons within ${Math.round(buffer)} m of the lines.`
-            : "No zones yet: publish a line, or upload zones in the Tables tab."}
+            ? t("dzone.auto", { count: zones.length, buffer: Math.round(buffer) })
+            : t("dzone.none")}
       </p>
       {editable && mode.kind === "idle" && (
         <div className="flex flex-wrap gap-2">
@@ -236,7 +238,7 @@ export function DemandZoneEditor({
               className="btn btn-pri min-h-10"
               onClick={() => setMode({ kind: "draw", points: [], id: null })}
             >
-              Draw a zone
+              {t("dzone.draw")}
             </button>
           ) : (
             zones.length > 0 && (
@@ -245,7 +247,7 @@ export function DemandZoneEditor({
                 className="btn btn-pri min-h-10"
                 onClick={() => onDoc?.({ ...(doc ?? {}), source: "own", zones })}
               >
-                Make these zones my own
+                {t("dzone.makeOwn")}
               </button>
             )
           )}
@@ -255,20 +257,17 @@ export function DemandZoneEditor({
               className="btn min-h-10"
               onClick={() => onDoc?.({ ...doc!, source: "auto" })}
             >
-              Use automatic hexagons
+              {t("dzone.useAuto")}
             </button>
           )}
         </div>
       )}
       {mode.kind === "draw" && (
         <section
-          aria-label="Drawing a zone"
+          aria-label={t("dzone.drawing")}
           className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm"
         >
-          <p>
-            Tap the map to place the corners of the {mode.id ? "new outline" : "zone"} ({mode.points.length}{" "}
-            so far, at least 3).
-          </p>
+          <p>{t(mode.id ? "dzone.drawOutlineHint" : "dzone.drawHint", { count: mode.points.length })}</p>
           <div className="mt-2 flex flex-wrap gap-2">
             <button
               type="button"
@@ -276,7 +275,7 @@ export function DemandZoneEditor({
               disabled={mode.points.length < 3}
               onClick={finishDraw}
             >
-              Finish
+              {t("reg.finish")}
             </button>
             <button
               type="button"
@@ -284,20 +283,23 @@ export function DemandZoneEditor({
               disabled={!mode.points.length}
               onClick={() => setMode({ ...mode, points: mode.points.slice(0, -1) })}
             >
-              Undo last corner
+              {t("reg.undo")}
             </button>
             <button type="button" className="btn min-h-10" onClick={() => setMode({ kind: "idle" })}>
-              Cancel
+              {t("reg.cancel")}
             </button>
           </div>
         </section>
       )}
       {zone && mode.kind === "idle" && (
-        <section aria-label={`Zone ${zone.name}`} className="rounded-xl border border-slate-200 p-3 text-sm">
+        <section
+          aria-label={t("dzone.named", { name: zone.name })}
+          className="rounded-xl border border-slate-200 p-3 text-sm"
+        >
           <div className="flex items-start gap-2">
             {own && editable ? (
               <label className="min-w-0 flex-1">
-                <span className="font-medium">Name</span>
+                <span className="font-medium">{t("reg.name")}</span>
                 <input
                   key={zone.id}
                   className="input mt-1 w-full"
@@ -315,12 +317,12 @@ export function DemandZoneEditor({
               <p className="min-w-0 flex-1 font-medium">{zone.name}</p>
             )}
             <button type="button" className="btn min-h-10" onClick={() => setSelected(null)}>
-              Close
+              {t("reg.close")}
             </button>
           </div>
           <p className="mt-1 text-xs text-slate-500">
-            {zoneKm2(zone) < 10 ? zoneKm2(zone).toFixed(2) : Math.round(zoneKm2(zone))} km² ·{" "}
-            {Object.keys(zone.values).length} values of your own
+            {t("reg.km2", { v: zoneKm2(zone) < 10 ? zoneKm2(zone).toFixed(2) : Math.round(zoneKm2(zone)) })} ·{" "}
+            {tn("dzone.ownValues", Object.keys(zone.values).length)}
           </p>
           {own && editable && (
             <div className="mt-2 flex flex-wrap gap-2">
@@ -329,7 +331,7 @@ export function DemandZoneEditor({
                 className="btn min-h-10"
                 onClick={() => setMode({ kind: "draw", points: [], id: zone.id })}
               >
-                Redraw the outline
+                {t("dzone.redraw")}
               </button>
               <button
                 type="button"
@@ -339,7 +341,7 @@ export function DemandZoneEditor({
                   setSelected(null);
                 }}
               >
-                Delete zone
+                {t("dzone.delete")}
               </button>
             </div>
           )}
@@ -349,12 +351,12 @@ export function DemandZoneEditor({
               className="mt-2 text-sm underline"
               onClick={() => map.easeTo({ center: zoneCentre(zone), zoom: Math.max(map.getZoom(), 13) })}
             >
-              Show on the map
+              {t("dzone.show")}
             </button>
           )}
         </section>
       )}
-      <p className="text-xs text-slate-500">Saved with the project, for everyone who opens it.</p>
+      <p className="text-xs text-slate-500">{t("reg.saved")}</p>
     </div>
   );
   return panel ? createPortal(body, panel) : body;

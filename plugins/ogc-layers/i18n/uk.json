@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Шари карти з тайлових сервісів WMS, WMTS і XYZ як підкладки або накладання. Адміністратор додає сервіс у розділі «Адміністрування → Плагіни», за потреби з даними для входу; тайли йдуть через цей MobSimLab, тож браузери їх ніколи не бачать.",
+  "WMS, WMTS and XYZ map layers": "Шари карти WMS, WMTS і XYZ"
+}

@@ -2,7 +2,11 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { inputKey } from "../../projects/inputKey";
 import { type ResultsApi, useSavedResult } from "../../projects/results";
 import { SavedResultNotice } from "../../projects/SavedResultNotice";
-import { fmtMoney, modeLabel } from "../costs/CostTables";
+import { type MessageKey } from "../../i18n/messages";
+import { useI18n } from "../../i18n/i18n";
+import { paramLabel, paramUnit } from "../../i18n/params";
+import { fmtMoney } from "../costs/CostTables";
+import { useModeLabel } from "../schematic/common";
 import type { Estimate as CostEstimate } from "../costs/model";
 import { loadWasmReach } from "../journey-planner/engine";
 import type { ReachLoader, Timetable } from "../journey-planner/types";
@@ -80,19 +84,19 @@ interface Props {
 
 const DEFAULT_API = benefitsApi();
 
-const KIND_LABEL: Record<AccessKind, string> = {
-  jobs: "Jobs",
-  school: "Schools",
-  university: "Universities and colleges",
-  hospital: "Hospitals",
-  clinic: "Clinics and doctors",
+const KIND_LABEL: Record<AccessKind, MessageKey> = {
+  jobs: "ben.kind.jobs",
+  school: "ben.kind.school",
+  university: "ben.kind.university",
+  hospital: "ben.kind.hospital",
+  clinic: "ben.kind.clinic",
 };
-const KIND_GROUP: Record<AccessKind, string> = {
-  jobs: "residents",
-  school: "children (0–14)",
-  university: "people aged 18–24",
-  hospital: "residents",
-  clinic: "residents",
+const KIND_GROUP: Record<AccessKind, MessageKey> = {
+  jobs: "ben.per.resident",
+  school: "ben.per.child",
+  university: "ben.per.student",
+  hospital: "ben.per.resident",
+  clinic: "ben.per.resident",
 };
 
 /** Money metrics in the appraisal, and those shown for context only (adding them would double count). */
@@ -112,6 +116,22 @@ const COUNTS = new Set<Metric>([
   "construction_jobs",
   "operation_jobs",
 ]);
+
+/** The message of each formula unit and of what a formula is worked out for. */
+const UNIT_KEY: Record<string, MessageKey> = {
+  "boardings / weekday": "ben.u.boardingsWeekday",
+  "boardings / year": "ben.u.boardingsYear",
+  "currency / year": "ben.u.currencyYear",
+  "currency (one-off)": "ben.u.currencyOnce",
+  "currency (during construction)": "ben.u.currencyBuild",
+  "job-years": "ben.u.jobYears",
+  jobs: "ben.u.jobs",
+};
+const PER_KEY: Record<string, MessageKey> = {
+  station: "ben.per.station",
+  line: "ben.per.line",
+  building: "ben.per.building",
+};
 
 function fmtCount(v: number): string {
   return new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: v >= 1e3 ? 1 : 0 }).format(
@@ -148,6 +168,8 @@ export function BenefitTables({
   loadReach = loadWasmReach,
   draws,
 }: Props) {
+  const { t } = useI18n();
+  const modeLabel = useModeLabel();
   const prefs = preferences?.values;
   const [ind, setInd] = useState<BenefitIndicators | null>(null);
   const [indError, setIndError] = useState<string | null>(null);
@@ -300,25 +322,20 @@ export function BenefitTables({
   const status = !net?.stations.length
     ? null
     : !tiles || (!pop && !popError)
-      ? "Loading population, buildings, schools and health places around the stations…"
+      ? t("ben.loadingPlaces")
       : !acc && !accError
-        ? "Working out travel times with and without each line…"
+        ? t("ben.workingTimes")
         : null;
 
   return (
     <section aria-labelledby="benefit-title" className="mt-10">
       <h2 id="benefit-title" className="text-xl font-semibold tracking-tight">
-        Economic and social benefits
+        {t("ben.title")}
       </h2>
-      <p className="mt-1 max-w-3xl text-slate-600">
-        Educated estimates to put the project in perspective: who gains access to jobs, education and
-        healthcare, how many people may ride, and what the lines may add to the economy. People and places
-        come from WorldPop, OpenStreetMap and the World Bank; regions drawn in the GIS tab take priority. Low,
-        medium and high are the 10th, 50th and 90th percentile over the parameter ranges and the cost range.
-      </p>
+      <p className="mt-1 max-w-3xl text-slate-600">{t("ben.intro")}</p>
       {!net?.stations.length ? (
         <p className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-slate-600">
-          No stations yet. Draw a street line, or publish rail service lines in the railway tool.
+          {t("ben.noStations")}
         </p>
       ) : (
         <>
@@ -339,7 +356,7 @@ export function BenefitTables({
           )}
           {accError && (
             <p role="alert" className="mt-3 text-sm text-red-700">
-              Travel times could not be worked out: {accError}
+              {t("ben.timesFailed", { error: accError })}
             </p>
           )}
           <TablePart id="benefits.summary">
@@ -349,7 +366,7 @@ export function BenefitTables({
             <>
               <TablePart id={["benefits.summary", "benefits.access"]}>
                 <label className="mt-5 flex flex-wrap items-center gap-2 text-sm">
-                  <span className="font-medium">Show</span>
+                  <span className="font-medium">{t("ben.show")}</span>
                   <select
                     className="input min-h-10"
                     value={row.id}
@@ -358,9 +375,9 @@ export function BenefitTables({
                     {est.rows.map((r) => (
                       <option key={r.id} value={r.id}>
                         {r.scope === "total"
-                          ? "All lines"
+                          ? t("ben.allLines")
                           : r.scope === "mode"
-                            ? `All ${modeLabel(r.name)} lines`
+                            ? t("ben.allModeLines", { mode: modeLabel(r.name) })
                             : r.name}
                       </option>
                     ))}
@@ -369,21 +386,24 @@ export function BenefitTables({
               </TablePart>
               <TablePart id="benefits.summary">
                 <MetricTable
-                  title="Ridership"
+                  id="ridership"
+                  title={t("ben.m.ridership")}
                   metrics={["ridership_daily", "ridership_annual"]}
                   row={row}
                   value={value}
                 />
                 <MetricTable
-                  title="In the appraisal"
-                  note="Extra GDP a year once the lines run: the agglomeration effect of UK appraisal guidance (TAG A2.4)."
+                  id="in-the-appraisal"
+                  title={t("ben.m.appraisal")}
+                  note={t("ben.m.appraisalNote")}
                   metrics={IN_APPRAISAL}
                   row={row}
                   value={value}
                 />
                 <MetricTable
-                  title="Wider context, not added to the appraisal"
-                  note="Earnings and land values largely capitalise the same time savings, and spending impacts are not net benefits, so adding them to the GDP growth would count benefits twice."
+                  id="wider-context-not-added-to-the-appraisal"
+                  title={t("ben.m.context")}
+                  note={t("ben.m.contextNote")}
                   metrics={CONTEXT}
                   row={row}
                   value={value}
@@ -402,7 +422,7 @@ export function BenefitTables({
             <TablePart id="benefits.summary">
               <ul className="mt-4 list-disc pl-5 text-sm text-slate-600">
                 {est.notes.map((n) => (
-                  <li key={n}>{n}</li>
+                  <li key={n.key}>{t(n.key, n.vars)}</li>
                 ))}
               </ul>
             </TablePart>
@@ -432,50 +452,81 @@ function Sources({
   tiles: { buildings: BuildingIn[]; places: PlaceIn[]; failed: number; capped: number } | null;
   est: Estimate | null;
 }) {
+  const { t } = useI18n();
   const items: string[] = [];
+  const na = t("ben.src.notAvailable");
   if (ind)
     items.push(
-      `World Bank (${ind.iso3}): GDP per person ${ind.gdpPerCapita ? `${Math.round(ind.gdpPerCapita.value).toLocaleString("en")} (${ind.gdpPerCapita.year})` : "not available"}, employment ratio ${ind.employmentRatio ? `${ind.employmentRatio.value.toFixed(0)} % (${ind.employmentRatio.year})` : "not available"}. ${ind.source.licence}.`,
+      t("ben.src.worldBank", {
+        iso3: ind.iso3,
+        gdp: ind.gdpPerCapita
+          ? t("ben.src.gdp", {
+              value: Math.round(ind.gdpPerCapita.value).toLocaleString("en"),
+              year: ind.gdpPerCapita.year,
+            })
+          : na,
+        employment: ind.employmentRatio
+          ? t("ben.src.employment", {
+              value: ind.employmentRatio.value.toFixed(0),
+              year: ind.employmentRatio.year,
+            })
+          : na,
+        licence: ind.source.licence,
+      }),
     );
-  else if (indError) items.push(`World Bank figures are unavailable: ${indError}`);
-  else items.push("World Bank figures: waiting for the project's country (from the cost tables).");
-  if (pop)
+  else if (indError) items.push(t("ben.src.worldBankFailed", { error: indError }));
+  else items.push(t("ben.src.worldBankWaiting"));
+  if (pop) {
+    const vars = { source: pop.source.name || "WorldPop", year: pop.year ?? "", licence: pop.source.licence };
     items.push(
-      `${pop.source.name || "WorldPop"} ${pop.year ?? ""} population (100 m grid)${pop.failed ? `; ${pop.failed} station areas use homes' floor area instead${pop.reasons.length ? ` (${pop.reasons.join("; ")})` : ""}` : ""}. ${pop.source.licence}.`,
+      pop.failed
+        ? t("ben.src.populationPart", {
+            ...vars,
+            count: pop.failed,
+            reasons: pop.reasons.length ? ` (${pop.reasons.join("; ")})` : "",
+          })
+        : t("ben.src.population", vars),
     );
-  else if (popError)
-    items.push(`The population data is unavailable (${popError}); population comes from homes' floor area.`);
+  } else if (popError) items.push(t("ben.src.populationFailed", { error: popError }));
   if (tiles)
     items.push(
-      `OpenStreetMap: ${tiles.buildings.length.toLocaleString("en")} buildings and ${tiles.places.length.toLocaleString("en")} schools and health places${tiles.failed ? `; ${tiles.failed} tile requests failed` : ""}${tiles.capped ? `; ${tiles.capped} far tiles left out` : ""}. © OpenStreetMap contributors, ODbL.`,
+      t("ben.src.osm", {
+        buildings: tiles.buildings.length.toLocaleString("en"),
+        places: tiles.places.length.toLocaleString("en"),
+        failed: tiles.failed ? t("ben.src.tilesFailed", { count: tiles.failed }) : "",
+        capped: tiles.capped ? t("ben.src.tilesCapped", { count: tiles.capped }) : "",
+      }),
     );
   return (
     <details className="mt-4 text-sm text-slate-600">
-      <summary className="cursor-pointer font-medium text-slate-700">Data sources</summary>
+      <summary className="cursor-pointer font-medium text-slate-700">{t("ben.src.title")}</summary>
       <ul className="mt-2 list-disc pl-5">
         {items.map((x) => (
           <li key={x}>{x}</li>
         ))}
-        {est && <li>{est.draws} draws over the parameter and cost ranges, seeded so the numbers repeat.</li>}
+        {est && <li>{t("ben.src.draws", { draws: est.draws })}</li>}
       </ul>
     </details>
   );
 }
 
 function MetricTable({
+  id: name,
   title,
   note,
   metrics,
   row,
   value,
 }: {
+  id: string;
   title: string;
   note?: string;
   metrics: Metric[];
   row: Row;
   value: (m: Metric, v: number) => string;
 }) {
-  const id = `benefit-${title.replace(/\W+/g, "-").toLowerCase()}`;
+  const { t } = useI18n();
+  const id = `benefit-${name}`;
   return (
     <section className={card} aria-labelledby={id}>
       <h3 id={id} className="caps m-0">
@@ -486,25 +537,25 @@ function MetricTable({
         <table className="w-full min-w-[32rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Estimate</th>
-              <th className={`${th} text-right`}>Low</th>
-              <th className={`${th} text-right`}>Medium</th>
-              <th className={`${th} text-right`}>High</th>
+              <th className={th}>{t("ben.col.estimate")}</th>
+              <th className={`${th} text-right`}>{t("ben.col.low")}</th>
+              <th className={`${th} text-right`}>{t("ben.col.medium")}</th>
+              <th className={`${th} text-right`}>{t("ben.col.high")}</th>
             </tr>
           </thead>
           <tbody>
             {metrics.map((m) => {
               const d = FORMULA_BY_ID[m];
-              const t = row.values[m];
+              const v = row.values[m];
               return (
                 <tr key={m} className="border-b border-slate-100">
                   <td className={td}>
-                    {d.label}
-                    <span className="block text-xs text-slate-500">{d.unit}</span>
+                    {t(`ben.f.${m}`)}
+                    <span className="block text-xs text-slate-500">{t(UNIT_KEY[d.unit]!)}</span>
                   </td>
-                  <td className={num}>{value(m, t[0])}</td>
-                  <td className={`${num} font-semibold`}>{value(m, t[1])}</td>
-                  <td className={num}>{value(m, t[2])}</td>
+                  <td className={num}>{value(m, v[0])}</td>
+                  <td className={`${num} font-semibold`}>{value(m, v[1])}</td>
+                  <td className={num}>{value(m, v[2])}</td>
                 </tr>
               );
             })}
@@ -516,33 +567,35 @@ function MetricTable({
 }
 
 function AccessTable({ row }: { row: Row }) {
+  const { t } = useI18n();
   const a = row.access;
   return (
     <section className={card} aria-labelledby="benefit-access">
       <h3 id="benefit-access" className="caps m-0">
-        Access for people
+        {t("ben.access")}
       </h3>
       <p className="mt-1 text-xs text-slate-500">
-        {fmtCount(a.pop)} people and {fmtCount(a.jobsNear)} jobs within walking distance of the stations.
-        Places reachable by public transport and walking at the morning peak, within the time limits in the
-        parameters, before and with {row.scope === "total" ? "the lines" : "this"}.
+        {t(row.scope === "total" ? "ben.accessNoteAll" : "ben.accessNoteOne", {
+          people: fmtCount(a.pop),
+          jobs: fmtCount(a.jobsNear),
+        })}
       </p>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full min-w-[36rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Reachable</th>
-              <th className={`${th} text-right`}>Per person before</th>
-              <th className={`${th} text-right`}>With the line</th>
-              <th className={`${th} text-right`}>People who gain access</th>
+              <th className={th}>{t("ben.col.reachable")}</th>
+              <th className={`${th} text-right`}>{t("ben.col.before")}</th>
+              <th className={`${th} text-right`}>{t("ben.col.with")}</th>
+              <th className={`${th} text-right`}>{t("ben.col.gaining")}</th>
             </tr>
           </thead>
           <tbody>
             {ACCESS_KINDS.map((k) => (
               <tr key={k} className="border-b border-slate-100">
                 <td className={td}>
-                  {KIND_LABEL[k]}
-                  <span className="block text-xs text-slate-500">per {KIND_GROUP[k].replace(/s$/, "")}</span>
+                  {t(KIND_LABEL[k])}
+                  <span className="block text-xs text-slate-500">{t(KIND_GROUP[k])}</span>
                 </td>
                 <td className={num}>{fmtCount(a.before[k])}</td>
                 <td className={`${num} font-semibold`}>{fmtCount(a.after[k])}</td>
@@ -584,26 +637,24 @@ export function stationRows(prepared: Prepared, row: Pick<Row, "id" | "scope" | 
 }
 
 function PerStation({ prepared, row }: { prepared: Prepared; row: Row }) {
+  const { t } = useI18n();
   const rows = stationRows(prepared, row);
   if (!rows.length) return null;
   return (
     <section className={card} aria-labelledby="benefit-per-station">
       <h3 id="benefit-per-station" className="caps m-0">
-        People and jobs near each station
+        {t("ben.perStation")}
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        People living and jobs within walking distance of each station, most people first. Where two stations
-        are close, each place counts once, for the nearer station.
-      </p>
+      <p className="mt-1 text-xs text-slate-500">{t("ben.perStationNote")}</p>
       <div className="mt-2 max-h-[28rem] overflow-auto">
         <table className="w-full min-w-[34rem] text-sm">
           <thead className="sticky top-0 bg-white">
             <tr className="border-b border-slate-200">
-              <th className={th}>Station</th>
-              <th className={th}>Lines</th>
-              <th className={`${th} text-right`}>Walking distance</th>
-              <th className={`${th} text-right`}>People</th>
-              <th className={`${th} text-right`}>Jobs</th>
+              <th className={th}>{t("ben.col.station")}</th>
+              <th className={th}>{t("ben.col.lines")}</th>
+              <th className={`${th} text-right`}>{t("ben.col.walk")}</th>
+              <th className={`${th} text-right`}>{t("ben.col.people")}</th>
+              <th className={`${th} text-right`}>{t("ben.col.jobs")}</th>
             </tr>
           </thead>
           <tbody>
@@ -622,7 +673,7 @@ function PerStation({ prepared, row }: { prepared: Prepared; row: Row }) {
                     </span>
                   ))}
                 </td>
-                <td className={num}>{Math.round(r.radius)} m</td>
+                <td className={num}>{t("ben.m", { v: Math.round(r.radius) })}</td>
                 <td className={`${num} font-semibold`}>{fmtCount(r.pop)}</td>
                 <td className={num}>{fmtCount(r.jobs)}</td>
               </tr>
@@ -635,29 +686,28 @@ function PerStation({ prepared, row }: { prepared: Prepared; row: Row }) {
 }
 
 function PerLine({ est, money }: { est: Estimate; money: (v: number) => string }) {
-  const cols: [Metric, string][] = [
-    ["ridership_annual", "Boardings a year"],
-    ["gdp", "GDP growth a year"],
-    ["land_value", "Land value uplift"],
-    ["construction_jobs", "Job-years building it"],
+  const { t } = useI18n();
+  const modeLabel = useModeLabel();
+  const cols: [Metric, MessageKey][] = [
+    ["ridership_annual", "ben.col.boardingsYear"],
+    ["gdp", "ben.col.gdpYear"],
+    ["land_value", "ben.col.landValue"],
+    ["construction_jobs", "ben.col.jobYears"],
   ];
   return (
     <section className={card} aria-labelledby="benefit-per-line">
       <h3 id="benefit-per-line" className="caps m-0">
-        Per line, per mode and in total (medium)
+        {t("ben.perLine")}
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        A line's or mode's benefit is the difference with and without it; network effects make the parts add
-        up to more or less than the total.
-      </p>
+      <p className="mt-1 text-xs text-slate-500">{t("ben.perLineNote")}</p>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full min-w-[40rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Line</th>
+              <th className={th}>{t("ben.col.line")}</th>
               {cols.map(([m, l]) => (
                 <th key={m} className={`${th} text-right`}>
-                  {l}
+                  {t(l)}
                 </th>
               ))}
             </tr>
@@ -677,9 +727,9 @@ function PerLine({ est, money }: { est: Estimate; money: (v: number) => string }
                     />
                   )}
                   {r.scope === "total"
-                    ? "All lines"
+                    ? t("ben.allLines")
                     : r.scope === "mode"
-                      ? `${modeLabel(r.name)} (all)`
+                      ? t("ben.modeAll", { mode: modeLabel(r.name) })
                       : r.name}
                 </td>
                 {cols.map(([m]) => (
@@ -697,18 +747,14 @@ function PerLine({ est, money }: { est: Estimate; money: (v: number) => string }
 }
 
 function Formulas({ doc, onDoc }: { doc: BenefitsDoc | null; onDoc?: (d: BenefitsDoc) => void }) {
+  const { t } = useI18n();
   return (
     <details className={card}>
       <summary className="cursor-pointer">
-        <span className="caps">Formulas</span>
-        <span className="ml-2 text-sm text-slate-500">
-          change how each value is worked out for this project
-        </span>
+        <span className="caps">{t("ben.formulas")}</span>
+        <span className="ml-2 text-sm text-slate-500">{t("ben.formulasHint")}</span>
       </summary>
-      <p className="mt-2 text-xs text-slate-500">
-        Use the variables listed, numbers, + − * / ^, brackets and ln, log10, exp, sqrt, abs, min and max.
-        Variables marked as parameters vary between their low and high values.
-      </p>
+      <p className="mt-2 text-xs text-slate-500">{t("ben.formulasNote")}</p>
       {FORMULAS.map((f) => (
         <FormulaEditor key={f.id} def={f} doc={doc} onDoc={onDoc} />
       ))}
@@ -725,6 +771,7 @@ function FormulaEditor({
   doc: BenefitsDoc | null;
   onDoc?: (d: BenefitsDoc) => void;
 }) {
+  const { t } = useI18n();
   const saved = doc?.formulas?.[def.id];
   const [text, setText] = useState(saved ?? def.default);
   useEffect(() => setText(saved ?? def.default), [saved, def.default]);
@@ -742,10 +789,11 @@ function FormulaEditor({
   return (
     <div className="mt-4 border-t border-slate-100 pt-4">
       <label htmlFor={id} className="font-medium">
-        {def.label}
+        {t(`ben.f.${def.id}`)}
       </label>
       <p className="text-xs text-slate-500">
-        Worked out per {def.per}; result in {def.unit}.{saved ? " Changed for this project." : ""}
+        {t("ben.workedOut", { per: t(PER_KEY[def.per]!), unit: t(UNIT_KEY[def.unit]!) })}
+        {saved ? t("ben.changed") : ""}
       </p>
       <textarea
         id={id}
@@ -760,24 +808,25 @@ function FormulaEditor({
       />
       {problem && (
         <p role="alert" className="text-sm text-red-700">
-          {problem}. The default formula is used until this is fixed.
+          {t("ben.formulaProblem", { problem })}
         </p>
       )}
       {onDoc && saved && (
         <button type="button" className="btn mt-1 min-h-9 text-sm" onClick={() => save(null)}>
-          Reset to the default
+          {t("ben.reset")}
         </button>
       )}
       <ul id={`${id}-vars`} className="mt-1 grid gap-x-4 text-xs text-slate-600 sm:grid-cols-2">
         {def.vars.map((v) => (
           <li key={v.name}>
-            <code className="font-mono text-slate-800">{v.name}</code>: {v.label}
-            {v.param ? " (parameter)" : ""}
+            <code className="font-mono text-slate-800">{v.name}</code>:{" "}
+            {t(`ben.fv.${def.id}.${v.name}` as MessageKey)}
+            {v.param ? t("ben.isParam") : ""}
           </li>
         ))}
       </ul>
       {!problem && saved && formulaText(doc, def.id) !== saved && (
-        <p className="text-xs text-amber-700">The saved formula could not be read; the default is used.</p>
+        <p className="text-xs text-amber-700">{t("ben.savedUnreadable")}</p>
       )}
     </div>
   );
@@ -792,28 +841,24 @@ function Parameters({
   editable: boolean;
   setPref: (id: string, v: number | null) => void;
 }) {
+  const { t } = useI18n();
   // Riders by day type are set in Simulator → Calendar run only.
   const keys = Object.keys(PARAMS).filter((k) => !(RIDER_SHARE_PREFS as readonly string[]).includes(k));
   return (
     <details className={card}>
       <summary className="cursor-pointer">
-        <span className="caps">Parameters</span>
-        <span className="ml-2 text-sm text-slate-500">
-          the values the formulas use, with their sources in the assumption library
-        </span>
+        <span className="caps">{t("ben.params")}</span>
+        <span className="ml-2 text-sm text-slate-500">{t("ben.paramsHint")}</span>
       </summary>
-      <p className="mt-2 text-xs text-slate-500">
-        Setting a value replaces the medium; low and high move with it. Sources and reasoning are in
-        assumptions/DEFAULTS.md.
-      </p>
+      <p className="mt-2 text-xs text-slate-500">{t("ben.paramsNote")}</p>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full min-w-[40rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Parameter</th>
-              <th className={th}>Applies to</th>
-              <th className={`${th} text-right`}>Library low – medium – high</th>
-              <th className={`${th} text-right`}>This project</th>
+              <th className={th}>{t("ben.col.parameter")}</th>
+              <th className={th}>{t("ben.col.appliesTo")}</th>
+              <th className={`${th} text-right`}>{t("ben.col.library")}</th>
+              <th className={`${th} text-right`}>{t("ben.col.project")}</th>
             </tr>
           </thead>
           <tbody>
@@ -849,7 +894,10 @@ function ParamRow({
   editable: boolean;
   setPref: (id: string, v: number | null) => void;
 }) {
+  const { t, language } = useI18n();
+  const modeLabel = useModeLabel();
   const p = PARAMS[k]!;
+  const label = paramLabel(language, k, p.label);
   const lib = libraryValue(k, mode);
   const id = prefId(k, mode);
   const own = prefs?.[id];
@@ -858,11 +906,11 @@ function ParamRow({
   return (
     <tr className="border-b border-slate-100">
       <td className={td}>
-        {mode === "*" ? p.label : ""}
-        {mode === "*" && <span className="block text-xs text-slate-500">{p.unit}</span>}
+        {mode === "*" ? label : ""}
+        {mode === "*" && <span className="block text-xs text-slate-500">{paramUnit(language, p.unit)}</span>}
       </td>
       <td className={td}>
-        {mode === "*" ? (paramModes(k).length ? "Other modes" : "All") : modeLabel(mode)}
+        {mode === "*" ? t(paramModes(k).length ? "ben.otherModes" : "ben.all") : modeLabel(mode)}
       </td>
       <td className={num}>
         {f(lib[0])} – {f(lib[1])} – {f(lib[2])}
@@ -874,7 +922,7 @@ function ParamRow({
               type="number"
               step="any"
               className="input w-24 text-right"
-              aria-label={`${p.label}${mode === "*" ? "" : `, ${modeLabel(mode)}`}`}
+              aria-label={`${label}${mode === "*" ? "" : `, ${modeLabel(mode)}`}`}
               defaultValue={own ?? ""}
               placeholder={f(used[1])}
               onBlur={(e) => {

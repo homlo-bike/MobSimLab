@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { useI18n } from "../../i18n/i18n";
 import { useTip } from "../costs/charts";
 import type { CashYear, Present } from "./model";
 
@@ -71,19 +72,25 @@ function Mark({
  * their items, so the size of each and what makes it up show at a glance.
  */
 export function BenefitCostChart({ p, money }: { p: Present; money: (v: number) => string }) {
+  const { t } = useI18n();
   const { show, hide, bubble } = useTip();
   const benefits = [
-    { label: "Users' benefit", v: p.user, color: SLOT[0] },
-    { label: "Fare revenue", v: p.fares, color: SLOT[1] },
-    { label: "Car-km saved", v: p.external, color: SLOT[2] },
-    { label: "GDP growth", v: p.gdp, color: SLOT[3] },
+    { label: t("apr.item.user"), v: p.user, color: SLOT[0] },
+    { label: t("apr.item.fares"), v: p.fares, color: SLOT[1] },
+    { label: t("apr.item.external"), v: p.external, color: SLOT[2] },
+    { label: t("apr.item.gdp"), v: p.gdp, color: SLOT[3] },
   ];
   const costs = [
-    { label: "Construction and renewals", v: p.capital, color: SLOT[4] },
-    { label: "Operating cost", v: p.operating, color: SLOT[5] },
+    { label: t("apr.item.capital"), v: p.capital, color: SLOT[4] },
+    { label: t("apr.item.operating"), v: p.operating, color: SLOT[5] },
   ];
   const max = Math.max(p.benefits, p.costs, 1);
-  const bar = (name: string, total: number, parts: typeof benefits) => (
+  const bar = (
+    name: string,
+    of: "apr.chart.ofBenefits" | "apr.chart.ofCosts",
+    total: number,
+    parts: typeof benefits,
+  ) => (
     <div className="flex flex-col gap-1">
       <div className="flex items-baseline justify-between gap-2 text-sm">
         <span className="font-medium">{name}</span>
@@ -97,12 +104,12 @@ export function BenefitCostChart({ p, money }: { p: Present; money: (v: number) 
             return (
               <Mark
                 key={x.label}
-                label={`${name}, ${x.label}: ${money(x.v)}, ${share} %`}
+                label={t("apr.chart.partLabel", { name, part: x.label, value: money(x.v), share })}
                 body={
                   <>
                     <b className="font-semibold">{x.label}</b>
                     <br />
-                    {money(x.v)} ({share} % of {name.toLowerCase()})
+                    {t(of, { value: money(x.v), share })}
                   </>
                 }
                 show={show}
@@ -116,13 +123,13 @@ export function BenefitCostChart({ p, money }: { p: Present; money: (v: number) 
     </div>
   );
   return (
-    <figure className="m-0" aria-label="Present value of the benefits and the costs">
+    <figure className="m-0" aria-label={t("apr.chart.bc")}>
       <Legend
         items={[...benefits, ...costs].filter((x) => x.v > 0).map((x) => ({ ...x, value: money(x.v) }))}
       />
       <div data-chart className="relative mt-3 flex flex-col gap-3" onMouseLeave={hide}>
-        {bar("Benefits", p.benefits, benefits)}
-        {bar("Costs", p.costs, costs)}
+        {bar(t("apr.benefits"), "apr.chart.ofBenefits", p.benefits, benefits)}
+        {bar(t("apr.costs"), "apr.chart.ofCosts", p.costs, costs)}
         {bubble}
       </div>
     </figure>
@@ -144,6 +151,7 @@ export function CashFlowChart({
   cf: number;
   money: (v: number) => string;
 }) {
+  const { t } = useI18n();
   const { show, hide, bubble } = useTip();
   const rows = years.map((y) => {
     const benefits = y.user + y.fares + y.external + y.gdp;
@@ -151,7 +159,7 @@ export function CashFlowChart({
     return { y, benefits, costs };
   });
   let run = 0;
-  const cum = rows.map((r, t) => (run += (r.benefits - r.costs) / (1 + rate) ** t));
+  const cum = rows.map((r, i) => (run += (r.benefits - r.costs) / (1 + rate) ** i));
   const breakEven = cum.findIndex((v, i) => v >= 0 && i > 0 && cum[i - 1]! < 0);
   const up = Math.max(1, ...rows.map((r) => r.benefits));
   const down = Math.max(1, ...rows.map((r) => Math.max(0, r.costs)));
@@ -164,11 +172,11 @@ export function CashFlowChart({
   const w = 100 / n;
   const path = cum.map((v, i) => `${i ? "L" : "M"}${(i + 0.5) * w},${cy(v)}`).join(" ");
   return (
-    <figure className="m-0" aria-label="Cash flow by year and the discounted net value over time">
+    <figure className="m-0" aria-label={t("apr.chart.cash")}>
       <Legend
         items={[
-          { label: "Benefits", color: BENEFIT },
-          { label: "Costs (after the conversion factor)", color: COST },
+          { label: t("apr.benefits"), color: BENEFIT },
+          { label: t("apr.chart.costsCf"), color: COST },
         ]}
       />
       <div data-chart className="relative mt-3" onMouseLeave={hide}>
@@ -178,15 +186,21 @@ export function CashFlowChart({
             const body = (
               <>
                 <b className="font-semibold">
-                  Year {r.y.year} {r.y.op ? `(operation year ${r.y.op})` : "(building)"}
+                  {r.y.op
+                    ? t("apr.chart.yearOp", { year: r.y.year, op: r.y.op })
+                    : t("apr.chart.yearBuild", { year: r.y.year })}
                 </b>
                 <br />
-                Benefits {money(r.benefits)} · costs {money(r.costs)}
+                {t("apr.chart.bAndC", { benefits: money(r.benefits), costs: money(r.costs) })}
                 <br />
-                Net {money(r.benefits - r.costs)}
+                {t("apr.chart.net", { value: money(r.benefits - r.costs) })}
               </>
             );
-            const label = `Year ${r.y.year}: benefits ${money(r.benefits)}, costs ${money(r.costs)}`;
+            const label = t("apr.chart.yearLabel", {
+              year: r.y.year,
+              benefits: money(r.benefits),
+              costs: money(r.costs),
+            });
             const bh = (r.benefits / up) * zero;
             const ch = (Math.max(0, r.costs) / down) * (H - zero);
             return (
@@ -219,7 +233,7 @@ export function CashFlowChart({
             );
           })}
         </div>
-        <p className="caps mt-4 mb-1 text-slate-600">Discounted net value, added up</p>
+        <p className="caps mt-4 mb-1 text-slate-600">{t("apr.chart.cum")}</p>
         <div className="relative h-[90px]">
           <svg
             viewBox="0 0 100 90"
@@ -247,12 +261,12 @@ export function CashFlowChart({
           {cum.map((v, i) => (
             <Mark
               key={i}
-              label={`Year ${i + 1}: discounted net value so far ${money(v)}`}
+              label={t("apr.chart.soFarLabel", { year: i + 1, value: money(v) })}
               body={
                 <>
-                  <b className="font-semibold">Year {i + 1}</b>
+                  <b className="font-semibold">{t("apr.chart.year", { year: i + 1 })}</b>
                   <br />
-                  Discounted net value so far {money(v)}
+                  {t("apr.chart.soFar", { value: money(v) })}
                 </>
               }
               show={show}
@@ -266,23 +280,18 @@ export function CashFlowChart({
               className="pointer-events-none absolute -translate-x-1/2 rounded bg-white px-1 text-xs font-medium whitespace-nowrap text-slate-900 shadow"
               style={{ left: `${Math.min(90, (breakEven + 0.5) * w)}%`, top: Math.min(70, cy(0) + 6) }}
             >
-              Pays back in year {breakEven + 1}
+              {t("apr.chart.payback", { year: breakEven + 1 })}
             </span>
           )}
         </div>
         <div className="mt-1 flex justify-between text-xs tabular-nums text-slate-500">
           <span>
-            Year 1 · {money(cum[0] ?? 0)}
+            {t("apr.chart.yearValue", { year: 1, value: money(cum[0] ?? 0) })}
             {cum.length > 1 && cmin < (cum[0] ?? 0) && (
-              <>
-                {" "}
-                · lowest {money(cmin)} in year {cum.indexOf(cmin) + 1}
-              </>
+              <> · {t("apr.chart.lowest", { value: money(cmin), year: cum.indexOf(cmin) + 1 })}</>
             )}
           </span>
-          <span>
-            Year {n} · {money(cum[cum.length - 1] ?? 0)}
-          </span>
+          <span>{t("apr.chart.yearValue", { year: n, value: money(cum[cum.length - 1] ?? 0) })}</span>
         </div>
         {bubble}
       </div>
@@ -303,6 +312,7 @@ export function DrawsChart({
   p: [number, number, number];
   money: (v: number) => string;
 }) {
+  const { t } = useI18n();
   const { show, hide, bubble } = useTip();
   const xs = draws.filter(Number.isFinite);
   if (xs.length < 2) return null;
@@ -315,13 +325,13 @@ export function DrawsChart({
   const top = Math.max(...counts, 1);
   const x = (v: number) => ((v - lo) / span) * 100;
   const marks: [string, number][] = [
-    ["Low (P10)", p[0]],
+    [t("apr.chart.p10"), p[0]],
     // Not the medium case, which the tables use: the middle of the draws.
-    ["Middle of the draws (P50)", p[1]],
-    ["High (P90)", p[2]],
+    [t("apr.chart.p50"), p[1]],
+    [t("apr.chart.p90"), p[2]],
   ];
   return (
-    <figure className="m-0" aria-label="Spread of the economic net present value over the draws">
+    <figure className="m-0" aria-label={t("apr.chart.spread")}>
       <div data-chart className="relative mt-2" onMouseLeave={hide}>
         <div className="relative h-28">
           {counts.map((c, i) => {
@@ -331,12 +341,12 @@ export function DrawsChart({
             return (
               <Mark
                 key={i}
-                label={`${money(a)} to ${money(b)}: ${c} draws`}
+                label={t("apr.chart.binLabel", { from: money(a), to: money(b), count: c })}
                 body={
                   <>
                     {money(a)} – {money(b)}
                     <br />
-                    {c} of {xs.length} draws
+                    {t("apr.chart.binOf", { count: c, of: xs.length })}
                   </>
                 }
                 show={show}
@@ -379,8 +389,8 @@ export function DrawsChart({
       </div>
       <Legend
         items={[
-          { label: "ENPV above 0", color: BENEFIT },
-          { label: "ENPV 0 or below", color: COST },
+          { label: t("apr.chart.above"), color: BENEFIT },
+          { label: t("apr.chart.below"), color: COST },
         ]}
       />
     </figure>
@@ -393,9 +403,10 @@ export function RankingChart({
 }: {
   lines: { id: string; name: string; color: string; total: number; rank: number }[];
 }) {
+  const { t } = useI18n();
   const sorted = [...lines].sort((a, b) => a.rank - b.rank);
   return (
-    <figure className="m-0" aria-label="Lines ranked by their multi-criteria score">
+    <figure className="m-0" aria-label={t("apr.chart.ranking")}>
       <ol className="m-0 flex list-none flex-col gap-2 p-0">
         {sorted.map((l) => (
           <li key={l.id} className="flex flex-col gap-1">

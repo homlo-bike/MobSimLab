@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "왕복식 케이블카",
+    "Aerial tramway (reversible)": "왕복식 케이블카(가역식)",
+    "Bicable gondola (2S)": "복선 순환식 곤돌라(2S)",
+    "Cable car": "케이블카",
+    "Cable cars": "케이블카",
+    "Funitel": "퓨니텔",
+    "Gondolas and aerial tramways: click stations, towers follow.": "곤돌라와 왕복식 케이블카: 역을 클릭하면 지주가 따라옵니다.",
+    "Monocable detachable gondola (MGD)": "단선 자동 순환식 곤돌라(MGD)",
+    "Pulsed gondola": "펄스식 곤돌라",
+    "Ropeway system": "삭도 방식",
+    "Tricable gondola (3S)": "삼선 순환식 곤돌라(3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "도시 삭도: 연속 순환식 곤돌라(MGD, 2S, 3S, 퓨니텔, 펄스식)와 가역 왕복식 케이블카를 직선 스팬 키트로 그립니다(ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "카고 자전거",
+    "Cargo bike range": "카고 자전거 주행 거리",
+    "Cargo bike savings": "카고 자전거 절감액",
+    "Cargo bike trip and range": "카고 자전거 이동과 주행 거리",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "전기 카고 세발자전거가 배터리 한 번 충전으로 언덕을 넘고 자전거 도로를 우선하며 얼마나 멀리 갔다 올 수 있는지, 그리고 자동차와 비교해 얼마나 절약하는지(구입, 연료, 세금, 보험, 주차, 정비)를 별도 탭에서 보여 줍니다.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "출발지에서 목적지까지 자전거가 다닐 수 있는 길(자전거 도로 우선)로 왕복하는 경로와 지형에 따른 배터리 사용량, 그리고 자전거가 모든 방향으로 얼마나 멀리 갔다 올 수 있는지 보여 주는 주행 거리 지도.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "같은 이동에 대한 카고 자전거와 자동차의 연간 비용 비교: 구입, 에너지, 세금, 보험, 주차, 정비. 출발지 국가의 통화로 표시합니다."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "노선별, 수단별, 전체 네트워크의 연간 전력, 경유, 최종 에너지, CO2e와 차량-km당, 좌석-km당 원단위.",
+    "Energy and emissions": "에너지와 배출량",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "각 노선의 연간 견인 에너지와 온실가스 배출량을 수단별, 네트워크 전체로, 각 노선의 차량-km로부터 구합니다: 변전소나 충전기에서의 전력, 리터 단위 경유, 전력망 배출 계수와 경유의 Well-to-Wheel에 따른 CO2e. 표 탭에 표시됩니다."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "대부분의 도시에서 픽셀당 약 0.3~1m의 항공 사진이며 교외는 더 거칩니다. 차로, 연석, 선로를 볼 수 있을 만큼 선명합니다. 촬영 날짜는 장소마다 다릅니다.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "항공 배경 지도로서의 Esri World Imagery: 대부분의 도시에서 픽셀당 약 0.3~1m의 항공 사진으로, 차로, 연석, 선로를 볼 수 있을 만큼 선명합니다. 관리자가 관리 → 플러그인에서 ArcGIS API 키를 저장하고 Esri 약관에 동의하면 제공됩니다. 타일은 이 MobSimLab을 거쳐 오므로 브라우저는 키를 볼 수 없으며, 타일은 저장되지 않습니다."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "전기 수중익선",
+    "Fast catamaran": "고속 쌍동선",
+    "Ferries": "페리",
+    "Ferry": "페리",
+    "Monohull water bus": "단동 수상 버스",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "수상 항로 키트로 그리는 여객 페리와 수상 버스: 정박지와 승선교가 있는 부두, 수상 항로, 속도 구역, 정박지 점검(ADR-0037). 차량 페리는 나중에 추가됩니다.",
+    "Vessel type": "선박 종류",
+    "Water buses and crossings: click piers, shape the route over water.": "수상 버스와 도선: 부두를 클릭하고 물 위의 항로를 다듬습니다."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "GTFS 피드",
+    "GTFS import and export": "GTFS 가져오기와 내보내기",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "GTFS 피드(zip)를 하루 운행일의 기존 네트워크로 프로젝트에 읽어 들이고, 요청하면 지도 화면 범위로 잘라 여정 플래너가 계획 노선과 함께 이용하게 합니다. 또한 프로젝트 노선을 다른 도구용 GTFS 피드로 씁니다.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "하루 운행일의 정류장, 노선, 운행편(날짜를 지정하지 않으면 가장 운행이 많은 수요일). frequencies.txt는 배차 간격 패턴으로, 노선 유형은 교통수단으로 읽습니다.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "프로젝트 노선을 평일 GTFS 피드로: 정확한 운행편, 배차 간격 노선은 frequencies.txt로, 정류장 그룹은 역으로."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "픽셀당 약 30m(이 지도에서는 38m)로, 하루 동안의 위성 통과로 만들어집니다. 지도 일부가 비어 있거나 구름에 가릴 수 있으니 다른 날짜를 시도해 보세요. 선로나 연석을 그리기에는 너무 거칩니다.",
+    "NASA GIBS imagery": "NASA GIBS 영상",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 및 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS 트루 컬러",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA Global Imagery Browse Services(GIBS)의 위성 영상을 선택한 날짜의 항공 배경 지도로 사용합니다: 픽셀당 약 30m의 Harmonized Landsat Sentinel-2와 약 250m의 VIIRS. API 키가 필요 없습니다. 영상은 도로나 선로를 보기에는 너무 거칩니다.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "매일 전 세계를 픽셀당 약 250m(이 지도에서는 306m)로, 구름 포함: 지역 맥락 파악용으로만 쓰세요."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "노선의 추정 소음(ADR-0038): 도로 노선과 철도를 그리는 동안 실시간 소음 띠를 보여 주고 곡선 스킬음, 교량, 분기기를 점검합니다. CNOSSOS-EU 도로·철도 방출이며 지금은 건물이 없는 자유 음장입니다.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "그린 노선의 높이 4m 자유 음장에서의 L_den과 L_night: 양쪽 소음 띠 거리, 지도용 수음점 격자, 점검.",
+    "Noise band": "소음 띠",
+    "Noise map": "소음 지도"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS, WMTS, XYZ 타일 서비스의 지도 레이어를 배경 지도나 오버레이로 사용합니다. 관리자가 관리 → 플러그인에서 서비스를 추가하고 필요하면 로그인 정보도 넣습니다. 타일은 이 MobSimLab을 거쳐 오므로 브라우저는 이를 볼 수 없습니다.",
+    "WMS, WMTS and XYZ map layers": "WMS, WMTS 및 XYZ 지도 레이어"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "서비스 구역 키트로 그리는 수요응답형 교통: 구역을 그리고 시간당 요청 수, 차량 수, 운행 시간을 정하면 연속 근사 공식으로 필요 차량, 평균 대기, 승차, 문 앞에서 문 앞까지의 시간을 구합니다. 하루 시뮬레이션은 모든 예약을 운행편 단위로 배차합니다(ADR-0042). 구역은 여정 플래너에 표시됩니다.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "앱으로 예약하는 미니버스: 구역을 그리고 차량 수와 운행 시간을 정합니다.",
+    "On-demand bus": "수요응답 버스"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Panoramax 거리 사진",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "개인과 공공 기관이 공유한 사진으로, 사진을 이용한 지도 제작을 허용하는 개방형 라이선스(주로 CC BY-SA 4.0 또는 Etalab 2.0)를 따릅니다. 사진을 쓸 때는 작성자를 밝혀 주세요.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "자유롭고 개방된 거리 사진 공유 자원인 Panoramax의 거리 사진. 지도에서 거리 사진을 열면 사진이 찍힌 곳이 보이고, 지점을 클릭하면 그 근처에서 찍은 사진을 볼 수 있습니다. 사진은 사진을 이용한 지도 제작을 허용하는 개방형 라이선스를 따릅니다. 키가 필요 없습니다. 사진은 이 MobSimLab을 거쳐 오며 저장되거나 프로젝트와 함께 보관되지 않습니다."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "고가 가이드웨이 위의 케이블 견인식 자동 피플무버를 직선 스팬 키트로 그립니다: 열차 두 편성의 셔틀, 그리고 탈착식 열차가 모든 역에 서는 핀치드 루프(ADR-0037 §7). 자체 추진식 피플무버는 철도 편집기가 필요하며 나중에 추가됩니다.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "가이드웨이 위의 케이블 견인식 셔틀과 루프: 역을 클릭하면 교각이 따라옵니다.",
+    "People mover": "피플무버",
+    "People mover shuttle": "피플무버 셔틀",
+    "People mover system": "피플무버 방식",
+    "People movers": "피플무버",
+    "Pinched loop, detachable trains": "핀치드 루프, 탈착식 열차",
+    "Shuttle, two trains on a fixed rope": "셔틀, 고정 케이블에 열차 두 편성"
+  }
+}

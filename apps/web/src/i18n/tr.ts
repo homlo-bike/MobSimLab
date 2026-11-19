@@ -6,6 +6,7 @@ import { commentsTr } from "./comments/tr";
 import { depotsTr } from "./depots/tr";
 import { geodataTr } from "./geodata/tr";
 import { tablesTr } from "./tables/tr";
+import { economicsTr } from "./economics/tr";
 import { fleetTr } from "./fleet/tr";
 import { timetablesTr } from "./timetables/tr";
 import { mslabTr } from "./mslab/tr";
@@ -84,6 +85,8 @@ export const tr: Messages = {
   "settings.title": "Ayarlar",
   "settings.back": "Ayarlara dön",
   "settings.displayName": "Görünen ad",
+  "shell.thisComputer": "Bu bilgisayar",
+  "shell.localUser": "Yerel kullanıcı",
   "settings.email": "E-posta",
   "settings.role": "Rol",
   "settings.language": "Dil",
@@ -528,6 +531,7 @@ export const tr: Messages = {
   ...depotsTr,
   ...geodataTr,
   ...tablesTr,
+  ...economicsTr,
   ...fleetTr,
   ...timetablesTr,
   ...commentsTr,

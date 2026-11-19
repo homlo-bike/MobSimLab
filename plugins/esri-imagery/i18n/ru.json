@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Аэрофотоснимки примерно 0,3–1 м на пиксель в большинстве городов, грубее за городом: достаточно чётко, чтобы видеть полосы, бордюры и пути. Даты съёмки зависят от места.",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery как аэрофотоподложка: снимки примерно 0,3–1 м на пиксель в большинстве городов, достаточно чётко, чтобы видеть полосы, бордюры и пути. Доступно, когда администратор сохранит ключ ArcGIS API и примет условия Esri в разделе «Администрирование → Плагины»; тайлы идут через этот MobSimLab, поэтому браузеры никогда не видят ключ, и не сохраняются."
+}

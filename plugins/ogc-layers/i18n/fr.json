@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Couches de carte issues de services de tuiles WMS, WMTS et XYZ, comme fonds de carte ou superpositions. Un administrateur ajoute un service sous Administration → Extensions, avec ses identifiants si besoin ; les tuiles passent par ce MobSimLab, les navigateurs ne voient donc jamais les identifiants.",
+  "WMS, WMTS and XYZ map layers": "Couches de carte WMS, WMTS et XYZ"
+}

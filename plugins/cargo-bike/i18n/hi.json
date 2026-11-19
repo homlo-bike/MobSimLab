@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "कार्गो साइकिल",
+  "Cargo bike range": "कार्गो साइकिल की रेंज",
+  "Cargo bike savings": "कार्गो साइकिल से बचत",
+  "Cargo bike trip and range": "कार्गो साइकिल की यात्रा और रेंज",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "एक इलेक्ट्रिक कार्गो ट्राइसाइकिल एक बार बैटरी चार्ज पर कितनी दूर जाकर लौट सकती है, पहाड़ियों पर और साइकिल लेन को प्राथमिकता देते हुए, और कार की तुलना में वह कितना बचाती है (खरीद, ईंधन, कर, बीमा, पार्किंग, रखरखाव), अपने अलग टैब में।",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "शुरुआती बिंदु से गंतव्य तक साइकिल-योग्य सड़कों पर (साइकिल लेन को प्राथमिकता देते हुए) आने-जाने की यात्रा और भू-भाग पर खर्च हुई बैटरी, और एक रेंज मानचित्र कि साइकिल हर दिशा में कितनी दूर जाकर लौट सकती है।",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "उन्हीं यात्राओं के लिए कार की तुलना में कार्गो साइकिल की सालाना लागत: खरीद, ऊर्जा, कर, बीमा, पार्किंग और रखरखाव, शुरुआती बिंदु वाले देश की मुद्रा में।"
+}

@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS, WMTS మరియు XYZ టైల్ సేవల నుండి మ్యాప్ పొరలు, ఆధార మ్యాప్‌లుగా లేదా ఓవర్‌లేలుగా. అడ్మిన్ నిర్వహణ → ప్లగిన్‌లు కింద సేవను జోడిస్తారు, అవసరమైతే సైన్-ఇన్ వివరాలతో; టైల్స్ ఈ MobSimLab ద్వారా వస్తాయి, కాబట్టి బ్రౌజర్లు వాటిని ఎప్పుడూ చూడవు.",
+  "WMS, WMTS and XYZ map layers": "WMS, WMTS మరియు XYZ మ్యాప్ పొరలు"
+}

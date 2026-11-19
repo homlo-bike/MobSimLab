@@ -970,6 +970,7 @@ export const editorsEn = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "Parameter {name}",
   "kit.lineName": "Line name",
+  "kit.lines": "Lines in the project ({n})",
   "kit.tool": "Tool",
   "kit.select": "Select",
   "kit.summary": "Summary",
@@ -1102,6 +1103,8 @@ export const editorsEn = {
   "drt.method":
     "Estimated with continuous-approximation formulas (Daganzo 1978) for a zone with requests spread evenly. Simulate the day to dispatch every booking.",
   "ferry.defaultName": "Ferry 1",
+  "ferry.lines": "Ferry lines in the project ({n})",
+  "ferry.lineN": "Ferry {n}",
   "ferry.plugin": "ferry",
   "ferry.engineFailed": "The ferry kit did not start: {error}",
   "ferry.starting": "Starting the ferry kit…",
