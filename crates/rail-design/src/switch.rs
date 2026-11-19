@@ -64,6 +64,12 @@ fn turnout_path(t: &TurnoutGeometry, x0: f64, y0: f64, sg: f64) -> Vec<P2> {
     v
 }
 
+/// Straight between the heel of the first crossover and the toe of the second when a scissors
+/// crossover is built as two crossovers one after the other, m. Assumption: a short closure rail
+/// keeps the two switches' blades and joints apart (range 0.5 to 6 m; the shortest keeps the
+/// layout compact, any value in the range behaves the same for running).
+const SPLIT_GAP_M: f64 = 2.0;
+
 /// Purpose: half of a crossover: from the toe at `(0, −e/2)` up to the middle `(xm, 0)`. When
 /// the tracks are too close for the catalogue angle, the curve stops at a smaller angle.
 fn crossover_half(t: &TurnoutGeometry, e: f64) -> (Vec<P2>, f64) {
@@ -209,17 +215,26 @@ pub fn place(
             let scissors = sw.kind == SwitchKind::Scissors;
             // Catalogue rule: the two turnout legs must meet between the tracks
             // (e·√(n²+1) ≥ b, twice that for a scissors, whose diamond sits in the middle).
-            let need = if scissors { 2.0 } else { 1.0 } * t.b;
-            fits = e * t.n.hypot(1.0) >= need - 1e-6;
+            let room = e * t.n.hypot(1.0);
+            fits = room >= t.b - 1e-6;
+            // A scissors whose diamond does not fit between the tracks (the tram default R 50 m
+            // 1:6 at 3.00 m track centres) is built as two crossovers one after the other, the
+            // second mirrored: trains still cross both ways, with the project's own turnout.
+            let split = scissors && room < 2.0 * t.b - 1e-6;
             let (path, lx) = crossover_path(&t, e);
             let flips: &[bool] = if scissors { &[false, true] } else { &[sw.flip] };
-            for &f in flips {
-                let my = |v: P2| P2::new(v.x, if f { -v.y } else { v.y });
+            for (k, &f) in flips.iter().enumerate() {
+                let x0 = if split && k == 1 {
+                    lx + SPLIT_GAP_M
+                } else {
+                    0.0
+                };
+                let my = |v: P2| P2::new(x0 + v.x, if f { -v.y } else { v.y });
                 toes.push(my(P2::new(0.0, -e / 2.0)));
                 toes.push(my(P2::new(lx, e / 2.0)));
                 paths.push(path.iter().map(|v| my(*v)).collect());
             }
-            if scissors {
+            if scissors && !split {
                 diamonds.push(P2::new(lx / 2.0, 0.0));
             }
         }
@@ -236,6 +251,10 @@ pub fn place(
         SwitchKind::Crossover => {
             format!("Crossover with {} at {:.2} m track centres", spec.label, e)
         }
+        SwitchKind::Scissors if diamonds.is_empty() => format!(
+            "Scissors crossover as two crossovers in a row with {} at {:.2} m track centres",
+            spec.label, e
+        ),
         SwitchKind::Scissors => format!(
             "Scissors crossover with {} at {:.2} m track centres",
             spec.label, e

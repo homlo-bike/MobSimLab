@@ -503,6 +503,9 @@ fn periodic_pattern(
     )
 }
 
+/// Most routes a way out from a platform reserves ([`Planner::way_out`]).
+const WAY_OUT_ROUTES: usize = 4;
+
 /// Placeholder holders of pull-out reservations start here (never a vehicle number).
 const PRE_BASE: usize = usize::MAX / 2;
 
@@ -1318,16 +1321,44 @@ impl<'a> Planner<'a> {
     /// Purpose: reserve the first route a standing train will leave by
     /// (approach locking of its departure), so no other train is planned
     /// across its way out before it has left.
-    fn reserve(&mut self, v: usize, route: RouteId, at_s: f64) {
+    fn reserve(&mut self, v: usize, routes: &[RouteId], at_s: f64) {
         let line = self.runs[self.vehicles[v].last_run].line;
-        self.reserve_route(v, line, route, at_s);
+        self.reserve_route(v, line, routes, at_s);
     }
 
-    fn reserve_route(&mut self, v: usize, line: usize, route: RouteId, at_s: f64) {
+    /// Purpose: the routes of a path that take a train from where it stands towards its first call,
+    /// short of the route into it: its way out. Leaving a terminal by a crossover takes two or three routes, and reserving only the
+    /// first left the crossover free for a train coming in, which then shut the waiting train in
+    /// (Damascus T4 at Moadamiyeh West, bug 25). Inputs: the path. Output: its first routes (at
+    /// least one).
+    fn way_out(&self, path: &FoundPath) -> Vec<RouteId> {
+        let Some(first) = path.places.first() else {
+            return path.routes.iter().take(1).copied().collect();
+        };
+        let track = first.range(self.m).0;
+        let mut out = Vec::new();
+        for &r in &path.routes {
+            let reaches = self.m.routes[r as usize]
+                .steps
+                .iter()
+                .any(|st| self.m.pieces[st.piece as usize].track == track);
+            // The route into the first call is the next station's business, not the way out.
+            if reaches && !out.is_empty() {
+                break;
+            }
+            out.push(r);
+            if reaches || out.len() >= WAY_OUT_ROUTES {
+                break;
+            }
+        }
+        out
+    }
+
+    fn reserve_route(&mut self, v: usize, line: usize, routes: &[RouteId], at_s: f64) {
         let run = TrainRun {
             name: "reservation".into(),
             train: self.lines[line].train.clone(),
-            routes: vec![route],
+            routes: routes.to_vec(),
             start_m: 0.0,
             depart_s: at_s,
             stops: vec![],
@@ -1369,13 +1400,13 @@ impl<'a> Planner<'a> {
             for d in [Dir::Up, Dir::Down] {
                 let Some(first) = self
                     .trip_path(line, trip.dir, cand, d, &[])
-                    .and_then(|p| p.routes.first().copied())
+                    .map(|p| self.way_out(&p))
                 else {
                     continue;
                 };
                 let hold =
                     self.platform_hold(cand, trip.dep - self.p.pull_out_margin_s - 60.0, trip.dep);
-                if !self.way_out_free(line, first, trip.dep)
+                if !self.way_out_free(line, &first, trip.dep)
                     || self.overlaps(&hold, usize::MAX, None).2.is_some()
                 {
                     continue;
@@ -1386,7 +1417,7 @@ impl<'a> Planner<'a> {
                         .or_default()
                         .push((holder, b.start_s, b.end_s));
                 }
-                self.reserve_route(holder, line, first, trip.dep);
+                self.reserve_route(holder, line, &first, trip.dep);
                 return Some(cand);
             }
         }
@@ -1414,11 +1445,11 @@ impl<'a> Planner<'a> {
     }
 
     /// Purpose: whether a departure route is free of other trains at a time.
-    fn way_out_free(&self, line: usize, route: RouteId, at_s: f64) -> bool {
+    fn way_out_free(&self, line: usize, routes: &[RouteId], at_s: f64) -> bool {
         let run = TrainRun {
             name: "probe".into(),
             train: self.lines[line].train.clone(),
-            routes: vec![route],
+            routes: routes.to_vec(),
             start_m: 0.0,
             depart_s: at_s,
             stops: vec![],
@@ -1446,7 +1477,7 @@ impl<'a> Planner<'a> {
         let first = match next {
             Some(t) => self
                 .trip_path(t.line, t.dir, ve.at, dir, &[])
-                .and_then(|p| p.routes.first().copied()),
+                .map(|p| self.way_out(&p)),
             None => {
                 let line = self.runs[ve.last_run].line;
                 let start = departure_routes(self.m, ve.at, dir);
@@ -1467,10 +1498,11 @@ impl<'a> Planner<'a> {
                     })
                     .min_by(|a, b| a.cost.partial_cmp(&b.cost).unwrap())
                     .and_then(|p| p.routes.first().copied())
+                    .map(|r| vec![r])
             }
         };
         if let Some(r) = first {
-            self.reserve(v, r, at_s);
+            self.reserve(v, &r, at_s);
         }
     }
 
@@ -2140,8 +2172,7 @@ impl<'a> Planner<'a> {
             let arrived = arrival_dir(self.m, &steps, origin).unwrap_or(Dir::Up);
             let way_on = [arrived, arrived.reverse()].into_iter().find_map(|a| {
                 self.trip_path(trip.line, trip.dir, origin, a.reverse(), &[])
-                    .and_then(|p| p.routes.first().copied())
-                    .map(|r| (a, r))
+                    .map(|p| (a, self.way_out(&p)))
             });
             let Some((adir, first)) = way_on else {
                 last = (
@@ -2155,7 +2186,7 @@ impl<'a> Planner<'a> {
                 continue;
             };
             // Prefer a platform whose way out is free at the departure.
-            if !retry && opts_left > 1 && !self.way_out_free(trip.line, first, trip.dep) {
+            if !retry && opts_left > 1 && !self.way_out_free(trip.line, &first, trip.dep) {
                 opts_left -= 1;
                 queue.push((si, fp, true));
                 last = (

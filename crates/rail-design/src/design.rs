@@ -252,6 +252,26 @@ fn refers_to_missing(a: &Anchor, net: &Network) -> bool {
     }
 }
 
+/// Purpose: whether chainages `s0` to `s1` of a track are free of curves.
+fn on_straight(g: &TrackGeo, s0: f64, s1: f64) -> bool {
+    !g.centre
+        .iter()
+        .any(|q| q.s >= s0 - 0.5 && q.s <= s1 + 0.5 && q.k.abs() > 1e-7)
+}
+
+/// Purpose: whether chainages `s0` to `s1` of a double track reach where its tracks spread apart.
+fn in_spread(g: &TrackGeo, s0: f64, s1: f64) -> bool {
+    g.ntracks == 2
+        && ((g.spread_start > 0.0 && s0 < g.spread_start)
+            || (g.spread_end > 0.0 && s1 > g.length - g.spread_end))
+}
+
+/// Purpose: whether a switch spanning chainages `s0` to `s1` of a track sits on straight track
+/// with the tracks parallel, as catalogue switches must (the checks in [`build`]).
+fn on_straight_parallel_track(g: &TrackGeo, s0: f64, s1: f64) -> bool {
+    on_straight(g, s0, s1) && !in_spread(g, s0, s1)
+}
+
 /// Purpose: build the design and run every check.
 /// Inputs: the document, and the id of a track still being drawn (no open-end warning for it).
 /// Output: the design (pure; no side effects).
@@ -463,6 +483,55 @@ pub fn build_with_choice(
                             switches.push(x);
                         }
                         None => switches.push(g),
+                    }
+                }
+                Ok(g)
+                    if sw.kind == SwitchKind::Scissors
+                        && g.diamonds.is_empty()
+                        && !on_straight_parallel_track(parent, g.s0, g.s1) =>
+                {
+                    // A scissors built as two crossovers in a row is twice as long as one
+                    // crossover and can run onto a curve or into the spread towards the platforms
+                    // where the drawn element fitted: build it towards the other side of its
+                    // position, else with the overlapping diamond of a turnout that has room for
+                    // it, as before (Damascus test).
+                    let back = crate::model::Switch {
+                        direction: -sw.direction,
+                        ..sw.clone()
+                    };
+                    let reversed = place(&back, parent, spec, mode_params(mode))
+                        .ok()
+                        .filter(|x| x.fits && on_straight_parallel_track(parent, x.s0, x.s1));
+                    let overlapping = || {
+                        d.turnouts_for(mode)
+                            .into_iter()
+                            .filter(|o| o.id != spec.id)
+                            .find_map(|o| {
+                                place(sw, parent, o, mode_params(mode)).ok().filter(|x| {
+                                    x.fits
+                                        && !x.diamonds.is_empty()
+                                        && on_straight_parallel_track(parent, x.s0, x.s1)
+                                })
+                            })
+                    };
+                    match reversed {
+                        Some(x) => switches.push(x),
+                        None => match overlapping() {
+                            Some(x) => {
+                                switch_errors.push(Issue::info(
+                                    format!(
+                                        "{}: built with {} because two crossovers in a row with {} do not fit on the straight track here.",
+                                        x.label,
+                                        d.switch(&x.element).map_or(x.element.as_str(), |o| o.label.as_str()),
+                                        spec.label,
+                                    ),
+                                    x.toes.first().copied(),
+                                    Some(sw.id),
+                                ));
+                                switches.push(x);
+                            }
+                            None => switches.push(g),
+                        },
                     }
                 }
                 Ok(g) => switches.push(g),
@@ -692,20 +761,14 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                 sw.id,
             ));
         }
-        if g.centre
-            .iter()
-            .any(|q| q.s >= sw.s0 - 0.5 && q.s <= sw.s1 + 0.5 && q.k.abs() > 1e-7)
-        {
+        if !on_straight(g, sw.s0, sw.s1) {
             iss.push(Issue::error(
                 format!("{name} sits on a curve. Catalogue switches go on straight track."),
                 at,
                 sw.id,
             ));
         }
-        if g.ntracks == 2
-            && ((g.spread_start > 0.0 && sw.s0 < g.spread_start)
-                || (g.spread_end > 0.0 && sw.s1 > g.length - g.spread_end))
-        {
+        if in_spread(g, sw.s0, sw.s1) {
             iss.push(Issue::error(
                 format!("{name} is where the tracks spread towards the platforms. Move it onto parallel track."),
                 at,
@@ -1194,6 +1257,100 @@ mod tests {
                 );
             }
         }
+    }
+
+    #[test]
+    fn a_tram_scissors_too_tight_for_its_diamond_is_two_mirrored_crossovers_of_its_own_turnout() {
+        let mode = RailMode::Tram;
+        let mut net = Network::new(mode, [7.0, 50.9]);
+        let mut t = straight(1, (0.0, 0.0), (1500.0, 0.0), None);
+        t.tracks = 2;
+        net.tracks.push(t);
+        let element = defaults().mode(mode).default_turnout.clone();
+        net.switches.push(crate::model::Switch {
+            id: 2,
+            kind: SwitchKind::Scissors,
+            track: 1,
+            s: 400.0,
+            element: element.clone(),
+            side: 1,
+            direction: 1,
+            flip: false,
+        });
+        let dz = build(&net, None);
+        let sw = dz.switches.iter().find(|s| s.id == 2).unwrap();
+        assert!(sw.fits);
+        assert_eq!(sw.element, element, "built with the project's own turnout");
+        assert!(sw.diamonds.is_empty(), "no diamond between the tracks");
+        assert_eq!(sw.paths.len(), 2);
+        // Four separate blade tips: two on each track, none shared by the two crossovers.
+        assert_eq!(sw.toes.len(), 4);
+        for i in 0..4 {
+            for j in i + 1..4 {
+                assert!(sw.toes[i].dist(sw.toes[j]) > 1.0, "{:?}", sw.toes);
+            }
+        }
+        // The two crossovers lean opposite ways: trains cross from either track in either direction.
+        let lean = |k: usize| {
+            let p = &sw.paths[k];
+            let (a, b) = (p[0].p, p[p.len() - 1].p);
+            ((b.y - a.y) * (b.x - a.x)).signum()
+        };
+        assert_ne!(lean(0), lean(1));
+        assert!(!dz
+            .issues
+            .iter()
+            .any(|i| i.ref_id == Some(2) && i.text.contains("built with")));
+    }
+
+    #[test]
+    fn a_tram_scissors_with_no_room_ahead_before_a_curve_is_built_towards_the_other_side() {
+        let mut net = Network::new(RailMode::Tram, [7.0, 50.9]);
+        let mut t = straight(1, (-600.0, 0.0), (300.0, 600.0), None);
+        t.tracks = 2;
+        t.points = vec![crate::model::Pi {
+            x: 300.0,
+            y: 0.0,
+            radius_m: Some(100.0),
+            level: None,
+        }];
+        net.tracks.push(t);
+        let dz0 = build(&net, None);
+        let curve_s = dz0
+            .track(1)
+            .unwrap()
+            .centre
+            .iter()
+            .find(|q| q.k.abs() > 1e-6)
+            .map(|q| q.s)
+            .unwrap();
+        // One crossover (about 27 m) fits before the curve; two in a row (about 56 m) do not.
+        net.switches.push(crate::model::Switch {
+            id: 2,
+            kind: SwitchKind::Scissors,
+            track: 1,
+            s: curve_s - 35.0,
+            element: defaults().mode(RailMode::Tram).default_turnout.clone(),
+            side: 1,
+            direction: 1,
+            flip: false,
+        });
+        let dz = build(&net, None);
+        let sw = dz.switches.iter().find(|s| s.id == 2).unwrap();
+        assert!(sw.diamonds.is_empty(), "two crossovers in a row");
+        assert!(
+            sw.s1 <= curve_s,
+            "{} .. {} runs into the curve at {curve_s}",
+            sw.s0,
+            sw.s1
+        );
+        let errors: Vec<_> = dz
+            .issues
+            .iter()
+            .filter(|i| i.ref_id == Some(2) && i.severity == Severity::Error)
+            .map(|i| i.text.clone())
+            .collect();
+        assert!(errors.is_empty(), "{errors:?}");
     }
 
     #[test]
