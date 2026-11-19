@@ -1,6 +1,7 @@
 import { createContext, type ReactNode, useContext, useEffect, useId, useMemo, useState } from "react";
 import { createPortal, flushSync } from "react-dom";
 import { useI18n } from "../i18n/i18n";
+import { paramLabel, paramUnit } from "../i18n/params";
 import type { MessageKey } from "../i18n/messages";
 import { RATE_PREF } from "../features/costs/currency";
 import { outsideLibraryRange } from "../features/costs/params";
@@ -78,7 +79,7 @@ export function AssumptionsReportSection({
   /** The project's value history (who changed a value and when), newest first; absent: not shown. */
   loadHistory?: () => Promise<readonly ValueHistoryEntry[]>;
 }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const groupId = useId();
   const [data, setData] = useState<ReportSources | "loading" | "error">("loading");
   const [group, setGroup] = useState<string>(PARAM_GROUPS[0] ?? "Modes");
@@ -162,11 +163,11 @@ export function AssumptionsReportSection({
       const lib = Array.isArray(r.library) ? r.library : ["", r.library, ""];
       lines.push([
         groupName(r.param.group),
-        r.param.label,
+        paramLabel(language, r.param.id, r.param.label),
         r.param.id,
         scope(r),
         r.value,
-        r.param.unit,
+        paramUnit(language, r.param.unit),
         r.changed ? t("report.yes") : t("report.no"),
         lib[0],
         lib[1],
@@ -348,8 +349,9 @@ function ReportLine({
   last?: LastChange;
   children: ReactNode;
 }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const sources = useContext(SourcesContext);
+  const unit = paramUnit(language, r.param.unit);
   const lib = r.library;
   const library = Array.isArray(lib)
     ? lib[0] !== lib[2]
@@ -357,10 +359,10 @@ function ReportLine({
           value: fmtNum(lib[1]),
           low: fmtNum(lib[0]),
           high: fmtNum(lib[2]),
-          unit: r.param.unit,
+          unit,
         })
-      : t("prefs.rulesLibrary", { value: fmtNum(lib[1]), unit: r.param.unit })
-    : t("prefs.rulesLibrary", { value: lib, unit: r.param.unit });
+      : t("prefs.rulesLibrary", { value: fmtNum(lib[1]), unit })
+    : t("prefs.rulesLibrary", { value: lib, unit });
   // A unit cost the project set outside the library's range is flagged, as in the cost tables.
   const outside =
     r.param.group === "Cost" &&
@@ -372,10 +374,11 @@ function ReportLine({
     <li className="break-inside-avoid border-t border-slate-100 py-2.5 first:border-t-0">
       <div className="flex flex-wrap items-baseline gap-x-3">
         <span className="min-w-48 flex-1 font-semibold">
-          {r.param.label} <span className="font-normal text-slate-500">· {scope}</span>
+          {paramLabel(language, r.param.id, r.param.label)}{" "}
+          <span className="font-normal text-slate-500">· {scope}</span>
         </span>
         <span className="tabular-nums">
-          {children} {r.param.unit}
+          {children} {unit}
         </span>
         {r.changed && (
           <span className="rounded bg-amber-100 px-1.5 text-xs font-semibold text-amber-900">
