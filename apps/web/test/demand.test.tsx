@@ -35,6 +35,9 @@ import {
   zonesFromGeoJson,
   zonesToGeoJson,
 } from "../src/features/demand/zones";
+import { type Note, translate } from "../src/i18n/i18n";
+
+const inEnglish = (notes: Note[]) => notes.map((n) => translate("en", n.key, n.vars));
 
 afterEach(cleanup);
 
@@ -277,8 +280,8 @@ describe("demand run input", () => {
       prefs: null,
     });
     expect(away.zones[0]!.population).toBe(0);
-    expect(away.notes.join(" ")).toMatch(/1 zones are beyond/);
-    expect(away.notes.join(" ")).toMatch(/45 %/);
+    expect(inEnglish(away.notes).join(" ")).toMatch(/1 zones are beyond/);
+    expect(inEnglish(away.notes).join(" ")).toMatch(/45 %/);
 
     const { bundle, summary } = makeBundle(est.zones, transitOf(network(), null), {
       currency: "EUR",
@@ -712,7 +715,7 @@ describe("demand model ridership in the project", () => {
     expect(get("total").ridership_daily).toEqual([70, 140, 280]);
     expect(out.stations["rail:T1"]).toEqual({ West: 120 });
     expect(out.stations["street:0"]).toEqual({ A: 20 });
-    expect(out.notes.at(-1)).toMatch(/demand model run .* \(uncalibrated\)/);
+    expect(inEnglish(out.notes).at(-1)).toMatch(/demand model run .* \(uncalibrated\)/);
     // A run without any of the estimate's lines leaves it as it is.
     expect(withDemandRidership(est, { ...r, lines: { other: 5 } }, undefined)).toBe(est);
   });

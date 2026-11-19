@@ -6,6 +6,7 @@ import { commentsRu } from "./comments/ru";
 import { depotsRu } from "./depots/ru";
 import { geodataRu } from "./geodata/ru";
 import { tablesRu } from "./tables/ru";
+import { economicsRu } from "./economics/ru";
 import { fleetRu } from "./fleet/ru";
 import { timetablesRu } from "./timetables/ru";
 import { mslabRu } from "./mslab/ru";
@@ -83,6 +84,8 @@ export const ru: Messages = {
   "settings.title": "Настройки",
   "settings.back": "Назад к настройкам",
   "settings.displayName": "Отображаемое имя",
+  "shell.thisComputer": "Этот компьютер",
+  "shell.localUser": "Локальный пользователь",
   "settings.email": "Эл. почта",
   "settings.role": "Роль",
   "settings.language": "Язык",
@@ -532,6 +535,7 @@ export const ru: Messages = {
   ...depotsRu,
   ...geodataRu,
   ...tablesRu,
+  ...economicsRu,
   ...fleetRu,
   ...timetablesRu,
   ...commentsRu,

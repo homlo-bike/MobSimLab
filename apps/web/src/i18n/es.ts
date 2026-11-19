@@ -6,6 +6,7 @@ import { commentsEs } from "./comments/es";
 import { depotsEs } from "./depots/es";
 import { geodataEs } from "./geodata/es";
 import { tablesEs } from "./tables/es";
+import { economicsEs } from "./economics/es";
 import { fleetEs } from "./fleet/es";
 import { timetablesEs } from "./timetables/es";
 import { mslabEs } from "./mslab/es";
@@ -85,6 +86,8 @@ export const es: Messages = {
   "settings.title": "Ajustes",
   "settings.back": "Volver a los ajustes",
   "settings.displayName": "Nombre visible",
+  "shell.thisComputer": "Este equipo",
+  "shell.localUser": "Usuario local",
   "settings.email": "Correo",
   "settings.role": "Rol",
   "settings.language": "Idioma",
@@ -532,6 +535,7 @@ export const es: Messages = {
   ...depotsEs,
   ...geodataEs,
   ...tablesEs,
+  ...economicsEs,
   ...fleetEs,
   ...timetablesEs,
   ...commentsEs,

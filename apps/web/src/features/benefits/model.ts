@@ -8,6 +8,7 @@
  * of OpenStreetMap, WorldPop and the World Bank, with the planner's regions taking priority. Travel times
  * between zones come from the journey planner with and without each line.
  */
+import type { Note } from "../../i18n/i18n";
 import type { LonLat, Timetable } from "../journey-planner/types";
 import { compile, type Compiled, type Vars } from "./formula";
 import { type BenefitsDoc, FORMULA_BY_ID, type FormulaId, FORMULAS, formulaText } from "./formulas";
@@ -202,7 +203,7 @@ export interface Prepared {
   buildings: BuildingRec[];
   /** Per region: floor area of homes and of work places among the buildings, and share of its area covered. */
   regionStock: Map<string, { homes: number; work: number; covered: number }>;
-  notes: string[];
+  notes: Note[];
   /** How the population of the zones was found. */
   popSource: { worldpop: number; buildings: number; regions: number };
   /** Walking speed and detour factor, from the project's preferences or the library. */
@@ -309,7 +310,7 @@ export function prepareValues(prefs: PrepareInput["prefs"]): Record<string, numb
 /** Purpose: the people, jobs and places of every station's zone, and the buildings near the lines. */
 export function prepare(input: PrepareInput): Prepared {
   const { prefs, country, regions } = input;
-  const notes: string[] = [];
+  const notes: Note[] = [];
   const net = networkOf(input.timetable, sameNameStationM(prefs));
   const st = net.stations.map((s) => ({ ...s, radius: catchment(s.modes, prefs) }));
   const around = stationsAround(st);
@@ -326,13 +327,9 @@ export function prepare(input: PrepareInput): Prepared {
   const under15 = country.under15 ?? 0.18;
   const nationalWorkers =
     country.employmentRatio15 !== null ? country.employmentRatio15 * (1 - under15) : 0.45;
-  if (country.employmentRatio15 === null)
-    notes.push("No World Bank employment ratio: 45 % of residents are counted as workers.");
+  if (country.employmentRatio15 === null) notes.push({ key: "ben.note.noEmployment" });
   const nationalGdp = country.gdpPerCapita ?? 0;
-  if (country.gdpPerCapita === null)
-    notes.push(
-      "No World Bank GDP per person: GDP, earnings and land values are zero unless regions give them.",
-    );
+  if (country.gdpPerCapita === null) notes.push({ key: "ben.note.noGdp" });
   const gdpAt = (r: Region | null) =>
     usable(r?.values.gdpPerCapita) ? r!.values.gdpPerCapita! : nationalGdp;
   const workersAt = (r: Region | null) =>
@@ -458,14 +455,8 @@ export function prepare(input: PrepareInput): Prepared {
     z.workers += pop * workersAt(region);
     z.gdp += jobs * (gdpAt(region) / Math.max(0.05, workersAt(region)));
   }
-  if (popSource.buildings && popSource.worldpop)
-    notes.push(
-      "WorldPop did not answer for some stations: their population is estimated from the floor area of homes.",
-    );
-  else if (popSource.buildings && !popSource.regions)
-    notes.push(
-      "WorldPop is unavailable: population is estimated from the floor area of homes in OpenStreetMap.",
-    );
+  if (popSource.buildings && popSource.worldpop) notes.push({ key: "ben.note.worldPopPart" });
+  else if (popSource.buildings && !popSource.regions) notes.push({ key: "ben.note.worldPopNone" });
 
   const places = st.map(
     () => ({ school: 0, university: 0, hospital: 0, clinic: 0 }) as Record<PlaceKind, number>,
@@ -649,7 +640,7 @@ export interface Row {
 
 export interface Estimate {
   rows: Row[];
-  notes: string[];
+  notes: Note[];
   draws: number;
   /**
    * Weekday boardings of each line at each of its stations with the central parameter values, by line id
@@ -1009,8 +1000,7 @@ export function estimate(input: EstimateInput): Estimate {
     ) as Record<Metric, Triple>,
     access: accessRow(s),
   }));
-  if (!nationalGdpPerWorker)
-    notes.push("Job-years cannot be estimated without the country's GDP per person.");
+  if (!nationalGdpPerWorker) notes.push({ key: "ben.note.noJobYears" });
   const stationName = new Map(P.net.stations.map((s) => [s.id, s.name]));
   const stations: Estimate["stations"] = {};
   for (const l of lines) {

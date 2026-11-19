@@ -6,6 +6,7 @@ import { commentsKo } from "./comments/ko";
 import { depotsKo } from "./depots/ko";
 import { geodataKo } from "./geodata/ko";
 import { tablesKo } from "./tables/ko";
+import { economicsKo } from "./economics/ko";
 import { fleetKo } from "./fleet/ko";
 import { timetablesKo } from "./timetables/ko";
 import { mslabKo } from "./mslab/ko";
@@ -82,6 +83,8 @@ export const ko: Messages = {
   "settings.title": "설정",
   "settings.back": "설정으로 돌아가기",
   "settings.displayName": "표시 이름",
+  "shell.thisComputer": "이 컴퓨터",
+  "shell.localUser": "로컬 사용자",
   "settings.email": "이메일",
   "settings.role": "역할",
   "settings.language": "언어",
@@ -518,6 +521,7 @@ export const ko: Messages = {
   ...depotsKo,
   ...geodataKo,
   ...tablesKo,
+  ...economicsKo,
   ...fleetKo,
   ...timetablesKo,
   ...commentsKo,

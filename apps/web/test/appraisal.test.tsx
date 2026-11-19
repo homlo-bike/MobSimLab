@@ -20,6 +20,9 @@ import {
   present,
   socialRateKey,
 } from "../src/features/appraisal/model";
+import { type Note, translate } from "../src/i18n/i18n";
+
+const inEnglish = (notes: Note[]) => notes.map((n) => translate("en", n.key, n.vars));
 
 afterEach(cleanup);
 
@@ -293,7 +296,7 @@ describe("appraisal", () => {
 
   it("says when the demand run's benefits are missing", () => {
     const none = appraise(input([line({ userDay: null, carKmDay: null })]), 20);
-    expect(none.notes.join(" ")).toMatch(/No demand run/);
+    expect(inEnglish(none.notes).join(" ")).toMatch(/No demand run/);
     expect(none.switching.some((s) => s.id === "user")).toBe(false);
     expect(none.rows[0]!.central.user).toBe(0);
   });
