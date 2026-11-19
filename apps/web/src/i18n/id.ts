@@ -6,6 +6,7 @@ import { commentsId } from "./comments/id";
 import { depotsId } from "./depots/id";
 import { geodataId } from "./geodata/id";
 import { tablesId } from "./tables/id";
+import { economicsId } from "./economics/id";
 import { fleetId } from "./fleet/id";
 import { timetablesId } from "./timetables/id";
 import { mslabId } from "./mslab/id";
@@ -83,6 +84,8 @@ export const id: Messages = {
   "settings.title": "Pengaturan",
   "settings.back": "Kembali ke pengaturan",
   "settings.displayName": "Nama tampilan",
+  "shell.thisComputer": "Komputer ini",
+  "shell.localUser": "Pengguna lokal",
   "settings.email": "Email",
   "settings.role": "Peran",
   "settings.language": "Bahasa",
@@ -530,6 +533,7 @@ export const id: Messages = {
   ...depotsId,
   ...geodataId,
   ...tablesId,
+  ...economicsId,
   ...fleetId,
   ...timetablesId,
   ...commentsId,

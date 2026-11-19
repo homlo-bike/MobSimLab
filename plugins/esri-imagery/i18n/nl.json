@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Luchtfoto's van ongeveer 0,3 tot 1 m per pixel in de meeste steden, grover op het platteland: scherp genoeg om rijstroken, stoepranden en spoor te zien. De opnamedata verschillen per plaats.",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery als luchtfoto-ondergrond: luchtfoto's van ongeveer 0,3 tot 1 m per pixel in de meeste steden, scherp genoeg om rijstroken, stoepranden en spoor te zien. Beschikbaar zodra een beheerder een ArcGIS-API-sleutel opslaat en de voorwaarden van Esri accepteert onder Beheer → Plug-ins; de tegels komen via deze MobSimLab, zodat browsers de sleutel nooit zien, en worden niet bewaard."
+}

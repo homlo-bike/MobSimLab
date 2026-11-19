@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Angkutan responsif permintaan yang digambar dengan kit zona layanan: gambar zona, atur permintaan per jam, armada, dan jam layanan, lalu dapatkan kendaraan yang dibutuhkan, rata-rata waktu tunggu, waktu perjalanan, dan waktu dari pintu ke pintu dari rumus aproksimasi kontinu. Simulasi hari mengirim setiap pemesanan perjalanan demi perjalanan (ADR-0042). Zona tampil di perencana perjalanan.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "Minibus yang dipesan lewat aplikasi: gambar zona, atur armada dan jam.",
+  "On-demand bus": "Bus sesuai permintaan"
+}

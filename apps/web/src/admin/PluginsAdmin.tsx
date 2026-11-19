@@ -3,6 +3,7 @@ import { formatDateTime, useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { refreshServerBasemaps } from "../map/basemaps";
 import type { ProjectPlugin } from "../plugins/registry";
+import { localizeSummary } from "../plugins/texts";
 import { get, send } from "../session/api";
 import { Dialog } from "../shell/Dialog";
 import {
@@ -46,6 +47,8 @@ interface PluginRow {
   installedAt?: string;
   installedBy?: string | null;
   projects: number;
+  /** Language tag → English text → translation (older servers leave it out). */
+  translations?: Record<string, Record<string, string>>;
 }
 
 interface KeyRow {
@@ -165,7 +168,7 @@ export function PluginsAdmin({
   run: (f: () => Promise<unknown>) => Promise<void>;
   actorRole: string;
 }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [data, setData] = useState<AdminPlugins | null>(null);
   const [esri, setEsri] = useState<EsriStatus | null>(null);
   const [open, setOpen] = useState<Open>(null);
@@ -189,12 +192,16 @@ export function PluginsAdmin({
 
   const off = new Set(data.off ?? []);
   const items: Item[] = [
-    ...data.bundled.map((p) => ({ id: p.id, name: p.name, bundled: true, versions: [p] })),
+    ...data.bundled
+      .map((p) => localizeSummary(p, language))
+      .map((p) => ({ id: p.id, name: p.name, bundled: true, versions: [p] })),
     ...Object.values(
-      data.installed.reduce<Record<string, PluginRow[]>>((acc, p) => {
-        (acc[p.id] ??= []).push(p);
-        return acc;
-      }, {}),
+      data.installed
+        .map((p) => localizeSummary(p, language))
+        .reduce<Record<string, PluginRow[]>>((acc, p) => {
+          (acc[p.id] ??= []).push(p);
+          return acc;
+        }, {}),
     ).map((versions) => ({ id: versions[0]!.id, name: versions[0]!.name, bundled: false, versions })),
   ].sort((a, b) => a.name.localeCompare(b.name));
 
@@ -421,7 +428,7 @@ function InstallWindow({
   onInstalled: () => Promise<void>;
   onClose: () => void;
 }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [run, error] = useWindowRun();
   const [file, setFile] = useState<File | null>(null);
   const [inspection, setInspection] = useState<Inspection | null>(null);
@@ -452,7 +459,7 @@ function InstallWindow({
       : s === "untrusted"
         ? t("plugins.untrusted")
         : t("plugins.unsigned");
-  const p = inspection?.plugin;
+  const p = inspection?.plugin ? localizeSummary(inspection.plugin, language) : null;
   return (
     <Dialog title={t("plugins.installTitle")} onClose={onClose}>
       <div className="flex flex-col gap-3 text-sm">

@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Xizmat yoʻnalishlarining taxminiy shovqini (ADR-0038): koʻcha yoʻnalishlari va temir yoʻllarni chizayotganda jonli shovqin tasmasi, burilishdagi chiyillash, koʻpriklar va strelkalar tekshiruvlari bilan. CNOSSOS-EU yoʻl va temir yoʻl chiqarishi, hozircha binolarsiz ochiq maydonda.",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "Chizilgan yoʻnalishlarning 4 m balandlikdagi L_den va L_night qiymatlari, ochiq maydon: ikki tomondagi tasma masofalari, xarita uchun qabul qiluvchilar toʻri va tekshiruvlar.",
+  "Noise band": "Shovqin tasmasi",
+  "Noise map": "Shovqin xaritasi"
+}

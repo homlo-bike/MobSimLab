@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "大多数城市约每像素 0.3 至 1 米的航拍照片，乡村较粗：足以看清车道、路缘和轨道。拍摄日期因地而异。",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery 作为航拍底图：大多数城市约每像素 0.3 至 1 米的航拍照片，足以看清车道、路缘和轨道。管理员在“管理 → 插件”中保存 ArcGIS API 密钥并接受 Esri 的条款后即可使用；图块经由本 MobSimLab 传输，浏览器永远看不到密钥，且不会被保存。"
+}

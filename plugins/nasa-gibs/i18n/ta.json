@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "ஒரு பிக்சலுக்கு சுமார் 30 மீ (இந்த வரைபடத்தில் 38 மீ), ஒரு நாளின் செயற்கைக்கோள் கடப்புகளிலிருந்து: வரைபடத்தின் சில பகுதிகள் வெறுமையாக அல்லது மேகமூட்டமாக உள்ளன, எனவே வேறு தேதியை முயலுங்கள். தண்டவாளங்கள் அல்லது விளிம்புகளை வரைய மிகத் தடிமன்.",
+  "NASA GIBS imagery": "NASA GIBS படங்கள்",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 மற்றும் 9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS உண்மை நிறம்",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA வின் Global Imagery Browse Services (GIBS) இலிருந்து செயற்கைக்கோள் படங்கள் வான்வழி அடிப்படை வரைபடங்களாக, நீங்கள் தேர்ந்தெடுக்கும் நாளுக்கு: ஒரு பிக்சலுக்கு சுமார் 30 மீ இல் Harmonized Landsat Sentinel-2 மற்றும் சுமார் 250 மீ இல் VIIRS. API சாவி தேவையில்லை. தெருக்கள் அல்லது தண்டவாளங்களைப் பார்க்கப் படங்கள் மிகத் தடிமன்.",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "ஒவ்வொரு நாளும் முழு உலகம் ஒரு பிக்சலுக்கு சுமார் 250 மீ இல் (இந்த வரைபடத்தில் 306 மீ), மேகங்களுடன்: பிராந்தியச் சூழலுக்கு மட்டும்."
+}

@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "சரக்கு மிதிவண்டி",
+  "Cargo bike range": "சரக்கு மிதிவண்டியின் வரம்பு",
+  "Cargo bike savings": "சரக்கு மிதிவண்டியின் சேமிப்பு",
+  "Cargo bike trip and range": "சரக்கு மிதிவண்டி பயணமும் வரம்பும்",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "ஒரு மின்சார சரக்கு மூன்று சக்கர வண்டி ஒரு பேட்டரி சார்ஜில் எவ்வளவு தூரம் சென்று திரும்பும், மலைகள் மீது மிதிவண்டிப் பாதைகளை விரும்பி, மற்றும் காருடன் ஒப்பிடும்போது அது எவ்வளவு சேமிக்கிறது (வாங்குதல், எரிபொருள், வரி, காப்பீடு, நிறுத்தம், பராமரிப்பு), அதன் சொந்தத் தாவலில்.",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "தொடக்கப் புள்ளியிலிருந்து சேருமிடம் வரை மிதிவண்டி செல்லக்கூடிய தெருக்களில் (மிதிவண்டிப் பாதைகளை விரும்பி) சென்று திரும்பும் பயணம் மற்றும் நிலப்பரப்பில் செலவான பேட்டரி, மேலும் ஒவ்வொரு திசையிலும் மிதிவண்டி எவ்வளவு தூரம் சென்று திரும்பும் என்பதைக் காட்டும் வரம்பு வரைபடம்.",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "அதே பயணங்களுக்குக் காருடன் ஒப்பிடும்போது சரக்கு மிதிவண்டியின் ஆண்டுச் செலவு: வாங்குதல், ஆற்றல், வரி, காப்பீடு, நிறுத்தம் மற்றும் பராமரிப்பு, தொடக்கப் புள்ளியின் நாட்டு நாணயத்தில்."
+}

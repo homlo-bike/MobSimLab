@@ -3,6 +3,9 @@
  * weekday boardings of lines and stops, typed or from CSV), and how a calibrated run fits it.
  */
 import { useState } from "react";
+import { tNow, useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
+import { paramLabel } from "../../i18n/params";
 import type { PreferencesDoc } from "../../workspace/preferences";
 import type { Calibration, Mode, ObservedDemand } from "./api";
 import { demandParam } from "./params";
@@ -13,11 +16,11 @@ const th = "px-2 py-1.5 text-left font-medium text-slate-600";
 const td = "px-2 py-1.5 align-top";
 const num = "px-2 py-1.5 text-right align-top tabular-nums whitespace-nowrap";
 const SHARE_MODES: Mode[] = ["car", "transit", "walk", "cycle"];
-const MODE_LABEL: Record<Mode, string> = {
-  car: "Car",
-  transit: "Public transport",
-  walk: "Walking",
-  cycle: "Cycling",
+const MODE_LABEL: Record<Mode, MessageKey> = {
+  car: "dem.mode.car",
+  transit: "dem.mode.transit",
+  walk: "dem.mode.walk",
+  cycle: "dem.mode.cycle",
 };
 /** Largest number of observed counts (apps/api and the worker take as many). */
 export const MAX_COUNTS = 5000;
@@ -74,10 +77,13 @@ export function parseCountsCsv(text: string): { counts: ObservedCount[]; errors:
   const errors: string[] = [];
   if (bad.length)
     errors.push(
-      `Rows ${bad.slice(0, 10).join(", ")}${bad.length > 10 ? ` and ${bad.length - 10} more` : ""} were left out: each row needs line or stop, an id or name, and a number of boardings.`,
+      tNow(bad.length > 10 ? "dem.csv.badMore" : "dem.csv.bad", {
+        rows: bad.slice(0, 10).join(", "),
+        more: bad.length - 10,
+      }),
     );
   if (counts.length > MAX_COUNTS) {
-    errors.push(`Only the first ${MAX_COUNTS} counts are kept.`);
+    errors.push(tNow("dem.csv.capped", { max: MAX_COUNTS }));
     counts.length = MAX_COUNTS;
   }
   return { counts, errors };
@@ -114,6 +120,7 @@ export function ObservedCard({
   lineNames: string[];
   stopNames: string[];
 }) {
+  const { t } = useI18n();
   const [notes, setNotes] = useState<string[]>([]);
   const o = doc?.observed ?? {};
   const counts = o.counts ?? [];
@@ -149,22 +156,19 @@ export function ObservedCard({
   const upload = async (file: File) => {
     const { counts: read, errors } = parseCountsCsv(await file.text());
     const merged = [...counts, ...read].slice(0, MAX_COUNTS);
-    setNotes([`${read.length} counts read from ${file.name}.`, ...errors]);
+    setNotes([t("dem.countsRead", { count: read.length, file: file.name }), ...errors]);
     save({ ...o, counts: merged });
   };
   const given = SHARE_MODES.map((m) => o.shares?.[m]).filter((v): v is number => typeof v === "number");
   const sum = given.reduce((a, b) => a + b, 0);
   return (
-    <div className={card} aria-label="Observed data">
-      <h3 className="caps m-0">Observed data</h3>
-      <p className="mt-2 text-sm text-slate-600">
-        With observed data the run calibrates itself: it moves the mode constants and the trip length until
-        the model matches, and shows how close it got. Leave everything empty for an uncalibrated run.
-      </p>
+    <div className={card} aria-label={t("dem.obs.title")}>
+      <h3 className="caps m-0">{t("dem.obs.title")}</h3>
+      <p className="mt-2 text-sm text-slate-600">{t("dem.obs.intro")}</p>
       <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {SHARE_MODES.map((m) => (
           <label key={m} className="block text-sm">
-            <span className="font-medium">{MODE_LABEL[m]}, % of trips</span>
+            <span className="font-medium">{t("dem.obs.share", { mode: t(MODE_LABEL[m]) })}</span>
             <input
               key={`${m}:${o.shares?.[m] ?? ""}`}
               type="number"
@@ -179,7 +183,7 @@ export function ObservedCard({
           </label>
         ))}
         <label className="block text-sm">
-          <span className="font-medium">Mean car trip, km</span>
+          <span className="font-medium">{t("dem.obs.carKm")}</span>
           <input
             key={`km:${o.meanCarKm ?? ""}`}
             type="number"
@@ -193,20 +197,14 @@ export function ObservedCard({
         </label>
       </div>
       {given.length > 0 && given.length < 4 && (
-        <p className="mt-2 text-sm text-amber-800">
-          Give all four shares, or none: shares are used together.
-        </p>
+        <p className="mt-2 text-sm text-amber-800">{t("dem.obs.allFour")}</p>
       )}
       {given.length === 4 && Math.abs(sum - 100) > 0.5 && (
-        <p className="mt-2 text-sm text-slate-600">
-          The shares add up to {fmt(sum, 1)} %; the run scales them to 100 %.
-        </p>
+        <p className="mt-2 text-sm text-slate-600">{t("dem.obs.sum", { sum: fmt(sum, 1) })}</p>
       )}
 
-      <h4 className="mt-4 mb-0 text-sm font-semibold">Boardings, a weekday</h4>
-      <p className="mt-1 text-sm text-slate-600">
-        Counts of lines or stops, by id or name. CSV files need the columns kind (line or stop), id and value.
-      </p>
+      <h4 className="mt-4 mb-0 text-sm font-semibold">{t("dem.obs.boardings")}</h4>
+      <p className="mt-1 text-sm text-slate-600">{t("dem.obs.countsHint")}</p>
       <datalist id="demand-observed-lines">
         {lineNames.map((n) => (
           <option key={n} value={n} />
@@ -222,10 +220,10 @@ export function ObservedCard({
           <table className="w-full text-sm">
             <thead>
               <tr>
-                <th className={th}>Line or stop</th>
-                <th className={th}>Id or name</th>
-                <th className={`${th} text-right`}>Boardings</th>
-                {editable && <th className={th} aria-label="Remove" />}
+                <th className={th}>{t("dem.col.lineOrStop")}</th>
+                <th className={th}>{t("dem.col.idOrName")}</th>
+                <th className={`${th} text-right`}>{t("dem.col.boardings")}</th>
+                {editable && <th className={th} aria-label={t("dem.remove")} />}
               </tr>
             </thead>
             <tbody>
@@ -234,19 +232,19 @@ export function ObservedCard({
                   <td className={td}>
                     <select
                       className="input"
-                      aria-label={`Count ${i + 1}: line or stop`}
+                      aria-label={t("dem.count.kind", { n: i + 1 })}
                       value={c.kind}
                       disabled={!editable}
                       onChange={(e) => setCount(i, { ...c, kind: e.target.value as "line" | "stop" })}
                     >
-                      <option value="line">Line</option>
-                      <option value="stop">Stop</option>
+                      <option value="line">{t("dem.line")}</option>
+                      <option value="stop">{t("dem.stop1")}</option>
                     </select>
                   </td>
                   <td className={td}>
                     <input
                       className="input w-full"
-                      aria-label={`Count ${i + 1}: id or name`}
+                      aria-label={t("dem.count.id", { n: i + 1 })}
                       list={c.kind === "line" ? "demand-observed-lines" : "demand-observed-stops"}
                       defaultValue={c.id}
                       disabled={!editable}
@@ -261,7 +259,7 @@ export function ObservedCard({
                       type="number"
                       min={0}
                       className="input w-28 text-right"
-                      aria-label={`Count ${i + 1}: boardings`}
+                      aria-label={t("dem.count.value", { n: i + 1 })}
                       defaultValue={c.value}
                       disabled={!editable}
                       onBlur={(e) => {
@@ -274,7 +272,7 @@ export function ObservedCard({
                   {editable && (
                     <td className={td}>
                       <button type="button" className="btn min-h-10" onClick={() => setCount(i, null)}>
-                        Remove
+                        {t("dem.remove")}
                       </button>
                     </td>
                   )}
@@ -284,7 +282,7 @@ export function ObservedCard({
           </table>
           {counts.length > SHOWN && (
             <p className="mt-1 text-sm text-slate-500">
-              And {fmt(counts.length - SHOWN)} more counts from the CSV.
+              {t("dem.obs.more", { count: fmt(counts.length - SHOWN) })}
             </p>
           )}
         </div>
@@ -299,10 +297,10 @@ export function ObservedCard({
               save({ ...o, counts: [...counts, { kind: "line", id: lineNames[0] ?? "", value: 0 }] })
             }
           >
-            Add a count
+            {t("dem.obs.add")}
           </button>
           <label className="btn min-h-10 cursor-pointer">
-            Upload counts (CSV)
+            {t("dem.obs.upload")}
             <input
               type="file"
               accept=".csv,text/csv,text/plain"
@@ -323,7 +321,7 @@ export function ObservedCard({
                 save({ ...o, counts: [] });
               }}
             >
-              Remove all counts
+              {t("dem.obs.removeAll")}
             </button>
           )}
         </div>
@@ -353,6 +351,7 @@ export function CalibrationResult({
   preferences: PreferencesDoc | null;
   onPreferences?: (doc: PreferencesDoc) => void;
 }) {
+  const { t, tn, language } = useI18n();
   const [saved, setSaved] = useState(false);
   const fitted = Object.entries(c.fitted);
   const shares = SHARE_MODES.some((m) => c.mode_shares[m]?.observed != null);
@@ -369,21 +368,26 @@ export function CalibrationResult({
     setSaved(true);
   };
   return (
-    <div className="mt-4" aria-label="Calibration">
-      <h4 className="m-0 text-sm font-semibold">Calibration</h4>
+    <div className="mt-4" aria-label={t("dem.cal.title")}>
+      <h4 className="m-0 text-sm font-semibold">{t("dem.cal.title")}</h4>
       <p className="mt-1 text-sm text-slate-600">
-        {c.rounds.length === 1 ? "One round" : `${c.rounds.length} rounds`}
-        {last ? `; the largest gap left is ${fmt(last.gap * 100, 1)} %` : ""}.
+        {last
+          ? tn("dem.cal.roundsGap", c.rounds.length, { gap: fmt(last.gap * 100, 1) })
+          : tn("dem.cal.rounds", c.rounds.length)}
         {c.matched > 0 &&
-          ` ${fmt(c.matched)} counts matched a line or stop: %RMSE ${fmt(c.rmse_pct, 1)}, ${fmt((c.geh_under_5_share ?? 0) * 100)} % with a GEH under 5.`}
+          ` ${t("dem.cal.matched", {
+            count: fmt(c.matched),
+            rmse: fmt(c.rmse_pct, 1),
+            geh: fmt((c.geh_under_5_share ?? 0) * 100),
+          })}`}
       </p>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
             <tr>
               <th className={th} />
-              <th className={`${th} text-right`}>Observed</th>
-              <th className={`${th} text-right`}>Modelled</th>
+              <th className={`${th} text-right`}>{t("dem.col.observed")}</th>
+              <th className={`${th} text-right`}>{t("dem.col.modelled")}</th>
             </tr>
           </thead>
           <tbody>
@@ -391,7 +395,7 @@ export function CalibrationResult({
               SHARE_MODES.map((m) => (
                 <tr key={m} className="border-t border-slate-100">
                   <th scope="row" className={th}>
-                    {MODE_LABEL[m]}
+                    {t(MODE_LABEL[m])}
                   </th>
                   <td className={num}>{sharePct(c.mode_shares[m]?.observed)}</td>
                   <td className={num}>{sharePct(c.mode_shares[m]?.modelled)}</td>
@@ -400,10 +404,10 @@ export function CalibrationResult({
             {c.mean_car_km.observed != null && (
               <tr className="border-t border-slate-100">
                 <th scope="row" className={th}>
-                  Mean car trip
+                  {t("dem.cal.carTrip")}{" "}
                 </th>
-                <td className={num}>{fmt(c.mean_car_km.observed, 1)} km</td>
-                <td className={num}>{fmt(c.mean_car_km.modelled, 1)} km</td>
+                <td className={num}>{t("dem.c.km", { v: fmt(c.mean_car_km.observed, 1) })}</td>
+                <td className={num}>{t("dem.c.km", { v: fmt(c.mean_car_km.modelled, 1) })}</td>
               </tr>
             )}
           </tbody>
@@ -411,20 +415,20 @@ export function CalibrationResult({
       </div>
       {worst.length > 0 && (
         <div className="mt-3 overflow-x-auto">
-          <table className="w-full text-sm" aria-label="Counts with the largest GEH">
+          <table className="w-full text-sm" aria-label={t("dem.cal.worst")}>
             <thead>
               <tr>
-                <th className={th}>Count</th>
-                <th className={`${th} text-right`}>Observed</th>
-                <th className={`${th} text-right`}>Modelled</th>
-                <th className={`${th} text-right`}>GEH</th>
+                <th className={th}>{t("dem.col.count")}</th>
+                <th className={`${th} text-right`}>{t("dem.col.observed")}</th>
+                <th className={`${th} text-right`}>{t("dem.col.modelled")}</th>
+                <th className={`${th} text-right`}>{t("dem.col.geh")}</th>
               </tr>
             </thead>
             <tbody>
               {worst.map((r, i) => (
                 <tr key={`${i}:${r.kind}:${r.id}`} className="border-t border-slate-100">
                   <td className={td}>
-                    {r.kind === "line" ? "Line" : "Stop"} {r.id}
+                    {t(r.kind === "line" ? "dem.line" : "dem.stop1")} {r.id}
                   </td>
                   <td className={num}>{fmt(r.observed)}</td>
                   <td className={num}>{fmt(r.modelled)}</td>
@@ -439,7 +443,7 @@ export function CalibrationResult({
       )}
       {missing.length > 0 && (
         <p className="mt-2 text-sm text-amber-800">
-          {fmt(missing.length)} counts name no line or stop of the network:{" "}
+          {t("dem.cal.missing", { count: fmt(missing.length) })}{" "}
           {missing
             .slice(0, 5)
             .map((r) => r.id)
@@ -449,12 +453,12 @@ export function CalibrationResult({
       )}
       {fitted.length > 0 && (
         <>
-          <table className="mt-3 w-full text-sm" aria-label="Fitted values">
+          <table className="mt-3 w-full text-sm" aria-label={t("dem.cal.fitted")}>
             <tbody>
               {fitted.map(([k, v]) => (
                 <tr key={k} className="border-t border-slate-100">
                   <th scope="row" className={th}>
-                    {demandParam(k).label}
+                    {paramLabel(language, k, demandParam(k).label)}
                   </th>
                   <td className={num}>{fmt(v, 4)}</td>
                 </tr>
@@ -464,9 +468,9 @@ export function CalibrationResult({
           {onPreferences && (
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <button type="button" className="btn btn-pri min-h-10" disabled={saved} onClick={save}>
-                {saved ? "Saved to Project preferences" : "Save fitted values to Project preferences"}
+                {saved ? t("dem.cal.saved") : t("dem.cal.save")}
               </button>
-              <span className="text-sm text-slate-500">Later runs then start from them.</span>
+              <span className="text-sm text-slate-500">{t("dem.cal.later")}</span>
             </div>
           )}
         </>

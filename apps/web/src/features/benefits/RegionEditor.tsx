@@ -1,6 +1,8 @@
 import type { GeoJSONSource, Map as MapLibreMap, MapMouseEvent } from "maplibre-gl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { tNow, useI18n, withNodes } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 import { type Place, searchPlaces } from "../../map/places";
 import type { AreaImport, ProjectAreaApi } from "../area/api";
 import { type BenefitsApi, benefitsApi, type OsmArea } from "./data";
@@ -50,24 +52,27 @@ export function reachesOutside(
   return ring.some(([x, y]) => x < w || x > e || y < s || y > n);
 }
 
-const IMPORT_NAMES: Record<AreaImport["kind"], string> = {
-  osm: "OpenStreetMap",
-  dem: "terrain heights",
-  population: "population",
+const IMPORT_NAMES: Record<AreaImport["kind"], MessageKey> = {
+  osm: "reg.import.osm",
+  dem: "reg.import.dem",
+  population: "reg.import.population",
 };
 
 /** Purpose: one line on the downloads queued for the larger project area. */
 function importsNote(imports: readonly AreaImport[]): string {
-  const queued = imports.filter((i) => i.status === "queued").map((i) => IMPORT_NAMES[i.kind]);
+  const queued = imports.filter((i) => i.status === "queued").map((i) => tNow(IMPORT_NAMES[i.kind]));
   const failed = imports.filter((i) => i.status === "failed");
   const parts: string[] = [];
   parts.push(
-    queued.length
-      ? `The project area now includes it. Downloading ${queued.join(", ")} for it (see Map data).`
-      : "The project area now includes it. Its map data is already downloaded.",
+    queued.length ? tNow("reg.areaDownloading", { what: queued.join(", ") }) : tNow("reg.areaReady"),
   );
   for (const f of failed)
-    parts.push(`${IMPORT_NAMES[f.kind]} could not start: ${f.reason ?? "unknown reason"}.`);
+    parts.push(
+      tNow("reg.importFailed", {
+        what: tNow(IMPORT_NAMES[f.kind]),
+        reason: f.reason ?? tNow("reg.unknownReason"),
+      }),
+    );
   return parts.join(" ");
 }
 
@@ -194,6 +199,7 @@ export function RegionEditor({
    */
   area?: ProjectAreaApi | null;
 }) {
+  const { t, tn } = useI18n();
   const [mode, setMode] = useState<Mode>({ kind: "idle" });
   // Importing by name: the text, the places found, and any error.
   const [query, setQuery] = useState("");
@@ -319,7 +325,13 @@ export function RegionEditor({
   const finishDraw = () => {
     if (mode.kind !== "draw" || mode.points.length < 3) return;
     const ring = [...mode.points, mode.points[0]!];
-    add({ id: newId(), name: `Region ${regions.length + 1}`, ring, source: "drawn", values: {} });
+    add({
+      id: newId(),
+      name: t("reg.defaultName", { n: regions.length + 1 }),
+      ring,
+      source: "drawn",
+      values: {},
+    });
   };
   const addImported = (a: OsmArea) =>
     add({ id: newId(), name: a.name, ring: a.ring, source: "osm", osmId: a.id, values: {} });
@@ -363,7 +375,7 @@ export function RegionEditor({
       if (next.length > MAX_AREA_REGIONS) {
         setExtendNote({
           ok: false,
-          text: `The project area already joins ${MAX_AREA_REGIONS} regions, the most it can. Change it in Project preferences.`,
+          text: t("reg.areaFull", { max: MAX_AREA_REGIONS }),
         });
         return;
       }
@@ -373,7 +385,7 @@ export function RegionEditor({
     } catch (e) {
       setExtendNote({
         ok: false,
-        text: `The project area could not be changed: ${e instanceof Error ? e.message : String(e)}`,
+        text: t("reg.areaFailed", { error: e instanceof Error ? e.message : String(e) }),
       });
     } finally {
       setExtending(false);
@@ -388,11 +400,8 @@ export function RegionEditor({
   const body = (
     <div className="flex flex-col gap-4 px-4 pt-1 pb-6 md:px-5">
       <div>
-        <h2 className="text-lg font-semibold">Regions</h2>
-        <p className="mt-1 text-sm text-slate-600">
-          Draw an area or import a neighbourhood from OpenStreetMap, then enter what you know about it. Your
-          values take priority over WorldPop, OpenStreetMap and the World Bank in the benefit tables.
-        </p>
+        <h2 className="text-lg font-semibold">{t("reg.title")}</h2>
+        <p className="mt-1 text-sm text-slate-600">{t("reg.intro")}</p>
       </div>
       {editable && mode.kind === "idle" && (
         <div className="flex flex-wrap gap-2">
@@ -401,7 +410,7 @@ export function RegionEditor({
             className="btn btn-pri min-h-10"
             onClick={() => setMode({ kind: "draw", points: [] })}
           >
-            Draw a region
+            {t("reg.draw")}{" "}
           </button>
           <button
             type="button"
@@ -414,16 +423,16 @@ export function RegionEditor({
               setMode({ kind: "import", at: null });
             }}
           >
-            Import from OpenStreetMap
+            {t("reg.importOsm")}
           </button>
         </div>
       )}
       {mode.kind === "draw" && (
         <section
-          aria-label="Drawing a region"
+          aria-label={t("reg.drawing")}
           className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm"
         >
-          <p>Tap the map to place the corners of the region ({mode.points.length} so far, at least 3).</p>
+          <p>{t("reg.drawHint", { count: mode.points.length })}</p>
           <div className="mt-2 flex flex-wrap gap-2">
             <button
               type="button"
@@ -431,7 +440,7 @@ export function RegionEditor({
               disabled={mode.points.length < 3}
               onClick={finishDraw}
             >
-              Finish
+              {t("reg.finish")}
             </button>
             <button
               type="button"
@@ -439,26 +448,26 @@ export function RegionEditor({
               disabled={!mode.points.length}
               onClick={() => setMode({ kind: "draw", points: mode.points.slice(0, -1) })}
             >
-              Undo last corner
+              {t("reg.undo")}
             </button>
             <button type="button" className="btn min-h-10" onClick={() => setMode({ kind: "idle" })}>
-              Cancel
+              {t("reg.cancel")}
             </button>
           </div>
         </section>
       )}
       {mode.kind === "import" && (
         <section
-          aria-label="Importing a region"
+          aria-label={t("reg.importing")}
           className="rounded-xl border border-indigo-200 bg-indigo-50 p-3 text-sm"
         >
           <label className="flex flex-col gap-1">
-            <span className="font-medium">Search for a place</span>
+            <span className="font-medium">{t("reg.search")}</span>
             <input
               type="search"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="For example: Aleppo"
+              placeholder={t("reg.searchExample")}
               autoFocus
               className="min-h-10 rounded border border-slate-300 bg-white px-2"
             />
@@ -468,9 +477,9 @@ export function RegionEditor({
               {placeError}
             </p>
           )}
-          {places && places.length === 0 && <p className="mt-2 text-slate-600">No places found.</p>}
+          {places && places.length === 0 && <p className="mt-2 text-slate-600">{t("reg.noPlaces")}</p>}
           {places && places.length > 0 && (
-            <ul aria-label="Places found" className="mt-2 flex flex-col gap-1">
+            <ul aria-label={t("reg.placesFound")} className="mt-2 flex flex-col gap-1">
               {places.map((p, i) => (
                 <li key={`${p.name}-${i}`}>
                   <button
@@ -487,13 +496,10 @@ export function RegionEditor({
               ))}
             </ul>
           )}
-          <p className="mt-2 text-slate-600">
-            Pick a place, or tap the map, to list the neighbourhoods, districts, cities and regions it lies
-            in. Then choose the one that fits.
-          </p>
+          <p className="mt-2 text-slate-600">{t("reg.pickHint")}</p>
           {mode.at && !areas && !areaError && (
             <p role="status" className="mt-2 text-slate-600">
-              Looking up areas…
+              {t("reg.lookingUp")}
             </p>
           )}
           {areaError && (
@@ -501,9 +507,7 @@ export function RegionEditor({
               {areaError}
             </p>
           )}
-          {areas && areas.length === 0 && (
-            <p className="mt-2 text-slate-600">No named areas here. Try another place, or draw one.</p>
-          )}
+          {areas && areas.length === 0 && <p className="mt-2 text-slate-600">{t("reg.noAreas")}</p>}
           {areas && areas.length > 0 && (
             <ul className="mt-2 flex flex-col gap-1">
               {areas.map((a) => (
@@ -517,7 +521,7 @@ export function RegionEditor({
                     <span className="shrink-0 text-xs text-slate-500">
                       {a.kind}
                       {a.adminLevel ? ` ${a.adminLevel}` : ""} ·{" "}
-                      {a.areaKm2 < 10 ? a.areaKm2.toFixed(1) : Math.round(a.areaKm2)} km²
+                      {t("reg.km2", { v: a.areaKm2 < 10 ? a.areaKm2.toFixed(1) : Math.round(a.areaKm2) })}
                     </span>
                   </button>
                 </li>
@@ -525,19 +529,19 @@ export function RegionEditor({
             </ul>
           )}
           <button type="button" className="btn mt-2 min-h-10" onClick={() => setMode({ kind: "idle" })}>
-            Cancel
+            {t("reg.cancel")}
           </button>
         </section>
       )}
       {mode.kind === "outside" && (
         <section
-          aria-label="Region outside the project area"
+          aria-label={t("reg.outside")}
           className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm"
         >
           <p>
-            <span className="font-medium">{mode.area.name}</span> reaches outside the project area, so the map
-            data downloaded for the project may not cover it. Add it to the project area? This downloads the
-            OpenStreetMap data, terrain heights and population the larger area needs.
+            {withNodes(t("reg.outsideNote"), {
+              name: <span className="font-medium">{mode.area.name}</span>,
+            })}
           </p>
           <div className="mt-2 flex flex-wrap gap-2">
             <button
@@ -546,7 +550,7 @@ export function RegionEditor({
               disabled={extending}
               onClick={() => void extendArea(mode.area)}
             >
-              {extending ? "Adding…" : "Add to project area"}
+              {extending ? t("reg.adding") : t("reg.addToArea")}
             </button>
             <button
               type="button"
@@ -554,7 +558,7 @@ export function RegionEditor({
               disabled={extending}
               onClick={() => addImported(mode.area)}
             >
-              Import without changing the area
+              {t("reg.importOnly")}
             </button>
             <button
               type="button"
@@ -562,7 +566,7 @@ export function RegionEditor({
               disabled={extending}
               onClick={() => setMode({ kind: "idle" })}
             >
-              Cancel
+              {t("reg.cancel")}
             </button>
           </div>
         </section>
@@ -589,14 +593,12 @@ export function RegionEditor({
           onClose={() => setSelected(null)}
         />
       )}
-      <section aria-label="Regions in this project">
+      <section aria-label={t("reg.inProject")}>
         <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
-          Regions · {regions.length}
+          {t("reg.count", { count: regions.length })}
         </h3>
         {listed.length === 0 ? (
-          <p className="mt-1 text-sm text-slate-600">
-            None yet: the benefit tables use the sourced data everywhere.
-          </p>
+          <p className="mt-1 text-sm text-slate-600">{t("reg.none")}</p>
         ) : (
           <ul className="mt-1 flex flex-col">
             {listed.map((r) => (
@@ -609,15 +611,17 @@ export function RegionEditor({
                 >
                   <span className="min-w-0 flex-1 truncate font-medium">{r.name}</span>
                   <span className="shrink-0 text-xs text-slate-500">
-                    {Object.values(r.values).filter((v) => v !== undefined && v !== null && v !== "").length}{" "}
-                    values
+                    {tn(
+                      "reg.values",
+                      Object.values(r.values).filter((v) => v !== undefined && v !== null && v !== "").length,
+                    )}
                   </span>
                 </button>
               </li>
             ))}
           </ul>
         )}
-        <p className="mt-2 text-xs text-slate-500">Saved with the project, for everyone who opens it.</p>
+        <p className="mt-2 text-xs text-slate-500">{t("reg.saved")}</p>
       </section>
     </div>
   );
@@ -645,12 +649,16 @@ function RegionForm({
     else values[k] = v;
     onPatch({ values: values as RegionValues });
   };
+  const { t } = useI18n();
   const km2 = ringAreaM2(region.ring) / 1e6;
   return (
-    <section aria-label={`Region ${region.name}`} className="rounded-xl border border-slate-200 p-3">
+    <section
+      aria-label={t("reg.named", { name: region.name })}
+      className="rounded-xl border border-slate-200 p-3"
+    >
       <div className="flex items-start gap-2">
         <label className="min-w-0 flex-1 text-sm">
-          <span className="font-medium">Name</span>
+          <span className="font-medium">{t("reg.name")}</span>
           <input
             className="input mt-1 w-full"
             defaultValue={region.name}
@@ -663,28 +671,26 @@ function RegionForm({
           />
         </label>
         <button type="button" className="btn min-h-10" onClick={onClose}>
-          Close
+          {t("reg.close")}
         </button>
       </div>
       <p className="mt-1 text-xs text-slate-500">
-        {region.source === "osm" ? `Imported from OpenStreetMap (${region.osmId})` : "Drawn"} ·{" "}
-        {km2 < 10 ? km2.toFixed(2) : Math.round(km2)} km². Leave a value empty to keep the sourced data.
+        {region.source === "osm" ? t("reg.fromOsm", { id: region.osmId ?? "" }) : t("reg.drawn")} ·{" "}
+        {t("reg.km2", { v: km2 < 10 ? km2.toFixed(2) : Math.round(km2) })} {t("reg.keepSourced")}
       </p>
       <label className="mt-3 block text-sm">
-        <span className="font-medium">Primary land use</span>
-        <span className="block text-xs text-slate-500">
-          Used for buildings OpenStreetMap does not describe.
-        </span>
+        <span className="font-medium">{t("reg.landUse")}</span>
+        <span className="block text-xs text-slate-500">{t("reg.landUseHint")}</span>
         <select
           className="input mt-1 w-full"
           value={region.values.landUse ?? ""}
           disabled={!editable}
           onChange={(e) => setValue("landUse", (e.target.value || undefined) as LandUse | undefined)}
         >
-          <option value="">From OpenStreetMap</option>
+          <option value="">{t("reg.fromOsmData")}</option>
           {LAND_USES.map((u) => (
             <option key={u.id} value={u.id}>
-              {u.label}
+              {t(`reg.use.${u.id}`)}
             </option>
           ))}
         </select>
@@ -695,10 +701,10 @@ function RegionForm({
         const money = ["landValuePerM2", "taxRevenuePerYear", "gdpPerCapita"].includes(f.key);
         return (
           <label key={f.key} className="mt-3 block text-sm">
-            <span className="font-medium">{f.label}</span>
+            <span className="font-medium">{t(`reg.f.${f.key}`)}</span>
             <span className="block text-xs text-slate-500">
               {money && currency ? `${currency} ` : ""}
-              {f.unit}
+              {t(`reg.fu.${f.key}`)}
             </span>
             <input
               type="number"
@@ -708,12 +714,12 @@ function RegionForm({
               defaultValue={shown}
               readOnly={!editable}
               onBlur={(e) => {
-                const t = e.target.value.trim();
-                if (t === "") {
+                const text = e.target.value.trim();
+                if (text === "") {
                   if (v !== undefined) setValue(f.key, undefined);
                   return;
                 }
-                const n = Number(t);
+                const n = Number(text);
                 if (!Number.isFinite(n) || n < 0) return;
                 const next = f.percent ? n / 100 : n;
                 if (next !== v) setValue(f.key, next);
@@ -724,7 +730,7 @@ function RegionForm({
       })}
       {editable && (
         <button type="button" className="btn mt-4 min-h-10 text-red-700" onClick={onDelete}>
-          Delete region
+          {t("reg.delete")}
         </button>
       )}
     </section>

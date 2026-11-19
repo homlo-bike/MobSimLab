@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "سروس لائنوں کا تخمینی شور (ADR-0038): سڑک کی لائنیں اور ریلوے بناتے وقت براہ راست شور کی پٹی، موڑ کی چیخ، پلوں اور سوئچوں کی جانچ کے ساتھ۔ CNOSSOS-EU سڑک اور ریل اخراج، فی الحال عمارتوں کے بغیر کھلے میدان میں۔",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "بنائی گئی لائنوں کا 4 میٹر پر L_den اور L_night، کھلا میدان: دونوں طرف پٹی کے فاصلے، نقشے کے لیے وصول کنندہ گرڈ اور جانچیں۔",
+  "Noise band": "شور کی پٹی",
+  "Noise map": "شور کا نقشہ"
+}

@@ -1,8 +1,12 @@
 import { useMemo } from "react";
+import { hasMessage, type Translate, useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
+import { paramLabel, paramUnit } from "../../i18n/params";
 import type { Estimate as BenefitEstimate } from "../benefits/model";
 import type { Triple } from "../benefits/params";
 import { useTip } from "../costs/charts";
-import { card, modeLabel, num, td, th, Tile } from "../costs/CostTables";
+import { card, num, td, th, Tile } from "../costs/CostTables";
+import { useModeLabel } from "../schematic/common";
 import { BenefitCostChart, CashFlowChart, DrawsChart, RankingChart } from "./charts";
 import type { Estimate as CostEstimate } from "../costs/model";
 import type { DemandRidership } from "../demand/ridership";
@@ -24,6 +28,7 @@ import {
   paramValue,
   POLICY,
   type Present,
+  type TornadoBar,
   socialRateKey,
 } from "./model";
 
@@ -86,6 +91,7 @@ export function AppraisalSection({
   onDoc,
   draws,
 }: Props) {
+  const { t } = useI18n();
   const prefs = preferences?.values;
   const faresOwn = fares?.own;
   const lines = useMemo(
@@ -111,37 +117,36 @@ export function AppraisalSection({
   const total = result?.rows.find((r) => r.id === "total") ?? null;
   const uncosted = uncostedLines(lines);
   const uncostedNote = uncosted.length
-    ? `No costs yet for ${uncosted.map((l) => l.name).join(", ")}: ${uncosted.length === 1 ? "its" : "their"} ridership, fares and benefits count, but nothing is spent on ${uncosted.length === 1 ? "it" : "them"}, so the result is better than it will be.`
+    ? t("apr.uncostedNote", { lines: uncosted.map((l) => l.name).join(", ") })
     : null;
   const currencyNote =
     demand?.appraisal && currency && demand.appraisal.currency !== currency
-      ? `The demand run valued time in ${demand.appraisal.currency}, the tables show ${currency}: run the demand model again after changing the currency.`
+      ? t("apr.currencyNote", { run: demand.appraisal.currency, tables: currency })
       : null;
 
   return (
     <section aria-labelledby="appraisal-title" className="mt-10">
       <h2 id="appraisal-title" className="text-xl font-semibold tracking-tight">
-        Appraisal
+        {t("apr.title")}
       </h2>
       <p className="mt-1 max-w-3xl text-slate-600">
-        Is the project worth it? Every cost and benefit from the tables above, year by year, discounted to
-        today. Ranges are the 10th to 90th percentile of {result?.draws ?? draws ?? 200} random draws.
+        {t("apr.intro", { draws: result?.draws ?? draws ?? 200 })}
       </p>
       {!costs && (
         <p role="status" className="mt-4 text-sm text-slate-500">
-          Waiting for the cost tables to price the project…
+          {t("apr.waiting")}
         </p>
       )}
       {costs && !lines.length && (
         <p className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-slate-600">
-          No lines with costs or ridership yet.
+          {t("apr.noLines")}
         </p>
       )}
       {result && total && (
         <>
           <TablePart id="appraisal.results">
             {[
-              ...result.notes,
+              ...result.notes.map((n) => t(n.key, n.vars)),
               ...(uncostedNote ? [uncostedNote] : []),
               ...(currencyNote ? [currencyNote] : []),
             ].map((n) => (
@@ -151,35 +156,41 @@ export function AppraisalSection({
             ))}
             <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
               <Tile
-                title="Economic net present value"
+                title={t("apr.tile.enpv")}
                 value={money(total.enpv[1])}
-                sub={`${money(total.enpv[0])} – ${money(total.enpv[2])}; above 0 in ${Math.round(total.positive * 100)} % of draws`}
+                sub={t("apr.tile.enpvSub", {
+                  low: money(total.enpv[0]),
+                  high: money(total.enpv[2]),
+                  pct: Math.round(total.positive * 100),
+                })}
               />
               <Tile
-                title="Benefit-cost ratio"
+                title={t("apr.tile.bcr")}
                 value={ratio(total.bcr[1])}
                 sub={`${ratio(total.bcr[0])} – ${ratio(total.bcr[2])}`}
               />
               <Tile
-                title="Economic rate of return"
+                title={t("apr.tile.err")}
                 value={total.errShare >= 0.5 ? pct(total.err[1]) : "–"}
                 sub={
                   total.errShare >= 0.5
                     ? `${pct(total.err[0])} – ${pct(total.err[2])}`
-                    : "no rate brings the ENPV to 0 in most draws"
+                    : t("apr.tile.errNone")
                 }
               />
               <Tile
-                title="Financial net present value"
+                title={t("apr.tile.fnpv")}
                 value={money(total.fnpv[1])}
-                sub={`FIRR ${total.firrShare >= 0.5 ? pct(total.firr[1]) : "–"}; fares less the operator's costs`}
+                sub={t("apr.tile.fnpvSub", { firr: total.firrShare >= 0.5 ? pct(total.firr[1]) : "–" })}
               />
             </div>
             <p className="mt-2 text-xs text-slate-600">
-              These four are the middle of the {result.draws} draws (the 50th percentile), with the 10th to
-              90th percentile below each. The tables below use the medium case, every input at its medium
-              value: ENPV {money(total.central.enpv)}, benefit-cost ratio {ratio(total.central.bcr)}, FNPV{" "}
-              {money(total.central.fnpv)}.
+              {t("apr.tilesNote", {
+                draws: result.draws,
+                enpv: money(total.central.enpv),
+                bcr: ratio(total.central.bcr),
+                fnpv: money(total.central.fnpv),
+              })}
             </p>
             <Breakdown p={total.central} row={total} money={money} />
             <Rows rows={result.rows} money={money} />
@@ -188,11 +199,10 @@ export function AppraisalSection({
           <TablePart id="appraisal.uncertainty">
             <section className={card} aria-labelledby="appraisal-draws">
               <h3 id="appraisal-draws" className="caps m-0">
-                How sure is the result
+                {t("apr.howSure")}
               </h3>
               <p className="mt-1 text-xs text-slate-500">
-                ENPV of each of the {result.draws} draws. It is above 0 in {Math.round(total.positive * 100)}{" "}
-                % of them.
+                {t("apr.howSureNote", { draws: result.draws, pct: Math.round(total.positive * 100) })}
               </p>
               <DrawsChart draws={total.enpvDraws} p={total.enpv} money={money} />
             </section>
@@ -228,7 +238,7 @@ export function AppraisalSection({
   );
 }
 
-function Range({ t, f }: { t: Triple; f: (v: number) => string }) {
+function Range({ v: t, f }: { v: Triple; f: (v: number) => string }) {
   return (
     <>
       <span className="font-semibold">{f(t[1])}</span>
@@ -239,33 +249,35 @@ function Range({ t, f }: { t: Triple; f: (v: number) => string }) {
   );
 }
 
-function rowName(r: AppraisalRow): string {
-  return r.scope === "total" ? "All lines" : r.scope === "mode" ? `All ${modeLabel(r.name)} lines` : r.name;
+function rowName(t: Translate, modeLabel: (m: string) => string, r: AppraisalRow): string {
+  return r.scope === "total"
+    ? t("fare.allLines")
+    : r.scope === "mode"
+      ? t("fare.allModeLines", { mode: modeLabel(r.name) })
+      : r.name;
 }
 
 function Rows({ rows, money }: { rows: AppraisalRow[]; money: (v: number) => string }) {
-  const rate = (t: Triple, share: number) => (share >= 0.5 ? <Range t={t} f={pct} /> : "–");
+  const { t } = useI18n();
+  const modeLabel = useModeLabel();
+  const rate = (v: Triple, share: number) => (share >= 0.5 ? <Range v={v} f={pct} /> : "–");
   return (
     <section className={card} aria-labelledby="appraisal-lines">
       <h3 id="appraisal-lines" className="caps m-0">
-        Per line
+        {t("apr.perLine")}{" "}
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        Medium, with low – high below. A mode and the total count every line of it and the shared items no
-        line runs on yet, on the longest construction and appraisal period of their modes. A rate of return
-        shows when most draws have one.
-      </p>
+      <p className="mt-1 text-xs text-slate-500">{t("apr.perLineNote")}</p>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full min-w-[56rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Line</th>
-              <th className={`${th} text-right`}>Years</th>
-              <th className={`${th} text-right`}>ENPV</th>
-              <th className={`${th} text-right`}>Benefit-cost ratio</th>
-              <th className={`${th} text-right`}>ERR</th>
-              <th className={`${th} text-right`}>FNPV</th>
-              <th className={`${th} text-right`}>FIRR</th>
+              <th className={th}>{t("apr.col.line")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.years")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.enpv")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.bcr")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.err")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.fnpv")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.firr")}</th>
             </tr>
           </thead>
           <tbody>
@@ -283,22 +295,22 @@ function Rows({ rows, money }: { rows: AppraisalRow[]; money: (v: number) => str
                         style={{ background: r.color }}
                       />
                     )}
-                    {rowName(r)}
+                    {rowName(t, modeLabel, r)}
                   </span>
                 </td>
                 <td className={num}>
                   {r.timeline.build} + {r.timeline.period}
-                  <span className="block text-xs text-slate-500">building + running</span>
+                  <span className="block text-xs text-slate-500">{t("apr.buildRun")}</span>
                 </td>
                 <td className={num}>
-                  <Range t={r.enpv} f={money} />
+                  <Range v={r.enpv} f={money} />
                 </td>
                 <td className={num}>
-                  <Range t={r.bcr} f={ratio} />
+                  <Range v={r.bcr} f={ratio} />
                 </td>
                 <td className={num}>{rate(r.err, r.errShare)}</td>
                 <td className={num}>
-                  <Range t={r.fnpv} f={money} />
+                  <Range v={r.fnpv} f={money} />
                 </td>
                 <td className={num}>{rate(r.firr, r.firrShare)}</td>
               </tr>
@@ -311,15 +323,16 @@ function Rows({ rows, money }: { rows: AppraisalRow[]; money: (v: number) => str
 }
 
 function Breakdown({ p, row, money }: { p: Present; row: AppraisalRow; money: (v: number) => string }) {
+  const { t } = useI18n();
   const items: [string, number][] = [
-    ["Users' benefit: time, comfort and money saved (demand run)", p.user],
-    ["Fare revenue", p.fares],
-    ["Car-km saved: climate, air, noise, accidents and congestion", p.external],
-    ["GDP growth from agglomeration", p.gdp],
+    [t("apr.bd.user"), p.user],
+    [t("apr.item.fares"), p.fares],
+    [t("apr.bd.external"), p.external],
+    [t("apr.sw.gdp"), p.gdp],
   ];
   const costs: [string, number][] = [
-    ["Construction and renewals, less residual value", p.capital],
-    ["Operating cost", p.operating],
+    [t("apr.bd.capital"), p.capital],
+    [t("apr.item.operating"), p.operating],
   ];
   const line = ([label, v]: [string, number], bold = false) => (
     <tr key={label} className={`border-b border-slate-100 ${bold ? "bg-slate-50 font-medium" : ""}`}>
@@ -330,23 +343,22 @@ function Breakdown({ p, row, money }: { p: Present; row: AppraisalRow; money: (v
   return (
     <section className={card} aria-labelledby="appraisal-present">
       <h3 id="appraisal-present" className="caps m-0">
-        Benefits against costs, all lines
+        {t("apr.bd.title")}
       </h3>
       <p className="mt-1 mb-3 text-xs text-slate-500">
-        Medium case, discounted over {row.timeline.build} years of building and {row.timeline.period} of
-        operation. Fares count as a benefit because the users' benefit is net of the fares they pay.
+        {t("apr.bd.note", { build: row.timeline.build, period: row.timeline.period })}
       </p>
       <BenefitCostChart p={p} money={money} />
       <details className="mt-3 text-sm">
-        <summary className="cursor-pointer text-slate-700">Show as a table</summary>
+        <summary className="cursor-pointer text-slate-700">{t("apr.asTable")}</summary>
         <div className="mt-2 overflow-x-auto">
           <table className="w-full min-w-[28rem] text-sm">
             <tbody>
               {items.map((x) => line(x))}
-              {line(["Benefits", p.benefits], true)}
+              {line([t("apr.benefits"), p.benefits], true)}
               {costs.map((x) => line(x))}
-              {line(["Costs", p.costs], true)}
-              {line(["Economic net present value", p.enpv], true)}
+              {line([t("apr.costs"), p.costs], true)}
+              {line([t("apr.tile.enpv"), p.enpv], true)}
             </tbody>
           </table>
         </div>
@@ -356,32 +368,30 @@ function Breakdown({ p, row, money }: { p: Present; row: AppraisalRow; money: (v
 }
 
 function CashFlow({ a, base, money }: { a: Appraisal; base: Present; money: (v: number) => string }) {
+  const { t } = useI18n();
   const keep = new Set(shownYears(a));
   return (
     <section className={card} aria-labelledby="appraisal-years">
       <h3 id="appraisal-years" className="caps m-0">
-        Year by year, all lines
+        {t("fare.byYear")}
       </h3>
-      <p className="mt-1 mb-3 text-xs text-slate-500">
-        Medium case, in today's prices. Construction years first; assets are bought again at the end of their
-        life and their remaining value comes back in the last year.
-      </p>
+      <p className="mt-1 mb-3 text-xs text-slate-500">{t("apr.cashNote")}</p>
       <CashFlowChart years={a.years} rate={base.rate} cf={base.cf} money={money} />
       <details className="mt-3 text-sm">
-        <summary className="cursor-pointer text-slate-700">Show as a table</summary>
+        <summary className="cursor-pointer text-slate-700">{t("apr.asTable")}</summary>
         <div className="mt-2 overflow-x-auto">
           <table className="w-full min-w-[60rem] text-sm">
             <thead>
               <tr className="border-b border-slate-200">
-                <th className={th}>Year</th>
-                <th className={`${th} text-right`}>Construction</th>
-                <th className={`${th} text-right`}>Renewals</th>
-                <th className={`${th} text-right`}>Residual value</th>
-                <th className={`${th} text-right`}>Operating</th>
-                <th className={`${th} text-right`}>Users' benefit</th>
-                <th className={`${th} text-right`}>Fares</th>
-                <th className={`${th} text-right`}>Car-km saved</th>
-                <th className={`${th} text-right`}>GDP growth</th>
+                <th className={th}>{t("apr.col.year")}</th>
+                <th className={`${th} text-right`}>{t("apr.col.construction")}</th>
+                <th className={`${th} text-right`}>{t("apr.col.renewals")}</th>
+                <th className={`${th} text-right`}>{t("apr.col.residual")}</th>
+                <th className={`${th} text-right`}>{t("apr.col.operating")}</th>
+                <th className={`${th} text-right`}>{t("apr.col.user")}</th>
+                <th className={`${th} text-right`}>{t("apr.col.fares")}</th>
+                <th className={`${th} text-right`}>{t("apr.col.external")}</th>
+                <th className={`${th} text-right`}>{t("apr.col.gdp")}</th>
               </tr>
             </thead>
             <tbody>
@@ -392,7 +402,7 @@ function CashFlow({ a, base, money }: { a: Appraisal; base: Present; money: (v: 
                     <td className={td}>
                       {y.year}
                       <span className="block text-xs text-slate-500">
-                        {y.op === 0 ? "building" : `operation year ${y.op}`}
+                        {y.op === 0 ? t("apr.building") : t("apr.opYear", { n: y.op })}
                       </span>
                     </td>
                     {[
@@ -430,7 +440,12 @@ function Tornado({
   money: (v: number) => string;
   perIntl: number;
 }) {
+  const { t, language } = useI18n();
   const { show, hide, bubble } = useTip();
+  const label = (b: TornadoBar) =>
+    hasMessage(`apr.in.${b.name}`)
+      ? t(`apr.in.${b.name}` as MessageKey)
+      : paramLabel(language, b.name, b.label);
   const bars = a.tornado.slice(0, 12);
   const lo = Math.min(base, ...bars.map((b) => Math.min(b.low, b.high)));
   const hi = Math.max(base, ...bars.map((b) => Math.max(b.low, b.high)));
@@ -442,23 +457,20 @@ function Tornado({
         ? ""
         : sig(v)
       : unit.startsWith("US$")
-        ? `${sig(v * perIntl)} per car-km`
+        ? t("apr.perCarKm", { v: sig(v * perIntl) })
         : unit.startsWith("share")
           ? pct(v)
-          : `${sig(v)} ${unit}`;
+          : `${sig(v)} ${paramUnit(language, unit)}`;
   return (
     <section className={card} aria-labelledby="appraisal-tornado">
       <h3 id="appraisal-tornado" className="caps m-0">
-        What the ENPV depends on
+        {t("apr.tornado")}
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        Each value at its low and at its high, the others at their medium; the line marks the medium case (
-        {money(base)}). The largest swings first.
-      </p>
+      <p className="mt-1 text-xs text-slate-500">{t("apr.tornadoNote", { base: money(base) })}</p>
       {bars.length === 0 ? (
-        <p className="mt-2 text-sm text-slate-600">No value changes the result.</p>
+        <p className="mt-2 text-sm text-slate-600">{t("apr.noSwing")}</p>
       ) : (
-        <figure className="m-0 mt-3" aria-label="Tornado chart of the economic net present value">
+        <figure className="m-0 mt-3" aria-label={t("apr.tornadoChart")}>
           <ul className="m-0 flex list-none flex-wrap gap-x-4 gap-y-1 p-0 text-xs text-slate-700">
             <li className="flex items-center gap-1.5">
               <span
@@ -466,7 +478,7 @@ function Tornado({
                 style={{ background: LOW }}
                 aria-hidden="true"
               />
-              Value at its low
+              {t("apr.atLowLegend")}
             </li>
             <li className="flex items-center gap-1.5">
               <span
@@ -474,7 +486,7 @@ function Tornado({
                 style={{ background: HIGH }}
                 aria-hidden="true"
               />
-              Value at its high
+              {t("apr.atHighLegend")}
             </li>
           </ul>
           <div data-chart className="relative mt-3 flex flex-col gap-2" onMouseLeave={hide}>
@@ -485,17 +497,16 @@ function Tornado({
                 const vt = valueText(b.name, val, b.unit);
                 const body = (
                   <>
-                    <b className="font-semibold">{b.label}</b>
+                    <b className="font-semibold">{label(b)}</b>
                     <br />
-                    {which}
-                    {vt ? ` (${vt})` : ""}: ENPV {money(v)}
+                    {t("apr.tornadoTip", { which: vt ? `${which} (${vt})` : which, enpv: money(v) })}
                   </>
                 );
                 return (
                   <span
                     tabIndex={0}
                     role="img"
-                    aria-label={`${b.label}, ${which}${vt ? ` ${vt}` : ""}: ENPV ${money(v)}`}
+                    aria-label={`${label(b)}, ${t("apr.tornadoTip", { which: vt ? `${which} ${vt}` : which, enpv: money(v) })}`}
                     className="absolute top-0 h-full rounded focus:outline-2 focus:outline-offset-1 focus:outline-slate-900"
                     style={{ left: `${left}%`, width: `${width}%`, background: color }}
                     onMouseMove={(e) => show(e, body)}
@@ -506,10 +517,10 @@ function Tornado({
               };
               return (
                 <div key={b.name} className="flex flex-col gap-0.5">
-                  <span className="text-xs text-slate-700">{b.label}</span>
+                  <span className="text-xs text-slate-700">{label(b)}</span>
                   <div className="relative h-4">
-                    {seg(b.low, LOW, "at its low", b.values[0])}
-                    {seg(b.high, HIGH, "at its high", b.values[1])}
+                    {seg(b.low, LOW, t("apr.atLow"), b.values[0])}
+                    {seg(b.high, HIGH, t("apr.atHigh"), b.values[1])}
                     <span
                       aria-hidden="true"
                       className="absolute -top-0.5 h-5 w-[2px] bg-slate-900"
@@ -529,20 +540,20 @@ function Tornado({
       )}
       {bars.length > 0 && (
         <details className="mt-3 text-sm">
-          <summary className="cursor-pointer text-slate-700">Show as a table</summary>
+          <summary className="cursor-pointer text-slate-700">{t("apr.asTable")}</summary>
           <div className="mt-2 overflow-x-auto">
             <table className="w-full min-w-[36rem] text-sm">
               <thead>
                 <tr className="border-b border-slate-200">
-                  <th className={th}>Value</th>
-                  <th className={`${th} text-right`}>ENPV at its low</th>
-                  <th className={`${th} text-right`}>ENPV at its high</th>
+                  <th className={th}>{t("apr.col.value")}</th>
+                  <th className={`${th} text-right`}>{t("apr.col.atLow")}</th>
+                  <th className={`${th} text-right`}>{t("apr.col.atHigh")}</th>
                 </tr>
               </thead>
               <tbody>
                 {a.tornado.map((b) => (
                   <tr key={b.name} className="border-b border-slate-100">
-                    <td className={td}>{b.label}</td>
+                    <td className={td}>{label(b)}</td>
                     <td className={num}>{money(b.low)}</td>
                     <td className={num}>{money(b.high)}</td>
                   </tr>
@@ -557,32 +568,30 @@ function Tornado({
 }
 
 function SwitchingAndTests({ a, money }: { a: Appraisal; money: (v: number) => string }) {
+  const { t } = useI18n();
   return (
     <section className={card} aria-labelledby="appraisal-switching">
       <h3 id="appraisal-switching" className="caps m-0">
-        Switching values and standard tests
+        {t("apr.switching")}
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        A switching value is how far one item can change, the others at their medium, before the ENPV reaches
-        0 (and the benefit-cost ratio 1).
-      </p>
+      <p className="mt-1 text-xs text-slate-500">{t("apr.switchingNote")}</p>
       <div className="mt-2 overflow-x-auto">
         <table className="w-full min-w-[36rem] text-sm">
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Item</th>
-              <th className={`${th} text-right`}>Present value</th>
-              <th className={`${th} text-right`}>ENPV reaches 0 when it changes by</th>
+              <th className={th}>{t("apr.col.item")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.present")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.switch")}</th>
             </tr>
           </thead>
           <tbody>
             {a.switching.map((s) => (
               <tr key={s.id} className="border-b border-slate-100">
-                <td className={td}>{s.label}</td>
+                <td className={td}>{t(`apr.sw.${s.id}`)}</td>
                 <td className={num}>{money(s.value)}</td>
                 <td className={num}>
                   {s.impossible
-                    ? "none: the ENPV stays below 0 even at zero"
+                    ? t("apr.switchNone")
                     : s.change === null
                       ? "–"
                       : `${s.change >= 0 ? "+" : "−"}${Math.abs(s.change * 100).toFixed(1)} %`}
@@ -594,29 +603,29 @@ function SwitchingAndTests({ a, money }: { a: Appraisal; money: (v: number) => s
       </div>
       <div className="mt-4 overflow-x-auto">
         <table className="w-full min-w-[40rem] text-sm">
-          <caption className="caps pb-1 text-left text-slate-700">
-            Standard tests (09-planning-models §3.4)
-          </caption>
+          <caption className="caps pb-1 text-left text-slate-700">{t("apr.tests")}</caption>
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Test</th>
-              <th className={`${th} text-right`}>ENPV</th>
-              <th className={`${th} text-right`}>Benefit-cost ratio</th>
-              <th className={`${th} text-right`}>ERR</th>
-              <th className={`${th} text-right`}>FNPV</th>
+              <th className={th}>{t("apr.col.test")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.enpv")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.bcr")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.err")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.fnpv")}</th>
             </tr>
           </thead>
           <tbody>
-            {a.tests.map((t) => (
+            {a.tests.map((x) => (
               <tr
-                key={t.id}
-                className={`border-b border-slate-100 ${t.id === "base" ? "bg-slate-50 font-medium" : ""}`}
+                key={x.id}
+                className={`border-b border-slate-100 ${x.id === "base" ? "bg-slate-50 font-medium" : ""}`}
               >
-                <td className={td}>{t.label}</td>
-                <td className={num}>{money(t.result.enpv)}</td>
-                <td className={num}>{ratio(t.result.bcr)}</td>
-                <td className={num}>{pct(t.result.err)}</td>
-                <td className={num}>{money(t.result.fnpv)}</td>
+                <td className={td}>
+                  {hasMessage(`apr.test.${x.id}`) ? t(`apr.test.${x.id}` as MessageKey) : x.label}
+                </td>
+                <td className={num}>{money(x.result.enpv)}</td>
+                <td className={num}>{ratio(x.result.bcr)}</td>
+                <td className={num}>{pct(x.result.err)}</td>
+                <td className={num}>{money(x.result.fnpv)}</td>
               </tr>
             ))}
           </tbody>
@@ -643,7 +652,10 @@ function Mca({
   setValue: (id: string, v: number | null) => void;
   money: (v: number) => string;
 }) {
+  const { t } = useI18n();
   const own = doc?.criteria ?? [];
+  const label = (c: { id: string; label: string; own: boolean }) =>
+    c.own ? c.label : hasMessage(`apr.crit.${c.id}`) ? t(`apr.crit.${c.id}` as MessageKey) : c.label;
   const setOwn = (criteria: OwnCriterion[]) => onDoc?.({ ...(doc ?? {}), criteria });
   const patch = (id: string, p: Partial<OwnCriterion>) =>
     setOwn(own.map((c) => (c.id === id ? { ...c, ...p } : c)));
@@ -656,25 +668,21 @@ function Mca({
   return (
     <section className={card} aria-labelledby="appraisal-mca">
       <h3 id="appraisal-mca" className="caps m-0">
-        Multi-criteria analysis of the lines
+        {t("apr.mca")}
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        Weighted sum: each criterion scores 0 for the worst line and 100 for the best (lower is better for
-        costs), weights are shares of all weights. Access gains are per resident near the line's stations
-        (benefit tables). Add your own criteria and score each line by hand.
-      </p>
+      <p className="mt-1 text-xs text-slate-500">{t("apr.mcaNote")}</p>
       <div className="mt-3 max-w-2xl">
         <RankingChart lines={result.lines} />
       </div>
       <div className="mt-5 overflow-x-auto">
         <table className="w-full min-w-[40rem] text-sm">
-          <caption className="caps pb-1 text-left text-slate-700">Criteria and weights</caption>
+          <caption className="caps pb-1 text-left text-slate-700">{t("apr.criteria")}</caption>
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Criterion</th>
-              <th className={th}>Better when</th>
-              <th className={`${th} text-right`}>Weight</th>
-              <th className={`${th} text-right`}>Share</th>
+              <th className={th}>{t("apr.col.criterion")}</th>
+              <th className={th}>{t("apr.col.betterWhen")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.weight")}</th>
+              <th className={`${th} text-right`}>{t("apr.col.share")}</th>
               {editable && <th className={th} />}
             </tr>
           </thead>
@@ -689,7 +697,7 @@ function Mca({
                       <input
                         key={`${c.id}:${ownC.name}`}
                         className="input w-56"
-                        aria-label="Criterion name"
+                        aria-label={t("apr.critName")}
                         defaultValue={ownC.name}
                         onBlur={(e) => {
                           const v = e.target.value.trim();
@@ -697,24 +705,22 @@ function Mca({
                         }}
                       />
                     ) : (
-                      c.label
+                      label(c)
                     )}
                   </td>
                   <td className={td}>
                     {ownC && editable ? (
                       <select
                         className="input min-h-10"
-                        aria-label={`${c.label}: better when`}
+                        aria-label={t("apr.betterWhenOf", { name: label(c) })}
                         value={ownC.higher ? "higher" : "lower"}
                         onChange={(e) => patch(ownC.id, { higher: e.target.value === "higher" })}
                       >
-                        <option value="higher">higher</option>
-                        <option value="lower">lower</option>
+                        <option value="higher">{t("apr.higher")}</option>
+                        <option value="lower">{t("apr.lower")}</option>
                       </select>
-                    ) : c.higher ? (
-                      "higher"
                     ) : (
-                      "lower"
+                      t(c.higher ? "apr.higher" : "apr.lower")
                     )}
                   </td>
                   <td className={num}>
@@ -725,7 +731,7 @@ function Mca({
                         min={0}
                         step="any"
                         className="input w-20 text-right"
-                        aria-label={`${c.label}: weight`}
+                        aria-label={t("apr.weightOf", { name: label(c) })}
                         defaultValue={c.own || prefs?.[key] !== undefined ? c.weight : ""}
                         placeholder={sig(c.weight)}
                         onBlur={(e) => {
@@ -752,7 +758,7 @@ function Mca({
                           className="btn-ghost text-sm"
                           onClick={() => setOwn(own.filter((o) => o.id !== ownC.id))}
                         >
-                          Remove
+                          {t("dem.remove")}
                         </button>
                       )}
                     </td>
@@ -770,26 +776,32 @@ function Mca({
           onClick={() =>
             setOwn([
               ...own,
-              { id: newId(), name: `Criterion ${own.length + 1}`, weight: 1, higher: true, scores: {} },
+              {
+                id: newId(),
+                name: t("apr.critDefault", { n: own.length + 1 }),
+                weight: 1,
+                higher: true,
+                scores: {},
+              },
             ])
           }
         >
-          Add a criterion
+          {t("apr.addCrit")}
         </button>
       )}
       <div className="mt-4 overflow-x-auto">
         <table className="w-full text-sm" style={{ minWidth: `${20 + result.criteria.length * 8}rem` }}>
-          <caption className="caps pb-1 text-left text-slate-700">Scores and ranking</caption>
+          <caption className="caps pb-1 text-left text-slate-700">{t("apr.scores")}</caption>
           <thead>
             <tr className="border-b border-slate-200">
-              <th className={th}>Rank</th>
-              <th className={th}>Line</th>
+              <th className={th}>{t("apr.col.rank")}</th>
+              <th className={th}>{t("apr.col.line")}</th>
               {result.criteria.map((c) => (
                 <th key={c.id} className={`${th} text-right`}>
-                  {c.label}
+                  {label(c)}
                 </th>
               ))}
-              <th className={`${th} text-right`}>Score</th>
+              <th className={`${th} text-right`}>{t("apr.col.score")}</th>
             </tr>
           </thead>
           <tbody>
@@ -817,7 +829,7 @@ function Mca({
                           type="number"
                           step="any"
                           className="input w-20 text-right"
-                          aria-label={`${c.label}: ${l.name}`}
+                          aria-label={`${label(c)}: ${l.name}`}
                           defaultValue={ownC.scores[l.id] ?? ""}
                           onBlur={(e) => {
                             const v = e.target.value.trim();
@@ -833,7 +845,7 @@ function Mca({
                         fmt(c.id, l.raw[c.id] ?? null)
                       )}
                       <span className="block text-xs text-slate-500">
-                        {s === null ? "no value" : `${Math.round(s ?? 0)} points`}
+                        {s === null ? t("apr.noValue") : t("apr.points", { n: Math.round(s ?? 0) })}
                       </span>
                     </td>
                   );
@@ -849,11 +861,10 @@ function Mca({
 }
 
 /** How the settings name the income group each social rate applies to. */
-const GROUP_NAME: Record<string, string> = {
-  "appraisal.discount.social_high": "this project uses the high-income rate",
-  "appraisal.discount.social_upper_middle":
-    "this project uses the upper-middle-income rate, also used when the country's group is not known yet",
-  "appraisal.discount.social_lower": "this project uses the rate for lower-middle and low-income countries",
+const GROUP_NAME: Record<string, MessageKey> = {
+  "appraisal.discount.social_high": "apr.rate.high",
+  "appraisal.discount.social_upper_middle": "apr.rate.upperMiddle",
+  "appraisal.discount.social_lower": "apr.rate.lower",
 };
 
 /** Modes with their own library value for a key, for the per-mode rows. */
@@ -876,27 +887,23 @@ function Settings({
   editable: boolean;
   setValue: (id: string, v: number | null) => void;
 }) {
+  const { t } = useI18n();
   const used = socialRateKey(income);
   return (
     <section className={card} aria-labelledby="appraisal-settings">
       <h3 id="appraisal-settings" className="caps m-0">
-        Appraisal settings
+        {t("apr.settings")}
       </h3>
-      <p className="mt-1 text-xs text-slate-500">
-        Setting a value replaces the medium; low and high move with it. Values marked “your choice” stay fixed
-        in the Monte Carlo run. The social discount rate follows the World Bank's income group of the
-        project's country: {GROUP_NAME[used]}. These values are set here only. Sources and reasoning are in
-        assumptions/DEFAULTS.md.
-      </p>
+      <p className="mt-1 text-xs text-slate-500">{t("apr.settingsNote", { group: t(GROUP_NAME[used]!) })}</p>
       {appraisalSettingGroups(income).map((g) => (
         <div key={g.title} className="mt-4 overflow-x-auto">
           <table className="w-full min-w-[40rem] text-sm">
-            <caption className="caps pb-1 text-left text-slate-700">{g.title}</caption>
+            <caption className="caps pb-1 text-left text-slate-700">{t(g.title)}</caption>
             <thead>
               <tr className="border-b border-slate-200">
-                <th className={th}>Value</th>
-                <th className={`${th} text-right`}>Library low – medium – high</th>
-                <th className={`${th} text-right`}>This project</th>
+                <th className={th}>{t("apr.col.value")}</th>
+                <th className={`${th} text-right`}>{t("apr.col.library")}</th>
+                <th className={`${th} text-right`}>{t("apr.col.project")}</th>
               </tr>
             </thead>
             <tbody>
@@ -909,8 +916,8 @@ function Settings({
                     note={
                       k.startsWith("appraisal.discount.social")
                         ? k === used
-                          ? "applies to this project's country"
-                          : "not used for this country"
+                          ? t("apr.rateApplies")
+                          : t("apr.rateNotUsed")
                         : null
                     }
                     prefs={prefs}
@@ -948,7 +955,10 @@ function SettingRow({
   editable: boolean;
   setValue: (id: string, v: number | null) => void;
 }) {
+  const { t, language } = useI18n();
+  const modeLabel = useModeLabel();
   const p = PARAMS[k]!;
+  const label = paramLabel(language, k, p.label);
   const money = p.unit.startsWith("US$");
   const share = p.unit.startsWith("share");
   const k1 = money ? perIntl : 1;
@@ -967,16 +977,18 @@ function SettingRow({
       : share
         ? pct(v)
         : sig(v);
-  const unit = money ? `${currency ?? "local currency"} per car-km` : p.unit;
+  const unit = money
+    ? t("apr.perCarKmUnit", { currency: currency ?? t("fare.localCurrency") })
+    : paramUnit(language, p.unit);
   const modeName = mode === "*" ? "" : ` (${modeLabel(mode)})`;
   return (
     <tr className="border-b border-slate-100">
       <td className={td}>
-        {p.label}
+        {label}
         {modeName}
         <span className="block text-xs text-slate-500">
           {unit}
-          {POLICY.has(k) ? " · your choice" : ""}
+          {POLICY.has(k) ? t("fare.yourChoice") : ""}
           {note ? ` · ${note}` : ""}
         </span>
       </td>
@@ -990,7 +1002,7 @@ function SettingRow({
             type="number"
             step="any"
             className="input w-28 text-right"
-            aria-label={`${p.label}${modeName}`}
+            aria-label={`${label}${modeName}`}
             defaultValue={shown ?? ""}
             placeholder={money ? sig(usedV) : sig(usedV)}
             onBlur={(e) => {

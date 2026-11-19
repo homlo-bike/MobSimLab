@@ -4,16 +4,19 @@
  * compiled to a JavaScript closure; nothing is ever evaluated as code.
  */
 
+import { tNow, translate } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 export type Vars = Record<string, number>;
 export type Compiled = (v: Vars) => number;
 
 /** Thrown for a formula that cannot be read, with the position of the problem. */
 export class FormulaError extends Error {
   constructor(
-    message: string,
+    readonly key: MessageKey,
+    readonly vars: Record<string, string | number>,
     readonly at: number,
   ) {
-    super(message);
+    super(translate("en", key, vars));
   }
 }
 
@@ -62,7 +65,7 @@ function tokens(src: string): Tok[] {
       i++;
       continue;
     }
-    throw new FormulaError(`Unexpected "${c}"`, i);
+    throw new FormulaError("ben.fe.unexpected", { text: c }, i);
   }
   out.push({ t: "end", at: src.length });
   return out;
@@ -74,7 +77,7 @@ function tokens(src: string): Tok[] {
  * unknown variable or function, or a wrong number of arguments.
  */
 export function compile(src: string, allowed: readonly string[]): { fn: Compiled; uses: string[] } {
-  if (src.length > 2000) throw new FormulaError("The formula is too long", 0);
+  if (src.length > 2000) throw new FormulaError("ben.fe.tooLong", {}, 0);
   const toks = tokens(src);
   const known = new Set(allowed);
   const uses = new Set<string>();
@@ -85,7 +88,7 @@ export function compile(src: string, allowed: readonly string[]): { fn: Compiled
     return t.t === "op" && t.v === v;
   };
   const expect = (v: string) => {
-    if (!isOp(v)) throw new FormulaError(`Expected "${v}"`, peek().at);
+    if (!isOp(v)) throw new FormulaError("ben.fe.expected", { text: v }, peek().at);
     p++;
   };
 
@@ -145,7 +148,7 @@ export function compile(src: string, allowed: readonly string[]): { fn: Compiled
       p++;
       if (isOp("(")) {
         const f = FUNCS[t.v];
-        if (!f) throw new FormulaError(`Unknown function "${t.v}"`, t.at);
+        if (!f) throw new FormulaError("ben.fe.unknownFunction", { name: t.v }, t.at);
         p++;
         const args: Compiled[] = [];
         if (!isOp(")")) {
@@ -158,12 +161,13 @@ export function compile(src: string, allowed: readonly string[]): { fn: Compiled
         expect(")");
         if (args.length < f.n[0] || args.length > f.n[1])
           throw new FormulaError(
-            `"${t.v}" takes ${f.n[0] === f.n[1] ? f.n[0] : `${f.n[0]} or more`} values`,
+            f.n[0] === f.n[1] ? "ben.fe.takes" : "ben.fe.takesAtLeast",
+            { name: t.v, count: f.n[0] },
             t.at,
           );
         return (v) => f.f(...args.map((a) => a(v)));
       }
-      if (!known.has(t.v)) throw new FormulaError(`Unknown variable "${t.v}"`, t.at);
+      if (!known.has(t.v)) throw new FormulaError("ben.fe.unknownVariable", { name: t.v }, t.at);
       uses.add(t.v);
       const name = t.v;
       return (v) => v[name] ?? NaN;
@@ -174,14 +178,11 @@ export function compile(src: string, allowed: readonly string[]): { fn: Compiled
       expect(")");
       return a;
     }
-    throw new FormulaError(
-      t.t === "end" ? "The formula ends too early" : "Expected a number or a name",
-      t.at,
-    );
+    throw new FormulaError(t.t === "end" ? "ben.fe.endsEarly" : "ben.fe.expectedValue", {}, t.at);
   };
 
   const fn = expr();
-  if (peek().t !== "end") throw new FormulaError("Unexpected text after the formula", peek().at);
+  if (peek().t !== "end") throw new FormulaError("ben.fe.trailing", {}, peek().at);
   return { fn, uses: [...uses] };
 }
 
@@ -191,6 +192,8 @@ export function formulaProblem(src: string, allowed: readonly string[]): string 
     compile(src, allowed);
     return null;
   } catch (e) {
-    return e instanceof FormulaError ? `${e.message} (at character ${e.at + 1})` : String(e);
+    return e instanceof FormulaError
+      ? tNow("ben.fe.at", { problem: tNow(e.key, e.vars), at: e.at + 1 })
+      : String(e);
   }
 }

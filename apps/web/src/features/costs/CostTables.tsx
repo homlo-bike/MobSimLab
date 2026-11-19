@@ -3,8 +3,7 @@ import { loadRailEngine, nextTask } from "../railways/engine";
 import { TablePart } from "../tables/sections";
 import { hashText } from "../../projects/inputKey";
 import { type ResultsApi, useLiveResult } from "../../projects/results";
-import { en } from "../../i18n/en";
-import { hasMessage, type Translate, type TranslatePlural, useI18n, withNodes } from "../../i18n/i18n";
+import { hasMessage, tNow, type Translate, type TranslatePlural, useI18n, withNodes } from "../../i18n/i18n";
 import { tablesEn } from "../../i18n/tables/en";
 import { useModeLabel } from "../schematic/common";
 import { RAIL_MODES } from "../railways/modes";
@@ -82,11 +81,11 @@ interface Props {
 const DEFAULT_API = economyApi();
 const BASE_YEAR = libraryValue("cost.price_base_year", "*")[1];
 
-/** Purpose: a mode's name in English, for the tables that are still in English (fares, benefits). */
+/** Purpose: a mode's name in the language on screen, for code outside a component (see `useModeLabel`). */
 export function modeLabel(mode: string): string {
   const key =
     RAIL_MODES.find((m) => m.id === mode)?.label ?? STREET_MODES[mode as keyof typeof STREET_MODES]?.label;
-  return key ? en[key] : mode.replace(/_/g, " ");
+  return key ? tNow(key) : mode.replace(/_/g, " ");
 }
 
 /** Purpose: money in a short form, such as "€1.2 bn" or "1.2 bn local currency". */

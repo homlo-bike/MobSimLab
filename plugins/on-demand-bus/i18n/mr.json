@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "सेवा क्षेत्र किटने काढलेली मागणीनुसार वाहतूक: एक क्षेत्र रेखांकित करा, तासाला विनंत्या, ताफा आणि सेवा वेळा ठरवा, आणि सतत अंदाजी सूत्रांमधून आवश्यक वाहने, सरासरी प्रतीक्षा, प्रवास आणि दारापासून दारापर्यंतचा वेळ मिळवा. दिवसाचे अनुकरण प्रत्येक बुकिंग फेरीनुसार पाठवते (ADR-0042). क्षेत्र प्रवास नियोजकात दिसते.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "ॲपद्वारे बुक होणाऱ्या मिनीबस: क्षेत्र रेखांकित करा, ताफा आणि वेळा ठरवा.",
+  "On-demand bus": "मागणीनुसार बस"
+}

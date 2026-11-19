@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "来自 WMS、WMTS 和 XYZ 图块服务的地图图层，可作为底图或叠加层。管理员在“管理 → 插件”中添加服务，必要时附上登录信息；图块经由本 MobSimLab 传输，浏览器永远看不到这些信息。",
+  "WMS, WMTS and XYZ map layers": "WMS、WMTS 和 XYZ 地图图层"
+}

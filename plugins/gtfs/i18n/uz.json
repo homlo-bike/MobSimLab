@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "GTFS manbasi",
+  "GTFS import and export": "GTFS import va eksport",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "GTFS manbasini (zip) loyihaga bir xizmat kuni uchun mavjud tarmoq sifatida oʻqiydi, soʻralsa xarita koʻrinishiga qirqib, safar rejalashtiruvchi uni rejalashtirilgan yoʻnalishlar bilan birga ishlatishi uchun; hamda loyiha yoʻnalishlarini boshqa vositalar uchun GTFS manbasi sifatida yozadi.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Bir xizmat kunining bekatlari, yoʻnalishlari va reyslari (sana berilmasa eng gavjum chorshanba), frequencies.txt chastota namunalari va yoʻnalish turlari transport turlari sifatida.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Loyiha yoʻnalishlari ish kuni GTFS manbasi sifatida: aniq reyslar, chastotali yoʻnalishlar frequencies.txt sifatida, bekat guruhlari uchun stansiyalar."
+}

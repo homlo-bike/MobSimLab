@@ -1,0 +1,9 @@
+{
+  "Cargo bike": "دراجة الشحن",
+  "Cargo bike range": "مدى دراجة الشحن",
+  "Cargo bike savings": "وفورات دراجة الشحن",
+  "Cargo bike trip and range": "رحلة دراجة الشحن ومداها",
+  "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "إلى أي مدى تصل دراجة شحن كهربائية ثلاثية العجلات ذهابًا وإيابًا بشحنة بطارية واحدة، عبر التلال مع تفضيل مسارات الدراجات، وكم توفّر مقارنةً بالسيارة (الشراء والوقود والضريبة والتأمين والوقوف والصيانة)، في تبويب خاص بها.",
+  "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "رحلة ذهاب وإياب من نقطة بداية إلى وجهة على شوارع صالحة للدراجات (مع تفضيل مسارات الدراجات) مع البطارية المستهلكة على التضاريس، وخريطة مدى تبيّن إلى أي حد تصل الدراجة ذهابًا وإيابًا في كل اتجاه.",
+  "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "التكلفة السنوية لدراجة الشحن مقارنةً بالسيارة للرحلات نفسها: الشراء والطاقة والضريبة والتأمين والوقوف والصيانة، بعملة بلد نقطة البداية."
+}

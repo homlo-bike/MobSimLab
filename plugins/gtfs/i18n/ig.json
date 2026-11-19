@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "Nri GTFS",
+  "GTFS import and export": "Mbubata na mbupụ GTFS",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Ọ na-agụ nri GTFS (zip) n'ime ọrụ dịka netwọk dị adị maka otu ụbọchị ọrụ, e bepụrụ ya n'ihe a na-ahụ na maapụ ma ọ bụrụ na a rịọrọ, ka onye nhazi njem jiri ya na ahịrị ndị a haziri; ọ na-edekwa ahịrị ọrụ ahụ dịka nri GTFS maka ngwa ndị ọzọ.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Ebe nkwụsị, ụzọ na njem nke otu ụbọchị ọrụ (Wenezdee kachasị ọrụ ma ọ bụrụ na e nyeghị ụbọchị), ya na frequencies.txt dịka usoro ugboro ugboro na ụdị ụzọ dịka ụdị njem.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Ahịrị ọrụ ahụ dịka nri GTFS nke ụbọchị ọrụ: njem kpọmkwem, ahịrị ugboro ugboro dịka frequencies.txt, ọdụ ụgbọ maka otu ebe nkwụsị."
+}

@@ -54,7 +54,7 @@ export const fleetHa = {
   "fleet.energy.cng": "Iskar gas (CNG)",
   "fleet.energy.hvo": "HVO (dizal mai sabuntuwa)",
   "fleet.energy.battery": "Batir",
-  "fleet.energy.hydrogen": "Hydrogen",
+  "fleet.energy.hydrogen": "Haidrojin",
   "fleet.energy.overhead": "Wayar sama",
   "fleet.energy.overhead-ac": "Wayar sama, AC",
   "fleet.energy.overhead-dc": "Wayar sama, DC",

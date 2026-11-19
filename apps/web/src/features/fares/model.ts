@@ -1,3 +1,4 @@
+import type { MessageKey } from "../../i18n/messages";
 /**
  * The fare revenue model of the Tables tab (ADR-0044): a line's boardings a year, from the ridership
  * estimate, times the average fare its riders pay. The fare follows the project's fare structure (flat,
@@ -14,10 +15,10 @@ import type { SchematicNetwork } from "../schematic/lines";
 
 export type FareStructure = "flat" | "zonal" | "distance";
 export const STRUCTURES: FareStructure[] = ["flat", "zonal", "distance"];
-export const STRUCTURE_LABEL: Record<FareStructure, string> = {
-  flat: "Flat fare",
-  zonal: "Zonal fares",
-  distance: "Distance-based fares",
+export const STRUCTURE_LABEL: Record<FareStructure, MessageKey> = {
+  flat: "fare.flat",
+  zonal: "fare.zonal",
+  distance: "fare.distance",
 };
 
 /**

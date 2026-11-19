@@ -6,6 +6,7 @@ import { commentsHa } from "./comments/ha";
 import { depotsHa } from "./depots/ha";
 import { geodataHa } from "./geodata/ha";
 import { tablesHa } from "./tables/ha";
+import { economicsHa } from "./economics/ha";
 import { fleetHa } from "./fleet/ha";
 import { timetablesHa } from "./timetables/ha";
 import { mslabHa } from "./mslab/ha";
@@ -83,6 +84,8 @@ export const ha: Messages = {
   "settings.title": "Saituna",
   "settings.back": "Koma saituna",
   "settings.displayName": "Sunan nunawa",
+  "shell.thisComputer": "Wannan kwamfuta",
+  "shell.localUser": "Mai amfani na gida",
   "settings.email": "Imel",
   "settings.role": "Matsayi",
   "settings.language": "Harshe",
@@ -377,7 +380,7 @@ export const ha: Messages = {
   "prefs.group.noise": "Hayaniya",
   "prefs.traction.battery": "batir",
   "prefs.traction.diesel": "dizal",
-  "prefs.traction.hydrogen": "hydrogen",
+  "prefs.traction.hydrogen": "haidrojin",
   "prefs.traction.cng": "iskar gas (CNG)",
   "prefs.traction.electric": "lantarki",
   "report.title": "Rahoton zato",
@@ -530,6 +533,7 @@ export const ha: Messages = {
   ...depotsHa,
   ...geodataHa,
   ...tablesHa,
+  ...economicsHa,
   ...fleetHa,
   ...timetablesHa,
   ...commentsHa,

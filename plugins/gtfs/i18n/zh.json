@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "GTFS 数据",
+  "GTFS import and export": "GTFS 导入和导出",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "将 GTFS 数据（zip）读入项目，作为某一服务日的现有线网，可按需裁剪到地图视图，使行程规划器连同规划线路一起使用；并将项目的线路写成 GTFS 数据供其他工具使用。",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "某一服务日的站点、线路和班次（未指定日期时取最繁忙的星期三），frequencies.txt 作为发车间隔模式，线路类型作为交通方式。",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "项目线路作为工作日 GTFS 数据：精确班次、以 frequencies.txt 表示的间隔线路、以车站表示的站点组。"
+}

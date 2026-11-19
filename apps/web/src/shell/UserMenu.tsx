@@ -4,6 +4,7 @@ import type { MessageKey } from "../i18n/messages";
 import { type Me, send } from "../session/api";
 import { AgentIcon, ShieldIcon, SlidersIcon, UserIcon } from "./icons";
 import { anchorOf, Popover } from "./Popover";
+import { serverName } from "./serverNames";
 
 /** Purpose: two initials for an avatar, from the display name or e-mail. */
 export function initials(name: string | null | undefined): string {
@@ -39,7 +40,7 @@ export function UserMenu({
   const [at, setAt] = useState<ReturnType<typeof anchorOf> | null>(null);
   const user = me.user;
   if (!user) return null;
-  const name = user.displayName ?? user.email ?? "";
+  const name = user.displayName ? serverName(t, user.displayName) : (user.email ?? "");
   // The desktop app's local mode has one person and no sign-in: no administration of others, no sign out.
   const local = Boolean(me.instance.local);
   const admin = !local && (user.role === "owner" || user.role === "admin");

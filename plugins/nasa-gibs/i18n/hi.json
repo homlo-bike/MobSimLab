@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "लगभग 30 मी प्रति पिक्सेल (इस मानचित्र पर 38 मी), एक दिन के उपग्रह गुज़रने से: मानचित्र के कुछ हिस्से खाली या बादलों से ढके हैं, इसलिए दूसरी तारीख आज़माएँ। पटरी या कर्ब बनाने के लिए बहुत मोटा।",
+  "NASA GIBS imagery": "NASA GIBS इमेजरी",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 और 9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS वास्तविक रंग",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA की Global Imagery Browse Services (GIBS) से उपग्रह इमेजरी हवाई आधार मानचित्रों के रूप में, आपके चुने दिन के लिए: लगभग 30 मी प्रति पिक्सेल पर Harmonized Landsat Sentinel-2 और लगभग 250 मी पर VIIRS। किसी API कुंजी की ज़रूरत नहीं। इमेजरी सड़कें या पटरी देखने के लिए बहुत मोटी है।",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "हर दिन पूरी दुनिया लगभग 250 मी प्रति पिक्सेल पर (इस मानचित्र पर 306 मी), बादलों सहित: केवल क्षेत्रीय संदर्भ के लिए।"
+}

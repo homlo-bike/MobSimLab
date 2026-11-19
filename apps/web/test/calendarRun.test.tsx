@@ -102,6 +102,18 @@ describe("calendar run model", () => {
     expect(plan.day_types.saturday.lines).toBeUndefined();
   });
 
+  it("follows each day type's service for the energy the run works out without a cost estimate", () => {
+    const shares = { "rail:1": { weekday: 1, saturday: 1, sunday: 0.5, holiday: 0.5 } };
+    const f = dayFigures(
+      { estimate: null, riders: null, energy: ENERGY, energyLines: [{ id: "rail:1", kmPerYear: 300000 }] },
+      undefined,
+      shares,
+    );
+    expect(f.days.weekday.energy_kwh).toBe(2000);
+    expect(f.days.sunday.energy_kwh).toBe(1000);
+    expect(f.days.weekday.vehicle_km).toBeNull();
+  });
+
   it("makes the periods of years, one date and a row of dates from the calendar", () => {
     const cal = withFetched({}, 2027, [{ date: "2027-05-01", name: "Labour Day" }]);
     const years = periodsFor("years", cal, { years: { first: 2027, last: 2028 } });

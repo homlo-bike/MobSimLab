@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Layukan taswira daga sabis-sabis na tayiloli na WMS, WMTS da XYZ, a matsayin taswirorin tushe ko na sama. Mai gudanarwa yana ƙara sabis a Gudanarwa → Ƙarin manhajoji, tare da bayanan shiga idan ana buƙata; tayiloli suna wucewa ta wannan MobSimLab, don haka masu bincike ba sa ganin su.",
+  "WMS, WMTS and XYZ map layers": "Layukan taswira na WMS, WMTS da XYZ"
+}

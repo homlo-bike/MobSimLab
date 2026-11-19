@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "Cáp treo con thoi",
+    "Aerial tramway (reversible)": "Cáp treo con thoi (chạy đảo chiều)",
+    "Bicable gondola (2S)": "Cáp treo gondola hai cáp (2S)",
+    "Cable car": "Cáp treo",
+    "Cable cars": "Cáp treo",
+    "Funitel": "Funitel",
+    "Gondolas and aerial tramways: click stations, towers follow.": "Gondola và cáp treo con thoi: bấm vào các ga, cột tự đặt theo.",
+    "Monocable detachable gondola (MGD)": "Gondola một cáp tách rời được (MGD)",
+    "Pulsed gondola": "Gondola chạy theo nhóm",
+    "Ropeway system": "Hệ thống cáp treo",
+    "Tricable gondola (3S)": "Cáp treo gondola ba cáp (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "Cáp treo đô thị: gondola chạy liên tục (MGD, 2S, 3S, funitel, theo nhóm) và cáp treo con thoi đảo chiều, vẽ bằng bộ công cụ nhịp thẳng (ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "Xe đạp chở hàng",
+    "Cargo bike range": "Tầm đi của xe đạp chở hàng",
+    "Cargo bike savings": "Tiết kiệm nhờ xe đạp chở hàng",
+    "Cargo bike trip and range": "Chuyến đi và tầm đi của xe đạp chở hàng",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Xe ba bánh chở hàng chạy điện đi và về được bao xa với một lần sạc pin, qua đồi dốc và ưu tiên làn xe đạp, và tiết kiệm được bao nhiêu so với ô tô (mua xe, nhiên liệu, thuế, bảo hiểm, đỗ xe, bảo dưỡng), trong thẻ riêng.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Chuyến đi khứ hồi từ điểm xuất phát đến điểm đến trên các phố xe đạp đi được (ưu tiên làn xe đạp) với lượng pin dùng theo địa hình, và bản đồ tầm đi cho thấy xe đi và về được bao xa theo mọi hướng.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Chi phí hằng năm của xe đạp chở hàng so với ô tô cho cùng các chuyến đi: mua xe, năng lượng, thuế, bảo hiểm, đỗ xe và bảo dưỡng, theo tiền tệ của nước có điểm xuất phát."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "Điện, dầu diesel, năng lượng cuối cùng và CO2e mỗi năm theo tuyến, theo phương thức và cho toàn mạng lưới, kèm cường độ trên mỗi xe-km và mỗi chỗ-km.",
+    "Energy and emissions": "Năng lượng và phát thải",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "Năng lượng kéo và phát thải khí nhà kính của từng tuyến mỗi năm, theo phương thức và cho mạng lưới, từ số xe-km mỗi tuyến chạy: điện tại trạm biến áp hoặc bộ sạc, dầu diesel tính bằng lít, và CO2e từ cường độ phát thải của lưới điện và diesel từ giếng đến bánh xe. Hiển thị trong thẻ Bảng."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Ảnh hàng không khoảng 0,3 đến 1 m mỗi điểm ảnh ở hầu hết các thành phố, thô hơn ở nông thôn: đủ nét để thấy làn xe, bó vỉa và đường ray. Ngày chụp khác nhau tùy nơi.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery làm bản đồ nền ảnh hàng không: ảnh khoảng 0,3 đến 1 m mỗi điểm ảnh ở hầu hết các thành phố, đủ nét để thấy làn xe, bó vỉa và đường ray. Có sẵn khi Quản trị viên lưu khóa API ArcGIS và chấp nhận điều khoản của Esri trong Quản trị → Plugin; các ô bản đồ đi qua MobSimLab này nên trình duyệt không bao giờ thấy khóa, và các ô không được lưu."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "Tàu cánh ngầm chạy điện",
+    "Fast catamaran": "Tàu hai thân cao tốc",
+    "Ferries": "Phà",
+    "Ferry": "Phà",
+    "Monohull water bus": "Buýt đường thủy một thân",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "Phà chở khách và buýt đường thủy vẽ bằng bộ công cụ tuyến đường thủy: bến có chỗ neo và cầu lên tàu, tuyến trên mặt nước, vùng tốc độ và kiểm tra chỗ neo (ADR-0037). Phà chở ô tô sẽ có sau.",
+    "Vessel type": "Loại tàu",
+    "Water buses and crossings: click piers, shape the route over water.": "Buýt đường thủy và tuyến qua sông: bấm vào các bến, chỉnh tuyến trên mặt nước."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "Nguồn dữ liệu GTFS",
+    "GTFS import and export": "Nhập và xuất GTFS",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Đọc một nguồn GTFS (zip) vào dự án như mạng lưới hiện có cho một ngày phục vụ, cắt theo khung bản đồ nếu được yêu cầu, để công cụ lập hành trình dùng nó cùng các tuyến quy hoạch; và ghi các tuyến của dự án thành nguồn GTFS cho công cụ khác.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Điểm dừng, tuyến và chuyến của một ngày phục vụ (thứ Tư đông chuyến nhất nếu không cho ngày), với frequencies.txt là mẫu tần suất và loại tuyến là phương thức.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Các tuyến của dự án thành nguồn GTFS ngày thường: chuyến chính xác, tuyến tần suất trong frequencies.txt, ga cho nhóm điểm dừng."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Khoảng 30 m mỗi điểm ảnh (38 m trên bản đồ này), từ các lượt bay qua của vệ tinh trong một ngày: một phần bản đồ trống hoặc có mây, hãy thử ngày khác. Quá thô để vẽ đường ray hay bó vỉa.",
+    "NASA GIBS imagery": "Ảnh NASA GIBS",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 và 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS màu thật",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "Ảnh vệ tinh từ Global Imagery Browse Services (GIBS) của NASA làm bản đồ nền, cho ngày bạn chọn: Harmonized Landsat Sentinel-2 khoảng 30 m mỗi điểm ảnh và VIIRS khoảng 250 m. Không cần khóa API. Ảnh quá thô để thấy đường phố hay đường ray.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Toàn thế giới mỗi ngày ở khoảng 250 m mỗi điểm ảnh (306 m trên bản đồ này), có mây: chỉ để xem bối cảnh khu vực."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Tiếng ồn ước tính của các tuyến (ADR-0038): dải tiếng ồn trực tiếp khi vẽ tuyến đường phố và đường sắt, kèm kiểm tra tiếng rít ở đường cong, cầu và ghi. Phát thải đường bộ và đường sắt theo CNOSSOS-EU, hiện là trường tự do chưa có công trình.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den và L_night của các tuyến đã vẽ ở độ cao 4 m, trường tự do: khoảng cách dải ở hai bên, lưới điểm thu cho bản đồ và các kiểm tra.",
+    "Noise band": "Dải tiếng ồn",
+    "Noise map": "Bản đồ tiếng ồn"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Lớp bản đồ từ dịch vụ ô bản đồ WMS, WMTS và XYZ, làm bản đồ nền hoặc lớp phủ. Quản trị viên thêm dịch vụ trong Quản trị → Plugin, kèm thông tin đăng nhập nếu cần; các ô bản đồ đi qua MobSimLab này nên trình duyệt không bao giờ thấy chúng.",
+    "WMS, WMTS and XYZ map layers": "Lớp bản đồ WMS, WMTS và XYZ"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Vận tải theo yêu cầu vẽ bằng bộ công cụ vùng phục vụ: khoanh một vùng, đặt số yêu cầu mỗi giờ, đội xe và giờ phục vụ, rồi nhận số xe cần, thời gian chờ, đi xe và từ cửa đến cửa trung bình từ công thức xấp xỉ liên tục. Mô phỏng cả ngày điều phối từng lượt đặt theo từng chuyến (ADR-0042). Vùng hiển thị trong công cụ lập hành trình.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "Xe buýt nhỏ đặt qua ứng dụng: khoanh vùng, đặt đội xe và giờ.",
+    "On-demand bus": "Xe buýt theo yêu cầu"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Ảnh đường phố Panoramax",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "Ảnh do người dân và cơ quan công chia sẻ, theo giấy phép mở (chủ yếu CC BY-SA 4.0 hoặc Etalab 2.0) cho phép vẽ bản đồ từ ảnh. Hãy ghi tên tác giả khi bạn dùng một ảnh.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Ảnh ngang tầm phố từ Panoramax, kho ảnh đường phố chung tự do và mở. Mở Ảnh đường phố trên bản đồ để thấy nơi đã chụp ảnh, rồi bấm một điểm để xem ảnh chụp gần đó. Ảnh theo giấy phép mở cho phép vẽ bản đồ từ ảnh. Không cần khóa. Ảnh đi qua MobSimLab này và không được lưu hay giữ cùng dự án."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "Tàu tự động kéo bằng cáp trên đường dẫn trên cao, vẽ bằng bộ công cụ nhịp thẳng: tàu con thoi hai đoàn, và vòng thắt với đoàn tàu tách rời được dừng ở mọi ga (ADR-0037 §7). Tàu tự hành cần trình chỉnh sửa đường sắt và sẽ có sau.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "Tàu con thoi và vòng kéo bằng cáp trên đường dẫn: bấm vào các ga, trụ tự đặt theo.",
+    "People mover": "Tàu tự động",
+    "People mover shuttle": "Tàu tự động con thoi",
+    "People mover system": "Hệ thống tàu tự động",
+    "People movers": "Tàu tự động",
+    "Pinched loop, detachable trains": "Vòng thắt, đoàn tàu tách rời được",
+    "Shuttle, two trains on a fixed rope": "Con thoi, hai đoàn tàu trên cáp cố định"
+  }
+}

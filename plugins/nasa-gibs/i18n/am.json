@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "በፒክሰል 30 ሜ ገደማ (በዚህ ካርታ ላይ 38 ሜ)፣ ከአንድ ቀን የሳተላይት ማለፊያዎች፦ የካርታው ክፍሎች ባዶ ወይም ደመናማ ናቸው፣ ስለዚህ ሌላ ቀን ይሞክሩ። ሐዲድ ወይም የእግረኛ መንገድ ጠርዝ ለመሳል በጣም ሸካራ ነው።",
+  "NASA GIBS imagery": "የNASA GIBS ምስሎች",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 እና 9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS እውነተኛ ቀለም",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "ከNASA Global Imagery Browse Services (GIBS) የሳተላይት ምስሎች እንደ የአየር ላይ መሠረት ካርታዎች፣ ለሚመርጡት ቀን፦ Harmonized Landsat Sentinel-2 በፒክሰል 30 ሜ ገደማ እና VIIRS 250 ሜ ገደማ። የAPI ቁልፍ አያስፈልግም። ምስሎቹ መንገዶችን ወይም ሐዲዶችን ለማየት በጣም ሸካራ ናቸው።",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "መላው ዓለም በየቀኑ በፒክሰል 250 ሜ ገደማ (በዚህ ካርታ ላይ 306 ሜ)፣ ከደመና ጋር፦ ለአካባቢያዊ አውድ ብቻ።"
+}

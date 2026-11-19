@@ -6,6 +6,7 @@ import { commentsDe } from "./comments/de";
 import { depotsDe } from "./depots/de";
 import { geodataDe } from "./geodata/de";
 import { tablesDe } from "./tables/de";
+import { economicsDe } from "./economics/de";
 import { fleetDe } from "./fleet/de";
 import { timetablesDe } from "./timetables/de";
 import { mslabDe } from "./mslab/de";
@@ -88,6 +89,8 @@ export const de: Messages = {
   "settings.title": "Einstellungen",
   "settings.back": "Zurück zu den Einstellungen",
   "settings.displayName": "Anzeigename",
+  "shell.thisComputer": "Dieser Computer",
+  "shell.localUser": "Lokaler Benutzer",
   "settings.email": "E-Mail",
   "settings.role": "Rolle",
   "settings.language": "Sprache",
@@ -538,6 +541,7 @@ export const de: Messages = {
   ...depotsDe,
   ...geodataDe,
   ...tablesDe,
+  ...economicsDe,
   ...fleetDe,
   ...timetablesDe,
   ...commentsDe,

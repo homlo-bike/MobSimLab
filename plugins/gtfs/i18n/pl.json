@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "Plik GTFS",
+  "GTFS import and export": "Import i eksport GTFS",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Wczytuje plik GTFS (zip) do projektu jako istniejącą sieć na jeden dzień kursowania, przyciętą do widoku mapy na życzenie, by planer podróży korzystał z niej razem z planowanymi liniami; oraz zapisuje linie projektu jako plik GTFS dla innych narzędzi.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Przystanki, trasy i kursy jednego dnia (najbardziej obłożonej środy, jeśli nie podano daty), z frequencies.txt jako wzorcami częstotliwości i typami tras jako środkami transportu.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Linie projektu jako plik GTFS dnia roboczego: dokładne kursy, linie taktowe jako frequencies.txt, stacje dla grup przystanków."
+}

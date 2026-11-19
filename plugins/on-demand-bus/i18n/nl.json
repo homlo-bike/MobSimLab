@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Vraaggestuurd vervoer getekend met de kit voor bedieningsgebieden: omlijn een gebied, stel de aanvragen per uur, de vloot en de dienstregelingsuren in, en krijg de benodigde voertuigen, de gemiddelde wacht-, rit- en deur-tot-deurtijd uit formules van continue benadering. De dagsimulatie plant elke boeking rit voor rit in (ADR-0042). Het gebied verschijnt in de reisplanner.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "Per app geboekte minibusjes: omlijn het gebied, stel de vloot en de uren in.",
+  "On-demand bus": "Belbus"
+}

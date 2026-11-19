@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "آنے جانے والا روپ وے",
+    "Aerial tramway (reversible)": "آنے جانے والا روپ وے (الٹ چلنے والا)",
+    "Bicable gondola (2S)": "دو کیبل والا گنڈولا (2S)",
+    "Cable car": "کیبل کار",
+    "Cable cars": "کیبل کاریں",
+    "Funitel": "فیونیٹیل",
+    "Gondolas and aerial tramways: click stations, towers follow.": "گنڈولے اور آنے جانے والے روپ وے: اسٹیشنوں پر کلک کریں، ٹاور ساتھ آتے ہیں۔",
+    "Monocable detachable gondola (MGD)": "ایک کیبل والا الگ ہونے والا گنڈولا (MGD)",
+    "Pulsed gondola": "گروہوں میں چلنے والا گنڈولا",
+    "Ropeway system": "روپ وے نظام",
+    "Tricable gondola (3S)": "تین کیبل والا گنڈولا (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "شہری روپ وے: مسلسل چلنے والے گنڈولے (MGD، 2S، 3S، فیونیٹیل، گروہوں میں چلنے والے) اور آنے جانے والے روپ وے، سیدھے اسپین کٹ سے بنائے گئے (ADR-0037)۔"
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "کارگو سائیکل",
+    "Cargo bike range": "کارگو سائیکل کی رینج",
+    "Cargo bike savings": "کارگو سائیکل سے بچت",
+    "Cargo bike trip and range": "کارگو سائیکل کا سفر اور رینج",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "ایک برقی کارگو ٹرائی سائیکل بیٹری کے ایک چارج پر کتنی دور جا کر واپس آ سکتی ہے، پہاڑیوں پر اور سائیکل لین کو ترجیح دیتے ہوئے، اور کار کے مقابلے میں کتنی بچت کرتی ہے (خریداری، ایندھن، ٹیکس، انشورنس، پارکنگ، دیکھ بھال)، اپنے الگ ٹیب میں۔",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "نقطۂ آغاز سے منزل تک سائیکل کے قابل سڑکوں پر (سائیکل لین کو ترجیح دیتے ہوئے) آنے جانے کا سفر اور زمین پر خرچ ہونے والی بیٹری، اور ایک رینج نقشہ کہ سائیکل ہر سمت میں کتنی دور جا کر واپس آ سکتی ہے۔",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "انہی سفروں کے لیے کار کے مقابلے میں کارگو سائیکل کی سالانہ لاگت: خریداری، توانائی، ٹیکس، انشورنس، پارکنگ اور دیکھ بھال، نقطۂ آغاز کے ملک کی کرنسی میں۔"
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "ہر لائن، ہر ذریعے اور پورے نیٹ ورک کے لیے سالانہ بجلی، ڈیزل، حتمی توانائی اور CO2e، فی گاڑی-کلومیٹر اور فی نشست-کلومیٹر شدت کے ساتھ۔",
+    "Energy and emissions": "توانائی اور اخراج",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "ہر لائن کی سالانہ کرشن توانائی اور گرین ہاؤس گیس کا اخراج، ہر ذریعے اور نیٹ ورک کے لیے، ہر لائن کے گاڑی-کلومیٹر سے: سب اسٹیشن یا چارجر پر بجلی، لیٹر میں ڈیزل، اور گرڈ کی اخراجی شدت اور ڈیزل کے کنویں سے پہیے تک سے CO2e۔ جدولیں ٹیب میں دکھایا جاتا ہے۔"
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "زیادہ تر شہروں میں تقریباً 0.3 سے 1 میٹر فی پکسل کی فضائی تصاویر، دیہات میں موٹی: لین، کرب اور پٹری دیکھنے کے لیے کافی واضح۔ تصاویر کی تاریخیں جگہ کے لحاظ سے مختلف ہیں۔",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "فضائی بنیادی نقشے کے طور پر Esri World Imagery: زیادہ تر شہروں میں تقریباً 0.3 سے 1 میٹر فی پکسل کی فضائی تصاویر، لین، کرب اور پٹری دیکھنے کے لیے کافی واضح۔ جب کوئی ایڈمن انتظامیہ → پلگ اِنز میں ArcGIS API کلید محفوظ کر کے Esri کی شرائط قبول کرے تب دستیاب؛ ٹائلیں اسی MobSimLab سے ہو کر آتی ہیں، اس لیے براؤزر کبھی کلید نہیں دیکھتے، اور وہ محفوظ نہیں کی جاتیں۔"
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "برقی ہائیڈروفوائل",
+    "Fast catamaran": "تیز کیٹامران",
+    "Ferries": "فیریاں",
+    "Ferry": "فیری",
+    "Monohull water bus": "ایک پتوار والی واٹر بس",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "آبی راستہ کٹ سے بنائی گئی مسافر فیریاں اور واٹر بسیں: برتھ اور گینگ وے والے گھاٹ، پانی پر راستے، رفتار کے زون اور برتھ کی جانچ (ADR-0037)۔ کار فیریاں بعد میں آئیں گی۔",
+    "Vessel type": "جہاز کی قسم",
+    "Water buses and crossings: click piers, shape the route over water.": "واٹر بسیں اور پار گزرگاہیں: گھاٹوں پر کلک کریں، پانی پر راستے کو شکل دیں۔"
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "GTFS فیڈ",
+    "GTFS import and export": "GTFS درآمد اور برآمد",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "ایک GTFS فیڈ (zip) کو ایک سروس دن کے موجودہ نیٹ ورک کے طور پر منصوبے میں پڑھتا ہے، کہنے پر نقشے کے منظر تک کاٹ کر، تاکہ سفر منصوبہ ساز اسے منصوبہ بند لائنوں کے ساتھ استعمال کرے؛ اور منصوبے کی لائنوں کو دوسرے آلات کے لیے GTFS فیڈ کے طور پر لکھتا ہے۔",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "ایک سروس دن کے اسٹاپ، روٹ اور سفر (تاریخ نہ دی جائے تو سب سے مصروف بدھ)، frequencies.txt کو تعدد کے نمونوں اور روٹ کی اقسام کو ذرائع کے طور پر۔",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "منصوبے کی لائنیں کام کے دن کی GTFS فیڈ کے طور پر: درست سفر، تعدد والی لائنیں frequencies.txt کے طور پر، اسٹاپ گروپوں کے لیے اسٹیشن۔"
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "تقریباً 30 میٹر فی پکسل (اس نقشے پر 38 میٹر)، ایک دن کے سیٹلائٹ گزرنے سے: نقشے کے کچھ حصے خالی یا ابر آلود ہیں، اس لیے دوسری تاریخ آزمائیں۔ پٹری یا کرب بنانے کے لیے بہت موٹا۔",
+    "NASA GIBS imagery": "NASA GIBS تصاویر",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 اور 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS حقیقی رنگ",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA کی Global Imagery Browse Services (GIBS) سے سیٹلائٹ تصاویر فضائی بنیادی نقشوں کے طور پر، آپ کے منتخب دن کے لیے: تقریباً 30 میٹر فی پکسل پر Harmonized Landsat Sentinel-2 اور تقریباً 250 میٹر پر VIIRS۔ کسی API کلید کی ضرورت نہیں۔ تصاویر سڑکیں یا پٹری دیکھنے کے لیے بہت موٹی ہیں۔",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "ہر روز پوری دنیا تقریباً 250 میٹر فی پکسل پر (اس نقشے پر 306 میٹر)، بادلوں سمیت: صرف علاقائی سیاق کے لیے۔"
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "سروس لائنوں کا تخمینی شور (ADR-0038): سڑک کی لائنیں اور ریلوے بناتے وقت براہ راست شور کی پٹی، موڑ کی چیخ، پلوں اور سوئچوں کی جانچ کے ساتھ۔ CNOSSOS-EU سڑک اور ریل اخراج، فی الحال عمارتوں کے بغیر کھلے میدان میں۔",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "بنائی گئی لائنوں کا 4 میٹر پر L_den اور L_night، کھلا میدان: دونوں طرف پٹی کے فاصلے، نقشے کے لیے وصول کنندہ گرڈ اور جانچیں۔",
+    "Noise band": "شور کی پٹی",
+    "Noise map": "شور کا نقشہ"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS، WMTS اور XYZ ٹائل سروسز سے نقشہ تہیں، بنیادی نقشوں یا اوورلے کے طور پر۔ ایڈمن انتظامیہ → پلگ اِنز میں سروس شامل کرتا ہے، ضرورت ہو تو لاگ اِن تفصیلات کے ساتھ؛ ٹائلیں اسی MobSimLab سے ہو کر آتی ہیں، اس لیے براؤزر انہیں کبھی نہیں دیکھتے۔",
+    "WMS, WMTS and XYZ map layers": "WMS، WMTS اور XYZ نقشہ تہیں"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "سروس زون کٹ سے بنایا گیا طلب پر مبنی نقل و حمل: ایک زون کی حد بنائیں، فی گھنٹہ درخواستیں، بیڑا اور سروس کے اوقات طے کریں، اور مسلسل تخمینی فارمولوں سے درکار گاڑیاں، اوسط انتظار، سواری اور دروازے سے دروازے تک کا وقت حاصل کریں۔ دن کی نقالی ہر بکنگ کو سفر بہ سفر روانہ کرتی ہے (ADR-0042)۔ زون سفر منصوبہ ساز میں دکھتا ہے۔",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "ایپ سے بک ہونے والی منی بسیں: زون کی حد بنائیں، بیڑا اور اوقات طے کریں۔",
+    "On-demand bus": "آن ڈیمانڈ بس"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Panoramax سڑک کی تصاویر",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "لوگوں اور سرکاری اداروں کی شیئر کی گئی تصاویر، ایسے کھلے لائسنسوں کے تحت (زیادہ تر CC BY-SA 4.0 یا Etalab 2.0) جو ان سے نقشہ سازی کی اجازت دیتے ہیں۔ کوئی تصویر استعمال کریں تو مصنف کا حوالہ دیں۔",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Panoramax سے سڑک کی سطح کی تصاویر، سڑک کی تصاویر کا آزاد اور کھلا مشترکہ ذخیرہ۔ تصاویر کہاں لی گئیں یہ دیکھنے کے لیے نقشے پر سڑک کی تصاویر کھولیں، پھر کسی نقطے پر کلک کر کے اس کے قریب لی گئی تصاویر دیکھیں۔ تصاویر ایسے کھلے لائسنسوں کے تحت ہیں جو ان سے نقشہ سازی کی اجازت دیتے ہیں۔ کسی کلید کی ضرورت نہیں۔ تصاویر اسی MobSimLab سے ہو کر آتی ہیں اور نہ محفوظ ہوتی ہیں نہ منصوبے کے ساتھ رکھی جاتی ہیں۔"
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "اونچے گائیڈ وے پر کیبل سے کھنچنے والے خودکار پیپل موور، سیدھے اسپین کٹ سے بنائے گئے: دو ٹرینوں والی شٹل، اور ہر اسٹیشن پر رکنے والی الگ ہونے والی ٹرینوں والے تنگ لوپ (ADR-0037 §7)۔ خود چلنے والے پیپل موور کو ریلوے ایڈیٹر چاہیے اور وہ بعد میں آئیں گے۔",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "گائیڈ وے پر کیبل سے کھنچنے والی شٹل اور لوپ: اسٹیشنوں پر کلک کریں، ستون ساتھ آتے ہیں۔",
+    "People mover": "پیپل موور",
+    "People mover shuttle": "پیپل موور شٹل",
+    "People mover system": "پیپل موور نظام",
+    "People movers": "پیپل موور",
+    "Pinched loop, detachable trains": "تنگ لوپ، الگ ہونے والی ٹرینیں",
+    "Shuttle, two trains on a fixed rope": "شٹل، ایک ساکن کیبل پر دو ٹرینیں"
+  }
+}

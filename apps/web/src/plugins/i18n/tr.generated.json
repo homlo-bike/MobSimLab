@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "Va-gel teleferik",
+    "Aerial tramway (reversible)": "Va-gel teleferik (çift yönlü)",
+    "Bicable gondola (2S)": "Çift halatlı gondol (2S)",
+    "Cable car": "Teleferik",
+    "Cable cars": "Teleferikler",
+    "Funitel": "Funitel",
+    "Gondolas and aerial tramways: click stations, towers follow.": "Gondollar ve va-gel teleferikler: istasyonlara tıklayın, kuleler kendiliğinden gelir.",
+    "Monocable detachable gondola (MGD)": "Tek halatlı ayrılabilir gondol (MGD)",
+    "Pulsed gondola": "Gruplu gondol",
+    "Ropeway system": "Teleferik sistemi",
+    "Tricable gondola (3S)": "Üç halatlı gondol (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "Kentsel teleferikler: sürekli dönen gondollar (MGD, 2S, 3S, funitel, gruplu) ve çift yönlü va-gel teleferikler, düz açıklık kitiyle çizilir (ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "Kargo bisikleti",
+    "Cargo bike range": "Kargo bisikletinin menzili",
+    "Cargo bike savings": "Kargo bisikletiyle tasarruf",
+    "Cargo bike trip and range": "Kargo bisikleti yolculuğu ve menzili",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Elektrikli bir kargo üç tekerleklisinin tek şarjla ne kadar uzağa gidip dönebildiği, tepelerden geçerek ve bisiklet yollarını tercih ederek, ve otomobile göre ne kadar tasarruf sağladığı (satın alma, yakıt, vergi, sigorta, otopark, bakım), kendi sekmesinde.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Başlangıç noktasından varış noktasına bisikletle gidilebilen sokaklarda (bisiklet yollarını tercih ederek) gidiş-dönüş yolculuk ve araziye göre harcanan batarya, ayrıca bisikletin her yönde ne kadar uzağa gidip dönebildiğini gösteren menzil haritası.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Aynı yolculuklar için kargo bisikletinin otomobile göre yıllık maliyeti: satın alma, enerji, vergi, sigorta, otopark ve bakım, başlangıç noktasının ülkesinin para biriminde."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "Hat, ulaşım türü ve tüm ağ başına yıllık elektrik, dizel, nihai enerji ve CO2e, araç-km ve yer-km başına yoğunlukla birlikte.",
+    "Energy and emissions": "Enerji ve emisyonlar",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "Her hattın yıllık çekiş enerjisi ve sera gazı emisyonları, ulaşım türüne göre ve ağ için, her hattın araç-km'sinden: trafo merkezinde veya şarj cihazında elektrik, litre olarak dizel, ve şebekenin emisyon yoğunluğu ile dizelin kuyudan tekerleğe değerinden CO2e. Tablolar sekmesinde gösterilir."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Çoğu kentte piksel başına yaklaşık 0,3 ile 1 m hava fotoğrafları, kırsalda daha kaba: şeritleri, bordürleri ve rayları görecek kadar net. Fotoğraf tarihleri yere göre değişir.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Hava fotoğrafı altlığı olarak Esri World Imagery: çoğu kentte piksel başına yaklaşık 0,3 ile 1 m hava fotoğrafları, şeritleri, bordürleri ve rayları görecek kadar net. Bir Yönetici Yönetim → Eklentiler altında bir ArcGIS API anahtarı kaydedip Esri'nin koşullarını kabul edince sunulur; karolar bu MobSimLab üzerinden gelir, bu yüzden tarayıcılar anahtarı asla görmez, ve karolar saklanmaz."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "Elektrikli deniz otobüsü (hidrofoil)",
+    "Fast catamaran": "Hızlı katamaran",
+    "Ferries": "Vapurlar",
+    "Ferry": "Vapur",
+    "Monohull water bus": "Tek gövdeli su otobüsü",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "Su yolu kitiyle çizilen yolcu vapurları ve su otobüsleri: yanaşma yerleri ve iskeleleri olan iskeleler, su üzerinde güzergâhlar, hız bölgeleri ve yanaşma yeri denetimi (ADR-0037). Araba vapurları sonra gelecek.",
+    "Vessel type": "Tekne türü",
+    "Water buses and crossings: click piers, shape the route over water.": "Su otobüsleri ve geçişler: iskelelere tıklayın, su üzerindeki güzergâhı biçimlendirin."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "GTFS beslemesi",
+    "GTFS import and export": "GTFS içe ve dışa aktarma",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Bir GTFS beslemesini (zip) bir hizmet günü için mevcut ağ olarak projeye okur, istenirse harita görünümüne kırpar, böylece yolculuk planlayıcısı onu planlanan hatlarla birlikte kullanır; ve projenin hatlarını başka araçlar için GTFS beslemesi olarak yazar.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Bir hizmet gününün durakları, güzergâhları ve seferleri (tarih verilmezse en yoğun çarşamba), frequencies.txt sefer aralığı kalıpları ve güzergâh türleri ulaşım türleri olarak.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Projenin hatları hafta içi GTFS beslemesi olarak: tam seferler, frequencies.txt olarak sefer aralıklı hatlar, durak grupları için istasyonlar."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Piksel başına yaklaşık 30 m (bu haritada 38 m), bir günün uydu geçişlerinden: haritanın bazı kısımları boş ya da bulutlu, bu yüzden başka bir tarih deneyin. Ray ya da bordür çizmek için fazla kaba.",
+    "NASA GIBS imagery": "NASA GIBS görüntüleri",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 ve 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS gerçek renk",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA'nın Global Imagery Browse Services (GIBS) uydu görüntüleri, seçtiğiniz bir gün için hava altlığı olarak: piksel başına yaklaşık 30 m'de Harmonized Landsat Sentinel-2 ve yaklaşık 250 m'de VIIRS. API anahtarı gerekmez. Görüntüler sokakları ya da rayları görmek için fazla kaba.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Her gün tüm dünya, piksel başına yaklaşık 250 m'de (bu haritada 306 m), bulutlarla: yalnızca bölgesel bağlam için."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Hatların tahmini gürültüsü (ADR-0038): sokak hatları ve demiryolları çizilirken canlı gürültü bandı, kurp gıcırtısı, köprüler ve makaslar için denetimlerle. CNOSSOS-EU karayolu ve demiryolu yayılımı, şimdilik binasız serbest alanda.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "Çizilen hatların 4 m'de L_den ve L_night değerleri, serbest alan: iki yandaki bant uzaklıkları, harita için alıcı ızgarası ve denetimler.",
+    "Noise band": "Gürültü bandı",
+    "Noise map": "Gürültü haritası"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS, WMTS ve XYZ karo hizmetlerinden harita katmanları, altlık ya da bindirme olarak. Bir Yönetici Yönetim → Eklentiler altında bir hizmet ekler, gerekirse oturum açma bilgileriyle; karolar bu MobSimLab üzerinden gelir, bu yüzden tarayıcılar bunları asla görmez.",
+    "WMS, WMTS and XYZ map layers": "WMS, WMTS ve XYZ harita katmanları"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Hizmet bölgesi kitiyle çizilen talebe bağlı ulaşım: bir bölge çizin, saatlik talepleri, filoyu ve hizmet saatlerini ayarlayın, sürekli yaklaşım formüllerinden gereken araçları, ortalama bekleme, yolculuk ve kapıdan kapıya süreyi alın. Günün benzetimi her rezervasyonu sefer sefer gönderir (ADR-0042). Bölge yolculuk planlayıcısında görünür.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "Uygulamayla ayrılan minibüsler: bölgeyi çizin, filoyu ve saatleri ayarlayın.",
+    "On-demand bus": "Talebe bağlı otobüs"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Panoramax sokak fotoğrafları",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "İnsanların ve kamu kurumlarının paylaştığı, onlardan harita çizmeye izin veren açık lisanslı (çoğunlukla CC BY-SA 4.0 ya da Etalab 2.0) fotoğraflar. Birini kullandığınızda sahibini belirtin.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Özgür ve açık sokak fotoğrafı ortak varlığı Panoramax'tan sokak düzeyinde fotoğraflar. Fotoğrafların nerede çekildiğini görmek için haritada Sokak fotoğraflarını açın, sonra yakınında çekilen fotoğrafları görmek için bir noktaya tıklayın. Fotoğraflar onlardan harita çizmeye izin veren açık lisanslıdır. Anahtar gerekmez. Fotoğraflar bu MobSimLab üzerinden gelir, saklanmaz ve projeyle kaydedilmez."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "Yükseltilmiş kılavuz yol üzerinde halatla çekilen otomatik insan taşıyıcılar, düz açıklık kitiyle çizilir: iki trenli mekikler ve her istasyonda duran ayrılabilir trenli sıkıştırılmış döngüler (ADR-0037 §7). Kendinden tahrikli insan taşıyıcılar demiryolu düzenleyicisini gerektirir ve sonra gelecek.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "Kılavuz yol üzerinde halatla çekilen mekikler ve döngüler: istasyonlara tıklayın, ayaklar kendiliğinden gelir.",
+    "People mover": "İnsan taşıyıcı",
+    "People mover shuttle": "İnsan taşıyıcı mekiği",
+    "People mover system": "İnsan taşıyıcı sistemi",
+    "People movers": "İnsan taşıyıcılar",
+    "Pinched loop, detachable trains": "Sıkıştırılmış döngü, ayrılabilir trenler",
+    "Shuttle, two trains on a fixed rope": "Mekik, sabit halatta iki tren"
+  }
+}

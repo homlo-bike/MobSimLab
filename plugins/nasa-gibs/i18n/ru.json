@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Примерно 30 м на пиксель (38 м на этой карте), по пролётам спутников за один день: части карты пусты или в облаках, попробуйте другую дату. Слишком грубо, чтобы рисовать пути или бордюры.",
+  "NASA GIBS imagery": "Снимки NASA GIBS",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 и 9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS в естественных цветах",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "Спутниковые снимки Global Imagery Browse Services (GIBS) NASA как аэроподложки, на выбранный день: Harmonized Landsat Sentinel-2 примерно 30 м на пиксель и VIIRS примерно 250 м. Ключ API не нужен. Снимки слишком грубые, чтобы различать улицы или пути.",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Весь мир каждый день примерно 250 м на пиксель (306 м на этой карте), с облаками: только для регионального обзора."
+}

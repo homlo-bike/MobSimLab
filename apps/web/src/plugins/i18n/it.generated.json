@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "Funivia a va e vieni",
+    "Aerial tramway (reversible)": "Funivia a va e vieni (reversibile)",
+    "Bicable gondola (2S)": "Cabinovia bifune (2S)",
+    "Cable car": "Funivia",
+    "Cable cars": "Funivie",
+    "Funitel": "Funitel",
+    "Gondolas and aerial tramways: click stations, towers follow.": "Cabinovie e funivie a va e vieni: fai clic sulle stazioni, i sostegni seguono.",
+    "Monocable detachable gondola (MGD)": "Cabinovia monofune ad ammorsamento automatico (MGD)",
+    "Pulsed gondola": "Cabinovia a impulsi",
+    "Ropeway system": "Sistema a fune",
+    "Tricable gondola (3S)": "Cabinovia trifune (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "Impianti a fune urbani: cabinovie a moto continuo (MGD, 2S, 3S, funitel, a impulsi) e funivie a va e vieni, disegnate con il kit a campate rettilinee (ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "Cargo bike",
+    "Cargo bike range": "Autonomia della cargo bike",
+    "Cargo bike savings": "Risparmio con la cargo bike",
+    "Cargo bike trip and range": "Viaggio e autonomia della cargo bike",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "Fin dove arriva andata e ritorno un triciclo cargo elettrico con una carica di batteria, sulle salite e preferendo le piste ciclabili, e quanto fa risparmiare rispetto a un'auto (acquisto, carburante, tasse, assicurazione, parcheggio, manutenzione), in una scheda propria.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "Viaggio di andata e ritorno da un punto di partenza a una destinazione su strade percorribili in bici (preferendo le piste ciclabili) con la batteria consumata in base al terreno, e una mappa dell'autonomia che mostra fin dove arriva la bici andata e ritorno in ogni direzione.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "Costo annuo della cargo bike rispetto a un'auto per gli stessi viaggi: acquisto, energia, tasse, assicurazione, parcheggio e manutenzione, nella valuta del paese del punto di partenza."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "Elettricità, gasolio, energia finale e CO2e all'anno per linea, per modo e per la rete, con l'intensità per veicolo-km e per posto-km.",
+    "Energy and emissions": "Energia ed emissioni",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "Energia di trazione ed emissioni di gas serra di ogni linea all'anno, per modo e per la rete, dai veicoli-km di ogni linea: elettricità alla sottostazione o al caricatore, gasolio in litri e CO2e dall'intensità di emissione della rete elettrica e dal gasolio dal pozzo alla ruota. Mostrato nella scheda Tabelle."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Foto aeree di circa 0,3–1 m per pixel nella maggior parte delle città, più grossolane in campagna: abbastanza nitide da vedere corsie, cordoli e binari. Le date delle foto variano da luogo a luogo.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Esri World Imagery come mappa di base aerea: foto aeree di circa 0,3–1 m per pixel nella maggior parte delle città, abbastanza nitide da vedere corsie, cordoli e binari. Disponibile dopo che un amministratore salva una chiave API di ArcGIS e accetta i termini di Esri in Amministrazione → Plugin; le tessere passano da questo MobSimLab, quindi i browser non vedono mai la chiave, e non vengono conservate."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "Aliscafo elettrico",
+    "Fast catamaran": "Catamarano veloce",
+    "Ferries": "Traghetti",
+    "Ferry": "Traghetto",
+    "Monohull water bus": "Vaporetto monoscafo",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "Traghetti passeggeri e vaporetti disegnati con il kit delle rotte d'acqua: pontili con ormeggi e passerelle, rotte sull'acqua, zone di velocità e un controllo degli ormeggi (ADR-0037). I traghetti per auto arriveranno più avanti.",
+    "Vessel type": "Imbarcazione",
+    "Water buses and crossings: click piers, shape the route over water.": "Vaporetti e attraversamenti: fai clic sui pontili, modella la rotta sull'acqua."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "Feed GTFS",
+    "GTFS import and export": "Importazione ed esportazione GTFS",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Legge un feed GTFS (zip) nel progetto come rete esistente per un giorno di servizio, ritagliato sulla vista della mappa se richiesto, così che il pianificatore di viaggio lo usi insieme alle linee progettate; e scrive le linee del progetto come feed GTFS per altri strumenti.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Fermate, linee e corse di un giorno di servizio (il mercoledì più trafficato se non si indica una data), con frequencies.txt come schemi di frequenza e i tipi di linea come modi.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Le linee del progetto come feed GTFS di un giorno feriale: corse esatte, linee a frequenza in frequencies.txt, stazioni per i gruppi di fermate."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Circa 30 m per pixel (38 m su questa mappa), dai passaggi del satellite di un giorno: parti della mappa sono vuote o nuvolose, quindi prova un'altra data. Troppo grossolane per disegnare binari o cordoli.",
+    "NASA GIBS imagery": "Immagini NASA GIBS",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 e 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS colori naturali",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "Immagini satellitari dai Global Imagery Browse Services (GIBS) della NASA come mappe di base aeree, per un giorno a scelta: Harmonized Landsat Sentinel-2 a circa 30 m per pixel e VIIRS a circa 250 m. Non serve una chiave API. Le immagini sono troppo grossolane per vedere strade o binari.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Il mondo intero ogni giorno a circa 250 m per pixel (306 m su questa mappa), con le nuvole: solo per il contesto regionale."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Rumore stimato delle linee (ADR-0038): una fascia di rumore dal vivo mentre si disegnano linee stradali e ferrovie, con controlli di stridio in curva, ponti e scambi. Emissione stradale e ferroviaria CNOSSOS-EU, per ora in campo libero senza edifici.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den e L_night delle linee disegnate a 4 m, in campo libero: distanze della fascia su ciascun lato, una griglia di ricettori per la mappa e controlli.",
+    "Noise band": "Fascia di rumore",
+    "Noise map": "Mappa del rumore"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Livelli di mappa da servizi di tessere WMS, WMTS e XYZ, come mappe di base o sovrapposizioni. Un amministratore aggiunge un servizio in Amministrazione → Plugin, con le credenziali se servono; le tessere passano da questo MobSimLab, quindi i browser non le vedono mai.",
+    "WMS, WMTS and XYZ map layers": "Livelli di mappa WMS, WMTS e XYZ"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Trasporto a chiamata disegnato con il kit della zona di servizio: delimita una zona, imposta le richieste all'ora, la flotta e gli orari di servizio, e ottieni i veicoli necessari, l'attesa media, il tempo a bordo e porta a porta da formule di approssimazione continua. Simulare la giornata assegna ogni prenotazione corsa per corsa (ADR-0042). La zona compare nel pianificatore di viaggio.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "Minibus prenotati via app: delimita la zona, imposta la flotta e gli orari.",
+    "On-demand bus": "Bus a chiamata"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Foto stradali Panoramax",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "Foto condivise da persone ed enti pubblici, con licenze aperte (perlopiù CC BY-SA 4.0 o Etalab 2.0) che permettono di mappare a partire da esse. Cita l'autore quando ne usi una.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Foto a livello stradale da Panoramax, il bene comune libero e aperto delle foto stradali. Apri Foto stradali sulla mappa per vedere dove sono state scattate le foto, poi fai clic su un punto per vedere le foto scattate lì vicino. Le foto hanno licenze aperte che permettono di mappare a partire da esse. Non serve una chiave. Le foto passano da questo MobSimLab e non vengono conservate né salvate con il progetto."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "People mover automatici a trazione a fune su una via di corsa sopraelevata, disegnati con il kit a campate rettilinee: navette con due treni e anelli strozzati con treni ad ammorsamento che fermano in ogni stazione (ADR-0037 §7). I people mover autopropulsi richiedono l'editor ferroviario e arriveranno più avanti.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "Navette e anelli a trazione a fune su una via di corsa: fai clic sulle stazioni, le pile seguono.",
+    "People mover": "People mover",
+    "People mover shuttle": "Navetta people mover",
+    "People mover system": "Sistema people mover",
+    "People movers": "People mover",
+    "Pinched loop, detachable trains": "Anello strozzato, treni ad ammorsamento",
+    "Shuttle, two trains on a fixed rope": "Navetta, due treni su una fune fissa"
+  }
+}

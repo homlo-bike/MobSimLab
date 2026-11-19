@@ -6,6 +6,7 @@ import { commentsTe } from "./comments/te";
 import { depotsTe } from "./depots/te";
 import { geodataTe } from "./geodata/te";
 import { tablesTe } from "./tables/te";
+import { economicsTe } from "./economics/te";
 import { fleetTe } from "./fleet/te";
 import { timetablesTe } from "./timetables/te";
 import { mslabTe } from "./mslab/te";
@@ -84,6 +85,8 @@ export const te: Messages = {
   "settings.title": "సెట్టింగ్‌లు",
   "settings.back": "సెట్టింగ్‌లకు తిరిగి",
   "settings.displayName": "ప్రదర్శన పేరు",
+  "shell.thisComputer": "ఈ కంప్యూటర్",
+  "shell.localUser": "స్థానిక వినియోగదారు",
   "settings.email": "ఇ-మెయిల్",
   "settings.role": "పాత్ర",
   "settings.language": "భాష",
@@ -525,6 +528,7 @@ export const te: Messages = {
   ...depotsTe,
   ...geodataTe,
   ...tablesTe,
+  ...economicsTe,
   ...fleetTe,
   ...timetablesTe,
   ...commentsTe,

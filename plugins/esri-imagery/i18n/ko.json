@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "대부분의 도시에서 픽셀당 약 0.3~1m의 항공 사진이며 교외는 더 거칩니다. 차로, 연석, 선로를 볼 수 있을 만큼 선명합니다. 촬영 날짜는 장소마다 다릅니다.",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "항공 배경 지도로서의 Esri World Imagery: 대부분의 도시에서 픽셀당 약 0.3~1m의 항공 사진으로, 차로, 연석, 선로를 볼 수 있을 만큼 선명합니다. 관리자가 관리 → 플러그인에서 ArcGIS API 키를 저장하고 Esri 약관에 동의하면 제공됩니다. 타일은 이 MobSimLab을 거쳐 오므로 브라우저는 키를 볼 수 없으며, 타일은 저장되지 않습니다."
+}

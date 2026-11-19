@@ -1,0 +1,9 @@
+{
+  "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "Ihe dịka mita 30 kwa pikselụ (mita 38 na maapụ a), site na ngafe satịlaịtị otu ụbọchị: akụkụ ụfọdụ nke maapụ tọgbọ chakoo ma ọ bụ nwee igwe ojii, ya mere nwalee ụbọchị ọzọ. Ọ dịchaghị nkọ iji see ụzọ ụgbọ oloko ma ọ bụ nsọtụ okporo ụzọ.",
+  "NASA GIBS imagery": "Onyonyo NASA GIBS",
+  "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 na 9",
+  "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+  "NASA VIIRS true colour": "NASA VIIRS agba eziokwu",
+  "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "Onyonyo satịlaịtị sitere na Global Imagery Browse Services (GIBS) nke NASA dịka maapụ ntọala elu ikuku, maka ụbọchị ị họọrọ: Harmonized Landsat Sentinel-2 n'ihe dịka mita 30 kwa pikselụ na VIIRS n'ihe dịka mita 250. Achọghị igodo API. Onyonyo ahụ adịchaghị nkọ iji hụ okporo ụzọ ma ọ bụ ụzọ ụgbọ oloko.",
+  "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "Ụwa niile kwa ụbọchị n'ihe dịka mita 250 kwa pikselụ (mita 306 na maapụ a), ya na igwe ojii: maka ọnọdụ mpaghara naanị."
+}

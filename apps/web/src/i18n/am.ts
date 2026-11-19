@@ -6,6 +6,7 @@ import { commentsAm } from "./comments/am";
 import { depotsAm } from "./depots/am";
 import { geodataAm } from "./geodata/am";
 import { tablesAm } from "./tables/am";
+import { economicsAm } from "./economics/am";
 import { fleetAm } from "./fleet/am";
 import { timetablesAm } from "./timetables/am";
 import { mslabAm } from "./mslab/am";
@@ -81,6 +82,8 @@ export const am: Messages = {
   "settings.title": "ቅንብሮች",
   "settings.back": "ወደ ቅንብሮች ተመለስ",
   "settings.displayName": "የሚታይ ስም",
+  "shell.thisComputer": "ይህ ኮምፒውተር",
+  "shell.localUser": "የአካባቢ ተጠቃሚ",
   "settings.email": "ኢሜይል",
   "settings.role": "ሚና",
   "settings.language": "ቋንቋ",
@@ -513,6 +516,7 @@ export const am: Messages = {
   ...depotsAm,
   ...geodataAm,
   ...tablesAm,
+  ...economicsAm,
   ...fleetAm,
   ...timetablesAm,
   ...commentsAm,

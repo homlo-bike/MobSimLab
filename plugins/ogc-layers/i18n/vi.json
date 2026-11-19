@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Lớp bản đồ từ dịch vụ ô bản đồ WMS, WMTS và XYZ, làm bản đồ nền hoặc lớp phủ. Quản trị viên thêm dịch vụ trong Quản trị → Plugin, kèm thông tin đăng nhập nếu cần; các ô bản đồ đi qua MobSimLab này nên trình duyệt không bao giờ thấy chúng.",
+  "WMS, WMTS and XYZ map layers": "Lớp bản đồ WMS, WMTS và XYZ"
+}

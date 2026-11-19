@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "சேவை மண்டலக் கருவியால் வரையப்படும் தேவைக்கேற்ற போக்குவரத்து: ஒரு மண்டலத்தை வரையுங்கள், மணிக்குக் கோரிக்கைகள், வாகனத் தொகுப்பு மற்றும் சேவை நேரங்களை அமையுங்கள், தொடர் தோராய சூத்திரங்களிலிருந்து தேவையான வாகனங்கள், சராசரிக் காத்திருப்பு, பயண மற்றும் வீட்டிலிருந்து வீடு வரை நேரத்தைப் பெறுங்கள். நாள் உருவகப்படுத்தல் ஒவ்வொரு முன்பதிவையும் பயணம் பயணமாக அனுப்புகிறது (ADR-0042). மண்டலம் பயணத் திட்டமிடுபவரில் தெரியும்.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "செயலி மூலம் முன்பதிவு செய்யப்படும் சிற்றுந்துகள்: மண்டலத்தை வரையுங்கள், வாகனத் தொகுப்பையும் நேரங்களையும் அமையுங்கள்.",
+  "On-demand bus": "தேவைக்கேற்ற பேருந்து"
+}
