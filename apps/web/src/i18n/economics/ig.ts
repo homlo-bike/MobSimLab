@@ -618,6 +618,8 @@ export const economicsIg = {
   "apr.shared": "Akụrụngwa nkekọrịta na-enweghị ahịrị ugbu a ({mode})",
   "apr.currencyNote":
     "Ịgba ọchịchọ tụrụ uru oge na {run} mana tebụl na-egosi {tables}; gbaa ụdị ọchịchọ ọzọ mgbe ịgbanwechara ego.",
+  "apr.uncostedNote":
+    "Enweghị ego a na-efu ugbu a maka {lines}: a na-agụ ndị njem, ụgwọ njem na uru ha, mana ọ dịghị ihe a na-emefu na ha, ya mere nsonaazụ ahụ dị mma karịa ka ọ ga-adị.",
   "apr.title": "Nyocha",
   "apr.intro":
     "Ọrụ ahụ ọ̀ kwesịrị ya? Ọnụ ahịa na uru niile site na tebụl dị n'elu, afọ n'afọ, ebelatara ruo uru taa. Oke ndị ahụ bụ pasentaịlụ 10–90 nke ihe nlele {draws} a họpụtara n'enweghị usoro.",

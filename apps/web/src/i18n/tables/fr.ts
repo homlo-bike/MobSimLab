@@ -50,6 +50,9 @@ export const tablesFr = {
   "net.modes.other": "{count} modes",
   "net.routeSub": "{rail} ferroviaire, {street} lignes sur rue",
   "net.routeSubCable": "{rail} de ferroviaire, {street} de lignes routières, {cable} de téléphériques",
+  "net.routeSubFerry": "{rail} ferroviaire, {street} lignes sur rue, {ferry} de ferries",
+  "net.routeSubCableFerry":
+    "{rail} de ferroviaire, {street} de lignes routières, {cable} de téléphériques, {ferry} de ferries",
   "net.stationsAndStops": "Gares et arrêts",
   "net.stationsSub": "{stations} gares, {stops} arrêts",
   "net.inServiceSub": "{n} en service à l’heure de pointe",
@@ -109,6 +112,7 @@ export const tablesFr = {
   "net.perTrain": "par train",
   "net.perVehicle": "par véhicule",
   "net.perCabin": "par cabine",
+  "net.perVessel": "par navire",
   "net.perHour": "par heure",
   "net.ofPlaces": "{pct} % des places",
   "net.noFigures": "Pas encore de chiffres de service : {problem}",
@@ -303,6 +307,9 @@ export const tablesFr = {
   "cost.x.vehicleHours": "{n} véhicules à l’heure de pointe, {from}–{to}",
   "cost.x.ropeway": "Câble, pylônes et entraînements",
   "cost.x.stationHours": "{n} stations ouvertes {from}–{to}",
+  "cost.x.piers": "Embarcadères",
+  "cost.x.vessels": "Navires avec réserve",
+  "cost.x.vesselHours": "{n} navires en service, {from}–{to}",
   "cost.x.ofInfra": "{pct} % de l’infrastructure",
   "cost.x.ofInfraYear": "{pct} % de l’infrastructure par an",
   "cost.x.ofOperating": "Part du coût d’exploitation",
@@ -405,6 +412,8 @@ export const tablesFr = {
   "tt.tbl.noTrips": "Aucun trajet pour ce type de jour.",
   "tt.tbl.ropeway":
     "Une cabine part toutes les {every} dans chaque sens, de {from} à {to}. Les cabines restent sur la ligne toute la journée : un téléphérique n’a donc pas de services véhicules.",
+  "tt.tbl.ferry":
+    "{n} navires font la navette de {from} à {to}, un départ toutes les {every} dans chaque sens. Un aller-retour avec les battements dure {cycle}.",
   "tt.tbl.nTrips": "({n} trajets)",
   "tt.tbl.dirCaption": "{line}, de {from} à {to}",
   "tt.tbl.blocksTitle": "Services véhicules, {day}",

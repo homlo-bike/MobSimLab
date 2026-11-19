@@ -16,6 +16,7 @@ import { type Translate, translate } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { distanceKm } from "../../map/geo";
 import { activePlugins } from "../../plugins/registry";
+import type { FerryLine } from "../tables/ferries";
 import { ropewayParam, type RopewayLine } from "../tables/ropeways";
 
 /** Kinds of construction cost; the first seven are the alignment by construction type. */
@@ -152,6 +153,8 @@ export interface EstimateInput {
   prices: Prices;
   /** The cable car lines of the plugin tools, with their service. */
   ropeways?: readonly RopewayLine[];
+  /** The ferry lines of the plugin tools, with their service. */
+  ferries?: readonly FerryLine[];
   /** Translates the labels and notes; English when absent. */
   t?: Translate;
 }
@@ -697,6 +700,50 @@ export function estimate(input: EstimateInput): Estimate {
     });
   });
 
+  /** A plugin cost parameter for a mode and context, with the project's own value on top; null when unknown. */
+  const pluginRate = (
+    key: string,
+    mode: string,
+    context: string,
+  ): { rate: Triple; library: CostItem["library"] } | null => {
+    const lib = ropewayParam(key, mode, context);
+    if (!lib) return null;
+    const meta = ropewayParamMeta(key);
+    const values: Triple = [lib.low, lib.central, lib.high];
+    const own = ownPref(prefs, prefId(key, mode)) ?? ownPref(prefs, prefId(key, "*"));
+    const k = own === undefined ? 1 : lib.central !== 0 ? own / lib.central : 1;
+    const rate: Triple =
+      own !== undefined && lib.central === 0 ? [own, own, own] : (values.map((x) => x * k) as Triple);
+    return { rate, library: { label: meta?.label ?? key, unit: meta?.unit ?? "", values } };
+  };
+  /** Purpose: a cost item of a plugin line (cable car, ferry) priced from a plugin parameter. */
+  const pluginItem = (
+    line: { id: string; mode: string; context: string },
+    category: Category,
+    key: string,
+    label: string,
+    quantity: number,
+    unit: string,
+    scale: number,
+    amountOf: (rate: Triple) => Triple = (rate) => mul(rate, quantity),
+  ) => {
+    const p = pluginRate(key, line.mode, line.context);
+    if (!p || !(quantity > 0)) return;
+    const rate = mul(p.rate, scale);
+    items.push({
+      category,
+      mode: line.mode,
+      line: line.id,
+      label,
+      quantity,
+      unit,
+      rate,
+      amount: amountOf(rate),
+      param: key,
+      library: p.library,
+    });
+  };
+
   // Cable cars: stations, rope and towers, cabins and the staff of the stations while the line is open.
   for (const r of input.ropeways ?? []) {
     const mode = r.mode;
@@ -714,44 +761,9 @@ export function estimate(input: EstimateInput): Estimate {
       hoursPerYear: days[1] * r.cabinHoursPerDay,
       kmPerYear: days[1] * r.cabinKmPerDay,
     });
-    /** A plugin cost parameter for this line, with the project's own value on top; null when unknown. */
-    const rope = (key: string): { rate: Triple; library: CostItem["library"] } | null => {
-      const lib = ropewayParam(key, mode, r.system);
-      if (!lib) return null;
-      const meta = ropewayParamMeta(key);
-      const values: Triple = [lib.low, lib.central, lib.high];
-      const own = ownPref(prefs, prefId(key, mode)) ?? ownPref(prefs, prefId(key, "*"));
-      const k = own === undefined ? 1 : lib.central !== 0 ? own / lib.central : 1;
-      const rate: Triple =
-        own !== undefined && lib.central === 0 ? [own, own, own] : (values.map((x) => x * k) as Triple);
-      return { rate, library: { label: meta?.label ?? key, unit: meta?.unit ?? "", values } };
-    };
-    const ropeItem = (
-      category: Category,
-      key: string,
-      label: string,
-      quantity: number,
-      unit: string,
-      scale: number,
-      amountOf: (rate: Triple) => Triple = (rate) => mul(rate, quantity),
-    ) => {
-      const p = rope(key);
-      if (!p || !(quantity > 0)) return;
-      const rate = mul(p.rate, scale);
-      items.push({
-        category,
-        mode,
-        line: id,
-        label,
-        quantity,
-        unit,
-        rate,
-        amount: amountOf(rate),
-        param: key,
-        library: p.library,
-      });
-    };
-    ropeItem(
+    const rope = { id, mode, context: r.system };
+    pluginItem(
+      rope,
       "stations",
       "ropeway.cost.station_each",
       t("cost.cat.stations"),
@@ -759,7 +771,8 @@ export function estimate(input: EstimateInput): Estimate {
       t("cost.unit.each"),
       ppp * 1e6,
     );
-    ropeItem(
+    pluginItem(
+      rope,
       "systems",
       "ropeway.cost.line_per_km",
       t("cost.x.ropeway"),
@@ -767,7 +780,8 @@ export function estimate(input: EstimateInput): Estimate {
       t("cost.unit.km"),
       ppp * 1e6,
     );
-    ropeItem(
+    pluginItem(
+      rope,
       "vehicles",
       "ropeway.cost.cabin_each",
       t("cost.x.vehicles"),
@@ -777,7 +791,8 @@ export function estimate(input: EstimateInput): Estimate {
       (rate) => prod(rate, fleet),
     );
     const stationHours: Triple = mul(days, r.stations * serviceH);
-    ropeItem(
+    pluginItem(
+      rope,
       "service",
       "ropeway.cost.station_hour",
       t("cost.x.stationHours", { n: r.stations, from: hhmm(r.firstS / 60), to: hhmm(r.lastS / 60) }),
@@ -785,6 +800,53 @@ export function estimate(input: EstimateInput): Estimate {
       t("cost.unit.stationHours"),
       ppp,
       (rate) => prod(rate, stationHours),
+    );
+  }
+
+  // Ferries: piers, vessels with the reserve, and crew, fuel and running repairs per vessel-hour.
+  for (const f of input.ferries ?? []) {
+    const line = { id: f.id, mode: f.mode, context: f.vessel };
+    const fleet: Triple = [f.fleet, f.fleet, f.fleet];
+    lines.push({
+      id: f.id,
+      name: f.name,
+      mode: f.mode,
+      color: f.color,
+      lengthKm: f.lengthKm,
+      inService: f.inService,
+      fleet: f.fleet,
+      hoursPerYear: days[1] * f.vesselHoursPerDay,
+      kmPerYear: days[1] * f.vesselKmPerDay,
+    });
+    pluginItem(
+      line,
+      "stations",
+      "ferry.cost.pier_each",
+      t("cost.x.piers"),
+      f.piers,
+      t("cost.unit.each"),
+      ppp * 1e6,
+    );
+    pluginItem(
+      line,
+      "vehicles",
+      "ferry.cost.vessel_each",
+      t("cost.x.vessels"),
+      f.fleet,
+      t("cost.unit.vehicles"),
+      market * 1e6,
+      (rate) => prod(rate, fleet),
+    );
+    const vesselHours: Triple = mul(days, f.vesselHoursPerDay);
+    pluginItem(
+      line,
+      "service",
+      "ferry.cost.vessel_hour",
+      t("cost.x.vesselHours", { n: f.inService, from: hhmm(f.firstS / 60), to: hhmm(f.lastS / 60) }),
+      vesselHours[1],
+      t("cost.unit.vehicleHours"),
+      ppp,
+      (rate) => prod(rate, vesselHours),
     );
   }
 

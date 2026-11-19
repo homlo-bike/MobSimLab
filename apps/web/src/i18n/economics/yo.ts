@@ -618,6 +618,8 @@ export const economicsYo = {
   "apr.shared": "Àwọn ohun-èlò àjọpín tí kò ì tí ì ní ìlà ({mode})",
   "apr.currencyNote":
     "Ìṣiṣẹ́ ìbéèrè ṣe ìdíyelé àkókò ní {run} ṣùgbọ́n àwọn tábìlì fi {tables} hàn; tún ṣiṣẹ́ àwòṣe ìbéèrè lẹ́yìn yíyí owó padà.",
+  "apr.uncostedNote":
+    "Kò sí iye owó síbẹ̀ fún {lines}: a ń ka àwọn èrò, owó ọkọ̀ àti àǹfààní wọn, ṣùgbọ́n a kò ná nǹkan kan lé wọn, nítorí náà àbájáde dàbí èyí tó dára ju bó ṣe máa rí lọ.",
   "apr.title": "Ìgbéléwọ̀n",
   "apr.intro":
     "Ṣé iṣẹ́ àkànṣe yìí yẹ? Gbogbo iye owó àti àǹfààní láti àwọn tábìlì lókè, ọdún dé ọdún, tí a dín kù sí iye òde òní. Àwọn ìwọ̀n ni ìdá 10–90 ti àpẹẹrẹ àìròtẹ́lẹ̀ {draws}.",

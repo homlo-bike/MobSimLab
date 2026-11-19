@@ -645,6 +645,8 @@ export const economicsDe = {
   "apr.shared": "Gemeinsame Anlagen ({mode}), auf denen noch keine Linie fährt",
   "apr.currencyNote":
     "Der Nachfragelauf hat Zeit in {run} bewertet, die Tabellen zeigen {tables}: Rechnen Sie das Nachfragemodell nach dem Wechsel der Währung erneut.",
+  "apr.uncostedNote":
+    "Noch keine Kosten für {lines}: Fahrgäste, Fahrgeld und Nutzen zählen, aber es wird nichts dafür ausgegeben, daher sieht das Ergebnis besser aus, als es sein wird.",
   "apr.title": "Bewertung",
   "apr.intro":
     "Lohnt sich das Projekt? Alle Kosten und Nutzen aus den Tabellen oben, Jahr für Jahr, auf heute abgezinst. Spannen sind das 10. bis 90. Perzentil aus {draws} Zufallsziehungen.",

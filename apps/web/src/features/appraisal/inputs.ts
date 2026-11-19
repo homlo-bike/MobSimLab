@@ -106,3 +106,18 @@ export function mcaLines(
       };
     });
 }
+
+/**
+ * Purpose: the appraisal lines that carry ridership but no costs at all, such as a people mover the cost
+ * tables do not price yet. Their benefits and fares still count, which flatters the result.
+ * Inputs: the appraisal lines. Output: those lines, in order. No side effects.
+ */
+export function uncostedLines(lines: readonly AppraisalLine[]): AppraisalLine[] {
+  const sum = (x: Triple) => x[0] + x[1] + x[2];
+  return lines.filter((l) => {
+    const s = l.spending;
+    return (
+      l.shown && sum(l.annual) > 0 && sum(s.civil) + sum(s.systems) + sum(s.vehicles) + sum(s.operating) === 0
+    );
+  });
+}

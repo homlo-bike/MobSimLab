@@ -629,6 +629,8 @@ export const economicsEn = {
   "apr.shared": "Shared {mode} items no line runs on yet",
   "apr.currencyNote":
     "The demand run valued time in {run}, the tables show {tables}: run the demand model again after changing the currency.",
+  "apr.uncostedNote":
+    "No costs yet for {lines}: their ridership, fares and benefits count, but nothing is spent on them, so the result looks better than it will be.",
   "apr.title": "Appraisal",
   "apr.intro":
     "Is the project worth it? Every cost and benefit from the tables above, year by year, discounted to today. Ranges are the 10th to 90th percentile of {draws} random draws.",

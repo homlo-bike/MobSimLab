@@ -622,6 +622,8 @@ export const economicsVi = {
   "apr.shared": "Tài sản dùng chung ({mode}) chưa có tuyến nào chạy",
   "apr.currencyNote":
     "Lần chạy nhu cầu định giá thời gian bằng {run} trong khi bảng hiển thị {tables}: hãy chạy lại mô hình nhu cầu sau khi đổi tiền tệ.",
+  "apr.uncostedNote":
+    "Chưa có chi phí cho {lines}: hành khách, tiền vé và lợi ích của chúng được tính, nhưng không chi gì cho chúng, nên kết quả trông tốt hơn thực tế.",
   "apr.title": "Thẩm định",
   "apr.intro":
     "Dự án có đáng không? Mọi chi phí và lợi ích từ các bảng ở trên, từng năm, chiết khấu về hiện tại. Các khoảng là phân vị thứ 10 đến 90 của {draws} lần rút ngẫu nhiên.",

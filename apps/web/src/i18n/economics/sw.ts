@@ -632,6 +632,8 @@ export const economicsSw = {
   "apr.shared": "Miundombinu ya pamoja ambayo bado haina njia ({mode})",
   "apr.currencyNote":
     "Uendeshaji wa mahitaji ulithaminisha muda kwa {run} lakini majedwali yanaonyesha {tables}; endesha modeli ya mahitaji tena baada ya kubadilisha sarafu.",
+  "apr.uncostedNote":
+    "Bado hakuna gharama kwa {lines}: abiria, nauli na manufaa yake yanahesabiwa, lakini hakuna kinachotumika kwake, kwa hiyo matokeo yanaonekana bora kuliko yatakavyokuwa.",
   "apr.title": "Tathmini",
   "apr.intro":
     "Je, mradi unafaa? Gharama na manufaa yote kutoka majedwali yaliyo juu, mwaka kwa mwaka, yamepunguzwa hadi thamani ya leo. Masafa ni asilimia ya 10–90 ya sampuli {draws} za nasibu.",

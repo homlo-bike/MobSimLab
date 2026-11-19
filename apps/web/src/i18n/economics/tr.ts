@@ -632,6 +632,8 @@ export const economicsTr = {
   "apr.shared": "Henüz hiçbir hattın çalışmadığı ortak varlıklar ({mode})",
   "apr.currencyNote":
     "Talep çalıştırması zamanı {run} cinsinden değerledi, tablolar ise {tables} gösteriyor: para birimini değiştirdikten sonra talep modelini yeniden çalıştırın.",
+  "apr.uncostedNote":
+    "{lines} için henüz maliyet yok: yolcuları, ücret gelirleri ve faydaları sayılıyor ama onlara hiçbir şey harcanmıyor, bu yüzden sonuç olacağından iyi görünüyor.",
   "apr.title": "Değerlendirme",
   "apr.intro":
     "Proje buna değer mi? Yukarıdaki tablolardaki tüm maliyetler ve faydalar, yıl yıl, bugüne iskontolanmış. Aralıklar {draws} rastgele çekilişin 10. ile 90. yüzdelikleridir.",

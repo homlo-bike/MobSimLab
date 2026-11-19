@@ -50,6 +50,9 @@ export const tablesRu = {
   "net.modes.many": "{count} видов транспорта",
   "net.routeSub": "{rail} железной дороги, {street} уличных линий",
   "net.routeSubCable": "{rail} железной дороги, {street} уличных линий, {cable} канатных дорог",
+  "net.routeSubFerry": "{rail} железной дороги, {street} уличных линий, {ferry} паромов",
+  "net.routeSubCableFerry":
+    "{rail} железной дороги, {street} уличных линий, {cable} канатных дорог, {ferry} паромов",
   "net.stationsAndStops": "Станции и остановки",
   "net.stationsSub": "станций: {stations}, остановок: {stops}",
   "net.inServiceSub": "{n} в работе в час пик",
@@ -109,6 +112,7 @@ export const tablesRu = {
   "net.perTrain": "на поезд",
   "net.perVehicle": "на машину",
   "net.perCabin": "на кабину",
+  "net.perVessel": "на судно",
   "net.perHour": "в час",
   "net.ofPlaces": "{pct}% мест",
   "net.noFigures": "Данных об обслуживании пока нет: {problem}",
@@ -305,6 +309,9 @@ export const tablesRu = {
   "cost.x.vehicleHours": "{n} машин в час пик, {from}–{to}",
   "cost.x.ropeway": "Канат, опоры и приводы",
   "cost.x.stationHours": "{n} станций открыты {from}–{to}",
+  "cost.x.piers": "Причалы",
+  "cost.x.vessels": "Суда с резервом",
+  "cost.x.vesselHours": "{n} судов в работе, {from}–{to}",
   "cost.x.ofInfra": "{pct} % инфраструктуры",
   "cost.x.ofInfraYear": "{pct} % инфраструктуры в год",
   "cost.x.ofOperating": "Доля эксплуатационных затрат",
@@ -404,6 +411,8 @@ export const tablesRu = {
   "tt.tbl.noTrips": "В этот тип дня рейсов нет.",
   "tt.tbl.ropeway":
     "Кабина отправляется каждые {every} в каждом направлении с {from} до {to}. Кабины весь день остаются на линии, поэтому у канатной дороги нет оборотов подвижного состава.",
+  "tt.tbl.ferry":
+    "{n} судов курсируют туда и обратно с {from} до {to}, в каждом направлении одно отправляется каждые {every}. Полный рейс туда и обратно со стоянками занимает {cycle}.",
   "tt.tbl.nTrips": "(рейсов: {n})",
   "tt.tbl.dirCaption": "{line}, {from} — {to}",
   "tt.tbl.blocksTitle": "Выходы подвижного состава, {day}",

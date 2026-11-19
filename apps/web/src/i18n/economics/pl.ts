@@ -646,6 +646,8 @@ export const economicsPl = {
   "apr.shared": "Wspólna infrastruktura ({mode}), po której nie kursuje jeszcze żadna linia",
   "apr.currencyNote":
     "Obliczenie popytu wyceniło czas w {run}, a tabele pokazują {tables}: oblicz model popytu ponownie po zmianie waluty.",
+  "apr.uncostedNote":
+    "Brak jeszcze kosztów dla {lines}: ich pasażerowie, opłaty i korzyści są liczone, ale nic się na nie nie wydaje, więc wynik wygląda lepiej, niż będzie.",
   "apr.title": "Ocena",
   "apr.intro":
     "Czy projekt się opłaca? Wszystkie koszty i korzyści z tabel powyżej, rok po roku, zdyskontowane na dziś. Zakresy to percentyle od 10. do 90. z {draws} losowań.",

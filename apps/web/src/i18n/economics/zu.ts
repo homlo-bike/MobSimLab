@@ -637,6 +637,8 @@ export const economicsZu = {
   "apr.shared": "Ingqalasizinda yokwabelana engakabi nomugqa ({mode})",
   "apr.currencyNote":
     "Ukusebenza kwesidingo kulinganise isikhathi ngo-{run} kodwa amathebula abonisa {tables}; sebenzisa imodeli yesidingo futhi ngemuva kokushintsha imali.",
+  "apr.uncostedNote":
+    "Azikabi bikho izindleko ze-{lines}: abagibeli, imali yokugibela nezinzuzo kuyabalwa, kodwa akukho okusetshenziswayo kuzo, ngakho umphumela ubukeka ungcono kunalokho ozoba yikho.",
   "apr.title": "Ukuhlola",
   "apr.intro":
     "Ingabe iphrojekthi iyafaneleka? Zonke izindleko nezinzuzo ezivela kumathebula angenhla, unyaka nonyaka, zehliselwe enanini lanamuhla. Amabanga yi-percentile ye-10–90 yamasampula angahleliwe angu-{draws}.",

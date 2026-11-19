@@ -628,6 +628,8 @@ export const economicsHa = {
   "apr.shared": "Kayayyakin more rayuwa na tarayya da har yanzu babu layi ({mode})",
   "apr.currencyNote":
     "Gudanar da buƙata ta ƙimanta lokaci a {run} amma teburan suna nuna {tables}; sake gudanar da samfurin buƙata bayan canja kuɗi.",
+  "apr.uncostedNote":
+    "Babu kuɗin kashewa tukuna ga {lines}: ana ƙidaya fasinjoji, kuɗin tafiya da fa'idodinsu, amma ba a kashe komai a kansu ba, don haka sakamakon ya fi yadda zai kasance.",
   "apr.title": "Kimantawa",
   "apr.intro":
     "Shin aikin ya dace? Dukkan kuɗi da fa'idodi daga teburan da ke sama, shekara bayan shekara, an rage su zuwa ƙimar yau. Kewayon su ne kashi na 10–90 na samfura {draws} na bazuwa.",

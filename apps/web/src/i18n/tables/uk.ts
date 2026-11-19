@@ -50,6 +50,9 @@ export const tablesUk = {
   "net.modes.many": "{count} видів транспорту",
   "net.routeSub": "{rail} залізниці, {street} вуличних ліній",
   "net.routeSubCable": "{rail} залізниці, {street} вуличних ліній, {cable} канатних доріг",
+  "net.routeSubFerry": "{rail} залізниці, {street} вуличних ліній, {ferry} поромів",
+  "net.routeSubCableFerry":
+    "{rail} залізниці, {street} вуличних ліній, {cable} канатних доріг, {ferry} поромів",
   "net.stationsAndStops": "Станції та зупинки",
   "net.stationsSub": "станцій: {stations}, зупинок: {stops}",
   "net.inServiceSub": "{n} у роботі в пік",
@@ -109,6 +112,7 @@ export const tablesUk = {
   "net.perTrain": "на потяг",
   "net.perVehicle": "на машину",
   "net.perCabin": "на кабіну",
+  "net.perVessel": "на судно",
   "net.perHour": "за годину",
   "net.ofPlaces": "{pct}% місць",
   "net.noFigures": "Даних про обслуговування ще немає: {problem}",
@@ -305,6 +309,9 @@ export const tablesUk = {
   "cost.x.vehicleHours": "{n} машин у пік, {from}–{to}",
   "cost.x.ropeway": "Канат, опори та приводи",
   "cost.x.stationHours": "{n} станцій відкрито {from}–{to}",
+  "cost.x.piers": "Причали",
+  "cost.x.vessels": "Судна з резервом",
+  "cost.x.vesselHours": "{n} суден у роботі, {from}–{to}",
   "cost.x.ofInfra": "{pct} % інфраструктури",
   "cost.x.ofInfraYear": "{pct} % інфраструктури за рік",
   "cost.x.ofOperating": "Частка експлуатаційних витрат",
@@ -405,6 +412,8 @@ export const tablesUk = {
   "tt.tbl.noTrips": "У цей тип дня рейсів немає.",
   "tt.tbl.ropeway":
     "Кабіна відправляється кожні {every} у кожному напрямку з {from} до {to}. Кабіни весь день залишаються на лінії, тож канатна дорога не має оборотів рухомого складу.",
+  "tt.tbl.ferry":
+    "{n} суден курсують туди й назад з {from} до {to}, у кожному напрямку одне відходить кожні {every}. Повний рейс туди й назад зі стоянками триває {cycle}.",
   "tt.tbl.nTrips": "(рейсів: {n})",
   "tt.tbl.dirCaption": "{line}, {from} — {to}",
   "tt.tbl.blocksTitle": "Випуски рухомого складу, {day}",

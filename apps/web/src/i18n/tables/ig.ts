@@ -47,6 +47,9 @@ export const tablesIg = {
   "net.modes.other": "ụdị {count}",
   "net.routeSub": "ụzọ ígwè {rail}, ahịrị okporo ụzọ {street}",
   "net.routeSubCable": "{rail} ụzọ ụgbọ oloko, {street} ahịrị okporo ụzọ, {cable} ụgbọ eriri",
+  "net.routeSubFerry": "ụzọ ígwè {rail}, ahịrị okporo ụzọ {street}, {ferry} ụgbọ mmiri",
+  "net.routeSubCableFerry":
+    "{rail} ụzọ ụgbọ oloko, {street} ahịrị okporo ụzọ, {cable} ụgbọ eriri, {ferry} ụgbọ mmiri",
   "net.stationsAndStops": "Ọdụ na ebe nkwụsị",
   "net.stationsSub": "ọdụ {stations}, ebe nkwụsị {stops}",
   "net.inServiceSub": "{n} na-arụ ọrụ n'oge mkpọchi",
@@ -106,6 +109,7 @@ export const tablesIg = {
   "net.perTrain": "kwa ụgbọ oloko",
   "net.perVehicle": "kwa ụgbọ",
   "net.perCabin": "kwa ụlọ",
+  "net.perVessel": "kwa ụgbọ mmiri",
   "net.perHour": "kwa awa",
   "net.ofPlaces": "{pct}% nke oche",
   "net.noFigures": "Enwebeghị ọnụọgụgụ ọrụ njem: {problem}",
@@ -295,6 +299,9 @@ export const tablesIg = {
   "cost.x.vehicleHours": "ụgbọ {n} n'oge mkpọchi, {from}–{to}",
   "cost.x.ropeway": "Eriri, ụlọ elu na igwe ọkụ",
   "cost.x.stationHours": "ọdụ {n} mepere emepe {from}–{to}",
+  "cost.x.piers": "Ọdụ ụgbọ mmiri",
+  "cost.x.vessels": "Ụgbọ mmiri gụnyere ndị nchekwa",
+  "cost.x.vesselHours": "Ụgbọ mmiri {n} na-arụ ọrụ, {from}–{to}",
   "cost.x.ofInfra": "{pct} % nke akụrụngwa",
   "cost.x.ofInfraYear": "{pct} % nke akụrụngwa kwa afọ",
   "cost.x.ofOperating": "òkè nke ego ọrụ",
@@ -393,6 +400,8 @@ export const tablesIg = {
   "tt.tbl.noTrips": "Enweghị njem n'ụdị ụbọchị a.",
   "tt.tbl.ropeway":
     "Ụlọ na-apụ kwa {every} n'ụzọ ọ bụla, site na {from} ruo {to}. Ụlọ ndị ahụ na-anọ n'ahịrị ahụ ụbọchị niile, ya mere ụgbọ eriri enweghị ngọngọ ụgbọ.",
+  "tt.tbl.ferry":
+    "Ụgbọ mmiri {n} na-aga ma na-alọta site na {from} ruo {to}; otu na-apụ kwa {every} n'ụzọ ọ bụla. Otu njem gaa-lọta gụnyere ezumike na-ewe {cycle}.",
   "tt.tbl.nTrips": "(njem {n})",
   "tt.tbl.dirCaption": "{line}, site na {from} ruo {to}",
   "tt.tbl.blocksTitle": "Ọrụ ụgbọ, {day}",

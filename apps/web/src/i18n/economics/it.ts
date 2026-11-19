@@ -641,6 +641,8 @@ export const economicsIt = {
   "apr.shared": "Infrastrutture condivise ({mode}) su cui non circola ancora nessuna linea",
   "apr.currencyNote":
     "L'esecuzione della domanda ha valutato il tempo in {run} mentre le tabelle mostrano {tables}: esegui di nuovo il modello di domanda dopo aver cambiato valuta.",
+  "apr.uncostedNote":
+    "Ancora nessun costo per {lines}: passeggeri, tariffe e benefici contano, ma non si spende nulla per esse, quindi il risultato sembra migliore di quanto sarà.",
   "apr.title": "Valutazione",
   "apr.intro":
     "Il progetto vale la pena? Tutti i costi e benefici delle tabelle qui sopra, anno per anno, attualizzati a oggi. Gli intervalli vanno dal 10° al 90° percentile di {draws} estrazioni casuali.",

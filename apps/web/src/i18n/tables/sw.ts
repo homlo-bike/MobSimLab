@@ -48,6 +48,9 @@ export const tablesSw = {
   "net.modes.other": "aina {count}",
   "net.routeSub": "reli {rail}, njia za barabarani {street}",
   "net.routeSubCable": "reli {rail}, njia za barabarani {street}, magari ya kebo {cable}",
+  "net.routeSubFerry": "reli {rail}, njia za barabarani {street}, vivuko {ferry}",
+  "net.routeSubCableFerry":
+    "reli {rail}, njia za barabarani {street}, magari ya kebo {cable}, vivuko {ferry}",
   "net.stationsAndStops": "Stesheni na vituo",
   "net.stationsSub": "stesheni {stations}, vituo {stops}",
   "net.inServiceSub": "{n} kazini wakati wa msongamano",
@@ -107,6 +110,7 @@ export const tablesSw = {
   "net.perTrain": "kwa treni",
   "net.perVehicle": "kwa gari",
   "net.perCabin": "kwa kila kibanda",
+  "net.perVessel": "kwa chombo",
   "net.perHour": "kwa saa",
   "net.ofPlaces": "{pct}% ya viti",
   "net.noFigures": "Bado hakuna takwimu za huduma: {problem}",
@@ -301,6 +305,9 @@ export const tablesSw = {
   "cost.x.vehicleHours": "magari {n} wakati wa msongamano, {from}–{to}",
   "cost.x.ropeway": "Kamba, minara na mitambo ya kuendesha",
   "cost.x.stationHours": "stesheni {n} wazi {from}–{to}",
+  "cost.x.piers": "Gati za vivuko",
+  "cost.x.vessels": "Vyombo pamoja na vya akiba",
+  "cost.x.vesselHours": "Vyombo {n} kazini, {from}–{to}",
   "cost.x.ofInfra": "{pct} % ya miundombinu",
   "cost.x.ofInfraYear": "{pct} % ya miundombinu kwa mwaka",
   "cost.x.ofOperating": "sehemu ya gharama ya uendeshaji",
@@ -403,6 +410,8 @@ export const tablesSw = {
   "tt.tbl.noTrips": "Hakuna safari katika aina hii ya siku.",
   "tt.tbl.ropeway":
     "Kibanda huondoka kila {every} kila upande, kuanzia {from} hadi {to}. Vibanda hubaki kwenye njia siku nzima, kwa hiyo gari la kebo halina zamu za magari.",
+  "tt.tbl.ferry":
+    "Vyombo {n} vinaenda na kurudi kuanzia {from} hadi {to}; kimoja kinaondoka kila {every} kila upande. Safari moja ya kwenda na kurudi pamoja na mapumziko huchukua {cycle}.",
   "tt.tbl.nTrips": "(safari {n})",
   "tt.tbl.dirCaption": "{line}, {from} hadi {to}",
   "tt.tbl.blocksTitle": "Zamu za magari, {day}",

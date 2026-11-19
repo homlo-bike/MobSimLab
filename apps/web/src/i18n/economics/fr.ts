@@ -647,6 +647,8 @@ export const economicsFr = {
   "apr.shared": "Ouvrages partagés ({mode}) sans ligne encore en service",
   "apr.currencyNote":
     "L'exécution de la demande a valorisé le temps en {run} alors que les tableaux affichent {tables} : relancez le modèle de demande après avoir changé de monnaie.",
+  "apr.uncostedNote":
+    "Pas encore de coûts pour {lines} : leur fréquentation, leurs recettes et leurs avantages comptent, mais rien n’y est dépensé, donc le résultat paraît meilleur qu’il ne sera.",
   "apr.title": "Évaluation",
   "apr.intro":
     "Le projet en vaut-il la peine ? Tous les coûts et bénéfices des tableaux ci-dessus, année par année, actualisés à aujourd'hui. Les plages vont du 10e au 90e centile de {draws} tirages aléatoires.",

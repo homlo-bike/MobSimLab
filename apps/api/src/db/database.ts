@@ -1,5 +1,6 @@
 import type { ColumnType, Generated } from "kysely";
 import { Kysely, PostgresDialect } from "kysely";
+import { Logger } from "@nestjs/common";
 import { Pool } from "pg";
 import type { AppConfig } from "../config/env";
 
@@ -397,6 +398,8 @@ export type Database = Kysely<DB>;
 /**
  * Purpose: create the connection pool for the app role.
  * Inputs: validated config. Output: a Kysely instance; no connection is opened until the first query.
+ * Side effects: logs errors of idle connections, such as the server closing them on a restart, instead of
+ * letting them end the process; the pool opens a new connection for the next query.
  */
 export function createDatabase(config: AppConfig): Database {
   const pool = new Pool({
@@ -407,5 +410,6 @@ export function createDatabase(config: AppConfig): Database {
     password: config.secrets.db_app_password,
     max: 10,
   });
+  pool.on("error", (e) => new Logger("Database").warn(`Idle database connection closed: ${e.message}`));
   return new Kysely<DB>({ dialect: new PostgresDialect({ pool }) });
 }

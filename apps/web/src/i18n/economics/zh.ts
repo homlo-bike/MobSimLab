@@ -589,6 +589,7 @@ export const economicsZh = {
   "apr.shared": "尚无线路运行的共用设施（{mode}）",
   "apr.currencyNote":
     "需求运行以 {run} 计算时间价值，而表格显示的是 {tables}：更换货币后请重新运行需求模型。",
+  "apr.uncostedNote": "{lines} 尚无成本：其客流、票款和效益计入，但没有任何支出，因此结果看起来比实际更好。",
   "apr.title": "评估",
   "apr.intro":
     "项目值得做吗？上方各表中的全部成本和效益，逐年折现到今天。范围为 {draws} 次随机抽样的第 10 到第 90 百分位。",

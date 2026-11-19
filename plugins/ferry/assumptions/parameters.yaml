@@ -270,3 +270,145 @@
         - mobsimlab-derivation
       check: unverified
       rationale: (to verify)
+- key: ferry.reserve_share
+  label: Reserve vessels, share of the vessels in service
+  group: Ferries
+  unit: share
+  used_by:
+    - fleet
+  values:
+    - context:
+        mode: "*"
+      low: 0.1
+      central: 0.2
+      high: 0.34
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Vessels spend weeks a year in dry dock and surveys; a small fleet needs one spare, so 1 in 3 to 1 in 10.
+- key: ferry.cost.pier_each
+  label: Ferry pier
+  group: Ferry costs
+  unit: US$ million per pier (2023, PPP)
+  used_by:
+    - "construction cost: stations"
+  values:
+    - context:
+        mode: "*"
+      low: 1
+      central: 4
+      high: 10
+      basis: documented
+      sources:
+        - nycedc-ferry-landings
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Floating landing (barge or pontoon), gangway, piles, canopy and waiting area, before design (15 %) and
+        contingency (25 %). NYC Ferry's US$55 M for 10 new landings and upgrades (2017) is about US$5.5 M a
+        landing; a simple pontoon on a quay is about US$1 M, a terminal building with several berths over US$10 M."
+- key: ferry.cost.vessel_each
+  label: Ferry vessel
+  group: Ferry costs
+  unit: US$ million each (2023, market)
+  used_by:
+    - "construction cost: vehicles"
+  values:
+    - context:
+        mode: "*"
+      low: 2
+      central: 6
+      high: 16
+      basis: documented
+      sources:
+        - nyc-ferry-vessel-cost
+        - weta-kvichak-contract
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Fallback across vessel types; the vessel type's own value applies.
+    - context:
+        mode: ferry
+        vessel_type: monohull
+      low: 2
+      central: 4
+      high: 8
+      basis: documented
+      sources:
+        - nyc-ferry-vessel-cost
+      check: unverified
+      rationale:
+        "NYC Ferry's 149-passenger aluminium boats cost close to US$4 M each (2016–2020); larger 350-passenger
+        boats and inflation since then point to the high end."
+    - context:
+        mode: ferry
+        vessel_type: catamaran
+      low: 8
+      central: 15
+      high: 20
+      basis: documented
+      sources:
+        - weta-kvichak-contract
+        - weta-mavrik-contract
+      check: unverified
+      rationale:
+        "San Francisco Bay Ferry: US$32 M for two 400-passenger 27-knot catamarans (Kvichak) and US$30 M for two
+        320-passenger 36-knot ones (Mavrik), about US$15–16 M each."
+    - context:
+        mode: ferry
+        vessel_type: hydrofoil
+      low: 2
+      central: 2.7
+      high: 3.5
+      basis: documented
+      sources:
+        - candela-p12-price
+      check: unverified
+      rationale: "Candela P-12 Shuttle (30 passengers, electric): listed at €1.7 M to €2.5 M."
+- key: ferry.cost.vessel_hour
+  label: Ferry crew, fuel and running repairs per vessel-hour
+  group: Ferry costs
+  unit: US$ per hour (2023, PPP)
+  used_by:
+    - "operating cost: service"
+  values:
+    - context:
+        mode: "*"
+      low: 450
+      central: 900
+      high: 2000
+      basis: documented
+      sources:
+        - ntd-ferry-agency-profiles
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "US ferry operators report US$490 (BillyBey), US$850–1,010 (NY Waterway), US$690–1,170 (NYC Ferry) and
+        US$2,410 (Steamship Authority) of operating expense per vessel revenue hour (FTA agency profiles,
+        2017–2021). Overheads and upkeep are added on top, so the central value is below the NYC Ferry figure."
+    - context:
+        mode: ferry
+        vessel_type: catamaran
+      low: 700
+      central: 1200
+      high: 2400
+      basis: documented
+      sources:
+        - ntd-ferry-agency-profiles
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Fast catamarans burn several hundred litres of fuel an hour; the upper part of the US range.
+    - context:
+        mode: ferry
+        vessel_type: hydrofoil
+      low: 150
+      central: 300
+      high: 500
+      basis: educated-guess
+      sources:
+        - candela-p12-price
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Two crew and electricity at about 2 kWh per km; Candela claims running costs far below a diesel boat of
+        the same size.

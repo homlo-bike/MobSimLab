@@ -12,7 +12,7 @@ import type { Estimate as CostEstimate } from "../costs/model";
 import type { DemandRidership } from "../demand/ridership";
 import type { FareInput } from "../fares/model";
 import { type PreferencesDoc, withPref } from "../../workspace/preferences";
-import { appraisalLines, mcaLines } from "./inputs";
+import { appraisalLines, mcaLines, uncostedLines } from "./inputs";
 import { TablePart } from "../tables/sections";
 import {
   type Appraisal,
@@ -115,6 +115,10 @@ export function AppraisalSection({
   const editable = !!onPreferences;
   const setValue = (id: string, v: number | null) => onPreferences?.(withPref(preferences, id, v));
   const total = result?.rows.find((r) => r.id === "total") ?? null;
+  const uncosted = uncostedLines(lines);
+  const uncostedNote = uncosted.length
+    ? t("apr.uncostedNote", { lines: uncosted.map((l) => l.name).join(", ") })
+    : null;
   const currencyNote =
     demand?.appraisal && currency && demand.appraisal.currency !== currency
       ? t("apr.currencyNote", { run: demand.appraisal.currency, tables: currency })
@@ -141,13 +145,15 @@ export function AppraisalSection({
       {result && total && (
         <>
           <TablePart id="appraisal.results">
-            {[...result.notes.map((n) => t(n.key, n.vars)), ...(currencyNote ? [currencyNote] : [])].map(
-              (n) => (
-                <p key={n} className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
-                  {n}
-                </p>
-              ),
-            )}
+            {[
+              ...result.notes.map((n) => t(n.key, n.vars)),
+              ...(uncostedNote ? [uncostedNote] : []),
+              ...(currencyNote ? [currencyNote] : []),
+            ].map((n) => (
+              <p key={n} className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                {n}
+              </p>
+            ))}
             <div className="mt-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
               <Tile
                 title={t("apr.tile.enpv")}

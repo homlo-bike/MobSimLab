@@ -639,6 +639,8 @@ export const economicsPt = {
   "apr.shared": "Ativos compartilhados ({mode}) sem nenhuma linha ainda em operação",
   "apr.currencyNote":
     "A execução de demanda valorizou o tempo em {run}, enquanto as tabelas mostram {tables}: execute de novo o modelo de demanda depois de mudar a moeda.",
+  "apr.uncostedNote":
+    "Ainda sem custos para {lines}: passageiros, tarifas e benefícios contam, mas nada é gasto com elas, por isso o resultado parece melhor do que será.",
   "apr.title": "Avaliação",
   "apr.intro":
     "O projeto vale a pena? Todos os custos e benefícios das tabelas acima, ano a ano, descontados para hoje. As faixas vão do percentil 10 ao 90 de {draws} sorteios aleatórios.",

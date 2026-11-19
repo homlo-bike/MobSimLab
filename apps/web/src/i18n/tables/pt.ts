@@ -49,6 +49,9 @@ export const tablesPt = {
   "net.modes.other": "{count} modos",
   "net.routeSub": "{rail} de ferrovia, {street} de linhas em rua",
   "net.routeSubCable": "{rail} de ferrovia, {street} de linhas rodoviárias, {cable} de teleféricos",
+  "net.routeSubFerry": "{rail} de ferrovia, {street} de linhas em rua, {ferry} de balsas",
+  "net.routeSubCableFerry":
+    "{rail} de ferrovia, {street} de linhas rodoviárias, {cable} de teleféricos, {ferry} de balsas",
   "net.stationsAndStops": "Estações e paradas",
   "net.stationsSub": "{stations} estações, {stops} paradas",
   "net.inServiceSub": "{n} em serviço no pico",
@@ -108,6 +111,7 @@ export const tablesPt = {
   "net.perTrain": "por trem",
   "net.perVehicle": "por veículo",
   "net.perCabin": "por cabine",
+  "net.perVessel": "por embarcação",
   "net.perHour": "por hora",
   "net.ofPlaces": "{pct}% dos lugares",
   "net.noFigures": "Ainda sem números de serviço: {problem}",
@@ -300,6 +304,9 @@ export const tablesPt = {
   "cost.x.vehicleHours": "{n} veículos no pico, {from}–{to}",
   "cost.x.ropeway": "Cabo, torres e acionamentos",
   "cost.x.stationHours": "{n} estações abertas {from}–{to}",
+  "cost.x.piers": "Cais",
+  "cost.x.vessels": "Embarcações com reserva",
+  "cost.x.vesselHours": "{n} embarcações em serviço, {from}–{to}",
   "cost.x.ofInfra": "{pct} % da infraestrutura",
   "cost.x.ofInfraYear": "{pct} % da infraestrutura por ano",
   "cost.x.ofOperating": "Parcela do custo de operação",
@@ -399,6 +406,8 @@ export const tablesPt = {
   "tt.tbl.noTrips": "Nenhuma viagem neste tipo de dia.",
   "tt.tbl.ropeway":
     "Parte uma cabine a cada {every} em cada sentido, das {from} às {to}. As cabines ficam na linha o dia todo, por isso um teleférico não tem blocos de veículos.",
+  "tt.tbl.ferry":
+    "{n} embarcações vão e voltam de {from} a {to}, saindo uma a cada {every} em cada sentido. Uma viagem de ida e volta com as esperas leva {cycle}.",
   "tt.tbl.nTrips": "({n} viagens)",
   "tt.tbl.dirCaption": "{line}, de {from} a {to}",
   "tt.tbl.blocksTitle": "Blocos de veículos, {day}",

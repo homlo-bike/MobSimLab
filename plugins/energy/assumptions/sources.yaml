@@ -55,3 +55,23 @@
   access: free
   retrieved: 2026-11-15
   checked_via: search-snippet
+
+- id: candela-p12-energy
+  title: Candela P-12 electric hydrofoil, about 3–4 kWh per nautical mile at 25 knots
+  publisher: Riviera Maritime Media
+  url: https://www.rivieramm.com/news-content-hub/candela-p-12-completes-worlds-longest-electric-sea-journey-87645
+  licence: © Riviera Maritime Media; numbers cited as facts
+  access: free
+  retrieved: 2026-11-19
+  checked_via: search-snippet
+  kind: secondary
+
+- id: incat-crowther-seychelles-ferry
+  title: Incat Crowther designed ferry for Seychelles (292 passengers, 25 knots, 2 × 1,342 kW)
+  publisher: Maritime Professional
+  url: https://www.maritimeprofessional.com/news/incat-crowther-designed-ferry-seychelles-297367
+  licence: © Maritime Professional; numbers cited as facts
+  access: free
+  retrieved: 2026-11-19
+  checked_via: search-snippet
+  kind: secondary

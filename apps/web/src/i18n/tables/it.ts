@@ -49,6 +49,9 @@ export const tablesIt = {
   "net.modes.other": "{count} modi",
   "net.routeSub": "{rail} di ferrovia, {street} di linee stradali",
   "net.routeSubCable": "{rail} di ferrovia, {street} di linee stradali, {cable} di funivie",
+  "net.routeSubFerry": "{rail} di ferrovia, {street} di linee stradali, {ferry} di traghetti",
+  "net.routeSubCableFerry":
+    "{rail} di ferrovia, {street} di linee stradali, {cable} di funivie, {ferry} di traghetti",
   "net.stationsAndStops": "Stazioni e fermate",
   "net.stationsSub": "{stations} stazioni, {stops} fermate",
   "net.inServiceSub": "{n} in servizio nell’ora di punta",
@@ -108,6 +111,7 @@ export const tablesIt = {
   "net.perTrain": "per treno",
   "net.perVehicle": "per veicolo",
   "net.perCabin": "per cabina",
+  "net.perVessel": "per nave",
   "net.perHour": "all’ora",
   "net.ofPlaces": "{pct}% dei posti",
   "net.noFigures": "Ancora nessun dato di servizio: {problem}",
@@ -300,6 +304,9 @@ export const tablesIt = {
   "cost.x.vehicleHours": "{n} veicoli nell’ora di punta, {from}–{to}",
   "cost.x.ropeway": "Fune, sostegni e azionamenti",
   "cost.x.stationHours": "{n} stazioni aperte {from}–{to}",
+  "cost.x.piers": "Pontili",
+  "cost.x.vessels": "Navi con riserva",
+  "cost.x.vesselHours": "{n} navi in servizio, {from}–{to}",
   "cost.x.ofInfra": "{pct} % dell’infrastruttura",
   "cost.x.ofInfraYear": "{pct} % dell’infrastruttura all’anno",
   "cost.x.ofOperating": "Quota del costo di esercizio",
@@ -402,6 +409,8 @@ export const tablesIt = {
   "tt.tbl.noTrips": "Nessuna corsa in questo tipo di giorno.",
   "tt.tbl.ropeway":
     "Una cabina parte ogni {every} in ciascuna direzione, dalle {from} alle {to}. Le cabine restano sulla linea tutto il giorno, quindi una funivia non ha turni macchina.",
+  "tt.tbl.ferry":
+    "{n} navi fanno la spola da {from} a {to}, ne parte una ogni {every} in ciascuna direzione. Un giro completo con le soste ai capolinea dura {cycle}.",
   "tt.tbl.nTrips": "({n} corse)",
   "tt.tbl.dirCaption": "{line}, da {from} a {to}",
   "tt.tbl.blocksTitle": "Turni macchina, {day}",

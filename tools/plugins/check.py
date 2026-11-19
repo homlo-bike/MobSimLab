@@ -505,7 +505,15 @@ def check_plugin(
     if not modes and params:
         # A plugin without modes of its own (a calculation) gives values per core mode, so the app can
         # resolve them for each line of the project.
-        for mid in sorted(set(chk.MODES) | set(EXTRA_CORE_MODES)):
+        # Modes of other plugins get values too where a parameter names them (energy for ferries).
+        named = {
+            mid
+            for prm in params
+            for v in prm["values"]
+            for mid in as_list((v.get("context") or {}).get("mode", "*"))
+            if mid != "*" and mid not in chk.MODES and mid not in EXTRA_CORE_MODES
+        }
+        for mid in sorted(set(chk.MODES) | set(EXTRA_CORE_MODES) | named):
             defaults[mid] = {
                 "*": {
                     prm["key"]: {f: resolve(prm, mid, None, None)[f] for f in ("low", "central", "high")}

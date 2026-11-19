@@ -633,6 +633,8 @@ export const economicsUz = {
   "apr.shared": "Hali yo‘nalish qatnamaydigan umumiy inshootlar ({mode})",
   "apr.currencyNote":
     "Talab ishga tushirilishi vaqtni {run}da baholagan, jadvallar esa {tables} ko‘rsatadi; valyutani o‘zgartirgandan keyin talab modelini qayta ishga tushiring.",
+  "apr.uncostedNote":
+    "{lines} uchun hali xarajat yo‘q: yo‘lovchilari, yo‘l haqi va foydalari hisoblanadi, lekin ularga hech narsa sarflanmaydi, shuning uchun natija haqiqatdagidan yaxshi ko‘rinadi.",
   "apr.title": "Baholash",
   "apr.intro":
     "Loyiha arziydimi? Yuqoridagi jadvallardagi barcha xarajat va foydalar, yilma-yil, bugungi qiymatga diskontlangan. Oraliqlar {draws} ta tasodifiy tanlovning 10–90-persentillari.",

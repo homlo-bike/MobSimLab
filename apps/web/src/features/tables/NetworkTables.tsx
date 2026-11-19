@@ -14,6 +14,7 @@ import type { PreferencesDoc } from "../../workspace/preferences";
 import type { Triple } from "../benefits/params";
 import { type LineFact, lineFacts } from "./lineFacts";
 import { activePlugins } from "../../plugins/registry";
+import { ferryLines, type FerryLine } from "./ferries";
 import { ropewayLines, type RopewayLine } from "./ropeways";
 import type { SavedPluginLine } from "../../kits/saved";
 import {
@@ -33,7 +34,7 @@ import { TablePart } from "./sections";
 interface Props {
   railway: Network | null;
   streetLines: StreetLinesDoc | null;
-  /** The plugin tools' lines by tool id (the cable cars are listed). */
+  /** The plugin tools' lines by line key (the cable cars and ferries are listed). */
   pluginLines?: Readonly<Record<string, SavedPluginLine>>;
   preferences: PreferencesDoc | null;
   /** Saves the project's own values (the energy section's grid intensity and battery bus share). */
@@ -84,6 +85,7 @@ export function NetworkTables({
   // The cable car plugin may be turned off for the project: its lines then leave the tables.
   const plugins = activePlugins();
   const ropeways = useMemo(() => ropewayLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
+  const ferries = useMemo(() => ferryLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
   const facts = useMemo(
     () =>
       lineFacts({
@@ -93,9 +95,10 @@ export function NetworkTables({
         streetLines: lines,
         prefs,
         ropeways,
+        ferries,
         t,
       }),
-    [railway, build, lines, prefs, ropeways, t],
+    [railway, build, lines, prefs, ropeways, ferries, t],
   );
   const q = useMemo(() => quantities(railway, build?.view ?? null, lines, t), [railway, build, lines, t]);
   const waiting = !!railway?.tracks.length && !build && !error;
@@ -124,7 +127,7 @@ export function NetworkTables({
       ) : (
         <>
           <TablePart id="network.summary">
-            <Summary facts={facts} q={q} ropeways={ropeways} />
+            <Summary facts={facts} q={q} ropeways={ropeways} ferries={ferries} />
           </TablePart>
           <TablePart id="network.infrastructure">
             <Infrastructure q={q} terrain={build?.terrain ?? null} />
@@ -150,7 +153,17 @@ export function NetworkTables({
 }
 
 /** Purpose: the project at a glance: size, fleet and service, in total and per mode. */
-function Summary({ facts, q, ropeways }: { facts: LineFact[]; q: Quantities; ropeways: RopewayLine[] }) {
+function Summary({
+  facts,
+  q,
+  ropeways,
+  ferries,
+}: {
+  facts: LineFact[];
+  q: Quantities;
+  ropeways: RopewayLine[];
+  ferries: FerryLine[];
+}) {
   const { t, tn } = useI18n();
   const modeLabel = useModeLabel();
   const km = kmIn(t);
@@ -160,6 +173,8 @@ function Summary({ facts, q, ropeways }: { facts: LineFact[]; q: Quantities; rop
   const stops = sumOf(q.street, (s) => s.stops);
   const ropeKm = sumOf(ropeways, (r) => r.lengthKm);
   const ropeStations = sumOf(ropeways, (r) => r.stations);
+  const ferryKm = sumOf(ferries, (f) => f.lengthKm);
+  const piers = sumOf(ferries, (f) => f.piers);
   const tunnels = sumOf(q.rail, (r) => sumOf(TUNNELS, (s) => r.byStructure[s]));
   const bridges = sumOf(q.rail, (r) => sumOf(BRIDGES, (s) => r.byStructure[s]));
   const modes = [
@@ -177,17 +192,26 @@ function Summary({ facts, q, ropeways }: { facts: LineFact[]; q: Quantities; rop
         <Tile title={t("tbl.lines")} value={int(facts.length)} sub={plural(tn, "net.modes", modes.length)} />
         <Tile
           title={t("tbl.routeLength")}
-          value={km(railKm + streetKm + ropeKm)}
+          value={km(railKm + streetKm + ropeKm + ferryKm)}
           sub={
-            ropeKm > 0
-              ? t("net.routeSubCable", { rail: km(railKm), street: km(streetKm), cable: km(ropeKm) })
-              : t("net.routeSub", { rail: km(railKm), street: km(streetKm) })
+            ferryKm > 0
+              ? ropeKm > 0
+                ? t("net.routeSubCableFerry", {
+                    rail: km(railKm),
+                    street: km(streetKm),
+                    cable: km(ropeKm),
+                    ferry: km(ferryKm),
+                  })
+                : t("net.routeSubFerry", { rail: km(railKm), street: km(streetKm), ferry: km(ferryKm) })
+              : ropeKm > 0
+                ? t("net.routeSubCable", { rail: km(railKm), street: km(streetKm), cable: km(ropeKm) })
+                : t("net.routeSub", { rail: km(railKm), street: km(streetKm) })
           }
         />
         <Tile
           title={t("net.stationsAndStops")}
-          value={int(stations + ropeStations + stops)}
-          sub={t("net.stationsSub", { stations: int(stations + ropeStations), stops: int(stops) })}
+          value={int(stations + ropeStations + piers + stops)}
+          sub={t("net.stationsSub", { stations: int(stations + ropeStations + piers), stops: int(stops) })}
         />
         <Tile title={t("tbl.fleetSpares")} value={int(fleet)} sub={t("net.inServiceSub", { n: int(peak) })} />
         <Tile
@@ -226,19 +250,26 @@ function Summary({ facts, q, ropeways }: { facts: LineFact[]; q: Quantities; rop
                 const r = q.rail.find((x) => x.mode === m);
                 const ss = q.street.filter((x) => x.mode === m);
                 const rs = ropeways.filter((x) => x.mode === m);
+                const fe = ferries.filter((x) => x.mode === m);
                 const fs = facts.filter((f) => f.mode === m);
                 return (
                   <tr key={m} className="border-b border-slate-100">
                     <td className={td}>{modeLabel(m)}</td>
                     <td className={num}>{int(fs.length)}</td>
                     <td className={num}>
-                      {km((r?.routeKm ?? 0) + sumOf(ss, (s) => s.routeKm) + sumOf(rs, (x) => x.lengthKm))}
+                      {km(
+                        (r?.routeKm ?? 0) +
+                          sumOf(ss, (s) => s.routeKm) +
+                          sumOf(rs, (x) => x.lengthKm) +
+                          sumOf(fe, (x) => x.lengthKm),
+                      )}
                     </td>
                     <td className={num}>
                       {int(
                         (r ? sumOf(LEVELS, (l) => r.stations[l]) : 0) +
                           sumOf(ss, (s) => s.stops) +
-                          sumOf(rs, (x) => x.stations),
+                          sumOf(rs, (x) => x.stations) +
+                          sumOf(fe, (x) => x.piers),
                       )}
                     </td>
                     <td className={num}>{int(sumOf(fs, (f) => f.fleet))}</td>
@@ -547,7 +578,9 @@ function ServiceAndFleet({ facts, riders }: { facts: LineFact[]; riders: Record<
                                 ? "net.perTrain"
                                 : f.kind === "ropeway"
                                   ? "net.perCabin"
-                                  : "net.perVehicle",
+                                  : f.kind === "ferry"
+                                    ? "net.perVessel"
+                                    : "net.perVehicle",
                           ),
                         )}
                       </td>

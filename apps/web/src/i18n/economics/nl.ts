@@ -634,6 +634,8 @@ export const economicsNl = {
   "apr.shared": "Gedeelde voorzieningen ({mode}) waarop nog geen lijn rijdt",
   "apr.currencyNote":
     "De vraagrun waardeerde tijd in {run}, terwijl de tabellen {tables} tonen: draai het vraagmodel opnieuw na het wijzigen van de valuta.",
+  "apr.uncostedNote":
+    "Nog geen kosten voor {lines}: reizigers, ritopbrengst en baten tellen mee, maar er wordt niets aan uitgegeven, dus het resultaat lijkt beter dan het zal zijn.",
   "apr.title": "Beoordeling",
   "apr.intro":
     "Is het project het waard? Alle kosten en baten uit de tabellen hierboven, jaar voor jaar, verdisconteerd naar vandaag. Bandbreedtes zijn het 10e tot 90e percentiel uit {draws} willekeurige trekkingen.",

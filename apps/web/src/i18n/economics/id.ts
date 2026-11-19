@@ -625,6 +625,8 @@ export const economicsId = {
   "apr.shared": "Aset bersama ({mode}) yang belum dilalui jalur mana pun",
   "apr.currencyNote":
     "Proses permintaan menilai waktu dalam {run}, sedangkan tabel menampilkan {tables}: jalankan ulang model permintaan setelah mengganti mata uang.",
+  "apr.uncostedNote":
+    "Belum ada biaya untuk {lines}: penumpang, tarif dan manfaatnya dihitung, tetapi tidak ada yang dibelanjakan, jadi hasilnya tampak lebih baik daripada kenyataannya.",
   "apr.title": "Penilaian",
   "apr.intro":
     "Apakah proyek ini layak? Semua biaya dan manfaat dari tabel di atas, tahun demi tahun, didiskonto ke hari ini. Rentang adalah persentil ke-10 hingga ke-90 dari {draws} undian acak.",
