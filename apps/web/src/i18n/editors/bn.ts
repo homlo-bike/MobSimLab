@@ -947,6 +947,7 @@ export const editorsBn = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "প্যারামিটার {name}",
   "kit.lineName": "লাইনের নাম",
+  "kit.lines": "প্রকল্পের লাইন ({n})",
   "kit.tool": "টুল",
   "kit.select": "নির্বাচন",
   "kit.summary": "সারসংক্ষেপ",
@@ -1077,6 +1078,8 @@ export const editorsBn = {
   "drt.method":
     "সমানভাবে ছড়ানো অনুরোধের অঞ্চলের জন্য অবিচ্ছিন্ন আসন্নীকরণ সূত্রে (Daganzo 1978) অনুমান। প্রতিটি বুকিং বণ্টন করতে দিনটি সিমুলেট করুন।",
   "ferry.defaultName": "ফেরি ১",
+  "ferry.lines": "প্রকল্পের ফেরি লাইন ({n})",
+  "ferry.lineN": "ফেরি {n}",
   "ferry.plugin": "ফেরি",
   "ferry.engineFailed": "ফেরি কিট চালু হয়নি: {error}",
   "ferry.starting": "ফেরি কিট চালু হচ্ছে…",
@@ -1482,4 +1485,5 @@ export const editorsBn = {
   "spacing.onFoot": "হেঁটে {metres} মি",
   "spacing.straight": "স্টেশনগুলোর মধ্যে সরলরেখায় মাপা।",
   "spacing.onFootHint": "চিহ্নিত স্টপগুলোর মধ্যে হাঁটার দূরত্ব যোগ করতে ওপরে হাঁটার আওতা হিসাব করুন।",
+  "kit.savedWithProject": "অঙ্কনটি প্রকল্পের সঙ্গে সংরক্ষিত হয়।",
 } satisfies EditorMessages;

@@ -16,6 +16,7 @@ import { populationKo } from "./population/ko";
 import { resultsKo } from "./results/ko";
 import { pluginsKo } from "./plugins/ko";
 import { streetPhotosKo } from "./street-photos/ko";
+import { pluginAdminKo } from "./plugin-admin/ko";
 import type { Messages } from "./en";
 
 /** 한국어 */
@@ -531,4 +532,5 @@ export const ko: Messages = {
   ...calendarKo,
   ...pluginsKo,
   ...streetPhotosKo,
+  ...pluginAdminKo,
 };

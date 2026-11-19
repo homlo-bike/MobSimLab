@@ -6,6 +6,7 @@ import type { ProjectPlugin } from "../plugins/registry";
 import { get, send } from "../session/api";
 import { projectRuns } from "../features/capacity/server";
 import { projectComments } from "../features/comments/api";
+import { commentNoticesApi } from "../features/comments/notices";
 import { projectDemandRuns } from "../features/demand/api";
 import { projectPopulation } from "../features/population/api";
 import { projectRoadRuns } from "../features/road-sim/api";
@@ -186,6 +187,8 @@ export function projectsApi(csrf: string) {
     population: (id: string) => projectPopulation(id, csrf),
     /** Comments on the project's objects: threads, replies, resolving. */
     comments: (id: string) => projectComments(id, csrf),
+    /** The new comments and replies on the caller's projects, for the bell. */
+    commentNotices: () => commentNoticesApi(csrf),
     /** The project area from OpenStreetMap regions, and the imports its saving queues. */
     area: (id: string) => projectAreaApi(id, csrf),
     /** What a drawn area would hold, before the project exists (New project, Select area). */

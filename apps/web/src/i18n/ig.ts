@@ -16,6 +16,7 @@ import { populationIg } from "./population/ig";
 import { resultsIg } from "./results/ig";
 import { pluginsIg } from "./plugins/ig";
 import { streetPhotosIg } from "./street-photos/ig";
+import { pluginAdminIg } from "./plugin-admin/ig";
 import type { Messages } from "./en";
 
 /** Igbo. */
@@ -541,4 +542,5 @@ export const ig: Messages = {
   ...calendarIg,
   ...pluginsIg,
   ...streetPhotosIg,
+  ...pluginAdminIg,
 };

@@ -3,6 +3,7 @@ import { useI18n } from "../../i18n/i18n";
 import { type DrawnNetwork, type DrawnProblem, buildDrawnNetwork, drawnProblem } from "../capacity/drawn";
 import { paramValue } from "../costs/params";
 import type { SavedStreetLine } from "../street-lines/saved";
+import { weekdayServiceHours } from "../costs/model";
 import { dayShares } from "../timetables/feed";
 import { useRailPublications } from "../timetables/railPublish";
 import { verdictText } from "../capacity/CapacityRun";
@@ -29,6 +30,7 @@ import {
   weatherPeriods,
 } from "./model";
 import {
+  hvacFullKwhFromService,
   hvacFullKwhPerDay,
   libValue,
   switchKwhPerFrostDay,
@@ -135,7 +137,27 @@ export function CalendarRun({
 
   const months = useMemo(() => monthsOf(climateFrom(preferences)), [preferences]);
   const weather = useMemo(() => weatherSettings(preferences), [preferences]);
-  const hvacFull = useMemo(() => hvacFullKwhPerDay(tables.estimate, prefs), [tables, prefs]);
+
+  // How much each line runs on each day type (its own Saturday, Sunday and holiday times), for the day figures.
+  const calKey = JSON.stringify(cal);
+  const waitMin = paramValue("timetable.max_terminal_wait_min", "*", prefs)[1];
+  const publishOptions = useMemo(() => ({ max_idle_s: waitMin * 60 }), [waitMin]);
+  const { publications } = useRailPublications(railway, cal, publishOptions, prefs, loadRail);
+  const shares = useMemo(
+    () => dayShares(railway, streetLines, cal, publications),
+    // The calendar is compared by its content.
+    [railway, streetLines, calKey, publications],
+  );
+  const figures = useMemo(() => dayFigures(tables, prefs, shares), [tables, prefs, shares]);
+  // Heating and air conditioning from the Tables tab's estimate, or else from the weekday timetables, so it is
+  // counted even when Tables has not been opened (it came out as 0 MWh in the Damascus multi-year run).
+  const weekdayReports = publications.weekday?.lines;
+  const hvacFull = useMemo(
+    () =>
+      hvacFullKwhPerDay(tables.estimate, prefs) ??
+      hvacFullKwhFromService(weekdayServiceHours(railway, weekdayReports ?? [], streetLines, prefs), prefs),
+    [tables, prefs, railway, weekdayReports, streetLines],
+  );
   // The periods, split by the weather when the project has a climate; `switches` gives the switch heating.
   const periodsWith = (switches: number) => {
     const span = { years: simulationYearsFrom(preferences, today), date, from, to };
@@ -154,17 +176,6 @@ export function CalendarRun({
     [mode, preferences, today, date, from, to, months, weather, hvacFull],
   );
   const tooMany = mode === "days" && periods.length > MAX_DAYS;
-  // How much each line runs on each day type (its own Saturday, Sunday and holiday times), for the day figures.
-  const calKey = JSON.stringify(cal);
-  const waitMin = paramValue("timetable.max_terminal_wait_min", "*", prefs)[1];
-  const publishOptions = useMemo(() => ({ max_idle_s: waitMin * 60 }), [waitMin]);
-  const { publications } = useRailPublications(railway, cal, publishOptions, prefs, loadRail);
-  const shares = useMemo(
-    () => dayShares(railway, streetLines, cal, publications),
-    // The calendar is compared by its content.
-    [railway, streetLines, calKey, publications],
-  );
-  const figures = useMemo(() => dayFigures(tables, prefs, shares), [tables, prefs, shares]);
   const missing = FIGURES.filter((f) => figures.days.weekday[f] === null);
   const rail: DrawnProblem | null = drawnProblem(railway);
 

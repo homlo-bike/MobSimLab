@@ -3,6 +3,7 @@ import { createPortal, flushSync } from "react-dom";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { RATE_PREF } from "../features/costs/currency";
+import { outsideLibraryRange } from "../features/costs/params";
 import { TRAINS } from "../features/railways/trains";
 import { VEHICLES } from "../features/street-lines/vehicles";
 import { download } from "../features/schematic/export";
@@ -360,6 +361,13 @@ function ReportLine({
         })
       : t("prefs.rulesLibrary", { value: fmtNum(lib[1]), unit: r.param.unit })
     : t("prefs.rulesLibrary", { value: lib, unit: r.param.unit });
+  // A unit cost the project set outside the library's range is flagged, as in the cost tables.
+  const outside =
+    r.param.group === "Cost" &&
+    r.changed &&
+    Array.isArray(lib) &&
+    typeof r.value === "number" &&
+    outsideLibraryRange(r.value, lib);
   return (
     <li className="break-inside-avoid border-t border-slate-100 py-2.5 first:border-t-0">
       <div className="flex flex-wrap items-baseline gap-x-3">
@@ -372,6 +380,11 @@ function ReportLine({
         {r.changed && (
           <span className="rounded bg-amber-100 px-1.5 text-xs font-semibold text-amber-900">
             {t("report.changed")}
+          </span>
+        )}
+        {outside && (
+          <span className="rounded bg-red-100 px-1.5 text-xs font-semibold text-red-900">
+            ⚠ {t("cost.outsideRange", { low: fmtNum(lib[0]), high: fmtNum(lib[2]) })}
           </span>
         )}
       </div>

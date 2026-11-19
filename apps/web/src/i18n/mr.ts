@@ -16,6 +16,7 @@ import { populationMr } from "./population/mr";
 import { resultsMr } from "./results/mr";
 import { pluginsMr } from "./plugins/mr";
 import { streetPhotosMr } from "./street-photos/mr";
+import { pluginAdminMr } from "./plugin-admin/mr";
 import type { Messages } from "./en";
 
 /** मराठी */
@@ -536,4 +537,5 @@ export const mr: Messages = {
   ...calendarMr,
   ...pluginsMr,
   ...streetPhotosMr,
+  ...pluginAdminMr,
 };

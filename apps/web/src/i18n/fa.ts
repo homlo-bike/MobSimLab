@@ -16,6 +16,7 @@ import { populationFa } from "./population/fa";
 import { resultsFa } from "./results/fa";
 import { pluginsFa } from "./plugins/fa";
 import { streetPhotosFa } from "./street-photos/fa";
+import { pluginAdminFa } from "./plugin-admin/fa";
 import type { Messages } from "./en";
 
 /** فارسی */
@@ -537,4 +538,5 @@ export const fa: Messages = {
   ...calendarFa,
   ...pluginsFa,
   ...streetPhotosFa,
+  ...pluginAdminFa,
 };

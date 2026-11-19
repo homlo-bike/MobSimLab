@@ -16,6 +16,7 @@ import { populationIt } from "./population/it";
 import { resultsIt } from "./results/it";
 import { pluginsIt } from "./plugins/it";
 import { streetPhotosIt } from "./street-photos/it";
+import { pluginAdminIt } from "./plugin-admin/it";
 import type { Messages } from "./en";
 
 /** Italiano */
@@ -541,4 +542,5 @@ export const it: Messages = {
   ...calendarIt,
   ...pluginsIt,
   ...streetPhotosIt,
+  ...pluginAdminIt,
 };

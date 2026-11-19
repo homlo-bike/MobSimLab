@@ -938,6 +938,7 @@ export const editorsTr = {
   "kit.issueWhere": "{level}, {where}: ",
   "kit.parameter": "Parametre {name}",
   "kit.lineName": "Hat adı",
+  "kit.lines": "Projedeki hatlar ({n})",
   "kit.tool": "Araç",
   "kit.select": "Seç",
   "kit.summary": "Özet",
@@ -1070,6 +1071,8 @@ export const editorsTr = {
   "drt.method":
     "Talepleri eşit dağılmış bir bölge için sürekli yaklaşım formülleriyle (Daganzo 1978) tahmin edildi. Her rezervasyonu araçlara dağıtmak için günü benzetin.",
   "ferry.defaultName": "Vapur 1",
+  "ferry.lines": "Projedeki vapur hatları ({n})",
+  "ferry.lineN": "Vapur {n}",
   "ferry.plugin": "Vapur",
   "ferry.engineFailed": "Vapur kiti başlatılamadı: {error}",
   "ferry.starting": "Vapur kiti başlatılıyor…",
@@ -1479,4 +1482,5 @@ export const editorsTr = {
   "spacing.straight": "İstasyonlar arasında düz çizgiyle ölçüldü.",
   "spacing.onFootHint":
     "İşaretli duraklar arasındaki yürüme mesafesini eklemek için yukarıda yürüme kapsamını hesaplayın.",
+  "kit.savedWithProject": "Çizim projeyle birlikte kaydedilir.",
 } satisfies EditorMessages;

@@ -112,18 +112,21 @@ export class MslabMapService {
       files.push([name, b]);
     };
 
+    // With the project named, tiles come from its OpenStreetMap import where it has one (Map data), as in the
+    // editors, and only the rest from Overpass.
+    const pid = input.projectId;
     const fetchTile = (kind: MapTileKind, x: number, y: number): Promise<string> => {
       switch (kind) {
         case "streets":
-          return this.streets.tile(x, y);
+          return this.streets.tile(x, y, pid);
         case "walk":
-          return this.streets.walkTile(x, y);
+          return this.streets.walkTile(x, y, pid);
         case "rail":
-          return this.streets.railTile(x, y);
+          return this.streets.railTile(x, y, pid);
         case "buildings":
-          return this.streets.buildingTile(x, y);
+          return this.streets.buildingTile(x, y, pid);
         case "places":
-          return this.streets.placeTile(x, y);
+          return this.streets.placeTile(x, y, pid);
         case "bike-amenities":
           return this.streets.bikeAmenityTile(x, y);
       }
@@ -142,7 +145,7 @@ export class MslabMapService {
     files.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
 
     // Water of the area (the Schematic tab's network map), at most 1° a side round the area's centre.
-    add(MAP_FILES.water, await osm(() => this.streets.water(waterBox(area.bbox))));
+    add(MAP_FILES.water, await osm(() => this.streets.water(waterBox(area.bbox), pid)));
 
     // People per cell over the area, from the project's primary layer or WorldPop.
     const population = await this.populationGrid(input.projectId, area.bbox);

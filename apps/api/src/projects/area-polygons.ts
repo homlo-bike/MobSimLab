@@ -3,7 +3,7 @@ import { z } from "zod";
 /**
  * The project area as polygons the planner draws (large-area projects, step 1): one or more polygons round the
  * expected edges of the project, each with a detail setting. Map data is downloaded only inside them, at each
- * polygon's detail. Kept on the project (`project.project.area_polygons`, migration 0026).
+ * polygon's detail. Kept on the project (`project.project.area_polygons`, migration 0027).
  */
 
 export type LonLat = [number, number];

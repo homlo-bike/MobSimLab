@@ -897,6 +897,7 @@ export const editorsZh = {
   "kit.issueWhere": "{level}，{where}：",
   "kit.parameter": "参数 {name}",
   "kit.lineName": "线路名称",
+  "kit.lines": "项目中的线路（{n}）",
   "kit.tool": "工具",
   "kit.select": "选择",
   "kit.summary": "概要",
@@ -1021,6 +1022,8 @@ export const editorsZh = {
   "drt.method":
     "采用连续近似公式（Daganzo 1978）对需求均匀分布的区域进行估算。模拟一天即可逐一调度每个预约。",
   "ferry.defaultName": "渡轮 1",
+  "ferry.lines": "项目中的渡轮线路（{n}）",
+  "ferry.lineN": "渡轮 {n}",
   "ferry.plugin": "渡轮",
   "ferry.engineFailed": "渡轮工具包未能启动：{error}",
   "ferry.starting": "正在启动渡轮工具包…",
@@ -1400,4 +1403,5 @@ export const editorsZh = {
   "spacing.onFoot": "步行 {metres} 米",
   "spacing.straight": "按车站之间的直线测量。",
   "spacing.onFootHint": "在上方计算步行覆盖率后，会补充所标出站点之间的步行距离。",
+  "kit.savedWithProject": "图纸随项目一起保存。",
 } satisfies EditorMessages;

@@ -3,6 +3,7 @@ import { formatDateTime, useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { refreshServerBasemaps } from "../map/basemaps";
 import { get, send } from "../session/api";
+import { PluginWindow, type ServiceLink, useWindowRun } from "./PluginWindow";
 
 type Kind = "wms" | "wmts" | "xyz";
 type AuthType = "none" | "basic" | "query" | "header";
@@ -41,20 +42,47 @@ const AUTH_LABELS: Record<AuthType, MessageKey> = {
 };
 
 /**
- * WMS, WMTS and XYZ map layers in Administration → Plugins (bundled plugin `org.mobsimlab.ogc-layers`): an Admin adds
- * a service with its sign-in details when it needs them, reads its layers and picks those to offer as a basemap
- * or as overlays, or removes a service. MobSimLab fetches the tiles with the sign-in details, so browsers never
- * see them, and the password or key is never shown again.
+ * Purpose: the services an Admin added, as links to their sites: the address without its path or query (the list
+ * shows addresses without `https://`).
  */
-export function MapLayersAdmin({
+function serviceLinks(services: readonly MapLayerService[]): ServiceLink[] {
+  const out = new Map<string, ServiceLink>();
+  for (const s of services) {
+    try {
+      const address = s.address.replace(/\{[^}]*\}/g, "0");
+      const origin = new URL(/^https?:\/\//.test(address) ? address : `https://${address}`).origin;
+      if (!out.has(origin)) out.set(origin, { label: s.name, url: origin });
+    } catch {
+      // Not a web address: nothing to link.
+    }
+  }
+  return [...out.values()];
+}
+
+/** A change to a service that waits for Accept changes. */
+type Pending = { hidden?: boolean; remove?: boolean };
+
+/**
+ * Configure window of WMS, WMTS and XYZ map layers in Administration → Plugins (bundled plugin
+ * `org.mobsimlab.ogc-layers`): an Admin adds a service with its sign-in details when it needs them, reads its layers
+ * and picks those to offer as a basemap or as overlays. Hiding or removing a service waits for Accept changes.
+ * MobSimLab fetches the tiles with the sign-in details, so browsers never see them, and the password or key is
+ * never shown again.
+ */
+export function MapLayersConfig({
   csrfToken,
-  run,
+  meta,
+  onClose,
 }: {
   csrfToken: string;
-  run: (f: () => Promise<unknown>) => Promise<void>;
+  meta: string;
+  onClose: () => void;
 }) {
   const { t } = useI18n();
+  const [runOk, error] = useWindowRun();
+  const run = useCallback(async (f: () => Promise<unknown>) => void (await runOk(f)), [runOk]);
   const [services, setServices] = useState<MapLayerService[] | null>(null);
+  const [pending, setPending] = useState<Record<string, Pending>>({});
   const [kind, setKind] = useState<Kind>("wms");
   const [url, setUrl] = useState("");
   const [authType, setAuthType] = useState<AuthType>("none");
@@ -143,104 +171,154 @@ export function MapLayersAdmin({
     });
   };
 
-  const remove = (id: string) =>
-    void run(async () => {
-      const r = await send<{ services: MapLayerService[] }>(
-        "DELETE",
-        `/api/admin/map-layers/${id}`,
-        csrfToken,
-      );
-      setServices(r.services);
-      void refreshServerBasemaps();
+  const stage = (id: string, p: Pending | null) =>
+    setPending((cur) => {
+      const next = { ...cur };
+      if (p) next[id] = p;
+      else delete next[id];
+      return next;
     });
 
-  const setHidden = (id: string, hidden: boolean) =>
-    void run(async () => {
-      const r = await send<{ services: MapLayerService[] }>(
-        "PUT",
-        `/api/admin/map-layers/${id}/hidden`,
-        csrfToken,
-        { hidden },
-      );
-      setServices(r.services);
-      void refreshServerBasemaps();
-    });
+  /** Apply the waiting hides and removals, then close. */
+  const accept = async () => {
+    setBusy(true);
+    try {
+      return await runOk(async () => {
+        let list: MapLayerService[] | null = null;
+        for (const [id, p] of Object.entries(pending)) {
+          list = p.remove
+            ? (
+                await send<{ services: MapLayerService[] }>(
+                  "DELETE",
+                  `/api/admin/map-layers/${id}`,
+                  csrfToken,
+                )
+              ).services
+            : (
+                await send<{ services: MapLayerService[] }>(
+                  "PUT",
+                  `/api/admin/map-layers/${id}/hidden`,
+                  csrfToken,
+                  {
+                    hidden: p.hidden ?? false,
+                  },
+                )
+              ).services;
+          setPending((cur) => {
+            const next = { ...cur };
+            delete next[id];
+            return next;
+          });
+        }
+        if (list) {
+          setServices(list);
+          void refreshServerBasemaps();
+        }
+      });
+    } finally {
+      setBusy(false);
+    }
+  };
 
-  const input = "rounded border border-slate-300 px-2 py-1";
+  const input = "input";
   return (
-    <section aria-labelledby="ap-maplayers" className="flex flex-col gap-2">
-      <h3 id="ap-maplayers" className="font-semibold">
-        {t("maplayers.title")}
-      </h3>
-      <p className="m-0 text-slate-500">{t("maplayers.intro")}</p>
+    <PluginWindow
+      title={t("maplayers.title")}
+      intro={t("maplayers.intro")}
+      meta={meta}
+      error={error}
+      busy={busy}
+      links={serviceLinks(services)}
+      onAccept={accept}
+      onClose={onClose}
+    >
       {services.length === 0 ? (
         <p className="m-0 text-slate-500">{t("maplayers.none")}</p>
       ) : (
         <ul className="m-0 flex list-none flex-col gap-2 p-0">
-          {services.map((s) => (
-            <li
-              key={s.id}
-              className={`flex items-start gap-2 rounded border border-slate-200 p-2 ${s.hidden ? "opacity-60" : ""}`}
-            >
-              <div className="min-w-0 flex-1">
-                <p className="m-0 font-medium">
-                  {s.name} <span className="tag bg-sky-100 text-sky-900">{s.kind.toUpperCase()}</span>{" "}
-                  <span className="tag bg-slate-100 text-slate-700">
-                    {t(s.showAs === "basemap" ? "maplayers.asBasemap" : "maplayers.asOverlay")}
-                  </span>
-                  {s.builtin && (
-                    <>
-                      {" "}
-                      <span className="tag bg-emerald-100 text-emerald-900">{t("maplayers.builtin")}</span>
-                    </>
-                  )}
-                  {s.hidden && (
-                    <>
-                      {" "}
-                      <span className="tag bg-amber-100 text-amber-900">{t("maplayers.hiddenTag")}</span>
-                    </>
-                  )}
-                </p>
-                <p className="m-0 truncate font-mono text-xs text-slate-500">{s.address}</p>
-                {s.kind !== "xyz" && (
-                  <p className="m-0 text-xs text-slate-500">
-                    {t("maplayers.layers", { list: s.layers.map((l) => l.title).join(", ") })}
+          {services.map((s) => {
+            const p = pending[s.id];
+            const hidden = p?.hidden ?? s.hidden;
+            return (
+              <li
+                key={s.id}
+                className={`flex flex-wrap items-start gap-2 rounded-lg border border-slate-200 p-2 ${hidden || p?.remove ? "opacity-60" : ""}`}
+              >
+                <div className="min-w-0 flex-1">
+                  <p className={`m-0 font-medium ${p?.remove ? "line-through" : ""}`}>
+                    {s.name} <span className="tag bg-sky-100 text-sky-900">{s.kind.toUpperCase()}</span>{" "}
+                    <span className="tag bg-slate-100 text-slate-700">
+                      {t(s.showAs === "basemap" ? "maplayers.asBasemap" : "maplayers.asOverlay")}
+                    </span>
+                    {s.builtin && (
+                      <>
+                        {" "}
+                        <span className="tag bg-emerald-100 text-emerald-900">{t("maplayers.builtin")}</span>
+                      </>
+                    )}
+                    {hidden && (
+                      <>
+                        {" "}
+                        <span className="tag bg-amber-100 text-amber-900">{t("maplayers.hiddenTag")}</span>
+                      </>
+                    )}
                   </p>
+                  <p className="m-0 truncate font-mono text-xs text-slate-500">{s.address}</p>
+                  {s.kind !== "xyz" && (
+                    <p className="m-0 text-xs text-slate-500">
+                      {t("maplayers.layers", { list: s.layers.map((l) => l.title).join(", ") })}
+                    </p>
+                  )}
+                  <p className="m-0 text-xs text-slate-500">
+                    {t(AUTH_LABELS[s.auth.type])}
+                    {s.auth.name ? ` (${s.auth.name})` : ""}
+                    {s.builtin
+                      ? ""
+                      : ` · ${t("maplayers.addedBy", { name: s.addedBy ?? "", date: formatDateTime(s.addedAt) })}`}
+                  </p>
+                  {p && <p className="m-0 text-xs text-amber-800">{t("padmin.changedOnAccept")}</p>}
+                </div>
+                {p ? (
+                  <button
+                    type="button"
+                    className="btn min-h-9 shrink-0 px-3"
+                    onClick={() => stage(s.id, null)}
+                  >
+                    {t("padmin.undo")}
+                  </button>
+                ) : (
+                  <>
+                    {(s.builtin || s.hidden) && (
+                      <button
+                        type="button"
+                        className="btn min-h-9 shrink-0 px-3"
+                        aria-label={t(s.hidden ? "maplayers.showName" : "maplayers.hideName", {
+                          name: s.name,
+                        })}
+                        onClick={() => stage(s.id, { hidden: !s.hidden })}
+                      >
+                        {t(s.hidden ? "maplayers.show" : "maplayers.hide")}
+                      </button>
+                    )}
+                    {!s.builtin && (
+                      <button
+                        type="button"
+                        className="btn min-h-9 shrink-0 px-3"
+                        aria-label={t("maplayers.removeName", { name: s.name })}
+                        onClick={() => stage(s.id, { remove: true })}
+                      >
+                        {t("maplayers.remove")}
+                      </button>
+                    )}
+                  </>
                 )}
-                <p className="m-0 text-xs text-slate-500">
-                  {t(AUTH_LABELS[s.auth.type])}
-                  {s.auth.name ? ` (${s.auth.name})` : ""}
-                  {s.builtin
-                    ? ""
-                    : ` · ${t("maplayers.addedBy", { name: s.addedBy ?? "", date: formatDateTime(s.addedAt) })}`}
-                </p>
-              </div>
-              {s.builtin || s.hidden ? (
-                <button
-                  type="button"
-                  className="shrink-0 rounded border border-slate-300 px-2"
-                  aria-label={t(s.hidden ? "maplayers.showName" : "maplayers.hideName", { name: s.name })}
-                  onClick={() => setHidden(s.id, !s.hidden)}
-                >
-                  {t(s.hidden ? "maplayers.show" : "maplayers.hide")}
-                </button>
-              ) : null}
-              {!s.builtin && (
-                <button
-                  type="button"
-                  className="shrink-0 rounded border border-slate-300 px-2"
-                  aria-label={t("maplayers.removeName", { name: s.name })}
-                  onClick={() => remove(s.id)}
-                >
-                  {t("maplayers.remove")}
-                </button>
-              )}
-            </li>
-          ))}
+              </li>
+            );
+          })}
         </ul>
       )}
       <form onSubmit={read} className="flex flex-col gap-2" aria-label={t("maplayers.add")}>
-        <h4 className="m-0 mt-2 font-semibold">{t("maplayers.add")}</h4>
+        <h3 className="m-0 mt-2 font-semibold">{t("maplayers.add")}</h3>
         <div className="flex flex-wrap gap-2">
           <label className="flex flex-col gap-1">
             {t("maplayers.kind")}
@@ -250,7 +328,7 @@ export function MapLayersAdmin({
               <option value="xyz">{t("maplayers.xyz")}</option>
             </select>
           </label>
-          <label className="flex min-w-60 flex-1 flex-col gap-1">
+          <label className="flex min-w-56 flex-1 flex-col gap-1">
             {t("maplayers.url")}
             <input
               type="url"
@@ -330,16 +408,12 @@ export function MapLayersAdmin({
             <p className="m-0 w-full text-xs text-slate-500">{t("maplayers.secretNote")}</p>
           </div>
         )}
-        <button
-          type="submit"
-          disabled={busy}
-          className="w-36 rounded bg-slate-800 px-2 py-1 text-white disabled:opacity-50"
-        >
+        <button type="submit" disabled={busy} className="btn btn-dark self-start">
           {busy && !found ? t("maplayers.reading") : t(kind === "xyz" ? "maplayers.check" : "maplayers.read")}
         </button>
       </form>
       {found && (
-        <div className="flex flex-col gap-2 rounded border border-slate-200 p-2">
+        <div className="flex flex-col gap-2 rounded-lg border border-slate-200 p-3">
           <fieldset className="flex flex-col gap-1">
             <legend className="font-medium">{t("maplayers.pick")}</legend>
             {found.layers.every((l) => l.problem) && (
@@ -404,7 +478,7 @@ export function MapLayersAdmin({
           <button
             type="button"
             disabled={busy || picked.length === 0 || !name.trim() || !attribution.trim()}
-            className="w-36 rounded bg-slate-800 px-2 py-1 text-white disabled:opacity-50"
+            className="btn btn-dark self-start"
             onClick={save}
           >
             {t("maplayers.save")}
@@ -414,6 +488,6 @@ export function MapLayersAdmin({
           )}
         </div>
       )}
-    </section>
+    </PluginWindow>
   );
 }

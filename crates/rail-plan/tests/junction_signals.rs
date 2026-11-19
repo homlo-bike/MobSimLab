@@ -224,3 +224,184 @@ fn trains_from_a_siding_beyond_a_terminal_run_straight_on_into_service() {
     );
     assert!(r.trips > 0, "{:?}", r.issues);
 }
+
+#[test]
+fn a_train_ending_at_a_terminal_puts_away_straight_on_into_the_siding_beyond_it() {
+    // Damascus test, bug 25: a train that ended its trip at a terminal with a siding beyond the
+    // platforms always turned back to put away, so it ran empty to a storage track elsewhere
+    // (along the whole line, against the service) instead of straight on into that siding.
+    let mut net = sample(RailMode::Tram, 7.0, 50.9);
+    let st = net.stations.iter().find(|s| s.id == 1).unwrap().clone();
+    let siding: rail_design::model::Track = serde_json::from_value(serde_json::json!({
+        "id": 99,
+        "use": "storage",
+        "level": "street",
+        "tracks": 2,
+        "start": { "type": "station", "station": 1, "end": 0, "tracks": [0, 1] },
+        "end": { "type": "free", "x": st.x - 250.0, "y": st.y, "level": "street" },
+        "points": [],
+    }))
+    .unwrap();
+    net.tracks.push(siding);
+    let t = topology(&build(&net, None));
+    let imp = import_json(
+        &serde_json::to_string(&t).unwrap(),
+        &ImportOptions::default(),
+    )
+    .unwrap();
+    let m = Model::compile(&imp.spec).unwrap();
+    let line = rail_plan::ServiceLine {
+        id: "T1".into(),
+        name: "T1".into(),
+        color: None,
+        stations: vec!["st2".into(), "st1".into()],
+        vehicle: rail_plan::ServiceVehicle {
+            id: "tram".into(),
+            name: "Tram".into(),
+            length_m: 30.0,
+            top_speed_kmh: 70.0,
+            power_kw: Some(420.0),
+            empty_mass_t: None,
+            capacity: 200.0,
+        },
+        units: 1,
+        mode: "tram".into(),
+        first_s: 6.0 * 3600.0,
+        last_s: 12.0 * 3600.0,
+        peak_headway_s: 3600.0,
+        offpeak_headway_s: 3600.0,
+        peaks: vec![],
+        dwell_s: None,
+        turnback_s: None,
+        accel_ms2: None,
+        decel_ms2: None,
+        supplement_share: None,
+    };
+    let spec = rail_plan::line_spec_with_roles(&line, &m, &imp.storage_roles);
+    let p = rail_plan::plan(&m, &[spec], &rail_plan::PlanParams::default()).unwrap();
+    let st1: Vec<_> = m
+        .stations
+        .iter()
+        .find(|s| s.id == "st1")
+        .unwrap()
+        .platforms
+        .iter()
+        .map(|&p| Place::Platform(p))
+        .collect();
+    let pull_ins: Vec<_> = p
+        .runs
+        .iter()
+        .filter(|r| r.kind == rail_plan::RunKind::PullIn)
+        .filter(|r| st1.contains(&r.calls[0].place))
+        .collect();
+    // The first train put away at st1 finds the siding beyond it free.
+    let r = pull_ins.first().expect("a train is put away at st1");
+    let to = &r.calls.last().unwrap().id;
+    assert!(
+        to.starts_with("t99."),
+        "{} puts away on {to}, not the siding beyond st1",
+        r.name
+    );
+}
+
+/// The sample tram line (Riverside st1 to Northgate st2), its model and a T1 line between the
+/// two stations every `headway_s` from 6:00 to 12:00.
+fn sample_line(net: &rail_design::Network, headway_s: f64) -> (Model, rail_plan::LineSpec) {
+    let t = topology(&build(net, None));
+    assert!(t.valid, "{:?}", t.errors);
+    let imp = import_json(
+        &serde_json::to_string(&t).unwrap(),
+        &ImportOptions::default(),
+    )
+    .unwrap();
+    let m = Model::compile(&imp.spec).unwrap();
+    let line = rail_plan::ServiceLine {
+        id: "T1".into(),
+        name: "T1".into(),
+        color: None,
+        stations: vec!["st1".into(), "st2".into()],
+        vehicle: rail_plan::ServiceVehicle {
+            id: "tram".into(),
+            name: "Tram".into(),
+            length_m: 30.0,
+            top_speed_kmh: 70.0,
+            power_kw: Some(420.0),
+            empty_mass_t: None,
+            capacity: 200.0,
+        },
+        units: 1,
+        mode: "tram".into(),
+        first_s: 6.0 * 3600.0,
+        last_s: 12.0 * 3600.0,
+        peak_headway_s: headway_s,
+        offpeak_headway_s: headway_s,
+        peaks: vec![],
+        dwell_s: None,
+        turnback_s: None,
+        accel_ms2: None,
+        decel_ms2: None,
+        supplement_share: None,
+    };
+    let spec = rail_plan::line_spec_with_roles(&line, &m, &imp.storage_roles);
+    (m, spec)
+}
+
+#[test]
+fn tram_signals_keep_no_overlap() {
+    // Damascus test, bug 25: trams run on sight. A signal a little way in front of a terminal kept
+    // the 200 m overlap of a main line, which reached into the platform, so a tram could not come
+    // up to the signal while the tram ahead still stood in the platform.
+    let (m, _) = sample_line(&sample(RailMode::Tram, 7.0, 50.9), 1800.0);
+    assert!(!m.signals.is_empty());
+    for s in &m.signals {
+        assert_eq!(s.overlap_m, 0.0, "signal {} keeps an overlap", s.id);
+    }
+}
+
+#[test]
+fn a_tram_leaving_a_terminal_takes_the_crossover_in_front_of_it() {
+    // Damascus test, bug 25: with a second crossover added in front of a terminal, trams leaving
+    // it still ran back along the arrival track to the old crossover further out, against the
+    // trams coming in, because both ways are as long.
+    let mut net = sample(RailMode::Tram, 7.0, 50.9);
+    let len = build(&net, None).track(3).unwrap().length;
+    let near = net.switches.iter().find(|s| s.id == 4).unwrap().clone();
+    net.switches.push(rail_design::model::Switch {
+        id: 7,
+        s: len - near.s - 60.0,
+        ..near
+    });
+    let (m, spec) = sample_line(&net, 1800.0);
+    let p = rail_plan::plan(&m, &[spec], &rail_plan::PlanParams::default()).unwrap();
+    let st2: Vec<_> = m
+        .stations
+        .iter()
+        .find(|s| s.id == "st2")
+        .unwrap()
+        .platforms
+        .iter()
+        .map(|&p| Place::Platform(p))
+        .collect();
+    let crossover_of = |r: &rail_plan::PlannedRun| -> Vec<String> {
+        rail_plan::route_steps(&m, &r.run.routes)
+            .unwrap()
+            .iter()
+            .map(|st| m.tracks[m.pieces[st.piece as usize].track].id.clone())
+            .filter(|id| id.starts_with("w4.") || id.starts_with("w7."))
+            .collect()
+    };
+    let from_st2: Vec<_> = p
+        .runs
+        .iter()
+        .filter(|r| r.kind == rail_plan::RunKind::Service && st2.contains(&r.calls[0].place))
+        .collect();
+    assert!(!from_st2.is_empty(), "trips leave st2");
+    for r in from_st2 {
+        let x = crossover_of(r);
+        assert!(
+            x.iter().all(|id| id.starts_with("w7.")),
+            "{} leaves st2 by {x:?}",
+            r.name
+        );
+    }
+}

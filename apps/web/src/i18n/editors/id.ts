@@ -962,6 +962,7 @@ export const editorsId = {
   "kit.issueWhere": "{level}, {where}: ",
   "kit.parameter": "Parameter {name}",
   "kit.lineName": "Nama jalur",
+  "kit.lines": "Jalur dalam proyek ({n})",
   "kit.tool": "Alat",
   "kit.select": "Pilih",
   "kit.summary": "Ringkasan",
@@ -1096,6 +1097,8 @@ export const editorsId = {
   "drt.method":
     "Diperkirakan dengan rumus aproksimasi kontinu (Daganzo 1978) untuk zona dengan pesanan tersebar merata. Simulasikan sehari untuk menugaskan setiap pesanan.",
   "ferry.defaultName": "Feri 1",
+  "ferry.lines": "Jalur feri dalam proyek ({n})",
+  "ferry.lineN": "Feri {n}",
   "ferry.plugin": "Feri",
   "ferry.engineFailed": "Kit feri tidak dapat dimulai: {error}",
   "ferry.starting": "Memulai kit feri…",
@@ -1508,4 +1511,5 @@ export const editorsId = {
   "spacing.straight": "Diukur dalam garis lurus antarstasiun.",
   "spacing.onFootHint":
     "Hitung cakupan jalan kaki di atas untuk menambahkan jarak jalan kaki antara halte yang ditandai.",
+  "kit.savedWithProject": "Gambar disimpan bersama proyek.",
 } satisfies EditorMessages;

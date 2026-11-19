@@ -933,6 +933,7 @@ export const editorsFa = {
   "kit.issueWhere": "{level}، {where}: ",
   "kit.parameter": "پارامتر {name}",
   "kit.lineName": "نام خط",
+  "kit.lines": "خطوط پروژه ({n})",
   "kit.tool": "ابزار",
   "kit.select": "انتخاب",
   "kit.summary": "خلاصه",
@@ -1062,6 +1063,8 @@ export const editorsFa = {
   "drt.method":
     "برآورد با فرمول‌های تقریب پیوسته (Daganzo 1978) برای منطقه‌ای با درخواست‌های یکنواخت. روز را شبیه‌سازی کنید تا هر رزرو تخصیص یابد.",
   "ferry.defaultName": "کشتی مسافربری 1",
+  "ferry.lines": "خطوط کشتی مسافربری پروژه ({n})",
+  "ferry.lineN": "کشتی مسافربری {n}",
   "ferry.plugin": "کشتی مسافربری",
   "ferry.engineFailed": "کیت کشتی راه‌اندازی نشد: {error}",
   "ferry.starting": "در حال راه‌اندازی کیت کشتی…",
@@ -1463,4 +1466,5 @@ export const editorsFa = {
   "spacing.straight": "در خط مستقیم بین ایستگاه‌ها اندازه‌گیری شده است.",
   "spacing.onFootHint":
     "پوشش پیاده را در بالا محاسبه کنید تا فاصله‌ی پیاده بین ایستگاه‌های علامت‌خورده افزوده شود.",
+  "kit.savedWithProject": "نقشه همراه پروژه ذخیره می‌شود.",
 } satisfies EditorMessages;

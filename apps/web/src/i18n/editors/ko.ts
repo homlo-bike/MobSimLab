@@ -916,6 +916,7 @@ export const editorsKo = {
   "kit.issueWhere": "{level}, {where}: ",
   "kit.parameter": "매개변수 {name}",
   "kit.lineName": "노선 이름",
+  "kit.lines": "프로젝트의 노선({n})",
   "kit.tool": "도구",
   "kit.select": "선택",
   "kit.summary": "요약",
@@ -1042,6 +1043,8 @@ export const editorsKo = {
   "drt.method":
     "수요가 고르게 분포한 구역에 대해 연속 근사 공식(Daganzo 1978)으로 추정했습니다. 하루를 시뮬레이션하면 예약마다 배차합니다.",
   "ferry.defaultName": "페리 1",
+  "ferry.lines": "프로젝트의 페리 노선({n})",
+  "ferry.lineN": "페리 {n}",
   "ferry.plugin": "페리",
   "ferry.engineFailed": "페리 키트를 시작할 수 없습니다: {error}",
   "ferry.starting": "페리 키트 시작 중…",
@@ -1438,4 +1441,5 @@ export const editorsKo = {
   "spacing.onFoot": "도보 {metres} m",
   "spacing.straight": "역 사이를 직선으로 측정했습니다.",
   "spacing.onFootHint": "위에서 도보 접근성을 계산하면 표시된 정류장 사이의 도보 거리가 추가됩니다.",
+  "kit.savedWithProject": "도면은 프로젝트와 함께 저장됩니다.",
 } satisfies EditorMessages;

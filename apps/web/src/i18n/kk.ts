@@ -16,6 +16,7 @@ import { populationKk } from "./population/kk";
 import { resultsKk } from "./results/kk";
 import { pluginsKk } from "./plugins/kk";
 import { streetPhotosKk } from "./street-photos/kk";
+import { pluginAdminKk } from "./plugin-admin/kk";
 import type { Messages } from "./en";
 
 /** Қазақша */
@@ -540,4 +541,5 @@ export const kk: Messages = {
   ...calendarKk,
   ...pluginsKk,
   ...streetPhotosKk,
+  ...pluginAdminKk,
 };

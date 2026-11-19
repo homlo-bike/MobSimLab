@@ -16,6 +16,7 @@ import { populationTr } from "./population/tr";
 import { resultsTr } from "./results/tr";
 import { pluginsTr } from "./plugins/tr";
 import { streetPhotosTr } from "./street-photos/tr";
+import { pluginAdminTr } from "./plugin-admin/tr";
 import type { Messages } from "./en";
 
 /** Türkçe */
@@ -541,4 +542,5 @@ export const tr: Messages = {
   ...calendarTr,
   ...pluginsTr,
   ...streetPhotosTr,
+  ...pluginAdminTr,
 };

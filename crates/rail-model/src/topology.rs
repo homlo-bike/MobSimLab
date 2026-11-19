@@ -1080,7 +1080,12 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
                 position_m: at - sub.from,
                 facing: if s.facing == "to" { Dir::Up } else { Dir::Down },
                 kind,
-                overlap_m: s.overlap_m,
+                // Trams on line-of-sight running stop within sight and keep no overlap beyond a
+                // signal: one standing just in front of a terminal would otherwise claim the
+                // platform the train ahead stands in (Damascus test, bug 25).
+                overlap_m: s
+                    .overlap_m
+                    .or_else(|| line_of_sight(&spec, &sub.id).then_some(0.0)),
                 lineside: s.lineside,
             });
         }
@@ -1186,6 +1191,13 @@ fn stop_departure_signals(spec: &mut InfraSpec, buffers: &BTreeSet<(String, End)
     spec.signals.extend(out);
 }
 
+/// Purpose: whether a track runs on line of sight (trams), where signals keep no overlap.
+fn line_of_sight(spec: &InfraSpec, track: &str) -> bool {
+    spec.tracks
+        .iter()
+        .any(|t| t.id == track && t.protection == TrainProtection::LineOfSight)
+}
+
 /// Purpose: place a provisional signal plan on an imported network.
 /// Side effects: appends signals to `spec`.
 fn generate_signals(spec: &mut InfraSpec, buffers: &BTreeSet<(String, End)>, opt: &ImportOptions) {
@@ -1243,7 +1255,11 @@ fn generate_signals(spec: &mut InfraSpec, buffers: &BTreeSet<(String, End)>, opt
                 position_m: pos,
                 facing,
                 kind,
-                overlap_m: Some(overlap_for_speed(kmh)),
+                overlap_m: Some(if track.protection == TrainProtection::LineOfSight {
+                    0.0
+                } else {
+                    overlap_for_speed(kmh)
+                }),
                 lineside: true,
             });
         };

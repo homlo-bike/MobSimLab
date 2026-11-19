@@ -63,9 +63,11 @@ export function NetworkPicker({
     </label>
   );
   return (
-    <fieldset className="space-y-2">
+    <fieldset className="min-w-0 space-y-2">
       <legend className="caps mb-1.5">{t("capacity.network")}</legend>
-      <div className="seg" role="radiogroup" aria-label={t("capacity.network")}>
+      {/* A fieldset is as wide as its widest row by default: the three choices, in one line, made it wider than a
+          phone and cut the line names below at the edge (Damascus phone and Arabic tests). */}
+      <div className="seg [&>button]:whitespace-normal" role="radiogroup" aria-label={t("capacity.network")}>
         <button
           type="button"
           role="radio"
@@ -97,7 +99,7 @@ export function NetworkPicker({
       {source === "example" ? (
         <p className="text-xs text-slate-600">{t("capacity.exampleText")}</p>
       ) : source === "drawn" ? (
-        <div className="space-y-1 text-xs text-slate-600">
+        <div className="space-y-1 text-xs break-words text-slate-600">
           <p>
             {drawn === null
               ? t("capacity.drawnText", {
@@ -192,7 +194,7 @@ export function RunSettings({
     </label>
   );
   return (
-    <fieldset className="space-y-2">
+    <fieldset className="min-w-0 space-y-2">
       <legend className="caps mb-1.5">{t("capacity.period")}</legend>
       <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label={t("capacity.period")}>
         {[...PERIODS, { id: "custom", from: 0, to: 0 } as const].map((p) => (

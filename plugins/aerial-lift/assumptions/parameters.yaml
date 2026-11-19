@@ -881,3 +881,123 @@
         - doppelmayr-urban-faq
       check: unverified
       rationale: "R1 §1.2: about 6,000 p/h/dir for any ropeway; Doppelmayr TRI-Line claims up to 8,000."
+- key: ropeway.cost.station_each
+  label: Cable car station
+  group: Cable car costs
+  unit: US$ million per station (2023, PPP)
+  used_by:
+    - "construction cost: stations"
+  values:
+    - context:
+        mode: "*"
+      low: 8
+      central: 13
+      high: 25
+      basis: documented
+      sources:
+        - idfm-cable-c1-cost
+        - tisseo-teleo-cost
+        - cablebus-line-1-cost
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Building, bullwheels, platforms and cabin handling, before design (15 %) and contingency (25 %). Split
+        from the outturn costs of Câble C1 (€138 M, 4.5 km, 5 stations, cabins €6 M), Téléo (about €93 M, 3 km,
+        3 stations) and Cablebús Line 1 (MXN 2.93 bn, 9.2 km, 6 stations), each divided by 1.4 for design and
+        contingency and converted at purchasing power parity; with the per-km value below, the central values
+        reproduce the three totals within about 8 %. La Paz's first lines (US$234 M for 10 km) were cheaper."
+- key: ropeway.cost.line_per_km
+  label: Cable car rope, towers and drives
+  group: Cable car costs
+  unit: US$ million per km (2023, PPP)
+  used_by:
+    - "construction cost: track, power and signalling"
+  values:
+    - context:
+        mode: "*"
+      low: 7
+      central: 14
+      high: 20
+      basis: documented
+      sources:
+        - idfm-cable-c1-cost
+        - cablebus-line-1-cost
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Rope, towers and their foundations, drive and control equipment, per km of line, before design and
+        contingency. From the same split as the station cost (Câble C1, Cablebús Line 1)."
+    - context:
+        mode: cable_car
+        ropeway_system: 3s
+      low: 12
+      central: 18
+      high: 30
+      basis: documented
+      sources:
+        - tisseo-teleo-cost
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Tricable gondolas carry three ropes on fewer, taller towers. From Téléo (Toulouse, 3S): about €93 M for
+        3 km and 3 stations, with the station cost above."
+- key: ropeway.cost.cabin_each
+  label: Cable car cabin
+  group: Cable car costs
+  unit: US$ million each (2023, market)
+  used_by:
+    - "construction cost: vehicles"
+  values:
+    - context:
+        mode: "*"
+      low: 0.04
+      central: 0.06
+      high: 0.1
+      basis: documented
+      sources:
+        - idfm-cable-c1-cost
+      check: unverified
+      rationale: "Câble C1: €6 M for 105 ten-seat gondola cabins, about €57,000 each."
+    - context:
+        mode: cable_car
+        ropeway_system: 3s
+      low: 0.3
+      central: 0.4
+      high: 0.6
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Cabins for about 35 passengers on a tricable system; no published unit price found.
+    - context:
+        mode: aerial_tramway
+      low: 0.5
+      central: 1
+      high: 2
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Large aerial tramway cabins (about 60 to 200 passengers); no published unit price found.
+- key: ropeway.cost.station_hour
+  label: Cable car staff and energy per station and hour open
+  group: Cable car costs
+  unit: US$ per hour (2023, PPP)
+  used_by:
+    - "operating cost: service"
+  values:
+    - context:
+        mode: "*"
+      low: 100
+      central: 200
+      high: 350
+      basis: documented
+      sources:
+        - la-art-final-eir
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Station staff, the control room and drive energy, per station for each hour the line is open. With
+        upkeep (1.5 % of construction a year) and overheads on top, 3 stations open 19 hours a day come to about
+        US$9 M a year, as the Los Angeles Aerial Rapid Transit final EIR expects ($8–10 M a year with a capital
+        reserve)."

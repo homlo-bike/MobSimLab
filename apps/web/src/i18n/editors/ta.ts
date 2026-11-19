@@ -988,6 +988,7 @@ export const editorsTa = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "அளவுரு {name}",
   "kit.lineName": "வழித்தடத்தின் பெயர்",
+  "kit.lines": "திட்டத்திலுள்ள வழித்தடங்கள் ({n})",
   "kit.tool": "கருவி",
   "kit.select": "தேர்ந்தெடு",
   "kit.summary": "சுருக்கம்",
@@ -1122,6 +1123,8 @@ export const editorsTa = {
   "drt.method":
     "சீராகப் பரவிய கோரிக்கைகளுள்ள மண்டலத்திற்கு தொடர் தோராய சூத்திரங்களால் (Daganzo 1978) மதிப்பிடப்பட்டது. ஒவ்வொரு முன்பதிவையும் ஒதுக்க நாளை உருவகப்படுத்துங்கள்.",
   "ferry.defaultName": "படகு 1",
+  "ferry.lines": "திட்டத்திலுள்ள படகு வழித்தடங்கள் ({n})",
+  "ferry.lineN": "படகு {n}",
   "ferry.plugin": "படகு",
   "ferry.engineFailed": "படகுத் தொகுப்பு தொடங்கவில்லை: {error}",
   "ferry.starting": "படகுத் தொகுப்பு தொடங்குகிறது…",
@@ -1541,4 +1544,5 @@ export const editorsTa = {
   "spacing.straight": "நிலையங்களுக்கு இடையே நேர்கோட்டில் அளக்கப்பட்டது.",
   "spacing.onFootHint":
     "குறிக்கப்பட்ட நிறுத்தங்களுக்கு இடையிலான நடை தூரத்தைச் சேர்க்க மேலே நடை அணுகலைக் கணக்கிடவும்.",
+  "kit.savedWithProject": "வரைபடம் திட்டத்துடன் சேமிக்கப்படுகிறது.",
 } satisfies EditorMessages;

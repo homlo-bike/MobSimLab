@@ -32,14 +32,17 @@ use std::cell::RefCell;
 use std::collections::{BTreeMap, BinaryHeap, HashMap, HashSet};
 
 use rail_dynamics::Stop;
-use rail_model::{Dir, Model, PlatformId, RouteId, TdsId};
+use rail_model::{Dir, Model, PieceId, PlatformId, RouteId, TdsId};
 use serde::Serialize;
 
 use crate::blocking::{
     route_steps, run_profile, timing_with_profile, Blocking, BlockingParams, RunTiming, TrainRun,
 };
 use crate::line::{resolve, LineSpec};
-use crate::path::{arrival_dir, departure_routes, find_path, stop_at, Candidate, FoundPath, Place};
+use crate::path::{
+    arrival_dir, departure_routes, find_path, find_path_costed, stop_at, Candidate, FoundPath,
+    Place,
+};
 use rail_dynamics::SpeedProfile;
 
 /// Planner settings.
@@ -288,6 +291,8 @@ struct Planner<'a> {
     /// The terminal platform each line direction arrives in: the one its trains leave from on the
     /// track the other direction runs on.
     ends: HashMap<(usize, u8), PlatformId>,
+    /// The track pieces each line direction's usual run passes, with the direction it runs them in.
+    heads: HashMap<(usize, u8), HashSet<(PieceId, Dir)>>,
     vehicles: Vec<Vehicle>,
     stacks: Vec<Stack>,
     /// Departure routes reserved for trains standing in a platform: (vehicle, start, end) per section.
@@ -363,6 +368,7 @@ pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, Strin
         issues: Vec::new(),
         memory: HashMap::new(),
         ends: HashMap::new(),
+        heads: HashMap::new(),
         vehicles: Vec::new(),
         stacks,
         reserved: BTreeMap::new(),
@@ -618,11 +624,27 @@ impl<'a> Planner<'a> {
                     .collect()
             })
             .collect();
-        find_path(
+        // Track the other direction runs the other way costs its length again, so where two ways
+        // lead out of a terminal the train takes the crossover onto its own track rather than
+        // running back along the arrival track to one further on (Damascus test, bug 25).
+        let against = self.heads.get(&(line, 1 - dir));
+        let extra = |r: RouteId| -> f64 {
+            let Some(a) = against else {
+                return 0.0;
+            };
+            self.m.routes[r as usize]
+                .steps
+                .iter()
+                .filter(|st| a.contains(&(st.piece, st.dir.reverse())))
+                .map(|st| self.m.pieces[st.piece as usize].length_m())
+                .sum()
+        };
+        find_path_costed(
             self.m,
             &departure_routes(self.m, origin, depart_dir),
             &calls,
             self.p.max_routes,
+            &extra,
         )
     }
 
@@ -775,9 +797,17 @@ impl<'a> Planner<'a> {
             let mut blocks: [Vec<(TdsId, f64, f64)>; 2] = [Vec::new(), Vec::new()];
             for dir in 0..2u8 {
                 match self.template_run(li, dir) {
-                    Ok((t, b)) => {
+                    Ok((t, b, routes)) => {
                         t_run[dir as usize] = t;
                         blocks[dir as usize] = b;
+                        // The other direction's paths avoid running against this one.
+                        let heads = route_steps(self.m, &routes)
+                            .unwrap_or_default()
+                            .iter()
+                            .map(|st| (st.piece, st.dir))
+                            .collect();
+                        self.heads.insert((li, dir), heads);
+                        self.forget_paths();
                     }
                     Err(reason) => {
                         self.issues.push(Issue::NoPath {
@@ -858,44 +888,67 @@ impl<'a> Planner<'a> {
                 self.p.terminal_separation_s,
                 &|o, e| meets_at(o, e, h_min),
             );
-            for b in &l.bands {
-                let ratio = b.headway_s / h_min;
-                let pat = match l.return_offset_s {
-                    Some(o) => Pattern {
-                        offset_s: o,
-                        extra_s: 0.0,
-                    },
-                    None if (ratio - ratio.round()).abs() < 1e-6 => {
-                        let offs: Vec<f64> = (0..ratio.round() as usize)
-                            .map(|i| base.offset_s + i as f64 * h_min)
-                            .collect();
-                        periodic_pattern(
+            let pats: Vec<Pattern> = l
+                .bands
+                .iter()
+                .map(|b| {
+                    let ratio = b.headway_s / h_min;
+                    match l.return_offset_s {
+                        Some(o) => Pattern {
+                            offset_s: o,
+                            extra_s: 0.0,
+                        },
+                        None if (ratio - ratio.round()).abs() < 1e-6 => {
+                            let offs: Vec<f64> = (0..ratio.round() as usize)
+                                .map(|i| base.offset_s + i as f64 * h_min)
+                                .collect();
+                            periodic_pattern(
+                                b.headway_s,
+                                &offs,
+                                base.extra_s,
+                                t_run[0],
+                                t_run[1],
+                                l.turnback_s,
+                                self.p.terminal_separation_s,
+                                &|o, e| meets_at(o, e, b.headway_s),
+                            )
+                        }
+                        None => periodic_pattern(
                             b.headway_s,
-                            &offs,
-                            base.extra_s,
+                            &[],
+                            0.0,
                             t_run[0],
                             t_run[1],
                             l.turnback_s,
                             self.p.terminal_separation_s,
                             &|o, e| meets_at(o, e, b.headway_s),
-                        )
+                        ),
                     }
-                    None => periodic_pattern(
-                        b.headway_s,
-                        &[],
-                        0.0,
-                        t_run[0],
-                        t_run[1],
-                        l.turnback_s,
-                        self.p.terminal_separation_s,
-                        &|o, e| meets_at(o, e, b.headway_s),
-                    ),
-                };
+                })
+                .collect();
+            for (bi, b) in l.bands.iter().enumerate() {
+                let pat = pats[bi];
+                // A band runs from its start, and each direction's last departure in it keeps at
+                // least half a headway (the shorter of the two) before that direction's first in
+                // the next band. A band whose headway is not a multiple of the shortest has its
+                // own pattern, so its last train could leave a minute or two before the next
+                // band's first, and the two got in each other's way at each step of a gradual
+                // start or a ramp to a peak (Damascus test, bug 25).
+                let next = l
+                    .bands
+                    .get(bi + 1)
+                    .filter(|n| (n.from_s - b.to_s).abs() < 1e-6)
+                    .map(|n| (n, pats[bi + 1]));
                 for dir in 0..2u8 {
                     let off = if dir == 0 { 0.0 } else { pat.offset_s };
                     let extra = pat.extra_s / 2.0;
+                    let mut end = b.to_s + off - 1e-6;
+                    if let Some((n, np)) = next {
+                        let n_off = if dir == 0 { 0.0 } else { np.offset_s };
+                        end = end.min(n.from_s + n_off - 0.5 * n.headway_s.min(b.headway_s) + 1e-6);
+                    }
                     let mut t = b.from_s + off;
-                    while t < b.to_s + off - 1e-6 {
+                    while t < end {
                         trips.push(Trip {
                             line: li,
                             dir,
@@ -1065,8 +1118,12 @@ impl<'a> Planner<'a> {
     /// Output: Err with why trains cannot run it when the track joins the stops but no run along it
     /// can be built or timed (a platform too short for the train, a gradient it cannot climb); Err
     /// with None when no track joins the stops.
-    fn template_run(&self, line: usize, dir: u8) -> Result<(f64, Blocks), Option<String>> {
-        let mut best: Option<(f64, f64, Blocks)> = None;
+    fn template_run(
+        &self,
+        line: usize,
+        dir: u8,
+    ) -> Result<(f64, Blocks, Vec<RouteId>), Option<String>> {
+        let mut best: Option<(f64, f64, Blocks, Vec<RouteId>)> = None;
         let mut why: Option<String> = None;
         for (pl, _) in self.candidates(line, dir, 0) {
             for d in [Dir::Up, Dir::Down] {
@@ -1092,17 +1149,17 @@ impl<'a> Planner<'a> {
                     }
                 };
                 let total = t.profile.total_time_s();
-                if best.as_ref().map_or(true, |(c, _, _)| path.cost < *c) {
+                if best.as_ref().map_or(true, |(c, _, _, _)| path.cost < *c) {
                     let blocks = t
                         .blocking
                         .iter()
                         .map(|b| (b.tds, b.start_s, b.end_s))
                         .collect();
-                    best = Some((path.cost, total, blocks));
+                    best = Some((path.cost, total, blocks, path.routes.clone()));
                 }
             }
         }
-        best.map(|(_, t, b)| (t, b)).ok_or(why)
+        best.map(|(_, t, b, r)| (t, b, r)).ok_or(why)
     }
 
     /// Purpose: a run that stalls on a gradient, said where: the station it last left and how far
@@ -1755,6 +1812,34 @@ impl<'a> Planner<'a> {
         });
     }
 
+    /// Purpose: whether a path stops, at a station it passes through, on the track the line's
+    /// other direction stops on there instead of its own: on double track it would run against the
+    /// trains coming the other way, from the station before to the one after, and often all the
+    /// way to the end (Damascus test, bug 25). Such a path is no alternative to the usual one.
+    /// Inputs: the line, the direction and the path's places (calls after the origin, the last
+    /// being the destination). Output: true when it does.
+    fn against_the_other_way(&self, line: usize, dir: u8, places: &[Place]) -> bool {
+        let last = self.cands[line][dir as usize].len() - 1;
+        places.iter().enumerate().any(|(k, pl)| {
+            let i = k + 1;
+            let Place::Platform(pid) = *pl else {
+                return false;
+            };
+            if i >= last {
+                return false;
+            }
+            let own = self.memory.get(&(line, dir, i)).copied();
+            let other = self.memory.get(&(line, 1 - dir, last - i)).copied();
+            match (own, other) {
+                (Some(o), Some(x)) => {
+                    let track = |p: PlatformId| self.m.platforms[p as usize].track;
+                    o != pid && track(x) == track(pid) && track(o) != track(pid)
+                }
+                _ => false,
+            }
+        })
+    }
+
     /// Purpose: place a trip from a given origin with its train; commits on success.
     #[allow(clippy::too_many_arguments)]
     fn try_trip(
@@ -1774,7 +1859,9 @@ impl<'a> Planner<'a> {
         if let Some(best) = self.trip_path(trip.line, trip.dir, origin, depart_dir, &[]) {
             for pl in &best.places {
                 if let Some(alt) = self.trip_path(trip.line, trip.dir, origin, depart_dir, &[*pl]) {
-                    if !attempts.iter().any(|a| a.routes == alt.routes) && alt.routes != best.routes
+                    if !attempts.iter().any(|a| a.routes == alt.routes)
+                        && alt.routes != best.routes
+                        && !self.against_the_other_way(trip.line, trip.dir, &alt.places)
                     {
                         attempts.push(alt);
                     }
@@ -2512,26 +2599,34 @@ impl<'a> Planner<'a> {
         let line = self.runs[ve.last_run].line;
         let lines = self.lines;
         let l = &lines[line];
-        let dir = ve.arrive_dir.reverse();
-        let start = departure_routes(self.m, ve.at, dir);
-        let mut opts: Vec<(f64, usize, FoundPath)> = Vec::new();
+        // Back the way it came, or straight on into a siding beyond the terminal's far end: only
+        // turning back sent trains at one end of the line to the sidings at the other end, empty
+        // along the whole line against the service (Damascus test, bug 25).
+        let starts: Vec<(Dir, Vec<RouteId>)> = [ve.arrive_dir.reverse(), ve.arrive_dir]
+            .into_iter()
+            .map(|d| (d, departure_routes(self.m, ve.at, d)))
+            .filter(|(_, r)| !r.is_empty())
+            .collect();
+        let mut opts: Vec<(f64, usize, FoundPath, Dir)> = Vec::new();
         for (si, s) in self.stacks.iter().enumerate() {
             if !l.stabling.contains(&self.m.tracks[s.track].id) || s.now.len() >= s.capacity {
                 continue;
             }
             let e = 1 - self.runs[ve.last_run].direction;
             let end = [(Place::Storage(s.track), 0.0)];
-            if let Some(fp) = self.depot_path(line, e, &start, &end, false) {
-                // The overnight tracks first; an end-station siding when the line has no room to
-                // reach them now (the train goes on later, see `clear_layovers`).
-                let c = fp.cost + if s.layover { 1.0e5 } else { 0.0 };
-                opts.push((c, si, fp));
+            for (d, start) in &starts {
+                if let Some(fp) = self.depot_path(line, e, start, &end, false) {
+                    // The overnight tracks first; an end-station siding when the line has no room
+                    // to reach them now (the train goes on later, see `clear_layovers`).
+                    let c = fp.cost + if s.layover { 1.0e5 } else { 0.0 };
+                    opts.push((c, si, fp, *d));
+                }
             }
         }
         opts.sort_by(|a, b| a.0.partial_cmp(&b.0).unwrap().then(a.1.cmp(&b.1)));
         let ideal = ve.ready_s + l.turnback_s;
         let mut why = "no stabling track with room is reachable".to_string();
-        for (_, si, fp) in opts {
+        for (_, si, fp, dir) in opts {
             let track = self.stacks[si].track;
             let name = format!("{}-pi", self.runs[ve.last_run].name);
             let variants = self.depot_variants(line, &name, &fp);

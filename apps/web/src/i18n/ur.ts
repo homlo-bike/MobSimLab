@@ -16,6 +16,7 @@ import { populationUr } from "./population/ur";
 import { resultsUr } from "./results/ur";
 import { pluginsUr } from "./plugins/ur";
 import { streetPhotosUr } from "./street-photos/ur";
+import { pluginAdminUr } from "./plugin-admin/ur";
 import type { Messages } from "./en";
 
 /** اردو */
@@ -541,4 +542,5 @@ export const ur: Messages = {
   ...calendarUr,
   ...pluginsUr,
   ...streetPhotosUr,
+  ...pluginAdminUr,
 };

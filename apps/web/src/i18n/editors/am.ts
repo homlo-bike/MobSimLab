@@ -929,6 +929,7 @@ export const editorsAm = {
   "kit.issueWhere": "{level}፣ {where}፦",
   "kit.parameter": "መለኪያ {name}",
   "kit.lineName": "የመስመር ስም",
+  "kit.lines": "በፕሮጀክቱ ውስጥ ያሉ መስመሮች ({n})",
   "kit.tool": "መሣሪያ",
   "kit.select": "ምረጥ",
   "kit.summary": "ማጠቃለያ",
@@ -1056,6 +1057,8 @@ export const editorsAm = {
   "drt.method":
     "ጥያቄዎች በእኩል ለተሰራጩበት አካባቢ በቀጣይ ግምት ቀመሮች (Daganzo 1978) የተገመተ። እያንዳንዱን ቦታ ማስያዣ ለመመደብ ቀኑን ያስመስሉ።",
   "ferry.defaultName": "ጀልባ 1",
+  "ferry.lines": "በፕሮጀክቱ ውስጥ ያሉ የጀልባ መስመሮች ({n})",
+  "ferry.lineN": "ጀልባ {n}",
   "ferry.plugin": "ጀልባ",
   "ferry.engineFailed": "የጀልባ ኪቱ አልጀመረም፦ {error}",
   "ferry.starting": "የጀልባ ኪቱን በማስጀመር ላይ…",
@@ -1444,4 +1447,5 @@ export const editorsAm = {
   "spacing.onFoot": "በእግር {metres} ሜ",
   "spacing.straight": "በጣቢያዎች መካከል በቀጥታ መስመር የተለካ።",
   "spacing.onFootHint": "በምልክት በተደረጉ ፌርማታዎች መካከል ያለውን የእግር ርቀት ለመጨመር ከላይ የእግር ተደራሽነትን ያስሉ።",
+  "kit.savedWithProject": "ስዕሉ ከፕሮጀክቱ ጋር ይቀመጣል።",
 } satisfies EditorMessages;

@@ -109,6 +109,19 @@ pub fn find_path(
     calls: &[Vec<Candidate>],
     max_routes: usize,
 ) -> Option<FoundPath> {
+    find_path_costed(m, start, calls, max_routes, &|_| 0.0)
+}
+
+/// Purpose: [`find_path`] with an extra cost for some routes.
+/// Inputs: as [`find_path`], and the extra cost of each route, m (0 for most).
+/// Output: the cheapest path counting the extra costs, or None. Its cost includes them.
+pub fn find_path_costed(
+    m: &Model,
+    start: &[RouteId],
+    calls: &[Vec<Candidate>],
+    max_routes: usize,
+    extra: &dyn Fn(RouteId) -> f64,
+) -> Option<FoundPath> {
     let n = calls.len();
     let mut best: BTreeMap<(RouteId, usize), f64> = BTreeMap::new();
     // Parent: state -> (previous state, place chosen when advancing `k`).
@@ -126,7 +139,7 @@ pub fn find_path(
         if !allowed(r, 0) {
             continue;
         }
-        let c = m.routes[r as usize].length_m;
+        let c = m.routes[r as usize].length_m + extra(r);
         if best.get(&(r, 0)).map_or(true, |&b| c < b) {
             best.insert((r, 0), c);
             parent.insert((r, 0), (None, None, 1));
@@ -182,7 +195,7 @@ pub fn find_path(
             if !allowed(nx, k) {
                 continue;
             }
-            let c = cost + m.routes[nx as usize].length_m;
+            let c = cost + m.routes[nx as usize].length_m + extra(nx);
             if best.get(&(nx, k)).map_or(true, |&b| c < b - 1e-9) {
                 best.insert((nx, k), c);
                 parent.insert((nx, k), (Some((r, k)), None, depth + 1));

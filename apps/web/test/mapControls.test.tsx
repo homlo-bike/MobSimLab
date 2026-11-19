@@ -71,6 +71,23 @@ describe("basemaps and project layers", () => {
     expect(basemapStyle(DEFAULT_BASEMAP, loaded)).toBe(loaded);
   });
 
+  it("shows the OpenFreeMap credit once: the basemap's own, not the tiles' as well", () => {
+    const loaded = {
+      version: 8,
+      sources: {
+        openmaptiles: { type: "vector", url: "https://tiles.openfreemap.org/planet" },
+        other: { type: "vector", url: "https://example.org/tiles", attribution: "Other" },
+      },
+      layers: [],
+    } as unknown as StyleSpecification;
+    const street = basemapStyle(DEFAULT_BASEMAP, loaded);
+    expect(street.sources.openmaptiles).toMatchObject({ attribution: "" });
+    expect(street.sources.other).toMatchObject({ attribution: "Other" });
+    expect(DEFAULT_BASEMAP.attribution).toContain("OpenStreetMap contributors");
+    const aerial = basemapStyle(basemapById("eox-s2cloudless-2016"), loaded);
+    expect(aerial.sources.openmaptiles).toMatchObject({ attribution: "" });
+  });
+
   it("adds the NASA GIBS plugin's daily imagery, for the newest day or a picked one", () => {
     const ids = availableBasemaps().map((b) => b.id);
     expect(ids.slice(0, BASEMAPS.length)).toEqual(BASEMAPS.map((b) => b.id));

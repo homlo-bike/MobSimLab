@@ -952,6 +952,7 @@ export const editorsUr = {
   "kit.issueWhere": "{level}، {where}:",
   "kit.parameter": "پیرامیٹر {name}",
   "kit.lineName": "لائن کا نام",
+  "kit.lines": "منصوبے کی لائنیں ({n})",
   "kit.tool": "آلہ",
   "kit.select": "منتخب کریں",
   "kit.summary": "خلاصہ",
@@ -1083,6 +1084,8 @@ export const editorsUr = {
   "drt.method":
     "یکساں پھیلی درخواستوں والے زون کے لیے مسلسل تخمینے کے فارمولوں (Daganzo 1978) سے اندازہ۔ ہر بکنگ تقسیم کرنے کے لیے دن کی نقل کریں۔",
   "ferry.defaultName": "فیری 1",
+  "ferry.lines": "منصوبے کی فیری لائنیں ({n})",
+  "ferry.lineN": "فیری {n}",
   "ferry.plugin": "فیری",
   "ferry.engineFailed": "فیری کٹ شروع نہیں ہوئی: {error}",
   "ferry.starting": "فیری کٹ شروع ہو رہی ہے…",
@@ -1490,4 +1493,5 @@ export const editorsUr = {
   "spacing.straight": "اسٹیشنوں کے درمیان سیدھی لکیر میں ناپا گیا۔",
   "spacing.onFootHint":
     "نشان زدہ اسٹاپوں کے درمیان پیدل فاصلہ شامل کرنے کے لیے اوپر پیدل رسائی کا حساب لگائیں۔",
+  "kit.savedWithProject": "ڈرائنگ منصوبے کے ساتھ محفوظ ہوتی ہے۔",
 } satisfies EditorMessages;

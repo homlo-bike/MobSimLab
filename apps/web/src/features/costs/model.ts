@@ -11,10 +11,12 @@ import { fullTiming } from "../street-lines/modes";
 import { dayService } from "../street-lines/service";
 import { lineStats } from "../street-lines/summary";
 import type { Prices } from "./economy";
-import { paramValue, type Triple } from "./params";
+import { paramValue, prefId, type Triple } from "./params";
 import { type Translate, translate } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { distanceKm } from "../../map/geo";
+import { activePlugins } from "../../plugins/registry";
+import { ropewayParam, type RopewayLine } from "../tables/ropeways";
 
 /** Kinds of construction cost; the first seven are the alignment by construction type. */
 export type Category =
@@ -102,6 +104,11 @@ export interface CostItem {
   /** Assumption the rate comes from. */
   param: string | null;
   /**
+   * A parameter from a plugin's assumptions rather than the cost library: its name, unit and the plugin's
+   * low, central and high values (before the project's own value), for the table of unit costs.
+   */
+  library?: { label: string; unit: string; values: Triple };
+  /**
    * Shared items (`line` null) only: which lines run on which part of the quantity, such as a track's
    * kilometres or one station of a station count. A part no line runs through, and an item without parts, is
    * shared by all of its mode's lines.
@@ -143,6 +150,8 @@ export interface EstimateInput {
   streetLines: SavedStreetLine[];
   prefs: Record<string, number> | undefined;
   prices: Prices;
+  /** The cable car lines of the plugin tools, with their service. */
+  ropeways?: readonly RopewayLine[];
   /** Translates the labels and notes; English when absent. */
   t?: Translate;
 }
@@ -297,6 +306,39 @@ function streetVehicles(l: SavedStreetLine, layoverMin: number, maxWaitMin: numb
   if (!input || !Array.isArray(l.view.directions)) return null;
   const blocks = streetBlocks({ line: input, layoverMin, hasDepot: !!(l.depotId || l.depot), maxWaitMin });
   return blocks.length ? blocks.length : null;
+}
+
+/**
+ * Purpose: the hours each line's vehicles run on a weekday, worked out as the estimate does but without the
+ * prices, so the calendar runs can count heating and air conditioning before the Tables tab has been opened.
+ * Inputs: the railway (its service lines), their weekday publication reports, the street lines and the
+ * project's values. Output: one entry per line with a service: its mode and vehicle-hours (trains for rail).
+ */
+export function weekdayServiceHours(
+  railway: Network | null,
+  reports: readonly LineReport[],
+  streetLines: readonly SavedStreetLine[],
+  prefs: Record<string, number> | undefined,
+): { mode: string; hours: number }[] {
+  const out: { mode: string; hours: number }[] = [];
+  const byId = new Map(reports.map((r) => [r.id, r] as const));
+  for (const l of railway?.lines ?? []) {
+    const r = byId.get(l.id);
+    if (!r || !trainById(l.vehicle) || r.trains === 0) continue;
+    const runS = ((r.outbound_s ?? 0) + (r.return_s ?? r.outbound_s ?? 0)) / 2;
+    out.push({ mode: lineMode(railway!, l), hours: (r.trips * runS) / 3600 });
+  }
+  for (const l of streetLines) {
+    if (l.view.points.length < 2) continue;
+    const timing = fullTiming(l.timing);
+    const stats = lineStats(l.view, timing);
+    const vehicles =
+      streetVehicles(l, timing.layoverMin, paramValue("timetable.max_terminal_wait_min", "*", prefs)[1]) ??
+      stats.vehicles;
+    if (vehicles > 0)
+      out.push({ mode: l.profile.mode, hours: dayService(timing, stats.cycleMin).vehicleHours });
+  }
+  return out;
 }
 
 export function estimate(input: EstimateInput): Estimate {
@@ -655,6 +697,97 @@ export function estimate(input: EstimateInput): Estimate {
     });
   });
 
+  // Cable cars: stations, rope and towers, cabins and the staff of the stations while the line is open.
+  for (const r of input.ropeways ?? []) {
+    const mode = r.mode;
+    const id = r.id;
+    const serviceH = Math.max(0, r.lastS - r.firstS) / 3600;
+    const fleet: Triple = [r.fleet, r.fleet, r.fleet];
+    lines.push({
+      id,
+      name: r.name,
+      mode,
+      color: r.color,
+      lengthKm: r.lengthKm,
+      inService: r.inService,
+      fleet: r.fleet,
+      hoursPerYear: days[1] * r.cabinHoursPerDay,
+      kmPerYear: days[1] * r.cabinKmPerDay,
+    });
+    /** A plugin cost parameter for this line, with the project's own value on top; null when unknown. */
+    const rope = (key: string): { rate: Triple; library: CostItem["library"] } | null => {
+      const lib = ropewayParam(key, mode, r.system);
+      if (!lib) return null;
+      const meta = ropewayParamMeta(key);
+      const values: Triple = [lib.low, lib.central, lib.high];
+      const own = ownPref(prefs, prefId(key, mode)) ?? ownPref(prefs, prefId(key, "*"));
+      const k = own === undefined ? 1 : lib.central !== 0 ? own / lib.central : 1;
+      const rate: Triple =
+        own !== undefined && lib.central === 0 ? [own, own, own] : (values.map((x) => x * k) as Triple);
+      return { rate, library: { label: meta?.label ?? key, unit: meta?.unit ?? "", values } };
+    };
+    const ropeItem = (
+      category: Category,
+      key: string,
+      label: string,
+      quantity: number,
+      unit: string,
+      scale: number,
+      amountOf: (rate: Triple) => Triple = (rate) => mul(rate, quantity),
+    ) => {
+      const p = rope(key);
+      if (!p || !(quantity > 0)) return;
+      const rate = mul(p.rate, scale);
+      items.push({
+        category,
+        mode,
+        line: id,
+        label,
+        quantity,
+        unit,
+        rate,
+        amount: amountOf(rate),
+        param: key,
+        library: p.library,
+      });
+    };
+    ropeItem(
+      "stations",
+      "ropeway.cost.station_each",
+      t("cost.cat.stations"),
+      r.stations,
+      t("cost.unit.each"),
+      ppp * 1e6,
+    );
+    ropeItem(
+      "systems",
+      "ropeway.cost.line_per_km",
+      t("cost.x.ropeway"),
+      r.lengthKm,
+      t("cost.unit.km"),
+      ppp * 1e6,
+    );
+    ropeItem(
+      "vehicles",
+      "ropeway.cost.cabin_each",
+      t("cost.x.vehicles"),
+      r.fleet,
+      t("cost.unit.vehicles"),
+      market * 1e6,
+      (rate) => prod(rate, fleet),
+    );
+    const stationHours: Triple = mul(days, r.stations * serviceH);
+    ropeItem(
+      "service",
+      "ropeway.cost.station_hour",
+      t("cost.x.stationHours", { n: r.stations, from: hhmm(r.firstS / 60), to: hhmm(r.lastS / 60) }),
+      stationHours[1],
+      t("cost.unit.stationHours"),
+      ppp,
+      (rate) => prod(rate, stationHours),
+    );
+  }
+
   // Shares per mode: design and contingency on the infrastructure, upkeep and overheads a year.
   const modes = [...new Set([...items.map((x) => x.mode), ...lines.map((l) => l.mode)])];
   const eng = v("cost.engineering_share", "*");
@@ -676,11 +809,11 @@ export function estimate(input: EstimateInput): Estimate {
     "depots",
   ]);
   for (const mode of modes) {
-    // Per line where the infrastructure is the line's own (street lines), else for the mode.
+    // Per line where the infrastructure is the line's own (street lines, cable cars), else for the mode.
     const groups = new Map<string | null, CostItem[]>();
     for (const x of items)
       if (x.mode === mode && INFRA.has(x.category)) {
-        const g = x.line?.startsWith("street:") ? x.line : null;
+        const g = x.line && !x.line.startsWith("rail:") ? x.line : null;
         groups.set(g, [...(groups.get(g) ?? []), x]);
       }
     for (const [line, xs] of groups) {
@@ -801,4 +934,15 @@ export function perLine(e: Estimate): Map<string, { construction: Triple; operat
     }
   }
   return out;
+}
+
+function ownPref(prefs: Record<string, number> | undefined, id: string): number | undefined {
+  const v = prefs?.[id];
+  return typeof v === "number" && Number.isFinite(v) && v >= 0 ? v : undefined;
+}
+
+/** Purpose: the label and unit of a plugin parameter, from the plugin that has it. */
+function ropewayParamMeta(key: string): { label: string; unit: string } | null {
+  for (const p of activePlugins()) if (p.parameters[key]) return p.parameters[key]!;
+  return null;
 }

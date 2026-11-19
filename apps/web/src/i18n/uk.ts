@@ -16,6 +16,7 @@ import { populationUk } from "./population/uk";
 import { resultsUk } from "./results/uk";
 import { pluginsUk } from "./plugins/uk";
 import { streetPhotosUk } from "./street-photos/uk";
+import { pluginAdminUk } from "./plugin-admin/uk";
 import type { Messages } from "./en";
 
 /** Українська */
@@ -544,4 +545,5 @@ export const uk: Messages = {
   ...calendarUk,
   ...pluginsUk,
   ...streetPhotosUk,
+  ...pluginAdminUk,
 };

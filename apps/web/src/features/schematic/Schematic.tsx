@@ -231,8 +231,7 @@ export function Schematic({
     return (
       <div className="h-full overflow-y-auto bg-slate-50">
         <section aria-label={t("schematic.title")} className="mx-auto max-w-3xl px-4 py-8 md:px-8 md:py-12">
-          <h1 className="text-2xl font-semibold tracking-tight">{t("schematic.title")}</h1>
-          <p className="mt-1 text-slate-600">{t("schematic.intro")}</p>
+          <p className="text-slate-600">{t("schematic.intro")}</p>
           <p className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white px-4 py-5 text-slate-700">
             {t("schematic.empty")}
           </p>

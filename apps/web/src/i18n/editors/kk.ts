@@ -961,6 +961,7 @@ export const editorsKk = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "{name} параметрі",
   "kit.lineName": "Желі атауы",
+  "kit.lines": "Жобадағы желілер ({n})",
   "kit.tool": "Құрал",
   "kit.select": "Таңдау",
   "kit.summary": "Қорытынды",
@@ -1096,6 +1097,8 @@ export const editorsKk = {
   "drt.method":
     "Тапсырыстары біркелкі таралған аймақ үшін үздіксіз жуықтау формулаларымен (Daganzo 1978) бағаланды. Әр тапсырысты бөлу үшін күнді модельдеңіз.",
   "ferry.defaultName": "Паром 1",
+  "ferry.lines": "Жобадағы паром желілері ({n})",
+  "ferry.lineN": "Паром {n}",
   "ferry.plugin": "паром",
   "ferry.engineFailed": "Паром жинағы іске қосылмады: {error}",
   "ferry.starting": "Паром жинағы іске қосылуда…",
@@ -1507,4 +1510,5 @@ export const editorsKk = {
   "spacing.straight": "Станциялар арасы түзу сызықпен өлшенген.",
   "spacing.onFootHint":
     "Белгіленген аялдамалар арасындағы жаяу қашықтықты қосу үшін жоғарыда жаяу қолжетімділікті есептеңіз.",
+  "kit.savedWithProject": "Сызба жобамен бірге сақталады.",
 } satisfies EditorMessages;

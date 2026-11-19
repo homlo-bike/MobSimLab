@@ -928,6 +928,7 @@ export const editorsIg = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "Paramita {name}",
   "kit.lineName": "Aha ahịrị",
+  "kit.lines": "Ahịrị dị na ọrụ ahụ ({n})",
   "kit.tool": "Ngwá ọrụ",
   "kit.select": "Họrọ",
   "kit.summary": "Nchịkọta",
@@ -1055,6 +1056,8 @@ export const editorsIg = {
   "drt.method":
     "E mere atụmatụ site na usoro nso na-aga n'ihu (Daganzo 1978) maka mpaghara nwere arịrịọ gbasara n'otu. Ṣee ụbọchị ahụ iji kesaa arịrịọ ọ bụla.",
   "ferry.defaultName": "Ụgbọ mmiri 1",
+  "ferry.lines": "Ahịrị ụgbọ mmiri dị na ọrụ ahụ ({n})",
+  "ferry.lineN": "Ụgbọ mmiri {n}",
   "ferry.plugin": "ụgbọ mmiri",
   "ferry.engineFailed": "Ngwa ụgbọ mmiri amalitaghị: {error}",
   "ferry.starting": "Na-amalite ngwa ụgbọ mmiri…",
@@ -1463,4 +1466,5 @@ export const editorsIg = {
   "spacing.onFoot": "m {metres} n'ụkwụ",
   "spacing.straight": "A tụrụ ya n'ahịrị kwụ ọtọ n'etiti ọdụ.",
   "spacing.onFootHint": "Gbakọọ nnweta ije ụkwụ n'elu iji tinye anya ije ụkwụ n'etiti ebe nkwụsị akara.",
+  "kit.savedWithProject": "A na-echekwa ihe osise ahụ ya na ọrụ ahụ.",
 } satisfies EditorMessages;

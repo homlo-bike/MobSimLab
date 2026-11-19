@@ -972,6 +972,7 @@ export const editorsNl = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "Parameter {name}",
   "kit.lineName": "Lijnnaam",
+  "kit.lines": "Lijnen in het project ({n})",
   "kit.tool": "Hulpmiddel",
   "kit.select": "Selecteren",
   "kit.summary": "Overzicht",
@@ -1106,6 +1107,8 @@ export const editorsNl = {
   "drt.method":
     "Geschat met formules van continue benadering (Daganzo 1978) voor een zone met gelijkmatig verspreide aanvragen. Simuleer de dag om elke boeking in te plannen.",
   "ferry.defaultName": "Veerboot 1",
+  "ferry.lines": "Veerlijnen in het project ({n})",
+  "ferry.lineN": "Veerboot {n}",
   "ferry.plugin": "veerboot",
   "ferry.engineFailed": "De veerbootkit is niet gestart: {error}",
   "ferry.starting": "Veerbootkit starten…",
@@ -1520,4 +1523,5 @@ export const editorsNl = {
   "spacing.straight": "Gemeten in een rechte lijn tussen stations.",
   "spacing.onFootHint":
     "Bereken hierboven de loopdekking om de loopafstand tussen gemarkeerde haltes toe te voegen.",
+  "kit.savedWithProject": "De tekening wordt met het project opgeslagen.",
 } satisfies EditorMessages;

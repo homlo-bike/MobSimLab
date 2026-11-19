@@ -989,6 +989,7 @@ export const editorsFr = {
   "kit.issueWhere": "{level}, {where} :",
   "kit.parameter": "Paramètre {name}",
   "kit.lineName": "Nom de la ligne",
+  "kit.lines": "Lignes du projet ({n})",
   "kit.tool": "Outil",
   "kit.select": "Sélectionner",
   "kit.summary": "Résumé",
@@ -1125,6 +1126,8 @@ export const editorsFr = {
   "drt.method":
     "Estimé avec des formules d’approximation continue (Daganzo 1978) pour une zone aux demandes réparties uniformément. Simulez la journée pour affecter chaque réservation.",
   "ferry.defaultName": "Ferry 1",
+  "ferry.lines": "Lignes de ferry du projet ({n})",
+  "ferry.lineN": "Ferry {n}",
   "ferry.plugin": "ferry",
   "ferry.engineFailed": "Le kit ferry n’a pas démarré : {error}",
   "ferry.starting": "Démarrage du kit ferry…",
@@ -1550,4 +1553,5 @@ export const editorsFr = {
   "spacing.straight": "Mesuré à vol d'oiseau entre les stations.",
   "spacing.onFootHint":
     "Calculez la couverture à pied ci-dessus pour ajouter la distance à pied entre les arrêts signalés.",
+  "kit.savedWithProject": "Le dessin est enregistré avec le projet.",
 } satisfies EditorMessages;

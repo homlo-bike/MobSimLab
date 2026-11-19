@@ -7,6 +7,7 @@ import { centralValues, contextLabel, findMode, type PluginTool } from "../plugi
 import { loadKits, vesselType } from "./engine";
 import { fmtDur, fmtInt, fmtLen } from "./format";
 import { Issues, Stat } from "./Issues";
+import { LinePicker, type LineList, sharedStop } from "./LinePicker";
 import {
   drawKit,
   ensureKitLayers,
@@ -38,7 +39,7 @@ export interface WaterDoc {
 
 type Tool = "pier" | "via" | "zone";
 
-interface Props {
+interface Props extends LineList {
   map: MapLibreMap | null;
   panel?: HTMLElement | null;
   /** The plugin tool (water route kit) with the modes it draws. */
@@ -53,6 +54,9 @@ interface Props {
   /** Told about the drawing, the line and its noise shape after every change, to save with the project. */
   onSave?: (saved: SavedPluginLine) => void;
 }
+
+/** Purpose: the pier of another line within SHARED_STOP_M of a point, or null. */
+export const sharedPier = (p: LonLat, others: readonly Pier[]): Pier | null => sharedStop(p, others);
 
 function emptyDoc(tool: PluginTool): WaterDoc {
   const mode = findMode(tool.modes[0] ?? "")?.mode;
@@ -97,6 +101,12 @@ export function WaterRouteEditor({
   onLineChange,
   initial = null,
   onSave,
+  lineId,
+  lines,
+  onPickLine,
+  onNewLine,
+  onDeleteLine,
+  otherStops = [],
 }: Props) {
   const { t, tn } = useI18n();
   const [kits, setKits] = useState<Kits | null>(null);
@@ -174,7 +184,7 @@ export function WaterRouteEditor({
         dwell_s: s.dwell_s,
       }));
       line = {
-        id: tool.id,
+        id: lineId ?? tool.id,
         name: doc.name,
         mode: doc.mode,
         color,
@@ -216,7 +226,7 @@ export function WaterRouteEditor({
             }
           : null,
     });
-  }, [view, doc, color, tool.id]);
+  }, [view, doc, color, tool.id, lineId]);
 
   useEffect(() => {
     if (!map) return;
@@ -259,22 +269,28 @@ export function WaterRouteEditor({
     return () => markers.forEach((mk) => mk.remove());
   }, [map, doc.piers, color]);
 
-  const latest = useRef({ mode, leg });
-  latest.current = { mode, leg };
+  const latest = useRef({ mode, leg, otherStops });
+  latest.current = { mode, leg, otherStops };
   useEffect(() => {
     if (!map) return;
     const onClick = (e: MapMouseEvent) => {
       const p: LonLat = [e.lngLat.lng, e.lngLat.lat];
       const { mode, leg } = latest.current;
       if (mode === "pier")
-        setDoc((d) => ({
-          ...d,
-          piers: [
-            ...d.piers,
-            { name: tNow("ferry.pier", { n: d.piers.length + 1 }), lonlat: p, berths: 1, gangways: 1 },
-          ],
-          calls: [...d.calls, { pier: d.piers.length, via: [] }],
-        }));
+        setDoc((d) => {
+          // On a pier of another line: the same pier, so the journey planner changes there.
+          const shared = sharedStop(p, latest.current.otherStops);
+          return {
+            ...d,
+            piers: [
+              ...d.piers,
+              shared
+                ? { name: shared.name, lonlat: shared.lonlat, berths: 1, gangways: 1 }
+                : { name: tNow("ferry.pier", { n: d.piers.length + 1 }), lonlat: p, berths: 1, gangways: 1 },
+            ],
+            calls: [...d.calls, { pier: d.piers.length, via: [] }],
+          };
+        });
       else if (mode === "via")
         setDoc((d) => {
           const target = leg ?? d.calls.length - 2;
@@ -308,6 +324,12 @@ export function WaterRouteEditor({
 
   const body = (
     <div className="flex flex-col gap-3 px-4 pt-1 pb-5 text-sm md:px-5">
+      <LinePicker
+        label={t("ferry.lines", { n: lines?.length ?? 0 })}
+        current={lineId ?? tool.id}
+        name={doc.name}
+        list={{ lines, onPickLine, onNewLine, onDeleteLine }}
+      />
       <input
         aria-label={t("kit.lineName")}
         className="rounded-lg border border-slate-300 px-2.5 py-1.5"
@@ -579,7 +601,7 @@ export function WaterRouteEditor({
           plugin: found?.plugin.name ?? t("ferry.plugin"),
           context: contextLabel(doc.mode, doc.vessel),
         })}{" "}
-        {t("ferry.carLater")} {t("kit.keptHere")}
+        {t("ferry.carLater")} {t(onSave ? "kit.savedWithProject" : "kit.keptHere")}
       </p>
     </div>
   );

@@ -1,4 +1,4 @@
--- 0026: the project area as polygons the planner draws (large-area projects, step 1). Each entry:
+-- 0027: the project area as polygons the planner draws (large-area projects, step 1). Each entry:
 -- {id, name, detail: "full" | "main", ring: [[lon, lat], ...]}; map data is downloaded only inside them, at each
 -- polygon's detail (projects/area-polygons.ts). Projects with OpenStreetMap regions (0021) get each region as a
 -- full-detail polygon; projects without regions have no area until the planner draws one.

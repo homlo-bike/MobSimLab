@@ -34,6 +34,7 @@ export const tablesEn = {
   "tbl.u.km": "{v} km",
   "tbl.u.m": "{v} m",
   "tbl.u.min": "{v} min",
+  "tbl.u.s": "{v} s",
   "tbl.u.h": "{v} h",
   "tbl.u.kmh": "{v} km/h",
   "tbl.u.l": "{v} L",
@@ -52,6 +53,7 @@ export const tablesEn = {
   "net.modes.one": "{count} mode",
   "net.modes.other": "{count} modes",
   "net.routeSub": "{rail} railway, {street} street lines",
+  "net.routeSubCable": "{rail} railway, {street} street lines, {cable} cable cars",
   "net.stationsAndStops": "Stations and stops",
   "net.stationsSub": "{stations} stations, {stops} stops",
   "net.inServiceSub": "{n} in service at the peak",
@@ -114,6 +116,7 @@ export const tablesEn = {
   "net.atPeak": "{n} at the peak",
   "net.perTrain": "per train",
   "net.perVehicle": "per vehicle",
+  "net.perCabin": "per cabin",
   "net.perHour": "per hour",
   "net.ofPlaces": "{pct}% of places",
   "net.noFigures": "No service figures yet: {problem}",
@@ -316,6 +319,8 @@ export const tablesEn = {
   "cost.x.vehicles": "Vehicles with reserves",
   "cost.x.depotPlaces": "Depot places",
   "cost.x.vehicleHours": "{n} vehicles at the peak, {from}–{to}",
+  "cost.x.ropeway": "Rope, towers and drives",
+  "cost.x.stationHours": "{n} stations open {from}–{to}",
   "cost.x.ofInfra": "{pct} % of the infrastructure",
   "cost.x.ofInfraYear": "{pct} % of the infrastructure a year",
   "cost.x.ofOperating": "Share of the operating cost",
@@ -332,6 +337,7 @@ export const tablesEn = {
   "cost.unit.laneKm": "lane-km",
   "cost.unit.routeKm": "route-km",
   "cost.unit.vehicles": "vehicles",
+  "cost.unit.stationHours": "station-hours",
   "cost.unit.vehicleHours": "vehicle-h / year",
 
   // Unit costs of the assumption library (assumptions/parameters/costs.yaml); {year} is the price base year.
@@ -414,6 +420,8 @@ export const tablesEn = {
   "tt.tbl.departures": "Departures, {day}",
   "tt.tbl.line": "Line",
   "tt.tbl.noTrips": "No trips on this day type.",
+  "tt.tbl.ropeway":
+    "A cabin leaves every {every} in each direction from {from} to {to}. The cabins stay on the line all day, so a cable car has no vehicle blocks.",
   "tt.tbl.nTrips": "({n} trips)",
   "tt.tbl.dirCaption": "{line}, {from} to {to}",
   "tt.tbl.blocksTitle": "Vehicle blocks, {day}",
@@ -456,6 +464,7 @@ export const tablesEn = {
   "tt.tbl.departs": "Departs",
   "tt.tbl.to": "To",
   "tt.tbl.arrives": "Arrives",
+  "cost.outsideRange": "Outside the library range of {low}–{high}: check the value and its unit.",
 } as const;
 
 /** Keys of the tables messages. */

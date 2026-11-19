@@ -955,6 +955,7 @@ export const editorsHi = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "पैरामीटर {name}",
   "kit.lineName": "लाइन का नाम",
+  "kit.lines": "परियोजना में लाइनें ({n})",
   "kit.tool": "टूल",
   "kit.select": "चुनें",
   "kit.summary": "सारांश",
@@ -1086,6 +1087,8 @@ export const editorsHi = {
   "drt.method":
     "समान रूप से फैले अनुरोधों वाले ज़ोन के लिए सतत सन्निकटन सूत्रों (Daganzo 1978) से अनुमान। हर बुकिंग बाँटने के लिए दिन का सिमुलेशन करें।",
   "ferry.defaultName": "फ़ेरी 1",
+  "ferry.lines": "परियोजना में फ़ेरी लाइनें ({n})",
+  "ferry.lineN": "फ़ेरी {n}",
   "ferry.plugin": "फ़ेरी",
   "ferry.engineFailed": "फ़ेरी किट शुरू नहीं हुई: {error}",
   "ferry.starting": "फ़ेरी किट शुरू हो रही है…",
@@ -1493,4 +1496,5 @@ export const editorsHi = {
   "spacing.onFoot": "{metres} मी पैदल",
   "spacing.straight": "स्टेशनों के बीच सीधी रेखा में मापा गया।",
   "spacing.onFootHint": "चिह्नित स्टॉपों के बीच पैदल दूरी जोड़ने के लिए ऊपर पैदल कवरेज की गणना करें।",
+  "kit.savedWithProject": "ड्रॉइंग परियोजना के साथ सहेजी जाती है।",
 } satisfies EditorMessages;

@@ -16,6 +16,7 @@ import { populationPl } from "./population/pl";
 import { resultsPl } from "./results/pl";
 import { pluginsPl } from "./plugins/pl";
 import { streetPhotosPl } from "./street-photos/pl";
+import { pluginAdminPl } from "./plugin-admin/pl";
 import type { Messages } from "./en";
 
 /** Polski */
@@ -540,4 +541,5 @@ export const pl: Messages = {
   ...calendarPl,
   ...pluginsPl,
   ...streetPhotosPl,
+  ...pluginAdminPl,
 };

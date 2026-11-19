@@ -970,6 +970,7 @@ export const editorsSw = {
   "kit.issueWhere": "{level}, {where}:",
   "kit.parameter": "Kigezo {name}",
   "kit.lineName": "Jina la njia",
+  "kit.lines": "Njia katika mradi ({n})",
   "kit.tool": "Zana",
   "kit.select": "Chagua",
   "kit.summary": "Muhtasari",
@@ -1103,6 +1104,8 @@ export const editorsSw = {
   "drt.method":
     "Imekadiriwa kwa fomula za ukadiriaji endelevu (Daganzo 1978) kwa eneo lenye maombi yaliyoenea sawasawa. Iga siku ili kugawa kila ombi.",
   "ferry.defaultName": "Kivuko 1",
+  "ferry.lines": "Njia za vivuko katika mradi ({n})",
+  "ferry.lineN": "Kivuko {n}",
   "ferry.plugin": "kivuko",
   "ferry.engineFailed": "Kifurushi cha kivuko hakikuanza: {error}",
   "ferry.starting": "Inaanzisha kifurushi cha kivuko…",
@@ -1518,4 +1521,5 @@ export const editorsSw = {
   "spacing.straight": "Imepimwa kwa mstari ulionyooka kati ya stesheni.",
   "spacing.onFootHint":
     "Kokotoa ufikiaji kwa miguu hapo juu ili kuongeza umbali wa kutembea kati ya vituo vilivyowekwa alama.",
+  "kit.savedWithProject": "Mchoro huhifadhiwa pamoja na mradi.",
 } satisfies EditorMessages;

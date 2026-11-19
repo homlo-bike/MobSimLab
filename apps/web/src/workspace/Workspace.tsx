@@ -60,8 +60,10 @@ import { forgetSetups, loadSetups } from "../features/street-setup/model";
 import type { StreetSetup } from "../features/street-setup/types";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
-import type { PluginLinesDoc, SavedPluginLine } from "../kits/saved";
+import { newToolLineKey, type PluginLinesDoc, type SavedPluginLine, toolLineKeys } from "../kits/saved";
 import type { SpanDoc } from "../kits/SpanLineEditor";
+import type { LineList as KitLineList } from "../kits/LinePicker";
+import type { LonLat, Pier } from "../kits/types";
 import type { WaterDoc } from "../kits/WaterRouteEditor";
 import type { DemandZone } from "../kits/ZoneEditor";
 import { MapView } from "../map/MapView";
@@ -71,6 +73,7 @@ import {
   pluginTabs,
   type ProjectPlugin,
   pluginsOfProject,
+  type PluginTool,
   pluginTools,
   setActivePlugins,
 } from "../plugins/registry";
@@ -92,7 +95,7 @@ import {
   UndoIcon,
 } from "../shell/icons";
 import { ChecksProvider } from "../shell/checks";
-import { ChecksMenu } from "../shell/ChecksMenu";
+import { COMMENT_KIND, ChecksMenu } from "../shell/ChecksMenu";
 import { OtherModesLayer } from "./OtherModesLayer";
 import { type CoreTab, type Tab, TABS } from "../shell/route";
 import { HelpMenu } from "../shell/HelpMenu";
@@ -127,7 +130,15 @@ import { PluginFrame } from "../plugins/code/PluginFrame";
 import { clearPluginCode } from "../plugins/code/runtime";
 import { STATIC_TABS, STATIC_VIEWER } from "../static/mode";
 import { CommentsProvider } from "../features/comments/Comments";
+import { ObjectComments, objectKey } from "../features/comments/Comments";
 import { commentableObjects, CommentsPanel } from "../features/comments/CommentsPanel";
+import {
+  type CommentNotice,
+  openCommentsLater,
+  takePendingComments,
+  useCommentNotices,
+} from "../features/comments/notices";
+import { Dialog } from "../shell/Dialog";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
 
 // Editors and screens downloaded when first opened, so opening a project fetches only the tab shown.
@@ -222,6 +233,7 @@ export function Workspace({
   onTab,
   onHome,
   onAbout,
+  onOpenProject,
   existingRailways = false,
   userId = null,
   onRefreshSession,
@@ -235,6 +247,8 @@ export function Workspace({
   onTab: (t: Tab) => void;
   onHome: () => void;
   onAbout: () => void;
+  /** Open another project (a notice of a new comment there was chosen in the bell). */
+  onOpenProject?: (id: string) => void;
   /** Draw existing railways from OpenStreetMap in the railway tool (app setting). */
   existingRailways?: boolean;
   /** The signed-in person, so they can edit and delete their own comments. */
@@ -347,6 +361,11 @@ export function Workspace({
   // The track topology last built in the railway tool, so street lines wait at its level crossings.
   const [railTopology, setRailTopology] = useState<unknown>(null);
   const [touring, setTouring] = useState(false);
+  // The object whose comments show in a dialog: a notice in the bell was chosen.
+  const [commentsOf, setCommentsOf] = useState<{ type: CommentNotice["objectType"]; id: string } | null>(
+    null,
+  );
+  useEffect(() => setCommentsOf(takePendingComments(projectId)), [projectId]);
   useEffect(() => {
     setLine(null);
     setStreetIndex(0);
@@ -436,6 +455,8 @@ export function Workspace({
 
   const onMap = MAP_TABS.includes(tab);
   const editable = project ? can.edit(project) : false;
+  // A Commenter cannot change the network but can comment: the badge and the Create tab say so.
+  const commenter = !editable && project?.myRole === "commenter" && !project.viaPublic;
   const projectKey = project?.id ?? null;
   const runs = useMemo(
     () => (projectKey && typeof api.runs === "function" ? api.runs(projectKey) : null),
@@ -446,6 +467,12 @@ export function Workspace({
     () => (projectKey && typeof api.comments === "function" ? api.comments(projectKey) : null),
     [api, projectKey],
   );
+  // New comments and replies on all the person's projects, for the bell.
+  const noticesApi = useMemo(
+    () => (typeof api.commentNotices === "function" ? api.commentNotices() : null),
+    [api],
+  );
+  const notices = useCommentNotices(noticesApi);
   const roadRuns = useMemo(
     () => (projectKey && typeof api.roadRuns === "function" ? api.roadRuns(projectKey) : null),
     [api, projectKey],
@@ -508,6 +535,13 @@ export function Workspace({
     drawings.set("plugin-lines", {
       tools: { ...(drawings.doc<PluginLinesDoc>("plugin-lines")?.tools ?? {}), [id]: saved },
     } satisfies PluginLinesDoc);
+  const deletePluginLine = (id: string) => {
+    const tools = { ...(drawings.doc<PluginLinesDoc>("plugin-lines")?.tools ?? {}) };
+    delete tools[id];
+    drawings.set("plugin-lines", { tools } satisfies PluginLinesDoc);
+  };
+  // The line of each water route tool open in the editor (ferry: several lines per project), by tool id.
+  const [pluginLinePick, setPluginLinePick] = useState<Record<string, string>>({});
   // The trains of the rail service lines as last published in the railway tool, for the journey planner.
   const railLines = drawings.doc<Timetable>("rail-timetable");
   // Existing networks imported from GTFS feeds (GTFS plugin), for the journey planner.
@@ -569,6 +603,41 @@ export function Workspace({
   );
   // Road depots shared by the street lines (depot tool).
   const depotsDoc = drawings.doc<DepotsDoc>("depots");
+  // The names of the objects that can carry comments, for the bell's notices and the comments dialog.
+  const commentLabels = useMemo(
+    () =>
+      new Map(
+        commentableObjects(t, railway, streetLines, depotsDoc).map((o) => [objectKey(o.type, o.id), o.label]),
+      ),
+    [t, railway, streetLines, depotsDoc],
+  );
+  const noticeLabel = useCallback(
+    (n: CommentNotice) =>
+      n.projectId === projectId ? (commentLabels.get(objectKey(n.objectType, n.objectId)) ?? null) : null,
+    [commentLabels, projectId],
+  );
+  // A chosen notice opens its object's comments, here or in its own project, and is then read.
+  const openNotice = useCallback(
+    (n: CommentNotice) => {
+      if (n.projectId === projectId) setCommentsOf({ type: n.objectType, id: n.objectId });
+      else {
+        openCommentsLater(n.projectId, n.objectType, n.objectId);
+        onOpenProject?.(n.projectId);
+      }
+    },
+    [projectId, onOpenProject],
+  );
+  // While an object's comments are open, its new comments count as read.
+  const { comments: noticeList, markRead } = notices;
+  useEffect(() => {
+    if (!commentsOf) return;
+    const ids = noticeList
+      .filter(
+        (n) => n.projectId === projectId && n.objectType === commentsOf.type && n.objectId === commentsOf.id,
+      )
+      .map((n) => n.id);
+    if (ids.length) markRead({ ids });
+  }, [commentsOf, noticeList, markRead, projectId]);
   // The currency all money is shown in, and its exchange rate (Project preferences).
   const currencyState = useProjectCurrency(preferences, ECONOMY);
   // The country at the project's location, for the calendar's public holidays (Project preferences).
@@ -801,7 +870,7 @@ export function Workspace({
                 </button>
               </>
             )}
-            <ChecksMenu />
+            <ChecksMenu notices={notices} onOpenNotice={openNotice} objectLabel={noticeLabel} />
             <HelpMenu onTour={() => setTouring(true)} />
           </>
         )
@@ -813,7 +882,9 @@ export function Workspace({
       <span className="flex min-w-0 items-center gap-2 rounded-lg border border-slate-200 px-2.5 py-1.5 text-slate-700">
         <span className="truncate font-medium">{project?.name ?? "…"}</span>
         {project && !editable && (
-          <span className="tag bg-slate-100 text-slate-700">{t("project.viewOnly")}</span>
+          <span className="tag bg-slate-100 text-slate-700">
+            {commenter ? t("comments.canComment") : t("project.viewOnly")}
+          </span>
         )}
         {project?.visibility === "public" && (
           <span className="tag bg-blue-50 text-blue-800" title={t("project.publicNote")}>
@@ -917,6 +988,41 @@ export function Workspace({
             ? "rail"
             : null);
   const chosenPlugin = PLUGIN_TOOLS.find((x) => x.id === chosen) ?? null;
+  // Line tools (ferry, cable car, people mover) have a line list: the keys of the tool's lines, and the one open
+  // (the first by default, or a new one not saved yet).
+  const lineTool = chosenPlugin && chosenPlugin.kit !== "service-zone" ? chosenPlugin : null;
+  const toolKeys = lineTool ? toolLineKeys(pluginSaved, lineTool.id) : [];
+  const picked = lineTool ? pluginLinePick[lineTool.id] : undefined;
+  const lineKey = lineTool
+    ? picked && (toolKeys.includes(picked) || !(picked in pluginSaved))
+      ? picked
+      : (toolKeys[0] ?? lineTool.id)
+    : null;
+  const lineList = (tool: PluginTool, key: string): KitLineList => ({
+    lineId: key,
+    lines: [
+      ...toolKeys.map((k) => ({
+        id: k,
+        name: (pluginSaved[k]?.doc as { name?: string } | undefined)?.name || k,
+      })),
+      ...(toolKeys.includes(key) ? [] : [{ id: key, name: t("ferry.lineN", { n: toolKeys.length + 1 }) }]),
+    ],
+    onPickLine: (k) => setPluginLinePick((p) => ({ ...p, [tool.id]: k })),
+    onNewLine: () => setPluginLinePick((p) => ({ ...p, [tool.id]: newToolLineKey(pluginSaved, tool.id) })),
+    onDeleteLine: toolKeys.includes(key)
+      ? () => {
+          deletePluginLine(key);
+          setPluginLinePick((p) => ({ ...p, [tool.id]: "" }));
+        }
+      : undefined,
+    otherStops: toolKeys
+      .filter((k) => k !== key)
+      .flatMap((k) => {
+        const d = pluginSaved[k]?.doc as
+          { piers?: Pier[]; stations?: { name: string; lonlat: LonLat }[] } | undefined;
+        return [...(d?.piers ?? []), ...(d?.stations ?? [])];
+      }),
+  });
   const panelLabel =
     tab === "simulator"
       ? tabLabel("simulator")
@@ -991,7 +1097,7 @@ export function Workspace({
           {project && drawings.loaded && (tab === "create" || tab === "gis" || tab === "simulator") && (
             <OtherModesLayer
               map={map}
-              active={tab === "create" && editable ? chosen : null}
+              active={tab === "create" && editable ? (lineKey ?? chosen) : null}
               railway={railway}
               streetLines={savedStreet}
               depots={depotsDoc?.depots ?? NO_DEPOTS}
@@ -1088,13 +1194,19 @@ export function Workspace({
             chosenPlugin?.kit === "straight-spans" && (
               <Suspense fallback={null}>
                 <SpanLineEditor
-                  key={`${projectId}-${chosenPlugin.id}-${drawings.generation("plugin-lines")}`}
+                  key={`${projectId}-${lineKey}-${drawings.generation("plugin-lines")}`}
                   map={map}
                   panel={panel}
                   tool={chosenPlugin}
-                  storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
-                  initial={pluginSaved[chosenPlugin.id]?.doc as Partial<SpanDoc> | undefined}
-                  onSave={(x) => savePluginLine(chosenPlugin.id, x)}
+                  storageKey={`mobsimlab:${lineKey}:${projectId}`}
+                  initial={
+                    (pluginSaved[lineKey!]?.doc as Partial<SpanDoc> | undefined) ??
+                    (lineKey !== chosenPlugin.id
+                      ? { name: t("ferry.lineN", { n: toolKeys.length + 1 }) }
+                      : undefined)
+                  }
+                  onSave={(x) => savePluginLine(lineKey!, x)}
+                  {...lineList(chosenPlugin, lineKey!)}
                 />
               </Suspense>
             )}
@@ -1117,13 +1229,19 @@ export function Workspace({
             chosenPlugin?.kit === "water-route" && (
               <Suspense fallback={null}>
                 <WaterRouteEditor
-                  key={`${projectId}-${chosenPlugin.id}-${drawings.generation("plugin-lines")}`}
+                  key={`${projectId}-${lineKey}-${drawings.generation("plugin-lines")}`}
                   map={map}
                   panel={panel}
                   tool={chosenPlugin}
-                  storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
-                  initial={pluginSaved[chosenPlugin.id]?.doc as Partial<WaterDoc> | undefined}
-                  onSave={(x) => savePluginLine(chosenPlugin.id, x)}
+                  storageKey={`mobsimlab:${lineKey}:${projectId}`}
+                  initial={
+                    (pluginSaved[lineKey!]?.doc as Partial<WaterDoc> | undefined) ??
+                    (lineKey !== chosenPlugin.id
+                      ? { name: t("ferry.lineN", { n: toolKeys.length + 1 }) }
+                      : undefined)
+                  }
+                  onSave={(x) => savePluginLine(lineKey!, x)}
+                  {...lineList(chosenPlugin, lineKey!)}
                 />
               </Suspense>
             )}
@@ -1375,8 +1493,7 @@ export function Workspace({
         {!onMap && tab === "tables" && (
           <div ref={tablesScroll} className="min-h-0 flex-1 overflow-y-auto bg-slate-50">
             <section aria-label={t("tables.title")} className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-10">
-              <h1 className="text-2xl font-semibold tracking-tight">{t("tables.title")}</h1>
-              <p className="mt-1 text-slate-600">{t("tables.intro")}</p>
+              <p className="text-slate-600">{t("tables.intro")}</p>
               {project && drawings.loaded ? (
                 <div className="mt-6 md:flex md:items-start md:gap-8">
                   {/* One group of tables at a time, chosen here: a list beside them on wide screens, a row on top on
@@ -1408,6 +1525,7 @@ export function Workspace({
                           <NetworkTables
                             railway={railway}
                             streetLines={streetLines}
+                            pluginLines={pluginSaved}
                             preferences={preferences}
                             onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                             riders={riders}
@@ -1426,6 +1544,7 @@ export function Workspace({
                             projectName={project.name}
                             railway={railway}
                             streetLines={streetLines}
+                            pluginLines={pluginSaved}
                             preferences={preferences}
                             onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                           />
@@ -1441,6 +1560,7 @@ export function Workspace({
                           <CostTables
                             railway={railway}
                             streetLines={streetLines}
+                            pluginLines={pluginSaved}
                             preferences={preferences}
                             onPreferences={editable ? (d) => drawings.set("preferences", d) : undefined}
                             costs={drawings.doc<CostsDoc>("costs")}
@@ -1776,8 +1896,12 @@ export function Workspace({
               )}
               {tab === "create" && !editable && (
                 <div className="px-4 py-5 md:px-5">
-                  <h2 className="text-lg font-semibold">{t("create.readOnlyTitle")}</h2>
-                  <p className="mt-1 text-slate-600">{t("create.readOnly")}</p>
+                  <h2 className="text-lg font-semibold">
+                    {commenter ? t("comments.canComment") : t("create.readOnlyTitle")}
+                  </h2>
+                  <p className="mt-1 text-slate-600">
+                    {commenter ? t("comments.canCommentNote") : t("create.readOnly")}
+                  </p>
                   {drawings.loaded && (
                     <div className="mt-5 border-t border-slate-200 pt-5">
                       <CommentsPanel objects={commentableObjects(t, railway, streetLines, depotsDoc)} />
@@ -1831,6 +1955,17 @@ export function Workspace({
       </main>
       {bottomTabs}
       {touring && <Tour steps={PROJECT_TOUR} onTab={onTab} onClose={() => setTouring(false)} />}
+      {commentsOf && project && (
+        <Dialog
+          title={
+            commentLabels.get(objectKey(commentsOf.type, commentsOf.id)) ?? t(COMMENT_KIND[commentsOf.type])
+          }
+          subtitle={`${t(COMMENT_KIND[commentsOf.type])} · ${t("comments.title")}`}
+          onClose={() => setCommentsOf(null)}
+        >
+          <ObjectComments type={commentsOf.type} id={commentsOf.id} />
+        </Dialog>
+      )}
     </div>
   );
   // The catalogue vehicles the project does not use (Project preferences → Vehicles), and the modes it plans to
