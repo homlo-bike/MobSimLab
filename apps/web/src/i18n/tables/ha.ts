@@ -48,6 +48,9 @@ export const tablesHa = {
   "net.modes.other": "nau'o'i {count}",
   "net.routeSub": "layin dogo {rail}, layukan titi {street}",
   "net.routeSubCable": "layin dogo {rail}, layukan titi {street}, motocin igiya {cable}",
+  "net.routeSubFerry": "layin dogo {rail}, layukan titi {street}, jiragen ruwa {ferry}",
+  "net.routeSubCableFerry":
+    "layin dogo {rail}, layukan titi {street}, motocin igiya {cable}, jiragen ruwa {ferry}",
   "net.stationsAndStops": "Tashoshi da tasha",
   "net.stationsSub": "tashoshi {stations}, tasha {stops}",
   "net.inServiceSub": "{n} suna aiki a lokacin cunkoso",
@@ -107,6 +110,7 @@ export const tablesHa = {
   "net.perTrain": "kowane jirgi",
   "net.perVehicle": "kowace mota",
   "net.perCabin": "kowace kwalya",
+  "net.perVessel": "kowane jirgi",
   "net.perHour": "a awa",
   "net.ofPlaces": "{pct}% na kujeru",
   "net.noFigures": "Babu alƙaluman hidima tukuna: {problem}",
@@ -298,6 +302,9 @@ export const tablesHa = {
   "cost.x.vehicleHours": "motoci {n} a lokacin cunkoso, {from}–{to}",
   "cost.x.ropeway": "Igiya, hasumiyoyi da injuna",
   "cost.x.stationHours": "tashoshi {n} a buɗe {from}–{to}",
+  "cost.x.piers": "Tasoshin jiragen ruwa",
+  "cost.x.vessels": "Jiragen ruwa tare da na ajiya",
+  "cost.x.vesselHours": "Jiragen ruwa {n} suna aiki, {from}–{to}",
   "cost.x.ofInfra": "{pct} % na ababen more rayuwa",
   "cost.x.ofInfraYear": "{pct} % na ababen more rayuwa a shekara",
   "cost.x.ofOperating": "rabon kuɗin gudanarwa",
@@ -397,6 +404,8 @@ export const tablesHa = {
   "tt.tbl.noTrips": "Babu tafiye-tafiye a wannan nau'in rana.",
   "tt.tbl.ropeway":
     "Kwalya na tashi kowane {every} a kowace hanya, daga {from} zuwa {to}. Kwalayen suna kan layi duk yini, don haka motar igiya ba ta da jerin aikin abin hawa.",
+  "tt.tbl.ferry":
+    "Jiragen ruwa {n} suna kai da kawowa daga {from} zuwa {to}; ɗaya yana tashi kowane {every} a kowace hanya. Zagaye ɗaya tare da hutu yana ɗaukar {cycle}.",
   "tt.tbl.nTrips": "(tafiye-tafiye {n})",
   "tt.tbl.dirCaption": "{line}, daga {from} zuwa {to}",
   "tt.tbl.blocksTitle": "Ayyukan motoci, {day}",

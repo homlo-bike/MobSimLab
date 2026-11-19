@@ -19,3 +19,60 @@
   retrieved: 2026-11-02
   checked_via: search-snippet
   kind: secondary
+
+- id: nycedc-ferry-landings
+  title: McLaren completes new ferry landings in New York Harbor (US$55 M programme for NYC Ferry)
+  publisher: New York Real Estate Journal
+  url: https://nyrej.com/mclaren-completes-new-ferry-landings-in-new-york-harbor-provided-engineering-services-on-the-55-million-project
+  licence: © New York Real Estate Journal; numbers cited as facts
+  access: free
+  retrieved: 2026-11-19
+  checked_via: search-snippet
+  kind: secondary
+
+- id: nyc-ferry-vessel-cost
+  title: Metal Shark selected to build NYC passenger ferries (close to US$4 M each)
+  publisher: Baird Maritime
+  url: https://www.bairdmaritime.com/amp/story/passenger/metal-shark-selected-to-build-nyc-passenger-ferries
+  licence: © Baird Maritime; numbers cited as facts
+  access: free
+  retrieved: 2026-11-19
+  checked_via: search-snippet
+  kind: secondary
+
+- id: weta-kvichak-contract
+  title: WETA awards US$32M contract for two new 400-passenger vessels
+  publisher: Mass Transit
+  url: https://www.masstransitmag.com/home/press-release/12061552/san-francisco-bay-area-water-emergency-transportation-authority-weta-weta-awards-32m-contract-for-two-new-vessels
+  licence: © Endeavor Business Media; numbers cited as facts
+  access: free
+  retrieved: 2026-11-19
+  checked_via: search-snippet
+
+- id: weta-mavrik-contract
+  title: Mavrik Marine to build high-speed ferries for San Francisco (US$30 M for two 320-passenger vessels)
+  publisher: WorkBoat
+  url: https://www.workboat.com/shipbuilding/mavrik-marine-to-build-high-speed-ferry-for-san-francisco
+  licence: © WorkBoat; numbers cited as facts
+  access: free
+  retrieved: 2026-11-19
+  checked_via: search-snippet
+  kind: secondary
+
+- id: candela-p12-price
+  title: World's first electric flying passenger ship takes off, enters production (P-12 Shuttle price and range)
+  publisher: Candela
+  url: https://www.mynewsdesk.com/candela-speedboat-ab/pressreleases/worlds-first-electric-flying-passenger-ship-takes-off-enters-production-3286832
+  licence: © Candela Speedboat AB; numbers cited as facts
+  access: free
+  retrieved: 2026-11-19
+  checked_via: search-snippet
+
+- id: ntd-ferry-agency-profiles
+  title: FTA National Transit Database annual agency profiles, ferryboat operating expense per vehicle revenue hour
+  publisher: Federal Transit Administration
+  url: https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2019/20190.pdf
+  licence: US Government work, public domain
+  access: free
+  retrieved: 2026-11-19
+  checked_via: search-snippet

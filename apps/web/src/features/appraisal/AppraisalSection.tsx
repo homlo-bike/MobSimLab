@@ -8,7 +8,7 @@ import type { Estimate as CostEstimate } from "../costs/model";
 import type { DemandRidership } from "../demand/ridership";
 import type { FareInput } from "../fares/model";
 import { type PreferencesDoc, withPref } from "../../workspace/preferences";
-import { appraisalLines, mcaLines } from "./inputs";
+import { appraisalLines, mcaLines, uncostedLines } from "./inputs";
 import { TablePart } from "../tables/sections";
 import {
   type Appraisal,
@@ -109,6 +109,10 @@ export function AppraisalSection({
   const editable = !!onPreferences;
   const setValue = (id: string, v: number | null) => onPreferences?.(withPref(preferences, id, v));
   const total = result?.rows.find((r) => r.id === "total") ?? null;
+  const uncosted = uncostedLines(lines);
+  const uncostedNote = uncosted.length
+    ? `No costs yet for ${uncosted.map((l) => l.name).join(", ")}: ${uncosted.length === 1 ? "its" : "their"} ridership, fares and benefits count, but nothing is spent on ${uncosted.length === 1 ? "it" : "them"}, so the result is better than it will be.`
+    : null;
   const currencyNote =
     demand?.appraisal && currency && demand.appraisal.currency !== currency
       ? `The demand run valued time in ${demand.appraisal.currency}, the tables show ${currency}: run the demand model again after changing the currency.`
@@ -136,7 +140,11 @@ export function AppraisalSection({
       {result && total && (
         <>
           <TablePart id="appraisal.results">
-            {[...result.notes, ...(currencyNote ? [currencyNote] : [])].map((n) => (
+            {[
+              ...result.notes,
+              ...(uncostedNote ? [uncostedNote] : []),
+              ...(currencyNote ? [currencyNote] : []),
+            ].map((n) => (
               <p key={n} className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
                 {n}
               </p>

@@ -678,8 +678,16 @@ export function checkPlugin(
     }
     // A plugin without modes of its own (a calculation) gives values per core mode, so the app can
     // resolve them for each line of the project.
+    // Modes of other plugins get values too where a parameter names them (energy for ferries).
+    const named = new Set<string>();
+    for (const p of params)
+      for (const v of p.values ?? []) {
+        const ms = (v.context as Record<string, unknown> | undefined)?.mode ?? "*";
+        for (const mid of Array.isArray(ms) ? ms : [ms])
+          if (typeof mid === "string" && mid !== "*" && !CORE.coreModes.includes(mid)) named.add(mid);
+      }
     if (!modes.length && params.length)
-      for (const mid of CORE.coreModes)
+      for (const mid of [...CORE.coreModes, ...[...named].sort()])
         defaults[mid] = {
           "*": Object.fromEntries(
             params.map((p) => {

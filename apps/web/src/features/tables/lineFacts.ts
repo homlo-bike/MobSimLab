@@ -14,13 +14,14 @@ import { fullTiming } from "../street-lines/modes";
 import { dayService, vehicleById } from "../street-lines/service";
 import { lineStats } from "../street-lines/summary";
 import { type Translate, translate } from "../../i18n/i18n";
+import type { FerryLine } from "./ferries";
 import type { RopewayLine } from "./ropeways";
 
 /** One line of the project, rail or street, with what it offers. */
 export interface LineFact {
-  /** "rail:<line id>", "street:<index>" or "plugin:<tool id>" (cable cars), as in the cost estimate. */
+  /** "rail:<line id>", "street:<index>" or "plugin:<line key>" (cable cars, ferries), as in the cost estimate. */
   id: string;
-  kind: "rail" | "street" | "ropeway";
+  kind: "rail" | "street" | "ropeway" | "ferry";
   name: string;
   mode: string;
   color: string;
@@ -70,19 +71,31 @@ export interface LineFactsInput {
   prefs: Record<string, number> | undefined;
   /** The cable car lines of the plugin tools. */
   ropeways?: readonly RopewayLine[];
+  /** The ferry lines of the plugin tools. */
+  ferries?: readonly FerryLine[];
   /** Translates the names and problems; English when absent. */
   t?: Translate;
 }
 
 /**
- * Purpose: the facts of every line of the project, rail service lines first, then street lines, then cable cars.
+ * Purpose: the facts of every line of the project, rail service lines first, then street lines, then cable cars, then ferries.
  * Inputs: the railway and its build with the published service lines, the street lines, the project values, the translator.
  * Output: one fact sheet per line, in the order of the cost estimate.
  */
 export function lineFacts(input: LineFactsInput): LineFact[] {
-  const { railway, view, reports, streetLines, prefs, ropeways = [] } = input;
+  const { railway, view, reports, streetLines, prefs, ropeways = [], ferries = [] } = input;
   const t: Translate = input.t ?? ((key, vars) => translate("en", key, vars));
-  const est = estimate({ railway, view, reports, streetLines, prefs, prices: BASE_PRICES, ropeways, t });
+  const est = estimate({
+    railway,
+    view,
+    reports,
+    streetLines,
+    prefs,
+    prices: BASE_PRICES,
+    ropeways,
+    ferries,
+    t,
+  });
   const summary = new Map<string, LineSummary>(est.lines.map((l) => [l.id, l]));
   const out: LineFact[] = [];
 
@@ -196,6 +209,39 @@ export function lineFacts(input: LineFactsInput): LineFact[] {
       placesPerVehicle: r.placesPerCabin,
       placesAssumed: false,
       capacityPerHour: (3600 / r.headwayS) * r.placesPerCabin,
+      hoursPerYear: s.hoursPerYear,
+      kmPerYear: s.kmPerYear,
+      problem: null,
+    });
+  }
+
+  for (const f of ferries) {
+    const s = summary.get(f.id);
+    if (!s) continue;
+    const tripMin = f.tripS / 60;
+    out.push({
+      id: f.id,
+      kind: "ferry",
+      name: f.name,
+      mode: f.mode,
+      color: f.color,
+      lengthKm: f.lengthKm,
+      stops: f.piers,
+      spacingM: f.piers > 1 ? (f.lengthKm * 1000) / (f.piers - 1) : null,
+      tripMin,
+      speedKmh: tripMin > 0 ? f.lengthKm / (tripMin / 60) : null,
+      peakHeadwayMin: f.headwayS / 60,
+      offpeakHeadwayMin: null,
+      firstMin: f.firstS / 60,
+      lastMin: f.lastS / 60,
+      serviceHours: Math.max(0, f.lastS - f.firstS) / 3600,
+      tripsPerDay: f.tripsPerDay,
+      inService: s.inService,
+      fleet: s.fleet,
+      vehicle: null,
+      placesPerVehicle: f.placesPerVessel,
+      placesAssumed: false,
+      capacityPerHour: (3600 / f.headwayS) * f.placesPerVessel,
       hoursPerYear: s.hoursPerYear,
       kmPerYear: s.kmPerYear,
       problem: null,

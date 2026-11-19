@@ -6206,6 +6206,60 @@
             }
           }
         },
+        "ferry": {
+          "*": {
+            "energy.electric_share": {
+              "low": 0,
+              "central": 0,
+              "high": 1
+            },
+            "energy.electric_kwh_per_vkm": {
+              "low": 1.5,
+              "central": 6,
+              "high": 20
+            },
+            "energy.electric_wh_per_place_km": {
+              "low": 0,
+              "central": 0,
+              "high": 0
+            },
+            "energy.diesel_l_per_vkm": {
+              "low": 3,
+              "central": 10,
+              "high": 25
+            },
+            "energy.diesel_ml_per_place_km": {
+              "low": 0,
+              "central": 0,
+              "high": 0
+            },
+            "energy.charging_loss_share": {
+              "low": 0,
+              "central": 0,
+              "high": 0
+            },
+            "energy.grid_kg_co2e_per_kwh": {
+              "low": 0.02,
+              "central": 0.2,
+              "high": 0.8
+            },
+            "energy.diesel_ttw_kg_co2e_per_l": {
+              "low": 2.51,
+              "central": 2.66,
+              "high": 2.7
+            },
+            "energy.diesel_wtt_kg_co2e_per_l": {
+              "low": 0.55,
+              "central": 0.61,
+              "high": 0.65
+            },
+            "energy.diesel_kwh_per_l": {
+              "low": 9.8,
+              "central": 10.0,
+              "high": 10.1
+            }
+          }
+        },
         "funicular": {
           "*": {
             "energy.electric_share": {
@@ -6849,6 +6903,22 @@
         "ferry.wave_limit_hs_m": {
           "label": "Significant wave height limit",
           "unit": "m"
+        },
+        "ferry.reserve_share": {
+          "label": "Reserve vessels, share of the vessels in service",
+          "unit": "share"
+        },
+        "ferry.cost.pier_each": {
+          "label": "Ferry pier",
+          "unit": "US$ million per pier (2023, PPP)"
+        },
+        "ferry.cost.vessel_each": {
+          "label": "Ferry vessel",
+          "unit": "US$ million each (2023, market)"
+        },
+        "ferry.cost.vessel_hour": {
+          "label": "Ferry crew, fuel and running repairs per vessel-hour",
+          "unit": "US$ per hour (2023, PPP)"
         }
       },
       "defaults": {
@@ -6898,6 +6968,26 @@
               "low": 1,
               "central": 1.5,
               "high": 2.5
+            },
+            "ferry.reserve_share": {
+              "low": 0.1,
+              "central": 0.2,
+              "high": 0.34
+            },
+            "ferry.cost.pier_each": {
+              "low": 1,
+              "central": 4,
+              "high": 10
+            },
+            "ferry.cost.vessel_each": {
+              "low": 2,
+              "central": 4,
+              "high": 8
+            },
+            "ferry.cost.vessel_hour": {
+              "low": 450,
+              "central": 900,
+              "high": 2000
             }
           },
           "catamaran": {
@@ -6945,6 +7035,26 @@
               "low": 1.5,
               "central": 2,
               "high": 3
+            },
+            "ferry.reserve_share": {
+              "low": 0.1,
+              "central": 0.2,
+              "high": 0.34
+            },
+            "ferry.cost.pier_each": {
+              "low": 1,
+              "central": 4,
+              "high": 10
+            },
+            "ferry.cost.vessel_each": {
+              "low": 8,
+              "central": 15,
+              "high": 20
+            },
+            "ferry.cost.vessel_hour": {
+              "low": 700,
+              "central": 1200,
+              "high": 2400
             }
           },
           "hydrofoil": {
@@ -6992,6 +7102,26 @@
               "low": 0.5,
               "central": 1,
               "high": 1.5
+            },
+            "ferry.reserve_share": {
+              "low": 0.1,
+              "central": 0.2,
+              "high": 0.34
+            },
+            "ferry.cost.pier_each": {
+              "low": 1,
+              "central": 4,
+              "high": 10
+            },
+            "ferry.cost.vessel_each": {
+              "low": 2,
+              "central": 2.7,
+              "high": 3.5
+            },
+            "ferry.cost.vessel_hour": {
+              "low": 150,
+              "central": 300,
+              "high": 500
             }
           }
         }
@@ -8147,6 +8277,295 @@
               "low": 44,
               "central": 44,
               "high": 44
+            },
+            "noise.air_temperature_c": {
+              "low": 5,
+              "central": 15,
+              "high": 25
+            },
+            "noise.relative_humidity_pct": {
+              "low": 50,
+              "central": 70,
+              "high": 90
+            },
+            "noise.ground_factor_default": {
+              "low": 0,
+              "central": 0.5,
+              "high": 1
+            },
+            "noise.max_source_distance_m": {
+              "low": 250,
+              "central": 500,
+              "high": 1000
+            },
+            "noise.map_reach_m": {
+              "low": 150,
+              "central": 300,
+              "high": 500
+            },
+            "noise.grid_spacing_m": {
+              "low": 5,
+              "central": 10,
+              "high": 20
+            },
+            "noise.building_storey_height_m": {
+              "low": 2.8,
+              "central": 3,
+              "high": 3.5
+            },
+            "noise.building_default_height_m": {
+              "low": 4,
+              "central": 8,
+              "high": 15
+            },
+            "noise.favourable_probability_day": {
+              "low": 0.33,
+              "central": 0.5,
+              "high": 1.0
+            },
+            "noise.favourable_probability_evening": {
+              "low": 0.33,
+              "central": 0.75,
+              "high": 1.0
+            },
+            "noise.favourable_probability_night": {
+              "low": 0.66,
+              "central": 1.0,
+              "high": 1.0
+            },
+            "noise.reflection_order": {
+              "low": 0,
+              "central": 1,
+              "high": 2
+            },
+            "noise.reflection_max_distance_m": {
+              "low": 25,
+              "central": 50,
+              "high": 100
+            },
+            "noise.facade_reflection_coefficient": {
+              "low": 0.4,
+              "central": 0.8,
+              "high": 1.0
+            },
+            "noise.terrain_filter_window_m": {
+              "low": 30,
+              "central": 60,
+              "high": 120
+            },
+            "noise.floor_area_per_person_m2": {
+              "low": 35,
+              "central": 55,
+              "high": 75
+            },
+            "noise.population_min_footprint_m2": {
+              "low": 20,
+              "central": 30,
+              "high": 50
+            },
+            "noise.building_level_height_m": {
+              "low": 2.8,
+              "central": 3,
+              "high": 3.5
+            },
+            "noise.road_source_height_m": {
+              "low": 0.05,
+              "central": 0.05,
+              "high": 0.05
+            },
+            "noise.rail_source_height_a_m": {
+              "low": 0.5,
+              "central": 0.5,
+              "high": 0.5
+            },
+            "noise.rail_source_height_b_m": {
+              "low": 4,
+              "central": 4,
+              "high": 4
+            },
+            "noise.rail_min_roughness_speed_kmh": {
+              "low": 50,
+              "central": 50,
+              "high": 50
+            },
+            "noise.rail_aero_from_kmh": {
+              "low": 200,
+              "central": 200,
+              "high": 200
+            },
+            "noise.rail_vehicle_length_m": {
+              "low": 25,
+              "central": 25,
+              "high": 25
+            },
+            "noise.rail_axles_per_vehicle": {
+              "low": 4,
+              "central": 4,
+              "high": 4
+            },
+            "noise.rail_powered_vehicle_share": {
+              "low": 0.5,
+              "central": 0.5,
+              "high": 0.75
+            },
+            "noise.rail_locomotives_per_train": {
+              "low": 0,
+              "central": 0,
+              "high": 0
+            },
+            "noise.rail_traction": {
+              "low": "emu",
+              "central": "emu",
+              "high": "emu"
+            },
+            "noise.rail_wheel_roughness": {
+              "low": "disc",
+              "central": "disc",
+              "high": "composite"
+            },
+            "noise.rail_rail_roughness": {
+              "low": "e",
+              "central": "m",
+              "high": "m"
+            },
+            "noise.rail_contact_filter": {
+              "low": "wheel_load_50kn_d920",
+              "central": "wheel_load_50kn_d920",
+              "high": "wheel_load_50kn_d920"
+            },
+            "noise.rail_wheel_transfer": {
+              "low": "d920",
+              "central": "d920",
+              "high": "d920"
+            },
+            "noise.rail_track_transfer": {
+              "low": "mono_hard",
+              "central": "mono_medium",
+              "high": "mono_soft"
+            },
+            "noise.rail_bridge_transfer": {
+              "low": "plus10",
+              "central": "plus10",
+              "high": "plus15"
+            },
+            "noise.rail_impact_extent_m": {
+              "low": 50,
+              "central": 50,
+              "high": 50
+            },
+            "noise.road_stop_zone_m": {
+              "low": 50,
+              "central": 100,
+              "high": 100
+            },
+            "noise.electric_road_propulsion_delta_db": {
+              "low": -12,
+              "central": -8,
+              "high": -3
+            },
+            "noise.rail_squeal_r300_db": {
+              "low": 5,
+              "central": 8,
+              "high": 10
+            },
+            "noise.rail_squeal_r500_db": {
+              "low": 3,
+              "central": 5,
+              "high": 8
+            },
+            "noise.tram_squeal_r200_db": {
+              "low": 3,
+              "central": 5,
+              "high": 8
+            },
+            "noise.squeal_min_length_m": {
+              "low": 50,
+              "central": 50,
+              "high": 50
+            },
+            "noise.tram_embedded_track_db": {
+              "low": 0,
+              "central": 2,
+              "high": 5
+            },
+            "noise.cable_car_tower_lw_db": {
+              "low": 90,
+              "central": 100,
+              "high": 102
+            },
+            "noise.cable_car_station_lw_db": {
+              "low": 99,
+              "central": 102,
+              "high": 106
+            },
+            "noise.ferry_cruise_lw_db": {
+              "low": 105,
+              "central": 108,
+              "high": 112
+            },
+            "noise.ferry_berth_lw_db": {
+              "low": 90,
+              "central": 100,
+              "high": 110
+            },
+            "noise.ferry_source_height_m": {
+              "low": 3,
+              "central": 5,
+              "high": 10
+            }
+          }
+        },
+        "ferry": {
+          "*": {
+            "noise.receiver_height_m": {
+              "low": 1.5,
+              "central": 4,
+              "high": 4
+            },
+            "noise.day_start_h": {
+              "low": 6,
+              "central": 7,
+              "high": 8
+            },
+            "noise.evening_start_h": {
+              "low": 18,
+              "central": 19,
+              "high": 20
+            },
+            "noise.night_start_h": {
+              "low": 22,
+              "central": 23,
+              "high": 24
+            },
+            "noise.evening_penalty_db": {
+              "low": 5,
+              "central": 5,
+              "high": 5
+            },
+            "noise.night_penalty_db": {
+              "low": 10,
+              "central": 10,
+              "high": 10
+            },
+            "noise.band_lden_db": {
+              "low": 45,
+              "central": 55,
+              "high": 65
+            },
+            "noise.band_lnight_db": {
+              "low": 40,
+              "central": 50,
+              "high": 60
+            },
+            "noise.who_guideline_lden_db": {
+              "low": 53,
+              "central": 53,
+              "high": 53
+            },
+            "noise.who_guideline_lnight_db": {
+              "low": 45,
+              "central": 45,
+              "high": 45
             },
             "noise.air_temperature_c": {
               "low": 5,

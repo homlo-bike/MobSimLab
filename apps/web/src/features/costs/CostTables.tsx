@@ -40,6 +40,7 @@ import { libraryValue, outsideLibraryRange, PARAMS, paramValue, prefId, type Tri
 import { SPARE_PREF } from "../../workspace/editedElsewhere";
 import type { SavedPluginLine } from "../../kits/saved";
 import { activePlugins } from "../../plugins/registry";
+import { ferryLines } from "../tables/ferries";
 import { ropewayLines } from "../tables/ropeways";
 
 /** Cost tables settings (drawing kind `costs`): the country the planner chose for prices. */
@@ -50,7 +51,7 @@ export interface CostsDoc {
 interface Props {
   railway: Network | null;
   streetLines: StreetLinesDoc | null;
-  /** The plugin tools' lines by tool id (the cable cars are priced). */
+  /** The plugin tools' lines by line key (the cable cars and ferries are priced). */
   pluginLines?: Readonly<Record<string, SavedPluginLine>>;
   preferences: PreferencesDoc | null;
   onPreferences?: (doc: PreferencesDoc) => void;
@@ -246,6 +247,7 @@ export function CostTables({
   // The cable car plugin may be turned off for the project: its lines then leave the tables.
   const plugins = activePlugins();
   const ropeways = useMemo(() => ropewayLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
+  const ferries = useMemo(() => ferryLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
   const est = useMemo(
     () =>
       estimate({
@@ -256,9 +258,10 @@ export function CostTables({
         prefs,
         prices,
         ropeways,
+        ferries,
         t,
       }),
-    [railway, rail, streetLines, prefs, prices, ropeways, t],
+    [railway, rail, streetLines, prefs, prices, ropeways, ferries, t],
   );
   // The appraisal waits for the country's figures and the railway's publication, so it never shows interim
   // numbers (another currency, a shorter timeline) that change a moment later.

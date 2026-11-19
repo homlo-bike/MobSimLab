@@ -33,6 +33,7 @@ import {
 } from "./blocks";
 import type { SavedPluginLine } from "../../kits/saved";
 import { activePlugins } from "../../plugins/registry";
+import { ferryLines, type FerryLine } from "../tables/ferries";
 import { ropewayLines, type RopewayLine } from "../tables/ropeways";
 import { railLineFor } from "./dayTypes";
 import { feedHolidays, mergeDays, streetDay } from "./feed";
@@ -54,7 +55,7 @@ import { SPARE_PREF, TERMINAL_WAIT_PREF } from "../../workspace/editedElsewhere"
 interface Props {
   railway: Network | null;
   streetLines: StreetLinesDoc | null;
-  /** The plugin tools' lines by tool id (the cable cars are listed). */
+  /** The plugin tools' lines by line key (the cable cars and ferries are listed). */
   pluginLines?: Readonly<Record<string, SavedPluginLine>>;
   preferences: PreferencesDoc | null;
   /** Saves the project's own values (longest terminal wait, spare share); absent when read only. */
@@ -80,6 +81,8 @@ interface LineBlocks {
   timetable: Timetable | null;
   /** A cable car: its cabins stay on the line, so it has no vehicle blocks. */
   ropeway?: RopewayLine;
+  /** A ferry: its vessels shuttle back and forth all day, described in a sentence instead of blocks. */
+  ferry?: FerryLine;
 }
 
 /** Day type names on screen, and as they read inside a sentence. */
@@ -112,6 +115,7 @@ function linesOn(
   maxWaitMin: number,
   t: Translate,
   ropeways: readonly RopewayLine[] = [],
+  ferries: readonly FerryLine[] = [],
 ): LineBlocks[] {
   const out: LineBlocks[] = [];
   const pub = publications[day];
@@ -167,6 +171,21 @@ function linesOn(
       ropeway: r,
     });
   }
+  // Ferries too run the same service on every day type.
+  for (const f of ferries) {
+    const timetable = pluginLineTimetable(f.line);
+    out.push({
+      key: f.id,
+      name: f.name,
+      color: f.color,
+      mode: f.mode,
+      units: 1,
+      trips: timetable ? routeTrips(timetable, f.id) : [],
+      blocks: [],
+      timetable,
+      ferry: f,
+    });
+  }
   return out;
 }
 
@@ -219,15 +238,16 @@ export function TimetableTables({
   // The cable car plugin may be turned off for the project: its lines then leave the tables.
   const plugins = activePlugins();
   const ropeways = useMemo(() => ropewayLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
+  const ferries = useMemo(() => ferryLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
   const byDay = useMemo(
     () =>
       Object.fromEntries(
         DAY_TYPES.map((d) => [
           d,
-          linesOn(d, railway, publications, streetLines, cal, maxWaitMin, t, ropeways),
+          linesOn(d, railway, publications, streetLines, cal, maxWaitMin, t, ropeways, ferries),
         ]),
       ) as Record<DayTypeId, LineBlocks[]>,
-    [railway, publications, streetLines, cal, maxWaitMin, t, ropeways],
+    [railway, publications, streetLines, cal, maxWaitMin, t, ropeways, ferries],
   );
   const lines = byDay[day];
 
@@ -361,6 +381,33 @@ function ropewayFleetRow(r: RopewayLine): FleetRow {
   };
 }
 
+/** Purpose: a ferry's vessel working in a sentence: each vessel shuttles back and forth all day. */
+function ferryNote(t: Translate, f: FerryLine): string {
+  return t("tt.tbl.ferry", {
+    n: f.inService,
+    every: t("tbl.u.min", { v: fmtQty(f.headwayS / 60) }),
+    cycle: t("tbl.u.min", { v: fmtQty(Math.round(f.cycleS / 60)) }),
+    from: clockS(f.firstS),
+    to: clockS(f.lastS),
+  });
+}
+
+/** Purpose: a ferry's row of the fleet table: the vessels in service all day and the reserve. */
+function ferryFleetRow(f: FerryLine): FleetRow {
+  return {
+    line: f.name,
+    mode: f.mode,
+    blocks: f.inService,
+    units: 1,
+    spareShare: f.inService > 0 ? f.fleet / f.inService - 1 : 0,
+    fleet: f.fleet,
+    trips: f.tripsPerDay,
+    vehicleHours: f.vesselHoursPerDay,
+    serviceKm: f.vesselKmPerDay,
+    emptyKm: 0,
+  };
+}
+
 /** Purpose: the departures of one line and direction: stops down, trips across. */
 function Departures({ lines, day }: { lines: LineBlocks[]; day: DayTypeId }) {
   const [chosen, setChosen] = useState<string | null>(null);
@@ -456,10 +503,12 @@ function VehicleBlocks({
     l,
     f: l.ropeway
       ? ropewayFleetRow(l.ropeway)
-      : fleetRow(l.name, l.mode, l.blocks, paramValue(SPARE_KEY, l.mode, prefs)[1], l.units),
+      : l.ferry
+        ? ferryFleetRow(l.ferry)
+        : fleetRow(l.name, l.mode, l.blocks, paramValue(SPARE_KEY, l.mode, prefs)[1], l.units),
   }));
-  // Cable cars keep their reserve cabins from the cable car's own values.
-  const modes = [...new Set(lines.filter((l) => !l.ropeway).map((l) => l.mode))];
+  // Cable cars and ferries keep their reserve from their plugin's own values.
+  const modes = [...new Set(lines.filter((l) => !l.ropeway && !l.ferry).map((l) => l.mode))];
   const waitLib = paramValue(WAIT_KEY, "*", undefined)[1];
   const { t } = useI18n();
   const dayText = useDayTypeText();
@@ -590,6 +639,7 @@ function BlockList({ line, day }: { line: LineBlocks; day: DayTypeId }) {
   const { t } = useI18n();
   const dayText = useDayTypeText();
   if (line.ropeway) return <p className="mt-2 text-sm text-slate-600">{ropewayNote(t, line.ropeway)}</p>;
+  if (line.ferry) return <p className="mt-2 text-sm text-slate-600">{ferryNote(t, line.ferry)}</p>;
   if (!line.blocks.length)
     return (
       <p className="mt-2 text-sm text-slate-600">

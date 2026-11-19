@@ -44,6 +44,16 @@
         - mobsimlab-derivation
       check: unverified
       rationale: Electrified by default; set 0 for a line run with diesel units.
+    - context:
+        mode: ferry
+      low: 0
+      central: 0
+      high: 1
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Most passenger ferries run on diesel; set 1 for battery-electric vessels such as electric hydrofoils.
 - key: energy.electric_kwh_per_vkm
   label: Electricity per vehicle-km, street modes
   group: Energy and emissions
@@ -99,6 +109,19 @@
       rationale:
         "12 to 18 m trolleybus at the substation: a battery bus's traction plus about 10 % line and rectifier
         losses."
+    - context:
+        mode: ferry
+      low: 1.5
+      central: 6
+      high: 20
+      basis: documented
+      sources:
+        - candela-p12-energy
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "Battery-electric ferries: an electric hydrofoil uses about 3 to 4 kWh per nautical mile (about 2 kWh/km);
+        a 150 to 400-passenger electric catamaran needs several times more."
 - key: energy.electric_wh_per_place_km
   label: Electricity per place-km, rail
   group: Energy and emissions
@@ -215,6 +238,19 @@
         - mobsimlab-derivation
       check: unverified
       rationale: Coach at steady speed on interurban roads.
+    - context:
+        mode: ferry
+      low: 3
+      central: 10
+      high: 25
+      basis: documented
+      sources:
+        - incat-crowther-seychelles-ferry
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        "A 292-passenger 25-knot catamaran has two 1,342 kW engines: at about 70 % power and 210 g/kWh it burns
+        about 450 L/h, or 10 L per km at 46 km/h. Slow harbour boats use 3 to 5 L/km, large fast ferries 20 or more."
 - key: energy.diesel_ml_per_place_km
   label: Diesel per place-km, rail
   group: Energy and emissions

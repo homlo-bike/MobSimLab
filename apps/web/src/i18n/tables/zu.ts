@@ -48,6 +48,9 @@ export const tablesZu = {
   "net.modes.other": "izinhlobo ezingu-{count}",
   "net.routeSub": "isitimela esingu-{rail}, imizila yomgwaqo engu-{street}",
   "net.routeSubCable": "{rail} kololiwe, {street} imizila yemigwaqo, {cable} izimoto zentambo",
+  "net.routeSubFerry": "isitimela esingu-{rail}, imizila yomgwaqo engu-{street}, {ferry} izikebhe",
+  "net.routeSubCableFerry":
+    "{rail} kololiwe, {street} imizila yemigwaqo, {cable} izimoto zentambo, {ferry} izikebhe",
   "net.stationsAndStops": "Iziteshi nezitobhi",
   "net.stationsSub": "iziteshi ezingu-{stations}, izitobhi ezingu-{stops}",
   "net.inServiceSub": "{n} zisebenza ngesikhathi sokuminyana",
@@ -107,6 +110,7 @@ export const tablesZu = {
   "net.perTrain": "ngesitimela",
   "net.perVehicle": "ngemoto",
   "net.perCabin": "ngekamelo ngalinye",
+  "net.perVessel": "ngomkhumbi ngamunye",
   "net.perHour": "ngehora",
   "net.ofPlaces": "{pct}% wezihlalo",
   "net.noFigures": "Azikabikho izibalo zesevisi: {problem}",
@@ -301,6 +305,9 @@ export const tablesZu = {
   "cost.x.vehicleHours": "izimoto ezingu-{n} ngesikhathi sokuminyana, {from}–{to}",
   "cost.x.ropeway": "Intambo, imibhoshongo nezinjini",
   "cost.x.stationHours": "iziteshi ezingu-{n} zivuliwe {from}–{to}",
+  "cost.x.piers": "Amachweba ezikebhe",
+  "cost.x.vessels": "Imikhumbi kuhlanganise neyokugcina",
+  "cost.x.vesselHours": "Imikhumbi engu-{n} isebenza, {from}–{to}",
   "cost.x.ofInfra": "{pct} % wengqalasizinda",
   "cost.x.ofInfraYear": "{pct} % wengqalasizinda ngonyaka",
   "cost.x.ofOperating": "isabelo sezindleko zokusebenza",
@@ -407,6 +414,8 @@ export const tablesZu = {
   "tt.tbl.noTrips": "Alukho uhambo kulolu hlobo losuku.",
   "tt.tbl.ropeway":
     "Ikamelo lisuka njalo emva kuka-{every} ohlangothini ngalunye, kusukela ngo-{from} kuya ku-{to}. Amakamelo ahlala emzileni usuku lonke, ngakho imoto yentambo ayinawo amabhuloki ezimoto.",
+  "tt.tbl.ferry":
+    "Imikhumbi engu-{n} iya ibuya kusukela ngo-{from} kuya ku-{to}; owodwa uhamba njalo emva kuka-{every} ohlangothini ngalunye. Uhambo olulodwa lokuya nokubuya kuhlanganise nokuphumula luthatha {cycle}.",
   "tt.tbl.nTrips": "(uhambo olungu-{n})",
   "tt.tbl.dirCaption": "{line}, kusuka ku-{from} kuya ku-{to}",
   "tt.tbl.blocksTitle": "Imisebenzi yezimoto, {day}",
