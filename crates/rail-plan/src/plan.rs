@@ -447,6 +447,7 @@ fn periodic_pattern(
     t_back: f64,
     turnback: f64,
     target: f64,
+    one_platform: [bool; 2],
     meets: &dyn Fn(f64, f64) -> bool,
 ) -> Pattern {
     let circ = |x: f64| {
@@ -455,8 +456,12 @@ fn periodic_pattern(
     };
     // Layover from an arrival at `a` (relative to the departure grid) to the first departure it can make.
     let layover = |a: f64| (-(a + turnback)).rem_euclid(h) + turnback;
-    // Lexicographic key: (too close, the directions meet, fleet, -separation, extra time, offset).
-    type Key = (f64, f64, f64, f64, f64, f64);
+    // At a terminal with one platform trains can turn in, a train must have left before the next
+    // one comes in: its layover at most the headway less the separation.
+    let crowded = |a: f64, one: bool| one && layover(a) > h - target + 1e-6;
+    // Lexicographic key: (too close, a one-platform terminal overfull, the directions meet, fleet,
+    // -separation, extra time, offset).
+    type Key = (f64, f64, f64, f64, f64, f64, f64);
     let mut best: Option<(Key, Pattern)> = None;
     // Free search on a 5 s grid, or only the given offsets with the given extra time.
     let grid: Vec<f64> = (0..(h / 5.0).ceil() as usize)
@@ -477,6 +482,7 @@ fn periodic_pattern(
             // Separation counts in 10 s steps, so a fraction of a second never costs extra time.
             let key = (
                 (sep < target) as u8 as f64,
+                (crowded(far, one_platform[0]) as u8 + crowded(home, one_platform[1]) as u8) as f64,
                 meets(off, e) as u8 as f64,
                 fleet,
                 -(sep / 10.0).floor(),
@@ -502,6 +508,10 @@ fn periodic_pattern(
         |b| b.1,
     )
 }
+
+/// Track a path into a terminal platform may run on against the other direction (the crossover
+/// itself), m; more and the platform is no place for trains to turn ([`Planner::turning_platforms`]).
+const AGAINST_TOLERANCE_M: f64 = 500.0;
 
 /// Most routes a way out from a platform reserves ([`Planner::way_out`]).
 const WAY_OUT_ROUTES: usize = 4;
@@ -825,6 +835,8 @@ impl<'a> Planner<'a> {
             if t_run.iter().any(|t| t.is_nan()) {
                 continue;
             }
+            // Whether the terminal each direction ends at has only one platform trains can turn in.
+            let one_platform = [0u8, 1].map(|d| self.turning_platforms(li, d) == 1);
             let lines = self.lines;
             let l = &lines[li];
             let first = trips.len();
@@ -889,6 +901,7 @@ impl<'a> Planner<'a> {
                 t_run[1],
                 l.turnback_s,
                 self.p.terminal_separation_s,
+                one_platform,
                 &|o, e| meets_at(o, e, h_min),
             );
             let pats: Vec<Pattern> = l
@@ -913,6 +926,7 @@ impl<'a> Planner<'a> {
                                 t_run[1],
                                 l.turnback_s,
                                 self.p.terminal_separation_s,
+                                one_platform,
                                 &|o, e| meets_at(o, e, b.headway_s),
                             )
                         }
@@ -924,6 +938,7 @@ impl<'a> Planner<'a> {
                             t_run[1],
                             l.turnback_s,
                             self.p.terminal_separation_s,
+                            one_platform,
                             &|o, e| meets_at(o, e, b.headway_s),
                         ),
                     }
@@ -967,8 +982,13 @@ impl<'a> Planner<'a> {
                     }
                 }
             }
-            // Minimum-layover matching at each terminal.
+            // Minimum-layover matching at each terminal; at a terminal with one platform trains can
+            // turn in, first in, first out (see `match_one_platform`).
             for term_dir in 0..2u8 {
+                if one_platform[term_dir as usize] {
+                    self.match_one_platform(&mut trips, first, term_dir);
+                    continue;
+                }
                 // Arrivals of direction d end where direction 1 - d starts.
                 let mut arr: Vec<usize> = (first..trips.len())
                     .filter(|&i| trips[i].dir == term_dir)
@@ -1014,6 +1034,113 @@ impl<'a> Planner<'a> {
             }
         }
         trips
+    }
+
+    /// Purpose: how many platforms of the terminal a line direction ends at its trains can turn in:
+    /// reach on the way in and leave from on the way back. Moadamiyeh West (Damascus T4) has two
+    /// platforms, but its crossover lets arriving trams reach only one of them.
+    /// Inputs: the line and the arriving direction. Output: the count (0 when none is found).
+    fn turning_platforms(&self, line: usize, dir: u8) -> usize {
+        let ends = &self.cands[line][dir as usize];
+        let Some(last) = ends.last() else {
+            return 0;
+        };
+        let st = self.m.platforms[last[0] as usize].station;
+        let origins: Vec<Place> = self
+            .candidates(line, dir, 0)
+            .into_iter()
+            .map(|c| c.0)
+            .collect();
+        last.iter()
+            .filter(|&&p| {
+                let banned: Vec<Place> = last
+                    .iter()
+                    .filter(|&&x| x != p)
+                    .map(|&x| Place::Platform(x))
+                    .collect();
+                origins.iter().any(|&o| {
+                    [Dir::Up, Dir::Down].into_iter().any(|d| {
+                        let Some(path) = self.trip_path(line, dir, o, d, &banned) else {
+                            return false;
+                        };
+                        let end = Place::Platform(p);
+                        if self.against_m(line, dir, &path.routes, st) > AGAINST_TOLERANCE_M {
+                            return false;
+                        }
+                        let Some(a) = route_steps(self.m, &path.routes)
+                            .ok()
+                            .and_then(|st| arrival_dir(self.m, &st, end))
+                        else {
+                            return false;
+                        };
+                        self.trip_path(line, 1 - dir, end, a.reverse(), &[])
+                            .is_some()
+                    })
+                })
+            })
+            .count()
+    }
+
+    /// Purpose: how far a path runs against the other direction of its line, on track the other
+    /// direction's usual run passes the other way, outside the platforms of one station.
+    /// Inputs: the line, the direction, the routes and the station. Output: the length, m.
+    fn against_m(&self, line: usize, dir: u8, routes: &[RouteId], station: u32) -> f64 {
+        let Some(heads) = self.heads.get(&(line, 1 - dir)) else {
+            return 0.0;
+        };
+        let own: HashSet<usize> = self.m.stations[station as usize]
+            .platforms
+            .iter()
+            .map(|&p| self.m.platforms[p as usize].track)
+            .collect();
+        route_steps(self.m, routes)
+            .unwrap_or_default()
+            .iter()
+            .filter(|st| heads.contains(&(st.piece, st.dir.reverse())))
+            .map(|st| &self.m.pieces[st.piece as usize])
+            .filter(|pc| !own.contains(&pc.track))
+            .map(|pc| pc.length_m())
+            .sum()
+    }
+
+    /// Purpose: match the arrivals of a line direction at a terminal with one platform trains can
+    /// turn in to the departures back. Trains there leave in the order they came, and each must be
+    /// gone before the next comes in; matched as at other terminals (the latest arrival that can
+    /// make a departure), a train could wait for a later departure while the next one came into its
+    /// platform, and both trips were lost (Damascus test, T4 at Moadamiyeh West).
+    /// Inputs: the line's trips and the arriving direction. Effect: their successors and
+    /// predecessors at that terminal; an arrival with none goes to stabling, a departure with none
+    /// gets a train brought out of stabling.
+    fn match_one_platform(&self, trips: &mut [Trip], first: usize, term_dir: u8) {
+        let Some(line) = trips.get(first).map(|t| t.line) else {
+            return;
+        };
+        let tb = self.lines[line].turnback_s;
+        let mut arr: Vec<usize> = (first..trips.len())
+            .filter(|&i| trips[i].dir == term_dir)
+            .collect();
+        arr.sort_by(|&a, &b| trips[a].arr.total_cmp(&trips[b].arr));
+        let mut dep: Vec<usize> = (first..trips.len())
+            .filter(|&i| trips[i].dir != term_dir)
+            .collect();
+        dep.sort_by(|&a, &b| trips[a].dep.total_cmp(&trips[b].dep));
+        let mut j = 0;
+        for (k, &a) in arr.iter().enumerate() {
+            let ta = trips[a].arr;
+            while j < dep.len() && trips[dep[j]].dep < ta + tb - 1e-6 {
+                j += 1;
+            }
+            let Some(&d) = dep.get(j) else {
+                break;
+            };
+            let td = trips[d].dep;
+            let next = arr.get(k + 1).map_or(f64::INFINITY, |&n| trips[n].arr);
+            if td - ta <= self.p.max_idle_s && td <= next - self.p.min_buffer_s + 1e-6 {
+                trips[a].succ = Some(d);
+                trips[d].pred = Some(a);
+                j += 1;
+            }
+        }
     }
 
     /// Purpose: choose the platforms of a line before its trips, so its two directions run on
@@ -1082,10 +1209,70 @@ impl<'a> Planner<'a> {
                 if !outs.iter().any(|o| o.routes == first.routes) {
                     outs.push(first);
                 }
+                // Each platform of the far terminal, so lines that share it can turn in different
+                // ones (the third platform at Zahira was never tried).
+                let far: Vec<Place> = self.cands[line][0][last]
+                    .iter()
+                    .map(|&p| Place::Platform(p))
+                    .collect();
+                for &p in &far {
+                    let banned: Vec<Place> = far.iter().copied().filter(|&x| x != p).collect();
+                    if let Some(alt) = self.trip_path(line, 0, start, d, &banned) {
+                        if !outs.iter().any(|o| o.routes == alt.routes) {
+                            outs.push(alt);
+                        }
+                    }
+                }
             }
         }
-        // (sections shared, cost, out path, back path)
-        let mut best: Option<(usize, f64, FoundPath, FoundPath)> = None;
+        // Track the lines planned before run the other way: where lines share a double track,
+        // each runs on the track of its travel direction. Seeded alone, Damascus T3 took the track
+        // T1 and T2 ran towards Zahira on to leave it, and met their trains head on all the way
+        // (all lines together: 6 of its 208 trips ran).
+        let end_tracks: HashSet<usize> = [0, last]
+            .iter()
+            .flat_map(|&i| self.cands[line][0][i].iter())
+            .flat_map(|&p| {
+                let st = self.m.platforms[p as usize].station;
+                self.m.stations[st as usize].platforms.clone()
+            })
+            .map(|p| self.m.platforms[p as usize].track)
+            .collect();
+        let others: HashSet<(PieceId, Dir)> = self
+            .heads
+            .iter()
+            .filter(|(k, _)| k.0 != line)
+            .flat_map(|(_, h)| h.iter().copied())
+            .collect();
+        let against_others = |pl: &Planner, p: &FoundPath| -> f64 {
+            route_steps(pl.m, &p.routes)
+                .unwrap_or_default()
+                .iter()
+                .filter(|st| others.contains(&(st.piece, st.dir.reverse())))
+                .map(|st| &pl.m.pieces[st.piece as usize])
+                .filter(|pc| !end_tracks.contains(&pc.track))
+                .map(|pc| pc.length_m())
+                .sum()
+        };
+        // The terminal platforms other lines turn in: where lines share a terminal, each turns in
+        // a platform of its own while there are enough. Seeded alone, T1, T2 and T3 all turned in
+        // the same platform at Zahira and never used its third (Damascus test).
+        let taken: HashSet<PlatformId> = self
+            .ends
+            .iter()
+            .filter(|(k, _)| k.0 != line)
+            .map(|(_, &p)| p)
+            .collect();
+        let shared_ends = |p: &FoundPath| -> usize {
+            match p.places.last() {
+                Some(Place::Platform(x)) if taken.contains(x) => 1,
+                _ => 0,
+            }
+        };
+        // (track run against other lines in 100 m, sections shared, terminal platforms shared with
+        // other lines, cost, out path, back path)
+        type Seed = (u64, usize, usize, f64, FoundPath, FoundPath);
+        let mut best: Option<Seed> = None;
         for out in outs {
             clear(self);
             set(self, &out, 0);
@@ -1102,15 +1289,17 @@ impl<'a> Planner<'a> {
                 None => sh += 1000,
             }
             let cost = out.cost + back.cost;
-            if best
-                .as_ref()
-                .map_or(true, |b| (sh, cost) < (b.0, b.1 - 1e-6))
-            {
-                best = Some((sh, cost, out, back));
+            let against =
+                ((against_others(self, &out) + against_others(self, &back)) / 100.0).floor() as u64;
+            let shared = shared_ends(&out) + shared_ends(&back);
+            if best.as_ref().map_or(true, |b| {
+                (against, shared, sh, cost) < (b.0, b.1, b.2, b.3 - 1e-6)
+            }) {
+                best = Some((against, shared, sh, cost, out, back));
             }
         }
         clear(self);
-        if let Some((_, _, out, back)) = best {
+        if let Some((_, _, _, _, out, back)) = best {
             set(self, &out, 0);
             set(self, &back, 1);
         }
@@ -2061,6 +2250,12 @@ impl<'a> Planner<'a> {
                 continue;
             }
             let has = !s.now.is_empty();
+            // A train put away there is back in time to be reused (otherwise a new one comes out of
+            // the morning stabling, and costs as much as one from any other track).
+            let back = s
+                .now
+                .iter()
+                .any(|&v| self.vehicles[v].ready_s <= trip.dep - self.p.pull_out_margin_s);
             // A train comes out of the morning stabling, or, on an end-station siding, from an
             // overnight track first (see `stage`).
             if !has && (s.morning.len() >= s.capacity || s.layover && s.now.len() >= s.capacity) {
@@ -2078,10 +2273,13 @@ impl<'a> Planner<'a> {
                         // one by way of an end-station siding, where it waits for its trip after
                         // coming out early; then one straight from its overnight track.
                         let c = fp.cost
-                            + match (has, s.layover) {
-                                (true, _) => 0.0,
-                                (false, true) => 0.5e5,
-                                (false, false) => 1.0e5,
+                            + match (back, s.layover, has) {
+                                (true, _, _) => 0.0,
+                                (false, true, _) => 0.5e5,
+                                (false, false, false) => 1.0e5,
+                                // Trains put away there are still on their way: another track's
+                                // first, to leave room for them.
+                                (false, false, true) => 1.5e5,
                             };
                         opts.push((c, si, fp));
                     }
@@ -2230,15 +2428,30 @@ impl<'a> Planner<'a> {
                     occupy_until_s: Some(trip.dep.max(t + dur)),
                     ..base2.clone()
                 };
-                // The vehicle: the front train, or a new one in the morning stabling.
+                // The vehicle: the front train of those there by then, or a new one in the
+                // morning stabling. A train put away later than this one leaves is not in its
+                // way: taking only the last one put away, a trip early in the day found it "not
+                // back there in time" and had no train (Damascus test, T4).
                 let s = &self.stacks[si];
-                let vehicle = s.now.last().copied().unwrap_or(self.vehicles.len());
+                let there = s
+                    .now
+                    .iter()
+                    .rposition(|&v| self.vehicles[v].ready_s <= ideal);
+                let fresh = s.morning.len() < s.capacity && !s.layover;
+                let (slot, vehicle) = match there {
+                    Some(j) => (Some(j), s.now[j]),
+                    None if s.now.is_empty() || fresh => (None, self.vehicles.len()),
+                    // Every train put away there arrives later and the track has no room for more
+                    // overnight.
+                    None => (None, usize::MAX),
+                };
                 // A train already there leaves once it has arrived.
-                let window = match s.now.last() {
-                    Some(&v) => self
+                let window = match slot {
+                    Some(_) => self
                         .p
                         .max_depot_shift_s
-                        .min(ideal - self.vehicles[v].ready_s),
+                        .min(ideal - self.vehicles[vehicle].ready_s),
+                    None if vehicle == usize::MAX => -1.0,
                     None => self.p.max_depot_shift_s,
                 };
                 if window < 0.0 {
@@ -2255,7 +2468,9 @@ impl<'a> Planner<'a> {
                 match self.search_time(&mk, ideal, false, window, vehicle, None, idx) {
                     Ok((timing, t, _)) => {
                         let s = &mut self.stacks[si];
-                        if s.now.pop().is_none() {
+                        if let Some(j) = slot {
+                            s.now.remove(j);
+                        } else {
                             s.morning.push(vehicle);
                             self.vehicles.push(Vehicle {
                                 at: Place::Storage(track),
@@ -2726,11 +2941,54 @@ mod tests {
     #[test]
     fn the_pattern_keeps_the_two_directions_apart_where_they_share_track() {
         // Without the check, the best offset puts the two directions in the junction together.
-        let free = periodic_pattern(600.0, &[0.0], 0.0, 1500.0, 1500.0, 240.0, 120.0, &|_, _| {
-            false
-        });
+        let free = periodic_pattern(
+            600.0,
+            &[0.0],
+            0.0,
+            1500.0,
+            1500.0,
+            240.0,
+            120.0,
+            [false; 2],
+            &|_, _| false,
+        );
         let meets = move |off: f64, _e: f64| (off - free.offset_s).rem_euclid(600.0) < 120.0;
-        let p = periodic_pattern(600.0, &[0.0], 0.0, 1500.0, 1500.0, 240.0, 120.0, &meets);
+        let p = periodic_pattern(
+            600.0,
+            &[0.0],
+            0.0,
+            1500.0,
+            1500.0,
+            240.0,
+            120.0,
+            [false; 2],
+            &meets,
+        );
         assert!(!meets(p.offset_s, p.extra_s), "{p:?}");
+    }
+
+    #[test]
+    fn at_a_one_platform_terminal_a_train_leaves_before_the_next_comes_in() {
+        // Headway 420 s, turn-back 180 s: with two platforms the fewest trains can leave a train
+        // waiting almost a whole headway; with one, it must be gone 90 s before the next arrives.
+        let run = |one: [bool; 2]| {
+            periodic_pattern(
+                420.0,
+                &[],
+                0.0,
+                4229.0,
+                4233.0,
+                180.0,
+                90.0,
+                one,
+                &|_, _| false,
+            )
+        };
+        let layover = |a: f64| (-(a + 180.0)).rem_euclid(420.0) + 180.0;
+        let far = |p: Pattern| 4229.0 + p.extra_s / 2.0 - p.offset_s;
+        let home = |p: Pattern| p.offset_s + 4233.0 + p.extra_s / 2.0;
+        let p = run([true, true]);
+        assert!(layover(far(p)) <= 420.0 - 90.0 + 1e-6, "{p:?}");
+        assert!(layover(home(p)) <= 420.0 - 90.0 + 1e-6, "{p:?}");
     }
 }
