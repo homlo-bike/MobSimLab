@@ -2,6 +2,7 @@ import { createContext, type ReactNode, useContext, useEffect, useId, useMemo, u
 import { createPortal, flushSync } from "react-dom";
 import { useI18n } from "../i18n/i18n";
 import { isolate, paramLabel, paramUnit } from "../i18n/params";
+import { loadNoteTexts, rationaleText, usedByText } from "../i18n/notes";
 import type { MessageKey } from "../i18n/messages";
 import { RATE_PREF } from "../features/costs/currency";
 import { outsideLibraryRange } from "../features/costs/params";
@@ -103,6 +104,18 @@ export function AssumptionsReportSection({
       clearTimeout(timer);
     };
   }, [loadHistory, preferences]);
+  // The notes in the app language (reasoning and "Used by"); shown in English until they are loaded.
+  const [, setNotesLanguage] = useState("");
+  useEffect(() => {
+    let live = true;
+    loadNoteTexts(language).then(
+      () => live && setNotesLanguage(language),
+      () => {},
+    );
+    return () => {
+      live = false;
+    };
+  }, [language]);
   useEffect(() => {
     let live = true;
     loadSources().then(
@@ -180,8 +193,8 @@ export function AssumptionsReportSection({
             return s ? [s.title, s.url].filter(Boolean).join(" ") : id;
           })
           .join("; "),
-        r.source?.rationale ?? "",
-        r.usedBy.join("; "),
+        rationaleText(language, r.source?.rationale ?? ""),
+        r.usedBy.map((u) => usedByText(language, u)).join("; "),
         r.reason,
         (r.changed && changes.get(r.prefId)?.by) || "",
         (r.changed && changes.get(r.prefId)?.at.slice(0, 10)) || "",
@@ -430,10 +443,12 @@ function ReportLine({
           })}
         </div>
       )}
-      {r.source?.rationale && <p className="mt-0.5 mb-0 text-sm text-slate-500">{r.source.rationale}</p>}
+      {r.source?.rationale && (
+        <p className="mt-0.5 mb-0 text-sm text-slate-500">{rationaleText(language, r.source.rationale)}</p>
+      )}
       {r.usedBy.length > 0 && (
         <p className="mt-0.5 mb-0 text-xs text-slate-500">
-          {t("report.usedBy", { list: r.usedBy.join(", ") })}
+          {t("report.usedBy", { list: r.usedBy.map((u) => usedByText(language, u)).join(", ") })}
         </p>
       )}
     </li>
