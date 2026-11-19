@@ -1,5 +1,6 @@
 import { useId, useState } from "react";
 import { useI18n } from "../i18n/i18n";
+import { isolate, paramLabel, paramUnit } from "../i18n/params";
 import type { MessageKey } from "../i18n/messages";
 import { RAIL_MODES } from "../features/railways/modes";
 import { MODE_ORDER, MODES } from "../features/street-lines/modes";
@@ -185,7 +186,7 @@ function ParamField({
   editable: boolean;
   onPreferences: (doc: PreferencesDoc) => void;
 }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const id = useId();
   // What the planner is typing; the saved value shows again once the field is left.
   const [text, setText] = useState<string | null>(null);
@@ -200,9 +201,11 @@ function ParamField({
         ? prefValue(preferences, allId)
         : choiceValue(preferences, allId)
       : undefined;
+  const name = paramLabel(language, p.id, p.label);
+  const unit = paramUnit(language, p.unit);
   const label = traction
-    ? `${p.label} · ${TRACTION_LABEL[traction] ? t(TRACTION_LABEL[traction]) : traction}`
-    : p.label;
+    ? `${name} · ${TRACTION_LABEL[traction] ? t(TRACTION_LABEL[traction]) : traction}`
+    : name;
   const set = (v: number | string | null) =>
     onPreferences(
       typeof v === "string" || (v === null && !isNumber)
@@ -241,16 +244,24 @@ function ParamField({
               commit(e.target.value);
             }}
             onBlur={() => setText(null)}
+            dir="ltr"
             className="text-end"
           />
         </div>
-        <span className="w-16 text-sm text-slate-600">{p.unit}</span>
+        <span className="w-16 text-sm text-slate-600">
+          <bdi>{unit}</bdi>
+        </span>
       </div>
     );
     library =
       low !== high
-        ? t("prefs.rulesLibraryRange", { value: num(central), low: num(low), high: num(high), unit: p.unit })
-        : t("prefs.rulesLibrary", { value: num(central), unit: p.unit });
+        ? t("prefs.rulesLibraryRange", {
+            value: isolate(num(central)),
+            low: isolate(num(low)),
+            high: isolate(num(high)),
+            unit: isolate(unit),
+          })
+        : t("prefs.rulesLibrary", { value: isolate(num(central)), unit: isolate(unit) });
   } else {
     const central = String(lib);
     const shown = (own ?? fromAll ?? central) as string;
@@ -289,7 +300,7 @@ function ParamField({
           />
         </div>
       );
-    library = t("prefs.rulesLibrary", { value: central, unit: p.unit });
+    library = t("prefs.rulesLibrary", { value: isolate(central), unit: isolate(unit) });
   }
   return (
     <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-slate-100 py-3 first:border-t-0">

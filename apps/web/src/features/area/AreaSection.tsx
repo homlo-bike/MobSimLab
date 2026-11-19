@@ -10,6 +10,7 @@ import {
   ringAreaKm2,
 } from "./api";
 import { AreaOutline, AreaWindow, DETAIL_COLOUR } from "./AreaWindow";
+import { countryName } from "../costs/economy";
 
 const IMPORT_NAMES: Record<AreaImport["kind"], MessageKey> = {
   osm: "data.osm",
@@ -77,7 +78,7 @@ export function AreaSection({
   editable: boolean;
   projectName?: string;
 }) {
-  const { t, tn } = useI18n();
+  const { t, tn, language } = useI18n();
   const [view, setView] = useState<AreaView | null>(null);
   const [state, setState] = useState<"idle" | "busy" | "saved" | { error: string }>("idle");
   const [imports, setImports] = useState<AreaImport[]>([]);
@@ -187,10 +188,12 @@ export function AreaSection({
       {countries.length > 0 && (
         <p className="mt-3 text-sm text-slate-600">
           {countries.length === 1
-            ? t("area.country", { name: countries[0]!.name })
+            ? t("area.country", { name: countryName(countries[0]!, language) })
             : t("area.crossesBorder", {
-                countries: countries.map((c) => `${c.name} ${Math.round(c.share * 100)} %`).join(", "),
-                name: countries[0]!.name,
+                countries: countries
+                  .map((c) => `${countryName(c, language)} ${Math.round(c.share * 100)} %`)
+                  .join(", "),
+                name: countryName(countries[0]!, language),
               })}
         </p>
       )}
