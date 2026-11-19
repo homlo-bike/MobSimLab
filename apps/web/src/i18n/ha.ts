@@ -487,6 +487,7 @@ export const ha: Messages = {
   "map.group.noise": "Taswirar hayaniya",
   "map.group.journey": "Mai tsara tafiya",
   "map.group.agents": "Yanayin wakilin AI",
+  "map.group.projectArea": "Yankin aikin",
   "help.menu": "Taimako",
   "help.tour": "Fara rangadi",
   "help.tourHint": "Gajeren rangadi cikin shafuka da kayan aikin aikin",

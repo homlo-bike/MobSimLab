@@ -476,6 +476,7 @@ export const ar: Messages = {
   "map.group.noise": "خريطة الضوضاء",
   "map.group.journey": "مخطط الرحلات",
   "map.group.agents": "سيناريو وكيل الذكاء الاصطناعي",
+  "map.group.projectArea": "منطقة المشروع",
   "help.menu": "مساعدة",
   "help.tour": "ابدأ الجولة",
   "help.tourHint": "جولة قصيرة في علامات تبويب المشروع وأدواته",

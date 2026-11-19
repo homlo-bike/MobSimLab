@@ -488,6 +488,7 @@ export const es: Messages = {
   "map.group.noise": "Mapa de ruido",
   "map.group.journey": "Planificador de viajes",
   "map.group.agents": "Escenario del agente de IA",
+  "map.group.projectArea": "Área del proyecto",
   "help.menu": "Ayuda",
   "help.tour": "Hacer el recorrido",
   "help.tourHint": "Un breve recorrido por las pestañas y herramientas del proyecto",

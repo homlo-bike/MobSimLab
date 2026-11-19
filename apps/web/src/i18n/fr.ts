@@ -490,6 +490,7 @@ export const fr: Messages = {
   "map.group.noise": "Carte de bruit",
   "map.group.journey": "Calculateur d’itinéraire",
   "map.group.agents": "Scénario de l’agent IA",
+  "map.group.projectArea": "Zone du projet",
   "help.menu": "Aide",
   "help.tour": "Faire la visite",
   "help.tourHint": "Un court parcours des onglets et outils du projet",

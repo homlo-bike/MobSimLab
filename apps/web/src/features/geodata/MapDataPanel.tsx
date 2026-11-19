@@ -1,63 +1,12 @@
-import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useI18n } from "../../i18n/i18n";
 import { JobProgress } from "../../shell/JobProgress";
-import type { Box, GeodataApi, GeodataStatus, GeofabrikRegion, ImportRun } from "./api";
+import type { GeodataApi, GeodataStatus, GeofabrikRegion, ImportRun } from "./api";
 
-const SRC = "geodata-area";
-const LINE = "geodata-area-line";
 const POLL_MS = 2_000;
 
 type Method = "overpass" | "geofabrik" | "upload";
-
-/** Purpose: a box as a closed GeoJSON ring. */
-function ring(b: Box): [number, number][] {
-  return [
-    [b[0], b[1]],
-    [b[2], b[1]],
-    [b[2], b[3]],
-    [b[0], b[3]],
-    [b[0], b[1]],
-  ];
-}
-
-/** Purpose: draw the box the imports cover (dashed) and the outlines of the area's polygons on the map, or clear it. */
-function drawArea(map: MapLibreMap, b: Box | null, polygons: readonly { ring: [number, number][] }[] = []) {
-  const data = {
-    type: "FeatureCollection" as const,
-    features: b
-      ? [
-          {
-            type: "Feature" as const,
-            properties: {},
-            geometry: { type: "LineString" as const, coordinates: ring(b) },
-          },
-          ...polygons.map((r) => ({
-            type: "Feature" as const,
-            properties: {},
-            geometry: { type: "LineString" as const, coordinates: r.ring },
-          })),
-        ]
-      : [],
-  };
-  const src = map.getSource(SRC) as GeoJSONSource | undefined;
-  if (src) src.setData(data);
-  else {
-    map.addSource(SRC, { type: "geojson", data });
-    map.addLayer({
-      id: LINE,
-      type: "line",
-      source: SRC,
-      paint: { "line-color": "#1d4ed8", "line-width": 2, "line-dasharray": [2, 2] },
-    });
-  }
-}
-
-function removeArea(map: MapLibreMap) {
-  if (map.getLayer(LINE)) map.removeLayer(LINE);
-  if (map.getSource(SRC)) map.removeSource(SRC);
-}
 
 const busy = (r: ImportRun | null | undefined) => r?.status === "queued" || r?.status === "running";
 
@@ -84,18 +33,16 @@ function importSteps(r: ImportRun): ImportStep[] {
 }
 
 /**
- * The Map data view of the GIS tab (ADR-0046): the project area (the box around everything drawn plus the
- * buffer), and the OpenStreetMap and elevation imports of it, with their state, source and licence. Owners and
+ * The Map data view of the GIS tab (ADR-0046): the project area (its polygons; the map draws their edges as the
+ * Project area layer), and the OpenStreetMap and elevation imports of it, with their state, source and licence. Owners and
  * Editors start and cancel imports; the panel follows a running import until it ends.
  */
 export function MapDataPanel({
   api,
-  map,
   panel = null,
   onOsmImport,
 }: {
   api: GeodataApi;
-  map: MapLibreMap | null;
   /** Where the side panel renders; inline when `null`. */
   panel?: HTMLElement | null;
   /** Called with the current OpenStreetMap import when it changes, so the map tools read the new data. */
@@ -146,19 +93,6 @@ export function MapDataPanel({
     const timer = setTimeout(() => void load(), POLL_MS);
     return () => clearTimeout(timer);
   }, [running, status, load]);
-
-  useEffect(() => {
-    if (!map) return;
-    const draw = () => drawArea(map, status?.area?.bbox ?? null, status?.area?.polygons);
-    if (map.isStyleLoaded()) draw();
-    else map.once("load", draw);
-  }, [map, status]);
-  useEffect(
-    () => () => {
-      if (map) removeArea(map);
-    },
-    [map],
-  );
 
   const accuracyValue = own.accuracy.trim() === "" ? null : Number(own.accuracy);
   const ownValid = accuracyValue === null || (Number.isFinite(accuracyValue) && accuracyValue >= 0);

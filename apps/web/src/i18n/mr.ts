@@ -483,6 +483,7 @@ export const mr: Messages = {
   "map.group.noise": "आवाज नकाशा",
   "map.group.journey": "प्रवास नियोजक",
   "map.group.agents": "AI एजंट परिस्थिती",
+  "map.group.projectArea": "प्रकल्प क्षेत्र",
   "help.menu": "मदत",
   "help.tour": "ओळख फेरी घ्या",
   "help.tourHint": "प्रकल्पाच्या टॅब आणि साधनांची छोटी फेरी",

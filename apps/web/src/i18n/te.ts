@@ -485,6 +485,7 @@ export const te: Messages = {
   "map.group.noise": "శబ్ద మ్యాప్",
   "map.group.journey": "ప్రయాణ ప్రణాళిక",
   "map.group.agents": "AI ఏజెంట్ దృశ్యం",
+  "map.group.projectArea": "ప్రాజెక్ట్ ప్రాంతం",
   "help.menu": "సహాయం",
   "help.tour": "పరిచయ పర్యటన చేయండి",
   "help.tourHint": "ప్రాజెక్ట్ ట్యాబ్‌లు, సాధనాల్లో చిన్న పర్యటన",

@@ -488,6 +488,7 @@ export const id: Messages = {
   "map.group.noise": "Peta kebisingan",
   "map.group.journey": "Perencana perjalanan",
   "map.group.agents": "Skenario agen AI",
+  "map.group.projectArea": "Area proyek",
   "help.menu": "Bantuan",
   "help.tour": "Ikuti tur",
   "help.tourHint": "Jalan singkat melalui tab dan alat proyek",

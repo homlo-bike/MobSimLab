@@ -484,6 +484,7 @@ export const tr: Messages = {
   "map.group.noise": "Gürültü haritası",
   "map.group.journey": "Yolculuk planlayıcı",
   "map.group.agents": "Yapay zekâ ajanı senaryosu",
+  "map.group.projectArea": "Proje alanı",
   "help.menu": "Yardım",
   "help.tour": "Turu başlat",
   "help.tourHint": "Projenin sekmeleri ve araçları arasında kısa bir gezinti",

@@ -488,6 +488,7 @@ export const uk: Messages = {
   "map.group.noise": "Шумова карта",
   "map.group.journey": "Планувальник поїздок",
   "map.group.agents": "Сценарій ШІ-агента",
+  "map.group.projectArea": "Територія проєкту",
   "help.menu": "Довідка",
   "help.tour": "Пройти огляд",
   "help.tourHint": "Коротка прогулянка вкладками та інструментами проєкту",

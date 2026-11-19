@@ -494,6 +494,7 @@ export const de: Messages = {
   "map.group.noise": "Lärmkarte",
   "map.group.journey": "Reiseplaner",
   "map.group.agents": "Szenario des KI-Agenten",
+  "map.group.projectArea": "Projektgebiet",
   "help.menu": "Hilfe",
   "help.tour": "Rundgang starten",
   "help.tourHint": "Ein kurzer Gang durch die Tabs und Werkzeuge des Projekts",

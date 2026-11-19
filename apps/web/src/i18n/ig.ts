@@ -486,6 +486,7 @@ export const ig: Messages = {
   "map.group.noise": "Map mkpọtụ",
   "map.group.journey": "Onye na-eme atụmatụ njem",
   "map.group.agents": "Ọnọdụ onye nnọchite AI",
+  "map.group.projectArea": "Mpaghara ọrụ",
   "help.menu": "Enyemaka",
   "help.tour": "Malite njem nlegharị",
   "help.tourHint": "Njem dị mkpụmkpụ n'ime taabụ na ngwaọrụ ọrụ",

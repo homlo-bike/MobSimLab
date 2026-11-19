@@ -474,6 +474,7 @@ export const am: Messages = {
   "map.group.noise": "የጫጫታ ካርታ",
   "map.group.journey": "የጉዞ ዕቅድ አውጪ",
   "map.group.agents": "የAI ወኪል ሁኔታ",
+  "map.group.projectArea": "የፕሮጀክት ክልል",
   "help.menu": "እገዛ",
   "help.tour": "ጉብኝቱን ጀምር",
   "help.tourHint": "በፕሮጀክቱ ትሮችና መሣሪያዎች አጭር ጉብኝት",

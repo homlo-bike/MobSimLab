@@ -484,6 +484,7 @@ export const kk: Messages = {
   "map.group.noise": "Шу картасы",
   "map.group.journey": "Сапар жоспарлағыш",
   "map.group.agents": "ЖИ агентінің сценарийі",
+  "map.group.projectArea": "Жоба аумағы",
   "help.menu": "Анықтама",
   "help.tour": "Таныстыру турын бастау",
   "help.tourHint": "Жобаның қойындылары мен құралдары бойынша қысқа тур",

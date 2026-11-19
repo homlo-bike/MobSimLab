@@ -15,6 +15,7 @@ import {
   outsideKm2,
   type ProjectAreaApi,
 } from "../area/api";
+import { notifyAreaChanged } from "../area/areaLayer";
 import { type BenefitsApi, benefitsApi, type OsmArea } from "./data";
 import {
   LAND_USES,
@@ -403,6 +404,7 @@ export function RegionEditor({
     try {
       addImported(a);
       const r = await area.set([...polygons, regionPolygon(a, detail, polygons)], true);
+      notifyAreaChanged();
       setExtendNote({ ok: !r.imports.some((i) => i.status === "failed"), text: importsNote(r.imports) });
     } catch (e) {
       setExtendNote({

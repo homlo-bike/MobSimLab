@@ -67,6 +67,7 @@ import {
   type ProjectAreaApi,
   ringAreaKm2,
 } from "../src/features/area/api";
+import { AREA_LINE, AREA_SOURCE, notifyAreaChanged } from "../src/features/area/areaLayer";
 import { useAreaZoom } from "../src/features/area/useAreaZoom";
 
 afterEach(() => {
@@ -345,6 +346,18 @@ describe("Opening a project puts the map on its area", () => {
         once: (ev: string, f: () => void) => handlers.set(ev, f),
         off: (ev: string) => handlers.delete(ev),
         fitBounds: vi.fn(),
+        isStyleLoaded: () => true,
+        getStyle: () => ({ layers: [{ id: "sl-lines" }] }),
+        sources: new Map<string, { setData: ReturnType<typeof vi.fn> }>(),
+        getSource(id: string) {
+          return this.sources.get(id);
+        },
+        addSource(id: string, s: { data: unknown }) {
+          this.sources.set(id, { setData: vi.fn() });
+          this.added.push(s.data);
+        },
+        added: [] as unknown[],
+        addLayer: vi.fn(),
       },
     };
   }
@@ -360,6 +373,34 @@ describe("Opening a project puts the map on its area", () => {
       [37.0, 36.1],
       [37.3, 36.3],
     ]);
+  });
+
+  const poly = (id: string, ring: AreaPolygon["ring"]): AreaPolygon => ({
+    id,
+    name: id,
+    detail: "full",
+    ring,
+  });
+
+  it("draws the area's edges as the Project area layer and redraws them when the area is saved", async () => {
+    const { map } = fakeMap();
+    const first = {
+      ...view([poly("a1", square(0, 0, 1))]),
+      bbox: [0, 0, 1, 1] as [number, number, number, number],
+    };
+    const second = { ...view([poly("a1", square(0, 0, 1)), poly("a2", square(2, 2, 1))]), bbox: null };
+    const load = vi.fn().mockResolvedValueOnce(first).mockResolvedValueOnce(second);
+    renderHook(() => useAreaZoom(map as unknown as MapLibreMap, "p1", load));
+    await waitFor(() => expect(map.addLayer).toHaveBeenCalledTimes(1));
+    expect(map.addLayer.mock.calls[0]![0]).toMatchObject({ id: AREA_LINE, source: AREA_SOURCE });
+    // Under the project's own layers.
+    expect(map.addLayer.mock.calls[0]![1]).toBe("sl-lines");
+    expect((map.added[0] as { features: unknown[] }).features).toHaveLength(1);
+    act(() => notifyAreaChanged());
+    await waitFor(() => expect(map.sources.get(AREA_SOURCE)!.setData).toHaveBeenCalledTimes(1));
+    const data = map.sources.get(AREA_SOURCE)!.setData.mock.calls[0]![0] as { features: unknown[] };
+    expect(data.features).toHaveLength(2);
+    expect(map.fitBounds).toHaveBeenCalledTimes(1);
   });
 
   it("leaves the map alone when something moved it first or there is no area", async () => {

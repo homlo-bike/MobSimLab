@@ -118,7 +118,7 @@ describe("terrain requests", () => {
 
 describe("Map data panel", () => {
   it("asks for a drawing when the project has no area", async () => {
-    render(<MapDataPanel api={fakeApi(status({ area: null }))} map={null} />);
+    render(<MapDataPanel api={fakeApi(status({ area: null }))} />);
     expect(await screen.findByText(/Draw the project area first/)).toBeTruthy();
   });
 
@@ -127,7 +127,7 @@ describe("Map data panel", () => {
     render(
       <MapDataPanel
         api={fakeApi(status({ osm: { current: run(), latest: run(), coversDrawing: false } }))}
-        map={null}
+
         onOsmImport={onOsmImport}
       />,
     );
@@ -141,7 +141,7 @@ describe("Map data panel", () => {
       status(),
       status({ osm: { current: null, latest: run({ status: "running", progress: { step: "extract" } }) } }),
     );
-    render(<MapDataPanel api={api} map={null} />);
+    render(<MapDataPanel api={api} />);
     await screen.findByText(/box around it, 80 km²/);
     fireEvent.click(screen.getByLabelText(/Keep planned roads/));
     fireEvent.click(screen.getAllByRole("button", { name: "Import" })[0]!);
@@ -167,7 +167,7 @@ describe("Map data panel", () => {
         },
       }),
     );
-    render(<MapDataPanel api={api} map={null} />);
+    render(<MapDataPanel api={api} />);
     const bar = await screen.findByRole("progressbar", { name: "OpenStreetMap" });
     // Overpass: download, join, write; a quarter of the tiles are in, so a twelfth of the whole job.
     expect(screen.getByText("Step 1 of 3")).toBeTruthy();
@@ -182,7 +182,7 @@ describe("Map data panel", () => {
         suggestedMethod: "geofabrik",
       }),
     );
-    render(<MapDataPanel api={api} map={null} />);
+    render(<MapDataPanel api={api} />);
     expect(((await screen.findByRole("option", { name: /Overpass/ })) as HTMLOptionElement).disabled).toBe(
       true,
     );
@@ -207,7 +207,7 @@ describe("Map data panel", () => {
     api.regions = vi.fn(async () => {
       throw new Error("Geofabrik is unreachable: connect ETIMEDOUT");
     });
-    render(<MapDataPanel api={api} map={null} />);
+    render(<MapDataPanel api={api} />);
     expect((await screen.findByRole("alert")).textContent).toMatch(/Geofabrik is unreachable/);
     expect(screen.queryByText("No Geofabrik region holds the whole area.")).toBeNull();
     // The method no longer stays on Geofabrik: the area is too large for Overpass, so it is the file upload.
@@ -216,19 +216,19 @@ describe("Map data panel", () => {
 
   it("starts the elevation import and hides imports from viewers", async () => {
     const api = fakeApi(status());
-    render(<MapDataPanel api={api} map={null} />);
+    render(<MapDataPanel api={api} />);
     await screen.findByText(/box around it, 80 km²/);
     const buttons = screen.getAllByRole("button", { name: "Import" });
     fireEvent.click(buttons[buttons.length - 1]!);
     await waitFor(() => expect(api.startDem).toHaveBeenCalled());
     cleanup();
-    render(<MapDataPanel api={fakeApi(status({ canImport: false }))} map={null} />);
+    render(<MapDataPanel api={fakeApi(status({ canImport: false }))} />);
     expect(await screen.findByText("Owners and Editors can import data.")).toBeTruthy();
     expect(screen.queryByRole("button", { name: "Import" })).toBeNull();
   });
 
   it("names the project area's polygons and has no buffer to set", async () => {
-    render(<MapDataPanel api={fakeApi(status())} map={null} />);
+    render(<MapDataPanel api={fakeApi(status())} />);
     expect(
       await screen.findByText("Project area: Trier. The imports cover the box around it, 80 km²."),
     ).toBeTruthy();
@@ -250,7 +250,7 @@ describe("Map data panel", () => {
       stats: { notes: ["The file has 2 bands; the first was read."] },
     });
     const api = fakeApi(status(), status({ demUpload: { current: own, latest: own } }));
-    render(<MapDataPanel api={api} map={null} />);
+    render(<MapDataPanel api={api} />);
     await screen.findByText(/box around it, 80 km²/);
     fireEvent.change(screen.getByLabelText("Source"), { target: { value: "City LiDAR" } });
     fireEvent.change(screen.getByLabelText("Vertical accuracy (m)"), { target: { value: "0.15" } });

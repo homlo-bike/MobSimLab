@@ -483,6 +483,7 @@ export const yo: Messages = {
   "map.group.noise": "Máàpù ariwo",
   "map.group.journey": "Olùṣètò ìrìn-àjò",
   "map.group.agents": "Ìṣẹ̀lẹ̀ aṣojú AI",
+  "map.group.projectArea": "Agbègbè iṣẹ́ akanṣe",
   "help.menu": "Ìrànlọ́wọ́",
   "help.tour": "Bẹ̀rẹ̀ ìrìn-ìfihàn",
   "help.tourHint": "Ìrìn kúkúrú nínú àwọn táàbù àti irinṣẹ́ iṣẹ́ àkànṣe",

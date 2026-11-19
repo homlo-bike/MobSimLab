@@ -486,6 +486,7 @@ export const sw: Messages = {
   "map.group.noise": "Ramani ya kelele",
   "map.group.journey": "Kipanga safari",
   "map.group.agents": "Hali ya wakala wa AI",
+  "map.group.projectArea": "Eneo la mradi",
   "help.menu": "Msaada",
   "help.tour": "Anza ziara",
   "help.tourHint": "Matembezi mafupi kupitia vichupo na zana za mradi",

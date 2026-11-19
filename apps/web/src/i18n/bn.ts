@@ -483,6 +483,7 @@ export const bn: Messages = {
   "map.group.noise": "শব্দ মানচিত্র",
   "map.group.journey": "যাত্রা পরিকল্পক",
   "map.group.agents": "এআই এজেন্টের দৃশ্যকল্প",
+  "map.group.projectArea": "প্রকল্প এলাকা",
   "help.menu": "সহায়তা",
   "help.tour": "পরিচিতি ভ্রমণ করুন",
   "help.tourHint": "প্রকল্পের ট্যাব ও সরঞ্জামের ছোট্ট ভ্রমণ",

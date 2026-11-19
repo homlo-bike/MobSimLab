@@ -485,6 +485,7 @@ export const vi: Messages = {
   "map.group.noise": "Bản đồ tiếng ồn",
   "map.group.journey": "Lập kế hoạch hành trình",
   "map.group.agents": "Kịch bản của tác tử AI",
+  "map.group.projectArea": "Khu vực dự án",
   "help.menu": "Trợ giúp",
   "help.tour": "Xem hướng dẫn",
   "help.tourHint": "Đi nhanh qua các thẻ và công cụ của dự án",

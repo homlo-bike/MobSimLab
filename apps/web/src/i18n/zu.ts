@@ -492,6 +492,7 @@ export const zu: Messages = {
   "map.group.noise": "Imephu yomsindo",
   "map.group.journey": "Umhleli wohambo",
   "map.group.agents": "Isimo se-ejenti ye-AI",
+  "map.group.projectArea": "Indawo yephrojekthi",
   "help.menu": "Usizo",
   "help.tour": "Qala uhambo",
   "help.tourHint": "Uhambo olufushane emathebhuni namathuluzi ephrojekthi",

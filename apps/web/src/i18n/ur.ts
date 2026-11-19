@@ -485,6 +485,7 @@ export const ur: Messages = {
   "map.group.noise": "شور کا نقشہ",
   "map.group.journey": "سفر منصوبہ ساز",
   "map.group.agents": "اے آئی ایجنٹ کا منظرنامہ",
+  "map.group.projectArea": "منصوبے کا علاقہ",
   "help.menu": "مدد",
   "help.tour": "تعارفی دورہ کریں",
   "help.tourHint": "منصوبے کے ٹیبز اور ٹولز کا مختصر دورہ",

@@ -492,6 +492,7 @@ export const ta: Messages = {
   "map.group.noise": "இரைச்சல் வரைபடம்",
   "map.group.journey": "பயணத் திட்டமிடுபவர்",
   "map.group.agents": "AI முகவர் சூழ்நிலை",
+  "map.group.projectArea": "திட்டப் பகுதி",
   "help.menu": "உதவி",
   "help.tour": "சுற்றுலாவைத் தொடங்கு",
   "help.tourHint": "திட்டத்தின் தாவல்கள் மற்றும் கருவிகளின் சிறு சுற்றுலா",

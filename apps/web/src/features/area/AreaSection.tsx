@@ -10,6 +10,7 @@ import {
   ringAreaKm2,
 } from "./api";
 import { AreaOutline, AreaWindow, DETAIL_COLOUR } from "./AreaWindow";
+import { notifyAreaChanged } from "./areaLayer";
 import { countryName } from "../costs/economy";
 
 const IMPORT_NAMES: Record<AreaImport["kind"], MessageKey> = {
@@ -96,6 +97,7 @@ export function AreaSection({
   const save = async (polygons: AreaPolygon[]) => {
     const r = await api.set(polygons, true);
     setView(r);
+    notifyAreaChanged();
     setImports(r.imports);
     setState("saved");
     setOpen(false);

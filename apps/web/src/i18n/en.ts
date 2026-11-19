@@ -480,6 +480,7 @@ export const en = {
   "map.group.noise": "Noise map",
   "map.group.journey": "Journey planner",
   "map.group.agents": "AI agent scenario",
+  "map.group.projectArea": "Project area",
   "help.menu": "Help",
   "help.tour": "Take the tour",
   "help.tourHint": "A short walk through the project's tabs and tools",

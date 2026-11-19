@@ -490,6 +490,7 @@ export const uz: Messages = {
   "map.group.noise": "Shovqin xaritasi",
   "map.group.journey": "Sayohat rejalashtiruvchi",
   "map.group.agents": "SI agenti stsenariysi",
+  "map.group.projectArea": "Loyiha hududi",
   "help.menu": "Yordam",
   "help.tour": "Tanishuv sayohati",
   "help.tourHint": "Loyiha yorliqlari va vositalari bo‘ylab qisqa sayohat",

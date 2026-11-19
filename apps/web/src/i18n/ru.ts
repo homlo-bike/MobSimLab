@@ -489,6 +489,7 @@ export const ru: Messages = {
   "map.group.noise": "Шумовая карта",
   "map.group.journey": "Планировщик поездок",
   "map.group.agents": "Сценарий ИИ-агента",
+  "map.group.projectArea": "Территория проекта",
   "help.menu": "Справка",
   "help.tour": "Пройти обзор",
   "help.tourHint": "Короткая прогулка по вкладкам и инструментам проекта",
