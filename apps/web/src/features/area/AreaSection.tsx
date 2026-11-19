@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { type AreaCountry, type AreaImport, type AreaRegion, type ProjectAreaApi } from "./api";
+import { countryName } from "../costs/economy";
 import { AreaPicker } from "./AreaPicker";
 
 const IMPORT_NAMES: Record<AreaImport["kind"], MessageKey> = {
@@ -37,7 +38,7 @@ export function AreaImports({ imports }: { imports: readonly AreaImport[] }) {
  * them; saving queues the OpenStreetMap, elevation and population imports for the area once.
  */
 export function AreaSection({ api, editable }: { api: ProjectAreaApi; editable: boolean }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [saved, setSaved] = useState<AreaRegion[] | null>(null);
   const [regions, setRegions] = useState<AreaRegion[]>([]);
   const [state, setState] = useState<"idle" | "saving" | "saved" | { error: string }>("idle");
@@ -117,10 +118,12 @@ export function AreaSection({ api, editable }: { api: ProjectAreaApi; editable: 
       {countries.length > 0 && (
         <p className="mt-3 text-sm text-slate-600">
           {countries.length === 1
-            ? t("area.country", { name: countries[0]!.name })
+            ? t("area.country", { name: countryName(countries[0]!, language) })
             : t("area.crossesBorder", {
-                countries: countries.map((c) => `${c.name} ${Math.round(c.share * 100)} %`).join(", "),
-                name: countries[0]!.name,
+                countries: countries
+                  .map((c) => `${countryName(c, language)} ${Math.round(c.share * 100)} %`)
+                  .join(", "),
+                name: countryName(countries[0]!, language),
               })}
         </p>
       )}
