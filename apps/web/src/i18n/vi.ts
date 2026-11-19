@@ -8,6 +8,7 @@ import { geodataVi } from "./geodata/vi";
 import { tablesVi } from "./tables/vi";
 import { fleetVi } from "./fleet/vi";
 import { timetablesVi } from "./timetables/vi";
+import { areaVi } from "./area/vi";
 import { mslabVi } from "./mslab/vi";
 import { workspaceUiVi } from "./workspace-ui/vi";
 import { pluginCodeVi } from "./plugin-code/vi";
@@ -528,6 +529,7 @@ export const vi: Messages = {
   ...timetablesVi,
   ...commentsVi,
   ...mslabVi,
+  ...areaVi,
   ...workspaceUiVi,
   ...pluginCodeVi,
   ...populationVi,

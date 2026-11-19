@@ -282,7 +282,26 @@ describe("mslab project files", () => {
       vi.spyOn(app.get(BenefitsService), "indicators").mockResolvedValue({ gdp: null } as never),
     ];
     try {
-      // The project area is the box round what is drawn, widened by 2 km.
+      // The project area: one polygon round what is drawn.
+      const [w, s, e, n] = [13.37, 52.482, 13.44, 52.518];
+      const areaSet = await as("alice").put(`/api/projects/${source}/area`, {
+        polygons: [
+          {
+            id: "a1",
+            name: "Mitte",
+            detail: "full",
+            ring: [
+              [w, s],
+              [e, s],
+              [e, n],
+              [w, n],
+              [w, s],
+            ],
+          },
+        ],
+        import: false,
+      });
+      expect(areaSet.status).toBe(200);
       const lines = { lines: [{ name: "1", points: [{ lonlat: [13.4, 52.5] }, { lonlat: [13.41, 52.5] }] }] };
       expect(
         (
@@ -302,7 +321,22 @@ describe("mslab project files", () => {
         maxRatio: 1e9,
       });
       const manifest = JSON.parse(files.get("manifest.json")!.toString());
-      expect(manifest).toMatchObject({ formatVersion: "1.1.0", includes: { runs: false, map: true } });
+      // The project area makes it format 1.3.
+      expect(manifest).toMatchObject({ formatVersion: "1.3.0", includes: { runs: false, map: true } });
+      expect(JSON.parse(files.get("project.json")!.toString()).areaPolygons).toEqual([
+        {
+          id: "a1",
+          name: "Mitte",
+          detail: "full",
+          ring: [
+            [w, s],
+            [e, s],
+            [e, n],
+            [w, n],
+            [w, s],
+          ],
+        },
+      ]);
       const area = JSON.parse(files.get("map/area.json")!.toString());
       expect(area.kinds).toEqual(["streets", "walk", "buildings", "places", "rail"]);
       expect(area.tiles.length).toBeGreaterThan(1);
@@ -317,11 +351,16 @@ describe("mslab project files", () => {
         "/api/economy/countries",
         "/api/economy/country-at",
         "/api/economy/indicators?code=DEU&base=2023",
+        // Saving the area looked up its facts (country, holidays), kept for the static viewer.
+        "@facts",
       ]);
       expect(files.get("ATTRIBUTION.md")!.toString()).toContain("map/population.json");
 
       const opened = await as("alice").upload("/api/projects/import", res.body as Buffer);
       expect(opened.status).toBe(201);
+      // The opened project has the same area.
+      const openedArea = (await as("alice").get(`/api/projects/${opened.body.project.id}/area`)).body;
+      expect(openedArea.polygons.map((x: { name: string }) => x.name)).toEqual(["Mitte"]);
       expect(opened.body.skipped).toEqual([
         "plugin com.example.missing 1.0.0: not installed on this MobSimLab",
       ]);

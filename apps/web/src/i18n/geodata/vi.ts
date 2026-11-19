@@ -6,9 +6,6 @@ export const geodataVi = {
   "data.title": "Dữ liệu bản đồ",
   "data.intro":
     "OpenStreetMap và độ cao cho dự án này, được lưu cùng dự án. Các công cụ đường phố, đường sắt, tòa nhà, mặt nước và địa hình đọc chúng thay vì mỗi lần lại hỏi OpenStreetMap và máy chủ độ cao.",
-  "data.noArea":
-    "Hãy vẽ gì đó trong dự án trước: phần nhập bao gồm hình chữ nhật quanh mọi thứ đã vẽ, cộng thêm một vùng đệm.",
-  "data.area": "Khu vực: {area} km², hình chữ nhật quanh mọi thứ đã vẽ cộng {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Độ cao",
   "data.notImported": "Chưa nhập.",
@@ -55,18 +52,6 @@ export const geodataVi = {
   "data.ownReplace": "Thay bằng GeoTIFF khác (tối đa {max} MB)",
   "data.remove": "Xóa",
   "area.title": "Khu vực dự án",
-  "area.intro":
-    "Tìm một địa điểm và đánh dấu các vùng OpenStreetMap mà dự án bao gồm. Khu vực dự án là tất cả các vùng đó gộp lại. Khi lưu, OpenStreetMap, độ cao và dân số của khu vực được nhập một lần và mọi công cụ đều dùng chúng.",
-  "area.search": "Tìm địa điểm, ví dụ Aleppo, Syria",
-  "area.lookingUp": "Đang tìm các vùng tại {place}…",
-  "area.regionsAt": "Các vùng tại {place}",
-  "area.noRegions": "Không có vùng có tên ở đây. Hãy thử địa điểm khác.",
-  "area.none": "Chưa chọn vùng: khu vực là hình chữ nhật quanh mọi thứ đã vẽ, cộng vùng đệm.",
-  "area.remove": "Bỏ {name}",
-  "area.total": "Tổng cộng khoảng {area} km²",
-  "area.outline": "Đường viền các vùng đã chọn",
-  "area.save": "Lưu khu vực và nhập dữ liệu",
-  "area.saved": "Đã lưu khu vực.",
   "area.import.queued": "{what}: đã bắt đầu nhập",
   "area.import.current": "{what}: đã nhập",
   "area.import.failed": "{what}: không thể bắt đầu. {reason}",
@@ -77,5 +62,4 @@ export const geodataVi = {
     "{tiles} ô bản đồ và {heights} độ cao được lấy trực tiếp ngoài dữ liệu đã nhập của dự án. Giờ chúng được lưu trong dự án; hãy mở rộng dữ liệu nhập để phủ toàn bộ bản vẽ.",
   "data.extendImport": "Mở rộng dữ liệu nhập trong Dữ liệu bản đồ",
   "data.hideLive": "Ẩn",
-  "data.areaRegions": "Khu vực: {area} km², hình chữ nhật quanh {names}",
 } satisfies GeodataMessages;

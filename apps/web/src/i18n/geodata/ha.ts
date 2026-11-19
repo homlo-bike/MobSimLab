@@ -6,9 +6,6 @@ export const geodataHa = {
   "data.title": "Bayanan taswira",
   "data.intro":
     "OpenStreetMap da tsayin ƙasa na wannan aiki, ana adana su tare da aikin. Kayan aikin titi, layin dogo, gine-gine, ruwa da yanayin ƙasa suna karanta su maimakon tambayar OpenStreetMap da sabar tsayi kowane lokaci.",
-  "data.noArea":
-    "Ka zana wani abu a cikin aikin tukuna: shigowar ta rufe murabba'i da ke kewaye da duk abin da aka zana, tare da ƙarin gefe.",
-  "data.area": "Yanki: km² {area}, murabba'in da ke kewaye da duk abin da aka zana da km {buffer}",
   "data.osm": "OpenStreetMap",
   "data.dem": "Tsayin ƙasa",
   "data.notImported": "Ba a shigo da shi ba tukuna.",
@@ -55,19 +52,6 @@ export const geodataHa = {
   "data.ownReplace": "Maye gurbinsa da wani GeoTIFF (har zuwa MB {max})",
   "data.remove": "Cire",
   "area.title": "Yankin aiki",
-  "area.intro":
-    "Nemi wuri ka zaɓi yankunan OpenStreetMap da aikin ya ƙunsa. Yankin aikin shi ne dukansu tare. Idan ka ajiye, ana shigo da OpenStreetMap, tsayin ƙasa da yawan jama'a na yankin sau ɗaya, kuma duk kayan aiki suna amfani da su.",
-  "area.search": "Nemi wuri, misali Aleppo, Siriya",
-  "area.lookingUp": "Ana neman yankuna a {place}…",
-  "area.regionsAt": "Yankuna a {place}",
-  "area.noRegions": "Babu yankuna masu suna a nan. Gwada wani wuri.",
-  "area.none":
-    "Ba a zaɓi yanki ba: yankin shi ne akwatin da ke kewaye da duk abin da aka zana, da ƙarin tazara.",
-  "area.remove": "Cire {name}",
-  "area.total": "Kusan km² {area} gaba ɗaya",
-  "area.outline": "Iyakar yankunan da aka zaɓa",
-  "area.save": "Ajiye yanki ka shigo da bayanai",
-  "area.saved": "An ajiye yanki.",
   "area.import.queued": "{what}: an fara shigowa",
   "area.import.current": "{what}: an riga an shigo da shi",
   "area.import.failed": "{what}: bai iya farawa ba. {reason}",
@@ -78,5 +62,4 @@ export const geodataHa = {
     "Tayal ɗin taswira {tiles} da tsayi {heights} sun zo kai tsaye daga wajen bayanan da aka shigo da su na aikin. Yanzu an ajiye su a aikin; faɗaɗa shigo da bayanai don ya rufe zane gaba ɗaya.",
   "data.extendImport": "Faɗaɗa shigo da bayanai a Bayanan taswira",
   "data.hideLive": "Ɓoye",
-  "data.areaRegions": "Yanki: km² {area}, akwatin da ke kewaye da {names}",
 } satisfies GeodataMessages;

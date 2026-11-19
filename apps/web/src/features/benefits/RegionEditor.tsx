@@ -2,7 +2,17 @@ import type { GeoJSONSource, Map as MapLibreMap, MapMouseEvent } from "maplibre-
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import { type Place, searchPlaces } from "../../map/places";
-import type { AreaImport, ProjectAreaApi } from "../area/api";
+import {
+  type AreaDetail,
+  type AreaEstimate,
+  type AreaImport,
+  type AreaPolygon,
+  inArea,
+  megabytes,
+  newPolygonId,
+  outsideKm2,
+  type ProjectAreaApi,
+} from "../area/api";
 import { type BenefitsApi, benefitsApi, type OsmArea } from "./data";
 import {
   LAND_USES,
@@ -35,19 +45,33 @@ type Mode =
   | { kind: "idle" }
   | { kind: "draw"; points: LonLat[] }
   | { kind: "import"; at: LonLat | null }
-  /** An imported area that reaches outside the project area: ask before adding it to the area. */
-  | { kind: "outside"; area: OsmArea };
+  /**
+   * An imported area that reaches outside the project area: ask before downloading map data for it, which adds
+   * it to the project area as a new polygon at the detail picked here.
+   */
+  | {
+      kind: "outside";
+      area: OsmArea;
+      /** The project area's polygons now. */
+      polygons: AreaPolygon[];
+      detail: AreaDetail;
+      /** About how much of the region lies outside the project area, km². */
+      outsideKm2: number;
+      /** What adding it would download; null while it is worked out. */
+      estimate: AreaEstimate | null;
+    };
 
-/** Most regions a project area joins (apps/api/src/projects/project-area.ts `MAX_AREA_REGIONS`). */
-const MAX_AREA_REGIONS = 10;
-
-/** Purpose: whether a ring has a point outside a box `[west, south, east, north]`. */
+/** Purpose: whether a ring has a corner outside every polygon of the project area. */
 export function reachesOutside(
   ring: readonly LonLat[],
-  bbox: readonly [number, number, number, number],
+  polygons: readonly { ring: readonly LonLat[] }[],
 ): boolean {
-  const [w, s, e, n] = bbox;
-  return ring.some(([x, y]) => x < w || x > e || y < s || y > n);
+  return ring.some((p) => !inArea(p, polygons));
+}
+
+/** Purpose: the region as a new polygon of the project area. */
+function regionPolygon(a: OsmArea, detail: AreaDetail, polygons: readonly AreaPolygon[]): AreaPolygon {
+  return { id: newPolygonId(polygons), name: a.name, detail, ring: a.ring };
 }
 
 const IMPORT_NAMES: Record<AreaImport["kind"], string> = {
@@ -332,43 +356,41 @@ export function RegionEditor({
     }
     setExtendNote(null);
     if (area) {
-      // A region reaching outside the project area needs map data that may not be downloaded yet: ask first.
+      // A region reaching outside the project area has no map data there yet: ask before downloading it.
       const view = await area.get().catch(() => null);
-      if (view?.bbox && reachesOutside(a.ring, view.bbox)) {
-        setMode({ kind: "outside", area: a });
+      if (view?.polygons.length && reachesOutside(a.ring, view.polygons)) {
+        const polygons = view.polygons;
+        setMode({
+          kind: "outside",
+          area: a,
+          polygons,
+          detail: "full",
+          outsideKm2: outsideKm2(a.ring, polygons),
+          estimate: null,
+        });
+        void estimateOutside(a, polygons, "full");
         return;
       }
     }
     addImported(a);
   };
-  // Add the region to the project area too, which queues the downloads the larger area needs.
-  const extendArea = async (a: OsmArea) => {
+  // What adding the region to the project area at a detail would download.
+  const estimateOutside = async (a: OsmArea, polygons: AreaPolygon[], detail: AreaDetail) => {
+    if (!area) return;
+    const e = await area
+      .estimate([...polygons, regionPolygon(a, detail, polygons)], polygons)
+      .catch(() => null);
+    setMode((m) =>
+      m.kind === "outside" && m.area.id === a.id && m.detail === detail ? { ...m, estimate: e } : m,
+    );
+  };
+  // Add the region to the project area as a new polygon, which queues the downloads the larger area needs.
+  const extendArea = async (a: OsmArea, polygons: AreaPolygon[], detail: AreaDetail) => {
     if (!area) return;
     setExtending(true);
     try {
-      const view = await area.get();
-      const next = view.regions.some((r) => r.id === a.id)
-        ? view.regions
-        : [
-            ...view.regions,
-            {
-              id: a.id,
-              name: a.name,
-              kind: a.kind,
-              adminLevel: a.adminLevel,
-              ring: a.ring,
-              areaKm2: a.areaKm2,
-            },
-          ];
-      if (next.length > MAX_AREA_REGIONS) {
-        setExtendNote({
-          ok: false,
-          text: `The project area already joins ${MAX_AREA_REGIONS} regions, the most it can. Change it in Project preferences.`,
-        });
-        return;
-      }
       addImported(a);
-      const r = await area.set(next, true);
+      const r = await area.set([...polygons, regionPolygon(a, detail, polygons)], true);
       setExtendNote({ ok: !r.imports.some((i) => i.status === "failed"), text: importsNote(r.imports) });
     } catch (e) {
       setExtendNote({
@@ -534,27 +556,77 @@ export function RegionEditor({
           aria-label="Region outside the project area"
           className="rounded-xl border border-amber-300 bg-amber-50 p-3 text-sm"
         >
-          <p>
-            <span className="font-medium">{mode.area.name}</span> reaches outside the project area, so the map
-            data downloaded for the project may not cover it. Add it to the project area? This downloads the
-            OpenStreetMap data, terrain heights and population the larger area needs.
+          <h3 className="m-0 font-semibold">Download map data outside the project area?</h3>
+          <p className="mt-1">
+            The region <span className="font-medium">{mode.area.name}</span> reaches outside the project area.
+            Its outside part needs new map data.
           </p>
+          <dl className="mt-2 grid grid-cols-2 gap-2">
+            <div className="rounded-lg bg-white px-3 py-2">
+              <dt className="text-xs text-slate-600">Outside part</dt>
+              <dd className="m-0 font-mono">about {Math.round(mode.outsideKm2).toLocaleString()} km²</dd>
+            </div>
+            <div className="rounded-lg bg-white px-3 py-2">
+              <dt className="text-xs text-slate-600">Estimated download</dt>
+              <dd className="m-0 font-mono">
+                {mode.estimate?.added ? `${megabytes(mode.estimate.added.bytes).toLocaleString()} MB` : "…"}
+              </dd>
+            </div>
+          </dl>
+          <div className="mt-2 text-xs font-semibold" id="outside-detail">
+            Detail for the outside part
+          </div>
+          <div
+            role="radiogroup"
+            aria-labelledby="outside-detail"
+            className="mt-1 grid grid-cols-2 gap-1 rounded-xl bg-amber-100 p-1"
+          >
+            {(["full", "main"] as const).map((d) => (
+              <button
+                key={d}
+                type="button"
+                role="radio"
+                aria-checked={mode.detail === d}
+                className={`min-h-10 rounded-lg px-2 ${mode.detail === d ? "bg-white font-semibold shadow-sm" : ""}`}
+                onClick={() => {
+                  setMode({ ...mode, detail: d, estimate: null });
+                  void estimateOutside(mode.area, mode.polygons, d);
+                }}
+              >
+                {d === "full" ? "Full" : "Main roads and railways only"}
+              </button>
+            ))}
+          </div>
+          {mode.estimate?.overLimit ? (
+            <p role="alert" className="mt-2 text-red-800">
+              With it, the project area holds more map data than the{" "}
+              {Math.round(mode.estimate.limitBytes / 1024 / 1024).toLocaleString()} MB a project may hold.
+              Pick main roads and railways only, or make the area smaller in Project preferences.
+            </p>
+          ) : (
+            <p className="mt-2 text-xs text-slate-700">
+              Download adds the region to the project area as a new polygon, which you can edit later in the
+              area window.
+            </p>
+          )}
           <div className="mt-2 flex flex-wrap gap-2">
-            <button
-              type="button"
-              className="btn btn-pri min-h-10"
-              disabled={extending}
-              onClick={() => void extendArea(mode.area)}
-            >
-              {extending ? "Adding…" : "Add to project area"}
-            </button>
             <button
               type="button"
               className="btn min-h-10"
               disabled={extending}
               onClick={() => addImported(mode.area)}
             >
-              Import without changing the area
+              Keep the region, no download
+            </button>
+            <button
+              type="button"
+              className="btn btn-pri min-h-10"
+              disabled={extending || !mode.estimate || mode.estimate.overLimit}
+              onClick={() => void extendArea(mode.area, mode.polygons, mode.detail)}
+            >
+              {extending
+                ? "Downloading…"
+                : `Download ${mode.estimate?.added ? megabytes(mode.estimate.added.bytes).toLocaleString() : "…"} MB`}
             </button>
             <button
               type="button"

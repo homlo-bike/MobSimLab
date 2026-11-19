@@ -8,6 +8,7 @@ import { geodataZh } from "./geodata/zh";
 import { tablesZh } from "./tables/zh";
 import { fleetZh } from "./fleet/zh";
 import { timetablesZh } from "./timetables/zh";
+import { areaZh } from "./area/zh";
 import { mslabZh } from "./mslab/zh";
 import { workspaceUiZh } from "./workspace-ui/zh";
 import { pluginCodeZh } from "./plugin-code/zh";
@@ -508,6 +509,7 @@ export const zh: Messages = {
   ...timetablesZh,
   ...commentsZh,
   ...mslabZh,
+  ...areaZh,
   ...workspaceUiZh,
   ...pluginCodeZh,
   ...populationZh,

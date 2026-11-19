@@ -8,6 +8,7 @@ import { geodataFa } from "./geodata/fa";
 import { tablesFa } from "./tables/fa";
 import { fleetFa } from "./fleet/fa";
 import { timetablesFa } from "./timetables/fa";
+import { areaFa } from "./area/fa";
 import { mslabFa } from "./mslab/fa";
 import { workspaceUiFa } from "./workspace-ui/fa";
 import { pluginCodeFa } from "./plugin-code/fa";
@@ -527,6 +528,7 @@ export const fa: Messages = {
   ...timetablesFa,
   ...commentsFa,
   ...mslabFa,
+  ...areaFa,
   ...workspaceUiFa,
   ...pluginCodeFa,
   ...populationFa,

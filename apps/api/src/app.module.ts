@@ -27,7 +27,7 @@ import { LoggingModule } from "./logging/logging.module";
 import { StreetNetworkModule } from "./street-network/street-network.module";
 import { BenefitsModule } from "./benefits/benefits.module";
 import { PopulationLayersController } from "./population/layers.controller";
-import { ProjectAreaController } from "./projects/area.controller";
+import { AreaEstimateController, ProjectAreaController } from "./projects/area.controller";
 import { AreaFactsService } from "./projects/area-facts";
 import { ProjectAreaService } from "./projects/area.service";
 import { ProjectResultsController, ProjectResultsService } from "./projects/results";
@@ -93,6 +93,7 @@ export class AppModule {
         MslabController,
         PopulationLayersController,
         ProjectAreaController,
+        AreaEstimateController,
         ProjectResultsController,
       ],
       providers: [

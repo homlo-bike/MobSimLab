@@ -8,6 +8,7 @@ import { geodataAm } from "./geodata/am";
 import { tablesAm } from "./tables/am";
 import { fleetAm } from "./fleet/am";
 import { timetablesAm } from "./timetables/am";
+import { areaAm } from "./area/am";
 import { mslabAm } from "./mslab/am";
 import { workspaceUiAm } from "./workspace-ui/am";
 import { pluginCodeAm } from "./plugin-code/am";
@@ -516,6 +517,7 @@ export const am: Messages = {
   ...timetablesAm,
   ...commentsAm,
   ...mslabAm,
+  ...areaAm,
   ...workspaceUiAm,
   ...pluginCodeAm,
   ...populationAm,

@@ -3,8 +3,8 @@ import { z } from "zod";
 
 /**
  * Settings of the OpenStreetMap and elevation import (06-gis §2 and §4), from the environment. Each has a
- * default that suits a small server; operators change them in `.env`. The project area's buffer is a project
- * setting (`project.area_buffer_km`), and the import dialog chooses the method, the Geofabrik region and
+ * default that suits a small server; operators change them in `.env`. The project area is the polygons the
+ * planner draws (projects/area-polygons.ts), and the import dialog chooses the method, the Geofabrik region and
  * whether planned roads are kept.
  */
 export interface GeodataSettings {

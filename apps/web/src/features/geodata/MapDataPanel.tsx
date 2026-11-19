@@ -22,8 +22,8 @@ function ring(b: Box): [number, number][] {
   ];
 }
 
-/** Purpose: draw the project area (dashed) and the outlines of its OpenStreetMap regions on the map, or clear it. */
-function drawArea(map: MapLibreMap, b: Box | null, regions: readonly { ring: [number, number][] }[] = []) {
+/** Purpose: draw the box the imports cover (dashed) and the outlines of the area's polygons on the map, or clear it. */
+function drawArea(map: MapLibreMap, b: Box | null, polygons: readonly { ring: [number, number][] }[] = []) {
   const data = {
     type: "FeatureCollection" as const,
     features: b
@@ -33,7 +33,7 @@ function drawArea(map: MapLibreMap, b: Box | null, regions: readonly { ring: [nu
             properties: {},
             geometry: { type: "LineString" as const, coordinates: ring(b) },
           },
-          ...regions.map((r) => ({
+          ...polygons.map((r) => ({
             type: "Feature" as const,
             properties: {},
             geometry: { type: "LineString" as const, coordinates: r.ring },
@@ -115,7 +115,6 @@ export function MapDataPanel({
   const [sending, setSending] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const demFileRef = useRef<HTMLInputElement>(null);
-  const [km, setKm] = useState("");
   const [own, setOwn] = useState({ crs: "", source: "", licence: "", accuracy: "" });
   const lastOsm = useRef<string | null | undefined>(undefined);
   const onOsm = useRef(onOsmImport);
@@ -150,7 +149,7 @@ export function MapDataPanel({
 
   useEffect(() => {
     if (!map) return;
-    const draw = () => drawArea(map, status?.area?.bbox ?? null, status?.area?.regions);
+    const draw = () => drawArea(map, status?.area?.bbox ?? null, status?.area?.polygons);
     if (map.isStyleLoaded()) draw();
     else map.once("load", draw);
   }, [map, status]);
@@ -161,12 +160,6 @@ export function MapDataPanel({
     [map],
   );
 
-  const savedKm = status?.area?.bufferKm;
-  useEffect(() => {
-    if (savedKm !== undefined) setKm(String(savedKm));
-  }, [savedKm]);
-  const kmValue = Number(km);
-  const kmValid = km.trim() !== "" && Number.isFinite(kmValue) && kmValue >= 0 && kmValue <= 50;
   const accuracyValue = own.accuracy.trim() === "" ? null : Number(own.accuracy);
   const ownValid = accuracyValue === null || (Number.isFinite(accuracyValue) && accuracyValue >= 0);
 
@@ -298,42 +291,16 @@ export function MapDataPanel({
       )}
       {status && !status.area && (
         <p className="rounded-xl border border-dashed border-slate-300 px-3.5 py-3 text-sm text-slate-600">
-          {t("data.noArea")}
+          {t("aw.data.noArea")}
         </p>
       )}
       {status?.area && (
         <p className="text-sm text-slate-700">
-          {status.area.regions?.length
-            ? t("data.areaRegions", {
-                area: num(status.area.areaKm2),
-                names: status.area.regions.map((r) => r.name).join(", "),
-              })
-            : t("data.area", { area: num(status.area.areaKm2), buffer: num(status.area.bufferKm) })}
+          {t("aw.data.area", {
+            names: status.area.polygons.map((r) => r.name).join(", "),
+            area: num(status.area.areaKm2),
+          })}
         </p>
-      )}
-      {status?.area && status.canImport && (
-        <div className="flex items-end gap-2">
-          <label className="text-sm">
-            <span className="font-medium">{t("pop.area.buffer")}</span>
-            <input
-              type="number"
-              min={0}
-              max={50}
-              step="any"
-              className="input mt-1 w-28"
-              value={km}
-              onChange={(e) => setKm(e.target.value)}
-            />
-          </label>
-          <button
-            type="button"
-            className="btn min-h-10"
-            disabled={sending || !kmValid || kmValue === status.area.bufferKm}
-            onClick={() => run(() => api.setBuffer(kmValue))}
-          >
-            {t("pop.area.save")}
-          </button>
-        </div>
       )}
       {status && !status.canImport && <p className="text-sm text-slate-600">{t("data.readOnly")}</p>}
 

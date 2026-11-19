@@ -17,7 +17,7 @@ import {
   peopleValue,
   ringAreaM2,
 } from "../src/population/uploads";
-import { boxOf, bufferedBox, drawnPoints } from "../src/projects/project-area";
+import { boxOf, drawnPoints } from "../src/projects/project-area";
 import { buildTiff, buildZip } from "./support/tiff";
 
 const LIMITS = { maxFeatures: 100_000 };
@@ -363,10 +363,7 @@ describe("project area", () => {
     expect(boxOf([])).toBeNull();
   });
 
-  it("widens the box by the buffer in kilometres", () => {
-    const b = bufferedBox([7, 50, 7.1, 50.1], 2);
-    expect(50 - b[1]).toBeCloseTo(2 / 111.32, 6);
-    expect(7 - b[0]).toBeCloseTo(2 / 111.32 / Math.cos((50.1 * Math.PI) / 180), 6);
+  it("works out areas in square kilometres", () => {
     expect(boxAreaKm2([0, 0, 1, 1])).toBeCloseTo(12_364, -1);
     expect(
       ringAreaM2([

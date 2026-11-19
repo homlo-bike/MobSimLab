@@ -8,6 +8,7 @@ import { geodataUr } from "./geodata/ur";
 import { tablesUr } from "./tables/ur";
 import { fleetUr } from "./fleet/ur";
 import { timetablesUr } from "./timetables/ur";
+import { areaUr } from "./area/ur";
 import { mslabUr } from "./mslab/ur";
 import { workspaceUiUr } from "./workspace-ui/ur";
 import { pluginCodeUr } from "./plugin-code/ur";
@@ -531,6 +532,7 @@ export const ur: Messages = {
   ...timetablesUr,
   ...commentsUr,
   ...mslabUr,
+  ...areaUr,
   ...workspaceUiUr,
   ...pluginCodeUr,
   ...populationUr,

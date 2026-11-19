@@ -6,9 +6,6 @@ export const geodataUz = {
   "data.title": "Xarita maʼlumotlari",
   "data.intro":
     "Ushbu loyiha uchun OpenStreetMap va balandlik maʼlumotlari, loyiha bilan birga saqlanadi. Ko‘cha, temir yo‘l, bino, suv va relyef vositalari har safar OpenStreetMap va balandlik serveridan so‘ramasdan ularni o‘qiydi.",
-  "data.noArea":
-    "Avval loyihada biror narsa chizing: import chizilgan hamma narsani o‘rab turgan to‘rtburchak va qo‘shimcha chegarani qamraydi.",
-  "data.area": "Hudud: {area} km², chizilgan hamma narsani o‘rab turgan to‘rtburchak va {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Balandlik",
   "data.notImported": "Hali import qilinmagan.",
@@ -56,18 +53,6 @@ export const geodataUz = {
   "data.ownReplace": "Boshqa GeoTIFF bilan almashtirish ({max} MB gacha)",
   "data.remove": "Olib tashlash",
   "area.title": "Loyiha hududi",
-  "area.intro":
-    "Joyni qidiring va loyiha qamrab oladigan OpenStreetMap hududlarini belgilang. Loyiha hududi ularning barchasi birga. Saqlanganda hudud uchun OpenStreetMap, balandlik va aholi bir marta import qilinadi va barcha vositalar ulardan foydalanadi.",
-  "area.search": "Joyni qidiring, masalan Halab, Suriya",
-  "area.lookingUp": "{place} hududlari qidirilmoqda…",
-  "area.regionsAt": "{place} hududlari",
-  "area.noRegions": "Bu yerda nomli hudud yo‘q. Boshqa joyni sinab ko‘ring.",
-  "area.none": "Hudud tanlanmagan: hudud chizilgan hamma narsani o‘rab turgan to‘rtburchak va bufer.",
-  "area.remove": "{name} ni olib tashlash",
-  "area.total": "Jami taxminan {area} km²",
-  "area.outline": "Tanlangan hududlar chegarasi",
-  "area.save": "Hududni saqlash va ma’lumotlarni import qilish",
-  "area.saved": "Hudud saqlandi.",
   "area.import.queued": "{what}: import boshlandi",
   "area.import.current": "{what}: allaqachon import qilingan",
   "area.import.failed": "{what}: boshlab bo‘lmadi. {reason}",
@@ -79,5 +64,4 @@ export const geodataUz = {
     "{tiles} ta xarita plitkasi va {heights} ta balandlik loyihaning import qilingan ma'lumotlaridan tashqaridan to'g'ridan-to'g'ri olindi. Endi ular loyihada saqlanadi; butun chizmani qamrab olish uchun importni kengaytiring.",
   "data.extendImport": "Xarita ma'lumotlarida importni kengaytirish",
   "data.hideLive": "Yashirish",
-  "data.areaRegions": "Hudud: {area} km², {names} ni o‘rab turgan to‘rtburchak",
 } satisfies GeodataMessages;

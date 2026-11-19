@@ -10,11 +10,6 @@ export const populationNl = {
   "pop.failed": "De bevolkingslagen konden niet worden geladen: {error}",
   "pop.retry": "Opnieuw proberen",
   "pop.area.title": "Projectgebied",
-  "pop.area.none":
-    "Teken eerst een lijn, een spoorlijn, een remise of een gebied: het projectgebied is de rechthoek rond alles wat getekend is.",
-  "pop.area.box": "De rechthoek rond alles wat getekend is, verruimd met de buffer: {km2} km².",
-  "pop.area.buffer": "Buffer (km)",
-  "pop.area.save": "Buffer opslaan",
   "pop.area.tooLarge": "Imports beslaan hoogstens {max} km²; verklein de buffer of teken minder.",
   "pop.primary.title": "Bevolking die het project gebruikt",
   "pop.primary.hint": "De geluidskaart, de loopanalyse en de batentabellen lezen deze laag.",

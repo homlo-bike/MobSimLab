@@ -1,7 +1,8 @@
-import { type FormEvent, useEffect, useState } from "react";
-import { AreaPicker } from "../features/area/AreaPicker";
-import type { AreaRegion } from "../features/area/api";
-import { useI18n } from "../i18n/i18n";
+import { type FormEvent, useEffect, useMemo, useState } from "react";
+import { type AreaEstimate, type AreaPolygon, areaEstimator, megabytes } from "../features/area/api";
+import { AreaOutline, AreaWindow } from "../features/area/AreaWindow";
+import { PolygonList } from "../features/area/AreaSection";
+import { formatInt, useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import { Dialog } from "../shell/Dialog";
 import { LinkIcon } from "../shell/icons";
@@ -74,20 +75,23 @@ export function NewProjectDialog({
   onCreated: (p: Project) => void;
   onClose: () => void;
 }) {
-  const { t } = useI18n();
+  const { t, tn } = useI18n();
   const [name, setName] = useState("");
   const [from, setFrom] = useState<"empty" | "copy">("empty");
   const [source, setSource] = useState(projects[0]?.id ?? "");
   const [modes, setModes] = useState<string[]>(["bus", "tram"]);
-  const [regions, setRegions] = useState<AreaRegion[]>([]);
+  const [polygons, setPolygons] = useState<AreaPolygon[]>([]);
+  const [areaOpen, setAreaOpen] = useState(false);
+  const [areaEst, setAreaEst] = useState<AreaEstimate | null>(null);
+  const estimate = useMemo(() => api.estimateArea ?? areaEstimator(""), [api]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const submit = async (e: FormEvent) => {
     e.preventDefault();
     setBusy(true);
     setError(null);
-    // The picked OpenStreetMap regions name the area.
-    const areaName = regions
+    // The polygons name the area.
+    const areaName = polygons
       .map((r) => r.name)
       .join(", ")
       .slice(0, 200);
@@ -99,12 +103,12 @@ export function NewProjectDialog({
       } else {
         p = await api.create({ name: name.trim(), areaName: areaName || null, modes });
       }
-      // The picked regions become the project area and its data is imported in the background (#140). The
-      // project exists already, so a refused area is set again in Preferences rather than stopping here.
-      if (regions.length)
+      // The polygons become the project area and its map data is downloaded in the background. The project
+      // exists already, so a refused area is drawn again in Preferences rather than stopping here.
+      if (polygons.length)
         await api
           .area(p.id)
-          .set(regions, true)
+          .set(polygons, true)
           .catch(() => undefined);
       onCreated(p);
     } catch (err) {
@@ -146,7 +150,47 @@ export function NewProjectDialog({
           />
         </div>
         <div className={label}>{t("area.title")}</div>
-        <AreaPicker value={regions} onChange={setRegions} disabled={busy} />
+        {polygons.length === 0 ? (
+          <>
+            <button
+              type="button"
+              className="btn min-h-11 w-full justify-center"
+              disabled={busy}
+              onClick={() => setAreaOpen(true)}
+            >
+              <span aria-hidden="true">▱ </span>
+              {t("aw.select")}
+            </button>
+            <p className="mt-1.5 text-xs text-slate-500">{t("aw.selectHint")}</p>
+          </>
+        ) : (
+          <div className="flex gap-3 rounded-xl border border-slate-200 p-3">
+            <AreaOutline polygons={polygons} label={t("aw.outline")} />
+            <div className="min-w-0 flex-1">
+              <p className="m-0 text-sm">
+                <b>{tn("aw.count", polygons.length)}</b>
+                {areaEst && (
+                  <>
+                    {" "}
+                    · {formatInt(areaEst.areaKm2)} km² ·{" "}
+                    {t("aw.download", { mb: formatInt(megabytes(areaEst.bytes)) })}
+                  </>
+                )}
+              </p>
+              <div className="mt-1 max-h-28 overflow-y-auto">
+                <PolygonList polygons={polygons} />
+              </div>
+              <button
+                type="button"
+                className="btn mt-2 min-h-10"
+                disabled={busy}
+                onClick={() => setAreaOpen(true)}
+              >
+                {t("aw.change")}
+              </button>
+            </div>
+          </div>
+        )}
         <div className={label} id="np-from">
           {t("new.startFrom")}
         </div>
@@ -203,6 +247,18 @@ export function NewProjectDialog({
         )}
         <ErrorLine error={error} />
       </form>
+      {areaOpen && (
+        <AreaWindow
+          initial={polygons}
+          estimate={estimate}
+          onSave={async (next) => {
+            setPolygons(next);
+            setAreaOpen(false);
+            setAreaEst(await estimate(next).catch(() => null));
+          }}
+          onClose={() => setAreaOpen(false)}
+        />
+      )}
     </Dialog>
   );
 }

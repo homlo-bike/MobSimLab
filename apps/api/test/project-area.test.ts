@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { areasQuery } from "../src/benefits/benefits.service";
 import { areaBody, ProjectAreaService } from "../src/projects/area.service";
-import { type AreaRegion, joinBoxes, storedRegions } from "../src/projects/project-area";
+import { joinBoxes } from "../src/projects/project-area";
 
 const square = (x: number, y: number, d: number): [number, number][] => [
   [x, y],
@@ -10,36 +10,20 @@ const square = (x: number, y: number, d: number): [number, number][] => [
   [x, y + d],
   [x, y],
 ];
-const region = (id: string, ring = square(37.1, 36.1, 0.1)): AreaRegion => ({
-  id,
-  name: `Region ${id}`,
-  kind: "administrative",
-  adminLevel: 8,
-  ring,
-  areaKm2: 100,
-});
-
-describe("project area from OpenStreetMap regions (#140)", () => {
+describe("project area body", () => {
   it("joins boxes, either of which may be missing", () => {
     expect(joinBoxes(null, null)).toBeNull();
     expect(joinBoxes([0, 0, 1, 1], null)).toEqual([0, 0, 1, 1]);
     expect(joinBoxes([0, 0, 1, 1], [0.5, -1, 2, 0.5])).toEqual([0, -1, 2, 1]);
   });
 
-  it("reads stored regions and skips malformed ones", () => {
-    const ok = region("r1");
-    expect(storedRegions([ok, { id: "r2", name: "No ring", ring: [] }, "junk", null])).toEqual([ok]);
-    expect(storedRegions(null)).toEqual([]);
-  });
-
-  it("accepts up to ten distinct regions with closed outlines", () => {
-    expect(areaBody.safeParse({ regions: [region("r1"), region("w2")] }).success).toBe(true);
-    expect(areaBody.parse({ regions: [] }).import).toBe(true);
-    expect(areaBody.safeParse({ regions: [region("r1"), region("r1")] }).success).toBe(false);
-    expect(areaBody.safeParse({ regions: [region("n1")] }).success).toBe(false);
-    expect(areaBody.safeParse({ regions: [region("r1", [[0, 0]])] }).success).toBe(false);
+  it("accepts the polygons of the area window and queues the imports by default", () => {
+    const p = { id: "a1", name: "Aleppo", detail: "full", ring: square(37.1, 36.1, 0.1) };
+    expect(areaBody.parse({ polygons: [p] }).import).toBe(true);
+    expect(areaBody.parse({ polygons: [] }).polygons).toEqual([]);
+    expect(areaBody.safeParse({ regions: [] }).success).toBe(false);
     expect(
-      areaBody.safeParse({ regions: Array.from({ length: 11 }, (_, i) => region(`r${i + 1}`)) }).success,
+      areaBody.safeParse({ polygons: Array.from({ length: 51 }, (_, i) => ({ ...p, id: `a${i}` })) }).success,
     ).toBe(false);
   });
 
@@ -53,9 +37,7 @@ vi.mock("../src/projects/project-area", async (orig) => ({
   ...(await orig<typeof import("../src/projects/project-area")>()),
   projectArea: vi.fn(async () => ({
     bbox: [37, 36, 37.3, 36.3],
-    drawnBbox: [37, 36, 37.3, 36.3],
-    bufferKm: 2,
-    regions: [],
+    polygons: [],
   })),
 }));
 

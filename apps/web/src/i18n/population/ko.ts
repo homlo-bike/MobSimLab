@@ -10,11 +10,6 @@ export const populationKo = {
   "pop.failed": "인구 레이어를 불러오지 못했습니다: {error}",
   "pop.retry": "다시 시도",
   "pop.area.title": "프로젝트 구역",
-  "pop.area.none":
-    "먼저 노선, 철도, 차고지 또는 지역을 그리세요. 프로젝트 구역은 그린 모든 것을 둘러싼 사각형입니다.",
-  "pop.area.box": "그린 모든 것을 둘러싸고 버퍼만큼 넓힌 사각형: {km2} km².",
-  "pop.area.buffer": "버퍼 (km)",
-  "pop.area.save": "버퍼 저장",
   "pop.area.tooLarge": "가져오기는 최대 {max} km²까지입니다. 버퍼를 줄이거나 덜 그리세요.",
   "pop.primary.title": "프로젝트가 사용하는 인구",
   "pop.primary.hint": "소음 지도, 도보 분석, 편익 표가 이 레이어를 읽습니다.",

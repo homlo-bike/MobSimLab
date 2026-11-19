@@ -8,6 +8,7 @@ import { geodataUk } from "./geodata/uk";
 import { tablesUk } from "./tables/uk";
 import { fleetUk } from "./fleet/uk";
 import { timetablesUk } from "./timetables/uk";
+import { areaUk } from "./area/uk";
 import { mslabUk } from "./mslab/uk";
 import { workspaceUiUk } from "./workspace-ui/uk";
 import { pluginCodeUk } from "./plugin-code/uk";
@@ -534,6 +535,7 @@ export const uk: Messages = {
   ...timetablesUk,
   ...commentsUk,
   ...mslabUk,
+  ...areaUk,
   ...workspaceUiUk,
   ...pluginCodeUk,
   ...populationUk,

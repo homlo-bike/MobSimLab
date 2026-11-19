@@ -8,6 +8,7 @@ import { geodataIt } from "./geodata/it";
 import { tablesIt } from "./tables/it";
 import { fleetIt } from "./fleet/it";
 import { timetablesIt } from "./timetables/it";
+import { areaIt } from "./area/it";
 import { mslabIt } from "./mslab/it";
 import { workspaceUiIt } from "./workspace-ui/it";
 import { pluginCodeIt } from "./plugin-code/it";
@@ -531,6 +532,7 @@ export const it: Messages = {
   ...timetablesIt,
   ...commentsIt,
   ...mslabIt,
+  ...areaIt,
   ...workspaceUiIt,
   ...pluginCodeIt,
   ...populationIt,

@@ -30,7 +30,10 @@
  */
 
 /** Current format version (semantic): a new minor version only adds, a new major version needs a migration. */
-export const FORMAT_VERSION = "1.2.0";
+export const FORMAT_VERSION = "1.3.0";
+
+/** The version a file with saved results and no project area is saved as, so that MobSimLab 1.2 readers open it. */
+export const FORMAT_VERSION_RESULTS = "1.2.0";
 
 /** The version a file with map data and no saved results is saved as, so that MobSimLab 1.1 readers open it. */
 export const FORMAT_VERSION_MAP_ONLY = "1.1.0";
@@ -148,6 +151,12 @@ export interface ProjectFile {
   modes: string[];
   createdAt: string;
   updatedAt: string;
+  /**
+   * Format 1.3: the polygons of the project area (apps/api/src/projects/area-polygons.ts), each
+   * `{id, name, detail: "full" | "main", ring: [[lon, lat], ...]}`. Opening the file gives the new project the same
+   * area; its map data is downloaded again.
+   */
+  areaPolygons?: { id: string; name: string; detail: "full" | "main"; ring: [number, number][] }[];
 }
 
 /** `plugins.json`. */
@@ -266,6 +275,34 @@ export const PROJECT_SCHEMA = {
     modes: { type: "array", maxItems: 20, items: { enum: [...MODES] } },
     createdAt: isoDate,
     updatedAt: isoDate,
+    areaPolygons: {
+      type: "array",
+      maxItems: 50,
+      items: {
+        type: "object",
+        required: ["id", "name", "detail", "ring"],
+        additionalProperties: false,
+        properties: {
+          id: { type: "string", pattern: "^a[A-Za-z0-9_-]{1,40}$" },
+          name: { type: "string", minLength: 1, maxLength: 200 },
+          detail: { enum: ["full", "main"] },
+          ring: {
+            type: "array",
+            minItems: 4,
+            maxItems: 2001,
+            items: {
+              type: "array",
+              minItems: 2,
+              maxItems: 2,
+              prefixItems: [
+                { type: "number", minimum: -180, maximum: 180 },
+                { type: "number", minimum: -85, maximum: 85 },
+              ],
+            },
+          },
+        },
+      },
+    },
   },
 } as const;
 

@@ -6,9 +6,6 @@ export const geodataIg = {
   "data.title": "Data maapụ",
   "data.intro":
     "OpenStreetMap na ịdị elu maka ọrụ a, nke edoro ya na ọrụ ahụ. Ngwá ọrụ okporo ụzọ, ụgbọ oloko, ụlọ, mmiri na ala na-agụ ha kama ịjụ OpenStreetMap na sava ịdị elu oge ọ bụla.",
-  "data.noArea":
-    "Buru ụzọ see ihe n'ime ọrụ ahụ: mbubata na-ekpuchi akụkụ anọ gbara ihe niile e sere gburugburu, gbakwunyere oke ọzọ.",
-  "data.area": "Mpaghara: {area} km², akụkụ anọ gbara ihe niile e sere gburugburu gbakwunyere {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Ịdị elu",
   "data.notImported": "Ebubatabeghị ya.",
@@ -56,18 +53,6 @@ export const geodataIg = {
   "data.ownReplace": "Jiri GeoTIFF ọzọ dochie ya (ruo {max} MB)",
   "data.remove": "Wepụ",
   "area.title": "Mpaghara ọrụ",
-  "area.intro":
-    "Chọọ ebe ma kaa mpaghara OpenStreetMap ọrụ ahụ gụnyere akara. Mpaghara ọrụ bụ ha niile ọnụ. Mgbe ịchekwara ya, a na-ebubata OpenStreetMap, ịdị elu na ọnụ ọgụgụ mmadụ maka mpaghara ahụ otu ugboro, ngwa niile na-ejikwa ha.",
-  "area.search": "Chọọ ebe, dịka Aleppo, Syria",
-  "area.lookingUp": "A na-achọ mpaghara dị na {place}…",
-  "area.regionsAt": "Mpaghara dị na {place}",
-  "area.noRegions": "Enweghị mpaghara nwere aha ebe a. Nwaa ebe ọzọ.",
-  "area.none": "Ahọrọghị mpaghara: mpaghara bụ igbe gbara ihe niile e sere gburugburu, gbakwunyere oghere.",
-  "area.remove": "Wepụ {name}",
-  "area.total": "Ihe dị ka km² {area} niile",
-  "area.outline": "Oke mpaghara ahọpụtara",
-  "area.save": "Chekwaa mpaghara ma bubata data",
-  "area.saved": "Echekwala mpaghara.",
   "area.import.queued": "{what}: mbubata amalitela",
   "area.import.current": "{what}: ebubatala ya",
   "area.import.failed": "{what}: enweghị ike ịmalite. {reason}",
@@ -78,5 +63,4 @@ export const geodataIg = {
     "Taịl map {tiles} na ịdị elu {heights} si n'èzí data ebubatara nke ọrụ ahụ bịa ozugbo. Ugbu a, edobere ha n'ọrụ ahụ; gbasaa mbubata ka o kpuchie eserese niile.",
   "data.extendImport": "Gbasaa mbubata na Data map",
   "data.hideLive": "Zoo",
-  "data.areaRegions": "Mpaghara: km² {area}, igbe gbara {names} gburugburu",
 } satisfies GeodataMessages;

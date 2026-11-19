@@ -10,11 +10,6 @@ export const populationId = {
   "pop.failed": "Lapisan penduduk tidak dapat dimuat: {error}",
   "pop.retry": "Coba lagi",
   "pop.area.title": "Area proyek",
-  "pop.area.none":
-    "Gambar dulu sebuah jalur, rel kereta, depo, atau wilayah: area proyek adalah kotak di sekeliling semua yang digambar.",
-  "pop.area.box": "Kotak di sekeliling semua yang digambar, diperlebar dengan penyangga: {km2} km².",
-  "pop.area.buffer": "Penyangga (km)",
-  "pop.area.save": "Simpan penyangga",
   "pop.area.tooLarge":
     "Impor mencakup paling banyak {max} km²; perkecil penyangga atau gambar lebih sedikit.",
   "pop.primary.title": "Penduduk yang dipakai proyek",

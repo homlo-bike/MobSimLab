@@ -8,6 +8,7 @@ import { geodataKo } from "./geodata/ko";
 import { tablesKo } from "./tables/ko";
 import { fleetKo } from "./fleet/ko";
 import { timetablesKo } from "./timetables/ko";
+import { areaKo } from "./area/ko";
 import { mslabKo } from "./mslab/ko";
 import { workspaceUiKo } from "./workspace-ui/ko";
 import { pluginCodeKo } from "./plugin-code/ko";
@@ -521,6 +522,7 @@ export const ko: Messages = {
   ...timetablesKo,
   ...commentsKo,
   ...mslabKo,
+  ...areaKo,
   ...workspaceUiKo,
   ...pluginCodeKo,
   ...populationKo,

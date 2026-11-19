@@ -6,9 +6,6 @@ export const geodataNl = {
   "data.title": "Kaartgegevens",
   "data.intro":
     "OpenStreetMap en hoogtegegevens voor dit project, bewaard bij het project. De straat-, spoor-, gebouw-, water- en terreintools lezen ze in plaats van telkens OpenStreetMap en de hoogteserver te vragen.",
-  "data.noArea":
-    "Teken eerst iets in het project: de import omvat de rechthoek om alles wat getekend is, plus een buffer.",
-  "data.area": "Gebied: {area} km², de rechthoek om alles wat getekend is plus {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Hoogte",
   "data.notImported": "Nog niet geïmporteerd.",
@@ -56,18 +53,6 @@ export const geodataNl = {
   "data.ownReplace": "Vervangen door een andere GeoTIFF (tot {max} MB)",
   "data.remove": "Verwijderen",
   "area.title": "Projectgebied",
-  "area.intro":
-    "Zoek een plaats en vink de OpenStreetMap-gebieden aan die het project beslaat. Het projectgebied is ze allemaal samen. Bij opslaan worden OpenStreetMap, hoogte en bevolking eenmaal voor het gebied geïmporteerd, en alle hulpmiddelen gebruiken ze.",
-  "area.search": "Zoek een plaats, zoals Aleppo, Syrië",
-  "area.lookingUp": "Gebieden bij {place} opzoeken…",
-  "area.regionsAt": "Gebieden bij {place}",
-  "area.noRegions": "Hier zijn geen gebieden met een naam. Probeer een andere plaats.",
-  "area.none": "Geen gebied gekozen: het gebied is de rechthoek om alles wat getekend is, plus een buffer.",
-  "area.remove": "{name} verwijderen",
-  "area.total": "In totaal ongeveer {area} km²",
-  "area.outline": "Omtrek van de gekozen gebieden",
-  "area.save": "Gebied opslaan en gegevens importeren",
-  "area.saved": "Gebied opgeslagen.",
   "area.import.queued": "{what}: import gestart",
   "area.import.current": "{what}: al geïmporteerd",
   "area.import.failed": "{what}: kon niet starten. {reason}",
@@ -79,5 +64,4 @@ export const geodataNl = {
     "{tiles} kaarttegels en {heights} hoogtes kwamen live van buiten de geïmporteerde projectgegevens. Ze blijven nu bij het project; breid de import uit zodat die de hele tekening dekt.",
   "data.extendImport": "Import uitbreiden in Kaartgegevens",
   "data.hideLive": "Verbergen",
-  "data.areaRegions": "Gebied: {area} km², de rechthoek om {names}",
 } satisfies GeodataMessages;

@@ -8,6 +8,7 @@ import { geodataAr } from "./geodata/ar";
 import { tablesAr } from "./tables/ar";
 import { fleetAr } from "./fleet/ar";
 import { timetablesAr } from "./timetables/ar";
+import { areaAr } from "./area/ar";
 import { mslabAr } from "./mslab/ar";
 import { workspaceUiAr } from "./workspace-ui/ar";
 import { pluginCodeAr } from "./plugin-code/ar";
@@ -519,6 +520,7 @@ export const ar: Messages = {
   ...timetablesAr,
   ...commentsAr,
   ...mslabAr,
+  ...areaAr,
   ...workspaceUiAr,
   ...pluginCodeAr,
   ...populationAr,

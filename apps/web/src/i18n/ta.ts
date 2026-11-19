@@ -8,6 +8,7 @@ import { geodataTa } from "./geodata/ta";
 import { tablesTa } from "./tables/ta";
 import { fleetTa } from "./fleet/ta";
 import { timetablesTa } from "./timetables/ta";
+import { areaTa } from "./area/ta";
 import { mslabTa } from "./mslab/ta";
 import { workspaceUiTa } from "./workspace-ui/ta";
 import { pluginCodeTa } from "./plugin-code/ta";
@@ -540,6 +541,7 @@ export const ta: Messages = {
   ...timetablesTa,
   ...commentsTa,
   ...mslabTa,
+  ...areaTa,
   ...workspaceUiTa,
   ...pluginCodeTa,
   ...populationTa,

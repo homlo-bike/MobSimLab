@@ -8,6 +8,7 @@ import { geodataFr } from "./geodata/fr";
 import { tablesFr } from "./tables/fr";
 import { fleetFr } from "./fleet/fr";
 import { timetablesFr } from "./timetables/fr";
+import { areaFr } from "./area/fr";
 import { mslabFr } from "./mslab/fr";
 import { workspaceUiFr } from "./workspace-ui/fr";
 import { pluginCodeFr } from "./plugin-code/fr";
@@ -538,6 +539,7 @@ export const fr: Messages = {
   ...timetablesFr,
   ...commentsFr,
   ...mslabFr,
+  ...areaFr,
   ...workspaceUiFr,
   ...pluginCodeFr,
   ...populationFr,

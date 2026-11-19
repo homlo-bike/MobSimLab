@@ -6,9 +6,6 @@ export const geodataHi = {
   "data.title": "नक्शे का डेटा",
   "data.intro":
     "इस परियोजना के लिए OpenStreetMap और ऊँचाई, परियोजना के साथ रखे हुए। सड़क, रेलवे, इमारत, पानी और भू-भाग उपकरण हर बार OpenStreetMap और ऊँचाई सर्वर से पूछने के बजाय इन्हें पढ़ते हैं।",
-  "data.noArea":
-    "पहले परियोजना में कुछ बनाएँ: आयात बनाई गई हर चीज़ के चारों ओर के आयत और एक अतिरिक्त किनारे को ढकता है।",
-  "data.area": "क्षेत्र: {area} वर्ग किमी, बनाई गई हर चीज़ के चारों ओर का आयत और {buffer} किमी",
   "data.osm": "OpenStreetMap",
   "data.dem": "ऊँचाई",
   "data.notImported": "अभी आयात नहीं हुआ।",
@@ -55,18 +52,6 @@ export const geodataHi = {
   "data.ownReplace": "दूसरी GeoTIFF से बदलें ({max} MB तक)",
   "data.remove": "हटाएँ",
   "area.title": "परियोजना क्षेत्र",
-  "area.intro":
-    "कोई जगह खोजें और परियोजना में शामिल OpenStreetMap क्षेत्रों पर निशान लगाएँ। परियोजना क्षेत्र इन सबको मिलाकर है। सहेजने पर क्षेत्र का OpenStreetMap, ऊँचाई और जनसंख्या एक बार आयात होते हैं और सभी टूल उन्हें इस्तेमाल करते हैं।",
-  "area.search": "जगह खोजें, जैसे अलेप्पो, सीरिया",
-  "area.lookingUp": "{place} के क्षेत्र खोजे जा रहे हैं…",
-  "area.regionsAt": "{place} के क्षेत्र",
-  "area.noRegions": "यहाँ कोई नामित क्षेत्र नहीं है। कोई और जगह आज़माएँ।",
-  "area.none": "कोई क्षेत्र नहीं चुना: क्षेत्र सब बनाई चीज़ों के चारों ओर का आयत और एक बफ़र है।",
-  "area.remove": "{name} हटाएँ",
-  "area.total": "कुल लगभग {area} वर्ग किमी",
-  "area.outline": "चुने गए क्षेत्रों की रूपरेखा",
-  "area.save": "क्षेत्र सहेजें और डेटा आयात करें",
-  "area.saved": "क्षेत्र सहेजा गया।",
   "area.import.queued": "{what}: आयात शुरू",
   "area.import.current": "{what}: पहले से आयातित",
   "area.import.failed": "{what}: शुरू नहीं हो सका। {reason}",
@@ -78,5 +63,4 @@ export const geodataHi = {
     "{tiles} मानचित्र टाइलें और {heights} ऊँचाइयाँ परियोजना के आयातित डेटा के बाहर से सीधे आईं। अब वे परियोजना में रखी हैं; पूरे चित्र को ढकने के लिए आयात बढ़ाएँ।",
   "data.extendImport": "मानचित्र डेटा में आयात बढ़ाएँ",
   "data.hideLive": "छिपाएँ",
-  "data.areaRegions": "क्षेत्र: {area} वर्ग किमी, {names} के चारों ओर का आयत",
 } satisfies GeodataMessages;

@@ -10,11 +10,6 @@ export const populationFr = {
   "pop.failed": "Les couches de population n’ont pas pu être chargées : {error}",
   "pop.retry": "Réessayer",
   "pop.area.title": "Zone du projet",
-  "pop.area.none":
-    "Dessinez d’abord une ligne, une voie ferrée, un dépôt ou une région : la zone du projet est le rectangle entourant tout ce qui est dessiné.",
-  "pop.area.box": "Le rectangle entourant tout ce qui est dessiné, élargi de la marge : {km2} km².",
-  "pop.area.buffer": "Marge (km)",
-  "pop.area.save": "Enregistrer la marge",
   "pop.area.tooLarge": "Les imports couvrent au plus {max} km² ; réduisez la marge ou dessinez moins.",
   "pop.primary.title": "Population utilisée par le projet",
   "pop.primary.hint":

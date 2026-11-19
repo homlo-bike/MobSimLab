@@ -8,6 +8,7 @@ import { geodataNl } from "./geodata/nl";
 import { tablesNl } from "./tables/nl";
 import { fleetNl } from "./fleet/nl";
 import { timetablesNl } from "./timetables/nl";
+import { areaNl } from "./area/nl";
 import { mslabNl } from "./mslab/nl";
 import { workspaceUiNl } from "./workspace-ui/nl";
 import { pluginCodeNl } from "./plugin-code/nl";
@@ -535,6 +536,7 @@ export const nl: Messages = {
   ...timetablesNl,
   ...commentsNl,
   ...mslabNl,
+  ...areaNl,
   ...workspaceUiNl,
   ...pluginCodeNl,
   ...populationNl,

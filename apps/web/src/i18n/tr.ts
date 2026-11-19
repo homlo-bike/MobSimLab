@@ -8,6 +8,7 @@ import { geodataTr } from "./geodata/tr";
 import { tablesTr } from "./tables/tr";
 import { fleetTr } from "./fleet/tr";
 import { timetablesTr } from "./timetables/tr";
+import { areaTr } from "./area/tr";
 import { mslabTr } from "./mslab/tr";
 import { workspaceUiTr } from "./workspace-ui/tr";
 import { pluginCodeTr } from "./plugin-code/tr";
@@ -531,6 +532,7 @@ export const tr: Messages = {
   ...timetablesTr,
   ...commentsTr,
   ...mslabTr,
+  ...areaTr,
   ...workspaceUiTr,
   ...pluginCodeTr,
   ...populationTr,

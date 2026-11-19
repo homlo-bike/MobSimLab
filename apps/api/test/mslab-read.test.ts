@@ -81,7 +81,7 @@ describe("mslab reader", () => {
   });
 
   it("refuses files from a newer MobSimLab", async () => {
-    for (const v of ["1.3.0", "2.0.0"]) {
+    for (const v of ["1.4.0", "2.0.0"]) {
       const files = resign(folder(join(FIXTURES, "1.0.0")), (m) => (m.formatVersion = v));
       await refused(writeZip(files), /newer MobSimLab/);
     }

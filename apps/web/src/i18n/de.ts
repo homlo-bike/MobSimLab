@@ -8,6 +8,7 @@ import { geodataDe } from "./geodata/de";
 import { tablesDe } from "./tables/de";
 import { fleetDe } from "./fleet/de";
 import { timetablesDe } from "./timetables/de";
+import { areaDe } from "./area/de";
 import { mslabDe } from "./mslab/de";
 import { workspaceUiDe } from "./workspace-ui/de";
 import { pluginCodeDe } from "./plugin-code/de";
@@ -541,6 +542,7 @@ export const de: Messages = {
   ...timetablesDe,
   ...commentsDe,
   ...mslabDe,
+  ...areaDe,
   ...workspaceUiDe,
   ...pluginCodeDe,
   ...populationDe,

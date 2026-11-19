@@ -8,6 +8,7 @@ import { geodataId } from "./geodata/id";
 import { tablesId } from "./tables/id";
 import { fleetId } from "./fleet/id";
 import { timetablesId } from "./timetables/id";
+import { areaId } from "./area/id";
 import { mslabId } from "./mslab/id";
 import { workspaceUiId } from "./workspace-ui/id";
 import { pluginCodeId } from "./plugin-code/id";
@@ -533,6 +534,7 @@ export const id: Messages = {
   ...timetablesId,
   ...commentsId,
   ...mslabId,
+  ...areaId,
   ...workspaceUiId,
   ...pluginCodeId,
   ...populationId,

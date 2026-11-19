@@ -10,11 +10,6 @@ export const populationEs = {
   "pop.failed": "No se pudieron cargar las capas de población: {error}",
   "pop.retry": "Reintentar",
   "pop.area.title": "Área del proyecto",
-  "pop.area.none":
-    "Dibuje primero una línea, una vía férrea, un depósito o una región: el área del proyecto es el rectángulo que rodea todo lo dibujado.",
-  "pop.area.box": "El rectángulo que rodea todo lo dibujado, ampliado con el margen: {km2} km².",
-  "pop.area.buffer": "Margen (km)",
-  "pop.area.save": "Guardar margen",
   "pop.area.tooLarge": "Las importaciones cubren como máximo {max} km²; reduzca el margen o dibuje menos.",
   "pop.primary.title": "Población que usa el proyecto",
   "pop.primary.hint": "El mapa de ruido, el análisis a pie y las tablas de beneficios leen esta capa.",

@@ -8,6 +8,7 @@ import { geodataMr } from "./geodata/mr";
 import { tablesMr } from "./tables/mr";
 import { fleetMr } from "./fleet/mr";
 import { timetablesMr } from "./timetables/mr";
+import { areaMr } from "./area/mr";
 import { mslabMr } from "./mslab/mr";
 import { workspaceUiMr } from "./workspace-ui/mr";
 import { pluginCodeMr } from "./plugin-code/mr";
@@ -526,6 +527,7 @@ export const mr: Messages = {
   ...timetablesMr,
   ...commentsMr,
   ...mslabMr,
+  ...areaMr,
   ...workspaceUiMr,
   ...pluginCodeMr,
   ...populationMr,

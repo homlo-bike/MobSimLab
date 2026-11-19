@@ -8,6 +8,7 @@ import { geodataUz } from "./geodata/uz";
 import { tablesUz } from "./tables/uz";
 import { fleetUz } from "./fleet/uz";
 import { timetablesUz } from "./timetables/uz";
+import { areaUz } from "./area/uz";
 import { mslabUz } from "./mslab/uz";
 import { workspaceUiUz } from "./workspace-ui/uz";
 import { pluginCodeUz } from "./plugin-code/uz";
@@ -537,6 +538,7 @@ export const uz: Messages = {
   ...timetablesUz,
   ...commentsUz,
   ...mslabUz,
+  ...areaUz,
   ...workspaceUiUz,
   ...pluginCodeUz,
   ...populationUz,

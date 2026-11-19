@@ -41,7 +41,22 @@ function run(over: Partial<ImportRun> = {}): ImportRun {
 function status(over: Partial<GeodataStatus> = {}): GeodataStatus {
   return {
     canImport: true,
-    area: { bbox: [7, 50, 7.1, 50.1], drawnBbox: [7.02, 50.02, 7.08, 50.08], bufferKm: 2, areaKm2: 80 },
+    area: {
+      bbox: [7, 50, 7.1, 50.1],
+      areaKm2: 80,
+      polygons: [
+        {
+          id: "a1",
+          name: "Trier",
+          ring: [
+            [7, 50],
+            [7.1, 50],
+            [7.1, 50.1],
+            [7, 50],
+          ],
+        },
+      ],
+    },
     osm: none,
     dem: none,
     demUpload: none,
@@ -67,7 +82,6 @@ function fakeApi(
     cancel: vi.fn(async () => run({ status: "cancelled" })),
     uploadDem: vi.fn(async () => run({ kind: "dem_upload", method: "geotiff", status: "queued" })),
     remove: vi.fn(async () => undefined),
-    setBuffer: vi.fn(async () => undefined),
   };
 }
 
@@ -105,7 +119,7 @@ describe("terrain requests", () => {
 describe("Map data panel", () => {
   it("asks for a drawing when the project has no area", async () => {
     render(<MapDataPanel api={fakeApi(status({ area: null }))} map={null} />);
-    expect(await screen.findByText(/Draw something in the project first/)).toBeTruthy();
+    expect(await screen.findByText(/Draw the project area first/)).toBeTruthy();
   });
 
   it("shows the current import and reports it to the map tools", async () => {
@@ -128,7 +142,7 @@ describe("Map data panel", () => {
       status({ osm: { current: null, latest: run({ status: "running", progress: { step: "extract" } }) } }),
     );
     render(<MapDataPanel api={api} map={null} />);
-    await screen.findByText(/Area: 80 km²/);
+    await screen.findByText(/box around it, 80 km²/);
     fireEvent.click(screen.getByLabelText(/Keep planned roads/));
     fireEvent.click(screen.getAllByRole("button", { name: "Import" })[0]!);
     await waitFor(() => expect(api.startOsm).toHaveBeenCalledWith({ method: "overpass", planned: true }));
@@ -164,7 +178,7 @@ describe("Map data panel", () => {
   it("offers Geofabrik regions for an area too large for Overpass", async () => {
     const api = fakeApi(
       status({
-        area: { bbox: [6, 50, 8, 51], drawnBbox: [6, 50, 8, 51], bufferKm: 2, areaKm2: 15000 },
+        area: { bbox: [6, 50, 8, 51], areaKm2: 15000, polygons: [] },
         suggestedMethod: "geofabrik",
       }),
     );
@@ -186,7 +200,7 @@ describe("Map data panel", () => {
   it("says Geofabrik cannot be reached instead of that no region holds the area", async () => {
     const api = fakeApi(
       status({
-        area: { bbox: [6, 50, 8, 51], drawnBbox: [6, 50, 8, 51], bufferKm: 2, areaKm2: 15000 },
+        area: { bbox: [6, 50, 8, 51], areaKm2: 15000, polygons: [] },
         suggestedMethod: "geofabrik",
       }),
     );
@@ -203,7 +217,7 @@ describe("Map data panel", () => {
   it("starts the elevation import and hides imports from viewers", async () => {
     const api = fakeApi(status());
     render(<MapDataPanel api={api} map={null} />);
-    await screen.findByText(/Area: 80 km²/);
+    await screen.findByText(/box around it, 80 km²/);
     const buttons = screen.getAllByRole("button", { name: "Import" });
     fireEvent.click(buttons[buttons.length - 1]!);
     await waitFor(() => expect(api.startDem).toHaveBeenCalled());
@@ -213,13 +227,12 @@ describe("Map data panel", () => {
     expect(screen.queryByRole("button", { name: "Import" })).toBeNull();
   });
 
-  it("saves the buffer around the drawing", async () => {
-    const api = fakeApi(status());
-    render(<MapDataPanel api={api} map={null} />);
-    const field = await screen.findByLabelText("Buffer (km)");
-    fireEvent.change(field, { target: { value: "5" } });
-    fireEvent.click(screen.getByRole("button", { name: "Save buffer" }));
-    await waitFor(() => expect(api.setBuffer).toHaveBeenCalledWith(5));
+  it("names the project area's polygons and has no buffer to set", async () => {
+    render(<MapDataPanel api={fakeApi(status())} map={null} />);
+    expect(
+      await screen.findByText("Project area: Trier. The imports cover the box around it, 80 km²."),
+    ).toBeTruthy();
+    expect(screen.queryByLabelText("Buffer (km)")).toBeNull();
   });
 
   it("uploads the planner's own elevation grid with its source, and removes it", async () => {
@@ -238,7 +251,7 @@ describe("Map data panel", () => {
     });
     const api = fakeApi(status(), status({ demUpload: { current: own, latest: own } }));
     render(<MapDataPanel api={api} map={null} />);
-    await screen.findByText(/Area: 80 km²/);
+    await screen.findByText(/box around it, 80 km²/);
     fireEvent.change(screen.getByLabelText("Source"), { target: { value: "City LiDAR" } });
     fireEvent.change(screen.getByLabelText("Vertical accuracy (m)"), { target: { value: "0.15" } });
     const file = new File([new Uint8Array([73, 73, 42, 0])], "lidar.tif", { type: "image/tiff" });

@@ -8,6 +8,7 @@ import { geodataJa } from "./geodata/ja";
 import { tablesJa } from "./tables/ja";
 import { fleetJa } from "./fleet/ja";
 import { timetablesJa } from "./timetables/ja";
+import { areaJa } from "./area/ja";
 import { mslabJa } from "./mslab/ja";
 import { workspaceUiJa } from "./workspace-ui/ja";
 import { pluginCodeJa } from "./plugin-code/ja";
@@ -523,6 +524,7 @@ export const ja: Messages = {
   ...timetablesJa,
   ...commentsJa,
   ...mslabJa,
+  ...areaJa,
   ...workspaceUiJa,
   ...pluginCodeJa,
   ...populationJa,

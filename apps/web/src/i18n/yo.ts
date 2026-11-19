@@ -8,6 +8,7 @@ import { geodataYo } from "./geodata/yo";
 import { tablesYo } from "./tables/yo";
 import { fleetYo } from "./fleet/yo";
 import { timetablesYo } from "./timetables/yo";
+import { areaYo } from "./area/yo";
 import { mslabYo } from "./mslab/yo";
 import { workspaceUiYo } from "./workspace-ui/yo";
 import { pluginCodeYo } from "./plugin-code/yo";
@@ -528,6 +529,7 @@ export const yo: Messages = {
   ...timetablesYo,
   ...commentsYo,
   ...mslabYo,
+  ...areaYo,
   ...workspaceUiYo,
   ...pluginCodeYo,
   ...populationYo,

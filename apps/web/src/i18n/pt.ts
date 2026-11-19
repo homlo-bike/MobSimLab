@@ -8,6 +8,7 @@ import { geodataPt } from "./geodata/pt";
 import { tablesPt } from "./tables/pt";
 import { fleetPt } from "./fleet/pt";
 import { timetablesPt } from "./timetables/pt";
+import { areaPt } from "./area/pt";
 import { mslabPt } from "./mslab/pt";
 import { workspaceUiPt } from "./workspace-ui/pt";
 import { pluginCodePt } from "./plugin-code/pt";
@@ -535,6 +536,7 @@ export const pt: Messages = {
   ...timetablesPt,
   ...commentsPt,
   ...mslabPt,
+  ...areaPt,
   ...workspaceUiPt,
   ...pluginCodePt,
   ...populationPt,

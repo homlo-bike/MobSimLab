@@ -8,6 +8,7 @@ import { geodataRu } from "./geodata/ru";
 import { tablesRu } from "./tables/ru";
 import { fleetRu } from "./fleet/ru";
 import { timetablesRu } from "./timetables/ru";
+import { areaRu } from "./area/ru";
 import { mslabRu } from "./mslab/ru";
 import { workspaceUiRu } from "./workspace-ui/ru";
 import { pluginCodeRu } from "./plugin-code/ru";
@@ -535,6 +536,7 @@ export const ru: Messages = {
   ...timetablesRu,
   ...commentsRu,
   ...mslabRu,
+  ...areaRu,
   ...workspaceUiRu,
   ...pluginCodeRu,
   ...populationRu,

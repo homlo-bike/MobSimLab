@@ -8,6 +8,7 @@ import { geodataHi } from "./geodata/hi";
 import { tablesHi } from "./tables/hi";
 import { fleetHi } from "./fleet/hi";
 import { timetablesHi } from "./timetables/hi";
+import { areaHi } from "./area/hi";
 import { mslabHi } from "./mslab/hi";
 import { workspaceUiHi } from "./workspace-ui/hi";
 import { pluginCodeHi } from "./plugin-code/hi";
@@ -529,6 +530,7 @@ export const hi: Messages = {
   ...timetablesHi,
   ...commentsHi,
   ...mslabHi,
+  ...areaHi,
   ...workspaceUiHi,
   ...pluginCodeHi,
   ...populationHi,

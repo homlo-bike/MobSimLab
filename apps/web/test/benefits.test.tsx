@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { BenefitTables, stationRows } from "../src/features/benefits/BenefitTables";
+import type { AreaPolygon, AreaView } from "../src/features/area/api";
 import type { BenefitsApi, OsmArea } from "../src/features/benefits/data";
 import {
   benefitsApi,
@@ -36,6 +37,30 @@ import type { Estimate as CostEstimate } from "../src/features/costs/model";
 import type { LonLat, ReachLoader, Timetable } from "../src/features/journey-planner/types";
 
 afterEach(cleanup);
+
+const square = (x: number, y: number, d: number): [number, number][] => [
+  [x, y],
+  [x + d, y],
+  [x + d, y + d],
+  [x, y + d],
+  [x, y],
+];
+/** The project area as the API answers it, for some polygons. */
+function areaView(polygons: AreaPolygon[]): AreaView {
+  return {
+    polygons,
+    estimate: {
+      areaKm2: 1,
+      tiles: { full: 1, main: 0 },
+      bytes: 600_000,
+      polygons: [],
+      limitBytes: 1000 * 1024 * 1024,
+      overLimit: false,
+    },
+    bbox: [0, 0, 1, 1],
+    dataDate: null,
+  };
+}
 
 const C: LonLat = [5.0, 52.0];
 /** `[lon, lat]` x metres east and y metres north of C. */
@@ -810,7 +835,7 @@ describe("region editor", () => {
     ]);
   });
 
-  it("asks before importing a region that reaches outside the project area, then adds it to the area", async () => {
+  it("asks before downloading map data for a region outside the project area, then adds it as a polygon", async () => {
     const { map, click } = fakeMap();
     const area: OsmArea = {
       id: "r42",
@@ -821,10 +846,15 @@ describe("region editor", () => {
       areaKm2: 0.4,
     };
     const [x0, y0] = at(0, 0);
+    const home = {
+      id: "a1",
+      name: "Centrum",
+      detail: "full" as const,
+      ring: square(x0 - 0.0005, y0 - 0.0005, 0.001),
+    };
     const view = {
-      regions: [],
+      ...areaView([home]),
       bbox: [x0, y0, x0 + 0.001, y0 + 0.001] as [number, number, number, number],
-      areaKm2: 1,
     };
     const set = vi.fn(async () => ({
       ...view,
@@ -833,6 +863,10 @@ describe("region editor", () => {
         { kind: "dem" as const, status: "queued" as const },
         { kind: "population" as const, status: "current" as const },
       ],
+    }));
+    const estimate = vi.fn(async (polygons: AreaPolygon[]) => ({
+      ...view.estimate,
+      added: { tiles: 3, bytes: (polygons.at(-1)!.detail === "full" ? 38 : 4) * 1024 * 1024 },
     }));
     const onChange = vi.fn();
     render(
@@ -843,7 +877,7 @@ describe("region editor", () => {
         onChange={onChange}
         editable
         api={fakeApi({ osmAreas: async () => [area] })}
-        area={{ get: async () => view, set }}
+        area={{ get: async () => view, set, refresh: vi.fn(), estimate }}
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: "Import from OpenStreetMap" }));
@@ -851,10 +885,51 @@ describe("region editor", () => {
     fireEvent.click(await screen.findByRole("button", { name: /Oud-West/ }));
     const ask = await screen.findByRole("region", { name: "Region outside the project area" });
     expect(onChange).not.toHaveBeenCalled();
-    fireEvent.click(within(ask).getByRole("button", { name: "Add to project area" }));
+    expect(within(ask).getByText("Download map data outside the project area?")).toBeTruthy();
+    expect(await within(ask).findByRole("button", { name: "Download 38 MB" })).toBeTruthy();
+    // Main roads and railways only needs less.
+    fireEvent.click(within(ask).getByRole("radio", { name: "Main roads and railways only" }));
+    fireEvent.click(await within(ask).findByRole("button", { name: "Download 4 MB" }));
     expect(await screen.findByText(/Downloading OpenStreetMap, terrain heights for it/)).toBeTruthy();
-    expect(set).toHaveBeenCalledWith([expect.objectContaining({ id: "r42", name: "Oud-West" })], true);
+    expect(set).toHaveBeenCalledWith(
+      [home, { id: "a2", name: "Oud-West", detail: "main", ring: area.ring }],
+      true,
+    );
     expect(onChange.mock.calls[0]![0]).toMatchObject([{ name: "Oud-West", osmId: "r42" }]);
+  });
+
+  it("keeps a region outside the project area without downloading", async () => {
+    const { map, click } = fakeMap();
+    const area: OsmArea = {
+      id: "r42",
+      name: "Oud-West",
+      kind: "suburb",
+      adminLevel: null,
+      ring: [at(0, 0), at(900, 0), at(900, 900), at(0, 0)],
+      areaKm2: 0.4,
+    };
+    const [x0, y0] = at(0, 0);
+    const view = areaView([{ id: "a1", name: "Centrum", detail: "full", ring: square(x0, y0, 0.0001) }]);
+    const set = vi.fn();
+    const onChange = vi.fn();
+    render(
+      <RegionEditor
+        map={map as never}
+        panel={null}
+        regions={[]}
+        onChange={onChange}
+        editable
+        api={fakeApi({ osmAreas: async () => [area] })}
+        area={{ get: async () => view, set, refresh: vi.fn(), estimate: async () => view.estimate }}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Import from OpenStreetMap" }));
+    click(at(100, 100));
+    fireEvent.click(await screen.findByRole("button", { name: /Oud-West/ }));
+    const ask = await screen.findByRole("region", { name: "Region outside the project area" });
+    fireEvent.click(within(ask).getByRole("button", { name: "Keep the region, no download" }));
+    expect(onChange.mock.calls[0]![0]).toMatchObject([{ name: "Oud-West", osmId: "r42" }]);
+    expect(set).not.toHaveBeenCalled();
   });
 
   it("imports a region inside the project area without asking", async () => {
@@ -868,11 +943,7 @@ describe("region editor", () => {
       areaKm2: 0.4,
     };
     const [x0, y0] = at(0, 0);
-    const view = {
-      regions: [],
-      bbox: [x0 - 1, y0 - 1, x0 + 1, y0 + 1] as [number, number, number, number],
-      areaKm2: 1,
-    };
+    const view = areaView([{ id: "a1", name: "City", detail: "full", ring: square(x0 - 1, y0 - 1, 2) }]);
     const set = vi.fn();
     const onChange = vi.fn();
     render(
@@ -883,7 +954,7 @@ describe("region editor", () => {
         onChange={onChange}
         editable
         api={fakeApi({ osmAreas: async () => [area] })}
-        area={{ get: async () => view, set }}
+        area={{ get: async () => view, set, refresh: vi.fn(), estimate: vi.fn() }}
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: "Import from OpenStreetMap" }));

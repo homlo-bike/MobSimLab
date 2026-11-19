@@ -10,11 +10,6 @@ export const populationVi = {
   "pop.failed": "Không tải được các lớp dân số: {error}",
   "pop.retry": "Thử lại",
   "pop.area.title": "Khu vực dự án",
-  "pop.area.none":
-    "Hãy vẽ trước một tuyến, một đường sắt, một depot hoặc một vùng: khu vực dự án là hình chữ nhật bao quanh mọi thứ đã vẽ.",
-  "pop.area.box": "Hình chữ nhật bao quanh mọi thứ đã vẽ, nới rộng thêm vùng đệm: {km2} km².",
-  "pop.area.buffer": "Vùng đệm (km)",
-  "pop.area.save": "Lưu vùng đệm",
   "pop.area.tooLarge": "Mỗi lần nhập phủ tối đa {max} km²; hãy giảm vùng đệm hoặc vẽ ít hơn.",
   "pop.primary.title": "Dân số dự án sử dụng",
   "pop.primary.hint": "Bản đồ tiếng ồn, phân tích đi bộ và bảng lợi ích đọc lớp này.",

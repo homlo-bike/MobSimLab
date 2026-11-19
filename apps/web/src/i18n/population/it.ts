@@ -10,11 +10,6 @@ export const populationIt = {
   "pop.failed": "Impossibile caricare i livelli di popolazione: {error}",
   "pop.retry": "Riprova",
   "pop.area.title": "Area del progetto",
-  "pop.area.none":
-    "Disegna prima una linea, una ferrovia, un deposito o una regione: l’area del progetto è il rettangolo attorno a tutto ciò che è disegnato.",
-  "pop.area.box": "Il rettangolo attorno a tutto ciò che è disegnato, allargato del margine: {km2} km².",
-  "pop.area.buffer": "Margine (km)",
-  "pop.area.save": "Salva margine",
   "pop.area.tooLarge": "Le importazioni coprono al massimo {max} km²; riduci il margine o disegna meno.",
   "pop.primary.title": "Popolazione usata dal progetto",
   "pop.primary.hint":

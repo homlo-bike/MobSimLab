@@ -10,11 +10,6 @@ export const populationPl = {
   "pop.failed": "Nie udało się wczytać warstw ludności: {error}",
   "pop.retry": "Spróbuj ponownie",
   "pop.area.title": "Obszar projektu",
-  "pop.area.none":
-    "Najpierw narysuj linię, linię kolejową, zajezdnię lub region: obszar projektu to prostokąt wokół wszystkiego, co narysowano.",
-  "pop.area.box": "Prostokąt wokół wszystkiego, co narysowano, poszerzony o bufor: {km2} km².",
-  "pop.area.buffer": "Bufor (km)",
-  "pop.area.save": "Zapisz bufor",
   "pop.area.tooLarge": "Import obejmuje najwyżej {max} km²; zmniejsz bufor lub narysuj mniej.",
   "pop.primary.title": "Ludność używana przez projekt",
   "pop.primary.hint": "Mapa hałasu, analiza dojścia pieszo i tabele korzyści czytają tę warstwę.",

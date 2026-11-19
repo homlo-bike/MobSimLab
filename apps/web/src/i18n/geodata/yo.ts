@@ -6,9 +6,6 @@ export const geodataYo = {
   "data.title": "Dátà máàpù",
   "data.intro":
     "OpenStreetMap àti gíga ilẹ̀ fún iṣẹ́ yìí, tí a tọ́jú pẹ̀lú iṣẹ́ náà. Àwọn irinṣẹ́ òpópónà, ojú irin, ilé, omi àti ilẹ̀ ń kà wọ́n dípò bíbéèrè lọ́wọ́ OpenStreetMap àti sáfà gíga ní gbogbo ìgbà.",
-  "data.noArea":
-    "Ya nǹkan kan sínú iṣẹ́ náà ná: ìkówọlé bo onígun mẹ́rin tó yí gbogbo ohun tí a yà ká, pẹ̀lú àlàfo àfikún.",
-  "data.area": "Agbègbè: {area} km², onígun mẹ́rin tó yí gbogbo ohun tí a yà ká pẹ̀lú {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Gíga ilẹ̀",
   "data.notImported": "A kò tíì kó o wọlé.",
@@ -55,18 +52,6 @@ export const geodataYo = {
   "data.ownReplace": "Fi GeoTIFF mìíràn rọ́pò rẹ̀ (títí dé {max} MB)",
   "data.remove": "Yọ kúrò",
   "area.title": "Agbègbè iṣẹ́ akanṣe",
-  "area.intro":
-    "Wá ibì kan kí o sì fi àmì sí àwọn agbègbè OpenStreetMap tí iṣẹ́ náà bò. Agbègbè iṣẹ́ náà ni gbogbo wọn papọ̀. Nígbà tí o bá fi pamọ́, a ó mú OpenStreetMap, gíga ilẹ̀ àti iye ènìyàn agbègbè náà wọlé lẹ́ẹ̀kan, gbogbo irinṣẹ́ á sì lò wọ́n.",
-  "area.search": "Wá ibì kan, bí Aleppo, Siria",
-  "area.lookingUp": "À ń wá àwọn agbègbè ní {place}…",
-  "area.regionsAt": "Àwọn agbègbè ní {place}",
-  "area.noRegions": "Kò sí agbègbè tó ní orúkọ níbí. Gbìyànjú ibòmíì.",
-  "area.none": "A kò yan agbègbè: agbègbè náà ni àpótí tó yí gbogbo ohun tí a yà ká, pẹ̀lú àfikún àlàfo.",
-  "area.remove": "Yọ {name} kúrò",
-  "area.total": "Nǹkan bí km² {area} lápapọ̀",
-  "area.outline": "Ààlà àwọn agbègbè tí a yàn",
-  "area.save": "Fi agbègbè pamọ́ kí o sì mú dátà wọlé",
-  "area.saved": "A ti fi agbègbè pamọ́.",
   "area.import.queued": "{what}: mímú wọlé ti bẹ̀rẹ̀",
   "area.import.current": "{what}: a ti mú un wọlé tẹ́lẹ̀",
   "area.import.failed": "{what}: kò lè bẹ̀rẹ̀. {reason}",
@@ -77,5 +62,4 @@ export const geodataYo = {
     "Àwọn tile máàpù {tiles} àti gíga {heights} wá ní tààrà láti ìta dátà tí a gbé wọlé fún iṣẹ́ náà. A ti fi wọ́n pamọ́ sínú iṣẹ́ náà báyìí; fẹ ìgbéwọlé gbòòrò kí ó bo gbogbo àwòrán.",
   "data.extendImport": "Fẹ ìgbéwọlé gbòòrò nínú Dátà máàpù",
   "data.hideLive": "Fi pamọ́",
-  "data.areaRegions": "Agbègbè: km² {area}, àpótí tó yí {names} ká",
 } satisfies GeodataMessages;

@@ -8,6 +8,7 @@ import { geodataKk } from "./geodata/kk";
 import { tablesKk } from "./tables/kk";
 import { fleetKk } from "./fleet/kk";
 import { timetablesKk } from "./timetables/kk";
+import { areaKk } from "./area/kk";
 import { mslabKk } from "./mslab/kk";
 import { workspaceUiKk } from "./workspace-ui/kk";
 import { pluginCodeKk } from "./plugin-code/kk";
@@ -530,6 +531,7 @@ export const kk: Messages = {
   ...timetablesKk,
   ...commentsKk,
   ...mslabKk,
+  ...areaKk,
   ...workspaceUiKk,
   ...pluginCodeKk,
   ...populationKk,

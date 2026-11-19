@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from "vitest";
 import { OverpassClient } from "../src/gateway/overpass.client";
 import { countryShares, samplePoints } from "../src/projects/area-facts";
 import { type CacheKind, ProjectDataCache } from "../src/projects/data-cache";
-import type { AreaRegion } from "../src/projects/project-area";
 import { StreetNetworkService } from "../src/street-network/street-network.service";
 import { TerrainService } from "../src/terrain/terrain.service";
 
@@ -90,25 +89,21 @@ describe("project data cache (#140 step 4)", () => {
 });
 
 describe("area facts (#140 step 3)", () => {
-  it("samples the area inside its regions and always its centre", () => {
+  it("samples the area inside its polygons, their middles and always its centre", () => {
     const all = samplePoints([0, 0, 3, 3], []);
     expect(all[0]).toEqual([1.5, 1.5]);
     expect(all).toHaveLength(9);
-    const west: AreaRegion = {
-      id: "r1",
-      name: "West",
-      kind: "boundary",
-      adminLevel: 4,
+    const west = {
       ring: [
         [0, 0],
         [1.2, 0],
         [1.2, 3],
         [0, 3],
         [0, 0],
-      ],
-      areaKm2: 1,
+      ] as [number, number][],
     };
     const pts = samplePoints([0, 0, 3, 3], [west]);
+    expect(pts[1]).toEqual([0.6, 1.5]);
     expect(pts.slice(1).every(([x]) => x < 1.2)).toBe(true);
   });
 

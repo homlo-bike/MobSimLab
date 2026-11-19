@@ -10,11 +10,6 @@ export const populationJa = {
   "pop.failed": "人口レイヤーを読み込めませんでした: {error}",
   "pop.retry": "再試行",
   "pop.area.title": "プロジェクト区域",
-  "pop.area.none":
-    "まず路線、鉄道、車庫、または地域を描いてください。プロジェクト区域は描いたものすべてを囲む矩形です。",
-  "pop.area.box": "描いたものすべてを囲み、バッファ分広げた矩形: {km2} km²。",
-  "pop.area.buffer": "バッファ (km)",
-  "pop.area.save": "バッファを保存",
   "pop.area.tooLarge":
     "取り込みは最大 {max} km² までです。バッファを小さくするか、描く範囲を減らしてください。",
   "pop.primary.title": "プロジェクトが使う人口",

@@ -6,6 +6,7 @@ import { geodataEn } from "./geodata/en";
 import { tablesEn } from "./tables/en";
 import { fleetEn } from "./fleet/en";
 import { timetablesEn } from "./timetables/en";
+import { areaEn } from "./area/en";
 import { mslabEn } from "./mslab/en";
 import { workspaceUiEn } from "./workspace-ui/en";
 import { pluginCodeEn } from "./plugin-code/en";
@@ -524,6 +525,7 @@ export const en = {
   ...timetablesEn,
   ...commentsEn,
   ...mslabEn,
+  ...areaEn,
   ...workspaceUiEn,
   ...pluginCodeEn,
   ...roadEn,

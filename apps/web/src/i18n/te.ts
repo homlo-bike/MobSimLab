@@ -8,6 +8,7 @@ import { geodataTe } from "./geodata/te";
 import { tablesTe } from "./tables/te";
 import { fleetTe } from "./fleet/te";
 import { timetablesTe } from "./timetables/te";
+import { areaTe } from "./area/te";
 import { mslabTe } from "./mslab/te";
 import { workspaceUiTe } from "./workspace-ui/te";
 import { pluginCodeTe } from "./plugin-code/te";
@@ -528,6 +529,7 @@ export const te: Messages = {
   ...timetablesTe,
   ...commentsTe,
   ...mslabTe,
+  ...areaTe,
   ...workspaceUiTe,
   ...pluginCodeTe,
   ...populationTe,

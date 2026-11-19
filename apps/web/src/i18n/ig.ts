@@ -8,6 +8,7 @@ import { geodataIg } from "./geodata/ig";
 import { tablesIg } from "./tables/ig";
 import { fleetIg } from "./fleet/ig";
 import { timetablesIg } from "./timetables/ig";
+import { areaIg } from "./area/ig";
 import { mslabIg } from "./mslab/ig";
 import { workspaceUiIg } from "./workspace-ui/ig";
 import { pluginCodeIg } from "./plugin-code/ig";
@@ -531,6 +532,7 @@ export const ig: Messages = {
   ...timetablesIg,
   ...commentsIg,
   ...mslabIg,
+  ...areaIg,
   ...workspaceUiIg,
   ...pluginCodeIg,
   ...populationIg,

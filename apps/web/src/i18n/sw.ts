@@ -8,6 +8,7 @@ import { geodataSw } from "./geodata/sw";
 import { tablesSw } from "./tables/sw";
 import { fleetSw } from "./fleet/sw";
 import { timetablesSw } from "./timetables/sw";
+import { areaSw } from "./area/sw";
 import { mslabSw } from "./mslab/sw";
 import { workspaceUiSw } from "./workspace-ui/sw";
 import { pluginCodeSw } from "./plugin-code/sw";
@@ -532,6 +533,7 @@ export const sw: Messages = {
   ...timetablesSw,
   ...commentsSw,
   ...mslabSw,
+  ...areaSw,
   ...workspaceUiSw,
   ...pluginCodeSw,
   ...populationSw,
