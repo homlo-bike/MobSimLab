@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Tiếng ồn ước tính của các tuyến (ADR-0038): dải tiếng ồn trực tiếp khi vẽ tuyến đường phố và đường sắt, kèm kiểm tra tiếng rít ở đường cong, cầu và ghi. Phát thải đường bộ và đường sắt theo CNOSSOS-EU, hiện là trường tự do chưa có công trình.",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den và L_night của các tuyến đã vẽ ở độ cao 4 m, trường tự do: khoảng cách dải ở hai bên, lưới điểm thu cho bản đồ và các kiểm tra.",
+  "Noise band": "Dải tiếng ồn",
+  "Noise map": "Bản đồ tiếng ồn"
+}

@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Usafiri unaojibu mahitaji unaochorwa kwa kifaa cha eneo la huduma: chora eneo, weka maombi kwa saa, kundi la magari na saa za huduma, na upate magari yanayohitajika, wastani wa kusubiri, muda wa safari na muda wa mlango hadi mlango kutoka kwa fomula za ukadiriaji endelevu. Kuiga siku hutuma kila uhifadhi safari kwa safari (ADR-0042). Eneo huonekana kwenye kipanga safari.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "Mabasi madogo yanayohifadhiwa kwa programu: chora eneo, weka kundi la magari na saa.",
+  "On-demand bus": "Basi kwa ombi"
+}

@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Ezokuthutha eziphendula isidingo ezidwetshwa ngethuluzi lendawo yesevisi: dweba indawo, setha izicelo ngehora, izimoto namahora esevisi, bese uthola izimoto ezidingekayo, isikhathi esimaphakathi sokulinda, sohambo nesokusuka emnyango kuya emnyango ngamafomula okulinganisa okuqhubekayo. Ukulingisa usuku kuthumela konke ukubhuka uhambo ngohambo (ADR-0042). Indawo iyabonakala kumhleli wohambo.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "Amabhasi amancane abhukwa ngohlelo lokusebenza: dweba indawo, setha izimoto namahora.",
+  "On-demand bus": "Ibhasi ngesicelo"
+}

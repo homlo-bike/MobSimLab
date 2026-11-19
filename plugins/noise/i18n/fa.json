@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "نوفهٔ برآوردشدهٔ خطوط (ADR-0038): نوار نوفهٔ زنده هنگام رسم خطوط خیابانی و راه‌آهن، با بررسی جیغ قوس، پل‌ها و سوزن‌ها. انتشار جاده‌ای و ریلی CNOSSOS-EU، فعلاً در میدان آزاد بدون ساختمان.",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "L_den و L_night خطوط رسم‌شده در ارتفاع ۴ متر، میدان آزاد: فاصله‌های نوار در دو طرف، شبکهٔ گیرنده‌ها برای نقشه و بررسی‌ها.",
+  "Noise band": "نوار نوفه",
+  "Noise map": "نقشهٔ نوفه"
+}

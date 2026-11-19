@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "আসা-যাওয়া রোপওয়ে",
+    "Aerial tramway (reversible)": "আসা-যাওয়া রোপওয়ে (উল্টোমুখী)",
+    "Bicable gondola (2S)": "দুই-তারের গন্ডোলা (2S)",
+    "Cable car": "কেবল কার",
+    "Cable cars": "কেবল কার",
+    "Funitel": "ফানিটেল",
+    "Gondolas and aerial tramways: click stations, towers follow.": "গন্ডোলা ও আসা-যাওয়া রোপওয়ে: স্টেশনে ক্লিক করুন, টাওয়ার নিজে বসবে।",
+    "Monocable detachable gondola (MGD)": "এক-তারের বিচ্ছিন্নযোগ্য গন্ডোলা (MGD)",
+    "Pulsed gondola": "স্পন্দিত গন্ডোলা",
+    "Ropeway system": "রোপওয়ে ব্যবস্থা",
+    "Tricable gondola (3S)": "তিন-তারের গন্ডোলা (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "শহুরে রোপওয়ে: অবিরাম চলা গন্ডোলা (MGD, 2S, 3S, ফানিটেল, স্পন্দিত) এবং আসা-যাওয়া রোপওয়ে, সোজা স্প্যান কিট দিয়ে আঁকা (ADR-0037)।"
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "কার্গো সাইকেল",
+    "Cargo bike range": "কার্গো সাইকেলের পাল্লা",
+    "Cargo bike savings": "কার্গো সাইকেলে সাশ্রয়",
+    "Cargo bike trip and range": "কার্গো সাইকেলের যাত্রা ও পাল্লা",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "একটি বৈদ্যুতিক কার্গো ট্রাইসাইকেল এক চার্জে কত দূর গিয়ে ফিরে আসতে পারে, পাহাড় পেরিয়ে এবং সাইকেল লেন পছন্দ করে, আর গাড়ির তুলনায় কত সাশ্রয় করে (কেনা, জ্বালানি, কর, বিমা, পার্কিং, রক্ষণাবেক্ষণ), নিজস্ব ট্যাবে।",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "শুরুর বিন্দু থেকে গন্তব্যে সাইকেল-চলাচলযোগ্য রাস্তায় (সাইকেল লেন পছন্দ করে) আসা-যাওয়ার যাত্রা ও ভূপ্রকৃতিতে খরচ হওয়া ব্যাটারি, এবং সাইকেলটি প্রতিটি দিকে কত দূর গিয়ে ফিরতে পারে তার পাল্লা মানচিত্র।",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "একই যাত্রার জন্য গাড়ির তুলনায় কার্গো সাইকেলের বার্ষিক খরচ: কেনা, শক্তি, কর, বিমা, পার্কিং ও রক্ষণাবেক্ষণ, শুরুর বিন্দুর দেশের মুদ্রায়।"
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "প্রতি লাইন, প্রতি মাধ্যম ও পুরো নেটওয়ার্কের বার্ষিক বিদ্যুৎ, ডিজেল, চূড়ান্ত শক্তি ও CO2e, প্রতি যান-কিমি ও প্রতি আসন-কিমি তীব্রতাসহ।",
+    "Energy and emissions": "শক্তি ও নির্গমন",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "প্রতিটি লাইনের বার্ষিক ট্র্যাকশন শক্তি ও গ্রিনহাউস গ্যাস নির্গমন, প্রতি মাধ্যম ও নেটওয়ার্কের জন্য, প্রতিটি লাইনের যান-কিমি থেকে: সাবস্টেশন বা চার্জারে বিদ্যুৎ, লিটারে ডিজেল, এবং গ্রিডের নির্গমন তীব্রতা ও ডিজেলের কূপ-থেকে-চাকা হিসাব থেকে CO2e। সারণি ট্যাবে দেখানো হয়।"
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "বেশিরভাগ শহরে প্রতি পিক্সেলে প্রায় 0.3 থেকে 1 মি-এর আকাশ ছবি, গ্রামাঞ্চলে মোটা: লেন, কার্ব ও রেলপথ দেখার মতো যথেষ্ট স্পষ্ট। ছবির তারিখ জায়গাভেদে আলাদা।",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "আকাশ ভিত্তি মানচিত্র হিসেবে Esri World Imagery: বেশিরভাগ শহরে প্রতি পিক্সেলে প্রায় 0.3 থেকে 1 মি-এর আকাশ ছবি, লেন, কার্ব ও রেলপথ দেখার মতো যথেষ্ট স্পষ্ট। কোনো অ্যাডমিন প্রশাসন → প্লাগইন-এ ArcGIS API কী সংরক্ষণ করে Esri-র শর্ত মেনে নিলে দেওয়া হয়; টাইলগুলো এই MobSimLab হয়ে আসে, তাই ব্রাউজার কখনো কী দেখে না, আর সেগুলো সংরক্ষিত হয় না।"
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "বৈদ্যুতিক হাইড্রোফয়েল",
+    "Fast catamaran": "দ্রুত ক্যাটামারান",
+    "Ferries": "ফেরি",
+    "Ferry": "ফেরি",
+    "Monohull water bus": "একক খোলের ওয়াটার বাস",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "জলপথ কিট দিয়ে আঁকা যাত্রী ফেরি ও ওয়াটার বাস: বার্থ ও গ্যাংওয়েসহ ঘাট, জলের ওপর পথ, গতি অঞ্চল ও বার্থ পরীক্ষা (ADR-0037)। গাড়ির ফেরি পরে আসবে।",
+    "Vessel type": "জলযানের ধরন",
+    "Water buses and crossings: click piers, shape the route over water.": "ওয়াটার বাস ও পারাপার: ঘাটে ক্লিক করুন, জলের ওপর পথ সাজান।"
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "GTFS ফিড",
+    "GTFS import and export": "GTFS আমদানি ও রপ্তানি",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "একটি GTFS ফিড (zip) এক পরিষেবা দিনের বিদ্যমান নেটওয়ার্ক হিসেবে প্রকল্পে পড়ে, চাইলে মানচিত্রের দৃশ্য পর্যন্ত কেটে, যাতে যাত্রা পরিকল্পক এটি পরিকল্পিত লাইনের সঙ্গে ব্যবহার করে; এবং প্রকল্পের লাইনগুলো অন্য সরঞ্জামের জন্য GTFS ফিড হিসেবে লেখে।",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "এক পরিষেবা দিনের স্টপ, রুট ও ট্রিপ (তারিখ না দিলে সবচেয়ে ব্যস্ত বুধবার), frequencies.txt ফ্রিকোয়েন্সি নকশা ও রুটের ধরন মাধ্যম হিসেবে।",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "প্রকল্পের লাইনগুলো কর্মদিবসের GTFS ফিড হিসেবে: সঠিক ট্রিপ, ফ্রিকোয়েন্সি লাইন frequencies.txt হিসেবে, স্টপ গ্রুপের জন্য স্টেশন।"
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "প্রতি পিক্সেলে প্রায় 30 মি (এই মানচিত্রে 38 মি), এক দিনের উপগ্রহ অতিক্রম থেকে: মানচিত্রের কিছু অংশ ফাঁকা বা মেঘলা, তাই অন্য তারিখ চেষ্টা করুন। রেলপথ বা কার্ব আঁকার জন্য অতি মোটা।",
+    "NASA GIBS imagery": "NASA GIBS চিত্র",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 ও 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS প্রকৃত রং",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA-র Global Imagery Browse Services (GIBS) থেকে উপগ্রহ চিত্র আকাশ ভিত্তি মানচিত্র হিসেবে, আপনার বেছে নেওয়া দিনের জন্য: প্রতি পিক্সেলে প্রায় 30 মি-এ Harmonized Landsat Sentinel-2 এবং প্রায় 250 মি-এ VIIRS। কোনো API কী লাগে না। চিত্রগুলো রাস্তা বা রেলপথ দেখার জন্য অতি মোটা।",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "প্রতিদিন সারা বিশ্ব, প্রতি পিক্সেলে প্রায় 250 মি (এই মানচিত্রে 306 মি), মেঘসহ: শুধু আঞ্চলিক প্রেক্ষাপটের জন্য।"
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "পরিষেবা লাইনের আনুমানিক শব্দ (ADR-0038): রাস্তার লাইন ও রেলপথ আঁকার সময় সরাসরি শব্দ বলয়, বাঁকের কর্কশ শব্দ, সেতু ও সুইচের পরীক্ষাসহ। CNOSSOS-EU সড়ক ও রেল নির্গমন, আপাতত ভবন ছাড়া খোলা ক্ষেত্রে।",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "আঁকা লাইনের 4 মি উচ্চতায় L_den ও L_night, খোলা ক্ষেত্র: দুই পাশে বলয়ের দূরত্ব, মানচিত্রের জন্য গ্রাহক গ্রিড ও পরীক্ষা।",
+    "Noise band": "শব্দ বলয়",
+    "Noise map": "শব্দ মানচিত্র"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS, WMTS ও XYZ টাইল পরিষেবা থেকে মানচিত্র স্তর, ভিত্তি মানচিত্র বা ওভারলে হিসেবে। অ্যাডমিন প্রশাসন → প্লাগইন-এ পরিষেবা যোগ করেন, দরকার হলে লগইন তথ্যসহ; টাইলগুলো এই MobSimLab হয়ে আসে, তাই ব্রাউজার সেগুলো কখনো দেখে না।",
+    "WMS, WMTS and XYZ map layers": "WMS, WMTS ও XYZ মানচিত্র স্তর"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "পরিষেবা অঞ্চল কিট দিয়ে আঁকা চাহিদাভিত্তিক পরিবহন: একটি অঞ্চল চিহ্নিত করুন, ঘণ্টায় অনুরোধ, বহর ও পরিষেবার সময় ঠিক করুন, এবং অবিরত আসন্নকরণ সূত্র থেকে প্রয়োজনীয় যান, গড় অপেক্ষা, যাত্রা ও দরজা-থেকে-দরজা সময় পান। দিনের সিমুলেশন প্রতিটি বুকিং ট্রিপ ধরে ধরে পাঠায় (ADR-0042)। অঞ্চলটি যাত্রা পরিকল্পকে দেখা যায়।",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "অ্যাপে বুক করা মিনিবাস: অঞ্চল চিহ্নিত করুন, বহর ও সময় ঠিক করুন।",
+    "On-demand bus": "চাহিদাভিত্তিক বাস"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Panoramax রাস্তার ছবি",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "মানুষ ও সরকারি সংস্থার শেয়ার করা ছবি, এমন উন্মুক্ত লাইসেন্সে (বেশিরভাগ CC BY-SA 4.0 বা Etalab 2.0) যা সেগুলো থেকে মানচিত্র তৈরির অনুমতি দেয়। কোনোটি ব্যবহার করলে লেখকের নাম উল্লেখ করুন।",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Panoramax থেকে রাস্তা-স্তরের ছবি, রাস্তার ছবির মুক্ত ও উন্মুক্ত সাধারণ ভান্ডার। ছবি কোথায় তোলা হয়েছে দেখতে মানচিত্রে রাস্তার ছবি খুলুন, তারপর কোনো বিন্দুতে ক্লিক করে তার কাছে তোলা ছবি দেখুন। ছবিগুলো এমন উন্মুক্ত লাইসেন্সে যা সেগুলো থেকে মানচিত্র তৈরির অনুমতি দেয়। কোনো কী লাগে না। ছবিগুলো এই MobSimLab হয়ে আসে এবং সংরক্ষিত হয় না, প্রকল্পের সঙ্গেও রাখা হয় না।"
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "উঁচু গাইডওয়েতে তারে টানা স্বয়ংক্রিয় পিপল মুভার, সোজা স্প্যান কিট দিয়ে আঁকা: দুই ট্রেনের শাটল, এবং প্রতিটি স্টেশনে থামা বিচ্ছিন্নযোগ্য ট্রেনসহ সংকুচিত লুপ (ADR-0037 §7)। স্বচালিত পিপল মুভারের জন্য রেলপথ সম্পাদক লাগে, সেগুলো পরে আসবে।",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "গাইডওয়েতে তারে টানা শাটল ও লুপ: স্টেশনে ক্লিক করুন, খুঁটি নিজে বসবে।",
+    "People mover": "পিপল মুভার",
+    "People mover shuttle": "পিপল মুভার শাটল",
+    "People mover system": "পিপল মুভার ব্যবস্থা",
+    "People movers": "পিপল মুভার",
+    "Pinched loop, detachable trains": "সংকুচিত লুপ, বিচ্ছিন্নযোগ্য ট্রেন",
+    "Shuttle, two trains on a fixed rope": "শাটল, স্থির তারে দুটি ট্রেন"
+  }
+}

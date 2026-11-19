@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "نقل حسب الطلب يُرسم بأداة منطقة الخدمة: حدّد منطقة، واضبط عدد الطلبات في الساعة والأسطول وساعات الخدمة، لتحصل على عدد المركبات اللازمة ومتوسط الانتظار ومدة الركوب والزمن من الباب إلى الباب من معادلات التقريب المستمر. تُرسل محاكاة اليوم كل حجز رحلةً رحلة (ADR-0042). تظهر المنطقة في مخطط الرحلات.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "حافلات صغيرة تُحجز بالتطبيق: حدّد المنطقة، واضبط الأسطول والساعات.",
+  "On-demand bus": "حافلة عند الطلب"
+}

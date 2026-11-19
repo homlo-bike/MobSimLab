@@ -69,6 +69,7 @@ import type { DemandZone } from "../kits/ZoneEditor";
 import { MapView } from "../map/MapView";
 import {
   findMode,
+  localizePlugins,
   PLUGINS,
   pluginTabs,
   type ProjectPlugin,
@@ -256,7 +257,7 @@ export function Workspace({
   /** Load the session again (a fresh CSRF token), before saving again after a refused save. */
   onRefreshSession?: () => void;
 }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [project, setProject] = useState<Project | null>(null);
   const [missing, setMissing] = useState(false);
   const [map, setMap] = useState<MapLibreMap | null>(null);
@@ -418,7 +419,11 @@ export function Workspace({
       live = false;
     };
   }, [api, projectId]);
-  const activePlugins = useMemo(() => (plugins ? pluginsOfProject(plugins) : PLUGINS), [plugins]);
+  // The project's plugins, with their texts in the language shown.
+  const activePlugins = useMemo(
+    () => localizePlugins(plugins ? pluginsOfProject(plugins) : PLUGINS, language),
+    [plugins, language],
+  );
   // The registry's helpers (modes, tools, calculations) read the open project's plugins.
   setActivePlugins(activePlugins);
   useEffect(() => () => setActivePlugins(PLUGINS), []);

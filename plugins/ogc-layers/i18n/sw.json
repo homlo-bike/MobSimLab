@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Tabaka za ramani kutoka huduma za vigae za WMS, WMTS na XYZ, kama ramani za msingi au tabaka za juu. Msimamizi huongeza huduma chini ya Usimamizi → Programu-jalizi, pamoja na maelezo yake ya kuingia ikihitajika; vigae hupitia MobSimLab hii, kwa hivyo vivinjari havivioni kamwe.",
+  "WMS, WMTS and XYZ map layers": "Tabaka za ramani za WMS, WMTS na XYZ"
+}

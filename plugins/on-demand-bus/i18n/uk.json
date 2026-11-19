@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Транспорт за запитом малюється набором зони обслуговування: окресліть зону, задайте заявки на годину, парк і години роботи й отримайте потрібну кількість машин, середнє очікування, час у дорозі та від дверей до дверей за формулами неперервного наближення. Симуляція дня розподіляє кожне замовлення рейс за рейсом (ADR-0042). Зона видна в планувальнику поїздок.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "Мікроавтобуси, замовлені через застосунок: окресліть зону, задайте парк і години.",
+  "On-demand bus": "Автобус за запитом"
+}

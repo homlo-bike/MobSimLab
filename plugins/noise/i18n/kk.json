@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "Қызмет бағыттарының болжамды шуы (ADR-0038): көше бағыттары мен темір жолдарды сызған кезде тірі шу белдеуі, бұрылыстағы шиқыл, көпірлер мен бағыттамаларды тексерумен. CNOSSOS-EU жол және темір жол шығаруы, әзірге ғимараттарсыз ашық алаңда.",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "Сызылған бағыттардың 4 м биіктіктегі L_den және L_night мәндері, ашық алаң: екі жақтағы белдеу қашықтықтары, картаға арналған қабылдағыштар торы және тексерулер.",
+  "Noise band": "Шу белдеуі",
+  "Noise map": "Шу картасы"
+}

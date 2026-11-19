@@ -1,0 +1,6 @@
+{
+  "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "የአገልግሎት መስመሮች የሚገመት ጫጫታ (ADR-0038)፦ የመንገድ መስመሮችንና የባቡር ሐዲዶችን ሲስሉ በቀጥታ የሚታይ የጫጫታ ቀበቶ፣ የኩርባ ጩኸት፣ የድልድዮችና የመቀየሪያዎች ፍተሻዎች ያሉት። የCNOSSOS-EU የመንገድና የባቡር ልቀት፣ ለጊዜው ያለ ሕንፃዎች በክፍት ሜዳ።",
+  "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "የተሳሉ መስመሮች L_den እና L_night በ4 ሜ፣ ክፍት ሜዳ፦ በሁለቱም በኩል የቀበቶ ርቀቶች፣ ለካርታው የተቀባዮች ፍርግርግና ፍተሻዎች።",
+  "Noise band": "የጫጫታ ቀበቶ",
+  "Noise map": "የጫጫታ ካርታ"
+}

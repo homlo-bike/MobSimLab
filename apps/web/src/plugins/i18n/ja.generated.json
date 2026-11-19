@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "交走式ロープウェイ",
+    "Aerial tramway (reversible)": "交走式ロープウェイ（往復）",
+    "Bicable gondola (2S)": "複線自動循環式ゴンドラ（2S）",
+    "Cable car": "ロープウェイ",
+    "Cable cars": "ロープウェイ",
+    "Funitel": "フニテル",
+    "Gondolas and aerial tramways: click stations, towers follow.": "ゴンドラと交走式ロープウェイ：駅をクリックすると支柱が自動で付きます。",
+    "Monocable detachable gondola (MGD)": "単線自動循環式ゴンドラ（MGD）",
+    "Pulsed gondola": "パルス式ゴンドラ",
+    "Ropeway system": "索道方式",
+    "Tricable gondola (3S)": "三線自動循環式ゴンドラ（3S）",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "都市索道：循環式ゴンドラ（MGD、2S、3S、フニテル、パルス式）と交走式ロープウェイを、直線スパンキットで描きます（ADR-0037）。"
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "カーゴバイク",
+    "Cargo bike range": "カーゴバイクの航続距離",
+    "Cargo bike savings": "カーゴバイクによる節約",
+    "Cargo bike trip and range": "カーゴバイクの走行と航続距離",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "電動カーゴ三輪車が1回の充電でどこまで往復できるか（坂を越え、自転車レーンを優先）、そして車と比べてどれだけ節約できるか（購入、燃料、税金、保険、駐車、整備）を専用のタブで示します。",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "出発地から目的地まで自転車で通れる道（自転車レーンを優先）を往復するルートと地形に応じたバッテリー消費、そして各方向にどこまで往復できるかを示す航続距離マップ。",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "同じ移動について、カーゴバイクと車の年間費用の比較：購入、エネルギー、税金、保険、駐車、整備。出発地の国の通貨で示します。"
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "路線ごと、交通手段ごと、ネットワーク全体の年間の電力、軽油、最終エネルギー、CO2e。車両キロあたりと座席キロあたりの原単位も示します。",
+    "Energy and emissions": "エネルギーと排出量",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "各路線の年間の走行エネルギーと温室効果ガス排出量を、交通手段ごととネットワーク全体で、各路線の車両キロから求めます：変電所または充電器での電力、リットル単位の軽油、そして電力網の排出係数と軽油の Well-to-Wheel による CO2e。「表」タブに表示されます。"
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "多くの都市で1ピクセルあたり約 0.3〜1 m の航空写真。郊外ではより粗くなります。車線、縁石、線路が見分けられる鮮明さです。撮影日は場所によって異なります。",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "航空写真の背景地図としての Esri World Imagery：多くの都市で1ピクセルあたり約 0.3〜1 m で、車線、縁石、線路が見分けられる鮮明さです。管理者が「管理 → プラグイン」で ArcGIS API キーを保存し Esri の規約に同意すると利用できます。タイルはこの MobSimLab を経由するためブラウザーがキーを見ることはなく、タイルは保存されません。"
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "電動水中翼船",
+    "Fast catamaran": "高速双胴船",
+    "Ferries": "フェリー",
+    "Ferry": "フェリー",
+    "Monohull water bus": "単胴の水上バス",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "水上航路キットで描く旅客フェリーと水上バス：係留場所とタラップのある桟橋、水上の航路、速度区域、係留場所のチェック（ADR-0037）。カーフェリーは後日対応します。",
+    "Vessel type": "船の種類",
+    "Water buses and crossings: click piers, shape the route over water.": "水上バスと渡船：桟橋をクリックし、水上の航路を整えます。"
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "GTFS フィード",
+    "GTFS import and export": "GTFS のインポートとエクスポート",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "GTFS フィード（zip）を1運行日分の既存ネットワークとしてプロジェクトに読み込み、必要なら地図の表示範囲で切り出して、経路検索が計画路線と合わせて利用できるようにします。また、プロジェクトの路線を他のツール向けの GTFS フィードとして書き出します。",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "1運行日分の停留所、路線、便（日付の指定がなければ最も便数の多い水曜日）。frequencies.txt は運行間隔パターンとして、路線種別は交通手段として読み込みます。",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "プロジェクトの路線を平日の GTFS フィードとして：正確な便、運行間隔の路線は frequencies.txt、停留所グループには駅。"
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "1ピクセルあたり約 30 m（この地図では 38 m）、1日分の衛星の通過から作成：地図の一部が空白または雲に覆われるため、別の日付を試してください。線路や縁石を描くには粗すぎます。",
+    "NASA GIBS imagery": "NASA GIBS 画像",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8・9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS トゥルーカラー",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA の Global Imagery Browse Services（GIBS）の衛星画像を、選んだ日の航空背景地図として表示します：1ピクセルあたり約 30 m の Harmonized Landsat Sentinel-2 と約 250 m の VIIRS。API キーは不要です。画像は道路や線路を見分けるには粗すぎます。",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "毎日の全世界の画像、1ピクセルあたり約 250 m（この地図では 306 m）、雲あり：地域の概観用のみ。"
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "路線の推定騒音（ADR-0038）：道路路線と鉄道を描く間にリアルタイムで騒音帯を表示し、曲線のきしみ音、橋梁、分岐器をチェックします。CNOSSOS-EU の道路・鉄道の発生音で、現時点では建物のない自由音場です。",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "描いた路線の高さ 4 m における L_den と L_night（自由音場）：両側の騒音帯の距離、地図用の受音点グリッド、チェック。",
+    "Noise band": "騒音帯",
+    "Noise map": "騒音マップ"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS・WMTS・XYZ タイルサービスの地図レイヤーを、背景地図またはオーバーレイとして表示します。管理者が「管理 → プラグイン」でサービスを追加し、必要ならログイン情報も設定します。タイルはこの MobSimLab を経由するため、ブラウザーがそれを見ることはありません。",
+    "WMS, WMTS and XYZ map layers": "WMS・WMTS・XYZ 地図レイヤー"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "サービスエリアキットで描くデマンド交通：エリアを囲み、1時間あたりの予約数、車両数、運行時間を設定すると、連続近似式から必要な車両数、平均待ち時間、乗車時間、ドアツードアの所要時間が求まります。1日のシミュレーションではすべての予約を便ごとに配車します（ADR-0042）。エリアは経路検索に表示されます。",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "アプリで予約するミニバス：エリアを囲み、車両数と運行時間を設定します。",
+    "On-demand bus": "デマンドバス"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Panoramax ストリート写真",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "個人や公的機関が共有した写真で、写真からの地図作成を認めるオープンライセンス（主に CC BY-SA 4.0 または Etalab 2.0）で公開されています。使用する際は撮影者を表示してください。",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "自由でオープンなストリート写真の共有資源 Panoramax の路上写真。地図で「ストリート写真」を開くと撮影場所が表示され、地点をクリックするとその近くで撮影された写真を見られます。写真は写真からの地図作成を認めるオープンライセンスで公開されています。キーは不要です。写真はこの MobSimLab を経由し、保存もプロジェクトへの記録もされません。"
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "高架ガイドウェイ上のケーブル牽引式自動旅客輸送システム。直線スパンキットで描きます：2編成のシャトルと、着脱式車両が各駅に停まるピンチドループ（ADR-0037 §7）。自走式は鉄道エディターが必要で、後日対応します。",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "ガイドウェイ上のケーブル牽引式シャトルとループ：駅をクリックすると橋脚が自動で付きます。",
+    "People mover": "新交通システム",
+    "People mover shuttle": "新交通システムのシャトル",
+    "People mover system": "新交通システムの方式",
+    "People movers": "新交通システム",
+    "Pinched loop, detachable trains": "ピンチドループ、着脱式車両",
+    "Shuttle, two trains on a fixed rope": "シャトル、固定ケーブルに2編成"
+  }
+}

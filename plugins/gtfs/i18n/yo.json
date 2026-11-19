@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "Ìfúnni GTFS",
+  "GTFS import and export": "Gbígbé GTFS wọlé àti jáde",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Ó ń ka ìfúnni GTFS (zip) sínú iṣẹ́ àkànṣe gẹ́gẹ́ bí nẹ́tíwọ̀ọ̀kì tí ó wà fún ọjọ́ iṣẹ́ kan, tí a gé sí ìwò máàpù tí a bá béèrè, kí olùṣètò ìrìnàjò lè lò ó pẹ̀lú àwọn ìlà tí a ṣètò; ó sì ń kọ àwọn ìlà iṣẹ́ àkànṣe gẹ́gẹ́ bí ìfúnni GTFS fún àwọn irinṣẹ́ míràn.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Àwọn ibùdúró, ọ̀nà àti ìrìnàjò ọjọ́ iṣẹ́ kan (Ọjọ́rú tí ó kún jùlọ àyàfi tí a bá fún ní ọjọ́), pẹ̀lú frequencies.txt gẹ́gẹ́ bí àpẹẹrẹ ìgbà àti irú ọ̀nà gẹ́gẹ́ bí irú ọkọ̀.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Àwọn ìlà iṣẹ́ àkànṣe gẹ́gẹ́ bí ìfúnni GTFS ọjọ́ iṣẹ́: ìrìnàjò pàtó, ìlà onígbà gẹ́gẹ́ bí frequencies.txt, ibùdókọ̀ fún ẹgbẹ́ ibùdúró."
+}

@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Transporte a demanda dibujado con el kit de zona de servicio: delimita una zona, fija las solicitudes por hora, la flota y el horario de servicio, y obtén los vehículos necesarios, la espera media, el tiempo a bordo y puerta a puerta con fórmulas de aproximación continua. Simular el día despacha cada reserva viaje a viaje (ADR-0042). La zona aparece en el planificador de viajes.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "Microbuses reservados por app: delimita la zona y fija la flota y el horario.",
+  "On-demand bus": "Transporte a demanda"
+}

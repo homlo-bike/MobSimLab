@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS, WMTS ve XYZ karo hizmetlerinden harita katmanları, altlık ya da bindirme olarak. Bir Yönetici Yönetim → Eklentiler altında bir hizmet ekler, gerekirse oturum açma bilgileriyle; karolar bu MobSimLab üzerinden gelir, bu yüzden tarayıcılar bunları asla görmez.",
+  "WMS, WMTS and XYZ map layers": "WMS, WMTS ve XYZ harita katmanları"
+}

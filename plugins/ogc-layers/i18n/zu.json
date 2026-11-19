@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "Izendlalelo zebalazwe ezivela kumasevisi amathayela e-WMS, WMTS ne-XYZ, njengamamephu ayisisekelo noma izendlalelo ezingaphezulu. UMphathi wengeza isevisi ngaphansi kokuthi Ukuphatha → Ama-plugin, nemininingwane yayo yokungena uma kudingeka; amathayela adlula kule MobSimLab, ngakho iziphequluli azilokothi ziyibone.",
+  "WMS, WMTS and XYZ map layers": "Izendlalelo zebalazwe ze-WMS, WMTS ne-XYZ"
+}

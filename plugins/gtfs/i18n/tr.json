@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "GTFS beslemesi",
+  "GTFS import and export": "GTFS içe ve dışa aktarma",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Bir GTFS beslemesini (zip) bir hizmet günü için mevcut ağ olarak projeye okur, istenirse harita görünümüne kırpar, böylece yolculuk planlayıcısı onu planlanan hatlarla birlikte kullanır; ve projenin hatlarını başka araçlar için GTFS beslemesi olarak yazar.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Bir hizmet gününün durakları, güzergâhları ve seferleri (tarih verilmezse en yoğun çarşamba), frequencies.txt sefer aralığı kalıpları ve güzergâh türleri ulaşım türleri olarak.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Projenin hatları hafta içi GTFS beslemesi olarak: tam seferler, frequencies.txt olarak sefer aralıklı hatlar, durak grupları için istasyonlar."
+}

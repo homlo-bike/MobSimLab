@@ -376,7 +376,7 @@ export const ig: Messages = {
   "prefs.group.noise": "Mkpọtụ",
   "prefs.traction.battery": "batrị",
   "prefs.traction.diesel": "dizel",
-  "prefs.traction.hydrogen": "hydrogen",
+  "prefs.traction.hydrogen": "haịdrojin",
   "prefs.traction.cng": "gas sitere n'okike (CNG)",
   "prefs.traction.electric": "eletrik",
   "report.title": "Akụkọ echiche",

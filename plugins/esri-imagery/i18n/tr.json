@@ -1,0 +1,5 @@
+{
+  "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "Çoğu kentte piksel başına yaklaşık 0,3 ile 1 m hava fotoğrafları, kırsalda daha kaba: şeritleri, bordürleri ve rayları görecek kadar net. Fotoğraf tarihleri yere göre değişir.",
+  "Esri World Imagery": "Esri World Imagery",
+  "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "Hava fotoğrafı altlığı olarak Esri World Imagery: çoğu kentte piksel başına yaklaşık 0,3 ile 1 m hava fotoğrafları, şeritleri, bordürleri ve rayları görecek kadar net. Bir Yönetici Yönetim → Eklentiler altında bir ArcGIS API anahtarı kaydedip Esri'nin koşullarını kabul edince sunulur; karolar bu MobSimLab üzerinden gelir, bu yüzden tarayıcılar anahtarı asla görmez, ve karolar saklanmaz."
+}

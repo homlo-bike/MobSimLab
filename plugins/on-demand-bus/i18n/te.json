@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "సేవా జోన్ కిట్‌తో గీసిన డిమాండ్ ఆధారిత రవాణా: ఒక జోన్‌ను గీయండి, గంటకు అభ్యర్థనలు, వాహన సముదాయం మరియు సేవా గంటలు సెట్ చేయండి, మరియు నిరంతర అంచనా సూత్రాల నుండి అవసరమైన వాహనాలు, సగటు నిరీక్షణ, ప్రయాణ మరియు ఇంటి-నుండి-ఇంటి సమయం పొందండి. రోజు అనుకరణ ప్రతి బుకింగ్‌ను ట్రిప్ వారీగా పంపుతుంది (ADR-0042). జోన్ ప్రయాణ ప్లానర్‌లో కనిపిస్తుంది.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "యాప్ ద్వారా బుక్ చేసే మినీబస్సులు: జోన్‌ను గీయండి, సముదాయం మరియు గంటలు సెట్ చేయండి.",
+  "On-demand bus": "డిమాండ్ ఆధారిత బస్సు"
+}

@@ -3,6 +3,7 @@ import { Dialog } from "../shell/Dialog";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import type { ProjectPlugin } from "../plugins/registry";
+import { localizeSummary } from "../plugins/texts";
 
 /** Plain words for what a plugin may read or write (ADR-0036 §5). */
 export const PERMISSION_LABELS: Record<string, MessageKey> = {
@@ -53,7 +54,7 @@ export function ProjectPlugins({
   /** Turn a plugin on or off, with a version for installed plugins; resolves to the new list. */
   onSet: (pluginId: string, enabled: boolean, version?: string) => Promise<void>;
 }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
@@ -68,7 +69,9 @@ export function ProjectPlugins({
       setBusy(null);
     }
   };
-  const sorted = plugins ? [...plugins].sort((a, b) => a.name.localeCompare(b.name)) : null;
+  const sorted = plugins
+    ? plugins.map((p) => localizeSummary(p, language)).sort((a, b) => a.name.localeCompare(b.name, language))
+    : null;
   const shown = sorted?.find((p) => p.id === open) ?? null;
   return (
     <section

@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "GTFS ఫీడ్",
+  "GTFS import and export": "GTFS దిగుమతి మరియు ఎగుమతి",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "ఒక GTFS ఫీడ్‌ను (zip) ఒక సేవా దినం కోసం ఉన్న నెట్‌వర్క్‌గా ప్రాజెక్ట్‌లోకి చదువుతుంది, అడిగితే మ్యాప్ వీక్షణకు కత్తిరించి, ప్రయాణ ప్లానర్ దాన్ని ప్రణాళిక లైన్లతో పాటు వాడేలా; మరియు ప్రాజెక్ట్ లైన్లను ఇతర సాధనాల కోసం GTFS ఫీడ్‌గా రాస్తుంది.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "ఒక సేవా దినపు స్టాప్‌లు, మార్గాలు మరియు ట్రిప్‌లు (తేదీ ఇవ్వకపోతే అత్యంత రద్దీ బుధవారం), frequencies.txt ను ఫ్రీక్వెన్సీ నమూనాలుగా మరియు మార్గ రకాలను రవాణా విధానాలుగా.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "ప్రాజెక్ట్ లైన్లు వారపు రోజు GTFS ఫీడ్‌గా: ఖచ్చితమైన ట్రిప్‌లు, ఫ్రీక్వెన్సీ లైన్లు frequencies.txt గా, స్టాప్ గుంపులకు స్టేషన్లు."
+}

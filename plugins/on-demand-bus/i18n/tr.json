@@ -1,0 +1,5 @@
+{
+  "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "Hizmet bölgesi kitiyle çizilen talebe bağlı ulaşım: bir bölge çizin, saatlik talepleri, filoyu ve hizmet saatlerini ayarlayın, sürekli yaklaşım formüllerinden gereken araçları, ortalama bekleme, yolculuk ve kapıdan kapıya süreyi alın. Günün benzetimi her rezervasyonu sefer sefer gönderir (ADR-0042). Bölge yolculuk planlayıcısında görünür.",
+  "Minibuses booked by app: outline the zone, set the fleet and hours.": "Uygulamayla ayrılan minibüsler: bölgeyi çizin, filoyu ve saatleri ayarlayın.",
+  "On-demand bus": "Talebe bağlı otobüs"
+}

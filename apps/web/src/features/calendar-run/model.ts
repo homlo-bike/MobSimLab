@@ -57,6 +57,11 @@ export interface TableFigures {
   riders: Record<string, [number, number, number]> | null;
   /** The energy estimate, or null without the energy plugin or before it is ready. */
   energy: EnergyEstimate | null;
+  /**
+   * Each line's vehicle-km a year behind `energy` when the cost estimate is not there (the energy then comes from
+   * the weekday timetables), so the energy of a day type follows its own service.
+   */
+  energyLines?: readonly { id: string; kmPerYear: number }[];
 }
 
 /** The operating cost split into what each day of service costs and what a year costs whatever runs. */
@@ -118,16 +123,20 @@ export function dayFigures(
   const weekdayRiders = t.riders ? Object.values(t.riders).reduce((s, r) => s + r[1], 0) : null;
   // The energy estimate is a year of the same vehicle-km.
   const energy = t.energy ? t.energy.total.energy_kwh / days : null;
+  const energyLines = t.estimate ? lines : (t.energyLines ?? []);
+  const energyKmOn = (dt: DayTypeId) => energyLines.reduce((s, l) => s + l.kmPerYear * share(l.id, dt), 0);
+  const energyWeekdayKm = energyKmOn("weekday");
   const split = t.estimate ? operatingSplit(t.estimate, prefs) : null;
   const out = {} as Record<DayTypeId, DayFigures>;
   for (const dt of DAY_TYPES) {
     // Energy and the cost of a day of service follow the day's vehicle-km.
     const ratio = weekdayKm > 0 ? kmOn(dt) / weekdayKm : 1;
+    const energyRatio = energyWeekdayKm > 0 ? energyKmOn(dt) / energyWeekdayKm : 1;
     out[dt] = {
       vehicle_km: t.estimate ? kmOn(dt) : null,
       vehicle_hours: t.estimate ? hoursOn(dt) : null,
       passengers: weekdayRiders === null ? null : weekdayRiders * riderShare(dt, prefs),
-      energy_kwh: energy === null ? null : energy * ratio,
+      energy_kwh: energy === null ? null : energy * energyRatio,
       operating_cost: split ? split.perDay * ratio : null,
     };
   }

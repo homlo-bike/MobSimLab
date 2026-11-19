@@ -377,7 +377,7 @@ export const ha: Messages = {
   "prefs.group.noise": "Hayaniya",
   "prefs.traction.battery": "batir",
   "prefs.traction.diesel": "dizal",
-  "prefs.traction.hydrogen": "hydrogen",
+  "prefs.traction.hydrogen": "haidrojin",
   "prefs.traction.cng": "iskar gas (CNG)",
   "prefs.traction.electric": "lantarki",
   "report.title": "Rahoton zato",

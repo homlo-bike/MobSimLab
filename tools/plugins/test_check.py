@@ -194,3 +194,19 @@ def test_bundled_plugins_use_core_code(plugins: Path):
     )
     errors, _ = check.build(plugins)
     assert any("bundled plugins use runtime bundled-wasm" in e for e in errors)
+
+
+def test_translations_are_rendered_and_checked(plugins: Path):
+    _, reg = check.build()
+    ferry = next(p for p in reg["plugins"] if p["id"] == "org.mobsimlab.ferry")
+    assert ferry["translations"]["de"]["Ferries"] == "Fähren"
+    # A key that is none of the plugin's texts is refused.
+    edit(plugins / "ferry" / "i18n" / "de.json", lambda t: t.update({"Submarines": "U-Boote"}))
+    errors, _ = check.build(plugins)
+    assert any("Submarines" in e for e in errors)
+
+
+def test_bundled_plugins_translate_into_every_language(plugins: Path):
+    (plugins / "ferry" / "i18n" / "fr.json").unlink()
+    errors, _ = check.build(plugins)
+    assert any("org.mobsimlab.ferry" in e and "fr" in e for e in errors)

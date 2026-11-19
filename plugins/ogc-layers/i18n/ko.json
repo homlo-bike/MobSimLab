@@ -1,0 +1,4 @@
+{
+  "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS, WMTS, XYZ 타일 서비스의 지도 레이어를 배경 지도나 오버레이로 사용합니다. 관리자가 관리 → 플러그인에서 서비스를 추가하고 필요하면 로그인 정보도 넣습니다. 타일은 이 MobSimLab을 거쳐 오므로 브라우저는 이를 볼 수 없습니다.",
+  "WMS, WMTS and XYZ map layers": "WMS, WMTS 및 XYZ 지도 레이어"
+}

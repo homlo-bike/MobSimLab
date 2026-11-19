@@ -1,0 +1,92 @@
+{
+  "org.mobsimlab.aerial-lift": {
+    "Aerial tramway": "రాకపోకల రోప్‌వే",
+    "Aerial tramway (reversible)": "రాకపోకల రోప్‌వే (వెనక్కి తిరిగేది)",
+    "Bicable gondola (2S)": "రెండు కేబుళ్ల గొండోలా (2S)",
+    "Cable car": "కేబుల్ కార్",
+    "Cable cars": "కేబుల్ కార్లు",
+    "Funitel": "ఫ్యూనిటెల్",
+    "Gondolas and aerial tramways: click stations, towers follow.": "గొండోలాలు మరియు రాకపోకల రోప్‌వేలు: స్టేషన్లను క్లిక్ చేయండి, టవర్లు వాటంతట అవే వస్తాయి.",
+    "Monocable detachable gondola (MGD)": "ఒక కేబుల్ విడదీయగల గొండోలా (MGD)",
+    "Pulsed gondola": "పల్స్డ్ గొండోలా",
+    "Ropeway system": "రోప్‌వే వ్యవస్థ",
+    "Tricable gondola (3S)": "మూడు కేబుళ్ల గొండోలా (3S)",
+    "Urban ropeways: continuous gondolas (MGD, 2S, 3S, funitel, pulsed) and reversible aerial tramways, drawn with the straight spans kit (ADR-0037).": "నగర రోప్‌వేలు: నిరంతరం నడిచే గొండోలాలు (MGD, 2S, 3S, ఫ్యూనిటెల్, పల్స్డ్) మరియు రాకపోకల రోప్‌వేలు, నేరు స్పాన్‌ల కిట్‌తో గీసినవి (ADR-0037)."
+  },
+  "org.mobsimlab.cargo-bike": {
+    "Cargo bike": "కార్గో సైకిల్",
+    "Cargo bike range": "కార్గో సైకిల్ పరిధి",
+    "Cargo bike savings": "కార్గో సైకిల్ పొదుపు",
+    "Cargo bike trip and range": "కార్గో సైకిల్ ప్రయాణం మరియు పరిధి",
+    "How far an electric cargo tricycle gets out and back on one battery charge, over the hills and preferring bike lanes, and what it saves against a car (purchase, fuel, tax, insurance, parking, maintenance), in its own tab.": "విద్యుత్ కార్గో ట్రైసైకిల్ ఒక బ్యాటరీ ఛార్జ్‌తో ఎంత దూరం వెళ్లి తిరిగి రాగలదో, కొండల మీదుగా సైకిల్ లేన్లకు ప్రాధాన్యం ఇస్తూ, మరియు కారుతో పోలిస్తే అది ఎంత పొదుపు చేస్తుందో (కొనుగోలు, ఇంధనం, పన్ను, బీమా, పార్కింగ్, నిర్వహణ), దాని స్వంత ట్యాబ్‌లో.",
+    "Round trip from a start point to a destination on bike-usable streets (preferring bike lanes) with the battery used over the terrain, and a range map of how far the bike gets out and back in every direction.": "ప్రారంభ స్థానం నుండి గమ్యానికి సైకిల్ వెళ్లగల వీధుల్లో (సైకిల్ లేన్లకు ప్రాధాన్యం ఇస్తూ) వెళ్లి రావడం మరియు భూభాగంపై ఖర్చయిన బ్యాటరీ, మరియు ప్రతి దిశలో సైకిల్ ఎంత దూరం వెళ్లి రాగలదో చూపే పరిధి మ్యాప్.",
+    "Yearly cost of the cargo bike against a car for the same trips: purchase, energy, tax, insurance, parking and maintenance, in the currency of the start point's country.": "అవే ప్రయాణాలకు కారుతో పోలిస్తే కార్గో సైకిల్ వార్షిక ఖర్చు: కొనుగోలు, శక్తి, పన్ను, బీమా, పార్కింగ్ మరియు నిర్వహణ, ప్రారంభ స్థానం ఉన్న దేశపు కరెన్సీలో."
+  },
+  "org.mobsimlab.energy": {
+    "Electricity, diesel, final energy and CO2e a year per line, per mode and for the network, with the intensity per vehicle-km and per place-km.": "ప్రతి లైన్‌కు, ప్రతి రవాణా విధానానికి మరియు మొత్తం నెట్‌వర్క్‌కు సంవత్సరానికి విద్యుత్, డీజిల్, తుది శక్తి మరియు CO2e, ప్రతి వాహన-కి.మీ మరియు ప్రతి సీటు-కి.మీ తీవ్రతతో.",
+    "Energy and emissions": "శక్తి మరియు ఉద్గారాలు",
+    "Traction energy and greenhouse gas emissions of every line a year, per mode and for the network, from the vehicle-km each line runs: electricity at the substation or charger, diesel in litres, and CO2e from the grid's emission intensity and diesel well-to-wheel. Shown in the Tables tab.": "ప్రతి లైన్ యొక్క సంవత్సర ట్రాక్షన్ శక్తి మరియు హరితగృహ వాయు ఉద్గారాలు, ప్రతి విధానానికి మరియు నెట్‌వర్క్‌కు, ప్రతి లైన్ నడిచే వాహన-కి.మీ నుండి: సబ్‌స్టేషన్ లేదా ఛార్జర్ వద్ద విద్యుత్, లీటర్లలో డీజిల్, మరియు గ్రిడ్ ఉద్గార తీవ్రత మరియు డీజిల్ బావి-నుండి-చక్రం వరకు నుండి CO2e. పట్టికలు ట్యాబ్‌లో చూపబడుతుంది."
+  },
+  "org.mobsimlab.esri-imagery": {
+    "Aerial photos at about 0.3 to 1 m per pixel in most cities, coarser in the countryside: sharp enough to see lanes, kerbs and track. Photo dates vary by place.": "చాలా నగరాల్లో పిక్సెల్‌కు సుమారు 0.3 నుండి 1 మీ వైమానిక ఫోటోలు, గ్రామీణ ప్రాంతాల్లో మందంగా: లేన్లు, కర్బ్‌లు మరియు పట్టాలు చూడటానికి సరిపడా స్పష్టంగా. ఫోటోల తేదీలు ప్రదేశాన్ని బట్టి మారుతాయి.",
+    "Esri World Imagery": "Esri World Imagery",
+    "Esri World Imagery as an aerial basemap: aerial photos at about 0.3 to 1 m per pixel in most cities, sharp enough to see lanes, kerbs and track. Offered once an Admin saves an ArcGIS API key and accepts Esri's terms under Administration → Plugins; the tiles come through this MobSimLab, so browsers never see the key, and are not stored.": "వైమానిక ఆధార మ్యాప్‌గా Esri World Imagery: చాలా నగరాల్లో పిక్సెల్‌కు సుమారు 0.3 నుండి 1 మీ వైమానిక ఫోటోలు, లేన్లు, కర్బ్‌లు మరియు పట్టాలు చూడటానికి సరిపడా స్పష్టంగా. ఒక అడ్మిన్ నిర్వహణ → ప్లగిన్‌లు కింద ArcGIS API కీని సేవ్ చేసి Esri నిబంధనలను అంగీకరించిన తర్వాత అందుబాటులో ఉంటుంది; టైల్స్ ఈ MobSimLab ద్వారా వస్తాయి, కాబట్టి బ్రౌజర్లు కీని ఎప్పుడూ చూడవు, మరియు అవి నిల్వ చేయబడవు."
+  },
+  "org.mobsimlab.ferry": {
+    "Electric hydrofoil": "విద్యుత్ హైడ్రోఫాయిల్",
+    "Fast catamaran": "వేగవంతమైన కాటమరాన్",
+    "Ferries": "ఫెర్రీలు",
+    "Ferry": "ఫెర్రీ",
+    "Monohull water bus": "ఒక్క హల్ వాటర్ బస్",
+    "Passenger ferries and water buses drawn with the water route kit: piers with berths and gangways, routes over water, speed zones and a berth check (ADR-0037). Car ferries come later.": "జలమార్గ కిట్‌తో గీసిన ప్రయాణికుల ఫెర్రీలు మరియు వాటర్ బస్సులు: బెర్త్‌లు మరియు గ్యాంగ్‌వేలు ఉన్న రేవులు, నీటిపై మార్గాలు, వేగ జోన్‌లు మరియు బెర్త్ తనిఖీ (ADR-0037). కార్ ఫెర్రీలు తర్వాత వస్తాయి.",
+    "Vessel type": "నౌక రకం",
+    "Water buses and crossings: click piers, shape the route over water.": "వాటర్ బస్సులు మరియు దాటడాలు: రేవులను క్లిక్ చేయండి, నీటిపై మార్గానికి ఆకారం ఇవ్వండి."
+  },
+  "org.mobsimlab.gtfs": {
+    "GTFS feed": "GTFS ఫీడ్",
+    "GTFS import and export": "GTFS దిగుమతి మరియు ఎగుమతి",
+    "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "ఒక GTFS ఫీడ్‌ను (zip) ఒక సేవా దినం కోసం ఉన్న నెట్‌వర్క్‌గా ప్రాజెక్ట్‌లోకి చదువుతుంది, అడిగితే మ్యాప్ వీక్షణకు కత్తిరించి, ప్రయాణ ప్లానర్ దాన్ని ప్రణాళిక లైన్లతో పాటు వాడేలా; మరియు ప్రాజెక్ట్ లైన్లను ఇతర సాధనాల కోసం GTFS ఫీడ్‌గా రాస్తుంది.",
+    "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "ఒక సేవా దినపు స్టాప్‌లు, మార్గాలు మరియు ట్రిప్‌లు (తేదీ ఇవ్వకపోతే అత్యంత రద్దీ బుధవారం), frequencies.txt ను ఫ్రీక్వెన్సీ నమూనాలుగా మరియు మార్గ రకాలను రవాణా విధానాలుగా.",
+    "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "ప్రాజెక్ట్ లైన్లు వారపు రోజు GTFS ఫీడ్‌గా: ఖచ్చితమైన ట్రిప్‌లు, ఫ్రీక్వెన్సీ లైన్లు frequencies.txt గా, స్టాప్ గుంపులకు స్టేషన్లు."
+  },
+  "org.mobsimlab.nasa-gibs": {
+    "About 30 m per pixel (38 m on this map), from one day's satellite passes: parts of the map are empty or cloudy, so try another date. Too coarse to draw track or kerbs.": "పిక్సెల్‌కు సుమారు 30 మీ (ఈ మ్యాప్‌లో 38 మీ), ఒక రోజు ఉపగ్రహ పాస్‌ల నుండి: మ్యాప్‌లోని కొన్ని భాగాలు ఖాళీగా లేదా మేఘావృతంగా ఉంటాయి, కాబట్టి మరో తేదీ ప్రయత్నించండి. పట్టాలు లేదా కర్బ్‌లు గీయడానికి చాలా మందంగా ఉంటుంది.",
+    "NASA GIBS imagery": "NASA GIBS చిత్రాలు",
+    "NASA HLS Landsat 8 and 9": "NASA HLS Landsat 8 మరియు 9",
+    "NASA HLS Sentinel-2": "NASA HLS Sentinel-2",
+    "NASA VIIRS true colour": "NASA VIIRS నిజ రంగు",
+    "Satellite imagery from NASA's Global Imagery Browse Services (GIBS) as aerial basemaps, for a day you pick: Harmonized Landsat Sentinel-2 at about 30 m per pixel and VIIRS at about 250 m. No API key is needed. The imagery is too coarse to see streets or track.": "NASA యొక్క Global Imagery Browse Services (GIBS) నుండి ఉపగ్రహ చిత్రాలు వైమానిక ఆధార మ్యాప్‌లుగా, మీరు ఎంచుకునే రోజు కోసం: పిక్సెల్‌కు సుమారు 30 మీ వద్ద Harmonized Landsat Sentinel-2 మరియు సుమారు 250 మీ వద్ద VIIRS. API కీ అవసరం లేదు. వీధులు లేదా పట్టాలు చూడటానికి చిత్రాలు చాలా మందంగా ఉంటాయి.",
+    "The whole world each day at about 250 m per pixel (306 m on this map), with clouds: for regional context only.": "ప్రతి రోజు మొత్తం ప్రపంచం పిక్సెల్‌కు సుమారు 250 మీ వద్ద (ఈ మ్యాప్‌లో 306 మీ), మేఘాలతో: ప్రాంతీయ సందర్భం కోసం మాత్రమే."
+  },
+  "org.mobsimlab.noise": {
+    "Estimated noise of the service lines (ADR-0038): a live noise band while drawing street lines and railways, with checks for curve squeal, bridges and switches. CNOSSOS-EU road and railway emission, free field without buildings for now.": "సేవా లైన్ల అంచనా శబ్దం (ADR-0038): వీధి లైన్లు మరియు రైల్వేలు గీస్తున్నప్పుడు ప్రత్యక్ష శబ్ద పట్టీ, వంపు కీచు, వంతెనలు మరియు స్విచ్‌ల తనిఖీలతో. CNOSSOS-EU రోడ్డు మరియు రైల్వే ఉద్గారం, ప్రస్తుతానికి భవనాలు లేని బహిరంగ క్షేత్రంలో.",
+    "L_den and L_night of the drawn lines at 4 m, free field: band distances either side, a receiver grid for the map and checks.": "గీసిన లైన్ల 4 మీ వద్ద L_den మరియు L_night, బహిరంగ క్షేత్రం: రెండు వైపులా పట్టీ దూరాలు, మ్యాప్ కోసం రిసీవర్ గ్రిడ్ మరియు తనిఖీలు.",
+    "Noise band": "శబ్ద పట్టీ",
+    "Noise map": "శబ్ద మ్యాప్"
+  },
+  "org.mobsimlab.ogc-layers": {
+    "Map layers from WMS, WMTS and XYZ tile services, as basemaps or overlays. An Admin adds a service under Administration → Plugins, with its sign-in details if needed; tiles come through this MobSimLab, so browsers never see them.": "WMS, WMTS మరియు XYZ టైల్ సేవల నుండి మ్యాప్ పొరలు, ఆధార మ్యాప్‌లుగా లేదా ఓవర్‌లేలుగా. అడ్మిన్ నిర్వహణ → ప్లగిన్‌లు కింద సేవను జోడిస్తారు, అవసరమైతే సైన్-ఇన్ వివరాలతో; టైల్స్ ఈ MobSimLab ద్వారా వస్తాయి, కాబట్టి బ్రౌజర్లు వాటిని ఎప్పుడూ చూడవు.",
+    "WMS, WMTS and XYZ map layers": "WMS, WMTS మరియు XYZ మ్యాప్ పొరలు"
+  },
+  "org.mobsimlab.on-demand-bus": {
+    "Demand-responsive transport drawn with the service zone kit: outline a zone, set the requests an hour, the fleet and the service hours, and get the vehicles needed, the average wait, ride and door-to-door time from continuous-approximation formulas. Simulate the day dispatches every booking trip by trip (ADR-0042). The zone shows in the journey planner.": "సేవా జోన్ కిట్‌తో గీసిన డిమాండ్ ఆధారిత రవాణా: ఒక జోన్‌ను గీయండి, గంటకు అభ్యర్థనలు, వాహన సముదాయం మరియు సేవా గంటలు సెట్ చేయండి, మరియు నిరంతర అంచనా సూత్రాల నుండి అవసరమైన వాహనాలు, సగటు నిరీక్షణ, ప్రయాణ మరియు ఇంటి-నుండి-ఇంటి సమయం పొందండి. రోజు అనుకరణ ప్రతి బుకింగ్‌ను ట్రిప్ వారీగా పంపుతుంది (ADR-0042). జోన్ ప్రయాణ ప్లానర్‌లో కనిపిస్తుంది.",
+    "Minibuses booked by app: outline the zone, set the fleet and hours.": "యాప్ ద్వారా బుక్ చేసే మినీబస్సులు: జోన్‌ను గీయండి, సముదాయం మరియు గంటలు సెట్ చేయండి.",
+    "On-demand bus": "డిమాండ్ ఆధారిత బస్సు"
+  },
+  "org.mobsimlab.panoramax": {
+    "Panoramax": "Panoramax",
+    "Panoramax street photos": "Panoramax వీధి ఫోటోలు",
+    "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "ప్రజలు మరియు ప్రభుత్వ సంస్థలు పంచుకున్న ఫోటోలు, వాటి నుండి మ్యాపింగ్‌ను అనుమతించే ఓపెన్ లైసెన్సుల కింద (ఎక్కువగా CC BY-SA 4.0 లేదా Etalab 2.0). ఒకదాన్ని వాడినప్పుడు రచయితకు క్రెడిట్ ఇవ్వండి.",
+    "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Panoramax నుండి వీధి స్థాయి ఫోటోలు, వీధి ఫోటోల ఉచిత మరియు ఓపెన్ ఉమ్మడి సంపద. ఫోటోలు ఎక్కడ తీశారో చూడటానికి మ్యాప్‌లో వీధి ఫోటోలు తెరవండి, తర్వాత ఒక బిందువును క్లిక్ చేసి దాని దగ్గర తీసిన ఫోటోలు చూడండి. ఫోటోలు వాటి నుండి మ్యాపింగ్‌ను అనుమతించే ఓపెన్ లైసెన్సుల కింద ఉన్నాయి. కీ అవసరం లేదు. ఫోటోలు ఈ MobSimLab ద్వారా వస్తాయి మరియు నిల్వ చేయబడవు, ప్రాజెక్ట్‌తో సేవ్ చేయబడవు."
+  },
+  "org.mobsimlab.people-mover": {
+    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "ఎత్తైన గైడ్‌వేపై కేబుల్‌తో లాగబడే స్వయంచాలక పీపుల్ మూవర్లు, నేరు స్పాన్‌ల కిట్‌తో గీసినవి: రెండు రైళ్లున్న షటిల్‌లు, మరియు ప్రతి స్టేషన్‌లో ఆగే విడదీయగల రైళ్లున్న సన్నని లూప్‌లు (ADR-0037 §7). స్వయంచాలిత పీపుల్ మూవర్లకు రైల్వే ఎడిటర్ అవసరం, అవి తర్వాత వస్తాయి.",
+    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "గైడ్‌వేపై కేబుల్‌తో లాగబడే షటిల్‌లు మరియు లూప్‌లు: స్టేషన్లను క్లిక్ చేయండి, స్తంభాలు వాటంతట అవే వస్తాయి.",
+    "People mover": "పీపుల్ మూవర్",
+    "People mover shuttle": "పీపుల్ మూవర్ షటిల్",
+    "People mover system": "పీపుల్ మూవర్ వ్యవస్థ",
+    "People movers": "పీపుల్ మూవర్లు",
+    "Pinched loop, detachable trains": "సన్నని లూప్, విడదీయగల రైళ్లు",
+    "Shuttle, two trains on a fixed rope": "షటిల్, స్థిర కేబుల్‌పై రెండు రైళ్లు"
+  }
+}

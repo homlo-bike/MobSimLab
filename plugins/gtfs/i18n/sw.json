@@ -1,0 +1,7 @@
+{
+  "GTFS feed": "Mlisho wa GTFS",
+  "GTFS import and export": "Kuingiza na kutoa GTFS",
+  "Reads a GTFS feed (zip) into the project as an existing network for one service day, cut to the map view if asked, so the journey planner rides it with the planned lines; and writes the project's lines as a GTFS feed for other tools.": "Husoma mlisho wa GTFS (zip) ndani ya mradi kama mtandao uliopo kwa siku moja ya huduma, uliokatwa kwa mwonekano wa ramani ukiomba, ili kipanga safari kiutumie pamoja na njia zilizopangwa; na huandika njia za mradi kama mlisho wa GTFS kwa zana nyingine.",
+  "Stops, routes and the trips of one service day (the busiest Wednesday unless a date is given), with frequencies.txt as frequency patterns and route types as modes.": "Vituo, njia na safari za siku moja ya huduma (Jumatano yenye shughuli nyingi zaidi isipokuwa tarehe imetolewa), pamoja na frequencies.txt kama mifumo ya marudio na aina za njia kama aina za usafiri.",
+  "The project's lines as a weekday GTFS feed: exact trips, frequency lines as frequencies.txt, stations for stop groups.": "Njia za mradi kama mlisho wa GTFS wa siku ya kazi: safari kamili, njia za marudio kama frequencies.txt, stesheni kwa vikundi vya vituo."
+}
