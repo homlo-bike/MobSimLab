@@ -44,14 +44,6 @@ export function isolate(s: string): string {
 }
 
 /** Purpose: a parameter's unit in a language. Inputs: language tag, English unit. */
-/**
- * Purpose: a number or unit set into a sentence keeps its own direction, so right-to-left text shows "−20 °C"
- * and not "20- C°" (first-strong isolate).
- */
-export function isolate(s: string): string {
-  return s ? `\u2068${s}\u2069` : s;
-}
-
 export function paramUnit(tag: string, unit: string): string {
   return (unit && loaded[tag]?.units[unit]) || unit;
 }
