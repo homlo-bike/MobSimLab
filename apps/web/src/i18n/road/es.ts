@@ -71,4 +71,25 @@ export const roadEs = {
   "prefs.roadIntro": "Tráfico de coches de fondo en las simulaciones viales (Simulador → Simulación vial).",
   "prefs.offPeakTraffic":
     "Tráfico fuera de las horas punta de mañana y tarde, como parte de la punta de cada calle",
+  "prefs.groupVisuals": "Visualización",
+  "visuals.vehiclesTitle": "Vehículos en la simulación",
+  "visuals.vehiclesIntro":
+    "Colores de los vehículos en la repetición de la simulación vial (Simulador → Simulación vial). Un vehículo está en servicio desde su primera parada hasta que sale de la última; ir adelantado cuenta como puntual.",
+  "visuals.onTimeUpTo": "Puntual hasta (minutos de retraso)",
+  "visuals.lateUpTo": "Con retraso hasta (minutos de retraso); más es retraso grave",
+  "visuals.noLate":
+    "«Con retraso hasta» no es mayor que «Puntual hasta», así que ningún vehículo aparece con retraso.",
+  "visuals.colors": "Colores",
+  "visuals.onTime": "En servicio, puntual",
+  "visuals.late": "En servicio, con retraso",
+  "visuals.veryLate": "En servicio, con retraso grave",
+  "visuals.outOfService": "Fuera de servicio, en la calle",
+  "visuals.parked": "Estacionado en el depósito",
+  "visuals.defaultMin": "Predeterminado: {value} min",
+  "visuals.reset": "Usar el valor predeterminado",
+  "visuals.legend.onTime": "Puntual (hasta {min} min de retraso)",
+  "visuals.legend.late": "Con retraso ({from}–{to} min)",
+  "visuals.legend.veryLate": "Retraso grave (más de {min} min)",
+  "road.replay.noService":
+    "Esta simulación se guardó antes de registrar los horarios de servicio, así que sus vehículos mantienen el color de su línea. Vuelva a ejecutarla para verlos por puntualidad.",
 } satisfies RoadMessages;

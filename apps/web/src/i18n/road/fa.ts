@@ -70,4 +70,25 @@ export const roadFa = {
   "prefs.roadTitle": "شبیه‌سازی جاده‌ای",
   "prefs.roadIntro": "ترافیک خودروهای زمینه در شبیه‌سازی جاده‌ای (شبیه‌ساز ← شبیه‌سازی جاده‌ای).",
   "prefs.offPeakTraffic": "ترافیک خارج از اوج صبح و عصر، به‌صورت سهمی از اوج هر خیابان",
+  "prefs.groupVisuals": "نمایش",
+  "visuals.vehiclesTitle": "وسایل نقلیه در شبیه‌سازی",
+  "visuals.vehiclesIntro":
+    "رنگ وسایل نقلیه در بازپخش شبیه‌سازی جاده‌ای (شبیه‌ساز ← شبیه‌سازی جاده‌ای). وسیله از نخستین ایستگاه تا ترک آخرین ایستگاه در سرویس است؛ زودتر رسیدن به‌موقع حساب می‌شود.",
+  "visuals.onTimeUpTo": "به‌موقع تا (دقیقه تأخیر)",
+  "visuals.lateUpTo": "با تأخیر تا (دقیقه تأخیر)؛ بیشتر از آن تأخیر زیاد",
+  "visuals.noLate":
+    "حد «با تأخیر تا» بیشتر از «به‌موقع تا» نیست، پس هیچ وسیله‌ای با تأخیر نشان داده نمی‌شود.",
+  "visuals.colors": "رنگ‌ها",
+  "visuals.onTime": "در سرویس، به‌موقع",
+  "visuals.late": "در سرویس، با تأخیر",
+  "visuals.veryLate": "در سرویس، تأخیر زیاد",
+  "visuals.outOfService": "خارج از سرویس، در خیابان",
+  "visuals.parked": "پارک‌شده در پارکینگ",
+  "visuals.defaultMin": "پیش‌فرض: {value} دقیقه",
+  "visuals.reset": "استفاده از پیش‌فرض",
+  "visuals.legend.onTime": "به‌موقع (تا {min} دقیقه تأخیر)",
+  "visuals.legend.late": "با تأخیر ({from}–{to} دقیقه)",
+  "visuals.legend.veryLate": "تأخیر زیاد (بیش از {min} دقیقه)",
+  "road.replay.noService":
+    "این اجرا پیش از ثبت زمان‌های سرویس ذخیره شده، پس وسایل آن رنگ خطشان را دارند. برای دیدن آن‌ها بر پایهٔ وقت‌شناسی دوباره اجرا کنید.",
 } satisfies RoadMessages;

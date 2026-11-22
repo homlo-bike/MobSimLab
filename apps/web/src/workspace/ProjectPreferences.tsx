@@ -31,6 +31,7 @@ import { AssumptionsReportSection } from "./AssumptionsReport";
 import { roadValue } from "../features/road-sim/params";
 import { DemandParamsSection } from "./DemandParams";
 import { StationsSection } from "./StationsSection";
+import { VisualsSection } from "./VisualsSection";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 import { OFF_PEAK_PREF } from "./editedElsewhere";
@@ -384,6 +385,12 @@ export function ProjectPreferences({
       ),
     },
     {
+      id: "visuals",
+      group: "visuals",
+      title: "visuals.vehiclesTitle",
+      node: <VisualsSection preferences={preferences} editable={prefsEditable} onPreferences={setPrefs} />,
+    },
+    {
       id: "params",
       group: "assumptions",
       title: "prefs.paramsTitle",
@@ -414,6 +421,7 @@ const GROUPS = [
   { id: "vehicles", title: "prefs.groupVehicles" },
   { id: "demand", title: "prefs.groupDemand" },
   { id: "time", title: "prefs.groupTime" },
+  { id: "visuals", title: "prefs.groupVisuals" },
   { id: "assumptions", title: "prefs.groupAssumptions" },
 ] as const satisfies readonly { id: string; title: MessageKey }[];
 

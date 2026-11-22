@@ -71,4 +71,24 @@ export const roadTr = {
   "prefs.roadIntro":
     "Karayolu simülasyonlarındaki arka plan araç trafiği (Simülatör → Karayolu simülasyonu).",
   "prefs.offPeakTraffic": "Sabah ve akşam zirveleri dışındaki trafik, her sokağın zirvesinin payı olarak",
+  "prefs.groupVisuals": "Görünüm",
+  "visuals.vehiclesTitle": "Simülasyondaki araçlar",
+  "visuals.vehiclesIntro":
+    "Yol simülasyonu tekrarında araçların renkleri (Simülatör → Yol simülasyonu). Bir araç ilk durağından son durağı terk edene kadar seferdedir; erken gitmek zamanında sayılır.",
+  "visuals.onTimeUpTo": "Zamanında: en fazla (dakika gecikme)",
+  "visuals.lateUpTo": "Gecikmeli: en fazla (dakika gecikme); fazlası çok gecikmeli",
+  "visuals.noLate": "“Gecikmeli” sınırı “Zamanında” sınırından büyük değil; hiçbir araç gecikmeli görünmez.",
+  "visuals.colors": "Renkler",
+  "visuals.onTime": "Seferde, zamanında",
+  "visuals.late": "Seferde, gecikmeli",
+  "visuals.veryLate": "Seferde, çok gecikmeli",
+  "visuals.outOfService": "Sefer dışı, yolda",
+  "visuals.parked": "Garajda park halinde",
+  "visuals.defaultMin": "Varsayılan: {value} dk",
+  "visuals.reset": "Varsayılanı kullan",
+  "visuals.legend.onTime": "Zamanında ({min} dk gecikmeye kadar)",
+  "visuals.legend.late": "Gecikmeli ({from}–{to} dk)",
+  "visuals.legend.veryLate": "Çok gecikmeli ({min} dk üzeri)",
+  "road.replay.noService":
+    "Bu çalıştırma sefer saatleri kaydedilmeden önce kaydedildi; araçlar hat rengini korur. Dakikliğe göre görmek için yeniden çalıştırın.",
 } satisfies RoadMessages;

@@ -70,4 +70,25 @@ export const roadHa = {
   "prefs.roadTitle": "Kwaikwayon hanya",
   "prefs.roadIntro": "Cunkoson motocin baya a kwaikwayon hanya (Mai kwaikwayo → Kwaikwayon hanya).",
   "prefs.offPeakTraffic": "Cunkoso a wajen kololuwar safe da yamma, a matsayin kaso na kololuwar kowane titi",
+  "prefs.groupVisuals": "Kamanni",
+  "visuals.vehiclesTitle": "Motoci a cikin kwaikwayo",
+  "visuals.vehiclesIntro":
+    "Launukan motoci a sake kunna kwaikwayon hanya (Mai kwaikwayo → Kwaikwayon hanya). Mota tana aiki daga tasharta ta farko har ta bar ta ƙarshe; gaggawa ana ƙidaya ta a kan lokaci.",
+  "visuals.onTimeUpTo": "A kan lokaci har zuwa (mintunan jinkiri)",
+  "visuals.lateUpTo": "Jinkiri har zuwa (mintunan jinkiri); fiye da haka jinkiri sosai",
+  "visuals.noLate":
+    "Iyakar «Jinkiri» ba ta fi ta «A kan lokaci» ba, don haka babu mota da za ta nuna jinkiri.",
+  "visuals.colors": "Launuka",
+  "visuals.onTime": "Tana aiki, a kan lokaci",
+  "visuals.late": "Tana aiki, da jinkiri",
+  "visuals.veryLate": "Tana aiki, jinkiri sosai",
+  "visuals.outOfService": "Ba ta aiki, a kan titi",
+  "visuals.parked": "An ajiye a depo",
+  "visuals.defaultMin": "Tsoho: minti {value}",
+  "visuals.reset": "Yi amfani da tsoho",
+  "visuals.legend.onTime": "A kan lokaci (jinkiri har minti {min})",
+  "visuals.legend.late": "Jinkiri (minti {from}–{to})",
+  "visuals.legend.veryLate": "Jinkiri sosai (fiye da minti {min})",
+  "road.replay.noService":
+    "An ajiye wannan gudu kafin a fara rubuta lokutan aiki, don haka motocinsa suna da launin layinsu. Sake gudanar da shi don ganin su bisa kiyaye lokaci.",
 } satisfies RoadMessages;

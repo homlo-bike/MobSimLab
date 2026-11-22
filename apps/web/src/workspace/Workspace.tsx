@@ -1893,6 +1893,7 @@ export function Workspace({
                     depots={depotsDoc?.depots}
                     setups={setups}
                     prefs={preferences?.values}
+                    visuals={preferences?.visuals}
                   />
                 </LoadingScreen>
               )}

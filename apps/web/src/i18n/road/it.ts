@@ -73,4 +73,25 @@ export const roadIt = {
     "Traffico di auto di fondo nelle simulazioni stradali (Simulatore → Simulazione stradale).",
   "prefs.offPeakTraffic":
     "Traffico fuori dai picchi del mattino e della sera, come quota del picco di ogni strada",
+  "prefs.groupVisuals": "Aspetto",
+  "visuals.vehiclesTitle": "Veicoli nella simulazione",
+  "visuals.vehiclesIntro":
+    "Colori dei veicoli nella riproduzione della simulazione stradale (Simulatore → Simulazione stradale). Un veicolo è in servizio dalla prima fermata finché lascia l'ultima; l'anticipo conta come puntuale.",
+  "visuals.onTimeUpTo": "Puntuale fino a (minuti di ritardo)",
+  "visuals.lateUpTo": "In ritardo fino a (minuti di ritardo); oltre, in forte ritardo",
+  "visuals.noLate":
+    "«In ritardo fino a» non supera «Puntuale fino a», quindi nessun veicolo appare in ritardo.",
+  "visuals.colors": "Colori",
+  "visuals.onTime": "In servizio, puntuale",
+  "visuals.late": "In servizio, in ritardo",
+  "visuals.veryLate": "In servizio, in forte ritardo",
+  "visuals.outOfService": "Fuori servizio, su strada",
+  "visuals.parked": "Parcheggiato in deposito",
+  "visuals.defaultMin": "Predefinito: {value} min",
+  "visuals.reset": "Usa il predefinito",
+  "visuals.legend.onTime": "Puntuale (fino a {min} min di ritardo)",
+  "visuals.legend.late": "In ritardo ({from}–{to} min)",
+  "visuals.legend.veryLate": "Forte ritardo (oltre {min} min)",
+  "road.replay.noService":
+    "Questa simulazione è stata salvata prima che si registrassero gli orari di servizio: i suoi veicoli mantengono il colore della linea. Eseguila di nuovo per vederli per puntualità.",
 } satisfies RoadMessages;

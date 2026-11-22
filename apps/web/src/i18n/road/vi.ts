@@ -71,4 +71,24 @@ export const roadVi = {
   "prefs.roadIntro": "Giao thông xe nền trong mô phỏng đường bộ (Trình mô phỏng → Mô phỏng đường bộ).",
   "prefs.offPeakTraffic":
     "Giao thông ngoài giờ cao điểm sáng và chiều, theo tỷ lệ so với cao điểm của mỗi đường",
+  "prefs.groupVisuals": "Hiển thị",
+  "visuals.vehiclesTitle": "Phương tiện trong mô phỏng",
+  "visuals.vehiclesIntro":
+    "Màu của phương tiện khi phát lại mô phỏng đường bộ (Trình mô phỏng → Mô phỏng đường bộ). Phương tiện đang phục vụ từ điểm dừng đầu tiên đến khi rời điểm dừng cuối; chạy sớm được tính là đúng giờ.",
+  "visuals.onTimeUpTo": "Đúng giờ tối đa (phút trễ)",
+  "visuals.lateUpTo": "Trễ tối đa (phút trễ); quá mức này là trễ nhiều",
+  "visuals.noLate": "Ngưỡng «Trễ» không lớn hơn ngưỡng «Đúng giờ», nên không phương tiện nào hiện là trễ.",
+  "visuals.colors": "Màu sắc",
+  "visuals.onTime": "Đang phục vụ, đúng giờ",
+  "visuals.late": "Đang phục vụ, trễ",
+  "visuals.veryLate": "Đang phục vụ, trễ nhiều",
+  "visuals.outOfService": "Không phục vụ, trên đường",
+  "visuals.parked": "Đỗ trong depot",
+  "visuals.defaultMin": "Mặc định: {value} phút",
+  "visuals.reset": "Dùng mặc định",
+  "visuals.legend.onTime": "Đúng giờ (trễ tối đa {min} phút)",
+  "visuals.legend.late": "Trễ ({from}–{to} phút)",
+  "visuals.legend.veryLate": "Trễ nhiều (hơn {min} phút)",
+  "road.replay.noService":
+    "Lần chạy này được lưu trước khi ghi lại giờ phục vụ, nên phương tiện giữ màu tuyến. Chạy lại để xem theo mức đúng giờ.",
 } satisfies RoadMessages;
