@@ -468,6 +468,10 @@ export const pl: Messages = {
   "map.searching": "Szukanie…",
   "map.searchFailed": "Wyszukiwanie miejsc nie powiodło się: {error}",
   "map.noPlaces": "Nie znaleziono miejsc.",
+  "map.noWebgl":
+    "Nie można wyświetlić mapy: ten komputer lub przeglądarka nie obsługuje grafiki 3D (WebGL2).",
+  "map.noWebglHelp":
+    "Włącz akcelerację sprzętową lub zaktualizuj sterownik grafiki, a potem otwórz stronę ponownie. Reszta strony nadal działa.",
   "map.places": "Znalezione miejsca",
   "map.searchCredit": "Nazwy miejsc © współtwórcy OpenStreetMap, znalezione za pomocą Photon",
   "map.layers": "Warstwy mapy",

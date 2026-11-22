@@ -474,6 +474,10 @@ export const zu: Messages = {
   "map.searching": "Iyasesha…",
   "map.searchFailed": "Ukusesha indawo kuhlulekile: {error}",
   "map.noPlaces": "Azikho izindawo ezitholakele.",
+  "map.noWebgl":
+    "Imephu ayikwazi ukuboniswa: le khompyutha noma isiphequluli asinazo izithombe ze-3D (WebGL2).",
+  "map.noWebglHelp":
+    "Vula ukusheshisa kwehadiwe noma ubuyekeze umshayeli wezithombe, bese uvula ikhasi futhi. Ingxenye esele yekhasi isasebenza.",
   "map.places": "Izindawo ezitholakele",
   "map.searchCredit": "Amagama ezindawo © abanikeli be-OpenStreetMap, atholakale nge-Photon",
   "map.layers": "Izendlalelo zemephu",

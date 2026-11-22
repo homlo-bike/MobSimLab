@@ -472,6 +472,9 @@ export const uz: Messages = {
   "map.searching": "Qidirilmoqda…",
   "map.searchFailed": "Joyni qidirib bo‘lmadi: {error}",
   "map.noPlaces": "Hech qanday joy topilmadi.",
+  "map.noWebgl": "Xaritani ko‘rsatib bo‘lmaydi: bu kompyuter yoki brauzerda 3D grafika (WebGL2) yo‘q.",
+  "map.noWebglHelp":
+    "Apparat tezlashtirishni yoqing yoki grafik drayverni yangilang, so‘ng sahifani qayta oching. Sahifaning qolgan qismi ishlashda davom etadi.",
   "map.places": "Topilgan joylar",
   "map.searchCredit": "Joy nomlari © OpenStreetMap hissadorlari, Photon orqali topildi",
   "map.layers": "Xarita qatlamlari",

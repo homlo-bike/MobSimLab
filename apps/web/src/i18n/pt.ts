@@ -470,6 +470,9 @@ export const pt: Messages = {
   "map.searching": "A pesquisar…",
   "map.searchFailed": "A pesquisa de locais falhou: {error}",
   "map.noPlaces": "Nenhum local encontrado.",
+  "map.noWebgl": "Não é possível mostrar o mapa: este computador ou navegador não tem gráficos 3D (WebGL2).",
+  "map.noWebglHelp":
+    "Ative a aceleração de hardware ou atualize o driver gráfico e abra a página novamente. O resto da página continua a funcionar.",
   "map.places": "Locais encontrados",
   "map.searchCredit": "Nomes de locais © colaboradores do OpenStreetMap, encontrados com o Photon",
   "map.layers": "Camadas do mapa",

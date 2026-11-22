@@ -476,6 +476,10 @@ export const de: Messages = {
   "map.searching": "Suche…",
   "map.searchFailed": "Ortssuche fehlgeschlagen: {error}",
   "map.noPlaces": "Keine Orte gefunden.",
+  "map.noWebgl":
+    "Die Karte kann nicht angezeigt werden: Dieser Computer oder Browser bietet keine 3D-Grafik (WebGL2).",
+  "map.noWebglHelp":
+    "Schalte die Hardwarebeschleunigung ein oder aktualisiere den Grafiktreiber und öffne die Seite dann erneut. Der Rest der Seite funktioniert weiterhin.",
   "map.places": "Gefundene Orte",
   "map.searchCredit": "Ortsnamen © OpenStreetMap-Mitwirkende, gefunden mit Photon",
   "map.layers": "Kartenebenen",
