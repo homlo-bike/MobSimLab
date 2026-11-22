@@ -456,6 +456,8 @@ export const am: Messages = {
   "map.searching": "በመፈለግ ላይ…",
   "map.searchFailed": "ቦታ መፈለግ አልተሳካም፦ {error}",
   "map.noPlaces": "ምንም ቦታ አልተገኘም።",
+  "map.noWebgl": "ካርታው ሊታይ አይችልም፦ ይህ ኮምፒውተር ወይም አሳሽ 3D ግራፊክስ (WebGL2) የለውም።",
+  "map.noWebglHelp": "የሃርድዌር ማፋጠንን ያብሩ ወይም የግራፊክስ ሾፌሩን ያዘምኑ፣ ከዚያ ገጹን እንደገና ይክፈቱ። የተቀረው ገጽ አሁንም ይሠራል።",
   "map.places": "የተገኙ ቦታዎች",
   "map.searchCredit": "የቦታ ስሞች © የOpenStreetMap አስተዋጽዖ አድራጊዎች፣ በPhoton የተገኙ",
   "map.layers": "የካርታ ንብርብሮች",

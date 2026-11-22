@@ -468,6 +468,9 @@ export const ig: Messages = {
   "map.searching": "Na-achọ…",
   "map.searchFailed": "Ịchọ ebe dara: {error}",
   "map.noPlaces": "Ahụghị ebe ọ bụla.",
+  "map.noWebgl": "Enweghị ike igosi maapụ: kọmputa ma ọ bụ ihe nchọgharị a enweghị eserese 3D (WebGL2).",
+  "map.noWebglHelp":
+    "Gbanye ngwangwa ngwaike ma ọ bụ melite draịva eserese, wee mepee ibe ahụ ọzọ. Akụkụ ndị ọzọ nke ibe ahụ ka na-arụ ọrụ.",
   "map.places": "Ebe ndị a hụrụ",
   "map.searchCredit": "Aha ebe © ndị na-enye aka na OpenStreetMap, ejiri Photon chọta",
   "map.layers": "Ọkwa map",

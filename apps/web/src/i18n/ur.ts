@@ -467,6 +467,9 @@ export const ur: Messages = {
   "map.searching": "تلاش جاری ہے…",
   "map.searchFailed": "مقام کی تلاش ناکام رہی: {error}",
   "map.noPlaces": "کوئی مقام نہیں ملا۔",
+  "map.noWebgl": "نقشہ نہیں دکھایا جا سکتا: اس کمپیوٹر یا براؤزر میں 3D گرافکس (WebGL2) نہیں ہیں۔",
+  "map.noWebglHelp":
+    "ہارڈویئر ایکسلریشن آن کریں یا گرافکس ڈرائیور اپ ڈیٹ کریں، پھر صفحہ دوبارہ کھولیں۔ صفحے کا باقی حصہ اب بھی کام کرتا ہے۔",
   "map.places": "ملے ہوئے مقامات",
   "map.searchCredit": "مقامات کے نام © OpenStreetMap کے معاونین، Photon سے تلاش کیے گئے",
   "map.layers": "نقشے کی پرتیں",

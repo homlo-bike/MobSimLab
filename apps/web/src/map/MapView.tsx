@@ -1,7 +1,7 @@
 import {
   AttributionControl,
   type IControl,
-  Map as MapLibreMap,
+  type Map as MapLibreMap,
   NavigationControl,
   ScaleControl,
 } from "maplibre-gl";
@@ -24,6 +24,7 @@ import { activePlugins } from "../plugins/registry";
 import { isDark, useDark } from "../shell/theme";
 import { applyMapTheme } from "./darkLayers";
 import { MapControls } from "./MapControls";
+import { createMap, NoMapNotice } from "./NoMapNotice";
 import "./worker";
 import { applyHidden, markBasemap, type OverlayGroup, switchBasemap } from "./mapLayers";
 import { applyOverlays, rememberOverlays, rememberedOverlays } from "./overlays";
@@ -57,6 +58,8 @@ export function MapView({ onReady }: Props) {
   const ready = useRef(onReady);
   ready.current = onReady;
   const [map, setMap] = useState<MapLibreMap | null>(null);
+  /** The map could not be made (no WebGL2): a notice shows in its place and the rest of the page keeps working. */
+  const [noMap, setNoMap] = useState(false);
   const [host, setHost] = useState<HTMLElement | null>(null);
   const [basemap, setBasemap] = useState<Basemap>(rememberedBasemap);
   const [hidden, setHidden] = useState<ReadonlySet<OverlayGroup>>(() => new Set());
@@ -77,7 +80,7 @@ export function MapView({ onReady }: Props) {
     if (!container.current) return;
     const first = themedBasemap(basemap, isDark());
     drawn.current = first.styleUrl;
-    const map = new MapLibreMap({
+    const map = createMap({
       container: container.current,
       style: first.styleUrl,
       center: [10, 50],
@@ -85,6 +88,10 @@ export function MapView({ onReady }: Props) {
       attributionControl: false,
       transformStyle: (_, next) => basemapStyle(first, next),
     });
+    if (!map) {
+      setNoMap(true);
+      return;
+    }
     attribution.current = new AttributionControl({
       compact: first.kind === "aerial",
       customAttribution: first.attribution,
@@ -225,6 +232,7 @@ export function MapView({ onReady }: Props) {
   return (
     <div className={`absolute inset-0${darkMap ? " map-dark" : ""}`}>
       <div ref={container} className="h-full w-full" data-testid="map" />
+      {noMap && <NoMapNotice />}
       {host &&
         createPortal(
           <MapControls

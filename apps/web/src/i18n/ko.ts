@@ -461,6 +461,9 @@ export const ko: Messages = {
   "map.searching": "검색 중…",
   "map.searchFailed": "장소 검색 실패: {error}",
   "map.noPlaces": "찾은 장소가 없습니다.",
+  "map.noWebgl": "지도를 표시할 수 없습니다: 이 컴퓨터나 브라우저에서 3D 그래픽(WebGL2)을 지원하지 않습니다.",
+  "map.noWebglHelp":
+    "하드웨어 가속을 켜거나 그래픽 드라이버를 업데이트한 다음 페이지를 다시 여세요. 페이지의 나머지 부분은 계속 사용할 수 있습니다.",
   "map.places": "찾은 장소",
   "map.searchCredit": "장소 이름 © OpenStreetMap 기여자, Photon으로 검색",
   "map.layers": "지도 레이어",

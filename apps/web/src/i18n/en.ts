@@ -462,6 +462,9 @@ export const en = {
   "map.searching": "Searching…",
   "map.searchFailed": "Place search failed: {error}",
   "map.noPlaces": "No places found.",
+  "map.noWebgl": "The map can't be shown: this computer or browser has no 3D graphics (WebGL2).",
+  "map.noWebglHelp":
+    "Turn on hardware acceleration or update the graphics driver, then open the page again. The rest of the page still works.",
   "map.places": "Places found",
   "map.searchCredit": "Place names © OpenStreetMap contributors, found with Photon",
   "map.layers": "Map layers",
