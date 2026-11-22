@@ -384,6 +384,45 @@ describe("RoadSimulation", () => {
     expect(await screen.findByRole("status")).toBeTruthy();
   });
 
+  it("runs only the ticked lines", async () => {
+    const api = fakeApi();
+    render(
+      <RoadSimulation
+        api={api}
+        canRun
+        streetLines={[
+          bus({ id: "a" }),
+          bus({ id: "b", name: "Bus 2" }),
+          bus({ id: "c", name: "Bus 3" }, false),
+        ]}
+        loadEngine={async () => fakeEngine() as never}
+      />,
+    );
+    // Only the lines that can run are offered, all ticked.
+    expect((screen.getByRole("checkbox", { name: "Bus 1" }) as HTMLInputElement).checked).toBe(true);
+    expect((screen.getByRole("checkbox", { name: "Bus 2" }) as HTMLInputElement).checked).toBe(true);
+    expect(screen.queryByRole("checkbox", { name: "Bus 3" })).toBeNull();
+    expect(screen.getByText("Street lines: 2 · Depots: 0")).toBeTruthy();
+
+    fireEvent.click(screen.getByRole("button", { name: "None" }));
+    expect(screen.getByText("Tick at least one street line to run.")).toBeTruthy();
+    const run = screen.getByRole("button", { name: "Run on the server and save" }) as HTMLButtonElement;
+    expect(run.disabled).toBe(true);
+
+    fireEvent.click(screen.getByRole("checkbox", { name: "Bus 2" }));
+    expect(screen.getByText("Street lines: 1 · Depots: 0")).toBeTruthy();
+    expect(
+      screen.queryByText("Bus 1 has no laid-out depot: its vehicles start and end on the street."),
+    ).toBeNull();
+    fireEvent.click(run);
+    await waitFor(() => expect(api.start).toHaveBeenCalledTimes(1));
+    const [, scenario] = vi.mocked(api.start).mock.calls[0]!;
+    expect(scenario.lines.map((l) => [l.index, l.name])).toEqual([[1, "Bus 2"]]);
+
+    fireEvent.click(screen.getByRole("button", { name: "All" }));
+    expect(screen.getByText("Street lines: 2 · Depots: 0")).toBeTruthy();
+  });
+
   it("cannot run without a runnable line, and viewers cannot start one", () => {
     const { unmount } = render(<RoadSimulation api={fakeApi()} canRun streetLines={[bus({}, false)]} />);
     expect(

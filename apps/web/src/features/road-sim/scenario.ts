@@ -134,7 +134,8 @@ export function roadDepot(
 
 /**
  * Purpose: the whole scenario of a road run for the period `[from, to)` with `warmup` seconds of service
- * before it. Depots without a layout are left out (their lines start and end on the street).
+ * before it. Lines the planner did not tick are left out without a message, and so are the depots only they
+ * use. Depots without a layout are left out (their lines start and end on the street).
  */
 export function buildScenario(input: {
   lines: readonly SavedStreetLine[];
@@ -144,6 +145,8 @@ export function buildScenario(input: {
   from: number;
   to: number;
   warmup: number;
+  /** The lines the planner ticked, by their index in `lines`; left out, every line runs. */
+  picked?: (index: number) => boolean;
   /** Null for a preview: which lines run and which depots they use, without the depots' networks. */
   engine: Pick<DepotEngine, "analyse"> | null;
 }): BuiltScenario {
@@ -154,6 +157,7 @@ export function buildScenario(input: {
   const skipped: BuiltScenario["skipped"] = [];
   const noDepot: BuiltScenario["noDepot"] = [];
   lines.forEach((line, index) => {
+    if (input.picked && !input.picked(index)) return;
     const r = roadLine(line, index, input.from - input.warmup, input.to, prefs, ids);
     const name = line.name || `Street line ${index + 1}`;
     if (typeof r === "string") skipped.push({ index, name, problem: r });

@@ -9,6 +9,10 @@ export const roadDe = {
     "Noch kann keine Straßenlinie fahren. Zeichnen Sie eine unter Erstellen → Straßenlinie, mit mindestens zwei Haltestellen.",
   "road.lines": "Straßenlinien: {n}",
   "road.depots": "Betriebshöfe: {n}",
+  "road.pick": "Zu simulierende Linien",
+  "road.pickAll": "Alle",
+  "road.pickNone": "Keine",
+  "road.pickSome": "Haken Sie mindestens eine Straßenlinie an.",
   "road.skipped.notRouted": "{name} wird ausgelassen: Sie ist noch nicht geroutet.",
   "road.skipped.noService": "{name} wird ausgelassen: Sie hat in diesem Zeitraum keine Abfahrten.",
   "road.noDepot":

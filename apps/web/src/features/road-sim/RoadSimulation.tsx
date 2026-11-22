@@ -78,6 +78,10 @@ export function RoadSimulation({
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  // The lines the planner unticked, by id (by index for a line saved without one), so new lines start ticked.
+  const [unticked, setUnticked] = useState<ReadonlySet<string>>(() => new Set());
+  const keyOf = (index: number) => streetLines[index]?.id ?? `#${index}`;
+  const picked = (index: number) => !unticked.has(keyOf(index));
 
   const window = useMemo(() => {
     const p = PERIODS.find((x) => x.id === period);
@@ -88,8 +92,9 @@ export function RoadSimulation({
   }, [period, from, to]);
   const warmup = Math.max(0, Math.min(120, Number(warmupMin) || 0)) * 60;
 
-  // A preview of what would run: which lines and which depots, without the depot engine.
-  const preview = useMemo(
+  // A preview of what could run (the lines to tick) and of what would run: which lines and which depots,
+  // without the depot engine.
+  const runnableAll = useMemo(
     () =>
       window
         ? buildScenario({
@@ -105,6 +110,31 @@ export function RoadSimulation({
         : null,
     [window, streetLines, depots, setups, prefs, warmup],
   );
+  const preview = useMemo(
+    () =>
+      window
+        ? buildScenario({
+            lines: streetLines,
+            depots,
+            setups,
+            prefs,
+            from: window.from,
+            to: window.to,
+            warmup,
+            picked: (i) => !unticked.has(streetLines[i]?.id ?? `#${i}`),
+            engine: null,
+          })
+        : null,
+    [window, streetLines, depots, setups, prefs, warmup, unticked],
+  );
+  const choices = runnableAll?.scenario.lines ?? [];
+  const tick = (index: number, on: boolean) =>
+    setUnticked((u) => {
+      const next = new Set(u);
+      if (on) next.delete(keyOf(index));
+      else next.add(keyOf(index));
+      return next;
+    });
 
   useEffect(() => {
     if (!api) return;
@@ -155,6 +185,7 @@ export function RoadSimulation({
         from: window.from,
         to: window.to,
         warmup,
+        picked,
         engine,
       });
       const s = Math.round(Number(seed));
@@ -245,10 +276,63 @@ export function RoadSimulation({
         </div>
       </fieldset>
 
+      {choices.length > 0 && (
+        <fieldset className="space-y-1.5">
+          <legend className="caps mb-1.5">{t("road.pick")}</legend>
+          <div className="flex gap-1.5">
+            <button
+              type="button"
+              className="chip"
+              onClick={() =>
+                setUnticked((u) => {
+                  const next = new Set(u);
+                  for (const l of choices) next.delete(keyOf(l.index));
+                  return next;
+                })
+              }
+            >
+              {t("road.pickAll")}
+            </button>
+            <button
+              type="button"
+              className="chip"
+              onClick={() =>
+                setUnticked((u) => {
+                  const next = new Set(u);
+                  for (const l of choices) next.add(keyOf(l.index));
+                  return next;
+                })
+              }
+            >
+              {t("road.pickNone")}
+            </button>
+          </div>
+          <ul className="max-h-56 space-y-1 overflow-y-auto">
+            {choices.map((l) => (
+              <li key={keyOf(l.index)}>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={picked(l.index)}
+                    onChange={(e) => tick(l.index, e.target.checked)}
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ background: l.color }}
+                  />
+                  {l.name}
+                </label>
+              </li>
+            ))}
+          </ul>
+        </fieldset>
+      )}
+
       {preview && (
         <div className="space-y-1 text-sm text-slate-700">
           {runnable === 0 ? (
-            <p>{t("road.nothing")}</p>
+            <p>{t(choices.length > 0 ? "road.pickSome" : "road.nothing")}</p>
           ) : (
             <p>
               {t("road.lines", { n: runnable })} ·{" "}

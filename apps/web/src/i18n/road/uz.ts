@@ -9,6 +9,10 @@ export const roadUz = {
     "Hali hech bir ko‘cha yo‘nalishi harakatlana olmaydi. Yaratish → Koʻcha yoʻnalishi bo‘limida kamida ikki bekatli yo‘nalish chizing.",
   "road.lines": "Ko‘cha yo‘nalishlari: {n}",
   "road.depots": "Depolar: {n}",
+  "road.pick": "Ishga tushiriladigan yo‘nalishlar",
+  "road.pickAll": "Hammasi",
+  "road.pickNone": "Hech biri",
+  "road.pickSome": "Ishga tushirish uchun kamida bitta ko‘cha yo‘nalishini belgilang.",
   "road.skipped.notRouted": "{name} chiqarib tashlandi: hali marshruti yo‘q.",
   "road.skipped.noService": "{name} chiqarib tashlandi: bu davrda jo‘nashlari yo‘q.",
   "road.noDepot":
