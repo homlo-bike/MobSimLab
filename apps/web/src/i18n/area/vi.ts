@@ -1,0 +1,77 @@
+import type { AreaMessages } from "./en";
+
+/** Project area messages (vi). */
+export const areaVi = {
+  "aw.title": "Khu vực dự án",
+  "aw.editing": "Đang sửa khu vực của {name}",
+  "aw.search": "Tìm một địa điểm để di chuyển bản đồ, ví dụ Homs",
+  "aw.tools": "Công cụ vẽ",
+  "aw.draw": "Vẽ đa giác",
+  "aw.edit": "Sửa điểm",
+  "aw.pan": "Kéo bản đồ",
+  "aw.hint.draw":
+    "Nhấp để thêm đỉnh. Nhấp vào đỉnh đầu tiên hoặc nhấn Enter để khép đa giác. Backspace xoá đỉnh cuối.",
+  "aw.hint.edit":
+    "Nhấp vào một đa giác để chọn. Kéo một đỉnh để di chuyển, kéo một trung điểm để thêm đỉnh, nhấp đúp vào một đỉnh để xoá.",
+  "aw.hint.pan": "Kéo để di chuyển bản đồ. Nhấp vào một đa giác để chọn.",
+  "aw.statArea": "Diện tích",
+  "aw.statDownload": "Dung lượng tải ước tính",
+  "aw.mb": "{mb} MB",
+  "aw.limit": "Giới hạn {mb} MB",
+  "aw.overLimit":
+    "Khu vực chứa nhiều dữ liệu bản đồ hơn {mb} MB một dự án được phép. Hãy thu nhỏ, hoặc đặt các đa giác dọc tuyến thành chỉ đường chính và đường sắt.",
+  "aw.polygons": "Đa giác",
+  "aw.empty":
+    "Chưa có đa giác. Vẽ một đa giác quanh mỗi nơi dự án bao gồm, và một đa giác hẹp dọc mỗi tuyến liên tỉnh.",
+  "aw.detail.full": "Đầy đủ",
+  "aw.detail.main": "Chỉ đường chính và đường sắt",
+  "aw.polyLine": "{detail} · {area} km²",
+  "aw.name": "Tên",
+  "aw.detail": "Mức chi tiết",
+  "aw.fullHelp": "Đường phố, lối đi, công trình, trường học và bệnh viện, dân số theo ô 100 m, địa hình.",
+  "aw.mainHelp":
+    "Đường cao tốc, quốc lộ và đường chính, đường sắt, địa hình, dân số theo ô 1 km. Không có công trình: vẽ các thị trấn dọc tuyến ở mức Đầy đủ cho bản đồ tiếng ồn và tiếp cận đi bộ.",
+  "aw.delete": "Xoá đa giác",
+  "aw.newName": "Khu vực {n}",
+  "aw.save": "Lưu khu vực",
+  "aw.confirm.title": "Tải dữ liệu bản đồ cho các phần mới?",
+  "aw.confirm.body":
+    "Mới hoặc đã đổi: {list}. Cần khoảng {mb} MB. Các phần đã xoá không còn được dùng. Không tải gì cho đến khi bạn xác nhận.",
+  "aw.confirm.item": "{name} ({detail}, {area} km²)",
+  "aw.confirm.back": "Quay lại bản đồ",
+  "aw.confirm.save": "Lưu và tải {mb} MB",
+  "aw.select": "Chọn khu vực",
+  "aw.selectHint": "Vẽ ranh giới dự án trên bản đồ. Dữ liệu bản đồ chỉ được tải bên trong đó.",
+  "aw.change": "Đổi khu vực",
+  "aw.download": "khoảng {mb} MB dữ liệu bản đồ",
+  "aw.outline": "Đường viền khu vực dự án",
+  "aw.prefsIntro":
+    "Các đa giác vẽ quanh dự án. Dữ liệu bản đồ chỉ được tải bên trong chúng, theo mức chi tiết của từng đa giác.",
+  "aw.dataFrom": "Dữ liệu bản đồ ngày {date}",
+  "aw.noData": "Chưa tải dữ liệu bản đồ",
+  "aw.editArea": "Sửa khu vực",
+  "aw.drawArea": "Vẽ khu vực",
+  "aw.refresh": "Làm mới dữ liệu bản đồ",
+  "aw.refreshHelp":
+    "Làm mới sẽ tải dữ liệu OpenStreetMap hiện tại cho cùng khu vực; đến lúc đó kế hoạch giữ nguyên ngày dữ liệu.",
+  "aw.none": "Chưa có khu vực dự án. Hãy vẽ một khu vực để các công cụ có dữ liệu bản đồ.",
+  "aw.saved": "Đã lưu khu vực.",
+  "aw.data.noArea": "Hãy vẽ khu vực dự án trước trong Tuỳ chọn dự án: các lần nhập bao phủ khu vực đó.",
+  "aw.data.area": "Khu vực dự án: {names}. Các lần nhập bao phủ hình chữ nhật quanh nó, {area} km².",
+  "aw.pop.none": "Chưa có khu vực dự án. Hãy vẽ trong Tuỳ chọn dự án.",
+  "aw.pop.box": "Hình chữ nhật quanh khu vực dự án: {km2} km².",
+  "aw.tiles.other": "{count} ô bản đồ",
+  "aw.count.other": "{count} đa giác",
+  "aw.out.title": "Tải dữ liệu bản đồ bên ngoài khu vực dự án?",
+  "aw.out.note": "Vùng {name} vượt ra ngoài khu vực dự án. Phần bên ngoài cần dữ liệu bản đồ mới.",
+  "aw.out.part": "Phần bên ngoài",
+  "aw.out.km2": "khoảng {km2} km²",
+  "aw.out.detail": "Mức chi tiết cho phần bên ngoài",
+  "aw.out.overLimit":
+    "Khi thêm vùng này, khu vực dự án chứa nhiều dữ liệu bản đồ hơn mức {mb} MB cho phép của một dự án. Hãy chọn chỉ đường chính và đường sắt, hoặc thu nhỏ khu vực trong Tùy chọn dự án.",
+  "aw.out.adds":
+    "Tải xuống sẽ thêm vùng này vào khu vực dự án thành một đa giác mới, bạn có thể sửa sau trong cửa sổ khu vực.",
+  "aw.out.keep": "Giữ vùng, không tải xuống",
+  "aw.out.download": "Tải xuống {mb} MB",
+  "aw.out.downloading": "Đang tải xuống…",
+} satisfies AreaMessages;

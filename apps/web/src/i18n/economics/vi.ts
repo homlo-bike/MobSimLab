@@ -241,7 +241,6 @@ export const economicsVi = {
   "reg.importFailed": "Không thể bắt đầu {what}: {reason}.",
   "reg.unknownReason": "lý do không xác định",
   "reg.defaultName": "Vùng {n}",
-  "reg.areaFull": "Khu vực dự án đã gộp {max} vùng, mức tối đa. Hãy thay đổi trong cài đặt dự án.",
   "reg.areaFailed": "Không thể thay đổi khu vực dự án: {error}",
   "reg.title": "Vùng",
   "reg.intro":
@@ -264,11 +263,6 @@ export const economicsVi = {
   "reg.noAreas": "Không có khu vực có tên ở đây. Hãy thử nơi khác hoặc tự vẽ.",
   "reg.km2": "{v} km²",
   "reg.outside": "Vùng nằm ngoài khu vực dự án",
-  "reg.outsideNote":
-    "{name} vượt ra ngoài khu vực dự án, nên dữ liệu bản đồ đã tải cho dự án có thể không bao phủ nó. Thêm vào khu vực dự án? Việc này sẽ tải dữ liệu OpenStreetMap, cao độ địa hình và dân số mà khu vực lớn hơn cần.",
-  "reg.adding": "Đang thêm…",
-  "reg.addToArea": "Thêm vào khu vực dự án",
-  "reg.importOnly": "Nhập mà không thay đổi khu vực",
   "reg.inProject": "Các vùng trong dự án này",
   "reg.count": "Vùng · {count}",
   "reg.none": "Chưa có: bảng lợi ích dùng dữ liệu nguồn ở mọi nơi.",

@@ -232,8 +232,6 @@ export const economicsJa = {
   "reg.importFailed": "{what}を開始できませんでした：{reason}。",
   "reg.unknownReason": "理由不明",
   "reg.defaultName": "地域 {n}",
-  "reg.areaFull":
-    "プロジェクト範囲はすでに上限の {max} 地域を結合しています。プロジェクト設定で変更してください。",
   "reg.areaFailed": "プロジェクト範囲を変更できませんでした：{error}",
   "reg.title": "地域",
   "reg.intro":
@@ -256,11 +254,6 @@ export const economicsJa = {
   "reg.noAreas": "ここには名前の付いた範囲がありません。別の場所を試すか、描いてください。",
   "reg.km2": "{v} km²",
   "reg.outside": "プロジェクト範囲外の地域",
-  "reg.outsideNote":
-    "{name}はプロジェクト範囲を超えているため、プロジェクト用にダウンロードした地図データでは足りない可能性があります。プロジェクト範囲に追加しますか？広い範囲に必要な OpenStreetMap データ、地形の標高、人口をダウンロードします。",
-  "reg.adding": "追加中…",
-  "reg.addToArea": "プロジェクト範囲に追加",
-  "reg.importOnly": "範囲を変えずに読み込む",
   "reg.inProject": "このプロジェクトの地域",
   "reg.count": "地域 · {count}",
   "reg.none": "まだありません。便益表はすべて元データを使います。",

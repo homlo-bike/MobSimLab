@@ -38,8 +38,8 @@ export interface PopulationLayer {
 
 /** The project area, the layers and what an import offers. */
 export interface PopulationOverview {
-  area: { bbox: Bbox; drawnBbox: Bbox; bufferKm: number } | null;
-  bufferKm: number;
+  /** The project area: the box round its polygons (what the import covers). */
+  area: { bbox: Bbox } | null;
   areaKm2: number | null;
   layers: PopulationLayer[];
   choices: {
@@ -91,7 +91,6 @@ export interface CatchmentAnswer {
 
 export interface PopulationApi {
   overview(): Promise<PopulationOverview>;
-  setBuffer(km: number): Promise<PopulationOverview>;
   startImport(req: ImportRequest): Promise<PopulationLayer>;
   upload(details: LayerDetails, file: FileOptions, bytes: Blob): Promise<PopulationLayer>;
   layer(id: string): Promise<PopulationLayer>;
@@ -111,7 +110,6 @@ export function projectPopulation(projectId: string, csrf: string): PopulationAp
   const one = (id: string) => `${base}/layers/${encodeURIComponent(id)}`;
   return {
     overview: () => get<PopulationOverview>(base),
-    setBuffer: (km) => send<PopulationOverview>("PUT", `${base}/area`, csrf, { bufferKm: km }),
     startImport: async (req) =>
       (await send<{ layer: PopulationLayer }>("POST", `${base}/imports`, csrf, req)).layer,
     upload: async (details, file, bytes) => {

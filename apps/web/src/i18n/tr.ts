@@ -9,6 +9,7 @@ import { tablesTr } from "./tables/tr";
 import { economicsTr } from "./economics/tr";
 import { fleetTr } from "./fleet/tr";
 import { timetablesTr } from "./timetables/tr";
+import { areaTr } from "./area/tr";
 import { mslabTr } from "./mslab/tr";
 import { workspaceUiTr } from "./workspace-ui/tr";
 import { pluginCodeTr } from "./plugin-code/tr";
@@ -483,6 +484,7 @@ export const tr: Messages = {
   "map.group.noise": "Gürültü haritası",
   "map.group.journey": "Yolculuk planlayıcı",
   "map.group.agents": "Yapay zekâ ajanı senaryosu",
+  "map.group.projectArea": "Proje alanı",
   "help.menu": "Yardım",
   "help.tour": "Turu başlat",
   "help.tourHint": "Projenin sekmeleri ve araçları arasında kısa bir gezinti",
@@ -536,6 +538,7 @@ export const tr: Messages = {
   ...timetablesTr,
   ...commentsTr,
   ...mslabTr,
+  ...areaTr,
   ...workspaceUiTr,
   ...pluginCodeTr,
   ...populationTr,

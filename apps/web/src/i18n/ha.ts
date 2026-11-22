@@ -9,6 +9,7 @@ import { tablesHa } from "./tables/ha";
 import { economicsHa } from "./economics/ha";
 import { fleetHa } from "./fleet/ha";
 import { timetablesHa } from "./timetables/ha";
+import { areaHa } from "./area/ha";
 import { mslabHa } from "./mslab/ha";
 import { workspaceUiHa } from "./workspace-ui/ha";
 import { pluginCodeHa } from "./plugin-code/ha";
@@ -486,6 +487,7 @@ export const ha: Messages = {
   "map.group.noise": "Taswirar hayaniya",
   "map.group.journey": "Mai tsara tafiya",
   "map.group.agents": "Yanayin wakilin AI",
+  "map.group.projectArea": "Yankin aikin",
   "help.menu": "Taimako",
   "help.tour": "Fara rangadi",
   "help.tourHint": "Gajeren rangadi cikin shafuka da kayan aikin aikin",
@@ -538,6 +540,7 @@ export const ha: Messages = {
   ...timetablesHa,
   ...commentsHa,
   ...mslabHa,
+  ...areaHa,
   ...workspaceUiHa,
   ...pluginCodeHa,
   ...populationHa,

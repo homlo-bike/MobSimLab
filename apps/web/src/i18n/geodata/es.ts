@@ -6,9 +6,6 @@ export const geodataEs = {
   "data.title": "Datos del mapa",
   "data.intro":
     "OpenStreetMap y elevación para este proyecto, guardados con el proyecto. Las herramientas de calles, ferrocarriles, edificios, agua y terreno los leen en lugar de consultar OpenStreetMap y el servidor de elevación cada vez.",
-  "data.noArea":
-    "Dibuja algo en el proyecto primero: la importación cubre el rectángulo alrededor de todo lo dibujado, más un margen.",
-  "data.area": "Zona: {area} km², el rectángulo alrededor de todo lo dibujado más {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Elevación",
   "data.notImported": "Aún no importado.",
@@ -55,19 +52,6 @@ export const geodataEs = {
   "data.ownReplace": "Reemplazar por otro GeoTIFF (hasta {max} MB)",
   "data.remove": "Quitar",
   "area.title": "Área del proyecto",
-  "area.intro":
-    "Busque un lugar y marque las regiones de OpenStreetMap que abarca el proyecto. El área del proyecto es todas ellas juntas. Al guardarla se importan una vez OpenStreetMap, la elevación y la población del área, y todas las herramientas las usan.",
-  "area.search": "Buscar un lugar, por ejemplo Alepo, Siria",
-  "area.lookingUp": "Buscando las regiones en {place}…",
-  "area.regionsAt": "Regiones en {place}",
-  "area.noRegions": "No hay regiones con nombre aquí. Pruebe otro lugar.",
-  "area.none":
-    "Ninguna región elegida: el área es el rectángulo alrededor de todo lo dibujado, más un margen.",
-  "area.remove": "Quitar {name}",
-  "area.total": "Unos {area} km² en total",
-  "area.outline": "Contorno de las regiones elegidas",
-  "area.save": "Guardar área e importar datos",
-  "area.saved": "Área guardada.",
   "area.import.queued": "{what}: importación iniciada",
   "area.import.current": "{what}: ya importado",
   "area.import.failed": "{what}: no se pudo iniciar. {reason}",
@@ -79,5 +63,4 @@ export const geodataEs = {
     "{tiles} teselas de mapa y {heights} alturas se obtuvieron en directo fuera de los datos importados del proyecto. Ahora se guardan en el proyecto; amplía la importación para cubrir todo el dibujo.",
   "data.extendImport": "Ampliar la importación en Datos del mapa",
   "data.hideLive": "Ocultar",
-  "data.areaRegions": "Área: {area} km², el rectángulo alrededor de {names}",
 } satisfies GeodataMessages;

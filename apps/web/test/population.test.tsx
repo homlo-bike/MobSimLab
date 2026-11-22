@@ -86,8 +86,7 @@ function layer(over: Partial<PopulationLayer>): PopulationLayer {
 
 function fakeApi(layers: PopulationLayer[]): PopulationApi & { setPrimary: ReturnType<typeof vi.fn> } {
   const overview: PopulationOverview = {
-    area: { bbox: [0, 0, 1, 1], drawnBbox: [0.1, 0.1, 0.9, 0.9], bufferKm: 2 },
-    bufferKm: 2,
+    area: { bbox: [0, 0, 1, 1] },
     areaKm2: 12345,
     layers,
     choices: {
@@ -104,7 +103,6 @@ function fakeApi(layers: PopulationLayer[]): PopulationApi & { setPrimary: Retur
   );
   return {
     overview: vi.fn(async () => overview),
-    setBuffer: vi.fn(async () => overview),
     startImport: vi.fn(),
     upload: vi.fn(),
     layer: vi.fn(),

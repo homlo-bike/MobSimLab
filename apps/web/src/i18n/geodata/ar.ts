@@ -6,8 +6,6 @@ export const geodataAr = {
   "data.title": "بيانات الخريطة",
   "data.intro":
     "بيانات OpenStreetMap والارتفاعات لهذا المشروع، محفوظة مع المشروع. تقرؤها أدوات الشوارع والسكك الحديدية والمباني والمياه والتضاريس بدلًا من سؤال OpenStreetMap وخادم الارتفاعات في كل مرة.",
-  "data.noArea": "ارسم شيئًا في المشروع أولًا: يغطي الاستيراد المستطيل المحيط بكل ما رُسم، مع هامش.",
-  "data.area": "المنطقة: {area} كم²، المستطيل المحيط بكل ما رُسم مع {buffer} كم",
   "data.osm": "OpenStreetMap",
   "data.dem": "الارتفاعات",
   "data.notImported": "لم يُستورد بعد.",
@@ -54,18 +52,6 @@ export const geodataAr = {
   "data.ownReplace": "استبدله بملف GeoTIFF آخر (حتى {max} ميغابايت)",
   "data.remove": "إزالة",
   "area.title": "منطقة المشروع",
-  "area.intro":
-    "ابحث عن مكان وحدد مناطق OpenStreetMap التي يغطيها المشروع. منطقة المشروع هي كلها معًا. عند الحفظ تُستورد بيانات OpenStreetMap والارتفاعات والسكان للمنطقة مرة واحدة، وتستخدمها كل الأدوات.",
-  "area.search": "ابحث عن مكان، مثل حلب، سوريا",
-  "area.lookingUp": "جارٍ البحث عن المناطق في {place}…",
-  "area.regionsAt": "المناطق في {place}",
-  "area.noRegions": "لا توجد مناطق مسمّاة هنا. جرّب مكانًا آخر.",
-  "area.none": "لم تُختر أي منطقة: المنطقة هي المستطيل المحيط بكل ما رُسم مع هامش.",
-  "area.remove": "إزالة {name}",
-  "area.total": "نحو {area} كم² إجمالًا",
-  "area.outline": "حدود المناطق المختارة",
-  "area.save": "حفظ المنطقة واستيراد البيانات",
-  "area.saved": "حُفظت المنطقة.",
   "area.import.queued": "{what}: بدأ الاستيراد",
   "area.import.current": "{what}: مستورد بالفعل",
   "area.import.failed": "{what}: تعذّر البدء. {reason}",
@@ -76,5 +62,4 @@ export const geodataAr = {
     "جاءت {tiles} بلاطة خريطة و{heights} ارتفاعًا مباشرةً من خارج بيانات المشروع المستوردة. صارت محفوظة في المشروع الآن؛ وسّع الاستيراد ليغطي الرسم كله.",
   "data.extendImport": "توسيع الاستيراد في بيانات الخريطة",
   "data.hideLive": "إخفاء",
-  "data.areaRegions": "المنطقة: {area} كم²، المستطيل المحيط بـ {names}",
 } satisfies GeodataMessages;

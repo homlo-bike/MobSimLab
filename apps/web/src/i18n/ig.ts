@@ -9,6 +9,7 @@ import { tablesIg } from "./tables/ig";
 import { economicsIg } from "./economics/ig";
 import { fleetIg } from "./fleet/ig";
 import { timetablesIg } from "./timetables/ig";
+import { areaIg } from "./area/ig";
 import { mslabIg } from "./mslab/ig";
 import { workspaceUiIg } from "./workspace-ui/ig";
 import { pluginCodeIg } from "./plugin-code/ig";
@@ -485,6 +486,7 @@ export const ig: Messages = {
   "map.group.noise": "Map mkpọtụ",
   "map.group.journey": "Onye na-eme atụmatụ njem",
   "map.group.agents": "Ọnọdụ onye nnọchite AI",
+  "map.group.projectArea": "Mpaghara ọrụ",
   "help.menu": "Enyemaka",
   "help.tour": "Malite njem nlegharị",
   "help.tourHint": "Njem dị mkpụmkpụ n'ime taabụ na ngwaọrụ ọrụ",
@@ -536,6 +538,7 @@ export const ig: Messages = {
   ...timetablesIg,
   ...commentsIg,
   ...mslabIg,
+  ...areaIg,
   ...workspaceUiIg,
   ...pluginCodeIg,
   ...populationIg,

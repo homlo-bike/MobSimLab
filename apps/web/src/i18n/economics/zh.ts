@@ -225,7 +225,6 @@ export const economicsZh = {
   "reg.importFailed": "{what}无法启动：{reason}。",
   "reg.unknownReason": "原因未知",
   "reg.defaultName": "区域 {n}",
-  "reg.areaFull": "项目范围已合并 {max} 个区域，达到上限。请在项目设置中更改。",
   "reg.areaFailed": "无法更改项目范围：{error}",
   "reg.title": "区域",
   "reg.intro":
@@ -247,11 +246,6 @@ export const economicsZh = {
   "reg.noAreas": "此处没有已命名的区域。请换个地方，或自行绘制。",
   "reg.km2": "{v} 平方公里",
   "reg.outside": "超出项目范围的区域",
-  "reg.outsideNote":
-    "{name}超出了项目范围，因此为项目下载的地图数据可能无法覆盖它。是否将其加入项目范围？这将下载更大范围所需的 OpenStreetMap 数据、地形高程和人口。",
-  "reg.adding": "正在添加…",
-  "reg.addToArea": "加入项目范围",
-  "reg.importOnly": "导入但不更改范围",
   "reg.inProject": "本项目中的区域",
   "reg.count": "区域 · {count}",
   "reg.none": "暂无：效益表在各处使用源数据。",

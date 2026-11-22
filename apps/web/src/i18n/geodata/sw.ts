@@ -6,9 +6,6 @@ export const geodataSw = {
   "data.title": "Data za ramani",
   "data.intro":
     "OpenStreetMap na miinuko kwa mradi huu, zinazohifadhiwa pamoja na mradi. Zana za barabara, reli, majengo, maji na ardhi huzisoma badala ya kuuliza OpenStreetMap na seva ya miinuko kila mara.",
-  "data.noArea":
-    "Chora kitu kwenye mradi kwanza: uingizaji unahusu mstatili unaozunguka kila kilichochorwa, pamoja na ukingo wa ziada.",
-  "data.area": "Eneo: km² {area}, mstatili unaozunguka kila kilichochorwa pamoja na km {buffer}",
   "data.osm": "OpenStreetMap",
   "data.dem": "Miinuko",
   "data.notImported": "Bado haijaingizwa.",
@@ -55,19 +52,6 @@ export const geodataSw = {
   "data.ownReplace": "Badilisha kwa GeoTIFF nyingine (hadi MB {max})",
   "data.remove": "Ondoa",
   "area.title": "Eneo la mradi",
-  "area.intro":
-    "Tafuta mahali na uweke alama kwenye maeneo ya OpenStreetMap ambayo mradi unahusu. Eneo la mradi ni yote kwa pamoja. Ukihifadhi, OpenStreetMap, miinuko na idadi ya watu wa eneo huingizwa mara moja, na zana zote huzitumia.",
-  "area.search": "Tafuta mahali, kama Aleppo, Syria",
-  "area.lookingUp": "Inatafuta maeneo ya {place}…",
-  "area.regionsAt": "Maeneo ya {place}",
-  "area.noRegions": "Hakuna maeneo yenye majina hapa. Jaribu mahali pengine.",
-  "area.none":
-    "Hakuna eneo lililochaguliwa: eneo ni mstatili unaozunguka kila kilichochorwa, pamoja na nafasi ya ziada.",
-  "area.remove": "Ondoa {name}",
-  "area.total": "Takriban km² {area} kwa jumla",
-  "area.outline": "Mpaka wa maeneo yaliyochaguliwa",
-  "area.save": "Hifadhi eneo na uingize data",
-  "area.saved": "Eneo limehifadhiwa.",
   "area.import.queued": "{what}: uingizaji umeanza",
   "area.import.current": "{what}: tayari imeingizwa",
   "area.import.failed": "{what}: haikuweza kuanza. {reason}",
@@ -78,5 +62,4 @@ export const geodataSw = {
     "Vigae {tiles} vya ramani na miinuko {heights} vilikuja moja kwa moja kutoka nje ya data iliyoingizwa ya mradi. Sasa vimehifadhiwa kwenye mradi; panua uingizaji ili ufunike mchoro wote.",
   "data.extendImport": "Panua uingizaji kwenye Data ya ramani",
   "data.hideLive": "Ficha",
-  "data.areaRegions": "Eneo: km² {area}, mstatili unaozunguka {names}",
 } satisfies GeodataMessages;

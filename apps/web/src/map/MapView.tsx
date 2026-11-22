@@ -4,9 +4,7 @@ import {
   Map as MapLibreMap,
   NavigationControl,
   ScaleControl,
-  setWorkerUrl,
 } from "maplibre-gl";
-import workerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -26,11 +24,9 @@ import { activePlugins } from "../plugins/registry";
 import { isDark, useDark } from "../shell/theme";
 import { applyMapTheme } from "./darkLayers";
 import { MapControls } from "./MapControls";
+import "./worker";
 import { applyHidden, markBasemap, type OverlayGroup, switchBasemap } from "./mapLayers";
 import { applyOverlays, rememberOverlays, rememberedOverlays } from "./overlays";
-
-// MapLibre 6 looks for its worker next to its own module, which does not exist once Vite bundles it.
-setWorkerUrl(workerUrl);
 
 interface Props {
   /** Called once the map style has loaded, and with `null` when the map is removed. */

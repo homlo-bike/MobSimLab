@@ -1,48 +1,24 @@
 import proj4 from "proj4";
 import type { Database } from "../db/database";
+import { type AreaPolygon, polygonsBox, storedPolygons } from "./area-polygons";
 
 /**
- * The project area (06-gis §1, §3): the box round everything drawn in the project, widened by the project's
- * buffer (`project.project.area_buffer_km`, default 2 km, 0 to 50). Reference data such as population is
- * imported for this box. Drawn means the street lines, the railway design, the road depots, the GIS regions
- * and the cargo bike route; the railway is stored in metres on a transverse Mercator centred on its origin
- * (crates/rail-design/src/proj.rs), which is converted back here.
+ * The project area (06-gis §1, §3): the polygons the planner drew in the area window (area-polygons.ts), each with
+ * a detail setting. Map data (OpenStreetMap, elevation, population) is imported only for them; a project without
+ * polygons has no area yet. `drawnPoints` lists everything drawn (street lines, the railway design, the road
+ * depots, the GIS regions and the cargo bike route) for the checks that warn about drawing outside the area; the
+ * railway is stored in metres on a transverse Mercator centred on its origin (crates/rail-design/src/proj.rs),
+ * which is converted back here.
  */
 
 export type Bbox = [number, number, number, number];
 
-/** Default buffer round the drawn box, km. */
-export const DEFAULT_AREA_BUFFER_KM = 2;
-/** Largest buffer, km (also checked by the database). */
-export const MAX_AREA_BUFFER_KM = 50;
-
-/** An OpenStreetMap region the planner picked as (part of) the project area (#140). */
-export interface AreaRegion {
-  /** `r123` for a relation, `w123` for a way. */
-  id: string;
-  name: string;
-  kind: string;
-  adminLevel: number | null;
-  /** Outer ring `[lon, lat]`, closed. */
-  ring: [number, number][];
-  areaKm2: number;
-}
-
-/** Most regions a project area joins. */
-export const MAX_AREA_REGIONS = 10;
-
 /** The project area. */
 export interface ProjectArea {
-  /**
-   * The box imports cover, `[west, south, east, north]` in degrees: the regions' box joined with the drawn box
-   * widened by the buffer; without regions, the drawn box widened by the buffer.
-   */
+  /** The box round the polygons, `[west, south, east, north]` in degrees: what box-based imports cover. */
   bbox: Bbox;
-  /** The box that must be covered: the box round everything drawn, joined with the regions' box. */
-  drawnBbox: Bbox;
-  bufferKm: number;
-  /** The OpenStreetMap regions the area is made of (their union); empty when the area follows the drawing. */
-  regions: AreaRegion[];
+  /** The polygons the planner drew. Never empty. */
+  polygons: AreaPolygon[];
 }
 
 type LonLat = [number, number];
@@ -128,73 +104,17 @@ export function joinBoxes(a: Bbox | null, b: Bbox | null): Bbox | null {
   return [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])];
 }
 
-/** Purpose: the regions of a stored `area_regions` value; malformed entries are skipped. */
-export function storedRegions(v: unknown): AreaRegion[] {
-  const out: AreaRegion[] = [];
-  for (const x of arr(v)) {
-    const r = obj(x);
-    const ring = arr(r.ring).filter(isLonLat) as [number, number][];
-    if (typeof r.id !== "string" || typeof r.name !== "string" || ring.length < 4) continue;
-    out.push({
-      id: r.id,
-      name: r.name,
-      kind: typeof r.kind === "string" ? r.kind : "area",
-      adminLevel: typeof r.adminLevel === "number" ? r.adminLevel : null,
-      ring: ring.map((p) => [p[0], p[1]]),
-      areaKm2: typeof r.areaKm2 === "number" ? r.areaKm2 : 0,
-    });
-  }
-  return out;
-}
-
 /**
- * Purpose: a box widened by `km` on every side (metres to degrees at the box's widest latitude), clamped to
- * valid longitudes and latitudes.
+ * Purpose: a project's area. Inputs: database, project id. Output: the area, or null when the planner has not
+ * drawn one yet. The caller checks access first.
  */
-export function bufferedBox(b: Bbox, km: number): Bbox {
-  const dLat = (km * 1000) / 111_320;
-  const lat = Math.min(89, Math.max(Math.abs(b[1]), Math.abs(b[3])));
-  const dLon = dLat / Math.max(0.01, Math.cos((lat * Math.PI) / 180));
-  return [
-    Math.max(-180, b[0] - dLon),
-    Math.max(-90, b[1] - dLat),
-    Math.min(180, b[2] + dLon),
-    Math.min(90, b[3] + dLat),
-  ];
-}
-
-/**
- * Purpose: a project's area. Inputs: database, project id, an optional buffer (else the project's own).
- * Output: the area, or null when the project has no regions and nothing is drawn yet. The caller checks access
- * first.
- */
-export async function projectArea(
-  db: Database,
-  projectId: string,
-  bufferKm?: number,
-): Promise<ProjectArea | null> {
-  const rows = await db
-    .selectFrom("project.drawing")
-    .select(["kind", "doc"])
-    .where("project_id", "=", projectId)
-    .where("kind", "in", ["street-lines", "railway", "depots", "regions", "cargo-bike"])
-    .execute();
-  const docs: Record<string, unknown> = {};
-  for (const r of rows) docs[r.kind] = r.doc;
-  const drawn = boxOf(drawnPoints(docs));
+export async function projectArea(db: Database, projectId: string): Promise<ProjectArea | null> {
   const p = await db
     .selectFrom("project.project")
-    .select(["area_buffer_km as km", "area_regions"])
+    .select("area_polygons")
     .where("id", "=", projectId)
     .executeTakeFirst();
-  const regions = storedRegions(p?.area_regions);
-  const regionBox = boxOf(regions.flatMap((r) => r.ring));
-  if (!drawn && !regionBox) return null;
-  const km = bufferKm ?? (p ? Number(p.km) : DEFAULT_AREA_BUFFER_KM);
-  return {
-    bbox: joinBoxes(regionBox, drawn && bufferedBox(drawn, km))!,
-    drawnBbox: joinBoxes(regionBox, drawn)!,
-    bufferKm: km,
-    regions,
-  };
+  const polygons = storedPolygons(p?.area_polygons);
+  const bbox = polygonsBox(polygons);
+  return bbox ? { bbox, polygons } : null;
 }

@@ -246,8 +246,6 @@ export const economicsSw = {
   "reg.importFailed": "Haikuweza kuanza {what}: {reason}.",
   "reg.unknownReason": "sababu isiyojulikana",
   "reg.defaultName": "Eneo {n}",
-  "reg.areaFull":
-    "Eneo la mradi tayari linaunganisha kiwango cha juu cha maeneo {max}; badilisha hilo katika Mipangilio ya mradi.",
   "reg.areaFailed": "Haikuweza kubadilisha eneo la mradi: {error}",
   "reg.title": "Maeneo",
   "reg.intro":
@@ -270,11 +268,6 @@ export const economicsSw = {
   "reg.noAreas": "Hakuna maeneo yenye majina hapa. Jaribu mahali pengine au chora moja.",
   "reg.km2": "km² {v}",
   "reg.outside": "Eneo nje ya eneo la mradi",
-  "reg.outsideNote":
-    "{name} linapita nje ya eneo la mradi, kwa hiyo data ya ramani iliyopakuliwa kwa mradi huenda isilifunike. Liongezwe kwenye eneo la mradi? OpenStreetMap, mwinuko wa ardhi na idadi ya watu vitapakuliwa kwa eneo kubwa zaidi.",
-  "reg.adding": "Inaongeza…",
-  "reg.addToArea": "Ongeza kwenye eneo la mradi",
-  "reg.importOnly": "Leta bila kubadilisha eneo",
   "reg.inProject": "Maeneo katika mradi huu",
   "reg.count": "Maeneo · {count}",
   "reg.none": "Bado hakuna: majedwali ya manufaa hutumia data ya vyanzo kila mahali.",

@@ -57,7 +57,7 @@ A ZIP container, versioned, readable with standard tools:
 project.mslab
 ├── manifest.json            format version, app version, project id and name, date, what is included,
 │                            SHA-256 and size of every other file
-├── project.json             name, description, area, modes
+├── project.json             name, description, area, modes (format 1.3: areaPolygons)
 ├── plugins.json             plugins switched on or off for the project (bundled, or installed with a version)
 ├── data/<kind>.json         one saved drawing per tool (railway, street-lines, depots, preferences, scenarios, …):
 │                            kind, schema version, document as the tool saves it (geometry in EPSG:4326)

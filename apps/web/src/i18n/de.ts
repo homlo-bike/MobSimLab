@@ -9,6 +9,7 @@ import { tablesDe } from "./tables/de";
 import { economicsDe } from "./economics/de";
 import { fleetDe } from "./fleet/de";
 import { timetablesDe } from "./timetables/de";
+import { areaDe } from "./area/de";
 import { mslabDe } from "./mslab/de";
 import { workspaceUiDe } from "./workspace-ui/de";
 import { pluginCodeDe } from "./plugin-code/de";
@@ -493,6 +494,7 @@ export const de: Messages = {
   "map.group.noise": "Lärmkarte",
   "map.group.journey": "Reiseplaner",
   "map.group.agents": "Szenario des KI-Agenten",
+  "map.group.projectArea": "Projektgebiet",
   "help.menu": "Hilfe",
   "help.tour": "Rundgang starten",
   "help.tourHint": "Ein kurzer Gang durch die Tabs und Werkzeuge des Projekts",
@@ -546,6 +548,7 @@ export const de: Messages = {
   ...timetablesDe,
   ...commentsDe,
   ...mslabDe,
+  ...areaDe,
   ...workspaceUiDe,
   ...pluginCodeDe,
   ...populationDe,

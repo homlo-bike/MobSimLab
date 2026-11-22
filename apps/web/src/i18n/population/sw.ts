@@ -10,11 +10,6 @@ export const populationSw = {
   "pop.failed": "Matabaka ya idadi ya watu hayakuweza kupakiwa: {error}",
   "pop.retry": "Jaribu tena",
   "pop.area.title": "Eneo la mradi",
-  "pop.area.none":
-    "Chora kwanza njia, reli, bohari au eneo: eneo la mradi ni mstatili unaozunguka kila kilichochorwa.",
-  "pop.area.box": "Mstatili unaozunguka kila kilichochorwa, uliopanuliwa kwa ukingo: km² {km2}.",
-  "pop.area.buffer": "Ukingo (km)",
-  "pop.area.save": "Hifadhi ukingo",
   "pop.area.tooLarge": "Uletaji hufunika km² {max} kwa zaidi; punguza ukingo au chora kidogo.",
   "pop.primary.title": "Idadi ya watu inayotumiwa na mradi",
   "pop.primary.hint": "Ramani ya kelele, uchambuzi wa kutembea na majedwali ya manufaa husoma tabaka hili.",

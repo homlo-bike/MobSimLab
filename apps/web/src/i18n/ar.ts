@@ -9,6 +9,7 @@ import { tablesAr } from "./tables/ar";
 import { economicsAr } from "./economics/ar";
 import { fleetAr } from "./fleet/ar";
 import { timetablesAr } from "./timetables/ar";
+import { areaAr } from "./area/ar";
 import { mslabAr } from "./mslab/ar";
 import { workspaceUiAr } from "./workspace-ui/ar";
 import { pluginCodeAr } from "./plugin-code/ar";
@@ -475,6 +476,7 @@ export const ar: Messages = {
   "map.group.noise": "خريطة الضوضاء",
   "map.group.journey": "مخطط الرحلات",
   "map.group.agents": "سيناريو وكيل الذكاء الاصطناعي",
+  "map.group.projectArea": "منطقة المشروع",
   "help.menu": "مساعدة",
   "help.tour": "ابدأ الجولة",
   "help.tourHint": "جولة قصيرة في علامات تبويب المشروع وأدواته",
@@ -524,6 +526,7 @@ export const ar: Messages = {
   ...timetablesAr,
   ...commentsAr,
   ...mslabAr,
+  ...areaAr,
   ...workspaceUiAr,
   ...pluginCodeAr,
   ...populationAr,

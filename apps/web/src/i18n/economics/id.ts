@@ -238,8 +238,6 @@ export const economicsId = {
   "reg.importFailed": "{what} tidak dapat dimulai: {reason}.",
   "reg.unknownReason": "alasan tidak diketahui",
   "reg.defaultName": "Wilayah {n}",
-  "reg.areaFull":
-    "Area proyek sudah menggabungkan {max} wilayah, batas maksimumnya. Ubah di pengaturan proyek.",
   "reg.areaFailed": "Area proyek tidak dapat diubah: {error}",
   "reg.title": "Wilayah",
   "reg.intro":
@@ -262,11 +260,6 @@ export const economicsId = {
   "reg.noAreas": "Tidak ada area bernama di sini. Coba tempat lain atau gambar sendiri.",
   "reg.km2": "{v} km²",
   "reg.outside": "Wilayah di luar area proyek",
-  "reg.outsideNote":
-    "{name} melampaui area proyek, jadi data peta yang diunduh untuk proyek mungkin tidak mencakupnya. Tambahkan ke area proyek? Ini mengunduh data OpenStreetMap, ketinggian medan, dan penduduk yang dibutuhkan area yang lebih besar.",
-  "reg.adding": "Menambahkan…",
-  "reg.addToArea": "Tambahkan ke area proyek",
-  "reg.importOnly": "Impor tanpa mengubah area",
   "reg.inProject": "Wilayah dalam proyek ini",
   "reg.count": "Wilayah · {count}",
   "reg.none": "Belum ada: tabel manfaat memakai data sumber di mana-mana.",

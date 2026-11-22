@@ -56,11 +56,10 @@ export interface GeodataStatus {
   canImport: boolean;
   area: {
     bbox: Box;
-    drawnBbox: Box;
-    bufferKm: number;
+    /** The box round the polygons, km² (what the imports cover). */
     areaKm2: number;
-    /** The OpenStreetMap regions the project area is made of (#140); empty when it follows the drawing. */
-    regions?: { id: string; name: string; ring: [number, number][] }[];
+    /** The polygons the planner drew in the area window. */
+    polygons: { id: string; name: string; ring: [number, number][] }[];
   } | null;
   osm: ImportPair;
   dem: ImportPair;
@@ -94,8 +93,6 @@ export interface GeodataApi {
   cancel(importId: string): Promise<ImportRun>;
   /** Remove a finished import and its data (the planner's own grid). */
   remove(importId: string): Promise<void>;
-  /** Set the project's buffer around the drawing, km (shared with the population import). */
-  setBuffer(km: number): Promise<void>;
 }
 
 /** What the planner says about their elevation grid; empty fields are left out. */
@@ -164,11 +161,6 @@ export function projectGeodata(projectId: string, csrf: string): GeodataApi {
         const json = (await res.json().catch(() => ({}))) as { message?: string };
         throw new Error(json.message ?? `Remove failed (${res.status})`);
       }
-    },
-    setBuffer: async (km) => {
-      await send("PUT", `/api/projects/${encodeURIComponent(projectId)}/population/area`, csrf, {
-        bufferKm: km,
-      });
     },
   };
 }

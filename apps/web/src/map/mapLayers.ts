@@ -6,6 +6,7 @@ import { type Basemap, basemapStyle } from "./basemaps";
  * group (the basemap's own) are never hidden by the control.
  */
 export const OVERLAY_GROUPS = [
+  { id: "projectArea", prefixes: ["pa-"] },
   { id: "streetLines", prefixes: ["sl-"] },
   { id: "railways", prefixes: ["rd-"] },
   { id: "cableFerry", prefixes: ["spans-", "water-"] },

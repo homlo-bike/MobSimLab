@@ -241,7 +241,6 @@ export const economicsHa = {
   "reg.importFailed": "Ba a iya fara {what} ba: {reason}.",
   "reg.unknownReason": "dalili da ba a sani ba",
   "reg.defaultName": "Yanki {n}",
-  "reg.areaFull": "Yankin aikin ya riga ya haɗa iyakar yankuna {max}; canja hakan a Saitunan aiki.",
   "reg.areaFailed": "Ba a iya canja yankin aikin ba: {error}",
   "reg.title": "Yankuna",
   "reg.intro":
@@ -264,11 +263,6 @@ export const economicsHa = {
   "reg.noAreas": "Babu yankuna masu suna a nan. Gwada wani wuri ko zana ɗaya.",
   "reg.km2": "km² {v}",
   "reg.outside": "Yanki a wajen yankin aikin",
-  "reg.outsideNote":
-    "{name} ya wuce wajen yankin aikin, don haka bayanan taswira da aka sauke don aikin ƙila ba su rufe shi ba. A ƙara shi ga yankin aikin? Za a sauke OpenStreetMap, tsayin ƙasa da yawan jama'a don babban yanki.",
-  "reg.adding": "Ana ƙarawa…",
-  "reg.addToArea": "Ƙara ga yankin aikin",
-  "reg.importOnly": "Shigo da ba tare da canja yankin ba",
   "reg.inProject": "Yankuna a cikin wannan aikin",
   "reg.count": "Yankuna · {count}",
   "reg.none": "Babu tukuna: teburan fa'idodi suna amfani da bayanan tushe a ko'ina.",

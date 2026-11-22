@@ -25,7 +25,7 @@ import {
   nearestEpoch,
 } from "../gateway/ghsl.client";
 import { CELL_DEG, emptyGrid, WorldPopClient, type WorldPopEntry } from "../gateway/worldpop.client";
-import { type Bbox, MAX_AREA_BUFFER_KM, type ProjectArea, projectArea } from "../projects/project-area";
+import { type Bbox, type ProjectArea, projectArea } from "../projects/project-area";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
 import { type Lattice, layerLattice } from "./lattice";
 import { POPULATION_SOURCE, PopulationService } from "./population.service";
@@ -106,7 +106,6 @@ export interface PopulationLayer {
 /** What the GIS tab needs: the area, the layers and the choices an import offers. */
 export interface PopulationOverview {
   area: ProjectArea | null;
-  bufferKm: number;
   areaKm2: number | null;
   layers: PopulationLayer[];
   choices: {
@@ -231,14 +230,8 @@ export class PopulationLayersService implements OnModuleInit {
   async overview(actor: ProjectActor, projectId: string): Promise<PopulationOverview> {
     await this.projects.access(actor, projectId, "read");
     const area = await projectArea(this.db, projectId);
-    const p = await this.db
-      .selectFrom("project.project")
-      .select("area_buffer_km")
-      .where("id", "=", projectId)
-      .executeTakeFirstOrThrow();
     return {
       area,
-      bufferKm: Number(p.area_buffer_km),
       areaKm2: area ? Math.round(boxAreaKm2(area.bbox) * 10) / 10 : null,
       layers: await this.list(projectId),
       choices: {
@@ -288,7 +281,8 @@ export class PopulationLayersService implements OnModuleInit {
       if (l && l.status !== "ready") throw new BadRequestException(`The layer "${l.name}" is not ready`);
     const area = await projectArea(this.db, projectId);
     const bbox = area?.bbox ?? layer.coverage;
-    if (!bbox) throw new BadRequestException("Draw something in the project first, so it has an area");
+    if (!bbox)
+      throw new BadRequestException("Draw the project area first (Project preferences, Project area)");
     const d = cellDegrees(req.cellM);
     let a: Lattice;
     let b: Lattice | null = null;
@@ -307,34 +301,6 @@ export class PopulationLayersService implements OnModuleInit {
   // -------------------------------------------------------------------------------------------------------
   // Changes (Owners and Editors)
 
-  /** Purpose: change the buffer round the drawn box, km. */
-  async setBuffer(actor: ProjectActor, projectId: string, km: number): Promise<PopulationOverview> {
-    if (!(km >= 0 && km <= MAX_AREA_BUFFER_KM))
-      throw new BadRequestException(`The buffer is 0 to ${MAX_AREA_BUFFER_KM} km`);
-    await this.db.transaction().execute(async (tx) => {
-      await this.projects.access(actor, projectId, "edit", tx, true);
-      const cur = await tx
-        .selectFrom("project.project")
-        .select("area_buffer_km")
-        .where("id", "=", projectId)
-        .executeTakeFirstOrThrow();
-      await tx
-        .updateTable("project.project")
-        .set({ area_buffer_km: km, updated_at: new Date() })
-        .where("id", "=", projectId)
-        .execute();
-      await this.projects.logProject(
-        actor,
-        projectId,
-        "project.area_buffer_changed",
-        { km: Number(cur.area_buffer_km) },
-        { km },
-        tx,
-      );
-    });
-    return this.overview(actor, projectId);
-  }
-
   /**
    * Purpose: import WorldPop or GHSL for the project area into a new layer. Output: the layer, `importing`;
    * the import goes on in the background and the layer turns `ready` or `failed`.
@@ -343,11 +309,13 @@ export class PopulationLayersService implements OnModuleInit {
     await this.projects.access(actor, projectId, "edit");
     const area = await projectArea(this.db, projectId);
     if (!area)
-      throw new BadRequestException("Draw something in the project first: the import covers its area");
+      throw new BadRequestException(
+        "Draw the project area first (Project preferences, Project area): the import covers it",
+      );
     const km2 = boxAreaKm2(area.bbox);
     if (km2 > this.settings.maxAreaKm2)
       throw new BadRequestException(
-        `The project area is ${Math.round(km2).toLocaleString("en")} km², above the ${this.settings.maxAreaKm2.toLocaleString("en")} km² an import may cover; lower the buffer or ask the administrator to raise MOBSIMLAB_POPULATION_MAX_AREA_KM2`,
+        `The project area is ${Math.round(km2).toLocaleString("en")} km², above the ${this.settings.maxAreaKm2.toLocaleString("en")} km² an import may cover; make the project area smaller or ask the administrator to raise MOBSIMLAB_POPULATION_MAX_AREA_KM2`,
       );
     const year = new Date().getUTCFullYear();
     const isWp = req.source === "worldpop";
@@ -356,8 +324,8 @@ export class PopulationLayersService implements OnModuleInit {
     const name =
       req.name ?? (isWp ? `WorldPop ${refYear}` : `GHSL ${refYear}, ${res === "3ss" ? "100 m" : "1 km"}`);
     const options = isWp
-      ? { year: refYear, bufferKm: area.bufferKm, bbox: area.bbox }
-      : { epoch: refYear, resolution: res, bufferKm: area.bufferKm, bbox: area.bbox };
+      ? { year: refYear, bbox: area.bbox }
+      : { epoch: refYear, resolution: res, bbox: area.bbox };
     const id = await this.db.transaction().execute(async (tx) => {
       const row = await tx
         .insertInto("geo.population_layer")

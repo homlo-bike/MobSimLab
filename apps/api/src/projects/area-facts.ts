@@ -5,7 +5,7 @@ import { EconomyService, type PlaceCountry } from "../economy/economy.service";
 import { NagerClient } from "../gateway/nager.client";
 import { OpenMeteoClient } from "../gateway/openmeteo.client";
 import { factKey, ProjectDataCache } from "./data-cache";
-import { type AreaRegion, type Bbox, projectArea } from "./project-area";
+import { type Bbox, projectArea } from "./project-area";
 
 /** A country of the project area with the share of the area's sample points in it. */
 export interface AreaCountry {
@@ -38,10 +38,13 @@ const RETRY_MS = 10 * 60_000;
 const GRID = 3;
 
 /**
- * Purpose: points to ask the country of: a grid over the box, kept to those inside the picked regions when
- * there are regions (else the whole grid), and the box centre.
+ * Purpose: points to ask the country of: the box centre, the middle of each polygon of the area, and a grid over
+ * the box kept to the points inside the polygons when there are polygons (else the whole grid).
  */
-export function samplePoints(bbox: Bbox, regions: readonly AreaRegion[]): [number, number][] {
+export function samplePoints(
+  bbox: Bbox,
+  regions: readonly { ring: readonly [number, number][] }[],
+): [number, number][] {
   const [w, s, e, n] = bbox;
   const grid: [number, number][] = [];
   for (let i = 0; i < GRID; i++)
@@ -49,7 +52,14 @@ export function samplePoints(bbox: Bbox, regions: readonly AreaRegion[]): [numbe
       grid.push([w + ((i + 0.5) / GRID) * (e - w), s + ((j + 0.5) / GRID) * (n - s)]);
   const inside = regions.length ? grid.filter((p) => regions.some((r) => inRing(p, r.ring))) : grid;
   const centre: [number, number] = [(w + e) / 2, (s + n) / 2];
-  return [centre, ...inside.filter((p) => p[0] !== centre[0] || p[1] !== centre[1])];
+  const middles = regions.map((r) => {
+    const pts = r.ring.slice(0, -1);
+    return [
+      pts.reduce((a, p) => a + p[0], 0) / Math.max(1, pts.length),
+      pts.reduce((a, p) => a + p[1], 0) / Math.max(1, pts.length),
+    ] as [number, number];
+  });
+  return [centre, ...middles, ...inside.filter((p) => p[0] !== centre[0] || p[1] !== centre[1])];
 }
 
 /** Purpose: the countries of the sample points with their shares, largest first (sea points left out). */
@@ -137,7 +147,7 @@ export class AreaFactsService {
     if (!area) return null;
     const places: PlaceCountry[] = [];
     if (this.economy)
-      for (const [lon, lat] of samplePoints(area.bbox, area.regions ?? [])) {
+      for (const [lon, lat] of samplePoints(area.bbox, area.polygons)) {
         try {
           const r = await this.kept.through(projectId, "facts", factKey.countryAt(lon, lat), async () =>
             JSON.stringify(await this.economy!.countryAt(lon, lat)),

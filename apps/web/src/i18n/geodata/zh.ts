@@ -6,8 +6,6 @@ export const geodataZh = {
   "data.title": "地图数据",
   "data.intro":
     "本项目的 OpenStreetMap 和高程数据，随项目保存。街道、铁路、建筑、水体和地形工具读取这些数据，而不是每次都去询问 OpenStreetMap 和高程服务器。",
-  "data.noArea": "请先在项目中绘制内容：导入范围是包围所有已绘内容的矩形，再加一圈缓冲区。",
-  "data.area": "范围：{area} km²，即包围所有已绘内容的矩形外加 {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "高程",
   "data.notImported": "尚未导入。",
@@ -52,18 +50,6 @@ export const geodataZh = {
   "data.ownReplace": "换成另一个 GeoTIFF(最大 {max} MB)",
   "data.remove": "移除",
   "area.title": "项目区域",
-  "area.intro":
-    "搜索地点并勾选项目覆盖的 OpenStreetMap 区域。项目区域是它们的合集。保存后会为该区域一次性导入 OpenStreetMap、高程和人口数据，所有工具都使用这些数据。",
-  "area.search": "搜索地点，例如 叙利亚 阿勒颇",
-  "area.lookingUp": "正在查找 {place} 的区域…",
-  "area.regionsAt": "{place} 的区域",
-  "area.noRegions": "这里没有有名称的区域。请换一个地点。",
-  "area.none": "未选择区域：区域为所有绘制内容的外接矩形加缓冲区。",
-  "area.remove": "移除 {name}",
-  "area.total": "总计约 {area} 平方公里",
-  "area.outline": "所选区域的轮廓",
-  "area.save": "保存区域并导入数据",
-  "area.saved": "区域已保存。",
   "area.import.queued": "{what}：已开始导入",
   "area.import.current": "{what}：已导入",
   "area.import.failed": "{what}：无法开始。{reason}",
@@ -74,5 +60,4 @@ export const geodataZh = {
     "有 {tiles} 个地图瓦片和 {heights} 个高程是在项目导入数据之外实时获取的。现已保存在项目中；请扩大导入范围以覆盖整个绘图。",
   "data.extendImport": "在地图数据中扩大导入",
   "data.hideLive": "隐藏",
-  "data.areaRegions": "区域：{area} 平方公里，{names} 的外接矩形",
 } satisfies GeodataMessages;

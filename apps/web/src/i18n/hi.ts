@@ -9,6 +9,7 @@ import { tablesHi } from "./tables/hi";
 import { economicsHi } from "./economics/hi";
 import { fleetHi } from "./fleet/hi";
 import { timetablesHi } from "./timetables/hi";
+import { areaHi } from "./area/hi";
 import { mslabHi } from "./mslab/hi";
 import { workspaceUiHi } from "./workspace-ui/hi";
 import { pluginCodeHi } from "./plugin-code/hi";
@@ -483,6 +484,7 @@ export const hi: Messages = {
   "map.group.noise": "शोर मानचित्र",
   "map.group.journey": "यात्रा योजनाकार",
   "map.group.agents": "AI एजेंट परिदृश्य",
+  "map.group.projectArea": "परियोजना क्षेत्र",
   "help.menu": "सहायता",
   "help.tour": "परिचय यात्रा करें",
   "help.tourHint": "परियोजना के टैब और टूल की छोटी सैर",
@@ -534,6 +536,7 @@ export const hi: Messages = {
   ...timetablesHi,
   ...commentsHi,
   ...mslabHi,
+  ...areaHi,
   ...workspaceUiHi,
   ...pluginCodeHi,
   ...populationHi,

@@ -7,6 +7,7 @@ import { tablesEn } from "./tables/en";
 import { economicsEn } from "./economics/en";
 import { fleetEn } from "./fleet/en";
 import { timetablesEn } from "./timetables/en";
+import { areaEn } from "./area/en";
 import { mslabEn } from "./mslab/en";
 import { workspaceUiEn } from "./workspace-ui/en";
 import { pluginCodeEn } from "./plugin-code/en";
@@ -479,6 +480,7 @@ export const en = {
   "map.group.noise": "Noise map",
   "map.group.journey": "Journey planner",
   "map.group.agents": "AI agent scenario",
+  "map.group.projectArea": "Project area",
   "help.menu": "Help",
   "help.tour": "Take the tour",
   "help.tourHint": "A short walk through the project's tabs and tools",
@@ -529,6 +531,7 @@ export const en = {
   ...timetablesEn,
   ...commentsEn,
   ...mslabEn,
+  ...areaEn,
   ...workspaceUiEn,
   ...pluginCodeEn,
   ...roadEn,

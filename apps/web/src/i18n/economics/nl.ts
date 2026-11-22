@@ -243,8 +243,6 @@ export const economicsNl = {
   "reg.importFailed": "{what} kon niet starten: {reason}.",
   "reg.unknownReason": "onbekende reden",
   "reg.defaultName": "Regio {n}",
-  "reg.areaFull":
-    "Het projectgebied voegt al {max} regio's samen, het maximum. Wijzig het in de projectinstellingen.",
   "reg.areaFailed": "Het projectgebied kon niet worden gewijzigd: {error}",
   "reg.title": "Regio's",
   "reg.intro":
@@ -267,11 +265,6 @@ export const economicsNl = {
   "reg.noAreas": "Hier zijn geen benoemde gebieden. Probeer een andere plek of teken er een.",
   "reg.km2": "{v} km²",
   "reg.outside": "Regio buiten het projectgebied",
-  "reg.outsideNote":
-    "{name} reikt verder dan het projectgebied, dus de voor het project gedownloade kaartgegevens dekken haar mogelijk niet. Toevoegen aan het projectgebied? Dan worden de OpenStreetMap-gegevens, terreinhoogten en bevolking gedownload die het grotere gebied nodig heeft.",
-  "reg.adding": "Toevoegen…",
-  "reg.addToArea": "Toevoegen aan projectgebied",
-  "reg.importOnly": "Importeren zonder het gebied te wijzigen",
   "reg.inProject": "Regio's in dit project",
   "reg.count": "Regio's · {count}",
   "reg.none": "Nog geen: de batentabellen gebruiken overal de brongegevens.",

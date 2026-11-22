@@ -10,12 +10,6 @@ export const populationIg = {
   "pop.failed": "Enweghị ike ibunye oyi akwa ọnụ ọgụgụ mmadụ: {error}",
   "pop.retry": "Nwaa ọzọ",
   "pop.area.title": "Mpaghara ọrụ",
-  "pop.area.none":
-    "Buru ụzọ see ahịrị, ụzọ ụgbọ oloko, ebe nchekwa ụgbọ ma ọ bụ mpaghara: mpaghara ọrụ bụ akụkụ anọ gbara ihe niile e sere gburugburu.",
-  "pop.area.box":
-    "Akụkụ anọ gbara ihe niile e sere gburugburu, e mere ka ọ saa mbara site na oke: km² {km2}.",
-  "pop.area.buffer": "Oke (km)",
-  "pop.area.save": "Chekwaa oke",
   "pop.area.tooLarge": "Mbubata na-ekpuchi km² {max} kacha; belata oke ma ọ bụ see obere.",
   "pop.primary.title": "Ọnụ ọgụgụ mmadụ ọrụ ahụ na-eji",
   "pop.primary.hint": "Maapụ mkpọtụ, nyocha ije ụkwụ na tebụl uru na-agụ oyi akwa a.",

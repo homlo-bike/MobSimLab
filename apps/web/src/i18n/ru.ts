@@ -9,6 +9,7 @@ import { tablesRu } from "./tables/ru";
 import { economicsRu } from "./economics/ru";
 import { fleetRu } from "./fleet/ru";
 import { timetablesRu } from "./timetables/ru";
+import { areaRu } from "./area/ru";
 import { mslabRu } from "./mslab/ru";
 import { workspaceUiRu } from "./workspace-ui/ru";
 import { pluginCodeRu } from "./plugin-code/ru";
@@ -488,6 +489,7 @@ export const ru: Messages = {
   "map.group.noise": "Шумовая карта",
   "map.group.journey": "Планировщик поездок",
   "map.group.agents": "Сценарий ИИ-агента",
+  "map.group.projectArea": "Территория проекта",
   "help.menu": "Справка",
   "help.tour": "Пройти обзор",
   "help.tourHint": "Короткая прогулка по вкладкам и инструментам проекта",
@@ -540,6 +542,7 @@ export const ru: Messages = {
   ...timetablesRu,
   ...commentsRu,
   ...mslabRu,
+  ...areaRu,
   ...workspaceUiRu,
   ...pluginCodeRu,
   ...populationRu,

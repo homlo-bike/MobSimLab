@@ -251,8 +251,6 @@ export const economicsFr = {
   "reg.importFailed": "{what} n'a pas pu démarrer : {reason}.",
   "reg.unknownReason": "raison inconnue",
   "reg.defaultName": "Région {n}",
-  "reg.areaFull":
-    "L'emprise du projet réunit déjà {max} régions, le maximum. Modifiez-la dans les paramètres du projet.",
   "reg.areaFailed": "L'emprise du projet n'a pas pu être modifiée : {error}",
   "reg.title": "Régions",
   "reg.intro":
@@ -276,11 +274,6 @@ export const economicsFr = {
   "reg.noAreas": "Aucune zone nommée ici. Essayez un autre endroit ou dessinez-en une.",
   "reg.km2": "{v} km²",
   "reg.outside": "Région hors de l'emprise du projet",
-  "reg.outsideNote":
-    "{name} dépasse l'emprise du projet, les données cartographiques téléchargées pour le projet risquent donc de ne pas la couvrir. L'ajouter à l'emprise du projet ? Cela télécharge les données OpenStreetMap, les altitudes du terrain et la population dont l'emprise agrandie a besoin.",
-  "reg.adding": "Ajout…",
-  "reg.addToArea": "Ajouter à l'emprise du projet",
-  "reg.importOnly": "Importer sans modifier l'emprise",
   "reg.inProject": "Régions de ce projet",
   "reg.count": "Régions · {count}",
   "reg.none": "Aucune pour l'instant : les tableaux des bénéfices utilisent partout les données sources.",

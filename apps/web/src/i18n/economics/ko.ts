@@ -230,7 +230,6 @@ export const economicsKo = {
   "reg.importFailed": "{what}을(를) 시작할 수 없습니다: {reason}.",
   "reg.unknownReason": "알 수 없는 이유",
   "reg.defaultName": "지역 {n}",
-  "reg.areaFull": "프로젝트 영역이 이미 최대치인 {max}개 지역을 합쳤습니다. 프로젝트 설정에서 변경하세요.",
   "reg.areaFailed": "프로젝트 영역을 변경할 수 없습니다: {error}",
   "reg.title": "지역",
   "reg.intro":
@@ -253,11 +252,6 @@ export const economicsKo = {
   "reg.noAreas": "여기에는 이름이 있는 영역이 없습니다. 다른 곳을 시도하거나 직접 그리세요.",
   "reg.km2": "{v}km²",
   "reg.outside": "프로젝트 영역 밖의 지역",
-  "reg.outsideNote":
-    "{name}이(가) 프로젝트 영역을 벗어나므로 프로젝트용으로 내려받은 지도 데이터로 덮이지 않을 수 있습니다. 프로젝트 영역에 추가할까요? 더 넓은 영역에 필요한 OpenStreetMap 데이터, 지형 고도, 인구를 내려받습니다.",
-  "reg.adding": "추가하는 중…",
-  "reg.addToArea": "프로젝트 영역에 추가",
-  "reg.importOnly": "영역을 바꾸지 않고 가져오기",
   "reg.inProject": "이 프로젝트의 지역",
   "reg.count": "지역 · {count}",
   "reg.none": "아직 없음: 편익 표는 모든 곳에서 원본 데이터를 사용합니다.",

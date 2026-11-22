@@ -6,9 +6,6 @@ export const geodataId = {
   "data.title": "Data peta",
   "data.intro":
     "OpenStreetMap dan elevasi untuk proyek ini, disimpan bersama proyek. Alat jalan, rel, bangunan, perairan, dan medan membacanya alih-alih bertanya ke OpenStreetMap dan server elevasi setiap kali.",
-  "data.noArea":
-    "Gambar sesuatu di proyek terlebih dahulu: impor mencakup persegi panjang di sekeliling semua yang digambar, ditambah penyangga.",
-  "data.area": "Area: {area} km², persegi panjang di sekeliling semua yang digambar ditambah {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Elevasi",
   "data.notImported": "Belum diimpor.",
@@ -55,19 +52,6 @@ export const geodataId = {
   "data.ownReplace": "Ganti dengan GeoTIFF lain (hingga {max} MB)",
   "data.remove": "Hapus",
   "area.title": "Wilayah proyek",
-  "area.intro":
-    "Cari tempat dan centang wilayah OpenStreetMap yang dicakup proyek. Wilayah proyek adalah gabungan semuanya. Saat disimpan, OpenStreetMap, ketinggian, dan penduduk wilayah diimpor sekali, dan semua alat memakainya.",
-  "area.search": "Cari tempat, misalnya Aleppo, Suriah",
-  "area.lookingUp": "Mencari wilayah di {place}…",
-  "area.regionsAt": "Wilayah di {place}",
-  "area.noRegions": "Tidak ada wilayah bernama di sini. Coba tempat lain.",
-  "area.none":
-    "Tidak ada wilayah dipilih: wilayahnya adalah kotak di sekitar semua yang digambar, ditambah penyangga.",
-  "area.remove": "Hapus {name}",
-  "area.total": "Sekitar {area} km² seluruhnya",
-  "area.outline": "Garis batas wilayah terpilih",
-  "area.save": "Simpan wilayah dan impor data",
-  "area.saved": "Wilayah disimpan.",
   "area.import.queued": "{what}: impor dimulai",
   "area.import.current": "{what}: sudah diimpor",
   "area.import.failed": "{what}: tidak bisa dimulai. {reason}",
@@ -78,5 +62,4 @@ export const geodataId = {
     "{tiles} ubin peta dan {heights} ketinggian diambil langsung dari luar data impor proyek. Kini disimpan di proyek; perluas impor agar mencakup seluruh gambar.",
   "data.extendImport": "Perluas impor di Data peta",
   "data.hideLive": "Sembunyikan",
-  "data.areaRegions": "Wilayah: {area} km², kotak di sekitar {names}",
 } satisfies GeodataMessages;
