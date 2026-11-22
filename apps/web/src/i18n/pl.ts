@@ -9,6 +9,7 @@ import { tablesPl } from "./tables/pl";
 import { economicsPl } from "./economics/pl";
 import { fleetPl } from "./fleet/pl";
 import { timetablesPl } from "./timetables/pl";
+import { areaPl } from "./area/pl";
 import { mslabPl } from "./mslab/pl";
 import { workspaceUiPl } from "./workspace-ui/pl";
 import { pluginCodePl } from "./plugin-code/pl";
@@ -485,6 +486,7 @@ export const pl: Messages = {
   "map.group.noise": "Mapa hałasu",
   "map.group.journey": "Planer podróży",
   "map.group.agents": "Scenariusz agenta AI",
+  "map.group.projectArea": "Obszar projektu",
   "help.menu": "Pomoc",
   "help.tour": "Rozpocznij przewodnik",
   "help.tourHint": "Krótki przegląd kart i narzędzi projektu",
@@ -535,6 +537,7 @@ export const pl: Messages = {
   ...timetablesPl,
   ...commentsPl,
   ...mslabPl,
+  ...areaPl,
   ...workspaceUiPl,
   ...pluginCodePl,
   ...populationPl,

@@ -238,7 +238,6 @@ export const economicsIg = {
   "reg.importFailed": "Enweghị ike ịmalite {what}: {reason}.",
   "reg.unknownReason": "ihe kpatara a na-amaghị",
   "reg.defaultName": "Mpaghara {n}",
-  "reg.areaFull": "Mpaghara ọrụ ahụ ejikọtalarị mpaghara {max} kachasị; gbanwee nke ahụ na Ntọala ọrụ.",
   "reg.areaFailed": "Enweghị ike ịgbanwe mpaghara ọrụ ahụ: {error}",
   "reg.title": "Mpaghara",
   "reg.intro":
@@ -261,11 +260,6 @@ export const economicsIg = {
   "reg.noAreas": "Enweghị mpaghara nwere aha ebe a. Nwalee ebe ọzọ ma ọ bụ sere otu.",
   "reg.km2": "km² {v}",
   "reg.outside": "Mpaghara n'èzí mpaghara ọrụ ahụ",
-  "reg.outsideNote":
-    "{name} gafere n'èzí mpaghara ọrụ ahụ, ya mere data map e budatara maka ọrụ ahụ nwere ike ọ gaghị ekpuchi ya. Tinye ya na mpaghara ọrụ ahụ? A ga-ebudata OpenStreetMap, elu ala na ọnụọgụ ndị mmadụ maka mpaghara buru ibu.",
-  "reg.adding": "Na-agbakwunye…",
-  "reg.addToArea": "Tinye na mpaghara ọrụ ahụ",
-  "reg.importOnly": "Bubata na-agbanweghị mpaghara",
   "reg.inProject": "Mpaghara n'ime ọrụ a",
   "reg.count": "Mpaghara · {count}",
   "reg.none": "Ọ dịbeghị: tebụl uru na-eji data isi mmalite ebe niile.",

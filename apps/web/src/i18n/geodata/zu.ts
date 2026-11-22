@@ -6,9 +6,6 @@ export const geodataZu = {
   "data.title": "Idatha yemephu",
   "data.intro":
     "I-OpenStreetMap nokuphakama kwale phrojekthi, kugcinwe nephrojekthi. Amathuluzi emigwaqo, ojantshi, izakhiwo, amanzi nendawo ayakufunda esikhundleni sokubuza i-OpenStreetMap neseva yokuphakama njalo.",
-  "data.noArea":
-    "Dweba okuthile kuphrojekthi kuqala: ukungenisa kumboza unxande ozungeze konke okudwetshiwe, kanye nomkhawulo owengeziwe.",
-  "data.area": "Indawo: {area} km², unxande ozungeze konke okudwetshiwe kanye no-{buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Ukuphakama",
   "data.notImported": "Akukangeniswa.",
@@ -55,19 +52,6 @@ export const geodataZu = {
   "data.ownReplace": "Shintsha ngenye i-GeoTIFF (kuze kube ngu-{max} MB)",
   "data.remove": "Susa",
   "area.title": "Indawo yephrojekthi",
-  "area.intro":
-    "Sesha indawo bese umaka izifunda ze-OpenStreetMap ephrojekthi ezihlanganisayo. Indawo yephrojekthi yizo zonke ndawonye. Uma uyigcina, i-OpenStreetMap, ukuphakama nabantu bendawo kungeniswa kanye, futhi wonke amathuluzi akusebenzisa.",
-  "area.search": "Sesha indawo, njenge-Aleppo, eSyria",
-  "area.lookingUp": "Kusesha izifunda e-{place}…",
-  "area.regionsAt": "Izifunda e-{place}",
-  "area.noRegions": "Azikho izifunda ezinamagama lapha. Zama enye indawo.",
-  "area.none":
-    "Asikho isifunda esikhethiwe: indawo yibhokisi elizungeze konke okudwetshiwe, kanye nesikhala esingeziwe.",
-  "area.remove": "Susa i-{name}",
-  "area.total": "Cishe ama-km² angu-{area} sewonke",
-  "area.outline": "Umngcele wezifunda ezikhethiwe",
-  "area.save": "Gcina indawo bese ungenisa idatha",
-  "area.saved": "Indawo igciniwe.",
   "area.import.queued": "{what}: ukungenisa kuqalile",
   "area.import.current": "{what}: sekungenisiwe",
   "area.import.failed": "{what}: akukwazanga ukuqala. {reason}",
@@ -78,5 +62,4 @@ export const geodataZu = {
     "Amathayela emephu angu-{tiles} nokuphakama okungu-{heights} kufike ngqo kusukela ngaphandle kwedatha yephrojekthi engenisiwe. Manje kugcinwe ephrojekthini; nweba ukungenisa ukuze kumboze wonke umdwebo.",
   "data.extendImport": "Nweba ukungenisa ku-Data yemephu",
   "data.hideLive": "Fihla",
-  "data.areaRegions": "Indawo: ama-km² angu-{area}, ibhokisi elizungeze i-{names}",
 } satisfies GeodataMessages;

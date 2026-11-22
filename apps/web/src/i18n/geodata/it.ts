@@ -6,9 +6,6 @@ export const geodataIt = {
   "data.title": "Dati della mappa",
   "data.intro":
     "OpenStreetMap e quote per questo progetto, salvati con il progetto. Gli strumenti per strade, ferrovie, edifici, acque e terreno li leggono invece di interrogare ogni volta OpenStreetMap e il server delle quote.",
-  "data.noArea":
-    "Disegna prima qualcosa nel progetto: l’importazione copre il rettangolo attorno a tutto ciò che è disegnato, più un margine.",
-  "data.area": "Area: {area} km², il rettangolo attorno a tutto ciò che è disegnato più {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Quote",
   "data.notImported": "Non ancora importato.",
@@ -55,19 +52,6 @@ export const geodataIt = {
   "data.ownReplace": "Sostituisci con un altro GeoTIFF (fino a {max} MB)",
   "data.remove": "Rimuovi",
   "area.title": "Area del progetto",
-  "area.intro":
-    "Cerca un luogo e spunta le regioni OpenStreetMap che il progetto copre. L'area del progetto è l'insieme di tutte. Al salvataggio OpenStreetMap, quote e popolazione dell'area vengono importate una volta e tutti gli strumenti le usano.",
-  "area.search": "Cerca un luogo, ad esempio Aleppo, Siria",
-  "area.lookingUp": "Ricerca delle regioni a {place}…",
-  "area.regionsAt": "Regioni a {place}",
-  "area.noRegions": "Nessuna regione con nome qui. Prova un altro luogo.",
-  "area.none":
-    "Nessuna regione scelta: l'area è il rettangolo attorno a tutto ciò che è disegnato, più un margine.",
-  "area.remove": "Rimuovi {name}",
-  "area.total": "Circa {area} km² in tutto",
-  "area.outline": "Contorno delle regioni scelte",
-  "area.save": "Salva area e importa i dati",
-  "area.saved": "Area salvata.",
   "area.import.queued": "{what}: importazione avviata",
   "area.import.current": "{what}: già importato",
   "area.import.failed": "{what}: impossibile avviare. {reason}",
@@ -79,5 +63,4 @@ export const geodataIt = {
     "{tiles} tasselli di mappa e {heights} quote sono stati letti in diretta fuori dai dati importati del progetto. Ora restano nel progetto; estendi l'importazione per coprire tutto il disegno.",
   "data.extendImport": "Estendi l'importazione in Dati mappa",
   "data.hideLive": "Nascondi",
-  "data.areaRegions": "Area: {area} km², il rettangolo attorno a {names}",
 } satisfies GeodataMessages;

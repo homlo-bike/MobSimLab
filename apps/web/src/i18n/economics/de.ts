@@ -248,8 +248,6 @@ export const economicsDe = {
   "reg.importFailed": "{what} konnte nicht starten: {reason}.",
   "reg.unknownReason": "unbekannter Grund",
   "reg.defaultName": "Region {n}",
-  "reg.areaFull":
-    "Das Projektgebiet verbindet bereits {max} Regionen, mehr geht nicht. Ändern Sie es in den Projekteinstellungen.",
   "reg.areaFailed": "Das Projektgebiet konnte nicht geändert werden: {error}",
   "reg.title": "Regionen",
   "reg.intro":
@@ -274,11 +272,6 @@ export const economicsDe = {
     "Hier gibt es keine benannten Gebiete. Versuchen Sie einen anderen Ort oder zeichnen Sie eines.",
   "reg.km2": "{v} km²",
   "reg.outside": "Region außerhalb des Projektgebiets",
-  "reg.outsideNote":
-    "{name} reicht über das Projektgebiet hinaus, daher decken die für das Projekt heruntergeladenen Kartendaten sie womöglich nicht ab. Zum Projektgebiet hinzufügen? Dabei werden die OpenStreetMap-Daten, Geländehöhen und Bevölkerung heruntergeladen, die das größere Gebiet braucht.",
-  "reg.adding": "Wird hinzugefügt…",
-  "reg.addToArea": "Zum Projektgebiet hinzufügen",
-  "reg.importOnly": "Importieren, ohne das Gebiet zu ändern",
   "reg.inProject": "Regionen in diesem Projekt",
   "reg.count": "Regionen · {count}",
   "reg.none": "Noch keine: Die Nutzentabellen verwenden überall die Quelldaten.",

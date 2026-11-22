@@ -1,12 +1,12 @@
 import type { PluginLineInput } from "../features/journey-planner/network";
 import type { LonLat, StationKind } from "./types";
 
-/** What the noise map needs of a cable car or people mover line, as the straight spans kit built it. */
+/** What the noise map needs of a cable car line, as the straight spans kit built it. */
 export interface SpanNoiseShape {
   kit: "straight-spans";
-  /** Plugin mode id (`cable_car`, `aerial_tramway`, `people_mover`…). */
+  /** Plugin mode id (`cable_car`, `aerial_tramway`…). */
   mode: string;
-  /** Ropeway system or guideway type (the mode's context, such as `mgd` or `3s`). */
+  /** Ropeway system (the mode's context, such as `mgd` or `3s`). */
   system: string;
   /** Rope or train runs all the time (gondolas) or back and forth (aerial tramways, shuttles). */
   operation: "continuous" | "reversible";
@@ -15,7 +15,7 @@ export interface SpanNoiseShape {
   /** End-to-end running and dwell time one way, s. */
   trip_time_s: number;
   stations: { lonlat: LonLat; kind: StationKind }[];
-  /** Height of the rope (or guideway) above the station floor, m: where the station's sound comes from. */
+  /** Height of the rope above the station floor, m: where the station's sound comes from. */
   station_height_m: number;
   towers: { lonlat: LonLat; height_m: number }[];
 }

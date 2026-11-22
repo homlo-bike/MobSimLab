@@ -9,6 +9,7 @@ import { tablesUr } from "./tables/ur";
 import { economicsUr } from "./economics/ur";
 import { fleetUr } from "./fleet/ur";
 import { timetablesUr } from "./timetables/ur";
+import { areaUr } from "./area/ur";
 import { mslabUr } from "./mslab/ur";
 import { workspaceUiUr } from "./workspace-ui/ur";
 import { pluginCodeUr } from "./plugin-code/ur";
@@ -484,6 +485,7 @@ export const ur: Messages = {
   "map.group.noise": "شور کا نقشہ",
   "map.group.journey": "سفر منصوبہ ساز",
   "map.group.agents": "اے آئی ایجنٹ کا منظرنامہ",
+  "map.group.projectArea": "منصوبے کا علاقہ",
   "help.menu": "مدد",
   "help.tour": "تعارفی دورہ کریں",
   "help.tourHint": "منصوبے کے ٹیبز اور ٹولز کا مختصر دورہ",
@@ -536,6 +538,7 @@ export const ur: Messages = {
   ...timetablesUr,
   ...commentsUr,
   ...mslabUr,
+  ...areaUr,
   ...workspaceUiUr,
   ...pluginCodeUr,
   ...populationUr,

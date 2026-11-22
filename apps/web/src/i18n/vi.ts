@@ -9,6 +9,7 @@ import { tablesVi } from "./tables/vi";
 import { economicsVi } from "./economics/vi";
 import { fleetVi } from "./fleet/vi";
 import { timetablesVi } from "./timetables/vi";
+import { areaVi } from "./area/vi";
 import { mslabVi } from "./mslab/vi";
 import { workspaceUiVi } from "./workspace-ui/vi";
 import { pluginCodeVi } from "./plugin-code/vi";
@@ -484,6 +485,7 @@ export const vi: Messages = {
   "map.group.noise": "Bản đồ tiếng ồn",
   "map.group.journey": "Lập kế hoạch hành trình",
   "map.group.agents": "Kịch bản của tác tử AI",
+  "map.group.projectArea": "Khu vực dự án",
   "help.menu": "Trợ giúp",
   "help.tour": "Xem hướng dẫn",
   "help.tourHint": "Đi nhanh qua các thẻ và công cụ của dự án",
@@ -533,6 +535,7 @@ export const vi: Messages = {
   ...timetablesVi,
   ...commentsVi,
   ...mslabVi,
+  ...areaVi,
   ...workspaceUiVi,
   ...pluginCodeVi,
   ...populationVi,

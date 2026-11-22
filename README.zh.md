@@ -51,7 +51,7 @@ MobSimLab 是一款开源、可自行部署的 Web 应用，用于公共交通�
 
 - **项目**：与他人共享项目，对实例中所有已登录用户公开，或保存为 `.mslab` 文件。[项目文件](docs/user/project-files.md)
 - **静态查看器**：无需服务器的网站，以只读方式展示已保存的项目，可直接部署到 Cloudflare Pages。[指南](docs/user/static-viewer.md)
-- **插件**：内置插件提供索道、渡轮、旅客捷运系统、需求响应公交、货运自行车、能源与排放、GTFS 导入导出和噪声地图；管理员还可安装其他插件，它们在沙箱中运行。[内置插件](plugins/README.md)、[编写插件](docs/plugins/README.md)
+- **插件**：内置插件提供索道、渡轮、需求响应公交、货运自行车、能源与排放、GTFS 导入导出和噪声地图；管理员还可安装其他插件，它们在沙箱中运行。[内置插件](plugins/README.md)、[编写插件](docs/plugins/README.md)
 - **AI 智能体**：连接 Claude 或其他 MCP 应用来构建方案，并按 15 分钟步行规则检验。[指南](docs/user/ai-agents.md)
 - 应用支持 **32 种语言**。
 

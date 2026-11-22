@@ -10,11 +10,6 @@ export const populationTr = {
   "pop.failed": "Nüfus katmanları yüklenemedi: {error}",
   "pop.retry": "Yeniden dene",
   "pop.area.title": "Proje alanı",
-  "pop.area.none":
-    "Önce bir hat, demiryolu, depo veya bölge çizin: proje alanı, çizilen her şeyi çevreleyen dikdörtgendir.",
-  "pop.area.box": "Çizilen her şeyi çevreleyen, tampon kadar genişletilmiş dikdörtgen: {km2} km².",
-  "pop.area.buffer": "Tampon (km)",
-  "pop.area.save": "Tamponu kaydet",
   "pop.area.tooLarge": "İçe aktarmalar en fazla {max} km² kapsar; tamponu küçültün veya daha az çizin.",
   "pop.primary.title": "Projenin kullandığı nüfus",
   "pop.primary.hint": "Gürültü haritası, yürüme analizi ve fayda tabloları bu katmanı okur.",

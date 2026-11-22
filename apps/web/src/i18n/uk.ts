@@ -9,6 +9,7 @@ import { tablesUk } from "./tables/uk";
 import { economicsUk } from "./economics/uk";
 import { fleetUk } from "./fleet/uk";
 import { timetablesUk } from "./timetables/uk";
+import { areaUk } from "./area/uk";
 import { mslabUk } from "./mslab/uk";
 import { workspaceUiUk } from "./workspace-ui/uk";
 import { pluginCodeUk } from "./plugin-code/uk";
@@ -487,6 +488,7 @@ export const uk: Messages = {
   "map.group.noise": "Шумова карта",
   "map.group.journey": "Планувальник поїздок",
   "map.group.agents": "Сценарій ШІ-агента",
+  "map.group.projectArea": "Територія проєкту",
   "help.menu": "Довідка",
   "help.tour": "Пройти огляд",
   "help.tourHint": "Коротка прогулянка вкладками та інструментами проєкту",
@@ -539,6 +541,7 @@ export const uk: Messages = {
   ...timetablesUk,
   ...commentsUk,
   ...mslabUk,
+  ...areaUk,
   ...workspaceUiUk,
   ...pluginCodeUk,
   ...populationUk,

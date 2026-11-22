@@ -14,7 +14,7 @@
 
 use crate::geo::{self, LonLat, Xy};
 use crate::issue::{Issue, Level};
-use engine_msg::{msg, Msg};
+use engine_msg::msg;
 use serde::{Deserialize, Serialize};
 
 /// Continuous gondolas run a belt of cabins; reversible ropeways shuttle cabins between two terminals.
@@ -23,27 +23,6 @@ use serde::{Deserialize, Serialize};
 pub enum Operation {
     Continuous,
     Reversible,
-}
-
-/// What runs on the line, which sets the words of the findings and how the vehicles are counted.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum Carrier {
-    /// Ropeway cabins hanging from a rope on towers; cabins are counted along the rope.
-    #[default]
-    Cabin,
-    /// People mover trains on a guideway carried by piers; the "rope" is the running level, the "cabin
-    /// bottom" is the underside of the guideway, and trains are counted from the round trip time, since
-    /// they stop in the stations.
-    Train,
-}
-
-/// Purpose: the catalog key of a finding whose words depend on the carrier (towers or piers).
-fn by_carrier(c: Carrier, cabin: &'static str, train: &'static str) -> &'static str {
-    match c {
-        Carrier::Cabin => cabin,
-        Carrier::Train => train,
-    }
 }
 
 fn ropeway_prefix() -> String {
@@ -90,10 +69,7 @@ pub struct SpanSystem {
     /// `ropeway.capacity_ceiling_pphpd`: above it the line's capacity is a warning (0: no check).
     #[serde(default)]
     pub capacity_ceiling_pphpd: f64,
-    /// Cabins on a rope (default) or trains on a guideway.
-    #[serde(default)]
-    pub carrier: Carrier,
-    /// Prefix of the plugin parameters the findings name, such as `ropeway` (default) or `people_mover`.
+    /// Prefix of the plugin parameters the findings name, `ropeway` by default.
     #[serde(default = "ropeway_prefix")]
     pub parameter_prefix: String,
 }
@@ -416,7 +392,6 @@ pub fn build(line: &SpanLine) -> SpanView {
     let origin = st.first().map_or([0.0, 0.0], |s| s.lonlat);
     let xy: Vec<Xy> = st.iter().map(|s| geo::to_local(origin, s.lonlat)).collect();
     let reversible = sys.operation == Operation::Reversible;
-    let c = sys.carrier;
     let pk = |k: &str| format!("{}.{}", sys.parameter_prefix, k);
 
     // Stations: effective kind, boarding and deflection.
@@ -446,12 +421,10 @@ pub fn build(line: &SpanLine) -> SpanView {
                     Issue::new(
                         Level::Error,
                         "station.angle_reversible",
-                        Msg::new(by_carrier(
-                            c,
-                            "kits.station.angle_reversible_cabin",
-                            "kits.station.angle_reversible_train",
-                        ))
-                        .arg("angle", format!("{deflection_deg:.0}")),
+                        msg!(
+                            "kits.station.angle_reversible",
+                            angle = format!("{deflection_deg:.0}")
+                        ),
                     )
                     .at_station(i),
                 );
@@ -475,11 +448,7 @@ pub fn build(line: &SpanLine) -> SpanView {
                     Issue::new(
                         Level::Warning,
                         "station.intermediate_reversible",
-                        Msg::new(by_carrier(
-                            c,
-                            "kits.station.intermediate_reversible_cabin",
-                            "kits.station.intermediate_reversible_train",
-                        )),
+                        msg!("kits.station.intermediate_reversible"),
                     )
                     .at_station(i),
                 );
@@ -529,14 +498,12 @@ pub fn build(line: &SpanLine) -> SpanView {
                     Issue::new(
                         Level::Error,
                         "span.too_long",
-                        Msg::new(by_carrier(
-                            c,
-                            "kits.span.too_long_cabin",
-                            "kits.span.too_long_train",
-                        ))
-                        .arg("span", (k + 1).to_string())
-                        .arg("length", fmt_m(*s))
-                        .arg("max", fmt_m(sys.max_span_m)),
+                        msg!(
+                            "kits.span.too_long",
+                            span = (k + 1).to_string(),
+                            length = fmt_m(*s),
+                            max = fmt_m(sys.max_span_m)
+                        ),
                     )
                     .at_section(i)
                     .param(&pk("max_span_m")),
@@ -548,13 +515,11 @@ pub fn build(line: &SpanLine) -> SpanView {
                 Issue::new(
                     Level::Error,
                     "clearance.min",
-                    Msg::new(by_carrier(
-                        c,
-                        "kits.clearance.min_cabin",
-                        "kits.clearance.min_train",
-                    ))
-                    .arg("clearance", fmt_m(min_c))
-                    .arg("min", fmt_m(sys.min_clearance_m)),
+                    msg!(
+                        "kits.clearance.min",
+                        clearance = fmt_m(min_c),
+                        min = fmt_m(sys.min_clearance_m)
+                    ),
                 )
                 .at_section(i)
                 .param(&pk("min_clearance_m")),
@@ -564,13 +529,11 @@ pub fn build(line: &SpanLine) -> SpanView {
                 Issue::new(
                     Level::Warning,
                     "clearance.recommended",
-                    Msg::new(by_carrier(
-                        c,
-                        "kits.clearance.recommended_cabin",
-                        "kits.clearance.recommended_train",
-                    ))
-                    .arg("clearance", fmt_m(min_c))
-                    .arg("recommended", fmt_m(sys.recommended_clearance_m)),
+                    msg!(
+                        "kits.clearance.recommended",
+                        clearance = fmt_m(min_c),
+                        recommended = fmt_m(sys.recommended_clearance_m)
+                    ),
                 )
                 .at_section(i)
                 .param(&pk("recommended_clearance_m")),
@@ -582,14 +545,12 @@ pub fn build(line: &SpanLine) -> SpanView {
                     Issue::new(
                         Level::Warning,
                         "tower.too_tall",
-                        Msg::new(by_carrier(
-                            c,
-                            "kits.tower.too_tall_cabin",
-                            "kits.tower.too_tall_train",
-                        ))
-                        .arg("at", fmt_m(*x))
-                        .arg("height", fmt_m(*h))
-                        .arg("max", fmt_m(sys.max_tower_height_m)),
+                        msg!(
+                            "kits.tower.too_tall",
+                            at = fmt_m(*x),
+                            height = fmt_m(*h),
+                            max = fmt_m(sys.max_tower_height_m)
+                        ),
                     )
                     .at_section(i)
                     .param(&pk("max_tower_height_m")),
@@ -672,12 +633,8 @@ pub fn build(line: &SpanLine) -> SpanView {
     } else {
         let iv = sys.cabin_interval_s.max(1.0);
         let spacing = v * iv;
-        // Cabins are spaced along the moving rope; trains stop in the stations and turn at the terminals,
-        // so they are counted from the round trip time.
-        let on_line = match sys.carrier {
-            Carrier::Cabin => 2.0 * length_m / spacing,
-            Carrier::Train => 2.0 * (trip + sys.terminal_dwell_s) / iv,
-        };
+        // Cabins are spaced along the moving rope.
+        let on_line = 2.0 * length_m / spacing;
         let cabins = (on_line * (1.0 + sys.reserve_share) - 1e-9).ceil() as u32;
         (iv, sys.cabin_capacity * 3600.0 / iv, spacing, cabins)
     };
@@ -686,13 +643,11 @@ pub fn build(line: &SpanLine) -> SpanView {
             Issue::new(
                 Level::Warning,
                 "capacity.ceiling",
-                Msg::new(by_carrier(
-                    c,
-                    "kits.capacity.ceiling_cabin",
-                    "kits.capacity.ceiling_train",
-                ))
-                .arg("capacity", format!("{capacity_pphpd:.0}"))
-                .arg("ceiling", format!("{:.0}", sys.capacity_ceiling_pphpd)),
+                msg!(
+                    "kits.capacity.ceiling",
+                    capacity = format!("{capacity_pphpd:.0}"),
+                    ceiling = format!("{:.0}", sys.capacity_ceiling_pphpd)
+                ),
             )
             .param(&pk("capacity_ceiling_pphpd")),
         );
@@ -756,35 +711,7 @@ mod tests {
             terminal_dwell_s: 60.0,
             reserve_share: 0.1,
             capacity_ceiling_pphpd: 6000.0,
-            carrier: Carrier::Cabin,
             parameter_prefix: "ropeway".into(),
-        }
-    }
-
-    /// A cable-hauled people mover with detachable trains (pinched loop), close to the Oakland Airport
-    /// Connector: 4 trains of 113 passengers every 280 s at about 10 m/s.
-    pub(crate) fn pinched_loop() -> SpanSystem {
-        SpanSystem {
-            id: "pinched_loop".into(),
-            operation: Operation::Continuous,
-            line_speed_ms: 10.0,
-            cabin_interval_s: 280.0,
-            cabin_capacity: 113.0,
-            max_span_m: 40.0,
-            max_station_angle_deg: 30.0,
-            min_clearance_m: 4.5,
-            recommended_clearance_m: 5.5,
-            tower_height_m: 8.0,
-            max_tower_height_m: 20.0,
-            station_rope_height_m: 8.0,
-            cabin_hang_m: 2.0,
-            sag_ratio: 0.0,
-            station_passage_s: 40.0,
-            terminal_dwell_s: 60.0,
-            reserve_share: 0.0,
-            capacity_ceiling_pphpd: 7000.0,
-            carrier: Carrier::Train,
-            parameter_prefix: "people_mover".into(),
         }
     }
 
@@ -797,60 +724,6 @@ mod tests {
             boarding: false,
             elevation_m: 0.0,
         }
-    }
-
-    #[test]
-    fn people_mover_trains_follow_the_round_trip_and_name_piers() {
-        // 5 km with one station in the middle: 500 s running + 40 s stop = 540 s one way.
-        let line = SpanLine {
-            stations: vec![
-                st(0.0, 0.0, StationKind::Terminal),
-                st(2500.0, 0.0, StationKind::Intermediate),
-                st(5000.0, 0.0, StationKind::Terminal),
-            ],
-            system: pinched_loop(),
-            towers: vec![],
-            ground: vec![],
-        };
-        let v = build(&line);
-        assert!((v.trip_time_s - 540.0).abs() < 1.0, "{}", v.trip_time_s);
-        // Round trip 2 × (540 + 60) = 1200 s at a train every 280 s: 4.3, so 5 trains.
-        assert_eq!(v.cabins, 5);
-        assert!((v.capacity_pphpd - 113.0 * 3600.0 / 280.0).abs() < 1e-6);
-        // Piers every 40 m at most, the rigid guideway keeps 6 m under it on flat ground.
-        let s = &v.sections[0];
-        assert!(s.spans_m.iter().all(|x| *x <= 40.0 + 1e-6));
-        assert!(
-            (s.min_clearance_m - 6.0).abs() < 0.01,
-            "{}",
-            s.min_clearance_m
-        );
-        assert!(
-            !v.issues.iter().any(|i| i.level != Level::Info),
-            "{:?}",
-            v.issues
-        );
-
-        // A too-low guideway names the people mover's own parameter and the guideway.
-        let mut low = pinched_loop();
-        low.station_rope_height_m = 6.0;
-        low.tower_height_m = 6.0;
-        low.max_tower_height_m = 6.0;
-        let v = build(&SpanLine {
-            system: low,
-            ..line
-        });
-        let i = v
-            .issues
-            .iter()
-            .find(|i| i.code == "clearance.min")
-            .expect("clearance finding");
-        assert!(
-            i.message.starts_with("The underside of the guideway"),
-            "{}",
-            i.message
-        );
-        assert_eq!(i.parameter.as_deref(), Some("people_mover.min_clearance_m"));
     }
 
     #[test]

@@ -244,7 +244,6 @@ export const economicsAr = {
   "reg.importFailed": "تعذر بدء {what}: {reason}.",
   "reg.unknownReason": "سبب غير معروف",
   "reg.defaultName": "المنطقة {n}",
-  "reg.areaFull": "منطقة المشروع تضم بالفعل الحد الأقصى وهو {max} منطقة؛ غيّر ذلك في إعدادات المشروع.",
   "reg.areaFailed": "تعذر تغيير منطقة المشروع: {error}",
   "reg.title": "المناطق",
   "reg.intro":
@@ -267,11 +266,6 @@ export const economicsAr = {
   "reg.noAreas": "لا توجد مساحات ذات أسماء هنا. جرّب مكانًا آخر أو ارسم واحدة.",
   "reg.km2": "{v} كم²",
   "reg.outside": "منطقة خارج منطقة المشروع",
-  "reg.outsideNote":
-    "{name} تتجاوز منطقة المشروع، فقد لا تغطيها بيانات الخريطة المنزّلة للمشروع. أتضيفها إلى منطقة المشروع؟ سيُنزَّل OpenStreetMap وارتفاع التضاريس والسكان للمساحة الأكبر.",
-  "reg.adding": "جارٍ الإضافة…",
-  "reg.addToArea": "إضافة إلى منطقة المشروع",
-  "reg.importOnly": "استيراد دون تغيير المنطقة",
   "reg.inProject": "المناطق في هذا المشروع",
   "reg.count": "المناطق · {count}",
   "reg.none": "لا شيء بعد: تستخدم جداول المنافع البيانات المصدرية في كل مكان.",

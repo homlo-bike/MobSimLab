@@ -6,9 +6,6 @@ export const geodataKo = {
   "data.title": "지도 데이터",
   "data.intro":
     "이 프로젝트의 OpenStreetMap과 고도 데이터로, 프로젝트와 함께 저장됩니다. 도로·철도·건물·수역·지형 도구는 매번 OpenStreetMap과 고도 서버에 묻는 대신 이 데이터를 읽습니다.",
-  "data.noArea":
-    "먼저 프로젝트에 무언가를 그리세요. 가져오기는 그린 모든 것을 둘러싼 사각형에 여유 범위를 더한 영역을 대상으로 합니다.",
-  "data.area": "영역: {area} km², 그린 모든 것을 둘러싼 사각형 + {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "고도",
   "data.notImported": "아직 가져오지 않았습니다.",
@@ -55,18 +52,6 @@ export const geodataKo = {
   "data.ownReplace": "다른 GeoTIFF로 바꾸기(최대 {max} MB)",
   "data.remove": "삭제",
   "area.title": "프로젝트 영역",
-  "area.intro":
-    "장소를 검색하고 프로젝트가 포함하는 OpenStreetMap 지역을 선택하세요. 프로젝트 영역은 이들을 모두 합친 것입니다. 저장하면 영역의 OpenStreetMap, 고도, 인구 데이터를 한 번 가져오고 모든 도구가 이를 사용합니다.",
-  "area.search": "장소 검색, 예: 시리아 알레포",
-  "area.lookingUp": "{place}의 지역을 찾는 중…",
-  "area.regionsAt": "{place}의 지역",
-  "area.noRegions": "이름이 있는 지역이 없습니다. 다른 장소를 시도하세요.",
-  "area.none": "선택한 지역 없음: 영역은 그린 모든 것을 둘러싼 사각형과 버퍼입니다.",
-  "area.remove": "{name} 제거",
-  "area.total": "합계 약 {area} km²",
-  "area.outline": "선택한 지역의 윤곽",
-  "area.save": "영역 저장 및 데이터 가져오기",
-  "area.saved": "영역을 저장했습니다.",
   "area.import.queued": "{what}: 가져오기 시작",
   "area.import.current": "{what}: 이미 가져옴",
   "area.import.failed": "{what}: 시작하지 못했습니다. {reason}",
@@ -77,5 +62,4 @@ export const geodataKo = {
     "지도 타일 {tiles}개와 고도 {heights}개를 프로젝트 가져오기 데이터 밖에서 실시간으로 받았습니다. 이제 프로젝트에 보관됩니다. 전체 도면을 덮도록 가져오기를 넓히세요.",
   "data.extendImport": "지도 데이터에서 가져오기 넓히기",
   "data.hideLive": "숨기기",
-  "data.areaRegions": "영역: {area} km², {names}을(를) 둘러싼 사각형",
 } satisfies GeodataMessages;

@@ -78,15 +78,5 @@
     "Panoramax street photos": "Panoramax వీధి ఫోటోలు",
     "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "ప్రజలు మరియు ప్రభుత్వ సంస్థలు పంచుకున్న ఫోటోలు, వాటి నుండి మ్యాపింగ్‌ను అనుమతించే ఓపెన్ లైసెన్సుల కింద (ఎక్కువగా CC BY-SA 4.0 లేదా Etalab 2.0). ఒకదాన్ని వాడినప్పుడు రచయితకు క్రెడిట్ ఇవ్వండి.",
     "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Panoramax నుండి వీధి స్థాయి ఫోటోలు, వీధి ఫోటోల ఉచిత మరియు ఓపెన్ ఉమ్మడి సంపద. ఫోటోలు ఎక్కడ తీశారో చూడటానికి మ్యాప్‌లో వీధి ఫోటోలు తెరవండి, తర్వాత ఒక బిందువును క్లిక్ చేసి దాని దగ్గర తీసిన ఫోటోలు చూడండి. ఫోటోలు వాటి నుండి మ్యాపింగ్‌ను అనుమతించే ఓపెన్ లైసెన్సుల కింద ఉన్నాయి. కీ అవసరం లేదు. ఫోటోలు ఈ MobSimLab ద్వారా వస్తాయి మరియు నిల్వ చేయబడవు, ప్రాజెక్ట్‌తో సేవ్ చేయబడవు."
-  },
-  "org.mobsimlab.people-mover": {
-    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "ఎత్తైన గైడ్‌వేపై కేబుల్‌తో లాగబడే స్వయంచాలక పీపుల్ మూవర్లు, నేరు స్పాన్‌ల కిట్‌తో గీసినవి: రెండు రైళ్లున్న షటిల్‌లు, మరియు ప్రతి స్టేషన్‌లో ఆగే విడదీయగల రైళ్లున్న సన్నని లూప్‌లు (ADR-0037 §7). స్వయంచాలిత పీపుల్ మూవర్లకు రైల్వే ఎడిటర్ అవసరం, అవి తర్వాత వస్తాయి.",
-    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "గైడ్‌వేపై కేబుల్‌తో లాగబడే షటిల్‌లు మరియు లూప్‌లు: స్టేషన్లను క్లిక్ చేయండి, స్తంభాలు వాటంతట అవే వస్తాయి.",
-    "People mover": "పీపుల్ మూవర్",
-    "People mover shuttle": "పీపుల్ మూవర్ షటిల్",
-    "People mover system": "పీపుల్ మూవర్ వ్యవస్థ",
-    "People movers": "పీపుల్ మూవర్లు",
-    "Pinched loop, detachable trains": "సన్నని లూప్, విడదీయగల రైళ్లు",
-    "Shuttle, two trains on a fixed rope": "షటిల్, స్థిర కేబుల్‌పై రెండు రైళ్లు"
   }
 }

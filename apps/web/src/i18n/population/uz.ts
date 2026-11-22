@@ -10,11 +10,6 @@ export const populationUz = {
   "pop.failed": "Aholi qatlamlarini yuklab bo‘lmadi: {error}",
   "pop.retry": "Qayta urinish",
   "pop.area.title": "Loyiha hududi",
-  "pop.area.none":
-    "Avval liniya, temir yo‘l, depo yoki hudud chizing: loyiha hududi — chizilgan hamma narsani o‘rab turgan to‘rtburchak.",
-  "pop.area.box": "Chizilgan hamma narsani o‘rab turgan, bufer qadar kengaytirilgan to‘rtburchak: {km2} km².",
-  "pop.area.buffer": "Bufer (km)",
-  "pop.area.save": "Buferni saqlash",
   "pop.area.tooLarge": "Import ko‘pi bilan {max} km² ni qamraydi; buferni kamaytiring yoki kamroq chizing.",
   "pop.primary.title": "Loyiha foydalanadigan aholi",
   "pop.primary.hint": "Shovqin xaritasi, piyoda tahlil va foyda jadvallari shu qatlamni o‘qiydi.",

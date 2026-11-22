@@ -78,15 +78,5 @@
     "Panoramax street photos": "Panoramax தெருப் படங்கள்",
     "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "மக்களும் பொது அமைப்புகளும் பகிர்ந்த படங்கள், அவற்றிலிருந்து வரைபடமாக்கலை அனுமதிக்கும் திறந்த உரிமங்களின் கீழ் (பெரும்பாலும் CC BY-SA 4.0 அல்லது Etalab 2.0). ஒன்றைப் பயன்படுத்தும்போது ஆசிரியருக்குக் கடன் கொடுங்கள்.",
     "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Panoramax இலிருந்து தெரு நிலைப் படங்கள், தெருப் படங்களின் கட்டற்ற திறந்த பொதுச் சொத்து. படங்கள் எங்கு எடுக்கப்பட்டன என்று பார்க்க வரைபடத்தில் தெருப் படங்களைத் திறங்கள், பின்னர் ஒரு புள்ளியைக் கிளிக் செய்து அதன் அருகே எடுக்கப்பட்ட படங்களைப் பாருங்கள். படங்கள் அவற்றிலிருந்து வரைபடமாக்கலை அனுமதிக்கும் திறந்த உரிமங்களின் கீழ் உள்ளன. சாவி தேவையில்லை. படங்கள் இந்த MobSimLab வழியாக வருகின்றன, சேமிக்கப்படுவதில்லை, திட்டத்துடனும் வைக்கப்படுவதில்லை."
-  },
-  "org.mobsimlab.people-mover": {
-    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "உயர்த்தப்பட்ட வழிகாட்டிப் பாதையில் கம்பிவடத்தால் இழுக்கப்படும் தானியங்கி மக்கள் நகர்த்திகள், நேர் இடைவெளிக் கருவியால் வரையப்படுகின்றன: இரண்டு ரயில்களுடன் முன்னும் பின்னும் செல்லும் வண்டிகள், மற்றும் ஒவ்வொரு நிலையத்திலும் நிற்கும் பிரிக்கக்கூடிய ரயில்களுடன் சுருக்கிய வளையங்கள் (ADR-0037 §7). சுய இயக்க மக்கள் நகர்த்திகளுக்கு இருப்புப்பாதைத் தொகுப்பி தேவை, அவை பின்னர் வரும்.",
-    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "வழிகாட்டிப் பாதையில் கம்பிவடத்தால் இழுக்கப்படும் முன்னும் பின்னும் செல்லும் வண்டிகளும் வளையங்களும்: நிலையங்களைக் கிளிக் செய்யுங்கள், தூண்கள் தானாக வரும்.",
-    "People mover": "மக்கள் நகர்த்தி",
-    "People mover shuttle": "மக்கள் நகர்த்தி முன்னும் பின்னும் செல்லும் வண்டி",
-    "People mover system": "மக்கள் நகர்த்தி அமைப்பு",
-    "People movers": "மக்கள் நகர்த்திகள்",
-    "Pinched loop, detachable trains": "சுருக்கிய வளையம், பிரிக்கக்கூடிய ரயில்கள்",
-    "Shuttle, two trains on a fixed rope": "முன்னும் பின்னும் செல்லும் வண்டி, நிலையான கம்பிவடத்தில் இரண்டு ரயில்கள்"
   }
 }

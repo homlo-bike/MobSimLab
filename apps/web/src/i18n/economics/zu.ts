@@ -246,8 +246,6 @@ export const economicsZu = {
   "reg.importFailed": "Ayikwazanga ukuqala i-{what}: {reason}.",
   "reg.unknownReason": "isizathu esingaziwa",
   "reg.defaultName": "Indawo {n}",
-  "reg.areaFull":
-    "Indawo yephrojekthi isivele ihlanganisa izindawo ezingu-{max} eziphezulu; shintsha lokho ezilungiselelweni zephrojekthi.",
   "reg.areaFailed": "Ayikwazanga ukushintsha indawo yephrojekthi: {error}",
   "reg.title": "Izindawo",
   "reg.intro":
@@ -270,11 +268,6 @@ export const economicsZu = {
   "reg.noAreas": "Azikho izindawo ezinamagama lapha. Zama enye indawo noma udwebe eyodwa.",
   "reg.km2": "{v} km²",
   "reg.outside": "Indawo engaphandle kwendawo yephrojekthi",
-  "reg.outsideNote":
-    "{name} idlulela ngaphandle kwendawo yephrojekthi, ngakho idatha yemephu elandelwe iphrojekthi ingase ingayimboze. Ingengezwe endaweni yephrojekthi? I-OpenStreetMap, ukuphakama komhlaba nenani labantu kuzolandelwa indawo enkulu.",
-  "reg.adding": "Kuyengezwa…",
-  "reg.addToArea": "Engeza endaweni yephrojekthi",
-  "reg.importOnly": "Ngenisa ngaphandle kokushintsha indawo",
   "reg.inProject": "Izindawo kule phrojekthi",
   "reg.count": "Izindawo · {count}",
   "reg.none": "Akukabikho: amathebula ezinzuzo asebenzisa idatha yemithombo yonke indawo.",

@@ -3,19 +3,9 @@ import type { SpanView } from "./types";
 
 /**
  * Purpose: longitudinal profile of a ropeway: ground, rope and the bottom of a loaded cabin, with the
- * stations and towers, drawn to a common vertical scale; for a people mover the running level and the
- * underside of the guideway on its piers.
+ * stations and towers, drawn to a common vertical scale.
  */
-export function ProfileView({
-  view,
-  color,
-  guideway = false,
-}: {
-  view: SpanView;
-  color: string;
-  /** People mover: the running level and the underside of the guideway instead of rope and cabin. */
-  guideway?: boolean;
-}) {
+export function ProfileView({ view, color }: { view: SpanView; color: string }) {
   const { t } = useI18n();
   const pts = view.profile;
   if (pts.length < 2) return null;
@@ -62,7 +52,7 @@ export function ProfileView({
         viewBox={`0 0 ${W} ${H}`}
         className="w-full rounded-lg border border-slate-200 bg-white"
         role="img"
-        aria-label={t(guideway ? "apm.profile" : "cable.profile")}
+        aria-label={t("cable.profile")}
         direction="ltr"
       >
         <path d={ground} fill="var(--diagram-ground, #e2e8f0)" />
@@ -96,18 +86,9 @@ export function ProfileView({
         <path d={path("rope_m")} fill="none" stroke={color} strokeWidth={2} />
       </svg>
       <figcaption className="mt-1 text-[11px] text-slate-500">
-        {t(
-          guideway
-            ? blocks.length > 0
-              ? "apm.profileCaptionBuildings"
-              : "apm.profileCaption"
-            : blocks.length > 0
-              ? "cable.profileCaptionBuildings"
-              : "cable.profileCaption",
-          {
-            m: Math.round(hi - lo),
-          },
-        )}
+        {t(blocks.length > 0 ? "cable.profileCaptionBuildings" : "cable.profileCaption", {
+          m: Math.round(hi - lo),
+        })}
       </figcaption>
     </figure>
   );

@@ -6,9 +6,6 @@ export const geodataFr = {
   "data.title": "Données cartographiques",
   "data.intro":
     "OpenStreetMap et altitudes pour ce projet, conservées avec le projet. Les outils rues, voies ferrées, bâtiments, eau et relief les lisent au lieu d’interroger OpenStreetMap et le serveur d’altitudes à chaque fois.",
-  "data.noArea":
-    "Dessinez d’abord quelque chose dans le projet : l’import couvre le rectangle autour de tout ce qui est dessiné, plus une marge.",
-  "data.area": "Zone : {area} km², le rectangle autour de tout ce qui est dessiné plus {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Altitudes",
   "data.notImported": "Pas encore importé.",
@@ -55,19 +52,6 @@ export const geodataFr = {
   "data.ownReplace": "Remplacer par un autre GeoTIFF (jusqu'à {max} Mo)",
   "data.remove": "Supprimer",
   "area.title": "Zone du projet",
-  "area.intro":
-    "Cherchez un lieu et cochez les régions OpenStreetMap que couvre le projet. La zone du projet est leur ensemble. À l'enregistrement, OpenStreetMap, l'altitude et la population de la zone sont importées une fois, et tous les outils les utilisent.",
-  "area.search": "Chercher un lieu, par exemple Alep, Syrie",
-  "area.lookingUp": "Recherche des régions à {place}…",
-  "area.regionsAt": "Régions à {place}",
-  "area.noRegions": "Aucune région nommée ici. Essayez un autre lieu.",
-  "area.none":
-    "Aucune région choisie : la zone est le rectangle autour de tout ce qui est dessiné, plus une marge.",
-  "area.remove": "Retirer {name}",
-  "area.total": "Environ {area} km² au total",
-  "area.outline": "Contour des régions choisies",
-  "area.save": "Enregistrer la zone et importer les données",
-  "area.saved": "Zone enregistrée.",
   "area.import.queued": "{what} : import lancé",
   "area.import.current": "{what} : déjà importé",
   "area.import.failed": "{what} : n'a pas pu démarrer. {reason}",
@@ -79,5 +63,4 @@ export const geodataFr = {
     "{tiles} tuiles de carte et {heights} altitudes ont été lues en direct hors des données importées du projet. Elles sont désormais gardées pour le projet ; étendez l'import pour couvrir tout le dessin.",
   "data.extendImport": "Étendre l'import dans Données cartographiques",
   "data.hideLive": "Masquer",
-  "data.areaRegions": "Zone : {area} km², le rectangle autour de {names}",
 } satisfies GeodataMessages;

@@ -13,11 +13,6 @@ export const populationEn = {
   "pop.failed": "The population layers could not be loaded: {error}",
   "pop.retry": "Try again",
   "pop.area.title": "Project area",
-  "pop.area.none":
-    "Draw a line, a railway, a depot or a region first: the project area is the box around everything drawn.",
-  "pop.area.box": "The box around everything drawn, widened by the buffer: {km2} km².",
-  "pop.area.buffer": "Buffer (km)",
-  "pop.area.save": "Save buffer",
   "pop.area.tooLarge": "Imports cover at most {max} km²; lower the buffer or draw less.",
   "pop.primary.title": "Population used by the project",
   "pop.primary.hint": "The noise map, the walk analysis and the benefit tables read this layer.",

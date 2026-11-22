@@ -109,7 +109,7 @@ describe("geodata import", () => {
     rmSync(dataDir, { recursive: true, force: true });
   });
 
-  it("asks for a drawing before importing", async () => {
+  it("asks for a project area before importing", async () => {
     const st = await as("alice").get(`/api/projects/${project}/geodata`);
     expect(st.status).toBe(200);
     expect(st.body.area).toBeNull();
@@ -123,20 +123,28 @@ describe("geodata import", () => {
 
   it("imports OpenStreetMap through Overpass into the project's tables", async () => {
     const su = await db.superuser();
-    await su.query(`INSERT INTO project.drawing (project_id, kind, doc) VALUES ($1, 'street-lines', $2)`, [
+    // The project area: one polygon, larger than one 3 km Overpass tile.
+    const [w, s, e, n] = [6.972, 49.982, 7.038, 50.218];
+    await su.query(`UPDATE project.project SET area_polygons = $2 WHERE id = $1`, [
       project,
-      JSON.stringify({
-        lines: [
-          {
-            points: [{ lonlat: [7.0, 50.0] }, { lonlat: [7.01, 50.2] }],
-          },
-        ],
-      }),
+      JSON.stringify([
+        {
+          id: "a1",
+          name: "Area",
+          detail: "full",
+          ring: [
+            [w, s],
+            [e, s],
+            [e, n],
+            [w, n],
+            [w, s],
+          ],
+        },
+      ]),
     ]);
     await su.end();
     const st = (await as("alice").get(`/api/projects/${project}/geodata`)).body;
-    expect(st.area.drawnBbox).toEqual([7.0, 50.0, 7.01, 50.2]);
-    expect(st.area.bufferKm).toBe(2);
+    expect(st.area.bbox).toEqual([w, s, e, n]);
     expect(st.suggestedMethod).toBe("overpass");
 
     const start = await as("alice").post(`/api/projects/${project}/geodata/osm`, { method: "overpass" });
@@ -156,8 +164,8 @@ describe("geodata import", () => {
       licence: "© OpenStreetMap contributors, ODbL 1.0",
       dataTimestamp: "2026-11-15T08:00:00Z",
     });
-    // The 2 km buffer makes the area larger than one 3 km tile; every tile answers the same fixture, and the
-    // merge keeps each object once.
+    // The area is larger than one 3 km tile; every tile answers the same fixture, and the merge keeps each
+    // object once.
     expect(overpassQueries.length).toBeGreaterThan(1);
     expect(done.osm.current.stats.rows).toMatchObject({
       osm_way_road: 1,

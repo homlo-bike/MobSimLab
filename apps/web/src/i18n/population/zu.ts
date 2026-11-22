@@ -10,11 +10,6 @@ export const populationZu = {
   "pop.failed": "Izingqimba zenani labantu azikwazanga ukulayishwa: {error}",
   "pop.retry": "Zama futhi",
   "pop.area.title": "Indawo yephrojekthi",
-  "pop.area.none":
-    "Qala ngokudweba umugqa, ujantshi, idepho noma isifunda: indawo yephrojekthi yixande elizungeza konke okudwetshiwe.",
-  "pop.area.box": "Ixande elizungeza konke okudwetshiwe, elandiswe ngomngcele: {km2} km².",
-  "pop.area.buffer": "Umngcele (km)",
-  "pop.area.save": "Londoloza umngcele",
   "pop.area.tooLarge": "Ukungenisa kumboza ubuningi be-{max} km²; nciphisa umngcele noma udwebe okuncane.",
   "pop.primary.title": "Inani labantu elisetshenziswa yiphrojekthi",
   "pop.primary.hint":

@@ -6,8 +6,6 @@ export const geodataAm = {
   "data.title": "የካርታ ውሂብ",
   "data.intro":
     "ለዚህ ፕሮጀክት OpenStreetMap እና ከፍታ፣ ከፕሮጀክቱ ጋር የሚቀመጡ። የመንገድ፣ የባቡር፣ የሕንፃ፣ የውሃ እና የመሬት አቀማመጥ መሣሪያዎች በእያንዳንዱ ጊዜ OpenStreetMapን እና የከፍታ አገልጋዩን ከመጠየቅ ይልቅ እነዚህን ያነባሉ።",
-  "data.noArea": "መጀመሪያ በፕሮጀክቱ ውስጥ አንድ ነገር ይሳሉ፦ ማስመጣቱ የተሳለውን ሁሉ የሚከብበውን አራት ማዕዘን እና ተጨማሪ ጠርዝ ይሸፍናል።",
-  "data.area": "አካባቢ፦ {area} ኪ.ሜ²፣ የተሳለውን ሁሉ የሚከብበው አራት ማዕዘን እና {buffer} ኪ.ሜ",
   "data.osm": "OpenStreetMap",
   "data.dem": "ከፍታ",
   "data.notImported": "ገና አልመጣም።",
@@ -52,18 +50,6 @@ export const geodataAm = {
   "data.ownReplace": "በሌላ GeoTIFF ይተኩ (እስከ {max} MB)",
   "data.remove": "አስወግድ",
   "area.title": "የፕሮጀክት አካባቢ",
-  "area.intro":
-    "ቦታ ይፈልጉና ፕሮጀክቱ የሚሸፍናቸውን የOpenStreetMap ክልሎች ምልክት ያድርጉ። የፕሮጀክቱ አካባቢ ሁሉም በአንድ ላይ ነው። ሲያስቀምጡ የአካባቢው OpenStreetMap፣ ከፍታ እና የሕዝብ ብዛት አንድ ጊዜ ይመጣሉ፣ ሁሉም መሣሪያዎች ይጠቀሙባቸዋል።",
-  "area.search": "ቦታ ይፈልጉ፣ ለምሳሌ አሌፖ፣ ሶሪያ",
-  "area.lookingUp": "በ{place} ያሉ ክልሎች እየተፈለጉ ነው…",
-  "area.regionsAt": "በ{place} ያሉ ክልሎች",
-  "area.noRegions": "እዚህ ስም ያላቸው ክልሎች የሉም። ሌላ ቦታ ይሞክሩ።",
-  "area.none": "ክልል አልተመረጠም፦ አካባቢው የተሳለውን ሁሉ የሚከብበው አራት ማዕዘን እና ተጨማሪ ርቀት ነው።",
-  "area.remove": "{name}ን አስወግድ",
-  "area.total": "በጠቅላላ ወደ {area} ኪ.ሜ²",
-  "area.outline": "የተመረጡት ክልሎች ወሰን",
-  "area.save": "አካባቢውን አስቀምጥና ውሂብ አምጣ",
-  "area.saved": "አካባቢው ተቀምጧል።",
   "area.import.queued": "{what}፦ ማምጣት ተጀምሯል",
   "area.import.current": "{what}፦ ቀድሞ መጥቷል",
   "area.import.failed": "{what}፦ መጀመር አልተቻለም። {reason}",
@@ -74,5 +60,4 @@ export const geodataAm = {
     "{tiles} የካርታ ሰቆችና {heights} ከፍታዎች ከፕሮጀክቱ የገቡ መረጃዎች ውጭ በቀጥታ መጡ። አሁን በፕሮጀክቱ ተቀምጠዋል፤ ሙሉውን ስዕል እንዲሸፍን ማስገባቱን ያስፉ።",
   "data.extendImport": "በካርታ መረጃ ማስገባቱን አስፋ",
   "data.hideLive": "ደብቅ",
-  "data.areaRegions": "አካባቢ፦ {area} ኪ.ሜ²፣ {names}ን የሚከብበው አራት ማዕዘን",
 } satisfies GeodataMessages;

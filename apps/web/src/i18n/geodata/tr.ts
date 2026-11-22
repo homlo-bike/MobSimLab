@@ -6,9 +6,6 @@ export const geodataTr = {
   "data.title": "Harita verileri",
   "data.intro":
     "Bu proje için OpenStreetMap ve yükseklik verileri, projeyle birlikte saklanır. Sokak, demiryolu, bina, su ve arazi araçları her seferinde OpenStreetMap'e ve yükseklik sunucusuna sormak yerine bunları okur.",
-  "data.noArea":
-    "Önce projede bir şey çizin: içe aktarma, çizilen her şeyin çevresindeki dikdörtgeni ve bir tampon payını kapsar.",
-  "data.area": "Alan: {area} km², çizilen her şeyin çevresindeki dikdörtgen artı {buffer} km",
   "data.osm": "OpenStreetMap",
   "data.dem": "Yükseklik",
   "data.notImported": "Henüz içe aktarılmadı.",
@@ -55,18 +52,6 @@ export const geodataTr = {
   "data.ownReplace": "Başka bir GeoTIFF ile değiştirin ({max} MB'a kadar)",
   "data.remove": "Kaldır",
   "area.title": "Proje alanı",
-  "area.intro":
-    "Bir yer arayın ve projenin kapsadığı OpenStreetMap bölgelerini işaretleyin. Proje alanı hepsinin birleşimidir. Kaydedince alanın OpenStreetMap, yükseklik ve nüfus verileri bir kez içe aktarılır ve tüm araçlar bunları kullanır.",
-  "area.search": "Bir yer arayın, örneğin Halep, Suriye",
-  "area.lookingUp": "{place} konumundaki bölgeler aranıyor…",
-  "area.regionsAt": "{place} konumundaki bölgeler",
-  "area.noRegions": "Burada adlandırılmış bölge yok. Başka bir yer deneyin.",
-  "area.none": "Bölge seçilmedi: alan, çizilen her şeyin çevresindeki dikdörtgen artı bir tampondur.",
-  "area.remove": "{name} kaldır",
-  "area.total": "Toplam yaklaşık {area} km²",
-  "area.outline": "Seçilen bölgelerin sınırı",
-  "area.save": "Alanı kaydet ve verileri içe aktar",
-  "area.saved": "Alan kaydedildi.",
   "area.import.queued": "{what}: içe aktarma başladı",
   "area.import.current": "{what}: zaten içe aktarıldı",
   "area.import.failed": "{what}: başlatılamadı. {reason}",
@@ -77,5 +62,4 @@ export const geodataTr = {
     "{tiles} harita karosu ve {heights} yükseklik, projenin içe aktarılan verilerinin dışından canlı olarak geldi. Artık projede saklanıyorlar; içe aktarmayı tüm çizimi kapsayacak şekilde genişletin.",
   "data.extendImport": "Harita verilerinde içe aktarmayı genişlet",
   "data.hideLive": "Gizle",
-  "data.areaRegions": "Alan: {area} km², {names} çevresindeki dikdörtgen",
 } satisfies GeodataMessages;

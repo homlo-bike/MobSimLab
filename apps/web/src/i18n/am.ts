@@ -9,6 +9,7 @@ import { tablesAm } from "./tables/am";
 import { economicsAm } from "./economics/am";
 import { fleetAm } from "./fleet/am";
 import { timetablesAm } from "./timetables/am";
+import { areaAm } from "./area/am";
 import { mslabAm } from "./mslab/am";
 import { workspaceUiAm } from "./workspace-ui/am";
 import { pluginCodeAm } from "./plugin-code/am";
@@ -473,6 +474,7 @@ export const am: Messages = {
   "map.group.noise": "የጫጫታ ካርታ",
   "map.group.journey": "የጉዞ ዕቅድ አውጪ",
   "map.group.agents": "የAI ወኪል ሁኔታ",
+  "map.group.projectArea": "የፕሮጀክት ክልል",
   "help.menu": "እገዛ",
   "help.tour": "ጉብኝቱን ጀምር",
   "help.tourHint": "በፕሮጀክቱ ትሮችና መሣሪያዎች አጭር ጉብኝት",
@@ -521,6 +523,7 @@ export const am: Messages = {
   ...timetablesAm,
   ...commentsAm,
   ...mslabAm,
+  ...areaAm,
   ...workspaceUiAm,
   ...pluginCodeAm,
   ...populationAm,

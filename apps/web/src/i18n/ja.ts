@@ -9,6 +9,7 @@ import { tablesJa } from "./tables/ja";
 import { economicsJa } from "./economics/ja";
 import { fleetJa } from "./fleet/ja";
 import { timetablesJa } from "./timetables/ja";
+import { areaJa } from "./area/ja";
 import { mslabJa } from "./mslab/ja";
 import { workspaceUiJa } from "./workspace-ui/ja";
 import { pluginCodeJa } from "./plugin-code/ja";
@@ -479,6 +480,7 @@ export const ja: Messages = {
   "map.group.noise": "騒音マップ",
   "map.group.journey": "経路検索",
   "map.group.agents": "AI エージェントのシナリオ",
+  "map.group.projectArea": "プロジェクト範囲",
   "help.menu": "ヘルプ",
   "help.tour": "ツアーを始める",
   "help.tourHint": "プロジェクトのタブとツールを簡単に案内します",
@@ -528,6 +530,7 @@ export const ja: Messages = {
   ...timetablesJa,
   ...commentsJa,
   ...mslabJa,
+  ...areaJa,
   ...workspaceUiJa,
   ...pluginCodeJa,
   ...populationJa,

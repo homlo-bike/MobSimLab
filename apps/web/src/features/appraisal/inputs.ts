@@ -108,7 +108,7 @@ export function mcaLines(
 }
 
 /**
- * Purpose: the appraisal lines that carry ridership but no costs at all, such as a people mover the cost
+ * Purpose: the appraisal lines that carry ridership but no costs at all, such as a plugin line the cost
  * tables do not price yet. Their benefits and fares still count, which flatters the result.
  * Inputs: the appraisal lines. Output: those lines, in order. No side effects.
  */

@@ -9,6 +9,7 @@ import { tablesFr } from "./tables/fr";
 import { economicsFr } from "./economics/fr";
 import { fleetFr } from "./fleet/fr";
 import { timetablesFr } from "./timetables/fr";
+import { areaFr } from "./area/fr";
 import { mslabFr } from "./mslab/fr";
 import { workspaceUiFr } from "./workspace-ui/fr";
 import { pluginCodeFr } from "./plugin-code/fr";
@@ -489,6 +490,7 @@ export const fr: Messages = {
   "map.group.noise": "Carte de bruit",
   "map.group.journey": "Calculateur d’itinéraire",
   "map.group.agents": "Scénario de l’agent IA",
+  "map.group.projectArea": "Zone du projet",
   "help.menu": "Aide",
   "help.tour": "Faire la visite",
   "help.tourHint": "Un court parcours des onglets et outils du projet",
@@ -543,6 +545,7 @@ export const fr: Messages = {
   ...timetablesFr,
   ...commentsFr,
   ...mslabFr,
+  ...areaFr,
   ...workspaceUiFr,
   ...pluginCodeFr,
   ...populationFr,

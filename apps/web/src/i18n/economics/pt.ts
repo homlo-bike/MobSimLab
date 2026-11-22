@@ -248,7 +248,6 @@ export const economicsPt = {
   "reg.importFailed": "{what} não pôde iniciar: {reason}.",
   "reg.unknownReason": "motivo desconhecido",
   "reg.defaultName": "Região {n}",
-  "reg.areaFull": "A área do projeto já une {max} regiões, o máximo. Altere-a nas configurações do projeto.",
   "reg.areaFailed": "Não foi possível alterar a área do projeto: {error}",
   "reg.title": "Regiões",
   "reg.intro":
@@ -271,11 +270,6 @@ export const economicsPt = {
   "reg.noAreas": "Não há áreas com nome aqui. Tente outro lugar ou desenhe uma.",
   "reg.km2": "{v} km²",
   "reg.outside": "Região fora da área do projeto",
-  "reg.outsideNote":
-    "{name} vai além da área do projeto, então os dados de mapa baixados para o projeto podem não cobri-la. Adicioná-la à área do projeto? Isso baixa os dados do OpenStreetMap, as altitudes do terreno e a população de que a área maior precisa.",
-  "reg.adding": "Adicionando…",
-  "reg.addToArea": "Adicionar à área do projeto",
-  "reg.importOnly": "Importar sem alterar a área",
   "reg.inProject": "Regiões deste projeto",
   "reg.count": "Regiões · {count}",
   "reg.none": "Nenhuma ainda: as tabelas de benefícios usam os dados de origem em toda parte.",

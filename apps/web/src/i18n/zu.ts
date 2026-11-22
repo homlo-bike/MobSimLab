@@ -9,6 +9,7 @@ import { tablesZu } from "./tables/zu";
 import { economicsZu } from "./economics/zu";
 import { fleetZu } from "./fleet/zu";
 import { timetablesZu } from "./timetables/zu";
+import { areaZu } from "./area/zu";
 import { mslabZu } from "./mslab/zu";
 import { workspaceUiZu } from "./workspace-ui/zu";
 import { pluginCodeZu } from "./plugin-code/zu";
@@ -491,6 +492,7 @@ export const zu: Messages = {
   "map.group.noise": "Imephu yomsindo",
   "map.group.journey": "Umhleli wohambo",
   "map.group.agents": "Isimo se-ejenti ye-AI",
+  "map.group.projectArea": "Indawo yephrojekthi",
   "help.menu": "Usizo",
   "help.tour": "Qala uhambo",
   "help.tourHint": "Uhambo olufushane emathebhuni namathuluzi ephrojekthi",
@@ -543,6 +545,7 @@ export const zu: Messages = {
   ...timetablesZu,
   ...commentsZu,
   ...mslabZu,
+  ...areaZu,
   ...workspaceUiZu,
   ...pluginCodeZu,
   ...populationZu,

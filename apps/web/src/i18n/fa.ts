@@ -9,6 +9,7 @@ import { tablesFa } from "./tables/fa";
 import { economicsFa } from "./economics/fa";
 import { fleetFa } from "./fleet/fa";
 import { timetablesFa } from "./timetables/fa";
+import { areaFa } from "./area/fa";
 import { mslabFa } from "./mslab/fa";
 import { workspaceUiFa } from "./workspace-ui/fa";
 import { pluginCodeFa } from "./plugin-code/fa";
@@ -481,6 +482,7 @@ export const fa: Messages = {
   "map.group.noise": "نقشهٔ نوفه",
   "map.group.journey": "برنامه‌ریز سفر",
   "map.group.agents": "سناریوی عامل هوش مصنوعی",
+  "map.group.projectArea": "محدودهٔ پروژه",
   "help.menu": "راهنما",
   "help.tour": "شروع گشت",
   "help.tourHint": "گشتی کوتاه در زبانه‌ها و ابزارهای پروژه",
@@ -532,6 +534,7 @@ export const fa: Messages = {
   ...timetablesFa,
   ...commentsFa,
   ...mslabFa,
+  ...areaFa,
   ...workspaceUiFa,
   ...pluginCodeFa,
   ...populationFa,

@@ -6,9 +6,6 @@ export const geodataJa = {
   "data.title": "地図データ",
   "data.intro":
     "このプロジェクトの OpenStreetMap と標高データ。プロジェクトと一緒に保存されます。道路・鉄道・建物・水域・地形のツールは、毎回 OpenStreetMap や標高サーバーに問い合わせる代わりにこれを読みます。",
-  "data.noArea":
-    "まずプロジェクトに何か描いてください。インポートは描いたものすべてを囲む矩形に余白を加えた範囲を対象にします。",
-  "data.area": "範囲: {area} km²(描いたものすべてを囲む矩形+{buffer} km)",
   "data.osm": "OpenStreetMap",
   "data.dem": "標高",
   "data.notImported": "まだインポートされていません。",
@@ -56,18 +53,6 @@ export const geodataJa = {
   "data.ownReplace": "別の GeoTIFF に置き換える(最大 {max} MB)",
   "data.remove": "削除",
   "area.title": "プロジェクト範囲",
-  "area.intro":
-    "場所を検索し、プロジェクトが含む OpenStreetMap の地域にチェックを入れてください。プロジェクト範囲はそれらすべてを合わせたものです。保存すると範囲の OpenStreetMap、標高、人口を一度だけ取り込み、すべてのツールがそれを使います。",
-  "area.search": "場所を検索（例：アレッポ、シリア）",
-  "area.lookingUp": "{place} の地域を検索中…",
-  "area.regionsAt": "{place} の地域",
-  "area.noRegions": "名前のある地域がありません。別の場所を試してください。",
-  "area.none": "地域が選ばれていません：範囲は描いたものすべてを囲む矩形とバッファです。",
-  "area.remove": "{name} を外す",
-  "area.total": "合計 約 {area} km²",
-  "area.outline": "選んだ地域の輪郭",
-  "area.save": "範囲を保存してデータを取り込む",
-  "area.saved": "範囲を保存しました。",
   "area.import.queued": "{what}：取り込みを開始しました",
   "area.import.current": "{what}：取り込み済み",
   "area.import.failed": "{what}：開始できませんでした。{reason}",
@@ -78,5 +63,4 @@ export const geodataJa = {
     "{tiles} 枚の地図タイルと {heights} 件の標高を、プロジェクトの取り込みデータの外からライブで取得しました。今後はプロジェクトに保存されます。図面全体を覆うよう取り込みを広げてください。",
   "data.extendImport": "地図データで取り込みを広げる",
   "data.hideLive": "閉じる",
-  "data.areaRegions": "範囲：{area} km²、{names} を囲む矩形",
 } satisfies GeodataMessages;

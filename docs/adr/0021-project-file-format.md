@@ -31,3 +31,8 @@ Migration code for every format change; tests with fixture files of each version
 - Custom vehicles, attachments, signatures and the "full export" with reference data are not in format 1.0.0, because projects cannot hold them yet; they are additions for a later minor version.
 - JSON Schemas are in `contracts/mslab`, generated from `format.mts` and the editors' drawing outlines and checked by `apps/api/test/mslab-schemas.test.ts`.
 - The import runs in the sandboxed tool-runner (`apps/api/src/tool-runner`), the first part of the tool-runner of ADR-0003.
+
+## Format 1.3.0 (2026-11-19)
+
+- `project.json` gains `areaPolygons`: the polygons of the project area drawn in the area window, each `{id, name, detail, ring}` with `detail` `full` or `main` (main roads and railways only). Opening the file gives the new project the same area; its map data is downloaded again.
+- A file whose project has no area polygons is still saved as 1.2.0 (with saved runs) or 1.1.0 (map data only), so older readers open it.
