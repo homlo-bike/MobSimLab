@@ -1,5 +1,7 @@
 /** Types of the noise plugin's `noise_estimate` calculation (Rust `noise::EstimateInput`, `noise-wasm`). */
 
+import type { EngineMsg } from "../../i18n/engine";
+
 export type LonLat = [number, number];
 export type NoiseMode =
   | "bus"
@@ -156,6 +158,8 @@ export interface NoiseBand {
 export interface NoiseCheck {
   severity: "warning" | "info";
   text: string;
+  /** The text as a key and values, for the user's language. */
+  msg?: EngineMsg;
   at: LonLat | null;
   line: string | null;
 }

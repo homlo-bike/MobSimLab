@@ -1,3 +1,4 @@
+import type { EngineMsg } from "../../i18n/engine";
 import type { Timetable } from "../journey-planner/types";
 
 /** What a feed brought in (`gtfs::ImportSummary`). */
@@ -12,6 +13,8 @@ export interface GtfsSummary {
   /** Trips of the day left out because they do not stop inside the map view. */
   outside: number;
   warnings: string[];
+  /** The warnings as keys and values, for the user's language (feeds read before they were added have none). */
+  warning_msgs?: EngineMsg[];
 }
 
 /** One imported feed as the project keeps it (drawing `gtfs-network`). */

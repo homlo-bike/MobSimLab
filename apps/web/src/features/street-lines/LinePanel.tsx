@@ -1,3 +1,4 @@
+import { useEngineText } from "../../i18n/engine";
 import { useState } from "react";
 import { cleanFeatures, STATION_FEATURES, SymbolPicker } from "../stations/features";
 import { DayTypeChoice } from "../timetables/DayTypeChoice";
@@ -219,6 +220,7 @@ function NumberField({
  */
 export function LinePanel(props: Props) {
   const { t } = useI18n();
+  const engineText = useEngineText();
   const vehiclesOff = useVehiclesOff();
   const planned = usePlannedModes();
   const { view, profile, timing, selected, actions: a } = props;
@@ -466,12 +468,12 @@ export function LinePanel(props: Props) {
                 </div>
                 {p.status === "error" && p.message && (
                   <p className="ps-7 text-xs text-red-700" role="note">
-                    {p.message}
+                    {engineText({ text: p.message, msg: p.message_msg })}
                   </p>
                 )}
                 {leg?.status === "error" && leg.message && (
                   <p className="ps-7 text-xs text-red-700" role="note">
-                    {leg.message}
+                    {engineText({ text: leg.message, msg: leg.message_msg })}
                   </p>
                 )}
                 {sel && (

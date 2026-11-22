@@ -1,3 +1,4 @@
+import { engineTextNow } from "../../i18n/engine";
 import { tNow } from "../../i18n/i18n";
 import type { PointView } from "./types";
 
@@ -17,9 +18,9 @@ export function pointElement(
   el.setAttribute("role", "button");
   el.setAttribute(
     "aria-label",
-    `${tNow("street.marker", { n: p.seq + 1, name: p.name })}${p.status === "error" && p.message ? `. ${p.message}` : ""}`,
+    `${tNow("street.marker", { n: p.seq + 1, name: p.name })}${p.status === "error" && p.message ? `. ${engineTextNow({ text: p.message, msg: p.message_msg })}` : ""}`,
   );
-  el.title = `${p.seq + 1}. ${p.name}${p.message ? ` — ${p.message}` : ""}`;
+  el.title = `${p.seq + 1}. ${p.name}${p.message ? ` — ${engineTextNow({ text: p.message, msg: p.message_msg })}` : ""}`;
   const via = p.kind === "via";
   const end = p.kind === "end_stop";
   const error = p.status === "error";

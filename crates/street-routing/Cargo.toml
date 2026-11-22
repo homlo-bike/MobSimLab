@@ -8,6 +8,7 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+engine-msg = { path = "../engine-msg" }
 pathfinding = "4.16"
 quick-xml = "0.41"
 serde = { version = "1", features = ["derive"] }

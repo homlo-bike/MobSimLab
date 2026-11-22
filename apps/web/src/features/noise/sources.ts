@@ -1,3 +1,4 @@
+import { engineTextNow } from "../../i18n/engine";
 import { tNow } from "../../i18n/i18n";
 import type { LineView, VehicleProfile } from "../street-lines/types";
 import type { Network, RailView, TrackView } from "../railways/types";
@@ -229,5 +230,5 @@ export function pluginSources(tools: Record<string, SavedPluginLine>): NoisePoin
 
 /** Purpose: noise checks with "Noise: " in front, for an editor's Checks list. */
 export function noiseCheckText(c: NoiseCheck): string {
-  return tNow("noise.check", { text: c.text });
+  return tNow("noise.check", { text: engineTextNow({ text: c.text, msg: c.msg }) });
 }

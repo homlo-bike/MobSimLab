@@ -15,6 +15,7 @@ pub mod csv;
 pub mod modes;
 
 use csv::Table;
+use engine_msg::{msg, Msg};
 use journey_planner::timetable::{
     FrequencyPattern, PatternStop, Period, PeriodKind, Route, Stop, StopTime, Timetable, Transfer,
     Trip,
@@ -50,7 +51,11 @@ pub struct ImportSummary {
     pub patterns: usize,
     /// Trips of the day left out because they do not stop inside the bounding box.
     pub outside: usize,
+    /// In English.
     pub warnings: Vec<String>,
+    /// The same as keys and values, for the app to show in the user's language.
+    #[serde(default)]
+    pub warning_msgs: Vec<Msg>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -234,7 +239,7 @@ pub fn import(input: &ImportInput) -> Result<Imported, String> {
         return Err("The feed has neither calendar.txt nor calendar_dates.txt.".into());
     }
     let cal = Calendar::new(cal_t.as_ref(), dates_t.as_ref());
-    let mut warnings = Vec::new();
+    let mut warnings: Vec<Msg> = Vec::new();
 
     // Trips per service, to find the busiest Wednesday.
     let mut per_service: HashMap<String, usize> = HashMap::new();
@@ -444,7 +449,7 @@ pub fn import(input: &ImportInput) -> Result<Imported, String> {
         }
     }
     if untimed > 0 {
-        warnings.push(format!("{untimed} trips without times were left out."));
+        warnings.push(msg!("gtfs.untimed_trips", count = untimed.to_string()));
     }
     if trips.len() + patterns.len() == 0 {
         return Err(if outside > 0 {
@@ -511,9 +516,9 @@ pub fn import(input: &ImportInput) -> Result<Imported, String> {
         });
     }
     if !unknown_types.is_empty() {
-        warnings.push(format!(
-            "Route types {} are not known and are read as bus.",
-            unknown_types.into_iter().collect::<Vec<_>>().join(", ")
+        warnings.push(msg!(
+            "gtfs.unknown_route_types",
+            types = unknown_types.into_iter().collect::<Vec<_>>().join(", ")
         ));
     }
 
@@ -552,7 +557,8 @@ pub fn import(input: &ImportInput) -> Result<Imported, String> {
         trips: trips.len(),
         patterns: patterns.len(),
         outside,
-        warnings,
+        warnings: warnings.iter().map(Msg::english).collect(),
+        warning_msgs: warnings,
     };
     Ok(Imported {
         timetable: Timetable {
