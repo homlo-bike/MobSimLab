@@ -78,15 +78,5 @@
     "Panoramax street photos": "Panoramax 街景照片",
     "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "由个人和公共机构分享的照片，采用允许据此制图的开放许可（多为 CC BY-SA 4.0 或 Etalab 2.0）。使用时请注明作者。",
     "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "来自 Panoramax（自由开放的街景照片共享资源）的街景照片。在地图上打开“街景照片”可查看照片拍摄位置，再点击某一点可查看其附近拍摄的照片。照片采用允许据此制图的开放许可。无需密钥。照片经由本 MobSimLab 传输，不会被保存，也不会随项目存储。"
-  },
-  "org.mobsimlab.people-mover": {
-    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "高架导轨上的缆索牵引自动旅客捷运，用直线跨距工具绘制：两列车的穿梭线，以及列车可脱挂、每站停靠的收束环线（ADR-0037 §7）。自驱动的旅客捷运需要铁路编辑器，以后推出。",
-    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "导轨上缆索牵引的穿梭线和环线：点击车站，墩柱自动跟随。",
-    "People mover": "旅客捷运",
-    "People mover shuttle": "旅客捷运穿梭线",
-    "People mover system": "旅客捷运系统",
-    "People movers": "旅客捷运",
-    "Pinched loop, detachable trains": "收束环线，可脱挂列车",
-    "Shuttle, two trains on a fixed rope": "穿梭线，两列车挂在固定缆索上"
   }
 }

@@ -78,15 +78,5 @@
     "Panoramax street photos": "Panoramax koʻcha suratlari",
     "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "Odamlar va davlat tashkilotlari ulashgan suratlar, ulardan xarita tuzishga ruxsat beruvchi ochiq litsenziyalar ostida (asosan CC BY-SA 4.0 yoki Etalab 2.0). Birini ishlatganingizda muallifni koʻrsating.",
     "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Panoramax dan koʻcha darajasidagi suratlar, koʻcha suratlarining erkin va ochiq umumiy boyligi. Suratlar qayerda olinganini koʻrish uchun xaritada Koʻcha suratlarini oching, soʻng uning yaqinida olingan suratlarni koʻrish uchun nuqtani bosing. Suratlar ulardan xarita tuzishga ruxsat beruvchi ochiq litsenziyalar ostida. Kalit kerak emas. Suratlar shu MobSimLab orqali keladi va saqlanmaydi, loyiha bilan ham yozilmaydi."
-  },
-  "org.mobsimlab.people-mover": {
-    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "Koʻtarilgan yoʻl ustida arqon bilan tortiladigan avtomatik yoʻlovchi tashuvchilar, toʻgʻri oraliqlar toʻplami bilan chiziladi: ikki poyezdli borib-keluvchilar va har bir stansiyada toʻxtaydigan ajraladigan poyezdli siqilgan halqalar (ADR-0037 §7). Oʻzi harakatlanuvchilari uchun temir yoʻl muharriri kerak, ular keyinroq qoʻshiladi.",
-    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "Yoʻl ustida arqon bilan tortiladigan borib-keluvchilar va halqalar: stansiyalarni bosing, tayanchlar oʻzi qoʻyiladi.",
-    "People mover": "Avtomatik yoʻlovchi tashuvchi",
-    "People mover shuttle": "Borib-keluvchi avtomatik yoʻlovchi tashuvchi",
-    "People mover system": "Avtomatik yoʻlovchi tashuvchi tizimi",
-    "People movers": "Avtomatik yoʻlovchi tashuvchilar",
-    "Pinched loop, detachable trains": "Siqilgan halqa, ajraladigan poyezdlar",
-    "Shuttle, two trains on a fixed rope": "Borib-keluvchi, qoʻzgʻalmas arqonda ikki poyezd"
   }
 }
