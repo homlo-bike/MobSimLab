@@ -1,4 +1,4 @@
-//! WebAssembly bindings of `mode-kits` for the cable car, people mover, ferry and on-demand bus tools.
+//! WebAssembly bindings of `mode-kits` for the cable car, ferry and on-demand bus tools.
 //!
 //! Stateless: the editor sends the whole line after every edit and gets the built line back as JSON
 //! (`mode_kits::spans::SpanView`, `mode_kits::water::WaterView`, `mode_kits::zone::ZoneView`, `mode_kits::segment::SimOutput`).

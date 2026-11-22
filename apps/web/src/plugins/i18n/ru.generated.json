@@ -78,15 +78,5 @@
     "Panoramax street photos": "Фото улиц Panoramax",
     "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "Фото, которыми делятся люди и государственные организации, под открытыми лицензиями (чаще всего CC BY-SA 4.0 или Etalab 2.0), разрешающими картографирование по ним. Указывайте автора, когда используете фото.",
     "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Уличные фото из Panoramax, свободного и открытого общего достояния уличных фото. Откройте «Фото улиц» на карте, чтобы увидеть, где сделаны фото, затем щёлкните точку, чтобы увидеть фото рядом с ней. Фото под открытыми лицензиями, разрешающими картографирование по ним. Ключ не нужен. Фото идут через этот MobSimLab и не сохраняются ни отдельно, ни в проекте."
-  },
-  "org.mobsimlab.people-mover": {
-    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "Автоматические пипл-муверы на канатной тяге на эстакаде, рисуются набором прямых пролётов: челноки с двумя поездами и суженные петли с отцепляемыми поездами, останавливающимися на каждой станции (ADR-0037 §7). Пипл-муверам с собственным приводом нужен редактор железной дороги, они появятся позже.",
-    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "Челноки и петли на канатной тяге по путепроводу: щёлкайте станции, опоры встают сами.",
-    "People mover": "Пипл-мувер",
-    "People mover shuttle": "Челнок пипл-мувера",
-    "People mover system": "Система пипл-мувера",
-    "People movers": "Пипл-муверы",
-    "Pinched loop, detachable trains": "Суженная петля, отцепляемые поезда",
-    "Shuttle, two trains on a fixed rope": "Челнок, два поезда на неподвижном канате"
   }
 }

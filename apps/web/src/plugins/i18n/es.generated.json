@@ -78,15 +78,5 @@
     "Panoramax street photos": "Fotos de calle de Panoramax",
     "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "Fotos compartidas por personas y organismos públicos, con licencias abiertas (sobre todo CC BY-SA 4.0 o Etalab 2.0) que permiten cartografiar a partir de ellas. Cita a la autora o al autor cuando uses una.",
     "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "Fotos a pie de calle de Panoramax, el bien común libre y abierto de fotos de calle. Abre Fotos de calle en el mapa para ver dónde se tomaron fotos y haz clic en un punto para ver las fotos tomadas cerca. Las fotos tienen licencias abiertas que permiten cartografiar a partir de ellas. No hace falta clave. Las fotos pasan por este MobSimLab y no se guardan ni se almacenan con el proyecto."
-  },
-  "org.mobsimlab.people-mover": {
-    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "Trenes lanzadera automáticos arrastrados por cable sobre una vía elevada, dibujados con el kit de vanos rectos: lanzaderas con dos trenes y bucles estrangulados con trenes desembragables que paran en cada estación (ADR-0037 §7). Los autopropulsados necesitan el editor de ferrocarril y llegarán más adelante.",
-    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "Lanzaderas y bucles arrastrados por cable sobre una vía: haz clic en las estaciones y los pilares se colocan solos.",
-    "People mover": "Tren lanzadera",
-    "People mover shuttle": "Lanzadera de tren automático",
-    "People mover system": "Sistema de tren lanzadera",
-    "People movers": "Trenes lanzadera",
-    "Pinched loop, detachable trains": "Bucle estrangulado, trenes desembragables",
-    "Shuttle, two trains on a fixed rope": "Lanzadera, dos trenes en un cable fijo"
   }
 }

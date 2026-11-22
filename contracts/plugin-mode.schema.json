@@ -44,7 +44,7 @@
     },
     "defaultContext": { "type": "string" },
     "parameterPrefix": {
-      "description": "Prefix of the plugin parameters that feed the kit, such as `people_mover` for `people_mover.line_speed_ms`. Default: `ropeway` for the straight spans kit, `ferry` for the water route kit.",
+      "description": "Prefix of the plugin parameters that feed the kit, such as `drt` for `drt.speed_kmh`. Default: `ropeway` for the straight spans kit, `ferry` for the water route kit.",
       "type": "string",
       "pattern": "^[a-z][a-z0-9_]*$"
     }

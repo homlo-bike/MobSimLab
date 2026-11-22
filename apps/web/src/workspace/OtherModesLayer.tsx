@@ -84,7 +84,7 @@ export function streetLinesGeoJson(lines: readonly SavedStreetLine[]) {
   return out;
 }
 
-/** Purpose: the plugin tools' lines (cable cars, people movers, ferries) as lines through their stops or legs. */
+/** Purpose: the plugin tools' lines (cable cars, ferries) as lines through their stops or legs. */
 export function pluginLinesGeoJson(lines: Record<string, SavedPluginLine>, skip: string | null) {
   const out: Feature[] = [];
   for (const [id, saved] of Object.entries(lines)) {

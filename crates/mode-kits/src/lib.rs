@@ -7,8 +7,7 @@
 //!
 //! - [`spans`]: the **straight spans kit**: stations clicked in order, straight sections, towers placed
 //!   automatically within the span limit, rope sag and clearance, angle checks, running time, capacity and
-//!   cabin count. Used by the aerial-lift plugin for cable cars and aerial tramways, and by the people mover
-//!   plugin for cable-hauled trains on a guideway (carrier `train`).
+//!   cabin count. Used by the aerial-lift plugin for cable cars and aerial tramways.
 //! - [`water`]: the **water route kit**: an ordered list of pier calls with via points, speed zones,
 //!   berthing manoeuvre, dwell from gangway throughput, vessel blocks and a berth check that runs the
 //!   service on the segment engine. Used by the ferry plugin.

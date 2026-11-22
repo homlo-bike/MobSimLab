@@ -20,7 +20,6 @@ import {
   ShieldIcon,
   SoundIcon,
   TableIcon,
-  TrainIcon,
 } from "../shell/icons";
 import { addsLine, PERMISSION_LABELS } from "../workspace/ProjectPlugins";
 import { EsriImageryConfig, type EsriStatus } from "./EsriImageryAdmin";
@@ -102,7 +101,6 @@ const LOGOS: Record<string, { icon: ReactNode; tint: string }> = {
   "org.mobsimlab.gtfs": { icon: <TableIcon size={22} />, tint: "bg-emerald-100 text-emerald-800" },
   "org.mobsimlab.noise": { icon: <SoundIcon size={22} />, tint: "bg-rose-100 text-rose-800" },
   "org.mobsimlab.on-demand-bus": { icon: <BusIcon size={22} />, tint: "bg-cyan-100 text-cyan-800" },
-  "org.mobsimlab.people-mover": { icon: <TrainIcon size={22} />, tint: "bg-fuchsia-100 text-fuchsia-800" },
 };
 
 /** The outside services each bundled plugin uses (Esri's come with its key status, map layers' from the list). */

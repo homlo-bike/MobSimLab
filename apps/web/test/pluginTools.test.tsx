@@ -162,60 +162,6 @@ describe("editors", () => {
     await waitFor(() => expect((onLine.mock.lastCall![0] as PluginLineInput).stops).toHaveLength(2));
   });
 
-  it("people mover editor counts trains from the round trip and names piers and headway", async () => {
-    const apmTool = pluginTools().find((t) => t.id === "people-mover")!;
-    expect(apmTool.kit).toBe("straight-spans");
-    const doc: SpanDoc = {
-      name: "Airport link",
-      mode: "people_mover",
-      system: "pinched_loop",
-      stations: [
-        { name: "Station", lonlat: east(0), kind: "terminal", boarding: false, elevation_m: 0 },
-        { name: "Garage", lonlat: east(2500), kind: "intermediate", boarding: false, elevation_m: 0 },
-        { name: "Terminal", lonlat: east(5000), kind: "terminal", boarding: false, elevation_m: 0 },
-      ],
-      towers: [null, null],
-      lineSpeed: null,
-      interval: null,
-      terrain: false,
-    };
-    localStorage.setItem("k-apm", JSON.stringify(doc));
-    const onLine = vi.fn();
-    render(<SpanLineEditor map={null} tool={apmTool} storageKey="k-apm" onLineChange={onLine} />);
-    await screen.findByText("Capacity per direction");
-    // 113 passengers every 240 s; 2 × (500 s + 40 s stop + 40 s turn) / 240 s = 4.8, so 5 trains.
-    expect(screen.getByText("1,695 p/h")).toBeTruthy();
-    expect(screen.getByText("Trains")).toBeTruthy();
-    expect(screen.getByText("Piers")).toBeTruthy();
-    expect(screen.getByText("Train every")).toBeTruthy();
-    expect((screen.getByLabelText("Headway (s)") as HTMLInputElement).value).toBe("240");
-    expect(screen.getAllByText(/piers: \d+ \(automatic\)/)).toHaveLength(2);
-    await waitFor(() =>
-      expect(onLine).toHaveBeenLastCalledWith(expect.objectContaining({ mode: "people_mover" })),
-    );
-    expect((onLine.mock.lastCall![0] as PluginLineInput).headwayS).toBe(240);
-  });
-
-  it("people mover shuttle runs two trains back and forth", async () => {
-    const kits = await loadKits();
-    const v = centralValues("people_mover_shuttle", "shuttle");
-    expect(v["people_mover.line_speed_ms"]).toBe(10.5);
-    const system = spanSystem("shuttle", "reversible", v, {}, "people_mover", "train");
-    const view = kits.buildSpanLine({
-      stations: [
-        { name: "A", lonlat: east(0), kind: "terminal", boarding: false, elevation_m: 0 },
-        { name: "B", lonlat: east(650), kind: "terminal", boarding: false, elevation_m: 0 },
-      ],
-      system,
-      towers: [],
-    });
-    expect(view.cabins).toBe(2);
-    // 650 m at 10.5 m/s = 62 s, + 20 s acceleration loss, + 40 s dwell: a departure every 122 s.
-    expect(Math.round(view.headway_s)).toBe(122);
-    expect(view.sections[0]!.spans_m.every((s) => s <= 40 + 1e-6)).toBe(true);
-    expect(view.issues.some((i) => i.level === "error")).toBe(false);
-  });
-
   it("cable car editor stands stations on the terrain and checks clearance over buildings", async () => {
     const doc: SpanDoc = {
       name: "Valley",

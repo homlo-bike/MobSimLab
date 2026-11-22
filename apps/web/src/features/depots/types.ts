@@ -2,6 +2,7 @@
  * Road depots as the project saves them (drawing kind `depots`, contracts/depot.schema.json) and the
  * reports of the depot layout WebAssembly module (Rust `crates/depot-layout`).
  */
+import type { EngineMsg } from "../../i18n/engine";
 import type { LonLat, Mode } from "../street-lines/types";
 
 export type GateKind = "entrance" | "exit" | "both";
@@ -135,6 +136,8 @@ export interface Issue {
   /** A zone, lane, gate or line id, or null for the whole depot. */
   subject: string | null;
   message: string;
+  /** The message as a key and values, for the user's language. */
+  msg?: EngineMsg;
 }
 
 export interface Generated {
@@ -148,6 +151,7 @@ export interface LaneCheck {
   entry_ok: boolean;
   exit_ok: boolean;
   message: string | null;
+  message_msg?: EngineMsg | null;
 }
 
 export interface NetEdge {

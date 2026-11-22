@@ -1,3 +1,4 @@
+import { engineTextNow } from "../../i18n/engine";
 import { tNow } from "../../i18n/i18n";
 import type { Timing } from "./modes";
 import type { DepotTripView, LineView } from "./types";
@@ -60,7 +61,10 @@ export function lineChecks(view: LineView): Check[] {
     if (p.message)
       out.push({
         sev: "error",
-        text: tNow("street.check.point", { n: p.seq + 1, message: p.message }),
+        text: tNow("street.check.point", {
+          n: p.seq + 1,
+          message: engineTextNow({ text: p.message, msg: p.message_msg }),
+        }),
         point: p.id,
       });
   }
@@ -69,13 +73,19 @@ export function lineChecks(view: LineView): Check[] {
     if (l.status === "error" && !from.message && !view.points[(l.index + 1) % n]?.message) {
       out.push({
         sev: "error",
-        text: tNow("street.check.after", { n: l.index + 1, message: l.message ?? "" }),
+        text: tNow("street.check.after", {
+          n: l.index + 1,
+          message: engineTextNow({ text: l.message ?? "", msg: l.message_msg }),
+        }),
         point: from.id,
       });
     } else if (l.message) {
       out.push({
         sev: l.status === "warning" ? "warn" : "info",
-        text: tNow("street.check.after", { n: l.index + 1, message: l.message }),
+        text: tNow("street.check.after", {
+          n: l.index + 1,
+          message: engineTextNow({ text: l.message, msg: l.message_msg }),
+        }),
         point: from.id,
       });
     }
@@ -84,15 +94,20 @@ export function lineChecks(view: LineView): Check[] {
     if (t.status === "error")
       out.push({
         sev: "error",
-        text: tNow("street.check.depot", { message: t.message ?? "" }),
+        text: tNow("street.check.depot", {
+          message: engineTextNow({ text: t.message ?? "", msg: t.message_msg }),
+        }),
         point: t.stop,
       });
   }
-  for (const i of view.issues) {
-    if (i.startsWith("Some legs cannot be driven")) continue;
-    if (i.startsWith("Depot:") && view.depot_trips.some((t) => t.status === "error")) continue;
-    out.push({ sev: i.startsWith("A line needs") ? "info" : "warn", text: i });
-  }
+  view.issues.forEach((i, k) => {
+    if (i.startsWith("Some legs cannot be driven")) return;
+    if (i.startsWith("Depot:") && view.depot_trips.some((t) => t.status === "error")) return;
+    out.push({
+      sev: i.startsWith("A line needs") ? "info" : "warn",
+      text: engineTextNow({ text: i, msg: view.issue_msgs?.[k] }),
+    });
+  });
   if (n < 2) {
     out.push({
       sev: "info",
