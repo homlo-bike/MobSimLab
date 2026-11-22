@@ -6,7 +6,7 @@
  * shows in English.
  */
 import { useCallback, useEffect, useState } from "react";
-import { useI18n } from "./i18n";
+import { activeLanguage, useI18n } from "./i18n";
 
 /** A message of an engine: a catalog key and the values to put into its text. */
 export interface EngineMsg {
@@ -80,4 +80,12 @@ export function useEngineText(): (finding: EngineText) => string {
   }, [language]);
   const shown = ready === language ? language : "en";
   return useCallback((finding: EngineText) => engineText(shown, finding), [shown]);
+}
+
+/**
+ * Purpose: a finding in the language on screen, for code outside components. Output: English until the
+ * language's messages are downloaded (a component using {@link useEngineText} downloads them and shows again).
+ */
+export function engineTextNow(finding: EngineText): string {
+  return engineText(activeLanguage(), finding);
 }

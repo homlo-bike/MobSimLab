@@ -4,6 +4,7 @@
 use crate::layout::Issue;
 use crate::model::{FleetGroup, Layout, ZoneKind};
 use crate::vehicle::VehicleSpec;
+use engine_msg::msg;
 use serde::Serialize;
 
 /// Slots of each kind.
@@ -146,7 +147,7 @@ pub fn assign(
             issues.push(Issue::new(
                 "error",
                 Some(&g.line),
-                format!("{}: its vehicle is unknown to the depot.", label(g)),
+                msg!("depot.vehicle_unknown", group = label(g)),
             ));
             continue;
         };
@@ -195,11 +196,12 @@ pub fn assign(
             issues.push(Issue::new(
                 "error",
                 Some(&g.line),
-                format!(
-                    "{}: {short} of {} vehicles have no slot that fits them ({:.1} m long).",
-                    label(g),
-                    g.count,
-                    v.length_m
+                msg!(
+                    "depot.no_slot_fits",
+                    group = label(g),
+                    short = short.to_string(),
+                    count = g.count.to_string(),
+                    length = format!("{:.1}", v.length_m)
                 ),
             ));
         }
@@ -207,9 +209,10 @@ pub fn assign(
             issues.push(Issue::new(
                 "warning",
                 Some(&g.line),
-                format!(
-                    "{}: {on_plain} battery vehicles park without a charger.",
-                    label(g)
+                msg!(
+                    "depot.no_charger",
+                    group = label(g),
+                    count = on_plain.to_string()
                 ),
             ));
         }

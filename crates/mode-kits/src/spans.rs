@@ -14,6 +14,7 @@
 
 use crate::geo::{self, LonLat, Xy};
 use crate::issue::{Issue, Level};
+use engine_msg::msg;
 use serde::{Deserialize, Serialize};
 
 /// Continuous gondolas run a belt of cabins; reversible ropeways shuttle cabins between two terminals.
@@ -385,7 +386,7 @@ pub fn build(line: &SpanLine) -> SpanView {
         issues.push(Issue::new(
             Level::Info,
             "line.too_short",
-            "Click at least two stations on the map.",
+            msg!("kits.line.too_short_stations"),
         ));
     }
     let origin = st.first().map_or([0.0, 0.0], |s| s.lonlat);
@@ -420,9 +421,9 @@ pub fn build(line: &SpanLine) -> SpanView {
                     Issue::new(
                         Level::Error,
                         "station.angle_reversible",
-                        format!(
-                            "An aerial tramway runs straight; it turns {:.0}° here. Split it into two lines.",
-                            deflection_deg
+                        msg!(
+                            "kits.station.angle_reversible",
+                            angle = format!("{deflection_deg:.0}")
                         ),
                     )
                     .at_station(i),
@@ -432,9 +433,10 @@ pub fn build(line: &SpanLine) -> SpanView {
                     Issue::new(
                         Level::Error,
                         "station.angle",
-                        format!(
-                            "The line turns {:.0}° here; this system allows {:.0}° in a station.",
-                            deflection_deg, sys.max_station_angle_deg
+                        msg!(
+                            "kits.station.angle",
+                            angle = format!("{deflection_deg:.0}"),
+                            max = format!("{:.0}", sys.max_station_angle_deg)
                         ),
                     )
                     .at_station(i)
@@ -446,7 +448,7 @@ pub fn build(line: &SpanLine) -> SpanView {
                     Issue::new(
                         Level::Warning,
                         "station.intermediate_reversible",
-                        "Aerial tramways rarely have stations between the terminals; both cabins stop when one does.",
+                        msg!("kits.station.intermediate_reversible"),
                     )
                     .at_station(i),
                 );
@@ -496,11 +498,11 @@ pub fn build(line: &SpanLine) -> SpanView {
                     Issue::new(
                         Level::Error,
                         "span.too_long",
-                        format!(
-                            "Span {} is {}; this system spans at most {}. Add a tower.",
-                            k + 1,
-                            fmt_m(*s),
-                            fmt_m(sys.max_span_m)
+                        msg!(
+                            "kits.span.too_long",
+                            span = (k + 1).to_string(),
+                            length = fmt_m(*s),
+                            max = fmt_m(sys.max_span_m)
                         ),
                     )
                     .at_section(i)
@@ -513,10 +515,10 @@ pub fn build(line: &SpanLine) -> SpanView {
                 Issue::new(
                     Level::Error,
                     "clearance.min",
-                    format!(
-                        "The loaded cabin comes within {} of the ground; at least {} is needed.",
-                        fmt_m(min_c),
-                        fmt_m(sys.min_clearance_m)
+                    msg!(
+                        "kits.clearance.min",
+                        clearance = fmt_m(min_c),
+                        min = fmt_m(sys.min_clearance_m)
                     ),
                 )
                 .at_section(i)
@@ -527,10 +529,10 @@ pub fn build(line: &SpanLine) -> SpanView {
                 Issue::new(
                     Level::Warning,
                     "clearance.recommended",
-                    format!(
-                        "The loaded cabin comes within {} of the ground; {} is recommended.",
-                        fmt_m(min_c),
-                        fmt_m(sys.recommended_clearance_m)
+                    msg!(
+                        "kits.clearance.recommended",
+                        clearance = fmt_m(min_c),
+                        recommended = fmt_m(sys.recommended_clearance_m)
                     ),
                 )
                 .at_section(i)
@@ -543,11 +545,11 @@ pub fn build(line: &SpanLine) -> SpanView {
                     Issue::new(
                         Level::Warning,
                         "tower.too_tall",
-                        format!(
-                            "A tower {} along is {} tall; this system's towers are at most {}.",
-                            fmt_m(*x),
-                            fmt_m(*h),
-                            fmt_m(sys.max_tower_height_m)
+                        msg!(
+                            "kits.tower.too_tall",
+                            at = fmt_m(*x),
+                            height = fmt_m(*h),
+                            max = fmt_m(sys.max_tower_height_m)
                         ),
                     )
                     .at_section(i)
@@ -560,11 +562,11 @@ pub fn build(line: &SpanLine) -> SpanView {
                 Issue::new(
                     Level::Warning,
                     "section.short",
-                    format!(
-                        "Stations {} and {} are only {} apart.",
-                        i + 1,
-                        i + 2,
-                        fmt_m(len)
+                    msg!(
+                        "kits.section.short",
+                        from = (i + 1).to_string(),
+                        to = (i + 2).to_string(),
+                        length = fmt_m(len)
                     ),
                 )
                 .at_section(i),
@@ -641,9 +643,10 @@ pub fn build(line: &SpanLine) -> SpanView {
             Issue::new(
                 Level::Warning,
                 "capacity.ceiling",
-                format!(
-                    "{:.0} passengers per hour and direction is more than any ropeway carries (about {:.0}).",
-                    capacity_pphpd, sys.capacity_ceiling_pphpd
+                msg!(
+                    "kits.capacity.ceiling",
+                    capacity = format!("{capacity_pphpd:.0}"),
+                    ceiling = format!("{:.0}", sys.capacity_ceiling_pphpd)
                 ),
             )
             .param(&pk("capacity_ceiling_pphpd")),
@@ -653,7 +656,7 @@ pub fn build(line: &SpanLine) -> SpanView {
         issues.push(Issue::new(
             Level::Info,
             "ground.assumed",
-            "Ground is a straight line between the station heights. Terrain and building heights are not checked.",
+            msg!("kits.ground.assumed_all"),
         ));
     } else {
         for &i in &assumed {
@@ -661,7 +664,7 @@ pub fn build(line: &SpanLine) -> SpanView {
                 Issue::new(
                     Level::Info,
                     "ground.assumed",
-                    "No terrain heights for this section; the ground is a straight line between the station heights.",
+                    msg!("kits.ground.assumed_section"),
                 )
                 .at_section(i),
             );

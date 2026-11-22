@@ -15,6 +15,7 @@
 
 use crate::geo::{dist, to_local, LonLat, Xy};
 use crate::{Issue, Level};
+use engine_msg::msg;
 use serde::{Deserialize, Serialize};
 
 /// The on-demand system, from the plugin's `drt.*` parameter values.
@@ -176,11 +177,7 @@ pub fn estimate(input: &ZoneInput) -> ZoneView {
     let mut issues = Vec::new();
     let mut view = ZoneView::default();
     if input.ring.len() < 3 {
-        issues.push(Issue::new(
-            Level::Info,
-            "zone.draw",
-            "Click at least three points on the map to outline the zone.",
-        ));
+        issues.push(Issue::new(Level::Info, "zone.draw", msg!("kits.zone.draw")));
         view.issues = issues;
         return view;
     }
@@ -190,7 +187,7 @@ pub fn estimate(input: &ZoneInput) -> ZoneView {
         issues.push(Issue::new(
             Level::Error,
             "zone.crossing",
-            "The zone's outline crosses itself. Move a point so the outline goes round once.",
+            msg!("kits.zone.crossing"),
         ));
     }
     let area = area_m2(&ring) / 1e6;
@@ -244,25 +241,25 @@ pub fn estimate(input: &ZoneInput) -> ZoneView {
         issues.push(Issue::new(
             Level::Error,
             "zone.hours",
-            "The service ends before it starts.",
+            msg!("kits.zone.hours"),
         ));
     }
     if lambda > 0.0 && input.fleet == 0 {
         issues.push(Issue::new(
             Level::Error,
             "zone.no_fleet",
-            "Set how many vehicles serve the zone.",
+            msg!("kits.zone.no_fleet"),
         ));
     } else if lambda > 0.0 && view.utilisation >= 1.0 {
         issues.push(
             Issue::new(
                 Level::Error,
                 "zone.fleet_short",
-                format!(
-                    "{} vehicles cannot keep up with {} requests an hour: about {} are needed.",
-                    input.fleet,
-                    lambda.round(),
-                    view.vehicles_needed
+                msg!(
+                    "kits.zone.fleet_short",
+                    fleet = input.fleet.to_string(),
+                    requests = lambda.round().to_string(),
+                    needed = view.vehicles_needed.to_string()
                 ),
             )
             .param(&pk("target_utilisation")),
@@ -272,11 +269,11 @@ pub fn estimate(input: &ZoneInput) -> ZoneView {
             Issue::new(
                 Level::Warning,
                 "zone.busy",
-                format!(
-                    "The fleet is busy {:.0} % of the time, above the {:.0} % that keeps waits short; {} vehicles are recommended.",
-                    view.utilisation * 100.0,
-                    u * 100.0,
-                    view.vehicles_needed
+                msg!(
+                    "kits.zone.busy",
+                    busy = format!("{:.0}", view.utilisation * 100.0),
+                    target = format!("{:.0}", u * 100.0),
+                    needed = view.vehicles_needed.to_string()
                 ),
             )
             .param(&pk("target_utilisation")),
@@ -288,10 +285,10 @@ pub fn estimate(input: &ZoneInput) -> ZoneView {
                 Issue::new(
                     Level::Warning,
                     "zone.wait",
-                    format!(
-                        "Riders wait about {:.0} min on average, more than the {:.0} min recommended.",
-                        w / 60.0,
-                        s.max_wait_s / 60.0
+                    msg!(
+                        "kits.zone.wait",
+                        wait = format!("{:.0}", w / 60.0),
+                        max = format!("{:.0}", s.max_wait_s / 60.0)
                     ),
                 )
                 .param(&pk("max_wait_s")),
@@ -303,9 +300,10 @@ pub fn estimate(input: &ZoneInput) -> ZoneView {
             Issue::new(
                 Level::Warning,
                 "zone.full",
-                format!(
-                    "Vehicles carry {:.1} riders on average with {:.0} places: many requests would find them full.",
-                    view.mean_occupancy, s.vehicle_places
+                msg!(
+                    "kits.zone.full",
+                    riders = format!("{:.1}", view.mean_occupancy),
+                    places = format!("{:.0}", s.vehicle_places)
                 ),
             )
             .param(&pk("vehicle_places")),

@@ -1,3 +1,4 @@
+import { useEngineText } from "../i18n/engine";
 import { useI18n } from "../i18n/i18n";
 import { usePublishChecks } from "../shell/checks";
 import type { Issue } from "./types";
@@ -25,12 +26,14 @@ export function Issues({
   label: string;
 }) {
   const { t } = useI18n();
+  const engineText = useEngineText();
+  const text = (i: Issue) => engineText({ text: i.message, msg: i.msg });
   const elsewhere = usePublishChecks(
     source,
     label,
     issues.map((i) => ({
       severity: i.level,
-      text: where(i) ? `${where(i)}: ${i.message}` : i.message,
+      text: where(i) ? `${where(i)}: ${text(i)}` : text(i),
       ...(i.parameter ? { detail: t("kit.parameter", { name: i.parameter }) } : {}),
     })),
   );
@@ -46,7 +49,7 @@ export function Issues({
               ? t("kit.issueWhere", { level: t(`severity.${i.level}`), where: where(i)! })
               : t("kit.issue", { level: t(`severity.${i.level}`) })}
           </span>{" "}
-          {i.message}
+          {text(i)}
           {i.parameter && (
             <span className="block text-[11px] opacity-75">{t("kit.parameter", { name: i.parameter })}</span>
           )}

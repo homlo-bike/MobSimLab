@@ -8,5 +8,6 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+engine-msg = { path = "../engine-msg" }
 serde = { version = "1", features = ["derive"] }
 unicode-normalization = "0.1"

@@ -10,6 +10,7 @@
 
 use std::collections::HashMap;
 
+use engine_msg::{msg, Msg};
 use serde::{Deserialize, Serialize};
 
 use crate::journey::{Journey, Leg, Place, WaitKind, WalkKind};
@@ -82,7 +83,11 @@ pub struct NetworkSummary {
     pub joined_by_name: usize,
     pub first_departure_s: Option<u32>,
     pub last_arrival_s: Option<u32>,
+    /// In English.
     pub warnings: Vec<String>,
+    /// The same as keys and values, for the app to show in the user's language.
+    #[serde(default)]
+    pub warning_msgs: Vec<Msg>,
 }
 
 #[derive(Debug, Clone)]
@@ -325,7 +330,7 @@ impl Planner {
     /// Purpose: compile a timetable (exact trips plus expanded frequency patterns) for routing.
     /// Output: the planner; problems that make data unusable (unknown stops or routes) are warnings.
     pub fn new(tt: &Timetable, settings: Settings) -> Planner {
-        let mut warnings = Vec::new();
+        let mut warnings: Vec<Msg> = Vec::new();
         let lat0 = if tt.stops.is_empty() {
             0.0
         } else {
@@ -338,10 +343,7 @@ impl Planner {
         let mut parent: Vec<Option<&String>> = Vec::with_capacity(tt.stops.len());
         for s in &tt.stops {
             if stop_index.contains_key(&s.stop_id) {
-                warnings.push(format!(
-                    "Stop {} is listed twice; the first entry is used.",
-                    s.stop_id
-                ));
+                warnings.push(msg!("journey.stop_twice", stop = &s.stop_id));
                 continue;
             }
             stop_index.insert(s.stop_id.clone(), stops.len());
@@ -386,10 +388,7 @@ impl Planner {
                 }
             }
             let route = *line_index.entry(t.route_id.clone()).or_insert_with(|| {
-                warnings.push(format!(
-                    "Route {} is not listed; shown by its id.",
-                    t.route_id
-                ));
+                warnings.push(msg!("journey.route_unlisted", route = &t.route_id));
                 lines.push(RouteInfo {
                     route_id: t.route_id.clone(),
                     route_short_name: t.route_id.clone(),
@@ -406,9 +405,10 @@ impl Planner {
                 match stop_index.get(&s.stop_id) {
                     Some(&i) => seq.push(i),
                     None => {
-                        warnings.push(format!(
-                            "Trip {} calls at unknown stop {}; skipped.",
-                            t.trip_id, s.stop_id
+                        warnings.push(msg!(
+                            "journey.trip_unknown_stop",
+                            trip = &t.trip_id,
+                            stop = &s.stop_id
                         ));
                         ok = false;
                         break;
@@ -421,7 +421,7 @@ impl Planner {
                 .map(|s| s.departure_time.max(s.arrival_time))
                 .collect();
             if ok && (1..arr.len()).any(|i| arr[i] < dep[i - 1]) {
-                warnings.push(format!("Trip {} goes back in time; skipped.", t.trip_id));
+                warnings.push(msg!("journey.trip_back_in_time", trip = &t.trip_id));
                 ok = false;
             }
             if !ok {
@@ -561,9 +561,10 @@ impl Planner {
                 stop_index.get(&t.from_stop_id),
                 stop_index.get(&t.to_stop_id),
             ) else {
-                warnings.push(format!(
-                    "Transfer {} → {} names an unknown stop; ignored.",
-                    t.from_stop_id, t.to_stop_id
+                warnings.push(msg!(
+                    "journey.transfer_unknown_stop",
+                    from = &t.from_stop_id,
+                    to = &t.to_stop_id
                 ));
                 continue;
             };
@@ -611,7 +612,8 @@ impl Planner {
             joined_by_name,
             first_departure_s: (first != INF).then_some(first),
             last_arrival_s: (n_trips > 0).then_some(last),
-            warnings,
+            warnings: warnings.iter().map(Msg::english).collect(),
+            warning_msgs: warnings,
         };
         Planner {
             settings,

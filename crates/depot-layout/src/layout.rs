@@ -12,6 +12,7 @@ use crate::model::{
     ZoneKind,
 };
 use crate::vehicle::{body, Body, VehicleSpec};
+use engine_msg::{msg, Msg};
 use serde::Serialize;
 
 /// A message about the layout.
@@ -21,16 +22,19 @@ pub struct Issue {
     pub severity: &'static str,
     /// What it is about: a zone, lane or gate id, or None for the whole depot.
     pub subject: Option<String>,
-    /// Plain-language message.
+    /// Plain-language message, in English.
     pub message: String,
+    /// The same message as a key and values, for the app to show in the user's language.
+    pub msg: Msg,
 }
 
 impl Issue {
-    pub(crate) fn new(severity: &'static str, subject: Option<&str>, message: String) -> Self {
+    pub(crate) fn new(severity: &'static str, subject: Option<&str>, msg: Msg) -> Self {
         Self {
             severity,
             subject: subject.map(str::to_string),
-            message,
+            message: msg.english(),
+            msg,
         }
     }
 }
@@ -416,11 +420,7 @@ pub fn generate(input: &DepotInput) -> Generated {
     if input.boundary.len() < 3 {
         return Generated {
             layout: Layout::default(),
-            issues: vec![Issue::new(
-                "error",
-                None,
-                "Draw the depot outline first.".into(),
-            )],
+            issues: vec![Issue::new("error", None, msg!("depot.outline_first"))],
         };
     }
     let proj = Proj::around(&input.boundary);
@@ -486,10 +486,10 @@ pub fn generate(input: &DepotInput) -> Generated {
                 issues.push(Issue::new(
                     "error",
                     Some(&zone.id),
-                    format!(
-                        "A {} cannot turn into lanes at {}° even with a 40 m aisle.",
-                        v.name_or_len(),
-                        zone.angle_deg
+                    msg!(
+                        "depot.cannot_turn",
+                        vehicle = v.name_or_len(),
+                        angle = zone.angle_deg.to_string()
                     ),
                 ));
             }
@@ -500,11 +500,11 @@ pub fn generate(input: &DepotInput) -> Generated {
             issues.push(Issue::new(
                 "warning",
                 Some(&zone.id),
-                format!(
-                    "No lane fits: a lane of {} m by {:.1} m with {:.1} m aisles on both ends does not fit in this zone.",
-                    fmt1(p.lane_len),
-                    p.lane_w,
-                    aisle
+                msg!(
+                    "depot.no_lane_fits",
+                    length = fmt1(p.lane_len),
+                    width = format!("{:.1}", p.lane_w),
+                    aisle = format!("{aisle:.1}")
                 ),
             ));
             continue;
@@ -611,11 +611,11 @@ pub fn generate(input: &DepotInput) -> Generated {
         issues.push(Issue::new(
             "info",
             None,
-            format!(
-                "{dropped} lane{} left out because a vehicle could not turn into or out of {} without touching the fence or a parked vehicle.",
-                if dropped == 1 { " was" } else { "s were" },
-                if dropped == 1 { "it" } else { "them" }
-            ),
+            if dropped == 1 {
+                msg!("depot.lane_dropped")
+            } else {
+                msg!("depot.lanes_dropped", count = dropped.to_string())
+            },
         ));
     }
     let mut k = keep.iter();
@@ -629,11 +629,7 @@ pub fn generate(input: &DepotInput) -> Generated {
         .collect();
     layout.aisles.retain(|a| used.contains(&a.id));
     if input.zones.iter().all(|z| !z.kind.has_slots()) {
-        issues.push(Issue::new(
-            "warning",
-            None,
-            "Draw a parking or charging zone for the auto layout to fill.".into(),
-        ));
+        issues.push(Issue::new("warning", None, msg!("depot.draw_zone")));
     }
     Generated { layout, issues }
 }
@@ -658,15 +654,19 @@ fn fmt1(x: f64) -> String {
 }
 
 trait NameOrLen {
-    fn name_or_len(&self) -> String;
+    fn name_or_len(&self) -> engine_msg::Arg;
 }
 
 impl NameOrLen for VehicleSpec {
-    fn name_or_len(&self) -> String {
+    fn name_or_len(&self) -> engine_msg::Arg {
         if self.name.is_empty() {
-            format!("{:.1} m vehicle", self.length_m)
+            msg!(
+                "depot.vehicle_length",
+                length = format!("{:.1}", self.length_m)
+            )
+            .into()
         } else {
-            self.name.clone()
+            self.name.clone().into()
         }
     }
 }
