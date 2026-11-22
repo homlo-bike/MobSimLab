@@ -125,6 +125,7 @@ import { VehiclesOffContext } from "./projectVehicles";
 import { EMPTY_FLEET, fleetFrom, type FleetDoc } from "../features/fleet/model";
 import { setOwnVehicles } from "../features/fleet/registry";
 import type { DelayShares } from "../features/street-lines/types";
+import { drawnBox } from "../features/area/drawnBox";
 import { useAreaZoom } from "../features/area/useAreaZoom";
 import { type Drawings, useDrawings } from "./useDrawings";
 import type { EnergyEstimate } from "../features/energy/types";
@@ -385,11 +386,12 @@ export function Workspace({
     api.get(projectId).then(setProject, () => setMissing(true));
   }, [api, projectId]);
 
-  // A project opens with the map on its area (the regions picked for it, or around its drawing).
+  // A project opens with the map on its area, or on its drawing when it has no area (Damascus bug 23).
   const areaView = useAreaZoom(
     map,
     projectId,
     typeof api.area === "function" ? (id: string) => api.area(id).get() : null,
+    typeof api.drawings === "function" ? (id: string) => api.drawings(id).then(drawnBox) : null,
   );
 
   // The map tools read this project's imported OpenStreetMap and elevation data where it has some (ADR-0046).

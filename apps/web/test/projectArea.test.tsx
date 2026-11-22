@@ -68,6 +68,7 @@ import {
   ringAreaKm2,
 } from "../src/features/area/api";
 import { AREA_LINE, AREA_SOURCE, notifyAreaChanged } from "../src/features/area/areaLayer";
+import { drawnBox } from "../src/features/area/drawnBox";
 import { useAreaZoom } from "../src/features/area/useAreaZoom";
 
 afterEach(() => {
@@ -416,5 +417,72 @@ describe("Opening a project puts the map on its area", () => {
     renderHook(() => useAreaZoom(other.map as unknown as MapLibreMap, "p2", async () => boxView(null)));
     await act(async () => {});
     expect(other.map.fitBounds).not.toHaveBeenCalled();
+  });
+
+  it("opens on the drawing when the project has no area or its area cannot be read (Damascus bug 23)", async () => {
+    const { map } = fakeMap();
+    const drawn = vi.fn(async () => [36.2, 33.4, 36.4, 33.6] as [number, number, number, number]);
+    renderHook(() => useAreaZoom(map as unknown as MapLibreMap, "p1", async () => boxView(null), drawn));
+    await waitFor(() => expect(map.fitBounds).toHaveBeenCalledTimes(1));
+    expect(drawn).toHaveBeenCalledWith("p1");
+    expect(map.fitBounds.mock.calls[0]![0]).toEqual([
+      [36.2, 33.4],
+      [36.4, 33.6],
+    ]);
+
+    // The static viewer answers no area at all.
+    const other = fakeMap();
+    renderHook(() =>
+      useAreaZoom(
+        other.map as unknown as MapLibreMap,
+        "p2",
+        () => Promise.reject(new Error("not here")),
+        drawn,
+      ),
+    );
+    await waitFor(() => expect(other.map.fitBounds).toHaveBeenCalledTimes(1));
+
+    // An area wins over the drawing.
+    const third = fakeMap();
+    renderHook(() =>
+      useAreaZoom(third.map as unknown as MapLibreMap, "p3", async () => boxView([0, 0, 1, 1]), drawn),
+    );
+    await waitFor(() => expect(third.map.fitBounds).toHaveBeenCalledTimes(1));
+    expect(third.map.fitBounds.mock.calls[0]![0]).toEqual([
+      [0, 0],
+      [1, 1],
+    ]);
+    expect(drawn).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("the box round a project's drawing", () => {
+  it("joins street lines, plugin lines and the railway, which is in metres round its origin", () => {
+    const box = drawnBox({
+      "street-lines": {
+        doc: { lines: [{ points: [{ lonlat: [36.25, 33.5] }, { lonlat: [36.3, 33.52] }] }] },
+      },
+      "plugin-lines": {
+        doc: {
+          tools: { ferry: { line: { stops: [{ lonlat: [35.5, 33.9] }, { lonlat: [35.64, 34.12] }] } } },
+        },
+      },
+      railway: {
+        doc: {
+          origin: [36.3, 33.51],
+          stations: [{ x: 0, y: 0 }],
+          tracks: [{ points: [{ x: 10_000, y: -5_000 }] }],
+        },
+      },
+    })!;
+    expect(box[0]).toBeCloseTo(35.5, 6);
+    expect(box[1]).toBeCloseTo(33.465, 2);
+    expect(box[2]).toBeCloseTo(36.3 + 10_000 / (111_195 * Math.cos((33.51 * Math.PI) / 180)), 3);
+    expect(box[3]).toBeCloseTo(34.12, 6);
+  });
+
+  it("is null when nothing is drawn", () => {
+    expect(drawnBox({})).toBeNull();
+    expect(drawnBox({ railway: { doc: { origin: [10, 50], stations: [], tracks: [] } } })).toBeNull();
   });
 });
