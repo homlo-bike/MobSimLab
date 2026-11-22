@@ -17,7 +17,7 @@ from psycopg.types.json import Jsonb
 
 from mobsim_worker.jobs.calendar import run_calendar
 from mobsim_worker.jobs.capacity import KernelLoader, load_kernel, run_capacity
-from mobsim_worker.jobs.demand import RunFile, run_demand_job
+from mobsim_worker.jobs.demand import RunFile, run_demand_job, street_tiles
 from mobsim_worker.jobs.sweep import run_sweep
 from mobsim_worker.queue import Connection, Job, Queue
 
@@ -181,8 +181,7 @@ def process(
         if kind == "demand":
             outcome, result, files = run_demand_job(network, lines, settings, reporter)
         elif kind == "road":
-            tiles = json.loads(network).get("tiles", [])
-            outcome, result, replay = road(settings, json.loads(lines), list(tiles), reporter)
+            outcome, result, replay = road(settings, json.loads(lines), street_tiles(network), reporter)
             if replay is not None and outcome == "done":
                 conn.execute(REPLAY, {"id": run_id, "data": replay})
         elif kind == "calendar":

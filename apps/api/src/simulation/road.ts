@@ -158,8 +158,15 @@ export type RoadScenario = z.infer<typeof roadScenario>;
 /** Room around the lines and depots taken into the network, m (worker `MARGIN_M`). */
 export const ROAD_MARGIN_M = 600;
 
-/** Most street tiles one road run may take (about 10 × 10 km at 50° N). */
-export const MAX_ROAD_TILES = 64;
+/**
+ * Most street tiles one road run may take: the tiles along a whole city's bus lines, airport line included. The
+ * tiles are loaded in the background and stored compressed, as for a demand run (`MAX_DEMAND_TILES`), and the
+ * network column's size limit still guards a very dense area.
+ */
+export const MAX_ROAD_TILES = 320;
+
+/** Longest step between the points checked along a route, m; well under a tile's width. */
+const ROAD_STEP_M = 200;
 
 /** Purpose: the web-mercator tile at zoom 14 holding a point. */
 export function tileOf(lon: number, lat: number): [number, number] {
@@ -171,28 +178,38 @@ export function tileOf(lon: number, lat: number): [number, number] {
 }
 
 /**
- * Purpose: the street tiles a road run needs: every tile of the box around the lines' routes, their depot runs
- * and the depots, with `ROAD_MARGIN_M` of room. Output: tiles `[x, y]`, west to east, north to south.
+ * Purpose: the street tiles a road run needs: every tile within `ROAD_MARGIN_M` of the lines' routes, their
+ * depot runs and the depots. Only the tiles along the routes are taken, not the whole box around them, so a
+ * city's lines that fan out to its suburbs and airport do not take every tile of the empty land between them.
+ * Output: tiles `[x, y]`, north to south, west to east.
  */
 export function roadTiles(s: RoadScenario): [number, number][] {
-  const pts: [number, number][] = [];
+  const paths: [number, number][][] = [];
   for (const l of s.lines) {
-    for (const leg of l.legs) pts.push(...leg.coords);
-    if (l.pull_out) pts.push(...l.pull_out.coords);
-    if (l.pull_in) pts.push(...l.pull_in.coords);
+    for (const leg of l.legs) paths.push(leg.coords);
+    if (l.pull_out) paths.push(l.pull_out.coords);
+    if (l.pull_in) paths.push(l.pull_in.coords);
   }
-  for (const d of s.depots) for (const n of d.network.nodes) pts.push(n.lonlat);
-  if (!pts.length) return [];
-  const lat = pts.reduce((a, p) => a + p[1], 0) / pts.length;
-  const dLat = ROAD_MARGIN_M / 111_320;
-  const dLon = ROAD_MARGIN_M / (111_320 * Math.max(0.1, Math.cos((lat * Math.PI) / 180)));
-  const west = Math.min(...pts.map((p) => p[0])) - dLon;
-  const east = Math.max(...pts.map((p) => p[0])) + dLon;
-  const south = Math.min(...pts.map((p) => p[1])) - dLat;
-  const north = Math.max(...pts.map((p) => p[1])) + dLat;
-  const [x0, y0] = tileOf(west, north);
-  const [x1, y1] = tileOf(east, south);
-  const out: [number, number][] = [];
-  for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) out.push([x, y]);
-  return out;
+  for (const d of s.depots) for (const n of d.network.nodes) paths.push([n.lonlat]);
+  const seen = new Map<string, [number, number]>();
+  const around = (lon: number, lat: number) => {
+    const dLat = ROAD_MARGIN_M / 111_320;
+    const dLon = ROAD_MARGIN_M / (111_320 * Math.max(0.1, Math.cos((lat * Math.PI) / 180)));
+    const [x0, y0] = tileOf(lon - dLon, lat + dLat);
+    const [x1, y1] = tileOf(lon + dLon, lat - dLat);
+    for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) seen.set(`${x}/${y}`, [x, y]);
+  };
+  for (const path of paths) {
+    path.forEach(([lon, lat], i) => {
+      around(lon, lat);
+      const next = path[i + 1];
+      if (!next) return;
+      // Points between two far-apart coordinates, so a long straight piece does not skip a tile.
+      const kx = 111_320 * Math.max(0.1, Math.cos((lat * Math.PI) / 180));
+      const m = Math.hypot((next[0] - lon) * kx, (next[1] - lat) * 111_320);
+      const n = Math.ceil(m / ROAD_STEP_M);
+      for (let k = 1; k < n; k++) around(lon + ((next[0] - lon) * k) / n, lat + ((next[1] - lat) * k) / n);
+    });
+  }
+  return [...seen.values()].sort((a, b) => a[1] - b[1] || a[0] - b[0]);
 }
