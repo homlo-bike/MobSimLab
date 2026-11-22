@@ -78,15 +78,5 @@
     "Panoramax street photos": "Panoramax ストリート写真",
     "Photos shared by people and public bodies, under open licences (mostly CC BY-SA 4.0 or Etalab 2.0) that allow mapping from them. Credit the author when you use one.": "個人や公的機関が共有した写真で、写真からの地図作成を認めるオープンライセンス（主に CC BY-SA 4.0 または Etalab 2.0）で公開されています。使用する際は撮影者を表示してください。",
     "Street-level photos from Panoramax, the free and open street photo commons. Open Street photos on the map to see where photos were taken, then click a point to see the photos taken near it. The photos are under open licences that allow mapping from them. No key is needed. Photos come through this MobSimLab and are not stored or saved with the project.": "自由でオープンなストリート写真の共有資源 Panoramax の路上写真。地図で「ストリート写真」を開くと撮影場所が表示され、地点をクリックするとその近くで撮影された写真を見られます。写真は写真からの地図作成を認めるオープンライセンスで公開されています。キーは不要です。写真はこの MobSimLab を経由し、保存もプロジェクトへの記録もされません。"
-  },
-  "org.mobsimlab.people-mover": {
-    "Cable-hauled automated people movers on an elevated guideway, drawn with the straight spans kit: shuttles with two trains, and pinched loops with detachable trains that stop in every station (ADR-0037 §7). Self-propelled people movers need the railway editor and come later.": "高架ガイドウェイ上のケーブル牽引式自動旅客輸送システム。直線スパンキットで描きます：2編成のシャトルと、着脱式車両が各駅に停まるピンチドループ（ADR-0037 §7）。自走式は鉄道エディターが必要で、後日対応します。",
-    "Cable-hauled shuttles and loops on a guideway: click stations, piers follow.": "ガイドウェイ上のケーブル牽引式シャトルとループ：駅をクリックすると橋脚が自動で付きます。",
-    "People mover": "新交通システム",
-    "People mover shuttle": "新交通システムのシャトル",
-    "People mover system": "新交通システムの方式",
-    "People movers": "新交通システム",
-    "Pinched loop, detachable trains": "ピンチドループ、着脱式車両",
-    "Shuttle, two trains on a fixed rope": "シャトル、固定ケーブルに2編成"
   }
 }

@@ -51,7 +51,7 @@ MobSimLab est une application web libre et auto-hébergée pour la planification
 
 - **Projets** : partagez un projet avec d'autres, rendez-le public pour toutes les personnes connectées à l'instance, ou enregistrez-le en fichier `.mslab`. [Fichiers de projet](docs/user/project-files.md)
 - **Visionneuse statique** : un site web sans serveur qui affiche les projets enregistrés en lecture seule, prêt pour Cloudflare Pages. [Guide](docs/user/static-viewer.md)
-- **Plugins** : les plugins fournis ajoutent téléphériques, ferries, people movers, bus à la demande, vélos cargo, énergie et émissions, import et export GTFS et la carte du bruit ; les administrateurs peuvent en installer d'autres, qui s'exécutent dans un bac à sable. [Plugins fournis](plugins/README.md), [écrire des plugins](docs/plugins/README.md)
+- **Plugins** : les plugins fournis ajoutent téléphériques, ferries, bus à la demande, vélos cargo, énergie et émissions, import et export GTFS et la carte du bruit ; les administrateurs peuvent en installer d'autres, qui s'exécutent dans un bac à sable. [Plugins fournis](plugins/README.md), [écrire des plugins](docs/plugins/README.md)
 - **Agents IA** : connectez Claude ou une autre application MCP pour construire des scénarios et les vérifier selon la règle des 15 minutes à pied. [Guide](docs/user/ai-agents.md)
 - **32 langues** dans l'application.
 

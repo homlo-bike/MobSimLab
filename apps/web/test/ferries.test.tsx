@@ -185,7 +185,7 @@ describe("appraisal lines without costs", () => {
   const line = (id: string, spent: number, riders: number): AppraisalLine => ({
     id,
     name: id,
-    mode: "people_mover",
+    mode: "ferry",
     color: "#000",
     shown: true,
     spending: { civil: [spent, spent, spent], systems: zero, vehicles: zero, operating: zero },

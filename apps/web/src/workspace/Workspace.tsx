@@ -74,7 +74,6 @@ import type { WaterDoc } from "../kits/WaterRouteEditor";
 import type { DemandZone } from "../kits/ZoneEditor";
 import { MapView } from "../map/MapView";
 import {
-  findMode,
   localizePlugins,
   PLUGINS,
   pluginTabs,
@@ -536,7 +535,7 @@ export function Workspace({
   }, [api]);
   const streetLines = drawings.doc<StreetLinesDoc>("street-lines");
   const railway = drawings.doc<Network>("railway");
-  // Cable car, people mover and ferry lines of the plugin tools, per tool: the drawing, the line the journey
+  // Cable car and ferry lines of the plugin tools, per tool: the drawing, the line the journey
   // planner rides and the shape the noise map needs.
   // Lines drawn with the tools of a plugin that is now off stay in the project but are not shown or counted
   // until the plugin is on again. A tool's further lines are kept under `<tool id>-2`, `<tool id>-3`…
@@ -1009,7 +1008,7 @@ export function Workspace({
             ? "rail"
             : null);
   const chosenPlugin = PLUGIN_TOOLS.find((x) => x.id === chosen) ?? null;
-  // Line tools (ferry, cable car, people mover) have a line list: the keys of the tool's lines, and the one open
+  // Line tools (ferry, cable car) have a line list: the keys of the tool's lines, and the one open
   // (the first by default, or a new one not saved yet).
   const lineTool = chosenPlugin && chosenPlugin.kit !== "service-zone" ? chosenPlugin : null;
   const toolKeys = lineTool ? toolLineKeys(pluginSaved, lineTool.id) : [];
@@ -1413,29 +1412,24 @@ export function Workspace({
                       ] as const
                     ).filter(([kind]) => (kind === "street" ? showStreet : showRail)),
                     // Tools contributed by plugins (ADR-0036 §6): cable car and ferry are bundled.
-                    ...PLUGIN_TOOLS.map((x) => {
-                      // A guideway tool (people mover) gets the train icon, a ropeway the cable car.
-                      const guided = x.modes.some((m) => findMode(m)?.mode.family === "guided");
-                      return [
-                        x.id,
-                        x.kit === "water-route"
-                          ? FerryIcon
-                          : x.kit === "service-zone"
-                            ? BusIcon
-                            : guided
-                              ? TrainIcon
+                    ...PLUGIN_TOOLS.map(
+                      (x) =>
+                        [
+                          x.id,
+                          x.kit === "water-route"
+                            ? FerryIcon
+                            : x.kit === "service-zone"
+                              ? BusIcon
                               : CableIcon,
-                        x.label,
-                        x.hint ?? "",
-                        x.kit === "water-route"
-                          ? "bg-cyan-100 text-cyan-900"
-                          : x.kit === "service-zone"
-                            ? "bg-purple-100 text-purple-900"
-                            : guided
-                              ? "bg-teal-100 text-teal-900"
+                          x.label,
+                          x.hint ?? "",
+                          x.kit === "water-route"
+                            ? "bg-cyan-100 text-cyan-900"
+                            : x.kit === "service-zone"
+                              ? "bg-purple-100 text-purple-900"
                               : "bg-violet-100 text-violet-900",
-                      ] as const;
-                    }),
+                        ] as const,
+                    ),
                   ].map(([kind, Icon, title, hint, colour]) => (
                     <button
                       key={kind}

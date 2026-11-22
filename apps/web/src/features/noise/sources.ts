@@ -209,8 +209,8 @@ function ferrySources(id: string, name: string, x: WaterNoiseShape): NoisePointS
 }
 
 /**
- * Purpose: the cable car and ferry lines saved with the project as noise point sources. People movers and
- * modes without sound powers are left out.
+ * Purpose: the cable car and ferry lines saved with the project as noise point sources. Modes without sound
+ * powers are left out.
  * Inputs: the saved lines by tool id.
  */
 export function pluginSources(tools: Record<string, SavedPluginLine>): NoisePointSource[] {
