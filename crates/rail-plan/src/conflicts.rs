@@ -3,10 +3,10 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
-use rail_model::TdsId;
+use rail_model::{Dir, TdsId};
 use serde::Serialize;
 
-use crate::blocking::Blocking;
+use crate::blocking::{starts_between, Blocking};
 
 /// Two trains that block the same section at overlapping times (or with less
 /// than the minimum buffer time between them).
@@ -26,23 +26,31 @@ pub struct Conflict {
     pub second_interval: (f64, f64),
 }
 
+/// One train's merged blocking of one section: (train, start, end, following on sight, see
+/// [`Blocking::follow`]).
+type Interval = (usize, f64, f64, Option<(Dir, f64)>);
+
 /// Purpose: merge each train's blocking intervals per section (a train may
 /// block a section through two consecutive routes, or a route and an overlap).
-/// Output: per section, (train, start, end), sorted by start then train.
-fn by_section(blocks: &[Blocking]) -> BTreeMap<TdsId, Vec<(usize, f64, f64)>> {
-    let mut m: BTreeMap<TdsId, Vec<(usize, f64, f64)>> = BTreeMap::new();
+/// Output: per section, (train, start, end, following on sight), sorted by start then train.
+fn by_section(blocks: &[Blocking]) -> BTreeMap<TdsId, Vec<Interval>> {
+    let mut m: BTreeMap<TdsId, Vec<Interval>> = BTreeMap::new();
     for b in blocks {
         m.entry(b.tds)
             .or_default()
-            .push((b.train, b.start_s, b.end_s));
+            .push((b.train, b.start_s, b.end_s, b.follow));
     }
     for v in m.values_mut() {
         v.sort_by(|a, b| (a.0, a.1).partial_cmp(&(b.0, b.1)).unwrap());
-        let mut merged: Vec<(usize, f64, f64)> = Vec::with_capacity(v.len());
-        for &(t, s, e) in v.iter() {
+        let mut merged: Vec<Interval> = Vec::with_capacity(v.len());
+        for &(t, s, e, f) in v.iter() {
             match merged.last_mut() {
-                Some(l) if l.0 == t && s <= l.2 + 1e-9 => l.2 = l.2.max(e),
-                _ => merged.push((t, s, e)),
+                // Blocked through two routes: kept whole.
+                Some(l) if l.0 == t && s <= l.2 + 1e-9 => {
+                    l.2 = l.2.max(e);
+                    l.3 = None;
+                }
+                _ => merged.push((t, s, e, f)),
             }
         }
         merged.sort_by(|a, b| (a.1, a.0).partial_cmp(&(b.1, b.0)).unwrap());
@@ -66,13 +74,18 @@ pub fn find_conflicts(blocks: &[Blocking], min_buffer_s: f64) -> Vec<Conflict> {
                 if a.0 == b.0 {
                     continue;
                 }
+                // A tram following another on sight.
+                let b_start = starts_between((a.1, a.3), (b.1, b.3)).1;
+                if b_start >= a.2 + min_buffer_s {
+                    continue;
+                }
                 out.push(Conflict {
                     tds,
                     first: a.0,
                     second: b.0,
-                    shortfall_s: a.2 + min_buffer_s - b.1,
+                    shortfall_s: a.2 + min_buffer_s - b_start,
                     first_interval: (a.1, a.2),
-                    second_interval: (b.1, b.2),
+                    second_interval: (b_start, b.2),
                 });
             }
         }
@@ -80,8 +93,9 @@ pub fn find_conflicts(blocks: &[Blocking], min_buffer_s: f64) -> Vec<Conflict> {
     out
 }
 
-/// One train's blocking interval per section (its blocking time stairway).
-type Stairway = BTreeMap<TdsId, (f64, f64)>;
+/// One train's blocking interval per section (its blocking time stairway), with following on
+/// sight ([`Blocking::follow`]).
+type Stairway = BTreeMap<TdsId, (f64, f64, Option<(Dir, f64)>)>;
 
 /// Result of the UIC 406 compression method over a time window.
 #[derive(Clone, Debug, PartialEq, Serialize)]
@@ -115,13 +129,20 @@ pub fn compress(
     min_buffer_s: f64,
 ) -> Compression {
     // Per train: its merged blocking per section in the studied set.
-    let mut per_train: BTreeMap<usize, BTreeMap<TdsId, (f64, f64)>> = BTreeMap::new();
+    let mut per_train: BTreeMap<usize, Stairway> = BTreeMap::new();
     for (tds, v) in by_section(blocks) {
         if sections.is_some_and(|s| !s.contains(&tds)) {
             continue;
         }
-        for (t, s, e) in v {
-            let e0 = per_train.entry(t).or_default().entry(tds).or_insert((s, e));
+        for (t, s, e, f) in v {
+            let e0 = per_train
+                .entry(t)
+                .or_default()
+                .entry(tds)
+                .or_insert((s, e, f));
+            if s < e0.0 || e > e0.1 {
+                e0.2 = None;
+            }
             e0.0 = e0.0.min(s);
             e0.1 = e0.1.max(e);
         }
@@ -142,8 +163,10 @@ pub fn compress(
     for (t, first, m) in &trains {
         let mut d = window_start_s - first;
         for (dp, pm) in &placed {
-            for (tds, (s, _)) in m.iter() {
-                if let Some((_, pe)) = pm.get(tds) {
+            for (tds, &(s, _, f)) in m.iter() {
+                if let Some(&(_, pe, pf)) = pm.get(tds) {
+                    // A tram following another on sight.
+                    let s = starts_between((0.0, pf), (s, f)).1;
                     d = d.max(pe + dp + min_buffer_s - s);
                 }
             }

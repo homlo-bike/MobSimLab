@@ -318,3 +318,60 @@ fn street_traffic_delay_lengthens_the_running_time_there() {
     // Before the street the trains are on the same time.
     assert!((b.profile.time_at(1500.0) - a.profile.time_at(1500.0)).abs() < 1e-6);
 }
+
+/// Purpose: a network driven on sight, as the topology import gives trams: no overlaps.
+fn on_sight(mut spec: rail_model::InfraSpec) -> rail_model::InfraSpec {
+    spec.default_overlap_m = 0.0;
+    for t in &mut spec.tracks {
+        t.protection = rail_model::TrainProtection::LineOfSight;
+    }
+    spec
+}
+
+#[test]
+fn trams_on_sight_follow_closer_than_a_block_allows() {
+    let fixed = Model::compile(&examples::plain_line(5, 1000.0, 50.0)).unwrap();
+    let spec = on_sight(examples::plain_line(5, 1000.0, 50.0));
+    let sight = Model::compile(&spec).unwrap();
+    let p = BlockingParams::default();
+    let buffer = 20.0;
+    let conflicts = |m: &Model, h: f64| {
+        let runs = vec![line_run(m, "a", 0.0), line_run(m, "b", h)];
+        let ts = timetable_timing(m, &runs, &p).unwrap();
+        let blocks: Vec<_> = ts.iter().flat_map(|t| t.blocking.clone()).collect();
+        find_conflicts(&blocks, buffer)
+    };
+    // A 1 km block at 50 km/h keeps trains about two minutes apart; on sight the second tram
+    // only keeps its braking distance and the margin behind the first.
+    assert!(!conflicts(&fixed, 90.0).is_empty());
+    assert!(conflicts(&sight, 90.0).is_empty());
+    assert!(!conflicts(&sight, 10.0).is_empty());
+    // Each short section is needed by a follower only as it comes near it.
+    let t = run_timing(&sight, &line_run(&sight, "a", 0.0), 0, &p).unwrap();
+    let last = t.blocking.iter().rfind(|b| !b.overlap).unwrap();
+    let (_, follow) = last.follow.expect("on sight");
+    assert!(follow > last.start_s + 60.0, "{follow} vs {}", last.start_s);
+}
+
+#[test]
+fn a_train_ending_its_run_on_sight_is_not_followed_there() {
+    // A train that ends its run in a section neither follows nor is followed there: it turns back.
+    let spec = on_sight(examples::plain_line(2, 600.0, 50.0));
+    let m = Model::compile(&spec).unwrap();
+    let r = TrainRun {
+        name: "a".into(),
+        train: emu(),
+        routes: routes(&m, &["S0>S1", "S1>end"]),
+        start_m: 0.0,
+        depart_s: 0.0,
+        stops: vec![],
+        stop_at_end: true,
+        end_m: None,
+        occupy_until_s: Some(600.0),
+        supplement_share: 0.0,
+    };
+    let t = run_timing(&m, &r, 0, &BlockingParams::default()).unwrap();
+    let main: Vec<_> = t.blocking.iter().filter(|b| !b.overlap).collect();
+    assert!(main.first().unwrap().follow.is_some());
+    assert!(main.last().unwrap().follow.is_none());
+}

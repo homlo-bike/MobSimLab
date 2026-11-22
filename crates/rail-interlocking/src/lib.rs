@@ -25,6 +25,10 @@
 //!   train may lock the route a train ahead holds (a following move on the
 //!   same route); its movement authority then ends at the rear of the train
 //!   ahead, which the kernel enforces.
+//! - **Driving on sight** (trams): on the short sections of running track
+//!   driven on sight ([`rail_model::Tds::on_sight`]) a train may likewise
+//!   follow any train running the same way through them; the kernel keeps it
+//!   behind the train ahead.
 //! - **Level crossings** close when a train approaching on a locked route
 //!   triggers them, are proved closed after the closing time (road lights and
 //!   barriers), and open when the last train has cleared the rail zone. A
@@ -480,6 +484,19 @@ impl<'m> Interlocking<'m> {
             .all(|&p| self.m.is_storage(p))
     }
 
+    /// Purpose: whether two routes run the same way through a section.
+    fn same_way(&self, a: RouteId, b: RouteId, s: TdsId) -> bool {
+        let dir = |r: RouteId| {
+            self.m.routes[r as usize]
+                .steps
+                .iter()
+                .find(|st| self.m.pieces[st.piece as usize].tds == s)
+                .map(|st| st.dir)
+        };
+        let (da, db) = (dir(a), dir(b));
+        da.is_some() && da == db
+    }
+
     fn moving_block(&self, s: TdsId) -> bool {
         self.m.tds[s as usize].pieces.iter().all(|&p| {
             self.m.tracks[self.m.pieces[p as usize].track]
@@ -554,8 +571,12 @@ impl<'m> Interlocking<'m> {
                 .filter(|&h| !self.own(h, train))
                 .collect();
             let follow_ok = !others.is_empty()
-                && self.moving_block(s)
-                && others.iter().all(|&h| self.active[h].route == route);
+                && ((self.moving_block(s)
+                    && others.iter().all(|&h| self.active[h].route == route))
+                    || (self.m.tds[s as usize].on_sight
+                        && others
+                            .iter()
+                            .all(|&h| self.same_way(self.active[h].route, route, s))));
             if !others.is_empty() && !follow_ok {
                 return Err(Refusal::Locked(s));
             }
@@ -965,7 +986,11 @@ impl<'m> Interlocking<'m> {
             if trains.len() > 1 && !self.storage(i as TdsId) {
                 let routes: BTreeSet<RouteId> =
                     st.route.iter().map(|&h| self.active[h].route).collect();
-                if routes.len() > 1 || !self.moving_block(i as TdsId) {
+                let first = *routes.iter().next().unwrap();
+                let following = (routes.len() == 1 && self.moving_block(i as TdsId))
+                    || (self.m.tds[i].on_sight
+                        && routes.iter().all(|&r| self.same_way(first, r, i as TdsId)));
+                if !following {
                     return Err(format!(
                         "invariant 1: {} locked by trains {trains:?}",
                         self.m.tds[i].id
@@ -973,7 +998,10 @@ impl<'m> Interlocking<'m> {
                 }
             }
             if let Some(&s) = st.standing.iter().next() {
+                // A tram that followed another on sight may hold its route where the one ahead
+                // has come to stand; the kernel keeps it behind.
                 if !self.storage(i as TdsId)
+                    && !self.m.tds[i].on_sight
                     && (st.standing.len() > 1
                         || st.route.iter().any(|&h| self.active[h].train != s))
                 {
@@ -1000,8 +1028,8 @@ impl<'m> Interlocking<'m> {
                 }
             }
         }
-        // 4. Conflicting routes of different trains never hold the same section or
-        //    need a switch in different positions at the same time.
+        // 4. Conflicting routes of different trains never hold the same section (but trams
+        //    following each other on sight) or need a switch in different positions at the same time.
         let held: Vec<(Handle, BTreeSet<TdsId>, BTreeMap<SwitchId, SwitchPosition>)> = self
             .active
             .iter()
@@ -1042,7 +1070,10 @@ impl<'m> Interlocking<'m> {
                             && !ra.tds.contains(t)
                             && rb.overlap_tds.contains(t)
                             && !rb.tds.contains(t);
-                        !both_overlap
+                        // Trams following each other on sight.
+                        let following = self.m.tds[**t as usize].on_sight
+                            && self.same_way(a.route, b.route, **t);
+                        !both_overlap && !following
                     })
                     .collect();
                 if !shared.is_empty() {

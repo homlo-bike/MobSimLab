@@ -37,7 +37,8 @@ use rail_model::{Dir, Model, PieceId, PlatformId, RouteId, TdsId};
 use serde::Serialize;
 
 use crate::blocking::{
-    route_steps, run_profile, timing_with_profile, Blocking, BlockingParams, RunTiming, TrainRun,
+    route_steps, run_profile, starts_between, timing_with_profile, Blocking, BlockingParams,
+    RunTiming, TrainRun,
 };
 use crate::line::{resolve, LineSpec};
 use crate::path::{
@@ -298,13 +299,18 @@ type Blocks = Vec<(TdsId, f64, f64)>;
 /// A conflict that stops a placement: (other run, section).
 type Blocker = Option<(usize, TdsId)>;
 
+/// A placed run's blocking of one section: (run, start, end, following on sight, see
+/// [`Blocking::follow`]).
+type Placed = (usize, f64, f64, Option<(Dir, f64)>);
+
 struct Planner<'a> {
     m: &'a Model,
     lines: &'a [LineSpec],
     p: &'a PlanParams,
     cands: Vec<[Vec<Vec<PlatformId>>; 2]>,
     runs: Vec<PlannedRun>,
-    index: BTreeMap<TdsId, Vec<(usize, f64, f64)>>,
+    /// Placed blocking per section.
+    index: BTreeMap<TdsId, Vec<Placed>>,
     issues: Vec<Issue>,
     memory: HashMap<(usize, u8, usize), PlatformId>,
     /// The terminal platform each line direction arrives in: the one its trains leave from on the
@@ -1486,12 +1492,14 @@ impl<'a> Planner<'a> {
             let Some(v) = self.index.get(&b.tds) else {
                 continue;
             };
-            for &(r, s, e) in v {
+            for &(r, s, e, follow) in v {
                 if Some(r) == skip || self.vehicle_of(r) == vehicle {
                     continue;
                 }
-                if b.start_s < e + buf - 1e-6 && s < b.end_s + buf - 1e-6 {
-                    let l = e + buf - b.start_s;
+                // Two trams running the same way on sight need the section only as each comes near it.
+                let (bs, s) = starts_between((b.start_s, b.follow), (s, follow));
+                if bs < e + buf - 1e-6 && s < b.end_s + buf - 1e-6 {
+                    let l = e + buf - bs;
                     let er = b.end_s + buf - s;
                     if l > later {
                         later = l;
@@ -1646,6 +1654,7 @@ impl<'a> Planner<'a> {
                     start_s: from_s,
                     end_s: to_s,
                     overlap: false,
+                    follow: None,
                 });
             }
         }
@@ -1741,7 +1750,7 @@ impl<'a> Planner<'a> {
             self.index
                 .entry(b.tds)
                 .or_default()
-                .push((run, b.start_s, b.end_s));
+                .push((run, b.start_s, b.end_s, b.follow));
         }
     }
 

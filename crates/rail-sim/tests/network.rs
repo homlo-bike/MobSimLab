@@ -128,6 +128,56 @@ fn moving_block_lets_a_train_follow_a_late_one_closely() {
     assert!(sim.interlocking().following_moves > 0);
 }
 
+/// Purpose: the example metro line driven on sight, as the topology import gives trams (no overlaps).
+fn on_sight() -> InfraSpec {
+    let mut spec = examples::metro_line();
+    spec.default_overlap_m = 0.0;
+    for t in &mut spec.tracks {
+        t.protection = TrainProtection::LineOfSight;
+    }
+    spec
+}
+
+#[test]
+fn trains_on_sight_run_a_planned_day_on_time() {
+    let (m, p) = day(&on_sight());
+    let mut sim = NetworkSim::new(
+        &m,
+        &p,
+        NetParams {
+            check_invariants: true,
+            ..NetParams::default()
+        },
+    )
+    .unwrap();
+    sim.run_until(30.0 * 3600.0).unwrap();
+    assert!(sim.finished());
+    let worst = delays(&sim).into_iter().fold(0.0, f64::max);
+    assert!(worst < 30.0, "worst delay {worst} s");
+}
+
+#[test]
+fn a_tram_on_sight_follows_a_late_one_closely() {
+    let (m, p) = day(&on_sight());
+    let mut sim = NetworkSim::new(
+        &m,
+        &p,
+        NetParams {
+            check_invariants: true,
+            ..NetParams::default()
+        },
+    )
+    .unwrap();
+    let late = p
+        .runs
+        .iter()
+        .position(|r| r.name.starts_with("M1-0-") && r.depart_s() >= 7.0 * 3600.0)
+        .unwrap();
+    assert!(sim.delay_departure(late, 240.0));
+    sim.run_until(9.0 * 3600.0).unwrap();
+    assert!(sim.interlocking().following_moves > 0);
+}
+
 proptest! {
     #![proptest_config(ProptestConfig::with_cases(6))]
     /// Random departure delays never break a safety invariant or deadlock the line.
