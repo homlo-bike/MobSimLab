@@ -1,5 +1,6 @@
 import type { MessageKey } from "../../i18n/messages";
 import type { Level, Power, RailMode } from "./types";
+import { withUnit } from "../../i18n/units";
 
 /** Rail modes in display order, with their message keys. Design values come from the engine (assumption library). */
 export const RAIL_MODES: { id: RailMode; label: MessageKey }[] = [
@@ -74,14 +75,15 @@ export function shiftLevel(l: Level, d: number): Level {
 /** Purpose: format metres like the panel ("85 m", "1.25 km"). */
 export function fmtM(m: number): string {
   if (!Number.isFinite(m)) return "—";
-  if (Math.abs(m) >= 10000) return `${(m / 1000).toFixed(1)} km`;
-  if (Math.abs(m) >= 1000) return `${(m / 1000).toFixed(2)} km`;
-  return `${Math.round(m)} m`;
+  if (Math.abs(m) >= 10000) return withUnit((m / 1000).toFixed(1), "km");
+  if (Math.abs(m) >= 1000) return withUnit((m / 1000).toFixed(2), "km");
+  return withUnit(Math.round(m), "m");
 }
 
 /** Purpose: format seconds as "m:ss min" or "h:mm h". */
 export function fmtTime(s: number): string {
   const t = Math.round(s);
-  if (t >= 3600) return `${Math.floor(t / 3600)}:${String(Math.floor((t % 3600) / 60)).padStart(2, "0")} h`;
-  return `${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")} min`;
+  if (t >= 3600)
+    return withUnit(`${Math.floor(t / 3600)}:${String(Math.floor((t % 3600) / 60)).padStart(2, "0")}`, "h");
+  return withUnit(`${Math.floor(t / 60)}:${String(t % 60).padStart(2, "0")}`, "min");
 }

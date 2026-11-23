@@ -41,6 +41,7 @@ import type {
   WalkTileFetcher,
 } from "./types";
 import { engineErrorText } from "../../i18n/engine";
+import { withUnit } from "../../i18n/units";
 
 interface Props {
   map: MapLibreMap | null;
@@ -346,7 +347,12 @@ export function WalkAnalysis({
       const result = e.coverage({
         stops: points,
         groups: [
-          { label: `${limit} min`, stops: points.map((_, i) => i), metric: "time", limit: limit * 60 },
+          {
+            label: withUnit(limit, "min"),
+            stops: points.map((_, i) => i),
+            metric: "time",
+            limit: limit * 60,
+          },
         ],
         demand,
         study_area: area,
