@@ -464,3 +464,24 @@ def test_time_lost_is_added_up_by_red_light_street_and_junction_and_listed_most_
     ]
     assert out[0]["name"] == "Baghdad Street" and out[1]["name"] == ""
     assert out[0]["lonlat"] == [36.3, 33.5]
+
+
+def test_trips_run_counts_only_the_trips_planned_in_the_period() -> None:
+    from mobsim_worker.jobs.road.job import line_results  # noqa: PLC0415
+    from mobsim_worker.jobs.road.service import LinePlan, PlannedStop, TransitVehicle  # noqa: PLC0415
+    from mobsim_worker.jobs.road.sim import SimOutcome, Watch  # noqa: PLC0415
+
+    trips = [6.5 * H, 7 * H, 7.5 * H, 8 * H]  # the first one runs in the warm-up
+    stops = [PlannedStop(t, 0, "A", "stop", d, True, "l", 0.0) for t, d in enumerate(trips)]
+    stops.append(PlannedStop(3, 0, "A", "last", trips[-1] + 1800, False, "l", 0.0))
+    v = TransitVehicle("v0", 0, 0, trips[0], trips, stops, [], "l", 0.0, None, None, None, None)
+    plan = LinePlan(0, "B7", "bus", "#000", "diesel", 1800.0, 9000.0, [v])
+    out = [
+        {"id": "v0", "tripId": f"0:{t}:0", "started": f"{d - 30:.1f}", "ended": f"{d + 60:.1f}"}
+        for t, d in enumerate(trips)
+    ]
+    out.append({"id": "v0", "tripId": "0:3:end", "started": f"{trips[-1] + 1900:.1f}", "ended": "0"})
+    outcome = SimOutcome({"v0": Watch(v)}, [], 0, 0, 0, 0, 0.0, 1.0, False, 2.0, 0.0, 0)
+    r = line_results(plan, {"dwell_s": 20}, out, outcome, 7 * H, 9 * H)
+    assert r["trips"] == 3
+    assert r["trips_run"] == 3  # four trips came back, one of them before 07:00

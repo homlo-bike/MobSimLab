@@ -136,11 +136,14 @@ def line_results(
             gaps += 1
             if b - a < 0.5 * abs(pb - pa):
                 bunched += 1
-    cycles = [backs[k] - starts[k] for k in starts if k in backs and backs[k] > starts[k]]
+    done = [k for k in starts if k in backs and backs[k] > starts[k]]
+    cycles = [backs[k] - starts[k] for k in done]
     dwell = float(line["dwell_s"])
     run_cycle = sum(cycles) / len(cycles) if cycles else 0.0
     trips = sum(1 for v in plan.vehicles for d in v.trips if from_s <= d < to_s)
-    trips_run = len(cycles)
+    # Trips run in the period, as ``trips`` counts the planned ones (not those of the warm-up or after it).
+    deps_of = {v.id: v.trips for v in plan.vehicles}
+    trips_run = sum(1 for vid, t in done if t < len(deps_of[vid]) and from_s <= deps_of[vid][t] < to_s)
     ws = [outcome.watches[v.id] for v in plan.vehicles]
     lost_traffic = sum(w.lost_traffic_s for w in ws)
     lost_signals = sum(w.lost_signals_s for w in ws)
