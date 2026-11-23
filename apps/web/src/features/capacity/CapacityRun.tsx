@@ -43,7 +43,12 @@ import type {
   LineInfo,
   NetworkSource,
 } from "./types";
-import { engineErrorText, type EngineNote } from "../../i18n/engine";
+import { engineErrorText, type EngineNote, useEngineText } from "../../i18n/engine";
+import { FindingsList } from "../advice/Findings";
+import { capacityFindings } from "./advice";
+import { crowdLinks, drawCrowding, removeCrowding, stopPlaces } from "./crowdMap";
+import { topologyLocator } from "./place";
+import type { Map as MapLibreMap } from "maplibre-gl";
 
 export { explain, practicalMaximum, VERDICTS, verdictText } from "./capacityText";
 
@@ -99,6 +104,8 @@ interface Props {
   pollMs?: number;
   /** The project's saved results: the last test run in this browser shows again on opening. */
   results?: ResultsApi | null;
+  /** The map, for the crowding by link and the findings' places; none in tests. */
+  map?: MapLibreMap | null;
 }
 
 /**
@@ -126,8 +133,14 @@ export function CapacityRun({
   canRun = false,
   pollMs = 2000,
   results = null,
+  map = null,
 }: Props) {
   const { t, language } = useI18n();
+  const tx = useEngineText();
+  // The topology of the network last run in this browser, to place the advice's signals on the map.
+  const [runTopology, setRunTopology] = useState<string | null>(null);
+  const locate = useMemo(() => topologyLocator(runTopology), [runTopology]);
+  const [crowdOnMap, setCrowdOnMap] = useState(true);
   const drawn = drawnProblem(railway);
   const streets = useMemo(
     () => streetLines.map((line, index) => ({ line, index })).filter(({ line }) => circuit(line) !== null),
@@ -437,6 +450,7 @@ export function CapacityRun({
           }
           src = { kind: "files", ...built };
         }
+        setRunTopology(src.kind === "files" ? src.topology : null);
         phase("load");
         setStatus(t("capacity.loading"));
         const e = await loadEngine(src);
@@ -628,6 +642,22 @@ export function CapacityRun({
   };
 
   // What the panel shows: the open saved run, or the run in this browser.
+  const places = useMemo(
+    () =>
+      stopPlaces(
+        railway,
+        Object.keys(loads).filter((k) => k.startsWith("rail:")),
+        streets,
+      ),
+    [railway, loads, streets],
+  );
+  const crowd = useMemo(() => crowdLinks(loads, places), [loads, places]);
+  useEffect(() => {
+    if (!map) return;
+    if (crowdOnMap && crowd.length > 0) drawCrowding(map, crowd);
+    else removeCrowding(map);
+  }, [map, crowd, crowdOnMap]);
+  useEffect(() => () => void (map && removeCrowding(map)), [map]);
   const shownRun: Run | null = viewing ? (viewing.result?.run ?? null) : run;
   const shownLines: LineState[] = viewing ? (viewing.result?.lines ?? []) : lines;
   const shownNotes: EngineNote[] = viewing ? (viewing.result?.notes ?? []) : notes;
@@ -770,6 +800,29 @@ export function CapacityRun({
         </p>
       )}
 
+      {!shownStatus && (shownRun || streetResults.length > 0) && (
+        <>
+          <FindingsList
+            findings={capacityFindings(
+              shownLines,
+              shownRun?.params.occupancy_limit_share ?? 0.85,
+              loads,
+              streetResults,
+              t,
+              tx,
+              viewing ? null : locate,
+              places,
+            )}
+            onShow={map ? (at) => map.flyTo({ center: at, zoom: Math.max(map.getZoom(), 15.5) }) : undefined}
+          />
+          {map && crowd.length > 0 && (
+            <label className="flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={crowdOnMap} onChange={(e) => setCrowdOnMap(e.target.checked)} />
+              {t("advice.crowdMap")}
+            </label>
+          )}
+        </>
+      )}
       {shownRun && <RunResults run={shownRun} lines={shownLines} notes={shownNotes} loads={loads} />}
 
       <StreetResults results={streetResults} loads={loads} advanced={settings} prefs={prefs} />

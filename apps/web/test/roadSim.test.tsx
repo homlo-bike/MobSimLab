@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { DepotEngine, SavedDepot } from "../src/features/depots/types";
 import { projectRoadRuns, type RoadRunDetail, type RoadRunsApi } from "../src/features/road-sim/api";
@@ -515,6 +515,13 @@ describe("RoadSimulation", () => {
     expect(screen.getByText("Collisions: 6")).toBeTruthy();
     expect(screen.getByText("82 %")).toBeTruthy();
     expect(screen.getByText("Bus 1, vehicle 3: stuck for 5 minutes at 07:30")).toBeTruthy();
+    // What to improve: the stuck vehicle first (a problem), then the line that keeps badly to time.
+    const advice = within(screen.getByRole("region", { name: "What to improve" }));
+    const items = advice.getAllByRole("listitem").map((li) => li.textContent ?? "");
+    expect(items[0]).toContain("Bus 1: vehicles stuck for 5 minutes or more: 1");
+    expect(items[1]).toContain("Bus 1: only 82 % of departures on time (advice below 85 %)");
+    expect(items[1]).toContain("most of it at the traffic lights listed here");
+    expect(items[1]).toContain("The circuit took 32 min against 30 min planned");
     expect(await screen.findByRole("button", { name: "Play" })).toBeTruthy();
     expect(api.replay).toHaveBeenCalledWith("r1");
     const slider = screen.getByRole("slider", { name: "Time" }) as HTMLInputElement;

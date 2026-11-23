@@ -41,6 +41,20 @@ export type SignallingField =
   | "ato_brake_share"
   | "terminal_separation_s";
 
+/** The bottleneck section of a line (crates/rail-sim `BottleneckSection`). */
+export interface BottleneckSection {
+  kind: "plain" | "switches" | "platform" | "on_sight";
+  length_m: number;
+  /** Track (topology section id) of its longest piece, and that piece's chainage range, m. */
+  track: string;
+  from_m: number;
+  to_m: number;
+  speed_kmh: number;
+  /** Shortest block at that speed: the line's train's braking distance plus the sighting distance, m. */
+  block_m: number;
+  protection: "line_of_sight" | "fixed_block" | "cbtc" | "etcs_l2";
+}
+
 /** One frequency of a line, planned, run and tested. */
 export interface Point {
   headway_s: number;
@@ -53,6 +67,8 @@ export interface Point {
   terminal_share: number;
   bottleneck: string;
   bottleneck_share: number;
+  /** What the bottleneck section is, for the advice (absent in runs saved before it was kept). */
+  bottleneck_section?: BottleneckSection;
   theoretical_per_hour: number;
   limit_per_hour: number;
   punctuality: number;

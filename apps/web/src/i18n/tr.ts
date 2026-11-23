@@ -1,4 +1,5 @@
 import { roadTr } from "./road/tr";
+import { adviceTr } from "./advice/tr";
 import { calendarTr } from "./calendar/tr";
 import { editorsTr } from "./editors/tr";
 import { cargoBikeTr } from "./cargo-bike/tr";
@@ -548,6 +549,7 @@ export const tr: Messages = {
   ...populationTr,
   ...resultsTr,
   ...roadTr,
+  ...adviceTr,
   ...calendarTr,
   ...pluginsTr,
   ...streetPhotosTr,

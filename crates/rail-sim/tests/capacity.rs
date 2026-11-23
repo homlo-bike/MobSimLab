@@ -4,7 +4,8 @@ use rail_model::{examples, Model};
 use rail_plan::examples::metro_m1;
 use rail_plan::{plan, Band, PlanParams};
 use rail_sim::capacity::{
-    capacity_run, practical_maximum, sweep_headways, sweep_point, CapacityParams, Verdict,
+    bottleneck_section, capacity_run, practical_maximum, sweep_headways, sweep_point,
+    CapacityParams, SectionKind, Verdict,
 };
 use rail_sim::network::{NetParams, NetworkSim};
 
@@ -31,6 +32,40 @@ fn the_morning_peak_of_m1_runs_but_is_near_the_limit() {
     assert!(pt.terminal_share > 0.8 && pt.terminal_share < 0.9);
     assert!(pt.theoretical_per_hour > 12.0 && pt.theoretical_per_hour < 16.0);
     assert_eq!(run.verdict, Verdict::NearLimit);
+    // The busiest section is described for the advice: what it is, how long, and the block length.
+    let sec = pt.bottleneck_section.as_ref().expect("bottleneck section");
+    assert!(sec.length_m > 0.0 && sec.to_m > sec.from_m);
+    assert!(sec.speed_kmh > 0.0 && sec.block_m > 0.0);
+}
+
+#[test]
+fn a_bottleneck_section_is_told_apart_as_platform_switch_area_or_plain_line() {
+    let m = model();
+    let line = metro_m1();
+    let kinds: Vec<SectionKind> = m
+        .tds
+        .iter()
+        .filter_map(|t| bottleneck_section(&m, &t.id, &line, 150.0).map(|s| s.kind))
+        .collect();
+    assert_eq!(kinds.len(), m.tds.len());
+    for k in [
+        SectionKind::Platform,
+        SectionKind::Switches,
+        SectionKind::Plain,
+    ] {
+        assert!(kinds.contains(&k), "no {k:?} section in {kinds:?}");
+    }
+    // A block is the train's braking distance at line speed plus the sighting distance.
+    let plain = m
+        .tds
+        .iter()
+        .filter_map(|t| bottleneck_section(&m, &t.id, &line, 150.0))
+        .find(|s| s.kind == SectionKind::Plain)
+        .unwrap();
+    let v = plain.speed_kmh / 3.6;
+    let expect = v * v / (2.0 * line.train.service_decel_mps2) + 150.0;
+    assert!((plain.block_m - expect).abs() < 1e-6);
+    assert!(bottleneck_section(&m, "no such section", &line, 150.0).is_none());
 }
 
 #[test]

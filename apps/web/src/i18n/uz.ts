@@ -1,4 +1,5 @@
 import { roadUz } from "./road/uz";
+import { adviceUz } from "./advice/uz";
 import { calendarUz } from "./calendar/uz";
 import { editorsUz } from "./editors/uz";
 import { cargoBikeUz } from "./cargo-bike/uz";
@@ -554,6 +555,7 @@ export const uz: Messages = {
   ...populationUz,
   ...resultsUz,
   ...roadUz,
+  ...adviceUz,
   ...calendarUz,
   ...pluginsUz,
   ...streetPhotosUz,

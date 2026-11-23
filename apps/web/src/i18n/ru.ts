@@ -1,4 +1,5 @@
 import { roadRu } from "./road/ru";
+import { adviceRu } from "./advice/ru";
 import { calendarRu } from "./calendar/ru";
 import { editorsRu } from "./editors/ru";
 import { cargoBikeRu } from "./cargo-bike/ru";
@@ -552,6 +553,7 @@ export const ru: Messages = {
   ...populationRu,
   ...resultsRu,
   ...roadRu,
+  ...adviceRu,
   ...calendarRu,
   ...pluginsRu,
   ...streetPhotosRu,

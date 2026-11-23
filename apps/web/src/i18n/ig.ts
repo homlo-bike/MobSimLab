@@ -1,4 +1,5 @@
 import { roadIg } from "./road/ig";
+import { adviceIg } from "./advice/ig";
 import { calendarIg } from "./calendar/ig";
 import { editorsIg } from "./editors/ig";
 import { cargoBikeIg } from "./cargo-bike/ig";
@@ -548,6 +549,7 @@ export const ig: Messages = {
   ...populationIg,
   ...resultsIg,
   ...roadIg,
+  ...adviceIg,
   ...calendarIg,
   ...pluginsIg,
   ...streetPhotosIg,

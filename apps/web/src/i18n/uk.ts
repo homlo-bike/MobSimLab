@@ -1,4 +1,5 @@
 import { roadUk } from "./road/uk";
+import { adviceUk } from "./advice/uk";
 import { calendarUk } from "./calendar/uk";
 import { editorsUk } from "./editors/uk";
 import { cargoBikeUk } from "./cargo-bike/uk";
@@ -551,6 +552,7 @@ export const uk: Messages = {
   ...populationUk,
   ...resultsUk,
   ...roadUk,
+  ...adviceUk,
   ...calendarUk,
   ...pluginsUk,
   ...streetPhotosUk,

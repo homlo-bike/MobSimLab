@@ -1,4 +1,5 @@
 import { roadZh } from "./road/zh";
+import { adviceZh } from "./advice/zh";
 import { calendarZh } from "./calendar/zh";
 import { editorsZh } from "./editors/zh";
 import { cargoBikeZh } from "./cargo-bike/zh";
@@ -524,6 +525,7 @@ export const zh: Messages = {
   ...populationZh,
   ...resultsZh,
   ...roadZh,
+  ...adviceZh,
   ...calendarZh,
   ...pluginsZh,
   ...streetPhotosZh,

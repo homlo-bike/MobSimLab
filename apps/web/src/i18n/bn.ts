@@ -1,4 +1,5 @@
 import { roadBn } from "./road/bn";
+import { adviceBn } from "./advice/bn";
 import { calendarBn } from "./calendar/bn";
 import { editorsBn } from "./editors/bn";
 import { cargoBikeBn } from "./cargo-bike/bn";
@@ -542,6 +543,7 @@ export const bn: Messages = {
   ...populationBn,
   ...resultsBn,
   ...roadBn,
+  ...adviceBn,
   ...calendarBn,
   ...pluginsBn,
   ...streetPhotosBn,

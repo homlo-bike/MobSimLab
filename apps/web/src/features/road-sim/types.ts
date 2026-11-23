@@ -128,10 +128,25 @@ export interface RoadEvent {
   lonlat: LonLat | null;
 }
 
+/** A place where street line vehicles stood outside their stops (worker `hotspot_list`), most lost first. */
+export interface RoadHotspot {
+  /** `signal`: waiting at a red light; `street`: standing in traffic; `junction`: standing inside a junction. */
+  kind: "signal" | "street" | "junction";
+  /** The street's name, empty when OSM gives none. */
+  name: string;
+  lonlat: LonLat;
+  /** Seconds lost there by all street line vehicles together. */
+  lost_s: number;
+  /** The lines (their index) that lost time there. */
+  lines: number[];
+}
+
 export interface RoadResult {
   notes: string[];
   lines: RoadLineResult[];
   events: RoadEvent[];
+  /** Where the lines lost the most time (runs from before it was recorded: absent). */
+  hotspots?: RoadHotspot[];
   network: {
     edges: number;
     km: number;

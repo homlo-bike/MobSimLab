@@ -1,4 +1,5 @@
 import { roadVi } from "./road/vi";
+import { adviceVi } from "./advice/vi";
 import { calendarVi } from "./calendar/vi";
 import { editorsVi } from "./editors/vi";
 import { cargoBikeVi } from "./cargo-bike/vi";
@@ -545,6 +546,7 @@ export const vi: Messages = {
   ...populationVi,
   ...resultsVi,
   ...roadVi,
+  ...adviceVi,
   ...calendarVi,
   ...pluginsVi,
   ...streetPhotosVi,

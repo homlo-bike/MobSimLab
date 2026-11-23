@@ -1,4 +1,5 @@
 import { roadPt } from "./road/pt";
+import { advicePt } from "./advice/pt";
 import { calendarPt } from "./calendar/pt";
 import { editorsPt } from "./editors/pt";
 import { cargoBikePt } from "./cargo-bike/pt";
@@ -552,6 +553,7 @@ export const pt: Messages = {
   ...populationPt,
   ...resultsPt,
   ...roadPt,
+  ...advicePt,
   ...calendarPt,
   ...pluginsPt,
   ...streetPhotosPt,

@@ -1915,6 +1915,7 @@ export function Workspace({
               {tab === "simulator" && sim === "test" && (
                 <LoadingScreen>
                   <CapacityRun
+                    map={map}
                     demandRidership={usedRidership}
                     runs={runs}
                     results={results}

@@ -1,4 +1,5 @@
 import { roadFa } from "./road/fa";
+import { adviceFa } from "./advice/fa";
 import { calendarFa } from "./calendar/fa";
 import { editorsFa } from "./editors/fa";
 import { cargoBikeFa } from "./cargo-bike/fa";
@@ -544,6 +545,7 @@ export const fa: Messages = {
   ...populationFa,
   ...resultsFa,
   ...roadFa,
+  ...adviceFa,
   ...calendarFa,
   ...pluginsFa,
   ...streetPhotosFa,

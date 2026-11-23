@@ -8,7 +8,8 @@ Steps, each reported as progress and each a point where a cancelled run stops:
    trolleybus energy (trolleybus wires charge while driving).
 4. **Run.** SUMO through libsumo (``sim.py``), with a replay of the street line vehicles.
 5. **Results.** Per line: punctuality, delays, bunching, circuit times and speed, time lost in traffic and at
-   signals, energy; for the run: events (gridlock, out of charge, not back in the depot) and teleports (0).
+   signals, energy; for the run: events (gridlock, out of charge, not back in the depot), teleports (0) and
+   the places where the street line vehicles lost the most time (red lights, streets, junctions).
 
 Same inputs, seed and SUMO version give the same result (NFR-ACC-02): every random choice is seeded.
 """
@@ -342,6 +343,7 @@ def run_road(
     by_index = {int(ln["index"]): ln for ln in lines}
     result["lines"] = [line_results(pl, by_index[pl.index], stops, out, from_s, to_s) for pl in plans]
     result["events"] = out.events[:500]
+    result["hotspots"] = sim.hotspot_list(out.hotspots)
     result["run"] = {
         "begin": begin,
         "end": out.sim_end,

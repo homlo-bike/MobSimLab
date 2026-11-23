@@ -1,4 +1,5 @@
 import { roadFr } from "./road/fr";
+import { adviceFr } from "./advice/fr";
 import { calendarFr } from "./calendar/fr";
 import { editorsFr } from "./editors/fr";
 import { cargoBikeFr } from "./cargo-bike/fr";
@@ -556,6 +557,7 @@ export const fr: Messages = {
   ...populationFr,
   ...resultsFr,
   ...roadFr,
+  ...adviceFr,
   ...calendarFr,
   ...pluginsFr,
   ...streetPhotosFr,

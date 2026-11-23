@@ -2506,6 +2506,22 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 | brt | 350 | 500 | 650 | educated-guess | unverified | [vde-ebus-fleet](#src-vde-ebus-fleet), [mobsimlab-derivation](#src-mobsimlab-derivation) | 18 m articulated battery buses carry about 450–800 kWh installed. |
 | trolleybus | 30 | 60 | 120 | educated-guess | unverified | [uitp-trolleybus-tco](#src-uitp-trolleybus-tco), [mobsimlab-derivation](#src-mobsimlab-derivation) | In-motion charging trolleybuses carry a smaller battery for sections without wires, typically 30–120 kWh. |
 
+### Road simulation advice: a street line with a smaller share of departures on time gets advice
+
+`road.advice_on_time_share` · unit: share · used by: road simulation advice
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.75 | 0.85 | 0.95 | educated-guess | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | TCQSM rates on-time performance of 85–95 % as good to very good for a scheduled bus route and below 75 % as poor; below the central value the run's advice names where the line loses its time. |
+
+### Road simulation advice: a street line with a larger share of bunched departures gets advice
+
+`road.advice_bunched_share` · unit: share · used by: road simulation advice
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 0.05 | 0.1 | 0.2 | educated-guess | unverified | [tcqsm3](#src-tcqsm3), [mobsimlab-derivation](#src-mobsimlab-derivation) | TCQSM treats headway adherence with a coefficient of variation above about 0.4 as irregular, which corresponds to roughly one gap in ten under half the planned headway; from there passengers see vehicles arriving in pairs. |
+
 ## Energy and climate
 
 ### Rail temperature above air temperature in sunlight (climate note)
