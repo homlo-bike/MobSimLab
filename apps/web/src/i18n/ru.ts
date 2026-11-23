@@ -244,6 +244,7 @@ export const ru: Messages = {
   "drawing.street-lines": "уличная линия",
   "drawing.railway": "железная дорога",
   "drawing.street-setups": "профили улиц",
+  "drawing.junction-setups": "настройки перекрёстков",
   "drawing.rail-timetable": "расписание поездов",
   "drawing.preferences": "параметры проекта",
   "drawing.costs": "настройки затрат",

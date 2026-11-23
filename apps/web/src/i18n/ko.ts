@@ -239,6 +239,7 @@ export const ko: Messages = {
   "drawing.street-lines": "도로 노선",
   "drawing.railway": "철도",
   "drawing.street-setups": "도로 설정",
+  "drawing.junction-setups": "교차로 설정",
   "drawing.rail-timetable": "철도 시간표",
   "drawing.preferences": "프로젝트 환경설정",
   "drawing.costs": "비용 설정",

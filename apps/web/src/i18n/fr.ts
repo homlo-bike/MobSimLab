@@ -246,6 +246,7 @@ export const fr: Messages = {
   "drawing.street-lines": "la ligne de bus",
   "drawing.railway": "le réseau ferré",
   "drawing.street-setups": "les réglages des rues",
+  "drawing.junction-setups": "les réglages des carrefours",
   "drawing.rail-timetable": "l'horaire ferroviaire",
   "drawing.preferences": "les préférences du projet",
   "drawing.costs": "les réglages des coûts",

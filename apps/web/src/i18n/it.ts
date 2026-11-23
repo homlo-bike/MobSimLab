@@ -243,6 +243,7 @@ export const it: Messages = {
   "drawing.street-lines": "le linee su strada",
   "drawing.railway": "la ferrovia",
   "drawing.street-setups": "le configurazioni stradali",
+  "drawing.junction-setups": "le impostazioni degli incroci",
   "drawing.rail-timetable": "l'orario ferroviario",
   "drawing.preferences": "le preferenze del progetto",
   "drawing.costs": "le impostazioni dei costi",

@@ -243,6 +243,7 @@ export const ha: Messages = {
   "drawing.street-lines": "layin titi",
   "drawing.railway": "layin dogo",
   "drawing.street-setups": "tsarin tituna",
+  "drawing.junction-setups": "saitunan mahaɗu",
   "drawing.rail-timetable": "jadawalin jirgin ƙasa",
   "drawing.preferences": "zaɓuɓɓukan aiki",
   "drawing.costs": "saitunan kuɗi",

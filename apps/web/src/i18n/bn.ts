@@ -241,6 +241,7 @@ export const bn: Messages = {
   "drawing.street-lines": "রাস্তার লাইন",
   "drawing.railway": "রেলপথ",
   "drawing.street-setups": "রাস্তার বিন্যাস",
+  "drawing.junction-setups": "মোড়ের সেটিং",
   "drawing.rail-timetable": "রেলের সময়সূচি",
   "drawing.preferences": "প্রকল্পের পছন্দ",
   "drawing.costs": "খরচের সেটিংস",

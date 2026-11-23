@@ -581,6 +581,27 @@ export const editorsYo = {
   "setup.legend.other": "Àwọn òpópónà míì",
   "setup.legend.yours": "Ìwọ lo ṣètò rẹ̀",
   "setup.legend.lanes": "Ọ̀nà ọkọ̀, láti ìsúnmọ́ {zoom}",
+  "setup.junction.title": "Oríta",
+  "setup.junction.unnamed": "Oríta láìní orúkọ",
+  "setup.junction.osmYes": "OpenStreetMap: iná ìrìnnà wà",
+  "setup.junction.osmNo": "OpenStreetMap: kò sí iná ìrìnnà",
+  "setup.junction.lights": "Iná ìrìnnà",
+  "setup.junction.asOsm": "Bí ó ti wà ní OpenStreetMap",
+  "setup.junction.yes": "Iná ìrìnnà wà",
+  "setup.junction.no": "Kò sí iná ìrìnnà",
+  "setup.junction.note":
+    "Ìṣàfarawé ọ̀nà ń dá bọ́ọ̀sì àti ọkọ̀ dúró níbí nígbà tí iná bá pupa, àkókò ìrìn ẹsẹ̀ sì ń fi ìdúró ní ibi ìsọdá kún un.",
+  "setup.junction.selected": "Àwọn oríta tí a yàn: {count}",
+  "setup.junction.mix": "Pẹ̀lú iná: {on} · láìsí: {off}",
+  "setup.junction.differ":
+    "Wọ́n yàtọ̀ síra báyìí, nítorí náà kò sí àṣàyàn tí a sàmì sí. Àṣàyàn rẹ yóò kan gbogbo wọn.",
+  "setup.junction.unselect": "Yọ {name} kúrò nínú àṣàyàn",
+  "setup.junction.clear": "Pa àṣàyàn rẹ́",
+  "setup.junction.more": "Tẹ Shift kí o sì tẹ àwọn oríta mìíràn láti ṣètò ọ̀pọ̀ lẹ́ẹ̀kan náà.",
+  "setup.junction.listTitle": "Àwọn oríta tí a ṣètò · {count}",
+  "setup.junction.listEmpty":
+    "Kò sí síbẹ̀. Láti ìsúnmọ́ {zoom}, tẹ oríta kan láti fi iná ìrìnnà sí i tàbí yọ ọ́ kúrò.",
+  "setup.legend.signals": "Oríta tí ó ní iná ìrìnnà",
   "setup.v.busNoDelay":
     "A kò rò pé súnkẹrẹ-fàkẹrẹ máa fa ìdádúró fún irú òpópónà yìí; a ń kà á lórí àwọn òpópónà ńlá.",
   "setup.v.busSeparated": "Ọ̀nà bọ́ọ̀sì tí a yà sọ́tọ̀: súnkẹrẹ-fàkẹrẹ kò dá àwọn bọ́ọ̀sì dúró.",

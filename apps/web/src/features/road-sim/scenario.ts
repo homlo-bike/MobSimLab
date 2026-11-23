@@ -10,7 +10,7 @@ import { projectServiceDay, servicePeriods } from "../journey-planner/network";
 import { fullTiming } from "../street-lines/modes";
 import { type SavedStreetLine, streetLineColor } from "../street-lines/saved";
 import { lineServiceDay } from "../street-lines/service";
-import type { StreetSetup } from "../street-setup/types";
+import type { JunctionSetup, StreetSetup } from "../street-setup/types";
 import type { PreferencesDoc } from "../../workspace/preferences";
 import { central } from "./params";
 import type { Energy, RoadDepot, RoadLine, RoadScenario } from "./types";
@@ -141,6 +141,8 @@ export function buildScenario(input: {
   lines: readonly SavedStreetLine[];
   depots: readonly SavedDepot[];
   setups: readonly StreetSetup[];
+  /** The GIS tab's junction setups: traffic lights given to or taken from junctions. */
+  junctions?: readonly JunctionSetup[];
   prefs: PreferencesDoc["values"] | undefined;
   from: number;
   to: number;
@@ -186,6 +188,7 @@ export function buildScenario(input: {
         cars_morning_peak: s.cars_morning_peak ?? null,
         cars_evening_peak: s.cars_evening_peak ?? null,
       })),
+      junctions: (input.junctions ?? []).map((j) => ({ nodes: j.nodes, signals: j.signals })),
       traffic: {
         defaults: {
           trunk: central("street.peak_cars_trunk_vph", "*", prefs),

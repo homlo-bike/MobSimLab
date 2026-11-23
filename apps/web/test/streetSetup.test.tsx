@@ -22,7 +22,8 @@ import {
   template,
   totalWidth,
 } from "../src/features/street-setup/sections";
-import type { StreetInfo, StreetSetup } from "../src/features/street-setup/types";
+import type { JunctionSetup, StreetInfo, StreetSetup } from "../src/features/street-setup/types";
+import { addsToSelection, toggleSelection } from "../src/features/street-setup/selection";
 
 afterEach(cleanup);
 
@@ -253,7 +254,7 @@ function fakeMap(zoom = 16) {
   const handlers = new Map<string, Set<(ev: unknown) => void>>();
   const sources = new Map<string, { setData: ReturnType<typeof vi.fn> }>();
   const layers = new Set<string>();
-  const hit = { way: null as number | null };
+  const hit = { way: null as number | null, junction: null as string | null };
   const map = {
     on: (t: string, f: (ev: unknown) => void) => handlers.set(t, (handlers.get(t) ?? new Set()).add(f)),
     off: (t: string, f: (ev: unknown) => void) => handlers.get(t)?.delete(f),
@@ -274,16 +275,38 @@ function fakeMap(zoom = 16) {
     setFilter: vi.fn(),
     setLayerZoomRange: vi.fn(),
     easeTo: vi.fn(),
-    queryRenderedFeatures: () => (hit.way === null ? [] : [{ properties: { way: hit.way } }]),
+    queryRenderedFeatures: (_at: unknown, o?: { layers?: string[] }) =>
+      o?.layers?.includes("ss-junctions")
+        ? hit.junction === null
+          ? []
+          : [{ properties: { key: hit.junction, crossing: true } }]
+        : hit.way === null
+          ? []
+          : [{ properties: { way: hit.way } }],
   };
-  const tap = (way: number | null) => {
-    hit.way = way;
+  const click = (shiftKey: boolean) =>
     act(() => {
       for (const f of handlers.get("click") ?? [])
-        f({ point: { x: 5, y: 5 }, lngLat: { lng: 7.415, lat: 43.733 } });
+        f({ point: { x: 5, y: 5 }, lngLat: { lng: 7.415, lat: 43.733 }, originalEvent: { shiftKey } });
     });
+  const tap = (way: number | null) => {
+    hit.way = way;
+    hit.junction = null;
+    click(false);
   };
-  return { map: map as unknown as MapLibreMap, sources, tap, setLayerZoomRange: map.setLayerZoomRange };
+  /** A click on the junction with this key; with Shift held, it adds to the selection. */
+  const tapJunction = (key: string, shift = false) => {
+    hit.junction = key;
+    click(shift);
+  };
+  return {
+    map: map as unknown as MapLibreMap,
+    sources,
+    tap,
+    tapJunction,
+    setFilter: map.setFilter,
+    setLayerZoomRange: map.setLayerZoomRange,
+  };
 }
 
 const NO_LANES: LaneEngineLoader = async () => null;
@@ -293,13 +316,16 @@ function Harness({
   onChange,
   loadLanes = NO_LANES,
   trafficSide = "right",
+  onJunctionsChange,
 }: {
   map: MapLibreMap;
   onChange: (s: StreetSetup[]) => void;
   loadLanes?: LaneEngineLoader;
   trafficSide?: "right" | "left";
+  onJunctionsChange?: (j: JunctionSetup[]) => void;
 }) {
   const [setups, setSetups] = useState<StreetSetup[]>([]);
+  const [junctions, setJunctions] = useState<JunctionSetup[]>([]);
   return (
     <StreetSetupEditor
       map={map}
@@ -312,9 +338,29 @@ function Harness({
       loadInfos={async () => () => [HIGH, BACK]}
       loadLanes={loadLanes}
       trafficSide={trafficSide}
+      junctions={junctions}
+      onJunctionsChange={(j) => {
+        setJunctions(j);
+        onJunctionsChange?.(j);
+      }}
     />
   );
 }
+
+describe("Selecting several things on the map", () => {
+  it("adds or takes out with Shift, Ctrl or Cmd, else selects only the one clicked", () => {
+    const key = (x: { id: number }) => x.id;
+    const a = { id: 1 };
+    const b = { id: 2 };
+    expect(addsToSelection({ shiftKey: true })).toBe(true);
+    expect(addsToSelection({ metaKey: true })).toBe(true);
+    expect(addsToSelection({})).toBe(false);
+    expect(addsToSelection(undefined)).toBe(false);
+    expect(toggleSelection([a], b, key, false)).toEqual([b]);
+    expect(toggleSelection([a], b, key, true)).toEqual([a, b]);
+    expect(toggleSelection([a, b], a, key, true)).toEqual([b]);
+  });
+});
 
 describe("Street setup editor", () => {
   it("loads the streets on screen, sets up a tapped street and shows what it means", async () => {
@@ -421,7 +467,15 @@ describe("Street setup editor", () => {
           ring: [7.411, 43.731, 7.412, 43.731, 7.412, 43.732, 7.411, 43.731],
         },
       ],
-      junctions: [{ ring: [7.412, 43.731, 7.413, 43.731, 7.413, 43.732, 7.412, 43.731] }],
+      junctions: [
+        {
+          ring: [7.412, 43.731, 7.413, 43.731, 7.413, 43.732, 7.412, 43.731],
+          nodes: [1],
+          ways: [100],
+          crossing: true,
+          signals: false,
+        },
+      ],
       lines: [{ kind: "centre", layer: 0, path: [7.411, 43.731, 7.412, 43.731] }],
       roads: [
         {
@@ -508,6 +562,92 @@ describe("Street setup editor", () => {
     );
     unmount();
     expect(engine.dispose).toHaveBeenCalled();
+  });
+
+  it("shows traffic lights only for selected junctions, and sets several at once", async () => {
+    const { map, tap, tapJunction, setFilter } = fakeMap();
+    const ring = (x: number) => [x, 43.731, x + 0.001, 43.731, x + 0.001, 43.732, x, 43.731];
+    const shapes: LaneGeometry = {
+      lanes: [],
+      junctions: [
+        { ring: ring(7.411), nodes: [1], ways: [100, 200], crossing: true, signals: true },
+        { ring: ring(7.413), nodes: [2], ways: [100], crossing: true, signals: false },
+      ],
+      lines: [],
+      roads: [],
+      driving_side: "right",
+    };
+    const engine = {
+      addTile: vi.fn(),
+      build: vi.fn(async () => shapes),
+      dispose: vi.fn(),
+    } satisfies LaneEngine;
+    const onJunctionsChange = vi.fn();
+    render(
+      <Harness
+        map={map}
+        onChange={() => {}}
+        loadLanes={async () => engine}
+        onJunctionsChange={onJunctionsChange}
+      />,
+    );
+    await waitFor(() => expect(engine.build).toHaveBeenCalled());
+    await waitFor(() => expect(screen.queryByText("Loading streets…")).toBeNull());
+    // Nothing selected: no traffic light settings.
+    expect(screen.queryByRole("group", { name: "Traffic lights" })).toBeNull();
+
+    // One junction: its name, what OSM maps, and the three choices.
+    tapJunction("1");
+    expect(screen.getByRole("heading", { name: "High Street / Back Lane" })).toBeTruthy();
+    expect(screen.getByText("OpenStreetMap: traffic lights")).toBeTruthy();
+    expect(setFilter).toHaveBeenLastCalledWith("ss-junction-selected", [
+      "in",
+      ["get", "key"],
+      ["literal", ["1"]],
+    ]);
+    // A plain click on another junction selects only that one.
+    tapJunction("2");
+    expect(screen.getByText("OpenStreetMap: no traffic lights")).toBeTruthy();
+
+    // Shift-click adds the first one again: one choice for both.
+    tapJunction("1", true);
+    const panel = screen.getByRole("region", { name: "Junctions selected: 2" });
+    expect(within(panel).getByText("Now with traffic lights: 1 · without: 1")).toBeTruthy();
+    const lights = within(panel).getByRole("group", { name: "Traffic lights" });
+    // Both follow OpenStreetMap, so that choice is marked.
+    expect(within(lights).getByRole("button", { name: "As in OpenStreetMap", pressed: true })).toBeTruthy();
+    fireEvent.click(within(lights).getByRole("button", { name: "No traffic lights" }));
+    expect(onJunctionsChange).toHaveBeenLastCalledWith([
+      expect.objectContaining({ nodes: [2], signals: false }),
+      expect.objectContaining({ nodes: [1], signals: false, name: "High Street / Back Lane" }),
+    ]);
+    expect(within(lights).getByRole("button", { name: "No traffic lights", pressed: true })).toBeTruthy();
+    expect(screen.getByText("Junctions set up · 2")).toBeTruthy();
+    // Different settings: no choice is marked until one is made for all.
+    fireEvent.click(
+      within(panel).getByRole("button", { name: "Take High Street / Back Lane out of the selection" }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Traffic lights", pressed: false }));
+    tapJunction("1", true);
+    const mixed = screen.getByRole("region", { name: "Junctions selected: 2" });
+    expect(within(mixed).getByText(/They differ now/)).toBeTruthy();
+    expect(
+      within(within(mixed).getByRole("group", { name: "Traffic lights" })).queryByRole("button", {
+        pressed: true,
+      }),
+    ).toBeNull();
+
+    // Take one out of the selection; back to the panel of one junction.
+    fireEvent.click(
+      within(mixed).getByRole("button", { name: "Take High Street / Back Lane out of the selection" }),
+    );
+    expect(screen.getByRole("region", { name: "Junction" })).toBeTruthy();
+    // As OSM maps it: its setup is removed.
+    fireEvent.click(screen.getByRole("button", { name: "As in OpenStreetMap" }));
+    expect(onJunctionsChange).toHaveBeenLastCalledWith([expect.objectContaining({ nodes: [1] })]);
+    // A click on a street clears the junctions.
+    tap(100);
+    expect(screen.queryByRole("group", { name: "Traffic lights" })).toBeNull();
   });
 
   it("says so when the lanes cannot be drawn, and keeps the street lines", async () => {

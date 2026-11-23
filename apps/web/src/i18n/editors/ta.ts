@@ -622,6 +622,27 @@ export const editorsTa = {
   "setup.legend.other": "பிற தெருக்கள்",
   "setup.legend.yours": "நீங்கள் அமைத்தவை",
   "setup.legend.lanes": "பாதைகள், பெரிதாக்கம் {zoom} முதல்",
+  "setup.junction.title": "சந்திப்பு",
+  "setup.junction.unnamed": "பெயரில்லாத சந்திப்பு",
+  "setup.junction.osmYes": "OpenStreetMap: போக்குவரத்து விளக்குகள்",
+  "setup.junction.osmNo": "OpenStreetMap: போக்குவரத்து விளக்குகள் இல்லை",
+  "setup.junction.lights": "போக்குவரத்து விளக்குகள்",
+  "setup.junction.asOsm": "OpenStreetMap இல் உள்ளபடி",
+  "setup.junction.yes": "போக்குவரத்து விளக்குகள்",
+  "setup.junction.no": "போக்குவரத்து விளக்குகள் இல்லை",
+  "setup.junction.note":
+    "சாலை உருவகப்படுத்தல் இங்கு சிவப்பு விளக்கில் பேருந்துகளையும் கார்களையும் நிறுத்துகிறது; நடை நேரத்தில் கடவைகளில் காத்திருப்பும் சேர்கிறது.",
+  "setup.junction.selected": "தேர்ந்தெடுத்த சந்திப்புகள்: {count}",
+  "setup.junction.mix": "விளக்குடன்: {on} · இல்லாமல்: {off}",
+  "setup.junction.differ":
+    "இப்போது அவை வேறுபடுகின்றன, எனவே எந்தத் தேர்வும் குறிக்கப்படவில்லை. உங்கள் தேர்வு அனைத்துக்கும் பொருந்தும்.",
+  "setup.junction.unselect": "{name} ஐத் தேர்விலிருந்து நீக்கு",
+  "setup.junction.clear": "தேர்வை அழி",
+  "setup.junction.more": "பலவற்றை ஒரே நேரத்தில் அமைக்க Shift அழுத்தி மேலும் சந்திப்புகளைக் கிளிக் செய்யவும்.",
+  "setup.junction.listTitle": "அமைக்கப்பட்ட சந்திப்புகள் · {count}",
+  "setup.junction.listEmpty":
+    "இன்னும் இல்லை. பெரிதாக்கம் {zoom} முதல் ஒரு சந்திப்பைத் தட்டி விளக்குகளைச் சேர்க்கவும் அல்லது நீக்கவும்.",
+  "setup.legend.signals": "போக்குவரத்து விளக்குள்ள சந்திப்பு",
   "setup.v.busNoDelay":
     "இந்த வகைத் தெருவில் நெரிசல் தாமதம் கணக்கிடப்படுவதில்லை; அது முக்கியச் சாலைகளில் கணக்கிடப்படுகிறது.",
   "setup.v.busSeparated": "பிரிக்கப்பட்ட பேருந்துப் பாதை: நெரிசல் பேருந்துகளைத் தாமதப்படுத்துவதில்லை.",

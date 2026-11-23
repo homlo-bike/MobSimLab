@@ -37,4 +37,4 @@ pub use profile::{Mode, RoutingRules, TrafficSide, VehicleProfile};
 pub use router::{route, Anchor, Path, SearchOptions};
 pub use sections::{Layout, RoadUser, Section, SectionDir, SectionKind};
 pub use setup::{apply_setups, DelayShares, StreetSetup, TramShare};
-pub use walk::{WalkGraph, WalkSettings};
+pub use walk::{apply_junction_signals, JunctionSignals, WalkGraph, WalkSettings};

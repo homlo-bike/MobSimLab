@@ -609,6 +609,27 @@ export const editorsPt = {
   "setup.legend.other": "Outras ruas",
   "setup.legend.yours": "Configurada por você",
   "setup.legend.lanes": "Faixas, a partir do zoom {zoom}",
+  "setup.junction.title": "Cruzamento",
+  "setup.junction.unnamed": "Cruzamento sem nome",
+  "setup.junction.osmYes": "OpenStreetMap: semáforos",
+  "setup.junction.osmNo": "OpenStreetMap: sem semáforos",
+  "setup.junction.lights": "Semáforos",
+  "setup.junction.asOsm": "Como no OpenStreetMap",
+  "setup.junction.yes": "Semáforos",
+  "setup.junction.no": "Sem semáforos",
+  "setup.junction.note":
+    "A simulação viária para aqui ônibus e carros no vermelho, e os tempos a pé somam a espera nas travessias.",
+  "setup.junction.selected": "Cruzamentos selecionados: {count}",
+  "setup.junction.mix": "Com semáforos: {on} · sem: {off}",
+  "setup.junction.differ":
+    "Agora diferem, por isso nenhuma opção está marcada. A sua escolha vale para todos.",
+  "setup.junction.unselect": "Tirar {name} da seleção",
+  "setup.junction.clear": "Limpar a seleção",
+  "setup.junction.more": "Shift-clique em mais cruzamentos para configurar vários de uma vez.",
+  "setup.junction.listTitle": "Cruzamentos configurados · {count}",
+  "setup.junction.listEmpty":
+    "Nenhum ainda. A partir do zoom {zoom}, toque num cruzamento para lhe dar ou tirar semáforos.",
+  "setup.legend.signals": "Cruzamento com semáforos",
   "setup.v.busNoDelay":
     "Nenhum atraso no tráfego é considerado neste tipo de rua; ele conta nas vias principais.",
   "setup.v.busSeparated": "Faixa de ônibus segregada: congestionamentos não atrasam os ônibus.",

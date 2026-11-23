@@ -2,7 +2,7 @@ import { tNow } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/en";
 import type { DelayShares } from "../street-lines/types";
 import { layoutOf, type Layout } from "./sections";
-import type { StreetInfo, StreetSetup, TramShare } from "./types";
+import type { JunctionSetup, StreetInfo, StreetSetup, TramShare } from "./types";
 
 /** Assumption `street.mixed_traffic_delay_share` (central): extra running time in a main road's traffic. */
 export const MIXED_DELAY = 0.25;
@@ -138,6 +138,27 @@ export function parsePeakCars(text: string): number | null {
 export function upsert(list: readonly StreetSetup[], s: StreetSetup): StreetSetup[] {
   const rest = list.filter((x) => x.way !== s.way);
   return isEmpty(s) ? rest : [...rest, s];
+}
+
+/** Purpose: the planner's setup of the junction made of these OSM nodes, if any (any node in common). */
+export function junctionSetupOf(
+  list: readonly JunctionSetup[],
+  nodes: readonly number[],
+): JunctionSetup | undefined {
+  return list.find((j) => j.nodes.some((n) => nodes.includes(n)));
+}
+
+/**
+ * Purpose: the list with one junction's traffic lights set (`true`/`false`), or back to what OSM maps
+ * (`null`: its setup is removed).
+ */
+export function setJunction(
+  list: readonly JunctionSetup[],
+  junction: Omit<JunctionSetup, "signals">,
+  signals: boolean | null,
+): JunctionSetup[] {
+  const rest = list.filter((j) => !j.nodes.some((n) => junction.nodes.includes(n)));
+  return signals === null ? rest : [...rest, { ...junction, signals }];
 }
 
 /** One line of what the setup means for service and safety. */

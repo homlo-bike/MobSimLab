@@ -90,11 +90,15 @@ interface Log {
   coverage?: CoverageRequest;
   spacing: SpacingRequest[];
   xml: string[];
+  junctions?: unknown;
 }
 
 function fakeEngine(log: Log) {
   return async (): Promise<WalkEngine> => ({
     addOsm: (xml) => log.xml.push(xml),
+    setJunctions: (j) => {
+      log.junctions = j;
+    },
     build: () => {},
     ready: () => true,
     coverage: (req) => {
@@ -246,6 +250,7 @@ describe("WalkAnalysis", () => {
         map={null}
         streetLines={DOC}
         railway={null}
+        junctions={[{ nodes: [7, 8], signals: false }]}
         loadWalk={fakeEngine(log)}
         loadRail={noRail}
         fetchTile={fetchTile}
@@ -254,6 +259,8 @@ describe("WalkAnalysis", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Calculate walk coverage" }));
     expect(await screen.findByText(/75 % of the 2,000 residents/)).toBeTruthy();
+    // The junction setup reaches the walk network: lights taken away, no wait there.
+    expect(log.junctions).toEqual([{ nodes: [7, 8], signals: false }]);
     expect(screen.getByText(/In a straight line it would be 90 %/)).toBeTruthy();
     expect(screen.getByText("320 residents · 21 min walk to the nearest stop")).toBeTruthy();
     expect(screen.getByText("110 residents · no stop reachable on foot")).toBeTruthy();

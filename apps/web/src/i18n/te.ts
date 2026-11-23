@@ -243,6 +243,7 @@ export const te: Messages = {
   "drawing.street-lines": "వీధి మార్గం",
   "drawing.railway": "రైల్వే",
   "drawing.street-setups": "వీధి అమరికలు",
+  "drawing.junction-setups": "కూడళ్ల సెట్టింగ్‌లు",
   "drawing.rail-timetable": "రైలు సమయపట్టిక",
   "drawing.preferences": "ప్రాజెక్టు ప్రాధాన్యతలు",
   "drawing.costs": "ఖర్చు సెట్టింగ్‌లు",

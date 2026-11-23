@@ -244,6 +244,7 @@ export const uk: Messages = {
   "drawing.street-lines": "вуличні лінії",
   "drawing.railway": "залізницю",
   "drawing.street-setups": "налаштування вулиць",
+  "drawing.junction-setups": "налаштування перехресть",
   "drawing.rail-timetable": "розклад залізниці",
   "drawing.preferences": "параметри проєкту",
   "drawing.costs": "налаштування витрат",

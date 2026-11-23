@@ -580,6 +580,27 @@ export const editorsVi = {
   "setup.legend.other": "Đường khác",
   "setup.legend.yours": "Do bạn thiết lập",
   "setup.legend.lanes": "Làn đường, từ mức thu phóng {zoom}",
+  "setup.junction.title": "Nút giao",
+  "setup.junction.unnamed": "Nút giao không tên",
+  "setup.junction.osmYes": "OpenStreetMap: có đèn giao thông",
+  "setup.junction.osmNo": "OpenStreetMap: không có đèn giao thông",
+  "setup.junction.lights": "Đèn giao thông",
+  "setup.junction.asOsm": "Như trong OpenStreetMap",
+  "setup.junction.yes": "Có đèn giao thông",
+  "setup.junction.no": "Không có đèn giao thông",
+  "setup.junction.note":
+    "Mô phỏng đường bộ cho xe buýt và ô tô dừng đèn đỏ tại đây, và thời gian đi bộ cộng thêm thời gian chờ ở lối sang đường.",
+  "setup.junction.selected": "Nút giao đã chọn: {count}",
+  "setup.junction.mix": "Có đèn: {on} · không đèn: {off}",
+  "setup.junction.differ":
+    "Hiện chúng khác nhau nên chưa có lựa chọn nào được đánh dấu. Lựa chọn của bạn áp dụng cho tất cả.",
+  "setup.junction.unselect": "Bỏ {name} khỏi lựa chọn",
+  "setup.junction.clear": "Xóa lựa chọn",
+  "setup.junction.more": "Giữ Shift và nhấp thêm nút giao để thiết lập nhiều nút cùng lúc.",
+  "setup.junction.listTitle": "Nút giao đã thiết lập · {count}",
+  "setup.junction.listEmpty":
+    "Chưa có. Từ mức thu phóng {zoom}, chạm vào một nút giao để thêm hoặc bỏ đèn giao thông.",
+  "setup.legend.signals": "Nút giao có đèn giao thông",
   "setup.v.busNoDelay": "Không tính chậm trễ do kẹt xe cho loại đường này; chỉ tính cho đường chính.",
   "setup.v.busSeparated": "Làn xe buýt có phân cách: kẹt xe không làm chậm xe buýt.",
   "setup.v.busPainted":

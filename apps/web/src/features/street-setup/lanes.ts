@@ -37,7 +37,11 @@ export interface LaneProfile {
 /** Lane and junction shapes (Rust `street_geometry::Geometry`); rings and paths are flat `[lon, lat, …]`. */
 export interface LaneGeometry {
   lanes: { kind: LaneKind; way: number; layer: number; ring: number[] }[];
-  junctions: { ring: number[] }[];
+  /**
+   * Junction shapes with their OSM nodes and ways; `crossing` where at least three roads meet (the ones
+   * that may have traffic lights), `signals` where OSM maps traffic lights.
+   */
+  junctions: { ring: number[]; nodes: number[]; ways: number[]; crossing: boolean; signals: boolean }[];
   lines: { kind: LineKind; layer: number; path: number[] }[];
   /** The lanes of each street way, left to right looking along the way. */
   roads: { way: number; lanes: LaneProfile[] }[];

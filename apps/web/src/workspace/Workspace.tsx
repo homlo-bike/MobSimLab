@@ -58,7 +58,7 @@ import {
   toStreetLine,
 } from "../features/gtfs/toLines";
 import { forgetSetups, loadSetups } from "../features/street-setup/model";
-import type { StreetSetup } from "../features/street-setup/types";
+import type { JunctionSetup, StreetSetup } from "../features/street-setup/types";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import {
@@ -213,6 +213,7 @@ const tabIcon = (x: Tab): IconFn =>
 /** Tabs drawn over the map; the others are full pages. The plugins' tabs all use the map. */
 const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis", ...PLUGIN_TABS.map((x) => x.id)];
 const NO_SETUPS: StreetSetup[] = [];
+const NO_JUNCTIONS: JunctionSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
 
 type SimView = "test" | "journey" | "road" | "calendar";
@@ -612,6 +613,9 @@ export function Workspace({
     [railway, streetLines],
   );
   const changeSetups = (next: StreetSetup[]) => drawings.set("street-setups", next);
+  // Junction setups from the GIS tab: traffic lights given to or taken from junctions, for the road run.
+  const junctionSetups = drawings.doc<JunctionSetup[]>("junction-setups") ?? NO_JUNCTIONS;
+  const changeJunctions = (next: JunctionSetup[]) => drawings.set("junction-setups", next);
   // GIS tab regions: their values take priority in the benefit tables.
   const regions = drawings.doc<RegionsDoc>("regions")?.regions ?? NO_REGIONS;
   // Benefit tables settings: the project's formulas and its own boardings per station or stop.
@@ -1342,6 +1346,8 @@ export function Workspace({
                 panel={panel}
                 setups={setups}
                 onChange={changeSetups}
+                junctions={junctionSetups}
+                onJunctionsChange={changeJunctions}
                 editable={editable}
                 delays={delays}
                 trafficSide={streetRules.traffic_side}
@@ -1916,6 +1922,7 @@ export function Workspace({
                     streetLines={streetLines?.lines}
                     depots={depotsDoc?.depots}
                     setups={setups}
+                    junctions={junctionSetups}
                     prefs={preferences?.values}
                     visuals={preferences?.visuals}
                   />
@@ -1969,6 +1976,7 @@ export function Workspace({
                       streetLines={streetLines}
                       railway={railway}
                       preferences={preferences?.values}
+                      junctions={junctionSetups}
                       results={results}
                       canSave={editable}
                     />

@@ -603,6 +603,27 @@ export const editorsKk = {
   "setup.legend.other": "Басқа көшелер",
   "setup.legend.yours": "Сіз баптаған",
   "setup.legend.lanes": "Жолақтар, {zoom} масштабынан бастап",
+  "setup.junction.title": "Қиылыс",
+  "setup.junction.unnamed": "Атаусыз қиылыс",
+  "setup.junction.osmYes": "OpenStreetMap: бағдаршам бар",
+  "setup.junction.osmNo": "OpenStreetMap: бағдаршам жоқ",
+  "setup.junction.lights": "Бағдаршам",
+  "setup.junction.asOsm": "OpenStreetMap-тағыдай",
+  "setup.junction.yes": "Бағдаршам бар",
+  "setup.junction.no": "Бағдаршам жоқ",
+  "setup.junction.note":
+    "Жол симуляциясы мұнда автобустар мен көліктерді қызыл түсте тоқтатады, ал жаяу жүру уақытына өткелдердегі күту қосылады.",
+  "setup.junction.selected": "Таңдалған қиылыстар: {count}",
+  "setup.junction.mix": "Бағдаршаммен: {on} · бағдаршамсыз: {off}",
+  "setup.junction.differ":
+    "Қазір олар әртүрлі, сондықтан ештеңе белгіленбеген. Таңдауыңыз бәріне қолданылады.",
+  "setup.junction.unselect": "{name} таңдаудан алып тастау",
+  "setup.junction.clear": "Таңдауды тазалау",
+  "setup.junction.more": "Бірнешеуін бірден баптау үшін Shift басып, басқа қиылыстарды шертіңіз.",
+  "setup.junction.listTitle": "Бапталған қиылыстар · {count}",
+  "setup.junction.listEmpty":
+    "Әзірге жоқ. {zoom} масштабынан бастап қиылысты түртіп, бағдаршам қойыңыз не алыңыз.",
+  "setup.legend.signals": "Бағдаршамы бар қиылыс",
   "setup.v.busNoDelay": "Бұл түрдегі көшеде кептеліс кідірісі есептелмейді; ол негізгі жолдарда есептеледі.",
   "setup.v.busSeparated": "Бөлінген автобус жолағы: кептеліс автобустарды кешіктірмейді.",
   "setup.v.busPainted":

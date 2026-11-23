@@ -241,6 +241,7 @@ export const yo: Messages = {
   "drawing.street-lines": "ìlà òpópónà",
   "drawing.railway": "ọ̀nà ojú irin",
   "drawing.street-setups": "ètò òpópónà",
+  "drawing.junction-setups": "ètò àwọn oríta",
   "drawing.rail-timetable": "àkókò ìrìn ọkọ̀ ojú irin",
   "drawing.preferences": "àwọn àyànfẹ́ iṣẹ́ àkànṣe",
   "drawing.costs": "ètò iye owó",

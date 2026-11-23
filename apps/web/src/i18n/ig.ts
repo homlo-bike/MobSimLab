@@ -243,6 +243,7 @@ export const ig: Messages = {
   "drawing.street-lines": "ahịrị okporo ụzọ",
   "drawing.railway": "ụzọ ụgbọ oloko",
   "drawing.street-setups": "nhazi okporo ụzọ",
+  "drawing.junction-setups": "ntọala nkwụkọ ụzọ",
   "drawing.rail-timetable": "usoro oge ụgbọ oloko",
   "drawing.preferences": "mmasị ọrụ",
   "drawing.costs": "ntọala ego",

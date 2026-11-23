@@ -610,6 +610,27 @@ export const editorsUz = {
   "setup.legend.other": "Boshqa koʻchalar",
   "setup.legend.yours": "Siz sozlagan",
   "setup.legend.lanes": "Yoʻlaklar, {zoom} masshtabdan",
+  "setup.junction.title": "Chorraha",
+  "setup.junction.unnamed": "Nomsiz chorraha",
+  "setup.junction.osmYes": "OpenStreetMap: svetofor bor",
+  "setup.junction.osmNo": "OpenStreetMap: svetofor yoʻq",
+  "setup.junction.lights": "Svetofor",
+  "setup.junction.asOsm": "OpenStreetMap’dagidek",
+  "setup.junction.yes": "Svetofor bor",
+  "setup.junction.no": "Svetofor yoʻq",
+  "setup.junction.note":
+    "Yoʻl simulyatsiyasi bu yerda avtobus va mashinalarni qizil chiroqda toʻxtatadi, piyoda vaqtiga esa oʻtish joylaridagi kutish qoʻshiladi.",
+  "setup.junction.selected": "Tanlangan chorrahalar: {count}",
+  "setup.junction.mix": "Svetoforli: {on} · svetoforsiz: {off}",
+  "setup.junction.differ":
+    "Hozir ular har xil, shuning uchun hech narsa belgilanmagan. Tanlovingiz hammasiga qoʻllanadi.",
+  "setup.junction.unselect": "{name}ni tanlovdan chiqarish",
+  "setup.junction.clear": "Tanlovni tozalash",
+  "setup.junction.more": "Bir nechtasini birga sozlash uchun Shift bilan boshqa chorrahalarni bosing.",
+  "setup.junction.listTitle": "Sozlangan chorrahalar · {count}",
+  "setup.junction.listEmpty":
+    "Hali yoʻq. {zoom} masshtabdan chorrahaga bosib, svetofor qoʻying yoki olib tashlang.",
+  "setup.legend.signals": "Svetoforli chorraha",
   "setup.v.busNoDelay":
     "Bu turdagi koʻchada tirbandlik kechikishi hisoblanmaydi; u asosiy yoʻllarda hisoblanadi.",
   "setup.v.busSeparated": "Ajratilgan avtobus yoʻlagi: tirbandlik avtobuslarni kechiktirmaydi.",

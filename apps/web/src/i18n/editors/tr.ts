@@ -587,6 +587,27 @@ export const editorsTr = {
   "setup.legend.other": "Diğer sokak",
   "setup.legend.yours": "Sizin düzenlediğiniz",
   "setup.legend.lanes": "Şeritler, {zoom} yakınlaştırmasından itibaren",
+  "setup.junction.title": "Kavşak",
+  "setup.junction.unnamed": "Adsız kavşak",
+  "setup.junction.osmYes": "OpenStreetMap: trafik ışıkları",
+  "setup.junction.osmNo": "OpenStreetMap: trafik ışığı yok",
+  "setup.junction.lights": "Trafik ışıkları",
+  "setup.junction.asOsm": "OpenStreetMap’teki gibi",
+  "setup.junction.yes": "Trafik ışıkları",
+  "setup.junction.no": "Trafik ışığı yok",
+  "setup.junction.note":
+    "Yol simülasyonu burada otobüsleri ve arabaları kırmızıda durdurur, yürüme süreleri de geçitlerdeki bekleme süresini ekler.",
+  "setup.junction.selected": "Seçili kavşaklar: {count}",
+  "setup.junction.mix": "Trafik ışıklı: {on} · ışıksız: {off}",
+  "setup.junction.differ":
+    "Şu an farklılar, bu yüzden hiçbir seçenek işaretli değil. Seçiminiz hepsine uygulanır.",
+  "setup.junction.unselect": "{name} seçimden çıkar",
+  "setup.junction.clear": "Seçimi temizle",
+  "setup.junction.more": "Birkaçını birden ayarlamak için Shift ile başka kavşaklara tıklayın.",
+  "setup.junction.listTitle": "Ayarlanan kavşaklar · {count}",
+  "setup.junction.listEmpty":
+    "Henüz yok. {zoom} yakınlaştırmasından itibaren bir kavşağa dokunarak trafik ışığı ekleyin veya kaldırın.",
+  "setup.legend.signals": "Trafik ışıklı kavşak",
   "setup.v.busNoDelay": "Bu tür sokak için trafik gecikmesi hesaplanmaz; yalnızca ana caddeler için.",
   "setup.v.busSeparated": "Ayrılmış otobüs şeridi: trafik otobüsleri yavaşlatmaz.",
   "setup.v.busPainted":
