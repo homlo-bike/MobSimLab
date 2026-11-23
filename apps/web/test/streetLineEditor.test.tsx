@@ -660,6 +660,40 @@ describe("Street line saved with the project", () => {
     expect(line.routedWith).toMatch(/^[0-9a-f]{16}$/);
   });
 
+  it("saves the completed route on opening a line whose points were removed after its route was saved", async () => {
+    const engine = fakeEngine();
+    const build = engine.rebuild;
+    engine.rebuild = vi.fn(() => (build(), engine.clear()));
+    const onSave = vi.fn();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    // The route was saved with a fourth point that left a leg not found; that point was then removed from the
+    // line's points without routing it again, so the saved route still has the leg not found.
+    const stale = sampleView(["end_stop", "via", "stop", "stop"]);
+    stale.legs = stale.legs.map((l, i) => (i === 3 ? { ...l, status: "error" as const, length_m: 0 } : l));
+    expect(routesMore(saved.view, stale)).toBe(true);
+    expect(routesMore(stale, saved.view)).toBe(false);
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={{ ...saved, view: stale, routedWith: routeKey(saved, AROUND) }}
+        onSave={onSave}
+      />,
+    );
+    await waitFor(() => expect(engine.insertPoint).toHaveBeenCalledTimes(3));
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const line = onSave.mock.calls[0]![0] as SavedStreetLine;
+    expect(line.points).toHaveLength(3);
+    expect(line.view.points).toHaveLength(3);
+    expect(unroutedParts(line.view)).toBeNull();
+
+    // The same route found again is not a change.
+    await new Promise((r) => setTimeout(r, 20));
+    expect(onSave).toHaveBeenCalledTimes(1);
+  });
+
   it("shows a saved route as out of date when what it depends on changed, and recalculates it", async () => {
     const engine = fakeEngine();
     const build = engine.rebuild;
