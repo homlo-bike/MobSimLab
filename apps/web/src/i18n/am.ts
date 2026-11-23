@@ -253,7 +253,6 @@ export const am: Messages = {
   "tab.tables": "ሰንጠረዦች",
   "tab.preferences": "ምርጫዎች",
 
-  "placeholder.comingSoon": "በሚቀጥለው ልቀት ይመጣል",
 
   "sim.test": "ስርዓቱን ፈትን",
   "sim.journey": "የጉዞ ጊዜ A → B",

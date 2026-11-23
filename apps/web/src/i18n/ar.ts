@@ -253,7 +253,6 @@ export const ar: Messages = {
   "tab.tables": "الجداول",
   "tab.preferences": "التفضيلات",
 
-  "placeholder.comingSoon": "قادم في إصدار لاحق",
 
   "sim.test": "اختبار المنظومة",
   "sim.journey": "زمن الرحلة من A إلى B",
