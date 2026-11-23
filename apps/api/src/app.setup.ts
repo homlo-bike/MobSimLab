@@ -6,6 +6,7 @@ import { json, type NextFunction, raw, type Request, type Response } from "expre
 import helmet from "helmet";
 import type { AppConfig } from "./config/env";
 import { requestLogContext } from "./logging/context";
+import { ApiMessageFilter } from "./i18n/api-message.filter";
 
 /**
  * The only other sites the browser loads from: the basemap tile servers, including NASA GIBS for the bundled
@@ -27,6 +28,8 @@ export const MAP_ORIGINS = [
  */
 export function configureApp(app: NestExpressApplication, config: AppConfig): void {
   app.disable("x-powered-by");
+  // Known error messages carry their key, so the app can show them in its language.
+  app.useGlobalFilters(new ApiMessageFilter(app.getHttpAdapter()));
   app.set("trust proxy", config.trustedProxies ?? false);
   // HTTPS only (security review): when the public address is https and a trusted proxy reports that the browser
   // came over plain http, send it to the https address. Without MOBSIMLAB_TRUSTED_PROXIES nothing is redirected

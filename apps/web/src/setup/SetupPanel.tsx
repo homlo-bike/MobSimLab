@@ -1,6 +1,7 @@
 import { type FormEvent, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { send } from "../session/api";
+import { engineErrorText } from "../i18n/engine";
 
 /**
  * Setup wizard, first step: instance name, then Finish setup (05 §3.1). Shown to the Owner while the
@@ -29,7 +30,7 @@ export function SetupPanel({
       await send("POST", "/api/setup/finish", csrfToken);
       onFinished();
     } catch (err) {
-      setError((err as Error).message);
+      setError(engineErrorText(err));
     } finally {
       setBusy(false);
     }
