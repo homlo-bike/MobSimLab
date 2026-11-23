@@ -982,6 +982,42 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
         .map(|m| m.clearance_marker_m)
         .fold(0.0, f64::max);
     let mut worst: BTreeMap<(u32, u32), (f64, P2)> = BTreeMap::new();
+    // A track leaving a switch is closer than the clearance marker distance to the track it leaves
+    // until it has diverged far enough: with a flat high-speed turnout (1:26.5 and flatter) that is
+    // further than the fixed lead above. Near such an end, a track is not too close to one that
+    // passes its anchor while it still moves away from it (Damascus–Aleppo test).
+    const DIVERGING_M: f64 = 400.0;
+    const DIVERGING_RATIO: f64 = 60.0;
+    let mut at_anchor: BTreeMap<(u32, bool), BTreeMap<u32, f64>> = BTreeMap::new();
+    for a in geos {
+        let ends = [(true, Some(&a.start)), (false, a.end.as_ref())];
+        for (start, e) in ends {
+            let Some(e) = e.filter(|e| e.dir.is_some()) else {
+                continue;
+            };
+            let m = at_anchor.entry((a.id, start)).or_default();
+            grid.near(e.p, reach, |owner, dd, _| {
+                if owner != a.id {
+                    let d = m.entry(owner).or_insert(f64::INFINITY);
+                    *d = d.min(dd);
+                }
+            });
+        }
+    }
+    let diverging = |a: &TrackGeo, s: f64, b: u32, dd: f64| {
+        let (end, from) = if s < DIVERGING_M {
+            (true, s)
+        } else if s > a.length - DIVERGING_M {
+            (false, a.length - s)
+        } else {
+            return false;
+        };
+        // Still moving away at least as fast as the flattest turnout (1:42) would on its own.
+        at_anchor
+            .get(&(a.id, end))
+            .and_then(|m| m.get(&b))
+            .is_some_and(|&d0| d0 < need(a.id, b) && dd >= d0 + from / DIVERGING_RATIO)
+    };
     for a in geos {
         for la in &a.lines {
             for q in la.iter().step_by(2) {
@@ -994,6 +1030,9 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                     }
                     let b = by_id[&owner];
                     if anchored_near(b, sb) || a.order_at(q.s) != b.order_at(sb) {
+                        return;
+                    }
+                    if diverging(a, q.s, owner, dd) || diverging(b, sb, a.id, dd) {
                         return;
                     }
                     if dd >= need(a.id, owner) {
@@ -1570,6 +1609,59 @@ mod tests {
             "{:?}",
             dz.issues
         );
+    }
+
+    /// A high-speed main track with a 1:26.5 turnout and a track from its leg through `via`.
+    fn branch_off_a_high_speed_track(via: (f64, f64), to_x: f64) -> Design {
+        let mut net = Network::new(RailMode::HighSpeedRail, [7.0, 50.9]);
+        net.tracks
+            .push(straight(1, (0.0, 0.0), (3000.0, 0.0), None));
+        net.switches.push(crate::model::Switch {
+            id: 2,
+            kind: SwitchKind::Turnout,
+            track: 1,
+            s: 1000.0,
+            element: "db-ew-2500-1-26.5-fb".into(),
+            side: -1,
+            direction: 1,
+            flip: false,
+        });
+        let mut b = straight(3, (0.0, 0.0), (to_x, via.1), None);
+        b.start = Anchor::Switch { switch: 2, leg: 0 };
+        b.points = vec![crate::model::Pi {
+            x: via.0,
+            y: via.1,
+            radius_m: None,
+            level: None,
+        }];
+        net.tracks.push(b);
+        build(&net, None)
+    }
+
+    fn clearance_errors(dz: &Design) -> Vec<String> {
+        dz.issues
+            .iter()
+            .filter(|i| i.severity == Severity::Error && i.text.contains("clearance marker"))
+            .map(|i| i.text.clone())
+            .collect()
+    }
+
+    #[test]
+    fn a_loop_off_a_flat_high_speed_turnout_is_not_too_close_while_it_moves_away() {
+        // Damascus–Aleppo test: the leg ends 1.8 m from the main track and the loop reaches the
+        // 3.5 m clearance some 45 m further on, beyond the fixed allowance after a switch.
+        let dz = branch_off_a_high_speed_track((1232.0, -7.0), 2500.0);
+        assert!(
+            clearance_errors(&dz).is_empty(),
+            "{:?}",
+            clearance_errors(&dz)
+        );
+    }
+
+    #[test]
+    fn a_track_off_a_flat_turnout_that_stays_near_the_main_track_is_too_close() {
+        let dz = branch_off_a_high_speed_track((1500.0, -3.2), 2500.0);
+        assert!(!clearance_errors(&dz).is_empty(), "{:?}", dz.issues);
     }
 
     #[test]
