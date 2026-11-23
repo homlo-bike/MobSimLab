@@ -106,6 +106,8 @@ export const TILE_FILTERS = {
     "w/highway=motorway,motorway_link,trunk,trunk_link,primary,primary_link,secondary,secondary_link,tertiary,tertiary_link,unclassified,residential,living_street,service,road,busway,bus_guideway,pedestrian",
     "r/type=restriction",
   ],
+  /** A "Main roads and railways only" tile: the street line router's intercity roads (large-area step 3). */
+  roadMain: ["w/highway=motorway,motorway_link,trunk,trunk_link,primary,primary_link", "r/type=restriction"],
   walk: [
     "w/highway=footway,path,pedestrian,steps,living_street,residential,service,unclassified,tertiary,tertiary_link,secondary,secondary_link,primary,primary_link,trunk,trunk_link,track,road,cycleway,bridleway,corridor,platform",
   ],

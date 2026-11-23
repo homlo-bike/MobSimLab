@@ -5,7 +5,7 @@ import { activeLanguage, tNow, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { hashText } from "../../projects/inputKey";
 import { SavedResultNotice } from "../../projects/SavedResultNotice";
-import { fetchStreetTile, loadWasmEngine } from "./engine";
+import { fetchMainTiles, fetchStreetTile, loadWasmEngine } from "./engine";
 import { LinePanel, type PanelActions } from "./LinePanel";
 import {
   drawLine,
@@ -31,6 +31,9 @@ import {
   streetLineColor,
 } from "./saved";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
+
+/** Corridor tiles ("Main roads and railways only") loaded per round, after the tiles on screen. */
+const MAIN_BATCH = 24;
 import type { StreetLineInput } from "../journey-planner/network";
 import { depotFit, depotGates, lineVehicle } from "../depots/model";
 import type { SavedDepot } from "../depots/types";
@@ -119,6 +122,8 @@ interface Props {
   loadEngine?: EngineLoader;
   /** Street tile source; tests inject a fake. */
   fetchTile?: TileFetcher;
+  /** The project's "Main roads and railways only" tiles, loaded in the background so lines route between towns. */
+  fetchMain?: () => Promise<string[]>;
   /** Told about the line after every change, so the journey planner can ride it. */
   onLineChange?: (line: StreetLineInput) => void;
   /**
@@ -177,6 +182,7 @@ export function StreetLineEditor({
   panel = null,
   loadEngine = loadWasmEngine,
   fetchTile = fetchStreetTile,
+  fetchMain = fetchMainTiles,
   onLineChange,
   railTopology = null,
   projectRules,
@@ -447,6 +453,7 @@ export function StreetLineEditor({
     let busy = false;
     let again = false;
     let stopped = false;
+    let mainQueue: string[] | null = null;
     const load = async () => {
       const e = engine.current;
       if (!e || stopped) return;
@@ -458,13 +465,31 @@ export function StreetLineEditor({
       setZoomedOut(tooFar);
       const line = lineTileKeys.current;
       lineTileKeys.current = [];
-      if (tooFar && !line.length) return;
       const b = map.getBounds();
       const onScreen = tooFar
         ? []
         : tilesFor([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]).map(([x, y]) => `${x}/${y}`);
-      const want = [...new Set([...line, ...onScreen])].filter((k) => !tiles.current.has(k));
-      if (!want.length) return;
+      // Then, a batch at a time, the light tiles of the corridors drawn at "Main roads and railways only".
+      if (mainQueue === null) {
+        busy = true;
+        mainQueue = (await fetchMain()).filter((k) => !tiles.current.has(k));
+        busy = false;
+        if (stopped || engine.current !== e) return;
+      }
+      const near = [...new Set([...line, ...onScreen])].filter((k) => !tiles.current.has(k));
+      const corridor = mainQueue
+        .filter((k) => !tiles.current.has(k) && !near.includes(k))
+        .slice(0, MAIN_BATCH);
+      mainQueue = mainQueue.filter((k) => !corridor.includes(k) && !tiles.current.has(k));
+      const want = [...near, ...corridor];
+      if (mainQueue.length) again = true;
+      if (!want.length) {
+        if (again) {
+          again = false;
+          void load();
+        }
+        return;
+      }
       busy = true;
       want.forEach((k) => tiles.current.add(k));
       setStatus(tNow("street.loading"));
@@ -508,7 +533,7 @@ export function StreetLineEditor({
       stopped = true;
       map.off("moveend", onMove);
     };
-  }, [map, profile !== null, fetchTile, run]);
+  }, [map, profile !== null, fetchTile, fetchMain, run]);
 
   // Level crossings: from the railway tool's drawing, with the service its topology assumes.
   useEffect(() => {

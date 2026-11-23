@@ -428,5 +428,36 @@ describe("geodata import", () => {
     expect(after.osm.coversDrawing).toBe(true);
     await setArea([square("a1", 6.995, 49.995, 0.02)]);
     expect((await as("alice").get(`/api/projects/${project}/geodata`)).body.osm.coversDrawing).toBe(false);
+
+    // A "Main roads and railways only" polygon keeps the primary road and the tram line, not the building.
+    // Saved through the area API, which also tells the street tiles the area changed.
+    const saved = await as("alice").put(`/api/projects/${project}/area`, {
+      polygons: [{ ...square("a3", 6.99, 49.99, 0.04), detail: "main" }],
+      import: false,
+    });
+    expect(saved.status).toBe(200);
+    const main = await as("alice").upload(
+      `/api/projects/${project}/geodata/osm/upload?name=small.osm.pbf`,
+      readFileSync(pbf),
+    );
+    expect(main.status).toBe(201);
+    await idle();
+    const light = (await as("alice").get(`/api/projects/${project}/geodata`)).body;
+    expect(light.osm.latest.error).toBeNull();
+    expect(light.osm.current.stats.rows).toMatchObject({ osm_way_road: 1, osm_way_rail: 1, osm_building: 0 });
+    // The API serves the main-only tiles light: main roads, no walkways, buildings or places.
+    const [x, y] = tilesFor([7.005, 50.003, 7.005, 50.003])[0]!;
+    const keys = (await as("alice").get(`/api/street-network/main-tiles?project=${project}`)).body.tiles;
+    expect(keys).toContain(`${x}/${y}`);
+    overpassQueries.length = 0;
+    const tile = await as("alice").get(`/api/street-network/tiles/14/${x}/${y}?project=${project}`);
+    expect(tile.text).toContain('<way id="100"');
+    const walk = await as("alice").get(`/api/street-network/walk-tiles/14/${x}/${y}?project=${project}`);
+    expect(walk.text).not.toContain("<way");
+    const houses = await as("alice").get(
+      `/api/street-network/building-tiles/14/${x}/${y}?project=${project}`,
+    );
+    expect(houses.body.buildings).toEqual([]);
+    expect(overpassQueries).toEqual([]);
   });
 });

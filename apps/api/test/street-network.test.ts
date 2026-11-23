@@ -10,6 +10,7 @@ import {
   buildingQuery,
   buildingUse,
   footprints,
+  MAIN_ROAD_CLASSES,
   osmNumber,
   placeKind,
   placeQuery,
@@ -48,6 +49,12 @@ describe("street tiles", () => {
     expect(q).toContain('way["highway"~"^(motorway|');
     expect(q).toContain('rel(bw.w)["type"="restriction"]');
     expect(q).not.toContain('"building"');
+  });
+
+  it("asks only for main roads in a main-roads-only tile", () => {
+    const q = streetQuery(14, 8508, 5489, MAIN_ROAD_CLASSES);
+    expect(q).toContain('way["highway"~"^(motorway|motorway_link|trunk|trunk_link|primary|primary_link)$"]');
+    expect(q).not.toContain("residential");
   });
 
   it("asks for railway tracks of every kind, not roads", () => {

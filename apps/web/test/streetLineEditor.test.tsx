@@ -269,6 +269,25 @@ describe("Street line editor", () => {
     expect(fetchTile).not.toHaveBeenCalled();
   });
 
+  it("loads the corridor tiles of main-roads-only polygons in batches, also zoomed out", async () => {
+    const engine = fakeEngine();
+    const fetchTile = vi.fn(async (x: number, y: number) => `<osm tile="${x}/${y}"/>`);
+    const { map } = fakeMap(8);
+    const corridor = Array.from({ length: 60 }, (_, i) => `${9000 + i}/6000`);
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={fetchTile}
+        fetchMain={async () => corridor}
+      />,
+    );
+    await waitFor(() => expect(fetchTile).toHaveBeenCalledTimes(60));
+    expect(fetchTile).toHaveBeenCalledWith(9059, 6000);
+    // Batches of 24: the engine is rebuilt once per batch.
+    await waitFor(() => expect(engine.rebuild).toHaveBeenCalledTimes(3));
+  });
+
   it("adds a point where the planner clicks", async () => {
     const { engine, handlers } = await opened();
     await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());

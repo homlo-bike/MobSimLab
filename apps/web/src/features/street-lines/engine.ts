@@ -93,6 +93,24 @@ export const fetchStreetTile: TileFetcher = async (x, y) => {
 };
 
 /**
+ * Purpose: the tiles of the open project held at "Main roads and railways only" (large-area projects, step 3), as
+ * `x/y` keys: their streets are light, so the editor loads them all and a line can be routed between towns.
+ * Output: empty without an open project, without main polygons, or where the API cannot answer (static viewer).
+ */
+export async function fetchMainTiles(): Promise<string[]> {
+  const url = withProject("/api/street-network/main-tiles");
+  if (!url.includes("project=")) return [];
+  try {
+    const res = await fetch(url, { credentials: "same-origin" });
+    if (!res.ok) return [];
+    const body = (await res.json()) as { tiles?: unknown };
+    return Array.isArray(body.tiles) ? body.tiles.filter((k): k is string => typeof k === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+/**
  * Purpose: the walk analysis of the GIS tab (walk coverage, gaps and stop spacing, ADR-0035 §5–§6), on the
  * same street-routing WebAssembly module as the street line tool.
  * Output: an engine with no walk network; walk tiles are added with `addOsm` and `build`.

@@ -98,6 +98,16 @@ export class OsmTools {
   }
 
   /**
+   * Purpose: keep only the objects matching osmium tag filters (such as `w/highway=motorway`) and the nodes and
+   * members they reference.
+   */
+  async tagsFilter(input: string, filters: string[], output: string): Promise<void> {
+    await runTool("osmium", ["tags-filter", "--overwrite", "-o", output, input, ...filters], {
+      timeoutMs: this.timeoutMs,
+    });
+  }
+
+  /**
    * Purpose: cut an OSM file to the project area's polygons (a GeoJSON file, area-polygons.ts
    * `polygonsGeoJson`). `smart` keeps whole ways and multipolygons that cross the edge, so roads and buildings at
    * the edge are complete.

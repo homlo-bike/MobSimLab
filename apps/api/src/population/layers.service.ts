@@ -26,6 +26,7 @@ import {
 } from "../gateway/ghsl.client";
 import { CELL_DEG, emptyGrid, WorldPopClient, type WorldPopEntry } from "../gateway/worldpop.client";
 import { AreaIndex, type AreaPolygon, polygonsKm2 } from "../projects/area-polygons";
+import { coarsenMain } from "./coarsen";
 import { type Bbox, type ProjectArea, projectArea } from "../projects/project-area";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
 import { type Lattice, layerLattice } from "./lattice";
@@ -655,14 +656,11 @@ export class PopulationLayersService implements OnModuleInit {
       throw new Error(
         `The area has more than ${this.settings.maxFeatures.toLocaleString("en")} cells with people`,
       );
-    await this.insertCells(
-      id,
-      w,
-      s,
-      w.map((x) => x + CELL_DEG),
-      s.map((y) => y + CELL_DEG),
-      p,
+    const kept = coarsenMain(
+      { w, s, e: w.map((x) => x + CELL_DEG), n: s.map((y) => y + CELL_DEG), p },
+      polygons,
     );
+    await this.insertCells(id, kept.w, kept.s, kept.e, kept.n, kept.p);
     const citation = entries.map((e) => e.citation).filter(Boolean)[0] ?? "";
     await this.db.transaction().execute(async (tx) => {
       await tx
@@ -712,7 +710,8 @@ export class PopulationLayersService implements OnModuleInit {
       }),
     );
     await this.progress(id, { step: "store" });
-    await this.insertCells(id, w, s, e, n, p);
+    const kept = coarsenMain({ w, s, e, n, p }, polygons);
+    await this.insertCells(id, kept.w, kept.s, kept.e, kept.n, kept.p);
     const notes = got.missing.length
       ? [`GHSL has no tile ${got.missing.join(", ")} (open sea); it counts as nobody.`]
       : [];
