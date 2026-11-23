@@ -155,7 +155,11 @@ export function StreetSetupEditor({
 }: Props) {
   const [parse, setParse] = useState<((xml: string) => StreetInfo[]) | null>(null);
   const [infos, setInfos] = useState<Map<number, StreetInfo>>(new Map());
-  const [selected, setSelected] = useState<number | null>(null);
+  // Streets selected on the map (Shift, Ctrl or Cmd adds one), in the order they were tapped; one shows its own
+  // panel, several the settings they share.
+  const [streets, setStreets] = useState<number[]>([]);
+  const selected = streets.length === 1 ? streets[0]! : null;
+  const setSelected = (way: number | null) => setStreets(way === null ? [] : [way]);
   // Junctions selected on the map (one or more), in the order they were tapped.
   const [picked, setPicked] = useState<PickedJunction[]>([]);
   const { t, tn } = useI18n();
@@ -333,8 +337,8 @@ export function StreetSetupEditor({
   }, [map, lanes, setups, tileCount, trafficSide]);
 
   useEffect(() => {
-    if (map) selectStreet(map, selected);
-  }, [map, selected, infos]);
+    if (map) selectStreet(map, streets);
+  }, [map, streets, infos]);
 
   // Junctions coloured by their traffic lights: OSM's, or the planner's where set.
   useEffect(() => {
@@ -388,7 +392,8 @@ export function StreetSetupEditor({
           )
         : [];
       const way = hits[0]?.properties?.way;
-      setSelected(typeof way === "number" ? way : null);
+      if (typeof way !== "number") setStreets([]);
+      else setStreets((w) => toggleSelection(w, way, (x) => x, addsToSelection(ev.originalEvent)));
     };
     map.on("click", onClick);
     return () => {
@@ -408,6 +413,19 @@ export function StreetSetupEditor({
     const mid = info.coords[Math.floor(info.coords.length / 2)]!;
     const base: StreetSetup = setup ?? { way: info.way };
     onChange(upsert(setups, { ...base, ...patch, way: info.way, name: info.name, at: mid }));
+  };
+
+  /** The same change on every selected street whose shape has loaded. */
+  const changeAll = (patch: Partial<StreetSetup>) => {
+    let next: StreetSetup[] = [...setups];
+    for (const way of streets) {
+      const i = infos.get(way);
+      if (!i) continue;
+      const mid = i.coords[Math.floor(i.coords.length / 2)]!;
+      const base: StreetSetup = next.find((s) => s.way === way) ?? { way };
+      next = upsert(next, { ...base, ...patch, way, name: i.name, at: mid });
+    }
+    onChange(next);
   };
 
   const show = (s: StreetSetup) => {
@@ -504,6 +522,24 @@ export function StreetSetupEditor({
           onUnselect={(key) => setPicked((p) => p.filter((j) => j.key !== key))}
           onClose={() => setPicked([])}
         />
+      ) : streets.length > 1 ? (
+        <MultiStreetForm
+          rows={streets.map((way) => ({
+            way,
+            name: infos.get(way)?.name ?? setupOf(way)?.name ?? "",
+            setup: setupOf(way),
+            loaded: infos.has(way),
+          }))}
+          editable={editable}
+          onPatch={changeAll}
+          onCopyLayout={(from) => {
+            const sections = setupOf(from)?.sections;
+            if (sections) changeAll({ ...OSM_LANES, sections });
+          }}
+          onReset={() => onChange(setups.filter((s) => !streets.includes(s.way)))}
+          onUnselect={(way) => setStreets((w) => w.filter((x) => x !== way))}
+          onClose={() => setStreets([])}
+        />
       ) : info ? (
         <StreetForm
           info={info}
@@ -523,6 +559,10 @@ export function StreetSetupEditor({
         </p>
       )}
 
+      {streets.length <= 1 && picked.length === 0 && (
+        <p className="text-xs text-slate-500">{t("setup.multi.shiftHint")}</p>
+      )}
+
       <Legend />
 
       <section aria-label={t("setup.listLabel")}>
@@ -538,7 +578,7 @@ export function StreetSetupEditor({
                 <button
                   type="button"
                   onClick={() => show(s)}
-                  aria-current={s.way === selected ? "true" : undefined}
+                  aria-current={streets.includes(s.way) ? "true" : undefined}
                   className="flex min-h-11 w-full items-center gap-2 rounded-lg px-2 text-start hover:bg-slate-100 aria-[current=true]:bg-amber-50"
                 >
                   <span className="min-w-0 flex-1 truncate font-medium">
@@ -701,6 +741,149 @@ function JunctionForm({
       )}
       <p className="text-sm text-slate-700">{t("setup.junction.note")}</p>
       {editable && <p className="text-xs text-slate-500">{t("setup.junction.more")}</p>}
+    </section>
+  );
+}
+
+/** One selected street, as the panel for several shows it. */
+interface StreetRow {
+  way: number;
+  name: string;
+  setup: StreetSetup | undefined;
+  /** Whether its shape has loaded (a change only goes to loaded streets). */
+  loaded: boolean;
+}
+
+/**
+ * Purpose: the panel of several selected streets (Shift-click adds one): what they share. Their layout as OSM
+ * maps it, or one street's custom layout given to all; and the traffic at peak. A field shows its value only
+ * when all the streets have the same one; a change applies to all of them.
+ */
+function MultiStreetForm({
+  rows,
+  editable,
+  onPatch,
+  onCopyLayout,
+  onReset,
+  onUnselect,
+  onClose,
+}: {
+  rows: StreetRow[];
+  editable: boolean;
+  onPatch: (patch: Partial<StreetSetup>) => void;
+  onCopyLayout: (from: number) => void;
+  onReset: () => void;
+  onUnselect: (way: number) => void;
+  onClose: () => void;
+}) {
+  const { t } = useI18n();
+  const nameOf = (r: StreetRow) => r.name || t("setup.streetNum", { way: r.way });
+  const custom = (r: StreetRow) => !!r.setup?.sections;
+  const allOsm = rows.every((r) => !custom(r));
+  const sameOf = (f: "cars_morning_peak" | "cars_evening_peak") => {
+    const v = rows.map((r) => r.setup?.[f] ?? null);
+    return v.every((x) => x === v[0]) ? v[0] : undefined;
+  };
+  const withLayout = rows.filter(custom);
+  return (
+    <section aria-label={t("setup.multi.title", { count: rows.length })} className="flex flex-col gap-3.5">
+      <div className="flex items-start gap-2">
+        <h3 className="min-w-0 flex-1 truncate text-base font-semibold">
+          {t("setup.multi.title", { count: rows.length })}
+        </h3>
+        <button
+          type="button"
+          className="icon-btn -mt-2 -me-2"
+          aria-label={t("setup.multi.clear")}
+          onClick={onClose}
+        >
+          ✕
+        </button>
+      </div>
+      <ul className="flex flex-col">
+        {rows.map((r) => (
+          <li key={r.way} className="flex min-h-11 items-center gap-2.5 ps-2">
+            <span className="min-w-0 flex-1 truncate font-medium">{nameOf(r)}</span>
+            <span className="shrink-0 text-xs text-slate-500">
+              {custom(r) ? t("setup.lay.custom") : t("setup.lay.osm")}
+            </span>
+            <button
+              type="button"
+              className="icon-btn text-slate-500"
+              aria-label={t("setup.multi.unselect", { name: nameOf(r) })}
+              onClick={() => onUnselect(r.way)}
+            >
+              ✕
+            </button>
+          </li>
+        ))}
+      </ul>
+      {rows.some((r) => !r.loaded) && <p className="text-sm text-slate-600">{t("setup.moveToLoad")}</p>}
+
+      <fieldset disabled={!editable} className="flex flex-col gap-2">
+        <legend className="font-medium">{t("setup.lay.mode")}</legend>
+        <button
+          type="button"
+          className="btn w-full"
+          aria-pressed={allOsm}
+          onClick={() => !allOsm && onPatch(OSM_LANES)}
+        >
+          {t("setup.multi.allOsm")}
+        </button>
+        {withLayout.map((r) => (
+          <button key={r.way} type="button" className="btn w-full" onClick={() => onCopyLayout(r.way)}>
+            {t("setup.multi.copyLayout", { name: nameOf(r) })}
+          </button>
+        ))}
+        {withLayout.length === 0 && <p className="text-xs text-slate-500">{t("setup.multi.layoutHint")}</p>}
+      </fieldset>
+
+      <fieldset disabled={!editable} className="flex flex-col gap-1.5">
+        <legend className="font-medium">{t("setup.traffic")}</legend>
+        <div className="grid grid-cols-2 gap-2">
+          {(
+            [
+              [
+                "cars_morning_peak",
+                "setup.morningPeak",
+                projectServiceDay().peaks[0] ?? DEFAULT_SERVICE_DAY.peaks[0],
+              ],
+              [
+                "cars_evening_peak",
+                "setup.eveningPeak",
+                projectServiceDay().peaks[1] ?? DEFAULT_SERVICE_DAY.peaks[1],
+              ],
+            ] as const
+          ).map(([field, label, win]) => {
+            const v = sameOf(field);
+            return (
+              <label key={field} className="flex flex-col gap-1 text-sm">
+                <span>{t(label, { from: clock(win?.[0]), to: clock(win?.[1]) })}</span>
+                <span className="flex items-center gap-1.5">
+                  <input
+                    type="number"
+                    inputMode="numeric"
+                    min={0}
+                    max={MAX_PEAK_CARS}
+                    step={10}
+                    className="input min-h-11 w-full min-w-0 tabular-nums"
+                    placeholder={v === undefined ? t("rail.multi.mixedShort") : t("setup.multi.typical")}
+                    value={v ?? ""}
+                    onChange={(ev) => onPatch({ [field]: parsePeakCars(ev.target.value) })}
+                  />
+                  <span className="shrink-0 text-xs text-slate-500">{t("setup.carsPerHour")}</span>
+                </span>
+              </label>
+            );
+          })}
+        </div>
+      </fieldset>
+
+      {editable && rows.some((r) => r.setup) && (
+        <button type="button" className="btn w-full" onClick={onReset}>
+          {t("setup.multi.reset")}
+        </button>
+      )}
     </section>
   );
 }
