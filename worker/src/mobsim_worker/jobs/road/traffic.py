@@ -9,10 +9,18 @@ The cars are sampled from candidate routes (SUMO's ``randomTrips.py``, routed wi
 count on each street does not go above its target: the routes are taken in a seeded random order, again and
 again, while every street they use still has room (the greedy method of SUMO's ``routeSampler``). Each car
 leaves at a random time in its interval. Cars are not shown in the replay; they are there to load the streets.
+
+The default rates of the road types are what such a street carries where its junctions let the cars through,
+which a city's street network as a whole cannot: a side street that gives way to two main roads gets a car
+through only in the gaps of their traffic, and a car waiting to turn across oncoming traffic holds up the
+queue behind it. Filling every street to its default jammed whole districts (Damascus bug 30). So each
+street's default rate is cut to ``MAX_LOAD`` of what its end junction lets through (``approach_capacity``).
+A street's own counts from the GIS tab are kept as the planner set them.
 """
 
 from __future__ import annotations
 
+import math
 import os
 import random
 import sys
@@ -46,6 +54,20 @@ CANDIDATES_PER_CAR = 3
 
 #: Most candidate routes generated.
 MAX_CANDIDATES = 60_000
+
+#: Cars per hour a lane passes when its queue moves without a stop (HCM base saturation flow, rounded).
+SATURATION_VPH = 1800.0
+
+#: Share of what a junction lets through that a street's default background traffic may fill.
+MAX_LOAD = 0.8
+
+#: Gap a car waits for before it pulls out of a street that gives way, and between cars that follow, s
+#: (HCM two-way stop control, cars).
+CRITICAL_GAP_S = 6.5
+FOLLOW_UP_S = 3.5
+
+#: Cars per hour a junction of equal streets (right before left, all-way stop) passes in all.
+EQUAL_JUNCTION_VPH = 1200.0
 
 
 @dataclass(frozen=True)
@@ -108,21 +130,158 @@ def counts(
     parts: Sequence[Interval],
     off_peak_share: float,
 ) -> list[dict[str, float]]:
-    """Return the target car count of each edge in each interval."""
+    """Return the target car count of each edge in each interval.
+
+    Default rates are cut to ``MAX_LOAD`` of what the edge's end junction lets through; the planner's own
+    counts are kept.
+    """
     out: list[dict[str, float]] = []
     edges = [e for e in net.net.getEdges() if e.allows("passenger") and e.getFunction() == ""]
     for part in parts:
         hours = (part.end - part.begin) / 3600.0
-        c: dict[str, float] = {}
+        rates: dict[str, float] = {}
+        own: set[str] = set()
         for e in edges:
             w = way_of_edge(e.getID())
             if w is None:
                 continue
             rate = way_rate(ways.get(w), setups.get(w), defaults, part.peak, off_peak_share)
             if rate > 0:
-                c[e.getID()] = rate * hours
-        out.append(c)
+                rates[e.getID()] = rate
+                if planner_set(setups.get(w)):
+                    own.add(e.getID())
+        out.append({e: r * hours for e, r in limit(net, rates, own).items()})
     return out
+
+
+def limit(net: RoadNet, rates: Mapping[str, float], own: set[str]) -> dict[str, float]:
+    """Cut each edge's rate to ``MAX_LOAD`` of what its end junction lets through (``own`` edges stay).
+
+    The traffic a street gives way to is taken at its full rate, not cut: SUMO's drivers take fewer gaps
+    than the HCM's, and with the cut rates the test city still jammed.
+    """
+    cap = approach_capacity(net, rates)
+    return {e: r if e in own else min(r, MAX_LOAD * cap.get(e, r / MAX_LOAD)) for e, r in rates.items()}
+
+
+def planner_set(setup: Mapping[str, Any] | None) -> bool:
+    """Whether the planner set a street's own peak counts in the GIS tab."""
+    if not setup:
+        return False
+    return any(isinstance(setup.get(f), int | float) for f in ("cars_morning_peak", "cars_evening_peak"))
+
+
+def gap_capacity(conflicting_vph: float) -> float:
+    """Cars per hour a lane that gives way gets into the gaps of ``conflicting_vph`` (HCM two-way stop)."""
+    if conflicting_vph <= 0:
+        return 3600.0 / FOLLOW_UP_S
+    v = conflicting_vph / 3600.0
+    return conflicting_vph * math.exp(-v * CRITICAL_GAP_S) / (1.0 - math.exp(-v * FOLLOW_UP_S))
+
+
+def _phases(net: RoadNet, tls_id: str) -> list[tuple[str, float]]:
+    """The signal program of a junction: each phase's link states and its share of the cycle."""
+    tls = net.net.getTLS(tls_id)
+    programs = list(tls.getPrograms().values()) if tls else []
+    if not programs:
+        return []
+    phases = [(str(ph.state), float(ph.duration)) for ph in programs[0].getPhases()]
+    cycle = sum(d for _, d in phases)
+    return [(st, d / cycle) for st, d in phases] if cycle > 0 else []
+
+
+def approach_capacity(net: RoadNet, rates: Mapping[str, float]) -> dict[str, float]:
+    """Return the cars per hour each edge's end junction lets through from it.
+
+    Each link (a lane's turn into the junction) passes ``SATURATION_VPH`` while it may go freely, and the
+    gaps in the traffic it gives way to (``gap_capacity``) while it must yield:
+
+    - At traffic lights: per phase, a protected green (``G``) at the full rate; a permissive green (``g``,
+      such as a left turn across oncoming traffic) in the gaps of the edges that have a protected green in
+      the same phase, their rate packed into their green time.
+    - Without lights: a link with priority (``M``) at the full rate; one that gives way (``m``, ``s``, such
+      as a side street or a left turn off the main road) in the gaps of the other edges into the junction
+      that have priority; links of equal streets (``=``, ``w``) at an even share of ``EQUAL_JUNCTION_VPH``.
+
+    A lane passes no more than its slowest link (the car at the front of the queue holds the others up).
+    At traffic lights an edge passes the sum of its lanes: a car waiting to turn clears at the end of the
+    green. Without lights it may wait on and on, and the cars behind it squeeze into the lanes beside it, so
+    the edge passes its slowest lane's rate times its lanes.
+
+    Args:
+        net: The network (read with its signal programs).
+        rates: Cars per hour on each edge (the edges to rate).
+    """
+    links: dict[str, list[tuple[str, Any]]] = {}
+    by_node: dict[str, list[str]] = {}
+    for eid in rates:
+        e = net.edge(eid)
+        by_node.setdefault(e.getToNode().getID(), []).append(eid)
+        links[eid] = [
+            (c.getFromLane().getID(), c)
+            for conns in e.getOutgoing().values()
+            for c in conns
+            if c.getFromLane().allows("passenger")
+        ]
+    programs: dict[str, list[tuple[str, float]]] = {}
+
+    def program(tls_id: str) -> list[tuple[str, float]]:
+        if tls_id not in programs:
+            programs[tls_id] = _phases(net, tls_id)
+        return programs[tls_id]
+
+    def green(eid: str, tls_id: str, phase: str) -> bool:
+        return any(
+            c.getTLSID() == tls_id
+            and 0 <= c.getTLLinkIndex() < len(phase)
+            and phase[c.getTLLinkIndex()] == "G"
+            for _, c in links[eid]
+        )
+
+    def green_share(eid: str, tls_id: str) -> float:
+        return sum(share for st, share in program(tls_id) if green(eid, tls_id, st))
+
+    def link_capacity(eid: str, c: Any) -> float:
+        node = net.edge(eid).getToNode().getID()
+        others = [o for o in by_node[node] if o != eid]
+        tls_id = c.getTLSID()
+        if tls_id:
+            phases = program(tls_id)
+            k = int(c.getTLLinkIndex())
+            if not phases or not 0 <= k < len(phases[0][0]):
+                return SATURATION_VPH / 2
+            total = 0.0
+            for st, share in phases:
+                if st[k] == "G":
+                    total += share * SATURATION_VPH
+                elif st[k] == "g":
+                    foes = sum(
+                        rates[o] / max(0.1, green_share(o, tls_id)) for o in others if green(o, tls_id, st)
+                    )
+                    total += share * min(SATURATION_VPH, gap_capacity(foes))
+            return total
+        state = str(c.getState())
+        if state in ("M", "O"):
+            return SATURATION_VPH
+        if state in ("m", "s", "o"):
+            major = sum(rates[o] for o in others if any(str(x.getState()) == "M" for _, x in links[o]))
+            return min(SATURATION_VPH, gap_capacity(major))
+        return EQUAL_JUNCTION_VPH / max(1, len(by_node[node]))
+
+    cap: dict[str, float] = {}
+    for eid, ls in links.items():
+        lanes: dict[str, float] = {}
+        for lane, c in ls:
+            lanes[lane] = min(lanes.get(lane, SATURATION_VPH), link_capacity(eid, c))
+        if lanes and any(c.getTLSID() for _, c in ls):
+            cap[eid] = sum(lanes.values())
+        elif lanes:
+            cap[eid] = len(lanes) * min(lanes.values())
+        else:
+            cap[eid] = SATURATION_VPH * max(
+                1, sum(1 for ln in net.edge(eid).getLanes() if ln.allows("passenger"))
+            )
+    return cap
 
 
 def candidates(net_file: str, cwd: str, begin: float, end: float, wanted: int, seed: int) -> list[list[str]]:

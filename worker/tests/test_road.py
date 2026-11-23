@@ -19,7 +19,7 @@ from mobsim_worker.jobs.road.osm import (
     merge_tiles,
 )
 from mobsim_worker.jobs.road.service import blocks, planned_offsets
-from mobsim_worker.jobs.road.traffic import intervals, way_rate
+from mobsim_worker.jobs.road.traffic import gap_capacity, intervals, way_rate
 
 H = 3600.0
 DEFAULTS = {"trunk": 1500, "primary": 900, "secondary": 600, "tertiary": 300, "local": 50}
@@ -151,6 +151,78 @@ def test_traffic_takes_the_street_peak_and_a_share_of_it_off_peak() -> None:
     assert way_rate(main, None, DEFAULTS, None, 0.5) == 450
     assert way_rate(Way(2, [1, 2], {"highway": "busway"}), None, DEFAULTS, "morning", 0.6) == 0
     assert way_rate(None, None, DEFAULTS, "morning", 0.6) == 0
+
+
+def test_a_street_that_gives_way_gets_fewer_cars_through_the_busier_the_main_road() -> None:
+    assert gap_capacity(0) == pytest.approx(3600 / 3.5)
+    assert gap_capacity(900) == pytest.approx(304, abs=2)
+    assert gap_capacity(1800) < 100
+    assert gap_capacity(300) > gap_capacity(600) > gap_capacity(1200)
+
+
+def _town_with_setup(tmp: Path, junctions: list[dict[str, Any]] | None = None) -> Any:
+    pytest.importorskip("libsumo")
+    from mobsim_worker.jobs.road import osm  # noqa: PLC0415
+    from mobsim_worker.jobs.road.network import RoadNet, netconvert  # noqa: PLC0415
+
+    tmp.mkdir(parents=True, exist_ok=True)
+    data = merge_tiles(tiles())
+    apply_junction_setup(data, junctions or [])
+    osm.write(data, str(tmp / "town.osm"))
+    netconvert(str(tmp / "town.osm"), str(tmp / "town.net.xml"), str(tmp), False)
+    return data, RoadNet(str(tmp / "town.net.xml"))
+
+
+def test_default_traffic_is_cut_to_what_the_junctions_let_through(tmp_path: Path) -> None:
+    from mobsim_worker.jobs.road.osm import way_of_edge  # noqa: PLC0415
+    from mobsim_worker.jobs.road.traffic import (  # noqa: PLC0415
+        Interval,
+        approach_capacity,
+        counts,
+        limit,
+    )
+
+    data, net = _town_with_setup(tmp_path)
+    edges = [e for e in net.net.getEdges() if e.getFunction() == "" and e.allows("passenger")]
+    main = {e.getID() for e in edges if data.ways[way_of_edge(e.getID()) or 0].tags["highway"] == "primary"}
+    # Side streets into Main Street give way to it, except at the lights in the middle.
+    into_main = [
+        e
+        for e in edges
+        if e.getID() not in main
+        and e.getToNode().getType() == "priority"
+        and any(o.getID() in main for o in e.getToNode().getIncoming())
+    ]
+    assert into_main
+    rates = {e.getID(): 900.0 if e.getID() in main else 300.0 for e in edges}
+    cap = approach_capacity(net, rates)
+    assert all(cap[e.getID()] < 400 for e in into_main)
+    # Main Street's own left turns wait for gaps in the oncoming traffic.
+    cut_rates = limit(net, rates, set())
+    assert all(200 < cut_rates[m] <= 900 for m in main)
+    assert all(cut_rates[e.getID()] < 300 for e in into_main)
+    lit = [e.getID() for e in edges if e.getToNode().getType() == "traffic_light"]
+    assert lit and all(0 < cap[e] < 1800 * net.edge(e).getLaneNumber() for e in lit)
+
+    parts = [Interval(0.0, H, "morning")]
+    loud = {"trunk": 1500, "primary": 900, "secondary": 600, "tertiary": 300, "local": 900}
+    side = into_main[0].getID()
+    way = way_of_edge(side) or 0
+    cut = counts(net, data.ways, {}, loud, parts, 0.6)[0]
+    assert cut[side] < 400
+    # A street's own counts from the GIS tab stay as the planner set them.
+    own = counts(net, data.ways, {way: {"way": way, "cars_morning_peak": 900}}, loud, parts, 0.6)[0]
+    assert own[side] == pytest.approx(900)
+
+
+def test_lights_closer_than_20_m_count_as_junctions_not_controllers(tmp_path: Path) -> None:
+    # Two neighbouring junctions on Main Street (200 m apart) and the mapped one in the middle.
+    from road_fixture import node_id  # noqa: PLC0415
+
+    sets = [{"nodes": [node_id(1, 2)], "signals": True}, {"nodes": [node_id(3, 2)], "signals": True}]
+    _, net = _town_with_setup(tmp_path, sets)
+    lit = [n for n in net.net.getNodes() if n.getType().startswith("traffic_light")]
+    assert len(lit) == 3
 
 
 def test_planned_times_add_the_line_dwell_at_each_stop() -> None:

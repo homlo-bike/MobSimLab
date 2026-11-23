@@ -230,6 +230,7 @@ def run_road(
     data = osm.merge_tiles(tiles)
     osm.clip(data, *_bbox(scenario))
     osm.apply_street_setup(data, scenario.get("streets", []), left_hand=left)
+    osm_signals = osm.mapped_signals(data)  # before the planner's junction setup adds or removes lights
     lights_on, lights_off = osm.apply_junction_setup(data, scenario.get("junctions", []))
     if lights_on or lights_off:
         result["notes"].append(
@@ -252,7 +253,6 @@ def run_road(
     osm_file = os.path.join(workdir, "streets.osm")
     net_file = os.path.join(workdir, "net.net.xml")
     osm.write(data, osm_file)
-    osm_signals = osm.mapped_signals(data)
     keep = [str(i) for i in data.ways if i >= osm.ADDED_ID_BASE]
     warnings = netconvert(osm_file, net_file, workdir, left, keep)
     net = RoadNet(net_file)
@@ -260,11 +260,12 @@ def run_road(
     result["network"] = {
         "edges": len(edges),
         "km": sum(e.getLength() for e in edges) / 1000.0,
-        "signals": len(net.net.getTrafficLights()),
+        # Junctions with lights; netconvert runs lights closer than 20 m as one controller (``--tls.join``).
+        "signals": sum(1 for n in net.net.getNodes() if n.getType().startswith("traffic_light")),
         "osm_signals": osm_signals,
         "warnings": len(warnings),
     }
-    if osm_signals == 0:
+    if osm_signals == 0 and lights_on == 0:
         result["notes"].append(
             "OpenStreetMap maps no traffic lights on these streets, so every junction runs without lights "
             "and side streets wait for gaps in the main roads' traffic. Give the main junctions traffic "
