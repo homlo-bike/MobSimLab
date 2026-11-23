@@ -85,13 +85,13 @@ describe("mslab project files", () => {
   const railway = {
     origin: [13.4, 52.5],
     mode: "tram",
-    stations: [{ id: 1, name: "Lakeside" }],
+    stations: [{ id: 1, name: "Lakeside", x: 0, y: 0 }],
     tracks: [
       {
         id: 1,
         points: [
-          [0, 0],
-          [400, 0],
+          { x: 0, y: 0 },
+          { x: 400, y: 0 },
         ],
       },
     ],
