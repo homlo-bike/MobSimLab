@@ -2393,7 +2393,7 @@ mod tests {
             .as_array()
             .unwrap()
             .iter()
-            .all(|s| s.get("storage_role").map_or(true, |r| *r == "overnight")));
+            .all(|s| s.get("storage_role").is_none_or(|r| *r == "overnight")));
         // The drawing keeps the fields only when set.
         let doc = serde_json::to_value(sample(RailMode::Tram, 7.0, 50.9)).unwrap();
         assert!(doc.get("yards").is_none());

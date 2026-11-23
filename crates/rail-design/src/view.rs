@@ -1093,9 +1093,10 @@ fn level_profile(g: &crate::alignment::TrackGeo, p: &crate::params::ModeParams) 
             _ => (0.0, 0.0),
         };
         let r2 = |v: f64| (v * 100.0).round() / 100.0;
-        if out.last().map_or(true, |l| {
-            (l[0] - r2(z.s0)).abs() > 1e-9 || (l[1] - r2(h0)).abs() > 1e-9
-        }) {
+        if out
+            .last()
+            .is_none_or(|l| (l[0] - r2(z.s0)).abs() > 1e-9 || (l[1] - r2(h0)).abs() > 1e-9)
+        {
             out.push([r2(z.s0), r2(h0)]);
         }
         out.push([r2(z.s1), r2(h1)]);

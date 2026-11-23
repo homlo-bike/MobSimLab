@@ -465,7 +465,7 @@ impl WalkGraph {
                     let ed = &self.edges[e as usize];
                     let pr =
                         project_on_segment(p, self.nodes[ed.a as usize], self.nodes[ed.b as usize]);
-                    if pr.dist <= s.max_snap_m && best.map_or(true, |b| pr.dist < b.off_m) {
+                    if pr.dist <= s.max_snap_m && best.is_none_or(|b| pr.dist < b.off_m) {
                         best = Some(Snap {
                             edge: e,
                             t: pr.t,
@@ -1290,7 +1290,7 @@ pub fn stop_spacing(req: &SpacingRequest, walk: Option<&WalkGraph>) -> SpacingRe
                     if ch + 1e-6 < last {
                         continue;
                     }
-                    if best.map_or(true, |b| pr.dist < b.0 - 1e-9) {
+                    if best.is_none_or(|b| pr.dist < b.0 - 1e-9) {
                         best = Some((pr.dist, ch, i));
                     }
                 }

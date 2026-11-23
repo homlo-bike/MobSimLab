@@ -299,7 +299,7 @@ pub fn next_id(net: &Network) -> u32 {
 pub fn nearest_anchor(dz: &Design, q: P2, max_m: f64) -> Option<(SignalAt, f64)> {
     let mut best: Option<(SignalAt, f64)> = None;
     let mut take = |at: SignalAt, d: f64| {
-        if d <= max_m && best.as_ref().map_or(true, |b| d < b.1) {
+        if d <= max_m && best.as_ref().is_none_or(|b| d < b.1) {
             best = Some((at, d));
         }
     };

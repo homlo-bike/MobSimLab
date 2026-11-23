@@ -210,12 +210,12 @@ fn trains_come_to_an_end_station_siding_from_an_overnight_track() {
     let p = plan(m, &[line], &PlanParams::default()).unwrap();
     for t in ["es1", "es2"] {
         assert!(
-            p.stabling_start.get(t).map_or(true, |v| v.is_empty()),
+            p.stabling_start.get(t).is_none_or(|v| v.is_empty()),
             "{:?}",
             p.stabling_start
         );
         assert!(
-            p.stabling_end.get(t).map_or(true, |v| v.is_empty()),
+            p.stabling_end.get(t).is_none_or(|v| v.is_empty()),
             "{:?}",
             p.stabling_end
         );

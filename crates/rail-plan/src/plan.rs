@@ -512,7 +512,7 @@ fn periodic_pattern(
                 e,
                 off,
             );
-            if best.as_ref().map_or(true, |(k, _)| key < *k) {
+            if best.as_ref().is_none_or(|(k, _)| key < *k) {
                 best = Some((
                     key,
                     Pattern {
@@ -1439,9 +1439,10 @@ impl<'a> Planner<'a> {
             let against =
                 ((against_others(self, &out) + against_others(self, &back)) / 100.0).floor() as u64;
             let shared = shared_ends(&out) + shared_ends(&back);
-            if best.as_ref().map_or(true, |b| {
-                (against, shared, sh, cost) < (b.0, b.1, b.2, b.3 - 1e-6)
-            }) {
+            if best
+                .as_ref()
+                .is_none_or(|b| (against, shared, sh, cost) < (b.0, b.1, b.2, b.3 - 1e-6))
+            {
                 best = Some((against, shared, sh, cost, out, back));
             }
         }
@@ -1487,7 +1488,7 @@ impl<'a> Planner<'a> {
                     }
                 };
                 let total = t.profile.total_time_s();
-                if best.as_ref().map_or(true, |(c, _, _, _)| path.cost < *c) {
+                if best.as_ref().is_none_or(|(c, _, _, _)| path.cost < *c) {
                     let blocks = t
                         .blocking
                         .iter()
@@ -2273,7 +2274,7 @@ impl<'a> Planner<'a> {
             let idx = self.runs.len();
             match self.search_time(&mk, earliest, true, self.p.max_shift_s, vehicle, prev, idx) {
                 Ok((timing, t, prev_t)) => {
-                    if best.as_ref().map_or(true, |b| t < b.0 - 0.5) {
+                    if best.as_ref().is_none_or(|b| t < b.0 - 0.5) {
                         best = Some((t, path.clone(), mk(t), timing, prev_t));
                     }
                     if t <= earliest + 0.5 {
@@ -2292,7 +2293,7 @@ impl<'a> Planner<'a> {
         // has the lower-ranked trains in its way wait at a station for it, or waits there itself
         // for a higher-ranked one, if that costs less time.
         let mut waited: Option<Vec<Option<f64>>> = None;
-        if best.as_ref().map_or(true, |b| b.0 > earliest + 0.5) && !attempts.is_empty() {
+        if best.as_ref().is_none_or(|b| b.0 > earliest + 0.5) && !attempts.is_empty() {
             let shift = best.as_ref().map(|b| b.0 - earliest);
             if let Some((t, path, run, timing, prev_t, dw)) = self.overtake(
                 trip,
@@ -2498,7 +2499,7 @@ impl<'a> Planner<'a> {
                 let late = self
                     .search_time(&mk, t, true, late_most, vehicle, prev, idx)
                     .ok()
-                    .filter(|x| found.as_ref().map_or(true, |f| x.1 - t < f.0));
+                    .filter(|x| found.as_ref().is_none_or(|f| x.1 - t < f.0));
                 if let Some((tm, t2, prev_t)) = late {
                     return Some((t2, path.clone(), mk(t2), tm, prev_t, None));
                 }

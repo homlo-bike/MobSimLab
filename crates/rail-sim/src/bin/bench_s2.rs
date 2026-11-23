@@ -24,7 +24,7 @@ fn main() {
     let check_every = (3_600.0 / dt) as u64;
     while sim.time() + 1e-9 < sim_s {
         sim.step(dt);
-        if sim.stats().steps % check_every == 0 {
+        if sim.stats().steps.is_multiple_of(check_every) {
             sim.check_invariants().expect("safety invariant");
             checks += 1;
         }

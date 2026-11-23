@@ -1000,7 +1000,7 @@ fn validate(dz: &mut Design, draft: Option<u32>) {
                         return;
                     }
                     let key = (a.id.min(owner), a.id.max(owner));
-                    if worst.get(&key).map_or(true, |w| dd < w.0) {
+                    if worst.get(&key).is_none_or(|w| dd < w.0) {
                         worst.insert(key, (dd, q.p));
                     }
                 });

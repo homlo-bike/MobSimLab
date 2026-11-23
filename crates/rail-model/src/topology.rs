@@ -577,7 +577,7 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, Msg> {
                         zones[j].push((lo, hi, Some(ck.clone())));
                     }
                     let near = if a { x } else { len - x };
-                    if cut.map_or(true, |c| near < c.0) {
+                    if cut.is_none_or(|c| near < c.0) {
                         cut = Some((near, x));
                         let (l0, l1) = (
                             (x - JUNCTION_DIAMOND_M).max(0.0),

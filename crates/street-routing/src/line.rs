@@ -642,7 +642,7 @@ impl StreetLine {
                     continue;
                 }
                 let total = cost[n - 1][cl] + self.leg_cost(g, last, cands[0][c0]);
-                if best.as_ref().map_or(true, |b| total < b.0) {
+                if best.as_ref().is_none_or(|b| total < b.0) {
                     let mut choice = vec![0; n];
                     choice[n - 1] = cl;
                     for k in (1..n).rev() {

@@ -173,7 +173,7 @@ impl RailDesigner {
             if self
                 .streets
                 .get(&w.id)
-                .map_or(true, |old| old.1.len() < coords.len())
+                .is_none_or(|old| old.1.len() < coords.len())
             {
                 self.streets.insert(w.id, (w.tags.clone(), coords));
             }
@@ -215,7 +215,7 @@ impl RailDesigner {
             if self
                 .rails
                 .get(&w.id)
-                .map_or(true, |old| old.coords.len() < r.coords.len())
+                .is_none_or(|old| old.coords.len() < r.coords.len())
             {
                 self.rails.insert(w.id, r);
             }
