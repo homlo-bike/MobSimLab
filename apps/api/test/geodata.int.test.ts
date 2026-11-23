@@ -459,5 +459,16 @@ describe("geodata import", () => {
     );
     expect(houses.body.buildings).toEqual([]);
     expect(overpassQueries).toEqual([]);
+    // With a Full polygon as well, its tiles are listed apart, for the editor to load their main roads.
+    const both = await as("alice").put(`/api/projects/${project}/area`, {
+      polygons: [{ ...square("a3", 6.99, 49.99, 0.04), detail: "main" }, square("a4", 7.2, 50.2, 0.01)],
+      import: false,
+    });
+    expect(both.status).toBe(200);
+    const listed = (await as("alice").get(`/api/street-network/main-tiles?project=${project}`)).body;
+    const [fx, fy] = tilesFor([7.205, 50.205, 7.205, 50.205])[0]!;
+    expect(listed.full).toContain(`${fx}/${fy}`);
+    expect(listed.tiles).not.toContain(`${fx}/${fy}`);
+    expect(listed.tiles).toContain(`${x}/${y}`);
   });
 });

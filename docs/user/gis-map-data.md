@@ -6,6 +6,8 @@ In the **GIS** tab, switch to **Map data** to keep a copy of OpenStreetMap and o
 
 The imports cover only the polygons of the project area, not the box around them, so two cities far apart cost no more than the two cities. You draw the polygons when you create the project (**Select area**) and change them in **Project preferences**, **Project area**. The map shows their edges as dashed lines (layers menu, **Project area**). When you later make the area larger, the view says so; press **Refresh** to import the new parts. Nothing is imported on its own.
 
+Each polygon has a detail. **Full** imports everything. **Main roads and railways only** suits the long stretches between towns: there the import keeps only motorways, trunk and primary roads with their links, railways and the coastline, the population grid is kept at 1 km (30″) cells, and terrain is imported as usual. The street line tool routes along main roads there and along every street in Full polygons, so an intercity bus runs along the motorway between Full city polygons. Walk access, buildings and place names are empty there; draw towns along the route as Full for the noise map and walk access. Where a map tile touches a Full polygon, the whole tile has full detail.
+
 When a street line, the railway, a depot, the cargo bike route or a ferry or cable car line reaches outside the polygons, the notifications button shows a warning, since there is no map data there. Make the area larger to fix it.
 
 ## Import OpenStreetMap

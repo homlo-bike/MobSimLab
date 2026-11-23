@@ -42,21 +42,24 @@ export class StreetNetworkController {
 
   /**
    * Purpose: the zoom-14 tiles of a project held at "Main roads and railways only" (large-area projects, step 3),
-   * as `x/y` keys: the street line editor loads them all so a line can be routed between towns.
-   * Inputs: `?project=` (read access checked). Output: `{ tiles }`, empty without main polygons.
+   * as `x/y` keys: the street line editor loads them all so a line can be routed between towns. `full` lists the
+   * tiles of the Full polygons too: the editor loads their main roads (`?light=1`), so the route also runs through
+   * the towns it does not show.
+   * Inputs: `?project=` (read access checked). Output: `{ tiles, full }`, both empty without main polygons.
    */
   @Get("main-tiles")
   @Requires("instance.read")
   async mainTiles(@Query("project") project: string | undefined, @Req() req: MslRequest) {
     const projectId = await this.gate?.readable(req, project);
     if (!projectId) throw new BadRequestException("project is required");
-    const tiles = await this.details?.mainTiles(projectId);
-    return { tiles: tiles ? [...tiles].sort() : [] };
+    const t = await this.details?.tiles(projectId);
+    return { tiles: t?.main ? [...t.main].sort() : [], full: t?.main ? [...t.full].sort() : [] };
   }
 
   /**
    * Purpose: OSM XML with the streets of one web-mercator tile at zoom 14.
-   * Inputs: tile x and y. Output: `application/xml`; 400 for an invalid tile, 502/504 when OSM is unavailable.
+   * Inputs: tile x and y; `?light=1` for its main roads only, as in a main-only tile. Output: `application/xml`;
+   * 400 for an invalid tile, 502/504 when OSM is unavailable.
    */
   @Get(`tiles/${TILE_ZOOM}/:x/:y`)
   @Requires("instance.read")
@@ -67,11 +70,13 @@ export class StreetNetworkController {
     @Param("y") ys: string,
     @Query("project") project: string | undefined,
     @Req() req: MslRequest,
+    @Query("light") light?: string,
   ): Promise<string> {
     const [x, y] = parseTile(xs, ys);
     const projectId = await this.gate?.readable(req, project);
+    const main = light === "1" || (await this.main(projectId, x, y));
     try {
-      return await this.streets.tile(x, y, projectId, sourceHeader(req), await this.main(projectId, x, y));
+      return await this.streets.tile(x, y, projectId, sourceHeader(req), main);
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap streets are unavailable right now", e.status);

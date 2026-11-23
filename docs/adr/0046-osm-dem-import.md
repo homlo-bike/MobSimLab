@@ -29,6 +29,16 @@ a fallback, an Open-Elevation fallback, and every limit adjustable.
    downloading, and editing the area asks before downloading new parts. Drawings reaching outside the polygons
    (street lines, the railway, depots, the cargo bike route, ferry and cable car lines) show a warning under the
    notifications button, since there is no map data there.
+   **Main roads and railways only** (2026-11-23): such a polygon is cut out on its own and filtered with
+   `osmium tags-filter` to motorway, trunk and primary roads and their links, turn restrictions, railways and the
+   coastline before it is merged with the Full polygons. Population cells outside Full polygons are summed into
+   30″ cells (population/coarsen.ts). Map tiles (zoom 14) that touch only main polygons are light: the street
+   tile asks for main roads only (cache key `roadmain/x/y`, import filter `roadMain`), walk, building and place
+   tiles are empty, and `GET /api/street-network/main-tiles` lists them so the street line editor loads the
+   corridor's tiles in batches even zoomed out, and the router uses main roads there. It also lists the Full
+   polygons' tiles, which the editor loads with `?light=1` (main roads only), so a route runs through the towns
+   between the corridors before the map shows them. A tile touching a Full
+   polygon has full detail. The .mslab map data follows the same rule.
 2. **Two OpenStreetMap paths, one result.** Areas up to `MOBSIMLAB_OSM_OVERPASS_MAX_KM2` (400 km²) come from the
    Overpass API in tiles (`MOBSIMLAB_OSM_OVERPASS_TILE_KM`, split into quarters on a timeout or size error down to
    `..._MIN_TILE_KM`, one request every `..._INTERVAL_S`, cached for `MOBSIMLAB_OSM_CACHE_DAYS`). Larger areas, up

@@ -222,4 +222,14 @@ export interface DelayShares {
 export type EngineLoader = () => Promise<StreetEngine>;
 
 /** Fetches the OSM XML of one street tile. */
-export type TileFetcher = (x: number, y: number) => Promise<string>;
+/** Fetch one zoom-14 street tile as OSM XML; `light` asks for its main roads only. */
+export type TileFetcher = (x: number, y: number, light?: boolean) => Promise<string>;
+
+/**
+ * The tiles of a project with "Main roads and railways only" polygons, as `x/y` keys: `main` the corridor tiles
+ * (served light anyway), `full` the tiles of its Full polygons, loaded light so routes run through towns.
+ */
+export interface CorridorTiles {
+  main: string[];
+  full: string[];
+}

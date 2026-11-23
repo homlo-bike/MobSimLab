@@ -4,6 +4,12 @@ import { type AreaDetail, areaTiles } from "../projects/area-polygons";
 import { projectArea } from "../projects/project-area";
 
 const TTL_MS = 60_000;
+
+/** A project's zoom-14 tiles (`x/y` keys) by detail; `main` is null when the project has no main polygon. */
+export interface AreaTileDetails {
+  main: Set<string> | null;
+  full: Set<string>;
+}
 const MAX_PROJECTS = 200;
 
 /**
@@ -14,7 +20,7 @@ const MAX_PROJECTS = 200;
  */
 @Injectable()
 export class AreaDetailService {
-  private readonly cache = new Map<string, { until: number; main: Set<string> | null }>();
+  private readonly cache = new Map<string, { until: number } & AreaTileDetails>();
 
   constructor(@Inject(DATABASE) private readonly db: Database) {}
 
@@ -30,20 +36,26 @@ export class AreaDetailService {
 
   /** Purpose: the keys `x/y` of a project's main-only tiles, or null when it has no main polygon. */
   async mainTiles(projectId: string): Promise<Set<string> | null> {
+    return (await this.tiles(projectId)).main;
+  }
+
+  /**
+   * Purpose: the keys `x/y` of a project's tiles by detail: `main` as `mainTiles`, and `full` the tiles touching
+   * a Full polygon, listed only when the project has a main polygon (empty otherwise).
+   */
+  async tiles(projectId: string): Promise<AreaTileDetails> {
     const hit = this.cache.get(projectId);
-    if (hit && hit.until > Date.now()) return hit.main;
+    if (hit && hit.until > Date.now()) return { main: hit.main, full: hit.full };
     const area = await projectArea(this.db, projectId);
-    const main =
-      area && area.polygons.some((p) => p.detail === "main")
-        ? new Set(
-            areaTiles(area.polygons, 14)
-              .filter((t) => t.detail === ("main" satisfies AreaDetail))
-              .map((t) => `${t.x}/${t.y}`),
-          )
-        : null;
+    let details: AreaTileDetails = { main: null, full: new Set() };
+    if (area && area.polygons.some((p) => p.detail === "main")) {
+      const all = areaTiles(area.polygons, 14);
+      const keys = (d: AreaDetail) => new Set(all.filter((t) => t.detail === d).map((t) => `${t.x}/${t.y}`));
+      details = { main: keys("main"), full: keys("full") };
+    }
     if (this.cache.size > MAX_PROJECTS) this.cache.clear();
-    this.cache.set(projectId, { until: Date.now() + TTL_MS, main });
-    return main;
+    this.cache.set(projectId, { until: Date.now() + TTL_MS, ...details });
+    return details;
   }
 
   /** Purpose: forget a project's tiles after its area changed. */
