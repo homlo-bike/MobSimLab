@@ -512,7 +512,7 @@ def test_stopping_a_sumo_tool_ends_it_and_the_programs_it_started(tmp_path: Path
     from mobsim_worker.jobs.road.network import Stopped, run_tool  # noqa: PLC0415
 
     # A tool that starts a program of its own (as randomTrips.py starts duarouter) and waits for it.
-    script = 'sleep 60 & echo $! > child.pid; wait'
+    script = "sleep 60 & echo $! > child.pid; wait"
     calls = iter([False, False, True])
     with pytest.raises(Stopped):
         run_tool(["/bin/sh", "-c", script], str(tmp_path), should_stop=lambda: next(calls))
@@ -523,7 +523,7 @@ def test_stopping_a_sumo_tool_ends_it_and_the_programs_it_started(tmp_path: Path
 def test_a_sumo_tool_that_runs_too_long_is_ended_with_a_plain_message(tmp_path: Path) -> None:
     from mobsim_worker.jobs.road.network import ToolTimeout, run_tool  # noqa: PLC0415
 
-    script = 'sleep 60 & echo $! > child.pid; wait'
+    script = "sleep 60 & echo $! > child.pid; wait"
     with pytest.raises(ToolTimeout) as e:
         run_tool(["/bin/sh", "-c", script], str(tmp_path), timeout_s=1.5)
     assert "sleep" not in str(e.value) and "minutes" in str(e.value)
