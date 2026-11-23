@@ -710,6 +710,16 @@ export const editorsUk = {
   "schematic.showStatuses": "Символи статусу",
   "schematic.showFeatures": "Символи оснащення станцій",
   "schematic.showWater": "Море, озера й річки",
+  "schematic.straightRivers": "Малювати річки кроками по 45°",
+  "schematic.nameSize": "Розмір назв станцій",
+  "schematic.longRuns": "Довгі перегони без зупинок",
+  "schematic.longRuns.off": "Як на місцевості",
+  "schematic.longRuns.max": "Не більше {n} × звичайного інтервалу",
+  "schematic.pngSmallNames":
+    "Назви станцій на цьому зображенні лише {px} px, бо його обмежено 8192 px на сторону. Для чіткішої копії використайте SVG або друк.",
+  "schematic.printPaper": "Формат {paper}: назви станцій друкуються розміром {pt} pt.",
+  "schematic.printSmallNames":
+    "Формат {paper}: назви станцій друкуються розміром лише {pt} pt. Збільште назви станцій або сховайте деякі шари.",
   "schematic.showAreas": "Тарифні зони та орієнтири",
   "schematic.water": "Вода",
   "schematic.areas": "Тарифні зони та орієнтири",

@@ -635,6 +635,16 @@ export const editorsYo = {
   "schematic.showStatuses": "Àmì ipò",
   "schematic.showFeatures": "Àmì ohun èlò ibùdókọ̀",
   "schematic.showWater": "Òkun, adágún àti odò",
+  "schematic.straightRivers": "Ya àwọn odò ní ìgbésẹ̀ 45°",
+  "schematic.nameSize": "Ìwọ̀n orúkọ ibùdó",
+  "schematic.longRuns": "Àwọn apá gígùn láìsí ìdúró",
+  "schematic.longRuns.off": "Bí ó ṣe wà lórí ilẹ̀",
+  "schematic.longRuns.max": "Ó pọ̀jù ìlọ́po {n} ààyè tí a mọ̀",
+  "schematic.pngSmallNames":
+    "Orúkọ ibùdó jẹ́ {px} px nìkan nínú àwòrán yìí nítorí pé ó ní òpin px 8,192 ní ẹ̀gbẹ́ kọ̀ọ̀kan. Lo SVG tàbí Tẹ̀ jáde fún ẹ̀dà tó mọ́ kedere.",
+  "schematic.printPaper": "Ìwọ̀n ojú-ìwé {paper}: a ń tẹ orúkọ ibùdó ní {pt} pt.",
+  "schematic.printSmallNames":
+    "Ìwọ̀n ojú-ìwé {paper}: a ń tẹ orúkọ ibùdó ní {pt} pt nìkan. Mú orúkọ ibùdó tóbi síi tàbí fi àwọn ìpele kan pamọ́.",
   "schematic.showAreas": "Àwọn agbègbè owó ọkọ̀ àti àwọn ibi àmì",
   "schematic.water": "Omi",
   "schematic.areas": "Àwọn agbègbè owó ọkọ̀ àti àwọn ibi àmì",

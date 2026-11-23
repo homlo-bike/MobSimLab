@@ -659,6 +659,16 @@ export const editorsId = {
   "schematic.showStatuses": "Simbol status",
   "schematic.showFeatures": "Simbol fasilitas stasiun",
   "schematic.showWater": "Laut, danau, dan sungai",
+  "schematic.straightRivers": "Gambar sungai dengan langkah 45°",
+  "schematic.nameSize": "Ukuran nama stasiun",
+  "schematic.longRuns": "Ruas panjang tanpa perhentian",
+  "schematic.longRuns.off": "Seperti di lapangan",
+  "schematic.longRuns.max": "Paling banyak {n} × jarak biasa",
+  "schematic.pngSmallNames":
+    "Nama stasiun hanya {px} px di gambar ini karena dibatasi 8.192 px per sisi. Gunakan SVG atau Cetak untuk salinan yang lebih tajam.",
+  "schematic.printPaper": "Ukuran kertas {paper}: nama stasiun dicetak {pt} pt.",
+  "schematic.printSmallNames":
+    "Ukuran kertas {paper}: nama stasiun hanya dicetak {pt} pt. Perbesar nama stasiun atau sembunyikan beberapa lapisan.",
   "schematic.showAreas": "Zona tarif dan tengara",
   "schematic.water": "Air",
   "schematic.areas": "Zona tarif dan tengara",

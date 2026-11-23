@@ -643,6 +643,16 @@ export const editorsTr = {
   "schematic.showStatuses": "Durum simgeleri",
   "schematic.showFeatures": "İstasyon donanımı simgeleri",
   "schematic.showWater": "Deniz, göller ve nehirler",
+  "schematic.straightRivers": "Nehirleri 45° adımlarla çiz",
+  "schematic.nameSize": "İstasyon adı boyutu",
+  "schematic.longRuns": "Durağı olmayan uzun bölümler",
+  "schematic.longRuns.off": "Arazideki gibi",
+  "schematic.longRuns.max": "En çok olağan aralığın {n} katı",
+  "schematic.pngSmallNames":
+    "Bu görüntü kenar başına 8.192 px ile sınırlı olduğundan istasyon adları yalnızca {px} px. Daha net bir kopya için SVG veya Yazdır'ı kullanın.",
+  "schematic.printPaper": "Sayfa boyutu {paper}: istasyon adları {pt} pt basılır.",
+  "schematic.printSmallNames":
+    "Sayfa boyutu {paper}: istasyon adları yalnızca {pt} pt basılır. İstasyon adlarını büyütün veya bazı katmanları gizleyin.",
   "schematic.showAreas": "Tarife bölgeleri ve simge yerler",
   "schematic.water": "Su",
   "schematic.areas": "Tarife bölgeleri ve simge yerler",

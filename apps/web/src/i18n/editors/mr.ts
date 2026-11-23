@@ -657,6 +657,16 @@ export const editorsMr = {
   "schematic.showStatuses": "स्थिती चिन्हे",
   "schematic.showFeatures": "स्थानक सुविधा चिन्हे",
   "schematic.showWater": "समुद्र, तलाव आणि नद्या",
+  "schematic.straightRivers": "नद्या 45° च्या टप्प्यांत काढा",
+  "schematic.nameSize": "स्थानक नावांचा आकार",
+  "schematic.longRuns": "थांब्याशिवायचे लांब भाग",
+  "schematic.longRuns.off": "जमिनीवर आहे तसे",
+  "schematic.longRuns.max": "जास्तीत जास्त नेहमीच्या अंतराच्या {n} पट",
+  "schematic.pngSmallNames":
+    "या प्रतिमेत स्थानकांची नावे फक्त {px} px आहेत, कारण ती प्रत्येक बाजूस 8,192 px पर्यंत मर्यादित आहे. अधिक स्पष्ट प्रतीसाठी SVG किंवा प्रिंट वापरा.",
+  "schematic.printPaper": "पान आकार {paper}: स्थानकांची नावे {pt} pt मध्ये छापली जातात.",
+  "schematic.printSmallNames":
+    "पान आकार {paper}: स्थानकांची नावे फक्त {pt} pt मध्ये छापली जातात. स्थानकांची नावे मोठी करा किंवा काही स्तर लपवा.",
   "schematic.showAreas": "भाडे क्षेत्रे आणि खुणेची ठिकाणे",
   "schematic.water": "पाणी",
   "schematic.areas": "भाडे क्षेत्रे आणि खुणेची ठिकाणे",

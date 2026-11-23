@@ -666,6 +666,16 @@ export const editorsNl = {
   "schematic.showStatuses": "Statussymbolen",
   "schematic.showFeatures": "Symbolen voor stationsvoorzieningen",
   "schematic.showWater": "Zee, meren en rivieren",
+  "schematic.straightRivers": "Rivieren in stappen van 45° tekenen",
+  "schematic.nameSize": "Grootte van stationsnamen",
+  "schematic.longRuns": "Lange stukken zonder halte",
+  "schematic.longRuns.off": "Zoals op de grond",
+  "schematic.longRuns.max": "Hoogstens {n} × de gebruikelijke afstand",
+  "schematic.pngSmallNames":
+    "Stationsnamen zijn in deze afbeelding maar {px} px, omdat die beperkt is tot 8.192 px per zijde. Gebruik SVG of Afdrukken voor een scherpere versie.",
+  "schematic.printPaper": "Papierformaat {paper}: stationsnamen worden op {pt} pt afgedrukt.",
+  "schematic.printSmallNames":
+    "Papierformaat {paper}: stationsnamen worden maar op {pt} pt afgedrukt. Maak de stationsnamen groter of verberg lagen.",
   "schematic.showAreas": "Tariefzones en herkenningspunten",
   "schematic.water": "Water",
   "schematic.areas": "Tariefzones en herkenningspunten",

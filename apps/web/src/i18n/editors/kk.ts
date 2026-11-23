@@ -658,6 +658,16 @@ export const editorsKk = {
   "schematic.showStatuses": "Мәртебе белгілері",
   "schematic.showFeatures": "Станция жабдықтарының белгілері",
   "schematic.showWater": "Теңіз, көлдер мен өзендер",
+  "schematic.straightRivers": "Өзендерді 45° қадаммен салу",
+  "schematic.nameSize": "Бекет атауларының өлшемі",
+  "schematic.longRuns": "Аялдамасыз ұзақ бөліктер",
+  "schematic.longRuns.off": "Жердегідей",
+  "schematic.longRuns.max": "Әдеттегі аралықтан ең көбі {n} есе",
+  "schematic.pngSmallNames":
+    "Бұл сурет әр жағынан 8192 px-пен шектелгендіктен, бекет атаулары тек {px} px. Анығырақ көшірме үшін SVG немесе Басып шығаруды пайдаланыңыз.",
+  "schematic.printPaper": "Қағаз өлшемі {paper}: бекет атаулары {pt} pt болып басылады.",
+  "schematic.printSmallNames":
+    "Қағаз өлшемі {paper}: бекет атаулары тек {pt} pt болып басылады. Бекет атауларын үлкейтіңіз немесе кейбір қабаттарды жасырыңыз.",
   "schematic.showAreas": "Тариф аймақтары мен бағдарлар",
   "schematic.water": "Су",
   "schematic.areas": "Тариф аймақтары мен бағдарлар",

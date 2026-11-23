@@ -655,6 +655,16 @@ export const editorsHa = {
   "schematic.showStatuses": "Alamomin matsayi",
   "schematic.showFeatures": "Alamomin kayan aikin tasha",
   "schematic.showWater": "Teku, tafkuna da koguna",
+  "schematic.straightRivers": "Zana koguna a matakan 45°",
+  "schematic.nameSize": "Girman sunayen tasha",
+  "schematic.longRuns": "Dogayen sassa ba tare da tasha ba",
+  "schematic.longRuns.off": "Kamar a ƙasa",
+  "schematic.longRuns.max": "Mafi yawa sau {n} na tazarar da aka saba",
+  "schematic.pngSmallNames":
+    "Sunayen tasha {px} px ne kawai a wannan hoton saboda an iyakance shi zuwa px 8,192 kowane gefe. Yi amfani da SVG ko Bugawa don kwafi mafi bayyana.",
+  "schematic.printPaper": "Girman shafi {paper}: ana buga sunayen tasha a {pt} pt.",
+  "schematic.printSmallNames":
+    "Girman shafi {paper}: ana buga sunayen tasha a {pt} pt kawai. Ƙara girman sunayen tasha ko ɓoye wasu layuka.",
   "schematic.showAreas": "Yankunan kuɗin mota da wuraren tarihi",
   "schematic.water": "Ruwa",
   "schematic.areas": "Yankunan kuɗin mota da wuraren tarihi",

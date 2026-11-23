@@ -712,6 +712,16 @@ export const editorsRu = {
   "schematic.showStatuses": "Символы статуса",
   "schematic.showFeatures": "Символы оснащения станций",
   "schematic.showWater": "Море, озёра и реки",
+  "schematic.straightRivers": "Рисовать реки шагами по 45°",
+  "schematic.nameSize": "Размер названий станций",
+  "schematic.longRuns": "Длинные перегоны без остановок",
+  "schematic.longRuns.off": "Как на местности",
+  "schematic.longRuns.max": "Не более {n} × обычного интервала",
+  "schematic.pngSmallNames":
+    "Названия станций на этом изображении всего {px} px, потому что оно ограничено 8192 px по стороне. Для более чёткой копии используйте SVG или печать.",
+  "schematic.printPaper": "Формат {paper}: названия станций печатаются размером {pt} pt.",
+  "schematic.printSmallNames":
+    "Формат {paper}: названия станций печатаются размером всего {pt} pt. Увеличьте названия станций или скройте некоторые слои.",
   "schematic.showAreas": "Тарифные зоны и ориентиры",
   "schematic.water": "Вода",
   "schematic.areas": "Тарифные зоны и ориентиры",
