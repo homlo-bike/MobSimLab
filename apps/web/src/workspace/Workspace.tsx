@@ -148,6 +148,7 @@ import {
 } from "../features/comments/notices";
 import { Dialog } from "../shell/Dialog";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
+import { UnroutedNotice } from "../features/tables/UnroutedNotice";
 import { engineErrorText } from "../i18n/engine";
 
 // Editors and screens downloaded when first opened, so opening a project fetches only the tab shown.
@@ -1537,6 +1538,9 @@ export function Workspace({
                   />
                   <TablesSection.Provider value={shownPart(tablesView, tablesParts)}>
                     <div className="min-w-0 flex-1">
+                      {/* Every group reads the street lines' saved routes: a route with parts not found is named
+                          above them all. */}
+                      <UnroutedNotice streetLines={streetLines} />
                       <div
                         id="tables-network"
                         role="region"

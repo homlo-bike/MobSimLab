@@ -440,4 +440,10 @@ export const tablesJa = {
   "tt.tbl.to": "着",
   "tt.tbl.arrives": "着時刻",
   "cost.outsideRange": "ライブラリの範囲（{low}–{high}）外です：値と単位を確認してください。",
+  "tbl.unrouted.title": "一部の道路路線の経路が完全ではありません",
+  "tbl.unrouted.intro":
+    "これらの路線は保存時に経路の一部が見つからなかったため、表・費用・評価では 0 km として数えられています。各路線を「作成」タブで開いてください。道路が読み込まれ、補完された経路が保存されます。赤いままの区間は、車両が通行できる道路へ点を移動してください。",
+  "tbl.unrouted.legs": "見つからない区間",
+  "tbl.unrouted.runs": "見つからない入出庫便",
+  "tbl.unrouted.leftOut": "少なくとも除外",
 } satisfies TablesMessages;

@@ -45,6 +45,7 @@ import {
   lineTiles,
   routeKey,
   routesMore,
+  unroutedParts,
   type SavedStreetLine,
 } from "../src/features/street-lines/saved";
 import { LineList } from "../src/features/street-lines/LineList";
@@ -631,6 +632,34 @@ describe("Street line saved with the project", () => {
     expect(line.routedWith).toMatch(/^[0-9a-f]{16}$/);
   });
 
+  it("routes a line saved with a fingerprint again when its route has a leg not found, and saves the fuller route", async () => {
+    const engine = fakeEngine();
+    const build = engine.rebuild;
+    engine.rebuild = vi.fn(() => (build(), engine.clear()));
+    const onSave = vi.fn();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    // Saved while the streets around its last point had not loaded: that leg counts 0 m in Tables.
+    const broken = sampleView(["end_stop", "via", "stop"]);
+    broken.legs = broken.legs.map((l, i) => (i === 2 ? { ...l, status: "error" as const, length_m: 0 } : l));
+    broken.length_m = 800;
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={{ ...saved, view: broken, routedWith: routeKey(saved, AROUND) }}
+        onSave={onSave}
+      />,
+    );
+    await waitFor(() => expect(engine.insertPoint).toHaveBeenCalledTimes(3));
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const line = onSave.mock.calls[0]![0] as SavedStreetLine;
+    expect(line.view.length_m).toBe(1200);
+    expect(unroutedParts(line.view)).toBeNull();
+    expect(line.routedWith).toMatch(/^[0-9a-f]{16}$/);
+  });
+
   it("shows a saved route as out of date when what it depends on changed, and recalculates it", async () => {
     const engine = fakeEngine();
     const build = engine.rebuild;
@@ -1007,6 +1036,68 @@ describe("a saved street route", () => {
     moved.points[1]!.lonlat = [7.5, 50.5];
     moved.legs[0] = { ...moved.legs[0]!, status: "error", message: "No route" };
     expect(keepRoutedLegs(moved, saved).legs[0]!.status).toBe("error");
+  });
+
+  it("loads the tiles along a leg not found and along the depot runs", () => {
+    const view = sampleView(["end_stop", "end_stop"]);
+    // A leg not found is a straight line between its ends, here about 14 km across several tiles.
+    view.legs[0] = {
+      ...view.legs[0]!,
+      status: "error",
+      coords: [
+        [7, 50],
+        [7.2, 50],
+      ],
+    };
+    view.depot_trips = [
+      {
+        kind: "pull_out",
+        stop: 1,
+        coords: [
+          [7, 50.1],
+          [7, 50],
+        ],
+        length_m: 11000,
+        time_s: 900,
+        crossing_wait_s: 0,
+        status: "ok",
+        message: null,
+      },
+    ];
+    const keys = lineTiles({
+      points: [
+        { lonlat: [7, 50], kind: "end_stop", name: null },
+        { lonlat: [7.2, 50], kind: "end_stop", name: null },
+      ],
+      depot: null,
+      view,
+    } as unknown as SavedStreetLine);
+    for (let x = tileX(7); x <= tileX(7.2); x++) expect(keys).toContain(`${x}/${tileY(50)}`);
+    for (let y = tileY(50.1); y <= tileY(50); y++) expect(keys).toContain(`${tileX(7)}/${y}`);
+  });
+
+  it("counts the legs and depot runs a saved route has not found", () => {
+    const view = sampleView(["end_stop", "via", "stop"]);
+    expect(unroutedParts(view)).toBeNull();
+    view.legs = view.legs.map((l, i) => (i === 0 ? { ...l, status: "error" as const, length_m: 0 } : l));
+    view.depot_trips = [
+      {
+        kind: "pull_in",
+        stop: 3,
+        coords: [],
+        length_m: 0,
+        time_s: 0,
+        crossing_wait_s: 0,
+        status: "error",
+        message: null,
+      },
+    ];
+    const parts = unroutedParts(view)!;
+    expect(parts.legs).toBe(1);
+    expect(parts.depotRuns).toBe(1);
+    // Points 1 and 2 are 0.001° of longitude apart at 50° N: about 71.5 m.
+    expect(parts.straightM).toBeGreaterThan(71);
+    expect(parts.straightM).toBeLessThan(72);
   });
 
   it("loads the tiles under the whole line, not only those on screen", () => {
