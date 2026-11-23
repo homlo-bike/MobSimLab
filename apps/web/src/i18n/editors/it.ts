@@ -18,6 +18,17 @@ export const editorsIt = {
   "rail.stat.switches": "Deviatoi",
   "rail.stations.one": "{count} stazione",
   "rail.stations.other": "{count} stazioni",
+  "rail.backToNetwork": "Torna alla rete",
+  "street.allLines": "Tutte le linee",
+  "street.pickLine":
+    "Scegli una linea sulla mappa o nell’elenco per vederne le impostazioni, oppure iniziane una nuova.",
+  "rail.multi.mixed": "Valori diversi",
+  "rail.multi.mixedShort": "misto",
+  "rail.multi.tracks": "Binari selezionati: {count}",
+  "rail.multi.stations": "Stazioni selezionate: {count}",
+  "rail.multi.hint":
+    "Un’impostazione mostra il suo valore quando tutti hanno lo stesso. Una modifica vale per tutti.",
+  "rail.multi.shiftHint": "Maiusc-clic su altri binari o stazioni per modificarli insieme.",
   "rail.zoomAll": "Zoom su tutto",
   "rail.clear": "Cancella tutto",
   "rail.level.underground2": "Sotterraneo −2",

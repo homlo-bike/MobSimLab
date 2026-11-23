@@ -18,6 +18,17 @@ export const editorsZu = {
   "rail.stat.switches": "Izishintshi",
   "rail.stations.one": "isiteshi esingu-{count}",
   "rail.stations.other": "iziteshi ezingu-{count}",
+  "rail.backToNetwork": "Buyela kunethiwekhi",
+  "street.allLines": "Yonke imigqa",
+  "street.pickLine":
+    "Khetha umugqa emephini noma ohlwini ukuze ubone izilungiselelo zawo, noma uqale omusha.",
+  "rail.multi.mixed": "Amanani ahlukene",
+  "rail.multi.mixedShort": "kuxutshiwe",
+  "rail.multi.tracks": "Imizila ekhethiwe: {count}",
+  "rail.multi.stations": "Iziteshi ezikhethiwe: {count}",
+  "rail.multi.hint":
+    "Isilungiselelo sikhombisa inani laso uma zonke zinelifanayo. Ushintsho lusebenza kuzo zonke.",
+  "rail.multi.shiftHint": "Chofoza ngo-Shift eminye imizila noma iziteshi ukuze uzishintshe ndawonye.",
   "rail.zoomAll": "Sondeza ukuze ubone konke",
   "rail.clear": "Sula konke",
   "rail.level.underground2": "Ngaphansi komhlaba −2",

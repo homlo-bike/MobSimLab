@@ -35,6 +35,7 @@ import type { Timetable } from "../features/journey-planner/types";
 import type { SchematicDoc } from "../features/schematic/Schematic";
 import type { Network } from "../features/railways/types";
 import { LineList } from "../features/street-lines/LineList";
+import { StreetLinePicker } from "../features/street-lines/StreetLinePicker";
 import { PlannedModesProvider, plansRail, plansStreet } from "../projects/plannedModes";
 import { ToolPalette } from "../features/street-lines/ToolPalette";
 import {
@@ -282,6 +283,8 @@ export function Workspace({
   const [tablesParts, setTablesParts] = useState<Record<string, string>>({});
   const tablesScroll = useRef<HTMLDivElement>(null);
   const [gis, setGis] = useState<GisView>("streets");
+  // The Walk to a stop analysis under Demand zones, folded away until opened.
+  const [walkOpen, setWalkOpen] = useState(false);
   // The cost tables' estimate, currency and country, for the benefit tables.
   const [costInfo, setCostInfo] = useState<{
     estimate: CostEstimate;
@@ -366,9 +369,9 @@ export function Workspace({
   );
   // The street line being edited, as the tool last routed it, so the journey planner can ride it.
   const [line, setLine] = useState<StreetLineInput | null>(null);
-  // Which street line the tool edits (the number of saved lines for a new one), and a count of switches
-  // so the tool opens afresh on the right line after a switch or a delete.
-  const [streetIndex, setStreetIndex] = useState(0);
+  // Which street line the tool edits (the number of saved lines for a new one; null while none is picked), and
+  // a count of switches so the tool opens afresh on the right line after a switch or a delete.
+  const [streetIndex, setStreetIndex] = useState<number | null>(null);
   const [streetSwitch, setStreetSwitch] = useState(0);
   // On-demand zones from the service zone kit, for the journey planner.
   const [demandZones, setDemandZones] = useState<Record<string, DemandZone | null>>({});
@@ -382,7 +385,7 @@ export function Workspace({
   useEffect(() => setCommentsOf(takePendingComments(projectId)), [projectId]);
   useEffect(() => {
     setLine(null);
-    setStreetIndex(0);
+    setStreetIndex(null);
     setRailTopology(null);
   }, [projectId]);
   if (import.meta.env.DEV) Object.assign(window, { mobsimMap: map });
@@ -739,20 +742,23 @@ export function Workspace({
       lines: withLineColors(streetLines.lines.map((l) => (l.id ? l : { ...l, id: newLineId() }))),
     } satisfies StreetLinesDoc);
   }, [drawings.loaded, editable, streetLines]);
-  const editedStreet = Math.min(streetIndex, savedStreet.length);
-  const switchStreet = (i: number) => {
+  // No line is open until one is picked, so its settings only show for it; a project without lines starts a new one.
+  const editedStreet: number | null =
+    streetIndex === null ? (savedStreet.length === 0 ? 0 : null) : Math.min(streetIndex, savedStreet.length);
+  const switchStreet = (i: number | null) => {
     setStreetIndex(i);
     setStreetSwitch((n) => n + 1);
     setLine(null);
   };
   const saveStreet = (l: SavedStreetLine) => {
+    if (editedStreet === null) return;
     const next = [...savedStreet];
     next[editedStreet] = { ...l, id: savedStreet[editedStreet]?.id ?? l.id ?? newLineId() };
     drawings.set("street-lines", { lines: next } satisfies StreetLinesDoc);
   };
   const deleteStreet = (i: number) => {
     drawings.set("street-lines", { lines: savedStreet.filter((_, k) => k !== i) } satisfies StreetLinesDoc);
-    switchStreet(Math.max(0, i - 1));
+    switchStreet(null);
   };
   // Every street line for the journey planner, the one being edited as the tool last routed it.
   const ridden = useMemo(
@@ -1143,51 +1149,75 @@ export function Workspace({
           {project && drawings.loaded && (tab === "create" || tab === "gis" || tab === "simulator") && (
             <OtherModesLayer
               map={map}
-              active={tab === "create" && editable ? (lineKey ?? chosen) : null}
+              active={
+                tab === "create" && editable && !(chosen === "street" && editedStreet === null)
+                  ? (lineKey ?? chosen)
+                  : null
+              }
               railway={railway}
               streetLines={savedStreet}
               depots={depotsDoc?.depots ?? NO_DEPOTS}
               pluginLines={pluginSaved}
             />
           )}
-          {project && drawings.loaded && tab === "create" && editable && chosen === "street" && (
-            <Suspense fallback={null}>
-              <StreetLineEditor
-                key={`${projectId}-${drawings.generation("street-lines")}-${streetSwitch}`}
+          {project &&
+            drawings.loaded &&
+            tab === "create" &&
+            editable &&
+            chosen === "street" &&
+            editedStreet === null && (
+              <StreetLinePicker
                 map={map}
                 panel={panel}
-                onLineChange={setLine}
-                streetSetups={setups}
-                delays={delays}
-                initial={savedStreet[editedStreet] ?? null}
-                onSave={saveStreet}
-                defaultName={t("street.lineN", { n: editedStreet + 1 })}
-                defaultColor={
-                  withLineColors(savedStreet)[editedStreet]?.color ??
-                  nextLineColor(savedStreet.map((l) => l.color))
-                }
-                otherLines={otherStreet}
-                onPickLine={(id) => {
-                  const i = savedStreet.findIndex((l) => l.id === id);
-                  if (i >= 0) switchStreet(i);
-                }}
-                lineList={
-                  <LineList
-                    names={savedStreet.map((l) => l.name)}
-                    ids={savedStreet.map((l) => l.id)}
-                    current={editedStreet}
-                    onSelect={switchStreet}
-                    onNew={() => switchStreet(savedStreet.length)}
-                    onDelete={deleteStreet}
-                  />
-                }
-                railTopology={railTopology}
-                projectRules={streetRules}
-                depots={depotsDoc?.depots ?? NO_DEPOTS}
-                onOpenDepots={() => setBuild("depots")}
+                lines={savedStreet}
+                onPick={switchStreet}
+                onNew={() => switchStreet(savedStreet.length)}
               />
-            </Suspense>
-          )}
+            )}
+          {project &&
+            drawings.loaded &&
+            tab === "create" &&
+            editable &&
+            chosen === "street" &&
+            editedStreet !== null && (
+              <Suspense fallback={null}>
+                <StreetLineEditor
+                  key={`${projectId}-${drawings.generation("street-lines")}-${streetSwitch}`}
+                  map={map}
+                  panel={panel}
+                  onLineChange={setLine}
+                  streetSetups={setups}
+                  delays={delays}
+                  initial={savedStreet[editedStreet] ?? null}
+                  onSave={saveStreet}
+                  defaultName={t("street.lineN", { n: editedStreet + 1 })}
+                  defaultColor={
+                    withLineColors(savedStreet)[editedStreet]?.color ??
+                    nextLineColor(savedStreet.map((l) => l.color))
+                  }
+                  otherLines={otherStreet}
+                  onPickLine={(id) => {
+                    const i = savedStreet.findIndex((l) => l.id === id);
+                    if (i >= 0) switchStreet(i);
+                  }}
+                  lineList={
+                    <LineList
+                      names={savedStreet.map((l) => l.name)}
+                      ids={savedStreet.map((l) => l.id)}
+                      current={editedStreet}
+                      onSelect={switchStreet}
+                      onNew={() => switchStreet(savedStreet.length)}
+                      onDelete={deleteStreet}
+                      onClose={savedStreet.length > 0 ? () => switchStreet(null) : undefined}
+                    />
+                  }
+                  railTopology={railTopology}
+                  projectRules={streetRules}
+                  depots={depotsDoc?.depots ?? NO_DEPOTS}
+                  onOpenDepots={() => setBuild("depots")}
+                />
+              </Suspense>
+            )}
           {project && drawings.loaded && tab === "create" && editable && chosen === "depots" && (
             // Depots are a street-route tool: the street palette stays on the map with Bus depot pressed, and
             // any other tool goes back to the street lines.
@@ -1962,6 +1992,20 @@ export function Workspace({
               {/* Walk to a stop is a demand analysis: it shows under Demand zones only. */}
               {tab === "gis" && gis === "zones" && project && drawings.loaded && (
                 <div className="border-t border-slate-200 px-4 py-5 md:px-5">
+                  {/* Folded away until asked for, so the zones' own settings come first. */}
+                  <button
+                    type="button"
+                    aria-expanded={walkOpen}
+                    className="flex w-full items-center justify-between gap-2 text-start text-xs font-semibold tracking-wider text-slate-500 uppercase"
+                    onClick={() => setWalkOpen((o) => !o)}
+                  >
+                    {t("walk.title")}
+                    <span aria-hidden="true">{walkOpen ? "▾" : "▸"}</span>
+                  </button>
+                </div>
+              )}
+              {tab === "gis" && gis === "zones" && project && drawings.loaded && walkOpen && (
+                <div className="px-4 pb-5 md:px-5">
                   <LoadingScreen>
                     <WalkAnalysis
                       map={map}

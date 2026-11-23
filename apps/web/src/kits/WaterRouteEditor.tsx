@@ -117,6 +117,8 @@ export function WaterRouteEditor({
   );
   const [mode, setMode] = useState<Tool>("pier");
   const [leg, setLeg] = useState<number | null>(null);
+  // The pier whose settings show in the panel; the others are one line each.
+  const [pier, setPierShown] = useState<number | null>(null);
   const [draft, setDraft] = useState<LonLat[]>([]);
 
   useEffect(() => {
@@ -250,9 +252,10 @@ export function WaterRouteEditor({
   useEffect(() => {
     if (!map) return;
     const markers = doc.piers.map((p, i) => {
-      const el = stationElement(i + 1, p.name || tNow("ferry.pier", { n: i + 1 }), color, false);
+      const el = stationElement(i + 1, p.name || tNow("ferry.pier", { n: i + 1 }), color, pier === i);
       el.addEventListener("click", (e) => {
         e.stopPropagation();
+        setPierShown(i);
         // In pier mode, clicking an existing pier calls there again (a loop or a return visit).
         if (latest.current.mode === "pier")
           setDoc((d) => ({ ...d, calls: [...d.calls, { pier: i, via: [] }] }));
@@ -268,7 +271,7 @@ export function WaterRouteEditor({
       return mk;
     });
     return () => markers.forEach((mk) => mk.remove());
-  }, [map, doc.piers, color]);
+  }, [map, doc.piers, color, pier]);
 
   const latest = useRef({ mode, leg, otherStops });
   latest.current = { mode, leg, otherStops };
@@ -467,8 +470,27 @@ export function WaterRouteEditor({
         {doc.piers.length === 0 && <p className="text-slate-500">{t("ferry.noPiers")}</p>}
         {doc.piers.map((p, i) => {
           const use = view?.berths.find((b) => b.pier === i);
+          if (pier !== i)
+            return (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setPierShown(i)}
+                className="flex min-h-10 w-full items-center gap-2 rounded-lg border border-slate-200 px-2 text-start hover:bg-slate-50"
+              >
+                <span className="w-5 text-center font-semibold" style={{ color }}>
+                  {i + 1}
+                </span>
+                <span className="min-w-0 flex-1 truncate">{p.name || t("ferry.pier", { n: i + 1 })}</span>
+                {use && (
+                  <span className={`shrink-0 text-xs ${use.holds ? "text-amber-800" : "text-slate-500"}`}>
+                    {tn("ferry.upTo", use.peak)}
+                  </span>
+                )}
+              </button>
+            );
           return (
-            <div key={i} className="rounded-lg border border-slate-200 p-2">
+            <div key={i} className="rounded-lg border border-amber-400 p-2 ring-2 ring-amber-100">
               <div className="flex items-center gap-2">
                 <span className="w-5 text-center font-semibold" style={{ color }}>
                   {i + 1}
@@ -482,9 +504,20 @@ export function WaterRouteEditor({
                 <button
                   type="button"
                   className="btn min-h-8 px-2 text-xs"
-                  onClick={() => setDoc(removePier(doc, i))}
+                  onClick={() => {
+                    setDoc(removePier(doc, i));
+                    setPierShown(null);
+                  }}
                 >
                   {t("kit.delete")}
+                </button>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  aria-label={t("common.close")}
+                  onClick={() => setPierShown(null)}
+                >
+                  ✕
                 </button>
               </div>
               <div className="mt-1.5 flex flex-wrap items-center gap-3 text-xs">

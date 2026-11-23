@@ -11,13 +11,15 @@ interface Props {
   onSelect: (index: number) => void;
   onNew: () => void;
   onDelete: (index: number) => void;
+  /** Close the line and go back to the list of lines; absent while the project has none. */
+  onClose?: () => void;
 }
 
 /**
  * Purpose: the project's street lines at the top of the street line panel: pick the one to edit, start a new
  * one, or delete the one being edited (after asking).
  */
-export function LineList({ names, ids = [], current, onSelect, onNew, onDelete }: Props) {
+export function LineList({ names, ids = [], current, onSelect, onNew, onDelete, onClose }: Props) {
   const { t } = useI18n();
   const open = useOpenThreads();
   const id = ids[current];
@@ -45,6 +47,15 @@ export function LineList({ names, ids = [], current, onSelect, onNew, onDelete }
         </select>
       </label>
       <div className="flex gap-2">
+        {onClose && (
+          <button
+            type="button"
+            className="rounded border border-slate-300 bg-white px-2 py-1 hover:bg-slate-100"
+            onClick={onClose}
+          >
+            {t("street.allLines")}
+          </button>
+        )}
         <button
           type="button"
           className="rounded border border-slate-300 bg-white px-2 py-1 hover:bg-slate-100 disabled:opacity-40"

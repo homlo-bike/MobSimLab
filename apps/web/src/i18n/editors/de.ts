@@ -18,6 +18,18 @@ export const editorsDe = {
   "rail.stat.switches": "Weichen",
   "rail.stations.one": "{count} Station",
   "rail.stations.other": "{count} Stationen",
+  "rail.backToNetwork": "Zurück zum Netz",
+  "street.allLines": "Alle Linien",
+  "street.pickLine":
+    "Wähle eine Linie auf der Karte oder in der Liste, um ihre Einstellungen zu sehen, oder beginne eine neue.",
+  "rail.multi.mixed": "Unterschiedliche Werte",
+  "rail.multi.mixedShort": "gemischt",
+  "rail.multi.tracks": "Ausgewählte Gleise: {count}",
+  "rail.multi.stations": "Ausgewählte Stationen: {count}",
+  "rail.multi.hint":
+    "Eine Einstellung zeigt ihren Wert, wenn alle denselben haben. Eine Änderung gilt für alle.",
+  "rail.multi.shiftHint":
+    "Mit Umschalt-Klick weitere Gleise oder Stationen auswählen, um sie gemeinsam zu ändern.",
   "rail.zoomAll": "Alles zeigen",
   "rail.clear": "Leeren",
   "rail.level.underground2": "Tunnel −2",

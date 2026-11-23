@@ -17,6 +17,17 @@ export const editorsFa = {
   "rail.stat.stations": "ایستگاه‌ها",
   "rail.stat.switches": "سوزن‌ها",
   "rail.stations.other": "{count} ایستگاه",
+  "rail.backToNetwork": "بازگشت به شبکه",
+  "street.allLines": "همه خطوط",
+  "street.pickLine":
+    "برای دیدن تنظیمات یک خط، آن را روی نقشه یا در فهرست انتخاب کنید، یا خط تازه‌ای آغاز کنید.",
+  "rail.multi.mixed": "مقادیر متفاوت",
+  "rail.multi.mixedShort": "مختلط",
+  "rail.multi.tracks": "خطوط ریلی انتخاب‌شده: {count}",
+  "rail.multi.stations": "ایستگاه‌های انتخاب‌شده: {count}",
+  "rail.multi.hint":
+    "هر تنظیم وقتی مقدارش را نشان می‌دهد که در همه یکسان باشد. هر تغییر روی همه اعمال می‌شود.",
+  "rail.multi.shiftHint": "با Shift روی خطوط ریلی یا ایستگاه‌های دیگر کلیک کنید تا با هم تغییر کنند.",
   "rail.zoomAll": "نمایش همه",
   "rail.clear": "پاک کردن همه",
   "rail.level.underground2": "زیرزمینی −2",

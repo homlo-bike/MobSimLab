@@ -571,11 +571,30 @@ export function SpanLineEditor({
         {doc.stations.map((s, i) => {
           const end = i === 0 || i === doc.stations.length - 1;
           const sec = view?.sections[i];
+          // Only the picked station shows its settings; the others are one line each, to pick.
+          if (selected !== i)
+            return (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setSelected(i)}
+                className="flex min-h-10 w-full items-center gap-2 rounded-lg border border-slate-200 px-2 text-start hover:bg-slate-50"
+              >
+                <span className="w-5 text-center font-semibold" style={{ color }}>
+                  {i + 1}
+                </span>
+                <span className="min-w-0 flex-1 truncate">{s.name || t("cable.station", { n: i + 1 })}</span>
+                <span className="shrink-0 text-xs text-slate-500">
+                  {end
+                    ? t("cable.terminal")
+                    : s.kind === "angle"
+                      ? t("cable.angle")
+                      : t("cable.intermediate")}
+                </span>
+              </button>
+            );
           return (
-            <div
-              key={i}
-              className={`rounded-lg border p-2 ${selected === i ? "border-amber-400 ring-2 ring-amber-100" : "border-slate-200"}`}
-            >
+            <div key={i} className="rounded-lg border border-amber-400 p-2 ring-2 ring-amber-100">
               <div className="flex items-center gap-2">
                 <span className="w-5 text-center font-semibold" style={{ color }}>
                   {i + 1}
@@ -597,6 +616,14 @@ export function SpanLineEditor({
                   }}
                 >
                   {t("kit.delete")}
+                </button>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  aria-label={t("common.close")}
+                  onClick={() => setSelected(null)}
+                >
+                  ✕
                 </button>
               </div>
               <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs">

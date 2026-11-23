@@ -18,6 +18,17 @@ export const editorsNl = {
   "rail.stat.switches": "Wissels",
   "rail.stations.one": "{count} station",
   "rail.stations.other": "{count} stations",
+  "rail.backToNetwork": "Terug naar het netwerk",
+  "street.allLines": "Alle lijnen",
+  "street.pickLine":
+    "Kies een lijn op de kaart of in de lijst om de instellingen te zien, of begin een nieuwe.",
+  "rail.multi.mixed": "Verschillende waarden",
+  "rail.multi.mixedShort": "gemengd",
+  "rail.multi.tracks": "Geselecteerde sporen: {count}",
+  "rail.multi.stations": "Geselecteerde stations: {count}",
+  "rail.multi.hint":
+    "Een instelling toont haar waarde als ze allemaal dezelfde hebben. Een wijziging geldt voor allemaal.",
+  "rail.multi.shiftHint": "Shift-klik op meer sporen of stations om ze samen te wijzigen.",
   "rail.zoomAll": "Alles tonen",
   "rail.clear": "Wissen",
   "rail.level.underground2": "Ondergronds −2",

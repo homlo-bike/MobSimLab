@@ -18,6 +18,17 @@ export const editorsTa = {
   "rail.stat.switches": "சுவிட்சுகள்",
   "rail.stations.one": "{count} நிலையம்",
   "rail.stations.other": "{count} நிலையங்கள்",
+  "rail.backToNetwork": "வலையமைப்புக்குத் திரும்பு",
+  "street.allLines": "எல்லா வழித்தடங்களும்",
+  "street.pickLine":
+    "ஒரு வழித்தடத்தின் அமைப்புகளைக் காண அதை வரைபடத்தில் அல்லது பட்டியலில் தேர்ந்தெடுக்கவும், அல்லது புதியதைத் தொடங்கவும்.",
+  "rail.multi.mixed": "வெவ்வேறு மதிப்புகள்",
+  "rail.multi.mixedShort": "கலப்பு",
+  "rail.multi.tracks": "தேர்ந்தெடுத்த தண்டவாளங்கள்: {count}",
+  "rail.multi.stations": "தேர்ந்தெடுத்த நிலையங்கள்: {count}",
+  "rail.multi.hint":
+    "எல்லாவற்றுக்கும் ஒரே மதிப்பு இருந்தால் மட்டுமே அமைப்பு அதைக் காட்டும். மாற்றம் எல்லாவற்றுக்கும் பொருந்தும்.",
+  "rail.multi.shiftHint": "சேர்த்து மாற்ற மேலும் தண்டவாளங்கள் அல்லது நிலையங்களை Shift-கிளிக் செய்யவும்.",
   "rail.zoomAll": "அனைத்தையும் காண பெரிதாக்கு",
   "rail.clear": "அனைத்தையும் அழி",
   "rail.level.underground2": "நிலத்தடி −2",

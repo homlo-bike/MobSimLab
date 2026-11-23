@@ -18,6 +18,17 @@ export const editorsTe = {
   "rail.stat.switches": "స్విచ్‌లు",
   "rail.stations.one": "{count} స్టేషన్",
   "rail.stations.other": "{count} స్టేషన్లు",
+  "rail.backToNetwork": "నెట్‌వర్క్‌కు తిరిగి",
+  "street.allLines": "అన్ని లైన్లు",
+  "street.pickLine":
+    "ఒక లైన్ సెట్టింగ్‌లు చూడడానికి మ్యాప్‌లో లేదా జాబితాలో దాన్ని ఎంచుకోండి, లేదా కొత్తది ప్రారంభించండి.",
+  "rail.multi.mixed": "వేర్వేరు విలువలు",
+  "rail.multi.mixedShort": "మిశ్రమం",
+  "rail.multi.tracks": "ఎంచుకున్న ట్రాక్‌లు: {count}",
+  "rail.multi.stations": "ఎంచుకున్న స్టేషన్లు: {count}",
+  "rail.multi.hint":
+    "అన్నిటికీ ఒకే విలువ ఉంటేనే సెట్టింగ్ దాన్ని చూపిస్తుంది. మార్పు అన్నిటికీ వర్తిస్తుంది.",
+  "rail.multi.shiftHint": "కలిపి మార్చడానికి మరిన్ని ట్రాక్‌లు లేదా స్టేషన్లపై Shift-క్లిక్ చేయండి.",
   "rail.zoomAll": "అన్నీ చూడటానికి జూమ్ చేయండి",
   "rail.clear": "అన్నీ తుడిచివేయండి",
   "rail.level.underground2": "భూగర్భం −2",

@@ -6,6 +6,29 @@ import type { Anchor, ConnectionView, Network, RailView, SignalView, Track } fro
 export interface Selection {
   id: number;
   pi?: number;
+  /** More tracks or stations Shift-clicked into the selection, of the same kind as `id`. */
+  more?: number[];
+}
+
+/**
+ * Purpose: Shift-click on `ref`: add it to the selection, or take it out if it is in. Only tracks with tracks and
+ * stations with stations; anything else, or an element of another kind, becomes the selection on its own.
+ */
+export function toggleInSelection(
+  doc: { tracks: { id: number }[]; stations: { id: number }[] },
+  sel: Selection | null,
+  ref: number,
+): Selection | null {
+  if (!sel) return { id: ref };
+  const kindOf = (id: number) =>
+    doc.tracks.some((x) => x.id === id) ? "track" : doc.stations.some((x) => x.id === id) ? "station" : null;
+  const kind = kindOf(sel.id);
+  if (!kind || kindOf(ref) !== kind) return { id: ref };
+  const ids = [sel.id, ...(sel.more ?? [])];
+  const next = ids.includes(ref) ? ids.filter((x) => x !== ref) : [...ids, ref];
+  if (!next.length) return null;
+  const [id, ...more] = next;
+  return more.length ? { id: id!, more } : { id: id! };
 }
 
 /** The point under the cursor while drawing, and the connection there. */

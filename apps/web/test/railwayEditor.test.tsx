@@ -831,7 +831,6 @@ describe("Railway editor", () => {
 
   it("wraps a negative station rotation instead of setting it to 0°", async () => {
     const { handlers } = await opened();
-    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
     act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
     const field = (await screen.findByRole("spinbutton", { name: "Rotation" })) as HTMLInputElement;
     fireEvent.change(field, { target: { value: "-139" } });
@@ -873,7 +872,6 @@ describe("Railway editor", () => {
 
   it("places a station where the planner clicks", async () => {
     const { handlers } = await opened();
-    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
     expect(screen.getByRole("button", { name: /Station/ }).getAttribute("aria-pressed")).toBe("true");
     act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
     expect(await screen.findByDisplayValue("Riverside")).toBeTruthy();
@@ -882,7 +880,6 @@ describe("Railway editor", () => {
 
   it("rotates a station smoothly: its handle stays while it is dragged round", async () => {
     const { handlers } = await opened();
-    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
     markers.length = 0;
     act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
     const rotation = () => (screen.getByRole("spinbutton", { name: "Rotation" }) as HTMLInputElement).value;
@@ -907,7 +904,6 @@ describe("Railway editor", () => {
 
   it("keeps a platform at every station and turns a station with [ and ]", async () => {
     const { handlers } = await opened();
-    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
     act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
     await screen.findByDisplayValue("Riverside");
     const num = (name: string) => screen.getByRole("spinbutton", { name }) as HTMLInputElement;
@@ -927,7 +923,6 @@ describe("Railway editor", () => {
 
   it("stays in the track tool after drawing a track", async () => {
     const { handlers } = await opened();
-    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
     fireEvent.click(screen.getByRole("button", { name: /^Track/ }));
     const at = (dx: number) => ({
       lngLat: { lng: ORIGIN[0] + dx, lat: ORIGIN[1] },
@@ -951,7 +946,6 @@ describe("Railway editor", () => {
       { id: "street:2", name: "Riverside", lonlat: [ORIGIN[0] + 0.05, ORIGIN[1]] },
     ]);
     const { handlers } = await opened();
-    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
     act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));
     expect(await screen.findByDisplayValue("Harbour")).toBeTruthy();
     expect(screen.getByRole("status").textContent).toMatch(/one station with the station next to it/);
@@ -1016,8 +1010,9 @@ describe("Railway editor", () => {
     act(() => handlers.get("click")!({ lngLat: { lng, lat }, point: { x: 0, y: 0 } }));
     expect(await screen.findByRole("button", { name: /Turn round/ })).toBeTruthy();
     expect(screen.getByText(/ · yours/)).toBeTruthy();
-    expect(screen.getByRole("button", { name: /Reset to generated/ })).toBeTruthy();
     fireEvent.keyDown(window, { key: "f" });
+    // The network's signal list, with its reset, shows once the signal is put down again.
+    fireEvent.click(screen.getByRole("button", { name: "Back to the network" }));
     fireEvent.click(screen.getByRole("button", { name: /Reset to generated/ }));
     expect(screen.getByRole("status").textContent).toMatch(/reset/);
     expect(screen.queryByRole("button", { name: /Reset to generated/ })).toBeNull();
@@ -1055,7 +1050,6 @@ describe("Railway editor", () => {
 
   it("switches tools from the keyboard and cancels a draft with Escape", async () => {
     const { handlers } = await opened();
-    fireEvent.click(screen.getByRole("button", { name: "Clear" }));
     fireEvent.keyDown(window, { key: "t" });
     expect(screen.getByRole("button", { name: /Track/ }).getAttribute("aria-pressed")).toBe("true");
     act(() => handlers.get("click")!({ lngLat: { lng: ORIGIN[0], lat: ORIGIN[1] }, point: { x: 0, y: 0 } }));

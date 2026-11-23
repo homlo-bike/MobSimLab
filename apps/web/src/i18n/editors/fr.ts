@@ -18,6 +18,17 @@ export const editorsFr = {
   "rail.stat.switches": "Aiguillages",
   "rail.stations.one": "{count} station",
   "rail.stations.other": "{count} stations",
+  "rail.backToNetwork": "Retour au réseau",
+  "street.allLines": "Toutes les lignes",
+  "street.pickLine":
+    "Choisissez une ligne sur la carte ou dans la liste pour voir ses réglages, ou commencez-en une nouvelle.",
+  "rail.multi.mixed": "Valeurs différentes",
+  "rail.multi.mixedShort": "mixte",
+  "rail.multi.tracks": "Voies sélectionnées : {count}",
+  "rail.multi.stations": "Stations sélectionnées : {count}",
+  "rail.multi.hint":
+    "Un réglage affiche sa valeur quand tous ont la même. Une modification s’applique à tous.",
+  "rail.multi.shiftHint": "Maj-clic sur d’autres voies ou stations pour les modifier ensemble.",
   "rail.zoomAll": "Tout afficher",
   "rail.clear": "Effacer",
   "rail.level.underground2": "Souterrain −2",
