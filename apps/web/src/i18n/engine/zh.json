@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "在 {station}，有 {count} 个班次使用了非常用站台。",
   "rail.plan.platform_changes_one": "在 {station}，有 1 个班次使用了非常用站台。",
   "rail.plan.platform_short": "站台 {platform} 长 {length}，列车需要 {needed}",
+  "rail.plan.platform_taken": "一列无法驶离的列车停在站台上",
   "rail.plan.pull_out": "出车：{reason}",
   "rail.plan.route_break": "进路 {route} 未接续进路 {previous}",
   "rail.plan.run_failed": "{run}：{detail}",

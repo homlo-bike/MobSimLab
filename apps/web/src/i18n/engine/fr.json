@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "À {station}, {count} courses ont utilisé un autre quai que d'habitude.",
   "rail.plan.platform_changes_one": "À {station}, 1 course a utilisé un autre quai que d'habitude.",
   "rail.plan.platform_short": "le quai {platform} mesure {length}, le train demande {needed}",
+  "rail.plan.platform_taken": "un train qui n’a pas pu partir stationne à quai",
   "rail.plan.pull_out": "sortie du dépôt : {reason}",
   "rail.plan.route_break": "l'itinéraire {route} ne fait pas suite à l'itinéraire {previous}",
   "rail.plan.run_failed": "{run} : {detail}",

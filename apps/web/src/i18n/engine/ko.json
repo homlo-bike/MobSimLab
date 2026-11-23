@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station}에서 운행 {count}회가 평소와 다른 승강장을 썼습니다.",
   "rail.plan.platform_changes_one": "{station}에서 운행 1회가 평소와 다른 승강장을 썼습니다.",
   "rail.plan.platform_short": "승강장 {platform}은(는) {length}인데 열차에는 {needed}이(가) 필요함",
+  "rail.plan.platform_taken": "출발하지 못한 열차가 승강장에 서 있음",
   "rail.plan.pull_out": "출고: {reason}",
   "rail.plan.route_break": "진로 {route}이(가) 진로 {previous}에 이어지지 않음",
   "rail.plan.run_failed": "{run}: {detail}",

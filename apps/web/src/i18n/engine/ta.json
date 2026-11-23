@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station} இல், {count} பயணங்கள் வழக்கமான நடைமேடைக்குப் பதிலாக வேறு நடைமேடையைப் பயன்படுத்தின.",
   "rail.plan.platform_changes_one": "{station} இல், 1 பயணம் வழக்கமான நடைமேடைக்குப் பதிலாக வேறு நடைமேடையைப் பயன்படுத்தியது.",
   "rail.plan.platform_short": "நடைமேடை {platform} இன் நீளம் {length}, ரயிலுக்கு {needed} தேவை",
+  "rail.plan.platform_taken": "புறப்பட முடியாத ரயில் நடைமேடையில் நிற்கிறது",
   "rail.plan.pull_out": "வெளியேற்றம்: {reason}",
   "rail.plan.route_break": "வழி {route} வழி {previous} ஐத் தொடர்ந்து செல்லவில்லை",
   "rail.plan.run_failed": "{run}: {detail}",

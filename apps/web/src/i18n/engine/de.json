@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "In {station} haben {count} Fahrten einen anderen Bahnsteig als üblich genutzt.",
   "rail.plan.platform_changes_one": "In {station} hat 1 Fahrt einen anderen Bahnsteig als üblich genutzt.",
   "rail.plan.platform_short": "Bahnsteig {platform} ist {length} lang, der Zug braucht {needed}",
+  "rail.plan.platform_taken": "ein Zug, der nicht abfahren konnte, steht am Bahnsteig",
   "rail.plan.pull_out": "Ausrücken: {reason}",
   "rail.plan.route_break": "Fahrstraße {route} schließt nicht an Fahrstraße {previous} an",
   "rail.plan.run_failed": "{run}: {detail}",

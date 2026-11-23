@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station} پر {count} سفروں نے معمول سے مختلف پلیٹ فارم استعمال کیا۔",
   "rail.plan.platform_changes_one": "{station} پر 1 سفر نے معمول سے مختلف پلیٹ فارم استعمال کیا۔",
   "rail.plan.platform_short": "پلیٹ فارم {platform} کی لمبائی {length} ہے، ٹرین کو {needed} چاہیے",
+  "rail.plan.platform_taken": "جو ٹرین روانہ نہ ہو سکی وہ پلیٹ فارم پر کھڑی ہے",
   "rail.plan.pull_out": "ڈپو سے نکلنا: {reason}",
   "rail.plan.route_break": "روٹ {route}، روٹ {previous} کے بعد نہیں آتا",
   "rail.plan.run_failed": "{run}: {detail}",

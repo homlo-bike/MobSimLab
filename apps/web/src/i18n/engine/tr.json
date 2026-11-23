@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station}: {count} sefer olağan perondan başka bir peron kullandı.",
   "rail.plan.platform_changes_one": "{station}: 1 sefer olağan perondan başka bir peron kullandı.",
   "rail.plan.platform_short": "peron {platform} {length}, trenin ihtiyacı {needed}",
+  "rail.plan.platform_taken": "kalkamayan bir tren peronda duruyor",
   "rail.plan.pull_out": "depodan çıkış: {reason}",
   "rail.plan.route_break": "rota {route}, rota {previous} ardından gelmiyor",
   "rail.plan.run_failed": "{run}: {detail}",

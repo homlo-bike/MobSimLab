@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "Di {station}, {count} perjalanan memakai peron yang berbeda dari biasanya.",
   "rail.plan.platform_changes_one": "Di {station}, 1 perjalanan memakai peron yang berbeda dari biasanya.",
   "rail.plan.platform_short": "peron {platform} sepanjang {length}, kereta memerlukan {needed}",
+  "rail.plan.platform_taken": "kereta yang tidak dapat berangkat berdiri di peron",
   "rail.plan.pull_out": "keluar dari depo: {reason}",
   "rail.plan.route_break": "rute {route} tidak menyambung dengan rute {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "في {station}، استخدمت رحلات عددها {count} رصيفًا غير المعتاد.",
   "rail.plan.platform_changes_one": "في {station}، استخدمت رحلة واحدة رصيفًا غير المعتاد.",
   "rail.plan.platform_short": "طول الرصيف {platform} هو {length}، ويحتاج القطار إلى {needed}",
+  "rail.plan.platform_taken": "قطار لم يتمكن من المغادرة يقف على الرصيف",
   "rail.plan.pull_out": "الخروج إلى الخدمة: {reason}",
   "rail.plan.route_break": "المسار {route} لا يتابع المسار {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

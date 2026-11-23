@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "در {station}، {count} سفر از سکویی جز سکوی معمول استفاده کردند.",
   "rail.plan.platform_changes_one": "در {station}، 1 سفر از سکویی جز سکوی معمول استفاده کرد.",
   "rail.plan.platform_short": "طول سکوی {platform} برابر {length} است، قطار به {needed} نیاز دارد",
+  "rail.plan.platform_taken": "قطاری که نتوانست حرکت کند در سکو ایستاده است",
   "rail.plan.pull_out": "خروج از توقفگاه: {reason}",
   "rail.plan.route_break": "مسیر {route} در ادامه مسیر {previous} نیست",
   "rail.plan.run_failed": "{run}: {detail}",

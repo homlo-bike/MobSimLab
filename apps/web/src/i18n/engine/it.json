@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "A {station}, {count} corse hanno usato una banchina diversa da quella abituale.",
   "rail.plan.platform_changes_one": "A {station}, 1 corsa ha usato una banchina diversa da quella abituale.",
   "rail.plan.platform_short": "la banchina {platform} è lunga {length}, il treno richiede {needed}",
+  "rail.plan.platform_taken": "un treno che non è potuto partire sosta alla banchina",
   "rail.plan.pull_out": "uscita dal deposito: {reason}",
   "rail.plan.route_break": "l'itinerario {route} non prosegue l'itinerario {previous}",
   "rail.plan.run_failed": "{run}: {detail}",
