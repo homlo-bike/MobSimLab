@@ -70,4 +70,25 @@ export const roadId = {
   "prefs.roadTitle": "Simulasi jalan",
   "prefs.roadIntro": "Lalu lintas mobil latar dalam simulasi jalan (Simulator → Simulasi jalan).",
   "prefs.offPeakTraffic": "Lalu lintas di luar puncak pagi dan sore, sebagai bagian dari puncak tiap jalan",
+  "prefs.groupVisuals": "Tampilan",
+  "visuals.vehiclesTitle": "Kendaraan dalam simulasi",
+  "visuals.vehiclesIntro":
+    "Warna kendaraan dalam putar ulang simulasi jalan (Simulator → Simulasi jalan). Kendaraan beroperasi dari halte pertamanya hingga meninggalkan halte terakhir; lebih awal dihitung tepat waktu.",
+  "visuals.onTimeUpTo": "Tepat waktu hingga (menit terlambat)",
+  "visuals.lateUpTo": "Terlambat hingga (menit terlambat); lebih dari itu sangat terlambat",
+  "visuals.noLate":
+    "Batas «Terlambat hingga» tidak lebih dari «Tepat waktu hingga», jadi tidak ada kendaraan yang tampil terlambat.",
+  "visuals.colors": "Warna",
+  "visuals.onTime": "Beroperasi, tepat waktu",
+  "visuals.late": "Beroperasi, terlambat",
+  "visuals.veryLate": "Beroperasi, sangat terlambat",
+  "visuals.outOfService": "Tidak beroperasi, di jalan",
+  "visuals.parked": "Diparkir di depo",
+  "visuals.defaultMin": "Bawaan: {value} mnt",
+  "visuals.reset": "Gunakan bawaan",
+  "visuals.legend.onTime": "Tepat waktu (terlambat hingga {min} mnt)",
+  "visuals.legend.late": "Terlambat ({from}–{to} mnt)",
+  "visuals.legend.veryLate": "Sangat terlambat (lebih dari {min} mnt)",
+  "road.replay.noService":
+    "Run ini disimpan sebelum waktu layanan dicatat, jadi kendaraannya memakai warna jalurnya. Jalankan lagi untuk melihat ketepatan waktunya.",
 } satisfies RoadMessages;

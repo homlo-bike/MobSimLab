@@ -6,15 +6,22 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 import { isOpen, type RunStatus } from "../capacity/server";
 import { loadDepotEngine } from "../depots/engine";
 import type { DepotEngineLoader, SavedDepot } from "../depots/types";
 import { clock, parseClock } from "../journey-planner/format";
 import type { SavedStreetLine } from "../street-lines/saved";
 import type { StreetSetup } from "../street-setup/types";
-import type { PreferencesDoc } from "../../workspace/preferences";
+import {
+  type PreferencesDoc,
+  VEHICLE_STATES,
+  type VehicleState,
+  type VehicleVisuals,
+  vehicleVisualsFrom,
+} from "../../workspace/preferences";
 import type { RoadRun, RoadRunDetail, RoadRunsApi } from "./api";
-import { ensureReplayLayers, removeReplayLayers, replaySpan, setReplayTime } from "./replay";
+import { ensureReplayLayers, hasServiceTimes, removeReplayLayers, replaySpan, setReplayTime } from "./replay";
 import { buildScenario } from "./scenario";
 import type { Replay, RoadEvent, RoadLineResult, RoadResult, RoadStep } from "./types";
 import { engineErrorText } from "../../i18n/engine";
@@ -51,6 +58,8 @@ interface Props {
   depots?: readonly SavedDepot[];
   setups?: readonly StreetSetup[];
   prefs?: PreferencesDoc["values"];
+  /** The project's vehicle colours and delays (Project preferences → Visuals); absent: the defaults. */
+  visuals?: PreferencesDoc["visuals"];
   /** Depot layout engine; tests inject a fake. */
   loadEngine?: DepotEngineLoader;
   pollMs?: number;
@@ -65,10 +74,12 @@ export function RoadSimulation({
   depots = NO_DEPOTS,
   setups = NO_SETUPS,
   prefs,
+  visuals,
   loadEngine = loadDepotEngine,
   pollMs = 2000,
 }: Props) {
   const { t, language } = useI18n();
+  const vehicleVisuals = useMemo(() => vehicleVisualsFrom({ values: {}, visuals }), [visuals]);
   const [period, setPeriod] = useState<string>("am");
   const [from, setFrom] = useState("07:00");
   const [to, setTo] = useState("09:00");
@@ -437,7 +448,12 @@ export function RoadSimulation({
       )}
       {result && <Results result={result} />}
       {api && viewing?.status === "done" && (
-        <ReplayPlayer key={viewing.id} load={() => api.replay(viewing.id)} map={map} />
+        <ReplayPlayer
+          key={viewing.id}
+          load={() => api.replay(viewing.id)}
+          map={map}
+          visuals={vehicleVisuals}
+        />
       )}
     </div>
   );
@@ -562,7 +578,15 @@ function LineCard({ line }: { line: RoadLineResult }) {
 }
 
 /** Purpose: the replay of a finished run on the map, with play, pause, reset, speed and a time slider. */
-function ReplayPlayer({ load, map }: { load: () => Promise<Replay>; map: MapLibreMap | null }) {
+function ReplayPlayer({
+  load,
+  map,
+  visuals,
+}: {
+  load: () => Promise<Replay>;
+  map: MapLibreMap | null;
+  visuals: VehicleVisuals;
+}) {
   const { t } = useI18n();
   const [replay, setReplay] = useState<Replay | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
@@ -593,8 +617,8 @@ function ReplayPlayer({ load, map }: { load: () => Promise<Replay>; map: MapLibr
   }, [map, replay]);
 
   useEffect(() => {
-    if (map && replay && map.getSource("road-replay")) setReplayTime(map, replay, time);
-  }, [map, replay, time]);
+    if (map && replay && map.getSource("road-replay")) setReplayTime(map, replay, time, visuals);
+  }, [map, replay, time, visuals]);
 
   useEffect(() => {
     if (!playing || !replay) return;
@@ -668,6 +692,43 @@ function ReplayPlayer({ load, map }: { load: () => Promise<Replay>; map: MapLibr
         aria-label={t("road.time")}
         onChange={(e) => setTime(Number(e.target.value))}
       />
+      <VehicleLegend visuals={visuals} />
+      {!hasServiceTimes(replay) && <p className="text-xs text-slate-600">{t("road.replay.noService")}</p>}
     </section>
+  );
+}
+
+const STATE_LABEL = {
+  on_time: "visuals.onTime",
+  late: "visuals.late",
+  very_late: "visuals.veryLate",
+  out_of_service: "visuals.outOfService",
+  parked: "visuals.parked",
+} as const satisfies Record<VehicleState, MessageKey>;
+
+/** Purpose: what each vehicle colour of the replay means, with the project's delays. */
+function VehicleLegend({ visuals }: { visuals: VehicleVisuals }) {
+  const { t } = useI18n();
+  const text = (k: VehicleState) =>
+    k === "on_time"
+      ? t("visuals.legend.onTime", { min: visuals.on_time_min })
+      : k === "late"
+        ? t("visuals.legend.late", { from: visuals.on_time_min, to: visuals.late_min })
+        : k === "very_late"
+          ? t("visuals.legend.veryLate", { min: visuals.late_min })
+          : t(STATE_LABEL[k]);
+  return (
+    <ul className="m-0 flex list-none flex-wrap gap-x-3 gap-y-1 p-0 text-xs text-slate-700">
+      {VEHICLE_STATES.map((k) => (
+        <li key={k} className="flex items-center gap-1.5">
+          <span
+            aria-hidden="true"
+            className="inline-block h-3 w-3 rounded-full border border-white shadow-[0_0_0_1px_rgba(15,23,42,.25)]"
+            style={{ background: visuals.colors[k] }}
+          />
+          {text(k)}
+        </li>
+      ))}
+    </ul>
   );
 }

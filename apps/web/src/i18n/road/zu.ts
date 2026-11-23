@@ -72,4 +72,25 @@ export const roadZu = {
     "Ithrafikhi yezimoto zangemuva ekulingiseni komgwaqo (Isilingisi → Ukulingisa komgwaqo).",
   "prefs.offPeakTraffic":
     "Ithrafikhi ngaphandle kweziqongo zasekuseni nakusihlwa, njengengxenye yesiqongo somgwaqo ngamunye",
+  "prefs.groupVisuals": "Ukubukeka",
+  "visuals.vehiclesTitle": "Izimoto ekulingiseni",
+  "visuals.vehiclesIntro":
+    "Imibala yezimoto ekudlalweni kabusha kokulingisa umgwaqo (Isilingisi → Ukulingisa umgwaqo). Imoto isemsebenzini kusukela esitobhini sayo sokuqala ize ishiye esokugcina; ukuhamba kusenesikhathi kubalwa njengokufika ngesikhathi.",
+  "visuals.onTimeUpTo": "Ngesikhathi kuze kufike (amaminithi okubambezeleka)",
+  "visuals.lateUpTo": "Ibambezelekile kuze kufike (amaminithi); ngaphezulu ibambezeleke kakhulu",
+  "visuals.noLate":
+    "Umkhawulo othi «Ibambezelekile» awudluli owe-«Ngesikhathi», ngakho ayikho imoto ezoboniswa ibambezelekile.",
+  "visuals.colors": "Imibala",
+  "visuals.onTime": "Isemsebenzini, ngesikhathi",
+  "visuals.late": "Isemsebenzini, ibambezelekile",
+  "visuals.veryLate": "Isemsebenzini, ibambezeleke kakhulu",
+  "visuals.outOfService": "Ayikho emsebenzini, emgwaqweni",
+  "visuals.parked": "Ipakwe edepho",
+  "visuals.defaultMin": "Okuzenzakalelayo: imiz. {value}",
+  "visuals.reset": "Sebenzisa okuzenzakalelayo",
+  "visuals.legend.onTime": "Ngesikhathi (kuze kube imiz. {min})",
+  "visuals.legend.late": "Ibambezelekile (imiz. {from}–{to})",
+  "visuals.legend.veryLate": "Ibambezeleke kakhulu (ngaphezu kwemiz. {min})",
+  "road.replay.noService":
+    "Lokhu kusebenza kwagcinwa ngaphambi kokuba kuqoshwe izikhathi zomsebenzi, ngakho izimoto zinombala womugqa wazo. Kuqalise futhi ukuze uzibone ngokufika ngesikhathi.",
 } satisfies RoadMessages;

@@ -170,6 +170,12 @@ export interface Replay {
     f0: number;
     /** Five numbers per frame: lon·1e5, lat·1e5, heading °, speed km/h, charge % (-1 without a battery). */
     s: number[];
+    /**
+     * The vehicle's planned stops, four numbers each in plan order: planned departure, arrival and departure
+     * (s after midnight, -1 when it did not get there) and the kind (0 along a trip, 1 first stop of a trip,
+     * 2 back at the first stop after the last trip). Absent in replays of runs made before it was recorded.
+     */
+    st?: number[];
   }[];
   events: RoadEvent[];
 }

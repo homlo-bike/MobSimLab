@@ -71,4 +71,25 @@ export const roadNl = {
   "prefs.roadIntro": "Achtergrondverkeer van auto's in wegsimulaties (Simulator → Wegsimulatie).",
   "prefs.offPeakTraffic":
     "Verkeer buiten de ochtend- en avondspits, als aandeel van de spits van elke straat",
+  "prefs.groupVisuals": "Weergave",
+  "visuals.vehiclesTitle": "Voertuigen in de simulatie",
+  "visuals.vehiclesIntro":
+    "Kleuren van voertuigen in de weergave van de wegsimulatie (Simulator → Wegsimulatie). Een voertuig is in dienst vanaf zijn eerste halte tot het de laatste verlaat; te vroeg rijden telt als op tijd.",
+  "visuals.onTimeUpTo": "Op tijd tot (minuten te laat)",
+  "visuals.lateUpTo": "Te laat tot (minuten te laat); daarboven zeer te laat",
+  "visuals.noLate":
+    "‘Te laat tot’ is niet groter dan ‘Op tijd tot’, dus geen voertuig wordt als te laat getoond.",
+  "visuals.colors": "Kleuren",
+  "visuals.onTime": "In dienst, op tijd",
+  "visuals.late": "In dienst, te laat",
+  "visuals.veryLate": "In dienst, zeer te laat",
+  "visuals.outOfService": "Buiten dienst, op straat",
+  "visuals.parked": "Geparkeerd in de stalling",
+  "visuals.defaultMin": "Standaard: {value} min",
+  "visuals.reset": "Standaard gebruiken",
+  "visuals.legend.onTime": "Op tijd (tot {min} min te laat)",
+  "visuals.legend.late": "Te laat ({from}–{to} min)",
+  "visuals.legend.veryLate": "Zeer te laat (meer dan {min} min)",
+  "road.replay.noService":
+    "Deze run is opgeslagen voordat dienstijden werden vastgelegd; de voertuigen houden de kleur van hun lijn. Voer hem opnieuw uit om ze op stiptheid te zien.",
 } satisfies RoadMessages;

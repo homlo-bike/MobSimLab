@@ -70,4 +70,25 @@ export const roadPl = {
   "prefs.roadTitle": "Symulacja drogowa",
   "prefs.roadIntro": "Ruch samochodów tła w symulacjach drogowych (Symulator → Symulacja drogowa).",
   "prefs.offPeakTraffic": "Ruch poza szczytem porannym i wieczornym, jako część szczytu każdej ulicy",
+  "prefs.groupVisuals": "Wygląd",
+  "visuals.vehiclesTitle": "Pojazdy w symulacji",
+  "visuals.vehiclesIntro":
+    "Kolory pojazdów w odtworzeniu symulacji drogowej (Symulator → Symulacja drogowa). Pojazd jest w służbie od pierwszego przystanku, dopóki nie opuści ostatniego; jazda przed czasem liczy się jako punktualna.",
+  "visuals.onTimeUpTo": "Punktualny do (minut opóźnienia)",
+  "visuals.lateUpTo": "Opóźniony do (minut opóźnienia); powyżej mocno opóźniony",
+  "visuals.noLate":
+    "„Opóźniony do” nie jest większe niż „Punktualny do”, więc żaden pojazd nie jest pokazany jako opóźniony.",
+  "visuals.colors": "Kolory",
+  "visuals.onTime": "W służbie, punktualny",
+  "visuals.late": "W służbie, opóźniony",
+  "visuals.veryLate": "W służbie, mocno opóźniony",
+  "visuals.outOfService": "Poza służbą, na ulicy",
+  "visuals.parked": "Zaparkowany w zajezdni",
+  "visuals.defaultMin": "Domyślnie: {value} min",
+  "visuals.reset": "Użyj domyślnej",
+  "visuals.legend.onTime": "Punktualny (do {min} min opóźnienia)",
+  "visuals.legend.late": "Opóźniony ({from}–{to} min)",
+  "visuals.legend.veryLate": "Mocno opóźniony (ponad {min} min)",
+  "road.replay.noService":
+    "Ten przebieg zapisano, zanim rejestrowano czasy służby, więc pojazdy mają kolor swojej linii. Uruchom go ponownie, aby zobaczyć punktualność.",
 } satisfies RoadMessages;

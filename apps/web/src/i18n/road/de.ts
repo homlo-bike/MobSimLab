@@ -73,4 +73,25 @@ export const roadDe = {
   "prefs.roadIntro": "Hintergrundverkehr der Autos in Straßenläufen (Simulator → Straßensimulation).",
   "prefs.offPeakTraffic":
     "Verkehr außerhalb der Morgen- und Abendspitze, als Anteil an der Spitze jeder Straße",
+  "prefs.groupVisuals": "Darstellung",
+  "visuals.vehiclesTitle": "Fahrzeuge in der Simulation",
+  "visuals.vehiclesIntro":
+    "Wie Fahrzeuge in der Wiedergabe der Straßensimulation eingefärbt werden (Simulator → Straßensimulation). Ein Fahrzeug ist von seiner ersten Haltestelle an im Einsatz, bis es seine letzte verlässt; zu frühe Fahrt gilt als pünktlich.",
+  "visuals.onTimeUpTo": "Pünktlich bis (Minuten Verspätung)",
+  "visuals.lateUpTo": "Verspätet bis (Minuten Verspätung); darüber stark verspätet",
+  "visuals.noLate":
+    "„Verspätet bis“ ist nicht größer als „Pünktlich bis“, daher wird kein Fahrzeug als verspätet angezeigt.",
+  "visuals.colors": "Farben",
+  "visuals.onTime": "Im Einsatz, pünktlich",
+  "visuals.late": "Im Einsatz, verspätet",
+  "visuals.veryLate": "Im Einsatz, stark verspätet",
+  "visuals.outOfService": "Nicht im Einsatz, auf der Straße",
+  "visuals.parked": "Im Betriebshof abgestellt",
+  "visuals.defaultMin": "Standard: {value} min",
+  "visuals.reset": "Standard verwenden",
+  "visuals.legend.onTime": "Pünktlich (bis {min} min Verspätung)",
+  "visuals.legend.late": "Verspätet ({from}–{to} min)",
+  "visuals.legend.veryLate": "Stark verspätet (über {min} min)",
+  "road.replay.noService":
+    "Dieser Lauf wurde gespeichert, bevor Betriebszeiten erfasst wurden; seine Fahrzeuge behalten die Farbe ihrer Linie. Starten Sie ihn erneut, um sie nach Pünktlichkeit zu sehen.",
 } satisfies RoadMessages;

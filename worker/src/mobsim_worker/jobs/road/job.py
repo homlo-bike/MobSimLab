@@ -346,5 +346,5 @@ def run_road(
         "step_s": step_s,
         "complete": not out.stopped,
     }
-    replay = sim.pack_replay(runnable, out)
+    replay = sim.pack_replay(runnable, out, stops)
     return ("stopped" if out.stopped else "done"), result, replay

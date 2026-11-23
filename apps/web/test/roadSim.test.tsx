@@ -2,7 +2,14 @@ import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/re
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { DepotEngine, SavedDepot } from "../src/features/depots/types";
 import { projectRoadRuns, type RoadRunDetail, type RoadRunsApi } from "../src/features/road-sim/api";
-import { replaySpan, vehiclesAt } from "../src/features/road-sim/replay";
+import {
+  replayGeoJson,
+  replaySpan,
+  serviceAt,
+  vehiclesAt,
+  vehicleState,
+} from "../src/features/road-sim/replay";
+import { DEFAULT_VEHICLE_VISUALS, vehicleVisualsFrom } from "../src/workspace/preferences";
 import { RoadSimulation } from "../src/features/road-sim/RoadSimulation";
 import { buildScenario, lineDepartures } from "../src/features/road-sim/scenario";
 import type { Replay, RoadResult } from "../src/features/road-sim/types";
@@ -246,6 +253,70 @@ describe("road replay", () => {
     expect(v.speed_kmh).toBeCloseTo(35, 6);
     expect(v.charge).toBe(80);
   });
+
+  it("keeps the line's colour on the street in a replay without stop times, and greys parked vehicles", () => {
+    const at = (t: number) => replayGeoJson(REPLAY, t, DEFAULT_VEHICLE_VISUALS).features[0]!.properties;
+    expect(at(7 * H + 15)).toMatchObject({ color: "#123456", state: "line" });
+    expect(at(7 * H)).toMatchObject({ color: DEFAULT_VEHICLE_VISUALS.colors.parked, state: "parked" });
+  });
+});
+
+describe("vehicle punctuality", () => {
+  // Planned departure, arrival, departure, kind: the first stop at 07:05, one along at 07:10, back at 07:20.
+  const ST = [
+    7 * H + 300,
+    7 * H + 240,
+    7 * H + 300,
+    1,
+    7 * H + 600,
+    7 * H + 650,
+    7 * H + 670,
+    0,
+    7 * H + 1200,
+    7 * H + 1300,
+    7 * H + 1320,
+    2,
+  ];
+  const state = (t: number, visuals = DEFAULT_VEHICLE_VISUALS) =>
+    vehicleState(
+      {
+        id: "v",
+        line: 0,
+        number: 1,
+        lonlat: [0, 0],
+        heading: 0,
+        speed_kmh: 0,
+        charge: null,
+        parked: false,
+        service: serviceAt(ST, t),
+      },
+      visuals,
+    );
+
+  it("is out of service until it reaches its first stop and after it leaves its last one", () => {
+    expect(serviceAt(ST, 7 * H + 100)).toEqual({ in_service: false, delay_s: 0 });
+    expect(state(7 * H + 100)).toBe("out_of_service");
+    expect(state(7 * H + 240)).toBe("on_time");
+    expect(state(7 * H + 1310)).not.toBe("out_of_service");
+    expect(state(7 * H + 1320)).toBe("out_of_service");
+    expect(serviceAt(undefined, 7 * H)).toBeNull();
+  });
+
+  it("is as late as its last departure, or the time since the next one was planned if that is more", () => {
+    expect(serviceAt(ST, 7 * H + 500)!.delay_s).toBe(0);
+    expect(serviceAt(ST, 7 * H + 660)!.delay_s).toBe(60);
+    expect(serviceAt(ST, 7 * H + 700)!.delay_s).toBe(70);
+    expect(serviceAt(ST, 7 * H + 1290)!.delay_s).toBe(90);
+  });
+
+  it("is green on time or early, yellow up to the late limit and red beyond, by the project's minutes", () => {
+    expect(state(7 * H + 400)).toBe("on_time");
+    expect(state(7 * H + 700)).toBe("late");
+    const strict = vehicleVisualsFrom({ values: {}, visuals: { on_time_min: 0.5, late_min: 1 } });
+    expect(state(7 * H + 620, strict)).toBe("on_time");
+    expect(state(7 * H + 660, strict)).toBe("late");
+    expect(state(7 * H + 700, strict)).toBe("very_late");
+  });
 });
 
 describe("projectRoadRuns", () => {
@@ -411,6 +482,9 @@ describe("RoadSimulation", () => {
     expect(screen.getByText("07:00")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Reset" }));
     expect(slider.value).toBe(String(7 * H));
+    expect(screen.getByText("On time (up to 1 min late)")).toBeTruthy();
+    expect(screen.getByText("Parked in the depot")).toBeTruthy();
+    expect(screen.getByText(/Run it again to see them by punctuality/)).toBeTruthy();
   });
 
   it("deletes a run after confirming", async () => {
