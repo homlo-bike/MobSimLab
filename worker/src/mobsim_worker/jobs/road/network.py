@@ -5,7 +5,10 @@ restrictions, bus lanes (``--osm.lane-access``) and traffic signals from OSM (``
 grouped at junctions). Junctions close together are joined, as on real city maps.
 
 The street line tool routes over the same OSM ways, so its routes are matched to the SUMO edges with
-``sumolib.route.mapTrace`` (dense points, buses only), and gaps are closed with the shortest bus path.
+``sumolib.route.mapTrace`` (dense points, buses only), and gaps are closed with the shortest bus path. The
+street line tool's router does not know every turn netconvert builds (turn lanes, joined junctions, no
+U-turns), so ``mapTrace`` can return two edges in a row with no link for a bus between them; ``match`` closes
+such a break with the shortest bus path, or names it (``NoBusLink``) when there is none.
 """
 
 from __future__ import annotations
@@ -131,6 +134,19 @@ def densify(coords: Sequence[LonLat], step_m: float = DENSIFY_M) -> list[LonLat]
     return out
 
 
+class NoBusLink(Exception):
+    """A matched route has no way for a bus from one edge onto the next, not even round a detour."""
+
+    def __init__(self, from_edge: str, to_edge: str, from_street: str, to_street: str, at: LonLat) -> None:
+        """Keep both edges, their street names and where the first one ends."""
+        super().__init__(f"no way for a bus from {from_street} onto {to_street}")
+        self.from_edge = from_edge
+        self.to_edge = to_edge
+        self.from_street = from_street
+        self.to_street = to_street
+        self.at = at
+
+
 @dataclass
 class Placed:
     """A point placed on a route: the index of the edge in the route, the lane and the position on it."""
@@ -177,14 +193,50 @@ class RoadNet:
         return None
 
     def match(self, coords: Sequence[LonLat]) -> list[str]:
-        """Match a drawn route to bus edges, in order; empty when it cannot be matched."""
+        """Match a drawn route to bus edges, in order; empty when it cannot be matched.
+
+        Raises:
+            NoBusLink: Two edges of the match follow each other with no bus path between them.
+        """
         trace = [self.xy(p) for p in densify(coords)]
         if len(trace) < 2:
             return []
         edges = self._sumolib.route.mapTrace(
             trace, self.net, MATCH_M, fillGaps=2000, gapPenalty=5000, vClass="bus", direction=True
         )
-        return [e.getID() for e in edges]
+        return self.connect([e.getID() for e in edges])
+
+    def connect(self, edges: Sequence[str]) -> list[str]:
+        """Return the edges with every break between two of them closed by the shortest bus path.
+
+        ``mapTrace`` jumps from one edge to the next when no bus path between them is shorter than its gap
+        limit (a turn netconvert does not allow, such as a U-turn or a banned turn), and SUMO refuses such a
+        route ("no connection between edge … and edge …").
+
+        Raises:
+            NoBusLink: There is no bus path at all between two edges that follow each other.
+        """
+        out: list[str] = []
+        for e in edges:
+            if not out or out[-1] == e or self.follows(out[-1], e):
+                if not out or out[-1] != e:
+                    out.append(e)
+                continue
+            gap = self.path(out[-1], e)
+            if gap is None:
+                a, b = self.edge(out[-1]), self.edge(e)
+                x, y = a.getToNode().getCoord()
+                raise NoBusLink(out[-1], e, self.street(a), self.street(b), self.lonlat(x, y))
+            out.extend(gap[1:])
+        return out
+
+    def street(self, edge: Any) -> str:
+        """Name an edge for a planner: its street name, or the OSM way it comes from."""
+        name = str(edge.getName() or "").strip()
+        if name:
+            return name
+        way = edge.getID().lstrip("-").split("#")[0]
+        return f"an unnamed street (OSM way {way})"
 
     def path(self, a: str, b: str) -> list[str] | None:
         """Return the shortest bus path from edge ``a`` to edge ``b`` (both included), or None."""
