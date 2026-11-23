@@ -920,6 +920,9 @@ export const editorsKo = {
   "jp.set.maxRides": "최대 탑승 횟수",
   "jp.walkNote":
     "보행 네트워크가 추가되기 전까지 도보 거리는 직선 거리 × 1.3입니다. 기본값은 가정값 라이브러리에서 가져옵니다.",
+  "jp.slopeNote":
+    "도보 시간은 양 끝 사이의 경사로 계산합니다(지형 높이와 토블러 하이킹 함수). 오르막과 급한 내리막은 더 오래 걸립니다.",
+  "jp.slopeNoHeights": "지형 높이를 불러오지 못해 도보를 평지로 계산합니다.",
   "kit.minSec": "{m}분 {s}초",
   "kit.checks": "검사",
   "kit.issue": "{level}: ",

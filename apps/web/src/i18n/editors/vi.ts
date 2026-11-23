@@ -934,6 +934,9 @@ export const editorsVi = {
   "jp.set.maxRides": "Số chặng tối đa",
   "jp.walkNote":
     "Quãng đi bộ là đường thẳng × 1,3 cho đến khi có mạng lưới đi bộ. Mặc định từ thư viện giả định.",
+  "jp.slopeNote":
+    "Thời gian đi bộ được tính theo độ dốc giữa hai đầu (hàm đi bộ Tobler với độ cao địa hình): lên dốc và xuống dốc gắt mất nhiều thời gian hơn.",
+  "jp.slopeNoHeights": "Không tải được độ cao địa hình, nên đi bộ được tính như trên đường bằng.",
   "kit.minSec": "{m} phút {s} giây",
   "kit.checks": "Kiểm tra",
   "kit.issue": "{level}: ",

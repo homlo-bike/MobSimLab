@@ -974,6 +974,9 @@ export const editorsSw = {
   "jp.set.maxRides": "Magari mengi zaidi",
   "jp.walkNote":
     "Kutembea ni umbali wa mstari ulionyooka × 1.3 hadi mtandao wa kutembea uwepo. Thamani za msingi zinatoka maktaba ya dhana.",
+  "jp.slopeNote":
+    "Muda wa kutembea hukokotolewa kwenye mteremko kati ya ncha zake mbili (kanuni ya matembezi ya Tobler pamoja na miinuko ya ardhi): kupanda na kushuka kwa kasi huchukua muda zaidi.",
+  "jp.slopeNoHeights": "Miinuko ya ardhi haikupakiwa, hivyo matembezi yanahesabiwa kama ardhi tambarare.",
   "kit.minSec": "dak {m} sek {s}",
   "kit.checks": "Ukaguzi",
   "kit.issue": "{level}:",

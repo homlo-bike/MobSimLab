@@ -932,6 +932,9 @@ export const editorsIg = {
   "jp.set.maxRides": "Ọnụ ọgụgụ ụgbọ kacha",
   "jp.walkNote":
     "Ije ụkwụ bụ ogologo ahịrị kwụ ọtọ × 1.3 ruo mgbe netwọk ije ụkwụ dị. Uru ndabara si n'ọbá akwụkwọ echiche.",
+  "jp.slopeNote":
+    "A na-agụ oge ije n'ugwu dị n'etiti nsọtụ ya abụọ (ọrụ ije Tobler na ịdị elu ala): ịrị elu na ịrịda nke siri ike na-ewe ogologo oge.",
+  "jp.slopeNoHeights": "Ịdị elu ala ebughị, ya mere a na-agụ ije dị ka ala dị larịị.",
   "kit.minSec": "{m} nkeji {s} sekọnd",
   "kit.checks": "Nyocha",
   "kit.issue": "{level}:",

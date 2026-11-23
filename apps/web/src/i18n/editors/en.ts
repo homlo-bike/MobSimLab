@@ -974,6 +974,9 @@ export const editorsEn = {
   "jp.set.maxRides": "Most vehicles",
   "jp.walkNote":
     "Walks are straight-line distance × 1.3 until the walking network exists. Defaults come from the assumption library.",
+  "jp.slopeNote":
+    "Walks are timed on the slope between their two ends (Tobler's hiking function, with the terrain heights): uphill and steep downhill walks take longer.",
+  "jp.slopeNoHeights": "Terrain heights did not load, so walks are timed as if on flat ground.",
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Checks",
   "kit.issue": "{level}:",

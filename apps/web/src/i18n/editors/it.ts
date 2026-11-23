@@ -977,6 +977,10 @@ export const editorsIt = {
   "jp.set.maxRides": "Numero massimo di mezzi",
   "jp.walkNote":
     "Le distanze a piedi sono in linea d'aria × 1,3 finché non viene aggiunta una rete pedonale. Valori predefiniti dalla libreria delle ipotesi.",
+  "jp.slopeNote":
+    "I tratti a piedi sono calcolati sulla pendenza tra i due estremi (funzione escursionistica di Tobler con le quote del terreno): in salita e in forte discesa richiedono più tempo.",
+  "jp.slopeNoHeights":
+    "Le quote del terreno non sono state caricate, quindi i tratti a piedi sono calcolati come in piano.",
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Verifiche",
   "kit.issue": "{level}: ",

@@ -966,6 +966,9 @@ export const editorsId = {
   "jp.set.maxRides": "Jumlah naik maksimum",
   "jp.walkNote":
     "Jarak jalan kaki adalah garis lurus × 1,3 sampai jaringan pejalan kaki ditambahkan. Bawaan dari pustaka asumsi.",
+  "jp.slopeNote":
+    "Waktu jalan kaki dihitung pada kemiringan antara kedua ujungnya (fungsi pendakian Tobler dengan ketinggian medan): jalan menanjak dan menurun curam lebih lama.",
+  "jp.slopeNoHeights": "Ketinggian medan tidak termuat, jadi jalan kaki dihitung seperti di tanah datar.",
   "kit.minSec": "{m} mnt {s} d",
   "kit.checks": "Pemeriksaan",
   "kit.issue": "{level}: ",

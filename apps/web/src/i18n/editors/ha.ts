@@ -964,6 +964,9 @@ export const editorsHa = {
   "jp.set.maxRides": "Mafi yawan ababen hawa",
   "jp.walkNote":
     "Tafiya a ƙafa nisan miƙaƙƙen layi ne × 1.3 har sai an samu hanyar sadarwar tafiya a ƙafa. Tsoffin ƙimomi daga ɗakin zato suke.",
+  "jp.slopeNote":
+    "Ana lissafa lokacin tafiya a kan gangaren da ke tsakanin ƙarshensa biyu (tsarin tafiyar Tobler tare da tsawon ƙasa): hawa da sauka mai tsauri suna ɗaukar lokaci fiye.",
+  "jp.slopeNoHeights": "Ba a ɗora tsawon ƙasa ba, don haka ana lissafa tafiya kamar a fili.",
   "kit.minSec": "min {m} daƙ {s}",
   "kit.checks": "Bincike",
   "kit.issue": "{level}:",

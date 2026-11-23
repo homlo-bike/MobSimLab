@@ -975,6 +975,10 @@ export const editorsUz = {
   "jp.set.maxRides": "Maksimal qatnovlar",
   "jp.walkNote":
     "Piyoda tarmogʻi qoʻshilguncha piyoda masofa toʻgʻri chiziq × 1.3. Standart qiymatlar farazlar kutubxonasidan.",
+  "jp.slopeNote":
+    "Piyoda yurish vaqti ikki uchi orasidagi qiyalik bo‘yicha hisoblanadi (yer balandliklari bilan Tobler funksiyasi): tepaga va tik pastga yurish ko‘proq vaqt oladi.",
+  "jp.slopeNoHeights":
+    "Yer balandliklari yuklanmadi, shuning uchun piyoda yurish tekislikdagidek hisoblanmoqda.",
   "kit.minSec": "{m} daq {s} soniya",
   "kit.checks": "Tekshiruvlar",
   "kit.issue": "{level}:",
