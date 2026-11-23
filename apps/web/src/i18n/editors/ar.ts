@@ -702,6 +702,16 @@ export const editorsAr = {
   "schematic.showStatuses": "رموز الحالة",
   "schematic.showFeatures": "رموز مرافق المحطات",
   "schematic.showWater": "البحر والبحيرات والأنهار",
+  "schematic.straightRivers": "ارسم الأنهار بخطوات 45°",
+  "schematic.nameSize": "حجم أسماء المحطات",
+  "schematic.longRuns": "مقاطع طويلة بلا توقف",
+  "schematic.longRuns.off": "كما على الأرض",
+  "schematic.longRuns.max": "على الأكثر {n} × المسافة المعتادة",
+  "schematic.pngSmallNames":
+    "أسماء المحطات {px} px فقط في هذه الصورة لأنها محدودة بـ 8192 px لكل ضلع. استخدم SVG أو الطباعة لنسخة أوضح.",
+  "schematic.printPaper": "حجم الصفحة {paper}: تُطبع أسماء المحطات بحجم {pt} pt.",
+  "schematic.printSmallNames":
+    "حجم الصفحة {paper}: تُطبع أسماء المحطات بحجم {pt} pt فقط. كبّر أسماء المحطات أو أخفِ بعض الطبقات.",
   "schematic.showAreas": "مناطق التعرفة والمعالم",
   "schematic.water": "الماء",
   "schematic.areas": "مناطق التعرفة والمعالم",

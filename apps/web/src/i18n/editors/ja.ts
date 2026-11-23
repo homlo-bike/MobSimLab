@@ -630,6 +630,16 @@ export const editorsJa = {
   "schematic.showStatuses": "ステータス記号",
   "schematic.showFeatures": "駅設備の記号",
   "schematic.showWater": "海・湖・川",
+  "schematic.straightRivers": "川を 45° 刻みで描く",
+  "schematic.nameSize": "駅名の大きさ",
+  "schematic.longRuns": "駅のない長い区間",
+  "schematic.longRuns.off": "地理どおり",
+  "schematic.longRuns.max": "通常の駅間の最大 {n} 倍",
+  "schematic.pngSmallNames":
+    "この画像は一辺 8,192 px までのため、駅名は {px} px しかありません。より鮮明にするには SVG か印刷を使ってください。",
+  "schematic.printPaper": "用紙 {paper}：駅名は {pt} pt で印刷されます。",
+  "schematic.printSmallNames":
+    "用紙 {paper}：駅名は {pt} pt でしか印刷されません。駅名を大きくするか、一部のレイヤーを非表示にしてください。",
   "schematic.showAreas": "運賃ゾーンとランドマーク",
   "schematic.water": "水域",
   "schematic.areas": "運賃ゾーンとランドマーク",

@@ -709,6 +709,16 @@ export const editorsPl = {
   "schematic.showStatuses": "Symbole statusu",
   "schematic.showFeatures": "Symbole wyposażenia stacji",
   "schematic.showWater": "Morze, jeziora i rzeki",
+  "schematic.straightRivers": "Rysuj rzeki krokami po 45°",
+  "schematic.nameSize": "Rozmiar nazw stacji",
+  "schematic.longRuns": "Długie odcinki bez przystanków",
+  "schematic.longRuns.off": "Jak w terenie",
+  "schematic.longRuns.max": "Najwyżej {n} × zwykły odstęp",
+  "schematic.pngSmallNames":
+    "Nazwy stacji mają na tym obrazie tylko {px} px, bo jest on ograniczony do 8192 px na bok. Użyj SVG lub Drukuj, aby uzyskać ostrzejszą kopię.",
+  "schematic.printPaper": "Format {paper}: nazwy stacji drukowane są w rozmiarze {pt} pt.",
+  "schematic.printSmallNames":
+    "Format {paper}: nazwy stacji drukowane są tylko w rozmiarze {pt} pt. Powiększ nazwy stacji lub ukryj niektóre warstwy.",
   "schematic.showAreas": "Strefy taryfowe i punkty orientacyjne",
   "schematic.water": "Woda",
   "schematic.areas": "Strefy taryfowe i punkty orientacyjne",

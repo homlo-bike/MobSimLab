@@ -655,6 +655,16 @@ export const editorsHi = {
   "schematic.showStatuses": "स्थिति प्रतीक",
   "schematic.showFeatures": "स्टेशन सुविधा प्रतीक",
   "schematic.showWater": "समुद्र, झीलें और नदियाँ",
+  "schematic.straightRivers": "नदियों को 45° के चरणों में बनाएँ",
+  "schematic.nameSize": "स्टेशन नाम का आकार",
+  "schematic.longRuns": "बिना ठहराव के लंबे खंड",
+  "schematic.longRuns.off": "जैसे ज़मीन पर",
+  "schematic.longRuns.max": "अधिकतम सामान्य दूरी का {n} गुना",
+  "schematic.pngSmallNames":
+    "इस छवि में स्टेशन नाम केवल {px} px हैं, क्योंकि यह हर ओर 8,192 px तक सीमित है। अधिक साफ़ प्रति के लिए SVG या प्रिंट का उपयोग करें।",
+  "schematic.printPaper": "पृष्ठ आकार {paper}: स्टेशन नाम {pt} pt पर छपते हैं।",
+  "schematic.printSmallNames":
+    "पृष्ठ आकार {paper}: स्टेशन नाम केवल {pt} pt पर छपते हैं। स्टेशन नाम बड़े करें या कुछ परतें छिपाएँ।",
   "schematic.showAreas": "किराया ज़ोन और प्रमुख स्थल",
   "schematic.water": "जल",
   "schematic.areas": "किराया ज़ोन और प्रमुख स्थल",

@@ -680,6 +680,16 @@ export const editorsTa = {
   "schematic.showStatuses": "நிலை குறியீடுகள்",
   "schematic.showFeatures": "நிலைய வசதி குறியீடுகள்",
   "schematic.showWater": "கடல், ஏரிகள், ஆறுகள்",
+  "schematic.straightRivers": "ஆறுகளை 45° படிகளில் வரை",
+  "schematic.nameSize": "நிலையப் பெயர் அளவு",
+  "schematic.longRuns": "நிறுத்தம் இல்லாத நீண்ட பகுதிகள்",
+  "schematic.longRuns.off": "நிலத்தில் உள்ளபடி",
+  "schematic.longRuns.max": "அதிகபட்சம் வழக்கமான இடைவெளியின் {n} மடங்கு",
+  "schematic.pngSmallNames":
+    "இந்தப் படம் ஒவ்வொரு பக்கமும் 8,192 px வரை மட்டுமே என்பதால் நிலையப் பெயர்கள் {px} px மட்டுமே. தெளிவான நகலுக்கு SVG அல்லது அச்சிடு பயன்படுத்தவும்.",
+  "schematic.printPaper": "பக்க அளவு {paper}: நிலையப் பெயர்கள் {pt} pt இல் அச்சிடப்படும்.",
+  "schematic.printSmallNames":
+    "பக்க அளவு {paper}: நிலையப் பெயர்கள் {pt} pt இல் மட்டுமே அச்சிடப்படும். நிலையப் பெயர்களைப் பெரிதாக்கவும் அல்லது சில அடுக்குகளை மறைக்கவும்.",
   "schematic.showAreas": "கட்டண மண்டலங்கள், அடையாளங்கள்",
   "schematic.water": "நீர்",
   "schematic.areas": "கட்டண மண்டலங்கள், அடையாளங்கள்",

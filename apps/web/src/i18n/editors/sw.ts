@@ -665,6 +665,16 @@ export const editorsSw = {
   "schematic.showStatuses": "Alama za hadhi",
   "schematic.showFeatures": "Alama za huduma za stesheni",
   "schematic.showWater": "Bahari, maziwa na mito",
+  "schematic.straightRivers": "Chora mito kwa hatua za 45°",
+  "schematic.nameSize": "Ukubwa wa majina ya vituo",
+  "schematic.longRuns": "Sehemu ndefu bila vituo",
+  "schematic.longRuns.off": "Kama ardhini",
+  "schematic.longRuns.max": "Zaidi ya mara {n} ya nafasi ya kawaida",
+  "schematic.pngSmallNames":
+    "Majina ya vituo ni {px} px tu katika picha hii kwa sababu ina kikomo cha px 8,192 kila upande. Tumia SVG au Chapisha kupata nakala iliyo wazi zaidi.",
+  "schematic.printPaper": "Ukubwa wa ukurasa {paper}: majina ya vituo yanachapishwa kwa {pt} pt.",
+  "schematic.printSmallNames":
+    "Ukubwa wa ukurasa {paper}: majina ya vituo yanachapishwa kwa {pt} pt tu. Ongeza ukubwa wa majina ya vituo au ficha baadhi ya tabaka.",
   "schematic.showAreas": "Kanda za nauli na alama maarufu",
   "schematic.water": "Maji",
   "schematic.areas": "Kanda za nauli na alama maarufu",

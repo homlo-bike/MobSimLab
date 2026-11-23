@@ -626,6 +626,16 @@ export const editorsKo = {
   "schematic.showStatuses": "상태 기호",
   "schematic.showFeatures": "역 시설 기호",
   "schematic.showWater": "바다, 호수, 강",
+  "schematic.straightRivers": "강을 45° 단계로 그리기",
+  "schematic.nameSize": "역 이름 크기",
+  "schematic.longRuns": "정류장 없는 긴 구간",
+  "schematic.longRuns.off": "지리 그대로",
+  "schematic.longRuns.max": "최대 보통 간격의 {n}배",
+  "schematic.pngSmallNames":
+    "이 이미지는 한 변이 8,192 px로 제한되어 역 이름이 {px} px에 불과합니다. 더 선명한 사본은 SVG 또는 인쇄를 사용하세요.",
+  "schematic.printPaper": "용지 {paper}: 역 이름이 {pt} pt로 인쇄됩니다.",
+  "schematic.printSmallNames":
+    "용지 {paper}: 역 이름이 {pt} pt로만 인쇄됩니다. 역 이름을 키우거나 일부 레이어를 숨기세요.",
   "schematic.showAreas": "요금 구역과 랜드마크",
   "schematic.water": "물",
   "schematic.areas": "요금 구역과 랜드마크",

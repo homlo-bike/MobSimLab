@@ -667,6 +667,16 @@ export const editorsUz = {
   "schematic.showStatuses": "Maqom belgilari",
   "schematic.showFeatures": "Bekat jihozlari belgilari",
   "schematic.showWater": "Dengiz, ko‘llar va daryolar",
+  "schematic.straightRivers": "Daryolarni 45° qadamlar bilan chizish",
+  "schematic.nameSize": "Bekat nomlari o‘lchami",
+  "schematic.longRuns": "Bekatsiz uzun qismlar",
+  "schematic.longRuns.off": "Joydagidek",
+  "schematic.longRuns.max": "Odatdagi oraliqdan ko‘pi bilan {n} marta",
+  "schematic.pngSmallNames":
+    "Bu rasm har tomondan 8 192 px bilan cheklangani uchun bekat nomlari atigi {px} px. Aniqroq nusxa uchun SVG yoki Chop etishdan foydalaning.",
+  "schematic.printPaper": "Qog‘oz o‘lchami {paper}: bekat nomlari {pt} pt da chop etiladi.",
+  "schematic.printSmallNames":
+    "Qog‘oz o‘lchami {paper}: bekat nomlari atigi {pt} pt da chop etiladi. Bekat nomlarini kattalashtiring yoki ayrim qatlamlarni yashiring.",
   "schematic.showAreas": "Tarif zonalari va diqqatga sazovor joylar",
   "schematic.water": "Suv",
   "schematic.areas": "Tarif zonalari va diqqatga sazovor joylar",

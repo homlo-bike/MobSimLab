@@ -655,6 +655,16 @@ export const editorsUr = {
   "schematic.showStatuses": "حیثیت کی علامات",
   "schematic.showFeatures": "اسٹیشن سہولیات کی علامات",
   "schematic.showWater": "سمندر، جھیلیں اور دریا",
+  "schematic.straightRivers": "دریاؤں کو 45° کے قدموں میں بنائیں",
+  "schematic.nameSize": "اسٹیشن کے ناموں کا سائز",
+  "schematic.longRuns": "بغیر اسٹاپ کے لمبے حصے",
+  "schematic.longRuns.off": "جیسے زمین پر",
+  "schematic.longRuns.max": "زیادہ سے زیادہ معمول کے فاصلے کا {n} گنا",
+  "schematic.pngSmallNames":
+    "اس تصویر میں اسٹیشن کے نام صرف {px} px ہیں کیونکہ یہ ہر طرف 8,192 px تک محدود ہے۔ زیادہ واضح نقل کے لیے SVG یا پرنٹ استعمال کریں۔",
+  "schematic.printPaper": "صفحے کا سائز {paper}: اسٹیشن کے نام {pt} pt پر چھپتے ہیں۔",
+  "schematic.printSmallNames":
+    "صفحے کا سائز {paper}: اسٹیشن کے نام صرف {pt} pt پر چھپتے ہیں۔ اسٹیشن کے نام بڑے کریں یا کچھ تہیں چھپائیں۔",
   "schematic.showAreas": "کرایہ زون اور نمایاں مقامات",
   "schematic.water": "پانی",
   "schematic.areas": "کرایہ زون اور نمایاں مقامات",
