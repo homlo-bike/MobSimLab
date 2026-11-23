@@ -369,9 +369,9 @@ fn clearance(sys: &SpanSystem, g: &Ground, sup: &[(f64, f64)]) -> (f64, Vec<Prof
 }
 
 /// Purpose: automatic towers for one section: the fewest towers within the span limit that keep the
-/// recommended clearance under the loaded cabin, each standing where the ground needs it and as tall as
-/// it needs to be (from the standard to the maximum tower height); among layouts with the fewest towers,
-/// the one with the least tower height in total.
+/// recommended clearance under the loaded cabin, each standing where the ground needs it (outside the
+/// stations' approaches) and as tall as it needs to be (from the standard to the maximum tower height);
+/// among layouts with the fewest towers, the one with the least tower height in total.
 /// Input: the system and the section's ground.
 /// Output: (chainage, height) per tower; the evenly spaced layout of `even_towers` when no layout on the
 /// search grid keeps the clearance.
@@ -381,6 +381,7 @@ fn auto_towers(sys: &SpanSystem, g: &Ground) -> Vec<(f64, f64)> {
         return Vec::new();
     }
     let max_span = sys.max_span_m.max(1.0);
+    let approach = sys.station_approach_m.max(1.0);
     // Candidate positions: about 40 along the section, at least 6 to a span, never closer than 5 m.
     let step = (len / 40.0).min(max_span / 6.0).max(5.0);
     let n_pos = ((len / step).ceil() as usize).clamp(1, 400);
@@ -447,6 +448,10 @@ fn auto_towers(sys: &SpanSystem, g: &Ground) -> Vec<(f64, f64)> {
             for j in j0 + 1..n_pos {
                 if xs[j] - a.0 > max_span + 1e-9 {
                     break;
+                }
+                // The station's approach is the station's ground: no tower stands in it.
+                if xs[j] < approach || xs[j] > len - approach {
+                    continue;
                 }
                 let at = |k: usize| (xs[j], base[j] + hs[k]);
                 // A taller tower lifts the whole span, so the heights that work are the tallest few.
@@ -932,55 +937,43 @@ mod tests {
 
     #[test]
     fn hillside_gets_a_few_towers_where_the_ground_needs_them() {
-        // Damascus, Muhajreen to Qasioun: 785 m with 240 m of climb, steepening towards the top (Copernicus
-        // DEM GLO-30, every 20 m). Evenly spaced towers of one height needed 11 towers of 50 m here.
+        // Damascus, Muhajreen to Qasioun: 785 m with 240 m of climb, steepening towards the top, sampled
+        // every 30 m from the Copernicus DEM GLO-30 as the app does. Evenly spaced towers of one height
+        // needed 11 towers of 50 m here.
         let ground: Vec<GroundSample> = [
-            (0, 750),
-            (20, 751),
-            (40, 751),
-            (60, 754),
-            (80, 758),
-            (99, 759),
-            (119, 760),
-            (139, 764),
-            (159, 766),
-            (179, 770),
-            (199, 774),
-            (218, 776),
-            (238, 777),
-            (258, 780),
-            (278, 785),
-            (298, 791),
-            (318, 795),
-            (338, 799),
-            (358, 803),
-            (377, 808),
-            (397, 813),
-            (417, 820),
-            (437, 825),
-            (457, 829),
-            (477, 835),
-            (497, 843),
-            (516, 851),
-            (536, 859),
-            (556, 869),
-            (576, 880),
-            (596, 891),
-            (616, 902),
-            (636, 912),
-            (656, 923),
-            (675, 934),
-            (695, 946),
-            (715, 958),
-            (735, 970),
-            (755, 981),
-            (775, 987),
-            (785, 989),
+            (0.0, 749.5),
+            (29.1, 751.1),
+            (58.1, 753.6),
+            (87.2, 759.1),
+            (116.2, 760.2),
+            (145.3, 764.5),
+            (174.4, 769.1),
+            (203.4, 774.3),
+            (232.5, 776.8),
+            (261.5, 781.1),
+            (290.6, 788.4),
+            (319.7, 795.6),
+            (348.7, 801.0),
+            (377.8, 808.2),
+            (406.8, 816.3),
+            (435.9, 824.9),
+            (465.0, 831.0),
+            (494.0, 842.3),
+            (523.1, 853.7),
+            (552.1, 867.3),
+            (581.2, 882.5),
+            (610.3, 899.1),
+            (639.3, 914.3),
+            (668.4, 929.8),
+            (697.4, 947.4),
+            (726.5, 964.5),
+            (755.6, 981.2),
+            (784.6, 989.1),
         ]
         .iter()
-        .map(|&(x, z)| GroundSample {
-            at_m: x as f64,
-            z_m: z as f64,
+        .map(|&(at_m, z_m)| GroundSample {
+            at_m,
+            z_m,
             obstacle_m: 0.0,
         })
         .collect();
@@ -989,7 +982,7 @@ mod tests {
             ..st(x, 0.0, StationKind::Terminal)
         };
         let line = SpanLine {
-            stations: vec![station(0.0, 750.0), station(785.0, 989.0)],
+            stations: vec![station(0.0, 749.5), station(785.0, 989.1)],
             system: mgd(),
             towers: vec![],
             ground: vec![Some(ground)],
@@ -1013,7 +1006,7 @@ mod tests {
             v.issues
         );
         // With a 30 m station approach the cabin may stay near platform height as it leaves and enters
-        // the stations, so no tower has to stand right beside them.
+        // the stations: no tower stands in the approach, and the towers are lower.
         let approach = build(&SpanLine {
             system: SpanSystem {
                 station_approach_m: 30.0,
@@ -1022,7 +1015,9 @@ mod tests {
             ..line.clone()
         });
         let a = &approach.sections[0];
-        assert!(approach.tower_count < v.tower_count, "{:?}", a.towers);
+        let total = |s: &SectionView| s.towers.iter().map(|t| t.height_m).sum::<f64>();
+        assert!(approach.tower_count <= 3, "{:?}", a.towers);
+        assert!(total(a) < total(s), "{:?} vs {:?}", a.towers, s.towers);
         assert!(a
             .towers
             .iter()
