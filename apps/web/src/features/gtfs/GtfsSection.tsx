@@ -1,5 +1,6 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
+import { useEngineText } from "../../i18n/engine";
 import { useI18n } from "../../i18n/i18n";
 import { PluginConverters } from "../../plugins/code/PluginConverters";
 import { activePlugins, componentConverters, pluginConverter, type Plugin } from "../../plugins/registry";
@@ -122,6 +123,7 @@ export function GtfsSection({
   loadEngine?: GtfsEngineLoader;
 }) {
   const { t } = useI18n();
+  const engineText = useEngineText();
   const { importer, exporter } = gtfsAvailable();
   const [inView, setInView] = useState(true);
   const [date, setDate] = useState("");
@@ -214,9 +216,9 @@ export function GtfsSection({
                   {t("jp.gtfs.outside", { n: f.summary.outside })}
                 </span>
               )}
-              {f.summary.warnings.map((w) => (
+              {f.summary.warnings.map((w, k) => (
                 <span key={w} className="block text-xs text-amber-700">
-                  {w}
+                  {engineText({ text: w, msg: f.summary.warning_msgs?.[k] })}
                 </span>
               ))}
             </span>

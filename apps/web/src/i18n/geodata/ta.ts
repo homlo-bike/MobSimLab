@@ -15,7 +15,7 @@ export const geodataTa = {
     "வரைபடம் இப்போது இறக்குமதி செய்த பகுதிக்கு வெளியே செல்கிறது. புதிய பகுதியை இறக்குமதி செய்ய புதுப்பிக்கவும்.",
   "data.method": "தரவை இங்கிருந்து பெறுக",
   "data.method.overpass": "Overpass ({max} ச.கி.மீ வரையிலான பகுதிகள்)",
-  "data.method.geofabrik": "ஒரு Geofabrik பிராந்தியம்",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "ஒரு .osm.pbf கோப்பு",
   "data.region": "பிராந்தியம்",
   "data.regionsLoading": "பிராந்தியங்களைத் தேடுகிறது…",

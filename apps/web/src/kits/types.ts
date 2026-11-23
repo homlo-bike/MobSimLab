@@ -1,11 +1,15 @@
 /** Types of the mode-kits WebAssembly module (crates/mode-kits); field names follow the Rust structs. */
 
+import type { EngineMsg } from "../i18n/engine";
+
 export type LonLat = [number, number];
 
 export interface Issue {
   level: "error" | "warning" | "info";
   code: string;
   message: string;
+  /** The message as a key and values, for the user's language. */
+  msg?: EngineMsg;
   station?: number;
   section?: number;
   parameter?: string;

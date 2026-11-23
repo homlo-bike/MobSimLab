@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { roadParams, roadScenario, roadTiles, tileOf, type RoadScenario } from "../src/simulation/road";
+import {
+  MAX_ROAD_TILES,
+  roadParams,
+  roadScenario,
+  roadTiles,
+  tileOf,
+  type RoadScenario,
+} from "../src/simulation/road";
 
 const LEG = {
   coords: [
@@ -111,5 +118,40 @@ describe("road tiles", () => {
       ],
     });
     expect(roadTiles(s)).toContainEqual(tileOf(8.6, 47.4));
+  });
+
+  it("takes only the tiles along the routes, not the whole box around a city's lines", () => {
+    // Two lines 30 km apart, west and east of a city, and a 30 km airport line between them.
+    const base = scenario().lines[0]!;
+    const at = (lon: number, lat: number): [number, number] => [lon, lat];
+    const lineOf = (index: number, a: [number, number], b: [number, number]) => ({
+      ...base,
+      index,
+      legs: [
+        { coords: [a, b], time_s: 600 },
+        { coords: [b, a], time_s: 600 },
+      ],
+    });
+    const s = scenario({
+      lines: [
+        lineOf(0, at(36.1, 33.4), at(36.1, 33.7)),
+        lineOf(1, at(36.5, 33.4), at(36.5, 33.7)),
+        lineOf(2, at(36.1, 33.5), at(36.5, 33.5)),
+      ],
+    });
+    const tiles = roadTiles(s);
+    const [x0, y0] = tileOf(36.1, 33.7);
+    const [x1, y1] = tileOf(36.5, 33.4);
+    const box = (x1 - x0 + 1) * (y1 - y0 + 1);
+    expect(tiles.length).toBeLessThan(box / 2);
+    expect(tiles.length).toBeLessThanOrEqual(MAX_ROAD_TILES);
+    // Every tile the long straight airport leg crosses is in, though the leg has only its two ends.
+    for (let k = 0; k <= 40; k++) expect(tiles).toContainEqual(tileOf(36.1 + (0.4 * k) / 40, 33.5));
+    // A tile far from every line is left out.
+    expect(tiles).not.toContainEqual(tileOf(36.3, 33.65));
+    // Each tile once, north to south and west to east.
+    expect(new Set(tiles.map(([x, y]) => `${x}/${y}`)).size).toBe(tiles.length);
+    const sorted = [...tiles].sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+    expect(tiles).toEqual(sorted);
   });
 });

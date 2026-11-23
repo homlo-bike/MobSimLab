@@ -9,6 +9,7 @@ use crate::geo::dist;
 use crate::graph::RoadGraph;
 use crate::profile::{RoutingRules, TrafficSide, VehicleProfile};
 use crate::router::{route, Anchor, Path, SearchOptions};
+use engine_msg::{msg, Msg};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -61,7 +62,7 @@ pub struct RoutePoint {
     pub name: Option<String>,
     candidates: Vec<Anchor>,
     anchor: Option<Anchor>,
-    error: Option<String>,
+    error: Option<Msg>,
     side: Option<f64>,
 }
 
@@ -70,7 +71,7 @@ pub struct RoutePoint {
 struct Gate {
     click: (f64, f64),
     candidates: Vec<Anchor>,
-    error: Option<String>,
+    error: Option<Msg>,
 }
 
 /// The depot where vehicles start and end their day: pull-out leaves by an exit gate, pull-in comes in by
@@ -100,7 +101,7 @@ struct Leg {
     path: Option<Path>,
     direct_m: Option<f64>,
     status: Status,
-    message: Option<String>,
+    message: Option<Msg>,
 }
 
 /// A street line being drawn.
@@ -138,8 +139,10 @@ pub struct PointView {
     pub lonlat: [f64; 2],
     /// Problem with this point, if any.
     pub status: Status,
-    /// Explanation.
+    /// Explanation, in English.
     pub message: Option<String>,
+    /// The same as a message, for the app to show in the user's language.
+    pub message_msg: Option<Msg>,
     /// Direction of travel through the point, degrees clockwise from north.
     pub bearing_deg: Option<f64>,
     /// Stops: the bus bay on the kerb (vehicle length + 3 m by 3 m), as a closed ring in degrees.
@@ -176,8 +179,10 @@ pub struct LegView {
     pub direct_m: Option<f64>,
     /// Problem level.
     pub status: Status,
-    /// Explanation.
+    /// Explanation, in English.
     pub message: Option<String>,
+    /// The same as a message, for the app to show in the user's language.
+    pub message_msg: Option<Msg>,
     /// OSM way ids driven, in order, without repeats (for exports and checks).
     pub ways: Vec<i64>,
 }
@@ -255,8 +260,10 @@ pub struct DepotTripView {
     pub crossing_wait_s: f64,
     /// Problem level.
     pub status: Status,
-    /// Explanation.
+    /// Explanation, in English.
     pub message: Option<String>,
+    /// The same as a message, for the app to show in the user's language.
+    pub message_msg: Option<Msg>,
 }
 
 /// Everything the editor shows.
@@ -274,8 +281,10 @@ pub struct LineView {
     pub depot: Option<[f64; 2]>,
     /// Pull-out and pull-in trips.
     pub depot_trips: Vec<DepotTripView>,
-    /// Line-level problems.
+    /// Line-level problems, in English.
     pub issues: Vec<String>,
+    /// The same as messages, one per entry of `issues`.
+    pub issue_msgs: Vec<Msg>,
     /// Circuit length in metres.
     pub length_m: f64,
     /// Circuit running time in seconds, with the expected wait at level crossings.
@@ -676,13 +685,13 @@ impl StreetLine {
         g: &RoadGraph,
         click: (f64, f64),
         stop: bool,
-    ) -> Result<(Vec<Anchor>, f64), String> {
+    ) -> Result<(Vec<Anchor>, f64), Msg> {
         let (seg_id, pr) = g
             .nearest_segment(click, &self.profile, self.rules.max_snap_m)
             .ok_or_else(|| {
-                format!(
-                    "No road usable by this vehicle within {} m.",
-                    self.rules.max_snap_m
+                msg!(
+                    "street.line.no_road_near",
+                    distance = format!("{} m", self.rules.max_snap_m)
                 )
             })?;
         let seg = &g.segments[seg_id as usize];
@@ -706,11 +715,7 @@ impl StreetLine {
             }
         }
         if out.is_empty() {
-            return Err(
-                "This sidewalk cannot be served: traffic here only runs with the stop on the far side from the doors. \
-                 Put the stop on the other sidewalk."
-                    .into(),
-            );
+            return Err(msg!("street.line.wrong_sidewalk"));
         }
         let side = if pr.cross > 0.0 { 1.0 } else { -1.0 };
         Ok((out, side))
@@ -755,12 +760,16 @@ impl StreetLine {
             let why = p
                 .error
                 .clone()
-                .unwrap_or_else(|| "It is not on a usable road.".into());
+                .unwrap_or_else(|| msg!("street.line.not_on_road"));
             self.legs[i] = Leg {
                 path: None,
                 direct_m: None,
                 status: Status::Error,
-                message: Some(format!("Point {}: {why}", k + 1)),
+                message: Some(msg!(
+                    "street.line.point_problem",
+                    point = (k + 1).to_string(),
+                    why = why
+                )),
             };
             return;
         };
@@ -782,11 +791,7 @@ impl StreetLine {
                 path: None,
                 direct_m: None,
                 status: Status::Error,
-                message: Some(
-                    "No legal path: one-way streets, turn bans or vehicle limits block it, and buses may not U-turn. \
-                     Move a point or put the end stop where the vehicle can turn (bus station, loop, roundabout)."
-                        .into(),
-                ),
+                message: Some(msg!("street.line.no_legal_path")),
             };
         };
         let direct = self.direct_m(g, a, b);
@@ -801,10 +806,11 @@ impl StreetLine {
                     .max(self.rules.detour_warn_ratio * d)
             {
                 status = Status::Warning;
-                message = Some(format!(
-                    "Turning round adds {:.0} m ({:.0} m instead of {:.0} m). Consider putting the end stop where \
-                     the vehicle can turn: a bus station, turning loop, roundabout or a block it can drive round.",
-                    extra, path.length_m, d
+                message = Some(msg!(
+                    "street.line.turning_detour",
+                    extra = format!("{extra:.0} m"),
+                    length = format!("{:.0} m", path.length_m),
+                    direct = format!("{d:.0} m")
                 ));
             }
         }
@@ -817,24 +823,25 @@ impl StreetLine {
                 && path.length_m - crow > 2.0 * self.rules.detour_warn_m
             {
                 status = Status::Warning;
-                message = Some(format!(
-                    "This leg is {:.0} m for {:.0} m in a straight line. If the next point is on the far half of a \
-                     divided road, or on a one-way street the wrong way, move it to the side the vehicle drives on.",
-                    path.length_m, crow
+                message = Some(msg!(
+                    "street.line.wrong_side",
+                    length = format!("{:.0} m", path.length_m),
+                    straight = format!("{crow:.0} m")
                 ));
             }
         }
         if self.profile.mode == crate::profile::Mode::Trolleybus && path.max_off_wire_m > 0.0 {
             if path.max_off_wire_m > self.profile.battery_range_m {
                 status = Status::Error;
-                message = Some(format!(
-                    "{:.0} m without overhead wire exceeds the battery range of {:.0} m.",
-                    path.max_off_wire_m, self.profile.battery_range_m
+                message = Some(msg!(
+                    "street.line.beyond_battery",
+                    length = format!("{:.0} m", path.max_off_wire_m),
+                    range = format!("{:.0} m", self.profile.battery_range_m)
                 ));
             } else if status == Status::Ok {
-                message = Some(format!(
-                    "Runs {:.0} m on battery without overhead wire.",
-                    path.max_off_wire_m
+                message = Some(msg!(
+                    "street.line.on_battery",
+                    length = format!("{:.0} m", path.max_off_wire_m)
                 ));
             }
         }
@@ -970,7 +977,7 @@ impl StreetLine {
         pull_out: bool,
     ) -> DepotTripView {
         let kind = if pull_out { "pull_out" } else { "pull_in" };
-        let fail = |m: String| DepotTripView {
+        let fail = |m: Msg| DepotTripView {
             kind,
             stop: stop.id,
             coords: Vec::new(),
@@ -978,21 +985,27 @@ impl StreetLine {
             time_s: 0.0,
             crossing_wait_s: 0.0,
             status: Status::Error,
-            message: Some(m),
+            message: Some(m.english()),
+            message_msg: Some(m),
         };
         let gates = depot.gates(pull_out);
         if gates.is_empty() {
             return fail(if pull_out {
-                "The depot has no exit gate.".into()
+                msg!("street.depot.no_exit_gate")
             } else {
-                "The depot has no entrance gate.".into()
+                msg!("street.depot.no_entrance_gate")
             });
         }
         if gates.iter().all(|x| x.error.is_some()) {
-            return fail(gates[0].error.clone().unwrap_or_default());
+            return fail(
+                gates[0]
+                    .error
+                    .clone()
+                    .unwrap_or_else(|| msg!("street.line.not_on_road")),
+            );
         }
         let Some(s) = stop.anchor else {
-            return fail("The terminal stop is not on a usable road.".into());
+            return fail(msg!("street.depot.terminal_off_road"));
         };
         let best = gates
             .iter()
@@ -1026,9 +1039,10 @@ impl StreetLine {
                     crossing_wait_s: wait,
                     status: Status::Ok,
                     message: None,
+                    message_msg: None,
                 }
             }
-            None => fail("No legal path between the depot and this terminal.".into()),
+            None => fail(msg!("street.depot.no_path")),
         }
     }
 
@@ -1061,7 +1075,8 @@ impl StreetLine {
                     } else {
                         Status::Ok
                     },
-                    message: p.error.clone(),
+                    message: p.error.as_ref().map(Msg::english),
+                    message_msg: p.error.clone(),
                 }
             })
             .collect();
@@ -1115,7 +1130,8 @@ impl StreetLine {
                         bus_lane_m: l.path.as_ref().map_or(0.0, |p| p.bus_lane_m),
                         direct_m: l.direct_m,
                         status: l.status,
-                        message: l.message.clone(),
+                        message: l.message.as_ref().map(Msg::english),
+                        message_msg: l.message.clone(),
                         ways,
                     }
                 })
@@ -1176,16 +1192,24 @@ impl StreetLine {
                     }
                     v
                 });
-            let along = match names.len() {
-                0 => String::new(),
-                1..=3 => format!(" ({})", names.join(", ")),
-                _ => format!(" ({} and {} more)", names[..3].join(", "), names.len() - 3),
-            };
-            issues.push(format!(
-                "The line runs {:.1} km in the traffic of main roads{along}: traffic jams and gridlock hold the buses up, about {:.0} min per round at peak, and they run late. Give these streets a bus lane in the GIS tab, separated from the traffic to keep cars out of it.",
-                mixed_traffic_m / 1000.0,
-                traffic_delay_s / 60.0
-            ));
+            let length = format!("{:.1} km", mixed_traffic_m / 1000.0);
+            let delay = format!("{:.0} min", traffic_delay_s / 60.0);
+            issues.push(match names.len() {
+                0 => msg!("street.line.mixed_traffic", length = length, delay = delay),
+                1..=3 => msg!(
+                    "street.line.mixed_traffic_along",
+                    length = length,
+                    streets = names.join(", "),
+                    delay = delay
+                ),
+                _ => msg!(
+                    "street.line.mixed_traffic_along_more",
+                    length = length,
+                    streets = names[..3].join(", "),
+                    more = (names.len() - 3).to_string(),
+                    delay = delay
+                ),
+            });
         }
 
         let stops: Vec<usize> = (0..n).filter(|&i| self.points[i].kind.is_stop()).collect();
@@ -1193,17 +1217,13 @@ impl StreetLine {
             .filter(|&i| self.points[i].kind == PointKind::EndStop)
             .collect();
         if n >= 2 && stops.len() < 2 {
-            issues.push("A line needs at least two stops. Promote points to stops.".to_string());
+            issues.push(msg!("street.line.two_stops"));
         }
         if ends.len() > 2 {
-            issues.push(
-                "More than two end stops. A route has one end stop (circular line) or two (two directions); \
-                 use a pattern for short turns."
-                    .to_string(),
-            );
+            issues.push(msg!("street.line.end_stops"));
         }
         if legs.iter().any(|l| l.status == Status::Error) {
-            issues.push("Some legs cannot be driven; see the red legs.".to_string());
+            issues.push(msg!("street.line.red_legs"));
         }
         let directions = if n < 2 || stops.is_empty() || ends.len() > 2 {
             Vec::new()
@@ -1274,7 +1294,7 @@ impl StreetLine {
                 .chain(&d.entrances)
                 .filter_map(|x| x.error.clone())
             {
-                let m = format!("Depot: {e}");
+                let m = msg!("street.depot.problem", problem = e);
                 if !issues.contains(&m) {
                     issues.push(m);
                 }
@@ -1287,7 +1307,8 @@ impl StreetLine {
             station_groups,
             depot,
             depot_trips,
-            issues,
+            issues: issues.iter().map(Msg::english).collect(),
+            issue_msgs: issues,
             length_m,
             time_s,
             level_crossings,

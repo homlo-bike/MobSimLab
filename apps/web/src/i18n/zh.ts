@@ -450,6 +450,8 @@ export const zh: Messages = {
   "map.searching": "正在搜索…",
   "map.searchFailed": "地点搜索失败：{error}",
   "map.noPlaces": "未找到地点。",
+  "map.noWebgl": "无法显示地图：此计算机或浏览器不支持 3D 图形（WebGL2）。",
+  "map.noWebglHelp": "请开启硬件加速或更新显卡驱动，然后重新打开页面。页面的其他部分仍可使用。",
   "map.places": "找到的地点",
   "map.searchCredit": "地名 © OpenStreetMap 贡献者，由 Photon 查找",
   "map.layers": "地图图层",

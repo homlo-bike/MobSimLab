@@ -467,6 +467,9 @@ export const vi: Messages = {
   "map.searching": "Đang tìm…",
   "map.searchFailed": "Tìm địa điểm thất bại: {error}",
   "map.noPlaces": "Không tìm thấy địa điểm nào.",
+  "map.noWebgl": "Không thể hiển thị bản đồ: máy tính hoặc trình duyệt này không có đồ họa 3D (WebGL2).",
+  "map.noWebglHelp":
+    "Hãy bật tăng tốc phần cứng hoặc cập nhật trình điều khiển đồ họa, rồi mở lại trang. Phần còn lại của trang vẫn hoạt động.",
   "map.places": "Địa điểm tìm thấy",
   "map.searchCredit": "Tên địa điểm © những người đóng góp OpenStreetMap, tìm bằng Photon",
   "map.layers": "Lớp bản đồ",

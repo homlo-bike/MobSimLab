@@ -60,9 +60,9 @@ export const areaFr = {
   "aw.saved": "Zone enregistrée.",
   "aw.data.noArea":
     "Dessinez d’abord la zone du projet dans Préférences du projet : les imports la couvrent.",
-  "aw.data.area": "Zone du projet : {names}. Les imports couvrent le rectangle qui l’entoure, {area} km².",
+  "aw.data.area": "Zone du projet : {names}. Les imports couvrent uniquement ces polygones, {area} km².",
   "aw.pop.none": "Pas encore de zone du projet. Dessinez-la dans Préférences du projet.",
-  "aw.pop.box": "Le rectangle autour de la zone du projet : {km2} km².",
+  "aw.pop.box": "Les polygones de la zone du projet : {km2} km². Les imports ne couvrent qu'eux.",
   "aw.tiles.one": "{count} tuile de carte",
   "aw.tiles.other": "{count} tuiles de carte",
   "aw.count.one": "{count} polygone",
@@ -80,4 +80,17 @@ export const areaFr = {
   "aw.out.keep": "Garder la région, sans téléchargement",
   "aw.out.download": "Télécharger {mb} Mo",
   "aw.out.downloading": "Téléchargement…",
+  "aw.data.regions": "Régions Geofabrik",
+  "aw.data.regionsHelp": "Un téléchargement par pays touché par les polygones, chacun découpé aux polygones.",
+  "aw.outside.streetLine":
+    "La ligne {name} dépasse la zone du projet, où il n'y a pas de données cartographiques.",
+  "aw.outside.pluginLine":
+    "La ligne {name} dépasse la zone du projet, où il n'y a pas de données cartographiques.",
+  "aw.outside.railway":
+    "La voie ferrée dépasse la zone du projet, où il n'y a pas de données cartographiques.",
+  "aw.outside.depot":
+    "Le dépôt {name} dépasse la zone du projet, où il n'y a pas de données cartographiques.",
+  "aw.outside.cargoBike":
+    "L'itinéraire du vélo cargo dépasse la zone du projet, où il n'y a pas de données cartographiques.",
+  "aw.outside.fix": "Agrandissez la zone dans Préférences du projet, Zone du projet.",
 } satisfies AreaMessages;

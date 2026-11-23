@@ -6,7 +6,7 @@
 //! client without the catalog. A value is plain text (a name, or a number already formatted with its unit) or
 //! another message (a part of a sentence that is itself translated).
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::BTreeMap;
 use std::sync::OnceLock;
@@ -15,17 +15,17 @@ use std::sync::OnceLock;
 pub const CATALOG_EN: &str = include_str!("../messages/en.json");
 
 /// A message: a catalog key and its values.
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Msg {
     /// Catalog key, for example `rail.curve.below_minimum`.
     pub key: String,
     /// Values by placeholder name.
-    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub args: BTreeMap<String, Arg>,
 }
 
 /// One value of a message.
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Arg {
     /// Text shown as it is: a name, or a number with its unit.

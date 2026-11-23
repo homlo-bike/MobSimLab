@@ -375,4 +375,58 @@ describe("geodata import", () => {
     expect(tiles.rows[0].n).toBe(0);
     await su.end();
   });
+  it("imports only the project area's polygons, not the box round them", async () => {
+    const square = (id: string, w: number, s: number, side: number) => ({
+      id,
+      name: id,
+      detail: "full",
+      ring: [
+        [w, s],
+        [w + side, s],
+        [w + side, s + side],
+        [w, s + side],
+        [w, s],
+      ],
+    });
+    const setArea = async (polygons: unknown[]) => {
+      const su = await db.superuser();
+      await su.query(`UPDATE project.project SET area_polygons = $2 WHERE id = $1`, [
+        project,
+        JSON.stringify(polygons),
+      ]);
+      await su.end();
+    };
+    // Two small polygons 35 km apart: the box round them holds about a hundred 3 km Overpass tiles.
+    await setArea([square("a1", 6.995, 49.995, 0.02), square("a2", 7.3, 50.3, 0.01)]);
+    overpassQueries.length = 0;
+    expect(
+      (await as("alice").post(`/api/projects/${project}/geodata/osm`, { method: "overpass" })).status,
+    ).toBe(201);
+    await idle();
+    const st = (await as("alice").get(`/api/projects/${project}/geodata`)).body;
+    expect(st.osm.latest.error).toBeNull();
+    expect(st.area.areaKm2).toBeLessThan(5);
+    expect(overpassQueries.length).toBeGreaterThan(0);
+    expect(overpassQueries.length).toBeLessThanOrEqual(4);
+    expect(st.osm.current.options.area.map((p: { id: string }) => p.id)).toEqual(["a1", "a2"]);
+    expect(st.osm.coversDrawing).toBe(true);
+
+    // Data outside every polygon is cut away: an area far from the file's roads keeps none of them.
+    await setArea([square("a2", 7.3, 50.3, 0.01)]);
+    const pbf = join(dataDir, "fixture.osm.pbf");
+    execFileSync("osmium", ["cat", "--overwrite", FIXTURE, "-o", pbf]);
+    const up = await as("alice").upload(
+      `/api/projects/${project}/geodata/osm/upload?name=small.osm.pbf`,
+      readFileSync(pbf),
+    );
+    expect(up.status).toBe(201);
+    await idle();
+    const after = (await as("alice").get(`/api/projects/${project}/geodata`)).body;
+    expect(after.osm.latest.error).toBeNull();
+    expect(after.osm.current.stats.rows.osm_way_road).toBe(0);
+    // The area changed since the Overpass import, which no longer covers it; the upload does.
+    expect(after.osm.coversDrawing).toBe(true);
+    await setArea([square("a1", 6.995, 49.995, 0.02)]);
+    expect((await as("alice").get(`/api/projects/${project}/geodata`)).body.osm.coversDrawing).toBe(false);
+  });
 });

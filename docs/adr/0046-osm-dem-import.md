@@ -20,14 +20,22 @@ a fallback, an Open-Elevation fallback, and every limit adjustable.
 
 1. **Area.** The project area is the polygons the planner draws in the area window (New project, Select area;
    Preferences, Edit area), each with a detail setting (Full, or Main roads and railways only). Since 2026-11-19
-   there is no buffer and no area from the drawing. An import records the box it covered, which is the box round the
-   polygons until imports follow the polygons themselves. Nothing outside the polygons imports by itself: a GIS
-   region reaching outside asks before downloading, and editing the area asks before downloading new parts.
+   there is no buffer and no area from the drawing. Every import follows the polygons, not the box round them:
+   Overpass asks only for the tiles that meet a polygon, every OpenStreetMap path ends in `osmium extract -p` with
+   the polygons as a GeoJSON MultiPolygon, elevation reads and keeps only the tiles that meet a polygon, and the
+   population import keeps only cells whose centre lies in one. Area limits count the polygons' own km². An import
+   records the polygons it covered (`options.area`), so the Map data view asks for a refresh only when a polygon
+   is new or larger. Nothing outside the polygons imports by itself: a GIS region reaching outside asks before
+   downloading, and editing the area asks before downloading new parts. Drawings reaching outside the polygons
+   (street lines, the railway, depots, the cargo bike route, ferry and cable car lines) show a warning under the
+   notifications button, since there is no map data there.
 2. **Two OpenStreetMap paths, one result.** Areas up to `MOBSIMLAB_OSM_OVERPASS_MAX_KM2` (400 km²) come from the
    Overpass API in tiles (`MOBSIMLAB_OSM_OVERPASS_TILE_KM`, split into quarters on a timeout or size error down to
    `..._MIN_TILE_KM`, one request every `..._INTERVAL_S`, cached for `MOBSIMLAB_OSM_CACHE_DAYS`). Larger areas, up
-   to `MOBSIMLAB_OSM_MAX_AREA_KM2`, come from a Geofabrik region that holds the whole box (downloaded once and
-   kept `MOBSIMLAB_GEOFABRIK_CACHE_DAYS`) or an uploaded `.osm.pbf` (up to `MOBSIMLAB_OSM_PBF_MAX_MB`). Every path
+   to `MOBSIMLAB_OSM_MAX_AREA_KM2`, come from Geofabrik: for each polygon the smallest region that holds it, so
+   polygons in two countries download both countries (each downloaded once and kept
+   `MOBSIMLAB_GEOFABRIK_CACHE_DAYS`), each cut to the polygons and merged with osmium; the data timestamp is the
+   oldest of them. Product owner's choice, 2026-11-19. Or the data comes from an uploaded `.osm.pbf` (up to `MOBSIMLAB_OSM_PBF_MAX_MB`). Every path
    ends in `osmium extract -s smart` to the area and `osm2pgsql --output=flex` with `tools/osm/mobsimlab-flex.lua`
    into a staging schema, copied into the `geo.osm_*` tables with the project and import id. The tag mapping is
    the data file `tools/osm/tag_mapping.lua` (06-gis §2.2), now with planned roads (optional per import),

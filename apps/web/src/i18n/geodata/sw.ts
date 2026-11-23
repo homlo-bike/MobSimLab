@@ -14,7 +14,7 @@ export const geodataSw = {
   "data.outside": "Mchoro sasa unatoka nje ya eneo lililoingizwa. Onyesha upya ili kuingiza eneo jipya.",
   "data.method": "Pata data kutoka",
   "data.method.overpass": "Overpass (maeneo hadi km² {max})",
-  "data.method.geofabrik": "Eneo la Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Faili ya .osm.pbf",
   "data.region": "Eneo",
   "data.regionsLoading": "Inatafuta maeneo…",

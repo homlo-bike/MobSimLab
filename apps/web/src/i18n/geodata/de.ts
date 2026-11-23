@@ -15,7 +15,7 @@ export const geodataDe = {
     "Die Zeichnung reicht jetzt über das importierte Gebiet hinaus. Aktualisieren Sie, um das neue Gebiet zu importieren.",
   "data.method": "Daten holen von",
   "data.method.overpass": "Overpass (Gebiete bis {max} km²)",
-  "data.method.geofabrik": "Einer Geofabrik-Region",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Einer .osm.pbf-Datei",
   "data.region": "Region",
   "data.regionsLoading": "Regionen werden gesucht…",

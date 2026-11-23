@@ -196,6 +196,9 @@ export function keepRoutedLegs(view: LineView, saved: LineView | null | undefine
     length_m: view.length_m + dLength,
     time_s: view.time_s + dTime,
     issues: view.issues.filter((m) => !dropped.has(m)),
+    ...(view.issue_msgs
+      ? { issue_msgs: view.issue_msgs.filter((_, k) => !dropped.has(view.issues[k] ?? "")) }
+      : {}),
   };
 }
 

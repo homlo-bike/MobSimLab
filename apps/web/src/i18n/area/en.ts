@@ -63,9 +63,9 @@ export const areaEn = {
   "aw.none": "No project area yet. Draw one so the tools have map data.",
   "aw.saved": "Area saved.",
   "aw.data.noArea": "Draw the project area first, in Project preferences: the imports cover it.",
-  "aw.data.area": "Project area: {names}. The imports cover the box around it, {area} km².",
+  "aw.data.area": "Project area: {names}. The imports cover only these polygons, {area} km².",
   "aw.pop.none": "No project area yet. Draw it in Project preferences.",
-  "aw.pop.box": "The box around the project area: {km2} km².",
+  "aw.pop.box": "The project area's polygons: {km2} km². The imports cover only them.",
   "aw.out.title": "Download map data outside the project area?",
   "aw.out.note": "The region {name} reaches outside the project area. Its outside part needs new map data.",
   "aw.out.part": "Outside part",
@@ -78,6 +78,16 @@ export const areaEn = {
   "aw.out.keep": "Keep the region, no download",
   "aw.out.download": "Download {mb} MB",
   "aw.out.downloading": "Downloading…",
+  "aw.data.regions": "Geofabrik regions",
+  "aw.data.regionsHelp": "One download for each country the polygons reach, each cut to the polygons.",
+  "aw.outside.streetLine":
+    "The street line {name} reaches outside the project area, where there is no map data.",
+  "aw.outside.pluginLine": "The line {name} reaches outside the project area, where there is no map data.",
+  "aw.outside.railway": "The railway reaches outside the project area, where there is no map data.",
+  "aw.outside.depot": "The depot {name} reaches outside the project area, where there is no map data.",
+  "aw.outside.cargoBike":
+    "The cargo bike route reaches outside the project area, where there is no map data.",
+  "aw.outside.fix": "Extend the area in Project preferences, Project area.",
 } as const;
 
 type AreaKey = keyof typeof areaEn;

@@ -14,7 +14,7 @@ export const geodataUr = {
   "data.outside": "ڈرائنگ اب درآمد شدہ علاقے سے باہر جاتی ہے۔ نیا علاقہ درآمد کرنے کے لیے تازہ کریں۔",
   "data.method": "ڈیٹا یہاں سے لیں",
   "data.method.overpass": "Overpass ({max} مربع کلومیٹر تک کے علاقے)",
-  "data.method.geofabrik": "Geofabrik کا ایک خطہ",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "ایک ‎.osm.pbf فائل",
   "data.region": "خطہ",
   "data.regionsLoading": "خطے تلاش ہو رہے ہیں…",

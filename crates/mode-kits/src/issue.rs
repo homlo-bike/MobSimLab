@@ -1,5 +1,6 @@
 //! Findings of the kits' live checks, in the same shape as the other editors' checks.
 
+use engine_msg::Msg;
 use serde::{Deserialize, Serialize};
 
 /// How serious a finding is.
@@ -20,8 +21,10 @@ pub struct Issue {
     pub level: Level,
     /// Stable id of the check, such as `span.too_long`.
     pub code: String,
-    /// Plain-language message for the planner.
+    /// Plain-language message for the planner, in English.
     pub message: String,
+    /// The same message as a key and values, for the app to show in the user's language.
+    pub msg: Msg,
     /// Index of the station or pier the finding is about, if any.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub station: Option<usize>,
@@ -35,11 +38,12 @@ pub struct Issue {
 
 impl Issue {
     /// Purpose: a finding with no location.
-    pub fn new(level: Level, code: &str, message: impl Into<String>) -> Self {
+    pub fn new(level: Level, code: &str, msg: Msg) -> Self {
         Self {
             level,
             code: code.into(),
-            message: message.into(),
+            message: msg.english(),
+            msg,
             station: None,
             section: None,
             parameter: None,

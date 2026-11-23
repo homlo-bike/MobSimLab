@@ -14,7 +14,7 @@ export const geodataYo = {
   "data.outside": "Àwòrán náà ti kọjá agbègbè tí a kó wọlé báyìí. Sọ di tuntun láti kó agbègbè tuntun wọlé.",
   "data.method": "Gba dátà láti",
   "data.method.overpass": "Overpass (agbègbè tó tó {max} km²)",
-  "data.method.geofabrik": "Agbègbè Geofabrik kan",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Fáìlì .osm.pbf kan",
   "data.region": "Agbègbè",
   "data.regionsLoading": "Ń wá àwọn agbègbè…",
