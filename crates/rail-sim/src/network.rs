@@ -1403,7 +1403,7 @@ impl<'m> NetworkSim<'m> {
                         Dir::Down => p.to_m - c0.max(c1),
                     };
                     let rear = tr.path.start[i] + u;
-                    if rear > tr.s - 1e-6 && best.map_or(true, |b| rear > b.1) {
+                    if rear > tr.s - 1e-6 && best.is_none_or(|b| rear > b.1) {
                         best = Some((oi, rear));
                     }
                 }
