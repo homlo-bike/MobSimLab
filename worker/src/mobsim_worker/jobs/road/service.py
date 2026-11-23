@@ -24,7 +24,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
-from mobsim_worker.jobs.road.network import RoadNet
+from mobsim_worker.jobs.road.network import NoBusLink, RoadNet
 from mobsim_worker.jobs.road.osm import DepotWays
 
 LonLat = tuple[float, float]
@@ -217,7 +217,10 @@ def match_circuit(net: RoadNet, line: Mapping[str, Any]) -> Matched | str:
     for leg in line["legs"]:
         cs = [_pt(c) for c in leg["coords"]]
         coords.extend(cs if not coords else cs[1:])
-    edges = net.match(coords)
+    try:
+        edges = net.match(coords)
+    except NoBusLink as e:
+        return no_link(e, points)
     if len(edges) < 1:
         return "its route could not be matched to the streets"
     at: dict[int, tuple[int, str, float]] = {}
@@ -247,6 +250,18 @@ def match_circuit(net: RoadNet, line: Mapping[str, Any]) -> Matched | str:
     if end is None:
         return "the route does not come back to its first stop"
     return Matched(edges, at, end)
+
+
+def no_link(e: NoBusLink, points: Sequence[Mapping[str, Any]]) -> str:
+    """Say where a route has no way for a bus, by the nearest stop of the line."""
+    stops = [p for p in points if p.get("kind") != "via"] or list(points)
+    near = min(stops, key=lambda p: _metres(e.at, _pt(p["lonlat"])))
+    name = near.get("name") or f"stop {points.index(near) + 1}"
+    return (
+        f"{e}, near {name} ({_metres(e.at, _pt(near['lonlat'])):.0f} m away): the traffic model's streets "
+        "have no turn there that a bus may take, for example a U-turn or a banned turn. Move the route "
+        "or a via point so that it takes another street there"
+    )
 
 
 def stop_range(pos: float, lane_len: float, veh_len: float) -> tuple[float, float]:
@@ -292,6 +307,25 @@ def _stop(
     )
 
 
+def _pull_run(
+    net: RoadNet,
+    run: Mapping[str, Any] | None,
+    what: str,
+    points: Sequence[Mapping[str, Any]],
+    notes: list[str],
+) -> list[str]:
+    """Match a pull-out or pull-in run; without a bus path its vehicles take the shortest one instead."""
+    if not run:
+        return []
+    try:
+        return net.match([_pt(c) for c in run["coords"]])
+    except NoBusLink as e:
+        notes.append(
+            f"the {what} run is not followed ({no_link(e, points)}); its vehicles take the shortest way"
+        )
+        return []
+
+
 def plan_line(net: RoadNet, line: Mapping[str, Any], depots: Depots) -> LinePlan:
     """Plan a line's vehicles: blocks, routes, stops and depot slots."""
     index = int(line["index"])
@@ -325,8 +359,8 @@ def plan_line(net: RoadNet, line: Mapping[str, Any], depots: Depots) -> LinePlan
     pull_in = line.get("pull_in") or None
     out_at = int(pull_out["at"]) if pull_out else 0
     in_at = int(pull_in["at"]) if pull_in else 0
-    out_edges = net.match([_pt(c) for c in pull_out["coords"]]) if pull_out else []
-    in_edges = net.match([_pt(c) for c in pull_in["coords"]]) if pull_in else []
+    out_edges = _pull_run(net, pull_out, "pull-out", points, plan.notes)
+    in_edges = _pull_run(net, pull_in, "pull-in", points, plan.notes)
     depot_id = str(line["depot"]) if line.get("depot") else None
     if depot_id is None:
         plan.notes.append("no depot: its vehicles start and end on the street")
