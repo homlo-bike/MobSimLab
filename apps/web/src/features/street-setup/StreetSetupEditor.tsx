@@ -11,6 +11,7 @@ import { CrossSection } from "./CrossSection";
 import { SectionEditor } from "./SectionEditor";
 import { sectionsFromInfo, sectionsFromLanes } from "./sections";
 import { addsToSelection, toggleSelection } from "./selection";
+import { useShiftClickSelect } from "../../map/shiftClick";
 import {
   LANE_MIN_ZOOM,
   type LaneEngine,
@@ -352,6 +353,8 @@ export function StreetSetupEditor({
       );
   }, [map, picked, drawn]);
 
+  // Shift-click adds junctions and streets to the selection, so box zoom must not take Shift.
+  useShiftClickSelect(map);
   // Tap a junction (from zoom 16, where they are drawn) or a street to select it; tap elsewhere to close.
   const drawnRef = useRef(drawn);
   drawnRef.current = drawn;

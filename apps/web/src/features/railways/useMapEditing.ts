@@ -1,5 +1,6 @@
 import type { Map as MapLibreMap, MapMouseEvent } from "maplibre-gl";
 import { type Dispatch, type MutableRefObject, type SetStateAction, useEffect } from "react";
+import { useShiftClickSelect } from "../../map/shiftClick";
 import { activeLanguage, tNow } from "../../i18n/i18n";
 import { basemapLabels, featuresFromLabels, preferTransitKind } from "../naming/labels";
 import { describeChoice, nameForNewPlace } from "../naming/names";
@@ -81,6 +82,8 @@ export function useMapEditing({
   minLead: number;
   pxToM: (px: number) => number;
 }) {
+  // Shift-click adds tracks and stations to the selection, so box zoom must not take Shift.
+  useShiftClickSelect(map);
   useEffect(() => {
     if (!map) return;
     const onClick = (ev: MapMouseEvent) => {
