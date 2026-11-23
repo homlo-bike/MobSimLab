@@ -11206,6 +11206,44 @@
     "trolleybus": 2
    }
   },
+  "road.advice_on_time_share": {
+   "used_by": [
+    "road simulation advice"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "tcqsm3",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "TCQSM rates on-time performance of 85–95 % as good to very good for a scheduled bus route and below 75 % as poor; below the central value the run's advice names where the line loses its time."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "road.advice_bunched_share": {
+   "used_by": [
+    "road simulation advice"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "tcqsm3",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "TCQSM treats headway adherence with a coefficient of variation above about 0.4 as irregular, which corresponds to roughly one gap in ten under half the planned headway; from there passengers see vehicles arriving in pairs."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
   "noise.receiver_height_m": {
    "used_by": [
     "noise corridor in the editors",
