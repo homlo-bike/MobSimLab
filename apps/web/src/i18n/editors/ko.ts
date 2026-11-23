@@ -954,6 +954,7 @@ export const editorsKo = {
   "cable.hint.select": "역을 클릭해 편집합니다. 역은 드래그해 옮길 수 있습니다.",
   "cable.modeSystem": "교통수단과 방식",
   "cable.lineSpeed": "삭도 속도(m/s)",
+  "cable.longestSpan": "최대 경간(m)",
   "cable.cabinInterval": "캐빈 간격(초)",
   "cable.departureEvery": "출발 간격",
   "cable.cabinEvery": "캐빈 간격",

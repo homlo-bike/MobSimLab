@@ -1008,6 +1008,7 @@ export const editorsSw = {
   "cable.hint.select": "Bofya stesheni kuihariri. Buruta stesheni kuisogeza.",
   "cable.modeSystem": "Aina na mfumo",
   "cable.lineSpeed": "Kasi ya kamba (m/s)",
+  "cable.longestSpan": "Upana mrefu zaidi kati ya minara (m)",
   "cable.cabinInterval": "Muda kati ya vyumba (s)",
   "cable.departureEvery": "Kuondoka kila",
   "cable.cabinEvery": "Chumba kila",

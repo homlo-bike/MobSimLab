@@ -971,6 +971,7 @@ export const editorsFa = {
   "cable.hint.select": "روی ایستگاه کلیک کنید تا ویرایش شود. ایستگاه را برای جابه‌جایی بکشید.",
   "cable.modeSystem": "شیوه و سامانه",
   "cable.lineSpeed": "سرعت کابل (m/s)",
+  "cable.longestSpan": "بلندترین دهانه (m)",
   "cable.cabinInterval": "فاصلهٔ کابین (ثانیه)",
   "cable.departureEvery": "حرکت هر",
   "cable.cabinEvery": "کابین هر",

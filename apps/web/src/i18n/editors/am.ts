@@ -967,6 +967,7 @@ export const editorsAm = {
   "cable.hint.select": "ለማርትዕ ጣቢያን ጠቅ ያድርጉ። ለማንቀሳቀስ ጣቢያን ይጎትቱ።",
   "cable.modeSystem": "ዓይነት እና ስርዓት",
   "cable.lineSpeed": "የኬብል ፍጥነት (ሜ/ሰ)",
+  "cable.longestSpan": "ረጅሙ የገመድ ክፍት ርቀት (ሜ)",
   "cable.cabinInterval": "የካቢኖች ክፍተት (ሰ)",
   "cable.departureEvery": "መነሻ በየ",
   "cable.cabinEvery": "ካቢን በየ",

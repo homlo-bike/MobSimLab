@@ -1024,6 +1024,7 @@ export const editorsZu = {
   "cable.hint.select": "Chofoza isiteshi ukuze usihlele. Donsa isiteshi ukuze usihambise.",
   "cable.modeSystem": "Uhlobo nohlelo",
   "cable.lineSpeed": "Isivinini sentambo (m/s)",
+  "cable.longestSpan": "Isikhala eside kakhulu phakathi kwemibhoshongo (m)",
   "cable.cabinInterval": "Isikhawu samakhabethe (s)",
   "cable.departureEvery": "Ukusuka njalo",
   "cable.cabinEvery": "Ikhabethe njalo",

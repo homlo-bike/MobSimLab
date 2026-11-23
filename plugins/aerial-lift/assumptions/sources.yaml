@@ -84,3 +84,31 @@
   access: free
   retrieved: 2026-11-18
   checked_via: search-snippet
+
+- id: telecabine-lisboa-tech
+  title: Telecabine Lisboa, technical information and safety (monocable detachable gondola, longest span 270 m)
+  publisher: Telecabine Lisboa
+  url: https://www.telecabinelisboa.pt/InformacaoTecnicaeSeguranca
+  licence: © Telecabine Lisboa; numbers cited as facts
+  access: free
+  retrieved: 2026-11-22
+  checked_via: search-snippet
+
+- id: poma-nizhny-novgorod
+  title: POMA, Nizhny Novgorod urban gondola (900 m span over the Volga on two towers over 80 m, the longest for an 8-seat gondola)
+  publisher: POMA
+  url: https://www.poma.net/en/work/urban-gondola-lift-nizhny-novgorod/
+  licence: © POMA; numbers cited as facts
+  access: free
+  retrieved: 2026-11-22
+  checked_via: search-snippet
+
+- id: peak-2-peak-span
+  title: Peak 2 Peak Gondola (Whistler, 3S), 3,024 m unsupported span
+  publisher: Wikipedia
+  url: https://en.wikipedia.org/wiki/Peak_2_Peak_Gondola
+  licence: CC BY-SA 4.0; numbers cited as facts
+  access: free
+  retrieved: 2026-11-22
+  checked_via: search-snippet
+  kind: secondary

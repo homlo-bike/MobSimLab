@@ -1045,6 +1045,7 @@ export const editorsAr = {
   "cable.hint.select": "انقر على محطة لتعديلها. اسحب محطة لتحريكها.",
   "cable.modeSystem": "الوسيلة والنظام",
   "cable.lineSpeed": "سرعة الكابل (م/ث)",
+  "cable.longestSpan": "أطول بحر بين الأبراج (م)",
   "cable.cabinInterval": "الفاصل بين المقصورات (ث)",
   "cable.departureEvery": "مغادرة كل",
   "cable.cabinEvery": "مقصورة كل",

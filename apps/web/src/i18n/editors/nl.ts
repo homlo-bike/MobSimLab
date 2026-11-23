@@ -1012,6 +1012,7 @@ export const editorsNl = {
   "cable.hint.select": "Klik op een station om het te bewerken. Sleep een station om het te verplaatsen.",
   "cable.modeSystem": "Vervoerwijze en systeem",
   "cable.lineSpeed": "Kabelsnelheid (m/s)",
+  "cable.longestSpan": "Langste overspanning (m)",
   "cable.cabinInterval": "Cabine-interval (s)",
   "cable.departureEvery": "Vertrek elke",
   "cable.cabinEvery": "Cabine elke",

@@ -1026,6 +1026,7 @@ export const editorsTa = {
   "cable.hint.select": "திருத்த நிலையத்தைக் கிளிக் செய்யவும். நகர்த்த நிலையத்தை இழுக்கவும்.",
   "cable.modeSystem": "முறை மற்றும் அமைப்பு",
   "cable.lineSpeed": "கயிற்று வேகம் (மீ/வி)",
+  "cable.longestSpan": "மிக நீளமான இடைவெளி (மீ)",
   "cable.cabinInterval": "அறை இடைவெளி (வினாடி)",
   "cable.departureEvery": "புறப்பாடு ஒவ்வொரு",
   "cable.cabinEvery": "அறை ஒவ்வொரு",

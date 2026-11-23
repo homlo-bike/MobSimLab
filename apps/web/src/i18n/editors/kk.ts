@@ -1000,6 +1000,7 @@ export const editorsKk = {
   "cable.hint.select": "Өңдеу үшін станцияны басыңыз. Жылжыту үшін станцияны сүйреңіз.",
   "cable.modeSystem": "Түр және жүйе",
   "cable.lineSpeed": "Арқан жылдамдығы (м/с)",
+  "cable.longestSpan": "Ең ұзын аралық (м)",
   "cable.cabinInterval": "Кабиналар аралығы (сек)",
   "cable.departureEvery": "Жөнелу әр",
   "cable.cabinEvery": "Кабина әр",

@@ -996,6 +996,7 @@ export const editorsTe = {
   "cable.hint.select": "సవరించడానికి స్టేషన్‌పై క్లిక్ చేయండి. జరపడానికి స్టేషన్‌ను లాగండి.",
   "cable.modeSystem": "విధానం మరియు వ్యవస్థ",
   "cable.lineSpeed": "తాడు వేగం (మీ/సె)",
+  "cable.longestSpan": "అత్యంత పొడవైన స్పాన్ (మీ)",
   "cable.cabinInterval": "క్యాబిన్ విరామం (సెకన్లు)",
   "cable.departureEvery": "బయలుదేరు ప్రతి",
   "cable.cabinEvery": "క్యాబిన్ ప్రతి",

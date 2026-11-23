@@ -990,6 +990,7 @@ export const editorsUr = {
   "cable.hint.select": "ترمیم کے لیے اسٹیشن پر کلک کریں۔ ہلانے کے لیے اسٹیشن کھینچیں۔",
   "cable.modeSystem": "ذریعہ اور نظام",
   "cable.lineSpeed": "رسی کی رفتار (میٹر/سیکنڈ)",
+  "cable.longestSpan": "سب سے لمبا اسپین (میٹر)",
   "cable.cabinInterval": "کیبن کا وقفہ (سیکنڈ)",
   "cable.departureEvery": "روانگی ہر",
   "cable.cabinEvery": "کیبن ہر",

@@ -985,6 +985,7 @@ export const editorsBn = {
   "cable.hint.select": "সম্পাদনা করতে স্টেশনে ক্লিক করুন। সরাতে স্টেশন টানুন।",
   "cable.modeSystem": "মাধ্যম ও ব্যবস্থা",
   "cable.lineSpeed": "দড়ির গতি (মি/সে)",
+  "cable.longestSpan": "সবচেয়ে লম্বা স্প্যান (মি)",
   "cable.cabinInterval": "কেবিনের ব্যবধান (সে)",
   "cable.departureEvery": "ছাড়ে প্রতি",
   "cable.cabinEvery": "কেবিন প্রতি",

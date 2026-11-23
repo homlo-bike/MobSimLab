@@ -998,6 +998,7 @@ export const editorsHa = {
   "cable.hint.select": "Danna tasha don gyara ta. Ja tasha don matsar da ita.",
   "cable.modeSystem": "Nau'i da tsari",
   "cable.lineSpeed": "Gudun waya (m/s)",
+  "cable.longestSpan": "Mafi tsawon tazara tsakanin hasumiyoyi (m)",
   "cable.cabinInterval": "Tazarar ɗakuna (s)",
   "cable.departureEvery": "Tashi kowane",
   "cable.cabinEvery": "Ɗaki kowane",

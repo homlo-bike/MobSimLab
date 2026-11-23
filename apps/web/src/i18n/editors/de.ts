@@ -1028,6 +1028,7 @@ export const editorsDe = {
     "Klicken Sie auf eine Station, um sie zu bearbeiten. Ziehen Sie eine Station, um sie zu verschieben.",
   "cable.modeSystem": "Verkehrsmittel und System",
   "cable.lineSpeed": "Seilgeschwindigkeit (m/s)",
+  "cable.longestSpan": "Längstes Spannfeld (m)",
   "cable.cabinInterval": "Kabinenabstand (s)",
   "cable.departureEvery": "Abfahrt alle",
   "cable.cabinEvery": "Kabine alle",

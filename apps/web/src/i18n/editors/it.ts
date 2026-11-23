@@ -1013,6 +1013,7 @@ export const editorsIt = {
   "cable.hint.select": "Fai clic su una stazione per modificarla. Trascina una stazione per spostarla.",
   "cable.modeSystem": "Modo e sistema",
   "cable.lineSpeed": "Velocità della fune (m/s)",
+  "cable.longestSpan": "Campata più lunga (m)",
   "cable.cabinInterval": "Intervallo tra cabine (s)",
   "cable.departureEvery": "Partenza ogni",
   "cable.cabinEvery": "Cabina ogni",

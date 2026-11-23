@@ -162,6 +162,34 @@ describe("editors", () => {
     await waitFor(() => expect((onLine.mock.lastCall![0] as PluginLineInput).stops).toHaveLength(2));
   });
 
+  it("cable car editor's longest span sets how far apart the automatic towers may stand", async () => {
+    const doc: SpanDoc = {
+      name: "Long",
+      mode: "cable_car",
+      system: "mgd",
+      stations: [
+        { name: "A", lonlat: east(0), kind: "terminal", boarding: false, elevation_m: 0 },
+        { name: "B", lonlat: east(1500), kind: "terminal", boarding: false, elevation_m: 0 },
+      ],
+      towers: [null],
+      lineSpeed: null,
+      interval: null,
+    };
+    localStorage.setItem("k-span", JSON.stringify(doc));
+    const noTerrain: TerrainLoader = () => Promise.reject(new Error("offline"));
+    render(<SpanLineEditor map={null} tool={cableTool} storageKey="k-span" loadTerrain={noTerrain} />);
+    const input = (await screen.findByLabelText("Longest span (m)")) as HTMLInputElement;
+    // The MGD's central value from the plugin's assumptions.
+    expect(input.value).toBe("400");
+    const towers = () => Number(screen.getByText("Towers").nextElementSibling?.textContent);
+    await waitFor(() => expect(towers()).toBeGreaterThan(0));
+    const before = towers();
+    fireEvent.change(input, { target: { value: "200" } });
+    await waitFor(() => expect(towers()).toBeGreaterThan(before));
+    const saved = JSON.parse(localStorage.getItem("k-span")!) as SpanDoc;
+    expect(saved.maxSpan).toBe(200);
+  });
+
   it("cable car editor stands stations on the terrain and checks clearance over buildings", async () => {
     const doc: SpanDoc = {
       name: "Valley",

@@ -1010,6 +1010,7 @@ export const editorsUz = {
   "cable.hint.select": "Tahrirlash uchun stansiyani bosing. Siljitish uchun stansiyani torting.",
   "cable.modeSystem": "Tur va tizim",
   "cable.lineSpeed": "Arqon tezligi (m/s)",
+  "cable.longestSpan": "Eng uzun oraliq (m)",
   "cable.cabinInterval": "Kabinalar oraligʻi (soniya)",
   "cable.departureEvery": "Joʻnash har",
   "cable.cabinEvery": "Kabina har",

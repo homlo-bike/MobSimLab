@@ -1011,6 +1011,7 @@ export const editorsPt = {
   "cable.hint.select": "Clique numa estação para editá-la. Arraste uma estação para movê-la.",
   "cable.modeSystem": "Modo e sistema",
   "cable.lineSpeed": "Velocidade do cabo (m/s)",
+  "cable.longestSpan": "Vão mais longo (m)",
   "cable.cabinInterval": "Intervalo entre cabines (s)",
   "cable.departureEvery": "Partida a cada",
   "cable.cabinEvery": "Cabine a cada",

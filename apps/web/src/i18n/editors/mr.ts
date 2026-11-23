@@ -993,6 +993,7 @@ export const editorsMr = {
   "cable.hint.select": "संपादित करण्यासाठी स्थानकावर क्लिक करा. हलवण्यासाठी स्थानक ओढा.",
   "cable.modeSystem": "साधन आणि प्रणाली",
   "cable.lineSpeed": "दोराचा वेग (मी/से)",
+  "cable.longestSpan": "सर्वात लांब स्पॅन (मी)",
   "cable.cabinInterval": "केबिन अंतराल (सेकंद)",
   "cable.departureEvery": "प्रस्थान दर",
   "cable.cabinEvery": "केबिन दर",

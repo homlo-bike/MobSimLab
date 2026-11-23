@@ -34,6 +34,8 @@ export interface SpanSystem {
   terminal_dwell_s: number;
   reserve_share: number;
   capacity_ceiling_pphpd?: number;
+  /** Within this distance of a station the cabin only has to clear the ground and buildings, m. */
+  station_approach_m?: number;
   /** Prefix of the plugin parameters the findings name (default `ropeway`). */
   parameter_prefix?: string;
 }

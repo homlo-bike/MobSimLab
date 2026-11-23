@@ -968,6 +968,7 @@ export const editorsVi = {
   "cable.hint.select": "Nhấp vào ga để chỉnh sửa. Kéo ga để di chuyển.",
   "cable.modeSystem": "Phương thức và hệ thống",
   "cable.lineSpeed": "Tốc độ cáp (m/s)",
+  "cable.longestSpan": "Nhịp dài nhất (m)",
   "cable.cabinInterval": "Khoảng cách cabin (giây)",
   "cable.departureEvery": "Khởi hành mỗi",
   "cable.cabinEvery": "Cabin mỗi",

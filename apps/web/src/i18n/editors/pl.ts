@@ -1058,6 +1058,7 @@ export const editorsPl = {
   "cable.hint.select": "Kliknij stację, aby ją edytować. Przeciągnij stację, aby ją przesunąć.",
   "cable.modeSystem": "Środek transportu i system",
   "cable.lineSpeed": "Prędkość liny (m/s)",
+  "cable.longestSpan": "Najdłuższe przęsło (m)",
   "cable.cabinInterval": "Odstęp kabin (s)",
   "cable.departureEvery": "Odjazd co",
   "cable.cabinEvery": "Kabina co",

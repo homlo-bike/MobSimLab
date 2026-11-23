@@ -971,6 +971,7 @@ export const editorsYo = {
   "cable.hint.select": "Tẹ ibùdókọ̀ láti ṣàtúnṣe rẹ̀. Fa ibùdókọ̀ láti gbé e.",
   "cable.modeSystem": "Irú àti ètò",
   "cable.lineSpeed": "Ìyára okùn (m/s)",
+  "cable.longestSpan": "Àlàfo tó gùn jùlọ láàárín àwọn ilé-gíga (m)",
   "cable.cabinInterval": "Àlàfo yàrá ọkọ̀ (s)",
   "cable.departureEvery": "Ìgbéra ní gbogbo",
   "cable.cabinEvery": "Yàrá ọkọ̀ ní gbogbo",
