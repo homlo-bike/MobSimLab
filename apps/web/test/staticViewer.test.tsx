@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { cut, peopleIn, staticFetch } from "../src/static/shim";
 
@@ -151,5 +153,51 @@ describe("static viewer", () => {
         [0, 2],
       ]),
     ).toBe(10);
+  });
+  it("reads the tiles of a format 1.4 file from its archive by byte range", async () => {
+    const id = "0194f3a2-0000-7b2e-9f00-4a5b6c7d8e00";
+    // Two tiles, one of them 30 kB, written by apps/api/src/mslab/pmtiles.ts.
+    const archive = readFileSync(join(__dirname, "fixtures", "streets.pmtiles"));
+    const ranges: string[] = [];
+    const site: Record<string, string> = {
+      "/projects/index.json": JSON.stringify({
+        projects: [{ ...(SITE["/projects/index.json"] as { projects: object[] }).projects[0], id, dir: id }],
+      }),
+      [`/projects/${id}/map/area.json`]: JSON.stringify({ layout: "archive" }),
+    };
+    const ranged: typeof fetch = async (input, init) => {
+      const path = new URL(String(input), "http://localhost").pathname;
+      if (path === `/projects/${id}/map/streets.pmtiles`) {
+        const range = new Headers(init?.headers).get("Range") ?? "";
+        ranges.push(range);
+        const m = /^bytes=(\d+)-(\d+)$/.exec(range);
+        if (!m) return new Response(archive, { status: 200 });
+        return new Response(archive.subarray(Number(m[1]), Number(m[2]) + 1), { status: 206 });
+      }
+      const body = site[path];
+      return body === undefined
+        ? new Response("<!doctype html>", { headers: { "Content-Type": "text/html" } })
+        : new Response(body, { headers: { "Content-Type": "application/json" } });
+    };
+    const viewer = staticFetch(ranged);
+    window.history.pushState(null, "", `/projects/${id}/simulator`);
+    expect(await (await viewer("/api/street-network/tiles/14/8192/5450")).text()).toBe(
+      "<osm>streets from the archive</osm>",
+    );
+    // The header and directory, then at most the one tile: not the whole archive.
+    expect(ranges.every((r) => r.startsWith("bytes="))).toBe(true);
+    const read = ranges
+      .map((r) => /(\d+)-(\d+)/.exec(r)!)
+      .reduce((n, m) => n + Math.min(archive.length, Number(m[2]) + 1) - Number(m[1]), 0);
+    expect(read).toBeLessThan(archive.length);
+    expect((await (await viewer("/api/street-network/tiles/14/8193/5450")).text()).length).toBeGreaterThan(
+      30_000,
+    );
+    // A tile the archive does not hold is empty, and a kind without an archive too.
+    expect(await (await viewer("/api/street-network/tiles/14/1/1")).text()).toContain("<osm");
+    expect(await (await viewer("/api/street-network/building-tiles/14/8192/5450")).json()).toEqual({
+      buildings: [],
+    });
+    window.history.pushState(null, "", "/");
   });
 });

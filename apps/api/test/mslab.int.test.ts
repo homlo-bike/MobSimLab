@@ -8,6 +8,7 @@ import { PopulationService } from "../src/population/population.service";
 import { StreetNetworkService } from "../src/street-network/street-network.service";
 import type { AppConfig } from "../src/config/env";
 import { readZip } from "../src/tool-runner/zip.mts";
+import { readArchive } from "./support/pmtiles";
 import { createApp, testConfig } from "./support/app";
 import { startDatabase, type TestDatabase } from "./support/database";
 import { cookieValue, signIn, startIdp, type TestIdp } from "./support/idp";
@@ -251,10 +252,11 @@ describe("mslab project files", () => {
   it("saves the map data of the project area for the static viewer when asked, and leaves it out on opening", async () => {
     // OpenStreetMap, WorldPop and the World Bank are not reachable from tests: their answers are stubbed.
     const streets = app.get(StreetNetworkService);
-    const osm = '<?xml version="1.0"?><osm version="0.6"></osm>';
+    const osm = '<?xml version="1.0"?><osm version="0.6"><node id="1" lat="52.5" lon="13.4"/></osm>';
+    const empty = '<?xml version="1.0"?><osm version="0.6"></osm>';
     const spies = [
       vi.spyOn(streets, "tile").mockResolvedValue(osm),
-      vi.spyOn(streets, "walkTile").mockResolvedValue(osm),
+      vi.spyOn(streets, "walkTile").mockResolvedValue(empty),
       vi.spyOn(streets, "railTile").mockResolvedValue(osm),
       vi.spyOn(streets, "buildingTile").mockResolvedValue('{"buildings":[]}'),
       vi.spyOn(streets, "placeTile").mockResolvedValue('{"places":[]}'),
@@ -321,8 +323,8 @@ describe("mslab project files", () => {
         maxRatio: 1e9,
       });
       const manifest = JSON.parse(files.get("manifest.json")!.toString());
-      // The project area makes it format 1.3.
-      expect(manifest).toMatchObject({ formatVersion: "1.3.0", includes: { runs: false, map: true } });
+      // Map data makes it format 1.4.
+      expect(manifest).toMatchObject({ formatVersion: "1.4.0", includes: { runs: false, map: true } });
       expect(JSON.parse(files.get("project.json")!.toString()).areaPolygons).toEqual([
         {
           id: "a1",
@@ -340,11 +342,16 @@ describe("mslab project files", () => {
       const area = JSON.parse(files.get("map/area.json")!.toString());
       expect(area.kinds).toEqual(["streets", "walk", "buildings", "places", "rail"]);
       expect(area.tiles.length).toBeGreaterThan(1);
-      for (const [x, y] of area.tiles as [number, number][]) {
-        expect(files.get(`map/streets/${x}-${y}.xml`)?.toString()).toBe(osm);
-        expect(files.has(`map/buildings/${x}-${y}.json`)).toBe(true);
-        expect(files.has(`map/bike-amenities/${x}-${y}.json`)).toBe(false);
-      }
+      // One archive per kind, read by byte range in the static viewer; empty tiles are left out.
+      expect(area.layout).toBe("archive");
+      expect([...files.keys()].filter((n) => /^map\/[a-z-]+\//.test(n))).toEqual([]);
+      const streetsArchive = readArchive(files.get("map/streets.pmtiles")!);
+      expect(streetsArchive.size).toBe(area.tiles.length);
+      for (const [x, y] of area.tiles as [number, number][])
+        expect(streetsArchive.get(`14/${x}/${y}`)).toBe(osm);
+      expect(readArchive(files.get("map/walk.pmtiles")!).size).toBe(0);
+      expect(readArchive(files.get("map/buildings.pmtiles")!).size).toBe(0);
+      expect(files.has("map/bike-amenities.pmtiles")).toBe(false);
       expect(JSON.parse(files.get("map/population.json")!.toString()).grids[0].people).toEqual([42]);
       expect(Object.keys(JSON.parse(files.get("map/reference.json")!.toString())).sort()).toEqual([
         "/api/benefits/indicators?code=DEU",

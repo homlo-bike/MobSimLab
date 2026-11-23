@@ -65,7 +65,8 @@ project.mslab
 │                            replay.json.gz for road runs)
 ├── map/                     optional, format 1.1: map data of the project area for the static viewer
 │                            (area.json, OSM tiles per kind <kind>/<x>-<y>.xml|json, water.json,
-│                            population.json, reference.json); ignored when the file is opened
+│                            population.json, reference.json; since 1.4 the tiles of each kind are one
+│                            PMTiles archive <kind>.pmtiles); ignored when the file is opened
 └── ATTRIBUTION.md           generated: contents and the sources the project refers to
 ```
 
@@ -83,6 +84,11 @@ fingerprint of its inputs and when it was worked out (`project.result`, apps/api
 They are always written when the project has any, so an opened file shows them without working them out
 again, and marks a result out of date when its inputs no longer match. Files without results are saved as
 1.1.0 or 1.0.0 as before.
+
+Format 1.4.0 keeps the map data's tiles in one PMTiles 3 archive per kind (`map/<kind>.pmtiles`, gzipped tiles
+as the street network API serves them, empty tiles left out, `area.json` `layout: "archive"`), so a large area
+no longer meets the ZIP's 5,000-file limit and the static viewer reads only the tiles it needs by byte range.
+Only files with map data are saved as 1.4.0; the others keep the oldest version that holds them.
 
 - JSON Schemas for every file are published, so other tools can read and write `.mslab`.
 - **Import** always creates a new project owned by the person who opens it, with new ids. It runs in the sandboxed tool-runner (`apps/api/src/tool-runner`) with ZIP limits (200 MB file, 5000 entries, 70 MB per file, 512 MB unpacked, compression ratio), checks the checksums and every file against its schema, and applies forward migrations (`apps/api/src/mslab/migrations.mts`); the API then checks every drawing again against the editor's outline. Drawings of tools or plugins this instance lacks are left out and listed.

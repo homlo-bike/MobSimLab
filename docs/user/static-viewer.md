@@ -76,6 +76,14 @@ Cloudflare Pages serves files of up to 25 MiB. The unpacked files are small, but
 many runs or map tiles) can be over the limit: keep it outside the site and pass it to the script instead,
 `node tools/add-projects.mjs ~/big-project.mslab`. The script warns about any file over the limit.
 
+## Map data of large areas
+
+Files saved since format 1.4 keep the map tiles of each kind in one archive (`map/<kind>.pmtiles`). The viewer
+reads only the tiles a table or map needs, piece by piece, with HTTP range requests, so a visitor does not
+download a whole country. A host that does not answer range requests still works: the browser then downloads
+each archive once, whole. Each archive must stay under the host's file size limit (25 MiB on Cloudflare
+Pages); the script warns when one is larger.
+
 ## Licences
 
 The site is MobSimLab (AGPL-3.0-or-later); its source is this repository. Map data in a project file is

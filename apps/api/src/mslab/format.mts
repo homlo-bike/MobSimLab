@@ -16,6 +16,8 @@
  *   map/water.json             (1.1, optional) sea, lakes and rivers of the area
  *   map/population.json        (1.1, optional) people per cell over the area
  *   map/reference.json         (1.1, optional) country figures for the cost and benefit tables, by API path
+ *   map/<kind>.pmtiles         (1.4, optional) every zoom-14 tile of one kind in one PMTiles archive, which the
+ *                              static viewer reads by byte range; replaces map/<kind>/<x>-<y>.<ext> in 1.4 files
  *   results/<kind>.json        (1.2) a result the project's tools worked out (noise map, walk coverage…), with the
  *                              fingerprint of what it was worked out from
  *   ATTRIBUTION.md             generated: what the file holds and the sources it refers to
@@ -30,13 +32,13 @@
  */
 
 /** Current format version (semantic): a new minor version only adds, a new major version needs a migration. */
-export const FORMAT_VERSION = "1.3.0";
+export const FORMAT_VERSION = "1.4.0";
+
+/** The version a file with project area polygons and no map data is saved as, so that MobSimLab 1.3 readers open it. */
+export const FORMAT_VERSION_POLYGONS = "1.3.0";
 
 /** The version a file with saved results and no project area is saved as, so that MobSimLab 1.2 readers open it. */
 export const FORMAT_VERSION_RESULTS = "1.2.0";
-
-/** The version a file with map data and no saved results is saved as, so that MobSimLab 1.1 readers open it. */
-export const FORMAT_VERSION_MAP_ONLY = "1.1.0";
 
 /** The version a file without map data is saved as, so that MobSimLab 1.0 readers still open it. */
 export const FORMAT_VERSION_WITHOUT_MAP = "1.0.0";
@@ -108,6 +110,8 @@ export const MAP_FILES = {
   reference: "map/reference.json",
   tile: (kind: MapTileKind, x: number, y: number) =>
     `map/${kind}/${x}-${y}.${kind === "streets" || kind === "walk" || kind === "rail" ? "xml" : "json"}`,
+  /** Format 1.4: all tiles of one kind in one PMTiles archive (apps/api/src/mslab/pmtiles.ts). */
+  archive: (kind: MapTileKind) => `map/${kind}.pmtiles`,
 } as const;
 
 /** `map/area.json`: the project area (degrees) and the zoom-14 tiles of each kind in the file. */
@@ -116,6 +120,11 @@ export interface MapAreaFile {
   zoom: number;
   kinds: MapTileKind[];
   tiles: [number, number][];
+  /**
+   * Format 1.4: "archive" when the tiles are in `map/<kind>.pmtiles`; absent when they are one file per tile.
+   * A tile the archive does not hold is empty (nothing mapped there, or outside the area).
+   */
+  layout?: "archive";
 }
 
 /** Patterns of every file a version 1 file may hold besides the manifest. */
@@ -126,7 +135,7 @@ export const FILE_PATTERNS = {
   runLines: /^runs\/([0-9a-f-]{36})\/lines\.txt$/,
   runReplay: /^runs\/([0-9a-f-]{36})\/replay\.json\.gz$/,
   result: /^results\/([a-z][a-z0-9-]{1,39})\.json$/,
-  map: /^map\/(?:(?:area|water|population|reference)\.json|(?:streets|walk|rail)\/\d{1,5}-\d{1,5}\.xml|(?:buildings|places|bike-amenities)\/\d{1,5}-\d{1,5}\.json)$/,
+  map: /^map\/(?:(?:area|water|population|reference)\.json|(?:streets|walk|rail)\/\d{1,5}-\d{1,5}\.xml|(?:buildings|places|bike-amenities)\/\d{1,5}-\d{1,5}\.json|(?:streets|walk|rail|buildings|places|bike-amenities)\.pmtiles)$/,
 } as const;
 
 /** `manifest.json`. */
