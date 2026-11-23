@@ -11,6 +11,8 @@
 //!   from the rail timetable's closures or the service assumed in the track topology.
 //! - [`setup`]: the planner's street setup from the GIS tab (traffic lanes, bus and bike lanes,
 //!   separation, tram share) as tag overrides, and the delay buses lose in main-road traffic.
+//! - [`closures`]: what the street setups close to buses, so the line tool can say where a line
+//!   goes round a street or a stop moved off one.
 //! - [`walk`]: pedestrian graph, walk coverage (the 15-minute walk rule, SDG 11.2.1) and stop
 //!   spacing (ADR-0035).
 //!
@@ -19,6 +21,7 @@
 #![warn(missing_docs)]
 
 pub mod access;
+pub mod closures;
 pub mod crossings;
 pub mod geo;
 pub mod graph;

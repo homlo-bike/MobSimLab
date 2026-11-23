@@ -4,6 +4,7 @@ import {
   depotTripsToGeoJson,
   groupLinksToGeoJson,
   legsToGeoJson,
+  setupDetoursToGeoJson,
   STATUS_COLOR,
   type FeatureCollection,
 } from "./geojson";
@@ -15,7 +16,7 @@ export const HIT_LAYER = "sl-legs-hit";
 export const OTHERS_HIT_LAYER = "sl-others-hit";
 
 const EMPTY: FeatureCollection = { type: "FeatureCollection", features: [] };
-const SOURCES = ["sl-others", "sl-roads", "sl-depot", "sl-groups", "sl-bays", "sl-legs"];
+const SOURCES = ["sl-others", "sl-roads", "sl-depot", "sl-groups", "sl-bays", "sl-closed", "sl-legs"];
 const LAYERS = [
   "sl-others",
   "sl-roads",
@@ -23,6 +24,7 @@ const LAYERS = [
   "sl-groups",
   "sl-bays-fill",
   "sl-bays-line",
+  "sl-closed",
   "sl-legs-warn",
   "sl-legs-casing",
   "sl-legs",
@@ -117,6 +119,19 @@ export function ensureLayers(map: MapLibreMap, color: string, trafficSide: "righ
     type: "line",
     source: "sl-bays",
     paint: { "line-color": color, "line-width": 1 },
+  });
+  // The route as drawn along a street the GIS tab's layout closes to buses: red dashes beside the detour.
+  map.addLayer({
+    id: "sl-closed",
+    type: "line",
+    source: "sl-closed",
+    layout: { "line-join": "round", "line-cap": "round" },
+    paint: {
+      "line-color": STATUS_COLOR.error,
+      "line-width": 4,
+      "line-dasharray": [0.5, 2],
+      "line-offset": offset,
+    },
   });
   // As in the mockup: a leg with a warning keeps the line colour over a wide, faint amber band; every leg
   // has a white casing under a 4 px line in the mode colour.
@@ -236,6 +251,7 @@ export function drawLine(
   depot: { out?: number; in?: number } | null,
 ): void {
   set(map, "sl-legs", legsToGeoJson(view));
+  set(map, "sl-closed", setupDetoursToGeoJson(view));
   set(map, "sl-bays", baysToGeoJson(view));
   set(map, "sl-groups", groupLinksToGeoJson(view));
   set(map, "sl-depot", depot ? depotTripsToGeoJson(view, depot) : EMPTY);

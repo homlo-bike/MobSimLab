@@ -1381,6 +1381,7 @@ export function Workspace({
                 editable={editable}
                 delays={delays}
                 trafficSide={streetRules.traffic_side}
+                streetLines={savedStreet}
               />
             </Suspense>
           )}

@@ -53,7 +53,8 @@ import {
   verdicts,
 } from "./model";
 import type { JunctionSetup, StreetInfo, StreetInfoLoader, StreetSetup } from "./types";
-import type { LonLat } from "../street-lines/types";
+import { reroutedLines, type Reroute } from "./reroutes";
+import type { LineView, LonLat } from "../street-lines/types";
 import { engineErrorText } from "../../i18n/engine";
 
 interface Props {
@@ -81,7 +82,11 @@ interface Props {
   loadLanes?: LaneEngineLoader;
   /** The side traffic drives on (Project preferences, `street.driving_side`), for the lanes. */
   trafficSide?: TrafficSide;
+  /** The project's saved street lines, to warn before a change sends one round a street. */
+  streetLines?: readonly { name: string; view: LineView }[];
 }
+
+const NO_LINES: readonly { name: string; view: LineView }[] = [];
 
 const NO_JUNCTIONS: readonly JunctionSetup[] = [];
 
@@ -153,6 +158,7 @@ export function StreetSetupEditor({
   loadInfos = loadStreetInfos,
   loadLanes = loadLaneEngine,
   trafficSide = "right",
+  streetLines = NO_LINES,
 }: Props) {
   const [parse, setParse] = useState<((xml: string) => StreetInfo[]) | null>(null);
   const [infos, setInfos] = useState<Map<number, StreetInfo>>(new Map());
@@ -405,6 +411,13 @@ export function StreetSetupEditor({
   }, [map]);
 
   const setupOf = (way: number) => setups.find((s) => s.way === way);
+  // A change that would send saved bus lines round a street waits here until the planner confirms it.
+  const [pending, setPending] = useState<{ next: StreetSetup[]; hits: Reroute[] } | null>(null);
+  const commit = (next: StreetSetup[]) => {
+    const hits = reroutedLines(setups, next, infos, streetLines);
+    if (hits.length > 0) setPending({ next, hits });
+    else onChange(next);
+  };
   const info = selected !== null ? infos.get(selected) : undefined;
   const setup = info ? setupOf(info.way) : undefined;
   // Real lanes only when built with the setups as they are now; until then the typical cross-section.
@@ -415,7 +428,7 @@ export function StreetSetupEditor({
     if (!info) return;
     const mid = info.coords[Math.floor(info.coords.length / 2)]!;
     const base: StreetSetup = setup ?? { way: info.way };
-    onChange(upsert(setups, { ...base, ...patch, way: info.way, name: info.name, at: mid }));
+    commit(upsert(setups, { ...base, ...patch, way: info.way, name: info.name, at: mid }));
   };
 
   /** The same change on every selected street whose shape has loaded. */
@@ -428,7 +441,7 @@ export function StreetSetupEditor({
       const base: StreetSetup = next.find((s) => s.way === way) ?? { way };
       next = upsert(next, { ...base, ...patch, way, name: i.name, at: mid });
     }
-    onChange(next);
+    commit(next);
   };
 
   const show = (s: StreetSetup) => {
@@ -511,6 +524,38 @@ export function StreetSetupEditor({
         </p>
       )}
 
+      {pending && (
+        <div
+          role="alertdialog"
+          aria-label={t("setup.reroute.title")}
+          className="flex flex-col gap-2 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-900"
+        >
+          <p className="font-medium">{t("setup.reroute.title")}</p>
+          <ul className="list-disc ps-5">
+            {pending.hits.map((h) => (
+              <li key={`${h.line}-${h.way}`}>
+                {t("setup.reroute.item", { line: h.line, street: h.street || t("setup.unnamedLower") })}
+              </li>
+            ))}
+          </ul>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              className="btn min-h-11"
+              onClick={() => {
+                onChange(pending.next);
+                setPending(null);
+              }}
+            >
+              {t("setup.reroute.save")}
+            </button>
+            <button type="button" className="btn min-h-11" onClick={() => setPending(null)}>
+              {t("setup.reroute.cancel")}
+            </button>
+          </div>
+        </div>
+      )}
+
       {picked.length > 0 ? (
         <JunctionForm
           picked={picked.map((j) => ({
@@ -539,7 +584,7 @@ export function StreetSetupEditor({
             const sections = setupOf(from)?.sections;
             if (sections) changeAll({ ...OSM_LANES, sections });
           }}
-          onReset={() => onChange(setups.filter((s) => !streets.includes(s.way)))}
+          onReset={() => commit(setups.filter((s) => !streets.includes(s.way)))}
           onUnselect={(way) => setStreets((w) => w.filter((x) => x !== way))}
           onClose={() => setStreets([])}
         />
@@ -551,7 +596,7 @@ export function StreetSetupEditor({
           editable={editable}
           delays={delays}
           onPatch={change}
-          onReset={() => onChange(setups.filter((s) => s.way !== info.way))}
+          onReset={() => commit(setups.filter((s) => s.way !== info.way))}
           onClose={() => setSelected(null)}
         />
       ) : selected !== null ? (

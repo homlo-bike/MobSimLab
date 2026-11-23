@@ -623,6 +623,11 @@ export const editorsUz = {
   "setup.who.trams": "Tramvaylar",
   "setup.who.cyclists": "Velosipedchilar",
   "setup.reset": "OpenStreetMap ga qaytarish",
+  "setup.reroute.title":
+    "Bu oʻzgarish saqlangan avtobus yoʻnalishlarini koʻchani aylanib oʻtishga majbur qiladi:",
+  "setup.reroute.item": "{line} endi {street} orqali yurmaydi",
+  "setup.reroute.save": "Baribir saqlash",
+  "setup.reroute.cancel": "Bekor qilish",
   "setup.legend": "Xarita shartli belgilari",
   "setup.legend.separated": "Avtobus yoki tramvay yoʻlagi, ajratilgan",
   "setup.legend.painted": "Avtobus yoki tramvay yoʻlagi, boʻyalgan",

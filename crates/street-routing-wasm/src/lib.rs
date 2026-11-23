@@ -7,7 +7,9 @@
 //! worker uses.
 
 use engine_msg::{js_error, msg};
+use std::collections::HashMap;
 use street_routing::access::{MatrixRequest, PtalRequest, ReachCountRequest};
+use street_routing::closures::{bus_closures, Closed};
 use street_routing::geo::LocalProjection;
 use street_routing::line::{PointKind, StreetLine};
 use street_routing::osm::OsmData;
@@ -42,6 +44,11 @@ pub struct StreetLineEditor {
     data: OsmData,
     proj: Option<LocalProjection>,
     graph: Option<RoadGraph>,
+    /// The same streets without the setups, built only when the setups close streets to buses: the
+    /// line is routed on it as well, to say where it now goes round a closed street.
+    free_graph: Option<RoadGraph>,
+    /// What the setups close to buses, by OSM way.
+    closed: HashMap<i64, Closed>,
     line: StreetLine,
     setups: Vec<StreetSetup>,
     delays: DelayShares,
@@ -64,6 +71,8 @@ impl StreetLineEditor {
             data: OsmData::default(),
             proj: None,
             graph: None,
+            free_graph: None,
+            closed: HashMap::new(),
             setups: Vec::new(),
             delays: DelayShares::default(),
             language: String::new(),
@@ -100,6 +109,12 @@ impl StreetLineEditor {
         }
         .map_err(|e| js_error(&e))?;
         self.proj = Some(g.proj);
+        self.closed = bus_closures(&self.data, &self.setups);
+        self.free_graph = if self.closed.is_empty() {
+            None
+        } else {
+            RoadGraph::from_osm_with_delays(&self.data, Some(g.proj), &self.delays).ok()
+        };
         self.line.rebuild(&g);
         self.graph = Some(g);
         Ok(self.view())
@@ -308,7 +323,13 @@ impl StreetLineEditor {
     /// Purpose: current line view as JSON (an empty line before streets are loaded).
     pub fn view(&self) -> String {
         match &self.graph {
-            Some(g) => serde_json::to_string(&self.line.view(g)).unwrap_or_default(),
+            Some(g) => {
+                let mut v = self.line.view(g);
+                if let Some(free) = &self.free_graph {
+                    self.line.mark_setup_closures(&mut v, g, free, &self.closed);
+                }
+                serde_json::to_string(&v).unwrap_or_default()
+            }
             None => r#"{"points":[],"legs":[],"directions":[],"station_groups":[],"depot":null,"depot_trips":[],"issues":[],"length_m":0,"time_s":0,"traffic_delay_s":0,"mixed_traffic_m":0,"bus_lane_m":0,"mixed_streets":[],"level_crossings":[],"crossing_wait_s":0}"#.to_string(),
         }
     }

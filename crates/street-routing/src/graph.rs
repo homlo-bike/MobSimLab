@@ -274,6 +274,13 @@ fn way_info_with(tags: &Tags, delays: &crate::setup::DelayShares) -> Option<WayI
     })
 }
 
+/// Purpose: which ways along an OSM way buses may drive, by the graph's own rules: `(forward,
+/// backward)` along the way as drawn, or `None` when buses can never use it. Lets the street setup
+/// checks see what a setup took away from buses.
+pub fn bus_directions(tags: &Tags) -> Option<(bool, bool)> {
+    way_info_with(tags, &crate::setup::DelayShares::default()).map(|w| (w.fwd, w.bwd))
+}
+
 fn node_blocked(tags: &Tags) -> bool {
     let Some(b) = tags.get("barrier").map(String::as_str) else {
         return false;
