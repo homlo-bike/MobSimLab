@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station} で、{count} 便が通常と異なるホームを使いました。",
   "rail.plan.platform_changes_one": "{station} で、1 便が通常と異なるホームを使いました。",
   "rail.plan.platform_short": "ホーム {platform} は {length}、列車には {needed} が必要",
+  "rail.plan.platform_taken": "出発できなかった列車がホームに停車している",
   "rail.plan.pull_out": "出庫：{reason}",
   "rail.plan.route_break": "進路 {route} が進路 {previous} に続いていない",
   "rail.plan.run_failed": "{run}：{detail}",

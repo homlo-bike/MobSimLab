@@ -511,6 +511,7 @@ export const editorsPl = {
   "setup.intro":
     "Dotknij ulicy, aby określić jej układ: pasy ruchu, buspasy i drogi rowerowe, oddzielenie i tramwaj. Twoje ustawienia zastępują OpenStreetMap w narzędziu linii drogowych i edytorze kolejowym oraz wpływają na czasy jazdy i kontrole punktualności i bezpieczeństwa.",
   "setup.engineFailed": "Nie udało się uruchomić silnika ulic: {error}",
+  "setup.lanesFailed": "Nie udało się narysować pasów ruchu: {error}",
   "setup.zoomIn": "Przybliż do poziomu ulic, aby je wczytać (poziom {zoom} lub wyższy).",
   "setup.someFailed": "Nie udało się wczytać niektórych ulic.",
   "setup.tryAgain": "{reason} Przesuń mapę, aby spróbować ponownie.",
@@ -585,6 +586,7 @@ export const editorsPl = {
   "setup.legend.mixed": "Główna ulica, transport publiczny w ruchu",
   "setup.legend.other": "Inna ulica",
   "setup.legend.yours": "Skonfigurowana przez Ciebie",
+  "setup.legend.lanes": "Pasy ruchu, od przybliżenia {zoom}",
   "setup.v.busNoDelay":
     "Dla tego typu ulicy nie liczy się opóźnienia z powodu ruchu; tylko dla głównych ulic.",
   "setup.v.busSeparated": "Oddzielony buspas: ruch nie spowalnia autobusów.",

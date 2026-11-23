@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "Na {station}, njem {count} jiri ikpo okwu ọzọ karịa nke a na-eji mgbe niile.",
   "rail.plan.platform_changes_one": "Na {station}, otu njem jiri ikpo okwu ọzọ karịa nke a na-eji mgbe niile.",
   "rail.plan.platform_short": "ikpo okwu {platform} dị {length}, ụgbọ oloko chọrọ {needed}",
+  "rail.plan.platform_taken": "ụgbọ oloko na-enweghị ike ịpụ guzo n'ikpo okwu ahụ",
   "rail.plan.pull_out": "ọpụpụ n'ụlọ ụgbọ: {reason}",
   "rail.plan.route_break": "ụzọ {route} anaghị esochi ụzọ {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

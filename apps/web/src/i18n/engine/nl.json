@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "In {station} gebruikten {count} ritten een ander perron dan gewoonlijk.",
   "rail.plan.platform_changes_one": "In {station} gebruikte 1 rit een ander perron dan gewoonlijk.",
   "rail.plan.platform_short": "perron {platform} is {length}, de trein heeft {needed} nodig",
+  "rail.plan.platform_taken": "een trein die niet kon vertrekken staat aan het perron",
   "rail.plan.pull_out": "uitrukken: {reason}",
   "rail.plan.route_break": "rijweg {route} sluit niet aan op rijweg {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

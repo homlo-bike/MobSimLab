@@ -11,6 +11,8 @@ members = [
   "crates/mobsim-py",
   "crates/street-routing",
   "crates/street-routing-wasm",
+  "crates/street-geometry",
+  "crates/street-geometry-wasm",
   "crates/rail-design",
   "crates/rail-design-wasm",
   "crates/journey-planner",

@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "En {station}, {count} viajes usaron un andén distinto del habitual.",
   "rail.plan.platform_changes_one": "En {station}, 1 viaje usó un andén distinto del habitual.",
   "rail.plan.platform_short": "el andén {platform} mide {length}, el tren necesita {needed}",
+  "rail.plan.platform_taken": "un tren que no pudo salir está detenido en el andén",
   "rail.plan.pull_out": "salida de cochera: {reason}",
   "rail.plan.route_break": "el itinerario {route} no continúa el itinerario {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

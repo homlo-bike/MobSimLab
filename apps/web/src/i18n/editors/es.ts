@@ -475,6 +475,7 @@ export const editorsEs = {
   "setup.intro":
     "Toca una calle para indicar cómo se reparte: carriles de tráfico, carriles bus y bici, separación y tranvía. Tu configuración sustituye a OpenStreetMap en la herramienta de líneas por calle y en el editor ferroviario, para los tiempos de recorrido y las comprobaciones de fiabilidad y seguridad.",
   "setup.engineFailed": "El motor de calles no se inició: {error}",
+  "setup.lanesFailed": "No se pudieron dibujar los carriles: {error}",
   "setup.zoomIn": "Acerca el mapa al nivel de calle para cargar las calles (desde el zoom {zoom}).",
   "setup.someFailed": "Algunas calles no se cargaron.",
   "setup.tryAgain": "{reason} Mueve el mapa para volver a intentarlo.",
@@ -547,6 +548,7 @@ export const editorsEs = {
   "setup.legend.mixed": "Vía principal, transporte en el tráfico",
   "setup.legend.other": "Otras calles",
   "setup.legend.yours": "Configurada por ti",
+  "setup.legend.lanes": "Carriles, desde el zoom {zoom}",
   "setup.v.busNoDelay":
     "En este tipo de calle no se supone retraso por el tráfico; cuenta en las vías principales.",
   "setup.v.busSeparated": "Carril bus separado: los atascos no retrasan a los autobuses.",

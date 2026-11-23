@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "Ní {station}, ìrìn {count} lo pẹpẹ mìíràn yàtọ̀ sí èyí tí wọ́n máa ń lò.",
   "rail.plan.platform_changes_one": "Ní {station}, ìrìn 1 lo pẹpẹ mìíràn yàtọ̀ sí èyí tí ó máa ń lò.",
   "rail.plan.platform_short": "pẹpẹ {platform} jẹ́ {length}, ọkọ̀ ojú irin nílò {needed}",
+  "rail.plan.platform_taken": "ọkọ̀ ojú irin tí kò lè kúrò dúró ní pẹpẹ náà",
   "rail.plan.pull_out": "ìjáde láti ìpamọ́: {reason}",
   "rail.plan.route_break": "ọ̀nà {route} kò tẹ̀lé ọ̀nà {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

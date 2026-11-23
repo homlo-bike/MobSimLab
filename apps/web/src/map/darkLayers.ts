@@ -20,8 +20,8 @@ const ON_DARK: Record<string, string> = {
   "#2c3034": "#aab3bd",
 };
 
-/** Layers drawn as things look on the ground (rails on ballast, white road markings): never changed. */
-const AS_ON_GROUND = /-(rails|stop-lines|tram-lanes)$/;
+/** Layers drawn as things look on the ground (rails on ballast, lanes and white road markings): never changed. */
+const AS_ON_GROUND = /-(rails|stop-lines|lanes|junctions|markings)$/;
 
 function swap(value: unknown): unknown {
   if (typeof value === "string") return ON_DARK[value.toLowerCase()] ?? value;

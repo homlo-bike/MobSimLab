@@ -426,7 +426,7 @@ fn auto_towers(sys: &SpanSystem, g: &Ground) -> Vec<(f64, f64)> {
         let mut best: Option<(usize, f64)> = None;
         for &(s, total) in &layer {
             let (_, a) = support(s);
-            if len - a.0 <= max_span + 1e-9 && ok(a, end) && best.map_or(true, |b| total < b.1) {
+            if len - a.0 <= max_span + 1e-9 && ok(a, end) && best.is_none_or(|b| total < b.1) {
                 best = Some((s, total));
             }
         }

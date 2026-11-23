@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station} येथे {count} फेऱ्यांनी नेहमीपेक्षा दुसरा फलाट वापरला.",
   "rail.plan.platform_changes_one": "{station} येथे 1 फेरीने नेहमीपेक्षा दुसरा फलाट वापरला.",
   "rail.plan.platform_short": "फलाट {platform} ची लांबी {length} आहे, गाडीला {needed} लागतात",
+  "rail.plan.platform_taken": "निघू न शकलेली गाडी फलाटावर उभी आहे",
   "rail.plan.pull_out": "आगारातून बाहेर पडणे: {reason}",
   "rail.plan.route_break": "मार्ग {route} मार्ग {previous} नंतर येत नाही",
   "rail.plan.run_failed": "{run}: {detail}",

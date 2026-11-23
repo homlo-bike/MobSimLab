@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station} వద్ద, {count} ట్రిప్‌లు సాధారణం కంటే వేరే ప్లాట్‌ఫాంను ఉపయోగించాయి.",
   "rail.plan.platform_changes_one": "{station} వద్ద, 1 ట్రిప్ సాధారణం కంటే వేరే ప్లాట్‌ఫాంను ఉపయోగించింది.",
   "rail.plan.platform_short": "ప్లాట్‌ఫాం {platform} పొడవు {length}, రైలుకు {needed} అవసరం",
+  "rail.plan.platform_taken": "బయలుదేరలేకపోయిన రైలు ప్లాట్‌ఫాంలో నిలిచి ఉంది",
   "rail.plan.pull_out": "నిలిపిన స్థలం నుండి బయలుదేరడం: {reason}",
   "rail.plan.route_break": "మార్గం {route}, మార్గం {previous}ను అనుసరించదు",
   "rail.plan.run_failed": "{run}: {detail}",

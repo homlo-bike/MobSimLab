@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station}: рейсів, що використали не звичайну платформу: {count}.",
   "rail.plan.platform_changes_one": "{station}: 1 рейс використав не звичайну платформу.",
   "rail.plan.platform_short": "платформа {platform} має довжину {length}, поїзду потрібно {needed}",
+  "rail.plan.platform_taken": "поїзд, який не зміг відійти, стоїть біля платформи",
   "rail.plan.pull_out": "виїзд на лінію: {reason}",
   "rail.plan.route_break": "маршрут {route} не продовжує маршрут {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

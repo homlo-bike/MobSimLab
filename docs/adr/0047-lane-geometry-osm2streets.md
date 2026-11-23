@@ -33,12 +33,15 @@ three traffic lanes.
 
 ## Decision
 
-1. Add osm2streets as a **drawing-only** dependency in a new crate, `street-geometry-wasm`, compiled to
-   WebAssembly for the map editor. It never routes: routing stays in `street-routing` (ADR-0009, ADR-0031).
+1. Add osm2streets as a **drawing-only** dependency in a new crate, `street-geometry` (with `street-geometry-wasm`
+   compiling it to WebAssembly for the map editor, run in a Web Worker). It never routes: routing stays in
+   `street-routing` (ADR-0009, ADR-0031).
 2. Its input is what the router already reads: the merged street tiles (`/api/street-network/tiles`) with the
-   street setups applied as tag overrides (`apply_setups`). The `mobsimlab:` tags are mapped to OSM tags that
-   osm2lanes understands (`separated=yes` to a kerb-separated `busway` or `cycleway=track`, a tram in its own lane
-   to `embedded_rails=tram`).
+   street setups applied as tag overrides (`apply_setups`). What osm2lanes does not read is added to its lane
+   list afterwards: osm2lanes ignores tram tags (`embedded_rails`, `railway=tram`) and bus lane separation, so a
+   tram in its own lane becomes tram lanes between the two directions (on the inner side of a one-way street), a
+   separated bus or tram lane gets a kerb on the traffic side, and a tram in traffic is drawn as rails in the
+   inner traffic lanes.
 3. The map draws lane and junction polygons at zoom 16 and closer, and keeps the line layer below. Lane markings
    are left out or reduced to centre lines and lane separators; coordinates are rounded and the data passes as
    binary or compact arrays, not GeoJSON text.

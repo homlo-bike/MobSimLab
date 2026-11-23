@@ -245,6 +245,7 @@
   "rail.plan.platform_changes": "At {station}, {count} trips used another platform than usual.",
   "rail.plan.platform_changes_one": "At {station}, 1 trip used another platform than usual.",
   "rail.plan.platform_short": "platform {platform} is {length}, train needs {needed}",
+  "rail.plan.platform_taken": "a train that could not leave stands in the platform",
   "rail.plan.pull_out": "pull-out: {reason}",
   "rail.plan.route_break": "route {route} does not follow route {previous}",
   "rail.plan.run_failed": "{run}: {detail}",
