@@ -17,7 +17,7 @@ import {
   FINISHED_RUN_STATUSES,
   FORMAT_NAME,
   FORMAT_VERSION,
-  FORMAT_VERSION_MAP_ONLY,
+  FORMAT_VERSION_POLYGONS,
   FORMAT_VERSION_RESULTS,
   FORMAT_VERSION_WITHOUT_MAP,
   type Manifest,
@@ -323,7 +323,7 @@ export class MslabService {
         runCount++;
       }
     }
-    // Map data for the static viewer (format 1.1): the OpenStreetMap tiles, water, population and country
+    // Map data for the static viewer (format 1.4): the OpenStreetMap tiles, water, population and country
     // figures of the project area.
     let map: MapDataSummary | null = null;
     if (includeMap) {
@@ -335,12 +335,13 @@ export class MslabService {
       for (const [name, body] of m.files) add(name, body);
       map = m.summary;
     }
-    const formatVersion = polygons.length
+    // The oldest version that holds what the file carries, so that older readers still open it.
+    const formatVersion = includeMap
       ? FORMAT_VERSION
-      : resultCount
-        ? FORMAT_VERSION_RESULTS
-        : includeMap
-          ? FORMAT_VERSION_MAP_ONLY
+      : polygons.length
+        ? FORMAT_VERSION_POLYGONS
+        : resultCount
+          ? FORMAT_VERSION_RESULTS
           : FORMAT_VERSION_WITHOUT_MAP;
     add(
       FILES.attribution,

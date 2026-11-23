@@ -9,16 +9,29 @@ import { areaTiles } from "../projects/area-polygons";
 import { type Bbox, projectArea } from "../projects/project-area";
 import { EMPTY_OSM_XML, StreetNetworkService, TILE_ZOOM } from "../street-network/street-network.service";
 import { MAX_WATER_SPAN_DEG } from "../street-network/water";
-import { MAP_FILES, type MapAreaFile, type MapTileKind } from "./format.mts";
+import { MAP_FILES, MSLAB_ZIP_LIMITS, type MapAreaFile, type MapTileKind } from "./format.mts";
+import { type ArchiveTile, writeArchive } from "./pmtiles";
 
-/** Most zoom-14 tiles the map data of one file may cover (each kind is one file per tile). */
-export const MAX_MAP_TILES = 400;
+/**
+ * Most zoom-14 tiles the map data of one file may cover. Each kind is one archive (format 1.4), so the count no
+ * longer meets the ZIP's file limit; this bounds the time saving takes (every tile is cut or fetched).
+ */
+export const MAX_MAP_TILES = 20_000;
 /** Largest map data a file may carry, uncompressed, so that it still opens (format.mts MSLAB_ZIP_LIMITS). */
 export const MAX_MAP_BYTES = 300 * 1024 * 1024;
 /** Tiles fetched at once from the street network service (each uncached tile is an Overpass request). */
 const PARALLEL = 4;
 /** How long to wait for a population grid that is still downloading to the server. */
 const POPULATION_WAIT_MS = 60_000;
+/** A tile with nothing in it, by kind: the archive leaves such tiles out, and the viewer answers them empty. */
+const EMPTY_BODY: Record<MapTileKind, string> = {
+  streets: EMPTY_OSM_XML,
+  walk: EMPTY_OSM_XML,
+  rail: EMPTY_OSM_XML,
+  buildings: JSON.stringify({ buildings: [] }),
+  places: JSON.stringify({ places: [] }),
+  "bike-amenities": JSON.stringify({ amenities: [] }),
+};
 /** The price base year of the unit costs (web: library value `cost.price_base_year`). */
 const PRICE_BASE_YEARS = [2023];
 
@@ -68,8 +81,8 @@ export interface MapDataSummary {
 }
 
 /**
- * The map data a `.mslab` file may carry for the static viewer (`map/`, format 1.1): the OpenStreetMap tiles of
- * the project area as the street network API serves them, the water of the area, the population grid and the
+ * The map data a `.mslab` file may carry for the static viewer (`map/`, format 1.1; tiles in one PMTiles archive
+ * per kind since 1.4): the OpenStreetMap tiles of the project area as the street network API serves them, the water of the area, the population grid and the
  * country figures the cost and benefit tables read. A MobSimLab that opens the file ignores them and loads its
  * own; the static viewer (apps/web, `pnpm build:static`) serves them in place of the API.
  */
@@ -107,13 +120,14 @@ export class MslabMapService {
 
     const files: [string, Buffer][] = [];
     let bytes = 0;
+    const tooLarge = () =>
+      new BadRequestException(
+        `the map data of the project area is larger than ${MAX_MAP_BYTES / 1024 / 1024} MB; make the project area smaller or save without map data`,
+      );
     const add = (name: string, body: string) => {
       const b = Buffer.from(body, "utf8");
       bytes += b.length;
-      if (bytes > MAX_MAP_BYTES)
-        throw new BadRequestException(
-          `the map data of the project area is larger than ${MAX_MAP_BYTES / 1024 / 1024} MB; make the project area smaller or save without map data`,
-        );
+      if (bytes > MAX_MAP_BYTES) throw tooLarge();
       files.push([name, b]);
     };
 
@@ -137,18 +151,35 @@ export class MslabMapService {
           return this.streets.bikeAmenityTile(x, y);
       }
     };
+    // One archive per kind (format 1.4), read by byte range in the static viewer. Empty tiles are left out.
+    const byKind = new Map<MapTileKind, ArchiveTile[]>(kinds.map((k) => [k, []]));
+    let raw = 0;
     const jobs = kinds.flatMap((kind) => tiles.map(([x, y]) => ({ kind, x, y })));
     let next = 0;
     const worker = async () => {
       while (next < jobs.length) {
         const j = jobs[next++]!;
         const body = await osm(() => fetchTile(j.kind, j.x, j.y));
-        add(MAP_FILES.tile(j.kind, j.x, j.y), body);
+        if (isEmpty(j.kind, body)) continue;
+        raw += Buffer.byteLength(body);
+        if (raw > MAX_MAP_BYTES) throw tooLarge();
+        byKind.get(j.kind)!.push({ z: TILE_ZOOM, x: j.x, y: j.y, body: Buffer.from(body, "utf8") });
       }
     };
     await Promise.all(Array.from({ length: PARALLEL }, worker));
-    // Same order every time, whatever order the tiles arrived in.
-    files.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+    for (const kind of kinds) {
+      const archive = writeArchive(
+        byKind.get(kind)!,
+        { name: `MobSimLab ${kind}`, kind, attribution: "© OpenStreetMap contributors, ODbL 1.0" },
+        area.bbox,
+      );
+      if (archive.length > MSLAB_ZIP_LIMITS.fileBytes)
+        throw new BadRequestException(
+          `the ${kind} map data of the project area is larger than ${MSLAB_ZIP_LIMITS.fileBytes / 1024 / 1024} MB; make the project area smaller or save without map data`,
+        );
+      files.push([MAP_FILES.archive(kind), archive]);
+      bytes += archive.length;
+    }
 
     // Water of the area (the Schematic tab's network map), at most 1° a side round the area's centre.
     add(MAP_FILES.water, await osm(() => this.streets.water(waterBox(area.bbox), pid)));
@@ -165,6 +196,7 @@ export class MslabMapService {
       zoom: TILE_ZOOM,
       kinds,
       tiles,
+      layout: "archive",
     };
     add(MAP_FILES.area, JSON.stringify(areaFile));
     return {
@@ -261,6 +293,20 @@ export class MslabMapService {
       await tryAdd(`/api/benefits/indicators?code=${code}`, () => this.benefits.indicators(code));
     }
     return out;
+  }
+}
+
+/** Purpose: whether a tile holds nothing (no elements, no buildings, no places). */
+function isEmpty(kind: MapTileKind, body: string): boolean {
+  if (body === EMPTY_BODY[kind]) return true;
+  if (kind === "streets" || kind === "walk" || kind === "rail")
+    return !/<(?:node|way|relation)[\s>]/.test(body);
+  try {
+    const v = JSON.parse(body) as Record<string, unknown>;
+    const list = Object.values(v);
+    return list.length === 1 && Array.isArray(list[0]) && list[0].length === 0;
+  } catch {
+    return false;
   }
 }
 

@@ -38,12 +38,15 @@ const ALLOWED = [
   /^ATTRIBUTION\.md$/,
   /^data\/[a-z][a-z0-9-]{1,39}\.json$/,
   /^runs\/[0-9a-f-]{36}\/(?:run\.json|network\.txt|lines\.txt|replay\.json\.gz)$/,
-  /^map\/(?:(?:area|water|population|reference)\.json|(?:streets|walk|rail)\/\d{1,5}-\d{1,5}\.xml|(?:buildings|places|bike-amenities)\/\d{1,5}-\d{1,5}\.json)$/,
+  /^map\/(?:(?:area|water|population|reference)\.json|(?:streets|walk|rail)\/\d{1,5}-\d{1,5}\.xml|(?:buildings|places|bike-amenities)\/\d{1,5}-\d{1,5}\.json|(?:streets|walk|rail|buildings|places|bike-amenities)\.pmtiles)$/,
   /^results\/[a-z][a-z0-9-]{1,39}\.json$/,
 ];
 const UUID = /^[0-9a-fA-F-]{36}$/;
-/** The format versions this viewer reads: 1.x up to 1.2 (1.2 adds the saved results, results/). */
-const READS = [1, 2];
+/**
+ * The format versions this viewer reads: 1.x up to 1.4 (1.2 adds the saved results, results/; 1.3 the project
+ * area's polygons; 1.4 the map tiles in one archive per kind, map/<kind>.pmtiles, read by byte range).
+ */
+const READS = [1, 4];
 
 class FileError extends Error {}
 

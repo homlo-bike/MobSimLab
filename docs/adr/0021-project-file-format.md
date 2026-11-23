@@ -36,3 +36,22 @@ Migration code for every format change; tests with fixture files of each version
 
 - `project.json` gains `areaPolygons`: the polygons of the project area drawn in the area window, each `{id, name, detail, ring}` with `detail` `full` or `main` (main roads and railways only). Opening the file gives the new project the same area; its map data is downloaded again.
 - A file whose project has no area polygons is still saved as 1.2.0 (with saved runs) or 1.1.0 (map data only), so older readers open it.
+
+## Format 1.4.0 (2026-11-23)
+
+Large-area projects, step 5 (the plan called it 1.3; 1.3 went to the area polygons).
+
+- The map data's tiles are one PMTiles version 3 archive per kind, `map/<kind>.pmtiles` (streets, walk, rail,
+  buildings, places, bike-amenities), instead of one file per tile. Each tile is the street network API's answer
+  (OSM XML or JSON), gzipped, with tile type "unknown"; empty tiles are left out and read as empty; identical
+  tiles are kept once. The root directory fits in the first 16 KiB, with leaf directories for large areas.
+  `map/area.json` says `layout: "archive"`. Writer: `apps/api/src/mslab/pmtiles.ts`, tested with a reader
+  written from the spec; its archives were also read back with the reference reader (the `pmtiles` package).
+- Why: the intercity project's area takes 1,033 zoom-14 tiles; one file per tile and kind is over 5,000 files,
+  the ZIP limit, and a static host would have to serve them one by one. The limit of 400 tiles is now 20,000,
+  bounded by the time saving takes; the 300 MB map data limit and the 70 MB per file limit stay.
+- The static viewer (`apps/web/src/static/pmtiles.ts`) reads the header and root directory once, then each tile
+  by an HTTP range request, keeping the last 512 tiles read. A host that ignores ranges and sends the whole file
+  still works: the file is kept and the tiles cut from it. `tools/add-projects.mjs` reads 1.0 to 1.4.
+- Only a file with map data is saved as 1.4.0, so MobSimLab 1.3 readers still open the rest. A MobSimLab that
+  opens a 1.4.0 file leaves the map data out, as for 1.1.

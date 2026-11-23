@@ -1,3 +1,5 @@
+import { ArchiveReader } from "./pmtiles";
+
 /**
  * The static viewer's stand-in for the API (`pnpm build:static`): it answers the app's `/api/…` requests from
  * the project files unpacked under `/projects/<id>/` (the contents of a `.mslab` file, see
@@ -139,6 +141,20 @@ export function staticFetch(base: typeof fetch): typeof fetch {
       startedAt: r.startedAt ?? null,
       finishedAt: r.finishedAt ?? null,
     };
+  };
+
+  /** The map data's tile archives (format 1.4), one reader per project and kind; null for one file per tile. */
+  const archives = new Map<string, Promise<ArchiveReader | null>>();
+  const archive = (e: StaticProjectEntry, kind: string): Promise<ArchiveReader | null> => {
+    const key = `${e.dir}/${kind}`;
+    let a = archives.get(key);
+    if (!a) {
+      a = file<{ layout?: string }>(at(e, "map/area.json")).then((area) =>
+        area?.layout === "archive" ? new ArchiveReader(at(e, `map/${kind}.pmtiles`), base) : null,
+      );
+      archives.set(key, a);
+    }
+    return a;
   };
 
   const population = async (e: StaticProjectEntry | null) => {
@@ -310,9 +326,12 @@ export function staticFetch(base: typeof fetch): typeof fetch {
       const kind = TILE_KINDS[tile[1]!]!;
       const e = await current();
       const xml = kind === "streets" || kind === "walk" || kind === "rail";
-      const body = e?.map
-        ? await text(at(e, `map/${kind}/${tile[2]}-${tile[3]}.${xml ? "xml" : "json"}`))
-        : null;
+      const reader = e?.map ? await archive(e, kind) : null;
+      const body = !e?.map
+        ? null
+        : reader
+          ? await reader.tile(14, Number(tile[2]), Number(tile[3]))
+          : await text(at(e, `map/${kind}/${tile[2]}-${tile[3]}.${xml ? "xml" : "json"}`));
       // A tile outside the saved area is empty, as OpenStreetMap would be where nothing is mapped.
       return new Response(body ?? EMPTY_TILE[kind]!, {
         headers: { "Content-Type": xml ? "application/xml" : "application/json" },

@@ -19,8 +19,10 @@ Tick **Include map data for the static viewer** to also add the map data of the 
 OpenStreetMap streets, paths, railways, buildings and places, the water, the population grid and the country
 figures the cost and benefit tables use. The [static viewer](static-viewer.md) shows the project with them,
 without a server. The map data covers the map tiles that meet the project area's
-polygons; there may be at most 400. Saving can take a few minutes when the tiles are not cached yet.
-A file with map data uses format 1.1; a MobSimLab that opens it leaves the map data out and loads its own.
+polygons, up to 20,000 tiles and 300 MB. The tiles of each kind are kept together in one compact archive, so
+an intercity project with its corridors fits in one file (the Damascus–Aleppo project with the M5 corridor:
+1,033 tiles, 7.7 MB). Saving can take a few minutes when the tiles are not cached yet.
+A file with map data uses format 1.4; a MobSimLab that opens it leaves the map data out and loads its own.
 
 ## Open a file
 
