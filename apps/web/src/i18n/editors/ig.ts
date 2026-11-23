@@ -558,6 +558,7 @@ export const editorsIg = {
   "setup.x.bus": "ụzọ bọs",
   "setup.x.car": "ụzọ ụgbọ",
   "setup.x.tram": "ụzọ tram",
+  "setup.x.parking": "ụzọ ndọba ụgbọala",
   "setup.x.busMark": "BỌS",
   "setup.x.bikeMark": "IGWE",
   "schematic.view.network": "Map netwọk",

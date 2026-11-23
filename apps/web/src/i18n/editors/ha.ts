@@ -580,6 +580,7 @@ export const editorsHa = {
   "setup.x.bus": "hanyar bas",
   "setup.x.car": "hanyar ababen hawa",
   "setup.x.tram": "hanyar tram",
+  "setup.x.parking": "wurin ajiye mota",
   "setup.x.busMark": "BAS",
   "setup.x.bikeMark": "KEKE",
   "schematic.view.network": "Taswirar hanyoyi",

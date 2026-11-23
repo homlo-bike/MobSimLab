@@ -20,11 +20,22 @@ export type LaneKind =
 /** A line on the street (Rust `street_geometry::LineKind`). */
 export type LineKind = "lane" | "centre" | "rails";
 
+/** One lane across a street (Rust `street_geometry::LaneProfile`): which way it runs along the OSM way, its
+ * width in metres, and whether tram rails run along it. */
+export interface LaneProfile {
+  kind: LaneKind;
+  dir: "forward" | "backward";
+  width: number;
+  rails: boolean;
+}
+
 /** Lane and junction shapes (Rust `street_geometry::Geometry`); rings and paths are flat `[lon, lat, …]`. */
 export interface LaneGeometry {
   lanes: { kind: LaneKind; way: number; layer: number; ring: number[] }[];
   junctions: { ring: number[] }[];
   lines: { kind: LineKind; layer: number; path: number[] }[];
+  /** The lanes of each street way, left to right looking along the way. */
+  roads: { way: number; lanes: LaneProfile[] }[];
   driving_side: "right" | "left";
 }
 

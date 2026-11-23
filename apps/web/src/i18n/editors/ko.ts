@@ -553,6 +553,7 @@ export const editorsKo = {
   "setup.x.bus": "버스 차로",
   "setup.x.car": "차로",
   "setup.x.tram": "트램 차로",
+  "setup.x.parking": "주차 차로",
   "setup.x.busMark": "버스",
   "setup.x.bikeMark": "자전거",
   "schematic.view.network": "노선도",

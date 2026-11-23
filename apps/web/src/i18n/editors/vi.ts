@@ -560,6 +560,7 @@ export const editorsVi = {
   "setup.x.bus": "làn xe buýt",
   "setup.x.car": "làn xe",
   "setup.x.tram": "làn tàu điện",
+  "setup.x.parking": "làn đỗ xe",
   "setup.x.busMark": "BUS",
   "setup.x.bikeMark": "XE ĐẠP",
   "schematic.view.network": "Bản đồ mạng lưới",

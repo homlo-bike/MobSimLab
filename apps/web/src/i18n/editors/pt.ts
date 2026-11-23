@@ -590,6 +590,7 @@ export const editorsPt = {
   "setup.x.bus": "faixa de ônibus",
   "setup.x.car": "faixa de tráfego",
   "setup.x.tram": "faixa do bonde",
+  "setup.x.parking": "faixa de estacionamento",
   "setup.x.busMark": "ÔNIBUS",
   "setup.x.bikeMark": "BIKE",
 

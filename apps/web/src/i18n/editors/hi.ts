@@ -580,6 +580,7 @@ export const editorsHi = {
   "setup.x.bus": "बस लेन",
   "setup.x.car": "यातायात लेन",
   "setup.x.tram": "ट्राम लेन",
+  "setup.x.parking": "पार्किंग लेन",
   "setup.x.busMark": "बस",
   "setup.x.bikeMark": "साइकिल",
   "schematic.view.network": "नेटवर्क मानचित्र",

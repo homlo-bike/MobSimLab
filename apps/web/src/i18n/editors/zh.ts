@@ -544,6 +544,7 @@ export const editorsZh = {
   "setup.x.bus": "公交专用道",
   "setup.x.car": "机动车道",
   "setup.x.tram": "有轨电车道",
+  "setup.x.parking": "停车道",
   "setup.x.busMark": "公交",
   "setup.x.bikeMark": "自行车",
 

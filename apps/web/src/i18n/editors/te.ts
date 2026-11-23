@@ -585,6 +585,7 @@ export const editorsTe = {
   "setup.x.bus": "బస్ లేన్",
   "setup.x.car": "ట్రాఫిక్ లేన్",
   "setup.x.tram": "ట్రామ్ లేన్",
+  "setup.x.parking": "పార్కింగ్ లేన్",
   "setup.x.busMark": "బస్",
   "setup.x.bikeMark": "సైకిల్",
   "schematic.view.network": "నెట్‌వర్క్ పటం",

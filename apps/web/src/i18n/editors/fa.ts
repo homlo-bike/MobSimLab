@@ -563,6 +563,7 @@ export const editorsFa = {
   "setup.x.bus": "خط اتوبوس",
   "setup.x.car": "خط عبور",
   "setup.x.tram": "خط تراموا",
+  "setup.x.parking": "خط پارک",
   "setup.x.busMark": "اتوبوس",
   "setup.x.bikeMark": "دوچرخه",
   "schematic.view.network": "نقشهٔ شبکه",

@@ -582,6 +582,7 @@ export const editorsMr = {
   "setup.x.bus": "बस मार्गिका",
   "setup.x.car": "वाहतूक मार्गिका",
   "setup.x.tram": "ट्राम मार्गिका",
+  "setup.x.parking": "पार्किंग लेन",
   "setup.x.busMark": "बस",
   "setup.x.bikeMark": "सायकल",
   "schematic.view.network": "जाळे नकाशा",

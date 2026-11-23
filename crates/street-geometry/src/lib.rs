@@ -22,7 +22,7 @@
 //! Data © OpenStreetMap contributors, ODbL. Geometry: osm2streets (Apache-2.0).
 #![warn(missing_docs)]
 
-use std::collections::{BTreeSet, HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt::Write as _;
 
 use geom::{Distance, PolyLine, Pt2D};
@@ -32,6 +32,7 @@ use osm2streets::{
 };
 use serde::Serialize;
 use street_routing::osm::{OsmData, Tags};
+use street_routing::setup::osm_bus_lane;
 use street_routing::{apply_setups, StreetSetup};
 
 /// Width of a tram lane for one track, m (half the 6.2 m double-track lane of the cross-section).
@@ -110,6 +111,38 @@ pub struct LineShape {
     pub path: Vec<f64>,
 }
 
+/// Which way a lane runs, along the OSM way's node order.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum LaneDir {
+    /// In the way's direction.
+    Forward,
+    /// Against it.
+    Backward,
+}
+
+/// One lane of a street's cross-section.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct LaneProfile {
+    /// What the lane is.
+    pub kind: LaneKind,
+    /// Which way it runs.
+    pub dir: LaneDir,
+    /// Width, m (from OSM `width` tags or osm2lanes' typical width for the lane type).
+    pub width: f64,
+    /// Whether tram rails run along it (a tram lane, or the traffic lane a tram in mixed traffic uses).
+    pub rails: bool,
+}
+
+/// The lanes of one OSM way, left to right looking along the way, for the cross-section panel.
+#[derive(Debug, Clone, PartialEq, Serialize)]
+pub struct RoadLanes {
+    /// OSM way id.
+    pub way: i64,
+    /// Lanes, left to right.
+    pub lanes: Vec<LaneProfile>,
+}
+
 /// Everything the map draws.
 #[derive(Debug, Clone, Default, PartialEq, Serialize)]
 pub struct Geometry {
@@ -119,6 +152,8 @@ pub struct Geometry {
     pub junctions: Vec<JunctionShape>,
     /// Lane lines, centre lines and rails.
     pub lines: Vec<LineShape>,
+    /// The lanes of each way, from its longest road (a way split at junctions has one road per piece).
+    pub roads: Vec<RoadLanes>,
     /// `right` or `left`: the side traffic drives on, from the country of the area.
     pub driving_side: &'static str,
 }
@@ -129,7 +164,8 @@ pub struct Geometry {
 /// Side effects: none (works on a copy of `data`).
 pub fn build(data: &OsmData, setups: &[StreetSetup]) -> Result<Geometry, String> {
     let mut data = streets_only(data);
-    apply_setups(&mut data, setups);
+    let setups = keep_traffic_lanes(&data, setups);
+    apply_setups(&mut data, &setups);
     let tags: HashMap<i64, Tags> = data.ways.iter().map(|w| (w.id, w.tags.clone())).collect();
     let xml = to_osm_xml(&data);
 
@@ -143,6 +179,44 @@ pub fn build(data: &OsmData, setups: &[StreetSetup]) -> Result<Geometry, String>
     apply_setup_lanes(&mut net, &tags);
     net.apply_transformations(Transformation::standard_for_clipped_areas(), &mut timer);
     Ok(shapes(&net, &tags))
+}
+
+/// Purpose: a bus lane set up on a street keeps its traffic lanes, as the street setup panel counts them
+/// (`osmTrafficLanes` in the web app): OSM `lanes` counts bus lanes too, so adding `busway` alone would turn
+/// traffic lanes into bus lanes in osm2lanes.
+/// Output: the setups, with the way's OSM traffic lane count filled in where a bus lane changes and the
+/// planner set no lane count.
+fn keep_traffic_lanes(data: &OsmData, setups: &[StreetSetup]) -> Vec<StreetSetup> {
+    let tags: HashMap<i64, &Tags> = data.ways.iter().map(|w| (w.id, &w.tags)).collect();
+    setups
+        .iter()
+        .map(|s| {
+            let mut s = s.clone();
+            if s.bus_lane.is_some() && s.traffic_lanes.is_none() {
+                if let Some(t) = tags.get(&s.way) {
+                    let oneway = matches!(
+                        tag(Some(t), "oneway"),
+                        Some("yes" | "true" | "1" | "-1" | "reverse")
+                    );
+                    let bus = if !osm_bus_lane(t) {
+                        0
+                    } else if oneway {
+                        1
+                    } else {
+                        2
+                    };
+                    let lanes = tag(Some(t), "lanes").and_then(|v| v.trim().parse::<f64>().ok());
+                    let n = match lanes {
+                        Some(l) => (l.round() as i64 - bus).max(1),
+                        None if oneway => 1,
+                        None => 2,
+                    };
+                    s.traffic_lanes = u8::try_from(n).ok();
+                }
+            }
+            s
+        })
+        .collect()
 }
 
 /// Purpose: keep the ways that are streets or paths (`highway`, not an area) and their nodes. Railway ways
@@ -411,6 +485,8 @@ fn shapes(net: &StreetNetwork, tags: &HashMap<i64, Tags>) -> Geometry {
         },
         ..Geometry::default()
     };
+    // Per way: the length of the longest road seen so far and its lanes.
+    let mut profiles: BTreeMap<i64, (f64, Vec<LaneProfile>)> = BTreeMap::new();
     for road in net.roads.values() {
         let way = road.osm_ids.first().map(|id| id.0).unwrap_or(0);
         let layer = i32::try_from(road.layer).unwrap_or(0);
@@ -445,16 +521,42 @@ fn shapes(net: &StreetNetwork, tags: &HashMap<i64, Tags>) -> Geometry {
         }
         // A tram in mixed traffic: rails along the traffic lane next to the centre in each direction.
         let mixed = tag(tags.get(&way), "mobsimlab:tram") == Some("mixed");
-        if mixed {
-            for i in inner_traffic_lanes(&road.lane_specs_ltr, net.config.driving_side) {
-                out.lines.push(LineShape {
-                    kind: LineKind::Rails,
-                    layer,
-                    path: flat(net, centres[i].points()),
-                });
-            }
+        let railed: Vec<usize> = if mixed {
+            inner_traffic_lanes(&road.lane_specs_ltr, net.config.driving_side)
+        } else {
+            Vec::new()
+        };
+        for &i in &railed {
+            out.lines.push(LineShape {
+                kind: LineKind::Rails,
+                layer,
+                path: flat(net, centres[i].points()),
+            });
+        }
+        let length = road.center_line.length().inner_meters();
+        if profiles.get(&way).is_none_or(|(l, _)| length > *l) {
+            let lanes = road
+                .lane_specs_ltr
+                .iter()
+                .enumerate()
+                .map(|(i, l)| LaneProfile {
+                    kind: kind_of(l.lt),
+                    dir: if l.dir == Direction::Forward {
+                        LaneDir::Forward
+                    } else {
+                        LaneDir::Backward
+                    },
+                    width: (l.width.inner_meters() * 100.0).round() / 100.0,
+                    rails: l.lt == LaneType::LightRail || railed.contains(&i),
+                })
+                .collect();
+            profiles.insert(way, (length, lanes));
         }
     }
+    out.roads = profiles
+        .into_iter()
+        .map(|(way, (_, lanes))| RoadLanes { way, lanes })
+        .collect();
     out.lanes.sort_by_key(|l| l.layer);
     for i in net.intersections.values() {
         out.junctions.push(JunctionShape {

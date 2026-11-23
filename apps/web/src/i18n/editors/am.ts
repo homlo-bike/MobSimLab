@@ -570,6 +570,7 @@ export const editorsAm = {
   "setup.x.bus": "የአውቶቡስ መስመር",
   "setup.x.car": "የትራፊክ መስመር",
   "setup.x.tram": "የትራም መስመር",
+  "setup.x.parking": "የመኪና ማቆሚያ መስመር",
   "setup.x.busMark": "BUS",
   "setup.x.bikeMark": "ብስክሌት",
   "schematic.view.network": "የመረብ ካርታ",

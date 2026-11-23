@@ -2,7 +2,7 @@ import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testi
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { strips } from "../src/features/street-setup/CrossSection";
+import { strips, stripsFromLanes } from "../src/features/street-setup/CrossSection";
 import {
   effective,
   forgetSetups,
@@ -89,6 +89,7 @@ describe("Street setup model", () => {
       bus_lane: true,
       bike_lane: true,
     });
+    expect(strips(e, false).every((s) => s.width === undefined)).toBe(true);
     expect(strips(e, false).map((s) => s.kind)).toEqual([
       "walk",
       "bike",
@@ -105,6 +106,23 @@ describe("Street setup model", () => {
       "kerb",
       "bike",
       "walk",
+    ]);
+  });
+
+  it("takes the street's own lanes, widths and rails when the lane engine has them", () => {
+    const list = stripsFromLanes([
+      { kind: "footway", dir: "backward", width: 2, rails: false },
+      { kind: "kerb", dir: "backward", width: 0.1, rails: false },
+      { kind: "tram", dir: "backward", width: 3.1, rails: true },
+      { kind: "traffic", dir: "forward", width: 3.2, rails: false },
+      { kind: "construction", dir: "forward", width: 1, rails: false },
+    ]);
+    expect(list).toEqual([
+      { kind: "walk", dir: "down", width: 2, rails: false },
+      { kind: "kerb", dir: "down", width: 0.1, rails: false },
+      { kind: "tram", dir: "down", width: 3.1, rails: true },
+      { kind: "car", dir: "up", width: 3.2, rails: false },
+      { kind: "buffer", dir: "up", width: 1, rails: false },
     ]);
   });
 
@@ -280,6 +298,19 @@ describe("Street setup editor", () => {
       ],
       junctions: [{ ring: [7.412, 43.731, 7.413, 43.731, 7.413, 43.732, 7.412, 43.731] }],
       lines: [{ kind: "centre", layer: 0, path: [7.411, 43.731, 7.412, 43.731] }],
+      roads: [
+        {
+          way: 100,
+          lanes: [
+            { kind: "pavement", dir: "backward", width: 1.5, rails: false },
+            { kind: "parking", dir: "backward", width: 2.5, rails: false },
+            { kind: "traffic", dir: "backward", width: 3, rails: true },
+            { kind: "traffic", dir: "forward", width: 3, rails: true },
+            { kind: "bus", dir: "forward", width: 3.05, rails: false },
+            { kind: "pavement", dir: "forward", width: 1.5, rails: false },
+          ],
+        },
+      ],
       driving_side: "right",
     };
     const engine = {
@@ -318,8 +349,15 @@ describe("Street setup editor", () => {
     expect(setLayerZoomRange).toHaveBeenCalledWith("ss-streets", 0, 16);
     expect(screen.getByText("Lanes, from zoom 16")).toBeTruthy();
 
-    // A new setup is drawn with the setups applied.
+    // The cross-section shows the street's own lanes, at their widths.
     tap(100);
+    const section = screen.getByRole("img", { name: /^Cross-section/ });
+    expect(section.getAttribute("aria-label")).toBe(
+      "Cross-section: pavement, parking lane, traffic lane, traffic lane, bus lane, pavement",
+    );
+    expect((section.children[1] as HTMLElement).style.flex).toMatch(/^2\.5 1 0/);
+
+    // A new setup is drawn with the setups applied.
     fireEvent.click(
       within(screen.getByRole("group", { name: "Bus lane" })).getByRole("button", { name: "Yes" }),
     );

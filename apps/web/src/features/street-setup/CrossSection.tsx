@@ -1,10 +1,18 @@
 import { useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/en";
+import type { LaneKind, LaneProfile } from "./lanes";
 import type { Effective } from "./model";
 
-type Strip = { kind: "walk" | "bike" | "bus" | "car" | "tram" | "kerb"; dir?: "up" | "down" };
+type Strip = {
+  kind: "walk" | "bike" | "bus" | "car" | "tram" | "kerb" | "parking" | "buffer";
+  dir?: "up" | "down";
+  /** Width in metres, where the street's lanes give one; else the typical width. */
+  width?: number;
+  /** Tram rails along it (from the street's lanes). */
+  rails?: boolean;
+};
 
-/** Typical widths in metres, so the drawing keeps the street's proportions. */
+/** Typical widths in metres, so the drawing keeps the street's proportions where the lanes are not known. */
 const WIDTH: Record<Strip["kind"], number> = {
   walk: 2.5,
   bike: 1.8,
@@ -12,6 +20,8 @@ const WIDTH: Record<Strip["kind"], number> = {
   car: 3.1,
   tram: 6.2,
   kerb: 0.5,
+  parking: 2.3,
+  buffer: 0.5,
 };
 const STYLE: Record<Strip["kind"], string> = {
   walk: "bg-slate-200",
@@ -20,14 +30,45 @@ const STYLE: Record<Strip["kind"], string> = {
   car: "bg-slate-300 text-slate-700",
   tram: "bg-stone-200",
   kerb: "bg-slate-600",
+  parking: "bg-blue-100",
+  buffer: "bg-slate-100",
 };
-const LABEL: Record<Exclude<Strip["kind"], "kerb">, MessageKey> = {
+const LABEL: Record<Exclude<Strip["kind"], "kerb" | "buffer">, MessageKey> = {
   walk: "setup.x.walk",
   bike: "setup.x.bike",
   bus: "setup.x.bus",
   car: "setup.x.car",
   tram: "setup.x.tram",
+  parking: "setup.x.parking",
 };
+
+/** The cross-section kind of each lane kind of the lane engine. */
+const FROM_LANE: Record<LaneKind, Strip["kind"]> = {
+  traffic: "car",
+  bus: "bus",
+  bike: "bike",
+  tram: "tram",
+  pavement: "walk",
+  footway: "walk",
+  shared_use: "walk",
+  parking: "parking",
+  kerb: "kerb",
+  buffer: "buffer",
+  construction: "buffer",
+};
+
+/**
+ * Purpose: the strips across the street from its lanes (osm2lanes with the setup applied, ADR-0047), with
+ * their widths. Lanes running along the way point up, lanes against it down.
+ */
+export function stripsFromLanes(lanes: readonly LaneProfile[]): Strip[] {
+  return lanes.map((l) => ({
+    kind: FROM_LANE[l.kind],
+    dir: l.dir === "forward" ? "up" : "down",
+    width: l.width,
+    rails: l.rails,
+  }));
+}
 
 /** Purpose: the strips across the street, kerb to kerb, from the effective setup. */
 export function strips(e: Effective, oneway: boolean): Strip[] {
@@ -61,16 +102,30 @@ function innermost(list: Strip[], oneway: boolean): Set<number> {
 }
 
 /**
- * Purpose: a cross-section of the street as set up (pavements, bike lanes, bus lanes, traffic lanes, the
- * tram's own lane and kerbs), drawn to proportion, so the planner sees the street they describe. Rails in
- * the traffic lanes mark a tram in mixed traffic.
+ * Purpose: a cross-section of the street as set up (pavements, parking, bike lanes, bus lanes, traffic lanes,
+ * tram lanes and kerbs), drawn to proportion, so the planner sees the street they describe. Rails mark the
+ * tram's tracks. With the street's lanes (`lanes`) it shows those at their widths; without them (lanes not
+ * built yet, or zoomed out) a typical street from the setup.
  */
-export function CrossSection({ e, oneway }: { e: Effective; oneway: boolean }) {
+export function CrossSection({
+  e,
+  oneway,
+  lanes,
+}: {
+  e: Effective;
+  oneway: boolean;
+  lanes?: readonly LaneProfile[] | undefined;
+}) {
   const { t } = useI18n();
-  const list = strips(e, oneway);
-  const rails = e.tram === "mixed" ? innermost(list, oneway) : new Set<number>();
+  const real = lanes && lanes.length > 0;
+  const list = real ? stripsFromLanes(lanes) : strips(e, oneway);
+  const rails = real
+    ? new Set(list.flatMap((s, i) => (s.rails && s.kind !== "tram" ? [i] : [])))
+    : e.tram === "mixed"
+      ? innermost(list, oneway)
+      : new Set<number>();
   const label = list
-    .filter((s) => s.kind !== "kerb")
+    .filter((s) => s.kind !== "kerb" && s.kind !== "buffer")
     .map((s) => t(LABEL[s.kind as keyof typeof LABEL]))
     .join(t("setup.x.sep"));
   return (
@@ -87,9 +142,10 @@ export function CrossSection({ e, oneway }: { e: Effective; oneway: boolean }) {
           className={`relative flex min-w-0 items-center justify-center overflow-hidden text-[10px] font-bold ${STYLE[s.kind]} ${
             s.kind === "car" && list[i + 1]?.kind === "car" ? "border-e-2 border-dashed border-e-white" : ""
           }`}
-          style={{ flex: `${WIDTH[s.kind]} 1 0` }}
+          style={{ flex: `${s.width ?? WIDTH[s.kind]} 1 0` }}
         >
-          {(s.kind === "tram" || rails.has(i)) && <Rails double={s.kind === "tram"} />}
+          {/* A tram lane of the street's lanes carries one track; the typical one is double track. */}
+          {(s.kind === "tram" || rails.has(i)) && <Rails double={s.kind === "tram" && !real} />}
           {s.kind === "bus" && t("setup.x.busMark")}
           {s.kind === "bike" && <span className="[writing-mode:vertical-rl]">{t("setup.x.bikeMark")}</span>}
           {s.kind === "car" && <span className="relative text-base">{s.dir === "up" ? "↑" : "↓"}</span>}

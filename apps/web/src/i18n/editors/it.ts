@@ -593,6 +593,7 @@ export const editorsIt = {
   "setup.x.bus": "corsia bus",
   "setup.x.car": "corsia di marcia",
   "setup.x.tram": "corsia tram",
+  "setup.x.parking": "corsia di sosta",
   "setup.x.busMark": "BUS",
   "setup.x.bikeMark": "BICI",
   "schematic.view.network": "Mappa della rete",

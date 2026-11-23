@@ -567,6 +567,7 @@ export const editorsTr = {
   "setup.x.bus": "otobüs şeridi",
   "setup.x.car": "trafik şeridi",
   "setup.x.tram": "tramvay şeridi",
+  "setup.x.parking": "park şeridi",
   "setup.x.busMark": "OTOBÜS",
   "setup.x.bikeMark": "BİSİKLET",
   "schematic.view.network": "Ağ haritası",

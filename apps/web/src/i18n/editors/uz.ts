@@ -591,6 +591,7 @@ export const editorsUz = {
   "setup.x.bus": "avtobus yoʻlagi",
   "setup.x.car": "harakat yoʻlagi",
   "setup.x.tram": "tramvay yoʻlagi",
+  "setup.x.parking": "to'xtash yo'lagi",
   "setup.x.busMark": "AVTOBUS",
   "setup.x.bikeMark": "velo",
   "schematic.view.network": "Tarmoq xaritasi",

@@ -12,7 +12,9 @@ import {
   LANE_MIN_ZOOM,
   type LaneEngine,
   type LaneEngineLoader,
+  type LaneGeometry,
   type LaneKind,
+  type LaneProfile,
   loadLaneEngine,
 } from "./lanes";
 import {
@@ -117,6 +119,8 @@ export function StreetSetupEditor({
   const [lanes, setLanes] = useState<LaneEngine | null>(null);
   const [tileCount, setTileCount] = useState(0);
   const [laneError, setLaneError] = useState<string | null>(null);
+  // The shapes drawn last and the setups they were built with: the cross-section uses their lanes.
+  const [drawn, setDrawn] = useState<{ g: LaneGeometry | null; setups: readonly StreetSetup[] } | null>(null);
   useEffect(() => {
     let alive = true;
     let engine: LaneEngine | null = null;
@@ -245,11 +249,13 @@ export function StreetSetupEditor({
           if (stopped || mine !== seq) return;
           built.current = { keys: sig, setups };
           drawLanes(map, g);
+          setDrawn({ g, setups });
           setLaneError(null);
         } catch (err) {
           if (stopped || mine !== seq) return;
           built.current = null;
           drawLanes(map, null);
+          setDrawn(null);
           setLaneError(tNow("setup.lanesFailed", { error: engineErrorText(err) }));
         }
       }, 250);
@@ -293,6 +299,9 @@ export function StreetSetupEditor({
   const setupOf = (way: number) => setups.find((s) => s.way === way);
   const info = selected !== null ? infos.get(selected) : undefined;
   const setup = info ? setupOf(info.way) : undefined;
+  // Real lanes only when built with the setups as they are now; until then the typical cross-section.
+  const profile =
+    info && drawn?.setups === setups ? drawn.g?.roads.find((r) => r.way === info.way)?.lanes : undefined;
 
   const change = (patch: Partial<StreetSetup>) => {
     if (!info) return;
@@ -337,6 +346,7 @@ export function StreetSetupEditor({
         <StreetForm
           info={info}
           setup={setup}
+          lanes={profile}
           editable={editable}
           delays={delays}
           onPatch={change}
@@ -402,6 +412,7 @@ function summary(s: StreetSetup, t: Translate, tn: TranslatePlural): string {
 function StreetForm({
   info,
   setup,
+  lanes,
   editable,
   delays,
   onPatch,
@@ -410,6 +421,8 @@ function StreetForm({
 }: {
   info: StreetInfo;
   setup: StreetSetup | undefined;
+  /** The street's lanes from OpenStreetMap with the setup applied (ADR-0047), once built. */
+  lanes?: readonly LaneProfile[];
   editable: boolean;
   delays: DelayShares;
   onPatch: (p: Partial<StreetSetup>) => void;
@@ -448,7 +461,7 @@ function StreetForm({
         </button>
       </div>
 
-      <CrossSection e={e} oneway={info.oneway} />
+      <CrossSection e={e} oneway={info.oneway} lanes={lanes} />
 
       <fieldset disabled={!editable} className="flex flex-col gap-3.5">
         <Row label={t("setup.trafficLanes")} hint={t("setup.trafficHint", { lanes: osmLanes })}>
