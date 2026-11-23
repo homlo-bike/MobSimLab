@@ -432,6 +432,7 @@ export const editorsZh = {
   "setup.intro":
     "点击一条街道，说明它如何分配：机动车道、公交专用道和自行车道、隔离方式以及有轨电车。你的设置会在街道线路工具和铁路编辑器中取代 OpenStreetMap，用于运行时间以及可靠性和安全性检查。",
   "setup.engineFailed": "街道引擎未能启动：{error}",
+  "setup.lanesFailed": "无法绘制车道：{error}",
   "setup.zoomIn": "放大到街道级别以加载街道（从缩放级别 {zoom} 起）。",
   "setup.someFailed": "部分街道未能加载。",
   "setup.tryAgain": "{reason} 移动地图以重试。",
@@ -502,6 +503,7 @@ export const editorsZh = {
   "setup.legend.mixed": "主干道，公共交通混行",
   "setup.legend.other": "其他街道",
   "setup.legend.yours": "由你设置",
+  "setup.legend.lanes": "车道（缩放级别 {zoom} 起）",
   "setup.v.busNoDelay": "此类街道不计交通延误；延误只在主干道上计算。",
   "setup.v.busSeparated": "物理隔离的公交专用道：拥堵不会耽误公交车。",
   "setup.v.busPainted":

@@ -443,6 +443,7 @@ export const editorsIg = {
   "setup.intro":
     "Metụ okporo ụzọ ma kwuo otú e si ekesa ya: ụzọ ụgbọ, ụzọ bọs na igwe kwụ otu ebe, nkewa na tram. Nhazi gị na-anọchi OpenStreetMap na ngwá ọrụ ahịrị okporo ụzọ na onye ndezi ụzọ ígwè, maka oge njem na nyocha ntụkwasị obi na nchekwa.",
   "setup.engineFailed": "Injin okporo ụzọ amalitaghị: {error}",
+  "setup.lanesFailed": "Enweghị ike ise ụzọ ụgbọala: {error}",
   "setup.zoomIn": "Bubata ruo ọkwa okporo ụzọ iji bugo okporo ụzọ (site na ọkwa {zoom}).",
   "setup.someFailed": "Ụfọdụ okporo ụzọ ebughị.",
   "setup.tryAgain": "{reason} Bugharịa maapụ iji nwaa ọzọ.",
@@ -514,6 +515,7 @@ export const editorsIg = {
   "setup.legend.mixed": "Okporo ụzọ isi, njem n'okporo ụzọ jupụtara",
   "setup.legend.other": "Okporo ụzọ ndị ọzọ",
   "setup.legend.yours": "Gị haziri ya",
+  "setup.legend.lanes": "Ụzọ ụgbọala, site na zoom {zoom}",
   "setup.v.busNoDelay":
     "Echeghị igbu oge okporo ụzọ jupụtara maka ụdị okporo ụzọ a; a na-agụ ya n'okporo ụzọ isi.",
   "setup.v.busSeparated": "Ụzọ bọs kewapụrụ: okporo ụzọ jupụtara anaghị egbu bọs oge.",

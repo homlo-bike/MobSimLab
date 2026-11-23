@@ -453,6 +453,7 @@ export const editorsTr = {
   "setup.intro":
     "Düzenini belirtmek için bir sokağa dokunun: şeritler, otobüs ve bisiklet şeritleri, ayırma ve tramvay. Ayarlarınız karayolu hattı aracında ve raylı düzenleyicide OpenStreetMap'in yerine geçer; seyir sürelerini, dakiklik ve güvenlik denetimlerini etkiler.",
   "setup.engineFailed": "Sokak motoru başlatılamadı: {error}",
+  "setup.lanesFailed": "Şeritler çizilemedi: {error}",
   "setup.zoomIn": "Sokakları yüklemek için sokak seviyesine yakınlaştırın (seviye {zoom} veya üstü).",
   "setup.someFailed": "Bazı sokaklar yüklenemedi.",
   "setup.tryAgain": "{reason} Yeniden denemek için haritayı kaydırın.",
@@ -524,6 +525,7 @@ export const editorsTr = {
   "setup.legend.mixed": "Ana cadde, toplu taşıma trafikte",
   "setup.legend.other": "Diğer sokak",
   "setup.legend.yours": "Sizin düzenlediğiniz",
+  "setup.legend.lanes": "Şeritler, {zoom} yakınlaştırmasından itibaren",
   "setup.v.busNoDelay": "Bu tür sokak için trafik gecikmesi hesaplanmaz; yalnızca ana caddeler için.",
   "setup.v.busSeparated": "Ayrılmış otobüs şeridi: trafik otobüsleri yavaşlatmaz.",
   "setup.v.busPainted":

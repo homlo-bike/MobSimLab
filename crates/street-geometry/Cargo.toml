@@ -1,0 +1,19 @@
+[package]
+name = "street-geometry"
+version = "0.1.0"
+description = "MobSimLab lane and junction shapes for the GIS map, from osm2streets (drawing only, ADR-0047)."
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+street-routing = { path = "../street-routing" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# osm2streets is not on crates.io. Pinned to the commit checked in ADR-0047; its own git dependencies
+# (abstutil, geom, osm-reader, muv-osm) are pinned by Cargo.lock.
+osm2streets = { git = "https://github.com/a-b-street/osm2streets", rev = "fc119c47dac567d030c6ce7c24a48896f58ed906" }
+streets_reader = { git = "https://github.com/a-b-street/osm2streets", rev = "fc119c47dac567d030c6ce7c24a48896f58ed906" }
+abstutil = { git = "https://github.com/a-b-street/abstreet" }
+geom = { git = "https://github.com/a-b-street/geom" }

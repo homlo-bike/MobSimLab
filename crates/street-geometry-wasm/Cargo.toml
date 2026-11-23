@@ -1,0 +1,20 @@
+[package]
+name = "street-geometry-wasm"
+version = "0.1.0"
+description = "WebAssembly bindings of street-geometry: lane and junction shapes for the MobSimLab GIS map (ADR-0047)"
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+street-geometry = { path = "../street-geometry" }
+street-routing = { path = "../street-routing" }
+serde_json = "1"
+wasm-bindgen = "=0.2.129"
+# abstutil's timer reads the clock through `instant`; in the browser that needs its wasm-bindgen feature
+# (osm2streets-js does the same).
+instant = { version = "0.1.12", features = ["wasm-bindgen"] }

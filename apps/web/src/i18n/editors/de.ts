@@ -483,6 +483,7 @@ export const editorsDe = {
   "setup.intro":
     "Tippen Sie auf eine Straße, um festzulegen, wie sie aufgeteilt ist: Fahrstreifen, Bus- und Radfahrstreifen, Trennung und Straßenbahn. Ihre Einstellung ersetzt OpenStreetMap im Linienwerkzeug für Straßen und im Bahneditor, für Fahrzeiten und die Prüfungen zu Zuverlässigkeit und Sicherheit.",
   "setup.engineFailed": "Die Straßen-Engine ist nicht gestartet: {error}",
+  "setup.lanesFailed": "Die Fahrstreifen konnten nicht gezeichnet werden: {error}",
   "setup.zoomIn": "Zoomen Sie auf Straßenebene, um Straßen zu laden (ab Zoomstufe {zoom}).",
   "setup.someFailed": "Einige Straßen wurden nicht geladen.",
   "setup.tryAgain": "{reason} Verschieben Sie die Karte, um es erneut zu versuchen.",
@@ -555,6 +556,7 @@ export const editorsDe = {
   "setup.legend.mixed": "Hauptstraße, ÖPNV im Verkehr",
   "setup.legend.other": "Andere Straßen",
   "setup.legend.yours": "Von Ihnen eingestellt",
+  "setup.legend.lanes": "Fahrstreifen, ab Zoomstufe {zoom}",
   "setup.v.busNoDelay":
     "Auf dieser Art von Straße wird keine Verspätung im Verkehr angenommen; sie zählt auf Hauptstraßen.",
   "setup.v.busSeparated": "Getrennte Busspur: Staus halten die Busse nicht auf.",

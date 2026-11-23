@@ -482,6 +482,7 @@ export const editorsZu = {
   "setup.intro":
     "Thinta umgwaqo bese usho ukuthi wabelwana kanjani: imizila yezimoto, imizila yamabhasi namabhayisikili, ukuhlukanisa nethremu. Ukusetha kwakho kuthatha indawo ye-OpenStreetMap ethuluzini lomugqa womgwaqo nasemhleli kajantshi, ukuze kube nezikhathi zohambo nokuhlolwa kokwethembeka nokuphepha.",
   "setup.engineFailed": "Injini yemigwaqo ayiqalanga: {error}",
+  "setup.lanesFailed": "Imizila ayikwazanga ukudwetshwa: {error}",
   "setup.zoomIn": "Sondeza kuze kube sezingeni lomgwaqo ukuze ulayishe imigwaqo (kusuka ezingeni {zoom}).",
   "setup.someFailed": "Eminye imigwaqo ayilayishanga.",
   "setup.tryAgain": "{reason} Hambisa imephu ukuze uzame futhi.",
@@ -554,6 +555,7 @@ export const editorsZu = {
   "setup.legend.mixed": "Umgwaqo omkhulu, ezokuthutha esiminyaminyeni",
   "setup.legend.other": "Eminye imigwaqo",
   "setup.legend.yours": "Kusethwe nguwe",
+  "setup.legend.lanes": "Imizila, kusukela ku-zoom {zoom}",
   "setup.v.busNoDelay":
     "Akukho ukubambezeleka kwesiminyaminya okucatshangwayo kulolu hlobo lomgwaqo; kubalwa emigwaqweni emikhulu.",
   "setup.v.busSeparated": "Umzila webhasi ohlukanisiwe: isiminyaminya asiwabambezeli amabhasi.",

@@ -456,6 +456,7 @@ export const editorsAm = {
   "setup.intro":
     "መንገድን ይንኩ እና እንዴት እንደሚጋራ ይግለጹ፦ የትራፊክ መስመሮች፣ የአውቶቡስ እና የብስክሌት መስመሮች፣ መለያየት እና ትራም። የእርስዎ ቅንብር በመንገድ መስመር መሣሪያው እና በባቡር አርታዒው ውስጥ OpenStreetMapን ይተካል፣ ለጉዞ ጊዜዎች እና ለአስተማማኝነት እና ለደህንነት ፍተሻዎች።",
   "setup.engineFailed": "የመንገዶች ሞተሩ አልጀመረም፦ {error}",
+  "setup.lanesFailed": "መስመሮቹ ሊሳሉ አልቻሉም፦ {error}",
   "setup.zoomIn": "መንገዶችን ለመጫን ወደ መንገድ ደረጃ ያጉሉ (ከደረጃ {zoom} ጀምሮ)።",
   "setup.someFailed": "አንዳንድ መንገዶች አልተጫኑም።",
   "setup.tryAgain": "{reason} እንደገና ለመሞከር ካርታውን ያንቀሳቅሱ።",
@@ -527,6 +528,7 @@ export const editorsAm = {
   "setup.legend.mixed": "ዋና መንገድ፣ ትራንስፖርት በትራፊክ ውስጥ",
   "setup.legend.other": "ሌሎች መንገዶች",
   "setup.legend.yours": "በእርስዎ የተዘጋጀ",
+  "setup.legend.lanes": "መስመሮች፣ ከማጉላት {zoom} ጀምሮ",
   "setup.v.busNoDelay": "ለዚህ ዓይነት መንገድ የትራፊክ መዘግየት አይገመትም፤ በዋና መንገዶች ላይ ይቆጠራል።",
   "setup.v.busSeparated": "የተለየ የአውቶቡስ መስመር፦ ትራፊክ አውቶቡሶችን አያዘገይም።",
   "setup.v.busPainted":

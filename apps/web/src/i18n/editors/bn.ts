@@ -463,6 +463,7 @@ export const editorsBn = {
   "setup.intro":
     "একটি রাস্তায় ট্যাপ করে বলুন এটি কীভাবে ভাগ হয়: যান চলাচলের লেন, বাস ও সাইকেল লেন, পৃথকীকরণ ও ট্রাম। আপনার বিন্যাস রাস্তার লাইন টুল ও রেলপথ সম্পাদকে OpenStreetMap-এর জায়গা নেয়, যাত্রার সময় এবং নির্ভরযোগ্যতা ও নিরাপত্তা পরীক্ষার জন্য।",
   "setup.engineFailed": "রাস্তার ইঞ্জিন চালু হয়নি: {error}",
+  "setup.lanesFailed": "লেনগুলি আঁকা যায়নি: {error}",
   "setup.zoomIn": "রাস্তা লোড করতে রাস্তার স্তর পর্যন্ত জুম করুন (স্তর {zoom} থেকে)।",
   "setup.someFailed": "কিছু রাস্তা লোড হয়নি।",
   "setup.tryAgain": "{reason} আবার চেষ্টা করতে মানচিত্র সরান।",
@@ -534,6 +535,7 @@ export const editorsBn = {
   "setup.legend.mixed": "প্রধান সড়ক, যানজটে পরিবহন",
   "setup.legend.other": "অন্যান্য রাস্তা",
   "setup.legend.yours": "আপনার বিন্যস্ত",
+  "setup.legend.lanes": "লেন, জুম {zoom} থেকে",
   "setup.v.busNoDelay": "এই ধরনের রাস্তায় যানজটজনিত দেরি ধরা হয় না; এটি প্রধান সড়কে গণনা হয়।",
   "setup.v.busSeparated": "পৃথক বাস লেন: যানজট বাসকে দেরি করায় না।",
   "setup.v.busPainted":

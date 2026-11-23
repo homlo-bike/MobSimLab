@@ -469,6 +469,7 @@ export const editorsId = {
   "setup.intro":
     "Ketuk jalan untuk menentukan susunannya: lajur, lajur bus dan sepeda, pemisahan, dan trem. Pengaturan Anda menggantikan OpenStreetMap di alat jalur jalan dan editor rel, serta memengaruhi waktu tempuh dan pemeriksaan ketepatan waktu dan keselamatan.",
   "setup.engineFailed": "Mesin jalan tidak dapat dimulai: {error}",
+  "setup.lanesFailed": "Lajur tidak dapat digambar: {error}",
   "setup.zoomIn": "Perbesar ke tingkat jalan untuk memuat jalan (level {zoom} atau lebih).",
   "setup.someFailed": "Sebagian jalan tidak dapat dimuat.",
   "setup.tryAgain": "{reason} Geser peta untuk mencoba lagi.",
@@ -541,6 +542,7 @@ export const editorsId = {
   "setup.legend.mixed": "Jalan utama, angkutan umum dalam lalu lintas",
   "setup.legend.other": "Jalan lain",
   "setup.legend.yours": "Diatur oleh Anda",
+  "setup.legend.lanes": "Lajur, mulai zoom {zoom}",
   "setup.v.busNoDelay":
     "Tidak ada keterlambatan lalu lintas yang dihitung untuk jenis jalan ini; hanya untuk jalan utama.",
   "setup.v.busSeparated": "Lajur bus terpisah: kemacetan tidak memperlambat bus.",

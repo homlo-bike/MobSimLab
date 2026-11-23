@@ -465,6 +465,7 @@ export const editorsHa = {
   "setup.intro":
     "Taɓa titi ka faɗi yadda ake raba shi: hanyoyin ababen hawa, hanyoyin bas da keke, ware da tram. Saitinka yana maye gurbin OpenStreetMap a kayan aikin layin titi da mai gyara dogo, don lokacin tafiya da binciken dogaro da tsaro.",
   "setup.engineFailed": "Injin tituna bai fara ba: {error}",
+  "setup.lanesFailed": "Ba a iya zana hanyoyin mota ba: {error}",
   "setup.zoomIn": "Zuƙowa zuwa matakin titi don loda tituna (daga mataki {zoom}).",
   "setup.someFailed": "Wasu tituna ba su loda ba.",
   "setup.tryAgain": "{reason} Matsar da taswira don sake gwadawa.",
@@ -537,6 +538,7 @@ export const editorsHa = {
   "setup.legend.mixed": "Babban titi, sufuri cikin cunkoso",
   "setup.legend.other": "Sauran tituna",
   "setup.legend.yours": "Kai ne ka saita",
+  "setup.legend.lanes": "Hanyoyin mota, daga zuƙowa {zoom}",
   "setup.v.busNoDelay": "Ba a zaton jinkirin cunkoso ga wannan nau'in titi; ana lissafa shi a manyan tituna.",
   "setup.v.busSeparated": "Hanyar bas da aka ware: cunkoso ba ya jinkirtar da bas-bas.",
   "setup.v.busPainted":

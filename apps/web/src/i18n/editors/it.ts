@@ -476,6 +476,7 @@ export const editorsIt = {
   "setup.intro":
     "Tocca una strada per indicarne la configurazione: corsie, corsie bus e ciclabili, separazione e tram. Le tue impostazioni sostituiscono OpenStreetMap nello strumento linee su strada e nell'editor ferroviario e influiscono sui tempi di percorrenza e sulle verifiche di regolarità e sicurezza.",
   "setup.engineFailed": "Impossibile avviare il motore stradale: {error}",
+  "setup.lanesFailed": "Non è stato possibile disegnare le corsie: {error}",
   "setup.zoomIn": "Ingrandisci fino al livello stradale per caricare le strade (livello {zoom} o più).",
   "setup.someFailed": "Alcune strade non sono state caricate.",
   "setup.tryAgain": "{reason} Sposta la mappa per riprovare.",
@@ -548,6 +549,7 @@ export const editorsIt = {
   "setup.legend.mixed": "Strada principale, trasporto pubblico nel traffico",
   "setup.legend.other": "Altra strada",
   "setup.legend.yours": "Configurata da te",
+  "setup.legend.lanes": "Corsie, dallo zoom {zoom}",
   "setup.v.busNoDelay":
     "Per questo tipo di strada non si calcola ritardo da traffico; solo per le strade principali.",
   "setup.v.busSeparated": "Corsia bus separata: il traffico non rallenta gli autobus.",
