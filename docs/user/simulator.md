@@ -91,7 +91,8 @@ The lines file is the one the timetable planner reads (`crates/rail-plan/example
 - `dwell_s`, `turnback_s`, `supplement_share`;
 - `stabling`: storage track ids the line's trains may use;
 - `bands`: `{"from_s", "to_s", "headway_s"}` in seconds from the start of the service day;
-- `return_offset_s`: `null` to let the planner choose.
+- `return_offset_s`: `null` to let the planner choose;
+- `priority` (optional, 0 when absent): where lines share track, a train of a higher number keeps its time and a lower one waits in a station for it to pass. Service lines take it from their mode: 4 high-speed, 3 long-distance, 2 regional, 1 commuter rail, 0 the rest.
 
 A lines file can also hold the railway tool's service lines, `{"service_lines": [ ... ]}`, in the form **Publish timetable** sends them to the planner (`rail_plan::ServiceLine`). Each may give `dwell_s`, `turnback_s`, `supplement_share`, `accel_ms2` and `decel_ms2`; absent ones take the mode's values.
 

@@ -184,6 +184,8 @@ A service line is a route trains run on the drawn track: its stops in order, its
 
 When the drawing or a line changes, the panel says so; publish again to update the journey planner. The catalogue gives a train's length, top speed, power and capacity; acceleration, braking and running resistance come from the mode's assumptions. A layout without crossovers next to the terminals limits how often trains can run; the line's report says so.
 
+**Lines of different modes on one track.** Regional, long-distance and high-speed lines can share tracks and stations, as on German main lines, or run on tracks of their own, as French high-speed lines do. A line stops only at its own stations and runs through the others. Where lines share track, the faster mode goes first: high-speed, then long-distance, then regional, then commuter trains. A train of a faster line keeps its time, and a slower train in its way waits in a station for it to pass, on a loop or the other track of an island platform, or leaves its first station a little later. A train waits at most 10 minutes for this. Draw stations with more tracks than the line (side platforms next to an island) to give trains a place to wait. Tram, light rail and metro lines do not overtake.
+
 ### Time-distance graph
 
 After publishing, open a line and click **Time-distance graph** under its report. The graph shows the line's stations down the side, at their distance along the track from the first terminal, and the time of day across. Each train is one line: solid towards the last terminal, dashed on the way back. A steeper line is a faster train and a flat part is a stop. Choose the **morning peak** (06:30–09:30), **midday** (11:00–13:00), **evening peak** (15:30–19:30) or the **whole day**.

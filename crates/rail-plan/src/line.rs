@@ -70,6 +70,11 @@ pub struct LineSpec {
     /// as far as possible from departures (no crossing moves at the same time
     /// in the terminal throat).
     pub return_offset_s: Option<f64>,
+    /// Rank of the line's trains where lines share track: a train of a higher rank keeps its
+    /// time, and a train of a lower rank waits for it at a station, on a loop or another
+    /// platform track, to let it pass. 0 for lines that never overtake (tram, metro).
+    #[serde(default)]
+    pub priority: u8,
 }
 
 /// Purpose: candidate platforms of a pick, in preference order.

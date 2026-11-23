@@ -263,6 +263,21 @@ fn mode_values(mode: &str) -> ModeValues {
     }
 }
 
+/// Purpose: the rank of a rail mode's trains where lines share track ([`LineSpec::priority`]):
+/// high-speed over long-distance over regional over commuter trains, as on German and French
+/// main lines, where a regional train waits in a loop for the ICE or TGV. Urban modes run on
+/// their own track and do not overtake.
+/// Inputs: the mode id. Output: the rank, 0 for modes that never overtake.
+pub fn mode_priority(mode: &str) -> u8 {
+    match mode {
+        "high_speed_rail" => 4,
+        "long_distance_rail" => 3,
+        "regional_rail" => 2,
+        "commuter_rail" => 1,
+        _ => 0,
+    }
+}
+
 /// Mass of one passenger with luggage for the planning load, kg.
 const PASSENGER_KG: f64 = 75.0;
 /// Share of the capacity on board for running times (a well-used train, not a crush load).
@@ -476,6 +491,7 @@ pub fn line_spec_with_roles(
         layover,
         bands: service_bands(l),
         return_offset_s: None,
+        priority: mode_priority(&l.mode),
     }
 }
 

@@ -50,6 +50,7 @@ fn shuttle(m: &Model) -> LineSpec {
             headway_s: 600.0,
         }],
         return_offset_s: None,
+        priority: 0,
     }
 }
 
