@@ -18,7 +18,9 @@ export type LaneKind =
   | "parking"
   | "kerb"
   | "buffer"
-  | "construction";
+  | "construction"
+  | "island"
+  | "green";
 
 /** A line on the street (Rust `street_geometry::LineKind`). */
 export type LineKind = "lane" | "centre" | "rails";

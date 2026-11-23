@@ -314,3 +314,61 @@ fn a_two_way_street_made_one_way_has_its_lanes_one_way() {
         "{dirs:?}"
     );
 }
+
+#[test]
+fn a_custom_layout_is_drawn_section_by_section() {
+    use street_routing::{RoadUser::*, Section, SectionDir, SectionKind};
+    let lane = |users: &[street_routing::RoadUser], dir, width| Section {
+        kind: SectionKind::Lane,
+        users: users.to_vec(),
+        dir,
+        width,
+        style: None,
+    };
+    let strip = |kind, width, style: &str| Section {
+        kind,
+        users: Vec::new(),
+        dir: None,
+        width,
+        style: Some(style.into()),
+    };
+    let sections = vec![
+        lane(&[Walk], None, 4.0),
+        strip(SectionKind::Green, 2.5, "trees"),
+        lane(&[Car, Tram], Some(SectionDir::Backward), 3.2),
+        strip(SectionKind::Protection, 0.5, "planters"),
+        lane(&[Bus], Some(SectionDir::Backward), 3.3),
+        strip(SectionKind::Island, 1.5, "raised"),
+        lane(&[Bus], Some(SectionDir::Forward), 3.3),
+        lane(&[Car], Some(SectionDir::Forward), 3.1),
+        lane(&[Bike, Walk], None, 3.0),
+    ];
+    let s = StreetSetup {
+        sections: Some(sections),
+        ..setup(100)
+    };
+    let g = build(&crossroads(), &[s], None).expect("builds");
+    let k = |x: &str| match x {
+        "pavement" => LaneKind::Pavement,
+        "green" => LaneKind::Green,
+        "traffic" => LaneKind::Traffic,
+        "kerb" => LaneKind::Kerb,
+        "bus" => LaneKind::Bus,
+        "island" => LaneKind::Island,
+        _ => LaneKind::SharedUse,
+    };
+    let want: Vec<LaneKind> = [
+        "pavement", "green", "traffic", "kerb", "bus", "island", "bus", "traffic", "shared",
+    ]
+    .iter()
+    .map(|x| k(x))
+    .collect();
+    assert_eq!(kinds(&g, 100), want);
+    let p = profile(&g, 100);
+    assert_eq!(p[0].width, 4.0);
+    assert_eq!(p[2].dir, LaneDir::Backward);
+    assert_eq!(p[6].dir, LaneDir::Forward);
+    // Rails along the traffic lane the tram shares with cars.
+    assert!(p[2].rails && !p[7].rails);
+    assert!(g.lines.iter().any(|l| l.kind == LineKind::Rails));
+}

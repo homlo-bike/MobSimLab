@@ -1,5 +1,5 @@
 import type { Map as MapLibreMap, MapMouseEvent } from "maplibre-gl";
-import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import type { MessageKey } from "../../i18n/en";
 import { type Translate, type TranslatePlural, tNow, useI18n } from "../../i18n/i18n";
@@ -8,6 +8,8 @@ import { MIN_LOAD_ZOOM, tilesFor } from "../street-lines/tiles";
 import type { TileFetcher } from "../street-lines/types";
 import { DEFAULT_SERVICE_DAY, projectServiceDay } from "../journey-planner/network";
 import { CrossSection } from "./CrossSection";
+import { SectionEditor } from "./SectionEditor";
+import { sectionsFromInfo, sectionsFromLanes } from "./sections";
 import {
   LANE_MIN_ZOOM,
   type LaneEngine,
@@ -41,7 +43,7 @@ import {
   type Verdict,
   verdicts,
 } from "./model";
-import type { StreetInfo, StreetInfoLoader, StreetSetup, TramShare } from "./types";
+import type { StreetInfo, StreetInfoLoader, StreetSetup } from "./types";
 import { engineErrorText } from "../../i18n/engine";
 
 interface Props {
@@ -67,7 +69,19 @@ interface Props {
   trafficSide?: TrafficSide;
 }
 
+/** Clears every lane setting: the street keeps OSM's lanes (traffic peaks stay). */
+const OSM_LANES: Partial<StreetSetup> = {
+  sections: null,
+  oneway: null,
+  traffic_lanes: null,
+  bus_lane: null,
+  bike_lane: null,
+  separated: null,
+  tram: null,
+};
+
 const WHO: Record<Verdict["who"], MessageKey> = {
+  Cars: "setup.who.cars",
   Buses: "setup.who.buses",
   Trams: "setup.who.trams",
   Cyclists: "setup.who.cyclists",
@@ -407,6 +421,7 @@ export function StreetSetupEditor({
 /** Purpose: a short list of what a setup sets, for the list of streets. */
 function summary(s: StreetSetup, t: Translate, tn: TranslatePlural): string {
   const parts: string[] = [];
+  if (s.sections) parts.push(t("setup.sum.custom"));
   if (s.oneway != null) parts.push(t(s.oneway ? "setup.oneway" : "setup.twoway"));
   if (s.traffic_lanes != null) parts.push(tn("setup.sum.lanes", s.traffic_lanes));
   if (s.bus_lane != null) parts.push(t(s.bus_lane ? "setup.sum.busLane" : "setup.sum.noBusLane"));
@@ -449,6 +464,17 @@ function StreetForm({
     info.tram ? t("setup.tramRails") : null,
   ].filter(Boolean);
   const v = verdicts(info, e, delays);
+  // A custom layout: the planner's sections, or (set up with the earlier lane controls) the lanes they drew.
+  const legacy =
+    !!setup &&
+    [setup.oneway, setup.traffic_lanes, setup.bus_lane, setup.bike_lane, setup.separated, setup.tram].some(
+      (x) => x != null,
+    );
+  const custom = !!setup?.sections || legacy;
+  const start = () =>
+    lanes && lanes.length ? sectionsFromLanes(lanes) : sectionsFromInfo(info, e.trafficLanes || osmLanes);
+  const shown = setup?.sections ?? (custom ? start() : []);
+  const customise = () => onPatch({ ...OSM_LANES, sections: start() });
   return (
     <section
       aria-label={t("setup.formLabel", { name: info.name || t("setup.unnamedLower") })}
@@ -470,130 +496,90 @@ function StreetForm({
         </button>
       </div>
 
-      <CrossSection e={e} oneway={e.oneway} lanes={lanes} />
+      <div role="group" aria-label={t("setup.lay.mode")} className="seg [&>button]:min-h-11">
+        <button
+          type="button"
+          aria-pressed={!custom}
+          disabled={!editable}
+          onClick={() => custom && onPatch(OSM_LANES)}
+        >
+          {t("setup.lay.osm")}
+        </button>
+        <button
+          type="button"
+          aria-pressed={custom}
+          disabled={!editable}
+          onClick={() => !custom && customise()}
+        >
+          {t("setup.lay.custom")}
+        </button>
+      </div>
+
+      {custom ? (
+        <SectionEditor
+          key={info.way}
+          sections={shown}
+          streetWidth={info.width_m}
+          editable={editable}
+          onChange={(sections) => onPatch({ ...OSM_LANES, sections })}
+        />
+      ) : (
+        <>
+          <CrossSection e={e} oneway={e.oneway} lanes={lanes} />
+          <div className="flex flex-col gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <p className="text-sm text-slate-700">{t("setup.lay.osmNote")}</p>
+            {editable && (
+              <button type="button" className="btn btn-dark w-full" onClick={customise}>
+                {t("setup.lay.customise")}
+              </button>
+            )}
+          </div>
+        </>
+      )}
 
       <fieldset disabled={!editable} className="flex flex-col gap-3.5">
-        <Choice
-          label={t("setup.direction")}
-          hint={t("setup.directionHint")}
-          value={setup?.oneway ?? null}
-          osm={t(info.oneway ? "setup.oneway" : "setup.twoway")}
-          options={[
-            [true, t("setup.oneWay")],
-            [false, t("setup.twoWay")],
-          ]}
-          onPick={(x) => onPatch({ oneway: x })}
-        />
-        <Row label={t("setup.trafficLanes")} hint={t("setup.trafficHint", { lanes: osmLanes })}>
-          <div className="flex items-center gap-1">
-            <button
-              type="button"
-              className="icon-btn border border-slate-300"
-              aria-label={t("setup.fewer")}
-              disabled={e.trafficLanes <= 1}
-              onClick={() => onPatch({ traffic_lanes: e.trafficLanes - 1 })}
-            >
-              −
-            </button>
-            <output
-              aria-label={t("setup.trafficLanes")}
-              className="w-8 text-center text-lg font-semibold tabular-nums"
-            >
-              {e.trafficLanes}
-            </output>
-            <button
-              type="button"
-              className="icon-btn border border-slate-300"
-              aria-label={t("setup.more")}
-              disabled={e.trafficLanes >= 8}
-              onClick={() => onPatch({ traffic_lanes: e.trafficLanes + 1 })}
-            >
-              +
-            </button>
-          </div>
-        </Row>
-        <Choice
-          label={t("setup.busLane")}
-          value={setup?.bus_lane ?? null}
-          osm={t(info.bus_lane ? "setup.osmYes" : "setup.osmNo")}
-          options={[
-            [true, t("setup.yes")],
-            [false, t("setup.no")],
-          ]}
-          onPick={(x) => onPatch({ bus_lane: x })}
-        />
-        <Choice
-          label={t("setup.bikeLane")}
-          value={setup?.bike_lane ?? null}
-          osm={t(info.bike_lane ? "setup.osmYes" : "setup.osmNo")}
-          options={[
-            [true, t("setup.yes")],
-            [false, t("setup.no")],
-          ]}
-          onPick={(x) => onPatch({ bike_lane: x })}
-        />
-        <Choice
-          label={t("setup.separation")}
-          hint={t("setup.separationHint")}
-          value={setup?.separated ?? null}
-          osm={t(info.class === "busway" ? "setup.osmYes" : "setup.osmNone")}
-          options={[
-            [true, t("setup.kerb")],
-            [false, t("setup.painted")],
-          ]}
-          onPick={(x) => onPatch({ separated: x })}
-        />
-        <Choice<TramShare>
-          label={t("setup.tram")}
-          hint={t(info.tram ? "setup.tramHintRails" : "setup.tramHintEditor")}
-          value={setup?.tram ?? null}
-          osm={t("setup.osmByWidth")}
-          options={[
-            ["own_lane", t("setup.ownLane")],
-            ["mixed", t("setup.mixed")],
-          ]}
-          onPick={(x) => onPatch({ tram: x })}
-        />
-        <div role="group" aria-label={t("setup.traffic")}>
-          <div className="font-medium">{t("setup.traffic")}</div>
-          <div className="text-xs text-slate-500">
-            {t("setup.trafficPeakHint", { cars: peakCarsDefault(info.class) })}
-          </div>
-          <div className="mt-1.5 grid grid-cols-2 gap-2">
-            {(
-              [
+        {e.trafficLanes > 0 && (
+          <div role="group" aria-label={t("setup.traffic")}>
+            <div className="font-medium">{t("setup.traffic")}</div>
+            <div className="text-xs text-slate-500">
+              {t("setup.trafficPeakHint", { cars: peakCarsDefault(info.class) })}
+            </div>
+            <div className="mt-1.5 grid grid-cols-2 gap-2">
+              {(
                 [
-                  "cars_morning_peak",
-                  "setup.morningPeak",
-                  projectServiceDay().peaks[0] ?? DEFAULT_SERVICE_DAY.peaks[0],
-                ],
-                [
-                  "cars_evening_peak",
-                  "setup.eveningPeak",
-                  projectServiceDay().peaks[1] ?? DEFAULT_SERVICE_DAY.peaks[1],
-                ],
-              ] as const
-            ).map(([field, label, win]) => (
-              <label key={field} className="flex flex-col gap-1 text-sm">
-                <span>{t(label, { from: clock(win?.[0]), to: clock(win?.[1]) })}</span>
-                <span className="flex items-center gap-1.5">
-                  <input
-                    type="number"
-                    inputMode="numeric"
-                    min={0}
-                    max={MAX_PEAK_CARS}
-                    step={10}
-                    className="input min-h-11 w-full min-w-0 tabular-nums"
-                    placeholder={String(peakCarsDefault(info.class))}
-                    value={setup?.[field] ?? ""}
-                    onChange={(ev) => onPatch({ [field]: parsePeakCars(ev.target.value) })}
-                  />
-                  <span className="shrink-0 text-xs text-slate-500">{t("setup.carsPerHour")}</span>
-                </span>
-              </label>
-            ))}
+                  [
+                    "cars_morning_peak",
+                    "setup.morningPeak",
+                    projectServiceDay().peaks[0] ?? DEFAULT_SERVICE_DAY.peaks[0],
+                  ],
+                  [
+                    "cars_evening_peak",
+                    "setup.eveningPeak",
+                    projectServiceDay().peaks[1] ?? DEFAULT_SERVICE_DAY.peaks[1],
+                  ],
+                ] as const
+              ).map(([field, label, win]) => (
+                <label key={field} className="flex flex-col gap-1 text-sm">
+                  <span>{t(label, { from: clock(win?.[0]), to: clock(win?.[1]) })}</span>
+                  <span className="flex items-center gap-1.5">
+                    <input
+                      type="number"
+                      inputMode="numeric"
+                      min={0}
+                      max={MAX_PEAK_CARS}
+                      step={10}
+                      className="input min-h-11 w-full min-w-0 tabular-nums"
+                      placeholder={String(peakCarsDefault(info.class))}
+                      value={setup?.[field] ?? ""}
+                      onChange={(ev) => onPatch({ [field]: parsePeakCars(ev.target.value) })}
+                    />
+                    <span className="shrink-0 text-xs text-slate-500">{t("setup.carsPerHour")}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </fieldset>
 
       <section aria-label={t("setup.reliability")}>
@@ -633,53 +619,6 @@ function clock(sec: number | undefined): string {
   return `${Math.floor(m / 60)}:${String(m % 60).padStart(2, "0")}`;
 }
 
-function Row({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="min-w-0 flex-1">
-        <div className="font-medium">{label}</div>
-        {hint && <div className="text-xs text-slate-500">{hint}</div>}
-      </div>
-      {children}
-    </div>
-  );
-}
-
-/** A three-way choice: as OpenStreetMap says (unset), or one of the options. */
-function Choice<T extends string | boolean>({
-  label,
-  hint,
-  value,
-  osm,
-  options,
-  onPick,
-}: {
-  label: string;
-  hint?: string;
-  value: T | null;
-  osm: string;
-  options: [T, string][];
-  onPick: (v: T | null) => void;
-}) {
-  const { t } = useI18n();
-  return (
-    <div role="group" aria-label={label}>
-      <div className="font-medium">{label}</div>
-      {hint && <div className="text-xs text-slate-500">{hint}</div>}
-      <div className="seg mt-1.5 [&>button]:min-h-11 [&>button]:px-1.5 [&>button]:text-sm [&>button]:leading-tight [&>button]:whitespace-normal">
-        <button type="button" aria-pressed={value === null} onClick={() => onPick(null)}>
-          {t("setup.osm")} <span className="block text-xs font-normal opacity-75">{osm}</span>
-        </button>
-        {options.map(([v, l]) => (
-          <button key={String(v)} type="button" aria-pressed={value === v} onClick={() => onPick(v)}>
-            {l}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 function Legend() {
   const { t } = useI18n();
   const items: [keyof typeof PRIORITY_COLOR, MessageKey][] = [
@@ -694,6 +633,7 @@ function Legend() {
     ["bike", "setup.x.bike"],
     ["tram", "setup.x.tram"],
     ["pavement", "setup.x.walk"],
+    ["green", "setup.x.green"],
   ];
   return (
     <ul aria-label={t("setup.legend")} className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-slate-600">

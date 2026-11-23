@@ -1,6 +1,7 @@
 import { tNow } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/en";
 import type { DelayShares } from "../street-lines/types";
+import { layoutOf, type Layout } from "./sections";
 import type { StreetInfo, StreetSetup, TramShare } from "./types";
 
 /** Assumption `street.mixed_traffic_delay_share` (central): extra running time in a main road's traffic. */
@@ -26,6 +27,8 @@ export interface Effective {
   /** Cars per hour in each direction in the morning and evening peak. */
   carsMorningPeak: number;
   carsEveningPeak: number;
+  /** What the custom layout means for traffic; `null` when the street keeps OSM's lanes. */
+  layout: Layout | null;
 }
 
 /** Purpose: general traffic lanes as OSM gives them (OSM `lanes` counts bus lanes too). */
@@ -38,6 +41,22 @@ export function osmTrafficLanes(info: StreetInfo): number {
 /** Purpose: the street's values with the setup applied. */
 export function effective(info: StreetInfo, setup: StreetSetup | undefined): Effective {
   const s = setup ?? { way: info.way };
+  if (s.sections) {
+    const l = layoutOf(s.sections);
+    const cars = l.carsForward + l.carsBackward;
+    return {
+      oneway: cars > 0 ? l.carsForward === 0 || l.carsBackward === 0 : !(l.busForward && l.busBackward),
+      trafficLanes: cars,
+      busLane: l.busLanes > 0,
+      bikeLane: l.bikeLane,
+      separated: l.separated,
+      tram: l.tram ? (l.tramOwnLane ? "own_lane" : "mixed") : null,
+      hasTram: l.tram,
+      carsMorningPeak: cars ? (s.cars_morning_peak ?? peakCarsDefault(info.class)) : 0,
+      carsEveningPeak: cars ? (s.cars_evening_peak ?? peakCarsDefault(info.class)) : 0,
+      layout: l,
+    };
+  }
   const tram = s.tram ?? null;
   return {
     oneway: s.oneway ?? info.oneway,
@@ -49,12 +68,14 @@ export function effective(info: StreetInfo, setup: StreetSetup | undefined): Eff
     hasTram: info.tram || tram !== null,
     carsMorningPeak: s.cars_morning_peak ?? peakCarsDefault(info.class),
     carsEveningPeak: s.cars_evening_peak ?? peakCarsDefault(info.class),
+    layout: null,
   };
 }
 
 /** Purpose: whether a setup changes anything. */
 export function isEmpty(s: StreetSetup): boolean {
   return (
+    s.sections == null &&
     s.oneway == null &&
     s.traffic_lanes == null &&
     s.bus_lane == null &&
@@ -123,7 +144,7 @@ export function upsert(list: readonly StreetSetup[], s: StreetSetup): StreetSetu
 export interface Verdict {
   level: "ok" | "info" | "warning";
   /** Who it is about. */
-  who: "Buses" | "Trams" | "Cyclists";
+  who: "Buses" | "Trams" | "Cyclists" | "Cars";
   text: string;
 }
 
@@ -136,7 +157,25 @@ const pct = (x: number) => ({ pct: Math.round(x * 100) });
 export function verdicts(info: StreetInfo, e: Effective, delays: DelayShares = DEFAULT_DELAYS): Verdict[] {
   const out: Verdict[] = [];
   const main = info.main_road;
-  if (!main) {
+  const l = e.layout;
+  if (l) {
+    const up = l.carsForward;
+    const down = l.carsBackward;
+    out.push(
+      up + down === 0
+        ? { level: "info", who: "Cars", text: tNow("setup.v.carsClosed") }
+        : {
+            level: "ok",
+            who: "Cars",
+            text: tNow(up && down ? "setup.v.carsTwoWay" : "setup.v.carsOneWay", { up, down }),
+          },
+    );
+  }
+  if (l && !l.busForward && !l.busBackward) {
+    out.push({ level: "info", who: "Buses", text: tNow("setup.v.busBanned") });
+  } else if (l && !l.carsForward && !l.carsBackward) {
+    out.push({ level: "ok", who: "Buses", text: tNow("setup.v.busNoCars") });
+  } else if (!main) {
     out.push({
       level: "ok",
       who: "Buses",
@@ -187,7 +226,8 @@ export function verdicts(info: StreetInfo, e: Effective, delays: DelayShares = D
       });
     }
   }
-  if (main && !e.bikeLane && !(e.hasTram && e.tram === "mixed")) {
+  const noCars = !!l && l.carsForward + l.carsBackward === 0;
+  if (main && !noCars && !e.bikeLane && !(e.hasTram && e.tram === "mixed")) {
     out.push({
       level: "info",
       who: "Cyclists",

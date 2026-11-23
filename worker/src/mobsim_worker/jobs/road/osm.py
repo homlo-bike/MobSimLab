@@ -132,6 +132,72 @@ def _bus_lane_count(t: dict[str, str]) -> int:
     return n
 
 
+def _moves(s: dict[str, Any]) -> bool:
+    return s.get("kind") == "lane" and any(u != "walk" for u in s.get("users") or [])
+
+
+def _goes(s: dict[str, Any], forward: bool) -> bool:
+    d = s.get("dir") or "both"
+    return _moves(s) and (d == "both" or d == ("forward" if forward else "backward"))
+
+
+def _apply_sections(t: dict[str, str], sections: Sequence[dict[str, Any]]) -> None:
+    """Write a custom street layout (``StreetSetup.sections``) as OSM lane tags, as ``street-routing`` does.
+
+    Lanes cars may use are general lanes; lanes of buses (or taxis) without cars are bus lanes. A street
+    without car lanes is closed to motor traffic (buses still allowed on their lanes).
+    """
+
+    def has(s: dict[str, Any], u: str) -> bool:
+        return s.get("kind") == "lane" and u in (s.get("users") or [])
+
+    def road_lane(s: dict[str, Any]) -> bool:
+        return has(s, "car") or has(s, "bus") or has(s, "taxi")
+
+    fwd = [s for s in sections if _goes(s, True) and road_lane(s)]
+    # OSM lists the backward lanes left to right looking backward: the way's order reversed.
+    bwd = [s for s in reversed(sections) if _goes(s, False) and road_lane(s)]
+    cars = (any(has(s, "car") for s in fwd), any(has(s, "car") for s in bwd))
+    bus = (any(has(s, "bus") for s in fwd), any(has(s, "bus") for s in bwd))
+    f, b = cars if any(cars) else bus
+    for k in [
+        k
+        for k in t
+        if k.startswith(
+            ("oneway", "lanes", "turn:lanes", "busway", "bus:lanes", "psv:lanes", "access:lanes", "cycleway")
+        )
+        or k in ("width", "width:carriageway")
+    ]:
+        del t[k]
+    t["oneway"] = "yes" if f and not b else "-1" if b and not f else "no"
+    if any(cars) and ((bus[0] and not f) or (bus[1] and not b)):
+        t["oneway:bus"] = "no"
+    if not any(cars):
+        t["motor_vehicle"] = "no"
+    if any(bus):
+        if not any(cars):
+            t["bus"] = "yes"
+    else:
+        t["bus"] = t["psv"] = "no"
+
+    def access(lanes: list[dict[str, Any]]) -> str:
+        return "|".join("yes" if has(s, "car") else "designated" for s in lanes)
+
+    if fwd or bwd:
+        t["lanes"] = str(len(fwd) + len(bwd))
+    if t["oneway"] == "no":
+        t["lanes:forward"] = str(len(fwd))
+        t["lanes:backward"] = str(len(bwd))
+        if any(not has(s, "car") for s in fwd):
+            t["bus:lanes:forward"] = access(fwd)
+        if any(not has(s, "car") for s in bwd):
+            t["bus:lanes:backward"] = access(bwd)
+    else:
+        one = fwd if t["oneway"] == "yes" else bwd
+        if any(not has(s, "car") for s in one):
+            t["bus:lanes"] = access(one)
+
+
 def apply_street_setup(data: OsmData, setups: Sequence[dict[str, Any]], left_hand: bool = False) -> int:
     """Change way tags as the planner set the streets up in the GIS tab (``StreetSetup``).
 
@@ -140,7 +206,8 @@ def apply_street_setup(data: OsmData, setups: Sequence[dict[str, Any]], left_han
     lanes over both directions, without bus lanes; ``bus_lane`` is a
     bus lane on the kerb side of each direction. Both are written as OSM lane tags (``lanes``,
     ``lanes:forward``/``backward``, ``bus:lanes:*``) that netconvert reads with ``--osm.lane-access``.
-    Unset fields keep what OpenStreetMap says.
+    Unset fields keep what OpenStreetMap says. A custom layout (``sections``: the street section by
+    section, left to right along the way) replaces all of them (see ``_apply_sections``).
 
     Args:
         data: The merged OSM data, changed in place.
@@ -159,6 +226,11 @@ def apply_street_setup(data: OsmData, setups: Sequence[dict[str, Any]], left_han
         bus = s.get("bus_lane")
         direction = s.get("oneway")
         t = w.tags
+        sections = s.get("sections")
+        if isinstance(sections, list):
+            _apply_sections(t, sections)
+            changed += 1
+            continue
         if isinstance(direction, bool):
             if direction and not _oneway(t):
                 t["oneway"] = "yes"

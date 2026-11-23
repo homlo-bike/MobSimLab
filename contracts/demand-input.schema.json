@@ -131,7 +131,7 @@
     "street_setups": {
       "type": "array",
       "maxItems": 100000,
-      "description": "The planner's street setups from the GIS tab, applied to the OpenStreetMap street tiles: one-way or two-way, general traffic lanes over both directions, a bus lane each way, and a bike lane each way (a track where separated).",
+      "description": "The planner's street setups from the GIS tab, applied to the OpenStreetMap street tiles: one-way or two-way, general traffic lanes over both directions, a bus lane each way, and a bike lane each way (a track where separated); or a custom layout section by section, which replaces them.",
       "items": {
         "type": "object",
         "required": ["way"],
@@ -141,7 +141,27 @@
           "traffic_lanes": { "type": ["number", "null"] },
           "bus_lane": { "type": ["boolean", "null"] },
           "bike_lane": { "type": ["boolean", "null"] },
-          "separated": { "type": ["boolean", "null"] }
+          "separated": { "type": ["boolean", "null"] },
+          "sections": {
+            "type": ["array", "null"],
+            "maxItems": 60,
+            "description": "The street laid out section by section, left to right along the way: lanes with the road users allowed (car, bus, tram, bike, taxi, walk) and their direction, or parking, a traffic island, a green strip or protection.",
+            "items": {
+              "type": "object",
+              "required": ["kind", "width"],
+              "properties": {
+                "kind": { "enum": ["lane", "parking", "island", "green", "protection"] },
+                "users": {
+                  "type": "array",
+                  "maxItems": 6,
+                  "items": { "enum": ["car", "bus", "tram", "bike", "taxi", "walk"] }
+                },
+                "dir": { "enum": ["forward", "backward", "both", null] },
+                "width": { "type": "number", "minimum": 0, "maximum": 50 },
+                "style": { "type": ["string", "null"] }
+              }
+            }
+          }
         }
       }
     },

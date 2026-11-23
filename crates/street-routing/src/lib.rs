@@ -26,6 +26,7 @@ pub mod line;
 pub mod osm;
 pub mod profile;
 pub mod router;
+pub mod sections;
 pub mod setup;
 pub mod walk;
 
@@ -34,5 +35,6 @@ pub use line::{LineView, PointKind, Status, StreetLine};
 pub use osm::parse_osm_xml;
 pub use profile::{Mode, RoutingRules, TrafficSide, VehicleProfile};
 pub use router::{route, Anchor, Path, SearchOptions};
+pub use sections::{Layout, RoadUser, Section, SectionDir, SectionKind};
 pub use setup::{apply_setups, DelayShares, StreetSetup, TramShare};
 pub use walk::{WalkGraph, WalkSettings};

@@ -44,6 +44,8 @@ export const LANE_COLOR: Record<LaneKind, string> = {
   kerb: "#475569",
   buffer: "#cbd5e1",
   construction: "#fbbf24",
+  island: "#d6d3d1",
+  green: "#86a865",
 };
 const JUNCTION_COLOR = "#a8adb6";
 

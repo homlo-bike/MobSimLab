@@ -14,6 +14,14 @@ import {
 } from "../src/features/street-setup/model";
 import type { LaneEngine, LaneEngineLoader, LaneGeometry } from "../src/features/street-setup/lanes";
 import { StreetSetupEditor } from "../src/features/street-setup/StreetSetupEditor";
+import {
+  layoutOf,
+  newSection,
+  sectionName,
+  sectionsFromLanes,
+  template,
+  totalWidth,
+} from "../src/features/street-setup/sections";
 import type { StreetInfo, StreetSetup } from "../src/features/street-setup/types";
 
 afterEach(cleanup);
@@ -43,6 +51,86 @@ const BACK: StreetInfo = {
   main_road: false,
   tram: false,
 };
+
+describe("Street sections", () => {
+  it("reduces a layout to what routing reads, like the Rust engine", () => {
+    const centre = layoutOf(template("centreBus"));
+    expect(centre).toMatchObject({
+      carsForward: 2,
+      carsBackward: 2,
+      busLanes: 2,
+      separated: true,
+      tram: false,
+    });
+    // The same bus lanes painted next to the cars are not separated.
+    const painted = layoutOf([
+      newSection("lane", ["car"], "backward"),
+      newSection("lane", ["bus"], "backward"),
+      newSection("lane", ["bus"], "forward"),
+      newSection("lane", ["car"], "forward"),
+    ]);
+    expect(painted.separated).toBe(false);
+    const tram = layoutOf(template("tramPeople"));
+    expect(tram).toMatchObject({
+      carsForward: 0,
+      carsBackward: 0,
+      busForward: false,
+      tram: true,
+      tramOwnLane: true,
+    });
+    expect(layoutOf(template("tramBus"))).toMatchObject({ tramOwnLane: true, busLanes: 2 });
+    // A tram sharing a lane with cars runs in mixed traffic.
+    expect(
+      layoutOf([newSection("lane", ["car", "tram"], "backward"), newSection("lane", ["tram"], "forward")])
+        .tramOwnLane,
+    ).toBe(false);
+  });
+
+  it("names sections by who uses them", () => {
+    expect(sectionName(newSection("lane"))).toEqual({ key: "new" });
+    expect(sectionName(newSection("lane", ["bus"]))).toEqual({ key: "one", user: "bus" });
+    expect(sectionName(newSection("lane", ["bus", "car", "taxi"]))).toEqual({ key: "general" });
+    expect(sectionName(newSection("lane", ["walk", "bike"]))).toEqual({ key: "shared" });
+    expect(sectionName(newSection("lane", ["tram", "car"]))).toEqual({
+      key: "mixed",
+      users: ["car", "tram"],
+    });
+    expect(sectionName(newSection("green"))).toEqual({ key: "green" });
+    expect(newSection("green").style).toBe("trees");
+  });
+
+  it("starts a custom layout from the street's lanes", () => {
+    const s = sectionsFromLanes([
+      { kind: "pavement", dir: "backward", width: 2.04, rails: false },
+      { kind: "kerb", dir: "backward", width: 0.1, rails: false },
+      { kind: "traffic", dir: "backward", width: 3.25, rails: true },
+      { kind: "bus", dir: "forward", width: 3.3, rails: false },
+      { kind: "green", dir: "forward", width: 2, rails: false },
+    ]);
+    expect(s.map((x) => [x.kind, x.users, x.dir ?? null, x.width])).toEqual([
+      ["lane", ["walk"], null, 2],
+      ["protection", [], null, 0.3],
+      ["lane", ["car", "bus", "taxi", "bike", "tram"], "backward", 3.3],
+      ["lane", ["bus", "taxi"], "forward", 3.3],
+      ["green", [], null, 2],
+    ]);
+    expect(totalWidth(s)).toBeCloseTo(10.9);
+  });
+
+  it("gives a custom layout's street its values", () => {
+    const e = effective(HIGH, { way: 100, sections: template("protectedBike") });
+    expect(e).toMatchObject({
+      oneway: false,
+      trafficLanes: 2,
+      busLane: false,
+      bikeLane: true,
+      separated: true,
+    });
+    expect(verdicts(HIGH, e).map((v) => v.who)).toEqual(["Cars", "Buses"]);
+    const oneWay = effective(HIGH, { way: 100, sections: [newSection("lane", ["car"], "backward")] });
+    expect(oneWay.oneway).toBe(true);
+  });
+});
 
 describe("Street setup model", () => {
   it("takes each value from the setup, else from OpenStreetMap", () => {
@@ -240,30 +328,63 @@ describe("Street setup editor", () => {
     expect(within(form).getByText(/Mixed traffic on a main road|Inferred from the street/)).toBeTruthy();
     expect(within(form).getByText(/Buses and trolleybuses run in the traffic of a main road/)).toBeTruthy();
 
-    fireEvent.click(
-      within(screen.getByRole("group", { name: "Tram" })).getByRole("button", { name: "Own lane" }),
+    // OpenStreetMap's lanes until the planner customises the street: then a typical layout of it.
+    const layout = screen.getByRole("group", { name: "Street layout" });
+    expect(within(layout).getByRole("button", { name: "OSM default" }).getAttribute("aria-pressed")).toBe(
+      "true",
     );
-    fireEvent.click(
-      within(screen.getByRole("group", { name: "Separation from traffic" })).getByRole("button", {
-        name: "Kerb or barrier",
-      }),
-    );
-    fireEvent.click(
-      within(screen.getByRole("group", { name: "Bus lane" })).getByRole("button", { name: "Yes" }),
-    );
-    fireEvent.click(screen.getByRole("button", { name: "More traffic lanes" }));
+    fireEvent.click(screen.getByRole("button", { name: "Customise this street" }));
     expect(onChange).toHaveBeenLastCalledWith([
       expect.objectContaining({
         way: 100,
-        tram: "own_lane",
-        separated: true,
-        bus_lane: true,
-        traffic_lanes: 3,
+        sections: [
+          expect.objectContaining({ kind: "lane", users: ["walk"] }),
+          expect.objectContaining({ users: ["car", "bus", "taxi", "bike"], dir: "backward" }),
+          expect.objectContaining({ users: ["car", "bus", "taxi", "bike"], dir: "forward" }),
+          expect.objectContaining({ kind: "lane", users: ["walk"] }),
+        ],
       }),
     ]);
-    expect(within(form).getByText("Own lane, separated from the traffic: reliable.")).toBeTruthy();
+    expect(within(form).getByText("Lanes: 1 ↑ with the street, 1 ↓ against it.")).toBeTruthy();
+
+    // A template: bus lanes in the middle behind kerbs, so buses are not held up.
+    fireEvent.click(screen.getByRole("button", { name: "Centre bus lanes" }));
     expect(within(form).getByText(/Separated bus lane/)).toBeTruthy();
-    expect(screen.getByRole("img", { name: /Cross-section: pavement, bus lane, traffic lane/ })).toBeTruthy();
+    const strip = screen.getByRole("listbox", { name: "Sections, left to right" });
+    expect(within(strip).getAllByRole("option")).toHaveLength(11);
+
+    // Add a section after the first one and make it a tram lane both ways: a tram in its own lane.
+    fireEvent.click(screen.getByRole("button", { name: "+ Add section" }));
+    const picked = screen.getByRole("region", { name: "Selected section: New section" });
+    expect(within(picked).getByText("2 of 12")).toBeTruthy();
+    fireEvent.click(within(picked).getByRole("button", { name: "Trams" }));
+    expect(screen.getByRole("region", { name: "Selected section: Tram lane" })).toBeTruthy();
+    fireEvent.click(
+      within(screen.getByRole("group", { name: "Direction" })).getByRole("button", { name: "↕ Both" }),
+    );
+    let last = onChange.mock.lastCall![0][0] as StreetSetup;
+    expect(last.sections![1]).toMatchObject({ kind: "lane", users: ["tram"], dir: "both" });
+    // Buses may share it: mixed traffic of trams and buses, still no cars.
+    fireEvent.click(
+      within(screen.getByRole("group", { name: "Who can use it?" })).getByRole("button", { name: "Buses" }),
+    );
+    expect(screen.getByRole("region", { name: "Selected section: Buses + Trams" })).toBeTruthy();
+    // Move it next to the centre, then remove it again.
+    fireEvent.click(screen.getByRole("button", { name: "Move right" }));
+    last = onChange.mock.lastCall![0][0] as StreetSetup;
+    expect(last.sections![2]).toMatchObject({ users: ["tram", "bus"] });
+    fireEvent.click(screen.getByRole("button", { name: "Remove" }));
+    expect((onChange.mock.lastCall![0][0] as StreetSetup).sections).toHaveLength(11);
+
+    // Trams and people only: no cars and no buses on the street.
+    fireEvent.click(screen.getByRole("button", { name: "Trams and people only" }));
+    expect(within(form).getByText(/No lane for cars/)).toBeTruthy();
+    expect(within(form).getByText(/No lane lets buses in/)).toBeTruthy();
+    expect(screen.queryByRole("group", { name: "Traffic at peak" })).toBeNull();
+    // Back to OpenStreetMap's lanes.
+    fireEvent.click(within(layout).getByRole("button", { name: "OSM default" }));
+    expect(onChange).toHaveBeenLastCalledWith([]);
+    fireEvent.click(screen.getByRole("button", { name: "Customise this street" }));
     expect(screen.getByText("Streets set up · 1")).toBeTruthy();
 
     // Traffic peaks: empty shows the road type's default; a typed value is saved per direction.
@@ -285,14 +406,6 @@ describe("Street setup editor", () => {
     fireEvent.click(screen.getByRole("button", { name: "Reset to OpenStreetMap" }));
     expect(onChange).toHaveBeenLastCalledWith([]);
 
-    // Direction: OSM says two-way; the planner makes it one-way.
-    const direction = screen.getByRole("group", { name: "Direction" });
-    expect(within(direction).getByRole("button", { name: /OSM\s*two-way/ })).toBeTruthy();
-    fireEvent.click(within(direction).getByRole("button", { name: "One-way" }));
-    expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ way: 100, oneway: true })]);
-    expect(screen.getByText("one-way", { selector: "span" })).toBeTruthy();
-    expect(screen.getByRole("img", { name: /^Cross-section/ }).textContent).not.toContain("↓");
-    fireEvent.click(screen.getByRole("button", { name: "Reset to OpenStreetMap" }));
     tap(null);
     expect(screen.getByText(/No street selected/)).toBeTruthy();
   });
@@ -372,14 +485,24 @@ describe("Street setup editor", () => {
     );
     expect((section.children[1] as HTMLElement).style.flex).toMatch(/^2\.5 1 0/);
 
-    // A new setup is drawn with the setups applied.
-    fireEvent.click(
-      within(screen.getByRole("group", { name: "Bus lane" })).getByRole("button", { name: "Yes" }),
-    );
+    // Customising starts from the street's own lanes, and the layout is drawn on the map.
+    fireEvent.click(screen.getByRole("button", { name: "Customise this street" }));
     await waitFor(() =>
       expect(engine.build).toHaveBeenLastCalledWith(
         keys,
-        [expect.objectContaining({ way: 100, bus_lane: true })],
+        [
+          expect.objectContaining({
+            way: 100,
+            sections: [
+              expect.objectContaining({ users: ["walk"], width: 1.5 }),
+              expect.objectContaining({ kind: "parking", width: 2.5 }),
+              expect.objectContaining({ users: ["car", "bus", "taxi", "bike", "tram"], dir: "backward" }),
+              expect.objectContaining({ users: ["car", "bus", "taxi", "bike", "tram"], dir: "forward" }),
+              expect.objectContaining({ users: ["bus", "taxi"], dir: "forward", width: 3.1 }),
+              expect.objectContaining({ users: ["walk"] }),
+            ],
+          }),
+        ],
         "left",
       ),
     );

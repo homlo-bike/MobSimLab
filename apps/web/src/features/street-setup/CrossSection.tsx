@@ -4,7 +4,7 @@ import type { LaneKind, LaneProfile } from "./lanes";
 import type { Effective } from "./model";
 
 type Strip = {
-  kind: "walk" | "bike" | "bus" | "car" | "tram" | "kerb" | "parking" | "buffer";
+  kind: "walk" | "bike" | "bus" | "car" | "tram" | "kerb" | "parking" | "buffer" | "island" | "green";
   dir?: "up" | "down";
   /** Width in metres, where the street's lanes give one; else the typical width. */
   width?: number;
@@ -22,6 +22,8 @@ const WIDTH: Record<Strip["kind"], number> = {
   kerb: 0.5,
   parking: 2.3,
   buffer: 0.5,
+  island: 2,
+  green: 2.5,
 };
 const STYLE: Record<Strip["kind"], string> = {
   walk: "bg-slate-200",
@@ -32,14 +34,17 @@ const STYLE: Record<Strip["kind"], string> = {
   kerb: "bg-slate-600",
   parking: "bg-blue-100",
   buffer: "bg-slate-100",
+  island: "bg-stone-300",
+  green: "bg-[#86a865]",
 };
-const LABEL: Record<Exclude<Strip["kind"], "kerb" | "buffer">, MessageKey> = {
+const LABEL: Record<Exclude<Strip["kind"], "kerb" | "buffer" | "island">, MessageKey> = {
   walk: "setup.x.walk",
   bike: "setup.x.bike",
   bus: "setup.x.bus",
   car: "setup.x.car",
   tram: "setup.x.tram",
   parking: "setup.x.parking",
+  green: "setup.x.green",
 };
 
 /** The cross-section kind of each lane kind of the lane engine. */
@@ -55,6 +60,8 @@ const FROM_LANE: Record<LaneKind, Strip["kind"]> = {
   kerb: "kerb",
   buffer: "buffer",
   construction: "buffer",
+  island: "island",
+  green: "green",
 };
 
 /**
@@ -125,7 +132,7 @@ export function CrossSection({
       ? innermost(list, oneway)
       : new Set<number>();
   const label = list
-    .filter((s) => s.kind !== "kerb" && s.kind !== "buffer")
+    .filter((s) => s.kind !== "kerb" && s.kind !== "buffer" && s.kind !== "island")
     .map((s) => t(LABEL[s.kind as keyof typeof LABEL]))
     .join(t("setup.x.sep"));
   return (

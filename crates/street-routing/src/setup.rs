@@ -24,6 +24,7 @@
 //! library: `street.mixed_traffic_delay_share` and `street.bus_lane_delay_share`.
 
 use crate::osm::{OsmData, Tags};
+use crate::sections::{Layout, Section};
 use serde::{Deserialize, Serialize};
 
 /// How a tram along the street shares it with road traffic.
@@ -37,7 +38,7 @@ pub enum TramShare {
 }
 
 /// The planner's setup of one street (one OSM way). `None` keeps what OSM says.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct StreetSetup {
     /// OSM way id.
     pub way: i64,
@@ -61,6 +62,10 @@ pub struct StreetSetup {
     /// Tram along this street: own lane or mixed traffic.
     #[serde(default)]
     pub tram: Option<TramShare>,
+    /// The street laid out section by section (custom layout), left to right looking along the way.
+    /// When set it replaces OSM's lanes and the lane fields above ([`Layout`]).
+    #[serde(default)]
+    pub sections: Option<Vec<Section>>,
     /// Cars per hour in each direction in the morning peak (the shared peak windows of the
     /// service day), for the road simulation's background traffic. `None`: the default for the
     /// road type (assumptions `street.peak_cars_*_vph`). Not an OSM tag: [`Self::apply`] ignores it.
@@ -147,7 +152,8 @@ impl StreetSetup {
     /// Purpose: whether the setup changes nothing on the carriageway (traffic peaks do not count:
     /// they change no OSM tag).
     pub fn is_empty(&self) -> bool {
-        self.oneway.is_none()
+        self.sections.is_none()
+            && self.oneway.is_none()
             && self.traffic_lanes.is_none()
             && self.bus_lane.is_none()
             && self.bike_lane.is_none()
@@ -158,6 +164,10 @@ impl StreetSetup {
     /// Purpose: write the setup into the tags of its OSM way.
     /// Side effects: replaces or removes the bus lane, bike lane and lane count tags it sets.
     pub fn apply(&self, tags: &mut Tags) {
+        if let Some(sections) = &self.sections {
+            apply_sections(sections, tags);
+            return;
+        }
         if self.is_empty() {
             return;
         }
@@ -240,6 +250,93 @@ impl StreetSetup {
             );
         }
     }
+}
+
+/// Purpose: write a custom layout into the tags of its OSM way: the direction of the traffic (and of
+/// buses where it differs), the lane counts with the bus lanes in each direction, bike lanes, whether
+/// cars and buses may use the street, the separation and the tram. The layout replaces every lane tag OSM
+/// had.
+fn apply_sections(sections: &[Section], tags: &mut Tags) {
+    let l = Layout::of(sections);
+    tags.insert("mobsimlab:setup".into(), "yes".into());
+    tags.retain(|k, _| {
+        !(k.starts_with("oneway")
+            || k.starts_with("lanes")
+            || k.starts_with("turn:lanes")
+            || k.starts_with("access:lanes")
+            || k.starts_with("busway")
+            || k.starts_with("bus:lanes")
+            || k.starts_with("psv:lanes")
+            || k.starts_with("cycleway")
+            || k == "width"
+            || k == "width:carriageway"
+            || k.starts_with("mobsimlab:"))
+    });
+    tags.insert("mobsimlab:setup".into(), "yes".into());
+    let (fwd, bwd) = if l.cars() {
+        (l.cars_forward > 0, l.cars_backward > 0)
+    } else {
+        (l.bus_forward, l.bus_backward)
+    };
+    let oneway = match (fwd, bwd) {
+        (true, false) => "yes",
+        (false, true) => "-1",
+        _ => "no",
+    };
+    tags.insert("oneway".into(), oneway.into());
+    if l.cars() && ((l.bus_forward && !fwd) || (l.bus_backward && !bwd)) {
+        tags.insert("oneway:bus".into(), "no".into());
+    }
+    let forward = u32::from(l.cars_forward) + u32::from(l.bus_lanes_forward);
+    let backward = u32::from(l.cars_backward) + u32::from(l.bus_lanes_backward);
+    if forward + backward > 0 {
+        tags.insert("lanes".into(), (forward + backward).to_string());
+        if oneway == "no" {
+            tags.insert("lanes:forward".into(), forward.to_string());
+            tags.insert("lanes:backward".into(), backward.to_string());
+        }
+    }
+    for (n, key) in [
+        (l.bus_lanes_forward, "lanes:bus:forward"),
+        (l.bus_lanes_backward, "lanes:bus:backward"),
+    ] {
+        if n > 0 {
+            tags.insert(key.into(), n.to_string());
+        }
+    }
+    let bike = match (l.bike_lane, l.separated) {
+        (false, _) => "no",
+        (true, true) => "track",
+        (true, false) => "lane",
+    };
+    tags.insert("cycleway:both".into(), bike.into());
+    if l.cars() {
+        tags.insert(
+            "mobsimlab:traffic_lanes".into(),
+            (u32::from(l.cars_forward) + u32::from(l.cars_backward)).to_string(),
+        );
+    } else {
+        tags.insert("motor_vehicle".into(), "no".into());
+    }
+    if l.bus_forward || l.bus_backward {
+        if !l.cars() {
+            tags.insert("bus".into(), "yes".into());
+        }
+    } else {
+        tags.insert("bus".into(), "no".into());
+        tags.insert("psv".into(), "no".into());
+    }
+    tags.insert(
+        "mobsimlab:separated".into(),
+        if l.separated { "yes" } else { "no" }.into(),
+    );
+    if l.tram {
+        tags.insert(
+            "mobsimlab:tram".into(),
+            if l.tram_own_lane { "own_lane" } else { "mixed" }.into(),
+        );
+    }
+    tags.insert("mobsimlab:sections".into(), "yes".into());
 }
 
 /// Purpose: apply the planner's street setups to OSM data (ways not set up stay as they are).
