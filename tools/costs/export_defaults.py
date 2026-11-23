@@ -6,7 +6,7 @@ Usage:
   python3 tools/costs/export_defaults.py --check   # fail if it is stale
 
 Reads assumptions/parameters/costs.yaml (validated by tools/assumptions/check.py), mode.spare_share
-from modes.yaml and timetable.max_terminal_wait_min (vehicle blocks) from operations.yaml, and
+from modes.yaml and the timetable waits (vehicle blocks, overtaking) from operations.yaml, and
 writes every parameter as [low, central, high] for "*" and each mode whose value differs, with its
 label and unit, so the tables can show and edit them.
 """
@@ -24,6 +24,7 @@ OUT = ROOT / "apps" / "web" / "src" / "features" / "costs" / "defaults.generated
 EXTRA = {
     "mode.spare_share",
     "mode.vehicle_capacity",
+    "timetable.max_overtake_wait_min",
     "timetable.max_terminal_wait_min",
 }
 
