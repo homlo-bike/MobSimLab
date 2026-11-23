@@ -8,6 +8,7 @@ before the job, so the API never shows a finished job with an open run.
 from __future__ import annotations
 
 import json
+import threading
 import time
 from collections.abc import Callable
 from typing import Any, Protocol
@@ -26,7 +27,9 @@ RoadRunner = Callable[[Any, Any, list[str], Any], tuple[str, dict[str, Any], byt
 
 log = structlog.get_logger("mobsim_worker")
 
-#: Seconds between heartbeats while a run reports progress (the queue fails a job after 120 s without one).
+#: Seconds between heartbeats while a run is running (the queue fails a job after 120 s without one). They
+#: come from a timer, not from the run's progress, as some steps (background traffic, netconvert) report
+#: nothing for minutes.
 HEARTBEAT_EVERY_S = 30.0
 
 #: Seconds between checks of ``cancel_requested`` while a run reports progress.
@@ -72,7 +75,11 @@ CANCELLED = "SELECT cancel_requested OR status <> 'running' FROM simulation.run 
 
 
 class RunReporter:
-    """Writes a run's progress to its row, beats the job's heartbeat and tells the run when to stop."""
+    """Writes a run's progress to its row, beats the job's heartbeat and tells the run when to stop.
+
+    The heartbeat is beaten from a timer thread between ``start`` and ``close``, on the same connection
+    (psycopg serialises statements from several threads on one connection).
+    """
 
     def __init__(
         self,
@@ -92,16 +99,43 @@ class RunReporter:
         self.clock = clock
         self.cancelled = False
         self.lost = False
-        self._beat = clock()
         self._checked = -CANCEL_CHECK_EVERY_S
+        self._closed = threading.Event()
+        self._timer: threading.Thread | None = None
+
+    def start(self) -> None:
+        """Beat the job's heartbeat every ``HEARTBEAT_EVERY_S`` until ``close``, whatever the run is doing."""
+        self._timer = threading.Thread(
+            target=self._beat_until_closed,
+            args=(HEARTBEAT_EVERY_S,),
+            name=f"heartbeat-{self.job.id}",
+            daemon=True,
+        )
+        self._timer.start()
+
+    def close(self) -> None:
+        """Stop the heartbeat timer and wait for it, so it never touches the connection after the run."""
+        self._closed.set()
+        if self._timer is not None:
+            self._timer.join()
+            self._timer = None
+
+    def beat(self) -> None:
+        """Beat the job's heartbeat once; if the job is no longer this worker's, the run should stop."""
+        if not self.queue.touch(self.job):
+            self.lost = True
+
+    def _beat_until_closed(self, every_s: float) -> None:
+        while not self._closed.wait(every_s) and not self.lost:
+            try:
+                self.beat()
+            except Exception as e:  # noqa: BLE001 (a lost connection also fails the run's own statements)
+                log.warning("heartbeat failed", job=self.job.id, error=str(e) or type(e).__name__)
+                return
 
     def report(self, step: dict[str, Any], result: dict[str, Any]) -> None:
-        """Save the current step and what the run has found so far, and beat the heartbeat when due."""
+        """Save the current step and what the run has found so far."""
         self.conn.execute(PROGRESS, {"id": self.run_id, "progress": Jsonb(step), "result": Jsonb(result)})
-        if self.clock() - self._beat >= HEARTBEAT_EVERY_S:
-            self._beat = self.clock()
-            if not self.queue.touch(self.job):
-                self.lost = True
 
     def should_stop(self) -> bool:
         """Whether to stop: the worker is stopping, the job was lost, or a planner cancelled the run."""
@@ -168,62 +202,67 @@ def process(
     bound = log.bind(run=run_id, job=job.id, kind=kind)
     bound.info("run started")
     reporter = RunReporter(conn, queue, job, run_id, stop)
+    reporter.start()
     try:
-        if kind not in ("capacity", "sweep", "road", "demand", "calendar"):
-            raise ValueError(f"this worker cannot run {kind!r} runs")
-        if cancel_requested:
-            settle(conn, run_id, "cancelled", None, None)
+        try:
+            if kind not in ("capacity", "sweep", "road", "demand", "calendar"):
+                raise ValueError(f"this worker cannot run {kind!r} runs")
+            if cancel_requested:
+                settle(conn, run_id, "cancelled", None, None)
+                queue.complete(job, {"status": "cancelled"})
+                return "cancelled"
+            outcome: str
+            files: list[RunFile] = []
+            replay: bytes | None = None
+            if kind == "demand":
+                outcome, result, files = run_demand_job(network, lines, settings, reporter)
+            elif kind == "road":
+                outcome, result, replay = road(settings, json.loads(lines), street_tiles(network), reporter)
+                if replay is not None and outcome == "done":
+                    conn.execute(REPLAY, {"id": run_id, "data": replay})
+            elif kind == "calendar":
+                # A project without rail service lines has no network: only the expansion runs.
+                outcome, result = run_calendar(
+                    (lambda net, own=None: loader(net, own or lines)) if network else None,
+                    settings,
+                    reporter,
+                    network or None,
+                )
+            elif kind == "sweep":
+                outcome, result = run_sweep(loader(network, lines), settings, reporter)
+            else:
+                kernel = loader(network, lines)
+                outcome, result = run_capacity(
+                    kernel, dict(settings["params"]), bool(settings["sweep"]), reporter
+                )
+        except Exception as e:  # noqa: BLE001 (any failure of the run is reported on the run)
+            message = str(e) or type(e).__name__
+            bound.warning("run failed", error=message)
+            settle(conn, run_id, "failed", None, message)
+            queue.fail(job, message)
+            return "failed"
+        if outcome == "done":
+            for f in files:
+                conn.execute(
+                    SAVE_FILE,
+                    {"id": run_id, "name": f.name, "media_type": f.media_type, "content": f.content},
+                )
+            settle(conn, run_id, "done", result, None)
+            queue.complete(job, {"status": "done"})
+            bound.info(
+                "run done",
+                verdict=(result.get("run") or {}).get("verdict") if kind not in ("road", "demand") else None,
+                variants=len(result.get("variants", [])),
+            )
+            return "done"
+        if reporter.cancelled and not stop.is_set() and not reporter.lost:
+            settle(conn, run_id, "cancelled", result, None)
             queue.complete(job, {"status": "cancelled"})
+            bound.info("run cancelled")
             return "cancelled"
-        outcome: str
-        files: list[RunFile] = []
-        replay: bytes | None = None
-        if kind == "demand":
-            outcome, result, files = run_demand_job(network, lines, settings, reporter)
-        elif kind == "road":
-            outcome, result, replay = road(settings, json.loads(lines), street_tiles(network), reporter)
-            if replay is not None and outcome == "done":
-                conn.execute(REPLAY, {"id": run_id, "data": replay})
-        elif kind == "calendar":
-            # A project without rail service lines has no network: only the expansion runs.
-            outcome, result = run_calendar(
-                (lambda net, own=None: loader(net, own or lines)) if network else None,
-                settings,
-                reporter,
-                network or None,
-            )
-        elif kind == "sweep":
-            outcome, result = run_sweep(loader(network, lines), settings, reporter)
-        else:
-            kernel = loader(network, lines)
-            outcome, result = run_capacity(
-                kernel, dict(settings["params"]), bool(settings["sweep"]), reporter
-            )
-    except Exception as e:  # noqa: BLE001 (any failure of the run is reported on the run)
-        message = str(e) or type(e).__name__
-        bound.warning("run failed", error=message)
-        settle(conn, run_id, "failed", None, message)
-        queue.fail(job, message)
-        return "failed"
-    if outcome == "done":
-        for f in files:
-            conn.execute(
-                SAVE_FILE, {"id": run_id, "name": f.name, "media_type": f.media_type, "content": f.content}
-            )
-        settle(conn, run_id, "done", result, None)
-        queue.complete(job, {"status": "done"})
-        bound.info(
-            "run done",
-            verdict=(result.get("run") or {}).get("verdict") if kind not in ("road", "demand") else None,
-            variants=len(result.get("variants", [])),
-        )
-        return "done"
-    if reporter.cancelled and not stop.is_set() and not reporter.lost:
-        settle(conn, run_id, "cancelled", result, None)
-        queue.complete(job, {"status": "cancelled"})
-        bound.info("run cancelled")
-        return "cancelled"
-    settle(conn, run_id, "failed", result, STOPPED)
-    queue.fail(job, STOPPED)
-    bound.info("run stopped")
-    return "stopped"
+        settle(conn, run_id, "failed", result, STOPPED)
+        queue.fail(job, STOPPED)
+        bound.info("run stopped")
+        return "stopped"
+    finally:
+        reporter.close()
