@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station}: liczba kursów, które skorzystały z innego peronu niż zwykle: {count}.",
   "rail.plan.platform_changes_one": "{station}: 1 kurs skorzystał z innego peronu niż zwykle.",
   "rail.plan.platform_short": "peron {platform} ma {length}, pociąg potrzebuje {needed}",
+  "rail.plan.platform_taken": "pociąg, który nie mógł odjechać, stoi przy peronie",
   "rail.plan.pull_out": "wyjazd z postoju: {reason}",
   "rail.plan.route_break": "przebieg {route} nie jest kontynuacją przebiegu {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

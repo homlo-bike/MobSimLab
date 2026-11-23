@@ -204,8 +204,10 @@ fn a_dense_day_stacks_trains_in_the_depot_and_runs_without_a_deadlock() {
     // At 3 and 4 minutes the day stopped: two trains on one depot track overlapped (a train
     // stopped 50 m behind the one ahead instead of the 10 m stabling gap, so the last one did
     // not fit), a train left a stack before the one in front of it, and a train whose trip was
-    // dropped stood in a terminal platform another train was planned into.
-    for h in [180.0, 240.0] {
+    // dropped stood in a terminal platform another train was planned into. At 2 minutes, far
+    // over the line's capacity, such a train could not leave in time either: the trips planned
+    // into its platform are taken back.
+    for h in [120.0, 180.0, 240.0] {
         for protection in [TrainProtection::default(), TrainProtection::LineOfSight] {
             let r = dense_day(h, protection);
             assert!(r.is_ok(), "{h} s, {protection:?}: {r:?}");

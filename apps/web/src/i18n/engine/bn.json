@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station}-এ {count}টি যাত্রা সাধারণের চেয়ে অন্য প্ল্যাটফর্ম ব্যবহার করেছে।",
   "rail.plan.platform_changes_one": "{station}-এ 1টি যাত্রা সাধারণের চেয়ে অন্য প্ল্যাটফর্ম ব্যবহার করেছে।",
   "rail.plan.platform_short": "প্ল্যাটফর্ম {platform} {length}, ট্রেনের লাগে {needed}",
+  "rail.plan.platform_taken": "যে ট্রেনটি ছাড়তে পারেনি সেটি প্ল্যাটফর্মে দাঁড়িয়ে আছে",
   "rail.plan.pull_out": "বের হওয়া: {reason}",
   "rail.plan.route_break": "রুট {route} রুট {previous}-এর পরে আসে না",
   "rail.plan.run_failed": "{run}: {detail}",

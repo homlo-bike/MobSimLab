@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station} da {count} ta qatnov odatdagidan boshqa platformadan foydalandi.",
   "rail.plan.platform_changes_one": "{station} da 1 ta qatnov odatdagidan boshqa platformadan foydalandi.",
   "rail.plan.platform_short": "{platform} platformasi {length}, poyezdga {needed} kerak",
+  "rail.plan.platform_taken": "joʻnay olmagan poyezd platformada turibdi",
   "rail.plan.pull_out": "depodan chiqish: {reason}",
   "rail.plan.route_break": "{route} marshruti {previous} marshrutining davomi emas",
   "rail.plan.run_failed": "{run}: {detail}",

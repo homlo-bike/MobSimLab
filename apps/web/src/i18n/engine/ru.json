@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "Станция {station}: рейсов, использовавших не обычную платформу, — {count}.",
   "rail.plan.platform_changes_one": "Станция {station}: 1 рейс использовал не обычную платформу.",
   "rail.plan.platform_short": "длина платформы {platform} — {length}, поезду нужно {needed}",
+  "rail.plan.platform_taken": "поезд, который не смог уйти, стоит у платформы",
   "rail.plan.pull_out": "выход из отстоя: {reason}",
   "rail.plan.route_break": "маршрут {route} не продолжает маршрут {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

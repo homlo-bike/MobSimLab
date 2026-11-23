@@ -1292,6 +1292,47 @@ mod tests {
     }
 
     #[test]
+    fn no_generated_signal_holds_a_tram_on_its_scissors_crossover() {
+        // Damascus, signal g27: on the short piece of track between the two halves of a tram
+        // scissors, a tram held at the signal stood on the half behind it, which the next train's
+        // route needed, and both waited for ever.
+        let mode = RailMode::Tram;
+        let mut net = Network::new(mode, [7.0, 50.9]);
+        let mut t = straight(1, (0.0, 0.0), (1500.0, 0.0), None);
+        t.tracks = 2;
+        net.tracks.push(t);
+        net.switches.push(crate::model::Switch {
+            id: 2,
+            kind: SwitchKind::Scissors,
+            track: 1,
+            s: 400.0,
+            element: defaults().mode(mode).default_turnout.clone(),
+            side: 1,
+            direction: 1,
+            flip: false,
+        });
+        let t = crate::topology::topology(&build(&net, None));
+        let sw = t.switches.iter().find(|s| s.id == 2).unwrap();
+        let inner: Vec<&str> = t
+            .sections
+            .iter()
+            .filter(|s| {
+                sw.nodes.contains(&s.from) && sw.nodes.contains(&s.to) && !sw.legs.contains(&s.id)
+            })
+            .map(|s| s.id.as_str())
+            .collect();
+        assert!(!inner.is_empty(), "{:?}", sw.nodes);
+        let on: Vec<_> = t
+            .signals
+            .iter()
+            .filter(|g| inner.contains(&g.section.as_str()))
+            .collect();
+        assert!(on.is_empty(), "{on:?}");
+        // The scissors is still protected from both sides of both tracks.
+        assert!(t.signals.len() >= 4, "{:?}", t.signals);
+    }
+
+    #[test]
     fn a_tram_scissors_too_tight_for_its_diamond_is_two_mirrored_crossovers_of_its_own_turnout() {
         let mode = RailMode::Tram;
         let mut net = Network::new(mode, [7.0, 50.9]);

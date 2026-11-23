@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "Em {station}, {count} viagens usaram uma plataforma diferente da habitual.",
   "rail.plan.platform_changes_one": "Em {station}, 1 viagem usou uma plataforma diferente da habitual.",
   "rail.plan.platform_short": "a plataforma {platform} tem {length}, o trem precisa de {needed}",
+  "rail.plan.platform_taken": "um trem que não pôde partir está parado na plataforma",
   "rail.plan.pull_out": "saída do estacionamento: {reason}",
   "rail.plan.route_break": "a rota {route} não dá continuidade à rota {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

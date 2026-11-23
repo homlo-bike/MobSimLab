@@ -1833,13 +1833,65 @@ fn to_anchor(dz: &Design, g: &Seg, x: f64) -> Option<crate::signal::SignalAt> {
     }
 }
 
+/// Purpose: whether a train standing `rest_m` beyond one end of a section, on the sections joined
+/// to it there, would stand in a switch, crossing or level crossing area.
+/// Inputs: the segments, nodes, node of each section end, the areas and lengths per section, the
+/// section end (section, 0 start / 1 end), the length beyond it, m, and how many sections deep to
+/// look. Output: true when it would.
+#[allow(clippy::too_many_arguments)]
+fn fouls_behind(
+    segs: &[Seg],
+    nodes: &[NodeAt],
+    node_of: &BTreeMap<(usize, usize), String>,
+    areas: &[Vec<(f64, f64, Area)>],
+    len: &[f64],
+    (seg, end): (usize, usize),
+    rest_m: f64,
+    depth: u32,
+) -> bool {
+    let Some(id) = node_of.get(&(seg, end)) else {
+        return false;
+    };
+    let Some(n) = nodes.iter().find(|n| &n.0 == id) else {
+        return false;
+    };
+    let out = outward(&segs[seg].pts, end == 0);
+    n.2.iter()
+        .filter(|&&(si, e)| (si, e) != (seg, end))
+        // Only the sections a train passes into from this one (as for the links).
+        .filter(|&&(si, e)| outward(&segs[si].pts, e == 0).dot(out) < -0.5)
+        .any(|&(si, e)| {
+            let (lo, hi) = if e == 0 {
+                (0.0, rest_m)
+            } else {
+                (len[si] - rest_m, len[si])
+            };
+            areas[si]
+                .iter()
+                .any(|(a, b, _)| *a < hi - 0.5 && *b > lo + 0.5)
+                || (rest_m > len[si] + 0.5
+                    && depth > 0
+                    && fouls_behind(
+                        segs,
+                        nodes,
+                        node_of,
+                        areas,
+                        len,
+                        (si, 1 - e),
+                        rest_m - len[si],
+                        depth - 1,
+                    ))
+        })
+}
+
 /// Purpose: generate the signal plan (ADR-0030 point 7) on the sections, and the same plan in
 /// document form. Rules (see [`crate::signal`]):
 ///
 /// - main signals facing every switch area: `signal_before_switch_m` in front of a switch point,
 ///   at the fouling point on a leg; facing every same-level crossing at its fouling points;
 ///   none where it would stand inside another area, or where a train waiting at it would not
-///   fit before the area behind it (the two areas are then protected as one);
+///   fit before the area behind it, on its section or the ones behind (the two areas are then
+///   protected as one);
 /// - starter signals at the ends of platform tracks that continue (not for driving on sight);
 /// - block signals on plain running line, both directions, no further apart than the block
 ///   length (braking distance + sighting + overlap), avoiding switch areas, crossings and level
@@ -2069,6 +2121,20 @@ fn generate_signals(
             (c.x + 0.5, c.x + train)
         };
         if areas[c.seg].iter().any(|(a, b, _)| *a < hi && *b > lo) {
+            continue;
+        }
+        // Where the section is shorter than the train, the rest of it stands on the sections
+        // behind: not in a switch area there either. Signal g27 of the Damascus drawing stood on a
+        // 2 m piece between the two halves of scissors crossover w173, and a tram held at it stood
+        // on the crossover's first half, which the next train's route needed (deadlock).
+        let spill = if c.to {
+            train - c.x
+        } else {
+            c.x + train - len[c.seg]
+        };
+        let back = usize::from(!c.to);
+        if spill > 0.5 && fouls_behind(segs, nodes, node_of, &areas, &len, (c.seg, back), spill, 4)
+        {
             continue;
         }
         push(&mut out, c);
