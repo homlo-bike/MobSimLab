@@ -419,7 +419,7 @@ impl Model {
                 c.extend(more);
                 c.sort_by(|a, b| a.partial_cmp(b).unwrap());
             }
-            piece_on_sight.extend(std::iter::repeat(sight).take(c.len() + 1));
+            piece_on_sight.extend(std::iter::repeat_n(sight, c.len() + 1));
             let mut from = 0.0;
             for &x in c.iter().chain(std::iter::once(&track.length_m)) {
                 track_pieces[t].push(pieces.len() as PieceId);
