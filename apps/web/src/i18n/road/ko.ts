@@ -95,4 +95,30 @@ export const roadKo = {
   "visuals.legend.veryLate": "심한 지연({min}분 초과)",
   "road.replay.noService":
     "이 실행은 운행 시각이 기록되기 전에 저장되어 차량이 노선 색상으로 표시됩니다. 정시성으로 보려면 다시 실행하세요.",
+  "road.step.streets": "도로를 불러오는 중: 지도 타일 {of}개 중 {done}개…",
+  "road.note.junctionSetup": "교차로 설정: 신호등 있는 교차로 {on}개, 없는 교차로 {off}개",
+  "road.note.gateOffStreet": "차고지 {depot}: 출입구 하나가 버스가 다닐 수 있는 도로 근처에 없습니다",
+  "road.note.noOsmSignals":
+    "OpenStreetMap에는 이 도로들에 신호등이 없어서 모든 교차로가 신호 없이 운영되고, 이면도로는 간선도로 교통의 틈을 기다립니다. GIS › 도로에서 주요 교차로에 신호등을 지정하세요.",
+  "road.note.lineCannotRun": "{line} 운행 불가: {why}",
+  "road.note.carsRemoved":
+    "배경 차량 {n}대가 {min}분 넘게 멈춰 정체를 풀기 위해 교통에서 제외되었습니다. 도로 교통량이 처리 용량을 넘을 수 있습니다",
+  "road.note.pullOutNotFollowed": "출고 경로를 따르지 않습니다({why}). 차량은 최단 경로로 갑니다",
+  "road.note.pullInNotFollowed": "입고 경로를 따르지 않습니다({why}). 차량은 최단 경로로 갑니다",
+  "road.note.noDepot": "차고지 없음: 차량이 도로에서 시작하고 끝납니다",
+  "road.note.noSlot": "차량 {n}은(는) 차고지에 자리가 없습니다: 차고지 출입구에서 출발합니다",
+  "road.note.cannotLeave": "차량 {n}은(는) 차고지를 나갈 수 없습니다: 도로에서 출발합니다",
+  "road.note.cannotReturn": "차량 {n}은(는) 차고지로 돌아갈 수 없습니다: 도로에서 끝납니다",
+  "road.problem.notRouted": "점이 두 개 미만이거나 경로가 만들어지지 않았습니다",
+  "road.problem.noDepartures": "이 시간대에 출발이 없습니다",
+  "road.problem.notMatched": "경로를 도로에 맞출 수 없습니다",
+  "road.problem.stopOffRoute": "정류장 {stop}이(가) 맞춘 경로 위에 없습니다",
+  "road.problem.notBack": "경로가 첫 정류장으로 돌아오지 않습니다",
+  "road.problem.noBusLink":
+    "버스가 {from}에서 {to}(으)로 갈 길이 없습니다. {stop} 근처({m}m 떨어짐): 교통 모델의 도로에는 그곳에서 버스가 할 수 있는 회전이 없습니다(예: 유턴이나 금지된 회전). 그곳에서 다른 도로로 가도록 경로나 경유점을 옮기세요",
+  "road.problem.depotToRoute": "차량이 차고지에서 경로에 닿을 수 없습니다",
+  "road.problem.notClosed": "순환 경로가 도로 위에서 닫히지 않습니다",
+  "road.problem.unreachable": "도달할 수 없습니다",
+  "road.part.unnamedStreet": "이름 없는 도로(OSM 경로 {way})",
+  "road.part.stop": "정류장 {n}",
 } satisfies RoadMessages;

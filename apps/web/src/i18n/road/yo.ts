@@ -95,4 +95,30 @@ export const roadYo = {
   "visuals.legend.veryLate": "Ó pẹ́ púpọ̀ (ju ìṣẹ́jú {min} lọ)",
   "road.replay.noService":
     "A fi ìṣiṣẹ́ yìí pamọ́ kí a tó máa kọ àkókò iṣẹ́ sílẹ̀, nítorí náà àwọn ọkọ̀ rẹ̀ ní àwọ̀ ìlà wọn. Tún un ṣe láti rí wọn gẹ́gẹ́ bí wọ́n ṣe ń dé lásìkò.",
+  "road.step.streets": "Ń ṣí àwọn òpópónà: àwòrán {done} nínú {of} ti máàpù…",
+  "road.note.junctionSetup": "Ètò oríta: oríta {on} ní iná ìrìnnà, {off} kò ní",
+  "road.note.gateOffStreet": "Ibùdó ọkọ̀ {depot}: ẹnu ọ̀nà kan kò sún mọ́ òpópónà tí bọ́ọ̀sì lè gbà",
+  "road.note.noOsmSignals":
+    "OpenStreetMap kò fi iná ìrìnnà kankan hàn lórí àwọn òpópónà wọ̀nyí, nítorí náà gbogbo oríta ń ṣiṣẹ́ láìsí iná, àwọn òpópónà kékeré sì ń dúró de àlàfo nínú ọkọ̀ àwọn ojú ọ̀nà ńlá. Fún àwọn oríta pàtàkì ní iná ìrìnnà ní GIS › Àwọn òpópónà.",
+  "road.note.lineCannotRun": "{line} kò lè ṣiṣẹ́: {why}",
+  "road.note.carsRemoved":
+    "Ọkọ̀ ẹ̀yìn {n} dúró fún ju ìṣẹ́jú {min} lọ, a sì yọ wọ́n kúrò nínú ìrìnnà láti tú súnkẹrẹ-fàkẹrẹ; ó lè jẹ́ pé ọkọ̀ pọ̀ lójú òpópónà ju ohun tí wọ́n lè gbé lọ",
+  "road.note.pullOutNotFollowed": "A kò tẹ̀lé ọ̀nà ìjáde láti ibùdó ({why}); àwọn ọkọ̀ rẹ̀ ń gba ọ̀nà tó kúrú jù",
+  "road.note.pullInNotFollowed": "A kò tẹ̀lé ọ̀nà ìpadà sí ibùdó ({why}); àwọn ọkọ̀ rẹ̀ ń gba ọ̀nà tó kúrú jù",
+  "road.note.noDepot": "Kò sí ibùdó: àwọn ọkọ̀ rẹ̀ ń bẹ̀rẹ̀ wọ́n sì ń parí lójú òpópónà",
+  "road.note.noSlot": "Ọkọ̀ {n} kò ní àyè ní ibùdó: ó ń bẹ̀rẹ̀ ní ẹnu ọ̀nà ibùdó",
+  "road.note.cannotLeave": "Ọkọ̀ {n} kò lè jáde kúrò ní ibùdó rẹ̀: ó ń bẹ̀rẹ̀ lójú òpópónà",
+  "road.note.cannotReturn": "Ọkọ̀ {n} kò lè padà sí ibùdó rẹ̀: ó ń parí lójú òpópónà",
+  "road.problem.notRouted": "ó ní ojúàmì tí kò tó méjì tàbí a kò tíì ṣètò ọ̀nà rẹ̀",
+  "road.problem.noDepartures": "kò ní ìgbéra kankan ní àkókò yìí",
+  "road.problem.notMatched": "a kò lè so ọ̀nà rẹ̀ mọ́ àwọn òpópónà",
+  "road.problem.stopOffRoute": "ibùdókọ̀ {stop} kò sí lórí ọ̀nà tí a sopọ̀",
+  "road.problem.notBack": "ọ̀nà náà kò padà sí ibùdókọ̀ àkọ́kọ́ rẹ̀",
+  "road.problem.noBusLink":
+    "kò sí ọ̀nà fún bọ́ọ̀sì láti {from} sí {to}, nítòsí {stop} ({m} m sí i): àwọn òpópónà àwòṣe ìrìnnà kò ní ìyípadà níbẹ̀ tí bọ́ọ̀sì lè gbà, bí àpẹẹrẹ ìyípadà-sẹ́yìn tàbí ìyípadà tí a kà léèwọ̀. Sún ọ̀nà náà tàbí ojúàmì àgbàkọjá kí ó lè gba òpópónà mìíràn níbẹ̀",
+  "road.problem.depotToRoute": "àwọn ọkọ̀ rẹ̀ kò lè dé ọ̀nà láti ibùdó",
+  "road.problem.notClosed": "yípo rẹ̀ kò parí lórí àwọn òpópónà",
+  "road.problem.unreachable": "a kò lè dé ọ̀dọ̀ rẹ̀",
+  "road.part.unnamedStreet": "òpópónà aláìní orúkọ (ọ̀nà OSM {way})",
+  "road.part.stop": "ibùdókọ̀ {n}",
 } satisfies RoadMessages;

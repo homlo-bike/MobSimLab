@@ -19,11 +19,17 @@ from __future__ import annotations
 import math
 import os
 import tempfile
+import time
 from collections.abc import Mapping
 from typing import Any, Literal, Protocol
 
+import structlog
+
 from mobsim_worker.jobs.road import osm, service, sim, traffic
-from mobsim_worker.jobs.road.network import RoadNet, netconvert
+from mobsim_worker.jobs.road.messages import note
+from mobsim_worker.jobs.road.network import RoadNet, Stopped, ToolTimeout, netconvert
+
+log = structlog.get_logger("mobsim_worker")
 
 Outcome = Literal["done", "stopped"]
 
@@ -96,6 +102,7 @@ def line_results(
         "color": plan.color,
         "energy": plan.energy,
         "problem": plan.problem,
+        "problem_msg": plan.problem_msg,
         "notes": plan.notes,
         "vehicles": len(plan.vehicles),
         "cycle_s": plan.cycle_s,
@@ -224,7 +231,11 @@ def run_road(
         "traffic": None,
     }
 
+    started = time.monotonic()
+
     def step(name: str, **extra: Any) -> bool:
+        # The worker's log says how long each step took (a long step shows as a long gap between two lines).
+        log.info("road run step", step=name, after_s=round(time.monotonic() - started, 1))
         reporter.report({"step": name, **extra}, result)
         return reporter.should_stop()
 
@@ -238,15 +249,25 @@ def run_road(
     lights_on, lights_off = osm.apply_junction_setup(data, scenario.get("junctions", []))
     if lights_on or lights_off:
         result["notes"].append(
-            f"Junction setup: {lights_on:,} junctions given traffic lights, {lights_off:,} without"
+            note(
+                f"Junction setup: {lights_on:,} junctions given traffic lights, {lights_off:,} without",
+                "road.note.junctionSetup",
+                on=lights_on,
+                off=lights_off,
+            )
         )
     depot_ways: dict[str, osm.DepotWays] = {}
     for d in scenario.get("depots", []):
         dw = osm.add_depot(data, d.get("network", {}))
         depot_ways[str(d["id"])] = dw
         if dw.unjoined:
+            depot = str(d.get("name") or d["id"])
             result["notes"].append(
-                f"depot {d.get('name') or d['id']}: a gate is not near a street a bus may use"
+                note(
+                    f"depot {depot}: a gate is not near a street a bus may use",
+                    "road.note.gateOffStreet",
+                    depot=depot,
+                )
             )
     wired = {w.id for w in data.ways.values() if w.tags.get("trolley_wire") in ("yes", "both")}
     wired |= {
@@ -258,7 +279,10 @@ def run_road(
     net_file = os.path.join(workdir, "net.net.xml")
     osm.write(data, osm_file)
     keep = [str(i) for i in data.ways if i >= osm.ADDED_ID_BASE]
-    warnings = netconvert(osm_file, net_file, workdir, left, keep)
+    try:
+        warnings = netconvert(osm_file, net_file, workdir, left, keep, reporter.should_stop)
+    except Stopped:
+        return "stopped", result, None
     net = RoadNet(net_file)
     edges = [e for e in net.net.getEdges() if e.getFunction() == ""]
     result["network"] = {
@@ -271,9 +295,12 @@ def run_road(
     }
     if osm_signals == 0 and lights_on == 0:
         result["notes"].append(
-            "OpenStreetMap maps no traffic lights on these streets, so every junction runs without lights "
-            "and side streets wait for gaps in the main roads' traffic. Give the main junctions traffic "
-            "lights in GIS › Streets."
+            note(
+                "OpenStreetMap maps no traffic lights on these streets, so every junction runs without "
+                "lights and side streets wait for gaps in the main roads' traffic. Give the main junctions "
+                "traffic lights in GIS › Streets.",
+                "road.note.noOsmSignals",
+            )
         )
 
     if step("planning"):
@@ -283,11 +310,18 @@ def run_road(
     plans = [service.plan_line(net, ln, depots) for ln in lines]
     for pl in plans:
         if pl.problem:
-            result["notes"].append(f"{pl.name} cannot run: {pl.problem}")
+            result["notes"].append(
+                note(
+                    f"{pl.name} cannot run: {pl.problem}",
+                    "road.note.lineCannotRun",
+                    line=pl.name,
+                    why=pl.problem_msg,
+                )
+            )
     runnable = [pl for pl in plans if not pl.problem and pl.vehicles]
     if not runnable:
         raise ValueError(
-            "no street line can run: " + "; ".join(n for n in result["notes"])
+            "no street line can run: " + "; ".join(n["text"] for n in result["notes"])
             if result["notes"]
             else "no street lines"
         )
@@ -305,18 +339,27 @@ def run_road(
     if step("traffic"):
         return "stopped", result, None
     bg_file = os.path.join(workdir, "background.rou.xml")
-    tr = traffic.write_background(
-        net,
-        net_file,
-        workdir,
-        data.ways,
-        scenario.get("streets", []),
-        scenario.get("traffic", {}),
-        begin,
-        max(to_s, last_planned),
-        seed,
-        bg_file,
-    )
+    try:
+        tr = traffic.write_background(
+            net,
+            net_file,
+            workdir,
+            data.ways,
+            scenario.get("streets", []),
+            scenario.get("traffic", {}),
+            begin,
+            max(to_s, last_planned),
+            seed,
+            bg_file,
+            reporter.should_stop,
+        )
+    except Stopped:
+        return "stopped", result, None
+    except ToolTimeout as e:
+        raise RuntimeError(
+            f"Planning the background traffic took longer than {e.timeout_s / 60:.0f} minutes and was "
+            "stopped. Run a shorter period or fewer lines, or lower the traffic peaks of the streets"
+        ) from None
     result["traffic"] = {
         "cars": tr.cars,
         "target_car_km": tr.target_car_km,
@@ -333,6 +376,13 @@ def run_road(
         "stops": os.path.join(workdir, "stops.xml"),
         "tripinfo": os.path.join(workdir, "tripinfo.xml"),
     }
+    log.info(
+        "road run step",
+        step="simulating",
+        after_s=round(time.monotonic() - started, 1),
+        cars=tr.cars,
+        vehicles=sum(len(pl.vehicles) for pl in runnable),
+    )
     out = sim.run_sumo(
         files=files,
         plans=runnable,
@@ -368,8 +418,14 @@ def run_road(
     }
     if out.background_removed:
         result["notes"].append(
-            f"{out.background_removed:,} background cars stood for over {sim.CAR_STUCK_S / 60:.0f} minutes "
-            "and were taken out of the traffic to clear jams; the streets may be busier than they can carry"
+            note(
+                f"{out.background_removed:,} background cars stood for over {sim.CAR_STUCK_S / 60:.0f} "
+                "minutes and were taken out of the traffic to clear jams; the streets may be busier than "
+                "they can carry",
+                "road.note.carsRemoved",
+                n=out.background_removed,
+                min=round(sim.CAR_STUCK_S / 60),
+            )
         )
     replay = sim.pack_replay(runnable, out, stops)
     return ("stopped" if out.stopped else "done"), result, replay

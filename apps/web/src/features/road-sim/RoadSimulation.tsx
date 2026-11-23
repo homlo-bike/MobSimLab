@@ -24,6 +24,7 @@ import type { RoadRun, RoadRunDetail, RoadRunsApi } from "./api";
 import { ensureReplayLayers, hasServiceTimes, removeReplayLayers, replaySpan, setReplayTime } from "./replay";
 import { buildScenario } from "./scenario";
 import { roadFindings } from "./advice";
+import { roadNoteText, roadProblemText } from "./notes";
 import { FindingsList } from "../advice/Findings";
 import type { LonLat } from "../street-lines/types";
 import type { Replay, RoadEvent, RoadLineResult, RoadResult, RoadStep } from "./types";
@@ -559,7 +560,8 @@ function Progress({ step }: { step: RoadStep | null }) {
   if (step?.step === "simulating") {
     const share = step.end > step.begin ? (step.t - step.begin) / (step.end - step.begin) : 0;
     text = t("road.step.simulating", { time: clock(step.t), share: pct(Math.min(1, share)) });
-  } else if (step) text = t(`road.step.${step.step}`);
+  } else if (step?.step === "streets") text = t("road.step.streets", { done: step.done, of: step.of });
+  else if (step) text = t(`road.step.${step.step}`);
   return (
     <p role="status" className="flex items-center gap-2 text-sm text-slate-700">
       <span
@@ -609,9 +611,9 @@ function Results({
           </ul>
         </section>
       )}
-      {result.notes.map((n) => (
-        <p key={n} className="text-xs text-amber-800">
-          {n}
+      {result.notes.map((n, i) => (
+        <p key={i} className="text-xs text-amber-800">
+          {roadNoteText(t, n)}
         </p>
       ))}
       {result.lines.map((l) => (
@@ -673,7 +675,9 @@ function LineCard({ line }: { line: RoadLineResult }) {
         {line.name}
       </h3>
       {line.problem ? (
-        <p className="mt-1 text-xs text-red-700">{t("road.cannotRun", { problem: line.problem })}</p>
+        <p className="mt-1 text-xs text-red-700">
+          {t("road.cannotRun", { problem: roadProblemText(t, line) })}
+        </p>
       ) : (
         <dl className="mt-1 grid grid-cols-[1fr_auto] gap-x-3 gap-y-0.5">
           {rows.map(([k, v]) => (
@@ -684,9 +688,9 @@ function LineCard({ line }: { line: RoadLineResult }) {
           ))}
         </dl>
       )}
-      {line.notes.map((n) => (
-        <p key={n} className="mt-1 text-xs text-amber-800">
-          {n}
+      {line.notes.map((n, i) => (
+        <p key={i} className="mt-1 text-xs text-amber-800">
+          {roadNoteText(t, n)}
         </p>
       ))}
     </section>

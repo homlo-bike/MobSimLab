@@ -96,4 +96,30 @@ export const roadVi = {
   "visuals.legend.veryLate": "Trễ nhiều (hơn {min} phút)",
   "road.replay.noService":
     "Lần chạy này được lưu trước khi ghi lại giờ phục vụ, nên phương tiện giữ màu tuyến. Chạy lại để xem theo mức đúng giờ.",
+  "road.step.streets": "Đang tải đường phố: {done} / {of} ô bản đồ…",
+  "road.note.junctionSetup": "Thiết lập nút giao: {on} nút giao có đèn tín hiệu, {off} không có",
+  "road.note.gateOffStreet": "Bãi xe {depot}: một cổng không ở gần con đường xe buýt được đi",
+  "road.note.noOsmSignals":
+    "OpenStreetMap không ghi đèn tín hiệu nào trên các đường này, nên mọi nút giao đều chạy không có đèn và đường nhánh phải chờ khoảng trống trong dòng xe của đường chính. Hãy đặt đèn tín hiệu cho các nút giao chính trong GIS › Đường phố.",
+  "road.note.lineCannotRun": "{line} không thể chạy: {why}",
+  "road.note.carsRemoved":
+    "{n} xe nền đứng yên quá {min} phút và đã được đưa ra khỏi dòng xe để giải tỏa ùn tắc; đường phố có thể đông hơn mức chịu tải",
+  "road.note.pullOutNotFollowed": "Không đi theo lộ trình ra bãi ({why}); xe đi đường ngắn nhất",
+  "road.note.pullInNotFollowed": "Không đi theo lộ trình về bãi ({why}); xe đi đường ngắn nhất",
+  "road.note.noDepot": "Không có bãi xe: xe bắt đầu và kết thúc trên đường",
+  "road.note.noSlot": "Xe {n} không có chỗ trong bãi: bắt đầu tại cổng bãi",
+  "road.note.cannotLeave": "Xe {n} không thể rời bãi: bắt đầu trên đường",
+  "road.note.cannotReturn": "Xe {n} không thể về bãi: kết thúc trên đường",
+  "road.problem.notRouted": "có ít hơn hai điểm hoặc chưa được vạch tuyến",
+  "road.problem.noDepartures": "không có chuyến khởi hành nào trong khoảng thời gian",
+  "road.problem.notMatched": "không khớp được lộ trình với đường phố",
+  "road.problem.stopOffRoute": "điểm dừng {stop} không nằm trên lộ trình đã khớp",
+  "road.problem.notBack": "lộ trình không quay lại điểm dừng đầu tiên",
+  "road.problem.noBusLink":
+    "xe buýt không có đường từ {from} sang {to}, gần {stop} (cách {m} m): đường phố của mô hình giao thông không có hướng rẽ nào ở đó mà xe buýt được đi, ví dụ quay đầu hoặc rẽ bị cấm. Hãy dời lộ trình hoặc một điểm đi qua để nó đi đường khác ở đó",
+  "road.problem.depotToRoute": "xe không thể từ bãi đến lộ trình",
+  "road.problem.notClosed": "vòng chạy không khép kín trên đường phố",
+  "road.problem.unreachable": "không thể đến được",
+  "road.part.unnamedStreet": "đường không tên (đường OSM {way})",
+  "road.part.stop": "điểm dừng {n}",
 } satisfies RoadMessages;

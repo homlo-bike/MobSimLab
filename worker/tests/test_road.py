@@ -282,7 +282,9 @@ def test_a_line_runs_out_of_its_depot_and_back_in_traffic(tmp_path: Path) -> Non
     assert run["teleports"] == 0
     # The test town maps one traffic light: it is counted and built, and no "no lights" note is given.
     assert result["network"]["osm_signals"] >= 1 and result["network"]["signals"] >= 1
-    assert not any("no traffic lights" in n for n in result["notes"])
+    assert not any("no traffic lights" in n["text"] for n in result["notes"])
+    # Every note carries its message for the app's languages.
+    assert all(n["msg"]["key"].startswith("road.") for n in result["notes"])
     assert run["background_inserted"] > 0
     assert run["vehicles"] >= 1 and run["back_in_depot"] == run["vehicles"]
     ln = result["lines"][0]
@@ -387,9 +389,15 @@ def test_a_route_with_no_bus_path_names_the_streets_and_the_nearest_stop() -> No
             raise NoBusLink("-29270329#0", "1242688065", "Main Street", "Col 2", at)
 
     problem = match_circuit(Net(), ln)  # type: ignore[arg-type]
-    assert isinstance(problem, str)
-    assert problem.startswith("no way for a bus from Main Street onto Col 2, near Middle (0 m away)")
-    assert "29270329" not in problem
+    assert isinstance(problem, dict)
+    text = problem["text"]
+    assert text.startswith("no way for a bus from Main Street onto Col 2, near Middle (0 m away)")
+    assert "29270329" not in text
+    # The same as a message for the app's languages.
+    assert problem["msg"] == {
+        "key": "road.problem.noBusLink",
+        "args": {"from": "Main Street", "to": "Col 2", "stop": "Middle", "m": 0},
+    }
 
 
 def test_background_cars_stuck_for_minutes_are_taken_out_but_buses_never() -> None:
@@ -485,3 +493,38 @@ def test_trips_run_counts_only_the_trips_planned_in_the_period() -> None:
     r = line_results(plan, {"dwell_s": 20}, out, outcome, 7 * H, 9 * H)
     assert r["trips"] == 3
     assert r["trips_run"] == 3  # four trips came back, one of them before 07:00
+
+
+def _gone(pid: int) -> bool:
+    import os  # noqa: PLC0415
+    import time  # noqa: PLC0415
+
+    for _ in range(50):
+        try:
+            os.kill(pid, 0)
+        except ProcessLookupError:
+            return True
+        time.sleep(0.1)
+    return False
+
+
+def test_stopping_a_sumo_tool_ends_it_and_the_programs_it_started(tmp_path: Path) -> None:
+    from mobsim_worker.jobs.road.network import Stopped, run_tool  # noqa: PLC0415
+
+    # A tool that starts a program of its own (as randomTrips.py starts duarouter) and waits for it.
+    script = 'sleep 60 & echo $! > child.pid; wait'
+    calls = iter([False, False, True])
+    with pytest.raises(Stopped):
+        run_tool(["/bin/sh", "-c", script], str(tmp_path), should_stop=lambda: next(calls))
+    child = int((tmp_path / "child.pid").read_text())
+    assert _gone(child)
+
+
+def test_a_sumo_tool_that_runs_too_long_is_ended_with_a_plain_message(tmp_path: Path) -> None:
+    from mobsim_worker.jobs.road.network import ToolTimeout, run_tool  # noqa: PLC0415
+
+    script = 'sleep 60 & echo $! > child.pid; wait'
+    with pytest.raises(ToolTimeout) as e:
+        run_tool(["/bin/sh", "-c", script], str(tmp_path), timeout_s=1.5)
+    assert "sleep" not in str(e.value) and "minutes" in str(e.value)
+    assert _gone(int((tmp_path / "child.pid").read_text()))
