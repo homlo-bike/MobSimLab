@@ -66,6 +66,21 @@ export interface StreetSetup {
   at?: LonLat;
 }
 
+/**
+ * One junction where the planner gives or takes traffic lights, overriding OpenStreetMap. A junction is
+ * known by its OSM nodes (more than one where osm2streets joined a cluster); without a setup it keeps
+ * what OSM maps. `name` and `lonlat` are for the list in the GIS tab.
+ */
+export interface JunctionSetup {
+  nodes: number[];
+  /** Traffic lights (`true`) or none (`false`). */
+  signals: boolean;
+  /** Where it is, to show it again. */
+  lonlat: LonLat;
+  /** Its streets' names when it was set up, for the list. */
+  name?: string;
+}
+
 /** A street as OpenStreetMap describes it (Rust `StreetInfo`). */
 export interface StreetInfo {
   way: number;

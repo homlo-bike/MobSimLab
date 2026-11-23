@@ -249,6 +249,7 @@ export const de: Messages = {
   "drawing.street-lines": "die Buslinie",
   "drawing.railway": "die Bahnanlage",
   "drawing.street-setups": "die Straßeneinstellungen",
+  "drawing.junction-setups": "die Knotenpunkteinstellungen",
   "drawing.rail-timetable": "den Fahrplan der Bahnlinien",
   "drawing.preferences": "die Projekteinstellungen",
   "drawing.costs": "die Kosteneinstellungen",

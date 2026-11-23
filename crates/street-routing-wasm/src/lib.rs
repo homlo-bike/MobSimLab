@@ -12,8 +12,8 @@ use street_routing::geo::LocalProjection;
 use street_routing::line::{PointKind, StreetLine};
 use street_routing::osm::OsmData;
 use street_routing::walk::{
-    stop_spacing, CoverageRequest, NetworkProfile, SpacingRequest, StopPoint, SuggestRequest,
-    WalkGraph, WalkSettings,
+    apply_junction_signals, stop_spacing, CoverageRequest, JunctionSignals, NetworkProfile,
+    SpacingRequest, StopPoint, SuggestRequest, WalkGraph, WalkSettings,
 };
 use street_routing::{
     apply_setups, parse_osm_xml, DelayShares, Mode, RoadGraph, RoutingRules, StreetSetup,
@@ -333,6 +333,7 @@ pub struct WalkAnalysis {
     data: OsmData,
     graph: Option<WalkGraph>,
     profile: NetworkProfile,
+    junctions: Vec<JunctionSignals>,
 }
 
 impl Default for WalkAnalysis {
@@ -354,6 +355,7 @@ impl WalkAnalysis {
             data: OsmData::default(),
             graph: None,
             profile: NetworkProfile::Walk,
+            junctions: Vec::new(),
         }
     }
 
@@ -371,14 +373,25 @@ impl WalkAnalysis {
         Ok(())
     }
 
-    /// Purpose: build the walk graph from everything added so far.
+    /// Purpose: the planner's junction setup (JSON list of `JunctionSignals`: OSM `nodes`, `signals`):
+    /// junctions given traffic lights or without them. Applies from the next `build`.
+    pub fn set_junctions(&mut self, json: &str) -> Result<(), JsValue> {
+        self.junctions = parse_json("junction setup", json)?;
+        Ok(())
+    }
+
+    /// Purpose: build the walk graph from everything added so far, with the junction setup applied.
     /// Output: an error when no walkable way has been loaded.
     pub fn build(&mut self) -> Result<(), JsValue> {
         let proj = self.graph.as_ref().map(|g| g.proj);
-        self.graph = Some(
+        let graph = if self.junctions.is_empty() {
             WalkGraph::from_osm_profile(&self.data, proj, self.profile)
-                .map_err(|e| js_error(&e))?,
-        );
+        } else {
+            let mut data = self.data.clone();
+            apply_junction_signals(&mut data, &self.junctions);
+            WalkGraph::from_osm_profile(&data, proj, self.profile)
+        };
+        self.graph = Some(graph.map_err(|e| js_error(&e))?);
         Ok(())
     }
 

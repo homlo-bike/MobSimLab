@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/drawings/junction-setups.schema.json",
+  "title": "Document of a \"junction-setups\" drawing (data/junction-setups.json, field doc)",
+  "maxItems": 50000,
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties": {
+      "nodes": {
+        "minItems": 1,
+        "maxItems": 50,
+        "type": "array",
+        "items": {
+          "type": "integer",
+          "minimum": -9007199254740991,
+          "maximum": 9007199254740991
+        }
+      },
+      "signals": {
+        "type": "boolean"
+      },
+      "lonlat": {
+        "type": "array",
+        "prefixItems": [
+          {
+            "type": "number",
+            "minimum": -180,
+            "maximum": 180
+          },
+          {
+            "type": "number",
+            "minimum": -90,
+            "maximum": 90
+          }
+        ],
+        "items": false,
+        "minItems": 2,
+        "maxItems": 2
+      }
+    },
+    "required": [
+      "nodes",
+      "signals",
+      "lonlat"
+    ],
+    "additionalProperties": false
+  }
+}

@@ -6,6 +6,7 @@ Here they become one OSM file for ``netconvert``:
 - Tiles overlap (ways are returned whole), so nodes, ways and relations are merged by id.
 - The planner's street setup from the GIS tab (``StreetSetup``) changes the way's lane tags: general traffic
   lanes and a bus lane on the kerb side of each direction. Fields the planner left unset keep what OSM says.
+- The planner's junction setup (``JunctionSetup``) gives a junction traffic lights or takes them away.
 - Each depot's driving network (gates, aisles, lanes, drives; ``crates/depot-layout``) is added as service
   ways for buses only, and every fence gate is joined to the nearest street a bus may use, at a new node
   inserted into that street.
@@ -276,6 +277,74 @@ def apply_street_setup(data: OsmData, setups: Sequence[dict[str, Any]], left_han
                 t["bus:lanes:backward"] = access(bwd)
         changed += 1
     return changed
+
+
+#: Signal nodes mapped on a junction's approaches (``highway=traffic_signals`` before the stop line)
+#: that netconvert turns into the junction's lights (``--tls.guess-signals``), m from the junction.
+APPROACH_SIGNAL_M = 30.0
+
+
+def _signal_tagged(tags: dict[str, str]) -> bool:
+    return tags.get("highway") == "traffic_signals" or tags.get("crossing") == "traffic_signals"
+
+
+def apply_junction_setup(data: OsmData, setups: Sequence[dict[str, Any]]) -> tuple[int, int]:
+    """Give junctions traffic lights or take them away, as the planner set them up in the GIS tab.
+
+    A junction is its OSM nodes (``nodes``; osm2streets may merge several into one). ``signals: True``
+    tags every one of them ``highway=traffic_signals`` (netconvert joins them into one controller,
+    ``--tls.join``). ``signals: False`` removes the signal tags from those nodes and from signal nodes on
+    the ways into the junction up to ``APPROACH_SIGNAL_M`` away, which netconvert would otherwise turn
+    into the junction's lights. Junctions the planner left alone keep what OpenStreetMap maps.
+
+    Args:
+        data: The merged OSM data, changed in place.
+        setups: Junction setups: ``nodes`` (OSM node ids) and ``signals``.
+
+    Returns:
+        How many junctions were given lights, and how many had them taken away.
+    """
+    on = off = 0
+    for s in setups:
+        signals = s.get("signals")
+        nodes = [int(n) for n in s.get("nodes", []) if int(n) in data.nodes]
+        if not isinstance(signals, bool) or not nodes:
+            continue
+        if signals:
+            for n in nodes:
+                data.nodes[n][2]["highway"] = "traffic_signals"
+            on += 1
+            continue
+        here = set(nodes)
+        drop = set(here)
+        uses: dict[int, int] = {}
+        for w in data.ways.values():
+            for n in set(w.nodes):
+                uses[n] = uses.get(n, 0) + 1
+        for w in data.ways.values():
+            idx = [i for i, n in enumerate(w.nodes) if n in here]
+            for i in idx:
+                for step in (-1, 1):
+                    j, dist = i, 0.0
+                    while 0 <= j + step < len(w.nodes):
+                        a, b = data.nodes[w.nodes[j]], data.nodes[w.nodes[j + step]]
+                        dist += _metres((a[0], a[1]), (b[0], b[1]))
+                        if dist > APPROACH_SIGNAL_M or uses.get(w.nodes[j + step], 0) > 1:
+                            break  # too far, or the next junction (its lights are its own)
+                        j += step
+                        drop.add(w.nodes[j])
+        for n in drop:
+            tags = data.nodes[n][2]
+            if not _signal_tagged(tags):
+                continue
+            if tags.get("highway") == "traffic_signals":
+                del tags["highway"]
+            if tags.get("crossing") == "traffic_signals":
+                tags["crossing"] = "uncontrolled"
+            tags.pop("traffic_signals", None)
+            tags.pop("traffic_signals:direction", None)
+        off += 1
+    return on, off
 
 
 def _metres(a: LonLat, b: LonLat) -> float:

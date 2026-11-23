@@ -230,6 +230,11 @@ def run_road(
     data = osm.merge_tiles(tiles)
     osm.clip(data, *_bbox(scenario))
     osm.apply_street_setup(data, scenario.get("streets", []), left_hand=left)
+    lights_on, lights_off = osm.apply_junction_setup(data, scenario.get("junctions", []))
+    if lights_on or lights_off:
+        result["notes"].append(
+            f"junction setup: {lights_on:,} junctions given traffic lights, {lights_off:,} without"
+        )
     depot_ways: dict[str, osm.DepotWays] = {}
     for d in scenario.get("depots", []):
         dw = osm.add_depot(data, d.get("network", {}))

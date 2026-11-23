@@ -245,6 +245,7 @@ export const uz: Messages = {
   "drawing.street-lines": "koʻcha yoʻnalishi",
   "drawing.railway": "temir yoʻl",
   "drawing.street-setups": "koʻchalar sozlamasi",
+  "drawing.junction-setups": "chorraha sozlamalari",
   "drawing.rail-timetable": "poyezdlar jadvali",
   "drawing.preferences": "loyiha sozlamalari",
   "drawing.costs": "xarajat sozlamalari",

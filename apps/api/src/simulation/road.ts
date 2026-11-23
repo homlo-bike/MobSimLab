@@ -151,6 +151,11 @@ export const roadScenario = z.object({
       }),
     )
     .max(100_000),
+  /** The GIS tab's junction setups: traffic lights given (`signals: true`) or taken away, by OSM nodes. */
+  junctions: z
+    .array(z.object({ nodes: z.array(z.number().int()).min(1).max(50), signals: z.boolean() }))
+    .max(50_000)
+    .optional(),
   traffic: z.object({
     /** Cars per hour per direction at peak by road type where the planner set none (`street.peak_cars_*_vph`). */
     defaults: z.object({

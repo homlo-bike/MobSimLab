@@ -235,6 +235,7 @@ export const zh: Messages = {
   "drawing.street-lines": "道路线路",
   "drawing.railway": "铁路",
   "drawing.street-setups": "街道设置",
+  "drawing.junction-setups": "路口设置",
   "drawing.rail-timetable": "铁路时刻表",
   "drawing.preferences": "项目偏好设置",
   "drawing.costs": "费用设置",

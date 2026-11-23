@@ -243,6 +243,7 @@ export const tr: Messages = {
   "drawing.street-lines": "karayolu hatları",
   "drawing.railway": "demiryolu",
   "drawing.street-setups": "sokak düzenleri",
+  "drawing.junction-setups": "kavşak ayarları",
   "drawing.rail-timetable": "tren tarifesi",
   "drawing.preferences": "proje tercihleri",
   "drawing.costs": "maliyet ayarları",

@@ -34,6 +34,7 @@ import {
 import type {
   CatchmentGeoJson,
   CoverageResult,
+  JunctionSignals,
   LonLat,
   SpacingResult,
   WalkEngine,
@@ -47,6 +48,8 @@ interface Props {
   map: MapLibreMap | null;
   streetLines: StreetLinesDoc | null;
   railway: Network | null;
+  /** The planner's junction setup: signalised crossings add `walk.crossing_delay_s` where lights are set. */
+  junctions?: readonly JunctionSignals[];
   /** Project preferences: `analysis.walk_rule_minutes`, `demand.walk_speed_kmh`, `walk.crossing_delay_s`. */
   preferences?: Record<string, number>;
   /** The project's saved results: the coverage and the stop spacing show on opening, each new one replaces them. */
@@ -59,6 +62,8 @@ interface Props {
   fetchTile?: WalkTileFetcher;
   fetchPeople?: PopulationFetcher;
 }
+
+const NO_JUNCTIONS: readonly JunctionSignals[] = [];
 
 /** Gaps listed and drawn. */
 const GAPS = 10;
@@ -106,6 +111,7 @@ export function WalkAnalysis({
   streetLines,
   railway,
   preferences,
+  junctions = NO_JUNCTIONS,
   loadWalk = loadWalkEngine,
   loadRail = loadRailEngine,
   fetchTile = fetchWalkTile,
@@ -153,14 +159,17 @@ export function WalkAnalysis({
   const network = useMemo(() => mergeNetworks(streetNetwork(streetLines), rail), [streetKey, rail]);
   const names = useMemo(() => new Map(network.stops.map((s) => [s.id, s])), [network]);
 
-  // What the coverage and the spacing are worked out from: the lines and stations, the walk settings and the
-  // walk rule. Saved results worked out from other inputs are out of date.
+  // What the coverage and the spacing are worked out from: the lines and stations, the walk settings, the
+  // walk rule and the lights set at junctions. Saved results worked out from other inputs are out of date.
+  const lights = junctions.map((j) => `${[...j.nodes].sort((a, b) => a - b).join(",")}:${j.signals}`).sort();
   const linesKey = useMemo(() => hashText(`${streetKey}\n${railKey}`), [streetKey, railKey]);
   const limitNow = Math.min(MAX_MINUTES, Math.max(MIN_MINUTES, Math.round(minutes)));
   const coverageInputs = inputKey({
     lines: linesKey,
     settings: walkSettings(preferences, stepFree),
     minutes: limitNow,
+    // Lights at junctions change walk times (not distances): only the coverage depends on them.
+    ...(lights.length ? { junctions: lights } : {}),
   });
   const spacingInputs = inputKey({ lines: linesKey, settings: walkSettings(preferences, stepFree) });
   const keptCoverage = useSavedResult<SavedCoverage>(results, "walk-coverage", coverageInputs, canSave);
@@ -313,6 +322,7 @@ export function WalkAnalysis({
           done++;
         }
         if (!alive()) return e.dispose();
+        e.setJunctions(junctions.map((j) => ({ nodes: [...j.nodes], signals: j.signals })));
         e.build();
       } catch (err) {
         e.dispose();

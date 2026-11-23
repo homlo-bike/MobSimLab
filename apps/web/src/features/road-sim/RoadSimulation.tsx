@@ -12,7 +12,7 @@ import { loadDepotEngine } from "../depots/engine";
 import type { DepotEngineLoader, SavedDepot } from "../depots/types";
 import { clock, parseClock } from "../journey-planner/format";
 import type { SavedStreetLine } from "../street-lines/saved";
-import type { StreetSetup } from "../street-setup/types";
+import type { JunctionSetup, StreetSetup } from "../street-setup/types";
 import {
   type PreferencesDoc,
   VEHICLE_STATES,
@@ -38,6 +38,7 @@ const SPEEDS = [1, 10, 30, 60, 120, 300] as const;
 const NO_LINES: readonly SavedStreetLine[] = [];
 const NO_DEPOTS: readonly SavedDepot[] = [];
 const NO_SETUPS: readonly StreetSetup[] = [];
+const NO_JUNCTIONS: readonly JunctionSetup[] = [];
 
 const STATUS_TONE: Record<RunStatus, string> = {
   queued: "bg-slate-100 text-slate-700 border-slate-300",
@@ -58,6 +59,8 @@ interface Props {
   streetLines?: readonly SavedStreetLine[];
   depots?: readonly SavedDepot[];
   setups?: readonly StreetSetup[];
+  /** The GIS tab's junction setups (traffic lights per junction). */
+  junctions?: readonly JunctionSetup[];
   prefs?: PreferencesDoc["values"];
   /** The project's vehicle colours and delays (Project preferences → Visuals); absent: the defaults. */
   visuals?: PreferencesDoc["visuals"];
@@ -74,6 +77,7 @@ export function RoadSimulation({
   streetLines = NO_LINES,
   depots = NO_DEPOTS,
   setups = NO_SETUPS,
+  junctions = NO_JUNCTIONS,
   prefs,
   visuals,
   loadEngine = loadDepotEngine,
@@ -194,6 +198,7 @@ export function RoadSimulation({
         lines: streetLines,
         depots,
         setups,
+        junctions,
         prefs,
         from: window.from,
         to: window.to,

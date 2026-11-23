@@ -127,6 +127,7 @@ export const loadWalkEngine: WalkEngineLoader = async () => {
   const w = new wasm.WalkAnalysis();
   return {
     addOsm: (xml) => w.add_osm(xml),
+    setJunctions: (j) => w.set_junctions(JSON.stringify(j)),
     build: () => w.build(),
     ready: () => w.ready(),
     coverage: (req) => JSON.parse(w.coverage(JSON.stringify(req))) as CoverageResult,

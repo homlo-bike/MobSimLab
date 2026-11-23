@@ -242,6 +242,7 @@ export const kk: Messages = {
   "drawing.street-lines": "көше бағыты",
   "drawing.railway": "теміржол",
   "drawing.street-setups": "көше баптаулары",
+  "drawing.junction-setups": "қиылыс баптаулары",
   "drawing.rail-timetable": "пойыз кестесі",
   "drawing.preferences": "жоба параметрлері",
   "drawing.costs": "шығын баптаулары",

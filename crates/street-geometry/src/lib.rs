@@ -32,8 +32,8 @@ use std::fmt::Write as _;
 use geom::{Distance, PolyLine, Pt2D};
 pub use osm2streets::DrivingSide;
 use osm2streets::{
-    BufferType, Direction, IntersectionID, LaneSpec, LaneType, MapConfig, Road, StreetNetwork,
-    Transformation,
+    BufferType, Direction, IntersectionControl, IntersectionID, IntersectionKind, LaneSpec,
+    LaneType, MapConfig, Road, StreetNetwork, Transformation,
 };
 use serde::Serialize;
 use street_routing::osm::{OsmData, Tags};
@@ -107,6 +107,15 @@ pub struct LaneShape {
 pub struct JunctionShape {
     /// Outer ring, `[lon, lat, …]`.
     pub ring: Vec<f64>,
+    /// The OSM nodes the junction is made of (more than one where osm2streets joined a cluster).
+    pub nodes: Vec<i64>,
+    /// The OSM ways that meet here, to name the junction by its streets.
+    pub ways: Vec<i64>,
+    /// Whether traffic crosses or gives way here (at least three roads meet): the junctions a planner
+    /// may give or take traffic lights.
+    pub crossing: bool,
+    /// Whether OpenStreetMap maps traffic lights at the junction (`highway=traffic_signals`).
+    pub signals: bool,
 }
 
 /// One marking line.
@@ -683,6 +692,20 @@ fn shapes(
     for i in net.intersections.values() {
         out.junctions.push(JunctionShape {
             ring: flat(net, i.polygon.get_outer_ring().points()),
+            nodes: i.osm_ids.iter().map(|n| n.0).collect(),
+            ways: {
+                let mut w: Vec<i64> = i
+                    .roads
+                    .iter()
+                    .filter_map(|r| net.roads.get(r))
+                    .flat_map(|r| r.osm_ids.iter().map(|id| id.0))
+                    .collect();
+                w.sort_unstable();
+                w.dedup();
+                w
+            },
+            crossing: i.kind == IntersectionKind::Intersection,
+            signals: i.control == IntersectionControl::Signalled,
         });
     }
     out

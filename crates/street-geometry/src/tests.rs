@@ -372,3 +372,40 @@ fn a_custom_layout_is_drawn_section_by_section() {
     assert!(p[2].rails && !p[7].rails);
     assert!(g.lines.iter().any(|l| l.kind == LineKind::Rails));
 }
+
+#[test]
+fn junctions_name_their_osm_nodes_and_mapped_traffic_lights() {
+    let g = build(&crossroads(), &[], None).expect("builds");
+    let j = g
+        .junctions
+        .iter()
+        .find(|j| j.nodes.contains(&2))
+        .expect("the crossroads is drawn");
+    assert!(j.crossing);
+    assert!(!j.signals);
+    assert_eq!(j.ways, vec![100, 200]);
+    // The road ends are not crossings.
+    assert!(g
+        .junctions
+        .iter()
+        .filter(|j| j.nodes.contains(&1))
+        .all(|j| !j.crossing));
+
+    let xml = r#"<?xml version="1.0"?><osm version="0.6">
+  <node id="1" lat="33.5130" lon="36.2880"/>
+  <node id="2" lat="33.5130" lon="36.2896"><tag k="highway" v="traffic_signals"/></node>
+  <node id="3" lat="33.5130" lon="36.2912"/>
+  <node id="4" lat="33.5116" lon="36.2896"/>
+  <node id="5" lat="33.5144" lon="36.2896"/>
+  <way id="100"><nd ref="1"/><nd ref="2"/><nd ref="3"/><tag k="highway" v="primary"/></way>
+  <way id="200"><nd ref="4"/><nd ref="2"/><nd ref="5"/><tag k="highway" v="secondary"/></way>
+</osm>"#;
+    let data = parse_osm_xml(xml).expect("fixture parses");
+    let g = build(&data, &[], None).expect("builds");
+    let j = g
+        .junctions
+        .iter()
+        .find(|j| j.nodes.contains(&2))
+        .expect("the crossroads is drawn");
+    assert!(j.signals, "highway=traffic_signals on the junction node");
+}

@@ -1,8 +1,10 @@
 import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
 import { LANE_MIN_ZOOM, type LaneGeometry, type LaneKind } from "./lanes";
-import { effective, priority } from "./model";
-import type { StreetInfo, StreetSetup } from "./types";
+import { effective, junctionSetupOf, priority } from "./model";
+import type { JunctionSetup, StreetInfo, StreetSetup } from "./types";
 
+/** Layer of the junction shapes, which receives taps on junctions from zoom 16. */
+export const JUNCTION_LAYER = "ss-junctions";
 /** Layer that receives taps on streets: wide and transparent, so a finger finds a street easily. */
 export const HIT_LAYER = "ss-streets-hit";
 const SOURCE = "ss-streets";
@@ -11,6 +13,7 @@ const JUNCTION_SOURCE = "ss-junctions";
 const MARKING_SOURCE = "ss-lane-markings";
 const LAYERS = [
   "ss-junctions",
+  "ss-junction-selected",
   "ss-lanes",
   "ss-lane-markings",
   "ss-centre-markings",
@@ -48,6 +51,8 @@ export const LANE_COLOR: Record<LaneKind, string> = {
   green: "#86a865",
 };
 const JUNCTION_COLOR = "#a8adb6";
+/** Junctions with traffic lights (from OSM or the planner), shared with the legend. */
+export const SIGNAL_JUNCTION_COLOR = "#f59e0b";
 
 const EMPTY = { type: "FeatureCollection" as const, features: [] };
 
@@ -63,7 +68,17 @@ export function ensureLayers(map: MapLibreMap): void {
     type: "fill",
     source: JUNCTION_SOURCE,
     minzoom: LANE_MIN_ZOOM,
-    paint: { "fill-color": JUNCTION_COLOR },
+    paint: {
+      "fill-color": ["case", ["get", "signals"], SIGNAL_JUNCTION_COLOR, JUNCTION_COLOR] as never,
+    },
+  });
+  map.addLayer({
+    id: "ss-junction-selected",
+    type: "line",
+    source: JUNCTION_SOURCE,
+    minzoom: LANE_MIN_ZOOM,
+    filter: ["==", ["get", "key"], ""],
+    paint: { "line-color": "#0f172a", "line-width": 3 },
   });
   map.addLayer({
     id: "ss-lanes",
@@ -203,7 +218,11 @@ function positions(flat: readonly number[]): [number, number][] {
  * street lines give way to them from zoom 16; without lanes they stay at every zoom.
  * Side effects: sets the lane sources and the zoom range of the street line layers.
  */
-export function drawLanes(map: MapLibreMap, g: LaneGeometry | null): void {
+export function drawLanes(
+  map: MapLibreMap,
+  g: LaneGeometry | null,
+  junctions: readonly JunctionSetup[] = [],
+): void {
   const set = (id: string, features: unknown[]) =>
     (map.getSource(id) as GeoJSONSource | undefined)?.setData({
       type: "FeatureCollection",
@@ -217,14 +236,7 @@ export function drawLanes(map: MapLibreMap, g: LaneGeometry | null): void {
       geometry: { type: "Polygon", coordinates: [positions(l.ring)] },
     })),
   );
-  set(
-    JUNCTION_SOURCE,
-    (g?.junctions ?? []).map((j) => ({
-      type: "Feature",
-      properties: {},
-      geometry: { type: "Polygon", coordinates: [positions(j.ring)] },
-    })),
-  );
+  drawJunctions(map, g, junctions);
   set(
     MARKING_SOURCE,
     (g?.lines ?? []).map((l) => ({
@@ -235,6 +247,40 @@ export function drawLanes(map: MapLibreMap, g: LaneGeometry | null): void {
   );
   const max = g && g.lanes.length ? LANE_MIN_ZOOM : 24;
   for (const id of LINE_LAYERS) if (map.getLayer(id)) map.setLayerZoomRange(id, 0, max);
+}
+
+/** Purpose: the key a junction is known by on the map: its OSM nodes. */
+export function junctionKey(nodes: readonly number[]): string {
+  return nodes.join(",");
+}
+
+/**
+ * Purpose: draw the junction shapes, those with traffic lights (OSM's, or the planner's where set) in
+ * amber. Side effects: sets the junction source.
+ */
+export function drawJunctions(
+  map: MapLibreMap,
+  g: LaneGeometry | null,
+  junctions: readonly JunctionSetup[],
+): void {
+  (map.getSource(JUNCTION_SOURCE) as GeoJSONSource | undefined)?.setData({
+    type: "FeatureCollection",
+    features: (g?.junctions ?? []).map((j) => ({
+      type: "Feature",
+      properties: {
+        key: junctionKey(j.nodes),
+        crossing: j.crossing,
+        signals: junctionSetupOf(junctions, j.nodes)?.signals ?? j.signals,
+      },
+      geometry: { type: "Polygon", coordinates: [positions(j.ring)] },
+    })),
+  } as never);
+}
+
+/** Purpose: outline one junction (or none), by its key. */
+export function selectJunction(map: MapLibreMap, key: string | null): void {
+  if (map.getLayer("ss-junction-selected"))
+    map.setFilter("ss-junction-selected", ["==", ["get", "key"], key ?? ""]);
 }
 
 /** Purpose: highlight one street (or none). */

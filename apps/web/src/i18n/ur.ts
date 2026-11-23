@@ -243,6 +243,7 @@ export const ur: Messages = {
   "drawing.street-lines": "سڑک کی لائن",
   "drawing.railway": "ریلوے",
   "drawing.street-setups": "سڑکوں کی ترتیب",
+  "drawing.junction-setups": "چوراہوں کی ترتیبات",
   "drawing.rail-timetable": "ریل کا ٹائم ٹیبل",
   "drawing.preferences": "منصوبے کی ترجیحات",
   "drawing.costs": "لاگت کی ترتیبات",

@@ -10,7 +10,7 @@ from typing import Any
 import pytest
 from road_fixture import depot, line, tiles
 
-from mobsim_worker.jobs.road.osm import Way, apply_street_setup, merge_tiles
+from mobsim_worker.jobs.road.osm import OsmData, Way, apply_junction_setup, apply_street_setup, merge_tiles
 from mobsim_worker.jobs.road.service import blocks, planned_offsets
 from mobsim_worker.jobs.road.traffic import intervals, way_rate
 
@@ -23,6 +23,37 @@ def test_tiles_merge_into_one_network_without_duplicates() -> None:
     assert len(data.ways) == 40
     assert len(data.nodes) == 25
     assert data.ways[109].tags["name"] == "Main Street"
+
+
+def _cross(signals_at: dict[int, dict[str, str]]) -> OsmData:
+    """A crossroads at node 1 (lon 0, lat 0), arms about 11 m per node, and a second junction at node 13."""
+    d = OsmData()
+    pts = {1: (0.0, 0.0), 2: (0.0001, 0.0), 3: (0.0002, 0.0), 4: (0.0004, 0.0), 5: (-0.0001, 0.0)}
+    pts |= {11: (0.0, 0.0001), 12: (0.0, -0.0001), 13: (0.0002, 0.0001), 14: (0.0002, -0.0001)}
+    for n, (lon, lat) in pts.items():
+        d.nodes[n] = (lon, lat, dict(signals_at.get(n, {})))
+    d.ways[100] = Way(100, [5, 1, 2, 3, 4], {"highway": "primary"})
+    d.ways[200] = Way(200, [11, 1, 12], {"highway": "secondary"})
+    d.ways[300] = Way(300, [13, 3, 14], {"highway": "residential"})
+    return d
+
+
+def test_junction_setup_adds_lights_or_removes_them_with_the_approach_signals() -> None:
+    sig = {"highway": "traffic_signals"}
+    d = _cross({})
+    assert apply_junction_setup(d, [{"nodes": [1], "signals": True}]) == (1, 0)
+    assert d.nodes[1][2]["highway"] == "traffic_signals"
+
+    d = _cross({2: sig, 3: sig, 4: sig, 5: {**sig, "crossing": "traffic_signals"}})
+    assert apply_junction_setup(d, [{"nodes": [1], "signals": False}]) == (0, 1)
+    assert "highway" not in d.nodes[2][2]  # approach signal 11 m out: the junction's own lights
+    assert d.nodes[5][2] == {"crossing": "uncontrolled"}
+    assert d.nodes[3][2] == sig  # the next junction keeps its lights
+    assert d.nodes[4][2] == sig  # beyond it, and too far
+
+    d = _cross({1: sig})
+    assert apply_junction_setup(d, [{"nodes": [999], "signals": False}, {"nodes": [1]}]) == (0, 0)
+    assert d.nodes[1][2] == sig
 
 
 def test_street_setup_adds_a_kerb_bus_lane_each_way() -> None:

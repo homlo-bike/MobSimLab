@@ -43,6 +43,17 @@ const gtfsNetwork = z.looseObject({
 
 const streetSetups = z.array(z.looseObject({ way: z.number().int() })).max(50000);
 
+/** GIS tab junction setups: traffic lights given to or taken from a junction (its OSM nodes). */
+const junctionSetups = z
+  .array(
+    z.object({
+      nodes: z.array(z.number().int()).min(1).max(50),
+      signals: z.boolean(),
+      lonlat: z.tuple([z.number().min(-180).max(180), z.number().min(-90).max(90)]),
+    }),
+  )
+  .max(50000);
+
 /** Assumption library values the project changes, by assumption id (for example `street.mixed_traffic_delay_share`). */
 const preferences = z.looseObject({
   values: z
@@ -365,6 +376,8 @@ export const DRAWING_KINDS = {
   railway: { schema: railway, schemaVersion: 1 },
   /** GIS tab street setups: lanes, bus and bike lanes, separation and tram share per OSM way. */
   "street-setups": { schema: streetSetups, schemaVersion: 1 },
+  /** GIS tab junction setups: traffic lights per junction, where the planner overrides OSM. */
+  "junction-setups": { schema: junctionSetups, schemaVersion: 1 },
   /** The trains of the railway tool's service lines as last published, for the journey planner. */
   "rail-timetable": { schema: railTimetable, schemaVersion: 1 },
   /** Existing networks imported from GTFS feeds (GTFS plugin), for the journey planner. */

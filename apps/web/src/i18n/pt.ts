@@ -245,6 +245,7 @@ export const pt: Messages = {
   "drawing.street-lines": "a linha de rua",
   "drawing.railway": "a ferrovia",
   "drawing.street-setups": "as configurações de rua",
+  "drawing.junction-setups": "as configurações dos cruzamentos",
   "drawing.rail-timetable": "o horário ferroviário",
   "drawing.preferences": "as preferências do projeto",
   "drawing.costs": "as definições de custos",
