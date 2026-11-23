@@ -252,6 +252,7 @@ def run_road(
     osm_file = os.path.join(workdir, "streets.osm")
     net_file = os.path.join(workdir, "net.net.xml")
     osm.write(data, osm_file)
+    osm_signals = osm.mapped_signals(data)
     keep = [str(i) for i in data.ways if i >= osm.ADDED_ID_BASE]
     warnings = netconvert(osm_file, net_file, workdir, left, keep)
     net = RoadNet(net_file)
@@ -260,8 +261,15 @@ def run_road(
         "edges": len(edges),
         "km": sum(e.getLength() for e in edges) / 1000.0,
         "signals": len(net.net.getTrafficLights()),
+        "osm_signals": osm_signals,
         "warnings": len(warnings),
     }
+    if osm_signals == 0:
+        result["notes"].append(
+            "OpenStreetMap maps no traffic lights on these streets, so every junction runs without lights "
+            "and side streets wait for gaps in the main roads' traffic. Give the main junctions traffic "
+            "lights in GIS › Streets."
+        )
 
     if step("planning"):
         return "stopped", result, None

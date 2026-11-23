@@ -43,6 +43,7 @@ export const roadHi = {
   "road.back": "डिपो में वापस: {total} में से {n}",
   "road.teleports": "टेलीपोर्ट: {n}",
   "road.gridlocks": "पूर्ण जाम: {n}",
+  "road.collisions": "टक्करें: {n}",
   "road.cars": "पृष्ठभूमि कारें: {n}",
   "road.speedup": "वास्तविक समय से {x}× तेज़",
   "road.network": "सड़क नेटवर्क: {km} किमी, {signals} ट्रैफ़िक लाइटें",

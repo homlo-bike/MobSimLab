@@ -43,6 +43,7 @@ export const roadPl = {
   "road.back": "Z powrotem w zajezdni: {n} z {total}",
   "road.teleports": "Teleportacje: {n}",
   "road.gridlocks": "Zatory całkowite: {n}",
+  "road.collisions": "Kolizje: {n}",
   "road.cars": "Samochody tła: {n}",
   "road.speedup": "{x}× szybciej niż w czasie rzeczywistym",
   "road.network": "Sieć drogowa: {km} km, {signals} sygnalizacji",

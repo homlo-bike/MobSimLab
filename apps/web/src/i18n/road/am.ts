@@ -42,6 +42,7 @@ export const roadAm = {
   "road.back": "ወደ ዴፖ የተመለሱ፦ {n} ከ{total}",
   "road.teleports": "ቅጽበታዊ ዝውውሮች፦ {n}",
   "road.gridlocks": "ሙሉ መጨናነቆች፦ {n}",
+  "road.collisions": "ግጭቶች፦ {n}",
   "road.cars": "የጀርባ መኪኖች፦ {n}",
   "road.speedup": "ከእውነተኛ ጊዜ {x}× ፈጣን",
   "road.network": "የመንገድ አውታረ መረብ፦ {km} ኪ.ሜ፣ {signals} የትራፊክ መብራቶች",

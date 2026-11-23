@@ -582,6 +582,7 @@ function Results({ result }: { result: RoadResult }) {
             <li>{t("road.back", { n: r.back_in_depot, total: r.vehicles })}</li>
             <li>{t("road.teleports", { n: r.teleports })}</li>
             <li>{t("road.gridlocks", { n: r.gridlocks })}</li>
+            <li>{t("road.collisions", { n: r.collisions })}</li>
             <li>{t("road.cars", { n: r.background_inserted })}</li>
             {result.network && (
               <li>

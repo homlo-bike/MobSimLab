@@ -44,6 +44,7 @@ export const roadEn = {
   "road.back": "Back in the depot: {n} of {total}",
   "road.teleports": "Teleports: {n}",
   "road.gridlocks": "Gridlocks: {n}",
+  "road.collisions": "Collisions: {n}",
   "road.cars": "Background cars: {n}",
   "road.speedup": "{x}× faster than real time",
   "road.network": "Street network: {km} km, {signals} traffic lights",

@@ -44,6 +44,7 @@ export const roadJa = {
   "road.back": "車庫に戻った車両: {n} / {total}",
   "road.teleports": "テレポート: {n}",
   "road.gridlocks": "グリッドロック: {n}",
+  "road.collisions": "衝突：{n}",
   "road.cars": "背景の自動車: {n}",
   "road.speedup": "実時間の {x}× の速さ",
   "road.network": "道路網: {km} km、信号 {signals} 基",

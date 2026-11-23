@@ -43,6 +43,7 @@ export const roadFa = {
   "road.back": "بازگشته به پایانه: {n} از {total}",
   "road.teleports": "جابه‌جایی‌های آنی: {n}",
   "road.gridlocks": "قفل‌شدگی‌های ترافیک: {n}",
+  "road.collisions": "برخوردها: {n}",
   "road.cars": "خودروهای زمینه: {n}",
   "road.speedup": "{x}× سریع‌تر از زمان واقعی",
   "road.network": "شبکه خیابان‌ها: {km} کیلومتر، {signals} چراغ راهنمایی",

@@ -43,6 +43,7 @@ export const roadIg = {
   "road.back": "Laghachiri n'ụlọ ụgbọ: {n} n'ime {total}",
   "road.teleports": "Mbugharị ozugbo: {n}",
   "road.gridlocks": "Mkpọchi ọgbaghara: {n}",
+  "road.collisions": "Nkukọ: {n}",
   "road.cars": "Ụgbọala azụ: {n}",
   "road.speedup": "Ugboro {x}× ọsọ karịa oge n'ezie",
   "road.network": "Netwọk okporo ụzọ: km {km}, ọkụ okporo ụzọ {signals}",

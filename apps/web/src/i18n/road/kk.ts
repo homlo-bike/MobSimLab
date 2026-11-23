@@ -43,6 +43,7 @@ export const roadKk = {
   "road.back": "Паркке оралды: {n} / {total}",
   "road.teleports": "Телепорттар: {n}",
   "road.gridlocks": "Кептелістер: {n}",
+  "road.collisions": "Соқтығысулар: {n}",
   "road.cars": "Фондық автокөліктер: {n}",
   "road.speedup": "Нақты уақыттан {x}× жылдам",
   "road.network": "Жол желісі: {km} км, {signals} бағдаршам",

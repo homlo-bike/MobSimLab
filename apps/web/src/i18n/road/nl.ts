@@ -43,6 +43,7 @@ export const roadNl = {
   "road.back": "Terug in de remise: {n} van {total}",
   "road.teleports": "Teleports: {n}",
   "road.gridlocks": "Verkeersinfarcten: {n}",
+  "road.collisions": "Botsingen: {n}",
   "road.cars": "Achtergrondauto's: {n}",
   "road.speedup": "{x}× sneller dan real time",
   "road.network": "Wegennet: {km} km, {signals} verkeerslichten",

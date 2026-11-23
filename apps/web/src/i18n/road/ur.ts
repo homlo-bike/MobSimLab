@@ -43,6 +43,7 @@ export const roadUr = {
   "road.back": "ڈپو میں واپس: {total} میں سے {n}",
   "road.teleports": "ٹیلی پورٹس: {n}",
   "road.gridlocks": "مکمل جام: {n}",
+  "road.collisions": "تصادمات: {n}",
   "road.cars": "پس منظر کاریں: {n}",
   "road.speedup": "حقیقی وقت سے {x}× تیز",
   "road.network": "سڑکوں کا نیٹ ورک: {km} کلومیٹر، {signals} ٹریفک لائٹس",

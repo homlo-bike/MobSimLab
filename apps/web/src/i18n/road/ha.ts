@@ -43,6 +43,7 @@ export const roadHa = {
   "road.back": "Sun koma tasha: {n} cikin {total}",
   "road.teleports": "Tsalle-tsalle: {n}",
   "road.gridlocks": "Cunkoson da ya tsaya cak: {n}",
+  "road.collisions": "Karo: {n}",
   "road.cars": "Motocin baya: {n}",
   "road.speedup": "Sau {x}× sauri fiye da lokaci na gaske",
   "road.network": "Hanyoyin titi: km {km}, fitilun hanya {signals}",

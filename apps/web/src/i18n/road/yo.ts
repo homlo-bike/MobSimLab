@@ -43,6 +43,7 @@ export const roadYo = {
   "road.back": "Ó ti padà sí ibùdó ọkọ̀: {n} nínú {total}",
   "road.teleports": "Ìfòsókè: {n}",
   "road.gridlocks": "Ìdènà pátápátá: {n}",
+  "road.collisions": "Ìkọlù: {n}",
   "road.cars": "Ọkọ̀ ẹ̀yìn: {n}",
   "road.speedup": "Ìlọ́po {x}× yára ju àkókò gidi lọ",
   "road.network": "Nẹ́tíwọ̀ọ̀kì òpópónà: km {km}, iná ìrìnnà {signals}",

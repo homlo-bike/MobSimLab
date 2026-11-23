@@ -43,6 +43,7 @@ export const roadBn = {
   "road.back": "ডিপোতে ফিরেছে: {total}-এর মধ্যে {n}",
   "road.teleports": "টেলিপোর্ট: {n}",
   "road.gridlocks": "সম্পূর্ণ জট: {n}",
+  "road.collisions": "সংঘর্ষ: {n}",
   "road.cars": "পটভূমির গাড়ি: {n}",
   "road.speedup": "বাস্তব সময়ের চেয়ে {x}× দ্রুত",
   "road.network": "সড়ক নেটওয়ার্ক: {km} কিমি, {signals}টি ট্রাফিক সিগন্যাল",

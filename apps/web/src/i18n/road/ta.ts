@@ -45,6 +45,7 @@ export const roadTa = {
   "road.back": "பணிமனைக்குத் திரும்பியவை: {total} இல் {n}",
   "road.teleports": "டெலிபோர்ட்கள்: {n}",
   "road.gridlocks": "முழு நெரிசல்கள்: {n}",
+  "road.collisions": "மோதல்கள்: {n}",
   "road.cars": "பின்னணி கார்கள்: {n}",
   "road.speedup": "நிகழ் நேரத்தை விட {x}× வேகம்",
   "road.network": "சாலை வலையமைப்பு: {km} கிமீ, {signals} சிக்னல்கள்",

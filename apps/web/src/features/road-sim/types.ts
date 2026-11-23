@@ -132,7 +132,14 @@ export interface RoadResult {
   notes: string[];
   lines: RoadLineResult[];
   events: RoadEvent[];
-  network: { edges: number; km: number; signals: number; warnings: number } | null;
+  network: {
+    edges: number;
+    km: number;
+    signals: number;
+    /** Nodes mapped as traffic lights in OSM on the run's streets (runs from before it was counted: absent). */
+    osm_signals?: number;
+    warnings: number;
+  } | null;
   traffic: { cars: number; target_car_km: number; sampled_car_km: number } | null;
   run: {
     begin: number;

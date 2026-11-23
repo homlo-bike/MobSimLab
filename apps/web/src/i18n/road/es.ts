@@ -43,6 +43,7 @@ export const roadEs = {
   "road.back": "De vuelta en la cochera: {n} de {total}",
   "road.teleports": "Teletransportes: {n}",
   "road.gridlocks": "Atascos totales: {n}",
+  "road.collisions": "Colisiones: {n}",
   "road.cars": "Coches de fondo: {n}",
   "road.speedup": "{x}× más rápido que el tiempo real",
   "road.network": "Red viaria: {km} km, {signals} semáforos",

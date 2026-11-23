@@ -43,6 +43,7 @@ export const roadKo = {
   "road.back": "차고지 복귀: {n} / {total}",
   "road.teleports": "순간이동: {n}",
   "road.gridlocks": "교통 마비: {n}",
+  "road.collisions": "충돌: {n}",
   "road.cars": "배경 차량: {n}",
   "road.speedup": "실시간보다 {x}× 빠름",
   "road.network": "도로망: {km} km, 신호등 {signals}개",

@@ -45,6 +45,7 @@ export const roadUz = {
   "road.back": "Depoga qaytgan: {n} / {total}",
   "road.teleports": "Teleportlar: {n}",
   "road.gridlocks": "To‘liq tiqilinlar: {n}",
+  "road.collisions": "Toʻqnashuvlar: {n}",
   "road.cars": "Fon avtomobillari: {n}",
   "road.speedup": "Real vaqtdan {x}× tez",
   "road.network": "Yo‘l tarmog‘i: {km} km, {signals} svetofor",

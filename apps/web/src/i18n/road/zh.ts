@@ -42,6 +42,7 @@ export const roadZh = {
   "road.back": "已回车场：{n} / {total}",
   "road.teleports": "瞬移：{n}",
   "road.gridlocks": "交通死锁：{n}",
+  "road.collisions": "碰撞：{n}",
   "road.cars": "背景车辆：{n}",
   "road.speedup": "比实时快 {x}×",
   "road.network": "道路网络：{km} 公里，{signals} 个信号灯",

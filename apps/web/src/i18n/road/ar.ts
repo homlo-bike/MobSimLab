@@ -43,6 +43,7 @@ export const roadAr = {
   "road.back": "عادت إلى المرأب: {n} من {total}",
   "road.teleports": "عمليات النقل الفوري: {n}",
   "road.gridlocks": "الاختناقات التامة: {n}",
+  "road.collisions": "التصادمات: {n}",
   "road.cars": "سيارات الخلفية: {n}",
   "road.speedup": "أسرع من الزمن الحقيقي بـ {x}×",
   "road.network": "شبكة الشوارع: {km} كم، {signals} إشارة مرور",

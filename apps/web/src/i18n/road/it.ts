@@ -44,6 +44,7 @@ export const roadIt = {
   "road.back": "Rientrati in deposito: {n} su {total}",
   "road.teleports": "Teletrasporti: {n}",
   "road.gridlocks": "Blocchi del traffico: {n}",
+  "road.collisions": "Collisioni: {n}",
   "road.cars": "Auto di fondo: {n}",
   "road.speedup": "{x}× più veloce del tempo reale",
   "road.network": "Rete stradale: {km} km, {signals} semafori",
