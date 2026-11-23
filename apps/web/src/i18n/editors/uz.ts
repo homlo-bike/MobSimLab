@@ -341,6 +341,8 @@ export const editorsUz = {
   "rail.say.clickTrackSwitch": "Strelka qoʻyish uchun yoʻlni bosing.",
   "rail.say.straightOnly": "Katalog strelkalari toʻgʻri yoʻlga qoʻyiladi. Toʻgʻri qismni bosing.",
   "rail.say.doubleOnly": "Oʻtish yoʻli ikki parallel yoʻlni bogʻlaydi. Ikki yoʻlli liniyani tanlang.",
+  "rail.say.missedStationEnd":
+    "Yoʻlni ulash uchun aynan stansiya uchini bosing. Uchlarni bosish qiyin boʻlsa, yaqinlashtiring.",
   "rail.say.clickTrackSignal": "Svetofor qoʻyish uchun yoʻl, stansiya yoʻli yoki strelka tarmogʻini bosing.",
   "rail.signalsReset": "Svetoforlar loyihadan hosil qilingan holatga qaytarildi.",
   "rail.noiseFlows": "Har bir yoʻlda soatiga poyezdlar (relsli liniyalar chizilguncha namunaviy xizmat)",

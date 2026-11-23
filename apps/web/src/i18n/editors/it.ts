@@ -345,6 +345,8 @@ export const editorsIt = {
   "rail.say.straightOnly":
     "I deviatoi del catalogo vanno su un tratto rettilineo. Fai clic su una parte rettilinea.",
   "rail.say.doubleOnly": "Una comunicazione collega due binari paralleli. Scegli un doppio binario.",
+  "rail.say.missedStationEnd":
+    "Fai clic proprio su un'estremità della stazione per collegarvi il binario. Ingrandisci se le estremità sono difficili da colpire.",
   "rail.say.clickTrackSignal":
     "Fai clic su un binario, un binario di stazione o il ramo deviato di un deviatoio per posizionare un segnale.",
   "rail.signalsReset": "Segnali ripristinati come generati dal progetto.",

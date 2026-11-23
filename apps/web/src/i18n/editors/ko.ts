@@ -312,6 +312,8 @@ export const editorsKo = {
   "rail.say.clickTrackSwitch": "선로를 클릭해 분기기를 배치하세요.",
   "rail.say.straightOnly": "카탈로그 분기기는 직선 구간에 놓입니다. 직선 부분을 클릭하세요.",
   "rail.say.doubleOnly": "건넘선은 나란한 두 선로를 연결합니다. 복선을 선택하세요.",
+  "rail.say.missedStationEnd":
+    "선로를 연결하려면 역의 끝을 정확히 클릭하세요. 끝을 맞히기 어려우면 확대하세요.",
   "rail.say.clickTrackSignal": "선로, 역 선로 또는 분기기의 분기 측을 클릭해 신호기를 배치하세요.",
   "rail.signalsReset": "신호기를 설계에서 생성한 상태로 되돌렸습니다.",
   "rail.noiseFlows": "선로별 시간당 열차 수(철도 계통을 그리기 전까지는 가정 운행)",

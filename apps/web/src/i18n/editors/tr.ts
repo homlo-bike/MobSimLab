@@ -322,6 +322,8 @@ export const editorsTr = {
   "rail.say.clickTrackSwitch": "Makas yerleştirmek için bir raya tıklayın.",
   "rail.say.straightOnly": "Katalog makasları düz bölüme oturur. Düz bir kısma tıklayın.",
   "rail.say.doubleOnly": "Geçiş makası iki paralel rayı bağlar. Çift hat seçin.",
+  "rail.say.missedStationEnd":
+    "Yolu bağlamak için tam olarak bir istasyon ucuna tıklayın. Uçlara denk getirmek zorsa yakınlaştırın.",
   "rail.say.clickTrackSignal":
     "Sinyal yerleştirmek için bir raya, istasyon rayına veya makasın sapan koluna tıklayın.",
   "rail.signalsReset": "Sinyaller tasarımdan üretilen hallerine döndürüldü.",

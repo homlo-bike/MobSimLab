@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Berbalik arah menambah {extra} ({length}, bukan {direct}). Pertimbangkan meletakkan halte ujung di tempat kendaraan dapat berbalik: terminal bus, putaran balik, bundaran, atau blok yang dapat dikelilinginya.",
   "street.line.two_stops": "Trayek memerlukan setidaknya dua halte. Jadikan titik sebagai halte.",
   "street.line.wrong_side": "Ruas ini sepanjang {length}, sedangkan garis lurusnya {straight}. Jika titik berikutnya berada di separuh seberang jalan terbagi, atau di jalan satu arah dari arah yang salah, pindahkan ke sisi tempat kendaraan melaju.",
-  "street.line.wrong_sidewalk": "Trotoar ini tidak dapat dilayani: lalu lintas di sini hanya berjalan dengan halte di sisi yang berlawanan dari pintu. Letakkan halte di trotoar seberang."
+  "street.line.wrong_sidewalk": "Trotoar ini tidak dapat dilayani: lalu lintas di sini hanya berjalan dengan halte di sisi yang berlawanan dari pintu. Letakkan halte di trotoar seberang.",
+  "rail.plan.no_track_between_reach": "Tidak ada rel dari {from} ke {to}. Kereta dari {from} hanya bisa mencapai {reached}: periksa apakah rel yang masuk dan keluar {last} tersambung ke rel stasiun yang sama di kedua ujung, agar kereta yang tiba di sana dapat melanjutkan perjalanan, atau pasang wesel di sana.",
+  "rail.plan.gap_does_not_lead_on": "kereta dari {from} mencapai {at}, tetapi di rel stasiun yang tidak berlanjut ke {next}. Periksa apakah rel yang masuk dan keluar {at} tersambung ke rel stasiun yang sama di kedua ujung, atau pasang wesel di sana",
+  "rail.plan.gap_no_track": "tidak ada rel dari {from} ke {to}",
+  "rail.plan.no_track_outbound_at": "Tidak ada rel yang menghubungkan halte-halte searah jalur: {gap}.",
+  "rail.plan.no_track_return_at": "Tidak ada rel yang menghubungkan halte-halte pada arah balik: {gap}."
 }

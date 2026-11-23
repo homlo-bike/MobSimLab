@@ -329,6 +329,7 @@ export const editorsAm = {
   "rail.say.clickTrackSwitch": "መቀየሪያ ለማስቀመጥ ሐዲድ ጠቅ ያድርጉ።",
   "rail.say.straightOnly": "የካታሎግ መቀየሪያዎች ቀጥ ባለ ሐዲድ ላይ ይቀመጣሉ። ቀጥ ያለ ክፍል ጠቅ ያድርጉ።",
   "rail.say.doubleOnly": "መሻገሪያዎች ሁለት ትይዩ ሐዲዶችን ያገናኛሉ። ድርብ ሐዲድ ይምረጡ።",
+  "rail.say.missedStationEnd": "ሐዲዱን ለማገናኘት በትክክል የጣቢያውን ጫፍ ጠቅ ያድርጉ። ጫፎቹን መምታት ከከበደ ያጉሉ።",
   "rail.say.clickTrackSignal": "ምልክት ለማስቀመጥ ሐዲድ፣ የጣቢያ ሐዲድ ወይም የመቀየሪያ ቅርንጫፍ ጠቅ ያድርጉ።",
   "rail.signalsReset": "ምልክቶች ከንድፉ ወደተፈጠሩት ተመልሰዋል።",
   "rail.noiseFlows": "በእያንዳንዱ ሐዲድ ላይ በሰዓት ባቡሮች (የባቡር መስመሮች እስኪሳሉ ድረስ የምሳሌ አገልግሎት)",

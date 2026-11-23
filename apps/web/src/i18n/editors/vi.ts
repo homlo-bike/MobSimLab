@@ -317,6 +317,8 @@ export const editorsVi = {
   "rail.say.clickTrackSwitch": "Nhấp vào đường ray để đặt ghi.",
   "rail.say.straightOnly": "Ghi trong danh mục được đặt trên đoạn thẳng. Hãy nhấp vào phần thẳng.",
   "rail.say.doubleOnly": "Đường chuyển tuyến nối hai đường ray song song. Hãy chọn đường đôi.",
+  "rail.say.missedStationEnd":
+    "Nhấp đúng vào một đầu ga để nối đường ray vào đó. Phóng to nếu khó nhấp trúng các đầu ga.",
   "rail.say.clickTrackSignal":
     "Nhấp vào đường ray, đường ray trong ga hoặc nhánh rẽ của ghi để đặt tín hiệu.",
   "rail.signalsReset": "Tín hiệu đã được khôi phục về bản tạo từ thiết kế.",

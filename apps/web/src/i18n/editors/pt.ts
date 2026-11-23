@@ -341,6 +341,8 @@ export const editorsPt = {
   "rail.say.clickTrackSwitch": "Clique em uma via para colocar um AMV.",
   "rail.say.straightOnly": "Os AMVs do catálogo ficam em via reta. Clique em um trecho reto.",
   "rail.say.doubleOnly": "Travessões ligam duas vias paralelas. Escolha uma via dupla.",
+  "rail.say.missedStationEnd":
+    "Clique exatamente numa extremidade da estação para ligar a via a ela. Aproxime o mapa se for difícil acertar nas extremidades.",
   "rail.say.clickTrackSignal":
     "Clique em uma via, uma via de estação ou um ramo de AMV para colocar um sinal.",
   "rail.signalsReset": "Sinais redefinidos para os gerados a partir do projeto.",

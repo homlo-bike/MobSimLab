@@ -348,6 +348,8 @@ export const editorsFr = {
   "rail.say.straightOnly":
     "Les aiguillages du catalogue se posent en alignement droit. Cliquez sur une partie droite.",
   "rail.say.doubleOnly": "Une communication relie deux voies parallèles. Choisissez une voie double.",
+  "rail.say.missedStationEnd":
+    "Cliquez exactement sur une extrémité de gare pour y raccorder la voie. Zoomez si les extrémités sont difficiles à atteindre.",
   "rail.say.clickTrackSignal":
     "Cliquez sur une voie, une voie de station ou une branche d’aiguillage pour placer un signal.",
   "rail.signalsReset": "Signaux remis à ceux générés à partir du projet.",

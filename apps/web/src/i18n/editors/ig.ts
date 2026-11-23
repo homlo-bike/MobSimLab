@@ -313,6 +313,8 @@ export const editorsIg = {
   "rail.say.clickTrackSwitch": "Pịa ụzọ ígwè iji tinye ihe ntụgharị.",
   "rail.say.straightOnly": "A na-etinye ihe ntụgharị katalọgụ n'ụzọ ígwè kwụ ọtọ. Pịa akụkụ kwụ ọtọ.",
   "rail.say.doubleOnly": "Ngafe na-ejikọ ụzọ ígwè abụọ yitere. Họrọ ụzọ ígwè abụọ.",
+  "rail.say.missedStationEnd":
+    "Pịa kpọmkwem n'otu nsọtụ ọdụ ụgbọ oloko iji jikọọ ụzọ ígwè ahụ ebe ahụ. Bulie maapụ ma ọ bụrụ na ọ na-esiri ike ịpịa nsọtụ ndị ahụ.",
   "rail.say.clickTrackSignal": "Pịa ụzọ ígwè, ụzọ ígwè ọdụ ma ọ bụ alaka ihe ntụgharị iji tinye akara.",
   "rail.signalsReset": "Eweghachila akara na ndị emepụtara site na nhazi.",
   "rail.noiseFlows": "Ụgbọ oloko kwa elekere n'ụzọ ígwè ọ bụla (ọrụ ọmụmaatụ ruo mgbe e sere ahịrị ụzọ ígwè)",

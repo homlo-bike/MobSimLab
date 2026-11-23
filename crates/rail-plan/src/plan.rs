@@ -198,6 +198,10 @@ pub enum Issue {
         /// train, a gradient it cannot climb); None when no track joins them.
         #[serde(skip_serializing_if = "Option::is_none")]
         reason: Option<Msg>,
+        /// When no track joins the stops: where the track stops leading on (the stop trains get to
+        /// and the next one they cannot reach from there); None when that cannot be said.
+        #[serde(skip_serializing_if = "Option::is_none")]
+        gap: Option<Msg>,
     },
     /// A trip could not be placed.
     Unplaced {
@@ -1047,10 +1051,16 @@ impl<'a> Planner<'a> {
                         self.forget_paths();
                     }
                     Err(reason) => {
+                        let gap = if reason.is_none() {
+                            self.track_gap(li, dir)
+                        } else {
+                            None
+                        };
                         self.issues.push(Issue::NoPath {
                             line: self.lines[li].id.clone(),
                             direction: dir,
                             reason,
+                            gap,
                         });
                         t_run[dir as usize] = f64::NAN;
                     }
@@ -1629,6 +1639,65 @@ impl<'a> Planner<'a> {
             }
         }
         best.map(|(_, t, b, r)| (t, b, r)).ok_or(why)
+    }
+
+    /// Purpose: where the track stops leading on along a line no path runs through: the furthest
+    /// stop a train from the first can reach while calling at the stops before it, and the next
+    /// one, which it cannot reach from there. A line whose stops each reach the next can still have
+    /// none when the track trains arrive on at a station is not the one that leads on, as when the
+    /// through tracks meet other station tracks at each end of a station (Syria intercity test,
+    /// bug 11). Inputs: the line and direction. Output: the sentence, or None when a path does run
+    /// through every stop once the line's platform choices are left aside.
+    fn track_gap(&self, line: usize, dir: u8) -> Option<Msg> {
+        let cands = &self.cands[line][dir as usize];
+        let stop = |pids: &[PlatformId]| -> Vec<Candidate> {
+            pids.iter().map(|&p| (Place::Platform(p), 0.0)).collect()
+        };
+        let starts = |pids: &[PlatformId]| -> Vec<RouteId> {
+            pids.iter()
+                .flat_map(|&p| {
+                    [Dir::Up, Dir::Down]
+                        .into_iter()
+                        .flat_map(move |d| departure_routes(self.m, Place::Platform(p), d))
+                })
+                .collect()
+        };
+        let name = |pids: &[PlatformId]| {
+            pids.first().map_or(String::new(), |&p| {
+                let st = self.m.platforms[p as usize].station;
+                self.m.stations[st as usize].name.clone()
+            })
+        };
+        let origin = starts(&cands[0]);
+        // The most stops in a row a train from the first can call at.
+        let mut k = 0;
+        while k + 1 < cands.len() {
+            let calls: Vec<Vec<Candidate>> = cands[1..=k + 1].iter().map(|c| stop(c)).collect();
+            if find_path(self.m, &origin, &calls, self.p.max_routes).is_none() {
+                break;
+            }
+            k += 1;
+        }
+        if k + 1 >= cands.len() {
+            return None;
+        }
+        let (at, next) = (name(&cands[k]), name(&cands[k + 1]));
+        let pair = find_path(
+            self.m,
+            &starts(&cands[k]),
+            &[stop(&cands[k + 1])],
+            self.p.max_routes,
+        );
+        Some(if k > 0 && pair.is_some() {
+            msg!(
+                "rail.plan.gap_does_not_lead_on",
+                from = name(&cands[0]),
+                at = at,
+                next = next
+            )
+        } else {
+            msg!("rail.plan.gap_no_track", from = at, to = next)
+        })
     }
 
     /// Purpose: a run that stalls on a gradient, said where: the station it last left and how far

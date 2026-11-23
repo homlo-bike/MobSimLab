@@ -377,6 +377,8 @@ export const editorsPl = {
   "rail.say.clickTrackSwitch": "Kliknij tor, aby umieścić rozjazd.",
   "rail.say.straightOnly": "Rozjazdy z katalogu leżą na prostym odcinku. Kliknij prostą część.",
   "rail.say.doubleOnly": "Przejazd międzytorowy łączy dwa równoległe tory. Wybierz tor dwutorowy.",
+  "rail.say.missedStationEnd":
+    "Kliknij dokładnie koniec stacji, aby połączyć z nim tor. Przybliż mapę, jeśli trudno trafić w końce.",
   "rail.say.clickTrackSignal":
     "Kliknij tor, tor stacyjny lub kierunek zwrotny rozjazdu, aby umieścić sygnalizator.",
   "rail.signalsReset": "Przywrócono sygnalizatory wygenerowane z projektu.",

@@ -337,6 +337,8 @@ export const editorsSw = {
   "rail.say.clickTrackSwitch": "Bofya kwenye reli kuweka swichi.",
   "rail.say.straightOnly": "Swichi za katalogi huwekwa kwenye reli iliyonyooka. Bofya sehemu iliyonyooka.",
   "rail.say.doubleOnly": "Vivuko vya reli huunganisha reli mbili sambamba. Chagua reli mbili.",
+  "rail.say.missedStationEnd":
+    "Bofya hasa kwenye mwisho wa stesheni ili kuunganisha reli hapo. Kuza ramani ikiwa ni vigumu kugusa ncha.",
   "rail.say.clickTrackSignal": "Bofya kwenye reli, reli ya stesheni au tawi la swichi kuweka ishara.",
   "rail.signalsReset": "Ishara zimerudishwa kwa zile zilizotengenezwa kutoka kwenye usanifu.",
   "rail.noiseFlows": "Treni kwa saa kwenye kila reli (huduma ya mfano hadi njia za reli zichorwe)",
