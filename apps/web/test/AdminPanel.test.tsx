@@ -96,7 +96,8 @@ describe("Administration panel", () => {
     stubApi();
     render(<AdminPanel role="owner" userId="u1" csrfToken="c" onClose={() => {}} />);
     fireEvent.click(screen.getByRole("tab", { name: "Audit log" }));
-    expect((await screen.findByRole("status")).textContent).toMatch(/verified/);
-    expect(screen.getByText("system")).toBeTruthy();
+    // The status reads "verified" before the records load, so wait for a record first.
+    expect(await screen.findByText("system")).toBeTruthy();
+    expect(screen.getByRole("status").textContent).toMatch(/verified/);
   });
 });
