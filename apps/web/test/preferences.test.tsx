@@ -28,6 +28,9 @@ import {
   paramNumber,
   paramPrefId,
   withChoice,
+  countryDrivingSide,
+  streetRulesFrom,
+  withCountryDrivingSide,
 } from "../src/workspace/preferences";
 import { addLine, trainsFor } from "../src/features/railways/serviceLines";
 import type { Network } from "../src/features/railways/types";
@@ -294,5 +297,19 @@ describe("vehicle visuals", () => {
     ).toEqual({
       values: { a: 1 },
     });
+  });
+
+  it("takes a new project's driving side from its country and keeps one the project set", () => {
+    expect(countryDrivingSide("GB")).toBe("left");
+    expect(countryDrivingSide("jp")).toBe("left");
+    expect(countryDrivingSide("SY")).toBe("right");
+    expect(countryDrivingSide(null)).toBeNull();
+    expect(countryDrivingSide("GBR")).toBeNull();
+    expect(streetRulesFrom(withCountryDrivingSide(null, "IN")).traffic_side).toBe("left");
+    expect(streetRulesFrom(withCountryDrivingSide(null, "LB")).traffic_side).toBe("right");
+    expect(withCountryDrivingSide(null, "LB")?.choices).toEqual({ "street.driving_side": "right" });
+    const own = withChoice(null, "street.driving_side", "right");
+    expect(withCountryDrivingSide(own, "AU")).toBe(own);
+    expect(withCountryDrivingSide(null, null)).toBeNull();
   });
 });

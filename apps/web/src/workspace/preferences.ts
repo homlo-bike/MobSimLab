@@ -485,6 +485,47 @@ export function paramNumber(key: string, values: PreferencesDoc["values"] | unde
   return lib[1];
 }
 
+/** The preference id of the driving side of buses, BRT and trolleybuses (assumption library). */
+export const DRIVING_SIDE_PREF = "street.driving_side";
+
+/**
+ * Countries and territories (ISO 3166-1 alpha-2) where traffic keeps to the left. Every other country keeps to
+ * the right.
+ */
+// prettier-ignore
+const LEFT_HAND_COUNTRIES = new Set([
+  // Europe
+  "GB", "IE", "MT", "CY", "IM", "JE", "GG",
+  // Africa
+  "BW", "KE", "LS", "MW", "MU", "MZ", "NA", "SC", "ZA", "SZ", "TZ", "UG", "ZM", "ZW", "SH",
+  // Asia
+  "BD", "BT", "BN", "HK", "IN", "ID", "JP", "MO", "MY", "MV", "NP", "PK", "SG", "LK", "TH", "TL",
+  // Americas
+  "AG", "BS", "BB", "DM", "GD", "GY", "JM", "KN", "LC", "VC", "SR", "TT", "AI", "BM", "VG", "KY", "MS", "TC",
+  "VI", "FK",
+  // Oceania and the Indian Ocean
+  "AU", "NZ", "FJ", "KI", "NR", "PG", "WS", "SB", "TO", "TV", "CK", "NU", "NF", "PN", "TK", "CX", "CC", "IO",
+]);
+
+/** Purpose: the side traffic keeps to in a country (ISO alpha-2), or null when the code is not a country code. */
+export function countryDrivingSide(country: string | null | undefined): "left" | "right" | null {
+  if (!country || !/^[A-Za-z]{2}$/.test(country)) return null;
+  return LEFT_HAND_COUNTRIES.has(country.toUpperCase()) ? "left" : "right";
+}
+
+/**
+ * Purpose: the document with the driving side of the project's country (`countryDrivingSide`) when the project
+ * has not set one; unchanged when it has, or when the country is not known.
+ */
+export function withCountryDrivingSide(
+  doc: PreferencesDoc | null | undefined,
+  country: string | null | undefined,
+): PreferencesDoc | null {
+  if (choiceValue(doc, DRIVING_SIDE_PREF) !== undefined) return doc ?? null;
+  const side = countryDrivingSide(country);
+  return side ? withChoice(doc, DRIVING_SIDE_PREF, side) : (doc ?? null);
+}
+
 /**
  * Purpose: the street rules of the project (Project preferences) for the street line tool: driving side
  * (`street.driving_side`), station grouping (`analysis.station_grouping_m`) and the detour warning
