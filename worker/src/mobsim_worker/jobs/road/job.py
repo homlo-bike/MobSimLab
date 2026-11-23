@@ -337,6 +337,7 @@ def run_road(
         "teleports": out.teleports,
         "collisions": out.collisions,
         "background_inserted": out.background_inserted,
+        "background_removed": out.background_removed,
         "vehicles": sum(len(pl.vehicles) for pl in runnable),
         "back_in_depot": sum(1 for w in out.watches.values() if w.arrived and w.vehicle.slot_in),
         "gridlocks": sum(1 for e in out.events if e["kind"] == "gridlock"),
@@ -346,5 +347,10 @@ def run_road(
         "step_s": step_s,
         "complete": not out.stopped,
     }
+    if out.background_removed:
+        result["notes"].append(
+            f"{out.background_removed:,} background cars stood for over {sim.CAR_STUCK_S / 60:.0f} minutes "
+            "and were taken out of the traffic to clear jams; the streets may be busier than they can carry"
+        )
     replay = sim.pack_replay(runnable, out, stops)
     return ("stopped" if out.stopped else "done"), result, replay

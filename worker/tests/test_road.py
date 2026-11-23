@@ -264,3 +264,27 @@ def test_a_route_with_no_bus_path_names_the_streets_and_the_nearest_stop() -> No
     assert isinstance(problem, str)
     assert problem.startswith("no way for a bus from Main Street onto Col 2, near Middle (0 m away)")
     assert "29270329" not in problem
+
+
+def test_background_cars_stuck_for_minutes_are_taken_out_but_buses_never() -> None:
+    from mobsim_worker.jobs.road import sim  # noqa: PLC0415
+
+    class Vehicle:
+        waiting = {"bg1": 200.0, "bg2": 20.0, "L0v0": 900.0}
+        removed: list[str] = []
+
+        def getIDList(self) -> list[str]:  # noqa: N802 (libsumo's names)
+            return list(self.waiting)
+
+        def getWaitingTime(self, vid: str) -> float:  # noqa: N802
+            return self.waiting[vid]
+
+        def remove(self, vid: str) -> None:
+            self.removed.append(vid)
+
+    class Libsumo:
+        vehicle = Vehicle()
+
+    watches = {"L0v0": object()}
+    assert sim._clear_stuck_cars(Libsumo(), watches) == 1  # type: ignore[arg-type]
+    assert Libsumo.vehicle.removed == ["bg1"]

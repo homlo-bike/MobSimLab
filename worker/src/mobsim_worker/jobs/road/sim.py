@@ -7,6 +7,9 @@ While SUMO steps, the street line vehicles are watched:
   the next traffic light is within 40 m and not green, else in traffic.
 - **Gridlock.** A vehicle that has stood over 5 minutes away from a stop and a red light is a run event.
   Nothing is teleported (``--time-to-teleport -1``): the vehicle stays where it is.
+- **Jams.** A background car that has stood for ``CAR_STUCK_S`` is taken out of the run, as SUMO's own
+  teleport would after 5 minutes, so that junctions where cars block each other clear again instead of
+  locking up whole districts round the buses (Damascus bug 30). Street line vehicles are never taken out.
 - **Energy.** A battery or trolleybus that runs out of charge stops where it is (a run event; no recharge).
 
 After the run, SUMO's stop output gives each stop's departure; with the plan it gives punctuality, delays,
@@ -35,6 +38,12 @@ SIGNAL_NEAR_M = 40.0
 
 #: Standing this long away from a stop is a gridlock event, s.
 GRIDLOCK_S = 300.0
+
+#: A background car standing this long (``getWaitingTime``) is taken out of the run, s.
+CAR_STUCK_S = 180.0
+
+#: Simulated seconds between looks for stuck background cars.
+CAR_CHECK_EVERY_S = 30.0
 
 #: Most position samples kept for the replay (vehicles × frames); the frame interval grows to stay below it.
 MAX_SAMPLES = 1_500_000
@@ -77,6 +86,7 @@ class SimOutcome:
     teleports: int
     collisions: int
     background_inserted: int
+    background_removed: int
     sim_end: float
     wall_s: float
     stopped: bool
@@ -160,6 +170,7 @@ def run_sumo(
     teleports = 0
     collisions = 0
     inserted_bg = 0
+    removed_bg = 0
     wall0 = time.monotonic()
     libsumo.start(args)
     stopped = False
@@ -167,6 +178,7 @@ def run_sumo(
         t = begin
         next_frame = begin
         next_report = begin
+        next_check = begin + CAR_CHECK_EVERY_S
         last_wall = -PROGRESS_MIN_WALL_S
         active: set[str] = set()
         left = set(watches)
@@ -243,6 +255,9 @@ def run_sumo(
                     )
             if frame:
                 next_frame += frame_s
+            if t >= next_check:
+                next_check = t + CAR_CHECK_EVERY_S
+                removed_bg += _clear_stuck_cars(libsumo, watches)
             if t >= next_report and time.monotonic() - last_wall >= PROGRESS_MIN_WALL_S:
                 next_report = t + PROGRESS_EVERY_S
                 last_wall = time.monotonic()
@@ -273,6 +288,7 @@ def run_sumo(
         teleports=teleports,
         collisions=collisions,
         background_inserted=inserted_bg,
+        background_removed=removed_bg,
         sim_end=t,
         wall_s=time.monotonic() - wall0,
         stopped=stopped,
@@ -280,6 +296,16 @@ def run_sumo(
         begin=begin,
         frames=int((t - begin) / frame_s) + 1,
     )
+
+
+def _clear_stuck_cars(libsumo: Any, watches: Mapping[str, Watch]) -> int:
+    """Take out the background cars that have stood for ``CAR_STUCK_S``; return how many."""
+    n = 0
+    for vid in libsumo.vehicle.getIDList():
+        if vid not in watches and float(libsumo.vehicle.getWaitingTime(vid)) >= CAR_STUCK_S:
+            libsumo.vehicle.remove(vid)
+            n += 1
+    return n
 
 
 def _charge(libsumo: Any, vid: str) -> float:
