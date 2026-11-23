@@ -183,7 +183,7 @@ pub fn nearest(samples: &[Sample], q: P2) -> Option<Nearest> {
         };
         let p = a.p.add(ab.mul(t));
         let d = q.dist(p);
-        if best.map_or(true, |b| d < b.d) {
+        if best.is_none_or(|b| d < b.d) {
             best = Some(Nearest {
                 d,
                 s: a.s + (b.s - a.s) * t,

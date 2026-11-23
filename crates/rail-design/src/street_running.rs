@@ -133,7 +133,7 @@ fn near_point(pts: &[P2], q: P2) -> Option<(f64, P2, P2)> {
         let t = (q.sub(w[0]).dot(ab) / l2).clamp(0.0, 1.0);
         let at = w[0].add(ab.mul(t));
         let d = at.dist(q);
-        if best.map_or(true, |b: (f64, P2, P2)| d < b.0) {
+        if best.is_none_or(|b: (f64, P2, P2)| d < b.0) {
             best = Some((d, at, ab.unit()));
         }
     }
@@ -167,7 +167,7 @@ fn dual_partner(
         if sep <= DUAL_MAX_M
             && da.dot(db) < 0.0
             && line_angle(da, db) < min_angle
-            && best.map_or(true, |x| sep < x.1)
+            && best.is_none_or(|x| sep < x.1)
         {
             best = Some((j, sep));
         }
@@ -243,7 +243,7 @@ pub fn street_running(dz: &mut Design, streets: &[Street]) {
                 let width = street_width(l.st, p);
                 if d <= (width / 2.0).max(3.0) + half_track
                     && line_angle(dir, sd) < min_angle
-                    && best.map_or(true, |b: (f64, usize)| d < b.0)
+                    && best.is_none_or(|b: (f64, usize)| d < b.0)
                 {
                     best = Some((d, i));
                 }

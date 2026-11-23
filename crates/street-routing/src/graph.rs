@@ -518,7 +518,7 @@ impl RoadGraph {
                         self.nodes[seg.b as usize].xy,
                     );
                     let score = pr.dist + if seg.minor { MINOR_SNAP_PENALTY_M } else { 0.0 };
-                    if pr.dist <= max_m && best.as_ref().map_or(true, |b| score < b.2) {
+                    if pr.dist <= max_m && best.as_ref().is_none_or(|b| score < b.2) {
                         best = Some((s, pr, score));
                     }
                 }

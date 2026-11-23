@@ -508,7 +508,7 @@ fn periodic_pattern(
                 e,
                 off,
             );
-            if best.as_ref().map_or(true, |(k, _)| key < *k) {
+            if best.as_ref().is_none_or(|(k, _)| key < *k) {
                 best = Some((
                     key,
                     Pattern {
@@ -1311,9 +1311,10 @@ impl<'a> Planner<'a> {
             let against =
                 ((against_others(self, &out) + against_others(self, &back)) / 100.0).floor() as u64;
             let shared = shared_ends(&out) + shared_ends(&back);
-            if best.as_ref().map_or(true, |b| {
-                (against, shared, sh, cost) < (b.0, b.1, b.2, b.3 - 1e-6)
-            }) {
+            if best
+                .as_ref()
+                .is_none_or(|b| (against, shared, sh, cost) < (b.0, b.1, b.2, b.3 - 1e-6))
+            {
                 best = Some((against, shared, sh, cost, out, back));
             }
         }
@@ -1359,7 +1360,7 @@ impl<'a> Planner<'a> {
                     }
                 };
                 let total = t.profile.total_time_s();
-                if best.as_ref().map_or(true, |(c, _, _, _)| path.cost < *c) {
+                if best.as_ref().is_none_or(|(c, _, _, _)| path.cost < *c) {
                     let blocks = t
                         .blocking
                         .iter()
@@ -2133,7 +2134,7 @@ impl<'a> Planner<'a> {
             let idx = self.runs.len();
             match self.search_time(&mk, earliest, true, self.p.max_shift_s, vehicle, prev, idx) {
                 Ok((timing, t, prev_t)) => {
-                    if best.as_ref().map_or(true, |b| t < b.0 - 0.5) {
+                    if best.as_ref().is_none_or(|b| t < b.0 - 0.5) {
                         best = Some((t, ai, mk(t), timing, prev_t));
                     }
                     if t <= earliest + 0.5 {

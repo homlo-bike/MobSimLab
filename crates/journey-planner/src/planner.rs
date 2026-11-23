@@ -874,7 +874,7 @@ impl Planner {
                     while j < route.trips.len() && !route.trips[j].board[i] {
                         j += 1;
                     }
-                    if j < route.trips.len() && cur.map_or(true, |(t, _, _)| j < t) {
+                    if j < route.trips.len() && cur.is_none_or(|(t, _, _)| j < t) {
                         cur = Some((j, i, ff));
                     }
                 }
@@ -886,7 +886,7 @@ impl Planner {
             for &p in &improved {
                 if let Some((w, _)) = egress[p] {
                     let a = tau_v[k][p] + w;
-                    if a < best_dest && cand.map_or(true, |(c, _)| a < c) {
+                    if a < best_dest && cand.is_none_or(|(c, _)| a < c) {
                         cand = Some((a, p));
                     }
                 }
@@ -996,7 +996,7 @@ impl Planner {
                     while j < route.trips.len() && !route.trips[j].board[i] {
                         j += 1;
                     }
-                    if j < route.trips.len() && cur.map_or(true, |t| j < t) {
+                    if j < route.trips.len() && cur.is_none_or(|t| j < t) {
                         cur = Some(j);
                     }
                 }

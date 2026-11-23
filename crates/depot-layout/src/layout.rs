@@ -345,7 +345,7 @@ fn place(
             }
             j += 1;
             u += p.pitch;
-            if p.walk_every > 0 && j % p.walk_every == 0 {
+            if p.walk_every > 0 && j.is_multiple_of(p.walk_every) {
                 u += p.walkway;
             }
         }
@@ -476,7 +476,7 @@ pub fn generate(input: &DepotInput) -> Generated {
             let slots = placed.len() as u32 * per_lane;
             if chosen
                 .as_ref()
-                .map_or(true, |c| slots > c.2.len() as u32 * c.0.per_lane)
+                .is_none_or(|c| slots > c.2.len() as u32 * c.0.per_lane)
             {
                 chosen = Some((p, alpha, placed));
             }

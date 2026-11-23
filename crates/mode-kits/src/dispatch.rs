@@ -356,7 +356,7 @@ pub fn simulate(input: &DispatchInput) -> DispatchResult {
                     );
                     if let Some((done, _, drop)) = check(v, &plan, &reqs, i) {
                         let cost = done - base + (drop - now);
-                        if best.as_ref().map_or(true, |x| cost < x.0) {
+                        if best.as_ref().is_none_or(|x| cost < x.0) {
                             best = Some((cost, vi, plan));
                         }
                     }

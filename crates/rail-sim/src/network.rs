@@ -658,7 +658,7 @@ impl<'m> NetworkSim<'m> {
                 return true;
             };
             let next = self.order_next.get(s).copied().unwrap_or(0);
-            q.get(next).map_or(true, |x| (x.1, x.2, x.3) == me)
+            q.get(next).is_none_or(|x| (x.1, x.2, x.3) == me)
         })
     }
 

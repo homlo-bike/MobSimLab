@@ -247,7 +247,7 @@ pub fn inside_margin(inner: &[V2], outer: &[V2]) -> f64 {
 pub fn clean_ring(ring: &[V2]) -> Vec<V2> {
     let mut out: Vec<V2> = Vec::with_capacity(ring.len());
     for p in ring {
-        if out.last().map_or(true, |q| q.dist(*p) > 1e-6) {
+        if out.last().is_none_or(|q| q.dist(*p) > 1e-6) {
             out.push(*p);
         }
     }
