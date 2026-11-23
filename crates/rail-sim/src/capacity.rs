@@ -36,6 +36,7 @@
 
 use std::collections::BTreeMap;
 
+use engine_msg::{msg, Msg};
 use rail_model::Model;
 use rail_plan::{
     plan, report, Band, Issue, LineSpec, Plan, PlanParams, RunKind, CLOCK_FACE_HEADWAYS_S,
@@ -248,8 +249,10 @@ pub struct Point {
     pub residual_delay_s: f64,
     /// Whether delays die out (mean residual delay of the stability runs under the limit, no deadlock).
     pub stable: bool,
-    /// Kernel events or errors (deadlocks, overspeed braking), as text.
+    /// Kernel events or errors (deadlocks, overspeed braking), as text in English.
     pub problems: Vec<String>,
+    /// The same as keys and values, for the app to show in the user's language.
+    pub problem_msgs: Vec<Msg>,
     /// The verdict at this frequency.
     pub verdict: Verdict,
 }
@@ -291,8 +294,10 @@ pub struct CapacityRun {
     pub lines: Vec<LineResult>,
     /// Fleet.
     pub fleet: Fleet,
-    /// Planner issues other than shifted departures, as text.
+    /// Planner issues other than shifted departures, as text in English.
     pub issues: Vec<String>,
+    /// The same as keys and values, for the app to show in the user's language.
+    pub issue_msgs: Vec<Msg>,
 }
 
 /// A deterministic random generator (SplitMix64), so runs repeat exactly.
@@ -427,9 +432,9 @@ fn run_kernel(
     lines: usize,
     p: &CapacityParams,
     seed: Option<u64>,
-) -> (Vec<RunStats>, Vec<Vec<String>>, u64) {
+) -> (Vec<RunStats>, Vec<Vec<Msg>>, u64) {
     let mut stats: Vec<RunStats> = (0..lines).map(|_| RunStats::default()).collect();
-    let mut problems: Vec<Vec<String>> = vec![Vec::new(); lines];
+    let mut problems: Vec<Vec<Msg>> = vec![Vec::new(); lines];
     let np = p.signalling.net(NetParams {
         check_invariants: true,
         ..NetParams::default()
@@ -438,7 +443,7 @@ fn run_kernel(
         Ok(s) => s,
         Err(e) => {
             for pr in &mut problems {
-                pr.push(format!("the kernel could not start: {e}"));
+                pr.push(msg!("rail.sim.kernel_failed", why = e.clone()));
             }
             return (stats, problems, 0);
         }
@@ -479,11 +484,19 @@ fn run_kernel(
                 .unwrap_or(0)
         };
         match ev {
-            NetEvent::Overspeed { t, train, .. } => problems[line_of(*train)]
-                .push(format!("train {train} braked for overspeed at {t:.0} s")),
-            NetEvent::HeldAtCrossing { t, train, crossing } => problems[line_of(*train)].push(
-                format!("train {train} held at level crossing {crossing} at {t:.0} s"),
-            ),
+            NetEvent::Overspeed { t, train, .. } => problems[line_of(*train)].push(msg!(
+                "rail.sim.overspeed_braking",
+                train = train.to_string(),
+                t = format!("{t:.0}")
+            )),
+            NetEvent::HeldAtCrossing { t, train, crossing } => {
+                problems[line_of(*train)].push(msg!(
+                    "rail.sim.held_at_crossing",
+                    train = train.to_string(),
+                    crossing = crossing.to_string(),
+                    t = format!("{t:.0}")
+                ))
+            }
             NetEvent::Deadlock { .. } => {}
         }
     }
@@ -528,7 +541,7 @@ fn run_kernel(
         s.knock_on_sum += (delay - own).max(0.0);
     }
     for pr in &mut problems {
-        pr.sort();
+        pr.sort_by_key(|m| m.english());
         pr.dedup();
         pr.truncate(5);
     }
@@ -542,7 +555,7 @@ fn evaluate(
     m: &Model,
     lines: &[LineSpec],
     p: &CapacityParams,
-) -> Result<(Vec<Point>, Fleet, Vec<String>), String> {
+) -> Result<(Vec<Point>, Fleet, Vec<Msg>), Msg> {
     let pp = p.signalling.plan(PlanParams {
         min_buffer_s: p.min_buffer_s,
         ..PlanParams::default()
@@ -574,16 +587,19 @@ fn evaluate(
             }
             _ => {}
         }
-        issues.push(format!("{i:?}"));
+        issues.push(rail_plan::service::issue_message(i, m));
     }
     let (clean, clean_problems, routes_locked) = run_kernel(m, &pl, lines.len(), p, None);
     let mut disturbed: Vec<Vec<RunStats>> = Vec::new();
-    let mut disturbed_problems: Vec<Vec<String>> = vec![Vec::new(); lines.len()];
+    let mut disturbed_problems: Vec<Vec<Msg>> = vec![Vec::new(); lines.len()];
     for k in 0..p.stability_runs {
         let seed = p.seed.wrapping_mul(1_000_003).wrapping_add(k as u64);
         let (s, pr, _) = run_kernel(m, &pl, lines.len(), p, Some(seed));
         for (li, x) in pr.into_iter().enumerate() {
-            disturbed_problems[li].extend(x.into_iter().map(|e| format!("with delays: {e}")));
+            disturbed_problems[li].extend(
+                x.into_iter()
+                    .map(|e| msg!("rail.sim.with_delays", what = e)),
+            );
         }
         disturbed.push(s);
     }
@@ -655,13 +671,14 @@ fn evaluate(
         let (knock, dp, residual) = (knock / n, dp / n, residual / n);
         let deadlocked = disturbed_problems[li]
             .iter()
-            .any(|e| e.contains("deadlock"));
+            .any(|e| e.english().contains("deadlock"));
         let stable = residual <= p.residual_delay_s && !deadlocked;
-        let mut problems = clean_problems[li].clone();
+        let mut problem_msgs = clean_problems[li].clone();
         let mut dprob = disturbed_problems[li].clone();
-        dprob.sort();
+        dprob.sort_by_key(|m| m.english());
         dprob.dedup();
-        problems.extend(dprob.into_iter().take(3));
+        problem_msgs.extend(dprob.into_iter().take(3));
+        let problems = problem_msgs.iter().map(Msg::english).collect();
         let verdict = if unplaced[li] > 0 || !clean_problems[li].is_empty() || tight > 1.0 {
             Verdict::NotEnoughCapacity
         } else if !stable {
@@ -691,6 +708,7 @@ fn evaluate(
             residual_delay_s: residual,
             stable,
             problems,
+            problem_msgs,
             verdict,
         });
     }
@@ -710,13 +728,9 @@ fn evaluate(
 /// Output: the verdict, a result per line and the fleet, or Err when a line
 /// refers to a station or storage track that is not on the network.
 /// Side effects: none (deterministic for a given seed).
-pub fn capacity_run(
-    m: &Model,
-    lines: &[LineSpec],
-    p: &CapacityParams,
-) -> Result<CapacityRun, String> {
+pub fn capacity_run(m: &Model, lines: &[LineSpec], p: &CapacityParams) -> Result<CapacityRun, Msg> {
     if p.to_s <= p.from_s {
-        return Err("the period ends before it starts".into());
+        return Err(msg!("rail.sim.period_reversed"));
     }
     // Only lines with service in the period are planned (the others do not
     // use the network then).
@@ -725,7 +739,7 @@ pub fn capacity_run(
         .filter(|l| period_headway(l, p).is_some())
         .collect();
     if active.is_empty() {
-        return Err("no line has service in this period".into());
+        return Err(msg!("rail.sim.no_service"));
     }
     let cut_lines: Vec<LineSpec> = active.iter().map(|l| cut(l, p, None)).collect();
     let (points, fleet, issues) = evaluate(m, &cut_lines, p)?;
@@ -748,7 +762,8 @@ pub fn capacity_run(
         verdict,
         lines: results,
         fleet,
-        issues,
+        issues: issues.iter().map(Msg::english).collect(),
+        issue_msgs: issues,
     })
 }
 
@@ -763,15 +778,12 @@ pub fn sweep_point(
     p: &CapacityParams,
     line: usize,
     headway_s: f64,
-) -> Result<Point, String> {
+) -> Result<Point, Msg> {
     if line >= lines.len() {
-        return Err(format!("no line {line}"));
+        return Err(msg!("rail.sim.no_line", line = line.to_string()));
     }
     if period_headway(&lines[line], p).is_none() {
-        return Err(format!(
-            "line {} has no service in this period",
-            lines[line].id
-        ));
+        return Err(msg!("rail.sim.line_no_service", line = &lines[line].id));
     }
     let mut at = 0;
     let mut cut_lines = Vec::new();

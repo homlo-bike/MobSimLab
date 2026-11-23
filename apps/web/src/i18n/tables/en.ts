@@ -473,6 +473,12 @@ export const tablesEn = {
   "tt.tbl.to": "To",
   "tt.tbl.arrives": "Arrives",
   "cost.outsideRange": "Outside the library range of {low}–{high}: check the value and its unit.",
+  "tbl.unrouted.title": "Some street line routes are not complete",
+  "tbl.unrouted.intro":
+    "Parts of these lines' routes were not found when they were saved, so Tables, costs and the appraisal count them as 0 km. Open each line in the Create tab: its streets load, and the route they complete is saved. A leg that stays red needs a point moved onto a road the vehicle may use.",
+  "tbl.unrouted.legs": "Legs not found",
+  "tbl.unrouted.runs": "Depot runs not found",
+  "tbl.unrouted.leftOut": "Left out, at least",
 } as const;
 
 /** Keys of the tables messages. */

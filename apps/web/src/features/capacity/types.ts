@@ -1,5 +1,7 @@
 /** Types of the rail capacity run (crates/rail-sim/src/capacity.rs), as the WebAssembly module returns them. */
 
+import type { EngineMsg, EngineNote } from "../../i18n/engine";
+
 /** Plain verdict, best first. */
 export type Verdict = "works" | "near_limit" | "over_limit" | "delays_pile_up" | "not_enough_capacity";
 
@@ -58,6 +60,8 @@ export interface Point {
   residual_delay_s: number;
   stable: boolean;
   problems: string[];
+  /** The same as messages, to show in the app language (runs saved earlier have none). */
+  problem_msgs?: EngineMsg[];
   verdict: Verdict;
 }
 
@@ -73,6 +77,8 @@ export interface CapacityRun {
   lines: LineResult[];
   fleet: { trips: number; vehicles: number; peak_out: number; reserve: number; routes_locked: number };
   issues: string[];
+  /** The same as messages, to show in the app language (runs saved earlier have none). */
+  issue_msgs?: EngineMsg[];
 }
 
 /** A line as loaded, with its service bands. */
@@ -85,7 +91,7 @@ export interface LineInfo {
 /** A network and its lines, ready for runs (a web worker in the app, a fake in tests). */
 export interface CapacityEngine {
   lines(): Promise<LineInfo[]>;
-  notes(): Promise<string[]>;
+  notes(): Promise<EngineNote[]>;
   run(p: Partial<CapacityParams>): Promise<CapacityRun>;
   sweepHeadways(p: Partial<CapacityParams>, line: number, works: boolean): Promise<number[]>;
   sweepPoint(p: Partial<CapacityParams>, line: number, headwayS: number): Promise<Point>;

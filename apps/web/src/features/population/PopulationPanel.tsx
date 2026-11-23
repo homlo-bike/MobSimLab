@@ -14,6 +14,7 @@ import type {
 } from "./api";
 import { type FileFormat, fieldsOf, formatOf, guessField } from "./files";
 import { drawArea, drawLattice, legend, removeLattice, scaleTop } from "./mapLayer";
+import { engineErrorText } from "../../i18n/engine";
 
 interface Props {
   /** The map; `null` until it has loaded. */
@@ -54,7 +55,7 @@ export function PopulationPanel({ map, panel, api, editable, onPrimaryChange }: 
     setLoadError(null);
     api.overview().then(
       (o) => live && setOverview(o),
-      (e: unknown) => live && setLoadError(e instanceof Error ? e.message : String(e)),
+      (e: unknown) => live && setLoadError(engineErrorText(e)),
     );
     return () => {
       live = false;
@@ -94,7 +95,7 @@ export function PopulationPanel({ map, panel, api, editable, onPrimaryChange }: 
       await f();
       after?.();
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(engineErrorText(e));
     } finally {
       setBusy(false);
     }
@@ -918,7 +919,7 @@ function CompareSection({
       const view = await api.lattice(layerId, minusId || null, cell);
       setShown({ view, diff: !!minusId, top: scaleTop(view.grid.values) });
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(engineErrorText(e));
     } finally {
       setLoading(false);
     }

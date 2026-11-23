@@ -478,6 +478,33 @@ export class GeodataService implements OnApplicationBootstrap {
     if (this.cancelled.has(id)) throw new Cancelled();
   }
 
+  /**
+   * Purpose: cut an OSM file to the project area's polygons, each at its detail (large-area projects, step 3):
+   * Full polygons keep everything, "Main roads and railways only" polygons keep only `MAIN_FILTERS`.
+   * Inputs: the source file, the polygons, a work folder, the output file. Side effects: writes temporary files.
+   */
+  private async cutToArea(input: string, polygons: readonly AreaPolygon[], work: string, output: string) {
+    const full = polygons.filter((p) => p.detail !== "main");
+    const main = polygons.filter((p) => p.detail === "main");
+    const cut = async (ps: readonly AreaPolygon[], name: string) => {
+      const file = join(work, `${name}.geojson`);
+      await writeFile(file, polygonsGeoJson(ps));
+      const out = join(work, `${name}.osm.pbf`);
+      await this.tools.extractPolygons(input, file, out);
+      return out;
+    };
+    if (!main.length) return this.tools.extractPolygons(input, await writePolygons(work, full), output);
+    const mainRaw = await cut(main, "main-raw");
+    const mainPart = join(work, "main.osm.pbf");
+    await this.tools.tagsFilter(mainRaw, [...MAIN_FILTERS], mainPart);
+    await rm(mainRaw, { force: true });
+    if (!full.length) return rename(mainPart, output);
+    const fullPart = await cut(full, "full");
+    await this.tools.merge([fullPart, mainPart], output);
+    await rm(fullPart, { force: true });
+    await rm(mainPart, { force: true });
+  }
+
   private async osmJob(
     run: ImportRun,
     projectId: string,
@@ -489,8 +516,6 @@ export class GeodataService implements OnApplicationBootstrap {
       const area = join(work, "area.osm.pbf");
       // Only the project area's polygons are imported (osmium cuts to them, keeping whole ways at the edges).
       const polygons = importPolygons(run);
-      const polygonFile = join(work, "area.geojson");
-      await writeFile(polygonFile, polygonsGeoJson(polygons));
       const stats: Record<string, unknown> = {};
       let dataTimestamp: string | null = null;
       if (run.method === "overpass") {
@@ -525,7 +550,7 @@ export class GeodataService implements OnApplicationBootstrap {
         const merged = join(work, "merged.osm.pbf");
         await this.tools.merge(sorted, merged);
         await this.mark(run.id, { progress: { step: "extract" } });
-        await this.tools.extractPolygons(merged, polygonFile, area);
+        await this.cutToArea(merged, polygons, work, area);
         await rm(merged, { force: true });
       } else if (run.method === "geofabrik") {
         // One download per region (a project across a border needs one per country), each cut to the polygons.
@@ -549,7 +574,7 @@ export class GeodataService implements OnApplicationBootstrap {
           this.check(run.id);
           await this.mark(run.id, { progress: { step: "extract" } });
           const part = join(work, `part-${i}.osm.pbf`);
-          await this.tools.extractPolygons(source, polygonFile, part);
+          await this.cutToArea(source, polygons, work, part);
           parts.push(part);
           const stamp = await this.tools.dataTimestamp(source);
           if (stamp) stamps.push(stamp);
@@ -561,7 +586,7 @@ export class GeodataService implements OnApplicationBootstrap {
       } else {
         this.check(run.id);
         await this.mark(run.id, { progress: { step: "extract" } });
-        await this.tools.extractPolygons(o.upload!, polygonFile, area);
+        await this.cutToArea(o.upload!, polygons, work, area);
         dataTimestamp = await this.tools.dataTimestamp(o.upload!);
       }
       this.check(run.id);
@@ -868,6 +893,24 @@ export class GeodataService implements OnApplicationBootstrap {
     }
     return bytes;
   }
+}
+
+/**
+ * What a "Main roads and railways only" polygon keeps of OpenStreetMap: main roads with their links and turn
+ * restrictions, railways, and the coastline (water on the map).
+ */
+const MAIN_FILTERS = [
+  "w/highway=motorway,motorway_link,trunk,trunk_link,primary,primary_link",
+  "r/type=restriction",
+  "w/railway=rail,light_rail,tram,subway,narrow_gauge,monorail,funicular,construction,disused,preserved",
+  "w/natural=coastline",
+] as const;
+
+/** Purpose: write polygons as the GeoJSON file osmium cuts with; output: its path. */
+async function writePolygons(work: string, polygons: readonly AreaPolygon[]): Promise<string> {
+  const file = join(work, "area.geojson");
+  await writeFile(file, polygonsGeoJson(polygons));
+  return file;
 }
 
 /** Purpose: the polygons an import covers (`options.area`); none for imports from before polygons. */

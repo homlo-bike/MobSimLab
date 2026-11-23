@@ -1,12 +1,19 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useEngineText } from "../../i18n/engine";
+import { useEngineText, engineErrorText } from "../../i18n/engine";
 import { tNow, useI18n } from "../../i18n/i18n";
 import { type AllDayFeed, GtfsSection } from "../gtfs/GtfsSection";
 import { feedTimetable } from "../gtfs/toLines";
 import type { GtfsEngineLoader, GtfsFeed, GtfsNetworkDoc } from "../gtfs/types";
 import { loadWasmPlanner } from "./engine";
+import {
+  fetchGroundHeights,
+  fetchHeightsByKey,
+  type HeightFetcher,
+  missingStopPoints,
+  withStopHeights,
+} from "./heights";
 import { clock, duration, minutes, PARTS, parseClock } from "./format";
 import type { DemandZone } from "../../kits/ZoneEditor";
 import { drawJourney, drawNetwork, drawZones, ensureLayers, removeLayers } from "./mapLayers";
@@ -67,6 +74,8 @@ interface Props {
   loadPlanner?: PlannerLoader;
   /** GTFS engine loader; tests inject one. */
   loadGtfs?: GtfsEngineLoader;
+  /** Ground heights at points, so walks are timed on their slope; tests inject a fake. */
+  fetchHeights?: HeightFetcher;
   /** The project's own lines on every day type, for the GTFS download (weekday only when absent). */
   allDayFeed?: AllDayFeed;
 }
@@ -203,6 +212,7 @@ export function JourneyPlanner({
   loadPlanner = loadWasmPlanner,
   loadGtfs,
   allDayFeed,
+  fetchHeights = fetchGroundHeights,
 }: Props) {
   const { t, tn } = useI18n();
   const engineText = useEngineText();
@@ -258,6 +268,33 @@ export function JourneyPlanner({
     ].filter((p): p is Timetable => p !== null);
     return parts.length ? mergeTimetables(parts) : null;
   }, [streetLines, railLines, pluginLines]);
+  // Ground heights of the stops and of A and B: walks are timed on the slope between their ends.
+  const [stopHeights, setStopHeights] = useState<ReadonlyMap<string, number | null>>(new Map());
+  const stopHeightsRef = useRef(stopHeights);
+  stopHeightsRef.current = stopHeights;
+  const [heightsFailed, setHeightsFailed] = useState(false);
+  useEffect(() => {
+    if (!timetable) return;
+    const want = missingStopPoints(timetable, stopHeightsRef.current);
+    if (!want.length) return;
+    let alive = true;
+    fetchHeightsByKey(want, fetchHeights)
+      .then((got) => {
+        if (!alive) return;
+        setHeightsFailed(false);
+        setStopHeights((prev) => new Map([...prev, ...got]));
+      })
+      .catch(() => alive && setHeightsFailed(true));
+    return () => {
+      alive = false;
+    };
+  }, [timetable, fetchHeights]);
+  const routed = useMemo(
+    () => (timetable ? withStopHeights(timetable, stopHeights) : null),
+    [timetable, stopHeights],
+  );
+  const aZ = usePointHeight(a, fetchHeights);
+  const bZ = usePointHeight(b, fetchHeights);
   const toggle = (id: string, use: boolean) =>
     setSkipped((s) => {
       const n = new Set(s);
@@ -266,16 +303,16 @@ export function JourneyPlanner({
       return n;
     });
 
-  // Compile the timetable whenever it or the settings change.
+  // Compile the timetable whenever it, its stop heights or the settings change.
   useEffect(() => {
-    if (!timetable) {
+    if (!routed) {
       setEngine(null);
       setSummary(null);
       return;
     }
     let alive = true;
     let made: PlannerEngine | null = null;
-    loadPlanner(timetable, { same_name_station_m: sameNameM, ...projectSettings, ...settings })
+    loadPlanner(routed, { same_name_station_m: sameNameM, ...projectSettings, ...settings })
       .then((e) => {
         made = e;
         if (!alive) return e.dispose();
@@ -283,24 +320,25 @@ export function JourneyPlanner({
         setSummary(e.summary());
         setError(null);
       })
-      .catch((err) =>
-        setError(tNow("jp.engineFailed", { error: err instanceof Error ? err.message : String(err) })),
-      );
+      .catch((err) => setError(tNow("jp.engineFailed", { error: engineErrorText(err) })));
     return () => {
       alive = false;
       made?.dispose();
     };
-  }, [timetable, settings, sameNameM, projectSettings, loadPlanner]);
+  }, [routed, settings, sameNameM, projectSettings, loadPlanner]);
 
   const time = parseClock(timeText);
   const planned = useMemo((): { plan: Plan | null; error: string | null } => {
     if (!engine || !a || !b || time === null) return { plan: null, error: null };
     try {
-      return { plan: engine.plan({ from: a, to: b, time_s: time, mode }), error: null };
+      return {
+        plan: engine.plan({ from: a, to: b, time_s: time, mode, ...pointHeights(aZ, bZ) }),
+        error: null,
+      };
     } catch (err) {
-      return { plan: null, error: err instanceof Error ? err.message : String(err) };
+      return { plan: null, error: engineErrorText(err) };
     }
-  }, [engine, a, b, time, mode]);
+  }, [engine, a, b, time, mode, aZ, bZ]);
   const plan = planned.plan;
   useEffect(() => setChosen(0), [plan]);
   const profile: ProfilePoint[] = useMemo(() => {
@@ -313,11 +351,12 @@ export function JourneyPlanner({
         start_s: PROFILE_START,
         end_s: PROFILE_END,
         step_s: stepMin * 60,
+        ...pointHeights(aZ, bZ),
       });
     } catch {
       return [];
     }
-  }, [engine, a, b, mode, stepMin]);
+  }, [engine, a, b, mode, stepMin, aZ, bZ]);
   const journey = plan?.journeys[chosen] ?? null;
 
   // Map layers, network and journey drawing.
@@ -862,6 +901,7 @@ export function JourneyPlanner({
               ))}
             </div>
             <p className="mt-2 text-slate-600">{t("jp.walkNote")}</p>
+            <p className="mt-1 text-slate-600">{t(heightsFailed ? "jp.slopeNoHeights" : "jp.slopeNote")}</p>
           </details>
         </div>
       </div>
@@ -869,4 +909,31 @@ export function JourneyPlanner({
   );
 
   return panel ? createPortal(body, panel) : body;
+}
+
+/** Purpose: the heights of A and B a query carries, where known. */
+function pointHeights(aZ: number | null, bZ: number | null) {
+  return {
+    ...(aZ !== null ? { from_elevation_m: aZ } : {}),
+    ...(bZ !== null ? { to_elevation_m: bZ } : {}),
+  };
+}
+
+/**
+ * Purpose: the ground height at a point picked on the map, for timing walks on their slope.
+ * Output: the height in metres, or null while it loads, where the terrain has no data, or when it failed.
+ */
+function usePointHeight(p: LonLat | null, fetchHeights: HeightFetcher): number | null {
+  const [got, setGot] = useState<{ p: LonLat; z: number | null } | null>(null);
+  useEffect(() => {
+    if (!p) return;
+    let alive = true;
+    fetchHeights([p])
+      .then(([z]) => alive && setGot({ p, z: typeof z === "number" && Number.isFinite(z) ? z : null }))
+      .catch(() => alive && setGot({ p, z: null }));
+    return () => {
+      alive = false;
+    };
+  }, [p, fetchHeights]);
+  return got && p && got.p === p ? got.z : null;
 }

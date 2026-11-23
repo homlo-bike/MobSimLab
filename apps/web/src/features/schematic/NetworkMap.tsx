@@ -17,7 +17,7 @@ import {
   GAP,
   INK,
   PAPER,
-  LABEL_SIZE,
+  labelSizeOf,
   legend,
   LINE_W,
   PAD,
@@ -30,13 +30,13 @@ import {
   WATER_FILL,
   WATER_LINE,
 } from "./common";
-import { defaultOrigin, layout, type Pt, snapToNeighbours } from "./layout";
+import { DEFAULT_LONG_RUN, defaultOrigin, layout, type Pt, snapToNeighbours } from "./layout";
 import type { Layer, SchematicNetwork } from "./lines";
 import { bundles, LABEL_DIRS, offsetPolyline, pathD, placeLabels } from "./paths";
 import { StationPopup } from "./StationPopup";
 import { symbolsAt } from "./StripMap";
 import { schematicThumb } from "./thumb";
-import { warp, type WaterShapes } from "./water";
+import { schematicRivers, warp, type WaterShapes } from "./water";
 
 /** An area being drawn: its corners so far, metres from the origin. */
 export interface AreaDraft {
@@ -96,9 +96,11 @@ export function NetworkMap({
   const curves = doc.curves !== false;
   const snap = doc.snap !== false;
   const [ox, oy] = origin;
+  const longRun = doc.longRun ?? DEFAULT_LONG_RUN;
+  const nameSize = labelSizeOf(doc);
   const { pos, unit } = useMemo(
-    () => layout(net, [ox, oy], doc.pins, straighten),
-    [net, ox, oy, doc.pins, straighten],
+    () => layout(net, [ox, oy], doc.pins, straighten, longRun),
+    [net, ox, oy, doc.pins, straighten, longRun],
   );
   const [drag, setDrag] = useState<{ i: number; at: Pt } | null>(null);
   const [cornerDrag, setCornerDrag] = useState<{ area: string; k: number; at: Pt } | null>(null);
@@ -122,6 +124,7 @@ export function NetworkMap({
   const drawH = (fMaxY - fMinY) * s + 2 * PAD + 80;
 
   const showWater = doc.water !== false && !!water;
+  const straightRivers = doc.straightRivers !== false;
   const areas = doc.showAreas !== false || draft ? (doc.areas ?? []) : [];
 
   // Water: ground places bent along with the stations, then onto the screen.
@@ -139,18 +142,26 @@ export function NetworkMap({
           return `${k ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`;
         })
         .join("") + "Z";
-    const line = (r: readonly [number, number][]) =>
-      r
+    const toD = (pts: readonly Pt[]) =>
+      pts
         .map((p, k) => {
-          const [x, y] = screen(f(p));
+          const [x, y] = screen(p);
           return `${k ? "L" : "M"}${x.toFixed(1)} ${y.toFixed(1)}`;
         })
         .join("");
+    const bent = water.rivers.map((r) => ({ line: r.line.map(f), kind: r.kind }));
+    // Schematic rivers run at 45° steps like the lines, corners rounded when the lines' are.
+    const rivers = straightRivers
+      ? schematicRivers(bent, unit, pos).map((r) => ({
+          d: pathD(r.line.map(screen), curves ? PX * 0.4 : 0),
+          kind: r.kind,
+        }))
+      : bent.map((r) => ({ d: toD(r.line), kind: r.kind }));
     return {
       fill: [...water.sea, ...water.areas].map(ring).join(""),
-      rivers: water.rivers.map((r) => ({ d: line(r.line), kind: r.kind })),
+      rivers,
     };
-  }, [showWater, water, ox, oy, net, pos, fMinX, fMaxY, s]);
+  }, [showWater, straightRivers, curves, unit, water, ox, oy, net, pos, fMinX, fMaxY, s]);
 
   const used = new Set<StationStatus | StationFeature>();
   for (const i of shown) for (const id of symbolsAt(net, i, doc)) used.add(id);
@@ -281,7 +292,7 @@ export function NetworkMap({
     // The symbols after a name take room like a few more letters.
     name:
       net.stations[i]!.name +
-      " ".repeat(Math.ceil((symbolsAt(net, i, doc).length * (SYMBOL_SIZE + 2) + 4) / (LABEL_SIZE * 0.56))),
+      " ".repeat(Math.ceil((symbolsAt(net, i, doc).length * (SYMBOL_SIZE + 2) + 4) / (nameSize * 0.56))),
     r: radiusOf(i),
     neighbours: neighbours(i).map((n) => sp[n]!),
   }));
@@ -294,7 +305,7 @@ export function NetworkMap({
     stationList,
     drawn.map((x) => x.pts),
     fixedLabels,
-    LABEL_SIZE,
+    nameSize,
   );
   const sel = selected !== null && shown.has(selected) ? selected : null;
   // While a station is being moved the pop-up gets out of the way, so the drawing under it stays in view;
@@ -484,12 +495,11 @@ export function NetworkMap({
           const interchange = here.length > 1;
           const syms = symbolsAt(net, i, doc);
           // Symbols follow the name: after it along its line, or under (above) a name below (above) the station.
-          const textW = st.name.length * LABEL_SIZE * 0.56;
+          const textW = st.name.length * nameSize * 0.56;
           const step = SYMBOL_SIZE + 2;
           const symAt = (j: number): Pt => {
             if (anchor === "middle") {
-              const y =
-                ly + (uy > 0 ? LABEL_SIZE + 4 + SYMBOL_SIZE / 2 : -(LABEL_SIZE + 4 + SYMBOL_SIZE / 2));
+              const y = ly + (uy > 0 ? nameSize + 4 + SYMBOL_SIZE / 2 : -(nameSize + 4 + SYMBOL_SIZE / 2));
               return [lx + (j - (syms.length - 1) / 2) * step, y];
             }
             const sign = anchor === "end" ? -1 : 1;
@@ -538,7 +548,7 @@ export function NetworkMap({
                 x={lx}
                 y={ly}
                 fontFamily={FONT}
-                fontSize={LABEL_SIZE}
+                fontSize={nameSize}
                 fontWeight={interchange ? 700 : 500}
                 fill={INK}
                 textAnchor={anchor}

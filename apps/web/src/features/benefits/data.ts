@@ -8,6 +8,7 @@ import type { BuildingIn, CountryFigures, PlaceIn } from "./model";
 import type { LonLat } from "./regions";
 import { withProject, withProjectFacts } from "../../geodata/projectData";
 import { csrfHeader } from "../../session/csrf";
+import { withApiMsg } from "../../i18n/engine";
 
 /** World Bank figures as the API answers them (benefits.service.ts). */
 export interface BenefitIndicators {
@@ -49,11 +50,8 @@ export interface BenefitsApi {
 
 async function json<T>(res: Response): Promise<T> {
   if (!res.ok) {
-    const msg = await res
-      .json()
-      .then((j: { message?: string }) => j.message)
-      .catch(() => undefined);
-    throw new Error(msg ?? `Request failed (${res.status})`);
+    const j = (await res.json().catch(() => undefined)) as { message?: string } | undefined;
+    throw withApiMsg(new Error(j?.message ?? `Request failed (${res.status})`), j);
   }
   return (await res.json()) as T;
 }

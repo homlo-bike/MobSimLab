@@ -451,4 +451,10 @@ export const tablesPt = {
   "tt.tbl.to": "Para",
   "tt.tbl.arrives": "Chega",
   "cost.outsideRange": "Fora do intervalo da biblioteca ({low}–{high}): verifique o valor e a sua unidade.",
+  "tbl.unrouted.title": "Alguns percursos de linhas rodoviárias estão incompletos",
+  "tbl.unrouted.intro":
+    "Partes do percurso destas linhas não foram encontradas ao salvar, por isso as tabelas, os custos e a avaliação as contam como 0 km. Abra cada linha na aba Criar: as suas ruas carregam e o percurso completado é salvo. Um trecho que continue vermelho precisa que um ponto seja movido para uma via que o veículo possa usar.",
+  "tbl.unrouted.legs": "Trechos não encontrados",
+  "tbl.unrouted.runs": "Viagens de garagem não encontradas",
+  "tbl.unrouted.leftOut": "Deixado de fora, no mínimo",
 } satisfies TablesMessages;

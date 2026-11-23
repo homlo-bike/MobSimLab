@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { useI18n } from "../../i18n/i18n";
 import { JobProgress } from "../../shell/JobProgress";
 import type { GeodataApi, GeodataStatus, GeofabrikRegion, ImportRun } from "./api";
+import { engineErrorText } from "../../i18n/engine";
 
 const POLL_MS = 2_000;
 
@@ -77,7 +78,7 @@ export function MapDataPanel({
         onOsm.current?.(id);
       }
     } catch (e) {
-      setError((e as Error).message);
+      setError(engineErrorText(e));
     }
   }, [api]);
 
@@ -121,7 +122,7 @@ export function MapDataPanel({
       await fn();
       await load();
     } catch (e) {
-      setError((e as Error).message);
+      setError(engineErrorText(e));
     } finally {
       setSending(false);
     }

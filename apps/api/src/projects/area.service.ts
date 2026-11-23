@@ -13,6 +13,7 @@ import {
   estimateArea,
 } from "./area-polygons";
 import { type Bbox, projectArea } from "./project-area";
+import { AreaDetailService } from "../geodata/area-detail";
 import { type ProjectActor, ProjectsService } from "./projects.service";
 
 /** What a planner sends to set the project area: the polygons drawn in the area window. */
@@ -69,6 +70,7 @@ export class ProjectAreaService {
     private readonly geodata: GeodataService,
     private readonly population: PopulationLayersService,
     @Optional() private readonly facts?: AreaFactsService,
+    @Optional() private readonly details?: AreaDetailService,
   ) {}
 
   /** Purpose: the project's polygons, what they hold and the box imports cover. Every member. */
@@ -147,6 +149,7 @@ export class ProjectAreaService {
         tx,
       );
     });
+    this.details?.forget(projectId);
     const imports = body.import && body.polygons.length ? await this.queueImports(actor, projectId) : [];
     // A new area: look up its country, holidays and climate once, in the background.
     this.facts?.lookUp(projectId, true);

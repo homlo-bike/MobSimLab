@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useI18n, withNodes } from "../i18n/i18n";
 import { get, type Me, send } from "../session/api";
+import { engineErrorText } from "../i18n/engine";
 
 interface Details {
   client: { name: string; uri: string | null; redirectHost: string; verified: boolean };
@@ -46,7 +47,7 @@ export function ConsentPage({ me }: { me: Me | null }) {
       );
       window.location.assign(r.redirect);
     } catch (e) {
-      setError((e as Error).message);
+      setError(engineErrorText(e));
       setBusy(false);
     }
   };

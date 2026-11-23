@@ -626,6 +626,16 @@ export const editorsKo = {
   "schematic.showStatuses": "상태 기호",
   "schematic.showFeatures": "역 시설 기호",
   "schematic.showWater": "바다, 호수, 강",
+  "schematic.straightRivers": "강을 45° 단계로 그리기",
+  "schematic.nameSize": "역 이름 크기",
+  "schematic.longRuns": "정류장 없는 긴 구간",
+  "schematic.longRuns.off": "지리 그대로",
+  "schematic.longRuns.max": "최대 보통 간격의 {n}배",
+  "schematic.pngSmallNames":
+    "이 이미지는 한 변이 8,192 px로 제한되어 역 이름이 {px} px에 불과합니다. 더 선명한 사본은 SVG 또는 인쇄를 사용하세요.",
+  "schematic.printPaper": "용지 {paper}: 역 이름이 {pt} pt로 인쇄됩니다.",
+  "schematic.printSmallNames":
+    "용지 {paper}: 역 이름이 {pt} pt로만 인쇄됩니다. 역 이름을 키우거나 일부 레이어를 숨기세요.",
   "schematic.showAreas": "요금 구역과 랜드마크",
   "schematic.water": "물",
   "schematic.areas": "요금 구역과 랜드마크",
@@ -910,6 +920,9 @@ export const editorsKo = {
   "jp.set.maxRides": "최대 탑승 횟수",
   "jp.walkNote":
     "보행 네트워크가 추가되기 전까지 도보 거리는 직선 거리 × 1.3입니다. 기본값은 가정값 라이브러리에서 가져옵니다.",
+  "jp.slopeNote":
+    "도보 시간은 양 끝 사이의 경사로 계산합니다(지형 높이와 토블러 하이킹 함수). 오르막과 급한 내리막은 더 오래 걸립니다.",
+  "jp.slopeNoHeights": "지형 높이를 불러오지 못해 도보를 평지로 계산합니다.",
   "kit.minSec": "{m}분 {s}초",
   "kit.checks": "검사",
   "kit.issue": "{level}: ",

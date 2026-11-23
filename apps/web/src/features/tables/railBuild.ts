@@ -4,6 +4,7 @@ import { loadRailEngine, nextTask } from "../railways/engine";
 import { engineLines } from "../railways/serviceLines";
 import type { Timetable } from "../journey-planner/types";
 import type { LineReport, LonLat, Network, RailEngine, RailEngineLoader, RailView } from "../railways/types";
+import { engineErrorText } from "../../i18n/engine";
 
 /** Ground heights at points, m (null without data); tests inject one. */
 export type HeightsFetcher = (points: LonLat[]) => Promise<(number | null)[]>;
@@ -125,7 +126,7 @@ export function useRailBuild(
       } finally {
         engine.dispose();
       }
-    })().catch((e: unknown) => live && setError(e instanceof Error ? e.message : String(e)));
+    })().catch((e: unknown) => live && setError(engineErrorText(e)));
     return () => {
       live = false;
     };

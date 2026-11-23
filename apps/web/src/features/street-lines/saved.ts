@@ -2,6 +2,7 @@
 import type { StreetLineInput } from "../journey-planner/network";
 import { inputKey } from "../../projects/inputKey";
 import { fullTiming, MODES, type Timing } from "./modes";
+import { distanceM } from "../../map/geo";
 import { tileX, tileY } from "./tiles";
 import type { LineView, LonLat, PointKind, RoutingRules, VehicleProfile } from "./types";
 
@@ -150,17 +151,58 @@ export function lineBounds(line: SavedStreetLine): [number, number, number, numb
 }
 
 /**
- * Purpose: the street tiles a saved line runs over, as "x/y" keys: under its route and its points, so all of its
- * streets load when it opens, not only those on screen (a long line opens zoomed to its first point).
- * At most `max` tiles, nearest the line's points first.
+ * Purpose: the street tiles a saved line runs over, as "x/y" keys: under its points, its route and its depot runs,
+ * so all of its streets load when it opens, not only those on screen (a long line opens zoomed to its first point).
+ * A part of the route that was not found is a straight line between its ends; the tiles along it are taken too,
+ * so the streets that may complete it load. At most `max` tiles: the points' first, then the route's, then the
+ * depot runs'.
  */
 export function lineTiles(line: SavedStreetLine, max = 64): string[] {
   const keys = new Set<string>();
   const add = ([lon, lat]: LonLat) => keys.add(`${tileX(lon)}/${tileY(lat)}`);
+  // Every point of a path, and points along each of its segments at most about a third of a tile apart.
+  const along = (coords: LonLat[]) =>
+    coords.forEach((c, i) => {
+      add(c);
+      const next = coords[i + 1];
+      if (!next) return;
+      const steps = Math.ceil(distanceM(c, next) / TILE_STEP_M);
+      for (let k = 1; k < steps; k++)
+        add([c[0] + ((next[0] - c[0]) * k) / steps, c[1] + ((next[1] - c[1]) * k) / steps]);
+    });
   line.points.forEach((p) => add(p.lonlat));
   if (line.depot) add(line.depot);
-  for (const leg of line.view?.legs ?? []) leg.coords.forEach(add);
+  for (const leg of line.view?.legs ?? []) along(leg.coords);
+  for (const run of line.view?.depot_trips ?? []) along(run.coords);
   return [...keys].slice(0, max);
+}
+
+/** Sampling step along a path for `lineTiles`, m: a zoom-14 tile is at most about 2.4 km wide. */
+const TILE_STEP_M = 800;
+
+/** The parts of a saved route that were not found, which count 0 m in Tables, costs and the appraisal. */
+export interface UnroutedParts {
+  /** Legs between two points with no route found. */
+  legs: number;
+  /** Depot runs with no route found. */
+  depotRuns: number;
+  /** Straight-line distance between the ends of the legs not found, m: at least what the line leaves out. */
+  straightM: number;
+}
+
+/** Purpose: what a saved route still leaves out; null when every leg and depot run was found. */
+export function unroutedParts(view: LineView): UnroutedParts | null {
+  const at = new Map((view.points ?? []).map((p) => [p.id, p.lonlat] as const));
+  let legs = 0;
+  let straightM = 0;
+  for (const leg of view.legs ?? []) {
+    if (leg.status !== "error") continue;
+    legs++;
+    const [a, b] = [at.get(leg.from), at.get(leg.to)];
+    if (a && b) straightM += distanceM(a, b);
+  }
+  const depotRuns = (view.depot_trips ?? []).filter((d) => d.status === "error").length;
+  return legs || depotRuns ? { legs, depotRuns, straightM } : null;
 }
 
 const same = (a: LonLat | undefined, b: LonLat | undefined) =>

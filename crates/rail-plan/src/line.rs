@@ -79,7 +79,7 @@ pub struct LineSpec {
 
 /// Purpose: candidate platforms of a pick, in preference order.
 /// Output: platform ids, or Err naming the unknown pick.
-pub fn resolve(m: &Model, pick: &Pick) -> Result<Vec<PlatformId>, String> {
+pub fn resolve(m: &Model, pick: &Pick) -> Result<Vec<PlatformId>, engine_msg::Msg> {
     match pick {
         Pick::Group(name) => {
             let key = normalise_name(name);
@@ -87,7 +87,7 @@ pub fn resolve(m: &Model, pick: &Pick) -> Result<Vec<PlatformId>, String> {
                 .groups
                 .iter()
                 .find(|g| g.key == key || g.key == *name)
-                .ok_or_else(|| format!("unknown station {name}"))?;
+                .ok_or_else(|| engine_msg::msg!("rail.plan.unknown_station", station = name))?;
             Ok(g.stations
                 .iter()
                 .flat_map(|&s| m.stations[s as usize].platforms.iter().copied())
@@ -98,10 +98,13 @@ pub fn resolve(m: &Model, pick: &Pick) -> Result<Vec<PlatformId>, String> {
             .iter()
             .find(|s| s.id == *id)
             .map(|s| s.platforms.clone())
-            .ok_or_else(|| format!("unknown station part {id}")),
+            .ok_or_else(|| engine_msg::msg!("rail.plan.unknown_station_part", part = id)),
         Pick::Platforms(ids) => ids
             .iter()
-            .map(|i| m.platform(i).ok_or_else(|| format!("unknown platform {i}")))
+            .map(|i| {
+                m.platform(i)
+                    .ok_or_else(|| engine_msg::msg!("rail.plan.unknown_platform", platform = i))
+            })
             .collect(),
     }
 }

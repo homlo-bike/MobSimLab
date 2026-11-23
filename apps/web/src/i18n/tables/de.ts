@@ -453,4 +453,10 @@ export const tablesDe = {
   "tt.tbl.arrives": "An",
   "cost.outsideRange":
     "Außerhalb der Spanne der Bibliothek ({low}–{high}): Prüfen Sie den Wert und seine Einheit.",
+  "tbl.unrouted.title": "Einige Straßenlinien sind nicht vollständig geroutet",
+  "tbl.unrouted.intro":
+    "Teile der Strecken dieser Linien wurden beim Speichern nicht gefunden, daher zählen Tabellen, Kosten und Bewertung sie mit 0 km. Öffnen Sie jede Linie im Tab „Erstellen“: Ihre Straßen werden geladen, und die damit vervollständigte Strecke wird gespeichert. Bleibt ein Abschnitt rot, muss ein Punkt auf eine Straße verschoben werden, die das Fahrzeug befahren darf.",
+  "tbl.unrouted.legs": "Abschnitte nicht gefunden",
+  "tbl.unrouted.runs": "Depotfahrten nicht gefunden",
+  "tbl.unrouted.leftOut": "Mindestens ausgelassen",
 } satisfies TablesMessages;

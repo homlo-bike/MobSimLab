@@ -1,4 +1,5 @@
 /** The project's calendar runs on the server (apps/api/src/simulation): list, start, follow, stop and delete. */
+import type { EngineNote } from "../../i18n/engine";
 import { get, send } from "../../session/api";
 import type { RunStatus, ServerNetwork } from "../capacity/server";
 import type { DayTypeId } from "../../workspace/calendar";
@@ -48,7 +49,7 @@ export interface RailDay {
 /** What the worker found: each day type's day, and each period's totals. */
 export interface CalendarResult {
   mode: CalendarPlan["mode"];
-  notes: string[];
+  notes: EngineNote[];
   run: { verdict: string | null };
   day_types: Partial<
     Record<

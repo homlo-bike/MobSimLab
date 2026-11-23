@@ -148,6 +148,8 @@ import {
 } from "../features/comments/notices";
 import { Dialog } from "../shell/Dialog";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
+import { UnroutedNotice } from "../features/tables/UnroutedNotice";
+import { engineErrorText } from "../i18n/engine";
 
 // Editors and screens downloaded when first opened, so opening a project fetches only the tab shown.
 const BenefitTables = lazyNamed(() => import("../features/benefits/BenefitTables"), "BenefitTables");
@@ -794,7 +796,7 @@ export function Workspace({
       setBuild(kind);
       onTab("create");
     } catch (err) {
-      setConvertError(err instanceof Error ? err.message : String(err));
+      setConvertError(engineErrorText(err));
     }
   };
   // Cmd+Z (Ctrl+Z) undoes the last change to a drawing; Cmd+Shift+Z or Ctrl+Y makes it again. In a text field
@@ -1536,6 +1538,9 @@ export function Workspace({
                   />
                   <TablesSection.Provider value={shownPart(tablesView, tablesParts)}>
                     <div className="min-w-0 flex-1">
+                      {/* Every group reads the street lines' saved routes: a route with parts not found is named
+                          above them all. */}
+                      <UnroutedNotice streetLines={streetLines} />
                       <div
                         id="tables-network"
                         role="region"

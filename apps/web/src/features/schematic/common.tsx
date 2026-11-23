@@ -48,6 +48,12 @@ export interface SchematicDoc {
   features?: boolean;
   /** Show sea, lakes and rivers (default on). */
   water?: boolean;
+  /** Draw rivers at 45° steps like the lines (default on); off: as on the ground, bent with the stations. */
+  straightRivers?: boolean;
+  /** Size of the station names on the network map, px of the drawing (`LABEL_SIZE` when absent). */
+  labelSize?: number;
+  /** Longest section without stops, in typical sections (`DEFAULT_LONG_RUN` when absent; 0 keeps ground lengths). */
+  longRun?: number;
   /** Show the tariff zones and landmarks (default on). */
   showAreas?: boolean;
   /** Mode layers switched off. */
@@ -67,6 +73,16 @@ export const PAD = 70;
 export const LINE_W = 6;
 export const GAP = 7;
 export const LABEL_SIZE = 13;
+/** Smallest and largest station name size offered, px of the drawing: below 10 px names are hard to read. */
+export const LABEL_SIZE_MIN = 10;
+export const LABEL_SIZE_MAX = 32;
+
+/** Purpose: the station name size of a diagram, within the offered range. */
+export function labelSizeOf(doc: Pick<SchematicDoc, "labelSize">): number {
+  const v = doc.labelSize;
+  if (typeof v !== "number" || !Number.isFinite(v)) return LABEL_SIZE;
+  return Math.min(LABEL_SIZE_MAX, Math.max(LABEL_SIZE_MIN, Math.round(v)));
+}
 export const SYMBOL_SIZE = 15;
 export const FONT = "system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif";
 /*

@@ -1,6 +1,7 @@
 import { withProjectFacts } from "../geodata/projectData";
 import { DEFAULT_SERVICE_DAY, type ServiceDay } from "../features/journey-planner/network";
 import type { PreferencesDoc } from "./preferences";
+import { withApiMsg } from "../i18n/engine";
 
 /**
  * The project calendar (ADR-0020): day types, public holidays and the service day of each day type, kept in the
@@ -493,11 +494,8 @@ export function calendarApi(fetchImpl: typeof fetch = (...a) => fetch(...a)): Ca
         { credentials: "same-origin" },
       ).then(async (res) => {
         if (!res.ok) {
-          const msg = await res
-            .json()
-            .then((j: { message?: string }) => j.message)
-            .catch(() => undefined);
-          throw new Error(msg ?? `Request failed (${res.status})`);
+          const j = (await res.json().catch(() => undefined)) as { message?: string } | undefined;
+          throw withApiMsg(new Error(j?.message ?? `Request failed (${res.status})`), j);
         }
         return ((await res.json()) as { holidays: Holiday[] }).holidays;
       });

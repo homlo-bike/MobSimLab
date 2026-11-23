@@ -458,4 +458,10 @@ export const tablesFr = {
   "tt.tbl.arrives": "Arrivée",
   "cost.outsideRange":
     "Hors de la plage de la bibliothèque ({low}–{high}) : vérifiez la valeur et son unité.",
+  "tbl.unrouted.title": "Certains itinéraires de lignes routières sont incomplets",
+  "tbl.unrouted.intro":
+    "Des parties de l'itinéraire de ces lignes n'ont pas été trouvées lors de l'enregistrement : les tableaux, les coûts et l'évaluation les comptent pour 0 km. Ouvrez chaque ligne dans l'onglet Créer : ses rues se chargent et l'itinéraire complété est enregistré. Un tronçon qui reste rouge demande de déplacer un point sur une route que le véhicule peut emprunter.",
+  "tbl.unrouted.legs": "Tronçons non trouvés",
+  "tbl.unrouted.runs": "Trajets de dépôt non trouvés",
+  "tbl.unrouted.leftOut": "Omis, au moins",
 } satisfies TablesMessages;

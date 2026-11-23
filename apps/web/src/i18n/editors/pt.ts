@@ -666,6 +666,16 @@ export const editorsPt = {
   "schematic.showStatuses": "Símbolos de status",
   "schematic.showFeatures": "Símbolos de equipamentos das estações",
   "schematic.showWater": "Mar, lagos e rios",
+  "schematic.straightRivers": "Desenhar rios em passos de 45°",
+  "schematic.nameSize": "Tamanho dos nomes das estações",
+  "schematic.longRuns": "Trechos longos sem paragens",
+  "schematic.longRuns.off": "Como no terreno",
+  "schematic.longRuns.max": "No máximo {n} × o espaçamento habitual",
+  "schematic.pngSmallNames":
+    "Os nomes das estações têm só {px} px nesta imagem, limitada a 8192 px por lado. Use SVG ou Imprimir para uma cópia mais nítida.",
+  "schematic.printPaper": "Tamanho de página {paper}: os nomes das estações são impressos a {pt} pt.",
+  "schematic.printSmallNames":
+    "Tamanho de página {paper}: os nomes das estações são impressos a apenas {pt} pt. Aumente os nomes das estações ou oculte algumas camadas.",
   "schematic.showAreas": "Zonas tarifárias e marcos",
   "schematic.water": "Água",
   "schematic.areas": "Zonas tarifárias e marcos",
@@ -965,6 +975,10 @@ export const editorsPt = {
   "jp.set.maxRides": "Máximo de veículos",
   "jp.walkNote":
     "As caminhadas são a distância em linha reta × 1,3 até que a rede de pedestres exista. Os valores padrão vêm da biblioteca de premissas.",
+  "jp.slopeNote":
+    "As caminhadas são calculadas no declive entre as suas duas pontas (função de caminhada de Tobler com as alturas do terreno): a subir e em descidas íngremes demoram mais.",
+  "jp.slopeNoHeights":
+    "As alturas do terreno não carregaram, por isso as caminhadas são calculadas como em plano.",
 
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Verificações",

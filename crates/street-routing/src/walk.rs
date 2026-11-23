@@ -16,6 +16,7 @@
 
 use crate::geo::{dist, project_on_segment, LocalProjection};
 use crate::osm::{OsmData, Tags};
+use engine_msg::{msg, Msg};
 use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 use std::collections::{BinaryHeap, HashMap};
@@ -349,7 +350,7 @@ impl WalkGraph {
     /// Purpose: build the walk graph from OSM data.
     /// Inputs: data; an optional projection (`None` centres it on the data).
     /// Output: the graph, or an error when the data holds no walkable way.
-    pub fn from_osm(data: &OsmData, proj: Option<LocalProjection>) -> Result<Self, String> {
+    pub fn from_osm(data: &OsmData, proj: Option<LocalProjection>) -> Result<Self, Msg> {
         Self::from_osm_profile(data, proj, NetworkProfile::Walk)
     }
 
@@ -360,7 +361,7 @@ impl WalkGraph {
         data: &OsmData,
         proj: Option<LocalProjection>,
         profile: NetworkProfile,
-    ) -> Result<Self, String> {
+    ) -> Result<Self, Msg> {
         let keep = match profile {
             NetworkProfile::Walk => walk_way,
             NetworkProfile::Cycle => cycle_way,
@@ -386,10 +387,8 @@ impl WalkGraph {
         }
         if n == 0.0 {
             return Err(match profile {
-                NetworkProfile::Walk => "No walkable streets or paths in this area.".into(),
-                NetworkProfile::Cycle => {
-                    "No streets or paths open to bicycles in this area.".into()
-                }
+                NetworkProfile::Walk => msg!("street.error.no_walk_paths"),
+                NetworkProfile::Cycle => msg!("street.error.no_cycle_paths"),
             });
         }
         let proj = proj.unwrap_or_else(|| LocalProjection::new(lon / n, lat / n));

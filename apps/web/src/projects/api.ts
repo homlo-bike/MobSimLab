@@ -14,6 +14,7 @@ import { projectResults } from "./results";
 import { projectGeodata } from "../features/geodata/api";
 import { projectCalendarRuns } from "../features/calendar-run/api";
 import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
+import { withApiMsg } from "../i18n/engine";
 
 export type ProjectRole = "owner" | "editor" | "commenter" | "viewer";
 
@@ -212,7 +213,7 @@ async function importMslab(csrf: string, file: Blob): Promise<{ project: Project
   };
   if (!res.ok || !body.project) {
     const m = Array.isArray(body.message) ? body.message.join("; ") : body.message;
-    throw new Error(m ?? `POST ${base}/import failed: ${res.status}`);
+    throw withApiMsg(new Error(m ?? `POST ${base}/import failed: ${res.status}`), body);
   }
   return { project: body.project, skipped: body.skipped ?? [] };
 }

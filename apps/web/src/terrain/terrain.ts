@@ -6,6 +6,7 @@
  */
 import { dataProject, noteLiveHeights } from "../geodata/projectData";
 import { csrfHeader } from "../session/csrf";
+import { withApiMsg } from "../i18n/engine";
 
 export type LonLat = [number, number];
 
@@ -78,11 +79,8 @@ async function post<T>(path: string, body: unknown, fetchImpl: typeof fetch): Pr
       body: JSON.stringify(body),
     });
     if (!res.ok) {
-      const msg = await res
-        .json()
-        .then((j: { message?: string }) => j.message)
-        .catch(() => undefined);
-      throw new Error(msg ?? `Terrain heights failed (${res.status})`);
+      const j = (await res.json().catch(() => undefined)) as { message?: string } | undefined;
+      throw withApiMsg(new Error(j?.message ?? `Terrain heights failed (${res.status})`), j);
     }
     const out = (await res.json()) as T & { liveCount?: number };
     noteLiveHeights(out.liveCount ?? 0);

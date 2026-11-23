@@ -352,11 +352,11 @@ impl StreetLine {
             .and_then(|p| p.anchor)
     }
 
-    fn index_of(&self, id: u32) -> Result<usize, String> {
+    fn index_of(&self, id: u32) -> Result<usize, Msg> {
         self.points
             .iter()
             .position(|p| p.id == id)
-            .ok_or_else(|| format!("No point with id {id}"))
+            .ok_or_else(|| msg!("street.error.no_point", id = id.to_string()))
     }
 
     /// Purpose: append a point after the last one (before the loop closes).
@@ -397,7 +397,7 @@ impl StreetLine {
     }
 
     /// Purpose: move a point; re-routes only its two adjacent legs.
-    pub fn move_point(&mut self, g: &RoadGraph, id: u32, lon: f64, lat: f64) -> Result<(), String> {
+    pub fn move_point(&mut self, g: &RoadGraph, id: u32, lon: f64, lat: f64) -> Result<(), Msg> {
         let i = self.index_of(id)?;
         self.points[i].click = g.proj.to_xy(lon, lat);
         self.resnap(g, i);
@@ -409,14 +409,14 @@ impl StreetLine {
     /// Purpose: move a stop to the sidewalk across the street (its click mirrored over the
     /// centreline), re-snapping and re-routing as a move does.
     /// Output: Err for an unknown id, a via point, or a stop not near a usable road.
-    pub fn switch_side(&mut self, g: &RoadGraph, id: u32) -> Result<(), String> {
+    pub fn switch_side(&mut self, g: &RoadGraph, id: u32) -> Result<(), Msg> {
         let i = self.index_of(id)?;
         if !self.points[i].kind.is_stop() {
-            return Err("Only stops have a side.".into());
+            return Err(msg!("street.line.side_stops_only"));
         }
         let click = self
             .other_side_click(g, i)
-            .ok_or_else(|| "This stop is not next to a usable road.".to_string())?;
+            .ok_or_else(|| msg!("street.line.stop_not_by_road"))?;
         self.points[i].click = click;
         self.resnap(g, i);
         let n = self.points.len();
@@ -465,7 +465,7 @@ impl StreetLine {
     }
 
     /// Purpose: delete a point; re-routes the leg that now joins its neighbours.
-    pub fn delete_point(&mut self, g: &RoadGraph, id: u32) -> Result<(), String> {
+    pub fn delete_point(&mut self, g: &RoadGraph, id: u32) -> Result<(), Msg> {
         let i = self.index_of(id)?;
         self.points.remove(i);
         self.legs.remove(i);
@@ -477,7 +477,7 @@ impl StreetLine {
     }
 
     /// Purpose: promote or demote a point; a stop moves to the sidewalk on the side it was placed.
-    pub fn set_kind(&mut self, g: &RoadGraph, id: u32, kind: PointKind) -> Result<(), String> {
+    pub fn set_kind(&mut self, g: &RoadGraph, id: u32, kind: PointKind) -> Result<(), Msg> {
         let i = self.index_of(id)?;
         let was_stop = self.points[i].kind.is_stop();
         self.points[i].kind = kind;
@@ -490,7 +490,7 @@ impl StreetLine {
     }
 
     /// Purpose: set the planner's name for a point (`None` = automatic street name).
-    pub fn set_name(&mut self, id: u32, name: Option<String>) -> Result<(), String> {
+    pub fn set_name(&mut self, id: u32, name: Option<String>) -> Result<(), Msg> {
         let i = self.index_of(id)?;
         self.points[i].name = name.filter(|n| !n.trim().is_empty());
         Ok(())

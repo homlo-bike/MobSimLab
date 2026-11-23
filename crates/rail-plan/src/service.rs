@@ -163,8 +163,10 @@ pub struct ServicePublication {
     pub timetable: Timetable,
     /// One report per line, in input order.
     pub lines: Vec<LineReport>,
-    /// Notes from the topology import and the stop placement.
+    /// Notes from the topology import and the stop placement, in English.
     pub notes: Vec<String>,
+    /// The same notes as keys and values, for the app to show in the user's language.
+    pub note_msgs: Vec<Msg>,
     /// Trains of each line per clock hour on each topology section, for the noise map's
     /// timetabled input (ADR-0038 step N3).
     pub section_trains: Vec<SectionTrains>,
@@ -517,6 +519,11 @@ fn clock(s: f64) -> String {
     format!("{:02}:{:02}", m / 60, m % 60)
 }
 
+/// Purpose: a planner issue in words, with platforms named as the editor shows them.
+pub fn issue_message(issue: &Issue, m: &Model) -> Msg {
+    issue_text(issue, &PlatformNames { m })
+}
+
 /// Purpose: the issue in words for the editor.
 fn issue_text(issue: &Issue, names: &PlatformNames) -> Msg {
     match issue {
@@ -697,7 +704,7 @@ pub fn publish_service(
     topology_json: &str,
     lines: &[ServiceLine],
     service_id: &str,
-) -> Result<ServicePublication, String> {
+) -> Result<ServicePublication, Msg> {
     publish_service_with(topology_json, lines, service_id, &PublishOptions::default())
 }
 
@@ -707,15 +714,14 @@ pub fn publish_service_with(
     lines: &[ServiceLine],
     service_id: &str,
     opts: &PublishOptions,
-) -> Result<ServicePublication, String> {
+) -> Result<ServicePublication, Msg> {
     for l in lines {
         if l.stations.len() < 2 {
-            return Err(format!("{} needs at least two stops.", l.name));
+            return Err(msg!("rail.plan.two_stops", line = &l.name));
         }
     }
     let imp = import_json(topology_json, &ImportOptions::default())?;
-    let m =
-        Model::compile(&imp.spec).map_err(|e| format!("the track layout cannot be used: {e:?}"))?;
+    let m = Model::compile(&imp.spec).map_err(layout_unusable)?;
     let specs: Vec<LineSpec> = lines
         .iter()
         .map(|l| line_spec_with_roles(l, &m, &imp.storage_roles))
@@ -778,7 +784,6 @@ pub fn publish_service_with(
             }
         })
         .collect();
-    let mut notes: Vec<String> = Vec::new();
     let mut note_msgs: Vec<Msg> = Vec::new();
     // Many small shifts say little each; count them per line instead.
     let mut shifted = vec![0usize; lines.len()];
@@ -892,14 +897,15 @@ pub fn publish_service_with(
         }
         r.issues = r.issue_msgs.iter().map(Msg::english).collect();
     }
-    notes.extend(note_msgs.iter().map(Msg::english));
-    notes.extend(imp.notes.iter().filter(|n| !n.is_empty()).cloned());
-    notes.extend(jt.notes);
+    note_msgs.extend(imp.notes.iter().cloned());
+    note_msgs.extend(jt.notes);
+    let notes = note_msgs.iter().map(Msg::english).collect();
     let section_trains = section_trains(&m, &p, &ids);
     Ok(ServicePublication {
         timetable: jt.timetable,
         lines: reports,
         notes,
+        note_msgs,
         section_trains,
         blocks: vehicle_blocks(&m, &p, &ids),
     })
@@ -1058,8 +1064,19 @@ fn station_km(m: &Model, r: &crate::PlannedRun) -> Vec<StationKm> {
 pub struct Reach {
     /// A path exists from a platform of `from` to a platform of `to`.
     pub ok: bool,
-    /// Why not, in words, when it does not.
+    /// Why not, in words (English), when it does not.
     pub reason: Option<String>,
+    /// The same as a key and values, for the app to show in the user's language.
+    pub reason_msg: Option<Msg>,
+}
+
+/// Purpose: the error for a track layout the operations model cannot use, naming every problem.
+pub fn layout_unusable(errors: Vec<Msg>) -> Msg {
+    let all = errors
+        .into_iter()
+        .reduce(|a, b| msg!("rail.sim.join", a = a, b = b))
+        .unwrap_or_else(|| msg!("rail.sim.no_reason"));
+    msg!("rail.plan.layout_unusable", errors = all)
 }
 
 /// Purpose: check, while the planner picks a line's stations in order, that a train standing at a
@@ -1067,19 +1084,18 @@ pub struct Reach {
 /// (either way out of the platform, through switches the design allows).
 /// Inputs: the topology export (JSON text) and two station part ids (`st<id>`).
 /// Output: the answer; Err when the design cannot be used for operations.
-pub fn station_reachable(topology_json: &str, from: &str, to: &str) -> Result<Reach, String> {
+pub fn station_reachable(topology_json: &str, from: &str, to: &str) -> Result<Reach, Msg> {
     // Whether two stations are joined by track does not depend on the design's other errors (a
     // crossover elsewhere that does not fit, a ramp too short): check the track as drawn, so a
     // service line can get its stops while the planner still fixes unrelated problems. Publishing
     // still refuses a design with errors.
-    let mut t: serde_json::Value =
-        serde_json::from_str(topology_json).map_err(|e| format!("topology: {e}"))?;
+    let mut t: serde_json::Value = serde_json::from_str(topology_json)
+        .map_err(|e| msg!("rail.model.topology_unreadable", error = e.to_string()))?;
     if let Some(o) = t.as_object_mut() {
         o.insert("valid".into(), serde_json::Value::Bool(true));
     }
     let imp = import_json(&t.to_string(), &ImportOptions::default())?;
-    let m =
-        Model::compile(&imp.spec).map_err(|e| format!("the track layout cannot be used: {e:?}"))?;
+    let m = Model::compile(&imp.spec).map_err(layout_unusable)?;
     let platforms = |id: &str| -> Option<Vec<u32>> {
         m.stations
             .iter()
@@ -1092,16 +1108,20 @@ pub fn station_reachable(topology_json: &str, from: &str, to: &str) -> Result<Re
             .find(|s| s.id == id)
             .map_or(id.to_string(), |s| s.name.clone())
     };
-    let no = |reason: String| Reach {
+    let no = |reason: Msg| Reach {
         ok: false,
-        reason: Some(reason),
+        reason: Some(reason.english()),
+        reason_msg: Some(reason),
     };
     let (Some(a), Some(b)) = (platforms(from), platforms(to)) else {
-        return Err(format!("unknown station {from} or {to}"));
+        return Err(msg!("rail.plan.unknown_stations", from = from, to = to));
     };
     if a.is_empty() || b.is_empty() {
         let which = if a.is_empty() { from } else { to };
-        return Ok(no(format!("{} has no platform on a track.", name(which))));
+        return Ok(no(msg!(
+            "rail.plan.no_platform_on_track",
+            station = name(which)
+        )));
     }
     let calls = vec![b
         .iter()
@@ -1115,13 +1135,14 @@ pub fn station_reachable(topology_json: &str, from: &str, to: &str) -> Result<Re
                 return Ok(Reach {
                     ok: true,
                     reason: None,
+                    reason_msg: None,
                 });
             }
         }
     }
-    Ok(no(format!(
-        "No track leads from {} to {}. Join them with track (and switches where lines meet), or pick the stations in the order trains pass them.",
-        name(from),
-        name(to)
+    Ok(no(msg!(
+        "rail.plan.no_track_between",
+        from = name(from),
+        to = name(to)
     )))
 }

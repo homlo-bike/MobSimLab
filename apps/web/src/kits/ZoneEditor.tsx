@@ -8,6 +8,7 @@ import { fmtInt } from "./format";
 import { Issues, Stat } from "./Issues";
 import { drawKit, ensureKitLayers, loadLocal, removeKitLayers, saveLocal, setKitColor } from "./mapLayers";
 import type { DispatchResult, Kits, KitsLoader, LonLat, ZoneView } from "./types";
+import { engineErrorText } from "../i18n/engine";
 
 const PREFIX = "zone";
 
@@ -87,7 +88,7 @@ export function ZoneEditor({
     let alive = true;
     load().then(
       (k) => alive && setKits(k),
-      (e) => setError(tNow("drt.engineFailed", { error: e instanceof Error ? e.message : String(e) })),
+      (e) => setError(tNow("drt.engineFailed", { error: engineErrorText(e) })),
     );
     return () => {
       alive = false;
@@ -113,7 +114,7 @@ export function ZoneEditor({
         parameter_prefix: prefix,
       });
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(engineErrorText(e));
       return null;
     }
   }, [kits, doc.ring, doc.requestsPerHour, doc.fleet, doc.from, doc.to, system, prefix]);
@@ -148,7 +149,7 @@ export function ZoneEditor({
       try {
         setSim({ input: simInput, result: kits.simulateZone(simInput) });
       } catch (e) {
-        setError(e instanceof Error ? e.message : String(e));
+        setError(engineErrorText(e));
       } finally {
         setSimulating(false);
       }

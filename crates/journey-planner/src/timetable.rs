@@ -20,6 +20,9 @@ pub struct Stop {
     pub parent_station: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub platform_code: Option<String>,
+    /// Ground height in metres (not GTFS). Walks to and from the stop are timed on its slope when known.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub elevation_m: Option<f64>,
 }
 
 /// A line as passengers know it.

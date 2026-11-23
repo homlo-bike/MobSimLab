@@ -1,7 +1,7 @@
 import type { Map as MapLibreMap, MapMouseEvent } from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { useEngineText } from "../../i18n/engine";
+import { useEngineText, engineErrorText } from "../../i18n/engine";
 import { useI18n } from "../../i18n/i18n";
 import { CommentBadge, ObjectComments } from "../comments/Comments";
 import { usePublishChecks } from "../../shell/checks";
@@ -127,7 +127,7 @@ export function DepotEditor({
     let alive = true;
     loadEngine()
       .then((e) => alive && setEngine(e))
-      .catch((err) => alive && setError(err instanceof Error ? err.message : String(err)));
+      .catch((err) => alive && setError(engineErrorText(err)));
     return () => {
       alive = false;
     };
@@ -157,7 +157,7 @@ export function DepotEditor({
         setReport(engine.analyse(parsed));
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        setError(engineErrorText(err));
       }
     }, 250);
     return () => clearTimeout(timer);
@@ -322,7 +322,7 @@ export function DepotEditor({
         setLaneId(null);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        setError(engineErrorText(err));
       }
       setBusy(null);
     }, 20);
@@ -336,7 +336,7 @@ export function DepotEditor({
         setSizing(engine.size(input));
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        setError(engineErrorText(err));
       }
       setBusy(null);
     }, 20);
@@ -357,7 +357,7 @@ export function DepotEditor({
         setLaneId(null);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        setError(engineErrorText(err));
       }
       setBusy(null);
     }, 20);

@@ -1,3 +1,4 @@
+import { withApiMsg } from "../i18n/engine";
 /** One place found by the API's place search (apps/api/src/places). */
 export interface Place {
   name: string;
@@ -25,8 +26,8 @@ export async function searchPlaces(
   }
   const res = await fetch(`/api/places/search?${params}`, { signal: opts.signal });
   if (!res.ok) {
-    const msg = ((await res.json().catch(() => null)) as { message?: string } | null)?.message;
-    throw new Error(msg || `the server answered ${res.status}`);
+    const j = (await res.json().catch(() => null)) as { message?: string } | null;
+    throw withApiMsg(new Error(j?.message || `the server answered ${res.status}`), j);
   }
   return ((await res.json()) as { places?: Place[] }).places ?? [];
 }

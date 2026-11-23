@@ -448,4 +448,10 @@ export const tablesNl = {
   "tt.tbl.arrives": "Komt aan",
   "cost.outsideRange":
     "Buiten het bereik van de bibliotheek ({low}–{high}): controleer de waarde en de eenheid.",
+  "tbl.unrouted.title": "Sommige routes van straatlijnen zijn niet compleet",
+  "tbl.unrouted.intro":
+    "Delen van de routes van deze lijnen zijn bij het opslaan niet gevonden, dus tabellen, kosten en beoordeling tellen ze als 0 km. Open elke lijn in het tabblad Maken: de straten laden en de route die ze aanvullen wordt opgeslagen. Een deel dat rood blijft, vraagt om een punt op een weg te zetten die het voertuig mag gebruiken.",
+  "tbl.unrouted.legs": "Delen niet gevonden",
+  "tbl.unrouted.runs": "Depotritten niet gevonden",
+  "tbl.unrouted.leftOut": "Weggelaten, minstens",
 } satisfies TablesMessages;

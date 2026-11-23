@@ -19,6 +19,7 @@ import {
 } from "./mapLayers";
 import type { SavedPluginLine } from "./saved";
 import type { Kits, KitsLoader, LonLat, Pier, SpeedZone, WaterCall, WaterView } from "./types";
+import { engineErrorText } from "../i18n/engine";
 
 const PREFIX = "water";
 
@@ -122,7 +123,7 @@ export function WaterRouteEditor({
     let alive = true;
     load().then(
       (k) => alive && setKits(k),
-      (e) => setError(tNow("ferry.engineFailed", { error: e instanceof Error ? e.message : String(e) })),
+      (e) => setError(tNow("ferry.engineFailed", { error: engineErrorText(e) })),
     );
     return () => {
       alive = false;
@@ -156,7 +157,7 @@ export function WaterRouteEditor({
         speed_zones: doc.zones,
       });
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(engineErrorText(e));
       return null;
     }
   }, [kits, doc.piers, doc.calls, doc.zones, doc.headwayMin, vessel, layover, pax]);

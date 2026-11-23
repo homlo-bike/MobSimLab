@@ -27,7 +27,11 @@
           "type": "string",
           "description": "Station group: platforms of one station, paired stops, same-name station parts."
         },
-        "platform_code": { "type": "string" }
+        "platform_code": { "type": "string" },
+        "elevation_m": {
+          "type": "number",
+          "description": "Ground height in metres (not GTFS). The journey planner times walks to and from the stop on its slope."
+        }
       },
       "additionalProperties": false
     },

@@ -11,8 +11,10 @@
 //! here, so a run in the browser and a run on the server start from the same
 //! network and lines.
 
+use engine_msg::{msg, Msg};
 use rail_model::topology::{import_json, ImportOptions};
 use rail_model::{examples, Model};
+use rail_plan::service::layout_unusable;
 use rail_plan::{line_spec, Band, LineSpec, ServiceLine};
 use serde::{Deserialize, Serialize};
 
@@ -32,33 +34,55 @@ enum LinesFile {
 /// Purpose: read a lines file (JSON text) for the compiled network.
 /// Output: the lines (service lines drawn in the railway editor as the timetable planner publishes
 /// them, `rail_plan::line_spec`), or an error naming the problem.
-pub fn parse_lines(text: &str, model: &Model) -> Result<Vec<LineSpec>, String> {
-    let f: LinesFile = serde_json::from_str(text).map_err(|e| format!("not a lines file: {e}"))?;
+pub fn parse_lines(text: &str, model: &Model) -> Result<Vec<LineSpec>, Msg> {
+    let f: LinesFile = serde_json::from_str(text)
+        .map_err(|e| msg!("rail.sim.lines_unreadable", error = e.to_string()))?;
     let lines = match f {
         LinesFile::List(l) | LinesFile::File { lines: l } => l,
         LinesFile::Service { service_lines } => {
             if let Some(l) = service_lines.iter().find(|l| l.stations.len() < 2) {
-                return Err(format!("{} needs at least two stops.", l.name));
+                return Err(msg!("rail.plan.two_stops", line = l.name.clone()));
             }
             service_lines.iter().map(|l| line_spec(l, model)).collect()
         }
     };
     if lines.is_empty() {
-        return Err("the lines file has no lines".into());
+        return Err(msg!("rail.sim.no_lines"));
     }
     Ok(lines)
 }
 
 /// Purpose: compile a network: [`EXAMPLE_NETWORK`] or a topology export (JSON text).
 /// Output: the model and the import notes.
-pub fn compile_network(network: &str) -> Result<(Model, Vec<String>), String> {
+pub fn compile_network(network: &str) -> Result<(Model, Vec<Msg>), Msg> {
     if network == EXAMPLE_NETWORK {
-        let m = Model::compile(&examples::metro_line()).map_err(|e| format!("{e:?}"))?;
+        let m = Model::compile(&examples::metro_line()).map_err(layout_unusable)?;
         return Ok((m, Vec::new()));
     }
     let imp = import_json(network, &ImportOptions::default())?;
-    let m = Model::compile(&imp.spec).map_err(|e| format!("{e:?}"))?;
+    let m = Model::compile(&imp.spec).map_err(layout_unusable)?;
     Ok((m, imp.notes))
+}
+
+/// An import note as the app shows it: the English text and the message to show it in the app
+/// language.
+#[derive(Serialize)]
+pub struct Note<'a> {
+    /// The note in English.
+    pub text: String,
+    /// The note as a message of the engine message catalog.
+    pub msg: &'a Msg,
+}
+
+/// Purpose: the import notes with their English text, for the app (JSON).
+pub fn note_texts(notes: &[Msg]) -> Vec<Note<'_>> {
+    notes
+        .iter()
+        .map(|m| Note {
+            text: m.english(),
+            msg: m,
+        })
+        .collect()
 }
 
 /// A line as loaded, with its service bands.
@@ -153,7 +177,7 @@ mod tests {
         assert_eq!(r.lines[0].line, "M7");
         assert_eq!(r.lines[0].planned.unplaced, 0);
         let err = parse_lines(&drawn_shuttle(&["st1"]), &m).unwrap_err();
-        assert!(err.contains("two stops"), "{err}");
+        assert!(err.english().contains("two stops"), "{err}");
     }
 
     #[test]
