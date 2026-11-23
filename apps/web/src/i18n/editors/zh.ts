@@ -890,6 +890,8 @@ export const editorsZh = {
   "jp.set.minChange": "同站换乘时间（秒）",
   "jp.set.maxRides": "最多乘坐车辆数",
   "jp.walkNote": "在步行网络建成之前，步行距离按直线距离 × 1.3 计算。默认值来自假设库。",
+  "jp.slopeNote": "步行时间按两端之间的坡度计算（Tobler 徒步函数与地形高程）：上坡和陡下坡耗时更长。",
+  "jp.slopeNoHeights": "地形高程未能加载，因此步行按平地计算。",
 
   "kit.minSec": "{m} 分 {s} 秒",
   "kit.checks": "检查",

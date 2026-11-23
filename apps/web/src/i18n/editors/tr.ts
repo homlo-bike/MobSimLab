@@ -932,6 +932,10 @@ export const editorsTr = {
   "jp.set.maxRides": "En fazla biniş sayısı",
   "jp.walkNote":
     "Yaya ağı eklenene kadar yürüme mesafeleri kuş uçuşu × 1,3'tür. Varsayılanlar varsayımlar kitaplığından.",
+  "jp.slopeNote":
+    "Yürüme süresi iki ucu arasındaki eğime göre hesaplanır (arazi yükseklikleriyle Tobler yürüyüş fonksiyonu): yokuş yukarı ve dik yokuş aşağı daha uzun sürer.",
+  "jp.slopeNoHeights":
+    "Arazi yükseklikleri yüklenemedi, bu yüzden yürüyüş düz zemindeymiş gibi hesaplanıyor.",
   "kit.minSec": "{m} dk {s} sn",
   "kit.checks": "Denetimler",
   "kit.issue": "{level}: ",

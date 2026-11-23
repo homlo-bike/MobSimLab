@@ -927,6 +927,9 @@ export const editorsYo = {
   "jp.set.maxRides": "Iye ọkọ̀ tó pọ̀ jù",
   "jp.walkNote":
     "Ìrìn ẹsẹ̀ jẹ́ ìjìnnà ìlà títọ́ × 1.3 títí nẹ́tíwọ̀ọ̀kì ìrìn ẹsẹ̀ yóò fi wà. Àwọn iye àìyípadà wá láti ilé ìkàwé àròsọ.",
+  "jp.slopeNote":
+    "A ń ka àkókò ìrìn lórí ìtẹ̀ láàárín òpin méjèèjì rẹ̀ (ìlànà ìrìn Tobler pẹ̀lú gíga ilẹ̀): gígun òkè àti sísọ̀kalẹ̀ gíga máa ń pẹ́ jù.",
+  "jp.slopeNoHeights": "Gíga ilẹ̀ kò gbé wọlé, nítorí náà a ń ka ìrìn bí ilẹ̀ pẹ̀tẹ́lẹ̀.",
   "kit.minSec": "{m} ìṣẹ́jú {s} ìṣẹ́jú-àáyá",
   "kit.checks": "Àwọn àyẹ̀wò",
   "kit.issue": "{level}:",

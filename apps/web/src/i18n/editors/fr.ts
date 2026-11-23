@@ -982,6 +982,10 @@ export const editorsFr = {
   "jp.set.maxRides": "Véhicules au plus",
   "jp.walkNote":
     "La marche est la distance à vol d’oiseau × 1,3 en attendant le réseau piéton. Les valeurs par défaut viennent de la bibliothèque d’hypothèses.",
+  "jp.slopeNote":
+    "La marche est chronométrée sur la pente entre ses deux extrémités (fonction de randonnée de Tobler avec les altitudes du terrain) : en montée et en forte descente, elle prend plus de temps.",
+  "jp.slopeNoHeights":
+    "Les altitudes du terrain n’ont pas été chargées : la marche est comptée comme sur le plat.",
 
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Contrôles",

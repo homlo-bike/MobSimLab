@@ -1014,6 +1014,9 @@ export const editorsPl = {
   "jp.set.maxRides": "Maksymalna liczba przejazdów",
   "jp.walkNote":
     "Odległości piesze to linia prosta × 1,3, dopóki nie zostanie dodana sieć piesza. Wartości domyślne z biblioteki założeń.",
+  "jp.slopeNote":
+    "Czas marszu liczony jest na nachyleniu między jego końcami (funkcja wędrówki Toblera z wysokościami terenu): pod górę i stromo w dół trwa dłużej.",
+  "jp.slopeNoHeights": "Nie wczytano wysokości terenu, więc marsz liczony jest jak po płaskim.",
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Kontrole",
   "kit.issue": "{level}: ",

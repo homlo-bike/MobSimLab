@@ -965,6 +965,10 @@ export const editorsPt = {
   "jp.set.maxRides": "Máximo de veículos",
   "jp.walkNote":
     "As caminhadas são a distância em linha reta × 1,3 até que a rede de pedestres exista. Os valores padrão vêm da biblioteca de premissas.",
+  "jp.slopeNote":
+    "As caminhadas são calculadas no declive entre as suas duas pontas (função de caminhada de Tobler com as alturas do terreno): a subir e em descidas íngremes demoram mais.",
+  "jp.slopeNoHeights":
+    "As alturas do terreno não carregaram, por isso as caminhadas são calculadas como em plano.",
 
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Verificações",

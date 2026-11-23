@@ -980,6 +980,10 @@ export const editorsDe = {
   "jp.set.maxRides": "Höchstens Fahrzeuge",
   "jp.walkNote":
     "Fußwege sind Luftlinie × 1,3, bis das Fußwegenetz existiert. Die Vorgaben stammen aus der Annahmenbibliothek.",
+  "jp.slopeNote":
+    "Fußwege werden auf der Steigung zwischen ihren beiden Enden berechnet (Wanderfunktion nach Tobler mit den Geländehöhen): bergauf und steil bergab dauern sie länger.",
+  "jp.slopeNoHeights":
+    "Die Geländehöhen wurden nicht geladen, daher werden Fußwege wie in der Ebene berechnet.",
 
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Prüfungen",

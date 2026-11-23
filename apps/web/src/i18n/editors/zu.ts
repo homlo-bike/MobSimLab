@@ -980,6 +980,9 @@ export const editorsZu = {
   "jp.set.maxRides": "Inani eliphezulu lezimoto",
   "jp.walkNote":
     "Ukuhamba ngezinyawo kuyibanga lomugqa oqondile × 1.3 kuze kube khona inethiwekhi yokuhamba ngezinyawo. Amanani azenzakalelayo avela emtapweni wolwazi wemicabango.",
+  "jp.slopeNote":
+    "Isikhathi sokuhamba sibalwa emthambekeni ophakathi kweziphetho zakho ezimbili (umsebenzi wokuhamba kaTobler nobude bomhlaba): ukwenyuka nokwehla okuqinile kuthatha isikhathi eside.",
+  "jp.slopeNoHeights": "Ubude bomhlaba abulayishekanga, ngakho ukuhamba kubalwa njengasendaweni eyisicaba.",
   "kit.minSec": "{m} imiz {s} imizuzwana",
   "kit.checks": "Ukuhlola",
   "kit.issue": "{level}:",

@@ -3626,6 +3626,20 @@
    }
   },
   {
+   "id": "journey.walk_slope_k",
+   "label": "Walking on slopes: steepness term of Tobler's hiking function (journey planner; 0 = walks timed as flat)",
+   "group": "Demand",
+   "unit": "coefficient",
+   "kind": "number",
+   "values": {
+    "*": [
+     3,
+     3.5,
+     4
+    ]
+   }
+  },
+  {
    "id": "journey.min_change_s",
    "label": "Journey planner: minimum time to change vehicles at the same stop",
    "group": "Demand",

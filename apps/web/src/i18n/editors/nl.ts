@@ -965,6 +965,10 @@ export const editorsNl = {
   "jp.set.maxRides": "Meeste voertuigen",
   "jp.walkNote":
     "Looproutes zijn de afstand hemelsbreed × 1,3 tot het loopnetwerk er is. De standaardwaarden komen uit de aannamebibliotheek.",
+  "jp.slopeNote":
+    "Looptijden worden berekend op de helling tussen beide uiteinden (Toblers wandelfunctie met de terreinhoogten): bergop en steil bergaf duurt langer.",
+  "jp.slopeNoHeights":
+    "De terreinhoogten zijn niet geladen, dus looptijden worden berekend als op vlak terrein.",
 
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Controles",

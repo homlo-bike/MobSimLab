@@ -393,6 +393,17 @@
   retrieved: 2026-11-02
   checked_via: search-snippet
 
+- id: tobler-1993
+  title: "W. Tobler, Three presentations on geographical analysis and modeling: non-isotropic geographic modeling; speculations on the geometry of geography; global spatial analysis, NCGIA Technical Report 93-1 (1993), the hiking function W = 6 exp(-3.5 |dh/dx + 0.05|) km/h"
+  publisher: National Center for Geographic Information and Analysis, University of California, Santa Barbara
+  url: https://escholarship.org/uc/item/05r820mz
+  licence: © the author; numbers cited as facts
+  access: free
+  retrieved: 2026-11-22
+  checked_via: none
+  kind: primary
+  note: "The URL could not be opened from the build environment; confirm the formula against the report and change check to read."
+
 - id: hcm7
   title: Highway Capacity Manual, 7th edition, pedestrian walking speeds
   publisher: Transportation Research Board

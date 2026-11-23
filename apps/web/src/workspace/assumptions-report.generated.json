@@ -559,6 +559,12 @@
    "url": "https://nap.nationalacademies.org/read/22409/chapter/2",
    "access": "free"
   },
+  "tobler-1993": {
+   "title": "W. Tobler, Three presentations on geographical analysis and modeling: non-isotropic geographic modeling; speculations on the geometry of geography; global spatial analysis, NCGIA Technical Report 93-1 (1993), the hiking function W = 6 exp(-3.5 |dh/dx + 0.05|) km/h",
+   "publisher": "National Center for Geographic Information and Analysis, University of California, Santa Barbara",
+   "url": "https://escholarship.org/uc/item/05r820mz",
+   "access": "free"
+  },
   "trackopedia-track-centres": {
    "title": "Trackopedia, \"Track centreline distance\" (German practice: 4.50 m new lines up to 300 km/h, 4.00 m upgraded lines up to 230 km/h, 3.50 m minimum)",
    "publisher": "Plasser & Theurer",
@@ -9698,6 +9704,26 @@
       "mobsimlab-derivation"
      ],
      "rationale": "Stand-in until walks are routed on the walk graph: street networks make a walk roughly 20–50 % longer than the straight line (lower in dense grids, higher with rivers, rail lines and cul-de-sacs). 1.3 is the planning value used by the journey planner (ADR-0034); replace with a cited circuity study."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "journey.walk_slope_k": {
+   "used_by": [
+    "journey planner access",
+    "egress",
+    "transfer and walk-only legs"
+   ],
+   "entries": [
+    {
+     "basis": "cited",
+     "check": "unverified",
+     "sources": [
+      "tobler-1993"
+     ],
+     "rationale": "Tobler's hiking function gives walking speed as 6 exp(-3.5 |s + 0.05|) km/h for gradient s (rise over distance walked): fastest on a 5 % downhill, about 5 km/h on the flat, roughly half that on a 20 % climb. The planner keeps the project's flat walking speed and multiplies the walking time by exp(k (|s + 0.05| - 0.05)), with s the height difference between the two ends over the walking distance (heights from the project's terrain, Copernicus GLO-30 by default), held within ±50 %. 3.5 is Tobler's value, fitted to Imhof's hiking data; low and high (±0.5) are an educated range for fitter or slower walkers, not cited. 0 ignores slopes. A walk is timed on its average gradient end to end, so a walk over a ridge between two stops at the same height is still timed as flat."
     }
    ],
    "modes": {

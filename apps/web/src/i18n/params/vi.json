@@ -173,6 +173,7 @@
     "demand.calibration.geh_hours": "Hiệu chỉnh: số giờ để chia số đếm ngày thường cho chỉ số GEH",
     "demand.walk_speed_kmh": "Tốc độ đi bộ cho các liên kết đi bộ giữa các ga",
     "journey.walk_detour_factor": "Quãng đi bộ so với khoảng cách đường chim bay (lập kế hoạch hành trình, ước tính lợi ích)",
+    "journey.walk_slope_k": "Đi bộ trên dốc: hệ số độ dốc của hàm đi bộ đường dài Tobler (công cụ lập hành trình; 0 = tính như đường bằng)",
     "journey.min_change_s": "Lập kế hoạch hành trình: thời gian chuyển tuyến tối thiểu tại cùng điểm dừng",
     "journey.level_change_s": "Lập kế hoạch hành trình: thời gian thêm để đổi sân ga trong một ga (cầu thang, thang máy)",
     "journey.same_name_station_m": "Các điểm dừng cùng tên trong khoảng đường chim bay này là một ga",

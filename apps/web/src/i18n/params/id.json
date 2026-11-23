@@ -173,6 +173,7 @@
     "demand.calibration.geh_hours": "Kalibrasi: jam untuk membagi hitungan hari kerja bagi statistik GEH",
     "demand.walk_speed_kmh": "Kecepatan berjalan untuk tautan jalan kaki antar stasiun",
     "journey.walk_detour_factor": "Jarak berjalan dibanding jarak garis lurus (perencana perjalanan, estimasi manfaat)",
+    "journey.walk_slope_k": "Berjalan di lereng: suku kemiringan fungsi pendakian Tobler (perencana perjalanan; 0 = jalan kaki dihitung datar)",
     "journey.min_change_s": "Perencana perjalanan: waktu pindah minimum di halte yang sama",
     "journey.level_change_s": "Perencana perjalanan: waktu tambahan untuk pindah peron di stasiun (tangga, lift)",
     "journey.same_name_station_m": "Halte bernama sama dalam jarak garis lurus ini adalah satu stasiun",

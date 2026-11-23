@@ -913,6 +913,9 @@ export const editorsJa = {
   "jp.set.maxRides": "最大乗車回数",
   "jp.walkNote":
     "歩行ネットワークが追加されるまでは、徒歩距離を直線距離 × 1.3 とします。既定値は前提値ライブラリから。",
+  "jp.slopeNote":
+    "徒歩時間は両端の間の勾配で計算します（地形の標高とトブラーのハイキング関数）。上り坂と急な下り坂は時間が長くなります。",
+  "jp.slopeNoHeights": "地形の標高を読み込めなかったため、徒歩は平地として計算しています。",
   "kit.minSec": "{m}分{s}秒",
   "kit.checks": "チェック",
   "kit.issue": "{level}：",

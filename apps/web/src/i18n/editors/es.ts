@@ -969,6 +969,10 @@ export const editorsEs = {
   "jp.set.maxRides": "Máximo de vehículos",
   "jp.walkNote":
     "Los trayectos a pie son la distancia en línea recta × 1,3 hasta que exista la red peatonal. Los valores por defecto vienen de la biblioteca de supuestos.",
+  "jp.slopeNote":
+    "Las caminatas se calculan con la pendiente entre sus dos extremos (función de senderismo de Tobler con las alturas del terreno): cuesta arriba y en bajadas pronunciadas tardan más.",
+  "jp.slopeNoHeights":
+    "No se cargaron las alturas del terreno, así que las caminatas se calculan como en llano.",
 
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Comprobaciones",
