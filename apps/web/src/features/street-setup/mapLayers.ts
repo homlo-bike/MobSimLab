@@ -1,11 +1,27 @@
 import type { GeoJSONSource, Map as MapLibreMap } from "maplibre-gl";
+import { LANE_MIN_ZOOM, type LaneGeometry, type LaneKind } from "./lanes";
 import { effective, priority } from "./model";
 import type { StreetInfo, StreetSetup } from "./types";
 
 /** Layer that receives taps on streets: wide and transparent, so a finger finds a street easily. */
 export const HIT_LAYER = "ss-streets-hit";
 const SOURCE = "ss-streets";
-const LAYERS = ["ss-streets-casing", "ss-streets", "ss-selected", HIT_LAYER];
+const LANE_SOURCE = "ss-lanes";
+const JUNCTION_SOURCE = "ss-junctions";
+const MARKING_SOURCE = "ss-lane-markings";
+const LAYERS = [
+  "ss-junctions",
+  "ss-lanes",
+  "ss-lane-markings",
+  "ss-centre-markings",
+  "ss-lane-rails",
+  "ss-streets-casing",
+  "ss-streets",
+  "ss-selected",
+  HIT_LAYER,
+];
+/** The street lines, which make way for the lanes where those are drawn. */
+const LINE_LAYERS = ["ss-streets-casing", "ss-streets"];
 
 /** Map colours by transit priority, shared with the legend. */
 export const PRIORITY_COLOR = {
@@ -15,11 +31,83 @@ export const PRIORITY_COLOR = {
   other: "#94a3b8",
 } as const;
 
+/** Lane colours as on the ground (asphalt, red bus lanes, green bike lanes), shared with the legend. */
+export const LANE_COLOR: Record<LaneKind, string> = {
+  traffic: "#9ca3af",
+  bus: "#f87171",
+  bike: "#4ade80",
+  tram: "#c2a878",
+  pavement: "#e2e8f0",
+  footway: "#d6d3d1",
+  shared_use: "#a7f3d0",
+  parking: "#93c5fd",
+  kerb: "#475569",
+  buffer: "#cbd5e1",
+  construction: "#fbbf24",
+};
+const JUNCTION_COLOR = "#a8adb6";
+
 const EMPTY = { type: "FeatureCollection" as const, features: [] };
 
 /** Purpose: add the street setup source and layers once. Side effects: adds them to the map. */
 export function ensureLayers(map: MapLibreMap): void {
   if (map.getSource(SOURCE)) return;
+  // Lanes and junctions (ADR-0047) under everything else, from zoom 16.
+  map.addSource(JUNCTION_SOURCE, { type: "geojson", data: EMPTY });
+  map.addSource(LANE_SOURCE, { type: "geojson", data: EMPTY });
+  map.addSource(MARKING_SOURCE, { type: "geojson", data: EMPTY });
+  map.addLayer({
+    id: "ss-junctions",
+    type: "fill",
+    source: JUNCTION_SOURCE,
+    minzoom: LANE_MIN_ZOOM,
+    paint: { "fill-color": JUNCTION_COLOR },
+  });
+  map.addLayer({
+    id: "ss-lanes",
+    type: "fill",
+    source: LANE_SOURCE,
+    minzoom: LANE_MIN_ZOOM,
+    layout: { "fill-sort-key": ["get", "layer"] },
+    paint: {
+      "fill-color": [
+        "match",
+        ["get", "kind"],
+        ...Object.entries(LANE_COLOR).flat(),
+        LANE_COLOR.traffic,
+      ] as never,
+      "fill-outline-color": "#64748b",
+    },
+  });
+  // Road markings stay white on a dark basemap too (map/darkLayers.ts).
+  const markingWidth = ["interpolate", ["linear"], ["zoom"], 16, 0.5, 19, 2] as never;
+  map.addLayer({
+    id: "ss-lane-markings",
+    type: "line",
+    source: MARKING_SOURCE,
+    minzoom: LANE_MIN_ZOOM,
+    filter: ["==", ["get", "kind"], "lane"],
+    paint: { "line-color": "#ffffff", "line-width": markingWidth, "line-dasharray": [3, 4] },
+  });
+  map.addLayer({
+    id: "ss-centre-markings",
+    type: "line",
+    source: MARKING_SOURCE,
+    minzoom: LANE_MIN_ZOOM,
+    filter: ["==", ["get", "kind"], "centre"],
+    paint: { "line-color": "#ffffff", "line-width": markingWidth },
+  });
+  map.addLayer({
+    id: "ss-lane-rails",
+    type: "line",
+    source: MARKING_SOURCE,
+    minzoom: LANE_MIN_ZOOM,
+    filter: ["==", ["get", "kind"], "rails"],
+    paint: {
+      "line-color": "#57534e",
+      "line-width": ["interpolate", ["linear"], ["zoom"], 16, 1, 19, 3] as never,
+    },
+  });
   map.addSource(SOURCE, { type: "geojson", data: EMPTY });
   const width = (lo: number, hi: number) => ["interpolate", ["linear"], ["zoom"], 13, lo, 18, hi] as never;
   map.addLayer({
@@ -101,6 +189,52 @@ export function drawStreets(
   (map.getSource(SOURCE) as GeoJSONSource | undefined)?.setData({ type: "FeatureCollection", features });
 }
 
+/** Purpose: flat `[lon, lat, …]` to GeoJSON positions. */
+function positions(flat: readonly number[]): [number, number][] {
+  const out: [number, number][] = [];
+  for (let i = 0; i + 1 < flat.length; i += 2) out.push([flat[i]!, flat[i + 1]!]);
+  return out;
+}
+
+/**
+ * Purpose: draw the lane and junction shapes (or clear them with `null`). Where lanes are drawn, the
+ * street lines give way to them from zoom 16; without lanes they stay at every zoom.
+ * Side effects: sets the lane sources and the zoom range of the street line layers.
+ */
+export function drawLanes(map: MapLibreMap, g: LaneGeometry | null): void {
+  const set = (id: string, features: unknown[]) =>
+    (map.getSource(id) as GeoJSONSource | undefined)?.setData({
+      type: "FeatureCollection",
+      features,
+    } as never);
+  set(
+    LANE_SOURCE,
+    (g?.lanes ?? []).map((l) => ({
+      type: "Feature",
+      properties: { kind: l.kind, way: l.way, layer: l.layer },
+      geometry: { type: "Polygon", coordinates: [positions(l.ring)] },
+    })),
+  );
+  set(
+    JUNCTION_SOURCE,
+    (g?.junctions ?? []).map((j) => ({
+      type: "Feature",
+      properties: {},
+      geometry: { type: "Polygon", coordinates: [positions(j.ring)] },
+    })),
+  );
+  set(
+    MARKING_SOURCE,
+    (g?.lines ?? []).map((l) => ({
+      type: "Feature",
+      properties: { kind: l.kind, layer: l.layer },
+      geometry: { type: "LineString", coordinates: positions(l.path) },
+    })),
+  );
+  const max = g && g.lanes.length ? LANE_MIN_ZOOM : 24;
+  for (const id of LINE_LAYERS) if (map.getLayer(id)) map.setLayerZoomRange(id, 0, max);
+}
+
 /** Purpose: highlight one street (or none). */
 export function selectStreet(map: MapLibreMap, way: number | null): void {
   if (map.getLayer("ss-selected")) map.setFilter("ss-selected", ["==", ["get", "way"], way ?? -1]);
@@ -109,5 +243,6 @@ export function selectStreet(map: MapLibreMap, way: number | null): void {
 /** Purpose: remove the layers and source. */
 export function removeLayers(map: MapLibreMap): void {
   for (const id of LAYERS) if (map.getLayer(id)) map.removeLayer(id);
-  if (map.getSource(SOURCE)) map.removeSource(SOURCE);
+  for (const id of [SOURCE, LANE_SOURCE, JUNCTION_SOURCE, MARKING_SOURCE])
+    if (map.getSource(id)) map.removeSource(id);
 }

@@ -9,8 +9,17 @@ import type { TileFetcher } from "../street-lines/types";
 import { DEFAULT_SERVICE_DAY, projectServiceDay } from "../journey-planner/network";
 import { CrossSection } from "./CrossSection";
 import {
+  LANE_MIN_ZOOM,
+  type LaneEngine,
+  type LaneEngineLoader,
+  type LaneKind,
+  loadLaneEngine,
+} from "./lanes";
+import {
+  drawLanes,
   drawStreets,
   ensureLayers,
+  LANE_COLOR,
   HIT_LAYER,
   PRIORITY_COLOR,
   removeLayers,
@@ -49,6 +58,8 @@ interface Props {
   fetchTile?: TileFetcher;
   /** Street parser loader; tests inject a fake. */
   loadInfos?: StreetInfoLoader;
+  /** Lane engine loader (osm2streets, ADR-0047); tests inject a fake. */
+  loadLanes?: LaneEngineLoader;
 }
 
 const WHO: Record<Verdict["who"], MessageKey> = {
@@ -68,7 +79,9 @@ const LEVEL_STYLE: Record<Verdict["level"], { mark: string; cls: string }> = {
  * by transit priority; tapping one opens its setup: general traffic lanes, bus lane, bike lane, separation
  * from the traffic, and how a tram shares it. The setup overrides OSM for bus running times and the
  * reliability and safety checks of the street line tool and the railway editor.
- * Side effects: adds layers and a tap handler to the map while mounted; fetches street tiles.
+ * From zoom 16 the streets are drawn lane by lane, with their junctions (ADR-0047).
+ * Side effects: adds layers and a tap handler to the map while mounted; fetches street tiles; runs the
+ * lane engine in a Web Worker.
  */
 export function StreetSetupEditor({
   map,
@@ -79,6 +92,7 @@ export function StreetSetupEditor({
   delays = DEFAULT_DELAYS,
   fetchTile = fetchStreetTile,
   loadInfos = loadStreetInfos,
+  loadLanes = loadLaneEngine,
 }: Props) {
   const [parse, setParse] = useState<((xml: string) => StreetInfo[]) | null>(null);
   const [infos, setInfos] = useState<Map<number, StreetInfo>>(new Map());
@@ -96,6 +110,32 @@ export function StreetSetupEditor({
       alive = false;
     };
   }, [loadInfos]);
+
+  // The lane engine. Tiles that arrive before it has started are handed over when it does.
+  const xmls = useRef(new Map<string, string>());
+  const laneRef = useRef<LaneEngine | null>(null);
+  const [lanes, setLanes] = useState<LaneEngine | null>(null);
+  const [tileCount, setTileCount] = useState(0);
+  const [laneError, setLaneError] = useState<string | null>(null);
+  useEffect(() => {
+    let alive = true;
+    let engine: LaneEngine | null = null;
+    loadLanes()
+      .then((e) => {
+        if (!alive) return e?.dispose();
+        if (!e) return;
+        engine = e;
+        for (const [k, xml] of xmls.current) e.addTile(k, xml);
+        laneRef.current = e;
+        setLanes(e);
+      })
+      .catch((err) => alive && setLaneError(tNow("setup.lanesFailed", { error: engineErrorText(err) })));
+    return () => {
+      alive = false;
+      laneRef.current = null;
+      engine?.dispose();
+    };
+  }, [loadLanes]);
 
   // Streets on screen, loaded tile by tile when the map stops moving (the street line tool's tiles).
   const tiles = useRef(new Set<string>());
@@ -139,11 +179,14 @@ export function StreetSetupEditor({
         try {
           if (r.status === "rejected") throw r.reason;
           found.push(...parse(r.value));
+          xmls.current.set(want[i]!, r.value);
+          laneRef.current?.addTile(want[i]!, r.value);
         } catch (err) {
           tiles.current.delete(want[i]!);
           reason ??= err instanceof Error ? err.message : tNow("setup.someFailed");
         }
       });
+      setTileCount(xmls.current.size);
       if (found.length)
         setInfos((old) => {
           const next = new Map(old);
@@ -178,6 +221,47 @@ export function StreetSetupEditor({
   useEffect(() => {
     if (map) drawStreets(map, infos.values(), setups);
   }, [map, infos, setups]);
+
+  // Lanes of the loaded tiles on screen, rebuilt shortly after the map stops or a setup changes.
+  const built = useRef<{ keys: string; setups: readonly StreetSetup[] } | null>(null);
+  useEffect(() => {
+    if (!map || !lanes) return;
+    let stopped = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let seq = 0;
+    const run = () => {
+      clearTimeout(timer);
+      timer = setTimeout(async () => {
+        if (stopped || map.getZoom() < LANE_MIN_ZOOM) return;
+        const b = map.getBounds();
+        const keys = tilesFor([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()])
+          .map(([x, y]) => `${x}/${y}`)
+          .filter((k) => xmls.current.has(k));
+        const sig = keys.join(",");
+        if (!keys.length || (built.current?.keys === sig && built.current.setups === setups)) return;
+        const mine = ++seq;
+        try {
+          const g = await lanes.build(keys, setups);
+          if (stopped || mine !== seq) return;
+          built.current = { keys: sig, setups };
+          drawLanes(map, g);
+          setLaneError(null);
+        } catch (err) {
+          if (stopped || mine !== seq) return;
+          built.current = null;
+          drawLanes(map, null);
+          setLaneError(tNow("setup.lanesFailed", { error: engineErrorText(err) }));
+        }
+      }, 250);
+    };
+    map.on("moveend", run);
+    run();
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+      map.off("moveend", run);
+    };
+  }, [map, lanes, setups, tileCount]);
 
   useEffect(() => {
     if (map) selectStreet(map, selected);
@@ -236,6 +320,11 @@ export function StreetSetupEditor({
       {error && (
         <p role="alert" className="rounded-lg bg-red-50 px-3 py-2 text-sm text-red-800">
           {error}
+        </p>
+      )}
+      {laneError && !error && (
+        <p role="status" className="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
+          {laneError}
         </p>
       )}
       {note && !error && (
@@ -566,6 +655,13 @@ function Legend() {
     ["mixed", "setup.legend.mixed"],
     ["other", "setup.legend.other"],
   ];
+  const lanes: [LaneKind, MessageKey][] = [
+    ["traffic", "setup.x.car"],
+    ["bus", "setup.x.bus"],
+    ["bike", "setup.x.bike"],
+    ["tram", "setup.x.tram"],
+    ["pavement", "setup.x.walk"],
+  ];
   return (
     <ul aria-label={t("setup.legend")} className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs text-slate-600">
       {items.map(([k, l]) => (
@@ -578,6 +674,18 @@ function Legend() {
         <span className="inline-block h-2.5 w-5 rounded-full border-2 border-slate-900 bg-white" />{" "}
         {t("setup.legend.yours")}
       </li>
+      <li className="col-span-2 mt-1 font-medium text-slate-700">
+        {t("setup.legend.lanes", { zoom: LANE_MIN_ZOOM })}
+      </li>
+      {lanes.map(([k, l]) => (
+        <li key={k} className="flex items-center gap-1.5">
+          <span
+            className="inline-block h-2.5 w-5 rounded-sm border border-slate-400"
+            style={{ background: LANE_COLOR[k] }}
+          />
+          <span className="first-letter:uppercase">{t(l)}</span>
+        </li>
+      ))}
     </ul>
   );
 }

@@ -474,6 +474,7 @@ export const editorsUz = {
   "setup.intro":
     "Koʻchaga teging va u qanday taqsimlanganini koʻrsating: harakat yoʻlaklari, avtobus va velosiped yoʻlaklari, ajratish va tramvay. Sozlamangiz koʻcha liniyasi vositasi va temir yoʻl muharririda safar vaqtlari hamda ishonchlilik va xavfsizlik tekshiruvlari uchun OpenStreetMap oʻrnini egallaydi.",
   "setup.engineFailed": "Koʻcha mexanizmi ishga tushmadi: {error}",
+  "setup.lanesFailed": "Yoʻlaklarni chizib boʻlmadi: {error}",
   "setup.zoomIn": "Koʻchalarni yuklash uchun koʻcha darajasigacha yaqinlashtiring ({zoom} darajadan).",
   "setup.someFailed": "Baʼzi koʻchalar yuklanmadi.",
   "setup.tryAgain": "{reason} Qayta urinish uchun xaritani siljiting.",
@@ -546,6 +547,7 @@ export const editorsUz = {
   "setup.legend.mixed": "Asosiy yoʻl, transport tirbandlikda",
   "setup.legend.other": "Boshqa koʻchalar",
   "setup.legend.yours": "Siz sozlagan",
+  "setup.legend.lanes": "Yoʻlaklar, {zoom} masshtabdan",
   "setup.v.busNoDelay":
     "Bu turdagi koʻchada tirbandlik kechikishi hisoblanmaydi; u asosiy yoʻllarda hisoblanadi.",
   "setup.v.busSeparated": "Ajratilgan avtobus yoʻlagi: tirbandlik avtobuslarni kechiktirmaydi.",

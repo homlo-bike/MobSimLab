@@ -440,6 +440,7 @@ export const editorsKo = {
   "setup.intro":
     "도로를 눌러 구성 방식을 지정하세요: 차로, 버스·자전거 차로, 분리, 트램. 설정은 도로 노선 도구와 철도 편집기에서 OpenStreetMap 대신 사용되며 운행 시간과 정시성·안전 검사에 반영됩니다.",
   "setup.engineFailed": "도로 엔진을 시작할 수 없습니다: {error}",
+  "setup.lanesFailed": "차로를 그릴 수 없습니다: {error}",
   "setup.zoomIn": "도로를 불러오려면 도로 수준까지 확대하세요(레벨 {zoom} 이상).",
   "setup.someFailed": "일부 도로를 불러올 수 없습니다.",
   "setup.tryAgain": "{reason}지도를 움직이면 다시 시도합니다.",
@@ -510,6 +511,7 @@ export const editorsKo = {
   "setup.legend.mixed": "간선도로, 대중교통이 일반 교통과 혼재",
   "setup.legend.other": "기타 도로",
   "setup.legend.yours": "내가 설정함",
+  "setup.legend.lanes": "차로, 확대 {zoom}부터",
   "setup.v.busNoDelay": "이 유형의 도로에서는 교통 지연을 계산하지 않습니다. 간선도로에서 계산합니다.",
   "setup.v.busSeparated": "분리된 버스 차로: 교통 혼잡이 버스를 지연시키지 않습니다.",
   "setup.v.busPainted":
