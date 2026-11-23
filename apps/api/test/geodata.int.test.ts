@@ -458,7 +458,8 @@ describe("geodata import", () => {
       `/api/street-network/building-tiles/14/${x}/${y}?project=${project}`,
     );
     expect(houses.body.buildings).toEqual([]);
-    expect(overpassQueries).toEqual([]);
+    // No tile went to Overpass (saving the area looks up its country in the background, which may land here).
+    expect(overpassQueries.filter((q) => !q.includes("is_in("))).toEqual([]);
     // With a Full polygon as well, its tiles are listed apart, for the editor to load their main roads.
     const both = await as("alice").put(`/api/projects/${project}/area`, {
       polygons: [{ ...square("a3", 6.99, 49.99, 0.04), detail: "main" }, square("a4", 7.2, 50.2, 0.01)],
