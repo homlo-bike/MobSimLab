@@ -2344,6 +2344,7 @@ impl<'a> Planner<'a> {
                     ve.at,
                     ve.arrive_dir.reverse(),
                     earliest,
+                    ve.ready_s + l.turnback_s,
                     v,
                     ve.last_run,
                     hold_until,
@@ -2387,6 +2388,7 @@ impl<'a> Planner<'a> {
                                 ve.at,
                                 ve.arrive_dir.reverse(),
                                 earliest,
+                                ve.ready_s + self.p.pull_out_margin_s,
                                 v,
                                 po,
                                 hold_until,
@@ -2458,6 +2460,7 @@ impl<'a> Planner<'a> {
         origin: Place,
         depart_dir: Dir,
         earliest: f64,
+        ready: f64,
         vehicle: usize,
         prev_run: usize,
         hold_until: f64,
@@ -2542,6 +2545,39 @@ impl<'a> Planner<'a> {
                         first_err = Some(e.clone());
                     }
                     last_err = e;
+                }
+            }
+        }
+        // No room on time or later: a train that is ready before its slot may leave a little
+        // early instead, by at most the shift allowed the other way. Only trips moved later were
+        // tried, and a tram waiting in its terminal lost the trip to one coming the other way or
+        // to another line on the shared track, then its later trips to depot runs (Damascus test,
+        // bug 25).
+        let room = (trip.dep - ready).min(self.p.max_shift_s);
+        if best.is_none() && room > 0.5 {
+            for path in &attempts {
+                let Ok((base, _)) = self.build_run(
+                    trip.line,
+                    &trip.name,
+                    &path.routes,
+                    &path.places,
+                    dwells,
+                    0.0,
+                ) else {
+                    continue;
+                };
+                let mk = |t: f64| TrainRun {
+                    depart_s: t,
+                    occupy_until_s: Some(hold_until + (t - trip.dep).max(0.0)),
+                    ..base.clone()
+                };
+                let idx = self.runs.len();
+                if let Ok((timing, t, prev_t)) =
+                    self.search_time(&mk, trip.dep, false, room, vehicle, prev, idx)
+                {
+                    if best.as_ref().is_none_or(|b| t > b.0 + 0.5) {
+                        best = Some((t, path.clone(), mk(t), timing, prev_t));
+                    }
                 }
             }
         }
