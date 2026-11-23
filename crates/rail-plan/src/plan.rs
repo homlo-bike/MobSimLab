@@ -386,6 +386,9 @@ struct Planner<'a> {
     pulled_from: HashMap<usize, (usize, Option<usize>)>,
     /// The stack each pull-in placed by [`Planner::pull_in`] took its train to, by run index.
     pulled_in: HashMap<usize, usize>,
+    /// Trains left standing because their runs were taken back: the run they stand after, and
+    /// from when they stand there in place of the run taken back, s.
+    left_standing: HashMap<usize, (usize, f64)>,
 }
 
 type TripPaths = HashMap<(usize, u8, Place, Dir, Vec<Place>), Option<FoundPath>>;
@@ -499,6 +502,7 @@ pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, Msg> 
         trip_of_run: HashMap::new(),
         pulled_from: HashMap::new(),
         pulled_in: HashMap::new(),
+        left_standing: HashMap::new(),
     };
     let trips = pl.trips();
     pl.construct(trips);
@@ -2259,7 +2263,16 @@ impl<'a> Planner<'a> {
                                 gone = true;
                                 break;
                             }
-                            if taken >= MAX_TAKEN_BACK {
+                            // A train left standing because its own runs were taken back takes back
+                            // only runs leaving after it was left there: one leaving earlier would
+                            // leave another train standing earlier in the day, and on a busy line
+                            // that ran back through the whole day and cancelled most of its trips.
+                            if taken >= MAX_TAKEN_BACK
+                                || self.left_standing.get(&v).is_some_and(|&(run, since)| {
+                                    run == self.vehicles[v].last_run
+                                        && self.runs[r].run.depart_s < since
+                                })
+                            {
                                 break;
                             }
                             let Some(w) = self.take_back(r, v, &mut trips, &mut trip_vehicle)
@@ -2267,6 +2280,9 @@ impl<'a> Planner<'a> {
                                 break;
                             };
                             taken += 1;
+                            let since = self.vehicles[w].ready_s;
+                            self.left_standing
+                                .insert(w, (self.vehicles[w].last_run, since));
                             if !matches!(self.vehicles[w].at, Place::Storage(_)) {
                                 let run = self.vehicles[w].last_run;
                                 queue.push(Queued(at_s, seq, Task::PullIn(w, run)));
