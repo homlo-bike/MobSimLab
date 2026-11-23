@@ -12,6 +12,7 @@ import {
 import { AreaOutline, AreaWindow, DETAIL_COLOUR } from "./AreaWindow";
 import { notifyAreaChanged } from "./areaLayer";
 import { countryName } from "../costs/economy";
+import { engineErrorText } from "../../i18n/engine";
 
 const IMPORT_NAMES: Record<AreaImport["kind"], MessageKey> = {
   osm: "data.osm",
@@ -89,7 +90,7 @@ export function AreaSection({
     api
       .get()
       .then((a) => live && setView(a))
-      .catch((e: unknown) => live && setState({ error: e instanceof Error ? e.message : String(e) }));
+      .catch((e: unknown) => live && setState({ error: engineErrorText(e) }));
     return () => {
       live = false;
     };
@@ -109,7 +110,7 @@ export function AreaSection({
       setImports((await api.refresh()).imports);
       setState("idle");
     } catch (e) {
-      setState({ error: e instanceof Error ? e.message : String(e) });
+      setState({ error: engineErrorText(e) });
     }
   };
   const polygons = view?.polygons ?? [];

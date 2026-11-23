@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
+  AreaIndex,
   type AreaPolygon,
   areaPolygon,
   areaPolygons,
@@ -8,6 +9,8 @@ import {
   closeRing,
   estimateArea,
   pointInRing,
+  polygonsCover,
+  polygonsGeoJson,
   ringAreaKm2,
   ringMeetsBox,
   storedPolygons,
@@ -148,5 +151,36 @@ describe("project area polygons (large-area projects, step 1)", () => {
     expect(estimateArea([city], 1000, [{ ...city, detail: "main" }]).added!.tiles).toBe(e(city));
     expect(estimateArea([city], 1000, [city, tartus]).added!.bytes).toBe(0);
     expect(estimateArea([city]).added).toBeUndefined();
+  });
+});
+
+describe("what follows the polygons", () => {
+  it("tells points inside the polygons from those outside, row by row", () => {
+    const tri: [number, number][] = [
+      [0, 0],
+      [2, 0],
+      [0, 2],
+      [0, 0],
+    ];
+    const idx = new AreaIndex([{ ring: tri }, { ring: square(5, 5, 1) }]);
+    const probes: [number, number][] = [];
+    for (let x = -0.95; x < 7; x += 0.1) for (let y = -0.95; y < 7; y += 0.1) probes.push([x, y]);
+    for (const [x, y] of probes)
+      expect(idx.contains(x, y)).toBe(pointInRing([x, y], tri) || pointInRing([x, y], square(5, 5, 1)));
+  });
+
+  it("says whether an earlier import's polygons still cover the area", () => {
+    const big = { ring: square(0, 0, 1) };
+    expect(polygonsCover([big], [big])).toBe(true);
+    expect(polygonsCover([big], [{ ring: square(0.2, 0.2, 0.5) }])).toBe(true);
+    expect(polygonsCover([big], [big, { ring: square(3, 3, 1) }])).toBe(false);
+    expect(polygonsCover([], [big])).toBe(false);
+  });
+
+  it("writes the polygons as the GeoJSON osmium cuts with", () => {
+    const g = JSON.parse(polygonsGeoJson([{ ring: square(0, 0, 1) }, { ring: square(3, 3, 1) }]));
+    expect(g.features[0].geometry.type).toBe("MultiPolygon");
+    expect(g.features[0].geometry.coordinates).toHaveLength(2);
+    expect(g.features[0].geometry.coordinates[1][0][0]).toEqual([3, 3]);
   });
 });

@@ -15,7 +15,7 @@ export const geodataIg = {
     "Ihe osise ahụ agafeela mpaghara ebubatara ugbu a. Mee ka ọ dị ọhụrụ iji bubata mpaghara ọhụrụ.",
   "data.method": "Nweta data site na",
   "data.method.overpass": "Overpass (mpaghara ruo {max} km²)",
-  "data.method.geofabrik": "Mpaghara Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Faịlụ .osm.pbf",
   "data.region": "Mpaghara",
   "data.regionsLoading": "Na-achọ mpaghara…",

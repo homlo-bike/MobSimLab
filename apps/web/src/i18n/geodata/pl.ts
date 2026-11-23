@@ -14,7 +14,7 @@ export const geodataPl = {
   "data.outside": "Rysunek wychodzi teraz poza zaimportowany obszar. Odśwież, aby zaimportować nowy obszar.",
   "data.method": "Pobierz dane z",
   "data.method.overpass": "Overpass (obszary do {max} km²)",
-  "data.method.geofabrik": "Regionu Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Pliku .osm.pbf",
   "data.region": "Region",
   "data.regionsLoading": "Wyszukiwanie regionów…",

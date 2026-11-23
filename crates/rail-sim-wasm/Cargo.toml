@@ -11,6 +11,7 @@ rust-version.workspace = true
 crate-type = ["cdylib", "rlib"]
 
 [dependencies]
+engine-msg = { path = "../engine-msg", features = ["wasm"] }
 rail-model = { path = "../rail-model" }
 rail-plan = { path = "../rail-plan" }
 rail-sim = { path = "../rail-sim" }

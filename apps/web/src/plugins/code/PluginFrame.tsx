@@ -6,6 +6,7 @@ import type { PluginProjectData } from "./inputs";
 import { runCalculation } from "./PluginCalculations";
 import type { WorkerFactory } from "./runtime";
 import { isDark } from "../../shell/theme";
+import { engineErrorText } from "../../i18n/engine";
 
 /** A message from a tab page: `{ mobsimlab: 1, id, method, params }`. */
 interface Request {
@@ -108,7 +109,7 @@ export function PluginFrame({
           ),
         });
       } catch (err) {
-        reply({ error: (err instanceof Error ? err.message : String(err)).slice(0, 500) });
+        reply({ error: engineErrorText(err).slice(0, 500) });
       } finally {
         busy = false;
       }

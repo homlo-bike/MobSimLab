@@ -12,6 +12,7 @@
 //! ([`RailDesigner::set_street_setups`]) are applied over the OSM tags, so a street set up with a
 //! separated tram lane is built as one.
 
+use engine_msg::js_error;
 use rail_design::existing::{nearest_on, rail_from_osm, ExistingRail};
 use rail_design::geom::{nearest, P2};
 use rail_design::params::SwitchChoice;
@@ -156,8 +157,8 @@ impl RailDesigner {
     /// Purpose: add the streets of one OSM XML tile, for level crossings. A way already known is
     /// kept with the longer of its two shapes (a way cut at a tile edge). Output: number of streets.
     /// Side effects: the next build checks the tracks against these streets.
-    pub fn add_street_tile(&mut self, xml: &str) -> Result<u32, JsError> {
-        let data = street_routing::osm::parse_osm_xml(xml).map_err(js)?;
+    pub fn add_street_tile(&mut self, xml: &str) -> Result<u32, JsValue> {
+        let data = street_routing::osm::parse_osm_xml(xml).map_err(|e| js_error(&e))?;
         let nodes: HashMap<i64, [f64; 2]> =
             data.nodes.iter().map(|n| (n.id, [n.lon, n.lat])).collect();
         for w in &data.ways {
@@ -198,8 +199,8 @@ impl RailDesigner {
     /// Purpose: add the existing railways of one OSM XML railway tile. A way already known is kept
     /// with the longer of its two shapes. Output: number of existing railways.
     /// Side effects: the next build draws them and joins new track ends to them.
-    pub fn add_rail_tile(&mut self, xml: &str) -> Result<u32, JsError> {
-        let data = street_routing::osm::parse_osm_xml(xml).map_err(js)?;
+    pub fn add_rail_tile(&mut self, xml: &str) -> Result<u32, JsValue> {
+        let data = street_routing::osm::parse_osm_xml(xml).map_err(|e| js_error(&e))?;
         let nodes: HashMap<i64, [f64; 2]> =
             data.nodes.iter().map(|n| (n.id, [n.lon, n.lat])).collect();
         for w in &data.ways {
@@ -323,16 +324,17 @@ impl RailDesigner {
     /// Inputs: JSON list of `rail_plan::ServiceLine`, the day type id.
     /// Output: JSON `rail_plan::ServicePublication` (timetable, report per line, notes); Err before a
     /// build, for a design with errors or for a line with fewer than two stops.
-    pub fn publish_lines(&self, lines: &str, service_id: &str) -> Result<String, JsError> {
+    pub fn publish_lines(&self, lines: &str, service_id: &str) -> Result<String, JsValue> {
         let d = self
             .design
             .as_ref()
-            .ok_or_else(|| JsError::new("Nothing is drawn yet."))?;
+            .ok_or_else(|| js_error(&engine_msg::msg!("rail.error.nothing_drawn")))?;
         let lines: Vec<rail_plan::ServiceLine> = serde_json::from_str(lines).map_err(js)?;
         let topo = self.topology_of(d)?;
-        let out =
-            rail_plan::publish_service(topo, &lines, service_id).map_err(|e| JsError::new(&e))?;
-        serde_json::to_string(&out).map_err(js)
+        let out = rail_plan::publish_service(topo, &lines, service_id).map_err(|e| js_error(&e))?;
+        serde_json::to_string(&out)
+            .map_err(js)
+            .map_err(JsValue::from)
     }
 
     /// Purpose: [`Self::publish_lines`] with the project's settings.
@@ -343,31 +345,33 @@ impl RailDesigner {
         lines: &str,
         service_id: &str,
         options: &str,
-    ) -> Result<String, JsError> {
+    ) -> Result<String, JsValue> {
         let d = self
             .design
             .as_ref()
-            .ok_or_else(|| JsError::new("Nothing is drawn yet."))?;
+            .ok_or_else(|| js_error(&engine_msg::msg!("rail.error.nothing_drawn")))?;
         let lines: Vec<rail_plan::ServiceLine> = serde_json::from_str(lines).map_err(js)?;
         let opts: rail_plan::PublishOptions = serde_json::from_str(options).map_err(js)?;
         let topo = self.topology_of(d)?;
         let out = rail_plan::publish_service_with(topo, &lines, service_id, &opts)
-            .map_err(|e| JsError::new(&e))?;
-        serde_json::to_string(&out).map_err(js)
+            .map_err(|e| js_error(&e))?;
+        serde_json::to_string(&out)
+            .map_err(js)
+            .map_err(JsValue::from)
     }
 
     /// Purpose: whether a train can run from station `from` to station `to` (document ids) on the
     /// last built design, for picking a service line's stations in order.
     /// Output: JSON `rail_plan::Reach`; Err before a build or for a design with errors.
-    pub fn reachable(&self, from: u32, to: u32) -> Result<String, JsError> {
+    pub fn reachable(&self, from: u32, to: u32) -> Result<String, JsValue> {
         let d = self
             .design
             .as_ref()
-            .ok_or_else(|| JsError::new("Nothing is drawn yet."))?;
+            .ok_or_else(|| js_error(&engine_msg::msg!("rail.error.nothing_drawn")))?;
         let topo = self.topology_of(d)?;
         let r = rail_plan::station_reachable(topo, &format!("st{from}"), &format!("st{to}"))
-            .map_err(|e| JsError::new(&e))?;
-        serde_json::to_string(&r).map_err(js)
+            .map_err(|e| js_error(&e))?;
+        serde_json::to_string(&r).map_err(js).map_err(JsValue::from)
     }
 
     /// Purpose: a signal plan generated from the last built design (JSON list of document

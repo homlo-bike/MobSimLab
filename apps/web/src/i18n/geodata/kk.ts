@@ -14,7 +14,7 @@ export const geodataKk = {
   "data.outside": "Сызба енді импортталған аумақтан шығып тұр. Жаңа аумақты импорттау үшін жаңартыңыз.",
   "data.method": "Деректерді қайдан алу",
   "data.method.overpass": "Overpass ({max} км² дейінгі аумақтар)",
-  "data.method.geofabrik": "Geofabrik өңірі",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": ".osm.pbf файлы",
   "data.region": "Өңір",
   "data.regionsLoading": "Өңірлер ізделуде…",

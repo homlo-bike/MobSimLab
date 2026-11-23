@@ -40,6 +40,7 @@ import type {
   WalkEngineLoader,
   WalkTileFetcher,
 } from "./types";
+import { engineErrorText } from "../../i18n/engine";
 
 interface Props {
   map: MapLibreMap | null;
@@ -334,7 +335,7 @@ export function WalkAnalysis({
           notes.push(tNow("walk.popDownloading", { countries: a.countries.join(", ") }));
         else notes.push(tNow("walk.popUnavailable", { reason: a.reason }));
       } catch (err) {
-        notes.push(tNow("walk.popUnavailable", { reason: err instanceof Error ? err.message : String(err) }));
+        notes.push(tNow("walk.popUnavailable", { reason: engineErrorText(err) }));
       }
       if (!demand) people = null;
       if (!alive()) return;
@@ -365,7 +366,7 @@ export function WalkAnalysis({
       setCoverage(done);
       keptCoverage.save({ coverage: done, stepFree }, runInputs);
     } catch (err) {
-      if (alive()) setCoverage({ kind: "error", text: err instanceof Error ? err.message : String(err) });
+      if (alive()) setCoverage({ kind: "error", text: engineErrorText(err) });
     }
   }
   const cancel = () => {

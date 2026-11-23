@@ -11,7 +11,9 @@ use pyo3::prelude::*;
 use rail_model::Model;
 use rail_plan::LineSpec;
 use rail_sim::capacity::{capacity_run, sweep_headways, sweep_point, CapacityParams};
-use rail_sim::capacity_input::{compile_network, example_lines_json, line_summaries, parse_lines};
+use rail_sim::capacity_input::{
+    compile_network, example_lines_json, line_summaries, note_texts, parse_lines,
+};
 use rail_sim::{RailSim, SimConfig, TdsSpec, TrainSpec};
 
 fn json_err(e: serde_json::Error) -> PyErr {
@@ -118,7 +120,7 @@ fn depot_report(depot_json: &str) -> PyResult<String> {
 struct PyCapacityRunner {
     model: Model,
     lines: Vec<LineSpec>,
-    notes: Vec<String>,
+    notes: Vec<engine_msg::Msg>,
 }
 
 fn params(params_json: &str) -> PyResult<CapacityParams> {
@@ -131,8 +133,10 @@ impl PyCapacityRunner {
     /// the lines (JSON text). Raises ValueError naming the problem.
     #[new]
     fn new(network: &str, lines_json: &str) -> PyResult<Self> {
-        let (model, notes) = compile_network(network).map_err(PyValueError::new_err)?;
-        let lines = parse_lines(lines_json, &model).map_err(PyValueError::new_err)?;
+        let (model, notes) =
+            compile_network(network).map_err(|e| PyValueError::new_err(e.english()))?;
+        let lines =
+            parse_lines(lines_json, &model).map_err(|e| PyValueError::new_err(e.english()))?;
         Ok(Self {
             model,
             lines,
@@ -145,16 +149,16 @@ impl PyCapacityRunner {
         serde_json::to_string(&line_summaries(&self.lines)).map_err(json_err)
     }
 
-    /// Purpose: notes from importing the topology, as JSON (a list of strings).
+    /// Purpose: notes from importing the topology, as JSON (a list of `{text, msg}`).
     fn notes(&self) -> PyResult<String> {
-        serde_json::to_string(&self.notes).map_err(json_err)
+        serde_json::to_string(&note_texts(&self.notes)).map_err(json_err)
     }
 
     /// Purpose: the capacity run of the period (JSON `CapacityParams`; missing fields take their
     /// defaults). Output: JSON `CapacityRun`. Raises ValueError on invalid settings.
     fn run(&self, params_json: &str) -> PyResult<String> {
         let r = capacity_run(&self.model, &self.lines, &params(params_json)?)
-            .map_err(PyValueError::new_err)?;
+            .map_err(|e| PyValueError::new_err(e.english()))?;
         serde_json::to_string(&r).map_err(json_err)
     }
 
@@ -176,7 +180,7 @@ impl PyCapacityRunner {
             line,
             headway_s,
         )
-        .map_err(PyValueError::new_err)?;
+        .map_err(|e| PyValueError::new_err(e.english()))?;
         serde_json::to_string(&pt).map_err(json_err)
     }
 

@@ -1,3 +1,4 @@
+import { type EngineMsg, errorWithMsg } from "../../i18n/engine";
 import type { CapacityEngine, EngineLoader } from "./types";
 
 /**
@@ -10,12 +11,14 @@ export const loadWorkerEngine: EngineLoader = async (src) => {
   const worker = new Worker(new URL("./capacity.worker.ts", import.meta.url), { type: "module" });
   let next = 0;
   const waiting = new Map<number, { ok: (v: unknown) => void; fail: (e: Error) => void }>();
-  worker.onmessage = (e: MessageEvent<{ id: number; ok: boolean; value?: unknown; error?: string }>) => {
+  worker.onmessage = (
+    e: MessageEvent<{ id: number; ok: boolean; value?: unknown; error?: string; msg?: EngineMsg }>,
+  ) => {
     const w = waiting.get(e.data.id);
     if (!w) return;
     waiting.delete(e.data.id);
     if (e.data.ok) w.ok(e.data.value);
-    else w.fail(new Error(e.data.error ?? "the capacity run failed"));
+    else w.fail(errorWithMsg(e.data.error ?? "the capacity run failed", e.data.msg));
   };
   worker.onerror = (e) => {
     for (const w of waiting.values()) w.fail(new Error(e.message || "the capacity run stopped"));

@@ -12,6 +12,7 @@ import { LAYERS, schematicNetwork } from "./lines";
 import { type AreaDraft, NetworkMap } from "./NetworkMap";
 import { StripMap } from "./StripMap";
 import { loadWater, waterBox, type WaterLoader, type WaterShapes } from "./water";
+import { engineErrorText } from "../../i18n/engine";
 
 export { EMPTY_SCHEMATIC, type SchematicArea, type SchematicDoc };
 
@@ -223,7 +224,7 @@ export function Schematic({
       else if (kind === "png") download(await pngBlob(svg, 2), fileName(title, "png"));
       else printSvg(svg, title);
     } catch (e) {
-      setError(t("schematic.exportFailed", { error: e instanceof Error ? e.message : String(e) }));
+      setError(t("schematic.exportFailed", { error: engineErrorText(e) }));
     }
   };
 

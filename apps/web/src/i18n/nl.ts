@@ -471,6 +471,10 @@ export const nl: Messages = {
   "map.searching": "Zoeken…",
   "map.searchFailed": "Plaats zoeken mislukt: {error}",
   "map.noPlaces": "Geen plaatsen gevonden.",
+  "map.noWebgl":
+    "De kaart kan niet worden getoond: deze computer of browser heeft geen 3D-graphics (WebGL2).",
+  "map.noWebglHelp":
+    "Zet hardwareversnelling aan of werk het grafische stuurprogramma bij en open de pagina opnieuw. De rest van de pagina werkt nog steeds.",
   "map.places": "Gevonden plaatsen",
   "map.searchCredit": "Plaatsnamen © OpenStreetMap-bijdragers, gevonden met Photon",
   "map.layers": "Kaartlagen",

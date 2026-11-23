@@ -10,10 +10,13 @@
 //! the same the simulation worker runs: timetable planner, UIC 406 compression, interlocking and
 //! network kernel.
 
+use engine_msg::{js_error, Msg};
 use rail_model::Model;
 use rail_plan::LineSpec;
 use rail_sim::capacity::{capacity_run, sweep_headways, sweep_point, CapacityParams};
-use rail_sim::capacity_input::{compile_network, example_lines_json, line_summaries, parse_lines};
+use rail_sim::capacity_input::{
+    compile_network, example_lines_json, line_summaries, note_texts, parse_lines,
+};
 use serde::Serialize;
 use wasm_bindgen::prelude::*;
 
@@ -30,7 +33,7 @@ fn json<T: Serialize>(v: &T) -> String {
 pub struct CapacityRunner {
     model: Model,
     lines: Vec<LineSpec>,
-    notes: Vec<String>,
+    notes: Vec<Msg>,
 }
 
 #[wasm_bindgen]
@@ -38,9 +41,9 @@ impl CapacityRunner {
     /// Purpose: compile the network (`"example:metro"` or a topology export, JSON text) and read
     /// the lines (JSON text).
     #[wasm_bindgen(constructor)]
-    pub fn new(network: &str, lines_json: &str) -> Result<CapacityRunner, JsError> {
-        let (model, notes) = compile_network(network).map_err(js)?;
-        let lines = parse_lines(lines_json, &model).map_err(js)?;
+    pub fn new(network: &str, lines_json: &str) -> Result<CapacityRunner, JsValue> {
+        let (model, notes) = compile_network(network).map_err(|e| js_error(&e))?;
+        let lines = parse_lines(lines_json, &model).map_err(|e| js_error(&e))?;
         Ok(CapacityRunner {
             model,
             lines,
@@ -53,16 +56,16 @@ impl CapacityRunner {
         json(&line_summaries(&self.lines))
     }
 
-    /// Purpose: notes from importing the topology, as JSON (a list of strings).
+    /// Purpose: notes from importing the topology, as JSON (a list of `{text, msg}`).
     pub fn notes(&self) -> String {
-        json(&self.notes)
+        json(&note_texts(&self.notes))
     }
 
     /// Purpose: the capacity run of the period (JSON `CapacityParams`; missing fields take their
     /// defaults). Output: JSON `CapacityRun`.
-    pub fn run(&self, params_json: &str) -> Result<String, JsError> {
+    pub fn run(&self, params_json: &str) -> Result<String, JsValue> {
         let p: CapacityParams = serde_json::from_str(params_json).map_err(js)?;
-        let r = capacity_run(&self.model, &self.lines, &p).map_err(js)?;
+        let r = capacity_run(&self.model, &self.lines, &p).map_err(|e| js_error(&e))?;
         Ok(json(&r))
     }
 
@@ -84,9 +87,10 @@ impl CapacityRunner {
         params_json: &str,
         line: usize,
         headway_s: f64,
-    ) -> Result<String, JsError> {
+    ) -> Result<String, JsValue> {
         let p: CapacityParams = serde_json::from_str(params_json).map_err(js)?;
-        let pt = sweep_point(&self.model, &self.lines, &p, line, headway_s).map_err(js)?;
+        let pt =
+            sweep_point(&self.model, &self.lines, &p, line, headway_s).map_err(|e| js_error(&e))?;
         Ok(json(&pt))
     }
 

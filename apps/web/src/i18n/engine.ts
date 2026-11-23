@@ -89,3 +89,35 @@ export function useEngineText(): (finding: EngineText) => string {
 export function engineTextNow(finding: EngineText): string {
   return engineText(activeLanguage(), finding);
 }
+
+/** A note of an engine: a finding with its message, or English text alone (results saved before messages). */
+export type EngineNote = string | EngineText;
+
+/** Purpose: a note as a finding, for {@link engineText}. */
+export function noteFinding(note: EngineNote): EngineText {
+  return typeof note === "string" ? { text: note } : note;
+}
+
+/**
+ * Purpose: an error an engine threw, as a finding. The WebAssembly engines throw an Error whose message is the
+ * English text and whose `msg` is the message (engine_msg::js_error); other errors have no message.
+ */
+export function engineError(err: unknown): EngineText {
+  if (err instanceof Error) {
+    const msg = (err as Error & { msg?: EngineMsg | null }).msg;
+    return msg ? { text: err.message, msg } : { text: err.message };
+  }
+  return { text: String(err) };
+}
+
+/** Purpose: an error, an engine's or any other, as text in the language on screen. */
+export function engineErrorText(err: unknown): string {
+  return engineTextNow(engineError(err));
+}
+
+/** Purpose: an Error that carries an engine message, for errors passed on from a web worker. */
+export function errorWithMsg(text: string, msg?: EngineMsg | null): Error {
+  const e = new Error(text) as Error & { msg?: EngineMsg };
+  if (msg) e.msg = msg;
+  return e;
+}
