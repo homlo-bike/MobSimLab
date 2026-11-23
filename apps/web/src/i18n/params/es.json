@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Tiempo para repostar un vehículo en la cochera durante el día",
     "operations.energy_reserve_share": "Reserva de energía en la batería o el depósito, parte de su capacidad (planificación energética)",
     "timetable.max_terminal_wait_min": "Espera más larga de un vehículo en una terminal hasta su siguiente viaje antes de volver a la cochera",
+    "timetable.max_overtake_wait_min": "Espera más larga de un tren en una estación para que lo adelante un tren más rápido",
     "timetable.min_buffer_s": "Tiempo de margen mínimo entre los tiempos de ocupación de dos trenes en un tramo",
     "timetable.target_load_factor": "Carga prevista en el punto de máxima carga, como parte de la capacidad del tren",
     "timetable.policy_headway_peak_min": "Intervalo más largo permitido en hora punta, sea cual sea la demanda",

@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Oge itinye mmanụ n'ụgbọ n'ụlọ ụgbọ n'ime ụbọchị",
     "operations.energy_reserve_share": "Nchekwa ike na batrị ma ọ bụ tank, òkè nke ike (atụmatụ ike)",
     "timetable.max_terminal_wait_min": "Nchere kacha ogologo nke ụgbọ n'ebe nkwụsị ikpeazụ maka njem ọzọ tupu ọ laghachi n'ụlọ ụgbọ",
+    "timetable.max_overtake_wait_min": "Oge kachasị ogologo ụgbọ oloko na-echere n'ọdụ ka ụgbọ ka ọsọ gafere",
     "timetable.min_buffer_s": "Oghere kacha nta n'etiti oge ụgbọ oloko abụọ na-eji otu akụkụ",
     "timetable.target_load_factor": "Ibu a hazịrị n'ebe kacha jupụta, òkè nke ike ụgbọ oloko",
     "timetable.policy_headway_peak_min": "Oghere oge kacha ogologo a nabatara n'oge ọgbaghara, n'agbanyeghị achọrọ",

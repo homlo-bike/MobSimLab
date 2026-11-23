@@ -132,4 +132,10 @@ fn regional_trains_wait_in_a_station_for_the_ice_to_pass() {
     };
     assert!(waits(&ranked) > 0);
     assert_eq!(waits(&same), 0);
+    // With no wait allowed (the project's "longest wait for a faster train"), none waits.
+    let no_wait = PlanParams {
+        max_overtake_wait_s: 0.0,
+        ..PlanParams::default()
+    };
+    assert_eq!(waits(&plan(&m, &specs, &no_wait).unwrap()), 0);
 }

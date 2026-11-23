@@ -19,7 +19,7 @@ import type { Estimate as CostEstimate } from "../features/costs/model";
 import type { CostsDoc } from "../features/costs/CostTables";
 import { journeySettingsFrom } from "../features/journey-planner/projectSettings";
 import { feedHolidays, projectFeed } from "../features/timetables/feed";
-import { paramValue } from "../features/costs/params";
+import { publishOptionsFrom } from "../features/timetables/railPublish";
 import type { AppraisalDoc } from "../features/appraisal/model";
 import type { FareInput, FaresDoc } from "../features/fares/model";
 import type { ScenariosDoc } from "../features/tables/scenarioModel";
@@ -1414,13 +1414,12 @@ export function Workspace({
                 allDayFeed={async () => {
                   const cal = calendarFrom(preferences);
                   const today = new Date();
-                  const waitMin = paramValue("timetable.max_terminal_wait_min", "*", preferences?.values)[1];
                   const timetable = await projectFeed({
                     railway,
                     streetLines: savedStreet,
                     pluginLines: pluginLineList,
                     cal,
-                    options: { max_idle_s: waitMin * 60 },
+                    options: publishOptionsFrom(preferences?.values),
                     values: preferences?.values ?? null,
                   });
                   return {

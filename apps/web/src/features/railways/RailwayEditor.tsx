@@ -53,7 +53,7 @@ import {
 } from "./RailPanel";
 import { RailToolPalette } from "./RailToolPalette";
 import { addLine, linesTrainLength, removeLine } from "./serviceLines";
-import { dayEngineLines, type DayPublications } from "../timetables/railPublish";
+import { dayEngineLines, type DayPublications, publishOptionsFrom } from "../timetables/railPublish";
 import { DAY_TYPES } from "../../workspace/calendar";
 import { useDayTypeLabel } from "../../workspace/dayTypeLabel";
 import type { ServiceCalendar } from "../../workspace/calendar";
@@ -729,10 +729,19 @@ export function RailwayEditor({
           steps,
         });
         await paint();
-        byDay[day] = e.publishLines(dayEngineLines(doc, day, calendar, prefValues), day);
+        byDay[day] = e.publishLines(
+          dayEngineLines(doc, day, calendar, prefValues),
+          day,
+          publishOptionsFrom(prefValues),
+        );
       }
       const result =
-        byDay.weekday ?? e.publishLines(dayEngineLines(doc, "weekday", calendar, prefValues), "weekday");
+        byDay.weekday ??
+        e.publishLines(
+          dayEngineLines(doc, "weekday", calendar, prefValues),
+          "weekday",
+          publishOptionsFrom(prefValues),
+        );
       byDay.weekday = result;
       next = { result, byDay, error: null, key: publishKey(doc), topology: e.topology() };
       onPublish?.(result.timetable);

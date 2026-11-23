@@ -321,6 +321,7 @@ fn a_shorter_terminal_wait_sends_trains_to_stabling_sooner() {
     let long = publish_service(&topology(), &[shuttle()], "weekday").unwrap();
     let opts = rail_plan::PublishOptions {
         max_idle_s: Some(0.0),
+        ..Default::default()
     };
     let short =
         rail_plan::publish_service_with(&topology(), &[shuttle()], "weekday", &opts).unwrap();

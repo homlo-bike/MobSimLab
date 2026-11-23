@@ -1,11 +1,10 @@
 import { useEffect, useId, useMemo, useState } from "react";
 import { useI18n } from "../../i18n/i18n";
 import { type DrawnNetwork, type DrawnProblem, buildDrawnNetwork, drawnProblem } from "../capacity/drawn";
-import { paramValue } from "../costs/params";
 import type { SavedStreetLine } from "../street-lines/saved";
 import { weekdayServiceHours } from "../costs/model";
 import { dayShares } from "../timetables/feed";
-import { useRailPublications } from "../timetables/railPublish";
+import { publishOptionsFrom, useRailPublications } from "../timetables/railPublish";
 import { loadWasmEnergy } from "../energy/engine";
 import { energyInputs } from "../energy/EnergySection";
 import { energyInTables } from "../energy/params";
@@ -15,7 +14,7 @@ import { activePlugins } from "../../plugins/registry";
 import { verdictText } from "../capacity/CapacityRun";
 import { isOpen, type RunStatus, type ServerNetwork } from "../capacity/server";
 import type { Verdict } from "../capacity/types";
-import type { Network, RailEngineLoader } from "../railways/types";
+import type { Network, PublishOptions, RailEngineLoader } from "../railways/types";
 import { libraryValue as benefitLibrary } from "../benefits/params";
 import { useDayTypeLabel } from "../../workspace/dayTypeLabel";
 import { calendarFrom, DAY_TYPES, simulationYearsFrom } from "../../workspace/calendar";
@@ -150,8 +149,8 @@ export function CalendarRun({
 
   // How much each line runs on each day type (its own Saturday, Sunday and holiday times), for the day figures.
   const calKey = JSON.stringify(cal);
-  const waitMin = paramValue("timetable.max_terminal_wait_min", "*", prefs)[1];
-  const publishOptions = useMemo(() => ({ max_idle_s: waitMin * 60 }), [waitMin]);
+  const optionsKey = JSON.stringify(publishOptionsFrom(prefs));
+  const publishOptions = useMemo(() => JSON.parse(optionsKey) as PublishOptions, [optionsKey]);
   const { publications, view } = useRailPublications(railway, cal, publishOptions, prefs, loadRail);
   const shares = useMemo(
     () => dayShares(railway, streetLines, cal, publications),

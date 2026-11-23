@@ -214,6 +214,10 @@ pub struct PublishOptions {
     /// the planner's default when absent.
     #[serde(default)]
     pub max_idle_s: Option<f64>,
+    /// Longest a train waits at a station for a train of a higher-ranked line to pass, s; the
+    /// planner's default when absent.
+    #[serde(default)]
+    pub max_overtake_wait_s: Option<f64>,
 }
 
 /// How many trains of one line pass one section of the topology export in each clock hour.
@@ -729,6 +733,12 @@ pub fn publish_service_with(
     let mut params = PlanParams::default();
     if let Some(v) = opts.max_idle_s.filter(|v| v.is_finite() && *v >= 0.0) {
         params.max_idle_s = v;
+    }
+    if let Some(v) = opts
+        .max_overtake_wait_s
+        .filter(|v| v.is_finite() && *v >= 0.0)
+    {
+        params.max_overtake_wait_s = v;
     }
     let p = plan(&m, &specs, &params)?;
     let routes: Vec<RouteInfo> = lines

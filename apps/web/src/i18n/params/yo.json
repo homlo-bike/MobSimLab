@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Àkókò fífi epo sí ọkọ̀ ní ilé ọkọ̀ láàrin ọjọ́",
     "operations.energy_reserve_share": "Ìpamọ́ agbára nínú bátìrì tàbí táǹkì, ìpín agbára (ètò agbára)",
     "timetable.max_terminal_wait_min": "Ìdúró tó gùn jù ti ọkọ̀ ní ibùdókọ̀ ìparí fún ìrìn tó kàn kí ó tó padà sí ilé ọkọ̀",
+    "timetable.max_overtake_wait_min": "Àkókò tó gùn jù tí ọkọ̀ ojú irin ń dúró ní ibùdó kí ọkọ̀ tó yára jù lè kọjá",
     "timetable.min_buffer_s": "Àlàfo tó kéré jù láàrin àwọn àkókò tí ọkọ̀ ojú irin méjì gba apá kan náà",
     "timetable.target_load_factor": "Ẹrù tí a gbèrò ní ibi tó kún jù, ìpín agbára ọkọ̀ ojú irin",
     "timetable.policy_headway_peak_min": "Àlàfo àkókò tó gùn jù tí a gbà láàyè ní àkókò ìkúnlẹ̀ ọkọ̀, láìka ìbéèrè sí",

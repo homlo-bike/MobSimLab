@@ -388,6 +388,22 @@
       check: unverified
       rationale: "Vehicle blocks: a vehicle that would stand longer than this between trips (for example between the peaks) runs back to the depot and a vehicle pulls out again later, so it does not block a terminal stand or platform. The rail timetable planner used 20 min; operators choose by depot distance and terminal space."
 
+- key: timetable.max_overtake_wait_min
+  label: Longest a train waits at a station for a faster train to pass
+  group: Operations
+  unit: min
+  used_by: [timetable construction]
+  values:
+    - context:
+        mode: "*"
+      low: 5
+      central: 10
+      high: 30
+      basis: educated-guess
+      sources: [mobsimlab-derivation]
+      check: unverified
+      rationale: "Where lines of different modes share track, a slower train may wait in a loop or another platform track for a faster one to pass. Long main lines with stations far apart need longer waits (15 to 20 min on a 345 km test line); on a dense line, long waits block loops other trains need."
+
 - key: timetable.min_buffer_s
   label: Minimum buffer time between the blocking times of two trains on one section
   group: Operations

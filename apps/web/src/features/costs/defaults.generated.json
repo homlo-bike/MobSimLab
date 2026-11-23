@@ -649,6 +649,17 @@
      45
     ]
    }
+  },
+  "timetable.max_overtake_wait_min": {
+   "label": "Longest a train waits at a station for a faster train to pass",
+   "unit": "min",
+   "values": {
+    "*": [
+     5,
+     10,
+     30
+    ]
+   }
   }
  }
 }

@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Zeit zum Tanken oder Laden eines Fahrzeugs im Betriebshof während des Tages",
     "operations.energy_reserve_share": "Energiereserve in Batterie oder Tank, Anteil der Kapazität (Energieplanung)",
     "timetable.max_terminal_wait_min": "Längste Wartezeit an einer Endhaltestelle auf die nächste Fahrt, bevor das Fahrzeug stattdessen in den Betriebshof fährt",
+    "timetable.max_overtake_wait_min": "Längste Wartezeit eines Zuges in einem Bahnhof, bis ein schnellerer Zug überholt hat",
     "timetable.min_buffer_s": "Mindestpufferzeit zwischen den Sperrzeiten zweier Züge auf einem Abschnitt",
     "timetable.target_load_factor": "Geplante Auslastung am Punkt der höchsten Belastung, als Anteil der Zugkapazität",
     "timetable.policy_headway_peak_min": "Längster zulässiger Takt in der Hauptverkehrszeit, unabhängig von der Nachfrage",

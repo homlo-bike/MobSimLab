@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Temps pour ravitailler un véhicule au dépôt en journée",
     "operations.energy_reserve_share": "Réserve d'énergie gardée dans la batterie ou le réservoir, part de sa capacité (planification énergétique)",
     "timetable.max_terminal_wait_min": "Attente la plus longue d'un véhicule à un terminus avant sa prochaine course, au-delà il rentre au dépôt",
+    "timetable.max_overtake_wait_min": "Attente la plus longue d'un train en gare pour qu'un train plus rapide le dépasse",
     "timetable.min_buffer_s": "Temps tampon minimal entre les temps d'occupation de deux trains sur un canton",
     "timetable.target_load_factor": "Charge prévue au point de charge maximale, en part de la capacité du train",
     "timetable.policy_headway_peak_min": "Intervalle le plus long admis en pointe, quelle que soit la demande",

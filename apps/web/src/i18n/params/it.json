@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Tempo per rifornire un veicolo al deposito durante il giorno",
     "operations.energy_reserve_share": "Riserva di energia nella batteria o nel serbatoio, quota della capacità (pianificazione energetica)",
     "timetable.max_terminal_wait_min": "Attesa più lunga di un veicolo al capolinea per la corsa successiva prima di rientrare al deposito",
+    "timetable.max_overtake_wait_min": "Attesa più lunga di un treno in stazione per farsi sorpassare da un treno più veloce",
     "timetable.min_buffer_s": "Tempo cuscinetto minimo tra i tempi di occupazione di due treni su una sezione",
     "timetable.target_load_factor": "Carico previsto nel punto di massimo carico, come quota della capacità del treno",
     "timetable.policy_headway_peak_min": "Intervallo più lungo ammesso nell'ora di punta, qualunque sia la domanda",

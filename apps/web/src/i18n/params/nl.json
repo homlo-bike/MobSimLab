@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Tijd om een voertuig overdag in het depot te tanken",
     "operations.energy_reserve_share": "Energiereserve in accu of tank, aandeel van de capaciteit (energieplanning)",
     "timetable.max_terminal_wait_min": "Langste wachttijd van een voertuig bij het eindpunt op de volgende rit voordat het naar het depot gaat",
+    "timetable.max_overtake_wait_min": "Langste wachttijd van een trein op een station tot een snellere trein is gepasseerd",
     "timetable.min_buffer_s": "Minimale buffertijd tussen de bezettingstijden van twee treinen op een baanvak",
     "timetable.target_load_factor": "Geplande bezetting op het drukste punt, als aandeel van de treincapaciteit",
     "timetable.policy_headway_peak_min": "Langste toegestane interval in de spits, ongeacht de vraag",

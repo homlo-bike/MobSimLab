@@ -1453,6 +1453,20 @@
    }
   },
   {
+   "id": "timetable.max_overtake_wait_min",
+   "label": "Longest a train waits at a station for a faster train to pass",
+   "group": "Operations",
+   "unit": "min",
+   "kind": "number",
+   "values": {
+    "*": [
+     5,
+     10,
+     30
+    ]
+   }
+  },
+  {
    "id": "timetable.min_buffer_s",
    "label": "Minimum buffer time between the blocking times of two trains on one section",
    "group": "Operations",
