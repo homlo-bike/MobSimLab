@@ -643,6 +643,16 @@ export const editorsTr = {
   "schematic.showStatuses": "Durum simgeleri",
   "schematic.showFeatures": "İstasyon donanımı simgeleri",
   "schematic.showWater": "Deniz, göller ve nehirler",
+  "schematic.straightRivers": "Nehirleri 45° adımlarla çiz",
+  "schematic.nameSize": "İstasyon adı boyutu",
+  "schematic.longRuns": "Durağı olmayan uzun bölümler",
+  "schematic.longRuns.off": "Arazideki gibi",
+  "schematic.longRuns.max": "En çok olağan aralığın {n} katı",
+  "schematic.pngSmallNames":
+    "Bu görüntü kenar başına 8.192 px ile sınırlı olduğundan istasyon adları yalnızca {px} px. Daha net bir kopya için SVG veya Yazdır'ı kullanın.",
+  "schematic.printPaper": "Sayfa boyutu {paper}: istasyon adları {pt} pt basılır.",
+  "schematic.printSmallNames":
+    "Sayfa boyutu {paper}: istasyon adları yalnızca {pt} pt basılır. İstasyon adlarını büyütün veya bazı katmanları gizleyin.",
   "schematic.showAreas": "Tarife bölgeleri ve simge yerler",
   "schematic.water": "Su",
   "schematic.areas": "Tarife bölgeleri ve simge yerler",
@@ -932,6 +942,10 @@ export const editorsTr = {
   "jp.set.maxRides": "En fazla biniş sayısı",
   "jp.walkNote":
     "Yaya ağı eklenene kadar yürüme mesafeleri kuş uçuşu × 1,3'tür. Varsayılanlar varsayımlar kitaplığından.",
+  "jp.slopeNote":
+    "Yürüme süresi iki ucu arasındaki eğime göre hesaplanır (arazi yükseklikleriyle Tobler yürüyüş fonksiyonu): yokuş yukarı ve dik yokuş aşağı daha uzun sürer.",
+  "jp.slopeNoHeights":
+    "Arazi yükseklikleri yüklenemedi, bu yüzden yürüyüş düz zemindeymiş gibi hesaplanıyor.",
   "kit.minSec": "{m} dk {s} sn",
   "kit.checks": "Denetimler",
   "kit.issue": "{level}: ",
@@ -964,6 +978,7 @@ export const editorsTr = {
   "cable.hint.select": "Düzenlemek için bir istasyona tıklayın. Taşımak için bir istasyonu sürükleyin.",
   "cable.modeSystem": "Tür ve sistem",
   "cable.lineSpeed": "Halat hızı (m/sn)",
+  "cable.longestSpan": "En uzun açıklık (m)",
   "cable.cabinInterval": "Kabin aralığı (sn)",
   "cable.departureEvery": "Kalkış her",
   "cable.cabinEvery": "Kabin her",
@@ -1356,6 +1371,9 @@ export const editorsTr = {
   "capacity.dieOut": "Sönüyor",
   "capacity.pileUp": "Birikiyor",
   "capacity.delaysHint": "sefer başına {passed} aktarılıyor, sonda {left} kalıyor",
+  "capacity.ranOf":
+    "Yapılan seferler: planlanan {planned} seferden {ran} ({share}), {left} sefer dışarıda kaldı",
+  "capacity.noneRan": "Planlanan {planned} seferin hiçbiri yapılmadı",
   "capacity.worksUpTo": "Her yönde saatte {n} trene kadar çalışıyor",
   "capacity.tryingOthers": "Diğer sıklıklar deneniyor…",
   "capacity.noneWorks": "Denenen hiçbir sıklık çalışmıyor",

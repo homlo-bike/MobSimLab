@@ -128,6 +128,12 @@ def test_a_line_runs_out_of_its_depot_and_back_in_traffic(tmp_path: Path) -> Non
     doc = json.loads(gzip.decompress(replay))
     assert doc["version"] == 1 and doc["vehicles"] and doc["frames"] > 1
     assert all(v["slot_out"] is not None for v in doc["vehicles"])
+    # Each vehicle's stops: planned departure, arrival, departure, kind; it served them all and came back.
+    for v in doc["vehicles"]:
+        st = v["st"]
+        assert st and len(st) % 4 == 0
+        assert st[3] == 1 and st[-1] == 2
+        assert all(st[i + 1] >= 0 and st[i + 2] >= st[i + 1] for i in range(0, len(st) - 4, 4))
 
 
 def test_the_same_seed_gives_the_same_run(tmp_path: Path) -> None:
@@ -137,3 +143,37 @@ def test_the_same_seed_gives_the_same_run(tmp_path: Path) -> None:
     assert strip(a) == strip(b)
     assert a["lines"] == b["lines"]
     assert ra == rb
+
+
+def test_the_replay_lists_each_stop_with_its_plan_and_when_it_was_served() -> None:
+    from mobsim_worker.jobs.road.service import PlannedStop, TransitVehicle  # noqa: PLC0415
+    from mobsim_worker.jobs.road.sim import replay_stops  # noqa: PLC0415
+
+    def stop(trip: int, point: int, kind: str, dep: float, first: bool) -> PlannedStop:
+        return PlannedStop(trip, point, "S", kind, dep, first, "e_0", 10.0)
+
+    v = TransitVehicle(
+        id="v0",
+        line=3,
+        number=0,
+        depart=25000.0,
+        trips=[25200.0],
+        stops=[
+            stop(0, 0, "end_stop", 25200.0, True),
+            stop(0, 2, "stop", 25500.0, False),
+            stop(0, 0, "last", 26000.0, False),
+        ],
+        route=[],
+        depart_lane="",
+        depart_pos=0.0,
+        arrival_pos=None,
+        slot_out=None,
+        slot_in=None,
+        depot=None,
+    )
+    out = [
+        {"id": "v0", "tripId": "3:0:0", "started": "25100.00", "ended": "25200.00"},
+        {"id": "v0", "tripId": "3:0:2", "started": "25580.40", "ended": "25600.60"},
+        {"id": "v1", "tripId": "3:0:end", "started": "1", "ended": "2"},
+    ]
+    assert replay_stops(v, out) == [25200, 25100, 25200, 1, 25500, 25580, 25601, 0, 26000, -1, -1, 2]

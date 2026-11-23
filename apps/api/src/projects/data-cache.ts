@@ -1,6 +1,7 @@
 import { Inject, Injectable, Optional } from "@nestjs/common";
 import type { MslRequest } from "../auth/session.service";
 import { DATABASE, type Database } from "../db/database";
+import { type ProjectSharedKind, SharedDataStore } from "../geodata/shared-data";
 
 /** What a project's data cache holds: OpenStreetMap tiles, terrain heights, location facts. */
 export type CacheKind = "osm" | "height" | "facts";
@@ -11,16 +12,28 @@ export type DataSource = "import" | "cache" | "live";
 /** Most keys read or written in one statement. */
 const BATCH = 500;
 
+/** Whether a kind is held once for the instance (geodata/shared-data.ts) rather than per project. */
+const isShared = (kind: CacheKind): kind is ProjectSharedKind => kind === "osm" || kind === "height";
+
 /**
  * Data a project's tools fetched live because the project's imports did not hold it (#140 step 4): a street
  * tile outside the OpenStreetMap import, a terrain height outside the elevation import, or a location fact
- * (country, holidays, climate; step 3). Stored per project (`project.data_cache`, removed with the project)
- * and served to every tool next time, so nothing is downloaded twice. A failing cache never fails a tool:
- * reads then miss and writes are skipped.
+ * (country, holidays, climate; step 3), served to every tool next time, so nothing is downloaded twice. Tiles and
+ * heights are held once for the instance and the project points at them (large-area projects, step 4;
+ * geodata/shared-data.ts), so another project in the same area takes them too; facts are kept per project
+ * (`project.data_cache`, removed with the project). A failing cache never fails a tool: reads then miss and
+ * writes are skipped.
  */
 @Injectable()
 export class ProjectDataCache {
-  constructor(@Optional() @Inject(DATABASE) private readonly db?: Database) {}
+  private readonly shared: SharedDataStore;
+
+  constructor(
+    @Optional() @Inject(DATABASE) private readonly db?: Database,
+    @Optional() shared?: SharedDataStore,
+  ) {
+    this.shared = shared ?? new SharedDataStore(db);
+  }
 
   /** Purpose: one cached answer, or null. */
   async get(projectId: string, kind: CacheKind, key: string): Promise<string | null> {
@@ -29,6 +42,14 @@ export class ProjectDataCache {
 
   /** Purpose: the cached answers among `keys`, by key. */
   async getMany(projectId: string, kind: CacheKind, keys: readonly string[]): Promise<Map<string, string>> {
+    if (isShared(kind)) {
+      const store = this.shared;
+      // The copies the project used, then the copies the instance holds for the rest.
+      const out = await store.used(projectId, kind, keys);
+      const rest = keys.filter((k) => !out.has(k));
+      for (const [k, v] of await store.adopt(projectId, kind, rest)) out.set(k, v);
+      return out;
+    }
     const out = new Map<string, string>();
     if (!this.db || keys.length === 0) return out;
     try {
@@ -55,6 +76,7 @@ export class ProjectDataCache {
 
   /** Purpose: keep several answers for the project. */
   async putMany(projectId: string, kind: CacheKind, entries: readonly [string, string][]): Promise<void> {
+    if (isShared(kind)) return this.shared.keep(projectId, kind, entries);
     if (!this.db || entries.length === 0) return;
     try {
       for (let i = 0; i < entries.length; i += BATCH) {

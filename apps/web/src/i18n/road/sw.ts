@@ -9,6 +9,10 @@ export const roadSw = {
     "Bado hakuna njia ya barabarani inayoweza kuendeshwa. Chora moja katika Unda → Njia ya barabarani, yenye angalau vituo viwili.",
   "road.lines": "Njia za barabarani: {n}",
   "road.depots": "Bohari: {n}",
+  "road.pick": "Njia za kuendesha",
+  "road.pickAll": "Zote",
+  "road.pickNone": "Hakuna",
+  "road.pickSome": "Weka alama angalau njia moja ya barabarani ili kuendesha.",
   "road.skipped.notRouted": "{name} imeachwa: bado haina njia iliyopangwa.",
   "road.skipped.noService": "{name} imeachwa: haina safari za kuondoka katika kipindi hiki.",
   "road.noDepot": "{name} haina bohari iliyopangwa: magari yake yanaanza na kumalizia barabarani.",
@@ -72,4 +76,25 @@ export const roadSw = {
     "Msongamano wa magari ya nyuma katika uigaji wa barabarani (Kiigaji → Uigaji wa barabarani).",
   "prefs.offPeakTraffic":
     "Msongamano nje ya vilele vya asubuhi na jioni, kama sehemu ya kilele cha kila barabara",
+  "prefs.groupVisuals": "Mwonekano",
+  "visuals.vehiclesTitle": "Magari katika uigaji",
+  "visuals.vehiclesIntro":
+    "Rangi za magari katika marudio ya uigaji wa barabara (Kiigaji → Uigaji wa barabara). Gari liko kazini kuanzia kituo chake cha kwanza hadi linapoondoka cha mwisho; kuwahi huhesabiwa kuwa kwa wakati.",
+  "visuals.onTimeUpTo": "Kwa wakati hadi (dakika za kuchelewa)",
+  "visuals.lateUpTo": "Kuchelewa hadi (dakika za kuchelewa); zaidi ni kuchelewa sana",
+  "visuals.noLate":
+    "Kikomo cha «Kuchelewa» si zaidi ya kile cha «Kwa wakati», kwa hivyo hakuna gari linaloonekana limechelewa.",
+  "visuals.colors": "Rangi",
+  "visuals.onTime": "Kazini, kwa wakati",
+  "visuals.late": "Kazini, limechelewa",
+  "visuals.veryLate": "Kazini, limechelewa sana",
+  "visuals.outOfService": "Halipo kazini, barabarani",
+  "visuals.parked": "Limeegeshwa depo",
+  "visuals.defaultMin": "Chaguo-msingi: {value} dk",
+  "visuals.reset": "Tumia chaguo-msingi",
+  "visuals.legend.onTime": "Kwa wakati (hadi dk {min} za kuchelewa)",
+  "visuals.legend.late": "Limechelewa (dk {from}–{to})",
+  "visuals.legend.veryLate": "Limechelewa sana (zaidi ya dk {min})",
+  "road.replay.noService":
+    "Uendeshaji huu ulihifadhiwa kabla nyakati za huduma kurekodiwa, kwa hivyo magari yana rangi ya laini yao. Uendeshe tena kuyaona kwa ushikaji wakati.",
 } satisfies RoadMessages;

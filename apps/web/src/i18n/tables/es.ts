@@ -453,4 +453,10 @@ export const tablesEs = {
   "tt.tbl.to": "Hasta",
   "tt.tbl.arrives": "Llega",
   "cost.outsideRange": "Fuera del rango de la biblioteca ({low}–{high}): comprueba el valor y su unidad.",
+  "tbl.unrouted.title": "Algunos recorridos de líneas viales están incompletos",
+  "tbl.unrouted.intro":
+    "Partes del recorrido de estas líneas no se encontraron al guardarlas, así que las tablas, los costes y la evaluación las cuentan como 0 km. Abra cada línea en la pestaña Crear: se cargan sus calles y se guarda el recorrido que completan. Un tramo que siga en rojo necesita que un punto se mueva a una vía que el vehículo pueda usar.",
+  "tbl.unrouted.legs": "Tramos no encontrados",
+  "tbl.unrouted.runs": "Viajes a cochera no encontrados",
+  "tbl.unrouted.leftOut": "Omitido, al menos",
 } satisfies TablesMessages;

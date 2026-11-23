@@ -101,6 +101,7 @@ export const calendarJa = {
   "calrun.days": "日数",
   "calrun.trains": "列車",
   "calrun.punctuality": "定時",
+  "calrun.ranOf": "{planned} 本中 {ran} 本が運行 ({share})",
   "calrun.perYear": "年ごと",
   "calrun.perDate": "日付ごと",
   "calrun.method":

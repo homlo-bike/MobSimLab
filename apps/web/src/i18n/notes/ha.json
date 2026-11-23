@@ -491,6 +491,7 @@
     "4663ffcb": "Jirgin ƙasa mai sauƙi masu ƙasan ƙasa da tram-train a cikin kundin bayani suna da ƙasa 356–550 mm; ababen hawan Stadtbahn masu tsayin ƙasa (Stuttgart DT 8) suna da 1000 mm.",
     "46c150f1": "TSI PRM: mataki na tsaye ≤ 50 mm a kowace alƙibla (an gani a tushe); ADA: ± 5/8 in (≈ 16 mm) ga layin dogo mai sauri da mai sauƙi (a duba).",
     "46dd4c61": "MUTCD 2009 § 8C.04: hannayen shinge suna tashi zuwa tsaye cikin ba fiye da 12 s ba bayan jirgin ƙasa ya wuce kuma ba a gano wani jirgi ba; fitilun suna tsayawa idan hannayen sun tashi. Shinge da ke tashi cikin kimanin 6–10 s abu ne na yau da kullum a wasu wurare. Ƙimar tsakiya tana tsakanin biyun.",
+    "46e1b5df": "Tsarin tafiyar Tobler: gudun tafiya a ƙafa shi ne 6 exp(-3.5 |s + 0.05|) km/h a kan gangare s, mafi sauri a gangaren ƙasa na 5 %. Mai tsara tafiya yana riƙe gudun tafiya a fili kuma yana ninka lokacin da exp(k (|s + 0.05| - 0.05)); s shi ne bambancin tsayi tsakanin ƙarshen biyu raba nisan tafiya, an iyakance shi cikin ±50 %. 3.5 ƙimar Tobler ce; kewayon ±0.5 ƙiyasi ne. 0 yana watsi da gangare.",
     "472c7331": "Ababen hawan metro masu tsayin ƙasa.",
     "47a4908b": "Broach, Dill da Gliebe: layukan da aka fenta suna taimakawa ƙasa da hanyoyi daban, kuma galibi a tituna masu cunkoso. OpenStreetMap cycleway=lane ko layin keke da aka saita a shafin GIS (saitin titi).",
     "47ac0bc3": "CBTC da ETCS level 2 suna riƙe gefen tsaro bayan lanƙwasar birki don rufe rashin tabbas na wuri da ƙarshen jirgin ƙasan gaba; masu samarwa suna amfani da mita goma-goma kaɗan.",

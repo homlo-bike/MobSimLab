@@ -455,4 +455,10 @@ export const tablesSw = {
   "tt.tbl.to": "Hadi",
   "tt.tbl.arrives": "Inafika",
   "cost.outsideRange": "Nje ya kiwango cha maktaba ({low}–{high}): kagua thamani na kipimo chake.",
+  "tbl.unrouted.title": "Baadhi ya njia za mistari ya barabarani hazijakamilika",
+  "tbl.unrouted.intro":
+    "Sehemu za njia za mistari hii hazikupatikana zilipohifadhiwa, kwa hiyo majedwali, gharama na tathmini huzihesabu kama km 0. Fungua kila mstari kwenye kichupo cha Unda: barabara zake zitapakia na njia iliyokamilishwa itahifadhiwa. Sehemu inayobaki nyekundu inahitaji nukta kuhamishwa kwenye barabara ambayo gari linaruhusiwa kutumia.",
+  "tbl.unrouted.legs": "Sehemu ambazo hazikupatikana",
+  "tbl.unrouted.runs": "Safari za bohari ambazo hazikupatikana",
+  "tbl.unrouted.leftOut": "Iliyoachwa, angalau",
 } satisfies TablesMessages;

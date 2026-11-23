@@ -102,6 +102,7 @@ export const calendarFr = {
   "calrun.days": "Jours",
   "calrun.trains": "Trains",
   "calrun.punctuality": "À l’heure",
+  "calrun.ranOf": "{ran} courses effectuées sur {planned} ({share})",
   "calrun.perYear": "Par année",
   "calrun.perDate": "Par date",
   "calrun.method":

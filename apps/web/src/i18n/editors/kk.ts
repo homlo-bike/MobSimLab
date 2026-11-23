@@ -658,6 +658,16 @@ export const editorsKk = {
   "schematic.showStatuses": "Мәртебе белгілері",
   "schematic.showFeatures": "Станция жабдықтарының белгілері",
   "schematic.showWater": "Теңіз, көлдер мен өзендер",
+  "schematic.straightRivers": "Өзендерді 45° қадаммен салу",
+  "schematic.nameSize": "Бекет атауларының өлшемі",
+  "schematic.longRuns": "Аялдамасыз ұзақ бөліктер",
+  "schematic.longRuns.off": "Жердегідей",
+  "schematic.longRuns.max": "Әдеттегі аралықтан ең көбі {n} есе",
+  "schematic.pngSmallNames":
+    "Бұл сурет әр жағынан 8192 px-пен шектелгендіктен, бекет атаулары тек {px} px. Анығырақ көшірме үшін SVG немесе Басып шығаруды пайдаланыңыз.",
+  "schematic.printPaper": "Қағаз өлшемі {paper}: бекет атаулары {pt} pt болып басылады.",
+  "schematic.printSmallNames":
+    "Қағаз өлшемі {paper}: бекет атаулары тек {pt} pt болып басылады. Бекет атауларын үлкейтіңіз немесе кейбір қабаттарды жасырыңыз.",
   "schematic.showAreas": "Тариф аймақтары мен бағдарлар",
   "schematic.water": "Су",
   "schematic.areas": "Тариф аймақтары мен бағдарлар",
@@ -955,6 +965,10 @@ export const editorsKk = {
   "jp.set.maxRides": "Ең көп рейстер",
   "jp.walkNote":
     "Жаяу желісі қосылғанша жаяу қашықтық түзу сызық × 1.3. Әдепкі мәндер болжамдар кітапханасынан.",
+  "jp.slopeNote":
+    "Жаяу жүру уақыты екі ұшының арасындағы еңіспен есептеледі (жер бедері биіктіктерімен Тоблер функциясы): өрге және тік еңіспен жүру ұзағырақ.",
+  "jp.slopeNoHeights":
+    "Жер бедерінің биіктіктері жүктелмеді, сондықтан жаяу жүру тегіс жердегідей есептеледі.",
   "kit.minSec": "{m} мин {s} сек",
   "kit.checks": "Тексерулер",
   "kit.issue": "{level}:",
@@ -986,6 +1000,7 @@ export const editorsKk = {
   "cable.hint.select": "Өңдеу үшін станцияны басыңыз. Жылжыту үшін станцияны сүйреңіз.",
   "cable.modeSystem": "Түр және жүйе",
   "cable.lineSpeed": "Арқан жылдамдығы (м/с)",
+  "cable.longestSpan": "Ең ұзын аралық (м)",
   "cable.cabinInterval": "Кабиналар аралығы (сек)",
   "cable.departureEvery": "Жөнелу әр",
   "cable.cabinEvery": "Кабина әр",
@@ -1384,6 +1399,9 @@ export const editorsKk = {
   "capacity.dieOut": "Басылады",
   "capacity.pileUp": "Жиналады",
   "capacity.delaysHint": "әр рейске {passed} беріледі, соңында {left} қалады",
+  "capacity.ranOf":
+    "Орындалған рейстер: жоспарланған {planned} рейстің {ran} ({share}), {left} рейс қалып қойды",
+  "capacity.noneRan": "Жоспарланған {planned} рейстің бірде-біреуі орындалмады",
   "capacity.worksUpTo": "Әр бағытта сағатына {n} пойызға дейін жұмыс істейді",
   "capacity.tryingOthers": "Басқа жиіліктер сыналуда…",
   "capacity.noneWorks": "Сыналған жиіліктердің ешқайсысы жұмыс істемейді",

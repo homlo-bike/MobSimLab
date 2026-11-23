@@ -680,6 +680,16 @@ export const editorsTa = {
   "schematic.showStatuses": "நிலை குறியீடுகள்",
   "schematic.showFeatures": "நிலைய வசதி குறியீடுகள்",
   "schematic.showWater": "கடல், ஏரிகள், ஆறுகள்",
+  "schematic.straightRivers": "ஆறுகளை 45° படிகளில் வரை",
+  "schematic.nameSize": "நிலையப் பெயர் அளவு",
+  "schematic.longRuns": "நிறுத்தம் இல்லாத நீண்ட பகுதிகள்",
+  "schematic.longRuns.off": "நிலத்தில் உள்ளபடி",
+  "schematic.longRuns.max": "அதிகபட்சம் வழக்கமான இடைவெளியின் {n} மடங்கு",
+  "schematic.pngSmallNames":
+    "இந்தப் படம் ஒவ்வொரு பக்கமும் 8,192 px வரை மட்டுமே என்பதால் நிலையப் பெயர்கள் {px} px மட்டுமே. தெளிவான நகலுக்கு SVG அல்லது அச்சிடு பயன்படுத்தவும்.",
+  "schematic.printPaper": "பக்க அளவு {paper}: நிலையப் பெயர்கள் {pt} pt இல் அச்சிடப்படும்.",
+  "schematic.printSmallNames":
+    "பக்க அளவு {paper}: நிலையப் பெயர்கள் {pt} pt இல் மட்டுமே அச்சிடப்படும். நிலையப் பெயர்களைப் பெரிதாக்கவும் அல்லது சில அடுக்குகளை மறைக்கவும்.",
   "schematic.showAreas": "கட்டண மண்டலங்கள், அடையாளங்கள்",
   "schematic.water": "நீர்",
   "schematic.areas": "கட்டண மண்டலங்கள், அடையாளங்கள்",
@@ -982,6 +992,9 @@ export const editorsTa = {
   "jp.set.maxRides": "அதிகபட்ச வாகனங்கள்",
   "jp.walkNote":
     "நடை வலையமைப்பு வரும் வரை நடை நேர்கோட்டுத் தூரம் × 1.3. இயல்புநிலை மதிப்புகள் அனுமானங்களின் நூலகத்திலிருந்து.",
+  "jp.slopeNote":
+    "நடை நேரம் இரு முனைகளுக்கு இடையிலான சரிவில் கணக்கிடப்படுகிறது (நில உயரங்களுடன் டோப்லரின் மலையேற்றச் சார்பு): ஏற்றமும் செங்குத்தான இறக்கமும் அதிக நேரம் எடுக்கும்.",
+  "jp.slopeNoHeights": "நில உயரங்கள் ஏற்றப்படவில்லை, எனவே நடை சமதளமாகக் கணக்கிடப்படுகிறது.",
   "kit.minSec": "{m} நிமி {s} வினாடி",
   "kit.checks": "சரிபார்ப்புகள்",
   "kit.issue": "{level}:",
@@ -1013,6 +1026,7 @@ export const editorsTa = {
   "cable.hint.select": "திருத்த நிலையத்தைக் கிளிக் செய்யவும். நகர்த்த நிலையத்தை இழுக்கவும்.",
   "cable.modeSystem": "முறை மற்றும் அமைப்பு",
   "cable.lineSpeed": "கயிற்று வேகம் (மீ/வி)",
+  "cable.longestSpan": "மிக நீளமான இடைவெளி (மீ)",
   "cable.cabinInterval": "அறை இடைவெளி (வினாடி)",
   "cable.departureEvery": "புறப்பாடு ஒவ்வொரு",
   "cable.cabinEvery": "அறை ஒவ்வொரு",
@@ -1414,6 +1428,8 @@ export const editorsTa = {
   "capacity.dieOut": "தணிகின்றன",
   "capacity.pileUp": "குவிகின்றன",
   "capacity.delaysHint": "ஒவ்வொரு பயணத்துக்கும் {passed} கடத்தப்படுகிறது, இறுதியில் {left} மீதம்",
+  "capacity.ranOf": "ஓடிய பயணங்கள்: திட்டமிட்ட {planned} இல் {ran} ({share}), {left} விடுபட்டன",
+  "capacity.noneRan": "திட்டமிட்ட {planned} பயணங்களில் எதுவும் ஓடவில்லை",
   "capacity.worksUpTo": "ஒவ்வொரு திசையிலும் மணிக்கு {n} ரயில்கள் வரை இயங்குகிறது",
   "capacity.tryingOthers": "பிற அலைவெண்கள் முயற்சிக்கப்படுகின்றன…",
   "capacity.noneWorks": "முயற்சித்த எந்த அலைவெண்ணும் இயங்கவில்லை",

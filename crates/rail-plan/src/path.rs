@@ -141,7 +141,7 @@ pub fn find_path_costed(
             continue;
         }
         let c = m.routes[r as usize].length_m + extra(r);
-        if best.get(&(r, 0)).map_or(true, |&b| c < b) {
+        if best.get(&(r, 0)).is_none_or(|&b| c < b) {
             best.insert((r, 0), c);
             parent.insert((r, 0), (None, None, 1));
             heap.push(Item(c, seq, r, 0));
@@ -181,7 +181,7 @@ pub fn find_path_costed(
         for &(place, pen) in &calls[k] {
             if reaches(m, r, place).is_some() {
                 let c = cost + pen;
-                if best.get(&(r, k + 1)).map_or(true, |&b| c < b - 1e-9) {
+                if best.get(&(r, k + 1)).is_none_or(|&b| c < b - 1e-9) {
                     best.insert((r, k + 1), c);
                     parent.insert((r, k + 1), (Some((r, k)), Some(place), 1));
                     heap.push(Item(c, seq, r, k + 1));
@@ -197,7 +197,7 @@ pub fn find_path_costed(
                 continue;
             }
             let c = cost + m.routes[nx as usize].length_m + extra(nx);
-            if best.get(&(nx, k)).map_or(true, |&b| c < b - 1e-9) {
+            if best.get(&(nx, k)).is_none_or(|&b| c < b - 1e-9) {
                 best.insert((nx, k), c);
                 parent.insert((nx, k), (Some((r, k)), None, depth + 1));
                 heap.push(Item(c, seq, nx, k));
@@ -235,7 +235,7 @@ pub fn departure_routes(m: &Model, place: Place, dir: Dir) -> Vec<RouteId> {
             Dir::Up => (to - c).abs(),
             Dir::Down => (c - from).abs(),
         };
-        if best.map_or(true, |(k, _)| key < k) {
+        if best.is_none_or(|(k, _)| key < k) {
             best = Some((key, s));
         }
     }

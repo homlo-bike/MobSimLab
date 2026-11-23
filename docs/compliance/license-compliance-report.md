@@ -80,6 +80,8 @@
 | PyO3 | MIT OR Apache-2.0 | ✅ |
 | petgraph | MIT OR Apache-2.0 | ✅ |
 | pathfinding | MIT OR Apache-2.0 | ✅ |
+| osm2streets, osm2lanes, streets_reader, abstutil, geom, osm-reader (git, A/B Street) | Apache-2.0 (repository `LICENSE`; no `license` field in `Cargo.toml`) | ✅ Verified 2026-11-23. Listed by name in the gate policy (ADR-0047) |
+| muv-osm and its `muv-*` dependencies (git, GitLab) | MPL-2.0 | ✅ Verified 2026-11-23 (ADR-0047) |
 | rayon, serde, tracing | MIT OR Apache-2.0 | ✅ |
 | proptest (test) | MIT OR Apache-2.0 | ✅ |
 

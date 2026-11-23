@@ -46,6 +46,8 @@ export interface Point {
   headway_s: number;
   per_hour: number;
   unplaced: number;
+  /** Passenger trips that ran, over the period and its margins (absent in runs saved before it was kept). */
+  trips?: number;
   consumption: number;
   terminal: string;
   terminal_share: number;

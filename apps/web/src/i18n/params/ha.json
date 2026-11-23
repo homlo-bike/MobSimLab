@@ -173,6 +173,7 @@
     "demand.calibration.geh_hours": "Daidaitawa: awannin da ake raba ƙirgar ranar aiki da su don ƙididdigar GEH",
     "demand.walk_speed_kmh": "Gudun tafiya da ƙafa don hanyoyin tafiya tsakanin tashoshi",
     "journey.walk_detour_factor": "Nisan tafiya da ƙafa idan aka kwatanta da nisan layi madaidaici (mai tsara tafiya, ƙididdigar fa'ida)",
+    "journey.walk_slope_k": "Tafiya a kan gangare: ma'aunin gangare na tsarin tafiyar Tobler (mai tsara tafiya; 0 = ana lissafa tafiya kamar a fili)",
     "journey.min_change_s": "Mai tsara tafiya: mafi ƙarancin lokacin canji a tasha ɗaya",
     "journey.level_change_s": "Mai tsara tafiya: ƙarin lokaci don canza dandamali a tasha (matakala, lif)",
     "journey.same_name_station_m": "Tashoshi masu suna ɗaya a cikin wannan nisan layi madaidaici tasha ɗaya ce",

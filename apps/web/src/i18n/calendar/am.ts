@@ -98,6 +98,7 @@ export const calendarAm = {
   "calrun.days": "ቀኖች",
   "calrun.trains": "ባቡሮች",
   "calrun.punctuality": "በሰዓቱ",
+  "calrun.ranOf": "ከ{planned} ጉዞዎች {ran} ተካሂደዋል ({share})",
   "calrun.perYear": "በየዓመቱ",
   "calrun.perDate": "በየቀኑ",
   "calrun.method":

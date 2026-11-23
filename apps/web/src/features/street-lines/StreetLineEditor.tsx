@@ -29,6 +29,7 @@ import {
   routesMore,
   type SavedStreetLine,
   streetLineColor,
+  unroutedParts,
 } from "./saved";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
 
@@ -204,8 +205,12 @@ export function StreetLineEditor({
   const engine = useRef<StreetEngine | null>(null);
   // A saved route with a fingerprint opens as saved: the engine is given the line only when the planner changes
   // it or recalculates it (`hydrated`). A new line, or one saved before routes had a fingerprint, is routed by
-  // the engine from the start.
-  const savedRoute0 = initial && initial.view.points.length > 0 && initial.routedWith ? initial : null;
+  // the engine from the start, and so is a saved route with legs or depot runs not found: the streets that load
+  // as it opens may complete it, and the fuller route is then saved for Tables, costs and the appraisal.
+  const savedRoute0 =
+    initial && initial.view.points.length > 0 && initial.routedWith && !unroutedParts(initial.view)
+      ? initial
+      : null;
   const hydrated = useRef(savedRoute0 === null);
   const [asSaved, setAsSaved] = useState(savedRoute0 !== null);
   // The saved line until it has been routed again; nothing is saved before that.

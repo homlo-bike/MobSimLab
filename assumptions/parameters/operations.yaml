@@ -274,6 +274,22 @@
       check: unverified
       rationale: "Stand-in until walks are routed on the walk graph: street networks make a walk roughly 20–50 % longer than the straight line (lower in dense grids, higher with rivers, rail lines and cul-de-sacs). 1.3 is the planning value used by the journey planner (ADR-0034); replace with a cited circuity study."
 
+- key: journey.walk_slope_k
+  label: "Walking on slopes: steepness term of Tobler's hiking function (journey planner; 0 = walks timed as flat)"
+  group: Demand
+  unit: coefficient
+  used_by: [journey planner access, egress and transfer walks]
+  values:
+    - context:
+        mode: "*"
+      low: 3
+      central: 3.5
+      high: 4
+      basis: cited
+      sources: [tobler-1993]
+      check: unverified
+      rationale: "Tobler's hiking function: walking speed is 6 exp(-3.5 |s + 0.05|) km/h on gradient s, fastest on a 5 % downhill. The planner keeps the flat walking speed and multiplies the time by exp(k (|s + 0.05| - 0.05)), s being the height difference of the two ends over the walking distance, held within ±50 %. 3.5 is Tobler's value; the range of ±0.5 is an educated guess. 0 ignores slopes."
+
 - key: journey.min_change_s
   label: "Journey planner: minimum time to change vehicles at the same stop"
   group: Demand

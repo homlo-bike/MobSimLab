@@ -13,6 +13,8 @@ export interface Stop {
   stop_lon: number;
   parent_station?: string;
   platform_code?: string;
+  /** Ground height in metres (not GTFS); walks to and from the stop are timed on its slope. */
+  elevation_m?: number;
 }
 
 export interface Route {
@@ -86,6 +88,8 @@ export interface Timetable {
 export interface Settings {
   walk_speed_kmh: number;
   walk_detour_factor: number;
+  /** `journey.walk_slope_k`: steepness term of Tobler's hiking function; 0 times walks as flat. */
+  walk_slope_k: number;
   max_access_m: number;
   max_transfer_m: number;
   /** Stops with the same name within this distance are one station (a bus stop named like the railway station). */
@@ -103,6 +107,9 @@ export type TimeMode = "depart_at" | "arrive_by";
 export interface Query {
   from: LonLat;
   to: LonLat;
+  /** Ground heights of A and B in metres, when known: walks from A and to B are timed on their slope. */
+  from_elevation_m?: number;
+  to_elevation_m?: number;
   time_s: number;
   mode: TimeMode;
 }
@@ -110,6 +117,9 @@ export interface Query {
 export interface ProfileQuery {
   from: LonLat;
   to: LonLat;
+  /** Ground heights of A and B in metres, when known: walks from A and to B are timed on their slope. */
+  from_elevation_m?: number;
+  to_elevation_m?: number;
   mode: TimeMode;
   start_s: number;
   end_s: number;

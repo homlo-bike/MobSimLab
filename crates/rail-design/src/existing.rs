@@ -246,7 +246,7 @@ pub fn nearest_on(pts: &[P2], q: P2) -> Option<(f64, P2, P2, f64)> {
             let t = (q.sub(w[0]).dot(ab) / l2).clamp(0.0, 1.0);
             let p = w[0].add(ab.mul(t));
             let d = p.dist(q);
-            if best.map_or(true, |b| d < b.0) {
+            if best.is_none_or(|b| d < b.0) {
                 best = Some((d, p, ab.unit(), along + t * l2.sqrt()));
             }
         }
@@ -289,7 +289,7 @@ pub fn joins(dz: &Design) -> Vec<Join> {
                     && e.bbox.overlaps(&BBox::of([q.p]), JOIN_M + 1.0)
             }) {
                 if let Some((d, p, dir, along)) = nearest_on(&e.pts, q.p) {
-                    if d <= JOIN_M && best.as_ref().map_or(true, |b| d < b.0) {
+                    if d <= JOIN_M && best.as_ref().is_none_or(|b| d < b.0) {
                         best = Some((d, e, p, dir, along));
                     }
                 }
@@ -563,7 +563,7 @@ trait SameLevel {
 
 impl SameLevel for Option<Level> {
     fn is_none_or_same(&self, l: Level) -> bool {
-        self.map_or(true, |m| m == l)
+        self.is_none_or(|m| m == l)
     }
 }
 

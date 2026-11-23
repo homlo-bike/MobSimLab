@@ -4,10 +4,20 @@ import type { PluginLineInput } from "../journey-planner/network";
 import type { Network, RailEngineLoader } from "../railways/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import type { HeightsFetcher } from "../tables/railBuild";
-import { EMPTY_SCHEMATIC, LAYER_LABEL, type SchematicArea, type SchematicDoc, useModeLabel } from "./common";
+import {
+  EMPTY_SCHEMATIC,
+  LABEL_SIZE,
+  LABEL_SIZE_MAX,
+  LABEL_SIZE_MIN,
+  LAYER_LABEL,
+  labelSizeOf,
+  type SchematicArea,
+  type SchematicDoc,
+  useModeLabel,
+} from "./common";
 import { useLineProfile, useSchematicDetails } from "./details";
-import { download, fileName, pngBlob, printSvg, svgText } from "./export";
-import { defaultOrigin } from "./layout";
+import { download, fileName, MIN_NAME_PT, MIN_NAME_PX, pngImage, printSvg, svgText } from "./export";
+import { DEFAULT_LONG_RUN, defaultOrigin, LONG_RUN_CHOICES } from "./layout";
 import { LAYERS, schematicNetwork } from "./lines";
 import { type AreaDraft, NetworkMap } from "./NetworkMap";
 import { StripMap } from "./StripMap";
@@ -95,6 +105,7 @@ export function Schematic({
   const [draft, setDraft] = useState<AreaDraft | null>(null);
   const [areaId, setAreaId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [exportNote, setExportNote] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   // Zooming keeps the point under the pointer (or the middle of the view) in place, ctrl/⌘ + wheel zooms, and
   // dragging the empty page pans it.
@@ -217,12 +228,28 @@ export function Schematic({
     const svg = svgRef.current;
     if (!svg) return;
     setError(null);
+    setExportNote(null);
     const title = view === "line" && line ? `${projectName} ${line.name}` : projectName;
+    // The strip map's station names are drawn at the default size.
+    const namePx = view === "network" ? labelSizeOf(d) : LABEL_SIZE;
     try {
       if (kind === "svg")
         download(new Blob([svgText(svg)], { type: "image/svg+xml" }), fileName(title, "svg"));
-      else if (kind === "png") download(await pngBlob(svg, 2), fileName(title, "png"));
-      else printSvg(svg, title);
+      else if (kind === "png") {
+        // Twice the drawing's size, or more so the names are at least `MIN_NAME_PX` in the image.
+        const png = await pngImage(svg, Math.max(2, MIN_NAME_PX / namePx));
+        download(png.blob, fileName(title, "png"));
+        const px = Math.round(namePx * png.scale * 10) / 10;
+        if (px < MIN_NAME_PX) setExportNote(t("schematic.pngSmallNames", { px }));
+      } else {
+        const paper = printSvg(svg, title, namePx);
+        setExportNote(
+          t(paper.namePt < MIN_NAME_PT ? "schematic.printSmallNames" : "schematic.printPaper", {
+            paper: paper.name,
+            pt: paper.namePt,
+          }),
+        );
+      }
     } catch (e) {
       setError(t("schematic.exportFailed", { error: engineErrorText(e) }));
     }
@@ -404,6 +431,7 @@ export function Schematic({
               ...(view === "network"
                 ? ([
                     ["water", "schematic.showWater"],
+                    ["straightRivers", "schematic.straightRivers"],
                     ["showAreas", "schematic.showAreas"],
                   ] as const)
                 : []),
@@ -414,7 +442,7 @@ export function Schematic({
                 type="checkbox"
                 className="h-4 w-4"
                 checked={d[k] !== false}
-                disabled={!onDoc}
+                disabled={!onDoc || (k === "straightRivers" && d.water === false)}
                 onChange={(e) => set({ [k]: e.target.checked })}
               />
               {t(label)}
@@ -424,6 +452,39 @@ export function Schematic({
 
         {view === "network" && (
           <>
+            <label className="flex flex-col gap-1.5">
+              <span className="caps">{t("schematic.nameSize")}</span>
+              <span className="flex items-center gap-3">
+                <input
+                  type="range"
+                  className="min-w-0 flex-1"
+                  min={LABEL_SIZE_MIN}
+                  max={LABEL_SIZE_MAX}
+                  step={1}
+                  value={labelSizeOf(d)}
+                  disabled={!onDoc}
+                  aria-valuetext={`${labelSizeOf(d)} px`}
+                  onChange={(e) => set({ labelSize: Number(e.target.value) })}
+                />
+                <span className="w-12 text-end text-sm tabular-nums">{labelSizeOf(d)} px</span>
+              </span>
+            </label>
+            <label className="flex flex-col gap-1.5">
+              <span className="caps">{t("schematic.longRuns")}</span>
+              <span className="field">
+                <select
+                  value={d.longRun ?? DEFAULT_LONG_RUN}
+                  disabled={!onDoc}
+                  onChange={(e) => set({ longRun: Number(e.target.value) })}
+                >
+                  {LONG_RUN_CHOICES.map((n) => (
+                    <option key={n} value={n}>
+                      {n ? t("schematic.longRuns.max", { n }) : t("schematic.longRuns.off")}
+                    </option>
+                  ))}
+                </select>
+              </span>
+            </label>
             <section aria-label={t("schematic.areas")} className="flex flex-col gap-2">
               <h2 className="caps">{t("schematic.areas")}</h2>
               {areas.length > 0 && (
@@ -569,6 +630,11 @@ export function Schematic({
           {error && (
             <p role="alert" className="mt-2 text-sm text-red-700">
               {error}
+            </p>
+          )}
+          {exportNote && (
+            <p role="status" className="mt-2 text-sm text-slate-600">
+              {exportNote}
             </p>
           )}
         </div>

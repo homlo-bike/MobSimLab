@@ -28,6 +28,7 @@ import {
   type Trip,
 } from "./model";
 import { engineErrorText } from "../../i18n/engine";
+import { withUnit } from "../../i18n/units";
 
 type View = "trip" | "range" | "savings";
 type Pick = "start" | "destination" | null;
@@ -624,12 +625,12 @@ export function CargoBikeTab({
             <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
               {(
                 [
-                  ["cb.stat.roundTrip", `${km(r.distance_m)} km`],
+                  ["cb.stat.roundTrip", withUnit(km(r.distance_m), "km")],
                   ["cb.stat.battery", `${Math.round(r.battery_wh)} / ${Math.round(r.usable_wh)} Wh`],
                   ["cb.stat.perKm", `${r.wh_per_km.toFixed(1)} Wh/km`],
                   ["cb.stat.time", duration(r.time_s)],
-                  ["cb.stat.climb", `${Math.round(r.go.climb_m + r.back.climb_m)} m`],
-                  ["cb.stat.range", `${Math.round(r.range_km)} km`],
+                  ["cb.stat.climb", withUnit(Math.round(r.go.climb_m + r.back.climb_m), "m")],
+                  ["cb.stat.range", withUnit(Math.round(r.range_km), "km")],
                 ] as const
               ).map(([k, v]) => (
                 <div key={k} className="rounded-lg bg-slate-50 px-2.5 py-2">

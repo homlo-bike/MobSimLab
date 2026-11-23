@@ -1308,6 +1308,7 @@
     "journey.min_change_s",
     "journey.same_name_station_m",
     "journey.walk_detour_factor",
+    "journey.walk_slope_k",
     "level_crossing.barrier_closing_s",
     "level_crossing.cycle_min_angle_deg",
     "level_crossing.max_line_speed_kmh",
@@ -1515,6 +1516,7 @@
     "tcqsm3",
     "tcrp-94",
     "tcrp-spare-ratio",
+    "tobler-1993",
     "trackopedia-track-centres",
     "transit-costs-project",
     "tsi-ccs",
@@ -1679,6 +1681,10 @@
           "label": "Clearance under the loaded cabin, recommended",
           "unit": "m"
         },
+        "ropeway.station_approach_m": {
+          "label": "Station approach, length",
+          "unit": "m"
+        },
         "ropeway.tower_height_m": {
           "label": "Tower height, standard",
           "unit": "m"
@@ -1759,9 +1765,9 @@
               "high": 15
             },
             "ropeway.max_span_m": {
-              "low": 200,
+              "low": 270,
               "central": 400,
-              "high": 600
+              "high": 900
             },
             "ropeway.max_station_angle_deg": {
               "low": 20,
@@ -1777,6 +1783,11 @@
               "low": 5,
               "central": 8,
               "high": 15
+            },
+            "ropeway.station_approach_m": {
+              "low": 10,
+              "central": 30,
+              "high": 60
             },
             "ropeway.tower_height_m": {
               "low": 15,
@@ -1890,6 +1901,11 @@
               "central": 8,
               "high": 15
             },
+            "ropeway.station_approach_m": {
+              "low": 10,
+              "central": 30,
+              "high": 60
+            },
             "ropeway.tower_height_m": {
               "low": 20,
               "central": 35,
@@ -2001,6 +2017,11 @@
               "low": 5,
               "central": 8,
               "high": 15
+            },
+            "ropeway.station_approach_m": {
+              "low": 10,
+              "central": 30,
+              "high": 60
             },
             "ropeway.tower_height_m": {
               "low": 40,
@@ -2114,6 +2135,11 @@
               "central": 8,
               "high": 15
             },
+            "ropeway.station_approach_m": {
+              "low": 10,
+              "central": 30,
+              "high": 60
+            },
             "ropeway.tower_height_m": {
               "low": 20,
               "central": 30,
@@ -2225,6 +2251,11 @@
               "low": 5,
               "central": 8,
               "high": 15
+            },
+            "ropeway.station_approach_m": {
+              "low": 10,
+              "central": 30,
+              "high": 60
             },
             "ropeway.tower_height_m": {
               "low": 10,
@@ -2339,6 +2370,11 @@
               "low": 5,
               "central": 8,
               "high": 15
+            },
+            "ropeway.station_approach_m": {
+              "low": 10,
+              "central": 30,
+              "high": 60
             },
             "ropeway.tower_height_m": {
               "low": 30,

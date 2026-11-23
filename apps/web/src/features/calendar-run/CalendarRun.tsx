@@ -640,10 +640,29 @@ function RunView({ run }: { run: CalendarRunDetail }) {
       : t("calrun.step.day", { day: dayLabel(x.day_type), n: x.n, total: x.total });
   const hhmm = (sec: number) =>
     `${String(Math.floor(sec / 3600) % 24).padStart(2, "0")}:${String(Math.floor((sec % 3600) / 60)).padStart(2, "0")}`;
-  const punctOf = (rail: RailDay | undefined) =>
-    rail?.lines.length
-      ? Math.min(...rail.lines.map((l) => l.disturbed_punctuality ?? l.punctuality ?? 1))
-      : null;
+  // The on-time share only counts lines with trips that ran (a line that ran none has nothing to be
+  // late with), and says how many of the planned trips ran when some were left out (Damascus test).
+  const punctOf = (rail: RailDay | undefined) => {
+    const ran = rail?.lines.filter((l) => l.trips !== 0) ?? [];
+    return ran.length ? Math.min(...ran.map((l) => l.disturbed_punctuality ?? l.punctuality ?? 1)) : null;
+  };
+  const ranOf = (rail: RailDay | undefined) => {
+    const lines = rail?.lines ?? [];
+    if (!lines.some((l) => (l.unplaced ?? 0) > 0) || lines.some((l) => typeof l.trips !== "number"))
+      return null;
+    const ran = lines.reduce((s, l) => s + (l.trips ?? 0), 0);
+    const planned = ran + lines.reduce((s, l) => s + (l.unplaced ?? 0), 0);
+    return t("calrun.ranOf", { ran: num(ran), planned: num(planned), share: pct(ran / planned) });
+  };
+  const punctCell = (rail: RailDay | undefined) => {
+    const ran = ranOf(rail);
+    return (
+      <td className="py-1 text-end tabular-nums">
+        {pct(punctOf(rail))}
+        {ran && <span className="block text-xs text-amber-800">{ran}</span>}
+      </td>
+    );
+  };
   if (run.error)
     return (
       <p role="alert" className="text-sm text-red-800">
@@ -717,7 +736,7 @@ function RunView({ run }: { run: CalendarRunDetail }) {
                     </th>
                     <td className="py-1 text-end tabular-nums">{num(d.days, 1)}</td>
                     <td className="py-1 text-end tabular-nums">{num(d.rail?.vehicles)}</td>
-                    <td className="py-1 text-end tabular-nums">{pct(punctOf(d.rail))}</td>
+                    {punctCell(d.rail)}
                     <td className="py-1 text-end tabular-nums">{num(d.per_day.passengers)}</td>
                   </tr>,
                 ];
@@ -742,7 +761,7 @@ function RunView({ run }: { run: CalendarRunDetail }) {
                       </th>
                       <td className="py-1 text-end tabular-nums">{num(x.days, 1)}</td>
                       <td className="py-1 text-end tabular-nums">{num(x.rail?.vehicles)}</td>
-                      <td className="py-1 text-end tabular-nums">{pct(punctOf(x.rail))}</td>
+                      {punctCell(x.rail)}
                       <td className="py-1 text-end tabular-nums" />
                     </tr>,
                   );

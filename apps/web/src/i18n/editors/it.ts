@@ -668,6 +668,16 @@ export const editorsIt = {
   "schematic.showStatuses": "Simboli di stato",
   "schematic.showFeatures": "Simboli delle dotazioni di stazione",
   "schematic.showWater": "Mare, laghi e fiumi",
+  "schematic.straightRivers": "Disegna i fiumi a passi di 45°",
+  "schematic.nameSize": "Dimensione dei nomi delle stazioni",
+  "schematic.longRuns": "Tratti lunghi senza fermate",
+  "schematic.longRuns.off": "Come sul terreno",
+  "schematic.longRuns.max": "Al massimo {n} × la distanza abituale",
+  "schematic.pngSmallNames":
+    "I nomi delle stazioni sono solo {px} px in questa immagine, limitata a 8.192 px per lato. Usa SVG o Stampa per una copia più nitida.",
+  "schematic.printPaper": "Formato {paper}: i nomi delle stazioni sono stampati a {pt} pt.",
+  "schematic.printSmallNames":
+    "Formato {paper}: i nomi delle stazioni sono stampati solo a {pt} pt. Ingrandisci i nomi delle stazioni o nascondi alcuni livelli.",
   "schematic.showAreas": "Zone tariffarie e luoghi simbolo",
   "schematic.water": "Acqua",
   "schematic.areas": "Zone tariffarie e luoghi simbolo",
@@ -967,6 +977,10 @@ export const editorsIt = {
   "jp.set.maxRides": "Numero massimo di mezzi",
   "jp.walkNote":
     "Le distanze a piedi sono in linea d'aria × 1,3 finché non viene aggiunta una rete pedonale. Valori predefiniti dalla libreria delle ipotesi.",
+  "jp.slopeNote":
+    "I tratti a piedi sono calcolati sulla pendenza tra i due estremi (funzione escursionistica di Tobler con le quote del terreno): in salita e in forte discesa richiedono più tempo.",
+  "jp.slopeNoHeights":
+    "Le quote del terreno non sono state caricate, quindi i tratti a piedi sono calcolati come in piano.",
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Verifiche",
   "kit.issue": "{level}: ",
@@ -999,6 +1013,7 @@ export const editorsIt = {
   "cable.hint.select": "Fai clic su una stazione per modificarla. Trascina una stazione per spostarla.",
   "cable.modeSystem": "Modo e sistema",
   "cable.lineSpeed": "Velocità della fune (m/s)",
+  "cable.longestSpan": "Campata più lunga (m)",
   "cable.cabinInterval": "Intervallo tra cabine (s)",
   "cable.departureEvery": "Partenza ogni",
   "cable.cabinEvery": "Cabina ogni",
@@ -1399,6 +1414,8 @@ export const editorsIt = {
   "capacity.dieOut": "Si smorzano",
   "capacity.pileUp": "Si accumulano",
   "capacity.delaysHint": "{passed} trasmessi per corsa, {left} residui alla fine",
+  "capacity.ranOf": "Corse effettuate: {ran} su {planned} previste ({share}), {left} escluse",
+  "capacity.noneRan": "Nessuna delle {planned} corse previste è stata effettuata",
   "capacity.worksUpTo": "Funziona fino a {n} treni all’ora per direzione",
   "capacity.tryingOthers": "Prova di altre frequenze…",
   "capacity.noneWorks": "Nessuna frequenza provata funziona",

@@ -102,6 +102,7 @@ export const calendarNl = {
   "calrun.days": "Dagen",
   "calrun.trains": "Treinen",
   "calrun.punctuality": "Op tijd",
+  "calrun.ranOf": "{ran} van {planned} ritten gereden ({share})",
   "calrun.perYear": "Per jaar",
   "calrun.perDate": "Per datum",
   "calrun.method":

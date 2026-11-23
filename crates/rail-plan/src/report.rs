@@ -232,7 +232,7 @@ pub fn report(
                 });
                 // Only hours with a full hour of regular service count for the maximum.
                 let tight = c.consumption.max(term.0);
-                if worst.map_or(true, |(wc, _, _)| tight > wc) && trains >= 2 {
+                if worst.is_none_or(|(wc, _, _)| tight > wc) && trains >= 2 {
                     worst = Some((tight, h, trains));
                 }
             }

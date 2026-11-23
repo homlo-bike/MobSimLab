@@ -101,6 +101,7 @@ export const calendarHi = {
   "calrun.days": "दिन",
   "calrun.trains": "ट्रेनें",
   "calrun.punctuality": "समय पर",
+  "calrun.ranOf": "{planned} में से {ran} यात्राएँ चलीं ({share})",
   "calrun.perYear": "हर वर्ष",
   "calrun.perDate": "हर तारीख",
   "calrun.method":

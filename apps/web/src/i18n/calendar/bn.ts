@@ -100,6 +100,7 @@ export const calendarBn = {
   "calrun.days": "দিন",
   "calrun.trains": "ট্রেন",
   "calrun.punctuality": "সময়মতো",
+  "calrun.ranOf": "{planned}টির মধ্যে {ran}টি যাত্রা চলেছে ({share})",
   "calrun.perYear": "প্রতি বছর",
   "calrun.perDate": "প্রতি তারিখ",
   "calrun.method":

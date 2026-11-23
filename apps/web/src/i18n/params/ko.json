@@ -173,6 +173,7 @@
     "demand.calibration.geh_hours": "보정: GEH 통계를 위해 평일 조사값을 나누는 시간",
     "demand.walk_speed_kmh": "역 사이 보행 연결의 보행 속도",
     "journey.walk_detour_factor": "직선 거리 대비 보행 거리(경로 안내, 편익 추정)",
+    "journey.walk_slope_k": "경사 보행: 토블러 하이킹 함수의 경사 항 (경로 검색; 0 = 도보를 평지로 계산)",
     "journey.min_change_s": "경로 안내: 같은 정류장에서의 최소 환승 시간",
     "journey.level_change_s": "경로 안내: 역에서 승강장을 바꾸는 추가 시간(계단, 엘리베이터)",
     "journey.same_name_station_m": "이 직선 거리 안의 같은 이름 정류장은 하나의 역",

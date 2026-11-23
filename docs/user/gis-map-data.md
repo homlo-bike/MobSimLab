@@ -38,6 +38,12 @@ If you have better heights than GLO-30, such as a LiDAR terrain model from your 
 
 The grid is cut to the project area and converted to longitude and latitude at about its own resolution. Where it has heights it is used before GLO-30; elsewhere GLO-30 still answers. Uploading another file replaces it, and **Remove** goes back to GLO-30 everywhere.
 
+## Data shared between projects
+
+Map data is downloaded once for the whole MobSimLab instance and shared between projects. When two projects cover the same area, the second one uses the street, rail, walk and place tiles, terrain heights and GLO-30 elevation files the first one already downloaded, so it loads faster and the public servers are asked only once.
+
+Each project keeps the date of the data it used, so its map stays the same until it fetches the data again. A new project takes OpenStreetMap data downloaded by another project only while it is younger than a week (your administrator can change this with `MOBSIMLAB_OSM_CACHE_DAYS`); older data is downloaded again. Heights do not change and are always shared. Deleting a project leaves the data other projects use.
+
 ## Who can import
 
 Owners and Editors can import and refresh. Viewers see what was imported and when.

@@ -702,6 +702,16 @@ export const editorsAr = {
   "schematic.showStatuses": "رموز الحالة",
   "schematic.showFeatures": "رموز مرافق المحطات",
   "schematic.showWater": "البحر والبحيرات والأنهار",
+  "schematic.straightRivers": "ارسم الأنهار بخطوات 45°",
+  "schematic.nameSize": "حجم أسماء المحطات",
+  "schematic.longRuns": "مقاطع طويلة بلا توقف",
+  "schematic.longRuns.off": "كما على الأرض",
+  "schematic.longRuns.max": "على الأكثر {n} × المسافة المعتادة",
+  "schematic.pngSmallNames":
+    "أسماء المحطات {px} px فقط في هذه الصورة لأنها محدودة بـ 8192 px لكل ضلع. استخدم SVG أو الطباعة لنسخة أوضح.",
+  "schematic.printPaper": "حجم الصفحة {paper}: تُطبع أسماء المحطات بحجم {pt} pt.",
+  "schematic.printSmallNames":
+    "حجم الصفحة {paper}: تُطبع أسماء المحطات بحجم {pt} pt فقط. كبّر أسماء المحطات أو أخفِ بعض الطبقات.",
   "schematic.showAreas": "مناطق التعرفة والمعالم",
   "schematic.water": "الماء",
   "schematic.areas": "مناطق التعرفة والمعالم",
@@ -1000,6 +1010,9 @@ export const editorsAr = {
   "jp.set.maxRides": "أكبر عدد من المركبات",
   "jp.walkNote":
     "المشي مسافة خط مستقيم × 1.3 إلى أن توجد شبكة المشاة. القيم الافتراضية مأخوذة من مكتبة الافتراضات.",
+  "jp.slopeNote":
+    "يُحسب زمن المشي على الانحدار بين طرفيه (دالة توبلر للمشي، مع ارتفاعات التضاريس): المشي صعودًا أو نزولًا شديدًا يستغرق وقتًا أطول.",
+  "jp.slopeNoHeights": "لم تُحمَّل ارتفاعات التضاريس، لذلك يُحسب زمن المشي كأنه على أرض مستوية.",
 
   "kit.minSec": "{m} د {s} ث",
   "kit.checks": "الفحوص",
@@ -1032,6 +1045,7 @@ export const editorsAr = {
   "cable.hint.select": "انقر على محطة لتعديلها. اسحب محطة لتحريكها.",
   "cable.modeSystem": "الوسيلة والنظام",
   "cable.lineSpeed": "سرعة الكابل (م/ث)",
+  "cable.longestSpan": "أطول بحر بين الأبراج (م)",
   "cable.cabinInterval": "الفاصل بين المقصورات (ث)",
   "cable.departureEvery": "مغادرة كل",
   "cable.cabinEvery": "مقصورة كل",
@@ -1431,6 +1445,8 @@ export const editorsAr = {
   "capacity.dieOut": "تتلاشى",
   "capacity.pileUp": "تتراكم",
   "capacity.delaysHint": "{passed} تنتقل لكل رحلة، و{left} متبقية في النهاية",
+  "capacity.ranOf": "الرحلات المنفّذة: {ran} من {planned} مخططة ({share})، و{left} لم تُنفَّذ",
+  "capacity.noneRan": "لم تُنفَّذ أي رحلة من الرحلات المخططة البالغة {planned}",
   "capacity.worksUpTo": "يعمل حتى {n} قطارًا في الساعة في كل اتجاه",
   "capacity.tryingOthers": "تجربة ترددات أخرى…",
   "capacity.noneWorks": "لا يعمل أي تردد تمت تجربته",

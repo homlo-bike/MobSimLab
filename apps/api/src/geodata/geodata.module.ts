@@ -9,6 +9,7 @@ import { GeodataController } from "./geodata.controller";
 import { GeodataReader } from "./geodata-reader";
 import { GeodataService } from "./geodata.service";
 import { ProjectGate } from "./project-gate";
+import { SharedDataStore } from "./shared-data";
 
 /**
  * OpenStreetMap and elevation imported per project area (06-gis §2 and §4, ADR-0046), and the readers the
@@ -27,8 +28,21 @@ import { ProjectGate } from "./project-gate";
     AreaDetailService,
     GeodataReader,
     ProjectDataCache,
-    { provide: CopernicusDemClient, useFactory: () => new CopernicusDemClient() },
+    SharedDataStore,
+    {
+      provide: CopernicusDemClient,
+      useFactory: (shared: SharedDataStore) => new CopernicusDemClient({ store: shared.glo30() }),
+      inject: [SharedDataStore],
+    },
   ],
-  exports: [GeodataService, GeodataReader, ProjectGate, AreaDetailService, ProjectsService, ProjectDataCache],
+  exports: [
+    GeodataService,
+    GeodataReader,
+    ProjectGate,
+    AreaDetailService,
+    ProjectsService,
+    ProjectDataCache,
+    SharedDataStore,
+  ],
 })
 export class GeodataModule {}

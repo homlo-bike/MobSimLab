@@ -2,6 +2,7 @@ import { Module } from "@nestjs/common";
 import { CopernicusDemClient } from "../gateway/copernicus-dem.client";
 import { OpenElevationClient, openElevationSettings } from "../gateway/open-elevation.client";
 import { OverpassClient } from "../gateway/overpass.client";
+import { SharedDataStore } from "../geodata/shared-data";
 import { TerrainController } from "./terrain.controller";
 import { TerrainService } from "./terrain.service";
 
@@ -10,7 +11,13 @@ import { TerrainService } from "./terrain.service";
   controllers: [TerrainController],
   providers: [
     TerrainService,
-    { provide: CopernicusDemClient, useFactory: () => new CopernicusDemClient() },
+    {
+      // GLO-30 byte ranges are held once for the instance when the geodata module is there (it is global).
+      provide: CopernicusDemClient,
+      useFactory: (shared?: SharedDataStore) =>
+        new CopernicusDemClient(shared ? { store: shared.glo30() } : {}),
+      inject: [{ token: SharedDataStore, optional: true }],
+    },
     { provide: OverpassClient, useFactory: () => new OverpassClient() },
     {
       // The fallback is off when MOBSIMLAB_ELEVATION_FALLBACK=off; TerrainService then has none.

@@ -491,6 +491,7 @@
     "4663ffcb": "Đường sắt nhẹ sàn thấp và tàu điện–tàu hỏa (tram-train) trong danh mục có sàn cao 356–550 mm; đoàn Stadtbahn sàn cao (Stuttgart DT 8) có 1000 mm.",
     "46c150f1": "TSI PRM: bậc đứng ≤ 50 mm theo cả hai chiều (thấy trong nguồn); ADA: ± 5/8 in (≈ 16 mm) cho đường sắt nhanh và đường sắt nhẹ (cần kiểm tra lại).",
     "46dd4c61": "MUTCD 2009 § 8C.04: cần chắn nâng lên thẳng đứng trong không quá 12 s sau khi đoàn tàu đã qua và không phát hiện đoàn tàu nào khác; đèn tắt khi cần chắn đã nâng. Ở nơi khác, cần chắn nâng trong khoảng 6–10 s là thông thường. Giá trị trung bình nằm giữa hai mức này.",
+    "46e1b5df": "Hàm đi bộ đường dài Tobler: tốc độ đi bộ là 6 exp(-3.5 |s + 0.05|) km/h trên độ dốc s, nhanh nhất khi xuống dốc 5 %. Công cụ lập hành trình giữ tốc độ đi bộ trên đường bằng và nhân thời gian với exp(k (|s + 0.05| - 0.05)), với s là chênh lệch độ cao hai đầu chia cho quãng đường đi bộ, giới hạn trong ±50 %. 3,5 là giá trị của Tobler; khoảng ±0,5 là ước tính có cơ sở. 0 bỏ qua độ dốc.",
     "472c7331": "Đoàn tàu điện ngầm sàn cao.",
     "47a4908b": "Broach, Dill và Gliebe: làn sơn kẻ ít hữu ích hơn đường riêng, và chủ yếu trên đường phố đông xe. OpenStreetMap cycleway=lane hoặc làn xe đạp được thiết lập trong thẻ GIS (thiết lập đường phố).",
     "47ac0bc3": "CBTC và ETCS cấp 2 giữ một biên an toàn ngoài đường cong hãm để bù sai số vị trí và đuôi đoàn tàu phía trước; các nhà cung cấp dùng vài chục mét.",

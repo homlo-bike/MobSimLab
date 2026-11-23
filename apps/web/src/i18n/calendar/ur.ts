@@ -101,6 +101,7 @@ export const calendarUr = {
   "calrun.days": "دن",
   "calrun.trains": "ٹرینیں",
   "calrun.punctuality": "وقت پر",
+  "calrun.ranOf": "{planned} میں سے {ran} سفر چلے ({share})",
   "calrun.perYear": "ہر سال",
   "calrun.perDate": "ہر تاریخ",
   "calrun.method":

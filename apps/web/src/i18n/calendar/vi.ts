@@ -99,6 +99,7 @@ export const calendarVi = {
   "calrun.days": "Ngày",
   "calrun.trains": "Tàu",
   "calrun.punctuality": "Đúng giờ",
+  "calrun.ranOf": "{ran} trên {planned} chuyến đã chạy ({share})",
   "calrun.perYear": "Theo năm",
   "calrun.perDate": "Theo ngày",
   "calrun.method":

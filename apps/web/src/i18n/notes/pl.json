@@ -491,6 +491,7 @@
     "4663ffcb": "Niskopodłogowe szybkie tramwaje i tram-train w katalogu mają podłogi 356–550 mm; wysokopodłogowy tabor Stadtbahn (Stuttgart DT 8) ma 1000 mm.",
     "46c150f1": "TSI PRM: stopień pionowy ≤ 50 mm w każdą stronę (widoczne w źródle); ADA: ± 5/8 in (≈ 16 mm) dla szybkiej kolei miejskiej i szybkiego tramwaju (do sprawdzenia).",
     "46dd4c61": "MUTCD 2009 § 8C.04: drągi rogatek podnoszą się do pionu w czasie nie dłuższym niż 12 s po przejechaniu pociągu, gdy nie wykryto innego pociągu; światła gasną, gdy drągi są podniesione. W innych krajach typowe jest podnoszenie rogatek w około 6–10 s. Wartość środkowa leży pomiędzy.",
+    "46e1b5df": "Funkcja wędrówki Toblera: prędkość marszu wynosi 6 exp(-3.5 |s + 0.05|) km/h przy nachyleniu s, najwyższa przy 5 % spadku. Planer podróży zachowuje prędkość marszu po płaskim i mnoży czas przez exp(k (|s + 0.05| - 0.05)), gdzie s to różnica wysokości obu końców podzielona przez długość marszu, ograniczona do ±50 %. 3,5 to wartość Toblera; zakres ±0,5 to uzasadnione oszacowanie. 0 pomija nachylenie.",
     "472c7331": "Wysokopodłogowy tabor metra.",
     "47a4908b": "Broach, Dill i Gliebe: pasy malowane pomagają mniej niż oddzielne drogi rowerowe, i głównie na ruchliwych ulicach. OpenStreetMap cycleway=lane lub pas rowerowy ustawiony w zakładce GIS (ustawienia ulicy).",
     "47ac0bc3": "CBTC i ETCS poziomu 2 utrzymują margines bezpieczeństwa poza krzywą hamowania, aby pokryć niepewność położenia i koniec poprzedzającego pociągu; dostawcy stosują kilkadziesiąt metrów.",

@@ -31,6 +31,99 @@ export interface PreferencesDoc {
   climate?: ProjectClimate;
   /** Values of enum and text assumptions the project changes, by assumption id (as `values` for numbers). */
   choices?: Record<string, string>;
+  /** How the project's vehicles look in the simulation (Project preferences → Visuals); absent: the defaults. */
+  visuals?: VisualsDoc;
+}
+
+/** What a vehicle is doing in the road simulation's replay, which gives its colour. */
+export const VEHICLE_STATES = ["on_time", "late", "very_late", "out_of_service", "parked"] as const;
+export type VehicleState = (typeof VEHICLE_STATES)[number];
+
+/** Project preferences → Visuals: the colours of the vehicles in the simulation and the delays between them. */
+export interface VisualsDoc {
+  /** A vehicle in service up to this late (minutes) is on time; early counts as on time. */
+  on_time_min?: number;
+  /** A vehicle in service up to this late (minutes) is late; later is very late. */
+  late_min?: number;
+  /** Colour of each vehicle state (`#rrggbb`). */
+  colors?: Partial<Record<VehicleState, string>>;
+}
+
+/** The vehicle colours and delays the simulation uses, every value set. */
+export interface VehicleVisuals {
+  on_time_min: number;
+  late_min: number;
+  colors: Record<VehicleState, string>;
+}
+
+/** The default vehicle colours and delays: green on time, yellow up to 3 minutes late, red later, greys out of service. */
+export const DEFAULT_VEHICLE_VISUALS: VehicleVisuals = {
+  on_time_min: 1,
+  late_min: 3,
+  colors: {
+    on_time: "#16a34a",
+    late: "#eab308",
+    very_late: "#dc2626",
+    out_of_service: "#475569",
+    parked: "#cbd5e1",
+  },
+};
+
+/** Longest delay accepted for the vehicle colours, minutes. */
+export const MAX_VISUAL_DELAY_MIN = 120;
+
+const HEX_COLOR = /^#[0-9a-f]{6}$/i;
+
+/** Purpose: the vehicle colours and delays of the project: its own where it set them, else the defaults. */
+export function vehicleVisualsFrom(doc: PreferencesDoc | null | undefined): VehicleVisuals {
+  const v = doc?.visuals;
+  const min = (x: unknown, fallback: number) =>
+    typeof x === "number" && Number.isFinite(x) && x >= 0 ? Math.min(MAX_VISUAL_DELAY_MIN, x) : fallback;
+  const onTime = min(v?.on_time_min, DEFAULT_VEHICLE_VISUALS.on_time_min);
+  const colors = { ...DEFAULT_VEHICLE_VISUALS.colors };
+  for (const k of VEHICLE_STATES) {
+    const c = v?.colors?.[k];
+    if (typeof c === "string" && HEX_COLOR.test(c)) colors[k] = c.toLowerCase();
+  }
+  return {
+    on_time_min: onTime,
+    late_min: Math.max(onTime, min(v?.late_min, DEFAULT_VEHICLE_VISUALS.late_min)),
+    colors,
+  };
+}
+
+/**
+ * Purpose: the document with the vehicle visuals changed: `null` for a delay or colour puts the default back.
+ * Values equal to the default are not stored; an empty `visuals` is removed.
+ */
+export function withVehicleVisuals(
+  doc: PreferencesDoc | null | undefined,
+  change: {
+    on_time_min?: number | null;
+    late_min?: number | null;
+    colors?: Partial<Record<VehicleState, string | null>>;
+  },
+): PreferencesDoc {
+  const cur = doc?.visuals ?? {};
+  const out: VisualsDoc = {};
+  const delay = (key: "on_time_min" | "late_min") => {
+    const v = key in change ? change[key] : cur[key];
+    if (typeof v === "number" && Number.isFinite(v) && v !== DEFAULT_VEHICLE_VISUALS[key])
+      out[key] = Math.min(MAX_VISUAL_DELAY_MIN, Math.max(0, v));
+  };
+  delay("on_time_min");
+  delay("late_min");
+  const colors: Partial<Record<VehicleState, string>> = {};
+  for (const k of VEHICLE_STATES) {
+    const c = change.colors && k in change.colors ? change.colors[k] : cur.colors?.[k];
+    if (typeof c === "string" && HEX_COLOR.test(c) && c.toLowerCase() !== DEFAULT_VEHICLE_VISUALS.colors[k])
+      colors[k] = c.toLowerCase();
+  }
+  if (Object.keys(colors).length) out.colors = colors;
+  const next: PreferencesDoc = { ...(doc ?? {}), values: { ...(doc?.values ?? {}) } };
+  if (Object.keys(out).length) next.visuals = out;
+  else delete next.visuals;
+  return next;
 }
 
 /** The delays in traffic a project can change, with the library's values. */

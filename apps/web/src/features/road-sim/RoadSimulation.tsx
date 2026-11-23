@@ -6,18 +6,26 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useI18n } from "../../i18n/i18n";
+import type { MessageKey } from "../../i18n/messages";
 import { isOpen, type RunStatus } from "../capacity/server";
 import { loadDepotEngine } from "../depots/engine";
 import type { DepotEngineLoader, SavedDepot } from "../depots/types";
 import { clock, parseClock } from "../journey-planner/format";
 import type { SavedStreetLine } from "../street-lines/saved";
 import type { StreetSetup } from "../street-setup/types";
-import type { PreferencesDoc } from "../../workspace/preferences";
+import {
+  type PreferencesDoc,
+  VEHICLE_STATES,
+  type VehicleState,
+  type VehicleVisuals,
+  vehicleVisualsFrom,
+} from "../../workspace/preferences";
 import type { RoadRun, RoadRunDetail, RoadRunsApi } from "./api";
-import { ensureReplayLayers, removeReplayLayers, replaySpan, setReplayTime } from "./replay";
+import { ensureReplayLayers, hasServiceTimes, removeReplayLayers, replaySpan, setReplayTime } from "./replay";
 import { buildScenario } from "./scenario";
 import type { Replay, RoadEvent, RoadLineResult, RoadResult, RoadStep } from "./types";
 import { engineErrorText } from "../../i18n/engine";
+import { withUnit } from "../../i18n/units";
 
 const H = 3600;
 const PERIODS = [
@@ -40,7 +48,7 @@ const STATUS_TONE: Record<RunStatus, string> = {
 };
 
 const pct = (x: number) => `${Math.round(x * 100)} %`;
-const mins = (s: number) => (s < 90 ? `${Math.round(s)} s` : `${(s / 60).toFixed(1)} min`);
+const mins = (s: number) => (s < 90 ? withUnit(Math.round(s), "s") : withUnit((s / 60).toFixed(1), "min"));
 const message = (e: unknown) => engineErrorText(e);
 
 interface Props {
@@ -51,6 +59,8 @@ interface Props {
   depots?: readonly SavedDepot[];
   setups?: readonly StreetSetup[];
   prefs?: PreferencesDoc["values"];
+  /** The project's vehicle colours and delays (Project preferences → Visuals); absent: the defaults. */
+  visuals?: PreferencesDoc["visuals"];
   /** Depot layout engine; tests inject a fake. */
   loadEngine?: DepotEngineLoader;
   pollMs?: number;
@@ -65,10 +75,12 @@ export function RoadSimulation({
   depots = NO_DEPOTS,
   setups = NO_SETUPS,
   prefs,
+  visuals,
   loadEngine = loadDepotEngine,
   pollMs = 2000,
 }: Props) {
   const { t, language } = useI18n();
+  const vehicleVisuals = useMemo(() => vehicleVisualsFrom({ values: {}, visuals }), [visuals]);
   const [period, setPeriod] = useState<string>("am");
   const [from, setFrom] = useState("07:00");
   const [to, setTo] = useState("09:00");
@@ -79,6 +91,10 @@ export function RoadSimulation({
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  // The lines the planner unticked, by id (by index for a line saved without one), so new lines start ticked.
+  const [unticked, setUnticked] = useState<ReadonlySet<string>>(() => new Set());
+  const keyOf = (index: number) => streetLines[index]?.id ?? `#${index}`;
+  const picked = (index: number) => !unticked.has(keyOf(index));
 
   const window = useMemo(() => {
     const p = PERIODS.find((x) => x.id === period);
@@ -89,8 +105,9 @@ export function RoadSimulation({
   }, [period, from, to]);
   const warmup = Math.max(0, Math.min(120, Number(warmupMin) || 0)) * 60;
 
-  // A preview of what would run: which lines and which depots, without the depot engine.
-  const preview = useMemo(
+  // A preview of what could run (the lines to tick) and of what would run: which lines and which depots,
+  // without the depot engine.
+  const runnableAll = useMemo(
     () =>
       window
         ? buildScenario({
@@ -106,6 +123,31 @@ export function RoadSimulation({
         : null,
     [window, streetLines, depots, setups, prefs, warmup],
   );
+  const preview = useMemo(
+    () =>
+      window
+        ? buildScenario({
+            lines: streetLines,
+            depots,
+            setups,
+            prefs,
+            from: window.from,
+            to: window.to,
+            warmup,
+            picked: (i) => !unticked.has(streetLines[i]?.id ?? `#${i}`),
+            engine: null,
+          })
+        : null,
+    [window, streetLines, depots, setups, prefs, warmup, unticked],
+  );
+  const choices = runnableAll?.scenario.lines ?? [];
+  const tick = (index: number, on: boolean) =>
+    setUnticked((u) => {
+      const next = new Set(u);
+      if (on) next.delete(keyOf(index));
+      else next.add(keyOf(index));
+      return next;
+    });
 
   useEffect(() => {
     if (!api) return;
@@ -156,6 +198,7 @@ export function RoadSimulation({
         from: window.from,
         to: window.to,
         warmup,
+        picked,
         engine,
       });
       const s = Math.round(Number(seed));
@@ -246,10 +289,63 @@ export function RoadSimulation({
         </div>
       </fieldset>
 
+      {choices.length > 0 && (
+        <fieldset className="space-y-1.5">
+          <legend className="caps mb-1.5">{t("road.pick")}</legend>
+          <div className="flex gap-1.5">
+            <button
+              type="button"
+              className="chip"
+              onClick={() =>
+                setUnticked((u) => {
+                  const next = new Set(u);
+                  for (const l of choices) next.delete(keyOf(l.index));
+                  return next;
+                })
+              }
+            >
+              {t("road.pickAll")}
+            </button>
+            <button
+              type="button"
+              className="chip"
+              onClick={() =>
+                setUnticked((u) => {
+                  const next = new Set(u);
+                  for (const l of choices) next.add(keyOf(l.index));
+                  return next;
+                })
+              }
+            >
+              {t("road.pickNone")}
+            </button>
+          </div>
+          <ul className="max-h-56 space-y-1 overflow-y-auto">
+            {choices.map((l) => (
+              <li key={keyOf(l.index)}>
+                <label className="flex items-center gap-2 text-sm">
+                  <input
+                    type="checkbox"
+                    checked={picked(l.index)}
+                    onChange={(e) => tick(l.index, e.target.checked)}
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="inline-block h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{ background: l.color }}
+                  />
+                  {l.name}
+                </label>
+              </li>
+            ))}
+          </ul>
+        </fieldset>
+      )}
+
       {preview && (
         <div className="space-y-1 text-sm text-slate-700">
           {runnable === 0 ? (
-            <p>{t("road.nothing")}</p>
+            <p>{t(choices.length > 0 ? "road.pickSome" : "road.nothing")}</p>
           ) : (
             <p>
               {t("road.lines", { n: runnable })} ·{" "}
@@ -437,7 +533,12 @@ export function RoadSimulation({
       )}
       {result && <Results result={result} />}
       {api && viewing?.status === "done" && (
-        <ReplayPlayer key={viewing.id} load={() => api.replay(viewing.id)} map={map} />
+        <ReplayPlayer
+          key={viewing.id}
+          load={() => api.replay(viewing.id)}
+          map={map}
+          visuals={vehicleVisuals}
+        />
       )}
     </div>
   );
@@ -521,7 +622,7 @@ function LineCard({ line }: { line: RoadLineResult }) {
   if (!line.problem) {
     rows.push([t("road.kpi.trips"), `${line.trips_run ?? 0} / ${line.trips ?? 0}`]);
     rows.push([t("road.kpi.cycle"), `${mins(line.planned_run_s ?? 0)} → ${mins(line.run_cycle_s ?? 0)}`]);
-    rows.push([t("road.kpi.speed"), `${(line.speed_kmh ?? 0).toFixed(1)} km/h`]);
+    rows.push([t("road.kpi.speed"), withUnit((line.speed_kmh ?? 0).toFixed(1), "km/h")]);
     rows.push([t("road.kpi.punctuality"), pct(line.punctuality ?? 1)]);
     rows.push([t("road.kpi.delay"), `${mins(line.mean_delay_s ?? 0)} / ${mins(line.p95_delay_s ?? 0)}`]);
     rows.push([t("road.kpi.bunching"), pct(line.bunched_share ?? 0)]);
@@ -562,7 +663,15 @@ function LineCard({ line }: { line: RoadLineResult }) {
 }
 
 /** Purpose: the replay of a finished run on the map, with play, pause, reset, speed and a time slider. */
-function ReplayPlayer({ load, map }: { load: () => Promise<Replay>; map: MapLibreMap | null }) {
+function ReplayPlayer({
+  load,
+  map,
+  visuals,
+}: {
+  load: () => Promise<Replay>;
+  map: MapLibreMap | null;
+  visuals: VehicleVisuals;
+}) {
   const { t } = useI18n();
   const [replay, setReplay] = useState<Replay | null>(null);
   const [failed, setFailed] = useState<string | null>(null);
@@ -593,8 +702,8 @@ function ReplayPlayer({ load, map }: { load: () => Promise<Replay>; map: MapLibr
   }, [map, replay]);
 
   useEffect(() => {
-    if (map && replay && map.getSource("road-replay")) setReplayTime(map, replay, time);
-  }, [map, replay, time]);
+    if (map && replay && map.getSource("road-replay")) setReplayTime(map, replay, time, visuals);
+  }, [map, replay, time, visuals]);
 
   useEffect(() => {
     if (!playing || !replay) return;
@@ -668,6 +777,43 @@ function ReplayPlayer({ load, map }: { load: () => Promise<Replay>; map: MapLibr
         aria-label={t("road.time")}
         onChange={(e) => setTime(Number(e.target.value))}
       />
+      <VehicleLegend visuals={visuals} />
+      {!hasServiceTimes(replay) && <p className="text-xs text-slate-600">{t("road.replay.noService")}</p>}
     </section>
+  );
+}
+
+const STATE_LABEL = {
+  on_time: "visuals.onTime",
+  late: "visuals.late",
+  very_late: "visuals.veryLate",
+  out_of_service: "visuals.outOfService",
+  parked: "visuals.parked",
+} as const satisfies Record<VehicleState, MessageKey>;
+
+/** Purpose: what each vehicle colour of the replay means, with the project's delays. */
+function VehicleLegend({ visuals }: { visuals: VehicleVisuals }) {
+  const { t } = useI18n();
+  const text = (k: VehicleState) =>
+    k === "on_time"
+      ? t("visuals.legend.onTime", { min: visuals.on_time_min })
+      : k === "late"
+        ? t("visuals.legend.late", { from: visuals.on_time_min, to: visuals.late_min })
+        : k === "very_late"
+          ? t("visuals.legend.veryLate", { min: visuals.late_min })
+          : t(STATE_LABEL[k]);
+  return (
+    <ul className="m-0 flex list-none flex-wrap gap-x-3 gap-y-1 p-0 text-xs text-slate-700">
+      {VEHICLE_STATES.map((k) => (
+        <li key={k} className="flex items-center gap-1.5">
+          <span
+            aria-hidden="true"
+            className="inline-block h-3 w-3 rounded-full border border-white shadow-[0_0_0_1px_rgba(15,23,42,.25)]"
+            style={{ background: visuals.colors[k] }}
+          />
+          {text(k)}
+        </li>
+      ))}
+    </ul>
   );
 }

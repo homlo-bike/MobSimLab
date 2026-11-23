@@ -712,6 +712,16 @@ export const editorsRu = {
   "schematic.showStatuses": "Символы статуса",
   "schematic.showFeatures": "Символы оснащения станций",
   "schematic.showWater": "Море, озёра и реки",
+  "schematic.straightRivers": "Рисовать реки шагами по 45°",
+  "schematic.nameSize": "Размер названий станций",
+  "schematic.longRuns": "Длинные перегоны без остановок",
+  "schematic.longRuns.off": "Как на местности",
+  "schematic.longRuns.max": "Не более {n} × обычного интервала",
+  "schematic.pngSmallNames":
+    "Названия станций на этом изображении всего {px} px, потому что оно ограничено 8192 px по стороне. Для более чёткой копии используйте SVG или печать.",
+  "schematic.printPaper": "Формат {paper}: названия станций печатаются размером {pt} pt.",
+  "schematic.printSmallNames":
+    "Формат {paper}: названия станций печатаются размером всего {pt} pt. Увеличьте названия станций или скройте некоторые слои.",
   "schematic.showAreas": "Тарифные зоны и ориентиры",
   "schematic.water": "Вода",
   "schematic.areas": "Тарифные зоны и ориентиры",
@@ -1015,6 +1025,9 @@ export const editorsRu = {
   "jp.set.maxRides": "Не больше транспортных средств",
   "jp.walkNote":
     "Пешие пути — расстояние по прямой × 1,3, пока нет пешеходной сети. Значения по умолчанию взяты из библиотеки допущений.",
+  "jp.slopeNote":
+    "Время ходьбы считается по уклону между её концами (функция пешего движения Тоблера с высотами рельефа): в гору и по крутому спуску дольше.",
+  "jp.slopeNoHeights": "Высоты рельефа не загрузились, поэтому ходьба считается как по ровной местности.",
 
   "kit.minSec": "{m} мин {s} с",
   "kit.checks": "Проверки",
@@ -1048,6 +1061,7 @@ export const editorsRu = {
   "cable.hint.select": "Нажмите на станцию, чтобы изменить её. Перетащите станцию, чтобы сдвинуть её.",
   "cable.modeSystem": "Вид транспорта и система",
   "cable.lineSpeed": "Скорость каната (м/с)",
+  "cable.longestSpan": "Наибольший пролёт (м)",
   "cable.cabinInterval": "Интервал кабин (с)",
   "cable.departureEvery": "Отправление каждые",
   "cable.cabinEvery": "Кабина каждые",
@@ -1452,6 +1466,8 @@ export const editorsRu = {
   "capacity.dieOut": "Затухают",
   "capacity.pileUp": "Накапливаются",
   "capacity.delaysHint": "{passed} передаётся на рейс, {left} остаётся в конце",
+  "capacity.ranOf": "Выполнено рейсов: {ran} из {planned} запланированных ({share}), пропущено: {left}",
+  "capacity.noneRan": "Не выполнен ни один из запланированных рейсов (запланировано: {planned})",
   "capacity.worksUpTo": "Работает до {n} поездов в час в каждую сторону",
   "capacity.tryingOthers": "Проверка других интервалов…",
   "capacity.noneWorks": "Ни один проверенный интервал не работает",

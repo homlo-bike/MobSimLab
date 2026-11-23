@@ -268,14 +268,20 @@
     - context:
         mode: cable_car
         ropeway_system: mgd
-      low: 200
+      low: 270
       central: 400
-      high: 600
-      basis: educated-guess
+      high: 900
+      basis: documented
       sources:
+        - telecabine-lisboa-tech
+        - poma-nizhny-novgorod
         - mobsimlab-derivation
       check: unverified
-      rationale: "R1 §1.5: MGD spans are a few hundred metres (short spans, many towers)."
+      rationale:
+        "Longest span between two supports that the automatic towers may use. Urban monocable gondolas mostly
+        span a few hundred metres: Lisbon's longest is 270 m. Nizhny Novgorod spans 900 m over the Volga, the
+        longest for an 8-seat gondola, on two towers over 80 m. The central value is a planning default; a
+        longer span needs taller towers for the rope sag."
     - context:
         mode: cable_car
         ropeway_system: 2s
@@ -293,11 +299,14 @@
       low: 1000
       central: 1500
       high: 3000
-      basis: educated-guess
+      basis: documented
       sources:
+        - peak-2-peak-span
         - mobsimlab-derivation
       check: unverified
-      rationale: "R1 §1.2: long spans of 1 to 3 km, few towers."
+      rationale:
+        "R1 §1.2: long spans of 1 to 3 km, few towers. Peak 2 Peak (Whistler) spans 3,024 m between towers,
+        the longest of any 3S."
     - context:
         mode: cable_car
         ropeway_system: funitel
@@ -453,6 +462,28 @@
         - mobsimlab-derivation
       check: unverified
       rationale: Margin over the minimum for swing in wind, snow and rescue access; automatic towers keep it.
+- key: ropeway.station_approach_m
+  label: Station approach, length
+  group: Cable cars
+  unit: m
+  used_by:
+    - clearance check
+    - automatic towers
+  values:
+    - context:
+        mode: "*"
+      low: 10
+      central: 30
+      high: 60
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale:
+        Where cabins leave and enter a station they are close to platform height over the station's fenced
+        approach. Within this distance of a station the cabin only has to clear the ground and buildings;
+        beyond it the minimum and recommended clearances apply. To verify against EN 12929-1 (clearance
+        profile and passageways) and the station design.
 - key: ropeway.tower_height_m
   label: Tower height, standard
   group: Cable cars

@@ -659,6 +659,16 @@ export const editorsId = {
   "schematic.showStatuses": "Simbol status",
   "schematic.showFeatures": "Simbol fasilitas stasiun",
   "schematic.showWater": "Laut, danau, dan sungai",
+  "schematic.straightRivers": "Gambar sungai dengan langkah 45°",
+  "schematic.nameSize": "Ukuran nama stasiun",
+  "schematic.longRuns": "Ruas panjang tanpa perhentian",
+  "schematic.longRuns.off": "Seperti di lapangan",
+  "schematic.longRuns.max": "Paling banyak {n} × jarak biasa",
+  "schematic.pngSmallNames":
+    "Nama stasiun hanya {px} px di gambar ini karena dibatasi 8.192 px per sisi. Gunakan SVG atau Cetak untuk salinan yang lebih tajam.",
+  "schematic.printPaper": "Ukuran kertas {paper}: nama stasiun dicetak {pt} pt.",
+  "schematic.printSmallNames":
+    "Ukuran kertas {paper}: nama stasiun hanya dicetak {pt} pt. Perbesar nama stasiun atau sembunyikan beberapa lapisan.",
   "schematic.showAreas": "Zona tarif dan tengara",
   "schematic.water": "Air",
   "schematic.areas": "Zona tarif dan tengara",
@@ -956,6 +966,9 @@ export const editorsId = {
   "jp.set.maxRides": "Jumlah naik maksimum",
   "jp.walkNote":
     "Jarak jalan kaki adalah garis lurus × 1,3 sampai jaringan pejalan kaki ditambahkan. Bawaan dari pustaka asumsi.",
+  "jp.slopeNote":
+    "Waktu jalan kaki dihitung pada kemiringan antara kedua ujungnya (fungsi pendakian Tobler dengan ketinggian medan): jalan menanjak dan menurun curam lebih lama.",
+  "jp.slopeNoHeights": "Ketinggian medan tidak termuat, jadi jalan kaki dihitung seperti di tanah datar.",
   "kit.minSec": "{m} mnt {s} d",
   "kit.checks": "Pemeriksaan",
   "kit.issue": "{level}: ",
@@ -987,6 +1000,7 @@ export const editorsId = {
   "cable.hint.select": "Klik stasiun untuk mengeditnya. Seret stasiun untuk memindahkannya.",
   "cable.modeSystem": "Moda dan sistem",
   "cable.lineSpeed": "Kecepatan kabel (m/d)",
+  "cable.longestSpan": "Bentang terpanjang (m)",
   "cable.cabinInterval": "Selang kabin (d)",
   "cable.departureEvery": "Keberangkatan setiap",
   "cable.cabinEvery": "Kabin setiap",
@@ -1383,6 +1397,9 @@ export const editorsId = {
   "capacity.dieOut": "Mereda",
   "capacity.pileUp": "Menumpuk",
   "capacity.delaysHint": "{passed} diteruskan per perjalanan, sisa {left} di akhir",
+  "capacity.ranOf":
+    "Perjalanan yang berjalan: {ran} dari {planned} yang direncanakan ({share}), {left} tidak dijalankan",
+  "capacity.noneRan": "Tidak satu pun dari {planned} perjalanan yang direncanakan berjalan",
   "capacity.worksUpTo": "Berjalan hingga {n} kereta per jam tiap arah",
   "capacity.tryingOthers": "Mencoba frekuensi lain…",
   "capacity.noneWorks": "Tidak ada frekuensi yang dicoba berhasil",

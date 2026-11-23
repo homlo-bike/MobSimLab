@@ -652,6 +652,16 @@ export const editorsBn = {
   "schematic.showStatuses": "অবস্থার প্রতীক",
   "schematic.showFeatures": "স্টেশন সুবিধার প্রতীক",
   "schematic.showWater": "সমুদ্র, হ্রদ ও নদী",
+  "schematic.straightRivers": "নদীগুলো 45° ধাপে আঁকুন",
+  "schematic.nameSize": "স্টেশনের নামের আকার",
+  "schematic.longRuns": "থামা ছাড়া দীর্ঘ অংশ",
+  "schematic.longRuns.off": "মাটিতে যেমন",
+  "schematic.longRuns.max": "সর্বোচ্চ সাধারণ দূরত্বের {n} গুণ",
+  "schematic.pngSmallNames":
+    "এই ছবিতে স্টেশনের নাম মাত্র {px} px, কারণ এটি প্রতি পাশে 8,192 px-এ সীমিত। আরও স্পষ্ট কপির জন্য SVG বা প্রিন্ট ব্যবহার করুন।",
+  "schematic.printPaper": "পৃষ্ঠার আকার {paper}: স্টেশনের নাম {pt} pt-এ ছাপা হয়।",
+  "schematic.printSmallNames":
+    "পৃষ্ঠার আকার {paper}: স্টেশনের নাম মাত্র {pt} pt-এ ছাপা হয়। স্টেশনের নাম বড় করুন বা কিছু স্তর লুকান।",
   "schematic.showAreas": "ভাড়া অঞ্চল ও উল্লেখযোগ্য স্থান",
   "schematic.water": "জল",
   "schematic.areas": "ভাড়া অঞ্চল ও উল্লেখযোগ্য স্থান",
@@ -941,6 +951,9 @@ export const editorsBn = {
   "jp.set.maxRides": "সর্বোচ্চ যান",
   "jp.walkNote":
     "হাঁটার নেটওয়ার্ক না আসা পর্যন্ত হাঁটা সরলরেখার দূরত্ব × 1.3। ডিফল্ট মান অনুমান লাইব্রেরি থেকে।",
+  "jp.slopeNote":
+    "হাঁটার সময় দুই প্রান্তের মধ্যকার ঢাল ধরে হিসাব হয় (ভূমির উচ্চতাসহ টোবলারের হাইকিং ফাংশন): চড়াই ও খাড়া উতরাই হাঁটায় বেশি সময় লাগে।",
+  "jp.slopeNoHeights": "ভূমির উচ্চতা লোড হয়নি, তাই হাঁটা সমতল ধরে হিসাব করা হচ্ছে।",
   "kit.minSec": "{m} মিনিট {s} সেকেন্ড",
   "kit.checks": "পরীক্ষা",
   "kit.issue": "{level}:",
@@ -972,6 +985,7 @@ export const editorsBn = {
   "cable.hint.select": "সম্পাদনা করতে স্টেশনে ক্লিক করুন। সরাতে স্টেশন টানুন।",
   "cable.modeSystem": "মাধ্যম ও ব্যবস্থা",
   "cable.lineSpeed": "দড়ির গতি (মি/সে)",
+  "cable.longestSpan": "সবচেয়ে লম্বা স্প্যান (মি)",
   "cable.cabinInterval": "কেবিনের ব্যবধান (সে)",
   "cable.departureEvery": "ছাড়ে প্রতি",
   "cable.cabinEvery": "কেবিন প্রতি",
@@ -1361,6 +1375,8 @@ export const editorsBn = {
   "capacity.dieOut": "মিলিয়ে যায়",
   "capacity.pileUp": "জমে",
   "capacity.delaysHint": "প্রতি যাত্রায় {passed} ছড়ায়, শেষে {left} থাকে",
+  "capacity.ranOf": "চলা যাত্রা: {planned}টি পরিকল্পিতের মধ্যে {ran}টি ({share}), {left}টি বাদ পড়েছে",
+  "capacity.noneRan": "{planned}টি পরিকল্পিত যাত্রার একটিও চলেনি",
   "capacity.worksUpTo": "প্রতি দিকে ঘণ্টায় {n}টি ট্রেন পর্যন্ত চলে",
   "capacity.tryingOthers": "অন্য ফ্রিকোয়েন্সি চেষ্টা করা হচ্ছে…",
   "capacity.noneWorks": "চেষ্টা করা কোনো ফ্রিকোয়েন্সি চলে না",

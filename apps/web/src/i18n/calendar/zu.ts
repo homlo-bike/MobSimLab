@@ -103,6 +103,7 @@ export const calendarZu = {
   "calrun.days": "Izinsuku",
   "calrun.trains": "Izitimela",
   "calrun.punctuality": "Ngesikhathi",
+  "calrun.ranOf": "Kwenziwe uhambo olungu-{ran} kolungu-{planned} ({share})",
   "calrun.perYear": "Unyaka ngamunye",
   "calrun.perDate": "Usuku ngalunye",
   "calrun.method":

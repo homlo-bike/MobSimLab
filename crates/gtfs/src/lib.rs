@@ -300,6 +300,7 @@ pub fn import(input: &ImportInput) -> Result<Imported, Msg> {
                 stop_lon: lon,
                 parent_station: (!parent.is_empty()).then(|| parent.to_string()),
                 platform_code: (!platform.is_empty()).then(|| platform.to_string()),
+                elevation_m: None,
             },
         );
     }

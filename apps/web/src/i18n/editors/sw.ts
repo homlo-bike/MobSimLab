@@ -665,6 +665,16 @@ export const editorsSw = {
   "schematic.showStatuses": "Alama za hadhi",
   "schematic.showFeatures": "Alama za huduma za stesheni",
   "schematic.showWater": "Bahari, maziwa na mito",
+  "schematic.straightRivers": "Chora mito kwa hatua za 45°",
+  "schematic.nameSize": "Ukubwa wa majina ya vituo",
+  "schematic.longRuns": "Sehemu ndefu bila vituo",
+  "schematic.longRuns.off": "Kama ardhini",
+  "schematic.longRuns.max": "Zaidi ya mara {n} ya nafasi ya kawaida",
+  "schematic.pngSmallNames":
+    "Majina ya vituo ni {px} px tu katika picha hii kwa sababu ina kikomo cha px 8,192 kila upande. Tumia SVG au Chapisha kupata nakala iliyo wazi zaidi.",
+  "schematic.printPaper": "Ukubwa wa ukurasa {paper}: majina ya vituo yanachapishwa kwa {pt} pt.",
+  "schematic.printSmallNames":
+    "Ukubwa wa ukurasa {paper}: majina ya vituo yanachapishwa kwa {pt} pt tu. Ongeza ukubwa wa majina ya vituo au ficha baadhi ya tabaka.",
   "schematic.showAreas": "Kanda za nauli na alama maarufu",
   "schematic.water": "Maji",
   "schematic.areas": "Kanda za nauli na alama maarufu",
@@ -964,6 +974,9 @@ export const editorsSw = {
   "jp.set.maxRides": "Magari mengi zaidi",
   "jp.walkNote":
     "Kutembea ni umbali wa mstari ulionyooka × 1.3 hadi mtandao wa kutembea uwepo. Thamani za msingi zinatoka maktaba ya dhana.",
+  "jp.slopeNote":
+    "Muda wa kutembea hukokotolewa kwenye mteremko kati ya ncha zake mbili (kanuni ya matembezi ya Tobler pamoja na miinuko ya ardhi): kupanda na kushuka kwa kasi huchukua muda zaidi.",
+  "jp.slopeNoHeights": "Miinuko ya ardhi haikupakiwa, hivyo matembezi yanahesabiwa kama ardhi tambarare.",
   "kit.minSec": "dak {m} sek {s}",
   "kit.checks": "Ukaguzi",
   "kit.issue": "{level}:",
@@ -995,6 +1008,7 @@ export const editorsSw = {
   "cable.hint.select": "Bofya stesheni kuihariri. Buruta stesheni kuisogeza.",
   "cable.modeSystem": "Aina na mfumo",
   "cable.lineSpeed": "Kasi ya kamba (m/s)",
+  "cable.longestSpan": "Upana mrefu zaidi kati ya minara (m)",
   "cable.cabinInterval": "Muda kati ya vyumba (s)",
   "cable.departureEvery": "Kuondoka kila",
   "cable.cabinEvery": "Chumba kila",
@@ -1392,6 +1406,8 @@ export const editorsSw = {
   "capacity.dieOut": "Unaisha",
   "capacity.pileUp": "Unalimbikizana",
   "capacity.delaysHint": "{passed} unapitishwa kwa kila safari, {left} unabaki mwishoni",
+  "capacity.ranOf": "Safari zilizofanyika: {ran} kati ya {planned} zilizopangwa ({share}), {left} ziliachwa",
+  "capacity.noneRan": "Hakuna safari hata moja kati ya {planned} zilizopangwa iliyofanyika",
   "capacity.worksUpTo": "Inafanya kazi hadi treni {n} kwa saa kila upande",
   "capacity.tryingOthers": "Inajaribu masafa mengine…",
   "capacity.noneWorks": "Hakuna masafa yaliyojaribiwa yanayofanya kazi",

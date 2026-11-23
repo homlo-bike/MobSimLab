@@ -28,6 +28,12 @@
     "street-routing": "AGPL-3.0-or-later: this project",
     "street-routing-wasm": "AGPL-3.0-or-later: this project",
     "rail-design": "AGPL-3.0-or-later: this project",
-    "rail-design-wasm": "AGPL-3.0-or-later: this project"
+    "rail-design-wasm": "AGPL-3.0-or-later: this project",
+    "osm2streets": "Apache-2.0: repository LICENSE verified 2026-11-23, no Cargo.toml licence field, ADR-0047",
+    "osm2lanes": "Apache-2.0: osm2streets repository LICENSE verified 2026-11-23, ADR-0047",
+    "streets_reader": "Apache-2.0: osm2streets repository LICENSE verified 2026-11-23, ADR-0047",
+    "abstutil": "Apache-2.0: a-b-street/abstreet LICENSE verified 2026-11-23, ADR-0047",
+    "geom": "Apache-2.0: a-b-street/geom LICENSE verified 2026-11-23, ADR-0047",
+    "osm-reader": "Apache-2.0: a-b-street/osm-reader LICENSE verified 2026-11-23, ADR-0047"
   }
 }

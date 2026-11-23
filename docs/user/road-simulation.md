@@ -47,7 +47,19 @@ Each line shows, for the period:
 
 ## Replay
 
-A finished run shows **Replay**. **Play** moves the line vehicles on the map, in their line's colour, at the chosen **speed** (1× to 300× real time); **Pause** stops, **Reset** goes back to the start, and the **time** slider jumps to any moment. Vehicles in the depot are drawn paler; at closer zoom each vehicle shows its line and number.
+A finished run shows **Replay**. **Play** moves the line vehicles on the map at the chosen **speed** (1× to 300× real time); **Pause** stops, **Reset** goes back to the start, and the **time** slider jumps to any moment. At closer zoom each vehicle shows its line and number.
+
+Each vehicle is coloured by what it is doing, with a legend under the slider:
+
+| Colour (default) | Vehicle |
+|---|---|
+| Green | In service and on time: at most 1 minute late, or early. |
+| Yellow | In service and late: up to 3 minutes late. |
+| Red | In service and later than that. |
+| Dark grey | Out of service on the street: pulling out of the depot to its first stop, or back from its last stop to the depot. |
+| Light grey | Parked in the depot. |
+
+A vehicle is in service from reaching the first stop of its first trip until it leaves the first stop after its last trip. Its delay is that of its last departure from a stop, or, once the planned departure of the stop it is heading to or standing at has passed, the time since then if that is more. Change the minutes and the colours in **Project preferences → Visuals**. Runs saved before the stop times were recorded keep each vehicle in its line's colour; run them again to see punctuality.
 
 ## Not yet
 

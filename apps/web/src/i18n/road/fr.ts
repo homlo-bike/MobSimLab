@@ -9,6 +9,10 @@ export const roadFr = {
     "Aucune ligne routière ne peut encore circuler. Dessinez-en une dans Créer → Ligne routière, avec au moins deux arrêts.",
   "road.lines": "Lignes routières : {n}",
   "road.depots": "Dépôts : {n}",
+  "road.pick": "Lignes à simuler",
+  "road.pickAll": "Toutes",
+  "road.pickNone": "Aucune",
+  "road.pickSome": "Cochez au moins une ligne routière à simuler.",
   "road.skipped.notRouted": "{name} est exclue : elle n’est pas encore tracée.",
   "road.skipped.noService": "{name} est exclue : elle n’a aucun départ sur cette période.",
   "road.noDepot": "{name} n’a pas de dépôt aménagé : ses véhicules commencent et finissent dans la rue.",
@@ -72,4 +76,25 @@ export const roadFr = {
   "prefs.roadIntro":
     "Trafic de voitures de fond dans les simulations routières (Simulateur → Simulation routière).",
   "prefs.offPeakTraffic": "Trafic hors pointes du matin et du soir, en part de la pointe de chaque rue",
+  "prefs.groupVisuals": "Affichage",
+  "visuals.vehiclesTitle": "Véhicules dans la simulation",
+  "visuals.vehiclesIntro":
+    "Couleurs des véhicules dans la relecture de la simulation routière (Simulateur → Simulation routière). Un véhicule est en service de son premier arrêt jusqu'à ce qu'il quitte le dernier ; l'avance compte comme à l'heure.",
+  "visuals.onTimeUpTo": "À l'heure jusqu'à (minutes de retard)",
+  "visuals.lateUpTo": "En retard jusqu'à (minutes de retard) ; au-delà, très en retard",
+  "visuals.noLate":
+    "« En retard jusqu'à » n'est pas supérieur à « À l'heure jusqu'à » : aucun véhicule n'apparaît en retard.",
+  "visuals.colors": "Couleurs",
+  "visuals.onTime": "En service, à l'heure",
+  "visuals.late": "En service, en retard",
+  "visuals.veryLate": "En service, très en retard",
+  "visuals.outOfService": "Hors service, sur la voirie",
+  "visuals.parked": "Garé au dépôt",
+  "visuals.defaultMin": "Par défaut : {value} min",
+  "visuals.reset": "Utiliser la valeur par défaut",
+  "visuals.legend.onTime": "À l'heure (jusqu'à {min} min de retard)",
+  "visuals.legend.late": "En retard ({from}–{to} min)",
+  "visuals.legend.veryLate": "Très en retard (plus de {min} min)",
+  "road.replay.noService":
+    "Ce calcul a été enregistré avant l'enregistrement des horaires de service : ses véhicules gardent la couleur de leur ligne. Relancez-le pour les voir selon leur ponctualité.",
 } satisfies RoadMessages;

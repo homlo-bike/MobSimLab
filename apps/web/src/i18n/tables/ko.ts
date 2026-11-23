@@ -438,4 +438,10 @@ export const tablesKo = {
   "tt.tbl.to": "도착지",
   "tt.tbl.arrives": "도착",
   "cost.outsideRange": "라이브러리 범위({low}–{high})를 벗어났습니다: 값과 단위를 확인하세요.",
+  "tbl.unrouted.title": "일부 도로 노선의 경로가 완전하지 않습니다",
+  "tbl.unrouted.intro":
+    "이 노선들은 저장할 때 경로 일부를 찾지 못해 표, 비용, 평가에서 0km로 계산됩니다. 각 노선을 만들기 탭에서 여세요. 도로가 불러와지고 완성된 경로가 저장됩니다. 계속 빨간색인 구간은 차량이 다닐 수 있는 도로로 점을 옮겨야 합니다.",
+  "tbl.unrouted.legs": "찾지 못한 구간",
+  "tbl.unrouted.runs": "찾지 못한 차고 운행",
+  "tbl.unrouted.leftOut": "최소 누락",
 } satisfies TablesMessages;

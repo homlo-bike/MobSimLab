@@ -459,4 +459,10 @@ export const tablesZu = {
   "tt.tbl.to": "Kuya",
   "tt.tbl.arrives": "Iyafika",
   "cost.outsideRange": "Ingaphandle kobubanzi bomtapo ({low}–{high}): hlola inani neyunithi yalo.",
+  "tbl.unrouted.title": "Eminye imizila yemigwaqo ayiphelele",
+  "tbl.unrouted.intro":
+    "Ezinye izingxenye zemizila yale migqa azitholakalanga lapho igcinwa, ngakho amathebula, izindleko nokuhlola kuzibala njengo-0 km. Vula umugqa ngamunye kuthebhu ethi Dala: imigwaqo yawo izolayisha futhi umzila ophelele uzogcinwa. Ingxenye ehlala ibomvu idinga ukuthi iphuzu lisuswe liye emgwaqweni imoto engawusebenzisa.",
+  "tbl.unrouted.legs": "Izingxenye ezingatholakalanga",
+  "tbl.unrouted.runs": "Uhambo lwedepho olungatholakalanga",
+  "tbl.unrouted.leftOut": "Okushiyiwe, okungenani",
 } satisfies TablesMessages;

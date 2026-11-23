@@ -72,10 +72,26 @@ a fallback, an Open-Elevation fallback, and every limit adjustable.
    like the GLO-30 tiles with a higher priority, so it wins where it has heights. The planner names its source,
    licence and vertical accuracy, which go into its Source record; Remove brings GLO-30 back.
 8. **Tools in the image.** `osmium-tool` and `osm2pgsql` run as separate programs (GPL), never linked.
+9. **One store for the instance** (2026-11-23, `db/migrations/0028_shared_data.sql`). Map data fetched live is
+   held once for the instance in `geo.shared_data`, keyed by kind, key and data date (when it was fetched):
+   OpenStreetMap tiles (`osm`, such as `road/x/y`), terrain heights (`height`, a rounded point) and the byte ranges
+   read from the GLO-30 cell files (`glo30`, `cell/offset/length`; an empty body means the cell does not exist).
+   A project points at the copies its tools used (`project.data_use`, project, kind and key to one copy), so its
+   data keeps its date until it is fetched again. A second project in the same area takes the newest copy already
+   held instead of downloading it: OpenStreetMap copies while they are younger than `MOBSIMLAB_OSM_CACHE_DAYS`,
+   heights and GLO-30 ranges always, since they do not change. An older OpenStreetMap copy is fetched again and
+   held as a new copy with its own date; the projects pointing at the old one keep it. Copies no project points at
+   are removed once they are older than `MOBSIMLAB_OSM_CACHE_DAYS` (checked at most hourly); deleting a project
+   removes only its pointers. The elevation import reads its GLO-30 ranges through the same store, so a second
+   project's import downloads nothing. The Overpass tile files and Geofabrik extracts on the data volume were
+   already held once for the instance. Each project's imported tables (`geo.osm_*`, `geo.dem_tile`) stay its own
+   cut of the area, made from the shared downloads. The migration moves the tiles and heights the projects kept in
+   `project.data_cache` (0022) into the store, holding equal copies once.
 
 ## Consequences
 
 - A project's map data has a fixed date until the planner refreshes it, and works when the public servers are down.
-- The data volume holds the Geofabrik downloads and each project's extract; the database holds the tables.
+- The data volume holds the Geofabrik downloads and each project's extract; the database holds the tables and the
+  shared store of fetched map data, which grows with the area all projects cover rather than with their number.
 - The project area is shared with the population import (`projects/project-area.ts`); it is changed only in the
   area window, and the Map data view then asks for a refresh.

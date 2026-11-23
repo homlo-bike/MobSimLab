@@ -630,6 +630,16 @@ export const editorsJa = {
   "schematic.showStatuses": "ステータス記号",
   "schematic.showFeatures": "駅設備の記号",
   "schematic.showWater": "海・湖・川",
+  "schematic.straightRivers": "川を 45° 刻みで描く",
+  "schematic.nameSize": "駅名の大きさ",
+  "schematic.longRuns": "駅のない長い区間",
+  "schematic.longRuns.off": "地理どおり",
+  "schematic.longRuns.max": "通常の駅間の最大 {n} 倍",
+  "schematic.pngSmallNames":
+    "この画像は一辺 8,192 px までのため、駅名は {px} px しかありません。より鮮明にするには SVG か印刷を使ってください。",
+  "schematic.printPaper": "用紙 {paper}：駅名は {pt} pt で印刷されます。",
+  "schematic.printSmallNames":
+    "用紙 {paper}：駅名は {pt} pt でしか印刷されません。駅名を大きくするか、一部のレイヤーを非表示にしてください。",
   "schematic.showAreas": "運賃ゾーンとランドマーク",
   "schematic.water": "水域",
   "schematic.areas": "運賃ゾーンとランドマーク",
@@ -913,6 +923,9 @@ export const editorsJa = {
   "jp.set.maxRides": "最大乗車回数",
   "jp.walkNote":
     "歩行ネットワークが追加されるまでは、徒歩距離を直線距離 × 1.3 とします。既定値は前提値ライブラリから。",
+  "jp.slopeNote":
+    "徒歩時間は両端の間の勾配で計算します（地形の標高とトブラーのハイキング関数）。上り坂と急な下り坂は時間が長くなります。",
+  "jp.slopeNoHeights": "地形の標高を読み込めなかったため、徒歩は平地として計算しています。",
   "kit.minSec": "{m}分{s}秒",
   "kit.checks": "チェック",
   "kit.issue": "{level}：",
@@ -944,6 +957,7 @@ export const editorsJa = {
   "cable.hint.select": "駅をクリックして編集します。駅はドラッグで移動できます。",
   "cable.modeSystem": "モードと方式",
   "cable.lineSpeed": "索道速度（m/s）",
+  "cable.longestSpan": "最大径間（m）",
   "cable.cabinInterval": "搬器間隔（秒）",
   "cable.departureEvery": "発車間隔",
   "cable.cabinEvery": "搬器間隔",
@@ -1324,6 +1338,8 @@ export const editorsJa = {
   "capacity.dieOut": "収束",
   "capacity.pileUp": "積み重なる",
   "capacity.delaysHint": "1 本あたり {passed} が伝わり、終了時に {left} 残る",
+  "capacity.ranOf": "運行した便: 計画 {planned} 本中 {ran} 本 ({share})、{left} 本は運行されず",
+  "capacity.noneRan": "計画した {planned} 本はどれも運行されなかった",
   "capacity.worksUpTo": "片方向 1 時間 {n} 本まで機能",
   "capacity.tryingOthers": "他の運行間隔を試験中…",
   "capacity.noneWorks": "試した運行間隔はどれも機能しません",

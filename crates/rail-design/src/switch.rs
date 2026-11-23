@@ -111,7 +111,7 @@ fn crossover_path(t: &TurnoutGeometry, e: f64) -> (Vec<P2>, f64) {
     let mid = P2::new(xm, 0.0);
     for q in half.iter().rev() {
         let r = mid.mul(2.0).sub(*q);
-        if v.last().map_or(true, |l| l.dist(r) > 1e-6) {
+        if v.last().is_none_or(|l| l.dist(r) > 1e-6) {
             v.push(r);
         }
     }

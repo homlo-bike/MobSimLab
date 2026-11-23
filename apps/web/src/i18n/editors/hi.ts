@@ -655,6 +655,16 @@ export const editorsHi = {
   "schematic.showStatuses": "स्थिति प्रतीक",
   "schematic.showFeatures": "स्टेशन सुविधा प्रतीक",
   "schematic.showWater": "समुद्र, झीलें और नदियाँ",
+  "schematic.straightRivers": "नदियों को 45° के चरणों में बनाएँ",
+  "schematic.nameSize": "स्टेशन नाम का आकार",
+  "schematic.longRuns": "बिना ठहराव के लंबे खंड",
+  "schematic.longRuns.off": "जैसे ज़मीन पर",
+  "schematic.longRuns.max": "अधिकतम सामान्य दूरी का {n} गुना",
+  "schematic.pngSmallNames":
+    "इस छवि में स्टेशन नाम केवल {px} px हैं, क्योंकि यह हर ओर 8,192 px तक सीमित है। अधिक साफ़ प्रति के लिए SVG या प्रिंट का उपयोग करें।",
+  "schematic.printPaper": "पृष्ठ आकार {paper}: स्टेशन नाम {pt} pt पर छपते हैं।",
+  "schematic.printSmallNames":
+    "पृष्ठ आकार {paper}: स्टेशन नाम केवल {pt} pt पर छपते हैं। स्टेशन नाम बड़े करें या कुछ परतें छिपाएँ।",
   "schematic.showAreas": "किराया ज़ोन और प्रमुख स्थल",
   "schematic.water": "जल",
   "schematic.areas": "किराया ज़ोन और प्रमुख स्थल",
@@ -949,6 +959,9 @@ export const editorsHi = {
   "jp.set.maxRides": "अधिकतम वाहन",
   "jp.walkNote":
     "पैदल दूरी पैदल नेटवर्क आने तक सीधी रेखा की दूरी × 1.3 है। डिफ़ॉल्ट मान धारणा पुस्तकालय से हैं।",
+  "jp.slopeNote":
+    "पैदल समय दोनों सिरों के बीच की ढलान पर गिना जाता है (भू-ऊँचाई के साथ टोबलर का हाइकिंग फ़ंक्शन): चढ़ाई और तीखी ढलान वाली पैदल यात्रा में अधिक समय लगता है।",
+  "jp.slopeNoHeights": "भू-ऊँचाई लोड नहीं हुई, इसलिए पैदल चलना समतल माना जा रहा है।",
   "kit.minSec": "{m} मिनट {s} सेकंड",
   "kit.checks": "जाँच",
   "kit.issue": "{level}:",
@@ -980,6 +993,7 @@ export const editorsHi = {
   "cable.hint.select": "संपादित करने के लिए स्टेशन पर क्लिक करें। खिसकाने के लिए उसे खींचें।",
   "cable.modeSystem": "साधन और प्रणाली",
   "cable.lineSpeed": "रस्सी की गति (मी/से)",
+  "cable.longestSpan": "सबसे लंबा स्पैन (मी)",
   "cable.cabinInterval": "केबिन अंतराल (सेकंड)",
   "cable.departureEvery": "प्रस्थान हर",
   "cable.cabinEvery": "केबिन हर",
@@ -1373,6 +1387,8 @@ export const editorsHi = {
   "capacity.dieOut": "खत्म होती है",
   "capacity.pileUp": "जमा होती है",
   "capacity.delaysHint": "प्रति यात्रा {passed} आगे गई, अंत में {left} बची",
+  "capacity.ranOf": "चली यात्राएँ: {planned} नियोजित में से {ran} ({share}), {left} छूट गईं",
+  "capacity.noneRan": "{planned} नियोजित यात्राओं में से कोई नहीं चली",
   "capacity.worksUpTo": "हर दिशा में प्रति घंटा {n} ट्रेनों तक काम करता है",
   "capacity.tryingOthers": "दूसरी आवृत्तियाँ आज़माई जा रही हैं…",
   "capacity.noneWorks": "आज़माई गई कोई आवृत्ति काम नहीं करती",

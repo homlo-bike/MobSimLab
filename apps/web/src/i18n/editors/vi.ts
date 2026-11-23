@@ -633,6 +633,16 @@ export const editorsVi = {
   "schematic.showStatuses": "Ký hiệu trạng thái",
   "schematic.showFeatures": "Ký hiệu tiện ích nhà ga",
   "schematic.showWater": "Biển, hồ và sông",
+  "schematic.straightRivers": "Vẽ sông theo bước 45°",
+  "schematic.nameSize": "Cỡ tên ga",
+  "schematic.longRuns": "Đoạn dài không có điểm dừng",
+  "schematic.longRuns.off": "Như trên thực địa",
+  "schematic.longRuns.max": "Tối đa {n} × khoảng cách thường",
+  "schematic.pngSmallNames":
+    "Tên ga trong ảnh này chỉ {px} px vì ảnh bị giới hạn 8.192 px mỗi cạnh. Dùng SVG hoặc In để có bản rõ hơn.",
+  "schematic.printPaper": "Khổ giấy {paper}: tên ga được in cỡ {pt} pt.",
+  "schematic.printSmallNames":
+    "Khổ giấy {paper}: tên ga chỉ được in cỡ {pt} pt. Hãy tăng cỡ tên ga hoặc ẩn bớt lớp.",
   "schematic.showAreas": "Vùng giá vé và địa danh",
   "schematic.water": "Nước",
   "schematic.areas": "Vùng giá vé và địa danh",
@@ -924,6 +934,9 @@ export const editorsVi = {
   "jp.set.maxRides": "Số chặng tối đa",
   "jp.walkNote":
     "Quãng đi bộ là đường thẳng × 1,3 cho đến khi có mạng lưới đi bộ. Mặc định từ thư viện giả định.",
+  "jp.slopeNote":
+    "Thời gian đi bộ được tính theo độ dốc giữa hai đầu (hàm đi bộ Tobler với độ cao địa hình): lên dốc và xuống dốc gắt mất nhiều thời gian hơn.",
+  "jp.slopeNoHeights": "Không tải được độ cao địa hình, nên đi bộ được tính như trên đường bằng.",
   "kit.minSec": "{m} phút {s} giây",
   "kit.checks": "Kiểm tra",
   "kit.issue": "{level}: ",
@@ -955,6 +968,7 @@ export const editorsVi = {
   "cable.hint.select": "Nhấp vào ga để chỉnh sửa. Kéo ga để di chuyển.",
   "cable.modeSystem": "Phương thức và hệ thống",
   "cable.lineSpeed": "Tốc độ cáp (m/s)",
+  "cable.longestSpan": "Nhịp dài nhất (m)",
   "cable.cabinInterval": "Khoảng cách cabin (giây)",
   "cable.departureEvery": "Khởi hành mỗi",
   "cable.cabinEvery": "Cabin mỗi",
@@ -1342,6 +1356,8 @@ export const editorsVi = {
   "capacity.dieOut": "Tắt dần",
   "capacity.pileUp": "Dồn lại",
   "capacity.delaysHint": "{passed} truyền sang mỗi chuyến, còn {left} ở cuối",
+  "capacity.ranOf": "Chuyến đã chạy: {ran} trên {planned} chuyến dự kiến ({share}), {left} chuyến bị bỏ",
+  "capacity.noneRan": "Không chuyến nào trong {planned} chuyến dự kiến được chạy",
   "capacity.worksUpTo": "Hoạt động đến {n} tàu mỗi giờ mỗi chiều",
   "capacity.tryingOthers": "Đang thử tần suất khác…",
   "capacity.noneWorks": "Không tần suất nào đã thử hoạt động",

@@ -631,6 +631,16 @@ export const editorsIg = {
   "schematic.showStatuses": "Akara ọnọdụ",
   "schematic.showFeatures": "Akara ihe dị n'ọdụ",
   "schematic.showWater": "Oké osimiri, ọdọ mmiri na osimiri",
+  "schematic.straightRivers": "See osimiri n'usoro 45°",
+  "schematic.nameSize": "Nha aha ọdụ",
+  "schematic.longRuns": "Akụkụ ogologo na-enweghị nkwụsị",
+  "schematic.longRuns.off": "Dịka n'ala",
+  "schematic.longRuns.max": "Kachasị ugboro {n} nke oghere a na-emebu",
+  "schematic.pngSmallNames":
+    "Aha ọdụ bụ naanị {px} px na foto a n'ihi na ọ nwere oke px 8,192 n'akụkụ ọ bụla. Jiri SVG ma ọ bụ Bipụta maka mbipụta doro anya karịa.",
+  "schematic.printPaper": "Nha peeji {paper}: a na-ebipụta aha ọdụ na {pt} pt.",
+  "schematic.printSmallNames":
+    "Nha peeji {paper}: a na-ebipụta aha ọdụ naanị na {pt} pt. Mee aha ọdụ ka ha buo ibu ma ọ bụ zoo ụfọdụ ọkwa.",
   "schematic.showAreas": "Mpaghara ụgwọ na ebe a ma ama",
   "schematic.water": "Mmiri",
   "schematic.areas": "Mpaghara ụgwọ na ebe a ma ama",
@@ -922,6 +932,9 @@ export const editorsIg = {
   "jp.set.maxRides": "Ọnụ ọgụgụ ụgbọ kacha",
   "jp.walkNote":
     "Ije ụkwụ bụ ogologo ahịrị kwụ ọtọ × 1.3 ruo mgbe netwọk ije ụkwụ dị. Uru ndabara si n'ọbá akwụkwọ echiche.",
+  "jp.slopeNote":
+    "A na-agụ oge ije n'ugwu dị n'etiti nsọtụ ya abụọ (ọrụ ije Tobler na ịdị elu ala): ịrị elu na ịrịda nke siri ike na-ewe ogologo oge.",
+  "jp.slopeNoHeights": "Ịdị elu ala ebughị, ya mere a na-agụ ije dị ka ala dị larịị.",
   "kit.minSec": "{m} nkeji {s} sekọnd",
   "kit.checks": "Nyocha",
   "kit.issue": "{level}:",
@@ -953,6 +966,7 @@ export const editorsIg = {
   "cable.hint.select": "Pịa ọdụ iji dezie ya. Dọkpụ ọdụ iji bugharịa ya.",
   "cable.modeSystem": "Ụdị na sistemụ",
   "cable.lineSpeed": "Ọsọ eriri (m/s)",
+  "cable.longestSpan": "Ogologo kachasị n’etiti ụlọ elu (m)",
   "cable.cabinInterval": "Oghere ụlọ ụgbọ (s)",
   "cable.departureEvery": "Ọpụpụ kwa",
   "cable.cabinEvery": "Ụlọ ụgbọ kwa",
@@ -1344,6 +1358,8 @@ export const editorsIg = {
   "capacity.dieOut": "Na-akwụsị",
   "capacity.pileUp": "Na-agbakọ",
   "capacity.delaysHint": "{passed} na-aga n’ihu kwa njem, {left} fọdụrụ na njedebe",
+  "capacity.ranOf": "Njem ndị gara: {ran} n’ime {planned} a haziri ({share}), a hapụrụ {left}",
+  "capacity.noneRan": "Ọ dịghị otu n’ime njem {planned} a haziri gara",
   "capacity.worksUpTo": "Ọ na-arụ ọrụ ruo ụgbọ {n} kwa elekere n’ụzọ ọ bụla",
   "capacity.tryingOthers": "Na-anwale ugboro ndị ọzọ…",
   "capacity.noneWorks": "Ọ dịghị ugboro a nwalere na-arụ ọrụ",

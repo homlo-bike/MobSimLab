@@ -667,6 +667,16 @@ export const editorsUz = {
   "schematic.showStatuses": "Maqom belgilari",
   "schematic.showFeatures": "Bekat jihozlari belgilari",
   "schematic.showWater": "Dengiz, ko‘llar va daryolar",
+  "schematic.straightRivers": "Daryolarni 45° qadamlar bilan chizish",
+  "schematic.nameSize": "Bekat nomlari o‘lchami",
+  "schematic.longRuns": "Bekatsiz uzun qismlar",
+  "schematic.longRuns.off": "Joydagidek",
+  "schematic.longRuns.max": "Odatdagi oraliqdan ko‘pi bilan {n} marta",
+  "schematic.pngSmallNames":
+    "Bu rasm har tomondan 8 192 px bilan cheklangani uchun bekat nomlari atigi {px} px. Aniqroq nusxa uchun SVG yoki Chop etishdan foydalaning.",
+  "schematic.printPaper": "Qog‘oz o‘lchami {paper}: bekat nomlari {pt} pt da chop etiladi.",
+  "schematic.printSmallNames":
+    "Qog‘oz o‘lchami {paper}: bekat nomlari atigi {pt} pt da chop etiladi. Bekat nomlarini kattalashtiring yoki ayrim qatlamlarni yashiring.",
   "schematic.showAreas": "Tarif zonalari va diqqatga sazovor joylar",
   "schematic.water": "Suv",
   "schematic.areas": "Tarif zonalari va diqqatga sazovor joylar",
@@ -965,6 +975,10 @@ export const editorsUz = {
   "jp.set.maxRides": "Maksimal qatnovlar",
   "jp.walkNote":
     "Piyoda tarmogʻi qoʻshilguncha piyoda masofa toʻgʻri chiziq × 1.3. Standart qiymatlar farazlar kutubxonasidan.",
+  "jp.slopeNote":
+    "Piyoda yurish vaqti ikki uchi orasidagi qiyalik bo‘yicha hisoblanadi (yer balandliklari bilan Tobler funksiyasi): tepaga va tik pastga yurish ko‘proq vaqt oladi.",
+  "jp.slopeNoHeights":
+    "Yer balandliklari yuklanmadi, shuning uchun piyoda yurish tekislikdagidek hisoblanmoqda.",
   "kit.minSec": "{m} daq {s} soniya",
   "kit.checks": "Tekshiruvlar",
   "kit.issue": "{level}:",
@@ -996,6 +1010,7 @@ export const editorsUz = {
   "cable.hint.select": "Tahrirlash uchun stansiyani bosing. Siljitish uchun stansiyani torting.",
   "cable.modeSystem": "Tur va tizim",
   "cable.lineSpeed": "Arqon tezligi (m/s)",
+  "cable.longestSpan": "Eng uzun oraliq (m)",
   "cable.cabinInterval": "Kabinalar oraligʻi (soniya)",
   "cable.departureEvery": "Joʻnash har",
   "cable.cabinEvery": "Kabina har",
@@ -1394,6 +1409,9 @@ export const editorsUz = {
   "capacity.dieOut": "So‘nadi",
   "capacity.pileUp": "To‘planadi",
   "capacity.delaysHint": "har qatnovga {passed} o‘tadi, oxirida {left} qoladi",
+  "capacity.ranOf":
+    "Bajarilgan qatnovlar: rejadagi {planned} tadan {ran} ta ({share}), {left} ta chetda qoldi",
+  "capacity.noneRan": "Rejadagi {planned} ta qatnovdan birortasi ham bajarilmadi",
   "capacity.worksUpTo": "Har yo‘nalishda soatiga {n} poyezdgacha ishlaydi",
   "capacity.tryingOthers": "Boshqa chastotalar sinab ko‘rilmoqda…",
   "capacity.noneWorks": "Sinalgan chastotalarning hech biri ishlamaydi",

@@ -18,6 +18,7 @@ import {
   withScenario,
 } from "../src/features/tables/scenarioModel";
 import { Scenarios } from "../src/features/tables/Scenarios";
+import { UnroutedNotice } from "../src/features/tables/UnroutedNotice";
 
 afterEach(cleanup);
 
@@ -501,5 +502,28 @@ describe("table sections", () => {
     expect([shown("Overview part"), shown("Shared part"), shown("Prices part")]).toEqual([true, true, false]);
     rerender(parts);
     expect([shown("Overview part"), shown("Shared part"), shown("Prices part")]).toEqual([true, true, true]);
+  });
+});
+
+describe("street lines with parts of the route not found", () => {
+  it("names them, with the legs and depot runs not found and the distance left out at least", () => {
+    const line = STREET.lines[0]!;
+    const view = {
+      ...line.view,
+      legs: line.view.legs.map((l, i) => (i === 0 ? { ...l, status: "error" as const, length_m: 0 } : l)),
+    };
+    render(<UnroutedNotice streetLines={{ lines: [{ ...line, view }] }} />);
+    const note = screen.getByRole("note", { name: "Some street line routes are not complete" });
+    const row = within(note).getAllByRole("row")[1]!;
+    expect(
+      within(row)
+        .getAllByRole("cell")
+        .map((c) => c.textContent),
+    ).toEqual([line.name, "1", "0", expect.stringMatching(/ km$/)]);
+  });
+
+  it("shows nothing when every route is complete", () => {
+    const { container } = render(<UnroutedNotice streetLines={STREET} />);
+    expect(container.textContent).toBe("");
   });
 });

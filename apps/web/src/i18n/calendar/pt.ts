@@ -102,6 +102,7 @@ export const calendarPt = {
   "calrun.days": "Dias",
   "calrun.trains": "Comboios",
   "calrun.punctuality": "Pontual",
+  "calrun.ranOf": "{ran} de {planned} viagens realizadas ({share})",
   "calrun.perYear": "Por ano",
   "calrun.perDate": "Por data",
   "calrun.method":
