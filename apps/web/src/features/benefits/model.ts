@@ -58,7 +58,8 @@ export interface Spending {
 export type Matrix = number[][];
 
 /** Earliest arrival from a point at every stop. */
-export type ReachFn = (from: LonLat, t0: number) => Map<string, number | null>;
+/** Earliest arrival at stops by id, seconds after midnight; null or undefined where not reached. */
+export type ReachFn = (from: LonLat, t0: number) => { get(stopId: string): number | null | undefined };
 
 export const DEPARTURES_S = [7.5 * 3600, 8 * 3600, 8.5 * 3600];
 const CELL_M = 50;
@@ -549,33 +550,40 @@ export function matrix(
   reach: ReachFn | null,
   walking: Walk,
 ): Matrix {
+  return zones.map((_, i) => matrixRow(i, zones, stationStops, reach, walking));
+}
+
+/** Purpose: one row of `matrix`: door-to-door minutes from zone `i` to every zone. */
+export function matrixRow(
+  i: number,
+  zones: Zone[],
+  stationStops: string[][],
+  reach: ReachFn | null,
+  walking: Walk,
+): number[] {
   const n = zones.length;
-  const out: Matrix = zones.map(() => new Array<number>(n).fill(0));
-  for (let i = 0; i < n; i++) {
-    const sums = new Array<number>(n).fill(0);
-    const answers = reach ? DEPARTURES_S.map((t0) => ({ t0, at: reach(zones[i]!.at, t0) })) : [];
-    for (let j = 0; j < n; j++) {
-      if (i === j) continue;
-      const walk = walkMin(zones[i]!.at, zones[j]!.at, walking);
-      if (!answers.length) {
-        sums[j] = walk;
-        continue;
-      }
-      let total = 0;
-      for (const { t0, at } of answers) {
-        let best = Infinity;
-        for (const sid of stationStops[j]!) {
-          const a = at.get(sid);
-          if (a !== null && a !== undefined) best = Math.min(best, (a - t0) / 60);
-        }
-        total += Math.min(walk, best);
-      }
-      sums[j] = total / answers.length;
+  const sums = new Array<number>(n).fill(0);
+  const answers = reach ? DEPARTURES_S.map((t0) => ({ t0, at: reach(zones[i]!.at, t0) })) : [];
+  for (let j = 0; j < n; j++) {
+    if (i === j) continue;
+    const walk = walkMin(zones[i]!.at, zones[j]!.at, walking);
+    if (!answers.length) {
+      sums[j] = walk;
+      continue;
     }
-    for (let j = 0; j < n; j++)
-      out[i]![j] = i === j ? zones[i]!.accessMin : zones[i]!.accessMin + sums[j]! + zones[j]!.accessMin;
+    let total = 0;
+    for (const { t0, at } of answers) {
+      let best = Infinity;
+      for (const sid of stationStops[j]!) {
+        const a = at.get(sid);
+        if (a !== null && a !== undefined) best = Math.min(best, (a - t0) / 60);
+      }
+      total += Math.min(walk, best);
+    }
+    sums[j] = total / answers.length;
   }
-  return out;
+  const own = zones[i]!.accessMin;
+  return zones.map((z, j) => (i === j ? own : own + sums[j]! + z.accessMin));
 }
 
 /** What a zone can reach in one scenario. */

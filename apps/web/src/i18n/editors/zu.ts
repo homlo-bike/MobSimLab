@@ -1626,7 +1626,7 @@ export const editorsZu = {
   "walk.loadingPopulation": "Kulayishwa lapho abantu behlala khona…",
   "walk.computing": "Kukalwa ukuhamba…",
   "walk.tooLarge":
-    "Izitobhi zisabalele kumathayela ebalazwe angu-{tiles}; kulayishwa angu-{max} kuphela (cishe u-12 km × 12 km) ngesikhathi esisodwa.",
+    "Izitobhi zisabalele kumathayela ebalazwe angu-{tiles}; kulayishwa angu-{max} kuphela (cishe u-{km} km × {km} km) ngesikhathi esisodwa.",
   "walk.osmUnavailable":
     "Izindlela zabahamba ngezinyawo ze-OpenStreetMap azitholakali manje. Zama futhi emva komzuzu.",
   "walk.headlinePeople":

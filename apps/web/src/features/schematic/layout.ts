@@ -172,6 +172,8 @@ export function layout(
   const minEdge = unit * 0.7;
   const minGap = unit * 0.55;
   const n = pos.length;
+  const clear = unit * 0.35;
+  const cell = Math.max(minGap, clear);
   const iterations = straighten ? 400 : 120;
   for (let it = 0; it < iterations; it++) {
     const rate = 0.5 * (1 - it / iterations) + 0.05;
@@ -197,9 +199,11 @@ export function layout(
       count[a]! += 1;
       count[b]! += 1;
     }
-    // Stations closer than `minGap` push apart.
+    // Stations closer than `minGap` push apart (only stations in neighbouring grid cells can be that close;
+    // they are taken in the same order as checking every pair, so the result is the same).
+    const near = nearGrid(pos, edges, cell, clear);
     for (let i = 0; i < n; i++)
-      for (let j = i + 1; j < n; j++) {
+      for (const j of near.stationsAfter(i)) {
         const dx = pos[j]![0] - pos[i]![0];
         const dy = pos[j]![1] - pos[i]![1];
         const d = Math.hypot(dx, dy);
@@ -214,10 +218,11 @@ export function layout(
         count[i]! += 1;
         count[j]! += 1;
       }
-    // A station must not sit on a section it does not belong to: push it off sideways.
-    const clear = unit * 0.35;
+    // A station must not sit on a section it does not belong to: push it off sideways (only sections whose
+    // box, widened by `clear`, covers the station's grid cell can be that close; in the sections' order).
     for (let i = 0; i < n; i++)
-      for (const [a, b] of edges) {
+      for (const e of near.sectionsAt(i)) {
+        const [a, b] = edges[e]!;
         if (a === i || b === i) continue;
         const pa = pos[a]!;
         const pb = pos[b]!;
@@ -289,6 +294,67 @@ export function layout(
       }
   }
   return { pos, unit };
+}
+
+/** Sections whose widened box covers more grid cells than this are checked against every station. */
+const MAX_SECTION_CELLS = 400;
+
+/**
+ * Purpose: a grid over the stations for the layout's close-range forces, so each step looks at nearby stations
+ * and sections only, not every pair (a city-wide network of ~500 stations took seconds).
+ * Inputs: station places, sections, the grid cell size (at least the push-apart distance) and the clearance
+ * round sections. Output: for a station, the later stations in its own and the eight neighbouring cells, and
+ * the sections whose box widened by `clear` touches its cell; both in increasing order.
+ */
+function nearGrid(pos: readonly Pt[], edges: readonly [number, number][], cell: number, clear: number) {
+  const cx = (x: number) => Math.floor(x / cell);
+  // A number per cell (cells within ±2^20 of the origin on each axis, far beyond any network).
+  const key = (x: number, y: number) => (x + 1_048_576) * 2_097_152 + (y + 1_048_576);
+  const stations = new Map<number, number[]>();
+  pos.forEach((p, i) => {
+    const k = key(cx(p[0]), cx(p[1]));
+    const list = stations.get(k);
+    if (list) list.push(i);
+    else stations.set(k, [i]);
+  });
+  const sections = new Map<number, number[]>();
+  const everywhere: number[] = [];
+  edges.forEach(([a, b], e) => {
+    const pa = pos[a]!;
+    const pb = pos[b]!;
+    const x0 = cx(Math.min(pa[0], pb[0]) - clear);
+    const x1 = cx(Math.max(pa[0], pb[0]) + clear);
+    const y0 = cx(Math.min(pa[1], pb[1]) - clear);
+    const y1 = cx(Math.max(pa[1], pb[1]) + clear);
+    if (!Number.isFinite(x0 + x1 + y0 + y1) || (x1 - x0 + 1) * (y1 - y0 + 1) > MAX_SECTION_CELLS) {
+      everywhere.push(e);
+      return;
+    }
+    for (let x = x0; x <= x1; x++)
+      for (let y = y0; y <= y1; y++) {
+        const k = key(x, y);
+        const list = sections.get(k);
+        if (list) list.push(e);
+        else sections.set(k, [e]);
+      }
+  });
+  const cellOf = (i: number) => [cx(pos[i]![0]), cx(pos[i]![1])] as const;
+  return {
+    stationsAfter(i: number): number[] {
+      const [x, y] = cellOf(i);
+      const out: number[] = [];
+      for (let dx = -1; dx <= 1; dx++)
+        for (let dy = -1; dy <= 1; dy++)
+          for (const j of stations.get(key(x + dx, y + dy)) ?? []) if (j > i) out.push(j);
+      return out.sort((p, q) => p - q);
+    },
+    sectionsAt(i: number): number[] {
+      const [x, y] = cellOf(i);
+      const here = sections.get(key(x, y)) ?? [];
+      if (!everywhere.length) return here;
+      return [...here, ...everywhere].sort((p, q) => p - q);
+    },
+  };
 }
 
 /**

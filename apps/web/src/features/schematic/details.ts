@@ -55,6 +55,43 @@ function nearestOn(line: readonly Pt[], p: Pt): { d: number; along: number } {
   return best;
 }
 
+/** Box round each track's centre line `[west, south, east, north]`, worked out once per built design. */
+const trackBoxes = new WeakMap<TrackView, [number, number, number, number]>();
+
+function boxOf(tr: TrackView): [number, number, number, number] {
+  let b = trackBoxes.get(tr);
+  if (!b) {
+    b = [Infinity, Infinity, -Infinity, -Infinity];
+    for (const [lon, lat] of tr.centre) {
+      b[0] = Math.min(b[0], lon);
+      b[1] = Math.min(b[1], lat);
+      b[2] = Math.max(b[2], lon);
+      b[3] = Math.max(b[3], lat);
+    }
+    trackBoxes.set(tr, b);
+  }
+  return b;
+}
+
+/**
+ * Purpose: the tracks that may come within `NEAR_TRACK_M` of the box round `points` (with a wide margin, so
+ * none that could is left out). Every station checked every track of the network before (the Schematic of
+ * the Damascus network spent seconds here); a track this leaves out is never near enough to count.
+ */
+function tracksNear(points: readonly LonLat[], tracks: readonly TrackView[]): TrackView[] {
+  const lat0 = points.reduce((m, p) => m + p[1], 0) / points.length;
+  const dLat = (3 * NEAR_TRACK_M) / 111_195;
+  const dLon = dLat / Math.max(0.1, Math.cos((lat0 * Math.PI) / 180));
+  const w = Math.min(...points.map((p) => p[0])) - dLon;
+  const e = Math.max(...points.map((p) => p[0])) + dLon;
+  const s = Math.min(...points.map((p) => p[1])) - dLat;
+  const n = Math.max(...points.map((p) => p[1])) + dLat;
+  return tracks.filter((tr) => {
+    const b = boxOf(tr);
+    return b[0] <= e && b[2] >= w && b[1] <= n && b[3] >= s;
+  });
+}
+
 /** Purpose: the level of a track at a distance along its centre line (scaled to the track's length). */
 function levelAt(track: TrackView, alongCentre: number, centreLen: number): SectionLevel | null {
   const m = centreLen > 0 ? (alongCentre / centreLen) * track.length_m : 0;
@@ -74,7 +111,7 @@ export function sectionLevels(
 ): { level: SectionLevel; share: number }[] | null {
   if (!tracks.length) return null;
   const origin = a;
-  const lines = tracks.map((tr) => {
+  const lines = tracksNear([a, b], tracks).map((tr) => {
     const pts = tr.centre.map((c) => project(origin, c));
     let len = 0;
     for (let i = 1; i < pts.length; i++)
@@ -135,8 +172,10 @@ function slicePath(ll: readonly LonLat[], pts: readonly Pt[], from: number, to: 
 export function trackPath(a: LonLat, b: LonLat, tracks: readonly TrackView[]): LonLat[] | null {
   const pb = project(a, b);
   let best: { score: number; path: LonLat[] } | null = null;
-  for (const tr of tracks) {
-    if (tr.centre.length < 2) continue;
+  // A track must pass near both stations.
+  const nearA = new Set(tracksNear([a], tracks));
+  for (const tr of tracksNear([b], tracks)) {
+    if (tr.centre.length < 2 || !nearA.has(tr)) continue;
     const pts = tr.centre.map((c) => project(a, c));
     const na = nearestOn(pts, [0, 0]);
     const nb = nearestOn(pts, pb);

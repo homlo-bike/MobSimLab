@@ -2,13 +2,14 @@
  * Runs the steps of the benefit estimate that need the journey planner (ADR-0040): travel times between
  * stations in every scenario, then what each station's zone reaches.
  */
-import type { ReachLoader, Timetable } from "../journey-planner/types";
+import type { ReachEngine, ReachLoader, Timetable } from "../journey-planner/types";
 import type { Estimate as CostEstimate } from "../costs/model";
 import { isConstruction } from "../costs/model";
 import type { Triple } from "./params";
 import {
   access,
   matrix,
+  matrixRow,
   type Prepared,
   type ReachFn,
   scenarios,
@@ -37,16 +38,50 @@ export async function accessByScenario(
     }
     const engine = await load(part, {});
     try {
-      const reach: ReachFn = (from, t0) => {
-        const r = engine.reach(from, t0);
-        return new Map(r.stop_ids.map((id, i) => [id, r.arrive_s[i] ?? null]));
-      };
-      out.set(s.key, access(P.zones, matrix(P.zones, stopsOf, reach, P.walk), prefs));
+      const m: number[][] = [];
+      const reach = reachFn(engine);
+      // Row by row, letting the page answer every ~50 ms: a scenario of a city-wide network takes seconds.
+      let since = performance.now();
+      for (let i = 0; i < P.zones.length; i++) {
+        m.push(matrixRow(i, P.zones, stopsOf, reach, P.walk));
+        if (performance.now() - since > 50) {
+          await new Promise<void>((r) => setTimeout(r, 0));
+          since = performance.now();
+        }
+      }
+      out.set(s.key, access(P.zones, m, prefs));
     } finally {
       engine.dispose();
     }
   }
   return out;
+}
+
+/**
+ * Purpose: the reach answers of a compiled timetable as lookups by stop id. With `reachTimes` the stop ids are
+ * read once and each answer is a list of numbers, not JSON with every stop id (much faster for many questions).
+ */
+function reachFn(engine: ReachEngine): ReachFn {
+  if (engine.reachTimes && engine.stopIds) {
+    const index = new Map<string, number>();
+    engine.stopIds().forEach((id, k) => index.set(id, k));
+    const times = engine.reachTimes.bind(engine);
+    return (from, t0) => {
+      const r = times(from, t0);
+      return {
+        get: (id) => {
+          const k = index.get(id);
+          if (k === undefined) return undefined;
+          const a = r[k]!;
+          return a < 0 ? null : a;
+        },
+      };
+    };
+  }
+  return (from, t0) => {
+    const r = engine.reach(from, t0);
+    return new Map(r.stop_ids.map((id, i) => [id, r.arrive_s[i] ?? null]));
+  };
 }
 
 type Group = keyof Spending;

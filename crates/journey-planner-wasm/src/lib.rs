@@ -58,6 +58,22 @@ impl JourneyPlanner {
         json(&serde_json::json!({ "stop_ids": self.planner.stop_ids(), "arrive_s": arrive }))
     }
 
+    /// Purpose: the same as [`JourneyPlanner::reach`] without the stop ids or JSON, for many questions in a
+    /// row (the benefit tables ask hundreds per scenario): seconds after midnight per stop in the order of
+    /// [`JourneyPlanner::stop_ids`], -1 where the stop cannot be reached.
+    pub fn reach_times(&self, lon: f64, lat: f64, t0: u32) -> Vec<f64> {
+        self.planner
+            .reach([lon, lat], t0)
+            .into_iter()
+            .map(|a| a.map_or(-1.0, f64::from))
+            .collect()
+    }
+
+    /// Purpose: the stop ids of the compiled network, in the order [`JourneyPlanner::reach_times`] answers in.
+    pub fn stop_ids(&self) -> Vec<String> {
+        self.planner.stop_ids()
+    }
+
     /// Purpose: the default settings, as JSON.
     pub fn default_settings() -> String {
         json(&Settings::default())

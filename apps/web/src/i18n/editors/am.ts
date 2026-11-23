@@ -1524,7 +1524,7 @@ export const editorsAm = {
   "walk.heightsNoData": "ለዚህ አካባቢ የከፍታ መረጃ የለም",
   "walk.loadingPopulation": "ሰዎች የሚኖሩበት ቦታ እየተጫነ ነው…",
   "walk.computing": "የእግር ጉዞዎች እየተለኩ ነው…",
-  "walk.tooLarge": "ፌርማታዎቹ በ{tiles} የካርታ ሰቆች ላይ ተዘርግተዋል፤ በአንድ ጊዜ ቢበዛ {max} (ወደ 12 ኪ.ሜ × 12 ኪ.ሜ) ይጫናሉ።",
+  "walk.tooLarge": "ፌርማታዎቹ በ{tiles} የካርታ ሰቆች ላይ ተዘርግተዋል፤ በአንድ ጊዜ ቢበዛ {max} (ወደ {km} ኪ.ሜ × {km} ኪ.ሜ) ይጫናሉ።",
   "walk.osmUnavailable": "የOpenStreetMap የእግረኛ መንገዶች አሁን አይገኙም። ከአንድ ደቂቃ በኋላ እንደገና ይሞክሩ።",
   "walk.headlinePeople":
     "በመስመሮቹ ዙሪያ ካሉ {total} ነዋሪዎች {share} % የሚሆኑት ከፌርማታ ወይም ጣቢያ በ{minutes} ደቂቃ የእግር ርቀት ውስጥ ይኖራሉ።",

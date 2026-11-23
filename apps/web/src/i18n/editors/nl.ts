@@ -1598,7 +1598,7 @@ export const editorsNl = {
   "walk.loadingPopulation": "Laden waar mensen wonen…",
   "walk.computing": "Looproutes meten…",
   "walk.tooLarge":
-    "De haltes liggen verspreid over {tiles} kaarttegels; er worden er hoogstens {max} (ongeveer 12 km × 12 km) tegelijk geladen.",
+    "De haltes liggen verspreid over {tiles} kaarttegels; er worden er hoogstens {max} (ongeveer {km} km × {km} km) tegelijk geladen.",
   "walk.osmUnavailable":
     "OpenStreetMap-voetpaden zijn nu niet beschikbaar. Probeer het over een minuut opnieuw.",
   "walk.headlinePeople":

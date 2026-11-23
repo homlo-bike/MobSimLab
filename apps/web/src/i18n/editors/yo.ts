@@ -1544,7 +1544,7 @@ export const editorsYo = {
   "walk.loadingPopulation": "À ń gbé ibi tí ènìyàn ń gbé wọlé…",
   "walk.computing": "À ń wọn àwọn ìrìn…",
   "walk.tooLarge":
-    "Àwọn ibùdókọ̀ tàn ká àwo máàpù {tiles}; {max} péré (ní nǹkan bí km 12 × km 12) ni a ń gbé wọlé lẹ́ẹ̀kan.",
+    "Àwọn ibùdókọ̀ tàn ká àwo máàpù {tiles}; {max} péré (ní nǹkan bí km {km} × km {km}) ni a ń gbé wọlé lẹ́ẹ̀kan.",
   "walk.osmUnavailable": "Ọ̀nà ẹlẹ́sẹ̀ OpenStreetMap kò sí lọ́wọ́lọ́wọ́. Gbìyànjú lẹ́ẹ̀kan sí i lẹ́yìn ìṣẹ́jú kan.",
   "walk.headlinePeople":
     "{share} % nínú olùgbé {total} yíká àwọn ìlà ń gbé láàrin ìrìn ìṣẹ́jú {minutes} sí ibùdókọ̀ tàbí ibùdó.",

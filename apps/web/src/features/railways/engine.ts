@@ -2,6 +2,8 @@ import { tNow } from "../../i18n/i18n";
 import type { TileFetcher } from "../street-lines/types";
 import type { RailEngine, RailEngineLoader, RailView } from "./types";
 import { noteSource, withProject } from "../../geodata/projectData";
+import { hashText } from "../../projects/inputKey";
+import { CachedDesigner } from "./designerCache";
 
 let wasmModule: Promise<typeof import("../../wasm/rail-design/rail_design_wasm.js")> | null = null;
 
@@ -28,39 +30,63 @@ export const nextTask = () => new Promise<void>((r) => setTimeout(r, 0));
  */
 export const loadRailEngine: RailEngineLoader = async () => {
   const wasm = await initWasm();
-  const d = new wasm.RailDesigner();
+  const c = new CachedDesigner(new wasm.RailDesigner());
+  // Calls that read the last build run once the engine has caught up with the answers kept from memory.
+  const d = () => c.catchUp();
   const engine: RailEngine = {
-    build: (doc, draft) => JSON.parse(d.build(JSON.stringify(doc), draft ?? 0)) as RailView,
-    nearestTrack: ([lon, lat], maxM) => JSON.parse(d.nearest_track(lon, lat, maxM)),
-    chainage: (track, [lon, lat]) => d.chainage(track, lon, lat),
+    build: (doc, draft) => JSON.parse(c.build(JSON.stringify(doc), draft ?? 0)) as RailView,
+    nearestTrack: ([lon, lat], maxM) => JSON.parse(d().nearest_track(lon, lat, maxM)),
+    chainage: (track, [lon, lat]) => d().chainage(track, lon, lat),
     toLocal: ([olon, olat], [lon, lat]) => {
       const v = wasm.RailDesigner.to_local(olon, olat, lon, lat);
       return [v[0]!, v[1]!];
     },
     defaultParams: (mode) => JSON.parse(wasm.RailDesigner.default_params(mode)),
     sample: (mode, [lon, lat]) => JSON.parse(wasm.RailDesigner.sample(mode, lon, lat)),
-    topology: () => JSON.parse(d.topology()),
-    addStreetTile: (xml) => d.add_street_tile(xml),
-    clearStreets: () => d.clear_streets(),
-    addRailTile: (xml) => d.add_rail_tile(xml),
-    clearRails: () => d.clear_rails(),
-    missingTerrainTiles: () => JSON.parse(d.missing_terrain_tiles()),
+    topology: () => JSON.parse(d().topology()),
+    addStreetTile: (xml) => {
+      // The count is wanted now, so the engine catches up first.
+      c.catchUp();
+      let n = 0;
+      c.change(`street\u0000${hashText(xml)}`, (e) => (n = e.add_street_tile(xml)));
+      return n;
+    },
+    clearStreets: () => c.change("clear-streets", (e) => e.clear_streets()),
+    addRailTile: (xml) => {
+      // The count is wanted now, so the engine catches up first.
+      c.catchUp();
+      let n = 0;
+      c.change(`rail\u0000${hashText(xml)}`, (e) => (n = e.add_rail_tile(xml)));
+      return n;
+    },
+    clearRails: () => c.change("clear-rails", (e) => e.clear_rails()),
+    missingTerrainTiles: () => JSON.parse(c.missingTerrainTiles()),
     terrainTilePoints: (x, y) => JSON.parse(wasm.RailDesigner.terrain_tile_points(x, y)),
-    addTerrainTile: (x, y, heights) => d.add_terrain_tile(x, y, JSON.stringify(heights)),
-    existingSnap: ([lon, lat], maxM) => JSON.parse(d.existing_snap(lon, lat, maxM)),
-    setStreetSetups: (s) => d.set_street_setups(JSON.stringify(s)),
-    setValues: (v) => d.set_values(JSON.stringify(v)),
-    setSwitchChoice: (c) => d.set_switch_choice(JSON.stringify(c)),
-    generateSignals: () => JSON.parse(d.generate_signals()),
-    signalAnchor: ([lon, lat], maxM) => JSON.parse(d.signal_anchor(lon, lat, maxM)),
-    reachable: (from, to) => JSON.parse(d.reachable(from, to)),
+    addTerrainTile: (x, y, heights) => {
+      const h = JSON.stringify(heights);
+      c.change(`terrain\u0000${x}\u0000${y}\u0000${h}`, (e) => e.add_terrain_tile(x, y, h));
+    },
+    existingSnap: ([lon, lat], maxM) => JSON.parse(d().existing_snap(lon, lat, maxM)),
+    setStreetSetups: (s) => {
+      const j = JSON.stringify(s);
+      c.change(`setups\u0000${j}`, (e) => e.set_street_setups(j));
+    },
+    setValues: (v) => {
+      const j = JSON.stringify(v);
+      c.change(`values\u0000${j}`, (e) => e.set_values(j));
+    },
+    setSwitchChoice: (s) => {
+      const j = JSON.stringify(s);
+      c.change(`switches\u0000${j}`, (e) => e.set_switch_choice(j));
+    },
+    generateSignals: () => JSON.parse(d().generate_signals()),
+    signalAnchor: ([lon, lat], maxM) => JSON.parse(d().signal_anchor(lon, lat, maxM)),
+    reachable: (from, to) => JSON.parse(d().reachable(from, to)),
     publishLines: (lines, serviceId, options) =>
       JSON.parse(
-        options
-          ? d.publish_lines_with(JSON.stringify(lines), serviceId, JSON.stringify(options))
-          : d.publish_lines(JSON.stringify(lines), serviceId),
+        c.publishLines(JSON.stringify(lines), serviceId, options ? JSON.stringify(options) : undefined),
       ),
-    dispose: () => d.free(),
+    dispose: () => c.engine.free(),
   };
   return engine;
 };

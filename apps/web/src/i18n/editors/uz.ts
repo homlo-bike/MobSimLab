@@ -1601,7 +1601,7 @@ export const editorsUz = {
   "walk.loadingPopulation": "Odamlar qayerda yashashi yuklanmoqda…",
   "walk.computing": "Piyoda yo'llar o'lchanmoqda…",
   "walk.tooLarge":
-    "Bekatlar {tiles} ta xarita plitasiga yoyilgan; bir vaqtda ko'pi bilan {max} ta (taxminan 12 km × 12 km) yuklanadi.",
+    "Bekatlar {tiles} ta xarita plitasiga yoyilgan; bir vaqtda ko'pi bilan {max} ta (taxminan {km} km × {km} km) yuklanadi.",
   "walk.osmUnavailable":
     "OpenStreetMap piyoda yo'llari hozir mavjud emas. Bir daqiqadan so'ng qayta urinib ko'ring.",
   "walk.headlinePeople":

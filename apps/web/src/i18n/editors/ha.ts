@@ -1587,7 +1587,7 @@ export const editorsHa = {
   "walk.loadingPopulation": "Ana loda inda mutane ke zaune…",
   "walk.computing": "Ana auna tafiye-tafiye…",
   "walk.tooLarge":
-    "Tasoshin sun bazu a kan tayil {tiles} na taswira; aƙalla {max} (kusan km 12 × km 12) ake lodawa a lokaci ɗaya.",
+    "Tasoshin sun bazu a kan tayil {tiles} na taswira; aƙalla {max} (kusan km {km} × km {km}) ake lodawa a lokaci ɗaya.",
   "walk.osmUnavailable":
     "Hanyoyin tafiya na OpenStreetMap ba sa samuwa yanzu. Sake gwadawa bayan minti ɗaya.",
   "walk.headlinePeople":

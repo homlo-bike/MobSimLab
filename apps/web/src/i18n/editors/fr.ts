@@ -1628,7 +1628,7 @@ export const editorsFr = {
   "walk.loadingPopulation": "Chargement des lieux d'habitation…",
   "walk.computing": "Mesure des trajets à pied…",
   "walk.tooLarge":
-    "Les arrêts s'étendent sur {tiles} tuiles de carte ; au plus {max} (environ 12 km × 12 km) sont chargées à la fois.",
+    "Les arrêts s'étendent sur {tiles} tuiles de carte ; au plus {max} (environ {km} km × {km} km) sont chargées à la fois.",
   "walk.osmUnavailable":
     "Les chemins piétons OpenStreetMap sont indisponibles pour le moment. Réessayez dans une minute.",
   "walk.headlinePeople":

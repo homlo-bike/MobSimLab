@@ -1518,7 +1518,7 @@ export const editorsKo = {
   "walk.loadingPopulation": "사람들이 사는 곳을 불러오는 중…",
   "walk.computing": "도보 경로 측정 중…",
   "walk.tooLarge":
-    "정류장이 지도 타일 {tiles}개에 걸쳐 있습니다. 한 번에 최대 {max}개(약 12 km × 12 km)만 불러옵니다.",
+    "정류장이 지도 타일 {tiles}개에 걸쳐 있습니다. 한 번에 최대 {max}개(약 {km} km × {km} km)만 불러옵니다.",
   "walk.osmUnavailable": "지금은 OpenStreetMap 보행로를 사용할 수 없습니다. 1분 후 다시 시도하세요.",
   "walk.headlinePeople":
     "노선 주변 주민 {total}명 중 {share} %가 정류장이나 역에서 도보 {minutes}분 이내에 삽니다.",

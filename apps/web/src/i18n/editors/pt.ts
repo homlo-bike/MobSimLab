@@ -1599,7 +1599,7 @@ export const editorsPt = {
   "walk.loadingPopulation": "A carregar onde as pessoas vivem…",
   "walk.computing": "A medir as caminhadas…",
   "walk.tooLarge":
-    "As paragens espalham-se por {tiles} mosaicos do mapa; no máximo {max} (cerca de 12 km × 12 km) são carregados de cada vez.",
+    "As paragens espalham-se por {tiles} mosaicos do mapa; no máximo {max} (cerca de {km} km × {km} km) são carregados de cada vez.",
   "walk.osmUnavailable":
     "Os caminhos pedonais do OpenStreetMap não estão disponíveis agora. Tente de novo dentro de um minuto.",
   "walk.headlinePeople":
