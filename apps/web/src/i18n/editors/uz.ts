@@ -618,8 +618,16 @@ export const editorsUz = {
   "setup.junction.asOsm": "OpenStreetMap’dagidek",
   "setup.junction.yes": "Svetofor bor",
   "setup.junction.no": "Svetofor yoʻq",
-  "setup.junction.note": "Yoʻl simulyatsiyasi bu yerda avtobus va mashinalarni qizil chiroqda toʻxtatadi.",
-  "setup.junction.listTitle": "Sozlangan chorrahalar ({count})",
+  "setup.junction.note":
+    "Yoʻl simulyatsiyasi bu yerda avtobus va mashinalarni qizil chiroqda toʻxtatadi, piyoda vaqtiga esa oʻtish joylaridagi kutish qoʻshiladi.",
+  "setup.junction.selected": "Tanlangan chorrahalar: {count}",
+  "setup.junction.mix": "Svetoforli: {on} · svetoforsiz: {off}",
+  "setup.junction.differ":
+    "Hozir ular har xil, shuning uchun hech narsa belgilanmagan. Tanlovingiz hammasiga qoʻllanadi.",
+  "setup.junction.unselect": "{name}ni tanlovdan chiqarish",
+  "setup.junction.clear": "Tanlovni tozalash",
+  "setup.junction.more": "Bir nechtasini birga sozlash uchun Shift bilan boshqa chorrahalarni bosing.",
+  "setup.junction.listTitle": "Sozlangan chorrahalar · {count}",
   "setup.junction.listEmpty":
     "Hali yoʻq. {zoom} masshtabdan chorrahaga bosib, svetofor qoʻying yoki olib tashlang.",
   "setup.legend.signals": "Svetoforli chorraha",

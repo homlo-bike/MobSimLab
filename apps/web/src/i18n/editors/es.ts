@@ -618,8 +618,15 @@ export const editorsEs = {
   "setup.junction.asOsm": "Como en OpenStreetMap",
   "setup.junction.yes": "Semáforos",
   "setup.junction.no": "Sin semáforos",
-  "setup.junction.note": "La simulación vial detiene aquí autobuses y coches en rojo.",
-  "setup.junction.listTitle": "Cruces configurados ({count})",
+  "setup.junction.note":
+    "La simulación vial detiene aquí autobuses y coches en rojo, y los tiempos a pie suman la espera en sus pasos de peatones.",
+  "setup.junction.selected": "Cruces seleccionados: {count}",
+  "setup.junction.mix": "Con semáforos: {on} · sin: {off}",
+  "setup.junction.differ": "Ahora difieren, así que no hay opción marcada. Su elección se aplica a todos.",
+  "setup.junction.unselect": "Quitar {name} de la selección",
+  "setup.junction.clear": "Vaciar la selección",
+  "setup.junction.more": "Mayús-clic en más cruces para configurar varios a la vez.",
+  "setup.junction.listTitle": "Cruces configurados · {count}",
   "setup.junction.listEmpty":
     "Ninguno todavía. Desde el zoom {zoom}, toque un cruce para ponerle o quitarle semáforos.",
   "setup.legend.signals": "Cruce con semáforos",

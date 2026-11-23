@@ -589,8 +589,16 @@ export const editorsYo = {
   "setup.junction.asOsm": "Bí ó ti wà ní OpenStreetMap",
   "setup.junction.yes": "Iná ìrìnnà wà",
   "setup.junction.no": "Kò sí iná ìrìnnà",
-  "setup.junction.note": "Ìṣàfarawé ọ̀nà ń dá bọ́ọ̀sì àti ọkọ̀ dúró níbí nígbà tí iná bá pupa.",
-  "setup.junction.listTitle": "Àwọn oríta tí a ṣètò ({count})",
+  "setup.junction.note":
+    "Ìṣàfarawé ọ̀nà ń dá bọ́ọ̀sì àti ọkọ̀ dúró níbí nígbà tí iná bá pupa, àkókò ìrìn ẹsẹ̀ sì ń fi ìdúró ní ibi ìsọdá kún un.",
+  "setup.junction.selected": "Àwọn oríta tí a yàn: {count}",
+  "setup.junction.mix": "Pẹ̀lú iná: {on} · láìsí: {off}",
+  "setup.junction.differ":
+    "Wọ́n yàtọ̀ síra báyìí, nítorí náà kò sí àṣàyàn tí a sàmì sí. Àṣàyàn rẹ yóò kan gbogbo wọn.",
+  "setup.junction.unselect": "Yọ {name} kúrò nínú àṣàyàn",
+  "setup.junction.clear": "Pa àṣàyàn rẹ́",
+  "setup.junction.more": "Tẹ Shift kí o sì tẹ àwọn oríta mìíràn láti ṣètò ọ̀pọ̀ lẹ́ẹ̀kan náà.",
+  "setup.junction.listTitle": "Àwọn oríta tí a ṣètò · {count}",
   "setup.junction.listEmpty":
     "Kò sí síbẹ̀. Láti ìsúnmọ́ {zoom}, tẹ oríta kan láti fi iná ìrìnnà sí i tàbí yọ ọ́ kúrò.",
   "setup.legend.signals": "Oríta tí ó ní iná ìrìnnà",

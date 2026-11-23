@@ -586,8 +586,15 @@ export const editorsIg = {
   "setup.junction.asOsm": "Dị ka ọ dị na OpenStreetMap",
   "setup.junction.yes": "Ọkụ okporo ụzọ dị",
   "setup.junction.no": "Ọkụ okporo ụzọ adịghị",
-  "setup.junction.note": "Ịme ka okporo ụzọ na-akwụsị bọs na ụgbọala ebe a mgbe ọkụ na-acha uhie uhie.",
-  "setup.junction.listTitle": "Nkwụkọ ụzọ ahaziri ({count})",
+  "setup.junction.note":
+    "Ịme ka okporo ụzọ na-akwụsị bọs na ụgbọala ebe a mgbe ọkụ na-acha uhie uhie, oge ije ụkwụ na-agbakwụnye nchere n'ebe ngafe.",
+  "setup.junction.selected": "Nkwụkọ ụzọ ahọpụtara: {count}",
+  "setup.junction.mix": "Nwere ọkụ: {on} · enweghị: {off}",
+  "setup.junction.differ": "Ha dị iche ugbu a, ya mere ọ dịghị nhọrọ akara. Nhọrọ gị ga-emetụta ha niile.",
+  "setup.junction.unselect": "Wepụ {name} na nhọrọ",
+  "setup.junction.clear": "Hichapụ nhọrọ",
+  "setup.junction.more": "Jiri Shift pịa nkwụkọ ụzọ ndị ọzọ iji hazie ọtụtụ n'otu oge.",
+  "setup.junction.listTitle": "Nkwụkọ ụzọ ahaziri · {count}",
   "setup.junction.listEmpty":
     "Ọ nweghị ka ọ dị. Site na zoom {zoom}, pịa nkwụkọ ụzọ iji tinye ma ọ bụ wepụ ọkụ okporo ụzọ.",
   "setup.legend.signals": "Nkwụkọ ụzọ nwere ọkụ okporo ụzọ",

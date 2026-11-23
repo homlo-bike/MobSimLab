@@ -622,8 +622,15 @@ export const editorsEn = {
   "setup.junction.asOsm": "As in OpenStreetMap",
   "setup.junction.yes": "Traffic lights",
   "setup.junction.no": "No traffic lights",
-  "setup.junction.note": "The road simulation stops buses and cars at red lights here.",
-  "setup.junction.listTitle": "Junctions set up ({count})",
+  "setup.junction.note":
+    "The road simulation stops buses and cars at red lights here, and walk times add the wait at its crossings.",
+  "setup.junction.selected": "Junctions selected: {count}",
+  "setup.junction.mix": "Now with traffic lights: {on} · without: {off}",
+  "setup.junction.differ": "They differ now, so no choice is marked. Your choice applies to all of them.",
+  "setup.junction.unselect": "Take {name} out of the selection",
+  "setup.junction.clear": "Clear the selection",
+  "setup.junction.more": "Shift-click more junctions to set several at once.",
+  "setup.junction.listTitle": "Junctions set up · {count}",
   "setup.junction.listEmpty":
     "None yet. From zoom {zoom}, tap a junction to give it traffic lights or take them away.",
   "setup.legend.signals": "Junction with traffic lights",

@@ -627,8 +627,15 @@ export const editorsFr = {
   "setup.junction.asOsm": "Comme dans OpenStreetMap",
   "setup.junction.yes": "Feux tricolores",
   "setup.junction.no": "Pas de feux",
-  "setup.junction.note": "La simulation routière arrête ici bus et voitures au feu rouge.",
-  "setup.junction.listTitle": "Carrefours réglés ({count})",
+  "setup.junction.note":
+    "La simulation routière arrête ici bus et voitures au feu rouge, et les temps de marche comptent l’attente aux passages piétons.",
+  "setup.junction.selected": "Carrefours sélectionnés : {count}",
+  "setup.junction.mix": "Avec feux : {on} · sans : {off}",
+  "setup.junction.differ": "Ils diffèrent, donc aucun choix n’est marqué. Votre choix s’applique à tous.",
+  "setup.junction.unselect": "Retirer {name} de la sélection",
+  "setup.junction.clear": "Vider la sélection",
+  "setup.junction.more": "Maj-clic sur d’autres carrefours pour en régler plusieurs à la fois.",
+  "setup.junction.listTitle": "Carrefours réglés · {count}",
   "setup.junction.listEmpty":
     "Aucun pour l’instant. À partir du zoom {zoom}, touchez un carrefour pour lui donner des feux ou les retirer.",
   "setup.legend.signals": "Carrefour à feux",

@@ -613,8 +613,16 @@ export const editorsTe = {
   "setup.junction.asOsm": "OpenStreetMap లో ఉన్నట్లు",
   "setup.junction.yes": "ట్రాఫిక్ లైట్లు",
   "setup.junction.no": "ట్రాఫిక్ లైట్లు లేవు",
-  "setup.junction.note": "రోడ్ సిమ్యులేషన్ ఇక్కడ ఎరుపు లైటు వద్ద బస్సులు, కార్లను ఆపుతుంది.",
-  "setup.junction.listTitle": "సెట్ చేసిన కూడళ్లు ({count})",
+  "setup.junction.note":
+    "రోడ్ సిమ్యులేషన్ ఇక్కడ ఎరుపు లైటు వద్ద బస్సులు, కార్లను ఆపుతుంది; నడక సమయంలో క్రాసింగ్‌ల వద్ద నిరీక్షణ కలుస్తుంది.",
+  "setup.junction.selected": "ఎంచుకున్న కూడళ్లు: {count}",
+  "setup.junction.mix": "ట్రాఫిక్ లైట్లతో: {on} · లేకుండా: {off}",
+  "setup.junction.differ":
+    "ఇప్పుడు అవి వేరుగా ఉన్నాయి, కాబట్టి ఏ ఎంపికా గుర్తించలేదు. మీ ఎంపిక అన్నింటికీ వర్తిస్తుంది.",
+  "setup.junction.unselect": "{name} ను ఎంపిక నుండి తీసేయండి",
+  "setup.junction.clear": "ఎంపికను క్లియర్ చేయండి",
+  "setup.junction.more": "ఒకేసారి పలు కూడళ్లు సెట్ చేయడానికి Shift నొక్కి మరిన్ని కూడళ్లపై క్లిక్ చేయండి.",
+  "setup.junction.listTitle": "సెట్ చేసిన కూడళ్లు · {count}",
   "setup.junction.listEmpty":
     "ఇంకా ఏమీ లేవు. జూమ్ {zoom} నుండి కూడలిపై తట్టి ట్రాఫిక్ లైట్లు పెట్టండి లేదా తీసేయండి.",
   "setup.legend.signals": "ట్రాఫిక్ లైట్లు ఉన్న కూడలి",

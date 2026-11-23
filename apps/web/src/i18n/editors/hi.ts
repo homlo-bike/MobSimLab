@@ -609,8 +609,15 @@ export const editorsHi = {
   "setup.junction.asOsm": "OpenStreetMap जैसा",
   "setup.junction.yes": "ट्रैफ़िक लाइट",
   "setup.junction.no": "कोई ट्रैफ़िक लाइट नहीं",
-  "setup.junction.note": "सड़क सिमुलेशन यहाँ लाल बत्ती पर बसों और कारों को रोकता है।",
-  "setup.junction.listTitle": "सेट किए गए चौराहे ({count})",
+  "setup.junction.note":
+    "सड़क सिमुलेशन यहाँ लाल बत्ती पर बसों और कारों को रोकता है, और पैदल समय में क्रॉसिंग पर इंतज़ार जुड़ता है।",
+  "setup.junction.selected": "चुने गए चौराहे: {count}",
+  "setup.junction.mix": "ट्रैफ़िक लाइट वाले: {on} · बिना: {off}",
+  "setup.junction.differ": "अभी ये अलग हैं, इसलिए कोई विकल्प चिह्नित नहीं है। आपका चुनाव सब पर लागू होगा।",
+  "setup.junction.unselect": "{name} को चयन से हटाएँ",
+  "setup.junction.clear": "चयन साफ़ करें",
+  "setup.junction.more": "कई चौराहे एक साथ सेट करने के लिए Shift दबाकर और चौराहों पर क्लिक करें।",
+  "setup.junction.listTitle": "सेट किए गए चौराहे · {count}",
   "setup.junction.listEmpty":
     "अभी कोई नहीं। ज़ूम {zoom} से किसी चौराहे पर टैप करके ट्रैफ़िक लाइट लगाएँ या हटाएँ।",
   "setup.legend.signals": "ट्रैफ़िक लाइट वाला चौराहा",

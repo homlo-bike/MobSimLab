@@ -611,8 +611,16 @@ export const editorsKk = {
   "setup.junction.asOsm": "OpenStreetMap-тағыдай",
   "setup.junction.yes": "Бағдаршам бар",
   "setup.junction.no": "Бағдаршам жоқ",
-  "setup.junction.note": "Жол симуляциясы мұнда автобустар мен көліктерді қызыл түсте тоқтатады.",
-  "setup.junction.listTitle": "Бапталған қиылыстар ({count})",
+  "setup.junction.note":
+    "Жол симуляциясы мұнда автобустар мен көліктерді қызыл түсте тоқтатады, ал жаяу жүру уақытына өткелдердегі күту қосылады.",
+  "setup.junction.selected": "Таңдалған қиылыстар: {count}",
+  "setup.junction.mix": "Бағдаршаммен: {on} · бағдаршамсыз: {off}",
+  "setup.junction.differ":
+    "Қазір олар әртүрлі, сондықтан ештеңе белгіленбеген. Таңдауыңыз бәріне қолданылады.",
+  "setup.junction.unselect": "{name} таңдаудан алып тастау",
+  "setup.junction.clear": "Таңдауды тазалау",
+  "setup.junction.more": "Бірнешеуін бірден баптау үшін Shift басып, басқа қиылыстарды шертіңіз.",
+  "setup.junction.listTitle": "Бапталған қиылыстар · {count}",
   "setup.junction.listEmpty":
     "Әзірге жоқ. {zoom} масштабынан бастап қиылысты түртіп, бағдаршам қойыңыз не алыңыз.",
   "setup.legend.signals": "Бағдаршамы бар қиылыс",

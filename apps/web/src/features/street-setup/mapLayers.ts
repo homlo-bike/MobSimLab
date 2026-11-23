@@ -277,10 +277,10 @@ export function drawJunctions(
   } as never);
 }
 
-/** Purpose: outline one junction (or none), by its key. */
-export function selectJunction(map: MapLibreMap, key: string | null): void {
+/** Purpose: outline the selected junctions (none: an empty list), by their keys. */
+export function selectJunction(map: MapLibreMap, keys: readonly string[]): void {
   if (map.getLayer("ss-junction-selected"))
-    map.setFilter("ss-junction-selected", ["==", ["get", "key"], key ?? ""]);
+    map.setFilter("ss-junction-selected", ["in", ["get", "key"], ["literal", [...keys]]]);
 }
 
 /** Purpose: highlight one street (or none). */

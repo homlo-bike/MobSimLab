@@ -626,8 +626,17 @@ export const editorsDe = {
   "setup.junction.asOsm": "Wie in OpenStreetMap",
   "setup.junction.yes": "Ampel",
   "setup.junction.no": "Keine Ampel",
-  "setup.junction.note": "Die Straßensimulation hält Busse und Autos hier bei Rot an.",
-  "setup.junction.listTitle": "Eingestellte Knotenpunkte ({count})",
+  "setup.junction.note":
+    "Die Straßensimulation hält Busse und Autos hier bei Rot an, und Gehzeiten rechnen die Wartezeit an den Überwegen ein.",
+  "setup.junction.selected": "Ausgewählte Knotenpunkte: {count}",
+  "setup.junction.mix": "Jetzt mit Ampel: {on} · ohne: {off}",
+  "setup.junction.differ":
+    "Sie unterscheiden sich gerade, darum ist nichts markiert. Ihre Wahl gilt für alle.",
+  "setup.junction.unselect": "{name} aus der Auswahl nehmen",
+  "setup.junction.clear": "Auswahl aufheben",
+  "setup.junction.more":
+    "Mit Umschalt-Klick weitere Knotenpunkte wählen, um mehrere auf einmal einzustellen.",
+  "setup.junction.listTitle": "Eingestellte Knotenpunkte · {count}",
   "setup.junction.listEmpty":
     "Noch keine. Ab Zoomstufe {zoom} einen Knotenpunkt antippen, um ihm eine Ampel zu geben oder sie wegzunehmen.",
   "setup.legend.signals": "Knotenpunkt mit Ampel",

@@ -586,8 +586,15 @@ export const editorsJa = {
   "setup.junction.asOsm": "OpenStreetMap のとおり",
   "setup.junction.yes": "信号あり",
   "setup.junction.no": "信号なし",
-  "setup.junction.note": "道路シミュレーションでは、ここでバスと車が赤信号で止まります。",
-  "setup.junction.listTitle": "設定した交差点（{count}）",
+  "setup.junction.note":
+    "道路シミュレーションでは、ここでバスと車が赤信号で止まり、徒歩時間には横断歩道での待ち時間が加わります。",
+  "setup.junction.selected": "選択した交差点：{count}",
+  "setup.junction.mix": "信号あり：{on} · なし：{off}",
+  "setup.junction.differ": "今は設定が異なるため、どれも選ばれていません。選んだ設定はすべてに適用されます。",
+  "setup.junction.unselect": "{name} を選択から外す",
+  "setup.junction.clear": "選択を解除",
+  "setup.junction.more": "Shift キーを押しながら他の交差点をクリックすると、まとめて設定できます。",
+  "setup.junction.listTitle": "設定した交差点 · {count}",
   "setup.junction.listEmpty":
     "まだありません。ズーム {zoom} 以上で交差点をタップすると、信号を付けたり外したりできます。",
   "setup.legend.signals": "信号のある交差点",

@@ -609,8 +609,16 @@ export const editorsMr = {
   "setup.junction.asOsm": "OpenStreetMap प्रमाणे",
   "setup.junction.yes": "सिग्नल",
   "setup.junction.no": "सिग्नल नाही",
-  "setup.junction.note": "रस्ता सिम्युलेशन येथे लाल दिव्याला बस व गाड्या थांबवते.",
-  "setup.junction.listTitle": "सेट केलेले चौक ({count})",
+  "setup.junction.note":
+    "रस्ता सिम्युलेशन येथे लाल दिव्याला बस व गाड्या थांबवते, आणि चालण्याच्या वेळेत क्रॉसिंगवरील प्रतीक्षा जोडली जाते.",
+  "setup.junction.selected": "निवडलेले चौक: {count}",
+  "setup.junction.mix": "सिग्नलसह: {on} · सिग्नलशिवाय: {off}",
+  "setup.junction.differ":
+    "सध्या ते वेगळे आहेत, म्हणून कोणताही पर्याय चिन्हांकित नाही. तुमची निवड सर्वांना लागू होईल.",
+  "setup.junction.unselect": "{name} निवडीतून काढा",
+  "setup.junction.clear": "निवड साफ करा",
+  "setup.junction.more": "अनेक चौक एकदम सेट करण्यासाठी Shift दाबून आणखी चौकांवर क्लिक करा.",
+  "setup.junction.listTitle": "सेट केलेले चौक · {count}",
   "setup.junction.listEmpty": "अजून काही नाही. झूम {zoom} पासून चौकावर टॅप करून सिग्नल लावा किंवा काढा.",
   "setup.legend.signals": "सिग्नल असलेला चौक",
   "setup.v.busNoDelay":

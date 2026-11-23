@@ -595,8 +595,16 @@ export const editorsTr = {
   "setup.junction.asOsm": "OpenStreetMap’teki gibi",
   "setup.junction.yes": "Trafik ışıkları",
   "setup.junction.no": "Trafik ışığı yok",
-  "setup.junction.note": "Yol simülasyonu burada otobüsleri ve arabaları kırmızıda durdurur.",
-  "setup.junction.listTitle": "Ayarlanan kavşaklar ({count})",
+  "setup.junction.note":
+    "Yol simülasyonu burada otobüsleri ve arabaları kırmızıda durdurur, yürüme süreleri de geçitlerdeki bekleme süresini ekler.",
+  "setup.junction.selected": "Seçili kavşaklar: {count}",
+  "setup.junction.mix": "Trafik ışıklı: {on} · ışıksız: {off}",
+  "setup.junction.differ":
+    "Şu an farklılar, bu yüzden hiçbir seçenek işaretli değil. Seçiminiz hepsine uygulanır.",
+  "setup.junction.unselect": "{name} seçimden çıkar",
+  "setup.junction.clear": "Seçimi temizle",
+  "setup.junction.more": "Birkaçını birden ayarlamak için Shift ile başka kavşaklara tıklayın.",
+  "setup.junction.listTitle": "Ayarlanan kavşaklar · {count}",
   "setup.junction.listEmpty":
     "Henüz yok. {zoom} yakınlaştırmasından itibaren bir kavşağa dokunarak trafik ışığı ekleyin veya kaldırın.",
   "setup.legend.signals": "Trafik ışıklı kavşak",

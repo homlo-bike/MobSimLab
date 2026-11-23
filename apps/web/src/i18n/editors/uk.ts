@@ -656,8 +656,15 @@ export const editorsUk = {
   "setup.junction.asOsm": "Як в OpenStreetMap",
   "setup.junction.yes": "Світлофор",
   "setup.junction.no": "Без світлофора",
-  "setup.junction.note": "Дорожня симуляція зупиняє тут автобуси й авто на червоне.",
-  "setup.junction.listTitle": "Налаштовані перехрестя ({count})",
+  "setup.junction.note":
+    "Дорожня симуляція зупиняє тут автобуси й авто на червоне, а час пішки враховує очікування на переходах.",
+  "setup.junction.selected": "Вибрано перехресть: {count}",
+  "setup.junction.mix": "Зі світлофором: {on} · без: {off}",
+  "setup.junction.differ": "Зараз вони різняться, тож нічого не позначено. Вибір застосується до всіх.",
+  "setup.junction.unselect": "Прибрати {name} з вибору",
+  "setup.junction.clear": "Зняти вибір",
+  "setup.junction.more": "Клацніть із Shift інші перехрестя, щоб налаштувати кілька одразу.",
+  "setup.junction.listTitle": "Налаштовані перехрестя · {count}",
   "setup.junction.listEmpty":
     "Поки немає. З масштабу {zoom} торкніться перехрестя, щоб поставити чи прибрати світлофор.",
   "setup.legend.signals": "Перехрестя зі світлофором",

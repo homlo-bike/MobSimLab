@@ -612,8 +612,16 @@ export const editorsId = {
   "setup.junction.asOsm": "Seperti di OpenStreetMap",
   "setup.junction.yes": "Lampu lalu lintas",
   "setup.junction.no": "Tanpa lampu lalu lintas",
-  "setup.junction.note": "Simulasi jalan menghentikan bus dan mobil di sini saat lampu merah.",
-  "setup.junction.listTitle": "Persimpangan yang diatur ({count})",
+  "setup.junction.note":
+    "Simulasi jalan menghentikan bus dan mobil di sini saat lampu merah, dan waktu berjalan menambah waktu tunggu di penyeberangan.",
+  "setup.junction.selected": "Persimpangan terpilih: {count}",
+  "setup.junction.mix": "Dengan lampu: {on} · tanpa: {off}",
+  "setup.junction.differ":
+    "Saat ini berbeda, jadi tidak ada pilihan yang ditandai. Pilihan Anda berlaku untuk semuanya.",
+  "setup.junction.unselect": "Keluarkan {name} dari pilihan",
+  "setup.junction.clear": "Kosongkan pilihan",
+  "setup.junction.more": "Shift-klik persimpangan lain untuk mengatur beberapa sekaligus.",
+  "setup.junction.listTitle": "Persimpangan yang diatur · {count}",
   "setup.junction.listEmpty":
     "Belum ada. Mulai zoom {zoom}, ketuk persimpangan untuk memberi atau mencabut lampu lalu lintas.",
   "setup.legend.signals": "Persimpangan berlampu lalu lintas",

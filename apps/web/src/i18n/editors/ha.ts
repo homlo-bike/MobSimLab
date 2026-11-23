@@ -608,8 +608,16 @@ export const editorsHa = {
   "setup.junction.asOsm": "Kamar yadda yake a OpenStreetMap",
   "setup.junction.yes": "Akwai fitilun hanya",
   "setup.junction.no": "Babu fitilun hanya",
-  "setup.junction.note": "Kwaikwayon hanya yana tsayar da bas da motoci a nan idan fitila ta yi ja.",
-  "setup.junction.listTitle": "Mahaɗun da aka saita ({count})",
+  "setup.junction.note":
+    "Kwaikwayon hanya yana tsayar da bas da motoci a nan idan fitila ta yi ja, kuma lokacin tafiya da ƙafa yana ƙara jira a mashigar.",
+  "setup.junction.selected": "Mahaɗun da aka zaɓa: {count}",
+  "setup.junction.mix": "Da fitila: {on} · babu: {off}",
+  "setup.junction.differ":
+    "Sun bambanta yanzu, don haka ba a yi wa kowane zaɓi alama ba. Zaɓinka zai shafi duka.",
+  "setup.junction.unselect": "Cire {name} daga zaɓi",
+  "setup.junction.clear": "Share zaɓi",
+  "setup.junction.more": "Danna ƙarin mahaɗu tare da Shift don saita da yawa a lokaci ɗaya.",
+  "setup.junction.listTitle": "Mahaɗun da aka saita · {count}",
   "setup.junction.listEmpty": "Babu tukuna. Daga zuƙowa {zoom}, taɓa mahaɗa don ƙara ko cire fitilun hanya.",
   "setup.legend.signals": "Mahaɗa mai fitilun hanya",
   "setup.v.busNoDelay": "Ba a zaton jinkirin cunkoso ga wannan nau'in titi; ana lissafa shi a manyan tituna.",

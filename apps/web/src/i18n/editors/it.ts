@@ -619,8 +619,15 @@ export const editorsIt = {
   "setup.junction.asOsm": "Come in OpenStreetMap",
   "setup.junction.yes": "Semaforo",
   "setup.junction.no": "Nessun semaforo",
-  "setup.junction.note": "La simulazione stradale ferma qui autobus e auto con il rosso.",
-  "setup.junction.listTitle": "Incroci impostati ({count})",
+  "setup.junction.note":
+    "La simulazione stradale ferma qui autobus e auto con il rosso, e i tempi a piedi aggiungono l’attesa agli attraversamenti.",
+  "setup.junction.selected": "Incroci selezionati: {count}",
+  "setup.junction.mix": "Con semaforo: {on} · senza: {off}",
+  "setup.junction.differ": "Ora sono diversi, quindi nessuna scelta è segnata. La scelta vale per tutti.",
+  "setup.junction.unselect": "Togli {name} dalla selezione",
+  "setup.junction.clear": "Svuota la selezione",
+  "setup.junction.more": "Maiusc-clic su altri incroci per impostarne diversi insieme.",
+  "setup.junction.listTitle": "Incroci impostati · {count}",
   "setup.junction.listEmpty":
     "Ancora nessuno. Dallo zoom {zoom}, tocca un incrocio per dargli un semaforo o toglierlo.",
   "setup.legend.signals": "Incrocio con semaforo",

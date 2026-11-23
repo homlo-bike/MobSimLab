@@ -657,8 +657,15 @@ export const editorsRu = {
   "setup.junction.asOsm": "Как в OpenStreetMap",
   "setup.junction.yes": "Светофор",
   "setup.junction.no": "Без светофора",
-  "setup.junction.note": "Дорожная симуляция останавливает здесь автобусы и машины на красный.",
-  "setup.junction.listTitle": "Настроенные перекрёстки ({count})",
+  "setup.junction.note":
+    "Дорожная симуляция останавливает здесь автобусы и машины на красный, а время пешком учитывает ожидание на переходах.",
+  "setup.junction.selected": "Выбрано перекрёстков: {count}",
+  "setup.junction.mix": "Со светофором: {on} · без: {off}",
+  "setup.junction.differ": "Сейчас они различаются, поэтому ничего не отмечено. Выбор применится ко всем.",
+  "setup.junction.unselect": "Убрать {name} из выбора",
+  "setup.junction.clear": "Снять выбор",
+  "setup.junction.more": "Щёлкните с Shift по другим перекрёсткам, чтобы настроить несколько сразу.",
+  "setup.junction.listTitle": "Настроенные перекрёстки · {count}",
   "setup.junction.listEmpty":
     "Пока нет. С масштаба {zoom} нажмите на перекрёсток, чтобы поставить или убрать светофор.",
   "setup.legend.signals": "Перекрёсток со светофором",

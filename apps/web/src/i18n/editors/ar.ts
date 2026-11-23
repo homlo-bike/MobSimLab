@@ -646,8 +646,15 @@ export const editorsAr = {
   "setup.junction.asOsm": "كما في OpenStreetMap",
   "setup.junction.yes": "إشارات مرور",
   "setup.junction.no": "بلا إشارات مرور",
-  "setup.junction.note": "تُوقف محاكاة الطرق الحافلات والسيارات هنا عند الإشارة الحمراء.",
-  "setup.junction.listTitle": "التقاطعات المعدّة ({count})",
+  "setup.junction.note":
+    "تُوقف محاكاة الطرق الحافلات والسيارات هنا عند الإشارة الحمراء، وتضيف أزمنة المشي الانتظار عند معابره.",
+  "setup.junction.selected": "التقاطعات المحددة: {count}",
+  "setup.junction.mix": "بإشارات مرور: {on} · بدونها: {off}",
+  "setup.junction.differ": "تختلف الآن، لذا لا يوجد خيار محدد. يسري اختيارك على جميعها.",
+  "setup.junction.unselect": "إزالة {name} من التحديد",
+  "setup.junction.clear": "مسح التحديد",
+  "setup.junction.more": "انقر مع Shift على تقاطعات أخرى لضبط عدة تقاطعات معًا.",
+  "setup.junction.listTitle": "التقاطعات المعدّة · {count}",
   "setup.junction.listEmpty":
     "لا شيء بعد. من مستوى التكبير {zoom}، المس تقاطعًا لتضيف له إشارات مرور أو تزيلها.",
   "setup.legend.signals": "تقاطع بإشارات مرور",

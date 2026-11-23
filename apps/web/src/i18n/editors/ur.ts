@@ -608,8 +608,16 @@ export const editorsUr = {
   "setup.junction.asOsm": "جیسا OpenStreetMap میں",
   "setup.junction.yes": "ٹریفک سگنل",
   "setup.junction.no": "کوئی ٹریفک سگنل نہیں",
-  "setup.junction.note": "سڑک کی سمولیشن یہاں سرخ بتی پر بسوں اور کاروں کو روکتی ہے۔",
-  "setup.junction.listTitle": "ترتیب دیے گئے چوراہے ({count})",
+  "setup.junction.note":
+    "سڑک کی سمولیشن یہاں سرخ بتی پر بسوں اور کاروں کو روکتی ہے، اور پیدل وقت میں کراسنگ پر انتظار شامل ہوتا ہے۔",
+  "setup.junction.selected": "منتخب چوراہے: {count}",
+  "setup.junction.mix": "ٹریفک سگنل کے ساتھ: {on} · بغیر: {off}",
+  "setup.junction.differ":
+    "یہ ابھی مختلف ہیں، اس لیے کوئی انتخاب نشان زد نہیں۔ آپ کا انتخاب سب پر لاگو ہوگا۔",
+  "setup.junction.unselect": "{name} کو انتخاب سے نکالیں",
+  "setup.junction.clear": "انتخاب صاف کریں",
+  "setup.junction.more": "کئی چوراہے ایک ساتھ ترتیب دینے کے لیے Shift دبا کر مزید چوراہوں پر کلک کریں۔",
+  "setup.junction.listTitle": "ترتیب دیے گئے چوراہے · {count}",
   "setup.junction.listEmpty":
     "ابھی کوئی نہیں۔ زوم {zoom} سے کسی چوراہے پر ٹیپ کریں تاکہ ٹریفک سگنل لگائیں یا ہٹائیں۔",
   "setup.legend.signals": "ٹریفک سگنل والا چوراہا",

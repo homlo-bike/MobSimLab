@@ -615,8 +615,15 @@ export const editorsNl = {
   "setup.junction.asOsm": "Zoals in OpenStreetMap",
   "setup.junction.yes": "Verkeerslichten",
   "setup.junction.no": "Geen verkeerslichten",
-  "setup.junction.note": "De wegsimulatie laat bussen en auto’s hier stoppen voor rood.",
-  "setup.junction.listTitle": "Ingestelde kruispunten ({count})",
+  "setup.junction.note":
+    "De wegsimulatie laat bussen en auto’s hier stoppen voor rood, en looptijden tellen de wachttijd bij de oversteekplaatsen mee.",
+  "setup.junction.selected": "Geselecteerde kruispunten: {count}",
+  "setup.junction.mix": "Met verkeerslichten: {on} · zonder: {off}",
+  "setup.junction.differ": "Ze verschillen nu, dus er is niets gemarkeerd. Uw keuze geldt voor allemaal.",
+  "setup.junction.unselect": "{name} uit de selectie halen",
+  "setup.junction.clear": "Selectie wissen",
+  "setup.junction.more": "Shift-klik op meer kruispunten om er meerdere tegelijk in te stellen.",
+  "setup.junction.listTitle": "Ingestelde kruispunten · {count}",
   "setup.junction.listEmpty":
     "Nog geen. Tik vanaf zoom {zoom} op een kruispunt om het verkeerslichten te geven of ze weg te halen.",
   "setup.legend.signals": "Kruispunt met verkeerslichten",

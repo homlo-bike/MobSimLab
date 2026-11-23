@@ -617,8 +617,16 @@ export const editorsPt = {
   "setup.junction.asOsm": "Como no OpenStreetMap",
   "setup.junction.yes": "Semáforos",
   "setup.junction.no": "Sem semáforos",
-  "setup.junction.note": "A simulação viária para aqui ônibus e carros no vermelho.",
-  "setup.junction.listTitle": "Cruzamentos configurados ({count})",
+  "setup.junction.note":
+    "A simulação viária para aqui ônibus e carros no vermelho, e os tempos a pé somam a espera nas travessias.",
+  "setup.junction.selected": "Cruzamentos selecionados: {count}",
+  "setup.junction.mix": "Com semáforos: {on} · sem: {off}",
+  "setup.junction.differ":
+    "Agora diferem, por isso nenhuma opção está marcada. A sua escolha vale para todos.",
+  "setup.junction.unselect": "Tirar {name} da seleção",
+  "setup.junction.clear": "Limpar a seleção",
+  "setup.junction.more": "Shift-clique em mais cruzamentos para configurar vários de uma vez.",
+  "setup.junction.listTitle": "Cruzamentos configurados · {count}",
   "setup.junction.listEmpty":
     "Nenhum ainda. A partir do zoom {zoom}, toque num cruzamento para lhe dar ou tirar semáforos.",
   "setup.legend.signals": "Cruzamento com semáforos",

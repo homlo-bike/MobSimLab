@@ -656,8 +656,15 @@ export const editorsPl = {
   "setup.junction.asOsm": "Jak w OpenStreetMap",
   "setup.junction.yes": "Sygnalizacja świetlna",
   "setup.junction.no": "Bez sygnalizacji",
-  "setup.junction.note": "Symulacja drogowa zatrzymuje tu autobusy i samochody na czerwonym.",
-  "setup.junction.listTitle": "Ustawione skrzyżowania ({count})",
+  "setup.junction.note":
+    "Symulacja drogowa zatrzymuje tu autobusy i samochody na czerwonym, a czasy dojścia doliczają czekanie na przejściach.",
+  "setup.junction.selected": "Wybrane skrzyżowania: {count}",
+  "setup.junction.mix": "Z sygnalizacją: {on} · bez: {off}",
+  "setup.junction.differ": "Różnią się teraz, więc nic nie jest zaznaczone. Wybór dotyczy wszystkich.",
+  "setup.junction.unselect": "Usuń {name} z wyboru",
+  "setup.junction.clear": "Wyczyść wybór",
+  "setup.junction.more": "Kliknij z Shiftem kolejne skrzyżowania, aby ustawić kilka naraz.",
+  "setup.junction.listTitle": "Ustawione skrzyżowania · {count}",
   "setup.junction.listEmpty":
     "Jeszcze żadnych. Od przybliżenia {zoom} dotknij skrzyżowania, aby dodać lub usunąć sygnalizację.",
   "setup.legend.signals": "Skrzyżowanie z sygnalizacją",

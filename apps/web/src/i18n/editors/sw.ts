@@ -615,8 +615,16 @@ export const editorsSw = {
   "setup.junction.asOsm": "Kama ilivyo kwenye OpenStreetMap",
   "setup.junction.yes": "Taa za barabarani",
   "setup.junction.no": "Hakuna taa za barabarani",
-  "setup.junction.note": "Uigaji wa barabara husimamisha mabasi na magari hapa kwenye taa nyekundu.",
-  "setup.junction.listTitle": "Makutano yaliyowekwa ({count})",
+  "setup.junction.note":
+    "Uigaji wa barabara husimamisha mabasi na magari hapa kwenye taa nyekundu, na muda wa kutembea huongeza kusubiri kwenye vivuko.",
+  "setup.junction.selected": "Makutano yaliyochaguliwa: {count}",
+  "setup.junction.mix": "Yenye taa: {on} · bila taa: {off}",
+  "setup.junction.differ":
+    "Kwa sasa yanatofautiana, hivyo hakuna chaguo lililowekwa alama. Chaguo lako litatumika kwa yote.",
+  "setup.junction.unselect": "Ondoa {name} kwenye uteuzi",
+  "setup.junction.clear": "Futa uteuzi",
+  "setup.junction.more": "Bofya makutano mengine huku ukibonyeza Shift ili kuweka kadhaa kwa pamoja.",
+  "setup.junction.listTitle": "Makutano yaliyowekwa · {count}",
   "setup.junction.listEmpty":
     "Bado hakuna. Kuanzia kukuza {zoom}, gusa makutano ili kuweka au kuondoa taa za barabarani.",
   "setup.legend.signals": "Makutano yenye taa za barabarani",
