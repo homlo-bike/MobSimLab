@@ -464,7 +464,9 @@
     "cost.price_base_year": "비용 값의 가격 기준 연도",
     "mode.spare_share": "예비 차량, 첨두 운행 차량 대비 비율(차량 수)",
     "mode.vehicle_capacity": "도로 차량 1대당 승객 정원, 계획 밀도 기준 좌석과 입석",
-    "cost.opex.car_length_m": "철도 운행비: 1량으로 계산하는 열차 길이"
+    "cost.opex.car_length_m": "철도 운행비: 1량으로 계산하는 열차 길이",
+    "road.advice_on_time_share": "도로 시뮬레이션 조언: 정시 출발 비율이 이보다 낮은 도로 노선은 조언을 받음",
+    "road.advice_bunched_share": "도로 시뮬레이션 조언: 몰림 출발 비율이 이보다 높은 도로 노선은 조언을 받음"
   },
   "units": {
     "US$ million each (2023, PPP)": "백만 달러/대(2023, PPP)",

@@ -291,7 +291,8 @@
     "fe653218": "kalibrlash: hisoblashlar GEH koʻrsatkichi",
     "ff319992": "qatnovlar yuzaga kelishi: uyga bogʻliq boʻlmagan qatnovlar ishlab chiqarilishi va jalbi",
     "ff362d54": "transport turini tanlash: velosipedi yoʻq odamlar uchun velosiped",
-    "ff653463": "oʻtish egriligi uzunligi"
+    "ff653463": "oʻtish egriligi uzunligi",
+    "c4a51a02": "yo‘l simulyatsiyasi maslahatlari"
   },
   "rationale": {
     "009596c6": "Shahar/shahar atrofi qatnovi uchun EN 15663 hisobiy yuklamalari; haddan tashqari tigʻizlik sifatida 6/m².",
@@ -978,6 +979,8 @@
     "fef618f9": "Har bir foydalanish turi boʻyicha bandlik zichliklari (bir toʻliq stavkali ish oʻrniga sof ichki maydon) umumiy qavat maydoni va boʻsh joylar uchun taxminan 20 % ga oshirilgan.",
     "ff4818d0": "Mahsulot egasining tanlovi (2026-11-16): model yoʻnalishlar va 2 km bufer zonani qamraydi. Bu har bir bekatning piyoda va velosiped xizmat hududlarini (mode.catchment_m koʻpi bilan taxminan 1.2 km) va yoʻnalish bilan raqobatlashadigan qisqa avtomobil qatnovlarini oʻz ichiga oladi. Yoʻlovchilari uzoqdan keladigan yoʻnalishlar (avtomobil + jamoat transporti, mintaqaviy poyezd) uchun koʻproq oling.",
     "ff5e263c": "Cederning eng koʻp yuklama nuqtasi usuli qatnov chastotasini eng gavjum oraliqdagi tigʻiz soat yuklamasi kerakli toʻlish darajasida qoladigan qilib belgilaydi; sigʻim tik turganlarni rejalashtirish zichligida hisoblaydi, shuning uchun 0.8 ga yaqin qiymatlar poyezdlar orasidagi notekis yuklanishga joy qoldiradi.",
-    "ff68efd7": "CNOSSOS-EU yoʻl chiziqli manbasini yoʻl sirtidan 0.05 m balandlikka joylashtiradi."
+    "ff68efd7": "CNOSSOS-EU yoʻl chiziqli manbasini yoʻl sirtidan 0.05 m balandlikka joylashtiradi.",
+    "abdceb21": "TCQSM jadval bo‘yicha qatnaydigan avtobus liniyasi uchun 85–95 % o‘z vaqtidalikni yaxshidan juda yaxshigacha, 75 % dan pastini esa yomon deb baholaydi; markaziy qiymatdan past bo‘lsa, ishga tushirish maslahatlari liniya vaqtni qayerda yo‘qotishini ko‘rsatadi.",
+    "76757724": "TCQSM oraliqlarning variatsiya koeffitsiyenti taxminan 0,4 dan yuqori bo‘lsa, uni notekis deb hisoblaydi; bu taxminan o‘nta oraliqdan biri rejadagining yarmidan qisqa bo‘lishiga to‘g‘ri keladi. Shundan boshlab yo‘lovchilar transportlarning juft-juft kelishini ko‘radi."
   }
 }

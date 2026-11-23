@@ -291,7 +291,8 @@
     "fe653218": "urekebishaji: GEH ya hesabu",
     "ff319992": "uzalishaji wa safari: safari zisizo za nyumbani zinazozalishwa na maeneo ya kuvutia",
     "ff362d54": "uchaguzi wa njia ya usafiri: kuendesha baiskeli kwa watu wasio na baiskeli",
-    "ff653463": "urefu wa kona ya mpito"
+    "ff653463": "urefu wa kona ya mpito",
+    "c4a51a02": "ushauri wa uigaji wa barabara"
   },
   "rationale": {
     "009596c6": "Mizigo ya marejeo ya EN 15663 kwa huduma ya mjini/vitongojini; 6/m² kama msongamano wa juu kabisa (crush).",
@@ -978,6 +979,8 @@
     "fef618f9": "Msongamano wa ajira kwa kila daraja la matumizi (eneo la ndani halisi kwa kila kazi ya muda wote) ukiongezwa kwa takriban 20 % kwa eneo la jumla la sakafu na nafasi zilizo wazi.",
     "ff4818d0": "Chaguo la mmiliki wa bidhaa (2026-11-16): modeli hufunika njia pamoja na ukanda wa km 2. Hiyo hushikilia maeneo ya huduma ya kutembea na baiskeli ya kila kituo (mode.catchment_m ni takriban km 1.2 kwa juu kabisa) na safari fupi za gari zinazoshindana na njia. Tumia zaidi kwa njia ambazo abiria wake hutoka mbali (egesha-na-panda, reli ya kikanda).",
     "ff5e263c": "Mbinu ya Ceder ya sehemu ya mzigo wa juu kabisa huweka marudio ili mzigo wa saa ya msongamano kwenye kiungo chenye shughuli nyingi zaidi ubaki kwenye ukaliaji unaotakiwa; uwezo huhesabu waliosimama kwa msongamano wa upangaji, kwa hiyo thamani karibu na 0.8 huacha nafasi kwa mzigo usio sawa kati ya treni.",
-    "ff68efd7": "CNOSSOS-EU huweka chanzo cha mstari wa barabara 0.05 m juu ya uso wa barabara."
+    "ff68efd7": "CNOSSOS-EU huweka chanzo cha mstari wa barabara 0.05 m juu ya uso wa barabara.",
+    "abdceb21": "TCQSM hupima ufikaji kwa wakati wa 85–95 % kuwa mzuri hadi mzuri sana kwa laini ya basi yenye ratiba, na chini ya 75 % kuwa duni; chini ya thamani ya kati, ushauri wa uendeshaji hutaja mahali laini inapopoteza muda.",
+    "76757724": "TCQSM huona mgawo wa mabadiliko ya vipindi juu ya takriban 0.4 kuwa usio wa kawaida, sawa na takriban kipindi kimoja kati ya kumi kuwa kifupi kuliko nusu ya kilichopangwa; kuanzia hapo abiria huona magari yakifika wawili wawili."
   }
 }

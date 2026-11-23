@@ -291,7 +291,8 @@
     "fe653218": "hiệu chỉnh: GEH của số đếm",
     "ff319992": "phát sinh chuyến đi: lượng phát sinh và thu hút không gắn với nhà",
     "ff362d54": "lựa chọn phương thức: đi xe đạp cho người không có xe đạp",
-    "ff653463": "chiều dài đường cong chuyển tiếp"
+    "ff653463": "chiều dài đường cong chuyển tiếp",
+    "c4a51a02": "lời khuyên của mô phỏng đường bộ"
   },
   "rationale": {
     "009596c6": "Tải trọng tham chiếu theo EN 15663 cho dịch vụ đô thị/ngoại ô; 6/m² là mức chật cứng.",
@@ -978,6 +979,8 @@
     "fef618f9": "Mật độ việc làm theo loại công năng (diện tích sử dụng bên trong mỗi việc làm toàn thời gian) được tăng khoảng 20 % để tính tổng diện tích sàn và diện tích bỏ trống.",
     "ff4818d0": "Lựa chọn của chủ sản phẩm (2026-11-16): mô hình bao phủ các tuyến cộng vùng đệm 2 km. Vùng này chứa vùng phục vụ đi bộ và xe đạp của mọi điểm dừng (mode.catchment_m tối đa khoảng 1.2 km) và các chuyến ô tô ngắn cạnh tranh với tuyến. Hãy dùng giá trị lớn hơn cho các tuyến có hành khách đến từ xa (gửi xe rồi đi tiếp, đường sắt vùng).",
     "ff5e263c": "Phương pháp điểm tải lớn nhất của Ceder đặt tần suất sao cho tải giờ cao điểm tại đoạn đông nhất giữ ở mức sử dụng mong muốn; sức chứa tính cả hành khách đứng ở mật độ quy hoạch, nên các giá trị gần 0.8 để lại dư địa cho tải không đều giữa các đoàn tàu.",
-    "ff68efd7": "CNOSSOS-EU đặt nguồn đường của giao thông đường bộ ở độ cao 0.05 m trên mặt đường."
+    "ff68efd7": "CNOSSOS-EU đặt nguồn đường của giao thông đường bộ ở độ cao 0.05 m trên mặt đường.",
+    "abdceb21": "TCQSM đánh giá mức đúng giờ 85–95 % là tốt đến rất tốt cho tuyến xe buýt chạy theo lịch, và dưới 75 % là kém; dưới giá trị trung tâm, lời khuyên của lần chạy chỉ ra tuyến mất thời gian ở đâu.",
+    "76757724": "TCQSM coi hệ số biến thiên của khoảng cách chuyến trên khoảng 0,4 là không đều, tương ứng khoảng một trong mười khoảng cách ngắn hơn một nửa khoảng cách dự kiến; từ đó hành khách thấy xe đến theo cặp."
   }
 }

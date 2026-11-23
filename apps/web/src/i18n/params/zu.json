@@ -464,7 +464,9 @@
     "cost.price_base_year": "Unyaka oyisisekelo samanani ezindleko",
     "mode.spare_share": "Izimoto ezigciniwe, isabelo sezimoto ezisebenzayo ngesikhathi sokuminyana (izimoto)",
     "mode.vehicle_capacity": "Izindawo zabagibeli ngemoto yomgwaqo, abahlezi nabamile ngokuminyana kokuhlela",
-    "cost.opex.car_length_m": "Izindleko zokuhamba kwesitimela: ubude besitimela obubalwa njengenqola eyodwa"
+    "cost.opex.car_length_m": "Izindleko zokuhamba kwesitimela: ubude besitimela obubalwa njengenqola eyodwa",
+    "road.advice_on_time_share": "Ukulingisa umgwaqo, iseluleko: umzila womgwaqo onesabelo sokuhamba ngesikhathi esingaphansi kwalesi uthola iseluleko",
+    "road.advice_bunched_share": "Ukulingisa umgwaqo, iseluleko: umzila womgwaqo onesabelo sokuhamba kuqoqene esingaphezu kwalesi uthola iseluleko"
   },
   "units": {
     "US$ million each (2023, PPP)": "izigidi ze-US$ ngakunye (2023, PPP)",

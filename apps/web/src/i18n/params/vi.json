@@ -464,7 +464,9 @@
     "cost.price_base_year": "Năm gốc giá của các giá trị chi phí",
     "mode.spare_share": "Xe dự phòng, tỷ lệ trên số xe chạy giờ cao điểm (đoàn xe)",
     "mode.vehicle_capacity": "Chỗ hành khách mỗi xe đường phố, ghế ngồi cộng chỗ đứng theo mật độ thiết kế",
-    "cost.opex.car_length_m": "Chi phí vận hành đường sắt: chiều dài tàu tính là một toa"
+    "cost.opex.car_length_m": "Chi phí vận hành đường sắt: chiều dài tàu tính là một toa",
+    "road.advice_on_time_share": "Mô phỏng đường bộ, lời khuyên: tuyến đường phố có tỷ lệ chuyến xuất phát đúng giờ dưới mức này sẽ nhận lời khuyên",
+    "road.advice_bunched_share": "Mô phỏng đường bộ, lời khuyên: tuyến đường phố có tỷ lệ chuyến xuất phát dồn cục trên mức này sẽ nhận lời khuyên"
   },
   "units": {
     "US$ million each (2023, PPP)": "triệu US$ mỗi chiếc (2023, PPP)",

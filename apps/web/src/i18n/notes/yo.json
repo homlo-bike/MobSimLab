@@ -291,7 +291,8 @@
     "fe653218": "ìṣàtúnṣe: GEH ti àwọn ìkàyè",
     "ff319992": "ìpilẹ̀ṣẹ̀ ìrìn: ìrìn tí kì í ṣe ti ilé tí a ṣẹ̀dá àti ìfàmọ́ra",
     "ff362d54": "yíyan ọ̀nà ìrìnnà: kẹ̀kẹ́ fún àwọn tí kò ní kẹ̀kẹ́",
-    "ff653463": "gígùn ìtẹ̀ ìyípadà"
+    "ff653463": "gígùn ìtẹ̀ ìyípadà",
+    "c4a51a02": "ìmọ̀ràn àfarawé ọ̀nà"
   },
   "rationale": {
     "009596c6": "Ẹrù ìtọ́kasí EN 15663 fún iṣẹ́ ìlú àti ìgbèríko ìlú; 6/m² gẹ́gẹ́ bí ìkún tó pọ̀ jù (crush).",
@@ -978,6 +979,8 @@
     "fef618f9": "Ìpọ̀ iṣẹ́ fún ẹ̀ka lílo kọ̀ọ̀kan (ààyè inú àpapọ̀ fún iṣẹ́ alákòókò kíkún kọ̀ọ̀kan) tí a gbé sókè ní nǹkan bí 20 % fún ààyè ilẹ̀ àpapọ̀ àti àìlò.",
     "ff4818d0": "Ìpinnu olùní ọjà (2026-11-16): àwòṣe náà bo àwọn ìlà pẹ̀lú ìbòrí 2 km. Ìyẹn ní agbègbè iṣẹ́ ìrìn ẹsẹ̀ àti kẹ̀kẹ́ ti gbogbo ibùdókọ̀ nínú (mode.catchment_m kò ju nǹkan bí 1.2 km lọ) àti àwọn ìrìn mọ́tò kúkúrú tó ń bá ìlà náà díje. Ẹ lo jù bẹ́ẹ̀ lọ fún àwọn ìlà tí èrò wọn ń wá láti ọ̀nà jíjìn (park and ride, ọkọ̀ ojú irin ẹkùn).",
     "ff5e263c": "Ọ̀nà ibi ẹrù tó pọ̀ jù ti Ceder ń ṣètò ìgbà-mélòó-mélòó kí ẹrù wákàtí ìkúnlẹ̀ ọkọ̀ ní apá tó kún jù lè wà ní ìkún tí a fẹ́; agbára ń ka àwọn tó dúró ní ìwọ̀n ètò, nítorí náà iye tó súnmọ́ 0.8 ń fi ààyè sílẹ̀ fún ẹrù tí kò dọ́gba láàrin àwọn ọkọ̀ ojú irin.",
-    "ff68efd7": "CNOSSOS-EU gbé orísun onílà títì sí 0.05 m lókè ojú títì."
+    "ff68efd7": "CNOSSOS-EU gbé orísun onílà títì sí 0.05 m lókè ojú títì.",
+    "abdceb21": "TCQSM ka ìtẹ̀lé àkókò 85–95 % sí dáradára sí dáradára gan-an fún ìlà bọ́ọ̀sì tí ó ní ètò àkókò, àti nísàlẹ̀ 75 % sí aláìdára; nísàlẹ̀ iye àárín, ìmọ̀ràn ìṣiṣẹ́ náà sọ ibi tí ìlà náà ti ń pàdánù àkókò rẹ̀.",
+    "76757724": "TCQSM ka ìyàtọ̀ àlàfo tí ó ju nǹkan bí 0.4 lọ sí aláìlétò, èyí tí ó dọ́gba pẹ̀lú nǹkan bí àlàfo kan nínú mẹ́wàá tí ó kúrú ju ìdajì àlàfo tí a gbèrò; láti ibẹ̀ àwọn èrò ń rí ọkọ̀ tí ń dé ní méjì-méjì."
   }
 }

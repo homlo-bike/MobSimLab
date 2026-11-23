@@ -464,7 +464,9 @@
     "cost.price_base_year": "Ano-base de preços dos custos",
     "mode.spare_share": "Veículos de reserva, parcela dos veículos em serviço no pico (frota)",
     "mode.vehicle_capacity": "Lugares de passageiros por veículo de rua, sentados mais em pé na densidade de projeto",
-    "cost.opex.car_length_m": "Custo de circulação ferroviária: comprimento de trem contado como um carro"
+    "cost.opex.car_length_m": "Custo de circulação ferroviária: comprimento de trem contado como um carro",
+    "road.advice_on_time_share": "Simulação rodoviária, conselhos: uma linha de rua abaixo desta parcela de partidas pontuais recebe conselhos",
+    "road.advice_bunched_share": "Simulação rodoviária, conselhos: uma linha de rua acima desta parcela de partidas agrupadas recebe conselhos"
   },
   "units": {
     "US$ million each (2023, PPP)": "milhões de US$ cada (2023, PPC)",

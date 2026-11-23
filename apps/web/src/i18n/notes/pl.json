@@ -291,7 +291,8 @@
     "fe653218": "kalibracja: GEH pomiarów ruchu",
     "ff319992": "generowanie podróży: produkcja i atrakcja podróży niezwiązanych z domem",
     "ff362d54": "wybór środka transportu: rower dla osób bez roweru",
-    "ff653463": "długość krzywej przejściowej"
+    "ff653463": "długość krzywej przejściowej",
+    "c4a51a02": "porady symulacji drogowej"
   },
   "rationale": {
     "009596c6": "Obciążenia odniesienia wg EN 15663 dla komunikacji miejskiej i podmiejskiej; 6/m² jako stan maksymalnego zatłoczenia.",
@@ -978,6 +979,8 @@
     "fef618f9": "Wskaźniki zatrudnienia według klasy użytkowania (powierzchnia wewnętrzna netto na etat) zwiększone o około 20 % dla powierzchni całkowitej i pustostanów.",
     "ff4818d0": "Wybór właściciela produktu (2026-11-16): model obejmuje linie plus bufor 2 km. Mieści to obszary dojścia pieszego i dojazdu rowerem do każdego przystanku (mode.catchment_m wynosi najwyżej około 1.2 km) oraz krótkie podróże samochodem konkurujące z linią. Użyj więcej dla linii, których pasażerowie przyjeżdżają z daleka (park and ride, kolej regionalna).",
     "ff5e263c": "Metoda punktu maksymalnego obciążenia Cedera ustala częstotliwość tak, aby obciążenie w godzinie szczytu na najbardziej obciążonym odcinku pozostało na pożądanym poziomie napełnienia; pojemność liczy pasażerów stojących przy gęstości planistycznej, więc wartości bliskie 0.8 zostawiają miejsce na nierówne obciążenie pociągów.",
-    "ff68efd7": "CNOSSOS-EU umieszcza liniowe źródło drogowe 0.05 m nad nawierzchnią drogi."
+    "ff68efd7": "CNOSSOS-EU umieszcza liniowe źródło drogowe 0.05 m nad nawierzchnią drogi.",
+    "abdceb21": "TCQSM ocenia punktualność 85–95 % jako dobrą do bardzo dobrej dla linii autobusowej z rozkładem, a poniżej 75 % jako słabą; poniżej wartości centralnej porady przebiegu wskazują, gdzie linia traci czas.",
+    "76757724": "TCQSM uznaje za nieregularny współczynnik zmienności odstępów powyżej około 0,4, co odpowiada mniej więcej jednemu odstępowi na dziesięć krótszemu niż połowa planowanego; od tego momentu pasażerowie widzą pojazdy przyjeżdżające parami."
   }
 }

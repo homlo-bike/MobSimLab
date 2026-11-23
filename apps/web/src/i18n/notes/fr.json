@@ -291,7 +291,8 @@
     "fe653218": "calage : GEH des comptages",
     "ff319992": "génération des déplacements : émissions et attractions non basées au domicile",
     "ff362d54": "choix modal : vélo pour les personnes sans vélo",
-    "ff653463": "longueur du raccordement progressif"
+    "ff653463": "longueur du raccordement progressif",
+    "c4a51a02": "conseils de la simulation routière"
   },
   "rationale": {
     "009596c6": "Charges de référence de l'EN 15663 pour le service urbain et suburbain ; 6/m² en charge écrasante.",
@@ -978,6 +979,8 @@
     "fef618f9": "Densités d'emploi par catégorie d'usage (surface intérieure nette par emploi à temps plein) majorées d'environ 20 % pour la surface de plancher brute et la vacance.",
     "ff4818d0": "Choix du responsable produit (2026-11-16) : le modèle couvre les lignes plus une zone tampon de 2 km. Elle contient les zones de desserte à pied et à vélo de chaque arrêt (mode.catchment_m vaut au plus environ 1.2 km) et les courts déplacements en voiture qui concurrencent la ligne. Utilisez davantage pour les lignes dont les voyageurs viennent de loin (parc-relais, ferroviaire régional).",
     "ff5e263c": "La méthode du point de charge maximale de Ceder fixe la fréquence de sorte que la charge à l'heure de pointe sur le tronçon le plus chargé reste à un taux d'occupation souhaité ; la capacité compte les voyageurs debout à la densité de planification, de sorte que des valeurs proches de 0.8 laissent une marge pour une charge inégale entre les trains.",
-    "ff68efd7": "CNOSSOS-EU place la source linéique routière 0.05 m au-dessus de la chaussée."
+    "ff68efd7": "CNOSSOS-EU place la source linéique routière 0.05 m au-dessus de la chaussée.",
+    "abdceb21": "Le TCQSM juge une ponctualité de 85 à 95 % bonne à très bonne pour une ligne de bus à horaire, et mauvaise sous 75 % ; sous la valeur centrale, les conseils du calcul indiquent où la ligne perd son temps.",
+    "76757724": "Le TCQSM considère irrégulier un coefficient de variation des intervalles supérieur à environ 0,4, soit à peu près un intervalle sur dix inférieur à la moitié de l'intervalle prévu ; dès lors, les voyageurs voient les véhicules arriver par deux."
   }
 }

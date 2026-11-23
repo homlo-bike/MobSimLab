@@ -464,7 +464,9 @@
     "cost.price_base_year": "費用値の価格基準年",
     "mode.spare_share": "予備車両、ピーク時運行車両に対する割合（車両数）",
     "mode.vehicle_capacity": "道路車両1台あたりの乗客定員、計画密度での座席と立席",
-    "cost.opex.car_length_m": "鉄道の走行費：1両として数える列車の長さ"
+    "cost.opex.car_length_m": "鉄道の走行費：1両として数える列車の長さ",
+    "road.advice_on_time_share": "道路シミュレーションの助言：定時発車の割合がこれを下回る街路路線に助言を出す",
+    "road.advice_bunched_share": "道路シミュレーションの助言：団子発車の割合がこれを上回る街路路線に助言を出す"
   },
   "units": {
     "US$ million each (2023, PPP)": "百万米ドル/台（2023、PPP）",

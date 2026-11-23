@@ -464,7 +464,9 @@
     "cost.price_base_year": "Tahun dasar harga nilai biaya",
     "mode.spare_share": "Kendaraan cadangan, bagian dari kendaraan yang beroperasi pada jam sibuk (armada)",
     "mode.vehicle_capacity": "Tempat penumpang per kendaraan jalan, kursi ditambah berdiri pada kepadatan perencanaan",
-    "cost.opex.car_length_m": "Biaya jalan kereta: panjang kereta yang dihitung sebagai satu gerbong"
+    "cost.opex.car_length_m": "Biaya jalan kereta: panjang kereta yang dihitung sebagai satu gerbong",
+    "road.advice_on_time_share": "Simulasi jalan, saran: jalur jalan dengan porsi keberangkatan tepat waktu di bawah nilai ini mendapat saran",
+    "road.advice_bunched_share": "Simulasi jalan, saran: jalur jalan dengan porsi keberangkatan bergerombol di atas nilai ini mendapat saran"
   },
   "units": {
     "US$ million each (2023, PPP)": "juta US$ per unit (2023, PPP)",

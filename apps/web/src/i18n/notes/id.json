@@ -291,7 +291,8 @@
     "fe653218": "kalibrasi: GEH hitungan lalu lintas",
     "ff319992": "bangkitan perjalanan: produksi dan tarikan berbasis bukan rumah",
     "ff362d54": "pemilihan moda: bersepeda bagi orang tanpa sepeda",
-    "ff653463": "panjang lengkung peralihan"
+    "ff653463": "panjang lengkung peralihan",
+    "c4a51a02": "saran simulasi jalan"
   },
   "rationale": {
     "009596c6": "Beban acuan EN 15663 untuk layanan perkotaan/pinggiran kota; 6/m² sebagai kondisi berdesakan penuh.",
@@ -978,6 +979,8 @@
     "fef618f9": "Kepadatan lapangan kerja per kelas penggunaan (luas bersih bagian dalam per pekerjaan penuh waktu) dinaikkan sekitar 20 % untuk luas lantai kotor dan kekosongan.",
     "ff4818d0": "Pilihan pemilik produk (2026-11-16): model mencakup jalur ditambah buffer 2 km. Itu mencakup daerah tangkapan jalan kaki dan sepeda dari setiap halte (mode.catchment_m paling besar sekitar 1.2 km) dan perjalanan mobil pendek yang bersaing dengan jalur. Gunakan lebih untuk jalur yang penumpangnya datang dari jauh (park and ride, kereta regional).",
     "ff5e263c": "Metode titik muatan maksimum Ceder menetapkan frekuensi agar muatan jam puncak pada ruas tersibuk tetap pada okupansi yang diinginkan; kapasitas menghitung penumpang berdiri pada kepadatan perencanaan, sehingga nilai sekitar 0.8 menyisakan ruang untuk muatan yang tidak merata antarkereta.",
-    "ff68efd7": "CNOSSOS-EU menempatkan sumber garis jalan 0.05 m di atas permukaan jalan."
+    "ff68efd7": "CNOSSOS-EU menempatkan sumber garis jalan 0.05 m di atas permukaan jalan.",
+    "abdceb21": "TCQSM menilai ketepatan waktu 85–95 % sebagai baik hingga sangat baik untuk jalur bus berjadwal, dan di bawah 75 % sebagai buruk; di bawah nilai pusat, saran dari jalannya simulasi menyebut di mana jalur kehilangan waktunya.",
+    "76757724": "TCQSM menganggap koefisien variasi selang waktu di atas sekitar 0,4 tidak teratur, setara dengan kira-kira satu dari sepuluh selang lebih pendek dari separuh selang rencana; sejak itu penumpang melihat kendaraan datang berpasangan."
   }
 }

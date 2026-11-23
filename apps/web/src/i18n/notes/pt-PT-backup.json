@@ -291,7 +291,8 @@
     "fe653218": "calibração: GEH das contagens",
     "ff319992": "geração de viagens: produções e atrações não baseadas em casa",
     "ff362d54": "escolha modal: bicicleta para pessoas sem bicicleta",
-    "ff653463": "comprimento da curva de transição"
+    "ff653463": "comprimento da curva de transição",
+    "c4a51a02": "conselhos da simulação rodoviária"
   },
   "rationale": {
     "009596c6": "Cargas de referência da EN 15663 para serviço urbano/suburbano; 6/m² como lotação de esmagamento.",
@@ -978,6 +979,8 @@
     "fef618f9": "Densidades de emprego por classe de uso (área interna útil por emprego a tempo inteiro) aumentadas em cerca de 20 % para área bruta e desocupação.",
     "ff4818d0": "Escolha do responsável pelo produto (2026-11-16): o modelo cobre as linhas mais uma faixa de 2 km. Isso abrange as áreas de influência a pé e de bicicleta de todas as paragens (mode.catchment_m é no máximo cerca de 1.2 km) e as viagens curtas de automóvel que competem com a linha. Use mais para linhas cujos passageiros vêm de longe (park and ride, ferrovia regional).",
     "ff5e263c": "O método do ponto de carga máxima de Ceder define a frequência para que a carga da hora de ponta no troço mais carregado fique numa ocupação desejada; a capacidade conta os passageiros em pé à densidade de planeamento, por isso valores perto de 0.8 deixam margem para uma carga desigual entre comboios.",
-    "ff68efd7": "O CNOSSOS-EU coloca a fonte linear rodoviária 0.05 m acima da superfície da estrada."
+    "ff68efd7": "O CNOSSOS-EU coloca a fonte linear rodoviária 0.05 m acima da superfície da estrada.",
+    "abdceb21": "O TCQSM classifica uma pontualidade de 85–95 % como boa a muito boa para uma linha de autocarro com horário, e abaixo de 75 % como má; abaixo do valor central, os conselhos da execução indicam onde a linha perde tempo.",
+    "76757724": "O TCQSM considera irregular um coeficiente de variação dos intervalos acima de cerca de 0,4, o que corresponde a cerca de um intervalo em dez abaixo de metade do previsto; a partir daí os passageiros veem veículos chegar aos pares."
   }
 }

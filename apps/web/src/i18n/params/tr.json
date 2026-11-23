@@ -464,7 +464,9 @@
     "cost.price_base_year": "Maliyet değerlerinin fiyat baz yılı",
     "mode.spare_share": "Yedek araçlar, zirvede hizmetteki araçların payı (filo)",
     "mode.vehicle_capacity": "Cadde aracı başına yolcu yeri, planlama yoğunluğunda oturma artı ayakta",
-    "cost.opex.car_length_m": "Demiryolu işletme maliyeti: bir vagon sayılan tren uzunluğu"
+    "cost.opex.car_length_m": "Demiryolu işletme maliyeti: bir vagon sayılan tren uzunluğu",
+    "road.advice_on_time_share": "Yol simülasyonu, öneriler: zamanında kalkış payı bunun altında olan bir cadde hattı öneri alır",
+    "road.advice_bunched_share": "Yol simülasyonu, öneriler: toplu kalkış payı bunun üstünde olan bir cadde hattı öneri alır"
   },
   "units": {
     "US$ million each (2023, PPP)": "milyon US$ adet başına (2023, SAGP)",

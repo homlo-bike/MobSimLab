@@ -291,7 +291,8 @@
     "fe653218": "kalibratie: GEH van tellingen",
     "ff319992": "ritgeneratie: niet-woninggebonden producties en attracties",
     "ff362d54": "vervoerwijzekeuze: fietsen voor mensen zonder fiets",
-    "ff653463": "lengte van de overgangsboog"
+    "ff653463": "lengte van de overgangsboog",
+    "c4a51a02": "advies van de wegsimulatie"
   },
   "rationale": {
     "009596c6": "Referentiebelastingen volgens EN 15663 voor stads- en voorstadsdienst; 6/m² als maximale bezetting (crush).",
@@ -978,6 +979,8 @@
     "fef618f9": "Werkgelegenheidsdichtheden per gebruiksklasse (netto vloeroppervlak per voltijdbaan), verhoogd met ongeveer 20 % voor bruto vloeroppervlak en leegstand.",
     "ff4818d0": "Keuze van de producteigenaar (2026-11-16): het model dekt de lijnen plus een buffer van 2 km. Dat omvat de invloedsgebieden te voet en per fiets van elke halte (mode.catchment_m is hoogstens ongeveer 1.2 km) en de korte autoritten die met de lijn concurreren. Gebruik meer voor lijnen waarvan de reizigers van ver komen (P+R, regionaal spoor).",
     "ff5e263c": "De methode van het maximale belastingpunt van Ceder stelt de frequentie zo vast dat de belasting in het spitsuur op het drukste baanvak op een gewenste bezetting blijft; de capaciteit telt staande reizigers bij de planningsdichtheid, dus waarden rond 0.8 laten ruimte voor een ongelijke bezetting tussen treinen.",
-    "ff68efd7": "CNOSSOS-EU legt de lijnbron voor wegverkeer op 0.05 m boven het wegdek."
+    "ff68efd7": "CNOSSOS-EU legt de lijnbron voor wegverkeer op 0.05 m boven het wegdek.",
+    "abdceb21": "De TCQSM beoordeelt een stiptheid van 85–95 % als goed tot zeer goed voor een buslijn met dienstregeling en onder 75 % als slecht; onder de centrale waarde noemt het advies van de run waar de lijn tijd verliest.",
+    "76757724": "De TCQSM beschouwt een variatiecoëfficiënt van de opvolgtijden boven ongeveer 0,4 als onregelmatig, wat neerkomt op ongeveer één op de tien gaten onder de helft van de geplande opvolgtijd; vanaf daar zien reizigers voertuigen in paren komen."
   }
 }

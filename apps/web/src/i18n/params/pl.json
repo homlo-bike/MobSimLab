@@ -464,7 +464,9 @@
     "cost.price_base_year": "Rok bazowy cen kosztów",
     "mode.spare_share": "Pojazdy rezerwowe, udział pojazdów w ruchu w szczycie (tabor)",
     "mode.vehicle_capacity": "Miejsca dla pasażerów na pojazd uliczny, siedzące i stojące przy gęstości projektowej",
-    "cost.opex.car_length_m": "Koszt ruchu kolejowego: długość pociągu liczona jako jeden wagon"
+    "cost.opex.car_length_m": "Koszt ruchu kolejowego: długość pociągu liczona jako jeden wagon",
+    "road.advice_on_time_share": "Symulacja drogowa, porady: linia uliczna poniżej tego udziału punktualnych odjazdów otrzymuje porady",
+    "road.advice_bunched_share": "Symulacja drogowa, porady: linia uliczna powyżej tego udziału zgrupowanych odjazdów otrzymuje porady"
   },
   "units": {
     "US$ million each (2023, PPP)": "mln US$ za sztukę (2023, PPP)",

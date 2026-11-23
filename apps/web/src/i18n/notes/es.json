@@ -291,7 +291,8 @@
     "fe653218": "calibración: GEH de los conteos",
     "ff319992": "generación de viajes: producciones y atracciones no basadas en casa",
     "ff362d54": "elección modal: bicicleta para personas sin bicicleta",
-    "ff653463": "longitud de la curva de transición"
+    "ff653463": "longitud de la curva de transición",
+    "c4a51a02": "consejos de la simulación vial"
   },
   "rationale": {
     "009596c6": "Cargas de referencia de EN 15663 para servicio urbano y suburbano; 6/m² como carga de hacinamiento.",
@@ -978,6 +979,8 @@
     "fef618f9": "Densidades de empleo por clase de uso (superficie interior neta por empleo a tiempo completo) aumentadas en aproximadamente un 20 % para la superficie construida bruta y la desocupación.",
     "ff4818d0": "Decisión del responsable del producto (2026-11-16): el modelo cubre las líneas más una franja de 2 km. Eso abarca las áreas de influencia a pie y en bicicleta de todas las paradas (mode.catchment_m es como máximo de unos 1.2 km) y los viajes cortos en coche que compiten con la línea. Use más para líneas cuyos viajeros vienen de lejos (aparcamientos disuasorios, ferrocarril regional).",
     "ff5e263c": "El método del punto de carga máxima de Ceder fija la frecuencia para que la carga en hora punta en el tramo más cargado se mantenga en una ocupación deseada; la capacidad cuenta los viajeros de pie a la densidad de planificación, así que valores cercanos a 0.8 dejan margen para cargas desiguales entre trenes.",
-    "ff68efd7": "CNOSSOS-EU sitúa la fuente lineal viaria a 0.05 m por encima de la superficie de la calzada."
+    "ff68efd7": "CNOSSOS-EU sitúa la fuente lineal viaria a 0.05 m por encima de la superficie de la calzada.",
+    "abdceb21": "El TCQSM califica una puntualidad del 85–95 % como buena a muy buena para una línea de autobús con horario, y por debajo del 75 % como mala; por debajo del valor central, los consejos de la ejecución indican dónde pierde tiempo la línea.",
+    "76757724": "El TCQSM considera irregular un coeficiente de variación de los intervalos superior a unos 0,4, lo que equivale a aproximadamente uno de cada diez intervalos por debajo de la mitad del previsto; a partir de ahí los pasajeros ven llegar vehículos de dos en dos."
   }
 }

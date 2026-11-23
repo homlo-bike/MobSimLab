@@ -464,7 +464,9 @@
     "cost.price_base_year": "Xarajat qiymatlarining narx bazasi yili",
     "mode.spare_share": "Zaxira transport vositalari, tigʻiz soatda xizmatdagi transport vositalarining ulushi (park)",
     "mode.vehicle_capacity": "Yoʻl transport vositasi uchun yoʻlovchi oʻrinlari, rejalashtirish zichligida oʻtirish va turish",
-    "cost.opex.car_length_m": "Temir yoʻl harakat xarajati: bitta vagon deb hisoblanadigan poyezd uzunligi"
+    "cost.opex.car_length_m": "Temir yoʻl harakat xarajati: bitta vagon deb hisoblanadigan poyezd uzunligi",
+    "road.advice_on_time_share": "Yo‘l simulyatsiyasi, maslahat: vaqtida jo‘nash ulushi bundan past bo‘lgan ko‘cha liniyasi maslahat oladi",
+    "road.advice_bunched_share": "Yo‘l simulyatsiyasi, maslahat: to‘planib jo‘nash ulushi bundan yuqori bo‘lgan ko‘cha liniyasi maslahat oladi"
   },
   "units": {
     "US$ million each (2023, PPP)": "mln US$ har biri (2023, PPP)",

@@ -464,7 +464,9 @@
     "cost.price_base_year": "Anno base dei prezzi dei costi",
     "mode.spare_share": "Veicoli di riserva, quota dei veicoli in servizio di punta (flotta)",
     "mode.vehicle_capacity": "Posti passeggeri per veicolo stradale, a sedere più in piedi alla densità di progetto",
-    "cost.opex.car_length_m": "Costo di marcia ferroviario: lunghezza di treno contata come una carrozza"
+    "cost.opex.car_length_m": "Costo di marcia ferroviario: lunghezza di treno contata come una carrozza",
+    "road.advice_on_time_share": "Simulazione stradale, consigli: una linea stradale sotto questa quota di partenze puntuali riceve consigli",
+    "road.advice_bunched_share": "Simulazione stradale, consigli: una linea stradale sopra questa quota di partenze raggruppate riceve consigli"
   },
   "units": {
     "US$ million each (2023, PPP)": "milioni di US$ cad. (2023, PPA)",

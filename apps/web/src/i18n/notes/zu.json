@@ -291,7 +291,8 @@
     "fe653218": "ukulungisa: i-GEH yezibalo",
     "ff319992": "ukwakhiwa kohambo: ukukhiqizwa nokuheha kohambo olungelona olwasekhaya",
     "ff362d54": "ukukhetha uhlobo lwezokuthutha: ukugibela ibhayisikili kwabantu abangenalo ibhayisikili",
-    "ff653463": "ubude bejika lokushintsha"
+    "ff653463": "ubude bejika lokushintsha",
+    "c4a51a02": "iseluleko sokulingisa umgwaqo"
   },
   "rationale": {
     "009596c6": "Imithwalo eyisisekelo ye-EN 15663 yesevisi yasedolobheni/yasemaphethelweni; 6/m² njengokuminyana okukhulu (crush).",
@@ -978,6 +979,8 @@
     "fef618f9": "Ukuminyana kokuqashwa ngesigaba sokusetshenziswa (indawo yangaphakathi ephelele ngomsebenzi wesikhathi esigcwele) kwenyuswe cishe ngo-20 % ngendawo yaphansi ephelele nezindawo ezingenalutho.",
     "ff4818d0": "Ukukhetha komnikazi womkhiqizo (2026-11-16): imodeli imboza olayini kanye nendawo ezungezile engu-2 km. Lokho kubamba izindawo zesevisi zokuhamba ngezinyawo nezebhayisikili zaso sonke isitobhi (i-mode.catchment_m ingaphezulu kakhulu cishe ku-1.2 km) nohambo olufushane lwemoto oluncintisana nolayini. Sebenzisa okwengeziwe kolayini abagibeli babo abavela kude (ukupaka uqhubeke, ujantshi wesifunda).",
     "ff5e263c": "Indlela kaCeder yephuzu lomthwalo omkhulu ibeka ukuvama ukuze umthwalo wehora lokuminyana esixhumanisini esiminyene kakhulu uhlale ekugcweleni okufunwayo; umthamo ubala abemile ngokuminyana kokuhlela, ngakho amanani aseduze no-0.8 ashiya isikhala sokulayisha okungalingani phakathi kwezitimela.",
-    "ff68efd7": "I-CNOSSOS-EU ibeka umthombo womugqa womgwaqo ku-0.05 m ngaphezu kobuso bomgwaqo."
+    "ff68efd7": "I-CNOSSOS-EU ibeka umthombo womugqa womgwaqo ku-0.05 m ngaphezu kobuso bomgwaqo.",
+    "abdceb21": "I-TCQSM ilinganisa ukuhamba ngesikhathi kuka-85–95 % njengokuhle kuya kokuhle kakhulu emzileni webhasi onesheduli, futhi ngaphansi kuka-75 % njengokubi; ngaphansi kwenani eliphakathi, iseluleko sokuqhuba sisho ukuthi umzila ulahlekelwa isikhathi kuphi.",
+    "76757724": "I-TCQSM ithatha i-coefficient of variation yezikhala ezingaphezu kuka-0.4 cishe njengokungajwayelekile, okulingana cishe nesikhala esisodwa kweziyishumi esifushane kunengxenye yesikhala esihleliwe; kusukela lapho abagibeli babona izimoto zifika ngambili."
   }
 }

@@ -291,7 +291,8 @@
     "fe653218": "Kalibrierung: GEH der Zählungen",
     "ff319992": "Verkehrserzeugung: nicht wohnungsbezogene Quell- und Zielverkehre",
     "ff362d54": "Verkehrsmittelwahl: Radfahren für Personen ohne Fahrrad",
-    "ff653463": "Länge des Übergangsbogens"
+    "ff653463": "Länge des Übergangsbogens",
+    "c4a51a02": "Hinweise der Straßensimulation"
   },
   "rationale": {
     "009596c6": "Referenzlasten nach EN 15663 für Stadt- und Vorortverkehr; 6/m² als Gedrängebesetzung.",
@@ -978,6 +979,8 @@
     "fef618f9": "Beschäftigtendichten je Nutzungsklasse (Nettonutzfläche je Vollzeitarbeitsplatz), um etwa 20 % für Bruttogrundfläche und Leerstand erhöht.",
     "ff4818d0": "Wahl des Product Owners (2026-11-16): Das Modell umfasst die Linien plus einen Puffer von 2 km. Darin liegen die Fuß- und Radeinzugsbereiche jeder Haltestelle (mode.catchment_m beträgt höchstens etwa 1.2 km) und die kurzen Pkw-Fahrten, die mit der Linie konkurrieren. Verwenden Sie mehr für Linien, deren Fahrgäste von weit her kommen (Park-and-Ride, Regionalbahn).",
     "ff5e263c": "Das Verfahren des Punkts maximaler Belastung nach Ceder legt die Bedienungshäufigkeit so fest, dass die Belastung in der Spitzenstunde auf dem am stärksten belasteten Abschnitt bei einem gewünschten Besetzungsgrad bleibt; die Kapazität zählt Stehende bei der Planungsdichte, daher lassen Werte nahe 0.8 Raum für ungleichmäßige Belastung zwischen den Zügen.",
-    "ff68efd7": "CNOSSOS-EU setzt die Linienquelle der Straße 0.05 m über die Fahrbahnoberfläche."
+    "ff68efd7": "CNOSSOS-EU setzt die Linienquelle der Straße 0.05 m über die Fahrbahnoberfläche.",
+    "abdceb21": "Das TCQSM bewertet eine Pünktlichkeit von 85–95 % bei einer Buslinie mit Fahrplan als gut bis sehr gut und unter 75 % als schlecht; unter dem zentralen Wert nennen die Hinweise des Laufs, wo die Linie ihre Zeit verliert.",
+    "76757724": "Das TCQSM wertet einen Variationskoeffizienten der Takteinhaltung über etwa 0,4 als unregelmäßig; das entspricht etwa einer von zehn Lücken unter dem halben geplanten Takt. Ab dort sehen Fahrgäste Fahrzeuge paarweise kommen."
   }
 }

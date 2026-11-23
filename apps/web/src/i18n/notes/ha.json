@@ -291,7 +291,8 @@
     "fe653218": "daidaitawa: GEH na ƙirga",
     "ff319992": "samar da tafiye-tafiye: samarwa da jan hankali da ba na gida ba",
     "ff362d54": "zaɓin hanyar sufuri: tafiya da keke ga mutanen da ba su da keke",
-    "ff653463": "tsawon lanƙwasar sauyi"
+    "ff653463": "tsawon lanƙwasar sauyi",
+    "c4a51a02": "shawarar kwaikwayon hanya"
   },
   "rationale": {
     "009596c6": "Nauyin tunani na EN 15663 don hidimar birni/kewayen birni; 6/m² a matsayin cunkoso mai tsanani.",
@@ -978,6 +979,8 @@
     "fef618f9": "Yawan ayyuka a kowane rukunin amfani (faɗin ciki na net ga kowane cikakken aiki) an ƙara su da kimanin 20 % don jimillar faɗin ƙasa da wuraren da babu kowa.",
     "ff4818d0": "Zaɓin mai kayan (2026-11-16): samfurin yana rufe layuka tare da gefe na 2 km. Wannan yana ɗauke da yankunan hidimar tafiya da ƙafa da keke na kowace tasha (mode.catchment_m bai wuce kimanin 1.2 km ba) da gajerun tafiye-tafiyen mota da ke gasa da layin. A yi amfani da fiye ga layukan da fasinjojinsu ke zuwa daga nesa (ajiye mota a tasha, layin dogo na yanki).",
     "ff5e263c": "Hanyar wurin nauyi mafi girma ta Ceder tana saita yawan tafiya don nauyin awar cunkoso a haɗi mafi cunkoso ya zauna a mamayewar da ake so; iya ɗauka yana ƙirga masu tsaye a yawan tsari, don haka ƙimomi kusa da 0.8 suna barin sarari ga nauyin da bai daidaita ba tsakanin jiragen ƙasa.",
-    "ff68efd7": "CNOSSOS-EU yana sanya tushen layin titi 0.05 m sama da saman titi."
+    "ff68efd7": "CNOSSOS-EU yana sanya tushen layin titi 0.05 m sama da saman titi.",
+    "abdceb21": "TCQSM yana ɗaukar kiyaye lokaci na 85–95 % a matsayin mai kyau zuwa mai kyau sosai ga layin bas mai jadawali, kuma ƙasa da 75 % a matsayin mara kyau; ƙasa da ƙimar tsakiya, shawarar gudu tana faɗin inda layin ke rasa lokacinsa.",
+    "76757724": "TCQSM yana ɗaukar ma'aunin bambancin tazara sama da kusan 0.4 a matsayin mara tsari, wanda yayi daidai da kusan tazara ɗaya cikin goma da ta gaza rabin tazarar da aka tsara; daga nan fasinjoji suna ganin motoci suna zuwa biyu-biyu."
   }
 }

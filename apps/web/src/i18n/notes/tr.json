@@ -291,7 +291,8 @@
     "fe653218": "kalibrasyon: sayımların GEH değeri",
     "ff319992": "yolculuk üretimi: ev bağlantısız üretimler ve çekimler",
     "ff362d54": "tür seçimi: bisikleti olmayanlar için bisiklet kullanımı",
-    "ff653463": "geçiş eğrisi uzunluğu"
+    "ff653463": "geçiş eğrisi uzunluğu",
+    "c4a51a02": "yol simülasyonu önerileri"
   },
   "rationale": {
     "009596c6": "Kentsel/banliyö hizmeti için EN 15663 referans yükleri; tıkış tıkış doluluk olarak 6/m².",
@@ -978,6 +979,8 @@
     "fef618f9": "Kullanım sınıfı başına istihdam yoğunlukları (tam zamanlı iş başına net iç alan), brüt kat alanı ve boşluk için yaklaşık %20 artırılmış.",
     "ff4818d0": "Ürün sahibinin seçimi (2026-11-16): model hatları artı 2 km'lik bir tampon alanı kapsar. Bu, her durağın yürüme ve bisiklet etki alanlarını (mode.catchment_m en fazla yaklaşık 1.2 km'dir) ve hatla rekabet eden kısa otomobil yolculuklarını içerir. Yolcuları uzaktan gelen hatlar için (park et-devam et, bölgesel demiryolu) daha fazlasını kullanın.",
     "ff5e263c": "Ceder'in azami yük noktası yöntemi sıklığı, en yoğun kesimdeki zirve saat yükü istenen bir dolulukta kalacak şekilde belirler; kapasite ayakta yolcuları planlama yoğunluğunda sayar, bu yüzden 0.8'e yakın değerler trenler arası dengesiz yüklemeye yer bırakır.",
-    "ff68efd7": "CNOSSOS-EU karayolu çizgisel kaynağını yol yüzeyinin 0.05 m üstüne yerleştirir."
+    "ff68efd7": "CNOSSOS-EU karayolu çizgisel kaynağını yol yüzeyinin 0.05 m üstüne yerleştirir.",
+    "abdceb21": "TCQSM, tarifeli bir otobüs hattı için %85–95 dakiklik oranını iyi ile çok iyi, %75'in altını kötü olarak değerlendirir; merkezi değerin altında çalıştırmanın önerileri hattın zamanı nerede kaybettiğini belirtir.",
+    "76757724": "TCQSM, sefer aralıklarının değişim katsayısı yaklaşık 0,4'ün üzerindeyse düzensiz sayar; bu, kabaca on aralıktan birinin planlanan aralığın yarısından kısa olmasına denk gelir. Bu noktadan sonra yolcular araçların çift çift geldiğini görür."
   }
 }

@@ -291,7 +291,8 @@
     "fe653218": "calibrazione: GEH dei conteggi",
     "ff319992": "generazione degli spostamenti: produzioni e attrazioni non basate sull'abitazione",
     "ff362d54": "scelta modale: bicicletta per chi non ne ha una",
-    "ff653463": "lunghezza della curva di transizione"
+    "ff653463": "lunghezza della curva di transizione",
+    "c4a51a02": "consigli della simulazione stradale"
   },
   "rationale": {
     "009596c6": "Carichi di riferimento EN 15663 per il servizio urbano/suburbano; 6/m² come carico di punta eccezionale.",
@@ -978,6 +979,8 @@
     "fef618f9": "Densità di occupazione per classe d'uso (superficie interna netta per posto di lavoro a tempo pieno) aumentate di circa il 20 % per la superficie lorda e gli spazi sfitti.",
     "ff4818d0": "Scelta del responsabile del prodotto (2026-11-16): il modello copre le linee più una fascia di 2 km. Questa contiene i bacini pedonali e ciclabili di ogni fermata (mode.catchment_m è al massimo circa 1.2 km) e i brevi spostamenti in auto in concorrenza con la linea. Usane di più per linee i cui passeggeri arrivano da lontano (park and ride, ferrovia regionale).",
     "ff5e263c": "Il metodo del punto di massimo carico di Ceder fissa la frequenza in modo che il carico dell'ora di punta sulla tratta più carica resti a un'occupazione desiderata; la capacità conta i passeggeri in piedi alla densità di progetto, quindi valori vicini a 0.8 lasciano margine per un carico irregolare tra i treni.",
-    "ff68efd7": "CNOSSOS-EU colloca la sorgente lineare stradale 0.05 m sopra la superficie stradale."
+    "ff68efd7": "CNOSSOS-EU colloca la sorgente lineare stradale 0.05 m sopra la superficie stradale.",
+    "abdceb21": "Il TCQSM giudica una puntualità dell'85–95 % da buona a molto buona per una linea di autobus con orario, e sotto il 75 % scarsa; sotto il valore centrale i consigli della simulazione indicano dove la linea perde tempo.",
+    "76757724": "Il TCQSM considera irregolare un coefficiente di variazione dei distanziamenti superiore a circa 0,4, pari a circa un intervallo su dieci sotto la metà di quello previsto; da lì i passeggeri vedono arrivare i mezzi a coppie."
   }
 }
