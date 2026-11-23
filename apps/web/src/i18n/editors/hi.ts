@@ -466,6 +466,7 @@ export const editorsHi = {
   "setup.intro":
     "किसी सड़क पर टैप करें और बताएँ कि उसे कैसे साझा किया जाता है: यातायात लेन, बस और साइकिल लेन, अलगाव और ट्राम। आपका सेटअप सड़क लाइन टूल और रेलवे संपादक में OpenStreetMap की जगह लेता है, यात्रा समय और विश्वसनीयता व सुरक्षा जाँच के लिए।",
   "setup.engineFailed": "सड़क इंजन शुरू नहीं हुआ: {error}",
+  "setup.lanesFailed": "लेन नहीं बनाई जा सकीं: {error}",
   "setup.zoomIn": "सड़कें लोड करने के लिए सड़क स्तर तक ज़ूम करें (स्तर {zoom} से)।",
   "setup.someFailed": "कुछ सड़कें लोड नहीं हुईं।",
   "setup.tryAgain": "{reason} फिर कोशिश करने के लिए मानचित्र खिसकाएँ।",
@@ -537,6 +538,7 @@ export const editorsHi = {
   "setup.legend.mixed": "मुख्य सड़क, ट्रैफ़िक में परिवहन",
   "setup.legend.other": "अन्य सड़कें",
   "setup.legend.yours": "आपके द्वारा सेट",
+  "setup.legend.lanes": "लेन, ज़ूम {zoom} से",
   "setup.v.busNoDelay": "इस प्रकार की सड़क पर ट्रैफ़िक देरी नहीं मानी जाती; यह मुख्य सड़कों पर गिनी जाती है।",
   "setup.v.busSeparated": "अलग बस लेन: ट्रैफ़िक से बसों को देर नहीं होती।",
   "setup.v.busPainted":
@@ -993,6 +995,7 @@ export const editorsHi = {
   "cable.hint.select": "संपादित करने के लिए स्टेशन पर क्लिक करें। खिसकाने के लिए उसे खींचें।",
   "cable.modeSystem": "साधन और प्रणाली",
   "cable.lineSpeed": "रस्सी की गति (मी/से)",
+  "cable.longestSpan": "सबसे लंबा स्पैन (मी)",
   "cable.cabinInterval": "केबिन अंतराल (सेकंड)",
   "cable.departureEvery": "प्रस्थान हर",
   "cable.cabinEvery": "केबिन हर",

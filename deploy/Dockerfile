@@ -23,7 +23,7 @@ WORKDIR /src
 COPY Cargo.toml Cargo.lock ./
 COPY crates crates
 COPY tools/wasm tools/wasm
-RUN tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-rail-sim.sh && tools/wasm/build-journey-planner.sh \
+RUN tools/wasm/build-street-routing.sh && tools/wasm/build-street-geometry.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-rail-sim.sh && tools/wasm/build-journey-planner.sh \
  && tools/wasm/build-mode-kits.sh \
  && tools/wasm/build-noise.sh \
  && tools/wasm/build-energy.sh \

@@ -484,6 +484,7 @@ export const editorsFr = {
   "setup.intro":
     "Touchez une rue pour indiquer comment elle est partagée : voies de circulation, voies de bus et pistes cyclables, séparation et tramway. Votre configuration remplace OpenStreetMap dans l’outil de lignes sur rue et l’éditeur ferroviaire, pour les temps de parcours et les contrôles de fiabilité et de sécurité.",
   "setup.engineFailed": "Le moteur des rues n’a pas démarré : {error}",
+  "setup.lanesFailed": "Les voies n’ont pas pu être dessinées : {error}",
   "setup.zoomIn": "Zoomez au niveau de la rue pour charger les rues (à partir du zoom {zoom}).",
   "setup.someFailed": "Certaines rues n’ont pas été chargées.",
   "setup.tryAgain": "{reason} Déplacez la carte pour réessayer.",
@@ -556,6 +557,7 @@ export const editorsFr = {
   "setup.legend.mixed": "Axe principal, transport dans la circulation",
   "setup.legend.other": "Autres rues",
   "setup.legend.yours": "Configurée par vous",
+  "setup.legend.lanes": "Voies, à partir du zoom {zoom}",
   "setup.v.busNoDelay":
     "Aucun retard dû à la circulation n’est compté sur ce type de rue ; il compte sur les axes principaux.",
   "setup.v.busSeparated": "Voie de bus séparée : les embouteillages ne retardent pas les bus.",
@@ -1030,6 +1032,7 @@ export const editorsFr = {
     "Cliquez sur une station pour la modifier. Faites glisser une station pour la déplacer.",
   "cable.modeSystem": "Mode et système",
   "cable.lineSpeed": "Vitesse du câble (m/s)",
+  "cable.longestSpan": "Portée la plus longue (m)",
   "cable.cabinInterval": "Intervalle entre cabines (s)",
   "cable.departureEvery": "Départ toutes les",
   "cable.cabinEvery": "Cabine toutes les",

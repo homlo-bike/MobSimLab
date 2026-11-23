@@ -128,6 +128,141 @@ fn moving_block_lets_a_train_follow_a_late_one_closely() {
     assert!(sim.interlocking().following_moves > 0);
 }
 
+/// Purpose: the example metro line driven on sight, as the topology import gives trams (no overlaps).
+fn on_sight() -> InfraSpec {
+    let mut spec = examples::metro_line();
+    spec.default_overlap_m = 0.0;
+    for t in &mut spec.tracks {
+        t.protection = TrainProtection::LineOfSight;
+    }
+    spec
+}
+
+#[test]
+fn trains_on_sight_run_a_planned_day_on_time() {
+    let (m, p) = day(&on_sight());
+    let mut sim = NetworkSim::new(
+        &m,
+        &p,
+        NetParams {
+            check_invariants: true,
+            ..NetParams::default()
+        },
+    )
+    .unwrap();
+    sim.run_until(30.0 * 3600.0).unwrap();
+    assert!(sim.finished());
+    let worst = delays(&sim).into_iter().fold(0.0, f64::max);
+    assert!(worst < 30.0, "worst delay {worst} s");
+}
+
+#[test]
+fn a_tram_on_sight_follows_a_late_one_closely() {
+    let (m, p) = day(&on_sight());
+    let mut sim = NetworkSim::new(
+        &m,
+        &p,
+        NetParams {
+            check_invariants: true,
+            ..NetParams::default()
+        },
+    )
+    .unwrap();
+    let late = p
+        .runs
+        .iter()
+        .position(|r| r.name.starts_with("M1-0-") && r.depart_s() >= 7.0 * 3600.0)
+        .unwrap();
+    assert!(sim.delay_departure(late, 240.0));
+    sim.run_until(9.0 * 3600.0).unwrap();
+    assert!(sim.interlocking().following_moves > 0);
+}
+
+/// Purpose: plan the example metro line with every band at most `headway_s` apart and run the
+/// day through the kernel with the invariants checked.
+fn dense_day(headway_s: f64, protection: TrainProtection) -> Result<(), engine_msg::Msg> {
+    let mut spec = examples::metro_line();
+    for t in &mut spec.tracks {
+        t.protection = protection;
+    }
+    let m = Model::compile(&spec).unwrap();
+    let mut l = common::metro_m1();
+    for b in &mut l.bands {
+        b.headway_s = b.headway_s.min(headway_s);
+    }
+    let p = plan(&m, &[l], &PlanParams::default()).unwrap();
+    let np = NetParams {
+        check_invariants: true,
+        ..NetParams::default()
+    };
+    let mut sim = NetworkSim::new(&m, &p, np).unwrap();
+    sim.run_until(26.0 * 3600.0)
+}
+
+#[test]
+fn a_dense_day_stacks_trains_in_the_depot_and_runs_without_a_deadlock() {
+    // At 3 and 4 minutes the day stopped: two trains on one depot track overlapped (a train
+    // stopped 50 m behind the one ahead instead of the 10 m stabling gap, so the last one did
+    // not fit), a train left a stack before the one in front of it, and a train whose trip was
+    // dropped stood in a terminal platform another train was planned into.
+    for h in [180.0, 240.0] {
+        for protection in [TrainProtection::default(), TrainProtection::LineOfSight] {
+            let r = dense_day(h, protection);
+            assert!(r.is_ok(), "{h} s, {protection:?}: {r:?}");
+        }
+    }
+}
+
+#[test]
+fn trains_stabled_in_terminal_platforms_run_their_day() {
+    // A line with no storage track keeps its trains overnight in the terminal platforms. The
+    // planner put two trains in one platform track and planned trains into platforms where a
+    // train stood stabled, and the kernel stopped (on main too).
+    let topo = std::fs::read_to_string(concat!(
+        env!("CARGO_MANIFEST_DIR"),
+        "/../rail-model/tests/data/metro.json"
+    ))
+    .unwrap();
+    let line = rail_plan::ServiceLine {
+        id: "M7".into(),
+        name: "M7".into(),
+        color: None,
+        stations: vec!["st1".into(), "st2".into()],
+        vehicle: rail_plan::ServiceVehicle {
+            id: "stadler_bvg-j-4-car".into(),
+            name: "Stadler Class J".into(),
+            length_m: 64.2,
+            top_speed_kmh: 70.0,
+            power_kw: Some(1200.0),
+            empty_mass_t: None,
+            capacity: 463.0,
+        },
+        units: 1,
+        mode: "metro".into(),
+        first_s: 6.0 * 3600.0,
+        last_s: 10.0 * 3600.0,
+        peak_headway_s: 600.0,
+        offpeak_headway_s: 1200.0,
+        peaks: vec![[7.0 * 3600.0, 9.0 * 3600.0]],
+        dwell_s: None,
+        turnback_s: None,
+        accel_ms2: None,
+        decel_ms2: None,
+        supplement_share: None,
+    };
+    let imp = rail_model::topology::import_json(&topo, &Default::default()).unwrap();
+    let m = Model::compile(&imp.spec).unwrap();
+    let specs = [rail_plan::line_spec_with_roles(
+        &line,
+        &m,
+        &imp.storage_roles,
+    )];
+    let p = plan(&m, &specs, &PlanParams::default()).unwrap();
+    let mut sim = NetworkSim::new(&m, &p, NetParams::default()).unwrap();
+    sim.run_until(12.0 * 3600.0).unwrap();
+    assert!(sim.finished());
+}
+
 proptest! {
     #![proptest_config(ProptestConfig::with_cases(6))]
     /// Random departure delays never break a safety invariant or deadlock the line.

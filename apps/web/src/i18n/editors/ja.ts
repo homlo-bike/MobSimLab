@@ -444,6 +444,7 @@ export const editorsJa = {
   "setup.intro":
     "道路をタップして、その構成を指定します：車線、バスレーンと自転車レーン、分離、路面電車。設定は道路路線ツールと鉄道エディターで OpenStreetMap の代わりに使われ、所要時間や定時性・安全性のチェックに反映されます。",
   "setup.engineFailed": "道路エンジンを起動できませんでした：{error}",
+  "setup.lanesFailed": "車線を描画できませんでした: {error}",
   "setup.zoomIn": "道路を読み込むには道路レベルまでズームインしてください（レベル {zoom} 以上）。",
   "setup.someFailed": "一部の道路を読み込めませんでした。",
   "setup.tryAgain": "{reason}地図を動かすと再試行します。",
@@ -514,6 +515,7 @@ export const editorsJa = {
   "setup.legend.mixed": "幹線道路、公共交通が一般交通と混在",
   "setup.legend.other": "その他の道路",
   "setup.legend.yours": "あなたが設定",
+  "setup.legend.lanes": "車線（ズーム {zoom} から）",
   "setup.v.busNoDelay": "この種類の道路では渋滞遅延を計算しません。幹線道路で計算します。",
   "setup.v.busSeparated": "分離されたバスレーン：渋滞でバスが遅れません。",
   "setup.v.busPainted":
@@ -957,6 +959,7 @@ export const editorsJa = {
   "cable.hint.select": "駅をクリックして編集します。駅はドラッグで移動できます。",
   "cable.modeSystem": "モードと方式",
   "cable.lineSpeed": "索道速度（m/s）",
+  "cable.longestSpan": "最大径間（m）",
   "cable.cabinInterval": "搬器間隔（秒）",
   "cable.departureEvery": "発車間隔",
   "cable.cabinEvery": "搬器間隔",

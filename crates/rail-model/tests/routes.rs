@@ -171,3 +171,53 @@ fn diamond_crossing_is_one_section_shared_by_two_systems() {
     assert!(m.routes_conflict(m.route("S1>S2").unwrap(), m.route("tS1>tS2").unwrap()));
     assert!(!m.routes_conflict(m.route("S0>S1").unwrap(), m.route("tS0>tS1").unwrap()));
 }
+
+#[test]
+fn track_driven_on_sight_is_cut_into_short_sections_but_each_stop_stays_one() {
+    let mut spec = examples::metro_line();
+    let fixed = Model::compile(&spec).unwrap();
+    for t in &mut spec.tracks {
+        t.protection = rail_model::TrainProtection::LineOfSight;
+    }
+    let m = Model::compile(&spec).unwrap();
+    // The same routes, over more and shorter sections.
+    assert_eq!(route_ids(&m), route_ids(&fixed));
+    assert!(m.tds.len() > fixed.tds.len());
+    assert!(fixed.tds.iter().all(|t| !t.on_sight));
+    let len = |t: &rail_model::Tds| -> f64 {
+        t.pieces
+            .iter()
+            .map(|&p| m.pieces[p as usize].length_m())
+            .sum()
+    };
+    for t in &m.tds {
+        let track = &m.tracks[m.pieces[t.pieces[0] as usize].track];
+        let storage = track.usage == rail_model::TrackUse::Storage;
+        assert_eq!(t.on_sight, !storage, "{}", t.id);
+        let at_stop = m.platforms.iter().any(|p| {
+            t.pieces.iter().any(|&pc| {
+                let pc = &m.pieces[pc as usize];
+                pc.track == p.track && pc.from_m < p.to_m && pc.to_m > p.from_m
+            })
+        });
+        if t.on_sight && !at_stop {
+            assert!(
+                len(t) <= rail_model::SIGHT_SECTION_M + 1e-6,
+                "{} is {} m",
+                t.id,
+                len(t)
+            );
+        }
+    }
+    // A platform edge lies in one section: a stop takes one tram at a time.
+    for p in &m.platforms {
+        let sections: std::collections::BTreeSet<u32> = m
+            .track_pieces(p.track)
+            .iter()
+            .map(|&pc| &m.pieces[pc as usize])
+            .filter(|pc| pc.from_m < p.to_m && pc.to_m > p.from_m)
+            .map(|pc| pc.tds)
+            .collect();
+        assert_eq!(sections.len(), 1, "{}", p.id);
+    }
+}

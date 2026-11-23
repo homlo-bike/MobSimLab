@@ -446,6 +446,7 @@ export const editorsVi = {
   "setup.intro":
     "Chạm vào một đường để mô tả cấu trúc: làn xe, làn xe buýt và xe đạp, dải phân cách và tàu điện. Thiết lập của bạn thay thế OpenStreetMap trong công cụ tuyến đường phố và trình chỉnh sửa đường sắt, và ảnh hưởng đến thời gian chạy cũng như kiểm tra độ đúng giờ và an toàn.",
   "setup.engineFailed": "Không thể khởi động bộ máy đường phố: {error}",
+  "setup.lanesFailed": "Không thể vẽ làn đường: {error}",
   "setup.zoomIn": "Phóng to đến mức đường phố để tải đường (mức {zoom} trở lên).",
   "setup.someFailed": "Không thể tải một số đường phố.",
   "setup.tryAgain": "{reason} Di chuyển bản đồ để thử lại.",
@@ -517,6 +518,7 @@ export const editorsVi = {
   "setup.legend.mixed": "Đường chính, giao thông công cộng trong dòng xe",
   "setup.legend.other": "Đường khác",
   "setup.legend.yours": "Do bạn thiết lập",
+  "setup.legend.lanes": "Làn đường, từ mức thu phóng {zoom}",
   "setup.v.busNoDelay": "Không tính chậm trễ do kẹt xe cho loại đường này; chỉ tính cho đường chính.",
   "setup.v.busSeparated": "Làn xe buýt có phân cách: kẹt xe không làm chậm xe buýt.",
   "setup.v.busPainted":
@@ -968,6 +970,7 @@ export const editorsVi = {
   "cable.hint.select": "Nhấp vào ga để chỉnh sửa. Kéo ga để di chuyển.",
   "cable.modeSystem": "Phương thức và hệ thống",
   "cable.lineSpeed": "Tốc độ cáp (m/s)",
+  "cable.longestSpan": "Nhịp dài nhất (m)",
   "cable.cabinInterval": "Khoảng cách cabin (giây)",
   "cable.departureEvery": "Khởi hành mỗi",
   "cable.cabinEvery": "Cabin mỗi",

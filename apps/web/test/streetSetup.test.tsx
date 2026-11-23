@@ -12,6 +12,7 @@ import {
   upsert,
   verdicts,
 } from "../src/features/street-setup/model";
+import type { LaneEngine, LaneEngineLoader, LaneGeometry } from "../src/features/street-setup/lanes";
 import { StreetSetupEditor } from "../src/features/street-setup/StreetSetupEditor";
 import type { StreetInfo, StreetSetup } from "../src/features/street-setup/types";
 
@@ -143,13 +144,13 @@ describe("Street setup model", () => {
 
 /** A map with only what the editor touches. */
 function fakeMap(zoom = 16) {
-  const handlers = new Map<string, (ev: unknown) => void>();
+  const handlers = new Map<string, Set<(ev: unknown) => void>>();
   const sources = new Map<string, { setData: ReturnType<typeof vi.fn> }>();
   const layers = new Set<string>();
   const hit = { way: null as number | null };
   const map = {
-    on: (t: string, f: (ev: unknown) => void) => handlers.set(t, f),
-    off: (t: string) => handlers.delete(t),
+    on: (t: string, f: (ev: unknown) => void) => handlers.set(t, (handlers.get(t) ?? new Set()).add(f)),
+    off: (t: string, f: (ev: unknown) => void) => handlers.get(t)?.delete(f),
     getZoom: () => zoom,
     getBounds: () => ({
       getWest: () => 7.41,
@@ -165,17 +166,31 @@ function fakeMap(zoom = 16) {
     removeLayer: (id: string) => layers.delete(id),
     moveLayer: vi.fn(),
     setFilter: vi.fn(),
+    setLayerZoomRange: vi.fn(),
     easeTo: vi.fn(),
     queryRenderedFeatures: () => (hit.way === null ? [] : [{ properties: { way: hit.way } }]),
   };
   const tap = (way: number | null) => {
     hit.way = way;
-    act(() => handlers.get("click")!({ point: { x: 5, y: 5 }, lngLat: { lng: 7.415, lat: 43.733 } }));
+    act(() => {
+      for (const f of handlers.get("click") ?? [])
+        f({ point: { x: 5, y: 5 }, lngLat: { lng: 7.415, lat: 43.733 } });
+    });
   };
-  return { map: map as unknown as MapLibreMap, sources, tap };
+  return { map: map as unknown as MapLibreMap, sources, tap, setLayerZoomRange: map.setLayerZoomRange };
 }
 
-function Harness({ map, onChange }: { map: MapLibreMap; onChange: (s: StreetSetup[]) => void }) {
+const NO_LANES: LaneEngineLoader = async () => null;
+
+function Harness({
+  map,
+  onChange,
+  loadLanes = NO_LANES,
+}: {
+  map: MapLibreMap;
+  onChange: (s: StreetSetup[]) => void;
+  loadLanes?: LaneEngineLoader;
+}) {
   const [setups, setSetups] = useState<StreetSetup[]>([]);
   return (
     <StreetSetupEditor
@@ -187,6 +202,7 @@ function Harness({ map, onChange }: { map: MapLibreMap; onChange: (s: StreetSetu
       }}
       fetchTile={async () => "<osm/>"}
       loadInfos={async () => () => [HIGH, BACK]}
+      loadLanes={loadLanes}
     />
   );
 }
@@ -249,6 +265,85 @@ describe("Street setup editor", () => {
     expect(onChange).toHaveBeenLastCalledWith([]);
     tap(null);
     expect(screen.getByText(/No street selected/)).toBeTruthy();
+  });
+
+  it("draws the lanes of the streets on screen and redraws them when a setup changes", async () => {
+    const { map, sources, tap, setLayerZoomRange } = fakeMap();
+    const shapes: LaneGeometry = {
+      lanes: [
+        {
+          kind: "bus",
+          way: 100,
+          layer: 0,
+          ring: [7.411, 43.731, 7.412, 43.731, 7.412, 43.732, 7.411, 43.731],
+        },
+      ],
+      junctions: [{ ring: [7.412, 43.731, 7.413, 43.731, 7.413, 43.732, 7.412, 43.731] }],
+      lines: [{ kind: "centre", layer: 0, path: [7.411, 43.731, 7.412, 43.731] }],
+      driving_side: "right",
+    };
+    const engine = {
+      addTile: vi.fn(),
+      build: vi.fn(async () => shapes),
+      dispose: vi.fn(),
+    } satisfies LaneEngine;
+    const { unmount } = render(<Harness map={map} onChange={() => {}} loadLanes={async () => engine} />);
+    await waitFor(() => expect(engine.build).toHaveBeenCalled());
+    // Every loaded tile goes to the engine, and the tiles on screen are built.
+    const keys = engine.addTile.mock.calls.map((c) => c[0]);
+    expect(keys.length).toBeGreaterThan(0);
+    expect(engine.addTile).toHaveBeenCalledWith(keys[0], "<osm/>");
+    expect(engine.build).toHaveBeenLastCalledWith(keys, []);
+    await waitFor(() => expect(sources.get("ss-lanes")!.setData).toHaveBeenCalled());
+    const drawn = sources.get("ss-lanes")!.setData.mock.lastCall![0];
+    expect(drawn.features[0]).toMatchObject({
+      properties: { kind: "bus", way: 100 },
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [
+            [7.411, 43.731],
+            [7.412, 43.731],
+            [7.412, 43.732],
+            [7.411, 43.731],
+          ],
+        ],
+      },
+    });
+    expect(sources.get("ss-junctions")!.setData.mock.lastCall![0].features).toHaveLength(1);
+    expect(sources.get("ss-lane-markings")!.setData.mock.lastCall![0].features[0].properties.kind).toBe(
+      "centre",
+    );
+    // The street lines make way for the lanes from zoom 16.
+    expect(setLayerZoomRange).toHaveBeenCalledWith("ss-streets", 0, 16);
+    expect(screen.getByText("Lanes, from zoom 16")).toBeTruthy();
+
+    // A new setup is drawn with the setups applied.
+    tap(100);
+    fireEvent.click(
+      within(screen.getByRole("group", { name: "Bus lane" })).getByRole("button", { name: "Yes" }),
+    );
+    await waitFor(() =>
+      expect(engine.build).toHaveBeenLastCalledWith(keys, [
+        expect.objectContaining({ way: 100, bus_lane: true }),
+      ]),
+    );
+    unmount();
+    expect(engine.dispose).toHaveBeenCalled();
+  });
+
+  it("says so when the lanes cannot be drawn, and keeps the street lines", async () => {
+    const { map, setLayerZoomRange } = fakeMap();
+    const engine: LaneEngine = {
+      addTile: () => {},
+      build: async () => {
+        throw new Error("no junctions");
+      },
+      dispose: () => {},
+    };
+    render(<Harness map={map} onChange={() => {}} loadLanes={async () => engine} />);
+    expect(await screen.findByText(/The lanes could not be drawn/)).toBeTruthy();
+    expect(setLayerZoomRange).toHaveBeenLastCalledWith("ss-streets", 0, 24);
   });
 
   it("asks to zoom in before loading streets", async () => {

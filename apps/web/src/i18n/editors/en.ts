@@ -479,6 +479,7 @@ export const editorsEn = {
   "setup.intro":
     "Tap a street to say how it is shared: traffic lanes, bus and bike lanes, separation and trams. Your setup overrides OpenStreetMap in the street line tool and the railway editor, for running times and the reliability and safety checks.",
   "setup.engineFailed": "The street engine did not start: {error}",
+  "setup.lanesFailed": "The lanes could not be drawn: {error}",
   "setup.zoomIn": "Zoom in to street level to load streets (from zoom {zoom}).",
   "setup.someFailed": "Some streets did not load.",
   "setup.tryAgain": "{reason} Move the map to try again.",
@@ -551,6 +552,7 @@ export const editorsEn = {
   "setup.legend.mixed": "Main road, transit in traffic",
   "setup.legend.other": "Other streets",
   "setup.legend.yours": "Set up by you",
+  "setup.legend.lanes": "Lanes, from zoom {zoom}",
   "setup.v.busNoDelay": "No delay in traffic is assumed on this kind of street; it counts on main roads.",
   "setup.v.busSeparated": "Separated bus lane: traffic jams do not hold buses up.",
   "setup.v.busPainted":
@@ -1008,6 +1010,7 @@ export const editorsEn = {
   "cable.hint.select": "Click a station to edit it. Drag a station to move it.",
   "cable.modeSystem": "Mode and system",
   "cable.lineSpeed": "Line speed (m/s)",
+  "cable.longestSpan": "Longest span (m)",
   "cable.cabinInterval": "Cabin interval (s)",
   "cable.departureEvery": "Departure every",
   "cable.cabinEvery": "Cabin every",

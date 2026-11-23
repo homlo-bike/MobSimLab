@@ -501,6 +501,7 @@ export const editorsAr = {
   "setup.intro":
     "اضغط على شارع لتحدد كيف يُقسَّم: حارات المرور، وحارات الحافلات والدراجات، والفصل، والترام. يحل إعدادك محل OpenStreetMap في أداة خطوط الشوارع ومحرر السكك الحديدية، لأزمنة الرحلة وفحوص الموثوقية والسلامة.",
   "setup.engineFailed": "لم يبدأ محرك الشوارع: {error}",
+  "setup.lanesFailed": "تعذّر رسم الحارات: {error}",
   "setup.zoomIn": "كبّر الخريطة إلى مستوى الشارع لتحميل الشوارع (من مستوى التكبير {zoom}).",
   "setup.someFailed": "لم يُحمَّل بعض الشوارع.",
   "setup.tryAgain": "{reason} حرّك الخريطة للمحاولة مرة أخرى.",
@@ -575,6 +576,7 @@ export const editorsAr = {
   "setup.legend.mixed": "طريق رئيسي، النقل وسط المرور",
   "setup.legend.other": "شوارع أخرى",
   "setup.legend.yours": "أعددتَه أنت",
+  "setup.legend.lanes": "الحارات، من مستوى التكبير {zoom}",
   "setup.v.busNoDelay": "لا يُفترض تأخير بسبب المرور في هذا النوع من الشوارع؛ يُحتسب على الطرق الرئيسية.",
   "setup.v.busSeparated": "حارة حافلات مفصولة: الازدحام لا يؤخر الحافلات.",
   "setup.v.busPainted":
@@ -1045,6 +1047,7 @@ export const editorsAr = {
   "cable.hint.select": "انقر على محطة لتعديلها. اسحب محطة لتحريكها.",
   "cable.modeSystem": "الوسيلة والنظام",
   "cable.lineSpeed": "سرعة الكابل (م/ث)",
+  "cable.longestSpan": "أطول بحر بين الأبراج (م)",
   "cable.cabinInterval": "الفاصل بين المقصورات (ث)",
   "cable.departureEvery": "مغادرة كل",
   "cable.cabinEvery": "مقصورة كل",

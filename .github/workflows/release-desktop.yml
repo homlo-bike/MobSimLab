@@ -52,7 +52,7 @@ jobs:
       - uses: taiki-e/install-action@ab49d3c64680143e184118bed66a46419fc15519 # v2
         with: { tool: wasm-bindgen@0.2.129 }
       - name: WebAssembly modules (browser and API)
-        run: tools/wasm/build-street-routing.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-rail-sim.sh && tools/wasm/build-journey-planner.sh && tools/wasm/build-mode-kits.sh && tools/wasm/build-noise.sh && tools/wasm/build-energy.sh && tools/wasm/build-gtfs.sh && tools/wasm/build-cargo-bike.sh && tools/wasm/build-depot-layout.sh && tools/wasm/build-api.sh
+        run: tools/wasm/build-street-routing.sh && tools/wasm/build-street-geometry.sh && tools/wasm/build-rail-design.sh && tools/wasm/build-rail-sim.sh && tools/wasm/build-journey-planner.sh && tools/wasm/build-mode-kits.sh && tools/wasm/build-noise.sh && tools/wasm/build-energy.sh && tools/wasm/build-gtfs.sh && tools/wasm/build-cargo-bike.sh && tools/wasm/build-depot-layout.sh && tools/wasm/build-api.sh
       - uses: pnpm/action-setup@b906affcce14559ad1aafd4ab0e942779e9f58b1 # v4
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with: { node-version-file: .nvmrc, cache: pnpm }

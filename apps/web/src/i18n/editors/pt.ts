@@ -474,6 +474,7 @@ export const editorsPt = {
   "setup.intro":
     "Toque numa rua para dizer como ela é compartilhada: faixas de tráfego, faixas de ônibus e ciclofaixas, separação e bonde. Sua configuração substitui o OpenStreetMap na ferramenta de linhas em ruas e no editor ferroviário, para os tempos de percurso e as verificações de confiabilidade e segurança.",
   "setup.engineFailed": "O motor de ruas não iniciou: {error}",
+  "setup.lanesFailed": "Não foi possível desenhar as faixas: {error}",
   "setup.zoomIn": "Aproxime até o nível da rua para carregar as ruas (a partir do zoom {zoom}).",
   "setup.someFailed": "Algumas ruas não carregaram.",
   "setup.tryAgain": "{reason} Mova o mapa para tentar de novo.",
@@ -546,6 +547,7 @@ export const editorsPt = {
   "setup.legend.mixed": "Via principal, transporte no tráfego",
   "setup.legend.other": "Outras ruas",
   "setup.legend.yours": "Configurada por você",
+  "setup.legend.lanes": "Faixas, a partir do zoom {zoom}",
   "setup.v.busNoDelay":
     "Nenhum atraso no tráfego é considerado neste tipo de rua; ele conta nas vias principais.",
   "setup.v.busSeparated": "Faixa de ônibus segregada: congestionamentos não atrasam os ônibus.",
@@ -1011,6 +1013,7 @@ export const editorsPt = {
   "cable.hint.select": "Clique numa estação para editá-la. Arraste uma estação para movê-la.",
   "cable.modeSystem": "Modo e sistema",
   "cable.lineSpeed": "Velocidade do cabo (m/s)",
+  "cable.longestSpan": "Vão mais longo (m)",
   "cable.cabinInterval": "Intervalo entre cabines (s)",
   "cable.departureEvery": "Partida a cada",
   "cable.cabinEvery": "Cabine a cada",

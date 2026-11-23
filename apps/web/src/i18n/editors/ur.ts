@@ -465,6 +465,7 @@ export const editorsUr = {
   "setup.intro":
     "کسی سڑک پر ٹیپ کر کے بتائیں کہ یہ کیسے تقسیم ہے: ٹریفک لینیں، بس اور سائیکل لینیں، علیحدگی اور ٹرام۔ آپ کی ترتیب سڑک لائن کے آلے اور ریلوے ایڈیٹر میں OpenStreetMap کی جگہ لیتی ہے، سفر کے اوقات اور قابل اعتماد ہونے اور حفاظت کی جانچ کے لیے۔",
   "setup.engineFailed": "سڑکوں کا انجن شروع نہیں ہوا: {error}",
+  "setup.lanesFailed": "لینز نہیں بنائی جا سکیں: {error}",
   "setup.zoomIn": "سڑکیں لوڈ کرنے کے لیے سڑک کی سطح تک زوم کریں (سطح {zoom} سے)۔",
   "setup.someFailed": "کچھ سڑکیں لوڈ نہیں ہوئیں۔",
   "setup.tryAgain": "{reason} دوبارہ کوشش کے لیے نقشہ ہلائیں۔",
@@ -537,6 +538,7 @@ export const editorsUr = {
   "setup.legend.mixed": "بڑی سڑک، ٹریفک میں نقل و حمل",
   "setup.legend.other": "دیگر سڑکیں",
   "setup.legend.yours": "آپ کی ترتیب دی گئی",
+  "setup.legend.lanes": "لینز، زوم {zoom} سے",
   "setup.v.busNoDelay": "اس قسم کی سڑک پر ٹریفک کی تاخیر شمار نہیں ہوتی؛ یہ بڑی سڑکوں پر شمار ہوتی ہے۔",
   "setup.v.busSeparated": "الگ بس لین: ٹریفک بسوں کو تاخیر نہیں دیتی۔",
   "setup.v.busPainted":
@@ -990,6 +992,7 @@ export const editorsUr = {
   "cable.hint.select": "ترمیم کے لیے اسٹیشن پر کلک کریں۔ ہلانے کے لیے اسٹیشن کھینچیں۔",
   "cable.modeSystem": "ذریعہ اور نظام",
   "cable.lineSpeed": "رسی کی رفتار (میٹر/سیکنڈ)",
+  "cable.longestSpan": "سب سے لمبا اسپین (میٹر)",
   "cable.cabinInterval": "کیبن کا وقفہ (سیکنڈ)",
   "cable.departureEvery": "روانگی ہر",
   "cable.cabinEvery": "کیبن ہر",

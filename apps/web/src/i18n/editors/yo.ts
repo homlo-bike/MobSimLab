@@ -447,6 +447,7 @@ export const editorsYo = {
   "setup.intro":
     "Fọwọ́ kan òpópónà kan kí o sọ bí a ṣe ń pín in: ọ̀nà ọkọ̀, ọ̀nà bọ́ọ̀sì àti kẹ̀kẹ́, ìyàsọ́tọ̀ àti tírámù. Ètò rẹ rọ́pò OpenStreetMap nínú irinṣẹ́ ìlà òpópónà àti olóòtú ojú irin, fún àkókò ìrìn àti àyẹ̀wò ìgbẹ́kẹ̀lé àti ààbò.",
   "setup.engineFailed": "Ẹ̀rọ òpópónà kò bẹ̀rẹ̀: {error}",
+  "setup.lanesFailed": "Kò ṣeé ṣe láti ya àwọn ọ̀nà ọkọ̀: {error}",
   "setup.zoomIn": "Sún mọ́ dé ìpele òpópónà láti gbé àwọn òpópónà wọlé (láti ìpele {zoom}).",
   "setup.someFailed": "Àwọn òpópónà kan kò gbé wọlé.",
   "setup.tryAgain": "{reason} Gbé máàpù láti gbìyànjú lẹ́ẹ̀kan sí i.",
@@ -518,6 +519,7 @@ export const editorsYo = {
   "setup.legend.mixed": "Òpópónà ńlá, ìrìnnà nínú súnkẹrẹ-fàkẹrẹ",
   "setup.legend.other": "Àwọn òpópónà míì",
   "setup.legend.yours": "Ìwọ lo ṣètò rẹ̀",
+  "setup.legend.lanes": "Ọ̀nà ọkọ̀, láti ìsúnmọ́ {zoom}",
   "setup.v.busNoDelay":
     "A kò rò pé súnkẹrẹ-fàkẹrẹ máa fa ìdádúró fún irú òpópónà yìí; a ń kà á lórí àwọn òpópónà ńlá.",
   "setup.v.busSeparated": "Ọ̀nà bọ́ọ̀sì tí a yà sọ́tọ̀: súnkẹrẹ-fàkẹrẹ kò dá àwọn bọ́ọ̀sì dúró.",
@@ -971,6 +973,7 @@ export const editorsYo = {
   "cable.hint.select": "Tẹ ibùdókọ̀ láti ṣàtúnṣe rẹ̀. Fa ibùdókọ̀ láti gbé e.",
   "cable.modeSystem": "Irú àti ètò",
   "cable.lineSpeed": "Ìyára okùn (m/s)",
+  "cable.longestSpan": "Àlàfo tó gùn jùlọ láàárín àwọn ilé-gíga (m)",
   "cable.cabinInterval": "Àlàfo yàrá ọkọ̀ (s)",
   "cable.departureEvery": "Ìgbéra ní gbogbo",
   "cable.cabinEvery": "Yàrá ọkọ̀ ní gbogbo",

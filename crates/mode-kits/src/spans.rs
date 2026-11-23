@@ -3,8 +3,8 @@
 //!
 //! The planner clicks stations in order. Each section between two stations is straight; towers are placed
 //! automatically along it, as few as possible within the system's span limit while the loaded cabin keeps
-//! the recommended clearance with rope sag, and taller (up to the maximum tower height) when that saves a
-//! tower. The planner can replace the automatic towers of a section with their own. The kit returns the
+//! the recommended clearance with rope sag, each where the ground needs it and taller (up to the maximum
+//! tower height) when that saves a tower. The planner can replace the automatic towers of a section with their own. The kit returns the
 //! geometry for the map, a longitudinal profile, the live checks, and the running time, capacity, cabin
 //! count and stopping pattern that the timetable needs.
 //!
@@ -23,6 +23,10 @@ use serde::{Deserialize, Serialize};
 pub enum Operation {
     Continuous,
     Reversible,
+}
+
+fn one_metre() -> f64 {
+    1.0
 }
 
 fn ropeway_prefix() -> String {
@@ -69,6 +73,11 @@ pub struct SpanSystem {
     /// `ropeway.capacity_ceiling_pphpd`: above it the line's capacity is a warning (0: no check).
     #[serde(default)]
     pub capacity_ceiling_pphpd: f64,
+    /// `ropeway.station_approach_m`: within this distance of a station the cabin is leaving or entering
+    /// it, close to platform height, and only has to clear the ground and buildings; the minimum and
+    /// recommended clearances apply beyond it (1 m when absent).
+    #[serde(default = "one_metre")]
+    pub station_approach_m: f64,
     /// Prefix of the plugin parameters the findings name, `ropeway` by default.
     #[serde(default = "ropeway_prefix")]
     pub parameter_prefix: String,
@@ -287,6 +296,45 @@ fn supports(g: &Ground, h_station: f64, towers: &[(f64, f64)]) -> Vec<(f64, f64)
     s
 }
 
+/// Lowest clearance under the loaded cabin over one span between two supports (chainage, rope height).
+fn span_clearance(sys: &SpanSystem, g: &Ground, (xa, ya): (f64, f64), (xb, yb): (f64, f64)) -> f64 {
+    let l = xb - xa;
+    if l <= 0.0 {
+        return f64::INFINITY;
+    }
+    let len = g.len;
+    let sag = sys.sag_ratio * l;
+    let cabin_at =
+        |u: f64| ya + (yb - ya) * u / l - 4.0 * sag * u * (l - u) / (l * l) - sys.cabin_hang_m;
+    // The cabin is in the station at the ends; clearance there is the station's business. In the
+    // station's approach the cabin is near platform height and only has to clear the ground and buildings.
+    let in_station = |x: f64| x < 1.0 || x > len - 1.0;
+    let approach = sys.station_approach_m.max(1.0);
+    let in_approach = |x: f64| x < approach || x > len - approach;
+    let mut min = f64::INFINITY;
+    let mut take = |x: f64, c: f64| {
+        if !in_station(x) && (!in_approach(x) || c < 0.0) {
+            min = min.min(c);
+        }
+    };
+    let n = span_steps(l);
+    for i in 0..=n {
+        let u = l * i as f64 / n as f64;
+        let x = xa + u;
+        take(x, cabin_at(u) - g.at(x).1);
+    }
+    // Every sample too, so a ridge or a building between profile steps is not missed.
+    for &(x, _, top) in g.pts.iter().filter(|p| p.0 > xa && p.0 < xb) {
+        take(x, cabin_at(x - xa) - top);
+    }
+    min
+}
+
+/// Profile steps along a span: about every 10 m, 8 to 60 of them.
+fn span_steps(l: f64) -> usize {
+    ((l / 10.0).ceil() as usize).clamp(8, 60)
+}
+
 /// Lowest clearance over the section, and profile points (chainage within the section).
 fn clearance(sys: &SpanSystem, g: &Ground, sup: &[(f64, f64)]) -> (f64, Vec<ProfilePoint>) {
     let len = g.len;
@@ -298,45 +346,146 @@ fn clearance(sys: &SpanSystem, g: &Ground, sup: &[(f64, f64)]) -> (f64, Vec<Prof
         if l <= 0.0 {
             continue;
         }
+        min = min.min(span_clearance(sys, g, w[0], w[1]));
         let sag = sys.sag_ratio * l;
-        let cabin_at = |u: f64| {
-            let rope = ya + (yb - ya) * u / l - 4.0 * sag * u * (l - u) / (l * l);
-            (rope, rope - sys.cabin_hang_m)
-        };
-        // The cabin is in the station at the ends; clearance there is the station's business.
-        let in_station = |x: f64| x < 1.0 || x > len - 1.0;
-        let n = ((l / 10.0).ceil() as usize).clamp(8, 60);
+        let n = span_steps(l);
         for i in 0..=n {
             let u = l * i as f64 / n as f64;
-            let (rope, cabin) = cabin_at(u);
+            let rope = ya + (yb - ya) * u / l - 4.0 * sag * u * (l - u) / (l * l);
             let x = xa + u;
             let (terrain, top) = g.at(x);
-            if !in_station(x) {
-                min = min.min(cabin - top);
-            }
             if i < n || (xb - len).abs() < 1e-9 {
                 pts.push(ProfilePoint {
                     at_m: x,
                     ground_m: terrain,
                     obstacle_m: top - terrain,
                     rope_m: rope,
-                    cabin_m: cabin,
+                    cabin_m: rope - sys.cabin_hang_m,
                 });
-            }
-        }
-        // Every sample too, so a ridge or a building between profile steps is not missed.
-        for &(x, _, top) in g.pts.iter().filter(|p| p.0 > xa && p.0 < xb) {
-            if !in_station(x) {
-                min = min.min(cabin_at(x - xa).1 - top);
             }
         }
     }
     (min, pts)
 }
 
-/// Purpose: automatic towers for one section: the fewest equal spans within the span limit whose lowest
-/// clearance reaches the recommended value, at the standard tower height or taller up to the maximum.
+/// Purpose: automatic towers for one section: the fewest towers within the span limit that keep the
+/// recommended clearance under the loaded cabin, each standing where the ground needs it and as tall as
+/// it needs to be (from the standard to the maximum tower height); among layouts with the fewest towers,
+/// the one with the least tower height in total.
+/// Input: the system and the section's ground.
+/// Output: (chainage, height) per tower; the evenly spaced layout of `even_towers` when no layout on the
+/// search grid keeps the clearance.
 fn auto_towers(sys: &SpanSystem, g: &Ground) -> Vec<(f64, f64)> {
+    let len = g.len;
+    if len <= 0.0 {
+        return Vec::new();
+    }
+    let max_span = sys.max_span_m.max(1.0);
+    // Candidate positions: about 40 along the section, at least 6 to a span, never closer than 5 m.
+    let step = (len / 40.0).min(max_span / 6.0).max(5.0);
+    let n_pos = ((len / step).ceil() as usize).clamp(1, 400);
+    let xs: Vec<f64> = (0..=n_pos).map(|j| len * j as f64 / n_pos as f64).collect();
+    // Candidate heights: the standard height up to the maximum, in at most 16 steps.
+    let lo = sys.tower_height_m.max(0.0);
+    let hi = sys.max_tower_height_m.max(lo);
+    let n_h = (((hi - lo) / 1.0).ceil() as usize).clamp(0, 15);
+    let hs: Vec<f64> = (0..=n_h)
+        .map(|k| {
+            if n_h == 0 {
+                lo
+            } else {
+                (lo + (hi - lo) * k as f64 / n_h as f64).ceil()
+            }
+        })
+        .collect();
+    let base: Vec<f64> = xs.iter().map(|&x| g.at(x).0).collect();
+    let station = sys.station_rope_height_m;
+    let start = (0.0, g.z0 + station);
+    let end = (len, g.z1 + station);
+    let ok =
+        |a: (f64, f64), b: (f64, f64)| span_clearance(sys, g, a, b) >= sys.recommended_clearance_m;
+
+    // Layer by layer: the states (position, height) reached with exactly t towers, at their least total
+    // height. A state reached with fewer towers is never worth reaching again.
+    const NONE: usize = usize::MAX;
+    let idx = |j: usize, k: usize| j * hs.len() + k;
+    let mut seen = vec![false; xs.len() * hs.len()];
+    let mut parent = vec![NONE; xs.len() * hs.len()];
+    // (state, total height); NONE as the state is the start station.
+    let mut layer: Vec<(usize, f64)> = vec![(NONE, 0.0)];
+    while !layer.is_empty() {
+        // Can any state of this layer reach the far station?
+        let support = |s: usize| {
+            if s == NONE {
+                (0usize, start)
+            } else {
+                let (j, k) = (s / hs.len(), s % hs.len());
+                (j, (xs[j], base[j] + hs[k]))
+            }
+        };
+        let mut best: Option<(usize, f64)> = None;
+        for &(s, total) in &layer {
+            let (_, a) = support(s);
+            if len - a.0 <= max_span + 1e-9 && ok(a, end) && best.map_or(true, |b| total < b.1) {
+                best = Some((s, total));
+            }
+        }
+        if let Some((mut s, _)) = best {
+            let mut out = Vec::new();
+            while s != NONE {
+                let (j, k) = (s / hs.len(), s % hs.len());
+                out.push((xs[j], hs[k]));
+                s = parent[s];
+            }
+            out.reverse();
+            return out;
+        }
+        let mut next: Vec<f64> = vec![f64::INFINITY; xs.len() * hs.len()];
+        let mut from = vec![NONE; xs.len() * hs.len()];
+        for &(s, total) in &layer {
+            let (j0, a) = support(s);
+            for j in j0 + 1..n_pos {
+                if xs[j] - a.0 > max_span + 1e-9 {
+                    break;
+                }
+                let at = |k: usize| (xs[j], base[j] + hs[k]);
+                // A taller tower lifts the whole span, so the heights that work are the tallest few.
+                if !ok(a, at(hs.len() - 1)) {
+                    continue;
+                }
+                let (mut l, mut h) = (0usize, hs.len() - 1);
+                while l < h {
+                    let m = (l + h) / 2;
+                    if ok(a, at(m)) {
+                        h = m;
+                    } else {
+                        l = m + 1;
+                    }
+                }
+                for (k, &hk) in hs.iter().enumerate().skip(h) {
+                    let t = idx(j, k);
+                    if !seen[t] && total + hk < next[t] {
+                        next[t] = total + hk;
+                        from[t] = s;
+                    }
+                }
+            }
+        }
+        layer = Vec::new();
+        for (t, &total) in next.iter().enumerate() {
+            if total.is_finite() {
+                seen[t] = true;
+                parent[t] = from[t];
+                layer.push((t, total));
+            }
+        }
+    }
+    even_towers(sys, g)
+}
+
+/// Purpose: evenly spaced towers of one height, the fewest within the span limit that keep the
+/// recommended clearance; used when the search in `auto_towers` finds no layout.
+fn even_towers(sys: &SpanSystem, g: &Ground) -> Vec<(f64, f64)> {
     let len = g.len;
     let first = (len / sys.max_span_m.max(1.0)).ceil().max(1.0) as usize;
     let last = first.max((len / 30.0).ceil() as usize);
@@ -711,6 +860,7 @@ mod tests {
             terminal_dwell_s: 60.0,
             reserve_share: 0.1,
             capacity_ceiling_pphpd: 6000.0,
+            station_approach_m: 1.0,
             parameter_prefix: "ropeway".into(),
         }
     }
@@ -778,6 +928,135 @@ mod tests {
         );
         assert!(s.towers.iter().all(|t| t.auto && t.height_m <= 50.0));
         assert!(!v.profile.is_empty());
+    }
+
+    #[test]
+    fn hillside_gets_a_few_towers_where_the_ground_needs_them() {
+        // Damascus, Muhajreen to Qasioun: 785 m with 240 m of climb, steepening towards the top (Copernicus
+        // DEM GLO-30, every 20 m). Evenly spaced towers of one height needed 11 towers of 50 m here.
+        let ground: Vec<GroundSample> = [
+            (0, 750),
+            (20, 751),
+            (40, 751),
+            (60, 754),
+            (80, 758),
+            (99, 759),
+            (119, 760),
+            (139, 764),
+            (159, 766),
+            (179, 770),
+            (199, 774),
+            (218, 776),
+            (238, 777),
+            (258, 780),
+            (278, 785),
+            (298, 791),
+            (318, 795),
+            (338, 799),
+            (358, 803),
+            (377, 808),
+            (397, 813),
+            (417, 820),
+            (437, 825),
+            (457, 829),
+            (477, 835),
+            (497, 843),
+            (516, 851),
+            (536, 859),
+            (556, 869),
+            (576, 880),
+            (596, 891),
+            (616, 902),
+            (636, 912),
+            (656, 923),
+            (675, 934),
+            (695, 946),
+            (715, 958),
+            (735, 970),
+            (755, 981),
+            (775, 987),
+            (785, 989),
+        ]
+        .iter()
+        .map(|&(x, z)| GroundSample {
+            at_m: x as f64,
+            z_m: z as f64,
+            obstacle_m: 0.0,
+        })
+        .collect();
+        let station = |x: f64, z: f64| SpanStation {
+            elevation_m: z,
+            ..st(x, 0.0, StationKind::Terminal)
+        };
+        let line = SpanLine {
+            stations: vec![station(0.0, 750.0), station(785.0, 989.0)],
+            system: mgd(),
+            towers: vec![],
+            ground: vec![Some(ground)],
+        };
+        let v = build(&line);
+        let s = &v.sections[0];
+        assert!(v.tower_count >= 1 && v.tower_count <= 3, "{:?}", s.towers);
+        assert!(
+            s.spans_m.iter().all(|&x| x <= 400.0 + 1e-6),
+            "{:?}",
+            s.spans_m
+        );
+        assert!(s.min_clearance_m >= 8.0 - 1e-6, "{}", s.min_clearance_m);
+        assert!(s
+            .towers
+            .iter()
+            .all(|t| t.auto && t.height_m >= 25.0 && t.height_m <= 50.0));
+        assert!(
+            !v.issues.iter().any(|i| i.level != Level::Info),
+            "{:?}",
+            v.issues
+        );
+        // With a 30 m station approach the cabin may stay near platform height as it leaves and enters
+        // the stations, so no tower has to stand right beside them.
+        let approach = build(&SpanLine {
+            system: SpanSystem {
+                station_approach_m: 30.0,
+                ..mgd()
+            },
+            ..line.clone()
+        });
+        let a = &approach.sections[0];
+        assert!(approach.tower_count < v.tower_count, "{:?}", a.towers);
+        assert!(a
+            .towers
+            .iter()
+            .all(|t| t.at_m >= 30.0 && t.at_m <= 785.0 - 30.0));
+        assert!(a.min_clearance_m >= 8.0 - 1e-6, "{}", a.min_clearance_m);
+        assert!(!approach.issues.iter().any(|i| i.level != Level::Info));
+    }
+
+    #[test]
+    fn a_longer_span_limit_saves_towers() {
+        let line = |max_span_m: f64| SpanLine {
+            stations: vec![
+                st(0.0, 0.0, StationKind::Terminal),
+                st(1500.0, 0.0, StationKind::Terminal),
+            ],
+            system: SpanSystem {
+                max_span_m,
+                max_tower_height_m: 70.0,
+                ..mgd()
+            },
+            towers: vec![],
+            ground: vec![],
+        };
+        let short = build(&line(300.0));
+        let long = build(&line(600.0));
+        assert!(short.sections[0].spans_m.iter().all(|&x| x <= 300.0 + 1e-6));
+        assert!(long.sections[0].spans_m.iter().all(|&x| x <= 600.0 + 1e-6));
+        assert!(
+            long.tower_count < short.tower_count,
+            "{} vs {}",
+            long.tower_count,
+            short.tower_count
+        );
+        assert!(long.sections[0].min_clearance_m >= 8.0 - 1e-6);
     }
 
     #[test]

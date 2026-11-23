@@ -1,4 +1,5 @@
-//! The compiled operations model: tracks split into pieces at route signals,
+//! The compiled operations model: tracks split into pieces at route signals
+//! (and into short sections where trains drive on sight),
 //! train detection sections (TDS), the route table with overlaps and route
 //! conflicts, platforms, stations and station groups (ADR-0032 §1).
 
@@ -10,7 +11,7 @@ use unicode_normalization::UnicodeNormalization;
 
 use crate::spec::{
     Dir, Directions, End, InfraSpec, LevelCrossingSpec, NodeSpec, SignalKind, SwitchPosition,
-    TrackEnd, TrackSpec, TrackUse,
+    TrackEnd, TrackSpec, TrackUse, TrainProtection,
 };
 
 /// Index of a track piece.
@@ -42,8 +43,13 @@ const EPS: f64 = 1e-6;
 const END_TOL_M: f64 = 0.01;
 /// Longest route searched, in pieces (guards against loops in bad data).
 const MAX_ROUTE_PIECES: usize = 400;
+/// Longest detection section on running track driven on sight (trams), metres. Trams follow each
+/// other at sight distance with no block between the stops, so the planner and the simulator track
+/// them in short sections, not one section from stop to stop (Damascus test, bug 25).
+pub const SIGHT_SECTION_M: f64 = 100.0;
 
-/// A part of a track between two cut points (track ends or route signals).
+/// A part of a track between two cut points (track ends, route signals, or the short sections of
+/// track driven on sight).
 #[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct Piece {
     /// Index of the track in [`Model::tracks`].
@@ -71,6 +77,9 @@ pub struct Tds {
     pub id: String,
     /// Pieces it covers.
     pub pieces: Vec<PieceId>,
+    /// One of the short sections of running track driven on sight outside the stops
+    /// ([`SIGHT_SECTION_M`]): a train may follow another into it, keeping its distance by sight.
+    pub on_sight: bool,
 }
 
 /// A switch as the interlocking sees it.
@@ -337,7 +346,7 @@ impl Model {
             r
         };
 
-        // Cut points: route signals strictly inside a track.
+        // Cut points: route signals strictly inside a track (and, below, the sections of track driven on sight).
         let mut cuts: Vec<Vec<f64>> = vec![Vec::new(); spec.tracks.len()];
         for s in &spec.signals {
             let Some(t) = find_track(
@@ -365,10 +374,52 @@ impl Model {
         }
         let mut pieces = Vec::new();
         let mut track_pieces = vec![Vec::new(); spec.tracks.len()];
+        // Running track a tram follows on sight: outside detection sections. The stretch with a stop
+        // stays one section, so a stop takes one tram at a time.
+        let in_detection: BTreeSet<&str> = spec
+            .detection
+            .iter()
+            .flat_map(|d| d.tracks.iter().map(String::as_str))
+            .collect();
+        let mut stops: Vec<Vec<(f64, f64)>> = vec![Vec::new(); spec.tracks.len()];
+        for p in &spec.platforms {
+            if let Some(&t) = track_index.get(&p.track) {
+                stops[t].push((p.from_m.min(p.to_m), p.from_m.max(p.to_m)));
+            }
+        }
+        let mut piece_on_sight = Vec::new();
         for (t, track) in spec.tracks.iter().enumerate() {
+            let sight = track.protection == TrainProtection::LineOfSight
+                && track.usage == TrackUse::Running
+                && !in_detection.contains(track.id.as_str());
+            let at_stop = |a: f64, b: f64| {
+                stops[t]
+                    .iter()
+                    .any(|&(s0, s1)| a < s1 - EPS && b > s0 + EPS)
+            };
             let c = &mut cuts[t];
             c.sort_by(|a, b| a.partial_cmp(b).unwrap());
             c.dedup_by(|a, b| (*a - *b).abs() < END_TOL_M);
+            // Short sections between the signals; the stretch with a stop stays whole (see
+            // `SIGHT_SECTION_M`).
+            if sight {
+                let mut ends = vec![0.0];
+                ends.extend(c.iter().copied());
+                ends.push(track.length_m);
+                let mut more = Vec::new();
+                for w in ends.windows(2) {
+                    if at_stop(w[0], w[1]) {
+                        continue;
+                    }
+                    let n = ((w[1] - w[0]) / SIGHT_SECTION_M).ceil().max(1.0) as usize;
+                    for k in 1..n {
+                        more.push(w[0] + (w[1] - w[0]) * k as f64 / n as f64);
+                    }
+                }
+                c.extend(more);
+                c.sort_by(|a, b| a.partial_cmp(b).unwrap());
+            }
+            piece_on_sight.extend(std::iter::repeat(sight).take(c.len() + 1));
             let mut from = 0.0;
             for &x in c.iter().chain(std::iter::once(&track.length_m)) {
                 track_pieces[t].push(pieces.len() as PieceId);
@@ -420,6 +471,7 @@ impl Model {
             tds.push(Tds {
                 id: d.id.clone(),
                 pieces: ps,
+                on_sight: false,
             });
         }
         for (t, ps) in track_pieces.iter().enumerate() {
@@ -436,6 +488,7 @@ impl Model {
                 tds.push(Tds {
                     id,
                     pieces: vec![p],
+                    on_sight: piece_on_sight[p as usize],
                 });
             }
         }

@@ -58,6 +58,7 @@ export function spanSystem(
     terminal_dwell_s: p("terminal_dwell_s", 60),
     reserve_share: p("reserve_share", 0.1),
     capacity_ceiling_pphpd: p("capacity_ceiling_pphpd", 0),
+    station_approach_m: p("station_approach_m", 30),
     parameter_prefix: prefix,
     ...over,
   };

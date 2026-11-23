@@ -466,6 +466,7 @@ export const editorsMr = {
   "setup.intro":
     "रस्त्यावर टॅप करून तो कसा विभागला आहे ते सांगा: वाहतूक मार्गिका, बस आणि सायकल मार्गिका, विभाजन आणि ट्राम. तुमची रचना रस्ता मार्ग साधन आणि रेल्वे संपादकात OpenStreetMap ची जागा घेते, प्रवास वेळा आणि विश्वासार्हता व सुरक्षा तपासण्यांसाठी.",
   "setup.engineFailed": "रस्त्यांचे इंजिन सुरू झाले नाही: {error}",
+  "setup.lanesFailed": "लेन काढता आल्या नाहीत: {error}",
   "setup.zoomIn": "रस्ते लोड करण्यासाठी रस्त्याच्या पातळीपर्यंत झूम करा (पातळी {zoom} पासून).",
   "setup.someFailed": "काही रस्ते लोड झाले नाहीत.",
   "setup.tryAgain": "{reason} पुन्हा प्रयत्न करण्यासाठी नकाशा हलवा.",
@@ -538,6 +539,7 @@ export const editorsMr = {
   "setup.legend.mixed": "मुख्य रस्ता, वाहतुकीत सार्वजनिक वाहतूक",
   "setup.legend.other": "इतर रस्ते",
   "setup.legend.yours": "तुमचे रचना केलेले",
+  "setup.legend.lanes": "लेन, झूम {zoom} पासून",
   "setup.v.busNoDelay":
     "या प्रकारच्या रस्त्यावर वाहतूक विलंब मोजला जात नाही; तो मुख्य रस्त्यांवर मोजला जातो.",
   "setup.v.busSeparated": "वेगळी बस मार्गिका: वाहतूक बसना उशीर करत नाही.",
@@ -993,6 +995,7 @@ export const editorsMr = {
   "cable.hint.select": "संपादित करण्यासाठी स्थानकावर क्लिक करा. हलवण्यासाठी स्थानक ओढा.",
   "cable.modeSystem": "साधन आणि प्रणाली",
   "cable.lineSpeed": "दोराचा वेग (मी/से)",
+  "cable.longestSpan": "सर्वात लांब स्पॅन (मी)",
   "cable.cabinInterval": "केबिन अंतराल (सेकंद)",
   "cable.departureEvery": "प्रस्थान दर",
   "cable.cabinEvery": "केबिन दर",

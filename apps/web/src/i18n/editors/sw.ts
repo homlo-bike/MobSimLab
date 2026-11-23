@@ -472,6 +472,7 @@ export const editorsSw = {
   "setup.intro":
     "Gusa barabara useme inavyoshirikiwa: njia za magari, njia za basi na baiskeli, utenganisho na tramu. Mpangilio wako hubadilisha OpenStreetMap kwenye zana ya njia za barabarani na kihariri cha reli, kwa muda wa safari na ukaguzi wa uaminifu na usalama.",
   "setup.engineFailed": "Injini ya barabara haikuanza: {error}",
+  "setup.lanesFailed": "Njia za barabara hazikuweza kuchorwa: {error}",
   "setup.zoomIn": "Kuza hadi kiwango cha barabara kupakia barabara (kuanzia kiwango {zoom}).",
   "setup.someFailed": "Baadhi ya barabara hazikupakia.",
   "setup.tryAgain": "{reason} Sogeza ramani kujaribu tena.",
@@ -544,6 +545,7 @@ export const editorsSw = {
   "setup.legend.mixed": "Barabara kuu, usafiri katika msongamano",
   "setup.legend.other": "Barabara nyingine",
   "setup.legend.yours": "Imepangwa na wewe",
+  "setup.legend.lanes": "Njia za barabara, kuanzia kukuza {zoom}",
   "setup.v.busNoDelay":
     "Hakuna ucheleweshaji wa msongamano unaodhaniwa kwa aina hii ya barabara; unahesabiwa kwenye barabara kuu.",
   "setup.v.busSeparated": "Njia ya basi iliyotenganishwa: msongamano hauchelewishi mabasi.",
@@ -1008,6 +1010,7 @@ export const editorsSw = {
   "cable.hint.select": "Bofya stesheni kuihariri. Buruta stesheni kuisogeza.",
   "cable.modeSystem": "Aina na mfumo",
   "cable.lineSpeed": "Kasi ya kamba (m/s)",
+  "cable.longestSpan": "Upana mrefu zaidi kati ya minara (m)",
   "cable.cabinInterval": "Muda kati ya vyumba (s)",
   "cable.departureEvery": "Kuondoka kila",
   "cable.cabinEvery": "Chumba kila",

@@ -472,6 +472,7 @@ export const editorsNl = {
   "setup.intro":
     "Tik op een straat om aan te geven hoe die gedeeld wordt: rijstroken, bus- en fietsstroken, scheiding en tram. Je instelling vervangt OpenStreetMap in het lijnhulpmiddel voor straten en de spoorwegeditor, voor rijtijden en de controles op betrouwbaarheid en veiligheid.",
   "setup.engineFailed": "De straatengine is niet gestart: {error}",
+  "setup.lanesFailed": "De rijstroken konden niet worden getekend: {error}",
   "setup.zoomIn": "Zoom in tot straatniveau om straten te laden (vanaf zoom {zoom}).",
   "setup.someFailed": "Sommige straten zijn niet geladen.",
   "setup.tryAgain": "{reason} Verplaats de kaart om het opnieuw te proberen.",
@@ -544,6 +545,7 @@ export const editorsNl = {
   "setup.legend.mixed": "Hoofdweg, ov in het verkeer",
   "setup.legend.other": "Andere straten",
   "setup.legend.yours": "Door jou ingesteld",
+  "setup.legend.lanes": "Rijstroken, vanaf zoom {zoom}",
   "setup.v.busNoDelay":
     "Op dit soort straat wordt geen vertraging in het verkeer aangenomen; die telt op hoofdwegen.",
   "setup.v.busSeparated": "Gescheiden busbaan: files houden de bussen niet op.",
@@ -1012,6 +1014,7 @@ export const editorsNl = {
   "cable.hint.select": "Klik op een station om het te bewerken. Sleep een station om het te verplaatsen.",
   "cable.modeSystem": "Vervoerwijze en systeem",
   "cable.lineSpeed": "Kabelsnelheid (m/s)",
+  "cable.longestSpan": "Langste overspanning (m)",
   "cable.cabinInterval": "Cabine-interval (s)",
   "cable.departureEvery": "Vertrek elke",
   "cable.cabinEvery": "Cabine elke",
