@@ -435,3 +435,35 @@
       sources: [uitp-trolleybus-tco, mobsimlab-derivation]
       check: unverified
       rationale: "In-motion charging trolleybuses carry a smaller battery for sections without wires, typically 30–120 kWh."
+
+- key: road.advice_on_time_share
+  label: "Road simulation advice: a street line with a smaller share of departures on time gets advice"
+  group: Depots and streets
+  unit: share
+  used_by: [road simulation advice]
+  values:
+    - context:
+        mode: "*"
+      low: 0.75
+      central: 0.85
+      high: 0.95
+      basis: educated-guess
+      sources: [tcqsm3, mobsimlab-derivation]
+      check: unverified
+      rationale: "TCQSM rates on-time performance of 85–95 % as good to very good for a scheduled bus route and below 75 % as poor; below the central value the run's advice names where the line loses its time."
+
+- key: road.advice_bunched_share
+  label: "Road simulation advice: a street line with a larger share of bunched departures gets advice"
+  group: Depots and streets
+  unit: share
+  used_by: [road simulation advice]
+  values:
+    - context:
+        mode: "*"
+      low: 0.05
+      central: 0.1
+      high: 0.2
+      basis: educated-guess
+      sources: [tcqsm3, mobsimlab-derivation]
+      check: unverified
+      rationale: "TCQSM treats headway adherence with a coefficient of variation above about 0.4 as irregular, which corresponds to roughly one gap in ten under half the planned headway; from there passengers see vehicles arriving in pairs."

@@ -466,7 +466,9 @@
     "mode.vehicle_capacity": "Nafasi za abiria kwa gari la barabarani, kukaa na kusimama kwa msongamano wa mipango",
     "cost.opex.car_length_m": "Gharama ya uendeshaji wa reli: urefu wa treni unaohesabiwa kama behewa moja",
     "dwell.door_channels_per_100m": "Njia za mlango kwa kila mita 100 za treni (milango upande mmoja × watu wanaopita sambamba kwa mlango)",
-    "dwell.door_peaking": "Njia ya mlango yenye msongamano zaidi ikilinganishwa na abiria kugawanyika sawa kwenye milango"
+    "dwell.door_peaking": "Njia ya mlango yenye msongamano zaidi ikilinganishwa na abiria kugawanyika sawa kwenye milango",
+    "road.advice_on_time_share": "Uigaji wa barabara, ushauri: laini ya mtaa yenye sehemu ya safari zinazoondoka kwa wakati chini ya hii hupata ushauri",
+    "road.advice_bunched_share": "Uigaji wa barabara, ushauri: laini ya mtaa yenye sehemu ya safari zinazoondoka zikiwa zimesongamana juu ya hii hupata ushauri"
   },
   "units": {
     "US$ million each (2023, PPP)": "milioni US$ kila kimoja (2023, PPP)",

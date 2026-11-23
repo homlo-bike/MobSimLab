@@ -466,7 +466,9 @@
     "mode.vehicle_capacity": "Posti passeggeri per veicolo stradale, a sedere più in piedi alla densità di progetto",
     "cost.opex.car_length_m": "Costo di marcia ferroviario: lunghezza di treno contata come una carrozza",
     "dwell.door_channels_per_100m": "Canali di porta per 100 m di treno (porte su un lato × persone affiancate per porta)",
-    "dwell.door_peaking": "Canale di porta più carico rispetto a una distribuzione uniforme dei passeggeri tra le porte"
+    "dwell.door_peaking": "Canale di porta più carico rispetto a una distribuzione uniforme dei passeggeri tra le porte",
+    "road.advice_on_time_share": "Simulazione stradale, consigli: una linea stradale sotto questa quota di partenze puntuali riceve consigli",
+    "road.advice_bunched_share": "Simulazione stradale, consigli: una linea stradale sopra questa quota di partenze raggruppate riceve consigli"
   },
   "units": {
     "US$ million each (2023, PPP)": "milioni di US$ cad. (2023, PPA)",

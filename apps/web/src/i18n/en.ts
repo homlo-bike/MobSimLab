@@ -12,6 +12,7 @@ import { mslabEn } from "./mslab/en";
 import { workspaceUiEn } from "./workspace-ui/en";
 import { pluginCodeEn } from "./plugin-code/en";
 import { roadEn } from "./road/en";
+import { adviceEn } from "./advice/en";
 import { calendarEn } from "./calendar/en";
 import { populationEn } from "./population/en";
 import { resultsEn } from "./results/en";
@@ -537,6 +538,7 @@ export const en = {
   ...workspaceUiEn,
   ...pluginCodeEn,
   ...roadEn,
+  ...adviceEn,
   ...calendarEn,
   ...populationEn,
   ...resultsEn,

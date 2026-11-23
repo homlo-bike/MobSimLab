@@ -291,7 +291,8 @@
     "fe653218": "kalibracja: GEH pomiarów ruchu",
     "ff319992": "generowanie podróży: produkcja i atrakcja podróży niezwiązanych z domem",
     "ff362d54": "wybór środka transportu: rower dla osób bez roweru",
-    "ff653463": "długość krzywej przejściowej"
+    "ff653463": "długość krzywej przejściowej",
+    "c4a51a02": "porady symulacji drogowej"
   },
   "rationale": {
     "009596c6": "Obciążenia odniesienia wg EN 15663 dla komunikacji miejskiej i podmiejskiej; 6/m² jako stan maksymalnego zatłoczenia.",
@@ -980,6 +981,8 @@
     "ff5e263c": "Metoda punktu maksymalnego obciążenia Cedera ustala częstotliwość tak, aby obciążenie w godzinie szczytu na najbardziej obciążonym odcinku pozostało na pożądanym poziomie napełnienia; pojemność liczy pasażerów stojących przy gęstości planistycznej, więc wartości bliskie 0.8 zostawiają miejsce na nierówne obciążenie pociągów.",
     "ff68efd7": "CNOSSOS-EU umieszcza liniowe źródło drogowe 0.05 m nad nawierzchnią drogi.",
     "29fa358c": "Kanały drzwiowe po jednej stronie pociągu; drzwi, przez które przejdą dwie osoby obok siebie, liczą się podwójnie. Model czasu postoju dzieli przez nie pasażerów pociągu. Policzone z typowych układów wagonów, nie z tabeli źródłowej: 20-metrowy wagon metra z czterema podwójnymi drzwiami daje 40 na 100 m, 30-metrowy tramwaj z trzema lub czterema podwójnymi drzwiami około 24, 25-metrowy wagon regionalny z dwoma podwójnymi drzwiami 16, a 25-metrowy wagon dalekobieżny z jednymi lub dwoma pojedynczymi drzwiami 8.",
-    "dba93787": "Pasażerowie tłoczą się przy drzwiach najbliżej wejść na peron, więc najbardziej obciążony kanał obsługuje więcej niż równy udział; postój trwa, aż skończy. TCQSM opisuje to nierówne korzystanie z drzwi; 1,3 to uzasadnione szacunki dla peronów z wejściem w jednym lub dwóch miejscach."
+    "dba93787": "Pasażerowie tłoczą się przy drzwiach najbliżej wejść na peron, więc najbardziej obciążony kanał obsługuje więcej niż równy udział; postój trwa, aż skończy. TCQSM opisuje to nierówne korzystanie z drzwi; 1,3 to uzasadnione szacunki dla peronów z wejściem w jednym lub dwóch miejscach.",
+    "abdceb21": "TCQSM ocenia punktualność 85–95 % jako dobrą do bardzo dobrej dla linii autobusowej z rozkładem, a poniżej 75 % jako słabą; poniżej wartości centralnej porady przebiegu wskazują, gdzie linia traci czas.",
+    "76757724": "TCQSM uznaje za nieregularny współczynnik zmienności odstępów powyżej około 0,4, co odpowiada mniej więcej jednemu odstępowi na dziesięć krótszemu niż połowa planowanego; od tego momentu pasażerowie widzą pojazdy przyjeżdżające parami."
   }
 }

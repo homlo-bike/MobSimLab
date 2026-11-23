@@ -291,7 +291,8 @@
     "fe653218": "daidaitawa: GEH na ƙirga",
     "ff319992": "samar da tafiye-tafiye: samarwa da jan hankali da ba na gida ba",
     "ff362d54": "zaɓin hanyar sufuri: tafiya da keke ga mutanen da ba su da keke",
-    "ff653463": "tsawon lanƙwasar sauyi"
+    "ff653463": "tsawon lanƙwasar sauyi",
+    "c4a51a02": "shawarar kwaikwayon hanya"
   },
   "rationale": {
     "009596c6": "Nauyin tunani na EN 15663 don hidimar birni/kewayen birni; 6/m² a matsayin cunkoso mai tsanani.",
@@ -980,6 +981,8 @@
     "ff5e263c": "Hanyar wurin nauyi mafi girma ta Ceder tana saita yawan tafiya don nauyin awar cunkoso a haɗi mafi cunkoso ya zauna a mamayewar da ake so; iya ɗauka yana ƙirga masu tsaye a yawan tsari, don haka ƙimomi kusa da 0.8 suna barin sarari ga nauyin da bai daidaita ba tsakanin jiragen ƙasa.",
     "ff68efd7": "CNOSSOS-EU yana sanya tushen layin titi 0.05 m sama da saman titi.",
     "29fa358c": "Hanyoyin ƙofa a gefe ɗaya na jirgin; ƙofar da mutane biyu za su iya wucewa jere ana ƙirga ta sau biyu. Tsarin lokacin tsayawa yana raba fasinjojin jirgi da su. An ƙirga daga tsarin taragai na yau da kullum, ba daga teburin tushe ba: taragin metro na m 20 mai ƙofofi biyu-biyu huɗu yana ba da 40 a kowace m 100, tram na m 30 mai ƙofofi biyu-biyu uku ko huɗu kusan 24, taragin yanki na m 25 mai ƙofofi biyu-biyu biyu 16, taragin tafiya mai nisa na m 25 mai ƙofa ɗaya ko biyu guda-guda 8.",
-    "dba93787": "Fasinjoji suna taruwa a ƙofofin da suka fi kusa da hanyoyin shiga dandamali, don haka hanya mafi cunkoso tana hidima fiye da kaso daidai; tsayawa yana ci gaba har ta gama. TCQSM ya bayyana wannan amfani da ƙofofi mara daidaito; 1.3 ƙiyasi ne na hankali ga dandamalin da ake shiga daga wuri ɗaya ko biyu."
+    "dba93787": "Fasinjoji suna taruwa a ƙofofin da suka fi kusa da hanyoyin shiga dandamali, don haka hanya mafi cunkoso tana hidima fiye da kaso daidai; tsayawa yana ci gaba har ta gama. TCQSM ya bayyana wannan amfani da ƙofofi mara daidaito; 1.3 ƙiyasi ne na hankali ga dandamalin da ake shiga daga wuri ɗaya ko biyu.",
+    "abdceb21": "TCQSM yana ɗaukar kiyaye lokaci na 85–95 % a matsayin mai kyau zuwa mai kyau sosai ga layin bas mai jadawali, kuma ƙasa da 75 % a matsayin mara kyau; ƙasa da ƙimar tsakiya, shawarar gudu tana faɗin inda layin ke rasa lokacinsa.",
+    "76757724": "TCQSM yana ɗaukar ma'aunin bambancin tazara sama da kusan 0.4 a matsayin mara tsari, wanda yayi daidai da kusan tazara ɗaya cikin goma da ta gaza rabin tazarar da aka tsara; daga nan fasinjoji suna ganin motoci suna zuwa biyu-biyu."
   }
 }

@@ -1,4 +1,5 @@
 import { roadAm } from "./road/am";
+import { adviceAm } from "./advice/am";
 import { calendarAm } from "./calendar/am";
 import { editorsAm } from "./editors/am";
 import { cargoBikeAm } from "./cargo-bike/am";
@@ -530,6 +531,7 @@ export const am: Messages = {
   ...populationAm,
   ...resultsAm,
   ...roadAm,
+  ...adviceAm,
   ...calendarAm,
   ...pluginsAm,
   ...streetPhotosAm,

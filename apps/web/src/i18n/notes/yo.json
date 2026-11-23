@@ -291,7 +291,8 @@
     "fe653218": "ìṣàtúnṣe: GEH ti àwọn ìkàyè",
     "ff319992": "ìpilẹ̀ṣẹ̀ ìrìn: ìrìn tí kì í ṣe ti ilé tí a ṣẹ̀dá àti ìfàmọ́ra",
     "ff362d54": "yíyan ọ̀nà ìrìnnà: kẹ̀kẹ́ fún àwọn tí kò ní kẹ̀kẹ́",
-    "ff653463": "gígùn ìtẹ̀ ìyípadà"
+    "ff653463": "gígùn ìtẹ̀ ìyípadà",
+    "c4a51a02": "ìmọ̀ràn àfarawé ọ̀nà"
   },
   "rationale": {
     "009596c6": "Ẹrù ìtọ́kasí EN 15663 fún iṣẹ́ ìlú àti ìgbèríko ìlú; 6/m² gẹ́gẹ́ bí ìkún tó pọ̀ jù (crush).",
@@ -980,6 +981,8 @@
     "ff5e263c": "Ọ̀nà ibi ẹrù tó pọ̀ jù ti Ceder ń ṣètò ìgbà-mélòó-mélòó kí ẹrù wákàtí ìkúnlẹ̀ ọkọ̀ ní apá tó kún jù lè wà ní ìkún tí a fẹ́; agbára ń ka àwọn tó dúró ní ìwọ̀n ètò, nítorí náà iye tó súnmọ́ 0.8 ń fi ààyè sílẹ̀ fún ẹrù tí kò dọ́gba láàrin àwọn ọkọ̀ ojú irin.",
     "ff68efd7": "CNOSSOS-EU gbé orísun onílà títì sí 0.05 m lókè ojú títì.",
     "29fa358c": "Àwọn ọ̀nà ilẹ̀kùn ní ẹ̀gbẹ́ kan ọkọ̀; ilẹ̀kùn tí ènìyàn méjì lè gbà kọjá lẹ́gbẹ̀ẹ́ ara wọn ni a ka sí méjì. Àwòṣe àkókò ìdúró ń fi wọ́n pín àwọn èrò ọkọ̀. A kà á láti inú ètò kẹ̀kẹ́ ọkọ̀ tó wọ́pọ̀, kì í ṣe láti inú tábìlì orísun: kẹ̀kẹ́ mẹ́tíró 20 m pẹ̀lú ilẹ̀kùn oníṣí-méjì mẹ́rin ń fún 40 fún 100 m, tram 30 m pẹ̀lú ilẹ̀kùn oníṣí-méjì mẹ́ta tàbí mẹ́rin nǹkan bí 24, kẹ̀kẹ́ agbègbè 25 m pẹ̀lú ilẹ̀kùn oníṣí-méjì méjì 16, àti kẹ̀kẹ́ ìrìn-àjò jíjìn 25 m pẹ̀lú ilẹ̀kùn ẹyọ kan tàbí méjì 8.",
-    "dba93787": "Àwọn èrò máa ń kóra jọ sí ilẹ̀kùn tó súnmọ́ ẹnu ọ̀nà pèpéle jùlọ, nítorí náà ọ̀nà tó kún jùlọ ń sìn ju ìpín dọ́gba lọ; ìdúró máa ń pẹ́ títí yóò fi parí. TCQSM ṣàlàyé lílo ilẹ̀kùn tí kò dọ́gba yìí; 1.3 jẹ́ ìdíyelé tí a ronú lé fún pèpéle tí a ń wọlé láti ibì kan tàbí méjì."
+    "dba93787": "Àwọn èrò máa ń kóra jọ sí ilẹ̀kùn tó súnmọ́ ẹnu ọ̀nà pèpéle jùlọ, nítorí náà ọ̀nà tó kún jùlọ ń sìn ju ìpín dọ́gba lọ; ìdúró máa ń pẹ́ títí yóò fi parí. TCQSM ṣàlàyé lílo ilẹ̀kùn tí kò dọ́gba yìí; 1.3 jẹ́ ìdíyelé tí a ronú lé fún pèpéle tí a ń wọlé láti ibì kan tàbí méjì.",
+    "abdceb21": "TCQSM ka ìtẹ̀lé àkókò 85–95 % sí dáradára sí dáradára gan-an fún ìlà bọ́ọ̀sì tí ó ní ètò àkókò, àti nísàlẹ̀ 75 % sí aláìdára; nísàlẹ̀ iye àárín, ìmọ̀ràn ìṣiṣẹ́ náà sọ ibi tí ìlà náà ti ń pàdánù àkókò rẹ̀.",
+    "76757724": "TCQSM ka ìyàtọ̀ àlàfo tí ó ju nǹkan bí 0.4 lọ sí aláìlétò, èyí tí ó dọ́gba pẹ̀lú nǹkan bí àlàfo kan nínú mẹ́wàá tí ó kúrú ju ìdajì àlàfo tí a gbèrò; láti ibẹ̀ àwọn èrò ń rí ọkọ̀ tí ń dé ní méjì-méjì."
   }
 }

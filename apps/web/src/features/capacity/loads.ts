@@ -48,6 +48,16 @@ export interface HourLoad {
   left_behind: number;
 }
 
+/** Riders on one link (stop to next stop, one direction) in one hour. */
+export interface LinkLoad {
+  from: string;
+  to: string;
+  riders: number;
+  places: number;
+  /** riders / places. */
+  occupancy: number;
+}
+
 export interface LineLoad {
   id: string;
   name: string;
@@ -57,6 +67,8 @@ export interface LineLoad {
   busiest: HourLoad | null;
   /** Riders left behind on the busiest links over the whole period. */
   left_behind: number;
+  /** Every link of the busiest hour, both directions (for the crowding map; absent in older results). */
+  links?: LinkLoad[];
   /** Stops without any boardings (no estimate and no number of the planner's). */
   missing: string[];
   /** A train line's longest stop, where busy stops make it longer than the line's usual dwell. */
@@ -182,6 +194,7 @@ export function lineLoad(
   const daily = stops.reduce((a, n) => a + (line.boardings[n] ?? 0), 0);
   const missing = stops.filter((n) => !(line.boardings[n] && line.boardings[n]! > 0));
   let busiest: HourLoad | null = null;
+  let busiestLinks: LinkLoad[] = [];
   let leftBehind = 0;
   for (let h = Math.floor(fromS / 3600) * 3600; h < toS; h += 3600) {
     const part = (Math.min(toS, h + 3600) - Math.max(fromS, h)) / 3600;
@@ -191,10 +204,12 @@ export function lineLoad(
     const links = f.links;
     const places = line.perHour(h) * line.capacity;
     let best: HourLoad | null = null;
+    const hourLinks: LinkLoad[] = [];
     links.forEach((l, d) => {
       const seq = line.sequences[d]!;
       l.forEach((riders, i) => {
         const occupancy = places > 0 ? riders / places : riders > 0 ? Infinity : 0;
+        hourLinks.push({ from: seq[i]!, to: seq[(i + 1) % seq.length]!, riders, places, occupancy });
         if (!best || occupancy > best.occupancy)
           best = {
             hour_s: h,
@@ -210,8 +225,19 @@ export function lineLoad(
     if (best) {
       const b = best as HourLoad;
       leftBehind += b.left_behind * part;
-      if (!busiest || b.occupancy > busiest.occupancy) busiest = b;
+      if (!busiest || b.occupancy > busiest.occupancy) {
+        busiest = b;
+        busiestLinks = hourLinks;
+      }
     }
   }
-  return { id: line.id, name: line.name, daily, busiest, left_behind: leftBehind, missing };
+  return {
+    id: line.id,
+    name: line.name,
+    daily,
+    busiest,
+    left_behind: leftBehind,
+    missing,
+    links: busiestLinks,
+  };
 }

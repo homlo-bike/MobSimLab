@@ -291,7 +291,8 @@
     "fe653218": "ukulungisa: i-GEH yezibalo",
     "ff319992": "ukwakhiwa kohambo: ukukhiqizwa nokuheha kohambo olungelona olwasekhaya",
     "ff362d54": "ukukhetha uhlobo lwezokuthutha: ukugibela ibhayisikili kwabantu abangenalo ibhayisikili",
-    "ff653463": "ubude bejika lokushintsha"
+    "ff653463": "ubude bejika lokushintsha",
+    "c4a51a02": "iseluleko sokulingisa umgwaqo"
   },
   "rationale": {
     "009596c6": "Imithwalo eyisisekelo ye-EN 15663 yesevisi yasedolobheni/yasemaphethelweni; 6/m² njengokuminyana okukhulu (crush).",
@@ -980,6 +981,8 @@
     "ff5e263c": "Indlela kaCeder yephuzu lomthwalo omkhulu ibeka ukuvama ukuze umthwalo wehora lokuminyana esixhumanisini esiminyene kakhulu uhlale ekugcweleni okufunwayo; umthamo ubala abemile ngokuminyana kokuhlela, ngakho amanani aseduze no-0.8 ashiya isikhala sokulayisha okungalingani phakathi kwezitimela.",
     "ff68efd7": "I-CNOSSOS-EU ibeka umthombo womugqa womgwaqo ku-0.05 m ngaphezu kobuso bomgwaqo.",
     "29fa358c": "Imizila yeminyango ohlangothini olulodwa lwesitimela; umnyango okwazi ukudlulisa abantu ababili behlangene ubalwa kabili. Imodeli yesikhathi sokuma ihlukanisa abagibeli besitimela ngayo. Kubalwe ezakhiweni zezinqola ezijwayelekile, hhayi etafuleni lomthombo: inqola ye-metro engu-20 m eneminyango emine ephindwe kabili inika u-40 nge-100 m, ithilamu engu-30 m eneminyango emithathu noma emine ephindwe kabili cishe u-24, inqola yesifunda engu-25 m eneminyango emibili ephindwe kabili u-16, nenqola yebanga elide engu-25 m enomnyango owodwa noma emibili engashadile u-8.",
-    "dba93787": "Abagibeli bayaxinana eminyango eseduze nezindlela zokungena epulatifomu, ngakho umzila oxinene kakhulu usebenzela ngaphezu kwengxenye elinganayo; ukuma kuqhubeka kuze uqede. I-TCQSM ichaza lokhu kusetshenziswa kweminyango okungalingani; u-1.3 uyisilinganiso esicatshangelwe samapulatifomu anokungena endaweni eyodwa noma ezimbili."
+    "dba93787": "Abagibeli bayaxinana eminyango eseduze nezindlela zokungena epulatifomu, ngakho umzila oxinene kakhulu usebenzela ngaphezu kwengxenye elinganayo; ukuma kuqhubeka kuze uqede. I-TCQSM ichaza lokhu kusetshenziswa kweminyango okungalingani; u-1.3 uyisilinganiso esicatshangelwe samapulatifomu anokungena endaweni eyodwa noma ezimbili.",
+    "abdceb21": "I-TCQSM ilinganisa ukuhamba ngesikhathi kuka-85–95 % njengokuhle kuya kokuhle kakhulu emzileni webhasi onesheduli, futhi ngaphansi kuka-75 % njengokubi; ngaphansi kwenani eliphakathi, iseluleko sokuqhuba sisho ukuthi umzila ulahlekelwa isikhathi kuphi.",
+    "76757724": "I-TCQSM ithatha i-coefficient of variation yezikhala ezingaphezu kuka-0.4 cishe njengokungajwayelekile, okulingana cishe nesikhala esisodwa kweziyishumi esifushane kunengxenye yesikhala esihleliwe; kusukela lapho abagibeli babona izimoto zifika ngambili."
   }
 }

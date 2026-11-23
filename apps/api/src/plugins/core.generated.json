@@ -1351,6 +1351,8 @@
     "platform.side_width_m",
     "platform.stopping_tolerance_m",
     "recording.late_threshold_s",
+    "road.advice_bunched_share",
+    "road.advice_on_time_share",
     "road.battery_capacity_kwh",
     "road.off_peak_traffic_share",
     "road.trolley_wire_charge_kw",

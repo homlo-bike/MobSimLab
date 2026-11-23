@@ -1,4 +1,5 @@
 import { roadDe } from "./road/de";
+import { adviceDe } from "./advice/de";
 import { calendarDe } from "./calendar/de";
 import { editorsDe } from "./editors/de";
 import { cargoBikeDe } from "./cargo-bike/de";
@@ -557,6 +558,7 @@ export const de: Messages = {
   ...populationDe,
   ...resultsDe,
   ...roadDe,
+  ...adviceDe,
   ...calendarDe,
   ...pluginsDe,
   ...streetPhotosDe,

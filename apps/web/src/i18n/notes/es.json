@@ -291,7 +291,8 @@
     "fe653218": "calibración: GEH de los conteos",
     "ff319992": "generación de viajes: producciones y atracciones no basadas en casa",
     "ff362d54": "elección modal: bicicleta para personas sin bicicleta",
-    "ff653463": "longitud de la curva de transición"
+    "ff653463": "longitud de la curva de transición",
+    "c4a51a02": "consejos de la simulación vial"
   },
   "rationale": {
     "009596c6": "Cargas de referencia de EN 15663 para servicio urbano y suburbano; 6/m² como carga de hacinamiento.",
@@ -980,6 +981,8 @@
     "ff5e263c": "El método del punto de carga máxima de Ceder fija la frecuencia para que la carga en hora punta en el tramo más cargado se mantenga en una ocupación deseada; la capacidad cuenta los viajeros de pie a la densidad de planificación, así que valores cercanos a 0.8 dejan margen para cargas desiguales entre trenes.",
     "ff68efd7": "CNOSSOS-EU sitúa la fuente lineal viaria a 0.05 m por encima de la superficie de la calzada.",
     "29fa358c": "Canales de puerta de un lado del tren; una puerta por la que caben dos personas a la vez cuenta doble. El modelo de tiempo de parada divide los pasajeros de un tren entre ellos. Contados a partir de disposiciones típicas de coches, no de una tabla de fuentes: un coche de metro de 20 m con cuatro puertas dobles da 40 por 100 m, un tranvía de 30 m con tres o cuatro puertas dobles unos 24, un coche regional de 25 m con dos puertas dobles 16 y un coche de larga distancia de 25 m con una o dos puertas sencillas 8.",
-    "dba93787": "Los pasajeros se agolpan en las puertas más cercanas a los accesos del andén, así que el canal más cargado atiende más que una parte igual; la parada dura hasta que termina. El TCQSM describe este uso desigual de las puertas; 1,3 es una estimación razonada para andenes con acceso en uno o dos puntos."
+    "dba93787": "Los pasajeros se agolpan en las puertas más cercanas a los accesos del andén, así que el canal más cargado atiende más que una parte igual; la parada dura hasta que termina. El TCQSM describe este uso desigual de las puertas; 1,3 es una estimación razonada para andenes con acceso en uno o dos puntos.",
+    "abdceb21": "El TCQSM califica una puntualidad del 85–95 % como buena a muy buena para una línea de autobús con horario, y por debajo del 75 % como mala; por debajo del valor central, los consejos de la ejecución indican dónde pierde tiempo la línea.",
+    "76757724": "El TCQSM considera irregular un coeficiente de variación de los intervalos superior a unos 0,4, lo que equivale a aproximadamente uno de cada diez intervalos por debajo de la mitad del previsto; a partir de ahí los pasajeros ven llegar vehículos de dos en dos."
   }
 }

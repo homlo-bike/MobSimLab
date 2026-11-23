@@ -1,4 +1,5 @@
 import { roadPl } from "./road/pl";
+import { advicePl } from "./advice/pl";
 import { calendarPl } from "./calendar/pl";
 import { editorsPl } from "./editors/pl";
 import { cargoBikePl } from "./cargo-bike/pl";
@@ -546,6 +547,7 @@ export const pl: Messages = {
   ...populationPl,
   ...resultsPl,
   ...roadPl,
+  ...advicePl,
   ...calendarPl,
   ...pluginsPl,
   ...streetPhotosPl,

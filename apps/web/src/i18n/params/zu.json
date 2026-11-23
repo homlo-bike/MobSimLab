@@ -466,7 +466,9 @@
     "mode.vehicle_capacity": "Izindawo zabagibeli ngemoto yomgwaqo, abahlezi nabamile ngokuminyana kokuhlela",
     "cost.opex.car_length_m": "Izindleko zokuhamba kwesitimela: ubude besitimela obubalwa njengenqola eyodwa",
     "dwell.door_channels_per_100m": "Imizila yeminyango nge-100 m yesitimela (iminyango ohlangothini olulodwa × abantu abadlula behlangene emnyango ngamunye)",
-    "dwell.door_peaking": "Umzila womnyango oxinene kakhulu uma uqhathaniswa nokwabelana kwabagibeli ngokulinganayo eminyango"
+    "dwell.door_peaking": "Umzila womnyango oxinene kakhulu uma uqhathaniswa nokwabelana kwabagibeli ngokulinganayo eminyango",
+    "road.advice_on_time_share": "Ukulingisa umgwaqo, iseluleko: umzila womgwaqo onesabelo sokuhamba ngesikhathi esingaphansi kwalesi uthola iseluleko",
+    "road.advice_bunched_share": "Ukulingisa umgwaqo, iseluleko: umzila womgwaqo onesabelo sokuhamba kuqoqene esingaphezu kwalesi uthola iseluleko"
   },
   "units": {
     "US$ million each (2023, PPP)": "izigidi ze-US$ ngakunye (2023, PPP)",

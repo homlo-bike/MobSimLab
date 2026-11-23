@@ -45,6 +45,9 @@ CAR_STUCK_S = 180.0
 #: Simulated seconds between looks for stuck background cars.
 CAR_CHECK_EVERY_S = 30.0
 
+#: Most places kept in a run's list of where the street line vehicles lose time.
+HOTSPOTS_KEPT = 12
+
 #: Most position samples kept for the replay (vehicles × frames); the frame interval grows to stay below it.
 MAX_SAMPLES = 1_500_000
 
@@ -78,6 +81,24 @@ class Watch:
 
 
 @dataclass
+class Hotspot:
+    """One place where street line vehicles stood outside their stops: a red light, a street or a junction."""
+
+    kind: str
+    """``signal`` (waiting at a red light), ``street`` (standing in traffic on a street) or ``junction``."""
+    ref: str
+    """SUMO's traffic light or edge id."""
+    name: str
+    """The street's name (empty when OSM gives none)."""
+    lonlat: tuple[float, float]
+    """Where the first vehicle stood there."""
+    lost_s: float = 0.0
+    """Seconds lost there by all street line vehicles together."""
+    lines: set[int] = field(default_factory=set)
+    """The lines whose vehicles lost time there."""
+
+
+@dataclass
 class SimOutcome:
     """What the run produced: per-vehicle watches, events, totals and the replay."""
 
@@ -93,6 +114,7 @@ class SimOutcome:
     frame_s: float
     begin: float
     frames: int
+    hotspots: dict[str, Hotspot] = field(default_factory=dict)
 
 
 def frame_interval(vehicles: int, span_s: float, base_s: float = 2.0) -> float:
@@ -167,6 +189,7 @@ def run_sumo(
     span = end - begin
     frame_s = frame_interval(len(watches), span)
     events: list[dict[str, Any]] = []
+    hotspots: dict[str, Hotspot] = {}
     teleports = 0
     collisions = 0
     inserted_bg = 0
@@ -209,6 +232,7 @@ def run_sumo(
                         w.lost_signals_s += step_s
                     else:
                         w.lost_traffic_s += step_s
+                    _lose(libsumo, hotspots, vid, w, step_s, str(tls[0][0]) if red else None)
                     if w.stood_since is None:
                         w.stood_since = t
                     elif not w.gridlocked and not red and t - w.stood_since >= GRIDLOCK_S:
@@ -295,7 +319,48 @@ def run_sumo(
         frame_s=frame_s,
         begin=begin,
         frames=int((t - begin) / frame_s) + 1,
+        hotspots=hotspots,
     )
+
+
+def _lose(
+    libsumo: Any, hotspots: dict[str, Hotspot], vid: str, w: Watch, step_s: float, signal: str | None
+) -> None:
+    """Add a step that a street line vehicle stood outside its stops to the place where it stood.
+
+    ``signal`` is the red traffic light it waits at, None when it stands in traffic.
+    """
+    if signal is not None:
+        key, kind, ref = f"signal:{signal}", "signal", signal
+    else:
+        ref = str(libsumo.vehicle.getRoadID(vid))
+        kind = "junction" if ref.startswith(":") else "street"
+        key = f"{kind}:{ref}"
+    h = hotspots.get(key)
+    if h is None:
+        x, y = libsumo.vehicle.getPosition(vid)
+        lon, lat = libsumo.simulation.convertGeo(x, y)
+        road = str(libsumo.vehicle.getRoadID(vid))
+        name = "" if road.startswith(":") else str(libsumo.edge.getStreetName(road))
+        h = hotspots[key] = Hotspot(kind=kind, ref=ref, name=name, lonlat=(round(lon, 6), round(lat, 6)))
+    h.lost_s += step_s
+    h.lines.add(w.vehicle.line)
+
+
+def hotspot_list(hotspots: Mapping[str, Hotspot]) -> list[dict[str, Any]]:
+    """The places where the street line vehicles lost most time, most first (``HOTSPOTS_KEPT`` at most)."""
+    top = sorted(hotspots.values(), key=lambda h: (-h.lost_s, h.kind, h.ref))[:HOTSPOTS_KEPT]
+    return [
+        {
+            "kind": h.kind,
+            "name": h.name,
+            "lonlat": list(h.lonlat),
+            "lost_s": round(h.lost_s, 1),
+            "lines": sorted(h.lines),
+        }
+        for h in top
+        if h.lost_s > 0
+    ]
 
 
 def _clear_stuck_cars(libsumo: Any, watches: Mapping[str, Watch]) -> int:

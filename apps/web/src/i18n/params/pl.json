@@ -466,7 +466,9 @@
     "mode.vehicle_capacity": "Miejsca dla pasażerów na pojazd uliczny, siedzące i stojące przy gęstości projektowej",
     "cost.opex.car_length_m": "Koszt ruchu kolejowego: długość pociągu liczona jako jeden wagon",
     "dwell.door_channels_per_100m": "Kanały drzwiowe na 100 m pociągu (drzwi po jednej stronie × osoby obok siebie w drzwiach)",
-    "dwell.door_peaking": "Najbardziej obciążony kanał drzwiowy względem równego rozkładu pasażerów na drzwi"
+    "dwell.door_peaking": "Najbardziej obciążony kanał drzwiowy względem równego rozkładu pasażerów na drzwi",
+    "road.advice_on_time_share": "Symulacja drogowa, porady: linia uliczna poniżej tego udziału punktualnych odjazdów otrzymuje porady",
+    "road.advice_bunched_share": "Symulacja drogowa, porady: linia uliczna powyżej tego udziału zgrupowanych odjazdów otrzymuje porady"
   },
   "units": {
     "US$ million each (2023, PPP)": "mln US$ za sztukę (2023, PPP)",

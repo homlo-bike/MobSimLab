@@ -291,7 +291,8 @@
     "fe653218": "calibração: GEH das contagens",
     "ff319992": "geração de viagens: produções e atrações não baseadas em casa",
     "ff362d54": "escolha modal: bicicleta para pessoas sem bicicleta",
-    "ff653463": "comprimento da curva de transição"
+    "ff653463": "comprimento da curva de transição",
+    "c4a51a02": "conselhos da simulação rodoviária"
   },
   "rationale": {
     "009596c6": "Cargas de referência da EN 15663 para serviço urbano/suburbano; 6/m² como lotação de esmagamento.",
@@ -980,6 +981,8 @@
     "ff5e263c": "O método do ponto de carga máxima de Ceder define a frequência para que a carga da hora de pico no trecho mais carregado fique em uma ocupação desejada; a capacidade conta os passageiros em pé à densidade de planejamento, por isso valores perto de 0.8 deixam margem para uma carga desigual entre trens.",
     "ff68efd7": "O CNOSSOS-EU coloca a fonte linear rodoviária 0.05 m acima da superfície da estrada.",
     "29fa358c": "Canais de porta de um lado do comboio; uma porta onde cabem duas pessoas lado a lado conta a dobrar. O modelo de tempo de paragem divide por eles os passageiros de um comboio. Contados a partir de disposições típicas de carruagens, não de uma tabela de fonte: uma carruagem de metro de 20 m com quatro portas duplas dá 40 por 100 m, um elétrico de 30 m com três ou quatro portas duplas cerca de 24, uma carruagem regional de 25 m com duas portas duplas 16 e uma carruagem de longo curso de 25 m com uma ou duas portas simples 8.",
-    "dba93787": "Os passageiros concentram-se nas portas mais próximas dos acessos à plataforma, por isso o canal mais carregado serve mais do que uma parte igual; a paragem dura até ele terminar. O TCQSM descreve este uso desigual das portas; 1,3 é uma estimativa fundamentada para plataformas com acesso em um ou dois pontos."
+    "dba93787": "Os passageiros concentram-se nas portas mais próximas dos acessos à plataforma, por isso o canal mais carregado serve mais do que uma parte igual; a paragem dura até ele terminar. O TCQSM descreve este uso desigual das portas; 1,3 é uma estimativa fundamentada para plataformas com acesso em um ou dois pontos.",
+    "abdceb21": "O TCQSM classifica uma pontualidade de 85–95 % como boa a muito boa para uma linha de autocarro com horário, e abaixo de 75 % como má; abaixo do valor central, os conselhos da execução indicam onde a linha perde tempo.",
+    "76757724": "O TCQSM considera irregular um coeficiente de variação dos intervalos acima de cerca de 0,4, o que corresponde a cerca de um intervalo em dez abaixo de metade do previsto; a partir daí os passageiros veem veículos chegar aos pares."
   }
 }

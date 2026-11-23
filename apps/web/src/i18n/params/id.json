@@ -466,7 +466,9 @@
     "mode.vehicle_capacity": "Tempat penumpang per kendaraan jalan, kursi ditambah berdiri pada kepadatan perencanaan",
     "cost.opex.car_length_m": "Biaya jalan kereta: panjang kereta yang dihitung sebagai satu gerbong",
     "dwell.door_channels_per_100m": "Jalur pintu per 100 m kereta (pintu di satu sisi × orang berdampingan per pintu)",
-    "dwell.door_peaking": "Jalur pintu tersibuk dibanding sebaran penumpang yang merata ke semua pintu"
+    "dwell.door_peaking": "Jalur pintu tersibuk dibanding sebaran penumpang yang merata ke semua pintu",
+    "road.advice_on_time_share": "Simulasi jalan, saran: jalur jalan dengan porsi keberangkatan tepat waktu di bawah nilai ini mendapat saran",
+    "road.advice_bunched_share": "Simulasi jalan, saran: jalur jalan dengan porsi keberangkatan bergerombol di atas nilai ini mendapat saran"
   },
   "units": {
     "US$ million each (2023, PPP)": "juta US$ per unit (2023, PPP)",

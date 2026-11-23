@@ -1,4 +1,5 @@
 import { roadNl } from "./road/nl";
+import { adviceNl } from "./advice/nl";
 import { calendarNl } from "./calendar/nl";
 import { editorsNl } from "./editors/nl";
 import { cargoBikeNl } from "./cargo-bike/nl";
@@ -551,6 +552,7 @@ export const nl: Messages = {
   ...populationNl,
   ...resultsNl,
   ...roadNl,
+  ...adviceNl,
   ...calendarNl,
   ...pluginsNl,
   ...streetPhotosNl,

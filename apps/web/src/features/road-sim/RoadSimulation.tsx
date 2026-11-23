@@ -23,6 +23,9 @@ import {
 import type { RoadRun, RoadRunDetail, RoadRunsApi } from "./api";
 import { ensureReplayLayers, hasServiceTimes, removeReplayLayers, replaySpan, setReplayTime } from "./replay";
 import { buildScenario } from "./scenario";
+import { roadFindings } from "./advice";
+import { FindingsList } from "../advice/Findings";
+import type { LonLat } from "../street-lines/types";
 import type { Replay, RoadEvent, RoadLineResult, RoadResult, RoadStep } from "./types";
 import { engineErrorText } from "../../i18n/engine";
 import { withUnit } from "../../i18n/units";
@@ -536,7 +539,7 @@ export function RoadSimulation({
       {viewing?.status === "cancelled" && result?.run && (
         <p className="text-xs text-slate-600">{t("road.stoppedEarly")}</p>
       )}
-      {result && <Results result={result} />}
+      {result && <Results result={result} prefs={prefs} map={map} />}
       {api && viewing?.status === "done" && (
         <ReplayPlayer
           key={viewing.id}
@@ -568,13 +571,26 @@ function Progress({ step }: { step: RoadStep | null }) {
   );
 }
 
-/** Purpose: the run's summary, each line's measures and the events. */
-function Results({ result }: { result: RoadResult }) {
+/** Purpose: what to improve, the run's summary, each line's measures and the events. */
+function Results({
+  result,
+  prefs,
+  map,
+}: {
+  result: RoadResult;
+  prefs: PreferencesDoc["values"] | undefined;
+  map: MapLibreMap | null;
+}) {
   const { t } = useI18n();
   const r = result.run;
   const names = new Map(result.lines.map((l) => [l.index, l.name]));
+  const findings = useMemo(() => (r ? roadFindings(result, prefs, t) : []), [r, result, prefs, t]);
+  const show = map
+    ? (at: LonLat) => map.flyTo({ center: at, zoom: Math.max(map.getZoom(), 16.5) })
+    : undefined;
   return (
     <div className="space-y-3">
+      {r && <FindingsList findings={findings} onShow={show} />}
       {r && (
         <section className="rounded-[10px] border border-slate-200 bg-white px-3 py-2 text-sm">
           <h3 className="caps mb-1">{t("road.summary")}</h3>

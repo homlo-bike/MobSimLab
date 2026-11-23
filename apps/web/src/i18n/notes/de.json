@@ -291,7 +291,8 @@
     "fe653218": "Kalibrierung: GEH der Zählungen",
     "ff319992": "Verkehrserzeugung: nicht wohnungsbezogene Quell- und Zielverkehre",
     "ff362d54": "Verkehrsmittelwahl: Radfahren für Personen ohne Fahrrad",
-    "ff653463": "Länge des Übergangsbogens"
+    "ff653463": "Länge des Übergangsbogens",
+    "c4a51a02": "Hinweise der Straßensimulation"
   },
   "rationale": {
     "009596c6": "Referenzlasten nach EN 15663 für Stadt- und Vorortverkehr; 6/m² als Gedrängebesetzung.",
@@ -980,6 +981,8 @@
     "ff5e263c": "Das Verfahren des Punkts maximaler Belastung nach Ceder legt die Bedienungshäufigkeit so fest, dass die Belastung in der Spitzenstunde auf dem am stärksten belasteten Abschnitt bei einem gewünschten Besetzungsgrad bleibt; die Kapazität zählt Stehende bei der Planungsdichte, daher lassen Werte nahe 0.8 Raum für ungleichmäßige Belastung zwischen den Zügen.",
     "ff68efd7": "CNOSSOS-EU setzt die Linienquelle der Straße 0.05 m über die Fahrbahnoberfläche.",
     "29fa358c": "Türkanäle auf einer Zugseite; eine Tür, durch die zwei Personen nebeneinander passen, zählt doppelt. Das Haltezeitmodell teilt die Fahrgäste eines Zuges durch sie. Aus typischen Wagenaufteilungen gezählt, nicht aus einer Quellentabelle: ein 20-m-Metrowagen mit vier Doppeltüren ergibt 40 je 100 m, eine 30-m-Straßenbahn mit drei oder vier Doppeltüren etwa 24, ein 25-m-Regionalwagen mit zwei Doppeltüren 16 und ein 25-m-Fernverkehrswagen mit ein oder zwei einfachen Türen 8.",
-    "dba93787": "Fahrgäste drängen sich an den Türen nahe den Bahnsteigzugängen, daher bedient der stärkste Kanal mehr als einen gleichmäßigen Anteil; die Haltezeit dauert, bis er fertig ist. Das TCQSM beschreibt diese ungleiche Türnutzung; 1,3 ist eine fundierte Schätzung für Bahnsteige mit Zugang an ein oder zwei Stellen."
+    "dba93787": "Fahrgäste drängen sich an den Türen nahe den Bahnsteigzugängen, daher bedient der stärkste Kanal mehr als einen gleichmäßigen Anteil; die Haltezeit dauert, bis er fertig ist. Das TCQSM beschreibt diese ungleiche Türnutzung; 1,3 ist eine fundierte Schätzung für Bahnsteige mit Zugang an ein oder zwei Stellen.",
+    "abdceb21": "Das TCQSM bewertet eine Pünktlichkeit von 85–95 % bei einer Buslinie mit Fahrplan als gut bis sehr gut und unter 75 % als schlecht; unter dem zentralen Wert nennen die Hinweise des Laufs, wo die Linie ihre Zeit verliert.",
+    "76757724": "Das TCQSM wertet einen Variationskoeffizienten der Takteinhaltung über etwa 0,4 als unregelmäßig; das entspricht etwa einer von zehn Lücken unter dem halben geplanten Takt. Ab dort sehen Fahrgäste Fahrzeuge paarweise kommen."
   }
 }

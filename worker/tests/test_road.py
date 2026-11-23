@@ -290,6 +290,11 @@ def test_a_line_runs_out_of_its_depot_and_back_in_traffic(tmp_path: Path) -> Non
     assert ln["trips_run"] == ln["trips"] > 0
     assert 0 <= ln["punctuality"] <= 1
     assert ln["energy_use"]["kwh"] > 0 and ln["energy_use"]["ran_out"] == 0
+    # Where the line lost time: places with a position, most lost first, each naming the line.
+    spots = result["hotspots"]
+    assert all(h["kind"] in ("signal", "street", "junction") and h["lines"] == [0] for h in spots)
+    assert [h["lost_s"] for h in spots] == sorted((h["lost_s"] for h in spots), reverse=True)
+    assert all(len(h["lonlat"]) == 2 for h in spots)
     assert replay is not None
     doc = json.loads(gzip.decompress(replay))
     assert doc["version"] == 1 and doc["vehicles"] and doc["frames"] > 1
@@ -409,6 +414,56 @@ def test_background_cars_stuck_for_minutes_are_taken_out_but_buses_never() -> No
     watches = {"L0v0": object()}
     assert sim._clear_stuck_cars(Libsumo(), watches) == 1  # type: ignore[arg-type]
     assert Libsumo.vehicle.removed == ["bg1"]
+
+
+def test_time_lost_is_added_up_by_red_light_street_and_junction_and_listed_most_first() -> None:
+    from mobsim_worker.jobs.road import sim  # noqa: PLC0415
+
+    class Vehicle:
+        road = "e1"
+
+        def getRoadID(self, vid: str) -> str:  # noqa: N802 (libsumo's names)
+            return self.road
+
+        def getPosition(self, vid: str) -> tuple[float, float]:  # noqa: N802
+            return (1.0, 2.0)
+
+    class Simulation:
+        def convertGeo(self, x: float, y: float) -> tuple[float, float]:  # noqa: N802
+            return (36.3, 33.5)
+
+    class Edge:
+        def getStreetName(self, e: str) -> str:  # noqa: N802
+            return {"e1": "Baghdad Street"}.get(e, "")
+
+    class Libsumo:
+        vehicle = Vehicle()
+        simulation = Simulation()
+        edge = Edge()
+
+    def watch(line: int) -> Any:
+        from mobsim_worker.jobs.road.service import TransitVehicle  # noqa: PLC0415
+
+        v = TransitVehicle("v", line, 0, 0.0, [], [], [], "", 0.0, None, None, None, None)
+        return sim.Watch(v)
+
+    spots: dict[str, sim.Hotspot] = {}
+    lib = Libsumo()
+    for _ in range(4):
+        sim._lose(lib, spots, "v", watch(0), 0.5, "tl7")
+    sim._lose(lib, spots, "v", watch(1), 0.5, "tl7")
+    sim._lose(lib, spots, "v", watch(0), 0.5, None)
+    Libsumo.vehicle.road = ":j3_0"
+    for _ in range(2):
+        sim._lose(lib, spots, "v", watch(1), 0.5, None)
+    out = sim.hotspot_list(spots)
+    assert [(h["kind"], h["lost_s"], h["lines"]) for h in out] == [
+        ("signal", 2.5, [0, 1]),
+        ("junction", 1.0, [1]),
+        ("street", 0.5, [0]),
+    ]
+    assert out[0]["name"] == "Baghdad Street" and out[1]["name"] == ""
+    assert out[0]["lonlat"] == [36.3, 33.5]
 
 
 def test_trips_run_counts_only_the_trips_planned_in_the_period() -> None:

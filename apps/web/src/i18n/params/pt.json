@@ -466,7 +466,9 @@
     "mode.vehicle_capacity": "Lugares de passageiros por veículo de rua, sentados mais em pé na densidade de projeto",
     "cost.opex.car_length_m": "Custo de circulação ferroviária: comprimento de trem contado como um carro",
     "dwell.door_channels_per_100m": "Canais de porta por 100 m de comboio (portas de um lado × pessoas lado a lado por porta)",
-    "dwell.door_peaking": "Canal de porta mais carregado face a uma distribuição uniforme dos passageiros pelas portas"
+    "dwell.door_peaking": "Canal de porta mais carregado face a uma distribuição uniforme dos passageiros pelas portas",
+    "road.advice_on_time_share": "Simulação rodoviária, conselhos: uma linha de rua abaixo desta parcela de partidas pontuais recebe conselhos",
+    "road.advice_bunched_share": "Simulação rodoviária, conselhos: uma linha de rua acima desta parcela de partidas agrupadas recebe conselhos"
   },
   "units": {
     "US$ million each (2023, PPP)": "milhões de US$ cada (2023, PPC)",

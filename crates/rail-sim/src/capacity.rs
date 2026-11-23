@@ -37,6 +37,7 @@
 use std::collections::BTreeMap;
 
 use engine_msg::{msg, Msg};
+use rail_model::spec::TrainProtection;
 use rail_model::Model;
 use rail_plan::{
     plan, report, Band, Issue, LineSpec, Plan, PlanParams, RunKind, CLOCK_FACE_HEADWAYS_S,
@@ -215,6 +216,107 @@ pub enum Verdict {
     NotEnoughCapacity,
 }
 
+/// What the bottleneck section is, for the advice after a run.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum SectionKind {
+    /// Plain line between signals.
+    Plain,
+    /// A switch area (two legs of a switch, or one leg in a section shorter than a block).
+    Switches,
+    /// A platform track.
+    Platform,
+    /// Running track driven on sight (trams), or a track with line-of-sight protection.
+    OnSight,
+}
+
+/// The bottleneck section of a line: what it is, how long, and how long a block needs to be on it,
+/// so the app can advise where a block signal would help (rule-based, no extra run).
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct BottleneckSection {
+    /// What it is.
+    pub kind: SectionKind,
+    /// Length of the section, m.
+    pub length_m: f64,
+    /// Track (topology section id) of its longest piece.
+    pub track: String,
+    /// Start chainage of that piece on the track, m.
+    pub from_m: f64,
+    /// End chainage of that piece on the track, m.
+    pub to_m: f64,
+    /// Line speed of that track, km/h.
+    pub speed_kmh: f64,
+    /// Shortest block at that speed for the line's train: its service braking distance plus the
+    /// sighting distance (`signalling.sighting_m`, lineside signals only), m.
+    pub block_m: f64,
+    /// Train protection of the track.
+    pub protection: TrainProtection,
+}
+
+/// Purpose: describe the detection section `id` for the advice (see [`BottleneckSection`]).
+/// Inputs: the network, the section id, the line's train and the sighting distance, m.
+/// Output: None when there is no such section.
+pub fn bottleneck_section(
+    m: &Model,
+    id: &str,
+    line: &LineSpec,
+    sighting_m: f64,
+) -> Option<BottleneckSection> {
+    let ti = m.tds.iter().position(|t| t.id == id)?;
+    let tds = &m.tds[ti];
+    let pieces: Vec<_> = tds.pieces.iter().map(|&p| &m.pieces[p as usize]).collect();
+    let length_m: f64 = pieces.iter().map(|p| p.length_m()).sum();
+    let main = pieces
+        .iter()
+        .max_by(|a, b| a.length_m().total_cmp(&b.length_m()))?;
+    let track = m.tracks.get(main.track)?;
+    let inside = |p: u32| {
+        m.pieces
+            .get(p as usize)
+            .is_some_and(|x| x.tds as usize == ti)
+    };
+    let sighting = if track.protection == TrainProtection::FixedBlock {
+        sighting_m
+    } else {
+        0.0
+    };
+    let block_m = line.train.braking_distance(track.line_speed_mps) + sighting;
+    // A switch area: two legs of a switch in the section, or one leg in a section shorter than a
+    // block (the piece between a switch and its signal). A long plain section that merely starts
+    // at a switch is plain line.
+    let switches = m.switches.iter().any(|sw| {
+        let legs = [sw.common.0, sw.straight.0, sw.diverging.0]
+            .into_iter()
+            .filter(|&p| inside(p))
+            .count();
+        legs >= 2 || (legs == 1 && length_m < block_m)
+    });
+    let platform = m.platforms.iter().any(|pl| {
+        pieces
+            .iter()
+            .any(|p| p.track == pl.track && p.from_m < pl.to_m && pl.from_m < p.to_m)
+    });
+    let kind = if platform {
+        SectionKind::Platform
+    } else if switches {
+        SectionKind::Switches
+    } else if tds.on_sight || track.protection == TrainProtection::LineOfSight {
+        SectionKind::OnSight
+    } else {
+        SectionKind::Plain
+    };
+    Some(BottleneckSection {
+        kind,
+        length_m,
+        track: track.id.clone(),
+        from_m: main.from_m,
+        to_m: main.to_m,
+        speed_kmh: track.line_speed_mps * 3.6,
+        block_m,
+        protection: track.protection,
+    })
+}
+
 /// One frequency of a line, as planned, run and tested.
 #[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct Point {
@@ -236,6 +338,9 @@ pub struct Point {
     pub bottleneck: String,
     /// Its blocked share of the hour.
     pub bottleneck_share: f64,
+    /// What the bottleneck section is (None when the section is not found).
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub bottleneck_section: Option<BottleneckSection>,
     /// Trains per hour at 100 % consumption (UIC 406 theoretical maximum).
     pub theoretical_per_hour: f64,
     /// Trains per hour at the recommended occupancy limit.
@@ -715,6 +820,7 @@ fn evaluate(
             consumption,
             terminal,
             terminal_share,
+            bottleneck_section: bottleneck_section(m, &bottleneck, l, pp.blocking.sighting_m),
             bottleneck,
             bottleneck_share,
             theoretical_per_hour: theoretical,

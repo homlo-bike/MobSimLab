@@ -1,4 +1,5 @@
 import { roadHa } from "./road/ha";
+import { adviceHa } from "./advice/ha";
 import { calendarHa } from "./calendar/ha";
 import { editorsHa } from "./editors/ha";
 import { cargoBikeHa } from "./cargo-bike/ha";
@@ -548,6 +549,7 @@ export const ha: Messages = {
   ...populationHa,
   ...resultsHa,
   ...roadHa,
+  ...adviceHa,
   ...calendarHa,
   ...pluginsHa,
   ...streetPhotosHa,

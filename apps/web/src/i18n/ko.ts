@@ -1,4 +1,5 @@
 import { roadKo } from "./road/ko";
+import { adviceKo } from "./advice/ko";
 import { calendarKo } from "./calendar/ko";
 import { editorsKo } from "./editors/ko";
 import { cargoBikeKo } from "./cargo-bike/ko";
@@ -536,6 +537,7 @@ export const ko: Messages = {
   ...populationKo,
   ...resultsKo,
   ...roadKo,
+  ...adviceKo,
   ...calendarKo,
   ...pluginsKo,
   ...streetPhotosKo,

@@ -466,7 +466,9 @@
     "mode.vehicle_capacity": "Fahrgastplätze je Straßenfahrzeug, Sitz- und Stehplätze bei der Planungsdichte",
     "cost.opex.car_length_m": "Laufkosten der Bahn: als ein Wagen gezählte Zuglänge",
     "dwell.door_channels_per_100m": "Türkanäle je 100 m Zug (Türen auf einer Seite × Personen nebeneinander je Tür)",
-    "dwell.door_peaking": "Stärkster Türkanal gegenüber gleichmäßiger Verteilung der Fahrgäste auf die Türen"
+    "dwell.door_peaking": "Stärkster Türkanal gegenüber gleichmäßiger Verteilung der Fahrgäste auf die Türen",
+    "road.advice_on_time_share": "Straßensimulation, Hinweise: unter diesem Anteil pünktlicher Abfahrten erhält eine Straßenlinie Hinweise",
+    "road.advice_bunched_share": "Straßensimulation, Hinweise: über diesem Anteil gebündelter Abfahrten erhält eine Straßenlinie Hinweise"
   },
   "units": {
     "US$ million each (2023, PPP)": "Mio. US$ je Stück (2023, KKP)",

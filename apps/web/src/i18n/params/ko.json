@@ -466,7 +466,9 @@
     "mode.vehicle_capacity": "도로 차량 1대당 승객 정원, 계획 밀도 기준 좌석과 입석",
     "cost.opex.car_length_m": "철도 운행비: 1량으로 계산하는 열차 길이",
     "dwell.door_channels_per_100m": "열차 100 m당 출입문 통로 수 (한쪽 출입문 수 × 문 하나를 나란히 지나는 인원)",
-    "dwell.door_peaking": "승객이 출입문에 고르게 나뉠 때에 대한 가장 붐비는 출입문 통로의 비"
+    "dwell.door_peaking": "승객이 출입문에 고르게 나뉠 때에 대한 가장 붐비는 출입문 통로의 비",
+    "road.advice_on_time_share": "도로 시뮬레이션 조언: 정시 출발 비율이 이보다 낮은 도로 노선은 조언을 받음",
+    "road.advice_bunched_share": "도로 시뮬레이션 조언: 몰림 출발 비율이 이보다 높은 도로 노선은 조언을 받음"
   },
   "units": {
     "US$ million each (2023, PPP)": "백만 달러/대(2023, PPP)",

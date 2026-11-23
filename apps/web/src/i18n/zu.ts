@@ -1,4 +1,5 @@
 import { roadZu } from "./road/zu";
+import { adviceZu } from "./advice/zu";
 import { calendarZu } from "./calendar/zu";
 import { editorsZu } from "./editors/zu";
 import { cargoBikeZu } from "./cargo-bike/zu";
@@ -554,6 +555,7 @@ export const zu: Messages = {
   ...populationZu,
   ...resultsZu,
   ...roadZu,
+  ...adviceZu,
   ...calendarZu,
   ...pluginsZu,
   ...streetPhotosZu,

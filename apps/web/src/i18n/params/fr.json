@@ -466,7 +466,9 @@
     "mode.vehicle_capacity": "Places voyageurs par véhicule routier, assises et debout à la densité de conception",
     "cost.opex.car_length_m": "Coût de roulement ferroviaire : longueur de train comptée comme une voiture",
     "dwell.door_channels_per_100m": "Passages de porte par 100 m de train (portes d’un côté × personnes de front par porte)",
-    "dwell.door_peaking": "Passage de porte le plus chargé par rapport à une répartition égale des voyageurs entre les portes"
+    "dwell.door_peaking": "Passage de porte le plus chargé par rapport à une répartition égale des voyageurs entre les portes",
+    "road.advice_on_time_share": "Simulation routière, conseils : une ligne routière sous cette part de départs à l'heure reçoit des conseils",
+    "road.advice_bunched_share": "Simulation routière, conseils : une ligne routière au-dessus de cette part de départs groupés reçoit des conseils"
   },
   "units": {
     "US$ million each (2023, PPP)": "M US$ l'unité (2023, PPA)",

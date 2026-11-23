@@ -1,4 +1,5 @@
 import { roadIt } from "./road/it";
+import { adviceIt } from "./advice/it";
 import { calendarIt } from "./calendar/it";
 import { editorsIt } from "./editors/it";
 import { cargoBikeIt } from "./cargo-bike/it";
@@ -547,6 +548,7 @@ export const it: Messages = {
   ...populationIt,
   ...resultsIt,
   ...roadIt,
+  ...adviceIt,
   ...calendarIt,
   ...pluginsIt,
   ...streetPhotosIt,

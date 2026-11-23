@@ -1,4 +1,5 @@
 import { roadMr } from "./road/mr";
+import { adviceMr } from "./advice/mr";
 import { calendarMr } from "./calendar/mr";
 import { editorsMr } from "./editors/mr";
 import { cargoBikeMr } from "./cargo-bike/mr";
@@ -541,6 +542,7 @@ export const mr: Messages = {
   ...populationMr,
   ...resultsMr,
   ...roadMr,
+  ...adviceMr,
   ...calendarMr,
   ...pluginsMr,
   ...streetPhotosMr,

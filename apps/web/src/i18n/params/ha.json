@@ -466,7 +466,9 @@
     "mode.vehicle_capacity": "Wuraren fasinja kowace motar titi, zaune da tsaye a yawan tsarawa",
     "cost.opex.car_length_m": "Kuɗin tafiyar layin dogo: tsawon jirgin da ake ƙirga a matsayin tarago ɗaya",
     "dwell.door_channels_per_100m": "Hanyoyin ƙofa a kowace mita 100 na jirgin ƙasa (ƙofofin gefe ɗaya × mutanen da ke wucewa jere a kowace ƙofa)",
-    "dwell.door_peaking": "Hanyar ƙofa mafi cunkoso idan aka kwatanta da rarraba fasinjoji daidai a ƙofofi"
+    "dwell.door_peaking": "Hanyar ƙofa mafi cunkoso idan aka kwatanta da rarraba fasinjoji daidai a ƙofofi",
+    "road.advice_on_time_share": "Kwaikwayon hanya, shawara: layin titi da kason tashi a kan lokaci ya ƙasa da wannan yana samun shawara",
+    "road.advice_bunched_share": "Kwaikwayon hanya, shawara: layin titi da kason tashi a tare ya wuce wannan yana samun shawara"
   },
   "units": {
     "US$ million each (2023, PPP)": "miliyan US$ kowanne (2023, PPP)",

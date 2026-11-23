@@ -279,6 +279,68 @@
      450
     ]
    }
+  },
+  "road.advice_on_time_share": {
+   "label": "Road simulation advice: a street line with a smaller share of departures on time gets advice",
+   "unit": "share",
+   "values": {
+    "*": [
+     0.75,
+     0.85,
+     0.95
+    ],
+    "bus": [
+     0.75,
+     0.85,
+     0.95
+    ],
+    "brt": [
+     0.75,
+     0.85,
+     0.95
+    ],
+    "trolleybus": [
+     0.75,
+     0.85,
+     0.95
+    ],
+    "intercity_bus": [
+     0.75,
+     0.85,
+     0.95
+    ]
+   }
+  },
+  "road.advice_bunched_share": {
+   "label": "Road simulation advice: a street line with a larger share of bunched departures gets advice",
+   "unit": "share",
+   "values": {
+    "*": [
+     0.05,
+     0.1,
+     0.2
+    ],
+    "bus": [
+     0.05,
+     0.1,
+     0.2
+    ],
+    "brt": [
+     0.05,
+     0.1,
+     0.2
+    ],
+    "trolleybus": [
+     0.05,
+     0.1,
+     0.2
+    ],
+    "intercity_bus": [
+     0.05,
+     0.1,
+     0.2
+    ]
+   }
   }
  }
 }

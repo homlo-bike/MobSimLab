@@ -466,7 +466,9 @@
     "mode.vehicle_capacity": "Yoʻl transport vositasi uchun yoʻlovchi oʻrinlari, rejalashtirish zichligida oʻtirish va turish",
     "cost.opex.car_length_m": "Temir yoʻl harakat xarajati: bitta vagon deb hisoblanadigan poyezd uzunligi",
     "dwell.door_channels_per_100m": "Poyezdning har 100 m iga eshik oqimlari (bir tomondagi eshiklar × bir eshikdan yonma-yon oʻtuvchi odamlar)",
-    "dwell.door_peaking": "Yoʻlovchilar eshiklarga teng taqsimlanganiga nisbatan eng band eshik oqimi"
+    "dwell.door_peaking": "Yoʻlovchilar eshiklarga teng taqsimlanganiga nisbatan eng band eshik oqimi",
+    "road.advice_on_time_share": "Yo‘l simulyatsiyasi, maslahat: vaqtida jo‘nash ulushi bundan past bo‘lgan ko‘cha liniyasi maslahat oladi",
+    "road.advice_bunched_share": "Yo‘l simulyatsiyasi, maslahat: to‘planib jo‘nash ulushi bundan yuqori bo‘lgan ko‘cha liniyasi maslahat oladi"
   },
   "units": {
     "US$ million each (2023, PPP)": "mln US$ har biri (2023, PPP)",
