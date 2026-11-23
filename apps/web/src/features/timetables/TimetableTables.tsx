@@ -7,7 +7,7 @@ import type { GtfsEngineLoader } from "../gtfs/types";
 import { pluginLineTimetable, prefixTimetable } from "../journey-planner/network";
 import type { Timetable } from "../journey-planner/types";
 import { lineMode } from "../railways/serviceLines";
-import type { Network, RailEngineLoader } from "../railways/types";
+import type { Network, PublishOptions, RailEngineLoader } from "../railways/types";
 import { fullTiming } from "../street-lines/modes";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import {
@@ -48,7 +48,7 @@ import {
   timetableCsv,
   type TripTimes,
 } from "./departures";
-import { type DayPublications, useRailPublications } from "./railPublish";
+import { type DayPublications, publishOptionsFrom, useRailPublications } from "./railPublish";
 import { TablePart } from "../tables/sections";
 import { SPARE_PREF, TERMINAL_WAIT_PREF } from "../../workspace/editedElsewhere";
 import { engineErrorText } from "../../i18n/engine";
@@ -232,7 +232,8 @@ export function TimetableTables({
   const dayText = useDayTypeText();
   const prefs = preferences?.values;
   const maxWaitMin = paramValue(WAIT_KEY, "*", prefs)[1];
-  const options = useMemo(() => ({ max_idle_s: maxWaitMin * 60 }), [maxWaitMin]);
+  const optionsKey = JSON.stringify(publishOptionsFrom(prefs));
+  const options = useMemo(() => JSON.parse(optionsKey) as PublishOptions, [optionsKey]);
   const [day, setDay] = useState<DayTypeId>("weekday");
   const calKey = JSON.stringify(calendarFrom(preferences));
   const cal = useMemo(() => JSON.parse(calKey) as ServiceCalendar, [calKey]);

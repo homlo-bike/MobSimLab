@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "दिन में डिपो पर वाहन में ईंधन भरने का समय",
     "operations.energy_reserve_share": "बैटरी या टैंक में ऊर्जा आरक्षित, क्षमता का हिस्सा (ऊर्जा योजना)",
     "timetable.max_terminal_wait_min": "डिपो लौटने से पहले अगली यात्रा के लिए टर्मिनल पर वाहन का अधिकतम इंतज़ार",
+    "timetable.max_overtake_wait_min": "तेज़ ट्रेन के आगे निकलने के लिए किसी ट्रेन का स्टेशन पर अधिकतम इंतज़ार",
     "timetable.min_buffer_s": "दो ट्रेनों के एक ब्लॉक पर कब्ज़े के समयों के बीच न्यूनतम बफ़र",
     "timetable.target_load_factor": "सबसे व्यस्त बिंदु पर नियोजित भार, ट्रेन क्षमता का हिस्सा",
     "timetable.policy_headway_peak_min": "पीक में सबसे लंबा अनुमत हेडवे, माँग चाहे जो हो",

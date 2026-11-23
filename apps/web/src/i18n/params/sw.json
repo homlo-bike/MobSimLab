@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Muda wa kujaza mafuta chombo kwenye karakana wakati wa mchana",
     "operations.energy_reserve_share": "Akiba ya nishati kwenye betri au tangi, sehemu ya uwezo (mpango wa nishati)",
     "timetable.max_terminal_wait_min": "Muda mrefu kabisa chombo husubiri kituo cha mwisho kwa safari inayofuata kabla ya kurudi karakana",
+    "timetable.max_overtake_wait_min": "Muda mrefu zaidi treni husubiri kituoni ili treni yenye kasi zaidi ipite",
     "timetable.min_buffer_s": "Nafasi ndogo kabisa kati ya nyakati za treni mbili kukalia sehemu moja",
     "timetable.target_load_factor": "Mzigo uliopangwa kwenye sehemu yenye shughuli nyingi zaidi, sehemu ya uwezo wa treni",
     "timetable.policy_headway_peak_min": "Muda mrefu kabisa unaoruhusiwa kati ya vyombo wakati wa msongamano, bila kujali mahitaji",

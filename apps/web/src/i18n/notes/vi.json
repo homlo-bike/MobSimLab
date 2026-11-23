@@ -592,6 +592,7 @@
     "6e8914b2": "Đường ray chôn trong mặt lát bức xạ nhiều hơn đá ba lát và phản xạ; đường ray trồng cỏ sẽ êm hơn. CNOSSOS-EU liệt kê đường ray chôn (mã nền đường ray T, Bảng 2.3.b) nhưng không cho hàm truyền của nó trong Appendix G, nên hiệu chỉnh này của MobSimLab được cộng vào bức xạ đường ray của hàm truyền đường ray đá ba lát.",
     "6ed75b3c": "Mặc định của 06-gis §9.3: các sân ga của một điểm chuyển tuyến (một điểm dừng tàu điện trước nhà ga, hai điểm dừng xe buýt ở hai phía nút giao) thường nằm cách nhau trong khoảng 150 m; xa hơn thì chúng là các điểm dừng riêng cần tên riêng.",
     "6f0104d7": "Công tác đất, thoát nước, công trình nhỏ và di dời hạ tầng kỹ thuật cho đường đôi tách biệt đồng mức. Dữ liệu của Transit Costs Project cho thấy tuyến đồng mức chỉ tốn một phần nhỏ so với tuyến đi ngầm.",
+    "6f034ac1": "Ở nơi các tuyến thuộc loại hình khác nhau dùng chung đường ray, tàu chậm hơn có thể chờ ở đường tránh hoặc đường ray sân ga khác để tàu nhanh hơn đi qua. Các tuyến chính dài có ga cách xa nhau cần thời gian chờ lâu hơn (15 đến 20 phút trên tuyến thử nghiệm 345 km); trên tuyến dày đặc, chờ lâu sẽ chiếm các đường tránh mà tàu khác cần.",
     "6f2166f6": "Tàu điện chạy theo tầm nhìn; vài mét sau điểm dừng là đủ.",
     "6f4b6e31": "Phân bổ dừng tại giá trị này hoặc tại demand.road.relative_gap, tùy điều kiện nào đạt trước.",
     "6fc38790": "Vận tải công cộng Hà Lan thu khoảng 0.17–0.20 € mỗi km, đường sắt vùng và đường dài của Đức và Thụy Sĩ khoảng 0.15–0.30 € mỗi km theo giá vé đầy đủ; các nước thu nhập thấp hơn thì thấp hơn.",

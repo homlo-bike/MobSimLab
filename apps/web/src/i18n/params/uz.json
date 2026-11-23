@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Kun davomida depoda transportga yoqilgʻi quyish vaqti",
     "operations.energy_reserve_share": "Batareya yoki bakdagi energiya zaxirasi, sigʻim ulushi (energiya rejalashtirish)",
     "timetable.max_terminal_wait_min": "Depoga qaytishdan oldin keyingi qatnov uchun oxirgi bekatda transportning eng uzoq kutishi",
+    "timetable.max_overtake_wait_min": "Poyezdning tezroq poyezd o‘tib ketishi uchun bekatda eng uzoq kutishi",
     "timetable.min_buffer_s": "Ikki poyezdning bir blokni egallash vaqtlari orasidagi eng kichik bufer",
     "timetable.target_load_factor": "Eng gavjum nuqtadagi rejalashtirilgan yuklama, poyezd sigʻimining ulushi",
     "timetable.policy_headway_peak_min": "Tigʻiz vaqtda ruxsat etilgan eng uzun interval, talabdan qatʼi nazar",

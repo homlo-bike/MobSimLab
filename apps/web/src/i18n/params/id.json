@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Waktu mengisi bahan bakar kendaraan di depo pada siang hari",
     "operations.energy_reserve_share": "Cadangan energi di baterai atau tangki, bagian dari kapasitas (perencanaan energi)",
     "timetable.max_terminal_wait_min": "Waktu tunggu terlama kendaraan di terminal untuk perjalanan berikutnya sebelum kembali ke depo",
+    "timetable.max_overtake_wait_min": "Waktu tunggu terlama kereta di stasiun agar kereta yang lebih cepat dapat menyusul",
     "timetable.min_buffer_s": "Waktu penyangga minimum antara waktu okupansi dua kereta di satu petak",
     "timetable.target_load_factor": "Muatan rencana di titik tersibuk, sebagai bagian dari kapasitas kereta",
     "timetable.policy_headway_peak_min": "Selang waktu terpanjang yang diizinkan pada jam sibuk, apa pun permintaannya",

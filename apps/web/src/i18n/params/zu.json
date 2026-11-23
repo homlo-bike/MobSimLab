@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Isikhathi sokufaka uphethiloli emotweni edepho phakathi nosuku",
     "operations.energy_reserve_share": "Ugcino lwamandla kubhethri noma ethangini, ingxenye yomthamo (uhlelo lwamandla)",
     "timetable.max_terminal_wait_min": "Ukulinda okude kakhulu kwemoto esiteshini sokugcina ohambweni olulandelayo ngaphambi kokubuyela edepho",
+    "timetable.max_overtake_wait_min": "Isikhathi eside kakhulu isitimela esilinda ngaso esiteshini ukuze kudlule isitimela esisheshayo",
     "timetable.min_buffer_s": "Isikhala esincane kakhulu phakathi kwezikhathi izitimela ezimbili ezithatha ngazo isigaba esisodwa",
     "timetable.target_load_factor": "Umthwalo ohleliwe endaweni egcwele kakhulu, ingxenye yomthamo wesitimela",
     "timetable.policy_headway_peak_min": "Isikhala sesikhathi eside kakhulu esivunyelwe ngesikhathi sokuminyana, kungakhathaliseki isidingo",

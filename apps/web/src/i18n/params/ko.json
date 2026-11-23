@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "낮 시간 차량기지에서 차량 연료 보급 시간",
     "operations.energy_reserve_share": "배터리나 탱크의 에너지 예비량, 용량 대비 비율(에너지 계획)",
     "timetable.max_terminal_wait_min": "차량기지로 돌아가기 전 종점에서 다음 운행을 기다리는 최장 시간",
+    "timetable.max_overtake_wait_min": "더 빠른 열차가 추월할 때까지 열차가 역에서 기다리는 최장 시간",
     "timetable.min_buffer_s": "한 구간에서 두 열차의 점유 시간 사이 최소 여유 시간",
     "timetable.target_load_factor": "최혼잡 구간의 계획 혼잡도, 열차 정원 대비 비율",
     "timetable.policy_headway_peak_min": "수요와 무관하게 첨두 시간에 허용되는 최장 배차 간격",

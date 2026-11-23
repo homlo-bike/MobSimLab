@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "白天在车辆段为车辆加注燃料的时间",
     "operations.energy_reserve_share": "电池或油箱中的能量储备，占容量的比例（能源规划）",
     "timetable.max_terminal_wait_min": "车辆在终点站等待下一班次的最长时间，超过则回车辆段",
+    "timetable.max_overtake_wait_min": "列车在车站等待更快列车越行的最长时间",
     "timetable.min_buffer_s": "两列车在一个区段占用时间之间的最短缓冲时间",
     "timetable.target_load_factor": "最大断面的计划满载率，占列车定员的比例",
     "timetable.policy_headway_peak_min": "高峰时段允许的最长发车间隔，不论客流",

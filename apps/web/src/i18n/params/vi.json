@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Thời gian tiếp nhiên liệu cho một phương tiện tại depot trong ngày",
     "operations.energy_reserve_share": "Dự trữ năng lượng trong pin hoặc bình, tỷ lệ dung lượng (lập kế hoạch năng lượng)",
     "timetable.max_terminal_wait_min": "Thời gian chờ lâu nhất của phương tiện tại đầu bến cho chuyến kế tiếp trước khi về depot",
+    "timetable.max_overtake_wait_min": "Thời gian lâu nhất một đoàn tàu chờ ở ga để tàu nhanh hơn vượt qua",
     "timetable.min_buffer_s": "Thời gian đệm tối thiểu giữa thời gian chiếm dụng một khu gian của hai đoàn tàu",
     "timetable.target_load_factor": "Mức tải theo kế hoạch tại điểm đông nhất, theo tỷ lệ sức chứa đoàn tàu",
     "timetable.policy_headway_peak_min": "Giãn cách dài nhất cho phép giờ cao điểm, bất kể nhu cầu",

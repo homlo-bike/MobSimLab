@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "زمن تزويد المركبة بالوقود في المستودع خلال النهار",
     "operations.energy_reserve_share": "احتياطي الطاقة في البطارية أو الخزان، نسبةً من السعة (تخطيط الطاقة)",
     "timetable.max_terminal_wait_min": "أطول انتظار للمركبة عند المحطة النهائية للرحلة التالية قبل عودتها إلى المستودع",
+    "timetable.max_overtake_wait_min": "أطول مدة ينتظرها قطار في محطة ليتجاوزه قطار أسرع",
     "timetable.min_buffer_s": "أقل زمن احتياطي بين زمني إشغال قطارين لقسم واحد",
     "timetable.target_load_factor": "الحمولة المخططة عند أكثر نقطة ازدحامًا، نسبةً من سعة القطار",
     "timetable.policy_headway_peak_min": "أطول فاصل زمني مسموح في الذروة مهما كان الطلب",

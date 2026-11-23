@@ -452,6 +452,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 10 | 20 | 45 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Vehicle blocks: a vehicle that would stand longer than this between trips (for example between the peaks) runs back to the depot and a vehicle pulls out again later, so it does not block a terminal stand or platform. The rail timetable planner used 20 min; operators choose by depot distance and terminal space. |
 
+### Longest a train waits at a station for a faster train to pass
+
+`timetable.max_overtake_wait_min` · unit: min · used by: timetable construction
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 5 | 10 | 30 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Where lines of different modes share track, a slower train may wait in a loop or another platform track for a faster one to pass. Long main lines with stations far apart need longer waits (15 to 20 min on a 345 km test line); on a dense line, long waits block loops other trains need. |
+
 ### Minimum buffer time between the blocking times of two trains on one section
 
 `timetable.min_buffer_s` · unit: s · used by: timetable construction, conflict detection, capacity

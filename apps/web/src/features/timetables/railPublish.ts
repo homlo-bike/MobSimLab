@@ -13,6 +13,7 @@ import type {
 import { DAY_TYPES, type DayTypeId, serviceDayFor, type ServiceCalendar } from "../../workspace/calendar";
 import { railLineFor, withPeaks } from "./dayTypes";
 import { engineErrorText } from "../../i18n/engine";
+import { paramValue } from "../costs/params";
 
 /**
  * Purpose: the railway's service lines in the engine's form on a day type, with the calendar's peaks and the
@@ -47,6 +48,22 @@ export function publishDays(
     if (lines.length) out[day] = engine.publishLines(lines, day, options);
   }
   return out;
+}
+
+/**
+ * Purpose: the publish settings from the project's preferences: the longest wait at a terminal
+ * (`timetable.max_terminal_wait_min`) and the longest wait for a faster train to pass
+ * (`timetable.max_overtake_wait_min`), each the assumption library's value unless the project sets its own.
+ * Inputs: the project's preference values. Output: the settings, in seconds.
+ */
+export function publishOptionsFrom(
+  values: Readonly<Record<string, number>> | null | undefined,
+): PublishOptions {
+  const min = (key: string) => paramValue(key, "*", values ?? undefined)[1];
+  return {
+    max_idle_s: min("timetable.max_terminal_wait_min") * 60,
+    max_overtake_wait_s: min("timetable.max_overtake_wait_min") * 60,
+  };
 }
 
 /** No publications (one object, so memos that depend on it keep). */

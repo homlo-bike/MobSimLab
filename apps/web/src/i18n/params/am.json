@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "በቀን ውስጥ በዴፖ ተሽከርካሪ ነዳጅ የመሙላት ጊዜ",
     "operations.energy_reserve_share": "በባትሪ ወይም ታንክ የኃይል ክምችት፣ የአቅም ድርሻ (የኃይል እቅድ)",
     "timetable.max_terminal_wait_min": "ወደ ዴፖ ከመመለሱ በፊት ተሽከርካሪ በመጨረሻ ማቆሚያ ለቀጣዩ ጉዞ የሚጠብቀው ከፍተኛ ጊዜ",
+    "timetable.max_overtake_wait_min": "ባቡር ፈጣን ባቡር እስኪያልፍ ድረስ በጣቢያ የሚጠብቀው ከፍተኛ ጊዜ",
     "timetable.min_buffer_s": "ሁለት ባቡሮች አንድን ክፍል በሚይዙባቸው ጊዜያት መካከል ያለ ዝቅተኛ ክፍተት",
     "timetable.target_load_factor": "በጣም በተጨናነቀው ነጥብ የታቀደ ጭነት፣ የባቡር አቅም ድርሻ",
     "timetable.policy_headway_peak_min": "በጫፍ ሰዓት የሚፈቀድ ከፍተኛ የጊዜ ልዩነት፣ ፍላጎት ምንም ይሁን",

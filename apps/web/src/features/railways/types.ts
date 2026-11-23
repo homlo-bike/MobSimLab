@@ -308,6 +308,8 @@ export interface RailVehicleBlock {
 export interface PublishOptions {
   /** Longest a train waits in a terminal before it goes to stabling instead, s. */
   max_idle_s?: number | null;
+  /** Longest a train waits at a station for a train of a higher-ranked line to pass, s. */
+  max_overtake_wait_s?: number | null;
 }
 
 /** Trains of one line in each clock hour on one section of the topology export (Rust `rail_plan::SectionTrains`). */

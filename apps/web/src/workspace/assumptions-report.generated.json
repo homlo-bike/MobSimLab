@@ -9846,6 +9846,24 @@
     "*": 0
    }
   },
+  "timetable.max_overtake_wait_min": {
+   "used_by": [
+    "timetable construction"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Where lines of different modes share track, a slower train may wait in a loop or another platform track for a faster one to pass. Long main lines with stations far apart need longer waits (15 to 20 min on a 345 km test line); on a dense line, long waits block loops other trains need."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
   "timetable.min_buffer_s": {
    "used_by": [
     "timetable construction",

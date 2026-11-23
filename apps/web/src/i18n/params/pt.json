@@ -26,6 +26,7 @@
     "operations.refuel_time_min": "Tempo para abastecer um veículo na garagem durante o dia",
     "operations.energy_reserve_share": "Reserva de energia mantida na bateria ou no tanque, parte da capacidade (planejamento energético)",
     "timetable.max_terminal_wait_min": "Espera mais longa de um veículo em um terminal pela próxima viagem antes de voltar à garagem",
+    "timetable.max_overtake_wait_min": "Espera mais longa de um trem numa estação para que um trem mais rápido o ultrapasse",
     "timetable.min_buffer_s": "Tempo de folga mínimo entre os tempos de ocupação de dois trens em um trecho",
     "timetable.target_load_factor": "Carga prevista no ponto de carga máxima, como parte da capacidade do trem",
     "timetable.policy_headway_peak_min": "Intervalo mais longo permitido no pico, qualquer que seja a demanda",
