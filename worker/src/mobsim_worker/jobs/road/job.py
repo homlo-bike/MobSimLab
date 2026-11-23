@@ -230,7 +230,6 @@ def run_road(
     data = osm.merge_tiles(tiles)
     osm.clip(data, *_bbox(scenario))
     osm.apply_street_setup(data, scenario.get("streets", []), left_hand=left)
-    guessed = osm.add_main_road_signals(data)
     depot_ways: dict[str, osm.DepotWays] = {}
     for d in scenario.get("depots", []):
         dw = osm.add_depot(data, d.get("network", {}))
@@ -256,14 +255,8 @@ def run_road(
         "edges": len(edges),
         "km": sum(e.getLength() for e in edges) / 1000.0,
         "signals": len(net.net.getTrafficLights()),
-        "signals_added": guessed,
         "warnings": len(warnings),
     }
-    if guessed:
-        result["notes"].append(
-            f"{guessed:,} junctions where main roads cross had no traffic lights in OpenStreetMap; "
-            "the run gives them traffic lights"
-        )
 
     if step("planning"):
         return "stopped", result, None
