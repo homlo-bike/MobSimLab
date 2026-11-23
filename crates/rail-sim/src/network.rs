@@ -160,6 +160,14 @@ pub enum NetEvent {
         /// Trains waiting for a route.
         waiting: Vec<usize>,
     },
+    /// Two idle trains on a siding swapped the rest of their day: the one in front left in
+    /// place of the one it blocked in.
+    Swapped {
+        /// Time.
+        t: f64,
+        /// The trains (vehicles): the one blocked in, the one that left instead.
+        trains: [usize; 2],
+    },
     /// A train stopped before a level crossing that was not safe.
     HeldAtCrossing {
         /// Time.
@@ -282,6 +290,8 @@ struct Train {
     last_eoa: f64,
     /// Why the interlocking last refused this train's next route.
     refused: Option<String>,
+    /// Since when the train has stood while it should be running, s.
+    still_since: f64,
 }
 
 /// The kernel.
@@ -487,14 +497,35 @@ impl<'m> NetworkSim<'m> {
         for (v, runs) in infos {
             let tp = params[&v].clone();
             let j = stack_pos.get(&v).copied().unwrap_or(0) as f64;
-            let s0 = -(p.stop_margin_m + j * (tp.length_m + p.stabling_gap_m));
-            let back = tp.length_m - s0 + 50.0;
-            let storage = plan
-                .stabling_start
-                .iter()
-                .find(|(_, vs)| vs.contains(&v))
-                .and_then(|(t, _)| m.track(t));
+            let mut s0 = -(p.stop_margin_m + j * (tp.length_m + p.stabling_gap_m));
+            let stack = plan.stabling_start.iter().find(|(_, vs)| vs.contains(&v));
+            let storage = stack.and_then(|(t, _)| m.track(t));
+            let len = storage.map_or(0.0, |t| m.tracks[t].length_m);
+            let back = (tp.length_m - s0 + 50.0).max(len + 50.0);
             let path = build_path(m, &il, &runs[0].routes, back, storage);
+            // On a dead-end track the morning trains stand at the buffer end, front first as
+            // planned: a train put away during the day then stands in front of them, as the
+            // planner's last-in, first-out stack has it.
+            if let (Some(t), Some((_, vs))) = (storage, stack) {
+                let behind = path
+                    .steps
+                    .iter()
+                    .zip(&path.start)
+                    .take_while(|(_, &x)| x < -1e-6);
+                let on_track = behind
+                    .clone()
+                    .all(|(st, _)| m.pieces[st.piece as usize].track == t);
+                let ps = m.track_pieces(t);
+                let dead_end = m.neighbours(ps[0], End::A).is_empty()
+                    || m.neighbours(ps[ps.len() - 1], End::B).is_empty();
+                if dead_end && on_track && behind.count() > 0 {
+                    let n = vs.len() as f64;
+                    let tail = path.start[0] + p.stop_margin_m;
+                    let head =
+                        tail + tp.length_m + (n - 1.0 - j) * (tp.length_m + p.stabling_gap_m);
+                    s0 = s0.min(head);
+                }
+            }
             let body = path.cover(m, s0 - tp.length_m, s0);
             let tds: BTreeSet<TdsId> = body
                 .iter()
@@ -522,6 +553,7 @@ impl<'m> NetworkSim<'m> {
                 delay_s: 0.0,
                 last_eoa: s0,
                 refused: None,
+                still_since: 0.0,
             });
         }
         // Planned order of locks per section.
@@ -747,7 +779,14 @@ impl<'m> NetworkSim<'m> {
                     };
                     let rear = tr.path.start[i] + u0.min(u1);
                     if rear > tr.s - 1e-6 {
-                        let lim = rear - self.p.follow_margin_m + self.p.eoa_margin_m;
+                        // On a storage track trains close up to the stabling
+                        // gap the planner stacks them with.
+                        let margin = if self.m.is_storage(pc) {
+                            self.p.stabling_gap_m
+                        } else {
+                            self.p.follow_margin_m
+                        };
+                        let lim = rear - margin + self.p.eoa_margin_m;
                         if lim < eoa {
                             eoa = lim;
                             behind = true;
@@ -802,21 +841,41 @@ impl<'m> NetworkSim<'m> {
             if self.trains[ti].status == Status::Done {
                 continue;
             }
+            self.swap_blocked_in(ti);
+            if self.trains[ti].status == Status::Done {
+                continue;
+            }
             self.ars(ti);
             self.crossings(ti);
             let before = self.trains[ti].s;
             self.drive(ti, dt)?;
-            if (self.trains[ti].s - before).abs() > 1e-6 {
-                moved = true;
-            }
-            let tr = &self.trains[ti];
-            if tr.status == Status::Running && tr.v == 0.0 {
+            let went = (self.trains[ti].s - before).abs() > 1e-6;
+            moved |= went;
+            let tr = &mut self.trains[ti];
+            if tr.status == Status::Running && tr.v == 0.0 && !went {
                 waiting.push(tr.vehicle);
+            } else {
+                tr.still_since = t;
             }
         }
+        // Trains that wait for each other while others still run are as stuck as a network
+        // where nothing moves (Damascus test: the trains at Zahira waited for the rest of the
+        // run, and the kernel did not say so).
+        let stuck: Vec<usize> = self
+            .trains
+            .iter()
+            .filter(|tr| {
+                tr.status == Status::Running
+                    && tr.v == 0.0
+                    && t - tr.still_since > self.p.deadlock_timeout_s
+            })
+            .map(|tr| tr.vehicle)
+            .collect();
         if moved || waiting.is_empty() {
             self.last_move = t;
-        } else if t - self.last_move > self.p.deadlock_timeout_s {
+        }
+        if !stuck.is_empty() || t - self.last_move > self.p.deadlock_timeout_s {
+            let waiting = if stuck.is_empty() { waiting } else { stuck };
             self.events.push(NetEvent::Deadlock {
                 t,
                 waiting: waiting.clone(),
@@ -1151,6 +1210,13 @@ impl<'m> NetworkSim<'m> {
                 self.m.routes[tr.path.routes.last().unwrap().0 as usize].exit,
                 rail_model::RouteExit::BufferStop(_)
             )
+            // Only once it is wholly on the siding: a train held short of it by one standing
+            // in the way waits for it (it was put on the siding, through the trains there).
+            && tr
+                .path
+                .cover(self.m, tr.s - tr.params.length_m, tr.s)
+                .iter()
+                .all(|&(pc, _, _)| self.m.is_storage(pc))
         {
             // Stabled behind the trains already on the siding: the run ends here.
             let pi = run.plan_index;
@@ -1193,29 +1259,29 @@ impl<'m> NetworkSim<'m> {
     fn end_run(&mut self, ti: usize) {
         let t = self.t;
         self.il.park(t, ti as u32);
-        let m = self.m;
         let tr = &mut self.trains[ti];
-        let (head, tail) = (tr.s, tr.s - tr.params.length_m);
-        let head_pt = tr.path.cover(m, head - 0.01, head).last().copied();
-        let tail_pt = tr.path.cover(m, tail, tail + 0.01).first().copied();
         tr.k += 1;
         if tr.k >= tr.runs.len() {
             tr.status = Status::Done;
             tr.v = 0.0;
             return;
         }
+        self.place_for_run(ti, None);
+    }
+
+    /// Purpose: put a standing train on the path of its current run, where it stands.
+    /// Inputs: the train; the storage track it stands on, if any (picks the way behind it).
+    fn place_for_run(&mut self, ti: usize, storage: Option<usize>) {
+        let m = self.m;
+        let tr = &mut self.trains[ti];
+        let (head, tail) = (tr.s, tr.s - tr.params.length_m);
+        let head_pt = tr.path.cover(m, head - 0.01, head).last().copied();
+        let tail_pt = tr.path.cover(m, tail, tail + 0.01).first().copied();
         let back = tr.params.length_m + 400.0;
-        let path = build_path(m, &self.il, &tr.runs[tr.k].routes, back, None);
+        let path = build_path(m, &self.il, &tr.runs[tr.k].routes, back, storage);
         // Where the train stands on the new path: its front in the new direction.
         let mut ends = Vec::new();
-        if let Some((pc, c0, c1)) = head_pt {
-            for ch in [c0, c1] {
-                if let Some(x) = path.locate(m, pc, ch) {
-                    ends.push(x);
-                }
-            }
-        }
-        if let Some((pc, c0, c1)) = tail_pt {
+        for (pc, c0, c1) in [head_pt, tail_pt].into_iter().flatten() {
             for ch in [c0, c1] {
                 if let Some(x) = path.locate(m, pc, ch) {
                     ends.push(x);
@@ -1236,6 +1302,109 @@ impl<'m> NetworkSim<'m> {
         tr.body = tr.path.cover(m, tr.s - tr.params.length_m, tr.s);
         let pi = tr.runs[tr.k].plan_index;
         self.names[ti] = format!("run {pi}");
+    }
+
+    /// Purpose: the storage track a standing train is wholly on, if any.
+    fn on_storage(&self, ti: usize) -> Option<usize> {
+        let tr = &self.trains[ti];
+        let mut track = None;
+        for &(pc, _, _) in &tr.body {
+            if !self.m.is_storage(pc) {
+                return None;
+            }
+            let t = self.m.pieces[pc as usize].track;
+            if track.is_some_and(|x| x != t) {
+                return None;
+            }
+            track = Some(t);
+        }
+        track
+    }
+
+    /// Purpose: on a siding, a train due to leave that is blocked in by an idle train of the same
+    /// kind in front of it hands its work to that train (the front train leaves; the two swap the
+    /// rest of their day). The planner keeps a dead-end track last in, first out, but it places
+    /// the trains of the morning stabling only when they first leave, so a train put away during
+    /// the morning can stand in front of one planned to leave before it.
+    fn swap_blocked_in(&mut self, ti: usize) {
+        let tr = &self.trains[ti];
+        if tr.status != Status::Waiting {
+            return;
+        }
+        let run = &tr.runs[tr.k];
+        let due = run.depart_s + run.hold_s;
+        if self.t < due - self.p.route_lead_s {
+            return;
+        }
+        let Some(track) = self.on_storage(ti) else {
+            return;
+        };
+        // The idle train furthest ahead on this train's way out.
+        let mut best: Option<(usize, f64)> = None;
+        for (oi, o) in self.trains.iter().enumerate() {
+            // An idle train leaves later, or not at all (its day is over).
+            let later = match o.status {
+                Status::Waiting => o.runs[o.k].depart_s + o.runs[o.k].hold_s > due,
+                Status::Done => true,
+                _ => false,
+            };
+            if oi == ti
+                || !later
+                || (o.params.length_m - tr.params.length_m).abs() > 0.01
+                || o.params.max_speed_mps != tr.params.max_speed_mps
+                || self.on_storage(oi) != Some(track)
+            {
+                continue;
+            }
+            for &(pc, c0, c1) in &o.body {
+                for (i, st) in tr.path.steps.iter().enumerate() {
+                    if st.piece != pc {
+                        continue;
+                    }
+                    let p = &self.m.pieces[pc as usize];
+                    let u = match st.dir {
+                        Dir::Up => c0.min(c1) - p.from_m,
+                        Dir::Down => p.to_m - c0.max(c1),
+                    };
+                    let rear = tr.path.start[i] + u;
+                    if rear > tr.s - 1e-6 && best.map_or(true, |b| rear > b.1) {
+                        best = Some((oi, rear));
+                    }
+                }
+            }
+        }
+        let Some((oj, _)) = best else {
+            return;
+        };
+        // Swap the rest of the day (and the train indices in the planned order of locks).
+        let (a, b) = (ti.min(oj), ti.max(oj));
+        let (left, right) = self.trains.split_at_mut(b);
+        let (x, y) = (&mut left[a], &mut right[0]);
+        std::mem::swap(&mut x.runs, &mut y.runs);
+        std::mem::swap(&mut x.k, &mut y.k);
+        std::mem::swap(&mut x.delay_s, &mut y.delay_s);
+        for q in self.order.values_mut() {
+            for e in q.iter_mut() {
+                if e.1 == a {
+                    e.1 = b;
+                } else if e.1 == b {
+                    e.1 = a;
+                }
+            }
+        }
+        for x in [ti, oj] {
+            let tr = &mut self.trains[x];
+            if tr.k >= tr.runs.len() {
+                tr.status = Status::Done;
+                tr.v = 0.0;
+            } else {
+                self.place_for_run(x, Some(track));
+            }
+        }
+        self.events.push(NetEvent::Swapped {
+            t: self.t,
+            trains: [self.trains[ti].vehicle, self.trains[oj].vehicle],
+        });
     }
 
     /// Purpose: check the safety invariants (ADR-0032 §4).

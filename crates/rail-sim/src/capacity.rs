@@ -485,7 +485,7 @@ fn run_kernel(
             NetEvent::HeldAtCrossing { t, train, crossing } => problems[line_of(*train)].push(
                 format!("train {train} held at level crossing {crossing} at {t:.0} s"),
             ),
-            NetEvent::Deadlock { .. } => {}
+            NetEvent::Deadlock { .. } | NetEvent::Swapped { .. } => {}
         }
     }
     // Per trip: the latest arrival delay at its destination.

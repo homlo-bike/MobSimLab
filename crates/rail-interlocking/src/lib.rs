@@ -997,14 +997,16 @@ impl<'m> Interlocking<'m> {
                     ));
                 }
             }
-            if let Some(&s) = st.standing.iter().next() {
+            // Trains standing together (stabled in one platform track) are kept apart by the
+            // kernel; a route of another train into a section where a train stands is not.
+            let other = st.route.iter().find_map(|&h| {
+                let r = self.active[h].train;
+                st.standing.iter().find(|&&s| s != r).copied()
+            });
+            if let Some(s) = other {
                 // A tram that followed another on sight may hold its route where the one ahead
                 // has come to stand; the kernel keeps it behind.
-                if !self.storage(i as TdsId)
-                    && !self.m.tds[i].on_sight
-                    && (st.standing.len() > 1
-                        || st.route.iter().any(|&h| self.active[h].train != s))
-                {
+                if !self.storage(i as TdsId) && !self.m.tds[i].on_sight {
                     return Err(format!(
                         "invariant 1: {} has train {s} standing and another train's route",
                         self.m.tds[i].id
