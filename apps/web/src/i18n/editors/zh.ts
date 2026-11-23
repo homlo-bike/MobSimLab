@@ -1454,6 +1454,9 @@ export const editorsZh = {
   "walk.drawFirst": "请先绘制一条道路线路或一条带车站的铁路。",
   "walk.collecting": "正在收集站点和车站…",
   "walk.loadingTiles": "正在加载人行道（{count} 个地图瓦片中的 {done} 个）…",
+  "walk.loadingHeights": "正在加载地面高程…",
+  "walk.heightsUnavailable": "地面高程未能加载（{reason}），因此步行按平地计算。",
+  "walk.heightsNoData": "此区域没有高程数据",
   "walk.loadingPopulation": "正在加载人口居住位置…",
   "walk.computing": "正在测量步行路程…",
   "walk.tooLarge": "站点分布在 {tiles} 个地图瓦片上；一次最多加载 {max} 个（约 12 公里 × 12 公里）。",
@@ -1480,7 +1483,8 @@ export const editorsZh = {
   "walk.popDownloading": "{countries} 的人口数据仍在下载到服务器；在此之前用街道代替人口。",
   "walk.popUnavailable": "没有人口数据（{reason}）；用街道代替人口。",
   "walk.popCredit": "居民：WorldPop {year}（{countries}），CC BY 4.0。",
-  "walk.note": "区域为站点外接矩形再加上限内可步行的距离。暂不计入坡度。",
+  "walk.note":
+    "范围是站点周围的矩形加上限时内步行的距离。每条街道按朝向站点方向的坡度步行计算，因此上坡步行耗时更长。",
   "spacing.title": "站间距",
   "spacing.intro":
     "沿线相邻站点之间的距离，与该交通方式的常见范围相比。站点太近会拖慢线路；太远则意味着步行距离长。",

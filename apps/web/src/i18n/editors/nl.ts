@@ -1570,6 +1570,10 @@ export const editorsNl = {
   "walk.drawFirst": "Teken eerst een straatlijn of een spoorlijn met stations.",
   "walk.collecting": "Haltes en stations verzamelen…",
   "walk.loadingTiles": "Voetpaden laden ({done} van {count} kaarttegels)…",
+  "walk.loadingHeights": "Terreinhoogtes laden…",
+  "walk.heightsUnavailable":
+    "Terreinhoogtes niet geladen ({reason}), dus looptijden zijn berekend als op vlak terrein.",
+  "walk.heightsNoData": "geen hoogtegegevens voor dit gebied",
   "walk.loadingPopulation": "Laden waar mensen wonen…",
   "walk.computing": "Looproutes meten…",
   "walk.tooLarge":
@@ -1605,7 +1609,7 @@ export const editorsNl = {
   "walk.popUnavailable": "Geen bevolkingsgegevens ({reason}); de straten staan voor de mensen.",
   "walk.popCredit": "Inwoners: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Het gebied is de rechthoek rond de haltes plus de afstand die binnen de grens wordt gelopen. Hellingen tellen nog niet mee.",
+    "Het gebied is de rechthoek rond de haltes plus de in de limiet gelopen afstand. Elke straat wordt met haar helling richting de halte gelopen, dus bergop duurt langer.",
   "spacing.title": "Halteafstand",
   "spacing.intro":
     "Afstand tussen opeenvolgende haltes langs de lijn, vergeleken met het gebruikelijke bereik voor de modaliteit. Haltes te dicht bij elkaar vertragen de lijn; te ver uit elkaar betekent lange looproutes.",

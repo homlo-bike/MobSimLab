@@ -1575,6 +1575,10 @@ export const editorsIt = {
   "walk.drawFirst": "Disegna prima una linea su strada o una ferrovia con stazioni.",
   "walk.collecting": "Raccolta di fermate e stazioni…",
   "walk.loadingTiles": "Caricamento dei percorsi pedonali ({done} di {count} riquadri)…",
+  "walk.loadingHeights": "Caricamento delle quote del terreno…",
+  "walk.heightsUnavailable":
+    "Le quote del terreno non sono state caricate ({reason}), quindi i percorsi a piedi sono calcolati come in piano.",
+  "walk.heightsNoData": "nessun dato di quota per quest’area",
   "walk.loadingPopulation": "Caricamento di dove vivono le persone…",
   "walk.computing": "Misurazione dei percorsi a piedi…",
   "walk.tooLarge":
@@ -1609,7 +1613,7 @@ export const editorsIt = {
   "walk.popUnavailable": "Nessun dato sulla popolazione ({reason}); le strade sostituiscono le persone.",
   "walk.popCredit": "Residenti: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "L'area è il rettangolo intorno alle fermate più la distanza percorsa nel limite. Le pendenze non sono ancora considerate.",
+    "L’area è il rettangolo attorno alle fermate più la distanza percorsa nel limite. Ogni strada è percorsa con la sua pendenza verso la fermata, quindi in salita si impiega di più.",
   "spacing.title": "Distanza tra fermate",
   "spacing.intro":
     "Distanza tra fermate consecutive lungo la linea, rispetto all'intervallo usuale del modo. Fermate troppo vicine rallentano la linea; troppo distanti significano lunghe camminate.",

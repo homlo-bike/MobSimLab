@@ -1628,6 +1628,10 @@ export const editorsPl = {
   "walk.drawFirst": "Najpierw narysuj linię uliczną lub linię kolejową ze stacjami.",
   "walk.collecting": "Zbieranie przystanków i stacji…",
   "walk.loadingTiles": "Wczytywanie ścieżek pieszych ({done} z {count} kafelków mapy)…",
+  "walk.loadingHeights": "Wczytywanie wysokości terenu…",
+  "walk.heightsUnavailable":
+    "Nie wczytano wysokości terenu ({reason}), więc dojścia liczone są jak po płaskim.",
+  "walk.heightsNoData": "brak danych o wysokości dla tego obszaru",
   "walk.loadingPopulation": "Wczytywanie miejsc zamieszkania…",
   "walk.computing": "Mierzenie dojść pieszych…",
   "walk.tooLarge":
@@ -1661,7 +1665,7 @@ export const editorsPl = {
   "walk.popUnavailable": "Brak danych o ludności ({reason}); ulice zastępują ludzi.",
   "walk.popCredit": "Mieszkańcy: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Obszar to prostokąt wokół przystanków powiększony o dystans przebyty w limicie. Nachylenia nie są jeszcze uwzględniane.",
+    "Obszar to prostokąt wokół przystanków plus odległość przebyta w limicie. Każda ulica jest pokonywana z jej nachyleniem w stronę przystanku, więc pod górę trwa to dłużej.",
   "spacing.title": "Odległość między przystankami",
   "spacing.intro":
     "Odległość między kolejnymi przystankami wzdłuż linii w porównaniu z typowym zakresem dla środka transportu. Zbyt bliskie przystanki spowalniają linię; zbyt odległe oznaczają długie dojścia.",

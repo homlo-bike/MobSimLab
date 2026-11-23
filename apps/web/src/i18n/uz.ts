@@ -262,7 +262,6 @@ export const uz: Messages = {
   "tab.tables": "Jadvallar",
   "tab.preferences": "Sozlamalar",
 
-
   "sim.test": "Tizimni sinash",
   "sim.journey": "Safar vaqti A → B",
 

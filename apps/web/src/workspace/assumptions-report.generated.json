@@ -9713,7 +9713,9 @@
   "journey.walk_slope_k": {
    "used_by": [
     "journey planner access",
-    "egress and transfer walks"
+    "egress and transfer walks",
+    "walk coverage",
+    "walk catchments"
    ],
    "entries": [
     {

@@ -1495,6 +1495,9 @@ export const editorsJa = {
   "walk.drawFirst": "まず道路の路線か、駅のある鉄道を描いてください。",
   "walk.collecting": "停留所と駅を集めています…",
   "walk.loadingTiles": "歩道を読み込み中（{count} タイル中 {done}）…",
+  "walk.loadingHeights": "地面の標高を読み込み中…",
+  "walk.heightsUnavailable": "地面の標高を読み込めませんでした（{reason}）。徒歩は平地として計算されます。",
+  "walk.heightsNoData": "この地域の標高データがありません",
   "walk.loadingPopulation": "人が住む場所を読み込み中…",
   "walk.computing": "徒歩ルートを計測中…",
   "walk.tooLarge":
@@ -1526,7 +1529,8 @@ export const editorsJa = {
     "{countries} の人口データはまだサーバーにダウンロード中です。それまでは道路を人の代わりに使います。",
   "walk.popUnavailable": "人口データがありません（{reason}）。道路を人の代わりに使います。",
   "walk.popCredit": "住民：WorldPop {year}（{countries}）、CC BY 4.0。",
-  "walk.note": "区域は停留所を囲む矩形に、上限内で歩ける距離を加えたものです。勾配はまだ考慮していません。",
+  "walk.note":
+    "範囲は停留所を囲む長方形に、制限内で歩ける距離を加えたものです。各道路は停留所へ向かう方向の勾配で歩くものとして計算するため、上り坂の徒歩は時間が長くなります。",
   "spacing.title": "停留所間隔",
   "spacing.intro":
     "路線に沿った隣り合う停留所間の距離を、交通手段ごとの一般的な範囲と比べます。近すぎると路線が遅くなり、離れすぎると長い徒歩になります。",

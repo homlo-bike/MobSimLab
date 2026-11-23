@@ -1571,6 +1571,10 @@ export const editorsPt = {
   "walk.drawFirst": "Desenhe primeiro uma linha de rua ou uma ferrovia com estações.",
   "walk.collecting": "A reunir as paragens e estações…",
   "walk.loadingTiles": "A carregar caminhos pedonais ({done} de {count} mosaicos)…",
+  "walk.loadingHeights": "A carregar as altitudes do terreno…",
+  "walk.heightsUnavailable":
+    "As altitudes do terreno não carregaram ({reason}), por isso as caminhadas são calculadas como em plano.",
+  "walk.heightsNoData": "sem dados de altitude para esta zona",
   "walk.loadingPopulation": "A carregar onde as pessoas vivem…",
   "walk.computing": "A medir as caminhadas…",
   "walk.tooLarge":
@@ -1605,7 +1609,7 @@ export const editorsPt = {
   "walk.popUnavailable": "Sem dados de população ({reason}); as ruas representam as pessoas.",
   "walk.popCredit": "Residentes: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "A área é o retângulo em redor das paragens mais a distância percorrida no limite. Os declives ainda não são contados.",
+    "A área é o retângulo à volta das paragens mais a distância percorrida no limite. Cada rua é percorrida com o seu declive em direção à paragem, por isso a subir demora mais.",
   "spacing.title": "Distância entre paragens",
   "spacing.intro":
     "Distância entre paragens consecutivas ao longo da linha, face ao intervalo habitual do modo. Paragens demasiado próximas atrasam a linha; demasiado afastadas obrigam a longas caminhadas.",

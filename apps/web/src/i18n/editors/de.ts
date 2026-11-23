@@ -1592,6 +1592,10 @@ export const editorsDe = {
   "walk.drawFirst": "Zeichnen Sie zuerst eine Straßenlinie oder eine Bahnstrecke mit Stationen.",
   "walk.collecting": "Haltestellen und Stationen werden gesammelt…",
   "walk.loadingTiles": "Fußwege werden geladen ({done} von {count} Kartenkacheln)…",
+  "walk.loadingHeights": "Geländehöhen werden geladen…",
+  "walk.heightsUnavailable":
+    "Geländehöhen nicht geladen ({reason}), daher werden Fußwege wie in der Ebene gerechnet.",
+  "walk.heightsNoData": "keine Höhendaten für dieses Gebiet",
   "walk.loadingPopulation": "Wohnorte werden geladen…",
   "walk.computing": "Fußwege werden gemessen…",
   "walk.tooLarge":
@@ -1626,7 +1630,7 @@ export const editorsDe = {
   "walk.popUnavailable": "Keine Bevölkerungsdaten ({reason}); die Straßen stehen für die Menschen.",
   "walk.popCredit": "Einwohner: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Das Gebiet ist das Rechteck um die Haltestellen plus die in der Grenze gegangene Strecke. Steigungen werden noch nicht berücksichtigt.",
+    "Das Gebiet ist das Rechteck um die Haltestellen plus die in der Grenze gegangene Strecke. Jede Straße wird mit ihrer Steigung in Richtung Haltestelle gegangen, bergauf dauert es also länger.",
   "spacing.title": "Haltestellenabstand",
   "spacing.intro":
     "Abstand zwischen aufeinanderfolgenden Haltestellen entlang der Linie, verglichen mit dem üblichen Bereich des Verkehrsmittels. Zu nahe Haltestellen bremsen die Linie; zu weit auseinander bedeutet lange Fußwege.",

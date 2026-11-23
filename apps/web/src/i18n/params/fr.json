@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Calage : heures sur lesquelles un comptage de jour ouvré est réparti pour la statistique GEH",
     "demand.walk_speed_kmh": "Vitesse de marche pour les liaisons piétonnes entre stations",
     "journey.walk_detour_factor": "Distance à pied rapportée à la distance à vol d'oiseau (calculateur d'itinéraire, estimation des bénéfices)",
-    "journey.walk_slope_k": "Marche en pente : terme de pente de la fonction de randonnée de Tobler (calculateur d’itinéraire ; 0 = marche comptée comme sur le plat)",
+    "journey.walk_slope_k": "Marche en pente : terme de pente de la fonction de randonnée de Tobler (0 = marche comptée comme sur le plat)",
     "journey.min_change_s": "Calculateur d'itinéraire : temps minimal de correspondance au même arrêt",
     "journey.level_change_s": "Calculateur d'itinéraire : temps ajouté pour changer de quai dans une station (escaliers, ascenseurs)",
     "journey.same_name_station_m": "Les arrêts de même nom à moins de cette distance à vol d'oiseau forment une seule station",

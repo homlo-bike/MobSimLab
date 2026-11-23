@@ -1516,6 +1516,9 @@ export const editorsIg = {
   "walk.drawFirst": "Buru ụzọ see ahịrị okporo ụzọ ma ọ bụ ụzọ ụgbọ oloko nwere ọdụ.",
   "walk.collecting": "A na-achịkọta ebe nkwụsị na ọdụ…",
   "walk.loadingTiles": "A na-ebunye ụzọ ndị na-eji ụkwụ ({done} n'ime taịlụ maapụ {count})…",
+  "walk.loadingHeights": "Na-ebugo ịdị elu ala…",
+  "walk.heightsUnavailable": "Ebughị ịdị elu ala ({reason}), ya mere a na-agụ ije dị ka ala dị larịị.",
+  "walk.heightsNoData": "enweghị data ịdị elu maka mpaghara a",
   "walk.loadingPopulation": "A na-ebunye ebe ndị mmadụ bi…",
   "walk.computing": "A na-atụ ije ụkwụ…",
   "walk.tooLarge":
@@ -1549,7 +1552,7 @@ export const editorsIg = {
   "walk.popUnavailable": "Enweghị data ọnụọgụ mmadụ ({reason}); okporo ụzọ na-anọchi anya ndị mmadụ.",
   "walk.popCredit": "Ndị bi: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Mpaghara ahụ bụ igbe gburugburu ebe nkwụsị gbakwunyere anya a na-eje n'ime oke. A gụbeghị mkpọda.",
+    "Mpaghara ahụ bụ akụkụ anọ gburugburu ebe nkwụsị gbakwunyere anya a na-eje n'ime oke. A na-eje okporo ụzọ ọ bụla n'ugwu ya na-aga ebe nkwụsị, ya mere ịrị elu na-ewe oge karịa.",
   "spacing.title": "Oghere n'etiti ebe nkwụsị",
   "spacing.intro":
     "Anya dị n'etiti ebe nkwụsị na-esochi ibe ha n'ahịrị, ma e jiri ya tụnyere oke a na-ahụkarị maka ụdị njem ahụ. Ebe nkwụsị dị nso nke ukwuu na-eme ka ahịrị ahụ dị nwayọ; ndị dị anya nke ukwuu pụtara ije ogologo.",

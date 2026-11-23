@@ -1572,6 +1572,10 @@ export const editorsUz = {
   "walk.drawFirst": "Avval ko'cha liniyasi yoki stansiyali temir yo'l chizing.",
   "walk.collecting": "Bekatlar va stansiyalar yig'ilmoqda…",
   "walk.loadingTiles": "Piyoda yo'llari yuklanmoqda ({count} ta xarita plitasidan {done})…",
+  "walk.loadingHeights": "Yer balandliklari yuklanmoqda…",
+  "walk.heightsUnavailable":
+    "Yer balandliklari yuklanmadi ({reason}), shuning uchun piyoda yurish tekis yerdagidek hisoblanadi.",
+  "walk.heightsNoData": "bu hudud uchun balandlik maʼlumoti yoʻq",
   "walk.loadingPopulation": "Odamlar qayerda yashashi yuklanmoqda…",
   "walk.computing": "Piyoda yo'llar o'lchanmoqda…",
   "walk.tooLarge":
@@ -1606,7 +1610,7 @@ export const editorsUz = {
   "walk.popUnavailable": "Aholi ma'lumoti yo'q ({reason}); ko'chalar odamlar o'rnini bosadi.",
   "walk.popCredit": "Aholi: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Hudud — bekatlar atrofidagi to'rtburchak va chegara ichida yuriladigan masofa. Qiyaliklar hozircha hisobga olinmaydi.",
+    "Hudud — bekatlar atrofidagi toʻrtburchak va chegara ichida piyoda bosib oʻtiladigan masofa. Har bir koʻcha bekat tomon oʻz qiyaligi bilan yuriladi, shuning uchun tepaga yurish koʻproq vaqt oladi.",
   "spacing.title": "Bekatlar oralig'i",
   "spacing.intro":
     "Liniya bo'ylab ketma-ket bekatlar orasidagi masofa, transport turining odatiy oralig'i bilan solishtirilgan. Juda yaqin bekatlar liniyani sekinlashtiradi; juda uzoq bo'lsa, uzoq yurish kerak.",

@@ -1581,6 +1581,10 @@ export const editorsEs = {
   "walk.drawFirst": "Dibuje primero una línea por calle o un ferrocarril con estaciones.",
   "walk.collecting": "Reuniendo las paradas y estaciones…",
   "walk.loadingTiles": "Cargando caminos peatonales ({done} de {count} teselas)…",
+  "walk.loadingHeights": "Cargando alturas del terreno…",
+  "walk.heightsUnavailable":
+    "No se cargaron las alturas del terreno ({reason}), así que las caminatas se calculan como en llano.",
+  "walk.heightsNoData": "no hay datos de altura para esta zona",
   "walk.loadingPopulation": "Cargando dónde vive la gente…",
   "walk.computing": "Midiendo los recorridos a pie…",
   "walk.tooLarge":
@@ -1615,7 +1619,7 @@ export const editorsEs = {
   "walk.popUnavailable": "Sin datos de población ({reason}); las calles representan a las personas.",
   "walk.popCredit": "Residentes: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "El área es el rectángulo alrededor de las paradas más la distancia recorrida en el límite. Las pendientes aún no se tienen en cuenta.",
+    "La zona es el rectángulo alrededor de las paradas más la distancia caminada en el límite. Cada calle se recorre con su pendiente hacia la parada, así que cuesta arriba se tarda más.",
   "spacing.title": "Distancia entre paradas",
   "spacing.intro":
     "Distancia entre paradas consecutivas a lo largo de la línea, frente al rango habitual del modo. Paradas demasiado cercanas ralentizan la línea; demasiado separadas obligan a caminar mucho.",

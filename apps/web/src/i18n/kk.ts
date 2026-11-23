@@ -259,7 +259,6 @@ export const kk: Messages = {
   "tab.tables": "Кестелер",
   "tab.preferences": "Параметрлер",
 
-
   "sim.test": "Жүйені сынау",
   "sim.journey": "Сапар уақыты A → B",
 

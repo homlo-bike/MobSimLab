@@ -258,7 +258,6 @@ export const yo: Messages = {
   "tab.tables": "Àwọn tábìlì",
   "tab.preferences": "Àwọn àyànfẹ́",
 
-
   "sim.test": "Dán ètò náà wò",
   "sim.journey": "Àkókò ìrìn-àjò A → B",
 

@@ -91,6 +91,7 @@ interface Log {
   spacing: SpacingRequest[];
   xml: string[];
   junctions?: unknown;
+  heights?: { cellM: number; heights: (number | null)[] };
 }
 
 function fakeEngine(log: Log) {
@@ -101,6 +102,14 @@ function fakeEngine(log: Log) {
     },
     build: () => {},
     ready: () => true,
+    heightCells: () => [
+      [7, 50],
+      [7.001, 50],
+    ],
+    setHeights: (cellM, heights) => {
+      log.heights = { cellM, heights };
+      return heights.filter((h) => h !== null).length;
+    },
     coverage: (req) => {
       log.coverage = req;
       return {
@@ -351,13 +360,86 @@ describe("WalkAnalysis", () => {
     );
     fireEvent.click(screen.getByRole("button", { name: "Calculate walk coverage" }));
     const bar = await screen.findByRole("progressbar", { name: "Walk to a stop" });
-    expect(screen.getByText("Step 2 of 4")).toBeTruthy();
-    expect(Number(bar.getAttribute("aria-valuenow"))).toBeGreaterThanOrEqual(25);
+    expect(screen.getByText("Step 2 of 5")).toBeTruthy();
+    expect(Number(bar.getAttribute("aria-valuenow"))).toBeGreaterThanOrEqual(20);
     fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
     expect(screen.queryByRole("progressbar")).toBeNull();
     expect(
       (screen.getByRole("button", { name: "Calculate walk coverage" }) as HTMLButtonElement).disabled,
     ).toBe(false);
+  });
+
+  it("gives the walk network its ground heights, so walks are timed on their slopes", async () => {
+    const log: Log = { spacing: [], xml: [] };
+    const fetchHeights = vi.fn(async (points: [number, number][]) =>
+      points.map((_, i) => (i ? null : 312.5)),
+    );
+    render(
+      <WalkAnalysis
+        map={null}
+        streetLines={DOC}
+        railway={null}
+        loadWalk={fakeEngine(log)}
+        loadRail={noRail}
+        fetchTile={async () => "<osm/>"}
+        fetchPeople={async () => GRID}
+        fetchHeights={fetchHeights}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Calculate walk coverage" }));
+    expect(await screen.findByText(/75 % of the 2,000 residents/)).toBeTruthy();
+    expect(fetchHeights).toHaveBeenCalledWith([
+      [7, 50],
+      [7.001, 50],
+    ]);
+    expect(log.heights).toEqual({ cellM: 30, heights: [312.5, null] });
+    expect(log.coverage!.settings.walk_slope_k).toBe(3.5);
+    expect(screen.getByText(/walked on its slope towards the stop/)).toBeTruthy();
+    expect(screen.queryByText(/Ground heights did not load/)).toBeNull();
+  });
+
+  it("times walks as flat, and says so, when the heights do not load", async () => {
+    const log: Log = { spacing: [], xml: [] };
+    render(
+      <WalkAnalysis
+        map={null}
+        streetLines={DOC}
+        railway={null}
+        loadWalk={fakeEngine(log)}
+        loadRail={noRail}
+        fetchTile={async () => "<osm/>"}
+        fetchPeople={async () => GRID}
+        fetchHeights={async () => {
+          throw new Error("terrain service down");
+        }}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Calculate walk coverage" }));
+    expect(await screen.findByText(/75 % of the 2,000 residents/)).toBeTruthy();
+    expect(screen.getByText(/Ground heights did not load \(terrain service down\)/)).toBeTruthy();
+    expect(log.heights).toBeUndefined();
+  });
+
+  it("leaves the heights out when the project's slope term is 0", async () => {
+    const log: Log = { spacing: [], xml: [] };
+    const fetchHeights = vi.fn(async () => []);
+    render(
+      <WalkAnalysis
+        map={null}
+        streetLines={DOC}
+        railway={null}
+        preferences={{ "journey.walk_slope_k": 0 }}
+        loadWalk={fakeEngine(log)}
+        loadRail={noRail}
+        fetchTile={async () => "<osm/>"}
+        fetchPeople={async () => GRID}
+        fetchHeights={fetchHeights}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Calculate walk coverage" }));
+    expect(await screen.findByText(/75 % of the 2,000 residents/)).toBeTruthy();
+    expect(fetchHeights).not.toHaveBeenCalled();
+    expect(log.coverage!.settings.walk_slope_k).toBe(0);
   });
 
   it("falls back to the streets when the population is still downloading", async () => {

@@ -1492,6 +1492,9 @@ export const editorsKo = {
   "walk.drawFirst": "먼저 도로 노선이나 역이 있는 철도를 그리세요.",
   "walk.collecting": "정류장과 역을 모으는 중…",
   "walk.loadingTiles": "보행로 불러오는 중({count}개 지도 타일 중 {done})…",
+  "walk.loadingHeights": "지면 고도를 불러오는 중…",
+  "walk.heightsUnavailable": "지면 고도를 불러오지 못했습니다({reason}). 도보는 평지로 계산됩니다.",
+  "walk.heightsNoData": "이 지역의 고도 데이터가 없습니다",
   "walk.loadingPopulation": "사람들이 사는 곳을 불러오는 중…",
   "walk.computing": "도보 경로 측정 중…",
   "walk.tooLarge":
@@ -1523,7 +1526,7 @@ export const editorsKo = {
   "walk.popUnavailable": "인구 데이터 없음({reason}). 도로가 사람을 대신합니다.",
   "walk.popCredit": "주민: WorldPop {year}({countries}), CC BY 4.0.",
   "walk.note":
-    "지역은 정류장을 둘러싼 사각형에 한도 안에서 걸을 수 있는 거리를 더한 것입니다. 경사는 아직 반영하지 않습니다.",
+    "범위는 정류장을 둘러싼 직사각형에 제한 시간 동안 걷는 거리를 더한 것입니다. 각 도로는 정류장 방향의 경사로 걷는 것으로 계산하므로 오르막 도보는 더 오래 걸립니다.",
   "spacing.title": "정류장 간격",
   "spacing.intro":
     "노선을 따라 이어지는 정류장 사이의 거리를 교통수단의 일반적인 범위와 비교합니다. 너무 가까우면 노선이 느려지고, 너무 멀면 오래 걸어야 합니다.",

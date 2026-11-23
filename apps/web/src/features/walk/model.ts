@@ -19,6 +19,7 @@ const LIB = data as unknown as {
   walk_speed_kmh: number;
   crossing_delay_s: number;
   walk_rule_minutes: number;
+  walk_slope_k: number;
 };
 
 /** Assumption ids a project can set in its preferences document. */
@@ -26,6 +27,7 @@ export const PREF = {
   minutes: "analysis.walk_rule_minutes",
   speed: "demand.walk_speed_kmh",
   crossing: "walk.crossing_delay_s",
+  slope: "journey.walk_slope_k",
 } as const;
 
 /** The walk rule's minutes from the library (`analysis.walk_rule_minutes`, central 15). */
@@ -58,13 +60,17 @@ export function ruleMinutes(prefs?: Record<string, number>): number {
   return prefNumber(prefs, PREF.minutes, MIN_MINUTES, MAX_MINUTES) ?? LIBRARY_MINUTES;
 }
 
-/** Purpose: how people walk: the project's walking speed and crossing wait where set, else the library's. */
+/**
+ * Purpose: how people walk: the project's walking speed, crossing wait and slope term (`journey.walk_slope_k`,
+ * the journey planner's) where set, else the library's.
+ */
 export function walkSettings(prefs: Record<string, number> | undefined, stepFree: boolean): WalkSettings {
   return {
     walk_speed_kmh: prefNumber(prefs, PREF.speed, 1, 10) ?? LIB.walk_speed_kmh,
     crossing_delay_s: prefNumber(prefs, PREF.crossing, 0, 300) ?? LIB.crossing_delay_s,
     step_free: stepFree,
     max_snap_m: 250,
+    walk_slope_k: prefNumber(prefs, PREF.slope, 0, 20) ?? LIB.walk_slope_k,
   };
 }
 

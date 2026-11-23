@@ -400,6 +400,23 @@ impl WalkAnalysis {
         self.graph.is_some()
     }
 
+    /// Purpose: the points to take ground heights at for walks on slopes: the middle of every square
+    /// cell of `cell_m` metres that holds a node of the built graph. Output: JSON list of `[lon, lat]`.
+    pub fn height_cells(&self, cell_m: f64) -> Result<String, JsValue> {
+        let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
+        Ok(serde_json::to_string(&g.height_cells(cell_m)).unwrap_or_default())
+    }
+
+    /// Purpose: give the built graph its ground heights (JSON list, one per `height_cells` point in
+    /// that order, `null` where unknown), so walks are timed on their slopes. Applies until the next
+    /// `build`. Output: how many nodes got a height.
+    pub fn set_heights(&mut self, cell_m: f64, heights_json: &str) -> Result<usize, JsValue> {
+        let g = self.graph.as_mut().ok_or_else(no_walk_graph)?;
+        let heights: Vec<Option<f64>> = parse_json("heights", heights_json)?;
+        g.set_cell_heights(cell_m, &heights)
+            .map_err(|e| JsError::new(&e).into())
+    }
+
     /// Purpose: answer a coverage question (JSON `walk::CoverageRequest`). Output: JSON `CoverageResult`.
     pub fn coverage(&self, request_json: &str) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;

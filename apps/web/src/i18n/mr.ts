@@ -259,7 +259,6 @@ export const mr: Messages = {
   "tab.tables": "तक्ते",
   "tab.preferences": "प्राधान्ये",
 
-
   "sim.test": "प्रणालीची चाचणी करा",
   "sim.journey": "प्रवास वेळ A → B",
 

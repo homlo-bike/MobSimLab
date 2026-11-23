@@ -260,7 +260,6 @@ export const ha: Messages = {
   "tab.tables": "Teburori",
   "tab.preferences": "Zaɓuɓɓuka",
 
-
   "sim.test": "Gwada tsarin",
   "sim.journey": "Lokacin tafiya A → B",
 

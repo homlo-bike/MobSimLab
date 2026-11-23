@@ -258,7 +258,6 @@ export const bn: Messages = {
   "tab.tables": "সারণি",
   "tab.preferences": "পছন্দ",
 
-
   "sim.test": "সিস্টেম পরীক্ষা করুন",
   "sim.journey": "যাত্রার সময় A → B",
 

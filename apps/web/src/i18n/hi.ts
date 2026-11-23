@@ -260,7 +260,6 @@ export const hi: Messages = {
   "tab.tables": "तालिकाएँ",
   "tab.preferences": "प्राथमिकताएँ",
 
-
   "sim.test": "सिस्टम परखें",
   "sim.journey": "यात्रा समय A → B",
 

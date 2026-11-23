@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Kalibrasyon: GEH istatistiği için hafta içi sayımın bölündüğü saat",
     "demand.walk_speed_kmh": "İstasyonlar arası yaya bağlantıları için yürüme hızı",
     "journey.walk_detour_factor": "Kuş uçuşu mesafeye göre yürüme mesafesi (yolculuk planlayıcı, fayda tahmini)",
-    "journey.walk_slope_k": "Eğimde yürüme: Tobler yürüyüş fonksiyonunun eğim terimi (yolculuk planlayıcı; 0 = yürüyüş düz zemin gibi)",
+    "journey.walk_slope_k": "Eğimde yürüme: Tobler yürüyüş fonksiyonunun eğim terimi (0 = yürüyüş düz zemin gibi)",
     "journey.min_change_s": "Yolculuk planlayıcı: aynı durakta en kısa aktarma süresi",
     "journey.level_change_s": "Yolculuk planlayıcı: bir istasyonda peron değiştirmek için eklenen süre (merdiven, asansör)",
     "journey.same_name_station_m": "Bu kuş uçuşu mesafe içindeki aynı adlı duraklar tek bir istasyondur",

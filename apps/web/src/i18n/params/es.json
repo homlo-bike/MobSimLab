@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Calibración: horas entre las que se reparte un conteo de día laborable para el estadístico GEH",
     "demand.walk_speed_kmh": "Velocidad a pie para los enlaces peatonales entre estaciones",
     "journey.walk_detour_factor": "Distancia a pie respecto a la distancia en línea recta (planificador de viajes, estimación de beneficios)",
-    "journey.walk_slope_k": "Caminar en pendiente: término de pendiente de la función de senderismo de Tobler (planificador de viajes; 0 = caminatas como en llano)",
+    "journey.walk_slope_k": "Caminar en pendiente: término de pendiente de la función de senderismo de Tobler (0 = caminatas como en llano)",
     "journey.min_change_s": "Planificador de viajes: tiempo mínimo de transbordo en la misma parada",
     "journey.level_change_s": "Planificador de viajes: tiempo añadido para cambiar de andén dentro de una estación (escaleras, ascensores)",
     "journey.same_name_station_m": "Las paradas con el mismo nombre a menos de esta distancia en línea recta son una estación",

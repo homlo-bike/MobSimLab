@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Ìṣàtúnṣe: wákàtí tí a fi pín iye ọjọ́ iṣẹ́ fún ìṣirò GEH",
     "demand.walk_speed_kmh": "Ìyára ìrìn ẹsẹ̀ fún àwọn ọ̀nà ìrìn láàrin àwọn ibùdókọ̀",
     "journey.walk_detour_factor": "Ìjìnnà ìrìn ẹsẹ̀ ní ìfiwéra pẹ̀lú ìjìnnà ìlà títọ́ (olùṣètò ìrìn, ìṣirò àǹfààní)",
-    "journey.walk_slope_k": "Rírìn lórí òkè: ìwọ̀n ìtẹ̀ nínú ìlànà ìrìn Tobler (olùṣètò ìrìn-àjò; 0 = a ka ìrìn bí ilẹ̀ pẹ̀tẹ́lẹ̀)",
+    "journey.walk_slope_k": "Rírìn lórí òkè: ìwọ̀n ìtẹ̀ nínú ìlànà ìrìn Tobler (0 = a ka ìrìn bí ilẹ̀ pẹ̀tẹ́lẹ̀)",
     "journey.min_change_s": "Olùṣètò ìrìn: àkókò ìyípadà tó kéré jù ní ibùdókọ̀ kan",
     "journey.level_change_s": "Olùṣètò ìrìn: àkókò àfikún láti yí pẹpẹ padà ní ibùdókọ̀ (àtẹ̀gùn, ẹ̀rọ agbéniga)",
     "journey.same_name_station_m": "Àwọn ibùdókọ̀ orúkọ kan náà láàrin ìjìnnà ìlà títọ́ yìí jẹ́ ibùdó kan",

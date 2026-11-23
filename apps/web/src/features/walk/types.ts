@@ -10,6 +10,8 @@ export interface WalkSettings {
   crossing_delay_s: number;
   step_free: boolean;
   max_snap_m: number;
+  /** `journey.walk_slope_k`: Tobler's steepness term; walks are timed on their slopes where heights are set. */
+  walk_slope_k: number;
 }
 
 /** A stop or station (`walk::StopPoint`). */
@@ -103,6 +105,10 @@ export interface WalkEngine {
   setJunctions(junctions: JunctionSignals[]): void;
   build(): void;
   ready(): boolean;
+  /** Points to take ground heights at: the middle of every `cellM` square holding a node of the built network. */
+  heightCells(cellM: number): LonLat[];
+  /** Ground heights at `heightCells(cellM)`, in order (null: unknown); until the next `build`. Output: nodes given one. */
+  setHeights(cellM: number, heights: (number | null)[]): number;
   coverage(req: CoverageRequest): CoverageResult;
   /** The walk network within `maxMinutes` of the stops, each edge with `minutes` to the nearest one. */
   catchment(stops: StopPoint[], maxMinutes: number, settings: WalkSettings): CatchmentGeoJson;

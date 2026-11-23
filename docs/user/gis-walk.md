@@ -14,7 +14,9 @@ The result says what share of the residents round the lines live within the walk
 
 On the map, a soft shaded area shows the minutes on foot to the nearest stop: green within 5, yellow within 10, orange within 15. Where there is no shading, the walk is longer than the limit. **Show on the map** turns the layer off and on.
 
-The area measured is the box round all the stops plus the distance walked in the limit; at most about 12 km × 12 km is loaded at once. Where the population of the country is still downloading to the server, or there is none, the walkable street length stands in for people, and the panel says so. Slopes are not counted yet.
+The area measured is the box round all the stops plus the distance walked in the limit; at most about 12 km × 12 km is loaded at once. Where the population of the country is still downloading to the server, or there is none, the walkable street length stands in for people, and the panel says so.
+
+Walks are timed on the slope of each street, in the direction people walk to the stop, with Tobler's hiking function: a walk up a 10 % slope takes about 1.4 times as long as on the flat, and a gentle walk down is a little quicker. The ground heights come from the project's imported elevation, else Copernicus GLO-30, in 30 m squares. The steepness term is the journey planner's (Project preferences → All parameters → Walking on slopes); 0 times every walk as flat. Where the heights do not load, walks are timed as flat and the panel says so.
 
 ## Stop spacing
 

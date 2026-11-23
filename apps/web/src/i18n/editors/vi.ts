@@ -1514,6 +1514,10 @@ export const editorsVi = {
   "walk.drawFirst": "Hãy vẽ trước một tuyến đường phố hoặc một tuyến đường sắt có nhà ga.",
   "walk.collecting": "Đang thu thập trạm dừng và nhà ga…",
   "walk.loadingTiles": "Đang tải lối đi bộ ({done} trên {count} ô bản đồ)…",
+  "walk.loadingHeights": "Đang tải độ cao mặt đất…",
+  "walk.heightsUnavailable":
+    "Không tải được độ cao mặt đất ({reason}), nên đi bộ được tính như trên đường bằng.",
+  "walk.heightsNoData": "không có dữ liệu độ cao cho khu vực này",
   "walk.loadingPopulation": "Đang tải nơi người dân sinh sống…",
   "walk.computing": "Đang đo quãng đi bộ…",
   "walk.tooLarge":
@@ -1547,7 +1551,7 @@ export const editorsVi = {
   "walk.popUnavailable": "Không có dữ liệu dân số ({reason}); đường phố thay cho người dân.",
   "walk.popCredit": "Cư dân: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Khu vực là hình chữ nhật quanh các trạm cộng quãng đường đi được trong giới hạn. Độ dốc chưa được tính.",
+    "Khu vực là hình chữ nhật quanh các điểm dừng cộng với quãng đường đi bộ trong giới hạn. Mỗi con đường được tính theo độ dốc của nó khi đi về phía điểm dừng, nên đi bộ lên dốc mất nhiều thời gian hơn.",
   "spacing.title": "Khoảng cách giữa các trạm",
   "spacing.intro":
     "Khoảng cách giữa các trạm liên tiếp dọc tuyến, so với khoảng thông thường của loại hình. Trạm quá gần làm chậm tuyến; quá xa nghĩa là phải đi bộ lâu.",

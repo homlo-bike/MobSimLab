@@ -1550,6 +1550,9 @@ export const editorsEn = {
   "walk.drawFirst": "Draw a street line or a railway with stations first.",
   "walk.collecting": "Collecting the stops and stations…",
   "walk.loadingTiles": "Loading footpaths ({done} of {count} map tiles)…",
+  "walk.loadingHeights": "Loading ground heights…",
+  "walk.heightsUnavailable": "Ground heights did not load ({reason}), so walks are timed as on flat ground.",
+  "walk.heightsNoData": "no height data for this area",
   "walk.loadingPopulation": "Loading where people live…",
   "walk.computing": "Measuring the walks…",
   "walk.tooLarge":
@@ -1582,7 +1585,7 @@ export const editorsEn = {
   "walk.popUnavailable": "No population data ({reason}); the streets stand in for people.",
   "walk.popCredit": "Residents: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "The area is the box round the stops plus the distance walked in the limit. Slopes are not counted yet.",
+    "The area is the box round the stops plus the distance walked in the limit. Each street is walked on its slope towards the stop, so uphill walks take longer.",
   "spacing.title": "Stop spacing",
   "spacing.intro":
     "Distance between consecutive stops along the line, against the usual range for the mode. Stops too close slow the line down; stops too far apart mean long walks.",
