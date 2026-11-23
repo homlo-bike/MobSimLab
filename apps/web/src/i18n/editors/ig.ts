@@ -1163,6 +1163,8 @@ export const editorsIg = {
   "ferry.pier": "Ọdụ ụgbọ mmiri {n}",
   "ferry.pierLower": "ọdụ ụgbọ mmiri {n}",
   "ferry.legLower": "ngalaba {n}",
+  "ferry.depthsUnavailable":
+    "Enweghị ike ibudata omimi mmiri GEBCO, ya mere anaghị enyocha omimi n'oké osimiri mepere emepe.",
   "ferry.hint.pier":
     "Pịa ikpere mmiri iji tinye ọdụ ụgbọ mmiri ọzọ. Pịa ọdụ ụgbọ mmiri dị adị iji kwụsị ebe ahụ ọzọ.",
   "ferry.hint.via": "Pịa mmiri iji tinye ntụpọ ngafe na ngalaba {n}.",

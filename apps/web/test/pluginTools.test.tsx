@@ -312,6 +312,105 @@ describe("editors", () => {
     expect(tt.stops[0]!.stop_id).toBe("plugin:ferry:0");
   });
 
+  it("ferry editor checks the route against land, bridges and the depth on open sea", async () => {
+    const doc: WaterDoc = {
+      name: "Sound",
+      mode: "ferry",
+      vessel: "monohull",
+      piers: [
+        { name: "West", lonlat: east(0), berths: 1, gangways: 1 },
+        { name: "East", lonlat: east(6000), berths: 1, gangways: 1 },
+      ],
+      calls: [
+        { pier: 0, via: [] },
+        { pier: 1, via: [] },
+      ],
+      zones: [],
+      headwayMin: 30,
+      layoverS: null,
+      paxPerCall: null,
+      speedKn: null,
+    };
+    // Sea all round, an island from 2.5 to 3 km and a fixed bridge 2 m above the water at 4 km.
+    const box = (w: number, e: number, h: number) =>
+      [
+        [east(w)[0], east(0)[1] - h],
+        [east(e)[0], east(0)[1] - h],
+        [east(e)[0], east(0)[1] + h],
+        [east(w)[0], east(0)[1] + h],
+        [east(w)[0], east(0)[1] - h],
+      ] as [number, number][];
+    const loadSurroundings = vi.fn(async (b: [number, number, number, number]) => ({
+      bbox: b,
+      areas: [],
+      sea: [box(-3000, 9000, 0.05), box(2500, 3000, 0.002)],
+      rivers: [],
+      bridges: [
+        {
+          name: "Sound bridge",
+          line: [
+            [east(4000)[0], east(0)[1] - 0.001],
+            [east(4000)[0], east(0)[1] + 0.001],
+          ] as [number, number][],
+          clearance_m: 2,
+          movable: false,
+        },
+      ],
+      locks: [],
+    }));
+    const fetchDepths = vi.fn(async (points: [number, number][]) => points.map(() => 1));
+    render(
+      <WaterRouteEditor
+        map={null}
+        tool={ferryTool}
+        storageKey="k-sound"
+        initial={doc}
+        loadSurroundings={loadSurroundings}
+        fetchDepths={fetchDepths}
+      />,
+    );
+    await screen.findByText(/crosses about .* of land/);
+    expect(screen.getByText(/passes under Sound bridge, 2\.0 m above the water/)).toBeTruthy();
+    // The depths on open sea are fetched, and 1 m is too shallow.
+    await waitFor(() => expect(fetchDepths).toHaveBeenCalled());
+    await screen.findByText(/crosses open water about 1\.0 m deep/);
+    expect(loadSurroundings).toHaveBeenCalledTimes(1);
+  });
+
+  it("ferry editor says the route is not checked when the map data does not load", async () => {
+    const doc: WaterDoc = {
+      name: "Sound",
+      mode: "ferry",
+      vessel: "monohull",
+      piers: [
+        { name: "West", lonlat: east(0), berths: 1, gangways: 1 },
+        { name: "East", lonlat: east(3000), berths: 1, gangways: 1 },
+      ],
+      calls: [
+        { pier: 0, via: [] },
+        { pier: 1, via: [] },
+      ],
+      zones: [],
+      headwayMin: 30,
+      layoverS: null,
+      paxPerCall: null,
+      speedKn: null,
+    };
+    render(
+      <WaterRouteEditor
+        map={null}
+        tool={ferryTool}
+        storageKey="k-sound2"
+        initial={doc}
+        loadSurroundings={async () => {
+          throw new Error("offline");
+        }}
+        fetchDepths={async () => []}
+      />,
+    );
+    await screen.findByText(/not checked until OpenStreetMap water has loaded/);
+  });
+
   it("editors save the drawing, the line and the noise shape with the project", async () => {
     const cable: SpanDoc = {
       name: "Rhine",

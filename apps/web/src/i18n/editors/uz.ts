@@ -1214,6 +1214,8 @@ export const editorsUz = {
   "ferry.pier": "Iskala {n}",
   "ferry.pierLower": "iskala {n}",
   "ferry.legLower": "qism {n}",
+  "ferry.depthsUnavailable":
+    "GEBCO suv chuqurliklari yuklanmadi, shuning uchun ochiq dengizda chuqurlik tekshirilmaydi.",
   "ferry.hint.pier":
     "Keyingi iskalani qoʻshish uchun qirgʻoqni bosing. U yerda yana toʻxtash uchun mavjud iskalani bosing.",
   "ferry.hint.via": "{n} qismga oraliq nuqta qoʻshish uchun suvni bosing.",

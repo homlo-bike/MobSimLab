@@ -8,12 +8,15 @@
 //! [`segment`](crate::segment) engine with each pier's berths as a reservable resource, so vessels that
 //! would meet at a pier with too few berths show up as holds.
 //!
-//! Routing on a water graph built from OpenStreetMap, bridges, locks and depth are later steps; until then
-//! the route is the planner's via points, and the result says so.
+//! The route is the planner's via points. With the [`Surroundings`] the app fetches (OpenStreetMap water,
+//! bridges and locks, GEBCO depth), the [`water_checks`](crate::water_checks) say where a leg crosses land,
+//! passes under a bridge too low for the vessel or one that opens, goes through a lock, or crosses open water
+//! too shallow for it.
 
 use crate::geo::{self, LonLat, Xy};
 use crate::issue::{Issue, Level};
 use crate::segment::{self, Call, Run, SimInput};
+use crate::water_checks::{self, DepthPoint, Sizes, Surroundings};
 use engine_msg::msg;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -36,6 +39,15 @@ pub struct VesselType {
     pub min_dwell_s: f64,
     /// `ferry.passenger_capacity`: passengers per vessel, as certified.
     pub capacity: f64,
+    /// `ferry.air_draft_m`: height above the waterline, for the bridge check.
+    #[serde(default)]
+    pub air_draft_m: Option<f64>,
+    /// `ferry.draught_m`: depth below the waterline, for the depth check.
+    #[serde(default)]
+    pub draught_m: Option<f64>,
+    /// `ferry.under_keel_clearance_m`: water kept under the keel, for the depth check.
+    #[serde(default)]
+    pub under_keel_m: Option<f64>,
 }
 
 /// A pier (landing) with its berths and gangways.
@@ -88,6 +100,10 @@ pub struct WaterLine {
     /// How long the berth check runs the service, seconds (default 3 hours).
     #[serde(default = "three_hours")]
     pub check_window_s: f64,
+    /// OpenStreetMap water, bridges and locks around the line, and GEBCO depths, for the route checks;
+    /// without them the route is not checked.
+    #[serde(default)]
+    pub surroundings: Option<Surroundings>,
 }
 
 fn three_hours() -> f64 {
@@ -146,6 +162,9 @@ pub struct WaterView {
     pub berths: Vec<BerthUse>,
     pub holds: usize,
     pub held_s: f64,
+    /// Points on open sea whose depth (GEBCO) the depth check needs; the app fetches them and builds again with
+    /// them in `surroundings.depths`.
+    pub depth_points: Vec<DepthPoint>,
     pub issues: Vec<Issue>,
 }
 
@@ -408,11 +427,31 @@ pub fn build(line: &WaterLine) -> WaterView {
             }
         }
         directions = vec![fwd, bwd];
-        issues.push(Issue::new(
-            Level::Info,
-            "route.unchecked",
-            msg!("kits.route.unchecked"),
-        ));
+    }
+    let mut depth_points = Vec::new();
+    if !legs.is_empty() {
+        match &line.surroundings {
+            Some(s) => {
+                let paths: Vec<Vec<LonLat>> = legs.iter().map(|l| l.path.clone()).collect();
+                depth_points = water_checks::depth_points(&paths, s, origin);
+                let sizes = Sizes {
+                    air_draft_m: line.vessel.air_draft_m,
+                    draught_m: line.vessel.draught_m,
+                    under_keel_m: line.vessel.under_keel_m,
+                };
+                issues.extend(water_checks::check(&paths, s, sizes, &depth_points, origin));
+                issues.push(Issue::new(
+                    Level::Info,
+                    "route.checked",
+                    msg!("kits.route.checked"),
+                ));
+            }
+            None => issues.push(Issue::new(
+                Level::Info,
+                "route.unchecked",
+                msg!("kits.route.unchecked"),
+            )),
+        }
     }
     let capacity_pphpd = if calls.len() >= 2 {
         line.vessel.capacity * 3600.0 / headway
@@ -433,6 +472,7 @@ pub fn build(line: &WaterLine) -> WaterView {
         berths,
         holds,
         held_s,
+        depth_points,
         issues,
     }
 }
@@ -449,6 +489,9 @@ mod tests {
             boarding_pax_per_min_per_gangway: 30.0,
             min_dwell_s: 60.0,
             capacity: 250.0,
+            air_draft_m: Some(10.0),
+            draught_m: Some(2.0),
+            under_keel_m: Some(1.0),
         }
     }
 
@@ -474,6 +517,7 @@ mod tests {
             pax_per_call: 60.0,
             speed_zones: vec![],
             check_window_s: 3.0 * 3600.0,
+            surroundings: None,
         }
     }
 
@@ -566,5 +610,38 @@ mod tests {
         ];
         let v = build(&l);
         assert!(v.issues.iter().any(|i| i.code == "leg.same_pier"));
+    }
+
+    #[test]
+    fn route_is_checked_with_the_surroundings() {
+        let mut l = line(vec![pier(0.0, 0.0, 1), pier(6000.0, 0.0, 1)], 30.0 * 60.0);
+        let codes = |v: &WaterView| v.issues.iter().map(|i| i.code.clone()).collect::<Vec<_>>();
+        assert!(codes(&build(&l)).contains(&"route.unchecked".to_string()));
+        assert!(build(&l).depth_points.is_empty());
+        // Open sea all round, with a bridge 8 m above the water half way.
+        let at = |x: f64, y: f64| geo::to_lonlat([9.97, 53.54], [x, y]);
+        let sea = vec![
+            at(-2000.0, -2000.0),
+            at(8000.0, -2000.0),
+            at(8000.0, 2000.0),
+            at(-2000.0, 2000.0),
+            at(-2000.0, -2000.0),
+        ];
+        let (w, e) = (at(-2000.0, -2000.0), at(8000.0, 2000.0));
+        l.surroundings = Some(Surroundings {
+            bbox: [w[0], w[1], e[0], e[1]],
+            sea: vec![sea],
+            bridges: vec![water_checks::Bridge {
+                name: "Harbour bridge".into(),
+                line: vec![at(3000.0, -100.0), at(3000.0, 100.0)],
+                clearance_m: Some(8.0),
+                movable: false,
+            }],
+            ..Default::default()
+        });
+        let v = build(&l);
+        assert_eq!(codes(&v), vec!["route.low_bridge", "route.checked"]);
+        assert!(!v.depth_points.is_empty());
+        assert!(v.depth_points.iter().all(|p| p.leg == 0));
     }
 }

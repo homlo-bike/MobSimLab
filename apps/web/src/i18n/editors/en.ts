@@ -1208,6 +1208,7 @@ export const editorsEn = {
   "ferry.pier": "Pier {n}",
   "ferry.pierLower": "pier {n}",
   "ferry.legLower": "leg {n}",
+  "ferry.depthsUnavailable": "GEBCO water depths could not be loaded, so depth on open sea is not checked.",
   "ferry.hint.pier": "Click the shore to add the next pier. Click an existing pier to call there again.",
   "ferry.hint.via": "Click the water to add a via point to leg {n}.",
   "ferry.hint.zone": "Click the corners of a speed zone, then press Finish zone.",

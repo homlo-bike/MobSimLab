@@ -1268,6 +1268,8 @@ export const editorsPl = {
   "ferry.pier": "Przystań {n}",
   "ferry.pierLower": "przystań {n}",
   "ferry.legLower": "odcinek {n}",
+  "ferry.depthsUnavailable":
+    "Nie udało się wczytać głębokości GEBCO, więc głębokość na otwartym morzu nie jest sprawdzana.",
   "ferry.hint.pier":
     "Kliknij brzeg, aby dodać następną przystań. Kliknij istniejącą przystań, aby zawinąć ponownie.",
   "ferry.hint.via": "Kliknij wodę, aby dodać punkt pośredni do odcinka {n}.",

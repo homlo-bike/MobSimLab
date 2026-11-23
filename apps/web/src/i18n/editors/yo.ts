@@ -1167,6 +1167,7 @@ export const editorsYo = {
   "ferry.pier": "Èbúté {n}",
   "ferry.pierLower": "èbúté {n}",
   "ferry.legLower": "apá {n}",
+  "ferry.depthsUnavailable": "A kò lè gbé jíjìn omi GEBCO, nítorí náà a kò ṣàyẹ̀wò jíjìn ní òkun gbangba.",
   "ferry.hint.pier": "Tẹ etí odò láti fi èbúté tó kàn kún un. Tẹ èbúté tó wà láti dúró níbẹ̀ lẹ́ẹ̀kan sí i.",
   "ferry.hint.via": "Tẹ omi láti fi ojúàmì ìkọjá kún apá {n}.",
   "ferry.hint.zone": "Tẹ àwọn igun agbègbè ìyára, lẹ́yìn náà tẹ Parí agbègbè.",

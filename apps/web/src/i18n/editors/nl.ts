@@ -1214,6 +1214,8 @@ export const editorsNl = {
   "ferry.pier": "Steiger {n}",
   "ferry.pierLower": "steiger {n}",
   "ferry.legLower": "traject {n}",
+  "ferry.depthsUnavailable":
+    "De GEBCO-waterdiepten konden niet worden geladen, dus de diepte op open zee wordt niet gecontroleerd.",
   "ferry.hint.pier":
     "Klik op de oever om de volgende steiger toe te voegen. Klik op een bestaande steiger om daar opnieuw aan te leggen.",
   "ferry.hint.via": "Klik op het water om een tussenpunt aan traject {n} toe te voegen.",

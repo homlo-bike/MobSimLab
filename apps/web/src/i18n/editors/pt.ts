@@ -1213,6 +1213,8 @@ export const editorsPt = {
   "ferry.pier": "Cais {n}",
   "ferry.pierLower": "cais {n}",
   "ferry.legLower": "trecho {n}",
+  "ferry.depthsUnavailable":
+    "Não foi possível carregar as profundidades do GEBCO, por isso a profundidade em mar aberto não é verificada.",
   "ferry.hint.pier":
     "Clique na margem para adicionar o próximo cais. Clique num cais existente para fazer escala nele de novo.",
   "ferry.hint.via": "Clique na água para adicionar um ponto de passagem ao trecho {n}.",

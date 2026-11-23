@@ -1209,6 +1209,8 @@ export const editorsSw = {
   "ferry.pier": "Gati {n}",
   "ferry.pierLower": "gati {n}",
   "ferry.legLower": "sehemu {n}",
+  "ferry.depthsUnavailable":
+    "Kina cha maji cha GEBCO hakikuweza kupakiwa, kwa hiyo kina katika bahari wazi hakikaguliwi.",
   "ferry.hint.pier": "Bofya ufukwe kuongeza gati inayofuata. Bofya gati iliyopo kusimama hapo tena.",
   "ferry.hint.via": "Bofya majini kuongeza nukta ya kupitia kwenye sehemu {n}.",
   "ferry.hint.zone": "Bofya pembe za eneo la kasi, kisha bonyeza Maliza eneo.",

@@ -1217,6 +1217,8 @@ export const editorsIt = {
   "ferry.pier": "Pontile {n}",
   "ferry.pierLower": "pontile {n}",
   "ferry.legLower": "tratta {n}",
+  "ferry.depthsUnavailable":
+    "Non è stato possibile caricare le profondità GEBCO, quindi la profondità in mare aperto non è verificata.",
   "ferry.hint.pier":
     "Fai clic sulla riva per aggiungere il pontile successivo. Fai clic su un pontile esistente per farvi di nuovo scalo.",
   "ferry.hint.via": "Fai clic sull'acqua per aggiungere un punto di passaggio alla tratta {n}.",

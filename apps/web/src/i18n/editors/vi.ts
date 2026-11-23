@@ -1167,6 +1167,7 @@ export const editorsVi = {
   "ferry.pier": "Bến {n}",
   "ferry.pierLower": "bến {n}",
   "ferry.legLower": "chặng {n}",
+  "ferry.depthsUnavailable": "Không tải được độ sâu GEBCO, nên độ sâu ngoài biển khơi không được kiểm tra.",
   "ferry.hint.pier": "Nhấp vào bờ để thêm bến tiếp theo. Nhấp vào bến hiện có để ghé lại.",
   "ferry.hint.via": "Nhấp vào mặt nước để thêm điểm qua cho chặng {n}.",
   "ferry.hint.zone": "Nhấp vào các góc của vùng giới hạn tốc độ, rồi nhấn Hoàn tất vùng.",

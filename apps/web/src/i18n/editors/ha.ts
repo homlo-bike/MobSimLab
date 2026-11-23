@@ -1198,6 +1198,8 @@ export const editorsHa = {
   "ferry.pier": "Tashar jirgin ruwa {n}",
   "ferry.pierLower": "tashar jirgin ruwa {n}",
   "ferry.legLower": "sashe {n}",
+  "ferry.depthsUnavailable":
+    "Ba a iya ɗora zurfin ruwa na GEBCO ba, don haka ba a duba zurfi a buɗaɗɗen teku ba.",
   "ferry.hint.pier":
     "Danna bakin ruwa don ƙara tashar jirgin ruwa ta gaba. Danna tashar da ake da ita don sake tsayawa a can.",
   "ferry.hint.via": "Danna ruwa don ƙara wurin wucewa a sashe {n}.",

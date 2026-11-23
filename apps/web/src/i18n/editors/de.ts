@@ -1233,6 +1233,8 @@ export const editorsDe = {
   "ferry.pier": "Anleger {n}",
   "ferry.pierLower": "Anleger {n}",
   "ferry.legLower": "Teilstrecke {n}",
+  "ferry.depthsUnavailable":
+    "Die GEBCO-Wassertiefen konnten nicht geladen werden; die Tiefe auf offener See wird daher nicht geprüft.",
   "ferry.hint.pier":
     "Klicken Sie ans Ufer, um den nächsten Anleger hinzuzufügen. Klicken Sie auf einen vorhandenen Anleger, um ihn erneut anzulaufen.",
   "ferry.hint.via": "Klicken Sie aufs Wasser, um Teilstrecke {n} einen Zwischenpunkt hinzuzufügen.",

@@ -1161,6 +1161,7 @@ export const editorsAm = {
   "ferry.pier": "ወደብ {n}",
   "ferry.pierLower": "ወደብ {n}",
   "ferry.legLower": "ክፍል {n}",
+  "ferry.depthsUnavailable": "የGEBCO የውሃ ጥልቀቶች ሊጫኑ አልቻሉም፤ ስለዚህ በክፍት ባሕር ላይ ጥልቀት አይፈተሽም።",
   "ferry.hint.pier": "ቀጣዩን ወደብ ለማከል የባሕር ዳርቻውን ጠቅ ያድርጉ። እዚያ እንደገና ለማቆም ያለ ወደብን ጠቅ ያድርጉ።",
   "ferry.hint.via": "በክፍል {n} ላይ የማለፊያ ነጥብ ለማከል ውሃውን ጠቅ ያድርጉ።",
   "ferry.hint.zone": "የፍጥነት ዞኑን ማዕዘኖች ጠቅ ያድርጉ፣ ከዚያ ዞኑን ጨርስን ይጫኑ።",

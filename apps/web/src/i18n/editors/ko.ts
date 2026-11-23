@@ -1149,6 +1149,7 @@ export const editorsKo = {
   "ferry.pier": "선착장 {n}",
   "ferry.pierLower": "선착장 {n}",
   "ferry.legLower": "구간 {n}",
+  "ferry.depthsUnavailable": "GEBCO 수심을 불러오지 못해 외해의 수심은 확인하지 않습니다.",
   "ferry.hint.pier": "해안을 클릭해 다음 선착장을 추가합니다. 기존 선착장을 클릭하면 다시 기항합니다.",
   "ferry.hint.via": "수면을 클릭해 구간 {n}에 경유점을 추가합니다.",
   "ferry.hint.zone": "속도 제한 구역의 모서리를 클릭한 다음 '구역 완료'를 누르세요.",

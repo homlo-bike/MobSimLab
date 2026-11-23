@@ -1232,6 +1232,8 @@ export const editorsZu = {
   "ferry.pier": "Ichweba {n}",
   "ferry.pierLower": "ichweba {n}",
   "ferry.legLower": "isigaba {n}",
+  "ferry.depthsUnavailable":
+    "Ukujula kwamanzi kwe-GEBCO akukwazanga ukulayishwa, ngakho ukujula olwandle oluvulekile akuhlolwa.",
   "ferry.hint.pier":
     "Chofoza ugu ukuze wengeze ichweba elilandelayo. Chofoza ichweba elikhona ukuze ume lapho futhi.",
   "ferry.hint.via": "Chofoza amanzi ukuze wengeze iphoyinti lokudlula esigabeni {n}.",

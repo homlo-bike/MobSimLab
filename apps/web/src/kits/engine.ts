@@ -78,6 +78,9 @@ export function vesselType(
     boarding_pax_per_min_per_gangway: p("boarding_pax_per_min_per_gangway", 30),
     min_dwell_s: p("min_dwell_s", 60),
     capacity: p("passenger_capacity", 250),
+    air_draft_m: v["ferry.air_draft_m"] ?? null,
+    draught_m: v["ferry.draught_m"] ?? null,
+    under_keel_m: v["ferry.under_keel_clearance_m"] ?? null,
     ...over,
   };
 }

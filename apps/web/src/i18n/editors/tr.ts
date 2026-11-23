@@ -1178,6 +1178,8 @@ export const editorsTr = {
   "ferry.pier": "İskele {n}",
   "ferry.pierLower": "iskele {n}",
   "ferry.legLower": "ayak {n}",
+  "ferry.depthsUnavailable":
+    "GEBCO su derinlikleri yüklenemedi, bu yüzden açık denizde derinlik kontrol edilmiyor.",
   "ferry.hint.pier":
     "Sonraki iskeleyi eklemek için kıyıya tıklayın. Yeniden uğramak için mevcut bir iskeleye tıklayın.",
   "ferry.hint.via": "{n}. ayağa ara nokta eklemek için suya tıklayın.",

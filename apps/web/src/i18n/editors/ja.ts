@@ -1153,6 +1153,7 @@ export const editorsJa = {
   "ferry.pier": "桟橋 {n}",
   "ferry.pierLower": "桟橋 {n}",
   "ferry.legLower": "区間 {n}",
+  "ferry.depthsUnavailable": "GEBCOの水深を読み込めなかったため、外洋の水深は確認していません。",
   "ferry.hint.pier": "岸をクリックして次の桟橋を追加します。既存の桟橋をクリックすると再度寄港します。",
   "ferry.hint.via": "水面をクリックして区間 {n} に経由点を追加します。",
   "ferry.hint.zone": "速度制限区域の角をクリックし、「区域を完了」を押します。",

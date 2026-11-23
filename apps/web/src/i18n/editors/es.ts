@@ -1216,6 +1216,8 @@ export const editorsEs = {
   "ferry.pier": "Embarcadero {n}",
   "ferry.pierLower": "embarcadero {n}",
   "ferry.legLower": "trayecto {n}",
+  "ferry.depthsUnavailable":
+    "No se pudieron cargar las profundidades de GEBCO, así que no se comprueba la profundidad en mar abierto.",
   "ferry.hint.pier":
     "Haz clic en la orilla para añadir el siguiente embarcadero. Haz clic en un embarcadero existente para volver a hacer escala allí.",
   "ferry.hint.via": "Haz clic en el agua para añadir un punto de paso al trayecto {n}.",

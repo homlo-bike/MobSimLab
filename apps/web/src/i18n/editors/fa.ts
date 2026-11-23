@@ -1172,6 +1172,7 @@ export const editorsFa = {
   "ferry.pier": "اسکله {n}",
   "ferry.pierLower": "اسکله {n}",
   "ferry.legLower": "بخش {n}",
+  "ferry.depthsUnavailable": "عمق‌های آب GEBCO بارگیری نشد، بنابراین عمق در دریای آزاد بررسی نمی‌شود.",
   "ferry.hint.pier":
     "روی ساحل کلیک کنید تا اسکلهٔ بعدی اضافه شود. روی اسکلهٔ موجود کلیک کنید تا دوباره توقف شود.",
   "ferry.hint.via": "روی آب کلیک کنید تا نقطهٔ گذر به بخش {n} اضافه شود.",

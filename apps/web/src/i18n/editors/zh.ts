@@ -1123,6 +1123,7 @@ export const editorsZh = {
   "ferry.pier": "码头 {n}",
   "ferry.pierLower": "码头 {n}",
   "ferry.legLower": "航段 {n}",
+  "ferry.depthsUnavailable": "无法加载 GEBCO 水深，因此不检查开阔海域的水深。",
   "ferry.hint.pier": "点击岸边添加下一个码头。点击已有码头可再次停靠。",
   "ferry.hint.via": "点击水面为航段 {n} 添加途经点。",
   "ferry.hint.zone": "点击限速区的各个角点，然后按“完成区域”。",

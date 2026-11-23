@@ -1202,6 +1202,8 @@ export const editorsId = {
   "ferry.pier": "Dermaga {n}",
   "ferry.pierLower": "dermaga {n}",
   "ferry.legLower": "ruas {n}",
+  "ferry.depthsUnavailable":
+    "Kedalaman air GEBCO tidak dapat dimuat, jadi kedalaman di laut terbuka tidak diperiksa.",
   "ferry.hint.pier":
     "Klik pantai untuk menambah dermaga berikutnya. Klik dermaga yang ada untuk singgah lagi.",
   "ferry.hint.via": "Klik air untuk menambah titik lewat pada ruas {n}.",
