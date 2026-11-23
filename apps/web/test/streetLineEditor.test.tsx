@@ -660,6 +660,40 @@ describe("Street line saved with the project", () => {
     expect(line.routedWith).toMatch(/^[0-9a-f]{16}$/);
   });
 
+  it("saves the completed route on opening a line whose points were removed after its route was saved", async () => {
+    const engine = fakeEngine();
+    const build = engine.rebuild;
+    engine.rebuild = vi.fn(() => (build(), engine.clear()));
+    const onSave = vi.fn();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    // The route was saved with a fourth point that left a leg not found; that point was then removed from the
+    // line's points without routing it again, so the saved route still has the leg not found.
+    const stale = sampleView(["end_stop", "via", "stop", "stop"]);
+    stale.legs = stale.legs.map((l, i) => (i === 3 ? { ...l, status: "error" as const, length_m: 0 } : l));
+    expect(routesMore(saved.view, stale)).toBe(true);
+    expect(routesMore(stale, saved.view)).toBe(false);
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={{ ...saved, view: stale, routedWith: routeKey(saved, AROUND) }}
+        onSave={onSave}
+      />,
+    );
+    await waitFor(() => expect(engine.insertPoint).toHaveBeenCalledTimes(3));
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const line = onSave.mock.calls[0]![0] as SavedStreetLine;
+    expect(line.points).toHaveLength(3);
+    expect(line.view.points).toHaveLength(3);
+    expect(unroutedParts(line.view)).toBeNull();
+
+    // The same route found again is not a change.
+    await new Promise((r) => setTimeout(r, 20));
+    expect(onSave).toHaveBeenCalledTimes(1);
+  });
+
   it("shows a saved route as out of date when what it depends on changed, and recalculates it", async () => {
     const engine = fakeEngine();
     const build = engine.rebuild;
@@ -831,8 +865,9 @@ describe("Street line vehicle and service", () => {
     );
     expect(screen.getByTestId("vehicle-facts").textContent).toContain(`${bus.capacity} places`);
 
-    // First and last departure and the off-peak headway are the planner's to change, and saved.
-    fireEvent.change(screen.getByLabelText("First departure"), { target: { value: "06:15" } });
+    // First and last departure and the off-peak headway are the planner's to change, and saved. They show once the
+    // line has a route.
+    fireEvent.change(await screen.findByLabelText("First departure"), { target: { value: "06:15" } });
     fireEvent.change(screen.getByLabelText("Last departure"), { target: { value: "23:00" } });
     fireEvent.change(screen.getByRole("spinbutton", { name: /Off-peak headway/ }), {
       target: { value: "15" },
@@ -855,7 +890,8 @@ describe("Street line vehicle and service", () => {
 
   it("starts a new line at 05:00 to 00:30 and flags a last departure before the first", async () => {
     await opened();
-    expect((screen.getByLabelText("First departure") as HTMLInputElement).value).toBe("05:00");
+    // The service times show once the line has a route.
+    expect(((await screen.findByLabelText("First departure")) as HTMLInputElement).value).toBe("05:00");
     expect((screen.getByLabelText("Last departure") as HTMLInputElement).value).toBe("24:30");
     fireEvent.change(screen.getByLabelText("Last departure"), { target: { value: "04:00" } });
     expect(screen.getByRole("list", { name: "Checks" }).textContent).toContain(

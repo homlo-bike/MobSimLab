@@ -248,9 +248,19 @@ export function keepRoutedLegs(view: LineView, saved: LineView | null | undefine
  * Whether `now` routes more of the same points than `before`: more legs found, or as many legs and more depot runs.
  * Streets that load after a line was saved can complete its route; the editor then saves the fuller route,
  * which Tables, costs and the appraisal read. A route with fewer parts found never replaces a saved one.
+ * A saved route worked out for other points than the line's (points removed or added without routing it again)
+ * is replaced when the route for the line's points leaves out fewer legs, or as many legs and fewer depot runs.
  */
 export function routesMore(now: LineView, before: LineView): boolean {
-  if (now.points.length !== before.points.length) return false;
+  if (now.points.length !== before.points.length) {
+    const missing = (v: LineView) => {
+      const p = unroutedParts(v);
+      return [p?.legs ?? 0, p?.depotRuns ?? 0];
+    };
+    const [legs, runs] = missing(now);
+    const [legsBefore, runsBefore] = missing(before);
+    return legs! < legsBefore! || (legs === legsBefore && runs! < runsBefore!);
+  }
   const found = (v: LineView) => [
     v.legs.filter((l) => l.status !== "error").length,
     v.depot_trips.filter((d) => d.status !== "error").length,

@@ -20,14 +20,14 @@ Saved runs work as in [Run on the server and save](simulator.md#run-on-the-serve
 - **Depots.** The depot layout of each depot the lines use: its gates, aisles and lanes, joined to the nearest street. Each vehicle leaves from the slot the depot tool gives it and parks back in it.
 - **Vehicles.** Each line's vehicle (length, width, top speed, weight) from the street line tool. The line's departures in the period (and the service before it) go to the fewest vehicles that can run them, each taking the next trip it is back in time for. A vehicle drives its pull-out run from the depot, its trips round the line's circuit from the first end stop, and its pull-in run back.
 - **Stops.** At every stop the vehicle stands for the line's **dwell** time (street line tool, timing). At the end stops it also waits for its planned departure. Dwell does not depend on passengers yet.
-- **Background traffic.** Cars on every street. On a street with traffic peaks set in the GIS tab, the morning and evening values are the cars per hour per direction in those peaks; elsewhere the project values `street.peak_cars_*_vph` by road type apply. Outside the two peaks the traffic is a share of the peak value, 60 % by default; change it in **Project preferences → Road simulation** (`road.off_peak_traffic_share`). Cars are not shown in the replay.
+- **Background traffic.** Cars on every street. On a street with traffic peaks set in the GIS tab, the morning and evening values are the cars per hour per direction in those peaks; elsewhere the project values `street.peak_cars_*_vph` by road type apply. Outside the two peaks the traffic is a share of the peak value, 60 % by default; change it in **Project preferences → Road simulation** (`road.off_peak_traffic_share`). Where a street uses its road type's value, the run cuts it to 80 % of what the junction at its end lets through: a side street that gives way gets its cars only into the gaps of the main road's traffic, and a left turn without traffic lights waits for gaps in the oncoming traffic. A street's own peak values from the GIS tab are kept as you set them. Cars are not shown in the replay.
 - **Energy.** Battery buses and trolleybuses run with SUMO's battery model: driving, air drag, rolling, regenerative braking and the heating and air conditioning load (`energy.hvac_power_kw`). Batteries start full, with the size of `road.battery_capacity_kwh`. Trolleybuses charge under the overhead wire (streets tagged with a trolley wire in OpenStreetMap) at `road.trolley_wire_charge_kw`. A vehicle whose battery runs empty stops where it is.
 
 Vehicles never jump ahead: a vehicle stuck in a jam stays stuck (no SUMO teleports), and a vehicle standing still for 5 minutes away from a stop and not at a red light is reported as a gridlock.
 
 ## Results
 
-**Run** sums up the whole run: vehicles back in their depot at the end, teleports (should be 0), gridlocks, background cars, the street network's length and traffic lights, and how much faster than real time it ran.
+**Run** sums up the whole run: vehicles back in their depot at the end, teleports (should be 0), gridlocks, background cars, the street network's length and its junctions with traffic lights (lights closer than 20 m apart run as one, but count as separate junctions), and how much faster than real time it ran.
 
 Each line shows, for the period:
 
