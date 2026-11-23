@@ -177,3 +177,45 @@ def test_the_replay_lists_each_stop_with_its_plan_and_when_it_was_served() -> No
         {"id": "v1", "tripId": "3:0:end", "started": "1", "ended": "2"},
     ]
     assert replay_stops(v, out) == [25200, 25100, 25200, 1, 25500, 25580, 25601, 0, 26000, -1, -1, 2]
+
+
+def _town_net(tmp: Path) -> Any:
+    pytest.importorskip("libsumo")
+    from mobsim_worker.jobs.road import osm  # noqa: PLC0415
+    from mobsim_worker.jobs.road.network import RoadNet, netconvert  # noqa: PLC0415
+
+    tmp.mkdir(parents=True, exist_ok=True)
+    data = osm.merge_tiles(tiles())
+    osm.write(data, str(tmp / "streets.osm"))
+    netconvert(str(tmp / "streets.osm"), str(tmp / "net.net.xml"), str(tmp), False)
+    return RoadNet(str(tmp / "net.net.xml"))
+
+
+def test_a_break_in_a_matched_route_is_closed_with_a_bus_path(tmp_path: Path) -> None:
+    from road_fixture import lonlat  # noqa: PLC0415
+
+    net = _town_net(tmp_path)
+    east = net.match([lonlat(0, 2), lonlat(1, 2), lonlat(2, 2)])
+    west = net.match([lonlat(2, 2), lonlat(1, 2), lonlat(0, 2)])
+    # No U-turn at the crossing: as SUMO would read it, this route has no connection there (bug 29).
+    assert not net.follows(east[-1], west[0])
+    route = net.connect(east + west)
+    assert route[: len(east)] == east and route[-len(west) :] == west
+    assert all(net.follows(a, b) for a, b in zip(route, route[1:], strict=False))
+
+
+def test_a_route_with_no_bus_path_names_the_streets_and_the_nearest_stop() -> None:
+    from mobsim_worker.jobs.road.network import NoBusLink  # noqa: PLC0415
+    from mobsim_worker.jobs.road.service import match_circuit  # noqa: PLC0415
+
+    ln = line()
+
+    class Net:
+        def match(self, coords: Any) -> list[str]:
+            at = tuple(ln["points"][1]["lonlat"])
+            raise NoBusLink("-29270329#0", "1242688065", "Main Street", "Col 2", at)
+
+    problem = match_circuit(Net(), ln)  # type: ignore[arg-type]
+    assert isinstance(problem, str)
+    assert problem.startswith("no way for a bus from Main Street onto Col 2, near Middle (0 m away)")
+    assert "29270329" not in problem
