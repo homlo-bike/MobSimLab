@@ -234,7 +234,7 @@ def run_road(
     lights_on, lights_off = osm.apply_junction_setup(data, scenario.get("junctions", []))
     if lights_on or lights_off:
         result["notes"].append(
-            f"junction setup: {lights_on:,} junctions given traffic lights, {lights_off:,} without"
+            f"Junction setup: {lights_on:,} junctions given traffic lights, {lights_off:,} without"
         )
     depot_ways: dict[str, osm.DepotWays] = {}
     for d in scenario.get("depots", []):

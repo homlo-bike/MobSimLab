@@ -275,6 +275,7 @@ function fakeMap(zoom = 16) {
     setFilter: vi.fn(),
     setLayerZoomRange: vi.fn(),
     easeTo: vi.fn(),
+    boxZoom: { disable: vi.fn(), enable: vi.fn() },
     queryRenderedFeatures: (_at: unknown, o?: { layers?: string[] }) =>
       o?.layers?.includes("ss-junctions")
         ? hit.junction === null
@@ -313,6 +314,7 @@ function fakeMap(zoom = 16) {
     tapJunction,
     setFilter: map.setFilter,
     setLayerZoomRange: map.setLayerZoomRange,
+    boxZoom: map.boxZoom,
   };
 }
 
@@ -655,6 +657,16 @@ describe("Street setup editor", () => {
     // A click on a street clears the junctions.
     tap(100);
     expect(screen.queryByRole("group", { name: "Traffic lights" })).toBeNull();
+  });
+
+  it("turns off box zoom while open, so Shift-click reaches junctions and streets", () => {
+    const { map, boxZoom } = fakeMap();
+    const { unmount } = render(<Harness map={map} onChange={vi.fn()} />);
+    // MapLibre's box zoom takes Shift and swallows the click that follows.
+    expect(boxZoom.disable).toHaveBeenCalled();
+    expect(boxZoom.enable).not.toHaveBeenCalled();
+    unmount();
+    expect(boxZoom.enable).toHaveBeenCalled();
   });
 
   it("sets several streets at once with Shift-click: one street's layout for all, and their peak traffic", async () => {
