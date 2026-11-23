@@ -1346,6 +1346,8 @@ export const editorsYo = {
   "capacity.dieOut": "Ń parẹ́",
   "capacity.pileUp": "Ń kó jọ",
   "capacity.delaysHint": "{passed} ń kọjá sí ìrìn-àjò kọ̀ọ̀kan, {left} kù ní ìparí",
+  "capacity.ranOf": "Ìrìn-àjò tó lọ: {ran} nínú {planned} tí a ṣètò ({share}), {left} ni a fi sílẹ̀",
+  "capacity.noneRan": "Kò sí ọ̀kan nínú ìrìn-àjò {planned} tí a ṣètò tó lọ",
   "capacity.worksUpTo": "Ó ń ṣiṣẹ́ títí dé ọkọ̀ {n} ní wákàtí kan ní ọ̀nà kọ̀ọ̀kan",
   "capacity.tryingOthers": "Ó ń dán ìgbà mìíràn wò…",
   "capacity.noneWorks": "Kò sí ìgbà tí a dán wò tí ó ṣiṣẹ́",

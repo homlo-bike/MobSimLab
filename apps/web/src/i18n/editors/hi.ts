@@ -1373,6 +1373,8 @@ export const editorsHi = {
   "capacity.dieOut": "खत्म होती है",
   "capacity.pileUp": "जमा होती है",
   "capacity.delaysHint": "प्रति यात्रा {passed} आगे गई, अंत में {left} बची",
+  "capacity.ranOf": "चली यात्राएँ: {planned} नियोजित में से {ran} ({share}), {left} छूट गईं",
+  "capacity.noneRan": "{planned} नियोजित यात्राओं में से कोई नहीं चली",
   "capacity.worksUpTo": "हर दिशा में प्रति घंटा {n} ट्रेनों तक काम करता है",
   "capacity.tryingOthers": "दूसरी आवृत्तियाँ आज़माई जा रही हैं…",
   "capacity.noneWorks": "आज़माई गई कोई आवृत्ति काम नहीं करती",

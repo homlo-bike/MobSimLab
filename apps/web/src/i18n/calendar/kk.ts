@@ -101,6 +101,7 @@ export const calendarKk = {
   "calrun.days": "Күндер",
   "calrun.trains": "Пойыздар",
   "calrun.punctuality": "Уақытында",
+  "calrun.ranOf": "{planned} рейстің {ran} орындалды ({share})",
   "calrun.perYear": "Әр жыл",
   "calrun.perDate": "Әр күн",
   "calrun.method":

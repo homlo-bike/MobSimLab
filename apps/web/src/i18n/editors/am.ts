@@ -1333,6 +1333,8 @@ export const editorsAm = {
   "capacity.dieOut": "ይጠፋሉ",
   "capacity.pileUp": "ይከማቻሉ",
   "capacity.delaysHint": "በአንድ ጉዞ {passed} ይተላለፋል፣ በመጨረሻ {left} ይቀራል",
+  "capacity.ranOf": "የተካሄዱ ጉዞዎች፦ ከታቀዱት {planned} ውስጥ {ran} ({share})፣ {left} ቀርተዋል",
+  "capacity.noneRan": "ከታቀዱት {planned} ጉዞዎች አንዱም አልተካሄደም",
   "capacity.worksUpTo": "በእያንዳንዱ አቅጣጫ በሰዓት እስከ {n} ባቡሮች ይሰራል",
   "capacity.tryingOthers": "ሌሎች ድግግሞሾችን በመሞከር ላይ…",
   "capacity.noneWorks": "የተሞከረ ምንም ድግግሞሽ አይሰራም",

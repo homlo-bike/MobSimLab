@@ -101,6 +101,7 @@ export const calendarIg = {
   "calrun.days": "Ụbọchị",
   "calrun.trains": "Ụgbọ oloko",
   "calrun.punctuality": "N'oge",
+  "calrun.ranOf": "Njem {ran} n’ime {planned} gara ({share})",
   "calrun.perYear": "Afọ ọ bụla",
   "calrun.perDate": "Ụbọchị ọ bụla",
   "calrun.method":

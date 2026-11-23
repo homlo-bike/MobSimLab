@@ -1293,6 +1293,8 @@ export const editorsZh = {
   "capacity.dieOut": "消散",
   "capacity.pileUp": "累积",
   "capacity.delaysHint": "每车次传递 {passed}，结束时剩余 {left}",
+  "capacity.ranOf": "实际运行车次：计划 {planned} 个中的 {ran} 个（{share}），{left} 个未运行",
+  "capacity.noneRan": "计划的 {planned} 个车次均未运行",
   "capacity.worksUpTo": "每方向每小时最多 {n} 列可行",
   "capacity.tryingOthers": "正在试验其他发车频率…",
   "capacity.noneWorks": "试过的频率均不可行",

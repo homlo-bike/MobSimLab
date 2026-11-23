@@ -1386,6 +1386,8 @@ export const editorsEn = {
   "capacity.dieOut": "Die out",
   "capacity.pileUp": "Pile up",
   "capacity.delaysHint": "{passed} passed on per trip, {left} left at the end",
+  "capacity.ranOf": "Trips that ran: {ran} of {planned} planned ({share}), {left} left out",
+  "capacity.noneRan": "None of the {planned} planned trips ran",
   "capacity.worksUpTo": "Works up to {n} trains an hour each way",
   "capacity.tryingOthers": "Trying other frequencies…",
   "capacity.noneWorks": "No frequency tried works",

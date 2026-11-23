@@ -1324,6 +1324,8 @@ export const editorsJa = {
   "capacity.dieOut": "収束",
   "capacity.pileUp": "積み重なる",
   "capacity.delaysHint": "1 本あたり {passed} が伝わり、終了時に {left} 残る",
+  "capacity.ranOf": "運行した便: 計画 {planned} 本中 {ran} 本 ({share})、{left} 本は運行されず",
+  "capacity.noneRan": "計画した {planned} 本はどれも運行されなかった",
   "capacity.worksUpTo": "片方向 1 時間 {n} 本まで機能",
   "capacity.tryingOthers": "他の運行間隔を試験中…",
   "capacity.noneWorks": "試した運行間隔はどれも機能しません",

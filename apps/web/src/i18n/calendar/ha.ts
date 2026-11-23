@@ -102,6 +102,7 @@ export const calendarHa = {
   "calrun.days": "Ranaku",
   "calrun.trains": "Jiragen ƙasa",
   "calrun.punctuality": "A kan lokaci",
+  "calrun.ranOf": "Tafiye-tafiye {ran} cikin {planned} sun gudana ({share})",
   "calrun.perYear": "Kowace shekara",
   "calrun.perDate": "Kowane kwanan wata",
   "calrun.method":

@@ -94,6 +94,7 @@ export const calendarZh = {
   "calrun.days": "天数",
   "calrun.trains": "列车",
   "calrun.punctuality": "准点",
+  "calrun.ranOf": "{planned} 个车次中运行了 {ran} 个（{share}）",
   "calrun.perYear": "按年份",
   "calrun.perDate": "按日期",
   "calrun.method":

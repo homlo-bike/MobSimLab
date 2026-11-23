@@ -1455,6 +1455,8 @@ export const editorsPl = {
   "capacity.dieOut": "Wygasają",
   "capacity.pileUp": "Narastają",
   "capacity.delaysHint": "{passed} przekazane na kurs, {left} pozostałe na końcu",
+  "capacity.ranOf": "Kursy wykonane: {ran} z {planned} planowanych ({share}), pominięte: {left}",
+  "capacity.noneRan": "Nie wykonano żadnego z planowanych kursów (planowano: {planned})",
   "capacity.worksUpTo": "Działa do {n} pociągów na godzinę w każdą stronę",
   "capacity.tryingOthers": "Sprawdzanie innych częstotliwości…",
   "capacity.noneWorks": "Żadna sprawdzona częstotliwość nie działa",

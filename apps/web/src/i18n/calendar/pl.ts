@@ -100,6 +100,7 @@ export const calendarPl = {
   "calrun.days": "Dni",
   "calrun.trains": "Pociągi",
   "calrun.punctuality": "Punktualnie",
+  "calrun.ranOf": "Wykonane kursy: {ran} z {planned} ({share})",
   "calrun.perYear": "Według roku",
   "calrun.perDate": "Według daty",
   "calrun.method":

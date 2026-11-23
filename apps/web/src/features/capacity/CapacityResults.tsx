@@ -1,7 +1,17 @@
 import { clock } from "../journey-planner/format";
 import { useI18n } from "../../i18n/i18n";
 import { paramValue } from "../benefits/params";
-import { explain, every, pct, perHour, practicalMaximum, secs, VERDICTS, verdictText } from "./capacityText";
+import {
+  explain,
+  every,
+  pct,
+  perHour,
+  practicalMaximum,
+  ranText,
+  secs,
+  VERDICTS,
+  verdictText,
+} from "./capacityText";
 import { pickStreetParams } from "./loadPlans";
 import type { LineLoad } from "./loads";
 import { STREET_RUN_DEFAULTS, type StreetLineResult, TRAFFIC_FACTOR } from "./streetRun";
@@ -123,10 +133,15 @@ function LineCard({ line, limit, load }: { line: LineState; limit: number; load?
   const all = [p, ...line.sweep].sort((a, b) => b.headway_s - a.headway_s);
   const max = practicalMaximum(all);
   const v = { ...VERDICTS[p.verdict], ...verdictText(p.verdict, t) };
-  const metric = (label: string, value: string, hint?: string) => (
+  // When planned trips were left out, the on-time share and the delays only describe the trips
+  // that ran; with none run there is nothing to measure.
+  const ran = ranText(p, t, tn);
+  const noneRan = p.unplaced > 0 && p.trips === 0;
+  const metric = (label: string, value: string, hint?: string, qualifier?: string | null) => (
     <div className="rounded-lg bg-slate-50 px-2.5 py-2">
       <dt className="text-xs text-slate-500">{label}</dt>
       <dd className="font-semibold">{value}</dd>
+      {qualifier && <dd className="text-xs font-medium text-amber-800">{qualifier}</dd>}
       {hint && <dd className="text-xs text-slate-500">{hint}</dd>}
     </div>
   );
@@ -162,13 +177,17 @@ function LineCard({ line, limit, load }: { line: LineState; limit: number; load?
         )}
         {metric(
           t("capacity.onTime"),
-          pct(p.punctuality),
-          t("capacity.onTimeHint", { share: pct(p.disturbed_punctuality) }),
+          noneRan ? "–" : pct(p.punctuality),
+          noneRan ? undefined : t("capacity.onTimeHint", { share: pct(p.disturbed_punctuality) }),
+          ran,
         )}
         {metric(
           t("capacity.delays"),
-          p.stable ? t("capacity.dieOut") : t("capacity.pileUp"),
-          t("capacity.delaysHint", { passed: secs(p.knock_on_s, t), left: secs(p.residual_delay_s, t) }),
+          noneRan ? "–" : p.stable ? t("capacity.dieOut") : t("capacity.pileUp"),
+          noneRan
+            ? undefined
+            : t("capacity.delaysHint", { passed: secs(p.knock_on_s, t), left: secs(p.residual_delay_s, t) }),
+          ran,
         )}
       </dl>
       {(line.sweep.length > 0 || line.sweeping) && (

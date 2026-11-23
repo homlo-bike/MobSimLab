@@ -101,6 +101,7 @@ export const calendarTr = {
   "calrun.days": "Günler",
   "calrun.trains": "Trenler",
   "calrun.punctuality": "Zamanında",
+  "calrun.ranOf": "{planned} seferden {ran} sefer yapıldı ({share})",
   "calrun.perYear": "Yıla göre",
   "calrun.perDate": "Tarihe göre",
   "calrun.method":

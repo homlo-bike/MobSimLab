@@ -101,6 +101,7 @@ export const calendarSw = {
   "calrun.days": "Siku",
   "calrun.trains": "Treni",
   "calrun.punctuality": "Kwa wakati",
+  "calrun.ranOf": "Safari {ran} kati ya {planned} zilifanyika ({share})",
   "calrun.perYear": "Kila mwaka",
   "calrun.perDate": "Kila tarehe",
   "calrun.method":

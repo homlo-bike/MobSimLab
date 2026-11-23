@@ -102,6 +102,7 @@ export const calendarRu = {
   "calrun.days": "Дни",
   "calrun.trains": "Поезда",
   "calrun.punctuality": "Вовремя",
+  "calrun.ranOf": "Выполнено рейсов: {ran} из {planned} ({share})",
   "calrun.perYear": "По годам",
   "calrun.perDate": "По датам",
   "calrun.method":

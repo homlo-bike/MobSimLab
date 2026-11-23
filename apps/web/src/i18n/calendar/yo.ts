@@ -101,6 +101,7 @@ export const calendarYo = {
   "calrun.days": "Àwọn ọjọ́",
   "calrun.trains": "Àwọn ọkọ̀ ojú irin",
   "calrun.punctuality": "Ní àkókò",
+  "calrun.ranOf": "Ìrìn-àjò {ran} nínú {planned} ló lọ ({share})",
   "calrun.perYear": "Ọdún kọ̀ọ̀kan",
   "calrun.perDate": "Ọjọ́ kọ̀ọ̀kan",
   "calrun.method":

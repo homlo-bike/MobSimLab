@@ -1342,6 +1342,8 @@ export const editorsVi = {
   "capacity.dieOut": "Tắt dần",
   "capacity.pileUp": "Dồn lại",
   "capacity.delaysHint": "{passed} truyền sang mỗi chuyến, còn {left} ở cuối",
+  "capacity.ranOf": "Chuyến đã chạy: {ran} trên {planned} chuyến dự kiến ({share}), {left} chuyến bị bỏ",
+  "capacity.noneRan": "Không chuyến nào trong {planned} chuyến dự kiến được chạy",
   "capacity.worksUpTo": "Hoạt động đến {n} tàu mỗi giờ mỗi chiều",
   "capacity.tryingOthers": "Đang thử tần suất khác…",
   "capacity.noneWorks": "Không tần suất nào đã thử hoạt động",

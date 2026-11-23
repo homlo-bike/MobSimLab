@@ -1452,6 +1452,8 @@ export const editorsRu = {
   "capacity.dieOut": "Затухают",
   "capacity.pileUp": "Накапливаются",
   "capacity.delaysHint": "{passed} передаётся на рейс, {left} остаётся в конце",
+  "capacity.ranOf": "Выполнено рейсов: {ran} из {planned} запланированных ({share}), пропущено: {left}",
+  "capacity.noneRan": "Не выполнен ни один из запланированных рейсов (запланировано: {planned})",
   "capacity.worksUpTo": "Работает до {n} поездов в час в каждую сторону",
   "capacity.tryingOthers": "Проверка других интервалов…",
   "capacity.noneWorks": "Ни один проверенный интервал не работает",

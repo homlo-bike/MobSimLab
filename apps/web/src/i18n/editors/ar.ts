@@ -1431,6 +1431,8 @@ export const editorsAr = {
   "capacity.dieOut": "تتلاشى",
   "capacity.pileUp": "تتراكم",
   "capacity.delaysHint": "{passed} تنتقل لكل رحلة، و{left} متبقية في النهاية",
+  "capacity.ranOf": "الرحلات المنفّذة: {ran} من {planned} مخططة ({share})، و{left} لم تُنفَّذ",
+  "capacity.noneRan": "لم تُنفَّذ أي رحلة من الرحلات المخططة البالغة {planned}",
   "capacity.worksUpTo": "يعمل حتى {n} قطارًا في الساعة في كل اتجاه",
   "capacity.tryingOthers": "تجربة ترددات أخرى…",
   "capacity.noneWorks": "لا يعمل أي تردد تمت تجربته",

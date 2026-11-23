@@ -1395,6 +1395,8 @@ export const editorsPt = {
   "capacity.dieOut": "Se dissipam",
   "capacity.pileUp": "Se acumulam",
   "capacity.delaysHint": "{passed} repassados por viagem, {left} restantes no fim",
+  "capacity.ranOf": "Viagens realizadas: {ran} de {planned} previstas ({share}), {left} deixadas de fora",
+  "capacity.noneRan": "Nenhuma das {planned} viagens previstas foi realizada",
   "capacity.worksUpTo": "Funciona até {n} trens por hora por sentido",
   "capacity.tryingOthers": "Testando outras frequências…",
   "capacity.noneWorks": "Nenhuma frequência testada funciona",

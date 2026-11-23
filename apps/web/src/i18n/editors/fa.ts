@@ -1343,6 +1343,9 @@ export const editorsFa = {
   "capacity.dieOut": "فروکش می‌کنند",
   "capacity.pileUp": "انباشته می‌شوند",
   "capacity.delaysHint": "{passed} در هر سفر منتقل می‌شود، {left} در پایان باقی می‌ماند",
+  "capacity.ranOf":
+    "سفرهای انجام‌شده: {ran} از {planned} سفر برنامه‌ریزی‌شده ({share})، {left} سفر کنار گذاشته شد",
+  "capacity.noneRan": "هیچ‌یک از {planned} سفر برنامه‌ریزی‌شده انجام نشد",
   "capacity.worksUpTo": "تا {n} قطار در ساعت در هر جهت کار می‌کند",
   "capacity.tryingOthers": "آزمودن فرکانس‌های دیگر…",
   "capacity.noneWorks": "هیچ فرکانس آزموده‌شده‌ای کار نمی‌کند",

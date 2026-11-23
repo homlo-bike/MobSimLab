@@ -1383,6 +1383,9 @@ export const editorsId = {
   "capacity.dieOut": "Mereda",
   "capacity.pileUp": "Menumpuk",
   "capacity.delaysHint": "{passed} diteruskan per perjalanan, sisa {left} di akhir",
+  "capacity.ranOf":
+    "Perjalanan yang berjalan: {ran} dari {planned} yang direncanakan ({share}), {left} tidak dijalankan",
+  "capacity.noneRan": "Tidak satu pun dari {planned} perjalanan yang direncanakan berjalan",
   "capacity.worksUpTo": "Berjalan hingga {n} kereta per jam tiap arah",
   "capacity.tryingOthers": "Mencoba frekuensi lain…",
   "capacity.noneWorks": "Tidak ada frekuensi yang dicoba berhasil",

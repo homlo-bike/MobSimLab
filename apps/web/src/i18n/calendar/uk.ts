@@ -101,6 +101,7 @@ export const calendarUk = {
   "calrun.days": "Дні",
   "calrun.trains": "Поїзди",
   "calrun.punctuality": "Вчасно",
+  "calrun.ranOf": "Виконано рейсів: {ran} із {planned} ({share})",
   "calrun.perYear": "За роками",
   "calrun.perDate": "За датами",
   "calrun.method":

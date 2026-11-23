@@ -220,8 +220,10 @@ pub struct Point {
     pub headway_s: f64,
     /// Trains per hour and direction in the period.
     pub per_hour: f64,
-    /// Trips of the line that could not be placed.
+    /// Trips of the line that could not be placed (a direction without a path counts all its trips).
     pub unplaced: usize,
+    /// Passenger trips of the line that were placed and run, over the period and its margins.
+    pub trips: usize,
     /// Highest capacity consumption of the line in an hour of the period (either direction).
     pub consumption: f64,
     /// Busier terminal and its blocked share in that hour.
@@ -400,6 +402,16 @@ pub fn sweep_headways(l: &LineSpec, p: &CapacityParams, planned_works: bool) -> 
     }
 }
 
+/// Purpose: how many departures one direction of a line has in its bands
+/// (the planner's slots, from each band's start every headway).
+fn departures(l: &LineSpec) -> usize {
+    l.bands
+        .iter()
+        .filter(|b| b.headway_s > 0.0 && b.to_s > b.from_s)
+        .map(|b| ((b.to_s - b.from_s) / b.headway_s - 1e-9).ceil().max(0.0) as usize)
+        .sum()
+}
+
 /// Line index of a trip name `{line}-{direction}-{number}`.
 fn trip_line(name: &str, ids: &[String]) -> Option<usize> {
     let mut it = name.rsplitn(3, '-');
@@ -569,7 +581,7 @@ fn evaluate(
             }
             Issue::NoPath { line, .. } => {
                 if let Some(li) = ids.iter().position(|x| x == line) {
-                    unplaced[li] += 1;
+                    unplaced[li] += departures(&lines[li]).max(1);
                 }
             }
             _ => {}
@@ -677,6 +689,11 @@ fn evaluate(
             headway_s: hw,
             per_hour: if hw.is_finite() { 3600.0 / hw } else { 0.0 },
             unplaced: unplaced[li],
+            trips: pl
+                .runs
+                .iter()
+                .filter(|r| r.line == li && r.kind == RunKind::Service)
+                .count(),
             consumption,
             terminal,
             terminal_share,

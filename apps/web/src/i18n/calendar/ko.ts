@@ -100,6 +100,7 @@ export const calendarKo = {
   "calrun.days": "일수",
   "calrun.trains": "열차",
   "calrun.punctuality": "정시",
+  "calrun.ranOf": "{planned}회 중 {ran}회 운행 ({share})",
   "calrun.perYear": "연도별",
   "calrun.perDate": "날짜별",
   "calrun.method":

@@ -331,6 +331,47 @@ describe("capacity runs on the server", () => {
     expect(screen.queryByRole("status")).toBeNull();
   });
 
+  it("qualifies On time and Delays by the trips that ran when planned trips were left out", async () => {
+    const { loader } = fakeLoader();
+    const line = (id: string, planned: Point) => ({
+      info: { id, name: id, bands: [] },
+      planned,
+      sweep: [],
+      sweeping: false,
+    });
+    const bad = { verdict: "not_enough_capacity" as const, punctuality: 1, disturbed_punctuality: 1 };
+    const done = saved({
+      status: "done",
+      verdict: "not_enough_capacity",
+      result: {
+        notes: [],
+        run: run(point(bad)),
+        lines: [
+          line("T2", point({ ...bad, unplaced: 33, trips: 7 })),
+          line("T1", point({ ...bad, unplaced: 40, trips: 0 })),
+          line("T9", point({ ...bad, unplaced: 2 })),
+        ],
+      },
+    });
+    const runs = fakeRuns([done], [done]);
+    render(<CapacityRun loadEngine={loader} runs={runs} />);
+    const list = await screen.findByRole("region", { name: "Saved runs" });
+    fireEvent.click(within(list).getAllByRole("button")[0]!);
+    const t2 = await screen.findByRole("article", { name: "Line T2" });
+    // The on-time share and the delays are of the trips that ran, and say so.
+    expect(within(t2).getByText("100 %")).toBeTruthy();
+    expect(within(t2).getAllByText("Trips that ran: 7 of 40 planned (18 %), 33 left out")).toHaveLength(2);
+    // A line that ran no trip has nothing to be on time with.
+    const t1 = screen.getByRole("article", { name: "Line T1" });
+    expect(within(t1).queryByText("100 %")).toBeNull();
+    expect(within(t1).queryByText("Die out")).toBeNull();
+    expect(within(t1).getAllByText("–")).toHaveLength(2);
+    expect(within(t1).getAllByText("None of the 40 planned trips ran")).toHaveLength(2);
+    // A run saved before the trips that ran were counted still says trips were left out.
+    const t9 = screen.getByRole("article", { name: "Line T9" });
+    expect(within(t9).getAllByText("2 trips do not fit")).toHaveLength(2);
+  });
+
   it("starts the drawn railway on the server with its built topology and service lines", async () => {
     const { loader } = fakeLoader();
     const runs = fakeRuns([saved()]);

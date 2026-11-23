@@ -98,6 +98,7 @@ export const calendarAr = {
   "calrun.days": "الأيام",
   "calrun.trains": "القطارات",
   "calrun.punctuality": "في الموعد",
+  "calrun.ranOf": "نُفّذت {ran} من {planned} رحلة ({share})",
   "calrun.perYear": "حسب السنة",
   "calrun.perDate": "حسب التاريخ",
   "calrun.method":
