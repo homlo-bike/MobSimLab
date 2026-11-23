@@ -1640,11 +1640,11 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 
 ### Walking on slopes: steepness term of Tobler's hiking function (journey planner; 0 = walks timed as flat)
 
-`journey.walk_slope_k` · unit: coefficient · used by: journey planner access, egress, transfer and walk-only legs
+`journey.walk_slope_k` · unit: coefficient · used by: journey planner access, egress and transfer walks
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|
-| all | 3 | 3.5 | 4 | cited | unverified | [tobler-1993](#src-tobler-1993) | Tobler's hiking function gives walking speed as 6 exp(-3.5 \|s + 0.05\|) km/h for gradient s (rise over distance walked): fastest on a 5 % downhill, about 5 km/h on the flat, roughly half that on a 20 % climb. The planner keeps the project's flat walking speed and multiplies the walking time by exp(k (\|s + 0.05\| - 0.05)), with s the height difference between the two ends over the walking distance (heights from the project's terrain, Copernicus GLO-30 by default), held within ±50 %. 3.5 is Tobler's value, fitted to Imhof's hiking data; low and high (±0.5) are an educated range for fitter or slower walkers, not cited. 0 ignores slopes. A walk is timed on its average gradient end to end, so a walk over a ridge between two stops at the same height is still timed as flat. |
+| all | 3 | 3.5 | 4 | cited | unverified | [tobler-1993](#src-tobler-1993) | Tobler's hiking function: walking speed is 6 exp(-3.5 \|s + 0.05\|) km/h on gradient s, fastest on a 5 % downhill. The planner keeps the flat walking speed and multiplies the time by exp(k (\|s + 0.05\| - 0.05)), s being the height difference of the two ends over the walking distance, held within ±50 %. 3.5 is Tobler's value; the range of ±0.5 is an educated guess. 0 ignores slopes. |
 
 ### Journey planner: minimum time to change vehicles at the same stop
 
