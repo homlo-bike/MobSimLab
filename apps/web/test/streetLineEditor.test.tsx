@@ -889,7 +889,8 @@ describe("Street line vehicle and service", () => {
 
   it("starts a new line at 05:00 to 00:30 and flags a last departure before the first", async () => {
     await opened();
-    expect((screen.getByLabelText("First departure") as HTMLInputElement).value).toBe("05:00");
+    // The service times show once the line has been routed, after the streets on screen load.
+    expect(((await screen.findByLabelText("First departure")) as HTMLInputElement).value).toBe("05:00");
     expect((screen.getByLabelText("Last departure") as HTMLInputElement).value).toBe("24:30");
     fireEvent.change(screen.getByLabelText("Last departure"), { target: { value: "04:00" } });
     expect(screen.getByRole("list", { name: "Checks" }).textContent).toContain(
