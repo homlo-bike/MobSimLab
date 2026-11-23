@@ -194,6 +194,21 @@ export interface DB {
     body: string;
     fetched_at: Generated<Date>;
   };
+  /** Map data held once for the instance (db/migrations/0028_shared_data.sql). */
+  "geo.shared_data": {
+    id: Generated<string>;
+    kind: "osm" | "height" | "glo30";
+    key: string;
+    data_date: Generated<Date>;
+    body: Buffer;
+  };
+  /** The shared copies a project's tools used (db/migrations/0028_shared_data.sql). */
+  "project.data_use": {
+    project_id: string;
+    kind: "osm" | "height";
+    key: string;
+    shared_id: string;
+  };
   /** Results the project's tools worked out (db/migrations/0023_project_results.sql): gzip-compressed JSON. */
   "project.result": {
     project_id: string;
