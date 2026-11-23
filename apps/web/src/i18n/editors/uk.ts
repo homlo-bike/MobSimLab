@@ -1044,6 +1044,7 @@ export const editorsUk = {
   "cable.hint.select": "Клацніть станцію, щоб редагувати її. Перетягніть станцію, щоб пересунути її.",
   "cable.modeSystem": "Вид транспорту й система",
   "cable.lineSpeed": "Швидкість каната (м/с)",
+  "cable.longestSpan": "Найбільший проліт (м)",
   "cable.cabinInterval": "Інтервал кабін (с)",
   "cable.departureEvery": "Відправлення кожні",
   "cable.cabinEvery": "Кабіна кожні",

@@ -980,6 +980,7 @@ export const editorsHi = {
   "cable.hint.select": "संपादित करने के लिए स्टेशन पर क्लिक करें। खिसकाने के लिए उसे खींचें।",
   "cable.modeSystem": "साधन और प्रणाली",
   "cable.lineSpeed": "रस्सी की गति (मी/से)",
+  "cable.longestSpan": "सबसे लंबा स्पैन (मी)",
   "cable.cabinInterval": "केबिन अंतराल (सेकंड)",
   "cable.departureEvery": "प्रस्थान हर",
   "cable.cabinEvery": "केबिन हर",

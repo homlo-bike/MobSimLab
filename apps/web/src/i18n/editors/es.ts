@@ -1002,6 +1002,7 @@ export const editorsEs = {
   "cable.hint.select": "Haz clic en una estación para editarla. Arrastra una estación para moverla.",
   "cable.modeSystem": "Modo y sistema",
   "cable.lineSpeed": "Velocidad del cable (m/s)",
+  "cable.longestSpan": "Vano más largo (m)",
   "cable.cabinInterval": "Intervalo entre cabinas (s)",
   "cable.departureEvery": "Salida cada",
   "cable.cabinEvery": "Cabina cada",

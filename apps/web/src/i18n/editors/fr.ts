@@ -1016,6 +1016,7 @@ export const editorsFr = {
     "Cliquez sur une station pour la modifier. Faites glisser une station pour la déplacer.",
   "cable.modeSystem": "Mode et système",
   "cable.lineSpeed": "Vitesse du câble (m/s)",
+  "cable.longestSpan": "Portée la plus longue (m)",
   "cable.cabinInterval": "Intervalle entre cabines (s)",
   "cable.departureEvery": "Départ toutes les",
   "cable.cabinEvery": "Cabine toutes les",

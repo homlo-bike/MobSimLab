@@ -953,6 +953,7 @@ export const editorsIg = {
   "cable.hint.select": "Pịa ọdụ iji dezie ya. Dọkpụ ọdụ iji bugharịa ya.",
   "cable.modeSystem": "Ụdị na sistemụ",
   "cable.lineSpeed": "Ọsọ eriri (m/s)",
+  "cable.longestSpan": "Ogologo kachasị n’etiti ụlọ elu (m)",
   "cable.cabinInterval": "Oghere ụlọ ụgbọ (s)",
   "cable.departureEvery": "Ọpụpụ kwa",
   "cable.cabinEvery": "Ụlọ ụgbọ kwa",

@@ -1759,9 +1759,9 @@
               "high": 15
             },
             "ropeway.max_span_m": {
-              "low": 200,
+              "low": 270,
               "central": 400,
-              "high": 600
+              "high": 900
             },
             "ropeway.max_station_angle_deg": {
               "low": 20,

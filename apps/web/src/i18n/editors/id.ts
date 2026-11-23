@@ -987,6 +987,7 @@ export const editorsId = {
   "cable.hint.select": "Klik stasiun untuk mengeditnya. Seret stasiun untuk memindahkannya.",
   "cable.modeSystem": "Moda dan sistem",
   "cable.lineSpeed": "Kecepatan kabel (m/d)",
+  "cable.longestSpan": "Bentang terpanjang (m)",
   "cable.cabinInterval": "Selang kabin (d)",
   "cable.departureEvery": "Keberangkatan setiap",
   "cable.cabinEvery": "Kabin setiap",

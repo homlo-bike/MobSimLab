@@ -922,6 +922,7 @@ export const editorsZh = {
   "cable.hint.select": "点击站点进行编辑。拖动站点可移动它。",
   "cable.modeSystem": "方式与系统",
   "cable.lineSpeed": "运行速度（米/秒）",
+  "cable.longestSpan": "最大跨距（米）",
   "cable.cabinInterval": "车厢间隔（秒）",
   "cable.departureEvery": "发车间隔",
   "cable.cabinEvery": "车厢间隔",

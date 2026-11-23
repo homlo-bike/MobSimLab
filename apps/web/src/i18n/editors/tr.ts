@@ -964,6 +964,7 @@ export const editorsTr = {
   "cable.hint.select": "Düzenlemek için bir istasyona tıklayın. Taşımak için bir istasyonu sürükleyin.",
   "cable.modeSystem": "Tür ve sistem",
   "cable.lineSpeed": "Halat hızı (m/sn)",
+  "cable.longestSpan": "En uzun açıklık (m)",
   "cable.cabinInterval": "Kabin aralığı (sn)",
   "cable.departureEvery": "Kalkış her",
   "cable.cabinEvery": "Kabin her",

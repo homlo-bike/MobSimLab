@@ -44,6 +44,8 @@ export interface SpanDoc {
   /** Planner's line speed and cabin interval, over the parameter values. */
   lineSpeed: number | null;
   interval: number | null;
+  /** Planner's longest span between supports for the automatic towers, over the parameter value. */
+  maxSpan?: number | null;
   /** Ground from the terrain model and OpenStreetMap buildings (default); false for typed heights only. */
   terrain?: boolean;
 }
@@ -118,6 +120,7 @@ function emptyDoc(tool: PluginTool): SpanDoc {
     towers: [],
     lineSpeed: null,
     interval: null,
+    maxSpan: null,
   };
 }
 
@@ -204,10 +207,11 @@ export function SpanLineEditor({
         {
           ...(doc.lineSpeed ? { line_speed_ms: doc.lineSpeed } : {}),
           ...(doc.interval ? { cabin_interval_s: doc.interval } : {}),
+          ...(doc.maxSpan ? { max_span_m: doc.maxSpan } : {}),
         },
         m?.parameterPrefix ?? "ropeway",
       ),
-    [doc.system, doc.lineSpeed, doc.interval, m?.operation, m?.parameterPrefix, values],
+    [doc.system, doc.lineSpeed, doc.interval, doc.maxSpan, m?.operation, m?.parameterPrefix, values],
   );
 
   // Terrain and buildings under each section, fetched when the stations move.
@@ -451,7 +455,14 @@ export function SpanLineEditor({
           value={`${doc.mode}|${doc.system}`}
           onChange={(e) => {
             const [mode, system] = e.target.value.split("|");
-            setDoc({ ...doc, mode: mode!, system: system!, lineSpeed: null, interval: null });
+            setDoc({
+              ...doc,
+              mode: mode!,
+              system: system!,
+              lineSpeed: null,
+              interval: null,
+              maxSpan: null,
+            });
           }}
         >
           {modes.flatMap((md) =>
@@ -489,6 +500,18 @@ export function SpanLineEditor({
             />
           </label>
         )}
+        <label className="flex flex-col gap-1">
+          <span className="text-xs font-medium text-slate-600">{t("cable.longestSpan")}</span>
+          <input
+            type="number"
+            min={50}
+            max={5000}
+            step={10}
+            className="rounded-lg border border-slate-300 px-2 py-1.5"
+            value={system.max_span_m}
+            onChange={(e) => setDoc({ ...doc, maxSpan: Number(e.target.value) || null })}
+          />
+        </label>
       </div>
       {error && (
         <p role="alert" className="rounded-lg border border-red-300 bg-red-50 px-2.5 py-1.5 text-red-900">

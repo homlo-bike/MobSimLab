@@ -1048,6 +1048,7 @@ export const editorsRu = {
   "cable.hint.select": "Нажмите на станцию, чтобы изменить её. Перетащите станцию, чтобы сдвинуть её.",
   "cable.modeSystem": "Вид транспорта и система",
   "cable.lineSpeed": "Скорость каната (м/с)",
+  "cable.longestSpan": "Наибольший пролёт (м)",
   "cable.cabinInterval": "Интервал кабин (с)",
   "cable.departureEvery": "Отправление каждые",
   "cable.cabinEvery": "Кабина каждые",

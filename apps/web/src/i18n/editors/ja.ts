@@ -944,6 +944,7 @@ export const editorsJa = {
   "cable.hint.select": "駅をクリックして編集します。駅はドラッグで移動できます。",
   "cable.modeSystem": "モードと方式",
   "cable.lineSpeed": "索道速度（m/s）",
+  "cable.longestSpan": "最大径間（m）",
   "cable.cabinInterval": "搬器間隔（秒）",
   "cable.departureEvery": "発車間隔",
   "cable.cabinEvery": "搬器間隔",

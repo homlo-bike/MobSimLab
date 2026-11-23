@@ -995,6 +995,7 @@ export const editorsEn = {
   "cable.hint.select": "Click a station to edit it. Drag a station to move it.",
   "cable.modeSystem": "Mode and system",
   "cable.lineSpeed": "Line speed (m/s)",
+  "cable.longestSpan": "Longest span (m)",
   "cable.cabinInterval": "Cabin interval (s)",
   "cable.departureEvery": "Departure every",
   "cable.cabinEvery": "Cabin every",

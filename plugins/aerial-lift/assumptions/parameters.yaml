@@ -268,14 +268,20 @@
     - context:
         mode: cable_car
         ropeway_system: mgd
-      low: 200
+      low: 270
       central: 400
-      high: 600
-      basis: educated-guess
+      high: 900
+      basis: documented
       sources:
+        - telecabine-lisboa-tech
+        - poma-nizhny-novgorod
         - mobsimlab-derivation
       check: unverified
-      rationale: "R1 §1.5: MGD spans are a few hundred metres (short spans, many towers)."
+      rationale:
+        "Longest span between two supports that the automatic towers may use. Urban monocable gondolas mostly
+        span a few hundred metres: Lisbon's longest is 270 m. Nizhny Novgorod spans 900 m over the Volga, the
+        longest for an 8-seat gondola, on two towers over 80 m. The central value is a planning default; a
+        longer span needs taller towers for the rope sag."
     - context:
         mode: cable_car
         ropeway_system: 2s
@@ -293,11 +299,14 @@
       low: 1000
       central: 1500
       high: 3000
-      basis: educated-guess
+      basis: documented
       sources:
+        - peak-2-peak-span
         - mobsimlab-derivation
       check: unverified
-      rationale: "R1 §1.2: long spans of 1 to 3 km, few towers."
+      rationale:
+        "R1 §1.2: long spans of 1 to 3 km, few towers. Peak 2 Peak (Whistler) spans 3,024 m between towers,
+        the longest of any 3S."
     - context:
         mode: cable_car
         ropeway_system: funitel
