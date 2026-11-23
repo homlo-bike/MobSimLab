@@ -453,10 +453,23 @@ export function StreetSetupEditor({
     [...new Set(ways.map((w) => infos.get(w)?.name).filter((n): n is string => !!n))].slice(0, 3).join(" / ");
   const nameOf = (j: PickedJunction) =>
     junctionName(j.ways) || junctionSetupOf(junctions, j.nodes)?.name || "";
+  /**
+   * A saved junction's name from the streets on the map now (its drawn shape gives its streets), so a
+   * junction set up before its streets had loaded, or whose streets were renamed, is listed by name; else
+   * the name it was saved with.
+   */
+  const savedName = (j: JunctionSetup) => {
+    const shape = drawn?.g?.junctions.find((x) => x.nodes.some((n) => j.nodes.includes(n)));
+    return (shape && junctionName(shape.ways)) || j.name || "";
+  };
   /** Lights on, off or as OSM maps them, for every selected junction at once. */
   const changeJunctions = (signals: boolean | null) => {
     if (!picked.length || !onJunctionsChange) return;
-    let list: JunctionSetup[] = [...junctions];
+    // Names found since the junctions were saved go along with the change.
+    let list: JunctionSetup[] = junctions.map((j) => {
+      const name = savedName(j);
+      return name && name !== j.name ? { ...j, name } : j;
+    });
     for (const j of picked) {
       const name = nameOf(j);
       list = setJunction(list, { nodes: j.nodes, lonlat: j.lonlat, ...(name ? { name } : {}) }, signals);
@@ -660,7 +673,7 @@ export function StreetSetupEditor({
                   className="flex min-h-11 w-full items-center gap-2 rounded-lg px-2 text-start hover:bg-slate-100 aria-[current=true]:bg-amber-50"
                 >
                   <span className="min-w-0 flex-1 truncate font-medium">
-                    {j.name || t("setup.junction.unnamed")}
+                    {savedName(j) || t("setup.junction.unnamed")}
                   </span>
                   <span className="shrink-0 text-xs text-slate-500">
                     {t(j.signals ? "setup.junction.yes" : "setup.junction.no")}

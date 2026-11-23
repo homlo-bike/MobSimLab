@@ -188,6 +188,43 @@ describe("project drawings", () => {
     expect(h.result.current.doc("preferences")).toEqual({ values: { a: 1 } });
   });
 
+  it("undoes the first change of a saved drawing by saving it empty, never as nothing", async () => {
+    const { api, store } = fakeApi();
+    const h = await open(api);
+    vi.useFakeTimers();
+    act(() => h.result.current.set("street-setups", [{ way: 410002334, lanes: 2 }]));
+    act(() =>
+      h.result.current.set("railway", {
+        origin: [36.3, 33.5],
+        mode: "tram",
+        stations: [{ id: 1 }],
+        tracks: [],
+        switches: [],
+      }),
+    );
+    await act(() => vi.advanceTimersByTimeAsync(2000));
+    expect(store["street-setups"]?.version).toBe(1);
+
+    act(() => h.result.current.undo());
+    act(() => h.result.current.undo());
+    await act(() => vi.advanceTimersByTimeAsync(2000));
+    expect(api.saveDrawing).toHaveBeenCalledWith("p1", "street-setups", [], 1);
+    expect(api.saveDrawing).toHaveBeenCalledWith(
+      "p1",
+      "railway",
+      { origin: [36.3, 33.5], mode: "tram", stations: [], tracks: [], switches: [] },
+      1,
+    );
+    expect(api.saveDrawing.mock.calls.some((c) => c[2] === null)).toBe(false);
+    expect(h.result.current.doc("street-setups")).toEqual([]);
+    expect(h.result.current.status).toBe("saved");
+
+    // Redo brings the change back.
+    act(() => h.result.current.redo());
+    await act(() => vi.advanceTimersByTimeAsync(2000));
+    expect(store["street-setups"]?.doc).toEqual([{ way: 410002334, lanes: 2 }]);
+  });
+
   it("does not undo for a viewer", async () => {
     const { api } = fakeApi({ railway: drawing("railway", { stations: [] }, 1) });
     const h = await open(api, false);

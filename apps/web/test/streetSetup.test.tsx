@@ -330,7 +330,9 @@ function Harness({
   trafficSide = "right",
   onJunctionsChange,
   streetLines,
+  initialJunctions = [],
 }: {
+  initialJunctions?: JunctionSetup[];
   map: MapLibreMap;
   onChange: (s: StreetSetup[]) => void;
   loadLanes?: LaneEngineLoader;
@@ -339,7 +341,7 @@ function Harness({
   streetLines?: { name: string; view: LineView }[];
 }) {
   const [setups, setSetups] = useState<StreetSetup[]>([]);
-  const [junctions, setJunctions] = useState<JunctionSetup[]>([]);
+  const [junctions, setJunctions] = useState<JunctionSetup[]>(initialJunctions);
   return (
     <StreetSetupEditor
       map={map}
@@ -663,6 +665,45 @@ describe("Street setup editor", () => {
     // A click on a street clears the junctions.
     tap(100);
     expect(screen.queryByRole("group", { name: "Traffic lights" })).toBeNull();
+  });
+
+  it("names a junction saved without its streets' names once its streets are drawn, and saves the name", async () => {
+    const { map, tapJunction } = fakeMap();
+    const ring = (x: number) => [x, 43.731, x + 0.001, 43.731, x + 0.001, 43.732, x, 43.731];
+    const shapes: LaneGeometry = {
+      lanes: [],
+      junctions: [
+        { ring: ring(7.411), nodes: [1], ways: [100, 200], crossing: true, signals: false },
+        { ring: ring(7.413), nodes: [2], ways: [100], crossing: true, signals: false },
+      ],
+      lines: [],
+      roads: [],
+      driving_side: "right",
+    };
+    const engine = {
+      addTile: vi.fn(),
+      build: vi.fn(async () => shapes),
+      dispose: vi.fn(),
+    } satisfies LaneEngine;
+    const onJunctionsChange = vi.fn();
+    render(
+      <Harness
+        map={map}
+        onChange={() => {}}
+        loadLanes={async () => engine}
+        onJunctionsChange={onJunctionsChange}
+        initialJunctions={[{ nodes: [1], signals: true, lonlat: [7.4115, 43.7315] }]}
+      />,
+    );
+    const list = await screen.findByRole("region", { name: "Junctions set up · 1" });
+    await waitFor(() => expect(within(list).getByText("High Street / Back Lane")).toBeTruthy());
+    // The next change of lights stores the name with the junction.
+    tapJunction("2");
+    fireEvent.click(screen.getByRole("button", { name: "No traffic lights" }));
+    expect(onJunctionsChange).toHaveBeenLastCalledWith([
+      expect.objectContaining({ nodes: [1], signals: true, name: "High Street / Back Lane" }),
+      expect.objectContaining({ nodes: [2], signals: false, name: "High Street" }),
+    ]);
   });
 
   it("turns off box zoom while open, so Shift-click reaches junctions and streets", () => {

@@ -42,6 +42,7 @@ import {
 import { clearPlaces, publishPlaces } from "../src/features/naming/registry";
 import { DEFAULT_TIMING } from "../src/features/street-lines/modes";
 import {
+  closedBySetups,
   keepRoutedLegs,
   lineTiles,
   routeKey,
@@ -714,12 +715,73 @@ describe("Street line saved with the project", () => {
       />,
     );
     expect(await screen.findByText(/Out of date/)).toBeTruthy();
-    expect(engine.insertPoint).not.toHaveBeenCalled();
+    // Once its streets load it is routed again to see whether street layouts close its streets; they don't, so
+    // it stays shown as saved, out of date, and nothing is saved.
+    await waitFor(() => expect(engine.insertPoint).toHaveBeenCalledTimes(3));
+    await new Promise((r) => setTimeout(r, 20));
+    expect(onSave).not.toHaveBeenCalled();
+    expect(screen.getByText(/Out of date/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Recalculate" }));
     expect(engine.insertPoint).toHaveBeenCalledTimes(3);
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
     expect((onSave.mock.calls[0]![0] as SavedStreetLine).routedWith).not.toBe(old.routedWith);
     expect(screen.queryByText(/Out of date/)).toBeNull();
+  });
+
+  it("routes an out-of-date line again on opening when the street layouts close its streets, and saves it", async () => {
+    const engine = fakeEngine();
+    const build = engine.rebuild;
+    engine.rebuild = vi.fn(() => (build(), engine.clear()));
+    // Like the engine with a street layout closing Market St: the first leg goes round it.
+    const plain = engine.view;
+    const detour = {
+      coords: [
+        [7.411, 43.731],
+        [7.413, 43.732],
+      ] as [number, number][],
+      streets: ["Market St"],
+      ways: [9],
+      extra_m: 380,
+    };
+    engine.view = () => {
+      const v = plain();
+      if (!v.legs.length) return v;
+      return {
+        ...v,
+        legs: v.legs.map((l, i) =>
+          i === 0
+            ? {
+                ...l,
+                status: "warning" as const,
+                message:
+                  "The street layout in the GIS tab closes Market St to buses; the line goes round it, 380 m longer.",
+                setup_detour: detour,
+              }
+            : l,
+        ),
+      };
+    };
+    const onSave = vi.fn();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    const old = { ...saved, routedWith: routeKey(saved, AROUND) };
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={old}
+        onSave={onSave}
+        streetSetups={[{ way: 9, oneway: true }]}
+      />,
+    );
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const line = onSave.mock.calls[0]![0] as SavedStreetLine;
+    expect(line.view.legs[0]!.setup_detour).toEqual(detour);
+    expect(line.routedWith).not.toBe(old.routedWith);
+    expect(screen.queryByText(/Out of date/)).toBeNull();
+    expect(closedBySetups(line.view)).toBe(true);
+    expect(closedBySetups(saved.view)).toBe(false);
   });
 
   it("runs to and from a shared depot's gates and saves the depot by id", async () => {

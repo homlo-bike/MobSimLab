@@ -21,6 +21,7 @@ import { depotElement, pointElement } from "./markers";
 import { fullTiming, MODES, type Timing } from "./modes";
 import { profileWith, vehicleById } from "./service";
 import {
+  closedBySetups,
   keepRoutedLegs,
   lineBounds,
   lineTiles,
@@ -344,6 +345,8 @@ export function StreetLineEditor({
           }
         }
         setView(f(e));
+        // A change shows the line as the engine routes it now, no longer as saved.
+        if (edit) setAsSaved(false);
         setRoutedAround({ ...applied.current });
         setError(null);
       } catch (err) {
@@ -419,6 +422,31 @@ export function StreetLineEditor({
       return keepRoutedLegs(v, saved.view);
     });
   }, [ready, run]);
+
+  // A saved route out of date because the GIS tab's street layouts now close streets it drives along (the
+  // planner chose "Save anyway" there): once its streets have loaded it is routed again, so the closed legs show
+  // their warnings and the way they went as red dashes, and the route that goes round them is saved. Any other
+  // out-of-date route stays shown as saved, with its notice, until the planner recalculates it.
+  const closuresChecked = useRef(false);
+  useEffect(() => {
+    const e = engine.current;
+    if (!ready || !savedStale || hydrated.current || closuresChecked.current || !e) return;
+    closuresChecked.current = true;
+    try {
+      if (!hydrate(e)) {
+        setView(e.view());
+        setRoutedAround({ ...applied.current });
+        return;
+      }
+      const v = e.view();
+      if (closedBySetups(v)) {
+        setView(v);
+        setRoutedAround({ ...applied.current });
+      } else setAsSaved(true);
+    } catch (err) {
+      setError(engineErrorText(err));
+    }
+  }, [ready, savedStale, hydrate]);
 
   // A shared depot: the depot runs start at its exit gates and end at its entrance gates, again whenever
   // the depot's gates change. A depot deleted from the project leaves the line without depot runs.

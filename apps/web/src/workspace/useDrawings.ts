@@ -57,6 +57,33 @@ export const UNDOABLE: ReadonlySet<DrawingKind> = new Set<DrawingKind>([
   "cargo-bike",
   "schematic",
 ]);
+/**
+ * What each undoable drawing looks like with nothing drawn, given the document it is undone from. Undoing the first
+ * change of a drawing goes back to "none drawn yet"; once the server has that drawing it cannot be saved as nothing,
+ * so this document is saved instead (the server refuses `null`).
+ */
+const EMPTY_DOCS: Record<string, (from: Record<string, unknown>) => unknown> = {
+  "street-lines": () => ({ lines: [] }),
+  railway: (from) => ({ origin: from.origin, mode: from.mode, stations: [], tracks: [], switches: [] }),
+  "plugin-lines": () => ({ tools: {} }),
+  depots: () => ({ depots: [] }),
+  "street-setups": () => [],
+  "junction-setups": () => [],
+  regions: () => ({ regions: [] }),
+  demand: () => ({ source: "auto" }),
+  "cargo-bike": () => ({}),
+  schematic: () => ({ pins: {}, labels: {} }),
+};
+
+/** Purpose: the empty document of a kind, made from the document it replaces; null for a kind without one. */
+export function emptyDoc(kind: DrawingKind, from: unknown): unknown {
+  const make = EMPTY_DOCS[kind];
+  if (!make) return null;
+  return make(
+    from && typeof from === "object" && !Array.isArray(from) ? (from as Record<string, unknown>) : {},
+  );
+}
+
 /** Purpose: a schematic document without its card picture, to compare the planner's edits only. */
 function withoutThumb(doc: unknown): unknown {
   if (!doc || typeof doc !== "object") return doc;
@@ -257,7 +284,12 @@ export function useDrawings(
     const st = from.pop();
     if (!st) return;
     to.push({ ...st, at: 0 });
-    apply(st.kind, st[side]);
+    let doc = st[side];
+    // Back to "none drawn yet" after the server got the drawing: save it empty, since nothing cannot be saved.
+    const e = entry(st.kind);
+    if (doc === null && (e.version !== null || e.inFlight))
+      doc = emptyDoc(st.kind, st[side === "before" ? "after" : "before"]);
+    apply(st.kind, doc);
     // The tool showing this drawing opens again from it.
     entry(st.kind).generation++;
     settle.current = { kind: st.kind, until: Date.now() + SETTLE_MS };

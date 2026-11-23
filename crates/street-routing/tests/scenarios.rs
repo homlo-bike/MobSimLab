@@ -1056,3 +1056,40 @@ fn without_closures_nothing_is_marked() {
     line.mark_setup_closures(&mut v, &g, &g, &Default::default());
     assert_eq!(serde_json::to_string(&v).unwrap(), before);
 }
+
+#[test]
+fn a_leg_round_a_closed_street_says_so_over_its_other_warnings() {
+    let o = grid();
+    let xml = format!(r#"<osm version="0.6">{}{}</osm>"#, o.nodes, o.ways);
+    let osm_data = parse_osm_xml(&xml).unwrap();
+    let free = RoadGraph::from_osm(&osm_data).unwrap();
+    let setups = [row_1_for_walking()];
+    let mut data = osm_data.clone();
+    street_routing::apply_setups(&mut data, &setups);
+    let g = RoadGraph::from_osm_with(&data, Some(free.proj)).unwrap();
+    let closed = street_routing::closures::bus_closures(&osm_data, &setups);
+
+    // Rules that warn about every leg longer than the straight line: the detour warning is there first.
+    let rules = RoutingRules {
+        detour_warn_m: 0.0,
+        detour_warn_ratio: 0.0,
+        ..RoutingRules::default()
+    };
+    let mut line = StreetLine::new(bus(), rules);
+    add(&mut line, &g, 300.0, 400.0, PointKind::Via);
+    add(&mut line, &g, 100.0, 195.0, PointKind::Stop);
+    let mut v = line.view(&g);
+    assert!(
+        v.legs.iter().any(|l| l.status == Status::Warning),
+        "a leg warned about its detour"
+    );
+    line.mark_setup_closures(&mut v, &g, &free, &closed);
+    let marked = v
+        .legs
+        .iter()
+        .find(|l| l.setup_detour.is_some())
+        .expect("a leg goes round Row 1");
+    assert_eq!(marked.status, Status::Warning);
+    let m = marked.message.clone().unwrap();
+    assert!(m.contains("Row 1"), "{m}");
+}

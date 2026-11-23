@@ -1,4 +1,4 @@
-import { type ArgumentsHost, Catch, HttpException } from "@nestjs/common";
+import { type ArgumentsHost, Catch, HttpException, HttpStatus, Logger } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
 import { API_MESSAGES } from "./messages";
 
@@ -42,12 +42,34 @@ export function apiMsgOf(text: string): ApiMsg | null {
 /**
  * Adds `msg` to HTTP error responses whose `message` is a known English text, so the app can show it in its
  * language. Everything else about the response, and every other error, is left as it is.
+ * Refused input (400) is also logged as a warning with the route and the reason, so an operator can see why the
+ * app could not save something; the request body is never logged.
  */
 @Catch()
 export class ApiMessageFilter extends BaseExceptionFilter {
+  private readonly log = new Logger("http");
+
   override catch(exception: unknown, host: ArgumentsHost): void {
+    if (exception instanceof HttpException && exception.getStatus() === HttpStatus.BAD_REQUEST)
+      this.log.warn(badRequestLine(exception, host));
     super.catch(exception instanceof HttpException ? withMsg(exception) : exception, host);
   }
+}
+
+/** Purpose: one log line for a refused request: method, path without the query, and the reason given. */
+export function badRequestLine(e: HttpException, host: ArgumentsHost): string {
+  const req =
+    host.getType() === "http"
+      ? host.switchToHttp().getRequest<{ method?: string; originalUrl?: string; url?: string }>()
+      : null;
+  const path = (req?.originalUrl ?? req?.url ?? "").split("?")[0]!.slice(0, 200);
+  const body = e.getResponse();
+  const raw = typeof body === "string" ? body : (body as { message?: unknown }).message;
+  const reason = (Array.isArray(raw) ? raw.join("; ") : typeof raw === "string" ? raw : e.message).slice(
+    0,
+    300,
+  );
+  return `400 ${req?.method ?? "?"} ${path}: ${reason}`;
 }
 
 /** Purpose: the exception with `msg` in its response body when its message is known. */

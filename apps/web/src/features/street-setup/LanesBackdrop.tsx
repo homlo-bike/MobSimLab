@@ -13,6 +13,11 @@ import {
 } from "./lanes";
 import { LANE_COLOR } from "./mapLayers";
 import type { StreetSetup } from "./types";
+import { getLogger } from "../../logging/logger";
+
+const log = getLogger("lanes-backdrop");
+/** Purpose: an error as the log shows it. */
+const errorOf = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
 /** Source and layer of the faded lanes; `om-` like the other read-only backdrop layers, so no tool removes them. */
 const SOURCE = "om-lanes";
@@ -60,8 +65,8 @@ export function LanesBackdrop({
         e = x;
         setEngine(x);
       })
-      // Without the lane engine the backdrop simply stays empty.
-      .catch(() => undefined);
+      // Without the lane engine the backdrop stays empty; the log says why.
+      .catch((err: unknown) => log.warn({ error: errorOf(err) }, "the lane engine did not start"));
     return () => {
       alive = false;
       e?.dispose();
@@ -85,7 +90,8 @@ export function LanesBackdrop({
             ...Object.entries(LANE_COLOR).flat(),
             LANE_COLOR.traffic,
           ] as never,
-          "fill-opacity": 0.35,
+          // Faded, yet still to be seen on the light basemaps: at 0.35 the grey lanes were lost on white roads.
+          "fill-opacity": 0.6,
         },
       });
     sink(map);
@@ -106,7 +112,7 @@ export function LanesBackdrop({
         ([x, y]) => `${x}/${y}`,
       );
       const mine = ++seq;
-      await Promise.allSettled(
+      const got = await Promise.allSettled(
         keys
           .filter((k) => !added.current.has(k))
           .map(async (k) => {
@@ -117,6 +123,12 @@ export function LanesBackdrop({
             added.current.add(k);
           }),
       );
+      const failed = got.filter((r): r is PromiseRejectedResult => r.status === "rejected");
+      if (failed.length && !stopped)
+        log.warn(
+          { tiles: failed.length, error: errorOf(failed[0]!.reason) },
+          "street tiles for the faded lanes did not load",
+        );
       if (stopped || mine !== seq) return;
       const have = keys.filter((k) => added.current.has(k));
       if (!have.length) return;
@@ -136,8 +148,10 @@ export function LanesBackdrop({
           }),
         } as never);
         sink(map);
-      } catch {
-        // A failed build leaves the last lanes drawn.
+      } catch (err) {
+        // A failed build leaves the last lanes drawn; the log says why.
+        if (!stopped)
+          log.warn({ error: errorOf(err), tiles: have.length }, "the faded lanes could not be built");
       }
     };
     const onMove = () => void draw();
