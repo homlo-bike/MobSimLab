@@ -620,14 +620,23 @@ function LineCard({ line }: { line: RoadLineResult }) {
   const { t } = useI18n();
   const rows: [string, string][] = [];
   if (!line.problem) {
+    // With no trip run to the end there is nothing to time: the measures stay blank (Damascus bug 30).
+    const ran = (line.trips_run ?? 0) > 0;
+    const ifRan = (v: string) => (ran ? v : "–");
     rows.push([t("road.kpi.trips"), `${line.trips_run ?? 0} / ${line.trips ?? 0}`]);
-    rows.push([t("road.kpi.cycle"), `${mins(line.planned_run_s ?? 0)} → ${mins(line.run_cycle_s ?? 0)}`]);
-    rows.push([t("road.kpi.speed"), withUnit((line.speed_kmh ?? 0).toFixed(1), "km/h")]);
-    rows.push([t("road.kpi.punctuality"), pct(line.punctuality ?? 1)]);
-    rows.push([t("road.kpi.delay"), `${mins(line.mean_delay_s ?? 0)} / ${mins(line.p95_delay_s ?? 0)}`]);
-    rows.push([t("road.kpi.bunching"), pct(line.bunched_share ?? 0)]);
-    rows.push([t("road.kpi.lostTraffic"), mins(line.lost_traffic_s ?? 0)]);
-    rows.push([t("road.kpi.lostSignals"), mins(line.lost_signals_s ?? 0)]);
+    rows.push([
+      t("road.kpi.cycle"),
+      `${mins(line.planned_run_s ?? 0)} → ${ifRan(mins(line.run_cycle_s ?? 0))}`,
+    ]);
+    rows.push([t("road.kpi.speed"), ifRan(withUnit((line.speed_kmh ?? 0).toFixed(1), "km/h"))]);
+    rows.push([t("road.kpi.punctuality"), ifRan(pct(line.punctuality ?? 1))]);
+    rows.push([
+      t("road.kpi.delay"),
+      ifRan(`${mins(line.mean_delay_s ?? 0)} / ${mins(line.p95_delay_s ?? 0)}`),
+    ]);
+    rows.push([t("road.kpi.bunching"), ifRan(pct(line.bunched_share ?? 0))]);
+    rows.push([t("road.kpi.lostTraffic"), ifRan(mins(line.lost_traffic_s ?? 0))]);
+    rows.push([t("road.kpi.lostSignals"), ifRan(mins(line.lost_signals_s ?? 0))]);
     const e = line.energy_use;
     if (e) {
       rows.push([t("road.kpi.energy"), `${e.kwh_per_km.toFixed(2)} kWh/km · ${e.kwh.toFixed(0)} kWh`]);

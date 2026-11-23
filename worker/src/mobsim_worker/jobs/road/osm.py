@@ -436,6 +436,62 @@ def clip(data: OsmData, west: float, south: float, east: float, north: float) ->
     }
 
 
+#: Road classes whose crossings get traffic lights when OSM maps none there.
+MAIN_ROADS = frozenset({"motorway", "trunk", "primary", "secondary"})
+
+#: A mapped traffic signal this close to a junction means the junction is already signalled, m.
+SIGNAL_NEAR_M = 40.0
+
+
+def add_main_road_signals(data: OsmData) -> int:
+    """Put traffic lights where main roads cross and OSM maps no signal near the junction; return how many.
+
+    In cities where OSM has few ``highway=traffic_signals`` (Damascus has almost none), every crossing of two
+    main roads becomes a priority junction: the side road never gets a gap in a busy peak, queues spill back
+    and whole districts lock up round the buses (Damascus bug 30). A node gets lights when at least three
+    ends of main-road ways meet there and they belong to at least two roads (by name, else by way), and no
+    mapped signal lies within ``SIGNAL_NEAR_M``. Roundabouts and links are left as they are.
+    """
+    ends: dict[int, int] = {}
+    roads: dict[int, set[str]] = {}
+    for w in data.ways.values():
+        hw = w.tags.get("highway", "")
+        if hw not in MAIN_ROADS or w.tags.get("junction") in ("roundabout", "circular"):
+            continue
+        road = w.tags.get("name") or w.tags.get("ref") or f"way {w.id}"
+        last = len(w.nodes) - 1
+        for i, n in enumerate(w.nodes):
+            ends[n] = ends.get(n, 0) + (1 if i in (0, last) else 2)
+            roads.setdefault(n, set()).add(road)
+    signals = [
+        (lon, lat) for lon, lat, tags in data.nodes.values() if tags.get("highway") == "traffic_signals"
+    ]
+    cell = SIGNAL_NEAR_M / 111_320.0
+    grid: dict[tuple[int, int], list[LonLat]] = {}
+    for p in signals:
+        grid.setdefault((int(p[0] // cell), int(p[1] // cell)), []).append(p)
+
+    def near_signal(p: LonLat) -> bool:
+        cx, cy = int(p[0] // cell), int(p[1] // cell)
+        for dx in (-2, -1, 0, 1, 2):
+            for dy in (-1, 0, 1):
+                for q in grid.get((cx + dx, cy + dy), []):
+                    if _metres(p, q) <= SIGNAL_NEAR_M:
+                        return True
+        return False
+
+    added = 0
+    for n, k in ends.items():
+        if k < 3 or len(roads[n]) < 2:
+            continue
+        lon, lat, tags = data.nodes[n]
+        if tags.get("highway") or near_signal((lon, lat)):
+            continue
+        data.nodes[n] = (lon, lat, {**tags, "highway": "traffic_signals"})
+        added += 1
+    return added
+
+
 def write(data: OsmData, path: str) -> None:
     """Write the data as one OSM XML file (nodes, then ways, then relations, as netconvert expects)."""
     root = ET.Element("osm", version="0.6", generator="mobsimlab")

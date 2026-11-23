@@ -264,3 +264,43 @@ def test_a_route_with_no_bus_path_names_the_streets_and_the_nearest_stop() -> No
     assert isinstance(problem, str)
     assert problem.startswith("no way for a bus from Main Street onto Col 2, near Middle (0 m away)")
     assert "29270329" not in problem
+
+
+def test_main_road_crossings_without_signals_get_traffic_lights() -> None:
+    from mobsim_worker.jobs.road.osm import add_main_road_signals  # noqa: PLC0415
+
+    data = merge_tiles(tiles())
+    for w in data.ways.values():
+        if w.tags.get("name") == "Col 2":
+            w.tags["highway"] = "secondary"
+    # Main Street crosses Col 2 at node 1022, which OSM already signals: nothing is added there.
+    assert add_main_road_signals(data) == 0
+    data.nodes[1022] = (*data.nodes[1022][:2], {})
+    assert add_main_road_signals(data) == 1
+    assert data.nodes[1022][2] == {"highway": "traffic_signals"}
+    # Nodes along one main road, where only side streets join, get none.
+    assert all(not data.nodes[n][2] for n in (1020, 1021, 1023, 1024, 1012, 1032))
+
+
+def test_background_cars_stuck_for_minutes_are_taken_out_but_buses_never() -> None:
+    from mobsim_worker.jobs.road import sim  # noqa: PLC0415
+
+    class Vehicle:
+        waiting = {"bg1": 200.0, "bg2": 20.0, "L0v0": 900.0}
+        removed: list[str] = []
+
+        def getIDList(self) -> list[str]:  # noqa: N802 (libsumo's names)
+            return list(self.waiting)
+
+        def getWaitingTime(self, vid: str) -> float:  # noqa: N802
+            return self.waiting[vid]
+
+        def remove(self, vid: str) -> None:
+            self.removed.append(vid)
+
+    class Libsumo:
+        vehicle = Vehicle()
+
+    watches = {"L0v0": object()}
+    assert sim._clear_stuck_cars(Libsumo(), watches) == 1  # type: ignore[arg-type]
+    assert Libsumo.vehicle.removed == ["bg1"]

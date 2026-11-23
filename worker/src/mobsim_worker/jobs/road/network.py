@@ -97,7 +97,6 @@ def netconvert(
         "--ramps.guess",
         "--junctions.join",
         "--tls.guess-signals",
-        "--tls.discard-simple",
         "--tls.join",
         "--tls.default-type",
         "actuated",

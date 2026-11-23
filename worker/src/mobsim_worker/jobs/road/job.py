@@ -230,6 +230,7 @@ def run_road(
     data = osm.merge_tiles(tiles)
     osm.clip(data, *_bbox(scenario))
     osm.apply_street_setup(data, scenario.get("streets", []), left_hand=left)
+    guessed = osm.add_main_road_signals(data)
     depot_ways: dict[str, osm.DepotWays] = {}
     for d in scenario.get("depots", []):
         dw = osm.add_depot(data, d.get("network", {}))
@@ -255,8 +256,14 @@ def run_road(
         "edges": len(edges),
         "km": sum(e.getLength() for e in edges) / 1000.0,
         "signals": len(net.net.getTrafficLights()),
+        "signals_added": guessed,
         "warnings": len(warnings),
     }
+    if guessed:
+        result["notes"].append(
+            f"{guessed:,} junctions where main roads cross had no traffic lights in OpenStreetMap; "
+            "the run gives them traffic lights"
+        )
 
     if step("planning"):
         return "stopped", result, None
@@ -337,6 +344,7 @@ def run_road(
         "teleports": out.teleports,
         "collisions": out.collisions,
         "background_inserted": out.background_inserted,
+        "background_removed": out.background_removed,
         "vehicles": sum(len(pl.vehicles) for pl in runnable),
         "back_in_depot": sum(1 for w in out.watches.values() if w.arrived and w.vehicle.slot_in),
         "gridlocks": sum(1 for e in out.events if e["kind"] == "gridlock"),
@@ -346,5 +354,10 @@ def run_road(
         "step_s": step_s,
         "complete": not out.stopped,
     }
+    if out.background_removed:
+        result["notes"].append(
+            f"{out.background_removed:,} background cars stood for over {sim.CAR_STUCK_S / 60:.0f} minutes "
+            "and were taken out of the traffic to clear jams; the streets may be busier than they can carry"
+        )
     replay = sim.pack_replay(runnable, out, stops)
     return ("stopped" if out.stopped else "done"), result, replay
