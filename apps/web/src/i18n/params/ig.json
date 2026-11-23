@@ -464,7 +464,9 @@
     "cost.price_base_year": "Afọ ntọala ọnụahịa nke uru ego",
     "mode.spare_share": "Ụgbọ nchekwa, òkè nke ụgbọ na-arụ ọrụ n'oge mkpọchi (ụgbọ niile)",
     "mode.vehicle_capacity": "Ebe ndị njem kwa ụgbọ okporo ụzọ, ịnọdụ ala na iguzo n'ọnụọgụgụ atụmatụ",
-    "cost.opex.car_length_m": "Ego ịgba ọsọ ụzọ ígwè: ogologo ụgbọ oloko a gụrụ dị ka otu ụgbọ"
+    "cost.opex.car_length_m": "Ego ịgba ọsọ ụzọ ígwè: ogologo ụgbọ oloko a gụrụ dị ka otu ụgbọ",
+    "dwell.door_channels_per_100m": "Ụzọ ọnụ ụzọ kwa mita 100 nke ụgbọ okporo ígwè (ọnụ ụzọ n'otu akụkụ × ndị mmadụ na-agafe n'akụkụ ibe ha n'ọnụ ụzọ)",
+    "dwell.door_peaking": "Ụzọ ọnụ ụzọ kacha jupụta ma e jiri ya tụnyere mgbe ndị njem kewara nke ọma n'ọnụ ụzọ niile"
   },
   "units": {
     "US$ million each (2023, PPP)": "nde US$ nke ọ bụla (2023, PPP)",

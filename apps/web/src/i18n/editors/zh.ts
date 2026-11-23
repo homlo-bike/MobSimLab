@@ -1398,7 +1398,11 @@ export const editorsZh = {
   "capacity.plannerNotes": "规划器说明（{n}）",
   "capacity.kernelNotes": "计算内核报告（{n}）",
   "capacity.method":
-    "能力按 UIC 406 压缩法计算；延误来自 {runs} 次运行，其中 {share} 的车次晚发最多 {late}。客流负荷尚未纳入此测试。",
+    "能力按 UIC 406 压缩法计算；延误来自 {runs} 次运行，其中 {share} 的车次晚发最多 {late}。",
+  "capacity.dwell.busy":
+    "上下车人多的车站列车停站更久：每列车的乘客分散到各车门，最繁忙的车门承担多于平均的份额。",
+  "capacity.dwell.fixed": "列车在每站停站时间相同；开启客流负荷后，上下车人多的车站停站更久。",
+  "capacity.loads.dwell": "列车在{station}最长停站 {dwell}（通常 {usual}）。",
   "capacity.line": "线路 {name}",
   "capacity.eachWay": "每方向 {n} 列/小时",
   "capacity.used": "已用能力",

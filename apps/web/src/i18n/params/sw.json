@@ -464,7 +464,9 @@
     "cost.price_base_year": "Mwaka wa msingi wa bei wa thamani za gharama",
     "mode.spare_share": "Magari ya ziada, sehemu ya magari yaliyo kazini wakati wa msongamano (kundi)",
     "mode.vehicle_capacity": "Nafasi za abiria kwa gari la barabarani, kukaa na kusimama kwa msongamano wa mipango",
-    "cost.opex.car_length_m": "Gharama ya uendeshaji wa reli: urefu wa treni unaohesabiwa kama behewa moja"
+    "cost.opex.car_length_m": "Gharama ya uendeshaji wa reli: urefu wa treni unaohesabiwa kama behewa moja",
+    "dwell.door_channels_per_100m": "Njia za mlango kwa kila mita 100 za treni (milango upande mmoja × watu wanaopita sambamba kwa mlango)",
+    "dwell.door_peaking": "Njia ya mlango yenye msongamano zaidi ikilinganishwa na abiria kugawanyika sawa kwenye milango"
   },
   "units": {
     "US$ million each (2023, PPP)": "milioni US$ kila kimoja (2023, PPP)",

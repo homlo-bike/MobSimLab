@@ -1566,7 +1566,12 @@ export const editorsPl = {
   "capacity.plannerNotes": "Uwagi planera ({n})",
   "capacity.kernelNotes": "Co zgłosił silnik obliczeniowy ({n})",
   "capacity.method":
-    "Przepustowość metodą kompresji UIC 406; opóźnienia z {runs} przebiegów, w których {share} kursów startuje z opóźnieniem do {late}. Obciążenie pasażerami nie jest jeszcze częścią tego testu.",
+    "Przepustowość metodą kompresji UIC 406; opóźnienia z {runs} przebiegów, w których {share} kursów startuje z opóźnieniem do {late}.",
+  "capacity.dwell.busy":
+    "Pociągi stoją dłużej tam, gdzie wiele osób wsiada i wysiada: pasażerowie pociągu rozkładają się na jego drzwi, a najbardziej obciążone drzwi dostają więcej niż równy udział.",
+  "capacity.dwell.fixed":
+    "Pociągi stoją tyle samo na każdym przystanku; z obciążeniem pasażerami stoją dłużej tam, gdzie wiele osób wsiada i wysiada.",
+  "capacity.loads.dwell": "Pociągi stoją do {dwell} na stacji {station} (zwykle {usual}).",
   "capacity.line": "Linia {name}",
   "capacity.eachWay": "{n} pociągów/h w każdą stronę",
   "capacity.used": "Wykorzystana przepustowość",

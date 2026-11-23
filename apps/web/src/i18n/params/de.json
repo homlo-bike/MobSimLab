@@ -464,7 +464,9 @@
     "cost.price_base_year": "Preisbasisjahr der Kostenwerte",
     "mode.spare_share": "Reservefahrzeuge, Anteil der Fahrzeuge im Spitzeneinsatz (Flotte)",
     "mode.vehicle_capacity": "Fahrgastplätze je Straßenfahrzeug, Sitz- und Stehplätze bei der Planungsdichte",
-    "cost.opex.car_length_m": "Laufkosten der Bahn: als ein Wagen gezählte Zuglänge"
+    "cost.opex.car_length_m": "Laufkosten der Bahn: als ein Wagen gezählte Zuglänge",
+    "dwell.door_channels_per_100m": "Türkanäle je 100 m Zug (Türen auf einer Seite × Personen nebeneinander je Tür)",
+    "dwell.door_peaking": "Stärkster Türkanal gegenüber gleichmäßiger Verteilung der Fahrgäste auf die Türen"
   },
   "units": {
     "US$ million each (2023, PPP)": "Mio. US$ je Stück (2023, KKP)",

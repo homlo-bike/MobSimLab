@@ -1532,7 +1532,12 @@ export const editorsZu = {
   "capacity.plannerNotes": "Amanothi omhleli ({n})",
   "capacity.kernelNotes": "Lokho okubikwe yinhlamvu yokubala ({n})",
   "capacity.method":
-    "Umthamo ngendlela yokucindezela ye-UIC 406; ukubambezeleka okuvela ekuhlolweni okungu-{runs} lapho u-{share} wohambo uqala ephuzile kuze kube ngu-{late}. Umthwalo wabagibeli awukabi yingxenye yalokhu kuhlola.",
+    "Umthamo ngendlela yokucindezela ye-UIC 406; ukubambezeleka okuvela ekuhlolweni okungu-{runs} lapho u-{share} wohambo uqala ephuzile kuze kube ngu-{late}.",
+  "capacity.dwell.busy":
+    "Izitimela zima isikhathi eside lapho abantu abaningi bengena futhi behla khona: abagibeli besitimela ngasinye bahlukana eminyango yaso, futhi umnyango oxinene kakhulu uthatha ngaphezu kwengxenye elinganayo.",
+  "capacity.dwell.fixed":
+    "Izitimela zima isikhathi esifanayo esitobhini ngasinye; uma umthwalo wabagibeli uvuliwe, zima isikhathi eside lapho abantu abaningi bengena futhi behla khona.",
+  "capacity.loads.dwell": "Izitimela zima kuze kube ngu-{dwell} e-{station} (ngokuvamile {usual}).",
   "capacity.line": "Ulayini {name}",
   "capacity.eachWay": "izitimela ezingu-{n}/ihora ohlangothini ngalunye",
   "capacity.used": "Umthamo osetshenzisiwe",

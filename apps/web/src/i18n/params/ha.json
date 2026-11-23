@@ -464,7 +464,9 @@
     "cost.price_base_year": "Shekarar tushen farashin ƙimomin kuɗi",
     "mode.spare_share": "Motocin ajiya, rabon motocin hidima a lokacin cunkoso (rukuni)",
     "mode.vehicle_capacity": "Wuraren fasinja kowace motar titi, zaune da tsaye a yawan tsarawa",
-    "cost.opex.car_length_m": "Kuɗin tafiyar layin dogo: tsawon jirgin da ake ƙirga a matsayin tarago ɗaya"
+    "cost.opex.car_length_m": "Kuɗin tafiyar layin dogo: tsawon jirgin da ake ƙirga a matsayin tarago ɗaya",
+    "dwell.door_channels_per_100m": "Hanyoyin ƙofa a kowace mita 100 na jirgin ƙasa (ƙofofin gefe ɗaya × mutanen da ke wucewa jere a kowace ƙofa)",
+    "dwell.door_peaking": "Hanyar ƙofa mafi cunkoso idan aka kwatanta da rarraba fasinjoji daidai a ƙofofi"
   },
   "units": {
     "US$ million each (2023, PPP)": "miliyan US$ kowanne (2023, PPP)",

@@ -1498,7 +1498,12 @@ export const editorsEn = {
   "capacity.plannerNotes": "Planner notes ({n})",
   "capacity.kernelNotes": "What the kernel reported ({n})",
   "capacity.method":
-    "Capacity by the UIC 406 compression method; delays from {runs} runs in which {share} of trips start up to {late} late. Passenger loads are not part of this test yet.",
+    "Capacity by the UIC 406 compression method; delays from {runs} runs in which {share} of trips start up to {late} late.",
+  "capacity.dwell.busy":
+    "Trains stand longer where many people board and alight: each train’s passengers are spread over its doors, and the busiest door takes more than an even share.",
+  "capacity.dwell.fixed":
+    "Trains stand the same time at every stop; with passenger loads on, they stand longer where many people board and alight.",
+  "capacity.loads.dwell": "Trains stand up to {dwell} at {station} (usually {usual}).",
   "capacity.line": "Line {name}",
   "capacity.eachWay": "{n} trains/h each way",
   "capacity.used": "Capacity used",

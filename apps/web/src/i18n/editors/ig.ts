@@ -1456,7 +1456,12 @@ export const editorsIg = {
   "capacity.plannerNotes": "Ndetu onye nhazi ({n})",
   "capacity.kernelNotes": "Ihe isi ngụkọ kọrọ ({n})",
   "capacity.method":
-    "Ike site na usoro mkpakọ UIC 406; igbu oge sitere n’ule {runs} ebe {share} nke njem na-amalite n’azụ oge ruo {late}. Ibu ndị njem esoghị n’ule a ugbu a.",
+    "Ike site na usoro mkpakọ UIC 406; igbu oge sitere n’ule {runs} ebe {share} nke njem na-amalite n’azụ oge ruo {late}.",
+  "capacity.dwell.busy":
+    "Ụgbọ okporo ígwè na-akwụsị ogologo oge ebe ọtụtụ mmadụ na-abanye ma na-apụ: ndị njem nke ụgbọ ọ bụla na-ekewa n'ọnụ ụzọ ya, ọnụ ụzọ kacha jupụta na-ewere karịa òkè nha nha.",
+  "capacity.dwell.fixed":
+    "Ụgbọ okporo ígwè na-akwụsị otu oge n'ebe nkwụsị ọ bụla; mgbe ibu ndị njem gbanyere, ha na-akwụsị ogologo oge ebe ọtụtụ mmadụ na-abanye ma na-apụ.",
+  "capacity.loads.dwell": "Ụgbọ okporo ígwè na-akwụsị ruo {dwell} na {station} (na-abụkarị {usual}).",
   "capacity.line": "Ahịrị {name}",
   "capacity.eachWay": "ụgbọ {n}/elekere n’ụzọ ọ bụla",
   "capacity.used": "Ike ejiri",

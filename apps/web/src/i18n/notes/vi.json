@@ -978,6 +978,8 @@
     "fef618f9": "Mật độ việc làm theo loại công năng (diện tích sử dụng bên trong mỗi việc làm toàn thời gian) được tăng khoảng 20 % để tính tổng diện tích sàn và diện tích bỏ trống.",
     "ff4818d0": "Lựa chọn của chủ sản phẩm (2026-11-16): mô hình bao phủ các tuyến cộng vùng đệm 2 km. Vùng này chứa vùng phục vụ đi bộ và xe đạp của mọi điểm dừng (mode.catchment_m tối đa khoảng 1.2 km) và các chuyến ô tô ngắn cạnh tranh với tuyến. Hãy dùng giá trị lớn hơn cho các tuyến có hành khách đến từ xa (gửi xe rồi đi tiếp, đường sắt vùng).",
     "ff5e263c": "Phương pháp điểm tải lớn nhất của Ceder đặt tần suất sao cho tải giờ cao điểm tại đoạn đông nhất giữ ở mức sử dụng mong muốn; sức chứa tính cả hành khách đứng ở mật độ quy hoạch, nên các giá trị gần 0.8 để lại dư địa cho tải không đều giữa các đoàn tàu.",
-    "ff68efd7": "CNOSSOS-EU đặt nguồn đường của giao thông đường bộ ở độ cao 0.05 m trên mặt đường."
+    "ff68efd7": "CNOSSOS-EU đặt nguồn đường của giao thông đường bộ ở độ cao 0.05 m trên mặt đường.",
+    "29fa358c": "Số luồng cửa ở một bên tàu; cửa đủ rộng cho hai người đi song song được tính hai. Mô hình thời gian dừng chia hành khách của một chuyến tàu cho số này. Đếm theo bố trí toa thông thường, không lấy từ bảng nguồn: toa metro 20 m có bốn cửa đôi cho 40 trên 100 m, xe điện 30 m có ba hoặc bốn cửa đôi khoảng 24, toa khu vực 25 m có hai cửa đôi 16, và toa đường dài 25 m có một hoặc hai cửa đơn 8.",
+    "dba93787": "Hành khách dồn về các cửa gần lối vào sân ga, nên luồng đông nhất phục vụ nhiều hơn phần chia đều; tàu dừng cho đến khi luồng đó xong. TCQSM mô tả việc dùng cửa không đều này; 1,3 là ước tính có cân nhắc cho sân ga có lối vào ở một hoặc hai chỗ."
   }
 }

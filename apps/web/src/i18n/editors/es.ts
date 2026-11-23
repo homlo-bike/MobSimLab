@@ -1518,7 +1518,12 @@ export const editorsEs = {
   "capacity.plannerNotes": "Notas del planificador ({n})",
   "capacity.kernelNotes": "Lo que informó el núcleo ({n})",
   "capacity.method":
-    "Capacidad según el método de compresión de la UIC 406; retrasos de {runs} pasadas en las que el {share} de los viajes sale hasta {late} tarde. La carga de pasajeros aún no forma parte de esta prueba.",
+    "Capacidad según el método de compresión de la UIC 406; retrasos de {runs} pasadas en las que el {share} de los viajes sale hasta {late} tarde.",
+  "capacity.dwell.busy":
+    "Los trenes paran más donde mucha gente sube y baja: los pasajeros de cada tren se reparten entre sus puertas, y la puerta más cargada recibe más que una parte igual.",
+  "capacity.dwell.fixed":
+    "Los trenes paran el mismo tiempo en cada parada; con la carga de pasajeros activada, paran más donde mucha gente sube y baja.",
+  "capacity.loads.dwell": "Los trenes paran hasta {dwell} en {station} (normalmente {usual}).",
   "capacity.line": "Línea {name}",
   "capacity.eachWay": "{n} trenes/h por sentido",
   "capacity.used": "Capacidad usada",

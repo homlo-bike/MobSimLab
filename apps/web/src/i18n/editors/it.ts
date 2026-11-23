@@ -1513,7 +1513,12 @@ export const editorsIt = {
   "capacity.plannerNotes": "Note del pianificatore ({n})",
   "capacity.kernelNotes": "Cosa ha segnalato il nucleo di calcolo ({n})",
   "capacity.method":
-    "Capacità con il metodo di compressione UIC 406; ritardi da {runs} prove in cui il {share} delle corse parte fino a {late} in ritardo. Il carico dei passeggeri non fa ancora parte di questo test.",
+    "Capacità con il metodo di compressione UIC 406; ritardi da {runs} prove in cui il {share} delle corse parte fino a {late} in ritardo.",
+  "capacity.dwell.busy":
+    "I treni sostano di più dove molte persone salgono e scendono: i passeggeri di ogni treno si distribuiscono tra le sue porte, e la porta più carica ne riceve più di una quota uguale.",
+  "capacity.dwell.fixed":
+    "I treni sostano lo stesso tempo a ogni fermata; con il carico dei passeggeri attivo, sostano di più dove molte persone salgono e scendono.",
+  "capacity.loads.dwell": "I treni sostano fino a {dwell} a {station} (di solito {usual}).",
   "capacity.line": "Linea {name}",
   "capacity.eachWay": "{n} treni/h per direzione",
   "capacity.used": "Capacità usata",

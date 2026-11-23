@@ -14,6 +14,9 @@ import { buildDrawnNetwork, type DrawnProblem, drawnProblem } from "./drawn";
 import { loadWorkerEngine } from "./engine";
 import { PERIODS, pickStreetParams, railLoadPlans, streetLoadPlans } from "./loadPlans";
 import { type LineLoad, type LoadLine, lineLoad } from "./loads";
+import { dwellModel, stopDwells, type StopDwells, trainsPerHour, withStopDwells } from "./dwells";
+import { engineLines } from "../railways/serviceLines";
+import { paramNumber } from "../../workspace/preferences";
 import {
   type Boardings,
   estimatedBoardings,
@@ -277,11 +280,67 @@ export function CapacityRun({
     return zonesRun.current.zones;
   };
 
+  const loadShares = () => ({
+    peakHour: paramValue("benefit.ridership.peak_hour_share", "*", prefs)[1],
+    peakDirection: paramValue("benefit.ridership.peak_direction_share", "*", prefs)[1],
+  });
+
+  /** Purpose: the weekday boardings at a line's stops: the estimate, the demand run's, the planner's own. */
+  const boardingsOf = (p: { mode: string; sequences: string[][] }, z: RidershipZones) => {
+    const names = [...new Set(p.sequences.flat())];
+    const est = {
+      ...estimatedBoardings(z.zones, p.mode, names, prefs, ridership?.doc ?? null),
+      ...(demandRidership ? demandStopBoardings(names, demandRidership, linesAt) : {}),
+    };
+    return lineBoardings(names, est, ownBoardings, linesAt);
+  };
+
+  /** The estimate's zones; an estimate that fails leaves the loads without boardings. */
+  const zonesNow = () => ensureZones()!.catch(() => ({ zones: [], notes: [] }) as RidershipZones);
+
+  /**
+   * Purpose: with passenger loads on, how long the drawn trains stand at each stop: longer where many people
+   * board and alight (dwells.ts). Null when the run has no loads or no drawn trains.
+   */
+  const trainDwells = async (
+    w: { from_s: number; to_s: number },
+    alive: () => boolean,
+    show = true,
+  ): Promise<{ zones: RidershipZones; byLine: Record<string, StopDwells> } | null> => {
+    if (source !== "drawn" || drawn !== null || !railway || !withLoads || !ridership) return null;
+    if (show) {
+      phase("loads");
+      setStatus(t("capacity.loads.estimating"));
+    }
+    const z = await zonesNow();
+    if (!alive()) return null;
+    const shares = loadShares();
+    const plans = new Map(railLoadPlans(railway, []).map((p) => [p.id, p]));
+    const byLine: Record<string, StopDwells> = {};
+    for (const l of engineLines(railway, railway.lines ?? [], prefs)) {
+      const p = plans.get(l.id);
+      if (!p) continue;
+      const line: LoadLine = { ...p, perHour: (h) => trainsPerHour(l, h), boardings: boardingsOf(p, z) };
+      const usual = l.dwell_s ?? paramNumber("mode.dwell_s", prefs, l.mode);
+      byLine[l.id] = stopDwells(
+        line,
+        l.vehicle.length_m * l.units,
+        usual,
+        dwellModel(prefs, l.mode),
+        w.from_s,
+        w.to_s,
+        shares,
+      );
+    }
+    return { zones: z, byLine };
+  };
+
   /** Runs the street lines and works out the passenger loads of the drawn lines. */
   const drawnExtras = async (
     w: { from_s: number; to_s: number },
     infos: LineInfo[],
     alive: () => boolean,
+    dwells: { zones: RidershipZones; byLine: Record<string, StopDwells> } | null = null,
   ) => {
     const params: StreetRunParams = { ...STREET_RUN_DEFAULTS, ...pickStreetParams(settings), ...w };
     setStreetResults(
@@ -291,27 +350,24 @@ export function CapacityRun({
       }),
     );
     if (!withLoads || !ridership) return;
-    phase("loads");
-    setStatus(t("capacity.loads.estimating"));
-    const z = await ensureZones()!.catch(() => ({ zones: [], notes: [] }) as RidershipZones);
-    if (!alive()) return;
-    const shares = {
-      peakHour: paramValue("benefit.ridership.peak_hour_share", "*", prefs)[1],
-      peakDirection: paramValue("benefit.ridership.peak_direction_share", "*", prefs)[1],
-    };
+    let z = dwells?.zones;
+    if (!z) {
+      phase("loads");
+      setStatus(t("capacity.loads.estimating"));
+      z = await zonesNow();
+      if (!alive()) return;
+    }
+    const shares = loadShares();
     const all = [
       ...(drawn === null && railway ? railLoadPlans(railway, infos) : []),
       ...streetLoadPlans(streets, prefs),
     ];
     const out: Record<string, LineLoad> = {};
     for (const p of all) {
-      const names = [...new Set(p.sequences.flat())];
-      const est = {
-        ...estimatedBoardings(z.zones, p.mode, names, prefs, ridership.doc),
-        ...(demandRidership ? demandStopBoardings(names, demandRidership, linesAt) : {}),
-      };
-      const line: LoadLine = { ...p, boardings: lineBoardings(names, est, ownBoardings, linesAt) };
+      const line: LoadLine = { ...p, boardings: boardingsOf(p, z) };
       out[p.key] = lineLoad(line, w.from_s, w.to_s, shares);
+      const longest = p.key.startsWith("rail:") ? dwells?.byLine[p.id]?.longest : null;
+      if (longest) out[p.key]!.dwell = longest;
     }
     setLoads(out);
   };
@@ -381,6 +437,14 @@ export function CapacityRun({
     // Restored once, when the saved run has loaded.
   }, [kept.saved]);
 
+  /** What the engine is loaded from, before the stops' dwells. */
+  const baseKey = () =>
+    source === "example"
+      ? "example"
+      : source === "drawn"
+        ? `drawn|${JSON.stringify(railway)}`
+        : `${topology!.name}|${topology!.text.length}|${linesFile!.text}`;
+
   const start = async () => {
     const runKey = capInputs;
     let failed = false;
@@ -398,23 +462,31 @@ export function CapacityRun({
     setStreetResults([]);
     setLoads({});
     const railOn = source !== "drawn" || drawn === null;
-    const key =
-      source === "example"
-        ? "example"
-        : source === "drawn"
-          ? `drawn|${JSON.stringify(railway)}`
-          : `${topology!.name}|${topology!.text.length}|${linesFile!.text}`;
-    // The steps this run will take, so the bar can say how far along it is.
-    const fresh = railOn && engine.current?.key !== key;
-    phases.current = [
+    // With loads, the drawn trains' dwells come from them first: they are part of the network the engine loads.
+    const loadsFirst = source === "drawn" && railOn && withLoads && ridership !== null;
+    const withLoadsStep = source === "drawn" && withLoads && ridership !== null;
+    const rest = (fresh: boolean): Phase[] => [
       ...(fresh && source === "drawn" ? (["build"] as const) : []),
       ...(fresh ? (["load"] as const) : []),
       ...(railOn ? (["plan"] as const) : []),
       ...(railOn && sweep ? (["sweep"] as const) : []),
-      ...(source === "drawn" && withLoads && ridership ? (["loads"] as const) : []),
     ];
+    // The steps this run will take, so the bar can say how far along it is.
+    phases.current = loadsFirst
+      ? ["loads", ...rest(true)]
+      : [
+          ...rest(railOn && engine.current?.key !== baseKey()),
+          ...(withLoadsStep ? (["loads"] as const) : []),
+        ];
     setProgress(null);
     try {
+      const dwells = loadsFirst ? await trainDwells(w, alive) : null;
+      if (loadsFirst && !alive()) return;
+      const dwellsBy = Object.fromEntries(
+        Object.entries(dwells?.byLine ?? {}).map(([id, d]) => [id, d.dwells]),
+      );
+      const key = dwells ? `${baseKey()}|${JSON.stringify(dwellsBy)}` : baseKey();
+      if (loadsFirst) phases.current = ["loads", ...rest(engine.current?.key !== key)];
       if (!railOn) {
         await drawnExtras(w, [], alive);
         return;
@@ -435,7 +507,7 @@ export function CapacityRun({
             setError(t(`capacity.drawn.${built}`));
             return;
           }
-          src = { kind: "files", ...built };
+          src = { kind: "files", ...built, lines: withStopDwells(built.lines, dwellsBy) };
         }
         phase("load");
         setStatus(t("capacity.loading"));
@@ -459,7 +531,7 @@ export function CapacityRun({
         sweeping: sweep,
       }));
       setLines(states);
-      if (source === "drawn") await drawnExtras(w, infos, alive);
+      if (source === "drawn") await drawnExtras(w, infos, alive, dwells);
       if (!alive()) return;
       if (sweep) {
         for (let k = 0; k < states.length; k++) {
@@ -526,11 +598,17 @@ export function CapacityRun({
         setServerError(built in DRAWN_PROBLEMS ? t(`capacity.drawn.${built as DrawnProblem}`) : built);
         return;
       }
+      setSending(true);
+      const dwells = await trainDwells(w, () => true, false).catch(() => null);
+      setSending(false);
+      const dwellsBy = Object.fromEntries(
+        Object.entries(dwells?.byLine ?? {}).map(([id, d]) => [id, d.dwells]),
+      );
       network = {
         kind: "files",
         topology: built.topology,
         topologyName: t("capacity.drawn"),
-        lines: built.lines,
+        lines: withStopDwells(built.lines, dwellsBy),
         linesName: t("capacity.drawn"),
       };
     } else

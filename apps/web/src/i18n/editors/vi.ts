@@ -1455,7 +1455,12 @@ export const editorsVi = {
   "capacity.plannerNotes": "Ghi chú của bộ lập biểu đồ ({n})",
   "capacity.kernelNotes": "Lõi tính toán báo cáo ({n})",
   "capacity.method":
-    "Năng lực theo phương pháp nén UIC 406; trễ từ {runs} lần chạy, trong đó {share} số chuyến khởi hành trễ tới {late}. Lượng hành khách chưa nằm trong thử nghiệm này.",
+    "Năng lực theo phương pháp nén UIC 406; trễ từ {runs} lần chạy, trong đó {share} số chuyến khởi hành trễ tới {late}.",
+  "capacity.dwell.busy":
+    "Tàu dừng lâu hơn ở nơi nhiều người lên xuống: hành khách của mỗi chuyến chia ra các cửa, và cửa đông nhất nhận nhiều hơn phần chia đều.",
+  "capacity.dwell.fixed":
+    "Tàu dừng như nhau ở mọi điểm dừng; khi bật lượng hành khách, tàu dừng lâu hơn ở nơi nhiều người lên xuống.",
+  "capacity.loads.dwell": "Tàu dừng tới {dwell} tại {station} (thường {usual}).",
   "capacity.line": "Tuyến {name}",
   "capacity.eachWay": "{n} tàu/giờ mỗi chiều",
   "capacity.used": "Năng lực đã dùng",

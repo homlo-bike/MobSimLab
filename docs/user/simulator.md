@@ -29,7 +29,7 @@ Owners and Editors of the project can also click **Run on the server and save**.
 
 Runs wait their turn: the server runs as many at the same time as it has background workers (`MOBSIMLAB_SIM_WORKERS` in `.env`, 1 by default), and the others show **Waiting** until a worker is free.
 
-The result is the same as in the browser: both use the same Rust code. The run in the browser stays as it was, instant and not saved. With **Drawn in this project**, the server runs the rail lines; street lines and passenger loads run in the browser only.
+The result is the same as in the browser: both use the same Rust code. The run in the browser stays as it was, instant and not saved. With **Drawn in this project**, the server runs the rail lines, with the longer dwell at busy stations when passenger loads are on; street lines and passenger loads run in the browser only.
 
 ## What the test does
 
@@ -64,6 +64,7 @@ With **Passenger loads** on, each drawn line (rail and street) gets a **Passenge
 - **Where people go.** People who board at a stop ride to the line's other stops in proportion to those stops' boardings. In a peak hour the busier direction carries `benefit.ridership.peak_direction_share` of the riders (60 %); off the peak, and on a loop line, both are the same. Both shares are in the Tables tab's parameters.
 - **Places.** A train has its catalogue places times the units coupled; a bus has `mode.vehicle_capacity` (75, BRT 120, intercity coach 50).
 - **Left behind**: on the busiest link of each hour, the riders above the places of the vehicles that pass in that hour, added over the period.
+- **Dwell at busy stations.** Drawn trains stand longer where many people board and alight, and the capacity test runs with those longer stops. A train stands for its doors to open and close (`dwell.door_open_close_s`) plus the time its busiest door channel takes: the people boarding and alighting each train, spread over the train's door channels (`dwell.door_channels_per_100m` over its length) and weighted by `dwell.door_peaking` for the doors nearest the platform entrances, times `dwell.board_s_per_pax` and `dwell.alight_s_per_pax`. A station never gets less than the line's usual dwell; the busiest hour of the period sets it. The train's card names the longest stop. Without passenger loads every stop keeps the line's dwell. Street lines keep their dwell.
 
 ## Verdicts
 

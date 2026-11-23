@@ -1504,7 +1504,12 @@ export const editorsSw = {
   "capacity.plannerNotes": "Maelezo ya mpangaji ({n})",
   "capacity.kernelNotes": "Kiini cha hesabu kiliripoti ({n})",
   "capacity.method":
-    "Uwezo kwa mbinu ya mgandamizo ya UIC 406; ucheleweshaji kutoka majaribio {runs} ambapo {share} ya safari zinaanza zikichelewa hadi {late}. Idadi ya abiria bado si sehemu ya jaribio hili.",
+    "Uwezo kwa mbinu ya mgandamizo ya UIC 406; ucheleweshaji kutoka majaribio {runs} ambapo {share} ya safari zinaanza zikichelewa hadi {late}.",
+  "capacity.dwell.busy":
+    "Treni husimama muda mrefu zaidi pale watu wengi wanapopanda na kushuka: abiria wa kila treni hugawanyika kwenye milango yake, na mlango wenye msongamano zaidi hupata zaidi ya sehemu sawa.",
+  "capacity.dwell.fixed":
+    "Treni husimama muda sawa kila kituo; idadi ya abiria ikiwashwa, husimama muda mrefu zaidi pale watu wengi wanapopanda na kushuka.",
+  "capacity.loads.dwell": "Treni husimama hadi {dwell} katika {station} (kwa kawaida {usual}).",
   "capacity.line": "Njia {name}",
   "capacity.eachWay": "treni {n}/saa kila upande",
   "capacity.used": "Uwezo uliotumika",

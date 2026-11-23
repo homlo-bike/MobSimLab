@@ -1509,7 +1509,12 @@ export const editorsNl = {
   "capacity.plannerNotes": "Plannernotities ({n})",
   "capacity.kernelNotes": "Wat de rekenkern meldde ({n})",
   "capacity.method":
-    "Capaciteit volgens de compressiemethode van UIC 406; vertragingen uit {runs} runs waarin {share} van de ritten tot {late} te laat vertrekt. Reizigersaantallen zitten nog niet in deze test.",
+    "Capaciteit volgens de compressiemethode van UIC 406; vertragingen uit {runs} runs waarin {share} van de ritten tot {late} te laat vertrekt.",
+  "capacity.dwell.busy":
+    "Treinen staan langer stil waar veel mensen in- en uitstappen: de reizigers van een trein verdelen zich over zijn deuren, en de drukste deur krijgt meer dan een gelijk deel.",
+  "capacity.dwell.fixed":
+    "Treinen staan bij elke halte even lang stil; met reizigersaantallen aan staan ze langer waar veel mensen in- en uitstappen.",
+  "capacity.loads.dwell": "Treinen staan tot {dwell} stil in {station} (meestal {usual}).",
   "capacity.line": "Lijn {name}",
   "capacity.eachWay": "{n} treinen/u per richting",
   "capacity.used": "Gebruikte capaciteit",

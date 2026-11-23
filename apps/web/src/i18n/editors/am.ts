@@ -1442,7 +1442,12 @@ export const editorsAm = {
   "capacity.plannerNotes": "የአቅጣጫ ሰጪው ማስታወሻዎች ({n})",
   "capacity.kernelNotes": "የስሌት ኮሩ የዘገበው ({n})",
   "capacity.method":
-    "አቅም በUIC 406 የመጨመቂያ ዘዴ፤ መዘግየቶች ከ{runs} ሙከራዎች፣ በእነሱ ውስጥ {share} ጉዞዎች እስከ {late} ዘግይተው ይነሳሉ። የተሳፋሪ ጭነት ገና የዚህ ሙከራ አካል አይደለም።",
+    "አቅም በUIC 406 የመጨመቂያ ዘዴ፤ መዘግየቶች ከ{runs} ሙከራዎች፣ በእነሱ ውስጥ {share} ጉዞዎች እስከ {late} ዘግይተው ይነሳሉ።",
+  "capacity.dwell.busy":
+    "ብዙ ሰዎች በሚሳፈሩበትና በሚወርዱበት ቦታ ባቡሮች ረዘም ብለው ይቆማሉ፤ የእያንዳንዱ ባቡር ተሳፋሪዎች በበሮቹ ይከፋፈላሉ፣ በጣም የተጨናነቀው በር ከእኩል ድርሻ በላይ ይወስዳል።",
+  "capacity.dwell.fixed":
+    "ባቡሮች በእያንዳንዱ ማቆሚያ እኩል ጊዜ ይቆማሉ፤ የተሳፋሪ ጭነት ሲበራ ብዙ ሰዎች በሚሳፈሩበትና በሚወርዱበት ቦታ ረዘም ብለው ይቆማሉ።",
+  "capacity.loads.dwell": "ባቡሮች በ{station} እስከ {dwell} ይቆማሉ (በተለምዶ {usual})።",
   "capacity.line": "መስመር {name}",
   "capacity.eachWay": "በእያንዳንዱ አቅጣጫ {n} ባቡሮች/ሰዓት",
   "capacity.used": "ጥቅም ላይ የዋለ አቅም",

@@ -464,7 +464,9 @@
     "cost.price_base_year": "成本数值的价格基准年",
     "mode.spare_share": "备用车辆，占高峰运营车辆的比例（车队）",
     "mode.vehicle_capacity": "每辆道路车辆的乘客位，按规划密度计的座位加站位",
-    "cost.opex.car_length_m": "铁路运行成本：计为一节车厢的列车长度"
+    "cost.opex.car_length_m": "铁路运行成本：计为一节车厢的列车长度",
+    "dwell.door_channels_per_100m": "每 100 米列车的车门通道数（单侧车门数 × 每扇门并排通过人数）",
+    "dwell.door_peaking": "最繁忙车门通道相对于乘客在各门均匀分布的倍数"
   },
   "units": {
     "US$ million each (2023, PPP)": "百万美元/台（2023，PPP）",

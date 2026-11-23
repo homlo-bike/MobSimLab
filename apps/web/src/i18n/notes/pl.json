@@ -978,6 +978,8 @@
     "fef618f9": "Wskaźniki zatrudnienia według klasy użytkowania (powierzchnia wewnętrzna netto na etat) zwiększone o około 20 % dla powierzchni całkowitej i pustostanów.",
     "ff4818d0": "Wybór właściciela produktu (2026-11-16): model obejmuje linie plus bufor 2 km. Mieści to obszary dojścia pieszego i dojazdu rowerem do każdego przystanku (mode.catchment_m wynosi najwyżej około 1.2 km) oraz krótkie podróże samochodem konkurujące z linią. Użyj więcej dla linii, których pasażerowie przyjeżdżają z daleka (park and ride, kolej regionalna).",
     "ff5e263c": "Metoda punktu maksymalnego obciążenia Cedera ustala częstotliwość tak, aby obciążenie w godzinie szczytu na najbardziej obciążonym odcinku pozostało na pożądanym poziomie napełnienia; pojemność liczy pasażerów stojących przy gęstości planistycznej, więc wartości bliskie 0.8 zostawiają miejsce na nierówne obciążenie pociągów.",
-    "ff68efd7": "CNOSSOS-EU umieszcza liniowe źródło drogowe 0.05 m nad nawierzchnią drogi."
+    "ff68efd7": "CNOSSOS-EU umieszcza liniowe źródło drogowe 0.05 m nad nawierzchnią drogi.",
+    "29fa358c": "Kanały drzwiowe po jednej stronie pociągu; drzwi, przez które przejdą dwie osoby obok siebie, liczą się podwójnie. Model czasu postoju dzieli przez nie pasażerów pociągu. Policzone z typowych układów wagonów, nie z tabeli źródłowej: 20-metrowy wagon metra z czterema podwójnymi drzwiami daje 40 na 100 m, 30-metrowy tramwaj z trzema lub czterema podwójnymi drzwiami około 24, 25-metrowy wagon regionalny z dwoma podwójnymi drzwiami 16, a 25-metrowy wagon dalekobieżny z jednymi lub dwoma pojedynczymi drzwiami 8.",
+    "dba93787": "Pasażerowie tłoczą się przy drzwiach najbliżej wejść na peron, więc najbardziej obciążony kanał obsługuje więcej niż równy udział; postój trwa, aż skończy. TCQSM opisuje to nierówne korzystanie z drzwi; 1,3 to uzasadnione szacunki dla peronów z wejściem w jednym lub dwóch miejscach."
   }
 }

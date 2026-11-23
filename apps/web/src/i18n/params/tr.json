@@ -464,7 +464,9 @@
     "cost.price_base_year": "Maliyet değerlerinin fiyat baz yılı",
     "mode.spare_share": "Yedek araçlar, zirvede hizmetteki araçların payı (filo)",
     "mode.vehicle_capacity": "Cadde aracı başına yolcu yeri, planlama yoğunluğunda oturma artı ayakta",
-    "cost.opex.car_length_m": "Demiryolu işletme maliyeti: bir vagon sayılan tren uzunluğu"
+    "cost.opex.car_length_m": "Demiryolu işletme maliyeti: bir vagon sayılan tren uzunluğu",
+    "dwell.door_channels_per_100m": "100 m tren başına kapı kanalı (bir taraftaki kapılar × kapı başına yan yana kişi)",
+    "dwell.door_peaking": "Yolcuların kapılara eşit dağılımına göre en yoğun kapı kanalı"
   },
   "units": {
     "US$ million each (2023, PPP)": "milyon US$ adet başına (2023, SAGP)",

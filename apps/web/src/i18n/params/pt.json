@@ -464,7 +464,9 @@
     "cost.price_base_year": "Ano-base de preços dos custos",
     "mode.spare_share": "Veículos de reserva, parcela dos veículos em serviço no pico (frota)",
     "mode.vehicle_capacity": "Lugares de passageiros por veículo de rua, sentados mais em pé na densidade de projeto",
-    "cost.opex.car_length_m": "Custo de circulação ferroviária: comprimento de trem contado como um carro"
+    "cost.opex.car_length_m": "Custo de circulação ferroviária: comprimento de trem contado como um carro",
+    "dwell.door_channels_per_100m": "Canais de porta por 100 m de comboio (portas de um lado × pessoas lado a lado por porta)",
+    "dwell.door_peaking": "Canal de porta mais carregado face a uma distribuição uniforme dos passageiros pelas portas"
   },
   "units": {
     "US$ million each (2023, PPP)": "milhões de US$ cada (2023, PPC)",

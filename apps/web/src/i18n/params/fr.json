@@ -464,7 +464,9 @@
     "cost.price_base_year": "Année de base des prix des coûts",
     "mode.spare_share": "Véhicules de réserve, part des véhicules en service à la pointe (parc)",
     "mode.vehicle_capacity": "Places voyageurs par véhicule routier, assises et debout à la densité de conception",
-    "cost.opex.car_length_m": "Coût de roulement ferroviaire : longueur de train comptée comme une voiture"
+    "cost.opex.car_length_m": "Coût de roulement ferroviaire : longueur de train comptée comme une voiture",
+    "dwell.door_channels_per_100m": "Passages de porte par 100 m de train (portes d’un côté × personnes de front par porte)",
+    "dwell.door_peaking": "Passage de porte le plus chargé par rapport à une répartition égale des voyageurs entre les portes"
   },
   "units": {
     "US$ million each (2023, PPP)": "M US$ l'unité (2023, PPA)",

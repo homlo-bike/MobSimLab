@@ -1470,7 +1470,12 @@ export const editorsTr = {
   "capacity.plannerNotes": "Planlayıcı notları ({n})",
   "capacity.kernelNotes": "Hesap çekirdeğinin bildirdikleri ({n})",
   "capacity.method":
-    "Kapasite UIC 406 sıkıştırma yöntemiyle; gecikmeler, seferlerin {share} kadarının {late} kadar geç kalktığı {runs} çalıştırmadan. Yolcu yükleri henüz bu testin parçası değil.",
+    "Kapasite UIC 406 sıkıştırma yöntemiyle; gecikmeler, seferlerin {share} kadarının {late} kadar geç kalktığı {runs} çalıştırmadan.",
+  "capacity.dwell.busy":
+    "Trenler çok kişinin binip indiği yerlerde daha uzun durur: her trenin yolcuları kapılarına dağılır ve en yoğun kapı eşit paydan fazlasını alır.",
+  "capacity.dwell.fixed":
+    "Trenler her durakta aynı süre durur; yolcu yükleri açıkken çok kişinin binip indiği yerlerde daha uzun dururlar.",
+  "capacity.loads.dwell": "Trenler {station} durağında {dwell} süreye kadar durur (genelde {usual}).",
   "capacity.line": "Hat {name}",
   "capacity.eachWay": "her yönde saatte {n} tren",
   "capacity.used": "Kullanılan kapasite",

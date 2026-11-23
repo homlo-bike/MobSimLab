@@ -1433,7 +1433,12 @@ export const editorsKo = {
   "capacity.plannerNotes": "계획기 메모({n})",
   "capacity.kernelNotes": "계산 커널 보고({n})",
   "capacity.method":
-    "용량은 UIC 406 압축법으로 계산했습니다. 지연은 운행의 {share}가 최대 {late} 늦게 출발하는 {runs}회 실행에서 나왔습니다. 승객 수요는 아직 이 시험에 포함되지 않습니다.",
+    "용량은 UIC 406 압축법으로 계산했습니다. 지연은 운행의 {share}가 최대 {late} 늦게 출발하는 {runs}회 실행에서 나왔습니다.",
+  "capacity.dwell.busy":
+    "타고 내리는 사람이 많은 곳에서는 열차가 더 오래 정차합니다. 각 열차의 승객은 출입문에 나뉘고, 가장 붐비는 문은 고른 몫보다 많이 맡습니다.",
+  "capacity.dwell.fixed":
+    "열차는 모든 정류장에서 같은 시간 정차합니다. 승객 수요를 켜면 타고 내리는 사람이 많은 곳에서 더 오래 정차합니다.",
+  "capacity.loads.dwell": "열차는 {station}에서 최대 {dwell} 정차합니다(보통 {usual}).",
   "capacity.line": "노선 {name}",
   "capacity.eachWay": "방향별 시간당 {n}회",
   "capacity.used": "사용 용량",

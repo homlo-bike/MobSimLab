@@ -1495,7 +1495,12 @@ export const editorsId = {
   "capacity.plannerNotes": "Catatan perencana ({n})",
   "capacity.kernelNotes": "Laporan inti perhitungan ({n})",
   "capacity.method":
-    "Kapasitas menurut metode kompresi UIC 406; keterlambatan dari {runs} putaran di mana {share} perjalanan berangkat hingga {late} terlambat. Beban penumpang belum termasuk dalam uji ini.",
+    "Kapasitas menurut metode kompresi UIC 406; keterlambatan dari {runs} putaran di mana {share} perjalanan berangkat hingga {late} terlambat.",
+  "capacity.dwell.busy":
+    "Kereta berhenti lebih lama di tempat banyak orang naik dan turun: penumpang setiap kereta tersebar ke pintu-pintunya, dan pintu tersibuk mendapat lebih dari bagian rata.",
+  "capacity.dwell.fixed":
+    "Kereta berhenti sama lama di setiap pemberhentian; dengan beban penumpang aktif, kereta berhenti lebih lama di tempat banyak orang naik dan turun.",
+  "capacity.loads.dwell": "Kereta berhenti hingga {dwell} di {station} (biasanya {usual}).",
   "capacity.line": "Jalur {name}",
   "capacity.eachWay": "{n} kereta/jam tiap arah",
   "capacity.used": "Kapasitas terpakai",

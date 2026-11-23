@@ -1495,7 +1495,12 @@ export const editorsHa = {
   "capacity.plannerNotes": "Bayanan mai tsarawa ({n})",
   "capacity.kernelNotes": "Abin da tushen lissafi ya ruwaito ({n})",
   "capacity.method":
-    "Ƙarfin ɗauka bisa hanyar matsawa ta UIC 406; jinkiri daga gudu {runs} inda {share} na tafiye-tafiye suke tashi a makare har zuwa {late}. Nauyin fasinjoji ba ya cikin wannan gwajin tukuna.",
+    "Ƙarfin ɗauka bisa hanyar matsawa ta UIC 406; jinkiri daga gudu {runs} inda {share} na tafiye-tafiye suke tashi a makare har zuwa {late}.",
+  "capacity.dwell.busy":
+    "Jiragen ƙasa suna tsayawa da tsawo inda mutane da yawa ke hawa da sauka: fasinjojin kowane jirgi suna rarrabuwa a ƙofofinsa, kuma ƙofa mafi cunkoso tana ɗaukar fiye da kaso daidai.",
+  "capacity.dwell.fixed":
+    "Jiragen ƙasa suna tsayawa daidai lokaci a kowace tasha; idan nauyin fasinjoji yana kunne, suna tsayawa da tsawo inda mutane da yawa ke hawa da sauka.",
+  "capacity.loads.dwell": "Jiragen ƙasa suna tsayawa har {dwell} a {station} (yawanci {usual}).",
   "capacity.line": "Layi {name}",
   "capacity.eachWay": "jirage {n}/awa kowace hanya",
   "capacity.used": "Ƙarfin da aka yi amfani da shi",

@@ -1509,7 +1509,12 @@ export const editorsUz = {
   "capacity.plannerNotes": "Rejalovchi izohlari ({n})",
   "capacity.kernelNotes": "Hisoblash yadrosi xabarlari ({n})",
   "capacity.method":
-    "O‘tkazish qobiliyati UIC 406 siqish usulida; kechikishlar {runs} ta sinovdan, ularda qatnovlarning {share} qismi {late} gacha kech jo‘naydi. Yo‘lovchi yuklamasi hozircha bu sinovga kirmaydi.",
+    "O‘tkazish qobiliyati UIC 406 siqish usulida; kechikishlar {runs} ta sinovdan, ularda qatnovlarning {share} qismi {late} gacha kech jo‘naydi.",
+  "capacity.dwell.busy":
+    "Koʻp odam chiqib-tushadigan joyda poyezdlar uzoqroq turadi: har bir poyezd yoʻlovchilari eshiklariga taqsimlanadi, eng band eshik esa teng ulushdan koʻprogʻini oladi.",
+  "capacity.dwell.fixed":
+    "Poyezdlar har bir bekatda bir xil turadi; yoʻlovchi yuklamasi yoqilganda koʻp odam chiqib-tushadigan joyda uzoqroq turadi.",
+  "capacity.loads.dwell": "Poyezdlar {station} da {dwell} gacha turadi (odatda {usual}).",
   "capacity.line": "Liniya {name}",
   "capacity.eachWay": "har yo‘nalishda soatiga {n} poyezd",
   "capacity.used": "Band qobiliyat",

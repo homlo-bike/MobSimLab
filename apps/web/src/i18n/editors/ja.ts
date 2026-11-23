@@ -1436,7 +1436,12 @@ export const editorsJa = {
   "capacity.plannerNotes": "ダイヤ作成の注記（{n}）",
   "capacity.kernelNotes": "計算カーネルの報告（{n}）",
   "capacity.method":
-    "容量は UIC 406 の圧縮法による。遅れは、{share} の列車が最大 {late} 遅れて出発する {runs} 回の実行から算出。旅客の乗車量はまだこの試験に含まれていません。",
+    "容量は UIC 406 の圧縮法による。遅れは、{share} の列車が最大 {late} 遅れて出発する {runs} 回の実行から算出。",
+  "capacity.dwell.busy":
+    "乗り降りの多い駅では列車の停車が長くなります。各列車の乗客はドアに分かれ、最も混むドアは均等な割合より多くを受け持ちます。",
+  "capacity.dwell.fixed":
+    "列車はどの駅でも同じ時間停車します。旅客の乗車量をオンにすると、乗り降りの多い駅で停車が長くなります。",
+  "capacity.loads.dwell": "列車は{station}で最大{dwell}停車します（通常{usual}）。",
   "capacity.line": "路線 {name}",
   "capacity.eachWay": "片方向 {n} 本/時",
   "capacity.used": "使用容量",

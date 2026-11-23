@@ -1458,7 +1458,12 @@ export const editorsYo = {
   "capacity.plannerNotes": "Àkíyèsí olùṣètò ({n})",
   "capacity.kernelNotes": "Ohun tí kókó ìṣirò ròyìn ({n})",
   "capacity.method":
-    "Agbára nípa ọ̀nà ìfúnpọ̀ UIC 406; ìdádúró láti inú ìdánwò {runs} níbi tí {share} ìrìn-àjò ti bẹ̀rẹ̀ pẹ́ títí dé {late}. Ẹrù èrò kò tíì jẹ́ ara ìdánwò yìí.",
+    "Agbára nípa ọ̀nà ìfúnpọ̀ UIC 406; ìdádúró láti inú ìdánwò {runs} níbi tí {share} ìrìn-àjò ti bẹ̀rẹ̀ pẹ́ títí dé {late}.",
+  "capacity.dwell.busy":
+    "Ọkọ̀ ojú irin máa ń dúró pẹ́ níbi tí ọ̀pọ̀ ènìyàn ti ń wọlé tí wọ́n sì ń sọ̀kalẹ̀: àwọn èrò ọkọ̀ kọ̀ọ̀kan máa ń pín sí àwọn ilẹ̀kùn rẹ̀, ilẹ̀kùn tó kún jùlọ sì ń gba ju ìpín dọ́gba lọ.",
+  "capacity.dwell.fixed":
+    "Ọkọ̀ ojú irin máa ń dúró àkókò kan náà ní ibùdókọ̀ kọ̀ọ̀kan; nígbà tí ẹrù èrò bá wà ní títàn, wọ́n máa ń dúró pẹ́ níbi tí ọ̀pọ̀ ènìyàn ti ń wọlé tí wọ́n sì ń sọ̀kalẹ̀.",
+  "capacity.loads.dwell": "Ọkọ̀ ojú irin máa ń dúró títí dé {dwell} ní {station} (nígbà gbogbo {usual}).",
   "capacity.line": "Ìlà {name}",
   "capacity.eachWay": "ọkọ̀ {n}/wákàtí ní ọ̀nà kọ̀ọ̀kan",
   "capacity.used": "Agbára tí a lò",

@@ -1531,7 +1531,12 @@ export const editorsDe = {
   "capacity.plannerNotes": "Planer-Hinweise ({n})",
   "capacity.kernelNotes": "Meldungen des Rechenkerns ({n})",
   "capacity.method":
-    "Kapazität nach dem Kompressionsverfahren der UIC 406; Verspätungen aus {runs} Läufen, in denen {share} der Fahrten bis zu {late} verspätet starten. Fahrgastlasten sind noch nicht Teil dieses Tests.",
+    "Kapazität nach dem Kompressionsverfahren der UIC 406; Verspätungen aus {runs} Läufen, in denen {share} der Fahrten bis zu {late} verspätet starten.",
+  "capacity.dwell.busy":
+    "Züge halten länger, wo viele ein- und aussteigen: Die Fahrgäste eines Zuges verteilen sich auf seine Türen, und die stärkste Tür bekommt mehr als einen gleichen Anteil.",
+  "capacity.dwell.fixed":
+    "Züge halten an jeder Station gleich lang; mit Fahrgastlasten halten sie länger, wo viele ein- und aussteigen.",
+  "capacity.loads.dwell": "Züge halten bis zu {dwell} in {station} (sonst {usual}).",
   "capacity.line": "Linie {name}",
   "capacity.eachWay": "{n} Züge/h je Richtung",
   "capacity.used": "Belegte Kapazität",
