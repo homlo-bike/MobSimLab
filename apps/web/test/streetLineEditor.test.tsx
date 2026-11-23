@@ -37,6 +37,7 @@ import {
   formatLength,
   formatTime,
   legsToGeoJson,
+  setupDetoursToGeoJson,
 } from "../src/features/street-lines/geojson";
 import { clearPlaces, publishPlaces } from "../src/features/naming/registry";
 import { DEFAULT_TIMING } from "../src/features/street-lines/modes";
@@ -1003,6 +1004,35 @@ describe("Line summary", () => {
     const c = lineChecks(clean);
     expect(c[0]!.sev).toBe("ok");
     expect(c.some((x) => /Mark an end stop/.test(x.text))).toBe(true);
+  });
+
+  it("warns about a stop moved off a street closed to buses, and keeps the route as drawn", () => {
+    const v = sampleView(["stop", "stop"]);
+    v.legs.forEach((l) => Object.assign(l, { status: "ok", message: null }));
+    Object.assign(v.points[1]!, {
+      status: "warning",
+      message:
+        "The street layout in the GIS tab closes Market St to buses, so this stop is served from Row 2, 60 m away.",
+    });
+    v.legs[0]!.setup_detour = {
+      coords: [
+        [7, 50],
+        [7.0005, 50.0005],
+        [7.001, 50],
+      ],
+      streets: ["Market St"],
+      ways: [9],
+      extra_m: 380,
+    };
+    const checks = lineChecks(v);
+    expect(checks[0]).toMatchObject({ sev: "warn", point: 2 });
+    expect(checks[0]!.text).toMatch(/closes Market St to buses/);
+    expect(setupDetoursToGeoJson(v).features).toEqual([
+      expect.objectContaining({
+        properties: { index: 0 },
+        geometry: expect.objectContaining({ coordinates: v.legs[0]!.setup_detour!.coords }),
+      }),
+    ]);
   });
 });
 

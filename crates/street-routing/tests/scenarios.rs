@@ -993,3 +993,66 @@ fn a_custom_layout_with_cars_one_way_and_buses_both_ways() {
     let (g2, _) = main_road_graph(&[contraflow]);
     assert!(north_stop(&g2));
 }
+
+/// Row 1 laid out for people on foot only in the GIS tab.
+fn row_1_for_walking() -> street_routing::StreetSetup {
+    use street_routing::{RoadUser, Section, SectionKind};
+    let walk = Section {
+        kind: SectionKind::Lane,
+        users: vec![RoadUser::Walk],
+        dir: None,
+        width: 4.0,
+        style: None,
+    };
+    street_routing::StreetSetup {
+        way: 1002,
+        sections: Some(vec![walk.clone(), walk]),
+        ..Default::default()
+    }
+}
+
+#[test]
+fn a_street_closed_to_buses_by_its_layout_is_named_with_the_route_as_drawn() {
+    let o = grid();
+    let xml = format!(r#"<osm version="0.6">{}{}</osm>"#, o.nodes, o.ways);
+    let osm_data = parse_osm_xml(&xml).unwrap();
+    let free = RoadGraph::from_osm(&osm_data).unwrap();
+    let setups = [row_1_for_walking()];
+    let mut data = osm_data.clone();
+    street_routing::apply_setups(&mut data, &setups);
+    let g = RoadGraph::from_osm_with(&data, Some(free.proj)).unwrap();
+    let closed = street_routing::closures::bus_closures(&osm_data, &setups);
+
+    let mut line = StreetLine::new(bus(), RoutingRules::default());
+    // A via point on Row 2 and one on Row 0, joined by a leg the planner meant along Col 1 and Row 1.
+    add(&mut line, &g, 300.0, 400.0, PointKind::Via);
+    add(&mut line, &g, 100.0, 195.0, PointKind::Stop);
+    let mut v = line.view(&g);
+    line.mark_setup_closures(&mut v, &g, &free, &closed);
+
+    let stop = &v.points[1];
+    assert_eq!(stop.status, Status::Warning, "{stop:?}");
+    let m = stop.message.clone().unwrap();
+    assert!(m.contains("closes Row 1 to buses"), "{m}");
+    assert!(m.contains("100 m away"), "{m}");
+
+    let detour = v
+        .legs
+        .iter()
+        .find_map(|l| l.setup_detour.as_ref())
+        .expect("a leg runs along Row 1 as drawn");
+    assert_eq!(detour.ways, vec![1002]);
+    assert_eq!(detour.streets, vec!["Row 1".to_string()]);
+}
+
+#[test]
+fn without_closures_nothing_is_marked() {
+    let g = grid().graph();
+    let mut line = StreetLine::new(bus(), RoutingRules::default());
+    add(&mut line, &g, 100.0, 195.0, PointKind::Stop);
+    add(&mut line, &g, 500.0, 195.0, PointKind::Stop);
+    let before = serde_json::to_string(&line.view(&g)).unwrap();
+    let mut v = line.view(&g);
+    line.mark_setup_closures(&mut v, &g, &g, &Default::default());
+    assert_eq!(serde_json::to_string(&v).unwrap(), before);
+}

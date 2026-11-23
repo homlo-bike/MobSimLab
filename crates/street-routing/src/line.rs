@@ -185,6 +185,22 @@ pub struct LegView {
     pub message_msg: Option<Msg>,
     /// OSM way ids driven, in order, without repeats (for exports and checks).
     pub ways: Vec<i64>,
+    /// The way the leg would go if the GIS tab's street setups did not close streets to buses, when
+    /// that way runs along such a street: the route as drawn, which the line now goes round.
+    pub setup_detour: Option<SetupDetour>,
+}
+
+/// The route a leg would take along streets the street setups closed to buses.
+#[derive(Debug, Clone, Serialize)]
+pub struct SetupDetour {
+    /// Polyline in degrees, as it would run without the closures.
+    pub coords: Vec<[f64; 2]>,
+    /// Names of the closed streets it runs along, in order (empty names for unnamed streets).
+    pub streets: Vec<String>,
+    /// OSM way ids of the closed streets, in order.
+    pub ways: Vec<i64>,
+    /// How much longer the leg is because of the closures, m; `None` when it has no route now.
+    pub extra_m: Option<f64>,
 }
 
 /// A level crossing on one leg.
@@ -1046,6 +1062,120 @@ impl StreetLine {
         }
     }
 
+    /// Purpose: say where the GIS tab's street setups make the line go round a street, or move a stop
+    /// off one. `osm` is the road graph of the same streets without the setups (same projection), and
+    /// `closed` what the setups take away from buses ([`crate::closures::bus_closures`]).
+    /// Side effects: marks the legs and stops of `view` (from [`StreetLine::view`] on `g`): a leg gets
+    /// the route as drawn ([`LegView::setup_detour`]) and a warning; a stop moved to another street
+    /// gets a warning, a stop with no street left an error naming the closed street.
+    pub fn mark_setup_closures(
+        &self,
+        view: &mut LineView,
+        g: &RoadGraph,
+        osm: &RoadGraph,
+        closed: &HashMap<i64, crate::closures::Closed>,
+    ) {
+        if closed.is_empty() || self.points.is_empty() {
+            return;
+        }
+        let blocked = |a: u32| {
+            let arc = &osm.arcs[a as usize];
+            closed.get(&arc.way).is_some_and(|c| {
+                if osm.segments[arc.segment as usize].fwd == Some(a) {
+                    c.forward
+                } else {
+                    c.backward
+                }
+            })
+        };
+        let street = |name: &Option<String>| name.clone().unwrap_or_default();
+        let mut free = self.clone();
+        free.rebuild(osm);
+        for (i, lv) in view.legs.iter_mut().enumerate() {
+            let Some(op) = free.legs.get(i).and_then(|l| l.path.as_ref()) else {
+                continue;
+            };
+            let mut streets = Vec::new();
+            let mut ways = Vec::new();
+            for &a in &op.arcs {
+                if !blocked(a) {
+                    continue;
+                }
+                let arc = &osm.arcs[a as usize];
+                if ways.last() != Some(&arc.way) {
+                    ways.push(arc.way);
+                    streets.push(street(&arc.name));
+                }
+            }
+            if ways.is_empty() {
+                continue;
+            }
+            let routed = self.legs.get(i).and_then(|l| l.path.as_ref());
+            let extra_m = routed.map(|p| (p.length_m - op.length_m).max(0.0));
+            let names = join_names(&streets);
+            if lv.status == Status::Ok {
+                let m = match extra_m {
+                    Some(e) => msg!(
+                        "street.line.setup_closed",
+                        streets = names,
+                        extra = format!("{e:.0} m")
+                    ),
+                    None => msg!("street.line.setup_closed_no_route", streets = names),
+                };
+                lv.status = Status::Warning;
+                lv.message = Some(m.english());
+                lv.message_msg = Some(m);
+            }
+            lv.setup_detour = Some(SetupDetour {
+                coords: to_lonlat(osm, &op.xy),
+                streets,
+                ways,
+                extra_m,
+            });
+        }
+        for (k, pv) in view.points.iter_mut().enumerate() {
+            let (Some(fp), Some(p)) = (free.points.get(k), self.points.get(k)) else {
+                continue;
+            };
+            if !p.kind.is_stop() {
+                continue;
+            }
+            let Some(fa) = fp.anchor else { continue };
+            if !blocked(fa.arc) {
+                continue;
+            }
+            let from = street(&osm.arcs[fa.arc as usize].name);
+            let m = match p.anchor {
+                Some(a) => {
+                    let d = dist(osm.point_on_arc(fa.arc, fa.t), g.point_on_arc(a.arc, a.t));
+                    let to = street(&g.arcs[a.arc as usize].name);
+                    if pv.status != Status::Ok {
+                        continue;
+                    }
+                    pv.status = Status::Warning;
+                    msg!(
+                        "street.line.stop_moved",
+                        from = from,
+                        to = to,
+                        distance = format!("{d:.0} m")
+                    )
+                }
+                None => {
+                    // One direction closed: the point's own message (the sidewalk the doors
+                    // don't open to) already says what to do.
+                    let way = osm.arcs[fa.arc as usize].way;
+                    if !closed.get(&way).is_some_and(|c| c.forward && c.backward) {
+                        continue;
+                    }
+                    pv.status = Status::Error;
+                    msg!("street.line.stop_closed", street = from)
+                }
+            };
+            pv.message = Some(m.english());
+            pv.message_msg = Some(m);
+        }
+    }
+
     /// Purpose: everything the editor draws and lists.
     pub fn view(&self, g: &RoadGraph) -> LineView {
         let n = self.points.len();
@@ -1133,6 +1263,7 @@ impl StreetLine {
                         message: l.message.as_ref().map(Msg::english),
                         message_msg: l.message.clone(),
                         ways,
+                        setup_detour: None,
                     }
                 })
                 .collect()
@@ -1408,5 +1539,20 @@ fn same_anchor(a: Option<Anchor>, b: Option<Anchor>) -> bool {
         (None, None) => true,
         (Some(a), Some(b)) => a.arc == b.arc && a.t.to_bits() == b.t.to_bits(),
         _ => false,
+    }
+}
+
+/// Purpose: street names for a message: the named ones, without repeats, joined by commas.
+fn join_names(names: &[String]) -> String {
+    let mut seen: Vec<&str> = Vec::new();
+    for n in names.iter().filter(|n| !n.is_empty()) {
+        if !seen.contains(&n.as_str()) {
+            seen.push(n);
+        }
+    }
+    if seen.is_empty() {
+        "an unnamed street".into()
+    } else {
+        seen.join(", ")
     }
 }

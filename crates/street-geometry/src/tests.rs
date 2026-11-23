@@ -135,8 +135,18 @@ fn a_tram_of_its_own_runs_in_the_middle() {
     };
     let g = build(&crossroads(), &[tram], None).expect("builds");
     let k = kinds(&g, 100);
-    let trams: Vec<usize> = (0..k.len()).filter(|&i| k[i] == LaneKind::Tram).collect();
+    // No tram rails in OSM here: space for a tram, drawn empty (rails come only from track).
+    let trams: Vec<usize> = (0..k.len())
+        .filter(|&i| k[i] == LaneKind::TramSpace)
+        .collect();
     assert_eq!(trams.len(), 2, "{k:?}");
+    assert!(
+        profile(&g, 100)
+            .iter()
+            .filter(|l| l.kind == LaneKind::Tram)
+            .count()
+            == 2
+    );
     // One traffic lane on each side of the two tram lanes.
     assert_eq!(k[trams[0] - 1], LaneKind::Traffic, "{k:?}");
     assert_eq!(k[trams[1] + 1], LaneKind::Traffic, "{k:?}");
@@ -154,7 +164,7 @@ fn a_separated_tram_lane_on_a_one_way_street_is_inside_kerbs() {
     let k = kinds(&g, 200);
     let t = k
         .iter()
-        .position(|k| *k == LaneKind::Tram)
+        .position(|k| *k == LaneKind::TramSpace)
         .expect("tram lane");
     assert_eq!(k[t - 1], LaneKind::Kerb, "{k:?}");
     assert_eq!(k[t + 1], LaneKind::Kerb, "{k:?}");
@@ -164,18 +174,24 @@ fn a_separated_tram_lane_on_a_one_way_street_is_inside_kerbs() {
 }
 
 #[test]
-fn a_tram_in_mixed_traffic_draws_rails() {
+fn a_tram_in_mixed_traffic_draws_rails_only_where_osm_maps_them() {
     let tram = StreetSetup {
         tram: Some(TramShare::Mixed),
         ..setup(100)
     };
-    let g = build(&crossroads(), &[tram], None).expect("builds");
-    // Two roads (one each side of the junction), rails in the inner lane of each direction on each.
-    assert_eq!(
-        g.lines.iter().filter(|l| l.kind == LineKind::Rails).count(),
-        4
-    );
+    let rails = |g: &Geometry| g.lines.iter().filter(|l| l.kind == LineKind::Rails).count();
+    // No tram rails in OSM: the setup alone draws none (the railway editor's tracks are drawn instead).
+    let g = build(&crossroads(), std::slice::from_ref(&tram), None).expect("builds");
+    assert_eq!(rails(&g), 0);
     assert!(!kinds(&g, 100).contains(&LaneKind::Tram));
+    // Rails embedded in the street in OSM: two roads (one each side of the junction), rails in the inner
+    // lane of each direction on each.
+    let mut d = crossroads();
+    for w in d.ways.iter_mut().filter(|w| w.id == 100) {
+        w.tags.insert("embedded_rails".into(), "tram".into());
+    }
+    let g = build(&d, &[tram], None).expect("builds");
+    assert_eq!(rails(&g), 4);
 }
 
 #[test]
@@ -368,9 +384,9 @@ fn a_custom_layout_is_drawn_section_by_section() {
     assert_eq!(p[0].width, 4.0);
     assert_eq!(p[2].dir, LaneDir::Backward);
     assert_eq!(p[6].dir, LaneDir::Forward);
-    // Rails along the traffic lane the tram shares with cars.
+    // The lane list knows trams share the traffic lane; the map draws no rails without track there.
     assert!(p[2].rails && !p[7].rails);
-    assert!(g.lines.iter().any(|l| l.kind == LineKind::Rails));
+    assert!(!g.lines.iter().any(|l| l.kind == LineKind::Rails));
 }
 
 #[test]

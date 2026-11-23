@@ -41,6 +41,16 @@ export function legsToGeoJson(view: LineView): FeatureCollection<LineString> {
   };
 }
 
+/** Purpose: the routes as drawn along streets the street layouts close to buses, one per leg that goes round them. */
+export function setupDetoursToGeoJson(view: LineView): FeatureCollection<LineString> {
+  return {
+    type: "FeatureCollection",
+    features: view.legs.flatMap((l) =>
+      l.setup_detour ? [line(l.setup_detour.coords, { index: l.index })] : [],
+    ),
+  };
+}
+
 /** Purpose: pull-out and pull-in trips with a `kind` property; only the chosen ones when given. */
 export function depotTripsToGeoJson(
   view: LineView,

@@ -12,6 +12,8 @@ export type LaneKind =
   | "bus"
   | "bike"
   | "tram"
+  /** A tram lane from the planner's setup on a street without tram rails in OSM: an empty strip (lane shapes only). */
+  | "tram_space"
   | "pavement"
   | "footway"
   | "shared_use"

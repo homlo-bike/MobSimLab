@@ -60,7 +60,7 @@ export function lineChecks(view: LineView): Check[] {
   for (const p of view.points) {
     if (p.message)
       out.push({
-        sev: "error",
+        sev: p.status === "warning" ? "warn" : "error",
         text: tNow("street.check.point", {
           n: p.seq + 1,
           message: engineTextNow({ text: p.message, msg: p.message_msg }),

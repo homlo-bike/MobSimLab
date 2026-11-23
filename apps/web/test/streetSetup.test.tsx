@@ -14,6 +14,7 @@ import {
 } from "../src/features/street-setup/model";
 import type { LaneEngine, LaneEngineLoader, LaneGeometry } from "../src/features/street-setup/lanes";
 import { StreetSetupEditor } from "../src/features/street-setup/StreetSetupEditor";
+import { LanesBackdrop } from "../src/features/street-setup/LanesBackdrop";
 import {
   layoutOf,
   newSection,
@@ -24,6 +25,8 @@ import {
 } from "../src/features/street-setup/sections";
 import type { JunctionSetup, StreetInfo, StreetSetup } from "../src/features/street-setup/types";
 import { addsToSelection, toggleSelection } from "../src/features/street-setup/selection";
+import { busDirections, drivenDirections, reroutedLines } from "../src/features/street-setup/reroutes";
+import type { LegView, LineView } from "../src/features/street-lines/types";
 
 afterEach(cleanup);
 
@@ -326,12 +329,14 @@ function Harness({
   loadLanes = NO_LANES,
   trafficSide = "right",
   onJunctionsChange,
+  streetLines,
 }: {
   map: MapLibreMap;
   onChange: (s: StreetSetup[]) => void;
   loadLanes?: LaneEngineLoader;
   trafficSide?: "right" | "left";
   onJunctionsChange?: (j: JunctionSetup[]) => void;
+  streetLines?: { name: string; view: LineView }[];
 }) {
   const [setups, setSetups] = useState<StreetSetup[]>([]);
   const [junctions, setJunctions] = useState<JunctionSetup[]>([]);
@@ -347,6 +352,7 @@ function Harness({
       loadInfos={async () => () => [HIGH, BACK]}
       loadLanes={loadLanes}
       trafficSide={trafficSide}
+      streetLines={streetLines}
       junctions={junctions}
       onJunctionsChange={(j) => {
         setJunctions(j);
@@ -718,5 +724,128 @@ describe("Street setup editor", () => {
     const { map } = fakeMap(11);
     render(<Harness map={map} onChange={() => {}} />);
     expect(await screen.findByText(/Zoom in to street level/)).toBeTruthy();
+  });
+});
+
+/** A saved line whose one leg drives along High Street from west to east (with the way as drawn). */
+function lineAlongHigh(name: string, eastward = true): { name: string; view: LineView } {
+  const coords: [number, number][] = [
+    [7.4145, 43.733],
+    [7.415, 43.733],
+    [7.4155, 43.733],
+  ];
+  const leg = {
+    index: 0,
+    ways: [100],
+    coords: eastward ? coords : [...coords].reverse(),
+  } as unknown as LegView;
+  return { name, view: { legs: [leg] } as unknown as LineView };
+}
+
+describe("Street setup changes that re-route saved bus lines", () => {
+  const walkOnly: StreetSetup = {
+    way: 100,
+    sections: [newSection("lane", ["walk"]), newSection("lane", ["walk"])],
+  };
+
+  it("reads which ways buses may drive, as the street routing does", () => {
+    expect(busDirections(HIGH, undefined)).toEqual([true, true]);
+    expect(busDirections(HIGH, { way: 100, oneway: true })).toEqual([true, false]);
+    expect(busDirections(HIGH, walkOnly)).toEqual([false, false]);
+    expect(busDirections(HIGH, { way: 100, sections: template("tramPeople") })).toEqual([false, false]);
+    expect(busDirections(HIGH, { way: 100, sections: template("centreBus") })).toEqual([true, true]);
+    expect(busDirections({ ...HIGH, class: "pedestrian" }, undefined)).toEqual([false, false]);
+  });
+
+  it("reads which way a route drives along a street", () => {
+    expect(drivenDirections(lineAlongHigh("A").view.legs[0]!.coords, HIGH.coords)).toEqual([true, false]);
+    expect(drivenDirections(lineAlongHigh("A", false).view.legs[0]!.coords, HIGH.coords)).toEqual([
+      false,
+      true,
+    ]);
+  });
+
+  it("lists lines driving along a street closed to buses, or against a street made one-way", () => {
+    const infos = new Map([[100, HIGH]]);
+    const lines = [lineAlongHigh("East"), lineAlongHigh("West", false)];
+    expect(reroutedLines([], [walkOnly], infos, lines).map((r) => r.line)).toEqual(["East", "West"]);
+    expect(reroutedLines([], [{ way: 100, oneway: true }], infos, lines)).toEqual([
+      { line: "West", street: "High Street", way: 100 },
+    ]);
+    expect(reroutedLines([], [{ way: 100, bus_lane: true }], infos, lines)).toEqual([]);
+    // Opening a street again re-routes no one.
+    expect(reroutedLines([walkOnly], [], infos, lines)).toEqual([]);
+  });
+
+  it("asks before a change that sends saved lines round a street", async () => {
+    const { map, sources, tap } = fakeMap();
+    const onChange = vi.fn();
+    render(<Harness map={map} onChange={onChange} streetLines={[lineAlongHigh("Line 12")]} />);
+    await waitFor(() => expect(sources.get("ss-streets")!.setData).toHaveBeenCalled());
+    await waitFor(() => expect(screen.queryByText("Loading streets…")).toBeNull());
+    tap(100);
+    fireEvent.click(screen.getByRole("button", { name: "Customise this street" }));
+    expect(onChange).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole("button", { name: "Trams and people only" }));
+    const ask = screen.getByRole("alertdialog", { name: /sends saved bus lines round a street/ });
+    expect(within(ask).getByText("Line 12 no longer drives along High Street")).toBeTruthy();
+    expect(onChange).toHaveBeenCalledTimes(1);
+    fireEvent.click(within(ask).getByRole("button", { name: "Cancel" }));
+    expect(screen.queryByRole("alertdialog")).toBeNull();
+    expect(onChange).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByRole("button", { name: "Trams and people only" }));
+    fireEvent.click(screen.getByRole("button", { name: "Save anyway" }));
+    expect(onChange).toHaveBeenCalledTimes(2);
+    expect((onChange.mock.lastCall![0][0] as StreetSetup).sections).toHaveLength(6);
+  });
+});
+
+describe("Street lanes under the Create tab's tools", () => {
+  it("draws the streets lane by lane, faded, with the street setups, and a tram lane without track as an empty strip", async () => {
+    const { map, sources } = fakeMap(17);
+    const added: string[] = [];
+    const build = vi.fn(async (): Promise<LaneGeometry> => ({
+      lanes: [
+        {
+          kind: "traffic",
+          way: 100,
+          layer: 0,
+          ring: [7.414, 43.733, 7.416, 43.733, 7.416, 43.7331, 7.414, 43.733],
+        },
+        {
+          kind: "tram_space",
+          way: 100,
+          layer: 0,
+          ring: [7.414, 43.7331, 7.416, 43.7331, 7.416, 43.7332, 7.414, 43.7331],
+        },
+      ],
+      junctions: [],
+      lines: [],
+      roads: [],
+      driving_side: "right",
+    }));
+    const engine = {
+      addTile: (k: string) => added.push(k),
+      build,
+      dispose: vi.fn(),
+    } as unknown as LaneEngine;
+    const setups: StreetSetup[] = [{ way: 100, tram: "own_lane" }];
+    const { unmount } = render(
+      <LanesBackdrop
+        map={map}
+        setups={setups}
+        fetchTile={async () => "<osm/>"}
+        loadLanes={async () => engine}
+      />,
+    );
+    await waitFor(() => expect(sources.get("om-lanes")!.setData).toHaveBeenCalled());
+    expect(added.length).toBeGreaterThan(0);
+    expect(build).toHaveBeenLastCalledWith(expect.any(Array), setups, "right");
+    const data = sources.get("om-lanes")!.setData.mock.lastCall![0] as {
+      features: { properties: { kind: string } }[];
+    };
+    expect(data.features.map((f) => f.properties.kind)).toEqual(["traffic", "tram_space"]);
+    unmount();
+    expect(sources.has("om-lanes")).toBe(false);
   });
 });

@@ -87,6 +87,22 @@ export interface LegView {
   mixed_traffic_m?: number;
   /** Metres on main roads in a bus lane. */
   bus_lane_m?: number;
+  /**
+   * The route as drawn when it runs along streets the GIS tab's street layouts close to buses, which the
+   * leg now goes round (Rust `line::SetupDetour`); absent or null otherwise.
+   */
+  setup_detour?: SetupDetour | null;
+}
+
+/** The way a leg would go along streets the street layouts close to buses. */
+export interface SetupDetour {
+  coords: LonLat[];
+  /** Names of the closed streets, in order ("" for an unnamed one). */
+  streets: string[];
+  /** Their OSM way ids. */
+  ways: number[];
+  /** How much longer the leg is because of the closures, m; null when it has no route now. */
+  extra_m: number | null;
 }
 
 /** Expected wait of a bus at one level crossing (Rust `crossings::CrossingWait`). */

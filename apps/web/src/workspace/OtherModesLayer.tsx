@@ -8,7 +8,9 @@ import { type SavedStreetLine, streetLineColor } from "../features/street-lines/
 import type { SavedPluginLine } from "../kits/saved";
 
 /** Ids of the read-only layers: no tool's prefix, so no tool removes them and no click reaches them. */
-const SRC = { lines: "om-lines", rail: "om-rail", depots: "om-depots" } as const;
+const SRC = { lines: "om-lines", rail: "om-rail", rails: "om-rails", depots: "om-depots" } as const;
+/** From this zoom the tracks are drawn rail by rail, as they lie in the street. */
+const RAILS_MIN_ZOOM = 16;
 const LAYERS: LayerSpecification[] = [
   {
     id: "om-depot-fill",
@@ -35,8 +37,22 @@ const LAYERS: LayerSpecification[] = [
     type: "line",
     source: SRC.rail,
     filter: ["==", ["geometry-type"], "LineString"],
+    maxzoom: RAILS_MIN_ZOOM,
     layout: { "line-join": "round", "line-cap": "round" },
     paint: { "line-color": "#475569", "line-width": 2.5, "line-opacity": 0.55 },
+  },
+  {
+    // The rails of the drawn tracks: the only rails on a street (a street layout's tram lane draws none).
+    id: "om-rails",
+    type: "line",
+    source: SRC.rails,
+    minzoom: RAILS_MIN_ZOOM,
+    layout: { "line-join": "round" },
+    paint: {
+      "line-color": "#44403c",
+      "line-width": ["interpolate", ["exponential", 2], ["zoom"], 16, 0.6, 20, 3] as never,
+      "line-opacity": 0.85,
+    },
   },
   {
     id: "om-lines",
@@ -153,6 +169,7 @@ export function OtherModesLayer({
   loadRail?: RailEngineLoader;
 }) {
   const [railGeo, setRailGeo] = useState<ReturnType<typeof fc> | null>(null);
+  const [railsGeo, setRailsGeo] = useState<ReturnType<typeof fc> | null>(null);
   const showRail = active !== "rail" && Boolean(railway?.tracks.length || railway?.stations.length);
 
   useEffect(() => {
@@ -171,6 +188,7 @@ export function OtherModesLayer({
   useEffect(() => {
     if (!showRail || !railway) {
       setRailGeo(null);
+      setRailsGeo(null);
       return;
     }
     let live = true;
@@ -182,13 +200,22 @@ export function OtherModesLayer({
           setRailGeo(
             fc([...v.layers.tracks.features, ...v.layers.platforms.features] as unknown as Feature[]),
           );
+          setRailsGeo(fc((v.layers.rails?.features ?? []) as unknown as Feature[]));
         } catch {
-          if (live) setRailGeo(null);
+          if (live) {
+            setRailGeo(null);
+            setRailsGeo(null);
+          }
         } finally {
           e.dispose();
         }
       },
-      () => live && setRailGeo(null),
+      () => {
+        if (live) {
+          setRailGeo(null);
+          setRailsGeo(null);
+        }
+      },
     );
     return () => {
       live = false;
@@ -198,7 +225,8 @@ export function OtherModesLayer({
   useEffect(() => {
     if (!map) return;
     set(map, SRC.rail, showRail && railGeo ? railGeo : EMPTY);
-  }, [map, railGeo, showRail]);
+    set(map, SRC.rails, showRail && railsGeo ? railsGeo : EMPTY);
+  }, [map, railGeo, railsGeo, showRail]);
 
   useEffect(() => {
     if (!map) return;

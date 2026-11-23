@@ -17,7 +17,11 @@
 //!
 //! A street the planner laid out section by section (`StreetSetup::sections`) is drawn exactly as laid out:
 //! its sections replace osm2streets' lanes, in their order and widths, with traffic islands and green
-//! strips as kinds of their own and rails along the lanes trams share with cars.
+//! strips as kinds of their own.
+//!
+//! Rails come only from track. A setup's tram lane on a street without tram rails in OpenStreetMap is
+//! drawn as an empty strip ([`LaneKind::TramSpace`]) and a tram in mixed traffic gets no rails there: the
+//! railway editor's tracks are drawn over the lanes instead, so a street never shows two sets of rails.
 //!
 //! The output is compact for the browser: rings and paths as flat `[lon, lat, lon, lat, …]` arrays,
 //! rounded to 1e-6° (about 0.1 m), and only the markings a planner reads (lane lines and centre lines),
@@ -55,8 +59,12 @@ pub enum LaneKind {
     Bus,
     /// Bike lane or track.
     Bike,
-    /// Tram lane (track in its own lane).
+    /// Tram lane (track in its own lane) where OpenStreetMap maps tram rails.
     Tram,
+    /// A tram lane from the planner's setup on a street without tram rails in OpenStreetMap: space kept
+    /// for a tram, drawn empty. Rails come only from track (OSM's, or drawn in the railway editor), so a
+    /// layout never draws rails of its own. Lane shapes only; the street's lane list keeps `Tram`.
+    TramSpace,
     /// Pavement.
     Pavement,
     /// Footway, or a shoulder people walk on.
@@ -445,6 +453,12 @@ fn custom_lanes(sections: &[Section]) -> Vec<CustomLane> {
         .collect()
 }
 
+/// Purpose: whether OpenStreetMap maps tram rails along the way (`embedded_rails=tram`, `railway=tram`).
+fn osm_tram_rails(tags: Option<&Tags>) -> bool {
+    tag(tags, "embedded_rails").is_some_and(|v| v.contains("tram"))
+        || tag(tags, "railway") == Some("tram")
+}
+
 fn carriageway(lt: LaneType) -> bool {
     matches!(
         lt,
@@ -618,10 +632,16 @@ fn shapes(
             .get(&way)
             .filter(|c| c.len() == road.lane_specs_ltr.len());
         let kind_at = |i: usize, lt: LaneType| own.map_or_else(|| kind_of(lt), |c| c[i].kind);
+        // Tram rails mapped in OSM: real track. Elsewhere a setup's tram lane is only space for one.
+        let track = osm_tram_rails(tags.get(&way));
+        let drawn_kind = |i: usize, lt: LaneType| match kind_at(i, lt) {
+            LaneKind::Tram if !track => LaneKind::TramSpace,
+            k => k,
+        };
         for (i, (lane, pl)) in road.lane_specs_ltr.iter().zip(&centres).enumerate() {
             let poly = pl.make_polygons(lane.width);
             out.lanes.push(LaneShape {
-                kind: kind_at(i, lane.lt),
+                kind: drawn_kind(i, lane.lt),
                 way,
                 layer,
                 ring: flat(net, poly.get_outer_ring().points()),
@@ -657,7 +677,7 @@ fn shapes(
         } else {
             Vec::new()
         };
-        for &i in &railed {
+        for &i in railed.iter().filter(|_| track) {
             out.lines.push(LineShape {
                 kind: LineKind::Rails,
                 layer,

@@ -53,6 +53,7 @@ const FROM_LANE: Record<LaneKind, Strip["kind"]> = {
   bus: "bus",
   bike: "bike",
   tram: "tram",
+  tram_space: "tram",
   pavement: "walk",
   footway: "walk",
   shared_use: "walk",

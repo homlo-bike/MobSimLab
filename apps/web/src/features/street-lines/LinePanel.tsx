@@ -473,6 +473,11 @@ export function LinePanel(props: Props) {
                     {engineText({ text: p.message, msg: p.message_msg })}
                   </p>
                 )}
+                {p.status === "warning" && p.message && (
+                  <p className="ps-7 text-xs text-amber-700" role="note">
+                    {engineText({ text: p.message, msg: p.message_msg })}
+                  </p>
+                )}
                 {leg?.status === "error" && leg.message && (
                   <p className="ps-7 text-xs text-red-700" role="note">
                     {engineText({ text: leg.message, msg: leg.message_msg })}
