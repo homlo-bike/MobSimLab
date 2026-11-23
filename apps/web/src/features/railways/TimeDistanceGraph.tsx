@@ -5,6 +5,7 @@ import { Dialog } from "../../shell/Dialog";
 import { hhmm } from "./serviceLines";
 import { inWindow, type TdGraph, timeDistance, WINDOWS, type WindowKey, windowRange } from "./timeDistance";
 import type { ServicePublication } from "./types";
+import { withUnit } from "../../i18n/units";
 
 const W = 880;
 const PAD = { l: 132, r: 24, t: 12, b: 26 };
@@ -21,7 +22,7 @@ function tickStep(min: number): number {
 /** Purpose: "+2 min" or "−1.5 min" for a shift in seconds. */
 export function shiftText(s: number): string {
   const m = Math.round((s / 60) * 10) / 10;
-  return `${m >= 0 ? "+" : "−"}${Math.abs(m)} min`;
+  return withUnit(`${m >= 0 ? "+" : "−"}${Math.abs(m)}`, "min");
 }
 
 /**
@@ -135,7 +136,7 @@ function Chart({ graph, range, lineName }: { graph: TdGraph; range: [number, num
                 fill="var(--diagram-muted-strong, #334155)"
               >
                 {st.name.length > 18 ? `${st.name.slice(0, 17)}…` : st.name}
-                <title>{`${st.name} · ${st.km.toFixed(1)} km`}</title>
+                <title>{`${st.name} · ${withUnit(st.km.toFixed(1), "km")}`}</title>
               </text>
             </g>
           ))}

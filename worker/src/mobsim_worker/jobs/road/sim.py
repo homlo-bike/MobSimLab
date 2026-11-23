@@ -320,11 +320,46 @@ def read_stops(path: str) -> list[dict[str, str]]:
     return [dict(el.attrib) for el in root.iter("stopinfo")]
 
 
-def pack_replay(plans: Sequence[LinePlan], outcome: SimOutcome) -> bytes:
+#: Kind of a stop in the replay's stop list: a stop along a trip, the first stop of a trip, back at the first
+#: stop after the last trip (the end of the vehicle's service).
+STOP_ALONG, STOP_FIRST, STOP_LAST = 0, 1, 2
+
+
+def replay_stops(v: TransitVehicle, stops: Sequence[Mapping[str, str]]) -> list[int]:
+    """A vehicle's planned stops with when it reached and left each, for the replay's punctuality colours.
+
+    Four numbers per planned stop, in plan order: planned departure, arrival, departure (s after midnight;
+    -1 when the vehicle did not get there) and the kind (``STOP_ALONG``, ``STOP_FIRST`` or ``STOP_LAST``).
+    """
+    seen: dict[str, tuple[float, float]] = {}
+    for st in stops:
+        if st.get("id") != v.id:
+            continue
+        try:
+            seen[st.get("tripId", "")] = (float(st.get("started", "nan")), float(st.get("ended", "nan")))
+        except ValueError:
+            continue
+
+    def sec(x: float) -> int:
+        return int(round(x)) if math.isfinite(x) else -1
+
+    out: list[int] = []
+    for s in v.stops:
+        key = f"{v.line}:{s.trip}:{'end' if s.kind == 'last' else s.point}"
+        started, ended = seen.get(key, (math.nan, math.nan))
+        kind = STOP_LAST if s.kind == "last" else STOP_FIRST if s.first else STOP_ALONG
+        out.extend([int(round(s.planned_dep)), sec(started), sec(ended), kind])
+    return out
+
+
+def pack_replay(
+    plans: Sequence[LinePlan], outcome: SimOutcome, stops: Sequence[Mapping[str, str]] = ()
+) -> bytes:
     """The replay as gzipped JSON: lines, vehicles with their slots, and a track of samples per vehicle.
 
     Each sample is ``[lon·1e5, lat·1e5, heading °, speed km/h, charge % or -1]``; a vehicle's track starts at
-    frame ``f0`` and has one sample per frame while it is in the network.
+    frame ``f0`` and has one sample per frame while it is in the network. ``st`` lists the vehicle's stops
+    (``replay_stops``, from SUMO's stop output), so the replay can show whether it is in service and on time.
     """
     lines = [{"index": p.index, "name": p.name, "color": p.color, "mode": p.mode} for p in plans]
     vehicles = []
@@ -340,6 +375,7 @@ def pack_replay(plans: Sequence[LinePlan], outcome: SimOutcome) -> bytes:
                     "slot_in": [round(c, 6) for c in v.slot_in] if v.slot_in else None,
                     "f0": w.frame0,
                     "s": w.samples,
+                    "st": replay_stops(v, stops),
                 }
             )
     doc = {

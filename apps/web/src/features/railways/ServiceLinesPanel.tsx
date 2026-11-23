@@ -32,6 +32,7 @@ import { usedVehicles } from "../../workspace/preferences";
 import { useVehiclesOff } from "../../workspace/projectVehicles";
 import type { CatalogueTrain, LonLat, Network, RailView, ServiceLine, ServicePublication } from "./types";
 import { JobProgress } from "../../shell/JobProgress";
+import { withUnit } from "../../i18n/units";
 
 /** The last publication, and whether the drawing changed since. */
 export interface Publication {
@@ -73,7 +74,7 @@ const field = "rounded border border-slate-300 bg-slate-50 px-2 py-1";
 
 /** Purpose: "every 4 min, 8 min off-peak". */
 function headways(t: Translate, l: ServiceLine): string {
-  const f = (m: number) => `${Math.round(m * 10) / 10} min`;
+  const f = (m: number) => withUnit(Math.round(m * 10) / 10, "min");
   return l.peak_headway_min === l.offpeak_headway_min
     ? t("rail.line.every", { every: f(l.peak_headway_min) })
     : t("rail.line.everyPeak", { peak: f(l.peak_headway_min), offpeak: f(l.offpeak_headway_min) });
@@ -606,7 +607,8 @@ const ACCESS_STYLE: Record<Access, string> = {
 };
 
 /** Purpose: "+20 mm" / "−150 mm" (a signed step: positive is up into the train). */
-const signedMm = (mm: number) => `${mm > 0 ? "+" : mm < 0 ? "−" : "±"}${Math.abs(Math.round(mm))} mm`;
+const signedMm = (mm: number) =>
+  withUnit(`${mm > 0 ? "+" : mm < 0 ? "−" : "±"}${Math.abs(Math.round(mm))}`, "mm");
 
 const ACCESS_FILL: Record<Access, string> = {
   level: "#047857",
@@ -678,7 +680,7 @@ function PlatformAccess({
             {s.horizontal_mm !== null && (
               <Measure
                 label={t("rail.access.gapLabel")}
-                value={`${Math.round(s.horizontal_mm)} mm`}
+                value={withUnit(Math.round(s.horizontal_mm), "mm")}
                 grade={gradeGap(s.horizontal_mm, s.rules)}
                 limit={t("rail.access.limits", {
                   level: `${s.rules.level_gap_horizontal_mm}`,
@@ -772,7 +774,7 @@ function CrossSection({ stop: s }: { stop: StopAccess }) {
       aria-label={t("rail.access.detail", {
         vertical: signedMm(s.vertical_mm),
         platform: s.platform_height_mm,
-        gap: `${Math.round(gapMm)} mm`,
+        gap: withUnit(Math.round(gapMm), "mm"),
       })}
     >
       {/* ground and rail */}
