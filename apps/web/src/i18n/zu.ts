@@ -246,6 +246,7 @@ export const zu: Messages = {
   "drawing.street-lines": "umugqa womgwaqo",
   "drawing.railway": "ujantshi",
   "drawing.street-setups": "ukusethwa kwemigwaqo",
+  "drawing.junction-setups": "izilungiselelo zezimpambano",
   "drawing.rail-timetable": "uhlelo lwezikhathi lwesitimela",
   "drawing.preferences": "okuthandwayo kwephrojekthi",
   "drawing.costs": "izilungiselelo zezindleko",

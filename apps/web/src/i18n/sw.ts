@@ -242,6 +242,7 @@ export const sw: Messages = {
   "drawing.street-lines": "njia ya barabarani",
   "drawing.railway": "reli",
   "drawing.street-setups": "mipangilio ya barabara",
+  "drawing.junction-setups": "mipangilio ya makutano",
   "drawing.rail-timetable": "ratiba ya reli",
   "drawing.preferences": "mapendeleo ya mradi",
   "drawing.costs": "mipangilio ya gharama",

@@ -236,6 +236,7 @@ export const am: Messages = {
   "drawing.street-lines": "የመንገድ መስመር",
   "drawing.railway": "የባቡር መስመር",
   "drawing.street-setups": "የመንገድ ቅንብሮች",
+  "drawing.junction-setups": "የመገናኛ ቅንብሮች",
   "drawing.rail-timetable": "የባቡር የጊዜ ሰሌዳ",
   "drawing.preferences": "የፕሮጀክት ምርጫዎች",
   "drawing.costs": "የወጪ ቅንብሮች",

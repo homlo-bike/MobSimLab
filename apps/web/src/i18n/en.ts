@@ -238,6 +238,7 @@ export const en = {
   "drawing.street-lines": "street line",
   "drawing.railway": "railway",
   "drawing.street-setups": "street setups",
+  "drawing.junction-setups": "junction setups",
   "drawing.rail-timetable": "rail timetable",
   "drawing.preferences": "project preferences",
   "drawing.costs": "cost settings",

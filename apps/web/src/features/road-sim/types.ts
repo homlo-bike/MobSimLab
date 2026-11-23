@@ -68,6 +68,8 @@ export interface RoadScenario {
     cars_morning_peak?: number | null;
     cars_evening_peak?: number | null;
   }[];
+  /** Junctions with traffic lights given (`signals: true`) or taken away, by their OSM nodes (GIS tab). */
+  junctions?: { nodes: number[]; signals: boolean }[];
   traffic: {
     defaults: { trunk: number; primary: number; secondary: number; tertiary: number; local: number };
     off_peak_share: number;

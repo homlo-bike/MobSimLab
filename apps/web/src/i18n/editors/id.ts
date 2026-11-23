@@ -613,6 +613,27 @@ export const editorsId = {
   "setup.legend.other": "Jalan lain",
   "setup.legend.yours": "Diatur oleh Anda",
   "setup.legend.lanes": "Lajur, mulai zoom {zoom}",
+  "setup.junction.title": "Persimpangan",
+  "setup.junction.unnamed": "Persimpangan tanpa nama",
+  "setup.junction.osmYes": "OpenStreetMap: lampu lalu lintas",
+  "setup.junction.osmNo": "OpenStreetMap: tanpa lampu lalu lintas",
+  "setup.junction.lights": "Lampu lalu lintas",
+  "setup.junction.asOsm": "Seperti di OpenStreetMap",
+  "setup.junction.yes": "Lampu lalu lintas",
+  "setup.junction.no": "Tanpa lampu lalu lintas",
+  "setup.junction.note":
+    "Simulasi jalan menghentikan bus dan mobil di sini saat lampu merah, dan waktu berjalan menambah waktu tunggu di penyeberangan.",
+  "setup.junction.selected": "Persimpangan terpilih: {count}",
+  "setup.junction.mix": "Dengan lampu: {on} · tanpa: {off}",
+  "setup.junction.differ":
+    "Saat ini berbeda, jadi tidak ada pilihan yang ditandai. Pilihan Anda berlaku untuk semuanya.",
+  "setup.junction.unselect": "Keluarkan {name} dari pilihan",
+  "setup.junction.clear": "Kosongkan pilihan",
+  "setup.junction.more": "Shift-klik persimpangan lain untuk mengatur beberapa sekaligus.",
+  "setup.junction.listTitle": "Persimpangan yang diatur · {count}",
+  "setup.junction.listEmpty":
+    "Belum ada. Mulai zoom {zoom}, ketuk persimpangan untuk memberi atau mencabut lampu lalu lintas.",
+  "setup.legend.signals": "Persimpangan berlampu lalu lintas",
   "setup.v.busNoDelay":
     "Tidak ada keterlambatan lalu lintas yang dihitung untuk jenis jalan ini; hanya untuk jalan utama.",
   "setup.v.busSeparated": "Lajur bus terpisah: kemacetan tidak memperlambat bus.",

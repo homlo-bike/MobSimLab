@@ -243,6 +243,7 @@ export const hi: Messages = {
   "drawing.street-lines": "सड़क लाइन",
   "drawing.railway": "रेलवे",
   "drawing.street-setups": "सड़क सेटअप",
+  "drawing.junction-setups": "चौराहों की सेटिंग",
   "drawing.rail-timetable": "रेल समय-सारणी",
   "drawing.preferences": "प्रोजेक्ट प्राथमिकताएँ",
   "drawing.costs": "लागत सेटिंग्स",

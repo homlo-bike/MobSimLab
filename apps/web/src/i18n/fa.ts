@@ -240,6 +240,7 @@ export const fa: Messages = {
   "drawing.street-lines": "خطوط خیابانی",
   "drawing.railway": "راه‌آهن",
   "drawing.street-setups": "پیکربندی خیابان‌ها",
+  "drawing.junction-setups": "تنظیمات تقاطع‌ها",
   "drawing.rail-timetable": "جدول زمانی ریلی",
   "drawing.preferences": "ترجیحات پروژه",
   "drawing.costs": "تنظیمات هزینه",

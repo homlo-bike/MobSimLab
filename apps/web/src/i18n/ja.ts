@@ -240,6 +240,7 @@ export const ja: Messages = {
   "drawing.street-lines": "道路路線",
   "drawing.railway": "鉄道",
   "drawing.street-setups": "道路設定",
+  "drawing.junction-setups": "交差点の設定",
   "drawing.rail-timetable": "鉄道時刻表",
   "drawing.preferences": "プロジェクト設定",
   "drawing.costs": "費用の設定",

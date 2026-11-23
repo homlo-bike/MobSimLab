@@ -629,6 +629,28 @@ export const editorsZu = {
   "setup.legend.other": "Eminye imigwaqo",
   "setup.legend.yours": "Kusethwe nguwe",
   "setup.legend.lanes": "Imizila, kusukela ku-zoom {zoom}",
+  "setup.junction.title": "Impambanomgwaqo",
+  "setup.junction.unnamed": "Impambanomgwaqo engenagama",
+  "setup.junction.osmYes": "OpenStreetMap: kunamarobhothi",
+  "setup.junction.osmNo": "OpenStreetMap: awekho amarobhothi",
+  "setup.junction.lights": "Amarobhothi",
+  "setup.junction.asOsm": "Njengaku-OpenStreetMap",
+  "setup.junction.yes": "Kunamarobhothi",
+  "setup.junction.no": "Awekho amarobhothi",
+  "setup.junction.note":
+    "Ukulingisa umgwaqo kumisa amabhasi nezimoto lapha uma irobhothi libomvu, futhi isikhathi sokuhamba ngezinyawo sengeza ukulinda ezindaweni zokuwela.",
+  "setup.junction.selected": "Izimpambano ezikhethiwe: {count}",
+  "setup.junction.mix": "Ezinamarobhothi: {on} · ezingenawo: {off}",
+  "setup.junction.differ":
+    "Okwamanje ziyahlukahluka, ngakho akukho okukhethwe kumakiwe. Ukukhetha kwakho kuzosebenza kuzo zonke.",
+  "setup.junction.unselect": "Khipha i-{name} ekukhetheni",
+  "setup.junction.clear": "Sula ukukhetha",
+  "setup.junction.more":
+    "Cindezela u-Shift bese uchofoza ezinye izimpambano ukuze ulungise eziningi ngesikhathi esisodwa.",
+  "setup.junction.listTitle": "Izimpambano ezilungisiwe · {count}",
+  "setup.junction.listEmpty":
+    "Azikabikho. Kusukela ku-zoom {zoom}, thepha impambano ukuze ufake noma ususe amarobhothi.",
+  "setup.legend.signals": "Impambano enamarobhothi",
   "setup.v.busNoDelay":
     "Akukho ukubambezeleka kwesiminyaminya okucatshangwayo kulolu hlobo lomgwaqo; kubalwa emigwaqweni emikhulu.",
   "setup.v.busSeparated": "Umzila webhasi ohlukanisiwe: isiminyaminya asiwabambezeli amabhasi.",

@@ -242,6 +242,7 @@ export const mr: Messages = {
   "drawing.street-lines": "रस्ता मार्ग",
   "drawing.railway": "रेल्वे",
   "drawing.street-setups": "रस्त्यांची रचना",
+  "drawing.junction-setups": "चौकांची सेटिंग",
   "drawing.rail-timetable": "रेल्वे वेळापत्रक",
   "drawing.preferences": "प्रकल्पाची प्राधान्ये",
   "drawing.costs": "खर्च सेटिंग्ज",

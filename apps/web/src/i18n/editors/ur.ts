@@ -609,6 +609,27 @@ export const editorsUr = {
   "setup.legend.other": "دیگر سڑکیں",
   "setup.legend.yours": "آپ کی ترتیب دی گئی",
   "setup.legend.lanes": "لینز، زوم {zoom} سے",
+  "setup.junction.title": "چوراہا",
+  "setup.junction.unnamed": "بے نام چوراہا",
+  "setup.junction.osmYes": "OpenStreetMap: ٹریفک سگنل",
+  "setup.junction.osmNo": "OpenStreetMap: کوئی ٹریفک سگنل نہیں",
+  "setup.junction.lights": "ٹریفک سگنل",
+  "setup.junction.asOsm": "جیسا OpenStreetMap میں",
+  "setup.junction.yes": "ٹریفک سگنل",
+  "setup.junction.no": "کوئی ٹریفک سگنل نہیں",
+  "setup.junction.note":
+    "سڑک کی سمولیشن یہاں سرخ بتی پر بسوں اور کاروں کو روکتی ہے، اور پیدل وقت میں کراسنگ پر انتظار شامل ہوتا ہے۔",
+  "setup.junction.selected": "منتخب چوراہے: {count}",
+  "setup.junction.mix": "ٹریفک سگنل کے ساتھ: {on} · بغیر: {off}",
+  "setup.junction.differ":
+    "یہ ابھی مختلف ہیں، اس لیے کوئی انتخاب نشان زد نہیں۔ آپ کا انتخاب سب پر لاگو ہوگا۔",
+  "setup.junction.unselect": "{name} کو انتخاب سے نکالیں",
+  "setup.junction.clear": "انتخاب صاف کریں",
+  "setup.junction.more": "کئی چوراہے ایک ساتھ ترتیب دینے کے لیے Shift دبا کر مزید چوراہوں پر کلک کریں۔",
+  "setup.junction.listTitle": "ترتیب دیے گئے چوراہے · {count}",
+  "setup.junction.listEmpty":
+    "ابھی کوئی نہیں۔ زوم {zoom} سے کسی چوراہے پر ٹیپ کریں تاکہ ٹریفک سگنل لگائیں یا ہٹائیں۔",
+  "setup.legend.signals": "ٹریفک سگنل والا چوراہا",
   "setup.v.busNoDelay": "اس قسم کی سڑک پر ٹریفک کی تاخیر شمار نہیں ہوتی؛ یہ بڑی سڑکوں پر شمار ہوتی ہے۔",
   "setup.v.busSeparated": "الگ بس لین: ٹریفک بسوں کو تاخیر نہیں دیتی۔",
   "setup.v.busPainted":

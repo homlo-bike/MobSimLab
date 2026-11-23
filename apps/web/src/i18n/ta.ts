@@ -245,6 +245,7 @@ export const ta: Messages = {
   "drawing.street-lines": "தெரு வழித்தடம்",
   "drawing.railway": "ரயில்பாதை",
   "drawing.street-setups": "தெரு அமைப்புகள்",
+  "drawing.junction-setups": "சந்திப்பு அமைப்புகள்",
   "drawing.rail-timetable": "ரயில் கால அட்டவணை",
   "drawing.preferences": "திட்ட விருப்பங்கள்",
   "drawing.costs": "செலவு அமைப்புகள்",

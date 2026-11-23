@@ -244,6 +244,7 @@ export const id: Messages = {
   "drawing.street-lines": "jalur jalan",
   "drawing.railway": "jalur kereta",
   "drawing.street-setups": "pengaturan jalan",
+  "drawing.junction-setups": "pengaturan persimpangan",
   "drawing.rail-timetable": "jadwal kereta",
   "drawing.preferences": "preferensi proyek",
   "drawing.costs": "pengaturan biaya",

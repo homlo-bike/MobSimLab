@@ -12,7 +12,7 @@ import { loadDepotEngine } from "../depots/engine";
 import type { DepotEngineLoader, SavedDepot } from "../depots/types";
 import { clock, parseClock } from "../journey-planner/format";
 import type { SavedStreetLine } from "../street-lines/saved";
-import type { StreetSetup } from "../street-setup/types";
+import type { JunctionSetup, StreetSetup } from "../street-setup/types";
 import {
   type PreferencesDoc,
   VEHICLE_STATES,
@@ -38,6 +38,7 @@ const SPEEDS = [1, 10, 30, 60, 120, 300] as const;
 const NO_LINES: readonly SavedStreetLine[] = [];
 const NO_DEPOTS: readonly SavedDepot[] = [];
 const NO_SETUPS: readonly StreetSetup[] = [];
+const NO_JUNCTIONS: readonly JunctionSetup[] = [];
 
 const STATUS_TONE: Record<RunStatus, string> = {
   queued: "bg-slate-100 text-slate-700 border-slate-300",
@@ -58,6 +59,8 @@ interface Props {
   streetLines?: readonly SavedStreetLine[];
   depots?: readonly SavedDepot[];
   setups?: readonly StreetSetup[];
+  /** The GIS tab's junction setups (traffic lights per junction). */
+  junctions?: readonly JunctionSetup[];
   prefs?: PreferencesDoc["values"];
   /** The project's vehicle colours and delays (Project preferences → Visuals); absent: the defaults. */
   visuals?: PreferencesDoc["visuals"];
@@ -74,6 +77,7 @@ export function RoadSimulation({
   streetLines = NO_LINES,
   depots = NO_DEPOTS,
   setups = NO_SETUPS,
+  junctions = NO_JUNCTIONS,
   prefs,
   visuals,
   loadEngine = loadDepotEngine,
@@ -194,6 +198,7 @@ export function RoadSimulation({
         lines: streetLines,
         depots,
         setups,
+        junctions,
         prefs,
         from: window.from,
         to: window.to,
@@ -620,14 +625,23 @@ function LineCard({ line }: { line: RoadLineResult }) {
   const { t } = useI18n();
   const rows: [string, string][] = [];
   if (!line.problem) {
+    // With no trip run to the end there is nothing to time: the measures stay blank (Damascus bug 30).
+    const ran = (line.trips_run ?? 0) > 0;
+    const ifRan = (v: string) => (ran ? v : "–");
     rows.push([t("road.kpi.trips"), `${line.trips_run ?? 0} / ${line.trips ?? 0}`]);
-    rows.push([t("road.kpi.cycle"), `${mins(line.planned_run_s ?? 0)} → ${mins(line.run_cycle_s ?? 0)}`]);
-    rows.push([t("road.kpi.speed"), withUnit((line.speed_kmh ?? 0).toFixed(1), "km/h")]);
-    rows.push([t("road.kpi.punctuality"), pct(line.punctuality ?? 1)]);
-    rows.push([t("road.kpi.delay"), `${mins(line.mean_delay_s ?? 0)} / ${mins(line.p95_delay_s ?? 0)}`]);
-    rows.push([t("road.kpi.bunching"), pct(line.bunched_share ?? 0)]);
-    rows.push([t("road.kpi.lostTraffic"), mins(line.lost_traffic_s ?? 0)]);
-    rows.push([t("road.kpi.lostSignals"), mins(line.lost_signals_s ?? 0)]);
+    rows.push([
+      t("road.kpi.cycle"),
+      `${mins(line.planned_run_s ?? 0)} → ${ifRan(mins(line.run_cycle_s ?? 0))}`,
+    ]);
+    rows.push([t("road.kpi.speed"), ifRan(withUnit((line.speed_kmh ?? 0).toFixed(1), "km/h"))]);
+    rows.push([t("road.kpi.punctuality"), ifRan(pct(line.punctuality ?? 1))]);
+    rows.push([
+      t("road.kpi.delay"),
+      ifRan(`${mins(line.mean_delay_s ?? 0)} / ${mins(line.p95_delay_s ?? 0)}`),
+    ]);
+    rows.push([t("road.kpi.bunching"), ifRan(pct(line.bunched_share ?? 0))]);
+    rows.push([t("road.kpi.lostTraffic"), ifRan(mins(line.lost_traffic_s ?? 0))]);
+    rows.push([t("road.kpi.lostSignals"), ifRan(mins(line.lost_signals_s ?? 0))]);
     const e = line.energy_use;
     if (e) {
       rows.push([t("road.kpi.energy"), `${e.kwh_per_km.toFixed(2)} kWh/km · ${e.kwh.toFixed(0)} kWh`]);

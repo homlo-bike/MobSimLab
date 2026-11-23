@@ -10,6 +10,7 @@ import { DEFAULT_SERVICE_DAY, projectServiceDay } from "../journey-planner/netwo
 import { CrossSection } from "./CrossSection";
 import { SectionEditor } from "./SectionEditor";
 import { sectionsFromInfo, sectionsFromLanes } from "./sections";
+import { addsToSelection, toggleSelection } from "./selection";
 import {
   LANE_MIN_ZOOM,
   type LaneEngine,
@@ -21,29 +22,37 @@ import {
   type TrafficSide,
 } from "./lanes";
 import {
+  drawJunctions,
   drawLanes,
   drawStreets,
   ensureLayers,
+  JUNCTION_LAYER,
+  junctionKey,
   LANE_COLOR,
   HIT_LAYER,
   PRIORITY_COLOR,
   removeLayers,
+  selectJunction,
   selectStreet,
+  SIGNAL_JUNCTION_COLOR,
 } from "./mapLayers";
 import type { DelayShares } from "../street-lines/types";
 import {
   CLASS_LABEL,
   DEFAULT_DELAYS,
   effective,
+  junctionSetupOf,
   MAX_PEAK_CARS,
   osmTrafficLanes,
   parsePeakCars,
   peakCarsDefault,
+  setJunction,
   upsert,
   type Verdict,
   verdicts,
 } from "./model";
-import type { StreetInfo, StreetInfoLoader, StreetSetup } from "./types";
+import type { JunctionSetup, StreetInfo, StreetInfoLoader, StreetSetup } from "./types";
+import type { LonLat } from "../street-lines/types";
 import { engineErrorText } from "../../i18n/engine";
 
 interface Props {
@@ -55,6 +64,10 @@ interface Props {
   setups: readonly StreetSetup[];
   /** Told about every change. */
   onChange: (setups: StreetSetup[]) => void;
+  /** The project's junction setups: traffic lights given to or taken from junctions. */
+  junctions?: readonly JunctionSetup[];
+  /** Told about every change of the junction setups. */
+  onJunctionsChange?: (junctions: JunctionSetup[]) => void;
   /** Whether the planner may change setups (view-only projects only look). */
   editable?: boolean;
   /** The project's delays in traffic (Project preferences), for the reliability texts. */
@@ -67,6 +80,30 @@ interface Props {
   loadLanes?: LaneEngineLoader;
   /** The side traffic drives on (Project preferences, `street.driving_side`), for the lanes. */
   trafficSide?: TrafficSide;
+}
+
+const NO_JUNCTIONS: readonly JunctionSetup[] = [];
+
+/** A junction tapped on the map (from the lane shapes): its OSM nodes and ways, and OSM's lights. */
+interface PickedJunction {
+  key: string;
+  nodes: number[];
+  ways: number[];
+  /** Whether OSM maps traffic lights here. */
+  osmSignals: boolean;
+  lonlat: LonLat;
+}
+
+/** Purpose: the middle of a junction shape (the mean of its ring's points). */
+function middle(ring: readonly number[]): LonLat {
+  let x = 0;
+  let y = 0;
+  const n = Math.max(1, Math.floor(ring.length / 2));
+  for (let i = 0; i + 1 < ring.length; i += 2) {
+    x += ring[i]!;
+    y += ring[i + 1]!;
+  }
+  return [x / n, y / n];
 }
 
 /** Clears every lane setting: the street keeps OSM's lanes (traffic peaks stay). */
@@ -107,6 +144,8 @@ export function StreetSetupEditor({
   panel = null,
   setups,
   onChange,
+  junctions = NO_JUNCTIONS,
+  onJunctionsChange,
   editable = true,
   delays = DEFAULT_DELAYS,
   fetchTile = fetchStreetTile,
@@ -117,6 +156,8 @@ export function StreetSetupEditor({
   const [parse, setParse] = useState<((xml: string) => StreetInfo[]) | null>(null);
   const [infos, setInfos] = useState<Map<number, StreetInfo>>(new Map());
   const [selected, setSelected] = useState<number | null>(null);
+  // Junctions selected on the map (one or more), in the order they were tapped.
+  const [picked, setPicked] = useState<PickedJunction[]>([]);
   const { t, tn } = useI18n();
   const [note, setNote] = useState<string | null>(() => tNow("street.loading"));
   const [error, setError] = useState<string | null>(null);
@@ -295,10 +336,47 @@ export function StreetSetupEditor({
     if (map) selectStreet(map, selected);
   }, [map, selected, infos]);
 
-  // Tap a street to select it; tap elsewhere to close.
+  // Junctions coloured by their traffic lights: OSM's, or the planner's where set.
+  useEffect(() => {
+    if (map) drawJunctions(map, drawn?.g ?? null, junctions);
+  }, [map, drawn, junctions]);
+  useEffect(() => {
+    if (map)
+      selectJunction(
+        map,
+        picked.map((j) => j.key),
+      );
+  }, [map, picked, drawn]);
+
+  // Tap a junction (from zoom 16, where they are drawn) or a street to select it; tap elsewhere to close.
+  const drawnRef = useRef(drawn);
+  drawnRef.current = drawn;
   useEffect(() => {
     if (!map) return;
     const onClick = (ev: MapMouseEvent) => {
+      const hit = map.getLayer(JUNCTION_LAYER)
+        ? map
+            .queryRenderedFeatures(ev.point, { layers: [JUNCTION_LAYER] })
+            .find((f) => f.properties?.crossing)
+        : undefined;
+      const key = hit?.properties?.key;
+      const j =
+        typeof key === "string"
+          ? drawnRef.current?.g?.junctions.find((x) => junctionKey(x.nodes) === key)
+          : null;
+      if (j) {
+        setSelected(null);
+        const item: PickedJunction = {
+          key: junctionKey(j.nodes),
+          nodes: j.nodes,
+          ways: j.ways,
+          osmSignals: j.signals,
+          lonlat: middle(j.ring),
+        };
+        setPicked((p) => toggleSelection(p, item, (x) => x.key, addsToSelection(ev.originalEvent)));
+        return;
+      }
+      setPicked([]);
       const { x, y } = ev.point;
       const hits = map.getLayer(HIT_LAYER)
         ? map.queryRenderedFeatures(
@@ -337,6 +415,54 @@ export function StreetSetupEditor({
     if (map && s.at) map.easeTo({ center: s.at, zoom: Math.max(map.getZoom(), 16) });
   };
 
+  const junctionName = (ways: readonly number[]) =>
+    [...new Set(ways.map((w) => infos.get(w)?.name).filter((n): n is string => !!n))].slice(0, 3).join(" / ");
+  const nameOf = (j: PickedJunction) =>
+    junctionName(j.ways) || junctionSetupOf(junctions, j.nodes)?.name || "";
+  /** Lights on, off or as OSM maps them, for every selected junction at once. */
+  const changeJunctions = (signals: boolean | null) => {
+    if (!picked.length || !onJunctionsChange) return;
+    let list: JunctionSetup[] = [...junctions];
+    for (const j of picked) {
+      const name = nameOf(j);
+      list = setJunction(list, { nodes: j.nodes, lonlat: j.lonlat, ...(name ? { name } : {}) }, signals);
+    }
+    onJunctionsChange(list);
+  };
+  const showJunction = (j: JunctionSetup) => {
+    setSelected(null);
+    setPicked([
+      {
+        key: junctionKey(j.nodes),
+        nodes: j.nodes,
+        ways: [],
+        osmSignals: false,
+        lonlat: j.lonlat,
+      },
+    ]);
+    if (map) map.easeTo({ center: j.lonlat, zoom: Math.max(map.getZoom(), LANE_MIN_ZOOM + 1) });
+  };
+  // A junction chosen from the list: its streets and OSM's lights once its shape is drawn.
+  useEffect(() => {
+    if (!picked.some((p) => !p.ways.length)) return;
+    const shapes = drawn?.g?.junctions ?? [];
+    let found = false;
+    const next = picked.map((p) => {
+      if (p.ways.length) return p;
+      const j = shapes.find((x) => x.nodes.some((n) => p.nodes.includes(n)));
+      if (!j) return p;
+      found = true;
+      return {
+        key: junctionKey(j.nodes),
+        nodes: j.nodes,
+        ways: j.ways,
+        osmSignals: j.signals,
+        lonlat: middle(j.ring),
+      };
+    });
+    if (found) setPicked(next);
+  }, [drawn, picked]);
+
   const listed = useMemo(
     () => [...setups].sort((a, b) => (a.name || "").localeCompare(b.name || "") || a.way - b.way),
     [setups],
@@ -364,7 +490,21 @@ export function StreetSetupEditor({
         </p>
       )}
 
-      {info ? (
+      {picked.length > 0 ? (
+        <JunctionForm
+          picked={picked.map((j) => ({
+            key: j.key,
+            name: nameOf(j),
+            osmSignals: j.osmSignals,
+            known: j.ways.length > 0,
+            setup: junctionSetupOf(junctions, j.nodes),
+          }))}
+          editable={editable && !!onJunctionsChange}
+          onSet={changeJunctions}
+          onUnselect={(key) => setPicked((p) => p.filter((j) => j.key !== key))}
+          onClose={() => setPicked([])}
+        />
+      ) : info ? (
         <StreetForm
           info={info}
           setup={setup}
@@ -412,10 +552,157 @@ export function StreetSetupEditor({
         )}
         <p className="mt-2 text-xs text-slate-500">{t("setup.saved")}</p>
       </section>
+
+      <section aria-label={t("setup.junction.listTitle", { count: junctions.length })}>
+        <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
+          {t("setup.junction.listTitle", { count: junctions.length })}
+        </h3>
+        {junctions.length === 0 ? (
+          <p className="mt-1 text-sm text-slate-600">
+            {t("setup.junction.listEmpty", { zoom: LANE_MIN_ZOOM })}
+          </p>
+        ) : (
+          <ul className="mt-1 flex flex-col">
+            {junctions.map((j) => (
+              <li key={junctionKey(j.nodes)}>
+                <button
+                  type="button"
+                  onClick={() => showJunction(j)}
+                  aria-current={picked.some((p) => p.key === junctionKey(j.nodes)) ? "true" : undefined}
+                  className="flex min-h-11 w-full items-center gap-2 rounded-lg px-2 text-start hover:bg-slate-100 aria-[current=true]:bg-amber-50"
+                >
+                  <span className="min-w-0 flex-1 truncate font-medium">
+                    {j.name || t("setup.junction.unnamed")}
+                  </span>
+                  <span className="shrink-0 text-xs text-slate-500">
+                    {t(j.signals ? "setup.junction.yes" : "setup.junction.no")}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 
   return panel ? createPortal(body, panel) : body;
+}
+
+/** One selected junction, as the panel shows it. */
+interface JunctionRow {
+  key: string;
+  name: string;
+  /** Whether OSM maps traffic lights here. */
+  osmSignals: boolean;
+  /** Whether its shape is drawn (so what OSM maps is known). */
+  known: boolean;
+  setup: JunctionSetup | undefined;
+}
+
+/** How a junction's lights are set: as OSM maps them, or given or taken away by the planner. */
+const lightState = (j: JunctionRow) => (j.setup ? (j.setup.signals ? "yes" : "no") : "osm");
+
+/**
+ * Purpose: the panel of the selected junctions: traffic lights as OSM maps them, or set by the planner.
+ * One choice applies to every selected junction; while they differ, no choice is marked.
+ */
+function JunctionForm({
+  picked,
+  editable,
+  onSet,
+  onUnselect,
+  onClose,
+}: {
+  picked: JunctionRow[];
+  editable: boolean;
+  onSet: (signals: boolean | null) => void;
+  onUnselect: (key: string) => void;
+  onClose: () => void;
+}) {
+  const { t } = useI18n();
+  const one = picked.length === 1 ? picked[0]! : null;
+  const states = new Set(picked.map(lightState));
+  const state = states.size === 1 ? [...states][0] : null;
+  const lit = picked.filter((j) => (j.setup ? j.setup.signals : j.osmSignals)).length;
+  return (
+    <section
+      aria-label={one ? t("setup.junction.title") : t("setup.junction.selected", { count: picked.length })}
+      className="flex flex-col gap-3.5"
+    >
+      <div className="flex items-start gap-2">
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate text-base font-semibold">
+            {one
+              ? one.name || t("setup.junction.unnamed")
+              : t("setup.junction.selected", { count: picked.length })}
+          </h3>
+          {one ? (
+            one.known && (
+              <p className="text-xs text-slate-500">
+                {t(one.osmSignals ? "setup.junction.osmYes" : "setup.junction.osmNo")}
+              </p>
+            )
+          ) : (
+            <p className="text-xs text-slate-500">
+              {t("setup.junction.mix", { on: lit, off: picked.length - lit })}
+            </p>
+          )}
+        </div>
+        {one?.setup && <span className="tag shrink-0 bg-slate-900 text-white">{t("setup.setUp")}</span>}
+        <button
+          type="button"
+          className="icon-btn -mt-2 -me-2"
+          aria-label={one ? t("setup.close") : t("setup.junction.clear")}
+          onClick={onClose}
+        >
+          ✕
+        </button>
+      </div>
+      {!one && (
+        <ul className="flex flex-col">
+          {picked.map((j) => (
+            <li key={j.key} className="flex min-h-11 items-center gap-2.5 ps-2">
+              <span
+                aria-hidden="true"
+                className="h-3 w-3 shrink-0 rounded-[3px]"
+                style={{
+                  background: (j.setup ? j.setup.signals : j.osmSignals) ? SIGNAL_JUNCTION_COLOR : "#a8adb6",
+                }}
+              />
+              <span className="min-w-0 flex-1 truncate font-medium">
+                {j.name || t("setup.junction.unnamed")}
+              </span>
+              <button
+                type="button"
+                className="icon-btn text-slate-500"
+                aria-label={t("setup.junction.unselect", { name: j.name || t("setup.junction.unnamed") })}
+                onClick={() => onUnselect(j.key)}
+              >
+                ✕
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div role="group" aria-label={t("setup.junction.lights")} className="seg [&>button]:min-h-11">
+        <button type="button" aria-pressed={state === "osm"} disabled={!editable} onClick={() => onSet(null)}>
+          {t("setup.junction.asOsm")}
+        </button>
+        <button type="button" aria-pressed={state === "yes"} disabled={!editable} onClick={() => onSet(true)}>
+          {t("setup.junction.yes")}
+        </button>
+        <button type="button" aria-pressed={state === "no"} disabled={!editable} onClick={() => onSet(false)}>
+          {t("setup.junction.no")}
+        </button>
+      </div>
+      {!one && state === null && (
+        <p className="text-sm text-slate-700">{t("setup.junction.differ", { count: picked.length })}</p>
+      )}
+      <p className="text-sm text-slate-700">{t("setup.junction.note")}</p>
+      {editable && <p className="text-xs text-slate-500">{t("setup.junction.more")}</p>}
+    </section>
+  );
 }
 
 /** Purpose: a short list of what a setup sets, for the list of streets. */
@@ -649,6 +936,13 @@ function Legend() {
       </li>
       <li className="col-span-2 mt-1 font-medium text-slate-700">
         {t("setup.legend.lanes", { zoom: LANE_MIN_ZOOM })}
+      </li>
+      <li className="col-span-2 flex items-center gap-1.5">
+        <span
+          className="inline-block h-2.5 w-5 rounded-sm border border-slate-400"
+          style={{ background: SIGNAL_JUNCTION_COLOR }}
+        />
+        {t("setup.legend.signals")}
       </li>
       {lanes.map(([k, l]) => (
         <li key={k} className="flex items-center gap-1.5">

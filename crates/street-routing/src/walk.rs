@@ -138,6 +138,105 @@ fn is_signal(t: &Tags) -> bool {
         || tag(t, "crossing:signals") == Some("yes")
 }
 
+/// A junction the planner gave traffic lights or took them away from in the GIS tab (`JunctionSetup`).
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct JunctionSignals {
+    /// The junction's OSM nodes (osm2streets may merge several into one junction).
+    pub nodes: Vec<i64>,
+    /// `true`: the junction has traffic lights; `false`: it has none, whatever OSM maps.
+    pub signals: bool,
+}
+
+/// Signal nodes and crossings on a junction's approaches up to this far out belong to the junction, m
+/// (the road run takes the same distance for approach-mapped lights).
+pub const APPROACH_SIGNAL_M: f64 = 30.0;
+
+/// Purpose: apply the planner's junction setup to the OSM data before the walk graph is built.
+/// With lights, the junction's nodes and the crossings on its approaches become signalised crossings;
+/// without, the signal tags go from the junction's nodes and from its approaches (up to
+/// [`APPROACH_SIGNAL_M`], never past the next junction). Junctions the planner left alone keep OSM's tags.
+/// Output: how many junctions were given lights, and how many had them taken away.
+pub fn apply_junction_signals(data: &mut OsmData, setups: &[JunctionSignals]) -> (usize, usize) {
+    let index: HashMap<i64, usize> = data
+        .nodes
+        .iter()
+        .enumerate()
+        .map(|(i, n)| (n.id, i))
+        .collect();
+    let mut uses: HashMap<i64, usize> = HashMap::new();
+    for w in &data.ways {
+        let mut seen: Vec<i64> = w.nodes.clone();
+        seen.sort_unstable();
+        seen.dedup();
+        for n in seen {
+            *uses.entry(n).or_default() += 1;
+        }
+    }
+    let pos: HashMap<i64, (f64, f64)> = data.nodes.iter().map(|n| (n.id, (n.lon, n.lat))).collect();
+    let (mut on, mut off) = (0, 0);
+    for s in setups {
+        let here: Vec<i64> = s
+            .nodes
+            .iter()
+            .copied()
+            .filter(|n| index.contains_key(n))
+            .collect();
+        if here.is_empty() {
+            continue;
+        }
+        let mut near: Vec<i64> = Vec::new();
+        for w in &data.ways {
+            for (i, n) in w.nodes.iter().enumerate() {
+                if !here.contains(n) {
+                    continue;
+                }
+                for step in [-1i64, 1] {
+                    let (mut j, mut d) = (i as i64, 0.0);
+                    while j + step >= 0 && ((j + step) as usize) < w.nodes.len() {
+                        let (a, b) = (w.nodes[j as usize], w.nodes[(j + step) as usize]);
+                        if !index.contains_key(&b) {
+                            break;
+                        }
+                        let (pa, pb) = (pos[&a], pos[&b]);
+                        let proj = LocalProjection::new(pa.0, pa.1);
+                        d += dist(proj.to_xy(pa.0, pa.1), proj.to_xy(pb.0, pb.1));
+                        if d > APPROACH_SIGNAL_M || uses.get(&b).copied().unwrap_or(0) > 1 {
+                            break;
+                        }
+                        j += step;
+                        near.push(b);
+                    }
+                }
+            }
+        }
+        for id in here.iter().chain(near.iter()) {
+            let junction = here.contains(id);
+            let t = &mut data.nodes[index[id]].tags;
+            if s.signals {
+                if junction {
+                    t.insert("highway".into(), "traffic_signals".into());
+                } else if tag(t, "highway") == Some("crossing") || t.contains_key("crossing") {
+                    t.insert("crossing".into(), "traffic_signals".into());
+                }
+            } else if is_signal(t) {
+                if tag(t, "highway") == Some("traffic_signals") {
+                    t.remove("highway");
+                }
+                if tag(t, "crossing") == Some("traffic_signals") {
+                    t.insert("crossing".into(), "uncontrolled".into());
+                }
+                t.remove("crossing:signals");
+            }
+        }
+        if s.signals {
+            on += 1;
+        } else {
+            off += 1;
+        }
+    }
+    (on, off)
+}
+
 /// A point snapped to the walk network.
 #[derive(Debug, Clone, Copy)]
 pub(crate) struct Snap {

@@ -91,8 +91,16 @@ export interface SpacingResult {
 }
 
 /** The walk analysis engine: walk tiles go in with `addOsm`, then `build`. */
+/** A junction's traffic lights as the planner set them: its OSM nodes, and whether it has lights. */
+export interface JunctionSignals {
+  nodes: number[];
+  signals: boolean;
+}
+
 export interface WalkEngine {
   addOsm(xml: string): void;
+  /** The planner's junction setup (GIS tab): junctions given traffic lights or without them. Before `build`. */
+  setJunctions(junctions: JunctionSignals[]): void;
   build(): void;
   ready(): boolean;
   coverage(req: CoverageRequest): CoverageResult;

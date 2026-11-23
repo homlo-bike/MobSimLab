@@ -630,6 +630,28 @@ export const editorsDe = {
   "setup.legend.other": "Andere Straßen",
   "setup.legend.yours": "Von Ihnen eingestellt",
   "setup.legend.lanes": "Fahrstreifen, ab Zoomstufe {zoom}",
+  "setup.junction.title": "Knotenpunkt",
+  "setup.junction.unnamed": "Knotenpunkt ohne Namen",
+  "setup.junction.osmYes": "OpenStreetMap: Ampel",
+  "setup.junction.osmNo": "OpenStreetMap: keine Ampel",
+  "setup.junction.lights": "Ampel",
+  "setup.junction.asOsm": "Wie in OpenStreetMap",
+  "setup.junction.yes": "Ampel",
+  "setup.junction.no": "Keine Ampel",
+  "setup.junction.note":
+    "Die Straßensimulation hält Busse und Autos hier bei Rot an, und Gehzeiten rechnen die Wartezeit an den Überwegen ein.",
+  "setup.junction.selected": "Ausgewählte Knotenpunkte: {count}",
+  "setup.junction.mix": "Jetzt mit Ampel: {on} · ohne: {off}",
+  "setup.junction.differ":
+    "Sie unterscheiden sich gerade, darum ist nichts markiert. Ihre Wahl gilt für alle.",
+  "setup.junction.unselect": "{name} aus der Auswahl nehmen",
+  "setup.junction.clear": "Auswahl aufheben",
+  "setup.junction.more":
+    "Mit Umschalt-Klick weitere Knotenpunkte wählen, um mehrere auf einmal einzustellen.",
+  "setup.junction.listTitle": "Eingestellte Knotenpunkte · {count}",
+  "setup.junction.listEmpty":
+    "Noch keine. Ab Zoomstufe {zoom} einen Knotenpunkt antippen, um ihm eine Ampel zu geben oder sie wegzunehmen.",
+  "setup.legend.signals": "Knotenpunkt mit Ampel",
   "setup.v.busNoDelay":
     "Auf dieser Art von Straße wird keine Verspätung im Verkehr angenommen; sie zählt auf Hauptstraßen.",
   "setup.v.busSeparated": "Getrennte Busspur: Staus halten die Busse nicht auf.",

@@ -616,6 +616,27 @@ export const editorsSw = {
   "setup.legend.other": "Barabara nyingine",
   "setup.legend.yours": "Imepangwa na wewe",
   "setup.legend.lanes": "Njia za barabara, kuanzia kukuza {zoom}",
+  "setup.junction.title": "Makutano",
+  "setup.junction.unnamed": "Makutano yasiyo na jina",
+  "setup.junction.osmYes": "OpenStreetMap: taa za barabarani",
+  "setup.junction.osmNo": "OpenStreetMap: hakuna taa za barabarani",
+  "setup.junction.lights": "Taa za barabarani",
+  "setup.junction.asOsm": "Kama ilivyo kwenye OpenStreetMap",
+  "setup.junction.yes": "Taa za barabarani",
+  "setup.junction.no": "Hakuna taa za barabarani",
+  "setup.junction.note":
+    "Uigaji wa barabara husimamisha mabasi na magari hapa kwenye taa nyekundu, na muda wa kutembea huongeza kusubiri kwenye vivuko.",
+  "setup.junction.selected": "Makutano yaliyochaguliwa: {count}",
+  "setup.junction.mix": "Yenye taa: {on} · bila taa: {off}",
+  "setup.junction.differ":
+    "Kwa sasa yanatofautiana, hivyo hakuna chaguo lililowekwa alama. Chaguo lako litatumika kwa yote.",
+  "setup.junction.unselect": "Ondoa {name} kwenye uteuzi",
+  "setup.junction.clear": "Futa uteuzi",
+  "setup.junction.more": "Bofya makutano mengine huku ukibonyeza Shift ili kuweka kadhaa kwa pamoja.",
+  "setup.junction.listTitle": "Makutano yaliyowekwa · {count}",
+  "setup.junction.listEmpty":
+    "Bado hakuna. Kuanzia kukuza {zoom}, gusa makutano ili kuweka au kuondoa taa za barabarani.",
+  "setup.legend.signals": "Makutano yenye taa za barabarani",
   "setup.v.busNoDelay":
     "Hakuna ucheleweshaji wa msongamano unaodhaniwa kwa aina hii ya barabara; unahesabiwa kwenye barabara kuu.",
   "setup.v.busSeparated": "Njia ya basi iliyotenganishwa: msongamano hauchelewishi mabasi.",

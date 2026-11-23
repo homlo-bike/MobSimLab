@@ -51,6 +51,7 @@ export const UNDOABLE: ReadonlySet<DrawingKind> = new Set<DrawingKind>([
   "plugin-lines",
   "depots",
   "street-setups",
+  "junction-setups",
   "regions",
   "demand",
   "cargo-bike",

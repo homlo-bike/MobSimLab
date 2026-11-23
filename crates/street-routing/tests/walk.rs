@@ -2,8 +2,8 @@
 
 use street_routing::osm::parse_osm_xml;
 use street_routing::walk::{
-    stop_spacing, CoverageGroup, CoverageRequest, DemandPoint, Metric, SpacingRequest, StopPoint,
-    WalkGraph, WalkSettings,
+    apply_junction_signals, stop_spacing, CoverageGroup, CoverageRequest, DemandPoint,
+    JunctionSignals, Metric, SpacingRequest, StopPoint, WalkGraph, WalkSettings,
 };
 
 const LON0: f64 = 7.0;
@@ -176,6 +176,58 @@ fn signals_add_delay_and_steps_can_be_excluded() {
     let r = g.coverage(&req);
     assert_eq!(r.covered, 0.0);
     assert_eq!(r.demand_off_network, 1);
+}
+
+#[test]
+fn junction_setup_adds_or_removes_the_wait_at_its_crossings() {
+    // A crossroads at node 2 with a pedestrian crossing 10 m out (node 5) and the next junction at 6.
+    let build = |signals: &[(&str, &str)]| {
+        let mut o = Osm::new();
+        o.node(1, 0.0, 0.0, &[]);
+        o.node(
+            5,
+            490.0,
+            0.0,
+            &[("highway", "crossing"), ("crossing", "uncontrolled")],
+        );
+        o.node(2, 500.0, 0.0, signals);
+        o.node(3, 1000.0, 0.0, &[]);
+        o.node(4, 500.0, 50.0, &[]);
+        o.node(6, 515.0, 0.0, &[]);
+        o.node(7, 515.0, 50.0, &[("highway", "traffic_signals")]);
+        o.way(&[1, 5, 2, 6, 3], &[("highway", "residential")]);
+        o.way(&[2, 4], &[("highway", "residential")]);
+        o.way(&[6, 7], &[("highway", "residential")]);
+        parse_osm_xml(&format!("<osm>{}</osm>", o.xml)).unwrap()
+    };
+    let tags = |d: &street_routing::osm::OsmData, id: i64| {
+        d.nodes.iter().find(|n| n.id == id).unwrap().tags.clone()
+    };
+    let mut d = build(&[]);
+    let on = JunctionSignals {
+        nodes: vec![2],
+        signals: true,
+    };
+    assert_eq!(apply_junction_signals(&mut d, &[on]), (1, 0));
+    assert_eq!(tags(&d, 2)["highway"], "traffic_signals");
+    assert_eq!(tags(&d, 5)["crossing"], "traffic_signals");
+    let g = WalkGraph::from_osm(&d, None).unwrap();
+    assert_eq!(g.signals.iter().filter(|s| **s).count(), 3);
+
+    let mut d = build(&[("highway", "traffic_signals")]);
+    let off = JunctionSignals {
+        nodes: vec![2, 999],
+        signals: false,
+    };
+    assert_eq!(apply_junction_signals(&mut d, &[off]), (0, 1));
+    assert!(!tags(&d, 2).contains_key("highway"));
+    assert_eq!(
+        tags(&d, 7)["highway"],
+        "traffic_signals",
+        "the next junction's street keeps its lights"
+    );
+    let g = WalkGraph::from_osm(&d, None).unwrap();
+    assert_eq!(g.signals.iter().filter(|s| **s).count(), 1);
 }
 
 #[test]

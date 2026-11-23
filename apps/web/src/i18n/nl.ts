@@ -245,6 +245,7 @@ export const nl: Messages = {
   "drawing.street-lines": "de buslijn",
   "drawing.railway": "de spoorlijn",
   "drawing.street-setups": "de straatinstellingen",
+  "drawing.junction-setups": "de kruispuntinstellingen",
   "drawing.rail-timetable": "de dienstregeling van de spoorlijnen",
   "drawing.preferences": "de projectvoorkeuren",
   "drawing.costs": "de kosteninstellingen",

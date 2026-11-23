@@ -236,6 +236,7 @@ export const ar: Messages = {
   "drawing.street-lines": "خط الشارع",
   "drawing.railway": "السكة الحديدية",
   "drawing.street-setups": "إعدادات الشوارع",
+  "drawing.junction-setups": "إعدادات التقاطعات",
   "drawing.rail-timetable": "جدول مواعيد القطارات",
   "drawing.preferences": "تفضيلات المشروع",
   "drawing.costs": "إعدادات التكاليف",

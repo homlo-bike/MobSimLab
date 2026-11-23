@@ -595,6 +595,27 @@ export const editorsFa = {
   "setup.legend.other": "خیابان دیگر",
   "setup.legend.yours": "تنظیم‌شده توسط شما",
   "setup.legend.lanes": "خطوط عبور، از بزرگنمایی {zoom}",
+  "setup.junction.title": "تقاطع",
+  "setup.junction.unnamed": "تقاطع بی‌نام",
+  "setup.junction.osmYes": "OpenStreetMap: چراغ راهنمایی",
+  "setup.junction.osmNo": "OpenStreetMap: بدون چراغ راهنمایی",
+  "setup.junction.lights": "چراغ راهنمایی",
+  "setup.junction.asOsm": "مانند OpenStreetMap",
+  "setup.junction.yes": "چراغ راهنمایی",
+  "setup.junction.no": "بدون چراغ راهنمایی",
+  "setup.junction.note":
+    "شبیه‌سازی جاده‌ای اتوبوس‌ها و خودروها را اینجا پشت چراغ قرمز نگه می‌دارد و زمان پیاده‌روی انتظار در گذرگاه‌ها را می‌افزاید.",
+  "setup.junction.selected": "تقاطع‌های انتخاب‌شده: {count}",
+  "setup.junction.mix": "با چراغ راهنمایی: {on} · بدون: {off}",
+  "setup.junction.differ":
+    "اکنون متفاوت‌اند، پس گزینه‌ای علامت نخورده است. انتخاب شما برای همه اعمال می‌شود.",
+  "setup.junction.unselect": "برداشتن {name} از انتخاب",
+  "setup.junction.clear": "پاک کردن انتخاب",
+  "setup.junction.more": "برای تنظیم چند تقاطع با هم، با Shift روی تقاطع‌های دیگر کلیک کنید.",
+  "setup.junction.listTitle": "تقاطع‌های تنظیم‌شده · {count}",
+  "setup.junction.listEmpty":
+    "هنوز هیچ. از بزرگنمایی {zoom} روی یک تقاطع بزنید تا چراغ راهنمایی بگذارید یا بردارید.",
+  "setup.legend.signals": "تقاطع با چراغ راهنمایی",
   "setup.v.busNoDelay": "برای این نوع خیابان تأخیر ترافیکی محاسبه نمی‌شود؛ فقط برای خیابان‌های اصلی.",
   "setup.v.busSeparated": "خط اتوبوس جداشده: ترافیک اتوبوس‌ها را کند نمی‌کند.",
   "setup.v.busPainted":

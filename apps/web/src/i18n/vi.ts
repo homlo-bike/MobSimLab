@@ -241,6 +241,7 @@ export const vi: Messages = {
   "drawing.street-lines": "tuyến đường phố",
   "drawing.railway": "đường sắt",
   "drawing.street-setups": "cấu hình đường phố",
+  "drawing.junction-setups": "thiết lập nút giao",
   "drawing.rail-timetable": "lịch tàu",
   "drawing.preferences": "tùy chọn dự án",
   "drawing.costs": "cài đặt chi phí",
