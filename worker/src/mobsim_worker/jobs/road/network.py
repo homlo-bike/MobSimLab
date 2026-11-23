@@ -160,10 +160,10 @@ class RoadNet:
     """The SUMO network, read with sumolib, and the helpers that place routes and points on it."""
 
     def __init__(self, net_file: str) -> None:
-        """Read the network (with internal lanes off; shapes in metres)."""
+        """Read the network (with internal lanes off; shapes in metres) and its signal programs."""
         import sumolib  # noqa: PLC0415
 
-        self.net: Any = sumolib.net.readNet(net_file, withInternal=False)
+        self.net: Any = sumolib.net.readNet(net_file, withInternal=False, withPrograms=True)
         self._sumolib = sumolib
 
     def xy(self, p: LonLat) -> tuple[float, float]:
