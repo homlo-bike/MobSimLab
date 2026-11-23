@@ -11,6 +11,7 @@ import {
 import { z } from "zod";
 import type { MslRequest } from "../auth/session.service";
 import { DemError } from "../gateway/copernicus-dem.client";
+import { GEBCO_SOURCE, GebcoClient, GebcoError } from "../gateway/gebco.client";
 import { OpenElevationError } from "../gateway/open-elevation.client";
 import { OverpassError } from "../gateway/overpass.client";
 import { ProjectGate } from "../geodata/project-gate";
@@ -22,6 +23,9 @@ const pointsBody = z.object({
   points: z.array(lonLat).min(1).max(MAX_SAMPLES),
   projectId: z.string().optional(),
 });
+/** Most points one depth request asks (the ferry route checks ask up to 400). */
+export const MAX_DEPTH_POINTS = 1_000;
+const depthsBody = z.object({ points: z.array(lonLat).min(1).max(MAX_DEPTH_POINTS) });
 const profileBody = z.object({
   lines: z.array(z.array(lonLat).min(1).max(5_000)).min(1).max(500),
   spacingM: z.number().min(5).max(1_000).default(50),
@@ -41,7 +45,24 @@ export class TerrainController {
   constructor(
     private readonly terrain: TerrainService,
     @Optional() private readonly gate?: ProjectGate,
+    @Optional() private readonly gebco?: GebcoClient,
   ) {}
+
+  /**
+   * Purpose: water depths at points from the GEBCO grid, for the ferry route checks.
+   * Inputs: { points: [[lon, lat], ...] }. Output: { depthsM: (number | null)[] (metres below sea level; land is
+   * negative), source }; 503 when depths are turned off on this instance.
+   */
+  @Post("depths")
+  @HttpCode(200)
+  @Requires("instance.read")
+  async depths(@Body() body: unknown) {
+    const { points } = parse(depthsBody, body);
+    if (!this.gebco) throw new HttpException("Water depths are turned off on this instance", 503);
+    const gebco = this.gebco;
+    const depthsM = await upstream(() => gebco.depths(points as LonLat[]));
+    return { depthsM, source: GEBCO_SOURCE };
+  }
 
   /**
    * Purpose: heights at points, without resampling.
@@ -111,6 +132,7 @@ async function upstream<T>(fn: () => Promise<T>): Promise<T> {
       throw new HttpException("Terrain heights are unavailable right now", e.status);
     if (e instanceof OverpassError)
       throw new HttpException("OpenStreetMap buildings are unavailable right now", e.status);
+    if (e instanceof GebcoError) throw new HttpException("Water depths are unavailable right now", e.status);
     throw e;
   }
 }

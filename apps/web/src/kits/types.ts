@@ -98,6 +98,12 @@ export interface VesselType {
   boarding_pax_per_min_per_gangway: number;
   min_dwell_s: number;
   capacity: number;
+  /** `ferry.air_draft_m`, for the bridge check. */
+  air_draft_m?: number | null;
+  /** `ferry.draught_m`, for the depth check. */
+  draught_m?: number | null;
+  /** `ferry.under_keel_clearance_m`, for the depth check. */
+  under_keel_m?: number | null;
 }
 
 export interface Pier {
@@ -127,6 +133,36 @@ export interface WaterLine {
   pax_per_call: number;
   speed_zones: SpeedZone[];
   check_window_s?: number;
+  /** OpenStreetMap water, bridges and locks around the line, and GEBCO depths, for the route checks. */
+  surroundings?: Surroundings | null;
+}
+
+/** A bridge from OpenStreetMap, for the water route checks. */
+export interface WaterBridge {
+  name: string;
+  line: LonLat[];
+  /** Height above the water a vessel passes under (closed), m; null when OpenStreetMap does not give it. */
+  clearance_m: number | null;
+  movable: boolean;
+}
+
+/** A lock (gate or chamber) from OpenStreetMap. */
+export interface WaterLock {
+  name: string;
+  line: LonLat[];
+}
+
+/** What lies around a ferry line (`mode_kits::water_checks::Surroundings`). */
+export interface Surroundings {
+  /** `[west, south, east, north]` the data covers. */
+  bbox: [number, number, number, number];
+  areas: LonLat[][];
+  sea: LonLat[][];
+  rivers: LonLat[][];
+  bridges: WaterBridge[];
+  locks: WaterLock[];
+  /** Depths (m below sea level, GEBCO) at the points the kit asked for. */
+  depths: { lonlat: LonLat; depth_m: number | null }[];
 }
 
 export interface WaterStop {
@@ -149,6 +185,8 @@ export interface WaterView {
   berths: { pier: number; berths: number; peak: number; holds: number; held_s: number }[];
   holds: number;
   held_s: number;
+  /** Points on open sea whose depth the depth check needs. */
+  depth_points: { leg: number; lonlat: LonLat }[];
   issues: Issue[];
 }
 

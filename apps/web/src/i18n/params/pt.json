@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Calibração: horas pelas quais uma contagem de dia útil é repartida para a estatística GEH",
     "demand.walk_speed_kmh": "Velocidade a pé nas ligações de pedestres entre estações",
     "journey.walk_detour_factor": "Distância a pé face à distância em linha reta (planejador de viagens, estimativa de benefícios)",
-    "journey.walk_slope_k": "Caminhar em declives: termo de inclinação da função de caminhada de Tobler (planeador de viagens; 0 = caminhadas como em plano)",
+    "journey.walk_slope_k": "Caminhar em declives: termo de inclinação da função de caminhada de Tobler (0 = caminhadas como em plano)",
     "journey.min_change_s": "Planejador de viagens: tempo mínimo de transbordo na mesma parada",
     "journey.level_change_s": "Planejador de viagens: tempo adicional para mudar de plataforma em uma estação (escadas, elevadores)",
     "journey.same_name_station_m": "Paradas com o mesmo nome a menos desta distância em linha reta são uma estação",
@@ -464,7 +464,9 @@
     "cost.price_base_year": "Ano-base de preços dos custos",
     "mode.spare_share": "Veículos de reserva, parcela dos veículos em serviço no pico (frota)",
     "mode.vehicle_capacity": "Lugares de passageiros por veículo de rua, sentados mais em pé na densidade de projeto",
-    "cost.opex.car_length_m": "Custo de circulação ferroviária: comprimento de trem contado como um carro"
+    "cost.opex.car_length_m": "Custo de circulação ferroviária: comprimento de trem contado como um carro",
+    "dwell.door_channels_per_100m": "Canais de porta por 100 m de comboio (portas de um lado × pessoas lado a lado por porta)",
+    "dwell.door_peaking": "Canal de porta mais carregado face a uma distribuição uniforme dos passageiros pelas portas"
   },
   "units": {
     "US$ million each (2023, PPP)": "milhões de US$ cada (2023, PPC)",

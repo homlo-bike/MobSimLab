@@ -24,6 +24,7 @@ pub mod issue;
 pub mod segment;
 pub mod spans;
 pub mod water;
+pub mod water_checks;
 pub mod zone;
 
 pub use issue::{Issue, Level};

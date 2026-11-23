@@ -168,6 +168,123 @@
         - candela-p12-techcrunch
       check: unverified
       rationale: "Candela P-12: 30 passengers."
+- key: ferry.air_draft_m
+  label: Air draft (height above the waterline)
+  group: Ferries
+  unit: m
+  used_by:
+    - bridge check
+  values:
+    - context:
+        mode: "*"
+      low: 3
+      central: 6
+      high: 15
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Fallback; use the vessel's own air draft once the catalogue has ferries.
+    - context:
+        mode: ferry
+        vessel_type: monohull
+      low: 3
+      central: 6
+      high: 12
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: City water buses pass under low river bridges, often 4 to 8 m above the water (to verify).
+    - context:
+        mode: ferry
+        vessel_type: catamaran
+      low: 4
+      central: 7
+      high: 12
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Commuter catamarans with an enclosed upper deck (to verify).
+    - context:
+        mode: ferry
+        vessel_type: hydrofoil
+      low: 2.5
+      central: 3.5
+      high: 5
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Small electric hydrofoils such as the Candela P-12, a single low cabin (to verify).
+- key: ferry.draught_m
+  label: Draught (depth below the waterline)
+  group: Ferries
+  unit: m
+  used_by:
+    - depth check
+  values:
+    - context:
+        mode: "*"
+      low: 0.8
+      central: 1.8
+      high: 3.5
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Fallback; use the vessel's own draught once the catalogue has ferries.
+    - context:
+        mode: ferry
+        vessel_type: monohull
+      low: 1
+      central: 1.8
+      high: 3
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Harbour and river water buses (to verify).
+    - context:
+        mode: ferry
+        vessel_type: catamaran
+      low: 1.2
+      central: 1.6
+      high: 2.5
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: Commuter catamarans draw little water for their size (to verify).
+    - context:
+        mode: ferry
+        vessel_type: hydrofoil
+      low: 0.8
+      central: 1.2
+      high: 2
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: With the foils down, at the pier and at low speed (to verify).
+- key: ferry.under_keel_clearance_m
+  label: Water kept under the keel
+  group: Ferries
+  unit: m
+  used_by:
+    - depth check
+  values:
+    - context:
+        mode: "*"
+      low: 0.5
+      central: 1
+      high: 2
+      basis: educated-guess
+      sources:
+        - mobsimlab-derivation
+      check: unverified
+      rationale: "Margin under the keel for squat, waves and the tide; GEBCO’s grid of about 450 m smooths out shoals, so the depth check keeps 1 m (educated guess)."
 - key: ferry.harbour_speed_kn
   label: Speed limit in a new speed zone
   group: Ferries

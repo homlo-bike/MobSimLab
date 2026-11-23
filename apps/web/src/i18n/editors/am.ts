@@ -1161,6 +1161,7 @@ export const editorsAm = {
   "ferry.pier": "ወደብ {n}",
   "ferry.pierLower": "ወደብ {n}",
   "ferry.legLower": "ክፍል {n}",
+  "ferry.depthsUnavailable": "የGEBCO የውሃ ጥልቀቶች ሊጫኑ አልቻሉም፤ ስለዚህ በክፍት ባሕር ላይ ጥልቀት አይፈተሽም።",
   "ferry.hint.pier": "ቀጣዩን ወደብ ለማከል የባሕር ዳርቻውን ጠቅ ያድርጉ። እዚያ እንደገና ለማቆም ያለ ወደብን ጠቅ ያድርጉ።",
   "ferry.hint.via": "በክፍል {n} ላይ የማለፊያ ነጥብ ለማከል ውሃውን ጠቅ ያድርጉ።",
   "ferry.hint.zone": "የፍጥነት ዞኑን ማዕዘኖች ጠቅ ያድርጉ፣ ከዚያ ዞኑን ጨርስን ይጫኑ።",
@@ -1218,6 +1219,15 @@ export const editorsAm = {
   "setup.wizardIntro": "እርስዎ ባለቤቱ ነዎት። ማዋቀሩን እስኪጨርሱ ድረስ ሌሎች ሰዎች መግባት አይችሉም።",
   "setup.instanceName": "የስርዓት ስም",
   "setup.finish": "ማዋቀሩን ጨርስ",
+  "setup.stepOf": "ደረጃ {n} ከ{count}",
+  "setup.next": "ቀጣይ",
+  "setup.back": "ተመለስ",
+  "setup.stepName": "ስም",
+  "setup.stepMaps": "መሠረታዊ ካርታዎች",
+  "setup.signupIntro":
+    "ማዋቀሩ ካለቀ በኋላ ማን መግባት እንደሚችል እና ምን ሚና እንደሚያገኝ። ይህንን በኋላ በአስተዳደር → የምዝገባ ደንቦች መቀየር ይችላሉ።",
+  "setup.mapsIntro":
+    "የOpenStreetMap ካርታዎች ያለ ማዋቀር ይሠራሉ። ከፈለጉ የአየር ላይ ምስሎችን ወይም የድርጅትዎን የራሱ የካርታ አገልግሎቶች እዚህ ያክሉ። ይህንን በኋላ በአስተዳደር → ተሰኪዎች መቀየር ይችላሉ።",
   "consent.title": "የ AI ወኪል ያገናኙ",
   "consent.incomplete": "ይህ ማገናኛ ያልተሟላ ነው። በ AI መተግበሪያዎ ውስጥ ግንኙነቱን እንደገና ይጀምሩ።",
   "consent.signInFirst": "መተግበሪያው መገናኘት ይችል እንደሆነ ለመወሰን ወደ MobSimLab ይግቡ።",
@@ -1433,7 +1443,12 @@ export const editorsAm = {
   "capacity.plannerNotes": "የአቅጣጫ ሰጪው ማስታወሻዎች ({n})",
   "capacity.kernelNotes": "የስሌት ኮሩ የዘገበው ({n})",
   "capacity.method":
-    "አቅም በUIC 406 የመጨመቂያ ዘዴ፤ መዘግየቶች ከ{runs} ሙከራዎች፣ በእነሱ ውስጥ {share} ጉዞዎች እስከ {late} ዘግይተው ይነሳሉ። የተሳፋሪ ጭነት ገና የዚህ ሙከራ አካል አይደለም።",
+    "አቅም በUIC 406 የመጨመቂያ ዘዴ፤ መዘግየቶች ከ{runs} ሙከራዎች፣ በእነሱ ውስጥ {share} ጉዞዎች እስከ {late} ዘግይተው ይነሳሉ።",
+  "capacity.dwell.busy":
+    "ብዙ ሰዎች በሚሳፈሩበትና በሚወርዱበት ቦታ ባቡሮች ረዘም ብለው ይቆማሉ፤ የእያንዳንዱ ባቡር ተሳፋሪዎች በበሮቹ ይከፋፈላሉ፣ በጣም የተጨናነቀው በር ከእኩል ድርሻ በላይ ይወስዳል።",
+  "capacity.dwell.fixed":
+    "ባቡሮች በእያንዳንዱ ማቆሚያ እኩል ጊዜ ይቆማሉ፤ የተሳፋሪ ጭነት ሲበራ ብዙ ሰዎች በሚሳፈሩበትና በሚወርዱበት ቦታ ረዘም ብለው ይቆማሉ።",
+  "capacity.loads.dwell": "ባቡሮች በ{station} እስከ {dwell} ይቆማሉ (በተለምዶ {usual})።",
   "capacity.line": "መስመር {name}",
   "capacity.eachWay": "በእያንዳንዱ አቅጣጫ {n} ባቡሮች/ሰዓት",
   "capacity.used": "ጥቅም ላይ የዋለ አቅም",
@@ -1499,6 +1514,9 @@ export const editorsAm = {
   "walk.drawFirst": "መጀመሪያ የመንገድ መስመር ወይም ጣቢያዎች ያሉት የባቡር መስመር ይሳሉ።",
   "walk.collecting": "ፌርማታዎችና ጣቢያዎች እየተሰበሰቡ ነው…",
   "walk.loadingTiles": "የእግረኛ መንገዶች እየተጫኑ ነው (ከ{count} የካርታ ሰቆች {done})…",
+  "walk.loadingHeights": "የመሬት ከፍታዎች በመጫን ላይ…",
+  "walk.heightsUnavailable": "የመሬት ከፍታዎች አልተጫኑም ({reason})፣ ስለዚህ የእግር ጉዞ እንደ ጠፍጣፋ መሬት ይሰላል።",
+  "walk.heightsNoData": "ለዚህ አካባቢ የከፍታ መረጃ የለም",
   "walk.loadingPopulation": "ሰዎች የሚኖሩበት ቦታ እየተጫነ ነው…",
   "walk.computing": "የእግር ጉዞዎች እየተለኩ ነው…",
   "walk.tooLarge": "ፌርማታዎቹ በ{tiles} የካርታ ሰቆች ላይ ተዘርግተዋል፤ በአንድ ጊዜ ቢበዛ {max} (ወደ 12 ኪ.ሜ × 12 ኪ.ሜ) ይጫናሉ።",
@@ -1527,7 +1545,8 @@ export const editorsAm = {
   "walk.popDownloading": "የ{countries} የሕዝብ ብዛት አሁንም ወደ አገልጋዩ እየወረደ ነው፤ እስከዚያ መንገዶች በሰዎች ቦታ ይቆማሉ።",
   "walk.popUnavailable": "የሕዝብ ብዛት መረጃ የለም ({reason})፤ መንገዶች በሰዎች ቦታ ይቆማሉ።",
   "walk.popCredit": "ነዋሪዎች፦ WorldPop {year} ({countries})፣ CC BY 4.0።",
-  "walk.note": "አካባቢው በፌርማታዎቹ ዙሪያ ያለው አራት ማዕዘን ሲደመር በገደቡ ውስጥ የሚሄደው ርቀት ነው። ቁልቁለት ገና አይቆጠርም።",
+  "walk.note":
+    "አካባቢው በማቆሚያዎቹ ዙሪያ ያለው አራት ማዕዘን እና በገደቡ ውስጥ በእግር የሚሸፈነው ርቀት ነው። እያንዳንዱ መንገድ ወደ ማቆሚያው አቅጣጫ ባለው ቁልቁለቱ ይሄዳል፣ ስለዚህ ዳገት መውጣት ብዙ ጊዜ ይወስዳል።",
   "spacing.title": "በፌርማታዎች መካከል ያለ ርቀት",
   "spacing.intro":
     "በመስመሩ ላይ በተከታታይ ፌርማታዎች መካከል ያለው ርቀት፣ ከትራንስፖርት ዓይነቱ የተለመደ ክልል ጋር ሲነጻጸር። በጣም ቅርብ ፌርማታዎች መስመሩን ያዘገያሉ፤ በጣም የራቁ ረጅም የእግር ጉዞ ማለት ነው።",

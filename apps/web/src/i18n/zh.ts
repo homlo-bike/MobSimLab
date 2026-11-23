@@ -252,8 +252,6 @@ export const zh: Messages = {
   "tab.tables": "表格",
   "tab.preferences": "偏好设置",
 
-  "placeholder.comingSoon": "将在后续版本中推出",
-
   "sim.test": "测试系统",
   "sim.journey": "A → B 出行时间",
 

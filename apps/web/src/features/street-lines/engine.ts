@@ -130,6 +130,8 @@ export const loadWalkEngine: WalkEngineLoader = async () => {
     setJunctions: (j) => w.set_junctions(JSON.stringify(j)),
     build: () => w.build(),
     ready: () => w.ready(),
+    heightCells: (cellM) => JSON.parse(w.height_cells(cellM)) as [number, number][],
+    setHeights: (cellM, heights) => w.set_heights(cellM, JSON.stringify(heights)),
     coverage: (req) => JSON.parse(w.coverage(JSON.stringify(req))) as CoverageResult,
     catchment: (stops, maxMinutes, settings) =>
       JSON.parse(

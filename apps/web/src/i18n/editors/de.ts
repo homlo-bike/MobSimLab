@@ -1233,6 +1233,8 @@ export const editorsDe = {
   "ferry.pier": "Anleger {n}",
   "ferry.pierLower": "Anleger {n}",
   "ferry.legLower": "Teilstrecke {n}",
+  "ferry.depthsUnavailable":
+    "Die GEBCO-Wassertiefen konnten nicht geladen werden; die Tiefe auf offener See wird daher nicht geprüft.",
   "ferry.hint.pier":
     "Klicken Sie ans Ufer, um den nächsten Anleger hinzuzufügen. Klicken Sie auf einen vorhandenen Anleger, um ihn erneut anzulaufen.",
   "ferry.hint.via": "Klicken Sie aufs Wasser, um Teilstrecke {n} einen Zwischenpunkt hinzuzufügen.",
@@ -1294,6 +1296,15 @@ export const editorsDe = {
     "Sie sind der Eigentümer. Andere können sich erst anmelden, wenn Sie die Einrichtung abschließen.",
   "setup.instanceName": "Name der Instanz",
   "setup.finish": "Einrichtung abschließen",
+  "setup.stepOf": "Schritt {n} von {count}",
+  "setup.next": "Weiter",
+  "setup.back": "Zurück",
+  "setup.stepName": "Name",
+  "setup.stepMaps": "Grundkarten",
+  "setup.signupIntro":
+    "Wer sich nach Abschluss der Einrichtung anmelden darf und welche Rolle er erhält. Sie können das später unter Verwaltung → Registrierungsregeln ändern.",
+  "setup.mapsIntro":
+    "OpenStreetMap-Karten funktionieren ohne Einrichtung. Fügen Sie hier bei Bedarf Luftbilder oder die eigenen Kartendienste Ihrer Organisation hinzu. Sie können das später unter Verwaltung → Plugins ändern.",
   "consent.title": "Einen KI-Agenten verbinden",
   "consent.incomplete": "Dieser Link ist unvollständig. Starten Sie die Verbindung in Ihrer KI-App erneut.",
   "consent.signInFirst":
@@ -1522,7 +1533,12 @@ export const editorsDe = {
   "capacity.plannerNotes": "Planer-Hinweise ({n})",
   "capacity.kernelNotes": "Meldungen des Rechenkerns ({n})",
   "capacity.method":
-    "Kapazität nach dem Kompressionsverfahren der UIC 406; Verspätungen aus {runs} Läufen, in denen {share} der Fahrten bis zu {late} verspätet starten. Fahrgastlasten sind noch nicht Teil dieses Tests.",
+    "Kapazität nach dem Kompressionsverfahren der UIC 406; Verspätungen aus {runs} Läufen, in denen {share} der Fahrten bis zu {late} verspätet starten.",
+  "capacity.dwell.busy":
+    "Züge halten länger, wo viele ein- und aussteigen: Die Fahrgäste eines Zuges verteilen sich auf seine Türen, und die stärkste Tür bekommt mehr als einen gleichen Anteil.",
+  "capacity.dwell.fixed":
+    "Züge halten an jeder Station gleich lang; mit Fahrgastlasten halten sie länger, wo viele ein- und aussteigen.",
+  "capacity.loads.dwell": "Züge halten bis zu {dwell} in {station} (sonst {usual}).",
   "capacity.line": "Linie {name}",
   "capacity.eachWay": "{n} Züge/h je Richtung",
   "capacity.used": "Belegte Kapazität",
@@ -1592,6 +1608,10 @@ export const editorsDe = {
   "walk.drawFirst": "Zeichnen Sie zuerst eine Straßenlinie oder eine Bahnstrecke mit Stationen.",
   "walk.collecting": "Haltestellen und Stationen werden gesammelt…",
   "walk.loadingTiles": "Fußwege werden geladen ({done} von {count} Kartenkacheln)…",
+  "walk.loadingHeights": "Geländehöhen werden geladen…",
+  "walk.heightsUnavailable":
+    "Geländehöhen nicht geladen ({reason}), daher werden Fußwege wie in der Ebene gerechnet.",
+  "walk.heightsNoData": "keine Höhendaten für dieses Gebiet",
   "walk.loadingPopulation": "Wohnorte werden geladen…",
   "walk.computing": "Fußwege werden gemessen…",
   "walk.tooLarge":
@@ -1626,7 +1646,7 @@ export const editorsDe = {
   "walk.popUnavailable": "Keine Bevölkerungsdaten ({reason}); die Straßen stehen für die Menschen.",
   "walk.popCredit": "Einwohner: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Das Gebiet ist das Rechteck um die Haltestellen plus die in der Grenze gegangene Strecke. Steigungen werden noch nicht berücksichtigt.",
+    "Das Gebiet ist das Rechteck um die Haltestellen plus die in der Grenze gegangene Strecke. Jede Straße wird mit ihrer Steigung in Richtung Haltestelle gegangen, bergauf dauert es also länger.",
   "spacing.title": "Haltestellenabstand",
   "spacing.intro":
     "Abstand zwischen aufeinanderfolgenden Haltestellen entlang der Linie, verglichen mit dem üblichen Bereich des Verkehrsmittels. Zu nahe Haltestellen bremsen die Linie; zu weit auseinander bedeutet lange Fußwege.",

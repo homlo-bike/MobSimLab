@@ -81,7 +81,10 @@ export function RunResults({
           runs: shownRun.params.stability_runs,
           share: pct(shownRun.params.delayed_share),
           late: secs(shownRun.params.primary_delay_max_s, t),
-        })}
+        })}{" "}
+        {Object.keys(loads).some((k) => k.startsWith("rail:"))
+          ? t("capacity.dwell.busy")
+          : t("capacity.dwell.fixed")}
       </p>
     </div>
   );

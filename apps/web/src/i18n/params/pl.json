@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Kalibracja: godziny, na które dzieli się pomiar dnia roboczego dla statystyki GEH",
     "demand.walk_speed_kmh": "Prędkość pieszego dla połączeń pieszych między stacjami",
     "journey.walk_detour_factor": "Odległość dojścia względem odległości w linii prostej (planer podróży, szacowanie korzyści)",
-    "journey.walk_slope_k": "Chodzenie po zboczach: składnik nachylenia funkcji wędrówki Toblera (planer podróży; 0 = marsz liczony jak po płaskim)",
+    "journey.walk_slope_k": "Chodzenie po zboczach: składnik nachylenia funkcji wędrówki Toblera (0 = marsz liczony jak po płaskim)",
     "journey.min_change_s": "Planer podróży: minimalny czas przesiadki na tym samym przystanku",
     "journey.level_change_s": "Planer podróży: dodatkowy czas zmiany peronu na stacji (schody, windy)",
     "journey.same_name_station_m": "Przystanki o tej samej nazwie w tej odległości w linii prostej tworzą jedną stację",
@@ -464,7 +464,9 @@
     "cost.price_base_year": "Rok bazowy cen kosztów",
     "mode.spare_share": "Pojazdy rezerwowe, udział pojazdów w ruchu w szczycie (tabor)",
     "mode.vehicle_capacity": "Miejsca dla pasażerów na pojazd uliczny, siedzące i stojące przy gęstości projektowej",
-    "cost.opex.car_length_m": "Koszt ruchu kolejowego: długość pociągu liczona jako jeden wagon"
+    "cost.opex.car_length_m": "Koszt ruchu kolejowego: długość pociągu liczona jako jeden wagon",
+    "dwell.door_channels_per_100m": "Kanały drzwiowe na 100 m pociągu (drzwi po jednej stronie × osoby obok siebie w drzwiach)",
+    "dwell.door_peaking": "Najbardziej obciążony kanał drzwiowy względem równego rozkładu pasażerów na drzwi"
   },
   "units": {
     "US$ million each (2023, PPP)": "mln US$ za sztukę (2023, PPP)",

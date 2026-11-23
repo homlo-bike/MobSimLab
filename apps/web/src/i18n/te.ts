@@ -260,8 +260,6 @@ export const te: Messages = {
   "tab.tables": "పట్టికలు",
   "tab.preferences": "ప్రాధాన్యతలు",
 
-  "placeholder.comingSoon": "తదుపరి విడుదలలో వస్తుంది",
-
   "sim.test": "వ్యవస్థను పరీక్షించండి",
   "sim.journey": "ప్రయాణ సమయం A → B",
 

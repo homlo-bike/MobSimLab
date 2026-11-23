@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Daidaitawa: awannin da ake raba ƙirgar ranar aiki da su don ƙididdigar GEH",
     "demand.walk_speed_kmh": "Gudun tafiya da ƙafa don hanyoyin tafiya tsakanin tashoshi",
     "journey.walk_detour_factor": "Nisan tafiya da ƙafa idan aka kwatanta da nisan layi madaidaici (mai tsara tafiya, ƙididdigar fa'ida)",
-    "journey.walk_slope_k": "Tafiya a kan gangare: ma'aunin gangare na tsarin tafiyar Tobler (mai tsara tafiya; 0 = ana lissafa tafiya kamar a fili)",
+    "journey.walk_slope_k": "Tafiya a kan gangare: ma'aunin gangare na tsarin tafiyar Tobler (0 = ana lissafa tafiya kamar a fili)",
     "journey.min_change_s": "Mai tsara tafiya: mafi ƙarancin lokacin canji a tasha ɗaya",
     "journey.level_change_s": "Mai tsara tafiya: ƙarin lokaci don canza dandamali a tasha (matakala, lif)",
     "journey.same_name_station_m": "Tashoshi masu suna ɗaya a cikin wannan nisan layi madaidaici tasha ɗaya ce",
@@ -464,7 +464,9 @@
     "cost.price_base_year": "Shekarar tushen farashin ƙimomin kuɗi",
     "mode.spare_share": "Motocin ajiya, rabon motocin hidima a lokacin cunkoso (rukuni)",
     "mode.vehicle_capacity": "Wuraren fasinja kowace motar titi, zaune da tsaye a yawan tsarawa",
-    "cost.opex.car_length_m": "Kuɗin tafiyar layin dogo: tsawon jirgin da ake ƙirga a matsayin tarago ɗaya"
+    "cost.opex.car_length_m": "Kuɗin tafiyar layin dogo: tsawon jirgin da ake ƙirga a matsayin tarago ɗaya",
+    "dwell.door_channels_per_100m": "Hanyoyin ƙofa a kowace mita 100 na jirgin ƙasa (ƙofofin gefe ɗaya × mutanen da ke wucewa jere a kowace ƙofa)",
+    "dwell.door_peaking": "Hanyar ƙofa mafi cunkoso idan aka kwatanta da rarraba fasinjoji daidai a ƙofofi"
   },
   "units": {
     "US$ million each (2023, PPP)": "miliyan US$ kowanne (2023, PPP)",

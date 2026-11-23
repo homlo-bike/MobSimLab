@@ -1167,6 +1167,7 @@ export const editorsVi = {
   "ferry.pier": "Bến {n}",
   "ferry.pierLower": "bến {n}",
   "ferry.legLower": "chặng {n}",
+  "ferry.depthsUnavailable": "Không tải được độ sâu GEBCO, nên độ sâu ngoài biển khơi không được kiểm tra.",
   "ferry.hint.pier": "Nhấp vào bờ để thêm bến tiếp theo. Nhấp vào bến hiện có để ghé lại.",
   "ferry.hint.via": "Nhấp vào mặt nước để thêm điểm qua cho chặng {n}.",
   "ferry.hint.zone": "Nhấp vào các góc của vùng giới hạn tốc độ, rồi nhấn Hoàn tất vùng.",
@@ -1223,6 +1224,15 @@ export const editorsVi = {
   "setup.wizardIntro": "Bạn là chủ sở hữu. Không ai khác có thể đăng nhập cho đến khi hoàn tất thiết lập.",
   "setup.instanceName": "Tên phiên bản",
   "setup.finish": "Hoàn tất thiết lập",
+  "setup.stepOf": "Bước {n}/{count}",
+  "setup.next": "Tiếp",
+  "setup.back": "Quay lại",
+  "setup.stepName": "Tên",
+  "setup.stepMaps": "Bản đồ nền",
+  "setup.signupIntro":
+    "Ai được đăng nhập khi thiết lập xong và họ nhận vai trò gì. Bạn có thể đổi sau trong Quản trị → Quy tắc đăng ký.",
+  "setup.mapsIntro":
+    "Bản đồ OpenStreetMap dùng được ngay mà không cần thiết lập. Nếu muốn, hãy thêm ảnh hàng không hoặc dịch vụ bản đồ riêng của tổ chức tại đây. Bạn có thể đổi sau trong Quản trị → Plugin.",
   "consent.title": "Kết nối tác tử AI",
   "consent.incomplete": "Liên kết này không đầy đủ. Hãy bắt đầu kết nối lại từ ứng dụng AI của bạn.",
   "consent.signInFirst": "Đăng nhập vào MobSimLab để quyết định có cho ứng dụng kết nối hay không.",
@@ -1446,7 +1456,12 @@ export const editorsVi = {
   "capacity.plannerNotes": "Ghi chú của bộ lập biểu đồ ({n})",
   "capacity.kernelNotes": "Lõi tính toán báo cáo ({n})",
   "capacity.method":
-    "Năng lực theo phương pháp nén UIC 406; trễ từ {runs} lần chạy, trong đó {share} số chuyến khởi hành trễ tới {late}. Lượng hành khách chưa nằm trong thử nghiệm này.",
+    "Năng lực theo phương pháp nén UIC 406; trễ từ {runs} lần chạy, trong đó {share} số chuyến khởi hành trễ tới {late}.",
+  "capacity.dwell.busy":
+    "Tàu dừng lâu hơn ở nơi nhiều người lên xuống: hành khách của mỗi chuyến chia ra các cửa, và cửa đông nhất nhận nhiều hơn phần chia đều.",
+  "capacity.dwell.fixed":
+    "Tàu dừng như nhau ở mọi điểm dừng; khi bật lượng hành khách, tàu dừng lâu hơn ở nơi nhiều người lên xuống.",
+  "capacity.loads.dwell": "Tàu dừng tới {dwell} tại {station} (thường {usual}).",
   "capacity.line": "Tuyến {name}",
   "capacity.eachWay": "{n} tàu/giờ mỗi chiều",
   "capacity.used": "Năng lực đã dùng",
@@ -1514,6 +1529,10 @@ export const editorsVi = {
   "walk.drawFirst": "Hãy vẽ trước một tuyến đường phố hoặc một tuyến đường sắt có nhà ga.",
   "walk.collecting": "Đang thu thập trạm dừng và nhà ga…",
   "walk.loadingTiles": "Đang tải lối đi bộ ({done} trên {count} ô bản đồ)…",
+  "walk.loadingHeights": "Đang tải độ cao mặt đất…",
+  "walk.heightsUnavailable":
+    "Không tải được độ cao mặt đất ({reason}), nên đi bộ được tính như trên đường bằng.",
+  "walk.heightsNoData": "không có dữ liệu độ cao cho khu vực này",
   "walk.loadingPopulation": "Đang tải nơi người dân sinh sống…",
   "walk.computing": "Đang đo quãng đi bộ…",
   "walk.tooLarge":
@@ -1547,7 +1566,7 @@ export const editorsVi = {
   "walk.popUnavailable": "Không có dữ liệu dân số ({reason}); đường phố thay cho người dân.",
   "walk.popCredit": "Cư dân: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Khu vực là hình chữ nhật quanh các trạm cộng quãng đường đi được trong giới hạn. Độ dốc chưa được tính.",
+    "Khu vực là hình chữ nhật quanh các điểm dừng cộng với quãng đường đi bộ trong giới hạn. Mỗi con đường được tính theo độ dốc của nó khi đi về phía điểm dừng, nên đi bộ lên dốc mất nhiều thời gian hơn.",
   "spacing.title": "Khoảng cách giữa các trạm",
   "spacing.intro":
     "Khoảng cách giữa các trạm liên tiếp dọc tuyến, so với khoảng thông thường của loại hình. Trạm quá gần làm chậm tuyến; quá xa nghĩa là phải đi bộ lâu.",

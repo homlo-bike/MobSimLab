@@ -991,10 +991,58 @@ describe("user menu and settings", () => {
 
   it("shows the setup wizard to the Owner and sends the CSRF token", async () => {
     const setupOwner = { ...owner, instance: { mode: "setup" as const, name: "MobSimLab" } };
-    const calls = stubApi([setupOwner, { ...owner, instance: { mode: "open", name: "Köln" } }]);
+    const calls = stubApi([setupOwner, { ...owner, instance: { mode: "open", name: "Köln" } }], {
+      "GET /api/admin/registration": {
+        autoRegistration: false,
+        defaultRole: "viewer",
+        allowedEmailDomains: ["example.org"],
+        allowedGroups: [],
+      },
+      "GET /api/admin/group-mappings": {
+        mappings: [{ id: "m1", group: "planners", role: "user", issuer: null }],
+      },
+      "GET /api/admin/plugins": {
+        bundled: [
+          {
+            id: "org.mobsimlab.esri-imagery",
+            name: "Esri World Imagery",
+            description: "Aerial imagery",
+            version: "1.0.0",
+            bundled: true,
+            publisher: { name: "MobSimLab contributors" },
+            projects: 0,
+            contributes: {
+              modes: [],
+              tools: [],
+              calculations: [],
+              mapLayers: [],
+              basemaps: ["Esri World Imagery"],
+            },
+          },
+        ],
+        installed: [],
+        keys: [],
+        developmentMode: false,
+        allowUnsigned: false,
+      },
+      "GET /api/admin/basemaps": {
+        esri: { configured: false, keyEnd: null, termsAcceptedAt: null, termsAcceptedBy: null, termsUrl: "" },
+      },
+    });
     render(<App />);
     const input = await screen.findByLabelText("Instance name");
+    expect(screen.getByText(/Step 1 of 3/)).toBeTruthy();
     fireEvent.change(input, { target: { value: "Köln" } });
+    fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    // Step 2: the sign-up rules and group mappings of Administration.
+    expect(await screen.findByText(/Step 2 of 3/)).toBeTruthy();
+    expect(await screen.findByLabelText("Allowed e-mail domains")).toBeTruthy();
+    expect(screen.getByText("planners")).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Next" }));
+    // Step 3: the basemaps that need an Admin.
+    expect(await screen.findByText(/Step 3 of 3/)).toBeTruthy();
+    expect(await screen.findByText("Needs an API key")).toBeTruthy();
+    expect(screen.getByRole("button", { name: "Configure Esri World Imagery" })).toBeTruthy();
     fireEvent.click(screen.getByText("Finish setup"));
     await waitFor(() => expect(screen.queryByRole("region", { name: "Setup" })).toBeNull());
     const put = calls.find((c) => c.url === "/api/setup/instance");

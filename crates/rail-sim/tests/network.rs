@@ -247,6 +247,7 @@ fn trains_stabled_in_terminal_platforms_run_their_day() {
         offpeak_headway_s: 1200.0,
         peaks: vec![[7.0 * 3600.0, 9.0 * 3600.0]],
         dwell_s: None,
+        stop_dwells_s: None,
         turnback_s: None,
         accel_ms2: None,
         decel_ms2: None,

@@ -1209,6 +1209,8 @@ export const editorsSw = {
   "ferry.pier": "Gati {n}",
   "ferry.pierLower": "gati {n}",
   "ferry.legLower": "sehemu {n}",
+  "ferry.depthsUnavailable":
+    "Kina cha maji cha GEBCO hakikuweza kupakiwa, kwa hiyo kina katika bahari wazi hakikaguliwi.",
   "ferry.hint.pier": "Bofya ufukwe kuongeza gati inayofuata. Bofya gati iliyopo kusimama hapo tena.",
   "ferry.hint.via": "Bofya majini kuongeza nukta ya kupitia kwenye sehemu {n}.",
   "ferry.hint.zone": "Bofya pembe za eneo la kasi, kisha bonyeza Maliza eneo.",
@@ -1267,6 +1269,15 @@ export const editorsSw = {
   "setup.wizardIntro": "Wewe ndiye Mmiliki. Watu wengine hawawezi kuingia hadi umalize usanidi.",
   "setup.instanceName": "Jina la mfumo",
   "setup.finish": "Maliza usanidi",
+  "setup.stepOf": "Hatua {n} kati ya {count}",
+  "setup.next": "Endelea",
+  "setup.back": "Rudi",
+  "setup.stepName": "Jina",
+  "setup.stepMaps": "Ramani za msingi",
+  "setup.signupIntro":
+    "Nani anaweza kuingia baada ya usanidi kukamilika, na jukumu atakalopata. Unaweza kubadilisha hili baadaye katika Usimamizi → Kanuni za usajili.",
+  "setup.mapsIntro":
+    "Ramani za OpenStreetMap zinafanya kazi bila usanidi. Ongeza hapa picha za angani au huduma za ramani za shirika lako ukipenda. Unaweza kubadilisha hili baadaye katika Usimamizi → Programu-jalizi.",
   "consent.title": "Unganisha wakala wa AI",
   "consent.incomplete": "Kiungo hiki hakijakamilika. Anza muunganiko tena kwenye programu yako ya AI.",
   "consent.signInFirst": "Ingia kwenye MobSimLab kuamua kama programu inaweza kuunganishwa.",
@@ -1495,7 +1506,12 @@ export const editorsSw = {
   "capacity.plannerNotes": "Maelezo ya mpangaji ({n})",
   "capacity.kernelNotes": "Kiini cha hesabu kiliripoti ({n})",
   "capacity.method":
-    "Uwezo kwa mbinu ya mgandamizo ya UIC 406; ucheleweshaji kutoka majaribio {runs} ambapo {share} ya safari zinaanza zikichelewa hadi {late}. Idadi ya abiria bado si sehemu ya jaribio hili.",
+    "Uwezo kwa mbinu ya mgandamizo ya UIC 406; ucheleweshaji kutoka majaribio {runs} ambapo {share} ya safari zinaanza zikichelewa hadi {late}.",
+  "capacity.dwell.busy":
+    "Treni husimama muda mrefu zaidi pale watu wengi wanapopanda na kushuka: abiria wa kila treni hugawanyika kwenye milango yake, na mlango wenye msongamano zaidi hupata zaidi ya sehemu sawa.",
+  "capacity.dwell.fixed":
+    "Treni husimama muda sawa kila kituo; idadi ya abiria ikiwashwa, husimama muda mrefu zaidi pale watu wengi wanapopanda na kushuka.",
+  "capacity.loads.dwell": "Treni husimama hadi {dwell} katika {station} (kwa kawaida {usual}).",
   "capacity.line": "Njia {name}",
   "capacity.eachWay": "treni {n}/saa kila upande",
   "capacity.used": "Uwezo uliotumika",
@@ -1567,6 +1583,10 @@ export const editorsSw = {
   "walk.drawFirst": "Chora kwanza njia ya barabarani au reli yenye stesheni.",
   "walk.collecting": "Inakusanya vituo na stesheni…",
   "walk.loadingTiles": "Inapakia njia za miguu (vigae {done} kati ya {count})…",
+  "walk.loadingHeights": "Inapakia miinuko ya ardhi…",
+  "walk.heightsUnavailable":
+    "Miinuko ya ardhi haikupakiwa ({reason}), kwa hivyo matembezi yanahesabiwa kama kwenye ardhi tambarare.",
+  "walk.heightsNoData": "hakuna data ya miinuko kwa eneo hili",
   "walk.loadingPopulation": "Inapakia mahali watu wanapoishi…",
   "walk.computing": "Inapima matembezi…",
   "walk.tooLarge":
@@ -1601,7 +1621,7 @@ export const editorsSw = {
   "walk.popUnavailable": "Hakuna data ya idadi ya watu ({reason}); barabara zinasimama badala ya watu.",
   "walk.popCredit": "Wakazi: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Eneo ni mstatili unaozunguka vituo pamoja na umbali unaotembewa ndani ya kikomo. Miteremko bado haihesabiwi.",
+    "Eneo ni mstatili unaozunguka vituo pamoja na umbali unaotembewa ndani ya kikomo. Kila barabara inatembewa kwa mteremko wake kuelekea kituo, kwa hivyo kupanda kunachukua muda zaidi.",
   "spacing.title": "Nafasi kati ya vituo",
   "spacing.intro":
     "Umbali kati ya vituo vinavyofuatana kando ya njia, ukilinganishwa na kiwango cha kawaida cha aina ya usafiri. Vituo vilivyo karibu sana hupunguza kasi ya njia; vilivyo mbali sana humaanisha matembezi marefu.",

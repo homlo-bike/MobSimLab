@@ -978,6 +978,8 @@
     "fef618f9": "Werkgelegenheidsdichtheden per gebruiksklasse (netto vloeroppervlak per voltijdbaan), verhoogd met ongeveer 20 % voor bruto vloeroppervlak en leegstand.",
     "ff4818d0": "Keuze van de producteigenaar (2026-11-16): het model dekt de lijnen plus een buffer van 2 km. Dat omvat de invloedsgebieden te voet en per fiets van elke halte (mode.catchment_m is hoogstens ongeveer 1.2 km) en de korte autoritten die met de lijn concurreren. Gebruik meer voor lijnen waarvan de reizigers van ver komen (P+R, regionaal spoor).",
     "ff5e263c": "De methode van het maximale belastingpunt van Ceder stelt de frequentie zo vast dat de belasting in het spitsuur op het drukste baanvak op een gewenste bezetting blijft; de capaciteit telt staande reizigers bij de planningsdichtheid, dus waarden rond 0.8 laten ruimte voor een ongelijke bezetting tussen treinen.",
-    "ff68efd7": "CNOSSOS-EU legt de lijnbron voor wegverkeer op 0.05 m boven het wegdek."
+    "ff68efd7": "CNOSSOS-EU legt de lijnbron voor wegverkeer op 0.05 m boven het wegdek.",
+    "29fa358c": "Deurkanalen aan één kant van de trein; een deur waar twee mensen naast elkaar door kunnen telt dubbel. Het halteertijdmodel deelt de reizigers van een trein erdoor. Geteld uit gangbare rijtuigindelingen, niet uit een brontabel: een metrorijtuig van 20 m met vier dubbele deuren geeft 40 per 100 m, een tram van 30 m met drie of vier dubbele deuren ongeveer 24, een regionaal rijtuig van 25 m met twee dubbele deuren 16 en een langeafstandsrijtuig van 25 m met één of twee enkele deuren 8.",
+    "dba93787": "Reizigers dringen samen bij de deuren het dichtst bij de perrontoegangen, dus het drukste kanaal bedient meer dan een gelijk deel; de halteertijd duurt tot dat klaar is. De TCQSM beschrijft dit ongelijke deurgebruik; 1,3 is een onderbouwde schatting voor perrons met toegang op één of twee plekken."
   }
 }

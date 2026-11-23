@@ -1214,6 +1214,8 @@ export const editorsUz = {
   "ferry.pier": "Iskala {n}",
   "ferry.pierLower": "iskala {n}",
   "ferry.legLower": "qism {n}",
+  "ferry.depthsUnavailable":
+    "GEBCO suv chuqurliklari yuklanmadi, shuning uchun ochiq dengizda chuqurlik tekshirilmaydi.",
   "ferry.hint.pier":
     "Keyingi iskalani qoʻshish uchun qirgʻoqni bosing. U yerda yana toʻxtash uchun mavjud iskalani bosing.",
   "ferry.hint.via": "{n} qismga oraliq nuqta qoʻshish uchun suvni bosing.",
@@ -1273,6 +1275,15 @@ export const editorsUz = {
   "setup.wizardIntro": "Siz egasiz. Sozlashni tugatmaguningizcha boshqalar tizimga kira olmaydi.",
   "setup.instanceName": "Nusxa nomi",
   "setup.finish": "Sozlashni tugatish",
+  "setup.stepOf": "{count} qadamdan {n}-qadam",
+  "setup.next": "Keyingi",
+  "setup.back": "Orqaga",
+  "setup.stepName": "Nomi",
+  "setup.stepMaps": "Asosiy xaritalar",
+  "setup.signupIntro":
+    "Sozlash tugagach kim kira oladi va qanday rol oladi. Buni keyinroq Boshqaruv → Roʻyxatdan oʻtish qoidalari boʻlimida oʻzgartirishingiz mumkin.",
+  "setup.mapsIntro":
+    "OpenStreetMap xaritalari sozlashsiz ishlaydi. Xohlasangiz, bu yerda aerofotosuratlar yoki tashkilotingizning oʻz xarita xizmatlarini qoʻshing. Buni keyinroq Boshqaruv → Plaginlar boʻlimida oʻzgartirishingiz mumkin.",
   "consent.title": "AI agentini ulash",
   "consent.incomplete": "Bu havola toʻliq emas. AI ilovangizda ulanishni qaytadan boshlang.",
   "consent.signInFirst": "Ilova ulanishi mumkinligini hal qilish uchun MobSimLab ga kiring.",
@@ -1500,7 +1511,12 @@ export const editorsUz = {
   "capacity.plannerNotes": "Rejalovchi izohlari ({n})",
   "capacity.kernelNotes": "Hisoblash yadrosi xabarlari ({n})",
   "capacity.method":
-    "O‘tkazish qobiliyati UIC 406 siqish usulida; kechikishlar {runs} ta sinovdan, ularda qatnovlarning {share} qismi {late} gacha kech jo‘naydi. Yo‘lovchi yuklamasi hozircha bu sinovga kirmaydi.",
+    "O‘tkazish qobiliyati UIC 406 siqish usulida; kechikishlar {runs} ta sinovdan, ularda qatnovlarning {share} qismi {late} gacha kech jo‘naydi.",
+  "capacity.dwell.busy":
+    "Koʻp odam chiqib-tushadigan joyda poyezdlar uzoqroq turadi: har bir poyezd yoʻlovchilari eshiklariga taqsimlanadi, eng band eshik esa teng ulushdan koʻprogʻini oladi.",
+  "capacity.dwell.fixed":
+    "Poyezdlar har bir bekatda bir xil turadi; yoʻlovchi yuklamasi yoqilganda koʻp odam chiqib-tushadigan joyda uzoqroq turadi.",
+  "capacity.loads.dwell": "Poyezdlar {station} da {dwell} gacha turadi (odatda {usual}).",
   "capacity.line": "Liniya {name}",
   "capacity.eachWay": "har yo‘nalishda soatiga {n} poyezd",
   "capacity.used": "Band qobiliyat",
@@ -1572,6 +1588,10 @@ export const editorsUz = {
   "walk.drawFirst": "Avval ko'cha liniyasi yoki stansiyali temir yo'l chizing.",
   "walk.collecting": "Bekatlar va stansiyalar yig'ilmoqda…",
   "walk.loadingTiles": "Piyoda yo'llari yuklanmoqda ({count} ta xarita plitasidan {done})…",
+  "walk.loadingHeights": "Yer balandliklari yuklanmoqda…",
+  "walk.heightsUnavailable":
+    "Yer balandliklari yuklanmadi ({reason}), shuning uchun piyoda yurish tekis yerdagidek hisoblanadi.",
+  "walk.heightsNoData": "bu hudud uchun balandlik maʼlumoti yoʻq",
   "walk.loadingPopulation": "Odamlar qayerda yashashi yuklanmoqda…",
   "walk.computing": "Piyoda yo'llar o'lchanmoqda…",
   "walk.tooLarge":
@@ -1606,7 +1626,7 @@ export const editorsUz = {
   "walk.popUnavailable": "Aholi ma'lumoti yo'q ({reason}); ko'chalar odamlar o'rnini bosadi.",
   "walk.popCredit": "Aholi: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Hudud — bekatlar atrofidagi to'rtburchak va chegara ichida yuriladigan masofa. Qiyaliklar hozircha hisobga olinmaydi.",
+    "Hudud — bekatlar atrofidagi toʻrtburchak va chegara ichida piyoda bosib oʻtiladigan masofa. Har bir koʻcha bekat tomon oʻz qiyaligi bilan yuriladi, shuning uchun tepaga yurish koʻproq vaqt oladi.",
   "spacing.title": "Bekatlar oralig'i",
   "spacing.intro":
     "Liniya bo'ylab ketma-ket bekatlar orasidagi masofa, transport turining odatiy oralig'i bilan solishtirilgan. Juda yaqin bekatlar liniyani sekinlashtiradi; juda uzoq bo'lsa, uzoq yurish kerak.",

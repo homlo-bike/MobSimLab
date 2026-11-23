@@ -978,6 +978,8 @@
     "fef618f9": "Densità di occupazione per classe d'uso (superficie interna netta per posto di lavoro a tempo pieno) aumentate di circa il 20 % per la superficie lorda e gli spazi sfitti.",
     "ff4818d0": "Scelta del responsabile del prodotto (2026-11-16): il modello copre le linee più una fascia di 2 km. Questa contiene i bacini pedonali e ciclabili di ogni fermata (mode.catchment_m è al massimo circa 1.2 km) e i brevi spostamenti in auto in concorrenza con la linea. Usane di più per linee i cui passeggeri arrivano da lontano (park and ride, ferrovia regionale).",
     "ff5e263c": "Il metodo del punto di massimo carico di Ceder fissa la frequenza in modo che il carico dell'ora di punta sulla tratta più carica resti a un'occupazione desiderata; la capacità conta i passeggeri in piedi alla densità di progetto, quindi valori vicini a 0.8 lasciano margine per un carico irregolare tra i treni.",
-    "ff68efd7": "CNOSSOS-EU colloca la sorgente lineare stradale 0.05 m sopra la superficie stradale."
+    "ff68efd7": "CNOSSOS-EU colloca la sorgente lineare stradale 0.05 m sopra la superficie stradale.",
+    "29fa358c": "Canali di porta su un lato del treno; una porta larga abbastanza per due persone affiancate conta doppio. Il modello del tempo di sosta divide per essi i passeggeri di un treno. Contati da disposizioni tipiche delle carrozze, non da una tabella di fonte: una carrozza metro di 20 m con quattro porte doppie dà 40 per 100 m, un tram di 30 m con tre o quattro porte doppie circa 24, una carrozza regionale di 25 m con due porte doppie 16 e una carrozza a lunga percorrenza di 25 m con una o due porte singole 8.",
+    "dba93787": "I passeggeri si accalcano alle porte più vicine agli accessi della banchina, quindi il canale più carico serve più di una quota uniforme; la sosta dura finché non ha finito. Il TCQSM descrive questo uso disuguale delle porte; 1,3 è una stima ragionata per banchine con accesso in uno o due punti."
   }
 }

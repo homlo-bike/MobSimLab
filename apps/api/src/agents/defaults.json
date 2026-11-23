@@ -17,7 +17,8 @@
   "cycle_speed_kmh": "analysis.cycle_speed_kmh",
   "frequent_headway_min": "analysis.frequent_headway_min",
   "min_change_s": "journey.min_change_s",
-  "same_name_station_m": "journey.same_name_station_m"
+  "same_name_station_m": "journey.same_name_station_m",
+  "walk_slope_k": "journey.walk_slope_k"
  },
  "modes": {
   "bus": {
@@ -203,5 +204,6 @@
  "cycle_speed_kmh": 15,
  "frequent_headway_min": 15,
  "min_change_s": 60,
- "same_name_station_m": 600
+ "same_name_station_m": 600,
+ "walk_slope_k": 3.5
 }

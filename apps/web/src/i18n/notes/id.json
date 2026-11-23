@@ -978,6 +978,8 @@
     "fef618f9": "Kepadatan lapangan kerja per kelas penggunaan (luas bersih bagian dalam per pekerjaan penuh waktu) dinaikkan sekitar 20 % untuk luas lantai kotor dan kekosongan.",
     "ff4818d0": "Pilihan pemilik produk (2026-11-16): model mencakup jalur ditambah buffer 2 km. Itu mencakup daerah tangkapan jalan kaki dan sepeda dari setiap halte (mode.catchment_m paling besar sekitar 1.2 km) dan perjalanan mobil pendek yang bersaing dengan jalur. Gunakan lebih untuk jalur yang penumpangnya datang dari jauh (park and ride, kereta regional).",
     "ff5e263c": "Metode titik muatan maksimum Ceder menetapkan frekuensi agar muatan jam puncak pada ruas tersibuk tetap pada okupansi yang diinginkan; kapasitas menghitung penumpang berdiri pada kepadatan perencanaan, sehingga nilai sekitar 0.8 menyisakan ruang untuk muatan yang tidak merata antarkereta.",
-    "ff68efd7": "CNOSSOS-EU menempatkan sumber garis jalan 0.05 m di atas permukaan jalan."
+    "ff68efd7": "CNOSSOS-EU menempatkan sumber garis jalan 0.05 m di atas permukaan jalan.",
+    "29fa358c": "Jalur pintu di satu sisi kereta; pintu yang cukup lebar untuk dua orang berdampingan dihitung dua. Model waktu berhenti membagi penumpang satu kereta dengan jumlah ini. Dihitung dari tata letak kereta yang umum, bukan dari tabel sumber: kereta metro 20 m dengan empat pintu ganda memberi 40 per 100 m, trem 30 m dengan tiga atau empat pintu ganda sekitar 24, kereta regional 25 m dengan dua pintu ganda 16, dan kereta jarak jauh 25 m dengan satu atau dua pintu tunggal 8.",
+    "dba93787": "Penumpang berkerumun di pintu yang paling dekat dengan akses peron, sehingga jalur tersibuk melayani lebih dari bagian rata; kereta berhenti sampai jalur itu selesai. TCQSM menjelaskan penggunaan pintu yang tidak merata ini; 1,3 adalah perkiraan beralasan untuk peron dengan akses di satu atau dua titik."
   }
 }

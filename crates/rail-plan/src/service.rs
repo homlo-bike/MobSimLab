@@ -75,6 +75,11 @@ pub struct ServiceLine {
     /// Dwell at intermediate stops, s; the mode's dwell when absent.
     #[serde(default)]
     pub dwell_s: Option<f64>,
+    /// Dwell at each station of `stations`, s, in the same order (both directions), where it differs
+    /// from `dwell_s`: the system test's dwell from the passengers boarding and alighting there
+    /// ([`crate::dwell_s`]). `None` (or a missing or non-finite entry) keeps the line's dwell.
+    #[serde(default)]
+    pub stop_dwells_s: Option<Vec<Option<f64>>>,
     /// Minimum turn-back in the terminal platform, s; the mode's layover when absent.
     #[serde(default)]
     pub turnback_s: Option<f64>,
@@ -478,10 +483,15 @@ pub fn line_spec_with_roles(
         calls: l
             .stations
             .iter()
-            .map(|s| Call {
+            .enumerate()
+            .map(|(i, s)| Call {
                 pick: Pick::Station(s.clone()),
                 stop: true,
-                dwell_s: None,
+                dwell_s: l
+                    .stop_dwells_s
+                    .as_ref()
+                    .and_then(|d| d.get(i).copied().flatten())
+                    .filter(|d| d.is_finite() && *d >= 0.0),
             })
             .collect(),
         train: train_params_with(&l.vehicle, l.units, &l.mode, l.accel_ms2, l.decel_ms2),

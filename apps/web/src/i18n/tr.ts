@@ -260,8 +260,6 @@ export const tr: Messages = {
   "tab.tables": "Tablolar",
   "tab.preferences": "Tercihler",
 
-  "placeholder.comingSoon": "Gelecek bir sürümde",
-
   "sim.test": "Sistemi test et",
   "sim.journey": "Yolculuk süresi A → B",
 

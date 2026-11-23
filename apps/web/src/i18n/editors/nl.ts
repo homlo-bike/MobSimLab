@@ -1214,6 +1214,8 @@ export const editorsNl = {
   "ferry.pier": "Steiger {n}",
   "ferry.pierLower": "steiger {n}",
   "ferry.legLower": "traject {n}",
+  "ferry.depthsUnavailable":
+    "De GEBCO-waterdiepten konden niet worden geladen, dus de diepte op open zee wordt niet gecontroleerd.",
   "ferry.hint.pier":
     "Klik op de oever om de volgende steiger toe te voegen. Klik op een bestaande steiger om daar opnieuw aan te leggen.",
   "ferry.hint.via": "Klik op het water om een tussenpunt aan traject {n} toe te voegen.",
@@ -1274,6 +1276,15 @@ export const editorsNl = {
   "setup.wizardIntro": "Jij bent de eigenaar. Anderen kunnen pas inloggen als je de inrichting afrondt.",
   "setup.instanceName": "Naam van de instantie",
   "setup.finish": "Inrichting afronden",
+  "setup.stepOf": "Stap {n} van {count}",
+  "setup.next": "Volgende",
+  "setup.back": "Terug",
+  "setup.stepName": "Naam",
+  "setup.stepMaps": "Basiskaarten",
+  "setup.signupIntro":
+    "Wie zich na de installatie mag aanmelden en welke rol die krijgt. U kunt dit later wijzigen onder Beheer → Aanmeldregels.",
+  "setup.mapsIntro":
+    "OpenStreetMap-kaarten werken zonder instellen. Voeg hier desgewenst luchtfoto's of de eigen kaartdiensten van uw organisatie toe. U kunt dit later wijzigen onder Beheer → Plug-ins.",
   "consent.title": "Een AI-agent koppelen",
   "consent.incomplete": "Deze link is onvolledig. Start de koppeling opnieuw in je AI-app.",
   "consent.signInFirst": "Log in bij MobSimLab om te beslissen of de app mag koppelen.",
@@ -1500,7 +1511,12 @@ export const editorsNl = {
   "capacity.plannerNotes": "Plannernotities ({n})",
   "capacity.kernelNotes": "Wat de rekenkern meldde ({n})",
   "capacity.method":
-    "Capaciteit volgens de compressiemethode van UIC 406; vertragingen uit {runs} runs waarin {share} van de ritten tot {late} te laat vertrekt. Reizigersaantallen zitten nog niet in deze test.",
+    "Capaciteit volgens de compressiemethode van UIC 406; vertragingen uit {runs} runs waarin {share} van de ritten tot {late} te laat vertrekt.",
+  "capacity.dwell.busy":
+    "Treinen staan langer stil waar veel mensen in- en uitstappen: de reizigers van een trein verdelen zich over zijn deuren, en de drukste deur krijgt meer dan een gelijk deel.",
+  "capacity.dwell.fixed":
+    "Treinen staan bij elke halte even lang stil; met reizigersaantallen aan staan ze langer waar veel mensen in- en uitstappen.",
+  "capacity.loads.dwell": "Treinen staan tot {dwell} stil in {station} (meestal {usual}).",
   "capacity.line": "Lijn {name}",
   "capacity.eachWay": "{n} treinen/u per richting",
   "capacity.used": "Gebruikte capaciteit",
@@ -1570,6 +1586,10 @@ export const editorsNl = {
   "walk.drawFirst": "Teken eerst een straatlijn of een spoorlijn met stations.",
   "walk.collecting": "Haltes en stations verzamelen…",
   "walk.loadingTiles": "Voetpaden laden ({done} van {count} kaarttegels)…",
+  "walk.loadingHeights": "Terreinhoogtes laden…",
+  "walk.heightsUnavailable":
+    "Terreinhoogtes niet geladen ({reason}), dus looptijden zijn berekend als op vlak terrein.",
+  "walk.heightsNoData": "geen hoogtegegevens voor dit gebied",
   "walk.loadingPopulation": "Laden waar mensen wonen…",
   "walk.computing": "Looproutes meten…",
   "walk.tooLarge":
@@ -1605,7 +1625,7 @@ export const editorsNl = {
   "walk.popUnavailable": "Geen bevolkingsgegevens ({reason}); de straten staan voor de mensen.",
   "walk.popCredit": "Inwoners: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Het gebied is de rechthoek rond de haltes plus de afstand die binnen de grens wordt gelopen. Hellingen tellen nog niet mee.",
+    "Het gebied is de rechthoek rond de haltes plus de in de limiet gelopen afstand. Elke straat wordt met haar helling richting de halte gelopen, dus bergop duurt langer.",
   "spacing.title": "Halteafstand",
   "spacing.intro":
     "Afstand tussen opeenvolgende haltes langs de lijn, vergeleken met het gebruikelijke bereik voor de modaliteit. Haltes te dicht bij elkaar vertragen de lijn; te ver uit elkaar betekent lange looproutes.",

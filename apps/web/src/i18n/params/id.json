@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Kalibrasi: jam untuk membagi hitungan hari kerja bagi statistik GEH",
     "demand.walk_speed_kmh": "Kecepatan berjalan untuk tautan jalan kaki antar stasiun",
     "journey.walk_detour_factor": "Jarak berjalan dibanding jarak garis lurus (perencana perjalanan, estimasi manfaat)",
-    "journey.walk_slope_k": "Berjalan di lereng: suku kemiringan fungsi pendakian Tobler (perencana perjalanan; 0 = jalan kaki dihitung datar)",
+    "journey.walk_slope_k": "Berjalan di lereng: suku kemiringan fungsi pendakian Tobler (0 = jalan kaki dihitung datar)",
     "journey.min_change_s": "Perencana perjalanan: waktu pindah minimum di halte yang sama",
     "journey.level_change_s": "Perencana perjalanan: waktu tambahan untuk pindah peron di stasiun (tangga, lift)",
     "journey.same_name_station_m": "Halte bernama sama dalam jarak garis lurus ini adalah satu stasiun",
@@ -464,7 +464,9 @@
     "cost.price_base_year": "Tahun dasar harga nilai biaya",
     "mode.spare_share": "Kendaraan cadangan, bagian dari kendaraan yang beroperasi pada jam sibuk (armada)",
     "mode.vehicle_capacity": "Tempat penumpang per kendaraan jalan, kursi ditambah berdiri pada kepadatan perencanaan",
-    "cost.opex.car_length_m": "Biaya jalan kereta: panjang kereta yang dihitung sebagai satu gerbong"
+    "cost.opex.car_length_m": "Biaya jalan kereta: panjang kereta yang dihitung sebagai satu gerbong",
+    "dwell.door_channels_per_100m": "Jalur pintu per 100 m kereta (pintu di satu sisi × orang berdampingan per pintu)",
+    "dwell.door_peaking": "Jalur pintu tersibuk dibanding sebaran penumpang yang merata ke semua pintu"
   },
   "units": {
     "US$ million each (2023, PPP)": "juta US$ per unit (2023, PPP)",

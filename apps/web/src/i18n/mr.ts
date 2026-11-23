@@ -259,8 +259,6 @@ export const mr: Messages = {
   "tab.tables": "तक्ते",
   "tab.preferences": "प्राधान्ये",
 
-  "placeholder.comingSoon": "पुढील आवृत्तीत येत आहे",
-
   "sim.test": "प्रणालीची चाचणी करा",
   "sim.journey": "प्रवास वेळ A → B",
 

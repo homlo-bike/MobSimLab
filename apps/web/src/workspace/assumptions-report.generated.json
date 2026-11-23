@@ -9713,7 +9713,9 @@
   "journey.walk_slope_k": {
    "used_by": [
     "journey planner access",
-    "egress and transfer walks"
+    "egress and transfer walks",
+    "walk coverage",
+    "walk catchments"
    ],
    "entries": [
     {
@@ -10045,6 +10047,42 @@
       "tcqsm3"
      ],
      "rationale": "TCQSM: alighting is somewhat quicker than boarding."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "dwell.door_channels_per_100m": {
+   "used_by": [
+    "dwell model"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "tcqsm3"
+     ],
+     "rationale": "Door channels on one side of the train, a door wide enough for two people abreast counting twice; the dwell model divides a train's passengers by them. Counted from typical car layouts, not from a source table: a 20 m metro car with four double doors gives 40 per 100 m, a 30 m tram with three or four double doors about 24, a 25 m regional car with two double doors 16, and a 25 m long-distance car with one or two single doors 8."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "dwell.door_peaking": {
+   "used_by": [
+    "dwell model"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "tcqsm3"
+     ],
+     "rationale": "Passengers crowd the doors nearest the platform entrances, so the busiest channel serves more than an even share; the dwell lasts until it is done. TCQSM describes this uneven use of doors; 1.3 is an educated guess for platforms with access at one or two points."
     }
    ],
    "modes": {

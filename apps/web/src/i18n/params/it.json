@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Calibrazione: ore su cui un conteggio feriale è ripartito per la statistica GEH",
     "demand.walk_speed_kmh": "Velocità a piedi per i collegamenti pedonali tra stazioni",
     "journey.walk_detour_factor": "Distanza a piedi rispetto alla distanza in linea d'aria (pianificatore di viaggio, stima dei benefici)",
-    "journey.walk_slope_k": "Camminare in pendenza: termine di pendenza della funzione escursionistica di Tobler (pianificatore di viaggio; 0 = a piedi come in piano)",
+    "journey.walk_slope_k": "Camminare in pendenza: termine di pendenza della funzione escursionistica di Tobler (0 = a piedi come in piano)",
     "journey.min_change_s": "Pianificatore di viaggio: tempo minimo di cambio alla stessa fermata",
     "journey.level_change_s": "Pianificatore di viaggio: tempo aggiunto per cambiare binario in una stazione (scale, ascensori)",
     "journey.same_name_station_m": "Fermate con lo stesso nome entro questa distanza in linea d'aria sono una stazione",
@@ -464,7 +464,9 @@
     "cost.price_base_year": "Anno base dei prezzi dei costi",
     "mode.spare_share": "Veicoli di riserva, quota dei veicoli in servizio di punta (flotta)",
     "mode.vehicle_capacity": "Posti passeggeri per veicolo stradale, a sedere più in piedi alla densità di progetto",
-    "cost.opex.car_length_m": "Costo di marcia ferroviario: lunghezza di treno contata come una carrozza"
+    "cost.opex.car_length_m": "Costo di marcia ferroviario: lunghezza di treno contata come una carrozza",
+    "dwell.door_channels_per_100m": "Canali di porta per 100 m di treno (porte su un lato × persone affiancate per porta)",
+    "dwell.door_peaking": "Canale di porta più carico rispetto a una distribuzione uniforme dei passeggeri tra le porte"
   },
   "units": {
     "US$ million each (2023, PPP)": "milioni di US$ cad. (2023, PPA)",

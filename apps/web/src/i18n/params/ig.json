@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Nhazi: awa a na-eji kewaa ọnụ ọgụgụ ụbọchị ọrụ maka ọnụ ọgụgụ GEH",
     "demand.walk_speed_kmh": "Ọsọ ije ụkwụ maka ụzọ ije n'etiti ebe nkwụsị",
     "journey.walk_detour_factor": "Anya ije ụkwụ ma e jiri ya tụnyere anya ahịrị kwụ ọtọ (onye na-ahazi njem, mgbakọ uru)",
-    "journey.walk_slope_k": "Ịga ije n'ugwu: akụkụ mmasị nke ọrụ ije ugwu Tobler (onye na-eme atụmatụ njem; 0 = a na-agụ ije dị ka ala dị larịị)",
+    "journey.walk_slope_k": "Ịga ije n'ugwu: akụkụ mmasị nke ọrụ ije ugwu Tobler (0 = a na-agụ ije dị ka ala dị larịị)",
     "journey.min_change_s": "Onye na-ahazi njem: oge mgbanwe kacha nta n'otu ebe nkwụsị",
     "journey.level_change_s": "Onye na-ahazi njem: oge agbakwunyere iji gbanwee ikpo okwu n'ebe nkwụsị (steepụ, igwe mbuli elu)",
     "journey.same_name_station_m": "Ebe nkwụsị nwere otu aha n'ime anya ahịrị kwụ ọtọ a bụ otu ọdụ",
@@ -464,7 +464,9 @@
     "cost.price_base_year": "Afọ ntọala ọnụahịa nke uru ego",
     "mode.spare_share": "Ụgbọ nchekwa, òkè nke ụgbọ na-arụ ọrụ n'oge mkpọchi (ụgbọ niile)",
     "mode.vehicle_capacity": "Ebe ndị njem kwa ụgbọ okporo ụzọ, ịnọdụ ala na iguzo n'ọnụọgụgụ atụmatụ",
-    "cost.opex.car_length_m": "Ego ịgba ọsọ ụzọ ígwè: ogologo ụgbọ oloko a gụrụ dị ka otu ụgbọ"
+    "cost.opex.car_length_m": "Ego ịgba ọsọ ụzọ ígwè: ogologo ụgbọ oloko a gụrụ dị ka otu ụgbọ",
+    "dwell.door_channels_per_100m": "Ụzọ ọnụ ụzọ kwa mita 100 nke ụgbọ okporo ígwè (ọnụ ụzọ n'otu akụkụ × ndị mmadụ na-agafe n'akụkụ ibe ha n'ọnụ ụzọ)",
+    "dwell.door_peaking": "Ụzọ ọnụ ụzọ kacha jupụta ma e jiri ya tụnyere mgbe ndị njem kewara nke ọma n'ọnụ ụzọ niile"
   },
   "units": {
     "US$ million each (2023, PPP)": "nde US$ nke ọ bụla (2023, PPP)",

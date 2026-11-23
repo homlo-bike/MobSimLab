@@ -262,8 +262,6 @@ export const nl: Messages = {
   "tab.tables": "Tabellen",
   "tab.preferences": "Voorkeuren",
 
-  "placeholder.comingSoon": "Komt in een latere versie",
-
   "sim.test": "Systeem testen",
   "sim.journey": "Reistijd A → B",
 

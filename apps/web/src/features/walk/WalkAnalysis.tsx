@@ -6,6 +6,7 @@ import { fetchPopulation, type PopulationFetcher, type PopulationSource } from "
 import { loadRailEngine } from "../railways/engine";
 import type { Network, RailEngineLoader } from "../railways/types";
 import { fetchWalkTile, loadWalkEngine } from "../street-lines/engine";
+import { fetchGroundHeights, type HeightFetcher } from "../journey-planner/heights";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import { JobProgress } from "../../shell/JobProgress";
 import { hashText, inputKey } from "../../projects/inputKey";
@@ -61,12 +62,19 @@ interface Props {
   loadRail?: RailEngineLoader;
   fetchTile?: WalkTileFetcher;
   fetchPeople?: PopulationFetcher;
+  fetchHeights?: HeightFetcher;
 }
 
 const NO_JUNCTIONS: readonly JunctionSignals[] = [];
 
 /** Gaps listed and drawn. */
 const GAPS = 10;
+
+/** Size of the squares the walk network takes its ground heights in, m: the resolution of Copernicus GLO-30. */
+const HEIGHT_CELL_M = 30;
+
+/** Points asked for heights in one request (the API takes up to 20,000). */
+const HEIGHTS_PER_REQUEST = 5000;
 
 /** A finished walk coverage, as shown and as saved with the project. */
 interface CoverageDone {
@@ -116,6 +124,7 @@ export function WalkAnalysis({
   loadRail = loadRailEngine,
   fetchTile = fetchWalkTile,
   fetchPeople = fetchPopulation,
+  fetchHeights = fetchGroundHeights,
   results = null,
   canSave = false,
 }: Props) {
@@ -171,7 +180,11 @@ export function WalkAnalysis({
     // Lights at junctions change walk times (not distances): only the coverage depends on them.
     ...(lights.length ? { junctions: lights } : {}),
   });
-  const spacingInputs = inputKey({ lines: linesKey, settings: walkSettings(preferences, stepFree) });
+  // Spacing is measured in metres, so the slope term does not change it.
+  const spacingInputs = inputKey({
+    lines: linesKey,
+    settings: { ...walkSettings(preferences, stepFree), walk_slope_k: undefined },
+  });
   const keptCoverage = useSavedResult<SavedCoverage>(results, "walk-coverage", coverageInputs, canSave);
   const keptSpacing = useSavedResult<LineSpacing[]>(results, "stop-spacing", spacingInputs, canSave);
   // The saved coverage shows on opening with its walk rule and step-free choice, until it is worked out again.
@@ -291,9 +304,9 @@ export function WalkAnalysis({
     const id = ++runId.current;
     const runInputs = coverageInputs;
     const alive = () => id === runId.current;
-    // Four steps: the stops, the street tiles (counted), the population, the coverage itself.
+    // Five steps: the stops, the street tiles (counted), the ground heights, the population, the coverage itself.
     const busy = (index: number, step: string, fraction: number | null = null) =>
-      setCoverage({ kind: "busy", step, index, steps: 4, fraction });
+      setCoverage({ kind: "busy", step, index, steps: 5, fraction });
     try {
       busy(1, tNow("walk.collecting"));
       const stops = network.stops;
@@ -333,9 +346,28 @@ export function WalkAnalysis({
       setGraphVersion((v) => v + 1);
 
       const notes: string[] = [];
+      // Ground heights, so walks up to a stop take longer than walks down (journey.walk_slope_k; 0: flat).
+      if (settings.walk_slope_k > 0) {
+        const cells = e.heightCells(HEIGHT_CELL_M);
+        try {
+          const heights: (number | null)[] = [];
+          for (let i = 0; i < cells.length; i += HEIGHTS_PER_REQUEST) {
+            if (!alive()) return;
+            busy(3, tNow("walk.loadingHeights"), i / cells.length);
+            const z = await fetchHeights(cells.slice(i, i + HEIGHTS_PER_REQUEST));
+            for (const h of z) heights.push(typeof h === "number" && Number.isFinite(h) ? h : null);
+          }
+          if (!alive()) return;
+          e.setHeights(HEIGHT_CELL_M, heights);
+          if (cells.length && heights.every((h) => h === null))
+            notes.push(tNow("walk.heightsUnavailable", { reason: tNow("walk.heightsNoData") }));
+        } catch (err) {
+          notes.push(tNow("walk.heightsUnavailable", { reason: engineErrorText(err) }));
+        }
+      }
       let people: PopulationSource | null = null;
       let demand = null;
-      busy(3, tNow("walk.loadingPopulation"));
+      busy(4, tNow("walk.loadingPopulation"));
       try {
         const a = await fetchPeople(area);
         if (a.status === "ready") {
@@ -351,7 +383,7 @@ export function WalkAnalysis({
       if (!demand) people = null;
       if (!alive()) return;
 
-      busy(4, tNow("walk.computing"));
+      busy(5, tNow("walk.computing"));
       await new Promise((r) => setTimeout(r, 30));
       const points = stopPoints(stops);
       const result = e.coverage({

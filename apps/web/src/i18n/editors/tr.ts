@@ -1178,6 +1178,8 @@ export const editorsTr = {
   "ferry.pier": "İskele {n}",
   "ferry.pierLower": "iskele {n}",
   "ferry.legLower": "ayak {n}",
+  "ferry.depthsUnavailable":
+    "GEBCO su derinlikleri yüklenemedi, bu yüzden açık denizde derinlik kontrol edilmiyor.",
   "ferry.hint.pier":
     "Sonraki iskeleyi eklemek için kıyıya tıklayın. Yeniden uğramak için mevcut bir iskeleye tıklayın.",
   "ferry.hint.via": "{n}. ayağa ara nokta eklemek için suya tıklayın.",
@@ -1235,6 +1237,15 @@ export const editorsTr = {
   "setup.wizardIntro": "Sahibi sizsiniz. Kurulum bitene kadar başka kimse oturum açamaz.",
   "setup.instanceName": "Kurulum adı",
   "setup.finish": "Kurulumu bitir",
+  "setup.stepOf": "Adım {n}/{count}",
+  "setup.next": "İleri",
+  "setup.back": "Geri",
+  "setup.stepName": "Ad",
+  "setup.stepMaps": "Altlık haritalar",
+  "setup.signupIntro":
+    "Kurulum bittikten sonra kimlerin oturum açabileceği ve hangi rolü alacağı. Bunu daha sonra Yönetim → Kayıt kuralları bölümünden değiştirebilirsiniz.",
+  "setup.mapsIntro":
+    "OpenStreetMap haritaları kurulum gerektirmez. İsterseniz hava fotoğraflarını veya kuruluşunuzun kendi harita hizmetlerini buradan ekleyin. Bunu daha sonra Yönetim → Eklentiler bölümünden değiştirebilirsiniz.",
   "consent.title": "Bir yapay zekâ ajanı bağla",
   "consent.incomplete": "Bu bağlantı eksik. Bağlanmayı yapay zekâ uygulamanızdan yeniden başlatın.",
   "consent.signInFirst":
@@ -1461,7 +1472,12 @@ export const editorsTr = {
   "capacity.plannerNotes": "Planlayıcı notları ({n})",
   "capacity.kernelNotes": "Hesap çekirdeğinin bildirdikleri ({n})",
   "capacity.method":
-    "Kapasite UIC 406 sıkıştırma yöntemiyle; gecikmeler, seferlerin {share} kadarının {late} kadar geç kalktığı {runs} çalıştırmadan. Yolcu yükleri henüz bu testin parçası değil.",
+    "Kapasite UIC 406 sıkıştırma yöntemiyle; gecikmeler, seferlerin {share} kadarının {late} kadar geç kalktığı {runs} çalıştırmadan.",
+  "capacity.dwell.busy":
+    "Trenler çok kişinin binip indiği yerlerde daha uzun durur: her trenin yolcuları kapılarına dağılır ve en yoğun kapı eşit paydan fazlasını alır.",
+  "capacity.dwell.fixed":
+    "Trenler her durakta aynı süre durur; yolcu yükleri açıkken çok kişinin binip indiği yerlerde daha uzun dururlar.",
+  "capacity.loads.dwell": "Trenler {station} durağında {dwell} süreye kadar durur (genelde {usual}).",
   "capacity.line": "Hat {name}",
   "capacity.eachWay": "her yönde saatte {n} tren",
   "capacity.used": "Kullanılan kapasite",
@@ -1531,6 +1547,10 @@ export const editorsTr = {
   "walk.drawFirst": "Önce bir sokak hattı veya istasyonlu bir demiryolu çizin.",
   "walk.collecting": "Duraklar ve istasyonlar toplanıyor…",
   "walk.loadingTiles": "Yaya yolları yükleniyor ({count} harita karosundan {done})…",
+  "walk.loadingHeights": "Arazi yükseklikleri yükleniyor…",
+  "walk.heightsUnavailable":
+    "Arazi yükseklikleri yüklenmedi ({reason}), bu yüzden yürüyüşler düz zemin gibi hesaplanıyor.",
+  "walk.heightsNoData": "bu alan için yükseklik verisi yok",
   "walk.loadingPopulation": "İnsanların yaşadığı yerler yükleniyor…",
   "walk.computing": "Yürüyüşler ölçülüyor…",
   "walk.tooLarge":
@@ -1565,7 +1585,7 @@ export const editorsTr = {
   "walk.popUnavailable": "Nüfus verisi yok ({reason}); sokaklar insanların yerini tutuyor.",
   "walk.popCredit": "Sakinler: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Alan, durakların çevresindeki dikdörtgen artı sınır içinde yürünen mesafedir. Eğimler henüz hesaba katılmıyor.",
+    "Alan, duraklar çevresindeki dikdörtgen artı sınır içinde yürünen mesafedir. Her sokak durağa doğru kendi eğimiyle yürünür, bu yüzden yokuş yukarı yürüyüş daha uzun sürer.",
   "spacing.title": "Duraklar arası mesafe",
   "spacing.intro":
     "Hat boyunca ardışık duraklar arasındaki mesafe, türün olağan aralığıyla karşılaştırılarak. Çok yakın duraklar hattı yavaşlatır; çok uzak duraklar uzun yürüyüş demektir.",

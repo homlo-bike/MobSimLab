@@ -418,3 +418,80 @@ fn suggested_stop_covers_the_far_corner() {
         "first suggestion should not sit next to S: {first:?}"
     );
 }
+
+/// A straight street 1 km long running north from (0, 0), climbing 10 % to the north, with its graph
+/// given ground heights through the height cells.
+fn hill() -> WalkGraph {
+    let mut o = Osm::new();
+    for i in 0..=10 {
+        o.node(1 + i, 0.0, i as f64 * 100.0, &[]);
+    }
+    o.way(&(1..=11).collect::<Vec<_>>(), &[("highway", "residential")]);
+    let mut g = o.graph();
+    let cells = g.height_cells(10.0);
+    let heights: Vec<Option<f64>> = cells
+        .iter()
+        .map(|c| Some((c[1] - LAT0) / DLAT * 0.1))
+        .collect();
+    assert_eq!(g.set_cell_heights(10.0, &heights).unwrap(), 11);
+    g
+}
+
+fn walk_s(g: &WalkGraph, stop_y: f64, from_y: f64, k: f64) -> f64 {
+    let mut req = fifteen_minutes(vec![stop("S", 0.0, stop_y)], vec![demand(0.0, from_y)]);
+    req.groups[0].limit = 3600.0;
+    req.settings.walk_slope_k = k;
+    req.list_uncovered = 0;
+    let r = g.coverage(&req);
+    assert_eq!(r.covered, 1.0);
+    // The 5-minute bands place the walk; the time itself is checked through the catchment.
+    let c: serde_json::Value =
+        serde_json::from_str(&g.catchment_geojson(&[stop("S", 0.0, stop_y)], 60.0, &req.settings))
+            .unwrap();
+    let far = if from_y > stop_y { 1 } else { 0 };
+    let f = &c["features"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|f| {
+            let y = f["geometry"]["coordinates"][far]
+                .as_array()
+                .map(|p| (p[1].as_f64().unwrap() - LAT0) / DLAT)
+                .unwrap();
+            (y - from_y).abs() < 1.0
+        })
+        .unwrap()["properties"]["minutes"];
+    f.as_f64().unwrap() * 60.0
+}
+
+#[test]
+fn walks_up_to_a_stop_take_longer_than_walks_down() {
+    let g = hill();
+    // Edge midpoint 950 m from the stop: 760 s on the flat at 1.25 m/s.
+    let flat = walk_s(&g, 1000.0, 0.0, 0.0);
+    assert!((flat - 760.0).abs() < 7.0, "flat {flat}");
+    // Up to a stop at the top: Tobler on +10 % is exp(3.5 × (0.15 − 0.05)) = 1.42 times as long.
+    let up = walk_s(&g, 1000.0, 0.0, 3.5);
+    assert!((up / flat - 1.419).abs() < 0.03, "up {up}, flat {flat}");
+    // Down to a stop at the bottom on −10 %: |−0.10 + 0.05| = 0.05, so as fast as on the flat.
+    let down = walk_s(&g, 0.0, 1000.0, 3.5);
+    assert!((down / flat - 1.0).abs() < 0.03, "down {down}, flat {flat}");
+}
+
+#[test]
+fn walks_without_heights_are_flat() {
+    let mut o = Osm::new();
+    for i in 0..=10 {
+        o.node(1 + i, 0.0, i as f64 * 100.0, &[]);
+    }
+    o.way(&(1..=11).collect::<Vec<_>>(), &[("highway", "residential")]);
+    let g = o.graph();
+    let flat = walk_s(&g, 1000.0, 0.0, 3.5);
+    assert!((flat - 760.0).abs() < 7.0, "flat {flat}");
+}
+
+#[test]
+fn height_count_must_match_the_cells() {
+    let mut g = hill();
+    assert!(g.set_cell_heights(10.0, &[Some(1.0)]).is_err());
+}

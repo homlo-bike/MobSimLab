@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Kalibratie: uren waarover een werkdagtelling wordt verdeeld voor de GEH-statistiek",
     "demand.walk_speed_kmh": "Loopsnelheid voor loopverbindingen tussen stations",
     "journey.walk_detour_factor": "Loopafstand ten opzichte van de hemelsbrede afstand (reisplanner, batenraming)",
-    "journey.walk_slope_k": "Lopen op hellingen: hellingsterm van Toblers wandelfunctie (reisplanner; 0 = looptijd als op vlak terrein)",
+    "journey.walk_slope_k": "Lopen op hellingen: hellingsterm van Toblers wandelfunctie (0 = looptijd als op vlak terrein)",
     "journey.min_change_s": "Reisplanner: minimale overstaptijd bij dezelfde halte",
     "journey.level_change_s": "Reisplanner: extra tijd om in een station van perron te wisselen (trappen, liften)",
     "journey.same_name_station_m": "Haltes met dezelfde naam binnen deze hemelsbrede afstand vormen één station",
@@ -464,7 +464,9 @@
     "cost.price_base_year": "Prijsbasisjaar van de kostenwaarden",
     "mode.spare_share": "Reservevoertuigen, aandeel van de voertuigen in spitsdienst (vloot)",
     "mode.vehicle_capacity": "Reizigersplaatsen per straatvoertuig, zit- plus staanplaatsen bij de ontwerpbezetting",
-    "cost.opex.car_length_m": "Rijkosten spoor: treinlengte die als één rijtuig telt"
+    "cost.opex.car_length_m": "Rijkosten spoor: treinlengte die als één rijtuig telt",
+    "dwell.door_channels_per_100m": "Deurkanalen per 100 m trein (deuren aan één kant × personen naast elkaar per deur)",
+    "dwell.door_peaking": "Drukste deurkanaal ten opzichte van een gelijke verdeling van de reizigers over de deuren"
   },
   "units": {
     "US$ million each (2023, PPP)": "mln US$ per stuk (2023, KKP)",

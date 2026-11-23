@@ -27,3 +27,7 @@ The brief says the first user to log in becomes Owner. The product owner confirm
 ## Consequences
 
 Simple first run. Documentation must state clearly that the instance should not be reachable by others until setup is finished, and recommend the owner pin when the IdP is public (e.g. Google).
+
+## Implementation status (2026-11-23)
+
+The wizard has three steps: the instance name; who may sign up (auto-registration, default role, allowed e-mail domains and groups, IdP group-to-role mappings, the same form as Administration → Sign-up rules); and the basemaps that need an Admin (Esri World Imagery's key and WMS, WMTS and XYZ map layers, the same windows as Administration → Plugins). Then **Finish setup**. Not in the wizard: the public URL and the sign-in provider (both from the environment; further providers are not supported yet), units and locale (each user's own settings) and default Project Preferences.

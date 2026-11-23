@@ -1198,6 +1198,8 @@ export const editorsHa = {
   "ferry.pier": "Tashar jirgin ruwa {n}",
   "ferry.pierLower": "tashar jirgin ruwa {n}",
   "ferry.legLower": "sashe {n}",
+  "ferry.depthsUnavailable":
+    "Ba a iya ɗora zurfin ruwa na GEBCO ba, don haka ba a duba zurfi a buɗaɗɗen teku ba.",
   "ferry.hint.pier":
     "Danna bakin ruwa don ƙara tashar jirgin ruwa ta gaba. Danna tashar da ake da ita don sake tsayawa a can.",
   "ferry.hint.via": "Danna ruwa don ƙara wurin wucewa a sashe {n}.",
@@ -1257,6 +1259,15 @@ export const editorsHa = {
   "setup.wizardIntro": "Kai ne Mamallaki. Wasu ba za su iya shiga ba har sai ka gama saitawa.",
   "setup.instanceName": "Sunan tsarin",
   "setup.finish": "Gama saitawa",
+  "setup.stepOf": "Mataki {n} cikin {count}",
+  "setup.next": "Gaba",
+  "setup.back": "Baya",
+  "setup.stepName": "Suna",
+  "setup.stepMaps": "Taswirorin tushe",
+  "setup.signupIntro":
+    "Wanda zai iya shiga bayan an gama saitawa, da matsayin da zai samu. Za ka iya canza wannan daga baya a Gudanarwa → Dokokin rajista.",
+  "setup.mapsIntro":
+    "Taswirorin OpenStreetMap suna aiki ba tare da saitawa ba. Ƙara hotunan sama ko sabis na taswira na ƙungiyarka a nan idan kana so. Za ka iya canza wannan daga baya a Gudanarwa → Ƙarin manhajoji.",
   "consent.title": "Haɗa wakilin AI",
   "consent.incomplete": "Wannan mahaɗin bai cika ba. Sake fara haɗin a manhajar AI ɗinka.",
   "consent.signInFirst": "Shiga MobSimLab don yanke shawara ko manhajar za ta iya haɗuwa.",
@@ -1486,7 +1497,12 @@ export const editorsHa = {
   "capacity.plannerNotes": "Bayanan mai tsarawa ({n})",
   "capacity.kernelNotes": "Abin da tushen lissafi ya ruwaito ({n})",
   "capacity.method":
-    "Ƙarfin ɗauka bisa hanyar matsawa ta UIC 406; jinkiri daga gudu {runs} inda {share} na tafiye-tafiye suke tashi a makare har zuwa {late}. Nauyin fasinjoji ba ya cikin wannan gwajin tukuna.",
+    "Ƙarfin ɗauka bisa hanyar matsawa ta UIC 406; jinkiri daga gudu {runs} inda {share} na tafiye-tafiye suke tashi a makare har zuwa {late}.",
+  "capacity.dwell.busy":
+    "Jiragen ƙasa suna tsayawa da tsawo inda mutane da yawa ke hawa da sauka: fasinjojin kowane jirgi suna rarrabuwa a ƙofofinsa, kuma ƙofa mafi cunkoso tana ɗaukar fiye da kaso daidai.",
+  "capacity.dwell.fixed":
+    "Jiragen ƙasa suna tsayawa daidai lokaci a kowace tasha; idan nauyin fasinjoji yana kunne, suna tsayawa da tsawo inda mutane da yawa ke hawa da sauka.",
+  "capacity.loads.dwell": "Jiragen ƙasa suna tsayawa har {dwell} a {station} (yawanci {usual}).",
   "capacity.line": "Layi {name}",
   "capacity.eachWay": "jirage {n}/awa kowace hanya",
   "capacity.used": "Ƙarfin da aka yi amfani da shi",
@@ -1559,6 +1575,10 @@ export const editorsHa = {
   "walk.drawFirst": "Da farko zana layin titi ko layin dogo mai tashoshi.",
   "walk.collecting": "Ana tattara tasoshi…",
   "walk.loadingTiles": "Ana loda hanyoyin tafiya ({done} cikin tayil {count})…",
+  "walk.loadingHeights": "Ana loda tsayin ƙasa…",
+  "walk.heightsUnavailable":
+    "Ba a loda tsayin ƙasa ba ({reason}), don haka ana lissafa tafiya kamar a ƙasa mai faɗi.",
+  "walk.heightsNoData": "babu bayanan tsayi na wannan yanki",
   "walk.loadingPopulation": "Ana loda inda mutane ke zaune…",
   "walk.computing": "Ana auna tafiye-tafiye…",
   "walk.tooLarge":
@@ -1593,7 +1613,7 @@ export const editorsHa = {
   "walk.popUnavailable": "Babu bayanan yawan jama'a ({reason}); tituna suna maye gurbin mutane.",
   "walk.popCredit": "Mazauna: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Yankin shi ne akwatin da ke kewaye da tasoshin tare da nisan da ake tafiya cikin iyaka. Ba a lissafa gangare ba tukuna.",
+    "Yankin shi ne murabba'in da ke kewaye da tashoshi tare da nisan da ake tafiya a cikin iyaka. Ana tafiya kowace hanya a kan gangarenta zuwa tashar, don haka hawan tudu yana ɗaukar lokaci mai tsawo.",
   "spacing.title": "Tazarar tasoshi",
   "spacing.intro":
     "Nisa tsakanin tasoshi masu bin juna a kan layi, idan aka kwatanta da kewayon da aka saba don irin sufurin. Tasoshi masu kusanci sosai suna rage gudun layi; masu nisa sosai na nufin dogon tafiya.",
