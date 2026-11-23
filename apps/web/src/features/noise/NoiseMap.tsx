@@ -9,7 +9,7 @@ import type { StreetLinesDoc } from "../street-lines/saved";
 import type { ScenariosDoc } from "../tables/scenarioModel";
 import {
   type BuildingTileFetcher,
-  buildingTiles,
+  corridorTiles,
   drawBuildings,
   fetchBuildingTile,
   loadBuildings,
@@ -28,7 +28,14 @@ import { type ResultsApi, useSavedResult } from "../../projects/results";
 import { SavedResultNotice } from "../../projects/SavedResultNotice";
 import type { SavedPluginLine } from "../../kits/saved";
 import { pluginSources } from "./sources";
-import { buildingsBbox, fetchPopulation, type PopulationFetcher, type PopulationSource } from "./population";
+import { Corridor } from "./corridor";
+import {
+  buildingsBbox,
+  fetchPopulation,
+  fetchPopulationOver,
+  type PopulationFetcher,
+  type PopulationSource,
+} from "./population";
 import { fetchHeights, type HeightsFetcher, loadTerrain, terrainPlan } from "./terrain";
 import type {
   Indicator,
@@ -329,25 +336,30 @@ export function NoiseMap({
         return;
       }
       let buildings: NoiseBuilding[] | null = null;
-      const points = [
-        ...[...linesA, ...(linesB ?? [])].flatMap((l) => l.points),
-        ...[...mainPoints, ...otherPoints].map((x) => x.p),
+      // The lines one by one, so the buildings and terrain are loaded along them, not over the box round them.
+      const paths = [
+        ...[...linesA, ...(linesB ?? [])].map((l) => l.points),
+        ...[...mainPoints, ...otherPoints].map((x) => [x.p]),
       ];
       const reach = paramNumber("noise.map_reach_m", preferences);
       if (withBuildings) {
         index++;
-        const tiles = buildingTiles(points, reach);
+        const near = new Corridor(paths, reach);
+        const tiles = corridorTiles(near);
         if (tiles.length > MAX_BUILDING_TILES) {
           notes.push(tNow("noise.tooLarge", { tiles: tiles.length, max: MAX_BUILDING_TILES }));
         } else {
           step(tNow("noise.loadingBuildings"), { fraction: 0 });
-          buildings = await abortable(loadBuildings(tiles, fetchTile, progress, signal), signal);
+          buildings = await abortable(
+            loadBuildings(tiles, fetchTile, progress, signal, (b) => near.touches(b.ring)),
+            signal,
+          );
         }
       }
       let terrain: NoiseTerrain | null = null;
       if (withTerrain) {
         index++;
-        const plan = terrainPlan(points, reach);
+        const plan = terrainPlan(paths, reach);
         if (!plan) {
           notes.push(tNow("noise.terrainTooLarge"));
         } else {
@@ -367,7 +379,7 @@ export function NoiseMap({
       if (bbox) {
         step(tNow("noise.loadingPopulation"));
         try {
-          const a = await waitForPeople(bbox);
+          const a = await waitForPeople(bbox, buildings ?? []);
           if (a.status === "ready") [population, people] = [a.grid, a.source];
           else if (a.status === "loading")
             notes.push(tNow("noise.popDownloading", { countries: a.countries.join(", ") }));
@@ -435,10 +447,10 @@ export function NoiseMap({
      * WorldPop's grid; while the server downloads a country for the first time, ask again until it is
      * there, showing how far the download is, until `popWaitMs` passes or the planner skips the wait.
      */
-    async function waitForPeople(box: [number, number, number, number]) {
+    async function waitForPeople(box: [number, number, number, number], near: NoiseBuilding[]) {
       const until = Date.now() + popWaitMs;
       for (;;) {
-        const a = await abortable(fetchPeople(box), signal);
+        const a = await abortable(fetchPopulationOver(box, near, fetchPeople), signal);
         signal.throwIfAborted();
         if (a.status !== "loading" || skip.signal.aborted || Date.now() >= until) return a;
         const p = a.progress;

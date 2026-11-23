@@ -16,9 +16,10 @@ vi.mock("../src/features/noise/mapLayer", () => ({
 }));
 
 import { engineRunner } from "../src/features/noise/engine";
-import { buildingTiles, loadBuildings, MAX_BUILDING_TILES } from "../src/features/noise/buildings";
+import { corridorTiles, loadBuildings, MAX_BUILDING_TILES } from "../src/features/noise/buildings";
+import { Corridor } from "../src/features/noise/corridor";
 import { MAP_REACH_M, NoiseMap, projectSources } from "../src/features/noise/NoiseMap";
-import { buildingsBbox, type PopulationAnswer } from "../src/features/noise/population";
+import { buildingsBbox, fetchPopulationOver, type PopulationAnswer } from "../src/features/noise/population";
 import { MAX_TERRAIN_POINTS, loadTerrain, terrainPlan } from "../src/features/noise/terrain";
 import type { NoiseBuilding, NoiseEngine, NoiseInput, NoiseView } from "../src/features/noise/types";
 import type { Done } from "../src/features/noise/result";
@@ -92,6 +93,16 @@ const DOC = {
 
 const noRail: RailEngineLoader = () => Promise.reject(new Error("no railway in this test"));
 
+const READY_SOURCE = {
+  name: "WorldPop",
+  dataset: "R2025A",
+  url: "https://doi.org/10.5258/SOTON/WP00839",
+  licence: "CC BY 4.0",
+  year: 2026,
+  countries: ["DEU"],
+  citation: "Bondarenko et al. 2025",
+};
+
 const house = (id: string, lon: number): NoiseBuilding => ({
   id,
   ring: [
@@ -145,69 +156,178 @@ describe("noise map sources and buildings", () => {
   });
 
   it("covers the lines and their reach with zoom-14 tiles, nearest the centre first", () => {
-    const t = buildingTiles(
-      [
-        [7, 50],
-        [7.004, 50],
-      ],
-      MAP_REACH_M,
+    const t = corridorTiles(
+      new Corridor(
+        [
+          [
+            [7, 50],
+            [7.004, 50],
+          ],
+        ],
+        MAP_REACH_M,
+      ),
     );
     expect(t.length).toBeGreaterThanOrEqual(1);
     expect(t.length).toBeLessThanOrEqual(4);
-    // A 30 km line needs far more tiles than the map loads.
-    expect(
-      buildingTiles(
+    // A 30 km line takes the tiles along it, well within the limit.
+    const line = corridorTiles(
+      new Corridor(
         [
-          [7, 50],
-          [7.4, 50],
+          [
+            [7, 50],
+            [7.4, 50],
+          ],
         ],
         MAP_REACH_M,
-      ).length,
-    ).toBeGreaterThan(MAX_BUILDING_TILES);
+      ),
+    );
+    expect(line.length).toBeGreaterThan(12);
+    expect(line.length).toBeLessThanOrEqual(MAX_BUILDING_TILES);
   });
 
-  it("plans a terrain grid over the lines and their reach, coarser for long lines", () => {
+  it("takes the tiles along lines that fan out across a city, not the land between them", () => {
+    // Four 15 km lines from a centre, as a city's network fans out to its suburbs.
+    const arms: [number, number][][] = [
+      [
+        [36.3, 33.5],
+        [36.45, 33.5],
+      ],
+      [
+        [36.3, 33.5],
+        [36.15, 33.5],
+      ],
+      [
+        [36.3, 33.5],
+        [36.3, 33.64],
+      ],
+      [
+        [36.3, 33.5],
+        [36.3, 33.36],
+      ],
+    ];
+    const tiles = corridorTiles(new Corridor(arms, MAP_REACH_M));
+    // The box round them holds about 20 × 23 tiles; the arms take a fraction of it.
+    expect(tiles.length).toBeLessThan(120);
+    expect(tiles.length).toBeLessThanOrEqual(MAX_BUILDING_TILES);
+    const near = new Corridor(arms, MAP_REACH_M);
+    // Within the reach of a line, yes; in the empty quarter between two arms, no.
+    expect(near.has(36.4, 33.5 + MAP_REACH_M / 111_195)).toBe(true);
+    expect(near.has(36.4, 33.6)).toBe(false);
+  });
+
+  it("plans the terrain along the lines and their reach, loading only the samples near them", () => {
     const p = terrainPlan(
       [
-        [7, 50],
-        [7.004, 50],
+        [
+          [7, 50],
+          [7.004, 50],
+        ],
       ],
       MAP_REACH_M,
     )!;
     expect(p.spacingM).toBe(30);
     expect(p.lon0).toBeLessThan(7 - MAP_REACH_M / 111_195 / Math.cos((50 * Math.PI) / 180));
     expect(p.lat0 + (p.ny - 1) * p.dLat).toBeGreaterThan(50 + MAP_REACH_M / 111_195);
-    const long = terrainPlan(
+    // A city's lines fanning out 15 km each way stay at 30 m, loading only along them.
+    const city = terrainPlan(
       [
-        [7, 50],
-        [7.1, 50.08],
+        [
+          [36.15, 33.5],
+          [36.45, 33.5],
+        ],
+        [
+          [36.3, 33.36],
+          [36.3, 33.64],
+        ],
       ],
       MAP_REACH_M,
     )!;
-    expect(long.spacingM).toBeGreaterThan(30);
-    expect(long.nx * long.ny).toBeLessThanOrEqual(MAX_TERRAIN_POINTS);
-    // A 30 km line would need a grid coarser than the terrain is worth.
+    expect(city.spacingM).toBe(30);
+    expect(city.samples.length).toBeLessThanOrEqual(MAX_TERRAIN_POINTS);
+    expect(city.samples.length).toBeLessThan((city.nx * city.ny) / 4);
+    // A region 300 km across would need a grid coarser than the terrain is worth.
     expect(
       terrainPlan(
         [
-          [7, 50],
-          [7.4, 50.2],
+          [
+            [7, 50],
+            [10, 53],
+          ],
+          [
+            [7, 53],
+            [10, 50],
+          ],
         ],
         MAP_REACH_M,
       ),
     ).toBeNull();
   });
 
-  it("loads the terrain row by row from the south-west in requests of 20,000", async () => {
+  it("loads the planned terrain samples from the south-west in requests of 20,000", async () => {
     const fetch = vi.fn(async (pts: [number, number][]) => pts.map((p) => (p[1] > 50 ? 100 : null)));
-    const plan = { lon0: 7, lat0: 49.95, dLon: 0.001, dLat: 0.0004, nx: 200, ny: 150, spacingM: 30 };
+    // Every sample but the first row's first.
+    const samples = Uint32Array.from({ length: 29_999 }, (_, i) => i + 1);
+    const plan = { lon0: 7, lat0: 49.95, dLon: 0.001, dLat: 0.0004, nx: 200, ny: 150, spacingM: 30, samples };
     const t = await loadTerrain(plan, fetch);
     expect(fetch).toHaveBeenCalledTimes(2);
     expect(t.z).toHaveLength(30_000);
-    expect(fetch.mock.calls[0]![0][1]).toEqual([7.001, 49.95]);
+    expect(fetch.mock.calls[0]![0][0]).toEqual([7.001, 49.95]);
     expect(t).toMatchObject({ x0: 7, y0: 49.95, dx: 0.001, dy: 0.0004, nx: 200, ny: 150 });
     expect(t.z[0]).toBeNull();
     expect(t.z.at(-1)).toBe(100);
+  });
+
+  it("keeps only the buildings near the lines, from tiles loaded a few at a time", async () => {
+    let open = 0;
+    let most = 0;
+    const fetchTile = vi.fn(async (x: number) => {
+      most = Math.max(most, ++open);
+      await new Promise((r) => setTimeout(r, 1));
+      open--;
+      return [house(`a${x}`, 7), house(`b${x}`, 7.5)];
+    });
+    const tiles = Array.from({ length: 10 }, (_, i): [number, number] => [i, 1]);
+    const b = await loadBuildings(tiles, fetchTile, undefined, undefined, (h) => h.ring[0]![0] < 7.1);
+    expect(fetchTile).toHaveBeenCalledTimes(10);
+    expect(most).toBeGreaterThan(1);
+    expect(most).toBeLessThanOrEqual(4);
+    expect(b.map((x) => x.id)).toEqual(tiles.map(([x]) => `a${x}`));
+  });
+
+  it("asks for people in pieces over a city's buildings and joins them into one grid", async () => {
+    const C = 1 / 1200;
+    const fetchPeople = vi.fn(async (bbox: [number, number, number, number]): Promise<PopulationAnswer> => {
+      const x0 = Math.floor((bbox[0] + 180) / C + 1e-6) * C - 180;
+      const y0 = Math.floor((bbox[1] + 90) / C + 1e-6) * C - 90;
+      const nx = Math.ceil((bbox[2] + 180) / C - 1e-6) - Math.round((x0 + 180) / C);
+      const ny = Math.ceil((bbox[3] + 90) / C - 1e-6) - Math.round((y0 + 90) / C);
+      return {
+        status: "ready",
+        grid: { x0, y0, dx: C, dy: C, nx, ny, people: new Array<number>(nx * ny).fill(1) },
+        source: { ...READY_SOURCE, countries: [bbox[0] < 36.2 ? "SYR" : "LBN"] },
+      };
+    });
+    // Buildings at both ends of a 0.4° line: two pieces, not the empty one between them.
+    const homes = [house("w", 36.01), house("e", 36.39)];
+    const box: [number, number, number, number] = [36.01, 50.0002, 36.3901, 50.0003];
+    const a = await fetchPopulationOver(box, homes, fetchPeople);
+    expect(fetchPeople).toHaveBeenCalledTimes(2);
+    for (const [w, , e] of fetchPeople.mock.calls.map((c) => c[0])) expect(e - w).toBeLessThanOrEqual(0.3);
+    if (a.status !== "ready") throw new Error(a.status);
+    expect(a.grid.x0).toBeLessThanOrEqual(36.01 + 1e-9);
+    expect(a.grid.x0 + a.grid.nx * a.grid.dx).toBeGreaterThanOrEqual(36.3901);
+    // The pieces do not overlap: every person of both is in the joined grid once.
+    let pieces = 0;
+    for (const r of fetchPeople.mock.results) {
+      const got = await (r.value as Promise<PopulationAnswer>);
+      if (got.status === "ready") pieces += got.grid.people.length;
+    }
+    expect(a.grid.people.reduce((x, y) => x + y, 0)).toBe(pieces);
+    expect(a.source.countries).toEqual(["SYR", "LBN"]);
+    // A small area is one request, as before.
+    fetchPeople.mockClear();
+    await fetchPopulationOver([7, 50, 7.01, 50.01], [house("x", 7)], fetchPeople);
+    expect(fetchPeople).toHaveBeenCalledTimes(1);
   });
 
   it("keeps a building on a tile edge once", async () => {
@@ -310,7 +430,9 @@ describe("noise map in the GIS tab", () => {
     expect(input.buildings!.map((b) => b.id)).toEqual(["w1", "w2"]);
     expect(input.overrides).toEqual({ "noise.building_default_height_m": 12 });
     expect(input.terrain).toMatchObject({ dx: expect.any(Number), nx: expect.any(Number) });
-    expect(input.terrain!.z.every((z) => z === 120)).toBe(true);
+    // The samples near the line are loaded; the engine fills the rest of the grid from them.
+    expect(input.terrain!.z.some((z) => z === 120)).toBe(true);
+    expect(input.terrain!.z.every((z) => z === 120 || z === null)).toBe(true);
     expect(screen.getByText(/stand on the terrain/)).toBeTruthy();
     const table = await screen.findByRole("table", { name: "Buildings and residents by noise band" });
     expect(table.textContent).toContain("55–59 dB");
