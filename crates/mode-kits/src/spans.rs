@@ -25,6 +25,10 @@ pub enum Operation {
     Reversible,
 }
 
+fn one_metre() -> f64 {
+    1.0
+}
+
 fn ropeway_prefix() -> String {
     "ropeway".into()
 }
@@ -69,6 +73,11 @@ pub struct SpanSystem {
     /// `ropeway.capacity_ceiling_pphpd`: above it the line's capacity is a warning (0: no check).
     #[serde(default)]
     pub capacity_ceiling_pphpd: f64,
+    /// `ropeway.station_approach_m`: within this distance of a station the cabin is leaving or entering
+    /// it, close to platform height, and only has to clear the ground and buildings; the minimum and
+    /// recommended clearances apply beyond it (1 m when absent).
+    #[serde(default = "one_metre")]
+    pub station_approach_m: f64,
     /// Prefix of the plugin parameters the findings name, `ropeway` by default.
     #[serde(default = "ropeway_prefix")]
     pub parameter_prefix: String,
@@ -297,22 +306,26 @@ fn span_clearance(sys: &SpanSystem, g: &Ground, (xa, ya): (f64, f64), (xb, yb): 
     let sag = sys.sag_ratio * l;
     let cabin_at =
         |u: f64| ya + (yb - ya) * u / l - 4.0 * sag * u * (l - u) / (l * l) - sys.cabin_hang_m;
-    // The cabin is in the station at the ends; clearance there is the station's business.
+    // The cabin is in the station at the ends; clearance there is the station's business. In the
+    // station's approach the cabin is near platform height and only has to clear the ground and buildings.
     let in_station = |x: f64| x < 1.0 || x > len - 1.0;
+    let approach = sys.station_approach_m.max(1.0);
+    let in_approach = |x: f64| x < approach || x > len - approach;
     let mut min = f64::INFINITY;
+    let mut take = |x: f64, c: f64| {
+        if !in_station(x) && (!in_approach(x) || c < 0.0) {
+            min = min.min(c);
+        }
+    };
     let n = span_steps(l);
     for i in 0..=n {
         let u = l * i as f64 / n as f64;
         let x = xa + u;
-        if !in_station(x) {
-            min = min.min(cabin_at(u) - g.at(x).1);
-        }
+        take(x, cabin_at(u) - g.at(x).1);
     }
     // Every sample too, so a ridge or a building between profile steps is not missed.
     for &(x, _, top) in g.pts.iter().filter(|p| p.0 > xa && p.0 < xb) {
-        if !in_station(x) {
-            min = min.min(cabin_at(x - xa) - top);
-        }
+        take(x, cabin_at(x - xa) - top);
     }
     min
 }
@@ -847,6 +860,7 @@ mod tests {
             terminal_dwell_s: 60.0,
             reserve_share: 0.1,
             capacity_ceiling_pphpd: 6000.0,
+            station_approach_m: 1.0,
             parameter_prefix: "ropeway".into(),
         }
     }
@@ -998,6 +1012,23 @@ mod tests {
             "{:?}",
             v.issues
         );
+        // With a 30 m station approach the cabin may stay near platform height as it leaves and enters
+        // the stations, so no tower has to stand right beside them.
+        let approach = build(&SpanLine {
+            system: SpanSystem {
+                station_approach_m: 30.0,
+                ..mgd()
+            },
+            ..line.clone()
+        });
+        let a = &approach.sections[0];
+        assert!(approach.tower_count < v.tower_count, "{:?}", a.towers);
+        assert!(a
+            .towers
+            .iter()
+            .all(|t| t.at_m >= 30.0 && t.at_m <= 785.0 - 30.0));
+        assert!(a.min_clearance_m >= 8.0 - 1e-6, "{}", a.min_clearance_m);
+        assert!(!approach.issues.iter().any(|i| i.level != Level::Info));
     }
 
     #[test]
