@@ -81,7 +81,7 @@ fn a_signal_inside_a_junction_leg_is_left_out_instead_of_refusing_the_layout() {
     assert!(
         imp.notes
             .iter()
-            .any(|n| n.contains("g999") && n.contains("inside the switch")),
+            .any(|n| n.english().contains("g999") && n.english().contains("inside the switch")),
         "{:?}",
         imp.notes
     );

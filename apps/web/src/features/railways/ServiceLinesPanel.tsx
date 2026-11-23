@@ -99,6 +99,7 @@ export function ServiceLinesPanel({
   checksInMenu = false,
 }: Props) {
   const { t, tn } = useI18n();
+  const noteText = useEngineText();
   const lines = doc.lines ?? [];
   const [open, setOpen] = useState<string | null>(null);
   const name = (id: number) => doc.stations.find((s) => s.id === id)?.name ?? t("rail.stationN", { id });
@@ -254,7 +255,7 @@ export function ServiceLinesPanel({
           </summary>
           <ul className="list-disc ps-4">
             {publication.result.notes.map((n, i) => (
-              <li key={i}>{n}</li>
+              <li key={i}>{noteText({ text: n, msg: publication.result!.note_msgs?.[i] })}</li>
             ))}
           </ul>
         </details>

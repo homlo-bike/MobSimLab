@@ -15,6 +15,7 @@ import type { SavedStreetLine } from "../street-lines/saved";
 import type { LonLat } from "../street-lines/types";
 import { railSources } from "./sources";
 import type { NoiseLine, NoiseMode, NoiseRange } from "./types";
+import { engineErrorText } from "../../i18n/engine";
 
 /** Vehicles in each clock hour 0–23. */
 export type Hourly = number[];
@@ -358,7 +359,7 @@ export function publishedRailSources(
   } catch (err) {
     return {
       lines: [],
-      notes: [tNow("noise.railNotPublished", { error: err instanceof Error ? err.message : String(err) })],
+      notes: [tNow("noise.railNotPublished", { error: engineErrorText(err) })],
     };
   }
 }

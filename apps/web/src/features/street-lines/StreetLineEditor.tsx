@@ -62,6 +62,7 @@ import type {
   VehicleProfile,
 } from "./types";
 import { nearestTerminal } from "./summary";
+import { engineErrorText } from "../../i18n/engine";
 
 const EMPTY_VIEW: LineView = {
   points: [],
@@ -341,7 +342,7 @@ export function StreetLineEditor({
         setRoutedAround({ ...applied.current });
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        setError(engineErrorText(err));
       }
     },
     [hydrate],
@@ -363,9 +364,7 @@ export function StreetLineEditor({
         setRules(r);
         setStatus(null);
       })
-      .catch((err) =>
-        setError(tNow("street.engineFailed", { error: err instanceof Error ? err.message : String(err) })),
-      );
+      .catch((err) => setError(tNow("street.engineFailed", { error: engineErrorText(err) })));
     return () => {
       alive = false;
       engine.current?.dispose();

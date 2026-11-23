@@ -1,12 +1,16 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { API_MESSAGES } from "../../api/src/i18n/messages";
 import { fillEngineMsg } from "../src/i18n/engine";
 
-/** The English engine message catalog and the translations, one file per language. */
-const EN = JSON.parse(
-  readFileSync(join(__dirname, "../../../crates/engine-msg/messages/en.json"), "utf8"),
-) as Record<string, string>;
+/** The English engine and API message catalogs and the translations, one file per language. */
+const EN = {
+  ...(JSON.parse(
+    readFileSync(join(__dirname, "../../../crates/engine-msg/messages/en.json"), "utf8"),
+  ) as Record<string, string>),
+  ...API_MESSAGES,
+};
 const DIR = join(__dirname, "../src/i18n/engine");
 const FILES = existsSync(DIR) ? readdirSync(DIR).filter((f) => f.endsWith(".json")) : [];
 

@@ -8,6 +8,7 @@ repository.workspace = true
 rust-version.workspace = true
 
 [dependencies]
+engine-msg = { path = "../engine-msg" }
 rail-model = { path = "../rail-model" }
 rail-dynamics = { path = "../rail-dynamics" }
 rail-plan = { path = "../rail-plan" }

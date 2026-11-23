@@ -25,6 +25,7 @@ import { addsLine, PERMISSION_LABELS } from "../workspace/ProjectPlugins";
 import { EsriImageryConfig, type EsriStatus } from "./EsriImageryAdmin";
 import { MapLayersConfig } from "./MapLayersAdmin";
 import { PluginWindow, type ServiceLink, Switch, useWindowRun } from "./PluginWindow";
+import { withApiMsg } from "../i18n/engine";
 
 /** One plugin version as `GET /api/admin/plugins` lists it. */
 interface PluginRow {
@@ -143,8 +144,11 @@ async function upload<T>(path: string, csrfToken: string, file: Blob): Promise<T
     problems?: string[];
   };
   if (!res.ok && !body.problems)
-    throw new Error(
-      Array.isArray(body.message) ? body.message.join("; ") : (body.message ?? `${path}: ${res.status}`),
+    throw withApiMsg(
+      new Error(
+        Array.isArray(body.message) ? body.message.join("; ") : (body.message ?? `${path}: ${res.status}`),
+      ),
+      body,
     );
   return body;
 }

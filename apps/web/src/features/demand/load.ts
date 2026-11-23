@@ -7,6 +7,7 @@ import type { BenefitsApi } from "../benefits/data";
 import type { BuildingIn, PlaceIn } from "../benefits/model";
 import type { LonLat } from "../benefits/regions";
 import { type DemandZone, thinRing, zoneCentre, zoneKm2 } from "./zones";
+import { engineErrorText } from "../../i18n/engine";
 
 /** Most zoom-14 tiles of buildings and places loaded for one model area. */
 export const MAX_ZONE_TILES = 160;
@@ -75,7 +76,7 @@ export async function loadZoneData(
       popYear = popYear ?? r.year;
       for (const x of r.reasons) reasons.add(x);
     } catch (e) {
-      reasons.add(e instanceof Error ? e.message : String(e));
+      reasons.add(engineErrorText(e));
     }
     tick();
   }

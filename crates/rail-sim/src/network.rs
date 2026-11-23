@@ -31,6 +31,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use engine_msg::{msg, Msg};
 use rail_dynamics::TrainParams;
 use rail_interlocking::{Handle, Interlocking, Params as IlParams, Refusal};
 use rail_model::{Dir, End, Model, PieceId, RouteId, Step, TdsId};
@@ -76,6 +77,11 @@ pub struct NetParams {
     pub stop_margin_m: f64,
     /// Interlocking timing.
     pub interlocking: IlParams,
+}
+
+/// Purpose: messages one after the other, separated by "; ", as one message (None for none).
+fn join(ms: impl Iterator<Item = Msg>) -> Option<Msg> {
+    ms.reduce(|a, b| msg!("rail.sim.join", a = a, b = b))
 }
 
 impl Default for NetParams {
@@ -281,7 +287,7 @@ struct Train {
     delay_s: f64,
     last_eoa: f64,
     /// Why the interlocking last refused this train's next route.
-    refused: Option<String>,
+    refused: Option<Msg>,
 }
 
 /// The kernel.
@@ -417,7 +423,7 @@ impl<'m> NetworkSim<'m> {
     /// Inputs: model, plan, kernel parameters.
     /// Output: the kernel at the start of the day with every train stabled
     /// as the plan's morning stabling says, or an error.
-    pub fn new(m: &'m Model, plan: &Plan, p: NetParams) -> Result<Self, String> {
+    pub fn new(m: &'m Model, plan: &Plan, p: NetParams) -> Result<Self, Msg> {
         let mut il = Interlocking::new(m, p.interlocking.clone());
         let bp = BlockingParams::default();
         let mut by_vehicle: BTreeMap<usize, Vec<usize>> = BTreeMap::new();
@@ -637,7 +643,7 @@ impl<'m> NetworkSim<'m> {
 
     /// Purpose: run until `t_end` or until all trains are done.
     /// Output: Err with a state description on a safety invariant violation or a deadlock.
-    pub fn run_until(&mut self, t_end: f64) -> Result<(), String> {
+    pub fn run_until(&mut self, t_end: f64) -> Result<(), Msg> {
         while self.t < t_end && !self.finished() {
             self.step()?;
         }
@@ -658,14 +664,14 @@ impl<'m> NetworkSim<'m> {
 
     /// Purpose: why a standing train cannot get its next route, as text: the
     /// section and the run the plan puts on it first, or the interlocking.
-    fn blocked_by(&self, ti: usize) -> Option<String> {
+    fn blocked_by(&self, ti: usize) -> Option<Msg> {
         let tr = &self.trains[ti];
         if tr.status != Status::Running || tr.v != 0.0 {
             return None;
         }
         let run = &self.names_of(ti);
         let Some(&(route, _, _)) = tr.path.routes.get(tr.next_route) else {
-            return Some(format!("{run} waits at the end of its authority"));
+            return Some(msg!("rail.sim.wait.end_of_authority", run = run.clone()));
         };
         let me = (ti, tr.k, tr.next_route);
         for s in &self.m.routes[route as usize].tds {
@@ -679,26 +685,38 @@ impl<'m> NetworkSim<'m> {
                         .get(x.2)
                         .map(|r| r.plan_index.to_string())
                         .unwrap_or_default();
-                    return Some(format!(
-                        "{run} waits on section {} for plan run {name} (train {})",
-                        self.m.tds[*s as usize].id, other.vehicle
+                    return Some(msg!(
+                        "rail.sim.wait.section",
+                        run = run.clone(),
+                        section = &self.m.tds[*s as usize].id,
+                        other = name,
+                        train = other.vehicle.to_string()
                     ));
                 }
             }
         }
-        Some(format!(
-            "{run} waits for the interlocking to set route {}: {}",
-            self.m.routes[route as usize].id,
-            tr.refused.as_deref().unwrap_or("not asked yet")
+        Some(msg!(
+            "rail.sim.wait.route",
+            run = run.clone(),
+            route = &self.m.routes[route as usize].id,
+            why = tr
+                .refused
+                .clone()
+                .unwrap_or_else(|| msg!("rail.sim.refused.not_asked"))
         ))
     }
 
-    fn names_of(&self, ti: usize) -> String {
+    fn names_of(&self, ti: usize) -> Msg {
         let tr = &self.trains[ti];
-        format!(
-            "train {} (plan run {})",
-            tr.vehicle,
-            tr.runs.get(tr.k).map(|r| r.plan_index).unwrap_or(0)
+        msg!(
+            "rail.sim.train_run",
+            train = tr.vehicle.to_string(),
+            run = tr
+                .runs
+                .get(tr.k)
+                .map(|r| r.plan_index)
+                .unwrap_or(0)
+                .to_string()
         )
     }
 
@@ -792,7 +810,7 @@ impl<'m> NetworkSim<'m> {
 
     /// Purpose: advance by one time step.
     /// Output: Err on an invariant violation or a deadlock.
-    pub fn step(&mut self) -> Result<(), String> {
+    pub fn step(&mut self) -> Result<(), Msg> {
         let dt = self.p.step_s;
         let t = self.t;
         self.il.update(t);
@@ -821,13 +839,21 @@ impl<'m> NetworkSim<'m> {
                 t,
                 waiting: waiting.clone(),
             });
-            let why: Vec<String> = (0..self.trains.len())
-                .filter_map(|ti| self.blocked_by(ti))
-                .collect();
-            return Err(format!(
-                "deadlock at {t:.0} s: trains {waiting:?} wait for routes ({})",
-                why.join("; ")
-            ));
+            let mut e = msg!(
+                "rail.sim.deadlock",
+                t = format!("{t:.0}"),
+                trains = waiting
+                    .iter()
+                    .map(|t| t.to_string())
+                    .collect::<Vec<_>>()
+                    .join(", ")
+            );
+            let why = (0..self.trains.len()).filter_map(|ti| self.blocked_by(ti));
+            e = e.arg(
+                "why",
+                join(why).unwrap_or_else(|| msg!("rail.sim.no_reason")),
+            );
+            return Err(e);
         }
         self.t += dt;
         if self.p.check_invariants {
@@ -878,21 +904,30 @@ impl<'m> NetworkSim<'m> {
                 Err(r) => {
                     let why = match r {
                         Refusal::Occupied(s) => {
-                            format!("section {} is occupied", self.m.tds[s as usize].id)
+                            msg!(
+                                "rail.sim.refused.occupied",
+                                section = &self.m.tds[s as usize].id
+                            )
                         }
                         Refusal::Locked(s) => {
-                            format!("section {} is locked", self.m.tds[s as usize].id)
+                            msg!(
+                                "rail.sim.refused.locked",
+                                section = &self.m.tds[s as usize].id
+                            )
                         }
-                        Refusal::SwitchLocked(w) => {
-                            format!("switch {} is locked", self.m.switches[w as usize].id)
-                        }
-                        Refusal::SwitchOccupied(w) => {
-                            format!("switch {} is occupied", self.m.switches[w as usize].id)
-                        }
-                        Refusal::Flank(w) => {
-                            format!("no flank protection at {}", self.m.switches[w as usize].id)
-                        }
-                        Refusal::Unavailable => "the route is out of service".into(),
+                        Refusal::SwitchLocked(w) => msg!(
+                            "rail.sim.refused.switch_locked",
+                            switch = &self.m.switches[w as usize].id
+                        ),
+                        Refusal::SwitchOccupied(w) => msg!(
+                            "rail.sim.refused.switch_occupied",
+                            switch = &self.m.switches[w as usize].id
+                        ),
+                        Refusal::Flank(w) => msg!(
+                            "rail.sim.refused.flank",
+                            switch = &self.m.switches[w as usize].id
+                        ),
+                        Refusal::Unavailable => msg!("rail.sim.refused.out_of_service"),
                     };
                     self.trains[ti].refused = Some(why);
                     return;
@@ -967,7 +1002,7 @@ impl<'m> NetworkSim<'m> {
         }
     }
 
-    fn drive(&mut self, ti: usize, dt: f64) -> Result<(), String> {
+    fn drive(&mut self, ti: usize, dt: f64) -> Result<(), Msg> {
         let t = self.t;
         // Departures.
         match self.trains[ti].status {
@@ -1117,11 +1152,12 @@ impl<'m> NetworkSim<'m> {
         // head when a train ahead stands closer than the following margin (a
         // shunting move on sight into an occupied siding, or a stabling stack).
         if ds > 1e-9 && tr.s + ds > eoa + 1e-6 {
-            return Err(format!(
-                "invariant 2: train {} would pass its end of authority at {:.1} m (authority {:.1} m) at {t:.1} s",
-                tr.vehicle,
-                tr.s + ds,
-                eoa
+            return Err(msg!(
+                "rail.sim.inv.passes_authority",
+                train = tr.vehicle.to_string(),
+                at = format!("{:.1}", tr.s + ds),
+                authority = format!("{eoa:.1}"),
+                t = format!("{t:.1}")
             ));
         }
         tr.s += ds;
@@ -1240,10 +1276,10 @@ impl<'m> NetworkSim<'m> {
 
     /// Purpose: check the safety invariants (ADR-0032 §4).
     /// Output: Err describing the first violation.
-    pub fn check(&self) -> Result<(), String> {
+    pub fn check(&self) -> Result<(), Msg> {
         self.il
             .check_invariants()
-            .map_err(|e| format!("at {:.1} s: {e}", self.t))?;
+            .map_err(|e| msg!("rail.sim.at_time", t = format!("{:.1}", self.t), what = e))?;
         // Bodies never overlap.
         let mut by_piece: BTreeMap<PieceId, Vec<(f64, f64, usize)>> = BTreeMap::new();
         for (i, tr) in self.trains.iter().enumerate() {
@@ -1255,9 +1291,12 @@ impl<'m> NetworkSim<'m> {
             for (i, x) in v.iter().enumerate() {
                 for y in &v[i + 1..] {
                     if x.2 != y.2 && x.0 < y.1 - 1e-6 && y.0 < x.1 - 1e-6 {
-                        return Err(format!(
-                            "at {:.1} s: trains {} and {} overlap on piece {pc}",
-                            self.t, self.trains[x.2].vehicle, self.trains[y.2].vehicle
+                        return Err(msg!(
+                            "rail.sim.inv.overlap",
+                            t = format!("{:.1}", self.t),
+                            a = self.trains[x.2].vehicle.to_string(),
+                            b = self.trains[y.2].vehicle.to_string(),
+                            piece = pc.to_string()
                         ));
                     }
                 }
@@ -1274,9 +1313,11 @@ impl<'m> NetworkSim<'m> {
                     && tr.s - tr.params.length_m < at + zone
                     && self.il.crossing_state(lc) != rail_interlocking::CrossingState::Closed
                 {
-                    return Err(format!(
-                        "at {:.1} s: train {} is on level crossing {} while it is not closed",
-                        self.t, tr.vehicle, self.m.level_crossings[lc].spec.id
+                    return Err(msg!(
+                        "rail.sim.inv.crossing_open",
+                        t = format!("{:.1}", self.t),
+                        train = tr.vehicle.to_string(),
+                        crossing = &self.m.level_crossings[lc].spec.id
                     ));
                 }
             }
@@ -1286,9 +1327,12 @@ impl<'m> NetworkSim<'m> {
                 .static_speed(tr, tr.params.service_decel_mps2)
                 .min((2.0 * tr.params.service_decel_mps2 * (eoa - tr.s).max(0.0)).sqrt());
             if tr.v > v_perm + 2.0 * self.p.supervision_tol_mps + 0.5 {
-                return Err(format!(
-                    "at {:.1} s: invariant 5: train {} at {:.1} m/s, permitted {:.1} m/s",
-                    self.t, tr.vehicle, tr.v, v_perm
+                return Err(msg!(
+                    "rail.sim.inv.overspeed",
+                    t = format!("{:.1}", self.t),
+                    train = tr.vehicle.to_string(),
+                    speed = format!("{:.1}", tr.v),
+                    permitted = format!("{v_perm:.1}")
                 ));
             }
         }
