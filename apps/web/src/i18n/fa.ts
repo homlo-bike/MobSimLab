@@ -257,7 +257,6 @@ export const fa: Messages = {
   "tab.tables": "جدول‌ها",
   "tab.preferences": "ترجیحات",
 
-  "placeholder.comingSoon": "در نسخه‌ای آینده",
 
   "sim.test": "آزمایش سامانه",
   "sim.journey": "زمان سفر A ← B",

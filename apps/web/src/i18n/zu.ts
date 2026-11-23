@@ -263,7 +263,6 @@ export const zu: Messages = {
   "tab.tables": "Amatafula",
   "tab.preferences": "Okuthandwayo",
 
-  "placeholder.comingSoon": "Kuyeza ekukhishweni okulandelayo",
 
   "sim.test": "Hlola uhlelo",
   "sim.journey": "Isikhathi sohambo A → B",
