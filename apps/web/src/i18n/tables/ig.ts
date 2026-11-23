@@ -445,4 +445,10 @@ export const tablesIg = {
   "tt.tbl.to": "Ruo",
   "tt.tbl.arrives": "Na-eru",
   "cost.outsideRange": "Ọ dị n'èzí oke ọbá akwụkwọ ({low}–{high}): lelee uru ahụ na nkeji ya.",
+  "tbl.unrouted.title": "Ụzọ ụfọdụ ahịrị okporo ámá ezughị ezu",
+  "tbl.unrouted.intro":
+    "Achọtaghị akụkụ ụfọdụ nke ụzọ ahịrị ndị a mgbe e chekwara ha, ya mere tebụl, ọnụ ahịa na nyocha na-agụ ha dị ka km 0. Mepee ahịrị ọ bụla na taabụ Mepụta: okporo ámá ya ga-ebunye, a ga-echekwakwa ụzọ zuru ezu. Akụkụ nke fọdụrụ uhie chọrọ ka e bugharịa otu ntụpọ gaa n'okporo ụzọ ụgbọ ahụ nwere ike iji.",
+  "tbl.unrouted.legs": "Akụkụ achọtaghị",
+  "tbl.unrouted.runs": "Njem depo achọtaghị",
+  "tbl.unrouted.leftOut": "Ahapụrụ, opekata mpe",
 } satisfies TablesMessages;

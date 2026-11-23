@@ -444,4 +444,10 @@ export const tablesTr = {
   "tt.tbl.to": "Nereye",
   "tt.tbl.arrives": "Varış",
   "cost.outsideRange": "Kütüphane aralığının ({low}–{high}) dışında: değeri ve birimini kontrol edin.",
+  "tbl.unrouted.title": "Bazı cadde hatlarının güzergâhı eksik",
+  "tbl.unrouted.intro":
+    "Bu hatların güzergâhının bazı kısımları kaydedilirken bulunamadı, bu yüzden tablolar, maliyetler ve değerlendirme onları 0 km sayıyor. Her hattı Oluştur sekmesinde açın: sokakları yüklenir ve tamamlanan güzergâh kaydedilir. Kırmızı kalan bir bölüm için bir noktayı aracın kullanabileceği bir yola taşıyın.",
+  "tbl.unrouted.legs": "Bulunamayan bölümler",
+  "tbl.unrouted.runs": "Bulunamayan garaj seferleri",
+  "tbl.unrouted.leftOut": "Dışarıda kalan, en az",
 } satisfies TablesMessages;

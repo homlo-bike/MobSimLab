@@ -444,4 +444,10 @@ export const tablesVi = {
   "tt.tbl.to": "Đến",
   "tt.tbl.arrives": "Đến nơi",
   "cost.outsideRange": "Nằm ngoài phạm vi thư viện ({low}–{high}): hãy kiểm tra giá trị và đơn vị.",
+  "tbl.unrouted.title": "Một số tuyến đường phố chưa có lộ trình đầy đủ",
+  "tbl.unrouted.intro":
+    "Một số phần lộ trình của các tuyến này không được tìm thấy khi lưu, nên bảng, chi phí và thẩm định tính chúng là 0 km. Mở từng tuyến trong thẻ Tạo: các con đường của tuyến sẽ tải và lộ trình được hoàn thiện sẽ được lưu. Đoạn nào vẫn đỏ cần dời một điểm sang con đường mà phương tiện được đi.",
+  "tbl.unrouted.legs": "Đoạn không tìm thấy",
+  "tbl.unrouted.runs": "Chuyến về bãi không tìm thấy",
+  "tbl.unrouted.leftOut": "Bị bỏ sót, ít nhất",
 } satisfies TablesMessages;
