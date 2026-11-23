@@ -4001,8 +4001,16 @@ impl<'a> Planner<'a> {
             for (d, start) in &starts {
                 if let Some(fp) = self.depot_path(line, e, start, &end, false) {
                     // The overnight tracks first; an end-station siding when the line has no room
-                    // to reach them now (the train goes on later, see `clear_layovers`).
-                    let c = fp.cost + if s.layover { 1.0e5 } else { 0.0 };
+                    // to reach them now (the train goes on later, see `clear_layovers`); a terminal
+                    // platform last. A train put away in a platform stands there until it is next
+                    // needed, often for hours between the peaks, and the platform was cheaper to
+                    // reach than the siding beyond it, so T1 trains stood in the Zahira platform T2
+                    // turns in from late morning to mid-afternoon (Damascus test, bug 25).
+                    let in_platform = self.m.tracks[s.track].usage == TrackUse::Running
+                        || self.m.platforms.iter().any(|p| p.track == s.track);
+                    let c = fp.cost
+                        + if s.layover { 1.0e5 } else { 0.0 }
+                        + if in_platform { 1.0e6 } else { 0.0 };
                     opts.push((c, si, fp, *d));
                 }
             }
