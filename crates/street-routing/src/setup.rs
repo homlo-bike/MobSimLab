@@ -1,6 +1,7 @@
 //! Street setup: what the planner sets for a street in the GIS tab, over what OpenStreetMap says.
 //!
-//! A [`StreetSetup`] belongs to one OSM way and says how its carriageway is shared: the number of
+//! A [`StreetSetup`] belongs to one OSM way and says whether traffic runs one way or both ways and
+//! how its carriageway is shared: the number of
 //! general traffic lanes, a bus lane, a bike lane, a physical separation (kerb, barrier or
 //! separate track bed) between the transit lanes and the traffic beside them, and whether a tram
 //! along the street has its own lane or runs in mixed traffic. Every field is optional: unset
@@ -23,6 +24,7 @@
 //! library: `street.mixed_traffic_delay_share` and `street.bus_lane_delay_share`.
 
 use crate::osm::{OsmData, Tags};
+use crate::sections::{Layout, Section};
 use serde::{Deserialize, Serialize};
 
 /// How a tram along the street shares it with road traffic.
@@ -36,10 +38,14 @@ pub enum TramShare {
 }
 
 /// The planner's setup of one street (one OSM way). `None` keeps what OSM says.
-#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
 pub struct StreetSetup {
     /// OSM way id.
     pub way: i64,
+    /// One-way (`true`) or two-way (`false`) for road traffic, written as OSM `oneway`. A street made
+    /// one-way keeps the direction OSM gives a one-way street, else runs the way the OSM way is drawn.
+    #[serde(default)]
+    pub oneway: Option<bool>,
     /// General traffic lanes over both directions (not counting bus or tram lanes).
     #[serde(default)]
     pub traffic_lanes: Option<u8>,
@@ -56,6 +62,10 @@ pub struct StreetSetup {
     /// Tram along this street: own lane or mixed traffic.
     #[serde(default)]
     pub tram: Option<TramShare>,
+    /// The street laid out section by section (custom layout), left to right looking along the way.
+    /// When set it replaces OSM's lanes and the lane fields above ([`Layout`]).
+    #[serde(default)]
+    pub sections: Option<Vec<Section>>,
     /// Cars per hour in each direction in the morning peak (the shared peak windows of the
     /// service day), for the road simulation's background traffic. `None`: the default for the
     /// road type (assumptions `street.peak_cars_*_vph`). Not an OSM tag: [`Self::apply`] ignores it.
@@ -142,7 +152,9 @@ impl StreetSetup {
     /// Purpose: whether the setup changes nothing on the carriageway (traffic peaks do not count:
     /// they change no OSM tag).
     pub fn is_empty(&self) -> bool {
-        self.traffic_lanes.is_none()
+        self.sections.is_none()
+            && self.oneway.is_none()
+            && self.traffic_lanes.is_none()
             && self.bus_lane.is_none()
             && self.bike_lane.is_none()
             && self.separated.is_none()
@@ -152,10 +164,31 @@ impl StreetSetup {
     /// Purpose: write the setup into the tags of its OSM way.
     /// Side effects: replaces or removes the bus lane, bike lane and lane count tags it sets.
     pub fn apply(&self, tags: &mut Tags) {
+        if let Some(sections) = &self.sections {
+            apply_sections(sections, tags);
+            return;
+        }
         if self.is_empty() {
             return;
         }
         tags.insert("mobsimlab:setup".into(), "yes".into());
+        match self.oneway {
+            Some(true) => {
+                let one_already = matches!(
+                    tags.get("oneway").map(String::as_str),
+                    Some("yes" | "true" | "1" | "-1" | "reverse")
+                );
+                if !one_already {
+                    tags.insert("oneway".into(), "yes".into());
+                }
+            }
+            Some(false) => {
+                // Both ways for all traffic: no one-way exceptions left to apply.
+                tags.retain(|k, _| !k.starts_with("oneway"));
+                tags.insert("oneway".into(), "no".into());
+            }
+            None => {}
+        }
         let oneway = matches!(
             tags.get("oneway").map(String::as_str),
             Some("yes" | "true" | "1" | "-1" | "reverse")
@@ -217,6 +250,93 @@ impl StreetSetup {
             );
         }
     }
+}
+
+/// Purpose: write a custom layout into the tags of its OSM way: the direction of the traffic (and of
+/// buses where it differs), the lane counts with the bus lanes in each direction, bike lanes, whether
+/// cars and buses may use the street, the separation and the tram. The layout replaces every lane tag OSM
+/// had.
+fn apply_sections(sections: &[Section], tags: &mut Tags) {
+    let l = Layout::of(sections);
+    tags.insert("mobsimlab:setup".into(), "yes".into());
+    tags.retain(|k, _| {
+        !(k.starts_with("oneway")
+            || k.starts_with("lanes")
+            || k.starts_with("turn:lanes")
+            || k.starts_with("access:lanes")
+            || k.starts_with("busway")
+            || k.starts_with("bus:lanes")
+            || k.starts_with("psv:lanes")
+            || k.starts_with("cycleway")
+            || k == "width"
+            || k == "width:carriageway"
+            || k.starts_with("mobsimlab:"))
+    });
+    tags.insert("mobsimlab:setup".into(), "yes".into());
+    let (fwd, bwd) = if l.cars() {
+        (l.cars_forward > 0, l.cars_backward > 0)
+    } else {
+        (l.bus_forward, l.bus_backward)
+    };
+    let oneway = match (fwd, bwd) {
+        (true, false) => "yes",
+        (false, true) => "-1",
+        _ => "no",
+    };
+    tags.insert("oneway".into(), oneway.into());
+    if l.cars() && ((l.bus_forward && !fwd) || (l.bus_backward && !bwd)) {
+        tags.insert("oneway:bus".into(), "no".into());
+    }
+    let forward = u32::from(l.cars_forward) + u32::from(l.bus_lanes_forward);
+    let backward = u32::from(l.cars_backward) + u32::from(l.bus_lanes_backward);
+    if forward + backward > 0 {
+        tags.insert("lanes".into(), (forward + backward).to_string());
+        if oneway == "no" {
+            tags.insert("lanes:forward".into(), forward.to_string());
+            tags.insert("lanes:backward".into(), backward.to_string());
+        }
+    }
+    for (n, key) in [
+        (l.bus_lanes_forward, "lanes:bus:forward"),
+        (l.bus_lanes_backward, "lanes:bus:backward"),
+    ] {
+        if n > 0 {
+            tags.insert(key.into(), n.to_string());
+        }
+    }
+    let bike = match (l.bike_lane, l.separated) {
+        (false, _) => "no",
+        (true, true) => "track",
+        (true, false) => "lane",
+    };
+    tags.insert("cycleway:both".into(), bike.into());
+    if l.cars() {
+        tags.insert(
+            "mobsimlab:traffic_lanes".into(),
+            (u32::from(l.cars_forward) + u32::from(l.cars_backward)).to_string(),
+        );
+    } else {
+        tags.insert("motor_vehicle".into(), "no".into());
+    }
+    if l.bus_forward || l.bus_backward {
+        if !l.cars() {
+            tags.insert("bus".into(), "yes".into());
+        }
+    } else {
+        tags.insert("bus".into(), "no".into());
+        tags.insert("psv".into(), "no".into());
+    }
+    tags.insert(
+        "mobsimlab:separated".into(),
+        if l.separated { "yes" } else { "no" }.into(),
+    );
+    if l.tram {
+        tags.insert(
+            "mobsimlab:tram".into(),
+            if l.tram_own_lane { "own_lane" } else { "mixed" }.into(),
+        );
+    }
+    tags.insert("mobsimlab:sections".into(), "yes".into());
 }
 
 /// Purpose: apply the planner's street setups to OSM data (ways not set up stay as they are).
@@ -440,6 +560,47 @@ mod tests {
         assert_eq!(delay_share_with(&t, &project), 0.1);
         let t = tags(&[("highway", "residential")]);
         assert_eq!(delay_share(&t), 0.0);
+    }
+
+    #[test]
+    fn one_way_or_two_way() {
+        let mut t = tags(&[
+            ("highway", "primary"),
+            ("oneway", "-1"),
+            ("oneway:bus", "no"),
+        ]);
+        StreetSetup {
+            way: 1,
+            oneway: Some(true),
+            ..Default::default()
+        }
+        .apply(&mut t);
+        // Already one-way: it keeps its direction and its exceptions.
+        assert_eq!(t.get("oneway").map(String::as_str), Some("-1"));
+        assert_eq!(t.get("oneway:bus").map(String::as_str), Some("no"));
+        StreetSetup {
+            way: 1,
+            oneway: Some(false),
+            ..Default::default()
+        }
+        .apply(&mut t);
+        assert_eq!(t.get("oneway").map(String::as_str), Some("no"));
+        assert!(!t.contains_key("oneway:bus"));
+
+        let mut two = tags(&[("highway", "primary"), ("lanes", "2")]);
+        let s = StreetSetup {
+            way: 1,
+            oneway: Some(true),
+            bus_lane: Some(true),
+            traffic_lanes: Some(2),
+            ..Default::default()
+        };
+        assert!(!s.is_empty());
+        s.apply(&mut two);
+        // One-way the way it is drawn; one bus lane, so OSM `lanes` is 2 + 1.
+        assert_eq!(two.get("oneway").map(String::as_str), Some("yes"));
+        assert_eq!(two.get("busway").map(String::as_str), Some("lane"));
+        assert_eq!(two.get("lanes").map(String::as_str), Some("3"));
     }
 
     #[test]

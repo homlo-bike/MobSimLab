@@ -34,6 +34,51 @@ def test_street_setup_adds_a_kerb_bus_lane_each_way() -> None:
     assert t["bus:lanes:forward"] == "yes|designated"
 
 
+def test_street_setup_makes_a_street_one_way_or_two_way() -> None:
+    data = merge_tiles(tiles())
+    data.ways[110].tags["oneway:bus"] = "no"
+    assert apply_street_setup(data, [{"way": 110, "oneway": False}]) == 1
+    t = data.ways[110].tags
+    assert t["oneway"] == "no" and "oneway:bus" not in t
+    # One-way with a bus lane: one traffic lane and the bus lane, all in the way's direction.
+    assert apply_street_setup(data, [{"way": 110, "oneway": True, "traffic_lanes": 1, "bus_lane": True}]) == 1
+    t = data.ways[110].tags
+    assert t["oneway"] == "yes"
+    assert t["lanes"] == "2" and t["bus:lanes"] == "yes|designated"
+    assert "lanes:backward" not in t
+
+
+def test_a_custom_layout_sets_the_lanes_of_each_direction() -> None:
+    def lane(users: list[str], d: str | None = None) -> dict[str, object]:
+        return {"kind": "lane", "users": users, "dir": d, "width": 3.1}
+
+    data = merge_tiles(tiles())
+    centre_bus = [
+        lane(["walk"]),
+        lane(["car", "taxi"], "backward"),
+        {"kind": "protection", "width": 0.5},
+        lane(["bus"], "backward"),
+        lane(["bus"], "forward"),
+        lane(["car", "taxi"], "forward"),
+        lane(["car", "taxi"], "forward"),
+        lane(["walk"]),
+    ]
+    assert apply_street_setup(data, [{"way": 110, "sections": centre_bus}]) == 1
+    t = data.ways[110].tags
+    assert t["oneway"] == "no" and t["lanes"] == "5"
+    assert t["lanes:forward"] == "3" and t["lanes:backward"] == "2"
+    # Left to right in each direction: the bus lane is on the inside, next to the centre.
+    assert t["bus:lanes:forward"] == "designated|yes|yes"
+    assert t["bus:lanes:backward"] == "designated|yes"
+    assert "motor_vehicle" not in t
+
+    tram_only = [lane(["walk"]), lane(["tram"], "backward"), lane(["tram"], "forward"), lane(["walk"])]
+    apply_street_setup(data, [{"way": 110, "sections": tram_only}])
+    t = data.ways[110].tags
+    assert t["motor_vehicle"] == "no" and t["bus"] == "no"
+    assert "lanes" not in t
+
+
 def test_on_the_left_the_bus_lane_is_the_leftmost() -> None:
     data = merge_tiles(tiles())
     apply_street_setup(data, [{"way": 110, "bus_lane": True}], left_hand=True)

@@ -5,6 +5,7 @@
 //! returns the lane and junction shapes with the project's street setups applied, as JSON
 //! (`street_geometry::Geometry`). It only draws: routing stays in `street-routing-wasm`.
 
+use street_geometry::DrivingSide;
 use street_routing::osm::OsmData;
 use street_routing::{parse_osm_xml, StreetSetup};
 use wasm_bindgen::prelude::*;
@@ -37,12 +38,18 @@ impl StreetGeometry {
     }
 
     /// Purpose: the lane and junction shapes of the streets loaded, with the street setups applied.
-    /// Inputs: the project's street setups as JSON (`StreetSetup[]`).
+    /// Inputs: the project's street setups as JSON (`StreetSetup[]`); the side traffic drives on
+    /// (`right` or `left`, Project preferences; anything else takes it from the country).
     /// Output: `street_geometry::Geometry` as JSON.
-    pub fn build(&self, setups_json: &str) -> Result<String, JsError> {
+    pub fn build(&self, setups_json: &str, driving_side: &str) -> Result<String, JsError> {
         let setups: Vec<StreetSetup> =
             serde_json::from_str(setups_json).map_err(|e| JsError::new(&e.to_string()))?;
-        let g = street_geometry::build(&self.data, &setups).map_err(|e| JsError::new(&e))?;
+        let side = match driving_side {
+            "right" => Some(DrivingSide::Right),
+            "left" => Some(DrivingSide::Left),
+            _ => None,
+        };
+        let g = street_geometry::build(&self.data, &setups, side).map_err(|e| JsError::new(&e))?;
         serde_json::to_string(&g).map_err(|e| JsError::new(&e.to_string()))
     }
 }

@@ -3,6 +3,7 @@
  * worker/src/mobsim_worker/jobs/road): the scenario the panel builds, the result and the replay.
  */
 import type { LonLat, Mode } from "../street-lines/types";
+import type { Section } from "../street-setup/types";
 
 export type Energy = "battery" | "trolleybus" | "other";
 
@@ -60,8 +61,10 @@ export interface RoadScenario {
   depots: RoadDepot[];
   streets: {
     way: number;
+    oneway?: boolean | null;
     traffic_lanes?: number | null;
     bus_lane?: boolean | null;
+    sections?: Section[] | null;
     cars_morning_peak?: number | null;
     cars_evening_peak?: number | null;
   }[];

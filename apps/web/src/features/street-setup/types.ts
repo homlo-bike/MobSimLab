@@ -5,12 +5,39 @@ import type { LonLat } from "../street-lines/types";
 /** How a tram along the street shares it with road traffic. */
 export type TramShare = "own_lane" | "mixed";
 
+/** What a section of a street laid out by the planner is (Rust `street_routing::SectionKind`). */
+export type SectionKind = "lane" | "parking" | "island" | "green" | "protection";
+
+/** Who may use a lane (Rust `street_routing::RoadUser`). More than one is mixed traffic. */
+export type RoadUser = "car" | "bus" | "tram" | "bike" | "taxi" | "walk";
+
+/** Which way a lane runs along the OSM way as drawn. */
+export type SectionDir = "forward" | "backward" | "both";
+
+/** One strip of a street laid out section by section (Rust `street_routing::Section`). */
+export interface Section {
+  kind: SectionKind;
+  /** Who may use it (lanes only). */
+  users?: RoadUser[];
+  /** Which way it runs (lanes vehicles or bikes use); `null`: both ways. */
+  dir?: SectionDir | null;
+  /** Width, m. */
+  width: number;
+  /** How a protection, island or green strip is built or planted (`kerb`, `trees`...). */
+  style?: string | null;
+}
+
 /**
  * One street (OSM way) as the planner set it up. `null` or a missing field keeps what OpenStreetMap
  * says. `name` and `at` are for the list in the GIS tab; the engines ignore them.
  */
 export interface StreetSetup {
   way: number;
+  /**
+   * One-way (`true`) or two-way (`false`) for road traffic. A street made one-way keeps the direction OSM
+   * gives a one-way street, else runs the way the street is drawn in OSM.
+   */
+  oneway?: boolean | null;
   /** General traffic lanes over both directions, not counting bus or tram lanes. */
   traffic_lanes?: number | null;
   /** A bus lane in each direction of travel. */
@@ -21,6 +48,11 @@ export interface StreetSetup {
   separated?: boolean | null;
   /** A tram along this street: own lane or mixed traffic. */
   tram?: TramShare | null;
+  /**
+   * The street laid out section by section (custom layout), left to right looking along the way. When set
+   * it replaces OSM's lanes and the lane fields above.
+   */
+  sections?: Section[] | null;
   /**
    * Cars per hour in each direction in the morning peak (the shared peak windows), for the road
    * simulation's background traffic. Unset: the default for the road type (`peakCarsDefault`).

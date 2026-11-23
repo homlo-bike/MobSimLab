@@ -16,7 +16,7 @@ Saved runs work as in [Run on the server and save](simulator.md#run-on-the-serve
 
 ## What it simulates
 
-- **Streets.** The OpenStreetMap streets around the lines and depots, with 600 m of room, as the GIS tab loads them. The street setup of the GIS tab is applied first: the number of traffic lanes, and a bus lane on the kerb side of each direction. Traffic lights come from OpenStreetMap; SUMO times them (actuated signals).
+- **Streets.** The OpenStreetMap streets around the lines and depots, with 600 m of room, as the GIS tab loads them. The street setup of the GIS tab is applied first: one-way or two-way, the number of traffic lanes, and a bus lane on the kerb side of each direction; or a custom layout, with its own lanes in each direction, its bus lanes where they are, and no cars where it has no lane for them. Traffic lights come from OpenStreetMap; SUMO times them (actuated signals).
 - **Depots.** The depot layout of each depot the lines use: its gates, aisles and lanes, joined to the nearest street. Each vehicle leaves from the slot the depot tool gives it and parks back in it.
 - **Vehicles.** Each line's vehicle (length, width, top speed, weight) from the street line tool. The line's departures in the period (and the service before it) go to the fewest vehicles that can run them, each taking the next trip it is back in time for. A vehicle drives its pull-out run from the depot, its trips round the line's circuit from the first end stop, and its pull-in run back.
 - **Stops.** At every stop the vehicle stands for the line's **dwell** time (street line tool, timing). At the end stops it also waits for its planned departure. Dwell does not depend on passengers yet.

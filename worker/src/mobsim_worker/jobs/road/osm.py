@@ -113,6 +113,8 @@ def _int_tag(v: str | None) -> int | None:
 
 
 def _oneway(t: dict[str, str]) -> bool:
+    if t.get("oneway") in ("no", "false", "0"):
+        return False
     return t.get("oneway") in ("yes", "1", "true", "-1") or t.get("junction") == "roundabout"
 
 
@@ -130,17 +132,86 @@ def _bus_lane_count(t: dict[str, str]) -> int:
     return n
 
 
+def _moves(s: dict[str, Any]) -> bool:
+    return s.get("kind") == "lane" and any(u != "walk" for u in s.get("users") or [])
+
+
+def _goes(s: dict[str, Any], forward: bool) -> bool:
+    d = s.get("dir") or "both"
+    return _moves(s) and (d == "both" or d == ("forward" if forward else "backward"))
+
+
+def _apply_sections(t: dict[str, str], sections: Sequence[dict[str, Any]]) -> None:
+    """Write a custom street layout (``StreetSetup.sections``) as OSM lane tags, as ``street-routing`` does.
+
+    Lanes cars may use are general lanes; lanes of buses (or taxis) without cars are bus lanes. A street
+    without car lanes is closed to motor traffic (buses still allowed on their lanes).
+    """
+
+    def has(s: dict[str, Any], u: str) -> bool:
+        return s.get("kind") == "lane" and u in (s.get("users") or [])
+
+    def road_lane(s: dict[str, Any]) -> bool:
+        return has(s, "car") or has(s, "bus") or has(s, "taxi")
+
+    fwd = [s for s in sections if _goes(s, True) and road_lane(s)]
+    # OSM lists the backward lanes left to right looking backward: the way's order reversed.
+    bwd = [s for s in reversed(sections) if _goes(s, False) and road_lane(s)]
+    cars = (any(has(s, "car") for s in fwd), any(has(s, "car") for s in bwd))
+    bus = (any(has(s, "bus") for s in fwd), any(has(s, "bus") for s in bwd))
+    f, b = cars if any(cars) else bus
+    for k in [
+        k
+        for k in t
+        if k.startswith(
+            ("oneway", "lanes", "turn:lanes", "busway", "bus:lanes", "psv:lanes", "access:lanes", "cycleway")
+        )
+        or k in ("width", "width:carriageway")
+    ]:
+        del t[k]
+    t["oneway"] = "yes" if f and not b else "-1" if b and not f else "no"
+    if any(cars) and ((bus[0] and not f) or (bus[1] and not b)):
+        t["oneway:bus"] = "no"
+    if not any(cars):
+        t["motor_vehicle"] = "no"
+    if any(bus):
+        if not any(cars):
+            t["bus"] = "yes"
+    else:
+        t["bus"] = t["psv"] = "no"
+
+    def access(lanes: list[dict[str, Any]]) -> str:
+        return "|".join("yes" if has(s, "car") else "designated" for s in lanes)
+
+    if fwd or bwd:
+        t["lanes"] = str(len(fwd) + len(bwd))
+    if t["oneway"] == "no":
+        t["lanes:forward"] = str(len(fwd))
+        t["lanes:backward"] = str(len(bwd))
+        if any(not has(s, "car") for s in fwd):
+            t["bus:lanes:forward"] = access(fwd)
+        if any(not has(s, "car") for s in bwd):
+            t["bus:lanes:backward"] = access(bwd)
+    else:
+        one = fwd if t["oneway"] == "yes" else bwd
+        if any(not has(s, "car") for s in one):
+            t["bus:lanes"] = access(one)
+
+
 def apply_street_setup(data: OsmData, setups: Sequence[dict[str, Any]], left_hand: bool = False) -> int:
     """Change way tags as the planner set the streets up in the GIS tab (``StreetSetup``).
 
-    ``traffic_lanes`` counts general traffic lanes over both directions, without bus lanes; ``bus_lane`` is a
+    ``oneway`` makes the street one-way (``True``: the direction OSM gives a one-way street, else the
+    way's own direction) or two-way (``False``) for all traffic. ``traffic_lanes`` counts general traffic
+    lanes over both directions, without bus lanes; ``bus_lane`` is a
     bus lane on the kerb side of each direction. Both are written as OSM lane tags (``lanes``,
     ``lanes:forward``/``backward``, ``bus:lanes:*``) that netconvert reads with ``--osm.lane-access``.
-    Unset fields keep what OpenStreetMap says.
+    Unset fields keep what OpenStreetMap says. A custom layout (``sections``: the street section by
+    section, left to right along the way) replaces all of them (see ``_apply_sections``).
 
     Args:
         data: The merged OSM data, changed in place.
-        setups: Street setups: ``way`` and the optional ``traffic_lanes``, ``bus_lane``.
+        setups: Street setups: ``way`` and the optional ``oneway``, ``traffic_lanes``, ``bus_lane``.
         left_hand: Traffic drives on the left (the kerb lane is the leftmost in OSM's lane order).
 
     Returns:
@@ -153,9 +224,23 @@ def apply_street_setup(data: OsmData, setups: Sequence[dict[str, Any]], left_han
             continue
         lanes = s.get("traffic_lanes")
         bus = s.get("bus_lane")
-        if not (isinstance(lanes, int | float) and lanes >= 1) and not isinstance(bus, bool):
-            continue
+        direction = s.get("oneway")
         t = w.tags
+        sections = s.get("sections")
+        if isinstance(sections, list):
+            _apply_sections(t, sections)
+            changed += 1
+            continue
+        if isinstance(direction, bool):
+            if direction and not _oneway(t):
+                t["oneway"] = "yes"
+            elif not direction:
+                for k in [k for k in t if k.startswith("oneway")]:
+                    del t[k]
+                t["oneway"] = "no"
+        if not (isinstance(lanes, int | float) and lanes >= 1) and not isinstance(bus, bool):
+            changed += isinstance(direction, bool)
+            continue
         one = _oneway(t)
         had_bus = _bus_lane_count(t)
         if isinstance(lanes, int | float) and lanes >= 1:

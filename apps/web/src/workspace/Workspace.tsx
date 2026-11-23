@@ -1344,6 +1344,7 @@ export function Workspace({
                 onChange={changeSetups}
                 editable={editable}
                 delays={delays}
+                trafficSide={streetRules.traffic_side}
               />
             </Suspense>
           )}

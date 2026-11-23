@@ -87,6 +87,27 @@ describe("road scenario", () => {
     expect(roadScenario.safeParse(scenario({ lines: [] })).success).toBe(false);
   });
 
+  it("takes a street laid out section by section, and refuses an unknown road user", () => {
+    const laid = scenario({
+      streets: [
+        {
+          way: 110,
+          sections: [
+            { kind: "lane", users: ["walk"], width: 3 },
+            { kind: "lane", users: ["bus", "taxi"], dir: "backward", width: 3.3 },
+            { kind: "green", width: 2.5, style: "trees" },
+            { kind: "lane", users: ["car", "bus"], dir: "forward", width: 3.1 },
+          ],
+        },
+      ],
+    });
+    expect(roadScenario.safeParse(laid).success).toBe(true);
+    const bad = scenario({
+      streets: [{ way: 110, sections: [{ kind: "lane", users: ["horse" as "car"], width: 3 }] }],
+    });
+    expect(roadScenario.safeParse(bad).success).toBe(false);
+  });
+
   it("refuses an unknown vehicle energy", () => {
     const bad = scenario();
     (bad.lines[0]!.vehicle as { energy: string }).energy = "hydrogen";

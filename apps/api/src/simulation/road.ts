@@ -119,18 +119,33 @@ const depot = z.object({
 
 const peak = z.number().int().min(0).max(8000).nullable().optional();
 
+/** One strip of a street laid out section by section (`street_routing::Section`). */
+const section = z.object({
+  kind: z.enum(["lane", "parking", "island", "green", "protection"]),
+  users: z
+    .array(z.enum(["car", "bus", "tram", "bike", "taxi", "walk"]))
+    .max(6)
+    .optional(),
+  dir: z.enum(["forward", "backward", "both"]).nullable().optional(),
+  width: z.number().min(0).max(50),
+  style: z.string().max(20).nullable().optional(),
+});
+
 /** What the simulator panel builds from the project for a road run. */
 export const roadScenario = z.object({
   driving_side: z.enum(["right", "left"]),
   lines: z.array(line).min(1).max(200),
   depots: z.array(depot).max(100),
-  /** The GIS tab's street setup (`StreetSetup`): lanes, bus lanes and traffic peaks per OSM way. */
+  /** The GIS tab's street setup (`StreetSetup`): direction, lanes, bus lanes or a custom layout, and traffic peaks per OSM way. */
   streets: z
     .array(
       z.object({
         way: z.number().int().positive(),
+        oneway: z.boolean().nullable().optional(),
         traffic_lanes: z.number().int().min(1).max(12).nullable().optional(),
         bus_lane: z.boolean().nullable().optional(),
+        /** A custom layout: replaces the street's lanes, direction and bus lanes. */
+        sections: z.array(section).max(60).nullable().optional(),
         cars_morning_peak: peak,
         cars_evening_peak: peak,
       }),

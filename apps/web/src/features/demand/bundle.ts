@@ -14,6 +14,7 @@ import { type BuildingIn, catchment, classify, type CountryFigures, type PlaceIn
 import { paramValue } from "../benefits/params";
 import { inRing, type LonLat, type Region, regionAt, ringAreaM2, ringCentre } from "../benefits/regions";
 import type { PreferencesDoc } from "../../workspace/preferences";
+import type { Section } from "../street-setup/types";
 import { demandValue } from "./params";
 import { type DemandZone, type ZoneField, type ZoneValues, zoneCentre, zoneKm2 } from "./zones";
 
@@ -50,10 +51,13 @@ export interface StopAccess {
 /** A street setup from the GIS tab as the demand model reads it (contracts/demand-input.schema.json). */
 export interface BundleStreetSetup {
   way: number;
+  oneway?: boolean | null;
   traffic_lanes?: number | null;
   bus_lane?: boolean | null;
   bike_lane?: boolean | null;
   separated?: boolean | null;
+  /** A custom layout, section by section: replaces the fields above. */
+  sections?: Section[] | null;
 }
 
 /** Farthest a drawn stop may be from a timetable stop to give it its step-free access, m. */
@@ -422,13 +426,22 @@ export function makeBundle(
   streetSetups: readonly BundleStreetSetup[] = [],
 ): { bundle: Bundle; summary: { zones: number; stops: number; lines: number } } {
   const setups = streetSetups
-    .filter((s) => s.traffic_lanes != null || s.bus_lane != null || s.bike_lane != null)
+    .filter(
+      (s) =>
+        s.sections != null ||
+        s.oneway != null ||
+        s.traffic_lanes != null ||
+        s.bus_lane != null ||
+        s.bike_lane != null,
+    )
     .map((s) => ({
       way: s.way,
+      oneway: s.oneway ?? null,
       traffic_lanes: s.traffic_lanes ?? null,
       bus_lane: s.bus_lane ?? null,
       bike_lane: s.bike_lane ?? null,
       separated: s.separated ?? null,
+      ...(s.sections ? { sections: s.sections } : {}),
     }));
   return {
     bundle: { version: 1, zones, transit, economy, ...(setups.length ? { street_setups: setups } : {}) },

@@ -179,8 +179,10 @@ export function buildScenario(input: {
       depots,
       streets: input.setups.map((s) => ({
         way: s.way,
+        oneway: s.oneway ?? null,
         traffic_lanes: s.traffic_lanes ?? null,
         bus_lane: s.bus_lane ?? null,
+        sections: s.sections ?? null,
         cars_morning_peak: s.cars_morning_peak ?? null,
         cars_evening_peak: s.cars_evening_peak ?? null,
       })),

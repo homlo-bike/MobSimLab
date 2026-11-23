@@ -227,6 +227,56 @@ fn stop_on_the_wrong_side_of_a_one_way_street_is_an_error() {
 }
 
 #[test]
+fn the_planner_can_make_a_street_one_way_or_two_way() {
+    let mut o = Osm::new();
+    o.node(1, 0.0, 0.0, &[]);
+    o.node(2, 400.0, 0.0, &[]);
+    let way = o.way(&[1, 2], &[("highway", "primary"), ("oneway", "yes")]);
+    let xml = format!(r#"<osm version="0.6">{}{}</osm>"#, o.nodes, o.ways);
+    let graph_with = |setup: Option<bool>| {
+        let mut data = parse_osm_xml(&xml).unwrap();
+        let s = street_routing::StreetSetup {
+            way,
+            oneway: setup,
+            ..Default::default()
+        };
+        street_routing::apply_setups(&mut data, &[s]);
+        RoadGraph::from_osm(&data).unwrap()
+    };
+    // North side of an eastbound one-way street: no bus can serve it…
+    let stop_north = |g: &RoadGraph| {
+        let mut line = StreetLine::new(bus(), RoutingRules::default());
+        let s = add(&mut line, g, 200.0, 6.0, PointKind::Stop);
+        add(&mut line, g, 50.0, 0.0, PointKind::Via);
+        line.anchor(s).is_some()
+    };
+    assert!(!stop_north(&graph_with(None)));
+    assert!(!stop_north(&graph_with(Some(true))));
+    // …until the planner makes the street two-way: westbound buses now stop there.
+    assert!(stop_north(&graph_with(Some(false))));
+}
+
+#[test]
+fn a_two_way_street_made_one_way_runs_the_way_it_is_drawn() {
+    // High Street is drawn west to east. Westbound buses keep right: they stop on its north side.
+    let north_stop = |g: &RoadGraph| {
+        let mut line = StreetLine::new(bus(), RoutingRules::default());
+        let s = add(&mut line, g, 300.0, 6.0, PointKind::Stop);
+        add(&mut line, g, 100.0, 0.0, PointKind::Via);
+        line.anchor(s).is_some()
+    };
+    let (g, high) = main_road_graph(&[]);
+    assert!(north_stop(&g));
+    let one_way = street_routing::StreetSetup {
+        way: high,
+        oneway: Some(true),
+        ..Default::default()
+    };
+    let (g1, _) = main_road_graph(&[one_way]);
+    assert!(!north_stop(&g1));
+}
+
+#[test]
 fn dead_end_needs_a_turning_circle() {
     let build = |turning: bool| {
         let mut o = grid();
@@ -818,4 +868,128 @@ fn point_on_the_far_half_of_a_divided_road_is_flagged() {
     );
     let right = leg0(false);
     assert_eq!(right.status, Status::Ok, "{:?}", right.message);
+}
+
+/// A street laid out section by section: general traffic, a bus lane or no buses at all.
+fn laid_out(way: i64, sections: Vec<street_routing::Section>) -> street_routing::StreetSetup {
+    street_routing::StreetSetup {
+        way,
+        sections: Some(sections),
+        ..Default::default()
+    }
+}
+
+fn section(
+    users: &[street_routing::RoadUser],
+    dir: street_routing::SectionDir,
+) -> street_routing::Section {
+    street_routing::Section {
+        kind: street_routing::SectionKind::Lane,
+        users: users.to_vec(),
+        dir: Some(dir),
+        width: 3.1,
+        style: None,
+    }
+}
+
+fn strip(kind: street_routing::SectionKind) -> street_routing::Section {
+    street_routing::Section {
+        kind,
+        users: Vec::new(),
+        dir: None,
+        width: 0.5,
+        style: None,
+    }
+}
+
+#[test]
+fn a_custom_layout_sets_how_fast_buses_run_and_whether_they_can_use_the_street() {
+    use street_routing::{RoadUser::*, SectionDir::*, SectionKind};
+    let (g, high) = main_road_graph(&[]);
+    let base = high_street_line(&g).view(&g);
+
+    // General traffic both ways, buses in it: the same delay as OSM's street.
+    let mixed = laid_out(
+        high,
+        vec![
+            section(&[Walk], Both),
+            section(&[Car, Bus, Taxi], Backward),
+            section(&[Car, Bus, Taxi], Forward),
+            section(&[Walk], Both),
+        ],
+    );
+    let (g1, _) = main_road_graph(&[mixed]);
+    let v1 = high_street_line(&g1).view(&g1);
+    assert!((v1.traffic_delay_s - base.traffic_delay_s).abs() < 1.0);
+
+    // Bus lanes in the middle behind kerbs: no delay from the traffic.
+    let centre = laid_out(
+        high,
+        vec![
+            section(&[Car], Backward),
+            strip(SectionKind::Protection),
+            section(&[Bus], Backward),
+            strip(SectionKind::Island),
+            section(&[Bus], Forward),
+            strip(SectionKind::Protection),
+            section(&[Car], Forward),
+        ],
+    );
+    let (g2, _) = main_road_graph(&[centre]);
+    let v2 = high_street_line(&g2).view(&g2);
+    assert!(v2.bus_lane_m >= 400.0, "{}", v2.bus_lane_m);
+    assert!(v2.traffic_delay_s.abs() < 1e-9, "{}", v2.traffic_delay_s);
+    assert!(v2.time_s < base.time_s);
+
+    // Buses only, no cars: no traffic to hold them up.
+    let busway = laid_out(
+        high,
+        vec![section(&[Bus], Backward), section(&[Bus], Forward)],
+    );
+    let (g3, _) = main_road_graph(&[busway]);
+    let v3 = high_street_line(&g3).view(&g3);
+    assert!(v3.traffic_delay_s.abs() < 1e-9, "{}", v3.traffic_delay_s);
+
+    // Trams and people only: buses cannot use High Street any more.
+    let tram = laid_out(
+        high,
+        vec![
+            section(&[Walk], Both),
+            section(&[Tram], Backward),
+            section(&[Tram], Forward),
+            section(&[Walk], Both),
+        ],
+    );
+    let (g4, _) = main_road_graph(&[tram]);
+    let usable = |g: &RoadGraph| {
+        g.usable_roads_geojson(&bus())
+            .matches("\"Feature\"")
+            .count()
+    };
+    assert!(usable(&g4) < usable(&g3), "{} {}", usable(&g4), usable(&g3));
+}
+
+#[test]
+fn a_custom_layout_with_cars_one_way_and_buses_both_ways() {
+    use street_routing::{RoadUser::*, SectionDir::*};
+    // Westbound buses keep right on the north side of High Street (drawn west to east).
+    let north_stop = |g: &RoadGraph| {
+        let mut line = StreetLine::new(bus(), RoutingRules::default());
+        let s = add(&mut line, g, 300.0, 6.0, PointKind::Stop);
+        add(&mut line, g, 100.0, 0.0, PointKind::Via);
+        line.anchor(s).is_some()
+    };
+    let (_, high) = main_road_graph(&[]);
+    let cars_east = laid_out(
+        high,
+        vec![section(&[Car, Bus], Forward), section(&[Car, Bus], Forward)],
+    );
+    let (g1, _) = main_road_graph(&[cars_east]);
+    assert!(!north_stop(&g1));
+    let contraflow = laid_out(
+        high,
+        vec![section(&[Bus], Backward), section(&[Car, Bus], Forward)],
+    );
+    let (g2, _) = main_road_graph(&[contraflow]);
+    assert!(north_stop(&g2));
 }
