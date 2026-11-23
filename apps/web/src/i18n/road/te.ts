@@ -43,6 +43,7 @@ export const roadTe = {
   "road.back": "డిపోకు తిరిగి: {total} లో {n}",
   "road.teleports": "టెలిపోర్ట్‌లు: {n}",
   "road.gridlocks": "పూర్తి జామ్‌లు: {n}",
+  "road.collisions": "ఢీకొనడాలు: {n}",
   "road.cars": "నేపథ్య కార్లు: {n}",
   "road.speedup": "నిజ సమయం కంటే {x}× వేగంగా",
   "road.network": "రహదారి నెట్‌వర్క్: {km} కి.మీ, {signals} సిగ్నళ్లు",

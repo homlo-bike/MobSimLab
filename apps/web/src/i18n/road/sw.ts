@@ -43,6 +43,7 @@ export const roadSw = {
   "road.back": "Wamerudi bohari: {n} kati ya {total}",
   "road.teleports": "Uhamisho wa ghafla: {n}",
   "road.gridlocks": "Misongamano iliyokwama: {n}",
+  "road.collisions": "Migongano: {n}",
   "road.cars": "Magari ya nyuma: {n}",
   "road.speedup": "Kasi mara {x}× ya muda halisi",
   "road.network": "Mtandao wa barabara: km {km}, taa {signals} za barabarani",

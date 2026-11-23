@@ -44,6 +44,7 @@ export const roadFr = {
   "road.back": "De retour au dépôt : {n} sur {total}",
   "road.teleports": "Téléportations : {n}",
   "road.gridlocks": "Blocages : {n}",
+  "road.collisions": "Collisions : {n}",
   "road.cars": "Voitures de fond : {n}",
   "road.speedup": "{x}× plus rapide que le temps réel",
   "road.network": "Réseau routier : {km} km, {signals} feux",

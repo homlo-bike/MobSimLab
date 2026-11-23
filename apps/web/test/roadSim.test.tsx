@@ -377,7 +377,7 @@ const RESULT: RoadResult = {
     from_s: 7 * H,
     to_s: 9 * H,
     teleports: 0,
-    collisions: 0,
+    collisions: 6,
     background_inserted: 1379,
     vehicles: 3,
     back_in_depot: 3,
@@ -512,6 +512,7 @@ describe("RoadSimulation", () => {
     fireEvent.click(await screen.findByRole("button", { name: /07:00–09:00 · Bus 1/ }));
     expect(await screen.findByText("Back in the depot: 3 of 3")).toBeTruthy();
     expect(screen.getByText("Background cars: 1379")).toBeTruthy();
+    expect(screen.getByText("Collisions: 6")).toBeTruthy();
     expect(screen.getByText("82 %")).toBeTruthy();
     expect(screen.getByText("Bus 1, vehicle 3: stuck for 5 minutes at 07:30")).toBeTruthy();
     expect(await screen.findByRole("button", { name: "Play" })).toBeTruthy();

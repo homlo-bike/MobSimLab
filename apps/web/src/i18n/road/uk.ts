@@ -43,6 +43,7 @@ export const roadUk = {
   "road.back": "Повернулися в депо: {n} з {total}",
   "road.teleports": "Телепортації: {n}",
   "road.gridlocks": "Затори: {n}",
+  "road.collisions": "Зіткнення: {n}",
   "road.cars": "Фонові автомобілі: {n}",
   "road.speedup": "У {x}× швидше за реальний час",
   "road.network": "Мережа: {km} км, {signals} світлофорів",

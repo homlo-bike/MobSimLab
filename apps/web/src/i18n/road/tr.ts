@@ -43,6 +43,7 @@ export const roadTr = {
   "road.back": "Garaja dönen: {n} / {total}",
   "road.teleports": "Işınlanmalar: {n}",
   "road.gridlocks": "Kilitlenmeler: {n}",
+  "road.collisions": "Çarpışmalar: {n}",
   "road.cars": "Arka plan araçları: {n}",
   "road.speedup": "Gerçek zamandan {x}× hızlı",
   "road.network": "Yol ağı: {km} km, {signals} trafik ışığı",

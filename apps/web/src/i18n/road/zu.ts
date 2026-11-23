@@ -43,6 +43,7 @@ export const roadZu = {
   "road.back": "Zibuyele edepho: {n} kwangu-{total}",
   "road.teleports": "Ukudluliselwa ngokushesha: {n}",
   "road.gridlocks": "Ukuminyana okuphelele: {n}",
+  "road.collisions": "Ukushayisana: {n}",
   "road.cars": "Izimoto zangemuva: {n}",
   "road.speedup": "Kushesha izikhathi ezingu-{x}× kunesikhathi sangempela",
   "road.network": "Inethiwekhi yemigwaqo: {km} km, amarobhothi angu-{signals}",

@@ -43,6 +43,7 @@ export const roadId = {
   "road.back": "Kembali di depo: {n} dari {total}",
   "road.teleports": "Teleportasi: {n}",
   "road.gridlocks": "Kemacetan total: {n}",
+  "road.collisions": "Tabrakan: {n}",
   "road.cars": "Mobil latar: {n}",
   "road.speedup": "{x}× lebih cepat dari waktu nyata",
   "road.network": "Jaringan jalan: {km} km, {signals} lampu lalu lintas",

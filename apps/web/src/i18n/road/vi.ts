@@ -43,6 +43,7 @@ export const roadVi = {
   "road.back": "Đã về bãi: {n} / {total}",
   "road.teleports": "Dịch chuyển tức thời: {n}",
   "road.gridlocks": "Tắc nghẽn hoàn toàn: {n}",
+  "road.collisions": "Va chạm: {n}",
   "road.cars": "Xe nền: {n}",
   "road.speedup": "Nhanh hơn thời gian thực {x}×",
   "road.network": "Mạng lưới đường: {km} km, {signals} đèn tín hiệu",

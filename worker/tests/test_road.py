@@ -10,7 +10,14 @@ from typing import Any
 import pytest
 from road_fixture import depot, line, tiles
 
-from mobsim_worker.jobs.road.osm import OsmData, Way, apply_junction_setup, apply_street_setup, merge_tiles
+from mobsim_worker.jobs.road.osm import (
+    OsmData,
+    Way,
+    apply_junction_setup,
+    apply_street_setup,
+    mapped_signals,
+    merge_tiles,
+)
 from mobsim_worker.jobs.road.service import blocks, planned_offsets
 from mobsim_worker.jobs.road.traffic import intervals, way_rate
 
@@ -54,6 +61,14 @@ def test_junction_setup_adds_lights_or_removes_them_with_the_approach_signals() 
     d = _cross({1: sig})
     assert apply_junction_setup(d, [{"nodes": [999], "signals": False}, {"nodes": [1]}]) == (0, 0)
     assert d.nodes[1][2] == sig
+
+
+def test_the_lights_mapped_on_the_streets_are_counted() -> None:
+    sig = {"highway": "traffic_signals"}
+    assert mapped_signals(_cross({})) == 0
+    d = _cross({1: sig, 2: {"crossing": "traffic_signals"}})
+    d.nodes[99] = (1.0, 1.0, dict(sig))  # on no street: not counted
+    assert mapped_signals(d) == 2
 
 
 def test_street_setup_adds_a_kerb_bus_lane_each_way() -> None:
@@ -193,6 +208,9 @@ def test_a_line_runs_out_of_its_depot_and_back_in_traffic(tmp_path: Path) -> Non
     assert rec.steps[:3] == ["network", "planning", "traffic"]
     run = result["run"]
     assert run["teleports"] == 0
+    # The test town maps one traffic light: it is counted and built, and no "no lights" note is given.
+    assert result["network"]["osm_signals"] >= 1 and result["network"]["signals"] >= 1
+    assert not any("no traffic lights" in n for n in result["notes"])
     assert run["background_inserted"] > 0
     assert run["vehicles"] >= 1 and run["back_in_depot"] == run["vehicles"]
     ln = result["lines"][0]

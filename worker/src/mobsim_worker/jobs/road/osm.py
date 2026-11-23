@@ -284,8 +284,15 @@ def apply_street_setup(data: OsmData, setups: Sequence[dict[str, Any]], left_han
 APPROACH_SIGNAL_M = 30.0
 
 
-def _signal_tagged(tags: dict[str, str]) -> bool:
+def signal_tagged(tags: dict[str, str]) -> bool:
+    """Whether a node is mapped as traffic lights (``highway=traffic_signals`` or a crossing with lights)."""
     return tags.get("highway") == "traffic_signals" or tags.get("crossing") == "traffic_signals"
+
+
+def mapped_signals(data: OsmData) -> int:
+    """Count the nodes mapped as traffic lights on the streets (what netconvert turns into lights)."""
+    used = {n for w in data.ways.values() for n in w.nodes}
+    return sum(1 for n in used if signal_tagged(data.nodes[n][2]))
 
 
 def apply_junction_setup(data: OsmData, setups: Sequence[dict[str, Any]]) -> tuple[int, int]:
@@ -335,7 +342,7 @@ def apply_junction_setup(data: OsmData, setups: Sequence[dict[str, Any]]) -> tup
                         drop.add(w.nodes[j])
         for n in drop:
             tags = data.nodes[n][2]
-            if not _signal_tagged(tags):
+            if not signal_tagged(tags):
                 continue
             if tags.get("highway") == "traffic_signals":
                 del tags["highway"]

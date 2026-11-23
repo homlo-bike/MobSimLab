@@ -43,6 +43,7 @@ export const roadMr = {
   "road.back": "डेपोत परत: {total} पैकी {n}",
   "road.teleports": "टेलिपोर्ट: {n}",
   "road.gridlocks": "पूर्ण कोंडी: {n}",
+  "road.collisions": "धडका: {n}",
   "road.cars": "पार्श्वभूमी गाड्या: {n}",
   "road.speedup": "वास्तविक वेळेपेक्षा {x}× वेगवान",
   "road.network": "रस्ते नेटवर्क: {km} किमी, {signals} सिग्नल",
