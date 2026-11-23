@@ -111,6 +111,46 @@ export function regionsHolding(
   return out.sort((a, b2) => a.bboxKm2 - b2.bboxKm2);
 }
 
+/** Geofabrik's continents: a polygon is never downloaded as a whole continent, only as the countries it reaches. */
+export const CONTINENTS = new Set([
+  "africa",
+  "antarctica",
+  "asia",
+  "australia-oceania",
+  "central-america",
+  "europe",
+  "north-america",
+  "south-america",
+]);
+
+/**
+ * Purpose: the regions that together hold a polygon that no single country holds (a corridor across a border):
+ * for points along its edges, about every `stepDeg`, the region holding the point, preferring one already in
+ * `chosen`, else the smallest that is not a continent. Points no such region holds (open sea) are skipped.
+ * Inputs: the parsed index, the ring, the ids already chosen for other polygons. Output: the regions, each once.
+ */
+export function regionsCovering(
+  index: { features?: IndexFeature[] },
+  ring: readonly [number, number][],
+  chosen: ReadonlySet<string> = new Set(),
+  stepDeg = 0.02,
+): GeofabrikRegion[] {
+  const pts: [number, number][] = [];
+  for (let i = 0; i + 1 < ring.length; i++) {
+    const [ax, ay] = ring[i]!;
+    const [bx, by] = ring[i + 1]!;
+    const n = Math.min(200, Math.max(1, Math.ceil(Math.hypot(bx - ax, by - ay) / stepDeg)));
+    for (let k = 0; k < n; k++) pts.push([ax + ((bx - ax) * k) / n, ay + ((by - ay) * k) / n]);
+  }
+  const out = new Map<string, GeofabrikRegion>();
+  for (const [x, y] of pts) {
+    const held = regionsHolding(index, [x, y, x, y]).filter((r) => !CONTINENTS.has(r.id));
+    const pick = held.find((r) => out.has(r.id) || chosen.has(r.id)) ?? held[0];
+    if (pick) out.set(pick.id, pick);
+  }
+  return [...out.values()];
+}
+
 export interface GeofabrikOptions {
   baseUrl: string;
   dir: string;
@@ -129,6 +169,14 @@ export class GeofabrikClient {
   /** Purpose: the regions holding a box, smallest first. Side effects: fetches the index at most daily. */
   async regions(b: [number, number, number, number]): Promise<GeofabrikRegion[]> {
     return regionsHolding(await this.loadIndex(), b);
+  }
+
+  /** Purpose: the regions that together hold a ring no single country holds (`regionsCovering`). */
+  async regionsCovering(
+    ring: readonly [number, number][],
+    chosen?: ReadonlySet<string>,
+  ): Promise<GeofabrikRegion[]> {
+    return regionsCovering(await this.loadIndex(), ring, chosen);
   }
 
   /** Purpose: one region by id, or null. */

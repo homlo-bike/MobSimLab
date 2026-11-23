@@ -676,6 +676,16 @@ export const editorsZu = {
   "schematic.showStatuses": "Izimpawu zesimo",
   "schematic.showFeatures": "Izimpawu zezinsiza zesiteshi",
   "schematic.showWater": "Ulwandle, amachibi nemifula",
+  "schematic.straightRivers": "Dweba imifula ngezinyathelo ezingu-45°",
+  "schematic.nameSize": "Usayizi wamagama eziteshi",
+  "schematic.longRuns": "Izingxenye ezinde ezingenakumisa",
+  "schematic.longRuns.off": "Njengasemhlabathini",
+  "schematic.longRuns.max": "Kuze kube izikhathi ezingu-{n} zebanga elijwayelekile",
+  "schematic.pngSmallNames":
+    "Amagama eziteshi angu-{px} px kuphela kulesi sithombe ngoba sikhawulelwe ku-8,192 px ohlangothini ngalunye. Sebenzisa i-SVG noma Phrinta ukuze uthole ikhophi ecace kakhudlwana.",
+  "schematic.printPaper": "Usayizi wekhasi {paper}: amagama eziteshi aphrintwa ngo-{pt} pt.",
+  "schematic.printSmallNames":
+    "Usayizi wekhasi {paper}: amagama eziteshi aphrintwa ngo-{pt} pt kuphela. Khulisa amagama eziteshi noma ufihle ezinye izendlalelo.",
   "schematic.showAreas": "Izindawo zemali yokugibela nezindawo ezaziwayo",
   "schematic.water": "Amanzi",
   "schematic.areas": "Izindawo zemali yokugibela nezindawo ezaziwayo",
@@ -980,6 +990,9 @@ export const editorsZu = {
   "jp.set.maxRides": "Inani eliphezulu lezimoto",
   "jp.walkNote":
     "Ukuhamba ngezinyawo kuyibanga lomugqa oqondile × 1.3 kuze kube khona inethiwekhi yokuhamba ngezinyawo. Amanani azenzakalelayo avela emtapweni wolwazi wemicabango.",
+  "jp.slopeNote":
+    "Isikhathi sokuhamba sibalwa emthambekeni ophakathi kweziphetho zakho ezimbili (umsebenzi wokuhamba kaTobler nobude bomhlaba): ukwenyuka nokwehla okuqinile kuthatha isikhathi eside.",
+  "jp.slopeNoHeights": "Ubude bomhlaba abulayishekanga, ngakho ukuhamba kubalwa njengasendaweni eyisicaba.",
   "kit.minSec": "{m} imiz {s} imizuzwana",
   "kit.checks": "Ukuhlola",
   "kit.issue": "{level}:",

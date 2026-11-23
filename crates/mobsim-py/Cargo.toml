@@ -12,6 +12,7 @@ name = "mobsim_kernels"
 crate-type = ["cdylib"]
 
 [dependencies]
+engine-msg = { path = "../engine-msg" }
 rail-model = { path = "../rail-model" }
 rail-plan = { path = "../rail-plan" }
 rail-sim = { path = "../rail-sim" }

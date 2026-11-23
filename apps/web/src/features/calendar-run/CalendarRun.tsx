@@ -45,6 +45,7 @@ import {
   weatherPlan,
   weatherSettings,
 } from "./weather";
+import { engineErrorText, noteFinding, useEngineText } from "../../i18n/engine";
 
 const STATUS_TONE: Record<RunStatus, string> = {
   queued: "bg-slate-100 text-slate-700 border-slate-300",
@@ -68,7 +69,7 @@ const VARIANT_LABEL = {
   cold: "calrun.variant.cold",
 } as const satisfies Record<Variant, string>;
 
-const message = (e: unknown) => (e instanceof Error ? e.message : String(e));
+const message = (e: unknown) => engineErrorText(e);
 
 /** Purpose: the number of switches in the railway editor's topology export (0 when it cannot be read). */
 function switchesIn(topology: string): number {
@@ -602,6 +603,7 @@ function DayCountSummary({ periods }: { periods: ReturnType<typeof periodsFor> }
 /** Purpose: a saved run: progress, then each day type's day and each period's figures. */
 function RunView({ run }: { run: CalendarRunDetail }) {
   const { t, language } = useI18n();
+  const tx = useEngineText();
   const dayLabel = useDayTypeLabel();
   const num = (v: number | null | undefined, digits = 0) =>
     v === null || v === undefined
@@ -881,8 +883,8 @@ function RunView({ run }: { run: CalendarRunDetail }) {
       </section>
       {r.notes.length > 0 && (
         <ul className="list-disc ps-5 text-xs text-slate-600">
-          {r.notes.map((n) => (
-            <li key={n}>{n}</li>
+          {r.notes.map((n, i) => (
+            <li key={i}>{tx(noteFinding(n))}</li>
           ))}
         </ul>
       )}

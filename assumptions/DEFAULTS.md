@@ -1638,6 +1638,14 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 1.2 | 1.3 | 1.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stand-in until walks are routed on the walk graph: street networks make a walk roughly 20–50 % longer than the straight line (lower in dense grids, higher with rivers, rail lines and cul-de-sacs). 1.3 is the planning value used by the journey planner (ADR-0034); replace with a cited circuity study. |
 
+### Walking on slopes: steepness term of Tobler's hiking function (journey planner; 0 = walks timed as flat)
+
+`journey.walk_slope_k` · unit: coefficient · used by: journey planner access, egress and transfer walks
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 3 | 3.5 | 4 | cited | unverified | [tobler-1993](#src-tobler-1993) | Tobler's hiking function: walking speed is 6 exp(-3.5 \|s + 0.05\|) km/h on gradient s, fastest on a 5 % downhill. The planner keeps the flat walking speed and multiplies the time by exp(k (\|s + 0.05\| - 0.05)), s being the height difference of the two ends over the walking distance, held within ±50 %. 3.5 is Tobler's value; the range of ±0.5 is an educated guess. 0 ignores slopes. |
+
 ### Journey planner: minimum time to change vehicles at the same stop
 
 `journey.min_change_s` · unit: s · used by: journey planner transfers
@@ -3805,6 +3813,7 @@ and rationale per attribute: [`switches.yaml`](switches.yaml); geometry model:
 | <a id="src-sumo-vtype"></a>`sumo-vtype` | [Eclipse SUMO documentation, Definition of Vehicles, Vehicle Types, and Routes (default minGap 2.5 m, tau 1.0 s)](https://sumo.dlr.de/docs/Definition_of_Vehicles%2C_Vehicle_Types%2C_and_Routes.html) | free | EPL-2.0 | 2026-10-27 | search-snippet |
 | <a id="src-mutcd-2009"></a>`mutcd-2009` | [Manual on Uniform Traffic Control Devices, 2009 edition, § 4E.06 (pedestrian clearance walking speed 3.5 ft/s ≈ 1.07 m/s)](https://mutcd.fhwa.dot.gov/) | free | US Government work, public domain | 2026-10-27 | none |
 | <a id="src-mutcd-2009-part8"></a>`mutcd-2009-part8` | [Manual on Uniform Traffic Control Devices, 2009 edition, Part 8 (Traffic Control for Railroad and Light Rail Transit Grade Crossings), § 8C.04 gate arms ascend to upright in not more than 12 s](https://mutcd.fhwa.dot.gov/htm/2009/part8/part8c.htm) | free | US Government work, public domain | 2026-11-02 | search-snippet |
+| <a id="src-tobler-1993"></a>`tobler-1993` | [W. Tobler, Three presentations on geographical analysis and modeling: non-isotropic geographic modeling; speculations on the geometry of geography; global spatial analysis, NCGIA Technical Report 93-1 (1993), the hiking function W = 6 exp(-3.5 \|dh/dx + 0.05\|) km/h](https://escholarship.org/uc/item/05r820mz) | free | © the author; numbers cited as facts | 2026-11-22 | none |
 | <a id="src-hcm7"></a>`hcm7` | [Highway Capacity Manual, 7th edition, pedestrian walking speeds](https://www.trb.org/Main/Blurbs/182013.aspx) | paywalled | © National Academy of Sciences; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-rast06"></a>`rast06` | [FGSV Richtlinien für die Anlage von Stadtstraßen (RASt 06), lane widths](https://www.fgsv-verlag.de/) | paywalled | © FGSV; numbers cited as facts | 2026-10-27 | none |
 | <a id="src-aashto-green-book"></a>`aashto-green-book` | [AASHTO, A Policy on Geometric Design of Highways and Streets (Green Book), 7th edition (12 ft / 3.6 m lanes)](https://store.transportation.org/) | paywalled | © AASHTO; numbers cited as facts | 2026-10-27 | none |

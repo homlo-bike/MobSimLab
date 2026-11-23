@@ -88,7 +88,7 @@ def run_capacity(
         ``{"notes", "run", "lines": [{"info", "planned", "sweep", "sweeping"}]}``.
     """
     p = json.dumps(params)
-    notes: list[str] = json.loads(kernel.notes())
+    notes: list[Any] = json.loads(kernel.notes())
     infos: list[dict[str, Any]] = json.loads(kernel.lines())
     result: dict[str, Any] = {"notes": notes, "run": None, "lines": []}
     reporter.report({"step": "planning"}, result)

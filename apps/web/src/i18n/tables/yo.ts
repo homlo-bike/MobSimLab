@@ -444,4 +444,10 @@ export const tablesYo = {
   "tt.tbl.to": "Sí",
   "tt.tbl.arrives": "Ń dé",
   "cost.outsideRange": "Ó wà lóde ààlà ibi ìkówèsí ({low}–{high}): ṣàyẹ̀wò iye náà àti ẹ̀yà rẹ̀.",
+  "tbl.unrouted.title": "Àwọn ọ̀nà ìlà òpópónà kan kò pé",
+  "tbl.unrouted.intro":
+    "A kò rí àwọn apá kan nínú ọ̀nà àwọn ìlà wọ̀nyí nígbà tí a fi wọ́n pamọ́, nítorí náà àwọn tábìlì, iye owó àti àyẹ̀wò ka wọ́n sí km 0. Ṣí ìlà kọ̀ọ̀kan nínú táàbù Ṣẹ̀dá: àwọn òpópónà rẹ̀ yóò gbé wọlé, a ó sì fi ọ̀nà tí ó pé pamọ́. Apá tí ó bá wà ní pupa nílò kí a gbé àmì kan lọ sí ọ̀nà tí ọkọ̀ lè gbà.",
+  "tbl.unrouted.legs": "Àwọn apá tí a kò rí",
+  "tbl.unrouted.runs": "Àwọn ìrìn ibùdó tí a kò rí",
+  "tbl.unrouted.leftOut": "Tí a fi sílẹ̀, ó kéré tán",
 } satisfies TablesMessages;

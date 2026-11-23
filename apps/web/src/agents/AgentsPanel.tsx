@@ -3,6 +3,7 @@ import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { formatDateTime, tNow, useI18n } from "../i18n/i18n";
 import { get, send } from "../session/api";
 import { clearScenario, type ScenarioView, showScenario } from "./scenarioLayer";
+import { engineErrorText } from "../i18n/engine";
 
 /** A registered OAuth client, as Admins see it. */
 interface AgentClient {
@@ -78,7 +79,7 @@ export function AgentsPanel({
     try {
       await f();
     } catch (e) {
-      setError((e as Error).message);
+      setError(engineErrorText(e));
     }
   }, []);
   const reload = useCallback(

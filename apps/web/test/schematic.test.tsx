@@ -1,7 +1,15 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { fileName, pngScale } from "../src/features/schematic/export";
-import { defaultOrigin, edgesOf, layout, snapToNeighbours } from "../src/features/schematic/layout";
+import { fileName, pngScale, printPaper } from "../src/features/schematic/export";
+import { labelSizeOf } from "../src/features/schematic/common";
+import { schematicRivers } from "../src/features/schematic/water";
+import {
+  defaultOrigin,
+  edgesOf,
+  layout,
+  shortenLongRuns,
+  snapToNeighbours,
+} from "../src/features/schematic/layout";
 import { layerOf, linesAt, schematicNetwork } from "../src/features/schematic/lines";
 import { bundles, octiRoute, offsetPolyline, pathD, placeLabels } from "../src/features/schematic/paths";
 import { Schematic, type SchematicDoc } from "../src/features/schematic/Schematic";
@@ -790,5 +798,149 @@ describe("strip map extras", () => {
     expect(
       isStepFree({ ...pijp, parts: pijp.parts.map((p) => ({ ...p, features: ["elevator" as const] })) }),
     ).toBe(true);
+  });
+});
+
+describe("schematic readability (Homlo's review)", () => {
+  it("shortens a long run without stops by moving the part beyond it, keeping that part's shape", () => {
+    // A line of four stations 500 m apart, and an airport 10 km beyond the last one.
+    const geo: [number, number][] = [
+      [0, 0],
+      [500, 0],
+      [1000, 0],
+      [1500, 0],
+      [11500, 0],
+      [11500, 500],
+    ];
+    const edges: [number, number][] = [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+      [3, 4],
+      [4, 5],
+    ];
+    const out = shortenLongRuns(
+      geo,
+      edges,
+      1500,
+      geo.map(() => false),
+    );
+    expect(out.slice(0, 4)).toEqual(geo.slice(0, 4));
+    expect(out[4]).toEqual([3000, 0]);
+    expect(out[5]).toEqual([3000, 500]);
+  });
+
+  it("moves the part without placed stations, and leaves runs in a loop to the layout", () => {
+    const geo: [number, number][] = [
+      [0, 0],
+      [500, 0],
+      [10500, 0],
+    ];
+    const out = shortenLongRuns(
+      geo,
+      [
+        [0, 1],
+        [1, 2],
+      ],
+      1000,
+      [false, false, true],
+    );
+    // The far station is placed by the planner: the city moves towards it instead.
+    expect(out[2]).toEqual([10500, 0]);
+    expect(out[1]![0]).toBeCloseTo(9500);
+    const loop = shortenLongRuns(
+      geo,
+      [
+        [0, 1],
+        [1, 2],
+        [0, 2],
+      ],
+      1000,
+      [false, false, false],
+    );
+    expect(loop).toEqual(geo);
+  });
+
+  it("lays out a long run no longer than the chosen number of typical sections", () => {
+    const n = schematicNetwork(null, null, [
+      {
+        id: "b2",
+        name: "B2",
+        mode: "bus",
+        color: "#16a34a",
+        stops: [
+          { name: "A", lonlat: [36.3, 33.5] },
+          { name: "B", lonlat: [36.305, 33.5] },
+          { name: "C", lonlat: [36.31, 33.5] },
+          { name: "Airport", lonlat: [36.5, 33.42] },
+        ],
+        directions: [],
+        headwayS: 600,
+      },
+    ]);
+    const origin = defaultOrigin(n);
+    const far = (pos: [number, number][]) => Math.hypot(pos[3]![0] - pos[2]![0], pos[3]![1] - pos[2]![1]);
+    const ground = layout(n, origin, {}, true, 0);
+    const short = layout(n, origin, {}, true, 3);
+    expect(far(ground.pos)).toBeGreaterThan(ground.unit * 10);
+    expect(far(short.pos)).toBeLessThan(short.unit * 3.3);
+  });
+
+  it("draws rivers at 45° steps, without side channels and short arms", () => {
+    const wiggly: [number, number][] = [];
+    for (let x = 0; x <= 5000; x += 50) wiggly.push([x, x * 0.4 + 60 * Math.sin(x / 120)]);
+    const beside = wiggly.map(([x, y]) => [x, y + 80] as [number, number]);
+    const out = schematicRivers(
+      [
+        { line: wiggly, kind: "river" },
+        { line: beside, kind: "river" },
+        {
+          line: [
+            [100, 100],
+            [200, 300],
+          ],
+          kind: "river",
+        },
+      ],
+      500,
+      [],
+    );
+    expect(out).toHaveLength(1);
+    const line = out[0]!.line;
+    expect(line.length).toBeLessThan(15);
+    for (let i = 1; i < line.length; i++)
+      expect(octi(line[i]![0] - line[i - 1]![0], line[i]![1] - line[i - 1]![1])).toBe(true);
+    expect(line[0]).toEqual(wiggly[0]);
+    expect(line[line.length - 1]).toEqual(wiggly[wiggly.length - 1]);
+  });
+
+  it("keeps the station name size in its readable range", () => {
+    expect(labelSizeOf({})).toBe(13);
+    expect(labelSizeOf({ labelSize: 4 })).toBe(10);
+    expect(labelSizeOf({ labelSize: 18.4 })).toBe(18);
+    expect(labelSizeOf({ labelSize: 99 })).toBe(32);
+  });
+
+  it("draws station names at the chosen size", () => {
+    render(
+      <Schematic
+        railway={RAILWAY}
+        streetLines={STREET_LINES}
+        doc={{ pins: {}, labels: {}, labelSize: 20 }}
+        projectName="Demo"
+      />,
+    );
+    const name = screen.getAllByText("Westpark").find((n) => n.tagName === "text")!;
+    expect(name.getAttribute("font-size")).toBe("20");
+  });
+
+  it("prints on paper large enough for readable names", () => {
+    expect(printPaper(1200, 800, 13).name).toBe("A4");
+    const big = printPaper(3000, 2000, 13);
+    expect(big.name).toBe("A2");
+    expect(big.namePt).toBeGreaterThanOrEqual(7);
+    expect(big.mm).toEqual([594, 420]);
+    expect(printPaper(30000, 20000, 10).name).toBe("A0");
+    expect(printPaper(30000, 20000, 10).namePt).toBeLessThan(7);
   });
 });

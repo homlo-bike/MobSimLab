@@ -4,6 +4,7 @@ import type { Settings } from "./types";
 const KEYS: [keyof Settings, string][] = [
   ["walk_speed_kmh", "demand.walk_speed_kmh"],
   ["walk_detour_factor", "journey.walk_detour_factor"],
+  ["walk_slope_k", "journey.walk_slope_k"],
   ["min_change_s", "journey.min_change_s"],
   ["level_change_s", "journey.level_change_s"],
 ];
@@ -18,7 +19,9 @@ export function journeySettingsFrom(
   const out: Partial<Settings> = {};
   for (const [field, key] of KEYS) {
     const v = values?.[key];
-    if (typeof v === "number" && Number.isFinite(v) && v > 0) (out as Record<string, number>)[field] = v;
+    // 0 is a real choice for the slope term (walks timed as flat); the other values must be positive.
+    const ok = field === "walk_slope_k" ? (v ?? -1) >= 0 : (v ?? 0) > 0;
+    if (typeof v === "number" && Number.isFinite(v) && ok) (out as Record<string, number>)[field] = v;
   }
   return out;
 }

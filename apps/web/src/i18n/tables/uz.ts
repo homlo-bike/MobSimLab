@@ -456,4 +456,10 @@ export const tablesUz = {
   "tt.tbl.arrives": "Yetib keladi",
   "cost.outsideRange":
     "Kutubxona oraligʻidan ({low}–{high}) tashqarida: qiymat va uning birligini tekshiring.",
+  "tbl.unrouted.title": "Ayrim koʻcha yoʻnalishlarining yoʻli toʻliq emas",
+  "tbl.unrouted.intro":
+    "Bu yoʻnalishlar yoʻlining ayrim qismlari saqlashda topilmagan, shuning uchun jadvallar, xarajatlar va baholash ularni 0 km deb hisoblaydi. Har bir yoʻnalishni Yaratish yorligʻida oching: uning koʻchalari yuklanadi va toʻldirilgan yoʻl saqlanadi. Qizilligicha qolgan qism uchun nuqtani transport yura oladigan yoʻlga suring.",
+  "tbl.unrouted.legs": "Topilmagan qismlar",
+  "tbl.unrouted.runs": "Topilmagan depo qatnovlari",
+  "tbl.unrouted.leftOut": "Hisobga olinmagan, kamida",
 } satisfies TablesMessages;

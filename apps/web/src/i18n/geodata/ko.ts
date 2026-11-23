@@ -14,7 +14,7 @@ export const geodataKo = {
   "data.outside": "그림이 이제 가져온 영역 밖으로 나갑니다. 새 영역을 가져오려면 새로 고치세요.",
   "data.method": "데이터 가져올 곳",
   "data.method.overpass": "Overpass({max} km²까지의 영역)",
-  "data.method.geofabrik": "Geofabrik 지역",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "‎.osm.pbf 파일",
   "data.region": "지역",
   "data.regionsLoading": "지역을 찾는 중…",

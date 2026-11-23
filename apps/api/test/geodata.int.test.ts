@@ -375,4 +375,101 @@ describe("geodata import", () => {
     expect(tiles.rows[0].n).toBe(0);
     await su.end();
   });
+  it("imports only the project area's polygons, not the box round them", async () => {
+    const square = (id: string, w: number, s: number, side: number) => ({
+      id,
+      name: id,
+      detail: "full",
+      ring: [
+        [w, s],
+        [w + side, s],
+        [w + side, s + side],
+        [w, s + side],
+        [w, s],
+      ],
+    });
+    const setArea = async (polygons: unknown[]) => {
+      const su = await db.superuser();
+      await su.query(`UPDATE project.project SET area_polygons = $2 WHERE id = $1`, [
+        project,
+        JSON.stringify(polygons),
+      ]);
+      await su.end();
+    };
+    // Two small polygons 35 km apart: the box round them holds about a hundred 3 km Overpass tiles.
+    await setArea([square("a1", 6.995, 49.995, 0.02), square("a2", 7.3, 50.3, 0.01)]);
+    overpassQueries.length = 0;
+    expect(
+      (await as("alice").post(`/api/projects/${project}/geodata/osm`, { method: "overpass" })).status,
+    ).toBe(201);
+    await idle();
+    const st = (await as("alice").get(`/api/projects/${project}/geodata`)).body;
+    expect(st.osm.latest.error).toBeNull();
+    expect(st.area.areaKm2).toBeLessThan(5);
+    expect(overpassQueries.length).toBeGreaterThan(0);
+    expect(overpassQueries.length).toBeLessThanOrEqual(4);
+    expect(st.osm.current.options.area.map((p: { id: string }) => p.id)).toEqual(["a1", "a2"]);
+    expect(st.osm.coversDrawing).toBe(true);
+
+    // Data outside every polygon is cut away: an area far from the file's roads keeps none of them.
+    await setArea([square("a2", 7.3, 50.3, 0.01)]);
+    const pbf = join(dataDir, "fixture.osm.pbf");
+    execFileSync("osmium", ["cat", "--overwrite", FIXTURE, "-o", pbf]);
+    const up = await as("alice").upload(
+      `/api/projects/${project}/geodata/osm/upload?name=small.osm.pbf`,
+      readFileSync(pbf),
+    );
+    expect(up.status).toBe(201);
+    await idle();
+    const after = (await as("alice").get(`/api/projects/${project}/geodata`)).body;
+    expect(after.osm.latest.error).toBeNull();
+    expect(after.osm.current.stats.rows.osm_way_road).toBe(0);
+    // The area changed since the Overpass import, which no longer covers it; the upload does.
+    expect(after.osm.coversDrawing).toBe(true);
+    await setArea([square("a1", 6.995, 49.995, 0.02)]);
+    expect((await as("alice").get(`/api/projects/${project}/geodata`)).body.osm.coversDrawing).toBe(false);
+
+    // A "Main roads and railways only" polygon keeps the primary road and the tram line, not the building.
+    // Saved through the area API, which also tells the street tiles the area changed.
+    const saved = await as("alice").put(`/api/projects/${project}/area`, {
+      polygons: [{ ...square("a3", 6.99, 49.99, 0.04), detail: "main" }],
+      import: false,
+    });
+    expect(saved.status).toBe(200);
+    const main = await as("alice").upload(
+      `/api/projects/${project}/geodata/osm/upload?name=small.osm.pbf`,
+      readFileSync(pbf),
+    );
+    expect(main.status).toBe(201);
+    await idle();
+    const light = (await as("alice").get(`/api/projects/${project}/geodata`)).body;
+    expect(light.osm.latest.error).toBeNull();
+    expect(light.osm.current.stats.rows).toMatchObject({ osm_way_road: 1, osm_way_rail: 1, osm_building: 0 });
+    // The API serves the main-only tiles light: main roads, no walkways, buildings or places.
+    const [x, y] = tilesFor([7.005, 50.003, 7.005, 50.003])[0]!;
+    const keys = (await as("alice").get(`/api/street-network/main-tiles?project=${project}`)).body.tiles;
+    expect(keys).toContain(`${x}/${y}`);
+    overpassQueries.length = 0;
+    const tile = await as("alice").get(`/api/street-network/tiles/14/${x}/${y}?project=${project}`);
+    expect(tile.text).toContain('<way id="100"');
+    const walk = await as("alice").get(`/api/street-network/walk-tiles/14/${x}/${y}?project=${project}`);
+    expect(walk.text).not.toContain("<way");
+    const houses = await as("alice").get(
+      `/api/street-network/building-tiles/14/${x}/${y}?project=${project}`,
+    );
+    expect(houses.body.buildings).toEqual([]);
+    // No tile went to Overpass (saving the area looks up its country in the background, which may land here).
+    expect(overpassQueries.filter((q) => !q.includes("is_in("))).toEqual([]);
+    // With a Full polygon as well, its tiles are listed apart, for the editor to load their main roads.
+    const both = await as("alice").put(`/api/projects/${project}/area`, {
+      polygons: [{ ...square("a3", 6.99, 49.99, 0.04), detail: "main" }, square("a4", 7.2, 50.2, 0.01)],
+      import: false,
+    });
+    expect(both.status).toBe(200);
+    const listed = (await as("alice").get(`/api/street-network/main-tiles?project=${project}`)).body;
+    const [fx, fy] = tilesFor([7.205, 50.205, 7.205, 50.205])[0]!;
+    expect(listed.full).toContain(`${fx}/${fy}`);
+    expect(listed.tiles).not.toContain(`${fx}/${fy}`);
+    expect(listed.tiles).toContain(`${x}/${y}`);
+  });
 });

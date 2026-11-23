@@ -18,6 +18,7 @@ import {
   withoutScenario,
   withScenario,
 } from "./scenarioModel";
+import { engineErrorText } from "../../i18n/engine";
 
 interface Props {
   railway: Network | null;
@@ -115,7 +116,7 @@ export function Scenarios({
     let live = true;
     measure(railway, streetLines, prefs, loadRail).then(
       (f) => live && setCurrent(f),
-      (e: unknown) => live && setError(e instanceof Error ? e.message : String(e)),
+      (e: unknown) => live && setError(engineErrorText(e)),
     );
     return () => {
       live = false;

@@ -24,6 +24,7 @@
 
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
+use engine_msg::{msg, Msg};
 use serde::{Deserialize, Serialize};
 
 use crate::spec::{
@@ -294,7 +295,7 @@ pub struct Imported {
     /// Whether the signals were generated provisionally.
     pub signals_generated: bool,
     /// Notes for the run report (assumed values, skipped elements).
-    pub notes: Vec<String>,
+    pub notes: Vec<Msg>,
     /// `[lon, lat]` of the local frame's origin, when the export gives it.
     pub origin: Option<[f64; 2]>,
     /// Where passengers board each platform edge, by platform edge id.
@@ -453,20 +454,25 @@ struct Sub {
 /// Inputs: the JSON text and import options.
 /// Output: the network and notes, or Err for an unknown schema, an export
 /// marked invalid, or malformed data.
-pub fn import_json(json: &str, opt: &ImportOptions) -> Result<Imported, String> {
-    let t: Topology = serde_json::from_str(json).map_err(|e| format!("topology: {e}"))?;
+pub fn import_json(json: &str, opt: &ImportOptions) -> Result<Imported, Msg> {
+    let t: Topology = serde_json::from_str(json)
+        .map_err(|e| msg!("rail.model.topology_unreadable", error = e.to_string()))?;
     import(t, opt)
 }
 
-fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
+fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, Msg> {
     if t.schema != SCHEMA {
-        return Err(format!(
-            "unsupported topology schema {} (expected {SCHEMA})",
-            t.schema
+        return Err(msg!(
+            "rail.model.topology_schema",
+            schema = &t.schema,
+            expected = SCHEMA
         ));
     }
     if !t.valid {
-        return Err(format!("the design has errors: {}", t.errors.join("; ")));
+        return Err(msg!(
+            "rail.model.design_has_errors",
+            errors = t.errors.join("; ")
+        ));
     }
     let mut notes = Vec::new();
     let platform_places: BTreeMap<String, PlatformPlace> = t
@@ -492,11 +498,11 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
         .enumerate()
         .map(|(i, s)| (s.id.as_str(), i))
         .collect();
-    let sec = |id: &str| -> Result<usize, String> {
+    let sec = |id: &str| -> Result<usize, Msg> {
         sec_index
             .get(id)
             .copied()
-            .ok_or_else(|| format!("unknown section {id}"))
+            .ok_or_else(|| msg!("rail.model.unknown_section", section = id))
     };
     let node_kind: HashMap<&str, &TNode> = t.nodes.iter().map(|n| (n.id.as_str(), n)).collect();
 
@@ -624,9 +630,10 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
         }
     }
     if t.switches.iter().any(|s| s.fouling_points.is_empty()) {
-        notes.push(format!(
-            "switches without fouling points in the export: assumed {} m on the legs, {} m on the toe side",
-            opt.switch_fouling_m, opt.switch_toe_m
+        notes.push(msg!(
+            "rail.model.note.fouling_assumed",
+            legs = opt.switch_fouling_m.to_string(),
+            toe = opt.switch_toe_m.to_string()
         ));
     }
     for sw in t.switches.iter().filter(|s| s.fouling_points.is_empty()) {
@@ -677,9 +684,10 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
                 let i = sec(sid)?;
                 let s = &t.sections[i];
                 let Some(c) = section_chainage(s, tr.track, tr.chainage_m) else {
-                    notes.push(format!(
-                        "crossing {}: chainage not on section {sid}; whole section used",
-                        x.id
+                    notes.push(msg!(
+                        "rail.model.note.crossing_chainage",
+                        crossing = &x.id,
+                        section = sid
                     ));
                     zones[i].push((0.0, s.length_m, Some(key.clone())));
                     continue;
@@ -695,10 +703,10 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
     let mut level_crossings = Vec::new();
     for lc in &t.level_crossings {
         if !lc.standard {
-            notes.push(format!(
-                "level crossing {} is outside the usual rules ({}); it is protected by obstacle detection",
-                lc.id,
-                lc.special_measures.join(", ")
+            notes.push(msg!(
+                "rail.model.note.crossing_special",
+                crossing = &lc.id,
+                measures = lc.special_measures.join(", ")
             ));
         }
         for sid in &lc.sections {
@@ -828,7 +836,13 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
             Some("line_of_sight") => TrainProtection::LineOfSight,
             Some("cbtc") => TrainProtection::Cbtc,
             Some("etcs_l2") => TrainProtection::EtcsL2,
-            Some(x) => return Err(format!("section {}: unknown train protection {x}", s.id)),
+            Some(x) => {
+                return Err(msg!(
+                    "rail.model.unknown_protection",
+                    section = &s.id,
+                    protection = x
+                ))
+            }
         };
         for sub in &subs[i] {
             let speed = clip(&s.speed_kmh, sub.from, sub.to, 1.0 / 3.6);
@@ -864,7 +878,7 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
             });
         }
     }
-    let end_of = |e: &TEnd| -> Result<TrackEnd, String> {
+    let end_of = |e: &TEnd| -> Result<TrackEnd, Msg> {
         let i = sec(&e.section)?;
         Ok(if e.end == "from" {
             TrackEnd {
@@ -894,7 +908,7 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
                 .find(|e| ends.iter().filter(|f| key(f) == key(e)).count() == 2)
                 .copied();
             let Some(common) = common else {
-                return Err(format!("switch node {node}: no common end"));
+                return Err(msg!("rail.model.switch_no_common_end", node = *node));
             };
             let legs: Vec<&TEnd> = ends
                 .iter()
@@ -993,10 +1007,7 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
             .find(|s| mid >= s.from && mid <= s.to)
             .unwrap_or(&subs[i][0]);
         if p.from_m < sub.from - 1e-6 || p.to_m > sub.to + 1e-6 {
-            notes.push(format!(
-                "platform {} spans a switch or crossing area; clipped",
-                p.id
-            ));
+            notes.push(msg!("rail.model.note.platform_clipped", platform = &p.id));
         }
         spec.platforms.push(PlatformSpec {
             id: p.id.clone(),
@@ -1040,7 +1051,11 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
                 .iter()
                 .position(|x| s.chainage_m >= x.from - 1e-6 && s.chainage_m <= x.to + 1e-6)
                 .ok_or_else(|| {
-                    format!("signal {}: chainage outside section {}", s.id, s.section)
+                    msg!(
+                        "rail.model.signal_outside_section",
+                        signal = &s.id,
+                        section = &s.section
+                    )
                 })?;
             // A planned signal just inside a switch or crossing area marks that area's edge:
             // the export rounds chainages, so the plan and the area's own fouling points can
@@ -1061,9 +1076,11 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
             // junction) would split the area's detection section, and the whole layout would be
             // refused. No train can wait there anyway: the signal is left out, with a note.
             if sub.group.is_some() && at - sub.from > SIGNAL_SNAP_M && sub.to - at > SIGNAL_SNAP_M {
-                notes.push(format!(
-                    "signal {} stands inside the switch or crossing area of {} (at {:.0} m); it is left out: move it in front of the area",
-                    s.id, s.section, s.chainage_m
+                notes.push(msg!(
+                    "rail.model.note.signal_in_area",
+                    signal = &s.id,
+                    section = &s.section,
+                    at = format!("{:.0}", s.chainage_m)
                 ));
                 continue;
             }
@@ -1072,7 +1089,13 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
                 "block" => SignalKind::Block,
                 "shunting" => SignalKind::Shunting,
                 "distant" => SignalKind::Distant,
-                k => return Err(format!("signal {}: unknown kind {k}", s.id)),
+                k => {
+                    return Err(msg!(
+                        "rail.model.unknown_signal_kind",
+                        signal = &s.id,
+                        kind = k
+                    ))
+                }
             };
             spec.signals.push(SignalSpec {
                 id: s.id.clone(),
@@ -1092,12 +1115,12 @@ fn import(t: Topology, opt: &ImportOptions) -> Result<Imported, String> {
         stop_departure_signals(&mut spec, &buffers);
     } else if generate {
         generate_signals(&mut spec, &buffers, opt);
-        notes.push(format!(
-            "provisional signal plan generated: {} signals (home signals at switch and crossing areas, platform starters, block signals)",
-            spec.signals.len()
+        notes.push(msg!(
+            "rail.model.note.signals_generated",
+            count = spec.signals.len().to_string()
         ));
     } else {
-        notes.push("the export has no signals and generation is off: no routes".into());
+        notes.push(msg!("rail.model.note.no_signals"));
     }
     // Storage roles: the section's own role; a track of a stabling yard holds trains overnight.
     let yard: std::collections::HashSet<&str> = t

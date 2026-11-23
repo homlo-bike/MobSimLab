@@ -660,6 +660,16 @@ export const editorsTe = {
   "schematic.showStatuses": "స్థితి గుర్తులు",
   "schematic.showFeatures": "స్టేషన్ సౌకర్యాల గుర్తులు",
   "schematic.showWater": "సముద్రం, సరస్సులు, నదులు",
+  "schematic.straightRivers": "నదులను 45° అడుగులలో గీయండి",
+  "schematic.nameSize": "స్టేషన్ పేర్ల పరిమాణం",
+  "schematic.longRuns": "ఆగకుండా పొడవైన భాగాలు",
+  "schematic.longRuns.off": "నేలపై ఉన్నట్లు",
+  "schematic.longRuns.max": "గరిష్ఠంగా సాధారణ దూరానికి {n} రెట్లు",
+  "schematic.pngSmallNames":
+    "ఈ చిత్రం ప్రతి వైపు 8,192 px కు పరిమితమైనందున స్టేషన్ పేర్లు {px} px మాత్రమే. స్పష్టమైన ప్రతికి SVG లేదా ముద్రణ వాడండి.",
+  "schematic.printPaper": "పేజీ పరిమాణం {paper}: స్టేషన్ పేర్లు {pt} pt లో ముద్రించబడతాయి.",
+  "schematic.printSmallNames":
+    "పేజీ పరిమాణం {paper}: స్టేషన్ పేర్లు {pt} pt లో మాత్రమే ముద్రించబడతాయి. స్టేషన్ పేర్లను పెద్దవి చేయండి లేదా కొన్ని పొరలను దాచండి.",
   "schematic.showAreas": "ఛార్జీ జోన్లు, ముఖ్య ప్రదేశాలు",
   "schematic.water": "నీరు",
   "schematic.areas": "ఛార్జీ జోన్లు, ముఖ్య ప్రదేశాలు",
@@ -952,6 +962,9 @@ export const editorsTe = {
   "jp.set.minChange": "ఒకే స్టాప్ వద్ద మార్పు (సెకన్లు)",
   "jp.set.maxRides": "గరిష్ఠ వాహనాలు",
   "jp.walkNote": "నడక నెట్‌వర్క్ వచ్చే వరకు నడక సరళరేఖ దూరం × 1.3. డిఫాల్ట్ విలువలు ఊహల గ్రంథాలయం నుండి.",
+  "jp.slopeNote":
+    "నడక సమయం రెండు చివరల మధ్య వాలుపై లెక్కిస్తారు (భూమి ఎత్తులతో టోబ్లర్ హైకింగ్ ఫంక్షన్): ఎక్కుడు మరియు నిటారు దిగుడు నడకకు ఎక్కువ సమయం పడుతుంది.",
+  "jp.slopeNoHeights": "భూమి ఎత్తులు లోడ్ కాలేదు, కాబట్టి నడక సమతలంగా లెక్కిస్తున్నాం.",
   "kit.minSec": "{m} నిమి {s} సెకన్లు",
   "kit.checks": "తనిఖీలు",
   "kit.issue": "{level}:",

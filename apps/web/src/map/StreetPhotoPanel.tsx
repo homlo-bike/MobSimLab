@@ -12,6 +12,7 @@ import {
   type StreetPhotoSource,
   streetPhotoSources,
 } from "./streetPhotos";
+import { engineErrorText } from "../i18n/engine";
 
 /** How far the pointer may move between press and release for a press to count as a click, px. */
 const CLICK_TOLERANCE_PX = 5;
@@ -54,9 +55,7 @@ export function StreetPhotoPanel({ map, onClose }: { map: MapLibreMap | null; on
     setState({ kind: "searching", at });
     photosNear(source.provider, at, ctrl.signal).then(
       (photos) => !ctrl.signal.aborted && setState({ kind: "found", at, photos, index: 0 }),
-      (err) =>
-        !ctrl.signal.aborted &&
-        setState({ kind: "error", at, text: err instanceof Error ? err.message : String(err) }),
+      (err) => !ctrl.signal.aborted && setState({ kind: "error", at, text: engineErrorText(err) }),
     );
   };
   const searchNow = useRef(search);

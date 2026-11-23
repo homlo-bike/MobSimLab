@@ -677,6 +677,16 @@ export const editorsDe = {
   "schematic.showStatuses": "Statussymbole",
   "schematic.showFeatures": "Symbole der Stationsausstattung",
   "schematic.showWater": "Meer, Seen und Flüsse",
+  "schematic.straightRivers": "Flüsse in 45°-Schritten zeichnen",
+  "schematic.nameSize": "Größe der Stationsnamen",
+  "schematic.longRuns": "Lange Abschnitte ohne Halt",
+  "schematic.longRuns.off": "Wie im Gelände",
+  "schematic.longRuns.max": "Höchstens {n} × der übliche Abstand",
+  "schematic.pngSmallNames":
+    "Die Stationsnamen sind in diesem Bild nur {px} px groß, weil es auf 8.192 px pro Seite begrenzt ist. Für eine schärfere Fassung SVG oder Drucken verwenden.",
+  "schematic.printPaper": "Papierformat {paper}: Stationsnamen werden mit {pt} pt gedruckt.",
+  "schematic.printSmallNames":
+    "Papierformat {paper}: Stationsnamen werden nur mit {pt} pt gedruckt. Stationsnamen größer stellen oder Ebenen ausblenden.",
   "schematic.showAreas": "Tarifzonen und Wahrzeichen",
   "schematic.water": "Wasser",
   "schematic.areas": "Tarifzonen und Wahrzeichen",
@@ -980,6 +990,10 @@ export const editorsDe = {
   "jp.set.maxRides": "Höchstens Fahrzeuge",
   "jp.walkNote":
     "Fußwege sind Luftlinie × 1,3, bis das Fußwegenetz existiert. Die Vorgaben stammen aus der Annahmenbibliothek.",
+  "jp.slopeNote":
+    "Fußwege werden auf der Steigung zwischen ihren beiden Enden berechnet (Wanderfunktion nach Tobler mit den Geländehöhen): bergauf und steil bergab dauern sie länger.",
+  "jp.slopeNoHeights":
+    "Die Geländehöhen wurden nicht geladen, daher werden Fußwege wie in der Ebene berechnet.",
 
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Prüfungen",

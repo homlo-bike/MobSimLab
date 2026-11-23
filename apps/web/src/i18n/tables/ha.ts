@@ -449,4 +449,10 @@ export const tablesHa = {
   "tt.tbl.to": "Zuwa",
   "tt.tbl.arrives": "Isowa",
   "cost.outsideRange": "A wajen iyakar ɗakin bayanai ({low}–{high}): duba ƙimar da ma'auninta.",
+  "tbl.unrouted.title": "Wasu hanyoyin layukan titi ba su cika ba",
+  "tbl.unrouted.intro":
+    "Ba a sami wasu sassan hanyoyin waɗannan layuka ba lokacin da aka adana su, don haka tebura, kuɗaɗe da kimantawa suna ƙirga su a matsayin km 0. Buɗe kowane layi a shafin Ƙirƙira: titunansa za su loda kuma za a adana cikakkiyar hanyar. Sashen da ya kasance ja yana buƙatar a matsar da wani wuri zuwa hanyar da abin hawa zai iya bi.",
+  "tbl.unrouted.legs": "Sassan da ba a samu ba",
+  "tbl.unrouted.runs": "Tafiye-tafiyen depo da ba a samu ba",
+  "tbl.unrouted.leftOut": "An bari, aƙalla",
 } satisfies TablesMessages;

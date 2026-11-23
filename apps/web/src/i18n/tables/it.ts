@@ -455,4 +455,10 @@ export const tablesIt = {
   "tt.tbl.arrives": "Arriva",
   "cost.outsideRange":
     "Fuori dall'intervallo della libreria ({low}–{high}): controlla il valore e la sua unità.",
+  "tbl.unrouted.title": "Alcuni percorsi delle linee stradali non sono completi",
+  "tbl.unrouted.intro":
+    "Parti del percorso di queste linee non sono state trovate al salvataggio, quindi tabelle, costi e valutazione le contano 0 km. Apri ogni linea nella scheda Crea: le sue strade si caricano e il percorso completato viene salvato. Una tratta che resta rossa richiede di spostare un punto su una strada percorribile dal veicolo.",
+  "tbl.unrouted.legs": "Tratte non trovate",
+  "tbl.unrouted.runs": "Corse da/per deposito non trovate",
+  "tbl.unrouted.leftOut": "Escluso, almeno",
 } satisfies TablesMessages;

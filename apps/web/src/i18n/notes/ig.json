@@ -491,6 +491,7 @@
     "4663ffcb": "Ụzọ ígwè dị mfe ala dị ala na tram-train na katalọgụ nwere ala 356–550 mm; ụgbọ Stadtbahn ala dị elu (Stuttgart DT 8) nwere 1000 mm.",
     "46c150f1": "TSI PRM: steepụ kwụ ọtọ ≤ 50 mm n'ụzọ ọ bụla (a hụrụ n'isi iyi); ADA: ± 5/8 in (≈ 16 mm) maka ụzọ ígwè ọsọ na nke dị mfe (a ga-enyocha).",
     "46dd4c61": "MUTCD 2009 § 8C.04: ogwe ọnụ ụzọ na-ebili guzoro ọtọ n'ime ihe na-erughị 12 s mgbe ụgbọ oloko gafechara ma a chọpụtaghị ụgbọ oloko ọzọ; ọkụ na-akwụsị mgbe ogwe ndị ahụ bilitere. Ihe mgbochi na-ebili n'ihe dị ka 6–10 s bụ ihe nkịtị n'ebe ndị ọzọ. Uru etiti dị n'etiti ha abụọ.",
+    "46e1b5df": "Ọrụ ije ugwu Tobler: ọsọ ije bụ 6 exp(-3.5 |s + 0.05|) km/h n'ugwu s, ọ kachasị ọsọ n'ala ịrịda nke 5 %. Onye na-eme atụmatụ njem na-edobe ọsọ ije n'ala dị larịị ma mụbaa oge ahụ na exp(k (|s + 0.05| - 0.05)); s bụ ọdịiche ịdị elu nke nsọtụ abụọ kewara site na ogologo ije, nke a kpachiri n'ime ±50 %. 3.5 bụ uru Tobler; oke ±0.5 bụ atụmatụ e chere echiche. 0 na-eleghara ugwu anya.",
     "472c7331": "Ụgbọ metro ala dị elu.",
     "47a4908b": "Broach, Dill na Gliebe: ahịrị e sere agba na-enyere aka obere karịa ụzọ dị iche, na nke ka ukwuu n'okporo ụzọ jupụtara. OpenStreetMap cycleway=lane ma ọ bụ ụzọ igwe kwụ otu ebe e hiwere na taabụ GIS (nhazi okporo ụzọ).",
     "47ac0bc3": "CBTC na ETCS level 2 na-edobe oke nchekwa gafere akụkụ breeki iji kpuchie ejighị n'aka nke ọnọdụ na azụ ụgbọ oloko dị n'ihu; ndị na-ebunye na-eji iri mita ole na ole.",

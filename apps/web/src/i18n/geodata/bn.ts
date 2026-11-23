@@ -14,7 +14,7 @@ export const geodataBn = {
   "data.outside": "আঁকাটি এখন আমদানি করা এলাকার বাইরে যায়। নতুন এলাকা আমদানি করতে রিফ্রেশ করুন।",
   "data.method": "ডেটা নিন",
   "data.method.overpass": "Overpass ({max} বর্গ কিমি পর্যন্ত এলাকা)",
-  "data.method.geofabrik": "একটি Geofabrik অঞ্চল",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "একটি .osm.pbf ফাইল",
   "data.region": "অঞ্চল",
   "data.regionsLoading": "অঞ্চল খোঁজা হচ্ছে…",

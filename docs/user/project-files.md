@@ -18,8 +18,8 @@ and population data are not copied in: the project refers to them, and MobSimLab
 Tick **Include map data for the static viewer** to also add the map data of the project area: the
 OpenStreetMap streets, paths, railways, buildings and places, the water, the population grid and the country
 figures the cost and benefit tables use. The [static viewer](static-viewer.md) shows the project with them,
-without a server. The project area is the box round everything drawn, widened by the area buffer (2 km by
-default); it may take at most 400 map tiles. Saving can take a few minutes when the tiles are not cached yet.
+without a server. The map data covers the map tiles that meet the project area's
+polygons; there may be at most 400. Saving can take a few minutes when the tiles are not cached yet.
 A file with map data uses format 1.1; a MobSimLab that opens it leaves the map data out and loads its own.
 
 ## Open a file

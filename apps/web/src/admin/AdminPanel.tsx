@@ -2,6 +2,7 @@ import { type FormEvent, useCallback, useEffect, useState } from "react";
 import { formatDateTime, tNow, useI18n } from "../i18n/i18n";
 import { get, send } from "../session/api";
 import { PluginsAdmin } from "./PluginsAdmin";
+import { engineErrorText } from "../i18n/engine";
 
 const ROLES = ["owner", "admin", "user", "viewer", "restricted"] as const;
 type Role = (typeof ROLES)[number];
@@ -72,7 +73,7 @@ export function AdminPanel({
     try {
       await f();
     } catch (e) {
-      setError((e as Error).message);
+      setError(engineErrorText(e));
     }
   }, []);
   const props = { csrfToken, run, offered, userId, actorRole: role };

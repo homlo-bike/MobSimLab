@@ -7,7 +7,7 @@ use journey_planner::timetable::{
     FrequencyPattern, PatternStop, Period, PeriodKind, Route, Stop, StopTime, Transfer, Trip,
 };
 use journey_planner::{
-    Journey, Leg, Planner, ProfileQuery, Query, Settings, TimeMode, Timetable, WaitKind,
+    Journey, Leg, Planner, ProfileQuery, Query, Settings, TimeMode, Timetable, WaitKind, WalkKind,
 };
 
 const H: u32 = 3600;
@@ -27,6 +27,7 @@ fn stop(id: &str, name: &str, x: f64, y: f64, parent: Option<&str>) -> Stop {
         stop_lat: p[1],
         parent_station: parent.map(Into::into),
         platform_code: None,
+        elevation_m: None,
     }
 }
 
@@ -111,6 +112,8 @@ fn depart(p: &Planner, from: [f64; 2], to: [f64; 2], t: u32) -> Vec<Journey> {
         to,
         time_s: t,
         mode: TimeMode::DepartAt,
+        from_elevation_m: None,
+        to_elevation_m: None,
     })
     .journeys
 }
@@ -210,6 +213,8 @@ fn arrive_by_finds_the_latest_departure() {
             to: b,
             time_s: target,
             mode: TimeMode::ArriveBy,
+            from_elevation_m: None,
+            to_elevation_m: None,
         })
         .journeys;
     let j = &js[0];
@@ -246,6 +251,8 @@ fn peak_is_faster_than_off_peak_on_average() {
             start_s: start,
             end_s: end,
             step_s: 60,
+            from_elevation_m: None,
+            to_elevation_m: None,
         });
         let totals: Vec<u32> = pts
             .iter()
@@ -386,6 +393,8 @@ fn service_day_filter() {
         to: ll(4000.0, 0.0),
         time_s: 10 * H,
         mode: TimeMode::DepartAt,
+        from_elevation_m: None,
+        to_elevation_m: None,
     });
     assert!(plan.walk_only);
     assert_eq!(plan.journeys.len(), 1);
@@ -402,6 +411,8 @@ fn a_walk_all_the_way_when_no_stop_is_in_reach() {
             to: ll(4000.0, 0.0),
             time_s: 10 * H,
             mode,
+            from_elevation_m: None,
+            to_elevation_m: None,
         });
         assert!(plan.walk_only);
         let j = &plan.journeys[0];
@@ -424,6 +435,8 @@ fn a_walk_all_the_way_when_no_stop_is_in_reach() {
         to: ll(4000.0, 0.0),
         time_s: 10 * H,
         mode: TimeMode::DepartAt,
+        from_elevation_m: None,
+        to_elevation_m: None,
     });
     assert!(!plan.walk_only);
 }
@@ -560,4 +573,83 @@ fn riders_stay_on_board_of_a_train_that_continues_in_its_block() {
         .expect("a journey");
     assert_eq!(j.rides, 1, "{:?}", j.legs);
     assert_eq!(j.arrive_s, 10 * H + 1500);
+}
+
+/// A walk from A to B, 785 m apart and far from every stop, climbing `rise_m`.
+fn hill_walk(settings: Settings, rise_m: Option<f64>) -> Journey {
+    let p = Planner::new(&network(), settings);
+    let plan = p.plan(&Query {
+        from: ll(10_000.0, 10_000.0),
+        to: ll(10_000.0, 10_785.0),
+        time_s: 10 * H,
+        mode: TimeMode::DepartAt,
+        from_elevation_m: Some(751.0),
+        to_elevation_m: rise_m.map(|r| 751.0 + r),
+    });
+    assert_eq!(kinds(&plan.journeys[0]), ["walk"]);
+    plan.journeys[0].clone()
+}
+
+#[test]
+fn walking_up_a_hillside_takes_longer() {
+    // Muhajreen (751 m) to Qasioun (995 m): 785 m straight, about 1 km on foot, 244 m of climb.
+    let flat = hill_walk(Settings::default(), None).total_s;
+    let up = hill_walk(Settings::default(), Some(244.0)).total_s;
+    let down = hill_walk(Settings::default(), Some(-244.0)).total_s;
+    // Flat: 1,020 m at 4.5 km/h, a little under 14 minutes.
+    assert!((800..840).contains(&flat), "{flat}");
+    // Uphill at a 24 % average gradient Tobler's function walks at 43 % of the flat speed: about 31 minutes.
+    assert!((31 * M..32 * M).contains(&up), "{up}");
+    // Steep downhill is slower than the flat too, but faster than uphill.
+    assert!(down > flat && down < up, "{down}");
+    // The same height at both ends is the flat walk, and k = 0 ignores the climb.
+    assert_eq!(hill_walk(Settings::default(), Some(0.0)).total_s, flat);
+    let no_slope = Settings {
+        walk_slope_k: 0.0,
+        ..Settings::default()
+    };
+    assert_eq!(hill_walk(no_slope, Some(244.0)).total_s, flat);
+}
+
+#[test]
+fn walks_to_and_between_stops_use_their_heights() {
+    // West stands 60 m above A, 300 m away; the change at Central climbs 20 m to the tram stop.
+    let mut tt = network();
+    tt.stops[0].elevation_m = Some(60.0);
+    tt.stops[1].elevation_m = Some(0.0);
+    tt.stops[3].elevation_m = Some(20.0);
+    let p = Planner::new(&tt, Settings::default());
+    let flat = Planner::new(&network(), Settings::default());
+    let q = |from_z: Option<f64>| Query {
+        from: ll(0.0, -300.0),
+        to: ll(2000.0, 3000.0),
+        time_s: 10 * H,
+        mode: TimeMode::DepartAt,
+        from_elevation_m: from_z,
+        to_elevation_m: None,
+    };
+    let walk_s = |j: &Journey, kind: WalkKind| -> u32 {
+        j.legs
+            .iter()
+            .filter_map(|l| match l {
+                Leg::Walk {
+                    kind: k,
+                    start_s,
+                    end_s,
+                    ..
+                } if *k == kind => Some(end_s - start_s),
+                _ => None,
+            })
+            .sum()
+    };
+    let hill = &p.plan(&q(Some(0.0))).journeys[0];
+    let level = &flat.plan(&q(Some(0.0))).journeys[0];
+    assert!(walk_s(hill, WalkKind::Access) > walk_s(level, WalkKind::Access) + 60);
+    assert!(walk_s(hill, WalkKind::Transfer) > walk_s(level, WalkKind::Transfer));
+    // Without the origin's height the access walk is timed as flat.
+    let unknown = &p.plan(&q(None)).journeys[0];
+    assert_eq!(
+        walk_s(unknown, WalkKind::Access),
+        walk_s(level, WalkKind::Access)
+    );
 }

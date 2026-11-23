@@ -470,6 +470,10 @@ export const id: Messages = {
   "map.searching": "Mencari…",
   "map.searchFailed": "Pencarian tempat gagal: {error}",
   "map.noPlaces": "Tidak ada tempat yang ditemukan.",
+  "map.noWebgl":
+    "Peta tidak dapat ditampilkan: komputer atau peramban ini tidak memiliki grafis 3D (WebGL2).",
+  "map.noWebglHelp":
+    "Aktifkan akselerasi perangkat keras atau perbarui driver grafis, lalu buka halaman lagi. Bagian lain halaman tetap berfungsi.",
   "map.places": "Tempat yang ditemukan",
   "map.searchCredit": "Nama tempat © kontributor OpenStreetMap, ditemukan dengan Photon",
   "map.layers": "Lapisan peta",

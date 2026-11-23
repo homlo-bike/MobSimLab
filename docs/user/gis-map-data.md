@@ -4,14 +4,18 @@ In the **GIS** tab, switch to **Map data** to keep a copy of OpenStreetMap and o
 
 ## The area
 
-The import covers the box around everything drawn in the project, plus a buffer of 2 km. Owners and Editors can change the buffer (0 to 50 km) with **Buffer (km)** and **Save buffer**; the same buffer is used for the population import. The map shows the box as a dashed line. Draw something first: an empty project has no area. When you later draw outside the box, the view says so; press **Refresh** to import the larger area. Nothing is imported on its own.
+The imports cover only the polygons of the project area, not the box around them, so two cities far apart cost no more than the two cities. You draw the polygons when you create the project (**Select area**) and change them in **Project preferences**, **Project area**. The map shows their edges as dashed lines (layers menu, **Project area**). When you later make the area larger, the view says so; press **Refresh** to import the new parts. Nothing is imported on its own.
+
+Each polygon has a detail. **Full** imports everything. **Main roads and railways only** suits the long stretches between towns: there the import keeps only motorways, trunk and primary roads with their links, railways and the coastline, the population grid is kept at 1 km (30″) cells, and terrain is imported as usual. The street line tool routes along main roads there and along every street in Full polygons, so an intercity bus runs along the motorway between Full city polygons. Walk access, buildings and place names are empty there; draw towns along the route as Full for the noise map and walk access. Where a map tile touches a Full polygon, the whole tile has full detail.
+
+When a street line, the railway, a depot, the cargo bike route or a ferry or cable car line reaches outside the polygons, the notifications button shows a warning, since there is no map data there. Make the area larger to fix it.
 
 ## Import OpenStreetMap
 
 Pick where the data comes from:
 
 - **Overpass**: for areas up to 400 km² (your administrator can change this). The area is fetched in small tiles, one after the other.
-- **A Geofabrik region**: for larger areas. The view lists the regions that hold the whole area, smallest first. The file is downloaded once and kept for a week for other projects.
+- **Geofabrik**: for larger areas. The view names the Geofabrik regions used: for each polygon the smallest region that holds it, so polygons in two countries download both countries. Each file is cut to the polygons and the parts are joined. A file is downloaded once and kept for a week for other projects.
 - **An .osm.pbf file**: your own extract, for example for an offline install.
 
 Tick **Keep planned roads** to also import roads that are proposed or under construction. Press **Import**. The view shows each step and you can **Cancel**. The earlier import stays in use until the new one has finished, also when the new one fails.
@@ -20,7 +24,7 @@ When it is done, the view shows the date of the import, the date of the OpenStre
 
 ## Import elevation
 
-Press **Import** under **Elevation** to keep the Copernicus GLO-30 heights (30 m grid) of the area. Terrain profiles and gradients then come from this copy. Cells over open sea have no heights.
+Press **Import** under **Elevation** to keep the Copernicus GLO-30 heights (30 m grid) of the polygons. Terrain profiles and gradients then come from this copy. Cells over open sea have no heights.
 
 Where a point has no imported height, the live Copernicus files are read, and if they cannot be, an Open-Elevation server, which is less accurate. Gradient results name the source they used.
 

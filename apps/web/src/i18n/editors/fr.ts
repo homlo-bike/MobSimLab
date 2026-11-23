@@ -679,6 +679,16 @@ export const editorsFr = {
   "schematic.showStatuses": "Symboles de statut",
   "schematic.showFeatures": "Symboles des équipements de station",
   "schematic.showWater": "Mer, lacs et rivières",
+  "schematic.straightRivers": "Tracer les rivières par pas de 45°",
+  "schematic.nameSize": "Taille des noms de station",
+  "schematic.longRuns": "Longs tronçons sans arrêt",
+  "schematic.longRuns.off": "Comme sur le terrain",
+  "schematic.longRuns.max": "Au plus {n} × l’espacement habituel",
+  "schematic.pngSmallNames":
+    "Les noms de station ne font que {px} px dans cette image, limitée à 8 192 px de côté. Utilisez SVG ou Imprimer pour une copie plus nette.",
+  "schematic.printPaper": "Format {paper} : les noms de station sont imprimés en {pt} pt.",
+  "schematic.printSmallNames":
+    "Format {paper} : les noms de station ne sont imprimés qu’en {pt} pt. Agrandissez les noms de station ou masquez des couches.",
   "schematic.showAreas": "Zones tarifaires et repères",
   "schematic.water": "Eau",
   "schematic.areas": "Zones tarifaires et repères",
@@ -982,6 +992,10 @@ export const editorsFr = {
   "jp.set.maxRides": "Véhicules au plus",
   "jp.walkNote":
     "La marche est la distance à vol d’oiseau × 1,3 en attendant le réseau piéton. Les valeurs par défaut viennent de la bibliothèque d’hypothèses.",
+  "jp.slopeNote":
+    "La marche est chronométrée sur la pente entre ses deux extrémités (fonction de randonnée de Tobler avec les altitudes du terrain) : en montée et en forte descente, elle prend plus de temps.",
+  "jp.slopeNoHeights":
+    "Les altitudes du terrain n’ont pas été chargées : la marche est comptée comme sur le plat.",
 
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Contrôles",

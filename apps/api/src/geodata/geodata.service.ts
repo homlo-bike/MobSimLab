@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { createWriteStream } from "node:fs";
-import { mkdir, open, readdir, rename, rm, stat } from "node:fs/promises";
+import { mkdir, open, readdir, rename, rm, stat, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { Transform } from "node:stream";
 import { pipeline } from "node:stream/promises";
@@ -19,8 +19,17 @@ import { APP_CONFIG } from "../config/config.module";
 import type { AppConfig } from "../config/env";
 import { DATABASE, type Database } from "../db/database";
 import { CopernicusDemClient, TERRAIN_SOURCE, cellName } from "../gateway/copernicus-dem.client";
-import { GeofabrikClient, type GeofabrikRegion } from "../gateway/geofabrik.client";
+import { CONTINENTS, GeofabrikClient, type GeofabrikRegion } from "../gateway/geofabrik.client";
 import { OverpassClient, overpassEndpoint } from "../gateway/overpass.client";
+import {
+  type AreaPolygon,
+  boxMeetsPolygons,
+  polygonsBox,
+  polygonsCover,
+  polygonsGeoJson,
+  polygonsKm2,
+  storedPolygons,
+} from "../projects/area-polygons";
 import { projectArea } from "../projects/project-area";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
 
@@ -28,7 +37,7 @@ import { cutTiles, type DemTile, encodeValues, tileBounds } from "./dem-tiles";
 import { DemUploadError, resampleDem } from "./dem-upload";
 import { type Box, OsmTools } from "./osm-tools";
 import { fetchArea } from "./overpass-import";
-import { bboxAreaKm2, type GeodataSettings, geodataDirs, geodataSettings } from "./settings";
+import { type GeodataSettings, geodataDirs, geodataSettings } from "./settings";
 
 /** Kinds of import (db/migrations/0017). */
 export type ImportKind = "osm" | "dem" | "dem_upload";
@@ -209,17 +218,12 @@ export class GeodataService implements OnApplicationBootstrap {
       current: runs.find((r) => r.kind === kind && r.status === "done") ?? null,
       latest: runs.find((r) => r.kind === kind) ?? null,
     });
-    const covers = (r: ImportRun | null) =>
-      !!r &&
-      !!area &&
-      r.bbox[0] <= area.bbox[0] &&
-      r.bbox[1] <= area.bbox[1] &&
-      r.bbox[2] >= area.bbox[2] &&
-      r.bbox[3] >= area.bbox[3];
+    // An import covers the area when its polygons hold today's (imports before 2026-11-19 recorded a box only).
+    const covers = (r: ImportRun | null) => !!r && !!area && polygonsCover(importPolygons(r), area.polygons);
     const osm = of("osm");
     const dem = of("dem");
     const demUpload = of("dem_upload");
-    const areaKm2 = area ? Math.round(bboxAreaKm2(area.bbox) * 10) / 10 : null;
+    const areaKm2 = area ? Math.round(polygonsKm2(area.polygons) * 10) / 10 : null;
     return {
       canImport: role === "owner" || role === "editor",
       area: area ? { ...area, areaKm2 } : null,
@@ -238,11 +242,33 @@ export class GeodataService implements OnApplicationBootstrap {
     };
   }
 
-  /** Purpose: the Geofabrik regions holding the project area, smallest first. */
+  /**
+   * Purpose: the Geofabrik regions an import of the project area downloads: for each polygon the smallest region
+   * holding it, each region once (a project across a border needs one per country).
+   * Throws 400 naming a polygon no region holds.
+   */
   async regions(actor: ProjectActor, projectId: string): Promise<GeofabrikRegion[]> {
     await this.projects.access(actor, projectId, "read");
     const area = await this.requireArea(projectId);
-    return this.geofabrik.regions(area.bbox);
+    return this.regionsFor(area.polygons);
+  }
+
+  private async regionsFor(polygons: readonly AreaPolygon[]): Promise<GeofabrikRegion[]> {
+    const out = new Map<string, GeofabrikRegion>();
+    for (const p of polygons) {
+      const box = polygonsBox([p])!;
+      // Never a whole continent: a polygon across a border takes the countries it reaches instead.
+      const held = (await this.geofabrik.regions(box)).filter((r) => !CONTINENTS.has(r.id));
+      // A region already chosen for another polygon is reused when it holds this one too.
+      const pick = held.find((r) => out.has(r.id)) ?? held[0];
+      const picks = pick ? [pick] : await this.geofabrik.regionsCovering(p.ring, new Set(out.keys()));
+      if (!picks.length)
+        throw new BadRequestException(
+          `No Geofabrik region holds the polygon ${p.name}. Use Overpass or upload an .osm.pbf file.`,
+        );
+      for (const r of picks) out.set(r.id, r);
+    }
+    return [...out.values()];
   }
 
   /**
@@ -257,7 +283,7 @@ export class GeodataService implements OnApplicationBootstrap {
   ): Promise<ImportRun> {
     await this.projects.access(actor, projectId, "edit");
     const area = await this.requireArea(projectId);
-    const km2 = bboxAreaKm2(area.bbox);
+    const km2 = polygonsKm2(area.polygons);
     if (km2 > this.settings.maxAreaKm2)
       throw new BadRequestException(
         `The project area is ${Math.round(km2)} km², more than the ${this.settings.maxAreaKm2} km² an import accepts`,
@@ -266,17 +292,17 @@ export class GeodataService implements OnApplicationBootstrap {
       throw new BadRequestException(
         `The project area is ${Math.round(km2)} km²; Overpass is used up to ${this.settings.overpass.maxAreaKm2} km². Pick a Geofabrik region or upload an .osm.pbf file.`,
       );
-    let region: GeofabrikRegion | null = null;
-    if (o.method === "geofabrik") {
-      if (!o.region) throw new BadRequestException("Pick a Geofabrik region");
-      region = await this.geofabrik.region(o.region);
-      if (!region) throw new BadRequestException("Unknown Geofabrik region");
-    }
+    const regions = o.method === "geofabrik" ? await this.regionsFor(area.polygons) : [];
     const run = await this.insert(actor, projectId, "osm", o.method, area, {
       planned: o.planned,
-      ...(region ? { region: { id: region.id, name: region.name } } : {}),
+      ...(regions.length
+        ? {
+            region: { id: regions.map((r) => r.id).join("+"), name: regions.map((r) => r.name).join(", ") },
+            regions: regions.map((r) => ({ id: r.id, name: r.name })),
+          }
+        : {}),
     });
-    this.enqueue(run.id, () => this.osmJob(run, projectId, { planned: o.planned, region }));
+    this.enqueue(run.id, () => this.osmJob(run, projectId, { planned: o.planned, regions }));
     return run;
   }
 
@@ -292,7 +318,7 @@ export class GeodataService implements OnApplicationBootstrap {
   ): Promise<ImportRun> {
     await this.projects.access(actor, projectId, "edit");
     const area = await this.requireArea(projectId);
-    const km2 = bboxAreaKm2(area.bbox);
+    const km2 = polygonsKm2(area.polygons);
     if (km2 > this.settings.maxAreaKm2)
       throw new BadRequestException(
         `The project area is ${Math.round(km2)} km², more than the ${this.settings.maxAreaKm2} km² an import accepts`,
@@ -318,7 +344,7 @@ export class GeodataService implements OnApplicationBootstrap {
   async startDem(actor: ProjectActor, projectId: string): Promise<ImportRun> {
     await this.projects.access(actor, projectId, "edit");
     const area = await this.requireArea(projectId);
-    const km2 = bboxAreaKm2(area.bbox);
+    const km2 = polygonsKm2(area.polygons);
     if (km2 > this.settings.dem.maxAreaKm2)
       throw new BadRequestException(
         `The project area is ${Math.round(km2)} km², more than the ${this.settings.dem.maxAreaKm2} km² an elevation import accepts`,
@@ -347,7 +373,7 @@ export class GeodataService implements OnApplicationBootstrap {
   ): Promise<ImportRun> {
     await this.projects.access(actor, projectId, "edit");
     const area = await this.requireArea(projectId);
-    const km2 = bboxAreaKm2(area.bbox);
+    const km2 = polygonsKm2(area.polygons);
     if (km2 > this.settings.dem.maxAreaKm2)
       throw new BadRequestException(
         `The project area is ${Math.round(km2)} km², more than the ${this.settings.dem.maxAreaKm2} km² an elevation import accepts`,
@@ -452,19 +478,49 @@ export class GeodataService implements OnApplicationBootstrap {
     if (this.cancelled.has(id)) throw new Cancelled();
   }
 
+  /**
+   * Purpose: cut an OSM file to the project area's polygons, each at its detail (large-area projects, step 3):
+   * Full polygons keep everything, "Main roads and railways only" polygons keep only `MAIN_FILTERS`.
+   * Inputs: the source file, the polygons, a work folder, the output file. Side effects: writes temporary files.
+   */
+  private async cutToArea(input: string, polygons: readonly AreaPolygon[], work: string, output: string) {
+    const full = polygons.filter((p) => p.detail !== "main");
+    const main = polygons.filter((p) => p.detail === "main");
+    const cut = async (ps: readonly AreaPolygon[], name: string) => {
+      const file = join(work, `${name}.geojson`);
+      await writeFile(file, polygonsGeoJson(ps));
+      const out = join(work, `${name}.osm.pbf`);
+      await this.tools.extractPolygons(input, file, out);
+      return out;
+    };
+    if (!main.length) return this.tools.extractPolygons(input, await writePolygons(work, full), output);
+    const mainRaw = await cut(main, "main-raw");
+    const mainPart = join(work, "main.osm.pbf");
+    await this.tools.tagsFilter(mainRaw, [...MAIN_FILTERS], mainPart);
+    await rm(mainRaw, { force: true });
+    if (!full.length) return rename(mainPart, output);
+    const fullPart = await cut(full, "full");
+    await this.tools.merge([fullPart, mainPart], output);
+    await rm(fullPart, { force: true });
+    await rm(mainPart, { force: true });
+  }
+
   private async osmJob(
     run: ImportRun,
     projectId: string,
-    o: { planned: boolean; region?: GeofabrikRegion | null; upload?: string },
+    o: { planned: boolean; regions?: GeofabrikRegion[]; upload?: string },
   ): Promise<void> {
     const work = join(this.dirs.work, run.id);
     await mkdir(work, { recursive: true });
     try {
       const area = join(work, "area.osm.pbf");
+      // Only the project area's polygons are imported (osmium cuts to them, keeping whole ways at the edges).
+      const polygons = importPolygons(run);
       const stats: Record<string, unknown> = {};
       let dataTimestamp: string | null = null;
       if (run.method === "overpass") {
         const fetched = await fetchArea(this.overpass, run.bbox, join(work, "tiles"), {
+          keep: (b) => boxMeetsPolygons(b, polygons),
           tileKm: this.settings.overpass.tileKm,
           minTileKm: this.settings.overpass.minTileKm,
           queryTimeoutS: this.settings.overpass.queryTimeoutS,
@@ -491,14 +547,21 @@ export class GeodataService implements OnApplicationBootstrap {
           await rm(f, { force: true });
           sorted.push(out);
         }
-        await this.tools.merge(sorted, area);
-      } else {
-        let source = o.upload;
-        if (run.method === "geofabrik") {
+        const merged = join(work, "merged.osm.pbf");
+        await this.tools.merge(sorted, merged);
+        await this.mark(run.id, { progress: { step: "extract" } });
+        await this.cutToArea(merged, polygons, work, area);
+        await rm(merged, { force: true });
+      } else if (run.method === "geofabrik") {
+        // One download per region (a project across a border needs one per country), each cut to the polygons.
+        const parts: string[] = [];
+        const stamps: string[] = [];
+        for (const [i, region] of (o.regions ?? []).entries()) {
+          this.check(run.id);
           await this.mark(run.id, { progress: { step: "download" } });
           let lastMark = 0;
-          source = await this.geofabrik.download(
-            o.region!,
+          const source = await this.geofabrik.download(
+            region,
             (bytes, total) => {
               if (Date.now() - lastMark < 2_000) return;
               lastMark = Date.now();
@@ -508,11 +571,23 @@ export class GeodataService implements OnApplicationBootstrap {
             },
             this.aborts.get(run.id)?.signal,
           );
+          this.check(run.id);
+          await this.mark(run.id, { progress: { step: "extract" } });
+          const part = join(work, `part-${i}.osm.pbf`);
+          await this.cutToArea(source, polygons, work, part);
+          parts.push(part);
+          const stamp = await this.tools.dataTimestamp(source);
+          if (stamp) stamps.push(stamp);
         }
+        if (parts.length === 1) await rename(parts[0]!, area);
+        else await this.tools.merge(parts, area);
+        stamps.sort();
+        dataTimestamp = stamps[0] ?? null;
+      } else {
         this.check(run.id);
         await this.mark(run.id, { progress: { step: "extract" } });
-        await this.tools.extract(source!, run.bbox, area);
-        dataTimestamp = await this.tools.dataTimestamp(source!);
+        await this.cutToArea(o.upload!, polygons, work, area);
+        dataTimestamp = await this.tools.dataTimestamp(o.upload!);
       }
       this.check(run.id);
       stats.extractBytes = (await stat(area)).size;
@@ -531,7 +606,7 @@ export class GeodataService implements OnApplicationBootstrap {
           run.method === "overpass"
             ? overpassEndpoint()
             : run.method === "geofabrik"
-              ? `Geofabrik: ${o.region!.name}`
+              ? `Geofabrik: ${(o.regions ?? []).map((r) => r.name).join(", ")}`
               : `Uploaded file ${String((run.options.upload as { name?: string })?.name ?? "")}`,
         tagMapping: "tools/osm/tag_mapping.lua v1",
       });
@@ -593,10 +668,13 @@ export class GeodataService implements OnApplicationBootstrap {
 
   private async demJob(run: ImportRun, projectId: string): Promise<void> {
     const [w, s, e, n] = run.bbox;
+    const polygons = importPolygons(run);
+    // Only the 1° cells, and in them the 256 px tiles, that touch the project area's polygons.
     const cells: string[] = [];
     for (let lat = Math.floor(s); lat <= Math.floor(n - 1e-12); lat++)
       for (let lon = Math.floor(w); lon <= Math.floor(e - 1e-12); lon++)
-        cells.push(cellName(lon + 0.5, lat + 0.5));
+        if (!polygons.length || boxMeetsPolygons([lon, lat, lon + 1, lat + 1], polygons))
+          cells.push(cellName(lon + 0.5, lat + 0.5));
     let tiles = 0;
     let pixels = 0;
     let missingCells = 0;
@@ -608,7 +686,7 @@ export class GeodataService implements OnApplicationBootstrap {
         missingCells++;
         continue;
       }
-      const cut = cutTiles(win);
+      const cut = inArea(cutTiles(win), polygons);
       await this.writeTiles(run.id, projectId, 0, cut);
       tiles += cut.length;
       pixels += win.width * win.height;
@@ -652,7 +730,7 @@ export class GeodataService implements OnApplicationBootstrap {
     }
     this.check(run.id);
     await this.mark(run.id, { progress: { step: "database" } });
-    const cut = cutTiles(res.window);
+    const cut = inArea(cutTiles(res.window), importPolygons(run));
     await this.writeTiles(run.id, projectId, 1, cut);
     this.check(run.id);
     await this.finish(
@@ -714,9 +792,11 @@ export class GeodataService implements OnApplicationBootstrap {
     projectId: string,
     kind: ImportKind,
     method: ImportMethod,
-    area: { bbox: Box },
+    area: { bbox: Box; polygons: readonly AreaPolygon[] },
     options: Record<string, unknown>,
   ): Promise<ImportRun> {
+    // The polygons the import covers, for its jobs and for whether it still covers the area later.
+    options = { ...options, area: area.polygons };
     const run = await this.db.transaction().execute(async (tx) => {
       const { rows } = await sql<Row>`
         INSERT INTO geo.import (project_id, kind, method, bbox, buffer_km, options, requested_by)
@@ -813,4 +893,32 @@ export class GeodataService implements OnApplicationBootstrap {
     }
     return bytes;
   }
+}
+
+/**
+ * What a "Main roads and railways only" polygon keeps of OpenStreetMap: main roads with their links and turn
+ * restrictions, railways, and the coastline (water on the map).
+ */
+const MAIN_FILTERS = [
+  "w/highway=motorway,motorway_link,trunk,trunk_link,primary,primary_link",
+  "r/type=restriction",
+  "w/railway=rail,light_rail,tram,subway,narrow_gauge,monorail,funicular,construction,disused,preserved",
+  "w/natural=coastline",
+] as const;
+
+/** Purpose: write polygons as the GeoJSON file osmium cuts with; output: its path. */
+async function writePolygons(work: string, polygons: readonly AreaPolygon[]): Promise<string> {
+  const file = join(work, "area.geojson");
+  await writeFile(file, polygonsGeoJson(polygons));
+  return file;
+}
+
+/** Purpose: the polygons an import covers (`options.area`); none for imports from before polygons. */
+function importPolygons(r: ImportRun): AreaPolygon[] {
+  return storedPolygons(r.options.area);
+}
+
+/** Purpose: the elevation tiles touching the polygons; all of them without polygons. */
+function inArea(tiles: DemTile[], polygons: readonly AreaPolygon[]): DemTile[] {
+  return polygons.length ? tiles.filter((t) => boxMeetsPolygons(tileBounds(t), polygons)) : tiles;
 }

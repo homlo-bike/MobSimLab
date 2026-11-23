@@ -1,4 +1,5 @@
 import { clock } from "../journey-planner/format";
+import { type EngineNote, noteFinding, useEngineText } from "../../i18n/engine";
 import { useI18n } from "../../i18n/i18n";
 import { paramValue } from "../benefits/params";
 import {
@@ -30,10 +31,11 @@ export function RunResults({
 }: {
   run: Run;
   lines: LineState[];
-  notes: string[];
+  notes: EngineNote[];
   loads: Record<string, LineLoad>;
 }) {
   const { t } = useI18n();
+  const tx = useEngineText();
   const limit = shownRun.params.occupancy_limit_share ?? 0.85;
   return (
     <div className="space-y-3" data-testid="capacity-result">
@@ -56,8 +58,8 @@ export function RunResults({
         <details className="text-xs text-slate-600">
           <summary className="cursor-pointer">{t("capacity.importNotes", { n: shownNotes.length })}</summary>
           <ul className="mt-1 list-disc pl-4">
-            {shownNotes.map((n) => (
-              <li key={n}>{n}</li>
+            {shownNotes.map((n, i) => (
+              <li key={i}>{tx(noteFinding(n))}</li>
             ))}
           </ul>
         </details>
@@ -69,7 +71,7 @@ export function RunResults({
           </summary>
           <ul className="mt-1 list-disc pl-4 break-all">
             {shownRun.issues.slice(0, 20).map((n, i) => (
-              <li key={i}>{n}</li>
+              <li key={i}>{tx({ text: n, msg: shownRun.issue_msgs?.[i] })}</li>
             ))}
           </ul>
         </details>
@@ -129,6 +131,7 @@ export function StreetResults({
 
 function LineCard({ line, limit, load }: { line: LineState; limit: number; load?: LineLoad }) {
   const { t, tn } = useI18n();
+  const tx = useEngineText();
   const p = line.planned;
   const all = [p, ...line.sweep].sort((a, b) => b.headway_s - a.headway_s);
   const max = practicalMaximum(all);
@@ -159,7 +162,7 @@ function LineCard({ line, limit, load }: { line: LineState; limit: number; load?
         </h3>
         <span className={`tag border ${v.tone}`}>{v.title}</span>
       </header>
-      <p className="mt-1.5 text-sm text-slate-700">{explain(p, limit, t, tn)}</p>
+      <p className="mt-1.5 text-sm text-slate-700">{explain(p, limit, t, tn, tx)}</p>
       <dl className="mt-2.5 grid grid-cols-2 gap-1.5">
         {metric(
           t("capacity.used"),
@@ -236,8 +239,8 @@ function LineCard({ line, limit, load }: { line: LineState; limit: number; load?
         <details className="mt-2 text-xs text-slate-600">
           <summary className="cursor-pointer">{t("capacity.kernelNotes", { n: p.problems.length })}</summary>
           <ul className="mt-1 list-disc pl-4">
-            {p.problems.map((x) => (
-              <li key={x}>{x}</li>
+            {p.problems.map((x, i) => (
+              <li key={x}>{tx({ text: x, msg: p.problem_msgs?.[i] })}</li>
             ))}
           </ul>
         </details>

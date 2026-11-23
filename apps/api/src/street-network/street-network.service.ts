@@ -14,6 +14,16 @@ const ROAD_CLASSES =
   "motorway|motorway_link|trunk|trunk_link|primary|primary_link|secondary|secondary_link|" +
   "tertiary|tertiary_link|unclassified|residential|living_street|service|road|busway|bus_guideway|pedestrian";
 
+/**
+ * Road classes of a "Main roads and railways only" tile (large-area projects, step 3): motorways, trunk and
+ * primary roads with their links, enough for intercity buses between the towns drawn at Full detail.
+ */
+export const MAIN_ROAD_CLASSES = "motorway|motorway_link|trunk|trunk_link|primary|primary_link";
+
+/** An OSM XML answer with no elements, for the kinds a main-only tile does not hold (walkways). */
+export const EMPTY_OSM_XML =
+  '<?xml version="1.0" encoding="UTF-8"?>\n<osm version="0.6" generator="MobSimLab"></osm>\n';
+
 /** Purpose: bounding box `[south, west, north, east]` of a web-mercator tile. */
 export function tileBbox(z: number, x: number, y: number): [number, number, number, number] {
   const n = 2 ** z;
@@ -26,13 +36,13 @@ export function tileBbox(z: number, x: number, y: number): [number, number, numb
  * Purpose: Overpass QL for the streets of one tile: road ways with all their nodes, and the
  * turn restrictions on them. Ways are returned whole, so neighbouring tiles join up.
  */
-export function streetQuery(z: number, x: number, y: number): string {
+export function streetQuery(z: number, x: number, y: number, classes = ROAD_CLASSES): string {
   const b = tileBbox(z, x, y)
     .map((v) => v.toFixed(7))
     .join(",");
   return (
     `[out:xml][timeout:90][maxsize:67108864];` +
-    `way["highway"~"^(${ROAD_CLASSES})$"](${b})->.w;` +
+    `way["highway"~"^(${classes})$"](${b})->.w;` +
     `node(w.w)->.n;` +
     `rel(bw.w)["type"="restriction"]->.r;` +
     `(.n;.w;.r;);out body;`
@@ -493,8 +503,27 @@ export class StreetNetworkService {
     imported?.onChange((projectId) => this.forgetProject(projectId));
   }
 
-  /** Purpose: OSM XML for the streets of tile x/y at TILE_ZOOM. Side effects: may call Overpass. */
-  tile(x: number, y: number, projectId?: string, source?: (s: DataSource) => void): Promise<string> {
+  /**
+   * Purpose: OSM XML for the streets of tile x/y at TILE_ZOOM; with `main`, only the main roads
+   * (`MAIN_ROAD_CLASSES`), for a tile of a project held at "Main roads and railways only". Side effects: may call
+   * Overpass.
+   */
+  tile(
+    x: number,
+    y: number,
+    projectId?: string,
+    source?: (s: DataSource) => void,
+    main = false,
+  ): Promise<string> {
+    if (main)
+      return this.cached(
+        `roadmain/${x}/${y}`,
+        () => streetQuery(TILE_ZOOM, x, y, MAIN_ROAD_CLASSES),
+        undefined,
+        projectId && (() => this.imported!.tileXml(projectId, "roadMain", tileBox(x, y))),
+        projectId,
+        source,
+      );
     return this.cached(
       `road/${x}/${y}`,
       () => streetQuery(TILE_ZOOM, x, y),

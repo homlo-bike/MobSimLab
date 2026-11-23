@@ -42,6 +42,7 @@ import type { SavedPluginLine } from "../../kits/saved";
 import { activePlugins } from "../../plugins/registry";
 import { ferryLines } from "../tables/ferries";
 import { ropewayLines } from "../tables/ropeways";
+import { engineErrorText } from "../../i18n/engine";
 
 /** Cost tables settings (drawing kind `costs`): the country the planner chose for prices. */
 export interface CostsDoc {
@@ -201,7 +202,7 @@ export function CostTables({
     api
       .countryAt(place)
       .then((c) => live && setPlaceCode(c.iso3 ?? c.iso2))
-      .catch((e: unknown) => live && setEconError(e instanceof Error ? e.message : String(e)));
+      .catch((e: unknown) => live && setEconError(engineErrorText(e)));
     return () => {
       live = false;
     };
@@ -217,7 +218,7 @@ export function CostTables({
       .catch((e: unknown) => {
         if (!live) return;
         setEcon(null);
-        setEconError(e instanceof Error ? e.message : String(e));
+        setEconError(engineErrorText(e));
       });
     return () => {
       live = false;

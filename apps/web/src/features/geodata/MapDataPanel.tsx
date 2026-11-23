@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { useI18n } from "../../i18n/i18n";
 import { JobProgress } from "../../shell/JobProgress";
 import type { GeodataApi, GeodataStatus, GeofabrikRegion, ImportRun } from "./api";
+import { engineErrorText } from "../../i18n/engine";
 
 const POLL_MS = 2_000;
 
@@ -57,7 +58,6 @@ export function MapDataPanel({
   const [regions, setRegions] = useState<GeofabrikRegion[] | null>(null);
   /** Why Geofabrik's region list could not be had (it cannot be reached), so "no region holds the area" is not said. */
   const [regionsError, setRegionsError] = useState<string | null>(null);
-  const [region, setRegion] = useState("");
   const [planned, setPlanned] = useState(false);
   const [sending, setSending] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
@@ -78,7 +78,7 @@ export function MapDataPanel({
         onOsm.current?.(id);
       }
     } catch (e) {
-      setError((e as Error).message);
+      setError(engineErrorText(e));
     }
   }, [api]);
 
@@ -107,7 +107,6 @@ export function MapDataPanel({
     api.regions().then(
       (r) => {
         setRegions(r);
-        setRegion((x) => x || r[0]?.id || "");
       },
       (e: Error) => {
         setRegions([]);
@@ -123,7 +122,7 @@ export function MapDataPanel({
       await fn();
       await load();
     } catch (e) {
-      setError((e as Error).message);
+      setError(engineErrorText(e));
     } finally {
       setSending(false);
     }
@@ -295,8 +294,8 @@ export function MapDataPanel({
                 </p>
               )}
               {chosen === "geofabrik" && (
-                <label className="flex flex-col gap-1 text-sm">
-                  <span className="font-medium">{t("data.region")}</span>
+                <div className="flex flex-col gap-1 text-sm">
+                  <span className="font-medium">{t("aw.data.regions")}</span>
                   {regions === null ? (
                     <span role="status" className="text-slate-600">
                       {t("data.regionsLoading")}
@@ -308,17 +307,12 @@ export function MapDataPanel({
                   ) : regions.length === 0 ? (
                     <span className="text-slate-600">{t("data.noRegions")}</span>
                   ) : (
-                    <span className="field">
-                      <select value={region} onChange={(e) => setRegion(e.target.value)}>
-                        {regions.map((r) => (
-                          <option key={r.id} value={r.id}>
-                            {r.name}
-                          </option>
-                        ))}
-                      </select>
-                    </span>
+                    <>
+                      <span>{regions.map((r) => r.name).join(", ")}</span>
+                      <span className="text-xs text-slate-500">{t("aw.data.regionsHelp")}</span>
+                    </>
                   )}
-                </label>
+                </div>
               )}
               <label className="flex min-h-11 items-center gap-2 text-sm">
                 <input type="checkbox" checked={planned} onChange={(e) => setPlanned(e.target.checked)} />
@@ -352,13 +346,15 @@ export function MapDataPanel({
                   type="button"
                   className="btn btn-pri"
                   disabled={
-                    sending || (chosen === "overpass" && tooLarge) || (chosen === "geofabrik" && !region)
+                    sending ||
+                    (chosen === "overpass" && tooLarge) ||
+                    (chosen === "geofabrik" && !regions?.length)
                   }
                   onClick={() =>
                     run(() =>
                       api.startOsm(
                         chosen === "geofabrik"
-                          ? { method: "geofabrik", region, planned }
+                          ? { method: "geofabrik", planned }
                           : { method: "overpass", planned },
                       ),
                     )

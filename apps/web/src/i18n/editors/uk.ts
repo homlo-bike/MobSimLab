@@ -710,6 +710,16 @@ export const editorsUk = {
   "schematic.showStatuses": "Символи статусу",
   "schematic.showFeatures": "Символи оснащення станцій",
   "schematic.showWater": "Море, озера й річки",
+  "schematic.straightRivers": "Малювати річки кроками по 45°",
+  "schematic.nameSize": "Розмір назв станцій",
+  "schematic.longRuns": "Довгі перегони без зупинок",
+  "schematic.longRuns.off": "Як на місцевості",
+  "schematic.longRuns.max": "Не більше {n} × звичайного інтервалу",
+  "schematic.pngSmallNames":
+    "Назви станцій на цьому зображенні лише {px} px, бо його обмежено 8192 px на сторону. Для чіткішої копії використайте SVG або друк.",
+  "schematic.printPaper": "Формат {paper}: назви станцій друкуються розміром {pt} pt.",
+  "schematic.printSmallNames":
+    "Формат {paper}: назви станцій друкуються розміром лише {pt} pt. Збільште назви станцій або сховайте деякі шари.",
   "schematic.showAreas": "Тарифні зони та орієнтири",
   "schematic.water": "Вода",
   "schematic.areas": "Тарифні зони та орієнтири",
@@ -1013,6 +1023,9 @@ export const editorsUk = {
   "jp.set.maxRides": "Макс. кількість поїздок",
   "jp.walkNote":
     "Відстані пішки — пряма × 1,3, доки не додано пішохідну мережу. Типові значення з бібліотеки припущень.",
+  "jp.slopeNote":
+    "Час ходьби рахується за ухилом між її кінцями (функція пішої ходи Тоблера з висотами рельєфу): угору й крутим спуском довше.",
+  "jp.slopeNoHeights": "Висоти рельєфу не завантажилися, тому ходьба рахується як рівною місцевістю.",
   "kit.minSec": "{m} хв {s} с",
   "kit.checks": "Перевірки",
   "kit.issue": "{level}: ",

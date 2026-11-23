@@ -34,6 +34,7 @@ import {
 } from "./calendar";
 import { dayTypeName, weekdayName } from "./dayTypeLabel";
 import type { PreferencesDoc } from "./preferences";
+import { engineErrorText } from "../i18n/engine";
 
 const DEFAULT_API = calendarApi();
 
@@ -113,7 +114,7 @@ export function CalendarSection({
           setSession((s) => ({ ...s, ...Object.fromEntries(got.map(([y, d]) => [`${country}/${y}`, d])) }));
       })
       .catch((e: unknown) => {
-        if (!stop) setFetchState({ error: e instanceof Error ? e.message : String(e) });
+        if (!stop) setFetchState({ error: engineErrorText(e) });
       });
     return () => {
       stop = true;

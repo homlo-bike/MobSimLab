@@ -436,4 +436,10 @@ export const tablesZh = {
   "tt.tbl.to": "至",
   "tt.tbl.arrives": "到达",
   "cost.outsideRange": "超出资料库范围（{low}–{high}）：请检查数值及其单位。",
+  "tbl.unrouted.title": "部分道路线路的走向不完整",
+  "tbl.unrouted.intro":
+    "这些线路保存时有部分走向未找到，因此表格、成本和评估将其按 0 公里计算。请在“创建”标签页中打开每条线路：其街道会加载，补全后的走向会被保存。若某段仍为红色，请将一个点移到车辆可以通行的道路上。",
+  "tbl.unrouted.legs": "未找到的路段",
+  "tbl.unrouted.runs": "未找到的进出场行程",
+  "tbl.unrouted.leftOut": "至少遗漏",
 } satisfies TablesMessages;

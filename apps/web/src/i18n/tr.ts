@@ -466,6 +466,9 @@ export const tr: Messages = {
   "map.searching": "Aranıyor…",
   "map.searchFailed": "Yer araması başarısız oldu: {error}",
   "map.noPlaces": "Yer bulunamadı.",
+  "map.noWebgl": "Harita gösterilemiyor: bu bilgisayar veya tarayıcı 3B grafik (WebGL2) desteklemiyor.",
+  "map.noWebglHelp":
+    "Donanım hızlandırmayı açın veya grafik sürücüsünü güncelleyin, ardından sayfayı yeniden açın. Sayfanın geri kalanı çalışmaya devam ediyor.",
   "map.places": "Bulunan yerler",
   "map.searchCredit": "Yer adları © OpenStreetMap katkıcıları, Photon ile bulundu",
   "map.layers": "Harita katmanları",

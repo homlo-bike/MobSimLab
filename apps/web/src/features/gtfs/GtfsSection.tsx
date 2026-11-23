@@ -1,6 +1,6 @@
 import type { Map as MapLibreMap } from "maplibre-gl";
 import { useState } from "react";
-import { useEngineText } from "../../i18n/engine";
+import { useEngineText, engineErrorText } from "../../i18n/engine";
 import { useI18n } from "../../i18n/i18n";
 import { PluginConverters } from "../../plugins/code/PluginConverters";
 import { activePlugins, componentConverters, pluginConverter, type Plugin } from "../../plugins/registry";
@@ -165,7 +165,7 @@ export function GtfsSection({
       }
       onChange?.(doc);
     } catch (e) {
-      setError(t("jp.gtfs.failed", { error: e instanceof Error ? e.message : String(e) }));
+      setError(t("jp.gtfs.failed", { error: engineErrorText(e) }));
     } finally {
       setBusy(null);
     }
@@ -185,7 +185,7 @@ export function GtfsSection({
           : {}),
       });
     } catch (e) {
-      setError(t("jp.gtfs.exportFailed", { error: e instanceof Error ? e.message : String(e) }));
+      setError(t("jp.gtfs.exportFailed", { error: engineErrorText(e) }));
     }
   };
 

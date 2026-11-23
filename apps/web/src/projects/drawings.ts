@@ -1,4 +1,5 @@
 import { get } from "../session/api";
+import { withApiMsg } from "../i18n/engine";
 
 /** What a project keeps drawings of (apps/api/src/projects/drawings.ts). */
 export type DrawingKind =
@@ -107,7 +108,10 @@ export async function saveDrawing<T>(
   if (res.status === 409) throw new DrawingConflict(body.current ?? null);
   if (!res.ok || !body.drawing) {
     const msg = Array.isArray(body.message) ? body.message.join("; ") : body.message;
-    throw new DrawingSaveError(msg ?? `save failed: ${res.status}`, res.status >= 500 || res.status === 429);
+    throw withApiMsg(
+      new DrawingSaveError(msg ?? `save failed: ${res.status}`, res.status >= 500 || res.status === 429),
+      body,
+    );
   }
   return body.drawing;
 }

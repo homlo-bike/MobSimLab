@@ -15,7 +15,7 @@ export const geodataRu = {
     "Рисунок теперь выходит за импортированную область. Обновите, чтобы импортировать новую область.",
   "data.method": "Откуда взять данные",
   "data.method.overpass": "Overpass (области до {max} км²)",
-  "data.method.geofabrik": "Регион Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Файл .osm.pbf",
   "data.region": "Регион",
   "data.regionsLoading": "Поиск регионов…",

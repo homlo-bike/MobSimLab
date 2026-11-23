@@ -38,6 +38,8 @@ self.onmessage = async (e: MessageEvent<Msg>) => {
     }
     self.postMessage({ id: m.id, ok: true, value });
   } catch (err) {
-    self.postMessage({ id: m.id, ok: false, error: err instanceof Error ? err.message : String(err) });
+    // An engine error carries its message (engine_msg::js_error), so the page can show it in its language.
+    const msg = err instanceof Error ? (err as Error & { msg?: unknown }).msg : undefined;
+    self.postMessage({ id: m.id, ok: false, error: err instanceof Error ? err.message : String(err), msg });
   }
 };

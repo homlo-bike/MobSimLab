@@ -173,6 +173,7 @@
     "demand.calibration.geh_hours": "Kalibratie: uren waarover een werkdagtelling wordt verdeeld voor de GEH-statistiek",
     "demand.walk_speed_kmh": "Loopsnelheid voor loopverbindingen tussen stations",
     "journey.walk_detour_factor": "Loopafstand ten opzichte van de hemelsbrede afstand (reisplanner, batenraming)",
+    "journey.walk_slope_k": "Lopen op hellingen: hellingsterm van Toblers wandelfunctie (reisplanner; 0 = looptijd als op vlak terrein)",
     "journey.min_change_s": "Reisplanner: minimale overstaptijd bij dezelfde halte",
     "journey.level_change_s": "Reisplanner: extra tijd om in een station van perron te wisselen (trappen, liften)",
     "journey.same_name_station_m": "Haltes met dezelfde naam binnen deze hemelsbrede afstand vormen één station",

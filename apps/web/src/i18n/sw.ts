@@ -468,6 +468,9 @@ export const sw: Messages = {
   "map.searching": "Inatafuta…",
   "map.searchFailed": "Utafutaji wa eneo umeshindwa: {error}",
   "map.noPlaces": "Hakuna eneo lililopatikana.",
+  "map.noWebgl": "Ramani haiwezi kuonyeshwa: kompyuta hii au kivinjari hiki hakina michoro ya 3D (WebGL2).",
+  "map.noWebglHelp":
+    "Washa uongezaji kasi wa maunzi au sasisha kiendeshi cha michoro, kisha fungua ukurasa tena. Sehemu nyingine ya ukurasa bado inafanya kazi.",
   "map.places": "Maeneo yaliyopatikana",
   "map.searchCredit": "Majina ya maeneo © wachangiaji wa OpenStreetMap, yamepatikana kwa Photon",
   "map.layers": "Tabaka za ramani",

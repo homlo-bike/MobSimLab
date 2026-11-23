@@ -644,6 +644,16 @@ export const editorsAm = {
   "schematic.showStatuses": "የሁኔታ ምልክቶች",
   "schematic.showFeatures": "የጣቢያ አገልግሎት ምልክቶች",
   "schematic.showWater": "ባሕር፣ ሐይቆችና ወንዞች",
+  "schematic.straightRivers": "ወንዞችን በ45° ደረጃዎች ሳል",
+  "schematic.nameSize": "የጣቢያ ስም መጠን",
+  "schematic.longRuns": "ማቆሚያ የሌላቸው ረጅም ክፍሎች",
+  "schematic.longRuns.off": "መሬት ላይ እንዳለው",
+  "schematic.longRuns.max": "ቢበዛ ከተለመደው ርቀት {n} እጥፍ",
+  "schematic.pngSmallNames":
+    "ይህ ምስል በእያንዳንዱ ጎን በ8,192 px የተገደበ ስለሆነ የጣቢያ ስሞች {px} px ብቻ ናቸው። ለጠራ ቅጂ SVG ወይም ማተምን ይጠቀሙ።",
+  "schematic.printPaper": "የገጽ መጠን {paper}: የጣቢያ ስሞች በ{pt} pt ይታተማሉ።",
+  "schematic.printSmallNames":
+    "የገጽ መጠን {paper}: የጣቢያ ስሞች በ{pt} pt ብቻ ይታተማሉ። የጣቢያ ስሞችን ያስፉ ወይም አንዳንድ ንብርብሮችን ይደብቁ።",
   "schematic.showAreas": "የታሪፍ ዞኖችና ምልክት ቦታዎች",
   "schematic.water": "ውሃ",
   "schematic.areas": "የታሪፍ ዞኖችና ምልክት ቦታዎች",
@@ -923,6 +933,9 @@ export const editorsAm = {
   "jp.set.minChange": "በተመሳሳይ ማቆሚያ መቀየር (ሰ)",
   "jp.set.maxRides": "ከፍተኛ የተሽከርካሪዎች ብዛት",
   "jp.walkNote": "የእግር ጉዞ የእግረኛ አውታር እስኪኖር ድረስ የቀጥታ መስመር ርቀት × 1.3 ነው። ነባሪ እሴቶች ከግምቶች ቤተ መጻሕፍት ናቸው።",
+  "jp.slopeNote":
+    "የእግር ጉዞ ጊዜ በሁለቱ ጫፎች መካከል ባለው ዳገት ይሰላል (የቶብለር ቀመር ከመሬት ከፍታዎች ጋር)፦ ዳገት እና ቁልቁል ቁልቁለት ጉዞዎች ረዘም ያለ ጊዜ ይወስዳሉ።",
+  "jp.slopeNoHeights": "የመሬት ከፍታዎች አልተጫኑም፤ ስለዚህ የእግር ጉዞ እንደ ጠፍጣፋ መሬት ይሰላል።",
   "kit.minSec": "{m} ደቂቃ {s} ሰከንድ",
   "kit.checks": "ፍተሻዎች",
   "kit.issue": "{level}፦",

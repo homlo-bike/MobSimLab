@@ -34,6 +34,7 @@ import { StationsSection } from "./StationsSection";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 import { OFF_PEAK_PREF } from "./editedElsewhere";
+import { engineErrorText } from "../i18n/engine";
 
 /**
  * Preferences tab (mockup "Project preferences"): the project's name, description, study area and modes, which
@@ -104,7 +105,7 @@ export function ProjectPreferences({
       );
       setState("saved");
     } catch (err) {
-      setState({ error: err instanceof Error ? err.message : String(err) });
+      setState({ error: engineErrorText(err) });
     }
   };
   const label = "mt-4 mb-1.5 block font-semibold";

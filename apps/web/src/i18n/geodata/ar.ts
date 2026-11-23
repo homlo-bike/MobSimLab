@@ -14,7 +14,7 @@ export const geodataAr = {
   "data.outside": "يمتد الرسم الآن خارج المنطقة المستوردة. حدّث لاستيراد المنطقة الجديدة.",
   "data.method": "جلب البيانات من",
   "data.method.overpass": "Overpass (مناطق حتى {max} كم²)",
-  "data.method.geofabrik": "منطقة من Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "ملف ‎.osm.pbf",
   "data.region": "المنطقة",
   "data.regionsLoading": "جارٍ البحث عن المناطق…",

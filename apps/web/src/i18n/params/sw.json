@@ -173,6 +173,7 @@
     "demand.calibration.geh_hours": "Urekebishaji: saa ambazo hesabu ya siku ya kazi hugawanywa kwa takwimu ya GEH",
     "demand.walk_speed_kmh": "Kasi ya kutembea kwa viungo vya kutembea kati ya vituo",
     "journey.walk_detour_factor": "Umbali wa kutembea ikilinganishwa na umbali wa mstari ulionyooka (mpangaji wa safari, makadirio ya manufaa)",
+    "journey.walk_slope_k": "Kutembea kwenye mteremko: kipengele cha mwinuko cha kanuni ya matembezi ya Tobler (mpangaji wa safari; 0 = matembezi huhesabiwa kama ardhi tambarare)",
     "journey.min_change_s": "Mpangaji wa safari: muda mfupi kabisa wa kubadilisha kwenye kituo kile kile",
     "journey.level_change_s": "Mpangaji wa safari: muda wa ziada wa kubadilisha jukwaa kituoni (ngazi, lifti)",
     "journey.same_name_station_m": "Vituo vyenye jina moja ndani ya umbali huu wa mstari ulionyooka ni kituo kimoja",

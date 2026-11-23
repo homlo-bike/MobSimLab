@@ -23,19 +23,28 @@ stations), and ADR-0025 already names a simpler octilinear layout as the fallbac
    place and are moved in a few hundred deterministic steps until every section runs at a multiple of 45°, is
    at least 0.7 of the typical section long, stations keep apart and no station sits on a section it does not
    belong to; a weak pull keeps the map recognisable. Nearly straight sections are then made exactly straight.
+   Long runs without stops are shortened first (*Long runs without stops*, default at most 3 typical sections,
+   or as on the ground): a longer section whose removal splits the network (an airport bus, the end of a
+   suburban branch) is shortened by moving the whole part beyond it, so that part keeps its shape; the part
+   moved is the one without stations the planner placed, else the smaller one. Sections in a loop are capped by
+   the layout's springs. The idea of compressing empty runs comes from transit-map (juliuste/transit-map); no
+   code is taken from it.
    A section that still is not at 45° is drawn as straight–diagonal–straight. The layout needs no server.
 3. **Drawing.** Lines that share a section run side by side in a fixed order; corners between stations are
    rounded when *Round the corners* is on. Interchanges are white rings in ink, other stops white rings in the
    line's colour. Names take one of eight places around a station, chosen so they cover no other name, station or
-   line where possible.
+   line where possible. The station name size is a setting of the diagram (10 to 32 px of the drawing,
+   13 by default) and is kept in the exports.
 4. **Edits are kept with the project** as the drawing kind `schematic`: stations the planner moved (metres from a
    fixed origin, so they keep their place when lines are added), name places, the layers switched off and the
    three switches (straighten, round corners, snap while dragging). The automatic layout runs around the moved
    stations. *Reset layout* forgets the moves.
 5. **Strip map** per line: the stations in order on a straight band, with the other lines at each station as
    coloured labels.
-6. **Export** as SVG (stand-alone, presentation attributes only), PNG (twice the screen size) and the browser's
-   print dialog for print and PDF. The diagram carries the project name, a legend of the lines and a footer.
+6. **Export** as SVG (stand-alone, presentation attributes only), PNG (twice the screen size, more when needed
+   for names of at least 10 px, within 8,192 px a side) and the browser's print dialog for print and PDF on the
+   smallest A paper (A4 to A0) on which station names print at least 7 pt. When names still come out smaller,
+   the tab says so. The diagram carries the project name, a legend of the lines and a footer.
 7. **Station features and statuses.** Facilities (step-free access, ramp, lift, escalator, tactile paving,
    toilets, bike parking) are recorded where stations are made: in the railway tool's station panel and on street
    line stops in Create (`features` on the station or saved point). A special status (central station, central
@@ -51,7 +60,11 @@ stations), and ADR-0025 already names a simpler octilinear layout as the fallbac
    lines, and the sea closed from the coastline, land on its left), simplified to about 1/1500 of the box and
    without areas under 1/20000 of it, cached like the street tiles. The browser asks for the stations' box with a
    margin and bends the water with the stations: each point moves by the stations' moves, weighted by the
-   inverse square of the distance, so a river stays between the stations it runs between. Water is drawn under
+   inverse square of the distance, so a river stays between the stations it runs between. Rivers are drawn
+   schematically by default (*Draw rivers at 45° steps*): the bent pieces are joined, arms shorter than 1.5
+   typical sections and channels running alongside a longer river are dropped, the bends are simplified and
+   each part runs straight–diagonal–straight like the lines, bending the way round that keeps farther from
+   the stations. Water is drawn under
    the lines and can be switched off; it is not saved with the project.
 9. **Tariff zones and landmarks.** Planners draw areas on the network map by clicking corners, give them a
    name, a kind (tariff zone, dashed outline; landmark such as the old town, solid outline) and a colour, and can

@@ -670,6 +670,16 @@ export const editorsEn = {
   "schematic.showStatuses": "Status symbols",
   "schematic.showFeatures": "Station feature symbols",
   "schematic.showWater": "Sea, lakes and rivers",
+  "schematic.straightRivers": "Draw rivers at 45° steps",
+  "schematic.nameSize": "Station name size",
+  "schematic.longRuns": "Long runs without stops",
+  "schematic.longRuns.off": "As on the ground",
+  "schematic.longRuns.max": "At most {n} × the usual spacing",
+  "schematic.pngSmallNames":
+    "Station names are only {px} px in this image, because it is limited to 8,192 px a side. Use SVG or Print for a sharper copy.",
+  "schematic.printPaper": "Page size {paper}: station names print at {pt} pt.",
+  "schematic.printSmallNames":
+    "Page size {paper}: station names print at only {pt} pt. Make the station names larger or hide some layers.",
   "schematic.showAreas": "Tariff zones and landmarks",
   "schematic.water": "Water",
   "schematic.areas": "Tariff zones and landmarks",
@@ -964,6 +974,9 @@ export const editorsEn = {
   "jp.set.maxRides": "Most vehicles",
   "jp.walkNote":
     "Walks are straight-line distance × 1.3 until the walking network exists. Defaults come from the assumption library.",
+  "jp.slopeNote":
+    "Walks are timed on the slope between their two ends (Tobler's hiking function, with the terrain heights): uphill and steep downhill walks take longer.",
+  "jp.slopeNoHeights": "Terrain heights did not load, so walks are timed as if on flat ground.",
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Checks",
   "kit.issue": "{level}:",

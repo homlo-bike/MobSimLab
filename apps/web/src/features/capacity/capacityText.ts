@@ -1,5 +1,6 @@
 import { type Translate, type TranslatePlural, translate, translatePlural } from "../../i18n/i18n";
 import type { RunStatus, SavedRunDetail } from "./server";
+import type { EngineText } from "../../i18n/engine";
 import type { Point, Verdict } from "./types";
 
 /** English, for the helpers when no translator is given (tests, logs). */
@@ -36,11 +37,17 @@ export function practicalMaximum(points: Point[]): number | null {
   return ok.length ? Math.max(...ok) : null;
 }
 
-/** Purpose: one sentence that says why a point got its verdict. */
-export function explain(p: Point, limit: number, t: Translate = EN, tn: TranslatePlural = EN_N): string {
+/** Purpose: one sentence that says why a point got its verdict (`tx` shows the engine's problem in the language). */
+export function explain(
+  p: Point,
+  limit: number,
+  t: Translate = EN,
+  tn: TranslatePlural = EN_N,
+  tx: (finding: EngineText) => string = (f) => f.text,
+): string {
   if (p.unplaced > 0) return tn("capacity.unplaced", p.unplaced);
   if (p.problems.length && p.verdict === "not_enough_capacity")
-    return t("capacity.stopped", { problem: p.problems[0]! });
+    return t("capacity.stopped", { problem: tx({ text: p.problems[0]!, msg: p.problem_msgs?.[0] }) });
   const part =
     p.terminal_share > p.consumption
       ? t("capacity.partTerminal", { name: p.terminal })

@@ -5,6 +5,7 @@ import { componentCalculations, type Plugin, type PluginCalculation } from "../r
 import { pluginRuntime } from "./context";
 import { calculationInput, type PluginOutput, type PluginProjectData, readOutput } from "./inputs";
 import { runPluginCode, type WorkerFactory } from "./runtime";
+import { engineErrorText } from "../../i18n/engine";
 
 type Calc = PluginCalculation & { plugin: Plugin };
 
@@ -133,7 +134,7 @@ export function PluginCalculations({
       const r = await runCalculation(c, data, {}, createWorker);
       setState((s) => ({ ...s, [key(c)]: { output: r.output, logs: r.logs } }));
     } catch (e) {
-      setState((s) => ({ ...s, [key(c)]: { error: e instanceof Error ? e.message : String(e) } }));
+      setState((s) => ({ ...s, [key(c)]: { error: engineErrorText(e) } }));
     }
   };
   return (

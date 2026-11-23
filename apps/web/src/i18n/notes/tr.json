@@ -491,6 +491,7 @@
     "4663ffcb": "Katalogdaki alçak tabanlı hafif raylı araçların ve tram-trenlerin tabanları 356–550 mm'dir; yüksek tabanlı Stadtbahn araçlarının (Stuttgart DT 8) 1000 mm'dir.",
     "46c150f1": "TSI PRM: her iki yönde düşey basamak ≤ 50 mm (kaynakta görüldü); ADA: hızlı raylı ve hafif raylı için ± 5/8 in (≈ 16 mm) (kontrol edilecek).",
     "46dd4c61": "MUTCD 2009 § 8C.04: tren geçidi boşalttıktan ve başka tren algılanmadıktan sonra bariyer kolları en fazla 12 s içinde dik konuma kalkar; kollar kalkınca ışıklar söner. Başka yerlerde yaklaşık 6–10 s'de kalkan bariyerler olağandır. Orta değer bu ikisinin arasındadır.",
+    "46e1b5df": "Tobler yürüyüş fonksiyonu: s eğiminde yürüme hızı 6 exp(-3.5 |s + 0.05|) km/h olup en yüksek değer %5 inişte görülür. Yolculuk planlayıcı düz zemindeki yürüme hızını korur ve süreyi exp(k (|s + 0.05| - 0.05)) ile çarpar; s iki ucun yükseklik farkının yürüme mesafesine bölümüdür ve ±%50 ile sınırlanır. 3,5 Tobler'in değeridir; ±0,5 aralığı gerekçeli bir tahmindir. 0 eğimleri yok sayar.",
     "472c7331": "Yüksek tabanlı metro araçları.",
     "47a4908b": "Broach, Dill ve Gliebe: boyalı şeritler ayrı yollardan daha az yardımcı olur, çoğunlukla yoğun sokaklarda. OpenStreetMap cycleway=lane veya CBS sekmesinde (sokak kurulumu) tanımlanan bir bisiklet şeridi.",
     "47ac0bc3": "CBTC ve ETCS seviye 2, konum belirsizliğini ve öndeki trenin arka ucunu karşılamak için fren eğrisinin ötesinde bir emniyet payı bırakır; tedarikçiler birkaç on metre kullanır.",

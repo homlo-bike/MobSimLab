@@ -133,8 +133,12 @@ fn validation_reports_unknown_ids() {
     spec.signals[0].track = "nope".into();
     spec.platforms[0].station = "nowhere".into();
     let errs = Model::compile(&spec).unwrap_err();
-    assert!(errs.iter().any(|e| e.contains("unknown track nope")));
-    assert!(errs.iter().any(|e| e.contains("unknown station nowhere")));
+    assert!(errs
+        .iter()
+        .any(|e| e.english().contains("unknown track nope")));
+    assert!(errs
+        .iter()
+        .any(|e| e.english().contains("unknown station nowhere")));
 }
 
 #[test]

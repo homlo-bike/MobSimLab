@@ -491,6 +491,7 @@
     "4663ffcb": "Ọkọ̀ ojú irin fífúyẹ́ ilẹ̀ kékeré àti tram-train nínú àkójọ ní ilẹ̀ 356–550 mm; ọkọ̀ Stadtbahn ilẹ̀ gíga (Stuttgart DT 8) ní 1000 mm.",
     "46c150f1": "TSI PRM: àtẹ̀gùn inaro ≤ 50 mm ní ìhà èyíkéyìí (a rí i nínú orísun); ADA: ± 5/8 in (≈ 16 mm) fún ọkọ̀ ojú irin yíyára àti fífúyẹ́ (a ó ṣàyẹ̀wò rẹ̀).",
     "46dd4c61": "MUTCD 2009 § 8C.04: àwọn apá ẹnu ọ̀nà ìdènà ń dìde sókè láàrin 12 s lẹ́yìn tí ọkọ̀ ojú irin ti kọjá tí a kò sì rí ọkọ̀ ojú irin mìíràn; iná ń dúró nígbà tí àwọn apá bá wà lókè. Ìdènà tí ń dìde ní nǹkan bí 6–10 s ló wọ́pọ̀ níbòmíràn. Iye àárín wà láàrin méjèèjì.",
+    "46e1b5df": "Ìlànà ìrìn Tobler: ìyára ìrìn ni 6 exp(-3.5 |s + 0.05|) km/h lórí ìtẹ̀ s, ó yára jù lórí ìsọ̀kalẹ̀ 5 %. Olùṣètò ìrìn-àjò ń pa ìyára ìrìn ilẹ̀ pẹ̀tẹ́lẹ̀ mọ́, ó sì ń fi exp(k (|s + 0.05| - 0.05)) sọ àkókò di púpọ̀; s ni ìyàtọ̀ gíga òpin méjèèjì tí a pín sí ìjìnnà ìrìn, láàárín ±50 %. 3.5 ni iye Tobler; ààlà ±0.5 jẹ́ ìdíyelé. 0 kò ka ìtẹ̀ sí.",
     "472c7331": "Ọkọ̀ mẹ́tírò ilẹ̀ gíga.",
     "47a4908b": "Broach, Dill àti Gliebe: ìlà tí a fi ọ̀dà sàmì sí kò ṣe ìrànlọ́wọ́ tó ọ̀nà tí a yà sọ́tọ̀, ó sì ń ṣe ìrànlọ́wọ́ jùlọ lórí títì tí ọkọ̀ pọ̀ sí. OpenStreetMap cycleway=lane tàbí ìlà kẹ̀kẹ́ tí a ṣètò ní táàbù GIS (ìṣètò títì).",
     "47ac0bc3": "CBTC àti ETCS level 2 ń pa ààlà ààbò mọ́ kọjá ìtẹ̀ bíréèkì láti bo àìdánilójú ipò àti ìrù ọkọ̀ ojú irin tó wà níwájú; àwọn olùpèsè ń lo mítà mẹ́wàá díẹ̀.",

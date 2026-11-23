@@ -44,7 +44,7 @@ pub struct JourneyTimetable {
     /// Stops, routes and trips in the contract's form.
     pub timetable: Timetable,
     /// Platforms placed by an estimate, for the run report.
-    pub notes: Vec<String>,
+    pub notes: Vec<engine_msg::Msg>,
 }
 
 /// Purpose: the published timetable of a plan in the journey planner's form.
@@ -104,16 +104,17 @@ pub fn journey_timetable(
             if !stops.contains_key(&pf.id) {
                 let xy = place_of(p as usize)
                     .or_else(|| {
-                        notes.push(format!(
-                            "Platform {} has no position in the design; placed at the middle of {}.",
-                            pf.id, g.name
+                        notes.push(engine_msg::msg!(
+                            "rail.plan.note.platform_estimated",
+                            platform = &pf.id,
+                            station = &g.name
                         ));
                         group_middle(st.group as usize)
                     })
                     .unwrap_or_else(|| {
-                        notes.push(format!(
-                            "Station {} has no position in the design; placed at the origin.",
-                            g.name
+                        notes.push(engine_msg::msg!(
+                            "rail.plan.note.station_at_origin",
+                            station = &g.name
                         ));
                         [0.0, 0.0]
                     });
@@ -127,6 +128,7 @@ pub fn journey_timetable(
                         stop_lon: lon,
                         parent_station: Some(format!("group:{}", g.key)),
                         platform_code: pf.label.clone(),
+                        elevation_m: None,
                     },
                 );
             }

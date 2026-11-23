@@ -2,6 +2,7 @@ import { type ReactNode, useCallback, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { Dialog } from "../shell/Dialog";
 import { ExternalIcon } from "../shell/icons";
+import { engineErrorText } from "../i18n/engine";
 
 /** An outside service a plugin uses, linked at the bottom of its configure window. */
 export interface ServiceLink {
@@ -22,7 +23,7 @@ export function useWindowRun(): [(f: () => Promise<unknown>) => Promise<boolean>
       await f();
       return true;
     } catch (e) {
-      setError((e as Error).message);
+      setError(engineErrorText(e));
       return false;
     }
   }, []);

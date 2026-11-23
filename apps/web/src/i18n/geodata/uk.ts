@@ -15,7 +15,7 @@ export const geodataUk = {
     "Малюнок тепер виходить за межі імпортованої області. Оновіть, щоб імпортувати нову область.",
   "data.method": "Звідки взяти дані",
   "data.method.overpass": "Overpass (області до {max} км²)",
-  "data.method.geofabrik": "Регіон Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Файл .osm.pbf",
   "data.region": "Регіон",
   "data.regionsLoading": "Пошук регіонів…",

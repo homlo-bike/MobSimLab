@@ -10,6 +10,7 @@ import {
   buildingQuery,
   buildingUse,
   footprints,
+  MAIN_ROAD_CLASSES,
   osmNumber,
   placeKind,
   placeQuery,
@@ -48,6 +49,31 @@ describe("street tiles", () => {
     expect(q).toContain('way["highway"~"^(motorway|');
     expect(q).toContain('rel(bw.w)["type"="restriction"]');
     expect(q).not.toContain('"building"');
+  });
+
+  it("asks only for main roads in a main-roads-only tile", () => {
+    const q = streetQuery(14, 8508, 5489, MAIN_ROAD_CLASSES);
+    expect(q).toContain('way["highway"~"^(motorway|motorway_link|trunk|trunk_link|primary|primary_link)$"]');
+    expect(q).not.toContain("residential");
+  });
+
+  it("serves only main roads for a tile asked for light", async () => {
+    const { fetchImpl, c } = client([XML, XML]);
+    const mod = await Test.createTestingModule({ imports: [StreetNetworkModule] })
+      .overrideProvider(OverpassClient)
+      .useValue(c)
+      .compile();
+    const app = mod.createNestApplication();
+    await app.init();
+    await request(app.getHttpServer()).get("/api/street-network/tiles/14/8508/5489?light=1").expect(200);
+    await request(app.getHttpServer()).get("/api/street-network/tiles/14/8508/5489").expect(200);
+    const asked = fetchImpl.mock.calls.map((call) =>
+      decodeURIComponent(String((call as unknown[])[1] && ((call as unknown[])[1] as RequestInit).body)),
+    );
+    expect(asked[0]).toContain("motorway|motorway_link|trunk");
+    expect(asked[0]).not.toContain("residential");
+    expect(asked[1]).toContain("residential");
+    await app.close();
   });
 
   it("asks for railway tracks of every kind, not roads", () => {

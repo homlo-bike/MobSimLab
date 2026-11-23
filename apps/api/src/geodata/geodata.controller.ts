@@ -70,7 +70,7 @@ export class GeodataController {
     return this.geodata.status(this.actor(req), parse(uuid, id));
   }
 
-  /** Purpose: the Geofabrik regions holding the project area, smallest first. */
+  /** Purpose: the Geofabrik regions an import of the project area downloads (one per country it needs). */
   @Get("geofabrik-regions")
   @Requires("projects.read")
   async regions(@Param("id") id: string, @Req() req: MslRequest) {

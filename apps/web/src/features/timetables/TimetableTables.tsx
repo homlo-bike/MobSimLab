@@ -51,6 +51,7 @@ import {
 import { type DayPublications, useRailPublications } from "./railPublish";
 import { TablePart } from "../tables/sections";
 import { SPARE_PREF, TERMINAL_WAIT_PREF } from "../../workspace/editedElsewhere";
+import { engineErrorText } from "../../i18n/engine";
 
 interface Props {
   railway: Network | null;
@@ -285,7 +286,7 @@ export function TimetableTables({
         weekend: weekendOf(cal),
       });
     } catch (e) {
-      setFailed(e instanceof Error ? e.message : String(e));
+      setFailed(engineErrorText(e));
     }
   };
 

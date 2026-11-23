@@ -1,4 +1,5 @@
 import { get, send } from "../../session/api";
+import { withApiMsg } from "../../i18n/engine";
 
 /** `[west, south, east, north]` in degrees. */
 export type Box = [number, number, number, number];
@@ -116,9 +117,12 @@ async function uploadFile(url: string, csrf: string, file: File): Promise<Import
     message?: string | string[];
   };
   if (!res.ok || !json.import)
-    throw new Error(
-      (Array.isArray(json.message) ? json.message.join("; ") : json.message) ??
-        `Upload failed (${res.status})`,
+    throw withApiMsg(
+      new Error(
+        (Array.isArray(json.message) ? json.message.join("; ") : json.message) ??
+          `Upload failed (${res.status})`,
+      ),
+      json,
     );
   return json.import;
 }
@@ -159,7 +163,7 @@ export function projectGeodata(projectId: string, csrf: string): GeodataApi {
       });
       if (!res.ok) {
         const json = (await res.json().catch(() => ({}))) as { message?: string };
-        throw new Error(json.message ?? `Remove failed (${res.status})`);
+        throw withApiMsg(new Error(json.message ?? `Remove failed (${res.status})`), json);
       }
     },
   };

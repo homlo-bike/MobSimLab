@@ -639,6 +639,16 @@ export const editorsFa = {
   "schematic.showStatuses": "نمادهای وضعیت",
   "schematic.showFeatures": "نمادهای امکانات ایستگاه",
   "schematic.showWater": "دریا، دریاچه‌ها و رودها",
+  "schematic.straightRivers": "رودها را با گام‌های ۴۵° بکش",
+  "schematic.nameSize": "اندازهٔ نام ایستگاه‌ها",
+  "schematic.longRuns": "بخش‌های بلند بدون توقف",
+  "schematic.longRuns.off": "مانند روی زمین",
+  "schematic.longRuns.max": "حداکثر {n} × فاصلهٔ معمول",
+  "schematic.pngSmallNames":
+    "نام ایستگاه‌ها در این تصویر فقط {px} px است، چون تصویر به ۸۱۹۲ px در هر ضلع محدود است. برای نسخهٔ واضح‌تر از SVG یا چاپ استفاده کنید.",
+  "schematic.printPaper": "اندازهٔ صفحه {paper}: نام ایستگاه‌ها با {pt} pt چاپ می‌شوند.",
+  "schematic.printSmallNames":
+    "اندازهٔ صفحه {paper}: نام ایستگاه‌ها فقط با {pt} pt چاپ می‌شوند. نام ایستگاه‌ها را بزرگ‌تر کنید یا برخی لایه‌ها را پنهان کنید.",
   "schematic.showAreas": "منطقه‌های کرایه و نشانه‌های شهری",
   "schematic.water": "آب",
   "schematic.areas": "منطقه‌های کرایه و نشانه‌های شهری",
@@ -927,6 +937,9 @@ export const editorsFa = {
   "jp.set.maxRides": "حداکثر تعداد سوار شدن",
   "jp.walkNote":
     "تا افزوده شدن شبکهٔ پیاده، فاصلهٔ پیاده‌روی خط مستقیم × 1.3 است. پیش‌فرض‌ها از کتابخانهٔ فرض‌ها.",
+  "jp.slopeNote":
+    "زمان پیاده‌روی با شیب میان دو سر آن حساب می‌شود (تابع پیاده‌روی توبلر با ارتفاع‌های زمین): سربالایی و سرازیری تند زمان بیشتری می‌برد.",
+  "jp.slopeNoHeights": "ارتفاع‌های زمین بارگیری نشد، بنابراین پیاده‌روی مانند زمین هموار حساب می‌شود.",
   "kit.minSec": "{m} دقیقه {s} ثانیه",
   "kit.checks": "بررسی‌ها",
   "kit.issue": "{level}: ",

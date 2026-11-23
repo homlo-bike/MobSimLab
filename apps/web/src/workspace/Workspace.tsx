@@ -12,6 +12,7 @@ import { MapDataPanel } from "../features/geodata/MapDataPanel";
 import { type LiveData, setDataProject, watchLiveData } from "../geodata/projectData";
 import { projectTimetable } from "../features/benefits/timetable";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
+import { AreaChecks } from "../features/area/AreaChecks";
 import { economyApi, type Prices } from "../features/costs/economy";
 import { useProjectCurrency } from "../features/costs/currency";
 import type { Estimate as CostEstimate } from "../features/costs/model";
@@ -147,6 +148,8 @@ import {
 } from "../features/comments/notices";
 import { Dialog } from "../shell/Dialog";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
+import { UnroutedNotice } from "../features/tables/UnroutedNotice";
+import { engineErrorText } from "../i18n/engine";
 
 // Editors and screens downloaded when first opened, so opening a project fetches only the tab shown.
 const BenefitTables = lazyNamed(() => import("../features/benefits/BenefitTables"), "BenefitTables");
@@ -793,7 +796,7 @@ export function Workspace({
       setBuild(kind);
       onTab("create");
     } catch (err) {
-      setConvertError(err instanceof Error ? err.message : String(err));
+      setConvertError(engineErrorText(err));
     }
   };
   // Cmd+Z (Ctrl+Z) undoes the last change to a drawing; Cmd+Shift+Z or Ctrl+Y makes it again. In a text field
@@ -1535,6 +1538,9 @@ export function Workspace({
                   />
                   <TablesSection.Provider value={shownPart(tablesView, tablesParts)}>
                     <div className="min-w-0 flex-1">
+                      {/* Every group reads the street lines' saved routes: a route with parts not found is named
+                          above them all. */}
+                      <UnroutedNotice streetLines={streetLines} />
                       <div
                         id="tables-network"
                         role="region"
@@ -2000,7 +2006,21 @@ export function Workspace({
             isOwner={project ? can.manage(project) : false}
             userId={userId}
           >
-            <ChecksProvider key={projectId}>{body}</ChecksProvider>
+            <ChecksProvider key={projectId}>
+              {body}
+              {areaView && (
+                <AreaChecks
+                  polygons={areaView.polygons}
+                  docs={{
+                    streetLines,
+                    railway,
+                    depots: depotsDoc,
+                    cargoBike: drawings.doc<CargoBikeDoc>("cargo-bike"),
+                    pluginLines: drawings.doc<PluginLinesDoc>("plugin-lines"),
+                  }}
+                />
+              )}
+            </ChecksProvider>
           </CommentsProvider>
         </VehiclesOffContext.Provider>
       </WeekendContext.Provider>

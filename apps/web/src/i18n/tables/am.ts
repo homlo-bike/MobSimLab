@@ -439,4 +439,10 @@ export const tablesAm = {
   "tt.tbl.to": "ወደ",
   "tt.tbl.arrives": "ይደርሳል",
   "cost.outsideRange": "ከቤተ መጻሕፍቱ ክልል ({low}–{high}) ውጭ ነው፦ እሴቱንና መለኪያውን ያረጋግጡ።",
+  "tbl.unrouted.title": "የአንዳንድ የመንገድ መስመሮች ጉዞ ሙሉ አይደለም",
+  "tbl.unrouted.intro":
+    "እነዚህ መስመሮች ሲቀመጡ የጉዟቸው አንዳንድ ክፍሎች አልተገኙም፤ ስለዚህ ሰንጠረዦች፣ ወጪዎች እና ግምገማው እንደ 0 ኪ.ሜ ይቆጥሯቸዋል። እያንዳንዱን መስመር በፍጠር ትር ይክፈቱ፤ መንገዶቹ ይጫናሉ፣ የተሟላው ጉዞም ይቀመጣል። ቀይ ሆኖ የሚቀር ክፍል ተሽከርካሪው ሊጠቀምበት ወደሚችል መንገድ ነጥብ መዛወርን ይፈልጋል።",
+  "tbl.unrouted.legs": "ያልተገኙ ክፍሎች",
+  "tbl.unrouted.runs": "ያልተገኙ የዴፖ ጉዞዎች",
+  "tbl.unrouted.leftOut": "የተተወ፣ ቢያንስ",
 } satisfies TablesMessages;

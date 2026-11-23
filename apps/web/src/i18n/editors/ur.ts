@@ -655,6 +655,16 @@ export const editorsUr = {
   "schematic.showStatuses": "حیثیت کی علامات",
   "schematic.showFeatures": "اسٹیشن سہولیات کی علامات",
   "schematic.showWater": "سمندر، جھیلیں اور دریا",
+  "schematic.straightRivers": "دریاؤں کو 45° کے قدموں میں بنائیں",
+  "schematic.nameSize": "اسٹیشن کے ناموں کا سائز",
+  "schematic.longRuns": "بغیر اسٹاپ کے لمبے حصے",
+  "schematic.longRuns.off": "جیسے زمین پر",
+  "schematic.longRuns.max": "زیادہ سے زیادہ معمول کے فاصلے کا {n} گنا",
+  "schematic.pngSmallNames":
+    "اس تصویر میں اسٹیشن کے نام صرف {px} px ہیں کیونکہ یہ ہر طرف 8,192 px تک محدود ہے۔ زیادہ واضح نقل کے لیے SVG یا پرنٹ استعمال کریں۔",
+  "schematic.printPaper": "صفحے کا سائز {paper}: اسٹیشن کے نام {pt} pt پر چھپتے ہیں۔",
+  "schematic.printSmallNames":
+    "صفحے کا سائز {paper}: اسٹیشن کے نام صرف {pt} pt پر چھپتے ہیں۔ اسٹیشن کے نام بڑے کریں یا کچھ تہیں چھپائیں۔",
   "schematic.showAreas": "کرایہ زون اور نمایاں مقامات",
   "schematic.water": "پانی",
   "schematic.areas": "کرایہ زون اور نمایاں مقامات",
@@ -946,6 +956,9 @@ export const editorsUr = {
   "jp.set.minChange": "ایک ہی اسٹاپ پر تبدیلی (سیکنڈ)",
   "jp.set.maxRides": "زیادہ سے زیادہ سواریاں",
   "jp.walkNote": "پیدل نیٹ ورک آنے تک پیدل فاصلہ سیدھی لکیر × 1.3 ہے۔ طے شدہ قدریں مفروضات کی لائبریری سے۔",
+  "jp.slopeNote":
+    "پیدل وقت دونوں سروں کے درمیان ڈھلوان پر شمار ہوتا ہے (زمینی بلندیوں کے ساتھ ٹوبلر کا ہائکنگ فنکشن): چڑھائی اور تیز اترائی میں زیادہ وقت لگتا ہے۔",
+  "jp.slopeNoHeights": "زمینی بلندیاں لوڈ نہیں ہوئیں، اس لیے پیدل چلنا ہموار زمین کی طرح شمار ہو رہا ہے۔",
   "kit.minSec": "{m} منٹ {s} سیکنڈ",
   "kit.checks": "جانچ",
   "kit.issue": "{level}:",
