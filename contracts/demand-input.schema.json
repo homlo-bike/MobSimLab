@@ -131,12 +131,13 @@
     "street_setups": {
       "type": "array",
       "maxItems": 100000,
-      "description": "The planner's street setups from the GIS tab, applied to the OpenStreetMap street tiles: general traffic lanes over both directions, a bus lane each way, and a bike lane each way (a track where separated).",
+      "description": "The planner's street setups from the GIS tab, applied to the OpenStreetMap street tiles: one-way or two-way, general traffic lanes over both directions, a bus lane each way, and a bike lane each way (a track where separated).",
       "items": {
         "type": "object",
         "required": ["way"],
         "properties": {
           "way": { "type": "integer" },
+          "oneway": { "type": ["boolean", "null"] },
           "traffic_lanes": { "type": ["number", "null"] },
           "bus_lane": { "type": ["boolean", "null"] },
           "bike_lane": { "type": ["boolean", "null"] },

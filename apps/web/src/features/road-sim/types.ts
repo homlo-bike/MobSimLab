@@ -60,6 +60,7 @@ export interface RoadScenario {
   depots: RoadDepot[];
   streets: {
     way: number;
+    oneway?: boolean | null;
     traffic_lanes?: number | null;
     bus_lane?: boolean | null;
     cars_morning_peak?: number | null;

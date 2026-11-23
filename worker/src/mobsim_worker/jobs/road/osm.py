@@ -113,6 +113,8 @@ def _int_tag(v: str | None) -> int | None:
 
 
 def _oneway(t: dict[str, str]) -> bool:
+    if t.get("oneway") in ("no", "false", "0"):
+        return False
     return t.get("oneway") in ("yes", "1", "true", "-1") or t.get("junction") == "roundabout"
 
 
@@ -133,14 +135,16 @@ def _bus_lane_count(t: dict[str, str]) -> int:
 def apply_street_setup(data: OsmData, setups: Sequence[dict[str, Any]], left_hand: bool = False) -> int:
     """Change way tags as the planner set the streets up in the GIS tab (``StreetSetup``).
 
-    ``traffic_lanes`` counts general traffic lanes over both directions, without bus lanes; ``bus_lane`` is a
+    ``oneway`` makes the street one-way (``True``: the direction OSM gives a one-way street, else the
+    way's own direction) or two-way (``False``) for all traffic. ``traffic_lanes`` counts general traffic
+    lanes over both directions, without bus lanes; ``bus_lane`` is a
     bus lane on the kerb side of each direction. Both are written as OSM lane tags (``lanes``,
     ``lanes:forward``/``backward``, ``bus:lanes:*``) that netconvert reads with ``--osm.lane-access``.
     Unset fields keep what OpenStreetMap says.
 
     Args:
         data: The merged OSM data, changed in place.
-        setups: Street setups: ``way`` and the optional ``traffic_lanes``, ``bus_lane``.
+        setups: Street setups: ``way`` and the optional ``oneway``, ``traffic_lanes``, ``bus_lane``.
         left_hand: Traffic drives on the left (the kerb lane is the leftmost in OSM's lane order).
 
     Returns:
@@ -153,9 +157,18 @@ def apply_street_setup(data: OsmData, setups: Sequence[dict[str, Any]], left_han
             continue
         lanes = s.get("traffic_lanes")
         bus = s.get("bus_lane")
-        if not (isinstance(lanes, int | float) and lanes >= 1) and not isinstance(bus, bool):
-            continue
+        direction = s.get("oneway")
         t = w.tags
+        if isinstance(direction, bool):
+            if direction and not _oneway(t):
+                t["oneway"] = "yes"
+            elif not direction:
+                for k in [k for k in t if k.startswith("oneway")]:
+                    del t[k]
+                t["oneway"] = "no"
+        if not (isinstance(lanes, int | float) and lanes >= 1) and not isinstance(bus, bool):
+            changed += isinstance(direction, bool)
+            continue
         one = _oneway(t)
         had_bus = _bus_lane_count(t)
         if isinstance(lanes, int | float) and lanes >= 1:

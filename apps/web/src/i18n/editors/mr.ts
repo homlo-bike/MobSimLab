@@ -488,6 +488,12 @@ export const editorsMr = {
   "setup.sum.tramOwn": "ट्राम स्वतःच्या मार्गिकेत",
   "setup.sum.tramMixed": "ट्राम वाहतुकीत",
   "setup.oneway": "एकेरी",
+  "setup.twoway": "दुतर्फी",
+  "setup.direction": "दिशा",
+  "setup.directionHint":
+    "कार, बस आणि ट्रकसाठी. एकेरी केलेला रस्ता OpenStreetMap ज्या दिशेने काढतो त्या दिशेने जातो.",
+  "setup.oneWay": "एकेरी",
+  "setup.twoWay": "दुतर्फी",
   "setup.speed": "{speed} किमी/ता",
   "setup.width": "{width} मी रुंद",
   "setup.tramRails": "ट्रामचे रूळ",

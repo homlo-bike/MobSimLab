@@ -56,7 +56,7 @@ fn setup(way: i64) -> StreetSetup {
 
 #[test]
 fn draws_lanes_junctions_and_lines_in_lon_lat() {
-    let g = build(&crossroads(), &[]).expect("builds");
+    let g = build(&crossroads(), &[], None).expect("builds");
     assert_eq!(g.driving_side, "right");
     let k = kinds(&g, 100);
     assert_eq!(k.iter().filter(|k| **k == LaneKind::Traffic).count(), 2);
@@ -84,7 +84,7 @@ fn a_setup_bus_lane_becomes_a_bus_lane() {
         bus_lane: Some(true),
         ..setup(100)
     };
-    let g = build(&crossroads(), &[bus]).expect("builds");
+    let g = build(&crossroads(), &[bus], None).expect("builds");
     let k = kinds(&g, 100);
     assert_eq!(
         k.iter().filter(|k| **k == LaneKind::Bus).count(),
@@ -112,7 +112,7 @@ fn separated_bus_lanes_get_a_kerb_on_the_traffic_side() {
         separated: Some(true),
         ..setup(100)
     };
-    let g = build(&crossroads(), &[bus]).expect("builds");
+    let g = build(&crossroads(), &[bus], None).expect("builds");
     let k = kinds(&g, 100);
     for (i, kind) in k.iter().enumerate() {
         if *kind == LaneKind::Bus {
@@ -133,7 +133,7 @@ fn a_tram_of_its_own_runs_in_the_middle() {
         tram: Some(TramShare::OwnLane),
         ..setup(100)
     };
-    let g = build(&crossroads(), &[tram]).expect("builds");
+    let g = build(&crossroads(), &[tram], None).expect("builds");
     let k = kinds(&g, 100);
     let trams: Vec<usize> = (0..k.len()).filter(|&i| k[i] == LaneKind::Tram).collect();
     assert_eq!(trams.len(), 2, "{k:?}");
@@ -150,7 +150,7 @@ fn a_separated_tram_lane_on_a_one_way_street_is_inside_kerbs() {
         separated: Some(true),
         ..setup(200)
     };
-    let g = build(&crossroads(), &[tram]).expect("builds");
+    let g = build(&crossroads(), &[tram], None).expect("builds");
     let k = kinds(&g, 200);
     let t = k
         .iter()
@@ -169,7 +169,7 @@ fn a_tram_in_mixed_traffic_draws_rails() {
         tram: Some(TramShare::Mixed),
         ..setup(100)
     };
-    let g = build(&crossroads(), &[tram]).expect("builds");
+    let g = build(&crossroads(), &[tram], None).expect("builds");
     // Two roads (one each side of the junction), rails in the inner lane of each direction on each.
     assert_eq!(
         g.lines.iter().filter(|l| l.kind == LineKind::Rails).count(),
@@ -186,7 +186,7 @@ fn traffic_keeps_left_in_left_hand_countries() {
         n.lat += 51.5072 - 33.5130;
         n.lon += -0.1276 - 36.2896;
     }
-    let g = build(&data, &[]).expect("builds");
+    let g = build(&data, &[], None).expect("builds");
     assert_eq!(g.driving_side, "left");
 }
 
@@ -205,10 +205,10 @@ fn osm_xml_escapes_tag_values() {
 
 #[test]
 fn setup_lanes_leaves_roads_without_setup_values_alone() {
-    let g = build(&crossroads(), &[]).expect("builds");
+    let g = build(&crossroads(), &[], None).expect("builds");
     let before = kinds(&g, 100);
     let empty = setup(100);
-    let g2 = build(&crossroads(), &[empty]).expect("builds");
+    let g2 = build(&crossroads(), &[empty], None).expect("builds");
     assert_eq!(kinds(&g2, 100), before);
 }
 
@@ -226,7 +226,7 @@ fn each_way_has_one_lane_profile_with_widths_and_directions() {
         bus_lane: Some(true),
         ..setup(100)
     };
-    let g = build(&crossroads(), &[bus]).expect("builds");
+    let g = build(&crossroads(), &[bus], None).expect("builds");
     // One profile per street way, none for the railway.
     let ways: Vec<i64> = g.roads.iter().map(|r| r.way).collect();
     assert_eq!(ways, vec![100, 200]);
@@ -254,7 +254,7 @@ fn the_profile_marks_rails_of_trams() {
         tram: Some(TramShare::Mixed),
         ..setup(100)
     };
-    let g = build(&crossroads(), &[mixed]).expect("builds");
+    let g = build(&crossroads(), &[mixed], None).expect("builds");
     let railed: Vec<LaneKind> = profile(&g, 100)
         .iter()
         .filter(|l| l.rails)
@@ -266,10 +266,51 @@ fn the_profile_marks_rails_of_trams() {
         tram: Some(TramShare::OwnLane),
         ..setup(100)
     };
-    let g = build(&crossroads(), &[own]).expect("builds");
+    let g = build(&crossroads(), &[own], None).expect("builds");
     let p = profile(&g, 100);
     assert!(p
         .iter()
         .filter(|l| l.kind == LaneKind::Tram)
         .all(|l| l.rails && (l.width - TRAM_LANE_M).abs() < 1e-9));
+}
+
+#[test]
+fn the_project_driving_side_wins_over_the_country() {
+    // Damascus drives on the right; a project set to the left gets left-hand lanes.
+    let g = build(&crossroads(), &[], Some(DrivingSide::Left)).expect("builds");
+    assert_eq!(g.driving_side, "left");
+    let traffic: Vec<&LaneProfile> = profile(&g, 100)
+        .iter()
+        .filter(|l| l.kind == LaneKind::Traffic)
+        .collect();
+    assert_eq!(traffic.first().map(|l| l.dir), Some(LaneDir::Forward));
+    assert_eq!(traffic.last().map(|l| l.dir), Some(LaneDir::Backward));
+}
+
+#[test]
+fn a_two_way_street_made_one_way_has_its_lanes_one_way() {
+    let one = StreetSetup {
+        oneway: Some(true),
+        ..setup(100)
+    };
+    let g = build(&crossroads(), &[one], None).expect("builds");
+    let p = profile(&g, 100);
+    assert!(p
+        .iter()
+        .filter(|l| l.kind == LaneKind::Traffic)
+        .all(|l| l.dir == LaneDir::Forward));
+    let two = StreetSetup {
+        oneway: Some(false),
+        ..setup(200)
+    };
+    let g = build(&crossroads(), &[two], None).expect("builds");
+    let dirs: Vec<LaneDir> = profile(&g, 200)
+        .iter()
+        .filter(|l| l.kind == LaneKind::Traffic)
+        .map(|l| l.dir)
+        .collect();
+    assert!(
+        dirs.contains(&LaneDir::Forward) && dirs.contains(&LaneDir::Backward),
+        "{dirs:?}"
+    );
 }

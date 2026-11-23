@@ -26,9 +26,10 @@ use std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 use std::fmt::Write as _;
 
 use geom::{Distance, PolyLine, Pt2D};
+pub use osm2streets::DrivingSide;
 use osm2streets::{
-    BufferType, Direction, DrivingSide, IntersectionID, LaneSpec, LaneType, MapConfig, Road,
-    StreetNetwork, Transformation,
+    BufferType, Direction, IntersectionID, LaneSpec, LaneType, MapConfig, Road, StreetNetwork,
+    Transformation,
 };
 use serde::Serialize;
 use street_routing::osm::{OsmData, Tags};
@@ -154,15 +155,20 @@ pub struct Geometry {
     pub lines: Vec<LineShape>,
     /// The lanes of each way, from its longest road (a way split at junctions has one road per piece).
     pub roads: Vec<RoadLanes>,
-    /// `right` or `left`: the side traffic drives on, from the country of the area.
+    /// `right` or `left`: the side traffic drives on (the project's, else from the country of the area).
     pub driving_side: &'static str,
 }
 
 /// Purpose: lane and junction shapes for the streets in `data`, with the planner's setups applied.
-/// Inputs: merged OSM street tiles; the project's street setups.
+/// Inputs: merged OSM street tiles; the project's street setups; the side traffic drives on (Project
+/// preferences, `street.driving_side`), or `None` to take it from the country of the area.
 /// Output: the shapes, or osm2streets' error text when the streets cannot be built.
 /// Side effects: none (works on a copy of `data`).
-pub fn build(data: &OsmData, setups: &[StreetSetup]) -> Result<Geometry, String> {
+pub fn build(
+    data: &OsmData,
+    setups: &[StreetSetup],
+    driving_side: Option<DrivingSide>,
+) -> Result<Geometry, String> {
     let mut data = streets_only(data);
     let setups = keep_traffic_lanes(&data, setups);
     apply_setups(&mut data, &setups);
@@ -171,6 +177,7 @@ pub fn build(data: &OsmData, setups: &[StreetSetup]) -> Result<Geometry, String>
 
     let cfg = MapConfig {
         inferred_sidewalks: true,
+        override_driving_side: driving_side,
         ..MapConfig::default()
     };
     let mut timer = abstutil::Timer::throwaway();

@@ -508,6 +508,12 @@ export const editorsTa = {
   "setup.sum.tramOwn": "டிராம் சொந்தப் பாதையில்",
   "setup.sum.tramMixed": "டிராம் நெரிசலில்",
   "setup.oneway": "ஒருவழி",
+  "setup.twoway": "இருவழி",
+  "setup.direction": "திசை",
+  "setup.directionHint":
+    "கார்கள், பேருந்துகள், லாரிகளுக்கு. ஒருவழியாக்கப்பட்ட தெரு OpenStreetMap வரையும் திசையில் செல்லும்.",
+  "setup.oneWay": "ஒருவழி",
+  "setup.twoWay": "இருவழி",
   "setup.speed": "{speed} கி.மீ/ம",
   "setup.width": "{width} மீ அகலம்",
   "setup.tramRails": "டிராம் தண்டவாளங்கள்",

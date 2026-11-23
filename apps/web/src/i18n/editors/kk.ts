@@ -490,6 +490,12 @@ export const editorsKk = {
   "setup.sum.tramOwn": "трамвай жеке жолақта",
   "setup.sum.tramMixed": "трамвай кептелісте",
   "setup.oneway": "бір жақты",
+  "setup.twoway": "екі бағытты",
+  "setup.direction": "Бағыт",
+  "setup.directionHint":
+    "Көліктер, автобустар мен жүк көліктері үшін. Бір бағытты етілген көше OpenStreetMap сызған бағытпен жүреді.",
+  "setup.oneWay": "Бір бағытты",
+  "setup.twoWay": "Екі бағытты",
   "setup.speed": "{speed} км/сағ",
   "setup.width": "ені {width} м",
   "setup.tramRails": "трамвай рельстері",

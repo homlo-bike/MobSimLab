@@ -50,6 +50,7 @@ export interface StopAccess {
 /** A street setup from the GIS tab as the demand model reads it (contracts/demand-input.schema.json). */
 export interface BundleStreetSetup {
   way: number;
+  oneway?: boolean | null;
   traffic_lanes?: number | null;
   bus_lane?: boolean | null;
   bike_lane?: boolean | null;
@@ -422,9 +423,10 @@ export function makeBundle(
   streetSetups: readonly BundleStreetSetup[] = [],
 ): { bundle: Bundle; summary: { zones: number; stops: number; lines: number } } {
   const setups = streetSetups
-    .filter((s) => s.traffic_lanes != null || s.bus_lane != null || s.bike_lane != null)
+    .filter((s) => s.oneway != null || s.traffic_lanes != null || s.bus_lane != null || s.bike_lane != null)
     .map((s) => ({
       way: s.way,
+      oneway: s.oneway ?? null,
       traffic_lanes: s.traffic_lanes ?? null,
       bus_lane: s.bus_lane ?? null,
       bike_lane: s.bike_lane ?? null,

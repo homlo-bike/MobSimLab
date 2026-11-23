@@ -227,6 +227,56 @@ fn stop_on_the_wrong_side_of_a_one_way_street_is_an_error() {
 }
 
 #[test]
+fn the_planner_can_make_a_street_one_way_or_two_way() {
+    let mut o = Osm::new();
+    o.node(1, 0.0, 0.0, &[]);
+    o.node(2, 400.0, 0.0, &[]);
+    let way = o.way(&[1, 2], &[("highway", "primary"), ("oneway", "yes")]);
+    let xml = format!(r#"<osm version="0.6">{}{}</osm>"#, o.nodes, o.ways);
+    let graph_with = |setup: Option<bool>| {
+        let mut data = parse_osm_xml(&xml).unwrap();
+        let s = street_routing::StreetSetup {
+            way,
+            oneway: setup,
+            ..Default::default()
+        };
+        street_routing::apply_setups(&mut data, &[s]);
+        RoadGraph::from_osm(&data).unwrap()
+    };
+    // North side of an eastbound one-way street: no bus can serve it…
+    let stop_north = |g: &RoadGraph| {
+        let mut line = StreetLine::new(bus(), RoutingRules::default());
+        let s = add(&mut line, g, 200.0, 6.0, PointKind::Stop);
+        add(&mut line, g, 50.0, 0.0, PointKind::Via);
+        line.anchor(s).is_some()
+    };
+    assert!(!stop_north(&graph_with(None)));
+    assert!(!stop_north(&graph_with(Some(true))));
+    // …until the planner makes the street two-way: westbound buses now stop there.
+    assert!(stop_north(&graph_with(Some(false))));
+}
+
+#[test]
+fn a_two_way_street_made_one_way_runs_the_way_it_is_drawn() {
+    // High Street is drawn west to east. Westbound buses keep right: they stop on its north side.
+    let north_stop = |g: &RoadGraph| {
+        let mut line = StreetLine::new(bus(), RoutingRules::default());
+        let s = add(&mut line, g, 300.0, 6.0, PointKind::Stop);
+        add(&mut line, g, 100.0, 0.0, PointKind::Via);
+        line.anchor(s).is_some()
+    };
+    let (g, high) = main_road_graph(&[]);
+    assert!(north_stop(&g));
+    let one_way = street_routing::StreetSetup {
+        way: high,
+        oneway: Some(true),
+        ..Default::default()
+    };
+    let (g1, _) = main_road_graph(&[one_way]);
+    assert!(!north_stop(&g1));
+}
+
+#[test]
 fn dead_end_needs_a_turning_circle() {
     let build = |turning: bool| {
         let mut o = grid();

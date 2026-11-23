@@ -488,6 +488,12 @@ export const editorsHi = {
   "setup.sum.tramOwn": "ट्राम अपनी लेन में",
   "setup.sum.tramMixed": "ट्राम ट्रैफ़िक में",
   "setup.oneway": "एकतरफ़ा",
+  "setup.twoway": "दोतरफ़ा",
+  "setup.direction": "दिशा",
+  "setup.directionHint":
+    "कारों, बसों और ट्रकों के लिए। एकतरफ़ा बनाई गई सड़क उसी दिशा में चलती है जिसमें OpenStreetMap उसे बनाता है।",
+  "setup.oneWay": "एकतरफ़ा",
+  "setup.twoWay": "दोतरफ़ा",
   "setup.speed": "{speed} किमी/घं",
   "setup.width": "{width} मी चौड़ी",
   "setup.tramRails": "ट्राम पटरियाँ",

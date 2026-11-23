@@ -464,6 +464,12 @@ export const editorsIg = {
   "setup.sum.tramOwn": "tram n'ụzọ nke ya",
   "setup.sum.tramMixed": "tram n'okporo ụzọ jupụtara",
   "setup.oneway": "otu ụzọ",
+  "setup.twoway": "ụzọ abụọ",
+  "setup.direction": "Ụzọ ije",
+  "setup.directionHint":
+    "Maka ụgbọala, bọs na ụgbọ ibu. Okporo ụzọ e mere otu ụzọ na-aga n'ụzọ OpenStreetMap si see ya.",
+  "setup.oneWay": "Otu ụzọ",
+  "setup.twoWay": "Ụzọ abụọ",
   "setup.speed": "{speed} km/h",
   "setup.width": "obosara {width} m",
   "setup.tramRails": "ụzọ ígwè tram",

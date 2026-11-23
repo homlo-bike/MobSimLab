@@ -535,6 +535,12 @@ export const editorsUk = {
   "setup.sum.tramOwn": "трамвай на власній смузі",
   "setup.sum.tramMixed": "трамвай у потоці",
   "setup.oneway": "одностороння",
+  "setup.twoway": "двосторонній",
+  "setup.direction": "Напрямок",
+  "setup.directionHint":
+    "Для автомобілів, автобусів і вантажівок. Вулиця, зроблена односторонньою, іде в напрямку, в якому її малює OpenStreetMap.",
+  "setup.oneWay": "Односторонній",
+  "setup.twoWay": "Двосторонній",
   "setup.speed": "{speed} км/год",
   "setup.width": "ширина {width} м",
   "setup.tramRails": "трамвайні колії",

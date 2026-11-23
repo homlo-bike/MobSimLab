@@ -8,6 +8,7 @@ Say how a street is shared, where OpenStreetMap is missing or wrong, or to test 
 
 1. Open the project's **GIS** tab and zoom in to street level (zoom 13 or closer). The streets on screen load by themselves, as in the street line tool.
 2. Tap a street. Its panel shows a cross-section of the street as set up and these settings. Each one starts at **OSM**, which keeps what OpenStreetMap says.
+   - **Direction**: **One-way** or **Two-way** for cars, buses and lorries. A street made one-way keeps the direction OpenStreetMap gives a one-way street, or else runs the way OpenStreetMap draws it. Bus routes, running times and the road simulation follow it.
    - **Traffic lanes**: general traffic lanes in both directions, not counting bus or tram lanes.
    - **Bus lane**: a bus lane in each direction of travel.
    - **Bike lane**: a bike lane in each direction of travel.
@@ -15,6 +16,8 @@ Say how a street is shared, where OpenStreetMap is missing or wrong, or to test 
    - **Tram**: for tram track along the street, **Own lane** or **Mixed traffic**. With **OSM**, the railway tool decides from the street's width.
 3. **Reliability and safety** under the settings says what the setup means for buses, trams and cyclists. **Reset to OpenStreetMap** removes the setup.
 4. Setups are saved with the project, for everyone who opens it (see [Saving](street-line-tool.md#saving)). Setups an earlier release kept only in your browser move into the project the first time you open it.
+
+From zoom 16 the map draws each street lane by lane, with its junctions, as OpenStreetMap describes it and with your setup applied. The cross-section then shows the street's own lanes at their widths (parking lanes, kerbs and tram tracks too); zoomed out, it shows a typical street for the setup. Traffic keeps to the project's driving side (**Project preferences → Parameters**, `street.driving_side`).
 
 On the map, streets are coloured by how well buses and trams are protected from traffic: green for a separated bus or tram lane, blue for a painted one, orange for a main road where they run in traffic, grey for other streets. Streets you set up have a dark outline and are listed under **Streets set up**; tap one in the list to go to it.
 

@@ -494,6 +494,12 @@ export const editorsNl = {
   "setup.sum.tramOwn": "tram op eigen baan",
   "setup.sum.tramMixed": "tram in het verkeer",
   "setup.oneway": "eenrichtingsverkeer",
+  "setup.twoway": "in twee richtingen",
+  "setup.direction": "Rijrichting",
+  "setup.directionHint":
+    "Voor auto's, bussen en vrachtwagens. Een straat die eenrichting wordt, loopt in de richting waarin OpenStreetMap hem tekent.",
+  "setup.oneWay": "Eenrichting",
+  "setup.twoWay": "Tweerichting",
   "setup.speed": "{speed} km/u",
   "setup.width": "{width} m breed",
   "setup.tramRails": "tramrails",

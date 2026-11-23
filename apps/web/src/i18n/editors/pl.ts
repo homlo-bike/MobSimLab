@@ -535,6 +535,12 @@ export const editorsPl = {
   "setup.sum.tramOwn": "tramwaj na własnym pasie",
   "setup.sum.tramMixed": "tramwaj w ruchu",
   "setup.oneway": "jednokierunkowa",
+  "setup.twoway": "dwukierunkowa",
+  "setup.direction": "Kierunek ruchu",
+  "setup.directionHint":
+    "Dla samochodów, autobusów i ciężarówek. Ulica zmieniona na jednokierunkową biegnie w kierunku, w jakim rysuje ją OpenStreetMap.",
+  "setup.oneWay": "Jednokierunkowa",
+  "setup.twoWay": "Dwukierunkowa",
   "setup.speed": "{speed} km/h",
   "setup.width": "szerokość {width} m",
   "setup.tramRails": "tory tramwajowe",

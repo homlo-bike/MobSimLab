@@ -536,6 +536,12 @@ export const editorsRu = {
   "setup.sum.tramOwn": "трамвай на своей полосе",
   "setup.sum.tramMixed": "трамвай в общем потоке",
   "setup.oneway": "одностороннее",
+  "setup.twoway": "двустороннее",
+  "setup.direction": "Направление",
+  "setup.directionHint":
+    "Для легковых машин, автобусов и грузовиков. Улица, сделанная односторонней, идёт в направлении, в котором её рисует OpenStreetMap.",
+  "setup.oneWay": "Одностороннее",
+  "setup.twoWay": "Двустороннее",
   "setup.speed": "{speed} км/ч",
   "setup.width": "ширина {width} м",
   "setup.tramRails": "трамвайные пути",

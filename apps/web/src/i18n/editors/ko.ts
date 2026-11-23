@@ -461,6 +461,12 @@ export const editorsKo = {
   "setup.sum.tramOwn": "트램 전용 차로",
   "setup.sum.tramMixed": "트램 혼재",
   "setup.oneway": "일방통행",
+  "setup.twoway": "양방향",
+  "setup.direction": "통행 방향",
+  "setup.directionHint":
+    "승용차, 버스, 화물차에 적용됩니다. 일방통행으로 바꾼 도로는 OpenStreetMap에 그려진 방향을 따릅니다.",
+  "setup.oneWay": "일방통행",
+  "setup.twoWay": "양방향",
   "setup.speed": "{speed} km/h",
   "setup.width": "폭 {width} m",
   "setup.tramRails": "트램 궤도",

@@ -478,6 +478,12 @@ export const editorsAm = {
   "setup.sum.tramOwn": "ትራም በራሱ መስመር",
   "setup.sum.tramMixed": "ትራም በትራፊክ ውስጥ",
   "setup.oneway": "አንድ አቅጣጫ",
+  "setup.twoway": "ባለሁለት አቅጣጫ",
+  "setup.direction": "አቅጣጫ",
+  "setup.directionHint":
+    "ለመኪናዎች፣ ለአውቶቡሶች እና ለጭነት መኪናዎች። ባለአንድ አቅጣጫ የተደረገ መንገድ OpenStreetMap በሚስለው አቅጣጫ ይሄዳል።",
+  "setup.oneWay": "ባለአንድ አቅጣጫ",
+  "setup.twoWay": "ባለሁለት አቅጣጫ",
   "setup.speed": "{speed} ኪሜ/ሰ",
   "setup.width": "ስፋት {width} ሜ",
   "setup.tramRails": "የትራም ሐዲዶች",

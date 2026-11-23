@@ -506,6 +506,12 @@ export const editorsFr = {
   "setup.sum.tramOwn": "tram en site propre",
   "setup.sum.tramMixed": "tram dans la circulation",
   "setup.oneway": "sens unique",
+  "setup.twoway": "à double sens",
+  "setup.direction": "Sens de circulation",
+  "setup.directionHint":
+    "Pour les voitures, bus et camions. Une rue mise en sens unique suit le sens dans lequel OpenStreetMap la dessine.",
+  "setup.oneWay": "Sens unique",
+  "setup.twoWay": "Double sens",
   "setup.speed": "{speed} km/h",
   "setup.width": "{width} m de large",
   "setup.tramRails": "rails de tram",

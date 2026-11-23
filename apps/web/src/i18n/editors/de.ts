@@ -505,6 +505,12 @@ export const editorsDe = {
   "setup.sum.tramOwn": "Straßenbahn auf eigener Spur",
   "setup.sum.tramMixed": "Straßenbahn im Verkehr",
   "setup.oneway": "Einbahnstraße",
+  "setup.twoway": "in beide Richtungen",
+  "setup.direction": "Fahrtrichtung",
+  "setup.directionHint":
+    "Für Autos, Busse und Lkw. Eine zur Einbahnstraße gemachte Straße führt in die Richtung, in der OpenStreetMap sie zeichnet.",
+  "setup.oneWay": "Einbahnstraße",
+  "setup.twoWay": "Beide Richtungen",
   "setup.speed": "{speed} km/h",
   "setup.width": "{width} m breit",
   "setup.tramRails": "Straßenbahngleise",

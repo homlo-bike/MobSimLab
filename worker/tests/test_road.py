@@ -34,6 +34,20 @@ def test_street_setup_adds_a_kerb_bus_lane_each_way() -> None:
     assert t["bus:lanes:forward"] == "yes|designated"
 
 
+def test_street_setup_makes_a_street_one_way_or_two_way() -> None:
+    data = merge_tiles(tiles())
+    data.ways[110].tags["oneway:bus"] = "no"
+    assert apply_street_setup(data, [{"way": 110, "oneway": False}]) == 1
+    t = data.ways[110].tags
+    assert t["oneway"] == "no" and "oneway:bus" not in t
+    # One-way with a bus lane: one traffic lane and the bus lane, all in the way's direction.
+    assert apply_street_setup(data, [{"way": 110, "oneway": True, "traffic_lanes": 1, "bus_lane": True}]) == 1
+    t = data.ways[110].tags
+    assert t["oneway"] == "yes"
+    assert t["lanes"] == "2" and t["bus:lanes"] == "yes|designated"
+    assert "lanes:backward" not in t
+
+
 def test_on_the_left_the_bus_lane_is_the_leftmost() -> None:
     data = merge_tiles(tiles())
     apply_street_setup(data, [{"way": 110, "bus_lane": True}], left_hand=True)

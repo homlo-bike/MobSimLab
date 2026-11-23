@@ -467,6 +467,12 @@ export const editorsVi = {
   "setup.sum.tramOwn": "tàu điện làn riêng",
   "setup.sum.tramMixed": "tàu điện trong dòng xe",
   "setup.oneway": "một chiều",
+  "setup.twoway": "hai chiều",
+  "setup.direction": "Chiều lưu thông",
+  "setup.directionHint":
+    "Cho ô tô, xe buýt và xe tải. Đường được đổi thành một chiều sẽ chạy theo hướng OpenStreetMap vẽ nó.",
+  "setup.oneWay": "Một chiều",
+  "setup.twoWay": "Hai chiều",
   "setup.speed": "{speed} km/h",
   "setup.width": "rộng {width} m",
   "setup.tramRails": "ray tàu điện",

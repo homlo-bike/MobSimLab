@@ -465,6 +465,12 @@ export const editorsJa = {
   "setup.sum.tramOwn": "路面電車は専用レーン",
   "setup.sum.tramMixed": "路面電車は混在",
   "setup.oneway": "一方通行",
+  "setup.twoway": "対面通行",
+  "setup.direction": "通行方向",
+  "setup.directionHint":
+    "自動車・バス・トラック向け。一方通行にした道路は OpenStreetMap で描かれた向きになります。",
+  "setup.oneWay": "一方通行",
+  "setup.twoWay": "対面通行",
   "setup.speed": "{speed} km/h",
   "setup.width": "幅 {width} m",
   "setup.tramRails": "軌道あり",

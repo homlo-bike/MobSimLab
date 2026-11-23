@@ -496,6 +496,12 @@ export const editorsPt = {
   "setup.sum.tramOwn": "bonde em faixa própria",
   "setup.sum.tramMixed": "bonde no tráfego",
   "setup.oneway": "mão única",
+  "setup.twoway": "mão dupla",
+  "setup.direction": "Sentido",
+  "setup.directionHint":
+    "Para carros, ônibus e caminhões. Uma rua tornada de mão única segue o sentido em que o OpenStreetMap a desenha.",
+  "setup.oneWay": "Mão única",
+  "setup.twoWay": "Mão dupla",
   "setup.speed": "{speed} km/h",
   "setup.width": "{width} m de largura",
   "setup.tramRails": "trilhos de bonde",

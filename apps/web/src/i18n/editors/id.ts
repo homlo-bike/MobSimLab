@@ -491,6 +491,12 @@ export const editorsId = {
   "setup.sum.tramOwn": "trem di lajur sendiri",
   "setup.sum.tramMixed": "trem dalam lalu lintas",
   "setup.oneway": "satu arah",
+  "setup.twoway": "dua arah",
+  "setup.direction": "Arah",
+  "setup.directionHint":
+    "Untuk mobil, bus, dan truk. Jalan yang dijadikan satu arah mengikuti arah gambarnya di OpenStreetMap.",
+  "setup.oneWay": "Satu arah",
+  "setup.twoWay": "Dua arah",
   "setup.speed": "{speed} km/j",
   "setup.width": "lebar {width} m",
   "setup.tramRails": "rel trem",

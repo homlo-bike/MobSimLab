@@ -13,6 +13,8 @@ export const DEFAULT_DELAYS: DelayShares = { mixed_traffic: MIXED_DELAY, bus_lan
 
 /** What a street is after the planner's setup: each value from the setup, else from OpenStreetMap. */
 export interface Effective {
+  /** Road traffic runs one way only. */
+  oneway: boolean;
   trafficLanes: number;
   busLane: boolean;
   bikeLane: boolean;
@@ -38,6 +40,7 @@ export function effective(info: StreetInfo, setup: StreetSetup | undefined): Eff
   const s = setup ?? { way: info.way };
   const tram = s.tram ?? null;
   return {
+    oneway: s.oneway ?? info.oneway,
     trafficLanes: s.traffic_lanes ?? osmTrafficLanes(info),
     busLane: s.bus_lane ?? info.bus_lane,
     bikeLane: s.bike_lane ?? info.bike_lane,
@@ -52,6 +55,7 @@ export function effective(info: StreetInfo, setup: StreetSetup | undefined): Eff
 /** Purpose: whether a setup changes anything. */
 export function isEmpty(s: StreetSetup): boolean {
   return (
+    s.oneway == null &&
     s.traffic_lanes == null &&
     s.bus_lane == null &&
     s.bike_lane == null &&

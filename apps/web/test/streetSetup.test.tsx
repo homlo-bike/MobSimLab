@@ -204,10 +204,12 @@ function Harness({
   map,
   onChange,
   loadLanes = NO_LANES,
+  trafficSide = "right",
 }: {
   map: MapLibreMap;
   onChange: (s: StreetSetup[]) => void;
   loadLanes?: LaneEngineLoader;
+  trafficSide?: "right" | "left";
 }) {
   const [setups, setSetups] = useState<StreetSetup[]>([]);
   return (
@@ -221,6 +223,7 @@ function Harness({
       fetchTile={async () => "<osm/>"}
       loadInfos={async () => () => [HIGH, BACK]}
       loadLanes={loadLanes}
+      trafficSide={trafficSide}
     />
   );
 }
@@ -281,6 +284,15 @@ describe("Street setup editor", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "Reset to OpenStreetMap" }));
     expect(onChange).toHaveBeenLastCalledWith([]);
+
+    // Direction: OSM says two-way; the planner makes it one-way.
+    const direction = screen.getByRole("group", { name: "Direction" });
+    expect(within(direction).getByRole("button", { name: /OSM\s*two-way/ })).toBeTruthy();
+    fireEvent.click(within(direction).getByRole("button", { name: "One-way" }));
+    expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ way: 100, oneway: true })]);
+    expect(screen.getByText("one-way", { selector: "span" })).toBeTruthy();
+    expect(screen.getByRole("img", { name: /^Cross-section/ }).textContent).not.toContain("↓");
+    fireEvent.click(screen.getByRole("button", { name: "Reset to OpenStreetMap" }));
     tap(null);
     expect(screen.getByText(/No street selected/)).toBeTruthy();
   });
@@ -318,13 +330,16 @@ describe("Street setup editor", () => {
       build: vi.fn(async () => shapes),
       dispose: vi.fn(),
     } satisfies LaneEngine;
-    const { unmount } = render(<Harness map={map} onChange={() => {}} loadLanes={async () => engine} />);
+    const { unmount } = render(
+      <Harness map={map} onChange={() => {}} loadLanes={async () => engine} trafficSide="left" />,
+    );
     await waitFor(() => expect(engine.build).toHaveBeenCalled());
     // Every loaded tile goes to the engine, and the tiles on screen are built.
     const keys = engine.addTile.mock.calls.map((c) => c[0]);
     expect(keys.length).toBeGreaterThan(0);
     expect(engine.addTile).toHaveBeenCalledWith(keys[0], "<osm/>");
-    expect(engine.build).toHaveBeenLastCalledWith(keys, []);
+    // Traffic keeps to the project's side (Project preferences).
+    expect(engine.build).toHaveBeenLastCalledWith(keys, [], "left");
     await waitFor(() => expect(sources.get("ss-lanes")!.setData).toHaveBeenCalled());
     const drawn = sources.get("ss-lanes")!.setData.mock.lastCall![0];
     expect(drawn.features[0]).toMatchObject({
@@ -362,9 +377,11 @@ describe("Street setup editor", () => {
       within(screen.getByRole("group", { name: "Bus lane" })).getByRole("button", { name: "Yes" }),
     );
     await waitFor(() =>
-      expect(engine.build).toHaveBeenLastCalledWith(keys, [
-        expect.objectContaining({ way: 100, bus_lane: true }),
-      ]),
+      expect(engine.build).toHaveBeenLastCalledWith(
+        keys,
+        [expect.objectContaining({ way: 100, bus_lane: true })],
+        "left",
+      ),
     );
     unmount();
     expect(engine.dispose).toHaveBeenCalled();

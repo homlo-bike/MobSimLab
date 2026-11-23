@@ -604,17 +604,19 @@ describe("catchment effects in the demand run input", () => {
     expect(withStepFree(transit, [])).toBe(transit);
   });
 
-  it("sends the street setups that change lanes, bus lanes or bike lanes", () => {
+  it("sends the street setups that change direction, lanes, bus lanes or bike lanes", () => {
     const transit = transitOf(network(), null);
     const economy = { currency: "EUR", gdp_per_capita: 1, ppp_per_usd: 1 };
     const { bundle } = makeBundle([], transit, economy, [
       { way: 1, bike_lane: true, separated: true },
       { way: 2 },
       { way: 3, traffic_lanes: 2, bus_lane: false },
+      { way: 4, oneway: true },
     ]);
     expect(bundle.street_setups).toEqual([
-      { way: 1, traffic_lanes: null, bus_lane: null, bike_lane: true, separated: true },
-      { way: 3, traffic_lanes: 2, bus_lane: false, bike_lane: null, separated: null },
+      { way: 1, oneway: null, traffic_lanes: null, bus_lane: null, bike_lane: true, separated: true },
+      { way: 3, oneway: null, traffic_lanes: 2, bus_lane: false, bike_lane: null, separated: null },
+      { way: 4, oneway: true, traffic_lanes: null, bus_lane: null, bike_lane: null, separated: null },
     ]);
     expect(makeBundle([], transit, economy).bundle.street_setups).toBeUndefined();
   });

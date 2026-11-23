@@ -26,7 +26,7 @@ self.onmessage = async (e: MessageEvent<LaneWorkerRequest>) => {
         const xml = tiles.get(key);
         if (xml) g.add_osm(xml);
       }
-      reply({ id: req.id, json: g.ready() ? g.build(JSON.stringify(req.setups)) : null });
+      reply({ id: req.id, json: g.ready() ? g.build(JSON.stringify(req.setups), req.side) : null });
     } finally {
       g.free();
     }

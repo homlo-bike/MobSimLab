@@ -497,6 +497,12 @@ export const editorsEs = {
   "setup.sum.tramOwn": "tranvía en carril propio",
   "setup.sum.tramMixed": "tranvía en el tráfico",
   "setup.oneway": "sentido único",
+  "setup.twoway": "doble sentido",
+  "setup.direction": "Sentido",
+  "setup.directionHint":
+    "Para coches, autobuses y camiones. Una calle de sentido único va en la dirección en que la dibuja OpenStreetMap.",
+  "setup.oneWay": "Sentido único",
+  "setup.twoWay": "Doble sentido",
   "setup.speed": "{speed} km/h",
   "setup.width": "{width} m de ancho",
   "setup.tramRails": "vías de tranvía",

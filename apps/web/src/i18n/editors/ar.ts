@@ -526,6 +526,12 @@ export const editorsAr = {
   "setup.sum.tramOwn": "ترام في حارة خاصة",
   "setup.sum.tramMixed": "ترام وسط المرور",
   "setup.oneway": "اتجاه واحد",
+  "setup.twoway": "باتجاهين",
+  "setup.direction": "الاتجاه",
+  "setup.directionHint":
+    "للسيارات والحافلات والشاحنات. الشارع الذي يُجعل باتجاه واحد يسير في الاتجاه الذي ترسمه به OpenStreetMap.",
+  "setup.oneWay": "اتجاه واحد",
+  "setup.twoWay": "اتجاهان",
   "setup.speed": "{speed} كم/س",
   "setup.width": "بعرض {width} م",
   "setup.tramRails": "قضبان ترام",

@@ -487,6 +487,12 @@ export const editorsUr = {
   "setup.sum.tramOwn": "ٹرام اپنی لین میں",
   "setup.sum.tramMixed": "ٹرام ٹریفک میں",
   "setup.oneway": "یک طرفہ",
+  "setup.twoway": "دو طرفہ",
+  "setup.direction": "سمت",
+  "setup.directionHint":
+    "کاروں، بسوں اور ٹرکوں کے لیے۔ یک طرفہ کی گئی سڑک اسی سمت چلتی ہے جس میں OpenStreetMap اسے بناتا ہے۔",
+  "setup.oneWay": "یک طرفہ",
+  "setup.twoWay": "دو طرفہ",
   "setup.speed": "{speed} کلومیٹر/گھنٹہ",
   "setup.width": "{width} میٹر چوڑی",
   "setup.tramRails": "ٹرام کی پٹریاں",

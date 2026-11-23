@@ -468,6 +468,12 @@ export const editorsYo = {
   "setup.sum.tramOwn": "tírámù ní ọ̀nà tirẹ̀",
   "setup.sum.tramMixed": "tírámù nínú súnkẹrẹ-fàkẹrẹ",
   "setup.oneway": "ọ̀nà kan",
+  "setup.twoway": "ọ̀nà méjì",
+  "setup.direction": "Ìdarí",
+  "setup.directionHint":
+    "Fún ọkọ̀ ayọ́kẹ́lẹ́, bọ́ọ̀sì àti ọkọ̀ akẹ́rù. Òpópónà tí a sọ di ọ̀nà kan ń lọ sí ọ̀nà tí OpenStreetMap yà á.",
+  "setup.oneWay": "Ọ̀nà kan",
+  "setup.twoWay": "Ọ̀nà méjì",
   "setup.speed": "{speed} km/h",
   "setup.width": "fífẹ̀ {width} m",
   "setup.tramRails": "ojú irin tírámù",

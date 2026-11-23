@@ -1,6 +1,7 @@
 //! Street setup: what the planner sets for a street in the GIS tab, over what OpenStreetMap says.
 //!
-//! A [`StreetSetup`] belongs to one OSM way and says how its carriageway is shared: the number of
+//! A [`StreetSetup`] belongs to one OSM way and says whether traffic runs one way or both ways and
+//! how its carriageway is shared: the number of
 //! general traffic lanes, a bus lane, a bike lane, a physical separation (kerb, barrier or
 //! separate track bed) between the transit lanes and the traffic beside them, and whether a tram
 //! along the street has its own lane or runs in mixed traffic. Every field is optional: unset
@@ -40,6 +41,10 @@ pub enum TramShare {
 pub struct StreetSetup {
     /// OSM way id.
     pub way: i64,
+    /// One-way (`true`) or two-way (`false`) for road traffic, written as OSM `oneway`. A street made
+    /// one-way keeps the direction OSM gives a one-way street, else runs the way the OSM way is drawn.
+    #[serde(default)]
+    pub oneway: Option<bool>,
     /// General traffic lanes over both directions (not counting bus or tram lanes).
     #[serde(default)]
     pub traffic_lanes: Option<u8>,
@@ -142,7 +147,8 @@ impl StreetSetup {
     /// Purpose: whether the setup changes nothing on the carriageway (traffic peaks do not count:
     /// they change no OSM tag).
     pub fn is_empty(&self) -> bool {
-        self.traffic_lanes.is_none()
+        self.oneway.is_none()
+            && self.traffic_lanes.is_none()
             && self.bus_lane.is_none()
             && self.bike_lane.is_none()
             && self.separated.is_none()
@@ -156,6 +162,23 @@ impl StreetSetup {
             return;
         }
         tags.insert("mobsimlab:setup".into(), "yes".into());
+        match self.oneway {
+            Some(true) => {
+                let one_already = matches!(
+                    tags.get("oneway").map(String::as_str),
+                    Some("yes" | "true" | "1" | "-1" | "reverse")
+                );
+                if !one_already {
+                    tags.insert("oneway".into(), "yes".into());
+                }
+            }
+            Some(false) => {
+                // Both ways for all traffic: no one-way exceptions left to apply.
+                tags.retain(|k, _| !k.starts_with("oneway"));
+                tags.insert("oneway".into(), "no".into());
+            }
+            None => {}
+        }
         let oneway = matches!(
             tags.get("oneway").map(String::as_str),
             Some("yes" | "true" | "1" | "-1" | "reverse")
@@ -440,6 +463,47 @@ mod tests {
         assert_eq!(delay_share_with(&t, &project), 0.1);
         let t = tags(&[("highway", "residential")]);
         assert_eq!(delay_share(&t), 0.0);
+    }
+
+    #[test]
+    fn one_way_or_two_way() {
+        let mut t = tags(&[
+            ("highway", "primary"),
+            ("oneway", "-1"),
+            ("oneway:bus", "no"),
+        ]);
+        StreetSetup {
+            way: 1,
+            oneway: Some(true),
+            ..Default::default()
+        }
+        .apply(&mut t);
+        // Already one-way: it keeps its direction and its exceptions.
+        assert_eq!(t.get("oneway").map(String::as_str), Some("-1"));
+        assert_eq!(t.get("oneway:bus").map(String::as_str), Some("no"));
+        StreetSetup {
+            way: 1,
+            oneway: Some(false),
+            ..Default::default()
+        }
+        .apply(&mut t);
+        assert_eq!(t.get("oneway").map(String::as_str), Some("no"));
+        assert!(!t.contains_key("oneway:bus"));
+
+        let mut two = tags(&[("highway", "primary"), ("lanes", "2")]);
+        let s = StreetSetup {
+            way: 1,
+            oneway: Some(true),
+            bus_lane: Some(true),
+            traffic_lanes: Some(2),
+            ..Default::default()
+        };
+        assert!(!s.is_empty());
+        s.apply(&mut two);
+        // One-way the way it is drawn; one bus lane, so OSM `lanes` is 2 + 1.
+        assert_eq!(two.get("oneway").map(String::as_str), Some("yes"));
+        assert_eq!(two.get("busway").map(String::as_str), Some("lane"));
+        assert_eq!(two.get("lanes").map(String::as_str), Some("3"));
     }
 
     #[test]

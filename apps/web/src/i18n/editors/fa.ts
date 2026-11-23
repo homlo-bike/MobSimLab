@@ -471,6 +471,12 @@ export const editorsFa = {
   "setup.sum.tramOwn": "تراموا در خط اختصاصی",
   "setup.sum.tramMixed": "تراموا در ترافیک",
   "setup.oneway": "یک‌طرفه",
+  "setup.twoway": "دوطرفه",
+  "setup.direction": "جهت",
+  "setup.directionHint":
+    "برای خودروها، اتوبوس‌ها و کامیون‌ها. خیابانی که یک‌طرفه شود در جهتی است که OpenStreetMap آن را رسم کرده است.",
+  "setup.oneWay": "یک‌طرفه",
+  "setup.twoWay": "دوطرفه",
   "setup.speed": "{speed} km/h",
   "setup.width": "عرض {width} m",
   "setup.tramRails": "ریل تراموا",

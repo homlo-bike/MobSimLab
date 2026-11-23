@@ -496,6 +496,12 @@ export const editorsUz = {
   "setup.sum.tramOwn": "tramvay oʻz yoʻlagida",
   "setup.sum.tramMixed": "tramvay tirbandlikda",
   "setup.oneway": "bir tomonlama",
+  "setup.twoway": "ikki tomonlama",
+  "setup.direction": "Yo'nalish",
+  "setup.directionHint":
+    "Avtomobil, avtobus va yuk mashinalari uchun. Bir tomonlama qilingan ko'cha OpenStreetMap chizgan yo'nalishda bo'ladi.",
+  "setup.oneWay": "Bir tomonlama",
+  "setup.twoWay": "Ikki tomonlama",
   "setup.speed": "{speed} km/s",
   "setup.width": "kengligi {width} m",
   "setup.tramRails": "tramvay relslari",

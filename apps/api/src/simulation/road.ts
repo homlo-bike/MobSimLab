@@ -124,11 +124,12 @@ export const roadScenario = z.object({
   driving_side: z.enum(["right", "left"]),
   lines: z.array(line).min(1).max(200),
   depots: z.array(depot).max(100),
-  /** The GIS tab's street setup (`StreetSetup`): lanes, bus lanes and traffic peaks per OSM way. */
+  /** The GIS tab's street setup (`StreetSetup`): direction, lanes, bus lanes and traffic peaks per OSM way. */
   streets: z
     .array(
       z.object({
         way: z.number().int().positive(),
+        oneway: z.boolean().nullable().optional(),
         traffic_lanes: z.number().int().min(1).max(12).nullable().optional(),
         bus_lane: z.boolean().nullable().optional(),
         cars_morning_peak: peak,

@@ -16,6 +16,7 @@ import {
   type LaneKind,
   type LaneProfile,
   loadLaneEngine,
+  type TrafficSide,
 } from "./lanes";
 import {
   drawLanes,
@@ -62,6 +63,8 @@ interface Props {
   loadInfos?: StreetInfoLoader;
   /** Lane engine loader (osm2streets, ADR-0047); tests inject a fake. */
   loadLanes?: LaneEngineLoader;
+  /** The side traffic drives on (Project preferences, `street.driving_side`), for the lanes. */
+  trafficSide?: TrafficSide;
 }
 
 const WHO: Record<Verdict["who"], MessageKey> = {
@@ -95,6 +98,7 @@ export function StreetSetupEditor({
   fetchTile = fetchStreetTile,
   loadInfos = loadStreetInfos,
   loadLanes = loadLaneEngine,
+  trafficSide = "right",
 }: Props) {
   const [parse, setParse] = useState<((xml: string) => StreetInfo[]) | null>(null);
   const [infos, setInfos] = useState<Map<number, StreetInfo>>(new Map());
@@ -227,7 +231,7 @@ export function StreetSetupEditor({
   }, [map, infos, setups]);
 
   // Lanes of the loaded tiles on screen, rebuilt shortly after the map stops or a setup changes.
-  const built = useRef<{ keys: string; setups: readonly StreetSetup[] } | null>(null);
+  const built = useRef<{ keys: string; setups: readonly StreetSetup[]; side: TrafficSide } | null>(null);
   useEffect(() => {
     if (!map || !lanes) return;
     let stopped = false;
@@ -242,12 +246,16 @@ export function StreetSetupEditor({
           .map(([x, y]) => `${x}/${y}`)
           .filter((k) => xmls.current.has(k));
         const sig = keys.join(",");
-        if (!keys.length || (built.current?.keys === sig && built.current.setups === setups)) return;
+        const same =
+          built.current?.keys === sig &&
+          built.current.setups === setups &&
+          built.current.side === trafficSide;
+        if (!keys.length || same) return;
         const mine = ++seq;
         try {
-          const g = await lanes.build(keys, setups);
+          const g = await lanes.build(keys, setups, trafficSide);
           if (stopped || mine !== seq) return;
-          built.current = { keys: sig, setups };
+          built.current = { keys: sig, setups, side: trafficSide };
           drawLanes(map, g);
           setDrawn({ g, setups });
           setLaneError(null);
@@ -267,7 +275,7 @@ export function StreetSetupEditor({
       clearTimeout(timer);
       map.off("moveend", run);
     };
-  }, [map, lanes, setups, tileCount]);
+  }, [map, lanes, setups, tileCount, trafficSide]);
 
   useEffect(() => {
     if (map) selectStreet(map, selected);
@@ -399,6 +407,7 @@ export function StreetSetupEditor({
 /** Purpose: a short list of what a setup sets, for the list of streets. */
 function summary(s: StreetSetup, t: Translate, tn: TranslatePlural): string {
   const parts: string[] = [];
+  if (s.oneway != null) parts.push(t(s.oneway ? "setup.oneway" : "setup.twoway"));
   if (s.traffic_lanes != null) parts.push(tn("setup.sum.lanes", s.traffic_lanes));
   if (s.bus_lane != null) parts.push(t(s.bus_lane ? "setup.sum.busLane" : "setup.sum.noBusLane"));
   if (s.bike_lane != null) parts.push(t(s.bike_lane ? "setup.sum.bikeLane" : "setup.sum.noBikeLane"));
@@ -461,9 +470,20 @@ function StreetForm({
         </button>
       </div>
 
-      <CrossSection e={e} oneway={info.oneway} lanes={lanes} />
+      <CrossSection e={e} oneway={e.oneway} lanes={lanes} />
 
       <fieldset disabled={!editable} className="flex flex-col gap-3.5">
+        <Choice
+          label={t("setup.direction")}
+          hint={t("setup.directionHint")}
+          value={setup?.oneway ?? null}
+          osm={t(info.oneway ? "setup.oneway" : "setup.twoway")}
+          options={[
+            [true, t("setup.oneWay")],
+            [false, t("setup.twoWay")],
+          ]}
+          onPick={(x) => onPatch({ oneway: x })}
+        />
         <Row label={t("setup.trafficLanes")} hint={t("setup.trafficHint", { lanes: osmLanes })}>
           <div className="flex items-center gap-1">
             <button

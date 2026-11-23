@@ -494,6 +494,12 @@ export const editorsSw = {
   "setup.sum.tramOwn": "tramu kwenye njia yake",
   "setup.sum.tramMixed": "tramu katika msongamano",
   "setup.oneway": "upande mmoja",
+  "setup.twoway": "njia mbili",
+  "setup.direction": "Mwelekeo",
+  "setup.directionHint":
+    "Kwa magari, mabasi na malori. Barabara iliyofanywa ya njia moja inafuata mwelekeo ambao OpenStreetMap inaichora.",
+  "setup.oneWay": "Njia moja",
+  "setup.twoWay": "Njia mbili",
   "setup.speed": "{speed} km/h",
   "setup.width": "upana {width} m",
   "setup.tramRails": "reli za tramu",

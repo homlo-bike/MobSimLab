@@ -503,6 +503,12 @@ export const editorsEn = {
   "setup.sum.morning": "{cars} cars/h morning",
   "setup.sum.evening": "{cars} cars/h evening",
   "setup.oneway": "one-way",
+  "setup.twoway": "two-way",
+  "setup.direction": "Direction",
+  "setup.directionHint":
+    "For cars, buses and lorries. A street made one-way runs the way OpenStreetMap draws it.",
+  "setup.oneWay": "One-way",
+  "setup.twoWay": "Two-way",
   "setup.speed": "{speed} km/h",
   "setup.width": "{width} m wide",
   "setup.tramRails": "tram rails",

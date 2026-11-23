@@ -487,6 +487,12 @@ export const editorsHa = {
   "setup.sum.tramOwn": "tram a hanyarsa",
   "setup.sum.tramMixed": "tram cikin cunkoso",
   "setup.oneway": "hanya ɗaya",
+  "setup.twoway": "hanya biyu",
+  "setup.direction": "Hanya",
+  "setup.directionHint":
+    "Don motoci, bas da manyan motoci. Titin da aka mayar hanya ɗaya yana bin hanyar da OpenStreetMap ta zana shi.",
+  "setup.oneWay": "Hanya ɗaya",
+  "setup.twoWay": "Hanya biyu",
   "setup.speed": "{speed} km/h",
   "setup.width": "faɗi {width} m",
   "setup.tramRails": "dogon tram",

@@ -504,6 +504,12 @@ export const editorsZu = {
   "setup.sum.tramOwn": "ithremu emzileni wayo",
   "setup.sum.tramMixed": "ithremu esiminyaminyeni",
   "setup.oneway": "uhlangothi olulodwa",
+  "setup.twoway": "izindlela ezimbili",
+  "setup.direction": "Inkomba",
+  "setup.directionHint":
+    "Ezimotweni, emabhasini nasemaloli. Umgwaqo owenziwe wendlela eyodwa uhamba ngendlela i-OpenStreetMap ewudweba ngayo.",
+  "setup.oneWay": "Indlela eyodwa",
+  "setup.twoWay": "Izindlela ezimbili",
   "setup.speed": "{speed} km/h",
   "setup.width": "ububanzi {width} m",
   "setup.tramRails": "ojantshi bethremu",

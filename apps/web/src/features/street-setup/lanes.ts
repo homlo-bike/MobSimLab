@@ -1,5 +1,8 @@
 import type { StreetSetup } from "./types";
 
+/** The side traffic drives on (Project preferences, `street.driving_side`). */
+export type TrafficSide = "right" | "left";
+
 /** Lanes and junctions are drawn from this map zoom; below it they are too small to read. */
 export const LANE_MIN_ZOOM = 16;
 
@@ -43,8 +46,15 @@ export interface LaneGeometry {
 export interface LaneEngine {
   /** Hands over one street tile (OSM XML), once. */
   addTile(key: string, xml: string): void;
-  /** The shapes of the given tiles with the setups applied; `null` when none of them has streets. */
-  build(keys: readonly string[], setups: readonly StreetSetup[]): Promise<LaneGeometry | null>;
+  /**
+   * The shapes of the given tiles with the setups applied, traffic keeping to `side` (Project preferences);
+   * `null` when none of them has streets.
+   */
+  build(
+    keys: readonly string[],
+    setups: readonly StreetSetup[],
+    side: TrafficSide,
+  ): Promise<LaneGeometry | null>;
   dispose(): void;
 }
 
@@ -54,7 +64,7 @@ export type LaneEngineLoader = () => Promise<LaneEngine | null>;
 /** Messages to the worker (lanes.worker.ts). */
 export type LaneWorkerRequest =
   | { kind: "tile"; key: string; xml: string }
-  | { kind: "build"; id: number; keys: string[]; setups: StreetSetup[] };
+  | { kind: "build"; id: number; keys: string[]; setups: StreetSetup[]; side: TrafficSide };
 
 /** Answers from the worker. */
 export type LaneWorkerReply = { id: number; json: string | null } | { id: number; error: string };
@@ -85,7 +95,7 @@ export const loadLaneEngine: LaneEngineLoader = async () => {
   };
   return {
     addTile: (key, xml) => worker.postMessage({ kind: "tile", key, xml } satisfies LaneWorkerRequest),
-    build: (keys, setups) =>
+    build: (keys, setups, side) =>
       new Promise((resolve, reject) => {
         const id = next++;
         waiting.set(id, { resolve, reject });
@@ -94,6 +104,7 @@ export const loadLaneEngine: LaneEngineLoader = async () => {
           id,
           keys: [...keys],
           setups: [...setups],
+          side,
         } satisfies LaneWorkerRequest);
       }),
     dispose: () => worker.terminate(),

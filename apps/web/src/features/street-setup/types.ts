@@ -11,6 +11,11 @@ export type TramShare = "own_lane" | "mixed";
  */
 export interface StreetSetup {
   way: number;
+  /**
+   * One-way (`true`) or two-way (`false`) for road traffic. A street made one-way keeps the direction OSM
+   * gives a one-way street, else runs the way the street is drawn in OSM.
+   */
+  oneway?: boolean | null;
   /** General traffic lanes over both directions, not counting bus or tram lanes. */
   traffic_lanes?: number | null;
   /** A bus lane in each direction of travel. */

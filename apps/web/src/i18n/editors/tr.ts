@@ -474,6 +474,12 @@ export const editorsTr = {
   "setup.sum.tramOwn": "tramvay kendi şeridinde",
   "setup.sum.tramMixed": "tramvay trafikte",
   "setup.oneway": "tek yön",
+  "setup.twoway": "çift yönlü",
+  "setup.direction": "Yön",
+  "setup.directionHint":
+    "Otomobil, otobüs ve kamyonlar için. Tek yön yapılan sokak, OpenStreetMap'in çizdiği yönde akar.",
+  "setup.oneWay": "Tek yön",
+  "setup.twoWay": "Çift yön",
   "setup.speed": "{speed} km/sa",
   "setup.width": "{width} m genişlik",
   "setup.tramRails": "tramvay rayları",
