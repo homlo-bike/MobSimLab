@@ -15,7 +15,7 @@ export const geodataUz = {
     "Chizma endi import qilingan hududdan chiqib ketmoqda. Yangi hududni import qilish uchun yangilang.",
   "data.method": "Maʼlumotni qayerdan olish",
   "data.method.overpass": "Overpass ({max} km² gacha hududlar)",
-  "data.method.geofabrik": "Geofabrik mintaqasi",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Bitta .osm.pbf fayl",
   "data.region": "Mintaqa",
   "data.regionsLoading": "Mintaqalar qidirilmoqda…",

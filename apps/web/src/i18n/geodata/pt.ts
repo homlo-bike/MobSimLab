@@ -14,7 +14,7 @@ export const geodataPt = {
   "data.outside": "O desenho agora sai da área importada. Atualize para importar a nova área.",
   "data.method": "Obter os dados de",
   "data.method.overpass": "Overpass (áreas de até {max} km²)",
-  "data.method.geofabrik": "Uma região da Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Um arquivo .osm.pbf",
   "data.region": "Região",
   "data.regionsLoading": "Procurando regiões…",

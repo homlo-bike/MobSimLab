@@ -14,7 +14,7 @@ export const geodataTr = {
   "data.outside": "Çizim artık içe aktarılan alanın dışına taşıyor. Yeni alanı içe aktarmak için yenileyin.",
   "data.method": "Verileri şuradan al",
   "data.method.overpass": "Overpass ({max} km²'ye kadar alanlar)",
-  "data.method.geofabrik": "Bir Geofabrik bölgesi",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Bir .osm.pbf dosyası",
   "data.region": "Bölge",
   "data.regionsLoading": "Bölgeler aranıyor…",

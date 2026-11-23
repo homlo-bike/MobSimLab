@@ -14,7 +14,7 @@ export const geodataZh = {
   "data.outside": "绘图现已超出已导入的范围。请刷新以导入新的范围。",
   "data.method": "数据来源",
   "data.method.overpass": "Overpass（不超过 {max} km² 的范围）",
-  "data.method.geofabrik": "Geofabrik 区域",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "一个 .osm.pbf 文件",
   "data.region": "区域",
   "data.regionsLoading": "正在查找区域…",

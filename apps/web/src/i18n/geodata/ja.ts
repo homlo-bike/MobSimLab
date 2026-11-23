@@ -15,7 +15,7 @@ export const geodataJa = {
     "図面がインポート済みの範囲を超えています。新しい範囲をインポートするには更新してください。",
   "data.method": "データの取得元",
   "data.method.overpass": "Overpass({max} km² までの範囲)",
-  "data.method.geofabrik": "Geofabrik の地域",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": ".osm.pbf ファイル",
   "data.region": "地域",
   "data.regionsLoading": "地域を検索中…",

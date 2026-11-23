@@ -14,7 +14,7 @@ export const geodataVi = {
   "data.outside": "Bản vẽ giờ vượt ra ngoài khu vực đã nhập. Hãy làm mới để nhập khu vực mới.",
   "data.method": "Lấy dữ liệu từ",
   "data.method.overpass": "Overpass (khu vực đến {max} km²)",
-  "data.method.geofabrik": "Một vùng Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Một tệp .osm.pbf",
   "data.region": "Vùng",
   "data.regionsLoading": "Đang tìm vùng…",

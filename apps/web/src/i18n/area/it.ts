@@ -59,10 +59,9 @@ export const areaIt = {
   "aw.saved": "Area salvata.",
   "aw.data.noArea":
     "Disegna prima l’area del progetto in Preferenze del progetto: le importazioni la coprono.",
-  "aw.data.area":
-    "Area del progetto: {names}. Le importazioni coprono il rettangolo che la contiene, {area} km².",
+  "aw.data.area": "Area del progetto: {names}. Le importazioni coprono solo questi poligoni, {area} km².",
   "aw.pop.none": "Ancora nessuna area del progetto. Disegnala in Preferenze del progetto.",
-  "aw.pop.box": "Il rettangolo intorno all’area del progetto: {km2} km².",
+  "aw.pop.box": "I poligoni dell'area del progetto: {km2} km². Le importazioni coprono solo loro.",
   "aw.tiles.one": "{count} tassello di mappa",
   "aw.tiles.other": "{count} tasselli di mappa",
   "aw.count.one": "{count} poligono",
@@ -80,4 +79,13 @@ export const areaIt = {
   "aw.out.keep": "Mantieni la regione, senza download",
   "aw.out.download": "Scarica {mb} MB",
   "aw.out.downloading": "Download in corso…",
+  "aw.data.regions": "Regioni Geofabrik",
+  "aw.data.regionsHelp": "Un download per ogni paese toccato dai poligoni, ciascuno ritagliato ai poligoni.",
+  "aw.outside.streetLine": "La linea {name} esce dall'area del progetto, dove non ci sono dati cartografici.",
+  "aw.outside.pluginLine": "La linea {name} esce dall'area del progetto, dove non ci sono dati cartografici.",
+  "aw.outside.railway": "La ferrovia esce dall'area del progetto, dove non ci sono dati cartografici.",
+  "aw.outside.depot": "Il deposito {name} esce dall'area del progetto, dove non ci sono dati cartografici.",
+  "aw.outside.cargoBike":
+    "Il percorso della cargo bike esce dall'area del progetto, dove non ci sono dati cartografici.",
+  "aw.outside.fix": "Amplia l'area in Preferenze del progetto, Area del progetto.",
 } satisfies AreaMessages;

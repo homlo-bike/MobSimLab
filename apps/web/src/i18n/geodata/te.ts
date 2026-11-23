@@ -15,7 +15,7 @@ export const geodataTe = {
     "గీత ఇప్పుడు దిగుమతి చేసిన ప్రాంతం దాటి వెళ్తుంది. కొత్త ప్రాంతాన్ని దిగుమతి చేయడానికి రిఫ్రెష్ చేయండి.",
   "data.method": "డేటా ఇక్కడి నుండి తీసుకోండి",
   "data.method.overpass": "Overpass ({max} చ.కి.మీ వరకు ప్రాంతాలు)",
-  "data.method.geofabrik": "ఒక Geofabrik ప్రాంతం",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "ఒక .osm.pbf ఫైల్",
   "data.region": "ప్రాంతం",
   "data.regionsLoading": "ప్రాంతాలు వెతుకుతోంది…",

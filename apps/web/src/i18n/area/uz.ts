@@ -57,9 +57,9 @@ export const areaUz = {
   "aw.none": "Hali loyiha hududi yo‘q. Vositalarda xarita ma’lumoti bo‘lishi uchun bittasini chizing.",
   "aw.saved": "Hudud saqlandi.",
   "aw.data.noArea": "Avval Loyiha sozlamalarida loyiha hududini chizing: importlar uni qamraydi.",
-  "aw.data.area": "Loyiha hududi: {names}. Importlar uning atrofidagi to‘rtburchakni qamraydi, {area} km².",
+  "aw.data.area": "Loyiha hududi: {names}. Import faqat shu ko‘pburchaklarni qamraydi, {area} km².",
   "aw.pop.none": "Hali loyiha hududi yo‘q. Uni Loyiha sozlamalarida chizing.",
-  "aw.pop.box": "Loyiha hududi atrofidagi to‘rtburchak: {km2} km².",
+  "aw.pop.box": "Loyiha hududining ko‘pburchaklari: {km2} km². Import faqat ularni qamraydi.",
   "aw.tiles.other": "{count} ta xarita plitkasi",
   "aw.count.other": "{count} ta ko‘pburchak",
   "aw.out.title": "Loyiha hududidan tashqaridagi xarita maʼlumotlari yuklab olinsinmi?",
@@ -75,4 +75,16 @@ export const areaUz = {
   "aw.out.keep": "Hududni saqlash, yuklab olmaslik",
   "aw.out.download": "{mb} MB yuklab olish",
   "aw.out.downloading": "Yuklab olinmoqda…",
+  "aw.data.regions": "Geofabrik hududlari",
+  "aw.data.regionsHelp":
+    "Ko‘pburchaklar yetadigan har bir mamlakat uchun bitta yuklab olish, har biri ko‘pburchaklar bo‘yicha qirqiladi.",
+  "aw.outside.streetLine":
+    "{name} liniyasi loyiha hududidan tashqariga, xarita maʼlumotlari yo‘q joyga chiqadi.",
+  "aw.outside.pluginLine":
+    "{name} liniyasi loyiha hududidan tashqariga, xarita maʼlumotlari yo‘q joyga chiqadi.",
+  "aw.outside.railway": "Temir yo‘l loyiha hududidan tashqariga, xarita maʼlumotlari yo‘q joyga chiqadi.",
+  "aw.outside.depot": "{name} deposi loyiha hududidan tashqariga, xarita maʼlumotlari yo‘q joyga chiqadi.",
+  "aw.outside.cargoBike":
+    "Yuk velosipedi yo‘nalishi loyiha hududidan tashqariga, xarita maʼlumotlari yo‘q joyga chiqadi.",
+  "aw.outside.fix": "Hududni Loyiha sozlamalari, Loyiha hududi bo‘limida kengaytiring.",
 } satisfies AreaMessages;

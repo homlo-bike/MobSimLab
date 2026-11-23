@@ -14,7 +14,7 @@ export const geodataFr = {
   "data.outside": "Le dessin dépasse maintenant la zone importée. Actualisez pour importer la nouvelle zone.",
   "data.method": "Obtenir les données depuis",
   "data.method.overpass": "Overpass (zones jusqu’à {max} km²)",
-  "data.method.geofabrik": "Une région Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Un fichier .osm.pbf",
   "data.region": "Région",
   "data.regionsLoading": "Recherche des régions…",

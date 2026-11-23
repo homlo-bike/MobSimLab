@@ -59,9 +59,9 @@ export const areaDe = {
   "aw.saved": "Gebiet gespeichert.",
   "aw.data.noArea":
     "Zeichnen Sie zuerst das Projektgebiet in den Projekteinstellungen: Die Importe decken es ab.",
-  "aw.data.area": "Projektgebiet: {names}. Die Importe decken das Rechteck darum ab, {area} km².",
+  "aw.data.area": "Projektgebiet: {names}. Die Importe decken nur diese Polygone ab, {area} km².",
   "aw.pop.none": "Noch kein Projektgebiet. Zeichnen Sie es in den Projekteinstellungen.",
-  "aw.pop.box": "Das Rechteck um das Projektgebiet: {km2} km².",
+  "aw.pop.box": "Die Polygone des Projektgebiets: {km2} km². Die Importe decken nur sie ab.",
   "aw.tiles.one": "{count} Kartenkachel",
   "aw.tiles.other": "{count} Kartenkacheln",
   "aw.count.one": "{count} Polygon",
@@ -79,4 +79,17 @@ export const areaDe = {
   "aw.out.keep": "Gebiet behalten, nicht herunterladen",
   "aw.out.download": "{mb} MB herunterladen",
   "aw.out.downloading": "Wird heruntergeladen…",
+  "aw.data.regions": "Geofabrik-Regionen",
+  "aw.data.regionsHelp":
+    "Ein Download je Land, das die Polygone berühren, jeweils auf die Polygone zugeschnitten.",
+  "aw.outside.streetLine":
+    "Die Straßenlinie {name} reicht über das Projektgebiet hinaus, wo es keine Kartendaten gibt.",
+  "aw.outside.pluginLine":
+    "Die Linie {name} reicht über das Projektgebiet hinaus, wo es keine Kartendaten gibt.",
+  "aw.outside.railway": "Die Bahnstrecke reicht über das Projektgebiet hinaus, wo es keine Kartendaten gibt.",
+  "aw.outside.depot":
+    "Der Betriebshof {name} reicht über das Projektgebiet hinaus, wo es keine Kartendaten gibt.",
+  "aw.outside.cargoBike":
+    "Die Lastenradroute reicht über das Projektgebiet hinaus, wo es keine Kartendaten gibt.",
+  "aw.outside.fix": "Erweitern Sie das Gebiet in den Projekteinstellungen unter Projektgebiet.",
 } satisfies AreaMessages;

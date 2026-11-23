@@ -14,7 +14,7 @@ export const geodataZu = {
   "data.outside": "Umdwebo manje udlula indawo engenisiwe. Vuselela ukuze ungenise indawo entsha.",
   "data.method": "Thola idatha ku-",
   "data.method.overpass": "I-Overpass (izindawo ezifika ku-{max} km²)",
-  "data.method.geofabrik": "Isifunda se-Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Ifayela le-.osm.pbf",
   "data.region": "Isifunda",
   "data.regionsLoading": "Kufunwa izifunda…",

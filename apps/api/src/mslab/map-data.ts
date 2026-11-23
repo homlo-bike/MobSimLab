@@ -5,6 +5,7 @@ import { COUNTRY_SOURCE, EconomyService } from "../economy/economy.service";
 import { CELL_DEG } from "../gateway/worldpop.client";
 import { OverpassError } from "../gateway/overpass.client";
 import { PopulationService, MAX_SIDE_DEG, type PopulationAnswer } from "../population/population.service";
+import { areaTiles } from "../projects/area-polygons";
 import { type Bbox, projectArea } from "../projects/project-area";
 import { StreetNetworkService, TILE_ZOOM } from "../street-network/street-network.service";
 import { MAX_WATER_SPAN_DEG } from "../street-network/water";
@@ -90,10 +91,11 @@ export class MslabMapService {
     const area = await projectArea(this.db, input.projectId);
     if (!area)
       throw new BadRequestException("draw something in the project first: map data covers the project area");
-    const tiles = tilesOf(area.bbox);
+    // The tiles touching the project area's polygons, not the box round them.
+    const tiles: [number, number][] = areaTiles(area.polygons, TILE_ZOOM).map((t) => [t.x, t.y]);
     if (tiles.length > MAX_MAP_TILES)
       throw new BadRequestException(
-        `the project area takes ${tiles.length} map tiles, more than the ${MAX_MAP_TILES} a file may carry; lower the project area's buffer or save without map data`,
+        `the project area takes ${tiles.length} map tiles, more than the ${MAX_MAP_TILES} a file may carry; make the project area smaller or save without map data`,
       );
     const on = (id: string) => input.plugins.some((p) => p.id === id && p.enabled);
     const kinds: MapTileKind[] = ["streets", "walk", "buildings", "places"];
@@ -107,7 +109,7 @@ export class MslabMapService {
       bytes += b.length;
       if (bytes > MAX_MAP_BYTES)
         throw new BadRequestException(
-          `the map data of the project area is larger than ${MAX_MAP_BYTES / 1024 / 1024} MB; lower the project area's buffer or save without map data`,
+          `the map data of the project area is larger than ${MAX_MAP_BYTES / 1024 / 1024} MB; make the project area smaller or save without map data`,
         );
       files.push([name, b]);
     };

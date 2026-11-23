@@ -4,7 +4,7 @@ In the **GIS** tab, switch to **Population** to bring population data into the p
 
 ## Project area
 
-The project area is the box around everything drawn in the project (lines, the railway, depots and regions), widened by a **buffer** in km (2 km unless you change it). It is outlined with a dashed line on the map. Imports cover only this box, at most 10,000 km².
+The project area is the polygons you draw when you create the project, changed in **Project preferences**, **Project area**. Their edges are dashed lines on the map. Imports keep only the cells whose centre lies in a polygon, and the polygons together may cover at most 10,000 km².
 
 ## Import WorldPop or GHSL
 
