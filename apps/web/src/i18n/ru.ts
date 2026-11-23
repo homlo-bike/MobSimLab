@@ -261,7 +261,6 @@ export const ru: Messages = {
   "tab.tables": "Таблицы",
   "tab.preferences": "Параметры",
 
-
   "sim.test": "Проверить систему",
   "sim.journey": "Время в пути A → B",
 

@@ -255,7 +255,6 @@ export const en = {
   "tab.tables": "Tables",
   "tab.preferences": "Preferences",
 
-
   "sim.test": "Test the system",
   "sim.journey": "Journey time A → B",
 

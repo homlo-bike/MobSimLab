@@ -1559,6 +1559,10 @@ export const editorsHa = {
   "walk.drawFirst": "Da farko zana layin titi ko layin dogo mai tashoshi.",
   "walk.collecting": "Ana tattara tasoshi…",
   "walk.loadingTiles": "Ana loda hanyoyin tafiya ({done} cikin tayil {count})…",
+  "walk.loadingHeights": "Ana loda tsayin ƙasa…",
+  "walk.heightsUnavailable":
+    "Ba a loda tsayin ƙasa ba ({reason}), don haka ana lissafa tafiya kamar a ƙasa mai faɗi.",
+  "walk.heightsNoData": "babu bayanan tsayi na wannan yanki",
   "walk.loadingPopulation": "Ana loda inda mutane ke zaune…",
   "walk.computing": "Ana auna tafiye-tafiye…",
   "walk.tooLarge":
@@ -1593,7 +1597,7 @@ export const editorsHa = {
   "walk.popUnavailable": "Babu bayanan yawan jama'a ({reason}); tituna suna maye gurbin mutane.",
   "walk.popCredit": "Mazauna: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Yankin shi ne akwatin da ke kewaye da tasoshin tare da nisan da ake tafiya cikin iyaka. Ba a lissafa gangare ba tukuna.",
+    "Yankin shi ne murabba'in da ke kewaye da tashoshi tare da nisan da ake tafiya a cikin iyaka. Ana tafiya kowace hanya a kan gangarenta zuwa tashar, don haka hawan tudu yana ɗaukar lokaci mai tsawo.",
   "spacing.title": "Tazarar tasoshi",
   "spacing.intro":
     "Nisa tsakanin tasoshi masu bin juna a kan layi, idan aka kwatanta da kewayon da aka saba don irin sufurin. Tasoshi masu kusanci sosai suna rage gudun layi; masu nisa sosai na nufin dogon tafiya.",

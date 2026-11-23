@@ -1557,6 +1557,10 @@ export const editorsId = {
   "walk.drawFirst": "Gambar dulu jalur jalan atau jalur rel dengan stasiun.",
   "walk.collecting": "Mengumpulkan halte dan stasiun…",
   "walk.loadingTiles": "Memuat jalur pejalan kaki ({done} dari {count} petak peta)…",
+  "walk.loadingHeights": "Memuat ketinggian tanah…",
+  "walk.heightsUnavailable":
+    "Ketinggian tanah tidak termuat ({reason}), jadi jalan kaki dihitung seperti di tanah datar.",
+  "walk.heightsNoData": "tidak ada data ketinggian untuk area ini",
   "walk.loadingPopulation": "Memuat tempat tinggal penduduk…",
   "walk.computing": "Mengukur perjalanan kaki…",
   "walk.tooLarge":
@@ -1592,7 +1596,7 @@ export const editorsId = {
   "walk.popUnavailable": "Tidak ada data penduduk ({reason}); jalan menggantikan penduduk.",
   "walk.popCredit": "Penduduk: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Area adalah kotak di sekitar halte ditambah jarak yang ditempuh dalam batas. Kemiringan belum diperhitungkan.",
+    "Area adalah persegi panjang di sekitar halte ditambah jarak yang ditempuh berjalan kaki dalam batas. Setiap jalan ditempuh dengan kemiringannya ke arah halte, jadi jalan kaki menanjak memakan waktu lebih lama.",
   "spacing.title": "Jarak antarhalte",
   "spacing.intro":
     "Jarak antara halte berurutan di sepanjang jalur, dibandingkan dengan rentang biasa untuk moda tersebut. Halte terlalu dekat memperlambat jalur; terlalu jauh berarti berjalan kaki lama.",

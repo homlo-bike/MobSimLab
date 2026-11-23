@@ -3641,7 +3641,7 @@
   },
   {
    "id": "journey.walk_slope_k",
-   "label": "Walking on slopes: steepness term of Tobler's hiking function (journey planner; 0 = walks timed as flat)",
+   "label": "Walking on slopes: steepness term of Tobler's hiking function (0 = walks timed as flat)",
    "group": "Demand",
    "unit": "coefficient",
    "kind": "number",

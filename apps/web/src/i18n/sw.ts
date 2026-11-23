@@ -259,7 +259,6 @@ export const sw: Messages = {
   "tab.tables": "Majedwali",
   "tab.preferences": "Mapendeleo",
 
-
   "sim.test": "Jaribu mfumo",
   "sim.journey": "Muda wa safari A → B",
 

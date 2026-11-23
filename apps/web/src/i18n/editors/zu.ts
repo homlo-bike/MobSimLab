@@ -1598,6 +1598,10 @@ export const editorsZu = {
   "walk.collecting": "Kuqoqwa izitobhi neziteshi…",
   "walk.loadingTiles":
     "Kulayishwa izindlela zabahamba ngezinyawo ({done} kwezingu-{count} zamathayela ebalazwe)…",
+  "walk.loadingHeights": "Ilayisha ukuphakama komhlaba…",
+  "walk.heightsUnavailable":
+    "Ukuphakama komhlaba akulayishekanga ({reason}), ngakho ukuhamba kubalwa njengasendaweni eyisicaba.",
+  "walk.heightsNoData": "ayikho idatha yokuphakama yale ndawo",
   "walk.loadingPopulation": "Kulayishwa lapho abantu behlala khona…",
   "walk.computing": "Kukalwa ukuhamba…",
   "walk.tooLarge":
@@ -1633,7 +1637,7 @@ export const editorsZu = {
   "walk.popUnavailable": "Ayikho idatha yenani labantu ({reason}); imigwaqo imela abantu.",
   "walk.popCredit": "Abahlali: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Indawo ibhokisi elizungeze izitobhi kanye nebanga elihanjwa ngaphakathi komkhawulo. Imithambeka ayikabalwa.",
+    "Indawo ingunxande ozungeze iziteshi kanye nebanga elihanjwa ngaphakathi komkhawulo. Umgwaqo ngamunye uhanjwa ngomthambeko wawo ubheke esiteshini, ngakho ukukhuphuka kuthatha isikhathi eside.",
   "spacing.title": "Ibanga phakathi kwezitobhi",
   "spacing.intro":
     "Ibanga phakathi kwezitobhi ezilandelanayo emgqeni, kuqhathaniswa nebanga elivamile lohlobo lwezokuthutha. Izitobhi eziseduze kakhulu zinensa umugqa; ezikude kakhulu zisho ukuhamba isikhathi eside.",

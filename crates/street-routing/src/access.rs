@@ -394,6 +394,7 @@ impl WalkGraph {
             crossing_delay_s: 0.0,
             step_free: false,
             max_snap_m: req.max_snap_m,
+            walk_slope_k: 0.0,
         };
         let area = req.study_area.unwrap_or_else(|| self.bounds_lonlat());
         let inside = |p: &DemandPoint| {

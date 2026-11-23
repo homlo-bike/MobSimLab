@@ -1646,9 +1646,9 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 1.2 | 1.3 | 1.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stand-in until walks are routed on the walk graph: street networks make a walk roughly 20–50 % longer than the straight line (lower in dense grids, higher with rivers, rail lines and cul-de-sacs). 1.3 is the planning value used by the journey planner (ADR-0034); replace with a cited circuity study. |
 
-### Walking on slopes: steepness term of Tobler's hiking function (journey planner; 0 = walks timed as flat)
+### Walking on slopes: steepness term of Tobler's hiking function (0 = walks timed as flat)
 
-`journey.walk_slope_k` · unit: coefficient · used by: journey planner access, egress and transfer walks
+`journey.walk_slope_k` · unit: coefficient · used by: journey planner access, egress and transfer walks, walk coverage, walk catchments
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|

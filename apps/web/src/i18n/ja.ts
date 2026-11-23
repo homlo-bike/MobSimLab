@@ -257,7 +257,6 @@ export const ja: Messages = {
   "tab.tables": "表",
   "tab.preferences": "設定",
 
-
   "sim.test": "システムを検証",
   "sim.journey": "所要時間 A → B",
 

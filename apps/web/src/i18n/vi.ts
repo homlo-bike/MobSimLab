@@ -258,7 +258,6 @@ export const vi: Messages = {
   "tab.tables": "Bảng",
   "tab.preferences": "Tùy chọn",
 
-
   "sim.test": "Kiểm tra hệ thống",
   "sim.journey": "Thời gian hành trình A → B",
 

@@ -1600,6 +1600,10 @@ export const editorsFr = {
   "walk.drawFirst": "Dessinez d'abord une ligne sur rue ou une voie ferrée avec des stations.",
   "walk.collecting": "Collecte des arrêts et des stations…",
   "walk.loadingTiles": "Chargement des chemins piétons ({done} sur {count} tuiles)…",
+  "walk.loadingHeights": "Chargement des altitudes du terrain…",
+  "walk.heightsUnavailable":
+    "Les altitudes du terrain ne se sont pas chargées ({reason}) : la marche est comptée comme sur le plat.",
+  "walk.heightsNoData": "pas de données d’altitude pour cette zone",
   "walk.loadingPopulation": "Chargement des lieux d'habitation…",
   "walk.computing": "Mesure des trajets à pied…",
   "walk.tooLarge":
@@ -1634,7 +1638,7 @@ export const editorsFr = {
   "walk.popUnavailable": "Pas de données de population ({reason}) ; les rues remplacent les habitants.",
   "walk.popCredit": "Habitants : WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "La zone est le rectangle autour des arrêts plus la distance parcourue dans la limite. Les pentes ne sont pas encore prises en compte.",
+    "La zone est le rectangle autour des arrêts plus la distance parcourue dans la limite. Chaque rue est parcourue avec sa pente vers l’arrêt : en montée, la marche prend plus de temps.",
   "spacing.title": "Interstation",
   "spacing.intro":
     "Distance entre arrêts consécutifs le long de la ligne, comparée à la plage habituelle du mode. Des arrêts trop proches ralentissent la ligne ; trop éloignés, ils imposent de longues marches.",

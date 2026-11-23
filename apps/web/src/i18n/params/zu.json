@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Ukulungisa: amahora ahlukanisa izibalo zosuku lomsebenzi wezibalo ze-GEH",
     "demand.walk_speed_kmh": "Isivinini sokuhamba ngezinyawo sezindlela zokuhamba phakathi kwezitobhi",
     "journey.walk_detour_factor": "Ibanga lokuhamba ngezinyawo uma kuqhathaniswa nebanga lomugqa oqondile (umhleli wohambo, izibalo zenzuzo)",
-    "journey.walk_slope_k": "Ukuhamba emithambekeni: ingxenye yomthambeko yomsebenzi wokuhamba kaTobler (umhleli wohambo; 0 = ukuhamba kubalwa njengasendaweni eyisicaba)",
+    "journey.walk_slope_k": "Ukuhamba emithambekeni: ingxenye yomthambeko yomsebenzi wokuhamba kaTobler (0 = ukuhamba kubalwa njengasendaweni eyisicaba)",
     "journey.min_change_s": "Umhleli wohambo: isikhathi sokushintsha esincane kakhulu esitobhini esisodwa",
     "journey.level_change_s": "Umhleli wohambo: isikhathi esengeziwe sokushintsha ipulatifomu esitobhini (izitebhisi, amakheshi)",
     "journey.same_name_station_m": "Izitobhi ezinegama elifanayo ngaphakathi kwaleli banga lomugqa oqondile ziyisiteshi esisodwa",

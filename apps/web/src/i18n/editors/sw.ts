@@ -1567,6 +1567,10 @@ export const editorsSw = {
   "walk.drawFirst": "Chora kwanza njia ya barabarani au reli yenye stesheni.",
   "walk.collecting": "Inakusanya vituo na stesheni…",
   "walk.loadingTiles": "Inapakia njia za miguu (vigae {done} kati ya {count})…",
+  "walk.loadingHeights": "Inapakia miinuko ya ardhi…",
+  "walk.heightsUnavailable":
+    "Miinuko ya ardhi haikupakiwa ({reason}), kwa hivyo matembezi yanahesabiwa kama kwenye ardhi tambarare.",
+  "walk.heightsNoData": "hakuna data ya miinuko kwa eneo hili",
   "walk.loadingPopulation": "Inapakia mahali watu wanapoishi…",
   "walk.computing": "Inapima matembezi…",
   "walk.tooLarge":
@@ -1601,7 +1605,7 @@ export const editorsSw = {
   "walk.popUnavailable": "Hakuna data ya idadi ya watu ({reason}); barabara zinasimama badala ya watu.",
   "walk.popCredit": "Wakazi: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Eneo ni mstatili unaozunguka vituo pamoja na umbali unaotembewa ndani ya kikomo. Miteremko bado haihesabiwi.",
+    "Eneo ni mstatili unaozunguka vituo pamoja na umbali unaotembewa ndani ya kikomo. Kila barabara inatembewa kwa mteremko wake kuelekea kituo, kwa hivyo kupanda kunachukua muda zaidi.",
   "spacing.title": "Nafasi kati ya vituo",
   "spacing.intro":
     "Umbali kati ya vituo vinavyofuatana kando ya njia, ukilinganishwa na kiwango cha kawaida cha aina ya usafiri. Vituo vilivyo karibu sana hupunguza kasi ya njia; vilivyo mbali sana humaanisha matembezi marefu.",

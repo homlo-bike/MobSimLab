@@ -262,7 +262,6 @@ export const ta: Messages = {
   "tab.tables": "அட்டவணைகள்",
   "tab.preferences": "விருப்பங்கள்",
 
-
   "sim.test": "அமைப்பைச் சோதி",
   "sim.journey": "பயண நேரம் A → B",
 

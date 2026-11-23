@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Calibrazione: ore su cui un conteggio feriale è ripartito per la statistica GEH",
     "demand.walk_speed_kmh": "Velocità a piedi per i collegamenti pedonali tra stazioni",
     "journey.walk_detour_factor": "Distanza a piedi rispetto alla distanza in linea d'aria (pianificatore di viaggio, stima dei benefici)",
-    "journey.walk_slope_k": "Camminare in pendenza: termine di pendenza della funzione escursionistica di Tobler (pianificatore di viaggio; 0 = a piedi come in piano)",
+    "journey.walk_slope_k": "Camminare in pendenza: termine di pendenza della funzione escursionistica di Tobler (0 = a piedi come in piano)",
     "journey.min_change_s": "Pianificatore di viaggio: tempo minimo di cambio alla stessa fermata",
     "journey.level_change_s": "Pianificatore di viaggio: tempo aggiunto per cambiare binario in una stazione (scale, ascensori)",
     "journey.same_name_station_m": "Fermate con lo stesso nome entro questa distanza in linea d'aria sono una stazione",

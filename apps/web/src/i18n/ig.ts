@@ -260,7 +260,6 @@ export const ig: Messages = {
   "tab.tables": "Tebụl",
   "tab.preferences": "Mmasị",
 
-
   "sim.test": "Nwalee sistemụ ahụ",
   "sim.journey": "Oge njem A → B",
 

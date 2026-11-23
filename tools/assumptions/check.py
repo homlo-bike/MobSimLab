@@ -65,6 +65,7 @@ AGENT_GLOBAL_FIELDS = {
     "frequent_headway_min": "analysis.frequent_headway_min",
     "min_change_s": "journey.min_change_s",
     "same_name_station_m": "journey.same_name_station_m",
+    "walk_slope_k": "journey.walk_slope_k",
 }
 RAIL_MODES = [
     "tram",

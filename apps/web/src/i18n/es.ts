@@ -262,7 +262,6 @@ export const es: Messages = {
   "tab.tables": "Tablas",
   "tab.preferences": "Preferencias",
 
-
   "sim.test": "Probar el sistema",
   "sim.journey": "Tiempo de viaje A → B",
 

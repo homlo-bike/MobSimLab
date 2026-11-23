@@ -1531,6 +1531,10 @@ export const editorsTr = {
   "walk.drawFirst": "Önce bir sokak hattı veya istasyonlu bir demiryolu çizin.",
   "walk.collecting": "Duraklar ve istasyonlar toplanıyor…",
   "walk.loadingTiles": "Yaya yolları yükleniyor ({count} harita karosundan {done})…",
+  "walk.loadingHeights": "Arazi yükseklikleri yükleniyor…",
+  "walk.heightsUnavailable":
+    "Arazi yükseklikleri yüklenmedi ({reason}), bu yüzden yürüyüşler düz zemin gibi hesaplanıyor.",
+  "walk.heightsNoData": "bu alan için yükseklik verisi yok",
   "walk.loadingPopulation": "İnsanların yaşadığı yerler yükleniyor…",
   "walk.computing": "Yürüyüşler ölçülüyor…",
   "walk.tooLarge":
@@ -1565,7 +1569,7 @@ export const editorsTr = {
   "walk.popUnavailable": "Nüfus verisi yok ({reason}); sokaklar insanların yerini tutuyor.",
   "walk.popCredit": "Sakinler: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Alan, durakların çevresindeki dikdörtgen artı sınır içinde yürünen mesafedir. Eğimler henüz hesaba katılmıyor.",
+    "Alan, duraklar çevresindeki dikdörtgen artı sınır içinde yürünen mesafedir. Her sokak durağa doğru kendi eğimiyle yürünür, bu yüzden yokuş yukarı yürüyüş daha uzun sürer.",
   "spacing.title": "Duraklar arası mesafe",
   "spacing.intro":
     "Hat boyunca ardışık duraklar arasındaki mesafe, türün olağan aralığıyla karşılaştırılarak. Çok yakın duraklar hattı yavaşlatır; çok uzak duraklar uzun yürüyüş demektir.",
