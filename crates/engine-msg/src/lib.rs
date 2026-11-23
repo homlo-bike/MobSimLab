@@ -165,6 +165,20 @@ macro_rules! msg {
     };
 }
 
+/// Purpose: a JavaScript `Error` for a failed engine call: its `message` is the English text and its
+/// `msg` property the message (key and values), so the app can show it in the user's language.
+#[cfg(feature = "wasm")]
+pub fn js_error(m: &Msg) -> wasm_bindgen::JsValue {
+    #[wasm_bindgen::prelude::wasm_bindgen(
+        inline_js = "export function engine_error(text, msg) { const e = new Error(text); e.msg = JSON.parse(msg); return e; }"
+    )]
+    extern "C" {
+        fn engine_error(text: &str, msg: &str) -> wasm_bindgen::JsValue;
+    }
+    let json = serde_json::to_string(m).unwrap_or_else(|_| "null".into());
+    engine_error(&m.english(), &json)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

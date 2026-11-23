@@ -1,6 +1,7 @@
 import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { useI18n } from "../../i18n/i18n";
 import type { CommentObjectType, CommentsApi, ProjectComment } from "./api";
+import { engineErrorText } from "../../i18n/engine";
 
 /** The project's comments and what the person may do with them, shared by every panel of the workspace. */
 interface CommentsState {
@@ -46,7 +47,7 @@ export function CommentsProvider({
       setComments(await api.list());
       setError(null);
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(engineErrorText(e));
     }
   }, [api]);
 
@@ -65,7 +66,7 @@ export function CommentsProvider({
         await reload();
         return true;
       } catch (e) {
-        setError(e instanceof Error ? e.message : String(e));
+        setError(engineErrorText(e));
         return false;
       }
     },

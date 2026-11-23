@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { type Drawing, DrawingConflict, type DrawingKind, DrawingSaveError } from "../projects/drawings";
 import { DRAFT_MAX_AGE_MS, type DraftStore, indexedDbDrafts } from "./localDraft";
+import { engineErrorText } from "../i18n/engine";
 
 /** How the project's drawings stand against the server, worst first. */
 export type SaveStatus = "conflict" | "failed" | "offline" | "saving" | "saved";
@@ -315,7 +316,7 @@ export function useDrawings(
         setLoaded(true);
       },
       (err: unknown) => {
-        if (session.current === mine) setLoadError(err instanceof Error ? err.message : String(err));
+        if (session.current === mine) setLoadError(engineErrorText(err));
       },
     );
     const map = entries;

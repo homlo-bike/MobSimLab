@@ -1,4 +1,5 @@
 import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { loadEngineTexts } from "./engine";
 import { loadMessages, type MessageKey, MESSAGES_EN, messagesOf, type PluralKey } from "./messages";
 
 /** Languages the app shell is translated into, with their own names (shown in the picker). */
@@ -247,6 +248,10 @@ export function I18nProvider({
     }),
     [language, choice, onChoose],
   );
+  useEffect(() => {
+    // Engine messages (errors and findings) in the language too, so the first one shown is translated.
+    loadEngineTexts(language).catch(() => {});
+  }, [language]);
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = directionOf(language);

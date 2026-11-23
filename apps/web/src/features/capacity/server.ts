@@ -1,3 +1,4 @@
+import type { EngineNote } from "../../i18n/engine";
 import { get, send } from "../../session/api";
 import type { CapacityParams, CapacityRun, LineInfo, Point } from "./types";
 
@@ -28,7 +29,7 @@ export type RunStep =
 
 /** What the worker has found: the planned period, then the sweep of each line as it goes. */
 export interface RunResult {
-  notes: string[];
+  notes: EngineNote[];
   run: CapacityRun | null;
   lines: { info: LineInfo; planned: Point; sweep: Point[]; sweeping: boolean }[];
 }

@@ -145,7 +145,7 @@ fn a_given_date_and_errors() {
         date: Some("20250101".into()),
         bbox: None,
     });
-    assert!(none.unwrap_err().contains("20250101"));
+    assert!(none.unwrap_err().english().contains("20250101"));
     let mut f = feed();
     f.remove("stops.txt");
     assert!(import(&ImportInput {
@@ -154,13 +154,14 @@ fn a_given_date_and_errors() {
         bbox: None
     })
     .unwrap_err()
+    .english()
     .contains("stops.txt"));
     let boxed = import(&ImportInput {
         files: feed(),
         date: None,
         bbox: Some([0.0, 0.0, 1.0, 1.0]),
     });
-    assert!(boxed.unwrap_err().contains("map view"));
+    assert!(boxed.unwrap_err().english().contains("map view"));
 }
 
 #[test]

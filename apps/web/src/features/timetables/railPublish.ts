@@ -12,6 +12,7 @@ import type {
 } from "../railways/types";
 import { DAY_TYPES, type DayTypeId, serviceDayFor, type ServiceCalendar } from "../../workspace/calendar";
 import { railLineFor, withPeaks } from "./dayTypes";
+import { engineErrorText } from "../../i18n/engine";
 
 /**
  * Purpose: the railway's service lines in the engine's form on a day type, with the calendar's peaks and the
@@ -86,7 +87,7 @@ export function useRailPublications(
           key,
           publications: {},
           view: null,
-          error: err instanceof Error ? err.message : String(err),
+          error: engineErrorText(err),
         });
     };
     (async () => {

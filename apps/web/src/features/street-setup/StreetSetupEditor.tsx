@@ -30,6 +30,7 @@ import {
   verdicts,
 } from "./model";
 import type { StreetInfo, StreetInfoLoader, StreetSetup, TramShare } from "./types";
+import { engineErrorText } from "../../i18n/engine";
 
 interface Props {
   /** The map; `null` until it has loaded. */
@@ -90,9 +91,7 @@ export function StreetSetupEditor({
     let alive = true;
     loadInfos()
       .then((p) => alive && setParse(() => p))
-      .catch((err) =>
-        setError(tNow("setup.engineFailed", { error: err instanceof Error ? err.message : String(err) })),
-      );
+      .catch((err) => setError(tNow("setup.engineFailed", { error: engineErrorText(err) })));
     return () => {
       alive = false;
     };

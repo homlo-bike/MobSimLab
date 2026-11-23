@@ -8,6 +8,7 @@ import { groupsOnMap, OVERLAY_GROUPS, type OverlayGroup } from "./mapLayers";
 import { type Place, searchPlaces } from "./places";
 import { StreetPhotoPanel } from "./StreetPhotoPanel";
 import { onStreetPhotoSources, refreshStreetPhotoSources, streetPhotoSources } from "./streetPhotos";
+import { engineErrorText } from "../i18n/engine";
 
 type Open = "search" | "layers" | "photos" | null;
 
@@ -152,9 +153,7 @@ function PlaceSearch({ map, onClose }: { map: MapLibreMap | null; onClose: () =>
     const c = map?.getCenter?.();
     searchPlaces(text, { lang: language, near: c ? [c.lng, c.lat] : undefined, signal: ctrl.signal }).then(
       (places) => !ctrl.signal.aborted && setState({ kind: "found", q: text, places }),
-      (err) =>
-        !ctrl.signal.aborted &&
-        setState({ kind: "error", text: err instanceof Error ? err.message : String(err) }),
+      (err) => !ctrl.signal.aborted && setState({ kind: "error", text: engineErrorText(err) }),
     );
   };
 

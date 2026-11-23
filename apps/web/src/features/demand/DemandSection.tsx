@@ -46,6 +46,7 @@ import {
   zonesFromGeoJson,
   zonesToGeoJson,
 } from "./zones";
+import { engineErrorText } from "../../i18n/engine";
 
 interface Props {
   /** The published network: street lines, rail service lines and plugin lines. */
@@ -130,7 +131,7 @@ function pct(part: number, whole: number): string {
 }
 
 function message(e: unknown): string {
-  return e instanceof Error ? e.message : String(e);
+  return engineErrorText(e);
 }
 
 /** Purpose: a zone's values without one of them. */

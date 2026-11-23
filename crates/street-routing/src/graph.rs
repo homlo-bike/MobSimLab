@@ -8,6 +8,7 @@
 use crate::geo::{dist, heading, project_on_segment, LocalProjection, SegmentProjection};
 use crate::osm::{OsmData, RestrictionKind, Tags};
 use crate::profile::{Mode, VehicleProfile};
+use engine_msg::{msg, Msg};
 use std::collections::{HashMap, HashSet};
 
 /// Road graph node (an OSM node used by a road way).
@@ -299,13 +300,13 @@ fn node_blocked(tags: &Tags) -> bool {
 impl RoadGraph {
     /// Purpose: build the graph from parsed OSM data.
     /// Output: an error when the data contains no road usable by buses.
-    pub fn from_osm(data: &OsmData) -> Result<Self, String> {
+    pub fn from_osm(data: &OsmData) -> Result<Self, Msg> {
         Self::from_osm_with(data, None)
     }
 
     /// Purpose: build the graph with a fixed projection, so positions stay comparable when the
     /// network is rebuilt with more data. `None` centres the projection on the data.
-    pub fn from_osm_with(data: &OsmData, proj: Option<LocalProjection>) -> Result<Self, String> {
+    pub fn from_osm_with(data: &OsmData, proj: Option<LocalProjection>) -> Result<Self, Msg> {
         Self::from_osm_with_delays(data, proj, &crate::setup::DelayShares::default())
     }
 
@@ -314,7 +315,7 @@ impl RoadGraph {
         data: &OsmData,
         proj: Option<LocalProjection>,
         delays: &crate::setup::DelayShares,
-    ) -> Result<Self, String> {
+    ) -> Result<Self, Msg> {
         let node_by_id: HashMap<i64, usize> = data
             .nodes
             .iter()
@@ -335,7 +336,7 @@ impl RoadGraph {
             }
         }
         if count == 0.0 {
-            return Err("No roads that buses may use in this area.".into());
+            return Err(msg!("street.error.no_bus_roads"));
         }
         let proj = proj.unwrap_or_else(|| LocalProjection::new(lon_sum / count, lat_sum / count));
         let mut g = RoadGraph {

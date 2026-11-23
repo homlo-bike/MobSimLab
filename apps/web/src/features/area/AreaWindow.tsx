@@ -24,6 +24,7 @@ import {
   newPolygonId,
   ringAreaKm2,
 } from "./api";
+import { engineErrorText } from "../../i18n/engine";
 
 /** Colours of the polygons by detail (blue: full, teal: main roads and railways). */
 export const DETAIL_COLOUR: Record<AreaDetail, string> = { full: "#1d4ed8", main: "#0f766e" };
@@ -292,7 +293,7 @@ export function AreaWindow({
           setEst(e);
           setEstError(null);
         })
-        .catch((e: unknown) => live && setEstError(e instanceof Error ? e.message : String(e)));
+        .catch((e: unknown) => live && setEstError(engineErrorText(e)));
     }, 250);
     return () => {
       live = false;
@@ -521,7 +522,7 @@ export function AreaWindow({
     try {
       await onSave(polygons.map((p) => ({ ...p, name: p.name.trim() })));
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(engineErrorText(e));
       setSaving(false);
     }
   };

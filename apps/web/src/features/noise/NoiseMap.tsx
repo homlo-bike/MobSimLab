@@ -41,6 +41,7 @@ import type {
   NoiseView,
 } from "./types";
 import { paramNumber } from "../../workspace/preferences";
+import { engineErrorText } from "../../i18n/engine";
 
 export { STREET_OFF_PEAK } from "./inputs";
 export { FROM_DB } from "./result";
@@ -355,9 +356,7 @@ export function NoiseMap({
             terrain = await abortable(loadTerrain(plan, fetchTerrain, progress, signal), signal);
           } catch (err) {
             if (signal.aborted) throw err;
-            notes.push(
-              tNow("noise.terrainDown", { error: err instanceof Error ? err.message : String(err) }),
-            );
+            notes.push(tNow("noise.terrainDown", { error: engineErrorText(err) }));
           }
         }
       }
@@ -375,9 +374,7 @@ export function NoiseMap({
           else notes.push(tNow("noise.popUnavailable", { reason: a.reason }));
         } catch (err) {
           if (signal.aborted) throw err;
-          notes.push(
-            tNow("noise.popUnavailable", { reason: err instanceof Error ? err.message : String(err) }),
-          );
+          notes.push(tNow("noise.popUnavailable", { reason: engineErrorText(err) }));
         }
       }
       const common: Omit<NoiseInput, "lines"> = {
@@ -429,7 +426,7 @@ export function NoiseMap({
       kept.save({ result: done, choices: runChoices }, runInputs);
     } catch (err) {
       if (signal.aborted) setStatus({ kind: "cancelled" });
-      else setStatus({ kind: "error", text: err instanceof Error ? err.message : String(err) });
+      else setStatus({ kind: "error", text: engineErrorText(err) });
     } finally {
       if (run.current?.abort === abort) run.current = null;
     }

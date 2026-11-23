@@ -1,3 +1,4 @@
+import { type EngineMsg, errorWithMsg } from "../../i18n/engine";
 import type { Indicator, NoiseEngine, NoiseEngineLoader, NoiseInput, NoiseView } from "./types";
 
 let wasmModule: Promise<typeof import("../../wasm/noise/noise_wasm.js")> | null = null;
@@ -97,9 +98,9 @@ export const workerRunner: NoiseRunner = (input, fromDb, signal) => {
       signal?.removeEventListener("abort", stop);
       worker.terminate();
     };
-    worker.onmessage = (e: MessageEvent<NoiseRun | { error: string }>) => {
+    worker.onmessage = (e: MessageEvent<NoiseRun | { error: string; msg?: EngineMsg }>) => {
       done();
-      if ("error" in e.data) reject(new Error(e.data.error));
+      if ("error" in e.data) reject(errorWithMsg(e.data.error, e.data.msg));
       else resolve(e.data);
     };
     worker.onerror = (e) => {

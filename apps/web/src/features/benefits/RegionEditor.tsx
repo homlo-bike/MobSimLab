@@ -27,6 +27,7 @@ import {
   ringAreaM2,
   ringCentre,
 } from "./regions";
+import { engineErrorText } from "../../i18n/engine";
 
 const SRC = "regions";
 const FILL = "regions-fill";
@@ -268,7 +269,7 @@ export function RegionEditor({
       api
         .osmAreas(at)
         .then(setAreas)
-        .catch((e: unknown) => setAreaError(e instanceof Error ? e.message : String(e)));
+        .catch((e: unknown) => setAreaError(engineErrorText(e)));
     },
     [api],
   );
@@ -293,7 +294,7 @@ export function RegionEditor({
           setPlaceError(null);
         })
         .catch((e: unknown) => {
-          if (!ctl.signal.aborted) setPlaceError(e instanceof Error ? e.message : String(e));
+          if (!ctl.signal.aborted) setPlaceError(engineErrorText(e));
         });
     }, 300);
     return () => {
@@ -409,7 +410,7 @@ export function RegionEditor({
     } catch (e) {
       setExtendNote({
         ok: false,
-        text: t("reg.areaFailed", { error: e instanceof Error ? e.message : String(e) }),
+        text: t("reg.areaFailed", { error: engineErrorText(e) }),
       });
     } finally {
       setExtending(false);

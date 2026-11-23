@@ -17,6 +17,7 @@ import type { RoadRun, RoadRunDetail, RoadRunsApi } from "./api";
 import { ensureReplayLayers, removeReplayLayers, replaySpan, setReplayTime } from "./replay";
 import { buildScenario } from "./scenario";
 import type { Replay, RoadEvent, RoadLineResult, RoadResult, RoadStep } from "./types";
+import { engineErrorText } from "../../i18n/engine";
 
 const H = 3600;
 const PERIODS = [
@@ -40,7 +41,7 @@ const STATUS_TONE: Record<RunStatus, string> = {
 
 const pct = (x: number) => `${Math.round(x * 100)} %`;
 const mins = (s: number) => (s < 90 ? `${Math.round(s)} s` : `${(s / 60).toFixed(1)} min`);
-const message = (e: unknown) => (e instanceof Error ? e.message : String(e));
+const message = (e: unknown) => engineErrorText(e);
 
 interface Props {
   api: RoadRunsApi | null;
