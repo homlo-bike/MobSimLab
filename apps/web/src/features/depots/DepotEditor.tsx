@@ -55,6 +55,7 @@ import type {
   Sizing,
   Zone,
 } from "./types";
+import { withUnit } from "../../i18n/units";
 
 type Tool =
   | { kind: "idle" }
@@ -790,7 +791,7 @@ export function DepotEditor({
                       <span className={`shrink-0 ${problem ? "text-red-700" : "text-slate-500"}`}>
                         {problem
                           ? problem === "depot.fit.size"
-                            ? `${t(problem)}: ${lineVehicle(line).length_m} m`
+                            ? `${t(problem)}: ${withUnit(lineVehicle(line).length_m, "m")}`
                             : t(problem)
                           : t("depot.vehiclesN", { n: lineFleet(line, prefs) })}
                       </span>
@@ -843,7 +844,7 @@ export function DepotEditor({
                             {f ? `${Math.round(f.area_m2).toLocaleString()} m²` : "–"}
                           </td>
                           <td className="text-right font-mono">
-                            {f ? `${Math.round(f.width_m)} × ${Math.round(f.depth_m)} m` : "–"}
+                            {f ? `${Math.round(f.width_m)} × ${withUnit(Math.round(f.depth_m), "m")}` : "–"}
                           </td>
                           <td className="text-right font-mono">{holds ? holds.vehicles : "–"}</td>
                           <td className="text-right">

@@ -668,6 +668,16 @@ export const editorsEs = {
   "schematic.showStatuses": "Símbolos de estado",
   "schematic.showFeatures": "Símbolos de equipamiento de estaciones",
   "schematic.showWater": "Mar, lagos y ríos",
+  "schematic.straightRivers": "Dibujar los ríos en pasos de 45°",
+  "schematic.nameSize": "Tamaño de los nombres de estación",
+  "schematic.longRuns": "Tramos largos sin paradas",
+  "schematic.longRuns.off": "Como en el terreno",
+  "schematic.longRuns.max": "Como máximo {n} × la separación habitual",
+  "schematic.pngSmallNames":
+    "Los nombres de estación miden solo {px} px en esta imagen, limitada a 8192 px por lado. Use SVG o Imprimir para una copia más nítida.",
+  "schematic.printPaper": "Tamaño de página {paper}: los nombres de estación se imprimen a {pt} pt.",
+  "schematic.printSmallNames":
+    "Tamaño de página {paper}: los nombres de estación se imprimen a solo {pt} pt. Agrande los nombres de estación u oculte algunas capas.",
   "schematic.showAreas": "Zonas tarifarias y lugares emblemáticos",
   "schematic.water": "Agua",
   "schematic.areas": "Zonas tarifarias y lugares emblemáticos",
@@ -969,6 +979,10 @@ export const editorsEs = {
   "jp.set.maxRides": "Máximo de vehículos",
   "jp.walkNote":
     "Los trayectos a pie son la distancia en línea recta × 1,3 hasta que exista la red peatonal. Los valores por defecto vienen de la biblioteca de supuestos.",
+  "jp.slopeNote":
+    "Las caminatas se calculan con la pendiente entre sus dos extremos (función de senderismo de Tobler con las alturas del terreno): cuesta arriba y en bajadas pronunciadas tardan más.",
+  "jp.slopeNoHeights":
+    "No se cargaron las alturas del terreno, así que las caminatas se calculan como en llano.",
 
   "kit.minSec": "{m} min {s} s",
   "kit.checks": "Comprobaciones",

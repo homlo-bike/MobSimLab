@@ -9,6 +9,10 @@ export const roadUz = {
     "Hali hech bir ko‘cha yo‘nalishi harakatlana olmaydi. Yaratish → Koʻcha yoʻnalishi bo‘limida kamida ikki bekatli yo‘nalish chizing.",
   "road.lines": "Ko‘cha yo‘nalishlari: {n}",
   "road.depots": "Depolar: {n}",
+  "road.pick": "Ishga tushiriladigan yo‘nalishlar",
+  "road.pickAll": "Hammasi",
+  "road.pickNone": "Hech biri",
+  "road.pickSome": "Ishga tushirish uchun kamida bitta ko‘cha yo‘nalishini belgilang.",
   "road.skipped.notRouted": "{name} chiqarib tashlandi: hali marshruti yo‘q.",
   "road.skipped.noService": "{name} chiqarib tashlandi: bu davrda jo‘nashlari yo‘q.",
   "road.noDepot":
@@ -73,4 +77,25 @@ export const roadUz = {
   "prefs.roadIntro": "Yo‘l simulyatsiyalaridagi fon avtomobil harakati (Simulyator → Yo‘l simulyatsiyasi).",
   "prefs.offPeakTraffic":
     "Ertalabki va kechki cho‘qqidan tashqari harakat, har bir ko‘cha cho‘qqisining ulushi sifatida",
+  "prefs.groupVisuals": "Ko‘rinish",
+  "visuals.vehiclesTitle": "Simulyatsiyadagi transport",
+  "visuals.vehiclesIntro":
+    "Yo‘l simulyatsiyasi takrorida transport ranglari (Simulyator → Yo‘l simulyatsiyasi). Transport birinchi bekatidan oxirgisini tark etguncha xizmatda bo‘ladi; erta yurish o‘z vaqtida hisoblanadi.",
+  "visuals.onTimeUpTo": "O‘z vaqtida, ko‘pi bilan (daqiqa kechikish)",
+  "visuals.lateUpTo": "Kechikkan, ko‘pi bilan (daqiqa kechikish); undan ko‘pi juda kechikkan",
+  "visuals.noLate":
+    "«Kechikkan» chegarasi «O‘z vaqtida» chegarasidan katta emas, shuning uchun hech bir transport kechikkan ko‘rinmaydi.",
+  "visuals.colors": "Ranglar",
+  "visuals.onTime": "Xizmatda, o‘z vaqtida",
+  "visuals.late": "Xizmatda, kechikkan",
+  "visuals.veryLate": "Xizmatda, juda kechikkan",
+  "visuals.outOfService": "Xizmatda emas, ko‘chada",
+  "visuals.parked": "Deposida turibdi",
+  "visuals.defaultMin": "Standart: {value} daq",
+  "visuals.reset": "Standartni ishlatish",
+  "visuals.legend.onTime": "O‘z vaqtida ({min} daq kechikishgacha)",
+  "visuals.legend.late": "Kechikkan ({from}–{to} daq)",
+  "visuals.legend.veryLate": "Juda kechikkan ({min} daqdan ko‘p)",
+  "road.replay.noService":
+    "Bu ishga tushirish xizmat vaqtlari yozilishidan oldin saqlangan, shuning uchun transport o‘z liniyasi rangida. Aniqlik bo‘yicha ko‘rish uchun qayta ishga tushiring.",
 } satisfies RoadMessages;

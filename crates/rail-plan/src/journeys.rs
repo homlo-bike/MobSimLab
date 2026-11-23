@@ -128,6 +128,7 @@ pub fn journey_timetable(
                         stop_lon: lon,
                         parent_station: Some(format!("group:{}", g.key)),
                         platform_code: pf.label.clone(),
+                        elevation_m: None,
                     },
                 );
             }

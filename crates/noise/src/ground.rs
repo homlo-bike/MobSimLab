@@ -185,36 +185,89 @@ fn filter(
     out
 }
 
-/// Purpose: fill missing samples with the mean of their filled neighbours, pass by pass.
+/// Purpose: fill missing samples with the mean of their filled neighbours, pass by pass: each pass fills
+/// the gaps next to samples filled before it. Only the gaps next to the last pass's samples are looked at, so a
+/// grid loaded only along the lines (the rest missing) fills in time proportional to its size.
 fn fill(mut z: Vec<Option<f64>>, nx: usize, ny: usize) -> Vec<Option<f64>> {
-    for _ in 0..nx.max(ny) {
-        let mut changed = false;
-        let prev = z.clone();
-        for j in 0..ny {
-            for i in 0..nx {
-                if prev[j * nx + i].is_some() {
-                    continue;
-                }
+    let neighbours = |k: usize| {
+        let (i, j) = (k % nx, k / nx);
+        [
+            (i > 0).then(|| k - 1),
+            (i + 1 < nx).then(|| k + 1),
+            (j > 0).then(|| k - nx),
+            (j + 1 < ny).then(|| k + nx),
+        ]
+        .into_iter()
+        .flatten()
+    };
+    let mut queued = vec![false; nx * ny];
+    let mut front: Vec<usize> = Vec::new();
+    for k in 0..nx * ny {
+        if z[k].is_none() && neighbours(k).any(|n| z[n].is_some()) {
+            queued[k] = true;
+            front.push(k);
+        }
+    }
+    while !front.is_empty() {
+        // Values from the samples filled before this pass only.
+        let values: Vec<f64> = front
+            .iter()
+            .map(|&k| {
                 let (mut s, mut n) = (0.0, 0);
-                for (di, dj) in [(-1i64, 0i64), (1, 0), (0, -1), (0, 1)] {
-                    let (a, b) = (i as i64 + di, j as i64 + dj);
-                    if a < 0 || b < 0 || a >= nx as i64 || b >= ny as i64 {
-                        continue;
-                    }
-                    if let Some(v) = prev[b as usize * nx + a as usize] {
+                for m in neighbours(k) {
+                    if let Some(v) = z[m] {
                         s += v;
                         n += 1;
                     }
                 }
-                if n > 0 {
-                    z[j * nx + i] = Some(s / n as f64);
-                    changed = true;
+                s / n as f64
+            })
+            .collect();
+        for (&k, v) in front.iter().zip(values) {
+            z[k] = Some(v);
+        }
+        let mut next = Vec::new();
+        for &k in &front {
+            for m in neighbours(k) {
+                if z[m].is_none() && !queued[m] {
+                    queued[m] = true;
+                    next.push(m);
                 }
             }
         }
-        if !changed {
-            break;
-        }
+        front = next;
     }
     z
+}
+
+#[cfg(test)]
+mod fill_tests {
+    use super::*;
+
+    #[test]
+    fn fills_gaps_pass_by_pass_from_their_filled_neighbours() {
+        // 3 × 1: the middle gap takes the mean of both ends.
+        let z = fill(vec![Some(1.0), None, Some(3.0)], 3, 1);
+        assert_eq!(z, vec![Some(1.0), Some(2.0), Some(3.0)]);
+        // 3 × 3 with one corner: the second pass uses the first pass's samples.
+        let mut g = vec![None; 9];
+        g[0] = Some(4.0);
+        let z = fill(g, 3, 3);
+        assert!(z.iter().all(|v| *v == Some(4.0)));
+    }
+
+    #[test]
+    fn a_large_grid_loaded_only_along_a_line_fills_quickly() {
+        // 1,500 × 1,000 samples (45 × 30 km at 30 m) with heights only along one row.
+        let (nx, ny) = (1500, 1000);
+        let mut z = vec![None; nx * ny];
+        for i in 0..nx {
+            z[500 * nx + i] = Some(i as f64);
+        }
+        let t = std::time::Instant::now();
+        let z = fill(z, nx, ny);
+        assert!(z.iter().all(Option::is_some));
+        assert_eq!(z[nx + 7], Some(7.0));
+        assert!(t.elapsed().as_secs_f64() < 5.0, "took {:?}", t.elapsed());
+    }
 }

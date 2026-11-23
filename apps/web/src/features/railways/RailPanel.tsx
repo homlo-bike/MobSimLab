@@ -29,6 +29,7 @@ export type {
   RailPanelProps,
   RailTool,
 } from "./railPanelTypes";
+import { withUnit } from "../../i18n/units";
 
 /**
  * Purpose: the railway side panel, laid out like the railways tab of the mockup: mode and its
@@ -103,8 +104,8 @@ export function RailPanel(props: Props) {
       {/* The network's figures only while nothing is selected or being drawn. */}
       {!sel && !draft && (
         <div className="grid grid-cols-2 gap-2">
-          <Stat value={`${view.counts.route_km.toFixed(2)} km`} label={t("rail.stat.route")} />
-          <Stat value={`${view.counts.track_km.toFixed(2)} km`} label={t("rail.stat.track")} />
+          <Stat value={withUnit(view.counts.route_km.toFixed(2), "km")} label={t("rail.stat.route")} />
+          <Stat value={withUnit(view.counts.track_km.toFixed(2), "km")} label={t("rail.stat.track")} />
           <Stat value={String(doc.stations.length)} label={t("rail.stat.stations")} />
           <Stat value={String(doc.switches.length)} label={t("rail.stat.switches")} />
         </div>

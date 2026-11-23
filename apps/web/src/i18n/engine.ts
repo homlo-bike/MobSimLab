@@ -7,6 +7,7 @@
  */
 import { useCallback, useEffect, useState } from "react";
 import { activeLanguage, useI18n } from "./i18n";
+import { localizeUnits } from "./units";
 
 /** A message of an engine: a catalog key and the values to put into its text. */
 export interface EngineMsg {
@@ -38,16 +39,19 @@ export function loadEngineTexts(tag: string): Promise<void> {
   });
 }
 
-/** Purpose: a message in a catalog with its values filled in. Output: null when a key is not in the catalog. */
-export function fillEngineMsg(catalog: Record<string, string>, m: EngineMsg): string | null {
+/**
+ * Purpose: a message in a catalog with its values filled in; with a language, the units in its values
+ * (such as "240 s") use that language's symbols. Output: null when a key is not in the catalog.
+ */
+export function fillEngineMsg(catalog: Record<string, string>, m: EngineMsg, lang?: string): string | null {
   const text = catalog[m.key];
   if (text === undefined) return null;
   let missing = false;
   const out = text.replace(/\{([A-Za-z0-9_]+)\}/g, (whole, name: string) => {
     const v = m.args?.[name];
     if (v === undefined) return whole;
-    if (typeof v === "string") return v;
-    const part = fillEngineMsg(catalog, v);
+    if (typeof v === "string") return lang ? localizeUnits(lang, v) : v;
+    const part = fillEngineMsg(catalog, v, lang);
     if (part === null) missing = true;
     return part ?? "";
   });
@@ -58,7 +62,7 @@ export function fillEngineMsg(catalog: Record<string, string>, m: EngineMsg): st
 export function engineText(tag: string, finding: EngineText): string {
   const catalog = loaded[tag];
   if (!catalog || !finding.msg) return finding.text;
-  return fillEngineMsg(catalog, finding.msg) ?? finding.text;
+  return fillEngineMsg(catalog, finding.msg, tag) ?? finding.text;
 }
 
 /**

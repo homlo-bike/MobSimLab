@@ -50,6 +50,7 @@ fn shuttle(m: &Model) -> LineSpec {
             headway_s: 600.0,
         }],
         return_offset_s: None,
+        priority: 0,
     }
 }
 
@@ -125,6 +126,7 @@ fn journey_rides_the_train_then_changes_to_a_bus_at_the_same_name_stop() {
         stop_lon: p[0],
         parent_station: None,
         platform_code: None,
+        elevation_m: None,
     };
     let bus = Timetable {
         stops: vec![
@@ -179,6 +181,8 @@ fn journey_rides_the_train_then_changes_to_a_bus_at_the_same_name_stop() {
         to,
         time_s: 7 * 3600,
         mode: TimeMode::DepartAt,
+        from_elevation_m: None,
+        to_elevation_m: None,
     };
 
     let planner = Planner::new(&tt, Settings::default());

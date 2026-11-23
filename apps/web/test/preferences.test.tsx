@@ -272,3 +272,27 @@ describe("project preferences", () => {
     expect(CURRENCY_CODES).toContain("USD");
   });
 });
+
+describe("vehicle visuals", () => {
+  it("uses the defaults, the project's own values where valid, and stores only what differs", async () => {
+    const { DEFAULT_VEHICLE_VISUALS, vehicleVisualsFrom, withVehicleVisuals } =
+      await import("../src/workspace/preferences");
+    expect(vehicleVisualsFrom(null)).toEqual(DEFAULT_VEHICLE_VISUALS);
+    const own = vehicleVisualsFrom({
+      values: {},
+      visuals: { on_time_min: 2, late_min: 1, colors: { late: "#FF8800", parked: "grey" } },
+    });
+    expect(own.on_time_min).toBe(2);
+    expect(own.late_min).toBe(2);
+    expect(own.colors.late).toBe("#ff8800");
+    expect(own.colors.parked).toBe(DEFAULT_VEHICLE_VISUALS.colors.parked);
+
+    const doc = withVehicleVisuals({ values: { a: 1 } }, { on_time_min: 2, colors: { late: "#ff8800" } });
+    expect(doc).toEqual({ values: { a: 1 }, visuals: { on_time_min: 2, colors: { late: "#ff8800" } } });
+    expect(
+      withVehicleVisuals(doc, { on_time_min: null, colors: { late: DEFAULT_VEHICLE_VISUALS.colors.late } }),
+    ).toEqual({
+      values: { a: 1 },
+    });
+  });
+});

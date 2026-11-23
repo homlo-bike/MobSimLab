@@ -1,8 +1,9 @@
 /**
  * Schematic layout in the browser (ADR-0025 fallback, ADR-0041): stations start at their geographic place and
  * are moved until every edge runs at a multiple of 45° (octilinear), edges are not too short, and stations
- * keep apart. Stations the planner dragged stay where they put them. Positions are metres east and north of
- * the diagram's origin, so a dragged station keeps its place when lines are added.
+ * keep apart. Long runs without stops (an airport bus, a suburban branch) can be shortened, so they do not
+ * squeeze the centre into a corner. Stations the planner dragged stay where they put them. Positions are metres
+ * east and north of the diagram's origin, so a dragged station keeps its place when lines are added.
  */
 import type { LonLat } from "../street-lines/types";
 import type { SchematicNetwork } from "./lines";
@@ -51,6 +52,88 @@ export function octilinear(dx: number, dy: number): number {
   return Math.round(Math.atan2(dy, dx) / step) * step;
 }
 
+/** Longest section without stops offered for shortening, in typical sections (0: keep ground lengths). */
+export const LONG_RUN_CHOICES = [0, 2, 3, 5] as const;
+/** Default longest section: three typical sections. */
+export const DEFAULT_LONG_RUN = 3;
+
+/**
+ * Purpose: the stations on one side of a section: those reached from `from` without using the section `a`–`b`.
+ * Output: the set, or null when `from` also reaches the other end (the section is not a bridge).
+ */
+function sideOf(adj: readonly number[][], a: number, b: number, from: number): Set<number> | null {
+  const other = from === a ? b : a;
+  const seen = new Set<number>([from]);
+  const stack = [from];
+  while (stack.length) {
+    const i = stack.pop()!;
+    for (const j of adj[i]!) {
+      if ((i === a && j === b) || (i === b && j === a) || seen.has(j)) continue;
+      if (j === other) return null;
+      seen.add(j);
+      stack.push(j);
+    }
+  }
+  return seen;
+}
+
+/**
+ * Purpose: start places with long runs shortened (FR-SCH-01): every section longer than `maxLen` whose removal
+ * splits the network (an airport bus, the end of a branch) is shortened to `maxLen` by moving the whole part
+ * beyond it towards the rest, so that part keeps its own shape. The part moved is the one without stations the
+ * planner placed, else the smaller one, else the one farther from the middle. Sections in a loop are left to
+ * the layout's springs.
+ * Inputs: geographic places (metres), the sections, the longest allowed length (metres), which stations are
+ * placed by the planner. Output: new places; the input is not changed.
+ */
+export function shortenLongRuns(
+  geo: readonly Pt[],
+  edges: readonly [number, number][],
+  maxLen: number,
+  fixed: readonly boolean[],
+): Pt[] {
+  const pos: Pt[] = geo.map((p) => [p[0], p[1]]);
+  if (!(maxLen > 0) || !pos.length) return pos;
+  const adj: number[][] = pos.map(() => []);
+  for (const [a, b] of edges) {
+    adj[a]!.push(b);
+    adj[b]!.push(a);
+  }
+  const mid: Pt = [
+    pos.reduce((s, p) => s + p[0], 0) / pos.length,
+    pos.reduce((s, p) => s + p[1], 0) / pos.length,
+  ];
+  const len = ([a, b]: readonly [number, number]) =>
+    Math.hypot(pos[b]![0] - pos[a]![0], pos[b]![1] - pos[a]![1]);
+  // Longest first, so a chain of long runs is shortened from its far end inwards consistently.
+  const order = edges.filter((e) => len(e) > maxLen).sort((x, y) => len(y) - len(x));
+  for (const e of order) {
+    const [a, b] = e;
+    const l = len(e);
+    if (l <= maxLen) continue;
+    const sideA = sideOf(adj, a, b, a);
+    if (!sideA) continue;
+    const sideB = sideOf(adj, a, b, b)!;
+    const pinned = (s: Set<number>) => [...s].some((i) => fixed[i]);
+    const far = (s: Set<number>) =>
+      [...s].reduce((m, i) => Math.max(m, Math.hypot(pos[i]![0] - mid[0], pos[i]![1] - mid[1])), 0);
+    let moveB: boolean;
+    if (pinned(sideA) !== pinned(sideB)) moveB = pinned(sideA);
+    else if (pinned(sideA)) continue;
+    else if (sideA.size !== sideB.size) moveB = sideB.size < sideA.size;
+    else moveB = far(sideB) >= far(sideA);
+    // Move the chosen part along the section towards the other end by the extra length.
+    const k = (l - maxLen) / l;
+    const dx = (pos[b]![0] - pos[a]![0]) * k;
+    const dy = (pos[b]![1] - pos[a]![1]) * k;
+    for (const i of moveB ? sideB : sideA) {
+      pos[i]![0] += moveB ? -dx : dx;
+      pos[i]![1] += moveB ? -dy : dy;
+    }
+  }
+  return pos;
+}
+
 export interface LayoutResult {
   /** Diagram position of every station, metres from the origin. */
   pos: Pt[];
@@ -60,8 +143,9 @@ export interface LayoutResult {
 
 /**
  * Purpose: lay out a network octilinearly.
- * Inputs: the network, the diagram origin, the planner's pinned positions by station key, and whether to
- * straighten edges to 45° steps (off: geographic positions, only spread apart).
+ * Inputs: the network, the diagram origin, the planner's pinned positions by station key, whether to
+ * straighten edges to 45° steps (off: geographic positions, only spread apart), and the longest section
+ * without stops in typical sections (0 keeps ground lengths; see `shortenLongRuns`).
  * Output: a position per station and the diagram unit. No side effects; deterministic.
  */
 export function layout(
@@ -69,18 +153,22 @@ export function layout(
   origin: LonLat,
   pins: Readonly<Record<string, Pt>> = {},
   straighten = true,
+  longRun = 0,
 ): LayoutResult {
-  const geo = net.stations.map((s) => project(origin, s.lonlat));
-  const pos: Pt[] = net.stations.map((s, i) => {
-    const p = pins[s.key];
-    return p ? [p[0], p[1]] : [geo[i]![0], geo[i]![1]];
-  });
+  const ground = net.stations.map((s) => project(origin, s.lonlat));
   const fixed = net.stations.map((s) => s.key in pins);
   const edges = edgesOf(net);
   const unit = Math.max(
     50,
-    median(edges.map(([a, b]) => Math.hypot(geo[b]![0] - geo[a]![0], geo[b]![1] - geo[a]![1]))),
+    median(edges.map(([a, b]) => Math.hypot(ground[b]![0] - ground[a]![0], ground[b]![1] - ground[a]![1]))),
   );
+  const maxEdge = longRun > 0 ? unit * longRun : Infinity;
+  // The places the layout starts from and is weakly pulled back to: the ground, with long runs shortened.
+  const geo = longRun > 0 ? shortenLongRuns(ground, edges, maxEdge, fixed) : ground;
+  const pos: Pt[] = net.stations.map((s, i) => {
+    const p = pins[s.key];
+    return p ? [p[0], p[1]] : [geo[i]![0], geo[i]![1]];
+  });
   const minEdge = unit * 0.7;
   const minGap = unit * 0.55;
   const n = pos.length;
@@ -97,7 +185,7 @@ export function layout(
       const dy = pb[1] - pa[1];
       const len = Math.hypot(dx, dy) || 1e-6;
       const ang = straighten ? octilinear(dx, dy) : Math.atan2(dy, dx);
-      const want = Math.max(len, minEdge);
+      const want = Math.min(Math.max(len, minEdge), Math.max(maxEdge, minEdge));
       const tx = Math.cos(ang) * want;
       const ty = Math.sin(ang) * want;
       const ex = (tx - dx) / 2;

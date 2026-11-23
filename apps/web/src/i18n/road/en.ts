@@ -10,6 +10,10 @@ export const roadEn = {
   "road.nothing": "No street line can run yet. Draw one in Create → Street line, with at least two stops.",
   "road.lines": "Street lines: {n}",
   "road.depots": "Depots: {n}",
+  "road.pick": "Lines to run",
+  "road.pickAll": "All",
+  "road.pickNone": "None",
+  "road.pickSome": "Tick at least one street line to run.",
   "road.skipped.notRouted": "{name} is left out: it is not routed yet.",
   "road.skipped.noService": "{name} is left out: it has no departures in this period.",
   "road.noDepot": "{name} has no laid-out depot: its vehicles start and end on the street.",
@@ -71,6 +75,26 @@ export const roadEn = {
   "prefs.roadTitle": "Road simulation",
   "prefs.roadIntro": "Background car traffic in road simulation runs (Simulator → Road simulation).",
   "prefs.offPeakTraffic": "Traffic outside the morning and evening peaks, as a share of each street's peak",
+  "prefs.groupVisuals": "Visuals",
+  "visuals.vehiclesTitle": "Vehicles in the simulation",
+  "visuals.vehiclesIntro":
+    "How vehicles are coloured in the road simulation's replay (Simulator → Road simulation). A vehicle is in service from its first stop until it leaves its last one; running early counts as on time.",
+  "visuals.onTimeUpTo": "On time up to (minutes late)",
+  "visuals.lateUpTo": "Late up to (minutes late); later is very late",
+  "visuals.noLate": "Late up to is not more than on time up to, so no vehicle shows as late.",
+  "visuals.colors": "Colours",
+  "visuals.onTime": "In service, on time",
+  "visuals.late": "In service, late",
+  "visuals.veryLate": "In service, very late",
+  "visuals.outOfService": "Out of service, on the street",
+  "visuals.parked": "Parked in the depot",
+  "visuals.defaultMin": "Default: {value} min",
+  "visuals.reset": "Use the default",
+  "visuals.legend.onTime": "On time (up to {min} min late)",
+  "visuals.legend.late": "Late ({from}–{to} min)",
+  "visuals.legend.veryLate": "Very late (over {min} min)",
+  "road.replay.noService":
+    "This run was saved before service times were recorded, so its vehicles keep their line's colour. Run it again to see them by punctuality.",
 };
 
 /** A language's road simulation messages: every key of the English ones. */

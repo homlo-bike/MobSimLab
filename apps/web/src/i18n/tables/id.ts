@@ -447,4 +447,10 @@ export const tablesId = {
   "tt.tbl.to": "Ke",
   "tt.tbl.arrives": "Tiba",
   "cost.outsideRange": "Di luar rentang pustaka ({low}–{high}): periksa nilai dan satuannya.",
+  "tbl.unrouted.title": "Beberapa rute jalur jalan belum lengkap",
+  "tbl.unrouted.intro":
+    "Sebagian rute jalur-jalur ini tidak ditemukan saat disimpan, sehingga tabel, biaya, dan penilaian menghitungnya 0 km. Buka setiap jalur di tab Buat: jalannya dimuat dan rute yang dilengkapi disimpan. Ruas yang tetap merah perlu satu titik dipindahkan ke jalan yang boleh dilalui kendaraan.",
+  "tbl.unrouted.legs": "Ruas tidak ditemukan",
+  "tbl.unrouted.runs": "Perjalanan depo tidak ditemukan",
+  "tbl.unrouted.leftOut": "Terlewat, setidaknya",
 } satisfies TablesMessages;

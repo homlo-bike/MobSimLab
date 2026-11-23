@@ -443,4 +443,53 @@ describe("JourneyPlanner panel", () => {
     fireEvent.click(toggle);
     expect(screen.getByText(/No timetable yet/)).toBeTruthy();
   });
+
+  it("gives the planner the ground heights of the stops and of A and B, so walks are timed on the slope", async () => {
+    const { loader, calls, plan } = fakeLoader();
+    const map = fakeMap();
+    // Heights rise 1 m every 10 m eastwards from 700 m.
+    const fetchHeights = vi.fn(async (pts: [number, number][]) =>
+      pts.map(([lon]) => 700 + (lon - 10) * 7000),
+    );
+    render(
+      <JourneyPlanner
+        map={map.map}
+        loadPlanner={loader}
+        railLines={exampleCity([10, 50])}
+        fetchHeights={fetchHeights}
+      />,
+    );
+    await waitFor(() =>
+      expect(calls.at(-1)!.timetable.stops.every((s) => s.elevation_m !== undefined)).toBe(true),
+    );
+    fireEvent.click(screen.getByRole("button", { name: /^A: / }));
+    act(() => map.click(offset([10, 50], -2600, -300)));
+    act(() => map.click(offset([10, 50], 300, 1650)));
+    await waitFor(() =>
+      expect(plan).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          from_elevation_m: expect.any(Number),
+          to_elevation_m: expect.any(Number),
+        }),
+      ),
+    );
+    expect(screen.getByText(/Walks are timed on the slope between their two ends/)).toBeTruthy();
+  });
+
+  it("times walks as flat and says so when the terrain heights do not load", async () => {
+    const { loader, calls } = fakeLoader();
+    const fetchHeights = vi.fn(async () => {
+      throw new Error("offline");
+    });
+    render(
+      <JourneyPlanner
+        map={null}
+        loadPlanner={loader}
+        railLines={exampleCity([10, 50])}
+        fetchHeights={fetchHeights}
+      />,
+    );
+    await waitFor(() => expect(screen.getByText(/Terrain heights did not load/)).toBeTruthy());
+    expect(calls.at(-1)!.timetable.stops.some((s) => s.elevation_m !== undefined)).toBe(false);
+  });
 });

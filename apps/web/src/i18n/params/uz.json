@@ -173,6 +173,7 @@
     "demand.calibration.geh_hours": "Kalibrlash: GEH statistikasi uchun ish kuni hisobi boʻlinadigan soatlar",
     "demand.walk_speed_kmh": "Bekatlar orasidagi piyoda bogʻlanishlar uchun yurish tezligi",
     "journey.walk_detour_factor": "Toʻgʻri chiziq masofasiga nisbatan piyoda masofa (yoʻnalish rejalashtiruvchi, foyda baholash)",
+    "journey.walk_slope_k": "Qiyalikda yurish: Tobler piyoda yurish funksiyasining qiyalik hadi (sayohat rejalashtiruvchi; 0 = piyoda yurish tekislikdagidek)",
     "journey.min_change_s": "Yoʻnalish rejalashtiruvchi: bir bekatda oʻtirib oʻtishning eng qisqa vaqti",
     "journey.level_change_s": "Yoʻnalish rejalashtiruvchi: stansiyada platforma almashtirish uchun qoʻshimcha vaqt (zinalar, lift)",
     "journey.same_name_station_m": "Shu toʻgʻri chiziq masofasidagi bir xil nomli stansiyalar bitta stansiya",

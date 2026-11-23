@@ -24,6 +24,7 @@ import { usePublishChecks } from "../../shell/checks";
 import { lineChecks, lineStats, nearestTerminal, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, VehicleProfile } from "./types";
 import type { FitProblem } from "../depots/model";
+import { withUnit } from "../../i18n/units";
 
 const KINDS: { id: PointKind; label: MessageKey; title: MessageKey }[] = [
   { id: "via", label: "street.kind.via", title: "street.kind.viaTitle" },
@@ -88,9 +89,9 @@ const sevLabel = (t: Translate, s: Severity) => t(s === "warn" ? "severity.warni
 
 /** Purpose: seconds with one decimal under a minute, else whole minutes and seconds. */
 function seconds(s: number): string {
-  if (s < 60) return `${s.toFixed(1)} s`;
+  if (s < 60) return withUnit(s.toFixed(1), "s");
   const m = Math.floor(s / 60);
-  return `${m} min ${Math.round(s - m * 60)} s`;
+  return `${withUnit(m, "min")} ${withUnit(Math.round(s - m * 60), "s")}`;
 }
 
 /** Purpose: clock time of seconds after midnight, "08:00". */
@@ -387,7 +388,7 @@ export function LinePanel(props: Props) {
           <Stat value={formatLength(st.lengthM)} label={t("street.stat.length")} />
           <Stat value={String(st.stops)} label={t("street.stat.stops", { end: st.endStops })} />
           <Stat
-            value={`${Math.round(st.cycleMin)} min`}
+            value={withUnit(Math.round(st.cycleMin), "min")}
             label={t("street.stat.cycle", {
               run: Math.round(st.runMin),
               crossings:

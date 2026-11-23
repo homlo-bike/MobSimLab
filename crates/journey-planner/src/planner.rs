@@ -4,7 +4,8 @@
 //! Round k finds the earliest arrival at every stop with at most k vehicles. Trips with the same stop
 //! sequence form a route; a route whose trips overtake each other is split so that every route is FIFO and
 //! the earliest catchable trip can be found by binary search. Walking from the origin, between stops and to
-//! the destination uses straight-line distance times a detour factor until the walking graph exists.
+//! the destination uses straight-line distance times a detour factor until the walking graph exists, timed
+//! on the slope between the two ends when their ground heights are known (Tobler's hiking function).
 //! Arrive-by queries search for the latest departure whose earliest arrival is not after the asked time:
 //! the earliest arrival never decreases with a later departure, so a binary search is exact.
 
@@ -36,6 +37,12 @@ pub struct Query {
     pub to: [f64; 2],
     pub time_s: u32,
     pub mode: TimeMode,
+    /// Ground height of A in metres; walks from A are timed on their slope when it and the stop's are known.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from_elevation_m: Option<f64>,
+    /// Ground height of B in metres.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub to_elevation_m: Option<f64>,
 }
 
 /// The same question asked every `step_s` from `start_s` to `end_s` (inclusive).
@@ -47,6 +54,10 @@ pub struct ProfileQuery {
     pub start_s: u32,
     pub end_s: u32,
     pub step_s: u32,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub from_elevation_m: Option<f64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub to_elevation_m: Option<f64>,
 }
 
 /// The answer to one question: the fastest journey first, then journeys with fewer changes that take longer.
@@ -95,6 +106,8 @@ struct StopData {
     place: Place,
     x: f64,
     y: f64,
+    /// Ground height in metres, when the timetable gives it.
+    z: Option<f64>,
     change_s: u32,
     change_guaranteed: bool,
 }
@@ -140,6 +153,27 @@ enum FLabel {
     None,
     Access { dur: u32, straight_m: f64 },
     Walk { from: usize, foot: usize },
+}
+
+/// The climb from height `a` to height `b`, when both are known.
+fn rise(a: Option<f64>, b: Option<f64>) -> Option<f64> {
+    Some(b? - a?)
+}
+
+/// A or B of a question: `[lon, lat]` and the ground height when known.
+#[derive(Debug, Clone, Copy)]
+struct Point {
+    lonlat: [f64; 2],
+    z: Option<f64>,
+}
+
+impl Point {
+    fn new(lonlat: [f64; 2], z: Option<f64>) -> Self {
+        Point {
+            lonlat,
+            z: z.filter(|z| z.is_finite()),
+        }
+    }
 }
 
 /// A timetable compiled for routing.
@@ -358,6 +392,7 @@ impl Planner {
                 },
                 x: s.stop_lon * k_lon,
                 y: s.stop_lat * k_lat,
+                z: s.elevation_m.filter(|z| z.is_finite()),
                 change_s: settings.min_change_s,
                 change_guaranteed: false,
             });
@@ -517,7 +552,7 @@ impl Planner {
         let estimate = |a: usize, b: usize, stops: &Vec<StopData>| {
             let d = ((stops[a].x - stops[b].x).powi(2) + (stops[a].y - stops[b].y).powi(2)).sqrt();
             let same_station = root[a] == root[b];
-            let dur = settings.walk_s(d)
+            let dur = settings.walk_s_rise(d, rise(stops[a].z, stops[b].z))
                 + if same_station {
                     settings.level_change_s
                 } else {
@@ -639,13 +674,17 @@ impl Planner {
     /// Purpose: answer one question.
     /// Output: journeys (fastest first); empty when B cannot be reached.
     pub fn plan(&self, q: &Query) -> Plan {
+        let (from, to) = (
+            Point::new(q.from, q.from_elevation_m),
+            Point::new(q.to, q.to_elevation_m),
+        );
         let journeys = match q.mode {
             TimeMode::DepartAt => {
-                let mut js = self.depart_at(q.from, q.to, q.time_s);
+                let mut js = self.depart_at_points(from, to, q.time_s);
                 js.reverse();
                 js
             }
-            TimeMode::ArriveBy => self.arrive_by(q.from, q.to, q.time_s),
+            TimeMode::ArriveBy => self.arrive_by(from, to, q.time_s),
         };
         if !journeys.is_empty() {
             return Plan {
@@ -657,7 +696,7 @@ impl Planner {
         // Nothing by transit: walking all the way is still an answer.
         let (oxy, dxy) = (self.xy(q.from), self.xy(q.to));
         let direct_m = self.dist(oxy, dxy);
-        let dur = self.settings.walk_s(direct_m);
+        let dur = self.settings.walk_s_rise(direct_m, rise(from.z, to.z));
         let depart = match q.mode {
             TimeMode::DepartAt => q.time_s,
             TimeMode::ArriveBy => q.time_s.saturating_sub(dur),
@@ -700,6 +739,8 @@ impl Planner {
                 to: q.to,
                 time_s: t,
                 mode: q.mode,
+                from_elevation_m: q.from_elevation_m,
+                to_elevation_m: q.to_elevation_m,
             };
             out.push(ProfilePoint {
                 time_s: t,
@@ -719,8 +760,12 @@ impl Planner {
     }
 
     /// Purpose: latest departure that still arrives by `target`, then the journeys from it.
-    fn arrive_by(&self, from: [f64; 2], to: [f64; 2], target: u32) -> Vec<Journey> {
-        let arrival = |t: u32| self.depart_at(from, to, t).last().map(|j| j.arrive_s);
+    fn arrive_by(&self, from: Point, to: Point, target: u32) -> Vec<Journey> {
+        let arrival = |t: u32| {
+            self.depart_at_points(from, to, t)
+                .last()
+                .map(|j| j.arrive_s)
+        };
         let mut lo = target.saturating_sub(self.settings.arrive_by_window_s);
         if !arrival(lo).is_some_and(|a| a <= target) {
             return Vec::new();
@@ -736,7 +781,7 @@ impl Planner {
             }
         }
         let mut js: Vec<Journey> = self
-            .depart_at(from, to, lo)
+            .depart_at_points(from, to, lo)
             .into_iter()
             .filter(|j| j.arrive_s <= target)
             .map(|mut j| {
@@ -752,7 +797,13 @@ impl Planner {
 
     /// Purpose: RAPTOR from `from` leaving at `t0`.
     /// Output: Pareto-optimal journeys by number of vehicles, fewest vehicles first (each strictly faster).
+    /// Heights are unknown, so every walk is timed as flat; see [`Planner::plan`] for walks on slopes.
     pub fn depart_at(&self, from: [f64; 2], to: [f64; 2], t0: u32) -> Vec<Journey> {
+        self.depart_at_points(Point::new(from, None), Point::new(to, None), t0)
+    }
+
+    fn depart_at_points(&self, a: Point, b: Point, t0: u32) -> Vec<Journey> {
+        let (from, to) = (a.lonlat, b.lonlat);
         let n = self.stops.len();
         let (oxy, dxy) = (self.xy(from), self.xy(to));
         let origin = Place {
@@ -773,7 +824,7 @@ impl Planner {
         let direct_m = self.dist(oxy, dxy);
         let mut best_dest = INF;
         if direct_m <= self.settings.max_walk_only_m {
-            let dur = self.settings.walk_s(direct_m);
+            let dur = self.settings.walk_s_rise(direct_m, rise(a.z, b.z));
             best_dest = t0 + dur;
             result.push(Journey::from_legs(
                 t0,
@@ -796,7 +847,8 @@ impl Planner {
             .iter()
             .map(|s| {
                 let d = self.dist((s.x, s.y), dxy);
-                (d <= self.settings.max_access_m).then(|| (self.settings.walk_s(d), d))
+                (d <= self.settings.max_access_m)
+                    .then(|| (self.settings.walk_s_rise(d, rise(s.z, b.z)), d))
             })
             .collect();
         let k_max = self.settings.max_rides.max(1);
@@ -810,7 +862,7 @@ impl Planner {
         for (i, s) in self.stops.iter().enumerate() {
             let d = self.dist((s.x, s.y), oxy);
             if d <= self.settings.max_access_m {
-                let dur = self.settings.walk_s(d);
+                let dur = self.settings.walk_s_rise(d, rise(a.z, s.z));
                 tau_f[0][i] = t0 + dur;
                 best_f[i] = t0 + dur;
                 lab_f[0][i] = FLabel::Access { dur, straight_m: d };

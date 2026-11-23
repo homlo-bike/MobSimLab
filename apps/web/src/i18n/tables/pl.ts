@@ -453,4 +453,10 @@ export const tablesPl = {
   "tt.tbl.to": "Dokąd",
   "tt.tbl.arrives": "Przyjazd",
   "cost.outsideRange": "Poza zakresem biblioteki ({low}–{high}): sprawdź wartość i jej jednostkę.",
+  "tbl.unrouted.title": "Niektóre trasy linii ulicznych są niekompletne",
+  "tbl.unrouted.intro":
+    "Części tras tych linii nie znaleziono przy zapisie, więc tabele, koszty i ocena liczą je jako 0 km. Otwórz każdą linię w karcie Tworzenie: wczytają się jej ulice, a uzupełniona trasa zostanie zapisana. Odcinek, który pozostaje czerwony, wymaga przesunięcia punktu na drogę, po której pojazd może jechać.",
+  "tbl.unrouted.legs": "Nieznalezione odcinki",
+  "tbl.unrouted.runs": "Nieznalezione zjazdy do zajezdni",
+  "tbl.unrouted.leftOut": "Pominięto, co najmniej",
 } satisfies TablesMessages;
