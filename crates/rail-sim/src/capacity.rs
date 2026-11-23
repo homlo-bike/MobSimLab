@@ -143,6 +143,7 @@ impl Signalling {
         set(&mut b.sight_reaction_s, self.sight_reaction_s);
         set(&mut b.release_s, self.release_s);
         set(&mut b.sighting_m, self.sighting_m);
+        set(&mut b.follow_margin_m, self.moving_block_margin_m);
         set(&mut pp.terminal_separation_s, self.terminal_separation_s);
         pp
     }
@@ -509,7 +510,7 @@ fn run_kernel(
                     t = format!("{t:.0}")
                 ))
             }
-            NetEvent::Deadlock { .. } => {}
+            NetEvent::Deadlock { .. } | NetEvent::Swapped { .. } => {}
         }
     }
     // Per trip: the latest arrival delay at its destination.

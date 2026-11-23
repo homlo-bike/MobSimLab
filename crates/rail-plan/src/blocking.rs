@@ -17,10 +17,18 @@
 //! platform with the starter just beyond its end), needs the route at its
 //! departure time. Overlap sections are
 //! blocked until the head passes (or, after a stop, leaves) the exit signal.
+//!
+//! Trams drive on sight (`line_of_sight`): between the stops nothing but the
+//! driver's view keeps a tram behind the one ahead. A tram that follows another
+//! in the same direction needs each short section of that track
+//! ([`rail_model::SIGHT_SECTION_M`]) only from the moment it comes within its
+//! braking distance plus a margin of it ([`Blocking::follow`]), as the
+//! simulator lets it follow. A tram coming the other way needs the whole route
+//! from its setting, as on signalled track.
 
 use engine_msg::{msg, Msg};
 use rail_dynamics::{run, RunOptions, Segment, SpeedProfile, Stop, TrainParams};
-use rail_model::{Model, RouteId, Step, TdsId};
+use rail_model::{Dir, Model, RouteId, Step, TdsId};
 use serde::Serialize;
 
 /// Timing parameters of the signalling (new assumption-library keys
@@ -36,18 +44,23 @@ pub struct BlockingParams {
     pub release_s: f64,
     /// Sighting distance added to the braking distance for the approach, m.
     pub sighting_m: f64,
+    /// Margin a tram following another on sight keeps behind it, added to its braking distance, m
+    /// (`signalling.moving_block_margin_m`, as the simulator's train protection keeps it).
+    pub follow_margin_m: f64,
 }
 
 impl Default for BlockingParams {
     /// Purpose: planning defaults for an electronic interlocking with lineside
     /// signals: 3 s setting (plus switch throw time), 12 s sight and reaction,
-    /// 3 s release, 150 m sighting. Documented in the assumption library.
+    /// 3 s release, 150 m sighting, 50 m behind a tram ahead on sight. Documented in the
+    /// assumption library.
     fn default() -> Self {
         Self {
             route_setting_s: 3.0,
             sight_reaction_s: 12.0,
             release_s: 3.0,
             sighting_m: 150.0,
+            follow_margin_m: 50.0,
         }
     }
 }
@@ -98,6 +111,20 @@ pub struct Blocking {
     pub end_s: f64,
     /// Whether the section is part of the route's overlap.
     pub overlap: bool,
+    /// On a section driven on sight: the direction the train runs through it and the start of
+    /// blocking towards a train running the same way (from when it comes within its braking
+    /// distance plus the margin of the section), s; None elsewhere. See the module notes.
+    pub follow: Option<(Dir, f64)>,
+}
+
+/// Purpose: when two blockings of one section start towards each other: the start for trains
+/// following each other on sight when both run the same way through it, else their own starts.
+/// Inputs: each blocking's start and [`Blocking::follow`]. Output: (first start, second start).
+pub fn starts_between(a: (f64, Option<(Dir, f64)>), b: (f64, Option<(Dir, f64)>)) -> (f64, f64) {
+    match (a.1, b.1) {
+        (Some((da, fa)), Some((db, fb))) if da == db => (fa, fb),
+        _ => (a.0, b.0),
+    }
 }
 
 /// The computed timing of one train run.
@@ -331,17 +358,44 @@ pub fn timing_with_profile(
         };
         let start = t_approach - p.sight_reaction_s - setting;
         // Sections: release when the tail clears the end of each section's part of the route.
+        // (section, where the route enters it, where it leaves it, direction it runs it in)
         let mut pos = entry_pos;
-        let mut last_end: Vec<(TdsId, f64)> = Vec::new();
+        let mut spans: Vec<(TdsId, f64, f64, Dir)> = Vec::new();
         for st in &r.steps {
+            let from = pos;
             pos += model.pieces[st.piece as usize].length_m();
             let t = model.pieces[st.piece as usize].tds;
-            match last_end.iter_mut().find(|(x, _)| *x == t) {
-                Some(e) => e.1 = pos,
-                None => last_end.push((t, pos)),
+            match spans.iter_mut().find(|x| x.0 == t) {
+                Some(e) => e.2 = pos,
+                None => spans.push((t, from, pos, st.dir)),
             }
         }
-        for (t, end_pos) in last_end {
+        for (t, from_pos, end_pos, dir) in spans {
+            // A train that ends its run here turns back or stands: no train follows it in, and it
+            // follows none (it would meet the one ahead coming back).
+            let stands = tr.stop_at_end && end_pos + tr.train.length_m > path_len + 1e-6;
+            let follow = (model.tds[t as usize].on_sight && !stands).then(|| {
+                // Following on sight: the section is needed once the train comes within its braking
+                // distance plus the margin of it, or leaves a stop that close.
+                let need = if from_pos <= tr.start_m + 1e-6 {
+                    tr.depart_s
+                } else {
+                    let v = profile.speed_at(from_pos - tr.start_m);
+                    let ap = from_pos - tr.train.braking_distance(v) - p.follow_margin_m;
+                    let stop_before = tr
+                        .stops
+                        .iter()
+                        .filter(|s| s.position_m >= ap - 1e-6 && s.position_m <= from_pos + 1e-6)
+                        .map(|s| s.position_m)
+                        .fold(None, |a: Option<f64>, x| Some(a.map_or(x, |a| a.max(x))));
+                    match stop_before {
+                        Some(sp) => leaving(sp),
+                        None if ap <= tr.start_m + 1e-6 => tr.depart_s,
+                        None => at(ap),
+                    }
+                };
+                (dir, need - p.sight_reaction_s)
+            });
             blocking.push(Blocking {
                 train: index,
                 route: rid,
@@ -349,6 +403,7 @@ pub fn timing_with_profile(
                 start_s: start,
                 end_s: tail_clear(end_pos) + p.release_s,
                 overlap: false,
+                follow,
             });
         }
         let overlap_end = if exit_pos >= path_len - 1e-6 {
@@ -368,6 +423,7 @@ pub fn timing_with_profile(
                 start_s: start,
                 end_s: overlap_end,
                 overlap: true,
+                follow: None,
             });
         }
         entry_pos = exit_pos;

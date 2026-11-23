@@ -23,7 +23,7 @@ pub mod topology;
 pub use model::{
     normalise_name, GroupId, LevelCrossing, Model, Neighbour, Piece, PieceId, Platform, PlatformId,
     ProfileSegment, Route, RouteExit, RouteId, Signal, SignalAt, SignalId, Station, StationGroup,
-    StationId, Step, Successor, Switch, SwitchId, Tds, TdsId,
+    StationId, Step, Successor, Switch, SwitchId, Tds, TdsId, SIGHT_SECTION_M,
 };
 pub use spec::{
     DetectionSpec, Dir, Directions, End, InfraSpec, LevelCrossingSpec, NodeSpec, PlatformSpec,
