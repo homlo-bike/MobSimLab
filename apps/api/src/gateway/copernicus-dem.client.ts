@@ -41,6 +41,14 @@ export interface CopernicusOptions {
   tileCacheSize: number;
   fetchImpl: typeof fetch;
   sleep: (ms: number) => Promise<void>;
+  /**
+   * Byte ranges already read, held once for the instance (geodata/shared-data.ts): a range in the store is not
+   * read from the bucket again, by any project. `null` there marks a cell file that does not exist.
+   */
+  store?: {
+    get(key: string): Promise<Uint8Array | null | undefined>;
+    put(key: string, body: Uint8Array | null): Promise<void>;
+  };
 }
 
 /** Error with an HTTP status the API can pass on (502 upstream failure, 504 timeout). */
@@ -388,8 +396,23 @@ export class CopernicusDemClient {
     return p;
   }
 
-  /** Purpose: GET bytes [from, from + len) of a cell's file; null when the cell does not exist. */
+  /**
+   * Purpose: bytes [from, from + len) of a cell's file, from the store when it holds them, else from the bucket
+   * (then kept in the store); null when the cell does not exist.
+   */
   private async range(name: string, from: number, len: number): Promise<Uint8Array | null> {
+    const store = this.o.store;
+    if (!store) return this.fetchRange(name, from, len);
+    const key = `${name}/${from}/${len}`;
+    const held = await store.get(key);
+    if (held !== undefined) return held;
+    const body = await this.fetchRange(name, from, len);
+    await store.put(key, body);
+    return body;
+  }
+
+  /** Purpose: GET bytes [from, from + len) of a cell's file; null when the cell does not exist. */
+  private async fetchRange(name: string, from: number, len: number): Promise<Uint8Array | null> {
     const url = `${this.o.endpoint}/${name}/${name}.tif`;
     let lastError = new DemError("DEM request failed", 502);
     for (const backoff of [0, ...this.o.backoffMs]) {
