@@ -113,6 +113,7 @@ def _day_summary(run: dict[str, Any]) -> dict[str, Any]:
                 "disturbed_punctuality": p.get("disturbed_punctuality"),
                 "consumption": p.get("consumption"),
                 "unplaced": p.get("unplaced"),
+                "trips": p.get("trips"),
             }
         )
     return {

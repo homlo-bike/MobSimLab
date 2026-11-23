@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import type { CalendarRunDetail, CalendarRunsApi } from "../src/features/calendar-run/api";
+import type { CalendarRunDetail, CalendarRunsApi, RailDay } from "../src/features/calendar-run/api";
 import { CalendarRun } from "../src/features/calendar-run/CalendarRun";
 import {
   buildPlan,
@@ -146,7 +146,7 @@ describe("calendar run model", () => {
 describe("calendar run panel", () => {
   afterEach(cleanup);
 
-  function fakeApi() {
+  function fakeApi(rail?: RailDay) {
     const runs: CalendarRunDetail[] = [];
     const api: CalendarRunsApi = {
       list: vi.fn(async () => runs),
@@ -170,7 +170,7 @@ describe("calendar run panel", () => {
             mode: plan.mode,
             notes: [],
             run: { verdict: null },
-            day_types: { weekday: { ...plan.day_types.weekday, days: 517 } },
+            day_types: { weekday: { ...plan.day_types.weekday, days: 517, ...(rail && { rail }) } },
             periods: plan.periods.map((p) => ({
               label: p.label,
               counts: { weekday: p.counts.weekday ?? 0, saturday: 0, sunday: 0, holiday: 0 },
@@ -224,6 +224,42 @@ describe("calendar run panel", () => {
     // Two years of 730 MWh, and 730 days in all; the total row adds up the energy.
     expect(screen.getAllByText("730")).toHaveLength(3);
     expect(screen.getByText("1,460")).toBeTruthy();
+  });
+
+  it("gives the on-time share of the trips that ran, and how many of the planned trips ran", async () => {
+    const line = (id: string, over: Partial<RailDay["lines"][number]>) => ({
+      line: id,
+      name: id,
+      verdict: "not_enough_capacity",
+      punctuality: 1,
+      disturbed_punctuality: 1,
+      ...over,
+    });
+    const api = fakeApi({
+      verdict: "not_enough_capacity",
+      trips: 7,
+      vehicles: 40,
+      peak_out: 38,
+      lines: [
+        line("T2", { disturbed_punctuality: 0.9, unplaced: 33, trips: 7 }),
+        // A line that ran no trip has no on-time share to count.
+        line("T1", { disturbed_punctuality: 0, unplaced: 40, trips: 0 }),
+      ],
+    });
+    render(
+      <CalendarRun
+        api={api}
+        canRun
+        railway={null}
+        preferences={withSimulationYears(null, { first: 2027, last: 2028 })}
+        tables={{ estimate: ESTIMATE, riders: null, energy: ENERGY }}
+        currency="EUR"
+        today={new Date("2027-03-01T12:00:00Z")}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Run on the server and save" }));
+    expect(await screen.findByText("7 of 80 trips ran (9 %)")).toBeTruthy();
+    expect(screen.getByText("90 %")).toBeTruthy();
   });
 
   it("runs one date as its day type", async () => {

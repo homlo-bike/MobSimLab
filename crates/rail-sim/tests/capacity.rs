@@ -20,6 +20,9 @@ fn the_morning_peak_of_m1_runs_but_is_near_the_limit() {
     let pt = &run.lines[0].planned;
     assert_eq!(pt.headway_s, 300.0);
     assert_eq!(pt.unplaced, 0);
+    // Each way: every 5 minutes from 06:30 to 09:00 (the period and its warm-up), then every
+    // 10 minutes in the half-hour after it.
+    assert_eq!(pt.trips, 2 * (30 + 3));
     assert!(pt.problems.is_empty(), "{:?}", pt.problems);
     assert!(pt.punctuality > 0.99);
     assert!(pt.stable, "residual {} s", pt.residual_delay_s);
@@ -60,6 +63,14 @@ fn the_sweep_finds_the_practical_maximum() {
     let three = sweep_point(&m, &lines, &p, 0, 180.0).unwrap();
     assert_eq!(three.verdict, Verdict::NotEnoughCapacity);
     assert!(three.unplaced > 0);
+    // The trips that ran and the ones left out are both counted, so the on-time share can be
+    // read against the trips that ran.
+    assert!(
+        three.trips > four.trips / 2,
+        "{} ran, {} left out",
+        three.trips,
+        three.unplaced
+    );
     let points = [&run.lines[0].planned, &four, &three];
     assert_eq!(practical_maximum(&points), Some(15.0));
 }

@@ -101,6 +101,7 @@ export const calendarUz = {
   "calrun.days": "Kunlar",
   "calrun.trains": "Poyezdlar",
   "calrun.punctuality": "O‘z vaqtida",
+  "calrun.ranOf": "{planned} ta qatnovdan {ran} tasi bajarildi ({share})",
   "calrun.perYear": "Har bir yil",
   "calrun.perDate": "Har bir sana",
   "calrun.method":

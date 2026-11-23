@@ -1357,6 +1357,8 @@ export const editorsIg = {
   "capacity.dieOut": "Na-akwụsị",
   "capacity.pileUp": "Na-agbakọ",
   "capacity.delaysHint": "{passed} na-aga n’ihu kwa njem, {left} fọdụrụ na njedebe",
+  "capacity.ranOf": "Njem ndị gara: {ran} n’ime {planned} a haziri ({share}), a hapụrụ {left}",
+  "capacity.noneRan": "Ọ dịghị otu n’ime njem {planned} a haziri gara",
   "capacity.worksUpTo": "Ọ na-arụ ọrụ ruo ụgbọ {n} kwa elekere n’ụzọ ọ bụla",
   "capacity.tryingOthers": "Na-anwale ugboro ndị ọzọ…",
   "capacity.noneWorks": "Ọ dịghị ugboro a nwalere na-arụ ọrụ",

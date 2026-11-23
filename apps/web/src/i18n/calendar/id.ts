@@ -101,6 +101,7 @@ export const calendarId = {
   "calrun.days": "Hari",
   "calrun.trains": "Kereta",
   "calrun.punctuality": "Tepat waktu",
+  "calrun.ranOf": "{ran} dari {planned} perjalanan berjalan ({share})",
   "calrun.perYear": "Per tahun",
   "calrun.perDate": "Per tanggal",
   "calrun.method":

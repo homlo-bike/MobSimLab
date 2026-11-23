@@ -1397,6 +1397,9 @@ export const editorsHa = {
   "capacity.dieOut": "Suna ƙarewa",
   "capacity.pileUp": "Suna taruwa",
   "capacity.delaysHint": "{passed} ana miƙawa kowace tafiya, {left} ya rage a ƙarshe",
+  "capacity.ranOf":
+    "Tafiye-tafiyen da suka gudana: {ran} cikin {planned} da aka tsara ({share}), an bar {left}",
+  "capacity.noneRan": "Babu ko ɗaya daga cikin tafiye-tafiye {planned} da aka tsara da ya gudana",
   "capacity.worksUpTo": "Yana aiki har zuwa jirage {n} a awa kowace hanya",
   "capacity.tryingOthers": "Ana gwada wasu mitoci…",
   "capacity.noneWorks": "Babu mitar da aka gwada da ke aiki",

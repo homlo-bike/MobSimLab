@@ -43,6 +43,9 @@ export interface RailDay {
     verdict: string | null;
     punctuality: number | null;
     disturbed_punctuality: number | null;
+    /** Planned trips left out, and trips that ran (absent in runs saved before they were kept). */
+    unplaced?: number | null;
+    trips?: number | null;
   }[];
 }
 

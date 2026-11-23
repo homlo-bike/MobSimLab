@@ -100,6 +100,7 @@ export const calendarFa = {
   "calrun.days": "روزها",
   "calrun.trains": "قطارها",
   "calrun.punctuality": "به‌موقع",
+  "calrun.ranOf": "{ran} از {planned} سفر انجام شد ({share})",
   "calrun.perYear": "بر حسب سال",
   "calrun.perDate": "بر حسب تاریخ",
   "calrun.method":

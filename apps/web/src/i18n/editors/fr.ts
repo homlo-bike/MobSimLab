@@ -1439,6 +1439,8 @@ export const editorsFr = {
   "capacity.dieOut": "Se résorbent",
   "capacity.pileUp": "S’accumulent",
   "capacity.delaysHint": "{passed} transmis par course, {left} restants à la fin",
+  "capacity.ranOf": "Courses effectuées : {ran} sur {planned} prévues ({share}), {left} non effectuées",
+  "capacity.noneRan": "Aucune des {planned} courses prévues n’a eu lieu",
   "capacity.worksUpTo": "Fonctionne jusqu’à {n} trains par heure et par sens",
   "capacity.tryingOthers": "Essai d’autres fréquences…",
   "capacity.noneWorks": "Aucune fréquence essayée ne fonctionne",

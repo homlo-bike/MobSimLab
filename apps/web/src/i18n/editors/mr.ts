@@ -1382,6 +1382,8 @@ export const editorsMr = {
   "capacity.dieOut": "ओसरतो",
   "capacity.pileUp": "साचतो",
   "capacity.delaysHint": "प्रति फेरी {passed} पुढे जातो, शेवटी {left} उरतो",
+  "capacity.ranOf": "धावलेल्या फेऱ्या: {planned} नियोजित पैकी {ran} ({share}), {left} वगळल्या",
+  "capacity.noneRan": "{planned} नियोजित फेऱ्यांपैकी एकही धावली नाही",
   "capacity.worksUpTo": "प्रत्येक दिशेने तासाला {n} गाड्यांपर्यंत चालते",
   "capacity.tryingOthers": "इतर वारंवारता तपासत आहे…",
   "capacity.noneWorks": "तपासलेली कोणतीही वारंवारता चालत नाही",

@@ -1409,6 +1409,8 @@ export const editorsNl = {
   "capacity.dieOut": "Sterven uit",
   "capacity.pileUp": "Stapelen op",
   "capacity.delaysHint": "{passed} doorgegeven per rit, {left} over aan het einde",
+  "capacity.ranOf": "Gereden ritten: {ran} van {planned} geplande ({share}), {left} weggelaten",
+  "capacity.noneRan": "Geen van de {planned} geplande ritten is gereden",
   "capacity.worksUpTo": "Werkt tot {n} treinen per uur per richting",
   "capacity.tryingOthers": "Andere frequenties testen…",
   "capacity.noneWorks": "Geen geteste frequentie werkt",

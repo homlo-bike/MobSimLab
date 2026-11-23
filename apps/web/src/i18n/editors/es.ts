@@ -1420,6 +1420,8 @@ export const editorsEs = {
   "capacity.dieOut": "Se disipan",
   "capacity.pileUp": "Se acumulan",
   "capacity.delaysHint": "{passed} transmitidos por viaje, {left} restantes al final",
+  "capacity.ranOf": "Viajes realizados: {ran} de {planned} previstos ({share}), {left} omitidos",
+  "capacity.noneRan": "No se realizó ninguno de los {planned} viajes previstos",
   "capacity.worksUpTo": "Funciona hasta {n} trenes por hora y sentido",
   "capacity.tryingOthers": "Probando otras frecuencias…",
   "capacity.noneWorks": "Ninguna frecuencia probada funciona",

@@ -1335,6 +1335,8 @@ export const editorsKo = {
   "capacity.dieOut": "사라짐",
   "capacity.pileUp": "쌓임",
   "capacity.delaysHint": "운행당 {passed} 전파, 끝에 {left} 남음",
+  "capacity.ranOf": "운행한 회차: 계획 {planned}회 중 {ran}회 ({share}), {left}회 제외",
+  "capacity.noneRan": "계획한 {planned}회 중 운행한 회차 없음",
   "capacity.worksUpTo": "방향별 시간당 {n}회까지 작동",
   "capacity.tryingOthers": "다른 운행 간격 시험 중…",
   "capacity.noneWorks": "시험한 운행 간격 중 작동하는 것이 없음",

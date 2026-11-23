@@ -1461,6 +1461,8 @@ export const editorsUk = {
   "capacity.dieOut": "Згасають",
   "capacity.pileUp": "Накопичуються",
   "capacity.delaysHint": "{passed} передається на рейс, {left} лишається наприкінці",
+  "capacity.ranOf": "Виконано рейсів: {ran} із {planned} запланованих ({share}), пропущено: {left}",
+  "capacity.noneRan": "Не виконано жодного із запланованих рейсів (заплановано: {planned})",
   "capacity.worksUpTo": "Працює до {n} поїздів на годину в кожен бік",
   "capacity.tryingOthers": "Перевірка інших інтервалів…",
   "capacity.noneWorks": "Жоден перевірений інтервал не працює",

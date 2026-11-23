@@ -1398,6 +1398,9 @@ export const editorsKk = {
   "capacity.dieOut": "Басылады",
   "capacity.pileUp": "Жиналады",
   "capacity.delaysHint": "әр рейске {passed} беріледі, соңында {left} қалады",
+  "capacity.ranOf":
+    "Орындалған рейстер: жоспарланған {planned} рейстің {ran} ({share}), {left} рейс қалып қойды",
+  "capacity.noneRan": "Жоспарланған {planned} рейстің бірде-біреуі орындалмады",
   "capacity.worksUpTo": "Әр бағытта сағатына {n} пойызға дейін жұмыс істейді",
   "capacity.tryingOthers": "Басқа жиіліктер сыналуда…",
   "capacity.noneWorks": "Сыналған жиіліктердің ешқайсысы жұмыс істемейді",

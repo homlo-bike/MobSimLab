@@ -61,6 +61,25 @@ export function explain(
   return use;
 }
 
+/**
+ * Purpose: how many of the line's planned trips ran, when some were left out, so the on-time
+ * share and the delay figures are read against the trips that ran (Damascus test).
+ * Output: null when every planned trip ran.
+ */
+export function ranText(p: Point, t: Translate = EN, tn: TranslatePlural = EN_N): string | null {
+  if (p.unplaced <= 0) return null;
+  // Runs saved before the count of trips that ran was kept.
+  if (p.trips === undefined) return tn("capacity.notFit", p.unplaced);
+  const planned = p.trips + p.unplaced;
+  if (p.trips === 0) return t("capacity.noneRan", { planned });
+  return t("capacity.ranOf", {
+    ran: p.trips,
+    planned,
+    share: pct(p.trips / planned),
+    left: p.unplaced,
+  });
+}
+
 /** Tag colours of a saved run's status. */
 export const STATUS_TONE: Record<RunStatus, string> = {
   queued: "bg-slate-100 text-slate-700 border-slate-300",

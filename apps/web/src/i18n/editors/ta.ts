@@ -1427,6 +1427,8 @@ export const editorsTa = {
   "capacity.dieOut": "தணிகின்றன",
   "capacity.pileUp": "குவிகின்றன",
   "capacity.delaysHint": "ஒவ்வொரு பயணத்துக்கும் {passed} கடத்தப்படுகிறது, இறுதியில் {left} மீதம்",
+  "capacity.ranOf": "ஓடிய பயணங்கள்: திட்டமிட்ட {planned} இல் {ran} ({share}), {left} விடுபட்டன",
+  "capacity.noneRan": "திட்டமிட்ட {planned} பயணங்களில் எதுவும் ஓடவில்லை",
   "capacity.worksUpTo": "ஒவ்வொரு திசையிலும் மணிக்கு {n} ரயில்கள் வரை இயங்குகிறது",
   "capacity.tryingOthers": "பிற அலைவெண்கள் முயற்சிக்கப்படுகின்றன…",
   "capacity.noneWorks": "முயற்சித்த எந்த அலைவெண்ணும் இயங்கவில்லை",

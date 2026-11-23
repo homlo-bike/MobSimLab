@@ -1429,6 +1429,9 @@ export const editorsZu = {
   "capacity.dieOut": "Kuyaphela",
   "capacity.pileUp": "Kuyanqwabelana",
   "capacity.delaysHint": "{passed} kudluliselwa ohambweni ngalunye, {left} kusala ekugcineni",
+  "capacity.ranOf":
+    "Uhambo olwenziwe: {ran} kwezingu-{planned} ezihleliwe ({share}), ezingu-{left} zishiywe ngaphandle",
+  "capacity.noneRan": "Akukho neyodwa kwezingu-{planned} ezihleliwe eyenziwe",
   "capacity.worksUpTo": "Kusebenza kuze kube izitimela ezingu-{n} ngehora ohlangothini ngalunye",
   "capacity.tryingOthers": "Izama amaza amanye…",
   "capacity.noneWorks": "Awekho amaza azanyiwe asebenzayo",

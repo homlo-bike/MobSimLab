@@ -1413,6 +1413,8 @@ export const editorsIt = {
   "capacity.dieOut": "Si smorzano",
   "capacity.pileUp": "Si accumulano",
   "capacity.delaysHint": "{passed} trasmessi per corsa, {left} residui alla fine",
+  "capacity.ranOf": "Corse effettuate: {ran} su {planned} previste ({share}), {left} escluse",
+  "capacity.noneRan": "Nessuna delle {planned} corse previste è stata effettuata",
   "capacity.worksUpTo": "Funziona fino a {n} treni all’ora per direzione",
   "capacity.tryingOthers": "Prova di altre frequenze…",
   "capacity.noneWorks": "Nessuna frequenza provata funziona",

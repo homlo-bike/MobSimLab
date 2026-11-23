@@ -1382,6 +1382,8 @@ export const editorsUr = {
   "capacity.dieOut": "ختم ہو جاتی ہیں",
   "capacity.pileUp": "جمع ہوتی ہیں",
   "capacity.delaysHint": "فی سفر {passed} آگے منتقل، آخر میں {left} باقی",
+  "capacity.ranOf": "چلنے والے سفر: {planned} منصوبہ بند میں سے {ran} ({share})، {left} رہ گئے",
+  "capacity.noneRan": "{planned} منصوبہ بند سفروں میں سے کوئی نہیں چلا",
   "capacity.worksUpTo": "ہر سمت فی گھنٹہ {n} ٹرینوں تک کام کرتا ہے",
   "capacity.tryingOthers": "دوسری فریکوئنسیاں آزمائی جا رہی ہیں…",
   "capacity.noneWorks": "آزمائی گئی کوئی فریکوئنسی کام نہیں کرتی",

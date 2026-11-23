@@ -1374,6 +1374,8 @@ export const editorsBn = {
   "capacity.dieOut": "মিলিয়ে যায়",
   "capacity.pileUp": "জমে",
   "capacity.delaysHint": "প্রতি যাত্রায় {passed} ছড়ায়, শেষে {left} থাকে",
+  "capacity.ranOf": "চলা যাত্রা: {planned}টি পরিকল্পিতের মধ্যে {ran}টি ({share}), {left}টি বাদ পড়েছে",
+  "capacity.noneRan": "{planned}টি পরিকল্পিত যাত্রার একটিও চলেনি",
   "capacity.worksUpTo": "প্রতি দিকে ঘণ্টায় {n}টি ট্রেন পর্যন্ত চলে",
   "capacity.tryingOthers": "অন্য ফ্রিকোয়েন্সি চেষ্টা করা হচ্ছে…",
   "capacity.noneWorks": "চেষ্টা করা কোনো ফ্রিকোয়েন্সি চলে না",

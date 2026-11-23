@@ -1408,6 +1408,9 @@ export const editorsUz = {
   "capacity.dieOut": "So‘nadi",
   "capacity.pileUp": "To‘planadi",
   "capacity.delaysHint": "har qatnovga {passed} o‘tadi, oxirida {left} qoladi",
+  "capacity.ranOf":
+    "Bajarilgan qatnovlar: rejadagi {planned} tadan {ran} ta ({share}), {left} ta chetda qoldi",
+  "capacity.noneRan": "Rejadagi {planned} ta qatnovdan birortasi ham bajarilmadi",
   "capacity.worksUpTo": "Har yo‘nalishda soatiga {n} poyezdgacha ishlaydi",
   "capacity.tryingOthers": "Boshqa chastotalar sinab ko‘rilmoqda…",
   "capacity.noneWorks": "Sinalgan chastotalarning hech biri ishlamaydi",

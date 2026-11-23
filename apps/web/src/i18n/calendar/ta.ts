@@ -101,6 +101,7 @@ export const calendarTa = {
   "calrun.days": "நாட்கள்",
   "calrun.trains": "ரயில்கள்",
   "calrun.punctuality": "நேரத்தில்",
+  "calrun.ranOf": "{planned} இல் {ran} பயணங்கள் ஓடின ({share})",
   "calrun.perYear": "ஒவ்வோர் ஆண்டும்",
   "calrun.perDate": "ஒவ்வொரு தேதியும்",
   "calrun.method":

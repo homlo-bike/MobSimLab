@@ -1405,6 +1405,8 @@ export const editorsSw = {
   "capacity.dieOut": "Unaisha",
   "capacity.pileUp": "Unalimbikizana",
   "capacity.delaysHint": "{passed} unapitishwa kwa kila safari, {left} unabaki mwishoni",
+  "capacity.ranOf": "Safari zilizofanyika: {ran} kati ya {planned} zilizopangwa ({share}), {left} ziliachwa",
+  "capacity.noneRan": "Hakuna safari hata moja kati ya {planned} zilizopangwa iliyofanyika",
   "capacity.worksUpTo": "Inafanya kazi hadi treni {n} kwa saa kila upande",
   "capacity.tryingOthers": "Inajaribu masafa mengine…",
   "capacity.noneWorks": "Hakuna masafa yaliyojaribiwa yanayofanya kazi",

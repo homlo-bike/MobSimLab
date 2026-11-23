@@ -1386,6 +1386,8 @@ export const editorsTe = {
   "capacity.dieOut": "తగ్గిపోతాయి",
   "capacity.pileUp": "పేరుకుపోతాయి",
   "capacity.delaysHint": "ప్రతి ప్రయాణానికి {passed} బదిలీ, చివరకు {left} మిగులుతుంది",
+  "capacity.ranOf": "నడిచిన ప్రయాణాలు: ప్రణాళికలోని {planned} లో {ran} ({share}), {left} వదిలివేయబడ్డాయి",
+  "capacity.noneRan": "ప్రణాళికలోని {planned} ప్రయాణాలలో ఒక్కటీ నడవలేదు",
   "capacity.worksUpTo": "ప్రతి దిశలో గంటకు {n} రైళ్ల వరకు పనిచేస్తుంది",
   "capacity.tryingOthers": "ఇతర ఫ్రీక్వెన్సీలు ప్రయత్నిస్తోంది…",
   "capacity.noneWorks": "ప్రయత్నించిన ఏ ఫ్రీక్వెన్సీ పనిచేయదు",

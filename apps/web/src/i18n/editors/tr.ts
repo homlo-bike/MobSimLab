@@ -1370,6 +1370,9 @@ export const editorsTr = {
   "capacity.dieOut": "Sönüyor",
   "capacity.pileUp": "Birikiyor",
   "capacity.delaysHint": "sefer başına {passed} aktarılıyor, sonda {left} kalıyor",
+  "capacity.ranOf":
+    "Yapılan seferler: planlanan {planned} seferden {ran} ({share}), {left} sefer dışarıda kaldı",
+  "capacity.noneRan": "Planlanan {planned} seferin hiçbiri yapılmadı",
   "capacity.worksUpTo": "Her yönde saatte {n} trene kadar çalışıyor",
   "capacity.tryingOthers": "Diğer sıklıklar deneniyor…",
   "capacity.noneWorks": "Denenen hiçbir sıklık çalışmıyor",

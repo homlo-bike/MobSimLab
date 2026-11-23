@@ -1428,6 +1428,8 @@ export const editorsDe = {
   "capacity.dieOut": "Klingen ab",
   "capacity.pileUp": "Schaukeln sich auf",
   "capacity.delaysHint": "{passed} je Fahrt weitergegeben, {left} am Ende übrig",
+  "capacity.ranOf": "Gefahrene Fahrten: {ran} von {planned} geplanten ({share}), {left} ausgelassen",
+  "capacity.noneRan": "Keine der {planned} geplanten Fahrten ist gefahren",
   "capacity.worksUpTo": "Funktioniert bis {n} Züge pro Stunde je Richtung",
   "capacity.tryingOthers": "Teste andere Takte…",
   "capacity.noneWorks": "Kein getesteter Takt funktioniert",
