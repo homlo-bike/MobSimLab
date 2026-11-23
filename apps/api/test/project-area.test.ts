@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { areasQuery } from "../src/benefits/benefits.service";
 import { areaBody, ProjectAreaService } from "../src/projects/area.service";
-import { joinBoxes } from "../src/projects/project-area";
+import { areaRoundDrawing, bufferedBox, joinBoxes } from "../src/projects/project-area";
 
 const square = (x: number, y: number, d: number): [number, number][] => [
   [x, y],
@@ -15,6 +15,36 @@ describe("project area body", () => {
     expect(joinBoxes(null, null)).toBeNull();
     expect(joinBoxes([0, 0, 1, 1], null)).toEqual([0, 0, 1, 1]);
     expect(joinBoxes([0, 0, 1, 1], [0.5, -1, 2, 0.5])).toEqual([0, -1, 2, 1]);
+  });
+
+  it("gives a project saved without an area the box round its drawing, widened by 2 km", () => {
+    expect(areaRoundDrawing({}, "Damascus")).toEqual([]);
+    const docs = {
+      "street-lines": {
+        lines: [
+          { points: [{ lonlat: [36.2, 33.4] }, { lonlat: [36.5, 33.6] }] },
+          { points: [{ lonlat: "x" }] },
+        ],
+      },
+    };
+    const [box] = areaRoundDrawing(docs, "  Damascus  ");
+    const [w, s, e, n] = bufferedBox([36.2, 33.4, 36.5, 33.6], 2);
+    expect(box).toEqual({
+      id: "a1",
+      name: "Damascus",
+      detail: "full",
+      ring: [
+        [w, s],
+        [e, s],
+        [e, n],
+        [w, n],
+        [w, s],
+      ],
+    });
+    expect(n - 33.6).toBeCloseTo(2 / 111.32, 6);
+    expect(areaRoundDrawing(docs, " ")[0]!.name).toBe("Project area");
+    // Never past the latitudes a polygon may have.
+    expect(bufferedBox([0, 84.99, 1, 85], 5)[3]).toBe(85);
   });
 
   it("accepts the polygons of the area window and queues the imports by default", () => {
