@@ -692,6 +692,7 @@ export const editorsTe = {
   "setup.x.bus": "బస్ లేన్",
   "setup.x.car": "ట్రాఫిక్ లేన్",
   "setup.x.tram": "ట్రామ్ లేన్",
+  "setup.x.tramSpace": "ట్రామ్ లేన్, పట్టాలు లేవు",
   "setup.x.parking": "పార్కింగ్ లేన్",
   "setup.x.busMark": "బస్",
   "setup.x.bikeMark": "సైకిల్",

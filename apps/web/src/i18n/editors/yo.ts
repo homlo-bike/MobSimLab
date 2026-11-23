@@ -667,6 +667,7 @@ export const editorsYo = {
   "setup.x.bus": "ọ̀nà bọ́ọ̀sì",
   "setup.x.car": "ọ̀nà ọkọ̀",
   "setup.x.tram": "ọ̀nà tírámù",
+  "setup.x.tramSpace": "ọ̀nà tram láìsí irin ojú-irin",
   "setup.x.parking": "ọ̀nà ìdúró ọkọ̀",
   "setup.x.busMark": "BỌ́Ọ̀SÌ",
   "setup.x.bikeMark": "KẸ̀KẸ́",

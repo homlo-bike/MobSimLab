@@ -708,6 +708,7 @@ export const editorsDe = {
   "setup.x.bus": "Busspur",
   "setup.x.car": "Fahrstreifen",
   "setup.x.tram": "Straßenbahnspur",
+  "setup.x.tramSpace": "Straßenbahnspur ohne Gleis",
   "setup.x.parking": "Parkstreifen",
   "setup.x.busMark": "BUS",
   "setup.x.bikeMark": "RAD",

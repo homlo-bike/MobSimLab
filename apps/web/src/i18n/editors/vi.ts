@@ -666,6 +666,7 @@ export const editorsVi = {
   "setup.x.bus": "làn xe buýt",
   "setup.x.car": "làn xe",
   "setup.x.tram": "làn tàu điện",
+  "setup.x.tramSpace": "làn tàu điện chưa có đường ray",
   "setup.x.parking": "làn đỗ xe",
   "setup.x.busMark": "BUS",
   "setup.x.bikeMark": "XE ĐẠP",

@@ -735,6 +735,7 @@ export const editorsRu = {
   "setup.x.bus": "автобусная полоса",
   "setup.x.car": "полоса движения",
   "setup.x.tram": "трамвайная полоса",
+  "setup.x.tramSpace": "трамвайная полоса без путей",
   "setup.x.parking": "парковочная полоса",
   "setup.x.busMark": "А",
   "setup.x.bikeMark": "ВЕЛО",

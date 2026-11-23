@@ -734,6 +734,7 @@ export const editorsUk = {
   "setup.x.bus": "смуга для автобусів",
   "setup.x.car": "смуга руху",
   "setup.x.tram": "трамвайна смуга",
+  "setup.x.tramSpace": "трамвайна смуга без колій",
   "setup.x.parking": "смуга для паркування",
   "setup.x.busMark": "АВТОБУС",
   "setup.x.bikeMark": "ВЕЛО",

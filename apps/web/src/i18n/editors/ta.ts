@@ -712,6 +712,7 @@ export const editorsTa = {
   "setup.x.bus": "பேருந்துப் பாதை",
   "setup.x.car": "போக்குவரத்துப் பாதை",
   "setup.x.tram": "டிராம் பாதை",
+  "setup.x.tramSpace": "டிராம் பாதை, தண்டவாளம் இல்லை",
   "setup.x.parking": "நிறுத்தப் பாதை",
   "setup.x.busMark": "பேருந்து",
   "setup.x.bikeMark": "மிதிவண்டி",

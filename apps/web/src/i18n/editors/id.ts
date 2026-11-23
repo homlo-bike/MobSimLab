@@ -690,6 +690,7 @@ export const editorsId = {
   "setup.x.bus": "lajur bus",
   "setup.x.car": "lajur lalu lintas",
   "setup.x.tram": "lajur trem",
+  "setup.x.tramSpace": "lajur trem tanpa rel",
   "setup.x.parking": "lajur parkir",
   "setup.x.busMark": "BUS",
   "setup.x.bikeMark": "SEPEDA",

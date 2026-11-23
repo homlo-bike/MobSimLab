@@ -684,6 +684,7 @@ export const editorsHa = {
   "setup.x.bus": "hanyar bas",
   "setup.x.car": "hanyar ababen hawa",
   "setup.x.tram": "hanyar tram",
+  "setup.x.tramSpace": "hanyar tram ba tare da layin dogo ba",
   "setup.x.parking": "wurin ajiye mota",
   "setup.x.busMark": "BAS",
   "setup.x.bikeMark": "KEKE",

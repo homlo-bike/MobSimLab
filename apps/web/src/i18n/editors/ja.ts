@@ -662,6 +662,7 @@ export const editorsJa = {
   "setup.x.bus": "バスレーン",
   "setup.x.car": "車線",
   "setup.x.tram": "路面電車レーン",
+  "setup.x.tramSpace": "線路のない路面電車レーン",
   "setup.x.parking": "駐車帯",
   "setup.x.busMark": "バス",
   "setup.x.bikeMark": "自転車",

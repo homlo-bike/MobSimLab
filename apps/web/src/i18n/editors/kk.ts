@@ -688,6 +688,7 @@ export const editorsKk = {
   "setup.x.bus": "автобус жолағы",
   "setup.x.car": "қозғалыс жолағы",
   "setup.x.tram": "трамвай жолағы",
+  "setup.x.tramSpace": "рельссіз трамвай жолағы",
   "setup.x.parking": "тұрақ жолағы",
   "setup.x.busMark": "АВТОБУС",
   "setup.x.bikeMark": "вело",

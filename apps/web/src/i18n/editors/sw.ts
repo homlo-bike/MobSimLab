@@ -694,6 +694,7 @@ export const editorsSw = {
   "setup.x.bus": "njia ya basi",
   "setup.x.car": "njia ya magari",
   "setup.x.tram": "njia ya tramu",
+  "setup.x.tramSpace": "njia ya tramu bila reli",
   "setup.x.parking": "njia ya maegesho",
   "setup.x.busMark": "BASI",
   "setup.x.bikeMark": "BAISKELI",

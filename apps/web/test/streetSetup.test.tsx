@@ -14,6 +14,7 @@ import {
 } from "../src/features/street-setup/model";
 import type { LaneEngine, LaneEngineLoader, LaneGeometry } from "../src/features/street-setup/lanes";
 import { StreetSetupEditor } from "../src/features/street-setup/StreetSetupEditor";
+import { LanesBackdrop } from "../src/features/street-setup/LanesBackdrop";
 import {
   layoutOf,
   newSection,
@@ -796,5 +797,55 @@ describe("Street setup changes that re-route saved bus lines", () => {
     fireEvent.click(screen.getByRole("button", { name: "Save anyway" }));
     expect(onChange).toHaveBeenCalledTimes(2);
     expect((onChange.mock.lastCall![0][0] as StreetSetup).sections).toHaveLength(6);
+  });
+});
+
+describe("Street lanes under the Create tab's tools", () => {
+  it("draws the streets lane by lane, faded, with the street setups, and a tram lane without track as an empty strip", async () => {
+    const { map, sources } = fakeMap(17);
+    const added: string[] = [];
+    const build = vi.fn(async (): Promise<LaneGeometry> => ({
+      lanes: [
+        {
+          kind: "traffic",
+          way: 100,
+          layer: 0,
+          ring: [7.414, 43.733, 7.416, 43.733, 7.416, 43.7331, 7.414, 43.733],
+        },
+        {
+          kind: "tram_space",
+          way: 100,
+          layer: 0,
+          ring: [7.414, 43.7331, 7.416, 43.7331, 7.416, 43.7332, 7.414, 43.7331],
+        },
+      ],
+      junctions: [],
+      lines: [],
+      roads: [],
+      driving_side: "right",
+    }));
+    const engine = {
+      addTile: (k: string) => added.push(k),
+      build,
+      dispose: vi.fn(),
+    } as unknown as LaneEngine;
+    const setups: StreetSetup[] = [{ way: 100, tram: "own_lane" }];
+    const { unmount } = render(
+      <LanesBackdrop
+        map={map}
+        setups={setups}
+        fetchTile={async () => "<osm/>"}
+        loadLanes={async () => engine}
+      />,
+    );
+    await waitFor(() => expect(sources.get("om-lanes")!.setData).toHaveBeenCalled());
+    expect(added.length).toBeGreaterThan(0);
+    expect(build).toHaveBeenLastCalledWith(expect.any(Array), setups, "right");
+    const data = sources.get("om-lanes")!.setData.mock.lastCall![0] as {
+      features: { properties: { kind: string } }[];
+    };
+    expect(data.features.map((f) => f.properties.kind)).toEqual(["traffic", "tram_space"]);
+    unmount();
+    expect(sources.has("om-lanes")).toBe(false);
   });
 });

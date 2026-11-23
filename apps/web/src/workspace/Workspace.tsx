@@ -186,6 +186,7 @@ const StreetLineEditor = lazyNamed(
   () => import("../features/street-lines/StreetLineEditor"),
   "StreetLineEditor",
 );
+const LanesBackdrop = lazyNamed(() => import("../features/street-setup/LanesBackdrop"), "LanesBackdrop");
 const StreetSetupEditor = lazyNamed(
   () => import("../features/street-setup/StreetSetupEditor"),
   "StreetSetupEditor",
@@ -1163,6 +1164,12 @@ export function Workspace({
               depots={depotsDoc?.depots ?? NO_DEPOTS}
               pluginLines={pluginSaved}
             />
+          )}
+          {/* The streets lane by lane, with the GIS tab's setups, faded under the tools from zoom 16. */}
+          {project && drawings.loaded && tab === "create" && (
+            <Suspense fallback={null}>
+              <LanesBackdrop map={map} setups={setups} trafficSide={streetRules.traffic_side} />
+            </Suspense>
           )}
           {project &&
             drawings.loaded &&

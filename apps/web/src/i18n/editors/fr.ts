@@ -707,6 +707,7 @@ export const editorsFr = {
   "setup.x.bus": "voie de bus",
   "setup.x.car": "voie de circulation",
   "setup.x.tram": "voie de tram",
+  "setup.x.tramSpace": "voie de tram sans rails",
   "setup.x.parking": "voie de stationnement",
   "setup.x.busMark": "BUS",
   "setup.x.bikeMark": "VÉLO",

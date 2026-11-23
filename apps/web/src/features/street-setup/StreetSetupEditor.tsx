@@ -1150,6 +1150,7 @@ function Legend() {
     ["bus", "setup.x.bus"],
     ["bike", "setup.x.bike"],
     ["tram", "setup.x.tram"],
+    ["tram_space", "setup.x.tramSpace"],
     ["pavement", "setup.x.walk"],
     ["green", "setup.x.green"],
   ];

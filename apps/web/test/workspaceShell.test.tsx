@@ -159,6 +159,20 @@ describe("other modes on the map", () => {
           ],
         },
         platforms: { type: "FeatureCollection", features: [] },
+        rails: {
+          type: "FeatureCollection",
+          features: [0, 1].map((k) => ({
+            type: "Feature",
+            properties: {},
+            geometry: {
+              type: "LineString",
+              coordinates: [
+                [10, 50 + k * 1e-5],
+                [10.02, 50 + k * 1e-5],
+              ],
+            },
+          })),
+        },
       },
     }));
     const engine = { build, dispose: () => {} } as unknown as RailEngine;
@@ -177,6 +191,9 @@ describe("other modes on the map", () => {
     expect(features("om-lines")).toHaveLength(0);
     expect(features("om-depots")).toHaveLength(1);
     await waitFor(() => expect(features("om-rail")).toHaveLength(1));
+    // From zoom 16 the drawn tracks show rail by rail: the only rails on a street.
+    expect(layers).toContain("om-rails");
+    expect(features("om-rails")).toHaveLength(2);
 
     rerender(<OtherModesLayer {...props} active="rail" />);
     // In the railway tool the street line (routed legs and its two stops) shows, not the railway.

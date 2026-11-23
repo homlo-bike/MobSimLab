@@ -685,6 +685,7 @@ export const editorsHi = {
   "setup.x.bus": "बस लेन",
   "setup.x.car": "यातायात लेन",
   "setup.x.tram": "ट्राम लेन",
+  "setup.x.tramSpace": "ट्राम लेन, बिना पटरी",
   "setup.x.parking": "पार्किंग लेन",
   "setup.x.busMark": "बस",
   "setup.x.bikeMark": "साइकिल",

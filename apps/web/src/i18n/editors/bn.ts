@@ -682,6 +682,7 @@ export const editorsBn = {
   "setup.x.bus": "বাস লেন",
   "setup.x.car": "যান চলাচলের লেন",
   "setup.x.tram": "ট্রাম লেন",
+  "setup.x.tramSpace": "ট্রাম লেন, রেল ছাড়া",
   "setup.x.parking": "পার্কিং লেন",
   "setup.x.busMark": "বাস",
   "setup.x.bikeMark": "সাইকেল",

@@ -694,6 +694,7 @@ export const editorsNl = {
   "setup.x.bus": "busbaan",
   "setup.x.car": "rijstrook",
   "setup.x.tram": "trambaan",
+  "setup.x.tramSpace": "trambaan zonder spoor",
   "setup.x.parking": "parkeerstrook",
   "setup.x.busMark": "BUS",
   "setup.x.bikeMark": "FIETS",

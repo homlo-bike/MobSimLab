@@ -721,6 +721,7 @@ export const editorsAr = {
   "setup.x.bus": "حارة حافلات",
   "setup.x.car": "حارة مرور",
   "setup.x.tram": "حارة ترام",
+  "setup.x.tramSpace": "مسار ترام بلا سكة",
   "setup.x.parking": "حارة وقوف",
   "setup.x.busMark": "حافلة",
   "setup.x.bikeMark": "دراجة",

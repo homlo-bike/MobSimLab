@@ -709,6 +709,7 @@ export const editorsZu = {
   "setup.x.bus": "umzila webhasi",
   "setup.x.car": "umzila wezimoto",
   "setup.x.tram": "umzila wethremu",
+  "setup.x.tramSpace": "umzila wethilamu ongenayo ujantshi",
   "setup.x.parking": "umzila wokupaka",
   "setup.x.busMark": "BHASI",
   "setup.x.bikeMark": "BHAYISIKILI",

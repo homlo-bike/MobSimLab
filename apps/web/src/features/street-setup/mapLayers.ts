@@ -40,6 +40,7 @@ export const LANE_COLOR: Record<LaneKind, string> = {
   bus: "#f87171",
   bike: "#4ade80",
   tram: "#c2a878",
+  tram_space: "#e7e5e4",
   pavement: "#e2e8f0",
   footway: "#d6d3d1",
   shared_use: "#a7f3d0",
@@ -181,7 +182,21 @@ export function ensureLayers(map: MapLibreMap): void {
   });
   // The selection glow sits under the street colour.
   map.moveLayer("ss-selected", "ss-streets-casing");
+  // The drawn network (OtherModesLayer's `om-` layers: tracks, rails, street lines) stays on top of the
+  // lanes, so the drawn tracks are the rails on the street (a layout's tram lane is an empty strip).
+  const first = map.getStyle?.()?.layers?.find((l) => l.id.startsWith("om-"))?.id;
+  if (first) for (const id of UNDER_NETWORK) if (map.getLayer(id)) map.moveLayer(id, first);
 }
+
+/** The lane layers that go under the drawn network. */
+const UNDER_NETWORK = [
+  "ss-junctions",
+  "ss-junction-selected",
+  "ss-lanes",
+  "ss-lane-markings",
+  "ss-centre-markings",
+  "ss-lane-rails",
+];
 
 /** Purpose: draw the streets coloured by their priority with the setups applied. */
 export function drawStreets(

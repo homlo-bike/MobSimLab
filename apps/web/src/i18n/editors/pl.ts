@@ -733,6 +733,7 @@ export const editorsPl = {
   "setup.x.bus": "buspas",
   "setup.x.car": "pas ruchu",
   "setup.x.tram": "torowisko",
+  "setup.x.tramSpace": "pas tramwajowy bez torów",
   "setup.x.parking": "pas postojowy",
   "setup.x.busMark": "BUS",
   "setup.x.bikeMark": "ROWER",

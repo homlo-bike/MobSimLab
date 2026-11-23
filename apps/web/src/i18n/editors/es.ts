@@ -695,6 +695,7 @@ export const editorsEs = {
   "setup.x.bus": "carril bus",
   "setup.x.car": "carril de tráfico",
   "setup.x.tram": "carril de tranvía",
+  "setup.x.tramSpace": "carril de tranvía sin vía",
   "setup.x.parking": "carril de estacionamiento",
   "setup.x.busMark": "BUS",
   "setup.x.bikeMark": "BICI",

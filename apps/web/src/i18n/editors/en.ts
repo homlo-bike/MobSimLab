@@ -699,6 +699,7 @@ export const editorsEn = {
   "setup.x.bus": "bus lane",
   "setup.x.car": "traffic lane",
   "setup.x.tram": "tram lane",
+  "setup.x.tramSpace": "tram lane, no track",
   "setup.x.parking": "parking lane",
   "setup.x.busMark": "BUS",
   "setup.x.bikeMark": "BIKE",

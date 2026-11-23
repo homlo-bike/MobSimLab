@@ -685,6 +685,7 @@ export const editorsUr = {
   "setup.x.bus": "بس لین",
   "setup.x.car": "ٹریفک لین",
   "setup.x.tram": "ٹرام لین",
+  "setup.x.tramSpace": "ٹرام لین، پٹری کے بغیر",
   "setup.x.parking": "پارکنگ لین",
   "setup.x.busMark": "بس",
   "setup.x.bikeMark": "سائیکل",
