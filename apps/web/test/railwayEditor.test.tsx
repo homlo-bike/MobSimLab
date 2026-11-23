@@ -618,6 +618,7 @@ function fakeMap(center: { lng: number; lat: number } = { lng: ORIGIN[0], lat: O
     getCanvas: () => ({ style: {} as CSSStyleDeclaration }),
     doubleClickZoom: { disable: vi.fn(), enable: vi.fn() },
     dragPan: { disable: vi.fn(), enable: vi.fn() },
+    boxZoom: { disable: vi.fn(), enable: vi.fn() },
     fitBounds: vi.fn(),
     easeTo: vi.fn(),
     // About a pixel a metre around the origin.
