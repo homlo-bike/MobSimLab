@@ -1265,6 +1265,15 @@ export const editorsEn = {
   "setup.wizardIntro": "You are the Owner. Other people cannot sign in until you finish setup.",
   "setup.instanceName": "Instance name",
   "setup.finish": "Finish setup",
+  "setup.stepOf": "Step {n} of {count}",
+  "setup.next": "Next",
+  "setup.back": "Back",
+  "setup.stepName": "Name",
+  "setup.stepMaps": "Basemaps",
+  "setup.signupIntro":
+    "Who may sign in once setup is finished, and the role they get. You can change this later in Administration → Sign-up rules.",
+  "setup.mapsIntro":
+    "OpenStreetMap maps work without any setup. Add aerial imagery or your organisation's own map services here if you want them. You can change this later in Administration → Plugins.",
   "consent.title": "Connect an AI agent",
   "consent.incomplete": "This link is incomplete. Start the connection again in your AI app.",
   "consent.signInFirst": "Sign in to MobSimLab to decide whether the app may connect.",

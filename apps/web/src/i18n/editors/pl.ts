@@ -1329,6 +1329,15 @@ export const editorsPl = {
     "Jesteś właścicielem. Nikt inny nie może się zalogować, dopóki konfiguracja nie zostanie ukończona.",
   "setup.instanceName": "Nazwa instancji",
   "setup.finish": "Zakończ konfigurację",
+  "setup.stepOf": "Krok {n} z {count}",
+  "setup.next": "Dalej",
+  "setup.back": "Wstecz",
+  "setup.stepName": "Nazwa",
+  "setup.stepMaps": "Mapy podkładowe",
+  "setup.signupIntro":
+    "Kto może się logować po zakończeniu konfiguracji i jaką rolę otrzymuje. Możesz to później zmienić w Administracja → Zasady rejestracji.",
+  "setup.mapsIntro":
+    "Mapy OpenStreetMap działają bez konfiguracji. Dodaj tu zdjęcia lotnicze lub własne usługi mapowe organizacji, jeśli ich potrzebujesz. Możesz to później zmienić w Administracja → Wtyczki.",
   "consent.title": "Połącz agenta AI",
   "consent.incomplete": "Ten link jest niekompletny. Rozpocznij łączenie ponownie w aplikacji AI.",
   "consent.signInFirst": "Zaloguj się do MobSimLab, aby zdecydować, czy aplikacja może się połączyć.",

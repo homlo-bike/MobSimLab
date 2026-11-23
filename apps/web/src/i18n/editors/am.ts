@@ -1218,6 +1218,15 @@ export const editorsAm = {
   "setup.wizardIntro": "እርስዎ ባለቤቱ ነዎት። ማዋቀሩን እስኪጨርሱ ድረስ ሌሎች ሰዎች መግባት አይችሉም።",
   "setup.instanceName": "የስርዓት ስም",
   "setup.finish": "ማዋቀሩን ጨርስ",
+  "setup.stepOf": "ደረጃ {n} ከ{count}",
+  "setup.next": "ቀጣይ",
+  "setup.back": "ተመለስ",
+  "setup.stepName": "ስም",
+  "setup.stepMaps": "መሠረታዊ ካርታዎች",
+  "setup.signupIntro":
+    "ማዋቀሩ ካለቀ በኋላ ማን መግባት እንደሚችል እና ምን ሚና እንደሚያገኝ። ይህንን በኋላ በአስተዳደር → የምዝገባ ደንቦች መቀየር ይችላሉ።",
+  "setup.mapsIntro":
+    "የOpenStreetMap ካርታዎች ያለ ማዋቀር ይሠራሉ። ከፈለጉ የአየር ላይ ምስሎችን ወይም የድርጅትዎን የራሱ የካርታ አገልግሎቶች እዚህ ያክሉ። ይህንን በኋላ በአስተዳደር → ተሰኪዎች መቀየር ይችላሉ።",
   "consent.title": "የ AI ወኪል ያገናኙ",
   "consent.incomplete": "ይህ ማገናኛ ያልተሟላ ነው። በ AI መተግበሪያዎ ውስጥ ግንኙነቱን እንደገና ይጀምሩ።",
   "consent.signInFirst": "መተግበሪያው መገናኘት ይችል እንደሆነ ለመወሰን ወደ MobSimLab ይግቡ።",

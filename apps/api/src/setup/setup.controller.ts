@@ -20,8 +20,8 @@ import { Requires } from "../iam/requires";
 const instanceSchema = z.strictObject({ name: z.string().trim().min(1).max(100) });
 
 /**
- * Setup wizard, first step (05 §3.1): instance name, then "Finish setup", which lets other users in.
- * Later steps (providers, group mappings, auto-registration, basemaps, defaults) are added to this controller.
+ * Setup wizard (05 §3.1): the instance name, then "Finish setup", which lets other users in. The wizard's other
+ * steps (sign-up rules and group mappings, basemaps) use the Administration API, so they need nothing here.
  */
 @Controller("api/setup")
 export class SetupController {

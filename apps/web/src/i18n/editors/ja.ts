@@ -1209,6 +1209,15 @@ export const editorsJa = {
   "setup.wizardIntro": "あなたは所有者です。セットアップが完了するまで他のユーザーはサインインできません。",
   "setup.instanceName": "インスタンス名",
   "setup.finish": "セットアップを完了",
+  "setup.stepOf": "ステップ {n} / {count}",
+  "setup.next": "次へ",
+  "setup.back": "戻る",
+  "setup.stepName": "名前",
+  "setup.stepMaps": "背景地図",
+  "setup.signupIntro":
+    "セットアップ完了後にサインインできる人と、その人に与えるロールです。後で「管理」→「登録ルール」で変更できます。",
+  "setup.mapsIntro":
+    "OpenStreetMap の地図は設定なしで使えます。必要なら、ここで航空写真や組織独自の地図サービスを追加してください。後で「管理」→「プラグイン」で変更できます。",
   "consent.title": "AI エージェントを接続",
   "consent.incomplete": "このリンクは不完全です。AI アプリから接続をやり直してください。",
   "consent.signInFirst": "アプリの接続を許可するかどうか決めるには、MobSimLab にサインインしてください。",

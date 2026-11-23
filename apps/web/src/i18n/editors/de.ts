@@ -1294,6 +1294,15 @@ export const editorsDe = {
     "Sie sind der Eigentümer. Andere können sich erst anmelden, wenn Sie die Einrichtung abschließen.",
   "setup.instanceName": "Name der Instanz",
   "setup.finish": "Einrichtung abschließen",
+  "setup.stepOf": "Schritt {n} von {count}",
+  "setup.next": "Weiter",
+  "setup.back": "Zurück",
+  "setup.stepName": "Name",
+  "setup.stepMaps": "Grundkarten",
+  "setup.signupIntro":
+    "Wer sich nach Abschluss der Einrichtung anmelden darf und welche Rolle er erhält. Sie können das später unter Verwaltung → Registrierungsregeln ändern.",
+  "setup.mapsIntro":
+    "OpenStreetMap-Karten funktionieren ohne Einrichtung. Fügen Sie hier bei Bedarf Luftbilder oder die eigenen Kartendienste Ihrer Organisation hinzu. Sie können das später unter Verwaltung → Plugins ändern.",
   "consent.title": "Einen KI-Agenten verbinden",
   "consent.incomplete": "Dieser Link ist unvollständig. Starten Sie die Verbindung in Ihrer KI-App erneut.",
   "consent.signInFirst":

@@ -1205,6 +1205,15 @@ export const editorsKo = {
   "setup.wizardIntro": "당신이 소유자입니다. 설정을 마칠 때까지 다른 사람은 로그인할 수 없습니다.",
   "setup.instanceName": "인스턴스 이름",
   "setup.finish": "설정 완료",
+  "setup.stepOf": "{count}단계 중 {n}단계",
+  "setup.next": "다음",
+  "setup.back": "뒤로",
+  "setup.stepName": "이름",
+  "setup.stepMaps": "배경 지도",
+  "setup.signupIntro":
+    "설정이 끝난 뒤 로그인할 수 있는 사람과 그들이 받는 역할입니다. 나중에 관리 → 가입 규칙에서 바꿀 수 있습니다.",
+  "setup.mapsIntro":
+    "OpenStreetMap 지도는 설정 없이 작동합니다. 원하면 여기에서 항공 사진이나 조직 자체의 지도 서비스를 추가하세요. 나중에 관리 → 플러그인에서 바꿀 수 있습니다.",
   "consent.title": "AI 에이전트 연결",
   "consent.incomplete": "이 링크가 불완전합니다. AI 앱에서 연결을 다시 시작하세요.",
   "consent.signInFirst": "앱 연결을 허용할지 결정하려면 MobSimLab에 로그인하세요.",

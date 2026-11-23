@@ -1274,6 +1274,15 @@ export const editorsNl = {
   "setup.wizardIntro": "Jij bent de eigenaar. Anderen kunnen pas inloggen als je de inrichting afrondt.",
   "setup.instanceName": "Naam van de instantie",
   "setup.finish": "Inrichting afronden",
+  "setup.stepOf": "Stap {n} van {count}",
+  "setup.next": "Volgende",
+  "setup.back": "Terug",
+  "setup.stepName": "Naam",
+  "setup.stepMaps": "Basiskaarten",
+  "setup.signupIntro":
+    "Wie zich na de installatie mag aanmelden en welke rol die krijgt. U kunt dit later wijzigen onder Beheer → Aanmeldregels.",
+  "setup.mapsIntro":
+    "OpenStreetMap-kaarten werken zonder instellen. Voeg hier desgewenst luchtfoto's of de eigen kaartdiensten van uw organisatie toe. U kunt dit later wijzigen onder Beheer → Plug-ins.",
   "consent.title": "Een AI-agent koppelen",
   "consent.incomplete": "Deze link is onvolledig. Start de koppeling opnieuw in je AI-app.",
   "consent.signInFirst": "Log in bij MobSimLab om te beslissen of de app mag koppelen.",

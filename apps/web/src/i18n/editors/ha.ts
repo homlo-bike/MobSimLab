@@ -1257,6 +1257,15 @@ export const editorsHa = {
   "setup.wizardIntro": "Kai ne Mamallaki. Wasu ba za su iya shiga ba har sai ka gama saitawa.",
   "setup.instanceName": "Sunan tsarin",
   "setup.finish": "Gama saitawa",
+  "setup.stepOf": "Mataki {n} cikin {count}",
+  "setup.next": "Gaba",
+  "setup.back": "Baya",
+  "setup.stepName": "Suna",
+  "setup.stepMaps": "Taswirorin tushe",
+  "setup.signupIntro":
+    "Wanda zai iya shiga bayan an gama saitawa, da matsayin da zai samu. Za ka iya canza wannan daga baya a Gudanarwa → Dokokin rajista.",
+  "setup.mapsIntro":
+    "Taswirorin OpenStreetMap suna aiki ba tare da saitawa ba. Ƙara hotunan sama ko sabis na taswira na ƙungiyarka a nan idan kana so. Za ka iya canza wannan daga baya a Gudanarwa → Ƙarin manhajoji.",
   "consent.title": "Haɗa wakilin AI",
   "consent.incomplete": "Wannan mahaɗin bai cika ba. Sake fara haɗin a manhajar AI ɗinka.",
   "consent.signInFirst": "Shiga MobSimLab don yanke shawara ko manhajar za ta iya haɗuwa.",

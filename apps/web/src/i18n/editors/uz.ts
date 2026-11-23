@@ -1273,6 +1273,15 @@ export const editorsUz = {
   "setup.wizardIntro": "Siz egasiz. Sozlashni tugatmaguningizcha boshqalar tizimga kira olmaydi.",
   "setup.instanceName": "Nusxa nomi",
   "setup.finish": "Sozlashni tugatish",
+  "setup.stepOf": "{count} qadamdan {n}-qadam",
+  "setup.next": "Keyingi",
+  "setup.back": "Orqaga",
+  "setup.stepName": "Nomi",
+  "setup.stepMaps": "Asosiy xaritalar",
+  "setup.signupIntro":
+    "Sozlash tugagach kim kira oladi va qanday rol oladi. Buni keyinroq Boshqaruv → Roʻyxatdan oʻtish qoidalari boʻlimida oʻzgartirishingiz mumkin.",
+  "setup.mapsIntro":
+    "OpenStreetMap xaritalari sozlashsiz ishlaydi. Xohlasangiz, bu yerda aerofotosuratlar yoki tashkilotingizning oʻz xarita xizmatlarini qoʻshing. Buni keyinroq Boshqaruv → Plaginlar boʻlimida oʻzgartirishingiz mumkin.",
   "consent.title": "AI agentini ulash",
   "consent.incomplete": "Bu havola toʻliq emas. AI ilovangizda ulanishni qaytadan boshlang.",
   "consent.signInFirst": "Ilova ulanishi mumkinligini hal qilish uchun MobSimLab ga kiring.",

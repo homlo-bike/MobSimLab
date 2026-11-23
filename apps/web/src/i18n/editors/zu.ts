@@ -1291,6 +1291,15 @@ export const editorsZu = {
   "setup.wizardIntro": "Wena unguMnikazi. Abanye abantu abakwazi ukungena uze uqede ukusetha.",
   "setup.instanceName": "Igama lohlelo",
   "setup.finish": "Qeda ukusetha",
+  "setup.stepOf": "Isinyathelo {n} kwezingu-{count}",
+  "setup.next": "Okulandelayo",
+  "setup.back": "Emuva",
+  "setup.stepName": "Igama",
+  "setup.stepMaps": "Amamephu ayisisekelo",
+  "setup.signupIntro":
+    "Ubani ongangena uma ukusetha sekuqediwe, nendima azoyithola. Ungashintsha lokhu kamuva ku-Ukuphatha → Imithetho yokubhalisa.",
+  "setup.mapsIntro":
+    "Amamephu e-OpenStreetMap asebenza ngaphandle kokusetha. Engeza lapha izithombe zasemoyeni noma izinsiza zamamephu zenhlangano yakho uma uzifuna. Ungashintsha lokhu kamuva ku-Ukuphatha → Ama-plugin.",
   "consent.title": "Xhuma i-ejenti ye-AI",
   "consent.incomplete": "Lesi sixhumanisi asiphelele. Qala kabusha ukuxhuma kuhlelo lwakho lwe-AI.",
   "consent.signInFirst": "Ngena ku-MobSimLab ukuze unqume ukuthi uhlelo lungaxhuma yini.",

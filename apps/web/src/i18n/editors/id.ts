@@ -1262,6 +1262,15 @@ export const editorsId = {
     "Anda adalah pemiliknya. Tidak ada orang lain yang dapat masuk sampai penyiapan selesai.",
   "setup.instanceName": "Nama instans",
   "setup.finish": "Selesaikan penyiapan",
+  "setup.stepOf": "Langkah {n} dari {count}",
+  "setup.next": "Berikutnya",
+  "setup.back": "Kembali",
+  "setup.stepName": "Nama",
+  "setup.stepMaps": "Peta dasar",
+  "setup.signupIntro":
+    "Siapa yang boleh masuk setelah penyiapan selesai, dan peran yang mereka dapat. Anda bisa mengubahnya nanti di Administrasi → Aturan pendaftaran.",
+  "setup.mapsIntro":
+    "Peta OpenStreetMap berfungsi tanpa penyiapan. Tambahkan citra udara atau layanan peta milik organisasi Anda di sini jika perlu. Anda bisa mengubahnya nanti di Administrasi → Plugin.",
   "consent.title": "Hubungkan agen AI",
   "consent.incomplete": "Tautan ini tidak lengkap. Mulai koneksi lagi dari aplikasi AI Anda.",
   "consent.signInFirst": "Masuk ke MobSimLab untuk memutuskan apakah aplikasi boleh terhubung.",

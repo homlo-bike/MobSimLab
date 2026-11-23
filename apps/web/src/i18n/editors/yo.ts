@@ -1224,6 +1224,15 @@ export const editorsYo = {
   "setup.wizardIntro": "Ìwọ ni Olùní. Àwọn míì kò lè wọlé títí o fi parí ìṣètò.",
   "setup.instanceName": "Orúkọ ètò",
   "setup.finish": "Parí ìṣètò",
+  "setup.stepOf": "Ìgbésẹ̀ {n} nínú {count}",
+  "setup.next": "Tẹ̀síwájú",
+  "setup.back": "Padà",
+  "setup.stepName": "Orúkọ",
+  "setup.stepMaps": "Àwọn máàpù ìpìlẹ̀",
+  "setup.signupIntro":
+    "Ẹni tí ó lè wọlé lẹ́yìn tí ìṣètò bá parí, àti ipa tí wọ́n máa ní. O lè yí èyí padà nígbà míì ní Ìṣàkóso → Òfin ìforúkọsílẹ̀.",
+  "setup.mapsIntro":
+    "Àwọn máàpù OpenStreetMap ń ṣiṣẹ́ láìsí ìṣètò. Fi àwọn àwòrán láti òfuurufú tàbí iṣẹ́ máàpù ti àjọ rẹ kún ibí tí o bá fẹ́. O lè yí èyí padà nígbà míì ní Ìṣàkóso → Àwọn àfikún.",
   "consent.title": "So aṣojú AI pọ̀",
   "consent.incomplete": "Ìjápọ̀ yìí kò pé. Tún bẹ̀rẹ̀ ìsopọ̀ náà nínú áàpù AI rẹ.",
   "consent.signInFirst": "Wọlé sí MobSimLab láti pinnu bóyá áàpù náà lè so pọ̀.",

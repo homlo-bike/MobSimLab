@@ -1277,6 +1277,15 @@ export const editorsEs = {
     "Eres la persona propietaria. Nadie más puede iniciar sesión hasta que termines la configuración.",
   "setup.instanceName": "Nombre de la instancia",
   "setup.finish": "Terminar la configuración",
+  "setup.stepOf": "Paso {n} de {count}",
+  "setup.next": "Siguiente",
+  "setup.back": "Atrás",
+  "setup.stepName": "Nombre",
+  "setup.stepMaps": "Mapas base",
+  "setup.signupIntro":
+    "Quién puede iniciar sesión cuando termine la configuración y qué rol recibe. Puede cambiarlo más tarde en Administración → Reglas de registro.",
+  "setup.mapsIntro":
+    "Los mapas de OpenStreetMap funcionan sin configurar nada. Añada aquí imágenes aéreas o los servicios de mapas propios de su organización si los quiere. Puede cambiarlo más tarde en Administración → Complementos.",
   "consent.title": "Conectar un agente de IA",
   "consent.incomplete": "Este enlace está incompleto. Vuelve a iniciar la conexión en tu aplicación de IA.",
   "consent.signInFirst": "Inicia sesión en MobSimLab para decidir si la aplicación puede conectarse.",

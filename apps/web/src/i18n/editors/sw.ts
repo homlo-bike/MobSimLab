@@ -1267,6 +1267,15 @@ export const editorsSw = {
   "setup.wizardIntro": "Wewe ndiye Mmiliki. Watu wengine hawawezi kuingia hadi umalize usanidi.",
   "setup.instanceName": "Jina la mfumo",
   "setup.finish": "Maliza usanidi",
+  "setup.stepOf": "Hatua {n} kati ya {count}",
+  "setup.next": "Endelea",
+  "setup.back": "Rudi",
+  "setup.stepName": "Jina",
+  "setup.stepMaps": "Ramani za msingi",
+  "setup.signupIntro":
+    "Nani anaweza kuingia baada ya usanidi kukamilika, na jukumu atakalopata. Unaweza kubadilisha hili baadaye katika Usimamizi → Kanuni za usajili.",
+  "setup.mapsIntro":
+    "Ramani za OpenStreetMap zinafanya kazi bila usanidi. Ongeza hapa picha za angani au huduma za ramani za shirika lako ukipenda. Unaweza kubadilisha hili baadaye katika Usimamizi → Programu-jalizi.",
   "consent.title": "Unganisha wakala wa AI",
   "consent.incomplete": "Kiungo hiki hakijakamilika. Anza muunganiko tena kwenye programu yako ya AI.",
   "consent.signInFirst": "Ingia kwenye MobSimLab kuamua kama programu inaweza kuunganishwa.",

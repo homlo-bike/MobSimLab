@@ -1235,6 +1235,15 @@ export const editorsTr = {
   "setup.wizardIntro": "Sahibi sizsiniz. Kurulum bitene kadar başka kimse oturum açamaz.",
   "setup.instanceName": "Kurulum adı",
   "setup.finish": "Kurulumu bitir",
+  "setup.stepOf": "Adım {n}/{count}",
+  "setup.next": "İleri",
+  "setup.back": "Geri",
+  "setup.stepName": "Ad",
+  "setup.stepMaps": "Altlık haritalar",
+  "setup.signupIntro":
+    "Kurulum bittikten sonra kimlerin oturum açabileceği ve hangi rolü alacağı. Bunu daha sonra Yönetim → Kayıt kuralları bölümünden değiştirebilirsiniz.",
+  "setup.mapsIntro":
+    "OpenStreetMap haritaları kurulum gerektirmez. İsterseniz hava fotoğraflarını veya kuruluşunuzun kendi harita hizmetlerini buradan ekleyin. Bunu daha sonra Yönetim → Eklentiler bölümünden değiştirebilirsiniz.",
   "consent.title": "Bir yapay zekâ ajanı bağla",
   "consent.incomplete": "Bu bağlantı eksik. Bağlanmayı yapay zekâ uygulamanızdan yeniden başlatın.",
   "consent.signInFirst":

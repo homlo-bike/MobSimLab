@@ -1294,6 +1294,15 @@ export const editorsFr = {
     "Vous êtes le propriétaire. Personne d’autre ne peut se connecter tant que la configuration n’est pas terminée.",
   "setup.instanceName": "Nom de l’instance",
   "setup.finish": "Terminer la configuration",
+  "setup.stepOf": "Étape {n} sur {count}",
+  "setup.next": "Suivant",
+  "setup.back": "Retour",
+  "setup.stepName": "Nom",
+  "setup.stepMaps": "Fonds de carte",
+  "setup.signupIntro":
+    "Qui peut se connecter une fois la configuration terminée, et le rôle attribué. Vous pourrez le modifier plus tard dans Administration → Règles d’inscription.",
+  "setup.mapsIntro":
+    "Les cartes OpenStreetMap fonctionnent sans configuration. Ajoutez ici l’imagerie aérienne ou les services cartographiques de votre organisation si vous le souhaitez. Vous pourrez le modifier plus tard dans Administration → Extensions.",
   "consent.title": "Connecter un agent IA",
   "consent.incomplete": "Ce lien est incomplet. Relancez la connexion depuis votre application d’IA.",
   "consent.signInFirst": "Connectez-vous à MobSimLab pour décider si l’application peut se connecter.",

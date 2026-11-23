@@ -1273,6 +1273,15 @@ export const editorsPt = {
     "Você é o proprietário. Outras pessoas só podem entrar depois que você concluir a configuração.",
   "setup.instanceName": "Nome da instância",
   "setup.finish": "Concluir configuração",
+  "setup.stepOf": "Passo {n} de {count}",
+  "setup.next": "Seguinte",
+  "setup.back": "Voltar",
+  "setup.stepName": "Nome",
+  "setup.stepMaps": "Mapas base",
+  "setup.signupIntro":
+    "Quem pode iniciar sessão quando a configuração terminar e que função recebe. Pode alterar isto mais tarde em Administração → Regras de cadastro.",
+  "setup.mapsIntro":
+    "Os mapas do OpenStreetMap funcionam sem configuração. Adicione aqui imagens aéreas ou os serviços de mapas da sua organização, se os quiser. Pode alterar isto mais tarde em Administração → Plugins.",
   "consent.title": "Conectar um agente de IA",
   "consent.incomplete": "Este link está incompleto. Inicie a conexão de novo no seu app de IA.",
   "consent.signInFirst": "Entre no MobSimLab para decidir se o app pode se conectar.",

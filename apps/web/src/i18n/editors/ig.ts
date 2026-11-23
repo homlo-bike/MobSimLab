@@ -1221,6 +1221,15 @@ export const editorsIg = {
   "setup.wizardIntro": "Ị bụ Onye nwe. Ndị ọzọ enweghị ike ịbanye ruo mgbe ị mechara nhazi.",
   "setup.instanceName": "Aha sistemụ",
   "setup.finish": "Mechaa nhazi",
+  "setup.stepOf": "Nzọụkwụ {n} n'ime {count}",
+  "setup.next": "Ọzọ",
+  "setup.back": "Laghachi",
+  "setup.stepName": "Aha",
+  "setup.stepMaps": "Maapụ ntọala",
+  "setup.signupIntro":
+    "Onye nwere ike ịbanye ma emechaa nhazi, na ọrụ ha ga-enweta. Ị nwere ike ịgbanwe nke a mgbe e mesịrị na Nchịkwa → Iwu ndebanye aha.",
+  "setup.mapsIntro":
+    "Maapụ OpenStreetMap na-arụ ọrụ na-enweghị nhazi. Tinye ebe a foto ikuku ma ọ bụ ọrụ maapụ nke otu gị ma ọ bụrụ na ịchọrọ ha. Ị nwere ike ịgbanwe nke a mgbe e mesịrị na Nchịkwa → Ngwa mgbakwunye.",
   "consent.title": "Jikọọ onye nnọchite AI",
   "consent.incomplete": "Njikọ a ezughị ezu. Malitegharịa njikọ ahụ na ngwa AI gị.",
   "consent.signInFirst": "Banye na MobSimLab iji kpebie ma ngwa ahụ nwere ike ijikọ.",

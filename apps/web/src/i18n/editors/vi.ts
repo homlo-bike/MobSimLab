@@ -1223,6 +1223,15 @@ export const editorsVi = {
   "setup.wizardIntro": "Bạn là chủ sở hữu. Không ai khác có thể đăng nhập cho đến khi hoàn tất thiết lập.",
   "setup.instanceName": "Tên phiên bản",
   "setup.finish": "Hoàn tất thiết lập",
+  "setup.stepOf": "Bước {n}/{count}",
+  "setup.next": "Tiếp",
+  "setup.back": "Quay lại",
+  "setup.stepName": "Tên",
+  "setup.stepMaps": "Bản đồ nền",
+  "setup.signupIntro":
+    "Ai được đăng nhập khi thiết lập xong và họ nhận vai trò gì. Bạn có thể đổi sau trong Quản trị → Quy tắc đăng ký.",
+  "setup.mapsIntro":
+    "Bản đồ OpenStreetMap dùng được ngay mà không cần thiết lập. Nếu muốn, hãy thêm ảnh hàng không hoặc dịch vụ bản đồ riêng của tổ chức tại đây. Bạn có thể đổi sau trong Quản trị → Plugin.",
   "consent.title": "Kết nối tác tử AI",
   "consent.incomplete": "Liên kết này không đầy đủ. Hãy bắt đầu kết nối lại từ ứng dụng AI của bạn.",
   "consent.signInFirst": "Đăng nhập vào MobSimLab để quyết định có cho ứng dụng kết nối hay không.",
