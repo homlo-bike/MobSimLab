@@ -1,4 +1,5 @@
 import type { LineView, LonLat, Status } from "./types";
+import { withUnit } from "../../i18n/units";
 
 /** Minimal GeoJSON types (RFC 7946) used by the editor. */
 export interface Geometry {
@@ -85,10 +86,10 @@ export function groupLinksToGeoJson(view: LineView): FeatureCollection<LineStrin
 
 /** Purpose: "1.2 km" / "350 m". */
 export function formatLength(m: number): string {
-  return m >= 1000 ? `${(m / 1000).toFixed(m >= 10_000 ? 1 : 2)} km` : `${Math.round(m)} m`;
+  return m >= 1000 ? withUnit((m / 1000).toFixed(m >= 10_000 ? 1 : 2), "km") : withUnit(Math.round(m), "m");
 }
 
 /** Purpose: "12 min" / "45 s". */
 export function formatTime(s: number): string {
-  return s >= 90 ? `${Math.round(s / 60)} min` : `${Math.round(s)} s`;
+  return s >= 90 ? withUnit(Math.round(s / 60), "min") : withUnit(Math.round(s), "s");
 }

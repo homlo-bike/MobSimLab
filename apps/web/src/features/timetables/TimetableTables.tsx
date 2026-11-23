@@ -52,6 +52,7 @@ import { type DayPublications, useRailPublications } from "./railPublish";
 import { TablePart } from "../tables/sections";
 import { SPARE_PREF, TERMINAL_WAIT_PREF } from "../../workspace/editedElsewhere";
 import { engineErrorText } from "../../i18n/engine";
+import { withUnit } from "../../i18n/units";
 
 interface Props {
   railway: Network | null;
@@ -104,7 +105,7 @@ const WAIT_KEY = TERMINAL_WAIT_PREF;
 const SPARE_KEY = SPARE_PREF;
 const int = (v: number) => new Intl.NumberFormat("en").format(Math.round(v));
 const hours = (s: number) =>
-  `${Math.floor(s / 3600)} h ${String(Math.round((s % 3600) / 60)).padStart(2, "0")} min`;
+  `${withUnit(Math.floor(s / 3600), "h")} ${withUnit(String(Math.round((s % 3600) / 60)).padStart(2, "0"), "min")}`;
 
 /** Purpose: every line's trips and blocks on one day type. */
 function linesOn(

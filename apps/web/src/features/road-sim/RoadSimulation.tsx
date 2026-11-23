@@ -25,6 +25,7 @@ import { ensureReplayLayers, hasServiceTimes, removeReplayLayers, replaySpan, se
 import { buildScenario } from "./scenario";
 import type { Replay, RoadEvent, RoadLineResult, RoadResult, RoadStep } from "./types";
 import { engineErrorText } from "../../i18n/engine";
+import { withUnit } from "../../i18n/units";
 
 const H = 3600;
 const PERIODS = [
@@ -47,7 +48,7 @@ const STATUS_TONE: Record<RunStatus, string> = {
 };
 
 const pct = (x: number) => `${Math.round(x * 100)} %`;
-const mins = (s: number) => (s < 90 ? `${Math.round(s)} s` : `${(s / 60).toFixed(1)} min`);
+const mins = (s: number) => (s < 90 ? withUnit(Math.round(s), "s") : withUnit((s / 60).toFixed(1), "min"));
 const message = (e: unknown) => engineErrorText(e);
 
 interface Props {
@@ -537,7 +538,7 @@ function LineCard({ line }: { line: RoadLineResult }) {
   if (!line.problem) {
     rows.push([t("road.kpi.trips"), `${line.trips_run ?? 0} / ${line.trips ?? 0}`]);
     rows.push([t("road.kpi.cycle"), `${mins(line.planned_run_s ?? 0)} → ${mins(line.run_cycle_s ?? 0)}`]);
-    rows.push([t("road.kpi.speed"), `${(line.speed_kmh ?? 0).toFixed(1)} km/h`]);
+    rows.push([t("road.kpi.speed"), withUnit((line.speed_kmh ?? 0).toFixed(1), "km/h")]);
     rows.push([t("road.kpi.punctuality"), pct(line.punctuality ?? 1)]);
     rows.push([t("road.kpi.delay"), `${mins(line.mean_delay_s ?? 0)} / ${mins(line.p95_delay_s ?? 0)}`]);
     rows.push([t("road.kpi.bunching"), pct(line.bunched_share ?? 0)]);
