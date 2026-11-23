@@ -119,6 +119,10 @@ import {
   paramNumber,
   sameNameStationM,
   streetRulesFrom,
+  choiceValue,
+  countryDrivingSide,
+  DRIVING_SIDE_PREF,
+  withCountryDrivingSide,
   switchChoiceFrom,
   vehiclesOffFrom,
 } from "./preferences";
@@ -670,6 +674,19 @@ export function Workspace({
   // The project's country: the main one of its area, looked up once (#140 step 3); else at the drawing.
   const drawnCountry = usePlaceCountry(areaView?.countries?.main ? null : place);
   const placeCountry = areaView?.countries?.main?.iso2 ?? drawnCountry;
+  // A new project keeps to the driving side of its country (Project preferences → Parameters), set once the
+  // country is known and before any street line or street setup is drawn, so existing street work keeps its side.
+  const sideToSet =
+    editable &&
+    drawings.loaded &&
+    !streetLines?.lines.length &&
+    !setups.length &&
+    choiceValue(preferences, DRIVING_SIDE_PREF) === undefined
+      ? countryDrivingSide(placeCountry)
+      : null;
+  useEffect(() => {
+    if (sideToSet) drawings.set("preferences", withCountryDrivingSide(preferences, placeCountry)!);
+  }, [sideToSet, projectId]);
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
