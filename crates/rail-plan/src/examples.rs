@@ -58,5 +58,6 @@ pub fn metro_m1() -> LineSpec {
             band(19.0, 24.0, 600.0),
         ],
         return_offset_s: None,
+        priority: 0,
     }
 }

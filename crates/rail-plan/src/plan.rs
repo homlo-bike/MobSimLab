@@ -76,11 +76,14 @@ pub struct PlanParams {
     /// Time a train brought out of stabling stands in its first platform
     /// before departure (boarding), s.
     pub pull_out_margin_s: f64,
+    /// Longest a train waits at a station for a train of a higher-ranked line to pass, s.
+    pub max_overtake_wait_s: f64,
 }
 
 impl Default for PlanParams {
     /// Purpose: metro planning defaults (min buffer from the assumption library's
-    /// metro value, 4 min shift (2 min left too many trips out where lines of different headways share track, Damascus test), 15 min for depot moves, 20 min idle limit).
+    /// metro value, 4 min shift (2 min left too many trips out where lines of different headways share track, Damascus test), 15 min for depot moves, 20 min idle limit, 10 min longest wait
+    /// to be overtaken).
     fn default() -> Self {
         Self {
             blocking: BlockingParams::default(),
@@ -92,9 +95,10 @@ impl Default for PlanParams {
             alternative_penalty_m: 500.0,
             change_penalty_m: 2000.0,
             stabling_gap_m: 10.0,
-            max_routes: 64,
+            max_routes: 400,
             terminal_separation_s: 90.0,
             pull_out_margin_s: 90.0,
+            max_overtake_wait_s: 600.0,
         }
     }
 }
@@ -532,6 +536,12 @@ fn periodic_pattern(
 /// itself), m; more and the platform is no place for trains to turn ([`Planner::turning_platforms`]).
 const AGAINST_TOLERANCE_M: f64 = 500.0;
 
+/// How much further than its usual path another path of a train may run against the trains
+/// coming the other way between its first and last station, m: crossing over between stations of
+/// a main line, where crossovers lie a kilometre or more beyond the platforms, takes that much;
+/// a path that keeps to the other direction's track to the next station runs many kilometres.
+const OTHER_TRACK_TOLERANCE_M: f64 = 3000.0;
+
 /// Most routes a way out from a platform reserves ([`Planner::way_out`]).
 const WAY_OUT_ROUTES: usize = 4;
 
@@ -559,6 +569,51 @@ impl Ord for Queued {
             .unwrap_or(std::cmp::Ordering::Equal)
             .then_with(|| o.1.cmp(&self.1))
     }
+}
+
+/// Purpose: the arrival and departure times of a run's calls from its timing.
+/// Inputs: the calls, the departure and the timing. Effect: the calls' times.
+fn set_call_times(calls: &mut [CallTime], depart_s: f64, timing: &RunTiming) {
+    let n = calls.len();
+    let mut k = 0;
+    for (i, c) in calls.iter_mut().enumerate() {
+        if i == 0 {
+            c.depart_s = Some(depart_s);
+        } else if i + 1 == n {
+            c.arrive_s = Some(depart_s + timing.profile.total_time_s());
+        } else if c.stop {
+            let (a, d) = timing.profile.stops[k];
+            k += 1;
+            c.arrive_s = Some(depart_s + a);
+            c.depart_s = Some(depart_s + d);
+        }
+    }
+}
+
+/// Purpose: whether two runs block a section at the same time, with the buffer between them.
+/// Inputs: the blocks of both runs and the buffer, s. Output: true when they do.
+fn blocks_meet(a: &[Blocking], b: &[Blocking], buf: f64) -> bool {
+    let mut by: HashMap<TdsId, Vec<(f64, f64)>> = HashMap::new();
+    for x in b {
+        by.entry(x.tds).or_default().push((x.start_s, x.end_s));
+    }
+    a.iter().any(|x| {
+        by.get(&x.tds).is_some_and(|v| {
+            v.iter()
+                .any(|&(s, e)| x.start_s < e + buf - 1e-6 && s < x.end_s + buf - 1e-6)
+        })
+    })
+}
+
+/// A run with a wait at a station: the run, its timing, the wait (s) and the dwells.
+type Waited = (TrainRun, RunTiming, f64, Vec<Option<f64>>);
+
+/// A change made to let a train pass, with what was there before.
+enum Undo {
+    /// A run that now waits at a station: run index, run and train as they were.
+    Run(usize, Box<PlannedRun>, Vehicle),
+    /// The way out reserved for a standing train, given up: the reservations.
+    Reserved(Vec<(TdsId, (usize, f64, f64))>),
 }
 
 impl<'a> Planner<'a> {
@@ -660,14 +715,21 @@ impl<'a> Planner<'a> {
         // lead out of a terminal the train takes the crossover onto its own track rather than
         // running back along the arrival track to one further on (Damascus test, bug 25).
         let against = self.heads.get(&(line, 1 - dir));
+        // On a main line, track other lines run only the other way costs its length again too:
+        // a train that passes stations without stopping is held to no platform there, and took
+        // the track of the trains coming the other way (test line with regional, IC and ICE).
+        let others = (self.lines[line].priority > 0).then(|| self.other_heads(line));
         let extra = |r: RouteId| -> f64 {
-            let Some(a) = against else {
-                return 0.0;
-            };
             self.m.routes[r as usize]
                 .steps
                 .iter()
-                .filter(|st| a.contains(&(st.piece, st.dir.reverse())))
+                .filter(|st| {
+                    let back = (st.piece, st.dir.reverse());
+                    against.is_some_and(|a| a.contains(&back))
+                        || others
+                            .as_ref()
+                            .is_some_and(|o| o.contains(&back) && !o.contains(&(st.piece, st.dir)))
+                })
                 .map(|st| self.m.pieces[st.piece as usize].length_m())
                 .sum()
         };
@@ -678,6 +740,16 @@ impl<'a> Planner<'a> {
             self.p.max_routes,
             &extra,
         )
+    }
+
+    /// Purpose: the track pieces the other lines' usual runs pass, with the direction they run
+    /// them in. Input: the line. Output: the pieces and directions.
+    fn other_heads(&self, line: usize) -> HashSet<(PieceId, Dir)> {
+        self.heads
+            .iter()
+            .filter(|(k, _)| k.0 != line)
+            .flat_map(|(_, h)| h.iter().copied())
+            .collect()
     }
 
     /// Purpose: build a train run along a path.
@@ -823,7 +895,10 @@ impl<'a> Planner<'a> {
         let mut trips = Vec::new();
         // Nominal occupation of the lines phased so far, per section, sorted by start.
         let mut placed: HashMap<TdsId, Vec<(f64, f64)>> = HashMap::new();
-        for li in 0..self.lines.len() {
+        // Higher-ranked lines choose their tracks first, and the others keep to the same side.
+        let mut order: Vec<usize> = (0..self.lines.len()).collect();
+        order.sort_by_key(|&li| std::cmp::Reverse(self.lines[li].priority));
+        for li in order {
             self.seed_tracks(li);
             let mut t_run = [0.0f64; 2];
             let mut blocks: [Vec<(TdsId, f64, f64)>; 2] = [Vec::new(), Vec::new()];
@@ -1122,6 +1197,42 @@ impl<'a> Planner<'a> {
             .sum()
     }
 
+    /// Purpose: how far a path runs against the other direction of its line between its first and
+    /// last station, on track the other direction's usual run passes the other way. Another
+    /// platform at a station with loops can lead onto the other direction's track all the way to
+    /// the next station, where it meets every train coming the other way (four-track stations on
+    /// a main line); such a path is no alternative to the usual one.
+    /// Inputs: the line, the direction, where the path starts and the path. Output: the length, m.
+    fn against_between(&self, line: usize, dir: u8, origin: Place, path: &FoundPath) -> f64 {
+        let none = HashSet::new();
+        let heads = self.heads.get(&(line, 1 - dir)).unwrap_or(&none);
+        let others = (self.lines[line].priority > 0).then(|| self.other_heads(line));
+        let ends: HashSet<usize> = [Some(&origin), path.places.last()]
+            .into_iter()
+            .flatten()
+            .filter_map(|pl| match *pl {
+                Place::Platform(p) => Some(self.m.platforms[p as usize].station),
+                _ => None,
+            })
+            .flat_map(|st| self.m.stations[st as usize].platforms.iter())
+            .map(|&p| self.m.platforms[p as usize].track)
+            .collect();
+        route_steps(self.m, &path.routes)
+            .unwrap_or_default()
+            .iter()
+            .filter(|st| {
+                let back = (st.piece, st.dir.reverse());
+                heads.contains(&back)
+                    || others
+                        .as_ref()
+                        .is_some_and(|o| o.contains(&back) && !o.contains(&(st.piece, st.dir)))
+            })
+            .map(|st| &self.m.pieces[st.piece as usize])
+            .filter(|pc| !ends.contains(&pc.track))
+            .map(|pc| pc.length_m())
+            .sum()
+    }
+
     /// Purpose: match the arrivals of a line direction at a terminal with one platform trains can
     /// turn in to the departures back. Trains there leave in the order they came, and each must be
     /// gone before the next comes in; matched as at other terminals (the latest arrival that can
@@ -1204,11 +1315,28 @@ impl<'a> Planner<'a> {
             pl.ends.retain(|k, _| k.0 != line);
             pl.forget_paths();
         };
-        let ret = |pl: &Planner, p: &FoundPath, dir: u8| -> Option<FoundPath> {
+        // On a main line, the way back keeps off the track the way out runs on: with four-track
+        // stations, both directions took the same track all the way (test line).
+        let main_line = self.lines[line].priority > 0;
+        let ret = |pl: &mut Planner, p: &FoundPath, dir: u8| -> Option<FoundPath> {
             let end = *p.places.last()?;
             let steps = route_steps(pl.m, &p.routes).ok()?;
             let d = arrival_dir(pl.m, &steps, end)?.reverse();
-            pl.trip_path(line, 1 - dir, end, d, &[])
+            if !main_line {
+                return pl.trip_path(line, 1 - dir, end, d, &[]);
+            }
+            let old = pl.heads.insert(
+                (line, dir),
+                steps.iter().map(|st| (st.piece, st.dir)).collect(),
+            );
+            pl.forget_paths();
+            let back = pl.trip_path(line, 1 - dir, end, d, &[]);
+            match old {
+                Some(h) => pl.heads.insert((line, dir), h),
+                None => pl.heads.remove(&(line, dir)),
+            };
+            pl.forget_paths();
+            back
         };
         // Outbound paths to try: the best from each first platform, and each with one of its places
         // banned (another platform at a station, or another terminal platform).
@@ -1814,21 +1942,7 @@ impl<'a> Planner<'a> {
     ) -> usize {
         let idx = self.runs.len();
         self.unreserve(pr.vehicle);
-        // Call times from the profile.
-        let n = pr.calls.len();
-        let mut k = 0;
-        for (i, c) in pr.calls.iter_mut().enumerate() {
-            if i == 0 {
-                c.depart_s = Some(pr.run.depart_s);
-            } else if i + 1 == n {
-                c.arrive_s = Some(pr.run.depart_s + timing.profile.total_time_s());
-            } else if c.stop {
-                let (a, d) = timing.profile.stops[k];
-                k += 1;
-                c.arrive_s = Some(pr.run.depart_s + a);
-                c.depart_s = Some(pr.run.depart_s + d);
-            }
-        }
+        set_call_times(&mut pr.calls, pr.run.depart_s, &timing);
         pr.blocking = timing.blocking;
         self.runs.push(pr);
         if let Some((p, pt)) = prev {
@@ -2095,13 +2209,39 @@ impl<'a> Planner<'a> {
         // Paths to try: the best, then each with one of its platforms banned.
         let mut attempts: Vec<FoundPath> = Vec::new();
         if let Some(best) = self.trip_path(trip.line, trip.dir, origin, depart_dir, &[]) {
+            let usual = self.against_between(trip.line, trip.dir, origin, &best);
             for pl in &best.places {
                 if let Some(alt) = self.trip_path(trip.line, trip.dir, origin, depart_dir, &[*pl]) {
                     if !attempts.iter().any(|a| a.routes == alt.routes)
                         && alt.routes != best.routes
                         && !self.against_the_other_way(trip.line, trip.dir, &alt.places)
+                        && self.against_between(trip.line, trip.dir, origin, &alt)
+                            <= usual + OTHER_TRACK_TOLERANCE_M
                     {
                         attempts.push(alt);
+                    }
+                }
+            }
+            // On a main line, every platform of the terminal: a train held to the two nearest
+            // ones could not get in while trains of other lines stood in both (test line, IC).
+            if self.lines[trip.line].priority > 0 {
+                let last = self.cands[trip.line][trip.dir as usize].len() - 1;
+                let far: Vec<Place> = self.cands[trip.line][trip.dir as usize][last]
+                    .iter()
+                    .map(|&p| Place::Platform(p))
+                    .collect();
+                for &p in &far {
+                    let banned: Vec<Place> = far.iter().copied().filter(|&x| x != p).collect();
+                    if let Some(alt) =
+                        self.trip_path(trip.line, trip.dir, origin, depart_dir, &banned)
+                    {
+                        if !attempts.iter().any(|a| a.routes == alt.routes)
+                            && alt.routes != best.routes
+                            && self.against_between(trip.line, trip.dir, origin, &alt)
+                                <= usual + OTHER_TRACK_TOLERANCE_M
+                        {
+                            attempts.push(alt);
+                        }
                     }
                 }
             }
@@ -2111,8 +2251,8 @@ impl<'a> Planner<'a> {
         let mut first_err: Option<(Msg, Blocker)> = None;
         // Each path is searched for its earliest conflict-free departure; the one
         // that departs earliest wins (another platform before a later departure).
-        let mut best: Option<(f64, usize, TrainRun, RunTiming, Option<RunTiming>)> = None;
-        for (ai, path) in attempts.iter().enumerate() {
+        let mut best: Option<(f64, FoundPath, TrainRun, RunTiming, Option<RunTiming>)> = None;
+        for path in attempts.iter() {
             let built = self.build_run(
                 trip.line,
                 &trip.name,
@@ -2134,7 +2274,7 @@ impl<'a> Planner<'a> {
             match self.search_time(&mk, earliest, true, self.p.max_shift_s, vehicle, prev, idx) {
                 Ok((timing, t, prev_t)) => {
                     if best.as_ref().map_or(true, |b| t < b.0 - 0.5) {
-                        best = Some((t, ai, mk(t), timing, prev_t));
+                        best = Some((t, path.clone(), mk(t), timing, prev_t));
                     }
                     if t <= earliest + 0.5 {
                         break;
@@ -2148,8 +2288,30 @@ impl<'a> Planner<'a> {
                 }
             }
         }
-        if let Some((t, ai, run, timing, prev_t)) = best {
-            let path = &attempts[ai];
+        // Where lines of different ranks share track, a train that would leave late or not at all
+        // has the lower-ranked trains in its way wait at a station for it, or waits there itself
+        // for a higher-ranked one, if that costs less time.
+        let mut waited: Option<Vec<Option<f64>>> = None;
+        if best.as_ref().map_or(true, |b| b.0 > earliest + 0.5) && !attempts.is_empty() {
+            let shift = best.as_ref().map(|b| b.0 - earliest);
+            if let Some((t, path, run, timing, prev_t, dw)) = self.overtake(
+                trip,
+                &attempts[0],
+                dwells,
+                origin,
+                depart_dir,
+                earliest,
+                vehicle,
+                prev,
+                hold_until,
+                shift,
+            ) {
+                best = Some((t, path, run, timing, prev_t));
+                waited = dw;
+            }
+        }
+        if let Some((t, path, run, timing, prev_t)) = best {
+            let dwells = waited.as_deref().unwrap_or(dwells);
             let mut places = vec![origin];
             places.extend(path.places.iter().copied());
             let mut dw = vec![None];
@@ -2175,7 +2337,9 @@ impl<'a> Planner<'a> {
                     by_s: t - trip.dep,
                 });
             }
-            self.remember(trip, &path.places);
+            if waited.is_none() {
+                self.remember(trip, &path.places);
+            }
             let arr = self.runs[i].arrive_s();
             self.vehicles[vehicle] = Vehicle {
                 at: end,
@@ -2186,6 +2350,376 @@ impl<'a> Planner<'a> {
             return Ok(());
         }
         Err(first_err.unwrap_or(last_err))
+    }
+
+    /// Purpose: let a trip keep its time where a train of another rank is in its way: lower-ranked
+    /// trains in its way wait at a station for it to pass, or, when a higher-ranked train is in its
+    /// way, it waits at a station for that one, whichever applies, within
+    /// [`PlanParams::max_overtake_wait_s`].
+    /// Inputs: the trip, its usual path and dwells, where and which way it starts, its earliest
+    /// departure, train, previous run, how long it holds its last platform, and how much later it
+    /// could leave without this (None: not at all). Output: the departure, path, run, timing, the
+    /// previous run's timing and, when the trip itself waits, its dwells; None when neither helps.
+    /// Effect: the runs that wait for it are changed.
+    #[allow(clippy::too_many_arguments, clippy::type_complexity)]
+    fn overtake(
+        &mut self,
+        trip: &Trip,
+        path: &FoundPath,
+        dwells: &[Option<f64>],
+        origin: Place,
+        depart_dir: Dir,
+        earliest: f64,
+        vehicle: usize,
+        prev: Option<usize>,
+        hold_until: f64,
+        shift: Option<f64>,
+    ) -> Option<(
+        f64,
+        FoundPath,
+        TrainRun,
+        RunTiming,
+        Option<RunTiming>,
+        Option<Vec<Option<f64>>>,
+    )> {
+        let rank = self.lines[trip.line].priority;
+        if self.lines.iter().all(|l| l.priority == rank) {
+            return None;
+        }
+        let idx = self.runs.len();
+        let occupy = |t: f64| Some(hold_until + (t - trip.dep).max(0.0));
+        let (base, _) = self
+            .build_run(
+                trip.line,
+                &trip.name,
+                &path.routes,
+                &path.places,
+                dwells,
+                0.0,
+            )
+            .ok()?;
+        let mk = |t: f64| TrainRun {
+            depart_s: t,
+            occupy_until_s: occupy(t),
+            ..base.clone()
+        };
+        let blocker = |pl: &Planner, run: &TrainRun| -> Option<usize> {
+            let timing = pl.timing(run, idx).ok()?;
+            pl.overlaps(&timing.blocking, vehicle, None)
+                .2
+                .map(|(r, _)| r)
+        };
+        let limit = shift.unwrap_or(self.p.max_shift_s + 1.0);
+        // A lower-ranked train may wait longer than a departure may move, for the higher-ranked.
+        let wait_limit = shift.unwrap_or(self.p.max_overtake_wait_s + 1.0);
+        let mut t = earliest;
+        for _ in 0..60 {
+            if t - earliest >= limit - 0.5 {
+                break;
+            }
+            let Ok(timing) = self.timing(&mk(t), idx) else {
+                return None;
+            };
+            let (later, _, who) = self.overlaps(&timing.blocking, vehicle, None);
+            let Some((first, _)) = who else {
+                if let Ok((tm, t2, prev_t)) =
+                    self.search_time(&mk, t, true, 0.0, vehicle, prev, idx)
+                {
+                    return Some((t2, path.clone(), mk(t2), tm, prev_t, None));
+                }
+                return None;
+            };
+            let other =
+                (first < self.runs.len()).then(|| self.lines[self.runs[first].line].priority);
+            if other.is_some_and(|o| o < rank) {
+                // The trains in the way wait for this one, one after the other.
+                let mut undo: Vec<Undo> = Vec::new();
+                let mut who = Some(first);
+                for _ in 0..6 {
+                    let Some(r) = who.filter(|&r| r < self.runs.len()) else {
+                        break;
+                    };
+                    if self.lines[self.runs[r].line].priority >= rank {
+                        break;
+                    }
+                    let Ok(timing) = self.timing(&mk(t), idx) else {
+                        break;
+                    };
+                    // The run itself is in the way, or the way out reserved for its train standing
+                    // in a terminal platform: that train then leaves after this one has passed.
+                    let buf = self.p.min_buffer_s;
+                    let moved = if blocks_meet(&timing.blocking, &self.runs[r].blocking, buf) {
+                        self.hold_back(r, rank, &timing.blocking, &mut undo)
+                    } else {
+                        self.give_up_way_out(self.runs[r].vehicle, &mut undo)
+                    };
+                    if !moved {
+                        break;
+                    }
+                    who = blocker(self, &mk(t));
+                    if who.is_none() {
+                        if let Ok((tm, t2, prev_t)) =
+                            self.search_time(&mk, t, true, 0.0, vehicle, prev, idx)
+                        {
+                            return Some((t2, path.clone(), mk(t2), tm, prev_t, None));
+                        }
+                        break;
+                    }
+                }
+                self.undo(undo);
+            } else if other.is_some_and(|o| o > rank) {
+                // This train waits for the higher-ranked one, if that is sooner than leaving later.
+                let most = wait_limit - (t - earliest);
+                let mut found: Option<(f64, FoundPath, Vec<Option<f64>>)> = None;
+                for (k, wp) in
+                    self.wait_paths(trip.line, trip.dir, origin, depart_dir, path, dwells)
+                {
+                    let most = found.as_ref().map_or(most, |f| f.0);
+                    let ok = |pl: &Planner, tm: &RunTiming| {
+                        pl.overlaps(&tm.blocking, vehicle, None).2.is_none()
+                    };
+                    if let Some((_, _, w, dw)) = self.try_waits(
+                        trip.line,
+                        &trip.name,
+                        k,
+                        &wp,
+                        dwells,
+                        t,
+                        occupy(t),
+                        idx,
+                        most,
+                        &ok,
+                    ) {
+                        found = Some((w, wp, dw));
+                    }
+                }
+                // Or it leaves later, after the higher-ranked train.
+                let late_most = self.p.max_overtake_wait_s.min(most - 1.0).max(0.0);
+                let late = self
+                    .search_time(&mk, t, true, late_most, vehicle, prev, idx)
+                    .ok()
+                    .filter(|x| found.as_ref().map_or(true, |f| x.1 - t < f.0));
+                if let Some((tm, t2, prev_t)) = late {
+                    return Some((t2, path.clone(), mk(t2), tm, prev_t, None));
+                }
+                if let Some((_, wp, dw)) = found {
+                    if let Ok((b2, _)) =
+                        self.build_run(trip.line, &trip.name, &wp.routes, &wp.places, &dw, 0.0)
+                    {
+                        let mk2 = |t: f64| TrainRun {
+                            depart_s: t,
+                            occupy_until_s: occupy(t),
+                            ..b2.clone()
+                        };
+                        if let Ok((tm, t2, prev_t)) =
+                            self.search_time(&mk2, t, true, 0.0, vehicle, prev, idx)
+                        {
+                            return Some((t2, wp, mk2(t2), tm, prev_t, Some(dw)));
+                        }
+                    }
+                }
+            }
+            t += later.max(1.0);
+        }
+        None
+    }
+
+    /// Purpose: the paths on which a train can wait at a station for another to pass: at each stop,
+    /// its own path, and the path with another platform there (a loop, or the far side of an
+    /// island), unless that leads onto the other direction's track.
+    /// Inputs: the line, direction, where and which way it starts, its path and dwells.
+    /// Output: (index of the stop among the path's places, path) pairs.
+    fn wait_paths(
+        &self,
+        line: usize,
+        dir: u8,
+        origin: Place,
+        depart_dir: Dir,
+        path: &FoundPath,
+        dwells: &[Option<f64>],
+    ) -> Vec<(usize, FoundPath)> {
+        let usual = self.against_between(line, dir, origin, path);
+        let mut out = Vec::new();
+        for k in 0..path.places.len().saturating_sub(1) {
+            if dwells.get(k).copied().flatten().is_none() {
+                continue;
+            }
+            out.push((k, path.clone()));
+            if let Some(alt) = self.trip_path(line, dir, origin, depart_dir, &[path.places[k]]) {
+                if alt.places.len() == path.places.len()
+                    && alt.routes != path.routes
+                    && self.against_between(line, dir, origin, &alt)
+                        <= usual + OTHER_TRACK_TOLERANCE_M
+                {
+                    out.push((k, alt));
+                }
+            }
+        }
+        out
+    }
+
+    /// Purpose: the shortest wait at one stop of a path that makes a run acceptable.
+    /// Inputs: the line, run name, stop index, path, dwells, departure, how long it holds its last
+    /// platform (moved on by the wait), index of the run, the longest wait to try and the test.
+    /// Output: the run, its timing, the wait and the dwells, or None.
+    #[allow(clippy::too_many_arguments)]
+    fn try_waits(
+        &self,
+        line: usize,
+        name: &str,
+        k: usize,
+        path: &FoundPath,
+        dwells: &[Option<f64>],
+        depart_s: f64,
+        occupy_until_s: Option<f64>,
+        index: usize,
+        most_s: f64,
+        ok: &dyn Fn(&Planner, &RunTiming) -> bool,
+    ) -> Option<Waited> {
+        let step = 30.0;
+        let mut w = step;
+        while w <= self.p.max_overtake_wait_s.min(most_s - 1.0) + 1e-6 {
+            let mut dw = dwells.to_vec();
+            dw[k] = dw[k].map(|d| d + w);
+            let (mut run, _) = self
+                .build_run(line, name, &path.routes, &path.places, &dw, depart_s)
+                .ok()?;
+            run.occupy_until_s = occupy_until_s.map(|o| o + w);
+            let timing = self.timing(&run, index).ok()?;
+            if ok(self, &timing) {
+                return Some((run, timing, w, dw));
+            }
+            w += step;
+        }
+        None
+    }
+
+    /// Purpose: have a placed run of a lower rank wait at one of its stations so that a train of
+    /// the given rank can pass. Only the last run of its train is changed, before its next trip is
+    /// placed. Inputs: the run, the rank, the passing train's blocks and the list of changes.
+    /// Output: whether it now waits clear of the passing train. Effect: the run, its train and the
+    /// list of changes (for [`Planner::undo`]).
+    fn hold_back(
+        &mut self,
+        r: usize,
+        rank: u8,
+        passing: &[Blocking],
+        undo: &mut Vec<Undo>,
+    ) -> bool {
+        let Some(pr) = self.runs.get(r).cloned() else {
+            return false;
+        };
+        if pr.kind != RunKind::Service || self.lines[pr.line].priority >= rank {
+            return false;
+        }
+        let v = pr.vehicle;
+        if self.vehicles.get(v).map(|x| x.last_run) != Some(r) || pr.calls.len() < 3 {
+            return false;
+        }
+        let Some(first_route) = pr.run.routes.first() else {
+            return false;
+        };
+        let origin = pr.calls[0].place;
+        let Some(depart_dir) = [Dir::Up, Dir::Down]
+            .into_iter()
+            .find(|&d| departure_routes(self.m, origin, d).contains(first_route))
+        else {
+            return false;
+        };
+        let n = pr.calls.len();
+        let dwells: Vec<Option<f64>> = pr.calls[1..]
+            .iter()
+            .enumerate()
+            .map(
+                |(i, c)| match (c.stop && i + 2 < n, c.arrive_s, c.depart_s) {
+                    (true, Some(a), Some(d)) => Some(d - a),
+                    _ => None,
+                },
+            )
+            .collect();
+        let path = FoundPath {
+            routes: pr.run.routes.clone(),
+            places: pr.calls[1..].iter().map(|c| c.place).collect(),
+            cost: 0.0,
+        };
+        let buf = self.p.min_buffer_s;
+        let ok = |pl: &Planner, tm: &RunTiming| {
+            !blocks_meet(&tm.blocking, passing, buf)
+                && pl.overlaps(&tm.blocking, v, Some(r)).2.is_none()
+        };
+        let mut found: Option<(Waited, FoundPath)> = None;
+        for (k, wp) in self.wait_paths(pr.line, pr.direction, origin, depart_dir, &path, &dwells) {
+            let most = found.as_ref().map_or(f64::INFINITY, |f| f.0 .2);
+            if let Some((run, tm, w, dw)) = self.try_waits(
+                pr.line,
+                &pr.name,
+                k,
+                &wp,
+                &dwells,
+                pr.run.depart_s,
+                pr.run.occupy_until_s,
+                r,
+                most,
+                &ok,
+            ) {
+                found = Some(((run, tm, w, dw), wp));
+            }
+        }
+        let Some(((run, tm, _, dw), wp)) = found else {
+            return false;
+        };
+        undo.push(Undo::Run(r, Box::new(pr.clone()), self.vehicles[v].clone()));
+        let mut places = vec![origin];
+        places.extend(wp.places.iter().copied());
+        let mut d = vec![None];
+        d.extend(dw.iter().copied());
+        let mut calls = self.call_list(&places, &d);
+        set_call_times(&mut calls, run.depart_s, &tm);
+        self.remove_index(r);
+        self.runs[r].run = run;
+        self.runs[r].calls = calls;
+        self.runs[r].blocking = tm.blocking;
+        self.add_index(r);
+        self.vehicles[v].ready_s = self.runs[r].arrive_s();
+        true
+    }
+
+    /// Purpose: put back runs changed to let a train pass. Input: the changes, oldest first.
+    fn undo(&mut self, undo: Vec<Undo>) {
+        for u in undo.into_iter().rev() {
+            match u {
+                Undo::Run(r, pr, ve) => {
+                    self.remove_index(r);
+                    let v = pr.vehicle;
+                    self.runs[r] = *pr;
+                    self.add_index(r);
+                    self.vehicles[v] = ve;
+                }
+                Undo::Reserved(entries) => {
+                    for (tds, e) in entries {
+                        self.reserved.entry(tds).or_default().push(e);
+                    }
+                }
+            }
+        }
+    }
+
+    /// Purpose: give up the way out reserved for a standing train, so a higher-ranked train can
+    /// pass first; the standing train's next trip then leaves after it.
+    /// Inputs: the train and the list of changes. Output: whether it had a way out reserved.
+    /// Effect: the reservations and the list of changes (for [`Planner::undo`]).
+    fn give_up_way_out(&mut self, v: usize, undo: &mut Vec<Undo>) -> bool {
+        let entries: Vec<(TdsId, (usize, f64, f64))> = self
+            .reserved
+            .iter()
+            .flat_map(|(&tds, x)| x.iter().filter(|e| e.0 == v).map(move |&e| (tds, e)))
+            .collect();
+        if entries.is_empty() {
+            return false;
+        }
+        self.unreserve(v);
+        undo.push(Undo::Reserved(entries));
+        true
     }
 
     fn call_list(&self, places: &[Place], dwell: &[Option<f64>]) -> Vec<CallTime> {
