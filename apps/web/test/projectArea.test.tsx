@@ -175,6 +175,12 @@ describe("area window", () => {
     fireEvent.click(await screen.findByRole("button", { name: /Homs/ }));
     expect(maps[0]!.easeTo).toHaveBeenCalledWith({ center: [36.72, 34.73], zoom: 11 });
     expect(screen.queryByRole("button", { name: /Area 1/ })).toBeNull();
+    // Once the results close, clicks beside the tools, where the results were, reach the map (local test L2):
+    // the column over the map lets them through and only the search and the tools take them.
+    expect(screen.queryByRole("button", { name: /Homs/ })).toBeNull();
+    const overlay = screen.getByTestId("area-overlay");
+    expect(overlay.className).toContain("pointer-events-none");
+    for (const child of overlay.children) expect(child.className).toContain("pointer-events-auto");
 
     await clickMap(36.7, 34.7);
     await clickMap(36.75, 34.7);
