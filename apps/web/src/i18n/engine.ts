@@ -121,3 +121,13 @@ export function errorWithMsg(text: string, msg?: EngineMsg | null): Error {
   if (msg) e.msg = msg;
   return e;
 }
+
+/**
+ * Purpose: an error for an API error response: the error with the response's message key (`msg`, from the API's
+ * api-message.filter.ts) when it has one, so {@link engineErrorText} shows it in the app language.
+ */
+export function withApiMsg<E extends Error>(err: E, body: unknown): E {
+  const msg = (body as { msg?: EngineMsg } | null | undefined)?.msg;
+  if (msg && typeof msg.key === "string") (err as E & { msg?: EngineMsg }).msg = msg;
+  return err;
+}

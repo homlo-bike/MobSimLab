@@ -1,5 +1,6 @@
 import { csrfHeader } from "../../session/csrf";
 import type { NoiseBuilding, NoisePopulation } from "./types";
+import { withApiMsg } from "../../i18n/engine";
 
 /**
  * Where the people counts come from: the API's WorldPop source, or the project's own population layer
@@ -40,8 +41,8 @@ export const fetchPopulation: PopulationFetcher = async (bbox) => {
   });
   if (res.status === 401) throw new Error("sign in to load it");
   if (!res.ok) {
-    const msg = ((await res.json().catch(() => null)) as { message?: string } | null)?.message;
-    throw new Error(msg || `the server answered ${res.status}`);
+    const j = (await res.json().catch(() => null)) as { message?: string } | null;
+    throw withApiMsg(new Error(j?.message || `the server answered ${res.status}`), j);
   }
   return (await res.json()) as PopulationAnswer;
 };

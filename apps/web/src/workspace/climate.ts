@@ -6,6 +6,7 @@
  */
 import { withProjectFacts } from "../geodata/projectData";
 import type { PreferencesDoc } from "./preferences";
+import { withApiMsg } from "../i18n/engine";
 
 /** One month's air temperatures, °C. */
 export interface MonthClimate {
@@ -141,11 +142,8 @@ export function climateFetcher(fetchImpl: typeof fetch = (...a) => fetch(...a)):
       },
     ).then(async (res) => {
       if (!res.ok) {
-        const msg = await res
-          .json()
-          .then((j: { message?: string }) => j.message)
-          .catch(() => undefined);
-        throw new Error(msg ?? `Request failed (${res.status})`);
+        const j = (await res.json().catch(() => undefined)) as { message?: string } | undefined;
+        throw withApiMsg(new Error(j?.message ?? `Request failed (${res.status})`), j);
       }
       return (await res.json()) as FetchedClimate;
     });
