@@ -9,7 +9,7 @@ fn load(name: &str) -> (Model, Vec<String>) {
     let imp = import_json(&json, &ImportOptions::default()).unwrap();
     assert!(imp.signals_generated);
     let m = Model::compile(&imp.spec).unwrap_or_else(|e| panic!("{name}: {e:?}"));
-    (m, imp.notes)
+    (m, imp.notes.iter().map(|n| n.english()).collect())
 }
 
 /// Routes reachable from a route by following exits.
@@ -165,7 +165,7 @@ fn rejects_unknown_schema_and_invalid_designs() {
         &ImportOptions::default(),
     )
     .unwrap_err();
-    assert!(e.contains("radius too small"));
+    assert!(e.english().contains("radius too small"));
 }
 
 #[test]
@@ -183,7 +183,7 @@ fn crossing_outside_the_usual_rules_is_imported_with_a_warning() {
     assert!(imp
         .notes
         .iter()
-        .any(|n| n.contains("obstacle detection") && n.contains("line_speed")));
+        .any(|n| n.english().contains("obstacle detection") && n.english().contains("line_speed")));
     let m = Model::compile(&imp.spec).unwrap();
     assert_eq!(m.level_crossings.len(), 2);
     assert!(m

@@ -5,6 +5,7 @@ import { useI18n } from "../../i18n/i18n";
 import { componentConverters, type Plugin, type PluginConverter } from "../registry";
 import { pluginRuntime } from "./context";
 import { runPluginCode, type WorkerFactory } from "./runtime";
+import { engineErrorText } from "../../i18n/engine";
 
 type Converter = PluginConverter & { plugin: Plugin };
 
@@ -113,9 +114,7 @@ export function PluginConverters({
         throw new Error("the network is too large");
       onAdd?.(doc);
     } catch (e) {
-      setError(
-        t("pcode.importFailed", { plugin: c.plugin.name, error: e instanceof Error ? e.message : String(e) }),
-      );
+      setError(t("pcode.importFailed", { plugin: c.plugin.name, error: engineErrorText(e) }));
     } finally {
       setBusy(false);
     }
@@ -156,9 +155,7 @@ export function PluginConverters({
         setTimeout(() => URL.revokeObjectURL(url), 10_000);
       }
     } catch (e) {
-      setError(
-        t("pcode.exportFailed", { plugin: c.plugin.name, error: e instanceof Error ? e.message : String(e) }),
-      );
+      setError(t("pcode.exportFailed", { plugin: c.plugin.name, error: engineErrorText(e) }));
     } finally {
       setBusy(false);
     }

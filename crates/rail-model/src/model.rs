@@ -4,6 +4,7 @@
 
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 
+use engine_msg::{msg, Msg};
 use serde::Serialize;
 use unicode_normalization::UnicodeNormalization;
 
@@ -312,22 +313,26 @@ impl Model {
     /// Purpose: compile a network description into the operations model.
     /// Inputs: the network.
     /// Output: the model, or every validation error found (ids are named).
-    pub fn compile(spec: &InfraSpec) -> Result<Model, Vec<String>> {
+    pub fn compile(spec: &InfraSpec) -> Result<Model, Vec<Msg>> {
         let mut errors = Vec::new();
         let mut track_index = HashMap::new();
         for (i, t) in spec.tracks.iter().enumerate() {
             #[allow(clippy::neg_cmp_op_on_partial_ord)]
             if !(t.length_m > 0.0) || !(t.line_speed_mps > 0.0) {
-                errors.push(format!("track {}: length and line speed must be > 0", t.id));
+                errors.push(msg!("rail.model.track_length", track = &t.id));
             }
             if track_index.insert(t.id.clone(), i).is_some() {
-                errors.push(format!("track {}: duplicate id", t.id));
+                errors.push(msg!("rail.model.track_duplicate", track = &t.id));
             }
         }
-        let find_track = |id: &str, errors: &mut Vec<String>, what: &str| -> Option<usize> {
+        let find_track = |id: &str, errors: &mut Vec<Msg>, what: &Msg| -> Option<usize> {
             let r = track_index.get(id).copied();
             if r.is_none() {
-                errors.push(format!("{what}: unknown track {id}"));
+                errors.push(msg!(
+                    "rail.model.unknown_track",
+                    what = what.clone(),
+                    track = id
+                ));
             }
             r
         };
@@ -335,14 +340,19 @@ impl Model {
         // Cut points: route signals strictly inside a track.
         let mut cuts: Vec<Vec<f64>> = vec![Vec::new(); spec.tracks.len()];
         for s in &spec.signals {
-            let Some(t) = find_track(&s.track, &mut errors, &format!("signal {}", s.id)) else {
+            let Some(t) = find_track(
+                &s.track,
+                &mut errors,
+                &msg!("rail.model.what.signal", id = &s.id),
+            ) else {
                 continue;
             };
             let len = spec.tracks[t].length_m;
             if s.position_m < -END_TOL_M || s.position_m > len + END_TOL_M {
-                errors.push(format!(
-                    "signal {}: position outside track {}",
-                    s.id, s.track
+                errors.push(msg!(
+                    "rail.model.signal_outside",
+                    signal = &s.id,
+                    track = &s.track
                 ));
                 continue;
             }
@@ -378,20 +388,26 @@ impl Model {
         for d in &spec.detection {
             let mut ps = Vec::new();
             for tid in &d.tracks {
-                let Some(t) = find_track(tid, &mut errors, &format!("detection {}", d.id)) else {
+                let Some(t) = find_track(
+                    tid,
+                    &mut errors,
+                    &msg!("rail.model.what.detection", id = &d.id),
+                ) else {
                     continue;
                 };
                 if track_pieces[t].len() > 1 {
-                    errors.push(format!(
-                        "detection {}: track {tid} carries a route signal mid-track",
-                        d.id
+                    errors.push(msg!(
+                        "rail.model.detection_mid_signal",
+                        detection = &d.id,
+                        track = tid
                     ));
                 }
                 for &p in &track_pieces[t] {
                     if assigned[p as usize] {
-                        errors.push(format!(
-                            "detection {}: track {tid} is in two sections",
-                            d.id
+                        errors.push(msg!(
+                            "rail.model.detection_two_sections",
+                            detection = &d.id,
+                            track = tid
                         ));
                     }
                     assigned[p as usize] = true;
@@ -427,7 +443,7 @@ impl Model {
         // Adjacency between piece ends.
         let mut adj: Vec<Vec<Adj>> = vec![Vec::new(); pieces.len() * 2];
         let piece_end =
-            |te: &TrackEnd, errors: &mut Vec<String>, what: &str| -> Option<(PieceId, End)> {
+            |te: &TrackEnd, errors: &mut Vec<Msg>, what: &Msg| -> Option<(PieceId, End)> {
                 let t = find_track(&te.track, errors, what)?;
                 let ps = &track_pieces[t];
                 Some(match te.end {
@@ -461,7 +477,10 @@ impl Model {
         for n in &spec.nodes {
             match n {
                 NodeSpec::Link { a, b } => {
-                    let what = format!("link {}.{:?}-{}.{:?}", a.track, a.end, b.track, b.end);
+                    let what = msg!(
+                        "rail.model.what.link",
+                        id = format!("{}.{:?}-{}.{:?}", a.track, a.end, b.track, b.end)
+                    );
                     if let (Some(x), Some(y)) = (
                         piece_end(a, &mut errors, &what),
                         piece_end(b, &mut errors, &what),
@@ -479,7 +498,7 @@ impl Model {
                     diverging_speed_mps,
                     throw_time_s,
                 } => {
-                    let what = format!("switch {id}");
+                    let what = msg!("rail.model.what.switch", id = id);
                     let c = piece_end(common, &mut errors, &what);
                     let s = piece_end(straight, &mut errors, &what);
                     let d = piece_end(diverging, &mut errors, &what);
@@ -501,7 +520,11 @@ impl Model {
                     }
                 }
                 NodeSpec::BufferStop { id, at } => {
-                    if let Some(e) = piece_end(at, &mut errors, &format!("buffer stop {id}")) {
+                    if let Some(e) = piece_end(
+                        at,
+                        &mut errors,
+                        &msg!("rail.model.what.buffer_stop", id = id),
+                    ) {
                         *used_ends.entry(e).or_default() += 1;
                         buffer_ends.insert(e, id.clone());
                     }
@@ -511,9 +534,11 @@ impl Model {
         for (e, n) in &used_ends {
             if *n > 1 {
                 let p = &pieces[e.0 as usize];
-                errors.push(format!(
-                    "track {} end {:?} is used by {n} nodes",
-                    spec.tracks[p.track].id, e.1
+                errors.push(msg!(
+                    "rail.model.end_used_twice",
+                    track = &spec.tracks[p.track].id,
+                    end = format!("{:?}", e.1),
+                    count = n.to_string()
                 ));
             }
         }
@@ -579,10 +604,7 @@ impl Model {
             };
             let id = signals.len() as SignalId;
             if s.kind != SignalKind::Distant && signal_at.insert(at, id).is_some() {
-                errors.push(format!(
-                    "signal {}: another route signal stands at the same place",
-                    s.id
-                ));
+                errors.push(msg!("rail.model.signal_same_place", signal = &s.id));
             }
             signals.push(Signal {
                 id: s.id.clone(),
@@ -614,7 +636,7 @@ impl Model {
             });
             groups[g as usize].stations.push(sid);
             if station_index.insert(st.id.clone(), sid).is_some() {
-                errors.push(format!("station {}: duplicate id", st.id));
+                errors.push(msg!("rail.model.station_duplicate", station = &st.id));
             }
             stations.push(Station {
                 id: st.id.clone(),
@@ -626,10 +648,18 @@ impl Model {
         let mut platforms = Vec::new();
         for p in &spec.platforms {
             let Some(&st) = station_index.get(&p.station) else {
-                errors.push(format!("platform {}: unknown station {}", p.id, p.station));
+                errors.push(msg!(
+                    "rail.model.platform_unknown_station",
+                    platform = &p.id,
+                    station = &p.station
+                ));
                 continue;
             };
-            let Some(t) = find_track(&p.track, &mut errors, &format!("platform {}", p.id)) else {
+            let Some(t) = find_track(
+                &p.track,
+                &mut errors,
+                &msg!("rail.model.what.platform", id = &p.id),
+            ) else {
                 continue;
             };
             let (from_m, to_m) = (p.from_m.min(p.to_m), p.from_m.max(p.to_m));
@@ -637,9 +667,10 @@ impl Model {
                 || to_m > spec.tracks[t].length_m + END_TOL_M
                 || to_m - from_m <= 0.0
             {
-                errors.push(format!(
-                    "platform {}: range outside track {}",
-                    p.id, p.track
+                errors.push(msg!(
+                    "rail.model.platform_outside",
+                    platform = &p.id,
+                    track = &p.track
                 ));
                 continue;
             }
@@ -657,8 +688,11 @@ impl Model {
 
         let mut level_crossings = Vec::new();
         for lc in &spec.level_crossings {
-            let Some(t) = find_track(&lc.track, &mut errors, &format!("level crossing {}", lc.id))
-            else {
+            let Some(t) = find_track(
+                &lc.track,
+                &mut errors,
+                &msg!("rail.model.what.level_crossing", id = &lc.id),
+            ) else {
                 continue;
             };
             let piece = track_pieces[t]

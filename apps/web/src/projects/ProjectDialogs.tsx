@@ -16,6 +16,7 @@ import {
   RAIL_MODES,
   STREET_MODES,
 } from "./api";
+import { engineErrorText } from "../i18n/engine";
 
 /** An error line under a form. */
 function ErrorLine({ error }: { error: string | null }) {
@@ -30,7 +31,7 @@ function ErrorLine({ error }: { error: string | null }) {
   );
 }
 
-const message = (e: unknown) => (e instanceof Error ? e.message : String(e));
+const message = (e: unknown) => engineErrorText(e);
 const label = "mt-4 mb-1.5 block font-semibold";
 
 /** Purpose: toggle chips for the modes a project plans to use, street and rail grouped. */

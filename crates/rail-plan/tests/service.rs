@@ -183,11 +183,13 @@ fn a_line_with_one_stop_or_an_unknown_station_is_refused() {
     l.stations.truncate(1);
     assert!(publish_service(&topology(), &[l], "weekday")
         .unwrap_err()
+        .english()
         .contains("two stops"));
     let mut l = shuttle();
     l.stations[1] = "st99".into();
     assert!(publish_service(&topology(), &[l], "weekday")
         .unwrap_err()
+        .english()
         .contains("st99"));
 }
 

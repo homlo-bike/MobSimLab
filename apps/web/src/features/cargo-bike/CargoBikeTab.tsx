@@ -27,6 +27,7 @@ import {
   type Savings,
   type Trip,
 } from "./model";
+import { engineErrorText } from "../../i18n/engine";
 
 type View = "trip" | "range" | "savings";
 type Pick = "start" | "destination" | null;
@@ -355,7 +356,7 @@ export function CargoBikeTab({
       setError(
         e instanceof TripError && e.code !== "tiles"
           ? t(`cb.error.${e.code}` as MessageKey)
-          : t("cb.error.failed", { error: e instanceof Error ? e.message : String(e) }),
+          : t("cb.error.failed", { error: engineErrorText(e) }),
       );
     } finally {
       tripRun.current = null;
@@ -370,7 +371,7 @@ export function CargoBikeTab({
     try {
       setReach((await engine.rangeMap(start, effective)).reach);
     } catch (e) {
-      setError(t("cb.error.failed", { error: e instanceof Error ? e.message : String(e) }));
+      setError(t("cb.error.failed", { error: engineErrorText(e) }));
     } finally {
       setBusy(null);
     }

@@ -15,6 +15,7 @@ import {
   withFetchedClimate,
 } from "./climate";
 import type { PreferencesDoc } from "./preferences";
+import { engineErrorText } from "../i18n/engine";
 
 const FIELD_LABEL = {
   mean_c: "climate.mean",
@@ -70,7 +71,7 @@ export function ClimateSection({
         else setSession(got);
       })
       .catch((e: unknown) => {
-        if (!stop) setState({ error: e instanceof Error ? e.message : String(e) });
+        if (!stop) setState({ error: engineErrorText(e) });
       });
     return () => {
       stop = true;

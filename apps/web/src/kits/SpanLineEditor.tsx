@@ -30,6 +30,7 @@ import type {
   StationKind,
   TowerInput,
 } from "./types";
+import { engineErrorText } from "../i18n/engine";
 
 const PREFIX = "spans";
 
@@ -177,7 +178,7 @@ export function SpanLineEditor({
       (e) =>
         setError(
           tNow("cable.engineFailed", {
-            error: e instanceof Error ? e.message : String(e),
+            error: engineErrorText(e),
           }),
         ),
     );
@@ -232,7 +233,7 @@ export function SpanLineEditor({
         (e) => {
           if (!alive) return;
           setTerrainState("error");
-          setTerrainError(e instanceof Error ? e.message : String(e));
+          setTerrainError(engineErrorText(e));
         },
       );
     }, 400);
@@ -253,7 +254,7 @@ export function SpanLineEditor({
       const { stations, ground } = withTerrain(doc.stations, current, lengths);
       return kits.buildSpanLine({ stations, system, towers: doc.towers, ground });
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(engineErrorText(e));
       return null;
     }
   }, [kits, doc.stations, doc.towers, system, current]);

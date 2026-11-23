@@ -342,7 +342,7 @@ fn profile_key(r: &TrainRun) -> String {
 /// Inputs: the model, the lines (calls, train, bands, stabling) and settings.
 /// Output: the plan with every run, its blocking times and the issues found;
 /// Err for an unknown station, platform or storage track.
-pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, String> {
+pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, Msg> {
     let mut cands = Vec::new();
     for l in lines {
         let out: Vec<Vec<PlatformId>> = l
@@ -350,7 +350,7 @@ pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, Strin
             .iter()
             .map(|c| resolve(m, &c.pick))
             .collect::<Result<_, _>>()
-            .map_err(|e| format!("line {}: {e}", l.id))?;
+            .map_err(|e| msg!("rail.plan.line_error", line = &l.id, error = e))?;
         let mut back = out.clone();
         back.reverse();
         cands.push([out, back]);
@@ -360,7 +360,7 @@ pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, Strin
         for s in &l.stabling {
             let t = m
                 .track(s)
-                .ok_or_else(|| format!("line {}: unknown storage track {s}", l.id))?;
+                .ok_or_else(|| msg!("rail.plan.unknown_storage", line = &l.id, track = s))?;
             if stacks.iter().any(|x: &Stack| x.track == t) {
                 continue;
             }

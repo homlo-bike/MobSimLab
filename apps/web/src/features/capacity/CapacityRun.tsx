@@ -43,6 +43,7 @@ import type {
   LineInfo,
   NetworkSource,
 } from "./types";
+import { engineErrorText, type EngineNote } from "../../i18n/engine";
 
 export { explain, practicalMaximum, VERDICTS, verdictText } from "./capacityText";
 
@@ -52,7 +53,7 @@ const NO_STREETS: readonly SavedStreetLine[] = [];
 interface SavedTest {
   run: Run;
   lines: LineState[];
-  notes: string[];
+  notes: EngineNote[];
   streetResults: StreetLineResult[];
   loads: Record<string, LineLoad>;
   choices: {
@@ -160,7 +161,7 @@ export function CapacityRun({
   const [error, setError] = useState<string | null>(null);
   const [run, setRun] = useState<Run | null>(null);
   const [lines, setLines] = useState<LineState[]>([]);
-  const [notes, setNotes] = useState<string[]>([]);
+  const [notes, setNotes] = useState<EngineNote[]>([]);
   const [streetResults, setStreetResults] = useState<StreetLineResult[]>([]);
   const [loads, setLoads] = useState<Record<string, LineLoad>>({});
   const [zones, setZones] = useState<RidershipZones | null>(null);
@@ -178,7 +179,7 @@ export function CapacityRun({
     let live = true;
     void runs.list().then(
       (l) => live && setSaved(l),
-      (e: unknown) => live && setServerError(e instanceof Error ? e.message : String(e)),
+      (e: unknown) => live && setServerError(engineErrorText(e)),
     );
     return () => {
       live = false;
@@ -491,7 +492,7 @@ export function CapacityRun({
       }
     } catch (err) {
       failed = true;
-      if (alive()) setError(err instanceof Error ? err.message : String(err));
+      if (alive()) setError(engineErrorText(err));
     } finally {
       if (alive()) {
         setStatus(null);
@@ -518,7 +519,7 @@ export function CapacityRun({
       }
       setSending(true);
       const built = await buildDrawn(railway, undefined, undefined, prefs).catch((e: unknown) =>
-        e instanceof Error ? e.message : String(e),
+        engineErrorText(e),
       );
       setSending(false);
       if (typeof built === "string") {
@@ -555,7 +556,7 @@ export function CapacityRun({
       setViewing(r);
       setSaved((l) => [r, ...l.filter((x) => x.id !== r.id)]);
     } catch (e) {
-      setServerError(e instanceof Error ? e.message : String(e));
+      setServerError(engineErrorText(e));
     } finally {
       setSending(false);
     }
@@ -572,7 +573,7 @@ export function CapacityRun({
       setConfirmDelete(false);
       setViewing(r);
     } catch (e) {
-      setServerError(e instanceof Error ? e.message : String(e));
+      setServerError(engineErrorText(e));
     }
   };
 
@@ -587,7 +588,7 @@ export function CapacityRun({
       setViewing(r);
       setSaved((l) => [r, ...l.filter((x) => x.id !== r.id)]);
     } catch (e) {
-      setServerError(e instanceof Error ? e.message : String(e));
+      setServerError(engineErrorText(e));
     }
   };
 
@@ -602,7 +603,7 @@ export function CapacityRun({
       setViewing(null);
       setSaved((l) => l.filter((x) => x.id !== id));
     } catch (e) {
-      setServerError(e instanceof Error ? e.message : String(e));
+      setServerError(engineErrorText(e));
     }
   };
 
@@ -614,7 +615,7 @@ export function CapacityRun({
       setViewing(r);
       setSaved((l) => l.map((x) => (x.id === r.id ? r : x)));
     } catch (e) {
-      setServerError(e instanceof Error ? e.message : String(e));
+      setServerError(engineErrorText(e));
     }
   };
 
@@ -629,7 +630,7 @@ export function CapacityRun({
   // What the panel shows: the open saved run, or the run in this browser.
   const shownRun: Run | null = viewing ? (viewing.result?.run ?? null) : run;
   const shownLines: LineState[] = viewing ? (viewing.result?.lines ?? []) : lines;
-  const shownNotes: string[] = viewing ? (viewing.result?.notes ?? []) : notes;
+  const shownNotes: EngineNote[] = viewing ? (viewing.result?.notes ?? []) : notes;
   const shownStatus = viewing ? (isOpen(viewing) ? serverStatus(viewing, t) : null) : status;
   const shownError = viewing ? (viewing.status === "failed" ? viewing.error : null) : error;
   const when = (iso: string) =>

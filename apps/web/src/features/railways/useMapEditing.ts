@@ -31,6 +31,7 @@ import type { RailTool } from "./railPanelTypes";
 import { updateLine } from "./serviceLines";
 import type { TrackEnd } from "./trackEnds";
 import type { Anchor, ConnectionView, LonLat, Network, RailEngine, Track } from "./types";
+import { engineErrorText, engineTextNow } from "../../i18n/engine";
 
 /**
  * Purpose: the editor's map clicks, double-clicks and drags: placing stations, drawing tracks,
@@ -99,13 +100,18 @@ export function useMapEditing({
         if (last === station) return say(tNow("rail.pick.lastAlready", { name }));
         if (pickLine.stations.includes(station)) return say(tNow("rail.pick.already", { name }));
         if (last !== undefined) {
-          let reach: { ok: boolean; reason: string | null };
+          let reach: ReturnType<typeof e.reachable>;
           try {
             reach = e.reachable(last, station);
           } catch (err) {
-            return say(err instanceof Error ? err.message : String(err));
+            return say(engineErrorText(err));
           }
-          if (!reach.ok) return say(reach.reason ?? tNow("rail.pick.unreachable", { name }));
+          if (!reach.ok)
+            return say(
+              reach.reason
+                ? engineTextNow({ text: reach.reason, msg: reach.reason_msg })
+                : tNow("rail.pick.unreachable", { name }),
+            );
         }
         setDoc(updateLine(s.doc, pickLine.id, (l) => ({ ...l, stations: [...l.stations, station] })));
         setNote(
