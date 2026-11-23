@@ -1208,6 +1208,7 @@ export const editorsEn = {
   "ferry.pier": "Pier {n}",
   "ferry.pierLower": "pier {n}",
   "ferry.legLower": "leg {n}",
+  "ferry.depthsUnavailable": "GEBCO water depths could not be loaded, so depth on open sea is not checked.",
   "ferry.hint.pier": "Click the shore to add the next pier. Click an existing pier to call there again.",
   "ferry.hint.via": "Click the water to add a via point to leg {n}.",
   "ferry.hint.zone": "Click the corners of a speed zone, then press Finish zone.",
@@ -1265,6 +1266,15 @@ export const editorsEn = {
   "setup.wizardIntro": "You are the Owner. Other people cannot sign in until you finish setup.",
   "setup.instanceName": "Instance name",
   "setup.finish": "Finish setup",
+  "setup.stepOf": "Step {n} of {count}",
+  "setup.next": "Next",
+  "setup.back": "Back",
+  "setup.stepName": "Name",
+  "setup.stepMaps": "Basemaps",
+  "setup.signupIntro":
+    "Who may sign in once setup is finished, and the role they get. You can change this later in Administration → Sign-up rules.",
+  "setup.mapsIntro":
+    "OpenStreetMap maps work without any setup. Add aerial imagery or your organisation's own map services here if you want them. You can change this later in Administration → Plugins.",
   "consent.title": "Connect an AI agent",
   "consent.incomplete": "This link is incomplete. Start the connection again in your AI app.",
   "consent.signInFirst": "Sign in to MobSimLab to decide whether the app may connect.",
@@ -1489,7 +1499,12 @@ export const editorsEn = {
   "capacity.plannerNotes": "Planner notes ({n})",
   "capacity.kernelNotes": "What the kernel reported ({n})",
   "capacity.method":
-    "Capacity by the UIC 406 compression method; delays from {runs} runs in which {share} of trips start up to {late} late. Passenger loads are not part of this test yet.",
+    "Capacity by the UIC 406 compression method; delays from {runs} runs in which {share} of trips start up to {late} late.",
+  "capacity.dwell.busy":
+    "Trains stand longer where many people board and alight: each train’s passengers are spread over its doors, and the busiest door takes more than an even share.",
+  "capacity.dwell.fixed":
+    "Trains stand the same time at every stop; with passenger loads on, they stand longer where many people board and alight.",
+  "capacity.loads.dwell": "Trains stand up to {dwell} at {station} (usually {usual}).",
   "capacity.line": "Line {name}",
   "capacity.eachWay": "{n} trains/h each way",
   "capacity.used": "Capacity used",
@@ -1550,6 +1565,9 @@ export const editorsEn = {
   "walk.drawFirst": "Draw a street line or a railway with stations first.",
   "walk.collecting": "Collecting the stops and stations…",
   "walk.loadingTiles": "Loading footpaths ({done} of {count} map tiles)…",
+  "walk.loadingHeights": "Loading ground heights…",
+  "walk.heightsUnavailable": "Ground heights did not load ({reason}), so walks are timed as on flat ground.",
+  "walk.heightsNoData": "no height data for this area",
   "walk.loadingPopulation": "Loading where people live…",
   "walk.computing": "Measuring the walks…",
   "walk.tooLarge":
@@ -1582,7 +1600,7 @@ export const editorsEn = {
   "walk.popUnavailable": "No population data ({reason}); the streets stand in for people.",
   "walk.popCredit": "Residents: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "The area is the box round the stops plus the distance walked in the limit. Slopes are not counted yet.",
+    "The area is the box round the stops plus the distance walked in the limit. Each street is walked on its slope towards the stop, so uphill walks take longer.",
   "spacing.title": "Stop spacing",
   "spacing.intro":
     "Distance between consecutive stops along the line, against the usual range for the mode. Stops too close slow the line down; stops too far apart mean long walks.",

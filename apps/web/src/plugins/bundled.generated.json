@@ -5382,6 +5382,18 @@
           "label": "Passengers per vessel",
           "unit": "passengers"
         },
+        "ferry.air_draft_m": {
+          "label": "Air draft (height above the waterline)",
+          "unit": "m"
+        },
+        "ferry.draught_m": {
+          "label": "Draught (depth below the waterline)",
+          "unit": "m"
+        },
+        "ferry.under_keel_clearance_m": {
+          "label": "Water kept under the keel",
+          "unit": "m"
+        },
         "ferry.harbour_speed_kn": {
           "label": "Speed limit in a new speed zone",
           "unit": "kn"
@@ -5442,6 +5454,21 @@
               "low": 100,
               "central": 250,
               "high": 600
+            },
+            "ferry.air_draft_m": {
+              "low": 3,
+              "central": 6,
+              "high": 12
+            },
+            "ferry.draught_m": {
+              "low": 1,
+              "central": 1.8,
+              "high": 3
+            },
+            "ferry.under_keel_clearance_m": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
             },
             "ferry.harbour_speed_kn": {
               "low": 4,
@@ -5510,6 +5537,21 @@
               "central": 300,
               "high": 450
             },
+            "ferry.air_draft_m": {
+              "low": 4,
+              "central": 7,
+              "high": 12
+            },
+            "ferry.draught_m": {
+              "low": 1.2,
+              "central": 1.6,
+              "high": 2.5
+            },
+            "ferry.under_keel_clearance_m": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
+            },
             "ferry.harbour_speed_kn": {
               "low": 4,
               "central": 6,
@@ -5576,6 +5618,21 @@
               "low": 20,
               "central": 30,
               "high": 50
+            },
+            "ferry.air_draft_m": {
+              "low": 2.5,
+              "central": 3.5,
+              "high": 5
+            },
+            "ferry.draught_m": {
+              "low": 0.8,
+              "central": 1.2,
+              "high": 2
+            },
+            "ferry.under_keel_clearance_m": {
+              "low": 0.5,
+              "central": 1,
+              "high": 2
             },
             "ferry.harbour_speed_kn": {
               "low": 4,

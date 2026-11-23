@@ -1167,6 +1167,7 @@ export const editorsYo = {
   "ferry.pier": "Èbúté {n}",
   "ferry.pierLower": "èbúté {n}",
   "ferry.legLower": "apá {n}",
+  "ferry.depthsUnavailable": "A kò lè gbé jíjìn omi GEBCO, nítorí náà a kò ṣàyẹ̀wò jíjìn ní òkun gbangba.",
   "ferry.hint.pier": "Tẹ etí odò láti fi èbúté tó kàn kún un. Tẹ èbúté tó wà láti dúró níbẹ̀ lẹ́ẹ̀kan sí i.",
   "ferry.hint.via": "Tẹ omi láti fi ojúàmì ìkọjá kún apá {n}.",
   "ferry.hint.zone": "Tẹ àwọn igun agbègbè ìyára, lẹ́yìn náà tẹ Parí agbègbè.",
@@ -1224,6 +1225,15 @@ export const editorsYo = {
   "setup.wizardIntro": "Ìwọ ni Olùní. Àwọn míì kò lè wọlé títí o fi parí ìṣètò.",
   "setup.instanceName": "Orúkọ ètò",
   "setup.finish": "Parí ìṣètò",
+  "setup.stepOf": "Ìgbésẹ̀ {n} nínú {count}",
+  "setup.next": "Tẹ̀síwájú",
+  "setup.back": "Padà",
+  "setup.stepName": "Orúkọ",
+  "setup.stepMaps": "Àwọn máàpù ìpìlẹ̀",
+  "setup.signupIntro":
+    "Ẹni tí ó lè wọlé lẹ́yìn tí ìṣètò bá parí, àti ipa tí wọ́n máa ní. O lè yí èyí padà nígbà míì ní Ìṣàkóso → Òfin ìforúkọsílẹ̀.",
+  "setup.mapsIntro":
+    "Àwọn máàpù OpenStreetMap ń ṣiṣẹ́ láìsí ìṣètò. Fi àwọn àwòrán láti òfuurufú tàbí iṣẹ́ máàpù ti àjọ rẹ kún ibí tí o bá fẹ́. O lè yí èyí padà nígbà míì ní Ìṣàkóso → Àwọn àfikún.",
   "consent.title": "So aṣojú AI pọ̀",
   "consent.incomplete": "Ìjápọ̀ yìí kò pé. Tún bẹ̀rẹ̀ ìsopọ̀ náà nínú áàpù AI rẹ.",
   "consent.signInFirst": "Wọlé sí MobSimLab láti pinnu bóyá áàpù náà lè so pọ̀.",
@@ -1449,7 +1459,12 @@ export const editorsYo = {
   "capacity.plannerNotes": "Àkíyèsí olùṣètò ({n})",
   "capacity.kernelNotes": "Ohun tí kókó ìṣirò ròyìn ({n})",
   "capacity.method":
-    "Agbára nípa ọ̀nà ìfúnpọ̀ UIC 406; ìdádúró láti inú ìdánwò {runs} níbi tí {share} ìrìn-àjò ti bẹ̀rẹ̀ pẹ́ títí dé {late}. Ẹrù èrò kò tíì jẹ́ ara ìdánwò yìí.",
+    "Agbára nípa ọ̀nà ìfúnpọ̀ UIC 406; ìdádúró láti inú ìdánwò {runs} níbi tí {share} ìrìn-àjò ti bẹ̀rẹ̀ pẹ́ títí dé {late}.",
+  "capacity.dwell.busy":
+    "Ọkọ̀ ojú irin máa ń dúró pẹ́ níbi tí ọ̀pọ̀ ènìyàn ti ń wọlé tí wọ́n sì ń sọ̀kalẹ̀: àwọn èrò ọkọ̀ kọ̀ọ̀kan máa ń pín sí àwọn ilẹ̀kùn rẹ̀, ilẹ̀kùn tó kún jùlọ sì ń gba ju ìpín dọ́gba lọ.",
+  "capacity.dwell.fixed":
+    "Ọkọ̀ ojú irin máa ń dúró àkókò kan náà ní ibùdókọ̀ kọ̀ọ̀kan; nígbà tí ẹrù èrò bá wà ní títàn, wọ́n máa ń dúró pẹ́ níbi tí ọ̀pọ̀ ènìyàn ti ń wọlé tí wọ́n sì ń sọ̀kalẹ̀.",
+  "capacity.loads.dwell": "Ọkọ̀ ojú irin máa ń dúró títí dé {dwell} ní {station} (nígbà gbogbo {usual}).",
   "capacity.line": "Ìlà {name}",
   "capacity.eachWay": "ọkọ̀ {n}/wákàtí ní ọ̀nà kọ̀ọ̀kan",
   "capacity.used": "Agbára tí a lò",
@@ -1518,6 +1533,9 @@ export const editorsYo = {
   "walk.drawFirst": "Kọ́kọ́ ya ìlà òpópónà tàbí ojú irin tí ó ní àwọn ibùdó.",
   "walk.collecting": "À ń kó àwọn ibùdókọ̀ àti ibùdó jọ…",
   "walk.loadingTiles": "À ń gbé ọ̀nà ẹlẹ́sẹ̀ wọlé ({done} nínú àwo máàpù {count})…",
+  "walk.loadingHeights": "Ń gbé gíga ilẹ̀ wọlé…",
+  "walk.heightsUnavailable": "Gíga ilẹ̀ kò wọlé ({reason}), nítorí náà a ka ìrìn bí ilẹ̀ pẹ̀tẹ́lẹ̀.",
+  "walk.heightsNoData": "kò sí dátà gíga fún agbègbè yìí",
   "walk.loadingPopulation": "À ń gbé ibi tí ènìyàn ń gbé wọlé…",
   "walk.computing": "À ń wọn àwọn ìrìn…",
   "walk.tooLarge":
@@ -1551,7 +1569,7 @@ export const editorsYo = {
   "walk.popUnavailable": "Kò sí dátà iye ènìyàn ({reason}); òpópónà ló dúró fún ènìyàn.",
   "walk.popCredit": "Olùgbé: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Agbègbè náà ni àpótí yíká àwọn ibùdókọ̀ pẹ̀lú ìjìnnà tí a rìn láàrin ààlà. A kò tíì ka gẹ̀rẹ́gẹ̀rẹ́.",
+    "Agbègbè náà ni onígun mẹ́rin yí àwọn ibùdókọ̀ ká pẹ̀lú ìjìnnà tí a rìn láàrin ààlà. A ń rin òpópónà kọ̀ọ̀kan lórí ìtẹ̀ rẹ̀ sí ọ̀nà ibùdókọ̀, nítorí náà gígun òkè gba àkókò jù.",
   "spacing.title": "Àlàfo láàrin ibùdókọ̀",
   "spacing.intro":
     "Ìjìnnà láàrin àwọn ibùdókọ̀ tó tẹ̀lé ara wọn lórí ìlà, ní ìfiwéra pẹ̀lú ìwọ̀n àṣà fún irú ọkọ̀ náà. Ibùdókọ̀ tó súnmọ́ ara jù ń dá ìlà dúró; tó jìnnà jù túmọ̀ sí ìrìn gígùn.",

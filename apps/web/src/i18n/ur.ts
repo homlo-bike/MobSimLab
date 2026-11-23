@@ -261,8 +261,6 @@ export const ur: Messages = {
   "tab.tables": "جدولیں",
   "tab.preferences": "ترجیحات",
 
-  "placeholder.comingSoon": "اگلی ریلیز میں آ رہا ہے",
-
   "sim.test": "نظام کی جانچ کریں",
   "sim.journey": "سفر کا وقت A → B",
 

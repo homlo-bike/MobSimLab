@@ -290,3 +290,42 @@ fn a_headway_step_keeps_the_trains_apart() {
         assert!(w[1] - w[0] >= 300.0 - 1e-6, "outbound departures {w:?}");
     }
 }
+
+#[test]
+fn trains_are_put_away_on_sidings_rather_than_in_a_terminal_platform() {
+    // Damascus test, bug 25: a tram sent to stabling between the peaks stood in a Zahira platform
+    // another line turns in for three and a half hours, because the platform was nearer than the
+    // siding beyond it. The service line editor lets trains stable in the terminal platforms too
+    // (for a design without sidings), so M1 is given its platform tracks as well, and the Eastgate
+    // sidings are for layovers only (the dearest kind of siding to put a train away on).
+    let m = model();
+    let mut line = common::metro_m1();
+    line.layover = vec!["es1".into(), "es2".into()];
+    let platform_tracks: Vec<String> = m
+        .stations
+        .iter()
+        .flat_map(|s| s.platforms.iter())
+        .map(|&p| m.tracks[m.platforms[p as usize].track].id.clone())
+        .collect();
+    for t in &platform_tracks {
+        if !line.stabling.contains(t) {
+            line.stabling.push(t.clone());
+        }
+    }
+    let p = plan(m, &[line], &PlanParams::default()).unwrap();
+    let pull_ins: Vec<_> = p
+        .runs
+        .iter()
+        .filter(|r| r.kind == RunKind::PullIn)
+        .collect();
+    assert!(!pull_ins.is_empty());
+    for r in pull_ins {
+        let end = r.calls.last().unwrap();
+        assert!(
+            !(matches!(end.place, Place::Storage(_)) && platform_tracks.contains(&end.id)),
+            "{} is put away in platform track {}",
+            r.name,
+            end.id
+        );
+    }
+}

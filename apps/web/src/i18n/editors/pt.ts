@@ -1213,6 +1213,8 @@ export const editorsPt = {
   "ferry.pier": "Cais {n}",
   "ferry.pierLower": "cais {n}",
   "ferry.legLower": "trecho {n}",
+  "ferry.depthsUnavailable":
+    "Não foi possível carregar as profundidades do GEBCO, por isso a profundidade em mar aberto não é verificada.",
   "ferry.hint.pier":
     "Clique na margem para adicionar o próximo cais. Clique num cais existente para fazer escala nele de novo.",
   "ferry.hint.via": "Clique na água para adicionar um ponto de passagem ao trecho {n}.",
@@ -1273,6 +1275,15 @@ export const editorsPt = {
     "Você é o proprietário. Outras pessoas só podem entrar depois que você concluir a configuração.",
   "setup.instanceName": "Nome da instância",
   "setup.finish": "Concluir configuração",
+  "setup.stepOf": "Passo {n} de {count}",
+  "setup.next": "Seguinte",
+  "setup.back": "Voltar",
+  "setup.stepName": "Nome",
+  "setup.stepMaps": "Mapas base",
+  "setup.signupIntro":
+    "Quem pode iniciar sessão quando a configuração terminar e que função recebe. Pode alterar isto mais tarde em Administração → Regras de cadastro.",
+  "setup.mapsIntro":
+    "Os mapas do OpenStreetMap funcionam sem configuração. Adicione aqui imagens aéreas ou os serviços de mapas da sua organização, se os quiser. Pode alterar isto mais tarde em Administração → Plugins.",
   "consent.title": "Conectar um agente de IA",
   "consent.incomplete": "Este link está incompleto. Inicie a conexão de novo no seu app de IA.",
   "consent.signInFirst": "Entre no MobSimLab para decidir se o app pode se conectar.",
@@ -1500,7 +1511,12 @@ export const editorsPt = {
   "capacity.plannerNotes": "Notas do planejador ({n})",
   "capacity.kernelNotes": "O que o núcleo informou ({n})",
   "capacity.method":
-    "Capacidade pelo método de compressão da UIC 406; atrasos de {runs} rodadas em que {share} das viagens partem até {late} atrasadas. A carga de passageiros ainda não faz parte deste teste.",
+    "Capacidade pelo método de compressão da UIC 406; atrasos de {runs} rodadas em que {share} das viagens partem até {late} atrasadas.",
+  "capacity.dwell.busy":
+    "Os comboios param mais tempo onde muitas pessoas entram e saem: os passageiros de cada comboio distribuem-se pelas suas portas, e a porta mais carregada recebe mais do que uma parte igual.",
+  "capacity.dwell.fixed":
+    "Os comboios param o mesmo tempo em cada paragem; com a carga de passageiros ativa, param mais tempo onde muitas pessoas entram e saem.",
+  "capacity.loads.dwell": "Os comboios param até {dwell} em {station} (normalmente {usual}).",
   "capacity.line": "Linha {name}",
   "capacity.eachWay": "{n} trens/h por sentido",
   "capacity.used": "Capacidade usada",
@@ -1571,6 +1587,10 @@ export const editorsPt = {
   "walk.drawFirst": "Desenhe primeiro uma linha de rua ou uma ferrovia com estações.",
   "walk.collecting": "A reunir as paragens e estações…",
   "walk.loadingTiles": "A carregar caminhos pedonais ({done} de {count} mosaicos)…",
+  "walk.loadingHeights": "A carregar as altitudes do terreno…",
+  "walk.heightsUnavailable":
+    "As altitudes do terreno não carregaram ({reason}), por isso as caminhadas são calculadas como em plano.",
+  "walk.heightsNoData": "sem dados de altitude para esta zona",
   "walk.loadingPopulation": "A carregar onde as pessoas vivem…",
   "walk.computing": "A medir as caminhadas…",
   "walk.tooLarge":
@@ -1605,7 +1625,7 @@ export const editorsPt = {
   "walk.popUnavailable": "Sem dados de população ({reason}); as ruas representam as pessoas.",
   "walk.popCredit": "Residentes: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "A área é o retângulo em redor das paragens mais a distância percorrida no limite. Os declives ainda não são contados.",
+    "A área é o retângulo à volta das paragens mais a distância percorrida no limite. Cada rua é percorrida com o seu declive em direção à paragem, por isso a subir demora mais.",
   "spacing.title": "Distância entre paragens",
   "spacing.intro":
     "Distância entre paragens consecutivas ao longo da linha, face ao intervalo habitual do modo. Paragens demasiado próximas atrasam a linha; demasiado afastadas obrigam a longas caminhadas.",

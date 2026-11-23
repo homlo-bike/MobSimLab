@@ -1216,6 +1216,8 @@ export const editorsEs = {
   "ferry.pier": "Embarcadero {n}",
   "ferry.pierLower": "embarcadero {n}",
   "ferry.legLower": "trayecto {n}",
+  "ferry.depthsUnavailable":
+    "No se pudieron cargar las profundidades de GEBCO, así que no se comprueba la profundidad en mar abierto.",
   "ferry.hint.pier":
     "Haz clic en la orilla para añadir el siguiente embarcadero. Haz clic en un embarcadero existente para volver a hacer escala allí.",
   "ferry.hint.via": "Haz clic en el agua para añadir un punto de paso al trayecto {n}.",
@@ -1277,6 +1279,15 @@ export const editorsEs = {
     "Eres la persona propietaria. Nadie más puede iniciar sesión hasta que termines la configuración.",
   "setup.instanceName": "Nombre de la instancia",
   "setup.finish": "Terminar la configuración",
+  "setup.stepOf": "Paso {n} de {count}",
+  "setup.next": "Siguiente",
+  "setup.back": "Atrás",
+  "setup.stepName": "Nombre",
+  "setup.stepMaps": "Mapas base",
+  "setup.signupIntro":
+    "Quién puede iniciar sesión cuando termine la configuración y qué rol recibe. Puede cambiarlo más tarde en Administración → Reglas de registro.",
+  "setup.mapsIntro":
+    "Los mapas de OpenStreetMap funcionan sin configurar nada. Añada aquí imágenes aéreas o los servicios de mapas propios de su organización si los quiere. Puede cambiarlo más tarde en Administración → Complementos.",
   "consent.title": "Conectar un agente de IA",
   "consent.incomplete": "Este enlace está incompleto. Vuelve a iniciar la conexión en tu aplicación de IA.",
   "consent.signInFirst": "Inicia sesión en MobSimLab para decidir si la aplicación puede conectarse.",
@@ -1509,7 +1520,12 @@ export const editorsEs = {
   "capacity.plannerNotes": "Notas del planificador ({n})",
   "capacity.kernelNotes": "Lo que informó el núcleo ({n})",
   "capacity.method":
-    "Capacidad según el método de compresión de la UIC 406; retrasos de {runs} pasadas en las que el {share} de los viajes sale hasta {late} tarde. La carga de pasajeros aún no forma parte de esta prueba.",
+    "Capacidad según el método de compresión de la UIC 406; retrasos de {runs} pasadas en las que el {share} de los viajes sale hasta {late} tarde.",
+  "capacity.dwell.busy":
+    "Los trenes paran más donde mucha gente sube y baja: los pasajeros de cada tren se reparten entre sus puertas, y la puerta más cargada recibe más que una parte igual.",
+  "capacity.dwell.fixed":
+    "Los trenes paran el mismo tiempo en cada parada; con la carga de pasajeros activada, paran más donde mucha gente sube y baja.",
+  "capacity.loads.dwell": "Los trenes paran hasta {dwell} en {station} (normalmente {usual}).",
   "capacity.line": "Línea {name}",
   "capacity.eachWay": "{n} trenes/h por sentido",
   "capacity.used": "Capacidad usada",
@@ -1581,6 +1597,10 @@ export const editorsEs = {
   "walk.drawFirst": "Dibuje primero una línea por calle o un ferrocarril con estaciones.",
   "walk.collecting": "Reuniendo las paradas y estaciones…",
   "walk.loadingTiles": "Cargando caminos peatonales ({done} de {count} teselas)…",
+  "walk.loadingHeights": "Cargando alturas del terreno…",
+  "walk.heightsUnavailable":
+    "No se cargaron las alturas del terreno ({reason}), así que las caminatas se calculan como en llano.",
+  "walk.heightsNoData": "no hay datos de altura para esta zona",
   "walk.loadingPopulation": "Cargando dónde vive la gente…",
   "walk.computing": "Midiendo los recorridos a pie…",
   "walk.tooLarge":
@@ -1615,7 +1635,7 @@ export const editorsEs = {
   "walk.popUnavailable": "Sin datos de población ({reason}); las calles representan a las personas.",
   "walk.popCredit": "Residentes: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "El área es el rectángulo alrededor de las paradas más la distancia recorrida en el límite. Las pendientes aún no se tienen en cuenta.",
+    "La zona es el rectángulo alrededor de las paradas más la distancia caminada en el límite. Cada calle se recorre con su pendiente hacia la parada, así que cuesta arriba se tarda más.",
   "spacing.title": "Distancia entre paradas",
   "spacing.intro":
     "Distancia entre paradas consecutivas a lo largo de la línea, frente al rango habitual del modo. Paradas demasiado cercanas ralentizan la línea; demasiado separadas obligan a caminar mucho.",

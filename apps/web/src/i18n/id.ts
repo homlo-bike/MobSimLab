@@ -262,8 +262,6 @@ export const id: Messages = {
   "tab.tables": "Tabel",
   "tab.preferences": "Preferensi",
 
-  "placeholder.comingSoon": "Hadir di rilis berikutnya",
-
   "sim.test": "Uji sistem",
   "sim.journey": "Waktu perjalanan A → B",
 

@@ -42,6 +42,7 @@ fn shuttle() -> ServiceLine {
         offpeak_headway_s: 1200.0,
         peaks: vec![[7.0 * 3600.0, 9.0 * 3600.0]],
         dwell_s: None,
+        stop_dwells_s: None,
         turnback_s: None,
         accel_ms2: None,
         decel_ms2: None,
@@ -452,4 +453,36 @@ fn a_gradient_the_train_cannot_climb_is_reported_as_such_not_as_missing_track() 
         "{:?}",
         r.issues
     );
+}
+
+#[test]
+fn the_system_tests_stop_dwells_reach_the_calls() {
+    let imp = rail_model::topology::import_json(
+        &topology(),
+        &rail_model::topology::ImportOptions::default(),
+    )
+    .unwrap();
+    let m = rail_model::Model::compile(&imp.spec).unwrap();
+    let l = ServiceLine {
+        dwell_s: Some(25.0),
+        stop_dwells_s: Some(vec![None, Some(48.0)]),
+        ..shuttle()
+    };
+    let spec = line_spec(&l, &m);
+    assert_eq!(spec.dwell_s, 25.0);
+    let dwells: Vec<Option<f64>> = spec.calls.iter().map(|c| c.dwell_s).collect();
+    assert_eq!(dwells, vec![None, Some(48.0)]);
+    // Without them, or with nonsense, every call keeps the line's dwell.
+    assert!(line_spec(&shuttle(), &m)
+        .calls
+        .iter()
+        .all(|c| c.dwell_s.is_none()));
+    let bad = ServiceLine {
+        stop_dwells_s: Some(vec![Some(f64::NAN), Some(-3.0)]),
+        ..shuttle()
+    };
+    assert!(line_spec(&bad, &m)
+        .calls
+        .iter()
+        .all(|c| c.dwell_s.is_none()));
 }

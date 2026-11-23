@@ -1153,6 +1153,7 @@ export const editorsJa = {
   "ferry.pier": "桟橋 {n}",
   "ferry.pierLower": "桟橋 {n}",
   "ferry.legLower": "区間 {n}",
+  "ferry.depthsUnavailable": "GEBCOの水深を読み込めなかったため、外洋の水深は確認していません。",
   "ferry.hint.pier": "岸をクリックして次の桟橋を追加します。既存の桟橋をクリックすると再度寄港します。",
   "ferry.hint.via": "水面をクリックして区間 {n} に経由点を追加します。",
   "ferry.hint.zone": "速度制限区域の角をクリックし、「区域を完了」を押します。",
@@ -1209,6 +1210,15 @@ export const editorsJa = {
   "setup.wizardIntro": "あなたは所有者です。セットアップが完了するまで他のユーザーはサインインできません。",
   "setup.instanceName": "インスタンス名",
   "setup.finish": "セットアップを完了",
+  "setup.stepOf": "ステップ {n} / {count}",
+  "setup.next": "次へ",
+  "setup.back": "戻る",
+  "setup.stepName": "名前",
+  "setup.stepMaps": "背景地図",
+  "setup.signupIntro":
+    "セットアップ完了後にサインインできる人と、その人に与えるロールです。後で「管理」→「登録ルール」で変更できます。",
+  "setup.mapsIntro":
+    "OpenStreetMap の地図は設定なしで使えます。必要なら、ここで航空写真や組織独自の地図サービスを追加してください。後で「管理」→「プラグイン」で変更できます。",
   "consent.title": "AI エージェントを接続",
   "consent.incomplete": "このリンクは不完全です。AI アプリから接続をやり直してください。",
   "consent.signInFirst": "アプリの接続を許可するかどうか決めるには、MobSimLab にサインインしてください。",
@@ -1427,7 +1437,12 @@ export const editorsJa = {
   "capacity.plannerNotes": "ダイヤ作成の注記（{n}）",
   "capacity.kernelNotes": "計算カーネルの報告（{n}）",
   "capacity.method":
-    "容量は UIC 406 の圧縮法による。遅れは、{share} の列車が最大 {late} 遅れて出発する {runs} 回の実行から算出。旅客の乗車量はまだこの試験に含まれていません。",
+    "容量は UIC 406 の圧縮法による。遅れは、{share} の列車が最大 {late} 遅れて出発する {runs} 回の実行から算出。",
+  "capacity.dwell.busy":
+    "乗り降りの多い駅では列車の停車が長くなります。各列車の乗客はドアに分かれ、最も混むドアは均等な割合より多くを受け持ちます。",
+  "capacity.dwell.fixed":
+    "列車はどの駅でも同じ時間停車します。旅客の乗車量をオンにすると、乗り降りの多い駅で停車が長くなります。",
+  "capacity.loads.dwell": "列車は{station}で最大{dwell}停車します（通常{usual}）。",
   "capacity.line": "路線 {name}",
   "capacity.eachWay": "片方向 {n} 本/時",
   "capacity.used": "使用容量",
@@ -1495,6 +1510,9 @@ export const editorsJa = {
   "walk.drawFirst": "まず道路の路線か、駅のある鉄道を描いてください。",
   "walk.collecting": "停留所と駅を集めています…",
   "walk.loadingTiles": "歩道を読み込み中（{count} タイル中 {done}）…",
+  "walk.loadingHeights": "地面の標高を読み込み中…",
+  "walk.heightsUnavailable": "地面の標高を読み込めませんでした（{reason}）。徒歩は平地として計算されます。",
+  "walk.heightsNoData": "この地域の標高データがありません",
   "walk.loadingPopulation": "人が住む場所を読み込み中…",
   "walk.computing": "徒歩ルートを計測中…",
   "walk.tooLarge":
@@ -1526,7 +1544,8 @@ export const editorsJa = {
     "{countries} の人口データはまだサーバーにダウンロード中です。それまでは道路を人の代わりに使います。",
   "walk.popUnavailable": "人口データがありません（{reason}）。道路を人の代わりに使います。",
   "walk.popCredit": "住民：WorldPop {year}（{countries}）、CC BY 4.0。",
-  "walk.note": "区域は停留所を囲む矩形に、上限内で歩ける距離を加えたものです。勾配はまだ考慮していません。",
+  "walk.note":
+    "範囲は停留所を囲む長方形に、制限内で歩ける距離を加えたものです。各道路は停留所へ向かう方向の勾配で歩くものとして計算するため、上り坂の徒歩は時間が長くなります。",
   "spacing.title": "停留所間隔",
   "spacing.intro":
     "路線に沿った隣り合う停留所間の距離を、交通手段ごとの一般的な範囲と比べます。近すぎると路線が遅くなり、離れすぎると長い徒歩になります。",

@@ -259,8 +259,6 @@ export const vi: Messages = {
   "tab.tables": "Bảng",
   "tab.preferences": "Tùy chọn",
 
-  "placeholder.comingSoon": "Sẽ có trong bản phát hành sau",
-
   "sim.test": "Kiểm tra hệ thống",
   "sim.journey": "Thời gian hành trình A → B",
 

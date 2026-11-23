@@ -527,6 +527,25 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 0.8 | 1.2 | 2.0 | documented | unverified | [tcqsm3](#src-tcqsm3) | TCQSM: alighting is somewhat quicker than boarding. |
 
+### Door channels per 100 m of train (doors on one side × people abreast per door)
+
+`dwell.door_channels_per_100m` · unit: count · used by: dwell model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 12 | 16 | 24 | educated-guess | unverified | [tcqsm3](#src-tcqsm3) | Door channels on one side of the train, a door wide enough for two people abreast counting twice; the dwell model divides a train's passengers by them. Counted from typical car layouts, not from a source table: a 20 m metro car with four double doors gives 40 per 100 m, a 30 m tram with three or four double doors about 24, a 25 m regional car with two double doors 16, and a 25 m long-distance car with one or two single doors 8. |
+| metro | 32 | 40 | 48 | educated-guess | unverified | [tcqsm3](#src-tcqsm3) | Door channels on one side of the train, a door wide enough for two people abreast counting twice; the dwell model divides a train's passengers by them. Counted from typical car layouts, not from a source table: a 20 m metro car with four double doors gives 40 per 100 m, a 30 m tram with three or four double doors about 24, a 25 m regional car with two double doors 16, and a 25 m long-distance car with one or two single doors 8. |
+| tram, light_rail | 16 | 24 | 32 | educated-guess | unverified | [tcqsm3](#src-tcqsm3) | Door channels on one side of the train, a door wide enough for two people abreast counting twice; the dwell model divides a train's passengers by them. Counted from typical car layouts, not from a source table: a 20 m metro car with four double doors gives 40 per 100 m, a 30 m tram with three or four double doors about 24, a 25 m regional car with two double doors 16, and a 25 m long-distance car with one or two single doors 8. |
+| long_distance_rail, high_speed_rail | 4 | 8 | 12 | educated-guess | unverified | [tcqsm3](#src-tcqsm3) | Door channels on one side of the train, a door wide enough for two people abreast counting twice; the dwell model divides a train's passengers by them. Counted from typical car layouts, not from a source table: a 20 m metro car with four double doors gives 40 per 100 m, a 30 m tram with three or four double doors about 24, a 25 m regional car with two double doors 16, and a 25 m long-distance car with one or two single doors 8. |
+
+### Busiest door channel over an even spread of passengers across the doors
+
+`dwell.door_peaking` · unit: factor · used by: dwell model
+
+| Context | Low | Central | High | Basis | Check | Sources | Rationale |
+|---|---|---|---|---|---|---|---|
+| all | 1.1 | 1.3 | 1.6 | educated-guess | unverified | [tcqsm3](#src-tcqsm3) | Passengers crowd the doors nearest the platform entrances, so the busiest channel serves more than an even share; the dwell lasts until it is done. TCQSM describes this uneven use of doors; 1.3 is an educated guess for platforms with access at one or two points. |
+
 ### Recommended capacity consumption limit in the peak hour (UIC 406)
 
 `capacity.occupancy_limit_share` · unit: share · used by: capacity report, maximum capacity
@@ -1646,9 +1665,9 @@ Central value per mode, resolved the way the engine resolves it (mode entry, els
 |---|---|---|---|---|---|---|---|
 | all | 1.2 | 1.3 | 1.5 | educated-guess | unverified | [mobsimlab-derivation](#src-mobsimlab-derivation) | Stand-in until walks are routed on the walk graph: street networks make a walk roughly 20–50 % longer than the straight line (lower in dense grids, higher with rivers, rail lines and cul-de-sacs). 1.3 is the planning value used by the journey planner (ADR-0034); replace with a cited circuity study. |
 
-### Walking on slopes: steepness term of Tobler's hiking function (journey planner; 0 = walks timed as flat)
+### Walking on slopes: steepness term of Tobler's hiking function (0 = walks timed as flat)
 
-`journey.walk_slope_k` · unit: coefficient · used by: journey planner access, egress and transfer walks
+`journey.walk_slope_k` · unit: coefficient · used by: journey planner access, egress and transfer walks, walk coverage, walk catchments
 
 | Context | Low | Central | High | Basis | Check | Sources | Rationale |
 |---|---|---|---|---|---|---|---|

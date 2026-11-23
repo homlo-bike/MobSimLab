@@ -259,8 +259,6 @@ export const bn: Messages = {
   "tab.tables": "সারণি",
   "tab.preferences": "পছন্দ",
 
-  "placeholder.comingSoon": "পরবর্তী রিলিজে আসছে",
-
   "sim.test": "সিস্টেম পরীক্ষা করুন",
   "sim.journey": "যাত্রার সময় A → B",
 

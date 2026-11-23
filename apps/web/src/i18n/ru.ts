@@ -262,8 +262,6 @@ export const ru: Messages = {
   "tab.tables": "Таблицы",
   "tab.preferences": "Параметры",
 
-  "placeholder.comingSoon": "Появится в следующем выпуске",
-
   "sim.test": "Проверить систему",
   "sim.journey": "Время в пути A → B",
 

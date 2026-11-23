@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Kalibrierung: Stunden, auf die eine Werktagszählung für die GEH-Kennzahl verteilt wird",
     "demand.walk_speed_kmh": "Gehgeschwindigkeit für Fußwege zwischen Stationen",
     "journey.walk_detour_factor": "Fußweglänge im Verhältnis zur Luftlinie (Reiseplaner, Nutzenschätzung)",
-    "journey.walk_slope_k": "Gehen am Hang: Steigungsterm der Wanderfunktion nach Tobler (Reiseplaner; 0 = Fußwege wie in der Ebene)",
+    "journey.walk_slope_k": "Gehen am Hang: Steigungsterm der Wanderfunktion nach Tobler (0 = Fußwege wie in der Ebene)",
     "journey.min_change_s": "Reiseplaner: Mindestumsteigezeit an derselben Haltestelle",
     "journey.level_change_s": "Reiseplaner: zusätzliche Zeit für einen Bahnsteigwechsel innerhalb einer Station (Treppen, Aufzüge)",
     "journey.same_name_station_m": "Haltestellen gleichen Namens innerhalb dieser Luftlinienentfernung sind eine Station",
@@ -465,6 +465,8 @@
     "mode.spare_share": "Reservefahrzeuge, Anteil der Fahrzeuge im Spitzeneinsatz (Flotte)",
     "mode.vehicle_capacity": "Fahrgastplätze je Straßenfahrzeug, Sitz- und Stehplätze bei der Planungsdichte",
     "cost.opex.car_length_m": "Laufkosten der Bahn: als ein Wagen gezählte Zuglänge",
+    "dwell.door_channels_per_100m": "Türkanäle je 100 m Zug (Türen auf einer Seite × Personen nebeneinander je Tür)",
+    "dwell.door_peaking": "Stärkster Türkanal gegenüber gleichmäßiger Verteilung der Fahrgäste auf die Türen",
     "road.advice_on_time_share": "Straßensimulation, Hinweise: unter diesem Anteil pünktlicher Abfahrten erhält eine Straßenlinie Hinweise",
     "road.advice_bunched_share": "Straßensimulation, Hinweise: über diesem Anteil gebündelter Abfahrten erhält eine Straßenlinie Hinweise"
   },

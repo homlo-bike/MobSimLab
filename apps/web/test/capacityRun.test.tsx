@@ -4,6 +4,7 @@ import { CapacityRun, explain, practicalMaximum } from "../src/features/capacity
 import { buildDrawnNetwork } from "../src/features/capacity/drawn";
 import type { RunsApi, SavedRunDetail } from "../src/features/capacity/server";
 import type { CapacityEngine, CapacityRun as Run, EngineLoader, Point } from "../src/features/capacity/types";
+import { engineLines } from "../src/features/railways/serviceLines";
 import type { Network, RailEngine, RailView } from "../src/features/railways/types";
 
 afterEach(cleanup);
@@ -194,6 +195,33 @@ describe("capacity run panel", () => {
     fireEvent.click(screen.getByRole("button", { name: "Run again" }));
     await waitFor(() => expect(engine.run).toHaveBeenCalledTimes(2));
     expect(buildDrawn).toHaveBeenCalledTimes(1);
+  });
+
+  it("makes trains stand longer at busy stations when the passenger loads are on", async () => {
+    const { loader } = fakeLoader();
+    const railway = drawn();
+    const buildDrawn = vi.fn(async () => ({
+      topology: "{}",
+      lines: JSON.stringify({ service_lines: engineLines(railway) }),
+    }));
+    render(
+      <CapacityRun
+        loadEngine={loader}
+        railway={railway}
+        buildDrawn={buildDrawn}
+        ridership={{ timetable: null, regions: [], prefs: undefined, doc: null, country: null }}
+        loadRidership={async () => ({ zones: [], notes: [] })}
+        ownBoardings={{ S1: 400000, S2: 400000 }}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
+    const result = await screen.findByTestId("capacity-result");
+    const sent = JSON.parse((loader as ReturnType<typeof vi.fn>).mock.calls[0]![0].lines).service_lines;
+    const dwells = sent[0].stop_dwells_s as number[];
+    expect(dwells).toHaveLength(2);
+    expect(dwells.every((d) => d > 20)).toBe(true);
+    await waitFor(() => expect(within(result).getByText(/Trains stand up to/)).toBeTruthy());
+    expect(within(result).getByText(/Trains stand longer where many people board and alight/)).toBeTruthy();
   });
 
   it("explains why the drawn railway cannot be tested", async () => {

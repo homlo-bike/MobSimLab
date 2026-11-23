@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Kalibrlash: GEH statistikasi uchun ish kuni hisobi boʻlinadigan soatlar",
     "demand.walk_speed_kmh": "Bekatlar orasidagi piyoda bogʻlanishlar uchun yurish tezligi",
     "journey.walk_detour_factor": "Toʻgʻri chiziq masofasiga nisbatan piyoda masofa (yoʻnalish rejalashtiruvchi, foyda baholash)",
-    "journey.walk_slope_k": "Qiyalikda yurish: Tobler piyoda yurish funksiyasining qiyalik hadi (sayohat rejalashtiruvchi; 0 = piyoda yurish tekislikdagidek)",
+    "journey.walk_slope_k": "Qiyalikda yurish: Tobler piyoda yurish funksiyasining qiyalik hadi (0 = piyoda yurish tekislikdagidek)",
     "journey.min_change_s": "Yoʻnalish rejalashtiruvchi: bir bekatda oʻtirib oʻtishning eng qisqa vaqti",
     "journey.level_change_s": "Yoʻnalish rejalashtiruvchi: stansiyada platforma almashtirish uchun qoʻshimcha vaqt (zinalar, lift)",
     "journey.same_name_station_m": "Shu toʻgʻri chiziq masofasidagi bir xil nomli stansiyalar bitta stansiya",
@@ -465,6 +465,8 @@
     "mode.spare_share": "Zaxira transport vositalari, tigʻiz soatda xizmatdagi transport vositalarining ulushi (park)",
     "mode.vehicle_capacity": "Yoʻl transport vositasi uchun yoʻlovchi oʻrinlari, rejalashtirish zichligida oʻtirish va turish",
     "cost.opex.car_length_m": "Temir yoʻl harakat xarajati: bitta vagon deb hisoblanadigan poyezd uzunligi",
+    "dwell.door_channels_per_100m": "Poyezdning har 100 m iga eshik oqimlari (bir tomondagi eshiklar × bir eshikdan yonma-yon oʻtuvchi odamlar)",
+    "dwell.door_peaking": "Yoʻlovchilar eshiklarga teng taqsimlanganiga nisbatan eng band eshik oqimi",
     "road.advice_on_time_share": "Yo‘l simulyatsiyasi, maslahat: vaqtida jo‘nash ulushi bundan past bo‘lgan ko‘cha liniyasi maslahat oladi",
     "road.advice_bunched_share": "Yo‘l simulyatsiyasi, maslahat: to‘planib jo‘nash ulushi bundan yuqori bo‘lgan ko‘cha liniyasi maslahat oladi"
   },

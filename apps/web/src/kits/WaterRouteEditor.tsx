@@ -18,7 +18,15 @@ import {
   stationElement,
 } from "./mapLayers";
 import type { SavedPluginLine } from "./saved";
-import type { Kits, KitsLoader, LonLat, Pier, SpeedZone, WaterCall, WaterView } from "./types";
+import type { Kits, KitsLoader, LonLat, Pier, SpeedZone, Surroundings, WaterCall, WaterView } from "./types";
+import {
+  type DepthFetcher,
+  depthKey,
+  fetchDepths as fetchDepthsDefault,
+  loadSurroundings as loadSurroundingsDefault,
+  type SurroundingsLoader,
+  surroundingsBox,
+} from "./waterSurroundings";
 import { engineErrorText } from "../i18n/engine";
 
 const PREFIX = "water";
@@ -54,6 +62,10 @@ interface Props extends LineList {
   initial?: Partial<WaterDoc> | null;
   /** Told about the drawing, the line and its noise shape after every change, to save with the project. */
   onSave?: (saved: SavedPluginLine) => void;
+  /** OpenStreetMap water, bridges and locks around the line, for the route checks; tests inject a fake. */
+  loadSurroundings?: SurroundingsLoader;
+  /** GEBCO depths on open sea, for the depth check; tests inject a fake. */
+  fetchDepths?: DepthFetcher;
 }
 
 /** Purpose: the pier of another line within SHARED_STOP_M of a point, or null. */
@@ -102,6 +114,8 @@ export function WaterRouteEditor({
   onLineChange,
   initial = null,
   onSave,
+  loadSurroundings = loadSurroundingsDefault,
+  fetchDepths = fetchDepthsDefault,
   lineId,
   lines,
   onPickLine,
@@ -146,6 +160,35 @@ export function WaterRouteEditor({
   const layover = doc.layoverS ?? values["ferry.layover_s"] ?? 300;
   const pax = doc.paxPerCall ?? Math.round(vessel.capacity * (values["ferry.pax_per_call_share"] ?? 0.5));
 
+  // The route checks' surroundings: OpenStreetMap water, bridges and locks around the piers and via points,
+  // fetched again when the line moves into another hundredth of a degree.
+  const area = useMemo(
+    () =>
+      doc.calls.length >= 2
+        ? surroundingsBox([...doc.piers.map((p) => p.lonlat), ...doc.calls.flatMap((c) => c.via)])
+        : null,
+    [doc.piers, doc.calls],
+  );
+  const [around, setAround] = useState<Omit<Surroundings, "depths"> | null>(null);
+  const areaKey = area?.key ?? null;
+  useEffect(() => {
+    if (!area) return;
+    let alive = true;
+    loadSurroundings(area.box).then(
+      (s) => alive && setAround(s),
+      () => alive && setAround(null),
+    );
+    return () => {
+      alive = false;
+    };
+    // Fetched once per box key, not on every small move.
+  }, [areaKey, loadSurroundings]);
+  // GEBCO depths fetched so far, by point; null where there is none or the request failed.
+  const [depths, setDepths] = useState<ReadonlyMap<string, { lonlat: LonLat; depth_m: number | null }>>(
+    () => new Map(),
+  );
+  const [depthsFailed, setDepthsFailed] = useState(false);
+
   const view: WaterView | null = useMemo(() => {
     if (!kits) return null;
     try {
@@ -157,12 +200,42 @@ export function WaterRouteEditor({
         layover_s: layover,
         pax_per_call: pax,
         speed_zones: doc.zones,
+        surroundings: around ? { ...around, depths: [...depths.values()] } : null,
       });
     } catch (e) {
       setError(engineErrorText(e));
       return null;
     }
-  }, [kits, doc.piers, doc.calls, doc.zones, doc.headwayMin, vessel, layover, pax]);
+  }, [kits, doc.piers, doc.calls, doc.zones, doc.headwayMin, vessel, layover, pax, around, depths]);
+
+  // Depths the kit asks for that are not known yet.
+  const asking = useRef(new Set<string>());
+  useEffect(() => {
+    const missing = (view?.depth_points ?? [])
+      .map((p) => p.lonlat)
+      .filter((p) => !depths.has(depthKey(p)) && !asking.current.has(depthKey(p)));
+    if (!missing.length) return;
+    missing.forEach((p) => asking.current.add(depthKey(p)));
+    const done = (values: (number | null)[]) =>
+      setDepths((m) => {
+        const next = new Map(m);
+        missing.forEach((p, i) => {
+          next.set(depthKey(p), { lonlat: p, depth_m: values[i] ?? null });
+          asking.current.delete(depthKey(p));
+        });
+        return next;
+      });
+    fetchDepths(missing).then(
+      (v) => {
+        setDepthsFailed(false);
+        done(v);
+      },
+      () => {
+        setDepthsFailed(true);
+        done([]);
+      },
+    );
+  }, [view, depths, fetchDepths]);
 
   const changed = useRef(onLineChange);
   changed.current = onLineChange;
@@ -465,6 +538,7 @@ export function WaterRouteEditor({
         </div>
       )}
       {view && <Issues issues={view.issues} where={where} source={tool.id} label={tool.label} />}
+      {depthsFailed && <p className="text-xs text-amber-800">{t("ferry.depthsUnavailable")}</p>}
       <section aria-label={t("ferry.piers")} className="flex flex-col gap-2">
         <h3 className="font-semibold">{t("ferry.piers")}</h3>
         {doc.piers.length === 0 && <p className="text-slate-500">{t("ferry.noPiers")}</p>}

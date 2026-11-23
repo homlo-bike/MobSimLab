@@ -1149,6 +1149,7 @@ export const editorsKo = {
   "ferry.pier": "선착장 {n}",
   "ferry.pierLower": "선착장 {n}",
   "ferry.legLower": "구간 {n}",
+  "ferry.depthsUnavailable": "GEBCO 수심을 불러오지 못해 외해의 수심은 확인하지 않습니다.",
   "ferry.hint.pier": "해안을 클릭해 다음 선착장을 추가합니다. 기존 선착장을 클릭하면 다시 기항합니다.",
   "ferry.hint.via": "수면을 클릭해 구간 {n}에 경유점을 추가합니다.",
   "ferry.hint.zone": "속도 제한 구역의 모서리를 클릭한 다음 '구역 완료'를 누르세요.",
@@ -1205,6 +1206,15 @@ export const editorsKo = {
   "setup.wizardIntro": "당신이 소유자입니다. 설정을 마칠 때까지 다른 사람은 로그인할 수 없습니다.",
   "setup.instanceName": "인스턴스 이름",
   "setup.finish": "설정 완료",
+  "setup.stepOf": "{count}단계 중 {n}단계",
+  "setup.next": "다음",
+  "setup.back": "뒤로",
+  "setup.stepName": "이름",
+  "setup.stepMaps": "배경 지도",
+  "setup.signupIntro":
+    "설정이 끝난 뒤 로그인할 수 있는 사람과 그들이 받는 역할입니다. 나중에 관리 → 가입 규칙에서 바꿀 수 있습니다.",
+  "setup.mapsIntro":
+    "OpenStreetMap 지도는 설정 없이 작동합니다. 원하면 여기에서 항공 사진이나 조직 자체의 지도 서비스를 추가하세요. 나중에 관리 → 플러그인에서 바꿀 수 있습니다.",
   "consent.title": "AI 에이전트 연결",
   "consent.incomplete": "이 링크가 불완전합니다. AI 앱에서 연결을 다시 시작하세요.",
   "consent.signInFirst": "앱 연결을 허용할지 결정하려면 MobSimLab에 로그인하세요.",
@@ -1424,7 +1434,12 @@ export const editorsKo = {
   "capacity.plannerNotes": "계획기 메모({n})",
   "capacity.kernelNotes": "계산 커널 보고({n})",
   "capacity.method":
-    "용량은 UIC 406 압축법으로 계산했습니다. 지연은 운행의 {share}가 최대 {late} 늦게 출발하는 {runs}회 실행에서 나왔습니다. 승객 수요는 아직 이 시험에 포함되지 않습니다.",
+    "용량은 UIC 406 압축법으로 계산했습니다. 지연은 운행의 {share}가 최대 {late} 늦게 출발하는 {runs}회 실행에서 나왔습니다.",
+  "capacity.dwell.busy":
+    "타고 내리는 사람이 많은 곳에서는 열차가 더 오래 정차합니다. 각 열차의 승객은 출입문에 나뉘고, 가장 붐비는 문은 고른 몫보다 많이 맡습니다.",
+  "capacity.dwell.fixed":
+    "열차는 모든 정류장에서 같은 시간 정차합니다. 승객 수요를 켜면 타고 내리는 사람이 많은 곳에서 더 오래 정차합니다.",
+  "capacity.loads.dwell": "열차는 {station}에서 최대 {dwell} 정차합니다(보통 {usual}).",
   "capacity.line": "노선 {name}",
   "capacity.eachWay": "방향별 시간당 {n}회",
   "capacity.used": "사용 용량",
@@ -1492,6 +1507,9 @@ export const editorsKo = {
   "walk.drawFirst": "먼저 도로 노선이나 역이 있는 철도를 그리세요.",
   "walk.collecting": "정류장과 역을 모으는 중…",
   "walk.loadingTiles": "보행로 불러오는 중({count}개 지도 타일 중 {done})…",
+  "walk.loadingHeights": "지면 고도를 불러오는 중…",
+  "walk.heightsUnavailable": "지면 고도를 불러오지 못했습니다({reason}). 도보는 평지로 계산됩니다.",
+  "walk.heightsNoData": "이 지역의 고도 데이터가 없습니다",
   "walk.loadingPopulation": "사람들이 사는 곳을 불러오는 중…",
   "walk.computing": "도보 경로 측정 중…",
   "walk.tooLarge":
@@ -1523,7 +1541,7 @@ export const editorsKo = {
   "walk.popUnavailable": "인구 데이터 없음({reason}). 도로가 사람을 대신합니다.",
   "walk.popCredit": "주민: WorldPop {year}({countries}), CC BY 4.0.",
   "walk.note":
-    "지역은 정류장을 둘러싼 사각형에 한도 안에서 걸을 수 있는 거리를 더한 것입니다. 경사는 아직 반영하지 않습니다.",
+    "범위는 정류장을 둘러싼 직사각형에 제한 시간 동안 걷는 거리를 더한 것입니다. 각 도로는 정류장 방향의 경사로 걷는 것으로 계산하므로 오르막 도보는 더 오래 걸립니다.",
   "spacing.title": "정류장 간격",
   "spacing.intro":
     "노선을 따라 이어지는 정류장 사이의 거리를 교통수단의 일반적인 범위와 비교합니다. 너무 가까우면 노선이 느려지고, 너무 멀면 오래 걸어야 합니다.",

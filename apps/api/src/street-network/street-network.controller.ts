@@ -224,6 +224,26 @@ export class StreetNetworkController {
   }
 
   /**
+   * Purpose: the bridges and locks from OSM inside a box, for the ferry route checks: JSON `{bridges: [{name,
+   * line, clearance_m, movable}], locks: [{name, line}]}` (water-crossings.ts). Inputs: `bbox=west,south,east,
+   * north`, at most 1° a side. Output: 400 for an invalid box, 502/504 when OSM is unavailable.
+   */
+  @Get("water-crossings")
+  @Requires("instance.read")
+  @Header("Content-Type", "application/json; charset=utf-8")
+  @Header("Cache-Control", "private, max-age=86400")
+  async waterCrossings(@Query("bbox") bbox: string | undefined): Promise<string> {
+    const b = parseBbox(bbox);
+    try {
+      return await this.streets.waterCrossings(b);
+    } catch (e) {
+      if (e instanceof OverpassError)
+        throw new HttpException("OpenStreetMap bridges and locks are unavailable right now", e.status);
+      throw e;
+    }
+  }
+
+  /**
    * Purpose: the bicycle charging points and the secure or cargo bike parkings of one zoom-14 tile, for the
    * cargo bike plugin: JSON `{amenities: [{id, kind, lonlat, name?, hours?, fee?, capacity?}]}`.
    * Inputs: tile x and y. Output: 400 for an invalid tile, 502/504 when OSM is unavailable.

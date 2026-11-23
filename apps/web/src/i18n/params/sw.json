@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Urekebishaji: saa ambazo hesabu ya siku ya kazi hugawanywa kwa takwimu ya GEH",
     "demand.walk_speed_kmh": "Kasi ya kutembea kwa viungo vya kutembea kati ya vituo",
     "journey.walk_detour_factor": "Umbali wa kutembea ikilinganishwa na umbali wa mstari ulionyooka (mpangaji wa safari, makadirio ya manufaa)",
-    "journey.walk_slope_k": "Kutembea kwenye mteremko: kipengele cha mwinuko cha kanuni ya matembezi ya Tobler (mpangaji wa safari; 0 = matembezi huhesabiwa kama ardhi tambarare)",
+    "journey.walk_slope_k": "Kutembea kwenye mteremko: kipengele cha mwinuko cha kanuni ya matembezi ya Tobler (0 = matembezi huhesabiwa kama ardhi tambarare)",
     "journey.min_change_s": "Mpangaji wa safari: muda mfupi kabisa wa kubadilisha kwenye kituo kile kile",
     "journey.level_change_s": "Mpangaji wa safari: muda wa ziada wa kubadilisha jukwaa kituoni (ngazi, lifti)",
     "journey.same_name_station_m": "Vituo vyenye jina moja ndani ya umbali huu wa mstari ulionyooka ni kituo kimoja",
@@ -465,6 +465,8 @@
     "mode.spare_share": "Magari ya ziada, sehemu ya magari yaliyo kazini wakati wa msongamano (kundi)",
     "mode.vehicle_capacity": "Nafasi za abiria kwa gari la barabarani, kukaa na kusimama kwa msongamano wa mipango",
     "cost.opex.car_length_m": "Gharama ya uendeshaji wa reli: urefu wa treni unaohesabiwa kama behewa moja",
+    "dwell.door_channels_per_100m": "Njia za mlango kwa kila mita 100 za treni (milango upande mmoja × watu wanaopita sambamba kwa mlango)",
+    "dwell.door_peaking": "Njia ya mlango yenye msongamano zaidi ikilinganishwa na abiria kugawanyika sawa kwenye milango",
     "road.advice_on_time_share": "Uigaji wa barabara, ushauri: laini ya mtaa yenye sehemu ya safari zinazoondoka kwa wakati chini ya hii hupata ushauri",
     "road.advice_bunched_share": "Uigaji wa barabara, ushauri: laini ya mtaa yenye sehemu ya safari zinazoondoka zikiwa zimesongamana juu ya hii hupata ushauri"
   },

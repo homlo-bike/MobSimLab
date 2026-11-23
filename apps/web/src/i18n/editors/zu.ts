@@ -1232,6 +1232,8 @@ export const editorsZu = {
   "ferry.pier": "Ichweba {n}",
   "ferry.pierLower": "ichweba {n}",
   "ferry.legLower": "isigaba {n}",
+  "ferry.depthsUnavailable":
+    "Ukujula kwamanzi kwe-GEBCO akukwazanga ukulayishwa, ngakho ukujula olwandle oluvulekile akuhlolwa.",
   "ferry.hint.pier":
     "Chofoza ugu ukuze wengeze ichweba elilandelayo. Chofoza ichweba elikhona ukuze ume lapho futhi.",
   "ferry.hint.via": "Chofoza amanzi ukuze wengeze iphoyinti lokudlula esigabeni {n}.",
@@ -1291,6 +1293,15 @@ export const editorsZu = {
   "setup.wizardIntro": "Wena unguMnikazi. Abanye abantu abakwazi ukungena uze uqede ukusetha.",
   "setup.instanceName": "Igama lohlelo",
   "setup.finish": "Qeda ukusetha",
+  "setup.stepOf": "Isinyathelo {n} kwezingu-{count}",
+  "setup.next": "Okulandelayo",
+  "setup.back": "Emuva",
+  "setup.stepName": "Igama",
+  "setup.stepMaps": "Amamephu ayisisekelo",
+  "setup.signupIntro":
+    "Ubani ongangena uma ukusetha sekuqediwe, nendima azoyithola. Ungashintsha lokhu kamuva ku-Ukuphatha → Imithetho yokubhalisa.",
+  "setup.mapsIntro":
+    "Amamephu e-OpenStreetMap asebenza ngaphandle kokusetha. Engeza lapha izithombe zasemoyeni noma izinsiza zamamephu zenhlangano yakho uma uzifuna. Ungashintsha lokhu kamuva ku-Ukuphatha → Ama-plugin.",
   "consent.title": "Xhuma i-ejenti ye-AI",
   "consent.incomplete": "Lesi sixhumanisi asiphelele. Qala kabusha ukuxhuma kuhlelo lwakho lwe-AI.",
   "consent.signInFirst": "Ngena ku-MobSimLab ukuze unqume ukuthi uhlelo lungaxhuma yini.",
@@ -1523,7 +1534,12 @@ export const editorsZu = {
   "capacity.plannerNotes": "Amanothi omhleli ({n})",
   "capacity.kernelNotes": "Lokho okubikwe yinhlamvu yokubala ({n})",
   "capacity.method":
-    "Umthamo ngendlela yokucindezela ye-UIC 406; ukubambezeleka okuvela ekuhlolweni okungu-{runs} lapho u-{share} wohambo uqala ephuzile kuze kube ngu-{late}. Umthwalo wabagibeli awukabi yingxenye yalokhu kuhlola.",
+    "Umthamo ngendlela yokucindezela ye-UIC 406; ukubambezeleka okuvela ekuhlolweni okungu-{runs} lapho u-{share} wohambo uqala ephuzile kuze kube ngu-{late}.",
+  "capacity.dwell.busy":
+    "Izitimela zima isikhathi eside lapho abantu abaningi bengena futhi behla khona: abagibeli besitimela ngasinye bahlukana eminyango yaso, futhi umnyango oxinene kakhulu uthatha ngaphezu kwengxenye elinganayo.",
+  "capacity.dwell.fixed":
+    "Izitimela zima isikhathi esifanayo esitobhini ngasinye; uma umthwalo wabagibeli uvuliwe, zima isikhathi eside lapho abantu abaningi bengena futhi behla khona.",
+  "capacity.loads.dwell": "Izitimela zima kuze kube ngu-{dwell} e-{station} (ngokuvamile {usual}).",
   "capacity.line": "Ulayini {name}",
   "capacity.eachWay": "izitimela ezingu-{n}/ihora ohlangothini ngalunye",
   "capacity.used": "Umthamo osetshenzisiwe",
@@ -1598,6 +1614,10 @@ export const editorsZu = {
   "walk.collecting": "Kuqoqwa izitobhi neziteshi…",
   "walk.loadingTiles":
     "Kulayishwa izindlela zabahamba ngezinyawo ({done} kwezingu-{count} zamathayela ebalazwe)…",
+  "walk.loadingHeights": "Ilayisha ukuphakama komhlaba…",
+  "walk.heightsUnavailable":
+    "Ukuphakama komhlaba akulayishekanga ({reason}), ngakho ukuhamba kubalwa njengasendaweni eyisicaba.",
+  "walk.heightsNoData": "ayikho idatha yokuphakama yale ndawo",
   "walk.loadingPopulation": "Kulayishwa lapho abantu behlala khona…",
   "walk.computing": "Kukalwa ukuhamba…",
   "walk.tooLarge":
@@ -1633,7 +1653,7 @@ export const editorsZu = {
   "walk.popUnavailable": "Ayikho idatha yenani labantu ({reason}); imigwaqo imela abantu.",
   "walk.popCredit": "Abahlali: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Indawo ibhokisi elizungeze izitobhi kanye nebanga elihanjwa ngaphakathi komkhawulo. Imithambeka ayikabalwa.",
+    "Indawo ingunxande ozungeze iziteshi kanye nebanga elihanjwa ngaphakathi komkhawulo. Umgwaqo ngamunye uhanjwa ngomthambeko wawo ubheke esiteshini, ngakho ukukhuphuka kuthatha isikhathi eside.",
   "spacing.title": "Ibanga phakathi kwezitobhi",
   "spacing.intro":
     "Ibanga phakathi kwezitobhi ezilandelanayo emgqeni, kuqhathaniswa nebanga elivamile lohlobo lwezokuthutha. Izitobhi eziseduze kakhulu zinensa umugqa; ezikude kakhulu zisho ukuhamba isikhathi eside.",

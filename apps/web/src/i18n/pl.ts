@@ -261,8 +261,6 @@ export const pl: Messages = {
   "tab.tables": "Tabele",
   "tab.preferences": "Preferencje",
 
-  "placeholder.comingSoon": "W przyszłej wersji",
-
   "sim.test": "Testuj system",
   "sim.journey": "Czas podróży A → B",
 

@@ -1202,6 +1202,8 @@ export const editorsId = {
   "ferry.pier": "Dermaga {n}",
   "ferry.pierLower": "dermaga {n}",
   "ferry.legLower": "ruas {n}",
+  "ferry.depthsUnavailable":
+    "Kedalaman air GEBCO tidak dapat dimuat, jadi kedalaman di laut terbuka tidak diperiksa.",
   "ferry.hint.pier":
     "Klik pantai untuk menambah dermaga berikutnya. Klik dermaga yang ada untuk singgah lagi.",
   "ferry.hint.via": "Klik air untuk menambah titik lewat pada ruas {n}.",
@@ -1262,6 +1264,15 @@ export const editorsId = {
     "Anda adalah pemiliknya. Tidak ada orang lain yang dapat masuk sampai penyiapan selesai.",
   "setup.instanceName": "Nama instans",
   "setup.finish": "Selesaikan penyiapan",
+  "setup.stepOf": "Langkah {n} dari {count}",
+  "setup.next": "Berikutnya",
+  "setup.back": "Kembali",
+  "setup.stepName": "Nama",
+  "setup.stepMaps": "Peta dasar",
+  "setup.signupIntro":
+    "Siapa yang boleh masuk setelah penyiapan selesai, dan peran yang mereka dapat. Anda bisa mengubahnya nanti di Administrasi → Aturan pendaftaran.",
+  "setup.mapsIntro":
+    "Peta OpenStreetMap berfungsi tanpa penyiapan. Tambahkan citra udara atau layanan peta milik organisasi Anda di sini jika perlu. Anda bisa mengubahnya nanti di Administrasi → Plugin.",
   "consent.title": "Hubungkan agen AI",
   "consent.incomplete": "Tautan ini tidak lengkap. Mulai koneksi lagi dari aplikasi AI Anda.",
   "consent.signInFirst": "Masuk ke MobSimLab untuk memutuskan apakah aplikasi boleh terhubung.",
@@ -1486,7 +1497,12 @@ export const editorsId = {
   "capacity.plannerNotes": "Catatan perencana ({n})",
   "capacity.kernelNotes": "Laporan inti perhitungan ({n})",
   "capacity.method":
-    "Kapasitas menurut metode kompresi UIC 406; keterlambatan dari {runs} putaran di mana {share} perjalanan berangkat hingga {late} terlambat. Beban penumpang belum termasuk dalam uji ini.",
+    "Kapasitas menurut metode kompresi UIC 406; keterlambatan dari {runs} putaran di mana {share} perjalanan berangkat hingga {late} terlambat.",
+  "capacity.dwell.busy":
+    "Kereta berhenti lebih lama di tempat banyak orang naik dan turun: penumpang setiap kereta tersebar ke pintu-pintunya, dan pintu tersibuk mendapat lebih dari bagian rata.",
+  "capacity.dwell.fixed":
+    "Kereta berhenti sama lama di setiap pemberhentian; dengan beban penumpang aktif, kereta berhenti lebih lama di tempat banyak orang naik dan turun.",
+  "capacity.loads.dwell": "Kereta berhenti hingga {dwell} di {station} (biasanya {usual}).",
   "capacity.line": "Jalur {name}",
   "capacity.eachWay": "{n} kereta/jam tiap arah",
   "capacity.used": "Kapasitas terpakai",
@@ -1557,6 +1573,10 @@ export const editorsId = {
   "walk.drawFirst": "Gambar dulu jalur jalan atau jalur rel dengan stasiun.",
   "walk.collecting": "Mengumpulkan halte dan stasiun…",
   "walk.loadingTiles": "Memuat jalur pejalan kaki ({done} dari {count} petak peta)…",
+  "walk.loadingHeights": "Memuat ketinggian tanah…",
+  "walk.heightsUnavailable":
+    "Ketinggian tanah tidak termuat ({reason}), jadi jalan kaki dihitung seperti di tanah datar.",
+  "walk.heightsNoData": "tidak ada data ketinggian untuk area ini",
   "walk.loadingPopulation": "Memuat tempat tinggal penduduk…",
   "walk.computing": "Mengukur perjalanan kaki…",
   "walk.tooLarge":
@@ -1592,7 +1612,7 @@ export const editorsId = {
   "walk.popUnavailable": "Tidak ada data penduduk ({reason}); jalan menggantikan penduduk.",
   "walk.popCredit": "Penduduk: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Area adalah kotak di sekitar halte ditambah jarak yang ditempuh dalam batas. Kemiringan belum diperhitungkan.",
+    "Area adalah persegi panjang di sekitar halte ditambah jarak yang ditempuh berjalan kaki dalam batas. Setiap jalan ditempuh dengan kemiringannya ke arah halte, jadi jalan kaki menanjak memakan waktu lebih lama.",
   "spacing.title": "Jarak antarhalte",
   "spacing.intro":
     "Jarak antara halte berurutan di sepanjang jalur, dibandingkan dengan rentang biasa untuk moda tersebut. Halte terlalu dekat memperlambat jalur; terlalu jauh berarti berjalan kaki lama.",

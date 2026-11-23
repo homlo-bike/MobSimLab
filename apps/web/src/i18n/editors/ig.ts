@@ -1163,6 +1163,8 @@ export const editorsIg = {
   "ferry.pier": "Ọdụ ụgbọ mmiri {n}",
   "ferry.pierLower": "ọdụ ụgbọ mmiri {n}",
   "ferry.legLower": "ngalaba {n}",
+  "ferry.depthsUnavailable":
+    "Enweghị ike ibudata omimi mmiri GEBCO, ya mere anaghị enyocha omimi n'oké osimiri mepere emepe.",
   "ferry.hint.pier":
     "Pịa ikpere mmiri iji tinye ọdụ ụgbọ mmiri ọzọ. Pịa ọdụ ụgbọ mmiri dị adị iji kwụsị ebe ahụ ọzọ.",
   "ferry.hint.via": "Pịa mmiri iji tinye ntụpọ ngafe na ngalaba {n}.",
@@ -1221,6 +1223,15 @@ export const editorsIg = {
   "setup.wizardIntro": "Ị bụ Onye nwe. Ndị ọzọ enweghị ike ịbanye ruo mgbe ị mechara nhazi.",
   "setup.instanceName": "Aha sistemụ",
   "setup.finish": "Mechaa nhazi",
+  "setup.stepOf": "Nzọụkwụ {n} n'ime {count}",
+  "setup.next": "Ọzọ",
+  "setup.back": "Laghachi",
+  "setup.stepName": "Aha",
+  "setup.stepMaps": "Maapụ ntọala",
+  "setup.signupIntro":
+    "Onye nwere ike ịbanye ma emechaa nhazi, na ọrụ ha ga-enweta. Ị nwere ike ịgbanwe nke a mgbe e mesịrị na Nchịkwa → Iwu ndebanye aha.",
+  "setup.mapsIntro":
+    "Maapụ OpenStreetMap na-arụ ọrụ na-enweghị nhazi. Tinye ebe a foto ikuku ma ọ bụ ọrụ maapụ nke otu gị ma ọ bụrụ na ịchọrọ ha. Ị nwere ike ịgbanwe nke a mgbe e mesịrị na Nchịkwa → Ngwa mgbakwunye.",
   "consent.title": "Jikọọ onye nnọchite AI",
   "consent.incomplete": "Njikọ a ezughị ezu. Malitegharịa njikọ ahụ na ngwa AI gị.",
   "consent.signInFirst": "Banye na MobSimLab iji kpebie ma ngwa ahụ nwere ike ijikọ.",
@@ -1447,7 +1458,12 @@ export const editorsIg = {
   "capacity.plannerNotes": "Ndetu onye nhazi ({n})",
   "capacity.kernelNotes": "Ihe isi ngụkọ kọrọ ({n})",
   "capacity.method":
-    "Ike site na usoro mkpakọ UIC 406; igbu oge sitere n’ule {runs} ebe {share} nke njem na-amalite n’azụ oge ruo {late}. Ibu ndị njem esoghị n’ule a ugbu a.",
+    "Ike site na usoro mkpakọ UIC 406; igbu oge sitere n’ule {runs} ebe {share} nke njem na-amalite n’azụ oge ruo {late}.",
+  "capacity.dwell.busy":
+    "Ụgbọ okporo ígwè na-akwụsị ogologo oge ebe ọtụtụ mmadụ na-abanye ma na-apụ: ndị njem nke ụgbọ ọ bụla na-ekewa n'ọnụ ụzọ ya, ọnụ ụzọ kacha jupụta na-ewere karịa òkè nha nha.",
+  "capacity.dwell.fixed":
+    "Ụgbọ okporo ígwè na-akwụsị otu oge n'ebe nkwụsị ọ bụla; mgbe ibu ndị njem gbanyere, ha na-akwụsị ogologo oge ebe ọtụtụ mmadụ na-abanye ma na-apụ.",
+  "capacity.loads.dwell": "Ụgbọ okporo ígwè na-akwụsị ruo {dwell} na {station} (na-abụkarị {usual}).",
   "capacity.line": "Ahịrị {name}",
   "capacity.eachWay": "ụgbọ {n}/elekere n’ụzọ ọ bụla",
   "capacity.used": "Ike ejiri",
@@ -1516,6 +1532,9 @@ export const editorsIg = {
   "walk.drawFirst": "Buru ụzọ see ahịrị okporo ụzọ ma ọ bụ ụzọ ụgbọ oloko nwere ọdụ.",
   "walk.collecting": "A na-achịkọta ebe nkwụsị na ọdụ…",
   "walk.loadingTiles": "A na-ebunye ụzọ ndị na-eji ụkwụ ({done} n'ime taịlụ maapụ {count})…",
+  "walk.loadingHeights": "Na-ebugo ịdị elu ala…",
+  "walk.heightsUnavailable": "Ebughị ịdị elu ala ({reason}), ya mere a na-agụ ije dị ka ala dị larịị.",
+  "walk.heightsNoData": "enweghị data ịdị elu maka mpaghara a",
   "walk.loadingPopulation": "A na-ebunye ebe ndị mmadụ bi…",
   "walk.computing": "A na-atụ ije ụkwụ…",
   "walk.tooLarge":
@@ -1549,7 +1568,7 @@ export const editorsIg = {
   "walk.popUnavailable": "Enweghị data ọnụọgụ mmadụ ({reason}); okporo ụzọ na-anọchi anya ndị mmadụ.",
   "walk.popCredit": "Ndị bi: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Mpaghara ahụ bụ igbe gburugburu ebe nkwụsị gbakwunyere anya a na-eje n'ime oke. A gụbeghị mkpọda.",
+    "Mpaghara ahụ bụ akụkụ anọ gburugburu ebe nkwụsị gbakwunyere anya a na-eje n'ime oke. A na-eje okporo ụzọ ọ bụla n'ugwu ya na-aga ebe nkwụsị, ya mere ịrị elu na-ewe oge karịa.",
   "spacing.title": "Oghere n'etiti ebe nkwụsị",
   "spacing.intro":
     "Anya dị n'etiti ebe nkwụsị na-esochi ibe ha n'ahịrị, ma e jiri ya tụnyere oke a na-ahụkarị maka ụdị njem ahụ. Ebe nkwụsị dị nso nke ukwuu na-eme ka ahịrị ahụ dị nwayọ; ndị dị anya nke ukwuu pụtara ije ogologo.",

@@ -257,8 +257,6 @@ export const ko: Messages = {
   "tab.tables": "표",
   "tab.preferences": "환경설정",
 
-  "placeholder.comingSoon": "향후 릴리스에서 제공 예정",
-
   "sim.test": "시스템 검증",
   "sim.journey": "이동 시간 A → B",
 

@@ -1217,6 +1217,8 @@ export const editorsIt = {
   "ferry.pier": "Pontile {n}",
   "ferry.pierLower": "pontile {n}",
   "ferry.legLower": "tratta {n}",
+  "ferry.depthsUnavailable":
+    "Non è stato possibile caricare le profondità GEBCO, quindi la profondità in mare aperto non è verificata.",
   "ferry.hint.pier":
     "Fai clic sulla riva per aggiungere il pontile successivo. Fai clic su un pontile esistente per farvi di nuovo scalo.",
   "ferry.hint.via": "Fai clic sull'acqua per aggiungere un punto di passaggio alla tratta {n}.",
@@ -1276,6 +1278,15 @@ export const editorsIt = {
     "Sei il proprietario. Nessun altro può accedere finché la configurazione non è completa.",
   "setup.instanceName": "Nome dell'istanza",
   "setup.finish": "Completa la configurazione",
+  "setup.stepOf": "Passo {n} di {count}",
+  "setup.next": "Avanti",
+  "setup.back": "Indietro",
+  "setup.stepName": "Nome",
+  "setup.stepMaps": "Mappe di base",
+  "setup.signupIntro":
+    "Chi può accedere al termine della configurazione e con quale ruolo. Potrai cambiarlo in seguito in Amministrazione → Regole di registrazione.",
+  "setup.mapsIntro":
+    "Le mappe OpenStreetMap funzionano senza configurazione. Aggiungi qui immagini aeree o i servizi cartografici della tua organizzazione, se ti servono. Potrai cambiarlo in seguito in Amministrazione → Plugin.",
   "consent.title": "Collega un agente IA",
   "consent.incomplete": "Questo link è incompleto. Avvia di nuovo il collegamento dalla tua app di IA.",
   "consent.signInFirst": "Accedi a MobSimLab per decidere se l'app può collegarsi.",
@@ -1504,7 +1515,12 @@ export const editorsIt = {
   "capacity.plannerNotes": "Note del pianificatore ({n})",
   "capacity.kernelNotes": "Cosa ha segnalato il nucleo di calcolo ({n})",
   "capacity.method":
-    "Capacità con il metodo di compressione UIC 406; ritardi da {runs} prove in cui il {share} delle corse parte fino a {late} in ritardo. Il carico dei passeggeri non fa ancora parte di questo test.",
+    "Capacità con il metodo di compressione UIC 406; ritardi da {runs} prove in cui il {share} delle corse parte fino a {late} in ritardo.",
+  "capacity.dwell.busy":
+    "I treni sostano di più dove molte persone salgono e scendono: i passeggeri di ogni treno si distribuiscono tra le sue porte, e la porta più carica ne riceve più di una quota uguale.",
+  "capacity.dwell.fixed":
+    "I treni sostano lo stesso tempo a ogni fermata; con il carico dei passeggeri attivo, sostano di più dove molte persone salgono e scendono.",
+  "capacity.loads.dwell": "I treni sostano fino a {dwell} a {station} (di solito {usual}).",
   "capacity.line": "Linea {name}",
   "capacity.eachWay": "{n} treni/h per direzione",
   "capacity.used": "Capacità usata",
@@ -1575,6 +1591,10 @@ export const editorsIt = {
   "walk.drawFirst": "Disegna prima una linea su strada o una ferrovia con stazioni.",
   "walk.collecting": "Raccolta di fermate e stazioni…",
   "walk.loadingTiles": "Caricamento dei percorsi pedonali ({done} di {count} riquadri)…",
+  "walk.loadingHeights": "Caricamento delle quote del terreno…",
+  "walk.heightsUnavailable":
+    "Le quote del terreno non sono state caricate ({reason}), quindi i percorsi a piedi sono calcolati come in piano.",
+  "walk.heightsNoData": "nessun dato di quota per quest’area",
   "walk.loadingPopulation": "Caricamento di dove vivono le persone…",
   "walk.computing": "Misurazione dei percorsi a piedi…",
   "walk.tooLarge":
@@ -1609,7 +1629,7 @@ export const editorsIt = {
   "walk.popUnavailable": "Nessun dato sulla popolazione ({reason}); le strade sostituiscono le persone.",
   "walk.popCredit": "Residenti: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "L'area è il rettangolo intorno alle fermate più la distanza percorsa nel limite. Le pendenze non sono ancora considerate.",
+    "L’area è il rettangolo attorno alle fermate più la distanza percorsa nel limite. Ogni strada è percorsa con la sua pendenza verso la fermata, quindi in salita si impiega di più.",
   "spacing.title": "Distanza tra fermate",
   "spacing.intro":
     "Distanza tra fermate consecutive lungo la linea, rispetto all'intervallo usuale del modo. Fermate troppo vicine rallentano la linea; troppo distanti significano lunghe camminate.",

@@ -263,8 +263,6 @@ export const es: Messages = {
   "tab.tables": "Tablas",
   "tab.preferences": "Preferencias",
 
-  "placeholder.comingSoon": "Llegará en una versión posterior",
-
   "sim.test": "Probar el sistema",
   "sim.journey": "Tiempo de viaje A → B",
 

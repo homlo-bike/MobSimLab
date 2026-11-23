@@ -258,8 +258,6 @@ export const ja: Messages = {
   "tab.tables": "表",
   "tab.preferences": "設定",
 
-  "placeholder.comingSoon": "今後のリリースで提供予定",
-
   "sim.test": "システムを検証",
   "sim.journey": "所要時間 A → B",
 

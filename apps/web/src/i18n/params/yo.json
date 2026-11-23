@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "Ìṣàtúnṣe: wákàtí tí a fi pín iye ọjọ́ iṣẹ́ fún ìṣirò GEH",
     "demand.walk_speed_kmh": "Ìyára ìrìn ẹsẹ̀ fún àwọn ọ̀nà ìrìn láàrin àwọn ibùdókọ̀",
     "journey.walk_detour_factor": "Ìjìnnà ìrìn ẹsẹ̀ ní ìfiwéra pẹ̀lú ìjìnnà ìlà títọ́ (olùṣètò ìrìn, ìṣirò àǹfààní)",
-    "journey.walk_slope_k": "Rírìn lórí òkè: ìwọ̀n ìtẹ̀ nínú ìlànà ìrìn Tobler (olùṣètò ìrìn-àjò; 0 = a ka ìrìn bí ilẹ̀ pẹ̀tẹ́lẹ̀)",
+    "journey.walk_slope_k": "Rírìn lórí òkè: ìwọ̀n ìtẹ̀ nínú ìlànà ìrìn Tobler (0 = a ka ìrìn bí ilẹ̀ pẹ̀tẹ́lẹ̀)",
     "journey.min_change_s": "Olùṣètò ìrìn: àkókò ìyípadà tó kéré jù ní ibùdókọ̀ kan",
     "journey.level_change_s": "Olùṣètò ìrìn: àkókò àfikún láti yí pẹpẹ padà ní ibùdókọ̀ (àtẹ̀gùn, ẹ̀rọ agbéniga)",
     "journey.same_name_station_m": "Àwọn ibùdókọ̀ orúkọ kan náà láàrin ìjìnnà ìlà títọ́ yìí jẹ́ ibùdó kan",
@@ -465,6 +465,8 @@
     "mode.spare_share": "Ọkọ̀ àfipamọ́, ìpín ti ọkọ̀ tí ń ṣiṣẹ́ ní àkókò èrò púpọ̀ (àwọn ọkọ̀)",
     "mode.vehicle_capacity": "Ààyè èrò fún ọkọ̀ òpópónà kọ̀ọ̀kan, jíjókòó àti dídúró ní ìwọ̀n ètò",
     "cost.opex.car_length_m": "Iye owó ìrìn ojú irin: gígùn ọkọ̀ ojú irin tí a kà sí kẹ̀kẹ́ kan",
+    "dwell.door_channels_per_100m": "Ọ̀nà ilẹ̀kùn fún 100 m ọkọ̀ ojú irin (ilẹ̀kùn ẹ̀gbẹ́ kan × ènìyàn tí ń kọjá lẹ́gbẹ̀ẹ́ ara wọn ní ilẹ̀kùn kan)",
+    "dwell.door_peaking": "Ọ̀nà ilẹ̀kùn tó kún jùlọ ní ìfiwéra pẹ̀lú pípín àwọn èrò dọ́gba sí àwọn ilẹ̀kùn",
     "road.advice_on_time_share": "Àfarawé ọ̀nà, ìmọ̀ràn: ìlà òpópónà tí ìpín ìlọ ní àkókò rẹ̀ kéré sí èyí ń gba ìmọ̀ràn",
     "road.advice_bunched_share": "Àfarawé ọ̀nà, ìmọ̀ràn: ìlà òpópónà tí ìpín ìlọ ní àkójọ rẹ̀ ju èyí lọ ń gba ìmọ̀ràn"
   },

@@ -4,7 +4,7 @@ import { get, send } from "../session/api";
 import { PluginsAdmin } from "./PluginsAdmin";
 import { engineErrorText } from "../i18n/engine";
 
-const ROLES = ["owner", "admin", "user", "viewer", "restricted"] as const;
+export const ROLES = ["owner", "admin", "user", "viewer", "restricted"] as const;
 type Role = (typeof ROLES)[number];
 
 /** A row of `GET /api/admin/users`. */
@@ -117,7 +117,7 @@ export function AdminPanel({
       )}
       <div className="flex-1 overflow-auto p-4">
         {tab === "users" && <Users {...props} />}
-        {tab === "signup" && <SignUp {...props} />}
+        {tab === "signup" && <SignUpRules {...props} />}
         {tab === "plugins" && <PluginsAdmin csrfToken={csrfToken} run={run} actorRole={role} />}
         {tab === "audit" && <Audit run={run} />}
       </div>
@@ -267,7 +267,11 @@ const lines = (s: string) =>
     .map((x) => x.trim())
     .filter(Boolean);
 
-function SignUp({ csrfToken, run, offered }: TabProps) {
+/**
+ * Sign-up rules and group mappings (Administration → Sign-up rules, and the setup wizard's second step): who may
+ * sign up, the role new people get, and the IdP groups that give a role at sign-in.
+ */
+export function SignUpRules({ csrfToken, run, offered }: Pick<TabProps, "csrfToken" | "run" | "offered">) {
   const { t } = useI18n();
   const [reg, setReg] = useState<Registration | null>(null);
   const [domains, setDomains] = useState("");

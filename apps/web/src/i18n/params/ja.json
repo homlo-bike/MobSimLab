@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "キャリブレーション：GEH 統計で平日の観測値を割る時間数",
     "demand.walk_speed_kmh": "駅間の徒歩連絡の歩行速度",
     "journey.walk_detour_factor": "直線距離に対する徒歩距離（経路検索、便益推計）",
-    "journey.walk_slope_k": "坂道の歩行：トブラーのハイキング関数の勾配項（経路検索。0 = 徒歩を平地として計算）",
+    "journey.walk_slope_k": "坂道の歩行：トブラーのハイキング関数の勾配項（0 = 徒歩を平地として計算）",
     "journey.min_change_s": "経路検索：同じ停留所での最短乗換え時間",
     "journey.level_change_s": "経路検索：駅でホームを移るための追加時間（階段、エレベーター）",
     "journey.same_name_station_m": "この直線距離内の同名の停留所は 1 つの駅とする",
@@ -465,6 +465,8 @@
     "mode.spare_share": "予備車両、ピーク時運行車両に対する割合（車両数）",
     "mode.vehicle_capacity": "道路車両1台あたりの乗客定員、計画密度での座席と立席",
     "cost.opex.car_length_m": "鉄道の走行費：1両として数える列車の長さ",
+    "dwell.door_channels_per_100m": "列車100 mあたりのドア通路数（片側のドア数 × 1ドアを並んで通れる人数）",
+    "dwell.door_peaking": "乗客がドアに均等に分かれた場合に対する最も混むドア通路の比",
     "road.advice_on_time_share": "道路シミュレーションの助言：定時発車の割合がこれを下回る街路路線に助言を出す",
     "road.advice_bunched_share": "道路シミュレーションの助言：団子発車の割合がこれを上回る街路路線に助言を出す"
   },

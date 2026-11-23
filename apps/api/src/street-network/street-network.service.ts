@@ -4,6 +4,7 @@ import { DESTINATION_FILTERS, type DestinationPoint, destinationCategories } fro
 import { OverpassClient, OverpassError } from "../gateway/overpass.client";
 import { GeodataReader } from "../geodata/geodata-reader";
 import { type Bbox, waterQuery, waterShapes } from "./water";
+import { crossingsQuery, waterCrossings } from "./water-crossings";
 
 /** Street tiles use this web-mercator zoom: about 2.4 km × 2.4 km at the equator, 1.5 km at 50° N. */
 export const TILE_ZOOM = 14;
@@ -601,6 +602,19 @@ export class StreetNetworkService {
       projectId && (() => this.imported!.water(projectId, b)),
       projectId,
       source,
+    );
+  }
+
+  /**
+   * Purpose: the bridges and locks inside a box as JSON `WaterCrossings` (water-crossings.ts), for the ferry
+   * route checks. Inputs: `[west, south, east, north]`, already checked and rounded by the controller.
+   * Side effects: may call Overpass.
+   */
+  waterCrossings(b: Bbox): Promise<string> {
+    return this.cached(
+      `water-crossings/${b.join(",")}`,
+      () => crossingsQuery(b),
+      (json) => JSON.stringify(waterCrossings(json)),
     );
   }
 

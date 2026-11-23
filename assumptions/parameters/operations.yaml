@@ -275,10 +275,10 @@
       rationale: "Stand-in until walks are routed on the walk graph: street networks make a walk roughly 20–50 % longer than the straight line (lower in dense grids, higher with rivers, rail lines and cul-de-sacs). 1.3 is the planning value used by the journey planner (ADR-0034); replace with a cited circuity study."
 
 - key: journey.walk_slope_k
-  label: "Walking on slopes: steepness term of Tobler's hiking function (journey planner; 0 = walks timed as flat)"
+  label: "Walking on slopes: steepness term of Tobler's hiking function (0 = walks timed as flat)"
   group: Demand
   unit: coefficient
-  used_by: [journey planner access, egress and transfer walks]
+  used_by: [journey planner access, egress and transfer walks, walk coverage, walk catchments]
   values:
     - context:
         mode: "*"
@@ -558,6 +558,65 @@
       sources: [tcqsm3]
       check: unverified
       rationale: "TCQSM: alighting is somewhat quicker than boarding."
+
+- key: dwell.door_channels_per_100m
+  label: Door channels per 100 m of train (doors on one side × people abreast per door)
+  group: Operations
+  unit: count
+  used_by: [dwell model]
+  values:
+    - context:
+        mode: "*"
+      low: 12
+      central: 16
+      high: 24
+      basis: educated-guess
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "Door channels on one side of the train, a door wide enough for two people abreast counting twice; the dwell model divides a train's passengers by them. Counted from typical car layouts, not from a source table: a 20 m metro car with four double doors gives 40 per 100 m, a 30 m tram with three or four double doors about 24, a 25 m regional car with two double doors 16, and a 25 m long-distance car with one or two single doors 8."
+    - context:
+        mode: [metro]
+      low: 32
+      central: 40
+      high: 48
+      basis: educated-guess
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "Door channels on one side of the train, a door wide enough for two people abreast counting twice; the dwell model divides a train's passengers by them. Counted from typical car layouts, not from a source table: a 20 m metro car with four double doors gives 40 per 100 m, a 30 m tram with three or four double doors about 24, a 25 m regional car with two double doors 16, and a 25 m long-distance car with one or two single doors 8."
+    - context:
+        mode: [tram, light_rail]
+      low: 16
+      central: 24
+      high: 32
+      basis: educated-guess
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "Door channels on one side of the train, a door wide enough for two people abreast counting twice; the dwell model divides a train's passengers by them. Counted from typical car layouts, not from a source table: a 20 m metro car with four double doors gives 40 per 100 m, a 30 m tram with three or four double doors about 24, a 25 m regional car with two double doors 16, and a 25 m long-distance car with one or two single doors 8."
+    - context:
+        mode: [long_distance_rail, high_speed_rail]
+      low: 4
+      central: 8
+      high: 12
+      basis: educated-guess
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "Door channels on one side of the train, a door wide enough for two people abreast counting twice; the dwell model divides a train's passengers by them. Counted from typical car layouts, not from a source table: a 20 m metro car with four double doors gives 40 per 100 m, a 30 m tram with three or four double doors about 24, a 25 m regional car with two double doors 16, and a 25 m long-distance car with one or two single doors 8."
+
+- key: dwell.door_peaking
+  label: Busiest door channel over an even spread of passengers across the doors
+  group: Operations
+  unit: factor
+  used_by: [dwell model]
+  values:
+    - context:
+        mode: "*"
+      low: 1.1
+      central: 1.3
+      high: 1.6
+      basis: educated-guess
+      sources: [tcqsm3]
+      check: unverified
+      rationale: "Passengers crowd the doors nearest the platform entrances, so the busiest channel serves more than an even share; the dwell lasts until it is done. TCQSM describes this uneven use of doors; 1.3 is an educated guess for platforms with access at one or two points."
 
 - key: capacity.occupancy_limit_share
   label: Recommended capacity consumption limit in the peak hour (UIC 406)

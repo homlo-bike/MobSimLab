@@ -174,7 +174,7 @@
     "demand.calibration.geh_hours": "校准：计算 GEH 统计量时工作日计数所分摊的小时数",
     "demand.walk_speed_kmh": "车站间步行连接的步行速度",
     "journey.walk_detour_factor": "步行距离相对直线距离（出行规划器、效益估算）",
-    "journey.walk_slope_k": "坡道步行：Tobler 徒步函数的坡度项（出行规划；0 = 步行按平地计算）",
+    "journey.walk_slope_k": "坡道步行：Tobler 徒步函数的坡度项（0 = 步行按平地计算）",
     "journey.min_change_s": "出行规划器：同站最短换乘时间",
     "journey.level_change_s": "出行规划器：站内更换站台的附加时间（楼梯、电梯）",
     "journey.same_name_station_m": "此直线距离内同名车站视为一个车站",
@@ -465,6 +465,8 @@
     "mode.spare_share": "备用车辆，占高峰运营车辆的比例（车队）",
     "mode.vehicle_capacity": "每辆道路车辆的乘客位，按规划密度计的座位加站位",
     "cost.opex.car_length_m": "铁路运行成本：计为一节车厢的列车长度",
+    "dwell.door_channels_per_100m": "每 100 米列车的车门通道数（单侧车门数 × 每扇门并排通过人数）",
+    "dwell.door_peaking": "最繁忙车门通道相对于乘客在各门均匀分布的倍数",
     "road.advice_on_time_share": "道路仿真建议：准点发车比例低于此值的街道线路会收到建议",
     "road.advice_bunched_share": "道路仿真建议：串车发车比例高于此值的街道线路会收到建议"
   },

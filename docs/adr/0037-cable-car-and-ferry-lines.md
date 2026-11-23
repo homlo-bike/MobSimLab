@@ -61,6 +61,8 @@ The steps below are the water route kit with the ferry plugin's parameters and c
 4. **Speed zones** (harbour, wash-restricted, canal) are polygons with a speed limit; a vessel's running time uses the lower of zone limit and vessel service speed, plus a berthing manoeuvre at each call.
 5. **Checks:** vessel air draught under bridges, draught where the planner gives a depth, berth count against the timetable, energy per round trip against battery and charge during dwell.
 
+**Implemented so far (route checks).** The legs follow the planner's via points; the water graph and routing on it are not built yet. The water route kit checks each leg against what lies around the line (`crates/mode-kits/src/water_checks.rs`): land from OSM water areas, the sea built from the coastline and rivers mapped as lines (`GET /api/street-network/water`); bridges and whether they open, with the clearance from `seamark:bridge:clearance_height(_closed)` or `bridge:clearance`, and locks (`waterway=lock_gate`, `lock=yes`) (`GET /api/street-network/water-crossings`); and the depth on open sea, more than 1 km from the leg's piers, from the GEBCO grid (about 450 m) through an Open Topo Data server (`POST /api/terrain/depths`, `MOBSIMLAB_GEBCO_URL`, off with `MOBSIMLAB_GEBCO=off`). Rivers, lakes and harbours are not checked for depth (product owner, 2026-11-23). The vessel's sizes are the plugin parameters `ferry.air_draft_m`, `ferry.draught_m` and `ferry.under_keel_clearance_m`. Time waiting for a bridge to open or in a lock is not counted.
+
 ### 4. Vehicles
 
 New catalogue folders `vehicles/cable-car/`, `vehicles/aerial-tramway/` and `vehicles/ferry/`, with the same provenance rules (ADR-0026). The schema gains optional groups, all additive:

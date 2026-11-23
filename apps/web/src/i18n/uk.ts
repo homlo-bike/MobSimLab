@@ -262,8 +262,6 @@ export const uk: Messages = {
   "tab.tables": "Таблиці",
   "tab.preferences": "Параметри",
 
-  "placeholder.comingSoon": "У майбутньому випуску",
-
   "sim.test": "Перевірити систему",
   "sim.journey": "Час поїздки A → B",
 

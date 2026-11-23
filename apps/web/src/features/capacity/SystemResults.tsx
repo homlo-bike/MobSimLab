@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { clock } from "../journey-planner/format";
 import { useI18n } from "../../i18n/i18n";
+import { secs } from "./capacityText";
 import type { LineLoad } from "./loads";
 import type { Boardings } from "./ridership";
 import type { StreetLineResult } from "./streetRun";
@@ -50,6 +51,15 @@ export function LoadMetrics({ load }: { load: LineLoad }) {
       <p className={`mt-1 text-xs ${tone}`}>
         {b.occupancy > 1 ? t("capacity.loads.over") : t("capacity.loads.fits")}
       </p>
+      {load.dwell && (
+        <p className="mt-1 text-xs text-slate-600">
+          {t("capacity.loads.dwell", {
+            dwell: secs(load.dwell.dwell_s, t),
+            station: load.dwell.station,
+            usual: secs(load.dwell.usual_s, t),
+          })}
+        </p>
+      )}
       {load.missing.length > 0 && (
         <p className="mt-1 text-xs text-slate-500">
           {t("capacity.loads.missing", { stops: load.missing.join(", ") })}

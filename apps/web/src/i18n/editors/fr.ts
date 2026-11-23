@@ -1233,6 +1233,8 @@ export const editorsFr = {
   "ferry.pier": "Embarcadère {n}",
   "ferry.pierLower": "embarcadère {n}",
   "ferry.legLower": "trajet {n}",
+  "ferry.depthsUnavailable":
+    "Les profondeurs GEBCO n’ont pas pu être chargées ; la profondeur en mer ouverte n’est donc pas vérifiée.",
   "ferry.hint.pier":
     "Cliquez sur la rive pour ajouter l’embarcadère suivant. Cliquez sur un embarcadère existant pour y desservir à nouveau.",
   "ferry.hint.via": "Cliquez sur l’eau pour ajouter un point de passage au trajet {n}.",
@@ -1294,6 +1296,15 @@ export const editorsFr = {
     "Vous êtes le propriétaire. Personne d’autre ne peut se connecter tant que la configuration n’est pas terminée.",
   "setup.instanceName": "Nom de l’instance",
   "setup.finish": "Terminer la configuration",
+  "setup.stepOf": "Étape {n} sur {count}",
+  "setup.next": "Suivant",
+  "setup.back": "Retour",
+  "setup.stepName": "Nom",
+  "setup.stepMaps": "Fonds de carte",
+  "setup.signupIntro":
+    "Qui peut se connecter une fois la configuration terminée, et le rôle attribué. Vous pourrez le modifier plus tard dans Administration → Règles d’inscription.",
+  "setup.mapsIntro":
+    "Les cartes OpenStreetMap fonctionnent sans configuration. Ajoutez ici l’imagerie aérienne ou les services cartographiques de votre organisation si vous le souhaitez. Vous pourrez le modifier plus tard dans Administration → Extensions.",
   "consent.title": "Connecter un agent IA",
   "consent.incomplete": "Ce lien est incomplet. Relancez la connexion depuis votre application d’IA.",
   "consent.signInFirst": "Connectez-vous à MobSimLab pour décider si l’application peut se connecter.",
@@ -1530,7 +1541,12 @@ export const editorsFr = {
   "capacity.plannerNotes": "Notes du planificateur ({n})",
   "capacity.kernelNotes": "Ce que le noyau a signalé ({n})",
   "capacity.method":
-    "Capacité selon la méthode de compression UIC 406 ; retards issus de {runs} passages où {share} des courses partent jusqu’à {late} en retard. La charge des voyageurs ne fait pas encore partie de ce test.",
+    "Capacité selon la méthode de compression UIC 406 ; retards issus de {runs} passages où {share} des courses partent jusqu’à {late} en retard.",
+  "capacity.dwell.busy":
+    "Les trains stationnent plus longtemps là où beaucoup de gens montent et descendent : les voyageurs de chaque train se répartissent sur ses portes, et la porte la plus chargée en reçoit plus qu’une part égale.",
+  "capacity.dwell.fixed":
+    "Les trains stationnent le même temps à chaque arrêt ; avec la charge des voyageurs, ils stationnent plus longtemps là où beaucoup de gens montent et descendent.",
+  "capacity.loads.dwell": "Les trains stationnent jusqu’à {dwell} à {station} (d’habitude {usual}).",
   "capacity.line": "Ligne {name}",
   "capacity.eachWay": "{n} trains/h par sens",
   "capacity.used": "Capacité utilisée",
@@ -1600,6 +1616,10 @@ export const editorsFr = {
   "walk.drawFirst": "Dessinez d'abord une ligne sur rue ou une voie ferrée avec des stations.",
   "walk.collecting": "Collecte des arrêts et des stations…",
   "walk.loadingTiles": "Chargement des chemins piétons ({done} sur {count} tuiles)…",
+  "walk.loadingHeights": "Chargement des altitudes du terrain…",
+  "walk.heightsUnavailable":
+    "Les altitudes du terrain ne se sont pas chargées ({reason}) : la marche est comptée comme sur le plat.",
+  "walk.heightsNoData": "pas de données d’altitude pour cette zone",
   "walk.loadingPopulation": "Chargement des lieux d'habitation…",
   "walk.computing": "Mesure des trajets à pied…",
   "walk.tooLarge":
@@ -1634,7 +1654,7 @@ export const editorsFr = {
   "walk.popUnavailable": "Pas de données de population ({reason}) ; les rues remplacent les habitants.",
   "walk.popCredit": "Habitants : WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "La zone est le rectangle autour des arrêts plus la distance parcourue dans la limite. Les pentes ne sont pas encore prises en compte.",
+    "La zone est le rectangle autour des arrêts plus la distance parcourue dans la limite. Chaque rue est parcourue avec sa pente vers l’arrêt : en montée, la marche prend plus de temps.",
   "spacing.title": "Interstation",
   "spacing.intro":
     "Distance entre arrêts consécutifs le long de la ligne, comparée à la plage habituelle du mode. Des arrêts trop proches ralentissent la ligne ; trop éloignés, ils imposent de longues marches.",

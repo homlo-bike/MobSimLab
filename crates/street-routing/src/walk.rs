@@ -10,9 +10,11 @@
 //! - [`stop_spacing`]: distance between consecutive stops along the route and on foot.
 //!
 //! Costs: length ÷ walking speed (`demand.walk_speed_kmh`) plus a delay at each signalised
-//! crossing (`walk.crossing_delay_s`). Steps are left out in the step-free variant. Gradient is not
-//! applied yet: the OSM tiles carry no elevation. The same code runs in the API (WebAssembly for
-//! Node), in the browser and in the worker.
+//! crossing (`walk.crossing_delay_s`). Steps are left out in the step-free variant. Where the graph
+//! has ground heights ([`WalkGraph::set_cell_heights`]; the OSM tiles carry none), each street piece is
+//! timed on its own slope with Tobler's hiking function (`journey.walk_slope_k`), in the direction
+//! people walk to the stop. Without heights every walk is timed as flat. The same code runs in the API
+//! (WebAssembly for Node), in the browser and in the worker.
 
 use crate::geo::{dist, project_on_segment, LocalProjection};
 use crate::osm::{OsmData, Tags};
@@ -33,6 +35,9 @@ pub struct WalkSettings {
     pub step_free: bool,
     /// A stop or demand point further than this from any walkable way is not on the network.
     pub max_snap_m: f64,
+    /// `journey.walk_slope_k`: steepness term of Tobler's hiking function (central 3.5). Applies only
+    /// where the graph has ground heights; 0 times every walk as flat.
+    pub walk_slope_k: f64,
 }
 
 impl Default for WalkSettings {
@@ -42,6 +47,7 @@ impl Default for WalkSettings {
             crossing_delay_s: 20.0,
             step_free: false,
             max_snap_m: 250.0,
+            walk_slope_k: 3.5,
         }
     }
 }
@@ -51,6 +57,15 @@ impl WalkSettings {
         (self.walk_speed_kmh / 3.6).max(0.1)
     }
 }
+
+/// Tobler's hiking function is fastest on a 5 % downhill gradient.
+const TOBLER_FASTEST: f64 = 0.05;
+/// Steepest gradient a street piece is timed on (1 in 2, steeper than most stairs; anything more is
+/// taken as an error in the heights).
+const MAX_GRADIENT: f64 = 0.5;
+/// Street pieces shorter than this take the gradient of a piece this long, so a few metres between two
+/// height cells do not read as a cliff.
+const MIN_SLOPE_RUN_M: f64 = 20.0;
 
 /// What a rule measures: walk time in seconds (with crossing delays) or walking distance in metres.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -84,6 +99,8 @@ pub struct WalkGraph {
     pub nodes: Vec<(f64, f64)>,
     /// Signalised crossing at the node.
     pub signals: Vec<bool>,
+    /// Ground height at the node in metres (NaN: unknown, walked as flat).
+    pub heights: Vec<f32>,
     /// Edges.
     pub edges: Vec<WalkEdge>,
     adj: Vec<Vec<u32>>,
@@ -495,6 +512,7 @@ impl WalkGraph {
             proj,
             nodes: Vec::new(),
             signals: Vec::new(),
+            heights: Vec::new(),
             edges: Vec::new(),
             adj: Vec::new(),
             grid: HashMap::new(),
@@ -511,6 +529,7 @@ impl WalkGraph {
                 let idx = *local.entry(*id).or_insert_with(|| {
                     g.nodes.push(proj.to_xy(rn.lon, rn.lat));
                     g.signals.push(is_signal(&rn.tags));
+                    g.heights.push(f32::NAN);
                     g.adj.push(Vec::new());
                     (g.nodes.len() - 1) as u32
                 });
@@ -577,12 +596,98 @@ impl WalkGraph {
         best
     }
 
-    /// Cost of walking `m` metres in the metric (no crossing delay).
+    /// Cost of walking `m` metres in the metric on the flat (no crossing delay).
     pub(crate) fn along(m: f64, metric: Metric, s: &WalkSettings) -> f64 {
         match metric {
             Metric::Time => m / s.speed_ms(),
             Metric::Distance => m,
         }
+    }
+
+    /// Purpose: walking time on edge `e` over walking time on the flat, for someone walking from `a`
+    /// towards `b` (`toward_b`) or the other way: Tobler's hiking function on the edge's gradient,
+    /// `exp(k (|s + 0.05| - 0.05))`, with the gradient held within ±50 %, as the journey planner does.
+    /// Output: 1 where a height is unknown or `walk_slope_k` is 0.
+    pub(crate) fn slope_factor(&self, e: u32, toward_b: bool, s: &WalkSettings) -> f64 {
+        if s.walk_slope_k <= 0.0 {
+            return 1.0;
+        }
+        let ed = &self.edges[e as usize];
+        let (ha, hb) = (self.heights[ed.a as usize], self.heights[ed.b as usize]);
+        if !ha.is_finite() || !hb.is_finite() {
+            return 1.0;
+        }
+        let rise = f64::from(if toward_b { hb - ha } else { ha - hb });
+        let g = (rise / ed.length_m.max(MIN_SLOPE_RUN_M)).clamp(-MAX_GRADIENT, MAX_GRADIENT);
+        (s.walk_slope_k * ((g + TOBLER_FASTEST).abs() - TOBLER_FASTEST)).exp()
+    }
+
+    /// Cost of walking `m` metres of edge `e` from `a` towards `b` (`toward_b`) or the other way: the
+    /// flat cost, times the slope factor for walk time.
+    pub(crate) fn along_edge(
+        &self,
+        e: u32,
+        toward_b: bool,
+        m: f64,
+        metric: Metric,
+        s: &WalkSettings,
+    ) -> f64 {
+        match metric {
+            Metric::Time => m / s.speed_ms() * self.slope_factor(e, toward_b, s),
+            Metric::Distance => m,
+        }
+    }
+
+    /// Purpose: the points to take ground heights at: the middle of every square cell of `cell_m`
+    /// metres that holds a node, as `[lon, lat]`, in the order [`WalkGraph::set_cell_heights`] takes
+    /// them back.
+    pub fn height_cells(&self, cell_m: f64) -> Vec<[f64; 2]> {
+        let cell_m = cell_m.max(5.0);
+        let mut seen: HashMap<(i64, i64), ()> = HashMap::new();
+        let mut out = Vec::new();
+        for &(x, y) in &self.nodes {
+            let k = ((x / cell_m).floor() as i64, (y / cell_m).floor() as i64);
+            if seen.insert(k, ()).is_none() {
+                let (lon, lat) = self
+                    .proj
+                    .to_lonlat((k.0 as f64 + 0.5) * cell_m, (k.1 as f64 + 0.5) * cell_m);
+                out.push([round6(lon), round6(lat)]);
+            }
+        }
+        out
+    }
+
+    /// Purpose: give every node the ground height of its cell.
+    /// Inputs: the cell size used for [`WalkGraph::height_cells`]; one height per cell in that order
+    /// (`None` or a non-finite value: unknown, walked as flat).
+    /// Output: how many nodes got a height; an error when the count does not match the cells.
+    pub fn set_cell_heights(
+        &mut self,
+        cell_m: f64,
+        heights: &[Option<f64>],
+    ) -> Result<usize, String> {
+        let cell_m = cell_m.max(5.0);
+        let mut index: HashMap<(i64, i64), usize> = HashMap::new();
+        for &(x, y) in &self.nodes {
+            let k = ((x / cell_m).floor() as i64, (y / cell_m).floor() as i64);
+            let n = index.len();
+            index.entry(k).or_insert(n);
+        }
+        if index.len() != heights.len() {
+            return Err(format!(
+                "{} heights for {} height cells",
+                heights.len(),
+                index.len()
+            ));
+        }
+        let mut set = 0;
+        for (i, &(x, y)) in self.nodes.iter().enumerate() {
+            let k = ((x / cell_m).floor() as i64, (y / cell_m).floor() as i64);
+            let h = heights[index[&k]].filter(|h| h.is_finite());
+            self.heights[i] = h.map_or(f32::NAN, |h| h as f32);
+            set += usize::from(h.is_some());
+        }
+        Ok(set)
     }
 
     /// Multi-source Dijkstra from snapped sources, stopping beyond `limit`.
@@ -618,8 +723,13 @@ impl WalkGraph {
         let mut heap = BinaryHeap::new();
         for &(src, sn) in sources {
             let e = &self.edges[sn.edge as usize];
-            for (node, m) in [(e.a, sn.t * e.length_m), (e.b, (1.0 - sn.t) * e.length_m)] {
-                let mut c = Self::along(sn.off_m + m, metric, s);
+            // People walk from the node to the stop: from `a` that is towards `b`.
+            for (node, m, toward_b) in [
+                (e.a, sn.t * e.length_m, true),
+                (e.b, (1.0 - sn.t) * e.length_m, false),
+            ] {
+                let mut c = Self::along(sn.off_m, metric, s)
+                    + self.along_edge(sn.edge, toward_b, m, metric, s);
                 if metric == Metric::Time && m > 0.0 && self.signals[node as usize] {
                     c += s.crossing_delay_s;
                 }
@@ -643,7 +753,8 @@ impl WalkGraph {
                 }
                 let ed = &self.edges[e as usize];
                 let v = if ed.a == u { ed.b } else { ed.a };
-                let mut nc = c + Self::along(ed.length_m, metric, s);
+                // The search runs out from the stops; people walk the other way, from `v` to `u`.
+                let mut nc = c + self.along_edge(e, ed.a == v, ed.length_m, metric, s);
                 if metric == Metric::Time && self.signals[v as usize] {
                     nc += s.crossing_delay_s;
                 }
@@ -670,14 +781,18 @@ impl WalkGraph {
     ) -> f64 {
         let e = &self.edges[p.edge as usize];
         let off = Self::along(p.off_m, metric, s);
-        let mut best = (f.cost[e.a as usize] + Self::along(p.t * e.length_m, metric, s))
-            .min(f.cost[e.b as usize] + Self::along((1.0 - p.t) * e.length_m, metric, s));
+        // From the point people walk to `a` (away from `b`) or to `b`.
+        let mut best = (f.cost[e.a as usize]
+            + self.along_edge(p.edge, false, p.t * e.length_m, metric, s))
+        .min(
+            f.cost[e.b as usize]
+                + self.along_edge(p.edge, true, (1.0 - p.t) * e.length_m, metric, s),
+        );
         for (_, q) in same_edge.iter().filter(|(_, q)| q.edge == p.edge) {
-            best = best.min(Self::along(
-                q.off_m + (p.t - q.t).abs() * e.length_m,
-                metric,
-                s,
-            ));
+            best = best.min(
+                Self::along(q.off_m, metric, s)
+                    + self.along_edge(p.edge, q.t > p.t, (p.t - q.t).abs() * e.length_m, metric, s),
+            );
         }
         best + off
     }
@@ -823,7 +938,8 @@ impl WalkGraph {
             }
         } else {
             demand_kind = "street_length_m";
-            for e in &self.edges {
+            for (ei, e) in self.edges.iter().enumerate() {
+                let ei = ei as u32;
                 let (pa, pb) = (self.nodes[e.a as usize], self.nodes[e.b as usize]);
                 let mid = self
                     .proj
@@ -835,15 +951,22 @@ impl WalkGraph {
                 total += l;
                 let (mut ca, mut cb) = (0.0f64, 0.0f64);
                 for (gi, (g, (f, _))) in req.groups.iter().zip(&fields).enumerate() {
-                    let unit = Self::along(1.0, g.metric, s);
-                    let reach = |c: f64| ((g.limit - c) / unit).clamp(0.0, l);
-                    let (ga, gb) = (reach(f.cost[e.a as usize]), reach(f.cost[e.b as usize]));
+                    // Cost of one metre walked to `a` (away from `b`) and to `b`, on the edge's slope.
+                    let (unit_a, unit_b) = (
+                        self.along_edge(ei, false, 1.0, g.metric, s),
+                        self.along_edge(ei, true, 1.0, g.metric, s),
+                    );
+                    let reach = |c: f64, unit: f64| ((g.limit - c) / unit).clamp(0.0, l);
+                    let (ga, gb) = (
+                        reach(f.cost[e.a as usize], unit_a),
+                        reach(f.cost[e.b as usize], unit_b),
+                    );
                     group_cov[gi] += (ga + gb).min(l);
                     ca = ca.max(ga);
                     cb = cb.max(gb);
                     if Some(gi) == time_group {
-                        let mid_c = (f.cost[e.a as usize] + Self::along(l / 2.0, g.metric, s))
-                            .min(f.cost[e.b as usize] + Self::along(l / 2.0, g.metric, s));
+                        let mid_c = (f.cost[e.a as usize] + unit_a * l / 2.0)
+                            .min(f.cost[e.b as usize] + unit_b * l / 2.0);
                         if mid_c.is_finite() {
                             band_vals[band_of(mid_c)] += l;
                         } else {
@@ -929,8 +1052,13 @@ impl WalkGraph {
             if !self.usable(ei as u32, s) {
                 continue;
             }
-            let half = Self::along(e.length_m / 2.0, Metric::Time, s);
-            let (ca, cb) = (f.cost[e.a as usize] + half, f.cost[e.b as usize] + half);
+            // From the middle people walk to `a` (away from `b`) or to `b`.
+            let half =
+                |toward_b| self.along_edge(ei as u32, toward_b, e.length_m / 2.0, Metric::Time, s);
+            let (ca, cb) = (
+                f.cost[e.a as usize] + half(false),
+                f.cost[e.b as usize] + half(true),
+            );
             let mid = ca.min(cb);
             if !mid.is_finite() || mid > limit {
                 continue;

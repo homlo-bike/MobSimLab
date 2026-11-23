@@ -261,8 +261,6 @@ export const ha: Messages = {
   "tab.tables": "Teburori",
   "tab.preferences": "Zaɓuɓɓuka",
 
-  "placeholder.comingSoon": "Yana zuwa a fitowa ta gaba",
-
   "sim.test": "Gwada tsarin",
   "sim.journey": "Lokacin tafiya A → B",
 

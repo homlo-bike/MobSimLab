@@ -1268,6 +1268,8 @@ export const editorsPl = {
   "ferry.pier": "Przystań {n}",
   "ferry.pierLower": "przystań {n}",
   "ferry.legLower": "odcinek {n}",
+  "ferry.depthsUnavailable":
+    "Nie udało się wczytać głębokości GEBCO, więc głębokość na otwartym morzu nie jest sprawdzana.",
   "ferry.hint.pier":
     "Kliknij brzeg, aby dodać następną przystań. Kliknij istniejącą przystań, aby zawinąć ponownie.",
   "ferry.hint.via": "Kliknij wodę, aby dodać punkt pośredni do odcinka {n}.",
@@ -1329,6 +1331,15 @@ export const editorsPl = {
     "Jesteś właścicielem. Nikt inny nie może się zalogować, dopóki konfiguracja nie zostanie ukończona.",
   "setup.instanceName": "Nazwa instancji",
   "setup.finish": "Zakończ konfigurację",
+  "setup.stepOf": "Krok {n} z {count}",
+  "setup.next": "Dalej",
+  "setup.back": "Wstecz",
+  "setup.stepName": "Nazwa",
+  "setup.stepMaps": "Mapy podkładowe",
+  "setup.signupIntro":
+    "Kto może się logować po zakończeniu konfiguracji i jaką rolę otrzymuje. Możesz to później zmienić w Administracja → Zasady rejestracji.",
+  "setup.mapsIntro":
+    "Mapy OpenStreetMap działają bez konfiguracji. Dodaj tu zdjęcia lotnicze lub własne usługi mapowe organizacji, jeśli ich potrzebujesz. Możesz to później zmienić w Administracja → Wtyczki.",
   "consent.title": "Połącz agenta AI",
   "consent.incomplete": "Ten link jest niekompletny. Rozpocznij łączenie ponownie w aplikacji AI.",
   "consent.signInFirst": "Zaloguj się do MobSimLab, aby zdecydować, czy aplikacja może się połączyć.",
@@ -1557,7 +1568,12 @@ export const editorsPl = {
   "capacity.plannerNotes": "Uwagi planera ({n})",
   "capacity.kernelNotes": "Co zgłosił silnik obliczeniowy ({n})",
   "capacity.method":
-    "Przepustowość metodą kompresji UIC 406; opóźnienia z {runs} przebiegów, w których {share} kursów startuje z opóźnieniem do {late}. Obciążenie pasażerami nie jest jeszcze częścią tego testu.",
+    "Przepustowość metodą kompresji UIC 406; opóźnienia z {runs} przebiegów, w których {share} kursów startuje z opóźnieniem do {late}.",
+  "capacity.dwell.busy":
+    "Pociągi stoją dłużej tam, gdzie wiele osób wsiada i wysiada: pasażerowie pociągu rozkładają się na jego drzwi, a najbardziej obciążone drzwi dostają więcej niż równy udział.",
+  "capacity.dwell.fixed":
+    "Pociągi stoją tyle samo na każdym przystanku; z obciążeniem pasażerami stoją dłużej tam, gdzie wiele osób wsiada i wysiada.",
+  "capacity.loads.dwell": "Pociągi stoją do {dwell} na stacji {station} (zwykle {usual}).",
   "capacity.line": "Linia {name}",
   "capacity.eachWay": "{n} pociągów/h w każdą stronę",
   "capacity.used": "Wykorzystana przepustowość",
@@ -1628,6 +1644,10 @@ export const editorsPl = {
   "walk.drawFirst": "Najpierw narysuj linię uliczną lub linię kolejową ze stacjami.",
   "walk.collecting": "Zbieranie przystanków i stacji…",
   "walk.loadingTiles": "Wczytywanie ścieżek pieszych ({done} z {count} kafelków mapy)…",
+  "walk.loadingHeights": "Wczytywanie wysokości terenu…",
+  "walk.heightsUnavailable":
+    "Nie wczytano wysokości terenu ({reason}), więc dojścia liczone są jak po płaskim.",
+  "walk.heightsNoData": "brak danych o wysokości dla tego obszaru",
   "walk.loadingPopulation": "Wczytywanie miejsc zamieszkania…",
   "walk.computing": "Mierzenie dojść pieszych…",
   "walk.tooLarge":
@@ -1661,7 +1681,7 @@ export const editorsPl = {
   "walk.popUnavailable": "Brak danych o ludności ({reason}); ulice zastępują ludzi.",
   "walk.popCredit": "Mieszkańcy: WorldPop {year} ({countries}), CC BY 4.0.",
   "walk.note":
-    "Obszar to prostokąt wokół przystanków powiększony o dystans przebyty w limicie. Nachylenia nie są jeszcze uwzględniane.",
+    "Obszar to prostokąt wokół przystanków plus odległość przebyta w limicie. Każda ulica jest pokonywana z jej nachyleniem w stronę przystanku, więc pod górę trwa to dłużej.",
   "spacing.title": "Odległość między przystankami",
   "spacing.intro":
     "Odległość między kolejnymi przystankami wzdłuż linii w porównaniu z typowym zakresem dla środka transportu. Zbyt bliskie przystanki spowalniają linię; zbyt odległe oznaczają długie dojścia.",
