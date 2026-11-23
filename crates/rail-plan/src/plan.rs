@@ -369,9 +369,11 @@ struct Planner<'a> {
     stacks: Vec<Stack>,
     /// Departure routes reserved for trains standing in a platform: (vehicle, start, end) per section.
     reserved: BTreeMap<TdsId, Vec<(usize, f64, f64)>>,
-    /// Speed profiles already worked out, by [`profile_key`]: the search for a free slot tries a
-    /// run at many departure times, and the profile does not change with the time.
-    profiles: RefCell<HashMap<String, SpeedProfile>>,
+    /// Speed profiles already worked out, by [`profile_key`], with the dwells they were worked
+    /// out for: the search for a free slot tries a run at many departure times and dwells, and the
+    /// speeds do not change with them (a long run's profile takes megabytes, so one is kept per
+    /// path and stops, not per dwell).
+    profiles: RefCell<HashMap<String, (SpeedProfile, Vec<f64>)>>,
     /// Trip paths already found ([`Planner::trip_path`]), by line, direction, origin, departure
     /// direction and banned places.
     paths: RefCell<TripPaths>,
@@ -389,13 +391,47 @@ struct Planner<'a> {
 type TripPaths = HashMap<(usize, u8, Place, Dir, Vec<Place>), Option<FoundPath>>;
 type DepotPaths = HashMap<(usize, u8, Vec<RouteId>, Vec<(Place, u64)>, bool), Option<FoundPath>>;
 
-/// Purpose: what a run's speed profile depends on ([`run_profile`]), as a map key: everything
-/// but its name, departure time and how long it stays at the end.
+/// Purpose: what a run's speeds depend on ([`run_profile`]), as a map key: everything but its
+/// name, departure time, dwells and how long it stays at the end.
 fn profile_key(r: &TrainRun) -> String {
+    let stops: Vec<f64> = r.stops.iter().map(|s| s.position_m).collect();
     format!(
         "{:?}|{:?}|{:?}|{:?}|{:?}|{}|{:?}",
-        r.train, r.routes, r.start_m, r.end_m, r.stops, r.stop_at_end, r.supplement_share
+        r.train, r.routes, r.start_m, r.end_m, stops, r.stop_at_end, r.supplement_share
     )
+}
+
+/// Purpose: a speed profile worked out for other dwells at the same stops, with the times moved
+/// on by the difference in dwell from each stop onwards (running times do not depend on dwells).
+/// Inputs: the profile, the dwells it was worked out for, the run's start on its path and stops.
+/// Output: the profile for the run's dwells.
+fn with_dwells(mut p: SpeedProfile, had: &[f64], start_m: f64, stops: &[Stop]) -> SpeedProfile {
+    for (i, st) in stops.iter().enumerate() {
+        let d = st.dwell_s - had.get(i).copied().unwrap_or(st.dwell_s);
+        if d == 0.0 {
+            continue;
+        }
+        let pos = st.position_m - start_m;
+        // The stop is on the grid point nearest to it.
+        let n = p.position_m.len();
+        let mut j = p.position_m.partition_point(|&x| x < pos).min(n - 1);
+        if j > 0 && (pos - p.position_m[j - 1]).abs() <= (p.position_m[j] - pos).abs() {
+            j -= 1;
+        }
+        p.depart_s[j] += d;
+        for k in j + 1..p.position_m.len() {
+            p.arrive_s[k] += d;
+            p.depart_s[k] += d;
+        }
+        if let Some(t) = p.stops.get_mut(i) {
+            t.1 += d;
+        }
+        for t in p.stops.iter_mut().skip(i + 1) {
+            t.0 += d;
+            t.1 += d;
+        }
+    }
+    p
 }
 
 /// Purpose: plan a day of service for a set of lines.
@@ -1979,12 +2015,14 @@ impl<'a> Planner<'a> {
     /// shape (see [`Planner::profiles`]). Inputs and output as for `run_timing`.
     fn timing(&self, run: &TrainRun, index: usize) -> Result<RunTiming, Msg> {
         let key = profile_key(run);
+        let dwells: Vec<f64> = run.stops.iter().map(|s| s.dwell_s).collect();
         let known = self.profiles.borrow().get(&key).cloned();
         let profile = match known {
-            Some(p) => p,
+            Some((p, had)) if had == dwells => p,
+            Some((p, had)) => with_dwells(p, &had, run.start_m, &run.stops),
             None => {
                 let p = run_profile(self.m, run)?;
-                self.profiles.borrow_mut().insert(key, p.clone());
+                self.profiles.borrow_mut().insert(key, (p.clone(), dwells));
                 p
             }
         };
@@ -4072,6 +4110,53 @@ mod tests {
             &meets,
         );
         assert!(!meets(p.offset_s, p.extra_s), "{p:?}");
+    }
+
+    #[test]
+    fn a_kept_profile_moved_on_by_longer_dwells_matches_one_worked_out_for_them() {
+        // Profiles are kept once per path and stops; a wait at a stop only moves the times on.
+        let train = crate::examples::metro_train();
+        let segs = [rail_dynamics::Segment {
+            length_m: 6000.0,
+            speed_mps: 22.0,
+            gradient: 0.0,
+        }];
+        let opt = rail_dynamics::RunOptions {
+            start_speed_mps: 0.0,
+            stop_at_end: true,
+            step_m: 1.0,
+        };
+        let stops = |a: f64, b: f64| {
+            [
+                Stop {
+                    position_m: 2000.4,
+                    dwell_s: a,
+                },
+                Stop {
+                    position_m: 4000.6,
+                    dwell_s: b,
+                },
+            ]
+        };
+        let had = rail_dynamics::run(&train, &segs, &stops(30.0, 30.0), &opt).unwrap();
+        let want = rail_dynamics::run(&train, &segs, &stops(150.0, 60.0), &opt).unwrap();
+        let got = with_dwells(had, &[30.0, 30.0], 0.0, &stops(150.0, 60.0));
+        for (g, w) in got.stops.iter().zip(&want.stops) {
+            assert!(
+                (g.0 - w.0).abs() < 1e-6 && (g.1 - w.1).abs() < 1e-6,
+                "{g:?} {w:?}"
+            );
+        }
+        for k in 0..want.arrive_s.len() {
+            assert!(
+                (got.arrive_s[k] - want.arrive_s[k]).abs() < 1e-6,
+                "arrive at {k}"
+            );
+            assert!(
+                (got.depart_s[k] - want.depart_s[k]).abs() < 1e-6,
+                "depart at {k}"
+            );
+        }
     }
 
     #[test]
