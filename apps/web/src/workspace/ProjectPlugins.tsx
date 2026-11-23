@@ -4,6 +4,7 @@ import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
 import type { ProjectPlugin } from "../plugins/registry";
 import { localizeSummary } from "../plugins/texts";
+import { engineErrorText } from "../i18n/engine";
 
 /** Plain words for what a plugin may read or write (ADR-0036 §5). */
 export const PERMISSION_LABELS: Record<string, MessageKey> = {
@@ -64,7 +65,7 @@ export function ProjectPlugins({
     try {
       await onSet(id, enabled, version);
     } catch (e) {
-      setError((e as Error).message);
+      setError(engineErrorText(e));
     } finally {
       setBusy(null);
     }

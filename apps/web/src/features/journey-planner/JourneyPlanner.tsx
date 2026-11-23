@@ -1,6 +1,7 @@
 import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useEngineText, engineErrorText } from "../../i18n/engine";
 import { tNow, useI18n } from "../../i18n/i18n";
 import { type AllDayFeed, GtfsSection } from "../gtfs/GtfsSection";
 import { feedTimetable } from "../gtfs/toLines";
@@ -204,6 +205,7 @@ export function JourneyPlanner({
   allDayFeed,
 }: Props) {
   const { t, tn } = useI18n();
+  const engineText = useEngineText();
   const [skipped, setSkipped] = useState<ReadonlySet<string>>(new Set());
   const [useRailLines, setUseRailLines] = useState(true);
   const [settings, setSettings] = useState<Partial<Settings>>({});
@@ -281,9 +283,7 @@ export function JourneyPlanner({
         setSummary(e.summary());
         setError(null);
       })
-      .catch((err) =>
-        setError(tNow("jp.engineFailed", { error: err instanceof Error ? err.message : String(err) })),
-      );
+      .catch((err) => setError(tNow("jp.engineFailed", { error: engineErrorText(err) })));
     return () => {
       alive = false;
       made?.dispose();
@@ -296,7 +296,7 @@ export function JourneyPlanner({
     try {
       return { plan: engine.plan({ from: a, to: b, time_s: time, mode }), error: null };
     } catch (err) {
-      return { plan: null, error: err instanceof Error ? err.message : String(err) };
+      return { plan: null, error: engineErrorText(err) };
     }
   }, [engine, a, b, time, mode]);
   const plan = planned.plan;
@@ -520,9 +520,9 @@ export function JourneyPlanner({
           {summary.joined_by_name ? tn("jp.joined", summary.joined_by_name) : ""}
         </p>
       )}
-      {summary?.warnings.slice(0, 3).map((w) => (
+      {summary?.warnings.slice(0, 3).map((w, k) => (
         <p key={w} className="text-xs text-amber-700">
-          {w}
+          {engineText({ text: w, msg: summary.warning_msgs?.[k] })}
         </p>
       ))}
     </div>

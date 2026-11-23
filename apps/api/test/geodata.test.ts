@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { regionsHolding } from "../src/gateway/geofabrik.client";
+import { regionsCovering, regionsHolding } from "../src/gateway/geofabrik.client";
 import { OverpassClient } from "../src/gateway/overpass.client";
 import { cutTiles, decodeValues, encodeValues, sample, tileBounds } from "../src/geodata/dem-tiles";
 import { DemUploadError, resampleDem } from "../src/geodata/dem-upload";
@@ -94,6 +94,29 @@ describe("Geofabrik regions", () => {
     expect(regionsHolding(index, [6.9, 50.8, 7.1, 50.9]).map((r) => r.id)).toEqual(["koeln", "europe"]);
     // A box across two regions is only held by the larger one.
     expect(regionsHolding(index, [6.9, 50.9, 7.1, 51.1]).map((r) => r.id)).toEqual(["europe"]);
+  });
+
+  it("covers a polygon across a border with the regions it crosses, never the continent", () => {
+    const corridor: [number, number][] = [
+      [6.9, 50.5],
+      [7.1, 50.5],
+      [7.1, 51.5],
+      [6.9, 51.5],
+      [6.9, 50.5],
+    ];
+    expect(
+      regionsCovering(index, corridor)
+        .map((r) => r.id)
+        .sort(),
+    ).toEqual(["duesseldorf", "koeln"]);
+    // Points only a continent holds (here: outside both regions) are left out.
+    const wide: [number, number][] = [
+      [7, 50.5],
+      [9, 50.5],
+      [9, 50.6],
+      [7, 50.5],
+    ];
+    expect(regionsCovering(index, wide).map((r) => r.id)).toEqual(["koeln"]);
   });
 });
 

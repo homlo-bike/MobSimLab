@@ -80,6 +80,8 @@ export interface OverpassFetchOptions {
   cacheDir: string;
   cacheDays: number;
   endpoint: string;
+  /** Whether a tile is needed (it touches the project area's polygons); every tile when missing. */
+  keep?: (b: Box) => boolean;
   /** Called after each tile with the tiles done and the tiles known so far. */
   progress?: (done: number, total: number) => void | Promise<void>;
   /** Checked between tiles; throwing stops the fetch (cancelled import). */
@@ -99,7 +101,7 @@ export interface OverpassFetchResult {
 }
 
 /**
- * Purpose: fetch a box from Overpass tile by tile into `workDir`.
+ * Purpose: fetch a box from Overpass tile by tile into `workDir`, only the tiles `keep` wants.
  * Side effects: Overpass requests (spaced by the client), files in `workDir` and the cache folder.
  * Throws OverpassError when a tile still fails at the smallest size, or another request error.
  */
@@ -111,7 +113,8 @@ export async function fetchArea(
 ): Promise<OverpassFetchResult> {
   await mkdir(workDir, { recursive: true });
   await mkdir(o.cacheDir, { recursive: true });
-  const queue = splitBox(box, o.tileKm);
+  const keep = o.keep ?? (() => true);
+  const queue = splitBox(box, o.tileKm).filter(keep);
   let total = queue.length;
   let done = 0;
   let bytes = 0;
@@ -150,8 +153,9 @@ export async function fetchArea(
             `Overpass could not answer a ${sideKm(b).toFixed(1)} km tile: ${failure}`,
             502,
           );
-        queue.unshift(...quarters(b));
-        total += 3;
+        const parts = quarters(b).filter(keep);
+        queue.unshift(...parts);
+        total += parts.length - 1;
         continue;
       }
       await writeFile(cached, xml!);

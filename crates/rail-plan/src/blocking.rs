@@ -220,7 +220,7 @@ pub fn run_timing(
     tr: &TrainRun,
     index: usize,
     p: &BlockingParams,
-) -> Result<RunTiming, String> {
+) -> Result<RunTiming, Msg> {
     let profile = run_profile(model, tr)?;
     Ok(timing_with_profile(model, tr, profile, index, p))
 }
@@ -441,7 +441,7 @@ pub fn timetable_timing(
     model: &Model,
     runs: &[TrainRun],
     p: &BlockingParams,
-) -> Result<Vec<RunTiming>, String> {
+) -> Result<Vec<RunTiming>, Msg> {
     runs.iter()
         .enumerate()
         .map(|(i, r)| run_timing(model, r, i, p))

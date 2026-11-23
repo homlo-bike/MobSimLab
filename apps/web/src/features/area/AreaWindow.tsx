@@ -1,7 +1,7 @@
 import {
   AttributionControl,
   type GeoJSONSource,
-  Map as MapLibreMap,
+  type Map as MapLibreMap,
   type MapMouseEvent,
   NavigationControl,
 } from "maplibre-gl";
@@ -10,6 +10,7 @@ import { createPortal } from "react-dom";
 import { formatInt, useI18n } from "../../i18n/i18n";
 import { basemapStyle, rememberedBasemap, themedBasemap } from "../../map/basemaps";
 import "../../map/worker";
+import { createMap, NoMapNotice } from "../../map/NoMapNotice";
 import { type Place, searchPlaces } from "../../map/places";
 import { isDark } from "../../shell/theme";
 import { CloseIcon } from "../../shell/icons";
@@ -23,6 +24,7 @@ import {
   newPolygonId,
   ringAreaKm2,
 } from "./api";
+import { engineErrorText } from "../../i18n/engine";
 
 /** Colours of the polygons by detail (blue: full, teal: main roads and railways). */
 export const DETAIL_COLOUR: Record<AreaDetail, string> = { full: "#1d4ed8", main: "#0f766e" };
@@ -205,6 +207,8 @@ export function AreaWindow({
   const [confirm, setConfirm] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  /** The map could not be made (no WebGL2): a notice shows in its place. */
+  const [noMap, setNoMap] = useState(false);
   const [query, setQuery] = useState("");
   const [places, setPlaces] = useState<Place[] | null>(null);
 
@@ -218,7 +222,7 @@ export function AreaWindow({
   useEffect(() => {
     if (!container.current) return;
     const basemap = themedBasemap(rememberedBasemap(), isDark());
-    const m = new MapLibreMap({
+    const m = createMap({
       container: container.current,
       style: basemap.styleUrl,
       center: [20, 30],
@@ -226,6 +230,10 @@ export function AreaWindow({
       attributionControl: false,
       transformStyle: (_, next) => basemapStyle(basemap, next),
     });
+    if (!m) {
+      setNoMap(true);
+      return;
+    }
     m.addControl(new AttributionControl({ compact: true, customAttribution: basemap.attribution }));
     m.addControl(new NavigationControl({ showCompass: false }), "bottom-right");
     m.on("load", () => {
@@ -285,7 +293,7 @@ export function AreaWindow({
           setEst(e);
           setEstError(null);
         })
-        .catch((e: unknown) => live && setEstError(e instanceof Error ? e.message : String(e)));
+        .catch((e: unknown) => live && setEstError(engineErrorText(e)));
     }, 250);
     return () => {
       live = false;
@@ -514,7 +522,7 @@ export function AreaWindow({
     try {
       await onSave(polygons.map((p) => ({ ...p, name: p.name.trim() })));
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(engineErrorText(e));
       setSaving(false);
     }
   };
@@ -573,6 +581,7 @@ export function AreaWindow({
             <div className="absolute inset-0">
               {/* MapLibre makes its container position: relative, so it fills a positioned wrapper. */}
               <div ref={container} className="h-full w-full" data-testid="area-map" />
+              {noMap && <NoMapNotice />}
             </div>
             <div className="absolute start-3 top-3 z-10 flex w-[min(20rem,calc(100%-1.5rem))] flex-col gap-2">
               <div className="relative">

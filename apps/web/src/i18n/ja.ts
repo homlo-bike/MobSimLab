@@ -462,6 +462,10 @@ export const ja: Messages = {
   "map.searching": "検索中…",
   "map.searchFailed": "場所の検索に失敗しました：{error}",
   "map.noPlaces": "場所が見つかりません。",
+  "map.noWebgl":
+    "地図を表示できません：このコンピューターまたはブラウザーは 3D グラフィックス（WebGL2）に対応していません。",
+  "map.noWebglHelp":
+    "ハードウェアアクセラレーションをオンにするか、グラフィックスドライバーを更新してから、ページを開き直してください。ページのほかの部分はそのまま使えます。",
   "map.places": "見つかった場所",
   "map.searchCredit": "地名 © OpenStreetMap 貢献者、Photon で検索",
   "map.layers": "地図レイヤー",

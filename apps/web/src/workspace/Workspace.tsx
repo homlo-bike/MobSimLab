@@ -12,6 +12,7 @@ import { MapDataPanel } from "../features/geodata/MapDataPanel";
 import { type LiveData, setDataProject, watchLiveData } from "../geodata/projectData";
 import { projectTimetable } from "../features/benefits/timetable";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
+import { AreaChecks } from "../features/area/AreaChecks";
 import { economyApi, type Prices } from "../features/costs/economy";
 import { useProjectCurrency } from "../features/costs/currency";
 import type { Estimate as CostEstimate } from "../features/costs/model";
@@ -74,7 +75,6 @@ import type { WaterDoc } from "../kits/WaterRouteEditor";
 import type { DemandZone } from "../kits/ZoneEditor";
 import { MapView } from "../map/MapView";
 import {
-  findMode,
   localizePlugins,
   PLUGINS,
   pluginTabs,
@@ -126,6 +126,7 @@ import { VehiclesOffContext } from "./projectVehicles";
 import { EMPTY_FLEET, fleetFrom, type FleetDoc } from "../features/fleet/model";
 import { setOwnVehicles } from "../features/fleet/registry";
 import type { DelayShares } from "../features/street-lines/types";
+import { drawnBox } from "../features/area/drawnBox";
 import { useAreaZoom } from "../features/area/useAreaZoom";
 import { type Drawings, useDrawings } from "./useDrawings";
 import type { EnergyEstimate } from "../features/energy/types";
@@ -147,6 +148,7 @@ import {
 } from "../features/comments/notices";
 import { Dialog } from "../shell/Dialog";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
+import { engineErrorText } from "../i18n/engine";
 
 // Editors and screens downloaded when first opened, so opening a project fetches only the tab shown.
 const BenefitTables = lazyNamed(() => import("../features/benefits/BenefitTables"), "BenefitTables");
@@ -386,11 +388,12 @@ export function Workspace({
     api.get(projectId).then(setProject, () => setMissing(true));
   }, [api, projectId]);
 
-  // A project opens with the map on its area (the regions picked for it, or around its drawing).
+  // A project opens with the map on its area, or on its drawing when it has no area (Damascus bug 23).
   const areaView = useAreaZoom(
     map,
     projectId,
     typeof api.area === "function" ? (id: string) => api.area(id).get() : null,
+    typeof api.drawings === "function" ? (id: string) => api.drawings(id).then(drawnBox) : null,
   );
 
   // The map tools read this project's imported OpenStreetMap and elevation data where it has some (ADR-0046).
@@ -536,7 +539,7 @@ export function Workspace({
   }, [api]);
   const streetLines = drawings.doc<StreetLinesDoc>("street-lines");
   const railway = drawings.doc<Network>("railway");
-  // Cable car, people mover and ferry lines of the plugin tools, per tool: the drawing, the line the journey
+  // Cable car and ferry lines of the plugin tools, per tool: the drawing, the line the journey
   // planner rides and the shape the noise map needs.
   // Lines drawn with the tools of a plugin that is now off stay in the project but are not shown or counted
   // until the plugin is on again. A tool's further lines are kept under `<tool id>-2`, `<tool id>-3`…
@@ -792,7 +795,7 @@ export function Workspace({
       setBuild(kind);
       onTab("create");
     } catch (err) {
-      setConvertError(err instanceof Error ? err.message : String(err));
+      setConvertError(engineErrorText(err));
     }
   };
   // Cmd+Z (Ctrl+Z) undoes the last change to a drawing; Cmd+Shift+Z or Ctrl+Y makes it again. In a text field
@@ -1009,7 +1012,7 @@ export function Workspace({
             ? "rail"
             : null);
   const chosenPlugin = PLUGIN_TOOLS.find((x) => x.id === chosen) ?? null;
-  // Line tools (ferry, cable car, people mover) have a line list: the keys of the tool's lines, and the one open
+  // Line tools (ferry, cable car) have a line list: the keys of the tool's lines, and the one open
   // (the first by default, or a new one not saved yet).
   const lineTool = chosenPlugin && chosenPlugin.kit !== "service-zone" ? chosenPlugin : null;
   const toolKeys = lineTool ? toolLineKeys(pluginSaved, lineTool.id) : [];
@@ -1412,29 +1415,24 @@ export function Workspace({
                       ] as const
                     ).filter(([kind]) => (kind === "street" ? showStreet : showRail)),
                     // Tools contributed by plugins (ADR-0036 §6): cable car and ferry are bundled.
-                    ...PLUGIN_TOOLS.map((x) => {
-                      // A guideway tool (people mover) gets the train icon, a ropeway the cable car.
-                      const guided = x.modes.some((m) => findMode(m)?.mode.family === "guided");
-                      return [
-                        x.id,
-                        x.kit === "water-route"
-                          ? FerryIcon
-                          : x.kit === "service-zone"
-                            ? BusIcon
-                            : guided
-                              ? TrainIcon
+                    ...PLUGIN_TOOLS.map(
+                      (x) =>
+                        [
+                          x.id,
+                          x.kit === "water-route"
+                            ? FerryIcon
+                            : x.kit === "service-zone"
+                              ? BusIcon
                               : CableIcon,
-                        x.label,
-                        x.hint ?? "",
-                        x.kit === "water-route"
-                          ? "bg-cyan-100 text-cyan-900"
-                          : x.kit === "service-zone"
-                            ? "bg-purple-100 text-purple-900"
-                            : guided
-                              ? "bg-teal-100 text-teal-900"
+                          x.label,
+                          x.hint ?? "",
+                          x.kit === "water-route"
+                            ? "bg-cyan-100 text-cyan-900"
+                            : x.kit === "service-zone"
+                              ? "bg-purple-100 text-purple-900"
                               : "bg-violet-100 text-violet-900",
-                      ] as const;
-                    }),
+                        ] as const,
+                    ),
                   ].map(([kind, Icon, title, hint, colour]) => (
                     <button
                       key={kind}
@@ -2004,7 +2002,21 @@ export function Workspace({
             isOwner={project ? can.manage(project) : false}
             userId={userId}
           >
-            <ChecksProvider key={projectId}>{body}</ChecksProvider>
+            <ChecksProvider key={projectId}>
+              {body}
+              {areaView && (
+                <AreaChecks
+                  polygons={areaView.polygons}
+                  docs={{
+                    streetLines,
+                    railway,
+                    depots: depotsDoc,
+                    cargoBike: drawings.doc<CargoBikeDoc>("cargo-bike"),
+                    pluginLines: drawings.doc<PluginLinesDoc>("plugin-lines"),
+                  }}
+                />
+              )}
+            </ChecksProvider>
           </CommentsProvider>
         </VehiclesOffContext.Provider>
       </WeekendContext.Provider>

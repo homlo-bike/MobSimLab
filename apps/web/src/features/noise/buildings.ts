@@ -8,11 +8,17 @@ import type {
 import { LEGEND } from "./mapLayer";
 import type { Indicator, LonLat, NoiseBuilding } from "./types";
 import { noteSource, withProject } from "../../geodata/projectData";
+import type { Corridor } from "./corridor";
 
 /** Building tiles use the street tiles' zoom (about 1.5 km square at 50° N). */
 export const BUILDING_TILE_ZOOM = 14;
-/** At most this many building tiles for one noise map. */
-export const MAX_BUILDING_TILES = 12;
+/**
+ * At most this many building tiles for one noise map: the tiles along a whole city's lines (Damascus's 13 lines
+ * take about 100), as for a road run. Only the buildings near the lines are kept from each tile.
+ */
+export const MAX_BUILDING_TILES = 320;
+/** Building tiles asked for at the same time. */
+const PARALLEL_TILES = 4;
 
 /** Fetches one building tile: `{buildings: NoiseBuilding[]}` from the API. */
 export type BuildingTileFetcher = (x: number, y: number) => Promise<NoiseBuilding[]>;
@@ -56,23 +62,66 @@ export function buildingTiles(points: LonLat[], reachM: number): [number, number
 }
 
 /**
- * Purpose: buildings of several tiles, once each (a building on a tile edge comes in both).
- * Inputs: the tiles, the fetcher, and optionally a callback after each tile (tiles done, tiles in all) and a
- * signal that stops before the next tile (throwing the signal's reason).
+ * Purpose: the zoom-14 tiles `[x, y]` the corridor along the lines touches, nearest the centre of their box
+ * first. Lines that fan out across a city take the tiles along them, not the empty land between them.
+ */
+export function corridorTiles(corridor: Corridor): [number, number][] {
+  const seen = new Map<string, [number, number]>();
+  for (const [w, s, e, n] of corridor.boxes()) {
+    const [x0, y0, x1, y1] = [tileX(w), tileY(n), tileX(e), tileY(s)];
+    for (let x = x0; x <= x1; x++) for (let y = y0; y <= y1; y++) seen.set(`${x}/${y}`, [x, y]);
+  }
+  const out = [...seen.values()];
+  if (!out.length) return out;
+  const xs = out.map((t) => t[0]);
+  const ys = out.map((t) => t[1]);
+  const [cx, cy] = [(Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2];
+  return out.sort(
+    (a, b) =>
+      Math.hypot(a[0] - cx, a[1] - cy) - Math.hypot(b[0] - cx, b[1] - cy) || a[1] - b[1] || a[0] - b[0],
+  );
+}
+
+/** Purpose: the zoom-14 tile column of a longitude. */
+function tileX(lon: number): number {
+  return Math.floor(((lon + 180) / 360) * 2 ** BUILDING_TILE_ZOOM);
+}
+
+/** Purpose: the zoom-14 tile row of a latitude. */
+function tileY(lat: number): number {
+  const r = (lat * Math.PI) / 180;
+  return Math.floor(((1 - Math.asinh(Math.tan(r)) / Math.PI) / 2) * 2 ** BUILDING_TILE_ZOOM);
+}
+
+/**
+ * Purpose: buildings of several tiles, once each (a building on a tile edge comes in both), in the order of the
+ * tiles. A few tiles are asked for at a time.
+ * Inputs: the tiles, the fetcher, and optionally a callback after each tile (tiles done, tiles in all), a
+ * signal that stops before the next tile (throwing the signal's reason), and which buildings to keep (all by
+ * default; a city's tiles are kept to the buildings near the lines).
  */
 export async function loadBuildings(
   tiles: [number, number][],
   fetchTile: BuildingTileFetcher,
   onProgress?: (done: number, total: number) => void,
   signal?: AbortSignal,
+  keep: (b: NoiseBuilding) => boolean = () => true,
 ): Promise<NoiseBuilding[]> {
-  const seen = new Map<string, NoiseBuilding>();
-  for (const [i, [x, y]] of tiles.entries()) {
-    signal?.throwIfAborted();
-    for (const b of await fetchTile(x, y)) if (!seen.has(b.id)) seen.set(b.id, b);
-    onProgress?.(i + 1, tiles.length);
-  }
+  const got: NoiseBuilding[][] = new Array(tiles.length);
+  let [next, done] = [0, 0];
+  const worker = async () => {
+    while (next < tiles.length) {
+      signal?.throwIfAborted();
+      const i = next++;
+      const [x, y] = tiles[i]!;
+      got[i] = (await fetchTile(x, y)).filter(keep);
+      onProgress?.(++done, tiles.length);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(PARALLEL_TILES, tiles.length) }, worker));
   signal?.throwIfAborted();
+  const seen = new Map<string, NoiseBuilding>();
+  for (const list of got) for (const b of list) if (!seen.has(b.id)) seen.set(b.id, b);
   return [...seen.values()];
 }
 

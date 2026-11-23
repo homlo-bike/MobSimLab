@@ -8,6 +8,7 @@ import { type PreferencesDoc, withPref } from "../../workspace/preferences";
 import { loadWasmEnergy } from "./engine";
 import { ELECTRIC_SHARE, energyValues, GRID, libraryRange, ownValue } from "./params";
 import type { EnergyEngine, EnergyEngineLoader, EnergyEstimate, EnergyLineInput } from "./types";
+import { engineErrorText } from "../../i18n/engine";
 
 /** Street modes whose fleet may be partly battery electric (`energy.electric_share` set per mode). */
 const BUS_MODES = ["bus", "brt", "intercity_bus"];
@@ -72,7 +73,7 @@ export function EnergySection({
     let alive = true;
     loadEngine().then(
       (e) => alive && setEngine(e),
-      (e) => alive && setError(e instanceof Error ? e.message : String(e)),
+      (e) => alive && setError(engineErrorText(e)),
     );
     return () => {
       alive = false;
@@ -86,7 +87,7 @@ export function EnergySection({
     try {
       return engine.estimate(inputs);
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(engineErrorText(e));
       return null;
     }
   }, [engine, inputs]);

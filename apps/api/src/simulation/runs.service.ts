@@ -304,15 +304,18 @@ export class RunsService {
    */
   async start(actor: ProjectActor, projectId: string, input: NewRun, via?: AgentVia): Promise<RunDetail> {
     await this.projects.authorize(actor, projectId, "edit");
-    const demand = input.kind === "demand" ? this.demandNetwork(input) : null;
-    const net =
+    // Demand and road runs load their street tiles in the background once the run is saved.
+    const streets =
       input.kind === "demand"
-        ? demand!
+        ? this.demandNetwork(input)
         : input.kind === "road"
-          ? await this.roadNetwork(input.scenario)
-          : input.network === null
-            ? { stored: { kind: "none" as const }, network: "", lines: "" }
-            : await this.resolveNetwork(projectId, input.network);
+          ? this.roadNetwork(input.scenario)
+          : null;
+    const net =
+      streets ??
+      (input.kind === "demand" || input.kind === "road" || input.network === null
+        ? { stored: { kind: "none" as const }, network: "", lines: "" }
+        : await this.resolveNetwork(projectId, input.network));
     const stored: StoredInput =
       input.kind === "demand"
         ? {
@@ -378,12 +381,13 @@ export class RunsService {
       );
       return r.id;
     });
-    // A demand run is queued once its streets are loaded, in the background (they can take minutes).
-    if (demand)
-      void this.prepareDemand(
+    // A demand or road run is queued once its streets are loaded, in the background (they can take minutes).
+    if (streets)
+      void this.prepareStreets(
         id,
         projectId,
-        demand.tiles,
+        input.kind === "demand" ? "demand" : "road",
+        streets.tiles,
         input.kind === "demand" ? input.gbfsUrl : undefined,
       );
     else await this.enqueue(id);
@@ -447,7 +451,7 @@ export class RunsService {
         tx,
       );
     });
-    // A demand run whose streets never loaded loads them again first.
+    // A demand or road run whose streets never loaded loads them again first.
     const stored = await this.db
       .selectFrom("simulation.run")
       .select(["kind", "lines", "input"])
@@ -455,12 +459,15 @@ export class RunsService {
       .where("network", "=", "{}")
       .executeTakeFirst();
     if (stored?.kind === "demand")
-      void this.prepareDemand(
+      void this.prepareStreets(
         runId,
         projectId,
+        "demand",
         demandTiles(stored.lines),
         (stored.input as StoredInput).gbfsUrl,
       );
+    else if (stored?.kind === "road")
+      void this.prepareStreets(runId, projectId, "road", roadTiles(JSON.parse(stored.lines) as RoadScenario));
     else await this.enqueue(runId);
     return this.get(actor, projectId, runId);
   }
@@ -640,33 +647,21 @@ export class RunsService {
   // ---------------------------------------------------------------------------------------------------------
 
   /**
-   * Purpose: the network of a road run: the street tiles (OSM XML, as the street line tool loads them) of the
-   * area its lines and depots cover, and the scenario. 400 when the area takes more than `MAX_ROAD_TILES`
-   * tiles; 502/504 when OpenStreetMap cannot be reached for a tile that is not cached.
+   * Purpose: what to store for a new road run before its streets are loaded: the scenario, and the street tiles
+   * (OSM XML, as the street line tool loads them) along its lines, depot runs and depots that `prepareStreets`
+   * loads next. 400 when the lines have no routes or the area takes more than `MAX_ROAD_TILES` tiles.
    */
-  private async roadNetwork(
-    scenario: RoadScenario,
-  ): Promise<{ stored: RoadNetworkSummary; network: string; lines: string }> {
+  private roadNetwork(scenario: RoadScenario): {
+    stored: RoadNetworkSummary;
+    network: string;
+    lines: string;
+    tiles: [number, number][];
+  } {
     const tiles = roadTiles(scenario);
-    if (!tiles.length) throw new BadRequestException("the street lines have no routes");
+    if (!tiles.length) throw new BadRequestException("The street lines have no routes.");
     if (tiles.length > MAX_ROAD_TILES)
       throw new BadRequestException(
-        `the street lines and depots cover too large an area for one road run (${tiles.length} street tiles, at most ${MAX_ROAD_TILES})`,
-      );
-    const xml: string[] = [];
-    for (const [x, y] of tiles) {
-      try {
-        xml.push(await this.streets.tile(x, y));
-      } catch (e) {
-        if (e instanceof OverpassError)
-          throw new HttpException("OpenStreetMap streets are unavailable right now; try again", e.status);
-        throw e;
-      }
-    }
-    const network = JSON.stringify({ tiles: xml });
-    if (network.length > MAX_ROAD_NETWORK_CHARS)
-      throw new BadRequestException(
-        "the streets of the area the street lines cover are too large for one road run; split the lines into smaller areas",
+        `The street lines and depots cover too large an area for one road run (${tiles.length} street tiles, at most ${MAX_ROAD_TILES}).`,
       );
     return {
       stored: {
@@ -675,14 +670,15 @@ export class RunsService {
         depots: scenario.depots.length,
         tiles: tiles.length,
       },
-      network,
+      network: "{}",
       lines: JSON.stringify(scenario),
+      tiles,
     };
   }
 
   /**
    * Purpose: what to store for a new demand run before its streets are loaded: the bundle, and the street tiles
-   * around every zone centre that `prepareDemand` loads next. 400 when the bundle has no zone centres or the
+   * around every zone centre that `prepareStreets` loads next. 400 when the bundle has no zone centres or the
    * zones take more than `MAX_DEMAND_TILES` tiles.
    */
   private demandNetwork(input: NewDemandRun): {
@@ -701,16 +697,18 @@ export class RunsService {
   }
 
   /**
-   * Purpose: load the OpenStreetMap street tiles of a queued demand run in the background (from the project's OSM
-   * import where it has one, as the street line tool does), store them gzipped
-   * in its network (worker `jobs/demand.py` `street_tiles`) with the bike parkings and shared-bike stations of
-   * the same tiles and of the GBFS feed (`bikes`), and queue it. The run's progress counts the tiles. A run
-   * stopped meanwhile is left as it is; a run whose streets cannot be loaded fails with the reason. Bike points
-   * that cannot be loaded are left out with a note in the result.
+   * Purpose: load the OpenStreetMap street tiles of a queued demand or road run in the background (from the
+   * project's OSM import where it has one, as the street line tool does), store them gzipped in its network
+   * (worker `jobs/demand.py` `street_tiles`), for a demand run with the bike parkings and shared-bike stations of
+   * the same tiles and of the GBFS feed (`bikes`), and queue it. A demand run's progress counts the tiles; a road
+   * run's shows that its street network is being built. A run stopped meanwhile is left as it is; a run whose
+   * streets cannot be loaded fails with the reason. Bike points that cannot be loaded are left out with a note
+   * in the result.
    */
-  private async prepareDemand(
+  private async prepareStreets(
     id: string,
     projectId: string,
+    kind: "demand" | "road",
     tiles: [number, number][],
     gbfsUrl?: string,
   ): Promise<void> {
@@ -724,6 +722,12 @@ export class RunsService {
       )?.status === "queued";
     let failedTile: string | undefined;
     try {
+      if (kind === "road")
+        await this.db
+          .updateTable("simulation.run")
+          .set({ progress: JSON.stringify({ step: "network" }) })
+          .where("id", "=", id)
+          .execute();
       // The tiles go into one gzipped JSON list in order as they arrive, so the API holds them compressed, not
       // the whole area's OSM XML at once.
       const list = gzipList();
@@ -747,7 +751,7 @@ export class RunsService {
           done++;
           if (done % 8 === 0 || done === tiles.length) {
             if (!(await open())) stopped = true;
-            else
+            else if (kind === "demand")
               await this.db
                 .updateTable("simulation.run")
                 .set({ progress: JSON.stringify({ step: "streets", done, of: tiles.length }) })
@@ -763,23 +767,28 @@ export class RunsService {
         packed = await list.finish();
       }
       if (stopped || !(await open())) return;
-      await this.db
-        .updateTable("simulation.run")
-        .set({ progress: JSON.stringify({ step: "bikes" }) })
-        .where("id", "=", id)
-        .execute();
-      const bikes = await this.demandBikes(tiles, gbfsUrl);
-      if (!(await open())) return;
+      let bikes: Awaited<ReturnType<RunsService["demandBikes"]>> | undefined;
+      if (kind === "demand") {
+        await this.db
+          .updateTable("simulation.run")
+          .set({ progress: JSON.stringify({ step: "bikes" }) })
+          .where("id", "=", id)
+          .execute();
+        bikes = await this.demandBikes(tiles, gbfsUrl);
+        if (!(await open())) return;
+      }
       // A city's street tiles are large; gzipped they fit the run's network column.
       const network = JSON.stringify({
         tiles_gz: packed.toString("base64"),
-        bikes,
+        ...(bikes ? { bikes } : {}),
       });
       if (network.length > MAX_ROAD_NETWORK_CHARS) {
         await this.settle(
           id,
           "failed",
-          "the streets of the model area are too large for one demand run; use a smaller buffer or fewer lines",
+          kind === "demand"
+            ? "the streets of the model area are too large for one demand run; use a smaller buffer or fewer lines"
+            : "The streets along the street lines are too large for one road run.",
         );
         return;
       }
@@ -792,7 +801,7 @@ export class RunsService {
           : e instanceof ServiceUnavailableException
             ? "the run could not be queued; try again in a moment"
             : `the streets of the model area could not be loaded: ${e instanceof Error ? e.message : String(e)}`;
-      this.log.warn(`demand run ${id}: ${reason}${failedTile ? ` (${failedTile})` : ""}`);
+      this.log.warn(`${kind} run ${id}: ${reason}${failedTile ? ` (${failedTile})` : ""}`);
       await this.settle(id, "failed", reason).catch(() => undefined);
     }
   }

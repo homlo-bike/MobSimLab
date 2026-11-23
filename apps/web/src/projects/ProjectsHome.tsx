@@ -7,6 +7,7 @@ import { anchorOf, Popover } from "../shell/Popover";
 import { initials } from "../shell/UserMenu";
 import { can, type Project, type ProjectsApi, type Shelf, shelfOf } from "./api";
 import { DeleteDialog, NewProjectDialog, RenameDialog, SaveMslabDialog, ShareDialog } from "./ProjectDialogs";
+import { engineErrorText } from "../i18n/engine";
 
 type Filter = "all" | Shelf | "archived";
 type Dialogs =
@@ -224,7 +225,7 @@ export function ProjectsHome({
     try {
       await f();
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      setError(engineErrorText(e));
     }
   };
 

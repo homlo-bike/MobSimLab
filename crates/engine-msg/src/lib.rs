@@ -6,7 +6,7 @@
 //! client without the catalog. A value is plain text (a name, or a number already formatted with its unit) or
 //! another message (a part of a sentence that is itself translated).
 
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::collections::BTreeMap;
 use std::sync::OnceLock;
@@ -15,17 +15,17 @@ use std::sync::OnceLock;
 pub const CATALOG_EN: &str = include_str!("../messages/en.json");
 
 /// A message: a catalog key and its values.
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct Msg {
     /// Catalog key, for example `rail.curve.below_minimum`.
     pub key: String,
     /// Values by placeholder name.
-    #[serde(skip_serializing_if = "BTreeMap::is_empty")]
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub args: BTreeMap<String, Arg>,
 }
 
 /// One value of a message.
-#[derive(Clone, Debug, PartialEq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(untagged)]
 pub enum Arg {
     /// Text shown as it is: a name, or a number with its unit.
@@ -163,6 +163,26 @@ macro_rules! msg {
     ($key:literal $(, $name:ident = $value:expr)* $(,)?) => {
         $crate::Msg::new($key)$(.arg(stringify!($name), $value))*
     };
+}
+
+/// Purpose: a JavaScript `Error` for a failed engine call: its `message` is the English text and its
+/// `msg` property the message (key and values), so the app can show it in the user's language.
+#[cfg(feature = "wasm")]
+pub fn js_error(m: &Msg) -> wasm_bindgen::JsValue {
+    use wasm_bindgen::prelude::*;
+    // Globals only (no JavaScript snippet file), so the module works with every wasm-bindgen target,
+    // including the CommonJS build the API loads in Node.
+    #[wasm_bindgen]
+    extern "C" {
+        #[wasm_bindgen(js_namespace = Reflect, js_name = set)]
+        fn reflect_set(target: &JsValue, key: &JsValue, value: &JsValue) -> bool;
+        #[wasm_bindgen(js_namespace = JSON, js_name = parse)]
+        fn json_parse(text: &str) -> JsValue;
+    }
+    let e: JsValue = JsError::new(&m.english()).into();
+    let json = serde_json::to_string(m).unwrap_or_else(|_| "null".into());
+    reflect_set(&e, &JsValue::from_str("msg"), &json_parse(&json));
+    e
 }
 
 #[cfg(test)]

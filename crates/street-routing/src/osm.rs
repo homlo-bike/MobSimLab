@@ -3,6 +3,7 @@
 //! Reads the street tiles served by the API (`/api/street-network/tiles`) and the
 //! files written by `tools/osm/overpass_fetch.py`. Data © OpenStreetMap contributors, ODbL.
 
+use engine_msg::{msg, Msg};
 use quick_xml::events::{BytesStart, Event};
 use quick_xml::{Reader, XmlVersion};
 use std::collections::{BTreeMap, HashSet};
@@ -163,7 +164,7 @@ pub fn prefer_language(data: &mut OsmData, lang: &str) {
 
 /// Purpose: parse OSM XML text.
 /// Output: nodes, ways and bus-relevant turn restrictions; an error string on malformed XML.
-pub fn parse_osm_xml(xml: &str) -> Result<OsmData, String> {
+pub fn parse_osm_xml(xml: &str) -> Result<OsmData, Msg> {
     let mut reader = Reader::from_str(xml);
     let mut out = OsmData::default();
     enum Current {
@@ -174,9 +175,13 @@ pub fn parse_osm_xml(xml: &str) -> Result<OsmData, String> {
     }
     let mut cur = Current::None;
     loop {
-        let ev = reader
-            .read_event()
-            .map_err(|e| format!("OSM XML error at byte {}: {e}", reader.buffer_position()))?;
+        let ev = reader.read_event().map_err(|e| {
+            msg!(
+                "street.error.osm_xml",
+                byte = reader.buffer_position().to_string(),
+                error = e.to_string()
+            )
+        })?;
         let (e, empty) = match &ev {
             Event::Start(e) => (e, false),
             Event::Empty(e) => (e, true),

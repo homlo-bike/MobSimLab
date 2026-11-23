@@ -1,3 +1,4 @@
+import { engineTextNow } from "../../i18n/engine";
 import { tNow } from "../../i18n/i18n";
 import type { LineView, VehicleProfile } from "../street-lines/types";
 import type { Network, RailView, TrackView } from "../railways/types";
@@ -209,8 +210,8 @@ function ferrySources(id: string, name: string, x: WaterNoiseShape): NoisePointS
 }
 
 /**
- * Purpose: the cable car and ferry lines saved with the project as noise point sources. People movers and
- * modes without sound powers are left out.
+ * Purpose: the cable car and ferry lines saved with the project as noise point sources. Modes without sound
+ * powers are left out.
  * Inputs: the saved lines by tool id.
  */
 export function pluginSources(tools: Record<string, SavedPluginLine>): NoisePointSource[] {
@@ -229,5 +230,5 @@ export function pluginSources(tools: Record<string, SavedPluginLine>): NoisePoin
 
 /** Purpose: noise checks with "Noise: " in front, for an editor's Checks list. */
 export function noiseCheckText(c: NoiseCheck): string {
-  return tNow("noise.check", { text: c.text });
+  return tNow("noise.check", { text: engineTextNow({ text: c.text, msg: c.msg }) });
 }

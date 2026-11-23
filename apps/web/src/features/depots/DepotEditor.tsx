@@ -1,6 +1,7 @@
 import type { Map as MapLibreMap, MapMouseEvent } from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import { useEngineText, engineErrorText } from "../../i18n/engine";
 import { useI18n } from "../../i18n/i18n";
 import { CommentBadge, ObjectComments } from "../comments/Comments";
 import { usePublishChecks } from "../../shell/checks";
@@ -108,6 +109,7 @@ export function DepotEditor({
   loadEngine = loadDepotEngine,
 }: Props) {
   const { t } = useI18n();
+  const engineText = useEngineText();
   const depots = doc?.depots ?? [];
   const [selectedId, setSelectedId] = useState<string | null>(depots[0]?.id ?? null);
   const selected = depots.find((d) => d.id === selectedId) ?? null;
@@ -125,7 +127,7 @@ export function DepotEditor({
     let alive = true;
     loadEngine()
       .then((e) => alive && setEngine(e))
-      .catch((err) => alive && setError(err instanceof Error ? err.message : String(err)));
+      .catch((err) => alive && setError(engineErrorText(err)));
     return () => {
       alive = false;
     };
@@ -155,7 +157,7 @@ export function DepotEditor({
         setReport(engine.analyse(parsed));
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        setError(engineErrorText(err));
       }
     }, 250);
     return () => clearTimeout(timer);
@@ -320,7 +322,7 @@ export function DepotEditor({
         setLaneId(null);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        setError(engineErrorText(err));
       }
       setBusy(null);
     }, 20);
@@ -334,7 +336,7 @@ export function DepotEditor({
         setSizing(engine.size(input));
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        setError(engineErrorText(err));
       }
       setBusy(null);
     }, 20);
@@ -355,7 +357,7 @@ export function DepotEditor({
         setLaneId(null);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        setError(engineErrorText(err));
       }
       setBusy(null);
     }, 20);
@@ -389,7 +391,7 @@ export function DepotEditor({
     ...(report?.capacity.issues ?? []).filter(
       (i) => !(report?.issues ?? []).some((j) => j.message === i.message),
     ),
-  ];
+  ].map((i) => ({ ...i, message: "msg" in i ? engineText({ text: i.message, msg: i.msg }) : i.message }));
   // In a project the checks go to the notifications button in the top bar; on its own the panel lists them.
   const checksElsewhere = usePublishChecks(
     "depots",
@@ -646,7 +648,9 @@ export function DepotEditor({
                   <p className={laneCheck.entry_ok && laneCheck.exit_ok ? "text-slate-600" : "text-red-700"}>
                     {laneCheck.entry_ok && laneCheck.exit_ok
                       ? t("depot.laneOk")
-                      : (laneCheck.message ?? t("depot.laneBad"))}
+                      : laneCheck.message
+                        ? engineText({ text: laneCheck.message, msg: laneCheck.message_msg })
+                        : t("depot.laneBad")}
                   </p>
                 )}
                 {laneReach && (!laneReach.from_entrance || !laneReach.to_exit) && (

@@ -1,5 +1,6 @@
 import { get, send } from "../../session/api";
 import type { PopulationAnswer } from "../noise/population";
+import { withApiMsg } from "../../i18n/engine";
 
 /**
  * The project's population layers on the server (apps/api/src/population, 06-gis §3): WorldPop and GHSL
@@ -126,8 +127,11 @@ export function projectPopulation(projectId: string, csrf: string): PopulationAp
       };
       if (!res.ok || !body.layer) {
         const msg = Array.isArray(body.message) ? body.message.join("; ") : body.message;
-        throw new Error(
-          msg || (res.status === 413 ? "the file is too large" : `the server answered ${res.status}`),
+        throw withApiMsg(
+          new Error(
+            msg || (res.status === 413 ? "the file is too large" : `the server answered ${res.status}`),
+          ),
+          body,
         );
       }
       return body.layer;

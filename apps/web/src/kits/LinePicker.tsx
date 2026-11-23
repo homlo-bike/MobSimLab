@@ -1,7 +1,7 @@
 import { useI18n } from "../i18n/i18n";
 import type { LonLat } from "./types";
 
-/** What a plugin editor needs for its line list (ferry, cable car, people mover: several lines per project). */
+/** What a plugin editor needs for its line list (ferry, cable car: several lines per project). */
 export interface LineList {
   /** Id of this line for the journey planner and the other tabs (default: the tool id). */
   lineId?: string;

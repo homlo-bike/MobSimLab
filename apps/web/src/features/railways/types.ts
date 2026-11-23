@@ -323,6 +323,8 @@ export interface ServicePublication {
   timetable: Timetable;
   lines: LineReport[];
   notes: string[];
+  /** The same as messages, to show in the app language (absent from engines built before messages). */
+  note_msgs?: EngineMsg[];
   /** Each train's runs of the day, by first departure (absent from engines built before blocks). */
   blocks?: RailVehicleBlock[];
   /** Trains per hour on each section, for the noise map's timetabled input. */
@@ -682,7 +684,7 @@ export interface RailEngine {
   /** Plan the service lines on the last build and publish them for the journey planner; throws on errors. */
   publishLines(lines: EngineServiceLine[], serviceId: string, options?: PublishOptions): ServicePublication;
   /** Whether trains can run from one station (document id) to another on the last build; throws on errors. */
-  reachable(from: number, to: number): { ok: boolean; reason: string | null };
+  reachable(from: number, to: number): { ok: boolean; reason: string | null; reason_msg?: EngineMsg | null };
   dispose(): void;
 }
 

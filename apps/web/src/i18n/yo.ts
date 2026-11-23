@@ -465,6 +465,9 @@ export const yo: Messages = {
   "map.searching": "Ó ń wá…",
   "map.searchFailed": "Wíwá ibi kùnà: {error}",
   "map.noPlaces": "A kò rí ibi kankan.",
+  "map.noWebgl": "A kò lè fi máàpù hàn: kọ̀mpútà tàbí aṣàwákiri yìí kò ní àwòrán 3D (WebGL2).",
+  "map.noWebglHelp":
+    "Tan ìmúyára hardware tàbí ṣe àtúnṣe awakọ̀ àwòrán, lẹ́yìn náà ṣí ojú-ìwé náà padà. Ìyókù ojú-ìwé ṣì ń ṣiṣẹ́.",
   "map.places": "Àwọn ibi tí a rí",
   "map.searchCredit": "Orúkọ àwọn ibi © àwọn olùkópa OpenStreetMap, tí a rí pẹ̀lú Photon",
   "map.layers": "Àwọn ìpele máàpù",

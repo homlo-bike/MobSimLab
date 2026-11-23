@@ -14,10 +14,11 @@ import type { MslRequest } from "../auth/session.service";
 import type { DataSource } from "../projects/data-cache";
 import { OverpassError } from "../gateway/overpass.client";
 import { ProjectGate } from "../geodata/project-gate";
+import { AreaDetailService } from "../geodata/area-detail";
 import { ToolError } from "../geodata/osm-tools";
 import { Requires } from "../iam/requires";
 import { NoStoreOnError } from "./no-store-on-error";
-import { StreetNetworkService, TILE_ZOOM } from "./street-network.service";
+import { EMPTY_OSM_XML, StreetNetworkService, TILE_ZOOM } from "./street-network.service";
 import { type Bbox, MAX_WATER_SPAN_DEG } from "./water";
 
 /**
@@ -31,11 +32,34 @@ export class StreetNetworkController {
   constructor(
     private readonly streets: StreetNetworkService,
     @Optional() private readonly gate?: ProjectGate,
+    @Optional() private readonly details?: AreaDetailService,
   ) {}
+
+  /** Purpose: whether a tile of the project is held at "Main roads and railways only" (light data). */
+  private async main(projectId: string | undefined, x: number, y: number): Promise<boolean> {
+    return (await this.details?.isMain(projectId, x, y)) ?? false;
+  }
+
+  /**
+   * Purpose: the zoom-14 tiles of a project held at "Main roads and railways only" (large-area projects, step 3),
+   * as `x/y` keys: the street line editor loads them all so a line can be routed between towns. `full` lists the
+   * tiles of the Full polygons too: the editor loads their main roads (`?light=1`), so the route also runs through
+   * the towns it does not show.
+   * Inputs: `?project=` (read access checked). Output: `{ tiles, full }`, both empty without main polygons; 400 without a project.
+   */
+  @Get("main-tiles")
+  @Requires("instance.read")
+  async mainTiles(@Query("project") project: string | undefined, @Req() req: MslRequest) {
+    const projectId = await this.gate?.readable(req, project);
+    if (!projectId) throw new BadRequestException("project must be a project ID");
+    const t = await this.details?.tiles(projectId);
+    return { tiles: t?.main ? [...t.main].sort() : [], full: t?.main ? [...t.full].sort() : [] };
+  }
 
   /**
    * Purpose: OSM XML with the streets of one web-mercator tile at zoom 14.
-   * Inputs: tile x and y. Output: `application/xml`; 400 for an invalid tile, 502/504 when OSM is unavailable.
+   * Inputs: tile x and y; `?light=1` for its main roads only, as in a main-only tile. Output: `application/xml`;
+   * 400 for an invalid tile, 502/504 when OSM is unavailable.
    */
   @Get(`tiles/${TILE_ZOOM}/:x/:y`)
   @Requires("instance.read")
@@ -46,11 +70,13 @@ export class StreetNetworkController {
     @Param("y") ys: string,
     @Query("project") project: string | undefined,
     @Req() req: MslRequest,
+    @Query("light") light?: string,
   ): Promise<string> {
     const [x, y] = parseTile(xs, ys);
     const projectId = await this.gate?.readable(req, project);
+    const main = light === "1" || (await this.main(projectId, x, y));
     try {
-      return await this.streets.tile(x, y, projectId, sourceHeader(req));
+      return await this.streets.tile(x, y, projectId, sourceHeader(req), main);
     } catch (e) {
       if (e instanceof OverpassError)
         throw new HttpException("OpenStreetMap streets are unavailable right now", e.status);
@@ -78,6 +104,8 @@ export class StreetNetworkController {
     const [x, y] = parseTile(xs, ys);
     const projectId = await this.gate?.readable(req, project);
     try {
+      // A main-only tile holds no walkways, buildings or places (large-area projects, step 3).
+      if (await this.main(projectId, x, y)) return EMPTY_OSM_XML;
       return await this.streets.walkTile(x, y, projectId, sourceHeader(req));
     } catch (e) {
       if (e instanceof OverpassError)
@@ -134,6 +162,7 @@ export class StreetNetworkController {
     const [x, y] = parseTile(xs, ys);
     const projectId = await this.gate?.readable(req, project);
     try {
+      if (await this.main(projectId, x, y)) return JSON.stringify({ buildings: [] });
       return await this.streets.buildingTile(x, y, projectId, sourceHeader(req));
     } catch (e) {
       if (e instanceof OverpassError)
@@ -160,6 +189,7 @@ export class StreetNetworkController {
     const [x, y] = parseTile(xs, ys);
     const projectId = await this.gate?.readable(req, project);
     try {
+      if (await this.main(projectId, x, y)) return JSON.stringify({ places: [] });
       return await this.streets.placeTile(x, y, projectId, sourceHeader(req));
     } catch (e) {
       if (e instanceof OverpassError)

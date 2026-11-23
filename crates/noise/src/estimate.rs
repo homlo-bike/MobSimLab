@@ -17,6 +17,7 @@ use crate::screening::{
     barrier_db, lateral_db, lateral_db_63, BuildingInput, HeightRule, Lateral, Obstacles,
     RayScratch, LATERAL_MAX_BUILDINGS,
 };
+use engine_msg::{msg, Msg};
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -218,8 +219,10 @@ pub enum Severity {
 pub struct Check {
     /// Severity.
     pub severity: Severity,
-    /// Text.
+    /// Text, in English.
     pub text: String,
+    /// The same text as a key and values, for the app to show in the user's language.
+    pub msg: Msg,
     /// Where, local metres.
     pub at: Option<[f64; 2]>,
     /// Line id.
@@ -1591,11 +1594,11 @@ fn checks(
     lnight: &Band,
 ) -> Vec<Check> {
     let mut out = Vec::new();
-    let named = |l: &LineInput, t: String| {
+    let named = |l: &LineInput, t: Msg| {
         if l.label.is_empty() {
             t
         } else {
-            format!("{}: {t}", l.label)
+            msg!("noise.check.named", line = &l.label, text = t)
         }
     };
     let mut any_electric: Option<Mode> = None;
@@ -1618,23 +1621,22 @@ fn checks(
                     .fold(f64::INFINITY, f64::min);
                 let len = ps[a..=b].iter().map(|q| q.len).sum::<f64>();
                 let db = lib.range(key, Some(l.mode));
-                let what = if class == Squeal::Tram200 {
-                    "Tram curve"
+                let key = if class == Squeal::Tram200 {
+                    "noise.check.squeal_tram"
                 } else {
-                    "Curve"
+                    "noise.check.squeal"
                 };
                 out.push(Check {
                     severity: Severity::Warning,
-                    text: named(
+                    text: String::new(),
+                    msg: named(
                         l,
-                        format!(
-                            "{what} R {} over {}: squeal correction {} dB ({} to {} dB), the corridor widens here",
-                            fmt_m(r),
-                            fmt_m(len),
-                            fmt_db(db[1]),
-                            fmt_db(db[0]),
-                            fmt_db(db[2])
-                        ),
+                        Msg::new(key)
+                            .arg("radius", fmt_m(r))
+                            .arg("length", fmt_m(len))
+                            .arg("db", fmt_db(db[1]))
+                            .arg("low", fmt_db(db[0]))
+                            .arg("high", fmt_db(db[2])),
                     ),
                     at: Some(path.at((ps[a].s + ps[b].s) / 2.0).0),
                     line: Some(l.id.clone()),
@@ -1661,14 +1663,15 @@ fn checks(
                 let db = excess(&ps[(a + b) / 2], |st| st.bridge = true);
                 out.push(Check {
                     severity: Severity::Info,
-                    text: named(
+                    text: String::new(),
+                    msg: named(
                         l,
-                        format!(
-                            "Elevated over {}: bridge structure noise {} dB ({} to {} dB, CNOSSOS-EU bridge transfer functions)",
-                            fmt_m(len),
-                            fmt_db(db[1]),
-                            fmt_db(db[0]),
-                            fmt_db(db[2])
+                        msg!(
+                            "noise.check.bridge",
+                            length = fmt_m(len),
+                            db = fmt_db(db[1]),
+                            low = fmt_db(db[0]),
+                            high = fmt_db(db[2])
                         ),
                     ),
                     at: Some(path.at((ps[a].s + ps[b].s) / 2.0).0),
@@ -1681,27 +1684,33 @@ fn checks(
                 let ext = lib.central("noise.rail_impact_extent_m");
                 out.push(Check {
                     severity: Severity::Info,
-                    text: named(
+                    text: String::new(),
+                    msg: named(
                         l,
                         if db > 0.0 {
-                            format!(
-                                "{} {}: impact noise {} dB from {} before to {} after each",
-                                sw.len(),
-                                if sw.len() == 1 { "switch" } else { "switches" },
-                                fmt_db(db),
-                                fmt_m(ext),
-                                fmt_m(ext)
-                            )
+                            Msg::new(if sw.len() == 1 {
+                                "noise.check.switch_impact_one"
+                            } else {
+                                "noise.check.switch_impact"
+                            })
+                            .arg("count", sw.len().to_string())
+                            .arg("db", fmt_db(db))
+                            .arg("extent", fmt_m(ext))
                         } else {
-                            format!(
-                                "{} {}: no impact noise below {} km/h (CNOSSOS-EU)",
-                                sw.len(),
-                                if sw.len() == 1 { "switch" } else { "switches" },
+                            Msg::new(if sw.len() == 1 {
+                                "noise.check.switch_slow_one"
+                            } else {
+                                "noise.check.switch_slow"
+                            })
+                            .arg("count", sw.len().to_string())
+                            .arg(
+                                "speed",
                                 lib.get(
                                     "noise.rail_min_roughness_speed_kmh",
                                     Some(l.mode),
-                                    Variant::Central
+                                    Variant::Central,
                                 )
+                                .to_string(),
                             )
                         },
                     ),
@@ -1717,13 +1726,8 @@ fn checks(
                     .sum::<f64>();
                 out.push(Check {
                     severity: Severity::Info,
-                    text: named(
-                        l,
-                        format!(
-                            "{} underground: no noise at the surface; tunnel portals are not modelled yet",
-                            fmt_m(len)
-                        ),
-                    ),
+                    text: String::new(),
+                    msg: named(l, msg!("noise.check.underground", length = fmt_m(len))),
                     at: Some(path.at((ps[a].s + ps[b].s) / 2.0).0),
                     line: Some(l.id.clone()),
                 });
@@ -1734,10 +1738,11 @@ fn checks(
     if lden.max_m > 0.0 {
         out.push(Check {
             severity: Severity::Info,
-            text: format!(
-                "The {} L_den band is widest here: {} from the line",
-                th(lden),
-                fmt_m(lden.max_m)
+            text: String::new(),
+            msg: msg!(
+                "noise.check.lden_widest",
+                threshold = th(lden),
+                distance = fmt_m(lden.max_m)
             ),
             at: lden.max_at,
             line: None,
@@ -1746,7 +1751,8 @@ fn checks(
     if input.lines.iter().all(|l| l.flows.night <= 0.0) && !input.lines.is_empty() {
         out.push(Check {
             severity: Severity::Info,
-            text: format!("No night service: no {} L_night band", th(lnight)),
+            text: String::new(),
+            msg: msg!("noise.check.no_night", threshold = th(lnight)),
             at: None,
             line: None,
         });
@@ -1755,11 +1761,12 @@ fn checks(
         let r = lib.range("noise.electric_road_propulsion_delta_db", Some(m));
         out.push(Check {
             severity: Severity::Info,
-            text: format!(
-                "Electric buses: propulsion noise {} dB ({} to {} dB), an educated guess until measured values are added",
-                fmt_db(r[1]),
-                fmt_db(r[0]),
-                fmt_db(r[2])
+            text: String::new(),
+            msg: msg!(
+                "noise.check.electric_buses",
+                db = fmt_db(r[1]),
+                low = fmt_db(r[0]),
+                high = fmt_db(r[2])
             ),
             at: None,
             line: None,
@@ -1781,27 +1788,25 @@ fn checks(
     let uses = |key: &str| uses_if(key, &|_| true);
     let cable = uses("noise.cable_car_tower_lw_db") || uses("noise.cable_car_station_lw_db");
     for (used, text) in [
-        (
-            cable,
-            "Cable cars: sound powers from one study (Placer County gondola EIR, 2019): indicative",
-        ),
+        (cable, msg!("noise.check.source_cable_car")),
         (
             uses_if("noise.ferry_cruise_lw_db", &|p| !small(p)),
-            "Ferries under way: sound power from one study of large ferries (port of Livorno, Fredianelli and Nastasi 2020): indicative",
+            msg!("noise.check.source_ferry"),
         ),
         (
             uses_if("noise.ferry_cruise_lw_db", &small),
-            "Water buses, catamarans and hydrofoils under way: placeholder sound power, no source for small vessels yet: indicative only",
+            msg!("noise.check.source_small_vessel"),
         ),
         (
             uses("noise.ferry_berth_lw_db"),
-            "Ferries at the pier: placeholder sound power, no source yet: indicative only",
+            msg!("noise.check.source_berth"),
         ),
     ] {
         if used {
             out.push(Check {
                 severity: Severity::Info,
-                text: text.into(),
+                text: String::new(),
+                msg: text,
                 at: None,
                 line: None,
             });
@@ -1809,10 +1814,14 @@ fn checks(
     }
     out.push(Check {
         severity: Severity::Info,
-        text: "Quick estimate: free field over flat ground, no buildings or terrain (no screening), service lines only without general traffic".into(),
+        text: String::new(),
+        msg: msg!("noise.check.quick_estimate"),
         at: None,
         line: None,
     });
+    for c in &mut out {
+        c.text = c.msg.english();
+    }
     out.sort_by_key(|c| c.severity == Severity::Info);
     out
 }

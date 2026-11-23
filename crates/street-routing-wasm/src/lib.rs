@@ -6,6 +6,7 @@
 //! browser, so dragging a point re-routes instantly, and it is the same code the simulation
 //! worker uses.
 
+use engine_msg::{js_error, msg};
 use street_routing::access::{MatrixRequest, PtalRequest, ReachCountRequest};
 use street_routing::geo::LocalProjection;
 use street_routing::line::{PointKind, StreetLine};
@@ -74,8 +75,8 @@ impl StreetLineEditor {
     }
 
     /// Purpose: add streets (OSM XML for one tile) to the network. Call `rebuild` afterwards.
-    pub fn add_osm(&mut self, osm_xml: &str) -> Result<(), JsError> {
-        let mut d = parse_osm_xml(osm_xml).map_err(|e| JsError::new(&e))?;
+    pub fn add_osm(&mut self, osm_xml: &str) -> Result<(), JsValue> {
+        let mut d = parse_osm_xml(osm_xml).map_err(|e| js_error(&e))?;
         street_routing::osm::prefer_language(&mut d, &self.language);
         self.data.merge(d);
         Ok(())
@@ -89,7 +90,7 @@ impl StreetLineEditor {
 
     /// Purpose: rebuild the road network from all streets added so far and re-route the line.
     /// Output: the view, or an error when no street usable by buses has been loaded yet.
-    pub fn rebuild(&mut self) -> Result<String, JsError> {
+    pub fn rebuild(&mut self) -> Result<String, JsValue> {
         let g = if self.setups.is_empty() {
             RoadGraph::from_osm_with_delays(&self.data, self.proj, &self.delays)
         } else {
@@ -97,7 +98,7 @@ impl StreetLineEditor {
             apply_setups(&mut data, &self.setups);
             RoadGraph::from_osm_with_delays(&data, self.proj, &self.delays)
         }
-        .map_err(|e| JsError::new(&e))?;
+        .map_err(|e| js_error(&e))?;
         self.proj = Some(g.proj);
         self.line.rebuild(&g);
         self.graph = Some(g);
@@ -107,7 +108,7 @@ impl StreetLineEditor {
     /// Purpose: set the planner's street setups from the GIS tab (JSON list of `StreetSetup`).
     /// Output: the view, re-routed on the changed streets when a network is loaded.
     /// Side effects: every later rebuild applies them.
-    pub fn set_street_setups(&mut self, json: &str) -> Result<String, JsError> {
+    pub fn set_street_setups(&mut self, json: &str) -> Result<String, JsValue> {
         self.setups = serde_json::from_str(json).map_err(|e| JsError::new(&e.to_string()))?;
         if self.graph.is_some() {
             return self.rebuild();
@@ -119,7 +120,7 @@ impl StreetLineEditor {
     /// `bus_lane`, shares of the free-flow running time; missing values take the library's).
     /// Output: the view, re-routed when a network is loaded. Side effects: every later rebuild
     /// uses them.
-    pub fn set_delay_shares(&mut self, json: &str) -> Result<String, JsError> {
+    pub fn set_delay_shares(&mut self, json: &str) -> Result<String, JsValue> {
         let d: DelayShares =
             serde_json::from_str(json).map_err(|e| JsError::new(&e.to_string()))?;
         if d == self.delays {
@@ -142,7 +143,7 @@ impl StreetLineEditor {
         &mut self,
         profile_json: &str,
         rules_json: &str,
-    ) -> Result<String, JsError> {
+    ) -> Result<String, JsValue> {
         let profile: VehicleProfile =
             serde_json::from_str(profile_json).map_err(|e| JsError::new(&e.to_string()))?;
         self.line.rules =
@@ -155,7 +156,7 @@ impl StreetLineEditor {
     }
 
     /// Purpose: default vehicle for a mode (`bus`, `brt`, `trolleybus`, `intercity_bus`) as JSON.
-    pub fn default_profile(mode: &str) -> Result<String, JsError> {
+    pub fn default_profile(mode: &str) -> Result<String, JsValue> {
         let m: Mode = serde_json::from_str(&format!("\"{mode}\""))
             .map_err(|e| JsError::new(&e.to_string()))?;
         Ok(serde_json::to_string(&VehicleProfile::default_for(m)).unwrap_or_default())
@@ -174,7 +175,7 @@ impl StreetLineEditor {
         &mut self,
         topology_json: &str,
         closures_json: &str,
-    ) -> Result<String, JsError> {
+    ) -> Result<String, JsValue> {
         self.line.level_crossings = if topology_json.trim().is_empty() {
             Vec::new()
         } else {
@@ -191,25 +192,25 @@ impl StreetLineEditor {
         lon: f64,
         lat: f64,
         point_kind: &str,
-    ) -> Result<String, JsError> {
+    ) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;
         self.line.insert_point(g, seq, lon, lat, kind(point_kind)?);
         Ok(self.view())
     }
 
     /// Purpose: move a point. Returns the view.
-    pub fn move_point(&mut self, id: u32, lon: f64, lat: f64) -> Result<String, JsError> {
+    pub fn move_point(&mut self, id: u32, lon: f64, lat: f64) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;
         self.line
             .move_point(g, id, lon, lat)
-            .map_err(|e| JsError::new(&e))?;
+            .map_err(|e| js_error(&e))?;
         Ok(self.view())
     }
 
     /// Purpose: put a stop on the other sidewalk of its street. Returns the view.
-    pub fn switch_side(&mut self, id: u32) -> Result<String, JsError> {
+    pub fn switch_side(&mut self, id: u32) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;
-        self.line.switch_side(g, id).map_err(|e| JsError::new(&e))?;
+        self.line.switch_side(g, id).map_err(|e| js_error(&e))?;
         Ok(self.view())
     }
 
@@ -223,45 +224,41 @@ impl StreetLineEditor {
     }
 
     /// Purpose: delete a point. Returns the view.
-    pub fn delete_point(&mut self, id: u32) -> Result<String, JsError> {
+    pub fn delete_point(&mut self, id: u32) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;
-        self.line
-            .delete_point(g, id)
-            .map_err(|e| JsError::new(&e))?;
+        self.line.delete_point(g, id).map_err(|e| js_error(&e))?;
         Ok(self.view())
     }
 
     /// Purpose: delete every point (the depot stays). Returns the view.
-    pub fn clear(&mut self) -> Result<String, JsError> {
+    pub fn clear(&mut self) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;
         let ids: Vec<u32> = self.line.view(g).points.iter().map(|p| p.id).collect();
         for id in ids {
-            self.line
-                .delete_point(g, id)
-                .map_err(|e| JsError::new(&e))?;
+            self.line.delete_point(g, id).map_err(|e| js_error(&e))?;
         }
         Ok(self.view())
     }
 
     /// Purpose: set a point's kind (`via`, `stop`, `end_stop`). Returns the view.
-    pub fn set_kind(&mut self, id: u32, point_kind: &str) -> Result<String, JsError> {
+    pub fn set_kind(&mut self, id: u32, point_kind: &str) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;
         self.line
             .set_kind(g, id, kind(point_kind)?)
-            .map_err(|e| JsError::new(&e))?;
+            .map_err(|e| js_error(&e))?;
         Ok(self.view())
     }
 
     /// Purpose: set or clear (empty string) a point's name. Returns the view.
-    pub fn set_name(&mut self, id: u32, name: &str) -> Result<String, JsError> {
+    pub fn set_name(&mut self, id: u32, name: &str) -> Result<String, JsValue> {
         self.line
             .set_name(id, Some(name.to_string()))
-            .map_err(|e| JsError::new(&e))?;
+            .map_err(|e| js_error(&e))?;
         Ok(self.view())
     }
 
     /// Purpose: place the depot gate. Returns the view.
-    pub fn set_depot(&mut self, lon: f64, lat: f64) -> Result<String, JsError> {
+    pub fn set_depot(&mut self, lon: f64, lat: f64) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;
         self.line.set_depot(g, Some((lon, lat)));
         Ok(self.view())
@@ -274,7 +271,7 @@ impl StreetLineEditor {
         &mut self,
         exits_json: &str,
         entrances_json: &str,
-    ) -> Result<String, JsError> {
+    ) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;
         let parse = |j: &str| -> Result<Vec<(f64, f64)>, JsError> {
             let v: Vec<[f64; 2]> =
@@ -287,14 +284,14 @@ impl StreetLineEditor {
     }
 
     /// Purpose: remove the depot. Returns the view.
-    pub fn clear_depot(&mut self) -> Result<String, JsError> {
+    pub fn clear_depot(&mut self) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;
         self.line.set_depot(g, None);
         Ok(self.view())
     }
 
     /// Purpose: re-choose travel directions for the shortest whole circuit. Returns the view.
-    pub fn optimise(&mut self) -> Result<String, JsError> {
+    pub fn optimise(&mut self) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(not_ready)?;
         self.line.reroute_all(g);
         Ok(self.view())
@@ -320,10 +317,12 @@ impl StreetLineEditor {
 /// Purpose: the streets of one OSM XML tile that the GIS tab can set up (JSON list of
 /// `street_routing::setup::StreetInfo`: shape, class, lanes, width, bus and bike lanes, tram rails).
 #[wasm_bindgen]
-pub fn street_infos(osm_xml: &str) -> Result<String, JsError> {
-    let d = parse_osm_xml(osm_xml).map_err(|e| JsError::new(&e))?;
-    serde_json::to_string(&street_routing::setup::street_infos(&d))
-        .map_err(|e| JsError::new(&e.to_string()))
+pub fn street_infos(osm_xml: &str) -> Result<String, JsValue> {
+    let d = parse_osm_xml(osm_xml).map_err(|e| js_error(&e))?;
+    Ok(
+        serde_json::to_string(&street_routing::setup::street_infos(&d))
+            .map_err(|e| JsError::new(&e.to_string()))?,
+    )
 }
 
 /// Walk network analysis (ADR-0035): 15-minute walk coverage, SDG 11.2.1, catchments and stop spacing
@@ -360,25 +359,25 @@ impl WalkAnalysis {
 
     /// Purpose: build the next graph from walkable ways (`walk`, the default) or from ways open to
     /// bicycles (`cycle`, for the 15-minute city by bicycle). Call before `build`.
-    pub fn set_profile(&mut self, profile: &str) -> Result<(), JsError> {
+    pub fn set_profile(&mut self, profile: &str) -> Result<(), JsValue> {
         self.profile = parse_json("profile", &format!("\"{profile}\""))?;
         Ok(())
     }
 
     /// Purpose: add walkable ways (OSM XML for one tile). Call `build` after a batch.
-    pub fn add_osm(&mut self, osm_xml: &str) -> Result<(), JsError> {
-        let d = parse_osm_xml(osm_xml).map_err(|e| JsError::new(&e))?;
+    pub fn add_osm(&mut self, osm_xml: &str) -> Result<(), JsValue> {
+        let d = parse_osm_xml(osm_xml).map_err(|e| js_error(&e))?;
         self.data.merge(d);
         Ok(())
     }
 
     /// Purpose: build the walk graph from everything added so far.
     /// Output: an error when no walkable way has been loaded.
-    pub fn build(&mut self) -> Result<(), JsError> {
+    pub fn build(&mut self) -> Result<(), JsValue> {
         let proj = self.graph.as_ref().map(|g| g.proj);
         self.graph = Some(
             WalkGraph::from_osm_profile(&self.data, proj, self.profile)
-                .map_err(|e| JsError::new(&e))?,
+                .map_err(|e| js_error(&e))?,
         );
         Ok(())
     }
@@ -389,7 +388,7 @@ impl WalkAnalysis {
     }
 
     /// Purpose: answer a coverage question (JSON `walk::CoverageRequest`). Output: JSON `CoverageResult`.
-    pub fn coverage(&self, request_json: &str) -> Result<String, JsError> {
+    pub fn coverage(&self, request_json: &str) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
         let req: CoverageRequest = parse_json("coverage request", request_json)?;
         Ok(serde_json::to_string(&g.coverage(&req)).unwrap_or_default())
@@ -402,7 +401,7 @@ impl WalkAnalysis {
         stops_json: &str,
         max_minutes: f64,
         settings_json: &str,
-    ) -> Result<String, JsError> {
+    ) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
         let stops: Vec<StopPoint> = parse_json("stops", stops_json)?;
         let settings: WalkSettings = parse_json("settings", settings_json)?;
@@ -410,14 +409,14 @@ impl WalkAnalysis {
     }
 
     /// Purpose: suggest new stop locations (JSON `walk::SuggestRequest`). Output: JSON `SuggestResult`.
-    pub fn suggest_stops(&self, request_json: &str) -> Result<String, JsError> {
+    pub fn suggest_stops(&self, request_json: &str) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
         let req: SuggestRequest = parse_json("suggestion request", request_json)?;
         Ok(serde_json::to_string(&g.suggest_stops(&req)).unwrap_or_default())
     }
 
     /// Purpose: TfL PTAL on the walk network (JSON `access::PtalRequest`). Output: JSON `PtalResult`.
-    pub fn ptal(&self, request_json: &str) -> Result<String, JsError> {
+    pub fn ptal(&self, request_json: &str) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
         let req: PtalRequest = parse_json("PTAL request", request_json)?;
         Ok(serde_json::to_string(&g.ptal(&req)).unwrap_or_default())
@@ -425,14 +424,14 @@ impl WalkAnalysis {
 
     /// Purpose: destinations per category within a time limit of each origin (JSON
     /// `access::ReachCountRequest`). Output: JSON `ReachCountResult`.
-    pub fn reach_counts(&self, request_json: &str) -> Result<String, JsError> {
+    pub fn reach_counts(&self, request_json: &str) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
         let req: ReachCountRequest = parse_json("destination request", request_json)?;
         Ok(serde_json::to_string(&g.reach_counts(&req)).unwrap_or_default())
     }
 
     /// Purpose: sparse travel-cost matrix (JSON `access::MatrixRequest`). Output: JSON `MatrixResult`.
-    pub fn matrix(&self, request_json: &str) -> Result<String, JsError> {
+    pub fn matrix(&self, request_json: &str) -> Result<String, JsValue> {
         let g = self.graph.as_ref().ok_or_else(no_walk_graph)?;
         let req: MatrixRequest = parse_json("matrix request", request_json)?;
         Ok(serde_json::to_string(&g.matrix(&req)).unwrap_or_default())
@@ -440,12 +439,12 @@ impl WalkAnalysis {
 
     /// Purpose: stop spacing along a route and on foot (JSON `walk::SpacingRequest`).
     /// Works without a walk graph (then `walk_m` is empty). Output: JSON `SpacingResult`.
-    pub fn spacing(&self, request_json: &str) -> Result<String, JsError> {
+    pub fn spacing(&self, request_json: &str) -> Result<String, JsValue> {
         let req: SpacingRequest = parse_json("spacing request", request_json)?;
         Ok(serde_json::to_string(&stop_spacing(&req, self.graph.as_ref())).unwrap_or_default())
     }
 }
 
-fn no_walk_graph() -> JsError {
-    JsError::new("No walk network is loaded for this area yet.")
+fn no_walk_graph() -> JsValue {
+    js_error(&msg!("street.error.no_walk_network"))
 }

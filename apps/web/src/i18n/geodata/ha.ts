@@ -14,7 +14,7 @@ export const geodataHa = {
   "data.outside": "Zanen yanzu ya wuce yankin da aka shigo da shi. Sabunta don shigo da sabon yankin.",
   "data.method": "Samo bayanan daga",
   "data.method.overpass": "Overpass (yankuna har zuwa km² {max})",
-  "data.method.geofabrik": "Yankin Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Fayil .osm.pbf",
   "data.region": "Yanki",
   "data.regionsLoading": "Ana neman yankuna…",

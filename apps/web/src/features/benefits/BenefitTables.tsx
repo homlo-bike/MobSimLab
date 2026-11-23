@@ -54,6 +54,7 @@ import type { Region } from "./regions";
 import { accessByScenario, spendingFrom } from "./run";
 import { TablePart } from "../tables/sections";
 import { RIDER_SHARE_PREFS } from "../../workspace/editedElsewhere";
+import { engineErrorText } from "../../i18n/engine";
 
 interface Props {
   /** The published network: street lines (`street:<i>`), rail lines (`rail:<id>`) and plugin lines. */
@@ -205,7 +206,7 @@ export function BenefitTables({
       .catch((e: unknown) => {
         if (!live) return;
         setInd(null);
-        setIndError(e instanceof Error ? e.message : String(e));
+        setIndError(engineErrorText(e));
       });
     return () => {
       live = false;
@@ -226,7 +227,7 @@ export function BenefitTables({
     api
       .population(areas)
       .then((r) => live && setPop(r))
-      .catch((e: unknown) => live && setPopError(e instanceof Error ? e.message : String(e)));
+      .catch((e: unknown) => live && setPopError(engineErrorText(e)));
     return () => {
       live = false;
     };
@@ -292,7 +293,7 @@ export function BenefitTables({
         setAcc(a);
         keptAcc.save(a, keyNow);
       })
-      .catch((e: unknown) => live && setAccError(e instanceof Error ? e.message : String(e)));
+      .catch((e: unknown) => live && setAccError(engineErrorText(e)));
     return () => {
       live = false;
     };

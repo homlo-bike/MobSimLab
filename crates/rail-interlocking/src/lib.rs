@@ -45,6 +45,7 @@
 
 use std::collections::{BTreeMap, BTreeSet};
 
+use engine_msg::{msg, Msg};
 use rail_model::{End, Model, PieceId, RouteId, SwitchId, SwitchPosition, TdsId};
 use serde::{Deserialize, Serialize};
 
@@ -968,16 +969,17 @@ impl<'m> Interlocking<'m> {
 
     /// Purpose: check safety invariants 1, 3 and 4 of ADR-0032 §4.
     /// Output: Err describing the first violation.
-    pub fn check_invariants(&self) -> Result<(), String> {
+    pub fn check_invariants(&self) -> Result<(), Msg> {
         // 1. Every section under a train is locked for that train (route or standing).
         for (i, st) in self.tds.iter().enumerate() {
             for &tr in &st.occupants {
                 let ok = st.standing.contains(&tr)
                     || st.route.iter().any(|&h| self.active[h].train == tr);
                 if !ok {
-                    return Err(format!(
-                        "invariant 1: train {tr} occupies {} without a lock",
-                        self.m.tds[i].id
+                    return Err(msg!(
+                        "rail.sim.inv.occupied_unlocked",
+                        train = tr.to_string(),
+                        section = &self.m.tds[i].id
                     ));
                 }
             }
@@ -991,9 +993,14 @@ impl<'m> Interlocking<'m> {
                     || (self.m.tds[i].on_sight
                         && routes.iter().all(|&r| self.same_way(first, r, i as TdsId)));
                 if !following {
-                    return Err(format!(
-                        "invariant 1: {} locked by trains {trains:?}",
-                        self.m.tds[i].id
+                    return Err(msg!(
+                        "rail.sim.inv.locked_by_several",
+                        section = &self.m.tds[i].id,
+                        trains = trains
+                            .iter()
+                            .map(|t| t.to_string())
+                            .collect::<Vec<_>>()
+                            .join(", ")
                     ));
                 }
             }
@@ -1007,9 +1014,10 @@ impl<'m> Interlocking<'m> {
                 // A tram that followed another on sight may hold its route where the one ahead
                 // has come to stand; the kernel keeps it behind.
                 if !self.storage(i as TdsId) && !self.m.tds[i].on_sight {
-                    return Err(format!(
-                        "invariant 1: {} has train {s} standing and another train's route",
-                        self.m.tds[i].id
+                    return Err(msg!(
+                        "rail.sim.inv.standing_and_route",
+                        section = &self.m.tds[i].id,
+                        train = s.to_string()
                     ));
                 }
             }
@@ -1023,9 +1031,9 @@ impl<'m> Interlocking<'m> {
                     a.state == RouteState::Locked
                 });
                 if occupied || locked_other {
-                    return Err(format!(
-                        "invariant 3: switch {} moves while occupied or locked",
-                        self.m.switches[i].id
+                    return Err(msg!(
+                        "rail.sim.inv.switch_moves",
+                        switch = &self.m.switches[i].id
                     ));
                 }
             }
@@ -1079,16 +1087,20 @@ impl<'m> Interlocking<'m> {
                     })
                     .collect();
                 if !shared.is_empty() {
-                    return Err(format!(
-                        "invariant 4: routes {} and {} both hold {}",
-                        ra.id, rb.id, self.m.tds[*shared[0] as usize].id
+                    return Err(msg!(
+                        "rail.sim.inv.routes_share_section",
+                        a = &ra.id,
+                        b = &rb.id,
+                        section = &self.m.tds[*shared[0] as usize].id
                     ));
                 }
                 for (sw, p) in wa {
                     if wb.get(sw).is_some_and(|q| q != p) {
-                        return Err(format!(
-                            "invariant 4: routes {} and {} need switch {} in different positions",
-                            ra.id, rb.id, self.m.switches[*sw as usize].id
+                        return Err(msg!(
+                            "rail.sim.inv.routes_switch_positions",
+                            a = &ra.id,
+                            b = &rb.id,
+                            switch = &self.m.switches[*sw as usize].id
                         ));
                     }
                 }

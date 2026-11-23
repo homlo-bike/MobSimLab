@@ -25,6 +25,8 @@ import {
   nearestEpoch,
 } from "../gateway/ghsl.client";
 import { CELL_DEG, emptyGrid, WorldPopClient, type WorldPopEntry } from "../gateway/worldpop.client";
+import { AreaIndex, type AreaPolygon, polygonsKm2 } from "../projects/area-polygons";
+import { coarsenMain } from "./coarsen";
 import { type Bbox, type ProjectArea, projectArea } from "../projects/project-area";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
 import { type Lattice, layerLattice } from "./lattice";
@@ -232,7 +234,7 @@ export class PopulationLayersService implements OnModuleInit {
     const area = await projectArea(this.db, projectId);
     return {
       area,
-      areaKm2: area ? Math.round(boxAreaKm2(area.bbox) * 10) / 10 : null,
+      areaKm2: area ? Math.round(polygonsKm2(area.polygons) * 10) / 10 : null,
       layers: await this.list(projectId),
       choices: {
         worldpopYears: WORLDPOP_YEARS,
@@ -312,7 +314,7 @@ export class PopulationLayersService implements OnModuleInit {
       throw new BadRequestException(
         "Draw the project area first (Project preferences, Project area): the import covers it",
       );
-    const km2 = boxAreaKm2(area.bbox);
+    const km2 = polygonsKm2(area.polygons);
     if (km2 > this.settings.maxAreaKm2)
       throw new BadRequestException(
         `The project area is ${Math.round(km2).toLocaleString("en")} km², above the ${this.settings.maxAreaKm2.toLocaleString("en")} km² an import may cover; make the project area smaller or ask the administrator to raise MOBSIMLAB_POPULATION_MAX_AREA_KM2`,
@@ -362,7 +364,9 @@ export class PopulationLayersService implements OnModuleInit {
       return row.id;
     });
     const job = (
-      isWp ? this.importWorldPop(id, area.bbox, refYear) : this.importGhsl(id, area.bbox, refYear, res!)
+      isWp
+        ? this.importWorldPop(id, area.bbox, area.polygons, refYear)
+        : this.importGhsl(id, area.bbox, area.polygons, refYear, res!)
     )
       .catch(async (e: unknown) => {
         const msg = e instanceof Error ? e.message : String(e);
@@ -602,7 +606,14 @@ export class PopulationLayersService implements OnModuleInit {
     }
   }
 
-  private async importWorldPop(id: string, bbox: Bbox, year: number): Promise<void> {
+  /** Purpose: WorldPop cells whose centre lies in the polygons, from the grid over their box. */
+  private async importWorldPop(
+    id: string,
+    bbox: Bbox,
+    polygons: readonly AreaPolygon[],
+    year: number,
+  ): Promise<void> {
+    const inside = new AreaIndex(polygons);
     await this.progress(id, { step: "countries" });
     const codes = await this.population.countriesOf(bbox);
     if (!codes.length) throw new Error("OpenStreetMap places no country in the project area");
@@ -636,6 +647,7 @@ export class PopulationLayersService implements OnModuleInit {
       for (let i = 0; i < grid.nx; i++) {
         const v = grid.people[j * grid.nx + i]!;
         if (!(v > 0)) continue;
+        if (!inside.contains(grid.x0 + (i + 0.5) * CELL_DEG, grid.y0 + (j + 0.5) * CELL_DEG)) continue;
         w.push(grid.x0 + i * CELL_DEG);
         s.push(grid.y0 + j * CELL_DEG);
         p.push(v);
@@ -644,14 +656,11 @@ export class PopulationLayersService implements OnModuleInit {
       throw new Error(
         `The area has more than ${this.settings.maxFeatures.toLocaleString("en")} cells with people`,
       );
-    await this.insertCells(
-      id,
-      w,
-      s,
-      w.map((x) => x + CELL_DEG),
-      s.map((y) => y + CELL_DEG),
-      p,
+    const kept = coarsenMain(
+      { w, s, e: w.map((x) => x + CELL_DEG), n: s.map((y) => y + CELL_DEG), p },
+      polygons,
     );
+    await this.insertCells(id, kept.w, kept.s, kept.e, kept.n, kept.p);
     const citation = entries.map((e) => e.citation).filter(Boolean)[0] ?? "";
     await this.db.transaction().execute(async (tx) => {
       await tx
@@ -665,7 +674,15 @@ export class PopulationLayersService implements OnModuleInit {
     });
   }
 
-  private async importGhsl(id: string, bbox: Bbox, epoch: number, res: GhslResolution): Promise<void> {
+  /** Purpose: GHSL cells whose centre lies in the polygons. */
+  private async importGhsl(
+    id: string,
+    bbox: Bbox,
+    polygons: readonly AreaPolygon[],
+    epoch: number,
+    res: GhslResolution,
+  ): Promise<void> {
+    const inside = new AreaIndex(polygons);
     const urls = this.ghsl.urls(bbox, epoch, res);
     const w: number[] = [];
     const s: number[] = [];
@@ -680,10 +697,10 @@ export class PopulationLayersService implements OnModuleInit {
       "download",
       () => this.ghsl.progress(urls),
       this.ghsl.read(bbox, epoch, res, (cw, cs, ce, cn, people) => {
-        // Cells whose centre lies in the area, like the WorldPop import.
+        // Cells whose centre lies in the area's polygons, like the WorldPop import.
         const cx = (cw + ce) / 2;
         const cy = (cs + cn) / 2;
-        if (cx < bbox[0] || cx > bbox[2] || cy < bbox[1] || cy > bbox[3]) return;
+        if (!inside.contains(cx, cy)) return;
         if (p.length >= this.settings.maxFeatures) throw tooMany;
         w.push(cw);
         s.push(cs);
@@ -693,7 +710,8 @@ export class PopulationLayersService implements OnModuleInit {
       }),
     );
     await this.progress(id, { step: "store" });
-    await this.insertCells(id, w, s, e, n, p);
+    const kept = coarsenMain({ w, s, e, n, p }, polygons);
+    await this.insertCells(id, kept.w, kept.s, kept.e, kept.n, kept.p);
     const notes = got.missing.length
       ? [`GHSL has no tile ${got.missing.join(", ")} (open sea); it counts as nobody.`]
       : [];

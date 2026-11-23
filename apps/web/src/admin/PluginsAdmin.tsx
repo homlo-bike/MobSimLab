@@ -20,12 +20,12 @@ import {
   ShieldIcon,
   SoundIcon,
   TableIcon,
-  TrainIcon,
 } from "../shell/icons";
 import { addsLine, PERMISSION_LABELS } from "../workspace/ProjectPlugins";
 import { EsriImageryConfig, type EsriStatus } from "./EsriImageryAdmin";
 import { MapLayersConfig } from "./MapLayersAdmin";
 import { PluginWindow, type ServiceLink, Switch, useWindowRun } from "./PluginWindow";
+import { withApiMsg } from "../i18n/engine";
 
 /** One plugin version as `GET /api/admin/plugins` lists it. */
 interface PluginRow {
@@ -102,7 +102,6 @@ const LOGOS: Record<string, { icon: ReactNode; tint: string }> = {
   "org.mobsimlab.gtfs": { icon: <TableIcon size={22} />, tint: "bg-emerald-100 text-emerald-800" },
   "org.mobsimlab.noise": { icon: <SoundIcon size={22} />, tint: "bg-rose-100 text-rose-800" },
   "org.mobsimlab.on-demand-bus": { icon: <BusIcon size={22} />, tint: "bg-cyan-100 text-cyan-800" },
-  "org.mobsimlab.people-mover": { icon: <TrainIcon size={22} />, tint: "bg-fuchsia-100 text-fuchsia-800" },
 };
 
 /** The outside services each bundled plugin uses (Esri's come with its key status, map layers' from the list). */
@@ -145,8 +144,11 @@ async function upload<T>(path: string, csrfToken: string, file: Blob): Promise<T
     problems?: string[];
   };
   if (!res.ok && !body.problems)
-    throw new Error(
-      Array.isArray(body.message) ? body.message.join("; ") : (body.message ?? `${path}: ${res.status}`),
+    throw withApiMsg(
+      new Error(
+        Array.isArray(body.message) ? body.message.join("; ") : (body.message ?? `${path}: ${res.status}`),
+      ),
+      body,
     );
   return body;
 }

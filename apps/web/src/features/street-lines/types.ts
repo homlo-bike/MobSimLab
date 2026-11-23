@@ -1,3 +1,4 @@
+import type { EngineMsg } from "../../i18n/engine";
 /** Types of the JSON returned by the street-routing WebAssembly module (Rust `LineView`). */
 
 import type { StreetSetup } from "../street-setup/types";
@@ -58,6 +59,8 @@ export interface PointView {
   lonlat: LonLat;
   status: Status;
   message: string | null;
+  /** The same as an engine message, for the app language. */
+  message_msg?: EngineMsg | null;
   bearing_deg: number | null;
   bay: LonLat[] | null;
 }
@@ -72,6 +75,8 @@ export interface LegView {
   direct_m: number | null;
   status: Status;
   message: string | null;
+  /** The same as an engine message, for the app language. */
+  message_msg?: EngineMsg | null;
   ways: number[];
   /** Expected wait at level crossings on this leg, s (included in `time_s`). */
   crossing_wait_s: number;
@@ -133,6 +138,8 @@ export interface DepotTripView {
   crossing_wait_s: number;
   status: Status;
   message: string | null;
+  /** The same as an engine message, for the app language. */
+  message_msg?: EngineMsg | null;
 }
 
 export interface LineView {
@@ -143,6 +150,8 @@ export interface LineView {
   depot: LonLat | null;
   depot_trips: DepotTripView[];
   issues: string[];
+  /** The same as engine messages, one per entry of `issues`. */
+  issue_msgs?: EngineMsg[];
   length_m: number;
   /** Running time, s, with the expected wait at level crossings. */
   time_s: number;
@@ -213,4 +222,14 @@ export interface DelayShares {
 export type EngineLoader = () => Promise<StreetEngine>;
 
 /** Fetches the OSM XML of one street tile. */
-export type TileFetcher = (x: number, y: number) => Promise<string>;
+/** Fetch one zoom-14 street tile as OSM XML; `light` asks for its main roads only. */
+export type TileFetcher = (x: number, y: number, light?: boolean) => Promise<string>;
+
+/**
+ * The tiles of a project with "Main roads and railways only" polygons, as `x/y` keys: `main` the corridor tiles
+ * (served light anyway), `full` the tiles of its Full polygons, loaded light so routes run through towns.
+ */
+export interface CorridorTiles {
+  main: string[];
+  full: string[];
+}

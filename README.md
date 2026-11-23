@@ -49,7 +49,7 @@ MobSimLab is an open-source, self-hosted web app for public transport planning, 
 
 - **Projects**: share a project with others, make it public to everyone signed in to the instance, or save it as a `.mslab` file. [Project files](docs/user/project-files.md)
 - **Static viewer**: a website with no server that shows saved projects read-only, ready for Cloudflare Pages. [Guide](docs/user/static-viewer.md)
-- **Plugins**: bundled plugins add cable cars, ferries, people movers, on-demand buses, cargo bikes, energy and emissions, GTFS import and export and the noise map; Admins can install more, which run in a sandbox. [Bundled plugins](plugins/README.md), [writing plugins](docs/plugins/README.md)
+- **Plugins**: bundled plugins add cable cars, ferries, on-demand buses, cargo bikes, energy and emissions, GTFS import and export and the noise map; Admins can install more, which run in a sandbox. [Bundled plugins](plugins/README.md), [writing plugins](docs/plugins/README.md)
 - **AI agents**: connect Claude or another MCP app to build scenarios and check them against the 15-minute walk rule. [Guide](docs/user/ai-agents.md)
 - **32 languages** in the app.
 

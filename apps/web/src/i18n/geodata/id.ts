@@ -14,7 +14,7 @@ export const geodataId = {
   "data.outside": "Gambar kini melewati area yang diimpor. Segarkan untuk mengimpor area baru.",
   "data.method": "Ambil data dari",
   "data.method.overpass": "Overpass (area hingga {max} km²)",
-  "data.method.geofabrik": "Wilayah Geofabrik",
+  "data.method.geofabrik": "Geofabrik",
   "data.method.upload": "Berkas .osm.pbf",
   "data.region": "Wilayah",
   "data.regionsLoading": "Mencari wilayah…",

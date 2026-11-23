@@ -14,6 +14,7 @@
 use crate::geo::{self, LonLat, Xy};
 use crate::issue::{Issue, Level};
 use crate::segment::{self, Call, Run, SimInput};
+use engine_msg::msg;
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
@@ -191,14 +192,14 @@ pub fn build(line: &WaterLine) -> WaterView {
         issues.push(Issue::new(
             Level::Error,
             "call.unknown_pier",
-            "A call refers to a pier that no longer exists.",
+            msg!("kits.call.unknown_pier"),
         ));
     }
     if calls.len() < 2 {
         issues.push(Issue::new(
             Level::Info,
             "line.too_short",
-            "Click at least two piers on the map.",
+            msg!("kits.line.too_short_piers"),
         ));
     }
     let origin = line.piers.first().map_or([0.0, 0.0], |p| p.lonlat);
@@ -220,12 +221,7 @@ pub fn build(line: &WaterLine) -> WaterView {
         let (a, b) = (w[0], w[1]);
         if a.pier == b.pier {
             issues.push(
-                Issue::new(
-                    Level::Error,
-                    "leg.same_pier",
-                    "Two calls in a row at the same pier.",
-                )
-                .at_section(i),
+                Issue::new(Level::Error, "leg.same_pier", msg!("kits.leg.same_pier")).at_section(i),
             );
         }
         let mut path = vec![line.piers[a.pier].lonlat];
@@ -259,9 +255,10 @@ pub fn build(line: &WaterLine) -> WaterView {
             Issue::new(
                 Level::Warning,
                 "dwell.over_capacity",
-                format!(
-                    "{:.0} passengers on and off at a call is more than the vessel carries ({:.0}).",
-                    line.pax_per_call, line.vessel.capacity
+                msg!(
+                    "kits.dwell.over_capacity",
+                    pax = format!("{:.0}", line.pax_per_call),
+                    capacity = format!("{:.0}", line.vessel.capacity)
                 ),
             )
             .param("ferry.passenger_capacity"),
@@ -394,12 +391,16 @@ pub fn build(line: &WaterLine) -> WaterView {
                     Issue::new(
                         Level::Warning,
                         "berth.conflict",
-                        format!(
-                            "Vessels wait for a berth at {} {} times in {} (in total {}). Add a berth or change the headway or layover.",
-                            if name.is_empty() { format!("pier {}", b.pier + 1) } else { name.clone() },
-                            b.holds,
-                            minutes(window).replace(" min", " minutes"),
-                            minutes(b.held_s)
+                        msg!(
+                            "kits.berth.conflict",
+                            pier = if name.is_empty() {
+                                msg!("kits.pier_number", n = (b.pier + 1).to_string()).into()
+                            } else {
+                                engine_msg::Arg::from(name)
+                            },
+                            holds = b.holds.to_string(),
+                            window = format!("{:.0}", window / 60.0),
+                            held = minutes(b.held_s)
                         ),
                     )
                     .at_station(b.pier),
@@ -410,7 +411,7 @@ pub fn build(line: &WaterLine) -> WaterView {
         issues.push(Issue::new(
             Level::Info,
             "route.unchecked",
-            "The route follows your via points. Land, bridges, locks and water depth are not checked yet.",
+            msg!("kits.route.unchecked"),
         ));
     }
     let capacity_pphpd = if calls.len() >= 2 {

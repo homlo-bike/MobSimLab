@@ -31,7 +31,7 @@ class RunFile:
 
 
 def street_tiles(network: str) -> list[str]:
-    """The OSM XML street tiles of a demand run's network column.
+    """The OSM XML street tiles of a demand or road run's network column.
 
     The API stores them as ``{"tiles_gz": base64(gzip(JSON list))}``; ``{"tiles": [...]}`` is read too.
 
@@ -46,9 +46,9 @@ def street_tiles(network: str) -> list[str]:
             raw = {"tiles": json.loads(gzip.decompress(base64.b64decode(raw["tiles_gz"])))}
         tiles = raw.get("tiles", [])
     except (ValueError, OSError, AttributeError, TypeError) as e:
-        raise ValueError("the demand run's street tiles cannot be read") from e
+        raise ValueError("the run's street tiles cannot be read") from e
     if not isinstance(tiles, list) or not all(isinstance(t, str) for t in tiles):
-        raise ValueError("the demand run's street tiles cannot be read")
+        raise ValueError("the run's street tiles cannot be read")
     return tiles
 
 

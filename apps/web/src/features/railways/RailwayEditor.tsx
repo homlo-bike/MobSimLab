@@ -78,6 +78,7 @@ import { useEditorKeys } from "./useEditorKeys";
 import { useMapEditing } from "./useMapEditing";
 import { useRailTiles } from "./useRailTiles";
 import { fetchTerrainHeights, useTerrainHeights } from "./useTerrainHeights";
+import { engineErrorText } from "../../i18n/engine";
 
 const HINTS: Record<RailTool, MessageKey> = {
   select: "rail.hint.select",
@@ -224,9 +225,7 @@ export function RailwayEditor({
         engine.current = e;
         setReady(true);
       })
-      .catch((err) =>
-        setError(tNow("rail.engineFailed", { error: err instanceof Error ? err.message : String(err) })),
-      );
+      .catch((err) => setError(tNow("rail.engineFailed", { error: engineErrorText(err) })));
     return () => {
       alive = false;
       engine.current?.dispose();
@@ -338,7 +337,7 @@ export function RailwayEditor({
       setError(null);
       return v;
     } catch (err) {
-      setError(err instanceof Error ? err.message : String(err));
+      setError(engineErrorText(err));
       return null;
     }
     // `streets` changes when new streets arrive; the engine holds them.
@@ -737,7 +736,7 @@ export function RailwayEditor({
       next = { result, byDay, error: null, key: publishKey(doc), topology: e.topology() };
       onPublish?.(result.timetable);
     } catch (err) {
-      next = { result: null, error: err instanceof Error ? err.message : String(err), key: publishKey(doc) };
+      next = { result: null, error: engineErrorText(err), key: publishKey(doc) };
       onPublish?.(null);
     } finally {
       setPublishing(null);

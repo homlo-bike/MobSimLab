@@ -75,12 +75,7 @@ describe("plugins per project (ADR-0036 §9)", () => {
     expect(active.at(-1)?.id).toBe("org.example.water-taxi");
     setActivePlugins(active);
     expect(activePlugins()).toBe(active);
-    expect(pluginTools().map((t) => t.id)).toEqual([
-      "cable-car",
-      "on-demand-bus",
-      "people-mover",
-      "water-taxi",
-    ]);
+    expect(pluginTools().map((t) => t.id)).toEqual(["cable-car", "on-demand-bus", "water-taxi"]);
     expect(findMode("water_taxi")?.mode.kit).toBe("water-route");
     expect(findMode("ferry")).toBeNull();
   });

@@ -180,7 +180,7 @@ fn a_tram_on_sight_follows_a_late_one_closely() {
 
 /// Purpose: plan the example metro line with every band at most `headway_s` apart and run the
 /// day through the kernel with the invariants checked.
-fn dense_day(headway_s: f64, protection: TrainProtection) -> Result<(), String> {
+fn dense_day(headway_s: f64, protection: TrainProtection) -> Result<(), engine_msg::Msg> {
     let mut spec = examples::metro_line();
     for t in &mut spec.tracks {
         t.protection = protection;

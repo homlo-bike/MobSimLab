@@ -4,6 +4,7 @@
  */
 import { withProjectFacts } from "../../geodata/projectData";
 import { currencyOf } from "./currencies";
+import { withApiMsg } from "../../i18n/engine";
 
 export type LonLat = [number, number];
 
@@ -112,11 +113,8 @@ export function pricesFrom(econ: CountryEconomy | null, prefs: Record<string, nu
 async function getJson<T>(path: string, fetchImpl: typeof fetch): Promise<T> {
   const res = await fetchImpl(path, { credentials: "same-origin" });
   if (!res.ok) {
-    const msg = await res
-      .json()
-      .then((j: { message?: string }) => j.message)
-      .catch(() => undefined);
-    throw new Error(msg ?? `Request failed (${res.status})`);
+    const j = (await res.json().catch(() => undefined)) as { message?: string } | undefined;
+    throw withApiMsg(new Error(j?.message ?? `Request failed (${res.status})`), j);
   }
   return (await res.json()) as T;
 }

@@ -131,6 +131,7 @@ dependencies = [
 name = "depot-layout"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "serde",
  "serde_json",
 ]
@@ -179,6 +180,7 @@ version = "0.1.0"
 dependencies = [
  "serde",
  "serde_json",
+ "wasm-bindgen",
 ]
 
 [[package]]
@@ -225,6 +227,7 @@ dependencies = [
 name = "gtfs"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "journey-planner",
  "serde",
  "serde_json",
@@ -234,6 +237,7 @@ dependencies = [
 name = "gtfs-wasm"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "gtfs",
  "serde_json",
  "wasm-bindgen",
@@ -280,6 +284,7 @@ checksum = "8f42a60cbdf9a97f5d2305f08a87dc4e09308d1276d28c869c684d7777685682"
 name = "journey-planner"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "serde",
  "unicode-normalization",
 ]
@@ -317,6 +322,7 @@ name = "mobsim-py"
 version = "0.1.0"
 dependencies = [
  "depot-layout",
+ "engine-msg",
  "pyo3",
  "rail-model",
  "rail-plan",
@@ -328,6 +334,7 @@ dependencies = [
 name = "mode-kits"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "serde",
 ]
 
@@ -344,6 +351,7 @@ dependencies = [
 name = "noise"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "serde",
  "serde_json",
 ]
@@ -530,6 +538,7 @@ dependencies = [
 name = "rail-design-wasm"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "rail-design",
  "rail-plan",
  "serde_json",
@@ -548,6 +557,7 @@ dependencies = [
 name = "rail-interlocking"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "proptest",
  "rail-model",
  "serde",
@@ -580,6 +590,7 @@ dependencies = [
 name = "rail-sim"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "proptest",
  "rail-dynamics",
  "rail-interlocking",
@@ -593,6 +604,7 @@ dependencies = [
 name = "rail-sim-wasm"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "rail-model",
  "rail-plan",
  "rail-sim",
@@ -722,6 +734,7 @@ dependencies = [
 name = "street-routing"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "pathfinding",
  "quick-xml",
  "serde",
@@ -732,6 +745,7 @@ dependencies = [
 name = "street-routing-wasm"
 version = "0.1.0"
 dependencies = [
+ "engine-msg",
  "serde",
  "serde_json",
  "street-routing",

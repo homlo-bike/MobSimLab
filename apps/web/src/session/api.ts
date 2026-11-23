@@ -1,3 +1,4 @@
+import { withApiMsg } from "../i18n/engine";
 /** What `GET /api/auth/me` returns. */
 export interface Me {
   instance: {
@@ -70,25 +71,28 @@ export async function send<T>(
     headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
-  if (!res.ok) throw new Error(await errorMessage(res, `${method} ${path}`));
+  if (!res.ok) throw await apiError(res, `${method} ${path}`);
   return (await res.json()) as T;
 }
 
 /** Purpose: GET a JSON resource with the session cookie. */
 export async function get<T>(path: string): Promise<T> {
   const res = await fetch(path, { credentials: "same-origin" });
-  if (!res.ok) throw new Error(await errorMessage(res, `GET ${path}`));
+  if (!res.ok) throw await apiError(res, `GET ${path}`);
   return (await res.json()) as T;
 }
 
-/** Purpose: a readable message from an API error response (NestJS puts it in `message`). */
-async function errorMessage(res: Response, what: string): Promise<string> {
+/**
+ * Purpose: an error with a readable message from an API error response (NestJS puts it in `message`), and the
+ * message key when the API sends one.
+ */
+async function apiError(res: Response, what: string): Promise<Error> {
   try {
     const body = (await res.json()) as { message?: string | string[] };
-    if (Array.isArray(body.message)) return body.message.join("; ");
-    if (body.message) return body.message;
+    if (Array.isArray(body.message)) return new Error(body.message.join("; "));
+    if (body.message) return withApiMsg(new Error(body.message), body);
   } catch {
     // not JSON
   }
-  return `${what} failed: ${res.status}`;
+  return new Error(`${what} failed: ${res.status}`);
 }

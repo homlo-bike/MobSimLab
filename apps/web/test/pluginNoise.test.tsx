@@ -93,11 +93,11 @@ describe("cable car and ferry noise sources", () => {
     expect(berth[0]!.context).toEqual(["ferry/catamaran", "ferry"]);
   });
 
-  it("leaves out people movers and lines that are not complete", () => {
-    const apm: SavedPluginLine = {
+  it("leaves out modes without sound powers and lines that are not complete", () => {
+    const other: SavedPluginLine = {
       ...gondola,
-      noise: { ...gondola.noise!, mode: "people_mover" } as SavedPluginLine["noise"],
+      noise: { ...gondola.noise!, mode: "other_mode" } as SavedPluginLine["noise"],
     };
-    expect(pluginSources({ apm, empty: { ...ferry, noise: null } })).toEqual([]);
+    expect(pluginSources({ other, empty: { ...ferry, noise: null } })).toEqual([]);
   });
 });

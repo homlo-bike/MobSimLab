@@ -9,6 +9,7 @@ import type {
   WalkTileFetcher,
 } from "../walk/types";
 import type {
+  CorridorTiles,
   EngineLoader,
   LineView,
   Mode,
@@ -84,13 +85,37 @@ export const loadStreetInfos: StreetInfoLoader = async () => {
 };
 
 /** Purpose: fetch one street tile from the API (OSM streets, fetched and cached server-side). */
-export const fetchStreetTile: TileFetcher = async (x, y) => {
-  const res = await fetchTileWithRetry(withProject(`/api/street-network/tiles/14/${x}/${y}`));
+export const fetchStreetTile: TileFetcher = async (x, y, light) => {
+  const res = await fetchTileWithRetry(
+    withProject(`/api/street-network/tiles/14/${x}/${y}${light ? "?light=1" : ""}`),
+  );
   if (res.status === 401) throw new Error(tNow("street.osmUnauthorised"));
   if (!res.ok)
     throw new Error(res.status === 400 ? tNow("rail.osmInvalidTile") : tNow("street.osmUnavailable"));
   return res.text();
 };
+
+/**
+ * Purpose: the tiles of the open project held at "Main roads and railways only" (large-area projects, step 3), and
+ * the tiles of its Full polygons, as `x/y` keys: the editor loads the main roads of all of them, so a line can be
+ * routed between towns and through the towns on the way.
+ * Output: both empty without an open project, without main polygons, or where the API cannot answer (static
+ * viewer).
+ */
+export async function fetchMainTiles(): Promise<CorridorTiles> {
+  const none: CorridorTiles = { main: [], full: [] };
+  const url = withProject("/api/street-network/main-tiles");
+  if (!url.includes("project=")) return none;
+  const keys = (v: unknown) => (Array.isArray(v) ? v.filter((k): k is string => typeof k === "string") : []);
+  try {
+    const res = await fetch(url, { credentials: "same-origin" });
+    if (!res.ok) return none;
+    const body = (await res.json()) as { tiles?: unknown; full?: unknown };
+    return { main: keys(body.tiles), full: keys(body.full) };
+  } catch {
+    return none;
+  }
+}
 
 /**
  * Purpose: the walk analysis of the GIS tab (walk coverage, gaps and stop spacing, ADR-0035 §5–§6), on the

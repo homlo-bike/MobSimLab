@@ -15,6 +15,7 @@ pub mod csv;
 pub mod modes;
 
 use csv::Table;
+use engine_msg::{msg, Msg};
 use journey_planner::timetable::{
     FrequencyPattern, PatternStop, Period, PeriodKind, Route, Stop, StopTime, Timetable, Transfer,
     Trip,
@@ -50,7 +51,11 @@ pub struct ImportSummary {
     pub patterns: usize,
     /// Trips of the day left out because they do not stop inside the bounding box.
     pub outside: usize,
+    /// In English.
     pub warnings: Vec<String>,
+    /// The same as keys and values, for the app to show in the user's language.
+    #[serde(default)]
+    pub warning_msgs: Vec<Msg>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -221,9 +226,9 @@ fn table(files: &BTreeMap<String, String>, name: &str) -> Option<Table> {
 /// Input: the feed's text files, the day (or none for the busiest Wednesday) and an optional box.
 /// Output: the timetable with ids as in the feed, and a summary; an error when a required file is
 /// missing, no service runs that day or the day has more than [`MAX_TRIPS`] trips in the box.
-pub fn import(input: &ImportInput) -> Result<Imported, String> {
+pub fn import(input: &ImportInput) -> Result<Imported, Msg> {
     let f = &input.files;
-    let need = |n: &str| table(f, n).ok_or_else(|| format!("The feed has no {n}."));
+    let need = |n: &str| table(f, n).ok_or_else(|| msg!("gtfs.error.no_file", file = n));
     let stops_t = need("stops.txt")?;
     let routes_t = need("routes.txt")?;
     let trips_t = need("trips.txt")?;
@@ -231,10 +236,10 @@ pub fn import(input: &ImportInput) -> Result<Imported, String> {
     let cal_t = table(f, "calendar.txt");
     let dates_t = table(f, "calendar_dates.txt");
     if cal_t.is_none() && dates_t.is_none() {
-        return Err("The feed has neither calendar.txt nor calendar_dates.txt.".into());
+        return Err(msg!("gtfs.error.no_calendar"));
     }
     let cal = Calendar::new(cal_t.as_ref(), dates_t.as_ref());
-    let mut warnings = Vec::new();
+    let mut warnings: Vec<Msg> = Vec::new();
 
     // Trips per service, to find the busiest Wednesday.
     let mut per_service: HashMap<String, usize> = HashMap::new();
@@ -244,9 +249,11 @@ pub fn import(input: &ImportInput) -> Result<Imported, String> {
             .or_default() += 1;
     }
     let day = match input.date.as_deref() {
-        Some(d) => day_of(d).ok_or_else(|| format!("{d} is not a date (YYYYMMDD)."))?,
+        Some(d) => day_of(d).ok_or_else(|| msg!("gtfs.error.not_a_date", date = d))?,
         None => {
-            let (lo, hi) = cal.span().ok_or("The feed's calendar has no dates.")?;
+            let (lo, hi) = cal
+                .span()
+                .ok_or_else(|| msg!("gtfs.error.calendar_empty"))?;
             // First Wednesday on or after the start, then every week, for at most two years.
             let first = lo + (days_from_civil(1970, 1, 7) - lo).rem_euclid(7);
             let mut best = (0usize, first);
@@ -321,7 +328,7 @@ pub fn import(input: &ImportInput) -> Result<Imported, String> {
         );
     }
     if trip_meta.is_empty() {
-        return Err(format!("No trips run on {}.", date_of(day)));
+        return Err(msg!("gtfs.error.no_trips_on", date = date_of(day)));
     }
 
     // Stop times of those trips: (sequence, stop, arrival, departure).
@@ -444,19 +451,20 @@ pub fn import(input: &ImportInput) -> Result<Imported, String> {
         }
     }
     if untimed > 0 {
-        warnings.push(format!("{untimed} trips without times were left out."));
+        warnings.push(msg!("gtfs.untimed_trips", count = untimed.to_string()));
     }
     if trips.len() + patterns.len() == 0 {
         return Err(if outside > 0 {
-            "No trip of that day stops inside the map view.".into()
+            msg!("gtfs.error.none_in_view")
         } else {
-            "No trip of that day has two or more stops with times.".into()
+            msg!("gtfs.error.no_timed_trips")
         });
     }
     if trips.len() > MAX_TRIPS {
-        return Err(format!(
-            "{} trips run that day, more than a project keeps ({MAX_TRIPS}). Zoom the map to the study area and import again.",
-            trips.len()
+        return Err(msg!(
+            "gtfs.error.too_many_trips",
+            trips = trips.len().to_string(),
+            max = MAX_TRIPS.to_string()
         ));
     }
 
@@ -511,9 +519,9 @@ pub fn import(input: &ImportInput) -> Result<Imported, String> {
         });
     }
     if !unknown_types.is_empty() {
-        warnings.push(format!(
-            "Route types {} are not known and are read as bus.",
-            unknown_types.into_iter().collect::<Vec<_>>().join(", ")
+        warnings.push(msg!(
+            "gtfs.unknown_route_types",
+            types = unknown_types.into_iter().collect::<Vec<_>>().join(", ")
         ));
     }
 
@@ -552,7 +560,8 @@ pub fn import(input: &ImportInput) -> Result<Imported, String> {
         trips: trips.len(),
         patterns: patterns.len(),
         outside,
-        warnings,
+        warnings: warnings.iter().map(Msg::english).collect(),
+        warning_msgs: warnings,
     };
     Ok(Imported {
         timetable: Timetable {

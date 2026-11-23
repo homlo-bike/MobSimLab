@@ -5,7 +5,7 @@ import { activeLanguage, tNow, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
 import { hashText } from "../../projects/inputKey";
 import { SavedResultNotice } from "../../projects/SavedResultNotice";
-import { fetchStreetTile, loadWasmEngine } from "./engine";
+import { fetchMainTiles, fetchStreetTile, loadWasmEngine } from "./engine";
 import { LinePanel, type PanelActions } from "./LinePanel";
 import {
   drawLine,
@@ -31,6 +31,9 @@ import {
   streetLineColor,
 } from "./saved";
 import { MIN_LOAD_ZOOM, tilesFor } from "./tiles";
+
+/** Corridor tiles ("Main roads and railways only") loaded per round, after the tiles on screen. */
+const MAIN_BATCH = 24;
 import type { StreetLineInput } from "../journey-planner/network";
 import { depotFit, depotGates, lineVehicle } from "../depots/model";
 import type { SavedDepot } from "../depots/types";
@@ -46,6 +49,7 @@ import {
 import { placesOtherThan, publishPlaces } from "../naming/registry";
 import { ToolPalette, type Tool } from "./ToolPalette";
 import type {
+  CorridorTiles,
   DelayShares,
   DepotTripView,
   EngineLoader,
@@ -58,6 +62,7 @@ import type {
   VehicleProfile,
 } from "./types";
 import { nearestTerminal } from "./summary";
+import { engineErrorText } from "../../i18n/engine";
 
 const EMPTY_VIEW: LineView = {
   points: [],
@@ -119,6 +124,8 @@ interface Props {
   loadEngine?: EngineLoader;
   /** Street tile source; tests inject a fake. */
   fetchTile?: TileFetcher;
+  /** The project's "Main roads and railways only" and Full tiles, whose main roads load in the background. */
+  fetchMain?: () => Promise<CorridorTiles>;
   /** Told about the line after every change, so the journey planner can ride it. */
   onLineChange?: (line: StreetLineInput) => void;
   /**
@@ -177,6 +184,7 @@ export function StreetLineEditor({
   panel = null,
   loadEngine = loadWasmEngine,
   fetchTile = fetchStreetTile,
+  fetchMain = fetchMainTiles,
   onLineChange,
   railTopology = null,
   projectRules,
@@ -202,6 +210,8 @@ export function StreetLineEditor({
   const [asSaved, setAsSaved] = useState(savedRoute0 !== null);
   // The saved line until it has been routed again; nothing is saved before that.
   const pending = useRef(savedRoute0 ? null : initial);
+  // The line the editor opened with, also when its saved route is shown as saved (its vehicle and rules).
+  const opened = useRef(initial);
   // Names the planner gave (or the naming rules chose), by point id; other points take the street's name.
   const named = useRef<Map<number, string>>(
     new Map((savedRoute0?.points ?? []).flatMap((p, i) => (p.name ? [[i + 1, p.name] as const] : []))),
@@ -332,7 +342,7 @@ export function StreetLineEditor({
         setRoutedAround({ ...applied.current });
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : String(err));
+        setError(engineErrorText(err));
       }
     },
     [hydrate],
@@ -346,7 +356,7 @@ export function StreetLineEditor({
         // Streets, and the stops named after them, in the page's language where OSM has it (name:en).
         e.setLanguage?.(activeLanguage());
         engine.current = e;
-        const saved = pending.current;
+        const saved = pending.current ?? opened.current;
         const p = saved?.profile ?? e.defaultProfile("bus");
         const r = { ...e.defaultRules(), ...saved?.rules, ...projectRulesNow.current };
         e.setSettings(p, r);
@@ -354,9 +364,7 @@ export function StreetLineEditor({
         setRules(r);
         setStatus(null);
       })
-      .catch((err) =>
-        setError(tNow("street.engineFailed", { error: err instanceof Error ? err.message : String(err) })),
-      );
+      .catch((err) => setError(tNow("street.engineFailed", { error: engineErrorText(err) })));
     return () => {
       alive = false;
       engine.current?.dispose();
@@ -447,6 +455,10 @@ export function StreetLineEditor({
     let busy = false;
     let again = false;
     let stopped = false;
+    // Corridor tiles still to load in the background; `light` for the tiles of Full polygons, of which only the
+    // main roads are wanted until the map shows them.
+    let mainQueue: { key: string; light: boolean }[] | null = null;
+    const lightDone = new Set<string>();
     const load = async () => {
       const e = engine.current;
       if (!e || stopped) return;
@@ -458,25 +470,49 @@ export function StreetLineEditor({
       setZoomedOut(tooFar);
       const line = lineTileKeys.current;
       lineTileKeys.current = [];
-      if (tooFar && !line.length) return;
       const b = map.getBounds();
       const onScreen = tooFar
         ? []
         : tilesFor([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]).map(([x, y]) => `${x}/${y}`);
-      const want = [...new Set([...line, ...onScreen])].filter((k) => !tiles.current.has(k));
-      if (!want.length) return;
+      // Then, a batch at a time, the light tiles of the corridors drawn at "Main roads and railways only" and the
+      // main roads of the towns between them.
+      if (mainQueue === null) {
+        busy = true;
+        const c = await fetchMain();
+        mainQueue = [
+          ...c.main.map((key) => ({ key, light: false })),
+          ...c.full.map((key) => ({ key, light: true })),
+        ];
+        busy = false;
+        if (stopped || engine.current !== e) return;
+      }
+      const near = [...new Set([...line, ...onScreen])].filter((k) => !tiles.current.has(k));
+      const pending = (t: { key: string; light: boolean }) =>
+        !tiles.current.has(t.key) && !near.includes(t.key) && !(t.light && lightDone.has(t.key));
+      const corridor = mainQueue.filter(pending).slice(0, MAIN_BATCH);
+      mainQueue = mainQueue.filter((t) => pending(t) && !corridor.includes(t));
+      const want = [...near.map((key) => ({ key, light: false })), ...corridor];
+      if (mainQueue.length) again = true;
+      if (!want.length) {
+        if (again) {
+          again = false;
+          void load();
+        }
+        return;
+      }
       busy = true;
-      want.forEach((k) => tiles.current.add(k));
+      const done = (t: { key: string; light: boolean }) => (t.light ? lightDone : tiles.current);
+      want.forEach((t) => done(t).add(t.key));
       setStatus(tNow("street.loading"));
       const got = await Promise.allSettled(
-        want.map((k) => {
-          const [x, y] = k.split("/").map(Number);
-          return fetchTile(x!, y!);
+        want.map((t) => {
+          const [x, y] = t.key.split("/").map(Number);
+          return t.light ? fetchTile(x!, y!, true) : fetchTile(x!, y!);
         }),
       );
       busy = false;
       if (stopped || engine.current !== e) {
-        want.forEach((k) => tiles.current.delete(k));
+        want.forEach((t) => done(t).delete(t.key));
         return;
       }
       let added = 0;
@@ -488,7 +524,7 @@ export function StreetLineEditor({
           e.addOsm(r.value);
           added++;
         } catch (err) {
-          tiles.current.delete(want[i]!);
+          done(want[i]!).delete(want[i]!.key);
           failed++;
           reason ??= err instanceof Error ? err.message : null;
         }
@@ -508,7 +544,7 @@ export function StreetLineEditor({
       stopped = true;
       map.off("moveend", onMove);
     };
-  }, [map, profile !== null, fetchTile, run]);
+  }, [map, profile !== null, fetchTile, fetchMain, run]);
 
   // Level crossings: from the railway tool's drawing, with the service its topology assumes.
   useEffect(() => {

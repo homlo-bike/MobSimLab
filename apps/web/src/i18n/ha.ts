@@ -469,6 +469,9 @@ export const ha: Messages = {
   "map.searching": "Ana nema…",
   "map.searchFailed": "Neman wuri ya kasa: {error}",
   "map.noPlaces": "Ba a sami wani wuri ba.",
+  "map.noWebgl": "Ba za a iya nuna taswira ba: wannan kwamfuta ko burauza ba ta da zane-zanen 3D (WebGL2).",
+  "map.noWebglHelp":
+    "Kunna hanzarta kayan aiki ko sabunta direban zane, sannan sake buɗe shafin. Sauran shafin har yanzu yana aiki.",
   "map.places": "Wuraren da aka samu",
   "map.searchCredit": "Sunayen wurare © masu ba da gudummawa ga OpenStreetMap, an samo su da Photon",
   "map.layers": "Matakan taswira",

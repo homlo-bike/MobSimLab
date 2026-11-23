@@ -58,9 +58,9 @@ export const areaZu = {
   "aw.none": "Ayikho indawo yephrojekthi okwamanje. Dweba eyodwa ukuze amathuluzi abe nedatha yemephu.",
   "aw.saved": "Indawo ilondoloziwe.",
   "aw.data.noArea": "Qala ngokudweba indawo yephrojekthi kokuthandayo kwephrojekthi: ukungenisa kuyayimboza.",
-  "aw.data.area": "Indawo yephrojekthi: {names}. Ukungenisa kumboza unxande oyizungezile, {area} km².",
+  "aw.data.area": "Indawo yephrojekthi: {names}. Ukungenisa kumboza lezi zipholigoni kuphela, km² {area}.",
   "aw.pop.none": "Ayikho indawo yephrojekthi okwamanje. Yidwebe kokuthandayo kwephrojekthi.",
-  "aw.pop.box": "Unxande ozungeze indawo yephrojekthi: {km2} km².",
+  "aw.pop.box": "Izipholigoni zendawo yephrojekthi: km² {km2}. Ukungenisa kumboza zona kuphela.",
   "aw.tiles.one": "ithayela lemephu elingu-{count}",
   "aw.tiles.other": "amathayela emephu angu-{count}",
   "aw.count.one": "i-polygon engu-{count}",
@@ -78,4 +78,18 @@ export const areaZu = {
   "aw.out.keep": "Gcina isifunda, ungalandi",
   "aw.out.download": "Landa u-{mb} MB",
   "aw.out.downloading": "Iyalanda…",
+  "aw.data.regions": "Izifunda ze-Geofabrik",
+  "aw.data.regionsHelp":
+    "Ukulanda okukodwa ezweni ngalinye izipholigoni ezifinyelela kulo, ngalinye lisikwe ngokwezipholigoni.",
+  "aw.outside.streetLine":
+    "Umzila {name} udlulela ngaphandle kwendawo yephrojekthi, lapho kungekho khona idatha yemephu.",
+  "aw.outside.pluginLine":
+    "Umzila {name} udlulela ngaphandle kwendawo yephrojekthi, lapho kungekho khona idatha yemephu.",
+  "aw.outside.railway":
+    "Ujantshi udlulela ngaphandle kwendawo yephrojekthi, lapho kungekho khona idatha yemephu.",
+  "aw.outside.depot":
+    "Idepho {name} idlulela ngaphandle kwendawo yephrojekthi, lapho kungekho khona idatha yemephu.",
+  "aw.outside.cargoBike":
+    "Umzila webhayisikili lempahla udlulela ngaphandle kwendawo yephrojekthi, lapho kungekho khona idatha yemephu.",
+  "aw.outside.fix": "Khulisa indawo kokuncanyelwayo kwephrojekthi, Indawo yephrojekthi.",
 } satisfies AreaMessages;

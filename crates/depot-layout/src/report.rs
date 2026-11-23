@@ -10,6 +10,7 @@ use crate::model::{heading_rad, DepotInput, Layout, LonLat, Proj, ZoneKind};
 use crate::network::{build, NetInput, Network, Reach};
 use crate::sweep::Path;
 use crate::vehicle::{body, Body, VehicleSpec};
+use engine_msg::{msg, Msg};
 use serde::Serialize;
 
 /// The swept-path result of one lane.
@@ -23,8 +24,10 @@ pub struct LaneCheck {
     pub entry_ok: bool,
     /// Driving out works.
     pub exit_ok: bool,
-    /// Why not, when one fails.
+    /// Why not, when one fails, in English.
     pub message: Option<String>,
+    /// The same as a key and values, for the app to show in the user's language.
+    pub message_msg: Option<Msg>,
 }
 
 /// Everything the depot tool shows about a depot.
@@ -131,19 +134,17 @@ pub fn prepare(input: &DepotInput, layout: &Layout) -> Prepared {
     }
 }
 
-fn why(f: Fail, into: bool) -> &'static str {
+fn why(f: Fail, into: bool) -> Msg {
     match (f, into) {
-        (Fail::NoAisle, true) => "No aisle in front of the lane entry.",
-        (Fail::NoAisle, false) => "No aisle in front of the lane exit.",
-        (Fail::TooSharp, _) => "The lane meets its aisle at more than 100°.",
-        (Fail::NoRoom, true) => {
-            "The turn into the lane does not fit: the lane is too short for the turn."
-        }
-        (Fail::NoRoom, false) => "The turn out of the lane does not fit.",
-        (Fail::Obstacle, true) => "Driving in, the vehicle would touch a parked vehicle.",
-        (Fail::Obstacle, false) => "Driving out, the vehicle would touch a parked vehicle.",
-        (Fail::Outside, true) => "Driving in, the vehicle would run over the depot fence.",
-        (Fail::Outside, false) => "Driving out, the vehicle would run over the depot fence.",
+        (Fail::NoAisle, true) => msg!("depot.lane.no_aisle_entry"),
+        (Fail::NoAisle, false) => msg!("depot.lane.no_aisle_exit"),
+        (Fail::TooSharp, _) => msg!("depot.lane.too_sharp"),
+        (Fail::NoRoom, true) => msg!("depot.lane.no_room_in"),
+        (Fail::NoRoom, false) => msg!("depot.lane.no_room_out"),
+        (Fail::Obstacle, true) => msg!("depot.lane.obstacle_in"),
+        (Fail::Obstacle, false) => msg!("depot.lane.obstacle_out"),
+        (Fail::Outside, true) => msg!("depot.lane.outside_in"),
+        (Fail::Outside, false) => msg!("depot.lane.outside_out"),
     }
 }
 
@@ -176,23 +177,20 @@ pub fn analyse(input: &DepotInput) -> Report {
     let layout = input.layout.clone().unwrap_or_default();
     let mut issues: Vec<Issue> = Vec::new();
     if input.boundary.len() < 3 {
-        issues.push(Issue::new(
-            "error",
-            None,
-            "Draw the depot outline first.".into(),
-        ));
+        issues.push(Issue::new("error", None, msg!("depot.outline_first")));
     }
     let p = prepare(input, &layout);
     let clearance = input.rules.swept_clearance_m;
     let mut lanes = Vec::new();
     for (i, l) in layout.lanes.iter().enumerate() {
         let (rin, rout) = manoeuvres(&p, i, clearance);
-        let message = match (&rin, &rout) {
-            (Err(f), _) => Some(why(*f, true).to_string()),
-            (_, Err(f)) => Some(why(*f, false).to_string()),
+        let message_msg = match (&rin, &rout) {
+            (Err(f), _) => Some(why(*f, true)),
+            (_, Err(f)) => Some(why(*f, false)),
             _ => None,
         };
-        if let Some(m) = &message {
+        let message = message_msg.as_ref().map(Msg::english);
+        if let Some(m) = &message_msg {
             issues.push(Issue::new("error", Some(&l.id), m.clone()));
         }
         lanes.push(LaneCheck {
@@ -201,6 +199,7 @@ pub fn analyse(input: &DepotInput) -> Report {
             entry_ok: rin.is_ok(),
             exit_ok: rout.is_ok(),
             message,
+            message_msg,
         });
     }
     // Driving network from the gates.
@@ -260,18 +259,10 @@ pub fn analyse(input: &DepotInput) -> Report {
     };
     let (network, reach) = build(&net_in);
     if !input.gates.iter().any(|g| g.kind.enters()) {
-        issues.push(Issue::new(
-            "error",
-            None,
-            "The depot has no entrance: add a gate.".into(),
-        ));
+        issues.push(Issue::new("error", None, msg!("depot.no_entrance")));
     }
     if !input.gates.iter().any(|g| g.kind.leaves()) {
-        issues.push(Issue::new(
-            "error",
-            None,
-            "The depot has no exit: add a gate.".into(),
-        ));
+        issues.push(Issue::new("error", None, msg!("depot.no_exit")));
     }
     let has_gates =
         input.gates.iter().any(|g| g.kind.enters()) && input.gates.iter().any(|g| g.kind.leaves());
@@ -280,18 +271,14 @@ pub fn analyse(input: &DepotInput) -> Report {
         let cut_out = reach.iter().filter(|r| !r.to_exit).count();
         for r in reach.iter().filter(|r| !r.from_entrance || !r.to_exit) {
             let m = match (r.from_entrance, r.to_exit) {
-                (false, false) => "No drive from an entrance to this lane, nor from it to an exit.",
-                (false, true) => "No drive from an entrance to this lane.",
-                _ => "No drive from this lane to an exit.",
+                (false, false) => msg!("depot.no_drive_both"),
+                (false, true) => msg!("depot.no_drive_in"),
+                _ => msg!("depot.no_drive_out"),
             };
-            issues.push(Issue::new("error", Some(&r.lane), m.into()));
+            issues.push(Issue::new("error", Some(&r.lane), m));
         }
         if cut_in + cut_out > 0 {
-            issues.push(Issue::new(
-                "info",
-                None,
-                "Drives inside the depot run in straight lines through open space; draw a circulation zone or leave room along the fence where vehicles should drive.".into(),
-            ));
+            issues.push(Issue::new("info", None, msg!("depot.straight_drives")));
         }
     }
     let capacity = assign(
@@ -302,11 +289,7 @@ pub fn analyse(input: &DepotInput) -> Report {
     );
     issues.extend(capacity.issues.iter().cloned());
     if layout.lanes.is_empty() && input.boundary.len() >= 3 {
-        issues.push(Issue::new(
-            "warning",
-            None,
-            "The depot has no slots yet: draw zones and run the auto layout.".into(),
-        ));
+        issues.push(Issue::new("warning", None, msg!("depot.no_slots")));
     }
     let rank = |s: &str| match s {
         "error" => 0,

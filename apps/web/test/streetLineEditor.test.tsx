@@ -269,6 +269,48 @@ describe("Street line editor", () => {
     expect(fetchTile).not.toHaveBeenCalled();
   });
 
+  it("loads the corridor tiles of main-roads-only polygons in batches, also zoomed out", async () => {
+    const engine = fakeEngine();
+    const fetchTile = vi.fn(async (x: number, y: number) => `<osm tile="${x}/${y}"/>`);
+    const { map } = fakeMap(8);
+    const corridor = Array.from({ length: 60 }, (_, i) => `${9000 + i}/6000`);
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={fetchTile}
+        fetchMain={async () => ({ main: corridor, full: [] })}
+      />,
+    );
+    await waitFor(() => expect(fetchTile).toHaveBeenCalledTimes(60));
+    expect(fetchTile).toHaveBeenCalledWith(9059, 6000);
+    // Batches of 24: the engine is rebuilt once per batch.
+    await waitFor(() => expect(engine.rebuild).toHaveBeenCalledTimes(3));
+  });
+
+  it("loads the main roads of the towns between the corridors, and their full streets once on screen", async () => {
+    const engine = fakeEngine();
+    const fetchTile = vi.fn(async (x: number, y: number) => `<osm tile="${x}/${y}"/>`);
+    const { map, handlers } = fakeMap(8);
+    const town = `${tileX(7.415)}/${tileY(43.733)}`;
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={fetchTile}
+        fetchMain={async () => ({ main: ["9000/6000"], full: ["9100/6100", town] })}
+      />,
+    );
+    await waitFor(() => expect(fetchTile).toHaveBeenCalledTimes(3));
+    expect(fetchTile).toHaveBeenCalledWith(9000, 6000);
+    expect(fetchTile).toHaveBeenCalledWith(9100, 6100, true);
+    expect(fetchTile).toHaveBeenCalledWith(tileX(7.415), tileY(43.733), true);
+    // Zoomed in on the town, its tile loads again with all its streets.
+    (map as unknown as { getZoom: () => number }).getZoom = () => 15;
+    act(() => handlers.get("moveend")!({}));
+    await waitFor(() => expect(fetchTile).toHaveBeenCalledWith(tileX(7.415), tileY(43.733)));
+  });
+
   it("adds a point where the planner clicks", async () => {
     const { engine, handlers } = await opened();
     await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
@@ -526,6 +568,24 @@ describe("Street line saved with the project", () => {
     // The same route found again is not a change.
     await new Promise((r) => setTimeout(r, 20));
     expect(onSave).toHaveBeenCalledTimes(1);
+  });
+
+  it("opens a line saved with its route in its own mode and vehicle profile", async () => {
+    const engine = fakeEngine();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    const intercity = { ...saved, profile: { ...saved.profile, mode: "intercity_bus" as const } };
+    const fresh = { ...intercity, routedWith: routeKey(intercity, AROUND) };
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={fresh}
+      />,
+    );
+    await waitFor(() => expect(engine.setSettings).toHaveBeenCalled());
+    expect(vi.mocked(engine.setSettings).mock.calls[0]![0]).toMatchObject({ mode: "intercity_bus" });
   });
 
   it("opens a line saved with its whole route and fingerprint without routing or saving it", async () => {

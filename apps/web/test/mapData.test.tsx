@@ -75,6 +75,7 @@ function fakeApi(
     status: vi.fn(async () => (calls++ === 0 ? first : after)),
     regions: vi.fn(async () => [
       { id: "nordrhein-westfalen", name: "Nordrhein-Westfalen", parent: "germany", bboxKm2: 40000 },
+      { id: "luxembourg", name: "Luxembourg", parent: "europe", bboxKm2: 3000 },
     ]),
     startOsm: vi.fn(async () => run({ status: "queued" })),
     uploadPbf: vi.fn(async () => run({ status: "queued", method: "upload" })),
@@ -142,7 +143,7 @@ describe("Map data panel", () => {
       status({ osm: { current: null, latest: run({ status: "running", progress: { step: "extract" } }) } }),
     );
     render(<MapDataPanel api={api} />);
-    await screen.findByText(/box around it, 80 km²/);
+    await screen.findByText(/only these polygons, 80 km²/);
     fireEvent.click(screen.getByLabelText(/Keep planned roads/));
     fireEvent.click(screen.getAllByRole("button", { name: "Import" })[0]!);
     await waitFor(() => expect(api.startOsm).toHaveBeenCalledWith({ method: "overpass", planned: true }));
@@ -175,7 +176,7 @@ describe("Map data panel", () => {
     expect(screen.getByText("Downloading 3 of 12…")).toBeTruthy();
   });
 
-  it("offers Geofabrik regions for an area too large for Overpass", async () => {
+  it("names the Geofabrik regions an area too large for Overpass downloads", async () => {
     const api = fakeApi(
       status({
         area: { bbox: [6, 50, 8, 51], areaKm2: 15000, polygons: [] },
@@ -186,15 +187,10 @@ describe("Map data panel", () => {
     expect(((await screen.findByRole("option", { name: /Overpass/ })) as HTMLOptionElement).disabled).toBe(
       true,
     );
-    expect(await screen.findByRole("option", { name: /Nordrhein-Westfalen/ })).toBeTruthy();
+    // One download per country the polygons reach; the planner does not pick.
+    expect(await screen.findByText("Nordrhein-Westfalen, Luxembourg")).toBeTruthy();
     fireEvent.click(screen.getAllByRole("button", { name: "Import" })[0]!);
-    await waitFor(() =>
-      expect(api.startOsm).toHaveBeenCalledWith({
-        method: "geofabrik",
-        region: "nordrhein-westfalen",
-        planned: false,
-      }),
-    );
+    await waitFor(() => expect(api.startOsm).toHaveBeenCalledWith({ method: "geofabrik", planned: false }));
   });
 
   it("says Geofabrik cannot be reached instead of that no region holds the area", async () => {
@@ -217,7 +213,7 @@ describe("Map data panel", () => {
   it("starts the elevation import and hides imports from viewers", async () => {
     const api = fakeApi(status());
     render(<MapDataPanel api={api} />);
-    await screen.findByText(/box around it, 80 km²/);
+    await screen.findByText(/only these polygons, 80 km²/);
     const buttons = screen.getAllByRole("button", { name: "Import" });
     fireEvent.click(buttons[buttons.length - 1]!);
     await waitFor(() => expect(api.startDem).toHaveBeenCalled());
@@ -230,7 +226,7 @@ describe("Map data panel", () => {
   it("names the project area's polygons and has no buffer to set", async () => {
     render(<MapDataPanel api={fakeApi(status())} />);
     expect(
-      await screen.findByText("Project area: Trier. The imports cover the box around it, 80 km²."),
+      await screen.findByText("Project area: Trier. The imports cover only these polygons, 80 km²."),
     ).toBeTruthy();
     expect(screen.queryByLabelText("Buffer (km)")).toBeNull();
   });
@@ -251,7 +247,7 @@ describe("Map data panel", () => {
     });
     const api = fakeApi(status(), status({ demUpload: { current: own, latest: own } }));
     render(<MapDataPanel api={api} />);
-    await screen.findByText(/box around it, 80 km²/);
+    await screen.findByText(/only these polygons, 80 km²/);
     fireEvent.change(screen.getByLabelText("Source"), { target: { value: "City LiDAR" } });
     fireEvent.change(screen.getByLabelText("Vertical accuracy (m)"), { target: { value: "0.15" } });
     const file = new File([new Uint8Array([73, 73, 42, 0])], "lidar.tif", { type: "image/tiff" });

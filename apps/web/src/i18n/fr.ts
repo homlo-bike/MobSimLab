@@ -472,6 +472,10 @@ export const fr: Messages = {
   "map.searching": "Recherche…",
   "map.searchFailed": "La recherche de lieu a échoué : {error}",
   "map.noPlaces": "Aucun lieu trouvé.",
+  "map.noWebgl":
+    "La carte ne peut pas s'afficher : cet ordinateur ou ce navigateur n'offre pas de graphismes 3D (WebGL2).",
+  "map.noWebglHelp":
+    "Activez l'accélération matérielle ou mettez à jour le pilote graphique, puis rouvrez la page. Le reste de la page fonctionne toujours.",
   "map.places": "Lieux trouvés",
   "map.searchCredit": "Noms de lieux © contributeurs OpenStreetMap, trouvés avec Photon",
   "map.layers": "Couches de la carte",

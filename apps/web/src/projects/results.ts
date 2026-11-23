@@ -6,6 +6,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { csrfHeader } from "../session/csrf";
 import type { ResultState } from "./SavedResultNotice";
+import { engineErrorText, withApiMsg } from "../i18n/engine";
 
 /** Kinds of result a project keeps (apps/api/src/projects/results.ts `RESULT_KINDS`). */
 export type ResultKind =
@@ -139,7 +140,7 @@ export function projectResults(
       });
       if (!res.ok) {
         const json = (await res.json().catch(() => ({}))) as { message?: string };
-        throw new Error(json.message ?? `Saving the result failed (${res.status})`);
+        throw withApiMsg(new Error(json.message ?? `Saving the result failed (${res.status})`), json);
       }
       return ((await res.json()) as { computedAt?: string }).computedAt ?? null;
     },
@@ -201,7 +202,7 @@ export function useSavedResult<T>(
       setError(null);
       api.save(kind, value, keyNow).then(
         (at) => at && setSaved((s) => (s && s.inputs === keyNow ? { ...s, computedAt: at } : s)),
-        (err: unknown) => setError(err instanceof Error ? err.message : String(err)),
+        (err: unknown) => setError(engineErrorText(err)),
       );
     },
     [api, kind, canSave],
@@ -249,7 +250,7 @@ export function useLiveResult<T>(
         setValue({ inputs, value: v });
         save(v, inputs);
       },
-      (e: unknown) => live && setError(e instanceof Error ? e.message : String(e)),
+      (e: unknown) => live && setError(engineErrorText(e)),
     );
     return () => {
       live = false;

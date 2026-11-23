@@ -2,6 +2,7 @@
  * Types of the JSON exchanged with the journey-planner WebAssembly module (Rust crate `journey-planner`,
  * ADR-0034). The timetable follows `contracts/published-timetable.schema.json` (GTFS names).
  */
+import type { EngineMsg } from "../../i18n/engine";
 
 export type LonLat = [number, number];
 
@@ -197,6 +198,8 @@ export interface NetworkSummary {
   first_departure_s: number | null;
   last_arrival_s: number | null;
   warnings: string[];
+  /** The warnings as keys and values, for the user's language. */
+  warning_msgs?: EngineMsg[];
 }
 
 /** The planner as the panel sees it. */
