@@ -158,6 +158,9 @@ describe("editors", () => {
     expect(line.directions[1]!.map((s) => s.stop)).toEqual([2, 1, 0]);
     expect(line.headwayS).toBe(60);
     // Making the middle station an angle station without boarding drops it from the stops.
+    // Only the picked station shows its settings.
+    expect(screen.queryByLabelText("Station 2 kind")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /Middle/ }));
     fireEvent.change(screen.getByLabelText("Station 2 kind"), { target: { value: "angle" } });
     await waitFor(() => expect((onLine.mock.lastCall![0] as PluginLineInput).stops).toHaveLength(2));
   });
@@ -237,16 +240,20 @@ describe("editors", () => {
     render(<SpanLineEditor map={null} tool={cableTool} storageKey="k-terrain" loadTerrain={loadTerrain} />);
     await screen.findByText(/Copernicus DEM GLO-30/);
     expect(loadTerrain).toHaveBeenCalledWith([[east(0), east(400)]]);
-    expect((screen.getByLabelText("Station 1 ground height") as HTMLInputElement).value).toBe("120");
-    expect((screen.getByLabelText("Station 2 ground height") as HTMLInputElement).value).toBe("125");
-    expect(screen.getAllByText("from terrain")).toHaveLength(2);
     expect(screen.getByText(/1 without a height in OSM/)).toBeTruthy();
+    // Each station's settings show once it is picked.
+    fireEvent.click(screen.getByRole("button", { name: /East/ }));
+    expect((screen.getByLabelText("Station 2 ground height") as HTMLInputElement).value).toBe("125");
+    expect(screen.getAllByText("from terrain")).toHaveLength(1);
+    fireEvent.click(screen.getByRole("button", { name: /West/ }));
+    expect((screen.getByLabelText("Station 1 ground height") as HTMLInputElement).value).toBe("120");
+    expect(screen.getAllByText("from terrain")).toHaveLength(1);
     expect(screen.getByText(/within .* of the ground; at least/)).toBeTruthy();
     // A typed height overrides the terrain until the planner goes back to it.
     fireEvent.change(screen.getByLabelText("Station 1 ground height"), { target: { value: "200" } });
-    await waitFor(() => expect(screen.getAllByText("from terrain")).toHaveLength(1));
+    await waitFor(() => expect(screen.queryAllByText("from terrain")).toHaveLength(0));
     fireEvent.click(screen.getByText("Use terrain"));
-    await waitFor(() => expect(screen.getAllByText("from terrain")).toHaveLength(2));
+    await waitFor(() => expect(screen.getAllByText("from terrain")).toHaveLength(1));
   });
 
   it("puts buildings on the terrain beside them", () => {

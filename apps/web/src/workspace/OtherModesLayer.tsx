@@ -72,7 +72,9 @@ export function streetLinesGeoJson(lines: readonly SavedStreetLine[]) {
   const out: Feature[] = [];
   for (const l of lines) {
     const color = streetLineColor(l);
-    for (const f of legsToGeoJson(l.view).features) out.push({ ...f, properties: { color } } as Feature);
+    // The line's id lets the street tool pick a line by clicking it while none is open.
+    for (const f of legsToGeoJson(l.view).features)
+      out.push({ ...f, properties: { color, line: l.id ?? null } } as Feature);
     for (const p of l.view.points)
       if (p.kind !== "via")
         out.push({

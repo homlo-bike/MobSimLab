@@ -393,7 +393,7 @@ export function RailwayEditor({
     const features = [
       ...(view?.layers.tracks.features ?? []),
       ...(view?.layers.signals.features ?? []).filter((f) => f.geometry.type === "LineString"),
-    ].filter((f) => sel && f.properties.ref === sel.id);
+    ].filter((f) => sel && (f.properties.ref === sel.id || !!sel.more?.includes(f.properties.ref as number)));
     return { type: "FeatureCollection", features };
   }, [view, sel]);
   useEffect(() => {
@@ -595,7 +595,8 @@ export function RailwayEditor({
     map,
     engine,
     view,
-    sel,
+    // Several selected elements are set together in the panel, without handles.
+    sel: sel?.more?.length ? null : sel,
     latest,
     dragging,
     hold,

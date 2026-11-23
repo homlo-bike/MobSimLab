@@ -399,7 +399,7 @@ export function WalkAnalysis({
   return (
     <div className="flex flex-col gap-5">
       <section className="flex flex-col gap-2" aria-label={t("walk.title")}>
-        <h3 className="text-xs font-semibold tracking-wider text-slate-500 uppercase">{t("walk.title")}</h3>
+        {/* Its title is the button that opens it (workspace). */}
         <p className="text-xs text-slate-600">{t("walk.intro")}</p>
         <label className="flex items-center justify-between gap-2 text-xs">
           {t("walk.minutes")}

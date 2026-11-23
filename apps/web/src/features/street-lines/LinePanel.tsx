@@ -225,6 +225,7 @@ export function LinePanel(props: Props) {
   const vehiclesOff = useVehiclesOff();
   const planned = usePlannedModes();
   const { view, profile, timing, selected, actions: a } = props;
+  const routed = view.points.length >= 2;
   // The day type whose times and headways the fields below show and change.
   const [day, setDay] = useState<DayTypeId>("weekday");
   const weekday = streetWeekday(timing);
@@ -371,7 +372,7 @@ export function LinePanel(props: Props) {
         )}
       </div>
 
-      {selected !== null && (
+      {routed && selected !== null && (
         // While a point is open the tiles make room for it, but the totals stay readable, so the effect of an edit
         // (a via point made a stop) shows at once.
         <p className="m-0 border-t border-slate-200 pt-2 text-xs text-slate-600" aria-live="polite">
@@ -383,7 +384,7 @@ export function LinePanel(props: Props) {
           })}
         </p>
       )}
-      {selected === null && (
+      {routed && selected === null && (
         <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
           <Stat value={formatLength(st.lengthM)} label={t("street.stat.length")} />
           <Stat value={String(st.stops)} label={t("street.stat.stops", { end: st.endStops })} />
@@ -573,200 +574,213 @@ export function LinePanel(props: Props) {
         </Section>
       )}
 
-      <Section title={`${t("rail.levelCrossings")} · ${view.level_crossings.length}`}>
-        <p className="text-xs text-slate-600">{t("street.crossingsNote")}</p>
-        {view.level_crossings.length > 0 && (
-          <ul className="flex flex-col gap-1.5" aria-label={t("street.crossingsOnLine")}>
-            {view.level_crossings.map((x) => (
-              <li key={x.ids.join()} className="flex flex-col">
-                <span>
-                  <b>{x.street || t("rail.unnamedStreet")}</b> ·{" "}
-                  {x.modes.map((m) => (RAIL_MODE[m] ? t(RAIL_MODE[m]!) : m)).join(", ")} ·{" "}
-                  {x.protection === "barriers" ? t("rail.barriers") : t("rail.trafficSignals")}
-                  {x.passes > 1 ? ` · ${t("street.passed", { n: x.passes })}` : ""}
-                </span>
-                <span className="text-xs text-slate-600">
-                  {t("street.wait", {
-                    wait: seconds(x.wait.wait_s),
-                    when:
-                      x.wait.peak_hour_s !== null
-                        ? t("street.busiestHour", { time: clock(x.wait.peak_hour_s) })
-                        : t("street.peak"),
-                    offpeak: seconds(x.wait.off_peak_wait_s),
-                  })}{" "}
-                  ·{" "}
-                  {t("street.closures", {
-                    n: Math.round(x.wait.closures_per_hour),
-                    s: Math.round(x.wait.mean_closure_s),
-                    share: Math.round(x.wait.closed_share * 100),
-                  })}{" "}
-                  · {t(SOURCE[x.wait.source])}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-        <p className="text-xs text-slate-600">
-          {props.crossingSource
-            ? t("street.railwaySource", {
-                railway: props.crossingSource,
-                closures: t("street.source.assumed"),
-              })
-            : t("street.noRailway")}
-          {props.crossingSource && view.level_crossings.length === 0 && view.legs.length > 0
-            ? ` ${t("street.crossesNone")}`
-            : ""}
-        </p>
-      </Section>
-
-      <Section title={t("street.depotRuns")}>
-        <p className="text-xs text-slate-600">{t("street.depotNote")}</p>
-        <label className="flex items-center gap-2">
-          <span className="w-20">{t("depot.line.depot")}</span>
-          <select
-            value={props.depotId ?? ""}
-            onChange={(e) => a.chooseDepot(e.target.value || null)}
-            className="min-w-0 flex-1 rounded border border-slate-300 p-0.5"
-          >
-            <option value="">{t("depot.line.none")}</option>
-            {(props.depots ?? []).map((d) => (
-              <option key={d.id} value={d.id} disabled={d.problem !== null && d.id !== props.depotId}>
-                {d.problem ? `${d.name} (${fitText(d.problem)})` : d.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        {props.depotId && (props.depots ?? []).find((d) => d.id === props.depotId)?.problem && (
-          <p className="text-xs text-amber-700">
-            {fitText((props.depots ?? []).find((d) => d.id === props.depotId)!.problem!)}
-          </p>
-        )}
-        {props.depotId && !(props.depots ?? []).some((d) => d.id === props.depotId) && (
-          <p className="text-xs text-amber-700">{t("depot.line.gone")}</p>
-        )}
-        {!(props.depots ?? []).length && <p className="text-xs text-slate-600">{t("depot.line.noDepots")}</p>}
-        {!view.depot ? null : (
-          <>
-            {terminals.length === 0 && <p className="text-xs text-slate-600">{t("street.addStopsDepot")}</p>}
-            {terminals.length > 0 &&
-              (["pull_out", "pull_in"] as const).map((kind) => {
-                const chosen = kind === "pull_out" ? outStop : inStop;
-                const tr = trip(kind, chosen);
-                return (
-                  <label key={kind} className="flex items-center gap-2">
-                    <span className="w-20">
-                      {kind === "pull_out" ? t("street.pullOut") : t("street.pullIn")}
+      {/* What depends on the route only once the line has a route: two points or more. */}
+      {routed && (
+        <>
+          <Section title={`${t("rail.levelCrossings")} · ${view.level_crossings.length}`}>
+            <p className="text-xs text-slate-600">{t("street.crossingsNote")}</p>
+            {view.level_crossings.length > 0 && (
+              <ul className="flex flex-col gap-1.5" aria-label={t("street.crossingsOnLine")}>
+                {view.level_crossings.map((x) => (
+                  <li key={x.ids.join()} className="flex flex-col">
+                    <span>
+                      <b>{x.street || t("rail.unnamedStreet")}</b> ·{" "}
+                      {x.modes.map((m) => (RAIL_MODE[m] ? t(RAIL_MODE[m]!) : m)).join(", ")} ·{" "}
+                      {x.protection === "barriers" ? t("rail.barriers") : t("rail.trafficSignals")}
+                      {x.passes > 1 ? ` · ${t("street.passed", { n: x.passes })}` : ""}
                     </span>
-                    <select
-                      value={chosen}
-                      onChange={(e) =>
-                        a.setDepotStops({
-                          ...props.depotStops,
-                          [kind === "pull_out" ? "out" : "in"]: Number(e.target.value),
-                        })
-                      }
-                      className="min-w-0 flex-1 rounded border border-slate-300 p-0.5"
-                    >
-                      {terminals.map((s) => (
-                        <option key={s} value={s}>
-                          {name(s)}
-                        </option>
-                      ))}
-                    </select>
-                    <span className={`font-mono text-xs ${tr?.status === "error" ? "text-red-700" : ""}`}>
-                      {tr?.status === "ok" ? formatLength(tr.length_m) : t("street.noPath")}
+                    <span className="text-xs text-slate-600">
+                      {t("street.wait", {
+                        wait: seconds(x.wait.wait_s),
+                        when:
+                          x.wait.peak_hour_s !== null
+                            ? t("street.busiestHour", { time: clock(x.wait.peak_hour_s) })
+                            : t("street.peak"),
+                        offpeak: seconds(x.wait.off_peak_wait_s),
+                      })}{" "}
+                      ·{" "}
+                      {t("street.closures", {
+                        n: Math.round(x.wait.closures_per_hour),
+                        s: Math.round(x.wait.mean_closure_s),
+                        share: Math.round(x.wait.closed_share * 100),
+                      })}{" "}
+                      · {t(SOURCE[x.wait.source])}
                     </span>
-                  </label>
-                );
-              })}
-            <label className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                checked={props.showDepot}
-                onChange={(e) => a.setShowDepot(e.target.checked)}
-              />
-              {t("street.showDepot")}
-            </label>
-            {!props.depotId && (
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-                  onClick={a.placeDepot}
-                >
-                  {t("street.moveDepot")}
-                </button>
-                <button
-                  type="button"
-                  className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
-                  onClick={a.removeDepot}
-                >
-                  {t("street.removeDepot")}
-                </button>
-              </div>
+                  </li>
+                ))}
+              </ul>
             )}
-          </>
-        )}
-        {stops.length === 0 && view.depot && null}
-      </Section>
+            <p className="text-xs text-slate-600">
+              {props.crossingSource
+                ? t("street.railwaySource", {
+                    railway: props.crossingSource,
+                    closures: t("street.source.assumed"),
+                  })
+                : t("street.noRailway")}
+              {props.crossingSource && view.level_crossings.length === 0 && view.legs.length > 0
+                ? ` ${t("street.crossesNone")}`
+                : ""}
+            </p>
+          </Section>
+
+          <Section title={t("street.depotRuns")}>
+            <p className="text-xs text-slate-600">{t("street.depotNote")}</p>
+            <label className="flex items-center gap-2">
+              <span className="w-20">{t("depot.line.depot")}</span>
+              <select
+                value={props.depotId ?? ""}
+                onChange={(e) => a.chooseDepot(e.target.value || null)}
+                className="min-w-0 flex-1 rounded border border-slate-300 p-0.5"
+              >
+                <option value="">{t("depot.line.none")}</option>
+                {(props.depots ?? []).map((d) => (
+                  <option key={d.id} value={d.id} disabled={d.problem !== null && d.id !== props.depotId}>
+                    {d.problem ? `${d.name} (${fitText(d.problem)})` : d.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            {props.depotId && (props.depots ?? []).find((d) => d.id === props.depotId)?.problem && (
+              <p className="text-xs text-amber-700">
+                {fitText((props.depots ?? []).find((d) => d.id === props.depotId)!.problem!)}
+              </p>
+            )}
+            {props.depotId && !(props.depots ?? []).some((d) => d.id === props.depotId) && (
+              <p className="text-xs text-amber-700">{t("depot.line.gone")}</p>
+            )}
+            {!(props.depots ?? []).length && (
+              <p className="text-xs text-slate-600">{t("depot.line.noDepots")}</p>
+            )}
+            {!view.depot ? null : (
+              <>
+                {terminals.length === 0 && (
+                  <p className="text-xs text-slate-600">{t("street.addStopsDepot")}</p>
+                )}
+                {terminals.length > 0 &&
+                  (["pull_out", "pull_in"] as const).map((kind) => {
+                    const chosen = kind === "pull_out" ? outStop : inStop;
+                    const tr = trip(kind, chosen);
+                    return (
+                      <label key={kind} className="flex items-center gap-2">
+                        <span className="w-20">
+                          {kind === "pull_out" ? t("street.pullOut") : t("street.pullIn")}
+                        </span>
+                        <select
+                          value={chosen}
+                          onChange={(e) =>
+                            a.setDepotStops({
+                              ...props.depotStops,
+                              [kind === "pull_out" ? "out" : "in"]: Number(e.target.value),
+                            })
+                          }
+                          className="min-w-0 flex-1 rounded border border-slate-300 p-0.5"
+                        >
+                          {terminals.map((s) => (
+                            <option key={s} value={s}>
+                              {name(s)}
+                            </option>
+                          ))}
+                        </select>
+                        <span className={`font-mono text-xs ${tr?.status === "error" ? "text-red-700" : ""}`}>
+                          {tr?.status === "ok" ? formatLength(tr.length_m) : t("street.noPath")}
+                        </span>
+                      </label>
+                    );
+                  })}
+                <label className="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    checked={props.showDepot}
+                    onChange={(e) => a.setShowDepot(e.target.checked)}
+                  />
+                  {t("street.showDepot")}
+                </label>
+                {!props.depotId && (
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+                      onClick={a.placeDepot}
+                    >
+                      {t("street.moveDepot")}
+                    </button>
+                    <button
+                      type="button"
+                      className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+                      onClick={a.removeDepot}
+                    >
+                      {t("street.removeDepot")}
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+            {stops.length === 0 && view.depot && null}
+          </Section>
+        </>
+      )}
 
       <Section title={t("street.service")}>
-        <DayTypeChoice
-          day={day}
-          onDay={setDay}
-          own={hasOwnDay(timing.days, day)}
-          onOwn={(own) =>
-            day !== "weekday" &&
-            a.setTiming({ ...timing, days: withDay(timing.days, day, own ? shown : null) })
-          }
-        />
-        <label className="flex items-center justify-between gap-2">
-          <span>{t("rail.line.first")}</span>
-          <span className="flex items-center gap-1">
-            <TimeInput
-              label={t("rail.line.first")}
-              value={shown.firstMin}
-              onChange={(v) => setDayService({ firstMin: v })}
+        {routed && (
+          <>
+            <DayTypeChoice
+              day={day}
+              onDay={setDay}
+              own={hasOwnDay(timing.days, day)}
+              onOwn={(own) =>
+                day !== "weekday" &&
+                a.setTiming({ ...timing, days: withDay(timing.days, day, own ? shown : null) })
+              }
             />
-            <span className="w-6" />
-          </span>
-        </label>
-        <label className="flex items-center justify-between gap-2">
-          <span>{t("rail.line.last")}</span>
-          <span className="flex items-center gap-1">
-            <TimeInput
-              label={t("rail.line.last")}
-              value={shown.lastMin}
-              onChange={(v) => setDayService({ lastMin: v })}
+            <label className="flex items-center justify-between gap-2">
+              <span>{t("rail.line.first")}</span>
+              <span className="flex items-center gap-1">
+                <TimeInput
+                  label={t("rail.line.first")}
+                  value={shown.firstMin}
+                  onChange={(v) => setDayService({ firstMin: v })}
+                />
+                <span className="w-6" />
+              </span>
+            </label>
+            <label className="flex items-center justify-between gap-2">
+              <span>{t("rail.line.last")}</span>
+              <span className="flex items-center gap-1">
+                <TimeInput
+                  label={t("rail.line.last")}
+                  value={shown.lastMin}
+                  onChange={(v) => setDayService({ lastMin: v })}
+                />
+                <span className="w-6" />
+              </span>
+            </label>
+            <NumberField
+              label={t("rail.line.peakHeadway")}
+              value={shown.peakHeadwayMin}
+              unit="min"
+              onChange={(v) => setDayService({ peakHeadwayMin: v })}
             />
-            <span className="w-6" />
-          </span>
-        </label>
-        <NumberField
-          label={t("rail.line.peakHeadway")}
-          value={shown.peakHeadwayMin}
-          unit="min"
-          onChange={(v) => setDayService({ peakHeadwayMin: v })}
-        />
-        <NumberField
-          label={t("rail.line.offpeakHeadway")}
-          value={shown.offPeakHeadwayMin}
-          unit="min"
-          onChange={(v) => setDayService({ offPeakHeadwayMin: v })}
-        />
-        <NumberField
-          label={t("street.dwell")}
-          value={timing.dwellS}
-          unit="s"
-          step={5}
-          onChange={(v) => a.setTiming({ ...timing, dwellS: v })}
-        />
-        <NumberField
-          label={t("street.layover")}
-          value={timing.layoverMin}
-          unit="min"
-          onChange={(v) => a.setTiming({ ...timing, layoverMin: v })}
-        />
+            <NumberField
+              label={t("rail.line.offpeakHeadway")}
+              value={shown.offPeakHeadwayMin}
+              unit="min"
+              onChange={(v) => setDayService({ offPeakHeadwayMin: v })}
+            />
+            <NumberField
+              label={t("street.dwell")}
+              value={timing.dwellS}
+              unit="s"
+              step={5}
+              onChange={(v) => a.setTiming({ ...timing, dwellS: v })}
+            />
+            <NumberField
+              label={t("street.layover")}
+              value={timing.layoverMin}
+              unit="min"
+              onChange={(v) => a.setTiming({ ...timing, layoverMin: v })}
+            />
+          </>
+        )}
         <label className="flex items-center gap-2">
           <input
             type="checkbox"

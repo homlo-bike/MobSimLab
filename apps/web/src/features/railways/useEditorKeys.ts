@@ -86,7 +86,9 @@ export function useEditorKeys({
           setDoc(update(s.doc, "tracks", id, (t) => ({ ...t, points: t.points.filter((_, i) => i !== pi) })));
           setSel({ id });
         } else {
-          setDoc(deleteElement(s.doc, s.sel.id, anchorAt, sigs(s.view)));
+          // Every selected track or station, when several are.
+          const ids = [s.sel.id, ...(s.sel.more ?? [])];
+          setDoc(ids.reduce((d, id) => deleteElement(d, id, anchorAt, sigs(s.view)), s.doc));
           setSel(null);
         }
         return;

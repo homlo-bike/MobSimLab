@@ -112,7 +112,8 @@ export function DepotEditor({
   const { t } = useI18n();
   const engineText = useEngineText();
   const depots = doc?.depots ?? [];
-  const [selectedId, setSelectedId] = useState<string | null>(depots[0]?.id ?? null);
+  // No depot is open until one is picked, so a depot's settings only show for it.
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const selected = depots.find((d) => d.id === selectedId) ?? null;
   const [tool, setTool] = useState<Tool>({ kind: "idle" });
   const [laneId, setLaneId] = useState<string | null>(null);
@@ -467,14 +468,28 @@ export function DepotEditor({
           aria-label={selected.name}
           className="flex flex-col gap-3 rounded-xl border border-slate-200 p-3"
         >
-          <label className="block">
-            <span className="font-medium">{t("depot.name")}</span>
-            <input
-              className="input mt-1 w-full"
-              value={selected.name}
-              onChange={(e) => patch((d) => ({ ...d, name: e.target.value }))}
-            />
-          </label>
+          <div className="flex items-end gap-2">
+            <label className="block min-w-0 flex-1">
+              <span className="font-medium">{t("depot.name")}</span>
+              <input
+                className="input mt-1 w-full"
+                value={selected.name}
+                onChange={(e) => patch((d) => ({ ...d, name: e.target.value }))}
+              />
+            </label>
+            <button
+              type="button"
+              className="icon-btn"
+              aria-label={t("common.close")}
+              onClick={() => {
+                setSelectedId(null);
+                setLaneId(null);
+                setTool({ kind: "idle" });
+              }}
+            >
+              ✕
+            </button>
+          </div>
           <fieldset>
             <legend className="font-medium">{t("depot.modes")}</legend>
             <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1">

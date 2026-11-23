@@ -431,7 +431,8 @@ export function Schematic({
               ...(view === "network"
                 ? ([
                     ["water", "schematic.showWater"],
-                    ["straightRivers", "schematic.straightRivers"],
+                    // Straightening rivers only means something while the water is shown.
+                    ...(d.water === false ? [] : ([["straightRivers", "schematic.straightRivers"]] as const)),
                     ["showAreas", "schematic.showAreas"],
                   ] as const)
                 : []),
@@ -442,7 +443,7 @@ export function Schematic({
                 type="checkbox"
                 className="h-4 w-4"
                 checked={d[k] !== false}
-                disabled={!onDoc || (k === "straightRivers" && d.water === false)}
+                disabled={!onDoc}
                 onChange={(e) => set({ [k]: e.target.checked })}
               />
               {t(label)}

@@ -25,6 +25,7 @@ import {
   type LatestRef,
   type Selection,
   sigs,
+  toggleInSelection,
 } from "./editorState";
 import { HIT_LAYERS } from "./mapLayers";
 import type { RailTool } from "./railPanelTypes";
@@ -226,7 +227,9 @@ export function useMapEditing({
           hits.map((h) => Number(h.properties?.ref)),
           sigs(s.view),
         );
-        setSel(ref ? { id: ref } : null);
+        // Shift-click adds a track or station to the selection, or takes it out.
+        if (ev.originalEvent?.shiftKey && ref) setSel(toggleInSelection(s.doc, s.sel, ref));
+        else setSel(ref ? { id: ref } : null);
       }
     };
     const onDbl = (ev: MapMouseEvent) => {
@@ -302,6 +305,8 @@ export function useMapEditing({
     const onDown = (ev: MapMouseEvent) => {
       const s = latest.current;
       if (s.tool !== "select" || !s.doc || !engine.current) return;
+      // Shift-click picks more elements, and several picked ones are not dragged.
+      if (ev.originalEvent?.shiftKey || s.sel?.more?.length) return;
       const box: [[number, number], [number, number]] = [
         [ev.point.x - 4, ev.point.y - 4],
         [ev.point.x + 4, ev.point.y + 4],

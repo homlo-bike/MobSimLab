@@ -294,6 +294,12 @@ function fakeMap(zoom = 16) {
     hit.junction = null;
     click(false);
   };
+  /** A click on a street with Shift held: it adds the street to the selection, or takes it out. */
+  const tapShift = (way: number) => {
+    hit.way = way;
+    hit.junction = null;
+    click(true);
+  };
   /** A click on the junction with this key; with Shift held, it adds to the selection. */
   const tapJunction = (key: string, shift = false) => {
     hit.junction = key;
@@ -303,6 +309,7 @@ function fakeMap(zoom = 16) {
     map: map as unknown as MapLibreMap,
     sources,
     tap,
+    tapShift,
     tapJunction,
     setFilter: map.setFilter,
     setLayerZoomRange: map.setLayerZoomRange,
@@ -648,6 +655,37 @@ describe("Street setup editor", () => {
     // A click on a street clears the junctions.
     tap(100);
     expect(screen.queryByRole("group", { name: "Traffic lights" })).toBeNull();
+  });
+
+  it("sets several streets at once with Shift-click: one street's layout for all, and their peak traffic", async () => {
+    const { map, sources, tap, tapShift } = fakeMap();
+    const onChange = vi.fn();
+    render(<Harness map={map} onChange={onChange} />);
+    await waitFor(() => expect(sources.get("ss-streets")!.setData).toHaveBeenCalled());
+    await waitFor(() => expect(screen.queryByText("Loading streets…")).toBeNull());
+    tap(100);
+    fireEvent.click(screen.getByRole("button", { name: "Customise this street" }));
+    const sections = (onChange.mock.lastCall![0] as StreetSetup[])[0]!.sections;
+    tapShift(200);
+    const panel = screen.getByRole("region", { name: "Streets selected: 2" });
+    // Only what they share: no cross-section of one street.
+    expect(screen.queryByRole("listbox", { name: "Sections, left to right" })).toBeNull();
+    fireEvent.click(within(panel).getByRole("button", { name: "Use the layout of High Street for all" }));
+    let last = onChange.mock.lastCall![0] as StreetSetup[];
+    expect(last.find((s) => s.way === 200)?.sections).toEqual(sections);
+    // Peak traffic differs until it is typed once for both.
+    const morning = within(panel).getAllByRole("spinbutton")[0] as HTMLInputElement;
+    expect(morning.value).toBe("");
+    fireEvent.change(morning, { target: { value: "600" } });
+    last = onChange.mock.lastCall![0] as StreetSetup[];
+    expect(last.map((s) => s.cars_morning_peak)).toEqual([600, 600]);
+    // Shift-click takes a street out again: one street shows its own panel.
+    tapShift(100);
+    expect(screen.getByRole("region", { name: "Street setup: Back Lane" })).toBeTruthy();
+    // A plain click selects only that street.
+    tapShift(100);
+    tap(100);
+    expect(screen.getByRole("region", { name: "Street setup: High Street" })).toBeTruthy();
   });
 
   it("says so when the lanes cannot be drawn, and keeps the street lines", async () => {

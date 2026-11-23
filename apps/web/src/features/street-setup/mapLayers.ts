@@ -284,8 +284,9 @@ export function selectJunction(map: MapLibreMap, keys: readonly string[]): void 
 }
 
 /** Purpose: highlight one street (or none). */
-export function selectStreet(map: MapLibreMap, way: number | null): void {
-  if (map.getLayer("ss-selected")) map.setFilter("ss-selected", ["==", ["get", "way"], way ?? -1]);
+export function selectStreet(map: MapLibreMap, ways: readonly number[]): void {
+  if (map.getLayer("ss-selected"))
+    map.setFilter("ss-selected", ["in", ["get", "way"], ["literal", [...ways]]]);
 }
 
 /** Purpose: remove the layers and source. */

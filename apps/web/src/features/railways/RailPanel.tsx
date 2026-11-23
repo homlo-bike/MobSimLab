@@ -15,6 +15,7 @@ import {
   SwitchesSection,
   StreetRunningSection,
 } from "./RailNetworkSections";
+import { MultiStationInspector, MultiTrackInspector } from "./MultiInspector";
 import { SignalInspector, StationInspector, SwitchInspector } from "./RailInspectors";
 import type { RailPanelProps as Props } from "./railPanelTypes";
 import { ServiceLinesPanel } from "./ServiceLinesPanel";
@@ -75,57 +76,81 @@ export function RailPanel(props: Props) {
     })),
   ]);
 
+  // A selected object shows only its own settings; the tools that place new elements show their settings and the
+  // mode they use; otherwise the network: its figures, lines and lists.
+  const inspecting = kind !== null && sel !== null;
+  // Several tracks or stations picked with Shift-click: only the settings they share.
+  const multiIds = sel ? [sel.id, ...(sel.more ?? [])] : [];
+  const multi = multiIds.length > 1;
+  const placing = !inspecting && (draft !== null || PLACING.includes(tool));
+  const network = !inspecting;
+
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
       <h2 className="text-xl font-semibold">{t("rail.title")}</h2>
-      <label className="flex flex-col gap-1">
-        <span className="text-xs text-slate-600">{t("rail.modeForNew")}</span>
-        <select value={doc.mode} onChange={(e) => a.setMode(e.target.value as RailMode)} className={field}>
-          {offeredModes(RAIL_MODES, (m) => m.id, planned, doc.mode).map((m) => (
-            <option key={m.id} value={m.id}>
-              {t(m.label)}
-            </option>
-          ))}
-        </select>
-      </label>
-      <p className="text-xs text-slate-600">
-        {t("rail.params", {
-          gauge: p.gauge_mm,
-          centres: p.track_centre_m,
-          minRadius: p.min_radius_m,
-          radius: p.recommended_radius_m,
-          gradient: p.max_gradient_permille,
-          speed: p.design_speed_kmh,
-          platform: p.platform_length_m,
-          height: p.platform_height_mm,
-          power: electrification(t, String(p.electrification)),
-        })}
-      </p>
-      {/* The network's figures only while nothing is selected or being drawn. */}
-      {!sel && !draft && (
-        <div className="grid grid-cols-2 gap-2">
-          <Stat value={withUnit(view.counts.route_km.toFixed(2), "km")} label={t("rail.stat.route")} />
-          <Stat value={withUnit(view.counts.track_km.toFixed(2), "km")} label={t("rail.stat.track")} />
-          <Stat value={String(doc.stations.length)} label={t("rail.stat.stations")} />
-          <Stat value={String(doc.switches.length)} label={t("rail.stat.switches")} />
-        </div>
+      {/* The mode is for what is placed next, and the first choice in an empty drawing. */}
+      {(placing || doc.tracks.length + doc.stations.length === 0) && !inspecting && (
+        <>
+          <label className="flex flex-col gap-1">
+            <span className="text-xs text-slate-600">{t("rail.modeForNew")}</span>
+            <select
+              value={doc.mode}
+              onChange={(e) => a.setMode(e.target.value as RailMode)}
+              className={field}
+            >
+              {offeredModes(RAIL_MODES, (m) => m.id, planned, doc.mode).map((m) => (
+                <option key={m.id} value={m.id}>
+                  {t(m.label)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="text-xs text-slate-600">
+            {t("rail.params", {
+              gauge: p.gauge_mm,
+              centres: p.track_centre_m,
+              minRadius: p.min_radius_m,
+              radius: p.recommended_radius_m,
+              gradient: p.max_gradient_permille,
+              speed: p.design_speed_kmh,
+              platform: p.platform_length_m,
+              height: p.platform_height_mm,
+              power: electrification(t, String(p.electrification)),
+            })}
+          </p>
+        </>
       )}
-      <div className="flex gap-2">
+      {network && !draft && (
+        <>
+          <div className="grid grid-cols-2 gap-2">
+            <Stat value={withUnit(view.counts.route_km.toFixed(2), "km")} label={t("rail.stat.route")} />
+            <Stat value={withUnit(view.counts.track_km.toFixed(2), "km")} label={t("rail.stat.track")} />
+            <Stat value={String(doc.stations.length)} label={t("rail.stat.stations")} />
+            <Stat value={String(doc.switches.length)} label={t("rail.stat.switches")} />
+          </div>
+          {doc.tracks.length > 0 && (
+            <button
+              type="button"
+              onClick={a.fit}
+              className="rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+            >
+              {t("rail.zoomAll")}
+            </button>
+          )}
+        </>
+      )}
+      {inspecting && (
         <button
           type="button"
-          onClick={a.fit}
-          className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
+          onClick={() => a.select(null)}
+          className="self-start rounded border border-slate-300 px-2 py-1 hover:bg-slate-100"
         >
-          {t("rail.zoomAll")}
+          {t("rail.backToNetwork")}
         </button>
-        <button
-          type="button"
-          onClick={a.clear}
-          className="flex-1 rounded border border-slate-300 px-2 py-1 hover:bg-red-50"
-        >
-          {t("rail.clear")}
-        </button>
-      </div>
+      )}
+      {inspecting && (kind === "track" || kind === "station") && (
+        <p className="text-xs text-slate-500">{t("rail.multi.shiftHint")}</p>
+      )}
 
       {tool === "station" && (
         <Section title={t("rail.newStation")}>
@@ -255,44 +280,56 @@ export function RailPanel(props: Props) {
         </Section>
       )}
 
-      {kind === "station" && sel && (
-        <StationInspector st={doc.stations.find((s) => s.id === sel.id)!} {...props} />
+      {inspecting && multi && kind === "station" && <MultiStationInspector ids={multiIds} {...props} />}
+      {inspecting && multi && kind === "track" && <MultiTrackInspector ids={multiIds} {...props} />}
+      {inspecting && !multi && kind === "station" && (
+        <StationInspector st={doc.stations.find((s) => s.id === sel!.id)!} {...props} />
       )}
-      {kind === "track" && sel && <TrackInspector t={doc.tracks.find((s) => s.id === sel.id)!} {...props} />}
-      {kind === "switch" && sel && (
-        <SwitchInspector sw={doc.switches.find((s) => s.id === sel.id)!} {...props} />
+      {inspecting && !multi && kind === "track" && (
+        <TrackInspector t={doc.tracks.find((s) => s.id === sel!.id)!} {...props} />
       )}
-      {kind === "signal" && sel && <SignalInspector sg={signalById(doc, sel.id, view.signals)!} {...props} />}
+      {inspecting && kind === "switch" && (
+        <SwitchInspector sw={doc.switches.find((s) => s.id === sel!.id)!} {...props} />
+      )}
+      {inspecting && kind === "signal" && (
+        <SignalInspector sg={signalById(doc, sel!.id, view.signals)!} {...props} />
+      )}
       {/* Generated signals get new ids when the design changes, so only the planner's own carry comments. */}
-      {kind && sel && (kind !== "signal" || doc.signals?.some((s) => s.id === sel.id)) && (
+      {kind && sel && !multi && (kind !== "signal" || doc.signals?.some((s) => s.id === sel.id)) && (
         <ObjectComments type={kind} id={sel.id} />
       )}
 
-      <ServiceLinesPanel
-        doc={doc}
-        view={view}
-        setDoc={a.setDoc}
-        show={a.showIssue}
-        checksInMenu={checksElsewhere}
-        {...props.service}
-      />
+      {network && (
+        <ServiceLinesPanel
+          doc={doc}
+          view={view}
+          setDoc={a.setDoc}
+          show={a.showIssue}
+          checksInMenu={checksElsewhere}
+          {...props.service}
+        />
+      )}
 
-      <SwitchesSection
-        doc={doc}
-        view={view}
-        selected={kind === "switch" && sel ? sel.id : null}
-        actions={a}
-      />
+      {/* The network's lists only when they hold something. */}
+      {network && doc.switches.length > 0 && (
+        <SwitchesSection doc={doc} view={view} selected={null} actions={a} />
+      )}
 
-      <SignalsSection view={view} actions={a} />
+      {network && (view.signals.length > 0 || view.signals_edited) && (
+        <SignalsSection view={view} actions={a} />
+      )}
 
-      {props.existingRailways && <ExistingSection view={view} actions={a} />}
+      {network && props.existingRailways && (view.existing_joins.length > 0 || view.existing_count > 0) && (
+        <ExistingSection view={view} actions={a} />
+      )}
 
-      <DiamondSection doc={props.doc} view={view} actions={a} />
+      {network && <DiamondSection doc={props.doc} view={view} actions={a} />}
 
-      <StreetRunningSection view={view} actions={a} />
+      {network && view.street_running.length > 0 && <StreetRunningSection view={view} actions={a} />}
 
-      <LevelCrossingsSection view={view} streetNote={props.streetNote} actions={a} />
+      {network && (view.level_crossings.length > 0 || !!props.streetNote) && (
+        <LevelCrossingsSection view={view} streetNote={props.streetNote} actions={a} />
+      )}
 
       {props.terrainError && (
         <div role="status" className="flex flex-wrap items-center gap-2 text-xs text-amber-800">
@@ -310,9 +347,23 @@ export function RailPanel(props: Props) {
       ) : (
         <ChecksSection view={view} issues={issues} error={props.error} actions={a} />
       )}
+
+      {/* Clearing removes the whole drawing, so it sits at the end, away from the everyday buttons. */}
+      {network && doc.tracks.length + doc.stations.length > 0 && (
+        <button
+          type="button"
+          onClick={a.clear}
+          className="mt-2 self-start rounded border border-red-200 px-2 py-1 text-red-800 hover:bg-red-50"
+        >
+          {t("rail.clear")}
+        </button>
+      )}
     </div>
   );
 }
+
+/** The tools whose settings are for the next element placed. */
+const PLACING: readonly string[] = ["station", "track", "turnout", "crossover", "signal"];
 
 /** Purpose: the electrification of a mode in words ("overhead", "third rail"), else the engine's id. */
 function electrification(t: Translate, id: string): string {
