@@ -59,14 +59,36 @@ export function ropewayParam(
 }
 
 /**
+ * Purpose: a plugin parameter's value for a line: the project's own (Project preferences → All parameters,
+ * `<key>.<mode>` for the mode, else `<key>`), else the library's central value for the mode and context, else
+ * `fallback`.
+ */
+export function ropewayValue(
+  key: string,
+  mode: string,
+  context: string,
+  fallback: number,
+  prefs: Readonly<Record<string, number>> | null | undefined,
+  plugins: readonly Plugin[] = activePlugins(),
+): number {
+  for (const id of [`${key}.${mode}`, key]) {
+    const v = prefs?.[id];
+    if (typeof v === "number" && Number.isFinite(v)) return v;
+  }
+  return ropewayParam(key, mode, context, plugins)?.central ?? fallback;
+}
+
+/**
  * Purpose: the cable car lines saved with the project, with their service on a day.
- * Inputs: the saved plugin lines by tool id, the service day (the project's by default).
+ * Inputs: the saved plugin lines by tool id, the service day (the project's by default), the plugins on, and
+ * the project's own parameter values (Project preferences).
  * Output: one entry per complete cable car or aerial tramway line whose plugin is on, in tool order.
  */
 export function ropewayLines(
   tools: Readonly<Record<string, SavedPluginLine>> | null | undefined,
   day: ServiceDay = projectServiceDay(),
   plugins: readonly Plugin[] = activePlugins(),
+  prefs?: Readonly<Record<string, number>> | null,
 ): RopewayLine[] {
   const out: RopewayLine[] = [];
   for (const [toolId, saved] of Object.entries(tools ?? {})) {
@@ -80,7 +102,7 @@ export function ropewayLines(
     for (let i = 1; i < x.stations.length; i++)
       lengthM += distanceKm(x.stations[i - 1]!.lonlat, x.stations[i]!.lonlat) * 1000;
     const central = (key: string, fallback: number) =>
-      ropewayParam(`ropeway.${key}`, x.mode, x.system, plugins)?.central ?? fallback;
+      ropewayValue(`ropeway.${key}`, x.mode, x.system, fallback, prefs, plugins);
     const doc = (saved.doc ?? {}) as { lineSpeed?: unknown };
     const speed =
       typeof doc.lineSpeed === "number" && doc.lineSpeed > 0 ? doc.lineSpeed : central("line_speed_ms", 6);

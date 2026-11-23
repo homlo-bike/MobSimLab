@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../i18n/i18n";
 import type { PluginLineInput } from "../features/journey-planner/network";
-import { centralValues, contextLabel, findMode, type PluginTool } from "../plugins/registry";
+import { contextLabel, findMode, projectValues, type PluginTool } from "../plugins/registry";
 import { loadKits, vesselType } from "./engine";
 import { fmtDur, fmtInt, fmtLen } from "./format";
 import { Issues, Stat } from "./Issues";
@@ -66,6 +66,8 @@ interface Props extends LineList {
   loadSurroundings?: SurroundingsLoader;
   /** GEBCO depths on open sea, for the depth check; tests inject a fake. */
   fetchDepths?: DepthFetcher;
+  /** Project preferences: the project's own values of the plugin's parameters, over the library's. */
+  preferences?: Readonly<Record<string, number>>;
 }
 
 /** Purpose: the pier of another line within SHARED_STOP_M of a point, or null. */
@@ -122,6 +124,7 @@ export function WaterRouteEditor({
   onNewLine,
   onDeleteLine,
   otherStops = [],
+  preferences,
 }: Props) {
   const { t, tn } = useI18n();
   const [kits, setKits] = useState<Kits | null>(null);
@@ -152,7 +155,10 @@ export function WaterRouteEditor({
 
   const found = findMode(doc.mode) ?? findMode(tool.modes[0] ?? "");
   const color = found?.mode.colour ?? "#0e7490";
-  const values = useMemo(() => centralValues(doc.mode, doc.vessel), [doc.mode, doc.vessel]);
+  const values = useMemo(
+    () => projectValues(doc.mode, doc.vessel, preferences),
+    [doc.mode, doc.vessel, preferences],
+  );
   const vessel = useMemo(
     () => vesselType(doc.vessel, values, doc.speedKn ? { service_speed_kn: doc.speedKn } : {}),
     [doc.vessel, doc.speedKn, values],

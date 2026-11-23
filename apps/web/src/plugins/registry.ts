@@ -403,3 +403,26 @@ export function centralValues(
   const per = f?.plugin.defaults[modeId]?.[option] ?? {};
   return Object.fromEntries(Object.entries(per).map(([k, r]) => [k, r.central]));
 }
+
+/**
+ * Purpose: the values a mode's tool uses for one context option: the library's central values, with the
+ * project's own on top (Project preferences → All parameters: `<key>.<mode>` for the mode, else `<key>` for every
+ * mode). Output: parameter key → value; empty when the mode or option is unknown.
+ */
+export function projectValues(
+  modeId: string,
+  option: string,
+  prefs: Readonly<Record<string, number>> | null | undefined,
+  plugins: readonly Plugin[] = activePlugins(),
+): Record<string, number> {
+  const own = (id: string) => {
+    const v = prefs?.[id];
+    return typeof v === "number" && Number.isFinite(v) ? v : undefined;
+  };
+  return Object.fromEntries(
+    Object.entries(centralValues(modeId, option, plugins)).map(([k, v]) => [
+      k,
+      own(`${k}.${modeId}`) ?? own(k) ?? v,
+    ]),
+  );
+}

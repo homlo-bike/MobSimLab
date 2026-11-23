@@ -7,7 +7,7 @@
 import { projectServiceDay, type PluginLineInput, type ServiceDay } from "../journey-planner/network";
 import type { SavedPluginLine } from "../../kits/saved";
 import { activePlugins, findMode, type Plugin } from "../../plugins/registry";
-import { ropewayParam } from "./ropeways";
+import { ropewayValue } from "./ropeways";
 
 /** One ferry line with its service on a day. */
 export interface FerryLine {
@@ -48,12 +48,14 @@ export interface FerryLine {
 /**
  * Purpose: the ferry lines saved with the project, with their service on a day.
  * Inputs: the saved plugin lines by line key, the service day (the project's by default), the plugins on for
- * the project. Output: one entry per complete ferry line whose plugin is on, in saved order.
+ * the project, and the project's own parameter values (Project preferences). Output: one entry per complete ferry
+ * line whose plugin is on, in saved order.
  */
 export function ferryLines(
   tools: Readonly<Record<string, SavedPluginLine>> | null | undefined,
   day: ServiceDay = projectServiceDay(),
   plugins: readonly Plugin[] = activePlugins(),
+  prefs?: Readonly<Record<string, number>> | null,
 ): FerryLine[] {
   const out: FerryLine[] = [];
   for (const [key, saved] of Object.entries(tools ?? {})) {
@@ -63,7 +65,7 @@ export function ferryLines(
     // A plugin the project has turned off takes its lines out of the tables and the costs.
     if (!findMode(x.mode, plugins)) continue;
     const central = (k: string, fallback: number) =>
-      ropewayParam(`ferry.${k}`, x.mode, x.vessel, plugins)?.central ?? fallback;
+      ropewayValue(`ferry.${k}`, x.mode, x.vessel, fallback, prefs, plugins);
     const headwayS = Math.max(60, x.headway_s);
     const lengthM = x.legs.reduce((s, l) => s + l.length_m, 0);
     const runS = x.legs.reduce((s, l) => s + l.time_s, 0);

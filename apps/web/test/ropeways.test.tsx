@@ -127,6 +127,16 @@ describe("cable car lines in the tables", () => {
     expect(ropewayLines({ x: { ...gondola()["cable-car"]!, noise: null } }, DAY)).toEqual([]);
   });
 
+  it("uses the project's own values from All parameters over the library's", () => {
+    // Cabins of 8 for every cable car mode, and a 20 % reserve for cable cars only.
+    const prefs = { "ropeway.cabin_capacity": 8, "ropeway.reserve_share.cable_car": 0.2 };
+    const [r] = ropewayLines(gondola(), DAY, PLUGINS, prefs);
+    expect(r!.placesPerCabin).toBe(8);
+    expect(r!.inService).toBe(22);
+    // 21.8 cabins on the rope plus 20 %, not 10 %.
+    expect(r!.fleet).toBe(27);
+  });
+
   it("lists the cable car among the lines, with its fleet and capacity", () => {
     const ropeways = ropewayLines(gondola(), DAY);
     const facts = lineFacts({ railway: null, view: null, reports: {}, streetLines: [], prefs: {}, ropeways });

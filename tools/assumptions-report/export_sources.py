@@ -26,8 +26,8 @@ import yaml
 
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / "apps" / "web" / "src" / "workspace" / "assumptions-report.generated.json"
-# Plugin assumption folders whose number parameters are in Project Preferences (tools/parameters/export_defaults.py).
-PLUGIN_DIRS = [ROOT / "plugins" / "noise" / "assumptions"]
+# Plugins whose number parameters are in Project Preferences (PLUGINS in tools/parameters/export_defaults.py).
+PLUGINS = ["noise", "aerial-lift", "ferry", "on-demand-bus", "energy"]
 
 
 def read_yaml(path: Path) -> list[dict]:
@@ -66,7 +66,18 @@ def render() -> str:
     ac = assumption_check()
     sources = ac.load_sources()
     all_params = ac.load_parameters()
-    for d in PLUGIN_DIRS:
+    mode_list = ["*", *ac.MODES]
+    for name in PLUGINS:
+        folder = ROOT / "plugins" / name
+        manifest = json.loads(
+            (folder / "mobsimlab-plugin.json").read_text(encoding="utf-8")
+        )
+        mode_list += [
+            m["id"]
+            for m in manifest.get("contributes", {}).get("modes", [])
+            if m["id"] not in mode_list
+        ]
+        d = folder / "assumptions"
         sources.update({x["id"]: x for x in read_yaml(d / "sources.yaml")})
         all_params += [
             x
@@ -77,7 +88,7 @@ def render() -> str:
     cited: set[str] = set()
     for p in all_params:
         entries: list[dict] = []
-        modes = {m: index(entries, ac.resolve(p, m)) for m in ["*", *ac.MODES]}
+        modes = {m: index(entries, ac.resolve(p, m)) for m in mode_list}
         traction = {}
         for v in p["values"]:
             if set(v["context"]) == {"traction"}:

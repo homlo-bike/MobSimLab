@@ -86,8 +86,14 @@ export function NetworkTables({
   const lines = streetLines?.lines ?? [];
   // The cable car plugin may be turned off for the project: its lines then leave the tables.
   const plugins = activePlugins();
-  const ropeways = useMemo(() => ropewayLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
-  const ferries = useMemo(() => ferryLines(pluginLines, undefined, plugins), [pluginLines, plugins]);
+  const ropeways = useMemo(
+    () => ropewayLines(pluginLines, undefined, plugins, prefs),
+    [pluginLines, plugins, prefs],
+  );
+  const ferries = useMemo(
+    () => ferryLines(pluginLines, undefined, plugins, prefs),
+    [pluginLines, plugins, prefs],
+  );
   const facts = useMemo(
     () =>
       lineFacts({

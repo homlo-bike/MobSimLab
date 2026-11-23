@@ -37,6 +37,7 @@ import {
   PLUGINS,
   pluginCalculation,
   pluginTools,
+  projectValues,
 } from "../src/plugins/registry";
 
 beforeAll(async () => {
@@ -77,6 +78,21 @@ describe("plugin registry", () => {
     // Keys without a system entry fall back to the global value.
     expect(mgd["ropeway.min_clearance_m"]).toBe(5);
     expect(centralValues("ferry", "hydrofoil")["ferry.passenger_capacity"]).toBe(30);
+  });
+});
+
+describe("project values over the library's", () => {
+  it("takes the project's value for the mode, else for every mode, else the library's", () => {
+    const v = projectValues("cable_car", "mgd", {
+      "ropeway.max_span_m": 250,
+      "ropeway.line_speed_ms.cable_car": 5,
+      "ropeway.line_speed_ms": 4,
+      "ropeway.cabin_capacity.aerial_tramway": 80,
+    });
+    expect(v["ropeway.max_span_m"]).toBe(250);
+    expect(v["ropeway.line_speed_ms"]).toBe(5);
+    expect(v["ropeway.cabin_capacity"]).toBe(10);
+    expect(projectValues("cable_car", "mgd", null)).toEqual(centralValues("cable_car", "mgd"));
   });
 });
 

@@ -7,6 +7,12 @@
    "url": "https://store.transportation.org/",
    "access": "paywalled"
   },
+  "acceq-drt-planning": {
+   "title": "AccEq-DRT, planning demand-responsive transit to reduce inequality of accessibility (DRT bus at 25 km/h, 32 s lost per pick-up or drop-off)",
+   "publisher": "arXiv",
+   "url": "https://arxiv.org/abs/2310.04348",
+   "access": "free"
+  },
   "ada-49cfr38": {
    "title": "49 CFR Part 38, ADA Accessibility Specifications for Transportation Vehicles (§ 38.53 rapid rail, § 38.71/38.73 light rail, § 38.93 commuter rail)",
    "publisher": "US Department of Transportation",
@@ -53,6 +59,18 @@
    "title": "TransLink, Burnaby Mountain Gondola: 2020 Noise Modelling Summary (2023-10-31), with Hemmera's Burnaby Mountain Gondola Transit Noise Modelling memo (October 2020)",
    "publisher": "TransLink",
    "url": "https://www.translink.ca/-/media/translink/documents/plans-and-projects/rapid-transit/burnaby-mountain-gondola/business-case-engagement-2023/bmg_noise_modelling_tech_report.pdf",
+   "access": "free"
+  },
+  "cablebus-line-1-cost": {
+   "title": "Cablebús (Mexico City), Line 1 investment of MXN 2.93 bn for 9.2 km and 6 stations",
+   "publisher": "Wikipedia",
+   "url": "https://en.wikipedia.org/wiki/Cableb%C3%BAs",
+   "access": "free"
+  },
+  "candela-p12-energy": {
+   "title": "Candela P-12 electric hydrofoil, about 3–4 kWh per nautical mile at 25 knots",
+   "publisher": "Riviera Maritime Media",
+   "url": "https://www.rivieramm.com/news-content-hub/candela-p-12-completes-worlds-longest-electric-sea-journey-87645",
    "access": "free"
   },
   "ceder-2016": {
@@ -115,6 +133,12 @@
    "url": "https://research.vu.nl/en/publications/the-impact-of-railway-stations-on-residential-and-commercial-prop/",
    "access": "paywalled"
   },
+  "desnz-ghg-conversion-factors-2024": {
+   "title": "UK DESNZ, greenhouse gas reporting conversion factors 2024 (diesel per litre, tank-to-wheel and well-to-tank)",
+   "publisher": "Department for Energy Security and Net Zero",
+   "url": "https://www.gov.uk/government/publications/greenhouse-gas-reporting-conversion-factors-2024",
+   "access": "free"
+  },
   "dewiki-weiche": {
    "title": "Wikipedia (de), \"Weiche (Schienenverkehr)\": DB standard turnouts EW 190-1:9 (40 km/h), 300-1:9 (50), 500-1:12 (60), 760-1:14 (80), 1200-1:18,5 (100), 2500-1:26,5 (130), 6000/3700-1:32,5 fb (160/280), 7000/6000-1:42 fb (200/280)",
    "publisher": "Wikipedia contributors",
@@ -127,11 +151,29 @@
    "url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/706671/agglomeration-elasticities-existing-evidence-and-future-priorities.pdf",
    "access": "free"
   },
+  "doppelmayr-urban-faq": {
+   "title": "Doppelmayr, Urban ropeways FAQs (2020)",
+   "publisher": "Doppelmayr Seilbahnen GmbH",
+   "url": "https://www.doppelmayr.com/files/sites/default/data/_general_content/pdfs/2020_Urban_FAQs_ENG.pdf",
+   "access": "free"
+  },
   "ebo": {
    "title": "Eisenbahn-Bau- und Betriebsordnung (EBO), Germany",
    "publisher": "Bundesministerium der Justiz / Bundesamt für Justiz",
    "url": "https://www.gesetze-im-internet.de/ebo/",
    "access": "free"
+  },
+  "eea-electricity-ghg-intensity": {
+   "title": "EEA indicator, greenhouse gas emission intensity of electricity generation, EU level (2023 about 20 % below 2022)",
+   "publisher": "European Environment Agency",
+   "url": "https://www.eea.europa.eu/en/analysis/indicators/greenhouse-gas-emission-intensity-of-1/greenhouse-gas-emission-intensity-of-electricity-generation-eu-level",
+   "access": "free"
+  },
+  "en-12929-1": {
+   "title": "EN 12929-1:2015, Safety requirements for cableway installations designed to carry persons, general requirements",
+   "publisher": "CEN",
+   "url": "https://genorma.com/en/standards/en-12929-1-2015",
+   "access": "paywalled"
   },
   "en-13803": {
    "title": "EN 13803:2017 Railway applications — Track — Track alignment design parameters — Track gauges 1435 mm and wider",
@@ -259,6 +301,12 @@
    "url": "https://www.trb.org/Main/Blurbs/182013.aspx",
    "access": "paywalled"
   },
+  "idfm-cable-c1-cost": {
+   "title": "Île-de-France Mobilités, Câble C1, combien coûtera ce projet ? (€138 M including the cabins)",
+   "publisher": "Île-de-France Mobilités",
+   "url": "https://www.iledefrance-mobilites.fr/le-reseau/projets/cablec1/questions/combien-coutera-ce-projet-",
+   "access": "free"
+  },
   "ieee-1474-1": {
    "title": "IEEE 1474.1, Standard for Communications-Based Train Control (CBTC) Performance and Functional Requirements",
    "publisher": "IEEE",
@@ -269,6 +317,12 @@
    "title": "ILOSTAT: labour income share as a percent of GDP (SDG indicator 10.4.1), ILO modelled estimates",
    "publisher": "International Labour Organization",
    "url": "https://ilostat.ilo.org/topics/labour-income/",
+   "access": "free"
+  },
+  "incat-crowther-seychelles-ferry": {
+   "title": "Incat Crowther designed ferry for Seychelles (292 passengers, 25 knots, 2 × 1,342 kW)",
+   "publisher": "Maritime Professional",
+   "url": "https://www.maritimeprofessional.com/news/incat-crowther-designed-ferry-seychelles-297367",
    "access": "free"
   },
   "isacsson-2015": {
@@ -305,6 +359,18 @@
    "title": "Kraków tramway (MPK / ZDMK) turnout specification (switches with shallow-groove crossings 15 km/h; R = 50 m switches with deep-groove crossings 25 km/h)",
    "publisher": "Zarząd Dróg Miasta Krakowa",
    "url": "https://plikimpi.krakow.pl/pliki/339992",
+   "access": "free"
+  },
+  "la-art-final-eir": {
+   "title": "Los Angeles Aerial Rapid Transit, final environmental impact report (O&M about $8–10 M a year)",
+   "publisher": "Metro (Los Angeles County Metropolitan Transportation Authority), via CEQAnet",
+   "url": "https://files.ceqanet.opr.ca.gov/264989-5/attachment/6ABDVrTa5RmnOmM1W8nmQznfIHUHX-_ydOYFBSH5PHPq3dwZpVZUNgZ4nIkObgjV2w2SnbAnw4kRUeLN0",
+   "access": "free"
+  },
+  "lille-tram-energy-simulation": {
+   "title": "Lille tram network energy simulation (391.7 kWh for 126 tram-km in one hour, about 3.1 kWh per tram-km)",
+   "publisher": "Université de Lille, CUMIN",
+   "url": "https://cumin.univ-lille.fr/fileadmin/user_upload/cumin/Documents/News/3_CUMIN-HANKOUR-LAKHDARI-REZOUG-2024.pdf",
    "access": "free"
   },
   "litman-transit-elasticities": {
@@ -349,10 +415,22 @@
    "url": "https://econpapers.repec.org/RePEc:eee:transa:v:50:y:2013:i:c:p:158-170",
    "access": "paywalled"
   },
+  "moia-ride-pooling-small-towns": {
+   "title": "MOIA, ride pooling efficiency in large and small towns (service with a maximum wait of 10 min and a maximum detour of 10 min plus 50 % of the travel time)",
+   "publisher": "MOIA",
+   "url": "https://www.moia.io/mobility_analytics/studies/2103_Ride-pooling_efficiency_in_large_and_small_towns.pdf",
+   "access": "free"
+  },
   "moreno-2021": {
    "title": "Moreno, Allam, Chabaud, Gall, Pratlong: Introducing the “15-Minute City”: Sustainability, Resilience and Place Identity in Future Post-Pandemic Cities. Smart Cities 4(1), 93–111 (2021)",
    "publisher": "MDPI",
    "url": "https://doi.org/10.3390/smartcities4010006",
+   "access": "free"
+  },
+  "mpg-autonomous-ridepooling-germany": {
+   "title": "Simulation of autonomous ridepooling across Germany (mean detour 17.5 %, mean occupancy 1.67, average wait about 10 min)",
+   "publisher": "Max Planck Society (Communications in Transportation Research)",
+   "url": "https://pure.mpg.de/pubman/item/item_3497842_2/component/file_3497843/1-s2.0-S2772586323000126-main.pdf",
    "access": "free"
   },
   "mutcd-2009": {
@@ -409,10 +487,28 @@
    "url": "https://www.networkrail.co.uk/",
    "access": "on-request"
   },
+  "ntd-ferry-agency-profiles": {
+   "title": "FTA National Transit Database annual agency profiles, ferryboat operating expense per vehicle revenue hour",
+   "publisher": "Federal Transit Administration",
+   "url": "https://www.transit.dot.gov/sites/fta.dot.gov/files/transit_agency_profile_doc/2019/20190.pdf",
+   "access": "free"
+  },
   "nts-2019": {
    "title": "National Travel Survey: England 2019, trips per person per year by purpose",
    "publisher": "UK Department for Transport",
    "url": "https://www.gov.uk/government/statistics/national-travel-survey-2019",
+   "access": "free"
+  },
+  "nyc-ferry-vessel-cost": {
+   "title": "Metal Shark selected to build NYC passenger ferries (close to US$4 M each)",
+   "publisher": "Baird Maritime",
+   "url": "https://www.bairdmaritime.com/amp/story/passenger/metal-shark-selected-to-build-nyc-passenger-ferries",
+   "access": "free"
+  },
+  "nycedc-ferry-landings": {
+   "title": "McLaren completes new ferry landings in New York Harbor (US$55 M programme for NYC Ferry)",
+   "publisher": "New York Real Estate Journal",
+   "url": "https://nyrej.com/mclaren-completes-new-ferry-landings-in-new-york-harbor-provided-engineering-services-on-the-55-million-project",
    "access": "free"
   },
   "nzta-rr703": {
@@ -547,6 +643,12 @@
    "url": "https://nap.nationalacademies.org/catalog/24766",
    "access": "free"
   },
+  "tcrp-238": {
+   "title": "TCRP Research Report 238, Quantitative Procedures for Designing and Operating Ferry Services (2023)",
+   "publisher": "Transportation Research Board / National Academies Press",
+   "url": "https://www.nationalacademies.org/read/26748/chapter/5",
+   "access": "free"
+  },
   "tcrp-94": {
    "title": "TCRP Report 94: Fare Policies, Structures and Technologies: Update (Transportation Research Board, 2003)",
    "publisher": "Transportation Research Board",
@@ -557,6 +659,24 @@
    "title": "TCRP Synthesis / National Academies chapter on bus spare ratios quoting FTA Circular 9030.1C ch. V para 9.a.5",
    "publisher": "National Academies Press",
    "url": "https://nap.nationalacademies.org/read/22409/chapter/2",
+   "access": "free"
+  },
+  "thermal-science-ebus-review": {
+   "title": "Review of battery electric bus energy use in city service (12 m 1.3 to 1.7 kWh/km; a diesel bus 3.90 kWh/km of fuel)",
+   "publisher": "Thermal Science (University of Kragujevac repository)",
+   "url": "https://scidar.kg.ac.rs/bitstream/123456789/15550/1/TSCI220709156M.pdf",
+   "access": "free"
+  },
+  "tianjin-metro-traction-energy": {
+   "title": "Traction electricity use of Tianjin Metro lines, median about 2.0 kWh per car-km (Energy Science & Engineering, 2023)",
+   "publisher": "Wiley (open access)",
+   "url": "https://doaj.org/article/8ba1bd3955994b31a608c6a9dfd8141d",
+   "access": "free"
+  },
+  "tisseo-teleo-cost": {
+   "title": "Téléo, Toulouse 3S urban ropeway (budget grown from €54 M to €93 M)",
+   "publisher": "remontees-mecaniques.net",
+   "url": "https://remontees-mecaniques.net/bdd/reportage-3s-teleo-poma-8102.html",
    "access": "free"
   },
   "tobler-1993": {
@@ -637,6 +757,12 @@
    "url": "https://www.gov.uk/government/publications/the-green-book-appraisal-and-evaluation-in-central-government",
    "access": "free"
   },
+  "umn-transit-circuity": {
+   "title": "Transit circuity (cites an average road network circuity of about 1.2, Newell 1980, and Ballou, Rahardja and Sakai 2002)",
+   "publisher": "University of Minnesota",
+   "url": "https://conservancy.umn.edu/bitstream/handle/11299/180057/TransitCircuity.pdf?sequence=1",
+   "access": "free"
+  },
   "unece-r107": {
    "title": "UN Regulation No. 107, uniform provisions concerning the approval of category M2 or M3 vehicles (Annex 3, area per standing passenger by vehicle class)",
    "publisher": "UNECE World Forum for Harmonization of Vehicle Regulations (WP.29)",
@@ -667,17 +793,35 @@
    "url": "https://unece.org/DAM/trans/conventn/crt1968e.pdf",
    "access": "free"
   },
+  "viriciti-ebus-consumption": {
+   "title": "ViriCiti fleet study, real energy use of battery electric buses (12 m about 1.15 kWh/km over 10 months, 14 % more in cold weather)",
+   "publisher": "Vision Mobility",
+   "url": "https://vision-mobility.de/en/news/study-viriciti-determines-real-energy-consumption-of-electric-buses-58523.html",
+   "access": "free"
+  },
   "vuchic-2007": {
    "title": "Vuchic, V. R. (2007): Urban Transit Systems and Technology. Wiley (right-of-way categories A, B, C)",
    "publisher": "John Wiley & Sons",
    "url": "https://doi.org/10.1002/9780470168066",
    "access": "paywalled"
   },
+  "wandernundmehr-wind": {
+   "title": "Wann fahren Gondeln nicht? (wind limits by ropeway type)",
+   "publisher": "wandernundmehr.at",
+   "url": "https://www.wandernundmehr.at/faq/wann-fahren-gondeln-nicht",
+   "access": "free"
+  },
   "wardman-2004": {
    "title": "Wardman, M.: Public transport values of time, Transport Policy 11(4), 363–377 (2004): walk, wait and interchange weights",
    "publisher": "Elsevier",
    "url": "https://doi.org/10.1016/j.tranpol.2004.05.001",
    "access": "paywalled"
+  },
+  "weta-kvichak-contract": {
+   "title": "WETA awards US$32M contract for two new 400-passenger vessels",
+   "publisher": "Mass Transit",
+   "url": "https://www.masstransitmag.com/home/press-release/12061552/san-francisco-bay-area-water-emergency-transportation-authority-weta-weta-awards-32m-contract-for-two-new-vessels",
+   "access": "free"
   },
   "who-2011-disability": {
    "title": "World Health Organization and World Bank: World report on disability (2011)",
@@ -12322,6 +12466,1301 @@
       "nomeports"
      ],
      "rationale": "PLACEHOLDER until the ferry sound power sources are read: the main sources of a small or medium passenger ferry (exhaust, engine room and air conditioning vents) sit a few metres above the water. The Livorno pass-by papers name the ventilation near the funnel as the loudest source of large ferries but give no height."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.line_speed_ms": {
+   "used_by": [
+    "running time",
+    "cabin spacing",
+    "cabin count"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Fallback spanning pulsed gondolas to aerial tramways; every system has its own entry."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.cabin_interval_s": {
+   "used_by": [
+    "capacity",
+    "cabin count",
+    "published timetable headway"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "R1 §1.2: a continuous gondola runs a cabin every 8 to 30 s; pulsed groups are further apart."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.cabin_capacity": {
+   "used_by": [
+    "capacity",
+    "dwell"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Fallback spanning pulsed gondolas to large aerial tramway cabins."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.max_span_m": {
+   "used_by": [
+    "span check",
+    "automatic towers"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "R1 §1.5: a few hundred metres for monocable systems, over 1 km for tricable systems."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.max_station_angle_deg": {
+   "used_by": [
+    "station angle check"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Detachable lines change direction only in stations; how much depends on the station's bullwheels."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.min_clearance_m": {
+   "used_by": [
+    "clearance check (error below this)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "en-12929-1"
+     ],
+     "rationale": "EN 12929-1 sets the minimum distance between the lowest point of a loaded cabin and the ground, roads and buildings; exact values to verify against the clause and national rules."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.recommended_clearance_m": {
+   "used_by": [
+    "clearance check (warning below this)",
+    "automatic towers"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Margin over the minimum for swing in wind, snow and rescue access; automatic towers keep it."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.station_approach_m": {
+   "used_by": [
+    "clearance check",
+    "automatic towers"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Where cabins leave and enter a station they are close to platform height over the station's fenced approach. Within this distance of a station the cabin only has to clear the ground and buildings; beyond it the minimum and recommended clearances apply. To verify against EN 12929-1 (clearance profile and passageways) and the station design."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.tower_height_m": {
+   "used_by": [
+    "automatic towers"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Typical urban tower heights (to verify against built lines)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.max_tower_height_m": {
+   "used_by": [
+    "tower height check",
+    "automatic towers"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Above this towers become a major structure and a landscape issue (to verify)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.station_rope_height_m": {
+   "used_by": [
+    "profile",
+    "clearance check"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Rope height above the station's ground level where cabins enter; elevated stations are higher."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.cabin_hang_m": {
+   "used_by": [
+    "clearance check"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Hanger plus cabin height; large tricable and aerial tramway cabins hang lower."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.sag_ratio": {
+   "used_by": [
+    "profile",
+    "clearance check",
+    "automatic towers"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Mid-span sag of a loaded rope as a share of the span; depends on rope tension (to verify against EN 12927 design practice)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.station_passage_s": {
+   "used_by": [
+    "running time",
+    "stopping pattern"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "A detached cabin slows to platform speed, passes the platform and reattaches; for an aerial tramway this is the acceleration and braking loss per trip."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.terminal_dwell_s": {
+   "used_by": [
+    "shuttle cycle",
+    "capacity"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Doors, boarding and alighting of a large cabin."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.reserve_share": {
+   "used_by": [
+    "cabin count"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Cabins kept in the garage for maintenance and peak boosts."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.wind_slow_kmh": {
+   "used_by": [
+    "weather scenarios (planned, ADR-0037 §5a)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "wandernundmehr-wind"
+     ],
+     "rationale": "R1 §1.4: slow-down at about 60 to 70 km/h, depending on technology and site."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.wind_stop_kmh": {
+   "used_by": [
+    "weather scenarios (planned, ADR-0037 §5a)"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "wandernundmehr-wind"
+     ],
+     "rationale": "R1 §1.4: stop at about 60 to 110 km/h depending on technology and site."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.capacity_ceiling_pphpd": {
+   "used_by": [
+    "capacity check"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "doppelmayr-urban-faq"
+     ],
+     "rationale": "R1 §1.2: about 6,000 p/h/dir for any ropeway; Doppelmayr TRI-Line claims up to 8,000."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.cost.station_each": {
+   "used_by": [
+    "construction cost: stations"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "idfm-cable-c1-cost",
+      "tisseo-teleo-cost",
+      "cablebus-line-1-cost",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Building, bullwheels, platforms and cabin handling, before design (15 %) and contingency (25 %). Split from the outturn costs of Câble C1 (€138 M, 4.5 km, 5 stations, cabins €6 M), Téléo (about €93 M, 3 km, 3 stations) and Cablebús Line 1 (MXN 2.93 bn, 9.2 km, 6 stations), each divided by 1.4 for design and contingency and converted at purchasing power parity; with the per-km value below, the central values reproduce the three totals within about 8 %. La Paz's first lines (US$234 M for 10 km) were cheaper."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.cost.line_per_km": {
+   "used_by": [
+    "construction cost: track, power and signalling"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "idfm-cable-c1-cost",
+      "cablebus-line-1-cost",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Rope, towers and their foundations, drive and control equipment, per km of line, before design and contingency. From the same split as the station cost (Câble C1, Cablebús Line 1)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ropeway.cost.cabin_each": {
+   "used_by": [
+    "construction cost: vehicles"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "idfm-cable-c1-cost"
+     ],
+     "rationale": "Câble C1: €6 M for 105 ten-seat gondola cabins, about €57,000 each."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Large aerial tramway cabins (about 60 to 200 passengers); no published unit price found."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "aerial_tramway": 1
+   }
+  },
+  "ropeway.cost.station_hour": {
+   "used_by": [
+    "operating cost: service"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "la-art-final-eir",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Station staff, the control room and drive energy, per station for each hour the line is open. With upkeep (1.5 % of construction a year) and overheads on top, 3 stations open 19 hours a day come to about US$9 M a year, as the Los Angeles Aerial Rapid Transit final EIR expects ($8–10 M a year with a capital reserve)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.service_speed_kn": {
+   "used_by": [
+    "running time"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "R1 §2.1: water buses run 8 to 25 knots, commuter fast ferries 25 to 35."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.berthing_s": {
+   "used_by": [
+    "running time"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "tcrp-238"
+     ],
+     "rationale": "Approach, mooring and leaving per call; TCRP Report 238 treats manoeuvring time (values to verify)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.boarding_pax_per_min_per_gangway": {
+   "used_by": [
+    "dwell"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "tcrp-238"
+     ],
+     "rationale": "TCRP Report 238 treats gangway throughput as the capacity limit at busy terminals (values to verify)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.min_dwell_s": {
+   "used_by": [
+    "dwell",
+    "layover"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Gangway out and in, with few passengers."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.passenger_capacity": {
+   "used_by": [
+    "capacity",
+    "dwell check"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Fallback; use the vessel's certified capacity once the catalogue has ferries."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.air_draft_m": {
+   "used_by": [
+    "bridge check"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Fallback; use the vessel's own air draft once the catalogue has ferries."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.draught_m": {
+   "used_by": [
+    "depth check"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Fallback; use the vessel's own draught once the catalogue has ferries."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.under_keel_clearance_m": {
+   "used_by": [
+    "depth check"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Margin under the keel for squat, waves and the tide; GEBCO’s grid of about 450 m smooths out shoals, so the depth check keeps 1 m (educated guess)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.harbour_speed_kn": {
+   "used_by": [
+    "speed zones"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Typical harbour and wash-restricted limits; each zone can have its own."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.layover_s": {
+   "used_by": [
+    "vessel blocks",
+    "berth check"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Recovery time plus turning the vessel round."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.pax_per_call_share": {
+   "used_by": [
+    "dwell"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Planning value until demand is modelled: half a vessel load changes at the busiest call."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.wave_limit_hs_m": {
+   "used_by": [
+    "weather scenarios (planned, ADR-0037 §5a)"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Each vessel class has its own limit; Directive 2009/45/EC sea areas C and D use 2.5 m and 1.5 m."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.reserve_share": {
+   "used_by": [
+    "fleet"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Vessels spend weeks a year in dry dock and surveys; a small fleet needs one spare, so 1 in 3 to 1 in 10."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.cost.pier_each": {
+   "used_by": [
+    "construction cost: stations"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nycedc-ferry-landings",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Floating landing (barge or pontoon), gangway, piles, canopy and waiting area, before design (15 %) and contingency (25 %). NYC Ferry's US$55 M for 10 new landings and upgrades (2017) is about US$5.5 M a landing; a simple pontoon on a quay is about US$1 M, a terminal building with several berths over US$10 M."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.cost.vessel_each": {
+   "used_by": [
+    "construction cost: vehicles"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "nyc-ferry-vessel-cost",
+      "weta-kvichak-contract",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Fallback across vessel types; the vessel type's own value applies."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "ferry.cost.vessel_hour": {
+   "used_by": [
+    "operating cost: service"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "ntd-ferry-agency-profiles",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "US ferry operators report US$490 (BillyBey), US$850–1,010 (NY Waterway), US$690–1,170 (NYC Ferry) and US$2,410 (Steamship Authority) of operating expense per vessel revenue hour (FTA agency profiles, 2017–2021). Overheads and upkeep are added on top, so the central value is below the NYC Ferry figure."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "drt.speed_kmh": {
+   "used_by": [
+    "service-zone-kit"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "acceq-drt-planning"
+     ],
+     "rationale": "Driving speed between stops on urban streets; 15 in a dense centre, 35 in suburbs and villages."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "drt.network_factor": {
+   "used_by": [
+    "service-zone-kit"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "umn-transit-circuity"
+     ],
+     "rationale": "Road networks average about 1.2; short trips and rivers or rail lines in the zone raise it."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "drt.stop_dwell_s": {
+   "used_by": [
+    "service-zone-kit"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "acceq-drt-planning"
+     ],
+     "rationale": "Pulling over, the rider boarding or alighting and pulling out; wheelchair boarding takes longer."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "drt.vehicle_places": {
+   "used_by": [
+    "service-zone-kit"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Most on-demand services run minibuses or vans with 6 to 8 seats; rural services sometimes 16-seat buses."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "drt.target_utilisation": {
+   "used_by": [
+    "service-zone-kit"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Above this share too few vehicles are free near new requests and the wait grows quickly (the estimate divides the drive to the nearest vehicle by one minus the busy share)."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "drt.pooling_detour_share": {
+   "used_by": [
+    "service-zone-kit"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "mpg-autonomous-ridepooling-germany",
+      "moia-ride-pooling-small-towns"
+     ],
+     "rationale": "A simulation of pooled services across Germany found 17.5 % on average; services allow up to 50 % plus 10 min for a single rider."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "drt.max_wait_s": {
+   "used_by": [
+    "service-zone-kit"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "moia-ride-pooling-small-towns"
+     ],
+     "rationale": "Services promise a pick-up within about 10 min; rural services accept longer waits."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "drt.riders_per_request": {
+   "used_by": [
+    "service-zone-kit"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Most bookings are for one person; families and friends book together now and then."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "drt.max_wait_limit_s": {
+   "used_by": [
+    "service-zone-kit"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "moia-ride-pooling-small-towns"
+     ],
+     "rationale": "The dispatch simulation turns a booking away when no vehicle can be there within this time. MOIA's simulated services allow 10 min; rural services accept longer."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "drt.max_detour_share": {
+   "used_by": [
+    "service-zone-kit"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "moia-ride-pooling-small-towns"
+     ],
+     "rationale": "The dispatcher keeps every ride within the direct ride plus this share plus the fixed allowance below, as in MOIA's service rule of 50 % plus 10 min."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "drt.max_detour_fixed_s": {
+   "used_by": [
+    "service-zone-kit"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "moia-ride-pooling-small-towns"
+     ],
+     "rationale": "Added to the share above; MOIA's service rule allows 10 min."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "energy.electric_share": {
+   "used_by": [
+    "energy",
+    "emissions"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Rail and trolleybus lines run under the wire; a diesel regional line sets 0."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Share of the line's buses that are battery electric; 0 is an all-diesel fleet. Set the project's fleet plan in Project Preferences."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Electrified by default; set 0 for a line run with diesel units."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Most passenger ferries run on diesel; set 1 for battery-electric vessels such as electric hydrofoils."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "bus": 1,
+    "brt": 1,
+    "intercity_bus": 1,
+    "regional_rail": 2,
+    "ferry": 3
+   }
+  },
+  "energy.electric_kwh_per_vkm": {
+   "used_by": [
+    "energy"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "viriciti-ebus-consumption",
+      "thermal-science-ebus-review"
+     ],
+     "rationale": "12 m battery bus: 1.15 kWh/km measured over 10 months (ViriCiti), 1.3 to 1.7 kWh/km in reviews; more with electric heating."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "viriciti-ebus-consumption",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "18 m articulated battery bus: about 1.5 times a 12 m bus."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "thermal-science-ebus-review",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "12 to 18 m trolleybus at the substation: a battery bus's traction plus about 10 % line and rectifier losses."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "viriciti-ebus-consumption",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Battery coach: fewer stops than a city bus, more speed; about a city bus."
+    },
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "candela-p12-energy",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Battery-electric ferries: an electric hydrofoil uses about 3 to 4 kWh per nautical mile (about 2 kWh/km); a 150 to 400-passenger electric catamaran needs several times more."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "brt": 1,
+    "trolleybus": 2,
+    "intercity_bus": 3,
+    "ferry": 4
+   }
+  },
+  "energy.electric_wh_per_place_km": {
+   "used_by": [
+    "energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "0: the mode's value per vehicle-km applies (street modes)."
+    },
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "lille-tram-energy-simulation",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "About 3.1 kWh per tram-km (Lille) for a tram of about 200 places at the substation."
+    },
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "tianjin-metro-traction-energy",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Median 2.0 kWh per car-km (Tianjin) for a car of about 230 places; more with older trains and without regenerative braking."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Electric multiple unit at 120 to 160 km/h with frequent stops: higher speed and fewer places per metre than a metro."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Electric regional and intercity trains at 160 to 200 km/h; per place offered, seats mostly."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Aerodynamic drag grows with the square of speed; at 300 km/h about 40 Wh per seat-km."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "tram": 1,
+    "light_rail": 1,
+    "metro": 2,
+    "commuter_rail": 3,
+    "regional_rail": 4,
+    "long_distance_rail": 4,
+    "high_speed_rail": 5
+   }
+  },
+  "energy.diesel_l_per_vkm": {
+   "used_by": [
+    "energy",
+    "emissions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "thermal-science-ebus-review"
+     ],
+     "rationale": "12 m diesel city bus: 3.90 kWh of fuel per km measured, about 0.39 L/km at 10 kWh/L."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "thermal-science-ebus-review",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "18 m articulated diesel bus: about 1.4 times a 12 m bus."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Coach at steady speed on interurban roads."
+    },
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "incat-crowther-seychelles-ferry",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "A 292-passenger 25-knot catamaran has two 1,342 kW engines: at about 70 % power and 210 g/kWh it burns about 450 L/h, or 10 L per km at 46 km/h. Slow harbour boats use 3 to 5 L/km, large fast ferries 20 or more."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "brt": 1,
+    "intercity_bus": 2,
+    "ferry": 3
+   }
+  },
+  "energy.diesel_ml_per_place_km": {
+   "used_by": [
+    "energy",
+    "emissions"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "0: the mode's value per vehicle-km applies (street modes)."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Diesel multiple unit: about 1.2 L per train-km for about 250 places. Used for the share not run on electricity."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "tram": 1,
+    "light_rail": 1,
+    "metro": 1,
+    "commuter_rail": 1,
+    "regional_rail": 1,
+    "long_distance_rail": 1,
+    "high_speed_rail": 1
+   }
+  },
+  "energy.charging_loss_share": {
+   "used_by": [
+    "energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Rail and trolleybus energy is counted at the substation, with its losses."
+    },
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Charger and battery losses between the grid and the battery of a battery bus."
+    }
+   ],
+   "modes": {
+    "*": 0,
+    "bus": 1,
+    "brt": 1,
+    "intercity_bus": 1
+   }
+  },
+  "energy.grid_kg_co2e_per_kwh": {
+   "used_by": [
+    "emissions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "eea-electricity-ghg-intensity"
+     ],
+     "rationale": "EU average about 0.20 in 2023 (20 % below 2022); from about 0.02 (hydro and nuclear grids) to 0.8 (coal grids). Set the project's own country or green power contract."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "energy.diesel_ttw_kg_co2e_per_l": {
+   "used_by": [
+    "emissions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "desnz-ghg-conversion-factors-2024"
+     ],
+     "rationale": "2.66 for mineral diesel; about 2.51 for the average biofuel blend at the pump."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "energy.diesel_wtt_kg_co2e_per_l": {
+   "used_by": [
+    "emissions"
+   ],
+   "entries": [
+    {
+     "basis": "documented",
+     "check": "unverified",
+     "sources": [
+      "desnz-ghg-conversion-factors-2024"
+     ],
+     "rationale": "Extraction, refining and delivery of diesel, so it compares with electricity counted at generation."
+    }
+   ],
+   "modes": {
+    "*": 0
+   }
+  },
+  "energy.diesel_kwh_per_l": {
+   "used_by": [
+    "energy"
+   ],
+   "entries": [
+    {
+     "basis": "educated-guess",
+     "check": "unverified",
+     "sources": [
+      "desnz-ghg-conversion-factors-2024",
+      "mobsimlab-derivation"
+     ],
+     "rationale": "Net calorific value of about 36 MJ per litre."
     }
    ],
    "modes": {
