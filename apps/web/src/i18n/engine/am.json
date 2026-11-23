@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "በ{station}፣ {count} ጉዞዎች ከተለመደው ሌላ መድረክ ተጠቅመዋል።",
   "rail.plan.platform_changes_one": "በ{station}፣ 1 ጉዞ ከተለመደው ሌላ መድረክ ተጠቅሟል።",
   "rail.plan.platform_short": "መድረክ {platform} {length} ነው፣ ባቡሩ {needed} ይፈልጋል",
+  "rail.plan.platform_taken": "መውጣት ያልቻለ ባቡር በመድረኩ ላይ ቆሟል",
   "rail.plan.pull_out": "ከዴፖ መውጣት፡ {reason}",
   "rail.plan.route_break": "መስመር (route) {route} መስመር {previous}ን አይከተልም",
   "rail.plan.run_failed": "{run}፡ {detail}",

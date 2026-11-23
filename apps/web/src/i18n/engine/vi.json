@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "Tại {station}, {count} chuyến đã dùng sân ga khác thường lệ.",
   "rail.plan.platform_changes_one": "Tại {station}, 1 chuyến đã dùng sân ga khác thường lệ.",
   "rail.plan.platform_short": "sân ga {platform} dài {length}, tàu cần {needed}",
+  "rail.plan.platform_taken": "một tàu không thể rời đi đang đứng tại sân ga",
   "rail.plan.pull_out": "ra khỏi depot: {reason}",
   "rail.plan.route_break": "lộ trình {route} không nối tiếp lộ trình {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

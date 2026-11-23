@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "E-{station}, uhambo olungu-{count} lusebenzise enye ipulatifomu kunejwayelekile.",
   "rail.plan.platform_changes_one": "E-{station}, uhambo olu-1 lusebenzise enye ipulatifomu kunejwayelekile.",
   "rail.plan.platform_short": "ipulatifomu {platform} ingu-{length}, isitimela sidinga u-{needed}",
+  "rail.plan.platform_taken": "isitimela esingakwazanga ukuhamba simi epulatifomini",
   "rail.plan.pull_out": "ukuphuma: {reason}",
   "rail.plan.route_break": "umzila {route} awulandeli umzila {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

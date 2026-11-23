@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "A {station}, tafiye-tafiye {count} sun yi amfani da wani dandamali daban da na yau da kullum.",
   "rail.plan.platform_changes_one": "A {station}, tafiya 1 ta yi amfani da wani dandamali daban da na yau da kullum.",
   "rail.plan.platform_short": "dandamali {platform} tsawonsa {length} ne, jirgin ƙasa yana buƙatar {needed}",
+  "rail.plan.platform_taken": "jirgin ƙasa da bai iya tashi ba yana tsaye a dandamalin",
   "rail.plan.pull_out": "fitowa daga ajiya: {reason}",
   "rail.plan.route_break": "hanya {route} ba ta bin hanya {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

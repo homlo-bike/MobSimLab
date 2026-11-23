@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "Kwenye {station}, safari {count} zilitumia jukwaa jingine kuliko kawaida.",
   "rail.plan.platform_changes_one": "Kwenye {station}, safari 1 ilitumia jukwaa jingine kuliko kawaida.",
   "rail.plan.platform_short": "jukwaa {platform} lina urefu wa {length}, treni inahitaji {needed}",
+  "rail.plan.platform_taken": "treni iliyoshindwa kuondoka imesimama jukwaani",
   "rail.plan.pull_out": "kutoka karakana: {reason}",
   "rail.plan.route_break": "njia {route} haifuati njia {previous}",
   "rail.plan.run_failed": "{run}: {detail}",

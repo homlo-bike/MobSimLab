@@ -376,6 +376,7 @@
   "rail.plan.platform_changes": "{station}: {count} рейс әдеттегіден басқа платформаны пайдаланды.",
   "rail.plan.platform_changes_one": "{station}: 1 рейс әдеттегіден басқа платформаны пайдаланды.",
   "rail.plan.platform_short": "{platform} платформасының ұзындығы {length}, пойызға {needed} қажет",
+  "rail.plan.platform_taken": "жүре алмаған пойыз платформада тұр",
   "rail.plan.pull_out": "деподан шығу: {reason}",
   "rail.plan.route_break": "{route} маршруты {previous} маршрутының жалғасы емес",
   "rail.plan.run_failed": "{run}: {detail}",
