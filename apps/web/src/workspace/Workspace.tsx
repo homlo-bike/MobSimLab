@@ -155,6 +155,14 @@ import { Dialog } from "../shell/Dialog";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
 import { UnroutedNotice } from "../features/tables/UnroutedNotice";
 import { engineErrorText } from "../i18n/engine";
+import {
+  climateFrom,
+  climatePlace,
+  fetchClimate,
+  needsClimate,
+  withClimate,
+  withFetchedClimate,
+} from "./climate";
 
 // Editors and screens downloaded when first opened, so opening a project fetches only the tab shown.
 const BenefitTables = lazyNamed(() => import("../features/benefits/BenefitTables"), "BenefitTables");
@@ -702,6 +710,32 @@ export function Workspace({
   useEffect(() => {
     if (sideToSet) drawings.set("preferences", withCountryDrivingSide(preferences, placeCountry)!);
   }, [sideToSet, projectId]);
+  // The project's climate (Project preferences → Climate) is kept in the project as soon as it opens with a place,
+  // so calendar runs have it without Preferences being opened first. The API looked it up when the area was saved.
+  const climateAt = climatePlace(areaView?.bbox, place);
+  const climateToFetch =
+    editable &&
+    drawings.loaded &&
+    climateAt !== null &&
+    needsClimate(climateFrom(preferences), areaView?.bbox);
+  const latestPreferences = useRef(preferences);
+  latestPreferences.current = preferences;
+  useEffect(() => {
+    if (!climateToFetch || !climateAt) return;
+    let stop = false;
+    fetchClimate(climateAt[1], climateAt[0]).then(
+      (got) => {
+        const cur = latestPreferences.current;
+        if (stop || !needsClimate(climateFrom(cur), areaView?.bbox)) return;
+        drawings.set("preferences", withClimate(cur, withFetchedClimate(climateFrom(cur), got)));
+      },
+      // Preferences → Climate shows the error and a retry.
+      () => undefined,
+    );
+    return () => {
+      stop = true;
+    };
+  }, [climateToFetch, climateAt?.[0], climateAt?.[1], projectId]);
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
@@ -1527,7 +1561,7 @@ export function Workspace({
                 onFleet={drawings.loaded ? (d) => drawings.set("fleet", d) : undefined}
                 depots={depotsDoc?.depots ?? NO_DEPOTS}
                 country={placeCountry}
-                place={place}
+                place={climateAt}
                 mapExports={
                   drawings.loaded ? (
                     // Its own wait, so the rest of the preferences show while the export code loads.
