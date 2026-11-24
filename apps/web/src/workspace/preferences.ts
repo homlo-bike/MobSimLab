@@ -423,6 +423,8 @@ export interface LibraryParam {
   values: Record<string, [number, number, number] | string>;
   /** Values for a traction (battery, diesel…) that has its own entry. */
   traction?: Record<string, [number, number, number] | string>;
+  /** The plugin whose parameter it is (cable cars, ferries…); absent for the library's own. */
+  plugin?: string;
 }
 
 const PARAMS_DATA = paramsData as unknown as { groups: string[]; params: LibraryParam[] };

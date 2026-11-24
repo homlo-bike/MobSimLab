@@ -2,7 +2,7 @@ import { Marker, type Map as MapLibreMap, type MapMouseEvent } from "maplibre-gl
 import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../i18n/i18n";
-import { centralValues, findMode, type PluginTool } from "../plugins/registry";
+import { findMode, projectValues, type PluginTool } from "../plugins/registry";
 import { dispatchRules, loadKits, zoneSystem } from "./engine";
 import { fmtInt } from "./format";
 import { Issues, Stat } from "./Issues";
@@ -43,6 +43,8 @@ interface Props {
   storageKey: string;
   loadKits?: KitsLoader;
   onZoneChange?: (zone: DemandZone | null) => void;
+  /** Project preferences: the project's own values of the plugin's parameters, over the library's. */
+  preferences?: Readonly<Record<string, number>>;
 }
 
 function emptyDoc(tool: PluginTool): ZoneDoc {
@@ -78,6 +80,7 @@ export function ZoneEditor({
   storageKey,
   loadKits: load = loadKits,
   onZoneChange,
+  preferences,
 }: Props) {
   const { t } = useI18n();
   const [kits, setKits] = useState<Kits | null>(null);
@@ -99,7 +102,8 @@ export function ZoneEditor({
   const found = findMode(doc.mode) ?? findMode(tool.modes[0] ?? "");
   const color = found?.mode.colour ?? "#9333ea";
   const prefix = found?.mode.parameterPrefix ?? "drt";
-  const system = useMemo(() => zoneSystem(centralValues(doc.mode, "*"), prefix), [doc.mode, prefix]);
+  const values = useMemo(() => projectValues(doc.mode, "*", preferences), [doc.mode, preferences]);
+  const system = useMemo(() => zoneSystem(values, prefix), [values, prefix]);
 
   const view: ZoneView | null = useMemo(() => {
     if (!kits) return null;
@@ -133,10 +137,10 @@ export function ZoneEditor({
               system,
               parameter_prefix: prefix,
             },
-            rules: dispatchRules(centralValues(doc.mode, "*"), prefix),
+            rules: dispatchRules(values, prefix),
           }
         : null,
-    [doc.ring, doc.requestsPerHour, doc.fleet, doc.from, doc.to, doc.mode, system, prefix],
+    [doc.ring, doc.requestsPerHour, doc.fleet, doc.from, doc.to, values, system, prefix],
   );
   const [sim, setSim] = useState<{ input: typeof simInput; result: DispatchResult } | null>(null);
   const [simulating, setSimulating] = useState(false);

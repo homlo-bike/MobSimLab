@@ -19,16 +19,39 @@ export const BUILDING_TILE_ZOOM = 14;
 export const MAX_BUILDING_TILES = 320;
 /** Building tiles asked for at the same time. */
 const PARALLEL_TILES = 4;
+/**
+ * How long to wait before asking again for a tile the API could not give (502/503/504, or no answer), ms. Tiles
+ * outside the project's OpenStreetMap import come from the public Overpass API, which turns some away when a city's
+ * worth of tiles is asked for at once; the API keeps a tile it got late, so the next try is usually quick.
+ */
+export const TILE_RETRY_MS = [5_000, 15_000, 30_000];
+
+/** A building tile the API could not give; `retry` when asking again later may work. */
+export class BuildingTileError extends Error {
+  constructor(
+    message: string,
+    readonly retry: boolean,
+  ) {
+    super(message);
+  }
+}
 
 /** Fetches one building tile: `{buildings: NoiseBuilding[]}` from the API. */
 export type BuildingTileFetcher = (x: number, y: number) => Promise<NoiseBuilding[]>;
 
 /** Purpose: fetch one tile of OSM building footprints from the API (cached server-side). */
 export const fetchBuildingTile: BuildingTileFetcher = async (x, y) => {
-  const res = await fetch(withProject(`/api/street-network/building-tiles/${BUILDING_TILE_ZOOM}/${x}/${y}`));
+  let res: Response;
+  try {
+    res = await fetch(withProject(`/api/street-network/building-tiles/${BUILDING_TILE_ZOOM}/${x}/${y}`));
+  } catch {
+    // No answer at all (the connection dropped): worth asking again.
+    throw new BuildingTileError(tNow("noise.buildingsDown"), true);
+  }
   noteSource(res);
   if (res.status === 401) throw new Error(tNow("noise.signIn"));
-  if (!res.ok) throw new Error(tNow("noise.buildingsDown"));
+  if (!res.ok)
+    throw new BuildingTileError(tNow("noise.buildingsDown"), res.status === 429 || res.status >= 500);
   return ((await res.json()) as { buildings?: NoiseBuilding[] }).buildings ?? [];
 };
 
@@ -97,8 +120,9 @@ function tileY(lat: number): number {
  * Purpose: buildings of several tiles, once each (a building on a tile edge comes in both), in the order of the
  * tiles. A few tiles are asked for at a time.
  * Inputs: the tiles, the fetcher, and optionally a callback after each tile (tiles done, tiles in all), a
- * signal that stops before the next tile (throwing the signal's reason), and which buildings to keep (all by
- * default; a city's tiles are kept to the buildings near the lines).
+ * signal that stops before the next tile (throwing the signal's reason), which buildings to keep (all by
+ * default; a city's tiles are kept to the buildings near the lines), and the waits before asking again for a
+ * tile the API could not give (`TILE_RETRY_MS`). A tile that still fails after the last wait fails the whole load.
  */
 export async function loadBuildings(
   tiles: [number, number][],
@@ -106,15 +130,33 @@ export async function loadBuildings(
   onProgress?: (done: number, total: number) => void,
   signal?: AbortSignal,
   keep: (b: NoiseBuilding) => boolean = () => true,
+  retryMs: readonly number[] = TILE_RETRY_MS,
 ): Promise<NoiseBuilding[]> {
+  const fetchWithRetry = async (x: number, y: number): Promise<NoiseBuilding[]> => {
+    for (let attempt = 0; ; attempt++) {
+      try {
+        return await fetchTile(x, y);
+      } catch (e) {
+        if (failed || !(e instanceof BuildingTileError && e.retry) || attempt >= retryMs.length) throw e;
+        await wait(retryMs[attempt]!, signal);
+      }
+    }
+  };
   const got: NoiseBuilding[][] = new Array(tiles.length);
   let [next, done] = [0, 0];
+  // Once a tile has failed for good the load has failed: the other workers stop asking.
+  let failed = false;
   const worker = async () => {
-    while (next < tiles.length) {
+    while (next < tiles.length && !failed) {
       signal?.throwIfAborted();
       const i = next++;
       const [x, y] = tiles[i]!;
-      got[i] = (await fetchTile(x, y)).filter(keep);
+      try {
+        got[i] = (await fetchWithRetry(x, y)).filter(keep);
+      } catch (e) {
+        failed = true;
+        throw e;
+      }
       onProgress?.(++done, tiles.length);
     }
   };
@@ -123,6 +165,23 @@ export async function loadBuildings(
   const seen = new Map<string, NoiseBuilding>();
   for (const list of got) for (const b of list) if (!seen.has(b.id)) seen.set(b.id, b);
   return [...seen.values()];
+}
+
+/** Purpose: wait `ms`, or throw the signal's reason as soon as it is aborted. */
+function wait(ms: number, signal?: AbortSignal): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (signal?.aborted) return reject(signal.reason);
+    const done = () => {
+      signal?.removeEventListener("abort", stop);
+      resolve();
+    };
+    const timer = setTimeout(done, ms);
+    const stop = () => {
+      clearTimeout(timer);
+      reject(signal!.reason);
+    };
+    signal?.addEventListener("abort", stop, { once: true });
+  });
 }
 
 export const BUILDINGS_SOURCE = "noise-buildings";

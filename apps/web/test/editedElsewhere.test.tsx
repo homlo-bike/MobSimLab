@@ -1,8 +1,9 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
 import { hasOwnSection } from "../src/workspace/editedElsewhere";
-import { ParametersSection } from "../src/workspace/Parameters";
-import { LIBRARY_PARAMS } from "../src/workspace/preferences";
+import { ParametersSection, shownParams } from "../src/workspace/Parameters";
+import { PLUGINS } from "../src/plugins/registry";
+import { LIBRARY_PARAMS, type PreferencesDoc } from "../src/workspace/preferences";
 
 afterEach(cleanup);
 
@@ -37,5 +38,38 @@ describe("each library value is set in one place", () => {
     const shown = LIBRARY_PARAMS.filter((p) => !hasOwnSection(p.id));
     expect(shown.length).toBeGreaterThan(0);
     expect(shown.length).toBeLessThan(LIBRARY_PARAMS.length);
+  });
+
+  it("lists the cable car, ferry and on-demand bus values while their plugins are on, and saves a change", () => {
+    let saved: PreferencesDoc | null = null;
+    render(
+      <ParametersSection
+        preferences={null}
+        editable
+        onPreferences={(d) => {
+          saved = d;
+        }}
+      />,
+    );
+    const groups = screen.getByLabelText("Group") as HTMLSelectElement;
+    const names = [...groups.options].map((o) => o.value);
+    for (const g of ["Cable cars", "Ferries", "Energy and emissions"]) expect(names).toContain(g);
+    // Their prices are set in Tables → Costs.
+    expect(names).not.toContain("Cable car costs");
+    expect(hasOwnSection("ropeway.cost.station_each")).toBe(true);
+    const modes = [...(screen.getByLabelText("Mode") as HTMLSelectElement).options].map((o) => o.value);
+    expect(modes).toEqual(expect.arrayContaining(["cable_car", "aerial_tramway", "ferry", "on_demand_bus"]));
+    fireEvent.change(groups, { target: { value: "Cable cars" } });
+    const span = screen.getByLabelText("Span between supports, maximum");
+    fireEvent.change(span, { target: { value: "250" } });
+    expect(saved!.values["ropeway.max_span_m"]).toBe(250);
+    expect(screen.getByLabelText("Station approach, length")).toBeTruthy();
+  });
+
+  it("leaves a plugin's values out when the project has turned it off", () => {
+    expect(shownParams(PLUGINS).some((p) => p.id === "ropeway.max_span_m")).toBe(true);
+    const off = PLUGINS.filter((p) => p.id !== "org.mobsimlab.aerial-lift");
+    expect(shownParams(off).some((p) => p.id.startsWith("ropeway."))).toBe(false);
+    expect(shownParams(off).some((p) => p.id.startsWith("ferry."))).toBe(true);
   });
 });

@@ -3,7 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { tNow, useI18n } from "../i18n/i18n";
 import type { PluginLineInput } from "../features/journey-planner/network";
-import { centralValues, contextLabel, findMode, type PluginTool } from "../plugins/registry";
+import { contextLabel, findMode, projectValues, type PluginTool } from "../plugins/registry";
 import { loadKits, spanSystem } from "./engine";
 import { fmtDur, fmtInt, fmtLen } from "./format";
 import { LinePicker, type LineList, sharedStop } from "./LinePicker";
@@ -108,6 +108,8 @@ interface Props extends LineList {
   /** Told about the line after every change, so the journey planner can ride it. */
   onLineChange?: (line: PluginLineInput | null) => void;
   loadTerrain?: TerrainLoader;
+  /** Project preferences: the project's own values of the plugin's parameters, over the library's. */
+  preferences?: Readonly<Record<string, number>>;
 }
 
 /** Purpose: an empty drawing for the tool's first mode. */
@@ -164,6 +166,7 @@ export function SpanLineEditor({
   onNewLine,
   onDeleteLine,
   otherStops = [],
+  preferences,
 }: Props) {
   const { t, tn } = useI18n();
   const [kits, setKits] = useState<Kits | null>(null);
@@ -198,7 +201,10 @@ export function SpanLineEditor({
   const found = findMode(doc.mode) ?? findMode(tool.modes[0] ?? "");
   const m = found?.mode;
   const color = m?.colour ?? "#7c3aed";
-  const values = useMemo(() => centralValues(doc.mode, doc.system), [doc.mode, doc.system]);
+  const values = useMemo(
+    () => projectValues(doc.mode, doc.system, preferences),
+    [doc.mode, doc.system, preferences],
+  );
   const system = useMemo(
     () =>
       spanSystem(

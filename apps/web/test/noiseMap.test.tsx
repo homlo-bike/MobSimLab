@@ -16,7 +16,12 @@ vi.mock("../src/features/noise/mapLayer", () => ({
 }));
 
 import { engineRunner } from "../src/features/noise/engine";
-import { corridorTiles, loadBuildings, MAX_BUILDING_TILES } from "../src/features/noise/buildings";
+import {
+  BuildingTileError,
+  corridorTiles,
+  loadBuildings,
+  MAX_BUILDING_TILES,
+} from "../src/features/noise/buildings";
 import { Corridor } from "../src/features/noise/corridor";
 import { MAP_REACH_M, NoiseMap, projectSources } from "../src/features/noise/NoiseMap";
 import { buildingsBbox, fetchPopulationOver, type PopulationAnswer } from "../src/features/noise/population";
@@ -328,6 +333,50 @@ describe("noise map sources and buildings", () => {
     fetchPeople.mockClear();
     await fetchPopulationOver([7, 50, 7.01, 50.01], [house("x", 7)], fetchPeople);
     expect(fetchPeople).toHaveBeenCalledTimes(1);
+  });
+
+  it("asks again for a tile Overpass turned away, and gives up after the last wait", async () => {
+    // Tile 2 fails twice (502, then the proxy's 504), then comes.
+    let fails = 2;
+    const fetchTile = vi.fn(async (x: number) => {
+      if (x === 2 && fails-- > 0) throw new BuildingTileError("down", true);
+      return [house(`w${x}`, 7)];
+    });
+    const tiles: [number, number][] = [
+      [1, 1],
+      [2, 1],
+    ];
+    const b = await loadBuildings(tiles, fetchTile, undefined, undefined, undefined, [1, 1]);
+    expect(b.map((x) => x.id)).toEqual(["w1", "w2"]);
+    expect(fetchTile).toHaveBeenCalledTimes(4);
+    // Still down after every wait: the load fails.
+    const down = vi.fn(async (): Promise<never> => {
+      throw new BuildingTileError("down", true);
+    });
+    await expect(loadBuildings([[1, 1]], down, undefined, undefined, undefined, [1, 1])).rejects.toThrow(
+      "down",
+    );
+    expect(down).toHaveBeenCalledTimes(3);
+    // An error asking again would not help (signed out) fails at once.
+    const out = vi.fn(async (): Promise<never> => {
+      throw new Error("sign in");
+    });
+    await expect(loadBuildings([[1, 1]], out, undefined, undefined, undefined, [1, 1])).rejects.toThrow(
+      "sign in",
+    );
+    expect(out).toHaveBeenCalledTimes(1);
+  });
+
+  it("stops waiting to ask again for a tile when the noise map is cancelled", async () => {
+    const ctrl = new AbortController();
+    const fetchTile = vi.fn(async (): Promise<never> => {
+      setTimeout(() => ctrl.abort(new Error("cancelled")), 0);
+      throw new BuildingTileError("down", true);
+    });
+    await expect(
+      loadBuildings([[1, 1]], fetchTile, undefined, ctrl.signal, undefined, [60_000]),
+    ).rejects.toThrow("cancelled");
+    expect(fetchTile).toHaveBeenCalledTimes(1);
   });
 
   it("keeps a building on a tile edge once", async () => {

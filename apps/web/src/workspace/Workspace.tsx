@@ -1293,6 +1293,7 @@ export function Workspace({
                       : undefined)
                   }
                   onSave={(x) => savePluginLine(lineKey!, x)}
+                  preferences={preferences?.values}
                   {...lineList(chosenPlugin, lineKey!)}
                 />
               </Suspense>
@@ -1306,6 +1307,7 @@ export function Workspace({
                 tool={chosenPlugin}
                 storageKey={`mobsimlab:${chosenPlugin.id}:${projectId}`}
                 onZoneChange={(z) => setDemandZones((p) => ({ ...p, [chosenPlugin.id]: z }))}
+                preferences={preferences?.values}
               />
             </Suspense>
           )}
@@ -1328,6 +1330,7 @@ export function Workspace({
                       : undefined)
                   }
                   onSave={(x) => savePluginLine(lineKey!, x)}
+                  preferences={preferences?.values}
                   {...lineList(chosenPlugin, lineKey!)}
                 />
               </Suspense>

@@ -17,6 +17,7 @@ import {
   switchChoiceFrom,
   vehiclesOffFrom,
 } from "./preferences";
+import { activePlugins, pluginModes, type Plugin } from "../plugins/registry";
 
 /** Where one library entry comes from (tools/assumptions-report/export_sources.py). */
 export interface SourceEntry {
@@ -97,17 +98,26 @@ export function reportModes(projectModes: readonly string[]): string[] {
 
 /**
  * Purpose: the report's lines: for each library parameter, its value for every mode, one line per mode the
- * project uses, and one per traction that has its own library entry.
- * Inputs: the sources data, the project's preferences and its modes (project ids).
+ * project uses, and one per traction that has its own library entry. The parameters of a plugin (cable cars,
+ * ferries…) are in it while the plugin is on, with a line per plugin mode the project uses.
+ * Inputs: the sources data, the project's preferences, its modes (project ids) and the plugins on.
  */
 export function reportRows(
   data: ReportSources,
   doc: PreferencesDoc | null | undefined,
   projectModes: readonly string[],
+  plugins: readonly Plugin[] = activePlugins(),
 ): ReportRow[] {
-  const modes = reportModes(projectModes);
+  const libraryModes = reportModes(projectModes);
+  const on = new Set(plugins.map((p) => p.id));
+  const used = new Set(projectModes);
+  const ownModes = pluginModes(plugins)
+    .map((m) => m.id)
+    .filter((m) => used.has(m));
   const rows: ReportRow[] = [];
   for (const p of LIBRARY_PARAMS) {
+    if (p.plugin && !on.has(p.plugin)) continue;
+    const modes = p.plugin ? [...libraryModes, ...ownModes] : libraryModes;
     const src = data.params[p.id];
     const entry = (i: number | undefined) => (i === undefined ? null : (src?.entries[i] ?? null));
     const isNumber = p.kind === "number";

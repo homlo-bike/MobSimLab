@@ -14,7 +14,12 @@
   "Benefits",
   "Fares",
   "Appraisal",
-  "Noise"
+  "Noise",
+  "Cable cars",
+  "Cable car costs",
+  "Ferries",
+  "Ferry costs",
+  "Energy and emissions"
  ],
  "params": [
   {
@@ -1843,6 +1848,156 @@
      60
     ]
    }
+  },
+  {
+   "id": "drt.speed_kmh",
+   "label": "Average driving speed in the zone",
+   "group": "Operations",
+   "unit": "km/h",
+   "kind": "number",
+   "values": {
+    "*": [
+     15,
+     25,
+     35
+    ]
+   },
+   "plugin": "org.mobsimlab.on-demand-bus"
+  },
+  {
+   "id": "drt.network_factor",
+   "label": "Street distance over straight distance",
+   "group": "Operations",
+   "unit": "ratio",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.15,
+     1.25,
+     1.4
+    ]
+   },
+   "plugin": "org.mobsimlab.on-demand-bus"
+  },
+  {
+   "id": "drt.stop_dwell_s",
+   "label": "Time stopped for a pick-up or drop-off",
+   "group": "Operations",
+   "unit": "s",
+   "kind": "number",
+   "values": {
+    "*": [
+     20,
+     32,
+     60
+    ]
+   },
+   "plugin": "org.mobsimlab.on-demand-bus"
+  },
+  {
+   "id": "drt.vehicle_places",
+   "label": "Passenger places per vehicle",
+   "group": "Operations",
+   "unit": "places",
+   "kind": "number",
+   "values": {
+    "*": [
+     6,
+     8,
+     16
+    ]
+   },
+   "plugin": "org.mobsimlab.on-demand-bus"
+  },
+  {
+   "id": "drt.target_utilisation",
+   "label": "Busy share of the fleet that keeps waits short",
+   "group": "Operations",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.75,
+     0.85,
+     0.9
+    ]
+   },
+   "plugin": "org.mobsimlab.on-demand-bus"
+  },
+  {
+   "id": "drt.pooling_detour_share",
+   "label": "Extra ride time from sharing, over the direct trip",
+   "group": "Operations",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.1,
+     0.2,
+     0.5
+    ]
+   },
+   "plugin": "org.mobsimlab.on-demand-bus"
+  },
+  {
+   "id": "drt.max_wait_s",
+   "label": "Recommended longest average wait",
+   "group": "Operations",
+   "unit": "s",
+   "kind": "number",
+   "values": {
+    "*": [
+     600,
+     600,
+     1200
+    ]
+   },
+   "plugin": "org.mobsimlab.on-demand-bus"
+  },
+  {
+   "id": "drt.max_wait_limit_s",
+   "label": "Longest wait before a booking is turned away",
+   "group": "Operations",
+   "unit": "s",
+   "kind": "number",
+   "values": {
+    "*": [
+     600,
+     900,
+     1800
+    ]
+   },
+   "plugin": "org.mobsimlab.on-demand-bus"
+  },
+  {
+   "id": "drt.max_detour_share",
+   "label": "Longest ride, share over the direct ride",
+   "group": "Operations",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.3,
+     0.5,
+     1
+    ]
+   },
+   "plugin": "org.mobsimlab.on-demand-bus"
+  },
+  {
+   "id": "drt.max_detour_fixed_s",
+   "label": "Longest ride, fixed allowance over the direct ride",
+   "group": "Operations",
+   "unit": "s",
+   "kind": "number",
+   "values": {
+    "*": [
+     300,
+     600,
+     900
+    ]
+   },
+   "plugin": "org.mobsimlab.on-demand-bus"
   },
   {
    "id": "demand.area_buffer_m",
@@ -3747,6 +3902,21 @@
      1000
     ]
    }
+  },
+  {
+   "id": "drt.riders_per_request",
+   "label": "Riders per booking",
+   "group": "Demand",
+   "unit": "riders",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     1.1,
+     1.3
+    ]
+   },
+   "plugin": "org.mobsimlab.on-demand-bus"
   },
   {
    "id": "analysis.walk_rule_minutes",
@@ -7800,7 +7970,8 @@
      4,
      4
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.day_start_h",
@@ -7814,7 +7985,8 @@
      7,
      8
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.evening_start_h",
@@ -7828,7 +8000,8 @@
      19,
      20
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.night_start_h",
@@ -7842,7 +8015,8 @@
      23,
      24
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.evening_penalty_db",
@@ -7856,7 +8030,8 @@
      5,
      5
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.night_penalty_db",
@@ -7870,7 +8045,8 @@
      10,
      10
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.band_lden_db",
@@ -7884,7 +8060,8 @@
      55,
      65
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.band_lnight_db",
@@ -7898,7 +8075,8 @@
      50,
      60
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.who_guideline_lden_db",
@@ -7947,7 +8125,8 @@
      54,
      54
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.who_guideline_lnight_db",
@@ -7996,7 +8175,8 @@
      44,
      44
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.air_temperature_c",
@@ -8010,7 +8190,8 @@
      15,
      25
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.relative_humidity_pct",
@@ -8024,7 +8205,8 @@
      70,
      90
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.ground_factor_default",
@@ -8038,7 +8220,8 @@
      0.5,
      1
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.max_source_distance_m",
@@ -8052,7 +8235,8 @@
      500,
      1000
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.map_reach_m",
@@ -8066,7 +8250,8 @@
      300,
      500
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.grid_spacing_m",
@@ -8080,7 +8265,8 @@
      10,
      20
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.building_storey_height_m",
@@ -8094,7 +8280,8 @@
      3,
      3.5
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.building_default_height_m",
@@ -8108,7 +8295,8 @@
      8,
      15
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.favourable_probability_day",
@@ -8122,7 +8310,8 @@
      0.5,
      1.0
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.favourable_probability_evening",
@@ -8136,7 +8325,8 @@
      0.75,
      1.0
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.favourable_probability_night",
@@ -8150,7 +8340,8 @@
      1.0,
      1.0
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.reflection_order",
@@ -8164,7 +8355,8 @@
      1,
      2
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.reflection_max_distance_m",
@@ -8178,7 +8370,8 @@
      50,
      100
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.facade_reflection_coefficient",
@@ -8192,7 +8385,8 @@
      0.8,
      1.0
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.terrain_filter_window_m",
@@ -8206,7 +8400,8 @@
      60,
      120
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.floor_area_per_person_m2",
@@ -8220,7 +8415,8 @@
      55,
      75
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.population_min_footprint_m2",
@@ -8234,7 +8430,8 @@
      30,
      50
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.building_level_height_m",
@@ -8248,7 +8445,8 @@
      3,
      3.5
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.road_source_height_m",
@@ -8262,7 +8460,8 @@
      0.05,
      0.05
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.rail_source_height_a_m",
@@ -8276,7 +8475,8 @@
      0.5,
      0.5
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.rail_source_height_b_m",
@@ -8290,7 +8490,8 @@
      4,
      4
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.rail_min_roughness_speed_kmh",
@@ -8314,7 +8515,8 @@
      30,
      30
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.rail_aero_from_kmh",
@@ -8328,7 +8530,8 @@
      200,
      200
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.rail_vehicle_length_m",
@@ -8362,7 +8565,8 @@
      26.4,
      26.4
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.rail_axles_per_vehicle",
@@ -8386,7 +8590,8 @@
      6,
      8
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.rail_powered_vehicle_share",
@@ -8415,7 +8620,8 @@
      0,
      0
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.rail_locomotives_per_train",
@@ -8434,7 +8640,8 @@
      1,
      1
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.rail_impact_extent_m",
@@ -8448,7 +8655,8 @@
      50,
      50
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.road_stop_zone_m",
@@ -8462,7 +8670,8 @@
      100,
      100
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.electric_road_propulsion_delta_db",
@@ -8476,7 +8685,8 @@
      -8,
      -3
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.rail_squeal_r300_db",
@@ -8490,7 +8700,8 @@
      8,
      10
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.rail_squeal_r500_db",
@@ -8504,7 +8715,8 @@
      5,
      8
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.tram_squeal_r200_db",
@@ -8518,7 +8730,8 @@
      5,
      8
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.squeal_min_length_m",
@@ -8532,7 +8745,8 @@
      50,
      50
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.tram_embedded_track_db",
@@ -8546,7 +8760,8 @@
      2,
      5
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.cable_car_tower_lw_db",
@@ -8560,7 +8775,8 @@
      100,
      102
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.cable_car_station_lw_db",
@@ -8574,7 +8790,8 @@
      102,
      106
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.ferry_cruise_lw_db",
@@ -8588,7 +8805,8 @@
      108,
      112
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.ferry_berth_lw_db",
@@ -8602,7 +8820,8 @@
      100,
      110
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
   },
   {
    "id": "noise.ferry_source_height_m",
@@ -8616,7 +8835,888 @@
      5,
      10
     ]
-   }
+   },
+   "plugin": "org.mobsimlab.noise"
+  },
+  {
+   "id": "ropeway.line_speed_ms",
+   "label": "Line speed",
+   "group": "Cable cars",
+   "unit": "m/s",
+   "kind": "number",
+   "values": {
+    "*": [
+     3,
+     5,
+     12
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.cabin_interval_s",
+   "label": "Cabin interval",
+   "group": "Cable cars",
+   "unit": "s",
+   "kind": "number",
+   "values": {
+    "*": [
+     8,
+     12,
+     60
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.cabin_capacity",
+   "label": "Cabin capacity",
+   "group": "Cable cars",
+   "unit": "passengers",
+   "kind": "number",
+   "values": {
+    "*": [
+     4,
+     10,
+     200
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.max_span_m",
+   "label": "Span between supports, maximum",
+   "group": "Cable cars",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     150,
+     400,
+     3000
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.max_station_angle_deg",
+   "label": "Direction change in a station, maximum",
+   "group": "Cable cars",
+   "unit": "°",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     30,
+     90
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.min_clearance_m",
+   "label": "Clearance under the loaded cabin, minimum",
+   "group": "Cable cars",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     3,
+     5,
+     8
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.recommended_clearance_m",
+   "label": "Clearance under the loaded cabin, recommended",
+   "group": "Cable cars",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     5,
+     8,
+     15
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.station_approach_m",
+   "label": "Station approach, length",
+   "group": "Cable cars",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     10,
+     30,
+     60
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.tower_height_m",
+   "label": "Tower height, standard",
+   "group": "Cable cars",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     15,
+     25,
+     60
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.max_tower_height_m",
+   "label": "Tower height, maximum",
+   "group": "Cable cars",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     30,
+     50,
+     150
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.station_rope_height_m",
+   "label": "Rope height at a station",
+   "group": "Cable cars",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     5,
+     8,
+     15
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.cabin_hang_m",
+   "label": "Rope to cabin bottom",
+   "group": "Cable cars",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     3,
+     4,
+     6
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.sag_ratio",
+   "label": "Rope sag under load, share of span",
+   "group": "Cable cars",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.02,
+     0.04,
+     0.06
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.station_passage_s",
+   "label": "Time through an intermediate station",
+   "group": "Cable cars",
+   "unit": "s",
+   "kind": "number",
+   "values": {
+    "*": [
+     20,
+     45,
+     90
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.terminal_dwell_s",
+   "label": "Boarding time at an aerial tramway terminal",
+   "group": "Cable cars",
+   "unit": "s",
+   "kind": "number",
+   "values": {
+    "*": [
+     30,
+     60,
+     120
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.reserve_share",
+   "label": "Spare cabins, share of cabins on the line",
+   "group": "Cable cars",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.05,
+     0.1,
+     0.15
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.wind_slow_kmh",
+   "label": "Wind speed at which the line slows down",
+   "group": "Cable cars",
+   "unit": "km/h",
+   "kind": "number",
+   "values": {
+    "*": [
+     40,
+     60,
+     80
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.wind_stop_kmh",
+   "label": "Wind speed at which the line stops",
+   "group": "Cable cars",
+   "unit": "km/h",
+   "kind": "number",
+   "values": {
+    "*": [
+     60,
+     80,
+     110
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.capacity_ceiling_pphpd",
+   "label": "Capacity ceiling of any ropeway",
+   "group": "Cable cars",
+   "unit": "p/h/dir",
+   "kind": "number",
+   "values": {
+    "*": [
+     4500,
+     6000,
+     8000
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.cost.station_each",
+   "label": "Cable car station",
+   "group": "Cable car costs",
+   "unit": "US$ million per station (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     8,
+     13,
+     25
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.cost.line_per_km",
+   "label": "Cable car rope, towers and drives",
+   "group": "Cable car costs",
+   "unit": "US$ million per km (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     7,
+     14,
+     20
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.cost.cabin_each",
+   "label": "Cable car cabin",
+   "group": "Cable car costs",
+   "unit": "US$ million each (2023, market)",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.04,
+     0.06,
+     0.1
+    ],
+    "aerial_tramway": [
+     0.5,
+     1,
+     2
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ropeway.cost.station_hour",
+   "label": "Cable car staff and energy per station and hour open",
+   "group": "Cable car costs",
+   "unit": "US$ per hour (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     100,
+     200,
+     350
+    ]
+   },
+   "plugin": "org.mobsimlab.aerial-lift"
+  },
+  {
+   "id": "ferry.service_speed_kn",
+   "label": "Service speed",
+   "group": "Ferries",
+   "unit": "kn",
+   "kind": "number",
+   "values": {
+    "*": [
+     8,
+     12,
+     35
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.berthing_s",
+   "label": "Berthing manoeuvre per call",
+   "group": "Ferries",
+   "unit": "s",
+   "kind": "number",
+   "values": {
+    "*": [
+     60,
+     120,
+     300
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.boarding_pax_per_min_per_gangway",
+   "label": "Boarding rate per gangway",
+   "group": "Ferries",
+   "unit": "passengers/min",
+   "kind": "number",
+   "values": {
+    "*": [
+     15,
+     30,
+     50
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.min_dwell_s",
+   "label": "Dwell at a call, minimum",
+   "group": "Ferries",
+   "unit": "s",
+   "kind": "number",
+   "values": {
+    "*": [
+     30,
+     60,
+     120
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.passenger_capacity",
+   "label": "Passengers per vessel",
+   "group": "Ferries",
+   "unit": "passengers",
+   "kind": "number",
+   "values": {
+    "*": [
+     20,
+     250,
+     600
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.air_draft_m",
+   "label": "Air draft (height above the waterline)",
+   "group": "Ferries",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     3,
+     6,
+     15
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.draught_m",
+   "label": "Draught (depth below the waterline)",
+   "group": "Ferries",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.8,
+     1.8,
+     3.5
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.under_keel_clearance_m",
+   "label": "Water kept under the keel",
+   "group": "Ferries",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.5,
+     1,
+     2
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.harbour_speed_kn",
+   "label": "Speed limit in a new speed zone",
+   "group": "Ferries",
+   "unit": "kn",
+   "kind": "number",
+   "values": {
+    "*": [
+     4,
+     6,
+     8
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.layover_s",
+   "label": "Layover at the ends of a line, minimum",
+   "group": "Ferries",
+   "unit": "s",
+   "kind": "number",
+   "values": {
+    "*": [
+     180,
+     300,
+     600
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.pax_per_call_share",
+   "label": "Passengers on and off at the busiest call, share of capacity",
+   "group": "Ferries",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.2,
+     0.5,
+     1.0
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.wave_limit_hs_m",
+   "label": "Significant wave height limit",
+   "group": "Ferries",
+   "unit": "m",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.5,
+     1.5,
+     3
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.reserve_share",
+   "label": "Reserve vessels, share of the vessels in service",
+   "group": "Ferries",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.1,
+     0.2,
+     0.34
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.cost.pier_each",
+   "label": "Ferry pier",
+   "group": "Ferry costs",
+   "unit": "US$ million per pier (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     1,
+     4,
+     10
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.cost.vessel_each",
+   "label": "Ferry vessel",
+   "group": "Ferry costs",
+   "unit": "US$ million each (2023, market)",
+   "kind": "number",
+   "values": {
+    "*": [
+     2,
+     6,
+     16
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "ferry.cost.vessel_hour",
+   "label": "Ferry crew, fuel and running repairs per vessel-hour",
+   "group": "Ferry costs",
+   "unit": "US$ per hour (2023, PPP)",
+   "kind": "number",
+   "values": {
+    "*": [
+     450,
+     900,
+     2000
+    ]
+   },
+   "plugin": "org.mobsimlab.ferry"
+  },
+  {
+   "id": "energy.electric_share",
+   "label": "Share of vehicle-km run on electricity",
+   "group": "Energy and emissions",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     1,
+     1
+    ],
+    "bus": [
+     0,
+     0,
+     1
+    ],
+    "brt": [
+     0,
+     0,
+     1
+    ],
+    "intercity_bus": [
+     0,
+     0,
+     1
+    ],
+    "ferry": [
+     0,
+     0,
+     1
+    ]
+   },
+   "plugin": "org.mobsimlab.energy"
+  },
+  {
+   "id": "energy.electric_kwh_per_vkm",
+   "label": "Electricity per vehicle-km, street modes",
+   "group": "Energy and emissions",
+   "unit": "kWh/vehicle-km",
+   "kind": "number",
+   "values": {
+    "*": [
+     1.0,
+     1.15,
+     1.7
+    ],
+    "brt": [
+     1.4,
+     1.7,
+     2.4
+    ],
+    "trolleybus": [
+     1.3,
+     1.6,
+     2.2
+    ],
+    "intercity_bus": [
+     0.9,
+     1.1,
+     1.4
+    ],
+    "ferry": [
+     1.5,
+     6,
+     20
+    ]
+   },
+   "plugin": "org.mobsimlab.energy"
+  },
+  {
+   "id": "energy.electric_wh_per_place_km",
+   "label": "Electricity per place-km, rail",
+   "group": "Energy and emissions",
+   "unit": "Wh/place-km",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     0,
+     0
+    ],
+    "tram": [
+     10,
+     15,
+     25
+    ],
+    "light_rail": [
+     10,
+     15,
+     25
+    ],
+    "metro": [
+     6,
+     9,
+     15
+    ],
+    "commuter_rail": [
+     15,
+     25,
+     40
+    ],
+    "regional_rail": [
+     20,
+     30,
+     45
+    ],
+    "long_distance_rail": [
+     20,
+     30,
+     45
+    ],
+    "high_speed_rail": [
+     25,
+     40,
+     60
+    ]
+   },
+   "plugin": "org.mobsimlab.energy"
+  },
+  {
+   "id": "energy.diesel_l_per_vkm",
+   "label": "Diesel per vehicle-km, street modes",
+   "group": "Energy and emissions",
+   "unit": "L/vehicle-km",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.3,
+     0.39,
+     0.5
+    ],
+    "brt": [
+     0.45,
+     0.55,
+     0.65
+    ],
+    "intercity_bus": [
+     0.24,
+     0.28,
+     0.35
+    ],
+    "ferry": [
+     3,
+     10,
+     25
+    ]
+   },
+   "plugin": "org.mobsimlab.energy"
+  },
+  {
+   "id": "energy.diesel_ml_per_place_km",
+   "label": "Diesel per place-km, rail",
+   "group": "Energy and emissions",
+   "unit": "mL/place-km",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     0,
+     0
+    ],
+    "tram": [
+     3,
+     5,
+     8
+    ],
+    "light_rail": [
+     3,
+     5,
+     8
+    ],
+    "metro": [
+     3,
+     5,
+     8
+    ],
+    "commuter_rail": [
+     3,
+     5,
+     8
+    ],
+    "regional_rail": [
+     3,
+     5,
+     8
+    ],
+    "long_distance_rail": [
+     3,
+     5,
+     8
+    ],
+    "high_speed_rail": [
+     3,
+     5,
+     8
+    ]
+   },
+   "plugin": "org.mobsimlab.energy"
+  },
+  {
+   "id": "energy.charging_loss_share",
+   "label": "Charging loss, share of the energy taken from the battery",
+   "group": "Energy and emissions",
+   "unit": "share",
+   "kind": "number",
+   "values": {
+    "*": [
+     0,
+     0,
+     0
+    ],
+    "bus": [
+     0.05,
+     0.1,
+     0.15
+    ],
+    "brt": [
+     0.05,
+     0.1,
+     0.15
+    ],
+    "intercity_bus": [
+     0.05,
+     0.1,
+     0.15
+    ]
+   },
+   "plugin": "org.mobsimlab.energy"
+  },
+  {
+   "id": "energy.grid_kg_co2e_per_kwh",
+   "label": "Emission intensity of grid electricity",
+   "group": "Energy and emissions",
+   "unit": "kg CO2e/kWh",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.02,
+     0.2,
+     0.8
+    ]
+   },
+   "plugin": "org.mobsimlab.energy"
+  },
+  {
+   "id": "energy.diesel_ttw_kg_co2e_per_l",
+   "label": "Diesel emissions burnt, tank-to-wheel",
+   "group": "Energy and emissions",
+   "unit": "kg CO2e/L",
+   "kind": "number",
+   "values": {
+    "*": [
+     2.51,
+     2.66,
+     2.7
+    ]
+   },
+   "plugin": "org.mobsimlab.energy"
+  },
+  {
+   "id": "energy.diesel_wtt_kg_co2e_per_l",
+   "label": "Diesel emissions upstream, well-to-tank",
+   "group": "Energy and emissions",
+   "unit": "kg CO2e/L",
+   "kind": "number",
+   "values": {
+    "*": [
+     0.55,
+     0.61,
+     0.65
+    ]
+   },
+   "plugin": "org.mobsimlab.energy"
+  },
+  {
+   "id": "energy.diesel_kwh_per_l",
+   "label": "Energy content of diesel",
+   "group": "Energy and emissions",
+   "unit": "kWh/L",
+   "kind": "number",
+   "values": {
+    "*": [
+     9.8,
+     10.0,
+     10.1
+    ]
+   },
+   "plugin": "org.mobsimlab.energy"
   }
  ]
 }

@@ -17,6 +17,8 @@ import {
   withPref,
 } from "./preferences";
 import { hasOwnSection } from "./editedElsewhere";
+import { activePlugins, pluginModes, type Plugin } from "../plugins/registry";
+import { pluginText } from "../plugins/texts";
 import { ReasonField } from "./ReasonField";
 
 /** The library's group names as message keys. */
@@ -58,9 +60,16 @@ const num = (v: number) => String(Number(v.toPrecision(6)));
 const HEX = /^#[0-9a-f]{6}$/i;
 
 /** The library's parameters without a section of their own: each value is set in one place only. */
-const SHOWN_PARAMS = LIBRARY_PARAMS.filter((p) => !hasOwnSection(p.id));
-/** The groups that still have parameters here. */
-const SHOWN_GROUPS = PARAM_GROUPS.filter((g) => SHOWN_PARAMS.some((p) => p.group === g));
+const OWN_PARAMS = LIBRARY_PARAMS.filter((p) => !hasOwnSection(p.id));
+
+/**
+ * Purpose: the parameters All parameters lists for the project: the library's, and those of the plugins it has
+ * on (cable cars, ferries…), without the ones set in a section of their own.
+ */
+export function shownParams(plugins: readonly Plugin[] = activePlugins()): LibraryParam[] {
+  const on = new Set(plugins.map((p) => p.id));
+  return OWN_PARAMS.filter((p) => !p.plugin || on.has(p.plugin));
+}
 
 /** Purpose: whether the project changes any value of a parameter (any mode, any traction). */
 function changedParam(p: LibraryParam, doc: PreferencesDoc | null): boolean {
@@ -81,13 +90,27 @@ export function ParametersSection({
   editable: boolean;
   onPreferences: (doc: PreferencesDoc) => void;
 }) {
-  const { t } = useI18n();
+  const { t, language } = useI18n();
   const groupId = useId();
   const modeId = useId();
-  const [group, setGroup] = useState<string>(SHOWN_GROUPS[0] ?? "Modes");
+  const plugins = activePlugins();
+  const shown = shownParams(plugins);
+  // The groups that have parameters here.
+  const shownGroups = PARAM_GROUPS.filter((g) => shown.some((p) => p.group === g));
+  // The library's modes, then the modes of the plugins on (cable car, ferry…).
+  const modeChoices = [
+    ...MODE_CHOICES.map((m) => ({ id: m.id, label: t(m.label) })),
+    ...pluginModes(plugins).map((m) => ({ id: m.id, label: m.label })),
+  ];
+  const [group, setGroup] = useState<string>(shownGroups[0] ?? "Modes");
   const [mode, setMode] = useState<string>("*");
-  const groupName = (g: string) => (GROUP_LABEL[g] ? t(GROUP_LABEL[g]) : g);
-  const params = SHOWN_PARAMS.filter((p) => p.group === group);
+  // A plugin's own group is named in the plugin's texts.
+  const groupName = (g: string) => {
+    if (GROUP_LABEL[g]) return t(GROUP_LABEL[g]);
+    const owner = plugins.find((x) => shown.some((p) => p.group === g && p.plugin === x.id));
+    return owner ? pluginText(owner, g, language) : g;
+  };
+  const params = shown.filter((p) => p.group === group);
   return (
     <section
       aria-labelledby="pp-params"
@@ -105,8 +128,8 @@ export function ParametersSection({
           </label>
           <div className="field">
             <select id={groupId} value={group} onChange={(e) => setGroup(e.target.value)}>
-              {SHOWN_GROUPS.map((g) => {
-                const n = SHOWN_PARAMS.filter((p) => p.group === g && changedParam(p, preferences)).length;
+              {shownGroups.map((g) => {
+                const n = shown.filter((p) => p.group === g && changedParam(p, preferences)).length;
                 return (
                   <option key={g} value={g}>
                     {groupName(g)}
@@ -124,9 +147,9 @@ export function ParametersSection({
           <div className="field">
             <select id={modeId} value={mode} onChange={(e) => setMode(e.target.value)}>
               <option value="*">{t("prefs.paramsAllModes")}</option>
-              {MODE_CHOICES.map((m) => (
+              {modeChoices.map((m) => (
                 <option key={m.id} value={m.id}>
-                  {t(m.label)}
+                  {m.label}
                 </option>
               ))}
             </select>
