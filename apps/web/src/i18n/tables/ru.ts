@@ -84,8 +84,6 @@ export const tablesRu = {
   "net.signals": "Путевые светофоры",
   "net.steepest": "Наибольший уклон",
   "net.steepestSub": "{track}, предел {limit}",
-  "net.terrainFailed":
-    "Высоты рельефа не загрузились, поэтому некоторых уклонов нет. Откройте вкладку «Таблицы» снова, чтобы повторить.",
   "net.terrainWaiting": "Уклоны появятся, когда загрузятся высоты рельефа.",
   "net.streetLines": "Уличные линии",
   "net.inBusLanes": "По выделенным полосам",

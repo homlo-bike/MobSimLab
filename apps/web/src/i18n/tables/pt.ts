@@ -83,8 +83,6 @@ export const tablesPt = {
   "net.signals": "Sinais laterais",
   "net.steepest": "Rampa mais íngreme",
   "net.steepestSub": "{track}, limite {limit}",
-  "net.terrainFailed":
-    "As altitudes do terreno não carregaram, então faltam algumas rampas. Abra a aba Tabelas de novo para tentar outra vez.",
   "net.terrainWaiting": "As rampas aparecem quando as altitudes do terreno carregarem.",
   "net.streetLines": "Linhas em rua",
   "net.inBusLanes": "Em faixas de ônibus",

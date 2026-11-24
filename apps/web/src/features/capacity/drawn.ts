@@ -3,7 +3,8 @@ import { engineLines } from "../railways/serviceLines";
 import type { Network, RailEngineLoader } from "../railways/types";
 import { dayEngineLines } from "../timetables/railPublish";
 import { DAY_TYPES, type DayTypeId, type ServiceCalendar } from "../../workspace/calendar";
-import { defaultHeights, loadTerrain, type HeightsFetcher } from "../tables/railBuild";
+import { defaultHeights, type HeightsFetcher } from "../tables/railBuild";
+import { buildWithTerrain } from "../railways/terrainTiles";
 
 /** The drawn railway as the capacity run loads it. */
 export interface DrawnNetwork {
@@ -33,7 +34,7 @@ export function drawnProblem(railway: Network | null | undefined): DrawnProblem 
  * capacity run its track topology and service lines (the lines the railway tool can publish).
  * Inputs: the railway document; the engine loader and height source (tests inject them); the project's
  * preference values (running values of the lines); the project calendar, for the service of every day type.
- * Output: the network, or a problem when nothing can be tested.
+ * Output: the network, or a problem when nothing can be tested. Throws when the terrain heights did not load.
  * Side effects: loads the rail engine (WebAssembly) and fetches terrain heights.
  */
 export async function buildDrawnNetwork(
@@ -47,11 +48,8 @@ export async function buildDrawnNetwork(
   if (problem || !railway) return problem ?? "noTrack";
   const engine = await loadRail();
   try {
-    let view = engine.build(railway, null);
-    if (engine.addTerrainTile) {
-      await loadTerrain(engine, fetchHeights);
-      view = engine.build(railway, null);
-    }
+    // Throws when the heights did not load: the trains would run as if the line were flat.
+    const view = await buildWithTerrain(engine, railway, fetchHeights);
     if (view.counts.errors > 0) return "errors";
     const topology = JSON.stringify(engine.topology());
     if (!cal)

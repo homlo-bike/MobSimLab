@@ -80,8 +80,6 @@ export const tablesYo = {
   "net.signals": "Àmì ẹ̀gbẹ́ ojú irin",
   "net.steepest": "Gẹ̀rẹ́gẹ̀rẹ́ tó ga jù",
   "net.steepestSub": "{track}, ààlà {limit}",
-  "net.terrainFailed":
-    "Gíga ilẹ̀ kò gbé wọlé, nítorí náà àwọn gẹ̀rẹ́gẹ̀rẹ́ kan kò sí. Tún ṣí táàbù Àwọn tábìlì láti gbìyànjú lẹ́ẹ̀kan sí i.",
   "net.terrainWaiting": "Àwọn gẹ̀rẹ́gẹ̀rẹ́ yóò hàn nígbà tí gíga ilẹ̀ bá gbé wọlé.",
   "net.streetLines": "Àwọn ìlà òpópónà",
   "net.inBusLanes": "Nínú ọ̀nà bọ́ọ̀sì",

@@ -77,6 +77,8 @@ export const editorsPl = {
     "Nie wczytano wysokości terenu: {reason}. Pochylenia i wysokości stacji pojawią się po ich wczytaniu.",
   "rail.publishTerrainFailed":
     "Nie wczytano wysokości terenu: {reason}. Rozkład nie został opublikowany, bo bez nich pociągi jechałyby jak po płaskiej linii. Opublikuj ponownie.",
+  "rail.terrainRequired":
+    "Nie wczytano wysokości terenu: {reason}. Bez nich pociągi jechałyby jak po płaskiej linii, więc nie zaplanowano kursów. Spróbuj ponownie później.",
   "rail.signals": "Sygnalizatory",
   "rail.signalsSome":
     "{summary}. Generowane z projektu i podążają za nim. Kliknij sygnalizator, aby go zmienić lub usunąć, albo dodaj go narzędziem Sygnalizator. Każda zmiana jest sprawdzana.",

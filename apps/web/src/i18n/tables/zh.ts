@@ -79,7 +79,6 @@ export const tablesZh = {
   "net.signals": "线路旁信号机",
   "net.steepest": "最大坡度",
   "net.steepestSub": "{track}，限值 {limit}",
-  "net.terrainFailed": "地形高程未能加载，因此缺少部分坡度。请重新打开“表格”标签页重试。",
   "net.terrainWaiting": "地形高程加载后将显示坡度。",
   "net.streetLines": "道路线路",
   "net.inBusLanes": "公交专用道上",

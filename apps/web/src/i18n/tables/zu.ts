@@ -82,8 +82,6 @@ export const tablesZu = {
   "net.signals": "Izimpawu eceleni kukajantshi",
   "net.steepest": "Ukwehla okuwumqansa kakhulu",
   "net.steepestSub": "{track}, umkhawulo {limit}",
-  "net.terrainFailed":
-    "Ukuphakama komhlaba akulayishekanga, ngakho eminye imiqansa ayikho. Phinda uvule ithebhu ethi Amathebula ukuze uzame futhi.",
   "net.terrainWaiting": "Imiqansa izovela uma ukuphakama komhlaba sekulayishiwe.",
   "net.streetLines": "Imizila yomgwaqo",
   "net.inBusLanes": "Emzileni wamabhasi",

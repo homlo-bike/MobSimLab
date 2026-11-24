@@ -79,8 +79,6 @@ export const tablesFa = {
   "net.signals": "علائم کنار خط",
   "net.steepest": "بیشترین شیب",
   "net.steepestSub": "{track}، حد {limit}",
-  "net.terrainFailed":
-    "ارتفاع زمین بارگیری نشد، بنابراین برخی شیب‌ها نیستند. برای تلاش دوباره زبانه «جدول‌ها» را دوباره باز کنید.",
   "net.terrainWaiting": "شیب‌ها پس از بارگیری ارتفاع زمین نمایش داده می‌شوند.",
   "net.streetLines": "خطوط خیابانی",
   "net.inBusLanes": "در خطوط ویژه اتوبوس",

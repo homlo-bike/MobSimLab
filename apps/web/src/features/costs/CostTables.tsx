@@ -1,5 +1,6 @@
 import { type ReactNode, useEffect, useMemo, useState } from "react";
 import { loadRailEngine, nextTask } from "../railways/engine";
+import { buildWithTerrain, fetchTerrainHeights, type HeightsFetcher } from "../railways/terrainTiles";
 import { TablePart } from "../tables/sections";
 import { hashText } from "../../projects/inputKey";
 import { type ResultsApi, useLiveResult } from "../../projects/results";
@@ -77,6 +78,7 @@ interface Props {
   canSave?: boolean;
   /** Tests inject these. */
   loadRail?: RailEngineLoader;
+  fetchHeights?: HeightsFetcher;
   api?: EconomyApi;
 }
 
@@ -144,6 +146,7 @@ export function CostTables({
   currency = null,
   onEstimate,
   loadRail = loadRailEngine,
+  fetchHeights = fetchTerrainHeights,
   api = DEFAULT_API,
   results = null,
   canSave = false,
@@ -174,7 +177,8 @@ export function CostTables({
       try {
         // Building and publishing are a second or more each on a large railway: the page answers in between.
         await nextTask();
-        const view = engine.build(railway!, null);
+        // The trains run on the terrain heights; without them the build fails and says why.
+        const view = await buildWithTerrain(engine, railway!, fetchHeights);
         const reports: Record<string, LineReport> = {};
         const lines = engineLines(railway!);
         if (lines.length)

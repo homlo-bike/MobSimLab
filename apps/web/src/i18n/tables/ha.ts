@@ -82,8 +82,6 @@ export const tablesHa = {
   "net.signals": "Alamomin gefen dogo",
   "net.steepest": "Gangare mafi tsauri",
   "net.steepestSub": "{track}, iyaka {limit}",
-  "net.terrainFailed":
-    "Tsayin ƙasa bai loda ba, don haka wasu gangare babu. Sake buɗe shafin Teburori don sake gwadawa.",
   "net.terrainWaiting": "Gangare za su bayyana da zarar tsayin ƙasa ya loda.",
   "net.streetLines": "Layukan titi",
   "net.inBusLanes": "A layin bas",

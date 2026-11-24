@@ -82,8 +82,6 @@ export const tablesSw = {
   "net.signals": "Ishara za kando ya reli",
   "net.steepest": "Mteremko mkali zaidi",
   "net.steepestSub": "{track}, kikomo {limit}",
-  "net.terrainFailed":
-    "Miinuko ya ardhi haikupakia, kwa hiyo baadhi ya miteremko haipo. Fungua tena kichupo cha Majedwali ili kujaribu tena.",
   "net.terrainWaiting": "Miteremko itaonekana miinuko ya ardhi ikishapakia.",
   "net.streetLines": "Njia za barabarani",
   "net.inBusLanes": "Katika njia ya basi",

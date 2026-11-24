@@ -83,8 +83,6 @@ export const tablesIt = {
   "net.signals": "Segnali laterali",
   "net.steepest": "Pendenza massima",
   "net.steepestSub": "{track}, limite {limit}",
-  "net.terrainFailed":
-    "Le quote del terreno non sono state caricate, quindi mancano alcune pendenze. Riapri la scheda Tabelle per riprovare.",
   "net.terrainWaiting": "Le pendenze appaiono quando le quote del terreno sono caricate.",
   "net.streetLines": "Linee stradali",
   "net.inBusLanes": "Su corsie preferenziali",

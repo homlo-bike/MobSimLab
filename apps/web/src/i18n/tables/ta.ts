@@ -82,8 +82,6 @@ export const tablesTa = {
   "net.signals": "தண்டவாள ஓர சமிக்ஞைகள்",
   "net.steepest": "மிகச் செங்குத்தான சரிவு",
   "net.steepestSub": "{track}, வரம்பு {limit}",
-  "net.terrainFailed":
-    "நில உயரங்கள் ஏற்றப்படவில்லை, எனவே சில சரிவுகள் இல்லை. மீண்டும் முயல அட்டவணைகள் தாவலை மீண்டும் திறக்கவும்.",
   "net.terrainWaiting": "நில உயரங்கள் ஏற்றப்பட்டதும் சரிவுகள் தோன்றும்.",
   "net.streetLines": "தெரு வழித்தடங்கள்",
   "net.inBusLanes": "பேருந்துப் பாதையில்",

@@ -75,6 +75,8 @@ export const editorsSw = {
     "Miinuko ya ardhi haikupakia: {reason}. Miteremko na miinuko ya vituo itafuata ikishapakia.",
   "rail.publishTerrainFailed":
     "Miinuko ya ardhi haikupakiwa: {reason}. Ratiba haikuchapishwa, kwa sababu bila hiyo treni zingeenda kana kwamba njia ni tambarare. Chapisha tena.",
+  "rail.terrainRequired":
+    "Miinuko ya ardhi haikupakiwa: {reason}. Bila hiyo treni zingeenda kana kwamba njia ni tambarare, kwa hiyo hakuna huduma iliyopangwa. Jaribu tena baadaye.",
   "rail.signals": "Ishara",
   "rail.signalsSome":
     "{summary}. Zinatengenezwa kutoka kwenye usanifu na kuufuata unapobadilika. Bofya ishara kuibadilisha au kuifuta, au tumia zana ya Ishara kuongeza moja; kila badiliko linakaguliwa.",

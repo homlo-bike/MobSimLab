@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
-import { fetchElevations } from "../../terrain/terrain";
+import {
+  buildWithTerrain,
+  fetchTerrainHeights,
+  type HeightsFetcher,
+  loadAllTerrain,
+} from "../railways/terrainTiles";
 import { loadRailEngine, nextTask } from "../railways/engine";
 import { engineLines } from "../railways/serviceLines";
 import type { Timetable } from "../journey-planner/types";
-import type { LineReport, LonLat, Network, RailEngine, RailEngineLoader, RailView } from "../railways/types";
+import type { LineReport, Network, RailEngine, RailEngineLoader, RailView } from "../railways/types";
 import { engineErrorText } from "../../i18n/engine";
 
-/** Ground heights at points, m (null without data); tests inject one. */
-export type HeightsFetcher = (points: LonLat[]) => Promise<(number | null)[]>;
+export type { HeightsFetcher } from "../railways/terrainTiles";
 
 /** The railway as the engine builds it, with its service lines as published. */
 export interface RailBuild {
@@ -15,54 +19,32 @@ export interface RailBuild {
   reports: Record<string, LineReport>;
   /** The published weekday timetable (absent when publishing failed): running times between stations. */
   timetable?: Timetable;
-  /** "ready": gradients come from the terrain; "failed": the heights did not load; "none": the engine has no terrain. */
+  /**
+   * "ready": gradients come from the terrain; "failed": the heights did not load, and no service was planned
+   * (it would run as if the line were flat); "none": the engine has no terrain.
+   */
   terrain: "ready" | "failed" | "none";
+  /** Why the heights did not load, with "failed". */
+  terrainError?: string;
 }
 
-/** Terrain tiles asked for in one request, and the most fetched for one table (as in the railway tool). */
-const TILES_PER_REQUEST = 18;
-const MAX_TILES = 144;
-
-export const defaultHeights: HeightsFetcher = (points) => fetchElevations(points).then((r) => r.elevationsM);
+export const defaultHeights: HeightsFetcher = fetchTerrainHeights;
 
 /**
- * Purpose: add the terrain heights the last build still needs, so the next build has gradients and heights.
- * Output: whether every request succeeded. Side effects: fetches heights; adds tiles to the engine.
- */
-export async function loadTerrain(engine: RailEngine, fetchHeights: HeightsFetcher): Promise<boolean> {
-  if (!engine.missingTerrainTiles || !engine.terrainTilePoints || !engine.addTerrainTile) return true;
-  const want = engine.missingTerrainTiles().slice(0, MAX_TILES);
-  let ok = true;
-  for (let i = 0; i < want.length; i += TILES_PER_REQUEST) {
-    const batch = want.slice(i, i + TILES_PER_REQUEST);
-    const pts = batch.map(([x, y]) => engine.terrainTilePoints!(x, y));
-    try {
-      const heights = await fetchHeights(pts.flat());
-      let k = 0;
-      batch.forEach(([x, y], j) => {
-        engine.addTerrainTile!(x, y, heights.slice(k, k + pts[j]!.length));
-        k += pts[j]!.length;
-      });
-    } catch {
-      ok = false;
-    }
-  }
-  return ok;
-}
-
-/**
- * Purpose: build a railway design and publish its service lines on a weekday, without terrain.
- * Output: the engine's view and the report of each line it could publish. Side effects: loads the rail engine.
+ * Purpose: build a railway design with its terrain heights and publish its service lines on a weekday.
+ * Output: the engine's view and the report of each line it could publish. Throws when the heights did not
+ * load. Side effects: loads the rail engine; fetches terrain heights.
  */
 export async function buildRailway(
   railway: Network,
   loadRail: RailEngineLoader = loadRailEngine,
+  fetchHeights: HeightsFetcher = defaultHeights,
 ): Promise<Omit<RailBuild, "terrain">> {
   const engine = await loadRail();
   try {
     // Building and publishing are a second or more each on a large railway: the page answers in between.
     await nextTask();
-    const view = engine.build(railway, null);
+    const view = await buildWithTerrain(engine, railway, fetchHeights);
     await nextTask();
     return { view, ...publish(engine, railway) };
   } finally {
@@ -114,12 +96,17 @@ export function useRailBuild(
       const engine = await loadRail();
       try {
         let view = engine.build(railway, null);
-        let terrain: RailBuild["terrain"] = engine.addTerrainTile ? "ready" : "none";
-        if (engine.addTerrainTile) {
-          const ok = await loadTerrain(engine, fetchHeights);
-          if (!live) return;
-          if (!ok) terrain = "failed";
-          view = engine.build(railway, null);
+        const terrain: RailBuild["terrain"] = engine.addTerrainTile ? "ready" : "none";
+        const { failed } = await loadAllTerrain(
+          engine,
+          () => (view = engine.build(railway, null)),
+          fetchHeights,
+        );
+        if (!live) return;
+        if (failed) {
+          // Without the heights the trains would run as if the line were flat: no service is planned.
+          setBuild({ view, reports: {}, terrain: "failed", terrainError: failed });
+          return;
         }
         const published = publish(engine, railway);
         if (live) setBuild({ view, ...published, terrain });

@@ -139,7 +139,11 @@ export function NetworkTables({
             <Summary facts={facts} q={q} ropeways={ropeways} ferries={ferries} />
           </TablePart>
           <TablePart id="network.infrastructure">
-            <Infrastructure q={q} terrain={build?.terrain ?? null} />
+            <Infrastructure
+              q={q}
+              terrain={build?.terrain ?? null}
+              terrainError={build?.terrainError ?? null}
+            />
           </TablePart>
           <TablePart id="network.service">
             <ServiceAndFleet facts={facts} riders={riders} />
@@ -307,7 +311,15 @@ interface QRow {
 }
 
 /** Purpose: the infrastructure quantities: rail per mode, and street lines one by one. */
-function Infrastructure({ q, terrain }: { q: Quantities; terrain: "ready" | "failed" | "none" | null }) {
+function Infrastructure({
+  q,
+  terrain,
+  terrainError,
+}: {
+  q: Quantities;
+  terrain: "ready" | "failed" | "none" | null;
+  terrainError: string | null;
+}) {
   const { t } = useI18n();
   const modeLabel = useModeLabel();
   const km = kmIn(t);
@@ -403,7 +415,9 @@ function Infrastructure({ q, terrain }: { q: Quantities; terrain: "ready" | "fai
           </div>
           {terrain !== "ready" && (
             <p className="mt-3 text-xs text-slate-500">
-              {terrain === "failed" ? t("net.terrainFailed") : t("net.terrainWaiting")}
+              {terrain === "failed"
+                ? t("rail.terrainRequired", { reason: terrainError ?? "" })
+                : t("net.terrainWaiting")}
             </p>
           )}
         </section>

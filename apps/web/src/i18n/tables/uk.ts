@@ -84,8 +84,6 @@ export const tablesUk = {
   "net.signals": "Колійні світлофори",
   "net.steepest": "Найбільший ухил",
   "net.steepestSub": "{track}, межа {limit}",
-  "net.terrainFailed":
-    "Висоти рельєфу не завантажилися, тому деяких ухилів бракує. Відкрийте вкладку «Таблиці» знову, щоб повторити.",
   "net.terrainWaiting": "Ухили з'являться, коли завантажаться висоти рельєфу.",
   "net.streetLines": "Вуличні лінії",
   "net.inBusLanes": "Виділеними смугами",

@@ -75,6 +75,8 @@ export const editorsVi = {
     "Không tải được độ cao mặt đất: {reason}. Độ dốc và độ cao nhà ga sẽ có khi tải xong.",
   "rail.publishTerrainFailed":
     "Không tải được độ cao mặt đất: {reason}. Biểu đồ chạy tàu chưa được công bố, vì thiếu chúng tàu sẽ chạy như trên tuyến bằng phẳng. Hãy công bố lại.",
+  "rail.terrainRequired":
+    "Không tải được độ cao mặt đất: {reason}. Thiếu chúng tàu sẽ chạy như trên tuyến bằng phẳng, nên chưa lập kế hoạch chạy tàu. Hãy thử lại sau.",
   "rail.signals": "Tín hiệu",
   "rail.signalsSome":
     "{summary}. Được tạo từ thiết kế và tự cập nhật theo thiết kế. Nhấp vào tín hiệu để thay đổi hoặc xóa, hoặc thêm bằng công cụ Tín hiệu. Mọi thay đổi đều được kiểm tra.",

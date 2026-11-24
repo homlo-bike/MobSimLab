@@ -83,8 +83,6 @@ export const tablesEs = {
   "net.signals": "Señales laterales",
   "net.steepest": "Pendiente máxima",
   "net.steepestSub": "{track}, límite {limit}",
-  "net.terrainFailed":
-    "No se cargaron las alturas del terreno, así que faltan algunas pendientes. Vuelve a abrir la pestaña Tablas para reintentarlo.",
   "net.terrainWaiting": "Las pendientes aparecen cuando se cargan las alturas del terreno.",
   "net.streetLines": "Líneas de calle",
   "net.inBusLanes": "En carriles bus",
