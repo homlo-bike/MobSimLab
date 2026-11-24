@@ -1446,6 +1446,11 @@ export const editorsVi = {
   "capacity.run": "Chạy thử nghiệm",
   "capacity.runAgain": "Chạy lại",
   "capacity.stop": "Dừng",
+  "capacity.replay.title": "Phát lại trên bản đồ",
+  "capacity.replay.note":
+    "Mọi tuyến đã vẽ cùng chạy theo một đồng hồ. Tàu chạy theo kế hoạch, không có trễ ngẫu nhiên; xe của các tuyến đường phố gặp giao thông của lần chạy đầu tiên trong bài kiểm tra.",
+  "capacity.replay.none": "Không có gì để phát lại: không tuyến nào chạy trong khoảng thời gian này.",
+  "capacity.replay.stopped": "Lần chạy đã dừng sớm, nên từ đó các tàu đứng yên: {why}",
   "capacity.summary": "{period} · {trips} chuyến được lập có dư · {out} tàu hoạt động, {reserve} dự phòng",
   "capacity.importNotes": "Ghi chú nhập ({n})",
   "capacity.plannerNotes": "Ghi chú của bộ lập biểu đồ ({n})",

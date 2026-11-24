@@ -1463,6 +1463,11 @@ export const editorsBn = {
   "capacity.run": "পরীক্ষা চালান",
   "capacity.runAgain": "আবার চালান",
   "capacity.stop": "থামান",
+  "capacity.replay.title": "মানচিত্রে রিপ্লে",
+  "capacity.replay.note":
+    "আঁকা সব লাইন একই ঘড়িতে একসাথে চলে। ট্রেনগুলো পরিকল্পনা অনুযায়ী, এলোমেলো বিলম্ব ছাড়া চলে; রাস্তার লাইনের যানবাহন পরীক্ষার প্রথম রানের যানজটের মুখোমুখি হয়।",
+  "capacity.replay.none": "রিপ্লে করার কিছু নেই: এই সময়ে কোনো লাইন চলেনি।",
+  "capacity.replay.stopped": "রান আগেই থেমে গেছে, তাই এরপর থেকে ট্রেনগুলো দাঁড়িয়ে থাকে: {why}",
   "capacity.summary":
     "{period} · মার্জিনসহ {trips}টি যাত্রা পরিকল্পিত · {out}টি ট্রেন চালু, {reserve}টি রিজার্ভে",
   "capacity.importNotes": "ইমপোর্ট নোট ({n})",

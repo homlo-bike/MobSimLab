@@ -1500,6 +1500,11 @@ export const editorsPt = {
   "capacity.run": "Executar o teste",
   "capacity.runAgain": "Executar de novo",
   "capacity.stop": "Parar",
+  "capacity.replay.title": "Reprodução no mapa",
+  "capacity.replay.note":
+    "Todas as linhas desenhadas se movem juntas num mesmo relógio. Os trens circulam como planejado, sem atrasos aleatórios; os veículos das linhas de rua enfrentam o tráfego da primeira execução do teste.",
+  "capacity.replay.none": "Não há nada para reproduzir: nenhuma linha circulou no período.",
+  "capacity.replay.stopped": "A execução parou antes, por isso os trens ficam parados a partir daí: {why}",
   "capacity.summary":
     "{period} · {trips} viagens planejadas com folgas · {out} trens em serviço, {reserve} de reserva",
   "capacity.importNotes": "Notas de importação ({n})",

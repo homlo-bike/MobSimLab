@@ -1494,6 +1494,12 @@ export const editorsSw = {
   "capacity.run": "Endesha jaribio",
   "capacity.runAgain": "Endesha tena",
   "capacity.stop": "Simamisha",
+  "capacity.replay.title": "Rudia kwenye ramani",
+  "capacity.replay.note":
+    "Mistari yote iliyochorwa inasonga pamoja kwa saa moja. Treni zinakwenda kama zilivyopangwa, bila ucheleweshaji wa nasibu; magari ya mistari ya barabarani yanakutana na msongamano wa mzunguko wa kwanza wa jaribio.",
+  "capacity.replay.none": "Hakuna cha kurudia: hakuna mstari ulioendeshwa katika kipindi hiki.",
+  "capacity.replay.stopped":
+    "Mzunguko ulisimama mapema, kwa hiyo treni zinabaki zimesimama tangu hapo: {why}",
   "capacity.summary":
     "{period} · safari {trips} zimepangwa kwa nafasi · treni {out} zinafanya kazi, {reserve} za akiba",
   "capacity.importNotes": "Maelezo ya kuingiza ({n})",

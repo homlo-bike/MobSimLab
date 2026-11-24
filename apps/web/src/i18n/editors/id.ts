@@ -1486,6 +1486,12 @@ export const editorsId = {
   "capacity.run": "Jalankan uji",
   "capacity.runAgain": "Jalankan lagi",
   "capacity.stop": "Hentikan",
+  "capacity.replay.title": "Putar ulang di peta",
+  "capacity.replay.note":
+    "Semua jalur yang digambar bergerak bersama pada satu jam. Kereta berjalan sesuai rencana, tanpa keterlambatan acak; kendaraan jalur jalan menghadapi lalu lintas dari putaran pertama uji.",
+  "capacity.replay.none":
+    "Tidak ada yang bisa diputar ulang: tidak ada jalur yang berjalan pada periode ini.",
+  "capacity.replay.stopped": "Putaran berhenti lebih awal, jadi kereta diam sejak saat itu: {why}",
   "capacity.summary":
     "{period} · {trips} perjalanan direncanakan dengan cadangan · {out} kereta beroperasi, {reserve} cadangan",
   "capacity.importNotes": "Catatan impor ({n})",

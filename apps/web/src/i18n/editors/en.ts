@@ -1488,6 +1488,11 @@ export const editorsEn = {
   "capacity.run": "Run the test",
   "capacity.runAgain": "Run again",
   "capacity.stop": "Stop",
+  "capacity.replay.title": "Replay on the map",
+  "capacity.replay.note":
+    "All drawn lines move together on one clock. Trains run as planned, without random delays; street line vehicles meet the traffic of the test’s first run.",
+  "capacity.replay.none": "There is nothing to replay: no line ran in the period.",
+  "capacity.replay.stopped": "The run stopped early, so the trains stand still from then on: {why}",
   "capacity.summary":
     "{period} · {trips} trips planned with margins · {out} trains in service, {reserve} in reserve",
   "capacity.importNotes": "Import notes ({n})",

@@ -1557,6 +1557,11 @@ export const editorsPl = {
   "capacity.run": "Uruchom test",
   "capacity.runAgain": "Uruchom ponownie",
   "capacity.stop": "Zatrzymaj",
+  "capacity.replay.title": "Odtwarzanie na mapie",
+  "capacity.replay.note":
+    "Wszystkie narysowane linie poruszają się razem według jednego zegara. Pociągi jadą zgodnie z planem, bez losowych opóźnień; pojazdy linii ulicznych napotykają ruch z pierwszego przebiegu testu.",
+  "capacity.replay.none": "Nie ma czego odtworzyć: w tym okresie nie kursowała żadna linia.",
+  "capacity.replay.stopped": "Przebieg zatrzymał się wcześniej, więc od tego momentu pociągi stoją: {why}",
   "capacity.summary":
     "{period} · zaplanowane kursy z zapasem: {trips} · pociągi w ruchu: {out}, w rezerwie: {reserve}",
   "capacity.importNotes": "Uwagi importu ({n})",

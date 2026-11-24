@@ -1449,6 +1449,11 @@ export const editorsFa = {
   "capacity.run": "اجرای آزمون",
   "capacity.runAgain": "اجرای دوباره",
   "capacity.stop": "توقف",
+  "capacity.replay.title": "بازپخش روی نقشه",
+  "capacity.replay.note":
+    "همهٔ خط‌های کشیده‌شده با یک ساعت با هم حرکت می‌کنند. قطارها طبق برنامه و بدون تأخیر تصادفی حرکت می‌کنند؛ وسایل نقلیهٔ خط‌های خیابانی با ترافیک نخستین اجرای آزمون روبه‌رو می‌شوند.",
+  "capacity.replay.none": "چیزی برای بازپخش نیست: در این بازه هیچ خطی کار نکرد.",
+  "capacity.replay.stopped": "اجرا زودتر متوقف شد، پس قطارها از آن زمان ثابت می‌مانند: {why}",
   "capacity.summary": "{period} · {trips} سفر با حاشیه برنامه‌ریزی شد · {out} قطار در خدمت، {reserve} ذخیره",
   "capacity.importNotes": "یادداشت‌های ورود ({n})",
   "capacity.plannerNotes": "یادداشت‌های برنامه‌ریز ({n})",

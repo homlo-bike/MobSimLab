@@ -3,7 +3,8 @@
  * Web worker that runs the rail capacity run (rail-sim-wasm) off the main thread, so the panel stays responsive
  * while the period is planned and run through the interlocking many times.
  * Messages: { id, op: "load", network, lines } | { id, op: "lines" | "notes" } |
- * { id, op: "run", params } | { id, op: "sweepHeadways", params, line, works } | { id, op: "sweepPoint", params, line, headway }.
+ * { id, op: "run", params } | { id, op: "sweepHeadways", params, line, works } | { id, op: "sweepPoint", params, line, headway } |
+ * { id, op: "replay", params, frame }.
  * Replies: { id, ok: true, value } or { id, ok: false, error }.
  */
 import init, { CapacityRunner } from "../../wasm/rail-sim/rail_sim_wasm.js";
@@ -34,6 +35,7 @@ self.onmessage = async (e: MessageEvent<Msg>) => {
         value = JSON.parse(runner.sweep_headways(p, Number(m.line), Boolean(m.works)));
       else if (m.op === "sweepPoint")
         value = JSON.parse(runner.sweep_point(p, Number(m.line), Number(m.headway)));
+      else if (m.op === "replay") value = JSON.parse(runner.replay(p, Number(m.frame)));
       else throw new Error(`unknown operation ${m.op}`);
     }
     self.postMessage({ id: m.id, ok: true, value });

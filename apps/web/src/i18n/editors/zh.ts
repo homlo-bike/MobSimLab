@@ -1388,6 +1388,11 @@ export const editorsZh = {
   "capacity.run": "运行测试",
   "capacity.runAgain": "再次运行",
   "capacity.stop": "停止",
+  "capacity.replay.title": "地图回放",
+  "capacity.replay.note":
+    "所有绘制的线路在同一时钟下一起运行。列车按计划运行，没有随机延误；街道线路的车辆遇到测试第一次运行中的交通。",
+  "capacity.replay.none": "没有可回放的内容：该时段没有线路运行。",
+  "capacity.replay.stopped": "运行提前停止，因此此后列车静止不动：{why}",
   "capacity.summary": "{period} · 带余量规划 {trips} 个车次 · {out} 列在运营，{reserve} 列备用",
   "capacity.importNotes": "导入说明（{n}）",
   "capacity.plannerNotes": "规划器说明（{n}）",

@@ -42,6 +42,7 @@ export const loadWorkerEngine: EngineLoader = async (src) => {
     run: (params) => call("run", { params }),
     sweepHeadways: (params, line, works) => call("sweepHeadways", { params, line, works }),
     sweepPoint: (params, line, headway) => call("sweepPoint", { params, line, headway }),
+    replay: (params, frame) => call("replay", { params, frame }),
     dispose: () => worker.terminate(),
   };
   return engine;

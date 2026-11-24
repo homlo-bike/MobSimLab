@@ -1447,6 +1447,12 @@ export const editorsIg = {
   "capacity.run": "Mee ule",
   "capacity.runAgain": "Mee ọzọ",
   "capacity.stop": "Kwụsị",
+  "capacity.replay.title": "Kpọghachi na map",
+  "capacity.replay.note":
+    "Ahịrị niile e sere na-aga ọnụ n'otu elekere. Ụgbọ okporo ígwè na-aga dịka e zubere, na-enweghị igbu oge na-enweghị usoro; ụgbọ ala ahịrị okporo ụzọ na-ezute okporo ụzọ nke ọsọ mbụ nke ule ahụ.",
+  "capacity.replay.none": "Ọ dịghị ihe a ga-akpọghachi: ọ dịghị ahịrị gara n'oge a.",
+  "capacity.replay.stopped":
+    "Ọsọ ahụ kwụsịrị n'oge, ya mere ụgbọ okporo ígwè na-anọ ọdụ site n'oge ahụ: {why}",
   "capacity.summary":
     "{period} · njem {trips} ka ahaziri nwere oghere · ụgbọ {out} na-arụ ọrụ, {reserve} na nchekwa",
   "capacity.importNotes": "Ndetu mbubata ({n})",
