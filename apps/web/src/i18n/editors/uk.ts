@@ -770,6 +770,10 @@ export const editorsUk = {
   "schematic.connections": "Кольорові мітки під станцією: лінії, на які тут можна пересісти.",
   "schematic.noConnections": "Ця лінія не має спільних станцій з іншими лініями.",
   "schematic.exportTitle": "Експорт",
+  "schematic.exportsIntro":
+    "Завантажте схему мережі та схему кожної лінії у форматі SVG або PNG, або надрукуйте їх чи збережіть у PDF.",
+  "schematic.exportsNone": "Ще немає ліній для експорту. Спершу намалюйте лінію в розділі «Створити».",
+  "schematic.exporting": "Підготовка схеми…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Друк або PDF",

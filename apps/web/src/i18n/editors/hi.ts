@@ -719,6 +719,10 @@ export const editorsHi = {
   "schematic.connections": "स्टेशन के नीचे रंगीन लेबल: वे लाइनें जिनमें वहाँ बदल सकते हैं।",
   "schematic.noConnections": "इस लाइन का कोई स्टेशन दूसरी लाइनों से साझा नहीं है।",
   "schematic.exportTitle": "निर्यात",
+  "schematic.exportsIntro":
+    "नेटवर्क का योजनाबद्ध नक्शा और हर लाइन का नक्शा SVG या PNG के रूप में डाउनलोड करें, या उन्हें प्रिंट करें या PDF के रूप में सहेजें।",
+  "schematic.exportsNone": "निर्यात के लिए अभी कोई लाइन नहीं है। पहले बनाएँ में एक लाइन खींचें।",
+  "schematic.exporting": "नक्शा तैयार हो रहा है…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "प्रिंट या PDF",

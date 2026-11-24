@@ -720,6 +720,10 @@ export const editorsMr = {
   "schematic.connections": "स्थानकाखालील रंगीत लेबले: तेथे बदलता येणारे मार्ग.",
   "schematic.noConnections": "या मार्गाचे इतर मार्गांशी कोणतेही सामायिक स्थानक नाही.",
   "schematic.exportTitle": "निर्यात",
+  "schematic.exportsIntro":
+    "नेटवर्कचा योजनाबद्ध नकाशा आणि प्रत्येक लाइनचा नकाशा SVG किंवा PNG म्हणून डाउनलोड करा, किंवा ते मुद्रित करा किंवा PDF म्हणून जतन करा.",
+  "schematic.exportsNone": "निर्यात करण्यासाठी अजून कोणतीही लाइन नाही. आधी तयार करा मध्ये एक लाइन काढा.",
+  "schematic.exporting": "नकाशा तयार होत आहे…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "मुद्रण किंवा PDF",

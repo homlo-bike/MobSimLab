@@ -718,6 +718,10 @@ export const editorsHa = {
   "schematic.connections": "Lakabai masu launi ƙarƙashin tasha: layukan da za ka iya sauyawa zuwa can.",
   "schematic.noConnections": "Wannan layin ba shi da tashar da yake rabawa da wasu layuka.",
   "schematic.exportTitle": "Fitarwa",
+  "schematic.exportsIntro":
+    "Sauke taswirar hanyar sadarwa da taswirar kowane layi a matsayin SVG ko PNG, ko ka buga su ko ka adana su a matsayin PDF.",
+  "schematic.exportsNone": "Babu layin da za a fitar tukuna. Zana layi tukuna a ƙarƙashin Ƙirƙira.",
+  "schematic.exporting": "Ana shirya taswira…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Buga ko PDF",

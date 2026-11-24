@@ -729,6 +729,10 @@ export const editorsSw = {
   "schematic.connections": "Lebo za rangi chini ya kituo: njia unazoweza kubadilishia hapo.",
   "schematic.noConnections": "Njia hii haina kituo inachoshiriki na njia nyingine.",
   "schematic.exportTitle": "Hamisha",
+  "schematic.exportsIntro":
+    "Pakua ramani ya mtandao kwa mchoro na ramani ya kila laini kama SVG au PNG, au zichapishe au uzihifadhi kama PDF.",
+  "schematic.exportsNone": "Bado hakuna laini za kuhamisha. Chora laini kwanza chini ya Unda.",
+  "schematic.exporting": "Inaandaa ramani…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Chapisha au PDF",

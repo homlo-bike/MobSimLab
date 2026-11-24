@@ -182,6 +182,7 @@ const AppraisalSection = lazyNamed(
 const Scenarios = lazyNamed(() => import("../features/tables/Scenarios"), "Scenarios");
 const RailwayEditor = lazyNamed(() => import("../features/railways/RailwayEditor"), "RailwayEditor");
 const Schematic = lazyNamed(() => import("../features/schematic/Schematic"), "Schematic");
+const MapExports = lazyNamed(() => import("../features/schematic/MapExports"), "MapExports");
 const StreetLineEditor = lazyNamed(
   () => import("../features/street-lines/StreetLineEditor"),
   "StreetLineEditor",
@@ -1527,6 +1528,18 @@ export function Workspace({
                 depots={depotsDoc?.depots ?? NO_DEPOTS}
                 country={placeCountry}
                 place={place}
+                mapExports={
+                  drawings.loaded ? (
+                    <MapExports
+                      railway={railway}
+                      streetLines={streetLines}
+                      pluginLines={pluginLineList}
+                      prefs={preferences?.values}
+                      doc={drawings.doc<SchematicDoc>("schematic")}
+                      projectName={project.name}
+                    />
+                  ) : null
+                }
               />
             </LoadingScreen>
           </div>

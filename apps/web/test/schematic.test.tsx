@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { fileName, pngScale, printPaper } from "../src/features/schematic/export";
 import { labelSizeOf } from "../src/features/schematic/common";
@@ -12,6 +12,7 @@ import {
 } from "../src/features/schematic/layout";
 import { layerOf, linesAt, schematicNetwork } from "../src/features/schematic/lines";
 import { bundles, octiRoute, offsetPolyline, pathD, placeLabels } from "../src/features/schematic/paths";
+import { MapExports } from "../src/features/schematic/MapExports";
 import { Schematic, type SchematicDoc } from "../src/features/schematic/Schematic";
 import { RAILWAY, STREET_LINES } from "./fixtures/schematic";
 import { EARTH_RADIUS_M } from "../src/map/geo";
@@ -601,6 +602,42 @@ describe("Schematic tab", () => {
     expect(rows.length).toBeLessThan(8);
     for (const r of rows) for (const it of r) expect(it.x + it.w).toBeLessThanOrEqual(142);
     expect(rows.flat().filter((it) => it.kind === "walk")).toHaveLength(3);
+  });
+
+  it("leaves exporting to Project preferences", () => {
+    render(<Schematic railway={RAILWAY} streetLines={STREET_LINES} doc={null} projectName="A" />);
+    expect(screen.queryByRole("button", { name: "SVG" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Print or PDF" })).toBeNull();
+  });
+
+  it("exports the network map and each line's strip map from Project preferences", async () => {
+    const saved: { name: string; text: string }[] = [];
+    vi.stubGlobal("URL", Object.assign(URL, { createObjectURL: () => "blob:x", revokeObjectURL: () => {} }));
+    const click = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(function (
+      this: HTMLAnchorElement,
+    ) {
+      saved.push({ name: this.download, text: "" });
+    });
+    render(
+      <MapExports
+        railway={RAILWAY}
+        streetLines={STREET_LINES}
+        doc={null}
+        projectName="Amstelstad"
+        fetchHeights={async (pts) => pts.map(() => 5)}
+        waterLoader={async () => ({ areas: [], rivers: [], sea: [] })}
+      />,
+    );
+    expect(screen.getByRole("group", { name: "Network map" })).toBeTruthy();
+    const strip = screen.getByRole("group", { name: "Strip map: Bus 22 · Bus" });
+    fireEvent.click(within(strip).getByRole("button", { name: "SVG" }));
+    await waitFor(() => expect(saved.map((f) => f.name)).toEqual(["amstelstad-bus-22.svg"]));
+    fireEvent.click(
+      within(screen.getByRole("group", { name: "Network map" })).getByRole("button", { name: "SVG" }),
+    );
+    await waitFor(() => expect(saved.map((f) => f.name)).toContain("amstelstad.svg"));
+    click.mockRestore();
+    vi.unstubAllGlobals();
   });
 
   it("says how to get lines when there are none", () => {

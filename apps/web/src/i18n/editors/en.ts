@@ -734,6 +734,10 @@ export const editorsEn = {
   "schematic.connections": "Coloured labels under a station: lines you can change to there.",
   "schematic.noConnections": "This line has no stations shared with other lines.",
   "schematic.exportTitle": "Export",
+  "schematic.exportsIntro":
+    "Download the schematic network map and the strip map of each line as SVG or PNG, or print them or save them as PDF.",
+  "schematic.exportsNone": "There are no lines to export yet. Draw a line under Create first.",
+  "schematic.exporting": "Preparing the map…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Print or PDF",

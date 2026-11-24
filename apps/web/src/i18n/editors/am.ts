@@ -705,6 +705,10 @@ export const editorsAm = {
   "schematic.connections": "ከጣቢያ በታች ያሉ ባለቀለም መለያዎች፦ እዚያ መቀየር የሚችሉባቸው መስመሮች።",
   "schematic.noConnections": "ይህ መስመር ከሌሎች መስመሮች ጋር የሚጋራው ጣቢያ የለም።",
   "schematic.exportTitle": "ወደ ውጭ ላክ",
+  "schematic.exportsIntro":
+    "የኔትወርኩን ንድፍ ካርታ እና የእያንዳንዱን መስመር ካርታ እንደ SVG ወይም PNG ያውርዱ፣ ወይም ያትሟቸው ወይም እንደ PDF ያስቀምጡ።",
+  "schematic.exportsNone": "ለመላክ እስካሁን ምንም መስመር የለም። መጀመሪያ በፍጠር ስር መስመር ይሳሉ።",
+  "schematic.exporting": "ካርታው እየተዘጋጀ ነው…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "አትም ወይም PDF",

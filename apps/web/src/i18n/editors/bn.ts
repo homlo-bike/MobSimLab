@@ -716,6 +716,10 @@ export const editorsBn = {
   "schematic.connections": "স্টেশনের নিচে রঙিন লেবেল: সেখানে যেসব লাইনে বদল করা যায়।",
   "schematic.noConnections": "এই লাইনের অন্য লাইনের সঙ্গে কোনো যৌথ স্টেশন নেই।",
   "schematic.exportTitle": "রপ্তানি",
+  "schematic.exportsIntro":
+    "নেটওয়ার্কের স্কিম্যাটিক মানচিত্র এবং প্রতিটি লাইনের মানচিত্র SVG বা PNG হিসেবে ডাউনলোড করুন, অথবা প্রিন্ট করুন বা PDF হিসেবে সংরক্ষণ করুন।",
+  "schematic.exportsNone": "রপ্তানি করার মতো এখনো কোনো লাইন নেই। প্রথমে তৈরি করুন-এ একটি লাইন আঁকুন।",
+  "schematic.exporting": "মানচিত্র প্রস্তুত হচ্ছে…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "মুদ্রণ বা PDF",

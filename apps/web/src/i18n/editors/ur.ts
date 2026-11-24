@@ -719,6 +719,10 @@ export const editorsUr = {
   "schematic.connections": "اسٹیشن کے نیچے رنگین لیبل: وہ لائنیں جن میں وہاں تبدیل ہو سکتے ہیں۔",
   "schematic.noConnections": "اس لائن کا کوئی اسٹیشن دوسری لائنوں کے ساتھ مشترک نہیں۔",
   "schematic.exportTitle": "برآمد",
+  "schematic.exportsIntro":
+    "نیٹ ورک کا اسکیمیٹک نقشہ اور ہر لائن کا نقشہ SVG یا PNG کے طور پر ڈاؤن لوڈ کریں، یا انہیں پرنٹ کریں یا PDF کے طور پر محفوظ کریں۔",
+  "schematic.exportsNone": "برآمد کرنے کے لیے ابھی کوئی لائن نہیں ہے۔ پہلے بنائیں میں ایک لائن کھینچیں۔",
+  "schematic.exporting": "نقشہ تیار ہو رہا ہے…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "پرنٹ یا PDF",

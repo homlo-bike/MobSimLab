@@ -756,6 +756,10 @@ export const editorsAr = {
   "schematic.connections": "الملصقات الملونة تحت المحطة: خطوط يمكنك التحويل إليها هناك.",
   "schematic.noConnections": "لا يشترك هذا الخط في أي محطة مع خطوط أخرى.",
   "schematic.exportTitle": "تصدير",
+  "schematic.exportsIntro":
+    "نزّل خريطة الشبكة التخطيطية وخريطة كل خط بصيغة SVG أو PNG، أو اطبعها أو احفظها بصيغة PDF.",
+  "schematic.exportsNone": "لا توجد خطوط للتصدير بعد. ارسم خطًا أولًا في قسم الإنشاء.",
+  "schematic.exporting": "جارٍ تجهيز الخريطة…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "طباعة أو PDF",

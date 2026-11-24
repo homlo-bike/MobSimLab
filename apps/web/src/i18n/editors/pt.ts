@@ -730,6 +730,10 @@ export const editorsPt = {
   "schematic.connections": "Etiquetas coloridas por baixo de uma estação: linhas para onde pode mudar ali.",
   "schematic.noConnections": "Esta linha não partilha estações com outras linhas.",
   "schematic.exportTitle": "Exportar",
+  "schematic.exportsIntro":
+    "Baixe o mapa esquemático da rede e o mapa de cada linha em SVG ou PNG, ou imprima-os ou salve-os como PDF.",
+  "schematic.exportsNone": "Ainda não há linhas para exportar. Desenhe primeiro uma linha em Criar.",
+  "schematic.exporting": "Preparando o mapa…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Imprimir ou PDF",

@@ -744,6 +744,10 @@ export const editorsFr = {
   "schematic.connections": "Étiquettes colorées sous une station : lignes en correspondance à cet arrêt.",
   "schematic.noConnections": "Cette ligne n’a aucune station commune avec d’autres lignes.",
   "schematic.exportTitle": "Exporter",
+  "schematic.exportsIntro":
+    "Téléchargez le plan schématique du réseau et le plan de chaque ligne en SVG ou PNG, ou imprimez-les ou enregistrez-les en PDF.",
+  "schematic.exportsNone": "Il n’y a pas encore de ligne à exporter. Dessinez d’abord une ligne sous Créer.",
+  "schematic.exporting": "Préparation du plan…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Imprimer ou PDF",

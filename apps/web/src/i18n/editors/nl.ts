@@ -731,6 +731,10 @@ export const editorsNl = {
   "schematic.connections": "Gekleurde labels onder een station: lijnen waarop u daar kunt overstappen.",
   "schematic.noConnections": "Deze lijn deelt geen stations met andere lijnen.",
   "schematic.exportTitle": "Exporteren",
+  "schematic.exportsIntro":
+    "Download de schematische netkaart en de lijnkaart van elke lijn als SVG of PNG, of druk ze af of sla ze op als PDF.",
+  "schematic.exportsNone": "Er zijn nog geen lijnen om te exporteren. Teken eerst een lijn onder Maken.",
+  "schematic.exporting": "Kaart wordt voorbereid…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Afdrukken of pdf",

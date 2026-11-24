@@ -708,6 +708,10 @@ export const editorsTr = {
   "schematic.connections": "Bir istasyonun altındaki renkli etiketler: orada aktarma yapabileceğiniz hatlar.",
   "schematic.noConnections": "Bu hattın başka hatlarla ortak istasyonu yok.",
   "schematic.exportTitle": "Dışa aktar",
+  "schematic.exportsIntro":
+    "Şematik ağ haritasını ve her hattın şerit haritasını SVG veya PNG olarak indirin ya da yazdırın veya PDF olarak kaydedin.",
+  "schematic.exportsNone": "Henüz dışa aktarılacak hat yok. Önce Oluştur altında bir hat çizin.",
+  "schematic.exporting": "Harita hazırlanıyor…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Yazdır veya PDF",

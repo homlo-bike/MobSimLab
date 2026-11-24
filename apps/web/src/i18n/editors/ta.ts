@@ -746,6 +746,11 @@ export const editorsTa = {
   "schematic.connections": "நிலையத்தின் கீழ் வண்ணக் குறிகள்: அங்கு மாறக்கூடிய வழித்தடங்கள்.",
   "schematic.noConnections": "இந்த வழித்தடத்துக்கு மற்ற வழித்தடங்களுடன் பொது நிலையம் இல்லை.",
   "schematic.exportTitle": "ஏற்றுமதி",
+  "schematic.exportsIntro":
+    "வலையமைப்பின் திட்ட வரைபடத்தையும் ஒவ்வொரு வழித்தடத்தின் வரைபடத்தையும் SVG அல்லது PNG ஆகப் பதிவிறக்கவும், அல்லது அச்சிடவும் அல்லது PDF ஆகச் சேமிக்கவும்.",
+  "schematic.exportsNone":
+    "ஏற்றுமதி செய்ய இன்னும் வழித்தடங்கள் இல்லை. முதலில் உருவாக்கு பகுதியில் ஒரு வழித்தடத்தை வரையவும்.",
+  "schematic.exporting": "வரைபடம் தயாராகிறது…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "அச்சு அல்லது PDF",

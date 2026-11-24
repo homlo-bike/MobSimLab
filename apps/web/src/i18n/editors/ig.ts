@@ -697,6 +697,10 @@ export const editorsIg = {
   "schematic.connections": "Akara agba n'okpuru ọdụ: ahịrị ị nwere ike ịgbanwe gaa ebe ahụ.",
   "schematic.noConnections": "Ahịrị a enweghị ọdụ ya na ahịrị ndị ọzọ na-ekerịta.",
   "schematic.exportTitle": "Bupụ",
+  "schematic.exportsIntro":
+    "Budata map eserese netwọk na map ahịrị ọ bụla dị ka SVG ma ọ bụ PNG, ma ọ bụ bipụta ha ma ọ bụ chekwaa ha dị ka PDF.",
+  "schematic.exportsNone": "Enwebeghị ahịrị a ga-ebupụ. Buru ụzọ see ahịrị n'okpuru Mepụta.",
+  "schematic.exporting": "A na-akwado map ahụ…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Bipụta ma ọ bụ PDF",

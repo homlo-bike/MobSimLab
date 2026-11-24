@@ -705,6 +705,10 @@ export const editorsFa = {
   "schematic.connections": "برچسب‌های رنگی زیر ایستگاه: خطوطی که آنجا می‌توانید به آن‌ها تعویض کنید.",
   "schematic.noConnections": "این خط با خطوط دیگر ایستگاه مشترکی ندارد.",
   "schematic.exportTitle": "خروجی",
+  "schematic.exportsIntro":
+    "نقشه شماتیک شبکه و نقشه هر خط را به صورت SVG یا PNG دانلود کنید، یا آن‌ها را چاپ کنید یا به صورت PDF ذخیره کنید.",
+  "schematic.exportsNone": "هنوز خطی برای خروجی گرفتن وجود ندارد. ابتدا در بخش ایجاد یک خط بکشید.",
+  "schematic.exporting": "در حال آماده‌سازی نقشه…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "چاپ یا PDF",

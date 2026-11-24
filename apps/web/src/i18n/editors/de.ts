@@ -744,6 +744,11 @@ export const editorsDe = {
   "schematic.connections": "Farbige Schilder unter einer Station: Linien, in die Sie dort umsteigen können.",
   "schematic.noConnections": "Diese Linie teilt keine Station mit anderen Linien.",
   "schematic.exportTitle": "Export",
+  "schematic.exportsIntro":
+    "Laden Sie den schematischen Netzplan und den Linienplan jeder Linie als SVG oder PNG herunter, oder drucken Sie sie bzw. speichern Sie sie als PDF.",
+  "schematic.exportsNone":
+    "Es gibt noch keine Linien zum Exportieren. Zeichnen Sie zuerst unter Erstellen eine Linie.",
+  "schematic.exporting": "Karte wird vorbereitet…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Drucken oder PDF",

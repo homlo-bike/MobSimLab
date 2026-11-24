@@ -691,6 +691,10 @@ export const editorsKo = {
   "schematic.connections": "역 아래 색 라벨: 그 역에서 갈아탈 수 있는 노선.",
   "schematic.noConnections": "이 노선은 다른 노선과 함께 쓰는 역이 없습니다.",
   "schematic.exportTitle": "내보내기",
+  "schematic.exportsIntro":
+    "노선망 모식도와 각 노선의 노선도를 SVG 또는 PNG로 내려받거나, 인쇄하거나 PDF로 저장하세요.",
+  "schematic.exportsNone": "아직 내보낼 노선이 없습니다. 먼저 만들기에서 노선을 그리세요.",
+  "schematic.exporting": "지도를 준비하는 중…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "인쇄 또는 PDF",

@@ -725,6 +725,10 @@ export const editorsTe = {
   "schematic.connections": "స్టేషన్ కింద రంగు లేబుళ్లు: అక్కడ మారగలిగే లైన్లు.",
   "schematic.noConnections": "ఈ లైన్‌కు ఇతర లైన్లతో ఉమ్మడి స్టేషన్లు లేవు.",
   "schematic.exportTitle": "ఎగుమతి",
+  "schematic.exportsIntro":
+    "నెట్‌వర్క్ స్కీమాటిక్ మ్యాప్‌ను మరియు ప్రతి లైన్ మ్యాప్‌ను SVG లేదా PNG గా డౌన్‌లోడ్ చేయండి, లేదా వాటిని ముద్రించండి లేదా PDF గా సేవ్ చేయండి.",
+  "schematic.exportsNone": "ఎగుమతి చేయడానికి ఇంకా లైన్లు లేవు. ముందుగా సృష్టించు లో ఒక లైన్ గీయండి.",
+  "schematic.exporting": "మ్యాప్ సిద్ధమవుతోంది…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "ముద్రణ లేదా PDF",

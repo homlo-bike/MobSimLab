@@ -725,6 +725,10 @@ export const editorsId = {
   "schematic.connections": "Label berwarna di bawah stasiun: jalur yang bisa Anda tumpangi lanjutan di sana.",
   "schematic.noConnections": "Jalur ini tidak berbagi stasiun dengan jalur lain.",
   "schematic.exportTitle": "Ekspor",
+  "schematic.exportsIntro":
+    "Unduh peta skematik jaringan dan peta setiap jalur sebagai SVG atau PNG, atau cetak atau simpan sebagai PDF.",
+  "schematic.exportsNone": "Belum ada jalur untuk diekspor. Gambar jalur terlebih dahulu di Buat.",
+  "schematic.exporting": "Menyiapkan peta…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Cetak atau PDF",

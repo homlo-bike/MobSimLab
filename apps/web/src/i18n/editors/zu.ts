@@ -743,6 +743,10 @@ export const editorsZu = {
   "schematic.connections": "Amalebula anemibala ngaphansi kwesiteshi: amalayini ongashintshela kuwo lapho.",
   "schematic.noConnections": "Lo layini awunaso isiteshi owabelana ngaso namanye amalayini.",
   "schematic.exportTitle": "Khipha",
+  "schematic.exportsIntro":
+    "Landa imephu yohlelo lwenethiwekhi nemephu yomugqa ngamunye njenge-SVG noma i-PNG, noma uziphrinte noma uzigcine njenge-PDF.",
+  "schematic.exportsNone": "Ayikho imigqa ongayikhipha okwamanje. Qala udwebe umugqa ngaphansi kokuthi Dala.",
+  "schematic.exporting": "Ilungisa imephu…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Phrinta noma i-PDF",

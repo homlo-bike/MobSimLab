@@ -722,6 +722,10 @@ export const editorsKk = {
   "schematic.connections": "Бекет астындағы түрлі түсті белгілер: сол жерде ауысуға болатын желілер.",
   "schematic.noConnections": "Бұл желінің басқа желілермен ортақ бекеті жоқ.",
   "schematic.exportTitle": "Экспорт",
+  "schematic.exportsIntro":
+    "Желінің сызбасын және әр желінің сызбасын SVG немесе PNG түрінде жүктеп алыңыз, не басып шығарыңыз немесе PDF ретінде сақтаңыз.",
+  "schematic.exportsNone": "Экспорттайтын желілер әлі жоқ. Алдымен «Құру» бөлімінде желі сызыңыз.",
+  "schematic.exporting": "Карта дайындалуда…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Басып шығару немесе PDF",

@@ -696,6 +696,10 @@ export const editorsJa = {
   "schematic.connections": "駅の下の色付きラベル：その駅で乗り換えられる路線。",
   "schematic.noConnections": "この路線は他の路線と共有する駅がありません。",
   "schematic.exportTitle": "エクスポート",
+  "schematic.exportsIntro":
+    "路線網の模式図と各路線の路線図を SVG または PNG でダウンロードするか、印刷または PDF として保存します。",
+  "schematic.exportsNone": "エクスポートできる路線はまだありません。まず「作成」で路線を描いてください。",
+  "schematic.exporting": "地図を準備しています…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "印刷またはPDF",

@@ -701,6 +701,10 @@ export const editorsYo = {
   "schematic.connections": "Àmì aláwọ̀ ní ìsàlẹ̀ ibùdókọ̀: àwọn ìlà tí o lè yí sí níbẹ̀.",
   "schematic.noConnections": "Ìlà yìí kò pín ibùdókọ̀ kankan pẹ̀lú àwọn ìlà mìíràn.",
   "schematic.exportTitle": "Gbé jáde",
+  "schematic.exportsIntro":
+    "Ṣe ìgbàsílẹ̀ máàpù àwòrán nẹ́tíwọ́ọ̀kì àti máàpù ìlà kọ̀ọ̀kan gẹ́gẹ́ bí SVG tàbí PNG, tàbí tẹ̀ wọ́n jáde tàbí fi wọ́n pamọ́ gẹ́gẹ́ bí PDF.",
+  "schematic.exportsNone": "Kò sí ìlà kankan láti gbé jáde síbẹ̀. Kọ́kọ́ ya ìlà kan lábẹ́ Ṣẹ̀dá.",
+  "schematic.exporting": "À ń pèsè máàpù náà…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Tẹ̀ jáde tàbí PDF",

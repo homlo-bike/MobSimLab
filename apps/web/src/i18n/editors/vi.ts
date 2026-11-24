@@ -700,6 +700,10 @@ export const editorsVi = {
   "schematic.connections": "Nhãn màu dưới một ga: các tuyến bạn có thể chuyển sang tại đó.",
   "schematic.noConnections": "Tuyến này không có ga chung với tuyến khác.",
   "schematic.exportTitle": "Xuất",
+  "schematic.exportsIntro":
+    "Tải sơ đồ mạng lưới và sơ đồ từng tuyến dưới dạng SVG hoặc PNG, hoặc in hay lưu thành PDF.",
+  "schematic.exportsNone": "Chưa có tuyến nào để xuất. Hãy vẽ một tuyến trong mục Tạo trước.",
+  "schematic.exporting": "Đang chuẩn bị bản đồ…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "In hoặc PDF",

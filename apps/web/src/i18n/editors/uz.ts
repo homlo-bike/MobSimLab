@@ -734,6 +734,11 @@ export const editorsUz = {
   "schematic.connections": "Bekat ostidagi rangli yorliqlar: u yerda o‘tish mumkin bo‘lgan liniyalar.",
   "schematic.noConnections": "Bu liniyaning boshqa liniyalar bilan umumiy bekati yo‘q.",
   "schematic.exportTitle": "Eksport",
+  "schematic.exportsIntro":
+    "Tarmoqning sxematik xaritasini va har bir liniya xaritasini SVG yoki PNG sifatida yuklab oling yoki chop eting yoxud PDF sifatida saqlang.",
+  "schematic.exportsNone":
+    "Eksport qilish uchun hali liniyalar yo‘q. Avval Yaratish bo‘limida liniya chizing.",
+  "schematic.exporting": "Xarita tayyorlanmoqda…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Chop etish yoki PDF",

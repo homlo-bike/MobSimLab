@@ -772,6 +772,10 @@ export const editorsRu = {
   "schematic.connections": "Цветные метки под станцией: линии, на которые здесь можно пересесть.",
   "schematic.noConnections": "У этой линии нет общих станций с другими линиями.",
   "schematic.exportTitle": "Экспорт",
+  "schematic.exportsIntro":
+    "Скачайте схему сети и схему каждой линии в формате SVG или PNG, либо распечатайте их или сохраните в PDF.",
+  "schematic.exportsNone": "Пока нет линий для экспорта. Сначала нарисуйте линию в разделе «Создать».",
+  "schematic.exporting": "Подготовка схемы…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Печать или PDF",

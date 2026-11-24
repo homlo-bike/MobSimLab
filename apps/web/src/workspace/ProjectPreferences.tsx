@@ -56,6 +56,7 @@ export function ProjectPreferences({
   depots = [],
   country = null,
   place = null,
+  mapExports = null,
 }: {
   api: ProjectsApi;
   project: Project;
@@ -80,6 +81,8 @@ export function ProjectPreferences({
   country?: string | null;
   /** The project's location [lon, lat], for its climate; null when nothing is drawn yet. */
   place?: readonly [number, number] | null;
+  /** The Export section: the project's schematic maps to download or print. */
+  mapExports?: ReactNode;
 }) {
   const { t } = useI18n();
   const editable = can.edit(project);
@@ -411,6 +414,9 @@ export function ProjectPreferences({
         />
       ),
     },
+    ...(mapExports
+      ? [{ id: "export", group: "project", title: "schematic.exportTitle", node: mapExports } as const]
+      : []),
   ];
   return <PreferencesLayout projectId={project.id} sections={sections} />;
 }
