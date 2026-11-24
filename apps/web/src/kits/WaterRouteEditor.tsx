@@ -543,7 +543,22 @@ export function WaterRouteEditor({
           />
         </div>
       )}
-      {view && <Issues issues={view.issues} where={where} source={tool.id} label={tool.label} />}
+      {view && (
+        <Issues
+          issues={view.issues}
+          where={where}
+          source={tool.id}
+          label={tool.label}
+          onShow={(i) => {
+            const at = i.station !== undefined ? doc.piers[i.station]?.lonlat : undefined;
+            if (!at || !map) return null;
+            return () => {
+              setPierShown(i.station!);
+              map.flyTo({ center: at, zoom: Math.max(map.getZoom(), 16) });
+            };
+          }}
+        />
+      )}
       {depthsFailed && <p className="text-xs text-amber-800">{t("ferry.depthsUnavailable")}</p>}
       <section aria-label={t("ferry.piers")} className="flex flex-col gap-2">
         <h3 className="font-semibold">{t("ferry.piers")}</h3>

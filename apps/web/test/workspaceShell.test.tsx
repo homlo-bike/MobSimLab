@@ -70,6 +70,41 @@ describe("checks of every mode", () => {
     expect(within(again).queryByRole("menuitem", { name: /Radius below the minimum/ })).toBeNull();
   });
 
+  it("opens a closed tool again from its check and shows the check once the tool reports it", async () => {
+    const show = vi.fn();
+    const reopened = vi.fn();
+    function Page() {
+      const [open, setOpen] = useState(true);
+      return (
+        <ChecksProvider
+          onReopen={(source) => {
+            reopened(source);
+            setOpen(true);
+          }}
+        >
+          <ChecksMenu />
+          <button type="button" onClick={() => setOpen(false)}>
+            close tool
+          </button>
+          {open && (
+            <Tool
+              source="rail"
+              label="Railway"
+              items={[{ severity: "error", text: "Radius below the minimum", onShow: show }]}
+            />
+          )}
+        </ChecksProvider>
+      );
+    }
+    render(<Page />);
+    fireEvent.click(screen.getByRole("button", { name: "close tool" }));
+    fireEvent.click(await screen.findByRole("button", { name: /Checks/ }));
+    const menu = screen.getByRole("menu", { name: "Checks" });
+    fireEvent.click(within(menu).getByRole("menuitem", { name: /Radius below the minimum/ }));
+    expect(reopened).toHaveBeenCalledWith("rail");
+    await waitFor(() => expect(show).toHaveBeenCalledTimes(1));
+  });
+
   it("leaves a tool on its own to list its checks itself", () => {
     render(<Tool source="rail" label="Railway" items={[{ severity: "error", text: "x" }]} />);
     expect(screen.getByText("listed in the panel")).toBeTruthy();

@@ -797,6 +797,21 @@ export function Workspace({
     next[editedStreet] = { ...l, id: savedStreet[editedStreet]?.id ?? l.id ?? newLineId() };
     drawings.set("street-lines", { lines: next } satisfies StreetLinesDoc);
   };
+  // The street line whose checks were last listed, so a check of it chosen in the bell opens that line again.
+  const lastStreetLine = useRef<string | null>(null);
+  if (editedStreet !== null && savedStreet[editedStreet]?.id)
+    lastStreetLine.current = savedStreet[editedStreet]!.id!;
+  /** Purpose: open the tool a check in the bell belongs to (Create tab), so the check can show its element. */
+  const reopenCheck = (source: string) => {
+    if (source === "project-area") return onTab("preferences");
+    if (tab !== "create") onTab("create");
+    if (source === "street") {
+      const i = savedStreet.findIndex((l) => l.id === lastStreetLine.current);
+      setBuild("street");
+      if (i >= 0 && i !== editedStreet) switchStreet(i);
+    } else if (source === "rail" || source === "depots" || PLUGIN_TOOLS.some((x) => x.id === source))
+      setBuild(source);
+  };
   const deleteStreet = (i: number) => {
     drawings.set("street-lines", { lines: savedStreet.filter((_, k) => k !== i) } satisfies StreetLinesDoc);
     switchStreet(null);
@@ -2067,7 +2082,7 @@ export function Workspace({
             isOwner={project ? can.manage(project) : false}
             userId={userId}
           >
-            <ChecksProvider key={projectId}>
+            <ChecksProvider key={projectId} onReopen={editable ? reopenCheck : undefined}>
               <JobsProvider key={projectId}>
                 {body}
                 {project && !STATIC_VIEWER && <ImportsWatcher api={geodata} />}
