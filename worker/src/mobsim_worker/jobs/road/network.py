@@ -255,6 +255,26 @@ class Placed:
     dist: float
 
 
+def _keep_allowed_outgoing(net: Any) -> None:
+    """Make each edge keep its links per vehicle class instead of working them out on every call.
+
+    ``mapTrace`` searches the network hundreds of thousands of times for a city's lines, and each step of
+    each search asks an edge for the links a bus may take (``getAllowedOutgoing``), which sumolib builds
+    afresh every time from all lanes and connections: half of the planning time of an 8-line run. The links
+    do not change once the network is read, so each edge keeps them.
+    """
+    for edge in net.getEdges():
+        compute = edge.getAllowedOutgoing
+        kept: dict[Any, Any] = {}
+
+        def allowed(v_class: Any, _compute: Any = compute, _kept: dict[Any, Any] = kept) -> Any:
+            if v_class not in _kept:
+                _kept[v_class] = _compute(v_class)
+            return _kept[v_class]
+
+        edge.getAllowedOutgoing = allowed
+
+
 class RoadNet:
     """The SUMO network, read with sumolib, and the helpers that place routes and points on it."""
 
@@ -265,6 +285,7 @@ class RoadNet:
         self.net: Any = sumolib.net.readNet(net_file, withInternal=False, withPrograms=True)
         self._sumolib = sumolib
         self._paths: dict[tuple[str, str], tuple[str, ...] | None] = {}
+        _keep_allowed_outgoing(self.net)
 
     def xy(self, p: LonLat) -> tuple[float, float]:
         """Return network coordinates of a point."""
