@@ -231,6 +231,9 @@ export const ja: Messages = {
   "save.saving": "保存中…",
   "save.offline": "未保存 · 再試行中",
   "save.failed": "保存できませんでした：{error}",
+  "session.staleToken":
+    "このページを開いている間にサーバーが再起動したため、変更が保存されなくなっています。作業を続けるにはページを再読み込みしてください。",
+  "session.reload": "ページを再読み込み",
   "save.conflict": "あなたが{drawing}を変更している間に{who}が保存しました。どちらを残しますか？",
   "save.someone": "他のユーザー",
   "save.keepMine": "自分のものを残す",
@@ -261,12 +264,8 @@ export const ja: Messages = {
   "sim.test": "システムを検証",
   "sim.journey": "所要時間 A → B",
 
-  "create.chooseTitle": "まず何を作りますか？",
-  "create.chooseIntro": "もう一方は後で追加できます。作業中も既存の路線は表示されたままです。",
   "create.street": "道路路線",
-  "create.streetHint": "バス、BRT、トロリーバス、都市間バス。道路網に沿って走ります。",
   "create.rail": "鉄道路線",
-  "create.railHint": "路面電車、ライトレール、地下鉄、通勤、地域、都市間、高速。線路、駅、分岐器を描きます。",
   "create.noArea":
     "対象地域がまだありません。経路探索と旅客推計のため、まず OpenStreetMap から道路と人口を取り込んでください。",
   "create.setArea": "GIS で地域を設定",
@@ -457,6 +456,7 @@ export const ja: Messages = {
 
   "job.stepOf": "ステップ {step}/{steps}",
   "job.cancel": "キャンセル",
+  "job.running": "実行中の処理",
   "map.search": "場所を検索",
   "map.searchPlaceholder": "町、通り、駅、または住所",
   "map.searching": "検索中…",
@@ -469,6 +469,15 @@ export const ja: Messages = {
   "map.places": "見つかった場所",
   "map.searchCredit": "地名 © OpenStreetMap 貢献者、Photon で検索",
   "map.layers": "地図レイヤー",
+  "map.alwaysShow": "常に表示",
+  "map.alwaysShowHint":
+    "どのツールを開いていても、地図のあるすべてのタブに表示されます。このプロジェクト用にアカウントに保存されます。",
+  "map.pin.serviceLines": "運行系統",
+  "map.pin.tracks": "線路",
+  "map.pin.stations": "駅",
+  "map.pin.stops": "停留所",
+  "map.pin.streetSetups": "道路設定",
+  "map.pin.regions": "地域",
   "map.basemap": "背景地図",
   "map.streetMap": "地図",
   "map.aerial": "航空写真",

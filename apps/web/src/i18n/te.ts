@@ -234,6 +234,9 @@ export const te: Messages = {
   "save.saving": "సేవ్ అవుతోంది…",
   "save.offline": "ఇంకా సేవ్ కాలేదు · మళ్లీ ప్రయత్నిస్తోంది",
   "save.failed": "సేవ్ కాలేదు: {error}",
+  "session.staleToken":
+    "ఈ పేజీ తెరిచి ఉండగా సర్వర్ మళ్లీ ప్రారంభమైనందున మీ మార్పులు ఇకపై సేవ్ కావడం లేదు. పని కొనసాగించడానికి పేజీని మళ్లీ లోడ్ చేయండి.",
+  "session.reload": "పేజీని మళ్లీ లోడ్ చేయండి",
   "save.conflict": "మీరు {drawing} మారుస్తున్నప్పుడు {who} దాన్ని సేవ్ చేశారు. ప్రాజెక్టు ఏది ఉంచాలి?",
   "save.someone": "మరొకరు",
   "save.keepMine": "నాది ఉంచండి",
@@ -264,14 +267,8 @@ export const te: Messages = {
   "sim.test": "వ్యవస్థను పరీక్షించండి",
   "sim.journey": "ప్రయాణ సమయం A → B",
 
-  "create.chooseTitle": "మీరు ముందుగా ఏమి నిర్మించాలనుకుంటున్నారు?",
-  "create.chooseIntro":
-    "మరొక రకాన్ని తర్వాత జోడించవచ్చు. మీరు పనిచేస్తున్నప్పుడు ఉన్న మార్గాలు కనిపిస్తూనే ఉంటాయి.",
   "create.street": "వీధి మార్గం",
-  "create.streetHint": "బస్సు, BRT, ట్రాలీబస్, అంతర్‌నగర బస్సు. వీధి నెట్‌వర్క్‌ను అనుసరిస్తుంది.",
   "create.rail": "రైలు మార్గం",
-  "create.railHint":
-    "ట్రామ్, లైట్ రైల్, మెట్రో, సబర్బన్, ప్రాంతీయ, అంతర్‌నగర, హై-స్పీడ్. పట్టాలు, స్టేషన్లు మరియు స్విచ్‌లు గీయండి.",
   "create.noArea":
     "ఇంకా అధ్యయన ప్రాంతం లేదు. మార్గనిర్ణయం మరియు ప్రయాణికుల అంచనాల కోసం ముందుగా OpenStreetMap నుండి వీధులు మరియు జనాభాను దిగుమతి చేయండి.",
   "create.setArea": "GIS లో ప్రాంతాన్ని నిర్ణయించండి",
@@ -462,6 +459,7 @@ export const te: Messages = {
 
   "job.stepOf": "దశ {step} / {steps}",
   "job.cancel": "రద్దు చేయి",
+  "job.running": "జరుగుతున్న పనులు",
   "map.search": "స్థలాలను వెతుకు",
   "map.searchPlaceholder": "పట్టణం, వీధి, స్టేషన్ లేదా చిరునామా",
   "map.searching": "వెతుకుతోంది…",
@@ -473,6 +471,15 @@ export const te: Messages = {
   "map.places": "దొరికిన స్థలాలు",
   "map.searchCredit": "స్థలాల పేర్లు © OpenStreetMap సహకారులు, Photon తో వెతికినవి",
   "map.layers": "మ్యాప్ పొరలు",
+  "map.alwaysShow": "ఎప్పుడూ చూపించు",
+  "map.alwaysShowHint":
+    "ఏ సాధనం తెరిచి ఉన్నా ప్రతి మ్యాప్ ట్యాబ్‌లో కనిపిస్తుంది. ఈ ప్రాజెక్ట్ కోసం మీ ఖాతాలో సేవ్ అవుతుంది.",
+  "map.pin.serviceLines": "సర్వీస్ లైన్లు",
+  "map.pin.tracks": "పట్టాలు",
+  "map.pin.stations": "స్టేషన్లు",
+  "map.pin.stops": "స్టాప్‌లు",
+  "map.pin.streetSetups": "వీధి సెటప్‌లు",
+  "map.pin.regions": "ప్రాంతాలు",
   "map.basemap": "ఆధార మ్యాప్",
   "map.streetMap": "మ్యాప్",
   "map.aerial": "వైమానిక",

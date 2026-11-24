@@ -231,6 +231,9 @@ export const fa: Messages = {
   "save.saving": "در حال ذخیره…",
   "save.offline": "ذخیره نشده · تلاش دوباره",
   "save.failed": "ذخیره ممکن نشد: {error}",
+  "session.staleToken":
+    "تغییرات شما دیگر ذخیره نمی‌شوند، چون سرور در حالی که این صفحه باز بود دوباره راه‌اندازی شد. برای ادامهٔ کار صفحه را دوباره بارگیری کنید.",
+  "session.reload": "بارگیری دوبارهٔ صفحه",
   "save.conflict": "{who} هنگامی که شما {drawing} را تغییر می‌دادید ذخیره کرد. کدام را نگه داریم؟",
   "save.someone": "شخص دیگری",
   "save.keepMine": "نگه‌داشتن نسخهٔ من",
@@ -261,13 +264,8 @@ export const fa: Messages = {
   "sim.test": "آزمایش سامانه",
   "sim.journey": "زمان سفر A ← B",
 
-  "create.chooseTitle": "اول چه می‌خواهید بسازید؟",
-  "create.chooseIntro": "دیگری را بعداً می‌توانید اضافه کنید. خطوط موجود هنگام کار نمایان می‌مانند.",
   "create.street": "خطوط خیابانی",
-  "create.streetHint": "اتوبوس، BRT، اتوبوس برقی و اتوبوس بین‌شهری. شبکهٔ خیابان‌ها را دنبال می‌کنند.",
   "create.rail": "خطوط ریلی",
-  "create.railHint":
-    "تراموا، قطار سبک، مترو، حومه‌ای، منطقه‌ای، بین‌شهری و سریع‌السیر. ریل، ایستگاه و سوزن ترسیم کنید.",
   "create.noArea":
     "هنوز محدودهٔ مطالعه‌ای نیست. ابتدا خیابان‌ها و جمعیت را از OpenStreetMap وارد کنید تا مسیریابی و برآورد مسافر در دسترس باشد.",
   "create.setArea": "تعیین محدوده در GIS",
@@ -459,6 +457,7 @@ export const fa: Messages = {
 
   "job.stepOf": "گام {step} از {steps}",
   "job.cancel": "لغو",
+  "job.running": "کارهای در حال انجام",
   "map.search": "جستجوی مکان",
   "map.searchPlaceholder": "شهر، خیابان، ایستگاه یا نشانی",
   "map.searching": "در حال جستجو…",
@@ -470,6 +469,15 @@ export const fa: Messages = {
   "map.places": "مکان‌های پیدا شده",
   "map.searchCredit": "نام مکان‌ها © مشارکت‌کنندگان OpenStreetMap، یافته با Photon",
   "map.layers": "لایه‌های نقشه",
+  "map.alwaysShow": "همیشه نمایش بده",
+  "map.alwaysShowHint":
+    "در هر زبانهٔ نقشه، هر ابزاری که باز باشد، دیده می‌شود. برای این پروژه در حساب شما ذخیره می‌شود.",
+  "map.pin.serviceLines": "خطوط سرویس",
+  "map.pin.tracks": "ریل‌ها",
+  "map.pin.stations": "ایستگاه‌ها",
+  "map.pin.stops": "ایستگاه‌های اتوبوس",
+  "map.pin.streetSetups": "تنظیمات خیابان",
+  "map.pin.regions": "مناطق",
   "map.basemap": "نقشهٔ پایه",
   "map.streetMap": "نقشه",
   "map.aerial": "هوایی",

@@ -21,7 +21,7 @@ import { vehicleById, vehiclesFor } from "./service";
 import { usedVehicles } from "../../workspace/preferences";
 import { useVehiclesOff } from "../../workspace/projectVehicles";
 import { usePublishChecks } from "../../shell/checks";
-import { lineChecks, lineStats, nearestTerminal, type Check, type Severity } from "./summary";
+import { lineChecks, nearestTerminal, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, VehicleProfile } from "./types";
 import type { FitProblem } from "../depots/model";
 import { withUnit } from "../../i18n/units";
@@ -113,6 +113,8 @@ interface Props {
   /** The project's lines (switch, add, delete), shown at the top. */
   lineList?: React.ReactNode;
   selected: number | null;
+  /** The map tool in use: the line's sections (level crossings, depot runs, service) show with "select" only. */
+  tool?: string;
   depotStops: { out?: number; in?: number };
   showDepot: boolean;
   /** The shared road depot the line uses, or null. */
@@ -174,15 +176,6 @@ function Reliability({ view }: { view: LineView }) {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="rounded-md bg-slate-100 p-2">
-      <b className="block font-mono text-base">{value}</b>
-      <span className="text-xs text-slate-600">{label}</span>
-    </div>
-  );
-}
-
 function NumberField({
   label,
   value,
@@ -225,6 +218,8 @@ export function LinePanel(props: Props) {
   const vehiclesOff = useVehiclesOff();
   const planned = usePlannedModes();
   const { view, profile, timing, selected, actions: a } = props;
+  // Level crossings, depot runs and service only with "Select and move" and no point open.
+  const lists = (props.tool ?? "select") === "select" && selected === null;
   const routed = view.points.length >= 2;
   // The day type whose times and headways the fields below show and change.
   const [day, setDay] = useState<DayTypeId>("weekday");
@@ -242,7 +237,6 @@ export function LinePanel(props: Props) {
     });
   };
   const mode = MODES[profile.mode];
-  const st = lineStats(view, timing);
   const rank: Record<Severity, number> = { error: 0, warn: 1, ok: 2, info: 3 };
   const vehicle = vehicleById(props.vehicle);
   const serviceChecks: Check[] = [
@@ -372,40 +366,6 @@ export function LinePanel(props: Props) {
         )}
       </div>
 
-      {routed && selected !== null && (
-        // While a point is open the tiles make room for it, but the totals stay readable, so the effect of an edit
-        // (a via point made a stop) shows at once.
-        <p className="m-0 border-t border-slate-200 pt-2 text-xs text-slate-600" aria-live="polite">
-          {t("street.stat.compact", {
-            length: formatLength(st.lengthM),
-            stops: st.stops,
-            cycle: Math.round(st.cycleMin),
-            vehicles: st.vehicles,
-          })}
-        </p>
-      )}
-      {routed && selected === null && (
-        <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
-          <Stat value={formatLength(st.lengthM)} label={t("street.stat.length")} />
-          <Stat value={String(st.stops)} label={t("street.stat.stops", { end: st.endStops })} />
-          <Stat
-            value={withUnit(Math.round(st.cycleMin), "min")}
-            label={t("street.stat.cycle", {
-              run: Math.round(st.runMin),
-              crossings:
-                st.crossingMin > 0
-                  ? ` ${t("street.stat.atCrossings", { min: st.crossingMin < 1 ? "<1" : Math.round(st.crossingMin) })}`
-                  : "",
-              dwell: Math.round(st.dwellMin),
-              layover: Math.round(st.layoverMin),
-            })}
-          />
-          <Stat
-            value={String(st.vehicles)}
-            label={t("street.stat.vehicles", { headway: timing.headwayMin })}
-          />
-        </div>
-      )}
       {view.points.length >= 2 && <Reliability view={view} />}
 
       {props.routeNotice}
@@ -585,7 +545,7 @@ export function LinePanel(props: Props) {
       )}
 
       {/* What depends on the route only once the line has a route: two points or more. */}
-      {routed && (
+      {routed && lists && (
         <>
           <Section title={`${t("rail.levelCrossings")} · ${view.level_crossings.length}`}>
             <p className="text-xs text-slate-600">{t("street.crossingsNote")}</p>
@@ -730,78 +690,80 @@ export function LinePanel(props: Props) {
         </>
       )}
 
-      <Section title={t("street.service")}>
-        {routed && (
-          <>
-            <DayTypeChoice
-              day={day}
-              onDay={setDay}
-              own={hasOwnDay(timing.days, day)}
-              onOwn={(own) =>
-                day !== "weekday" &&
-                a.setTiming({ ...timing, days: withDay(timing.days, day, own ? shown : null) })
-              }
+      {lists && (
+        <Section title={t("street.service")}>
+          {routed && (
+            <>
+              <DayTypeChoice
+                day={day}
+                onDay={setDay}
+                own={hasOwnDay(timing.days, day)}
+                onOwn={(own) =>
+                  day !== "weekday" &&
+                  a.setTiming({ ...timing, days: withDay(timing.days, day, own ? shown : null) })
+                }
+              />
+              <label className="flex items-center justify-between gap-2">
+                <span>{t("rail.line.first")}</span>
+                <span className="flex items-center gap-1">
+                  <TimeInput
+                    label={t("rail.line.first")}
+                    value={shown.firstMin}
+                    onChange={(v) => setDayService({ firstMin: v })}
+                  />
+                  <span className="w-6" />
+                </span>
+              </label>
+              <label className="flex items-center justify-between gap-2">
+                <span>{t("rail.line.last")}</span>
+                <span className="flex items-center gap-1">
+                  <TimeInput
+                    label={t("rail.line.last")}
+                    value={shown.lastMin}
+                    onChange={(v) => setDayService({ lastMin: v })}
+                  />
+                  <span className="w-6" />
+                </span>
+              </label>
+              <NumberField
+                label={t("rail.line.peakHeadway")}
+                value={shown.peakHeadwayMin}
+                unit="min"
+                onChange={(v) => setDayService({ peakHeadwayMin: v })}
+              />
+              <NumberField
+                label={t("rail.line.offpeakHeadway")}
+                value={shown.offPeakHeadwayMin}
+                unit="min"
+                onChange={(v) => setDayService({ offPeakHeadwayMin: v })}
+              />
+              <NumberField
+                label={t("street.dwell")}
+                value={timing.dwellS}
+                unit="s"
+                step={5}
+                onChange={(v) => a.setTiming({ ...timing, dwellS: v })}
+              />
+              <NumberField
+                label={t("street.layover")}
+                value={timing.layoverMin}
+                unit="min"
+                onChange={(v) => a.setTiming({ ...timing, layoverMin: v })}
+              />
+            </>
+          )}
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={props.showRoads}
+              onChange={(e) => a.setShowRoads(e.target.checked)}
             />
-            <label className="flex items-center justify-between gap-2">
-              <span>{t("rail.line.first")}</span>
-              <span className="flex items-center gap-1">
-                <TimeInput
-                  label={t("rail.line.first")}
-                  value={shown.firstMin}
-                  onChange={(v) => setDayService({ firstMin: v })}
-                />
-                <span className="w-6" />
-              </span>
-            </label>
-            <label className="flex items-center justify-between gap-2">
-              <span>{t("rail.line.last")}</span>
-              <span className="flex items-center gap-1">
-                <TimeInput
-                  label={t("rail.line.last")}
-                  value={shown.lastMin}
-                  onChange={(v) => setDayService({ lastMin: v })}
-                />
-                <span className="w-6" />
-              </span>
-            </label>
-            <NumberField
-              label={t("rail.line.peakHeadway")}
-              value={shown.peakHeadwayMin}
-              unit="min"
-              onChange={(v) => setDayService({ peakHeadwayMin: v })}
-            />
-            <NumberField
-              label={t("rail.line.offpeakHeadway")}
-              value={shown.offPeakHeadwayMin}
-              unit="min"
-              onChange={(v) => setDayService({ offPeakHeadwayMin: v })}
-            />
-            <NumberField
-              label={t("street.dwell")}
-              value={timing.dwellS}
-              unit="s"
-              step={5}
-              onChange={(v) => a.setTiming({ ...timing, dwellS: v })}
-            />
-            <NumberField
-              label={t("street.layover")}
-              value={timing.layoverMin}
-              unit="min"
-              onChange={(v) => a.setTiming({ ...timing, layoverMin: v })}
-            />
-          </>
-        )}
-        <label className="flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={props.showRoads}
-            onChange={(e) => a.setShowRoads(e.target.checked)}
-          />
-          {t("street.showRoads")}
-          {profile.mode === "trolleybus" ? ` ${t("street.greenWire")}` : ""}
-        </label>
-        <p className="text-xs text-slate-500">{t("street.rulesNote")}</p>
-      </Section>
+            {t("street.showRoads")}
+            {profile.mode === "trolleybus" ? ` ${t("street.greenWire")}` : ""}
+          </label>
+          <p className="text-xs text-slate-500">{t("street.rulesNote")}</p>
+        </Section>
+      )}
     </div>
   );
 }

@@ -12,10 +12,6 @@ export const editorsTe = {
   "rail.mode.long_distance_rail": "సుదూర రైలు",
   "rail.params":
     "గేజ్ {gauge} మి.మీ · పట్టాల కేంద్రాల దూరం {centres} మీ · కనిష్ఠ వ్యాసార్ధం {minRadius} మీ (సిఫార్సు {radius} మీ) · గరిష్ఠ వాలు {gradient} ‰ · రూపకల్పన వేగం {speed} కి.మీ/గం · ప్లాట్‌ఫాం {platform} మీ, {height} మి.మీ ఎత్తులో · {power}",
-  "rail.stat.route": "మార్గం",
-  "rail.stat.track": "పట్టా",
-  "rail.stat.stations": "స్టేషన్లు",
-  "rail.stat.switches": "స్విచ్‌లు",
   "rail.stations.one": "{count} స్టేషన్",
   "rail.stations.other": "{count} స్టేషన్లు",
   "rail.backToNetwork": "నెట్‌వర్క్‌కు తిరిగి",
@@ -342,6 +338,8 @@ export const editorsTe = {
   "rail.say.straightOnly":
     "జాబితా స్విచ్‌లు నేరుగా ఉన్న పట్టాపై ఉంచబడతాయి. నేరుగా ఉన్న భాగంపై క్లిక్ చేయండి.",
   "rail.say.doubleOnly": "క్రాసోవర్ రెండు సమాంతర పట్టాలను కలుపుతుంది. రెండు పట్టాల మార్గాన్ని ఎంచుకోండి.",
+  "rail.say.missedStationEnd":
+    "పట్టాను కలపడానికి సరిగ్గా స్టేషన్ చివరపై క్లిక్ చేయండి. చివరలను తాకడం కష్టమైతే జూమ్ ఇన్ చేయండి.",
   "rail.say.clickTrackSignal": "సిగ్నల్ ఉంచడానికి పట్టా, స్టేషన్ పట్టా లేదా స్విచ్ శాఖపై క్లిక్ చేయండి.",
   "rail.signalsReset": "సిగ్నల్‌లు రూపకల్పన నుండి తయారైన స్థితికి పునరుద్ధరించబడ్డాయి.",
   "rail.noiseFlows": "ప్రతి పట్టాపై గంటకు రైళ్లు (రైలు మార్గాలు గీసే వరకు ఉదాహరణ సేవ)",
@@ -388,13 +386,6 @@ export const editorsTe = {
   "street.profile.intercity_bus": "ఎక్స్‌ప్రెస్‌వేలను ఉపయోగించగలదు; స్టాప్‌లు బస్ టెర్మినల్‌ల వద్ద ఉండవచ్చు.",
   "street.battery": "బ్యాటరీ పరిధి",
   "street.doorsBoth": "రెండు వైపులా తలుపులు",
-  "street.stat.length": "చక్ర పొడవు",
-  "street.stat.stops": "స్టాప్‌లు ({end} చివరివి)",
-  "street.stat.cycle": "చక్రం: {run} నడక{crossings}, {dwell} ఆగడం, {layover} విరామం",
-  "street.stat.atCrossings": "(క్రాసింగ్‌ల వద్ద {min})",
-  "street.stat.vehicles": "{headway} నిమిషాల విరామానికి వాహనాలు",
-  "street.stat.compact":
-    "సర్క్యూట్ {length} · {stops} స్టాప్‌లు · {cycle} నిమిషాల చక్రం · {vehicles} వాహనాలు",
   "street.points": "మార్గ బిందువులు · చక్ర క్రమం",
   "street.noPoints": "ఇంకా బిందువులు లేవు. బిందువులు జోడించండి ఎంచుకుని వీధిపై క్లిక్ చేయండి.",
   "street.viaN": "మార్గ బిందువు {n}",
@@ -736,6 +727,10 @@ export const editorsTe = {
   "schematic.connections": "స్టేషన్ కింద రంగు లేబుళ్లు: అక్కడ మారగలిగే లైన్లు.",
   "schematic.noConnections": "ఈ లైన్‌కు ఇతర లైన్లతో ఉమ్మడి స్టేషన్లు లేవు.",
   "schematic.exportTitle": "ఎగుమతి",
+  "schematic.exportsIntro":
+    "నెట్‌వర్క్ స్కీమాటిక్ మ్యాప్‌ను మరియు ప్రతి లైన్ మ్యాప్‌ను SVG లేదా PNG గా డౌన్‌లోడ్ చేయండి, లేదా వాటిని ముద్రించండి లేదా PDF గా సేవ్ చేయండి.",
+  "schematic.exportsNone": "ఎగుమతి చేయడానికి ఇంకా లైన్లు లేవు. ముందుగా సృష్టించు లో ఒక లైన్ గీయండి.",
+  "schematic.exporting": "మ్యాప్ సిద్ధమవుతోంది…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "ముద్రణ లేదా PDF",
@@ -793,9 +788,9 @@ export const editorsTe = {
   "schematic.area.color": "రంగు",
   "schematic.area.defaultName": "ప్రాంతం {n}",
   "schematic.area.draw": "ప్రాంతం గీయండి",
-  "schematic.area.drawHint": "మూలలు చేర్చడానికి మ్యాప్‌పై క్లిక్ చేసి, ఆపై పూర్తి నొక్కండి.",
+  "schematic.area.drawHint":
+    "మూలలు చేర్చడానికి మ్యాప్‌పై క్లిక్ చేసి, ఆపై పూర్తి నొక్కండి. Ctrl+Z చివరి మూలను తొలగిస్తుంది.",
   "schematic.area.finish": "పూర్తి",
-  "schematic.area.undo": "మూలను రద్దు చేయి",
   "schematic.area.remove": "ప్రాంతం తొలగించు",
   "schematic.area.dragHint": "ఆకారం మార్చడానికి మ్యాప్‌పై తెల్లని మూలలను లాగండి.",
   "schematic.facts": "సేవ",
@@ -1415,23 +1410,16 @@ export const editorsTe = {
   "capacity.loading": "నెట్‌వర్క్ లోడ్ అవుతోంది…",
   "capacity.planning": "వ్యవధిని ప్రణాళిక చేసి ఇంటర్‌లాకింగ్ ద్వారా నడుపుతోంది…",
   "capacity.trying": "{line} {every} ప్రయత్నిస్తోంది ({total}లో {n})…",
-  "capacity.noFile": "ఫైల్ ఎంచుకోలేదు",
-  "capacity.replace": "మార్చు",
-  "capacity.choose": "ఎంచుకోండి",
   "capacity.title": "వ్యవస్థను పరీక్షించండి",
   "capacity.intro":
     "రోజులోని ఒక వ్యవధిని టైమ్‌టేబుల్ ప్లానర్ మరియు ఇంటర్‌లాకింగ్ ద్వారా నడపండి. ప్రతి రైలు లైన్ పట్టాలపై సరిపోతుందా, సమయానికి నడుస్తుందా, ఆలస్యాల నుండి కోలుకుంటుందా, ఎన్ని రైళ్లు నడపగలదో చూడండి.",
-  "capacity.network": "నెట్‌వర్క్",
   "capacity.example": "ఉదాహరణ మెట్రో",
-  "capacity.mine": "ఫైళ్ల నుండి",
   "capacity.drawn": "ఈ ప్రాజెక్ట్‌లో గీసినది",
-  "capacity.drawnText": "రైల్వే టూల్‌లో గీసిన రైల్వేపై లైన్లు {names}, సేవ్ చేసినట్లుగా.",
   "capacity.drawn.noTrack": "రైల్వే టూల్‌లో ఇంకా ఏమీ గీయలేదు.",
   "capacity.drawn.noLines":
     "ఏ లైనూ పరీక్షకు సిద్ధంగా లేదు. రైల్వే టూల్‌లో ఒక లైన్‌కు కనీసం రెండు స్టాప్‌లు, ఒక రైలు ఇవ్వండి.",
   "capacity.drawn.errors": "గీసిన రైల్వేలో లోపాలు ఉన్నాయి. ముందుగా వాటిని రైల్వే టూల్‌లో సరిచేయండి.",
   "capacity.building": "గీసిన రైల్వే నిర్మించబడుతోంది…",
-  "capacity.drawnStreets": "వీధి లైన్లు {names}, ట్రాఫిక్ ఆలస్యాలతో తమ మార్గంలో నడిపారు.",
   "capacity.loads.estimating": "స్టేషన్లు, స్టాప్‌ల చుట్టూ ప్రయాణికులను అంచనా వేస్తోంది…",
   "capacity.loads.toggle": "ప్రయాణికుల భారం (పట్టికలు ట్యాబ్ ప్రయాణికుల అంచనా)",
   "capacity.loads.title": "ప్రయాణికులు",
@@ -1464,12 +1452,6 @@ export const editorsTe = {
   "capacity.street.bunchingHint": "సగం హెడ్‌వే కంటే చిన్న అంతరాలు; చివర్లో {left} ని ఆలస్యం",
   "capacity.street.method":
     "ప్రతి వీధి లైన్ {runs} సార్లు నడిచింది; ప్రతి ట్రిప్‌కు సొంత ట్రాఫిక్, ప్రధాన రోడ్లపై ఆశించిన ఆలస్యానికి {low} నుండి {high} రెట్లు (ప్రాజెక్ట్ ప్రాధాన్యతలు).",
-  "capacity.exampleText":
-    "లైన్ M1 Westpark – Eastgate: ఐదు స్టేషన్లు, ప్రతి చివర ఒక డిపో, రద్దీ వేళల్లో ప్రతి 5 ని, ఇతర సమయాల్లో ప్రతి 10 ని.",
-  "capacity.topologyFile": "ట్రాక్ టోపాలజీ (JSON)",
-  "capacity.linesFile": "లైన్లు (JSON)",
-  "capacity.filesHelp":
-    "ట్రాక్ టోపాలజీ ఫైల్ contracts/rail-topology.schema.json ను అనుసరిస్తుంది; ఈ ప్రాజెక్ట్‌లో గీసిన రైల్వే కోసం “{drawn}” ఎంచుకోండి. లైన్ల ఫైల్ ప్రతి లైన్ యొక్క స్టేషన్లు, రైలు, సేవను టైమ్‌టేబుల్ ప్లానర్ చదివే విధంగా జాబితా చేస్తుంది (docs/user/simulator.md).",
   "capacity.period": "వ్యవధి",
   "capacity.from": "నుండి",
   "capacity.to": "వరకు",
@@ -1488,7 +1470,11 @@ export const editorsTe = {
   "capacity.run": "పరీక్ష నడపండి",
   "capacity.runAgain": "మళ్లీ నడపండి",
   "capacity.stop": "ఆపు",
-  "capacity.chooseBoth": "మీ రైల్వేను పరీక్షించడానికి రెండు ఫైళ్లనూ ఎంచుకోండి.",
+  "capacity.replay.title": "మ్యాప్‌లో రీప్లే",
+  "capacity.replay.note":
+    "గీసిన అన్ని లైన్లు ఒకే గడియారంపై కలిసి కదులుతాయి. రైళ్లు ప్రణాళిక ప్రకారం, యాదృచ్ఛిక ఆలస్యాలు లేకుండా నడుస్తాయి; వీధి లైన్ల వాహనాలు పరీక్ష మొదటి రన్ ట్రాఫిక్‌ను ఎదుర్కొంటాయి.",
+  "capacity.replay.none": "రీప్లే చేయడానికి ఏమీ లేదు: ఈ కాలంలో ఏ లైనూ నడవలేదు.",
+  "capacity.replay.stopped": "రన్ ముందుగానే ఆగిపోయింది, కాబట్టి అప్పటి నుండి రైళ్లు నిలిచిపోతాయి: {why}",
   "capacity.summary":
     "{period} · మార్జిన్‌లతో {trips} ప్రయాణాలు ప్రణాళిక · {out} రైళ్లు సేవలో, {reserve} రిజర్వ్‌లో",
   "capacity.importNotes": "దిగుమతి గమనికలు ({n})",

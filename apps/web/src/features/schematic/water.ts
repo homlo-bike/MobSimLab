@@ -8,6 +8,8 @@ import type { LonLat } from "../street-lines/types";
 import { project, type Pt } from "./layout";
 import { octiRoute } from "./paths";
 import { withProject } from "../../geodata/projectData";
+import { hashText } from "../../projects/inputKey";
+import { codeVersion, recallAnswer, rememberAnswer } from "../../projects/keptAnswers";
 
 /** What the API returns (apps/api/src/street-network/water.ts), `[lon, lat]`. */
 export interface WaterShapes {
@@ -170,6 +172,24 @@ function samples(line: readonly Pt[], step: number): Pt[] {
  * between stations, metres) and the stations' diagram places. Output: the rivers as polylines, same units.
  */
 export function schematicRivers(
+  rivers: readonly { line: Pt[]; kind: "river" | "canal" }[],
+  unit: number,
+  stations: readonly Pt[],
+): { line: Pt[]; kind: "river" | "canal" }[] {
+  // Rivers worked out before for the same places (this visit, or saved with the project): read back.
+  const key = hashText(JSON.stringify([RIVERS_VERSION, rivers, unit, stations]));
+  const saved = recallAnswer(key);
+  if (saved) return JSON.parse(saved) as { line: Pt[]; kind: "river" | "canal" }[];
+  const out = riversNow(rivers, unit, stations);
+  rememberAnswer(key, JSON.stringify(out));
+  return out;
+}
+
+/** The river code's version in the fingerprint of kept rivers. */
+const RIVERS_VERSION = codeVersion(import.meta.url);
+
+/** Purpose: `schematicRivers` worked out. */
+function riversNow(
   rivers: readonly { line: Pt[]; kind: "river" | "canal" }[],
   unit: number,
   stations: readonly Pt[],

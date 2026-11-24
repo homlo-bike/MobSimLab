@@ -227,6 +227,9 @@ export const ar: Messages = {
   "save.saving": "جارٍ الحفظ…",
   "save.offline": "لم يُحفظ بعد · جارٍ إعادة المحاولة",
   "save.failed": "لم يُحفظ: {error}",
+  "session.staleToken":
+    "لم تعد تغييراتك تُحفظ لأن الخادم أُعيد تشغيله بينما كانت هذه الصفحة مفتوحة. أعد تحميل الصفحة لمتابعة العمل.",
+  "session.reload": "إعادة تحميل الصفحة",
   "save.conflict": "حفظ {who} {drawing} بينما كنت تغيّره. أيّ نسخة يجب أن يحتفظ بها المشروع؟",
   "save.someone": "شخص آخر",
   "save.keepMine": "الاحتفاظ بنسختي",
@@ -257,13 +260,8 @@ export const ar: Messages = {
   "sim.test": "اختبار المنظومة",
   "sim.journey": "زمن الرحلة من A إلى B",
 
-  "create.chooseTitle": "ماذا تريد أن تبني أولًا؟",
-  "create.chooseIntro": "يمكنك إضافة النوع الآخر لاحقًا. تبقى الخطوط الحالية ظاهرة أثناء عملك.",
   "create.street": "خط على الشوارع",
-  "create.streetHint": "حافلة، حافلات التردد السريع، ترولي باص، حافلة بين المدن. يتبع شبكة الشوارع.",
   "create.rail": "خط سككي",
-  "create.railHint":
-    "ترام، قطار خفيف، مترو، قطار الضواحي، إقليمي، بين المدن، فائق السرعة. ارسم السكك والمحطات والتحويلات.",
   "create.noArea":
     "لا توجد منطقة دراسة بعد. استورد الشوارع والسكان من OpenStreetMap أولًا لحساب المسارات وتقدير أعداد الركاب.",
   "create.setArea": "تحديد المنطقة في GIS",
@@ -453,6 +451,7 @@ export const ar: Messages = {
 
   "job.stepOf": "الخطوة {step} من {steps}",
   "job.cancel": "إلغاء",
+  "job.running": "أعمال جارية",
   "map.search": "البحث عن أماكن",
   "map.searchPlaceholder": "مدينة أو شارع أو محطة أو عنوان",
   "map.searching": "جارٍ البحث…",
@@ -464,6 +463,14 @@ export const ar: Messages = {
   "map.places": "الأماكن التي عُثر عليها",
   "map.searchCredit": "أسماء الأماكن © مساهمو OpenStreetMap، عُثر عليها عبر Photon",
   "map.layers": "طبقات الخريطة",
+  "map.alwaysShow": "إظهار دائمًا",
+  "map.alwaysShowHint": "تظهر في كل تبويب خريطة أيًا كانت الأداة المفتوحة. تُحفظ في حسابك لهذا المشروع.",
+  "map.pin.serviceLines": "خطوط الخدمة",
+  "map.pin.tracks": "المسارات",
+  "map.pin.stations": "المحطات",
+  "map.pin.stops": "المواقف",
+  "map.pin.streetSetups": "إعدادات الشوارع",
+  "map.pin.regions": "المناطق",
   "map.basemap": "الخريطة الأساسية",
   "map.streetMap": "خريطة",
   "map.aerial": "جوية",

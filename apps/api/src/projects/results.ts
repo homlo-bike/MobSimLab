@@ -32,6 +32,8 @@ export const MAX_RESULT_BYTES = 64 * 1024 * 1024;
  * - cost-quantities: the railway quantities the cost tables price (railway build step)
  * - scenario-measures: the quantities of every scenario of the Tables tab
  * - capacity-test: the last capacity test run in the browser (Simulator tab)
+ * - kept-answers: the answers of the browser's long calculations (railway built, timetables planned, schematic
+ *   laid out) by the fingerprint of their inputs, read back instead of worked out on every visit
  */
 export const RESULT_KINDS = [
   "noise",
@@ -41,6 +43,7 @@ export const RESULT_KINDS = [
   "cost-quantities",
   "scenario-measures",
   "capacity-test",
+  "kept-answers",
 ] as const;
 export type ResultKind = (typeof RESULT_KINDS)[number];
 

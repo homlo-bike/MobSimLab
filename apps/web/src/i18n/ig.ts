@@ -234,6 +234,9 @@ export const ig: Messages = {
   "save.saving": "Na-echekwa…",
   "save.offline": "Echekwabeghị · na-anwa ọzọ",
   "save.failed": "Echekwaghị: {error}",
+  "session.staleToken":
+    "A naghị echekwa mgbanwe gị ọzọ n'ihi na sava malitere ọzọ mgbe ibe a mepere emepe. Bugharịa ibe ahụ ka ị gaa n'ihu na-arụ ọrụ.",
+  "session.reload": "Bugharịa ibe",
   "save.conflict": "{who} chekwara {drawing} mgbe ị na-agbanwe ya. Kedu nke ọrụ ahụ ga-edebe?",
   "save.someone": "Onye ọzọ",
   "save.keepMine": "Debe nke m",
@@ -264,13 +267,8 @@ export const ig: Messages = {
   "sim.test": "Nwalee sistemụ ahụ",
   "sim.journey": "Oge njem A → B",
 
-  "create.chooseTitle": "Gịnị ka ị chọrọ ibu ụzọ wuo?",
-  "create.chooseIntro": "Ị nwere ike ịtinye ụdị nke ọzọ ma emechaa. Ụzọ dị adị na-apụta mgbe ị na-arụ ọrụ.",
   "create.street": "Ụzọ okporo ụzọ",
-  "create.streetHint": "Bọs, BRT, bọs nwere waya, bọs n'etiti obodo. Ọ na-eso netwọk okporo ụzọ.",
   "create.rail": "Ụzọ ígwè",
-  "create.railHint":
-    "Tram, ụgbọ oloko dị mfe, metro, gburugburu obodo, mpaghara, n'etiti obodo, ọsọ ọsọ. See ụzọ ígwè, ọdụ na ihe ntụgharị.",
   "create.noArea":
     "Enwebeghị mpaghara ọmụmụ. Buru ụzọ bubata okporo ụzọ na ọnụ ọgụgụ ndị mmadụ site na OpenStreetMap maka nhazi ụzọ na atụmatụ ndị njem.",
   "create.setArea": "Debe mpaghara na GIS",
@@ -463,6 +461,7 @@ export const ig: Messages = {
 
   "job.stepOf": "Nzọụkwụ {step} n'ime {steps}",
   "job.cancel": "Kagbuo",
+  "job.running": "Ọrụ na-aga n'ihu",
   "map.search": "Chọọ ebe",
   "map.searchPlaceholder": "Obodo, okporo ụzọ, ọdụ ma ọ bụ adreesị",
   "map.searching": "Na-achọ…",
@@ -474,6 +473,15 @@ export const ig: Messages = {
   "map.places": "Ebe ndị a hụrụ",
   "map.searchCredit": "Aha ebe © ndị na-enye aka na OpenStreetMap, ejiri Photon chọta",
   "map.layers": "Ọkwa map",
+  "map.alwaysShow": "Gosi mgbe niile",
+  "map.alwaysShowHint":
+    "A na-egosi ya na taabụ map ọ bụla, n'agbanyeghị ngwa mepere emepe. A na-echekwa ya n'akaụntụ gị maka ọrụ a.",
+  "map.pin.serviceLines": "Ahịrị ọrụ",
+  "map.pin.tracks": "Ụzọ ụgbọ oloko",
+  "map.pin.stations": "Ọdụ",
+  "map.pin.stops": "Ebe nkwụsị",
+  "map.pin.streetSetups": "Nhazi okporo ụzọ",
+  "map.pin.regions": "Mpaghara",
   "map.basemap": "Map ntọala",
   "map.streetMap": "Map",
   "map.aerial": "Site n'elu",

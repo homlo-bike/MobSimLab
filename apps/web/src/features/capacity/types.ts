@@ -106,6 +106,33 @@ export interface LineInfo {
   bands: { from_s: number; to_s: number; headway_s: number }[];
 }
 
+/**
+ * The replay of a test run's period without random delays (crates/rail-sim `capacity::Replay`): where every
+ * train's head is, frame by frame.
+ */
+export interface RailReplay {
+  /** First frame, s after midnight, and the time between frames, s. */
+  begin: number;
+  frame_s: number;
+  frames: number;
+  /** Topology section id of each track the positions refer to, and where the track starts on it, m. */
+  tracks: [string, number][];
+  /** The lines with service in the period: id and name. */
+  lines: [string, string][];
+  trains: {
+    vehicle: number;
+    /** Index in `lines`. */
+    line: number;
+    /** Three numbers per frame: index in `tracks` (-1: no position), chainage on that track m, speed km/h. */
+    s: number[];
+    /** Passenger calls, four numbers each: planned departure, arrival, departure (-1: not reached), kind. */
+    st: number[];
+  }[];
+  /** Why the run stopped early, if it did (in English, and as a message for the app language). */
+  stopped: string | null;
+  stopped_msg?: EngineMsg | null;
+}
+
 /** A network and its lines, ready for runs (a web worker in the app, a fake in tests). */
 export interface CapacityEngine {
   lines(): Promise<LineInfo[]>;
@@ -113,10 +140,12 @@ export interface CapacityEngine {
   run(p: Partial<CapacityParams>): Promise<CapacityRun>;
   sweepHeadways(p: Partial<CapacityParams>, line: number, works: boolean): Promise<number[]>;
   sweepPoint(p: Partial<CapacityParams>, line: number, headwayS: number): Promise<Point>;
+  /** The replay of the period without random delays, one frame every `frameS` seconds. */
+  replay(p: Partial<CapacityParams>, frameS: number): Promise<RailReplay>;
   dispose(): void;
 }
 
-/** What to load: the example metro, or the railway editor's topology export with a lines file (JSON texts). */
-export type NetworkSource = { kind: "example" } | { kind: "files"; topology: string; lines: string };
+/** What to load: the railway drawn in the project, as its topology and its lines (JSON texts). */
+export type NetworkSource = { topology: string; lines: string };
 
 export type EngineLoader = (src: NetworkSource) => Promise<CapacityEngine>;

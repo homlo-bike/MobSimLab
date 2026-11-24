@@ -234,6 +234,9 @@ export const tr: Messages = {
   "save.saving": "Kaydediliyor…",
   "save.offline": "Kaydedilmedi · yeniden deneniyor",
   "save.failed": "Kaydedilemedi: {error}",
+  "session.staleToken":
+    "Bu sayfa açıkken sunucu yeniden başlatıldığı için değişiklikleriniz artık kaydedilmiyor. Çalışmaya devam etmek için sayfayı yeniden yükleyin.",
+  "session.reload": "Sayfayı yeniden yükle",
   "save.conflict": "Siz {drawing} üzerinde değişiklik yaparken {who} kaydetti. Hangisi kalsın?",
   "save.someone": "Başka biri",
   "save.keepMine": "Benimkini koru",
@@ -264,13 +267,8 @@ export const tr: Messages = {
   "sim.test": "Sistemi test et",
   "sim.journey": "Yolculuk süresi A → B",
 
-  "create.chooseTitle": "Önce ne oluşturmak istersiniz?",
-  "create.chooseIntro": "Diğerini sonra ekleyebilirsiniz. Mevcut hatlar çalışırken görünür kalır.",
   "create.street": "Karayolu hatları",
-  "create.streetHint": "Otobüs, metrobüs, troleybüs ve şehirlerarası otobüs. Sokak ağını izler.",
   "create.rail": "Raylı hatlar",
-  "create.railHint":
-    "Tramvay, hafif raylı, metro, banliyö, bölgesel, şehirlerarası ve yüksek hızlı. Ray, istasyon ve makas çizin.",
   "create.noArea":
     "Henüz çalışma alanı yok. Rota ve yolcu tahminlerinin kullanılabilmesi için önce OpenStreetMap'ten sokakları ve nüfusu içe aktarın.",
   "create.setArea": "Alanı CBS'de belirle",
@@ -461,6 +459,7 @@ export const tr: Messages = {
 
   "job.stepOf": "Adım {step}/{steps}",
   "job.cancel": "İptal",
+  "job.running": "Süren işlemler",
   "map.search": "Yer ara",
   "map.searchPlaceholder": "Şehir, sokak, istasyon veya adres",
   "map.searching": "Aranıyor…",
@@ -472,6 +471,15 @@ export const tr: Messages = {
   "map.places": "Bulunan yerler",
   "map.searchCredit": "Yer adları © OpenStreetMap katkıcıları, Photon ile bulundu",
   "map.layers": "Harita katmanları",
+  "map.alwaysShow": "Her zaman göster",
+  "map.alwaysShowHint":
+    "Hangi araç açık olursa olsun her harita sekmesinde görünür. Bu proje için hesabınızda saklanır.",
+  "map.pin.serviceLines": "Hatlar",
+  "map.pin.tracks": "Raylar",
+  "map.pin.stations": "İstasyonlar",
+  "map.pin.stops": "Duraklar",
+  "map.pin.streetSetups": "Sokak ayarları",
+  "map.pin.regions": "Bölgeler",
   "map.basemap": "Altlık harita",
   "map.streetMap": "Harita",
   "map.aerial": "Hava",

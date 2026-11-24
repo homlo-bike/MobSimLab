@@ -98,4 +98,32 @@ export const roadFr = {
   "visuals.legend.veryLate": "Très en retard (plus de {min} min)",
   "road.replay.noService":
     "Ce calcul a été enregistré avant l'enregistrement des horaires de service : ses véhicules gardent la couleur de leur ligne. Relancez-le pour les voir selon leur ponctualité.",
+  "road.step.streets": "Chargement des rues : {done} tuiles de carte sur {of}…",
+  "road.note.junctionSetup": "Carrefours : {on} carrefours équipés de feux, {off} sans",
+  "road.note.gateOffStreet": "Dépôt {depot} : une entrée n’est pas près d’une rue qu’un bus peut emprunter",
+  "road.note.noOsmSignals":
+    "OpenStreetMap n’indique aucun feu sur ces rues ; tous les carrefours fonctionnent donc sans feux et les rues secondaires attendent des créneaux dans le trafic des axes principaux. Équipez les principaux carrefours de feux dans SIG › Rues.",
+  "road.note.lineCannotRun": "{line} ne peut pas circuler : {why}",
+  "road.note.carsRemoved":
+    "{n} voitures de fond sont restées arrêtées plus de {min} minutes et ont été retirées du trafic pour résorber les bouchons ; les rues sont peut-être plus chargées qu’elles ne peuvent l’absorber",
+  "road.note.pullOutNotFollowed":
+    "Le trajet de sortie du dépôt n’est pas suivi ({why}) ; ses véhicules prennent le chemin le plus court",
+  "road.note.pullInNotFollowed":
+    "Le trajet de rentrée au dépôt n’est pas suivi ({why}) ; ses véhicules prennent le chemin le plus court",
+  "road.note.noDepot": "Pas de dépôt : ses véhicules commencent et finissent dans la rue",
+  "road.note.noSlot": "Le véhicule {n} n’a pas de place au dépôt : il part de l’entrée du dépôt",
+  "road.note.cannotLeave": "Le véhicule {n} ne peut pas quitter son dépôt : il part de la rue",
+  "road.note.cannotReturn": "Le véhicule {n} ne peut pas rentrer au dépôt : il finit dans la rue",
+  "road.problem.notRouted": "elle a moins de deux points ou n’est pas tracée",
+  "road.problem.noDepartures": "elle n’a aucun départ sur la période",
+  "road.problem.notMatched": "son itinéraire n’a pas pu être rapproché des rues",
+  "road.problem.stopOffRoute": "l’arrêt {stop} n’est pas sur l’itinéraire rapproché",
+  "road.problem.notBack": "l’itinéraire ne revient pas à son premier arrêt",
+  "road.problem.noBusLink":
+    "aucun passage pour un bus de {from} vers {to}, près de {stop} (à {m} m) : les rues du modèle de trafic n’y offrent aucun virage autorisé à un bus, par exemple un demi-tour ou un virage interdit. Déplacez l’itinéraire ou un point de passage pour qu’il prenne une autre rue à cet endroit",
+  "road.problem.depotToRoute": "ses véhicules ne peuvent pas rejoindre l’itinéraire depuis le dépôt",
+  "road.problem.notClosed": "son circuit n’est pas fermé sur les rues",
+  "road.problem.unreachable": "elle est inaccessible",
+  "road.part.unnamedStreet": "une rue sans nom (voie OSM {way})",
+  "road.part.stop": "arrêt {n}",
 } satisfies RoadMessages;

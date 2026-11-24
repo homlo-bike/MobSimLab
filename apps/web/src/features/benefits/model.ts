@@ -274,20 +274,31 @@ export function stationsAround(st: readonly { at: LonLat; radius: number }[]): (
     Math.floor((p[0] * kx) / size),
     Math.floor((p[1] * 110_574) / size),
   ];
-  const grid = new Map<string, number[]>();
+  // A number per square (squares within ±2^20 of the origin on each axis, far beyond the Earth at these sizes).
+  const key = (x: number, y: number) => (x + 1_048_576) * 2_097_152 + (y + 1_048_576);
+  const grid = new Map<number, number[]>();
   st.forEach((s, i) => {
     const [x, y] = sq(s.at);
-    const k = `${x},${y}`;
+    const k = key(x, y);
     const list = grid.get(k);
     if (list) list.push(i);
     else grid.set(k, [i]);
   });
+  // The squares with a station in them or next to them: every other point has none around it.
+  const lived = new Set<number>();
+  for (const k of grid.keys()) {
+    const x = Math.floor(k / 2_097_152) - 1_048_576;
+    const y = (k % 2_097_152) - 1_048_576;
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) lived.add(key(x + dx, y + dy));
+  }
+  const none: number[] = [];
   return (p) => {
     const [x, y] = sq(p);
+    if (!lived.has(key(x, y))) return none;
     const out: number[] = [];
     for (let dx = -1; dx <= 1; dx++)
       for (let dy = -1; dy <= 1; dy++) {
-        const list = grid.get(`${x + dx},${y + dy}`);
+        const list = grid.get(key(x + dx, y + dy));
         if (list) out.push(...list);
       }
     return out.sort((a, b) => a - b);
@@ -362,6 +373,14 @@ export function prepare(input: PrepareInput): Prepared {
     l,
     at: l.stations.map((id) => st.find((s) => s.id === id)!),
   }));
+  const lineRadius = lineStations.map(({ l }) => central("mode.catchment_m", l.mode, prefs));
+  const linesAt: number[][] = st.map(() => []);
+  lineStations.forEach(({ at: stops }, k) => {
+    for (const s of stops) {
+      const i = st.indexOf(s);
+      if (!linesAt[i]!.includes(k)) linesAt[i]!.push(k);
+    }
+  });
   for (const b of input.buildings) {
     const at = ringCentre(b.ring);
     if (!nearest(at)) continue;
@@ -375,12 +394,19 @@ export function prepare(input: PrepareInput): Prepared {
     cellHomes.set(cell, (cellHomes.get(cell) ?? 0) + floor * use.homes);
     if (use.jobs)
       cellJobs.set(cell, (cellJobs.get(cell) ?? 0) + (floor * (1 - use.homes)) / m2PerJob[use.jobs]);
+    // The lines with a stop within their catchment: only stations in the grid squares round the building
+    // can be that close (a line's catchment is never wider than its stations'), so not every stop of every
+    // line is measured for every building (the Tables tab froze for seconds on the Damascus network).
+    const lineD = new Map<number, number>();
+    for (const i of around(at)) {
+      const d = distanceM(at, st[i]!.at);
+      for (const k of linesAt[i]!) lineD.set(k, Math.min(lineD.get(k) ?? Infinity, d));
+    }
     const near: BuildingRec["near"] = [];
-    for (const { l, at: stops } of lineStations) {
-      const r = central("mode.catchment_m", l.mode, prefs);
-      let d = Infinity;
-      for (const s of stops) d = Math.min(d, distanceM(at, s.at));
-      if (d <= r) near.push({ line: l.id, d, r });
+    for (const k of [...lineD.keys()].sort((a, b) => a - b)) {
+      const d = lineD.get(k)!;
+      const r = lineRadius[k]!;
+      if (d <= r) near.push({ line: lineStations[k]!.l.id, d, r });
     }
     if (region) {
       const k = regionStock.get(region.id) ?? { homes: 0, work: 0, covered: 0 };
@@ -399,29 +425,50 @@ export function prepare(input: PrepareInput): Prepared {
   const nCells = new Map<number, number>();
   const cells: { at: LonLat; key: string; zone: number; circles: number[] }[] = [];
   if (st.length) {
-    let [w, s, e, n] = [Infinity, Infinity, -Infinity, -Infinity];
+    // Only the cells around each station: a network spread over a country (an intercity bus from Damascus
+    // to Aleppo) has millions of 50 m cells in its bounding box but a few thousand within its catchments,
+    // and measuring every one of them froze the capacity run's ridership estimate for minutes.
+    let [w, s] = [Infinity, Infinity];
     for (const z of st) {
-      const dx = z.radius / kx;
-      const dy = z.radius / 110_574;
-      [w, s, e, n] = [
-        Math.min(w, z.at[0] - dx),
-        Math.min(s, z.at[1] - dy),
-        Math.max(e, z.at[0] + dx),
-        Math.max(n, z.at[1] + dy),
-      ];
+      w = Math.min(w, z.at[0] - z.radius / kx);
+      s = Math.min(s, z.at[1] - z.radius / 110_574);
     }
     const step = { x: CELL_M / kx, y: CELL_M / 110_574 };
     const x0 = lon0 + Math.floor(((w - lon0) * kx) / CELL_M) * step.x;
     const y0 = lat0 + Math.floor(((s - lat0) * 110_574) / CELL_M) * step.y;
-    for (let x = x0; x <= e; x += step.x)
-      for (let y = y0; y <= n; y += step.y) {
-        const at: LonLat = [x + step.x / 2, y + step.y / 2];
-        const circles = around(at).filter((i) => distanceM(at, st[i]!.at) <= st[i]!.radius);
-        if (!circles.length) continue;
-        const zone = nearest(at)!.i;
-        for (const c of circles) nCells.set(c, (nCells.get(c) ?? 0) + 1);
-        cells.push({ at, key: cellOf(at), zone, circles });
-      }
+    const seen = new Set<string>();
+    const todo: [number, number][] = [];
+    for (const z of st) {
+      // Wide enough at the station's latitude (a degree of longitude is shorter further from the equator).
+      const dy = z.radius / 110_574;
+      const cos = Math.cos((Math.min(89, Math.abs(z.at[1]) + dy) * Math.PI) / 180);
+      const dx = z.radius / (111_320 * Math.max(0.01, cos));
+      const [i0, i1] = [
+        Math.floor((z.at[0] - dx - x0) / step.x) - 1,
+        Math.ceil((z.at[0] + dx - x0) / step.x),
+      ];
+      const [j0, j1] = [
+        Math.floor((z.at[1] - dy - y0) / step.y) - 1,
+        Math.ceil((z.at[1] + dy - y0) / step.y),
+      ];
+      for (let i = Math.max(0, i0); i <= i1; i++)
+        for (let j = Math.max(0, j0); j <= j1; j++) {
+          const k = `${i},${j}`;
+          if (seen.has(k)) continue;
+          seen.add(k);
+          todo.push([i, j]);
+        }
+    }
+    // West to east, then south to north, as the cells were measured before.
+    todo.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    for (const [i, j] of todo) {
+      const at: LonLat = [x0 + i * step.x + step.x / 2, y0 + j * step.y + step.y / 2];
+      const circles = around(at).filter((c) => distanceM(at, st[c]!.at) <= st[c]!.radius);
+      if (!circles.length) continue;
+      const zone = nearest(at)!.i;
+      for (const c of circles) nCells.set(c, (nCells.get(c) ?? 0) + 1);
+      cells.push({ at, key: cellOf(at), zone, circles });
+    }
   }
   for (const c of cells) {
     const region = regionAt(regions, c.at);

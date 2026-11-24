@@ -236,6 +236,9 @@ export const zu: Messages = {
   "save.saving": "Iyagcina…",
   "save.offline": "Akukagcinwa · kuzanwa futhi",
   "save.failed": "Akugcinwanga: {error}",
+  "session.staleToken":
+    "Izinguquko zakho azisalondolozwa ngoba iseva iqale kabusha ngesikhathi leli khasi livuliwe. Layisha kabusha ikhasi ukuze uqhubeke nomsebenzi.",
+  "session.reload": "Layisha kabusha ikhasi",
   "save.conflict":
     "U-{who} ugcine i-{drawing} ngesikhathi uyishintsha. Iyiphi okufanele iphrojekthi iyigcine?",
   "save.someone": "Omunye umuntu",
@@ -267,14 +270,8 @@ export const zu: Messages = {
   "sim.test": "Hlola uhlelo",
   "sim.journey": "Isikhathi sohambo A → B",
 
-  "create.chooseTitle": "Ufuna ukwakha ini kuqala?",
-  "create.chooseIntro": "Ungangeza olunye uhlobo kamuva. Imizila ekhona iyabonakala ngesikhathi usebenza.",
   "create.street": "Umzila womgwaqo",
-  "create.streetHint":
-    "Ibhasi, BRT, ibhasi lentambo, ibhasi phakathi kwamadolobha. Ilandela inethiwekhi yemigwaqo.",
   "create.rail": "Umzila kajantshi",
-  "create.railHint":
-    "Ithremu, isitimela esilula, i-metro, sabagibeli, sesifunda, phakathi kwamadolobha, esisheshayo. Dweba ojantshi, iziteshi nezishintshi.",
   "create.noArea":
     "Ayikho indawo yokufunda okwamanje. Qala ngokungenisa imigwaqo nenani labantu kusuka ku-OpenStreetMap ukuze uhlele imizila futhi ulinganise abagibeli.",
   "create.setArea": "Setha indawo ku-GIS",
@@ -469,6 +466,7 @@ export const zu: Messages = {
 
   "job.stepOf": "Isinyathelo {step} kwezingu-{steps}",
   "job.cancel": "Khansela",
+  "job.running": "Umsebenzi oqhubekayo",
   "map.search": "Sesha izindawo",
   "map.searchPlaceholder": "Idolobha, umgwaqo, isiteshi noma ikheli",
   "map.searching": "Iyasesha…",
@@ -481,6 +479,15 @@ export const zu: Messages = {
   "map.places": "Izindawo ezitholakele",
   "map.searchCredit": "Amagama ezindawo © abanikeli be-OpenStreetMap, atholakale nge-Photon",
   "map.layers": "Izendlalelo zemephu",
+  "map.alwaysShow": "Bonisa njalo",
+  "map.alwaysShowHint":
+    "Kuyabonakala kuzo zonke izithebhu zemephu, noma ngabe yiliphi ithuluzi elivuliwe. Kulondolozwa ku-akhawunti yakho kule phrojekthi.",
+  "map.pin.serviceLines": "Imizila yesevisi",
+  "map.pin.tracks": "Ojantshi",
+  "map.pin.stations": "Iziteshi",
+  "map.pin.stops": "Izitobhi",
+  "map.pin.streetSetups": "Ukusethwa kwemigwaqo",
+  "map.pin.regions": "Izifunda",
   "map.basemap": "Imephu eyisisekelo",
   "map.streetMap": "Imephu",
   "map.aerial": "Emoyeni",

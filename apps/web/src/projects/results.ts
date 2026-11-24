@@ -16,7 +16,8 @@ export type ResultKind =
   | "benefit-access"
   | "cost-quantities"
   | "scenario-measures"
-  | "capacity-test";
+  | "capacity-test"
+  | "kept-answers";
 
 /** Format of a saved result's JSON; a newer app reads older ones, a result in an unknown one is worked out again. */
 const VERSION = 1;

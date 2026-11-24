@@ -236,6 +236,9 @@ export const fr: Messages = {
   "save.saving": "Enregistrement…",
   "save.offline": "Pas encore enregistré · nouvelle tentative",
   "save.failed": "Non enregistré : {error}",
+  "session.staleToken":
+    "Vos modifications ne sont plus enregistrées, car le serveur a redémarré pendant que cette page était ouverte. Rechargez la page pour continuer.",
+  "session.reload": "Recharger la page",
   "save.conflict":
     "{who} a enregistré {drawing} pendant que vous le modifiiez. Quelle version le projet doit-il garder ?",
   "save.someone": "Quelqu’un d’autre",
@@ -267,14 +270,8 @@ export const fr: Messages = {
   "sim.test": "Tester le système",
   "sim.journey": "Temps de trajet A → B",
 
-  "create.chooseTitle": "Que voulez-vous construire en premier ?",
-  "create.chooseIntro":
-    "Vous pourrez ajouter l’autre type plus tard. Les itinéraires existants restent visibles pendant que vous travaillez.",
   "create.street": "Ligne routière",
-  "create.streetHint": "Bus, BHNS, trolleybus, car interurbain. Suit le réseau de rues.",
   "create.rail": "Ligne ferroviaire",
-  "create.railHint":
-    "Tramway, métro léger, métro, banlieue, régional, grandes lignes, grande vitesse. Tracez voies, gares et aiguillages.",
   "create.noArea":
     "Pas encore de zone d’étude. Importez d’abord les rues et la population depuis OpenStreetMap pour le tracé et l’estimation des voyageurs.",
   "create.setArea": "Définir la zone dans SIG",
@@ -467,6 +464,7 @@ export const fr: Messages = {
 
   "job.stepOf": "Étape {step} sur {steps}",
   "job.cancel": "Annuler",
+  "job.running": "Traitements en cours",
   "map.search": "Rechercher un lieu",
   "map.searchPlaceholder": "Ville, rue, gare ou adresse",
   "map.searching": "Recherche…",
@@ -479,6 +477,15 @@ export const fr: Messages = {
   "map.places": "Lieux trouvés",
   "map.searchCredit": "Noms de lieux © contributeurs OpenStreetMap, trouvés avec Photon",
   "map.layers": "Couches de la carte",
+  "map.alwaysShow": "Toujours afficher",
+  "map.alwaysShowHint":
+    "Visible sur chaque onglet avec carte, quel que soit l'outil ouvert. Enregistré dans votre compte pour ce projet.",
+  "map.pin.serviceLines": "Lignes",
+  "map.pin.tracks": "Voies",
+  "map.pin.stations": "Stations",
+  "map.pin.stops": "Arrêts",
+  "map.pin.streetSetups": "Réglages des rues",
+  "map.pin.regions": "Régions",
   "map.basemap": "Fond de carte",
   "map.streetMap": "Carte",
   "map.aerial": "Aérienne",

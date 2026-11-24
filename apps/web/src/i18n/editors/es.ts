@@ -12,10 +12,6 @@ export const editorsEs = {
   "rail.mode.long_distance_rail": "Larga distancia",
   "rail.params":
     "Ancho {gauge} mm · entreeje {centres} m · radio mín. {minRadius} m (recomendado {radius} m) · pendiente máx. {gradient} ‰ · velocidad de diseño {speed} km/h · andenes de {platform} m a {height} mm · {power}",
-  "rail.stat.route": "Trazado",
-  "rail.stat.track": "Vía",
-  "rail.stat.stations": "Estaciones",
-  "rail.stat.switches": "Desvíos",
   "rail.stations.one": "{count} estación",
   "rail.stations.other": "{count} estaciones",
   "rail.backToNetwork": "Volver a la red",
@@ -342,6 +338,8 @@ export const editorsEs = {
   "rail.say.clickTrackSwitch": "Haz clic en una vía para colocar un desvío.",
   "rail.say.straightOnly": "Los desvíos del catálogo van en vía recta. Haz clic en un tramo recto.",
   "rail.say.doubleOnly": "Los escapes unen dos vías paralelas. Elige una vía doble.",
+  "rail.say.missedStationEnd":
+    "Haz clic justo en un extremo de la estación para unir la vía a él. Acércate si cuesta acertar en los extremos.",
   "rail.say.clickTrackSignal":
     "Haz clic en una vía, una vía de estación o un ramal de desvío para colocar una señal.",
   "rail.signalsReset": "Señales restablecidas a las generadas a partir del diseño.",
@@ -390,13 +388,6 @@ export const editorsEs = {
     "Puede usar autopistas; las paradas pueden estar en estaciones de autobuses.",
   "street.battery": "Autonomía de batería",
   "street.doorsBoth": "Puertas a ambos lados",
-  "street.stat.length": "Longitud del circuito",
-  "street.stat.stops": "Paradas ({end} cabeceras)",
-  "street.stat.cycle": "Ciclo: {run} de recorrido{crossings}, {dwell} en paradas, {layover} de regulación",
-  "street.stat.atCrossings": "({min} en pasos a nivel)",
-  "street.stat.vehicles": "Vehículos para una frecuencia de {headway} min",
-  "street.stat.compact":
-    "{length} de circuito · {stops} paradas · ciclo de {cycle} min · {vehicles} vehículos",
   "street.points": "Puntos del recorrido · orden del circuito",
   "street.noPoints": "Aún no hay puntos. Elige Añadir punto y haz clic en una calle.",
   "street.viaN": "Punto de paso {n}",
@@ -741,6 +732,10 @@ export const editorsEs = {
   "schematic.connections": "Etiquetas de color bajo una estación: líneas a las que puede transbordar allí.",
   "schematic.noConnections": "Esta línea no comparte estaciones con otras líneas.",
   "schematic.exportTitle": "Exportar",
+  "schematic.exportsIntro":
+    "Descarga el mapa esquemático de la red y el mapa de cada línea en SVG o PNG, o imprímelos o guárdalos como PDF.",
+  "schematic.exportsNone": "Todavía no hay líneas para exportar. Dibuja primero una línea en Crear.",
+  "schematic.exporting": "Preparando el mapa…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Imprimir o PDF",
@@ -798,9 +793,9 @@ export const editorsEs = {
   "schematic.area.color": "Color",
   "schematic.area.defaultName": "Área {n}",
   "schematic.area.draw": "Dibujar un área",
-  "schematic.area.drawHint": "Haga clic en el mapa para añadir vértices y luego pulse Terminar.",
+  "schematic.area.drawHint":
+    "Haga clic en el mapa para añadir vértices y luego pulse Terminar. Ctrl+Z quita el último vértice.",
   "schematic.area.finish": "Terminar",
-  "schematic.area.undo": "Deshacer vértice",
   "schematic.area.remove": "Eliminar área",
   "schematic.area.dragHint": "Arrastre los vértices blancos en el mapa para cambiar la forma.",
   "schematic.facts": "Servicio",
@@ -1442,25 +1437,17 @@ export const editorsEs = {
   "capacity.loading": "Cargando la red…",
   "capacity.planning": "Planificando el periodo y pasándolo por el enclavamiento…",
   "capacity.trying": "Probando {line} {every} ({n} de {total})…",
-  "capacity.noFile": "Ningún archivo elegido",
-  "capacity.replace": "Sustituir",
-  "capacity.choose": "Elegir",
   "capacity.title": "Probar el sistema",
   "capacity.intro":
     "Pase un periodo del día por el planificador de horarios y el enclavamiento. Vea si cada línea ferroviaria cabe en las vías, circula a tiempo y se recupera de los retrasos, y cuántos trenes podría llevar.",
-  "capacity.network": "Red",
   "capacity.example": "Metro de ejemplo",
-  "capacity.mine": "Desde archivos",
   "capacity.drawn": "Dibujado en este proyecto",
-  "capacity.drawnText":
-    "Líneas {names} en el ferrocarril dibujado en la herramienta ferroviaria, tal como se guardó.",
   "capacity.drawn.noTrack": "Aún no hay nada dibujado en la herramienta ferroviaria.",
   "capacity.drawn.noLines":
     "Ninguna línea está lista para la prueba. En la herramienta ferroviaria, da a una línea al menos dos paradas y un tren.",
   "capacity.drawn.errors":
     "El ferrocarril dibujado tiene errores. Corrígelos primero en la herramienta ferroviaria.",
   "capacity.building": "Construyendo el ferrocarril dibujado…",
-  "capacity.drawnStreets": "Líneas de calle {names}, recorridas por su ruta con retrasos del tráfico.",
   "capacity.loads.estimating": "Estimando pasajeros alrededor de estaciones y paradas…",
   "capacity.loads.toggle": "Carga de pasajeros (estimación de la pestaña Tablas)",
   "capacity.loads.title": "Pasajeros",
@@ -1495,12 +1482,6 @@ export const editorsEs = {
     "intervalos de menos de la mitad del intervalo previsto; {left} min de retraso al final",
   "capacity.street.method":
     "Cada línea de calle se ejecutó {runs} veces; cada viaje tuvo su propio tráfico, de {low} a {high} veces el retraso esperado en el tráfico de las vías principales (preferencias del proyecto).",
-  "capacity.exampleText":
-    "Línea M1 Westpark – Eastgate: cinco estaciones, un depósito en cada extremo, cada 5 min en las horas punta y cada 10 min el resto del tiempo.",
-  "capacity.topologyFile": "Topología de vías (JSON)",
-  "capacity.linesFile": "Líneas (JSON)",
-  "capacity.filesHelp":
-    "El archivo de topología de vías sigue contracts/rail-topology.schema.json; para el ferrocarril dibujado en este proyecto, elija «{drawn}». El archivo de líneas indica para cada línea las estaciones, el tren y el servicio, tal como los lee el planificador de horarios (docs/user/simulator.md).",
   "capacity.period": "Periodo",
   "capacity.from": "Desde",
   "capacity.to": "Hasta",
@@ -1520,7 +1501,12 @@ export const editorsEs = {
   "capacity.run": "Ejecutar la prueba",
   "capacity.runAgain": "Ejecutar de nuevo",
   "capacity.stop": "Detener",
-  "capacity.chooseBoth": "Elija ambos archivos para probar su ferrocarril.",
+  "capacity.replay.title": "Reproducción en el mapa",
+  "capacity.replay.note":
+    "Todas las líneas dibujadas se mueven juntas con un mismo reloj. Los trenes circulan según lo previsto, sin retrasos aleatorios; los vehículos de las líneas de calle encuentran el tráfico de la primera ejecución de la prueba.",
+  "capacity.replay.none": "No hay nada que reproducir: ninguna línea circuló en el periodo.",
+  "capacity.replay.stopped":
+    "La ejecución se detuvo antes, así que los trenes quedan parados desde entonces: {why}",
   "capacity.summary":
     "{period} · {trips} viajes planificados con márgenes · {out} trenes en servicio, {reserve} de reserva",
   "capacity.importNotes": "Notas de importación ({n})",

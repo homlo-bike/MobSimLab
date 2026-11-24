@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Ntụgharị na-agbakwunye {extra} ({length} kama {direct}). Tụlee itinye ebe nkwụsị ikpeazụ ebe ụgbọ ahụ nwere ike ịtụgharị: ọdụ bọs, gburugburu ntụgharị, roundabout ma ọ bụ blọk ọ nwere ike ịnya gburugburu.",
   "street.line.two_stops": "Ahịrị chọrọ ọ dịkarịa ala ebe nkwụsị abụọ. Mee ka ntụpọ ghọọ ebe nkwụsị.",
   "street.line.wrong_side": "Akụkụ ụzọ a dị {length} maka {straight} n'ahịrị kwụ ọtọ. Ọ bụrụ na ntụpọ na-esote dị n'ọkara nke ọzọ nke okporo ụzọ e kewara ekewa, ma ọ bụ n'okporo ụzọ otu ụzọ n'ụzọ na-ezighi ezi, bugharịa ya gaa n'akụkụ ụgbọ ahụ na-anya.",
-  "street.line.wrong_sidewalk": "A pụghị ijere akụkụ okporo ụzọ a ozi: ụgbọ ebe a na-aga naanị ebe ebe nkwụsị dị n'akụkụ nke ọzọ site n'ọnụ ụzọ. Tinye ebe nkwụsị n'akụkụ okporo ụzọ nke ọzọ."
+  "street.line.wrong_sidewalk": "A pụghị ijere akụkụ okporo ụzọ a ozi: ụgbọ ebe a na-aga naanị ebe ebe nkwụsị dị n'akụkụ nke ọzọ site n'ọnụ ụzọ. Tinye ebe nkwụsị n'akụkụ okporo ụzọ nke ọzọ.",
+  "rail.plan.no_track_between_reach": "Enweghị ụzọ ígwè si {from} gaa {to}. Ụgbọ oloko si {from} na-eru naanị {reached}: lelee na ụzọ ígwè na-abanye na nke na-apụ na {last} jikọrọ otu ụzọ ígwè ọdụ ahụ n'akụkụ abụọ, ka ụgbọ oloko ruru ebe ahụ nwee ike ịga n'ihu, ma ọ bụ tinye ihe ntụgharị ebe ahụ.",
+  "rail.plan.gap_does_not_lead_on": "ụgbọ oloko si {from} na-eru {at}, mana n'ụzọ ígwè ọdụ na-adịghị aga n'ihu ruo {next}. Lelee na ụzọ ígwè na-abanye na nke na-apụ na {at} jikọrọ otu ụzọ ígwè ọdụ ahụ n'akụkụ abụọ, ma ọ bụ tinye ihe ntụgharị ebe ahụ",
+  "rail.plan.gap_no_track": "enweghị ụzọ ígwè si {from} gaa {to}",
+  "rail.plan.no_track_outbound_at": "Enweghị ụzọ ígwè na-ejikọ ebe nkwụsị n'ụzọ ahịrị ahụ na-aga: {gap}.",
+  "rail.plan.no_track_return_at": "Enweghị ụzọ ígwè na-ejikọ ebe nkwụsị n'ụzọ nlaghachi: {gap}."
 }

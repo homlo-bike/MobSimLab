@@ -36,6 +36,7 @@ import { projectTimetable } from "../src/features/benefits/timetable";
 import type { Estimate as CostEstimate } from "../src/features/costs/model";
 import type { LonLat, ReachLoader, Timetable } from "../src/features/journey-planner/types";
 import { type Note, translate } from "../src/i18n/i18n";
+import { resultFromJson, resultToJson } from "../src/projects/results";
 
 const inEnglish = (notes: Note[]) => notes.map((n) => translate("en", n.key, n.vars));
 
@@ -511,6 +512,79 @@ describe("benefit estimate", () => {
     // 10 buildings of 400 m² × 4 floors per station at 35 m² per person.
     const people = r.P.zones.reduce((s, z) => s + z.pop, 0);
     expect(people).toBeCloseTo((4 * 10 * 400 * 4) / 35, -1);
+  });
+
+  it("measures only the cells near the stations of a network spread over a country", () => {
+    // An intercity bus from Damascus to Aleppo, 300 km and almost three degrees of latitude, a stop every
+    // 10 km: the box around it holds about 20 million 50 m cells. Measuring all of them froze the
+    // capacity run at "Estimating ridership" for minutes.
+    const [a, b]: [LonLat, LonLat] = [
+      [36.29, 33.51],
+      [37.16, 36.2],
+    ];
+    const n = 31;
+    const stops = Array.from({ length: n }, (_, i) => ({
+      stop_id: `s${i}`,
+      stop_name: `Stop ${i}`,
+      stop_lon: a[0] + ((b[0] - a[0]) * i) / (n - 1),
+      stop_lat: a[1] + ((b[1] - a[1]) * i) / (n - 1),
+    }));
+    const tt: Timetable = {
+      stops,
+      routes: [{ route_id: "street:0", route_short_name: "M5", mode: "bus" }],
+      trips: [],
+      transfers: [],
+      frequency_patterns: [
+        {
+          pattern_id: "m5",
+          route_id: "street:0",
+          stops: stops.map((s) => ({ stop_id: s.stop_id, run_time: 600, dwell_time: 60 })),
+          periods: [{ start_time: 6 * 3600, end_time: 22 * 3600, headway_secs: 1800, kind: "peak" }],
+        },
+      ],
+    };
+    // Homes just inside the catchment east of Aleppo, the stop furthest from the network's middle latitude.
+    const r = catchments(tt, undefined)[n - 1]!.ring;
+    const east = Math.max(...r.map((p) => p[0]));
+    const home: LonLat = [b[0] + (east - b[0]) * 0.9, b[1]];
+    const d = 0.0001;
+    const ring: LonLat[] = [
+      home,
+      [home[0] + d, home[1]],
+      [home[0] + d, home[1] + d],
+      [home[0], home[1] + d],
+      home,
+    ];
+    const t0 = performance.now();
+    const P = prepare({
+      timetable: tt,
+      buildings: [{ id: "far", ring, levels: 4, use: "apartments" }],
+      places: [],
+      worldpop: Object.fromEntries(catchments(tt, undefined).map((c) => [c.id, null])),
+      country: COUNTRY,
+      regions: [],
+      prefs: undefined,
+    });
+    expect(performance.now() - t0).toBeLessThan(5000);
+    expect(P.zones).toHaveLength(n);
+    const aleppo = P.zones.find((z) => z.name === `Stop ${n - 1}`)!;
+    expect(aleppo.pop).toBeCloseTo((ringAreaM2(ring) * 4) / 35, 0);
+    expect(P.zones.filter((z) => z.pop > 0)).toHaveLength(1);
+  });
+
+  it("keeps the zones worked out from the buildings exactly as they were when read back", () => {
+    const tt = network();
+    const regions: Region[] = [];
+    const P = prepare({
+      timetable: tt,
+      buildings: buildings(),
+      places: PLACES,
+      worldpop: worldpop(tt),
+      country: COUNTRY,
+      regions,
+      prefs: undefined,
+    });
+    expect(resultFromJson(resultToJson(P))).toEqual(P);
   });
 
   it("splits cost items into spending groups by line", () => {

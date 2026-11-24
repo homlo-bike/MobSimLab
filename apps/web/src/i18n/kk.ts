@@ -233,6 +233,9 @@ export const kk: Messages = {
   "save.saving": "Сақталуда…",
   "save.offline": "Әлі сақталмады · қайталануда",
   "save.failed": "Сақталмады: {error}",
+  "session.staleToken":
+    "Бұл бет ашық тұрғанда сервер қайта іске қосылғандықтан, өзгерістеріңіз енді сақталмайды. Жұмысты жалғастыру үшін бетті қайта жүктеңіз.",
+  "session.reload": "Бетті қайта жүктеу",
   "save.conflict": "Сіз {drawing} өзгертіп жатқанда {who} оны сақтады. Жобада қайсысы қалсын?",
   "save.someone": "Басқа біреу",
   "save.keepMine": "Менікі қалсын",
@@ -263,13 +266,8 @@ export const kk: Messages = {
   "sim.test": "Жүйені сынау",
   "sim.journey": "Сапар уақыты A → B",
 
-  "create.chooseTitle": "Алдымен не салғыңыз келеді?",
-  "create.chooseIntro": "Екінші түрін кейін қосуға болады. Жұмыс кезінде бар бағыттар көрініп тұрады.",
   "create.street": "Көше бағыты",
-  "create.streetHint": "Автобус, BRT, троллейбус, қалааралық автобус. Көше желісі бойымен жүреді.",
   "create.rail": "Рельсті бағыт",
-  "create.railHint":
-    "Трамвай, жеңіл рельсті, метро, қала маңы, өңірлік, қалааралық, жүрдек. Жолдар, станциялар мен бағыттамаларды сызыңыз.",
   "create.noArea":
     "Әзірге зерттеу аумағы жоқ. Бағыт құру мен жолаушыларды бағалау үшін алдымен OpenStreetMap-тан көшелер мен халықты импорттаңыз.",
   "create.setArea": "GIS-те аумақты белгілеу",
@@ -461,6 +459,7 @@ export const kk: Messages = {
 
   "job.stepOf": "{steps} қадамның {step}-қадамы",
   "job.cancel": "Бас тарту",
+  "job.running": "Орындалып жатқан жұмыс",
   "map.search": "Орындарды іздеу",
   "map.searchPlaceholder": "Қала, көше, бекет немесе мекенжай",
   "map.searching": "Ізделуде…",
@@ -473,6 +472,15 @@ export const kk: Messages = {
   "map.places": "Табылған орындар",
   "map.searchCredit": "Орын атаулары © OpenStreetMap қатысушылары, Photon арқылы табылды",
   "map.layers": "Карта қабаттары",
+  "map.alwaysShow": "Әрқашан көрсету",
+  "map.alwaysShowHint":
+    "Қай құрал ашық болса да, әр карта қойындысында көрінеді. Осы жоба үшін тіркелгіңізде сақталады.",
+  "map.pin.serviceLines": "Қызмет желілері",
+  "map.pin.tracks": "Жолдар",
+  "map.pin.stations": "Станциялар",
+  "map.pin.stops": "Аялдамалар",
+  "map.pin.streetSetups": "Көше баптаулары",
+  "map.pin.regions": "Аймақтар",
   "map.basemap": "Негізгі карта",
   "map.streetMap": "Карта",
   "map.aerial": "Аэрофото",

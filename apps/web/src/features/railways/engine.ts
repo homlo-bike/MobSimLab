@@ -5,6 +5,15 @@ import type { RailEngine, RailEngineLoader, RailView } from "./types";
 import { noteSource, withProject } from "../../geodata/projectData";
 import { hashText } from "../../projects/inputKey";
 import { CachedDesigner } from "./designerCache";
+import { answersReady, codeVersion } from "../../projects/keptAnswers";
+
+/**
+ * The engine's version in the fingerprint of its kept answers: its WebAssembly file and this wrapper, which a
+ * production build names by their content.
+ */
+const ENGINE_VERSION = codeVersion(
+  `${new URL("../../wasm/rail-design/rail_design_wasm_bg.wasm", import.meta.url).href} ${import.meta.url}`,
+);
 
 let wasmModule: Promise<typeof import("../../wasm/rail-design/rail_design_wasm.js")> | null = null;
 
@@ -30,8 +39,8 @@ export const nextTask = () => new Promise<void>((r) => setTimeout(r, 0));
  * Dependencies: apps/web/src/wasm/rail-design, built by tools/wasm/build-rail-design.sh.
  */
 export const loadRailEngine: RailEngineLoader = async () => {
-  const wasm = await initWasm();
-  const c = new CachedDesigner(new wasm.RailDesigner());
+  const [wasm] = await Promise.all([initWasm(), answersReady()]);
+  const c = new CachedDesigner(new wasm.RailDesigner(), ENGINE_VERSION);
   // Calls that read the last build run once the engine has caught up with the answers kept from memory.
   const d = () => c.catchUp();
   const engine: RailEngine = {

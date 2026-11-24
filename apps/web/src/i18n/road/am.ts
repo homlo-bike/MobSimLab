@@ -94,4 +94,30 @@ export const roadAm = {
   "visuals.legend.veryLate": "በጣም የዘገየ (ከ{min} ደቂቃ በላይ)",
   "road.replay.noService":
     "ይህ ሩጫ የአገልግሎት ሰዓቶች ከመመዝገባቸው በፊት ተቀምጧል፤ ተሽከርካሪዎቹ የመስመራቸውን ቀለም ይዘዋል። በሰዓት አክባሪነት ለማየት እንደገና ያሂዱት።",
+  "road.step.streets": "መንገዶች በመጫን ላይ፦ ከ{of} የካርታ ሰቆች {done}…",
+  "road.note.junctionSetup": "የመገናኛ ቅንብር፦ {on} መገናኛዎች የትራፊክ መብራት ተሰጥቷቸዋል፣ {off} ያለ መብራት",
+  "road.note.gateOffStreet": "ዴፖ {depot}፦ አንዱ በር አውቶቡስ ሊጠቀምበት ከሚችል መንገድ አጠገብ አይደለም",
+  "road.note.noOsmSignals":
+    "OpenStreetMap በእነዚህ መንገዶች ላይ ምንም የትራፊክ መብራት አያሳይም፤ ስለዚህ ሁሉም መገናኛዎች ያለ መብራት ይሠራሉ፣ ትናንሽ መንገዶችም በዋና መንገዶች ትራፊክ ውስጥ ክፍተት ይጠብቃሉ። በGIS › መንገዶች ለዋና መገናኛዎች የትራፊክ መብራት ይስጡ።",
+  "road.note.lineCannotRun": "{line} ሊሠራ አይችልም፦ {why}",
+  "road.note.carsRemoved":
+    "{n} የጀርባ መኪኖች ከ{min} ደቂቃ በላይ ቆመው መጨናነቅን ለመፍታት ከትራፊክ ወጥተዋል፤ መንገዶቹ ከአቅማቸው በላይ የተጨናነቁ ሊሆኑ ይችላሉ",
+  "road.note.pullOutNotFollowed": "ከዴፖ የመውጫ መስመር አልተከተለም ({why})፤ ተሽከርካሪዎቹ አጭሩን መንገድ ይይዛሉ",
+  "road.note.pullInNotFollowed": "ወደ ዴፖ የመመለሻ መስመር አልተከተለም ({why})፤ ተሽከርካሪዎቹ አጭሩን መንገድ ይይዛሉ",
+  "road.note.noDepot": "ዴፖ የለም፦ ተሽከርካሪዎቹ በመንገድ ላይ ይጀምራሉ ያበቃሉም",
+  "road.note.noSlot": "ተሽከርካሪ {n} በዴፖው ቦታ የለውም፦ ከዴፖው በር ይጀምራል",
+  "road.note.cannotLeave": "ተሽከርካሪ {n} ከዴፖው መውጣት አይችልም፦ በመንገድ ላይ ይጀምራል",
+  "road.note.cannotReturn": "ተሽከርካሪ {n} ወደ ዴፖው መመለስ አይችልም፦ በመንገድ ላይ ያበቃል",
+  "road.problem.notRouted": "ከሁለት ያነሱ ነጥቦች አሉት ወይም መስመሩ አልተዘጋጀም",
+  "road.problem.noDepartures": "በዚህ ጊዜ ውስጥ ምንም መነሻ የለውም",
+  "road.problem.notMatched": "መስመሩ ከመንገዶቹ ጋር ሊዛመድ አልቻለም",
+  "road.problem.stopOffRoute": "ፌርማታ {stop} በተዛመደው መስመር ላይ የለም",
+  "road.problem.notBack": "መስመሩ ወደ መጀመሪያው ፌርማታ አይመለስም",
+  "road.problem.noBusLink":
+    "ለአውቶቡስ ከ{from} ወደ {to} መተላለፊያ የለም፣ በ{stop} አቅራቢያ ({m} ሜ ርቀት)፦ የትራፊክ ሞዴሉ መንገዶች እዚያ አውቶቡስ ሊዞርበት የሚችል መታጠፊያ የላቸውም፣ ለምሳሌ ዩ-ተርን ወይም የተከለከለ መታጠፊያ። እዚያ ሌላ መንገድ እንዲይዝ መስመሩን ወይም የማለፊያ ነጥቡን ያንቀሳቅሱ",
+  "road.problem.depotToRoute": "ተሽከርካሪዎቹ ከዴፖው መስመሩ ላይ መድረስ አይችሉም",
+  "road.problem.notClosed": "ዙሩ በመንገዶቹ ላይ አይዘጋም",
+  "road.problem.unreachable": "ሊደረስበት አይችልም",
+  "road.part.unnamedStreet": "ስም የሌለው መንገድ (OSM መንገድ {way})",
+  "road.part.stop": "ፌርማታ {n}",
 } satisfies RoadMessages;

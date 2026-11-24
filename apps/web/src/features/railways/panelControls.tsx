@@ -16,15 +16,6 @@ export function Section({ title, children }: { title: string; children: React.Re
   );
 }
 
-export function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="rounded-md bg-slate-100 p-2">
-      <b className="block font-mono text-base">{value}</b>
-      <span className="text-xs text-slate-600">{label}</span>
-    </div>
-  );
-}
-
 export function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <label className="flex items-center justify-between gap-2">

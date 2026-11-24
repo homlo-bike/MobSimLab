@@ -12,10 +12,6 @@ export const editorsDe = {
   "rail.mode.long_distance_rail": "Fernverkehr",
   "rail.params":
     "Spurweite {gauge} mm · Gleisabstand {centres} m · Mindestradius {minRadius} m (empfohlen {radius} m) · max. Neigung {gradient} ‰ · Entwurfsgeschwindigkeit {speed} km/h · Bahnsteige {platform} m mit {height} mm · {power}",
-  "rail.stat.route": "Strecke",
-  "rail.stat.track": "Gleis",
-  "rail.stat.stations": "Stationen",
-  "rail.stat.switches": "Weichen",
   "rail.stations.one": "{count} Station",
   "rail.stations.other": "{count} Stationen",
   "rail.backToNetwork": "Zurück zum Netz",
@@ -352,6 +348,8 @@ export const editorsDe = {
     "Katalogweichen liegen auf geradem Gleis. Klicken Sie auf einen geraden Abschnitt.",
   "rail.say.doubleOnly":
     "Gleiswechsel verbinden zwei parallele Gleise. Wählen Sie eine zweigleisige Strecke.",
+  "rail.say.missedStationEnd":
+    "Klicken Sie genau auf ein Bahnhofsende, um das Gleis dort anzuschließen. Zoomen Sie hinein, wenn die Enden schwer zu treffen sind.",
   "rail.say.clickTrackSignal":
     "Klicken Sie auf ein Gleis, ein Bahnhofsgleis oder einen Weichenstrang, um ein Signal zu setzen.",
   "rail.signalsReset": "Signale auf die aus dem Entwurf erzeugten zurückgesetzt.",
@@ -400,13 +398,6 @@ export const editorsDe = {
   "street.profile.intercity_bus": "Darf Autobahnen nutzen; Halte können an Busbahnhöfen liegen.",
   "street.battery": "Batteriereichweite",
   "street.doorsBoth": "Türen auf beiden Seiten",
-  "street.stat.length": "Umlauflänge",
-  "street.stat.stops": "Halte ({end} Endhalte)",
-  "street.stat.cycle": "Umlauf: {run} Fahrt{crossings}, {dwell} Haltezeit, {layover} Wendezeit",
-  "street.stat.atCrossings": "({min} an Bahnübergängen)",
-  "street.stat.vehicles": "Fahrzeuge für einen {headway}-min-Takt",
-  "street.stat.compact":
-    "{length} Umlauf · {stops} Haltestellen · {cycle} min Umlaufzeit · {vehicles} Fahrzeuge",
   "street.points": "Routenpunkte · Reihenfolge im Umlauf",
   "street.noPoints": "Noch keine Punkte. Wählen Sie „Punkt hinzufügen“ und klicken Sie auf eine Straße.",
   "street.viaN": "Wegpunkt {n}",
@@ -755,6 +746,11 @@ export const editorsDe = {
   "schematic.connections": "Farbige Schilder unter einer Station: Linien, in die Sie dort umsteigen können.",
   "schematic.noConnections": "Diese Linie teilt keine Station mit anderen Linien.",
   "schematic.exportTitle": "Export",
+  "schematic.exportsIntro":
+    "Laden Sie den schematischen Netzplan und den Linienplan jeder Linie als SVG oder PNG herunter, oder drucken Sie sie bzw. speichern Sie sie als PDF.",
+  "schematic.exportsNone":
+    "Es gibt noch keine Linien zum Exportieren. Zeichnen Sie zuerst unter Erstellen eine Linie.",
+  "schematic.exporting": "Karte wird vorbereitet…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Drucken oder PDF",
@@ -812,9 +808,9 @@ export const editorsDe = {
   "schematic.area.color": "Farbe",
   "schematic.area.defaultName": "Fläche {n}",
   "schematic.area.draw": "Fläche zeichnen",
-  "schematic.area.drawHint": "Klicken Sie in den Plan, um Ecken zu setzen, und dann auf Fertig.",
+  "schematic.area.drawHint":
+    "Klicken Sie in den Plan, um Ecken zu setzen, und dann auf Fertig. Strg+Z nimmt die letzte Ecke zurück.",
   "schematic.area.finish": "Fertig",
-  "schematic.area.undo": "Ecke zurücknehmen",
   "schematic.area.remove": "Fläche entfernen",
   "schematic.area.dragHint": "Ziehen Sie die weißen Ecken im Plan, um die Form zu ändern.",
   "schematic.facts": "Betrieb",
@@ -1459,23 +1455,16 @@ export const editorsDe = {
   "capacity.loading": "Netz wird geladen…",
   "capacity.planning": "Zeitraum wird geplant und durch das Stellwerk gefahren…",
   "capacity.trying": "Teste {line} {every} ({n} von {total})…",
-  "capacity.noFile": "Keine Datei gewählt",
-  "capacity.replace": "Ersetzen",
-  "capacity.choose": "Auswählen",
   "capacity.title": "System testen",
   "capacity.intro":
     "Fahre einen Zeitraum des Tages durch den Fahrplaner und das Stellwerk. Sieh, ob jede Bahnlinie auf die Gleise passt, pünktlich läuft und sich von Verspätungen erholt, und wie viele Züge sie fahren könnte.",
-  "capacity.network": "Netz",
   "capacity.example": "Beispiel-U-Bahn",
-  "capacity.mine": "Aus Dateien",
   "capacity.drawn": "In diesem Projekt gezeichnet",
-  "capacity.drawnText": "Linien {names} auf der im Bahn-Werkzeug gezeichneten Strecke, wie gespeichert.",
   "capacity.drawn.noTrack": "Im Bahn-Werkzeug ist noch nichts gezeichnet.",
   "capacity.drawn.noLines":
     "Keine Linie ist bereit für den Test. Gib einer Linie im Bahn-Werkzeug mindestens zwei Halte und einen Zug.",
   "capacity.drawn.errors": "Die gezeichnete Bahn hat Fehler. Behebe sie zuerst im Bahn-Werkzeug.",
   "capacity.building": "Die gezeichnete Bahn wird aufgebaut…",
-  "capacity.drawnStreets": "Buslinien {names}, entlang ihrer Route mit Verkehrsverzögerungen gefahren.",
   "capacity.loads.estimating": "Fahrgastzahlen rund um die Stationen und Haltestellen werden geschätzt…",
   "capacity.loads.toggle": "Fahrgastbelastung (Fahrgastschätzung des Tabellen-Tabs)",
   "capacity.loads.title": "Fahrgäste",
@@ -1508,12 +1497,6 @@ export const editorsDe = {
   "capacity.street.bunchingHint": "Abstände unter dem halben Takt; am Ende {left} min verspätet",
   "capacity.street.method":
     "Jede Buslinie lief {runs}-mal; jede Fahrt hatte ihren eigenen Verkehr, das {low}- bis {high}-Fache der erwarteten Verzögerung im Verkehr von Hauptstraßen (Projekteinstellungen).",
-  "capacity.exampleText":
-    "Linie M1 Westpark – Eastgate: fünf Stationen, an jedem Ende ein Depot, alle 5 min in den Spitzen und sonst alle 10 min.",
-  "capacity.topologyFile": "Gleistopologie (JSON)",
-  "capacity.linesFile": "Linien (JSON)",
-  "capacity.filesHelp":
-    "Die Gleistopologie-Datei folgt contracts/rail-topology.schema.json; für die in diesem Projekt gezeichnete Bahn wählen Sie „{drawn}“. Die Liniendatei listet für jede Linie Stationen, Zug und Takt, so wie der Fahrplaner sie liest (docs/user/simulator.md).",
   "capacity.period": "Zeitraum",
   "capacity.from": "Von",
   "capacity.to": "Bis",
@@ -1533,7 +1516,12 @@ export const editorsDe = {
   "capacity.run": "Test starten",
   "capacity.runAgain": "Erneut starten",
   "capacity.stop": "Stopp",
-  "capacity.chooseBoth": "Wähle beide Dateien, um deine Bahn zu testen.",
+  "capacity.replay.title": "Wiedergabe auf der Karte",
+  "capacity.replay.note":
+    "Alle gezeichneten Linien fahren gemeinsam auf einer Uhr. Züge fahren wie geplant, ohne zufällige Verspätungen; Fahrzeuge der Buslinien haben den Verkehr des ersten Testlaufs.",
+  "capacity.replay.none": "Es gibt nichts wiederzugeben: Im Zeitraum ist keine Linie gefahren.",
+  "capacity.replay.stopped":
+    "Der Lauf wurde vorzeitig angehalten, daher stehen die Züge ab dann still: {why}",
   "capacity.summary":
     "{period} · {trips} Fahrten mit Reserven geplant · {out} Züge im Einsatz, {reserve} in Reserve",
   "capacity.importNotes": "Import-Hinweise ({n})",

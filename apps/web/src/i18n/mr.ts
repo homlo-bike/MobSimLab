@@ -233,6 +233,9 @@ export const mr: Messages = {
   "save.saving": "जतन होत आहे…",
   "save.offline": "अजून जतन झाले नाही · पुन्हा प्रयत्न सुरू",
   "save.failed": "जतन झाले नाही: {error}",
+  "session.staleToken":
+    "हे पान उघडे असताना सर्व्हर पुन्हा सुरू झाल्याने तुमचे बदल आता जतन होत नाहीत. काम सुरू ठेवण्यासाठी पान पुन्हा लोड करा.",
+  "session.reload": "पान पुन्हा लोड करा",
   "save.conflict": "तुम्ही {drawing} बदलत असताना {who} ने ते जतन केले. प्रकल्पाने कोणते ठेवावे?",
   "save.someone": "दुसऱ्या कोणी",
   "save.keepMine": "माझे ठेवा",
@@ -263,13 +266,8 @@ export const mr: Messages = {
   "sim.test": "प्रणालीची चाचणी करा",
   "sim.journey": "प्रवास वेळ A → B",
 
-  "create.chooseTitle": "तुम्हाला आधी काय तयार करायचे आहे?",
-  "create.chooseIntro": "दुसरा प्रकार तुम्ही नंतर जोडू शकता. काम करताना विद्यमान मार्ग दिसत राहतात.",
   "create.street": "रस्ता मार्ग",
-  "create.streetHint": "बस, BRT, ट्रॉलीबस, आंतरशहरी बस. रस्त्यांच्या जाळ्याचे अनुसरण करतो.",
   "create.rail": "रेल्वे मार्ग",
-  "create.railHint":
-    "ट्राम, लाइट रेल, मेट्रो, उपनगरी, प्रादेशिक, आंतरशहरी, अतिजलद. रूळ, स्थानके आणि स्विच काढा.",
   "create.noArea":
     "अजून अभ्यास क्षेत्र नाही. मार्ग काढण्यासाठी आणि प्रवाशांच्या अंदाजासाठी आधी OpenStreetMap वरून रस्ते आणि लोकसंख्या आयात करा.",
   "create.setArea": "GIS मध्ये क्षेत्र ठरवा",
@@ -460,6 +458,7 @@ export const mr: Messages = {
 
   "job.stepOf": "पायरी {step} / {steps}",
   "job.cancel": "रद्द करा",
+  "job.running": "सुरू असलेली कामे",
   "map.search": "ठिकाणे शोधा",
   "map.searchPlaceholder": "गाव, रस्ता, स्थानक किंवा पत्ता",
   "map.searching": "शोधत आहे…",
@@ -471,6 +470,15 @@ export const mr: Messages = {
   "map.places": "सापडलेली ठिकाणे",
   "map.searchCredit": "ठिकाणांची नावे © OpenStreetMap योगदानकर्ते, Photon ने शोधली",
   "map.layers": "नकाशा स्तर",
+  "map.alwaysShow": "नेहमी दाखवा",
+  "map.alwaysShowHint":
+    "कोणतेही साधन उघडे असले तरी प्रत्येक नकाशा टॅबवर दिसते. या प्रकल्पासाठी तुमच्या खात्यात जतन होते.",
+  "map.pin.serviceLines": "सेवा मार्ग",
+  "map.pin.tracks": "रूळ",
+  "map.pin.stations": "स्थानके",
+  "map.pin.stops": "थांबे",
+  "map.pin.streetSetups": "रस्ता सेटअप",
+  "map.pin.regions": "प्रदेश",
   "map.basemap": "आधार नकाशा",
   "map.streetMap": "नकाशा",
   "map.aerial": "हवाई",

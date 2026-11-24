@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Zawracanie dodaje {extra} ({length} zamiast {direct}). Rozważ umieszczenie pętli tam, gdzie pojazd może zawrócić: na dworcu autobusowym, pętli do zawracania, rondzie lub przy kwartale, który może objechać.",
   "street.line.two_stops": "Linia potrzebuje co najmniej dwóch przystanków. Zmień punkty na przystanki.",
   "street.line.wrong_side": "Ten odcinek ma {length} przy {straight} w linii prostej. Jeśli następny punkt leży na dalszej jezdni drogi dwujezdniowej lub na ulicy jednokierunkowej pod prąd, przesuń go na stronę, po której jedzie pojazd.",
-  "street.line.wrong_sidewalk": "Tego chodnika nie da się obsłużyć: ruch odbywa się tu tylko tak, że przystanek wypada po stronie przeciwnej do drzwi. Umieść przystanek na drugim chodniku."
+  "street.line.wrong_sidewalk": "Tego chodnika nie da się obsłużyć: ruch odbywa się tu tylko tak, że przystanek wypada po stronie przeciwnej do drzwi. Umieść przystanek na drugim chodniku.",
+  "rail.plan.no_track_between_reach": "Żaden tor nie prowadzi z {from} do {to}. Pociągi z {from} docierają tylko do {reached}: sprawdź, czy tory wchodzące do {last} i wychodzące z niej łączą się na obu końcach z tymi samymi torami stacyjnymi, aby przyjeżdżające tam pociągi mogły jechać dalej, albo dodaj tam rozjazdy.",
+  "rail.plan.gap_does_not_lead_on": "pociągi z {from} docierają do {at}, ale na tory stacyjne, które nie prowadzą dalej do {next}. Sprawdź, czy tory wchodzące do {at} i wychodzące z niej łączą się na obu końcach z tymi samymi torami stacyjnymi, albo dodaj tam rozjazdy",
+  "rail.plan.gap_no_track": "żaden tor nie prowadzi z {from} do {to}",
+  "rail.plan.no_track_outbound_at": "Żaden tor nie łączy przystanków w kierunku linii: {gap}.",
+  "rail.plan.no_track_return_at": "Żaden tor nie łączy przystanków w kierunku powrotnym: {gap}."
 }
