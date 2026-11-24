@@ -7,6 +7,7 @@
  */
 import type { LonLat } from "../street-lines/types";
 import type { SchematicNetwork } from "./lines";
+import { hashText } from "../../projects/inputKey";
 
 export type Pt = [number, number];
 
@@ -154,6 +155,39 @@ export function layout(
   pins: Readonly<Record<string, Pt>> = {},
   straighten = true,
   longRun = 0,
+): LayoutResult {
+  // The same network laid out again (the Schematic opened again): the kept result, copied.
+  const key = hashText(
+    JSON.stringify([
+      net.stations.map((st) => [st.key, st.lonlat]),
+      edgesOf(net),
+      origin,
+      Object.entries(pins).sort(([a], [b]) => (a < b ? -1 : a > b ? 1 : 0)),
+      straighten,
+      longRun,
+    ]),
+  );
+  let out = laidOut.get(key);
+  if (out) {
+    laidOut.delete(key);
+  } else {
+    out = layoutNow(net, origin, pins, straighten, longRun);
+    if (laidOut.size >= KEEP_LAYOUTS) laidOut.delete(laidOut.keys().next().value!);
+  }
+  laidOut.set(key, out);
+  return { pos: out.pos.map((p) => [p[0], p[1]]), unit: out.unit };
+}
+
+/** Layouts kept for the page, by the fingerprint of their inputs (least recently used first). */
+const laidOut = new Map<string, LayoutResult>();
+const KEEP_LAYOUTS = 8;
+
+function layoutNow(
+  net: SchematicNetwork,
+  origin: LonLat,
+  pins: Readonly<Record<string, Pt>>,
+  straighten: boolean,
+  longRun: number,
 ): LayoutResult {
   const ground = net.stations.map((s) => project(origin, s.lonlat));
   const fixed = net.stations.map((s) => s.key in pins);

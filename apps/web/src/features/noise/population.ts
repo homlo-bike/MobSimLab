@@ -66,15 +66,15 @@ const PIECE_DEG = 0.25;
 const CELL_DEG = 1 / 1200;
 
 /**
- * Purpose: the people per cell over the buildings of a noise map, asked for in pieces of at most 0.25° a side when
- * the buildings spread wider (a city's lines), and joined into one grid. Only the pieces holding a building are
- * asked for.
- * Inputs: the box round the buildings, the buildings, and the fetcher for one piece.
+ * Purpose: the people per cell over an area, asked for in pieces of at most 0.25° a side when it is wider (a
+ * city's lines; the API takes at most 0.3°), and joined into one grid. With buildings (a noise map), only the
+ * pieces holding a building are asked for; with null (walk coverage), every piece of the area.
+ * Inputs: the box, the buildings or null, and the fetcher for one piece.
  * Output: the joined grid; else the first piece's answer that is `unavailable`, else the first `loading` one.
  */
 export async function fetchPopulationOver(
   bbox: [number, number, number, number],
-  buildings: NoiseBuilding[],
+  buildings: NoiseBuilding[] | null,
   fetchPeople: PopulationFetcher,
 ): Promise<PopulationAnswer> {
   const [w, s, e, n] = bbox;
@@ -85,8 +85,8 @@ export async function fetchPopulationOver(
   const y0 = Math.floor((s + 90) / CELL_DEG) * CELL_DEG - 90;
   const cols = Math.max(1, Math.ceil((e - x0) / step));
   const rows = Math.max(1, Math.ceil((n - y0) / step));
-  const used = new Set<number>();
-  for (const b of buildings) {
+  const used = new Set<number>(buildings ? [] : Array.from({ length: cols * rows }, (_, k) => k));
+  for (const b of buildings ?? []) {
     const p = b.ring[0];
     if (!p) continue;
     const c = Math.min(cols - 1, Math.max(0, Math.floor((p[0] - x0) / step)));
