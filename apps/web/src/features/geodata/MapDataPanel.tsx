@@ -9,8 +9,6 @@ const POLL_MS = 2_000;
 
 type Method = "overpass" | "geofabrik" | "upload";
 
-const busy = (r: ImportRun | null | undefined) => r?.status === "queued" || r?.status === "running";
-
 type ImportStep = NonNullable<ImportRun["progress"]["step"]>;
 const ALL_STEPS: ImportStep[] = ["download", "merge", "extract", "database"];
 /**
@@ -32,6 +30,48 @@ function importSteps(r: ImportRun): ImportStep[] {
             : ["extract", "database"];
   return r.progress.step && !known.includes(r.progress.step) ? ALL_STEPS : known;
 }
+
+/**
+ * Purpose: what a running import is doing and how far it is, for its progress bar (the Map data panel's and the
+ * bar at the bottom of the project). Inputs: the run, the translator and the language for numbers.
+ */
+export function importProgress(
+  r: ImportRun,
+  t: ReturnType<typeof useI18n>["t"],
+  locale: string,
+): { label: string; step: string; index: number; steps: number; fraction: number | null } {
+  const p = r.progress;
+  const steps = importSteps(r);
+  const at = p.step ? steps.indexOf(p.step) : 0;
+  const num = (n: number) => n.toLocaleString(locale);
+  const step =
+    r.status === "queued"
+      ? t("data.queued")
+      : p.step === "download" && p.total
+        ? t("data.step.downloadN", {
+            done: r.method === "geofabrik" ? `${Math.round((p.done ?? 0) / 1e6)} MB` : num(p.done ?? 0),
+            total: r.method === "geofabrik" ? `${Math.round(p.total / 1e6)} MB` : num(p.total),
+          })
+        : p.step === "merge"
+          ? t("data.step.merge")
+          : p.step === "extract"
+            ? t("data.step.extract")
+            : p.step === "database"
+              ? t("data.step.database")
+              : t("data.step.download");
+  return {
+    label: t(r.kind === "osm" ? "data.osm" : "data.dem"),
+    step,
+    index: r.status === "queued" ? 1 : Math.max(0, at) + 1,
+    steps: steps.length,
+    fraction:
+      r.status !== "queued" && p.step === "download" && p.total ? Math.min(1, (p.done ?? 0) / p.total) : null,
+  };
+}
+
+/** Purpose: whether an import is waiting or running. */
+export const importBusy = (r: ImportRun | null | undefined) =>
+  r?.status === "queued" || r?.status === "running";
 
 /**
  * The Map data view of the GIS tab (ADR-0046): the project area (its polygons; the map draws their edges as the
@@ -87,7 +127,8 @@ export function MapDataPanel({
   }, [load]);
 
   // Follow a running import.
-  const running = busy(status?.osm.latest) || busy(status?.dem.latest) || busy(status?.demUpload.latest);
+  const running =
+    importBusy(status?.osm.latest) || importBusy(status?.dem.latest) || importBusy(status?.demUpload.latest);
   useEffect(() => {
     if (!running) return;
     const timer = setTimeout(() => void load(), POLL_MS);
@@ -132,20 +173,6 @@ export function MapDataPanel({
     iso ? new Date(iso).toLocaleDateString(locale, { year: "numeric", month: "short", day: "numeric" }) : "";
   const num = (n: number) => n.toLocaleString(locale);
 
-  const progress = (r: ImportRun) => {
-    if (r.status === "queued") return t("data.queued");
-    const p = r.progress;
-    if (p.step === "download" && p.total)
-      return t("data.step.downloadN", {
-        done: r.method === "geofabrik" ? `${Math.round((p.done ?? 0) / 1e6)} MB` : num(p.done ?? 0),
-        total: r.method === "geofabrik" ? `${Math.round(p.total / 1e6)} MB` : num(p.total),
-      });
-    if (p.step === "merge") return t("data.step.merge");
-    if (p.step === "extract") return t("data.step.extract");
-    if (p.step === "database") return t("data.step.database");
-    return t("data.step.download");
-  };
-
   const lastProblem = (latest: ImportRun | null, current: ImportRun | null) => {
     if (!latest || latest.id === current?.id) return null;
     if (latest.status === "failed")
@@ -160,25 +187,19 @@ export function MapDataPanel({
   };
 
   const runningLine = (r: ImportRun | null) => {
-    if (!busy(r)) return null;
+    if (!importBusy(r)) return null;
     // Cancel answers at once; the server stops the download under way and the next poll shows it cancelled.
     const isStopping = stopping.has(r!.id);
-    const p = r!.progress;
-    const steps = importSteps(r!);
-    const at = p.step ? steps.indexOf(p.step) : 0;
-    const index = r!.status === "queued" ? 1 : Math.max(0, at) + 1;
-    const fraction =
-      r!.status !== "queued" && p.step === "download" && p.total
-        ? Math.min(1, (p.done ?? 0) / p.total)
-        : null;
+    const job = importProgress(r!, t, locale);
     return (
       <div className="mt-2">
         <JobProgress
-          label={t(r!.kind === "osm" ? "data.osm" : "data.dem")}
-          step={isStopping ? t("capacity.stopping") : progress(r!)}
-          index={index}
-          steps={steps.length}
-          fraction={fraction}
+          label={job.label}
+          step={isStopping ? t("capacity.stopping") : job.step}
+          index={job.index}
+          steps={job.steps}
+          fraction={job.fraction}
+          jobKey={`import:${r!.id}`}
           onCancel={
             status?.canImport && !isStopping
               ? () => {
@@ -269,7 +290,7 @@ export function MapDataPanel({
           )}
           {lastProblem(osm?.latest ?? null, osm?.current ?? null)}
           {runningLine(osm?.latest ?? null)}
-          {status.canImport && status.area && !busy(osm?.latest) && (
+          {status.canImport && status.area && !importBusy(osm?.latest) && (
             <div className="mt-3 flex flex-col gap-2">
               <label className="flex flex-col gap-1 text-sm">
                 <span className="font-medium">{t("data.method")}</span>
@@ -400,7 +421,7 @@ export function MapDataPanel({
           )}
           {lastProblem(dem?.latest ?? null, dem?.current ?? null)}
           {runningLine(dem?.latest ?? null)}
-          {status.canImport && status.area && !busy(dem?.latest) && (
+          {status.canImport && status.area && !importBusy(dem?.latest) && (
             <button
               type="button"
               className="btn mt-3 w-full"
@@ -444,7 +465,7 @@ export function MapDataPanel({
                 <button
                   type="button"
                   className="btn-ghost btn mt-1 min-h-9"
-                  disabled={sending || busy(demUpload?.latest)}
+                  disabled={sending || importBusy(demUpload?.latest)}
                   onClick={() => run(() => api.remove(ownGrid.id))}
                 >
                   {t("data.remove")}
@@ -454,7 +475,7 @@ export function MapDataPanel({
           )}
           {lastProblem(demUpload?.latest ?? null, ownGrid)}
           {runningLine(demUpload?.latest ?? null)}
-          {status.canImport && status.area && !busy(demUpload?.latest) && (
+          {status.canImport && status.area && !importBusy(demUpload?.latest) && (
             <div className="mt-3 flex flex-col gap-2">
               {(
                 [

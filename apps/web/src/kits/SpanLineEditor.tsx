@@ -570,7 +570,27 @@ export function SpanLineEditor({
                 : t("cable.buildings", { licence: current.buildingSource.licence }))}
         </p>
       )}
-      {view && <Issues issues={view.issues} where={where} source={tool.id} label={tool.label} />}
+      {view && (
+        <Issues
+          issues={view.issues}
+          where={where}
+          source={tool.id}
+          label={tool.label}
+          onShow={(i) => {
+            const at =
+              i.station !== undefined
+                ? doc.stations[i.station]?.lonlat
+                : i.section !== undefined
+                  ? midpoint(doc.stations[i.section]?.lonlat, doc.stations[i.section + 1]?.lonlat)
+                  : undefined;
+            if (!at || !map) return null;
+            return () => {
+              if (i.station !== undefined) setSelected(i.station);
+              map.flyTo({ center: at, zoom: Math.max(map.getZoom(), 16) });
+            };
+          }}
+        />
+      )}
       <section aria-label={t("cable.stations")} className="flex flex-col gap-2">
         <h3 className="font-semibold">{t("cable.stations")}</h3>
         {doc.stations.length === 0 && <p className="text-slate-500">{t("cable.noStations")}</p>}
@@ -805,4 +825,9 @@ export function SpanLineEditor({
     </div>
   );
   return panel ? createPortal(body, panel) : body;
+}
+
+/** Purpose: the point half way between two, or undefined when either is missing. */
+function midpoint(a: LonLat | undefined, b: LonLat | undefined): LonLat | undefined {
+  return a && b ? [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2] : undefined;
 }

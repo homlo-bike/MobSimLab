@@ -363,8 +363,8 @@ describe("Street line editor", () => {
     fireEvent.click(kinds.querySelectorAll("button")[1]!);
     expect(engine.setKind).toHaveBeenCalledWith(2, "stop");
     expect(screen.getByDisplayValue("Street 2")).toBeTruthy();
-    // The totals stay readable while the point is open.
-    expect(screen.getByText(/circuit · \d+ stops · \d+ min cycle/)).toBeTruthy();
+    // The panel shows no circuit totals (length, stops, cycle, vehicles).
+    expect(screen.queryByText(/circuit · \d+ stops/)).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Delete point 2" }));
     expect(engine.deletePoint).toHaveBeenCalledWith(2);
     expect(screen.queryByText("Street 3")).toBeNull();
@@ -414,6 +414,8 @@ describe("Street line editor", () => {
 
   it("re-routes and recolours when the mode changes", async () => {
     const { engine } = await opened();
+    // The line's sections show with "Select and move".
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
     fireEvent.click(screen.getByRole("radio", { name: "Trolleybus" }));
     expect(engine.setSettings).toHaveBeenLastCalledWith(
       expect.objectContaining({ mode: "trolleybus" }),
@@ -426,6 +428,8 @@ describe("Street line editor", () => {
   it("waits at the railway tool's level crossings with the service it assumes", async () => {
     const topology = { schema: "mobsimlab.rail-topology/1", level_crossings: [] };
     const { engine } = await opened(15, topology);
+    // The line's sections show with "Select and move".
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
     await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
     expect(engine.setLevelCrossings).toHaveBeenCalledWith(JSON.stringify(topology), "");
     await waitFor(() =>
@@ -489,6 +493,10 @@ describe("Street line editor", () => {
 
   it("shows the mode first, right under the tool choice, and no rules of its own", async () => {
     await opened();
+    // With the Add point tool the line's level crossings, depot runs and service are not shown.
+    expect(screen.queryByText("Service")).toBeNull();
+    // The line's sections show with "Select and move".
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
     const mode = screen.getByRole("radiogroup", { name: "Mode" });
     const name = screen.getByDisplayValue("Line 1");
     expect(mode.compareDocumentPosition(name) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
@@ -893,6 +901,8 @@ describe("Street line saved with the project", () => {
       />,
     );
     await waitFor(() => expect(engine.insertPoint).toHaveBeenCalledTimes(3));
+    // The line's sections show with "Select and move".
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
     const pick = screen.getByRole("combobox", { name: "Depot" }) as HTMLSelectElement;
     // A depot that does not take trolleybuses cannot be chosen.
     const other = [...pick.options].find((o) => o.value === "dp2")!;
@@ -1000,6 +1010,8 @@ describe("Street line vehicle and service", () => {
       expect.anything(),
     );
     expect(screen.getByTestId("vehicle-facts").textContent).toContain(`${bus.capacity} places`);
+    // The line's sections show with "Select and move".
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
 
     // First and last departure and the off-peak headway are the planner's to change, and saved. They show once the
     // line has a route.
@@ -1008,6 +1020,7 @@ describe("Street line vehicle and service", () => {
     fireEvent.change(screen.getByRole("spinbutton", { name: /Off-peak headway/ }), {
       target: { value: "15" },
     });
+    fireEvent.click(screen.getByRole("button", { name: /Add point/ }));
     act(() => handlers.get("click")!({ lngLat: { lng: 7.42, lat: 43.735 }, point: { x: 10, y: 10 } }));
     await waitFor(() => expect(onSave).toHaveBeenCalled());
     const line = onSave.mock.calls.at(-1)![0] as SavedStreetLine;
@@ -1026,6 +1039,8 @@ describe("Street line vehicle and service", () => {
 
   it("starts a new line at 05:00 to 00:30 and flags a last departure before the first", async () => {
     await opened();
+    // The line's sections show with "Select and move".
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
     // The service times show once the line has a route.
     expect(((await screen.findByLabelText("First departure")) as HTMLInputElement).value).toBe("05:00");
     expect((screen.getByLabelText("Last departure") as HTMLInputElement).value).toBe("24:30");

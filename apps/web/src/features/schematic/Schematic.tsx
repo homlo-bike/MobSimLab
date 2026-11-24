@@ -6,7 +6,6 @@ import type { StreetLinesDoc } from "../street-lines/saved";
 import type { HeightsFetcher } from "../tables/railBuild";
 import {
   EMPTY_SCHEMATIC,
-  LABEL_SIZE,
   LABEL_SIZE_MAX,
   LABEL_SIZE_MIN,
   LAYER_LABEL,
@@ -16,13 +15,11 @@ import {
   useModeLabel,
 } from "./common";
 import { useLineProfile, useSchematicDetails } from "./details";
-import { download, fileName, MIN_NAME_PT, MIN_NAME_PX, pngImage, printSvg, svgText } from "./export";
 import { DEFAULT_LONG_RUN, defaultOrigin, LONG_RUN_CHOICES } from "./layout";
 import { LAYERS, schematicNetwork } from "./lines";
 import { type AreaDraft, NetworkMap } from "./NetworkMap";
 import { StripMap } from "./StripMap";
 import { loadWater, waterBox, type WaterLoader, type WaterShapes } from "./water";
-import { engineErrorText } from "../../i18n/engine";
 
 export { EMPTY_SCHEMATIC, type SchematicArea, type SchematicDoc };
 
@@ -56,8 +53,8 @@ function useWater(points: string, on: boolean, load: WaterLoader): WaterShapes |
  * The Schematic tab (ADR-0025, ADR-0041; FR-SCH-01..03): the network map with every line drawn schematically
  * (45° sections, lines side by side where they share a section, rounded corners), mode layers to show or hide,
  * stations to drag, click and label, status and feature symbols, water and the planner's tariff zones and
- * landmarks; a strip map per line with its connections, driving times, service, levels and ground heights;
- * and export as SVG, PNG and print or PDF. Edits are saved with the project when `onDoc` is given; without it
+ * landmarks; a strip map per line with its connections, driving times, service, levels and ground heights
+ * (exported from Project preferences). Edits are saved with the project when `onDoc` is given; without it
  * the diagram is view only.
  */
 export function Schematic({
@@ -103,9 +100,24 @@ export function Schematic({
   const [zoom, setZoom] = useState<number | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [draft, setDraft] = useState<AreaDraft | null>(null);
+  // While an area is drawn, Ctrl+Z (Cmd+Z) takes back its last corner instead of undoing a change to the drawings.
+  const drawingArea = draft !== null;
+  useEffect(() => {
+    if (!drawingArea) return;
+    const onKey = (ev: KeyboardEvent) => {
+      if (!(ev.metaKey || ev.ctrlKey) || ev.altKey || ev.shiftKey || ev.key.toLowerCase() !== "z") return;
+      const target = ev.target as HTMLElement | null;
+      if (target && (["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName) || target.isContentEditable))
+        return;
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      setDraft((d) => (d ? { points: d.points.slice(0, -1) } : d));
+    };
+    // Before the project's own undo, which listens on the window too.
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [drawingArea]);
   const [areaId, setAreaId] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [exportNote, setExportNote] = useState<string | null>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   // Zooming keeps the point under the pointer (or the middle of the view) in place, ctrl/⌘ + wheel zooms, and
   // dragging the empty page pans it.
@@ -222,37 +234,6 @@ export function Schematic({
     set({ origin: d.origin ?? defaultOrigin(net), areas: [...areas, next], showAreas: true });
     setDraft(null);
     setAreaId(id);
-  };
-
-  const exportAs = async (kind: "svg" | "png" | "print") => {
-    const svg = svgRef.current;
-    if (!svg) return;
-    setError(null);
-    setExportNote(null);
-    const title = view === "line" && line ? `${projectName} ${line.name}` : projectName;
-    // The strip map's station names are drawn at the default size.
-    const namePx = view === "network" ? labelSizeOf(d) : LABEL_SIZE;
-    try {
-      if (kind === "svg")
-        download(new Blob([svgText(svg)], { type: "image/svg+xml" }), fileName(title, "svg"));
-      else if (kind === "png") {
-        // Twice the drawing's size, or more so the names are at least `MIN_NAME_PX` in the image.
-        const png = await pngImage(svg, Math.max(2, MIN_NAME_PX / namePx));
-        download(png.blob, fileName(title, "png"));
-        const px = Math.round(namePx * png.scale * 10) / 10;
-        if (px < MIN_NAME_PX) setExportNote(t("schematic.pngSmallNames", { px }));
-      } else {
-        const paper = printSvg(svg, title, namePx);
-        setExportNote(
-          t(paper.namePt < MIN_NAME_PT ? "schematic.printSmallNames" : "schematic.printPaper", {
-            paper: paper.name,
-            pt: paper.namePt,
-          }),
-        );
-      }
-    } catch (e) {
-      setError(t("schematic.exportFailed", { error: engineErrorText(e) }));
-    }
   };
 
   if (!net.lines.length)
@@ -562,7 +543,7 @@ export function Schematic({
                 (draft ? (
                   <div className="flex flex-col gap-2 rounded-xl border border-blue-200 bg-blue-50 p-3">
                     <p className="text-sm">{t("schematic.area.drawHint")}</p>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <button
                         type="button"
                         className="btn btn-pri"
@@ -570,14 +551,6 @@ export function Schematic({
                         onClick={finishArea}
                       >
                         {t("schematic.area.finish")}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn"
-                        disabled={!draft.points.length}
-                        onClick={() => setDraft({ points: draft.points.slice(0, -1) })}
-                      >
-                        {t("schematic.area.undo")}
                       </button>
                       <button type="button" className="btn" onClick={() => setDraft(null)}>
                         {t("common.cancel")}
@@ -615,30 +588,6 @@ export function Schematic({
           </>
         )}
 
-        <div>
-          <h2 className="caps mb-2">{t("schematic.exportTitle")}</h2>
-          <div className="flex flex-wrap gap-2">
-            <button type="button" className="btn" onClick={() => void exportAs("svg")}>
-              {t("schematic.svg")}
-            </button>
-            <button type="button" className="btn" onClick={() => void exportAs("png")}>
-              {t("schematic.png")}
-            </button>
-            <button type="button" className="btn" onClick={() => void exportAs("print")}>
-              {t("schematic.print")}
-            </button>
-          </div>
-          {error && (
-            <p role="alert" className="mt-2 text-sm text-red-700">
-              {error}
-            </p>
-          )}
-          {exportNote && (
-            <p role="status" className="mt-2 text-sm text-slate-600">
-              {exportNote}
-            </p>
-          )}
-        </div>
         <p className="text-xs text-slate-500">
           {tn("schematic.count", net.lines.length)} · {tn("schematic.stationCount", net.stations.length)}
         </p>

@@ -12,10 +12,6 @@ export const editorsDe = {
   "rail.mode.long_distance_rail": "Fernverkehr",
   "rail.params":
     "Spurweite {gauge} mm · Gleisabstand {centres} m · Mindestradius {minRadius} m (empfohlen {radius} m) · max. Neigung {gradient} ‰ · Entwurfsgeschwindigkeit {speed} km/h · Bahnsteige {platform} m mit {height} mm · {power}",
-  "rail.stat.route": "Strecke",
-  "rail.stat.track": "Gleis",
-  "rail.stat.stations": "Stationen",
-  "rail.stat.switches": "Weichen",
   "rail.stations.one": "{count} Station",
   "rail.stations.other": "{count} Stationen",
   "rail.backToNetwork": "Zurück zum Netz",
@@ -402,13 +398,6 @@ export const editorsDe = {
   "street.profile.intercity_bus": "Darf Autobahnen nutzen; Halte können an Busbahnhöfen liegen.",
   "street.battery": "Batteriereichweite",
   "street.doorsBoth": "Türen auf beiden Seiten",
-  "street.stat.length": "Umlauflänge",
-  "street.stat.stops": "Halte ({end} Endhalte)",
-  "street.stat.cycle": "Umlauf: {run} Fahrt{crossings}, {dwell} Haltezeit, {layover} Wendezeit",
-  "street.stat.atCrossings": "({min} an Bahnübergängen)",
-  "street.stat.vehicles": "Fahrzeuge für einen {headway}-min-Takt",
-  "street.stat.compact":
-    "{length} Umlauf · {stops} Haltestellen · {cycle} min Umlaufzeit · {vehicles} Fahrzeuge",
   "street.points": "Routenpunkte · Reihenfolge im Umlauf",
   "street.noPoints": "Noch keine Punkte. Wählen Sie „Punkt hinzufügen“ und klicken Sie auf eine Straße.",
   "street.viaN": "Wegpunkt {n}",
@@ -757,6 +746,11 @@ export const editorsDe = {
   "schematic.connections": "Farbige Schilder unter einer Station: Linien, in die Sie dort umsteigen können.",
   "schematic.noConnections": "Diese Linie teilt keine Station mit anderen Linien.",
   "schematic.exportTitle": "Export",
+  "schematic.exportsIntro":
+    "Laden Sie den schematischen Netzplan und den Linienplan jeder Linie als SVG oder PNG herunter, oder drucken Sie sie bzw. speichern Sie sie als PDF.",
+  "schematic.exportsNone":
+    "Es gibt noch keine Linien zum Exportieren. Zeichnen Sie zuerst unter Erstellen eine Linie.",
+  "schematic.exporting": "Karte wird vorbereitet…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Drucken oder PDF",
@@ -814,9 +808,9 @@ export const editorsDe = {
   "schematic.area.color": "Farbe",
   "schematic.area.defaultName": "Fläche {n}",
   "schematic.area.draw": "Fläche zeichnen",
-  "schematic.area.drawHint": "Klicken Sie in den Plan, um Ecken zu setzen, und dann auf Fertig.",
+  "schematic.area.drawHint":
+    "Klicken Sie in den Plan, um Ecken zu setzen, und dann auf Fertig. Strg+Z nimmt die letzte Ecke zurück.",
   "schematic.area.finish": "Fertig",
-  "schematic.area.undo": "Ecke zurücknehmen",
   "schematic.area.remove": "Fläche entfernen",
   "schematic.area.dragHint": "Ziehen Sie die weißen Ecken im Plan, um die Form zu ändern.",
   "schematic.facts": "Betrieb",

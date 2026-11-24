@@ -236,6 +236,9 @@ export const uz: Messages = {
   "save.saving": "Saqlanmoqda…",
   "save.offline": "Hali saqlanmadi · qayta urinilmoqda",
   "save.failed": "Saqlanmadi: {error}",
+  "session.staleToken":
+    "Bu sahifa ochiq turganda server qayta ishga tushgani uchun o‘zgarishlaringiz endi saqlanmayapti. Ishni davom ettirish uchun sahifani qayta yuklang.",
+  "session.reload": "Sahifani qayta yuklash",
   "save.conflict": "Siz {drawing} ni oʻzgartirayotganingizda {who} uni saqladi. Loyihada qaysi biri qolsin?",
   "save.someone": "Boshqa kishi",
   "save.keepMine": "Meniki qolsin",
@@ -266,14 +269,8 @@ export const uz: Messages = {
   "sim.test": "Tizimni sinash",
   "sim.journey": "Safar vaqti A → B",
 
-  "create.chooseTitle": "Avval nima qurmoqchisiz?",
-  "create.chooseIntro":
-    "Boshqa turini keyin qoʻshishingiz mumkin. Ishlayotganingizda mavjud yoʻnalishlar koʻrinib turadi.",
   "create.street": "Koʻcha yoʻnalishi",
-  "create.streetHint": "Avtobus, BRT, trolleybus, shaharlararo avtobus. Koʻchalar tarmogʻi boʻylab yuradi.",
   "create.rail": "Relsli yoʻnalish",
-  "create.railHint":
-    "Tramvay, yengil relsli, metro, shahar atrofi, mintaqaviy, shaharlararo, tezyurar. Relslar, stansiyalar va strelkalarni chizing.",
   "create.noArea":
     "Hali oʻrganish hududi yoʻq. Yoʻnalish qurish va yoʻlovchilarni baholash uchun avval OpenStreetMap dan koʻchalar va aholini import qiling.",
   "create.setArea": "GIS da hududni belgilash",
@@ -467,6 +464,7 @@ export const uz: Messages = {
 
   "job.stepOf": "{steps} qadamdan {step}-qadam",
   "job.cancel": "Bekor qilish",
+  "job.running": "Bajarilayotgan ishlar",
   "map.search": "Joylarni qidirish",
   "map.searchPlaceholder": "Shahar, ko‘cha, bekat yoki manzil",
   "map.searching": "Qidirilmoqda…",
@@ -478,6 +476,15 @@ export const uz: Messages = {
   "map.places": "Topilgan joylar",
   "map.searchCredit": "Joy nomlari © OpenStreetMap hissadorlari, Photon orqali topildi",
   "map.layers": "Xarita qatlamlari",
+  "map.alwaysShow": "Doim ko‘rsatish",
+  "map.alwaysShowHint":
+    "Qaysi vosita ochiq bo‘lishidan qat’i nazar har bir xarita varag‘ida ko‘rinadi. Bu loyiha uchun hisobingizda saqlanadi.",
+  "map.pin.serviceLines": "Xizmat yo‘nalishlari",
+  "map.pin.tracks": "Relslar",
+  "map.pin.stations": "Stansiyalar",
+  "map.pin.stops": "Bekatlar",
+  "map.pin.streetSetups": "Ko‘cha sozlamalari",
+  "map.pin.regions": "Hududlar",
   "map.basemap": "Asosiy xarita",
   "map.streetMap": "Xarita",
   "map.aerial": "Aerofoto",

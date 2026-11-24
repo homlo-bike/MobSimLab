@@ -9,6 +9,7 @@ import {
 } from "./i18n/i18n";
 import { setLogSession } from "./logging/logger";
 import { setCsrfToken } from "./session/csrf";
+import { useStaleToken } from "./session/staleToken";
 import { projectsApi } from "./projects/api";
 import { ProjectsHome } from "./projects/ProjectsHome";
 import { fetchMe, type Me, type Preferences, savePreferences } from "./session/api";
@@ -98,9 +99,32 @@ export function App() {
   return (
     <I18nProvider choice={choice} onChoose={choose}>
       <Shell me={me} loaded={loaded} prefs={prefs} onPrefs={savePrefs} reload={reload} />
+      {me?.user && <StaleTokenBar />}
     </I18nProvider>
   );
 }
+
+/**
+ * Shown once the server refused a change because this page's security token is out of date (the server restarted
+ * with a new key): nothing the person changes is saved until the page is reloaded.
+ */
+function StaleTokenBar() {
+  const { t } = useI18n();
+  if (!useStaleToken()) return null;
+  return (
+    <div
+      role="alert"
+      className="fixed inset-x-0 top-0 z-[60] flex flex-wrap items-center gap-3 border-b border-red-300 bg-red-50 px-4 py-2.5 text-sm text-red-900 shadow-md"
+    >
+      <p className="min-w-48 flex-1">{t("session.staleToken")}</p>
+      <button type="button" className="btn btn-pri min-h-10" onClick={() => window.location.reload()}>
+        {t("session.reload")}
+      </button>
+    </div>
+  );
+}
+
+const NO_PINS: never[] = [];
 
 type Overlay =
   { kind: "about" } | { kind: "settings"; section: SettingsSection } | { kind: "admin" } | { kind: "agents" };
@@ -243,6 +267,8 @@ function Shell({
             existingRailways={Boolean(prefs.existingRailways)}
             userId={user?.id ?? null}
             onRefreshSession={reload}
+            pinnedLayers={prefs.mapLayers?.[route.id] ?? NO_PINS}
+            onPinnedLayers={(layers) => onPrefs({ mapLayers: { ...prefs.mapLayers, [route.id]: layers } })}
           />
         </LoadingScreen>
         {setup}

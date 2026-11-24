@@ -29,12 +29,16 @@ export interface CheckGroup {
   items: CheckItem[];
   /** The tool is open now: its checks are current and can show their place. */
   live: boolean;
+  /** Which of the tool's drawings the checks are about (a street line's id), to open it again. */
+  context?: string;
 }
 
 interface Store {
-  publish: (source: string, label: string, items: CheckItem[]) => void;
+  publish: (source: string, label: string, items: CheckItem[], context?: string) => void;
   retire: (source: string) => void;
   groups: CheckGroup[];
+  /** Opens a closed tool again and shows the check once its tool reports it; null when tools cannot be opened. */
+  reopen: ((group: CheckGroup, item: CheckItem) => void) | null;
 }
 
 const ChecksContext = createContext<Store | null>(null);
@@ -44,14 +48,34 @@ const ChecksContext = createContext<Store | null>(null);
  * one place. A tool that closes keeps its last checks (they cannot change while it is closed), without the links to
  * the map.
  */
-export function ChecksProvider({ children }: { children: ReactNode }) {
+export function ChecksProvider({
+  children,
+  onReopen,
+}: {
+  children: ReactNode;
+  /** Opens a tool (by its checks' source, and which of its drawings) so a check of it can be shown. */
+  onReopen?: (source: string, context: string | undefined) => void;
+}) {
   const [groups, setGroups] = useState<CheckGroup[]>([]);
-  const publish = useCallback((source: string, label: string, items: CheckItem[]) => {
+  // A check chosen while its tool was closed: shown once the tool, opened again, reports it.
+  const pending = useRef<{ source: string; context?: string; text: string; until: number } | null>(null);
+  const publish = useCallback((source: string, label: string, items: CheckItem[], context?: string) => {
     setGroups((gs) => {
-      const next = { source, label, items, live: true };
+      const next = { source, label, items, live: true, ...(context !== undefined ? { context } : {}) };
       const i = gs.findIndex((g) => g.source === source);
       return i < 0 ? [...gs, next] : gs.map((g, k) => (k === i ? next : g));
     });
+    const want = pending.current;
+    if (want && Date.now() > want.until) pending.current = null;
+    else if (want && want.source === source && want.context === context) {
+      // The tool may report its checks in steps (an engine still loading): wait for this one.
+      const item = items.find((x) => x.text === want.text);
+      if (item) {
+        pending.current = null;
+        // After the tool has drawn itself, so the element it selects is there.
+        if (item.onShow) setTimeout(() => item.onShow?.(), 0);
+      }
+    }
   }, []);
   const retire = useCallback((source: string) => {
     setGroups((gs) =>
@@ -62,7 +86,21 @@ export function ChecksProvider({ children }: { children: ReactNode }) {
       ),
     );
   }, []);
-  const store = useMemo(() => ({ publish, retire, groups }), [publish, retire, groups]);
+  const opener = useRef(onReopen);
+  opener.current = onReopen;
+  const reopen = useCallback((g: CheckGroup, item: CheckItem) => {
+    pending.current = {
+      until: Date.now() + 30_000,
+      source: g.source,
+      ...(g.context !== undefined ? { context: g.context } : {}),
+      text: item.text,
+    };
+    opener.current?.(g.source, g.context);
+  }, []);
+  const store = useMemo(
+    () => ({ publish, retire, groups, reopen: onReopen ? reopen : null }),
+    [publish, retire, groups, reopen, onReopen],
+  );
   return <ChecksContext.Provider value={store}>{children}</ChecksContext.Provider>;
 }
 
@@ -71,12 +109,23 @@ export function useCheckGroups(): CheckGroup[] {
   return useContext(ChecksContext)?.groups ?? [];
 }
 
+/** Purpose: open a check's tool again and show the check; null when the project cannot (outside a project). */
+export function useReopenCheck(): ((group: CheckGroup, item: CheckItem) => void) | null {
+  return useContext(ChecksContext)?.reopen ?? null;
+}
+
 /**
  * Purpose: send a tool's live checks to the project's notifications button.
  * Output: true when they went there; false when the tool is shown on its own (no project around it), so it lists
  * its checks itself.
  */
-export function usePublishChecks(source: string, label: string, items: CheckItem[]): boolean {
+export function usePublishChecks(
+  source: string,
+  label: string,
+  items: CheckItem[],
+  /** Which of the tool's drawings they are about (a street line's id), to open it again from the list. */
+  context?: string,
+): boolean {
   const store = useContext(ChecksContext);
   const publish = store?.publish;
   const retire = store?.retire;
@@ -93,8 +142,9 @@ export function usePublishChecks(source: string, label: string, items: CheckItem
         ...item,
         onShow: item.onShow ? () => latest.current[k]?.onShow?.() : undefined,
       })),
+      context,
     );
-  }, [publish, source, label, key]);
+  }, [publish, source, label, key, context]);
   useEffect(() => {
     if (!retire) return;
     return () => retire(source);

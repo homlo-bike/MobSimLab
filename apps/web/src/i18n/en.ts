@@ -229,6 +229,9 @@ export const en = {
   "save.saving": "Saving…",
   "save.offline": "Not saved yet · trying again",
   "save.failed": "Not saved: {error}",
+  "session.staleToken":
+    "Your changes are no longer being saved because the server restarted while this page was open. Reload the page to keep working.",
+  "session.reload": "Reload page",
   "save.conflict": "{who} saved the {drawing} while you were changing it. Which one should the project keep?",
   "save.someone": "Someone else",
   "save.keepMine": "Keep mine",
@@ -259,13 +262,8 @@ export const en = {
   "sim.test": "Test the system",
   "sim.journey": "Journey time A → B",
 
-  "create.chooseTitle": "What do you want to build first?",
-  "create.chooseIntro": "You can add the other kind later. Existing routes stay visible while you work.",
   "create.street": "Street route",
-  "create.streetHint": "Bus, BRT, trolleybus, intercity bus. Follows the street network.",
   "create.rail": "Rail route",
-  "create.railHint":
-    "Tram, light rail, metro, commuter, regional, intercity, high-speed. Draw tracks, stations and switches.",
   "create.noArea":
     "No study area yet. Import streets and population from OpenStreetMap first for routing and passenger estimates.",
   "create.setArea": "Set area in GIS",
@@ -457,6 +455,7 @@ export const en = {
 
   "job.stepOf": "Step {step} of {steps}",
   "job.cancel": "Cancel",
+  "job.running": "Work under way",
   "map.search": "Search places",
   "map.searchPlaceholder": "Town, street, station or address",
   "map.searching": "Searching…",
@@ -468,6 +467,15 @@ export const en = {
   "map.places": "Places found",
   "map.searchCredit": "Place names © OpenStreetMap contributors, found with Photon",
   "map.layers": "Map layers",
+  "map.alwaysShow": "Always show",
+  "map.alwaysShowHint":
+    "Shown on every map tab, whichever tool is open. Saved in your account for this project.",
+  "map.pin.serviceLines": "Service lines",
+  "map.pin.tracks": "Tracks",
+  "map.pin.stations": "Stations",
+  "map.pin.stops": "Stops",
+  "map.pin.streetSetups": "Street setups",
+  "map.pin.regions": "Regions",
   "map.basemap": "Basemap",
   "map.streetMap": "Map",
   "map.aerial": "Aerial",

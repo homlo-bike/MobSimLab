@@ -234,6 +234,9 @@ export const ha: Messages = {
   "save.saving": "Ana adanawa…",
   "save.offline": "Ba a adana ba tukuna · ana sake gwadawa",
   "save.failed": "Ba a adana ba: {error}",
+  "session.staleToken":
+    "Ba a ƙara adana canje-canjenku saboda sabar ta sake farawa yayin da wannan shafi ke buɗe. Sake loda shafin don ci gaba da aiki.",
+  "session.reload": "Sake loda shafi",
   "save.conflict": "{who} ya adana {drawing} yayin da kake canza shi. Wanne ne aikin zai riƙe?",
   "save.someone": "Wani daban",
   "save.keepMine": "Riƙe nawa",
@@ -264,14 +267,8 @@ export const ha: Messages = {
   "sim.test": "Gwada tsarin",
   "sim.journey": "Lokacin tafiya A → B",
 
-  "create.chooseTitle": "Me kake so ka gina da farko?",
-  "create.chooseIntro":
-    "Za ka iya ƙara ɗayan nau'in daga baya. Hanyoyin da ake da su suna bayyana yayin da kake aiki.",
   "create.street": "Hanyar titi",
-  "create.streetHint": "Bas, BRT, bas mai waya, bas na tsakanin birane. Yana bin hanyar tituna.",
   "create.rail": "Hanyar dogo",
-  "create.railHint":
-    "Tram, jirgin ƙasa mai sauƙi, metro, na kewayen birni, na yanki, na tsakanin birane, mai sauri. Zana dogo, tashoshi da makunnai.",
   "create.noArea":
     "Babu yankin nazari tukuna. Shigo da tituna da yawan jama'a daga OpenStreetMap da farko don tsara hanyoyi da ƙididdigar fasinjoji.",
   "create.setArea": "Saita yanki a GIS",
@@ -464,6 +461,7 @@ export const ha: Messages = {
 
   "job.stepOf": "Mataki {step} cikin {steps}",
   "job.cancel": "Soke",
+  "job.running": "Ayyukan da ake yi",
   "map.search": "Nemi wurare",
   "map.searchPlaceholder": "Gari, titi, tasha ko adireshi",
   "map.searching": "Ana nema…",
@@ -475,6 +473,15 @@ export const ha: Messages = {
   "map.places": "Wuraren da aka samu",
   "map.searchCredit": "Sunayen wurare © masu ba da gudummawa ga OpenStreetMap, an samo su da Photon",
   "map.layers": "Matakan taswira",
+  "map.alwaysShow": "Nuna koyaushe",
+  "map.alwaysShowHint":
+    "Ana nunawa a kowane shafin taswira, ko wane kayan aiki ne a buɗe. Ana adana shi a asusunka don wannan aikin.",
+  "map.pin.serviceLines": "Layukan sabis",
+  "map.pin.tracks": "Hanyoyin dogo",
+  "map.pin.stations": "Tashoshi",
+  "map.pin.stops": "Tashoshin tsayawa",
+  "map.pin.streetSetups": "Saitin tituna",
+  "map.pin.regions": "Yankuna",
   "map.basemap": "Taswirar tushe",
   "map.streetMap": "Taswira",
   "map.aerial": "Daga sama",

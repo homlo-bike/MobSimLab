@@ -872,7 +872,16 @@ export function RailwayEditor({
     },
     showIssue: (at: LonLat | null, ref: number | null) => {
       if (ref) setSel({ id: ref });
-      if (at && map) map.easeTo({ center: at, zoom: Math.max(map.getZoom(), 16) });
+      // Without a place of its own, the check is shown at the station or track it is about.
+      const track = ref ? view?.tracks.find((x) => x.id === ref) : undefined;
+      const place =
+        at ??
+        (ref
+          ? (view?.stations.find((x) => x.id === ref)?.lonlat ??
+            (track ? track.centre[Math.floor(track.centre.length / 2)] : undefined) ??
+            null)
+          : null);
+      if (place && map) map.easeTo({ center: place, zoom: Math.max(map.getZoom(), 16) });
     },
     resetSignals: () => {
       if (!doc) return;
