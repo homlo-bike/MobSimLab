@@ -124,6 +124,8 @@ function StaleTokenBar() {
   );
 }
 
+const NO_PINS: never[] = [];
+
 type Overlay =
   { kind: "about" } | { kind: "settings"; section: SettingsSection } | { kind: "admin" } | { kind: "agents" };
 
@@ -265,6 +267,8 @@ function Shell({
             existingRailways={Boolean(prefs.existingRailways)}
             userId={user?.id ?? null}
             onRefreshSession={reload}
+            pinnedLayers={prefs.mapLayers?.[route.id] ?? NO_PINS}
+            onPinnedLayers={(layers) => onPrefs({ mapLayers: { ...prefs.mapLayers, [route.id]: layers } })}
           />
         </LoadingScreen>
         {setup}

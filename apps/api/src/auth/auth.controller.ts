@@ -28,6 +28,9 @@ import { AuthService } from "./auth.service";
 import { describeOidcError, OidcNotConfiguredError, OidcService } from "./oidc.service";
 import { ABSOLUTE_MS, type MslRequest, SessionService } from "./session.service";
 
+/** The project layers a person can keep shown on every map tab (web `PINNED_LAYERS`). */
+export const PINNED_LAYERS = ["serviceLines", "tracks", "stations", "stops", "streetSetups", "regions"] as const;
+
 /**
  * Per-user preferences that follow the person to other devices. `language` is "system" (follow the browser)
  * or a BCP 47 tag; numbers, dates and units follow the language unless `units` is set.
@@ -43,6 +46,11 @@ export const preferencesBody = z.strictObject({
   largerTargets: z.boolean().optional(),
   reduceMotion: z.boolean().optional(),
   existingRailways: z.boolean().optional(),
+  /** Per project (by id), the project layers the person keeps shown on every map tab. Sent whole when changed. */
+  mapLayers: z
+    .record(z.uuid(), z.array(z.enum(PINNED_LAYERS)).max(PINNED_LAYERS.length))
+    .refine((r) => Object.keys(r).length <= 2000, "too many projects")
+    .optional(),
 });
 export type Preferences = z.infer<typeof preferencesBody>;
 

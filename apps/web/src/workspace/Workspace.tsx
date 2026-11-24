@@ -100,6 +100,8 @@ import {
 } from "../shell/icons";
 import { ChecksProvider } from "../shell/checks";
 import { JobsBar, JobsProvider } from "../shell/jobs";
+import { PINNED_LAYERS, type PinnedLayer, PinnedLayersContext } from "../map/pinnedLayers";
+import { PinnedLayers, pinnableLayers, type ProjectContent } from "./PinnedLayers";
 import { ImportsWatcher } from "../features/geodata/ImportsWatcher";
 import { COMMENT_KIND, ChecksMenu } from "../shell/ChecksMenu";
 import { OtherModesLayer } from "./OtherModesLayer";
@@ -212,6 +214,7 @@ const tabIcon = (x: Tab): IconFn =>
   TAB_ICONS[x as CoreTab] ?? VIEW_ICONS[PLUGIN_TABS.find((p) => p.id === x)?.view ?? ""] ?? LayersIcon;
 /** Tabs drawn over the map; the others are full pages. The plugins' tabs all use the map. */
 const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis", ...PLUGIN_TABS.map((x) => x.id)];
+const NO_PINS: readonly PinnedLayer[] = [];
 const NO_SETUPS: StreetSetup[] = [];
 const NO_JUNCTIONS: JunctionSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
@@ -252,6 +255,8 @@ export function Workspace({
   existingRailways = false,
   userId = null,
   onRefreshSession,
+  pinnedLayers = NO_PINS,
+  onPinnedLayers,
 }: {
   api: ProjectsApi;
   projectId: string;
@@ -270,6 +275,9 @@ export function Workspace({
   userId?: string | null;
   /** Load the session again (a fresh CSRF token), before saving again after a refused save. */
   onRefreshSession?: () => void;
+  /** The project layers this person keeps shown on every map tab (saved in their account). */
+  pinnedLayers?: readonly PinnedLayer[];
+  onPinnedLayers?: (layers: PinnedLayer[]) => void;
 }) {
   const { t, language } = useI18n();
   const [project, setProject] = useState<Project | null>(null);
@@ -736,6 +744,36 @@ export function Workspace({
     forgetSetups(projectId);
   }, [drawings.loaded, editable, projectId]);
   const savedStreet = streetLines?.lines ?? NO_STREET_LINES;
+  // The project layers kept shown on every map tab (Map layers → Always show), from the person's account.
+  const pinContent = useMemo<ProjectContent>(
+    () => ({
+      railway,
+      streetLines: savedStreet,
+      pluginLines: pluginSaved,
+      setups,
+      junctions: junctionSetups,
+      regions,
+    }),
+    [railway, savedStreet, pluginSaved, setups, junctionSetups, regions],
+  );
+  const pinKey = pinnedLayers.join();
+  const pinned = useMemo(
+    () => new Set<PinnedLayer>(pinKey ? (pinKey.split(",") as PinnedLayer[]) : []),
+    [pinKey],
+  );
+  const pinAvailable = useMemo(() => pinnableLayers(pinContent), [pinContent]);
+  const pinState = useMemo(
+    () =>
+      project && onPinnedLayers
+        ? {
+            available: pinAvailable,
+            pinned,
+            onChange: (next: ReadonlySet<PinnedLayer>) =>
+              onPinnedLayers(PINNED_LAYERS.filter((x) => next.has(x))),
+          }
+        : null,
+    [project, onPinnedLayers, pinAvailable, pinned],
+  );
   // Street lines saved before lines had ids get one, so their comments stay with them, and before lines had
   // colours a colour of their own, so lines of one mode can be told apart (Owners and Editors save).
   useEffect(() => {
@@ -1146,7 +1184,12 @@ export function Workspace({
       )}
       <main className="relative flex min-h-0 flex-1 flex-col overflow-clip md:flex-row">
         <div className={`relative min-h-0 min-w-0 flex-1 ${onMap ? "" : "hidden"}`}>
-          <MapView onReady={setMap} />
+          <PinnedLayersContext.Provider value={pinState}>
+            <MapView onReady={setMap} />
+          </PinnedLayersContext.Provider>
+          {project && drawings.loaded && pinned.size > 0 && (
+            <PinnedLayers map={map} pinned={pinned} content={pinContent} />
+          )}
           {/* The drawn network (track, stations, platforms, street lines and stops, depots) stays in view on
               every map tab: faded under the tool in use on Create, and as the backdrop on GIS and Simulator. */}
           {project && drawings.loaded && (tab === "create" || tab === "gis" || tab === "simulator") && (
