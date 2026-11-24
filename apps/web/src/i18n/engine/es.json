@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Dar la vuelta añade {extra} ({length} en lugar de {direct}). Considera poner la cabecera donde el vehículo pueda dar la vuelta: una estación de autobuses, un bucle de giro, una glorieta o una manzana que pueda rodear.",
   "street.line.two_stops": "Una línea necesita al menos dos paradas. Convierte puntos en paradas.",
   "street.line.wrong_side": "Este tramo mide {length} para {straight} en línea recta. Si el siguiente punto está en la mitad opuesta de una calzada separada, o en una calle de sentido único en el sentido contrario, muévelo al lado por el que circula el vehículo.",
-  "street.line.wrong_sidewalk": "Esta acera no se puede atender: aquí el tráfico solo circula con la parada en el lado opuesto a las puertas. Pon la parada en la otra acera."
+  "street.line.wrong_sidewalk": "Esta acera no se puede atender: aquí el tráfico solo circula con la parada en el lado opuesto a las puertas. Pon la parada en la otra acera.",
+  "rail.plan.no_track_between_reach": "Ninguna vía lleva de {from} a {to}. Los trenes desde {from} solo llegan a {reached}: comprueba que las vías que entran y salen de {last} se unen a las mismas vías de la estación en ambos extremos, para que los trenes que llegan allí puedan seguir, o pon desvíos allí.",
+  "rail.plan.gap_does_not_lead_on": "los trenes desde {from} llegan a {at}, pero por vías de estación que no siguen hacia {next}. Comprueba que las vías que entran y salen de {at} se unen a las mismas vías de la estación en ambos extremos, o pon desvíos allí",
+  "rail.plan.gap_no_track": "ninguna vía lleva de {from} a {to}",
+  "rail.plan.no_track_outbound_at": "Ninguna vía une las paradas en el sentido de la línea: {gap}.",
+  "rail.plan.no_track_return_at": "Ninguna vía une las paradas en el sentido de regreso: {gap}."
 }

@@ -12,10 +12,6 @@ export const editorsFr = {
   "rail.mode.long_distance_rail": "Grandes lignes",
   "rail.params":
     "Écartement {gauge} mm · entraxe {centres} m · rayon min. {minRadius} m (recommandé {radius} m) · pente max. {gradient} ‰ · vitesse de projet {speed} km/h · quais {platform} m à {height} mm · {power}",
-  "rail.stat.route": "Ligne",
-  "rail.stat.track": "Voie",
-  "rail.stat.stations": "Stations",
-  "rail.stat.switches": "Aiguillages",
   "rail.stations.one": "{count} station",
   "rail.stations.other": "{count} stations",
   "rail.backToNetwork": "Retour au réseau",
@@ -350,6 +346,8 @@ export const editorsFr = {
   "rail.say.straightOnly":
     "Les aiguillages du catalogue se posent en alignement droit. Cliquez sur une partie droite.",
   "rail.say.doubleOnly": "Une communication relie deux voies parallèles. Choisissez une voie double.",
+  "rail.say.missedStationEnd":
+    "Cliquez exactement sur une extrémité de gare pour y raccorder la voie. Zoomez si les extrémités sont difficiles à atteindre.",
   "rail.say.clickTrackSignal":
     "Cliquez sur une voie, une voie de station ou une branche d’aiguillage pour placer un signal.",
   "rail.signalsReset": "Signaux remis à ceux générés à partir du projet.",
@@ -401,12 +399,6 @@ export const editorsFr = {
   "street.profile.intercity_bus": "Peut emprunter les autoroutes ; les arrêts peuvent être en gare routière.",
   "street.battery": "Autonomie sur batterie",
   "street.doorsBoth": "Portes des deux côtés",
-  "street.stat.length": "Longueur du circuit",
-  "street.stat.stops": "Arrêts ({end} terminus)",
-  "street.stat.cycle": "Cycle : {run} de parcours{crossings}, {dwell} d’arrêt, {layover} de battement",
-  "street.stat.atCrossings": "({min} aux passages à niveau)",
-  "street.stat.vehicles": "Véhicules pour un intervalle de {headway} min",
-  "street.stat.compact": "{length} de circuit · {stops} arrêts · cycle de {cycle} min · {vehicles} véhicules",
   "street.points": "Points de l’itinéraire · ordre du circuit",
   "street.noPoints": "Aucun point. Choisissez Ajouter un point et cliquez sur une rue.",
   "street.viaN": "Point de passage {n}",
@@ -754,6 +746,10 @@ export const editorsFr = {
   "schematic.connections": "Étiquettes colorées sous une station : lignes en correspondance à cet arrêt.",
   "schematic.noConnections": "Cette ligne n’a aucune station commune avec d’autres lignes.",
   "schematic.exportTitle": "Exporter",
+  "schematic.exportsIntro":
+    "Téléchargez le plan schématique du réseau et le plan de chaque ligne en SVG ou PNG, ou imprimez-les ou enregistrez-les en PDF.",
+  "schematic.exportsNone": "Il n’y a pas encore de ligne à exporter. Dessinez d’abord une ligne sous Créer.",
+  "schematic.exporting": "Préparation du plan…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Imprimer ou PDF",
@@ -811,9 +807,9 @@ export const editorsFr = {
   "schematic.area.color": "Couleur",
   "schematic.area.defaultName": "Zone {n}",
   "schematic.area.draw": "Dessiner une zone",
-  "schematic.area.drawHint": "Cliquez sur le plan pour ajouter des sommets, puis sur Terminer.",
+  "schematic.area.drawHint":
+    "Cliquez sur le plan pour ajouter des sommets, puis sur Terminer. Ctrl+Z retire le dernier sommet.",
   "schematic.area.finish": "Terminer",
-  "schematic.area.undo": "Annuler le sommet",
   "schematic.area.remove": "Supprimer la zone",
   "schematic.area.dragHint": "Faites glisser les sommets blancs sur le plan pour modifier la forme.",
   "schematic.facts": "Service",
@@ -1462,26 +1458,17 @@ export const editorsFr = {
   "capacity.loading": "Chargement du réseau…",
   "capacity.planning": "Planification de la période et passage par l’enclenchement…",
   "capacity.trying": "Essai de {line} {every} ({n} sur {total})…",
-  "capacity.noFile": "Aucun fichier choisi",
-  "capacity.replace": "Remplacer",
-  "capacity.choose": "Choisir",
   "capacity.title": "Tester le système",
   "capacity.intro":
     "Faites passer une période de la journée par le planificateur d’horaires et l’enclenchement. Voyez si chaque ligne ferroviaire tient sur les voies, circule à l’heure et se remet des retards, et combien de trains elle pourrait faire circuler.",
-  "capacity.network": "Réseau",
   "capacity.example": "Métro d’exemple",
-  "capacity.mine": "Depuis des fichiers",
   "capacity.drawn": "Dessiné dans ce projet",
-  "capacity.drawnText":
-    "Lignes {names} sur le réseau ferré dessiné dans l’outil ferroviaire, tel qu’enregistré.",
   "capacity.drawn.noTrack": "Rien n’est encore dessiné dans l’outil ferroviaire.",
   "capacity.drawn.noLines":
     "Aucune ligne n’est prête pour le test. Dans l’outil ferroviaire, donnez à une ligne au moins deux arrêts et un train.",
   "capacity.drawn.errors":
     "Le réseau ferré dessiné contient des erreurs. Corrigez-les d’abord dans l’outil ferroviaire.",
   "capacity.building": "Construction du réseau ferré dessiné…",
-  "capacity.drawnStreets":
-    "Lignes routières {names}, parcourues sur leur itinéraire avec les retards dus au trafic.",
   "capacity.loads.estimating": "Estimation de la fréquentation autour des stations et arrêts…",
   "capacity.loads.toggle": "Charge de voyageurs (estimation de fréquentation de l’onglet Tableaux)",
   "capacity.loads.title": "Voyageurs",
@@ -1516,12 +1503,6 @@ export const editorsFr = {
     "écarts de moins de la moitié de l’intervalle ; {left} min de retard à la fin",
   "capacity.street.method":
     "Chaque ligne routière a tourné {runs} fois ; chaque course a eu son propre trafic, de {low} à {high} fois le retard attendu dans le trafic des grands axes (préférences du projet).",
-  "capacity.exampleText":
-    "Ligne M1 Westpark – Eastgate : cinq stations, un dépôt à chaque bout, toutes les 5 min aux heures de pointe et toutes les 10 min le reste du temps.",
-  "capacity.topologyFile": "Topologie des voies (JSON)",
-  "capacity.linesFile": "Lignes (JSON)",
-  "capacity.filesHelp":
-    "Le fichier de topologie des voies suit contracts/rail-topology.schema.json ; pour le réseau ferré dessiné dans ce projet, choisissez « {drawn} ». Le fichier des lignes donne pour chaque ligne les stations, le train et le service, tels que le planificateur d’horaires les lit (docs/user/simulator.md).",
   "capacity.period": "Période",
   "capacity.from": "De",
   "capacity.to": "À",
@@ -1541,7 +1522,12 @@ export const editorsFr = {
   "capacity.run": "Lancer le test",
   "capacity.runAgain": "Relancer",
   "capacity.stop": "Arrêter",
-  "capacity.chooseBoth": "Choisissez les deux fichiers pour tester votre réseau.",
+  "capacity.replay.title": "Relecture sur la carte",
+  "capacity.replay.note":
+    "Toutes les lignes dessinées circulent ensemble sur une même horloge. Les trains roulent comme prévu, sans retards aléatoires ; les véhicules des lignes routières rencontrent le trafic du premier passage du test.",
+  "capacity.replay.none": "Rien à relire : aucune ligne n’a circulé pendant la période.",
+  "capacity.replay.stopped":
+    "Le passage s’est arrêté plus tôt, les trains restent donc immobiles à partir de là : {why}",
   "capacity.summary":
     "{period} · {trips} courses planifiées avec marges · {out} trains en service, {reserve} en réserve",
   "capacity.importNotes": "Notes d’import ({n})",

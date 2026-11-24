@@ -235,6 +235,9 @@ export const uk: Messages = {
   "save.saving": "Збереження…",
   "save.offline": "Не збережено · повторна спроба",
   "save.failed": "Не вдалося зберегти: {error}",
+  "session.staleToken":
+    "Ваші зміни більше не зберігаються, бо сервер перезапустився, поки ця сторінка була відкрита. Перезавантажте сторінку, щоб продовжити роботу.",
+  "session.reload": "Перезавантажити сторінку",
   "save.conflict": "{who} зберіг(ла) зміни, поки ви змінювали {drawing}. Яку версію залишити?",
   "save.someone": "Хтось інший",
   "save.keepMine": "Залишити мою",
@@ -265,13 +268,8 @@ export const uk: Messages = {
   "sim.test": "Перевірити систему",
   "sim.journey": "Час поїздки A → B",
 
-  "create.chooseTitle": "Що ви хочете створити спочатку?",
-  "create.chooseIntro": "Інше можна додати пізніше. Наявні лінії залишаються видимими під час роботи.",
   "create.street": "Вуличні лінії",
-  "create.streetHint": "Автобус, BRT, тролейбус і міжміський автобус. Ідуть вуличною мережею.",
   "create.rail": "Рейкові лінії",
-  "create.railHint":
-    "Трамвай, швидкісний трамвай, метро, приміські, регіональні, міжміські й швидкісні поїзди. Малюйте колії, станції та стрілки.",
   "create.noArea":
     "Ще немає території дослідження. Спочатку імпортуйте вулиці й населення з OpenStreetMap, щоб стали доступні маршрутизація та оцінки пасажиропотоку.",
   "create.setArea": "Задати територію в ГІС",
@@ -465,6 +463,7 @@ export const uk: Messages = {
 
   "job.stepOf": "Крок {step} з {steps}",
   "job.cancel": "Скасувати",
+  "job.running": "Поточні завдання",
   "map.search": "Пошук місць",
   "map.searchPlaceholder": "Місто, вулиця, станція або адреса",
   "map.searching": "Пошук…",
@@ -476,6 +475,15 @@ export const uk: Messages = {
   "map.places": "Знайдені місця",
   "map.searchCredit": "Назви місць © учасники OpenStreetMap, знайдено за допомогою Photon",
   "map.layers": "Шари карти",
+  "map.alwaysShow": "Показувати завжди",
+  "map.alwaysShowHint":
+    "Видно на кожній вкладці з мапою, хоч який інструмент відкрито. Зберігається у вашому обліковому записі для цього проєкту.",
+  "map.pin.serviceLines": "Маршрути",
+  "map.pin.tracks": "Колії",
+  "map.pin.stations": "Станції",
+  "map.pin.stops": "Зупинки",
+  "map.pin.streetSetups": "Налаштування вулиць",
+  "map.pin.regions": "Райони",
   "map.basemap": "Підкладка",
   "map.streetMap": "Карта",
   "map.aerial": "Аерознімок",

@@ -75,6 +75,7 @@ import type {
 import type { Timetable } from "../journey-planner/types";
 import { useEditHandles } from "./useEditHandles";
 import { useEditorKeys } from "./useEditorKeys";
+import { pickConnection } from "./connectionPick";
 import { useMapEditing } from "./useMapEditing";
 import { useRailTiles } from "./useRailTiles";
 import { fetchTerrainHeights, useTerrainHeights } from "./useTerrainHeights";
@@ -469,7 +470,11 @@ export function RailwayEditor({
   );
 
   const connectionAt = useCallback(
-    (pt: { x: number; y: number }, wantTracks: number | null): ConnectionView | null => {
+    (
+      pt: { x: number; y: number },
+      wantTracks: number | null,
+      from: [number, number] | null = null,
+    ): ConnectionView | null => {
       if (!map || !map.getLayer(CONNECTION_LAYER)) return null;
       const box: [[number, number], [number, number]] = [
         [pt.x - 9, pt.y - 9],
@@ -480,7 +485,29 @@ export function RailwayEditor({
       const found = hits
         .map((h) => conns[Number(h.properties?.index)])
         .filter((c): c is ConnectionView => !!c && (wantTracks === null || c.tracks === wantTracks));
-      return found.find((c) => !c.used) ?? found[0] ?? null;
+      const unique = [...new Set(found)];
+      return pickConnection(
+        unique.map((c) => {
+          const p = map.project(c.lonlat);
+          return { c, px: Math.hypot(p.x - pt.x, p.y - pt.y), at: local(c.lonlat) };
+        }),
+        conns,
+        from,
+      );
+    },
+    [map, local],
+  );
+
+  // Whether a station end with connections for `wantTracks` tracks is within `px` of a click that hit
+  // none, to warn instead of starting or ending a track that joins nothing there.
+  const stationEndNear = useCallback(
+    (pt: { x: number; y: number }, px: number, wantTracks: number): boolean => {
+      if (!map) return false;
+      return (lastView.current?.connections ?? []).some((c) => {
+        if (c.anchor.type !== "station" || c.tracks !== wantTracks) return false;
+        const p = map.project(c.lonlat);
+        return Math.hypot(p.x - pt.x, p.y - pt.y) <= px;
+      });
     },
     [map],
   );
@@ -589,6 +616,7 @@ export function RailwayEditor({
     setDraft,
     setCursor,
     connectionAt,
+    stationEndNear,
     trackEndAt,
     connLocal,
     finishDraft,
@@ -844,7 +872,16 @@ export function RailwayEditor({
     },
     showIssue: (at: LonLat | null, ref: number | null) => {
       if (ref) setSel({ id: ref });
-      if (at && map) map.easeTo({ center: at, zoom: Math.max(map.getZoom(), 16) });
+      // Without a place of its own, the check is shown at the station or track it is about.
+      const track = ref ? view?.tracks.find((x) => x.id === ref) : undefined;
+      const place =
+        at ??
+        (ref
+          ? (view?.stations.find((x) => x.id === ref)?.lonlat ??
+            (track ? track.centre[Math.floor(track.centre.length / 2)] : undefined) ??
+            null)
+          : null);
+      if (place && map) map.easeTo({ center: place, zoom: Math.max(map.getZoom(), 16) });
     },
     resetSignals: () => {
       if (!doc) return;

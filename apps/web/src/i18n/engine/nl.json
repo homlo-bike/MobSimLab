@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Keren voegt {extra} toe ({length} in plaats van {direct}). Overweeg de eindhalte te leggen waar het voertuig kan keren: een busstation, keerlus, rotonde of een blok waar het omheen kan rijden.",
   "street.line.two_stops": "Een lijn heeft minstens twee haltes nodig. Maak van routepunten haltes.",
   "street.line.wrong_side": "Dit stuk is {length} voor {straight} in rechte lijn. Als het volgende punt op de andere helft van een gescheiden weg ligt, of in een eenrichtingsstraat in de verkeerde richting, verplaats het dan naar de kant waar het voertuig rijdt.",
-  "street.line.wrong_sidewalk": "Dit trottoir kan niet worden bediend: het verkeer rijdt hier alleen zo dat de halte aan de kant tegenover de deuren ligt. Leg de halte op het andere trottoir."
+  "street.line.wrong_sidewalk": "Dit trottoir kan niet worden bediend: het verkeer rijdt hier alleen zo dat de halte aan de kant tegenover de deuren ligt. Leg de halte op het andere trottoir.",
+  "rail.plan.no_track_between_reach": "Geen spoor leidt van {from} naar {to}. Treinen uit {from} bereiken alleen {reached}: controleer of de sporen naar en uit {last} aan beide einden op dezelfde stationssporen aansluiten, zodat treinen die daar aankomen verder kunnen, of leg daar wissels.",
+  "rail.plan.gap_does_not_lead_on": "treinen uit {from} bereiken {at}, maar op stationssporen die niet verder leiden naar {next}. Controleer of de sporen naar en uit {at} aan beide einden op dezelfde stationssporen aansluiten, of leg daar wissels",
+  "rail.plan.gap_no_track": "geen spoor leidt van {from} naar {to}",
+  "rail.plan.no_track_outbound_at": "Geen spoor verbindt de haltes in de richting van de lijn: {gap}.",
+  "rail.plan.no_track_return_at": "Geen spoor verbindt de haltes in de terugrichting: {gap}."
 }

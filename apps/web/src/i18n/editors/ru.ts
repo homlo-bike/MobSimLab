@@ -12,10 +12,6 @@ export const editorsRu = {
   "rail.mode.long_distance_rail": "Дальнего следования",
   "rail.params":
     "Колея {gauge} мм · междупутье {centres} м · мин. радиус {minRadius} м (рекомендуемый {radius} м) · макс. уклон {gradient} ‰ · расчётная скорость {speed} км/ч · платформы {platform} м высотой {height} мм · {power}",
-  "rail.stat.route": "Трасса",
-  "rail.stat.track": "Путь",
-  "rail.stat.stations": "Станции",
-  "rail.stat.switches": "Стрелки",
   "rail.stations.one": "{count} станция",
   "rail.stations.few": "{count} станции",
   "rail.stations.many": "{count} станций",
@@ -381,6 +377,8 @@ export const editorsRu = {
   "rail.say.clickTrackSwitch": "Нажмите на путь, чтобы поставить стрелку.",
   "rail.say.straightOnly": "Стрелки из каталога ставятся на прямой путь. Нажмите на прямой участок.",
   "rail.say.doubleOnly": "Съезд соединяет два параллельных пути. Выберите двухпутный участок.",
+  "rail.say.missedStationEnd":
+    "Нажмите точно на конец станции, чтобы присоединить к нему путь. Приблизьте карту, если в концы трудно попасть.",
   "rail.say.clickTrackSignal":
     "Нажмите на путь, станционный путь или ветвь стрелки, чтобы поставить светофор.",
   "rail.signalsReset": "Светофоры возвращены к созданным по проекту.",
@@ -429,12 +427,6 @@ export const editorsRu = {
   "street.profile.intercity_bus": "Может ехать по автомагистралям; остановки могут быть на автовокзалах.",
   "street.battery": "Запас хода на батарее",
   "street.doorsBoth": "Двери с обеих сторон",
-  "street.stat.length": "Длина оборота",
-  "street.stat.stops": "Остановки (конечных: {end})",
-  "street.stat.cycle": "Оборот: {run} в пути{crossings}, {dwell} на остановках, {layover} отстоя",
-  "street.stat.atCrossings": "({min} на переездах)",
-  "street.stat.vehicles": "Машин при интервале {headway} мин",
-  "street.stat.compact": "круг {length} · остановок: {stops} · оборот {cycle} мин · машин: {vehicles}",
   "street.points": "Точки маршрута · порядок оборота",
   "street.noPoints": "Точек пока нет. Выберите «Добавить точку» и нажмите на улицу.",
   "street.viaN": "Промежуточная точка {n}",
@@ -782,6 +774,10 @@ export const editorsRu = {
   "schematic.connections": "Цветные метки под станцией: линии, на которые здесь можно пересесть.",
   "schematic.noConnections": "У этой линии нет общих станций с другими линиями.",
   "schematic.exportTitle": "Экспорт",
+  "schematic.exportsIntro":
+    "Скачайте схему сети и схему каждой линии в формате SVG или PNG, либо распечатайте их или сохраните в PDF.",
+  "schematic.exportsNone": "Пока нет линий для экспорта. Сначала нарисуйте линию в разделе «Создать».",
+  "schematic.exporting": "Подготовка схемы…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Печать или PDF",
@@ -843,9 +839,9 @@ export const editorsRu = {
   "schematic.area.color": "Цвет",
   "schematic.area.defaultName": "Область {n}",
   "schematic.area.draw": "Нарисовать область",
-  "schematic.area.drawHint": "Щёлкайте по карте, чтобы добавить вершины, затем нажмите «Готово».",
+  "schematic.area.drawHint":
+    "Щёлкайте по карте, чтобы добавить вершины, затем нажмите «Готово». Ctrl+Z удаляет последнюю вершину.",
   "schematic.area.finish": "Готово",
-  "schematic.area.undo": "Отменить вершину",
   "schematic.area.remove": "Удалить область",
   "schematic.area.dragHint": "Перетаскивайте белые вершины на карте, чтобы изменить форму.",
   "schematic.facts": "Движение",
@@ -1491,25 +1487,17 @@ export const editorsRu = {
   "capacity.loading": "Загрузка сети…",
   "capacity.planning": "Планирование периода и прогон через централизацию…",
   "capacity.trying": "Проверка {line} {every} ({n} из {total})…",
-  "capacity.noFile": "Файл не выбран",
-  "capacity.replace": "Заменить",
-  "capacity.choose": "Выбрать",
   "capacity.title": "Проверить систему",
   "capacity.intro":
     "Прогоните период дня через планировщик расписания и централизацию. Узнайте, помещается ли каждая линия на путях, ходит ли по графику и восстанавливается ли после задержек, и сколько поездов она может пропустить.",
-  "capacity.network": "Сеть",
   "capacity.example": "Пример метро",
-  "capacity.mine": "Из файлов",
   "capacity.drawn": "Нарисовано в этом проекте",
-  "capacity.drawnText":
-    "Линии {names} на железной дороге, нарисованной в инструменте железных дорог, как сохранено.",
   "capacity.drawn.noTrack": "В инструменте железных дорог пока ничего не нарисовано.",
   "capacity.drawn.noLines":
     "Ни одна линия не готова к тесту. В инструменте железных дорог задайте линии не меньше двух остановок и поезд.",
   "capacity.drawn.errors":
     "В нарисованной железной дороге есть ошибки. Сначала исправьте их в инструменте железных дорог.",
   "capacity.building": "Строится нарисованная железная дорога…",
-  "capacity.drawnStreets": "Уличные линии {names} пройдены по маршруту с задержками в потоке.",
   "capacity.loads.estimating": "Оцениваем пассажиропоток у станций и остановок…",
   "capacity.loads.toggle": "Наполнение (оценка пассажиропотока со вкладки Таблицы)",
   "capacity.loads.title": "Пассажиры",
@@ -1542,12 +1530,6 @@ export const editorsRu = {
   "capacity.street.bunchingHint": "интервалы меньше половины расчётного; в конце {left} мин опоздания",
   "capacity.street.method":
     "Каждая уличная линия прогнана {runs} раз; у каждого рейса свой поток, от {low} до {high} раз от ожидаемой задержки на магистральных улицах (настройки проекта).",
-  "capacity.exampleText":
-    "Линия M1 Westpark – Eastgate: пять станций, депо на каждом конце, каждые 5 мин в часы пик и каждые 10 мин в остальное время.",
-  "capacity.topologyFile": "Топология путей (JSON)",
-  "capacity.linesFile": "Линии (JSON)",
-  "capacity.filesHelp":
-    "Файл топологии путей соответствует contracts/rail-topology.schema.json; для железной дороги, нарисованной в этом проекте, выберите «{drawn}». Файл линий перечисляет для каждой линии станции, поезд и режим движения так, как их читает планировщик расписания (docs/user/simulator.md).",
   "capacity.period": "Период",
   "capacity.from": "С",
   "capacity.to": "До",
@@ -1567,7 +1549,11 @@ export const editorsRu = {
   "capacity.run": "Запустить тест",
   "capacity.runAgain": "Запустить снова",
   "capacity.stop": "Остановить",
-  "capacity.chooseBoth": "Выберите оба файла, чтобы проверить свою железную дорогу.",
+  "capacity.replay.title": "Воспроизведение на карте",
+  "capacity.replay.note":
+    "Все нарисованные линии движутся вместе по одним часам. Поезда идут по плану, без случайных задержек; транспорт уличных линий попадает в движение первого прогона теста.",
+  "capacity.replay.none": "Нечего воспроизводить: в этот период не работала ни одна линия.",
+  "capacity.replay.stopped": "Прогон остановился раньше, поэтому с этого момента поезда стоят: {why}",
   "capacity.summary": "{period} · рейсов с запасом: {trips} · поездов в работе: {out}, в резерве: {reserve}",
   "capacity.importNotes": "Замечания импорта ({n})",
   "capacity.plannerNotes": "Замечания планировщика ({n})",

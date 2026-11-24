@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Ukuphenduka kwengeza u-{extra} (u-{length} esikhundleni sika-{direct}). Cabanga ngokubeka isitobhi sokugcina lapho imoto ingaphenduka khona: isiteshi samabhasi, indlela yokuphenduka ezungezayo, isiyingi noma ibhulokhi engayizungeza.",
   "street.line.two_stops": "Ulayini udinga okungenani izitobhi ezimbili. Yenza amaphuzu abe yizitobhi.",
   "street.line.wrong_side": "Le ngxenye ingu-{length} esikhundleni sika-{straight} ngomugqa oqondile. Uma iphuzu elilandelayo lisengxenyeni ekude yomgwaqo ohlukanisiwe, noma emgwaqweni wendlela eyodwa ngakolunye uhlangothi, lihambise liye ohlangothini imoto ehamba ngalo.",
-  "street.line.wrong_sidewalk": "Le ndlela yabahamba ngezinyawo ayikwazi ukusizwa: izimoto lapha zihamba kuphela isitobhi sisohlangothini olukude neminyango. Beka isitobhi kwenye indlela yabahamba ngezinyawo."
+  "street.line.wrong_sidewalk": "Le ndlela yabahamba ngezinyawo ayikwazi ukusizwa: izimoto lapha zihamba kuphela isitobhi sisohlangothini olukude neminyango. Beka isitobhi kwenye indlela yabahamba ngezinyawo.",
+  "rail.plan.no_track_between_reach": "Akukho jantshi osuka e-{from} uya e-{to}. Izitimela ezisuka e-{from} zifika kuphela e-{reached}: hlola ukuthi ojantshi abangena futhi baphume e-{last} baxhuma kojantshi abafanayo besiteshi ezinhlangothini zombili, ukuze izitimela ezifika lapho ziqhubeke, noma ufake izishintshi lapho.",
+  "rail.plan.gap_does_not_lead_on": "izitimela ezisuka e-{from} zifika e-{at}, kodwa kojantshi besiteshi abangaqhubeki baye e-{next}. Hlola ukuthi ojantshi abangena futhi baphume e-{at} baxhuma kojantshi abafanayo besiteshi ezinhlangothini zombili, noma ufake izishintshi lapho",
+  "rail.plan.gap_no_track": "akukho jantshi osuka e-{from} uya e-{to}",
+  "rail.plan.no_track_outbound_at": "Akukho jantshi oxhuma izitobhi ohlangothini lolayini: {gap}.",
+  "rail.plan.no_track_return_at": "Akukho jantshi oxhuma izitobhi ohlangothini lokubuya: {gap}."
 }

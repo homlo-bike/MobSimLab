@@ -12,10 +12,6 @@ export const editorsYo = {
   "rail.mode.long_distance_rail": "Láàárín ìlú",
   "rail.params":
     "Fífẹ̀ ojú irin {gauge} mm · àlàfo àárín ojú irin {centres} m · rédíọ́sì tó kéré jù {minRadius} m (tí a dámọ̀ràn {radius} m) · ìtẹ̀sí tó ga jù {gradient} ‰ · ìyára àpẹrẹ {speed} km/h · pẹpẹ {platform} m ní {height} mm · {power}",
-  "rail.stat.route": "Ọ̀nà",
-  "rail.stat.track": "Ojú irin",
-  "rail.stat.stations": "Ibùdókọ̀",
-  "rail.stat.switches": "Ìyípadà",
   "rail.stations.other": "ibùdókọ̀ {count}",
   "rail.backToNetwork": "Padà sí nẹ́tíwọ̀ọ̀kì",
   "street.allLines": "Gbogbo ìlà",
@@ -318,6 +314,8 @@ export const editorsYo = {
   "rail.say.clickTrackSwitch": "Tẹ ojú irin láti gbé ìyípadà sí.",
   "rail.say.straightOnly": "A ń gbé àwọn ìyípadà àkójọ sórí ojú irin títọ́. Tẹ apá títọ́ kan.",
   "rail.say.doubleOnly": "Àwọn ìkọjá ń so ojú irin méjì tó jọra pọ̀. Yan ojú irin méjì.",
+  "rail.say.missedStationEnd":
+    "Tẹ gangan sí òpin ibùdókọ̀ láti so ojú irin mọ́ ọn. Sún mọ́ tí ó bá ṣòro láti tẹ àwọn òpin.",
   "rail.say.clickTrackSignal": "Tẹ ojú irin, ojú irin ibùdókọ̀ tàbí ẹ̀ka ìyípadà láti gbé àmì sí.",
   "rail.signalsReset": "A mú àwọn àmì padà sí àwọn tí a ṣẹ̀dá láti inú àpẹrẹ.",
   "rail.noiseFlows":
@@ -366,12 +364,6 @@ export const editorsYo = {
   "street.profile.intercity_bus": "Ó lè lo àwọn òpópónà ayára; ibùdókọ̀ lè wà ní àwọn ibùdókọ̀ bọ́ọ̀sì ńlá.",
   "street.battery": "Ìjìnnà bátìrì",
   "street.doorsBoth": "Ilẹ̀kùn ní ẹ̀gbẹ́ méjèèjì",
-  "street.stat.length": "Gígùn ìyípo",
-  "street.stat.stops": "Ibùdókọ̀ ({end} ìkẹyìn)",
-  "street.stat.cycle": "Ìyípo: {run} ìrìn{crossings}, {dwell} ìdúró, {layover} ìsinmi",
-  "street.stat.atCrossings": "({min} ní àwọn ìkọjá)",
-  "street.stat.vehicles": "Àwọn ọkọ̀ fún àlàfo ìṣẹ́jú {headway}",
-  "street.stat.compact": "àyíká {length} · ibùdókọ̀ {stops} · àyíká ìṣẹ́jú {cycle} · ọkọ̀ {vehicles}",
   "street.points": "Àwọn ojúàmì ọ̀nà · ìtẹ̀léra ìyípo",
   "street.noPoints": "Kò tíì sí ojúàmì. Yan Fi ojúàmì kún un kí o sì tẹ òpópónà kan.",
   "street.viaN": "Ojúàmì ìkọjá {n}",
@@ -711,6 +703,10 @@ export const editorsYo = {
   "schematic.connections": "Àmì aláwọ̀ ní ìsàlẹ̀ ibùdókọ̀: àwọn ìlà tí o lè yí sí níbẹ̀.",
   "schematic.noConnections": "Ìlà yìí kò pín ibùdókọ̀ kankan pẹ̀lú àwọn ìlà mìíràn.",
   "schematic.exportTitle": "Gbé jáde",
+  "schematic.exportsIntro":
+    "Ṣe ìgbàsílẹ̀ máàpù àwòrán nẹ́tíwọ́ọ̀kì àti máàpù ìlà kọ̀ọ̀kan gẹ́gẹ́ bí SVG tàbí PNG, tàbí tẹ̀ wọ́n jáde tàbí fi wọ́n pamọ́ gẹ́gẹ́ bí PDF.",
+  "schematic.exportsNone": "Kò sí ìlà kankan láti gbé jáde síbẹ̀. Kọ́kọ́ ya ìlà kan lábẹ́ Ṣẹ̀dá.",
+  "schematic.exporting": "À ń pèsè máàpù náà…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Tẹ̀ jáde tàbí PDF",
@@ -766,9 +762,9 @@ export const editorsYo = {
   "schematic.area.color": "Àwọ̀",
   "schematic.area.defaultName": "Agbègbè {n}",
   "schematic.area.draw": "Ya agbègbè",
-  "schematic.area.drawHint": "Tẹ máàpù láti fi igun kún, lẹ́yìn náà tẹ Parí.",
+  "schematic.area.drawHint":
+    "Tẹ máàpù láti fi igun kún, lẹ́yìn náà tẹ Parí. Ctrl+Z máa yọ igun tó kẹ́yìn kúrò.",
   "schematic.area.finish": "Parí",
-  "schematic.area.undo": "Yí igun padà",
   "schematic.area.remove": "Yọ agbègbè kúrò",
   "schematic.area.dragHint": "Fa àwọn igun funfun lórí máàpù láti yí ìrísí padà.",
   "schematic.facts": "Iṣẹ́",
@@ -1385,23 +1381,16 @@ export const editorsYo = {
   "capacity.loading": "Ó ń gbé nẹ́tíwọ̀ọ̀kì wọlé…",
   "capacity.planning": "Ó ń ṣètò àkókò náà, ó sì ń gbé e kọjá nínú interlocking…",
   "capacity.trying": "Ó ń dán {line} {every} wò ({n} nínú {total})…",
-  "capacity.noFile": "A kò yan fáìlì",
-  "capacity.replace": "Rọ́pò",
-  "capacity.choose": "Yan",
   "capacity.title": "Dán ètò náà wò",
   "capacity.intro":
     "Gbé àkókò kan nínú ọjọ́ kọjá nínú olùṣètò àkókò-ìrìn àti interlocking. Wò bóyá ìlà ojú irin kọ̀ọ̀kan bá àwọn irin mu, ń lọ ní àsìkò, ó sì ń bọ́ lọ́wọ́ ìdádúró, àti iye ọkọ̀ tí ó lè gbé.",
-  "capacity.network": "Nẹ́tíwọ̀ọ̀kì",
   "capacity.example": "Mẹ́tírò àpẹẹrẹ",
-  "capacity.mine": "Láti inú fáìlì",
   "capacity.drawn": "Tí a yà nínú iṣẹ́ yìí",
-  "capacity.drawnText": "Àwọn ìlà {names} lórí ojú irin tí a yà nínú irinṣẹ́ ojú irin, bí a ṣe fi pamọ́.",
   "capacity.drawn.noTrack": "Kò sí ohun tí a tíì yà nínú irinṣẹ́ ojú irin.",
   "capacity.drawn.noLines":
     "Kò sí ìlà tí ó ṣetán fún ìdánwò. Nínú irinṣẹ́ ojú irin, fún ìlà kan ní ó kéré tán ibùdókọ̀ méjì àti ọkọ̀ ojú irin kan.",
   "capacity.drawn.errors": "Ojú irin tí a yà ní àṣìṣe. Kọ́kọ́ ṣàtúnṣe wọn nínú irinṣẹ́ ojú irin.",
   "capacity.building": "À ń kọ́ ojú irin tí a yà…",
-  "capacity.drawnStreets": "Àwọn ìlà òpópónà {names}, tí a sáré ní ọ̀nà wọn pẹ̀lú ìdádúró ọkọ̀.",
   "capacity.loads.estimating": "À ń ṣírò àwọn èrò yíká àwọn ibùdókọ̀…",
   "capacity.loads.toggle": "Ẹrù èrò (ìṣirò èrò ti táàbù Àwọn tábìlì)",
   "capacity.loads.title": "Àwọn èrò",
@@ -1434,12 +1423,6 @@ export const editorsYo = {
   "capacity.street.bunchingHint": "àlàfo tí kò tó ìdajì àkókò láàárín; ìṣẹ́jú {left} pẹ́ ní òpin",
   "capacity.street.method":
     "A sáré ìlà òpópónà kọ̀ọ̀kan ní ìgbà {runs}; ìrìn-àjò kọ̀ọ̀kan ní ọkọ̀ tirẹ̀, ìlọ́po {low} sí {high} ti ìdádúró tí a retí ní àwọn òpópónà ńlá (àwọn ààyò iṣẹ́).",
-  "capacity.exampleText":
-    "Ìlà M1 Westpark – Eastgate: ibùdókọ̀ márùn-ún, ibi-ìpamọ́ ní òpin kọ̀ọ̀kan, ní gbogbo ìṣẹ́jú 5 nígbà ìkún àti ní gbogbo ìṣẹ́jú 10 ní àsìkò mìíràn.",
-  "capacity.topologyFile": "Ìtòlẹ́sẹẹsẹ ojú irin (JSON)",
-  "capacity.linesFile": "Àwọn ìlà (JSON)",
-  "capacity.filesHelp":
-    "Fáìlì ìtòlẹ́sẹẹsẹ ojú irin tẹ̀lé contracts/rail-topology.schema.json; fún ojú irin tí a yà nínú iṣẹ́ yìí, yan “{drawn}”. Fáìlì àwọn ìlà ń ka àwọn ibùdókọ̀, ọkọ̀ àti iṣẹ́ ìlà kọ̀ọ̀kan, bí olùṣètò àkókò-ìrìn ṣe ń kà wọ́n (docs/user/simulator.md).",
   "capacity.period": "Àkókò",
   "capacity.from": "Láti",
   "capacity.to": "Sí",
@@ -1459,7 +1442,12 @@ export const editorsYo = {
   "capacity.run": "Ṣe ìdánwò",
   "capacity.runAgain": "Tún ṣe é",
   "capacity.stop": "Dúró",
-  "capacity.chooseBoth": "Yan fáìlì méjèèjì láti dán ojú irin rẹ wò.",
+  "capacity.replay.title": "Tún ṣe lórí màápù",
+  "capacity.replay.note":
+    "Gbogbo ìlà tí a yà ń rìn papọ̀ lórí aago kan. Ọkọ̀ ojú irin ń rìn bí a ṣe ṣètò, láìsí ìdádúró àìròtẹ́lẹ̀; àwọn ọkọ̀ ìlà òpópónà ń pàdé ìrìnnà ìṣiṣẹ́ àkọ́kọ́ ìdánwò náà.",
+  "capacity.replay.none": "Kò sí nǹkan láti tún ṣe: kò sí ìlà tí ó rìn ní àkókò yìí.",
+  "capacity.replay.stopped":
+    "Ìṣiṣẹ́ náà dúró ní kùtùkùtù, nítorí náà àwọn ọkọ̀ ojú irin dúró jẹ́ẹ́ láti ìgbà náà: {why}",
   "capacity.summary":
     "{period} · ìrìn-àjò {trips} ní a ṣètò pẹ̀lú àlàfo · ọkọ̀ {out} ń ṣiṣẹ́, {reserve} wà ní ìpamọ́",
   "capacity.importNotes": "Àkíyèsí ìgbéwọlé ({n})",

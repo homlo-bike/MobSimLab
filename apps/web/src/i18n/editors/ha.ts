@@ -12,10 +12,6 @@ export const editorsHa = {
   "rail.mode.long_distance_rail": "Tsakanin birane",
   "rail.params":
     "Faɗin dogo {gauge} mm · tazarar tsakiyar dogo {centres} m · mafi ƙanƙantar radius {minRadius} m (shawara {radius} m) · mafi girman gangare {gradient} ‰ · gudun tsarawa {speed} km/h · dandamali {platform} m a {height} mm · {power}",
-  "rail.stat.route": "Hanya",
-  "rail.stat.track": "Dogo",
-  "rail.stat.stations": "Tashoshi",
-  "rail.stat.switches": "Makunnai",
   "rail.stations.one": "tasha {count}",
   "rail.stations.other": "tashoshi {count}",
   "rail.backToNetwork": "Koma zuwa hanyar sadarwa",
@@ -336,6 +332,8 @@ export const editorsHa = {
   "rail.say.clickTrackSwitch": "Danna dogo don sanya makunni.",
   "rail.say.straightOnly": "Ana sanya makunnan kundin a kan miƙaƙƙen dogo. Danna miƙaƙƙen sashe.",
   "rail.say.doubleOnly": "Mahaɗar dogo suna haɗa dogo biyu masu layi ɗaya. Zaɓi dogo biyu.",
+  "rail.say.missedStationEnd":
+    "Danna daidai a ƙarshen tasha don haɗa dogo da shi. Ka zuƙo idan yana da wuya a taɓa ƙarshen.",
   "rail.say.clickTrackSignal": "Danna dogo, dogon tasha ko reshen makunni don sanya alama.",
   "rail.signalsReset": "An mayar da alamomi zuwa waɗanda aka samar daga tsarin.",
   "rail.noiseFlows":
@@ -384,12 +382,6 @@ export const editorsHa = {
     "Zai iya amfani da manyan hanyoyi masu sauri; tashoshi na iya kasancewa a tashoshin bas.",
   "street.battery": "Nisan batir",
   "street.doorsBoth": "Ƙofofi a gefe biyu",
-  "street.stat.length": "Tsawon zagaye",
-  "street.stat.stops": "Tashoshi ({end} na ƙarshe)",
-  "street.stat.cycle": "Zagaye: {run} tafiya{crossings}, {dwell} tsayawa, {layover} hutu",
-  "street.stat.atCrossings": "({min} a mahaɗa)",
-  "street.stat.vehicles": "Ababen hawa don tazarar minti {headway}",
-  "street.stat.compact": "zagaye {length} · tasoshi {stops} · zagaye na minti {cycle} · motoci {vehicles}",
   "street.points": "Wuraren hanya · tsarin zagaye",
   "street.noPoints": "Babu wurare tukuna. Zaɓi Ƙara wurare ka danna titi.",
   "street.viaN": "Wurin wucewa {n}",
@@ -728,6 +720,10 @@ export const editorsHa = {
   "schematic.connections": "Lakabai masu launi ƙarƙashin tasha: layukan da za ka iya sauyawa zuwa can.",
   "schematic.noConnections": "Wannan layin ba shi da tashar da yake rabawa da wasu layuka.",
   "schematic.exportTitle": "Fitarwa",
+  "schematic.exportsIntro":
+    "Sauke taswirar hanyar sadarwa da taswirar kowane layi a matsayin SVG ko PNG, ko ka buga su ko ka adana su a matsayin PDF.",
+  "schematic.exportsNone": "Babu layin da za a fitar tukuna. Zana layi tukuna a ƙarƙashin Ƙirƙira.",
+  "schematic.exporting": "Ana shirya taswira…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Buga ko PDF",
@@ -785,9 +781,9 @@ export const editorsHa = {
   "schematic.area.color": "Launi",
   "schematic.area.defaultName": "Yanki {n}",
   "schematic.area.draw": "Zana yanki",
-  "schematic.area.drawHint": "Danna taswira don ƙara kusurwa, sannan danna Gama.",
+  "schematic.area.drawHint":
+    "Danna taswira don ƙara kusurwa, sannan danna Gama. Ctrl+Z yana cire kusurwa ta ƙarshe.",
   "schematic.area.finish": "Gama",
-  "schematic.area.undo": "Soke kusurwa",
   "schematic.area.remove": "Cire yanki",
   "schematic.area.dragHint": "Ja farin kusurwoyi a taswira don canza fasali.",
   "schematic.facts": "Aiki",
@@ -1421,25 +1417,17 @@ export const editorsHa = {
   "capacity.loading": "Ana loda hanyar sadarwa…",
   "capacity.planning": "Ana tsara lokacin kuma ana gudanar da shi ta interlocking…",
   "capacity.trying": "Ana gwada {line} {every} ({n} cikin {total})…",
-  "capacity.noFile": "Ba a zaɓi fayil ba",
-  "capacity.replace": "Musanya",
-  "capacity.choose": "Zaɓi",
   "capacity.title": "Gwada tsarin",
   "capacity.intro":
     "Gudanar da wani lokaci na yini ta mai tsara jadawali da interlocking. Duba ko kowane layin dogo ya dace da layukan ƙarfe, yana tafiya a kan lokaci kuma yana farfaɗowa daga jinkiri, da jirage nawa zai iya ɗauka.",
-  "capacity.network": "Hanyar sadarwa",
   "capacity.example": "Misalin metro",
-  "capacity.mine": "Daga fayiloli",
   "capacity.drawn": "An zana a wannan aikin",
-  "capacity.drawnText":
-    "Layuka {names} a kan layin dogo da aka zana a kayan aikin layin dogo, kamar yadda aka adana.",
   "capacity.drawn.noTrack": "Ba a zana komai a kayan aikin layin dogo ba tukuna.",
   "capacity.drawn.noLines":
     "Babu layin da ke shirye don gwaji. A kayan aikin layin dogo, ba layi aƙalla tasha biyu da jirgin ƙasa.",
   "capacity.drawn.errors":
     "Layin dogo da aka zana yana da kurakurai. Gyara su a kayan aikin layin dogo tukuna.",
   "capacity.building": "Ana gina layin dogo da aka zana…",
-  "capacity.drawnStreets": "Layukan titi {names}, an tafiyar da su a hanyarsu tare da jinkirin cunkoso.",
   "capacity.loads.estimating": "Ana ƙiyasta fasinjoji kewaye da tashoshi…",
   "capacity.loads.toggle": "Nauyin fasinjoji (ƙiyasin fasinjoji na shafin Tebura)",
   "capacity.loads.title": "Fasinjoji",
@@ -1472,12 +1460,6 @@ export const editorsHa = {
   "capacity.street.bunchingHint": "tazara ƙasa da rabin lokacin tsakani; jinkiri min {left} a ƙarshe",
   "capacity.street.method":
     "An tafiyar da kowane layin titi sau {runs}; kowace tafiya tana da cunkosonta, ninki {low} zuwa {high} na jinkirin da ake tsammani a manyan tituna (zaɓuɓɓukan aiki).",
-  "capacity.exampleText":
-    "Layi M1 Westpark – Eastgate: tasoshi biyar, ma’ajiya a kowane ƙarshe, kowane mint. 5 a lokacin cunkoso da kowane mint. 10 a sauran lokaci.",
-  "capacity.topologyFile": "Tsarin layin dogo (JSON)",
-  "capacity.linesFile": "Layuka (JSON)",
-  "capacity.filesHelp":
-    "Fayil ɗin tsarin layin dogo yana bin contracts/rail-topology.schema.json; don layin dogon da aka zana a wannan aikin, zaɓi “{drawn}”. Fayil ɗin layuka yana lissafa tasoshi, jirgi da sabis na kowane layi, kamar yadda mai tsara jadawali yake karanta su (docs/user/simulator.md).",
   "capacity.period": "Lokaci",
   "capacity.from": "Daga",
   "capacity.to": "Zuwa",
@@ -1497,7 +1479,12 @@ export const editorsHa = {
   "capacity.run": "Gudanar da gwaji",
   "capacity.runAgain": "Sake gudanarwa",
   "capacity.stop": "Tsaya",
-  "capacity.chooseBoth": "Zaɓi fayiloli biyu don gwada layin dogonka.",
+  "capacity.replay.title": "Sake kunnawa a taswira",
+  "capacity.replay.note":
+    "Duk layukan da aka zana suna tafiya tare a agogo ɗaya. Jiragen ƙasa suna tafiya kamar yadda aka tsara, ba tare da jinkiri na bazuwar ba; motocin layukan titi suna haɗuwa da cunkoson zagayen farko na gwajin.",
+  "capacity.replay.none": "Babu abin da za a sake kunnawa: babu layin da ya yi aiki a wannan lokaci.",
+  "capacity.replay.stopped":
+    "Zagayen ya tsaya da wuri, don haka jiragen ƙasa suna tsaye tun daga lokacin: {why}",
   "capacity.summary":
     "{period} · an tsara tafiye-tafiye {trips} da rata · jirage {out} suna aiki, {reserve} a ajiye",
   "capacity.importNotes": "Bayanan shigo da ({n})",

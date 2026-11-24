@@ -185,6 +185,21 @@ pub enum NetEvent {
     },
 }
 
+/// Where the head of one train is, for the replay on the map.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct TrainAt {
+    /// Vehicle number from the plan.
+    pub vehicle: usize,
+    /// Plan run index of its current (or last) run.
+    pub plan_run: usize,
+    /// Index of the track in [`Model::tracks`] under the head of the train.
+    pub track: usize,
+    /// Chainage of the head on that track, m.
+    pub chainage_m: f64,
+    /// Speed, m/s.
+    pub speed_mps: f64,
+}
+
 /// Snapshot of one train.
 #[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct TrainView {
@@ -666,6 +681,37 @@ impl<'m> NetworkSim<'m> {
                 delay_s: tr.delay_s,
             })
             .collect()
+    }
+
+    /// Purpose: where the head of each train is (track and chainage), for the replay on the map.
+    /// Output: one entry per train whose head lies on its path.
+    pub fn positions(&self) -> Vec<TrainAt> {
+        let mut out = Vec::with_capacity(self.trains.len());
+        for tr in &self.trains {
+            let path = &tr.path;
+            let Some(i) = (0..path.steps.len())
+                .rev()
+                .find(|&i| path.start[i] <= tr.s + 1e-9)
+            else {
+                continue;
+            };
+            let st = &path.steps[i];
+            let pc = &self.m.pieces[st.piece as usize];
+            let u = (tr.s - path.start[i]).clamp(0.0, pc.length_m());
+            let chainage_m = match st.dir {
+                Dir::Up => pc.from_m + u,
+                Dir::Down => pc.to_m - u,
+            };
+            let run = &tr.runs[tr.k.min(tr.runs.len().saturating_sub(1))];
+            out.push(TrainAt {
+                vehicle: tr.vehicle,
+                plan_run: run.plan_index,
+                track: pc.track,
+                chainage_m,
+                speed_mps: tr.v,
+            });
+        }
+        out
     }
 
     /// Purpose: whether every train has finished its runs.

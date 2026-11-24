@@ -398,7 +398,13 @@ export function DepotEditor({
   const checksElsewhere = usePublishChecks(
     "depots",
     selected ? t("checks.depot", { name: selected.name }) : t("create.depots"),
-    selected ? issues.map((i) => ({ severity: i.severity, text: i.message })) : [],
+    selected
+      ? issues.map((i) => ({
+          severity: i.severity,
+          text: i.message,
+          ...(map && selected.boundary.length >= 3 ? { onShow: () => fitDepot(map, selected.boundary) } : {}),
+        }))
+      : [],
   );
   const laneCheck = lane && report?.lanes.find((c) => c.lane === lane.id);
   const laneReach = lane && report?.reach.find((r) => r.lane === lane.id);
@@ -434,18 +440,7 @@ export function DepotEditor({
                   setLaneId(null);
                   setSizing(null);
                   setLayoutIssues([]);
-                  const b = d.boundary;
-                  if (map && b.length >= 3) {
-                    const xs = b.map((p) => p[0]);
-                    const ys = b.map((p) => p[1]);
-                    map.fitBounds(
-                      [
-                        [Math.min(...xs), Math.min(...ys)],
-                        [Math.max(...xs), Math.max(...ys)],
-                      ],
-                      { padding: 60, maxZoom: 19 },
-                    );
-                  }
+                  if (map && d.boundary.length >= 3) fitDepot(map, d.boundary);
                 }}
                 className="flex min-h-10 w-full items-center gap-2 rounded-lg px-2 text-left hover:bg-slate-100 aria-[current=true]:bg-amber-50"
               >
@@ -1023,5 +1018,18 @@ function ZoneRow({
         </div>
       )}
     </li>
+  );
+}
+
+/** Purpose: move the map to a depot's outline. */
+function fitDepot(map: MapLibreMap, b: readonly LonLat[]): void {
+  const xs = b.map((p) => p[0]);
+  const ys = b.map((p) => p[1]);
+  map.fitBounds(
+    [
+      [Math.min(...xs), Math.min(...ys)],
+      [Math.max(...xs), Math.max(...ys)],
+    ],
+    { padding: 60, maxZoom: 19 },
   );
 }

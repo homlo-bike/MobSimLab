@@ -232,6 +232,9 @@ export const yo: Messages = {
   "save.saving": "Ó ń tọ́jú…",
   "save.offline": "A kò tíì tọ́jú · à ń gbìyànjú lẹ́ẹ̀kan sí i",
   "save.failed": "A kò tọ́jú: {error}",
+  "session.staleToken":
+    "A kò tún ń fi àwọn àyípadà rẹ pamọ́ mọ́ nítorí pé sáfà tún bẹ̀rẹ̀ nígbà tí ojú-ìwé yìí ṣí sílẹ̀. Tún ojú-ìwé náà gbé láti máa bá iṣẹ́ lọ.",
+  "session.reload": "Tún ojú-ìwé gbé",
   "save.conflict": "{who} tọ́jú {drawing} nígbà tí o ń yí i padà. Èwo ni iṣẹ́ àkànṣe náà kí ó pa mọ́?",
   "save.someone": "Ẹlòmíràn",
   "save.keepMine": "Pa tèmi mọ́",
@@ -262,13 +265,8 @@ export const yo: Messages = {
   "sim.test": "Dán ètò náà wò",
   "sim.journey": "Àkókò ìrìn-àjò A → B",
 
-  "create.chooseTitle": "Kí ni o fẹ́ kọ́kọ́ kọ́?",
-  "create.chooseIntro": "O lè fi irú kejì kún un nígbà míì. Àwọn ọ̀nà tó wà máa hàn nígbà tí o bá ń ṣiṣẹ́.",
   "create.street": "Ọ̀nà òpópónà",
-  "create.streetHint": "Bọ́ọ̀sì, BRT, bọ́ọ̀sì oníwáyà, bọ́ọ̀sì láàárín ìlú. Ó tẹ̀lé nẹ́tíwọ̀ọ̀kì òpópónà.",
   "create.rail": "Ọ̀nà ojú irin",
-  "create.railHint":
-    "Tírámù, ọkọ̀ ojú irin fífúyẹ́, mẹ́tírò, agbègbè ìlú, ẹkùn, láàárín ìlú, ayára. Ya ojú irin, ibùdókọ̀ àti àwọn ìyípadà.",
   "create.noArea":
     "Kò tíì sí agbègbè ìwádìí. Kọ́kọ́ gbé àwọn òpópónà àti iye ènìyàn wọlé láti OpenStreetMap fún ìṣètò ọ̀nà àti ìṣirò èrò.",
   "create.setArea": "Ṣètò agbègbè nínú GIS",
@@ -460,6 +458,7 @@ export const yo: Messages = {
 
   "job.stepOf": "Ìgbésẹ̀ {step} nínú {steps}",
   "job.cancel": "Fagilé",
+  "job.running": "Iṣẹ́ tó ń lọ lọ́wọ́",
   "map.search": "Wá àwọn ibi",
   "map.searchPlaceholder": "Ìlú, òpópónà, ibùdó tàbí àdírẹ́sì",
   "map.searching": "Ó ń wá…",
@@ -471,6 +470,15 @@ export const yo: Messages = {
   "map.places": "Àwọn ibi tí a rí",
   "map.searchCredit": "Orúkọ àwọn ibi © àwọn olùkópa OpenStreetMap, tí a rí pẹ̀lú Photon",
   "map.layers": "Àwọn ìpele máàpù",
+  "map.alwaysShow": "Máa fihàn nígbà gbogbo",
+  "map.alwaysShowHint":
+    "Ó máa hàn lórí gbogbo táàbù máàpù, ohun èlò yòówù tó ṣí sílẹ̀. A fi pamọ́ sínú àkáǹtì rẹ fún iṣẹ́ àkànṣe yìí.",
+  "map.pin.serviceLines": "Àwọn ọ̀nà iṣẹ́",
+  "map.pin.tracks": "Àwọn ọ̀nà ojú irin",
+  "map.pin.stations": "Àwọn ibùdó",
+  "map.pin.stops": "Àwọn ibùdókọ̀",
+  "map.pin.streetSetups": "Ètò òpópónà",
+  "map.pin.regions": "Àwọn agbègbè",
   "map.basemap": "Máàpù ìpìlẹ̀",
   "map.streetMap": "Máàpù",
   "map.aerial": "Láti òkè",

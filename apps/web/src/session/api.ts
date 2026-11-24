@@ -1,3 +1,4 @@
+import type { PinnedLayer } from "../map/pinnedLayers";
 import { withApiMsg } from "../i18n/engine";
 /** What `GET /api/auth/me` returns. */
 export interface Me {
@@ -31,6 +32,8 @@ export interface Preferences {
   reduceMotion?: boolean;
   /** Load and draw existing railways from OpenStreetMap in the railway tool (off when absent). */
   existingRailways?: boolean;
+  /** Per project (by id), the project layers kept shown on every map tab. */
+  mapLayers?: Record<string, PinnedLayer[]>;
 }
 
 /** Purpose: change some preferences; the others stay. Output: the stored set. */

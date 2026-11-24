@@ -233,6 +233,9 @@ export const sw: Messages = {
   "save.saving": "Inahifadhi…",
   "save.offline": "Bado haijahifadhiwa · inajaribu tena",
   "save.failed": "Haijahifadhiwa: {error}",
+  "session.staleToken":
+    "Mabadiliko yako hayahifadhiwi tena kwa sababu seva ilianzishwa upya ukurasa huu ukiwa wazi. Pakia upya ukurasa ili kuendelea kufanya kazi.",
+  "session.reload": "Pakia upya ukurasa",
   "save.conflict": "{who} alihifadhi {drawing} wakati ukiibadilisha. Mradi uhifadhi ipi?",
   "save.someone": "Mtu mwingine",
   "save.keepMine": "Weka yangu",
@@ -263,14 +266,8 @@ export const sw: Messages = {
   "sim.test": "Jaribu mfumo",
   "sim.journey": "Muda wa safari A → B",
 
-  "create.chooseTitle": "Unataka kujenga nini kwanza?",
-  "create.chooseIntro":
-    "Unaweza kuongeza aina nyingine baadaye. Njia zilizopo zinaendelea kuonekana unapofanya kazi.",
   "create.street": "Njia ya barabarani",
-  "create.streetHint": "Basi, BRT, basi la umeme la waya, basi la mikoani. Hufuata mtandao wa barabara.",
   "create.rail": "Njia ya reli",
-  "create.railHint":
-    "Tramu, reli nyepesi, metro, treni ya mjini, ya kanda, ya miji mikubwa, ya mwendo kasi. Chora reli, stesheni na swichi.",
   "create.noArea":
     "Bado hakuna eneo la utafiti. Leta kwanza barabara na idadi ya watu kutoka OpenStreetMap kwa njia na makadirio ya abiria.",
   "create.setArea": "Weka eneo kwenye GIS",
@@ -463,6 +460,7 @@ export const sw: Messages = {
 
   "job.stepOf": "Hatua {step} kati ya {steps}",
   "job.cancel": "Ghairi",
+  "job.running": "Kazi zinazoendelea",
   "map.search": "Tafuta maeneo",
   "map.searchPlaceholder": "Mji, barabara, stesheni au anwani",
   "map.searching": "Inatafuta…",
@@ -474,6 +472,15 @@ export const sw: Messages = {
   "map.places": "Maeneo yaliyopatikana",
   "map.searchCredit": "Majina ya maeneo © wachangiaji wa OpenStreetMap, yamepatikana kwa Photon",
   "map.layers": "Tabaka za ramani",
+  "map.alwaysShow": "Onyesha kila wakati",
+  "map.alwaysShowHint":
+    "Huonekana kwenye kila kichupo cha ramani, zana yoyote ikiwa wazi. Huhifadhiwa kwenye akaunti yako kwa mradi huu.",
+  "map.pin.serviceLines": "Njia za huduma",
+  "map.pin.tracks": "Reli",
+  "map.pin.stations": "Vituo",
+  "map.pin.stops": "Vituo vya kusimama",
+  "map.pin.streetSetups": "Mipangilio ya mitaa",
+  "map.pin.regions": "Maeneo",
   "map.basemap": "Ramani ya msingi",
   "map.streetMap": "Ramani",
   "map.aerial": "Angani",

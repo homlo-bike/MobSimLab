@@ -234,6 +234,9 @@ export const it: Messages = {
   "save.saving": "Salvataggio…",
   "save.offline": "Non salvato · nuovo tentativo",
   "save.failed": "Impossibile salvare: {error}",
+  "session.staleToken":
+    "Le modifiche non vengono più salvate perché il server è stato riavviato mentre questa pagina era aperta. Ricarica la pagina per continuare.",
+  "session.reload": "Ricarica la pagina",
   "save.conflict": "{who} ha salvato mentre modificavi {drawing}. Quale versione tenere?",
   "save.someone": "Qualcun altro",
   "save.keepMine": "Tieni la mia",
@@ -264,14 +267,8 @@ export const it: Messages = {
   "sim.test": "Verifica il sistema",
   "sim.journey": "Tempo di viaggio A → B",
 
-  "create.chooseTitle": "Cosa vuoi creare per primo?",
-  "create.chooseIntro":
-    "Puoi aggiungere l'altro più tardi. Le linee esistenti restano visibili mentre lavori.",
   "create.street": "Linee su strada",
-  "create.streetHint": "Autobus, BRT, filobus e autobus extraurbani. Seguono la rete stradale.",
   "create.rail": "Linee su ferro",
-  "create.railHint":
-    "Tram, metrotranvia, metropolitana, suburbana, regionale, intercity e alta velocità. Disegna binari, stazioni e deviatoi.",
   "create.noArea":
     "Non c'è ancora un'area di studio. Importa prima strade e popolazione da OpenStreetMap, così instradamento e stime dei passeggeri saranno disponibili.",
   "create.setArea": "Imposta l'area nel GIS",
@@ -464,6 +461,7 @@ export const it: Messages = {
 
   "job.stepOf": "Passo {step} di {steps}",
   "job.cancel": "Annulla",
+  "job.running": "Operazioni in corso",
   "map.search": "Cerca luoghi",
   "map.searchPlaceholder": "Città, via, stazione o indirizzo",
   "map.searching": "Ricerca…",
@@ -476,6 +474,15 @@ export const it: Messages = {
   "map.places": "Luoghi trovati",
   "map.searchCredit": "Nomi dei luoghi © collaboratori di OpenStreetMap, trovati con Photon",
   "map.layers": "Livelli della mappa",
+  "map.alwaysShow": "Mostra sempre",
+  "map.alwaysShowHint":
+    "Visibile in ogni scheda con mappa, qualunque strumento sia aperto. Salvato nel tuo account per questo progetto.",
+  "map.pin.serviceLines": "Linee",
+  "map.pin.tracks": "Binari",
+  "map.pin.stations": "Stazioni",
+  "map.pin.stops": "Fermate",
+  "map.pin.streetSetups": "Impostazioni delle strade",
+  "map.pin.regions": "Regioni",
   "map.basemap": "Mappa di base",
   "map.streetMap": "Mappa",
   "map.aerial": "Aerea",

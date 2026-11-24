@@ -4,6 +4,7 @@
  */
 import type { LonLat, Mode } from "../street-lines/types";
 import type { Section } from "../street-setup/types";
+import type { RoadMsg, RoadNote } from "./notes";
 
 export type Energy = "battery" | "trolleybus" | "other";
 
@@ -94,7 +95,9 @@ export interface RoadLineResult {
   color: string;
   energy: Energy;
   problem: string | null;
-  notes: string[];
+  /** Why it cannot run, as a message for the app language (runs saved before messages: absent). */
+  problem_msg?: RoadMsg | null;
+  notes: RoadNote[];
   vehicles: number;
   cycle_s: number;
   circuit_m: number;
@@ -142,7 +145,7 @@ export interface RoadHotspot {
 }
 
 export interface RoadResult {
-  notes: string[];
+  notes: RoadNote[];
   lines: RoadLineResult[];
   events: RoadEvent[];
   /** Where the lines lost the most time (runs from before it was recorded: absent). */
@@ -178,6 +181,8 @@ export interface RoadResult {
 /** What the worker is doing now. */
 export type RoadStep =
   | { step: "network" | "planning" | "traffic" }
+  /** The server loads the street tiles before the worker takes the run (runs from before it was sent: absent). */
+  | { step: "streets"; done: number; of: number }
   | { step: "simulating"; t: number; begin: number; end: number };
 
 /** The replay (worker `pack_replay`): a track per vehicle, one sample per frame while it is out. */

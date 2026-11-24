@@ -99,4 +99,32 @@ export const roadUz = {
   "visuals.legend.veryLate": "Juda kechikkan ({min} daqdan ko‘p)",
   "road.replay.noService":
     "Bu ishga tushirish xizmat vaqtlari yozilishidan oldin saqlangan, shuning uchun transport o‘z liniyasi rangida. Aniqlik bo‘yicha ko‘rish uchun qayta ishga tushiring.",
+  "road.step.streets": "Koʻchalar yuklanmoqda: {of} ta xarita boʻlagidan {done} tasi…",
+  "road.note.junctionSetup": "Chorrahalar: {on} ta chorrahaga svetofor berildi, {off} tasi svetoforsiz",
+  "road.note.gateOffStreet": "Depo {depot}: kirish joylaridan biri avtobus yura oladigan koʻchaga yaqin emas",
+  "road.note.noOsmSignals":
+    "OpenStreetMap bu koʻchalarda svetofor koʻrsatmaydi, shuning uchun har bir chorraha svetoforsiz ishlaydi, kichik koʻchalar esa asosiy yoʻllar oqimidagi boʻshliqlarni kutadi. Asosiy chorrahalarga GIS › Koʻchalar boʻlimida svetofor bering.",
+  "road.note.lineCannotRun": "{line} harakatlana olmaydi: {why}",
+  "road.note.carsRemoved":
+    "{n} ta fon avtomobili {min} daqiqadan ortiq turib qoldi va tirbandlikni ochish uchun harakatdan olib tashlandi; koʻchalar oʻtkazish qobiliyatidan koʻproq yuklangan boʻlishi mumkin",
+  "road.note.pullOutNotFollowed":
+    "Depodan chiqish yoʻnalishiga amal qilinmaydi ({why}); transport vositalari eng qisqa yoʻldan yuradi",
+  "road.note.pullInNotFollowed":
+    "Depoga qaytish yoʻnalishiga amal qilinmaydi ({why}); transport vositalari eng qisqa yoʻldan yuradi",
+  "road.note.noDepot": "Depo yoʻq: transport vositalari koʻchada boshlanib, koʻchada tugaydi",
+  "road.note.noSlot": "{n}-transport vositasiga depoda joy yoʻq: u depo kirishidan boshlaydi",
+  "road.note.cannotLeave": "{n}-transport vositasi deposidan chiqa olmaydi: u koʻchada boshlaydi",
+  "road.note.cannotReturn": "{n}-transport vositasi deposiga qayta olmaydi: u koʻchada tugaydi",
+  "road.problem.notRouted": "unda ikkitadan kam nuqta bor yoki yoʻnalishi chizilmagan",
+  "road.problem.noDepartures": "bu davrda joʻnashlari yoʻq",
+  "road.problem.notMatched": "uning yoʻnalishini koʻchalarga moslab boʻlmadi",
+  "road.problem.stopOffRoute": "{stop} bekati moslangan yoʻnalishda emas",
+  "road.problem.notBack": "yoʻnalish birinchi bekatiga qaytmaydi",
+  "road.problem.noBusLink":
+    "avtobus uchun {from} dan {to} ga oʻtish yoʻli yoʻq, {stop} yaqinida ({m} m uzoqda): transport modelining koʻchalarida u yerda avtobus qila oladigan burilish yoʻq, masalan, ortga burilish yoki taqiqlangan burilish. U yerda boshqa koʻchadan yurishi uchun yoʻnalishni yoki oraliq nuqtani suring",
+  "road.problem.depotToRoute": "uning transport vositalari depodan yoʻnalishga yetib bora olmaydi",
+  "road.problem.notClosed": "uning aylanmasi koʻchalarda yopilmaydi",
+  "road.problem.unreachable": "unga yetib boʻlmaydi",
+  "road.part.unnamedStreet": "nomsiz koʻcha (OSM yoʻli {way})",
+  "road.part.stop": "{n}-bekat",
 } satisfies RoadMessages;

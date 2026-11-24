@@ -208,6 +208,65 @@ pub fn find_path_costed(
     None
 }
 
+/// Purpose: the stations a train can run to from a set of start routes, along any track and
+/// through any switch, however far (storage tracks left out), to say where the track stops leading
+/// on when a line's stops are not joined (Syria intercity test, bugs 10 and 11).
+/// Inputs: the model and the start routes. Output: each station part reached, with the length run
+/// to the first of its platforms, nearest first.
+pub fn reached_stations(m: &Model, start: &[RouteId]) -> Vec<(u32, f64)> {
+    let mut on_track: BTreeMap<usize, Vec<PlatformId>> = BTreeMap::new();
+    for (i, p) in m.platforms.iter().enumerate() {
+        on_track.entry(p.track).or_default().push(i as PlatformId);
+    }
+    let mut best: BTreeMap<RouteId, f64> = BTreeMap::new();
+    let mut heap = BinaryHeap::new();
+    let mut seq = 0u32;
+    for &r in start {
+        if enters_storage(m, r).is_none() {
+            let c = m.routes[r as usize].length_m;
+            if best.get(&r).is_none_or(|&b| c < b) {
+                best.insert(r, c);
+                heap.push(Item(c, seq, r, 0));
+                seq += 1;
+            }
+        }
+    }
+    let mut stations: BTreeMap<u32, f64> = BTreeMap::new();
+    while let Some(Item(cost, _, r, _)) = heap.pop() {
+        if best.get(&r).is_some_and(|&b| cost > b + 1e-9) {
+            continue;
+        }
+        let mut tracks: Vec<usize> = m.routes[r as usize]
+            .steps
+            .iter()
+            .map(|st| m.pieces[st.piece as usize].track)
+            .collect();
+        tracks.dedup();
+        for t in tracks {
+            for &p in on_track.get(&t).map_or(&[][..], |v| &v[..]) {
+                if reaches(m, r, Place::Platform(p)).is_some() {
+                    let st = m.platforms[p as usize].station;
+                    stations.entry(st).or_insert(cost);
+                }
+            }
+        }
+        for &nx in m.next_routes(r) {
+            if enters_storage(m, nx).is_some() {
+                continue;
+            }
+            let c = cost + m.routes[nx as usize].length_m;
+            if best.get(&nx).is_none_or(|&b| c < b - 1e-9) {
+                best.insert(nx, c);
+                heap.push(Item(c, seq, nx, 0));
+                seq += 1;
+            }
+        }
+    }
+    let mut out: Vec<(u32, f64)> = stations.into_iter().collect();
+    out.sort_by(|a, b| a.1.total_cmp(&b.1).then(a.0.cmp(&b.0)));
+    out
+}
+
 /// Purpose: the routes a train standing at a place can start on in a direction.
 /// Inputs: the place and the direction of travel. The start signal is the
 /// signal on the place's track facing that direction that is nearest the

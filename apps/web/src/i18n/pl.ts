@@ -234,6 +234,9 @@ export const pl: Messages = {
   "save.saving": "Zapisywanie…",
   "save.offline": "Nie zapisano · ponawianie",
   "save.failed": "Nie udało się zapisać: {error}",
+  "session.staleToken":
+    "Zmiany nie są już zapisywane, ponieważ serwer został ponownie uruchomiony, gdy ta strona była otwarta. Odśwież stronę, aby kontynuować pracę.",
+  "session.reload": "Odśwież stronę",
   "save.conflict": "{who} zapisał(a) zmiany, gdy zmieniałeś(-aś) {drawing}. Którą wersję zachować?",
   "save.someone": "Ktoś inny",
   "save.keepMine": "Zachowaj moją",
@@ -264,13 +267,8 @@ export const pl: Messages = {
   "sim.test": "Testuj system",
   "sim.journey": "Czas podróży A → B",
 
-  "create.chooseTitle": "Co chcesz utworzyć najpierw?",
-  "create.chooseIntro": "Drugie możesz dodać później. Istniejące linie pozostają widoczne podczas pracy.",
   "create.street": "Linie drogowe",
-  "create.streetHint": "Autobus, BRT, trolejbus i autobus dalekobieżny. Biegną po sieci ulic.",
   "create.rail": "Linie szynowe",
-  "create.railHint":
-    "Tramwaj, szybki tramwaj, metro, kolej podmiejska, regionalna, międzymiastowa i dużych prędkości. Rysuj tory, stacje i rozjazdy.",
   "create.noArea":
     "Brak obszaru analizy. Najpierw zaimportuj ulice i ludność z OpenStreetMap, aby wyznaczanie tras i szacunki pasażerów były dostępne.",
   "create.setArea": "Ustaw obszar w GIS",
@@ -463,6 +461,7 @@ export const pl: Messages = {
 
   "job.stepOf": "Krok {step} z {steps}",
   "job.cancel": "Anuluj",
+  "job.running": "Trwające zadania",
   "map.search": "Szukaj miejsc",
   "map.searchPlaceholder": "Miasto, ulica, stacja lub adres",
   "map.searching": "Szukanie…",
@@ -475,6 +474,15 @@ export const pl: Messages = {
   "map.places": "Znalezione miejsca",
   "map.searchCredit": "Nazwy miejsc © współtwórcy OpenStreetMap, znalezione za pomocą Photon",
   "map.layers": "Warstwy mapy",
+  "map.alwaysShow": "Zawsze pokazuj",
+  "map.alwaysShowHint":
+    "Widoczne na każdej karcie z mapą, niezależnie od otwartego narzędzia. Zapisane na Twoim koncie dla tego projektu.",
+  "map.pin.serviceLines": "Linie",
+  "map.pin.tracks": "Tory",
+  "map.pin.stations": "Stacje",
+  "map.pin.stops": "Przystanki",
+  "map.pin.streetSetups": "Ustawienia ulic",
+  "map.pin.regions": "Regiony",
   "map.basemap": "Mapa podkładowa",
   "map.streetMap": "Mapa",
   "map.aerial": "Lotnicza",

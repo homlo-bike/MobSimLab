@@ -18,9 +18,12 @@ export function Issues({
   where,
   source,
   label,
+  onShow,
 }: {
   issues: Issue[];
   where: (i: Issue) => string | null;
+  /** Shows the station or section a check is about, when it names one (from the notifications list). */
+  onShow?: (i: Issue) => (() => void) | null;
   /** The tool's id and name, for the notifications list. */
   source: string;
   label: string;
@@ -35,6 +38,7 @@ export function Issues({
       severity: i.level,
       text: where(i) ? `${where(i)}: ${text(i)}` : text(i),
       ...(i.parameter ? { detail: t("kit.parameter", { name: i.parameter }) } : {}),
+      ...(onShow?.(i) ? { onShow: onShow(i)! } : {}),
     })),
   );
   if (elsewhere || !issues.length) return null;

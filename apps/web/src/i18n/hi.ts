@@ -234,6 +234,9 @@ export const hi: Messages = {
   "save.saving": "सहेजा जा रहा है…",
   "save.offline": "अभी सहेजा नहीं गया · फिर कोशिश हो रही है",
   "save.failed": "सहेजा नहीं गया: {error}",
+  "session.staleToken":
+    "आपके बदलाव अब सहेजे नहीं जा रहे हैं, क्योंकि यह पेज खुला रहते हुए सर्वर फिर से शुरू हुआ। काम जारी रखने के लिए पेज फिर से लोड करें।",
+  "session.reload": "पेज फिर से लोड करें",
   "save.conflict": "आपके बदलाव करते समय {who} ने {drawing} सहेज दिया। प्रोजेक्ट में कौन-सा रखा जाए?",
   "save.someone": "कोई और",
   "save.keepMine": "मेरा रखें",
@@ -264,13 +267,8 @@ export const hi: Messages = {
   "sim.test": "सिस्टम परखें",
   "sim.journey": "यात्रा समय A → B",
 
-  "create.chooseTitle": "आप पहले क्या बनाना चाहते हैं?",
-  "create.chooseIntro": "दूसरा प्रकार आप बाद में जोड़ सकते हैं। काम करते समय मौजूदा मार्ग दिखते रहते हैं।",
   "create.street": "सड़क मार्ग",
-  "create.streetHint": "बस, BRT, ट्रॉलीबस, अंतर-शहरी बस। सड़क नेटवर्क का अनुसरण करता है।",
   "create.rail": "रेल मार्ग",
-  "create.railHint":
-    "ट्राम, लाइट रेल, मेट्रो, उपनगरीय, क्षेत्रीय, अंतर-शहरी, हाई-स्पीड। पटरियाँ, स्टेशन और स्विच बनाएँ।",
   "create.noArea":
     "अभी कोई अध्ययन क्षेत्र नहीं है। मार्ग-निर्धारण और यात्री अनुमानों के लिए पहले OpenStreetMap से सड़कें और जनसंख्या आयात करें।",
   "create.setArea": "GIS में क्षेत्र तय करें",
@@ -461,6 +459,7 @@ export const hi: Messages = {
 
   "job.stepOf": "चरण {step} / {steps}",
   "job.cancel": "रद्द करें",
+  "job.running": "चल रहे काम",
   "map.search": "स्थान खोजें",
   "map.searchPlaceholder": "कस्बा, सड़क, स्टेशन या पता",
   "map.searching": "खोज रहे हैं…",
@@ -472,6 +471,15 @@ export const hi: Messages = {
   "map.places": "मिले स्थान",
   "map.searchCredit": "स्थानों के नाम © OpenStreetMap योगदानकर्ता, Photon से खोजे गए",
   "map.layers": "मानचित्र परतें",
+  "map.alwaysShow": "हमेशा दिखाएँ",
+  "map.alwaysShowHint":
+    "कोई भी टूल खुला हो, हर मानचित्र टैब पर दिखता है। इस परियोजना के लिए आपके खाते में सहेजा जाता है।",
+  "map.pin.serviceLines": "सेवा लाइनें",
+  "map.pin.tracks": "ट्रैक",
+  "map.pin.stations": "स्टेशन",
+  "map.pin.stops": "स्टॉप",
+  "map.pin.streetSetups": "सड़क सेटअप",
+  "map.pin.regions": "क्षेत्र",
   "map.basemap": "आधार मानचित्र",
   "map.streetMap": "मानचित्र",
   "map.aerial": "हवाई",

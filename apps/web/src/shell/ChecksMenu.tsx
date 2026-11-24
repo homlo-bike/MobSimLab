@@ -3,7 +3,7 @@ import type { CommentObjectType } from "../features/comments/api";
 import type { CommentNotice, CommentNotices } from "../features/comments/notices";
 import { useI18n } from "../i18n/i18n";
 import type { MessageKey } from "../i18n/messages";
-import { type CheckSeverity, useCheckGroups } from "./checks";
+import { type CheckSeverity, useCheckGroups, useReopenCheck } from "./checks";
 import { BellIcon } from "./icons";
 import { anchorOf, Popover } from "./Popover";
 
@@ -45,6 +45,7 @@ export function ChecksMenu({
   const { t, tn, language } = useI18n();
   const [at, setAt] = useState<ReturnType<typeof anchorOf> | null>(null);
   const groups = useCheckGroups().filter((g) => g.items.length > 0);
+  const reopen = useReopenCheck();
   const errors = groups.reduce((n, g) => n + g.items.filter((i) => i.severity === "error").length, 0);
   const warnings = groups.reduce((n, g) => n + g.items.filter((i) => i.severity === "warning").length, 0);
   const fresh = notices?.total ?? 0;
@@ -156,16 +157,18 @@ export function ChecksMenu({
                           </span>
                         </>
                       );
+                      // A live check shows its element; any other opens its tool, which then shows it.
+                      const show = i.onShow ?? (reopen ? () => reopen(g, i) : null);
                       return (
                         <li key={k}>
-                          {i.onShow ? (
+                          {show ? (
                             <button
                               type="button"
                               role="menuitem"
                               className="menu-item min-h-0 items-start py-1.5"
                               onClick={() => {
                                 setAt(null);
-                                i.onShow?.();
+                                show();
                               }}
                             >
                               {content}

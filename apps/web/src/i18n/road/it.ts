@@ -99,4 +99,33 @@ export const roadIt = {
   "visuals.legend.veryLate": "Forte ritardo (oltre {min} min)",
   "road.replay.noService":
     "Questa simulazione è stata salvata prima che si registrassero gli orari di servizio: i suoi veicoli mantengono il colore della linea. Eseguila di nuovo per vederli per puntualità.",
+  "road.step.streets": "Caricamento delle strade: {done} di {of} riquadri della mappa…",
+  "road.note.junctionSetup": "Incroci: {on} incroci con semaforo, {off} senza",
+  "road.note.gateOffStreet":
+    "Deposito {depot}: un accesso non è vicino a una strada percorribile da un autobus",
+  "road.note.noOsmSignals":
+    "OpenStreetMap non riporta semafori su queste strade, quindi tutti gli incroci funzionano senza semafori e le strade secondarie attendono varchi nel traffico delle strade principali. Assegna semafori agli incroci principali in GIS › Strade.",
+  "road.note.lineCannotRun": "{line} non può circolare: {why}",
+  "road.note.carsRemoved":
+    "{n} auto di fondo sono rimaste ferme per oltre {min} minuti e sono state tolte dal traffico per sciogliere gli ingorghi; le strade potrebbero essere più cariche di quanto reggano",
+  "road.note.pullOutNotFollowed":
+    "Il percorso di uscita dal deposito non è seguito ({why}); i suoi veicoli prendono la via più breve",
+  "road.note.pullInNotFollowed":
+    "Il percorso di rientro al deposito non è seguito ({why}); i suoi veicoli prendono la via più breve",
+  "road.note.noDepot": "Nessun deposito: i suoi veicoli iniziano e finiscono in strada",
+  "road.note.noSlot": "Il veicolo {n} non ha posto nel deposito: parte dall’accesso del deposito",
+  "road.note.cannotLeave": "Il veicolo {n} non può lasciare il deposito: parte dalla strada",
+  "road.note.cannotReturn": "Il veicolo {n} non può rientrare nel deposito: finisce in strada",
+  "road.problem.notRouted": "ha meno di due punti o non è tracciata",
+  "road.problem.noDepartures": "non ha partenze nel periodo",
+  "road.problem.notMatched": "il suo percorso non è stato abbinato alle strade",
+  "road.problem.stopOffRoute": "la fermata {stop} non è sul percorso abbinato",
+  "road.problem.notBack": "il percorso non torna alla prima fermata",
+  "road.problem.noBusLink":
+    "nessun passaggio per un autobus da {from} a {to}, vicino a {stop} (a {m} m): le strade del modello di traffico non hanno lì alcuna svolta consentita a un autobus, per esempio un’inversione a U o una svolta vietata. Sposta il percorso o un punto di passaggio perché lì prenda un’altra strada",
+  "road.problem.depotToRoute": "i suoi veicoli non raggiungono il percorso dal deposito",
+  "road.problem.notClosed": "il suo giro non è chiuso sulle strade",
+  "road.problem.unreachable": "non è raggiungibile",
+  "road.part.unnamedStreet": "una strada senza nome (via OSM {way})",
+  "road.part.stop": "fermata {n}",
 } satisfies RoadMessages;
