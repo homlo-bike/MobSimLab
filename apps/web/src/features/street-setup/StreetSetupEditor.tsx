@@ -462,6 +462,25 @@ export function StreetSetupEditor({
     const shape = drawn?.g?.junctions.find((x) => x.nodes.some((n) => j.nodes.includes(n)));
     return (shape && junctionName(shape.ways)) || j.name || "";
   };
+  // A junction saved without its streets' names (set up before they had loaded) gets them once its streets are
+  // drawn, so the list names it after a reload too. Names already saved are left as they are.
+  useEffect(() => {
+    if (!editable || !onJunctionsChange || !drawn?.g) return;
+    const shapes = drawn.g.junctions;
+    let found = false;
+    const next = junctions.map((j) => {
+      if (j.name) return j;
+      const shape = shapes.find((x) => x.nodes.some((n) => j.nodes.includes(n)));
+      const names = shape
+        ? [...new Set(shape.ways.map((w) => infos.get(w)?.name).filter((n): n is string => !!n))]
+        : [];
+      if (!names.length) return j;
+      found = true;
+      return { ...j, name: names.slice(0, 3).join(" / ") };
+    });
+    if (found) onJunctionsChange(next);
+  }, [editable, onJunctionsChange, drawn, infos, junctions]);
+
   /** Lights on, off or as OSM maps them, for every selected junction at once. */
   const changeJunctions = (signals: boolean | null) => {
     if (!picked.length || !onJunctionsChange) return;

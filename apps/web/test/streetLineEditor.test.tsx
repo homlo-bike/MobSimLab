@@ -721,8 +721,10 @@ describe("Street line saved with the project", () => {
     await new Promise((r) => setTimeout(r, 20));
     expect(onSave).not.toHaveBeenCalled();
     expect(screen.getByText(/Out of date/)).toBeTruthy();
+    // The engine forgot the line again: streets that load later route nothing and save nothing.
+    expect(engine.clear).toHaveBeenCalled();
     fireEvent.click(screen.getByRole("button", { name: "Recalculate" }));
-    expect(engine.insertPoint).toHaveBeenCalledTimes(3);
+    expect(engine.insertPoint).toHaveBeenCalledTimes(6);
     await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
     expect((onSave.mock.calls[0]![0] as SavedStreetLine).routedWith).not.toBe(old.routedWith);
     expect(screen.queryByText(/Out of date/)).toBeNull();
@@ -782,6 +784,44 @@ describe("Street line saved with the project", () => {
     expect(screen.queryByText(/Out of date/)).toBeNull();
     expect(closedBySetups(line.view)).toBe(true);
     expect(closedBySetups(saved.view)).toBe(false);
+  });
+
+  it("routes a line saved round a closed street again once the layout no longer closes it", async () => {
+    const engine = fakeEngine();
+    const build = engine.rebuild;
+    engine.rebuild = vi.fn(() => (build(), engine.clear()));
+    const onSave = vi.fn();
+    const { map } = fakeMap(15);
+    Object.assign(map, { fitBounds: vi.fn(), jumpTo: vi.fn() });
+    const detoured = sampleView(["end_stop", "via", "stop"]);
+    detoured.legs[0] = {
+      ...detoured.legs[0]!,
+      setup_detour: {
+        coords: [
+          [7.411, 43.731],
+          [7.413, 43.732],
+        ],
+        streets: ["Market St"],
+        ways: [9],
+        extra_m: 380,
+      },
+    };
+    const around = { ...AROUND, setups: JSON.stringify([{ way: 9, oneway: true }]) };
+    const old = { ...saved, view: detoured, routedWith: routeKey(saved, around) };
+    render(
+      <StreetLineEditor
+        map={map}
+        loadEngine={async () => engine}
+        fetchTile={async () => "<osm/>"}
+        initial={old}
+        onSave={onSave}
+      />,
+    );
+    await waitFor(() => expect(onSave).toHaveBeenCalledTimes(1));
+    const line = onSave.mock.calls[0]![0] as SavedStreetLine;
+    expect(closedBySetups(line.view)).toBe(false);
+    expect(line.routedWith).not.toBe(old.routedWith);
+    expect(screen.queryByText(/Out of date/)).toBeNull();
   });
 
   it("runs to and from a shared depot's gates and saves the depot by id", async () => {

@@ -424,9 +424,9 @@ export function StreetLineEditor({
   }, [ready, run]);
 
   // A saved route out of date because the GIS tab's street layouts now close streets it drives along (the
-  // planner chose "Save anyway" there): once its streets have loaded it is routed again, so the closed legs show
-  // their warnings and the way they went as red dashes, and the route that goes round them is saved. Any other
-  // out-of-date route stays shown as saved, with its notice, until the planner recalculates it.
+  // planner chose "Save anyway" there), or closed them when it was saved: once its streets have loaded it is
+  // routed again, so the closed legs show their warnings and the way they went as red dashes, and the route is
+  // saved. Any other out-of-date route stays shown as saved, with its notice, until the planner recalculates it.
   const closuresChecked = useRef(false);
   useEffect(() => {
     const e = engine.current;
@@ -439,10 +439,18 @@ export function StreetLineEditor({
         return;
       }
       const v = e.view();
-      if (closedBySetups(v)) {
+      // Routed again when the layouts close its streets now, or closed them when it was saved (a layout
+      // undone since: the detour it was saved with is gone).
+      if (closedBySetups(v) || (savedRoute0 && closedBySetups(savedRoute0.view))) {
         setView(v);
         setRoutedAround({ ...applied.current });
-      } else setAsSaved(true);
+      } else {
+        // Nothing closed: the engine forgets the line again, so streets that load later do not route it
+        // and save it (only float noise would change), and the saved route stays shown as saved.
+        e.clear();
+        hydrated.current = false;
+        setAsSaved(true);
+      }
     } catch (err) {
       setError(engineErrorText(err));
     }

@@ -697,6 +697,13 @@ describe("Street setup editor", () => {
     );
     const list = await screen.findByRole("region", { name: "Junctions set up · 1" });
     await waitFor(() => expect(within(list).getByText("High Street / Back Lane")).toBeTruthy());
+    // Saved with the junction, so the list names it after a reload too.
+    await waitFor(() =>
+      expect(onJunctionsChange).toHaveBeenCalledWith([
+        expect.objectContaining({ nodes: [1], signals: true, name: "High Street / Back Lane" }),
+      ]),
+    );
+    expect(onJunctionsChange).toHaveBeenCalledTimes(1);
     // The next change of lights stores the name with the junction.
     tapJunction("2");
     fireEvent.click(screen.getByRole("button", { name: "No traffic lights" }));
