@@ -44,6 +44,8 @@ export const loadWasmReach: ReachLoader = async (timetable, settings) => {
   const p = new wasm.JourneyPlanner(JSON.stringify(timetable), JSON.stringify(settings));
   return {
     reach: ([lon, lat], t0) => JSON.parse(p.reach(lon, lat, Math.round(t0))) as Reach,
+    stopIds: () => p.stop_ids(),
+    reachTimes: ([lon, lat], t0) => p.reach_times(lon, lat, Math.round(t0)),
     dispose: () => p.free(),
   };
 };

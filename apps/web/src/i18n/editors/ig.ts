@@ -1545,7 +1545,7 @@ export const editorsIg = {
   "walk.loadingPopulation": "A na-ebunye ebe ndị mmadụ bi…",
   "walk.computing": "A na-atụ ije ụkwụ…",
   "walk.tooLarge":
-    "Ebe nkwụsị gbasara n'elu taịlụ maapụ {tiles}; ọ bụ naanị {max} (ihe dị ka km 12 × km 12) ka a na-ebunye otu oge.",
+    "Ebe nkwụsị gbasara n'elu taịlụ maapụ {tiles}; ọ bụ naanị {max} (ihe dị ka km {km} × km {km}) ka a na-ebunye otu oge.",
   "walk.osmUnavailable": "Ụzọ ndị na-eji ụkwụ OpenStreetMap adịghị ugbu a. Nwaa ọzọ mgbe otu nkeji gasịrị.",
   "walk.headlinePeople":
     "{share} % nke ndị bi {total} gburugburu ahịrị ndị ahụ bi n'ime ije ụkwụ nkeji {minutes} site n'ebe nkwụsị ma ọ bụ ọdụ.",

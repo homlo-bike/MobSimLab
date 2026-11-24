@@ -1479,7 +1479,7 @@ export const editorsZh = {
   "walk.heightsNoData": "此区域没有高程数据",
   "walk.loadingPopulation": "正在加载人口居住位置…",
   "walk.computing": "正在测量步行路程…",
-  "walk.tooLarge": "站点分布在 {tiles} 个地图瓦片上；一次最多加载 {max} 个（约 12 公里 × 12 公里）。",
+  "walk.tooLarge": "站点分布在 {tiles} 个地图瓦片上；一次最多加载 {max} 个（约 {km} 公里 × {km} 公里）。",
   "walk.osmUnavailable": "OpenStreetMap 人行道数据暂时不可用。请一分钟后再试。",
   "walk.headlinePeople": "线路周边 {total} 名居民中有 {share} % 住在距车站步行 {minutes} 分钟以内。",
   "walk.headlineStreets": "线路周边可步行街道中有 {share} % 位于距车站步行 {minutes} 分钟以内。",

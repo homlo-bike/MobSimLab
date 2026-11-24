@@ -1611,7 +1611,7 @@ export const editorsEs = {
   "walk.loadingPopulation": "Cargando dónde vive la gente…",
   "walk.computing": "Midiendo los recorridos a pie…",
   "walk.tooLarge":
-    "Las paradas abarcan {tiles} teselas del mapa; se cargan como máximo {max} (unos 12 km × 12 km) a la vez.",
+    "Las paradas abarcan {tiles} teselas del mapa; se cargan como máximo {max} (unos {km} km × {km} km) a la vez.",
   "walk.osmUnavailable":
     "Los caminos peatonales de OpenStreetMap no están disponibles ahora. Inténtelo de nuevo en un minuto.",
   "walk.headlinePeople":

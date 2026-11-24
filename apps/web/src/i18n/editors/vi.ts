@@ -1543,7 +1543,7 @@ export const editorsVi = {
   "walk.loadingPopulation": "Đang tải nơi người dân sinh sống…",
   "walk.computing": "Đang đo quãng đi bộ…",
   "walk.tooLarge":
-    "Các trạm dừng trải trên {tiles} ô bản đồ; mỗi lần chỉ tải tối đa {max} ô (khoảng 12 km × 12 km).",
+    "Các trạm dừng trải trên {tiles} ô bản đồ; mỗi lần chỉ tải tối đa {max} ô (khoảng {km} km × {km} km).",
   "walk.osmUnavailable": "Lối đi bộ OpenStreetMap hiện không khả dụng. Hãy thử lại sau một phút.",
   "walk.headlinePeople":
     "{share} % trong số {total} cư dân quanh các tuyến sống trong vòng {minutes} phút đi bộ tới trạm dừng hoặc nhà ga.",

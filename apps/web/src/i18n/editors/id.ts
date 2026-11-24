@@ -1587,7 +1587,7 @@ export const editorsId = {
   "walk.loadingPopulation": "Memuat tempat tinggal penduduk…",
   "walk.computing": "Mengukur perjalanan kaki…",
   "walk.tooLarge":
-    "Halte tersebar di {tiles} petak peta; paling banyak {max} (sekitar 12 km × 12 km) dimuat sekaligus.",
+    "Halte tersebar di {tiles} petak peta; paling banyak {max} (sekitar {km} km × {km} km) dimuat sekaligus.",
   "walk.osmUnavailable":
     "Jalur pejalan kaki OpenStreetMap sedang tidak tersedia. Coba lagi dalam satu menit.",
   "walk.headlinePeople":

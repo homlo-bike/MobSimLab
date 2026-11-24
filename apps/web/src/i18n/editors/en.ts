@@ -1578,7 +1578,7 @@ export const editorsEn = {
   "walk.loadingPopulation": "Loading where people live…",
   "walk.computing": "Measuring the walks…",
   "walk.tooLarge":
-    "The stops spread over {tiles} map tiles; at most {max} (about 12 km × 12 km) are loaded at once.",
+    "The stops spread over {tiles} map tiles; at most {max} (about {km} km × {km} km) are loaded at once.",
   "walk.osmUnavailable": "OpenStreetMap footpaths are unavailable right now. Try again in a minute.",
   "walk.headlinePeople":
     "{share} % of the {total} residents round the lines live within a {minutes}-minute walk of a stop or station.",

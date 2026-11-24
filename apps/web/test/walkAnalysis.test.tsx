@@ -19,6 +19,7 @@ import {
   peopleDemand,
   ruleMinutes,
   spacingGuidance,
+  stopTiles,
   streetNetwork,
   studyArea,
   walkSettings,
@@ -217,6 +218,24 @@ describe("walk model", () => {
     expect(walkTiles(area).length).toBeGreaterThan(0);
     expect(walkTiles(area).length).toBeLessThan(10);
     expect(studyArea([], 1000)).toBeNull();
+  });
+
+  it("loads only the tiles within walking reach of a stop, not the whole box round a spread network", () => {
+    const stops = [
+      { id: "a", name: "A", lonlat: [7, 50] as [number, number] },
+      { id: "b", name: "B", lonlat: [7.4, 50.2] as [number, number] },
+    ];
+    const near = stopTiles(stops, 1000);
+    const box = walkTiles(studyArea(stops, 1000)!);
+    expect(near.length).toBeGreaterThan(1);
+    expect(near.length).toBeLessThan(20);
+    expect(box.length).toBeGreaterThan(200);
+    // Every tile kept is one of the box's, in the box's order (middle first).
+    const order = box.map(([x, y]) => `${x}/${y}`);
+    const idx = near.map(([x, y]) => order.indexOf(`${x}/${y}`));
+    expect(idx.every((i) => i >= 0)).toBe(true);
+    expect([...idx].sort((p, q) => p - q)).toEqual(idx);
+    expect(stopTiles([], 1000)).toEqual([]);
   });
 
   it("gathers the people of the grid inside the area in cells", () => {
@@ -463,8 +482,17 @@ describe("WalkAnalysis", () => {
   });
 
   it("refuses an area larger than the tiles it may load", async () => {
+    // 400 stops about 2 km apart over some 40 km × 45 km: more tiles within reach than one run loads.
     const far = structuredClone(DOC);
-    far.lines[0]!.view.points[3]!.lonlat = [8.5, 51];
+    const v = far.lines[0]!.view;
+    v.points = Array.from({ length: 400 }, (_, k) => ({
+      ...v.points[0]!,
+      id: k + 1,
+      seq: k,
+      kind: "stop" as const,
+      name: `Stop ${k + 1}`,
+      lonlat: [7 + (k % 20) * 0.03, 50 + Math.floor(k / 20) * 0.02] as [number, number],
+    }));
     const fetchTile = vi.fn(async () => "<osm/>");
     render(
       <WalkAnalysis
@@ -477,7 +505,7 @@ describe("WalkAnalysis", () => {
       />,
     );
     fireEvent.click(screen.getByRole("button", { name: "Calculate walk coverage" }));
-    expect(await screen.findByText(/at most 64/)).toBeTruthy();
+    expect(await screen.findByText(/at most 256 \(about 25 km × 25 km\)/)).toBeTruthy();
     expect(fetchTile).not.toHaveBeenCalled();
   });
 

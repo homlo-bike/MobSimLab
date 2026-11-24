@@ -233,6 +233,12 @@ export interface Reach {
 /** A compiled timetable that answers "how soon can I be at each stop". */
 export interface ReachEngine {
   reach(from: LonLat, t0: number): Reach;
+  /**
+   * The same as `reach` for many questions in a row: the stop ids once (`stopIds`), then seconds after
+   * midnight per stop in that order, -1 where the stop cannot be reached. Absent: `reach` is used.
+   */
+  stopIds?(): string[];
+  reachTimes?(from: LonLat, t0: number): Float64Array;
   dispose(): void;
 }
 

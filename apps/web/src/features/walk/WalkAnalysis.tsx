@@ -18,6 +18,7 @@ import {
   gapCellM,
   MAX_MINUTES,
   MAX_WALK_TILES,
+  maxWalkSideKm,
   MIN_MINUTES,
   mergeNetworks,
   peopleDemand,
@@ -29,8 +30,8 @@ import {
   stopPoints,
   streetNetwork,
   studyArea,
+  stopTiles,
   walkSettings,
-  walkTiles,
 } from "./model";
 import type {
   CatchmentGeoJson,
@@ -72,6 +73,9 @@ const GAPS = 10;
 
 /** Size of the squares the walk network takes its ground heights in, m: the resolution of Copernicus GLO-30. */
 const HEIGHT_CELL_M = 30;
+
+/** Walk tiles fetched at once. */
+const TILE_FETCHES = 6;
 
 /** Points asked for heights in one request (the API takes up to 20,000). */
 const HEIGHTS_PER_REQUEST = 5000;
@@ -317,24 +321,38 @@ export function WalkAnalysis({
       const settings = walkSettings(preferences, stepFree);
       const reach = (limit / 60) * settings.walk_speed_kmh * 1000;
       const area = studyArea(stops, reach)!;
-      const tiles = walkTiles(area);
+      const tiles = stopTiles(stops, reach);
       if (tiles.length > MAX_WALK_TILES) {
         setCoverage({
           kind: "error",
-          text: tNow("walk.tooLarge", { tiles: tiles.length, max: MAX_WALK_TILES }),
+          text: tNow("walk.tooLarge", {
+            tiles: tiles.length,
+            max: MAX_WALK_TILES,
+            km: maxWalkSideKm((area[1] + area[3]) / 2),
+          }),
         });
         return;
       }
       const e = await loadWalk();
       try {
+        // A few tiles at a time (a city-wide network needs a hundred or more), added in their order.
         let done = 0;
-        for (const [x, y] of tiles) {
-          if (!alive()) return e.dispose();
-          busy(2, tNow("walk.loadingTiles", { done, count: tiles.length }), done / tiles.length);
-          e.addOsm(await fetchTile(x, y));
-          done++;
-        }
+        busy(2, tNow("walk.loadingTiles", { done, count: tiles.length }), 0);
+        const osm: string[] = new Array(tiles.length);
+        let next = 0;
+        const worker = async () => {
+          while (next < tiles.length && alive()) {
+            const i = next++;
+            const [x, y] = tiles[i]!;
+            osm[i] = await fetchTile(x, y);
+            done++;
+            if (alive())
+              busy(2, tNow("walk.loadingTiles", { done, count: tiles.length }), done / tiles.length);
+          }
+        };
+        await Promise.all(Array.from({ length: Math.min(TILE_FETCHES, tiles.length) }, worker));
         if (!alive()) return e.dispose();
+        for (const xml of osm) e.addOsm(xml);
         e.setJunctions(junctions.map((j) => ({ nodes: [...j.nodes], signals: j.signals })));
         e.build();
       } catch (err) {

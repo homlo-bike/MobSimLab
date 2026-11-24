@@ -283,7 +283,10 @@ function fakeMap() {
   const handlers: ((e: { lngLat: { lng: number; lat: number } }) => void)[] = [];
   const map = {
     on: (_: string, f: (typeof handlers)[number]) => handlers.push(f),
-    off: () => {},
+    off: (_: string, f: (typeof handlers)[number]) => {
+      const i = handlers.indexOf(f);
+      if (i >= 0) handlers.splice(i, 1);
+    },
     getCanvas: () => null,
   } as unknown as MapLibreMap;
   return {
@@ -376,6 +379,15 @@ describe("JourneyPlanner panel", () => {
     fireEvent.click(screen.getByRole("button", { name: "Clear" }));
     expect(screen.getByRole("button", { name: "A: Click the map…" })).toBeTruthy();
     expect(screen.getByRole("button", { name: "B: Pick on the map" })).toBeTruthy();
+    // Pressing A again while it waits for its click keeps it waiting, so the next map click sets it.
+    fireEvent.click(screen.getByRole("button", { name: "A: Click the map…" }));
+    expect(screen.getByRole("button", { name: "A: Click the map…" })).toBeTruthy();
+    act(() => map.click(offset([10, 50], -2600, -300)));
+    expect(screen.getByRole("button", { name: "B: Click the map…" })).toBeTruthy();
+    // The same for B, which waits by itself once A is set.
+    fireEvent.click(screen.getByRole("button", { name: "B: Click the map…" }));
+    act(() => map.click(offset([10, 50], 300, 1650)));
+    await waitFor(() => expect(screen.getByTestId("total").textContent).toBe("21 min"));
   });
 
   it("says when the answer is a walk all the way", async () => {

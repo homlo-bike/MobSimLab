@@ -1523,7 +1523,7 @@ export const editorsJa = {
   "walk.loadingPopulation": "人が住む場所を読み込み中…",
   "walk.computing": "徒歩ルートを計測中…",
   "walk.tooLarge":
-    "停留所が {tiles} 枚の地図タイルに広がっています。一度に読み込めるのは最大 {max} 枚（約 12 km × 12 km）です。",
+    "停留所が {tiles} 枚の地図タイルに広がっています。一度に読み込めるのは最大 {max} 枚（約 {km} km × {km} km）です。",
   "walk.osmUnavailable": "OpenStreetMap の歩道は現在利用できません。1 分後にもう一度お試しください。",
   "walk.headlinePeople":
     "路線周辺の住民 {total} 人のうち {share} % が、停留所または駅から徒歩 {minutes} 分以内に住んでいます。",

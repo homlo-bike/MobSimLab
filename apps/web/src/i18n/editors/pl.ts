@@ -1658,7 +1658,7 @@ export const editorsPl = {
   "walk.loadingPopulation": "Wczytywanie miejsc zamieszkania…",
   "walk.computing": "Mierzenie dojść pieszych…",
   "walk.tooLarge":
-    "Przystanki rozciągają się na {tiles} kafelków mapy; naraz wczytuje się najwyżej {max} (około 12 km × 12 km).",
+    "Przystanki rozciągają się na {tiles} kafelków mapy; naraz wczytuje się najwyżej {max} (około {km} km × {km} km).",
   "walk.osmUnavailable": "Ścieżki piesze OpenStreetMap są teraz niedostępne. Spróbuj ponownie za minutę.",
   "walk.headlinePeople":
     "{share} % z {total} mieszkańców wokół linii mieszka w odległości do {minutes} minut pieszo od przystanku lub stacji.",

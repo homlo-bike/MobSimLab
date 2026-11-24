@@ -1561,7 +1561,7 @@ export const editorsTr = {
   "walk.loadingPopulation": "İnsanların yaşadığı yerler yükleniyor…",
   "walk.computing": "Yürüyüşler ölçülüyor…",
   "walk.tooLarge":
-    "Duraklar {tiles} harita karosuna yayılıyor; bir seferde en fazla {max} (yaklaşık 12 km × 12 km) yüklenir.",
+    "Duraklar {tiles} harita karosuna yayılıyor; bir seferde en fazla {max} (yaklaşık {km} km × {km} km) yüklenir.",
   "walk.osmUnavailable":
     "OpenStreetMap yaya yolları şu anda kullanılamıyor. Bir dakika sonra yeniden deneyin.",
   "walk.headlinePeople":

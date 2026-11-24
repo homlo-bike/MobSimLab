@@ -1605,7 +1605,7 @@ export const editorsIt = {
   "walk.loadingPopulation": "Caricamento di dove vivono le persone…",
   "walk.computing": "Misurazione dei percorsi a piedi…",
   "walk.tooLarge":
-    "Le fermate occupano {tiles} riquadri della mappa; se ne caricano al massimo {max} (circa 12 km × 12 km) alla volta.",
+    "Le fermate occupano {tiles} riquadri della mappa; se ne caricano al massimo {max} (circa {km} km × {km} km) alla volta.",
   "walk.osmUnavailable":
     "I percorsi pedonali di OpenStreetMap non sono disponibili ora. Riprova tra un minuto.",
   "walk.headlinePeople":

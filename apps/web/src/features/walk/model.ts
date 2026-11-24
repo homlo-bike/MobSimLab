@@ -37,8 +37,17 @@ export const LIBRARY_MINUTES = LIB.walk_rule_minutes;
 export const MIN_MINUTES = 1;
 export const MAX_MINUTES = 30;
 
-/** Most zoom-14 walk tiles one analysis loads (about 12 km × 12 km at 50° N), as the agent tools. */
-export const MAX_WALK_TILES = 64;
+/**
+ * Most zoom-14 walk tiles one analysis loads: only the tiles within walking reach of a stop are loaded, so a
+ * city-wide network of a few hundred stops fits (256 tiles is about 25 km × 25 km at 50° N).
+ */
+export const MAX_WALK_TILES = 256;
+
+/** Purpose: the side of the square `MAX_WALK_TILES` tiles cover at latitude `lat`, km (for the "too large" note). */
+export function maxWalkSideKm(lat: number): number {
+  const tileKm = (40_075 * Math.cos((lat * Math.PI) / 180)) / 2 ** 14;
+  return Math.round(Math.sqrt(MAX_WALK_TILES) * tileKm);
+}
 
 /** Size of the cells the people of the population grid are gathered in, m (also the gap size): the library's. */
 export const GAP_CELL_M = paramNumber("analysis.gap_cell_m", undefined);
@@ -196,19 +205,35 @@ export function studyArea(stops: ProjectStop[], reachM: number): [number, number
   ];
 }
 
+const TILES = 2 ** TILE_ZOOM;
+const tileX = (lon: number) => Math.min(TILES - 1, Math.max(0, Math.floor(((lon + 180) / 360) * TILES)));
+const tileY = (lat: number) => {
+  const r = (Math.max(-85, Math.min(85, lat)) * Math.PI) / 180;
+  return Math.min(TILES - 1, Math.max(0, Math.floor(((1 - Math.asinh(Math.tan(r)) / Math.PI) / 2) * TILES)));
+};
+
 /** Purpose: the zoom-14 tiles over a box, the middle ones first. */
 export function walkTiles(bbox: [number, number, number, number]): [number, number][] {
-  const n = 2 ** TILE_ZOOM;
-  const tx = (lon: number) => Math.min(n - 1, Math.max(0, Math.floor(((lon + 180) / 360) * n)));
-  const ty = (lat: number) => {
-    const r = (Math.max(-85, Math.min(85, lat)) * Math.PI) / 180;
-    return Math.min(n - 1, Math.max(0, Math.floor(((1 - Math.asinh(Math.tan(r)) / Math.PI) / 2) * n)));
-  };
   const out: [number, number][] = [];
-  for (let x = tx(bbox[0]); x <= tx(bbox[2]); x++)
-    for (let y = ty(bbox[3]); y <= ty(bbox[1]); y++) out.push([x, y]);
-  const [cx, cy] = [(tx(bbox[0]) + tx(bbox[2])) / 2, (ty(bbox[3]) + ty(bbox[1])) / 2];
+  for (let x = tileX(bbox[0]); x <= tileX(bbox[2]); x++)
+    for (let y = tileY(bbox[3]); y <= tileY(bbox[1]); y++) out.push([x, y]);
+  const [cx, cy] = [(tileX(bbox[0]) + tileX(bbox[2])) / 2, (tileY(bbox[3]) + tileY(bbox[1])) / 2];
   return out.sort((a, b) => Math.hypot(a[0] - cx, a[1] - cy) - Math.hypot(b[0] - cx, b[1] - cy));
+}
+
+/**
+ * Purpose: the zoom-14 tiles within `reachM` of any stop, the middle ones first. Nobody walks to a stop from
+ * beyond its reach, so the streets of the rest of the box round a city-wide network are not needed.
+ */
+export function stopTiles(stops: ProjectStop[], reachM: number): [number, number][] {
+  if (!stops.length) return [];
+  const keep = new Set<string>();
+  for (const s of stops) {
+    const box = studyArea([s], reachM)!;
+    for (let x = tileX(box[0]); x <= tileX(box[2]); x++)
+      for (let y = tileY(box[3]); y <= tileY(box[1]); y++) keep.add(`${x}/${y}`);
+  }
+  return walkTiles(studyArea(stops, reachM)!).filter(([x, y]) => keep.has(`${x}/${y}`));
 }
 
 /** People per cell (WorldPop through the population API): south-west corner, cell size in degrees. */

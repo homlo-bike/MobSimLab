@@ -590,7 +590,9 @@ export function JourneyPlanner({
                 aria-pressed={picking === k}
                 aria-label={t("jp.pointButton", { point: k.toUpperCase(), label })}
                 disabled={done}
-                onClick={() => setPicking(picking === k ? null : k)}
+                // Pressing a point that is already waiting for its click keeps it waiting (a second press used to
+                // switch picking off, so the next map click was ignored).
+                onClick={() => setPicking(k)}
                 className={`flex h-11 items-center gap-2.5 px-3 text-start ${k === "a" ? "border-b border-slate-200" : ""} ${picking === k ? "bg-blue-50" : "bg-white hover:bg-slate-50"}`}
               >
                 <span

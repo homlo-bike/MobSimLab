@@ -1597,7 +1597,7 @@ export const editorsSw = {
   "walk.loadingPopulation": "Inapakia mahali watu wanapoishi…",
   "walk.computing": "Inapima matembezi…",
   "walk.tooLarge":
-    "Vituo vimeenea kwenye vigae {tiles} vya ramani; vigae {max} tu (takriban km 12 × km 12) hupakiwa kwa wakati mmoja.",
+    "Vituo vimeenea kwenye vigae {tiles} vya ramani; vigae {max} tu (takriban km {km} × km {km}) hupakiwa kwa wakati mmoja.",
   "walk.osmUnavailable":
     "Njia za miguu za OpenStreetMap hazipatikani sasa. Jaribu tena baada ya dakika moja.",
   "walk.headlinePeople":

@@ -1622,7 +1622,7 @@ export const editorsDe = {
   "walk.loadingPopulation": "Wohnorte werden geladen…",
   "walk.computing": "Fußwege werden gemessen…",
   "walk.tooLarge":
-    "Die Haltestellen verteilen sich über {tiles} Kartenkacheln; höchstens {max} (etwa 12 km × 12 km) werden auf einmal geladen.",
+    "Die Haltestellen verteilen sich über {tiles} Kartenkacheln; höchstens {max} (etwa {km} km × {km} km) werden auf einmal geladen.",
   "walk.osmUnavailable":
     "OpenStreetMap-Fußwege sind gerade nicht verfügbar. Versuchen Sie es in einer Minute erneut.",
   "walk.headlinePeople":
