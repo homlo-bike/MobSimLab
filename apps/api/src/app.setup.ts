@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import { json, type NextFunction, raw, type Request, type Response } from "express";
 import helmet from "helmet";
 import type { AppConfig } from "./config/env";
+import { compressResponses } from "./compress";
 import { requestLogContext } from "./logging/context";
 import { ApiMessageFilter } from "./i18n/api-message.filter";
 
@@ -82,6 +83,8 @@ export function configureApp(app: NestExpressApplication, config: AppConfig): vo
         res.status(404).json({ statusCode: 404, message: "AI agents are switched off" });
       },
     );
+  // Before the routes and the app's files (main.ts), so both go out compressed.
+  app.use(compressResponses());
   app.use(cookieParser());
   // Drawings are whole documents (a railway design can be a few MB), terrain requests carry every track
   // of a design, a simulation run carries the topology and lines it runs; every other route keeps the
