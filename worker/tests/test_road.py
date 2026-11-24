@@ -528,3 +528,22 @@ def test_a_sumo_tool_that_runs_too_long_is_ended_with_a_plain_message(tmp_path: 
         run_tool(["/bin/sh", "-c", script], str(tmp_path), timeout_s=1.5)
     assert "sleep" not in str(e.value) and "minutes" in str(e.value)
     assert _gone(int((tmp_path / "child.pid").read_text()))
+
+
+def test_sampled_cars_fill_the_streets_up_to_their_targets_and_no_further() -> None:
+    import random  # noqa: PLC0415
+
+    from mobsim_worker.jobs.road.traffic import sample  # noqa: PLC0415
+
+    routes = [["a", "b"], ["b", "c"], ["c"], ["a", "x"]]
+    target = {"a": 3.0, "b": 4.0, "c": 2.5}
+    chosen = sample(routes, target, random.Random(1), max_cars=1000)
+    used: dict[str, int] = {}
+    for i in chosen:
+        for e in routes[i]:
+            used[e] = used.get(e, 0) + 1
+    assert all(used[e] <= target[e] for e in used)
+    assert 3 not in chosen  # "x" has no target: no room
+    # Full: no route has room for one more car.
+    assert not any(all(target[e] - used.get(e, 0) >= 1 for e in r) for r in routes[:3])
+    assert len(sample(routes, target, random.Random(1), max_cars=2)) == 2

@@ -353,25 +353,33 @@ def sample(
 ) -> list[int]:
     """Pick routes (by index, with repeats) so that no edge's count goes above its target.
 
-    Routes are taken in a random order, pass after pass, while every edge they use has room for a car.
+    Routes are taken in a random order, pass after pass, while every edge they use has room for a car. A
+    route that does not fit once never fits again (the room on its edges only shrinks), so it is left out of
+    the later passes; edges are numbered so that each check is a list lookup.
     """
-    left = {e: float(c) for e, c in target.items()}
-    order = list(range(len(routes)))
+    ids: dict[str, int] = {}
+    left: list[float] = []
+    for e, c in target.items():
+        ids[e] = len(left)
+        left.append(float(c))
+    none = len(left)
+    left.append(0.0)  # edges with no target: no room
+    paths = [[ids.get(e, none) for e in r] for r in routes]
+    alive = [i for i, p in enumerate(paths) if all(left[k] >= 1.0 for k in p)]
     chosen: list[int] = []
-    while len(chosen) < max_cars:
-        rng.shuffle(order)
-        took = 0
-        for i in order:
-            r = routes[i]
-            if all(left.get(e, 0.0) >= 1.0 for e in r):
-                for e in r:
-                    left[e] -= 1.0
+    while alive and len(chosen) < max_cars:
+        rng.shuffle(alive)
+        still: list[int] = []
+        for i in alive:
+            p = paths[i]
+            if all(left[k] >= 1.0 for k in p):
+                for k in p:
+                    left[k] -= 1.0
                 chosen.append(i)
-                took += 1
+                still.append(i)
                 if len(chosen) >= max_cars:
                     break
-        if took == 0:
-            break
+        alive = still
     return chosen
 
 
