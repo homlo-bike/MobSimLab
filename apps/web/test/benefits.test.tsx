@@ -36,6 +36,7 @@ import { projectTimetable } from "../src/features/benefits/timetable";
 import type { Estimate as CostEstimate } from "../src/features/costs/model";
 import type { LonLat, ReachLoader, Timetable } from "../src/features/journey-planner/types";
 import { type Note, translate } from "../src/i18n/i18n";
+import { resultFromJson, resultToJson } from "../src/projects/results";
 
 const inEnglish = (notes: Note[]) => notes.map((n) => translate("en", n.key, n.vars));
 
@@ -569,6 +570,21 @@ describe("benefit estimate", () => {
     const aleppo = P.zones.find((z) => z.name === `Stop ${n - 1}`)!;
     expect(aleppo.pop).toBeCloseTo((ringAreaM2(ring) * 4) / 35, 0);
     expect(P.zones.filter((z) => z.pop > 0)).toHaveLength(1);
+  });
+
+  it("keeps the zones worked out from the buildings exactly as they were when read back", () => {
+    const tt = network();
+    const regions: Region[] = [];
+    const P = prepare({
+      timetable: tt,
+      buildings: buildings(),
+      places: PLACES,
+      worldpop: worldpop(tt),
+      country: COUNTRY,
+      regions,
+      prefs: undefined,
+    });
+    expect(resultFromJson(resultToJson(P))).toEqual(P);
   });
 
   it("splits cost items into spending groups by line", () => {

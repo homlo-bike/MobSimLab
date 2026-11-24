@@ -8,6 +8,7 @@
 import type { LonLat } from "../street-lines/types";
 import type { SchematicNetwork } from "./lines";
 import { hashText } from "../../projects/inputKey";
+import { codeVersion, recallAnswer, rememberAnswer } from "../../projects/keptAnswers";
 
 export type Pt = [number, number];
 
@@ -156,9 +157,11 @@ export function layout(
   straighten = true,
   longRun = 0,
 ): LayoutResult {
-  // The same network laid out again (the Schematic opened again): the kept result, copied.
+  // The same network laid out again (the Schematic opened again, or a layout saved with the project): the kept
+  // result, copied.
   const key = hashText(
     JSON.stringify([
+      LAYOUT_VERSION,
       net.stations.map((st) => [st.key, st.lonlat]),
       edgesOf(net),
       origin,
@@ -171,12 +174,20 @@ export function layout(
   if (out) {
     laidOut.delete(key);
   } else {
-    out = layoutNow(net, origin, pins, straighten, longRun);
+    const saved = recallAnswer(key);
+    out = saved ? (JSON.parse(saved) as LayoutResult) : undefined;
+    if (!out) {
+      out = layoutNow(net, origin, pins, straighten, longRun);
+      rememberAnswer(key, JSON.stringify(out));
+    }
     if (laidOut.size >= KEEP_LAYOUTS) laidOut.delete(laidOut.keys().next().value!);
   }
   laidOut.set(key, out);
   return { pos: out.pos.map((p) => [p[0], p[1]]), unit: out.unit };
 }
+
+/** The layout code's version in the fingerprint of a kept layout. */
+const LAYOUT_VERSION = codeVersion(import.meta.url);
 
 /** Layouts kept for the page, by the fingerprint of their inputs (least recently used first). */
 const laidOut = new Map<string, LayoutResult>();

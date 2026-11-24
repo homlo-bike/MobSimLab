@@ -23,6 +23,7 @@ import { type AreaDraft, NetworkMap } from "./NetworkMap";
 import { StripMap } from "./StripMap";
 import { loadWater, waterBox, type WaterLoader, type WaterShapes } from "./water";
 import { engineErrorText } from "../../i18n/engine";
+import { useAnswersReady } from "../../projects/keptAnswers";
 
 export { EMPTY_SCHEMATIC, type SchematicArea, type SchematicDoc };
 
@@ -98,6 +99,8 @@ export function Schematic({
     [railway, streetLines, pluginJson, prefs],
   );
   const net = useSchematicDetails(base, railway, loadRail, fetchHeights);
+  // The layout saved with the project is read before laying out again (bug 14).
+  const answers = useAnswersReady();
   const [view, setView] = useState<"network" | "line">("network");
   const [lineId, setLineId] = useState<string | null>(null);
   const [zoom, setZoom] = useState<number | null>(null);
@@ -315,7 +318,9 @@ export function Schematic({
           )}
         </div>
         <div className="px-3 pb-6 md:px-6">
-          {view === "network" ? (
+          {view === "network" && !answers ? (
+            <p className="text-sm text-slate-600">{t("common.loading")}</p>
+          ) : view === "network" ? (
             <NetworkMap
               svgRef={svgRef}
               net={net}

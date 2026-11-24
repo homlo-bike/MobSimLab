@@ -10,6 +10,7 @@ import { benefitsApi } from "../features/benefits/data";
 import type { Region, RegionsDoc } from "../features/benefits/regions";
 import { MapDataPanel } from "../features/geodata/MapDataPanel";
 import { type LiveData, setDataProject, watchLiveData } from "../geodata/projectData";
+import { closeAnswers, keepAnswersFor } from "../projects/keptAnswers";
 import { projectTimetable } from "../features/benefits/timetable";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { AreaChecks } from "../features/area/AreaChecks";
@@ -505,6 +506,18 @@ export function Workspace({
     () => (projectKey && typeof api.results === "function" ? api.results(projectKey) : null),
     [api, projectKey],
   );
+  // The long calculations' answers (railway built, timetables planned, schematic laid out) are read back from the
+  // project instead of worked out on every visit (bug 14). Set while rendering, before the tabs' effects ask.
+  const answersApi = useMemo(
+    () => (typeof api.results === "function" ? api.results(projectId) : null),
+    [api, projectId],
+  );
+  keepAnswersFor(answersApi ? projectId : null, answersApi, editable);
+  useEffect(() => {
+    keepAnswersFor(answersApi ? projectId : null, answersApi, editable);
+    return () => closeAnswers(projectId);
+    // The right to save follows `editable` from the call above while rendering.
+  }, [answersApi, projectId]);
   const calendarRuns = useMemo(
     () => (projectKey && typeof api.calendarRuns === "function" ? api.calendarRuns(projectKey) : null),
     [api, projectKey],
