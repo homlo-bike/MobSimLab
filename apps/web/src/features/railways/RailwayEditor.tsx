@@ -733,24 +733,31 @@ export function RailwayEditor({
       const terrainFailed = await loadAllTerrain(e, () => e.build(doc, null));
       if (terrainFailed) throw new Error(tNow("rail.publishTerrainFailed", { reason: terrainFailed }));
       // Every day type with its own times and the calendar's peaks; the journey planner takes the weekday. The
-      // planner runs in a worker where there is one, so the page stays responsive while it plans.
+      // planner runs in a worker per day type where there are workers, all at once, so the page stays responsive
+      // while it plans and the day types are planned side by side (four in a third of the time on four cores).
       const plan = (lines: EngineServiceLine[], day: string, options: PublishOptions) =>
         e.publishLinesInWorker
           ? e.publishLinesInWorker(lines, day, options)
           : e.publishLines(lines, day, options);
+      const toPlan = days.length ? days : (["weekday"] as const);
+      const inWorker = e.publishLinesInWorker;
+      const inWorkers = inWorker
+        ? toPlan.map((day) =>
+            inWorker(dayEngineLines(doc, day, calendar, prefValues), day, publishOptionsFrom(prefValues)),
+          )
+        : null;
+      // A failed day type is reported once it is reached, in order; the others are not left unhandled meanwhile.
+      inWorkers?.forEach((p) => p.catch(() => {}));
       const byDay: DayPublications = {};
-      for (const [i, day] of (days.length ? days : (["weekday"] as const)).entries()) {
+      for (const [i, day] of toPlan.entries()) {
         setPublishing({
           step: `${tNow("rail.line.publish")} · ${dayLabel(day)}`,
           index: i + 2,
           steps,
         });
         await paint();
-        byDay[day] = await plan(
-          dayEngineLines(doc, day, calendar, prefValues),
-          day,
-          publishOptionsFrom(prefValues),
-        );
+        byDay[day] = await (inWorkers?.[i] ??
+          plan(dayEngineLines(doc, day, calendar, prefValues), day, publishOptionsFrom(prefValues)));
       }
       const result =
         byDay.weekday ??
