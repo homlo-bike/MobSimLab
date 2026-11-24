@@ -537,7 +537,8 @@ def test_sampled_cars_fill_the_streets_up_to_their_targets_and_no_further() -> N
 
     routes = [["a", "b"], ["b", "c"], ["c"], ["a", "x"]]
     target = {"a": 3.0, "b": 4.0, "c": 2.5}
-    chosen = sample(routes, target, random.Random(1), max_cars=1000)
+    rng = random.Random(1)  # noqa: S311 (simulation sampling, not security)
+    chosen = sample(routes, target, rng, max_cars=1000)
     used: dict[str, int] = {}
     for i in chosen:
         for e in routes[i]:
@@ -546,4 +547,4 @@ def test_sampled_cars_fill_the_streets_up_to_their_targets_and_no_further() -> N
     assert 3 not in chosen  # "x" has no target: no room
     # Full: no route has room for one more car.
     assert not any(all(target[e] - used.get(e, 0) >= 1 for e in r) for r in routes[:3])
-    assert len(sample(routes, target, random.Random(1), max_cars=2)) == 2
+    assert len(sample(routes, target, random.Random(1), max_cars=2)) == 2  # noqa: S311
