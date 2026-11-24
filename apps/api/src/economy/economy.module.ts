@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { OverpassClient } from "../gateway/overpass.client";
+import { INTERACTIVE_DEADLINE_MS, OverpassClient } from "../gateway/overpass.client";
 import { WorldBankClient } from "../gateway/worldbank.client";
 import { EconomyController } from "./economy.controller";
 import { EconomyService } from "./economy.service";
@@ -10,7 +10,10 @@ import { EconomyService } from "./economy.service";
   providers: [
     EconomyService,
     { provide: WorldBankClient, useFactory: () => new WorldBankClient() },
-    { provide: OverpassClient, useFactory: () => new OverpassClient() },
+    {
+      provide: OverpassClient,
+      useFactory: () => new OverpassClient({ deadlineMs: INTERACTIVE_DEADLINE_MS }),
+    },
   ],
   exports: [EconomyService],
 })

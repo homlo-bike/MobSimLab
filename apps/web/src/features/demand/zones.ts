@@ -450,3 +450,32 @@ export function zonesToGeoJson(zones: DemandZone[]): string {
     })),
   });
 }
+
+/** Upper ends of the distance bands the zones are coloured by, m (a band past the last for farther zones). */
+export const STOP_BANDS_M = [400, 800, 1200, 2000] as const;
+
+/**
+ * Purpose: the straight-line distance from each zone's centre to the nearest stop or station of the timetable,
+ * m, by zone id; empty without stops.
+ */
+export function nearestStopM(zones: readonly DemandZone[], tt: Timetable | null): Map<string, number> {
+  const out = new Map<string, number>();
+  const stops: LonLat[] = (tt?.stops ?? [])
+    .filter((s) => Number.isFinite(s.stop_lon) && Number.isFinite(s.stop_lat))
+    .map((s) => [s.stop_lon, s.stop_lat]);
+  if (!stops.length) return out;
+  for (const z of zones) {
+    if (z.ring.length < 4) continue;
+    const c = zoneCentre(z);
+    let best = Infinity;
+    for (const s of stops) best = Math.min(best, metres(c, s));
+    out.set(z.id, best);
+  }
+  return out;
+}
+
+/** Purpose: the band of a distance: 0 up to the first of `STOP_BANDS_M`, … , `STOP_BANDS_M.length` past the last. */
+export function stopBand(m: number): number {
+  const i = STOP_BANDS_M.findIndex((b) => m <= b);
+  return i < 0 ? STOP_BANDS_M.length : i;
+}

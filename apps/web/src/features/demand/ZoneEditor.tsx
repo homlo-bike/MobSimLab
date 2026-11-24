@@ -12,6 +12,9 @@ import {
   type DemandZone,
   hexZones,
   linePoints,
+  nearestStopM,
+  STOP_BANDS_M,
+  stopBand,
   zoneCentre,
   zoneKm2,
 } from "./zones";
@@ -35,14 +38,27 @@ interface FeatureCollection {
 /** Drawing a new zone, or a new outline for the zone `id`. */
 type Mode = { kind: "idle" } | { kind: "draw"; points: LonLat[]; id: string | null };
 
-function zonesGeoJson(zones: DemandZone[], selected: string | null): FeatureCollection {
+/** Colours of the distance bands to the nearest stop (`STOP_BANDS_M`), near to far; teal without stops. */
+const BAND_COLOURS = ["#15803d", "#65a30d", "#eab308", "#ea580c", "#dc2626"] as const;
+const NO_BAND = "#0d9488";
+
+function zonesGeoJson(
+  zones: DemandZone[],
+  selected: string | null,
+  nearest: ReadonlyMap<string, number> = new Map(),
+): FeatureCollection {
   return {
     type: "FeatureCollection",
     features: zones
       .filter((z) => z.ring.length >= 4)
       .map((z) => ({
         type: "Feature" as const,
-        properties: { id: z.id, selected: z.id === selected, name: z.name },
+        properties: {
+          id: z.id,
+          selected: z.id === selected,
+          name: z.name,
+          colour: nearest.has(z.id) ? BAND_COLOURS[stopBand(nearest.get(z.id)!)] : NO_BAND,
+        },
         geometry: { type: "Polygon", coordinates: [z.ring] },
       })),
   };
@@ -78,8 +94,9 @@ function ensureLayers(map: MapLibreMap) {
       type: "fill",
       source: SRC,
       paint: {
-        "fill-color": ["case", ["get", "selected"], "#f59e0b", "#0d9488"],
-        "fill-opacity": ["case", ["get", "selected"], 0.3, 0.08],
+        // Coloured by the distance from the zone to the nearest stop or station.
+        "fill-color": ["get", "colour"],
+        "fill-opacity": ["case", ["get", "selected"], 0.55, 0.3],
       },
     });
   if (!map.getLayer(LINE))
@@ -87,7 +104,10 @@ function ensureLayers(map: MapLibreMap) {
       id: LINE,
       type: "line",
       source: SRC,
-      paint: { "line-color": ["case", ["get", "selected"], "#b45309", "#0f766e"], "line-width": 1.2 },
+      paint: {
+        "line-color": ["case", ["get", "selected"], "#b45309", "#ffffff"],
+        "line-width": ["case", ["get", "selected"], 3, 0.8],
+      },
     });
   if (!map.getSource(DRAFT_SRC)) map.addSource(DRAFT_SRC, { type: "geojson", data: draftGeoJson([]) });
   if (!map.getLayer(DRAFT_LINE))
@@ -151,6 +171,7 @@ export function DemandZoneEditor({
   const points = useMemo(() => linePoints(timetable), [timetable]);
   const auto = useMemo(() => hexZones(points, buffer, maxZones), [points, buffer, maxZones]);
   const zones = useMemo(() => activeZones(doc, auto.zones), [doc, auto.zones]);
+  const nearest = useMemo(() => nearestStopM(zones, timetable), [zones, timetable]);
   const own = doc?.source === "own";
   const [mode, setMode] = useState<Mode>({ kind: "idle" });
   const [selected, setSelected] = useState<string | null>(null);
@@ -168,8 +189,8 @@ export function DemandZoneEditor({
 
   useEffect(() => {
     if (!map) return;
-    (map.getSource(SRC) as GeoJSONSource | undefined)?.setData(zonesGeoJson(zones, selected));
-  }, [map, zones, selected]);
+    (map.getSource(SRC) as GeoJSONSource | undefined)?.setData(zonesGeoJson(zones, selected, nearest));
+  }, [map, zones, selected, nearest]);
 
   const draft = mode.kind === "draw" ? mode.points : [];
   useEffect(() => {
@@ -230,6 +251,27 @@ export function DemandZoneEditor({
             ? t("dzone.auto", { count: zones.length, buffer: Math.round(buffer) })
             : t("dzone.none")}
       </p>
+      {nearest.size > 0 && (
+        <section aria-label={t("dzone.distanceTitle")} className="text-sm">
+          <h3 className="font-medium">{t("dzone.distanceTitle")}</h3>
+          <ul className="mt-1 flex flex-col gap-1">
+            {BAND_COLOURS.map((c, i) => (
+              <li key={c} className="flex items-center gap-2">
+                <span
+                  aria-hidden="true"
+                  className="inline-block h-3 w-5 rounded-sm"
+                  style={{ background: c, opacity: 0.7 }}
+                />
+                {i === 0
+                  ? t("dzone.under", { m: STOP_BANDS_M[0] })
+                  : i === STOP_BANDS_M.length
+                    ? t("dzone.over", { m: STOP_BANDS_M[i - 1]! })
+                    : t("dzone.between", { a: STOP_BANDS_M[i - 1]!, b: STOP_BANDS_M[i]! })}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
       {editable && mode.kind === "idle" && (
         <div className="flex flex-wrap gap-2">
           {own ? (
@@ -324,6 +366,11 @@ export function DemandZoneEditor({
             {t("reg.km2", { v: zoneKm2(zone) < 10 ? zoneKm2(zone).toFixed(2) : Math.round(zoneKm2(zone)) })} ·{" "}
             {tn("dzone.ownValues", Object.keys(zone.values).length)}
           </p>
+          {nearest.has(zone.id) && (
+            <p className="mt-1 text-xs text-slate-500">
+              {t("dzone.nearest", { m: Math.round(nearest.get(zone.id)!).toLocaleString("en") })}
+            </p>
+          )}
           {own && editable && (
             <div className="mt-2 flex flex-wrap gap-2">
               <button

@@ -481,6 +481,35 @@ describe("WalkAnalysis", () => {
     expect(log.coverage!.street_cells_m).toBe(200);
   });
 
+  it("asks for the residents of a city-wide area in pieces the API takes", async () => {
+    // Two ends 0.4° apart: wider than the API's 0.3° for one population request.
+    const wide = structuredClone(DOC);
+    wide.lines[0]!.view.points[3]!.lonlat = [7.4, 50];
+    const asked: [number, number, number, number][] = [];
+    const fetchPeople = vi.fn(async (b: [number, number, number, number]) => {
+      asked.push(b);
+      return GRID;
+    });
+    render(
+      <WalkAnalysis
+        map={null}
+        streetLines={wide}
+        railway={null}
+        loadWalk={fakeEngine({ spacing: [], xml: [] })}
+        loadRail={noRail}
+        fetchTile={async () => "<osm/>"}
+        fetchPeople={fetchPeople}
+      />,
+    );
+    fireEvent.click(screen.getByRole("button", { name: "Calculate walk coverage" }));
+    expect(await screen.findByText(/of the 2,000 residents round the lines/)).toBeTruthy();
+    expect(asked.length).toBeGreaterThan(1);
+    for (const [w, s, e, n] of asked) {
+      expect(e - w).toBeLessThanOrEqual(0.3);
+      expect(n - s).toBeLessThanOrEqual(0.3);
+    }
+  });
+
   it("refuses an area larger than the tiles it may load", async () => {
     // 400 stops about 2 km apart over some 40 km × 45 km: more tiles within reach than one run loads.
     const far = structuredClone(DOC);

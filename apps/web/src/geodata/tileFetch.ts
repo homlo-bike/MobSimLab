@@ -10,7 +10,7 @@ import { noteSource } from "./projectData";
 const RETRY_MS = [1_000, 3_000, 8_000];
 
 /**
- * Purpose: GET a tile, trying again after a short wait when the server or OpenStreetMap is busy (429, 502, 503,
+ * Purpose: GET a tile, trying again after a short wait when the server or OpenStreetMap is busy (429, 502,
  * 504) or the network dropped; any other answer comes back at once.
  * Inputs: the URL, fetch options, and (tests) the fetch and wait to use.
  */
@@ -24,7 +24,8 @@ export async function fetchTileWithRetry(
     const last = attempt >= RETRY_MS.length;
     try {
       const res = await fetchImpl(url, init);
-      if (last || ![429, 502, 503, 504].includes(res.status)) {
+      // 503: the API cannot reach OpenStreetMap at all; trying again would only keep the tool waiting.
+      if (last || ![429, 502, 504].includes(res.status)) {
         noteSource(res);
         return res;
       }
