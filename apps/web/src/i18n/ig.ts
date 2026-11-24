@@ -267,13 +267,8 @@ export const ig: Messages = {
   "sim.test": "Nwalee sistemụ ahụ",
   "sim.journey": "Oge njem A → B",
 
-  "create.chooseTitle": "Gịnị ka ị chọrọ ibu ụzọ wuo?",
-  "create.chooseIntro": "Ị nwere ike ịtinye ụdị nke ọzọ ma emechaa. Ụzọ dị adị na-apụta mgbe ị na-arụ ọrụ.",
   "create.street": "Ụzọ okporo ụzọ",
-  "create.streetHint": "Bọs, BRT, bọs nwere waya, bọs n'etiti obodo. Ọ na-eso netwọk okporo ụzọ.",
   "create.rail": "Ụzọ ígwè",
-  "create.railHint":
-    "Tram, ụgbọ oloko dị mfe, metro, gburugburu obodo, mpaghara, n'etiti obodo, ọsọ ọsọ. See ụzọ ígwè, ọdụ na ihe ntụgharị.",
   "create.noArea":
     "Enwebeghị mpaghara ọmụmụ. Buru ụzọ bubata okporo ụzọ na ọnụ ọgụgụ ndị mmadụ site na OpenStreetMap maka nhazi ụzọ na atụmatụ ndị njem.",
   "create.setArea": "Debe mpaghara na GIS",

@@ -267,13 +267,8 @@ export const tr: Messages = {
   "sim.test": "Sistemi test et",
   "sim.journey": "Yolculuk süresi A → B",
 
-  "create.chooseTitle": "Önce ne oluşturmak istersiniz?",
-  "create.chooseIntro": "Diğerini sonra ekleyebilirsiniz. Mevcut hatlar çalışırken görünür kalır.",
   "create.street": "Karayolu hatları",
-  "create.streetHint": "Otobüs, metrobüs, troleybüs ve şehirlerarası otobüs. Sokak ağını izler.",
   "create.rail": "Raylı hatlar",
-  "create.railHint":
-    "Tramvay, hafif raylı, metro, banliyö, bölgesel, şehirlerarası ve yüksek hızlı. Ray, istasyon ve makas çizin.",
   "create.noArea":
     "Henüz çalışma alanı yok. Rota ve yolcu tahminlerinin kullanılabilmesi için önce OpenStreetMap'ten sokakları ve nüfusu içe aktarın.",
   "create.setArea": "Alanı CBS'de belirle",

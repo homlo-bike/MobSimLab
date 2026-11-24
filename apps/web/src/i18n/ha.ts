@@ -267,14 +267,8 @@ export const ha: Messages = {
   "sim.test": "Gwada tsarin",
   "sim.journey": "Lokacin tafiya A → B",
 
-  "create.chooseTitle": "Me kake so ka gina da farko?",
-  "create.chooseIntro":
-    "Za ka iya ƙara ɗayan nau'in daga baya. Hanyoyin da ake da su suna bayyana yayin da kake aiki.",
   "create.street": "Hanyar titi",
-  "create.streetHint": "Bas, BRT, bas mai waya, bas na tsakanin birane. Yana bin hanyar tituna.",
   "create.rail": "Hanyar dogo",
-  "create.railHint":
-    "Tram, jirgin ƙasa mai sauƙi, metro, na kewayen birni, na yanki, na tsakanin birane, mai sauri. Zana dogo, tashoshi da makunnai.",
   "create.noArea":
     "Babu yankin nazari tukuna. Shigo da tituna da yawan jama'a daga OpenStreetMap da farko don tsara hanyoyi da ƙididdigar fasinjoji.",
   "create.setArea": "Saita yanki a GIS",

@@ -269,14 +269,8 @@ export const uz: Messages = {
   "sim.test": "Tizimni sinash",
   "sim.journey": "Safar vaqti A → B",
 
-  "create.chooseTitle": "Avval nima qurmoqchisiz?",
-  "create.chooseIntro":
-    "Boshqa turini keyin qoʻshishingiz mumkin. Ishlayotganingizda mavjud yoʻnalishlar koʻrinib turadi.",
   "create.street": "Koʻcha yoʻnalishi",
-  "create.streetHint": "Avtobus, BRT, trolleybus, shaharlararo avtobus. Koʻchalar tarmogʻi boʻylab yuradi.",
   "create.rail": "Relsli yoʻnalish",
-  "create.railHint":
-    "Tramvay, yengil relsli, metro, shahar atrofi, mintaqaviy, shaharlararo, tezyurar. Relslar, stansiyalar va strelkalarni chizing.",
   "create.noArea":
     "Hali oʻrganish hududi yoʻq. Yoʻnalish qurish va yoʻlovchilarni baholash uchun avval OpenStreetMap dan koʻchalar va aholini import qiling.",
   "create.setArea": "GIS da hududni belgilash",

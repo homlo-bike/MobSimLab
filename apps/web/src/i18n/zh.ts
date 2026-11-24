@@ -258,12 +258,8 @@ export const zh: Messages = {
   "sim.test": "测试系统",
   "sim.journey": "A → B 出行时间",
 
-  "create.chooseTitle": "你想先建什么？",
-  "create.chooseIntro": "另一种可以稍后添加。工作时现有线路会保持可见。",
   "create.street": "道路线路",
-  "create.streetHint": "公交车、快速公交、无轨电车、城际客车。沿道路网络行驶。",
   "create.rail": "轨道线路",
-  "create.railHint": "有轨电车、轻轨、地铁、市郊、区域、城际、高速铁路。绘制轨道、车站和道岔。",
   "create.noArea": "还没有研究区域。请先从 OpenStreetMap 导入街道和人口，用于路径规划和客流估算。",
   "create.setArea": "在 GIS 中设置区域",
   "create.chooseFirst": "选择道路线路或轨道线路开始。",

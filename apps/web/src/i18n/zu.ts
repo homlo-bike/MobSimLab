@@ -270,14 +270,8 @@ export const zu: Messages = {
   "sim.test": "Hlola uhlelo",
   "sim.journey": "Isikhathi sohambo A → B",
 
-  "create.chooseTitle": "Ufuna ukwakha ini kuqala?",
-  "create.chooseIntro": "Ungangeza olunye uhlobo kamuva. Imizila ekhona iyabonakala ngesikhathi usebenza.",
   "create.street": "Umzila womgwaqo",
-  "create.streetHint":
-    "Ibhasi, BRT, ibhasi lentambo, ibhasi phakathi kwamadolobha. Ilandela inethiwekhi yemigwaqo.",
   "create.rail": "Umzila kajantshi",
-  "create.railHint":
-    "Ithremu, isitimela esilula, i-metro, sabagibeli, sesifunda, phakathi kwamadolobha, esisheshayo. Dweba ojantshi, iziteshi nezishintshi.",
   "create.noArea":
     "Ayikho indawo yokufunda okwamanje. Qala ngokungenisa imigwaqo nenani labantu kusuka ku-OpenStreetMap ukuze uhlele imizila futhi ulinganise abagibeli.",
   "create.setArea": "Setha indawo ku-GIS",

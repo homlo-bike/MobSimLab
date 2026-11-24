@@ -270,14 +270,8 @@ export const fr: Messages = {
   "sim.test": "Tester le système",
   "sim.journey": "Temps de trajet A → B",
 
-  "create.chooseTitle": "Que voulez-vous construire en premier ?",
-  "create.chooseIntro":
-    "Vous pourrez ajouter l’autre type plus tard. Les itinéraires existants restent visibles pendant que vous travaillez.",
   "create.street": "Ligne routière",
-  "create.streetHint": "Bus, BHNS, trolleybus, car interurbain. Suit le réseau de rues.",
   "create.rail": "Ligne ferroviaire",
-  "create.railHint":
-    "Tramway, métro léger, métro, banlieue, régional, grandes lignes, grande vitesse. Tracez voies, gares et aiguillages.",
   "create.noArea":
     "Pas encore de zone d’étude. Importez d’abord les rues et la population depuis OpenStreetMap pour le tracé et l’estimation des voyageurs.",
   "create.setArea": "Définir la zone dans SIG",

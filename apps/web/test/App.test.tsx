@@ -383,7 +383,7 @@ describe("projects home", () => {
     expect(await screen.findByText("Moved Lakeside network to the bin.")).toBeTruthy();
   });
 
-  it("creates a project and opens its Create tab with the street or rail chooser", async () => {
+  it("creates a project and opens its Create tab with no tool picked yet", async () => {
     const calls = stubApi(owner);
     render(<App />);
     fireEvent.click((await screen.findAllByRole("button", { name: "New project" }))[0]!);
@@ -393,14 +393,15 @@ describe("projects home", () => {
     });
     fireEvent.click(within(dlg).getByRole("button", { name: "Metro" }));
     fireEvent.click(within(dlg).getByRole("button", { name: "Create and open" }));
-    expect(await screen.findByRole("region", { name: "What do you want to build first?" })).toBeTruthy();
+    expect(await screen.findByText("Choose a street route or a rail route to start.")).toBeTruthy();
+    expect(screen.queryByText("What do you want to build first?")).toBeNull();
     expect(window.location.pathname).toBe(`/projects/${NEW}/create`);
     expect(calls.find((c) => c.method === "POST")?.body).toEqual({
       name: "Riverside tram study",
       areaName: null,
       modes: ["bus", "tram", "metro"],
     });
-    fireEvent.click(screen.getByRole("button", { name: /Street route/ }));
+    fireEvent.click(screen.getByRole("tab", { name: "Street route" }));
     expect(await screen.findByRole("toolbar", { name: "Street line tools" })).toBeTruthy();
     expect(screen.getByRole("complementary", { name: "Street route" })).toBeTruthy();
   });
@@ -568,7 +569,7 @@ describe("project workspace", () => {
     window.history.replaceState(null, "", `/projects/${P1}/create?new=1`);
     render(<App />);
     expect(await screen.findByRole("complementary", { name: "Rail route" })).toBeTruthy();
-    expect(screen.queryByRole("region", { name: "What do you want to build first?" })).toBeNull();
+    expect(screen.queryByText("Choose a street route or a rail route to start.")).toBeNull();
   });
 
   it("asks which drawing to keep when someone else saved first", async () => {

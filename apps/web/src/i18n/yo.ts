@@ -265,13 +265,8 @@ export const yo: Messages = {
   "sim.test": "Dán ètò náà wò",
   "sim.journey": "Àkókò ìrìn-àjò A → B",
 
-  "create.chooseTitle": "Kí ni o fẹ́ kọ́kọ́ kọ́?",
-  "create.chooseIntro": "O lè fi irú kejì kún un nígbà míì. Àwọn ọ̀nà tó wà máa hàn nígbà tí o bá ń ṣiṣẹ́.",
   "create.street": "Ọ̀nà òpópónà",
-  "create.streetHint": "Bọ́ọ̀sì, BRT, bọ́ọ̀sì oníwáyà, bọ́ọ̀sì láàárín ìlú. Ó tẹ̀lé nẹ́tíwọ̀ọ̀kì òpópónà.",
   "create.rail": "Ọ̀nà ojú irin",
-  "create.railHint":
-    "Tírámù, ọkọ̀ ojú irin fífúyẹ́, mẹ́tírò, agbègbè ìlú, ẹkùn, láàárín ìlú, ayára. Ya ojú irin, ibùdókọ̀ àti àwọn ìyípadà.",
   "create.noArea":
     "Kò tíì sí agbègbè ìwádìí. Kọ́kọ́ gbé àwọn òpópónà àti iye ènìyàn wọlé láti OpenStreetMap fún ìṣètò ọ̀nà àti ìṣirò èrò.",
   "create.setArea": "Ṣètò agbègbè nínú GIS",

@@ -265,15 +265,8 @@ export const vi: Messages = {
   "sim.test": "Kiểm tra hệ thống",
   "sim.journey": "Thời gian hành trình A → B",
 
-  "create.chooseTitle": "Bạn muốn tạo gì trước?",
-  "create.chooseIntro":
-    "Bạn có thể thêm loại còn lại sau. Các tuyến hiện có vẫn hiển thị trong khi bạn làm việc.",
   "create.street": "Tuyến đường phố",
-  "create.streetHint":
-    "Xe buýt, BRT, xe buýt điện bánh hơi và xe khách liên tỉnh. Đi theo mạng lưới đường phố.",
   "create.rail": "Tuyến đường sắt",
-  "create.railHint":
-    "Tàu điện mặt đất, đường sắt nhẹ, tàu điện ngầm, ngoại ô, khu vực, liên tỉnh và cao tốc. Vẽ đường ray, ga và ghi.",
   "create.noArea":
     "Chưa có khu vực nghiên cứu. Hãy nhập đường phố và dân số từ OpenStreetMap trước để có tìm đường và ước tính hành khách.",
   "create.setArea": "Đặt khu vực trong GIS",

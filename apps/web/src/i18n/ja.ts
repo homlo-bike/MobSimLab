@@ -264,12 +264,8 @@ export const ja: Messages = {
   "sim.test": "システムを検証",
   "sim.journey": "所要時間 A → B",
 
-  "create.chooseTitle": "まず何を作りますか？",
-  "create.chooseIntro": "もう一方は後で追加できます。作業中も既存の路線は表示されたままです。",
   "create.street": "道路路線",
-  "create.streetHint": "バス、BRT、トロリーバス、都市間バス。道路網に沿って走ります。",
   "create.rail": "鉄道路線",
-  "create.railHint": "路面電車、ライトレール、地下鉄、通勤、地域、都市間、高速。線路、駅、分岐器を描きます。",
   "create.noArea":
     "対象地域がまだありません。経路探索と旅客推計のため、まず OpenStreetMap から道路と人口を取り込んでください。",
   "create.setArea": "GIS で地域を設定",

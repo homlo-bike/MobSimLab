@@ -88,10 +88,7 @@ import {
 import { can, type Project, type ProjectsApi } from "../projects/api";
 import {
   BackIcon,
-  BusIcon,
-  CableIcon,
   CargoBikeIcon,
-  FerryIcon,
   GearIcon,
   LayersIcon,
   PenIcon,
@@ -99,7 +96,6 @@ import {
   RedoIcon,
   SchematicIcon,
   TableIcon,
-  TrainIcon,
   UndoIcon,
 } from "../shell/icons";
 import { ChecksProvider } from "../shell/checks";
@@ -1453,79 +1449,6 @@ export function Workspace({
               {convertError}
             </p>
           )}
-          {project && tab === "create" && editable && chosen === null && (
-            <div className="absolute inset-0 z-20 flex items-start justify-center overflow-y-auto bg-slate-50/70 p-4 md:pt-16">
-              <section
-                aria-label={t("create.chooseTitle")}
-                className="w-full max-w-2xl rounded-2xl bg-white p-5 shadow-2xl md:p-7"
-              >
-                <h2 className="text-2xl font-semibold tracking-tight">{t("create.chooseTitle")}</h2>
-                <p className="mt-1 text-slate-600">{t("create.chooseIntro")}</p>
-                <div className="mt-5 grid gap-3.5 sm:grid-cols-2">
-                  {[
-                    ...(
-                      [
-                        [
-                          "street",
-                          BusIcon,
-                          t("create.street"),
-                          t("create.streetHint"),
-                          "bg-blue-100 text-blue-900",
-                        ],
-                        [
-                          "rail",
-                          TrainIcon,
-                          t("create.rail"),
-                          t("create.railHint"),
-                          "bg-red-100 text-red-900",
-                        ],
-                      ] as const
-                    ).filter(([kind]) => (kind === "street" ? showStreet : showRail)),
-                    // Tools contributed by plugins (ADR-0036 §6): cable car and ferry are bundled.
-                    ...PLUGIN_TOOLS.map(
-                      (x) =>
-                        [
-                          x.id,
-                          x.kit === "water-route"
-                            ? FerryIcon
-                            : x.kit === "service-zone"
-                              ? BusIcon
-                              : CableIcon,
-                          x.label,
-                          x.hint ?? "",
-                          x.kit === "water-route"
-                            ? "bg-cyan-100 text-cyan-900"
-                            : x.kit === "service-zone"
-                              ? "bg-purple-100 text-purple-900"
-                              : "bg-violet-100 text-violet-900",
-                        ] as const,
-                    ),
-                  ].map(([kind, Icon, title, hint, colour]) => (
-                    <button
-                      key={kind}
-                      type="button"
-                      className="flex flex-col gap-2.5 rounded-2xl border-[1.5px] border-slate-200 bg-white p-4 text-start hover:border-blue-700 hover:ring-[3px] hover:ring-blue-100 focus-visible:border-blue-700 focus-visible:ring-[3px] focus-visible:ring-blue-100 focus-visible:outline-none"
-                      onClick={() => setBuild(kind)}
-                    >
-                      <span className={`flex h-12 w-12 items-center justify-center rounded-xl ${colour}`}>
-                        <Icon size={26} />
-                      </span>
-                      <span className="text-base font-semibold">{title}</span>
-                      <span className="text-xs text-slate-500">{hint}</span>
-                    </button>
-                  ))}
-                </div>
-                {!project.areaName && (
-                  <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3">
-                    <p className="min-w-48 flex-1 text-xs text-slate-700">{t("create.noArea")}</p>
-                    <button type="button" className="btn min-h-10" onClick={() => onTab("gis")}>
-                      {t("create.setArea")}
-                    </button>
-                  </div>
-                )}
-              </section>
-            </div>
-          )}
         </div>
 
         {!onMap && project && tab === "preferences" && (
@@ -1886,7 +1809,7 @@ export function Workspace({
                 </div>
               </div>
             )}
-            {tab === "create" && editable && chosen !== null && (
+            {tab === "create" && editable && (
               <div className="shrink-0 overflow-x-auto overscroll-x-contain px-4 pt-3 pb-2 md:px-5 md:pt-5">
                 <div className="seg w-max min-w-full" role="tablist" aria-label={tabLabel("create")}>
                   {showStreet && (
@@ -2005,7 +1928,17 @@ export function Workspace({
                 </div>
               )}
               {tab === "create" && editable && chosen === null && (
-                <p className="px-4 py-5 text-slate-600 md:px-5">{t("create.chooseFirst")}</p>
+                <div className="flex flex-col gap-3 px-4 py-5 md:px-5">
+                  <p className="text-slate-600">{t("create.chooseFirst")}</p>
+                  {project && !project.areaName && (
+                    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3">
+                      <p className="min-w-48 flex-1 text-xs text-slate-700">{t("create.noArea")}</p>
+                      <button type="button" className="btn min-h-10" onClick={() => onTab("gis")}>
+                        {t("create.setArea")}
+                      </button>
+                    </div>
+                  )}
+                </div>
               )}
               {/* The street line tool, railway editor, journey planner and street setup render their panels here. */}
               <div key={`${tab}-${sim}-${chosen}-${gis}`} ref={setPanel} />

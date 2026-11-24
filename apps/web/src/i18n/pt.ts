@@ -269,14 +269,8 @@ export const pt: Messages = {
   "sim.test": "Testar o sistema",
   "sim.journey": "Tempo de viagem A → B",
 
-  "create.chooseTitle": "O que você quer construir primeiro?",
-  "create.chooseIntro":
-    "Você pode adicionar o outro tipo depois. As rotas existentes continuam visíveis enquanto você trabalha.",
   "create.street": "Rota de rua",
-  "create.streetHint": "Ônibus, BRT, trólebus, ônibus intermunicipal. Segue a malha viária.",
   "create.rail": "Rota ferroviária",
-  "create.railHint":
-    "Bonde, VLT, metrô, trem metropolitano, regional, intercidades, alta velocidade. Desenhe vias, estações e aparelhos de mudança de via.",
   "create.noArea":
     "Ainda não há área de estudo. Importe primeiro as ruas e a população do OpenStreetMap para o roteamento e as estimativas de passageiros.",
   "create.setArea": "Definir área no SIG",

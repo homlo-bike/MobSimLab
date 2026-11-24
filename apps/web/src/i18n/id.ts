@@ -268,14 +268,8 @@ export const id: Messages = {
   "sim.test": "Uji sistem",
   "sim.journey": "Waktu perjalanan A → B",
 
-  "create.chooseTitle": "Apa yang ingin Anda buat dulu?",
-  "create.chooseIntro":
-    "Anda dapat menambahkan yang lain nanti. Jalur yang ada tetap terlihat saat Anda bekerja.",
   "create.street": "Jalur jalan",
-  "create.streetHint": "Bus, BRT, bus listrik troli, dan bus antarkota. Mengikuti jaringan jalan.",
   "create.rail": "Jalur rel",
-  "create.railHint":
-    "Trem, kereta ringan, metro, komuter, regional, antarkota, dan kereta cepat. Gambar rel, stasiun, dan wesel.",
   "create.noArea":
     "Belum ada wilayah studi. Impor jalan dan penduduk dari OpenStreetMap terlebih dahulu agar rute dan perkiraan penumpang tersedia.",
   "create.setArea": "Tetapkan wilayah di GIS",

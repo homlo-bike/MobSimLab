@@ -273,14 +273,8 @@ export const de: Messages = {
   "sim.test": "System testen",
   "sim.journey": "Reisezeit A → B",
 
-  "create.chooseTitle": "Was möchten Sie zuerst bauen?",
-  "create.chooseIntro":
-    "Die andere Art können Sie später hinzufügen. Bestehende Linien bleiben beim Arbeiten sichtbar.",
   "create.street": "Straßenlinie",
-  "create.streetHint": "Bus, BRT, Oberleitungsbus, Fernbus. Folgt dem Straßennetz.",
   "create.rail": "Schienenlinie",
-  "create.railHint":
-    "Straßenbahn, Stadtbahn, U-Bahn, S-Bahn, Regional-, Fern- und Hochgeschwindigkeitsverkehr. Gleise, Stationen und Weichen zeichnen.",
   "create.noArea":
     "Noch kein Untersuchungsgebiet. Importieren Sie zuerst Straßen und Bevölkerung aus OpenStreetMap für Routen und Fahrgastschätzungen.",
   "create.setArea": "Gebiet im GIS festlegen",

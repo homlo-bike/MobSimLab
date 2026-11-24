@@ -262,13 +262,8 @@ export const en = {
   "sim.test": "Test the system",
   "sim.journey": "Journey time A → B",
 
-  "create.chooseTitle": "What do you want to build first?",
-  "create.chooseIntro": "You can add the other kind later. Existing routes stay visible while you work.",
   "create.street": "Street route",
-  "create.streetHint": "Bus, BRT, trolleybus, intercity bus. Follows the street network.",
   "create.rail": "Rail route",
-  "create.railHint":
-    "Tram, light rail, metro, commuter, regional, intercity, high-speed. Draw tracks, stations and switches.",
   "create.noArea":
     "No study area yet. Import streets and population from OpenStreetMap first for routing and passenger estimates.",
   "create.setArea": "Set area in GIS",

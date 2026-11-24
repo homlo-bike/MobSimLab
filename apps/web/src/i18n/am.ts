@@ -259,12 +259,8 @@ export const am: Messages = {
   "sim.test": "ስርዓቱን ፈትን",
   "sim.journey": "የጉዞ ጊዜ A → B",
 
-  "create.chooseTitle": "መጀመሪያ ምን መገንባት ይፈልጋሉ?",
-  "create.chooseIntro": "ሌላውን ዓይነት በኋላ ማከል ይችላሉ። በሚሠሩበት ጊዜ ያሉ መስመሮች ይታያሉ።",
   "create.street": "የመንገድ መስመር",
-  "create.streetHint": "አውቶቡስ፣ BRT፣ ትሮሊባስ፣ የከተሞች መካከል አውቶቡስ። የመንገድ አውታሩን ይከተላል።",
   "create.rail": "የሐዲድ መስመር",
-  "create.railHint": "ትራም፣ ቀላል ባቡር፣ ሜትሮ፣ የከተማ ዳርቻ፣ የክልል፣ የከተሞች መካከል፣ ፈጣን። ሐዲዶችን፣ ጣቢያዎችን እና መቀየሪያዎችን ይሳሉ።",
   "create.noArea":
     "ገና የጥናት አካባቢ የለም። ለመስመር እቅድ እና ለተሳፋሪ ግምቶች መጀመሪያ መንገዶችን እና የሕዝብ ብዛትን ከ OpenStreetMap ያስገቡ።",
   "create.setArea": "አካባቢውን በ GIS ያዘጋጁ",

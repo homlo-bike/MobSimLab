@@ -267,13 +267,8 @@ export const pl: Messages = {
   "sim.test": "Testuj system",
   "sim.journey": "Czas podróży A → B",
 
-  "create.chooseTitle": "Co chcesz utworzyć najpierw?",
-  "create.chooseIntro": "Drugie możesz dodać później. Istniejące linie pozostają widoczne podczas pracy.",
   "create.street": "Linie drogowe",
-  "create.streetHint": "Autobus, BRT, trolejbus i autobus dalekobieżny. Biegną po sieci ulic.",
   "create.rail": "Linie szynowe",
-  "create.railHint":
-    "Tramwaj, szybki tramwaj, metro, kolej podmiejska, regionalna, międzymiastowa i dużych prędkości. Rysuj tory, stacje i rozjazdy.",
   "create.noArea":
     "Brak obszaru analizy. Najpierw zaimportuj ulice i ludność z OpenStreetMap, aby wyznaczanie tras i szacunki pasażerów były dostępne.",
   "create.setArea": "Ustaw obszar w GIS",

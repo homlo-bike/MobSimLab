@@ -269,14 +269,8 @@ export const nl: Messages = {
   "sim.test": "Systeem testen",
   "sim.journey": "Reistijd A → B",
 
-  "create.chooseTitle": "Wat wil je eerst bouwen?",
-  "create.chooseIntro":
-    "Het andere soort kun je later toevoegen. Bestaande routes blijven zichtbaar terwijl je werkt.",
   "create.street": "Wegroute",
-  "create.streetHint": "Bus, HOV-bus, trolleybus, streekbus. Volgt het stratennet.",
   "create.rail": "Spoorroute",
-  "create.railHint":
-    "Tram, sneltram, metro, voorstads-, regionale en intercitytreinen, hogesnelheid. Teken sporen, stations en wissels.",
   "create.noArea":
     "Nog geen studiegebied. Importeer eerst straten en bevolking uit OpenStreetMap voor routes en reizigersschattingen.",
   "create.setArea": "Gebied instellen in GIS",

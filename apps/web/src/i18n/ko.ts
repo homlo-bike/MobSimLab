@@ -263,12 +263,8 @@ export const ko: Messages = {
   "sim.test": "시스템 검증",
   "sim.journey": "이동 시간 A → B",
 
-  "create.chooseTitle": "먼저 무엇을 만들까요?",
-  "create.chooseIntro": "나머지는 나중에 추가할 수 있습니다. 작업하는 동안 기존 노선은 계속 표시됩니다.",
   "create.street": "도로 노선",
-  "create.streetHint": "버스, BRT, 트롤리버스, 시외버스. 도로망을 따라 운행합니다.",
   "create.rail": "철도 노선",
-  "create.railHint": "트램, 경전철, 지하철, 광역, 지역, 간선, 고속. 선로, 역, 분기기를 그립니다.",
   "create.noArea":
     "아직 연구 지역이 없습니다. 경로 탐색과 승객 추정을 위해 먼저 OpenStreetMap에서 도로와 인구를 가져오세요.",
   "create.setArea": "GIS에서 지역 설정",

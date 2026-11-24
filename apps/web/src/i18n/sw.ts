@@ -266,14 +266,8 @@ export const sw: Messages = {
   "sim.test": "Jaribu mfumo",
   "sim.journey": "Muda wa safari A → B",
 
-  "create.chooseTitle": "Unataka kujenga nini kwanza?",
-  "create.chooseIntro":
-    "Unaweza kuongeza aina nyingine baadaye. Njia zilizopo zinaendelea kuonekana unapofanya kazi.",
   "create.street": "Njia ya barabarani",
-  "create.streetHint": "Basi, BRT, basi la umeme la waya, basi la mikoani. Hufuata mtandao wa barabara.",
   "create.rail": "Njia ya reli",
-  "create.railHint":
-    "Tramu, reli nyepesi, metro, treni ya mjini, ya kanda, ya miji mikubwa, ya mwendo kasi. Chora reli, stesheni na swichi.",
   "create.noArea":
     "Bado hakuna eneo la utafiti. Leta kwanza barabara na idadi ya watu kutoka OpenStreetMap kwa njia na makadirio ya abiria.",
   "create.setArea": "Weka eneo kwenye GIS",
