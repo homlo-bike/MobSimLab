@@ -12,10 +12,6 @@ export const editorsEs = {
   "rail.mode.long_distance_rail": "Larga distancia",
   "rail.params":
     "Ancho {gauge} mm · entreeje {centres} m · radio mín. {minRadius} m (recomendado {radius} m) · pendiente máx. {gradient} ‰ · velocidad de diseño {speed} km/h · andenes de {platform} m a {height} mm · {power}",
-  "rail.stat.route": "Trazado",
-  "rail.stat.track": "Vía",
-  "rail.stat.stations": "Estaciones",
-  "rail.stat.switches": "Desvíos",
   "rail.stations.one": "{count} estación",
   "rail.stations.other": "{count} estaciones",
   "rail.backToNetwork": "Volver a la red",

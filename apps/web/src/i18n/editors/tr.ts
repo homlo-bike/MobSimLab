@@ -12,10 +12,6 @@ export const editorsTr = {
   "rail.mode.long_distance_rail": "Uzun mesafe treni",
   "rail.params":
     "ray açıklığı {gauge} mm · hat eksen aralığı {centres} m · en küçük yarıçap {minRadius} m (önerilen {radius} m) · en büyük eğim {gradient} ‰ · proje hızı {speed} km/sa · peron {platform} m, yükseklik {height} mm · {power}",
-  "rail.stat.route": "Güzergâh uzunluğu",
-  "rail.stat.track": "Ray uzunluğu",
-  "rail.stat.stations": "İstasyonlar",
-  "rail.stat.switches": "Makaslar",
   "rail.stations.other": "{count} istasyon",
   "rail.backToNetwork": "Ağa dön",
   "street.allLines": "Tüm hatlar",

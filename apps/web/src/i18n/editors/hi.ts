@@ -12,10 +12,6 @@ export const editorsHi = {
   "rail.mode.long_distance_rail": "अंतर-शहरी",
   "rail.params":
     "गेज {gauge} मिमी · पटरी केंद्रों की दूरी {centres} मी · न्यूनतम त्रिज्या {minRadius} मी (अनुशंसित {radius} मी) · अधिकतम ढाल {gradient} ‰ · डिज़ाइन गति {speed} किमी/घं · प्लेटफ़ॉर्म {platform} मी, {height} मिमी पर · {power}",
-  "rail.stat.route": "मार्ग",
-  "rail.stat.track": "पटरी",
-  "rail.stat.stations": "स्टेशन",
-  "rail.stat.switches": "स्विच",
   "rail.stations.one": "{count} स्टेशन",
   "rail.stations.other": "{count} स्टेशन",
   "rail.backToNetwork": "नेटवर्क पर वापस",

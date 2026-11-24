@@ -12,10 +12,6 @@ export const editorsUz = {
   "rail.mode.long_distance_rail": "Uzoq masofali poyezd",
   "rail.params":
     "Koleya {gauge} mm · relslar oʻqlari orasi {centres} m · minimal radius {minRadius} m (tavsiya {radius} m) · maksimal qiyalik {gradient} ‰ · loyiha tezligi {speed} km/s · platforma {platform} m, balandligi {height} mm · {power}",
-  "rail.stat.route": "Yoʻnalish",
-  "rail.stat.track": "Rels yoʻli",
-  "rail.stat.stations": "Stansiyalar",
-  "rail.stat.switches": "Strelkalar",
   "rail.stations.one": "{count} ta stansiya",
   "rail.stations.other": "{count} ta stansiya",
   "rail.backToNetwork": "Tarmoqqa qaytish",

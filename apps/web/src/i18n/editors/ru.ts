@@ -12,10 +12,6 @@ export const editorsRu = {
   "rail.mode.long_distance_rail": "Дальнего следования",
   "rail.params":
     "Колея {gauge} мм · междупутье {centres} м · мин. радиус {minRadius} м (рекомендуемый {radius} м) · макс. уклон {gradient} ‰ · расчётная скорость {speed} км/ч · платформы {platform} м высотой {height} мм · {power}",
-  "rail.stat.route": "Трасса",
-  "rail.stat.track": "Путь",
-  "rail.stat.stations": "Станции",
-  "rail.stat.switches": "Стрелки",
   "rail.stations.one": "{count} станция",
   "rail.stations.few": "{count} станции",
   "rail.stations.many": "{count} станций",

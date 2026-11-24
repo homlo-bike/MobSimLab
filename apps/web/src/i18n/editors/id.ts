@@ -12,10 +12,6 @@ export const editorsId = {
   "rail.mode.long_distance_rail": "Kereta jarak jauh",
   "rail.params":
     "lebar sepur {gauge} mm · jarak sumbu rel {centres} m · radius minimum {minRadius} m (disarankan {radius} m) · kelandaian maks. {gradient} ‰ · kecepatan rencana {speed} km/j · peron {platform} m, tinggi {height} mm · {power}",
-  "rail.stat.route": "Panjang lintasan",
-  "rail.stat.track": "Panjang rel",
-  "rail.stat.stations": "Stasiun",
-  "rail.stat.switches": "Wesel",
   "rail.stations.other": "{count} stasiun",
   "rail.backToNetwork": "Kembali ke jaringan",
   "street.allLines": "Semua jalur",

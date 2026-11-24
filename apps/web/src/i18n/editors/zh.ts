@@ -12,10 +12,6 @@ export const editorsZh = {
   "rail.mode.long_distance_rail": "长途铁路",
   "rail.params":
     "轨距 {gauge} 毫米 · 线间距 {centres} 米 · 最小半径 {minRadius} 米（推荐 {radius} 米）· 最大坡度 {gradient} ‰ · 设计速度 {speed} 公里/小时 · 站台长 {platform} 米、高 {height} 毫米 · {power}",
-  "rail.stat.route": "线路",
-  "rail.stat.track": "轨道",
-  "rail.stat.stations": "车站",
-  "rail.stat.switches": "道岔",
   "rail.stations.other": "{count} 个车站",
   "rail.backToNetwork": "返回线网",
   "street.allLines": "所有线路",

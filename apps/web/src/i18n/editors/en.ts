@@ -14,10 +14,6 @@ export const editorsEn = {
   "rail.mode.long_distance_rail": "Intercity",
   "rail.params":
     "Gauge {gauge} mm · track centres {centres} m · min radius {minRadius} m (recommended {radius} m) · max gradient {gradient} ‰ · design speed {speed} km/h · platforms {platform} m at {height} mm · {power}",
-  "rail.stat.route": "Route",
-  "rail.stat.track": "Track",
-  "rail.stat.stations": "Stations",
-  "rail.stat.switches": "Switches",
   "rail.stations.one": "{count} station",
   "rail.stations.other": "{count} stations",
   "rail.backToNetwork": "Back to the network",

@@ -12,10 +12,6 @@ export const editorsNl = {
   "rail.mode.long_distance_rail": "Intercity",
   "rail.params":
     "Spoorwijdte {gauge} mm · spoorafstand {centres} m · min. boogstraal {minRadius} m (aanbevolen {radius} m) · max. helling {gradient} ‰ · ontwerpsnelheid {speed} km/h · perrons {platform} m op {height} mm · {power}",
-  "rail.stat.route": "Tracé",
-  "rail.stat.track": "Spoor",
-  "rail.stat.stations": "Stations",
-  "rail.stat.switches": "Wissels",
   "rail.stations.one": "{count} station",
   "rail.stations.other": "{count} stations",
   "rail.backToNetwork": "Terug naar het netwerk",

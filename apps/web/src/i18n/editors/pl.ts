@@ -12,10 +12,6 @@ export const editorsPl = {
   "rail.mode.long_distance_rail": "Kolej dalekobieżna",
   "rail.params":
     "rozstaw szyn {gauge} mm · rozstaw osi torów {centres} m · min. promień {minRadius} m (zalecany {radius} m) · maks. pochylenie {gradient} ‰ · prędkość projektowa {speed} km/h · peron {platform} m, wysokość {height} mm · {power}",
-  "rail.stat.route": "Długość trasy",
-  "rail.stat.track": "Długość torów",
-  "rail.stat.stations": "Stacje",
-  "rail.stat.switches": "Rozjazdy",
   "rail.stations.one": "{count} stacja",
   "rail.stations.few": "{count} stacje",
   "rail.stations.many": "{count} stacji",

@@ -12,10 +12,6 @@ export const editorsIt = {
   "rail.mode.long_distance_rail": "Lunga percorrenza",
   "rail.params":
     "scartamento {gauge} mm · interasse {centres} m · raggio min. {minRadius} m (consigliato {radius} m) · pendenza max. {gradient} ‰ · velocità di progetto {speed} km/h · banchina {platform} m, altezza {height} mm · {power}",
-  "rail.stat.route": "Lunghezza del tracciato",
-  "rail.stat.track": "Lunghezza dei binari",
-  "rail.stat.stations": "Stazioni",
-  "rail.stat.switches": "Deviatoi",
   "rail.stations.one": "{count} stazione",
   "rail.stations.other": "{count} stazioni",
   "rail.backToNetwork": "Torna alla rete",

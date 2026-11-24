@@ -12,10 +12,6 @@ export const editorsTa = {
   "rail.mode.long_distance_rail": "நெடுந்தூர ரயில்",
   "rail.params":
     "அகலம் {gauge} மி.மீ · தண்டவாள மையங்களுக்கு இடையே {centres} மீ · குறைந்தபட்ச ஆரம் {minRadius} மீ (பரிந்துரை {radius} மீ) · அதிகபட்ச சாய்வு {gradient} ‰ · வடிவமைப்பு வேகம் {speed} கி.மீ/ம · நடைமேடை {platform} மீ, {height} மி.மீ உயரத்தில் · {power}",
-  "rail.stat.route": "வழித்தடம்",
-  "rail.stat.track": "தண்டவாளம்",
-  "rail.stat.stations": "நிலையங்கள்",
-  "rail.stat.switches": "சுவிட்சுகள்",
   "rail.stations.one": "{count} நிலையம்",
   "rail.stations.other": "{count} நிலையங்கள்",
   "rail.backToNetwork": "வலையமைப்புக்குத் திரும்பு",

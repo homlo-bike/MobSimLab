@@ -12,10 +12,6 @@ export const editorsHa = {
   "rail.mode.long_distance_rail": "Tsakanin birane",
   "rail.params":
     "Faɗin dogo {gauge} mm · tazarar tsakiyar dogo {centres} m · mafi ƙanƙantar radius {minRadius} m (shawara {radius} m) · mafi girman gangare {gradient} ‰ · gudun tsarawa {speed} km/h · dandamali {platform} m a {height} mm · {power}",
-  "rail.stat.route": "Hanya",
-  "rail.stat.track": "Dogo",
-  "rail.stat.stations": "Tashoshi",
-  "rail.stat.switches": "Makunnai",
   "rail.stations.one": "tasha {count}",
   "rail.stations.other": "tashoshi {count}",
   "rail.backToNetwork": "Koma zuwa hanyar sadarwa",

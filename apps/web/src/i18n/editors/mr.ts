@@ -12,10 +12,6 @@ export const editorsMr = {
   "rail.mode.long_distance_rail": "लांब पल्ल्याची रेल्वे",
   "rail.params":
     "गेज {gauge} मिमी · रुळांच्या मध्यांमधील अंतर {centres} मी · किमान त्रिज्या {minRadius} मी (शिफारस {radius} मी) · कमाल चढ {gradient} ‰ · रचना वेग {speed} किमी/ता · फलाट {platform} मी, {height} मिमी उंचीवर · {power}",
-  "rail.stat.route": "मार्ग",
-  "rail.stat.track": "रूळ",
-  "rail.stat.stations": "स्थानके",
-  "rail.stat.switches": "स्विच",
   "rail.stations.one": "{count} स्थानक",
   "rail.stations.other": "{count} स्थानके",
   "rail.backToNetwork": "नेटवर्ककडे परत",

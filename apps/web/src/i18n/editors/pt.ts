@@ -12,10 +12,6 @@ export const editorsPt = {
   "rail.mode.long_distance_rail": "Longo percurso",
   "rail.params":
     "Bitola {gauge} mm · entre-eixos {centres} m · raio mín. {minRadius} m (recomendado {radius} m) · rampa máx. {gradient} ‰ · velocidade de projeto {speed} km/h · plataformas de {platform} m a {height} mm · {power}",
-  "rail.stat.route": "Traçado",
-  "rail.stat.track": "Via",
-  "rail.stat.stations": "Estações",
-  "rail.stat.switches": "AMVs",
   "rail.stations.one": "{count} estação",
   "rail.stations.other": "{count} estações",
   "rail.backToNetwork": "Voltar à rede",

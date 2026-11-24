@@ -12,10 +12,6 @@ export const editorsIg = {
   "rail.mode.long_distance_rail": "N'etiti obodo",
   "rail.params":
     "Obosara ụzọ ígwè {gauge} mm · oghere etiti ụzọ ígwè {centres} m · radius kacha nta {minRadius} m (a tụrụ aro {radius} m) · mgbago kacha elu {gradient} ‰ · ọsọ nhazi {speed} km/h · ikpo okwu {platform} m na {height} mm · {power}",
-  "rail.stat.route": "Ụzọ",
-  "rail.stat.track": "Ụzọ ígwè",
-  "rail.stat.stations": "Ọdụ",
-  "rail.stat.switches": "Ihe ntụgharị",
   "rail.stations.other": "ọdụ {count}",
   "rail.backToNetwork": "Laghachi na netwọk",
   "street.allLines": "Ahịrị niile",

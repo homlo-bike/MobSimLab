@@ -12,10 +12,6 @@ export const editorsAm = {
   "rail.mode.long_distance_rail": "የከተሞች መካከል",
   "rail.params":
     "የሐዲድ ስፋት {gauge} ሚሜ · የሐዲድ ማዕከሎች ርቀት {centres} ሜ · ዝቅተኛ ራዲየስ {minRadius} ሜ (የሚመከር {radius} ሜ) · ከፍተኛ ዝንባሌ {gradient} ‰ · የንድፍ ፍጥነት {speed} ኪሜ/ሰ · መድረኮች {platform} ሜ በ {height} ሚሜ · {power}",
-  "rail.stat.route": "መስመር",
-  "rail.stat.track": "ሐዲድ",
-  "rail.stat.stations": "ጣቢያዎች",
-  "rail.stat.switches": "መቀየሪያዎች",
   "rail.stations.one": "{count} ጣቢያ",
   "rail.stations.other": "{count} ጣቢያዎች",
   "rail.backToNetwork": "ወደ መረቡ ተመለስ",

@@ -12,10 +12,6 @@ export const editorsFr = {
   "rail.mode.long_distance_rail": "Grandes lignes",
   "rail.params":
     "Écartement {gauge} mm · entraxe {centres} m · rayon min. {minRadius} m (recommandé {radius} m) · pente max. {gradient} ‰ · vitesse de projet {speed} km/h · quais {platform} m à {height} mm · {power}",
-  "rail.stat.route": "Ligne",
-  "rail.stat.track": "Voie",
-  "rail.stat.stations": "Stations",
-  "rail.stat.switches": "Aiguillages",
   "rail.stations.one": "{count} station",
   "rail.stations.other": "{count} stations",
   "rail.backToNetwork": "Retour au réseau",

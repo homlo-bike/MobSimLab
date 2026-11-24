@@ -12,10 +12,6 @@ export const editorsBn = {
   "rail.mode.long_distance_rail": "আন্তঃনগর",
   "rail.params":
     "গেজ {gauge} মিমি · রেললাইনের কেন্দ্রের দূরত্ব {centres} মি · সর্বনিম্ন ব্যাসার্ধ {minRadius} মি (প্রস্তাবিত {radius} মি) · সর্বোচ্চ ঢাল {gradient} ‰ · নকশা গতি {speed} কিমি/ঘ · প্ল্যাটফর্ম {platform} মি, {height} মিমি উচ্চতায় · {power}",
-  "rail.stat.route": "রুট",
-  "rail.stat.track": "রেললাইন",
-  "rail.stat.stations": "স্টেশন",
-  "rail.stat.switches": "সুইচ",
   "rail.stations.one": "{count}টি স্টেশন",
   "rail.stations.other": "{count}টি স্টেশন",
   "rail.backToNetwork": "নেটওয়ার্কে ফিরুন",

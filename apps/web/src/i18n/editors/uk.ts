@@ -12,10 +12,6 @@ export const editorsUk = {
   "rail.mode.long_distance_rail": "Далеке сполучення",
   "rail.params":
     "ширина колії {gauge} мм · міжколійя {centres} м · мін. радіус {minRadius} м (рекомендовано {radius} м) · макс. ухил {gradient} ‰ · проєктна швидкість {speed} км/год · платформа {platform} м, висота {height} мм · {power}",
-  "rail.stat.route": "Довжина траси",
-  "rail.stat.track": "Довжина колій",
-  "rail.stat.stations": "Станції",
-  "rail.stat.switches": "Стрілки",
   "rail.stations.one": "{count} станція",
   "rail.stations.few": "{count} станції",
   "rail.stations.many": "{count} станцій",

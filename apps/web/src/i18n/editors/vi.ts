@@ -12,10 +12,6 @@ export const editorsVi = {
   "rail.mode.long_distance_rail": "Đường sắt đường dài",
   "rail.params":
     "khổ đường {gauge} mm · khoảng cách tim đường {centres} m · bán kính tối thiểu {minRadius} m (khuyến nghị {radius} m) · độ dốc tối đa {gradient} ‰ · tốc độ thiết kế {speed} km/h · ke ga {platform} m, cao {height} mm · {power}",
-  "rail.stat.route": "Chiều dài tuyến",
-  "rail.stat.track": "Chiều dài đường ray",
-  "rail.stat.stations": "Ga",
-  "rail.stat.switches": "Ghi",
   "rail.stations.other": "{count} ga",
   "rail.backToNetwork": "Quay lại mạng lưới",
   "street.allLines": "Tất cả các tuyến",

@@ -3,7 +3,7 @@ import { usePublishChecks } from "../../shell/checks";
 import { useEngineText } from "../../i18n/engine";
 import { hasMessage, type Translate, useI18n } from "../../i18n/i18n";
 import { signalById } from "./doc";
-import { field, input, levelOpts, Num, Row, Section, Segmented, Stat } from "./panelControls";
+import { field, input, levelOpts, Num, Row, Section, Segmented } from "./panelControls";
 import { offeredModes, usePlannedModes } from "../../projects/plannedModes";
 import { POWER, RAIL_MODES } from "./modes";
 import {
@@ -30,7 +30,6 @@ export type {
   RailPanelProps,
   RailTool,
 } from "./railPanelTypes";
-import { withUnit } from "../../i18n/units";
 
 /**
  * Purpose: the railway side panel, laid out like the railways tab of the mockup: mode and its
@@ -122,12 +121,6 @@ export function RailPanel(props: Props) {
       )}
       {network && !draft && (
         <>
-          <div className="grid grid-cols-2 gap-2">
-            <Stat value={withUnit(view.counts.route_km.toFixed(2), "km")} label={t("rail.stat.route")} />
-            <Stat value={withUnit(view.counts.track_km.toFixed(2), "km")} label={t("rail.stat.track")} />
-            <Stat value={String(doc.stations.length)} label={t("rail.stat.stations")} />
-            <Stat value={String(doc.switches.length)} label={t("rail.stat.switches")} />
-          </div>
           {doc.tracks.length > 0 && (
             <button
               type="button"

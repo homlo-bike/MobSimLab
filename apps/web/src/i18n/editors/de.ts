@@ -12,10 +12,6 @@ export const editorsDe = {
   "rail.mode.long_distance_rail": "Fernverkehr",
   "rail.params":
     "Spurweite {gauge} mm · Gleisabstand {centres} m · Mindestradius {minRadius} m (empfohlen {radius} m) · max. Neigung {gradient} ‰ · Entwurfsgeschwindigkeit {speed} km/h · Bahnsteige {platform} m mit {height} mm · {power}",
-  "rail.stat.route": "Strecke",
-  "rail.stat.track": "Gleis",
-  "rail.stat.stations": "Stationen",
-  "rail.stat.switches": "Weichen",
   "rail.stations.one": "{count} Station",
   "rail.stations.other": "{count} Stationen",
   "rail.backToNetwork": "Zurück zum Netz",

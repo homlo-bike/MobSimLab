@@ -12,10 +12,6 @@ export const editorsJa = {
   "rail.mode.long_distance_rail": "長距離鉄道",
   "rail.params":
     "軌間 {gauge} mm · 線間 {centres} m · 最小曲線半径 {minRadius} m（推奨 {radius} m）· 最急勾配 {gradient} ‰ · 設計速度 {speed} km/h · ホーム {platform} m、高さ {height} mm · {power}",
-  "rail.stat.route": "路線長",
-  "rail.stat.track": "線路長",
-  "rail.stat.stations": "駅",
-  "rail.stat.switches": "分岐器",
   "rail.stations.other": "{count}駅",
   "rail.backToNetwork": "ネットワークに戻る",
   "street.allLines": "すべての路線",

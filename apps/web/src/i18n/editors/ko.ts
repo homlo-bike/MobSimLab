@@ -12,10 +12,6 @@ export const editorsKo = {
   "rail.mode.long_distance_rail": "장거리 철도",
   "rail.params":
     "궤간 {gauge} mm · 선로 중심 간격 {centres} m · 최소 곡선 반경 {minRadius} m(권장 {radius} m) · 최대 기울기 {gradient} ‰ · 설계 속도 {speed} km/h · 승강장 {platform} m, 높이 {height} mm · {power}",
-  "rail.stat.route": "노선 연장",
-  "rail.stat.track": "선로 연장",
-  "rail.stat.stations": "역",
-  "rail.stat.switches": "분기기",
   "rail.stations.other": "역 {count}개",
   "rail.backToNetwork": "네트워크로 돌아가기",
   "street.allLines": "모든 노선",

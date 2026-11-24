@@ -12,10 +12,6 @@ export const editorsYo = {
   "rail.mode.long_distance_rail": "Láàárín ìlú",
   "rail.params":
     "Fífẹ̀ ojú irin {gauge} mm · àlàfo àárín ojú irin {centres} m · rédíọ́sì tó kéré jù {minRadius} m (tí a dámọ̀ràn {radius} m) · ìtẹ̀sí tó ga jù {gradient} ‰ · ìyára àpẹrẹ {speed} km/h · pẹpẹ {platform} m ní {height} mm · {power}",
-  "rail.stat.route": "Ọ̀nà",
-  "rail.stat.track": "Ojú irin",
-  "rail.stat.stations": "Ibùdókọ̀",
-  "rail.stat.switches": "Ìyípadà",
   "rail.stations.other": "ibùdókọ̀ {count}",
   "rail.backToNetwork": "Padà sí nẹ́tíwọ̀ọ̀kì",
   "street.allLines": "Gbogbo ìlà",

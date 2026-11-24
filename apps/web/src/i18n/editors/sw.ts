@@ -12,10 +12,6 @@ export const editorsSw = {
   "rail.mode.long_distance_rail": "Miji mikubwa",
   "rail.params":
     "Upana wa reli {gauge} mm · umbali wa vituo vya reli {centres} m · kipenyo cha chini {minRadius} m (kinachopendekezwa {radius} m) · mteremko wa juu {gradient} ‰ · kasi ya usanifu {speed} km/h · majukwaa {platform} m kwa {height} mm · {power}",
-  "rail.stat.route": "Njia",
-  "rail.stat.track": "Reli",
-  "rail.stat.stations": "Stesheni",
-  "rail.stat.switches": "Swichi",
   "rail.stations.one": "stesheni {count}",
   "rail.stations.other": "stesheni {count}",
   "rail.backToNetwork": "Rudi kwenye mtandao",

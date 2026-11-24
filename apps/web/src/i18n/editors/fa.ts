@@ -12,10 +12,6 @@ export const editorsFa = {
   "rail.mode.long_distance_rail": "قطار مسافت طولانی",
   "rail.params":
     "عرض خط {gauge} mm · فاصلهٔ محور خطوط {centres} m · حداقل شعاع {minRadius} m (توصیه‌شده {radius} m) · حداکثر شیب {gradient} ‰ · سرعت طراحی {speed} km/h · سکو {platform} m، ارتفاع {height} mm · {power}",
-  "rail.stat.route": "طول مسیر",
-  "rail.stat.track": "طول ریل",
-  "rail.stat.stations": "ایستگاه‌ها",
-  "rail.stat.switches": "سوزن‌ها",
   "rail.stations.other": "{count} ایستگاه",
   "rail.backToNetwork": "بازگشت به شبکه",
   "street.allLines": "همه خطوط",

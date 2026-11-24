@@ -12,10 +12,6 @@ export const editorsUr = {
   "rail.mode.long_distance_rail": "طویل فاصلے کی ریل",
   "rail.params":
     "گیج {gauge} ملی میٹر · پٹریوں کے مراکز کا فاصلہ {centres} میٹر · کم از کم نصف قطر {minRadius} میٹر (تجویز کردہ {radius} میٹر) · زیادہ سے زیادہ ڈھلان {gradient} ‰ · ڈیزائن رفتار {speed} کلومیٹر/گھنٹہ · پلیٹ فارم {platform} میٹر، {height} ملی میٹر اونچائی پر · {power}",
-  "rail.stat.route": "راستہ",
-  "rail.stat.track": "پٹری",
-  "rail.stat.stations": "اسٹیشن",
-  "rail.stat.switches": "سوئچ",
   "rail.stations.one": "{count} اسٹیشن",
   "rail.stations.other": "{count} اسٹیشن",
   "rail.backToNetwork": "نیٹ ورک پر واپس",

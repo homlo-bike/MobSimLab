@@ -12,10 +12,6 @@ export const editorsTe = {
   "rail.mode.long_distance_rail": "సుదూర రైలు",
   "rail.params":
     "గేజ్ {gauge} మి.మీ · పట్టాల కేంద్రాల దూరం {centres} మీ · కనిష్ఠ వ్యాసార్ధం {minRadius} మీ (సిఫార్సు {radius} మీ) · గరిష్ఠ వాలు {gradient} ‰ · రూపకల్పన వేగం {speed} కి.మీ/గం · ప్లాట్‌ఫాం {platform} మీ, {height} మి.మీ ఎత్తులో · {power}",
-  "rail.stat.route": "మార్గం",
-  "rail.stat.track": "పట్టా",
-  "rail.stat.stations": "స్టేషన్లు",
-  "rail.stat.switches": "స్విచ్‌లు",
   "rail.stations.one": "{count} స్టేషన్",
   "rail.stations.other": "{count} స్టేషన్లు",
   "rail.backToNetwork": "నెట్‌వర్క్‌కు తిరిగి",

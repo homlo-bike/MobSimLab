@@ -12,10 +12,6 @@ export const editorsKk = {
   "rail.mode.long_distance_rail": "Алыс қашықтықтағы пойыз",
   "rail.params":
     "Жол табаны {gauge} мм · жол осьтері арасы {centres} м · ең аз радиус {minRadius} м (ұсынылған {radius} м) · ең үлкен еңіс {gradient} ‰ · жобалық жылдамдық {speed} км/сағ · перрон {platform} м, биіктігі {height} мм · {power}",
-  "rail.stat.route": "Бағыт",
-  "rail.stat.track": "Жол",
-  "rail.stat.stations": "Станциялар",
-  "rail.stat.switches": "Бағыттамалар",
   "rail.stations.one": "{count} станция",
   "rail.stations.other": "{count} станция",
   "rail.backToNetwork": "Желіге оралу",

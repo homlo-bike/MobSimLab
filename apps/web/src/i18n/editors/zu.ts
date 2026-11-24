@@ -12,10 +12,6 @@ export const editorsZu = {
   "rail.mode.long_distance_rail": "Phakathi kwamadolobha",
   "rail.params":
     "Ububanzi bukajantshi {gauge} mm · ibanga phakathi kwamaphakathi kajantshi {centres} m · irediyasi encane {minRadius} m (enconyiwe {radius} m) · ukuthambeka okuphezulu {gradient} ‰ · isivinini sokuklama {speed} km/h · amapulatifomu {platform} m ku-{height} mm · {power}",
-  "rail.stat.route": "Umzila",
-  "rail.stat.track": "Ujantshi",
-  "rail.stat.stations": "Iziteshi",
-  "rail.stat.switches": "Izishintshi",
   "rail.stations.one": "isiteshi esingu-{count}",
   "rail.stations.other": "iziteshi ezingu-{count}",
   "rail.backToNetwork": "Buyela kunethiwekhi",

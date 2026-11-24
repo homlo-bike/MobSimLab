@@ -15,10 +15,6 @@ export const editorsAr = {
   "rail.mode.long_distance_rail": "قطار المسافات الطويلة",
   "rail.params":
     "عرض السكة {gauge} مم · المسافة بين محوري السكتين {centres} م · أدنى نصف قطر {minRadius} م (الموصى به {radius} م) · أقصى انحدار {gradient} ‰ · سرعة التصميم {speed} كم/س · أرصفة {platform} م بارتفاع {height} مم · {power}",
-  "rail.stat.route": "المسار",
-  "rail.stat.track": "السكة",
-  "rail.stat.stations": "المحطات",
-  "rail.stat.switches": "المحوّلات",
   "rail.stations.one": "محطة واحدة",
   "rail.stations.two": "محطتان",
   "rail.stations.few": "{count} محطات",
