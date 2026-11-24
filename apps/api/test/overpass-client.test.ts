@@ -68,4 +68,18 @@ describe("Overpass client queue", () => {
     expect(Date.now() - t0).toBeLessThan(2000);
     expect(calls).toBe(1);
   });
+
+  it("does not sleep through its deadline while backing off before a retry", async () => {
+    const fetchImpl = (async () => new Response("busy", { status: 503 })) as unknown as typeof fetch;
+    const c = new OverpassClient({
+      fetchImpl,
+      minIntervalMs: 0,
+      deadlineMs: 50,
+      backoffMs: [60_000],
+      sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
+    });
+    const t0 = Date.now();
+    await expect(c.run("A")).rejects.toMatchObject({ status: 503 });
+    expect(Date.now() - t0).toBeLessThan(2000);
+  });
 });

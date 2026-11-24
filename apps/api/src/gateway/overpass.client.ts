@@ -47,6 +47,13 @@ export function overpassEndpoint(env: NodeJS.ProcessEnv = process.env): string {
   return z.url({ protocol: /^https$/ }).parse(v);
 }
 
+/**
+ * Longest a request a person waits for (a map tile, the areas round a point, the country of a point) waits for
+ * Overpass, ms: well under the 90 s after which a reverse proxy gives up, so the tools say OpenStreetMap is slow
+ * instead of waiting for minutes (GIS showed "Loading streets…").
+ */
+export const INTERACTIVE_DEADLINE_MS = 40_000;
+
 /** Codes of a connection that could not be made at all (refused, no route, no such host). */
 const UNREACHABLE = new Set(["ECONNREFUSED", "EHOSTUNREACH", "ENETUNREACH", "ENOTFOUND", "EAI_AGAIN"]);
 
@@ -132,7 +139,7 @@ export class OverpassClient {
     let lastError = new OverpassError("Overpass request failed", 502);
     for (const backoff of [0, ...this.o.backoffMs]) {
       if (signal?.aborted) throw new OverpassError("Overpass request cancelled", 499);
-      if (backoff) await this.o.sleep(backoff + Math.random() * (backoff / 2));
+      if (backoff) await this.pause(backoff + Math.random() * (backoff / 2), signal);
       if (signal?.aborted) throw new OverpassError("Overpass request cancelled", 499);
       try {
         return await this.inTurn(() => {
@@ -194,6 +201,20 @@ export class OverpassClient {
       clearTimeout(timer);
       signal?.removeEventListener("abort", stop);
     }
+  }
+
+  /** Purpose: wait `ms` before a retry, or less when `signal` aborts (the deadline or the caller). */
+  private pause(ms: number, signal?: AbortSignal): Promise<void> {
+    if (!signal) return this.o.sleep(ms);
+    if (signal.aborted) return Promise.resolve();
+    return new Promise<void>((done) => {
+      const stop = () => done();
+      signal.addEventListener("abort", stop, { once: true });
+      void this.o.sleep(ms).then(() => {
+        signal.removeEventListener("abort", stop);
+        done();
+      });
+    });
   }
 
   /** Purpose: the error for a server that cannot be reached: not retried, status 503. */
