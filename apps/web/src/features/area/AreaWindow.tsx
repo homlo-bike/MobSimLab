@@ -583,8 +583,13 @@ export function AreaWindow({
               <div ref={container} className="h-full w-full" data-testid="area-map" />
               {noMap && <NoMapNotice />}
             </div>
-            <div className="absolute start-3 top-3 z-10 flex w-[min(20rem,calc(100%-1.5rem))] flex-col gap-2">
-              <div className="relative">
+            {/* Clicks pass through the empty part of this column (beside the tools, where the search results
+                were) to the map; only the search and the tools take them. */}
+            <div
+              data-testid="area-overlay"
+              className="pointer-events-none absolute start-3 top-3 z-10 flex w-[min(20rem,calc(100%-1.5rem))] flex-col gap-2"
+            >
+              <div className="pointer-events-auto relative">
                 <input
                   type="search"
                   className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm"
@@ -617,7 +622,7 @@ export function AreaWindow({
               <div
                 role="group"
                 aria-label={t("aw.tools")}
-                className="w-44 rounded-xl border border-slate-200 bg-white p-1 shadow-md"
+                className="pointer-events-auto w-44 rounded-xl border border-slate-200 bg-white p-1 shadow-md"
               >
                 {toolButton("draw", t("aw.draw"), "D", "✎")}
                 {toolButton("edit", t("aw.edit"), "E", "⬚")}

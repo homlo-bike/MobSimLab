@@ -31,6 +31,7 @@ import {
 } from "./format.mts";
 import type { MslabReadResult } from "./read.mts";
 import { storedPolygons } from "../projects/area-polygons";
+import { areaRoundDrawing } from "../projects/project-area";
 import { type MapDataSummary, MslabMapService } from "./map-data";
 
 /** The API's version, written into each file's manifest. */
@@ -488,6 +489,15 @@ export class MslabService {
           const modes = [...new Set(res.project.modes)].filter((m): m is (typeof PROJECT_MODES)[number] =>
             (PROJECT_MODES as readonly string[]).includes(m),
           );
+          // A file saved before projects had drawn polygons carries no area: the box round its drawing, as the
+          // project area then was, so the imported project can load its map data straight away.
+          const saved = storedPolygons(res.project.areaPolygons);
+          const area = saved.length
+            ? saved
+            : areaRoundDrawing(
+                Object.fromEntries(drawings.map((d) => [d.kind, JSON.parse(d.doc) as unknown])),
+                res.project.areaName ?? res.project.name,
+              );
           const newId = await this.db.transaction().execute(async (tx) => {
             const now = new Date();
             // A name the importer already uses gets a number: "Damascus (2)", "Damascus (3)"…
@@ -508,7 +518,7 @@ export class MslabService {
                 name,
                 description: res.project.description,
                 area_name: res.project.areaName,
-                area_polygons: JSON.stringify(storedPolygons(res.project.areaPolygons)),
+                area_polygons: JSON.stringify(area),
                 modes,
                 copied_from: null,
                 updated_at: now,

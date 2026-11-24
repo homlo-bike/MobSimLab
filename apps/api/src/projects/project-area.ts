@@ -104,6 +104,51 @@ export function joinBoxes(a: Bbox | null, b: Bbox | null): Bbox | null {
   return [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])];
 }
 
+/** Buffer round the drawing of a project saved without an area, km (the area before polygons, 06-gis §1). */
+export const DRAWN_AREA_BUFFER_KM = 2;
+
+/**
+ * Purpose: a box widened by `km` on every side (metres to degrees at the box's widest latitude), clamped to
+ * the longitudes and latitudes a polygon may have.
+ */
+export function bufferedBox(b: Bbox, km: number): Bbox {
+  const dLat = (km * 1000) / 111_320;
+  const lat = Math.min(85, Math.max(Math.abs(b[1]), Math.abs(b[3])));
+  const dLon = dLat / Math.max(0.01, Math.cos((lat * Math.PI) / 180));
+  return [
+    Math.max(-180, b[0] - dLon),
+    Math.max(-85, b[1] - dLat),
+    Math.min(180, b[2] + dLon),
+    Math.min(85, b[3] + dLat),
+  ];
+}
+
+/**
+ * Purpose: the project area of a project that has none, such as one saved before projects had drawn polygons
+ * (its area was the box round the drawing widened by 2 km): one full-detail polygon round the drawing, so map
+ * data can be imported without drawing the area again.
+ * Inputs: the drawing documents by kind, the polygon's name. Output: the polygons; none when nothing is drawn.
+ */
+export function areaRoundDrawing(docs: Record<string, unknown>, name: string): AreaPolygon[] {
+  const box = boxOf(drawnPoints(docs));
+  if (!box) return [];
+  const [w, s, e, n] = bufferedBox(box, DRAWN_AREA_BUFFER_KM);
+  return [
+    {
+      id: "a1",
+      name: name.trim().slice(0, 200) || "Project area",
+      detail: "full",
+      ring: [
+        [w, s],
+        [e, s],
+        [e, n],
+        [w, n],
+        [w, s],
+      ],
+    },
+  ];
+}
+
 /**
  * Purpose: a project's area. Inputs: database, project id. Output: the area, or null when the planner has not
  * drawn one yet. The caller checks access first.

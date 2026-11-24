@@ -85,13 +85,13 @@ describe("mslab project files", () => {
   const railway = {
     origin: [13.4, 52.5],
     mode: "tram",
-    stations: [{ id: 1, name: "Lakeside" }],
+    stations: [{ id: 1, name: "Lakeside", x: 0, y: 0 }],
     tracks: [
       {
         id: 1,
         points: [
-          [0, 0],
-          [400, 0],
+          { x: 0, y: 0 },
+          { x: 400, y: 0 },
         ],
       },
     ],
@@ -199,6 +199,20 @@ describe("mslab project files", () => {
     expect(drawings.railway.doc).toEqual(railway);
     expect(drawings.preferences.doc).toEqual(preferences);
     expect(drawings.depots).toBeUndefined();
+
+    // The source has no project area (as files saved before drawn polygons): the copy gets the box round its
+    // drawing, widened by 2 km, so its map data can be imported straight away.
+    const area = (await as("bob").get(`/api/projects/${id}/area`)).body as {
+      polygons: { name: string; detail: string; ring: [number, number][] }[];
+    };
+    expect(area.polygons).toHaveLength(1);
+    expect(area.polygons[0]).toMatchObject({ name: "Lakeside", detail: "full" });
+    const [w, s] = area.polygons[0]!.ring[0]!;
+    const [e, n] = area.polygons[0]!.ring[2]!;
+    expect(w).toBeCloseTo(13.4 - 2000 / 111_320 / Math.cos((52.5 * Math.PI) / 180), 3);
+    expect(s).toBeCloseTo(52.5 - 2000 / 111_320, 4);
+    expect(e).toBeGreaterThan(13.4 + 400 / 67_800);
+    expect(n).toBeCloseTo(52.5 + 2000 / 111_320, 4);
 
     const runs = (await as("bob").get(`/api/projects/${id}/simulation-runs`)).body.runs as {
       id: string;
