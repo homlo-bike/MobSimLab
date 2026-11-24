@@ -274,20 +274,31 @@ export function stationsAround(st: readonly { at: LonLat; radius: number }[]): (
     Math.floor((p[0] * kx) / size),
     Math.floor((p[1] * 110_574) / size),
   ];
-  const grid = new Map<string, number[]>();
+  // A number per square (squares within ±2^20 of the origin on each axis, far beyond the Earth at these sizes).
+  const key = (x: number, y: number) => (x + 1_048_576) * 2_097_152 + (y + 1_048_576);
+  const grid = new Map<number, number[]>();
   st.forEach((s, i) => {
     const [x, y] = sq(s.at);
-    const k = `${x},${y}`;
+    const k = key(x, y);
     const list = grid.get(k);
     if (list) list.push(i);
     else grid.set(k, [i]);
   });
+  // The squares with a station in them or next to them: every other point has none around it.
+  const lived = new Set<number>();
+  for (const k of grid.keys()) {
+    const x = Math.floor(k / 2_097_152) - 1_048_576;
+    const y = (k % 2_097_152) - 1_048_576;
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) lived.add(key(x + dx, y + dy));
+  }
+  const none: number[] = [];
   return (p) => {
     const [x, y] = sq(p);
+    if (!lived.has(key(x, y))) return none;
     const out: number[] = [];
     for (let dx = -1; dx <= 1; dx++)
       for (let dy = -1; dy <= 1; dy++) {
-        const list = grid.get(`${x + dx},${y + dy}`);
+        const list = grid.get(key(x + dx, y + dy));
         if (list) out.push(...list);
       }
     return out.sort((a, b) => a - b);
@@ -362,6 +373,14 @@ export function prepare(input: PrepareInput): Prepared {
     l,
     at: l.stations.map((id) => st.find((s) => s.id === id)!),
   }));
+  const lineRadius = lineStations.map(({ l }) => central("mode.catchment_m", l.mode, prefs));
+  const linesAt: number[][] = st.map(() => []);
+  lineStations.forEach(({ at: stops }, k) => {
+    for (const s of stops) {
+      const i = st.indexOf(s);
+      if (!linesAt[i]!.includes(k)) linesAt[i]!.push(k);
+    }
+  });
   for (const b of input.buildings) {
     const at = ringCentre(b.ring);
     if (!nearest(at)) continue;
@@ -375,12 +394,19 @@ export function prepare(input: PrepareInput): Prepared {
     cellHomes.set(cell, (cellHomes.get(cell) ?? 0) + floor * use.homes);
     if (use.jobs)
       cellJobs.set(cell, (cellJobs.get(cell) ?? 0) + (floor * (1 - use.homes)) / m2PerJob[use.jobs]);
+    // The lines with a stop within their catchment: only stations in the grid squares round the building
+    // can be that close (a line's catchment is never wider than its stations'), so not every stop of every
+    // line is measured for every building (the Tables tab froze for seconds on the Damascus network).
+    const lineD = new Map<number, number>();
+    for (const i of around(at)) {
+      const d = distanceM(at, st[i]!.at);
+      for (const k of linesAt[i]!) lineD.set(k, Math.min(lineD.get(k) ?? Infinity, d));
+    }
     const near: BuildingRec["near"] = [];
-    for (const { l, at: stops } of lineStations) {
-      const r = central("mode.catchment_m", l.mode, prefs);
-      let d = Infinity;
-      for (const s of stops) d = Math.min(d, distanceM(at, s.at));
-      if (d <= r) near.push({ line: l.id, d, r });
+    for (const k of [...lineD.keys()].sort((a, b) => a - b)) {
+      const d = lineD.get(k)!;
+      const r = lineRadius[k]!;
+      if (d <= r) near.push({ line: lineStations[k]!.l.id, d, r });
     }
     if (region) {
       const k = regionStock.get(region.id) ?? { homes: 0, work: 0, covered: 0 };
