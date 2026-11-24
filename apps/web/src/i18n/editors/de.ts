@@ -76,6 +76,8 @@ export const editorsDe = {
   "rail.scissors": "Doppelter Gleiswechsel",
   "rail.terrainFailed":
     "Geländehöhen wurden nicht geladen: {reason}. Neigungen und Stationshöhen folgen, sobald sie geladen sind.",
+  "rail.publishTerrainFailed":
+    "Geländehöhen wurden nicht geladen: {reason}. Der Fahrplan wurde nicht veröffentlicht, weil die Züge ohne sie wie auf einer ebenen Strecke fahren würden. Veröffentlichen Sie erneut.",
   "rail.signals": "Signale",
   "rail.signalsSome":
     "{summary}. Sie werden aus dem Entwurf erzeugt und folgen ihm bei Änderungen. Klicken Sie auf ein Signal, um es zu ändern oder zu löschen, oder fügen Sie mit dem Signal-Werkzeug eines hinzu; jede Änderung wird geprüft.",

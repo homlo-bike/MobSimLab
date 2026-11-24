@@ -73,6 +73,8 @@ export const editorsTr = {
   "rail.scissors": "Makaslı çapraz geçiş",
   "rail.terrainFailed":
     "Arazi yükseklikleri yüklenemedi: {reason}. Eğimler ve istasyon yükseklikleri yüklendiğinde gelecek.",
+  "rail.publishTerrainFailed":
+    "Zemin yükseklikleri yüklenmedi: {reason}. Tarife yayımlanmadı, çünkü onlar olmadan trenler hat düzmüş gibi çalışırdı. Yeniden yayımlayın.",
   "rail.signals": "Sinyaller",
   "rail.signalsSome":
     "{summary}. Tasarımdan üretilir ve tasarımı izler. Değiştirmek veya silmek için bir sinyale tıklayın ya da Sinyal aracıyla ekleyin. Her değişiklik denetlenir.",

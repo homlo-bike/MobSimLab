@@ -75,6 +75,8 @@ export const editorsIt = {
   "rail.scissors": "Comunicazione a forbice",
   "rail.terrainFailed":
     "Le quote del terreno non sono state caricate: {reason}. Pendenze e quote delle stazioni seguiranno appena caricate.",
+  "rail.publishTerrainFailed":
+    "Le quote del terreno non sono state caricate: {reason}. L’orario non è stato pubblicato, perché senza di esse i treni viaggerebbero come su una linea piana. Pubblica di nuovo.",
   "rail.signals": "Segnali",
   "rail.signalsSome":
     "{summary}. Generati dal progetto e lo seguono. Fai clic su un segnale per modificarlo o eliminarlo, oppure aggiungine con lo strumento Segnale. Ogni modifica viene verificata.",

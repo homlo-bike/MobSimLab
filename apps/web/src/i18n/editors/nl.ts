@@ -75,6 +75,8 @@ export const editorsNl = {
   "rail.scissors": "Dubbele overloop (schaarwissel)",
   "rail.terrainFailed":
     "Terreinhoogtes zijn niet geladen: {reason}. Hellingen en stationshoogtes volgen zodra ze geladen zijn.",
+  "rail.publishTerrainFailed":
+    "Terreinhoogtes zijn niet geladen: {reason}. De dienstregeling is niet gepubliceerd, omdat de treinen zonder hoogtes zouden rijden alsof de lijn vlak is. Publiceer opnieuw.",
   "rail.signals": "Seinen",
   "rail.signalsSome":
     "{summary}. Ze worden uit het ontwerp gegenereerd en volgen het als het verandert. Klik op een sein om het te wijzigen of te verwijderen, of voeg er een toe met het gereedschap Sein; elke wijziging wordt gecontroleerd.",

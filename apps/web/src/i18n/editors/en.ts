@@ -76,6 +76,8 @@ export const editorsEn = {
   "rail.scissors": "Scissors crossover",
   "rail.terrainFailed":
     "Ground heights did not load: {reason}. Gradients and station heights follow once they load.",
+  "rail.publishTerrainFailed":
+    "Ground heights did not load: {reason}. The timetable was not published, because without them the trains would run as if the line were flat. Try publishing again.",
   "rail.signals": "Signals",
   "rail.signalsSome":
     "{summary}. They are generated from the design and follow it as it changes. Click a signal to change or delete it, or use the Signal tool to add one; each change is checked.",

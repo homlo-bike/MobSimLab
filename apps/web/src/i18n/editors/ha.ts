@@ -73,6 +73,8 @@ export const editorsHa = {
   "rail.scissors": "Mahaɗar almakashi",
   "rail.terrainFailed":
     "Tsayin ƙasa bai loda ba: {reason}. Gangara da tsayin tashoshi za su biyo bayan sun loda.",
+  "rail.publishTerrainFailed":
+    "Tsayin ƙasa bai loda ba: {reason}. Ba a wallafa jadawalin ba, domin ba tare da su ba jiragen ƙasa za su yi tafiya kamar layin a shimfiɗe yake. Sake wallafawa.",
   "rail.signals": "Alamomi",
   "rail.signalsSome":
     "{summary}. Ana samar da su daga tsarin kuma suna bin sa idan ya canza. Danna alama don canza ta ko share ta, ko yi amfani da kayan aikin Alama don ƙara ɗaya; ana duba kowane canji.",

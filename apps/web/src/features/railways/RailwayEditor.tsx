@@ -345,7 +345,13 @@ export function RailwayEditor({
   const lastView = useRef<RailView | null>(null);
   if (view) lastView.current = view;
 
-  const { terrainError, retryTerrain } = useTerrainHeights({ engine, view, draft, fetchHeights, setStreets });
+  const { terrainError, retryTerrain, loadAllTerrain } = useTerrainHeights({
+    engine,
+    view,
+    draft,
+    fetchHeights,
+    setStreets,
+  });
 
   // A saved drawing opens with the map on it.
   const framed = useRef(initial === null);
@@ -720,6 +726,10 @@ export function RailwayEditor({
       await paint();
       // The engine plans on its last build: build the drawing without a draft first.
       e.build(doc, null);
+      // Gradients slow trains or stall them: every ground height the drawing needs loads before planning, and
+      // a publish whose heights did not load stops with the reason instead of planning as if on flat ground.
+      const terrainFailed = await loadAllTerrain(e, () => e.build(doc, null));
+      if (terrainFailed) throw new Error(tNow("rail.publishTerrainFailed", { reason: terrainFailed }));
       // Every day type with its own times and the calendar's peaks; the journey planner takes the weekday.
       const byDay: DayPublications = {};
       for (const [i, day] of (days.length ? days : (["weekday"] as const)).entries()) {
