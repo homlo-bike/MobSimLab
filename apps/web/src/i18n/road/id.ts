@@ -96,4 +96,33 @@ export const roadId = {
   "visuals.legend.veryLate": "Sangat terlambat (lebih dari {min} mnt)",
   "road.replay.noService":
     "Run ini disimpan sebelum waktu layanan dicatat, jadi kendaraannya memakai warna jalurnya. Jalankan lagi untuk melihat ketepatan waktunya.",
+  "road.step.streets": "Memuat jalan: {done} dari {of} ubin peta…",
+  "road.note.junctionSetup":
+    "Pengaturan persimpangan: {on} persimpangan diberi lampu lalu lintas, {off} tanpa",
+  "road.note.gateOffStreet": "Depo {depot}: sebuah gerbang tidak berada dekat jalan yang boleh dilalui bus",
+  "road.note.noOsmSignals":
+    "OpenStreetMap tidak mencatat lampu lalu lintas di jalan-jalan ini, jadi setiap persimpangan berjalan tanpa lampu dan jalan samping menunggu celah di lalu lintas jalan utama. Beri persimpangan utama lampu lalu lintas di GIS › Jalan.",
+  "road.note.lineCannotRun": "{line} tidak dapat berjalan: {why}",
+  "road.note.carsRemoved":
+    "{n} mobil latar berhenti lebih dari {min} menit dan dikeluarkan dari lalu lintas untuk mengurai kemacetan; jalan mungkin lebih padat daripada kapasitasnya",
+  "road.note.pullOutNotFollowed":
+    "Rute keluar depo tidak diikuti ({why}); kendaraannya mengambil jalan terpendek",
+  "road.note.pullInNotFollowed":
+    "Rute masuk depo tidak diikuti ({why}); kendaraannya mengambil jalan terpendek",
+  "road.note.noDepot": "Tanpa depo: kendaraannya mulai dan berakhir di jalan",
+  "road.note.noSlot": "Kendaraan {n} tidak punya tempat di depo: mulai dari gerbang depo",
+  "road.note.cannotLeave": "Kendaraan {n} tidak bisa keluar dari depo: mulai di jalan",
+  "road.note.cannotReturn": "Kendaraan {n} tidak bisa kembali ke depo: berakhir di jalan",
+  "road.problem.notRouted": "titiknya kurang dari dua atau rutenya belum dibuat",
+  "road.problem.noDepartures": "tidak ada keberangkatan dalam periode ini",
+  "road.problem.notMatched": "rutenya tidak dapat dicocokkan dengan jalan",
+  "road.problem.stopOffRoute": "halte {stop} tidak berada di rute yang dicocokkan",
+  "road.problem.notBack": "rute tidak kembali ke halte pertamanya",
+  "road.problem.noBusLink":
+    "tidak ada jalan bagi bus dari {from} ke {to}, dekat {stop} ({m} m jauhnya): jalan-jalan model lalu lintas tidak punya belokan di sana yang boleh diambil bus, misalnya putar balik atau belokan terlarang. Pindahkan rute atau titik lewat agar mengambil jalan lain di sana",
+  "road.problem.depotToRoute": "kendaraannya tidak dapat mencapai rute dari depo",
+  "road.problem.notClosed": "putarannya tidak tertutup di jalan",
+  "road.problem.unreachable": "tidak dapat dicapai",
+  "road.part.unnamedStreet": "jalan tanpa nama (jalan OSM {way})",
+  "road.part.stop": "halte {n}",
 } satisfies RoadMessages;

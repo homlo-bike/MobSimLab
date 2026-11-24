@@ -340,6 +340,8 @@ export const editorsNl = {
   "rail.say.clickTrackSwitch": "Klik op een spoor om een wissel te plaatsen.",
   "rail.say.straightOnly": "Cataloguswissels liggen op recht spoor. Klik op een recht stuk.",
   "rail.say.doubleOnly": "Overloopwissels verbinden twee evenwijdige sporen. Kies dubbelspoor.",
+  "rail.say.missedStationEnd":
+    "Klik precies op een stationseinde om het spoor daar aan te sluiten. Zoom in als de einden moeilijk te raken zijn.",
   "rail.say.clickTrackSignal": "Klik op een spoor, stationsspoor of wisseltak om een sein te plaatsen.",
   "rail.signalsReset": "Seinen teruggezet naar de uit het ontwerp gegenereerde.",
   "rail.noiseFlows": "Treinen per uur op elk spoor (voorbeelddienst tot er lijnen getekend zijn)",
@@ -1431,23 +1433,16 @@ export const editorsNl = {
   "capacity.loading": "Netwerk laden…",
   "capacity.planning": "Periode plannen en door de beveiliging laten rijden…",
   "capacity.trying": "{line} {every} testen ({n} van {total})…",
-  "capacity.noFile": "Geen bestand gekozen",
-  "capacity.replace": "Vervangen",
-  "capacity.choose": "Kiezen",
   "capacity.title": "Het systeem testen",
   "capacity.intro":
     "Laat een periode van de dag door de dienstregelingplanner en de beveiliging rijden. Zie of elke spoorlijn op de sporen past, op tijd rijdt en herstelt van vertragingen, en hoeveel treinen ze aankan.",
-  "capacity.network": "Netwerk",
   "capacity.example": "Voorbeeldmetro",
-  "capacity.mine": "Uit bestanden",
   "capacity.drawn": "Getekend in dit project",
-  "capacity.drawnText": "Lijnen {names} op het spoor dat in het spoortool is getekend, zoals opgeslagen.",
   "capacity.drawn.noTrack": "Er is nog niets getekend in het spoortool.",
   "capacity.drawn.noLines":
     "Geen lijn is klaar voor de test. Geef een lijn in het spoortool minstens twee haltes en een trein.",
   "capacity.drawn.errors": "Het getekende spoor bevat fouten. Los ze eerst op in het spoortool.",
   "capacity.building": "Het getekende spoor wordt opgebouwd…",
-  "capacity.drawnStreets": "Straatlijnen {names}, gereden langs hun route met vertraging door verkeer.",
   "capacity.loads.estimating": "Reizigers rond stations en haltes worden geschat…",
   "capacity.loads.toggle": "Bezetting (reizigersschatting van het tabblad Tabellen)",
   "capacity.loads.title": "Reizigers",
@@ -1480,12 +1475,6 @@ export const editorsNl = {
   "capacity.street.bunchingHint": "gaten korter dan de halve interval; {left} min te laat aan het eind",
   "capacity.street.method":
     "Elke straatlijn reed {runs} keer; elke rit had zijn eigen verkeer, {low} tot {high} keer de verwachte vertraging in het verkeer van hoofdwegen (projectvoorkeuren).",
-  "capacity.exampleText":
-    "Lijn M1 Westpark – Eastgate: vijf stations, aan elk einde een depot, elke 5 min in de spits en anders elke 10 min.",
-  "capacity.topologyFile": "Spoortopologie (JSON)",
-  "capacity.linesFile": "Lijnen (JSON)",
-  "capacity.filesHelp":
-    "Het spoortopologiebestand volgt contracts/rail-topology.schema.json; kies voor de spoorweg die in dit project is getekend “{drawn}”. Het lijnenbestand geeft per lijn de stations, de trein en de dienst, zoals de dienstregelingplanner ze leest (docs/user/simulator.md).",
   "capacity.period": "Periode",
   "capacity.from": "Van",
   "capacity.to": "Tot",
@@ -1505,7 +1494,11 @@ export const editorsNl = {
   "capacity.run": "Test uitvoeren",
   "capacity.runAgain": "Opnieuw uitvoeren",
   "capacity.stop": "Stoppen",
-  "capacity.chooseBoth": "Kies beide bestanden om je spoorlijn te testen.",
+  "capacity.replay.title": "Afspelen op de kaart",
+  "capacity.replay.note":
+    "Alle getekende lijnen rijden samen op één klok. Treinen rijden volgens plan, zonder willekeurige vertragingen; voertuigen van straatlijnen hebben het verkeer van de eerste testrun.",
+  "capacity.replay.none": "Er is niets af te spelen: in de periode reed geen enkele lijn.",
+  "capacity.replay.stopped": "De run stopte vroegtijdig, dus de treinen staan vanaf dan stil: {why}",
   "capacity.summary":
     "{period} · {trips} ritten met marges gepland · {out} treinen in dienst, {reserve} in reserve",
   "capacity.importNotes": "Importnotities ({n})",

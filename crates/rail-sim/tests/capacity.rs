@@ -4,7 +4,7 @@ use rail_model::{examples, Model};
 use rail_plan::examples::metro_m1;
 use rail_plan::{plan, Band, PlanParams};
 use rail_sim::capacity::{
-    bottleneck_section, capacity_run, practical_maximum, sweep_headways, sweep_point,
+    bottleneck_section, capacity_run, practical_maximum, replay, sweep_headways, sweep_point,
     CapacityParams, SectionKind, Verdict,
 };
 use rail_sim::network::{NetParams, NetworkSim};
@@ -184,4 +184,39 @@ fn the_projects_signalling_values_reach_the_planner_and_kernel() {
     assert!(Signalling::default().is_empty());
     let out = serde_json::to_value(CapacityParams::default()).unwrap();
     assert!(out.get("signalling").is_none());
+}
+
+#[test]
+fn the_replay_moves_every_train_along_the_track_through_the_period() {
+    let m = model();
+    let p = CapacityParams::default();
+    let r = replay(&m, &[metro_m1()], &p, 10.0).unwrap();
+    assert!(r.stopped.is_none(), "{:?}", r.stopped);
+    assert_eq!(r.begin, p.from_s - p.warmup_s);
+    assert_eq!(
+        r.frames,
+        ((p.to_s + p.recovery_s - r.begin) / 10.0) as usize + 1
+    );
+    assert_eq!(r.lines, vec![("M1".to_string(), "M1".to_string())]);
+    assert!(!r.trains.is_empty());
+    let track_ids: Vec<&str> = m.tracks.iter().map(|t| t.id.as_str()).collect();
+    assert!(r
+        .tracks
+        .iter()
+        .all(|(t, from)| track_ids.contains(&t.as_str()) && *from == 0.0));
+    for tr in &r.trains {
+        assert_eq!(tr.s.len(), r.frames * 3);
+        assert_eq!(tr.st.len() % 4, 0);
+    }
+    // Trains move: some train is somewhere else at the end of the period than at its start.
+    let at = |tr: &rail_sim::capacity::ReplayTrain, k: usize| (tr.s[k * 3], tr.s[k * 3 + 1]);
+    assert!(r.trains.iter().any(|tr| at(tr, 0) != at(tr, r.frames / 2)));
+    assert!(r
+        .trains
+        .iter()
+        .any(|tr| tr.s.chunks(3).any(|x| x[2] > 30.0)));
+    // A train with passenger calls ends its day with a last call, and arrives at its stops.
+    let busy = r.trains.iter().find(|tr| !tr.st.is_empty()).unwrap();
+    assert_eq!(busy.st[busy.st.len() - 1], 2.0);
+    assert!(busy.st.chunks(4).filter(|c| c[1] >= 0.0).count() > 1);
 }

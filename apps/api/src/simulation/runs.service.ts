@@ -700,8 +700,8 @@ export class RunsService {
    * Purpose: load the OpenStreetMap street tiles of a queued demand or road run in the background (from the
    * project's OSM import where it has one, as the street line tool does), store them gzipped in its network
    * (worker `jobs/demand.py` `street_tiles`), for a demand run with the bike parkings and shared-bike stations of
-   * the same tiles and of the GBFS feed (`bikes`), and queue it. A demand run's progress counts the tiles; a road
-   * run's shows that its street network is being built. A run stopped meanwhile is left as it is; a run whose
+   * the same tiles and of the GBFS feed (`bikes`), and queue it. The run's progress counts the tiles (`streets`);
+   * the log says when loading starts and how long it took. A run stopped meanwhile is left as it is; a run whose
    * streets cannot be loaded fails with the reason. Bike points that cannot be loaded are left out with a note
    * in the result.
    */
@@ -721,13 +721,14 @@ export class RunsService {
           .executeTakeFirst()
       )?.status === "queued";
     let failedTile: string | undefined;
+    const started = Date.now();
+    this.log.log(`${kind} run ${id}: loading ${tiles.length} street tiles`);
     try {
-      if (kind === "road")
-        await this.db
-          .updateTable("simulation.run")
-          .set({ progress: JSON.stringify({ step: "network" }) })
-          .where("id", "=", id)
-          .execute();
+      await this.db
+        .updateTable("simulation.run")
+        .set({ progress: JSON.stringify({ step: "streets", done: 0, of: tiles.length }) })
+        .where("id", "=", id)
+        .execute();
       // The tiles go into one gzipped JSON list in order as they arrive, so the API holds them compressed, not
       // the whole area's OSM XML at once.
       const list = gzipList();
@@ -751,7 +752,7 @@ export class RunsService {
           done++;
           if (done % 8 === 0 || done === tiles.length) {
             if (!(await open())) stopped = true;
-            else if (kind === "demand")
+            else
               await this.db
                 .updateTable("simulation.run")
                 .set({ progress: JSON.stringify({ step: "streets", done, of: tiles.length }) })
@@ -766,7 +767,13 @@ export class RunsService {
       } finally {
         packed = await list.finish();
       }
-      if (stopped || !(await open())) return;
+      if (stopped || !(await open())) {
+        this.log.log(`${kind} run ${id}: stopped while its street tiles loaded`);
+        return;
+      }
+      this.log.log(
+        `${kind} run ${id}: ${tiles.length} street tiles loaded in ${Math.round((Date.now() - started) / 1000)} s`,
+      );
       let bikes: Awaited<ReturnType<RunsService["demandBikes"]>> | undefined;
       if (kind === "demand") {
         await this.db
@@ -792,7 +799,12 @@ export class RunsService {
         );
         return;
       }
-      await this.db.updateTable("simulation.run").set({ network }).where("id", "=", id).execute();
+      // Loaded: the run waits for the worker ("Waiting") until it takes it.
+      await this.db
+        .updateTable("simulation.run")
+        .set({ network, ...(kind === "road" ? { progress: null } : {}) })
+        .where("id", "=", id)
+        .execute();
       await this.enqueue(id);
     } catch (e) {
       const reason =

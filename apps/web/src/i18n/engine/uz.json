@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Orqaga aylanish {extra} qoʻshadi ({direct} oʻrniga {length}). Oxirgi bekatni transport burila oladigan joyga qoʻyishni koʻrib chiqing: avtobus stansiyasi, aylanma yoʻl, aylanma harakatli chorraha yoki aylanib oʻtish mumkin boʻlgan kvartal.",
   "street.line.two_stops": "Liniyaga kamida ikkita bekat kerak. Nuqtalarni bekatga aylantiring.",
   "street.line.wrong_side": "Bu qism toʻgʻri chiziqda {straight} boʻlgani holda {length}. Agar keyingi nuqta ajratilgan yoʻlning narigi yarmida yoki bir tomonlama koʻchada teskari tomonda boʻlsa, uni transport harakatlanadigan tomonga koʻchiring.",
-  "street.line.wrong_sidewalk": "Bu yoʻlak chetiga xizmat koʻrsatib boʻlmaydi: bu yerda harakat faqat bekat eshiklarga qarama-qarshi tomonda boʻladigan yoʻnalishda. Bekatni boshqa yoʻlak chetiga qoʻying."
+  "street.line.wrong_sidewalk": "Bu yoʻlak chetiga xizmat koʻrsatib boʻlmaydi: bu yerda harakat faqat bekat eshiklarga qarama-qarshi tomonda boʻladigan yoʻnalishda. Bekatni boshqa yoʻlak chetiga qoʻying.",
+  "rail.plan.no_track_between_reach": "{from} dan {to} ga hech bir yoʻl olib bormaydi. {from} dan poyezdlar faqat {reached} ga yetadi: {last} ga kiradigan va undan chiqadigan yoʻllar ikkala uchida ham stansiyaning bir xil yoʻllariga ulanganini tekshiring, shunda u yerga kelgan poyezdlar davom eta oladi, yoki u yerga strelkalar qoʻying.",
+  "rail.plan.gap_does_not_lead_on": "{from} dan poyezdlar {at} ga yetadi, lekin {next} tomon davom etmaydigan stansiya yoʻllarida. {at} ga kiradigan va undan chiqadigan yoʻllar ikkala uchida ham stansiyaning bir xil yoʻllariga ulanganini tekshiring, yoki u yerga strelkalar qoʻying",
+  "rail.plan.gap_no_track": "{from} dan {to} ga hech bir yoʻl olib bormaydi",
+  "rail.plan.no_track_outbound_at": "Hech bir rels yoʻli bekatlarni yoʻnalish tomonida ulamaydi: {gap}.",
+  "rail.plan.no_track_return_at": "Hech bir rels yoʻli bekatlarni qaytish tomonida ulamaydi: {gap}."
 }

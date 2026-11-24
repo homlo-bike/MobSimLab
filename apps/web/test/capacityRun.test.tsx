@@ -71,6 +71,15 @@ function fakeLoader(): { loader: EngineLoader; engine: CapacityEngine } {
     sweepPoint: vi.fn(async (_p, _l, h: number) =>
       point({ headway_s: h, per_hour: 3600 / h, unplaced: 1, verdict: "not_enough_capacity" }),
     ),
+    replay: vi.fn(async () => ({
+      begin: 6.5 * H,
+      frame_s: 10,
+      frames: 2,
+      tracks: [["s1", 0]] as [string, number][],
+      lines: [["M1", "M1"]] as [string, string][],
+      trains: [{ vehicle: 0, line: 0, s: [0, 10, 0, 0, 20, 36], st: [] }],
+      stopped: null,
+    })),
     dispose: vi.fn(),
   };
   return { loader: vi.fn(async () => engine), engine };
@@ -177,19 +186,22 @@ describe("drawn railway for the test", () => {
   });
 });
 
+/** The drawn railway and a fake build of it, for a panel that tests what is drawn. */
+const BUILT = { topology: "{}", lines: '{"service_lines":[]}' };
+const drawnProps = () => ({ railway: drawn(), buildDrawn: vi.fn(async () => BUILT) });
+
 describe("capacity run panel", () => {
-  it("tests the railway drawn in the project by default", async () => {
+  it("always tests the railway drawn in the project, with no choice of network", async () => {
     const { loader, engine } = fakeLoader();
-    const buildDrawn = vi.fn(async () => ({ topology: "{}", lines: '{"service_lines":[]}' }));
+    const buildDrawn = vi.fn(async () => BUILT);
     render(<CapacityRun loadEngine={loader} railway={drawn()} buildDrawn={buildDrawn} />);
-    expect(screen.getByRole("radio", { name: "Drawn in this project" }).getAttribute("aria-checked")).toBe(
-      "true",
-    );
-    expect(screen.getByText(/Lines M1 on the railway drawn/)).toBeTruthy();
+    expect(screen.queryByRole("radiogroup", { name: "Network" })).toBeNull();
+    expect(screen.queryByText("Example metro")).toBeNull();
+    expect(screen.queryByText("From files")).toBeNull();
     fireEvent.click(screen.getByRole("checkbox"));
     fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
     await screen.findByTestId("capacity-result");
-    expect(loader).toHaveBeenCalledWith({ kind: "files", topology: "{}", lines: '{"service_lines":[]}' });
+    expect(loader).toHaveBeenCalledWith(BUILT);
     expect(engine.run).toHaveBeenCalled();
     // The same drawing is not built again.
     fireEvent.click(screen.getByRole("button", { name: "Run again" }));
@@ -227,8 +239,6 @@ describe("capacity run panel", () => {
   it("explains why the drawn railway cannot be tested", async () => {
     const { loader } = fakeLoader();
     render(<CapacityRun loadEngine={loader} railway={{ ...drawn(), lines: [] }} />);
-    expect(screen.getByRole("radio", { name: "Example metro" }).getAttribute("aria-checked")).toBe("true");
-    fireEvent.click(screen.getByRole("radio", { name: "Drawn in this project" }));
     expect(screen.getByText(/No service line is ready to test/)).toBeTruthy();
     expect((screen.getByRole("button", { name: "Run the test" }) as HTMLButtonElement).disabled).toBe(true);
   });
@@ -241,12 +251,12 @@ describe("capacity run panel", () => {
     expect(loader).not.toHaveBeenCalled();
   });
 
-  it("runs the example metro in the morning peak and sweeps other frequencies", async () => {
+  it("runs the drawn lines in the morning peak and sweeps other frequencies", async () => {
     const { loader, engine } = fakeLoader();
-    render(<CapacityRun loadEngine={loader} />);
+    render(<CapacityRun loadEngine={loader} {...drawnProps()} />);
     fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
     const result = await screen.findByTestId("capacity-result");
-    expect(loader).toHaveBeenCalledWith({ kind: "example" });
+    expect(loader).toHaveBeenCalledWith(BUILT);
     expect(engine.run).toHaveBeenCalledWith({ from_s: 7 * H, to_s: 9 * H });
     expect(within(result).getAllByText("Works, close to the limit").length).toBeGreaterThan(0);
     await waitFor(() => expect(screen.getByText("Works up to 12 trains an hour each way")).toBeTruthy());
@@ -255,17 +265,40 @@ describe("capacity run panel", () => {
     expect(screen.queryByRole("status")).toBeNull();
   });
 
-  it("asks for both files before running a railway of one's own", () => {
-    const { loader } = fakeLoader();
-    render(<CapacityRun loadEngine={loader} />);
-    fireEvent.click(screen.getByRole("radio", { name: "From files" }));
-    expect((screen.getByRole("button", { name: "Run the test" }) as HTMLButtonElement).disabled).toBe(true);
-    expect(screen.getByText("Choose both files to run your railway.")).toBeTruthy();
+  it("offers the replay of the run on the map, from the drawn railway's trains", async () => {
+    const { loader, engine } = fakeLoader();
+    const topology = JSON.stringify({
+      origin: [8, 47],
+      sections: [
+        {
+          id: "s1",
+          length_m: 100,
+          geometry: [
+            [0, 0],
+            [100, 0],
+          ],
+        },
+      ],
+    });
+    render(
+      <CapacityRun
+        loadEngine={loader}
+        railway={drawn()}
+        buildDrawn={vi.fn(async () => ({ ...BUILT, topology }))}
+      />,
+    );
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
+    const replay = await screen.findByRole("heading", { name: "Replay on the map" });
+    expect(engine.replay).toHaveBeenCalledWith({ from_s: 7 * H, to_s: 9 * H }, 10);
+    const box = replay.closest("section")!;
+    await waitFor(() => expect(within(box).getByRole("button", { name: "Play" })).toBeTruthy());
+    expect(within(box).getByText(/All drawn lines move together on one clock/)).toBeTruthy();
   });
 
   it("runs another period and refuses an end before the start", async () => {
     const { loader, engine } = fakeLoader();
-    render(<CapacityRun loadEngine={loader} />);
+    render(<CapacityRun loadEngine={loader} {...drawnProps()} />);
     fireEvent.click(screen.getByRole("checkbox"));
     fireEvent.click(screen.getByRole("radio", { name: /Midday/ }));
     fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
@@ -283,7 +316,7 @@ describe("capacity run panel", () => {
     const loader: EngineLoader = async () => {
       throw new Error("not a lines file: expected value");
     };
-    render(<CapacityRun loadEngine={loader} />);
+    render(<CapacityRun loadEngine={loader} {...drawnProps()} />);
     fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
     expect((await screen.findByRole("alert")).textContent).toContain("not a lines file");
   });
@@ -345,10 +378,16 @@ describe("capacity runs on the server", () => {
       }),
       saved({ status: "done", verdict: "near_limit", result: result() }),
     ]);
-    render(<CapacityRun loadEngine={loader} runs={runs} canRun pollMs={10} />);
+    render(<CapacityRun loadEngine={loader} runs={runs} canRun pollMs={10} {...drawnProps()} />);
     expect(await screen.findByText("No saved runs in this project yet.")).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Run on the server and save" }));
-    await waitFor(() => expect(runs.start).toHaveBeenCalledWith({ kind: "example" }, AM, true));
+    await waitFor(() =>
+      expect(runs.start).toHaveBeenCalledWith(
+        expect.objectContaining({ kind: "files", topology: "{}" }),
+        AM,
+        true,
+      ),
+    );
     // The browser's engine is not used for a run on the server.
     expect(loader).not.toHaveBeenCalled();
     expect((await screen.findByRole("status")).textContent).toContain("Waiting for the server");
@@ -449,7 +488,7 @@ describe("capacity runs on the server", () => {
   it("stops a run on the server", async () => {
     const running = saved({ status: "running", progress: { step: "planning" } });
     const runs = fakeRuns([running]);
-    render(<CapacityRun runs={runs} canRun pollMs={100000} />);
+    render(<CapacityRun runs={runs} canRun pollMs={100000} {...drawnProps()} />);
     fireEvent.click(await screen.findByRole("button", { name: "Run on the server and save" }));
     fireEvent.click(await screen.findByRole("button", { name: "Stop" }));
     await waitFor(() => expect(runs.cancel).toHaveBeenCalledWith("r1"));
@@ -458,7 +497,7 @@ describe("capacity runs on the server", () => {
 
   it("shows why a run failed", async () => {
     const runs = fakeRuns([saved({ status: "failed", error: "topology: expected value at line 1" })]);
-    render(<CapacityRun runs={runs} canRun />);
+    render(<CapacityRun runs={runs} canRun {...drawnProps()} />);
     fireEvent.click(await screen.findByRole("button", { name: "Run on the server and save" }));
     expect((await screen.findByRole("alert")).textContent).toContain("topology: expected value");
   });

@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Das Wenden kostet zusätzlich {extra} ({length} statt {direct}). Legen Sie die Endhaltestelle möglichst dorthin, wo das Fahrzeug wenden kann: an einen Busbahnhof, eine Wendeschleife, einen Kreisverkehr oder einen Block, den es umfahren kann.",
   "street.line.two_stops": "Eine Linie braucht mindestens zwei Haltestellen. Machen Sie Punkte zu Haltestellen.",
   "street.line.wrong_side": "Dieser Abschnitt ist {length} lang für {straight} Luftlinie. Liegt der nächste Punkt auf der anderen Hälfte einer Straße mit getrennten Fahrbahnen oder auf einer Einbahnstraße in Gegenrichtung, verschieben Sie ihn auf die Seite, auf der das Fahrzeug fährt.",
-  "street.line.wrong_sidewalk": "Dieser Gehweg kann nicht bedient werden: Der Verkehr fährt hier nur so, dass die Haltestelle auf der den Türen abgewandten Seite liegt. Legen Sie die Haltestelle auf den anderen Gehweg."
+  "street.line.wrong_sidewalk": "Dieser Gehweg kann nicht bedient werden: Der Verkehr fährt hier nur so, dass die Haltestelle auf der den Türen abgewandten Seite liegt. Legen Sie die Haltestelle auf den anderen Gehweg.",
+  "rail.plan.no_track_between_reach": "Kein Gleis führt von {from} nach {to}. Züge aus {from} erreichen nur {reached}: Prüfen Sie, ob die Gleise in und aus {last} an beiden Enden dieselben Bahnhofsgleise treffen, damit dort ankommende Züge weiterfahren können, oder setzen Sie dort Weichen.",
+  "rail.plan.gap_does_not_lead_on": "Züge aus {from} erreichen {at}, aber auf Bahnhofsgleisen, die nicht nach {next} weiterführen. Prüfen Sie, ob die Gleise in und aus {at} an beiden Enden dieselben Bahnhofsgleise treffen, oder setzen Sie dort Weichen",
+  "rail.plan.gap_no_track": "kein Gleis führt von {from} nach {to}",
+  "rail.plan.no_track_outbound_at": "Kein Gleis verbindet die Halte in Fahrtrichtung der Linie: {gap}.",
+  "rail.plan.no_track_return_at": "Kein Gleis verbindet die Halte in Gegenrichtung: {gap}."
 }

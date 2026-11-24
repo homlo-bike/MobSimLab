@@ -315,6 +315,8 @@ export const editorsVi = {
   "rail.say.clickTrackSwitch": "Nhấp vào đường ray để đặt ghi.",
   "rail.say.straightOnly": "Ghi trong danh mục được đặt trên đoạn thẳng. Hãy nhấp vào phần thẳng.",
   "rail.say.doubleOnly": "Đường chuyển tuyến nối hai đường ray song song. Hãy chọn đường đôi.",
+  "rail.say.missedStationEnd":
+    "Nhấp đúng vào một đầu ga để nối đường ray vào đó. Phóng to nếu khó nhấp trúng các đầu ga.",
   "rail.say.clickTrackSignal":
     "Nhấp vào đường ray, đường ray trong ga hoặc nhánh rẽ của ghi để đặt tín hiệu.",
   "rail.signalsReset": "Tín hiệu đã được khôi phục về bản tạo từ thiết kế.",
@@ -1376,23 +1378,16 @@ export const editorsVi = {
   "capacity.loading": "Đang tải mạng lưới…",
   "capacity.planning": "Đang lập kế hoạch cho khoảng thời gian và chạy qua khóa liên động…",
   "capacity.trying": "Đang thử {line} {every} ({n}/{total})…",
-  "capacity.noFile": "Chưa chọn tệp",
-  "capacity.replace": "Thay",
-  "capacity.choose": "Chọn",
   "capacity.title": "Thử nghiệm hệ thống",
   "capacity.intro":
     "Chạy một khoảng thời gian trong ngày qua bộ lập biểu đồ chạy tàu và khóa liên động. Xem mỗi tuyến đường sắt có vừa với đường ray, chạy đúng giờ và phục hồi sau trễ không, và có thể chở bao nhiêu tàu.",
-  "capacity.network": "Mạng lưới",
   "capacity.example": "Metro mẫu",
-  "capacity.mine": "Từ tệp",
   "capacity.drawn": "Vẽ trong dự án này",
-  "capacity.drawnText": "Các tuyến {names} trên đường sắt vẽ trong công cụ đường sắt, như đã lưu.",
   "capacity.drawn.noTrack": "Chưa có gì được vẽ trong công cụ đường sắt.",
   "capacity.drawn.noLines":
     "Chưa có tuyến nào sẵn sàng để kiểm tra. Trong công cụ đường sắt, hãy cho một tuyến ít nhất hai điểm dừng và một đoàn tàu.",
   "capacity.drawn.errors": "Đường sắt đã vẽ có lỗi. Hãy sửa chúng trong công cụ đường sắt trước.",
   "capacity.building": "Đang dựng đường sắt đã vẽ…",
-  "capacity.drawnStreets": "Các tuyến đường phố {names}, chạy theo lộ trình với độ trễ do giao thông.",
   "capacity.loads.estimating": "Đang ước tính hành khách quanh các ga và điểm dừng…",
   "capacity.loads.toggle": "Tải hành khách (ước tính hành khách của thẻ Bảng)",
   "capacity.loads.title": "Hành khách",
@@ -1425,12 +1420,6 @@ export const editorsVi = {
   "capacity.street.bunchingHint": "khoảng cách dưới một nửa giãn cách; cuối kỳ trễ {left} phút",
   "capacity.street.method":
     "Mỗi tuyến đường phố chạy {runs} lần; mỗi chuyến gặp giao thông riêng, từ {low} đến {high} lần độ trễ dự kiến trên đường chính (tùy chọn dự án).",
-  "capacity.exampleText":
-    "Tuyến M1 Westpark – Eastgate: năm ga, mỗi đầu một depot, 5 phút một chuyến giờ cao điểm và 10 phút một chuyến các giờ khác.",
-  "capacity.topologyFile": "Cấu trúc đường ray (JSON)",
-  "capacity.linesFile": "Tuyến (JSON)",
-  "capacity.filesHelp":
-    "Tệp cấu trúc đường ray theo contracts/rail-topology.schema.json; với đường sắt vẽ trong dự án này, hãy chọn “{drawn}”. Tệp tuyến liệt kê ga, tàu và dịch vụ của mỗi tuyến, theo cách bộ lập biểu đồ đọc (docs/user/simulator.md).",
   "capacity.period": "Khoảng thời gian",
   "capacity.from": "Từ",
   "capacity.to": "Đến",
@@ -1450,7 +1439,11 @@ export const editorsVi = {
   "capacity.run": "Chạy thử nghiệm",
   "capacity.runAgain": "Chạy lại",
   "capacity.stop": "Dừng",
-  "capacity.chooseBoth": "Chọn cả hai tệp để thử đường sắt của bạn.",
+  "capacity.replay.title": "Phát lại trên bản đồ",
+  "capacity.replay.note":
+    "Mọi tuyến đã vẽ cùng chạy theo một đồng hồ. Tàu chạy theo kế hoạch, không có trễ ngẫu nhiên; xe của các tuyến đường phố gặp giao thông của lần chạy đầu tiên trong bài kiểm tra.",
+  "capacity.replay.none": "Không có gì để phát lại: không tuyến nào chạy trong khoảng thời gian này.",
+  "capacity.replay.stopped": "Lần chạy đã dừng sớm, nên từ đó các tàu đứng yên: {why}",
   "capacity.summary": "{period} · {trips} chuyến được lập có dư · {out} tàu hoạt động, {reserve} dự phòng",
   "capacity.importNotes": "Ghi chú nhập ({n})",
   "capacity.plannerNotes": "Ghi chú của bộ lập biểu đồ ({n})",

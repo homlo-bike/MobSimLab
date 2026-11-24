@@ -333,6 +333,8 @@ export const editorsUr = {
   "rail.say.clickTrackSwitch": "سوئچ رکھنے کے لیے پٹری پر کلک کریں۔",
   "rail.say.straightOnly": "فہرست کے سوئچ سیدھی پٹری پر رکھے جاتے ہیں۔ سیدھے حصے پر کلک کریں۔",
   "rail.say.doubleOnly": "کراس اوور دو متوازی پٹریوں کو جوڑتا ہے۔ دوہری پٹری چنیں۔",
+  "rail.say.missedStationEnd":
+    "پٹری جوڑنے کے لیے عین اسٹیشن کے سرے پر کلک کریں۔ اگر سروں پر کلک کرنا مشکل ہو تو زوم اِن کریں۔",
   "rail.say.clickTrackSignal": "سگنل رکھنے کے لیے پٹری، اسٹیشن کی پٹری یا سوئچ کی شاخ پر کلک کریں۔",
   "rail.signalsReset": "سگنل ڈیزائن سے بنی حالت میں بحال کر دیے گئے۔",
   "rail.noiseFlows": "ہر پٹری پر فی گھنٹہ ٹرینیں (ریل لائنیں بننے تک مثالی سروس)",
@@ -1404,23 +1406,16 @@ export const editorsUr = {
   "capacity.loading": "نیٹ ورک لوڈ ہو رہا ہے…",
   "capacity.planning": "مدت کی منصوبہ بندی اور انٹرلاکنگ سے گزارا جا رہا ہے…",
   "capacity.trying": "{line} {every} آزمایا جا رہا ہے ({total} میں سے {n})…",
-  "capacity.noFile": "کوئی فائل منتخب نہیں",
-  "capacity.replace": "بدلیں",
-  "capacity.choose": "منتخب کریں",
   "capacity.title": "نظام کو جانچیں",
   "capacity.intro":
     "دن کی ایک مدت کو ٹائم ٹیبل پلانر اور انٹرلاکنگ سے گزاریں۔ دیکھیں کہ ہر ریل لائن پٹریوں پر سماتی ہے، وقت پر چلتی ہے اور تاخیروں سے سنبھلتی ہے یا نہیں، اور کتنی ٹرینیں چلا سکتی ہے۔",
-  "capacity.network": "نیٹ ورک",
   "capacity.example": "مثالی میٹرو",
-  "capacity.mine": "فائلوں سے",
   "capacity.drawn": "اس منصوبے میں بنائی گئی",
-  "capacity.drawnText": "ریلوے ٹول میں بنائی گئی ریلوے پر لائنیں {names}، جیسے محفوظ کی گئیں۔",
   "capacity.drawn.noTrack": "ریلوے ٹول میں ابھی کچھ نہیں بنایا گیا۔",
   "capacity.drawn.noLines":
     "کوئی لائن ٹیسٹ کے لیے تیار نہیں۔ ریلوے ٹول میں کسی لائن کو کم از کم دو اسٹاپ اور ایک ٹرین دیں۔",
   "capacity.drawn.errors": "بنائی گئی ریلوے میں غلطیاں ہیں۔ پہلے انہیں ریلوے ٹول میں درست کریں۔",
   "capacity.building": "بنائی گئی ریلوے تیار کی جا رہی ہے…",
-  "capacity.drawnStreets": "سڑک کی لائنیں {names}، ٹریفک کی تاخیر کے ساتھ اپنے روٹ پر چلائی گئیں۔",
   "capacity.loads.estimating": "اسٹیشنوں اور اسٹاپوں کے گرد مسافروں کا اندازہ لگایا جا رہا ہے…",
   "capacity.loads.toggle": "مسافروں کا بوجھ (ٹیبلز ٹیب کا مسافر اندازہ)",
   "capacity.loads.title": "مسافر",
@@ -1453,12 +1448,6 @@ export const editorsUr = {
   "capacity.street.bunchingHint": "وقفے نصف ہیڈوے سے کم؛ آخر میں {left} منٹ تاخیر",
   "capacity.street.method":
     "ہر سڑک لائن {runs} بار چلی؛ ہر سفر کی اپنی ٹریفک تھی، مرکزی سڑکوں پر متوقع تاخیر کے {low} سے {high} گنا (منصوبے کی ترجیحات)۔",
-  "capacity.exampleText":
-    "لائن M1 ‏Westpark – Eastgate: پانچ اسٹیشن، ہر سرے پر ایک ڈپو، رش میں ہر 5 منٹ اور باقی وقت ہر 10 منٹ۔",
-  "capacity.topologyFile": "پٹری کی ٹوپولوجی (JSON)",
-  "capacity.linesFile": "لائنیں (JSON)",
-  "capacity.filesHelp":
-    "ٹریک ٹوپولوجی فائل contracts/rail-topology.schema.json کے مطابق ہوتی ہے؛ اس پروجیکٹ میں بنائی گئی ریلوے کے لیے “{drawn}” منتخب کریں۔ لائنوں کی فائل ہر لائن کے اسٹیشن، ٹرین اور سروس اسی طرح درج کرتی ہے جیسے ٹائم ٹیبل پلانر پڑھتا ہے (docs/user/simulator.md)۔",
   "capacity.period": "مدت",
   "capacity.from": "سے",
   "capacity.to": "تک",
@@ -1478,7 +1467,11 @@ export const editorsUr = {
   "capacity.run": "ٹیسٹ چلائیں",
   "capacity.runAgain": "دوبارہ چلائیں",
   "capacity.stop": "روکیں",
-  "capacity.chooseBoth": "اپنی ریلوے جانچنے کے لیے دونوں فائلیں منتخب کریں۔",
+  "capacity.replay.title": "نقشے پر دوبارہ چلائیں",
+  "capacity.replay.note":
+    "تمام بنائی گئی لائنیں ایک ہی گھڑی پر ساتھ چلتی ہیں۔ ٹرینیں منصوبے کے مطابق، بغیر بے ترتیب تاخیر کے چلتی ہیں؛ سڑک کی لائنوں کی گاڑیاں ٹیسٹ کے پہلے رن کی ٹریفک سے گزرتی ہیں۔",
+  "capacity.replay.none": "دوبارہ چلانے کو کچھ نہیں: اس مدت میں کوئی لائن نہیں چلی۔",
+  "capacity.replay.stopped": "رن جلد رک گیا، اس لیے ٹرینیں اس کے بعد کھڑی رہتی ہیں: {why}",
   "capacity.summary": "{period} · گنجائش کے ساتھ {trips} سفر طے · {out} ٹرینیں سروس میں، {reserve} ریزرو میں",
   "capacity.importNotes": "درآمد کے نوٹس ({n})",
   "capacity.plannerNotes": "پلانر کے نوٹس ({n})",

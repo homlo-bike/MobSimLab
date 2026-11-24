@@ -375,6 +375,8 @@ export const editorsPl = {
   "rail.say.clickTrackSwitch": "Kliknij tor, aby umieścić rozjazd.",
   "rail.say.straightOnly": "Rozjazdy z katalogu leżą na prostym odcinku. Kliknij prostą część.",
   "rail.say.doubleOnly": "Przejazd międzytorowy łączy dwa równoległe tory. Wybierz tor dwutorowy.",
+  "rail.say.missedStationEnd":
+    "Kliknij dokładnie koniec stacji, aby połączyć z nim tor. Przybliż mapę, jeśli trudno trafić w końce.",
   "rail.say.clickTrackSignal":
     "Kliknij tor, tor stacyjny lub kierunek zwrotny rozjazdu, aby umieścić sygnalizator.",
   "rail.signalsReset": "Przywrócono sygnalizatory wygenerowane z projektu.",
@@ -1488,23 +1490,16 @@ export const editorsPl = {
   "capacity.loading": "Wczytywanie sieci…",
   "capacity.planning": "Planowanie okresu i przepuszczanie go przez urządzenia sterowania ruchem…",
   "capacity.trying": "Sprawdzanie {line} {every} ({n} z {total})…",
-  "capacity.noFile": "Nie wybrano pliku",
-  "capacity.replace": "Zastąp",
-  "capacity.choose": "Wybierz",
   "capacity.title": "Przetestuj system",
   "capacity.intro":
     "Przepuść okres dnia przez planer rozkładu i urządzenia sterowania ruchem. Zobacz, czy każda linia kolejowa mieści się na torach, jest punktualna i odrabia opóźnienia oraz ile pociągów mogłaby obsłużyć.",
-  "capacity.network": "Sieć",
   "capacity.example": "Przykładowe metro",
-  "capacity.mine": "Z plików",
   "capacity.drawn": "Narysowana w tym projekcie",
-  "capacity.drawnText": "Linie {names} na kolei narysowanej w narzędziu kolejowym, w zapisanej postaci.",
   "capacity.drawn.noTrack": "W narzędziu kolejowym nic jeszcze nie narysowano.",
   "capacity.drawn.noLines":
     "Żadna linia nie jest gotowa do testu. W narzędziu kolejowym nadaj linii co najmniej dwa przystanki i pociąg.",
   "capacity.drawn.errors": "Narysowana kolej zawiera błędy. Najpierw popraw je w narzędziu kolejowym.",
   "capacity.building": "Budowanie narysowanej kolei…",
-  "capacity.drawnStreets": "Linie uliczne {names}, przejechane trasą z opóźnieniami w ruchu.",
   "capacity.loads.estimating": "Szacowanie pasażerów wokół stacji i przystanków…",
   "capacity.loads.toggle": "Napełnienie (szacunek pasażerów z karty Tabele)",
   "capacity.loads.title": "Pasażerowie",
@@ -1537,12 +1532,6 @@ export const editorsPl = {
   "capacity.street.bunchingHint": "odstępy poniżej połowy taktu; na końcu {left} min opóźnienia",
   "capacity.street.method":
     "Każda linia uliczna przejechała {runs} razy; każdy kurs miał własny ruch, od {low} do {high} razy oczekiwane opóźnienie w ruchu na głównych ulicach (preferencje projektu).",
-  "capacity.exampleText":
-    "Linia M1 Westpark – Eastgate: pięć stacji, zajezdnia na każdym końcu, co 5 min w szczycie i co 10 min poza nim.",
-  "capacity.topologyFile": "Topologia torów (JSON)",
-  "capacity.linesFile": "Linie (JSON)",
-  "capacity.filesHelp":
-    "Plik topologii torów jest zgodny z contracts/rail-topology.schema.json; dla kolei narysowanej w tym projekcie wybierz „{drawn}”. Plik linii podaje dla każdej linii stacje, pociąg i kursowanie tak, jak czyta je planer rozkładu (docs/user/simulator.md).",
   "capacity.period": "Okres",
   "capacity.from": "Od",
   "capacity.to": "Do",
@@ -1562,7 +1551,11 @@ export const editorsPl = {
   "capacity.run": "Uruchom test",
   "capacity.runAgain": "Uruchom ponownie",
   "capacity.stop": "Zatrzymaj",
-  "capacity.chooseBoth": "Wybierz oba pliki, aby przetestować swoją kolej.",
+  "capacity.replay.title": "Odtwarzanie na mapie",
+  "capacity.replay.note":
+    "Wszystkie narysowane linie poruszają się razem według jednego zegara. Pociągi jadą zgodnie z planem, bez losowych opóźnień; pojazdy linii ulicznych napotykają ruch z pierwszego przebiegu testu.",
+  "capacity.replay.none": "Nie ma czego odtworzyć: w tym okresie nie kursowała żadna linia.",
+  "capacity.replay.stopped": "Przebieg zatrzymał się wcześniej, więc od tego momentu pociągi stoją: {why}",
   "capacity.summary":
     "{period} · zaplanowane kursy z zapasem: {trips} · pociągi w ruchu: {out}, w rezerwie: {reserve}",
   "capacity.importNotes": "Uwagi importu ({n})",

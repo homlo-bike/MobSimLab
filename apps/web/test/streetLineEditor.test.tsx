@@ -238,6 +238,14 @@ async function opened(zoom = 15, railTopology: unknown = null) {
   return { engine, fetchTile, handlers };
 }
 
+async function openedWithMap() {
+  const engine = fakeEngine();
+  const { map, handlers } = fakeMap(15);
+  render(<StreetLineEditor map={map} loadEngine={async () => engine} fetchTile={async () => "<osm/>"} />);
+  await waitFor(() => expect(screen.getByRole("radiogroup", { name: "Mode" })).toBeTruthy());
+  return { engine, handlers, map };
+}
+
 describe("Street line editor", () => {
   it("loads the streets on screen automatically and routes the line", async () => {
     const { engine, fetchTile } = await opened();
@@ -320,6 +328,31 @@ describe("Street line editor", () => {
     act(() => handlers.get("click")!({ lngLat: { lng: 7.415, lat: 43.733 }, point: { x: 10, y: 10 } }));
     expect(engine.insertPoint).toHaveBeenCalledWith(3, [7.415, 43.733], "via");
     expect(screen.getByText("Via point 4")).toBeTruthy();
+  });
+
+  it("pulls a via point out of the line, but not when a point's marker is dragged", async () => {
+    const { engine, handlers, map } = await openedWithMap();
+    await waitFor(() => expect(engine.rebuild).toHaveBeenCalled());
+    Object.assign(map, {
+      getLayer: () => ({}),
+      queryRenderedFeatures: () => [{ properties: { index: 0 } }],
+      dragPan: { disable: vi.fn(), enable: vi.fn() },
+    });
+    fireEvent.keyDown(window, { key: "v" });
+    const marker = document.createElement("div");
+    marker.className = "maplibregl-marker";
+    const inner = document.createElement("span");
+    marker.appendChild(inner);
+    const press = (target: EventTarget) =>
+      act(() => handlers.get("mousedown")!({ point: { x: 10, y: 10 }, originalEvent: { target } }));
+    const release = () =>
+      act(() => handlers.get("mouseup")!({ point: { x: 60, y: 60 }, lngLat: { lng: 7.416, lat: 43.734 } }));
+    press(inner);
+    release();
+    expect(engine.insertPoint).not.toHaveBeenCalled();
+    press(document.createElement("canvas"));
+    release();
+    expect(engine.insertPoint).toHaveBeenCalledWith(1, [7.416, 43.734], "via");
   });
 
   it("promotes a via point to a stop and deletes points", async () => {

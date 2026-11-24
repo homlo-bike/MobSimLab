@@ -343,6 +343,8 @@ export const editorsIt = {
   "rail.say.straightOnly":
     "I deviatoi del catalogo vanno su un tratto rettilineo. Fai clic su una parte rettilinea.",
   "rail.say.doubleOnly": "Una comunicazione collega due binari paralleli. Scegli un doppio binario.",
+  "rail.say.missedStationEnd":
+    "Fai clic proprio su un'estremità della stazione per collegarvi il binario. Ingrandisci se le estremità sono difficili da colpire.",
   "rail.say.clickTrackSignal":
     "Fai clic su un binario, un binario di stazione o il ramo deviato di un deviatoio per posizionare un segnale.",
   "rail.signalsReset": "Segnali ripristinati come generati dal progetto.",
@@ -1433,25 +1435,17 @@ export const editorsIt = {
   "capacity.loading": "Caricamento della rete…",
   "capacity.planning": "Pianificazione del periodo e passaggio attraverso l’apparato di sicurezza…",
   "capacity.trying": "Prova di {line} {every} ({n} di {total})…",
-  "capacity.noFile": "Nessun file scelto",
-  "capacity.replace": "Sostituisci",
-  "capacity.choose": "Scegli",
   "capacity.title": "Testa il sistema",
   "capacity.intro":
     "Fai passare un periodo della giornata attraverso il pianificatore dell’orario e l’apparato di sicurezza. Scopri se ogni linea ferroviaria sta sui binari, è puntuale e recupera i ritardi, e quanti treni potrebbe portare.",
-  "capacity.network": "Rete",
   "capacity.example": "Metro di esempio",
-  "capacity.mine": "Da file",
   "capacity.drawn": "Disegnata in questo progetto",
-  "capacity.drawnText": "Linee {names} sulla ferrovia disegnata nello strumento ferroviario, come salvata.",
   "capacity.drawn.noTrack": "Nello strumento ferroviario non è ancora disegnato nulla.",
   "capacity.drawn.noLines":
     "Nessuna linea è pronta per il test. Nello strumento ferroviario, assegna a una linea almeno due fermate e un treno.",
   "capacity.drawn.errors":
     "La ferrovia disegnata contiene errori. Correggili prima nello strumento ferroviario.",
   "capacity.building": "Costruzione della ferrovia disegnata…",
-  "capacity.drawnStreets":
-    "Linee su strada {names}, percorse lungo il loro tracciato con i ritardi del traffico.",
   "capacity.loads.estimating": "Stima dei passeggeri intorno a stazioni e fermate…",
   "capacity.loads.toggle": "Carico passeggeri (stima della scheda Tabelle)",
   "capacity.loads.title": "Passeggeri",
@@ -1484,12 +1478,6 @@ export const editorsIt = {
   "capacity.street.bunchingHint": "distanze sotto metà della frequenza; {left} min di ritardo alla fine",
   "capacity.street.method":
     "Ogni linea su strada è stata percorsa {runs} volte; ogni corsa ha avuto il suo traffico, da {low} a {high} volte il ritardo atteso nel traffico delle strade principali (preferenze del progetto).",
-  "capacity.exampleText":
-    "Linea M1 Westpark – Eastgate: cinque stazioni, un deposito a ogni capo, ogni 5 min nelle ore di punta e ogni 10 min negli altri orari.",
-  "capacity.topologyFile": "Topologia dei binari (JSON)",
-  "capacity.linesFile": "Linee (JSON)",
-  "capacity.filesHelp":
-    "Il file della topologia dei binari segue contracts/rail-topology.schema.json; per la ferrovia disegnata in questo progetto, scegli «{drawn}». Il file delle linee elenca per ogni linea le stazioni, il treno e il servizio, come li legge il pianificatore dell’orario (docs/user/simulator.md).",
   "capacity.period": "Periodo",
   "capacity.from": "Da",
   "capacity.to": "A",
@@ -1509,7 +1497,12 @@ export const editorsIt = {
   "capacity.run": "Avvia il test",
   "capacity.runAgain": "Avvia di nuovo",
   "capacity.stop": "Ferma",
-  "capacity.chooseBoth": "Scegli entrambi i file per testare la tua ferrovia.",
+  "capacity.replay.title": "Riproduzione sulla mappa",
+  "capacity.replay.note":
+    "Tutte le linee disegnate si muovono insieme con un unico orologio. I treni viaggiano come pianificato, senza ritardi casuali; i veicoli delle linee stradali incontrano il traffico della prima esecuzione del test.",
+  "capacity.replay.none": "Non c’è nulla da riprodurre: nessuna linea ha circolato nel periodo.",
+  "capacity.replay.stopped":
+    "L’esecuzione si è fermata prima, quindi da quel momento i treni restano fermi: {why}",
   "capacity.summary":
     "{period} · {trips} corse pianificate con margini · {out} treni in servizio, {reserve} di riserva",
   "capacity.importNotes": "Note di importazione ({n})",

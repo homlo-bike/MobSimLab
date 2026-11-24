@@ -15,10 +15,14 @@ from __future__ import annotations
 
 import math
 import os
+import signal
 import subprocess  # noqa: S404 (runs SUMO's own netconvert with fixed arguments)
-from collections.abc import Sequence
+import time
+from collections.abc import Callable, Sequence
 from dataclasses import dataclass
 from typing import Any
+
+from mobsim_worker.jobs.road.messages import Msg, msg
 
 #: Spacing of the points a drawn route is cut into before matching, m.
 DENSIFY_M = 12.0
@@ -53,23 +57,106 @@ def tool_env() -> dict[str, str]:
     return {**os.environ, "SUMO_HOME": home, "PROJ_DATA": os.path.join(home, "data", "proj")}
 
 
-def run_tool(args: Sequence[str], cwd: str, timeout_s: float = 1800.0) -> str:
+class Stopped(Exception):
+    """The run was told to stop while a SUMO program ran; the program and its children were ended."""
+
+
+class ToolTimeout(RuntimeError):
+    """A SUMO program ran longer than it may; it and its children were ended."""
+
+    def __init__(self, tool: str, timeout_s: float) -> None:
+        """Keep the program's name and its time limit."""
+        super().__init__(
+            f"{tool} took longer than {timeout_s / 60:.0f} minutes and was stopped; "
+            "try a shorter period or fewer lines"
+        )
+        self.tool = tool
+        self.timeout_s = timeout_s
+
+
+#: Seconds between checks whether a running SUMO program should be stopped.
+POLL_S = 1.0
+
+
+def _end(p: subprocess.Popen[str]) -> None:
+    """End a program and every program it started (its own process group), then reap it."""
+    try:
+        os.killpg(p.pid, signal.SIGKILL)
+    except (ProcessLookupError, PermissionError):
+        pass
+    try:
+        p.communicate(timeout=10)
+    except (subprocess.TimeoutExpired, ValueError):
+        pass
+
+
+def run_tool(
+    args: Sequence[str],
+    cwd: str,
+    timeout_s: float = 1800.0,
+    should_stop: Callable[[], bool] | None = None,
+) -> str:
     """Run a SUMO program and return its output.
 
+    The program runs in a process group of its own, so that the programs it starts (``randomTrips.py`` starts
+    ``duarouter``) are ended with it when the run stops or the time is up.
+
+    Args:
+        args: The program and its arguments.
+        cwd: Working folder.
+        timeout_s: Longest time the program may run, s.
+        should_stop: Asked every ``POLL_S`` seconds; when it says yes, the program is ended.
+
     Raises:
+        Stopped: ``should_stop`` said yes.
+        ToolTimeout: The program ran longer than ``timeout_s``.
         RuntimeError: The program failed; the message has the end of its output.
     """
-    p = subprocess.run(  # noqa: S603 (fixed program paths, no shell)
-        list(args), cwd=cwd, env=tool_env(), capture_output=True, text=True, timeout=timeout_s, check=False
+    tool = os.path.basename(args[0] if len(args) < 2 or not args[1].endswith(".py") else args[1])
+    p = subprocess.Popen(  # noqa: S603 (fixed program paths, no shell)
+        list(args),
+        cwd=cwd,
+        env=tool_env(),
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        start_new_session=True,
     )
+    started = time.monotonic()
+    try:
+        while True:
+            try:
+                out, err = p.communicate(timeout=POLL_S)
+                break
+            except subprocess.TimeoutExpired:
+                if should_stop is not None and should_stop():
+                    _end(p)
+                    raise Stopped(tool) from None
+                if time.monotonic() - started > timeout_s:
+                    _end(p)
+                    raise ToolTimeout(tool, timeout_s) from None
+    except BaseException:
+        if p.poll() is None:
+            _end(p)
+        raise
+    # Programs the tool started and left behind (it ended, they did not) go with it.
+    try:
+        os.killpg(p.pid, signal.SIGKILL)
+    except (ProcessLookupError, PermissionError):
+        pass
     if p.returncode != 0:
-        tail = (p.stderr or p.stdout).strip().splitlines()[-6:]
-        raise RuntimeError(f"{os.path.basename(args[0])} failed: " + " ".join(tail))
-    return p.stdout + p.stderr
+        tail = (err or out).strip().splitlines()[-6:]
+        raise RuntimeError(f"{tool} failed: " + " ".join(tail))
+    return out + err
 
 
 def netconvert(
-    osm_file: str, net_file: str, cwd: str, left_hand: bool, keep: Sequence[str] = ()
+    osm_file: str,
+    net_file: str,
+    cwd: str,
+    left_hand: bool,
+    keep: Sequence[str] = (),
+    should_stop: Callable[[], bool] | None = None,
 ) -> list[str]:
     """Build the SUMO network from the OSM file.
 
@@ -79,6 +166,7 @@ def netconvert(
         cwd: Working folder.
         left_hand: Traffic drives on the left.
         keep: Edges that must not be merged with their neighbours (the depots' lanes and drives).
+        should_stop: Ends netconvert when it says yes (``Stopped``).
 
     Returns:
         netconvert's warnings (the first few, for the run's notes).
@@ -116,7 +204,7 @@ def netconvert(
         with open(keep_file, "w", encoding="utf-8") as f:
             f.write("\n".join(keep))
         args += ["--geometry.remove.keep-edges.input-file", keep_file]
-    out = run_tool(args, cwd)
+    out = run_tool(args, cwd, should_stop=should_stop)
     return [ln for ln in out.splitlines() if ln.startswith("Warning")][:20]
 
 
@@ -136,13 +224,24 @@ def densify(coords: Sequence[LonLat], step_m: float = DENSIFY_M) -> list[LonLat]
 class NoBusLink(Exception):
     """A matched route has no way for a bus from one edge onto the next, not even round a detour."""
 
-    def __init__(self, from_edge: str, to_edge: str, from_street: str, to_street: str, at: LonLat) -> None:
-        """Keep both edges, their street names and where the first one ends."""
+    def __init__(
+        self,
+        from_edge: str,
+        to_edge: str,
+        from_street: str,
+        to_street: str,
+        at: LonLat,
+        from_part: str | Msg | None = None,
+        to_part: str | Msg | None = None,
+    ) -> None:
+        """Keep both edges, their street names (as text and as message parts) and where the first one ends."""
         super().__init__(f"no way for a bus from {from_street} onto {to_street}")
         self.from_edge = from_edge
         self.to_edge = to_edge
         self.from_street = from_street
         self.to_street = to_street
+        self.from_part: str | Msg = from_street if from_part is None else from_part
+        self.to_part: str | Msg = to_street if to_part is None else to_part
         self.at = at
 
 
@@ -156,6 +255,26 @@ class Placed:
     dist: float
 
 
+def _keep_allowed_outgoing(net: Any) -> None:
+    """Make each edge keep its links per vehicle class instead of working them out on every call.
+
+    ``mapTrace`` searches the network hundreds of thousands of times for a city's lines, and each step of
+    each search asks an edge for the links a bus may take (``getAllowedOutgoing``), which sumolib builds
+    afresh every time from all lanes and connections: half of the planning time of an 8-line run. The links
+    do not change once the network is read, so each edge keeps them.
+    """
+    for edge in net.getEdges():
+        compute = edge.getAllowedOutgoing
+        kept: dict[Any, Any] = {}
+
+        def allowed(v_class: Any, _compute: Any = compute, _kept: dict[Any, Any] = kept) -> Any:
+            if v_class not in _kept:
+                _kept[v_class] = _compute(v_class)
+            return _kept[v_class]
+
+        edge.getAllowedOutgoing = allowed
+
+
 class RoadNet:
     """The SUMO network, read with sumolib, and the helpers that place routes and points on it."""
 
@@ -165,6 +284,8 @@ class RoadNet:
 
         self.net: Any = sumolib.net.readNet(net_file, withInternal=False, withPrograms=True)
         self._sumolib = sumolib
+        self._paths: dict[tuple[str, str], tuple[str, ...] | None] = {}
+        _keep_allowed_outgoing(self.net)
 
     def xy(self, p: LonLat) -> tuple[float, float]:
         """Return network coordinates of a point."""
@@ -225,7 +346,15 @@ class RoadNet:
             if gap is None:
                 a, b = self.edge(out[-1]), self.edge(e)
                 x, y = a.getToNode().getCoord()
-                raise NoBusLink(out[-1], e, self.street(a), self.street(b), self.lonlat(x, y))
+                raise NoBusLink(
+                    out[-1],
+                    e,
+                    self.street(a),
+                    self.street(b),
+                    self.lonlat(x, y),
+                    self.street_part(a),
+                    self.street_part(b),
+                )
             out.extend(gap[1:])
         return out
 
@@ -237,12 +366,27 @@ class RoadNet:
         way = edge.getID().lstrip("-").split("#")[0]
         return f"an unnamed street (OSM way {way})"
 
+    def street_part(self, edge: Any) -> str | Msg:
+        """Name an edge as a part of a message: its street name, or a message naming the OSM way."""
+        name = str(edge.getName() or "").strip()
+        if name:
+            return name
+        return msg("road.part.unnamedStreet", way=edge.getID().lstrip("-").split("#")[0])
+
     def path(self, a: str, b: str) -> list[str] | None:
-        """Return the shortest bus path from edge ``a`` to edge ``b`` (both included), or None."""
+        """Return the shortest bus path from edge ``a`` to edge ``b`` (both included), or None.
+
+        Paths are kept: every vehicle of a line asks for the same few (the end of its circuit back to the
+        start, for each trip), and each search walks a city's whole network.
+        """
         if a == b:
             return [a]
-        route, _ = self.net.getShortestPath(self.edge(a), self.edge(b), vClass="bus")
-        return [e.getID() for e in route] if route else None
+        key = (a, b)
+        if key not in self._paths:
+            route, _ = self.net.getShortestPath(self.edge(a), self.edge(b), vClass="bus")
+            self._paths[key] = tuple(e.getID() for e in route) if route else None
+        found = self._paths[key]
+        return list(found) if found is not None else None
 
     def follows(self, a: str, b: str) -> bool:
         """Whether a bus may drive from the end of edge ``a`` straight onto edge ``b``."""

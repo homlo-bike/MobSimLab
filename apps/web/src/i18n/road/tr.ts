@@ -96,4 +96,31 @@ export const roadTr = {
   "visuals.legend.veryLate": "Çok gecikmeli ({min} dk üzeri)",
   "road.replay.noService":
     "Bu çalıştırma sefer saatleri kaydedilmeden önce kaydedildi; araçlar hat rengini korur. Dakikliğe göre görmek için yeniden çalıştırın.",
+  "road.step.streets": "Sokaklar yükleniyor: {of} harita karosundan {done} tanesi…",
+  "road.note.junctionSetup": "Kavşaklar: {on} kavşağa trafik ışığı verildi, {off} kavşak ışıksız",
+  "road.note.gateOffStreet": "Garaj {depot}: bir giriş, otobüsün kullanabileceği bir sokağın yakınında değil",
+  "road.note.noOsmSignals":
+    "OpenStreetMap bu sokaklarda trafik ışığı göstermiyor; bu yüzden tüm kavşaklar ışıksız çalışır ve yan sokaklar ana yolların trafiğindeki boşlukları bekler. Ana kavşaklara CBS › Sokaklar bölümünde trafik ışığı verin.",
+  "road.note.lineCannotRun": "{line} çalışamaz: {why}",
+  "road.note.carsRemoved":
+    "{n} arka plan aracı {min} dakikadan uzun süre durdu ve sıkışıklığı açmak için trafikten çıkarıldı; sokaklar taşıyabileceğinden daha yoğun olabilir",
+  "road.note.pullOutNotFollowed":
+    "Garajdan çıkış güzergâhı izlenmiyor ({why}); araçlar en kısa yolu kullanır",
+  "road.note.pullInNotFollowed": "Garaja dönüş güzergâhı izlenmiyor ({why}); araçlar en kısa yolu kullanır",
+  "road.note.noDepot": "Garaj yok: araçları sokakta başlar ve biter",
+  "road.note.noSlot": "{n}. aracın garajda yeri yok: garaj girişinden başlar",
+  "road.note.cannotLeave": "{n}. araç garajından çıkamıyor: sokakta başlar",
+  "road.note.cannotReturn": "{n}. araç garajına dönemiyor: sokakta biter",
+  "road.problem.notRouted": "iki noktadan azı var ya da güzergâhı çizilmemiş",
+  "road.problem.noDepartures": "bu dönemde kalkışı yok",
+  "road.problem.notMatched": "güzergâhı sokaklarla eşleştirilemedi",
+  "road.problem.stopOffRoute": "{stop} durağı eşleştirilen güzergâhın üzerinde değil",
+  "road.problem.notBack": "güzergâh ilk durağına geri dönmüyor",
+  "road.problem.noBusLink":
+    "otobüs için {from} yolundan {to} yoluna geçiş yok, {stop} yakınında ({m} m uzakta): trafik modelinin sokaklarında orada otobüsün yapabileceği bir dönüş yok, örneğin U dönüşü veya yasak bir dönüş. Güzergâhı ya da bir ara noktayı oradan başka bir sokağa geçecek şekilde taşıyın",
+  "road.problem.depotToRoute": "araçları garajdan güzergâha ulaşamıyor",
+  "road.problem.notClosed": "turu sokaklar üzerinde kapanmıyor",
+  "road.problem.unreachable": "ulaşılamıyor",
+  "road.part.unnamedStreet": "adsız bir sokak (OSM yolu {way})",
+  "road.part.stop": "{n}. durak",
 } satisfies RoadMessages;

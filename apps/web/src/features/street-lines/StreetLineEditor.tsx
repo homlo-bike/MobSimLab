@@ -709,6 +709,10 @@ export function StreetLineEditor({
     let pull: { seq: number; x: number; y: number } | null = null;
     const onDown = (ev: MapMouseEvent) => {
       if (latest.current.tool !== "select" || !map.getLayer(HIT_LAYER)) return;
+      // A press on a point's marker drags that point. Every point sits on the line, so without this the release
+      // would also pull a new via point out of the leg under it (or out of a leg on the other carriageway).
+      const target = ev.originalEvent?.target;
+      if (target instanceof Element && target.closest(".maplibregl-marker")) return;
       const { x, y } = ev.point;
       const hit = map.queryRenderedFeatures(
         [

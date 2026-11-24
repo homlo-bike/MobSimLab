@@ -40,10 +40,14 @@ export interface SavedRunDetail extends SavedRun {
   result: RunResult | null;
 }
 
-/** What to run: the example metro, or the railway editor's topology and a lines file (JSON texts). */
-export type ServerNetwork =
-  | { kind: "example" }
-  | { kind: "files"; topology: string; topologyName: string; lines: string; linesName: string };
+/** What to run: the railway drawn in the project, as its topology and its lines (JSON texts). */
+export type ServerNetwork = {
+  kind: "files";
+  topology: string;
+  topologyName: string;
+  lines: string;
+  linesName: string;
+};
 
 /** The project's saved capacity runs on the server (a fake in tests). */
 export interface RunsApi {

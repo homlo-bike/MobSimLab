@@ -98,4 +98,33 @@ export const roadZu = {
   "visuals.legend.veryLate": "Ibambezeleke kakhulu (ngaphezu kwemiz. {min})",
   "road.replay.noService":
     "Lokhu kusebenza kwagcinwa ngaphambi kokuba kuqoshwe izikhathi zomsebenzi, ngakho izimoto zinombala womugqa wazo. Kuqalise futhi ukuze uzibone ngokufika ngesikhathi.",
+  "road.step.streets": "Ilayisha imigwaqo: amathayela angu-{done} kwangu-{of} webalazwe…",
+  "road.note.junctionSetup":
+    "Ukuhlelwa kwezimpambano: izimpambano ezingu-{on} zinamarobhothi, ezingu-{off} azinawo",
+  "road.note.gateOffStreet": "Idepho {depot}: elinye isango alikho eduze komgwaqo ibhasi elingawusebenzisa",
+  "road.note.noOsmSignals":
+    "I-OpenStreetMap ayibonisi marobhothi kule migwaqo, ngakho yonke impambano isebenza ngaphandle kwamarobhothi futhi imigwaqo emincane ilinda izikhala ethrafikini yemigwaqo emikhulu. Nika izimpambano ezinkulu amarobhothi ku-GIS › Imigwaqo.",
+  "road.note.lineCannotRun": "I-{line} ayikwazi ukuqhuba: {why}",
+  "road.note.carsRemoved":
+    "Izimoto zangemuva ezingu-{n} zime isikhathi esingaphezu kwemizuzu engu-{min} futhi zakhishwa ethrafikini ukuze kuvuleke ukuminyana; imigwaqo ingase ibe nethrafikhi eningi kunalokho engakuthwala",
+  "road.note.pullOutNotFollowed":
+    "Umzila wokuphuma edepho awulandelwa ({why}); izimoto zayo zithatha indlela emfushane kakhulu",
+  "road.note.pullInNotFollowed":
+    "Umzila wokubuyela edepho awulandelwa ({why}); izimoto zayo zithatha indlela emfushane kakhulu",
+  "road.note.noDepot": "Ayikho idepho: izimoto zayo ziqala futhi ziphele emgwaqweni",
+  "road.note.noSlot": "Imoto {n} ayinayo indawo edepho: iqala esangweni ledepho",
+  "road.note.cannotLeave": "Imoto {n} ayikwazi ukuphuma edepho yayo: iqala emgwaqweni",
+  "road.note.cannotReturn": "Imoto {n} ayikwazi ukubuyela edepho yayo: iphela emgwaqweni",
+  "road.problem.notRouted": "inamaphoyinti angaphansi kwamabili noma ayikadwetshelwa umzila",
+  "road.problem.noDepartures": "ayinakho ukuhamba kulesi sikhathi",
+  "road.problem.notMatched": "umzila wayo awukwazanga ukufaniswa nemigwaqo",
+  "road.problem.stopOffRoute": "isitobhi {stop} asikho emzileni ofanisiwe",
+  "road.problem.notBack": "umzila awubuyeli esitobhini sawo sokuqala",
+  "road.problem.noBusLink":
+    "ayikho indlela yebhasi esuka ku-{from} iye ku-{to}, eduze kwe-{stop} (amamitha angu-{m} kude): imigwaqo yemodeli yethrafikhi ayinakho ukujika lapho ibhasi elivunyelwe ukukwenza, isibonelo ukuphendukela emuva noma ukujika okwenqatshelwe. Hambisa umzila noma iphoyinti lokudlula ukuze uthathe omunye umgwaqo lapho",
+  "road.problem.depotToRoute": "izimoto zayo azikwazi ukufika emzileni zisuka edepho",
+  "road.problem.notClosed": "umjikelezo wayo awuvaleki emigwaqweni",
+  "road.problem.unreachable": "ayifinyeleleki",
+  "road.part.unnamedStreet": "umgwaqo ongenagama (indlela ye-OSM {way})",
+  "road.part.stop": "isitobhi {n}",
 } satisfies RoadMessages;

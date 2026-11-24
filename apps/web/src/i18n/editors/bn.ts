@@ -333,6 +333,8 @@ export const editorsBn = {
   "rail.say.clickTrackSwitch": "সুইচ বসাতে লাইনে ক্লিক করুন।",
   "rail.say.straightOnly": "তালিকার সুইচ সোজা লাইনে বসানো হয়। একটি সোজা অংশে ক্লিক করুন।",
   "rail.say.doubleOnly": "ক্রসওভার দুটি সমান্তরাল লাইন যুক্ত করে। দ্বৈত লাইন বেছে নিন।",
+  "rail.say.missedStationEnd":
+    "লাইন জুড়তে ঠিক স্টেশনের প্রান্তে ক্লিক করুন। প্রান্তে ক্লিক করা কঠিন হলে জুম ইন করুন।",
   "rail.say.clickTrackSignal": "সিগন্যাল বসাতে লাইন, স্টেশনের লাইন বা সুইচের শাখায় ক্লিক করুন।",
   "rail.signalsReset": "সিগন্যাল নকশা থেকে তৈরি অবস্থায় ফিরিয়ে আনা হয়েছে।",
   "rail.noiseFlows": "প্রতিটি লাইনে ঘণ্টায় ট্রেন (রেল লাইন আঁকা না হওয়া পর্যন্ত উদাহরণ পরিষেবা)",
@@ -1395,23 +1397,16 @@ export const editorsBn = {
   "capacity.loading": "নেটওয়ার্ক লোড হচ্ছে…",
   "capacity.planning": "সময়কালের পরিকল্পনা করে ইন্টারলকিং দিয়ে চালানো হচ্ছে…",
   "capacity.trying": "{line} {every} চেষ্টা করা হচ্ছে ({total}-এর মধ্যে {n})…",
-  "capacity.noFile": "কোনো ফাইল বাছা হয়নি",
-  "capacity.replace": "বদলান",
-  "capacity.choose": "বাছুন",
   "capacity.title": "সিস্টেম পরীক্ষা করুন",
   "capacity.intro":
     "দিনের একটি সময়কাল টাইমটেবিল প্ল্যানার ও ইন্টারলকিং দিয়ে চালান। দেখুন প্রতিটি রেললাইন ট্র্যাকে আঁটে কি না, সময়মতো চলে ও দেরি থেকে সামলে ওঠে কি না, এবং কতগুলো ট্রেন চালাতে পারে।",
-  "capacity.network": "নেটওয়ার্ক",
   "capacity.example": "উদাহরণ মেট্রো",
-  "capacity.mine": "ফাইল থেকে",
   "capacity.drawn": "এই প্রকল্পে আঁকা",
-  "capacity.drawnText": "রেলপথ টুলে আঁকা রেলপথে লাইন {names}, যেমন সংরক্ষিত।",
   "capacity.drawn.noTrack": "রেলপথ টুলে এখনো কিছু আঁকা হয়নি।",
   "capacity.drawn.noLines":
     "কোনো লাইন পরীক্ষার জন্য প্রস্তুত নয়। রেলপথ টুলে একটি লাইনকে অন্তত দুটি স্টপ ও একটি ট্রেন দিন।",
   "capacity.drawn.errors": "আঁকা রেলপথে ত্রুটি আছে। আগে রেলপথ টুলে সেগুলো ঠিক করুন।",
   "capacity.building": "আঁকা রেলপথ তৈরি হচ্ছে…",
-  "capacity.drawnStreets": "রাস্তার লাইন {names}, যানজটের দেরিসহ রুট ধরে চালানো হয়েছে।",
   "capacity.loads.estimating": "স্টেশন ও স্টপের আশপাশে যাত্রী অনুমান করা হচ্ছে…",
   "capacity.loads.toggle": "যাত্রী বোঝা (টেবিল ট্যাবের যাত্রী অনুমান)",
   "capacity.loads.title": "যাত্রী",
@@ -1444,12 +1439,6 @@ export const editorsBn = {
   "capacity.street.bunchingHint": "অর্ধেক হেডওয়ের চেয়ে ছোট ব্যবধান; শেষে {left} মিনিট দেরি",
   "capacity.street.method":
     "প্রতিটি রাস্তার লাইন {runs} বার চালানো হয়েছে; প্রতিটি যাত্রার নিজস্ব যানজট ছিল, প্রধান সড়কে প্রত্যাশিত দেরির {low} থেকে {high} গুণ (প্রকল্পের পছন্দ)।",
-  "capacity.exampleText":
-    "লাইন M1 Westpark – Eastgate: পাঁচটি স্টেশন, প্রতিটি প্রান্তে একটি ডিপো, পিকে প্রতি 5 মিনিটে এবং অন্য সময় প্রতি 10 মিনিটে।",
-  "capacity.topologyFile": "ট্র্যাক টপোলজি (JSON)",
-  "capacity.linesFile": "লাইন (JSON)",
-  "capacity.filesHelp":
-    "ট্র্যাক টপোলজি ফাইল contracts/rail-topology.schema.json অনুসরণ করে; এই প্রকল্পে আঁকা রেলপথের জন্য “{drawn}” বেছে নিন। লাইন ফাইল প্রতিটি লাইনের স্টেশন, ট্রেন ও সেবা তালিকাভুক্ত করে, যেভাবে টাইমটেবিল প্ল্যানার পড়ে (docs/user/simulator.md)।",
   "capacity.period": "সময়কাল",
   "capacity.from": "থেকে",
   "capacity.to": "পর্যন্ত",
@@ -1468,7 +1457,11 @@ export const editorsBn = {
   "capacity.run": "পরীক্ষা চালান",
   "capacity.runAgain": "আবার চালান",
   "capacity.stop": "থামান",
-  "capacity.chooseBoth": "আপনার রেলপথ পরীক্ষা করতে দুটি ফাইলই বাছুন।",
+  "capacity.replay.title": "মানচিত্রে রিপ্লে",
+  "capacity.replay.note":
+    "আঁকা সব লাইন একই ঘড়িতে একসাথে চলে। ট্রেনগুলো পরিকল্পনা অনুযায়ী, এলোমেলো বিলম্ব ছাড়া চলে; রাস্তার লাইনের যানবাহন পরীক্ষার প্রথম রানের যানজটের মুখোমুখি হয়।",
+  "capacity.replay.none": "রিপ্লে করার কিছু নেই: এই সময়ে কোনো লাইন চলেনি।",
+  "capacity.replay.stopped": "রান আগেই থেমে গেছে, তাই এরপর থেকে ট্রেনগুলো দাঁড়িয়ে থাকে: {why}",
   "capacity.summary":
     "{period} · মার্জিনসহ {trips}টি যাত্রা পরিকল্পিত · {out}টি ট্রেন চালু, {reserve}টি রিজার্ভে",
   "capacity.importNotes": "ইমপোর্ট নোট ({n})",

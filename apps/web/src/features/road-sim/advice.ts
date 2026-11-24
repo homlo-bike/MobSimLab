@@ -7,6 +7,7 @@
 import type { Translate } from "../../i18n/i18n";
 import type { PreferencesDoc } from "../../workspace/preferences";
 import type { Finding } from "../advice/Findings";
+import { roadProblemText } from "./notes";
 import { central } from "./params";
 import type { RoadHotspot, RoadResult } from "./types";
 
@@ -42,7 +43,7 @@ export function roadFindings(
         severity: "problem",
         weight: 100,
         title: t("advice.road.cannotRun", { line: l.name }),
-        advice: t("advice.road.cannotRunFix", { problem: l.problem }),
+        advice: t("advice.road.cannotRunFix", { problem: roadProblemText(t, l) }),
       });
       continue;
     }

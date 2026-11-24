@@ -316,6 +316,8 @@ export const editorsFa = {
   "rail.say.clickTrackSwitch": "روی یک ریل کلیک کنید تا سوزن قرار گیرد.",
   "rail.say.straightOnly": "سوزن‌های کاتالوگ روی بخش مستقیم قرار می‌گیرند. روی بخشی مستقیم کلیک کنید.",
   "rail.say.doubleOnly": "خط رابط دو ریل موازی را به هم وصل می‌کند. یک خط دوخطه انتخاب کنید.",
+  "rail.say.missedStationEnd":
+    "برای وصل کردن ریل، دقیقاً روی یک سر ایستگاه کلیک کنید. اگر زدن روی سرها سخت است، بزرگ‌نمایی کنید.",
   "rail.say.clickTrackSignal": "روی ریل، ریل ایستگاه یا شاخهٔ انحرافی سوزن کلیک کنید تا علامت قرار گیرد.",
   "rail.signalsReset": "علائم به حالت ساخته‌شده از طراحی بازگشتند.",
   "rail.noiseFlows": "قطار در ساعت روی هر ریل (سرویس فرضی تا ترسیم سرویس‌های ریلی)",
@@ -1380,23 +1382,16 @@ export const editorsFa = {
   "capacity.loading": "در حال بارگذاری شبکه…",
   "capacity.planning": "در حال برنامه‌ریزی بازه و اجرای آن در سیستم اینترلاکینگ…",
   "capacity.trying": "آزمودن {line} {every} ({n} از {total})…",
-  "capacity.noFile": "فایلی انتخاب نشده",
-  "capacity.replace": "جایگزینی",
-  "capacity.choose": "انتخاب",
   "capacity.title": "آزمودن سامانه",
   "capacity.intro":
     "یک بازه از روز را از برنامه‌ریز جدول زمانی و سیستم اینترلاکینگ بگذرانید. ببینید آیا هر خط ریلی روی خطوط جا می‌شود، سر وقت کار می‌کند و از تأخیرها بازمی‌گردد، و چند قطار می‌تواند ببرد.",
-  "capacity.network": "شبکه",
   "capacity.example": "متروی نمونه",
-  "capacity.mine": "از فایل‌ها",
   "capacity.drawn": "ترسیم‌شده در این پروژه",
-  "capacity.drawnText": "خطوط {names} روی راه‌آهنی که در ابزار راه‌آهن ترسیم شده، همان‌طور که ذخیره شده است.",
   "capacity.drawn.noTrack": "هنوز چیزی در ابزار راه‌آهن ترسیم نشده است.",
   "capacity.drawn.noLines":
     "هیچ خطی برای آزمون آماده نیست. در ابزار راه‌آهن به یک خط دست‌کم دو ایستگاه و یک قطار بدهید.",
   "capacity.drawn.errors": "راه‌آهن ترسیم‌شده خطا دارد. ابتدا آن‌ها را در ابزار راه‌آهن برطرف کنید.",
   "capacity.building": "در حال ساختن راه‌آهن ترسیم‌شده…",
-  "capacity.drawnStreets": "خطوط خیابانی {names}، در مسیرشان با تأخیر ترافیک اجرا شدند.",
   "capacity.loads.estimating": "در حال برآورد مسافران پیرامون ایستگاه‌ها و ایستگاه‌های اتوبوس…",
   "capacity.loads.toggle": "بار مسافر (برآورد مسافر زبانه جدول‌ها)",
   "capacity.loads.title": "مسافران",
@@ -1429,12 +1424,6 @@ export const editorsFa = {
   "capacity.street.bunchingHint": "فاصله‌های کمتر از نصف سرفاصله؛ {left} دقیقه تأخیر در پایان",
   "capacity.street.method":
     "هر خط خیابانی {runs} بار اجرا شد؛ هر سفر ترافیک خودش را داشت، از {low} تا {high} برابر تأخیر مورد انتظار در ترافیک خیابان‌های اصلی (تنظیمات پروژه).",
-  "capacity.exampleText":
-    "خط M1 ‏Westpark – Eastgate: پنج ایستگاه، یک دپو در هر انتها، در ساعات اوج هر 5 دقیقه و در بقیهٔ زمان هر 10 دقیقه.",
-  "capacity.topologyFile": "توپولوژی خطوط (JSON)",
-  "capacity.linesFile": "خطوط سیر (JSON)",
-  "capacity.filesHelp":
-    "فایل توپولوژی خطوط از contracts/rail-topology.schema.json پیروی می‌کند؛ برای راه‌آهنی که در این پروژه کشیده شده، «{drawn}» را انتخاب کنید. فایل خطوط سیر، ایستگاه‌ها، قطار و سرویس هر خط را همان‌طور که برنامه‌ریز جدول زمانی می‌خواند فهرست می‌کند (docs/user/simulator.md).",
   "capacity.period": "بازه",
   "capacity.from": "از",
   "capacity.to": "تا",
@@ -1453,7 +1442,11 @@ export const editorsFa = {
   "capacity.run": "اجرای آزمون",
   "capacity.runAgain": "اجرای دوباره",
   "capacity.stop": "توقف",
-  "capacity.chooseBoth": "برای آزمودن راه‌آهن خود هر دو فایل را انتخاب کنید.",
+  "capacity.replay.title": "بازپخش روی نقشه",
+  "capacity.replay.note":
+    "همهٔ خط‌های کشیده‌شده با یک ساعت با هم حرکت می‌کنند. قطارها طبق برنامه و بدون تأخیر تصادفی حرکت می‌کنند؛ وسایل نقلیهٔ خط‌های خیابانی با ترافیک نخستین اجرای آزمون روبه‌رو می‌شوند.",
+  "capacity.replay.none": "چیزی برای بازپخش نیست: در این بازه هیچ خطی کار نکرد.",
+  "capacity.replay.stopped": "اجرا زودتر متوقف شد، پس قطارها از آن زمان ثابت می‌مانند: {why}",
   "capacity.summary": "{period} · {trips} سفر با حاشیه برنامه‌ریزی شد · {out} قطار در خدمت، {reserve} ذخیره",
   "capacity.importNotes": "یادداشت‌های ورود ({n})",
   "capacity.plannerNotes": "یادداشت‌های برنامه‌ریز ({n})",

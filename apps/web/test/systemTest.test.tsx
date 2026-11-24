@@ -11,6 +11,9 @@ import {
   streetStops,
   triangular,
 } from "../src/features/capacity/streetRun";
+import { REPLAY_FRAME_S, streetVehicles, systemReplay } from "../src/features/capacity/systemReplay";
+import type { RailReplay } from "../src/features/capacity/types";
+import { vehiclesAt } from "../src/features/road-sim/replay";
 import type { Zone } from "../src/features/benefits/model";
 import { DEFAULT_TIMING } from "../src/features/street-lines/modes";
 import type { SavedStreetLine } from "../src/features/street-lines/saved";
@@ -225,10 +228,6 @@ describe("system test panel with street lines and loads", () => {
         ownBoardings={{ A: 1000 }}
       />,
     );
-    expect(screen.getByRole("radio", { name: "Drawn in this project" }).getAttribute("aria-checked")).toBe(
-      "true",
-    );
-    expect(screen.getByText(/Street lines Bus 1/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
     const result = await screen.findByTestId("street-result");
     const card = within(result).getByRole("article", { name: /Bus 1/ });
@@ -244,5 +243,78 @@ describe("system test panel with street lines and loads", () => {
     fireEvent.change(a, { target: { value: "" } });
     expect(onOwn).toHaveBeenLastCalledWith({});
     expect(screen.getAllByText("Estimate 3,200").length).toBe(4);
+  });
+});
+
+describe("replay of the system test", () => {
+  const params = { ...STREET_RUN_DEFAULTS, from_s: 7 * H, to_s: 9 * H };
+
+  it("drives each street line vehicle along its circuit, stopping at the stops", () => {
+    const begin = params.from_s - params.warmup_s;
+    const frames = (params.to_s + params.recovery_s - begin) / REPLAY_FRAME_S + 1;
+    const vs = streetVehicles(bus(), 0, 2, params, begin, frames);
+    // A circuit of 20 min plus dwell and layover, every 5 min in the peak: five vehicles.
+    expect(vs.length).toBe(runStreetLine(bus(), 0, { ...params })!.vehicles);
+    expect(vs.every((v) => v.line === 2 && v.s.length % 5 === 0)).toBe(true);
+    const replay = {
+      version: 1 as const,
+      begin,
+      frame_s: REPLAY_FRAME_S,
+      frames,
+      lines: [{ index: 2, name: "Bus 1", color: "#d2392c", mode: "bus" }],
+      vehicles: vs,
+      events: [],
+    };
+    // Mid-morning every vehicle is out, between A (8.50) and D (8.53), on the street.
+    const at = vehiclesAt(replay, 8 * H);
+    expect(at.length).toBe(vs.length);
+    expect(at.every((v) => !v.parked && v.lonlat[0] >= 8.5 - 1e-6 && v.lonlat[0] <= 8.53 + 1e-6)).toBe(true);
+    expect(at.some((v) => v.speed_kmh > 0)).toBe(true);
+    expect(at.every((v) => v.service?.in_service)).toBe(true);
+    // Before its first departure a vehicle is parked at the first stop (the line has no depot).
+    const first = vs.find((v) => v.f0 > 0)!;
+    const before = vehiclesAt(replay, begin).find((v) => v.id === first.id)!;
+    expect(before.parked).toBe(true);
+    expect(before.lonlat).toEqual([8.5, 47.37]);
+  });
+
+  it("puts the trains and the street line vehicles on one clock", () => {
+    const rail: RailReplay = {
+      begin: 6.5 * H,
+      frame_s: REPLAY_FRAME_S,
+      frames: 3,
+      tracks: [
+        ["t1", 0],
+        ["t1", 100],
+      ],
+      lines: [["M1", "Metro 1"]],
+      trains: [
+        {
+          vehicle: 0,
+          line: 0,
+          s: [0, 50, 0, 1, 0, 36, 1, 50, 36],
+          st: [6.5 * H + 20, 6.5 * H, 6.5 * H + 20, 2],
+        },
+      ],
+      stopped: null,
+    };
+    const locate = (track: string, m: number) =>
+      track === "t1" ? ([8 + m / 1e5, 47] as [number, number]) : null;
+    const r = systemReplay(
+      { replay: rail, locate, colors: { M1: "#0055aa" } },
+      [{ line: bus(), index: 0, color: "#d2392c" }],
+      params,
+    )!;
+    expect(r.begin).toBe(6.5 * H);
+    expect(r.lines.map((l) => [l.name, l.color])).toEqual([
+      ["Metro 1", "#0055aa"],
+      ["Bus 1", "#d2392c"],
+    ]);
+    const train = r.vehicles.find((v) => v.id === "rail:0")!;
+    expect(train.f0).toBe(0);
+    // The second frame: 100 m into the track's section, at the start of the second track.
+    const at = vehiclesAt(r, 6.5 * H + REPLAY_FRAME_S).find((v) => v.id === "rail:0")!;
+    expect(at.lonlat[0]).toBeCloseTo(8.001, 5);
+    expect(r.vehicles.filter((v) => v.line === 1).length).toBeGreaterThan(0);
   });
 });

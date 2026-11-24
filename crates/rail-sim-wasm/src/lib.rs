@@ -13,7 +13,7 @@
 use engine_msg::{js_error, Msg};
 use rail_model::Model;
 use rail_plan::LineSpec;
-use rail_sim::capacity::{capacity_run, sweep_headways, sweep_point, CapacityParams};
+use rail_sim::capacity::{capacity_run, replay, sweep_headways, sweep_point, CapacityParams};
 use rail_sim::capacity_input::{
     compile_network, example_lines_json, line_summaries, note_texts, parse_lines,
 };
@@ -92,6 +92,15 @@ impl CapacityRunner {
         let pt =
             sweep_point(&self.model, &self.lines, &p, line, headway_s).map_err(|e| js_error(&e))?;
         Ok(json(&pt))
+    }
+
+    /// Purpose: the replay of the period without random delays: where every train is, one frame
+    /// every `frame_s` seconds (JSON `CapacityParams` as for [`CapacityRunner::run`]).
+    /// Output: JSON `Replay`.
+    pub fn replay(&self, params_json: &str, frame_s: f64) -> Result<String, JsValue> {
+        let p: CapacityParams = serde_json::from_str(params_json).map_err(js)?;
+        let r = replay(&self.model, &self.lines, &p, frame_s).map_err(|e| js_error(&e))?;
+        Ok(json(&r))
     }
 
     /// Purpose: the default settings, as JSON.

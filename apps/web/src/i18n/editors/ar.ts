@@ -370,6 +370,8 @@ export const editorsAr = {
   "rail.say.clickTrackSwitch": "انقر على سكة لوضع محوّل.",
   "rail.say.straightOnly": "توضع محوّلات الكتالوج على سكة مستقيمة. انقر على جزء مستقيم.",
   "rail.say.doubleOnly": "تربط وصلات العبور بين سكتين متوازيتين. اختر سكة مزدوجة.",
+  "rail.say.missedStationEnd":
+    "انقر على طرف المحطة تمامًا لوصل السكة به. كبّر الخريطة إذا صعب إصابة الأطراف.",
   "rail.say.clickTrackSignal": "انقر على سكة أو سكة محطة أو فرع محوّل لوضع إشارة.",
   "rail.signalsReset": "أُعيدت الإشارات إلى المولَّدة من التصميم.",
   "rail.noiseFlows": "عدد القطارات في الساعة على كل سكة (خدمة نموذجية إلى أن تُرسم الخطوط)",
@@ -1462,23 +1464,16 @@ export const editorsAr = {
   "capacity.loading": "جارٍ تحميل الشبكة…",
   "capacity.planning": "جارٍ تخطيط الفترة وتشغيلها عبر نظام التشابك…",
   "capacity.trying": "تجربة {line} {every} ({n} من {total})…",
-  "capacity.noFile": "لم يُختر ملف",
-  "capacity.replace": "استبدال",
-  "capacity.choose": "اختيار",
   "capacity.title": "اختبار النظام",
   "capacity.intro":
     "شغّل فترة من اليوم عبر مخطِّط الجداول ونظام التشابك. اعرف هل يتسع كل خط سكة حديد على المسارات، ويسير في موعده ويتعافى من التأخيرات، وكم قطارًا يمكنه أن يحمل.",
-  "capacity.network": "الشبكة",
   "capacity.example": "مترو تجريبي",
-  "capacity.mine": "من ملفات",
   "capacity.drawn": "مرسومة في هذا المشروع",
-  "capacity.drawnText": "الخطوط {names} على السكة المرسومة في أداة السكك الحديدية، كما حُفظت.",
   "capacity.drawn.noTrack": "لم يُرسم شيء في أداة السكك الحديدية بعد.",
   "capacity.drawn.noLines":
     "لا يوجد خط جاهز للاختبار. في أداة السكك الحديدية، أعطِ خطًا محطتين على الأقل وقطارًا.",
   "capacity.drawn.errors": "السكة المرسومة فيها أخطاء. أصلحها أولًا في أداة السكك الحديدية.",
   "capacity.building": "جارٍ بناء السكة المرسومة…",
-  "capacity.drawnStreets": "خطوط الشوارع {names}، شُغّلت على مساراتها مع تأخيرات حركة المرور.",
   "capacity.loads.estimating": "جارٍ تقدير الركاب حول المحطات والمواقف…",
   "capacity.loads.toggle": "حمولة الركاب (تقدير الركاب من تبويب الجداول)",
   "capacity.loads.title": "الركاب",
@@ -1511,12 +1506,6 @@ export const editorsAr = {
   "capacity.street.bunchingHint": "فواصل أقل من نصف التواتر؛ تأخير {left} د في النهاية",
   "capacity.street.method":
     "شُغّل كل خط شارع {runs} مرات؛ لكل رحلة حركة مرورها، من {low} إلى {high} ضعف التأخير المتوقع في حركة الطرق الرئيسية (تفضيلات المشروع).",
-  "capacity.exampleText":
-    "الخط M1 ‏Westpark – Eastgate: خمس محطات، ومستودع عند كل طرف، كل 5 د في الذروة وكل 10 د في غيرها.",
-  "capacity.topologyFile": "طوبولوجيا المسارات (JSON)",
-  "capacity.linesFile": "الخطوط (JSON)",
-  "capacity.filesHelp":
-    "يتبع ملف طوبولوجيا المسارات contracts/rail-topology.schema.json؛ وللسكك الحديدية المرسومة في هذا المشروع اختر «{drawn}». ملف الخطوط يسرد لكل خط محطاته وقطاره وخدمته كما يقرؤها مخطِّط الجداول (docs/user/simulator.md).",
   "capacity.period": "الفترة",
   "capacity.from": "من",
   "capacity.to": "إلى",
@@ -1536,7 +1525,11 @@ export const editorsAr = {
   "capacity.run": "تشغيل الاختبار",
   "capacity.runAgain": "تشغيل مرة أخرى",
   "capacity.stop": "إيقاف",
-  "capacity.chooseBoth": "اختر الملفين لاختبار سكتك الحديدية.",
+  "capacity.replay.title": "إعادة العرض على الخريطة",
+  "capacity.replay.note":
+    "تتحرك جميع الخطوط المرسومة معًا على ساعة واحدة. تسير القطارات كما هو مخطط، دون تأخيرات عشوائية؛ وتواجه مركبات خطوط الشوارع حركة المرور في التشغيل الأول للاختبار.",
+  "capacity.replay.none": "لا يوجد ما يُعاد عرضه: لم يعمل أي خط في هذه الفترة.",
+  "capacity.replay.stopped": "توقف التشغيل مبكرًا، لذلك تبقى القطارات متوقفة منذ ذلك الحين: {why}",
   "capacity.summary": "{period} · رحلات مخططة بهوامش: {trips} · قطارات في الخدمة: {out}، احتياطية: {reserve}",
   "capacity.importNotes": "ملاحظات الاستيراد ({n})",
   "capacity.plannerNotes": "ملاحظات المخطِّط ({n})",

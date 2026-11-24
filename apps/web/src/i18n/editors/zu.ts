@@ -343,6 +343,8 @@ export const editorsZu = {
   "rail.say.clickTrackSwitch": "Chofoza ujantshi ukuze ubeke isishintshi.",
   "rail.say.straightOnly": "Izishintshi zekhathalogi zibekwa kujantshi oqondile. Chofoza ingxenye eqondile.",
   "rail.say.doubleOnly": "Iziwela zixhuma ojantshi ababili abahambisanayo. Khetha ujantshi ophindwe kabili.",
+  "rail.say.missedStationEnd":
+    "Chofoza kahle esiphethweni sesiteshi ukuze uxhume ujantshi kuso. Sondeza uma kunzima ukushaya iziphetho.",
   "rail.say.clickTrackSignal":
     "Chofoza ujantshi, ujantshi wesiteshi noma igatsha lesishintshi ukuze ubeke isiginali.",
   "rail.signalsReset": "Amasiginali abuyiselwe kulawo akhiqizwe kusuka ekuklameni.",
@@ -1450,24 +1452,16 @@ export const editorsZu = {
   "capacity.loading": "Ilayisha inethiwekhi…",
   "capacity.planning": "Ihlela isikhathi futhi isidlulisa ku-interlocking…",
   "capacity.trying": "Izama i-{line} {every} ({n} kokungu-{total})…",
-  "capacity.noFile": "Alikho ifayela elikhethiwe",
-  "capacity.replace": "Shintsha",
-  "capacity.choose": "Khetha",
   "capacity.title": "Hlola uhlelo",
   "capacity.intro":
     "Dlulisa isikhathi sosuku kumhleli wezikhathi zokuhamba naku-interlocking. Bona ukuthi ulayini ngamunye wesitimela uyangena yini ezinsimbini, uhamba ngesikhathi futhi uyalulama ekubambezelekeni, nokuthi angathwala izitimela ezingaki.",
-  "capacity.network": "Inethiwekhi",
   "capacity.example": "Imetro eyisibonelo",
-  "capacity.mine": "Kusuka kumafayela",
   "capacity.drawn": "Kudwetshwe kule phrojekthi",
-  "capacity.drawnText": "Imigqa {names} kujantshi odwetshwe ethuluzini likajantshi, njengoba ugciniwe.",
   "capacity.drawn.noTrack": "Akukho okudwetshwe ethuluzini likajantshi okwamanje.",
   "capacity.drawn.noLines":
     "Awukho umugqa olungele ukuhlolwa. Ethuluzini likajantshi, nikeza umugqa okungenani iziteshi ezimbili nesitimela.",
   "capacity.drawn.errors": "Ujantshi odwetshiwe unamaphutha. Qala uwalungise ethuluzini likajantshi.",
   "capacity.building": "Kwakhiwa ujantshi odwetshiwe…",
-  "capacity.drawnStreets":
-    "Imigqa yasemgwaqweni {names}, ihanjiswe emizileni yayo nokubambezeleka kwethrafikhi.",
   "capacity.loads.estimating": "Kulinganiselwa abagibeli eduze neziteshi…",
   "capacity.loads.toggle": "Umthwalo wabagibeli (isilinganiso sabagibeli sethebhu Amatafula)",
   "capacity.loads.title": "Abagibeli",
@@ -1501,12 +1495,6 @@ export const editorsZu = {
     "izikhala ezingaphansi kwengxenye yesikhathi phakathi; ukubambezeleka kwemiz {left} ekugcineni",
   "capacity.street.method":
     "Umugqa ngamunye wasemgwaqweni uhanjiswe izikhathi ezingu-{runs}; uhambo ngalunye lube nethrafikhi yalo, izikhathi ezingu-{low} kuya ku-{high} zokubambezeleka okulindelekile emigwaqweni emikhulu (okuncanyelwayo kwephrojekthi).",
-  "capacity.exampleText":
-    "Ulayini M1 Westpark – Eastgate: iziteshi ezinhlanu, idepho ekugcineni ngakunye, njalo ngemizuzu engu-5 ngesikhathi sesiminyaminya nanjalo ngemizuzu engu-10 ngezinye izikhathi.",
-  "capacity.topologyFile": "Isakhiwo sojantshi (JSON)",
-  "capacity.linesFile": "Olayini (JSON)",
-  "capacity.filesHelp":
-    "Ifayela le-topology yojantshi lilandela i-contracts/rail-topology.schema.json; kujantshi odwetshwe kule phrojekthi, khetha “{drawn}”. Ifayela lolayini libala iziteshi, isitimela nensizakalo yolayini ngamunye, njengoba umhleli wezikhathi zokuhamba ezifunda (docs/user/simulator.md).",
   "capacity.period": "Isikhathi",
   "capacity.from": "Kusukela",
   "capacity.to": "Kuze kube",
@@ -1527,7 +1515,12 @@ export const editorsZu = {
   "capacity.run": "Qhuba ukuhlola",
   "capacity.runAgain": "Qhuba futhi",
   "capacity.stop": "Misa",
-  "capacity.chooseBoth": "Khetha womabili amafayela ukuze uhlole ujantshi wakho.",
+  "capacity.replay.title": "Dlala futhi ebalazweni",
+  "capacity.replay.note":
+    "Yonke imigqa edwetshiwe ihamba ndawonye ewashini elilodwa. Izitimela zihamba njengoba kuhleliwe, ngaphandle kokubambezeleka okungahleliwe; izimoto zemigqa yemigwaqo zihlangabezana nethrafikhi yokugijima kokuqala kokuhlola.",
+  "capacity.replay.none": "Akukho okungadlalwa futhi: awukho umugqa owahamba kulesi sikhathi.",
+  "capacity.replay.stopped":
+    "Ukugijima kwama ngaphambi kwesikhathi, ngakho izitimela zimile kusukela lapho: {why}",
   "capacity.summary":
     "{period} · uhambo olungu-{trips} luhlelwe ngezikhala · izitimela ezingu-{out} ziyasebenza, ezingu-{reserve} zigciniwe",
   "capacity.importNotes": "Amanothi okungenisa ({n})",

@@ -335,6 +335,8 @@ export const editorsSw = {
   "rail.say.clickTrackSwitch": "Bofya kwenye reli kuweka swichi.",
   "rail.say.straightOnly": "Swichi za katalogi huwekwa kwenye reli iliyonyooka. Bofya sehemu iliyonyooka.",
   "rail.say.doubleOnly": "Vivuko vya reli huunganisha reli mbili sambamba. Chagua reli mbili.",
+  "rail.say.missedStationEnd":
+    "Bofya hasa kwenye mwisho wa stesheni ili kuunganisha reli hapo. Kuza ramani ikiwa ni vigumu kugusa ncha.",
   "rail.say.clickTrackSignal": "Bofya kwenye reli, reli ya stesheni au tawi la swichi kuweka ishara.",
   "rail.signalsReset": "Ishara zimerudishwa kwa zile zilizotengenezwa kutoka kwenye usanifu.",
   "rail.noiseFlows": "Treni kwa saa kwenye kila reli (huduma ya mfano hadi njia za reli zichorwe)",
@@ -1424,24 +1426,16 @@ export const editorsSw = {
   "capacity.loading": "Inapakia mtandao…",
   "capacity.planning": "Inapanga kipindi na kukipitisha kwenye interlocking…",
   "capacity.trying": "Inajaribu {line} {every} ({n} kati ya {total})…",
-  "capacity.noFile": "Hakuna faili iliyochaguliwa",
-  "capacity.replace": "Badilisha",
-  "capacity.choose": "Chagua",
   "capacity.title": "Jaribu mfumo",
   "capacity.intro":
     "Pitisha kipindi cha siku kwenye mpangaji wa ratiba na interlocking. Ona kama kila njia ya reli inatosha kwenye reli, inakwenda kwa wakati na inapona kutokana na ucheleweshaji, na inaweza kubeba treni ngapi.",
-  "capacity.network": "Mtandao",
   "capacity.example": "Metro ya mfano",
-  "capacity.mine": "Kutoka kwa faili",
   "capacity.drawn": "Iliyochorwa katika mradi huu",
-  "capacity.drawnText": "Laini {names} kwenye reli iliyochorwa katika zana ya reli, kama ilivyohifadhiwa.",
   "capacity.drawn.noTrack": "Bado hakuna kilichochorwa katika zana ya reli.",
   "capacity.drawn.noLines":
     "Hakuna laini iliyo tayari kujaribiwa. Katika zana ya reli, ipe laini angalau vituo viwili na treni.",
   "capacity.drawn.errors": "Reli iliyochorwa ina makosa. Yarekebishe kwanza katika zana ya reli.",
   "capacity.building": "Inajenga reli iliyochorwa…",
-  "capacity.drawnStreets":
-    "Laini za barabarani {names}, zimeendeshwa kwenye njia zao pamoja na ucheleweshaji wa msongamano.",
   "capacity.loads.estimating": "Inakadiria abiria karibu na vituo…",
   "capacity.loads.toggle": "Mzigo wa abiria (makadirio ya abiria ya kichupo cha Majedwali)",
   "capacity.loads.title": "Abiria",
@@ -1475,12 +1469,6 @@ export const editorsSw = {
   "capacity.street.bunchingHint": "nafasi chini ya nusu ya muda kati ya magari; kuchelewa dk {left} mwishoni",
   "capacity.street.method":
     "Kila laini ya barabarani iliendeshwa mara {runs}; kila safari ilikuwa na msongamano wake, mara {low} hadi {high} ya ucheleweshaji unaotarajiwa barabara kuu (mapendeleo ya mradi).",
-  "capacity.exampleText":
-    "Njia M1 Westpark – Eastgate: stesheni tano, karakana kila mwisho, kila dak 5 wakati wa msongamano na kila dak 10 nyakati nyingine.",
-  "capacity.topologyFile": "Topolojia ya reli (JSON)",
-  "capacity.linesFile": "Njia (JSON)",
-  "capacity.filesHelp":
-    "Faili ya topolojia ya njia inafuata contracts/rail-topology.schema.json; kwa reli iliyochorwa katika mradi huu, chagua “{drawn}”. Faili la njia linaorodhesha stesheni, treni na huduma ya kila njia, jinsi mpangaji wa ratiba anavyozisoma (docs/user/simulator.md).",
   "capacity.period": "Kipindi",
   "capacity.from": "Kuanzia",
   "capacity.to": "Hadi",
@@ -1500,7 +1488,12 @@ export const editorsSw = {
   "capacity.run": "Endesha jaribio",
   "capacity.runAgain": "Endesha tena",
   "capacity.stop": "Simamisha",
-  "capacity.chooseBoth": "Chagua faili zote mbili ili kujaribu reli yako.",
+  "capacity.replay.title": "Rudia kwenye ramani",
+  "capacity.replay.note":
+    "Mistari yote iliyochorwa inasonga pamoja kwa saa moja. Treni zinakwenda kama zilivyopangwa, bila ucheleweshaji wa nasibu; magari ya mistari ya barabarani yanakutana na msongamano wa mzunguko wa kwanza wa jaribio.",
+  "capacity.replay.none": "Hakuna cha kurudia: hakuna mstari ulioendeshwa katika kipindi hiki.",
+  "capacity.replay.stopped":
+    "Mzunguko ulisimama mapema, kwa hiyo treni zinabaki zimesimama tangu hapo: {why}",
   "capacity.summary":
     "{period} · safari {trips} zimepangwa kwa nafasi · treni {out} zinafanya kazi, {reserve} za akiba",
   "capacity.importNotes": "Maelezo ya kuingiza ({n})",
