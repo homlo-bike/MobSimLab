@@ -1,6 +1,7 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Inject, Injectable, Optional } from "@nestjs/common";
 import { sql } from "kysely";
 import { DATABASE, type Database } from "../db/database";
+import { ProjectDataCache } from "../projects/data-cache";
 import { type DemTile, covers, decodeValues, sample } from "./dem-tiles";
 import { GeodataService, type ImportRun } from "./geodata.service";
 import type { Box } from "./osm-tools";
@@ -143,6 +144,7 @@ export class GeodataReader {
   constructor(
     @Inject(DATABASE) private readonly db: Database,
     private readonly imports: GeodataService,
+    @Optional() private readonly kept?: ProjectDataCache,
   ) {
     imports.onChange((projectId) => {
       this.demIndex.delete(projectId);
@@ -194,12 +196,19 @@ export class GeodataReader {
     const hit = await this.osmFor(projectId, wanted);
     if (!hit) return null;
     const { run, box } = hit;
-    return this.imports.osmTools.filteredXml(
+    // Cutting a tile runs osmium twice over the whole extract (seconds on a city): a tile cut once is kept with
+    // the project, by its import, so opening a tool again reads it instead of cutting it again (bug 14).
+    const key = `import:${run.id}:${kind}:${box.join(",")}`;
+    const kept = await this.kept?.get(projectId, "osm", key);
+    if (kept != null) return kept;
+    const xml = await this.imports.osmTools.filteredXml(
       this.imports.extractPath(projectId, run.id),
       box,
       [...TILE_FILTERS[kind]],
       TILE_MAX_BYTES,
     );
+    await this.kept?.put(projectId, "osm", key, xml);
+    return xml;
   }
 
   /** Purpose: Overpass-style JSON of the buildings in a box (for `footprints` and `crossings`), or null. */

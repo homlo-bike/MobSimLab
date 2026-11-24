@@ -41,4 +41,16 @@ describe("Overpass client queue", () => {
     await Promise.all([c.run("1"), c.run("2"), c.run("3")]);
     expect(most).toBe(1);
   });
+
+  it("fails at once, without retries, when the server refuses the connection, and for a minute after", async () => {
+    let calls = 0;
+    const fetchImpl = (async () => {
+      calls++;
+      throw new TypeError("fetch failed", { cause: { code: "ECONNREFUSED" } });
+    }) as unknown as typeof fetch;
+    const c = new OverpassClient({ fetchImpl, minIntervalMs: 0, backoffMs: [1, 1, 1] });
+    await expect(c.run("A")).rejects.toMatchObject({ status: 503 });
+    await expect(c.run("B")).rejects.toThrow(/cannot be reached.*ECONNREFUSED/);
+    expect(calls).toBe(1);
+  });
 });

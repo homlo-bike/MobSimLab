@@ -42,10 +42,32 @@ export function overpassEndpoint(env: NodeJS.ProcessEnv = process.env): string {
   return z.url({ protocol: /^https$/ }).parse(v);
 }
 
+/** Codes of a connection that could not be made at all (refused, no route, no such host). */
+const UNREACHABLE = new Set(["ECONNREFUSED", "EHOSTUNREACH", "ENETUNREACH", "ENOTFOUND", "EAI_AGAIN"]);
+
+/** How long a server that could not be reached is not asked again, ms. */
+const UNREACHABLE_FOR_MS = 60_000;
+
+/** Purpose: the error code of a failed connection, from fetch's error or its causes. */
+function connectionCode(e: unknown): string | null {
+  for (let c: unknown = e, depth = 0; c && depth < 4; depth++) {
+    const o = c as { code?: unknown; errors?: unknown[]; cause?: unknown };
+    if (typeof o.code === "string" && UNREACHABLE.has(o.code)) return o.code;
+    for (const x of o.errors ?? []) {
+      const code = (x as { code?: unknown })?.code;
+      if (typeof code === "string" && UNREACHABLE.has(code)) return code;
+    }
+    c = o.cause;
+  }
+  return null;
+}
+
 export class OverpassClient {
   private readonly o: OverpassOptions;
   private queue: Promise<unknown> = Promise.resolve();
   private last = 0;
+  /** Until when the server is taken as unreachable (it refused the connection), and why. */
+  private down: { until: number; code: string } | null = null;
 
   constructor(options: Partial<OverpassOptions> = {}) {
     this.o = {
@@ -113,6 +135,9 @@ export class OverpassClient {
   }
 
   private async once(query: string, signal?: AbortSignal): Promise<string> {
+    // A server that could not be reached a moment ago is not tried again for every tile: each would wait through
+    // its retries (GIS showed "Loading streets…" for minutes while Overpass refused the connection).
+    if (this.down && Date.now() < this.down.until) throw this.unreachable(this.down.code);
     const ctrl = new AbortController();
     const timer = setTimeout(() => ctrl.abort(), this.o.timeoutMs);
     const stop = () => ctrl.abort();
@@ -137,10 +162,25 @@ export class OverpassClient {
       if (e instanceof OverpassError) throw e;
       if (signal?.aborted) throw new OverpassError("Overpass request cancelled", 499);
       if (ctrl.signal.aborted) throw new OverpassError("Overpass request timed out", 504);
+      const code = connectionCode(e);
+      if (code) {
+        this.down = { until: Date.now() + UNREACHABLE_FOR_MS, code };
+        throw this.unreachable(code);
+      }
       throw new OverpassError(`retry: ${e instanceof Error ? e.message : String(e)}`, 502);
     } finally {
       clearTimeout(timer);
       signal?.removeEventListener("abort", stop);
     }
+  }
+
+  /** Purpose: the error for a server that cannot be reached: not retried, status 503. */
+  private unreachable(code: string): OverpassError {
+    return new OverpassError(
+      `OpenStreetMap's Overpass service cannot be reached from this server (${code}). Check the server's ` +
+        "network or set another Overpass server (MOBSIMLAB_OVERPASS_URL), or import the area's OpenStreetMap " +
+        "data into the project (Map data) so it is read from there.",
+      503,
+    );
   }
 }
