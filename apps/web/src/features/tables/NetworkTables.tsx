@@ -106,6 +106,10 @@ export function NetworkTables({
         ferries,
         t,
         engineText,
+        railUnplanned:
+          build?.terrain === "failed"
+            ? t("rail.terrainRequired", { reason: build.terrainError ?? "" })
+            : null,
       }),
     [railway, build, lines, prefs, ropeways, ferries, t, engineText],
   );

@@ -78,6 +78,8 @@ export interface LineFactsInput {
   t?: Translate;
   /** Shows an engine finding in the app language (English without it). */
   engineText?: (finding: EngineText) => string;
+  /** Why no rail service was planned at all (the terrain heights did not load), for lines without a report. */
+  railUnplanned?: string | null;
 }
 
 /**
@@ -142,7 +144,8 @@ export function lineFacts(input: LineFactsInput): LineFact[] {
         ? null
         : ((r?.issues[0] !== undefined
             ? (input.engineText ?? ((f) => f.text))({ text: r.issues[0], msg: r.issue_msgs?.[0] })
-            : undefined) ?? t(train ? "net.problem.unpublished" : "net.problem.noTrain")),
+            : undefined) ??
+          (train ? (input.railUnplanned ?? t("net.problem.unpublished")) : t("net.problem.noTrain"))),
     });
   }
 
