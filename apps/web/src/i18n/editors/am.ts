@@ -72,6 +72,8 @@ export const editorsAm = {
   "rail.doubleJunction": "በሁለት ሐዲድ ላይ ድርብ መጋጠሚያ",
   "rail.scissors": "የመቀስ መሻገሪያ",
   "rail.terrainFailed": "የመሬት ከፍታዎች አልተጫኑም፦ {reason}። ሲጫኑ ተዳፋቶች እና የጣቢያ ከፍታዎች ይከተላሉ።",
+  "rail.publishTerrainFailed":
+    "የመሬት ከፍታዎች አልተጫኑም፦ {reason}። ያለነሱ ባቡሮቹ መስመሩ ጠፍጣፋ እንደሆነ ስለሚሄዱ የጊዜ ሰሌዳው አልታተመም። እንደገና ያትሙ።",
   "rail.signals": "ምልክቶች",
   "rail.signalsSome":
     "{summary}። ከንድፉ የሚፈጠሩ ሲሆን ሲለወጥ ይከተሉታል። ለመቀየር ወይም ለመሰረዝ ምልክቱን ጠቅ ያድርጉ፣ ወይም አንድ ለማከል የምልክት መሣሪያውን ይጠቀሙ፤ እያንዳንዱ ለውጥ ይፈተሻል።",

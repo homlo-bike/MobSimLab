@@ -71,6 +71,8 @@ export const editorsKo = {
   "rail.doubleJunction": "복선 분기",
   "rail.scissors": "시저스 크로싱",
   "rail.terrainFailed": "지면 높이를 불러오지 못했습니다: {reason}. 불러오면 경사와 역 높이가 표시됩니다.",
+  "rail.publishTerrainFailed":
+    "지면 높이를 불러오지 못했습니다: {reason}. 높이가 없으면 열차가 평탄한 노선처럼 달리므로 시간표를 게시하지 않았습니다. 다시 게시하세요.",
   "rail.signals": "신호기",
   "rail.signalsSome":
     "{summary}. 설계에서 생성되며 설계를 바꾸면 따라 바뀝니다. 신호기를 클릭해 변경하거나 삭제하고, 신호기 도구로 추가하세요. 모든 변경 사항은 검사됩니다.",

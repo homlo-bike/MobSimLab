@@ -73,6 +73,8 @@ export const editorsEs = {
   "rail.scissors": "Escape doble (en tijera)",
   "rail.terrainFailed":
     "No se cargaron las alturas del terreno: {reason}. Las pendientes y las alturas de las estaciones aparecerán cuando se carguen.",
+  "rail.publishTerrainFailed":
+    "Las alturas del terreno no se cargaron: {reason}. El horario no se publicó, porque sin ellas los trenes circularían como si la línea fuera llana. Vuelva a publicar.",
   "rail.signals": "Señales",
   "rail.signalsSome":
     "{summary}. Se generan a partir del diseño y lo siguen cuando cambia. Haz clic en una señal para cambiarla o borrarla, o usa la herramienta Señal para añadir una; cada cambio se comprueba.",

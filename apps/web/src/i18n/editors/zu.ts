@@ -75,6 +75,8 @@ export const editorsZu = {
   "rail.scissors": "Isiwela sesikelo",
   "rail.terrainFailed":
     "Ukuphakama komhlabathi akulayishekanga: {reason}. Imithambeka nokuphakama kweziteshi kuzolandela uma sekulayishiwe.",
+  "rail.publishTerrainFailed":
+    "Ukuphakama komhlaba akulayishiwe: {reason}. Isheduli ayishicilelwanga, ngoba ngaphandle kwakho izitimela bezizohamba sengathi ulayini uyisicaba. Shicilela futhi.",
   "rail.signals": "Amasiginali",
   "rail.signalsSome":
     "{summary}. Akhiqizwa kusuka ekuklameni futhi ayakulandela uma kushintsha. Chofoza isiginali ukuze uyishintshe noma uyisuse, noma usebenzise ithuluzi leSiginali ukuze wengeze eyodwa; zonke izinguquko ziyahlolwa.",

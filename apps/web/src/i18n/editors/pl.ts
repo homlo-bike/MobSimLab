@@ -75,6 +75,8 @@ export const editorsPl = {
   "rail.scissors": "Przejazd nożycowy",
   "rail.terrainFailed":
     "Nie wczytano wysokości terenu: {reason}. Pochylenia i wysokości stacji pojawią się po ich wczytaniu.",
+  "rail.publishTerrainFailed":
+    "Nie wczytano wysokości terenu: {reason}. Rozkład nie został opublikowany, bo bez nich pociągi jechałyby jak po płaskiej linii. Opublikuj ponownie.",
   "rail.signals": "Sygnalizatory",
   "rail.signalsSome":
     "{summary}. Generowane z projektu i podążają za nim. Kliknij sygnalizator, aby go zmienić lub usunąć, albo dodaj go narzędziem Sygnalizator. Każda zmiana jest sprawdzana.",

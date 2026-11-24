@@ -1070,11 +1070,18 @@ describe("Railway editor", () => {
       name: "Faraway",
     });
     let engine: RailEngine | null = null;
+    // The ground heights are out at first: a publish must not plan as if the line were flat.
+    let heightsDown = true;
+    const fetchHeights = vi.fn(async (points: [number, number][]) => {
+      if (heightsDown) throw new Error("terrain source offline");
+      return points.map(() => 12);
+    });
     const { map, handlers } = fakeMap();
     render(
       <RailwayEditor
         map={map}
         fetchTile={() => Promise.reject(new Error("offline"))}
+        fetchHeights={fetchHeights}
         initial={lone}
         onPublish={onPublish}
         loadEngine={async () => (engine = await loadRailEngine())}
@@ -1138,10 +1145,30 @@ describe("Railway editor", () => {
     fireEvent.change(screen.getByLabelText("Off-peak headway"), { target: { value: "30" } });
     fireEvent.change(dayType, { target: { value: "weekday" } });
 
+    // Without ground heights, publishing stops and says why instead of planning on flat ground.
+    fireEvent.click(screen.getByRole("button", { name: "Publish timetable" }));
+    await waitFor(() =>
+      expect(
+        screen
+          .getAllByRole("alert")
+          .some((a) =>
+            /Ground heights did not load: terrain source offline\. The timetable was not published/.test(
+              a.textContent ?? "",
+            ),
+          ),
+      ).toBe(true),
+    );
+    expect(screen.queryByTestId("lines-published")).toBeNull();
+    expect(onPublish).toHaveBeenCalledWith(null);
+    onPublish.mockClear();
+
+    // Once the heights load, publishing loads every tile the drawing needs before planning on it.
+    heightsDown = false;
     fireEvent.click(screen.getByRole("button", { name: "Publish timetable" }));
     // Publishing plans every day type with the real engine, one step after another; on a slow CI runner that
     // takes longer than the default one second.
     const done = await screen.findByTestId("lines-published", {}, { timeout: 15_000 });
+    expect(engine!.missingTerrainTiles!()).toEqual([]);
     expect(done.textContent).toMatch(/Published 1 line · \d+ trips/);
     // The outcome is announced in one box, and the progress bar is gone.
     expect(done.getAttribute("role")).toBe("status");
