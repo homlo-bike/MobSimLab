@@ -190,6 +190,20 @@ export interface UnroutedParts {
   straightM: number;
 }
 
+/** Messages of the street routing for a stop the street layouts moved off its street, or closed. */
+const SETUP_STOP_KEYS = new Set(["street.line.stop_moved", "street.line.stop_closed"]);
+
+/**
+ * Purpose: whether the GIS tab's street layouts close streets a routed line drives along or stops on: a leg goes
+ * round a closed street (Rust `line::SetupDetour`), or a stop moved off one.
+ */
+export function closedBySetups(view: LineView): boolean {
+  return (
+    view.legs.some((l) => !!l.setup_detour) ||
+    view.points.some((p) => !!p.message_msg && SETUP_STOP_KEYS.has(p.message_msg.key))
+  );
+}
+
 /** Purpose: what a saved route still leaves out; null when every leg and depot run was found. */
 export function unroutedParts(view: LineView): UnroutedParts | null {
   const at = new Map((view.points ?? []).map((p) => [p.id, p.lonlat] as const));

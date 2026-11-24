@@ -13,6 +13,11 @@ import {
 } from "./lanes";
 import { LANE_COLOR } from "./mapLayers";
 import type { StreetSetup } from "./types";
+import { getLogger } from "../../logging/logger";
+
+const log = getLogger("lanes-backdrop");
+/** Purpose: an error as the log shows it. */
+const errorOf = (err: unknown) => (err instanceof Error ? err.message : String(err));
 
 /** Source and layer of the faded lanes; `om-` like the other read-only backdrop layers, so no tool removes them. */
 const SOURCE = "om-lanes";
@@ -26,6 +31,28 @@ function sink(map: MapLibreMap): void {
     .getStyle?.()
     ?.layers?.find((l) => l.id !== LAYER && (l.id.startsWith("om-") || groupOf(l.id) !== null))?.id;
   if (first && map.getLayer(LAYER)) map.moveLayer(LAYER, first);
+}
+
+/** Purpose: add the lanes' source and layer when they are missing (on mounting, or after something removed them). */
+function ensureLayer(map: MapLibreMap): void {
+  if (!map.getSource(SOURCE)) map.addSource(SOURCE, { type: "geojson", data: EMPTY });
+  if (!map.getLayer(LAYER))
+    map.addLayer({
+      id: LAYER,
+      type: "fill",
+      source: SOURCE,
+      minzoom: LANE_MIN_ZOOM,
+      paint: {
+        "fill-color": [
+          "match",
+          ["get", "kind"],
+          ...Object.entries(LANE_COLOR).flat(),
+          LANE_COLOR.traffic,
+        ] as never,
+        // Faded, yet still to be seen on the light basemaps: at 0.35 the grey lanes were lost on white roads.
+        "fill-opacity": 0.6,
+      },
+    });
 }
 
 /**
@@ -57,11 +84,12 @@ export function LanesBackdrop({
     loadLanes()
       .then((x) => {
         if (!alive) return x?.dispose();
+        if (!x) log.warn("the browser cannot run the lane engine (no Web Workers)");
         e = x;
         setEngine(x);
       })
-      // Without the lane engine the backdrop simply stays empty.
-      .catch(() => undefined);
+      // Without the lane engine the backdrop stays empty; the log says why.
+      .catch((err: unknown) => log.warn({ error: errorOf(err) }, "the lane engine did not start"));
     return () => {
       alive = false;
       e?.dispose();
@@ -71,23 +99,7 @@ export function LanesBackdrop({
 
   useEffect(() => {
     if (!map) return;
-    if (!map.getSource(SOURCE)) map.addSource(SOURCE, { type: "geojson", data: EMPTY });
-    if (!map.getLayer(LAYER))
-      map.addLayer({
-        id: LAYER,
-        type: "fill",
-        source: SOURCE,
-        minzoom: LANE_MIN_ZOOM,
-        paint: {
-          "fill-color": [
-            "match",
-            ["get", "kind"],
-            ...Object.entries(LANE_COLOR).flat(),
-            LANE_COLOR.traffic,
-          ] as never,
-          "fill-opacity": 0.35,
-        },
-      });
+    ensureLayer(map);
     sink(map);
     return () => {
       if (map.getLayer(LAYER)) map.removeLayer(LAYER);
@@ -106,7 +118,7 @@ export function LanesBackdrop({
         ([x, y]) => `${x}/${y}`,
       );
       const mine = ++seq;
-      await Promise.allSettled(
+      const got = await Promise.allSettled(
         keys
           .filter((k) => !added.current.has(k))
           .map(async (k) => {
@@ -117,12 +129,26 @@ export function LanesBackdrop({
             added.current.add(k);
           }),
       );
+      const failed = got.filter((r): r is PromiseRejectedResult => r.status === "rejected");
+      if (failed.length && !stopped)
+        log.warn(
+          { tiles: failed.length, error: errorOf(failed[0]!.reason) },
+          "street tiles for the faded lanes did not load",
+        );
       if (stopped || mine !== seq) return;
       const have = keys.filter((k) => added.current.has(k));
-      if (!have.length) return;
+      if (!have.length) {
+        log.info({ tiles: keys.length }, "no street tiles for the faded lanes yet");
+        return;
+      }
       try {
         const g = await engine.build(have, setups, trafficSide);
         if (stopped || mine !== seq) return;
+        ensureLayer(map);
+        log.info(
+          { lanes: g?.lanes.length ?? 0, tiles: have.length, zoom: Math.round(map.getZoom() * 10) / 10 },
+          "faded lanes built",
+        );
         (map.getSource(SOURCE) as GeoJSONSource | undefined)?.setData({
           type: "FeatureCollection",
           features: (g?.lanes ?? []).map((l) => {
@@ -136,8 +162,10 @@ export function LanesBackdrop({
           }),
         } as never);
         sink(map);
-      } catch {
-        // A failed build leaves the last lanes drawn.
+      } catch (err) {
+        // A failed build leaves the last lanes drawn; the log says why.
+        if (!stopped)
+          log.warn({ error: errorOf(err), tiles: have.length }, "the faded lanes could not be built");
       }
     };
     const onMove = () => void draw();

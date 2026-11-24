@@ -37,6 +37,10 @@
         "items": false,
         "minItems": 2,
         "maxItems": 2
+      },
+      "name": {
+        "type": "string",
+        "maxLength": 300
       }
     },
     "required": [

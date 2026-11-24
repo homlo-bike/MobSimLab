@@ -50,6 +50,8 @@ const junctionSetups = z
       nodes: z.array(z.number().int()).min(1).max(50),
       signals: z.boolean(),
       lonlat: z.tuple([z.number().min(-180).max(180), z.number().min(-90).max(90)]),
+      /** Its streets' names, for the list (kept: an unknown key would be dropped). */
+      name: z.string().max(300).optional(),
     }),
   )
   .max(50000);

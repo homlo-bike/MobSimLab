@@ -2,7 +2,9 @@ import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { BadRequestException, ForbiddenException, HttpException } from "@nestjs/common";
 import { describe, expect, it } from "vitest";
-import { apiMsgOf, withMsg } from "../src/i18n/api-message.filter";
+import { apiMsgOf, badRequestLine, withMsg } from "../src/i18n/api-message.filter";
+import { DRAWING_KINDS } from "../src/projects/drawings";
+import type { ArgumentsHost } from "@nestjs/common";
 
 function sources(dir: string): string[] {
   return readdirSync(dir).flatMap((n) => {
@@ -43,5 +45,31 @@ describe("API error messages", () => {
     });
     const other = new HttpException("not a known text", 400);
     expect(withMsg(other)).toBe(other);
+  });
+
+  it("logs a refused request with its route and reason, never its query or body", () => {
+    const host = {
+      getType: () => "http",
+      switchToHttp: () => ({
+        getRequest: () => ({
+          method: "PUT",
+          originalUrl: "/api/projects/p1/drawings/street-setups?x=secret",
+        }),
+      }),
+    } as unknown as ArgumentsHost;
+    const line = badRequestLine(
+      new BadRequestException("Invalid input: expected array, received object"),
+      host,
+    );
+    expect(line).toBe(
+      "400 PUT /api/projects/p1/drawings/street-setups: Invalid input: expected array, received object",
+    );
+  });
+});
+
+describe("Drawing outlines", () => {
+  it("keep a junction's street names", () => {
+    const doc = [{ nodes: [321866214], signals: true, lonlat: [36.29, 33.51], name: "شارع بغداد" }];
+    expect(DRAWING_KINDS["junction-setups"].schema.parse(doc)).toEqual(doc);
   });
 });

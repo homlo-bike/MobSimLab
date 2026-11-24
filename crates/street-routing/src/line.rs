@@ -1113,7 +1113,9 @@ impl StreetLine {
             let routed = self.legs.get(i).and_then(|l| l.path.as_ref());
             let extra_m = routed.map(|p| (p.length_m - op.length_m).max(0.0));
             let names = join_names(&streets);
-            if lv.status == Status::Ok {
+            // The closure is why the leg goes another way: it is said over any other warning of the
+            // leg (a long detour, turning round), which it usually explains. A leg not found keeps its error.
+            if lv.status != Status::Error {
                 let m = match extra_m {
                     Some(e) => msg!(
                         "street.line.setup_closed",
