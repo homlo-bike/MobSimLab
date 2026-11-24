@@ -29,7 +29,14 @@ import { describeOidcError, OidcNotConfiguredError, OidcService } from "./oidc.s
 import { ABSOLUTE_MS, type MslRequest, SessionService } from "./session.service";
 
 /** The project layers a person can keep shown on every map tab (web `PINNED_LAYERS`). */
-export const PINNED_LAYERS = ["serviceLines", "tracks", "stations", "stops", "streetSetups", "regions"] as const;
+export const PINNED_LAYERS = [
+  "serviceLines",
+  "tracks",
+  "stations",
+  "stops",
+  "streetSetups",
+  "regions",
+] as const;
 
 /**
  * Per-user preferences that follow the person to other devices. `language` is "system" (follow the browser)
