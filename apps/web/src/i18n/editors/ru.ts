@@ -1491,25 +1491,17 @@ export const editorsRu = {
   "capacity.loading": "Загрузка сети…",
   "capacity.planning": "Планирование периода и прогон через централизацию…",
   "capacity.trying": "Проверка {line} {every} ({n} из {total})…",
-  "capacity.noFile": "Файл не выбран",
-  "capacity.replace": "Заменить",
-  "capacity.choose": "Выбрать",
   "capacity.title": "Проверить систему",
   "capacity.intro":
     "Прогоните период дня через планировщик расписания и централизацию. Узнайте, помещается ли каждая линия на путях, ходит ли по графику и восстанавливается ли после задержек, и сколько поездов она может пропустить.",
-  "capacity.network": "Сеть",
   "capacity.example": "Пример метро",
-  "capacity.mine": "Из файлов",
   "capacity.drawn": "Нарисовано в этом проекте",
-  "capacity.drawnText":
-    "Линии {names} на железной дороге, нарисованной в инструменте железных дорог, как сохранено.",
   "capacity.drawn.noTrack": "В инструменте железных дорог пока ничего не нарисовано.",
   "capacity.drawn.noLines":
     "Ни одна линия не готова к тесту. В инструменте железных дорог задайте линии не меньше двух остановок и поезд.",
   "capacity.drawn.errors":
     "В нарисованной железной дороге есть ошибки. Сначала исправьте их в инструменте железных дорог.",
   "capacity.building": "Строится нарисованная железная дорога…",
-  "capacity.drawnStreets": "Уличные линии {names} пройдены по маршруту с задержками в потоке.",
   "capacity.loads.estimating": "Оцениваем пассажиропоток у станций и остановок…",
   "capacity.loads.toggle": "Наполнение (оценка пассажиропотока со вкладки Таблицы)",
   "capacity.loads.title": "Пассажиры",
@@ -1542,12 +1534,6 @@ export const editorsRu = {
   "capacity.street.bunchingHint": "интервалы меньше половины расчётного; в конце {left} мин опоздания",
   "capacity.street.method":
     "Каждая уличная линия прогнана {runs} раз; у каждого рейса свой поток, от {low} до {high} раз от ожидаемой задержки на магистральных улицах (настройки проекта).",
-  "capacity.exampleText":
-    "Линия M1 Westpark – Eastgate: пять станций, депо на каждом конце, каждые 5 мин в часы пик и каждые 10 мин в остальное время.",
-  "capacity.topologyFile": "Топология путей (JSON)",
-  "capacity.linesFile": "Линии (JSON)",
-  "capacity.filesHelp":
-    "Файл топологии путей соответствует contracts/rail-topology.schema.json; для железной дороги, нарисованной в этом проекте, выберите «{drawn}». Файл линий перечисляет для каждой линии станции, поезд и режим движения так, как их читает планировщик расписания (docs/user/simulator.md).",
   "capacity.period": "Период",
   "capacity.from": "С",
   "capacity.to": "До",
@@ -1567,7 +1553,6 @@ export const editorsRu = {
   "capacity.run": "Запустить тест",
   "capacity.runAgain": "Запустить снова",
   "capacity.stop": "Остановить",
-  "capacity.chooseBoth": "Выберите оба файла, чтобы проверить свою железную дорогу.",
   "capacity.summary": "{period} · рейсов с запасом: {trips} · поездов в работе: {out}, в резерве: {reserve}",
   "capacity.importNotes": "Замечания импорта ({n})",
   "capacity.plannerNotes": "Замечания планировщика ({n})",

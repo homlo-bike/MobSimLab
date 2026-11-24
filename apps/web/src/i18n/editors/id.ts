@@ -1423,23 +1423,16 @@ export const editorsId = {
   "capacity.loading": "Memuat jaringan…",
   "capacity.planning": "Merencanakan periode dan menjalankannya melalui interlocking…",
   "capacity.trying": "Mencoba {line} {every} ({n} dari {total})…",
-  "capacity.noFile": "Belum ada berkas",
-  "capacity.replace": "Ganti",
-  "capacity.choose": "Pilih",
   "capacity.title": "Uji sistem",
   "capacity.intro":
     "Jalankan satu periode dalam sehari melalui perencana jadwal dan interlocking. Lihat apakah setiap jalur rel muat di rel, tepat waktu, dan pulih dari keterlambatan, serta berapa banyak kereta yang dapat dilayaninya.",
-  "capacity.network": "Jaringan",
   "capacity.example": "Contoh metro",
-  "capacity.mine": "Dari berkas",
   "capacity.drawn": "Digambar di proyek ini",
-  "capacity.drawnText": "Jalur {names} pada rel yang digambar di alat rel, seperti yang disimpan.",
   "capacity.drawn.noTrack": "Belum ada yang digambar di alat rel.",
   "capacity.drawn.noLines":
     "Belum ada jalur yang siap diuji. Di alat rel, beri satu jalur paling sedikit dua perhentian dan sebuah kereta.",
   "capacity.drawn.errors": "Rel yang digambar memiliki kesalahan. Perbaiki dulu di alat rel.",
   "capacity.building": "Membangun rel yang digambar…",
-  "capacity.drawnStreets": "Jalur jalan {names}, dijalankan di rutenya dengan keterlambatan lalu lintas.",
   "capacity.loads.estimating": "Memperkirakan penumpang di sekitar stasiun dan halte…",
   "capacity.loads.toggle": "Muatan penumpang (perkiraan penumpang dari tab Tabel)",
   "capacity.loads.title": "Penumpang",
@@ -1472,12 +1465,6 @@ export const editorsId = {
   "capacity.street.bunchingHint": "jarak di bawah separuh selang; terlambat {left} mnt di akhir",
   "capacity.street.method":
     "Setiap jalur jalan dijalankan {runs} kali; setiap perjalanan punya lalu lintasnya sendiri, {low} hingga {high} kali keterlambatan yang diharapkan di jalan utama (preferensi proyek).",
-  "capacity.exampleText":
-    "Jalur M1 Westpark – Eastgate: lima stasiun, depo di tiap ujung, tiap 5 mnt saat puncak dan tiap 10 mnt di luar itu.",
-  "capacity.topologyFile": "Topologi rel (JSON)",
-  "capacity.linesFile": "Jalur (JSON)",
-  "capacity.filesHelp":
-    "Berkas topologi rel mengikuti contracts/rail-topology.schema.json; untuk rel yang digambar di proyek ini, pilih “{drawn}”. Berkas jalur mencantumkan stasiun, kereta, dan layanan tiap jalur, seperti yang dibaca perencana jadwal (docs/user/simulator.md).",
   "capacity.period": "Periode",
   "capacity.from": "Dari",
   "capacity.to": "Sampai",
@@ -1497,7 +1484,6 @@ export const editorsId = {
   "capacity.run": "Jalankan uji",
   "capacity.runAgain": "Jalankan lagi",
   "capacity.stop": "Hentikan",
-  "capacity.chooseBoth": "Pilih kedua berkas untuk menguji jalur rel Anda.",
   "capacity.summary":
     "{period} · {trips} perjalanan direncanakan dengan cadangan · {out} kereta beroperasi, {reserve} cadangan",
   "capacity.importNotes": "Catatan impor ({n})",

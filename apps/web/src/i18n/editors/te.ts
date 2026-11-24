@@ -1415,23 +1415,16 @@ export const editorsTe = {
   "capacity.loading": "నెట్‌వర్క్ లోడ్ అవుతోంది…",
   "capacity.planning": "వ్యవధిని ప్రణాళిక చేసి ఇంటర్‌లాకింగ్ ద్వారా నడుపుతోంది…",
   "capacity.trying": "{line} {every} ప్రయత్నిస్తోంది ({total}లో {n})…",
-  "capacity.noFile": "ఫైల్ ఎంచుకోలేదు",
-  "capacity.replace": "మార్చు",
-  "capacity.choose": "ఎంచుకోండి",
   "capacity.title": "వ్యవస్థను పరీక్షించండి",
   "capacity.intro":
     "రోజులోని ఒక వ్యవధిని టైమ్‌టేబుల్ ప్లానర్ మరియు ఇంటర్‌లాకింగ్ ద్వారా నడపండి. ప్రతి రైలు లైన్ పట్టాలపై సరిపోతుందా, సమయానికి నడుస్తుందా, ఆలస్యాల నుండి కోలుకుంటుందా, ఎన్ని రైళ్లు నడపగలదో చూడండి.",
-  "capacity.network": "నెట్‌వర్క్",
   "capacity.example": "ఉదాహరణ మెట్రో",
-  "capacity.mine": "ఫైళ్ల నుండి",
   "capacity.drawn": "ఈ ప్రాజెక్ట్‌లో గీసినది",
-  "capacity.drawnText": "రైల్వే టూల్‌లో గీసిన రైల్వేపై లైన్లు {names}, సేవ్ చేసినట్లుగా.",
   "capacity.drawn.noTrack": "రైల్వే టూల్‌లో ఇంకా ఏమీ గీయలేదు.",
   "capacity.drawn.noLines":
     "ఏ లైనూ పరీక్షకు సిద్ధంగా లేదు. రైల్వే టూల్‌లో ఒక లైన్‌కు కనీసం రెండు స్టాప్‌లు, ఒక రైలు ఇవ్వండి.",
   "capacity.drawn.errors": "గీసిన రైల్వేలో లోపాలు ఉన్నాయి. ముందుగా వాటిని రైల్వే టూల్‌లో సరిచేయండి.",
   "capacity.building": "గీసిన రైల్వే నిర్మించబడుతోంది…",
-  "capacity.drawnStreets": "వీధి లైన్లు {names}, ట్రాఫిక్ ఆలస్యాలతో తమ మార్గంలో నడిపారు.",
   "capacity.loads.estimating": "స్టేషన్లు, స్టాప్‌ల చుట్టూ ప్రయాణికులను అంచనా వేస్తోంది…",
   "capacity.loads.toggle": "ప్రయాణికుల భారం (పట్టికలు ట్యాబ్ ప్రయాణికుల అంచనా)",
   "capacity.loads.title": "ప్రయాణికులు",
@@ -1464,12 +1457,6 @@ export const editorsTe = {
   "capacity.street.bunchingHint": "సగం హెడ్‌వే కంటే చిన్న అంతరాలు; చివర్లో {left} ని ఆలస్యం",
   "capacity.street.method":
     "ప్రతి వీధి లైన్ {runs} సార్లు నడిచింది; ప్రతి ట్రిప్‌కు సొంత ట్రాఫిక్, ప్రధాన రోడ్లపై ఆశించిన ఆలస్యానికి {low} నుండి {high} రెట్లు (ప్రాజెక్ట్ ప్రాధాన్యతలు).",
-  "capacity.exampleText":
-    "లైన్ M1 Westpark – Eastgate: ఐదు స్టేషన్లు, ప్రతి చివర ఒక డిపో, రద్దీ వేళల్లో ప్రతి 5 ని, ఇతర సమయాల్లో ప్రతి 10 ని.",
-  "capacity.topologyFile": "ట్రాక్ టోపాలజీ (JSON)",
-  "capacity.linesFile": "లైన్లు (JSON)",
-  "capacity.filesHelp":
-    "ట్రాక్ టోపాలజీ ఫైల్ contracts/rail-topology.schema.json ను అనుసరిస్తుంది; ఈ ప్రాజెక్ట్‌లో గీసిన రైల్వే కోసం “{drawn}” ఎంచుకోండి. లైన్ల ఫైల్ ప్రతి లైన్ యొక్క స్టేషన్లు, రైలు, సేవను టైమ్‌టేబుల్ ప్లానర్ చదివే విధంగా జాబితా చేస్తుంది (docs/user/simulator.md).",
   "capacity.period": "వ్యవధి",
   "capacity.from": "నుండి",
   "capacity.to": "వరకు",
@@ -1488,7 +1475,6 @@ export const editorsTe = {
   "capacity.run": "పరీక్ష నడపండి",
   "capacity.runAgain": "మళ్లీ నడపండి",
   "capacity.stop": "ఆపు",
-  "capacity.chooseBoth": "మీ రైల్వేను పరీక్షించడానికి రెండు ఫైళ్లనూ ఎంచుకోండి.",
   "capacity.summary":
     "{period} · మార్జిన్‌లతో {trips} ప్రయాణాలు ప్రణాళిక · {out} రైళ్లు సేవలో, {reserve} రిజర్వ్‌లో",
   "capacity.importNotes": "దిగుమతి గమనికలు ({n})",

@@ -225,10 +225,6 @@ describe("system test panel with street lines and loads", () => {
         ownBoardings={{ A: 1000 }}
       />,
     );
-    expect(screen.getByRole("radio", { name: "Drawn in this project" }).getAttribute("aria-checked")).toBe(
-      "true",
-    );
-    expect(screen.getByText(/Street lines Bus 1/)).toBeTruthy();
     fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
     const result = await screen.findByTestId("street-result");
     const card = within(result).getByRole("article", { name: /Bus 1/ });

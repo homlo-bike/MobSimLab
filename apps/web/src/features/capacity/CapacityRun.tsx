@@ -6,7 +6,7 @@ import { useI18n } from "../../i18n/i18n";
 import { paramValue } from "../benefits/params";
 import type { SavedStreetLine } from "../street-lines/saved";
 import type { Network } from "../railways/types";
-import { NetworkPicker, RunSettings } from "./CapacityForm";
+import { RunSettings } from "./CapacityForm";
 import { type LineState, RunResults, StreetResults } from "./CapacityResults";
 import { projectRunSettings } from "./projectSettings";
 import { every, serverStatus, VERDICTS } from "./capacityText";
@@ -65,7 +65,6 @@ interface SavedTest {
   streetResults: StreetLineResult[];
   loads: Record<string, LineLoad>;
   choices: {
-    source: "example" | "drawn" | "files";
     period: string;
     from: string;
     to: string;
@@ -112,8 +111,8 @@ interface Props {
 }
 
 /**
- * The simulator tab's "Test the system" panel. The planner picks a network (the lines drawn in the project,
- * the example metro, or the railway editor's track topology with a lines file) and a period. Rail lines are
+ * The simulator tab's "Test the system" panel. It always tests what is drawn in the project: the railway and
+ * its service lines, and the street lines. The planner picks a period. Rail lines are
  * planned with the timetable planner, measured for UIC 406 capacity, run through the interlocking, repeated
  * with random delays, and tried at other frequencies to find the most each line can carry. Street lines run
  * their timetables along their routes with traffic delays that vary from trip to trip. Passenger loads come
@@ -150,11 +149,6 @@ export function CapacityRun({
     [streetLines],
   );
   const drawnReady = drawn === null || streets.length > 0;
-  // Until the planner picks one: the lines drawn in the project when there are any, else the example.
-  const [picked, setSource] = useState<"example" | "drawn" | "files" | null>(null);
-  const source = picked ?? (drawnReady ? "drawn" : "example");
-  const [topology, setTopology] = useState<{ name: string; text: string } | null>(null);
-  const [linesFile, setLinesFile] = useState<{ name: string; text: string } | null>(null);
   const [period, setPeriod] = useState<string>("am");
   const [from, setFrom] = useState("07:00");
   const [to, setTo] = useState("09:00");
@@ -243,8 +237,7 @@ export function CapacityRun({
     return { from_s: a, to_s: b };
   };
 
-  const ready =
-    source === "example" || (source === "drawn" ? drawnReady : topology !== null && linesFile !== null);
+  const ready = drawnReady;
   const busy = status !== null;
 
   // The drawn lines without their service bands (for the boardings editor before a run).
@@ -320,7 +313,7 @@ export function CapacityRun({
     alive: () => boolean,
     show = true,
   ): Promise<{ zones: RidershipZones; byLine: Record<string, StopDwells> } | null> => {
-    if (source !== "drawn" || drawn !== null || !railway || !withLoads || !ridership) return null;
+    if (drawn !== null || !railway || !withLoads || !ridership) return null;
     if (show) {
       phase("loads");
       setStatus(t("capacity.loads.estimating"));
@@ -385,32 +378,22 @@ export function CapacityRun({
     setLoads(out);
   };
 
-  // What a test run works from: the network, the period and the settings. The last run in this browser is saved
-  // with the project and shows again on opening; it is out of date once any of these change.
-  const networkKey =
-    source === "example"
-      ? "example"
-      : source === "drawn"
-        ? hashText(JSON.stringify([railway, streetLines]))
-        : topology && linesFile
-          ? hashText(`${topology.name}|${topology.text}|${linesFile.text}`)
-          : null;
-  const capInputs =
-    networkKey === null
-      ? null
-      : inputKey({
-          source,
-          network: networkKey,
-          period,
-          from,
-          to,
-          sweep,
-          withLoads,
-          settings,
-          loads: withLoads
-            ? hashText(JSON.stringify([ridership?.doc ?? null, demandRidership, ownBoardings]))
-            : null,
-        });
+  // What a test run works from: the drawn network, the period and the settings. The last run in this browser is
+  // saved with the project and shows again on opening; it is out of date once any of these change.
+  const capInputs = inputKey({
+    // Kept in the key so runs saved before the test always used the drawn network still match.
+    source: "drawn",
+    network: hashText(JSON.stringify([railway, streetLines])),
+    period,
+    from,
+    to,
+    sweep,
+    withLoads,
+    settings,
+    loads: withLoads
+      ? hashText(JSON.stringify([ridership?.doc ?? null, demandRidership, ownBoardings]))
+      : null,
+  });
   const kept = useSavedResult<SavedTest>(results, "capacity-test", capInputs, canRun);
   const [finished, setFinished] = useState<string | null>(null);
   useEffect(() => {
@@ -422,7 +405,7 @@ export function CapacityRun({
         notes,
         streetResults,
         loads,
-        choices: { source, period, from, to, sweep, withLoads },
+        choices: { period, from, to, sweep, withLoads },
       },
       finished,
     );
@@ -436,7 +419,6 @@ export function CapacityRun({
     restored.current = true;
     if (run || busy) return;
     const c = s.value.choices;
-    setSource(c.source);
     setPeriod(c.period);
     setFrom(c.from);
     setTo(c.to);
@@ -451,12 +433,7 @@ export function CapacityRun({
   }, [kept.saved]);
 
   /** What the engine is loaded from, before the stops' dwells. */
-  const baseKey = () =>
-    source === "example"
-      ? "example"
-      : source === "drawn"
-        ? `drawn|${JSON.stringify(railway)}`
-        : `${topology!.name}|${topology!.text.length}|${linesFile!.text}`;
+  const baseKey = () => `drawn|${JSON.stringify(railway)}`;
 
   const start = async () => {
     const runKey = capInputs;
@@ -474,13 +451,12 @@ export function CapacityRun({
     setLines([]);
     setStreetResults([]);
     setLoads({});
-    const railOn = source !== "drawn" || drawn === null;
+    const railOn = drawn === null;
     // With loads, the drawn trains' dwells come from them first: they are part of the network the engine loads.
-    const loadsFirst = source === "drawn" && railOn && withLoads && ridership !== null;
-    const withLoadsStep = source === "drawn" && withLoads && ridership !== null;
+    const loadsFirst = railOn && withLoads && ridership !== null;
+    const withLoadsStep = withLoads && ridership !== null;
     const rest = (fresh: boolean): Phase[] => [
-      ...(fresh && source === "drawn" ? (["build"] as const) : []),
-      ...(fresh ? (["load"] as const) : []),
+      ...(fresh ? (["build", "load"] as const) : []),
       ...(railOn ? (["plan"] as const) : []),
       ...(railOn && sweep ? (["sweep"] as const) : []),
     ];
@@ -507,22 +483,16 @@ export function CapacityRun({
       if (engine.current?.key !== key) {
         engine.current?.engine.dispose();
         engine.current = null;
-        let src: NetworkSource;
-        if (source === "example") src = { kind: "example" };
-        else if (source === "files")
-          src = { kind: "files", topology: topology!.text, lines: linesFile!.text };
-        else {
-          phase("build");
-          setStatus(t("capacity.building"));
-          const built = await buildDrawn(railway, undefined, undefined, prefs);
-          if (!alive()) return;
-          if (typeof built === "string") {
-            setError(t(`capacity.drawn.${built}`));
-            return;
-          }
-          src = { kind: "files", ...built, lines: withStopDwells(built.lines, dwellsBy) };
+        phase("build");
+        setStatus(t("capacity.building"));
+        const built = await buildDrawn(railway, undefined, undefined, prefs);
+        if (!alive()) return;
+        if (typeof built === "string") {
+          setError(t(`capacity.drawn.${built}`));
+          return;
         }
-        setRunTopology(src.kind === "files" ? src.topology : null);
+        const src: NetworkSource = { ...built, lines: withStopDwells(built.lines, dwellsBy) };
+        setRunTopology(src.topology);
         phase("load");
         setStatus(t("capacity.loading"));
         const e = await loadEngine(src);
@@ -545,7 +515,7 @@ export function CapacityRun({
         sweeping: sweep,
       }));
       setLines(states);
-      if (source === "drawn") await drawnExtras(w, infos, alive, dwells);
+      await drawnExtras(w, infos, alive, dwells);
       if (!alive()) return;
       if (sweep) {
         for (let k = 0; k < states.length; k++) {
@@ -596,46 +566,33 @@ export function CapacityRun({
       setServerError(t("capacity.badPeriod"));
       return;
     }
-    let network: ServerNetwork;
-    if (source === "drawn") {
-      // The server runs the rail test only: the drawn railway and its service lines.
-      if (drawn !== null) {
-        setServerError(t(`capacity.drawn.${drawn}`));
-        return;
-      }
-      setSending(true);
-      const built = await buildDrawn(railway, undefined, undefined, prefs).catch((e: unknown) =>
-        engineErrorText(e),
-      );
-      setSending(false);
-      if (typeof built === "string") {
-        setServerError(built in DRAWN_PROBLEMS ? t(`capacity.drawn.${built as DrawnProblem}`) : built);
-        return;
-      }
-      setSending(true);
-      const dwells = await trainDwells(w, () => true, false).catch(() => null);
-      setSending(false);
-      const dwellsBy = Object.fromEntries(
-        Object.entries(dwells?.byLine ?? {}).map(([id, d]) => [id, d.dwells]),
-      );
-      network = {
-        kind: "files",
-        topology: built.topology,
-        topologyName: t("capacity.drawn"),
-        lines: withStopDwells(built.lines, dwellsBy),
-        linesName: t("capacity.drawn"),
-      };
-    } else
-      network =
-        source === "example"
-          ? { kind: "example" }
-          : {
-              kind: "files",
-              topology: topology!.text,
-              topologyName: topology!.name,
-              lines: linesFile!.text,
-              linesName: linesFile!.name,
-            };
+    // The server runs the rail test only: the drawn railway and its service lines.
+    if (drawn !== null) {
+      setServerError(t(`capacity.drawn.${drawn}`));
+      return;
+    }
+    setSending(true);
+    const built = await buildDrawn(railway, undefined, undefined, prefs).catch((e: unknown) =>
+      engineErrorText(e),
+    );
+    setSending(false);
+    if (typeof built === "string") {
+      setServerError(built in DRAWN_PROBLEMS ? t(`capacity.drawn.${built as DrawnProblem}`) : built);
+      return;
+    }
+    setSending(true);
+    const dwells = await trainDwells(w, () => true, false).catch(() => null);
+    setSending(false);
+    const dwellsBy = Object.fromEntries(
+      Object.entries(dwells?.byLine ?? {}).map(([id, d]) => [id, d.dwells]),
+    );
+    const network: ServerNetwork = {
+      kind: "files",
+      topology: built.topology,
+      topologyName: t("capacity.drawn"),
+      lines: withStopDwells(built.lines, dwellsBy),
+      linesName: t("capacity.drawn"),
+    };
     const params = Object.fromEntries(
       Object.entries({ ...settings, ...w }).filter(([, v]) => v !== undefined),
     ) as SavedRun["params"];
@@ -751,18 +708,6 @@ export function CapacityRun({
         <p className="mt-1 text-sm text-slate-600">{t("capacity.intro")}</p>
       </div>
 
-      <NetworkPicker
-        source={source}
-        setSource={setSource}
-        drawn={drawn}
-        railway={railway}
-        streets={streets}
-        topology={topology}
-        setTopology={setTopology}
-        linesFile={linesFile}
-        setLinesFile={setLinesFile}
-      />
-
       <RunSettings
         period={period}
         setPeriod={setPeriod}
@@ -772,7 +717,7 @@ export function CapacityRun({
         setTo={setTo}
         sweep={sweep}
         setSweep={setSweep}
-        showLoads={source === "drawn" && !!ridership}
+        showLoads={!!ridership}
         withLoads={withLoads}
         setWithLoads={setWithLoads}
         stopNames={stopNames}
@@ -821,7 +766,7 @@ export function CapacityRun({
           <p className="text-xs text-slate-600">{t("capacity.serverHint")}</p>
         </div>
       )}
-      {!ready && source === "files" && <p className="text-xs text-slate-600">{t("capacity.chooseBoth")}</p>}
+      {!ready && drawn !== null && <p className="text-xs text-slate-600">{t(`capacity.drawn.${drawn}`)}</p>}
       {serverError && (
         <p
           role="alert"
