@@ -399,29 +399,50 @@ export function prepare(input: PrepareInput): Prepared {
   const nCells = new Map<number, number>();
   const cells: { at: LonLat; key: string; zone: number; circles: number[] }[] = [];
   if (st.length) {
-    let [w, s, e, n] = [Infinity, Infinity, -Infinity, -Infinity];
+    // Only the cells around each station: a network spread over a country (an intercity bus from Damascus
+    // to Aleppo) has millions of 50 m cells in its bounding box but a few thousand within its catchments,
+    // and measuring every one of them froze the capacity run's ridership estimate for minutes.
+    let [w, s] = [Infinity, Infinity];
     for (const z of st) {
-      const dx = z.radius / kx;
-      const dy = z.radius / 110_574;
-      [w, s, e, n] = [
-        Math.min(w, z.at[0] - dx),
-        Math.min(s, z.at[1] - dy),
-        Math.max(e, z.at[0] + dx),
-        Math.max(n, z.at[1] + dy),
-      ];
+      w = Math.min(w, z.at[0] - z.radius / kx);
+      s = Math.min(s, z.at[1] - z.radius / 110_574);
     }
     const step = { x: CELL_M / kx, y: CELL_M / 110_574 };
     const x0 = lon0 + Math.floor(((w - lon0) * kx) / CELL_M) * step.x;
     const y0 = lat0 + Math.floor(((s - lat0) * 110_574) / CELL_M) * step.y;
-    for (let x = x0; x <= e; x += step.x)
-      for (let y = y0; y <= n; y += step.y) {
-        const at: LonLat = [x + step.x / 2, y + step.y / 2];
-        const circles = around(at).filter((i) => distanceM(at, st[i]!.at) <= st[i]!.radius);
-        if (!circles.length) continue;
-        const zone = nearest(at)!.i;
-        for (const c of circles) nCells.set(c, (nCells.get(c) ?? 0) + 1);
-        cells.push({ at, key: cellOf(at), zone, circles });
-      }
+    const seen = new Set<string>();
+    const todo: [number, number][] = [];
+    for (const z of st) {
+      // Wide enough at the station's latitude (a degree of longitude is shorter further from the equator).
+      const dy = z.radius / 110_574;
+      const cos = Math.cos((Math.min(89, Math.abs(z.at[1]) + dy) * Math.PI) / 180);
+      const dx = z.radius / (111_320 * Math.max(0.01, cos));
+      const [i0, i1] = [
+        Math.floor((z.at[0] - dx - x0) / step.x) - 1,
+        Math.ceil((z.at[0] + dx - x0) / step.x),
+      ];
+      const [j0, j1] = [
+        Math.floor((z.at[1] - dy - y0) / step.y) - 1,
+        Math.ceil((z.at[1] + dy - y0) / step.y),
+      ];
+      for (let i = Math.max(0, i0); i <= i1; i++)
+        for (let j = Math.max(0, j0); j <= j1; j++) {
+          const k = `${i},${j}`;
+          if (seen.has(k)) continue;
+          seen.add(k);
+          todo.push([i, j]);
+        }
+    }
+    // West to east, then south to north, as the cells were measured before.
+    todo.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+    for (const [i, j] of todo) {
+      const at: LonLat = [x0 + i * step.x + step.x / 2, y0 + j * step.y + step.y / 2];
+      const circles = around(at).filter((c) => distanceM(at, st[c]!.at) <= st[c]!.radius);
+      if (!circles.length) continue;
+      const zone = nearest(at)!.i;
+      for (const c of circles) nCells.set(c, (nCells.get(c) ?? 0) + 1);
+      cells.push({ at, key: cellOf(at), zone, circles });
+    }
   }
   for (const c of cells) {
     const region = regionAt(regions, c.at);
