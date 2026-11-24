@@ -1,4 +1,4 @@
-import type { ConnectionView } from "./types";
+import type { Anchor, ConnectionView } from "./types";
 
 /** A connection point under the cursor: how far from it on screen (px) and where it is (local m). */
 export interface ConnectionHit {
@@ -90,4 +90,36 @@ export function pickConnection(
   // A switch leg: the nearest one no track joins yet, among those that are one target on screen.
   const pool = sorted.filter((h) => h.px <= near.px + SAME_PX);
   return (pool.find((h) => !h.c.used) ?? near).c;
+}
+
+/**
+ * Purpose: the station end a track started at a station leaves from, once its next point is known.
+ * Zoomed out, a click on a station whose two ends no track joins yet cannot tell the ends apart, and
+ * the track sometimes left from the far end and turned back past the station (a curve too sharp; PR 240
+ * local check). Inputs: the start, the next point (local m), every connection of the drawing, and the
+ * local position of a connection. Output: the same station tracks at the other end when no track joins
+ * them there and that end is nearer the next point; otherwise the start as it was.
+ */
+export function facingStart(
+  start: Anchor,
+  toward: [number, number],
+  all: ConnectionView[],
+  pos: (a: Anchor) => [number, number] | null,
+): Anchor {
+  if (start.type !== "station") return start;
+  const other = all.find((c) => {
+    const a = stationOf(c);
+    return (
+      !!a &&
+      !c.used &&
+      a.station === start.station &&
+      a.end !== start.end &&
+      key(a.tracks) === key(start.tracks)
+    );
+  });
+  const here = pos(start);
+  const there = other && pos(other.anchor);
+  if (!other || !here || !there) return start;
+  const d = (p: [number, number]) => Math.hypot(p[0] - toward[0], p[1] - toward[1]);
+  return d(there) < d(here) ? other.anchor : start;
 }
