@@ -1416,23 +1416,16 @@ export const editorsHi = {
   "capacity.loading": "नेटवर्क लोड हो रहा है…",
   "capacity.planning": "अवधि की योजना बनाई जा रही है और इंटरलॉकिंग से चलाई जा रही है…",
   "capacity.trying": "{line} {every} आज़माया जा रहा है ({total} में से {n})…",
-  "capacity.noFile": "कोई फ़ाइल नहीं चुनी",
-  "capacity.replace": "बदलें",
-  "capacity.choose": "चुनें",
   "capacity.title": "सिस्टम जाँचें",
   "capacity.intro":
     "दिन की एक अवधि को टाइमटेबल प्लानर और इंटरलॉकिंग से चलाएँ। देखें कि हर रेल लाइन पटरियों पर समाती है, समय पर चलती है और देरी से उबरती है या नहीं, और कितनी ट्रेनें चला सकती है।",
-  "capacity.network": "नेटवर्क",
   "capacity.example": "उदाहरण मेट्रो",
-  "capacity.mine": "फ़ाइलों से",
   "capacity.drawn": "इस प्रोजेक्ट में बनाई गई",
-  "capacity.drawnText": "रेलवे टूल में बनाई गई रेलवे पर लाइनें {names}, जैसे सहेजी गईं।",
   "capacity.drawn.noTrack": "रेलवे टूल में अभी कुछ नहीं बनाया गया है।",
   "capacity.drawn.noLines":
     "कोई लाइन टेस्ट के लिए तैयार नहीं है। रेलवे टूल में किसी लाइन को कम से कम दो स्टॉप और एक ट्रेन दें।",
   "capacity.drawn.errors": "बनाई गई रेलवे में त्रुटियाँ हैं। पहले उन्हें रेलवे टूल में ठीक करें।",
   "capacity.building": "बनाई गई रेलवे तैयार की जा रही है…",
-  "capacity.drawnStreets": "सड़क लाइनें {names}, ट्रैफ़िक देरी के साथ अपने रूट पर चलाई गईं।",
   "capacity.loads.estimating": "स्टेशनों और स्टॉप के आसपास यात्रियों का अनुमान लगाया जा रहा है…",
   "capacity.loads.toggle": "यात्री भार (तालिकाएँ टैब का यात्री अनुमान)",
   "capacity.loads.title": "यात्री",
@@ -1465,12 +1458,6 @@ export const editorsHi = {
   "capacity.street.bunchingHint": "आधे हेडवे से छोटे अंतर; अंत में {left} मिनट देर",
   "capacity.street.method":
     "हर सड़क लाइन {runs} बार चली; हर यात्रा का अपना ट्रैफ़िक था, मुख्य सड़कों पर अपेक्षित देरी का {low} से {high} गुना (परियोजना की पसंद)।",
-  "capacity.exampleText":
-    "लाइन M1 Westpark – Eastgate: पाँच स्टेशन, हर छोर पर एक डिपो, पीक में हर 5 मिनट और बाकी समय हर 10 मिनट।",
-  "capacity.topologyFile": "ट्रैक टोपोलॉजी (JSON)",
-  "capacity.linesFile": "लाइनें (JSON)",
-  "capacity.filesHelp":
-    "ट्रैक टोपोलॉजी फ़ाइल contracts/rail-topology.schema.json का पालन करती है; इस प्रोजेक्ट में बनाई गई रेलवे के लिए “{drawn}” चुनें। लाइनों की फ़ाइल हर लाइन के स्टेशन, ट्रेन और सेवा उसी तरह सूचीबद्ध करती है जैसे टाइमटेबल प्लानर पढ़ता है (docs/user/simulator.md)।",
   "capacity.period": "अवधि",
   "capacity.from": "से",
   "capacity.to": "तक",
@@ -1489,7 +1476,6 @@ export const editorsHi = {
   "capacity.run": "टेस्ट चलाएँ",
   "capacity.runAgain": "फिर चलाएँ",
   "capacity.stop": "रोकें",
-  "capacity.chooseBoth": "अपनी रेलवे जाँचने के लिए दोनों फ़ाइलें चुनें।",
   "capacity.summary":
     "{period} · मार्जिन के साथ {trips} यात्राएँ नियोजित · {out} ट्रेनें सेवा में, {reserve} रिज़र्व में",
   "capacity.importNotes": "इंपोर्ट नोट्स ({n})",

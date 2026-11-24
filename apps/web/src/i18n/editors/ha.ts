@@ -1423,25 +1423,17 @@ export const editorsHa = {
   "capacity.loading": "Ana loda hanyar sadarwa…",
   "capacity.planning": "Ana tsara lokacin kuma ana gudanar da shi ta interlocking…",
   "capacity.trying": "Ana gwada {line} {every} ({n} cikin {total})…",
-  "capacity.noFile": "Ba a zaɓi fayil ba",
-  "capacity.replace": "Musanya",
-  "capacity.choose": "Zaɓi",
   "capacity.title": "Gwada tsarin",
   "capacity.intro":
     "Gudanar da wani lokaci na yini ta mai tsara jadawali da interlocking. Duba ko kowane layin dogo ya dace da layukan ƙarfe, yana tafiya a kan lokaci kuma yana farfaɗowa daga jinkiri, da jirage nawa zai iya ɗauka.",
-  "capacity.network": "Hanyar sadarwa",
   "capacity.example": "Misalin metro",
-  "capacity.mine": "Daga fayiloli",
   "capacity.drawn": "An zana a wannan aikin",
-  "capacity.drawnText":
-    "Layuka {names} a kan layin dogo da aka zana a kayan aikin layin dogo, kamar yadda aka adana.",
   "capacity.drawn.noTrack": "Ba a zana komai a kayan aikin layin dogo ba tukuna.",
   "capacity.drawn.noLines":
     "Babu layin da ke shirye don gwaji. A kayan aikin layin dogo, ba layi aƙalla tasha biyu da jirgin ƙasa.",
   "capacity.drawn.errors":
     "Layin dogo da aka zana yana da kurakurai. Gyara su a kayan aikin layin dogo tukuna.",
   "capacity.building": "Ana gina layin dogo da aka zana…",
-  "capacity.drawnStreets": "Layukan titi {names}, an tafiyar da su a hanyarsu tare da jinkirin cunkoso.",
   "capacity.loads.estimating": "Ana ƙiyasta fasinjoji kewaye da tashoshi…",
   "capacity.loads.toggle": "Nauyin fasinjoji (ƙiyasin fasinjoji na shafin Tebura)",
   "capacity.loads.title": "Fasinjoji",
@@ -1474,12 +1466,6 @@ export const editorsHa = {
   "capacity.street.bunchingHint": "tazara ƙasa da rabin lokacin tsakani; jinkiri min {left} a ƙarshe",
   "capacity.street.method":
     "An tafiyar da kowane layin titi sau {runs}; kowace tafiya tana da cunkosonta, ninki {low} zuwa {high} na jinkirin da ake tsammani a manyan tituna (zaɓuɓɓukan aiki).",
-  "capacity.exampleText":
-    "Layi M1 Westpark – Eastgate: tasoshi biyar, ma’ajiya a kowane ƙarshe, kowane mint. 5 a lokacin cunkoso da kowane mint. 10 a sauran lokaci.",
-  "capacity.topologyFile": "Tsarin layin dogo (JSON)",
-  "capacity.linesFile": "Layuka (JSON)",
-  "capacity.filesHelp":
-    "Fayil ɗin tsarin layin dogo yana bin contracts/rail-topology.schema.json; don layin dogon da aka zana a wannan aikin, zaɓi “{drawn}”. Fayil ɗin layuka yana lissafa tasoshi, jirgi da sabis na kowane layi, kamar yadda mai tsara jadawali yake karanta su (docs/user/simulator.md).",
   "capacity.period": "Lokaci",
   "capacity.from": "Daga",
   "capacity.to": "Zuwa",
@@ -1499,7 +1485,6 @@ export const editorsHa = {
   "capacity.run": "Gudanar da gwaji",
   "capacity.runAgain": "Sake gudanarwa",
   "capacity.stop": "Tsaya",
-  "capacity.chooseBoth": "Zaɓi fayiloli biyu don gwada layin dogonka.",
   "capacity.summary":
     "{period} · an tsara tafiye-tafiye {trips} da rata · jirage {out} suna aiki, {reserve} a ajiye",
   "capacity.importNotes": "Bayanan shigo da ({n})",

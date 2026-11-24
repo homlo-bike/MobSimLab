@@ -1439,23 +1439,16 @@ export const editorsPt = {
   "capacity.loading": "Carregando a rede…",
   "capacity.planning": "Planejando o período e passando-o pelo intertravamento…",
   "capacity.trying": "Testando {line} {every} ({n} de {total})…",
-  "capacity.noFile": "Nenhum arquivo escolhido",
-  "capacity.replace": "Substituir",
-  "capacity.choose": "Escolher",
   "capacity.title": "Testar o sistema",
   "capacity.intro":
     "Passe um período do dia pelo planejador de horários e pelo intertravamento. Veja se cada linha ferroviária cabe nos trilhos, roda no horário e se recupera de atrasos, e quantos trens ela poderia levar.",
-  "capacity.network": "Rede",
   "capacity.example": "Metrô de exemplo",
-  "capacity.mine": "De arquivos",
   "capacity.drawn": "Desenhada neste projeto",
-  "capacity.drawnText": "Linhas {names} na ferrovia desenhada na ferramenta ferroviária, como foi salva.",
   "capacity.drawn.noTrack": "Ainda não há nada desenhado na ferramenta ferroviária.",
   "capacity.drawn.noLines":
     "Nenhuma linha está pronta para o teste. Na ferramenta ferroviária, dê a uma linha pelo menos duas paradas e um trem.",
   "capacity.drawn.errors": "A ferrovia desenhada tem erros. Corrija-os primeiro na ferramenta ferroviária.",
   "capacity.building": "Construindo a ferrovia desenhada…",
-  "capacity.drawnStreets": "Linhas de rua {names}, percorridas na sua rota com atrasos do trânsito.",
   "capacity.loads.estimating": "Estimando passageiros em torno das estações e paradas…",
   "capacity.loads.toggle": "Carga de passageiros (estimativa da aba Tabelas)",
   "capacity.loads.title": "Passageiros",
@@ -1488,12 +1481,6 @@ export const editorsPt = {
   "capacity.street.bunchingHint": "intervalos menores que metade do previsto; {left} min de atraso no fim",
   "capacity.street.method":
     "Cada linha de rua rodou {runs} vezes; cada viagem teve seu próprio trânsito, de {low} a {high} vezes o atraso esperado no trânsito das vias principais (preferências do projeto).",
-  "capacity.exampleText":
-    "Linha M1 Westpark – Eastgate: cinco estações, um pátio em cada ponta, a cada 5 min nos picos e a cada 10 min no resto do tempo.",
-  "capacity.topologyFile": "Topologia da via (JSON)",
-  "capacity.linesFile": "Linhas (JSON)",
-  "capacity.filesHelp":
-    "O arquivo de topologia de vias segue contracts/rail-topology.schema.json; para a ferrovia desenhada neste projeto, escolha “{drawn}”. O arquivo de linhas lista as estações, o trem e o serviço de cada linha, como o planejador de horários os lê (docs/user/simulator.md).",
   "capacity.period": "Período",
   "capacity.from": "De",
   "capacity.to": "Até",
@@ -1513,7 +1500,6 @@ export const editorsPt = {
   "capacity.run": "Executar o teste",
   "capacity.runAgain": "Executar de novo",
   "capacity.stop": "Parar",
-  "capacity.chooseBoth": "Escolha os dois arquivos para testar sua ferrovia.",
   "capacity.summary":
     "{period} · {trips} viagens planejadas com folgas · {out} trens em serviço, {reserve} de reserva",
   "capacity.importNotes": "Notas de importação ({n})",

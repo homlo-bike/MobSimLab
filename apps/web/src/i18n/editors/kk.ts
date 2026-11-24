@@ -1427,23 +1427,16 @@ export const editorsKk = {
   "capacity.loading": "Желі жүктелуде…",
   "capacity.planning": "Кезең жоспарланып, орталықтандыру арқылы өткізілуде…",
   "capacity.trying": "{line} {every} сыналуда ({total} ішінен {n})…",
-  "capacity.noFile": "Файл таңдалмаған",
-  "capacity.replace": "Ауыстыру",
-  "capacity.choose": "Таңдау",
   "capacity.title": "Жүйені сынау",
   "capacity.intro":
     "Күннің бір кезеңін кесте жоспарлаушысы мен орталықтандыру арқылы өткізіңіз. Әр теміржол желісі жолдарға сыя ма, уақытында жүре ме және кешігулерден қалпына келе ме, қанша пойыз тасымалдай алатынын көріңіз.",
-  "capacity.network": "Желі",
   "capacity.example": "Метро үлгісі",
-  "capacity.mine": "Файлдардан",
   "capacity.drawn": "Осы жобада салынған",
-  "capacity.drawnText": "Темір жол құралында салынған жолдағы {names} желілері, сақталғандай.",
   "capacity.drawn.noTrack": "Темір жол құралында әлі ештеңе салынбаған.",
   "capacity.drawn.noLines":
     "Сынаққа дайын желі жоқ. Темір жол құралында желіге кемінде екі аялдама мен пойыз беріңіз.",
   "capacity.drawn.errors": "Салынған темір жолда қателер бар. Алдымен оларды темір жол құралында түзетіңіз.",
   "capacity.building": "Салынған темір жол құрылуда…",
-  "capacity.drawnStreets": "Көше желілері {names}, көлік кідірісімен бағыты бойынша жүргізілді.",
   "capacity.loads.estimating": "Станциялар мен аялдамалар маңындағы жолаушылар бағалануда…",
   "capacity.loads.toggle": "Жолаушы жүктемесі (Кестелер қойындысының жолаушы бағасы)",
   "capacity.loads.title": "Жолаушылар",
@@ -1476,12 +1469,6 @@ export const editorsKk = {
   "capacity.street.bunchingHint": "аралық жартысынан қысқа аралықтар; соңында {left} мин кешігу",
   "capacity.street.method":
     "Әр көше желісі {runs} рет жүргізілді; әр рейстің өз көлік ағыны болды, негізгі көшелердегі күтілген кідірістің {low}–{high} есесі (жоба баптаулары).",
-  "capacity.exampleText":
-    "M1 желісі Westpark – Eastgate: бес бекет, әр шетінде депо, қарбаласта әр 5 мин, басқа уақытта әр 10 мин.",
-  "capacity.topologyFile": "Жол топологиясы (JSON)",
-  "capacity.linesFile": "Желілер (JSON)",
-  "capacity.filesHelp":
-    "Жол топологиясы файлы contracts/rail-topology.schema.json пішіміне сай; осы жобада сызылған темір жол үшін «{drawn}» таңдаңыз. Желілер файлы әр желінің бекеттерін, пойызын және қатынасын кесте жоспарлаушысы оқитындай етіп тізеді (docs/user/simulator.md).",
   "capacity.period": "Кезең",
   "capacity.from": "Бастап",
   "capacity.to": "Дейін",
@@ -1501,7 +1488,6 @@ export const editorsKk = {
   "capacity.run": "Сынақты іске қосу",
   "capacity.runAgain": "Қайта іске қосу",
   "capacity.stop": "Тоқтату",
-  "capacity.chooseBoth": "Теміржолыңызды сынау үшін екі файлды да таңдаңыз.",
   "capacity.summary":
     "{period} · қорымен жоспарланған рейстер: {trips} · жұмыстағы пойыздар: {out}, резервте: {reserve}",
   "capacity.importNotes": "Импорт ескертпелері ({n})",

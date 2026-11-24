@@ -7,12 +7,9 @@ To run your street lines in traffic, from their depots and back, see [Road simul
 ## Start
 
 1. Open a project and click **Simulator** in the top bar. **Test the system** is the first view of the panel.
-2. Choose the network:
-   - **Example metro**: line M1 Westpark – Eastgate, five stations, a depot at each end, every 5 minutes in the peaks and every 10 minutes otherwise. It is there to try the test before your own railway exists.
-   - **Drawn in this project**: the railway drawn in the [railway tool](railway-tool.md) and its service lines, and the project's [street lines](street-line-tool.md), as saved. It is picked by default when the project has a service line with at least two stops and a train, or a routed street line with at least two stops. The test builds the railway with its terrain heights, as the Tables tab does, and plans the lines as **Publish timetable** does: same stops, train, headways, peaks and stabling. Lines without two stops or a train are left out. A drawing with errors is not tested; the panel says to fix it in the railway tool first. You do not need to publish the timetable first.
-   - **From files**: pick two files, a **track topology** in the format of [`contracts/rail-topology.schema.json`](../../contracts/rail-topology.schema.json) and a **lines file** (below). The railway tool has no download for the topology; for the railway drawn in the project, choose **Drawn in this project** instead. Developers can write a topology with `cargo run -p rail-design --example topology -- DIR`.
+2. The test always runs on what is drawn in the project: the railway drawn in the [railway tool](railway-tool.md) and its service lines, and the project's [street lines](street-line-tool.md), as saved. The test builds the railway with its terrain heights, as the Tables tab does, and plans the lines as **Publish timetable** does: same stops, train, headways, peaks and stabling. Lines without two stops or a train are left out. **Run the test** needs a service line with at least two stops and a train, or a routed street line with at least two stops; until then the panel says what is missing. A drawing with errors is not tested; the panel says to fix it in the railway tool first. You do not need to publish the timetable first.
 3. Pick a **period**: morning peak 07:00–09:00, midday 11:00–13:00, evening peak 16:00–18:00, evening 20:00–22:00, or **Other** to type the times.
-4. Leave **Passenger loads** on to see how full the vehicles get (lines drawn in the project only; see below).
+4. Leave **Passenger loads** on to see how full the vehicles get (see below).
 5. Leave **Also find the most trains each line can carry** on to try other frequencies (it takes longer: one more test per frequency).
 6. Click **Run the test**. Everything runs in your browser; **Stop** ends the frequency search after the current step.
 
@@ -29,7 +26,7 @@ Owners and Editors of the project can also click **Run on the server and save**.
 
 Runs wait their turn: the server runs as many at the same time as it has background workers (`MOBSIMLAB_SIM_WORKERS` in `.env`, 1 by default), and the others show **Waiting** until a worker is free.
 
-The result is the same as in the browser: both use the same Rust code. The run in the browser stays as it was, instant and not saved. With **Drawn in this project**, the server runs the rail lines, with the longer dwell at busy stations when passenger loads are on; street lines and passenger loads run in the browser only.
+The result is the same as in the browser: both use the same Rust code. The run in the browser stays as it was, instant and not saved. The server runs the rail lines, with the longer dwell at busy stations when passenger loads are on; street lines and passenger loads run in the browser only.
 
 ## What the test does
 
@@ -84,7 +81,7 @@ The frequencies do not always improve in order. A line can work every 5 minutes 
 
 ## Lines file
 
-The lines file is the one the timetable planner reads (`crates/rail-plan/examples/publish_journeys.rs`): `{"lines": [ ... ]}`, each line with
+[AI agents](ai-agents.md) can start a capacity run on the server with their own track topology and lines file. The lines file is the one the timetable planner reads (`crates/rail-plan/examples/publish_journeys.rs`): `{"lines": [ ... ]}`, each line with
 
 - `id`, `name`;
 - `calls`: the stations in order, each `{"pick": {"Group": "Station name"}, "stop": true, "dwell_s": null}` (or `{"Station": "<station id>"}`, or `{"Platforms": ["<platform id>", ...]}` with the preferred one first);

@@ -1364,23 +1364,16 @@ export const editorsKo = {
   "capacity.loading": "노선망 불러오는 중…",
   "capacity.planning": "시간대를 계획하고 연동장치로 실행하는 중…",
   "capacity.trying": "{line} {every} 시험 중({total}개 중 {n}번째)…",
-  "capacity.noFile": "선택한 파일 없음",
-  "capacity.replace": "바꾸기",
-  "capacity.choose": "선택",
   "capacity.title": "시스템 시험",
   "capacity.intro":
     "하루 중 한 시간대를 시간표 계획기와 연동장치에 통과시킵니다. 각 철도 노선이 선로에 맞는지, 정시에 운행하고 지연에서 회복하는지, 열차를 몇 대까지 운행할 수 있는지 확인하세요.",
-  "capacity.network": "노선망",
   "capacity.example": "예제 지하철",
-  "capacity.mine": "파일에서",
   "capacity.drawn": "이 프로젝트에서 그린 철도",
-  "capacity.drawnText": "철도 도구에서 그린 철도의 노선 {names} (저장된 상태).",
   "capacity.drawn.noTrack": "철도 도구에 아직 아무것도 그려지지 않았습니다.",
   "capacity.drawn.noLines":
     "테스트할 수 있는 노선이 없습니다. 철도 도구에서 노선에 정차역 2개 이상과 열차를 지정하세요.",
   "capacity.drawn.errors": "그린 철도에 오류가 있습니다. 먼저 철도 도구에서 고치세요.",
   "capacity.building": "그린 철도를 구성하는 중…",
-  "capacity.drawnStreets": "도로 노선 {names}: 교통 지연을 반영해 경로를 따라 운행했습니다.",
   "capacity.loads.estimating": "역과 정류장 주변 이용객을 추정하는 중…",
   "capacity.loads.toggle": "승객 혼잡(표 탭의 이용객 추정)",
   "capacity.loads.title": "승객",
@@ -1412,12 +1405,6 @@ export const editorsKo = {
   "capacity.street.bunchingHint": "배차 간격 절반 미만의 간격, 끝날 때 {left}분 지연",
   "capacity.street.method":
     "각 도로 노선을 {runs}번 운행했습니다. 운행마다 교통 상황이 달라 간선도로 예상 지연의 {low}~{high}배였습니다(프로젝트 설정).",
-  "capacity.exampleText":
-    "M1 노선 Westpark – Eastgate: 5개 역, 양 끝에 차량기지, 첨두에는 5분 간격, 그 외에는 10분 간격.",
-  "capacity.topologyFile": "선로 토폴로지(JSON)",
-  "capacity.linesFile": "노선(JSON)",
-  "capacity.filesHelp":
-    "선로 토폴로지 파일은 contracts/rail-topology.schema.json 형식을 따릅니다. 이 프로젝트에서 그린 철도에는 “{drawn}”을 선택하세요. 노선 파일은 시간표 계획기가 읽는 형식으로 각 노선의 역, 열차, 운행을 나열합니다(docs/user/simulator.md).",
   "capacity.period": "시간대",
   "capacity.from": "시작",
   "capacity.to": "끝",
@@ -1436,7 +1423,6 @@ export const editorsKo = {
   "capacity.run": "시험 실행",
   "capacity.runAgain": "다시 실행",
   "capacity.stop": "중지",
-  "capacity.chooseBoth": "내 철도를 시험하려면 두 파일을 모두 선택하세요.",
   "capacity.summary":
     "{period} · 여유를 두고 계획한 운행 {trips}회 · 운행 열차 {out}편성, 예비 {reserve}편성",
   "capacity.importNotes": "가져오기 메모({n})",

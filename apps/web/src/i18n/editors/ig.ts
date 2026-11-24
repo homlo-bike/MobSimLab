@@ -1385,23 +1385,16 @@ export const editorsIg = {
   "capacity.loading": "Na-ebubata netwọk…",
   "capacity.planning": "Na-ahazi oge ahụ ma na-agafe ya n’interlocking…",
   "capacity.trying": "Na-anwale {line} {every} ({n} n’ime {total})…",
-  "capacity.noFile": "Ahọrọghị faịlụ",
-  "capacity.replace": "Dochie",
-  "capacity.choose": "Họrọ",
   "capacity.title": "Nwalee sistemụ ahụ",
   "capacity.intro":
     "Gafee otu oge n’ụbọchị site na onye nhazi usoro oge na interlocking. Hụ ma ahịrị ụgbọ oloko ọ bụla dabara n’ụzọ ígwè, na-aga n’oge ma na-agbake site n’igbu oge, na ụgbọ ole ọ nwere ike ibu.",
-  "capacity.network": "Netwọk",
   "capacity.example": "Metro ihe atụ",
-  "capacity.mine": "Site na faịlụ",
   "capacity.drawn": "Esere n’ọrụ a",
-  "capacity.drawnText": "Ahịrị {names} n’ụzọ ụgbọ oloko e sere na ngwá ụzọ ụgbọ oloko, dị ka e chekwara ya.",
   "capacity.drawn.noTrack": "Ọ dịbeghị ihe e sere na ngwá ụzọ ụgbọ oloko.",
   "capacity.drawn.noLines":
     "Ọ dịghị ahịrị dị njikere maka nnwale. Na ngwá ụzọ ụgbọ oloko, nye otu ahịrị ọ dịkarịa ala ebe nkwụsị abụọ na ụgbọ oloko.",
   "capacity.drawn.errors": "Ụzọ ụgbọ oloko e sere nwere njehie. Buru ụzọ dozie ha na ngwá ụzọ ụgbọ oloko.",
   "capacity.building": "A na-ewu ụzọ ụgbọ oloko e sere…",
-  "capacity.drawnStreets": "Ahịrị okporo ụzọ {names}, agbara n’ụzọ ha na igbu oge nke okporo ụzọ.",
   "capacity.loads.estimating": "Na-eme atụmatụ ndị njem gburugburu ọdụ…",
   "capacity.loads.toggle": "Ibu ndị njem (atụmatụ ndị njem nke taabụ Tebụl)",
   "capacity.loads.title": "Ndị njem",
@@ -1435,12 +1428,6 @@ export const editorsIg = {
   "capacity.street.bunchingHint": "oghere dị obere karịa ọkara oge n’etiti; nkeji {left} n’azụ na njedebe",
   "capacity.street.method":
     "Agbara ahịrị okporo ụzọ ọ bụla ugboro {runs}; njem ọ bụla nwere okporo ụzọ nke ya, ugboro {low} ruo {high} nke igbu oge a na-atụ anya n’okporo ụzọ ukwu (nhọrọ ọrụ).",
-  "capacity.exampleText":
-    "Ahịrị M1 Westpark – Eastgate: ọdụ ise, ebe nchekwa n’isi nke ọ bụla, kwa nkeji 5 n’oge njupụta na kwa nkeji 10 n’oge ndị ọzọ.",
-  "capacity.topologyFile": "Nhazi ụzọ ígwè (JSON)",
-  "capacity.linesFile": "Ahịrị (JSON)",
-  "capacity.filesHelp":
-    "Faịlụ topology ụzọ ụgbọ oloko na-agbaso contracts/rail-topology.schema.json; maka ụzọ ụgbọ oloko e sere n’ọrụ a, họrọ “{drawn}”. Faịlụ ahịrị na-edepụta ọdụ, ụgbọ na ọrụ nke ahịrị ọ bụla, dịka onye nhazi usoro oge si agụ ha (docs/user/simulator.md).",
   "capacity.period": "Oge",
   "capacity.from": "Site",
   "capacity.to": "Ruo",
@@ -1460,7 +1447,6 @@ export const editorsIg = {
   "capacity.run": "Mee ule",
   "capacity.runAgain": "Mee ọzọ",
   "capacity.stop": "Kwụsị",
-  "capacity.chooseBoth": "Họrọ faịlụ abụọ ahụ iji nwalee ụzọ ụgbọ oloko gị.",
   "capacity.summary":
     "{period} · njem {trips} ka ahaziri nwere oghere · ụgbọ {out} na-arụ ọrụ, {reserve} na nchekwa",
   "capacity.importNotes": "Ndetu mbubata ({n})",

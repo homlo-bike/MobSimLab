@@ -116,7 +116,7 @@ export interface CapacityEngine {
   dispose(): void;
 }
 
-/** What to load: the example metro, or the railway editor's topology export with a lines file (JSON texts). */
-export type NetworkSource = { kind: "example" } | { kind: "files"; topology: string; lines: string };
+/** What to load: the railway drawn in the project, as its topology and its lines (JSON texts). */
+export type NetworkSource = { topology: string; lines: string };
 
 export type EngineLoader = (src: NetworkSource) => Promise<CapacityEngine>;
