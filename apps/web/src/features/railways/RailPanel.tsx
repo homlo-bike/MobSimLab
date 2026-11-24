@@ -83,6 +83,9 @@ export function RailPanel(props: Props) {
   const multi = multiIds.length > 1;
   const placing = !inspecting && (draft !== null || PLACING.includes(tool));
   const network = !inspecting;
+  // The network's lists (service lines, switches, signals…) only with "Select and move" and nothing selected; the
+  // service lines also while the "Create service line" tool picks a line's stops, which shows that line there.
+  const lists = network && !draft && tool === "select";
 
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
@@ -292,7 +295,7 @@ export function RailPanel(props: Props) {
         <ObjectComments type={kind} id={sel.id} />
       )}
 
-      {network && (
+      {network && !draft && (tool === "select" || tool === "line") && (
         <ServiceLinesPanel
           doc={doc}
           view={view}
@@ -304,23 +307,23 @@ export function RailPanel(props: Props) {
       )}
 
       {/* The network's lists only when they hold something. */}
-      {network && doc.switches.length > 0 && (
+      {lists && doc.switches.length > 0 && (
         <SwitchesSection doc={doc} view={view} selected={null} actions={a} />
       )}
 
-      {network && (view.signals.length > 0 || view.signals_edited) && (
+      {lists && (view.signals.length > 0 || view.signals_edited) && (
         <SignalsSection view={view} actions={a} />
       )}
 
-      {network && props.existingRailways && (view.existing_joins.length > 0 || view.existing_count > 0) && (
+      {lists && props.existingRailways && (view.existing_joins.length > 0 || view.existing_count > 0) && (
         <ExistingSection view={view} actions={a} />
       )}
 
-      {network && <DiamondSection doc={props.doc} view={view} actions={a} />}
+      {lists && <DiamondSection doc={props.doc} view={view} actions={a} />}
 
-      {network && view.street_running.length > 0 && <StreetRunningSection view={view} actions={a} />}
+      {lists && view.street_running.length > 0 && <StreetRunningSection view={view} actions={a} />}
 
-      {network && (view.level_crossings.length > 0 || !!props.streetNote) && (
+      {lists && (view.level_crossings.length > 0 || !!props.streetNote) && (
         <LevelCrossingsSection view={view} streetNote={props.streetNote} actions={a} />
       )}
 
