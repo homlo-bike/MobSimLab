@@ -309,6 +309,7 @@ export const editorsZh = {
   "rail.say.clickTrackSwitch": "点击轨道放置道岔。",
   "rail.say.straightOnly": "目录中的道岔需铺设在直线段上。请点击直线部分。",
   "rail.say.doubleOnly": "渡线连接两条平行轨道。请选择双线轨道。",
+  "rail.say.missedStationEnd": "请准确点击车站的一端，把轨道接到那里。如果难以点中端点，请放大地图。",
   "rail.say.clickTrackSignal": "点击轨道、站内轨道或道岔分支放置信号机。",
   "rail.signalsReset": "信号机已恢复为根据设计自动生成的。",
   "rail.noiseFlows": "每条轨道每小时列车数（绘制线路前使用示例运营）",

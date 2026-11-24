@@ -336,6 +336,8 @@ export const editorsHa = {
   "rail.say.clickTrackSwitch": "Danna dogo don sanya makunni.",
   "rail.say.straightOnly": "Ana sanya makunnan kundin a kan miƙaƙƙen dogo. Danna miƙaƙƙen sashe.",
   "rail.say.doubleOnly": "Mahaɗar dogo suna haɗa dogo biyu masu layi ɗaya. Zaɓi dogo biyu.",
+  "rail.say.missedStationEnd":
+    "Danna daidai a ƙarshen tasha don haɗa dogo da shi. Ka zuƙo idan yana da wuya a taɓa ƙarshen.",
   "rail.say.clickTrackSignal": "Danna dogo, dogon tasha ko reshen makunni don sanya alama.",
   "rail.signalsReset": "An mayar da alamomi zuwa waɗanda aka samar daga tsarin.",
   "rail.noiseFlows":

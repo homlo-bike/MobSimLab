@@ -352,6 +352,8 @@ export const editorsDe = {
     "Katalogweichen liegen auf geradem Gleis. Klicken Sie auf einen geraden Abschnitt.",
   "rail.say.doubleOnly":
     "Gleiswechsel verbinden zwei parallele Gleise. Wählen Sie eine zweigleisige Strecke.",
+  "rail.say.missedStationEnd":
+    "Klicken Sie genau auf ein Bahnhofsende, um das Gleis dort anzuschließen. Zoomen Sie hinein, wenn die Enden schwer zu treffen sind.",
   "rail.say.clickTrackSignal":
     "Klicken Sie auf ein Gleis, ein Bahnhofsgleis oder einen Weichenstrang, um ein Signal zu setzen.",
   "rail.signalsReset": "Signale auf die aus dem Entwurf erzeugten zurückgesetzt.",

@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Geri dönüş {extra} ekliyor ({direct} yerine {length}). Son durağı aracın dönebileceği bir yere koymayı düşünün: bir otobüs terminali, dönüş döngüsü, dönel kavşak veya etrafında dolaşabileceği bir blok.",
   "street.line.two_stops": "Bir hattın en az iki durağı olmalıdır. Noktaları durağa dönüştürün.",
   "street.line.wrong_side": "Bu ayak, kuş uçuşu {straight} için {length}. Bir sonraki nokta bölünmüş bir yolun karşı yarısındaysa veya tek yönlü bir sokakta ters yöndeyse, onu aracın seyrettiği tarafa taşıyın.",
-  "street.line.wrong_sidewalk": "Bu kaldırıma hizmet verilemez: buradaki trafik yalnızca durak kapıların karşı tarafında kalacak şekilde akıyor. Durağı diğer kaldırıma koyun."
+  "street.line.wrong_sidewalk": "Bu kaldırıma hizmet verilemez: buradaki trafik yalnızca durak kapıların karşı tarafında kalacak şekilde akıyor. Durağı diğer kaldırıma koyun.",
+  "rail.plan.no_track_between_reach": "{from} ile {to} arasında hiçbir hat yok. {from} çıkışlı trenler yalnızca şuralara ulaşıyor: {reached}. {last} istasyonuna giren ve çıkan hatların iki uçta da aynı istasyon yollarına bağlandığını kontrol edin ki oraya gelen trenler devam edebilsin, ya da oraya makas ekleyin.",
+  "rail.plan.gap_does_not_lead_on": "{from} çıkışlı trenler {at} istasyonuna ulaşıyor, ancak {next} yönüne devam etmeyen istasyon yollarında. {at} istasyonuna giren ve çıkan hatların iki uçta da aynı istasyon yollarına bağlandığını kontrol edin ya da oraya makas ekleyin",
+  "rail.plan.gap_no_track": "{from} ile {to} arasında hiçbir hat yok",
+  "rail.plan.no_track_outbound_at": "Hiçbir hat durakları hattın yönünde bağlamıyor: {gap}.",
+  "rail.plan.no_track_return_at": "Hiçbir hat durakları dönüş yönünde bağlamıyor: {gap}."
 }

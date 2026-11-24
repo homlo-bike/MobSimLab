@@ -45,7 +45,7 @@ pub use demand::{
 };
 pub use journeys::{journey_timetable, JourneyTimetable, RouteInfo};
 pub use line::{resolve, Call, LineSpec, Pick};
-pub use path::{find_path, FoundPath, Place};
+pub use path::{find_path, reached_stations, FoundPath, Place};
 pub use plan::{plan, CallTime, Issue, Plan, PlanParams, PlannedRun, RunKind};
 pub use published::{gtfs_time, publish, Published, StopRow, StopTimeRow, TripRow};
 pub use report::{report, HourCapacity, MaxCapacity, Report};

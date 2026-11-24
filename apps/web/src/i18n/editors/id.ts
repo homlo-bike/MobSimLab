@@ -340,6 +340,8 @@ export const editorsId = {
   "rail.say.clickTrackSwitch": "Klik rel untuk menempatkan wesel.",
   "rail.say.straightOnly": "Wesel katalog dipasang di bagian lurus. Klik bagian yang lurus.",
   "rail.say.doubleOnly": "Penyeberangan rel menghubungkan dua rel sejajar. Pilih jalur ganda.",
+  "rail.say.missedStationEnd":
+    "Klik tepat di ujung stasiun untuk menyambungkan rel ke sana. Perbesar peta jika ujungnya sulit dikenai.",
   "rail.say.clickTrackSignal": "Klik rel, rel stasiun, atau sisi belok wesel untuk menempatkan sinyal.",
   "rail.signalsReset": "Sinyal dikembalikan ke yang dibuat dari desain.",
   "rail.noiseFlows": "Kereta per jam di setiap rel (layanan asumsi sampai layanan kereta digambar)",

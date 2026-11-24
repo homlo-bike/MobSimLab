@@ -342,6 +342,8 @@ export const editorsEs = {
   "rail.say.clickTrackSwitch": "Haz clic en una vía para colocar un desvío.",
   "rail.say.straightOnly": "Los desvíos del catálogo van en vía recta. Haz clic en un tramo recto.",
   "rail.say.doubleOnly": "Los escapes unen dos vías paralelas. Elige una vía doble.",
+  "rail.say.missedStationEnd":
+    "Haz clic justo en un extremo de la estación para unir la vía a él. Acércate si cuesta acertar en los extremos.",
   "rail.say.clickTrackSignal":
     "Haz clic en una vía, una vía de estación o un ramal de desvío para colocar una señal.",
   "rail.signalsReset": "Señales restablecidas a las generadas a partir del diseño.",

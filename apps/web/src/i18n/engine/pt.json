@@ -573,5 +573,10 @@
   "street.line.turning_detour": "A manobra de retorno acrescenta {extra} ({length} em vez de {direct}). Considere colocar a parada terminal onde o veículo possa manobrar: um terminal de ônibus, uma alça de retorno, uma rotatória ou um quarteirão que ele possa contornar.",
   "street.line.two_stops": "Uma linha precisa de pelo menos duas paradas. Transforme pontos em paradas.",
   "street.line.wrong_side": "Este trecho tem {length} para {straight} em linha reta. Se o ponto seguinte estiver na metade oposta de uma via com canteiro central, ou em uma rua de mão única no sentido errado, mova-o para o lado em que o veículo circula.",
-  "street.line.wrong_sidewalk": "Esta calçada não pode ser atendida: aqui o trânsito só circula com a parada do lado oposto às portas. Coloque a parada na outra calçada."
+  "street.line.wrong_sidewalk": "Esta calçada não pode ser atendida: aqui o trânsito só circula com a parada do lado oposto às portas. Coloque a parada na outra calçada.",
+  "rail.plan.no_track_between_reach": "Nenhuma via leva de {from} a {to}. Os comboios a partir de {from} só chegam a {reached}: verifique se as vias que entram e saem de {last} ligam às mesmas vias da estação nas duas extremidades, para que os comboios que lá chegam possam seguir, ou coloque lá AMVs.",
+  "rail.plan.gap_does_not_lead_on": "os comboios a partir de {from} chegam a {at}, mas por vias da estação que não seguem para {next}. Verifique se as vias que entram e saem de {at} ligam às mesmas vias da estação nas duas extremidades, ou coloque lá AMVs",
+  "rail.plan.gap_no_track": "nenhuma via leva de {from} a {to}",
+  "rail.plan.no_track_outbound_at": "Nenhuma via liga as paradas no sentido da linha: {gap}.",
+  "rail.plan.no_track_return_at": "Nenhuma via liga as paradas no sentido de volta: {gap}."
 }

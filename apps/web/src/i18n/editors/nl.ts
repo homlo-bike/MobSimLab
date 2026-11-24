@@ -344,6 +344,8 @@ export const editorsNl = {
   "rail.say.clickTrackSwitch": "Klik op een spoor om een wissel te plaatsen.",
   "rail.say.straightOnly": "Cataloguswissels liggen op recht spoor. Klik op een recht stuk.",
   "rail.say.doubleOnly": "Overloopwissels verbinden twee evenwijdige sporen. Kies dubbelspoor.",
+  "rail.say.missedStationEnd":
+    "Klik precies op een stationseinde om het spoor daar aan te sluiten. Zoom in als de einden moeilijk te raken zijn.",
   "rail.say.clickTrackSignal": "Klik op een spoor, stationsspoor of wisseltak om een sein te plaatsen.",
   "rail.signalsReset": "Seinen teruggezet naar de uit het ontwerp gegenereerde.",
   "rail.noiseFlows": "Treinen per uur op elk spoor (voorbeelddienst tot er lijnen getekend zijn)",

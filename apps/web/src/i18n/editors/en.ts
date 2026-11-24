@@ -351,6 +351,8 @@ export const editorsEn = {
   "rail.say.clickTrackSwitch": "Click on a track to place a switch.",
   "rail.say.straightOnly": "Catalogue switches go on straight track. Click on a straight part.",
   "rail.say.doubleOnly": "Crossovers join two parallel tracks. Pick a double track.",
+  "rail.say.missedStationEnd":
+    "Click right on a station end to join the track to it. Zoom in if the ends are hard to hit.",
   "rail.say.clickTrackSignal": "Click on a track, station track or switch leg to place a signal.",
   "rail.signalsReset": "Signals reset to the ones generated from the design.",
   "rail.noiseFlows": "Trains per hour on each track (sample service until rail lines are drawn)",

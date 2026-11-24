@@ -318,6 +318,8 @@ export const editorsYo = {
   "rail.say.clickTrackSwitch": "Tẹ ojú irin láti gbé ìyípadà sí.",
   "rail.say.straightOnly": "A ń gbé àwọn ìyípadà àkójọ sórí ojú irin títọ́. Tẹ apá títọ́ kan.",
   "rail.say.doubleOnly": "Àwọn ìkọjá ń so ojú irin méjì tó jọra pọ̀. Yan ojú irin méjì.",
+  "rail.say.missedStationEnd":
+    "Tẹ gangan sí òpin ibùdókọ̀ láti so ojú irin mọ́ ọn. Sún mọ́ tí ó bá ṣòro láti tẹ àwọn òpin.",
   "rail.say.clickTrackSignal": "Tẹ ojú irin, ojú irin ibùdókọ̀ tàbí ẹ̀ka ìyípadà láti gbé àmì sí.",
   "rail.signalsReset": "A mú àwọn àmì padà sí àwọn tí a ṣẹ̀dá láti inú àpẹrẹ.",
   "rail.noiseFlows":

@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Việc quay đầu làm tăng thêm {extra} ({length} thay vì {direct}). Hãy cân nhắc đặt bến cuối ở nơi xe quay đầu được: bến xe, vòng quay đầu, vòng xuyến hoặc một khối nhà xe có thể chạy vòng quanh.",
   "street.line.two_stops": "Một tuyến cần ít nhất hai điểm dừng. Hãy chuyển các điểm thành điểm dừng.",
   "street.line.wrong_side": "Chặng này dài {length} trong khi đường thẳng chỉ {straight}. Nếu điểm kế tiếp nằm ở nửa bên kia của đường có dải phân cách, hoặc trên đường một chiều theo chiều ngược lại, hãy dời nó sang phía xe chạy.",
-  "street.line.wrong_sidewalk": "Không thể phục vụ vỉa hè này: dòng xe ở đây chỉ chạy theo chiều khiến điểm dừng nằm ở phía không có cửa. Hãy đặt điểm dừng ở vỉa hè bên kia."
+  "street.line.wrong_sidewalk": "Không thể phục vụ vỉa hè này: dòng xe ở đây chỉ chạy theo chiều khiến điểm dừng nằm ở phía không có cửa. Hãy đặt điểm dừng ở vỉa hè bên kia.",
+  "rail.plan.no_track_between_reach": "Không có đường ray dẫn từ {from} đến {to}. Tàu từ {from} chỉ đến được {reached}: hãy kiểm tra các đường ray vào và ra khỏi {last} có nối với cùng các đường ga ở cả hai đầu không, để tàu đến đó có thể đi tiếp, hoặc đặt ghi ở đó.",
+  "rail.plan.gap_does_not_lead_on": "tàu từ {from} đến được {at}, nhưng trên các đường ga không dẫn tiếp đến {next}. Hãy kiểm tra các đường ray vào và ra khỏi {at} có nối với cùng các đường ga ở cả hai đầu không, hoặc đặt ghi ở đó",
+  "rail.plan.gap_no_track": "không có đường ray dẫn từ {from} đến {to}",
+  "rail.plan.no_track_outbound_at": "Không có đường ray nối các điểm dừng theo chiều đi của tuyến: {gap}.",
+  "rail.plan.no_track_return_at": "Không có đường ray nối các điểm dừng theo chiều về: {gap}."
 }

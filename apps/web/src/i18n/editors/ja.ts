@@ -317,6 +317,8 @@ export const editorsJa = {
   "rail.say.clickTrackSwitch": "線路をクリックして分岐器を配置します。",
   "rail.say.straightOnly": "カタログの分岐器は直線区間に配置します。直線部分をクリックしてください。",
   "rail.say.doubleOnly": "渡り線は平行する2本の線路をつなぎます。複線を選んでください。",
+  "rail.say.missedStationEnd":
+    "線路をつなぐには駅の端を正確にクリックしてください。端をクリックしにくい場合は拡大してください。",
   "rail.say.clickTrackSignal": "線路、駅の線路、または分岐器の分岐側をクリックして信号機を配置します。",
   "rail.signalsReset": "信号機を設計から生成した状態に戻しました。",
   "rail.noiseFlows": "各線路の1時間あたりの列車本数（鉄道系統を描くまでは仮の運行）",

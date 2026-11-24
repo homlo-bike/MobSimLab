@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Le demi-tour ajoute {extra} ({length} au lieu de {direct}). Envisagez de placer le terminus là où le véhicule peut faire demi-tour : gare routière, boucle de retournement, giratoire ou pâté de maisons dont il peut faire le tour.",
   "street.line.two_stops": "Une ligne demande au moins deux arrêts. Transformez des points en arrêts.",
   "street.line.wrong_side": "Ce tronçon mesure {length} pour {straight} en ligne droite. Si le point suivant est sur la moitié opposée d'une route à chaussées séparées, ou sur une rue à sens unique prise à contresens, déplacez-le du côté où circule le véhicule.",
-  "street.line.wrong_sidewalk": "Ce trottoir ne peut pas être desservi : ici, la circulation ne passe qu'avec l'arrêt du côté opposé aux portes. Placez l'arrêt sur l'autre trottoir."
+  "street.line.wrong_sidewalk": "Ce trottoir ne peut pas être desservi : ici, la circulation ne passe qu'avec l'arrêt du côté opposé aux portes. Placez l'arrêt sur l'autre trottoir.",
+  "rail.plan.no_track_between_reach": "Aucune voie ne mène de {from} à {to}. Les trains partant de {from} n'atteignent que {reached} : vérifiez que les voies qui entrent dans {last} et en sortent rejoignent les mêmes voies de gare aux deux extrémités, pour que les trains qui y arrivent puissent continuer, ou ajoutez-y des aiguillages.",
+  "rail.plan.gap_does_not_lead_on": "les trains partant de {from} atteignent {at}, mais sur des voies de gare qui ne mènent pas vers {next}. Vérifiez que les voies qui entrent dans {at} et en sortent rejoignent les mêmes voies de gare aux deux extrémités, ou ajoutez-y des aiguillages",
+  "rail.plan.gap_no_track": "aucune voie ne mène de {from} à {to}",
+  "rail.plan.no_track_outbound_at": "Aucune voie ne relie les arrêts dans le sens de la ligne : {gap}.",
+  "rail.plan.no_track_return_at": "Aucune voie ne relie les arrêts dans le sens retour : {gap}."
 }

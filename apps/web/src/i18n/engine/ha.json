@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Juyawa yana ƙara {extra} ({length} maimakon {direct}). Yi la'akari da sanya tashar ƙarshe inda abin hawa zai iya juyawa: tashar bas, madaukin juyawa, kewaye ko unguwar da zai iya zagayawa.",
   "street.line.two_stops": "Layi yana buƙatar aƙalla tashoshi biyu. Mai da wurare zuwa tashoshi.",
   "street.line.wrong_side": "Wannan ɓangare yana da {length} ga {straight} a layi madaidaici. Idan wuri na gaba yana kan ɗayan rabin titi mai rabewa, ko a titi mai hanya ɗaya a alƙibla mara kyau, matsar da shi zuwa gefen da abin hawa ke tuƙi.",
-  "street.line.wrong_sidewalk": "Ba za a iya hidimar wannan gefen titi ba: zirga-zirga a nan tana tafiya ne kawai tare da tashar a ɗayan gefe daga ƙofofi. Sanya tashar a ɗayan gefen titi."
+  "street.line.wrong_sidewalk": "Ba za a iya hidimar wannan gefen titi ba: zirga-zirga a nan tana tafiya ne kawai tare da tashar a ɗayan gefe daga ƙofofi. Sanya tashar a ɗayan gefen titi.",
+  "rail.plan.no_track_between_reach": "Babu dogo daga {from} zuwa {to}. Jiragen ƙasa daga {from} suna kaiwa {reached} kawai: duba cewa dogayen da ke shiga da fita daga {last} suna haɗuwa da dogayen tasha iri ɗaya a ƙarshen biyu, don jiragen da suka isa can su ci gaba, ko ka sanya makunni a can.",
+  "rail.plan.gap_does_not_lead_on": "jiragen ƙasa daga {from} suna kaiwa {at}, amma a kan dogayen tasha da ba sa ci gaba zuwa {next}. Duba cewa dogayen da ke shiga da fita daga {at} suna haɗuwa da dogayen tasha iri ɗaya a ƙarshen biyu, ko ka sanya makunni a can",
+  "rail.plan.gap_no_track": "babu dogo daga {from} zuwa {to}",
+  "rail.plan.no_track_outbound_at": "Babu dogo da ke haɗa tashoshin a alƙiblar layin: {gap}.",
+  "rail.plan.no_track_return_at": "Babu dogo da ke haɗa tashoshin a alƙiblar dawowa: {gap}."
 }

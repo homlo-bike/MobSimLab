@@ -35,6 +35,9 @@ import type { TrackEnd } from "./trackEnds";
 import type { Anchor, ConnectionView, LonLat, Network, RailEngine, Track } from "./types";
 import { engineErrorText, engineTextNow } from "../../i18n/engine";
 
+/** A click this close to a station end (px) that hit no connection point meant the station end. */
+const MISSED_END_PX = 30;
+
 /**
  * Purpose: the editor's map clicks, double-clicks and drags: placing stations, drawing tracks,
  * placing switches and signals, picking a service line's stops, selecting and moving elements.
@@ -54,6 +57,7 @@ export function useMapEditing({
   setDraft,
   setCursor,
   connectionAt,
+  stationEndNear,
   trackEndAt,
   connLocal,
   finishDraft,
@@ -74,7 +78,13 @@ export function useMapEditing({
   setNote: Dispatch<SetStateAction<string | null>>;
   setDraft: Dispatch<SetStateAction<Track | null>>;
   setCursor: Dispatch<SetStateAction<Cursor | null>>;
-  connectionAt: (pt: { x: number; y: number }, wantTracks: number | null) => ConnectionView | null;
+  connectionAt: (
+    pt: { x: number; y: number },
+    wantTracks: number | null,
+    from?: [number, number] | null,
+  ) => ConnectionView | null;
+  /** Whether a station end with connections for `wantTracks` tracks is within `px` of a point. */
+  stationEndNear: (pt: { x: number; y: number }, px: number, wantTracks: number) => boolean;
   trackEndAt: (pt: { x: number; y: number }, wantTracks: number | null) => TrackEnd | null;
   connLocal: (a: Anchor) => LocalConnection | null;
   finishDraft: (end: Anchor | null) => void;
@@ -86,6 +96,13 @@ export function useMapEditing({
   useShiftClickSelect(map);
   useEffect(() => {
     if (!map) return;
+    // Where the track being drawn comes from: its last point, or its start.
+    const comesFrom = (dr: Track): [number, number] | null => {
+      const last = dr.points[dr.points.length - 1];
+      return last
+        ? [last.x, last.y]
+        : (connLocal(dr.start)?.p ?? (dr.start.type === "free" ? [dr.start.x, dr.start.y] : null));
+    };
     const onClick = (ev: MapMouseEvent) => {
       const s = latest.current;
       const e = engine.current;
@@ -157,10 +174,13 @@ export function useMapEditing({
           if (c) startDraft(c.anchor, s.doc, c.level, c.tracks === 2 ? 2 : 1);
           else if (te)
             startDraft({ type: "free", x: te.x, y: te.y, level: te.level }, s.doc, te.level, te.tracks);
+          // A click just beside a station end meant it: a free start there is a track that joins nothing.
+          else if (stationEndNear(ev.point, MISSED_END_PX, s.trackOpts.tracks))
+            say(tNow("rail.say.missedStationEnd"));
           else startDraft({ type: "free", x: p[0], y: p[1] }, s.doc, s.trackOpts.level, s.trackOpts.tracks);
           return;
         }
-        const c = connectionAt(ev.point, s.draft.tracks);
+        const c = connectionAt(ev.point, s.draft.tracks, comesFrom(s.draft));
         if (c) return finishDraft(c.anchor);
         const te = trackEndAt(ev.point, s.draft.tracks);
         if (te) return finishDraft({ type: "free", x: te.x, y: te.y, level: te.level });
@@ -245,6 +265,12 @@ export function useMapEditing({
       const at = engine.current.toLocal(s.doc.origin, [ev.lngLat.lng, ev.lngLat.lat]);
       latest.current.draft = { ...dr, points: pts };
       const te = trackEndAt(ev.point, dr.tracks);
+      if (!te && stationEndNear(ev.point, MISSED_END_PX, dr.tracks)) {
+        // Both clicks added a point beside the station: take them back and keep drawing.
+        latest.current.draft = { ...dr, points: dr.points.slice(0, -2) };
+        setDraft(latest.current.draft);
+        return say(tNow("rail.say.missedStationEnd"));
+      }
       finishDraft(
         te
           ? { type: "free", x: te.x, y: te.y, level: te.level }
@@ -291,7 +317,7 @@ export function useMapEditing({
         return;
       }
       if (s.tool === "track" && s.draft) {
-        const conn = connectionAt(ev.point, s.draft.tracks);
+        const conn = connectionAt(ev.point, s.draft.tracks, comesFrom(s.draft));
         const te = conn ? null : trackEndAt(ev.point, s.draft.tracks);
         const snap = te ? null : e.existingSnap(ll, pxToM(10));
         const at: [number, number] = te ? [te.x, te.y] : e.toLocal(s.doc.origin, snap ? snap.lonlat : ll);
@@ -360,5 +386,16 @@ export function useMapEditing({
       map.off("mouseup", onUp);
       cancelAnimationFrame(frame);
     };
-  }, [map, hold, connectionAt, trackEndAt, connLocal, finishDraft, minLead, pxToM, startDraft]);
+  }, [
+    map,
+    hold,
+    connectionAt,
+    stationEndNear,
+    trackEndAt,
+    connLocal,
+    finishDraft,
+    minLead,
+    pxToM,
+    startDraft,
+  ]);
 }

@@ -347,6 +347,8 @@ export const editorsZu = {
   "rail.say.clickTrackSwitch": "Chofoza ujantshi ukuze ubeke isishintshi.",
   "rail.say.straightOnly": "Izishintshi zekhathalogi zibekwa kujantshi oqondile. Chofoza ingxenye eqondile.",
   "rail.say.doubleOnly": "Iziwela zixhuma ojantshi ababili abahambisanayo. Khetha ujantshi ophindwe kabili.",
+  "rail.say.missedStationEnd":
+    "Chofoza kahle esiphethweni sesiteshi ukuze uxhume ujantshi kuso. Sondeza uma kunzima ukushaya iziphetho.",
   "rail.say.clickTrackSignal":
     "Chofoza ujantshi, ujantshi wesiteshi noma igatsha lesishintshi ukuze ubeke isiginali.",
   "rail.signalsReset": "Amasiginali abuyiselwe kulawo akhiqizwe kusuka ekuklameni.",

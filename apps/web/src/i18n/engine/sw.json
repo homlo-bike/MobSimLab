@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Kugeuka kunaongeza {extra} ({length} badala ya {direct}). Fikiria kuweka kituo cha mwisho pale chombo kinapoweza kugeuka: stesheni ya mabasi, mzunguko wa kugeuka, kizunguko au mtaa kinachoweza kuuzunguka.",
   "street.line.two_stops": "Njia inahitaji angalau vituo viwili. Badilisha nukta kuwa vituo.",
   "street.line.wrong_side": "Sehemu hii ni {length} kwa {straight} kwa mstari ulionyooka. Ikiwa nukta inayofuata iko kwenye nusu ya mbali ya barabara iliyogawanywa, au kwenye barabara ya upande mmoja kinyume, isogeze upande ambao chombo huendesha.",
-  "street.line.wrong_sidewalk": "Kijia hiki cha watembea kwa miguu hakiwezi kuhudumiwa: magari hapa huenda tu kituo kikiwa upande ulio mbali na milango. Weka kituo kwenye kijia cha upande mwingine."
+  "street.line.wrong_sidewalk": "Kijia hiki cha watembea kwa miguu hakiwezi kuhudumiwa: magari hapa huenda tu kituo kikiwa upande ulio mbali na milango. Weka kituo kwenye kijia cha upande mwingine.",
+  "rail.plan.no_track_between_reach": "Hakuna reli kutoka {from} hadi {to}. Treni kutoka {from} hufika tu {reached}: kagua kwamba reli zinazoingia na kutoka {last} zinaungana na reli zilezile za stesheni pande zote mbili, ili treni zinazofika huko ziweze kuendelea, au weka swichi huko.",
+  "rail.plan.gap_does_not_lead_on": "treni kutoka {from} hufika {at}, lakini kwenye reli za stesheni zisizoendelea hadi {next}. Kagua kwamba reli zinazoingia na kutoka {at} zinaungana na reli zilezile za stesheni pande zote mbili, au weka swichi huko",
+  "rail.plan.gap_no_track": "hakuna reli kutoka {from} hadi {to}",
+  "rail.plan.no_track_outbound_at": "Hakuna reli inayounganisha vituo katika mwelekeo wa njia: {gap}.",
+  "rail.plan.no_track_return_at": "Hakuna reli inayounganisha vituo katika mwelekeo wa kurudi: {gap}."
 }
