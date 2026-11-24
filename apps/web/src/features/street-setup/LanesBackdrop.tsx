@@ -33,6 +33,28 @@ function sink(map: MapLibreMap): void {
   if (first && map.getLayer(LAYER)) map.moveLayer(LAYER, first);
 }
 
+/** Purpose: add the lanes' source and layer when they are missing (on mounting, or after something removed them). */
+function ensureLayer(map: MapLibreMap): void {
+  if (!map.getSource(SOURCE)) map.addSource(SOURCE, { type: "geojson", data: EMPTY });
+  if (!map.getLayer(LAYER))
+    map.addLayer({
+      id: LAYER,
+      type: "fill",
+      source: SOURCE,
+      minzoom: LANE_MIN_ZOOM,
+      paint: {
+        "fill-color": [
+          "match",
+          ["get", "kind"],
+          ...Object.entries(LANE_COLOR).flat(),
+          LANE_COLOR.traffic,
+        ] as never,
+        // Faded, yet still to be seen on the light basemaps: at 0.35 the grey lanes were lost on white roads.
+        "fill-opacity": 0.6,
+      },
+    });
+}
+
 /**
  * Purpose: on the Create tab, the streets on screen drawn lane by lane (with the GIS tab's street setups),
  * faded under the tools from zoom 16, so tracks and lines are drawn where the street has room for them.
@@ -62,6 +84,7 @@ export function LanesBackdrop({
     loadLanes()
       .then((x) => {
         if (!alive) return x?.dispose();
+        if (!x) log.warn("the browser cannot run the lane engine (no Web Workers)");
         e = x;
         setEngine(x);
       })
@@ -76,24 +99,7 @@ export function LanesBackdrop({
 
   useEffect(() => {
     if (!map) return;
-    if (!map.getSource(SOURCE)) map.addSource(SOURCE, { type: "geojson", data: EMPTY });
-    if (!map.getLayer(LAYER))
-      map.addLayer({
-        id: LAYER,
-        type: "fill",
-        source: SOURCE,
-        minzoom: LANE_MIN_ZOOM,
-        paint: {
-          "fill-color": [
-            "match",
-            ["get", "kind"],
-            ...Object.entries(LANE_COLOR).flat(),
-            LANE_COLOR.traffic,
-          ] as never,
-          // Faded, yet still to be seen on the light basemaps: at 0.35 the grey lanes were lost on white roads.
-          "fill-opacity": 0.6,
-        },
-      });
+    ensureLayer(map);
     sink(map);
     return () => {
       if (map.getLayer(LAYER)) map.removeLayer(LAYER);
@@ -131,10 +137,18 @@ export function LanesBackdrop({
         );
       if (stopped || mine !== seq) return;
       const have = keys.filter((k) => added.current.has(k));
-      if (!have.length) return;
+      if (!have.length) {
+        log.info({ tiles: keys.length }, "no street tiles for the faded lanes yet");
+        return;
+      }
       try {
         const g = await engine.build(have, setups, trafficSide);
         if (stopped || mine !== seq) return;
+        ensureLayer(map);
+        log.info(
+          { lanes: g?.lanes.length ?? 0, tiles: have.length, zoom: Math.round(map.getZoom() * 10) / 10 },
+          "faded lanes built",
+        );
         (map.getSource(SOURCE) as GeoJSONSource | undefined)?.setData({
           type: "FeatureCollection",
           features: (g?.lanes ?? []).map((l) => {
