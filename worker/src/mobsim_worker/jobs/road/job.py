@@ -371,6 +371,8 @@ def run_road(
             f"Planning the background traffic took longer than {e.timeout_s / 60:.0f} minutes and was "
             "stopped. Run a shorter period or fewer lines, or lower the traffic peaks of the streets"
         ) from None
+    if reporter.should_stop():
+        return "stopped", result, None
     result["traffic"] = {
         "cars": tr.cars,
         "target_car_km": tr.target_car_km,

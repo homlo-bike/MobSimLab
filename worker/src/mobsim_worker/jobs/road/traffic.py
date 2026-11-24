@@ -480,6 +480,8 @@ def write_background(
             raise Stopped("background traffic")
     cars.sort(key=lambda c: c[0])
     for k, (t, r) in enumerate(cars):
+        if should_stop is not None and k % (STOP_CHECK_EVERY * 4) == 0 and should_stop():
+            raise Stopped("background traffic")
         v = ET.SubElement(root, "vehicle", id=f"bg{k}", type="car", depart=f"{t:.1f}", departLane="best")
         ET.SubElement(v, "route", edges=" ".join(r))
     ET.ElementTree(root).write(path, encoding="utf-8", xml_declaration=True)
