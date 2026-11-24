@@ -573,5 +573,10 @@
   "street.line.turning_detour": "Yíyí padà ń fi {extra} kún un ({length} dípò {direct}). Ronú nípa gbígbé ibùdókọ̀ ìkẹyìn sí ibi tí ọkọ̀ ti lè yí padà: ibùdó bọ́ọ̀sì, ọ̀nà ìyípo, roundabout tàbí àdúgbò kan tí ó lè wakọ̀ yí ká.",
   "street.line.two_stops": "Ìlà kan nílò ó kéré tán ibùdókọ̀ méjì. Sọ àwọn ojúàmì di ibùdókọ̀.",
   "street.line.wrong_side": "Apá ìrìn yìí jẹ́ {length} fún {straight} ní ìlà títọ́. Bí ojúàmì tó kàn bá wà ní ìdajì òdìkejì òpópónà tí a pín sí méjì, tàbí lórí òpópónà ọ̀nà kan ní ìhà tí kò tọ́, sún un sí ẹ̀gbẹ́ tí ọkọ̀ ń wakọ̀ lé.",
-  "street.line.wrong_sidewalk": "A kò lè sìn ọ̀nà ẹlẹ́sẹ̀ yìí: ọkọ̀ níbí ń rìn nìkan pẹ̀lú ibùdókọ̀ ní ẹ̀gbẹ́ òdìkejì sí ilẹ̀kùn. Gbé ibùdókọ̀ sí ọ̀nà ẹlẹ́sẹ̀ kejì."
+  "street.line.wrong_sidewalk": "A kò lè sìn ọ̀nà ẹlẹ́sẹ̀ yìí: ọkọ̀ níbí ń rìn nìkan pẹ̀lú ibùdókọ̀ ní ẹ̀gbẹ́ òdìkejì sí ilẹ̀kùn. Gbé ibùdókọ̀ sí ọ̀nà ẹlẹ́sẹ̀ kejì.",
+  "rail.plan.no_track_between_reach": "Kò sí ojú irin láti {from} sí {to}. Àwọn ọkọ̀ ojú irin láti {from} ń dé {reached} nìkan: ṣàyẹ̀wò pé àwọn ojú irin tó ń wọ {last} àti tó ń jáde níbẹ̀ so mọ́ àwọn ojú irin ibùdókọ̀ kan náà ní òpin méjèèjì, kí àwọn ọkọ̀ tó dé ibẹ̀ lè máa bá ìrìn lọ, tàbí gbé ìyípadà síbẹ̀.",
+  "rail.plan.gap_does_not_lead_on": "àwọn ọkọ̀ ojú irin láti {from} ń dé {at}, ṣùgbọ́n lórí àwọn ojú irin ibùdókọ̀ tí kò lọ sí {next}. Ṣàyẹ̀wò pé àwọn ojú irin tó ń wọ {at} àti tó ń jáde níbẹ̀ so mọ́ àwọn ojú irin ibùdókọ̀ kan náà ní òpin méjèèjì, tàbí gbé ìyípadà síbẹ̀",
+  "rail.plan.gap_no_track": "kò sí ojú irin láti {from} sí {to}",
+  "rail.plan.no_track_outbound_at": "Kò sí ojú irin tó so àwọn ibùdókọ̀ pọ̀ ní ìhà ìlà náà: {gap}.",
+  "rail.plan.no_track_return_at": "Kò sí ojú irin tó so àwọn ibùdókọ̀ pọ̀ ní ìhà ìpadàbọ̀: {gap}."
 }

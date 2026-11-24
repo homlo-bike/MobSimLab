@@ -355,6 +355,8 @@ export const editorsDe = {
     "Katalogweichen liegen auf geradem Gleis. Klicken Sie auf einen geraden Abschnitt.",
   "rail.say.doubleOnly":
     "Gleiswechsel verbinden zwei parallele Gleise. Wählen Sie eine zweigleisige Strecke.",
+  "rail.say.missedStationEnd":
+    "Klicken Sie genau auf ein Bahnhofsende, um das Gleis dort anzuschließen. Zoomen Sie hinein, wenn die Enden schwer zu treffen sind.",
   "rail.say.clickTrackSignal":
     "Klicken Sie auf ein Gleis, ein Bahnhofsgleis oder einen Weichenstrang, um ein Signal zu setzen.",
   "rail.signalsReset": "Signale auf die aus dem Entwurf erzeugten zurückgesetzt.",
@@ -1462,23 +1464,16 @@ export const editorsDe = {
   "capacity.loading": "Netz wird geladen…",
   "capacity.planning": "Zeitraum wird geplant und durch das Stellwerk gefahren…",
   "capacity.trying": "Teste {line} {every} ({n} von {total})…",
-  "capacity.noFile": "Keine Datei gewählt",
-  "capacity.replace": "Ersetzen",
-  "capacity.choose": "Auswählen",
   "capacity.title": "System testen",
   "capacity.intro":
     "Fahre einen Zeitraum des Tages durch den Fahrplaner und das Stellwerk. Sieh, ob jede Bahnlinie auf die Gleise passt, pünktlich läuft und sich von Verspätungen erholt, und wie viele Züge sie fahren könnte.",
-  "capacity.network": "Netz",
   "capacity.example": "Beispiel-U-Bahn",
-  "capacity.mine": "Aus Dateien",
   "capacity.drawn": "In diesem Projekt gezeichnet",
-  "capacity.drawnText": "Linien {names} auf der im Bahn-Werkzeug gezeichneten Strecke, wie gespeichert.",
   "capacity.drawn.noTrack": "Im Bahn-Werkzeug ist noch nichts gezeichnet.",
   "capacity.drawn.noLines":
     "Keine Linie ist bereit für den Test. Gib einer Linie im Bahn-Werkzeug mindestens zwei Halte und einen Zug.",
   "capacity.drawn.errors": "Die gezeichnete Bahn hat Fehler. Behebe sie zuerst im Bahn-Werkzeug.",
   "capacity.building": "Die gezeichnete Bahn wird aufgebaut…",
-  "capacity.drawnStreets": "Buslinien {names}, entlang ihrer Route mit Verkehrsverzögerungen gefahren.",
   "capacity.loads.estimating": "Fahrgastzahlen rund um die Stationen und Haltestellen werden geschätzt…",
   "capacity.loads.toggle": "Fahrgastbelastung (Fahrgastschätzung des Tabellen-Tabs)",
   "capacity.loads.title": "Fahrgäste",
@@ -1511,12 +1506,6 @@ export const editorsDe = {
   "capacity.street.bunchingHint": "Abstände unter dem halben Takt; am Ende {left} min verspätet",
   "capacity.street.method":
     "Jede Buslinie lief {runs}-mal; jede Fahrt hatte ihren eigenen Verkehr, das {low}- bis {high}-Fache der erwarteten Verzögerung im Verkehr von Hauptstraßen (Projekteinstellungen).",
-  "capacity.exampleText":
-    "Linie M1 Westpark – Eastgate: fünf Stationen, an jedem Ende ein Depot, alle 5 min in den Spitzen und sonst alle 10 min.",
-  "capacity.topologyFile": "Gleistopologie (JSON)",
-  "capacity.linesFile": "Linien (JSON)",
-  "capacity.filesHelp":
-    "Die Gleistopologie-Datei folgt contracts/rail-topology.schema.json; für die in diesem Projekt gezeichnete Bahn wählen Sie „{drawn}“. Die Liniendatei listet für jede Linie Stationen, Zug und Takt, so wie der Fahrplaner sie liest (docs/user/simulator.md).",
   "capacity.period": "Zeitraum",
   "capacity.from": "Von",
   "capacity.to": "Bis",
@@ -1536,7 +1525,6 @@ export const editorsDe = {
   "capacity.run": "Test starten",
   "capacity.runAgain": "Erneut starten",
   "capacity.stop": "Stopp",
-  "capacity.chooseBoth": "Wähle beide Dateien, um deine Bahn zu testen.",
   "capacity.summary":
     "{period} · {trips} Fahrten mit Reserven geplant · {out} Züge im Einsatz, {reserve} in Reserve",
   "capacity.importNotes": "Import-Hinweise ({n})",

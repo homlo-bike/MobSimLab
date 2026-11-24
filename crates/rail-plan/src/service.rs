@@ -15,7 +15,7 @@ use rail_model::{Model, TrackUse};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 
-use crate::path::{departure_routes, find_path, Place};
+use crate::path::{departure_routes, find_path, reached_stations, Place};
 use crate::{
     journey_timetable, plan, Band, Call, Issue, LineSpec, Pick, PlanParams, RouteInfo, RunKind,
 };
@@ -541,6 +541,18 @@ pub fn issue_message(issue: &Issue, m: &Model) -> Msg {
 /// Purpose: the issue in words for the editor.
 fn issue_text(issue: &Issue, names: &PlatformNames) -> Msg {
     match issue {
+        Issue::NoPath {
+            direction,
+            reason: None,
+            gap: Some(gap),
+            ..
+        } => {
+            if *direction == 0 {
+                msg!("rail.plan.no_track_outbound_at", gap = gap.clone())
+            } else {
+                msg!("rail.plan.no_track_return_at", gap = gap.clone())
+            }
+        }
         Issue::NoPath {
             direction,
             reason: None,
@@ -1148,6 +1160,7 @@ pub fn station_reachable(topology_json: &str, from: &str, to: &str) -> Result<Re
         .map(|&p| (Place::Platform(p as _), 0.0))
         .collect::<Vec<_>>()];
     let p = PlanParams::default();
+    let mut starts = Vec::new();
     for &pa in &a {
         for d in [rail_model::Dir::Up, rail_model::Dir::Down] {
             let start = departure_routes(&m, Place::Platform(pa as _), d);
@@ -1158,11 +1171,33 @@ pub fn station_reachable(topology_json: &str, from: &str, to: &str) -> Result<Re
                     reason_msg: None,
                 });
             }
+            starts.extend(start);
         }
     }
-    Ok(no(msg!(
-        "rail.plan.no_track_between",
-        from = name(from),
-        to = name(to)
-    )))
+    Ok(no(no_track_between(&m, &starts, &name(from), &name(to))))
+}
+
+/// Purpose: why no track leads from one station to another, naming the stations trains from the
+/// first can reach, as a line whose through tracks do not meet the same station tracks at both
+/// ends of a station runs out of track a few stations on (Syria intercity test, bug 10).
+/// Inputs: the model, the routes a train can leave the first station on, and both names.
+/// Output: the message; the plain one when trains reach no other station.
+fn no_track_between(m: &Model, starts: &[rail_model::RouteId], from: &str, to: &str) -> Msg {
+    let mut reached: Vec<String> = Vec::new();
+    for (st, _) in reached_stations(m, starts) {
+        let n = &m.stations[st as usize].name;
+        if n != from && !reached.contains(n) {
+            reached.push(n.clone());
+        }
+    }
+    match reached.last() {
+        Some(last) => msg!(
+            "rail.plan.no_track_between_reach",
+            from = from,
+            to = to,
+            reached = reached.join(", "),
+            last = last.clone()
+        ),
+        None => msg!("rail.plan.no_track_between", from = from, to = to),
+    }
 }

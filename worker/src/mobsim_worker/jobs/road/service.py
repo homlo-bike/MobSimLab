@@ -24,6 +24,7 @@ from collections.abc import Mapping, Sequence
 from dataclasses import dataclass, field
 from typing import Any
 
+from mobsim_worker.jobs.road.messages import Msg, Note, msg, note
 from mobsim_worker.jobs.road.network import NoBusLink, RoadNet
 from mobsim_worker.jobs.road.osm import DepotWays
 
@@ -85,7 +86,14 @@ class LinePlan:
     circuit_m: float = 0.0
     vehicles: list[TransitVehicle] = field(default_factory=list)
     problem: str | None = None
-    notes: list[str] = field(default_factory=list)
+    problem_msg: Msg | None = None
+    notes: list[Note] = field(default_factory=list)
+
+    def fail(self, why: Note) -> LinePlan:
+        """Set why the line cannot run (its English text and its message) and return the plan."""
+        self.problem = str(why["text"])
+        self.problem_msg = why["msg"]
+        return self
 
 
 def _pt(p: Sequence[float]) -> LonLat:
@@ -210,7 +218,7 @@ class Matched:
     end_at: tuple[int, str, float]  # the start point again, at the end of the circuit
 
 
-def match_circuit(net: RoadNet, line: Mapping[str, Any]) -> Matched | str:
+def match_circuit(net: RoadNet, line: Mapping[str, Any]) -> Matched | Note:
     """Match a line's circuit to the network and place its stops; a message when it cannot."""
     points = line["points"]
     coords: list[LonLat] = []
@@ -222,7 +230,7 @@ def match_circuit(net: RoadNet, line: Mapping[str, Any]) -> Matched | str:
     except NoBusLink as e:
         return no_link(e, points)
     if len(edges) < 1:
-        return "its route could not be matched to the streets"
+        return note("its route could not be matched to the streets", "road.problem.notMatched")
     at: dict[int, tuple[int, str, float]] = {}
     start = 0
     for i, p in enumerate(points):
@@ -230,7 +238,8 @@ def match_circuit(net: RoadNet, line: Mapping[str, Any]) -> Matched | str:
             continue
         placed = net.place(edges, _pt(p["lonlat"]), start)
         if placed is None:
-            return f"stop {p.get('name') or i + 1} is not on the matched route"
+            stop = str(p.get("name") or i + 1)
+            return note(f"stop {stop} is not on the matched route", "road.problem.stopOffRoute", stop=stop)
         at[i] = (placed.index, placed.lane, placed.pos)
         start = placed.index
     # The start point again, at the end: search backwards from the last edge.
@@ -248,19 +257,24 @@ def match_circuit(net: RoadNet, line: Mapping[str, Any]) -> Matched | str:
             end = (k, lane, pos)
             break
     if end is None:
-        return "the route does not come back to its first stop"
+        return note("the route does not come back to its first stop", "road.problem.notBack")
     return Matched(edges, at, end)
 
 
-def no_link(e: NoBusLink, points: Sequence[Mapping[str, Any]]) -> str:
+def no_link(e: NoBusLink, points: Sequence[Mapping[str, Any]]) -> Note:
     """Say where a route has no way for a bus, by the nearest stop of the line."""
     stops = [p for p in points if p.get("kind") != "via"] or list(points)
     near = min(stops, key=lambda p: _metres(e.at, _pt(p["lonlat"])))
-    name = near.get("name") or f"stop {points.index(near) + 1}"
-    return (
-        f"{e}, near {name} ({_metres(e.at, _pt(near['lonlat'])):.0f} m away): the traffic model's streets "
+    number = points.index(near) + 1
+    name = near.get("name") or f"stop {number}"
+    stop: str | Msg = str(near["name"]) if near.get("name") else msg("road.part.stop", n=number)
+    m = round(_metres(e.at, _pt(near["lonlat"])))
+    return note(
+        f"{e}, near {name} ({m:.0f} m away): the traffic model's streets "
         "have no turn there that a bus may take, for example a U-turn or a banned turn. Move the route "
-        "or a via point so that it takes another street there"
+        "or a via point so that it takes another street there",
+        "road.problem.noBusLink",
+        **{"from": e.from_part, "to": e.to_part, "stop": stop, "m": m},
     )
 
 
@@ -312,7 +326,7 @@ def _pull_run(
     run: Mapping[str, Any] | None,
     what: str,
     points: Sequence[Mapping[str, Any]],
-    notes: list[str],
+    notes: list[Note],
 ) -> list[str]:
     """Match a pull-out or pull-in run; without a bus path its vehicles take the shortest one instead."""
     if not run:
@@ -320,8 +334,13 @@ def _pull_run(
     try:
         return net.match([_pt(c) for c in run["coords"]])
     except NoBusLink as e:
+        why = no_link(e, points)
         notes.append(
-            f"the {what} run is not followed ({no_link(e, points)}); its vehicles take the shortest way"
+            note(
+                f"the {what} run is not followed ({why['text']}); its vehicles take the shortest way",
+                "road.note.pullOutNotFollowed" if what == "pull-out" else "road.note.pullInNotFollowed",
+                why=why["msg"],
+            )
         )
         return []
 
@@ -340,18 +359,15 @@ def plan_line(net: RoadNet, line: Mapping[str, Any], depots: Depots) -> LinePlan
     )
     points = line["points"]
     if len(points) < 2 or len(line["legs"]) != len(points):
-        plan.problem = "it has fewer than two points or is not routed"
-        return plan
+        return plan.fail(note("it has fewer than two points or is not routed", "road.problem.notRouted"))
     offs, cycle = planned_offsets(line)
     plan.cycle_s = cycle
     deps = [float(d) for d in line.get("departures", [])]
     if not deps:
-        plan.problem = "it has no departures in the period"
-        return plan
+        return plan.fail(note("it has no departures in the period", "road.problem.noDepartures"))
     m = match_circuit(net, line)
-    if isinstance(m, str):
-        plan.problem = m
-        return plan
+    if not isinstance(m, Matched):
+        return plan.fail(m)
     total = sum(float(net.edge(e).getLength()) for e in m.edges)
     last_len = float(net.edge(m.edges[-1]).getLength())
     plan.circuit_m = max(1.0, total - m.at[0][2] - (last_len - m.end_at[2]))
@@ -363,18 +379,30 @@ def plan_line(net: RoadNet, line: Mapping[str, Any], depots: Depots) -> LinePlan
     in_edges = _pull_run(net, pull_in, "pull-in", points, plan.notes)
     depot_id = str(line["depot"]) if line.get("depot") else None
     if depot_id is None:
-        plan.notes.append("no depot: its vehicles start and end on the street")
+        plan.notes.append(note("no depot: its vehicles start and end on the street", "road.note.noDepot"))
     stops_order = [i for i in range(len(points)) if points[i]["kind"] != "via"]
     circuit = m.edges
     for number, trips in enumerate(blocks(deps, cycle)):
         place_out = depots.place(f"street:{index}", number) if depot_id else None
         if depot_id and place_out is None:
-            plan.notes.append(f"vehicle {number + 1} has no slot in the depot: it starts at the depot gate")
+            plan.notes.append(
+                note(
+                    f"vehicle {number + 1} has no slot in the depot: it starts at the depot gate",
+                    "road.note.noSlot",
+                    n=number + 1,
+                )
+            )
         rb = RouteBuilder(net)
         if place_out is not None:
             rb.add([place_out.edge])
             if out_edges and rb.add(out_edges) is None:
-                plan.notes.append(f"vehicle {number + 1} cannot leave its depot: it starts on the street")
+                plan.notes.append(
+                    note(
+                        f"vehicle {number + 1} cannot leave its depot: it starts on the street",
+                        "road.note.cannotLeave",
+                        n=number + 1,
+                    )
+                )
                 place_out = None
                 rb = RouteBuilder(net)
         if place_out is None and depot_id:
@@ -385,15 +413,19 @@ def plan_line(net: RoadNet, line: Mapping[str, Any], depots: Depots) -> LinePlan
             rb.add(out_edges)
         # To the point it pulls out to, then out of service round to the first stop.
         if out_at and out_at in m.at and rb.add(circuit[m.at[out_at][0] :]) is None:
-            plan.problem = "its vehicles cannot reach the route from the depot"
-            return plan
+            return plan.fail(
+                note("its vehicles cannot reach the route from the depot", "road.problem.depotToRoute")
+            )
         ready_index = max(0, len(rb.edges) - 1)
         stops: list[PlannedStop] = []
         for t_i, dep in enumerate(trips):
             base = rb.add(circuit)
             if base is None:
-                plan.problem = "its circuit is not closed on the streets" if t_i else "it cannot be reached"
-                return plan
+                return plan.fail(
+                    note("its circuit is not closed on the streets", "road.problem.notClosed")
+                    if t_i
+                    else note("it cannot be reached", "road.problem.unreachable")
+                )
             for p_i in stops_order:
                 ei, lane, pos = m.at[p_i]
                 st = _stop(points, p_i, t_i, dep + (offs[p_i] if p_i < len(offs) else 0.0), lane, pos)
@@ -411,7 +443,13 @@ def plan_line(net: RoadNet, line: Mapping[str, Any], depots: Depots) -> LinePlan
         if in_edges:
             rb.add(in_edges)
         if place_in is not None and rb.add([place_in.edge]) is None:
-            plan.notes.append(f"vehicle {number + 1} cannot get back into its depot: it ends on the street")
+            plan.notes.append(
+                note(
+                    f"vehicle {number + 1} cannot get back into its depot: it ends on the street",
+                    "road.note.cannotReturn",
+                    n=number + 1,
+                )
+            )
             place_in = None
         # Leave the slot early enough to be at the first stop a few minutes before the first departure.
         dist = sum(float(net.edge(e).getLength()) for e in rb.edges[: ready_index + 1])

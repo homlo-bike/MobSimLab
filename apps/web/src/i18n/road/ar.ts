@@ -95,4 +95,30 @@ export const roadAr = {
   "visuals.legend.veryLate": "متأخرة جدًا (أكثر من {min} دقيقة)",
   "road.replay.noService":
     "حُفظ هذا التشغيل قبل تسجيل أوقات الخدمة، لذا تحتفظ مركباته بلون خطها. شغّله مجددًا لرؤيتها حسب الانضباط.",
+  "road.step.streets": "جارٍ تحميل الشوارع: {done} من {of} من مربعات الخريطة…",
+  "road.note.junctionSetup": "إعداد التقاطعات: {on} تقاطعًا بإشارات مرور، و{off} بدونها",
+  "road.note.gateOffStreet": "المرأب {depot}: إحدى البوابات ليست قرب شارع يُسمح للحافلة بسلوكه",
+  "road.note.noOsmSignals":
+    "لا تُظهر OpenStreetMap أي إشارات مرور في هذه الشوارع، لذلك تعمل كل التقاطعات بلا إشارات، وتنتظر الشوارع الفرعية فجوات في حركة الطرق الرئيسية. أضف إشارات مرور إلى التقاطعات الرئيسية في GIS › الشوارع.",
+  "road.note.lineCannotRun": "لا يمكن تشغيل {line}: {why}",
+  "road.note.carsRemoved":
+    "توقفت {n} سيارة خلفية أكثر من {min} دقائق فأُخرجت من حركة المرور لفك الازدحام؛ قد تكون الشوارع أكثر ازدحامًا مما تتحمل",
+  "road.note.pullOutNotFollowed": "لا يُتَّبع مسار الخروج من المرأب ({why})؛ تسلك مركباته أقصر طريق",
+  "road.note.pullInNotFollowed": "لا يُتَّبع مسار الدخول إلى المرأب ({why})؛ تسلك مركباته أقصر طريق",
+  "road.note.noDepot": "لا مرأب: تبدأ مركباته وتنتهي في الشارع",
+  "road.note.noSlot": "ليس للمركبة {n} مكان في المرأب: تبدأ عند بوابة المرأب",
+  "road.note.cannotLeave": "لا تستطيع المركبة {n} مغادرة مرأبها: تبدأ في الشارع",
+  "road.note.cannotReturn": "لا تستطيع المركبة {n} العودة إلى مرأبها: تنتهي في الشارع",
+  "road.problem.notRouted": "فيه أقل من نقطتين أو لم يُرسم مساره",
+  "road.problem.noDepartures": "ليس له مواعيد انطلاق في هذه الفترة",
+  "road.problem.notMatched": "تعذّرت مطابقة مساره مع الشوارع",
+  "road.problem.stopOffRoute": "المحطة {stop} ليست على المسار المطابق",
+  "road.problem.notBack": "لا يعود المسار إلى محطته الأولى",
+  "road.problem.noBusLink":
+    "لا طريق للحافلة من {from} إلى {to}، قرب {stop} (على بعد {m} م): لا تتيح شوارع نموذج المرور هناك أي انعطاف يُسمح للحافلة به، مثل الالتفاف للخلف أو انعطاف ممنوع. حرّك المسار أو نقطة عبور ليسلك شارعًا آخر هناك",
+  "road.problem.depotToRoute": "لا تستطيع مركباته الوصول إلى المسار من المرأب",
+  "road.problem.notClosed": "دورته غير مغلقة على الشوارع",
+  "road.problem.unreachable": "لا يمكن الوصول إليه",
+  "road.part.unnamedStreet": "شارع بلا اسم (طريق OSM رقم {way})",
+  "road.part.stop": "المحطة {n}",
 } satisfies RoadMessages;

@@ -5,10 +5,11 @@ for the morning or evening peak (``StreetSetup.cars_morning_peak`` / ``cars_even
 for its road type (``street.peak_cars_*_vph``). Outside the two peak windows, the rate is the peak value times
 the project's off-peak share. Buses-only ways (busways, depots) and pedestrian streets carry none.
 
-The cars are sampled from candidate routes (SUMO's ``randomTrips.py``, routed with ``duarouter``) so that the
-count on each street does not go above its target: the routes are taken in a seeded random order, again and
-again, while every street they use still has room (the greedy method of SUMO's ``routeSampler``). Each car
-leaves at a random time in its interval. Cars are not shown in the replay; they are there to load the streets.
+The cars are sampled from candidate routes (SUMO's ``randomTrips.py``, routed once with ``duarouter``) so
+that the count on each street does not go above its target: the routes are taken in a seeded random order,
+again and again, while every street they use still has room (the greedy method of SUMO's ``routeSampler``).
+Each car leaves at a random time in its interval. Cars are not shown in the replay; they are there to load
+the streets.
 
 The default rates of the road types are what such a street carries where its junctions let the cars through,
 which a city's street network as a whole cannot: a side street that gives way to two main roads gets a car
@@ -24,13 +25,18 @@ import math
 import os
 import random
 import sys
+import time
 import xml.etree.ElementTree as ET  # noqa: S405 (files SUMO itself wrote for this run)
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from dataclasses import dataclass
 from typing import Any
 
-from mobsim_worker.jobs.road.network import RoadNet, run_tool, sumo_tool
+import structlog
+
+from mobsim_worker.jobs.road.network import RoadNet, Stopped, run_tool, sumo_tool
 from mobsim_worker.jobs.road.osm import Way, way_of_edge
+
+log = structlog.get_logger("mobsim_worker")
 
 #: Road type of each OSM highway class (apps/web/src/features/street-setup/model.ts ``peakCarsDefault``).
 ROAD_TYPE = {
@@ -54,6 +60,15 @@ CANDIDATES_PER_CAR = 3
 
 #: Most candidate routes generated.
 MAX_CANDIDATES = 60_000
+
+#: Landmark edges for ``duarouter``'s A* (``landmarks``).
+LANDMARKS = 16
+
+#: Routes the car sampler looks at between two checks whether the run should stop.
+STOP_CHECK_EVERY = 5000
+
+#: Threads ``duarouter`` routes the candidate routes on (the worker runs one run at a time).
+ROUTING_THREADS = max(1, min(4, os.cpu_count() or 1))
 
 #: Cars per hour a lane passes when its queue moves without a stop (HCM base saturation flow, rounded).
 SATURATION_VPH = 1800.0
@@ -284,10 +299,47 @@ def approach_capacity(net: RoadNet, rates: Mapping[str, float]) -> dict[str, flo
     return cap
 
 
-def candidates(net_file: str, cwd: str, begin: float, end: float, wanted: int, seed: int) -> list[list[str]]:
-    """Generate candidate car routes over the whole network with ``randomTrips.py`` and ``duarouter``."""
+def landmarks(net: RoadNet, path: str) -> str | None:
+    """Write the landmark edges for ``duarouter``'s A* to ``path``; None when the network has too few edges.
+
+    One car edge per ``LANDMARKS`` sector around the network's centre, the farthest out in each, so that A*
+    can bound the distance left by the distances to and from them (ALT). On the 8-line Damascus network it
+    routes the candidate routes in less than half the time.
+    """
+    edges = [e for e in net.net.getEdges() if e.getFunction() == "" and e.allows("passenger")]
+    if len(edges) < 4 * LANDMARKS:
+        return None
+    at = [e.getFromNode().getCoord() for e in edges]
+    cx = sum(p[0] for p in at) / len(at)
+    cy = sum(p[1] for p in at) / len(at)
+    far: dict[int, tuple[float, str]] = {}
+    for e, (x, y) in zip(edges, at, strict=True):
+        sector = int((math.atan2(y - cy, x - cx) + math.pi) / (2 * math.pi) * LANDMARKS) % LANDMARKS
+        d = math.hypot(x - cx, y - cy)
+        if sector not in far or d > far[sector][0]:
+            far[sector] = (d, e.getID())
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(eid for _, eid in far.values()) + "\n")
+    return path
+
+
+def candidates(
+    net_file: str,
+    cwd: str,
+    wanted: int,
+    seed: int,
+    should_stop: Callable[[], bool] | None = None,
+    landmark_file: str | None = None,
+) -> list[list[str]]:
+    """Generate candidate car routes over the whole network with ``randomTrips.py`` and ``duarouter``.
+
+    The routes do not depend on the time of day (their cars are given departure times when sampled), so one
+    set serves every interval of the run. Trips with no route are left out by ``duarouter`` itself, so the
+    trips are not validated first (that routed them all twice or more); ``duarouter`` routes with A* on
+    several threads.
+    """
     n = max(50, min(MAX_CANDIDATES, wanted * CANDIDATES_PER_CAR))
-    span = max(1.0, end - begin)
+    span = 3600.0
     args = [
         sys.executable,
         sumo_tool("randomTrips.py"),
@@ -305,7 +357,11 @@ def candidates(net_file: str, cwd: str, begin: float, end: float, wanted: int, s
         "300",
         "--vclass",
         "passenger",
-        "--validate",
+        "--no-validate",
+        "--threads",
+        str(ROUTING_THREADS),
+        "--duarouter-routing-algorithm",
+        "astar",
         "--seed",
         str(seed),
         "-o",
@@ -313,7 +369,9 @@ def candidates(net_file: str, cwd: str, begin: float, end: float, wanted: int, s
         "-r",
         "candidates.rou.xml",
     ]
-    run_tool(args, cwd)
+    if landmark_file:
+        args += ["--duarouter-astar.landmark-distances", landmark_file]
+    run_tool(args, cwd, should_stop=should_stop)
     root = ET.parse(os.path.join(cwd, "candidates.rou.xml")).getroot()  # noqa: S314
     routes: list[list[str]] = []
     for v in root.iter("vehicle"):
@@ -324,29 +382,46 @@ def candidates(net_file: str, cwd: str, begin: float, end: float, wanted: int, s
 
 
 def sample(
-    routes: Sequence[Sequence[str]], target: Mapping[str, float], rng: random.Random, max_cars: int
+    routes: Sequence[Sequence[str]],
+    target: Mapping[str, float],
+    rng: random.Random,
+    max_cars: int,
+    should_stop: Callable[[], bool] | None = None,
 ) -> list[int]:
     """Pick routes (by index, with repeats) so that no edge's count goes above its target.
 
-    Routes are taken in a random order, pass after pass, while every edge they use has room for a car.
+    Routes are taken in a random order, pass after pass, while every edge they use has room for a car. A
+    route that does not fit once never fits again (the room on its edges only shrinks), so it is left out of
+    the later passes; edges are numbered so that each check is a list lookup.
+
+    Raises:
+        Stopped: ``should_stop`` said yes (asked every ``STOP_CHECK_EVERY`` routes).
     """
-    left = {e: float(c) for e, c in target.items()}
-    order = list(range(len(routes)))
+    ids: dict[str, int] = {}
+    left: list[float] = []
+    for e, c in target.items():
+        ids[e] = len(left)
+        left.append(float(c))
+    none = len(left)
+    left.append(0.0)  # edges with no target: no room
+    paths = [[ids.get(e, none) for e in r] for r in routes]
+    alive = [i for i, p in enumerate(paths) if all(left[k] >= 1.0 for k in p)]
     chosen: list[int] = []
-    while len(chosen) < max_cars:
-        rng.shuffle(order)
-        took = 0
-        for i in order:
-            r = routes[i]
-            if all(left.get(e, 0.0) >= 1.0 for e in r):
-                for e in r:
-                    left[e] -= 1.0
+    while alive and len(chosen) < max_cars:
+        rng.shuffle(alive)
+        still: list[int] = []
+        for n, i in enumerate(alive):
+            if should_stop is not None and n % STOP_CHECK_EVERY == 0 and should_stop():
+                raise Stopped("background traffic")
+            p = paths[i]
+            if all(left[k] >= 1.0 for k in p):
+                for k in p:
+                    left[k] -= 1.0
                 chosen.append(i)
-                took += 1
+                still.append(i)
                 if len(chosen) >= max_cars:
                     break
-        if took == 0:
-            break
+        alive = still
     return chosen
 
 
@@ -370,13 +445,19 @@ def write_background(
     end: float,
     seed: int,
     path: str,
+    should_stop: Callable[[], bool] | None = None,
 ) -> Traffic:
-    """Write the background cars of the run window ``[begin, end)`` to ``path`` (a SUMO routes file)."""
+    """Write the background cars of the run window ``[begin, end)`` to ``path`` (a SUMO routes file).
+
+    Raises:
+        Stopped: ``should_stop`` said yes while the candidate routes were made or the cars sampled.
+    """
     by_way = {int(s["way"]): s for s in setups if "way" in s}
     defaults = {str(k): float(v) for k, v in dict(traffic.get("defaults", {})).items()}
     share = float(traffic.get("off_peak_share", 0.0))
     peaks = [list(map(float, p)) for p in traffic.get("peaks", [])]
     parts = intervals(begin, end, peaks)
+    t0 = time.monotonic()
     targets = counts(net, ways, by_way, defaults, parts, share)
     lengths = {e.getID(): e.getLength() for e in net.net.getEdges()}
     target_km = sum(c * lengths.get(e, 0.0) for t in targets for e, c in t.items()) / 1000.0
@@ -393,18 +474,47 @@ def write_background(
     )
     cars: list[tuple[float, list[str]]] = []
     sampled_km = 0.0
-    for part, target in zip(parts, targets, strict=True):
-        wanted = int(sum(target.values()) / 8) + 1
-        if not target or wanted <= 1:
+    wanted = [int(sum(t.values()) / 8) + 1 if t else 0 for t in targets]
+    log.info(
+        "background traffic: counts set",
+        intervals=len(parts),
+        target_car_km=round(target_km),
+        seconds=round(time.monotonic() - t0, 1),
+    )
+    routes: list[list[str]] = []
+    if max(wanted, default=0) > 1:
+        t1 = time.monotonic()
+        marks = landmarks(net, os.path.join(cwd, "landmarks.txt"))
+        routes = candidates(net_file, cwd, max(wanted), seed, should_stop, marks)
+        log.info(
+            "background traffic: candidate routes made",
+            routes=len(routes),
+            threads=ROUTING_THREADS,
+            seconds=round(time.monotonic() - t1, 1),
+        )
+    route_km = [sum(lengths.get(e, 0.0) for e in r) / 1000.0 for r in routes]
+    for part, target, w in zip(parts, targets, wanted, strict=True):
+        if not target or w <= 1:
             continue
-        routes = candidates(net_file, cwd, part.begin, part.end, wanted, seed)
-        for i in sample(routes, target, rng, max_cars=200_000):
-            r = list(routes[i])
-            cars.append((part.begin + rng.random() * (part.end - part.begin), r))
-            sampled_km += sum(lengths.get(e, 0.0) for e in r) / 1000.0
+        t2 = time.monotonic()
+        picked = sample(routes, target, rng, 200_000, should_stop)
+        for i in picked:
+            cars.append((part.begin + rng.random() * (part.end - part.begin), routes[i]))
+            sampled_km += route_km[i]
+        log.info(
+            "background traffic: cars sampled",
+            interval=f"{part.begin:.0f}-{part.end:.0f}",
+            cars=len(picked),
+            seconds=round(time.monotonic() - t2, 1),
+        )
+        if should_stop is not None and should_stop():
+            raise Stopped("background traffic")
     cars.sort(key=lambda c: c[0])
     for k, (t, r) in enumerate(cars):
+        if should_stop is not None and k % (STOP_CHECK_EVERY * 4) == 0 and should_stop():
+            raise Stopped("background traffic")
         v = ET.SubElement(root, "vehicle", id=f"bg{k}", type="car", depart=f"{t:.1f}", departLane="best")
         ET.SubElement(v, "route", edges=" ".join(r))
     ET.ElementTree(root).write(path, encoding="utf-8", xml_declaration=True)
+    log.info("background traffic: cars written", cars=len(cars), seconds=round(time.monotonic() - t0, 1))
     return Traffic(cars=len(cars), target_car_km=target_km, sampled_car_km=sampled_km)

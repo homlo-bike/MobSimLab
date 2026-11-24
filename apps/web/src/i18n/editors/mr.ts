@@ -340,6 +340,8 @@ export const editorsMr = {
   "rail.say.clickTrackSwitch": "स्विच ठेवण्यासाठी रुळावर क्लिक करा.",
   "rail.say.straightOnly": "सूचीतील स्विच सरळ रुळावर ठेवले जातात. सरळ भागावर क्लिक करा.",
   "rail.say.doubleOnly": "क्रॉसओव्हर दोन समांतर रूळ जोडतो. दुहेरी रूळ निवडा.",
+  "rail.say.missedStationEnd":
+    "रूळ जोडण्यासाठी नेमके स्थानकाच्या टोकावर क्लिक करा. टोकांवर क्लिक करणे कठीण असल्यास झूम इन करा.",
   "rail.say.clickTrackSignal": "सिग्नल ठेवण्यासाठी रूळ, स्थानकाचा रूळ किंवा स्विचच्या फाट्यावर क्लिक करा.",
   "rail.signalsReset": "सिग्नल रचनेतून तयार झालेल्या स्थितीत पुनर्संचयित केले.",
   "rail.noiseFlows": "प्रत्येक रुळावर दर तासाला गाड्या (रेल्वे मार्ग काढले जाईपर्यंत उदाहरण सेवा)",
@@ -1413,23 +1415,16 @@ export const editorsMr = {
   "capacity.loading": "नेटवर्क लोड होत आहे…",
   "capacity.planning": "कालावधीचे नियोजन करून इंटरलॉकिंगमधून चालवत आहे…",
   "capacity.trying": "{line} {every} तपासत आहे ({total} पैकी {n})…",
-  "capacity.noFile": "फाइल निवडलेली नाही",
-  "capacity.replace": "बदला",
-  "capacity.choose": "निवडा",
   "capacity.title": "प्रणाली तपासा",
   "capacity.intro":
     "दिवसाचा एक कालावधी वेळापत्रक नियोजक आणि इंटरलॉकिंगमधून चालवा. प्रत्येक रेल्वे मार्ग रुळांवर बसतो का, वेळेवर चालतो आणि उशिरातून सावरतो का, आणि किती गाड्या चालवू शकतो ते पहा.",
-  "capacity.network": "नेटवर्क",
   "capacity.example": "उदाहरण मेट्रो",
-  "capacity.mine": "फायलींमधून",
   "capacity.drawn": "या प्रकल्पात काढलेली",
-  "capacity.drawnText": "रेल्वे साधनात काढलेल्या रेल्वेवरील मार्ग {names}, जतन केल्याप्रमाणे.",
   "capacity.drawn.noTrack": "रेल्वे साधनात अजून काहीही काढलेले नाही.",
   "capacity.drawn.noLines":
     "कोणताही मार्ग चाचणीसाठी तयार नाही. रेल्वे साधनात एखाद्या मार्गाला किमान दोन थांबे आणि एक गाडी द्या.",
   "capacity.drawn.errors": "काढलेल्या रेल्वेत त्रुटी आहेत. आधी त्या रेल्वे साधनात दुरुस्त करा.",
   "capacity.building": "काढलेली रेल्वे तयार केली जात आहे…",
-  "capacity.drawnStreets": "रस्ता मार्ग {names}, वाहतूक विलंबासह त्यांच्या मार्गावर चालवले.",
   "capacity.loads.estimating": "स्थानके आणि थांब्यांभोवती प्रवाशांचा अंदाज घेत आहे…",
   "capacity.loads.toggle": "प्रवासी भार (तक्ते टॅबचा प्रवासी अंदाज)",
   "capacity.loads.title": "प्रवासी",
@@ -1462,12 +1457,6 @@ export const editorsMr = {
   "capacity.street.bunchingHint": "अर्ध्या अंतरापेक्षा कमी अंतर; शेवटी {left} मि उशीर",
   "capacity.street.method":
     "प्रत्येक रस्ता मार्ग {runs} वेळा चालवला; प्रत्येक फेरीला स्वतःची वाहतूक होती, मुख्य रस्त्यांवरील अपेक्षित विलंबाच्या {low} ते {high} पट (प्रकल्पाची पसंती).",
-  "capacity.exampleText":
-    "मार्ग M1 Westpark – Eastgate: पाच स्थानके, प्रत्येक टोकाला एक डेपो, गर्दीच्या वेळी दर 5 मि आणि इतर वेळी दर 10 मि.",
-  "capacity.topologyFile": "रूळ टोपोलॉजी (JSON)",
-  "capacity.linesFile": "मार्ग (JSON)",
-  "capacity.filesHelp":
-    "ट्रॅक टोपोलॉजी फाइल contracts/rail-topology.schema.json नुसार असते; या प्रकल्पात काढलेल्या रेल्वेसाठी “{drawn}” निवडा. मार्गांची फाइल प्रत्येक मार्गाची स्थानके, गाडी आणि सेवा, वेळापत्रक नियोजक वाचतो तशी सूचीबद्ध करते (docs/user/simulator.md).",
   "capacity.period": "कालावधी",
   "capacity.from": "पासून",
   "capacity.to": "पर्यंत",
@@ -1486,7 +1475,6 @@ export const editorsMr = {
   "capacity.run": "चाचणी चालवा",
   "capacity.runAgain": "पुन्हा चालवा",
   "capacity.stop": "थांबवा",
-  "capacity.chooseBoth": "तुमची रेल्वे तपासण्यासाठी दोन्ही फाइल्स निवडा.",
   "capacity.summary": "{period} · मार्जिनसह {trips} फेऱ्या नियोजित · {out} गाड्या सेवेत, {reserve} राखीव",
   "capacity.importNotes": "आयात नोंदी ({n})",
   "capacity.plannerNotes": "नियोजक नोंदी ({n})",

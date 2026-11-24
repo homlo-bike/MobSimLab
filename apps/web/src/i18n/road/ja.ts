@@ -96,4 +96,30 @@ export const roadJa = {
   "visuals.legend.veryLate": "大幅遅延（{min} 分超）",
   "road.replay.noService":
     "この実行は運行時刻の記録前に保存されたため、車両は路線の色のままです。定時性で見るには再実行してください。",
+  "road.step.streets": "道路を読み込み中: {of} 枚中 {done} 枚の地図タイル…",
+  "road.note.junctionSetup": "交差点の設定: 信号ありの交差点 {on}、信号なし {off}",
+  "road.note.gateOffStreet": "車庫 {depot}: 出入口のひとつがバスの通れる道路の近くにありません",
+  "road.note.noOsmSignals":
+    "OpenStreetMap にはこれらの道路の信号機がないため、すべての交差点が信号なしで動き、脇道は幹線道路の交通の切れ目を待ちます。GIS › 道路 で主要な交差点に信号機を設定してください。",
+  "road.note.lineCannotRun": "{line} は運行できません: {why}",
+  "road.note.carsRemoved":
+    "背景の自動車 {n} 台が {min} 分以上止まったため、渋滞解消のため交通から取り除きました。道路の交通量が処理能力を超えている可能性があります",
+  "road.note.pullOutNotFollowed": "出庫経路をたどれません（{why}）。車両は最短経路を通ります",
+  "road.note.pullInNotFollowed": "入庫経路をたどれません（{why}）。車両は最短経路を通ります",
+  "road.note.noDepot": "車庫なし: 車両は道路上で始まり、道路上で終わります",
+  "road.note.noSlot": "車両 {n} は車庫に枠がありません: 車庫の出入口から出発します",
+  "road.note.cannotLeave": "車両 {n} は車庫から出られません: 道路上から出発します",
+  "road.note.cannotReturn": "車両 {n} は車庫に戻れません: 道路上で終わります",
+  "road.problem.notRouted": "点が 2 つ未満か、経路が引かれていません",
+  "road.problem.noDepartures": "この時間帯に発車がありません",
+  "road.problem.notMatched": "経路を道路に合わせられませんでした",
+  "road.problem.stopOffRoute": "停留所 {stop} が合わせた経路上にありません",
+  "road.problem.notBack": "経路が最初の停留所に戻りません",
+  "road.problem.noBusLink":
+    "{from} から {to} へバスが進めません（{stop} の近く、{m} m）: 交通モデルの道路にはそこでバスが曲がれる道がありません（U ターンや禁止された右左折など）。そこで別の道路を通るよう、経路か経由点を動かしてください",
+  "road.problem.depotToRoute": "車両が車庫から経路に着けません",
+  "road.problem.notClosed": "循環が道路上で閉じていません",
+  "road.problem.unreachable": "たどり着けません",
+  "road.part.unnamedStreet": "名前のない道路（OSM ウェイ {way}）",
+  "road.part.stop": "停留所 {n}",
 } satisfies RoadMessages;

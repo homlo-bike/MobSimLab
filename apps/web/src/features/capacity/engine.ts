@@ -3,7 +3,7 @@ import type { CapacityEngine, EngineLoader } from "./types";
 
 /**
  * Purpose: load a network and its lines into a capacity run web worker.
- * Inputs: the example metro, or the railway editor's topology export and a lines file (JSON texts).
+ * Inputs: the drawn railway's topology and its lines (JSON texts).
  * Output: an engine whose calls run in the worker; `dispose` ends the worker.
  * Dependencies: apps/web/src/wasm/rail-sim, built by tools/wasm/build-rail-sim.sh.
  */
@@ -31,8 +31,7 @@ export const loadWorkerEngine: EngineLoader = async (src) => {
       worker.postMessage({ id, op, ...args });
     });
   try {
-    if (src.kind === "example") await call("load", { network: "example:metro", lines: "example" });
-    else await call("load", { network: src.topology, lines: src.lines });
+    await call("load", { network: src.topology, lines: src.lines });
   } catch (e) {
     worker.terminate();
     throw e;

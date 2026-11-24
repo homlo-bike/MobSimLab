@@ -96,6 +96,34 @@ export const roadEn = {
   "visuals.legend.veryLate": "Very late (over {min} min)",
   "road.replay.noService":
     "This run was saved before service times were recorded, so its vehicles keep their line's colour. Run it again to see them by punctuality.",
+  "road.step.streets": "Loading the streets: {done} of {of} map tiles…",
+  "road.note.junctionSetup": "Junction setup: {on} junctions given traffic lights, {off} without",
+  "road.note.gateOffStreet": "Depot {depot}: a gate is not near a street a bus may use",
+  "road.note.noOsmSignals":
+    "OpenStreetMap maps no traffic lights on these streets, so every junction runs without lights and side streets wait for gaps in the main roads' traffic. Give the main junctions traffic lights in GIS › Streets.",
+  "road.note.lineCannotRun": "{line} cannot run: {why}",
+  "road.note.carsRemoved":
+    "{n} background cars stood for over {min} minutes and were taken out of the traffic to clear jams; the streets may be busier than they can carry",
+  "road.note.pullOutNotFollowed":
+    "The pull-out run is not followed ({why}); its vehicles take the shortest way",
+  "road.note.pullInNotFollowed":
+    "The pull-in run is not followed ({why}); its vehicles take the shortest way",
+  "road.note.noDepot": "No depot: its vehicles start and end on the street",
+  "road.note.noSlot": "Vehicle {n} has no slot in the depot: it starts at the depot gate",
+  "road.note.cannotLeave": "Vehicle {n} cannot leave its depot: it starts on the street",
+  "road.note.cannotReturn": "Vehicle {n} cannot get back into its depot: it ends on the street",
+  "road.problem.notRouted": "it has fewer than two points or is not routed",
+  "road.problem.noDepartures": "it has no departures in the period",
+  "road.problem.notMatched": "its route could not be matched to the streets",
+  "road.problem.stopOffRoute": "stop {stop} is not on the matched route",
+  "road.problem.notBack": "the route does not come back to its first stop",
+  "road.problem.noBusLink":
+    "no way for a bus from {from} onto {to}, near {stop} ({m} m away): the traffic model's streets have no turn there that a bus may take, for example a U-turn or a banned turn. Move the route or a via point so that it takes another street there",
+  "road.problem.depotToRoute": "its vehicles cannot reach the route from the depot",
+  "road.problem.notClosed": "its circuit is not closed on the streets",
+  "road.problem.unreachable": "it cannot be reached",
+  "road.part.unnamedStreet": "an unnamed street (OSM way {way})",
+  "road.part.stop": "stop {n}",
 };
 
 /** A language's road simulation messages: every key of the English ones. */

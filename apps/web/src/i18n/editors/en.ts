@@ -354,6 +354,8 @@ export const editorsEn = {
   "rail.say.clickTrackSwitch": "Click on a track to place a switch.",
   "rail.say.straightOnly": "Catalogue switches go on straight track. Click on a straight part.",
   "rail.say.doubleOnly": "Crossovers join two parallel tracks. Pick a double track.",
+  "rail.say.missedStationEnd":
+    "Click right on a station end to join the track to it. Zoom in if the ends are hard to hit.",
   "rail.say.clickTrackSignal": "Click on a track, station track or switch leg to place a signal.",
   "rail.signalsReset": "Signals reset to the ones generated from the design.",
   "rail.noiseFlows": "Trains per hour on each track (sample service until rail lines are drawn)",
@@ -1428,23 +1430,16 @@ export const editorsEn = {
   "capacity.loading": "Loading the network…",
   "capacity.planning": "Planning the period and running it through the interlocking…",
   "capacity.trying": "Trying {line} {every} ({n} of {total})…",
-  "capacity.noFile": "No file chosen",
-  "capacity.replace": "Replace",
-  "capacity.choose": "Choose",
   "capacity.title": "Test the system",
   "capacity.intro":
     "Run a period of the day through the timetable planner and the interlocking. See whether every rail line fits the tracks, runs on time and recovers from delays, and how many trains it could carry.",
-  "capacity.network": "Network",
   "capacity.example": "Example metro",
-  "capacity.mine": "From files",
   "capacity.drawn": "Drawn in this project",
-  "capacity.drawnText": "Lines {names} on the railway drawn in the railway tool, as saved.",
   "capacity.drawn.noTrack": "Nothing is drawn in the railway tool yet.",
   "capacity.drawn.noLines":
     "No service line is ready to test. In the railway tool, give a line at least two stops and a train.",
   "capacity.drawn.errors": "The drawn railway has errors. Fix them in the railway tool first.",
   "capacity.building": "Building the drawn railway…",
-  "capacity.drawnStreets": "Street lines {names}, run along their routes with traffic delays.",
   "capacity.loads.estimating": "Estimating ridership around the stations and stops…",
   "capacity.loads.toggle": "Passenger loads (ridership estimate of the Tables tab)",
   "capacity.loads.title": "Passengers",
@@ -1477,12 +1472,6 @@ export const editorsEn = {
   "capacity.street.bunchingHint": "gaps under half the headway; {left} min late at the end",
   "capacity.street.method":
     "Each street line ran {runs} times; every trip met its own traffic, from {low} to {high} times the expected delay in main-road traffic (Project preferences).",
-  "capacity.exampleText":
-    "Line M1 Westpark – Eastgate: five stations, a depot at each end, every 5 min in the peaks and every 10 min otherwise.",
-  "capacity.topologyFile": "Track topology (JSON)",
-  "capacity.linesFile": "Lines (JSON)",
-  "capacity.filesHelp":
-    "The track topology file follows contracts/rail-topology.schema.json; for the railway drawn in this project, choose {drawn}. The lines file lists each line’s stations, train and service, as the timetable planner reads it (docs/user/simulator.md).",
   "capacity.period": "Period",
   "capacity.from": "From",
   "capacity.to": "To",
@@ -1502,7 +1491,6 @@ export const editorsEn = {
   "capacity.run": "Run the test",
   "capacity.runAgain": "Run again",
   "capacity.stop": "Stop",
-  "capacity.chooseBoth": "Choose both files to run your railway.",
   "capacity.summary":
     "{period} · {trips} trips planned with margins · {out} trains in service, {reserve} in reserve",
   "capacity.importNotes": "Import notes ({n})",

@@ -346,6 +346,8 @@ export const editorsUz = {
   "rail.say.clickTrackSwitch": "Strelka qoʻyish uchun yoʻlni bosing.",
   "rail.say.straightOnly": "Katalog strelkalari toʻgʻri yoʻlga qoʻyiladi. Toʻgʻri qismni bosing.",
   "rail.say.doubleOnly": "Oʻtish yoʻli ikki parallel yoʻlni bogʻlaydi. Ikki yoʻlli liniyani tanlang.",
+  "rail.say.missedStationEnd":
+    "Yoʻlni ulash uchun aynan stansiya uchini bosing. Uchlarni bosish qiyin boʻlsa, yaqinlashtiring.",
   "rail.say.clickTrackSignal": "Svetofor qoʻyish uchun yoʻl, stansiya yoʻli yoki strelka tarmogʻini bosing.",
   "rail.signalsReset": "Svetoforlar loyihadan hosil qilingan holatga qaytarildi.",
   "rail.noiseFlows": "Har bir yoʻlda soatiga poyezdlar (relsli liniyalar chizilguncha namunaviy xizmat)",
@@ -1440,24 +1442,16 @@ export const editorsUz = {
   "capacity.loading": "Tarmoq yuklanmoqda…",
   "capacity.planning": "Davr rejalashtirilmoqda va markazlashtirish orqali o‘tkazilmoqda…",
   "capacity.trying": "{line} {every} sinab ko‘rilmoqda ({total} tadan {n})…",
-  "capacity.noFile": "Fayl tanlanmagan",
-  "capacity.replace": "Almashtirish",
-  "capacity.choose": "Tanlash",
   "capacity.title": "Tizimni sinash",
   "capacity.intro":
     "Kunning bir davrini jadval rejalovchisi va markazlashtirish orqali o‘tkazing. Har bir temir yo‘l liniyasi relslarga sig‘adimi, o‘z vaqtida yuradimi va kechikishlardan tiklanadimi, qancha poyezd tashiy olishini ko‘ring.",
-  "capacity.network": "Tarmoq",
   "capacity.example": "Namuna metro",
-  "capacity.mine": "Fayllardan",
   "capacity.drawn": "Shu loyihada chizilgan",
-  "capacity.drawnText": "Temir yo‘l vositasida chizilgan yo‘ldagi {names} liniyalari, saqlanganidek.",
   "capacity.drawn.noTrack": "Temir yo‘l vositasida hali hech narsa chizilmagan.",
   "capacity.drawn.noLines":
     "Sinovga tayyor liniya yo‘q. Temir yo‘l vositasida liniyaga kamida ikki bekat va poyezd bering.",
   "capacity.drawn.errors": "Chizilgan temir yo‘lda xatolar bor. Avval ularni temir yo‘l vositasida tuzating.",
   "capacity.building": "Chizilgan temir yo‘l qurilmoqda…",
-  "capacity.drawnStreets":
-    "Ko‘cha liniyalari {names}, tirbandlik kechikishlari bilan yo‘nalishi bo‘ylab yurgizildi.",
   "capacity.loads.estimating": "Bekatlar atrofidagi yo‘lovchilar baholanmoqda…",
   "capacity.loads.toggle": "Yo‘lovchi yuklamasi (Jadvallar yorlig‘ining yo‘lovchi bahosi)",
   "capacity.loads.title": "Yo‘lovchilar",
@@ -1490,12 +1484,6 @@ export const editorsUz = {
   "capacity.street.bunchingHint": "oraliq yarmidan qisqa masofalar; oxirida {left} daq kechikish",
   "capacity.street.method":
     "Har bir ko‘cha liniyasi {runs} marta yurgizildi; har reysning o‘z tirbandligi bo‘ldi, asosiy ko‘chalardagi kutilgan kechikishning {low}–{high} baravari (loyiha sozlamalari).",
-  "capacity.exampleText":
-    "M1 liniya Westpark – Eastgate: beshta bekat, har uchida depo, tig‘izlikda har 5 daq, boshqa vaqtda har 10 daq.",
-  "capacity.topologyFile": "Yo‘l topologiyasi (JSON)",
-  "capacity.linesFile": "Liniyalar (JSON)",
-  "capacity.filesHelp":
-    "Yo‘l topologiyasi fayli contracts/rail-topology.schema.json formatiga mos keladi; ushbu loyihada chizilgan temir yo‘l uchun “{drawn}” ni tanlang. Liniyalar fayli har bir liniyaning bekatlari, poyezdi va qatnovini jadval rejalovchisi o‘qiydigan shaklda sanab beradi (docs/user/simulator.md).",
   "capacity.period": "Davr",
   "capacity.from": "Dan",
   "capacity.to": "Gacha",
@@ -1515,7 +1503,6 @@ export const editorsUz = {
   "capacity.run": "Sinovni boshlash",
   "capacity.runAgain": "Qayta boshlash",
   "capacity.stop": "To‘xtatish",
-  "capacity.chooseBoth": "Temir yo‘lingizni sinash uchun ikkala faylni tanlang.",
   "capacity.summary":
     "{period} · zaxira bilan {trips} ta qatnov rejalashtirildi · {out} ta poyezd xizmatda, {reserve} ta zaxirada",
   "capacity.importNotes": "Import izohlari ({n})",

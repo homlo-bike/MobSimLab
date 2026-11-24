@@ -98,4 +98,33 @@ export const roadSw = {
   "visuals.legend.veryLate": "Limechelewa sana (zaidi ya dk {min})",
   "road.replay.noService":
     "Uendeshaji huu ulihifadhiwa kabla nyakati za huduma kurekodiwa, kwa hivyo magari yana rangi ya laini yao. Uendeshe tena kuyaona kwa ushikaji wakati.",
+  "road.step.streets": "Inapakia barabara: vigae {done} kati ya {of} vya ramani…",
+  "road.note.junctionSetup": "Mpangilio wa makutano: makutano {on} yamepewa taa za barabarani, {off} bila",
+  "road.note.gateOffStreet":
+    "Bohari {depot}: lango moja haliko karibu na barabara ambayo basi linaweza kutumia",
+  "road.note.noOsmSignals":
+    "OpenStreetMap haionyeshi taa za barabarani kwenye barabara hizi, kwa hiyo kila makutano huendeshwa bila taa na barabara ndogo husubiri nafasi katika msongamano wa barabara kuu. Wape makutano makuu taa za barabarani katika GIS › Barabara.",
+  "road.note.lineCannotRun": "{line} haiwezi kuendeshwa: {why}",
+  "road.note.carsRemoved":
+    "Magari {n} ya nyuma yalisimama zaidi ya dakika {min} na yakaondolewa kwenye msongamano ili kuufungua; huenda barabara zina magari mengi kuliko uwezo wake",
+  "road.note.pullOutNotFollowed":
+    "Njia ya kutoka boharini haifuatwi ({why}); magari yake huchukua njia fupi zaidi",
+  "road.note.pullInNotFollowed":
+    "Njia ya kurudi boharini haifuatwi ({why}); magari yake huchukua njia fupi zaidi",
+  "road.note.noDepot": "Hakuna bohari: magari yake yanaanza na kumalizia barabarani",
+  "road.note.noSlot": "Gari {n} halina nafasi boharini: linaanzia kwenye lango la bohari",
+  "road.note.cannotLeave": "Gari {n} haliwezi kutoka boharini: linaanzia barabarani",
+  "road.note.cannotReturn": "Gari {n} haliwezi kurudi boharini: linamalizia barabarani",
+  "road.problem.notRouted": "ina pointi chini ya mbili au haijapangiwa njia",
+  "road.problem.noDepartures": "haina safari za kuondoka katika kipindi hiki",
+  "road.problem.notMatched": "njia yake haikuweza kulinganishwa na barabara",
+  "road.problem.stopOffRoute": "kituo {stop} hakipo kwenye njia iliyolinganishwa",
+  "road.problem.notBack": "njia hairudi kwenye kituo chake cha kwanza",
+  "road.problem.noBusLink":
+    "hakuna njia kwa basi kutoka {from} kwenda {to}, karibu na {stop} (umbali wa m {m}): barabara za mfano wa trafiki hazina zamu hapo ambayo basi linaruhusiwa kuchukua, kwa mfano kugeuka nyuma au zamu iliyokatazwa. Sogeza njia au kituo cha kupitia ili ichukue barabara nyingine hapo",
+  "road.problem.depotToRoute": "magari yake hayawezi kufika kwenye njia kutoka boharini",
+  "road.problem.notClosed": "mzunguko wake haujafungwa kwenye barabara",
+  "road.problem.unreachable": "haifikiki",
+  "road.part.unnamedStreet": "barabara isiyo na jina (njia ya OSM {way})",
+  "road.part.stop": "kituo {n}",
 } satisfies RoadMessages;

@@ -327,6 +327,8 @@ export const editorsTr = {
   "rail.say.clickTrackSwitch": "Makas yerleştirmek için bir raya tıklayın.",
   "rail.say.straightOnly": "Katalog makasları düz bölüme oturur. Düz bir kısma tıklayın.",
   "rail.say.doubleOnly": "Geçiş makası iki paralel rayı bağlar. Çift hat seçin.",
+  "rail.say.missedStationEnd":
+    "Yolu bağlamak için tam olarak bir istasyon ucuna tıklayın. Uçlara denk getirmek zorsa yakınlaştırın.",
   "rail.say.clickTrackSignal":
     "Sinyal yerleştirmek için bir raya, istasyon rayına veya makasın sapan koluna tıklayın.",
   "rail.signalsReset": "Sinyaller tasarımdan üretilen hallerine döndürüldü.",
@@ -1402,23 +1404,16 @@ export const editorsTr = {
   "capacity.loading": "Ağ yükleniyor…",
   "capacity.planning": "Dönem planlanıyor ve anklaşmandan geçiriliyor…",
   "capacity.trying": "{line} {every} deneniyor ({n}/{total})…",
-  "capacity.noFile": "Dosya seçilmedi",
-  "capacity.replace": "Değiştir",
-  "capacity.choose": "Seç",
   "capacity.title": "Sistemi test et",
   "capacity.intro":
     "Günün bir dönemini sefer planlayıcısından ve anklaşmandan geçirin. Her raylı hattın raylara sığıp sığmadığını, zamanında işleyip işlemediğini ve gecikmelerden toparlanıp toparlanmadığını, kaç tren taşıyabileceğini görün.",
-  "capacity.network": "Ağ",
   "capacity.example": "Örnek metro",
-  "capacity.mine": "Dosyalardan",
   "capacity.drawn": "Bu projede çizilen",
-  "capacity.drawnText": "Demiryolu aracında çizilen hattaki {names} hatları, kaydedildiği gibi.",
   "capacity.drawn.noTrack": "Demiryolu aracında henüz hiçbir şey çizilmedi.",
   "capacity.drawn.noLines":
     "Teste hazır hat yok. Demiryolu aracında bir hatta en az iki durak ve bir tren verin.",
   "capacity.drawn.errors": "Çizilen demiryolunda hatalar var. Önce bunları demiryolu aracında düzeltin.",
   "capacity.building": "Çizilen demiryolu oluşturuluyor…",
-  "capacity.drawnStreets": "Cadde hatları {names}, trafik gecikmeleriyle güzergâhları boyunca çalıştırıldı.",
   "capacity.loads.estimating": "İstasyon ve durakların çevresindeki yolcu sayısı tahmin ediliyor…",
   "capacity.loads.toggle": "Yolcu yükü (Tablolar sekmesinin yolcu tahmini)",
   "capacity.loads.title": "Yolcular",
@@ -1451,12 +1446,6 @@ export const editorsTr = {
   "capacity.street.bunchingHint": "sefer aralığının yarısından kısa aralıklar; sonda {left} dk gecikme",
   "capacity.street.method":
     "Her cadde hattı {runs} kez çalıştırıldı; her seferin kendi trafiği vardı, ana yol trafiğinde beklenen gecikmenin {low} ile {high} katı arasında (proje tercihleri).",
-  "capacity.exampleText":
-    "M1 hattı Westpark – Eastgate: beş istasyon, her uçta bir depo, zirvelerde her 5 dk, diğer saatlerde her 10 dk.",
-  "capacity.topologyFile": "Ray topolojisi (JSON)",
-  "capacity.linesFile": "Hatlar (JSON)",
-  "capacity.filesHelp":
-    "Hat topolojisi dosyası contracts/rail-topology.schema.json biçimindedir; bu projede çizilen demiryolu için “{drawn}” seçeneğini seçin. Hat dosyası, sefer planlayıcısının okuduğu şekilde her hattın istasyonlarını, trenini ve seferini listeler (docs/user/simulator.md).",
   "capacity.period": "Dönem",
   "capacity.from": "Başlangıç",
   "capacity.to": "Bitiş",
@@ -1476,7 +1465,6 @@ export const editorsTr = {
   "capacity.run": "Testi çalıştır",
   "capacity.runAgain": "Yeniden çalıştır",
   "capacity.stop": "Durdur",
-  "capacity.chooseBoth": "Demiryolunuzu test etmek için iki dosyayı da seçin.",
   "capacity.summary": "{period} · paylarla planlanan {trips} sefer · hizmette {out} tren, yedekte {reserve}",
   "capacity.importNotes": "İçe aktarma notları ({n})",
   "capacity.plannerNotes": "Planlayıcı notları ({n})",

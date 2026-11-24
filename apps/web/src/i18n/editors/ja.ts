@@ -320,6 +320,8 @@ export const editorsJa = {
   "rail.say.clickTrackSwitch": "線路をクリックして分岐器を配置します。",
   "rail.say.straightOnly": "カタログの分岐器は直線区間に配置します。直線部分をクリックしてください。",
   "rail.say.doubleOnly": "渡り線は平行する2本の線路をつなぎます。複線を選んでください。",
+  "rail.say.missedStationEnd":
+    "線路をつなぐには駅の端を正確にクリックしてください。端をクリックしにくい場合は拡大してください。",
   "rail.say.clickTrackSignal": "線路、駅の線路、または分岐器の分岐側をクリックして信号機を配置します。",
   "rail.signalsReset": "信号機を設計から生成した状態に戻しました。",
   "rail.noiseFlows": "各線路の1時間あたりの列車本数（鉄道系統を描くまでは仮の運行）",
@@ -1369,23 +1371,16 @@ export const editorsJa = {
   "capacity.loading": "路線網を読み込み中…",
   "capacity.planning": "時間帯を計画し、連動装置に通しています…",
   "capacity.trying": "{line} を {every} で試験中（{total} 件中 {n} 件目）…",
-  "capacity.noFile": "ファイル未選択",
-  "capacity.replace": "差し替え",
-  "capacity.choose": "選択",
   "capacity.title": "システムを試験",
   "capacity.intro":
     "1 日のある時間帯をダイヤ作成と連動装置に通します。各鉄道路線が線路に収まるか、定時に走り遅れから回復するか、何本の列車を走らせられるかを確認します。",
-  "capacity.network": "路線網",
   "capacity.example": "サンプル地下鉄",
-  "capacity.mine": "ファイルから",
   "capacity.drawn": "このプロジェクトで描いた路線",
-  "capacity.drawnText": "鉄道ツールで描いた鉄道上の系統 {names}(保存された状態)。",
   "capacity.drawn.noTrack": "鉄道ツールにはまだ何も描かれていません。",
   "capacity.drawn.noLines":
     "テストできる系統がありません。鉄道ツールで、系統に2つ以上の停車駅と車両を設定してください。",
   "capacity.drawn.errors": "描いた鉄道にエラーがあります。先に鉄道ツールで直してください。",
   "capacity.building": "描いた鉄道を構築しています…",
-  "capacity.drawnStreets": "路上系統 {names}:交通の遅れを含めて経路どおりに運行。",
   "capacity.loads.estimating": "駅と停留所の周辺の利用者を推計しています…",
   "capacity.loads.toggle": "乗客の混雑(表タブの利用者推計)",
   "capacity.loads.title": "乗客",
@@ -1417,12 +1412,6 @@ export const editorsJa = {
   "capacity.street.bunchingHint": "運行間隔の半分未満の間隔。終了時 {left} 分遅れ",
   "capacity.street.method":
     "各路上系統を {runs} 回走らせました。便ごとに交通状況が異なり、幹線道路で想定される遅れの {low}〜{high} 倍(プロジェクト設定)。",
-  "capacity.exampleText":
-    "M1 線 Westpark – Eastgate：5 駅、両端に車両基地、ラッシュ時は 5 分ごと、それ以外は 10 分ごと。",
-  "capacity.topologyFile": "線路トポロジー（JSON）",
-  "capacity.linesFile": "路線（JSON）",
-  "capacity.filesHelp":
-    "線路トポロジーのファイルは contracts/rail-topology.schema.json に従います。このプロジェクトで描いた鉄道には「{drawn}」を選んでください。路線ファイルには、ダイヤ作成が読む形式で各路線の駅、列車、運行が並びます（docs/user/simulator.md）。",
   "capacity.period": "時間帯",
   "capacity.from": "開始",
   "capacity.to": "終了",
@@ -1441,7 +1430,6 @@ export const editorsJa = {
   "capacity.run": "試験を実行",
   "capacity.runAgain": "再実行",
   "capacity.stop": "停止",
-  "capacity.chooseBoth": "自分の鉄道を試すには両方のファイルを選んでください。",
   "capacity.summary": "{period} · 余裕を含めて {trips} 本を計画 · 運用 {out} 編成、予備 {reserve} 編成",
   "capacity.importNotes": "読み込みの注記（{n}）",
   "capacity.plannerNotes": "ダイヤ作成の注記（{n}）",

@@ -573,5 +573,10 @@
   "street.line.turning_detour": "L'inversione aggiunge {extra} ({length} invece di {direct}). Valuta di mettere il capolinea dove il veicolo può girare: un'autostazione, un anello di inversione, una rotatoria o un isolato attorno a cui può girare.",
   "street.line.two_stops": "Una linea richiede almeno due fermate. Trasforma dei punti in fermate.",
   "street.line.wrong_side": "Questa tratta è lunga {length} per {straight} in linea retta. Se il punto successivo è sulla carreggiata opposta di una strada a carreggiate separate, o su una strada a senso unico percorsa contromano, spostalo sul lato su cui circola il veicolo.",
-  "street.line.wrong_sidewalk": "Questo marciapiede non può essere servito: qui il traffico scorre solo con la fermata sul lato opposto alle porte. Metti la fermata sull'altro marciapiede."
+  "street.line.wrong_sidewalk": "Questo marciapiede non può essere servito: qui il traffico scorre solo con la fermata sul lato opposto alle porte. Metti la fermata sull'altro marciapiede.",
+  "rail.plan.no_track_between_reach": "Nessun binario porta da {from} a {to}. I treni da {from} raggiungono solo {reached}: verifica che i binari in entrata e in uscita da {last} si colleghino agli stessi binari di stazione a entrambe le estremità, così che i treni che vi arrivano possano proseguire, oppure aggiungi lì dei deviatoi.",
+  "rail.plan.gap_does_not_lead_on": "i treni da {from} raggiungono {at}, ma su binari di stazione che non proseguono verso {next}. Verifica che i binari in entrata e in uscita da {at} si colleghino agli stessi binari di stazione a entrambe le estremità, oppure aggiungi lì dei deviatoi",
+  "rail.plan.gap_no_track": "nessun binario porta da {from} a {to}",
+  "rail.plan.no_track_outbound_at": "Nessun binario collega le fermate nella direzione della linea: {gap}.",
+  "rail.plan.no_track_return_at": "Nessun binario collega le fermate nella direzione di ritorno: {gap}."
 }

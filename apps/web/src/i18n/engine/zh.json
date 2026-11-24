@@ -573,5 +573,10 @@
   "street.line.turning_detour": "调头多出 {extra}（{length}，而非 {direct}）。请考虑将终点站设在车辆能够调头的地方：公交枢纽站、回车环道、环岛或可绕行一圈的街区。",
   "street.line.two_stops": "一条线路至少需要两个站点。请将点设为站点。",
   "street.line.wrong_side": "此路段长 {length}，而直线距离为 {straight}。如果下一个点位于分隔式道路的对向半幅，或位于逆行方向的单行道上，请将其移到车辆行驶的一侧。",
-  "street.line.wrong_sidewalk": "无法从这一侧人行道停靠：此处交通只能使站点位于车门的对侧。请将站点设在另一侧人行道。"
+  "street.line.wrong_sidewalk": "无法从这一侧人行道停靠：此处交通只能使站点位于车门的对侧。请将站点设在另一侧人行道。",
+  "rail.plan.no_track_between_reach": "没有轨道从{from}通往{to}。从{from}出发的列车只能到达{reached}：请检查进出{last}的轨道在两端是否接到同一组站线，使到达那里的列车能继续前行，或在那里加装道岔。",
+  "rail.plan.gap_does_not_lead_on": "从{from}出发的列车能到达{at}，但停在不通往{next}的站线上。请检查进出{at}的轨道在两端是否接到同一组站线，或在那里加装道岔",
+  "rail.plan.gap_no_track": "没有轨道从{from}通往{to}",
+  "rail.plan.no_track_outbound_at": "没有轨道按线路方向连接各站点：{gap}。",
+  "rail.plan.no_track_return_at": "没有轨道按返程方向连接各站点：{gap}。"
 }

@@ -573,5 +573,10 @@
   "street.line.turning_detour": "회차로 {extra}이(가) 늘어납니다({direct} 대신 {length}). 차량이 회차할 수 있는 곳에 종점 정류장을 두는 것을 고려하세요: 버스 터미널, 회차 루프, 회전 교차로 또는 돌아 나올 수 있는 블록.",
   "street.line.two_stops": "노선에는 정류장이 최소 2개 필요합니다. 점을 정류장으로 바꾸세요.",
   "street.line.wrong_side": "이 구간은 직선 거리 {straight}에 비해 {length}입니다. 다음 점이 분리된 도로의 반대편이나 역방향 일방통행 도로에 있으면, 차량이 주행하는 쪽으로 옮기세요.",
-  "street.line.wrong_sidewalk": "이 보도에서는 승하차할 수 없습니다. 여기서는 교통이 정류장을 출입문 반대쪽에 두는 방향으로만 흐릅니다. 정류장을 반대편 보도에 두세요."
+  "street.line.wrong_sidewalk": "이 보도에서는 승하차할 수 없습니다. 여기서는 교통이 정류장을 출입문 반대쪽에 두는 방향으로만 흐릅니다. 정류장을 반대편 보도에 두세요.",
+  "rail.plan.no_track_between_reach": "{from}에서 {to}(으)로 가는 선로가 없습니다. {from}에서 출발한 열차는 {reached}까지만 갈 수 있습니다: {last}에 드나드는 선로가 양쪽 끝에서 같은 역 선로에 이어지는지 확인해 그곳에 도착한 열차가 계속 갈 수 있게 하거나, 그곳에 분기기를 두세요.",
+  "rail.plan.gap_does_not_lead_on": "{from}에서 출발한 열차는 {at}에 도착하지만 {next}(으)로 이어지지 않는 역 선로에 들어갑니다. {at}에 드나드는 선로가 양쪽 끝에서 같은 역 선로에 이어지는지 확인하거나, 그곳에 분기기를 두세요",
+  "rail.plan.gap_no_track": "{from}에서 {to}(으)로 가는 선로가 없습니다",
+  "rail.plan.no_track_outbound_at": "노선 방향으로 정류장을 잇는 선로가 없습니다: {gap}.",
+  "rail.plan.no_track_return_at": "반대 방향으로 정류장을 잇는 선로가 없습니다: {gap}."
 }

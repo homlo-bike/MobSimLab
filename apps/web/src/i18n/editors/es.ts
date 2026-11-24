@@ -345,6 +345,8 @@ export const editorsEs = {
   "rail.say.clickTrackSwitch": "Haz clic en una vía para colocar un desvío.",
   "rail.say.straightOnly": "Los desvíos del catálogo van en vía recta. Haz clic en un tramo recto.",
   "rail.say.doubleOnly": "Los escapes unen dos vías paralelas. Elige una vía doble.",
+  "rail.say.missedStationEnd":
+    "Haz clic justo en un extremo de la estación para unir la vía a él. Acércate si cuesta acertar en los extremos.",
   "rail.say.clickTrackSignal":
     "Haz clic en una vía, una vía de estación o un ramal de desvío para colocar una señal.",
   "rail.signalsReset": "Señales restablecidas a las generadas a partir del diseño.",
@@ -1445,25 +1447,17 @@ export const editorsEs = {
   "capacity.loading": "Cargando la red…",
   "capacity.planning": "Planificando el periodo y pasándolo por el enclavamiento…",
   "capacity.trying": "Probando {line} {every} ({n} de {total})…",
-  "capacity.noFile": "Ningún archivo elegido",
-  "capacity.replace": "Sustituir",
-  "capacity.choose": "Elegir",
   "capacity.title": "Probar el sistema",
   "capacity.intro":
     "Pase un periodo del día por el planificador de horarios y el enclavamiento. Vea si cada línea ferroviaria cabe en las vías, circula a tiempo y se recupera de los retrasos, y cuántos trenes podría llevar.",
-  "capacity.network": "Red",
   "capacity.example": "Metro de ejemplo",
-  "capacity.mine": "Desde archivos",
   "capacity.drawn": "Dibujado en este proyecto",
-  "capacity.drawnText":
-    "Líneas {names} en el ferrocarril dibujado en la herramienta ferroviaria, tal como se guardó.",
   "capacity.drawn.noTrack": "Aún no hay nada dibujado en la herramienta ferroviaria.",
   "capacity.drawn.noLines":
     "Ninguna línea está lista para la prueba. En la herramienta ferroviaria, da a una línea al menos dos paradas y un tren.",
   "capacity.drawn.errors":
     "El ferrocarril dibujado tiene errores. Corrígelos primero en la herramienta ferroviaria.",
   "capacity.building": "Construyendo el ferrocarril dibujado…",
-  "capacity.drawnStreets": "Líneas de calle {names}, recorridas por su ruta con retrasos del tráfico.",
   "capacity.loads.estimating": "Estimando pasajeros alrededor de estaciones y paradas…",
   "capacity.loads.toggle": "Carga de pasajeros (estimación de la pestaña Tablas)",
   "capacity.loads.title": "Pasajeros",
@@ -1498,12 +1492,6 @@ export const editorsEs = {
     "intervalos de menos de la mitad del intervalo previsto; {left} min de retraso al final",
   "capacity.street.method":
     "Cada línea de calle se ejecutó {runs} veces; cada viaje tuvo su propio tráfico, de {low} a {high} veces el retraso esperado en el tráfico de las vías principales (preferencias del proyecto).",
-  "capacity.exampleText":
-    "Línea M1 Westpark – Eastgate: cinco estaciones, un depósito en cada extremo, cada 5 min en las horas punta y cada 10 min el resto del tiempo.",
-  "capacity.topologyFile": "Topología de vías (JSON)",
-  "capacity.linesFile": "Líneas (JSON)",
-  "capacity.filesHelp":
-    "El archivo de topología de vías sigue contracts/rail-topology.schema.json; para el ferrocarril dibujado en este proyecto, elija «{drawn}». El archivo de líneas indica para cada línea las estaciones, el tren y el servicio, tal como los lee el planificador de horarios (docs/user/simulator.md).",
   "capacity.period": "Periodo",
   "capacity.from": "Desde",
   "capacity.to": "Hasta",
@@ -1523,7 +1511,6 @@ export const editorsEs = {
   "capacity.run": "Ejecutar la prueba",
   "capacity.runAgain": "Ejecutar de nuevo",
   "capacity.stop": "Detener",
-  "capacity.chooseBoth": "Elija ambos archivos para probar su ferrocarril.",
   "capacity.summary":
     "{period} · {trips} viajes planificados con márgenes · {out} trenes en servicio, {reserve} de reserva",
   "capacity.importNotes": "Notas de importación ({n})",

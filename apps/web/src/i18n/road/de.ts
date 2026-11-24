@@ -99,4 +99,33 @@ export const roadDe = {
   "visuals.legend.veryLate": "Stark verspätet (über {min} min)",
   "road.replay.noService":
     "Dieser Lauf wurde gespeichert, bevor Betriebszeiten erfasst wurden; seine Fahrzeuge behalten die Farbe ihrer Linie. Starten Sie ihn erneut, um sie nach Pünktlichkeit zu sehen.",
+  "road.step.streets": "Straßen werden geladen: {done} von {of} Kartenkacheln…",
+  "road.note.junctionSetup": "Knotenpunkte: {on} Knotenpunkte mit Ampel, {off} ohne",
+  "road.note.gateOffStreet":
+    "Betriebshof {depot}: Eine Zufahrt liegt nicht an einer Straße, die ein Bus befahren darf",
+  "road.note.noOsmSignals":
+    "OpenStreetMap verzeichnet auf diesen Straßen keine Ampeln, daher laufen alle Knotenpunkte ohne Ampel, und Nebenstraßen warten auf Lücken im Verkehr der Hauptstraßen. Geben Sie den wichtigsten Knotenpunkten Ampeln unter GIS › Straßen.",
+  "road.note.lineCannotRun": "{line} kann nicht fahren: {why}",
+  "road.note.carsRemoved":
+    "{n} Hintergrundautos standen länger als {min} Minuten und wurden aus dem Verkehr genommen, um Staus aufzulösen; die Straßen sind womöglich stärker belastet, als sie aufnehmen können",
+  "road.note.pullOutNotFollowed":
+    "Die Ausrückfahrt wird nicht befolgt ({why}); die Fahrzeuge nehmen den kürzesten Weg",
+  "road.note.pullInNotFollowed":
+    "Die Einrückfahrt wird nicht befolgt ({why}); die Fahrzeuge nehmen den kürzesten Weg",
+  "road.note.noDepot": "Kein Betriebshof: Die Fahrzeuge beginnen und enden auf der Straße",
+  "road.note.noSlot": "Fahrzeug {n} hat keinen Abstellplatz im Betriebshof: Es beginnt an der Zufahrt",
+  "road.note.cannotLeave": "Fahrzeug {n} kann seinen Betriebshof nicht verlassen: Es beginnt auf der Straße",
+  "road.note.cannotReturn": "Fahrzeug {n} kann nicht in seinen Betriebshof zurück: Es endet auf der Straße",
+  "road.problem.notRouted": "sie hat weniger als zwei Punkte oder ist nicht geroutet",
+  "road.problem.noDepartures": "sie hat im Zeitraum keine Abfahrten",
+  "road.problem.notMatched": "ihre Route ließ sich nicht den Straßen zuordnen",
+  "road.problem.stopOffRoute": "Haltestelle {stop} liegt nicht auf der zugeordneten Route",
+  "road.problem.notBack": "die Route kommt nicht zu ihrer ersten Haltestelle zurück",
+  "road.problem.noBusLink":
+    "kein Weg für einen Bus von {from} auf {to}, nahe {stop} ({m} m entfernt): Die Straßen des Verkehrsmodells haben dort keine Abbiegung, die ein Bus nehmen darf, etwa eine Wende oder ein verbotenes Abbiegen. Verschieben Sie die Route oder einen Wegpunkt, sodass sie dort eine andere Straße nimmt",
+  "road.problem.depotToRoute": "ihre Fahrzeuge erreichen die Route vom Betriebshof aus nicht",
+  "road.problem.notClosed": "ihr Umlauf ist auf den Straßen nicht geschlossen",
+  "road.problem.unreachable": "sie ist nicht erreichbar",
+  "road.part.unnamedStreet": "eine Straße ohne Namen (OSM-Weg {way})",
+  "road.part.stop": "Haltestelle {n}",
 } satisfies RoadMessages;

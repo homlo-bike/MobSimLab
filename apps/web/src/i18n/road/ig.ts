@@ -95,4 +95,32 @@ export const roadIg = {
   "visuals.legend.veryLate": "Egbu oge nke ukwuu (karịa nkeji {min})",
   "road.replay.noService":
     "Edebere ọsọ a tupu e dekọọ oge ọrụ, ya mere ụgbọala ya nwere agba ahịrị ha. Megharịa ya ka ị hụ ha site n'idebe oge.",
+  "road.step.streets": "Na-ebugo okporo ụzọ: taịlị {done} n'ime {of} nke maapụ…",
+  "road.note.junctionSetup": "Nhazi njikọ ụzọ: e nyere njikọ {on} ọkụ okporo ụzọ, {off} enweghị",
+  "road.note.gateOffStreet": "Ụlọ ụgbọ {depot}: otu ọnụ ụzọ anọghị nso okporo ụzọ bọs nwere ike iji",
+  "road.note.noOsmSignals":
+    "OpenStreetMap egosighị ọkụ okporo ụzọ ọ bụla n'okporo ụzọ ndị a, ya mere njikọ ọ bụla na-arụ ọrụ na-enweghị ọkụ, okporo ụzọ ndị dị n'akụkụ na-echere oghere n'ụgbọ nke okporo ụzọ ndị bụ isi. Nye njikọ ndị bụ isi ọkụ okporo ụzọ na GIS › Okporo ụzọ.",
+  "road.note.lineCannotRun": "{line} enweghị ike ịgba: {why}",
+  "road.note.carsRemoved":
+    "Ụgbọala azụ {n} kwụrụ ihe karịrị nkeji {min}, e wepụkwara ha n'okporo ụzọ iji mepee mkpọchi; ọ nwere ike ịbụ na okporo ụzọ jupụtara karịa ike ha",
+  "road.note.pullOutNotFollowed":
+    "A naghị agbaso ụzọ ọpụpụ n'ụlọ ụgbọ ({why}); ụgbọ ya na-eji ụzọ kacha mkpụmkpụ",
+  "road.note.pullInNotFollowed":
+    "A naghị agbaso ụzọ nlọghachi n'ụlọ ụgbọ ({why}); ụgbọ ya na-eji ụzọ kacha mkpụmkpụ",
+  "road.note.noDepot": "Enweghị ụlọ ụgbọ: ụgbọ ya na-amalite ma na-akwụsị n'okporo ụzọ",
+  "road.note.noSlot": "Ụgbọ {n} enweghị ebe n'ụlọ ụgbọ: ọ na-amalite n'ọnụ ụzọ ụlọ ụgbọ",
+  "road.note.cannotLeave": "Ụgbọ {n} enweghị ike ịpụ n'ụlọ ụgbọ ya: ọ na-amalite n'okporo ụzọ",
+  "road.note.cannotReturn": "Ụgbọ {n} enweghị ike ịlaghachi n'ụlọ ụgbọ ya: ọ na-akwụsị n'okporo ụzọ",
+  "road.problem.notRouted": "o nwere ihe na-erughị ntụpọ abụọ ma ọ bụ a hazibeghị ụzọ ya",
+  "road.problem.noDepartures": "o nweghị ọpụpụ n'oge a",
+  "road.problem.notMatched": "enweghị ike ijikọ ụzọ ya na okporo ụzọ",
+  "road.problem.stopOffRoute": "ebe nkwụsị {stop} anọghị n'ụzọ e jikọrọ",
+  "road.problem.notBack": "ụzọ ahụ anaghị alaghachi n'ebe nkwụsị mbụ ya",
+  "road.problem.noBusLink":
+    "enweghị ụzọ maka bọs site na {from} gaa na {to}, nso {stop} (mita {m} anya): okporo ụzọ nke ụdị okporo ụzọ enweghị ntụgharị ebe ahụ bọs nwere ike ịme, dịka ntụgharị azụ ma ọ bụ ntụgharị a machiri. Bugharịa ụzọ ahụ ma ọ bụ ntụpọ ngafe ka o were okporo ụzọ ọzọ ebe ahụ",
+  "road.problem.depotToRoute": "ụgbọ ya enweghị ike iru ụzọ ahụ site n'ụlọ ụgbọ",
+  "road.problem.notClosed": "gburugburu ya emechighị n'okporo ụzọ",
+  "road.problem.unreachable": "enweghị ike iru ya",
+  "road.part.unnamedStreet": "okporo ụzọ na-enweghị aha (ụzọ OSM {way})",
+  "road.part.stop": "ebe nkwụsị {n}",
 } satisfies RoadMessages;
