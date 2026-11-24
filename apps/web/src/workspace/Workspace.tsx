@@ -1530,14 +1530,17 @@ export function Workspace({
                 place={place}
                 mapExports={
                   drawings.loaded ? (
-                    <MapExports
-                      railway={railway}
-                      streetLines={streetLines}
-                      pluginLines={pluginLineList}
-                      prefs={preferences?.values}
-                      doc={drawings.doc<SchematicDoc>("schematic")}
-                      projectName={project.name}
-                    />
+                    // Its own wait, so the rest of the preferences show while the export code loads.
+                    <Suspense fallback={null}>
+                      <MapExports
+                        railway={railway}
+                        streetLines={streetLines}
+                        pluginLines={pluginLineList}
+                        prefs={preferences?.values}
+                        doc={drawings.doc<SchematicDoc>("schematic")}
+                        projectName={project.name}
+                      />
+                    </Suspense>
                   ) : null
                 }
               />
