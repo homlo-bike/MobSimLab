@@ -685,6 +685,15 @@ export interface RailEngine {
   signalAnchor(at: LonLat, maxM: number): SignalAt | null;
   /** Plan the service lines on the last build and publish them for the journey planner; throws on errors. */
   publishLines(lines: EngineServiceLine[], serviceId: string, options?: PublishOptions): ServicePublication;
+  /**
+   * The same as `publishLines`, planned in a Web Worker so the page stays responsive while it plans (a large
+   * line held the page for 12 s). Absent where workers are not available (tests); then `publishLines` is used.
+   */
+  publishLinesInWorker?(
+    lines: EngineServiceLine[],
+    serviceId: string,
+    options?: PublishOptions,
+  ): Promise<ServicePublication>;
   /** Whether trains can run from one station (document id) to another on the last build; throws on errors. */
   reachable(from: number, to: number): { ok: boolean; reason: string | null; reason_msg?: EngineMsg | null };
   dispose(): void;

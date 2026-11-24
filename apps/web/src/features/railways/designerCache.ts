@@ -9,6 +9,7 @@ export interface Designer {
   publish_lines(lines: string, serviceId: string): string;
   publish_lines_with(lines: string, serviceId: string, options: string): string;
   missing_terrain_tiles(): string;
+  topology(): string;
 }
 
 /** Most characters of answers kept (about 128 MB in the browser's UTF-16 strings). */
@@ -41,6 +42,11 @@ function remember(key: string, value: string) {
     kept.delete(k);
     keptChars -= v.length;
   }
+}
+
+/** Purpose: what a publication's kept answer is found by, besides the build it was planned on. */
+function publishToken(lines: string, serviceId: string, options?: string) {
+  return `publish\u0000${serviceId}\u0000${options ?? ""}\u0000${lines}`;
 }
 
 /** Purpose: forget every kept answer (tests). */
@@ -110,11 +116,31 @@ export class CachedDesigner<D extends Designer> {
   }
 
   publishLines(lines: string, serviceId: string, options?: string): string {
-    return this.fromBuild(`publish\u0000${serviceId}\u0000${options ?? ""}\u0000${lines}`, (d) =>
+    return this.fromBuild(publishToken(lines, serviceId, options), (d) =>
       options === undefined
         ? d.publish_lines(lines, serviceId)
         : d.publish_lines_with(lines, serviceId, options),
     );
+  }
+
+  /**
+   * Purpose: `publishLines` planned elsewhere (a Web Worker) on the last build's topology, so the page stays
+   * responsive while it plans. The answer is kept as one from the engine is, for the same build and inputs.
+   * Inputs: the lines, day type and options as for `publishLines`, and the planner, given the topology.
+   */
+  async publishLinesAway(
+    lines: string,
+    serviceId: string,
+    options: string | undefined,
+    plan: (topology: string) => Promise<string>,
+  ): Promise<string> {
+    const built = this.built;
+    const key = hashText(`${built}\u0000${publishToken(lines, serviceId, options)}`);
+    const v = built ? recall(key) : undefined;
+    if (v !== undefined) return v;
+    const out = await plan(this.catchUp().topology());
+    if (built) remember(key, out);
+    return out;
   }
 
   missingTerrainTiles(): string {

@@ -61,9 +61,11 @@ import type { Publication } from "./ServiceLinesPanel";
 import type {
   Anchor,
   ConnectionView,
+  EngineServiceLine,
   FeatureCollection,
   LonLat,
   Network,
+  PublishOptions,
   RailEngine,
   RailEngineLoader,
   RailMode,
@@ -730,7 +732,12 @@ export function RailwayEditor({
       // a publish whose heights did not load stops with the reason instead of planning as if on flat ground.
       const terrainFailed = await loadAllTerrain(e, () => e.build(doc, null));
       if (terrainFailed) throw new Error(tNow("rail.publishTerrainFailed", { reason: terrainFailed }));
-      // Every day type with its own times and the calendar's peaks; the journey planner takes the weekday.
+      // Every day type with its own times and the calendar's peaks; the journey planner takes the weekday. The
+      // planner runs in a worker where there is one, so the page stays responsive while it plans.
+      const plan = (lines: EngineServiceLine[], day: string, options: PublishOptions) =>
+        e.publishLinesInWorker
+          ? e.publishLinesInWorker(lines, day, options)
+          : e.publishLines(lines, day, options);
       const byDay: DayPublications = {};
       for (const [i, day] of (days.length ? days : (["weekday"] as const)).entries()) {
         setPublishing({
@@ -739,7 +746,7 @@ export function RailwayEditor({
           steps,
         });
         await paint();
-        byDay[day] = e.publishLines(
+        byDay[day] = await plan(
           dayEngineLines(doc, day, calendar, prefValues),
           day,
           publishOptionsFrom(prefValues),
@@ -747,11 +754,11 @@ export function RailwayEditor({
       }
       const result =
         byDay.weekday ??
-        e.publishLines(
+        (await plan(
           dayEngineLines(doc, "weekday", calendar, prefValues),
           "weekday",
           publishOptionsFrom(prefValues),
-        );
+        ));
       byDay.weekday = result;
       next = { result, byDay, error: null, key: publishKey(doc), topology: e.topology() };
       onPublish?.(result.timetable);
