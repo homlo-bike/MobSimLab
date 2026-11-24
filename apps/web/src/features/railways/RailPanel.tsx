@@ -148,7 +148,7 @@ export function RailPanel(props: Props) {
         <p className="text-xs text-slate-500">{t("rail.multi.shiftHint")}</p>
       )}
 
-      {tool === "station" && (
+      {tool === "station" && !inspecting && (
         <Section title={t("rail.newStation")}>
           <Segmented
             label={t("rail.stationLevel")}
@@ -179,7 +179,7 @@ export function RailPanel(props: Props) {
         </Section>
       )}
 
-      {(tool === "track" || draft) && (
+      {(draft || (tool === "track" && !inspecting)) && (
         <Section title={draft ? t("rail.drawingTrack") : t("rail.newTrack")}>
           <Segmented<1 | 2>
             label={t("rail.tracks")}
@@ -239,7 +239,7 @@ export function RailPanel(props: Props) {
         </Section>
       )}
 
-      {(tool === "turnout" || tool === "crossover") && (
+      {(tool === "turnout" || tool === "crossover") && !inspecting && (
         <Section title={tool === "turnout" ? t("rail.newTurnout") : t("rail.newCrossover")}>
           <Row label={t("rail.element")}>
             <select

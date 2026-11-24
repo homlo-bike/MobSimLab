@@ -1002,6 +1002,19 @@ describe("Railway editor", () => {
     expect(engine()).not.toBeNull();
   });
 
+  it("shows a selected switch's own settings, not the new crossover's, while the Crossover tool is picked", async () => {
+    await opened({ mode: "regional_rail" });
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
+    const list = await screen.findByRole("list", { name: "Switches" });
+    fireEvent.click(within(list).getAllByRole("button")[0]!);
+    fireEvent.keyDown(window, { key: "x" });
+    expect(screen.getByRole("button", { name: /Crossover/ }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: "Back to the network" })).toBeTruthy();
+    expect(screen.queryByText("New crossover")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Back to the network" }));
+    expect(screen.getByText("New crossover")).toBeTruthy();
+  });
+
   it("shows generated signals, places one of the planner's, turns it with F and resets", async () => {
     const { handlers, engine } = await opened({ mode: "regional_rail" });
     fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
