@@ -5,6 +5,7 @@ import { dayEngineLines } from "../timetables/railPublish";
 import { DAY_TYPES, type DayTypeId, type ServiceCalendar } from "../../workspace/calendar";
 import { defaultHeights, type HeightsFetcher } from "../tables/railBuild";
 import { buildWithTerrain } from "../railways/terrainTiles";
+import { lineCannotRunNotes } from "../railways/cannotRun";
 
 /** The drawn railway as the capacity run loads it. */
 export interface DrawnNetwork {
@@ -17,6 +18,11 @@ export interface DrawnNetwork {
    * (JSON text, as `lines`); `lines` is then the weekday's, with the calendar's peaks.
    */
   dayLines?: Partial<Record<DayTypeId, string>>;
+  /**
+   * The lines the timetable planner cannot run on a weekday, each with why (a train that stalls on a gradient
+   * too steep for it, a platform too short), in the app language: the run then has no trips of them.
+   */
+  cannotRun: string[];
 }
 
 /** Why the drawn railway cannot be tested: nothing drawn, no service line ready, or errors in the drawing. */
@@ -52,10 +58,12 @@ export async function buildDrawnNetwork(
     const view = await buildWithTerrain(engine, railway, fetchHeights);
     if (view.counts.errors > 0) return "errors";
     const topology = JSON.stringify(engine.topology());
+    const cannotRun = lineCannotRunNotes(engine, railway, engineLines(railway, railway.lines ?? [], values));
     if (!cal)
       return {
         topology,
         lines: JSON.stringify({ service_lines: engineLines(railway, railway.lines ?? [], values) }),
+        cannotRun,
       };
     const text = (d: DayTypeId) => JSON.stringify({ service_lines: dayEngineLines(railway, d, cal, values) });
     const lines = text("weekday");
@@ -64,7 +72,7 @@ export async function buildDrawnNetwork(
       const own = d === "weekday" ? lines : text(d);
       if (own !== lines) dayLines[d] = own;
     }
-    return { topology, lines, dayLines };
+    return { topology, lines, dayLines, cannotRun };
   } finally {
     engine.dispose();
   }

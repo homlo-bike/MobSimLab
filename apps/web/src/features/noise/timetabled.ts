@@ -5,6 +5,7 @@
  * circuit; railway tracks carry the trains of each published service line, counted per section of the
  * track by the timetable planner.
  */
+import { cannotRunNotes } from "../railways/cannotRun";
 import { tNow } from "../../i18n/i18n";
 import { distanceM } from "../../map/geo";
 import { lineMode, engineLines, trainById } from "../railways/serviceLines";
@@ -355,7 +356,10 @@ export function publishedRailSources(
       pub.section_trains ?? [],
       engine.topology() as { sections?: TopologySection[] } | null,
     );
-    return { lines, notes: lines.length ? [] : [tNow("noise.noRailService")] };
+    if (lines.length) return { lines, notes: [] };
+    // Lines published without trips say why (a train that stalls on a gradient too steep for it).
+    const why = cannotRunNotes(doc, pub.lines);
+    return { lines, notes: why.length ? why : [tNow("noise.noRailService")] };
   } catch (err) {
     return {
       lines: [],

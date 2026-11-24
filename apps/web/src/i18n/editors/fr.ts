@@ -79,6 +79,7 @@ export const editorsFr = {
     "Les altitudes du terrain n’ont pas été chargées : {reason}. L’horaire n’a pas été publié, car sans elles les trains rouleraient comme sur une ligne plate. Publiez à nouveau.",
   "rail.terrainRequired":
     "Les altitudes du terrain n’ont pas été chargées : {reason}. Sans elles, les trains rouleraient comme sur une ligne plate ; aucun service n’a donc été planifié. Réessayez plus tard.",
+  "rail.lineCannotRun": "{line} n’a aucun train : {reason}",
   "rail.signals": "Signaux",
   "rail.signalsSome":
     "{summary}. Ils sont générés à partir du projet et le suivent quand il change. Cliquez sur un signal pour le modifier ou le supprimer, ou utilisez l’outil Signal pour en ajouter un ; chaque modification est vérifiée.",

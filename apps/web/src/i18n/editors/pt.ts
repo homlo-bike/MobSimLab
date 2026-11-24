@@ -78,6 +78,7 @@ export const editorsPt = {
     "As altitudes do terreno não foram carregadas: {reason}. O horário não foi publicado, porque sem elas os comboios circulariam como se a linha fosse plana. Publique novamente.",
   "rail.terrainRequired":
     "As altitudes do terreno não foram carregadas: {reason}. Sem elas os comboios circulariam como se a linha fosse plana, por isso não foi planeado nenhum serviço. Tente novamente mais tarde.",
+  "rail.lineCannotRun": "{line} não tem comboios: {reason}",
   "rail.signals": "Sinais",
   "rail.signalsSome":
     "{summary}. Eles são gerados a partir do projeto e o acompanham quando ele muda. Clique em um sinal para alterá-lo ou excluí-lo, ou use a ferramenta Sinal para adicionar um; cada mudança é verificada.",

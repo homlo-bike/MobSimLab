@@ -75,6 +75,7 @@ export const editorsZh = {
     "未能加载地面高程：{reason}。没有高程时列车会按平坦线路运行，因此未发布时刻表。请重新发布。",
   "rail.terrainRequired":
     "未能加载地面高程：{reason}。没有高程时列车会按平坦线路运行，因此未规划任何运营。请稍后重试。",
+  "rail.lineCannotRun": "{line} 没有列车：{reason}",
   "rail.signals": "信号机",
   "rail.signalsSome":
     "{summary}。信号机根据设计自动生成，并随设计变化而更新。点击信号机可修改或删除，或用“信号机”工具添加；每次修改都会检查。",

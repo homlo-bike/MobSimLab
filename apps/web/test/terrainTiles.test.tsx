@@ -49,6 +49,23 @@ describe("building a railway with its terrain heights", () => {
     e.dispose();
   });
 
+  it("names the stall in the capacity run and on the noise map", async () => {
+    const net = metro();
+    const drawn = await buildDrawnNetwork(net, loadRailEngine, steep);
+    if (typeof drawn === "string") throw new Error(drawn);
+    expect(drawn.cannotRun).toHaveLength(1);
+    expect(drawn.cannotRun[0]).toMatch(/^M1 has no trains: .*stalls on a gradient too steep/);
+    const noise = await designSources(
+      { streetLines: null, railway: net },
+      "timetabled",
+      loadRailEngine,
+      null,
+      steep,
+    );
+    expect(noise.lines).toEqual([]);
+    expect(noise.notes).toEqual(drawn.cannotRun);
+  });
+
   it("refuses, with the reason, when the heights do not load", async () => {
     const e = await loadRailEngine();
     await expect(buildWithTerrain(e, metro(), offline)).rejects.toThrow(REFUSED);

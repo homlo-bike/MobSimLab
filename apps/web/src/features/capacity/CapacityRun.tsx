@@ -189,6 +189,8 @@ export function CapacityRun({
   const [viewing, setViewing] = useState<SavedRunDetail | null>(null);
   const [sending, setSending] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  // The drawn lines the timetable planner cannot run, with why (a train that stalls on a gradient).
+  const [cannotRun, setCannotRun] = useState<string[]>([]);
 
   useEffect(() => {
     if (!runs) return;
@@ -508,6 +510,7 @@ export function CapacityRun({
         engine.current?.engine.dispose();
         engine.current = null;
         let src: NetworkSource;
+        setCannotRun([]);
         if (source === "example") src = { kind: "example" };
         else if (source === "files")
           src = { kind: "files", topology: topology!.text, lines: linesFile!.text };
@@ -520,7 +523,9 @@ export function CapacityRun({
             setError(t(`capacity.drawn.${built}`));
             return;
           }
-          src = { kind: "files", ...built, lines: withStopDwells(built.lines, dwellsBy) };
+          const { cannotRun: why, ...network } = built;
+          setCannotRun(why);
+          src = { kind: "files", ...network, lines: withStopDwells(network.lines, dwellsBy) };
         }
         setRunTopology(src.kind === "files" ? src.topology : null);
         phase("load");
@@ -612,6 +617,7 @@ export function CapacityRun({
         setServerError(built in DRAWN_PROBLEMS ? t(`capacity.drawn.${built as DrawnProblem}`) : built);
         return;
       }
+      setCannotRun(built.cannotRun);
       setSending(true);
       const dwells = await trainDwells(w, () => true, false).catch(() => null);
       setSending(false);
@@ -822,6 +828,16 @@ export function CapacityRun({
         </div>
       )}
       {!ready && source === "files" && <p className="text-xs text-slate-600">{t("capacity.chooseBoth")}</p>}
+      {source === "drawn" && cannotRun.length > 0 && (
+        <ul
+          data-testid="cannot-run"
+          className="list-disc rounded-[10px] border border-amber-200 bg-amber-50 py-2 ps-7 pe-3 text-sm text-amber-900"
+        >
+          {cannotRun.map((n, i) => (
+            <li key={i}>{n}</li>
+          ))}
+        </ul>
+      )}
       {serverError && (
         <p
           role="alert"

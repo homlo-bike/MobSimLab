@@ -77,6 +77,7 @@ export const editorsEs = {
     "Las alturas del terreno no se cargaron: {reason}. El horario no se publicó, porque sin ellas los trenes circularían como si la línea fuera llana. Vuelva a publicar.",
   "rail.terrainRequired":
     "Las alturas del terreno no se cargaron: {reason}. Sin ellas los trenes circularían como si la línea fuera llana, así que no se planificó ningún servicio. Vuelva a intentarlo más tarde.",
+  "rail.lineCannotRun": "{line} no tiene trenes: {reason}",
   "rail.signals": "Señales",
   "rail.signalsSome":
     "{summary}. Se generan a partir del diseño y lo siguen cuando cambia. Haz clic en una señal para cambiarla o borrarla, o usa la herramienta Señal para añadir una; cada cambio se comprueba.",

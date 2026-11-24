@@ -141,6 +141,8 @@ export function CalendarRun({
   const [saved, setSaved] = useState<SavedCalendarRun[]>([]);
   const [viewing, setViewing] = useState<CalendarRunDetail | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // The drawn lines the timetable planner cannot run, with why (a train that stalls on a gradient).
+  const [cannotRun, setCannotRun] = useState<string[]>([]);
   const [status, setStatus] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
@@ -270,6 +272,7 @@ export function CalendarRun({
   const start = async () => {
     if (!api || !periods.length || tooMany) return;
     setError(null);
+    setCannotRun([]);
     let network: ServerNetwork | null = null;
     let dayLines: DrawnNetwork["dayLines"];
     let switches = 0;
@@ -283,6 +286,7 @@ export function CalendarRun({
             return;
           }
         } else {
+          setCannotRun(built.cannotRun);
           switches = switchesIn(built.topology);
           network = {
             kind: "files",
@@ -457,6 +461,13 @@ export function CalendarRun({
         <p role="alert" className="text-sm text-red-800">
           {error}
         </p>
+      )}
+      {cannotRun.length > 0 && (
+        <ul data-testid="cannot-run" className="list-disc ps-5 text-sm text-amber-900">
+          {cannotRun.map((n, i) => (
+            <li key={i}>{n}</li>
+          ))}
+        </ul>
       )}
 
       {api && (

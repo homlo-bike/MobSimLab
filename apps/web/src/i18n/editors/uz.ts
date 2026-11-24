@@ -78,6 +78,7 @@ export const editorsUz = {
     "Yer balandliklari yuklanmadi: {reason}. Jadval eʼlon qilinmadi, chunki ularsiz poyezdlar yoʻl tekisdek yurardi. Qayta eʼlon qiling.",
   "rail.terrainRequired":
     "Yer balandliklari yuklanmadi: {reason}. Ularsiz poyezdlar yoʻl tekisdek yurardi, shuning uchun qatnov rejalashtirilmadi. Keyinroq qayta urinib koʻring.",
+  "rail.lineCannotRun": "{line} liniyasida poyezd yoʻq: {reason}",
   "rail.signals": "Svetoforlar",
   "rail.signalsSome":
     "{summary}. Ular loyihadan hosil qilinadi va loyiha oʻzgarganda u bilan birga oʻzgaradi. Svetoforni oʻzgartirish yoki olib tashlash uchun ustiga bosing yoki qoʻshish uchun svetofor vositasidan foydalaning; har bir oʻzgarish tekshiriladi.",

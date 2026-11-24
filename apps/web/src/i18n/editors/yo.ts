@@ -76,6 +76,7 @@ export const editorsYo = {
     "Gíga ilẹ̀ kò gbé wọlé: {reason}. A kò tẹ àkókò ìrìnàjò jáde, nítorí láìsí wọn àwọn ọkọ̀ ojú irin yóò máa sáré bí ẹni pé ọ̀nà náà tẹ́jú. Tún un tẹ̀ jáde.",
   "rail.terrainRequired":
     "Gíga ilẹ̀ kò gbé wọlé: {reason}. Láìsí wọn àwọn ọkọ̀ ojú irin yóò máa sáré bí ẹni pé ọ̀nà náà tẹ́jú, nítorí náà a kò ṣètò iṣẹ́ kankan. Tún gbìyànjú lẹ́yìn náà.",
+  "rail.lineCannotRun": "{line} kò ní ọkọ̀ ojú irin: {reason}",
   "rail.signals": "Àwọn àmì",
   "rail.signalsSome":
     "{summary}. A ṣẹ̀dá wọn láti inú àpẹrẹ, wọ́n sì ń tẹ̀lé e nígbà tó bá yí padà. Tẹ àmì kan láti yí i padà tàbí pa á rẹ́, tàbí lo irinṣẹ́ Àmì láti fi ọ̀kan kún un; a ń ṣàyẹ̀wò gbogbo àyípadà.",
