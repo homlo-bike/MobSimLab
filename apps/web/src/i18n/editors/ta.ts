@@ -399,13 +399,6 @@ export const editorsTa = {
     "விரைவுச் சாலைகளைப் பயன்படுத்தலாம்; நிறுத்தங்கள் பேருந்து முனையங்களில் இருக்கலாம்.",
   "street.battery": "மின்கல வரம்பு",
   "street.doorsBoth": "இரு பக்கமும் கதவுகள்",
-  "street.stat.length": "சுற்று நீளம்",
-  "street.stat.stops": "நிறுத்தங்கள் ({end} கடைசி)",
-  "street.stat.cycle": "சுற்று: {run} இயக்கம்{crossings}, {dwell} நிற்றல், {layover} ஓய்வு",
-  "street.stat.atCrossings": "(கிராசிங்குகளில் {min})",
-  "street.stat.vehicles": "{headway} நிமிட இடைவெளிக்கான வாகனங்கள்",
-  "street.stat.compact":
-    "சுற்று {length} · {stops} நிறுத்தங்கள் · {cycle} நிமிட சுழற்சி · {vehicles} வாகனங்கள்",
   "street.points": "வழித்தடப் புள்ளிகள் · சுற்று வரிசை",
   "street.noPoints":
     "இன்னும் புள்ளிகள் இல்லை. புள்ளிகளைச் சேர் என்பதைத் தேர்ந்தெடுத்து தெருவைக் கிளிக் செய்யவும்.",

@@ -395,13 +395,6 @@ export const editorsZu = {
     "Ingasebenzisa imigwaqo emikhulu esheshayo; iziteshi zingaba seziteshini zamabhasi.",
   "street.battery": "Ibanga lebhethri",
   "street.doorsBoth": "Iminyango nhlangothi zombili",
-  "street.stat.length": "Ubude bomjikelezo",
-  "street.stat.stops": "Iziteshi ({end} zokugcina)",
-  "street.stat.cycle": "Umjikelezo: {run} ukuhamba{crossings}, {dwell} ukuma, {layover} ikhefu",
-  "street.stat.atCrossings": "({min} eziweleni)",
-  "street.stat.vehicles": "Izimoto zesikhawu semizuzu engu-{headway}",
-  "street.stat.compact":
-    "umjikelezo {length} · izitobhi {stops} · umjikelezo wemizuzu {cycle} · izimoto {vehicles}",
   "street.points": "Amaphoyinti omzila · ukulandelana komjikelezo",
   "street.noPoints": "Awekho amaphoyinti okwamanje. Khetha Engeza amaphoyinti bese uchofoza umgwaqo.",
   "street.viaN": "Iphoyinti lokudlula {n}",

@@ -386,13 +386,6 @@ export const editorsEs = {
     "Puede usar autopistas; las paradas pueden estar en estaciones de autobuses.",
   "street.battery": "Autonomía de batería",
   "street.doorsBoth": "Puertas a ambos lados",
-  "street.stat.length": "Longitud del circuito",
-  "street.stat.stops": "Paradas ({end} cabeceras)",
-  "street.stat.cycle": "Ciclo: {run} de recorrido{crossings}, {dwell} en paradas, {layover} de regulación",
-  "street.stat.atCrossings": "({min} en pasos a nivel)",
-  "street.stat.vehicles": "Vehículos para una frecuencia de {headway} min",
-  "street.stat.compact":
-    "{length} de circuito · {stops} paradas · ciclo de {cycle} min · {vehicles} vehículos",
   "street.points": "Puntos del recorrido · orden del circuito",
   "street.noPoints": "Aún no hay puntos. Elige Añadir punto y haz clic en una calle.",
   "street.viaN": "Punto de paso {n}",

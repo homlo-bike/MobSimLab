@@ -364,13 +364,6 @@ export const editorsFa = {
     "می‌تواند از آزادراه‌ها استفاده کند و ایستگاه‌ها در پایانه‌های اتوبوس هم هستند.",
   "street.battery": "برد باتری",
   "street.doorsBoth": "در در هر دو طرف",
-  "street.stat.length": "طول دور",
-  "street.stat.stops": "ایستگاه‌ها (شامل {end} پایانه)",
-  "street.stat.cycle": "دور: {run} حرکت{crossings}، {dwell} توقف، {layover} برگشت",
-  "street.stat.atCrossings": " ({min} در تقاطع‌های هم‌سطح)",
-  "street.stat.vehicles": "خودرو برای هر {headway} دقیقه",
-  "street.stat.compact":
-    "مسیر رفت‌وبرگشت {length} · {stops} ایستگاه · چرخهٔ {cycle} دقیقه · {vehicles} وسیله",
   "street.points": "نقاط مسیر · ترتیب دور",
   "street.noPoints": "هنوز نقطه‌ای نیست. «افزودن نقطه» را انتخاب و روی خیابان کلیک کنید.",
   "street.viaN": "گذر {n}",

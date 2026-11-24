@@ -396,13 +396,6 @@ export const editorsDe = {
   "street.profile.intercity_bus": "Darf Autobahnen nutzen; Halte können an Busbahnhöfen liegen.",
   "street.battery": "Batteriereichweite",
   "street.doorsBoth": "Türen auf beiden Seiten",
-  "street.stat.length": "Umlauflänge",
-  "street.stat.stops": "Halte ({end} Endhalte)",
-  "street.stat.cycle": "Umlauf: {run} Fahrt{crossings}, {dwell} Haltezeit, {layover} Wendezeit",
-  "street.stat.atCrossings": "({min} an Bahnübergängen)",
-  "street.stat.vehicles": "Fahrzeuge für einen {headway}-min-Takt",
-  "street.stat.compact":
-    "{length} Umlauf · {stops} Haltestellen · {cycle} min Umlaufzeit · {vehicles} Fahrzeuge",
   "street.points": "Routenpunkte · Reihenfolge im Umlauf",
   "street.noPoints": "Noch keine Punkte. Wählen Sie „Punkt hinzufügen“ und klicken Sie auf eine Straße.",
   "street.viaN": "Wegpunkt {n}",

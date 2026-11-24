@@ -330,8 +330,8 @@ describe("Street line editor", () => {
     fireEvent.click(kinds.querySelectorAll("button")[1]!);
     expect(engine.setKind).toHaveBeenCalledWith(2, "stop");
     expect(screen.getByDisplayValue("Street 2")).toBeTruthy();
-    // The totals stay readable while the point is open.
-    expect(screen.getByText(/circuit · \d+ stops · \d+ min cycle/)).toBeTruthy();
+    // The panel shows no circuit totals (length, stops, cycle, vehicles).
+    expect(screen.queryByText(/circuit · \d+ stops/)).toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Delete point 2" }));
     expect(engine.deletePoint).toHaveBeenCalledWith(2);
     expect(screen.queryByText("Street 3")).toBeNull();

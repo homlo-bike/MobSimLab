@@ -386,13 +386,6 @@ export const editorsPt = {
   "street.profile.intercity_bus": "Pode usar rodovias; as paradas podem ficar em rodoviárias.",
   "street.battery": "Autonomia da bateria",
   "street.doorsBoth": "Portas dos dois lados",
-  "street.stat.length": "Extensão do circuito",
-  "street.stat.stops": "Paradas ({end} terminais)",
-  "street.stat.cycle": "Ciclo: {run} de percurso{crossings}, {dwell} de parada, {layover} de regulação",
-  "street.stat.atCrossings": "({min} em passagens de nível)",
-  "street.stat.vehicles": "Veículos para um intervalo de {headway} min",
-  "street.stat.compact":
-    "{length} de circuito · {stops} paradas · ciclo de {cycle} min · {vehicles} veículos",
   "street.points": "Pontos do trajeto · ordem do circuito",
   "street.noPoints": "Ainda sem pontos. Escolha Adicionar ponto e clique em uma rua.",
   "street.viaN": "Ponto de passagem {n}",

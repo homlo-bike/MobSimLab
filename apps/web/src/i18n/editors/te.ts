@@ -384,13 +384,6 @@ export const editorsTe = {
   "street.profile.intercity_bus": "ఎక్స్‌ప్రెస్‌వేలను ఉపయోగించగలదు; స్టాప్‌లు బస్ టెర్మినల్‌ల వద్ద ఉండవచ్చు.",
   "street.battery": "బ్యాటరీ పరిధి",
   "street.doorsBoth": "రెండు వైపులా తలుపులు",
-  "street.stat.length": "చక్ర పొడవు",
-  "street.stat.stops": "స్టాప్‌లు ({end} చివరివి)",
-  "street.stat.cycle": "చక్రం: {run} నడక{crossings}, {dwell} ఆగడం, {layover} విరామం",
-  "street.stat.atCrossings": "(క్రాసింగ్‌ల వద్ద {min})",
-  "street.stat.vehicles": "{headway} నిమిషాల విరామానికి వాహనాలు",
-  "street.stat.compact":
-    "సర్క్యూట్ {length} · {stops} స్టాప్‌లు · {cycle} నిమిషాల చక్రం · {vehicles} వాహనాలు",
   "street.points": "మార్గ బిందువులు · చక్ర క్రమం",
   "street.noPoints": "ఇంకా బిందువులు లేవు. బిందువులు జోడించండి ఎంచుకుని వీధిపై క్లిక్ చేయండి.",
   "street.viaN": "మార్గ బిందువు {n}",

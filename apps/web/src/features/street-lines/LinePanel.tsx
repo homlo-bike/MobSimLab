@@ -21,7 +21,7 @@ import { vehicleById, vehiclesFor } from "./service";
 import { usedVehicles } from "../../workspace/preferences";
 import { useVehiclesOff } from "../../workspace/projectVehicles";
 import { usePublishChecks } from "../../shell/checks";
-import { lineChecks, lineStats, nearestTerminal, type Check, type Severity } from "./summary";
+import { lineChecks, nearestTerminal, type Check, type Severity } from "./summary";
 import type { LineView, Mode, PointKind, VehicleProfile } from "./types";
 import type { FitProblem } from "../depots/model";
 import { withUnit } from "../../i18n/units";
@@ -174,15 +174,6 @@ function Reliability({ view }: { view: LineView }) {
   );
 }
 
-function Stat({ value, label }: { value: string; label: string }) {
-  return (
-    <div className="rounded-md bg-slate-100 p-2">
-      <b className="block font-mono text-base">{value}</b>
-      <span className="text-xs text-slate-600">{label}</span>
-    </div>
-  );
-}
-
 function NumberField({
   label,
   value,
@@ -242,7 +233,6 @@ export function LinePanel(props: Props) {
     });
   };
   const mode = MODES[profile.mode];
-  const st = lineStats(view, timing);
   const rank: Record<Severity, number> = { error: 0, warn: 1, ok: 2, info: 3 };
   const vehicle = vehicleById(props.vehicle);
   const serviceChecks: Check[] = [
@@ -372,40 +362,6 @@ export function LinePanel(props: Props) {
         )}
       </div>
 
-      {routed && selected !== null && (
-        // While a point is open the tiles make room for it, but the totals stay readable, so the effect of an edit
-        // (a via point made a stop) shows at once.
-        <p className="m-0 border-t border-slate-200 pt-2 text-xs text-slate-600" aria-live="polite">
-          {t("street.stat.compact", {
-            length: formatLength(st.lengthM),
-            stops: st.stops,
-            cycle: Math.round(st.cycleMin),
-            vehicles: st.vehicles,
-          })}
-        </p>
-      )}
-      {routed && selected === null && (
-        <div className="grid grid-cols-2 gap-2 border-t border-slate-200 pt-3">
-          <Stat value={formatLength(st.lengthM)} label={t("street.stat.length")} />
-          <Stat value={String(st.stops)} label={t("street.stat.stops", { end: st.endStops })} />
-          <Stat
-            value={withUnit(Math.round(st.cycleMin), "min")}
-            label={t("street.stat.cycle", {
-              run: Math.round(st.runMin),
-              crossings:
-                st.crossingMin > 0
-                  ? ` ${t("street.stat.atCrossings", { min: st.crossingMin < 1 ? "<1" : Math.round(st.crossingMin) })}`
-                  : "",
-              dwell: Math.round(st.dwellMin),
-              layover: Math.round(st.layoverMin),
-            })}
-          />
-          <Stat
-            value={String(st.vehicles)}
-            label={t("street.stat.vehicles", { headway: timing.headwayMin })}
-          />
-        </div>
-      )}
       {view.points.length >= 2 && <Reliability view={view} />}
 
       {props.routeNotice}
