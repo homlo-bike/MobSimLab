@@ -31,6 +31,7 @@
 use engine_msg::{msg, Msg};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, BinaryHeap, HashMap, HashSet};
+use std::sync::Arc;
 
 use rail_dynamics::Stop;
 use rail_model::{Dir, Model, PieceId, PlatformId, RouteId, TdsId, TrackUse};
@@ -287,6 +288,9 @@ struct Vehicle {
     last_run: usize,
 }
 
+/// A speed profile kept for a run shape, with the dwells it was worked out for.
+type KeptProfile = (Arc<SpeedProfile>, Vec<f64>);
+
 #[derive(Clone, Debug)]
 struct Stack {
     track: usize,
@@ -373,7 +377,10 @@ struct Planner<'a> {
     /// out for: the search for a free slot tries a run at many departure times and dwells, and the
     /// speeds do not change with them (a long run's profile takes megabytes, so one is kept per
     /// path and stops, not per dwell).
-    profiles: RefCell<HashMap<String, (SpeedProfile, Vec<f64>)>>,
+    profiles: RefCell<HashMap<String, KeptProfile>>,
+    /// The last profile of each run shape worked out for other dwells than those in
+    /// [`Planner::profiles`], with those dwells.
+    other_dwells: RefCell<HashMap<String, KeptProfile>>,
     /// Trip paths already found ([`Planner::trip_path`]), by line, direction, origin, departure
     /// direction and banned places.
     paths: RefCell<TripPaths>,
@@ -590,6 +597,7 @@ fn planner<'a>(
         stacks,
         reserved: BTreeMap::new(),
         profiles: RefCell::new(HashMap::new()),
+        other_dwells: RefCell::new(HashMap::new()),
         paths: RefCell::new(HashMap::new()),
         depot_paths: RefCell::new(HashMap::new()),
         trip_of_run: HashMap::new(),
@@ -2078,10 +2086,32 @@ impl<'a> Planner<'a> {
         let known = self.profiles.borrow().get(&key).cloned();
         let profile = match known {
             Some((p, had)) if had == dwells => p,
-            Some((p, had)) => with_dwells(p, &had, run.start_m, &run.stops),
+            Some((p, had)) => {
+                // The last other dwells of this shape are kept too: a departure is tried at many
+                // times with the same dwells (copying the profile of a 141 km line for each took most
+                // of the planning time on the Syria test line).
+                let last = self.other_dwells.borrow().get(&key).cloned();
+                match last {
+                    Some((q, d)) if d == dwells => q,
+                    _ => {
+                        let q = Arc::new(with_dwells(
+                            SpeedProfile::clone(&p),
+                            &had,
+                            run.start_m,
+                            &run.stops,
+                        ));
+                        self.other_dwells
+                            .borrow_mut()
+                            .insert(key, (Arc::clone(&q), dwells));
+                        q
+                    }
+                }
+            }
             None => {
-                let p = run_profile(self.m, run)?;
-                self.profiles.borrow_mut().insert(key, (p.clone(), dwells));
+                let p = Arc::new(run_profile(self.m, run)?);
+                self.profiles
+                    .borrow_mut()
+                    .insert(key, (Arc::clone(&p), dwells));
                 p
             }
         };
@@ -2628,20 +2658,17 @@ impl<'a> Planner<'a> {
         let mut waited: Option<Vec<Option<f64>>> = None;
         if best.as_ref().is_none_or(|b| b.0 > earliest + 0.5) && !attempts.is_empty() {
             let shift = best.as_ref().map(|b| b.0 - earliest);
-            if let Some((t, path, run, timing, prev_t, dw)) = self.overtake(
-                trip,
-                &attempts[0],
-                dwells,
-                origin,
-                depart_dir,
-                earliest,
-                vehicle,
-                prev,
-                hold_until,
-                shift,
-            ) {
-                best = Some((t, path, run, timing, prev_t));
-                waited = dw;
+            // On its usual path first, then on the others (another platform at the terminal, where
+            // a higher-ranked train stands in the usual one).
+            for path in &attempts {
+                if let Some((t, path, run, timing, prev_t, dw)) = self.overtake(
+                    trip, path, dwells, origin, depart_dir, earliest, vehicle, prev, hold_until,
+                    shift,
+                ) {
+                    best = Some((t, path, run, timing, prev_t));
+                    waited = dw;
+                    break;
+                }
             }
         }
         if let Some((t, path, run, timing, prev_t)) = best {
@@ -2783,7 +2810,7 @@ impl<'a> Planner<'a> {
                     // in a terminal platform: that train then leaves after this one has passed.
                     let buf = self.p.min_buffer_s;
                     let moved = if blocks_meet(&timing.blocking, &self.runs[r].blocking, buf) {
-                        self.hold_back(r, rank, &timing.blocking, &mut undo)
+                        self.hold_back(r, rank, &timing.blocking, t <= earliest + 0.5, &mut undo)
                     } else {
                         self.give_up_way_out(self.runs[r].vehicle, &mut undo)
                     };
@@ -2826,6 +2853,43 @@ impl<'a> Planner<'a> {
                     ) {
                         found = Some((w, wp, dw));
                     }
+                }
+                // Or it waits at several stations, for one higher-ranked train after another
+                // (where a trip is overtaken by more than one).
+                // Tried at its own departure only: each later departure would search the same loops
+                // again, and leaving later is tried below anyway.
+                let several = if found.is_none() && t <= earliest + 0.5 {
+                    let alts = |k: usize, p: &FoundPath| {
+                        self.wait_paths(trip.line, trip.dir, origin, depart_dir, p, dwells)
+                            .into_iter()
+                            .filter(|(at, _)| *at == k)
+                            .map(|(_, a)| a)
+                            .collect()
+                    };
+                    let clear =
+                        |pl: &Planner, b: &[Blocking]| pl.overlaps(b, vehicle, None).2.is_none();
+                    self.wait_as_needed(
+                        trip.line,
+                        &trip.name,
+                        path,
+                        dwells,
+                        t,
+                        occupy(t),
+                        idx,
+                        self.p.max_overtake_wait_s,
+                        &alts,
+                        &clear,
+                    )
+                } else {
+                    None
+                };
+                if let Some((_, _, wp, dw)) = several {
+                    let total: f64 = dw
+                        .iter()
+                        .zip(dwells)
+                        .map(|(a, b)| a.unwrap_or(0.0) - b.unwrap_or(0.0))
+                        .sum();
+                    found = Some((total, wp, dw));
                 }
                 // Or it leaves later, after the higher-ranked train.
                 let late_most = self.p.max_overtake_wait_s.min(most - 1.0).max(0.0);
@@ -2928,9 +2992,157 @@ impl<'a> Planner<'a> {
         None
     }
 
+    /// Purpose: a run that waits at as many of its stops as needed, each time for as short as it
+    /// can, so that it keeps clear of the trains in its way, the way a dispatcher holds a slow train
+    /// in one loop after another for each faster train to pass. Each round finds the run's first
+    /// conflict and the shortest wait (or another platform, such as a loop) at the last stop or
+    /// two before it that moves the first conflict later or removes it; it is kept only once it is
+    /// clear in full. Inputs: the line, run name, path, dwells, departure, how long it holds its last
+    /// platform, index of the run, the longest single wait, the other platforms to try at a stop,
+    /// and the test of a run's blocks. Output: the run, its timing, its path and its dwells, or None
+    /// when it does not change or cannot get clear.
+    #[allow(clippy::too_many_arguments)]
+    fn wait_as_needed(
+        &self,
+        line: usize,
+        name: &str,
+        path: &FoundPath,
+        dwells: &[Option<f64>],
+        depart_s: f64,
+        occupy_until_s: Option<f64>,
+        index: usize,
+        max_wait_s: f64,
+        alternatives: &dyn Fn(usize, &FoundPath) -> Vec<FoundPath>,
+        clear: &dyn Fn(&Planner, &[Blocking]) -> bool,
+    ) -> Option<(TrainRun, RunTiming, FoundPath, Vec<Option<f64>>)> {
+        const ROUNDS: usize = 8;
+        if std::env::var("NOMULTI").is_ok() {
+            return None;
+        }
+        let step = 30.0;
+        let build = |path: &FoundPath, dw: &[Option<f64>]| {
+            let waited: f64 = dw
+                .iter()
+                .zip(dwells)
+                .map(|(a, b)| a.unwrap_or(0.0) - b.unwrap_or(0.0))
+                .sum();
+            let (mut run, _) = self
+                .build_run(line, name, &path.routes, &path.places, dw, depart_s)
+                .ok()?;
+            run.occupy_until_s = occupy_until_s.map(|o| o + waited);
+            let timing = self.timing(&run, index).ok()?;
+            Some((run, timing))
+        };
+        // When the run's first block in conflict starts, s; None when it is clear.
+        let first_conflict = |tm: &RunTiming| -> Option<f64> {
+            if clear(self, &tm.blocking) {
+                return None;
+            }
+            tm.blocking
+                .iter()
+                .filter(|b| !clear(self, std::slice::from_ref(*b)))
+                .map(|b| b.start_s)
+                .min_by(f64::total_cmp)
+        };
+        // Whether a block that starts by `until` is in conflict.
+        let conflict_by = |tm: &RunTiming, until: f64| {
+            tm.blocking
+                .iter()
+                .any(|b| b.start_s <= until && !clear(self, std::slice::from_ref(b)))
+        };
+        // The stops of the path: index among its places, in order.
+        let stops: Vec<usize> = (0..path.places.len().saturating_sub(1))
+            .filter(|&k| dwells.get(k).copied().flatten().is_some())
+            .collect();
+        let mut path = path.clone();
+        let mut dw = dwells.to_vec();
+        let mut changed = false;
+        for _ in 0..ROUNDS {
+            let (run, tm) = build(&path, &dw)?;
+            let Some(fc) = first_conflict(&tm) else {
+                return changed.then_some((run, tm, path, dw));
+            };
+            // The last two stops the train reaches before its first conflict.
+            let reached: Vec<(usize, usize)> = stops
+                .iter()
+                .enumerate()
+                .filter(|(si, _)| {
+                    tm.profile
+                        .stops
+                        .get(*si)
+                        .is_some_and(|&(a, _)| depart_s + a < fc)
+                })
+                .map(|(si, &k)| (si, k))
+                .collect();
+            let mut found: Option<(f64, FoundPath, Vec<Option<f64>>)> = None;
+            for &(_, k) in reached.iter().rev().take(2) {
+                let mut ways = vec![path.clone()];
+                ways.extend(alternatives(k, &path).into_iter().filter(|a| {
+                    a.places.len() == path.places.len()
+                        && a.places[..k] == path.places[..k]
+                        && a.routes != path.routes
+                }));
+                for (wi, way) in ways.iter().enumerate() {
+                    let most = found.as_ref().map_or(max_wait_s, |f| f.0 - step);
+                    // On its own platform it has to wait; another platform may do without.
+                    let mut w = if wi == 0 { step } else { 0.0 };
+                    while w <= most + 1e-6 {
+                        let mut d2 = dw.clone();
+                        d2[k] = d2[k].map(|d| d + w);
+                        let Some((_, t2)) = build(way, &d2) else {
+                            break;
+                        };
+                        if std::env::var("DBG").is_ok()
+                            && name == "r1-1-000"
+                            && w + step > most + 1e-6
+                        {
+                            for b in t2
+                                .blocking
+                                .iter()
+                                .filter(|b| !clear(self, std::slice::from_ref(*b)))
+                                .take(2)
+                            {
+                                eprintln!(
+                                    "    k={} way {:?} w={} blk tds={} route={} ov={} {:.0}-{:.0}",
+                                    k,
+                                    way.places.iter().map(|x| x.id(self.m)).collect::<Vec<_>>(),
+                                    w,
+                                    self.m.tds[b.tds as usize].id,
+                                    self.m.routes[b.route as usize].id,
+                                    b.overlap,
+                                    b.start_s,
+                                    b.end_s
+                                );
+                            }
+                            eprintln!(
+                                "    stops {:?}",
+                                t2.profile
+                                    .stops
+                                    .iter()
+                                    .map(|x| ((depart_s + x.0) as i64, (depart_s + x.1) as i64))
+                                    .collect::<Vec<_>>()
+                            );
+                        }
+                        if !conflict_by(&t2, fc + 0.5) {
+                            found = Some((w, way.clone(), d2));
+                            break;
+                        }
+                        w += step;
+                    }
+                }
+            }
+            let (_, way, d2) = found?;
+            path = way;
+            dw = d2;
+            changed = true;
+        }
+        None
+    }
+
     /// Purpose: have a placed run of a lower rank wait at one of its stations so that a train of
     /// the given rank can pass. Only the last run of its train is changed, before its next trip is
-    /// placed. Inputs: the run, the rank, the passing train's blocks and the list of changes.
+    /// placed. Inputs: the run, the rank, the passing train's blocks, whether it may wait at several
+    /// stations, and the list of changes.
     /// Output: whether it now waits clear of the passing train. Effect: the run, its train and the
     /// list of changes (for [`Planner::undo`]).
     fn hold_back(
@@ -2938,6 +3150,7 @@ impl<'a> Planner<'a> {
         r: usize,
         rank: u8,
         passing: &[Blocking],
+        several: bool,
         undo: &mut Vec<Undo>,
     ) -> bool {
         let Some(pr) = self.runs.get(r).cloned() else {
@@ -2997,6 +3210,35 @@ impl<'a> Planner<'a> {
                 &ok,
             ) {
                 found = Some(((run, tm, w, dw), wp));
+            }
+        }
+        // Or it waits at several stations, where more trains of the rank pass it on its way (when
+        // asked to: for the passing train's own departure only, as each later one would search the
+        // same loops again).
+        if found.is_none() && several {
+            let alts = |k: usize, p: &FoundPath| {
+                self.wait_paths(pr.line, pr.direction, origin, depart_dir, p, &dwells)
+                    .into_iter()
+                    .filter(|(at, _)| *at == k)
+                    .map(|(_, a)| a)
+                    .collect()
+            };
+            let clear = |pl: &Planner, b: &[Blocking]| {
+                !blocks_meet(b, passing, buf) && pl.overlaps(b, v, Some(r)).2.is_none()
+            };
+            if let Some((run, tm, wp, dw)) = self.wait_as_needed(
+                pr.line,
+                &pr.name,
+                &path,
+                &dwells,
+                pr.run.depart_s,
+                pr.run.occupy_until_s,
+                r,
+                self.p.max_overtake_wait_s,
+                &alts,
+                &clear,
+            ) {
+                found = Some(((run, tm, 0.0, dw), wp));
             }
         }
         let Some(((run, tm, _, dw), wp)) = found else {

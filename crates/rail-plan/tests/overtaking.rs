@@ -115,19 +115,35 @@ fn regional_trains_wait_in_a_station_for_the_ice_to_pass() {
         trips(&same, 1)
     );
     assert!(trips(&ranked, 0) + trips(&ranked, 1) >= trips(&same, 0) + trips(&same, 1));
-    // Regional trains wait beyond their dwell at a station before the last one (the timetable's
-    // own extra time is held at the last), for an ICE to pass.
+    // Regional trains wait beyond their dwell at a station for an ICE to pass: at a station before
+    // the last one (the timetable's own extra time is held at the last), or at the last one in a
+    // loop, a platform the line does not usually use there.
     let waits = |p: &Plan| {
-        p.runs
+        let runs: Vec<_> = p
+            .runs
             .iter()
             .filter(|r| r.line == 0 && r.kind == RunKind::Service)
+            .collect();
+        let usual = |dir: u8, i: usize| {
+            let mut n: std::collections::HashMap<&str, usize> = Default::default();
+            for r in runs
+                .iter()
+                .filter(|r| r.direction == dir && r.calls.len() > i)
+            {
+                *n.entry(r.calls[i].id.as_str()).or_default() += 1;
+            }
+            n.into_iter().max_by_key(|x| x.1).map(|x| x.0.to_string())
+        };
+        runs.iter()
             .filter(|r| {
-                r.calls[1..r.calls.len() - 2]
-                    .iter()
-                    .any(|c| match (c.arrive_s, c.depart_s) {
+                let n = r.calls.len();
+                r.calls[1..n - 1].iter().enumerate().any(|(i, c)| {
+                    let long = match (c.arrive_s, c.depart_s) {
                         (Some(a), Some(d)) => d - a > specs[0].dwell_s + 25.0,
                         _ => false,
-                    })
+                    };
+                    long && (i + 2 < n - 1 || usual(r.direction, i + 1).as_deref() != Some(&c.id))
+                })
             })
             .count()
     };

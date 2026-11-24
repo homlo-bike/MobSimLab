@@ -30,6 +30,7 @@ use engine_msg::{msg, Msg};
 use rail_dynamics::{run, RunOptions, Segment, SpeedProfile, Stop, TrainParams};
 use rail_model::{Dir, Model, RouteId, Step, TdsId};
 use serde::Serialize;
+use std::sync::Arc;
 
 /// Timing parameters of the signalling (new assumption-library keys
 /// `signalling.route_setting_s`, `signalling.sight_reaction_s`,
@@ -130,8 +131,10 @@ pub fn starts_between(a: (f64, Option<(Dir, f64)>), b: (f64, Option<(Dir, f64)>)
 /// The computed timing of one train run.
 #[derive(Clone, Debug, PartialEq, Serialize)]
 pub struct RunTiming {
-    /// Speed profile with times relative to the departure.
-    pub profile: SpeedProfile,
+    /// Speed profile with times relative to the departure (shared: a profile is worked out once per
+    /// run shape and kept, and copying one of a long line for every departure tried took most of the
+    /// planning time on the Syria test line).
+    pub profile: Arc<SpeedProfile>,
     /// Departure time, s.
     pub depart_s: f64,
     /// Blocking intervals in route order.
@@ -222,7 +225,7 @@ pub fn run_timing(
     p: &BlockingParams,
 ) -> Result<RunTiming, Msg> {
     let profile = run_profile(model, tr)?;
-    Ok(timing_with_profile(model, tr, profile, index, p))
+    Ok(timing_with_profile(model, tr, Arc::new(profile), index, p))
 }
 
 /// Purpose: an error of the running-time calculation as a message: a train that stalls says where,
@@ -284,7 +287,7 @@ pub fn run_profile(model: &Model, tr: &TrainRun) -> Result<SpeedProfile, Msg> {
 pub fn timing_with_profile(
     model: &Model,
     tr: &TrainRun,
-    profile: SpeedProfile,
+    profile: Arc<SpeedProfile>,
     index: usize,
     p: &BlockingParams,
 ) -> RunTiming {
@@ -294,6 +297,18 @@ pub fn timing_with_profile(
     // Absolute time the head reaches / leaves a path position (from the first entry signal).
     let at = |pos: f64| tr.depart_s + profile.time_at(pos - tr.start_m);
     let leaving = |pos: f64| tr.depart_s + profile.time_leaving(pos - tr.start_m);
+    // Absolute time the train leaves one of its stops: its departure there. The profile's time leaving
+    // the stop's position can be its arrival (the dwell sits on a grid point next to it), so routes
+    // beyond a stop were needed from the train's arrival and held through its whole dwell: a slow
+    // train waiting in a loop kept its way out back onto the main line, and the fast train could not
+    // pass it there (Syria test line).
+    let leaving_stop = |sp: f64| {
+        tr.stops
+            .iter()
+            .zip(&profile.stops)
+            .find(|(s, _)| (s.position_m - sp).abs() < 1e-6)
+            .map_or_else(|| leaving(sp), |(_, &(_, d))| tr.depart_s + d)
+    };
     // Time the tail clears a position: head at pos + length, or never on this path.
     let tail_clear = |pos: f64| {
         let h = pos + tr.train.length_m;
@@ -348,7 +363,7 @@ pub fn timing_with_profile(
                     .map(|s| s.position_m)
                     .fold(None, |a: Option<f64>, x| Some(a.map_or(x, |a| a.max(x))));
                 if let Some(sp) = stop_before {
-                    leaving(sp)
+                    leaving_stop(sp)
                 } else if ap <= tr.start_m + 1e-6 {
                     tr.depart_s
                 } else {
@@ -389,7 +404,7 @@ pub fn timing_with_profile(
                         .map(|s| s.position_m)
                         .fold(None, |a: Option<f64>, x| Some(a.map_or(x, |a| a.max(x))));
                     match stop_before {
-                        Some(sp) => leaving(sp),
+                        Some(sp) => leaving_stop(sp),
                         None if ap <= tr.start_m + 1e-6 => tr.depart_s,
                         None => at(ap),
                     }

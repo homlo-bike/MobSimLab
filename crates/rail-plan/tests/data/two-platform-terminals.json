@@ -1,0 +1,775 @@
+{
+ "mode": "long_distance_rail",
+ "lines": [],
+ "origin": [
+  40.824,
+  36.357
+ ],
+ "tracks": [
+  {
+   "id": 6,
+   "bed": "auto",
+   "end": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     1,
+     2
+    ],
+    "station": 2
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     1,
+     2
+    ],
+    "station": 1
+   },
+   "points": [],
+   "tracks": 2,
+   "lead_end_m": 10218.367762215807,
+   "lead_start_m": 10218.367762215807
+  },
+  {
+   "id": 7,
+   "bed": "auto",
+   "end": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     1,
+     2
+    ],
+    "station": 3
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     1,
+     2
+    ],
+    "station": 2
+   },
+   "points": [],
+   "tracks": 2,
+   "lead_end_m": 200,
+   "lead_start_m": 200
+  },
+  {
+   "id": 8,
+   "bed": "auto",
+   "end": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     1,
+     2
+    ],
+    "station": 4
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     1,
+     2
+    ],
+    "station": 3
+   },
+   "points": [],
+   "tracks": 2,
+   "lead_end_m": 11775.614522106258,
+   "lead_start_m": 11775.614522106258
+  },
+  {
+   "id": 9,
+   "bed": "auto",
+   "end": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     1,
+     2
+    ],
+    "station": 5
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     1,
+     2
+    ],
+    "station": 4
+   },
+   "points": [],
+   "tracks": 2,
+   "lead_end_m": 10133.039532037768,
+   "lead_start_m": 10133.039532037768
+  },
+  {
+   "id": 60,
+   "bed": "auto",
+   "end": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     3
+    ],
+    "station": 2
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 20
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 61,
+   "bed": "auto",
+   "end": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     3
+    ],
+    "station": 2
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 21
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 62,
+   "bed": "auto",
+   "end": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     0
+    ],
+    "station": 2
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 22
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 63,
+   "bed": "auto",
+   "end": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     0
+    ],
+    "station": 2
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 23
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 68,
+   "bed": "auto",
+   "end": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     3
+    ],
+    "station": 3
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 28
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 69,
+   "bed": "auto",
+   "end": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     3
+    ],
+    "station": 3
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 29
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 70,
+   "bed": "auto",
+   "end": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     0
+    ],
+    "station": 3
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 30
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 71,
+   "bed": "auto",
+   "end": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     0
+    ],
+    "station": 3
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 31
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 76,
+   "bed": "auto",
+   "end": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     3
+    ],
+    "station": 4
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 36
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 77,
+   "bed": "auto",
+   "end": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     3
+    ],
+    "station": 4
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 37
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 78,
+   "bed": "auto",
+   "end": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     0
+    ],
+    "station": 4
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 38
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 79,
+   "bed": "auto",
+   "end": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     0
+    ],
+    "station": 4
+   },
+   "use": "running",
+   "mode": "long_distance_rail",
+   "name": "",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "leg": 0,
+    "type": "switch",
+    "switch": 39
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 600,
+   "lead_start_m": 150
+  },
+  {
+   "id": 90,
+   "bed": "auto",
+   "end": {
+    "x": -38156.1392446533,
+    "y": -62873.90106138866,
+    "type": "free"
+   },
+   "use": "storage",
+   "mode": "long_distance_rail",
+   "name": "Storage Damascus 1",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     1
+    ],
+    "station": 1
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 20,
+   "lead_start_m": 20,
+   "storage_role": "both"
+  },
+  {
+   "id": 91,
+   "bed": "auto",
+   "end": {
+    "x": -38167.73035456876,
+    "y": -62870.79523284743,
+    "type": "free"
+   },
+   "use": "storage",
+   "mode": "long_distance_rail",
+   "name": "Storage Damascus 2",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "end": 0,
+    "type": "station",
+    "tracks": [
+     2
+    ],
+    "station": 1
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 20,
+   "lead_start_m": 20,
+   "storage_role": "both"
+  },
+  {
+   "id": 92,
+   "bed": "auto",
+   "end": {
+    "x": -2492.2025847680525,
+    "y": 78038.26550169996,
+    "type": "free"
+   },
+   "use": "storage",
+   "mode": "long_distance_rail",
+   "name": "Storage Homs 1",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     1
+    ],
+    "station": 5
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 20,
+   "lead_start_m": 20,
+   "storage_role": "both"
+  },
+  {
+   "id": 93,
+   "bed": "auto",
+   "end": {
+    "x": -2503.7936946835216,
+    "y": 78041.3713302412,
+    "type": "free"
+   },
+   "use": "storage",
+   "mode": "long_distance_rail",
+   "name": "Storage Homs 2",
+   "level": "street",
+   "power": "auto",
+   "start": {
+    "end": 1,
+    "type": "station",
+    "tracks": [
+     2
+    ],
+    "station": 5
+   },
+   "points": [],
+   "tracks": 1,
+   "lead_end_m": 20,
+   "lead_start_m": 20,
+   "storage_role": "both"
+  }
+ ],
+ "stations": [
+  {
+   "x": -37921.233087665685,
+   "y": -61974.03712866921,
+   "id": 1,
+   "mode": "high_speed_rail",
+   "name": "Damascus",
+   "level": "street",
+   "rotation_deg": 75,
+   "side_platforms": 2,
+   "island_platforms": 1,
+   "platform_length_m": 400
+  },
+  {
+   "x": -29281.158637417484,
+   "y": -28467.312829909846,
+   "id": 2,
+   "name": "Qutayfah",
+   "level": "street",
+   "rotation_deg": 75,
+   "side_platforms": 2,
+   "island_platforms": 1,
+   "platform_length_m": 400
+  },
+  {
+   "x": -20305.807863523234,
+   "y": 5125.476022711024,
+   "id": 3,
+   "name": "An-Nabk",
+   "level": "street",
+   "rotation_deg": 75,
+   "side_platforms": 2,
+   "island_platforms": 1,
+   "platform_length_m": 400
+  },
+  {
+   "x": -11583.196281105982,
+   "y": 43984.018870798405,
+   "id": 4,
+   "name": "Hasya",
+   "level": "street",
+   "rotation_deg": 75,
+   "side_platforms": 2,
+   "island_platforms": 1,
+   "platform_length_m": 400
+  },
+  {
+   "x": -2738.6998516711315,
+   "y": 77141.50739752175,
+   "id": 5,
+   "mode": "regional_rail",
+   "name": "Homs",
+   "level": "street",
+   "rotation_deg": 75,
+   "side_platforms": 2,
+   "island_platforms": 1,
+   "platform_length_m": 400
+  }
+ ],
+ "switches": [
+  {
+   "s": 1000,
+   "id": 10,
+   "flip": false,
+   "kind": "crossover",
+   "side": 1,
+   "track": 6,
+   "element": "db-ew-500-1-12",
+   "direction": 1
+  },
+  {
+   "s": 32856.8204018099,
+   "id": 11,
+   "flip": false,
+   "kind": "crossover",
+   "side": 1,
+   "track": 9,
+   "element": "db-ew-500-1-12",
+   "direction": 1
+  },
+  {
+   "s": 32642.76664862078,
+   "id": 20,
+   "flip": false,
+   "kind": "turnout",
+   "side": 1,
+   "track": 6,
+   "element": "db-ew-500-1-12",
+   "direction": 1
+  },
+  {
+   "s": 1500,
+   "id": 21,
+   "flip": false,
+   "kind": "turnout",
+   "side": 1,
+   "track": 7,
+   "element": "db-ew-500-1-12",
+   "direction": -1
+  },
+  {
+   "s": 32442.76664862078,
+   "id": 22,
+   "flip": false,
+   "kind": "turnout",
+   "side": -1,
+   "track": 6,
+   "element": "db-ew-500-1-12",
+   "direction": 1
+  },
+  {
+   "s": 1700,
+   "id": 23,
+   "flip": false,
+   "kind": "turnout",
+   "side": -1,
+   "track": 7,
+   "element": "db-ew-500-1-12",
+   "direction": -1
+  },
+  {
+   "s": 32811.1429839632,
+   "id": 28,
+   "flip": false,
+   "kind": "turnout",
+   "side": 1,
+   "track": 7,
+   "element": "db-ew-500-1-12",
+   "direction": 1
+  },
+  {
+   "s": 1500,
+   "id": 29,
+   "flip": false,
+   "kind": "turnout",
+   "side": 1,
+   "track": 8,
+   "element": "db-ew-500-1-12",
+   "direction": -1
+  },
+  {
+   "s": 32611.142983963196,
+   "id": 30,
+   "flip": false,
+   "kind": "turnout",
+   "side": -1,
+   "track": 7,
+   "element": "db-ew-500-1-12",
+   "direction": 1
+  },
+  {
+   "s": 1700,
+   "id": 31,
+   "flip": false,
+   "kind": "turnout",
+   "side": -1,
+   "track": 8,
+   "element": "db-ew-500-1-12",
+   "direction": -1
+  },
+  {
+   "s": 37865.49817760429,
+   "id": 36,
+   "flip": false,
+   "kind": "turnout",
+   "side": 1,
+   "track": 8,
+   "element": "db-ew-500-1-12",
+   "direction": 1
+  },
+  {
+   "s": 1500,
+   "id": 37,
+   "flip": false,
+   "kind": "turnout",
+   "side": 1,
+   "track": 9,
+   "element": "db-ew-500-1-12",
+   "direction": -1
+  },
+  {
+   "s": 37665.49817760429,
+   "id": 38,
+   "flip": false,
+   "kind": "turnout",
+   "side": -1,
+   "track": 8,
+   "element": "db-ew-500-1-12",
+   "direction": 1
+  },
+  {
+   "s": 1700,
+   "id": 39,
+   "flip": false,
+   "kind": "turnout",
+   "side": -1,
+   "track": 9,
+   "element": "db-ew-500-1-12",
+   "direction": -1
+  },
+  {
+   "s": 1300,
+   "id": 12,
+   "flip": false,
+   "kind": "crossover",
+   "side": 1,
+   "track": 6,
+   "element": "db-ew-500-1-12",
+   "direction": -1
+  },
+  {
+   "s": 32556.82,
+   "id": 13,
+   "flip": false,
+   "kind": "crossover",
+   "side": 1,
+   "track": 9,
+   "element": "db-ew-500-1-12",
+   "direction": -1
+  }
+ ]
+}
