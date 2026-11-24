@@ -155,14 +155,8 @@ import { Dialog } from "../shell/Dialog";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
 import { UnroutedNotice } from "../features/tables/UnroutedNotice";
 import { engineErrorText } from "../i18n/engine";
-import {
-  climateFrom,
-  climatePlace,
-  fetchClimate,
-  needsClimate,
-  withClimate,
-  withFetchedClimate,
-} from "./climate";
+import { climatePlace } from "./climate";
+import { ClimateKeeper } from "./ClimateKeeper";
 
 // Editors and screens downloaded when first opened, so opening a project fetches only the tab shown.
 const BenefitTables = lazyNamed(() => import("../features/benefits/BenefitTables"), "BenefitTables");
@@ -710,32 +704,8 @@ export function Workspace({
   useEffect(() => {
     if (sideToSet) drawings.set("preferences", withCountryDrivingSide(preferences, placeCountry)!);
   }, [sideToSet, projectId]);
-  // The project's climate (Project preferences → Climate) is kept in the project as soon as it opens with a place,
-  // so calendar runs have it without Preferences being opened first. The API looked it up when the area was saved.
+  // Where the project's climate is asked for (Project preferences → Climate; kept by ClimateKeeper).
   const climateAt = climatePlace(areaView?.bbox, place);
-  const climateToFetch =
-    editable &&
-    drawings.loaded &&
-    climateAt !== null &&
-    needsClimate(climateFrom(preferences), areaView?.bbox);
-  const latestPreferences = useRef(preferences);
-  latestPreferences.current = preferences;
-  useEffect(() => {
-    if (!climateToFetch || !climateAt) return;
-    let stop = false;
-    fetchClimate(climateAt[1], climateAt[0]).then(
-      (got) => {
-        const cur = latestPreferences.current;
-        if (stop || !needsClimate(climateFrom(cur), areaView?.bbox)) return;
-        drawings.set("preferences", withClimate(cur, withFetchedClimate(climateFrom(cur), got)));
-      },
-      // Preferences → Climate shows the error and a retry.
-      () => undefined,
-    );
-    return () => {
-      stop = true;
-    };
-  }, [climateToFetch, climateAt?.[0], climateAt?.[1], projectId]);
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
@@ -2012,7 +1982,9 @@ export function Workspace({
                     streetLines={savedStreet}
                     preferences={preferences}
                     onPreferences={
-                      editable && drawings.loaded ? (d) => drawings.set("preferences", d) : undefined
+                      editable && drawings.loaded
+                        ? (d: PreferencesDoc) => drawings.set("preferences", d)
+                        : undefined
                     }
                     tables={tableFigures}
                     currency={costInfo?.currency ?? null}
@@ -2136,7 +2108,19 @@ export function Workspace({
             <ChecksProvider key={projectId} onReopen={editable ? reopenCheck : undefined}>
               <JobsProvider key={projectId}>
                 {body}
-                {project && !STATIC_VIEWER && <ImportsWatcher api={geodata} />}
+                {project && !STATIC_VIEWER && <ImportsWatcher api={geodata} population={population} />}
+                {project && !STATIC_VIEWER && (
+                  <ClimateKeeper
+                    place={climateAt}
+                    bbox={areaView?.bbox}
+                    preferences={preferences}
+                    onPreferences={
+                      editable && drawings.loaded
+                        ? (d: PreferencesDoc) => drawings.set("preferences", d)
+                        : undefined
+                    }
+                  />
+                )}
                 {areaView && (
                   <AreaChecks
                     polygons={areaView.polygons}
