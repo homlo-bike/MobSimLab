@@ -21,6 +21,11 @@ export interface OverpassOptions {
   backoffMs: number[];
   /** Retry a query that timed out. Imports turn this off and split the area instead. */
   retryTimeouts: boolean;
+  /**
+   * Longest one query may take with its retries and its wait for a turn, ms (none when absent). A tool waiting
+   * for a map tile is answered within it, before a reverse proxy gives up on the request.
+   */
+  deadlineMs?: number;
   fetchImpl: typeof fetch;
   sleep: (ms: number) => Promise<void>;
 }
@@ -90,8 +95,25 @@ export class OverpassClient {
    * gives up its turn while it backs off, so the next queries are not held up behind it. An aborted `signal`
    * stops the request under way and any retry (an import cancelled by the planner).
    */
-  run(query: string, signal?: AbortSignal): Promise<string> {
-    return this.attempts(query, signal);
+  async run(query: string, signal?: AbortSignal): Promise<string> {
+    if (!this.o.deadlineMs) return this.attempts(query, signal);
+    const late = new AbortController();
+    const timer = setTimeout(() => late.abort(), this.o.deadlineMs);
+    try {
+      return await this.attempts(query, signal ? AbortSignal.any([signal, late.signal]) : late.signal);
+    } catch (e) {
+      // Past the deadline: OpenStreetMap is too slow now; the caller is told at once, not asked to retry.
+      if (late.signal.aborted && !signal?.aborted)
+        throw new OverpassError(
+          `OpenStreetMap's Overpass service did not answer within ${Math.round(this.o.deadlineMs / 1000)} s. ` +
+            "It is busy or slow right now: try again later, or import the area's OpenStreetMap data into the " +
+            "project (Map data) so it is read from there.",
+          503,
+        );
+      throw e;
+    } finally {
+      clearTimeout(timer);
+    }
   }
 
   /** Purpose: run `f` when no other request is under way, at least `minIntervalMs` after the last one. */

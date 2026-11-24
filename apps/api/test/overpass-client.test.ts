@@ -53,4 +53,19 @@ describe("Overpass client queue", () => {
     await expect(c.run("B")).rejects.toThrow(/cannot be reached.*ECONNREFUSED/);
     expect(calls).toBe(1);
   });
+
+  it("answers within its deadline when Overpass is slow, without retrying", async () => {
+    let calls = 0;
+    const fetchImpl = ((_u: string, init: { signal: AbortSignal }) => {
+      calls++;
+      return new Promise((_r, reject) =>
+        init.signal.addEventListener("abort", () => reject(new Error("aborted"))),
+      );
+    }) as unknown as typeof fetch;
+    const c = new OverpassClient({ fetchImpl, minIntervalMs: 0, deadlineMs: 50 });
+    const t0 = Date.now();
+    await expect(c.run("A")).rejects.toMatchObject({ status: 503 });
+    expect(Date.now() - t0).toBeLessThan(2000);
+    expect(calls).toBe(1);
+  });
 });
