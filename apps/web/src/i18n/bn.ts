@@ -463,6 +463,7 @@ export const bn: Messages = {
 
   "job.stepOf": "ধাপ {step} / {steps}",
   "job.cancel": "বাতিল",
+  "job.running": "চলমান কাজ",
   "map.search": "স্থান খুঁজুন",
   "map.searchPlaceholder": "শহর, রাস্তা, স্টেশন বা ঠিকানা",
   "map.searching": "খোঁজা হচ্ছে…",

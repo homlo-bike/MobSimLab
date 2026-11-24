@@ -466,6 +466,7 @@ export const ig: Messages = {
 
   "job.stepOf": "Nzọụkwụ {step} n'ime {steps}",
   "job.cancel": "Kagbuo",
+  "job.running": "Ọrụ na-aga n'ihu",
   "map.search": "Chọọ ebe",
   "map.searchPlaceholder": "Obodo, okporo ụzọ, ọdụ ma ọ bụ adreesị",
   "map.searching": "Na-achọ…",

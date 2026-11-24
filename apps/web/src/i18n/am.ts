@@ -453,6 +453,7 @@ export const am: Messages = {
 
   "job.stepOf": "ደረጃ {step} ከ{steps}",
   "job.cancel": "ሰርዝ",
+  "job.running": "በሂደት ላይ ያለ ሥራ",
   "map.search": "ቦታዎችን ፈልግ",
   "map.searchPlaceholder": "ከተማ፣ መንገድ፣ ጣቢያ ወይም አድራሻ",
   "map.searching": "በመፈለግ ላይ…",

@@ -447,6 +447,7 @@ export const zh: Messages = {
 
   "job.stepOf": "第 {step} 步，共 {steps} 步",
   "job.cancel": "取消",
+  "job.running": "正在进行的任务",
   "map.search": "搜索地点",
   "map.searchPlaceholder": "城镇、街道、车站或地址",
   "map.searching": "正在搜索…",

@@ -469,6 +469,7 @@ export const ru: Messages = {
 
   "job.stepOf": "Шаг {step} из {steps}",
   "job.cancel": "Отмена",
+  "job.running": "Выполняемые задачи",
   "map.search": "Поиск мест",
   "map.searchPlaceholder": "Город, улица, станция или адрес",
   "map.searching": "Поиск…",

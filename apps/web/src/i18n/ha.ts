@@ -467,6 +467,7 @@ export const ha: Messages = {
 
   "job.stepOf": "Mataki {step} cikin {steps}",
   "job.cancel": "Soke",
+  "job.running": "Ayyukan da ake yi",
   "map.search": "Nemi wurare",
   "map.searchPlaceholder": "Gari, titi, tasha ko adireshi",
   "map.searching": "Ana nema…",

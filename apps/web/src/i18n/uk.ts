@@ -468,6 +468,7 @@ export const uk: Messages = {
 
   "job.stepOf": "Крок {step} з {steps}",
   "job.cancel": "Скасувати",
+  "job.running": "Поточні завдання",
   "map.search": "Пошук місць",
   "map.searchPlaceholder": "Місто, вулиця, станція або адреса",
   "map.searching": "Пошук…",

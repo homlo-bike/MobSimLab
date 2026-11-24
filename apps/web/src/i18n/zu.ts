@@ -472,6 +472,7 @@ export const zu: Messages = {
 
   "job.stepOf": "Isinyathelo {step} kwezingu-{steps}",
   "job.cancel": "Khansela",
+  "job.running": "Umsebenzi oqhubekayo",
   "map.search": "Sesha izindawo",
   "map.searchPlaceholder": "Idolobha, umgwaqo, isiteshi noma ikheli",
   "map.searching": "Iyasesha…",

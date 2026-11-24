@@ -464,6 +464,7 @@ export const hi: Messages = {
 
   "job.stepOf": "चरण {step} / {steps}",
   "job.cancel": "रद्द करें",
+  "job.running": "चल रहे काम",
   "map.search": "स्थान खोजें",
   "map.searchPlaceholder": "कस्बा, सड़क, स्टेशन या पता",
   "map.searching": "खोज रहे हैं…",

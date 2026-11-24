@@ -468,6 +468,7 @@ export const pt: Messages = {
 
   "job.stepOf": "Passo {step} de {steps}",
   "job.cancel": "Cancelar",
+  "job.running": "Tarefas em curso",
   "map.search": "Pesquisar locais",
   "map.searchPlaceholder": "Cidade, rua, estação ou endereço",
   "map.searching": "A pesquisar…",

@@ -456,6 +456,7 @@ export const ar: Messages = {
 
   "job.stepOf": "الخطوة {step} من {steps}",
   "job.cancel": "إلغاء",
+  "job.running": "أعمال جارية",
   "map.search": "البحث عن أماكن",
   "map.searchPlaceholder": "مدينة أو شارع أو محطة أو عنوان",
   "map.searching": "جارٍ البحث…",

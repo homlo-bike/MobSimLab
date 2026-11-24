@@ -470,6 +470,7 @@ export const uz: Messages = {
 
   "job.stepOf": "{steps} qadamdan {step}-qadam",
   "job.cancel": "Bekor qilish",
+  "job.running": "Bajarilayotgan ishlar",
   "map.search": "Joylarni qidirish",
   "map.searchPlaceholder": "Shahar, ko‘cha, bekat yoki manzil",
   "map.searching": "Qidirilmoqda…",

@@ -472,6 +472,7 @@ export const ta: Messages = {
 
   "job.stepOf": "படி {step} / {steps}",
   "job.cancel": "ரத்துசெய்",
+  "job.running": "நடைபெறும் பணிகள்",
   "map.search": "இடங்களைத் தேடு",
   "map.searchPlaceholder": "ஊர், தெரு, நிலையம் அல்லது முகவரி",
   "map.searching": "தேடுகிறது…",

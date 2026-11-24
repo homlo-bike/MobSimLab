@@ -463,6 +463,7 @@ export const mr: Messages = {
 
   "job.stepOf": "पायरी {step} / {steps}",
   "job.cancel": "रद्द करा",
+  "job.running": "सुरू असलेली कामे",
   "map.search": "ठिकाणे शोधा",
   "map.searchPlaceholder": "गाव, रस्ता, स्थानक किंवा पत्ता",
   "map.searching": "शोधत आहे…",

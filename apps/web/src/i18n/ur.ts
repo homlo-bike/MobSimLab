@@ -465,6 +465,7 @@ export const ur: Messages = {
 
   "job.stepOf": "مرحلہ {step} از {steps}",
   "job.cancel": "منسوخ کریں",
+  "job.running": "جاری کام",
   "map.search": "مقامات تلاش کریں",
   "map.searchPlaceholder": "قصبہ، سڑک، اسٹیشن یا پتہ",
   "map.searching": "تلاش جاری ہے…",

@@ -467,6 +467,7 @@ export const it: Messages = {
 
   "job.stepOf": "Passo {step} di {steps}",
   "job.cancel": "Annulla",
+  "job.running": "Operazioni in corso",
   "map.search": "Cerca luoghi",
   "map.searchPlaceholder": "Città, via, stazione o indirizzo",
   "map.searching": "Ricerca…",

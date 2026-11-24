@@ -465,6 +465,7 @@ export const te: Messages = {
 
   "job.stepOf": "దశ {step} / {steps}",
   "job.cancel": "రద్దు చేయి",
+  "job.running": "జరుగుతున్న పనులు",
   "map.search": "స్థలాలను వెతుకు",
   "map.searchPlaceholder": "పట్టణం, వీధి, స్టేషన్ లేదా చిరునామా",
   "map.searching": "వెతుకుతోంది…",

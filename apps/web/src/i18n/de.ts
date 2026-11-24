@@ -474,6 +474,7 @@ export const de: Messages = {
 
   "job.stepOf": "Schritt {step} von {steps}",
   "job.cancel": "Abbrechen",
+  "job.running": "Laufende Vorgänge",
   "map.search": "Orte suchen",
   "map.searchPlaceholder": "Ort, Straße, Bahnhof oder Adresse",
   "map.searching": "Suche…",

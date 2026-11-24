@@ -463,6 +463,7 @@ export const yo: Messages = {
 
   "job.stepOf": "Ìgbésẹ̀ {step} nínú {steps}",
   "job.cancel": "Fagilé",
+  "job.running": "Iṣẹ́ tó ń lọ lọ́wọ́",
   "map.search": "Wá àwọn ibi",
   "map.searchPlaceholder": "Ìlú, òpópónà, ibùdó tàbí àdírẹ́sì",
   "map.searching": "Ó ń wá…",

@@ -462,6 +462,7 @@ export const fa: Messages = {
 
   "job.stepOf": "گام {step} از {steps}",
   "job.cancel": "لغو",
+  "job.running": "کارهای در حال انجام",
   "map.search": "جستجوی مکان",
   "map.searchPlaceholder": "شهر، خیابان، ایستگاه یا نشانی",
   "map.searching": "در حال جستجو…",

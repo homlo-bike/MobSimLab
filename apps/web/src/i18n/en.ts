@@ -460,6 +460,7 @@ export const en = {
 
   "job.stepOf": "Step {step} of {steps}",
   "job.cancel": "Cancel",
+  "job.running": "Work under way",
   "map.search": "Search places",
   "map.searchPlaceholder": "Town, street, station or address",
   "map.searching": "Searching…",

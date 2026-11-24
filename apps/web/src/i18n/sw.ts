@@ -466,6 +466,7 @@ export const sw: Messages = {
 
   "job.stepOf": "Hatua {step} kati ya {steps}",
   "job.cancel": "Ghairi",
+  "job.running": "Kazi zinazoendelea",
   "map.search": "Tafuta maeneo",
   "map.searchPlaceholder": "Mji, barabara, stesheni au anwani",
   "map.searching": "Inatafuta…",

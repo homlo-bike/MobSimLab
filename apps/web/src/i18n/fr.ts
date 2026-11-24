@@ -470,6 +470,7 @@ export const fr: Messages = {
 
   "job.stepOf": "Étape {step} sur {steps}",
   "job.cancel": "Annuler",
+  "job.running": "Traitements en cours",
   "map.search": "Rechercher un lieu",
   "map.searchPlaceholder": "Ville, rue, gare ou adresse",
   "map.searching": "Recherche…",

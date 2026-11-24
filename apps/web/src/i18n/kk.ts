@@ -464,6 +464,7 @@ export const kk: Messages = {
 
   "job.stepOf": "{steps} қадамның {step}-қадамы",
   "job.cancel": "Бас тарту",
+  "job.running": "Орындалып жатқан жұмыс",
   "map.search": "Орындарды іздеу",
   "map.searchPlaceholder": "Қала, көше, бекет немесе мекенжай",
   "map.searching": "Ізделуде…",

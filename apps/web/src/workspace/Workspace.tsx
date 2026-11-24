@@ -103,6 +103,8 @@ import {
   UndoIcon,
 } from "../shell/icons";
 import { ChecksProvider } from "../shell/checks";
+import { JobsBar, JobsProvider } from "../shell/jobs";
+import { ImportsWatcher } from "../features/geodata/ImportsWatcher";
 import { COMMENT_KIND, ChecksMenu } from "../shell/ChecksMenu";
 import { OtherModesLayer } from "./OtherModesLayer";
 import { type CoreTab, type Tab, TABS } from "../shell/route";
@@ -2061,6 +2063,7 @@ export function Workspace({
           </aside>
         )}
       </main>
+      <JobsBar />
       {bottomTabs}
       {touring && <Tour steps={PROJECT_TOUR} onTab={onTab} onClose={() => setTouring(false)} />}
       {commentsOf && project && (
@@ -2089,19 +2092,22 @@ export function Workspace({
             userId={userId}
           >
             <ChecksProvider key={projectId}>
-              {body}
-              {areaView && (
-                <AreaChecks
-                  polygons={areaView.polygons}
-                  docs={{
-                    streetLines,
-                    railway,
-                    depots: depotsDoc,
-                    cargoBike: drawings.doc<CargoBikeDoc>("cargo-bike"),
-                    pluginLines: drawings.doc<PluginLinesDoc>("plugin-lines"),
-                  }}
-                />
-              )}
+              <JobsProvider key={projectId}>
+                {body}
+                {project && !STATIC_VIEWER && <ImportsWatcher api={geodata} />}
+                {areaView && (
+                  <AreaChecks
+                    polygons={areaView.polygons}
+                    docs={{
+                      streetLines,
+                      railway,
+                      depots: depotsDoc,
+                      cargoBike: drawings.doc<CargoBikeDoc>("cargo-bike"),
+                      pluginLines: drawings.doc<PluginLinesDoc>("plugin-lines"),
+                    }}
+                  />
+                )}
+              </JobsProvider>
             </ChecksProvider>
           </CommentsProvider>
         </VehiclesOffContext.Provider>

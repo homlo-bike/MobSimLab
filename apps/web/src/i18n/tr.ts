@@ -464,6 +464,7 @@ export const tr: Messages = {
 
   "job.stepOf": "Adım {step}/{steps}",
   "job.cancel": "İptal",
+  "job.running": "Süren işlemler",
   "map.search": "Yer ara",
   "map.searchPlaceholder": "Şehir, sokak, istasyon veya adres",
   "map.searching": "Aranıyor…",

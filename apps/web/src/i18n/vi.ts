@@ -465,6 +465,7 @@ export const vi: Messages = {
 
   "job.stepOf": "Bước {step}/{steps}",
   "job.cancel": "Hủy",
+  "job.running": "Công việc đang chạy",
   "map.search": "Tìm địa điểm",
   "map.searchPlaceholder": "Thị trấn, đường phố, nhà ga hoặc địa chỉ",
   "map.searching": "Đang tìm…",

@@ -459,6 +459,7 @@ export const ko: Messages = {
 
   "job.stepOf": "{steps}단계 중 {step}단계",
   "job.cancel": "취소",
+  "job.running": "진행 중인 작업",
   "map.search": "장소 검색",
   "map.searchPlaceholder": "도시, 거리, 역 또는 주소",
   "map.searching": "검색 중…",

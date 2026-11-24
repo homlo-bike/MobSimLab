@@ -468,6 +468,7 @@ export const id: Messages = {
 
   "job.stepOf": "Langkah {step} dari {steps}",
   "job.cancel": "Batal",
+  "job.running": "Proses berjalan",
   "map.search": "Cari tempat",
   "map.searchPlaceholder": "Kota, jalan, stasiun, atau alamat",
   "map.searching": "Mencari…",

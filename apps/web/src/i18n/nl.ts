@@ -469,6 +469,7 @@ export const nl: Messages = {
 
   "job.stepOf": "Stap {step} van {steps}",
   "job.cancel": "Annuleren",
+  "job.running": "Lopende taken",
   "map.search": "Plaatsen zoeken",
   "map.searchPlaceholder": "Plaats, straat, station of adres",
   "map.searching": "Zoeken…",

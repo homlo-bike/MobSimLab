@@ -460,6 +460,7 @@ export const ja: Messages = {
 
   "job.stepOf": "ステップ {step}/{steps}",
   "job.cancel": "キャンセル",
+  "job.running": "実行中の処理",
   "map.search": "場所を検索",
   "map.searchPlaceholder": "町、通り、駅、または住所",
   "map.searching": "検索中…",
