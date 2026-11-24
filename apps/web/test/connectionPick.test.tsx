@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { type ConnectionHit, pickConnection } from "../src/features/railways/connectionPick";
-import type { ConnectionView } from "../src/features/railways/types";
+import { type ConnectionHit, facingStart, pickConnection } from "../src/features/railways/connectionPick";
+import type { Anchor, ConnectionView } from "../src/features/railways/types";
 
 /** A 4-track station 400 m long along x, centred at `x0`: single and paired connection points at both ends. */
 function station(id: number, x0: number, used: number[][] = [], start = 0): ConnectionView[] {
@@ -71,5 +71,24 @@ describe("picking a station connection (Syria intercity test, bug 12)", () => {
       c.anchor.type === "station" && c.anchor.end === 1 ? (c.anchor.tracks[0] === 2 ? 1 : 12) : 400,
     ).filter((x) => x.px <= 13);
     expect(picked(pickConnection(h, cs, [0, 0]))).toEqual({ end: 1, tracks: [2, 3] });
+  });
+});
+
+describe("the end a track started at a station leaves from", () => {
+  const pos = (cs: ConnectionView[]) => (a: Anchor) => {
+    const c = cs.find((x) => JSON.stringify(x.anchor) === JSON.stringify(a));
+    return c ? ([c.lonlat[0], c.lonlat[1]] as [number, number]) : null;
+  };
+  const west: Anchor = { type: "station", station: 2, end: 0, tracks: [1, 2] };
+
+  it("turns round to the end facing the next point when no track joins it", () => {
+    const cs = station(2, 35000);
+    expect(facingStart(west, [70000, 0], cs, pos(cs))).toEqual({ ...west, end: 1 });
+    expect(facingStart(west, [0, 0], cs, pos(cs))).toBe(west);
+  });
+
+  it("keeps the start when a track already joins those tracks at the other end", () => {
+    const cs = station(2, 35000, [[1, 1, 2]]);
+    expect(facingStart(west, [70000, 0], cs, pos(cs))).toBe(west);
   });
 });

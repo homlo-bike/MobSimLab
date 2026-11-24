@@ -31,6 +31,7 @@ import {
 import { HIT_LAYERS } from "./mapLayers";
 import type { RailTool } from "./railPanelTypes";
 import { updateLine } from "./serviceLines";
+import { facingStart } from "./connectionPick";
 import type { TrackEnd } from "./trackEnds";
 import type { Anchor, ConnectionView, LonLat, Network, RailEngine, Track } from "./types";
 import { engineErrorText, engineTextNow } from "../../i18n/engine";
@@ -102,6 +103,18 @@ export function useMapEditing({
       return last
         ? [last.x, last.y]
         : (connLocal(dr.start)?.p ?? (dr.start.type === "free" ? [dr.start.x, dr.start.y] : null));
+    };
+    // A track started at a station leaves from the end facing its next point (zoomed out, the click
+    // that started it could not tell the ends apart).
+    const faced = (dr: Track, toward: [number, number]): Track => {
+      if (dr.points.length) return dr;
+      const start = facingStart(
+        dr.start,
+        toward,
+        latest.current.view?.connections ?? [],
+        (a) => connLocal(a)?.p ?? null,
+      );
+      return start === dr.start ? dr : { ...dr, start };
     };
     const onClick = (ev: MapMouseEvent) => {
       const s = latest.current;
@@ -180,11 +193,12 @@ export function useMapEditing({
           else startDraft({ type: "free", x: p[0], y: p[1] }, s.doc, s.trackOpts.level, s.trackOpts.tracks);
           return;
         }
-        const c = connectionAt(ev.point, s.draft.tracks, comesFrom(s.draft));
+        const dr = faced(s.draft, p);
+        latest.current.draft = dr;
+        const c = connectionAt(ev.point, dr.tracks, comesFrom(dr));
         if (c) return finishDraft(c.anchor);
-        const te = trackEndAt(ev.point, s.draft.tracks);
+        const te = trackEndAt(ev.point, dr.tracks);
         if (te) return finishDraft({ type: "free", x: te.x, y: te.y, level: te.level });
-        const dr = s.draft;
         const pts = [...dr.points, { x: p[0], y: p[1], level: draftLevel(dr) }];
         const next = autoLeads({ ...dr, points: pts }, connLocal(dr.start), null, null, minLead);
         setDraft(next);
@@ -317,14 +331,16 @@ export function useMapEditing({
         return;
       }
       if (s.tool === "track" && s.draft) {
-        const conn = connectionAt(ev.point, s.draft.tracks, comesFrom(s.draft));
+        const here = e.toLocal(s.doc.origin, ll);
+        const conn = connectionAt(ev.point, s.draft.tracks, comesFrom(faced(s.draft, here)));
         const te = conn ? null : trackEndAt(ev.point, s.draft.tracks);
         const snap = te ? null : e.existingSnap(ll, pxToM(10));
         const at: [number, number] = te ? [te.x, te.y] : e.toLocal(s.doc.origin, snap ? snap.lonlat : ll);
         cancelAnimationFrame(frame);
         frame = requestAnimationFrame(() => {
-          const d = latest.current.draft;
-          if (!d) return;
+          const d0 = latest.current.draft;
+          if (!d0) return;
+          const d = faced(d0, at);
           const endC = conn ? connLocal(conn.anchor) : null;
           setDraft(autoLeads(d, connLocal(d.start), endC, at, minLead));
           setCursor({ at, conn });
