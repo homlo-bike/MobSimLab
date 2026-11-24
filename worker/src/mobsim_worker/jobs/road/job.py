@@ -307,7 +307,18 @@ def run_road(
         return "stopped", result, None
     lines = list(scenario.get("lines", []))
     depots = service.Depots(net, scenario.get("depots", []), depot_ways)
-    plans = [service.plan_line(net, ln, depots) for ln in lines]
+    plans: list[service.LinePlan] = []
+    for ln in lines:
+        t0 = time.monotonic()
+        plans.append(service.plan_line(net, ln, depots))
+        log.info(
+            "road run line planned",
+            line=plans[-1].name,
+            vehicles=len(plans[-1].vehicles),
+            seconds=round(time.monotonic() - t0, 1),
+        )
+        if reporter.should_stop():
+            return "stopped", result, None
     for pl in plans:
         if pl.problem:
             result["notes"].append(

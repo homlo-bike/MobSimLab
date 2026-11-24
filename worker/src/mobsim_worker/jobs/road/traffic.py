@@ -33,7 +33,7 @@ from typing import Any
 
 import structlog
 
-from mobsim_worker.jobs.road.network import RoadNet, run_tool, sumo_tool
+from mobsim_worker.jobs.road.network import RoadNet, Stopped, run_tool, sumo_tool
 from mobsim_worker.jobs.road.osm import Way, way_of_edge
 
 log = structlog.get_logger("mobsim_worker")
@@ -60,6 +60,9 @@ CANDIDATES_PER_CAR = 3
 
 #: Most candidate routes generated.
 MAX_CANDIDATES = 60_000
+
+#: Routes the car sampler looks at between two checks whether the run should stop.
+STOP_CHECK_EVERY = 5000
 
 #: Threads ``duarouter`` routes the candidate routes on (the worker runs one run at a time).
 ROUTING_THREADS = max(1, min(4, os.cpu_count() or 1))
@@ -349,13 +352,20 @@ def candidates(
 
 
 def sample(
-    routes: Sequence[Sequence[str]], target: Mapping[str, float], rng: random.Random, max_cars: int
+    routes: Sequence[Sequence[str]],
+    target: Mapping[str, float],
+    rng: random.Random,
+    max_cars: int,
+    should_stop: Callable[[], bool] | None = None,
 ) -> list[int]:
     """Pick routes (by index, with repeats) so that no edge's count goes above its target.
 
     Routes are taken in a random order, pass after pass, while every edge they use has room for a car. A
     route that does not fit once never fits again (the room on its edges only shrinks), so it is left out of
     the later passes; edges are numbered so that each check is a list lookup.
+
+    Raises:
+        Stopped: ``should_stop`` said yes (asked every ``STOP_CHECK_EVERY`` routes).
     """
     ids: dict[str, int] = {}
     left: list[float] = []
@@ -370,7 +380,9 @@ def sample(
     while alive and len(chosen) < max_cars:
         rng.shuffle(alive)
         still: list[int] = []
-        for i in alive:
+        for n, i in enumerate(alive):
+            if should_stop is not None and n % STOP_CHECK_EVERY == 0 and should_stop():
+                raise Stopped("background traffic")
             p = paths[i]
             if all(left[k] >= 1.0 for k in p):
                 for k in p:
@@ -408,7 +420,7 @@ def write_background(
     """Write the background cars of the run window ``[begin, end)`` to ``path`` (a SUMO routes file).
 
     Raises:
-        Stopped: ``should_stop`` said yes while the candidate routes were made.
+        Stopped: ``should_stop`` said yes while the candidate routes were made or the cars sampled.
     """
     by_way = {int(s["way"]): s for s in setups if "way" in s}
     defaults = {str(k): float(v) for k, v in dict(traffic.get("defaults", {})).items()}
@@ -449,13 +461,23 @@ def write_background(
             threads=ROUTING_THREADS,
             seconds=round(time.monotonic() - t1, 1),
         )
+    route_km = [sum(lengths.get(e, 0.0) for e in r) / 1000.0 for r in routes]
     for part, target, w in zip(parts, targets, wanted, strict=True):
         if not target or w <= 1:
             continue
-        for i in sample(routes, target, rng, max_cars=200_000):
-            r = list(routes[i])
-            cars.append((part.begin + rng.random() * (part.end - part.begin), r))
-            sampled_km += sum(lengths.get(e, 0.0) for e in r) / 1000.0
+        t2 = time.monotonic()
+        picked = sample(routes, target, rng, 200_000, should_stop)
+        for i in picked:
+            cars.append((part.begin + rng.random() * (part.end - part.begin), routes[i]))
+            sampled_km += route_km[i]
+        log.info(
+            "background traffic: cars sampled",
+            interval=f"{part.begin:.0f}-{part.end:.0f}",
+            cars=len(picked),
+            seconds=round(time.monotonic() - t2, 1),
+        )
+        if should_stop is not None and should_stop():
+            raise Stopped("background traffic")
     cars.sort(key=lambda c: c[0])
     for k, (t, r) in enumerate(cars):
         v = ET.SubElement(root, "vehicle", id=f"bg{k}", type="car", depart=f"{t:.1f}", departLane="best")

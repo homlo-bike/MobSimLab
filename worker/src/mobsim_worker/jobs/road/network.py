@@ -264,6 +264,7 @@ class RoadNet:
 
         self.net: Any = sumolib.net.readNet(net_file, withInternal=False, withPrograms=True)
         self._sumolib = sumolib
+        self._paths: dict[tuple[str, str], tuple[str, ...] | None] = {}
 
     def xy(self, p: LonLat) -> tuple[float, float]:
         """Return network coordinates of a point."""
@@ -352,11 +353,19 @@ class RoadNet:
         return msg("road.part.unnamedStreet", way=edge.getID().lstrip("-").split("#")[0])
 
     def path(self, a: str, b: str) -> list[str] | None:
-        """Return the shortest bus path from edge ``a`` to edge ``b`` (both included), or None."""
+        """Return the shortest bus path from edge ``a`` to edge ``b`` (both included), or None.
+
+        Paths are kept: every vehicle of a line asks for the same few (the end of its circuit back to the
+        start, for each trip), and each search walks a city's whole network.
+        """
         if a == b:
             return [a]
-        route, _ = self.net.getShortestPath(self.edge(a), self.edge(b), vClass="bus")
-        return [e.getID() for e in route] if route else None
+        key = (a, b)
+        if key not in self._paths:
+            route, _ = self.net.getShortestPath(self.edge(a), self.edge(b), vClass="bus")
+            self._paths[key] = tuple(e.getID() for e in route) if route else None
+        found = self._paths[key]
+        return list(found) if found is not None else None
 
     def follows(self, a: str, b: str) -> bool:
         """Whether a bus may drive from the end of edge ``a`` straight onto edge ``b``."""

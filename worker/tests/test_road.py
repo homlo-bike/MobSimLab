@@ -548,3 +548,13 @@ def test_sampled_cars_fill_the_streets_up_to_their_targets_and_no_further() -> N
     # Full: no route has room for one more car.
     assert not any(all(target[e] - used.get(e, 0) >= 1 for e in r) for r in routes[:3])
     assert len(sample(routes, target, random.Random(1), max_cars=2)) == 2  # noqa: S311
+
+
+def test_the_car_sampler_stops_when_the_run_is_stopped() -> None:
+    import random  # noqa: PLC0415
+
+    from mobsim_worker.jobs.road.network import Stopped  # noqa: PLC0415
+    from mobsim_worker.jobs.road.traffic import sample  # noqa: PLC0415
+
+    with pytest.raises(Stopped):
+        sample([["a"]], {"a": 5.0}, random.Random(1), 100, should_stop=lambda: True)  # noqa: S311
