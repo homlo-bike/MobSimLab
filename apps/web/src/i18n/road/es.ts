@@ -97,4 +97,33 @@ export const roadEs = {
   "visuals.legend.veryLate": "Retraso grave (más de {min} min)",
   "road.replay.noService":
     "Esta simulación se guardó antes de registrar los horarios de servicio, así que sus vehículos mantienen el color de su línea. Vuelva a ejecutarla para verlos por puntualidad.",
+  "road.step.streets": "Cargando las calles: {done} de {of} teselas del mapa…",
+  "road.note.junctionSetup": "Intersecciones: {on} intersecciones con semáforo, {off} sin él",
+  "road.note.gateOffStreet":
+    "Cochera {depot}: una entrada no está junto a una calle que pueda usar un autobús",
+  "road.note.noOsmSignals":
+    "OpenStreetMap no registra semáforos en estas calles, así que todas las intersecciones funcionan sin semáforos y las calles secundarias esperan huecos en el tráfico de las vías principales. Ponga semáforos en las intersecciones principales en SIG › Calles.",
+  "road.note.lineCannotRun": "{line} no puede circular: {why}",
+  "road.note.carsRemoved":
+    "{n} coches de fondo estuvieron parados más de {min} minutos y se retiraron del tráfico para deshacer atascos; puede que las calles tengan más tráfico del que soportan",
+  "road.note.pullOutNotFollowed":
+    "No se sigue el recorrido de salida de cochera ({why}); sus vehículos toman el camino más corto",
+  "road.note.pullInNotFollowed":
+    "No se sigue el recorrido de entrada a cochera ({why}); sus vehículos toman el camino más corto",
+  "road.note.noDepot": "Sin cochera: sus vehículos empiezan y terminan en la calle",
+  "road.note.noSlot": "El vehículo {n} no tiene plaza en la cochera: empieza en la entrada de la cochera",
+  "road.note.cannotLeave": "El vehículo {n} no puede salir de su cochera: empieza en la calle",
+  "road.note.cannotReturn": "El vehículo {n} no puede volver a su cochera: termina en la calle",
+  "road.problem.notRouted": "tiene menos de dos puntos o no está trazada",
+  "road.problem.noDepartures": "no tiene salidas en el periodo",
+  "road.problem.notMatched": "su recorrido no se pudo ajustar a las calles",
+  "road.problem.stopOffRoute": "la parada {stop} no está en el recorrido ajustado",
+  "road.problem.notBack": "el recorrido no vuelve a su primera parada",
+  "road.problem.noBusLink":
+    "no hay paso para un autobús de {from} a {to}, cerca de {stop} (a {m} m): las calles del modelo de tráfico no tienen ahí ningún giro permitido para un autobús, por ejemplo un cambio de sentido o un giro prohibido. Mueva el recorrido o un punto de paso para que tome otra calle ahí",
+  "road.problem.depotToRoute": "sus vehículos no pueden llegar al recorrido desde la cochera",
+  "road.problem.notClosed": "su circuito no se cierra sobre las calles",
+  "road.problem.unreachable": "no se puede llegar a ella",
+  "road.part.unnamedStreet": "una calle sin nombre (vía OSM {way})",
+  "road.part.stop": "parada {n}",
 } satisfies RoadMessages;

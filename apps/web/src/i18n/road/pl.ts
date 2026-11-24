@@ -96,4 +96,32 @@ export const roadPl = {
   "visuals.legend.veryLate": "Mocno opóźniony (ponad {min} min)",
   "road.replay.noService":
     "Ten przebieg zapisano, zanim rejestrowano czasy służby, więc pojazdy mają kolor swojej linii. Uruchom go ponownie, aby zobaczyć punktualność.",
+  "road.step.streets": "Wczytywanie ulic: {done} z {of} kafelków mapy…",
+  "road.note.junctionSetup": "Skrzyżowania: {on} z sygnalizacją, {off} bez",
+  "road.note.gateOffStreet": "Zajezdnia {depot}: wjazd nie leży przy ulicy, którą może jechać autobus",
+  "road.note.noOsmSignals":
+    "OpenStreetMap nie podaje sygnalizacji świetlnej na tych ulicach, więc wszystkie skrzyżowania działają bez świateł, a ulice boczne czekają na luki w ruchu dróg głównych. Dodaj sygnalizację na głównych skrzyżowaniach w GIS › Ulice.",
+  "road.note.lineCannotRun": "{line} nie może kursować: {why}",
+  "road.note.carsRemoved":
+    "Samochody tła ({n}) stały dłużej niż {min} min i zostały usunięte z ruchu, aby rozładować korki; ulice mogą być bardziej obciążone, niż są w stanie przenieść",
+  "road.note.pullOutNotFollowed":
+    "Trasa wyjazdu z zajezdni nie jest stosowana ({why}); pojazdy jadą najkrótszą drogą",
+  "road.note.pullInNotFollowed":
+    "Trasa zjazdu do zajezdni nie jest stosowana ({why}); pojazdy jadą najkrótszą drogą",
+  "road.note.noDepot": "Brak zajezdni: pojazdy zaczynają i kończą na ulicy",
+  "road.note.noSlot": "Pojazd {n} nie ma miejsca w zajezdni: zaczyna przy wjeździe do zajezdni",
+  "road.note.cannotLeave": "Pojazd {n} nie może wyjechać z zajezdni: zaczyna na ulicy",
+  "road.note.cannotReturn": "Pojazd {n} nie może wrócić do zajezdni: kończy na ulicy",
+  "road.problem.notRouted": "ma mniej niż dwa punkty lub nie ma wyznaczonej trasy",
+  "road.problem.noDepartures": "nie ma odjazdów w tym okresie",
+  "road.problem.notMatched": "jej trasy nie udało się dopasować do ulic",
+  "road.problem.stopOffRoute": "przystanek {stop} nie leży na dopasowanej trasie",
+  "road.problem.notBack": "trasa nie wraca do pierwszego przystanku",
+  "road.problem.noBusLink":
+    "brak przejazdu dla autobusu z {from} na {to}, w pobliżu {stop} ({m} m dalej): ulice modelu ruchu nie mają tam skrętu dozwolonego dla autobusu, np. zawracania lub zakazanego skrętu. Przesuń trasę lub punkt pośredni, aby poprowadzić ją tam inną ulicą",
+  "road.problem.depotToRoute": "pojazdy nie mogą dojechać do trasy z zajezdni",
+  "road.problem.notClosed": "jej obieg nie zamyka się na ulicach",
+  "road.problem.unreachable": "nie da się do niej dojechać",
+  "road.part.unnamedStreet": "ulica bez nazwy (droga OSM {way})",
+  "road.part.stop": "przystanek {n}",
 } satisfies RoadMessages;

@@ -95,4 +95,33 @@ export const roadPt = {
   "visuals.legend.veryLate": "Muito atrasado (mais de {min} min)",
   "road.replay.noService":
     "Esta simulação foi salva antes de os horários de serviço serem registrados, então seus veículos mantêm a cor da linha. Execute-a de novo para vê-los por pontualidade.",
+  "road.step.streets": "A carregar as ruas: {done} de {of} mosaicos do mapa…",
+  "road.note.junctionSetup": "Cruzamentos: {on} cruzamentos com semáforos, {off} sem",
+  "road.note.gateOffStreet":
+    "Garagem {depot}: uma entrada não fica junto a uma rua que um autocarro possa usar",
+  "road.note.noOsmSignals":
+    "O OpenStreetMap não regista semáforos nestas ruas, por isso todos os cruzamentos funcionam sem semáforos e as ruas secundárias esperam por intervalos no trânsito das vias principais. Coloque semáforos nos principais cruzamentos em SIG › Ruas.",
+  "road.note.lineCannotRun": "{line} não pode circular: {why}",
+  "road.note.carsRemoved":
+    "{n} carros de fundo ficaram parados mais de {min} minutos e foram retirados do trânsito para desfazer engarrafamentos; as ruas podem ter mais trânsito do que suportam",
+  "road.note.pullOutNotFollowed":
+    "O percurso de saída da garagem não é seguido ({why}); os veículos seguem o caminho mais curto",
+  "road.note.pullInNotFollowed":
+    "O percurso de recolha à garagem não é seguido ({why}); os veículos seguem o caminho mais curto",
+  "road.note.noDepot": "Sem garagem: os veículos começam e terminam na rua",
+  "road.note.noSlot": "O veículo {n} não tem lugar na garagem: começa à entrada da garagem",
+  "road.note.cannotLeave": "O veículo {n} não consegue sair da garagem: começa na rua",
+  "road.note.cannotReturn": "O veículo {n} não consegue voltar à garagem: termina na rua",
+  "road.problem.notRouted": "tem menos de dois pontos ou não está traçada",
+  "road.problem.noDepartures": "não tem partidas no período",
+  "road.problem.notMatched": "o seu percurso não pôde ser associado às ruas",
+  "road.problem.stopOffRoute": "a paragem {stop} não está no percurso associado",
+  "road.problem.notBack": "o percurso não volta à primeira paragem",
+  "road.problem.noBusLink":
+    "não há passagem para um autocarro de {from} para {to}, perto de {stop} (a {m} m): as ruas do modelo de trânsito não têm ali nenhuma viragem permitida a um autocarro, por exemplo uma inversão de marcha ou uma viragem proibida. Mova o percurso ou um ponto de passagem para que siga outra rua ali",
+  "road.problem.depotToRoute": "os veículos não conseguem chegar ao percurso a partir da garagem",
+  "road.problem.notClosed": "o seu circuito não fecha nas ruas",
+  "road.problem.unreachable": "não é possível chegar a ela",
+  "road.part.unnamedStreet": "uma rua sem nome (via OSM {way})",
+  "road.part.stop": "paragem {n}",
 } satisfies RoadMessages;

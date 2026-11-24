@@ -96,4 +96,33 @@ export const roadHa = {
   "visuals.legend.veryLate": "Jinkiri sosai (fiye da minti {min})",
   "road.replay.noService":
     "An ajiye wannan gudu kafin a fara rubuta lokutan aiki, don haka motocinsa suna da launin layinsu. Sake gudanar da shi don ganin su bisa kiyaye lokaci.",
+  "road.step.streets": "Ana loda tituna: tayil {done} cikin {of} na taswira…",
+  "road.note.junctionSetup":
+    "Tsarin mahadar hanya: mahadai {on} an ba su fitilun hanya, {off} ba tare da su ba",
+  "road.note.gateOffStreet": "Tashar motoci {depot}: wata ƙofa ba ta kusa da titin da bas zai iya bi",
+  "road.note.noOsmSignals":
+    "OpenStreetMap ba ta nuna fitilun hanya a waɗannan tituna, don haka kowace mahada tana aiki ba tare da fitila ba, ƙananan tituna kuma suna jiran gibi a cunkoson manyan hanyoyi. Ba manyan mahadai fitilun hanya a GIS › Tituna.",
+  "road.note.lineCannotRun": "{line} ba za ta iya gudana ba: {why}",
+  "road.note.carsRemoved":
+    "Motocin baya {n} sun tsaya fiye da minti {min} kuma an cire su daga cunkoso don a buɗe shi; wataƙila tituna sun cika fiye da yadda za su iya ɗauka",
+  "road.note.pullOutNotFollowed":
+    "Ba a bi hanyar fita daga tasha ba ({why}); motocinta suna bin mafi gajeriyar hanya",
+  "road.note.pullInNotFollowed":
+    "Ba a bi hanyar komawa tasha ba ({why}); motocinta suna bin mafi gajeriyar hanya",
+  "road.note.noDepot": "Babu tashar motoci: motocinta suna farawa da ƙarewa a titi",
+  "road.note.noSlot": "Mota {n} ba ta da wuri a tasha: tana farawa a ƙofar tasha",
+  "road.note.cannotLeave": "Mota {n} ba za ta iya fita daga tasharta ba: tana farawa a titi",
+  "road.note.cannotReturn": "Mota {n} ba za ta iya komawa tasharta ba: tana ƙarewa a titi",
+  "road.problem.notRouted": "tana da ƙasa da maki biyu ko ba a tsara hanyarta ba",
+  "road.problem.noDepartures": "ba ta da tashi a wannan lokacin",
+  "road.problem.notMatched": "ba a iya daidaita hanyarta da tituna ba",
+  "road.problem.stopOffRoute": "tasha {stop} ba ta kan hanyar da aka daidaita",
+  "road.problem.notBack": "hanyar ba ta komawa tasharta ta farko",
+  "road.problem.noBusLink":
+    "babu hanya ga bas daga {from} zuwa {to}, kusa da {stop} (nisan m {m}): titunan samfurin zirga-zirga ba su da juyawa a can da bas zai iya yi, misali juyawa baya ko juyawar da aka hana. Matsar da hanyar ko wani wurin wucewa don ta bi wani titi a can",
+  "road.problem.depotToRoute": "motocinta ba za su iya kaiwa hanyar daga tasha ba",
+  "road.problem.notClosed": "zagayenta bai rufe a kan tituna ba",
+  "road.problem.unreachable": "ba za a iya kaiwa gare ta ba",
+  "road.part.unnamedStreet": "titi mara suna (hanyar OSM {way})",
+  "road.part.stop": "tasha {n}",
 } satisfies RoadMessages;

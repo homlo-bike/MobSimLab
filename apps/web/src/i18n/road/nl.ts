@@ -97,4 +97,31 @@ export const roadNl = {
   "visuals.legend.veryLate": "Zeer te laat (meer dan {min} min)",
   "road.replay.noService":
     "Deze run is opgeslagen voordat dienstijden werden vastgelegd; de voertuigen houden de kleur van hun lijn. Voer hem opnieuw uit om ze op stiptheid te zien.",
+  "road.step.streets": "Straten laden: {done} van {of} kaarttegels…",
+  "road.note.junctionSetup": "Kruispunten: {on} kruispunten met verkeerslichten, {off} zonder",
+  "road.note.gateOffStreet": "Remise {depot}: een ingang ligt niet bij een straat die een bus mag gebruiken",
+  "road.note.noOsmSignals":
+    "OpenStreetMap kent op deze straten geen verkeerslichten, dus alle kruispunten werken zonder lichten en zijstraten wachten op gaten in het verkeer van de hoofdwegen. Geef de belangrijkste kruispunten verkeerslichten in GIS › Straten.",
+  "road.note.lineCannotRun": "{line} kan niet rijden: {why}",
+  "road.note.carsRemoved":
+    "{n} achtergrondauto's stonden langer dan {min} minuten stil en zijn uit het verkeer gehaald om files op te lossen; de straten zijn mogelijk drukker dan ze aankunnen",
+  "road.note.pullOutNotFollowed":
+    "De uitrukrit wordt niet gevolgd ({why}); de voertuigen nemen de kortste weg",
+  "road.note.pullInNotFollowed": "De inrukrit wordt niet gevolgd ({why}); de voertuigen nemen de kortste weg",
+  "road.note.noDepot": "Geen remise: de voertuigen beginnen en eindigen op straat",
+  "road.note.noSlot": "Voertuig {n} heeft geen plek in de remise: het begint bij de ingang van de remise",
+  "road.note.cannotLeave": "Voertuig {n} kan de remise niet verlaten: het begint op straat",
+  "road.note.cannotReturn": "Voertuig {n} kan niet terug in de remise: het eindigt op straat",
+  "road.problem.notRouted": "ze heeft minder dan twee punten of is niet gerouteerd",
+  "road.problem.noDepartures": "ze heeft geen vertrekken in de periode",
+  "road.problem.notMatched": "de route kon niet aan de straten worden gekoppeld",
+  "road.problem.stopOffRoute": "halte {stop} ligt niet op de gekoppelde route",
+  "road.problem.notBack": "de route komt niet terug bij de eerste halte",
+  "road.problem.noBusLink":
+    "geen weg voor een bus van {from} naar {to}, bij {stop} ({m} m verderop): de straten van het verkeersmodel hebben daar geen afslag die een bus mag nemen, bijvoorbeeld een keerbeweging of een verboden afslag. Verplaats de route of een tussenpunt zodat ze daar een andere straat neemt",
+  "road.problem.depotToRoute": "de voertuigen bereiken de route niet vanuit de remise",
+  "road.problem.notClosed": "de omloop is niet gesloten op de straten",
+  "road.problem.unreachable": "ze is niet bereikbaar",
+  "road.part.unnamedStreet": "een straat zonder naam (OSM-weg {way})",
+  "road.part.stop": "halte {n}",
 } satisfies RoadMessages;
