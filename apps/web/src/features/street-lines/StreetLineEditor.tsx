@@ -1004,6 +1004,7 @@ export function StreetLineEditor({
       vehicle={vehicle}
       lineList={lineList}
       selected={selected}
+      tool={tool}
       depotStops={shownDepot}
       depotId={depotId}
       depots={depots.map((d) => ({ id: d.id, name: d.name, problem: depotFit(d, { profile, vehicle }) }))}
