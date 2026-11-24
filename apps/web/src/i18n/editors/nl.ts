@@ -788,9 +788,9 @@ export const editorsNl = {
   "schematic.area.color": "Kleur",
   "schematic.area.defaultName": "Gebied {n}",
   "schematic.area.draw": "Gebied tekenen",
-  "schematic.area.drawHint": "Klik op de kaart om hoeken toe te voegen en klik dan op Klaar.",
+  "schematic.area.drawHint":
+    "Klik op de kaart om hoeken toe te voegen en klik dan op Klaar. Ctrl+Z haalt de laatste hoek weg.",
   "schematic.area.finish": "Klaar",
-  "schematic.area.undo": "Hoek ongedaan maken",
   "schematic.area.remove": "Gebied verwijderen",
   "schematic.area.dragHint": "Sleep de witte hoeken op de kaart om de vorm te wijzigen.",
   "schematic.facts": "Dienst",

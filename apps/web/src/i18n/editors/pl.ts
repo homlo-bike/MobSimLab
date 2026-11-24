@@ -829,9 +829,9 @@ export const editorsPl = {
   "schematic.area.color": "Kolor",
   "schematic.area.defaultName": "Obszar {n}",
   "schematic.area.draw": "Narysuj obszar",
-  "schematic.area.drawHint": "Kliknij mapę, aby dodać narożniki, a potem Zakończ.",
+  "schematic.area.drawHint":
+    "Kliknij mapę, aby dodać narożniki, a potem Zakończ. Ctrl+Z usuwa ostatni narożnik.",
   "schematic.area.finish": "Zakończ",
-  "schematic.area.undo": "Cofnij narożnik",
   "schematic.area.remove": "Usuń obszar",
   "schematic.area.dragHint": "Przeciągnij białe narożniki na mapie, aby zmienić kształt.",
   "schematic.facts": "Kursowanie",

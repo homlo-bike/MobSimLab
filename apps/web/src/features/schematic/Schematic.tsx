@@ -103,6 +103,23 @@ export function Schematic({
   const [zoom, setZoom] = useState<number | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
   const [draft, setDraft] = useState<AreaDraft | null>(null);
+  // While an area is drawn, Ctrl+Z (Cmd+Z) takes back its last corner instead of undoing a change to the drawings.
+  const drawingArea = draft !== null;
+  useEffect(() => {
+    if (!drawingArea) return;
+    const onKey = (ev: KeyboardEvent) => {
+      if (!(ev.metaKey || ev.ctrlKey) || ev.altKey || ev.shiftKey || ev.key.toLowerCase() !== "z") return;
+      const target = ev.target as HTMLElement | null;
+      if (target && (["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName) || target.isContentEditable))
+        return;
+      ev.preventDefault();
+      ev.stopImmediatePropagation();
+      setDraft((d) => (d ? { points: d.points.slice(0, -1) } : d));
+    };
+    // Before the project's own undo, which listens on the window too.
+    window.addEventListener("keydown", onKey, true);
+    return () => window.removeEventListener("keydown", onKey, true);
+  }, [drawingArea]);
   const [areaId, setAreaId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [exportNote, setExportNote] = useState<string | null>(null);
@@ -562,7 +579,7 @@ export function Schematic({
                 (draft ? (
                   <div className="flex flex-col gap-2 rounded-xl border border-blue-200 bg-blue-50 p-3">
                     <p className="text-sm">{t("schematic.area.drawHint")}</p>
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <button
                         type="button"
                         className="btn btn-pri"
@@ -570,14 +587,6 @@ export function Schematic({
                         onClick={finishArea}
                       >
                         {t("schematic.area.finish")}
-                      </button>
-                      <button
-                        type="button"
-                        className="btn"
-                        disabled={!draft.points.length}
-                        onClick={() => setDraft({ points: draft.points.slice(0, -1) })}
-                      >
-                        {t("schematic.area.undo")}
                       </button>
                       <button type="button" className="btn" onClick={() => setDraft(null)}>
                         {t("common.cancel")}

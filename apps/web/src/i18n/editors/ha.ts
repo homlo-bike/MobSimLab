@@ -775,9 +775,9 @@ export const editorsHa = {
   "schematic.area.color": "Launi",
   "schematic.area.defaultName": "Yanki {n}",
   "schematic.area.draw": "Zana yanki",
-  "schematic.area.drawHint": "Danna taswira don ƙara kusurwa, sannan danna Gama.",
+  "schematic.area.drawHint":
+    "Danna taswira don ƙara kusurwa, sannan danna Gama. Ctrl+Z yana cire kusurwa ta ƙarshe.",
   "schematic.area.finish": "Gama",
-  "schematic.area.undo": "Soke kusurwa",
   "schematic.area.remove": "Cire yanki",
   "schematic.area.dragHint": "Ja farin kusurwoyi a taswira don canza fasali.",
   "schematic.facts": "Aiki",

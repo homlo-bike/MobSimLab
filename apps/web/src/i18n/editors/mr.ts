@@ -777,9 +777,9 @@ export const editorsMr = {
   "schematic.area.color": "रंग",
   "schematic.area.defaultName": "क्षेत्र {n}",
   "schematic.area.draw": "क्षेत्र काढा",
-  "schematic.area.drawHint": "कोपरे जोडण्यासाठी नकाशावर क्लिक करा, मग पूर्ण करा दाबा.",
+  "schematic.area.drawHint":
+    "कोपरे जोडण्यासाठी नकाशावर क्लिक करा, मग पूर्ण करा दाबा. Ctrl+Z शेवटचा कोपरा काढतो.",
   "schematic.area.finish": "पूर्ण करा",
-  "schematic.area.undo": "कोपरा मागे घ्या",
   "schematic.area.remove": "क्षेत्र काढून टाका",
   "schematic.area.dragHint": "आकार बदलण्यासाठी नकाशावरील पांढरे कोपरे ओढा.",
   "schematic.facts": "सेवा",

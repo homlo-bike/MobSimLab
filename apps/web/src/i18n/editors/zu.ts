@@ -800,9 +800,9 @@ export const editorsZu = {
   "schematic.area.color": "Umbala",
   "schematic.area.defaultName": "Indawo {n}",
   "schematic.area.draw": "Dweba indawo",
-  "schematic.area.drawHint": "Chofoza imephu ukuze wengeze amakhona, bese ucindezela Qeda.",
+  "schematic.area.drawHint":
+    "Chofoza imephu ukuze wengeze amakhona, bese ucindezela Qeda. I-Ctrl+Z isusa ikhona lokugcina.",
   "schematic.area.finish": "Qeda",
-  "schematic.area.undo": "Hlehlisa ikhona",
   "schematic.area.remove": "Susa indawo",
   "schematic.area.dragHint": "Hudula amakhona amhlophe emephini ukuze ushintshe isimo.",
   "schematic.facts": "Isevisi",

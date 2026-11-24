@@ -416,6 +416,10 @@ describe("Schematic tab", () => {
       fireEvent.click(circles[0]!, { clientX: 10, clientY: 60 });
       // Three corners, so the area can be finished, and no station pop-up opened.
       expect((screen.getByRole("button", { name: "Finish" }) as HTMLButtonElement).disabled).toBe(false);
+      // Ctrl+Z takes back the last corner (there is no Undo corner button): two corners cannot be finished.
+      expect(screen.queryByRole("button", { name: "Undo corner" })).toBeNull();
+      fireEvent.keyDown(window, { key: "z", ctrlKey: true });
+      expect((screen.getByRole("button", { name: "Finish" }) as HTMLButtonElement).disabled).toBe(true);
     } finally {
       proto.getScreenCTM = had;
       globalThis.DOMPoint = hadPoint;

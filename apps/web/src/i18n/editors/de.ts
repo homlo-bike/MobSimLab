@@ -801,9 +801,9 @@ export const editorsDe = {
   "schematic.area.color": "Farbe",
   "schematic.area.defaultName": "Fläche {n}",
   "schematic.area.draw": "Fläche zeichnen",
-  "schematic.area.drawHint": "Klicken Sie in den Plan, um Ecken zu setzen, und dann auf Fertig.",
+  "schematic.area.drawHint":
+    "Klicken Sie in den Plan, um Ecken zu setzen, und dann auf Fertig. Strg+Z nimmt die letzte Ecke zurück.",
   "schematic.area.finish": "Fertig",
-  "schematic.area.undo": "Ecke zurücknehmen",
   "schematic.area.remove": "Fläche entfernen",
   "schematic.area.dragHint": "Ziehen Sie die weißen Ecken im Plan, um die Form zu ändern.",
   "schematic.facts": "Betrieb",

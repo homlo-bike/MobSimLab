@@ -780,9 +780,9 @@ export const editorsId = {
   "schematic.area.color": "Warna",
   "schematic.area.defaultName": "Area {n}",
   "schematic.area.draw": "Gambar area",
-  "schematic.area.drawHint": "Klik peta untuk menambah sudut, lalu tekan Selesai.",
+  "schematic.area.drawHint":
+    "Klik peta untuk menambah sudut, lalu tekan Selesai. Ctrl+Z menghapus sudut terakhir.",
   "schematic.area.finish": "Selesai",
-  "schematic.area.undo": "Batalkan sudut",
   "schematic.area.remove": "Hapus area",
   "schematic.area.dragHint": "Seret sudut putih di peta untuk mengubah bentuk.",
   "schematic.facts": "Layanan",

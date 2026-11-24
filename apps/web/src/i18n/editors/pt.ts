@@ -787,9 +787,9 @@ export const editorsPt = {
   "schematic.area.color": "Cor",
   "schematic.area.defaultName": "Área {n}",
   "schematic.area.draw": "Desenhar uma área",
-  "schematic.area.drawHint": "Clique no mapa para adicionar vértices e depois em Concluir.",
+  "schematic.area.drawHint":
+    "Clique no mapa para adicionar vértices e depois em Concluir. Ctrl+Z remove o último vértice.",
   "schematic.area.finish": "Concluir",
-  "schematic.area.undo": "Desfazer vértice",
   "schematic.area.remove": "Remover área",
   "schematic.area.dragHint": "Arraste os vértices brancos no mapa para mudar a forma.",
   "schematic.facts": "Operação",

@@ -833,9 +833,9 @@ export const editorsRu = {
   "schematic.area.color": "Цвет",
   "schematic.area.defaultName": "Область {n}",
   "schematic.area.draw": "Нарисовать область",
-  "schematic.area.drawHint": "Щёлкайте по карте, чтобы добавить вершины, затем нажмите «Готово».",
+  "schematic.area.drawHint":
+    "Щёлкайте по карте, чтобы добавить вершины, затем нажмите «Готово». Ctrl+Z удаляет последнюю вершину.",
   "schematic.area.finish": "Готово",
-  "schematic.area.undo": "Отменить вершину",
   "schematic.area.remove": "Удалить область",
   "schematic.area.dragHint": "Перетаскивайте белые вершины на карте, чтобы изменить форму.",
   "schematic.facts": "Движение",

@@ -779,9 +779,9 @@ export const editorsKk = {
   "schematic.area.color": "Түсі",
   "schematic.area.defaultName": "Аймақ {n}",
   "schematic.area.draw": "Аймақ салу",
-  "schematic.area.drawHint": "Бұрыштарды қосу үшін картаны басыңыз, сосын Дайынды басыңыз.",
+  "schematic.area.drawHint":
+    "Бұрыштарды қосу үшін картаны басыңыз, сосын Дайынды басыңыз. Ctrl+Z соңғы бұрышты алып тастайды.",
   "schematic.area.finish": "Дайын",
-  "schematic.area.undo": "Бұрышты болдырмау",
   "schematic.area.remove": "Аймақты жою",
   "schematic.area.dragHint": "Пішінді өзгерту үшін картадағы ақ бұрыштарды сүйреңіз.",
   "schematic.facts": "Қозғалыс",

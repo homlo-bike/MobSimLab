@@ -773,9 +773,9 @@ export const editorsBn = {
   "schematic.area.color": "রং",
   "schematic.area.defaultName": "এলাকা {n}",
   "schematic.area.draw": "এলাকা আঁকুন",
-  "schematic.area.drawHint": "কোণ যোগ করতে মানচিত্রে ক্লিক করুন, তারপর শেষ করুন চাপুন।",
+  "schematic.area.drawHint":
+    "কোণ যোগ করতে মানচিত্রে ক্লিক করুন, তারপর শেষ করুন চাপুন। Ctrl+Z শেষ কোণটি সরায়।",
   "schematic.area.finish": "শেষ করুন",
-  "schematic.area.undo": "কোণ বাতিল",
   "schematic.area.remove": "এলাকা সরান",
   "schematic.area.dragHint": "আকার বদলাতে মানচিত্রে সাদা কোণগুলো টানুন।",
   "schematic.facts": "পরিষেবা",

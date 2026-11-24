@@ -803,9 +803,9 @@ export const editorsTa = {
   "schematic.area.color": "நிறம்",
   "schematic.area.defaultName": "பகுதி {n}",
   "schematic.area.draw": "பகுதி வரை",
-  "schematic.area.drawHint": "மூலைகளைச் சேர்க்க வரைபடத்தில் சொடுக்கி, பின் முடி அழுத்தவும்.",
+  "schematic.area.drawHint":
+    "மூலைகளைச் சேர்க்க வரைபடத்தில் சொடுக்கி, பின் முடி அழுத்தவும். Ctrl+Z கடைசி மூலையை நீக்கும்.",
   "schematic.area.finish": "முடி",
-  "schematic.area.undo": "மூலையை நீக்கு",
   "schematic.area.remove": "பகுதியை அகற்று",
   "schematic.area.dragHint": "வடிவத்தை மாற்ற வரைபடத்தில் வெள்ளை மூலைகளை இழுக்கவும்.",
   "schematic.facts": "சேவை",

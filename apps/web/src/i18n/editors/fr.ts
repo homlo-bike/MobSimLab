@@ -801,9 +801,9 @@ export const editorsFr = {
   "schematic.area.color": "Couleur",
   "schematic.area.defaultName": "Zone {n}",
   "schematic.area.draw": "Dessiner une zone",
-  "schematic.area.drawHint": "Cliquez sur le plan pour ajouter des sommets, puis sur Terminer.",
+  "schematic.area.drawHint":
+    "Cliquez sur le plan pour ajouter des sommets, puis sur Terminer. Ctrl+Z retire le dernier sommet.",
   "schematic.area.finish": "Terminer",
-  "schematic.area.undo": "Annuler le sommet",
   "schematic.area.remove": "Supprimer la zone",
   "schematic.area.dragHint": "Faites glisser les sommets blancs sur le plan pour modifier la forme.",
   "schematic.facts": "Service",

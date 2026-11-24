@@ -791,9 +791,9 @@ export const editorsUz = {
   "schematic.area.color": "Rangi",
   "schematic.area.defaultName": "Hudud {n}",
   "schematic.area.draw": "Hudud chizish",
-  "schematic.area.drawHint": "Burchak qo‘shish uchun xaritani bosing, so‘ng Tayyorni bosing.",
+  "schematic.area.drawHint":
+    "Burchak qo‘shish uchun xaritani bosing, so‘ng Tayyorni bosing. Ctrl+Z oxirgi burchakni olib tashlaydi.",
   "schematic.area.finish": "Tayyor",
-  "schematic.area.undo": "Burchakni bekor qilish",
   "schematic.area.remove": "Hududni o‘chirish",
   "schematic.area.dragHint": "Shaklni o‘zgartirish uchun xaritadagi oq burchaklarni torting.",
   "schematic.facts": "Harakat",

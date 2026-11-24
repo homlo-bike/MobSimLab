@@ -791,9 +791,9 @@ export const editorsEn = {
   "schematic.area.color": "Colour",
   "schematic.area.defaultName": "Area {n}",
   "schematic.area.draw": "Draw an area",
-  "schematic.area.drawHint": "Click the map to add corners, then press Finish.",
+  "schematic.area.drawHint":
+    "Click the map to add corners, then press Finish. Ctrl+Z removes the last corner.",
   "schematic.area.finish": "Finish",
-  "schematic.area.undo": "Undo corner",
   "schematic.area.remove": "Remove area",
   "schematic.area.dragHint": "Drag the white corners on the map to change the shape.",
   "schematic.facts": "Service",

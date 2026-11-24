@@ -765,9 +765,9 @@ export const editorsTr = {
   "schematic.area.color": "Renk",
   "schematic.area.defaultName": "Alan {n}",
   "schematic.area.draw": "Alan çiz",
-  "schematic.area.drawHint": "Köşe eklemek için haritaya tıklayın, sonra Bitir’e basın.",
+  "schematic.area.drawHint":
+    "Köşe eklemek için haritaya tıklayın, sonra Bitir’e basın. Ctrl+Z son köşeyi siler.",
   "schematic.area.finish": "Bitir",
-  "schematic.area.undo": "Köşeyi geri al",
   "schematic.area.remove": "Alanı kaldır",
   "schematic.area.dragHint": "Şekli değiştirmek için haritadaki beyaz köşeleri sürükleyin.",
   "schematic.facts": "İşletme",

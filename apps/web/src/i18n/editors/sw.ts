@@ -786,9 +786,9 @@ export const editorsSw = {
   "schematic.area.color": "Rangi",
   "schematic.area.defaultName": "Eneo {n}",
   "schematic.area.draw": "Chora eneo",
-  "schematic.area.drawHint": "Bofya ramani kuongeza pembe, kisha bonyeza Maliza.",
+  "schematic.area.drawHint":
+    "Bofya ramani kuongeza pembe, kisha bonyeza Maliza. Ctrl+Z huondoa pembe ya mwisho.",
   "schematic.area.finish": "Maliza",
-  "schematic.area.undo": "Tendua pembe",
   "schematic.area.remove": "Ondoa eneo",
   "schematic.area.dragHint": "Buruta pembe nyeupe kwenye ramani kubadilisha umbo.",
   "schematic.facts": "Huduma",

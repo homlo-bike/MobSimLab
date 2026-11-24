@@ -782,9 +782,9 @@ export const editorsTe = {
   "schematic.area.color": "రంగు",
   "schematic.area.defaultName": "ప్రాంతం {n}",
   "schematic.area.draw": "ప్రాంతం గీయండి",
-  "schematic.area.drawHint": "మూలలు చేర్చడానికి మ్యాప్‌పై క్లిక్ చేసి, ఆపై పూర్తి నొక్కండి.",
+  "schematic.area.drawHint":
+    "మూలలు చేర్చడానికి మ్యాప్‌పై క్లిక్ చేసి, ఆపై పూర్తి నొక్కండి. Ctrl+Z చివరి మూలను తొలగిస్తుంది.",
   "schematic.area.finish": "పూర్తి",
-  "schematic.area.undo": "మూలను రద్దు చేయి",
   "schematic.area.remove": "ప్రాంతం తొలగించు",
   "schematic.area.dragHint": "ఆకారం మార్చడానికి మ్యాప్‌పై తెల్లని మూలలను లాగండి.",
   "schematic.facts": "సేవ",

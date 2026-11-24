@@ -790,9 +790,9 @@ export const editorsIt = {
   "schematic.area.color": "Colore",
   "schematic.area.defaultName": "Area {n}",
   "schematic.area.draw": "Disegna un’area",
-  "schematic.area.drawHint": "Fai clic sulla mappa per aggiungere i vertici, poi premi Fine.",
+  "schematic.area.drawHint":
+    "Fai clic sulla mappa per aggiungere i vertici, poi premi Fine. Ctrl+Z rimuove l'ultimo vertice.",
   "schematic.area.finish": "Fine",
-  "schematic.area.undo": "Annulla vertice",
   "schematic.area.remove": "Rimuovi area",
   "schematic.area.dragHint": "Trascina i vertici bianchi sulla mappa per cambiare la forma.",
   "schematic.facts": "Servizio",

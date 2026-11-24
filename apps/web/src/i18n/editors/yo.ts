@@ -756,9 +756,9 @@ export const editorsYo = {
   "schematic.area.color": "Àwọ̀",
   "schematic.area.defaultName": "Agbègbè {n}",
   "schematic.area.draw": "Ya agbègbè",
-  "schematic.area.drawHint": "Tẹ máàpù láti fi igun kún, lẹ́yìn náà tẹ Parí.",
+  "schematic.area.drawHint":
+    "Tẹ máàpù láti fi igun kún, lẹ́yìn náà tẹ Parí. Ctrl+Z máa yọ igun tó kẹ́yìn kúrò.",
   "schematic.area.finish": "Parí",
-  "schematic.area.undo": "Yí igun padà",
   "schematic.area.remove": "Yọ agbègbè kúrò",
   "schematic.area.dragHint": "Fa àwọn igun funfun lórí máàpù láti yí ìrísí padà.",
   "schematic.facts": "Iṣẹ́",

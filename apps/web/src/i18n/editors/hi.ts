@@ -776,9 +776,9 @@ export const editorsHi = {
   "schematic.area.color": "रंग",
   "schematic.area.defaultName": "क्षेत्र {n}",
   "schematic.area.draw": "क्षेत्र बनाएँ",
-  "schematic.area.drawHint": "कोने जोड़ने के लिए मानचित्र पर क्लिक करें, फिर पूरा करें दबाएँ।",
+  "schematic.area.drawHint":
+    "कोने जोड़ने के लिए मानचित्र पर क्लिक करें, फिर पूरा करें दबाएँ। Ctrl+Z आख़िरी कोना हटाता है।",
   "schematic.area.finish": "पूरा करें",
-  "schematic.area.undo": "कोना वापस लें",
   "schematic.area.remove": "क्षेत्र हटाएँ",
   "schematic.area.dragHint": "आकार बदलने के लिए मानचित्र पर सफ़ेद कोनों को खींचें।",
   "schematic.facts": "सेवा",

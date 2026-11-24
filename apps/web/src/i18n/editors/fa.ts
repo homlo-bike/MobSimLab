@@ -762,9 +762,9 @@ export const editorsFa = {
   "schematic.area.color": "رنگ",
   "schematic.area.defaultName": "محدوده {n}",
   "schematic.area.draw": "رسم محدوده",
-  "schematic.area.drawHint": "برای افزودن گوشه روی نقشه کلیک کنید و سپس پایان را بزنید.",
+  "schematic.area.drawHint":
+    "برای افزودن گوشه روی نقشه کلیک کنید و سپس پایان را بزنید. Ctrl+Z آخرین گوشه را حذف می‌کند.",
   "schematic.area.finish": "پایان",
-  "schematic.area.undo": "برگرداندن گوشه",
   "schematic.area.remove": "حذف محدوده",
   "schematic.area.dragHint": "برای تغییر شکل، گوشه‌های سفید روی نقشه را بکشید.",
   "schematic.facts": "بهره‌برداری",

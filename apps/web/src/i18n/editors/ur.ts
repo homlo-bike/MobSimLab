@@ -776,9 +776,9 @@ export const editorsUr = {
   "schematic.area.color": "رنگ",
   "schematic.area.defaultName": "علاقہ {n}",
   "schematic.area.draw": "علاقہ بنائیں",
-  "schematic.area.drawHint": "کونے شامل کرنے کے لیے نقشے پر کلک کریں، پھر مکمل دبائیں۔",
+  "schematic.area.drawHint":
+    "کونے شامل کرنے کے لیے نقشے پر کلک کریں، پھر مکمل دبائیں۔ Ctrl+Z آخری کونا ہٹاتا ہے۔",
   "schematic.area.finish": "مکمل",
-  "schematic.area.undo": "کونا واپس لیں",
   "schematic.area.remove": "علاقہ ہٹائیں",
   "schematic.area.dragHint": "شکل بدلنے کے لیے نقشے پر سفید کونے گھسیٹیں۔",
   "schematic.facts": "سروس",

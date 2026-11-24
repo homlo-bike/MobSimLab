@@ -751,9 +751,9 @@ export const editorsJa = {
   "schematic.area.color": "色",
   "schematic.area.defaultName": "エリア {n}",
   "schematic.area.draw": "エリアを描く",
-  "schematic.area.drawHint": "地図をクリックして頂点を追加し、完了を押してください。",
+  "schematic.area.drawHint":
+    "地図をクリックして頂点を追加し、完了を押してください。Ctrl+Z で最後の頂点を取り消せます。",
   "schematic.area.finish": "完了",
-  "schematic.area.undo": "頂点を取り消す",
   "schematic.area.remove": "エリアを削除",
   "schematic.area.dragHint": "地図上の白い頂点をドラッグすると形を変えられます。",
   "schematic.facts": "運行",

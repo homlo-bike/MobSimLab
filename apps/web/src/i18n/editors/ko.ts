@@ -746,9 +746,9 @@ export const editorsKo = {
   "schematic.area.color": "색상",
   "schematic.area.defaultName": "구역 {n}",
   "schematic.area.draw": "구역 그리기",
-  "schematic.area.drawHint": "지도를 클릭해 꼭짓점을 추가한 뒤 완료를 누르세요.",
+  "schematic.area.drawHint":
+    "지도를 클릭해 꼭짓점을 추가한 뒤 완료를 누르세요. Ctrl+Z를 누르면 마지막 꼭짓점이 지워집니다.",
   "schematic.area.finish": "완료",
-  "schematic.area.undo": "꼭짓점 취소",
   "schematic.area.remove": "구역 삭제",
   "schematic.area.dragHint": "지도의 흰 꼭짓점을 끌어 모양을 바꾸세요.",
   "schematic.facts": "운행",
