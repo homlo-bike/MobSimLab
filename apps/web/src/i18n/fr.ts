@@ -236,6 +236,9 @@ export const fr: Messages = {
   "save.saving": "Enregistrement…",
   "save.offline": "Pas encore enregistré · nouvelle tentative",
   "save.failed": "Non enregistré : {error}",
+  "session.staleToken":
+    "Vos modifications ne sont plus enregistrées, car le serveur a redémarré pendant que cette page était ouverte. Rechargez la page pour continuer.",
+  "session.reload": "Recharger la page",
   "save.conflict":
     "{who} a enregistré {drawing} pendant que vous le modifiiez. Quelle version le projet doit-il garder ?",
   "save.someone": "Quelqu’un d’autre",

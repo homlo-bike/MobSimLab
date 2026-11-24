@@ -236,6 +236,9 @@ export const zu: Messages = {
   "save.saving": "Iyagcina…",
   "save.offline": "Akukagcinwa · kuzanwa futhi",
   "save.failed": "Akugcinwanga: {error}",
+  "session.staleToken":
+    "Izinguquko zakho azisalondolozwa ngoba iseva iqale kabusha ngesikhathi leli khasi livuliwe. Layisha kabusha ikhasi ukuze uqhubeke nomsebenzi.",
+  "session.reload": "Layisha kabusha ikhasi",
   "save.conflict":
     "U-{who} ugcine i-{drawing} ngesikhathi uyishintsha. Iyiphi okufanele iphrojekthi iyigcine?",
   "save.someone": "Omunye umuntu",

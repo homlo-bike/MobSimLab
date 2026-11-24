@@ -233,6 +233,9 @@ export const sw: Messages = {
   "save.saving": "Inahifadhi…",
   "save.offline": "Bado haijahifadhiwa · inajaribu tena",
   "save.failed": "Haijahifadhiwa: {error}",
+  "session.staleToken":
+    "Mabadiliko yako hayahifadhiwi tena kwa sababu seva ilianzishwa upya ukurasa huu ukiwa wazi. Pakia upya ukurasa ili kuendelea kufanya kazi.",
+  "session.reload": "Pakia upya ukurasa",
   "save.conflict": "{who} alihifadhi {drawing} wakati ukiibadilisha. Mradi uhifadhi ipi?",
   "save.someone": "Mtu mwingine",
   "save.keepMine": "Weka yangu",

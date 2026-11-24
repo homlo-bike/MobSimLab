@@ -234,6 +234,9 @@ export const tr: Messages = {
   "save.saving": "Kaydediliyor…",
   "save.offline": "Kaydedilmedi · yeniden deneniyor",
   "save.failed": "Kaydedilemedi: {error}",
+  "session.staleToken":
+    "Bu sayfa açıkken sunucu yeniden başlatıldığı için değişiklikleriniz artık kaydedilmiyor. Çalışmaya devam etmek için sayfayı yeniden yükleyin.",
+  "session.reload": "Sayfayı yeniden yükle",
   "save.conflict": "Siz {drawing} üzerinde değişiklik yaparken {who} kaydetti. Hangisi kalsın?",
   "save.someone": "Başka biri",
   "save.keepMine": "Benimkini koru",

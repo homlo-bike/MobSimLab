@@ -229,6 +229,9 @@ export const en = {
   "save.saving": "Saving…",
   "save.offline": "Not saved yet · trying again",
   "save.failed": "Not saved: {error}",
+  "session.staleToken":
+    "Your changes are no longer being saved because the server restarted while this page was open. Reload the page to keep working.",
+  "session.reload": "Reload page",
   "save.conflict": "{who} saved the {drawing} while you were changing it. Which one should the project keep?",
   "save.someone": "Someone else",
   "save.keepMine": "Keep mine",

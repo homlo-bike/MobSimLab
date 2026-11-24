@@ -227,6 +227,8 @@ export const am: Messages = {
   "save.saving": "በማስቀመጥ ላይ…",
   "save.offline": "ገና አልተቀመጠም · እንደገና በመሞከር ላይ",
   "save.failed": "አልተቀመጠም፦ {error}",
+  "session.staleToken": "ይህ ገጽ ክፍት ሆኖ ሳለ አገልጋዩ እንደገና ስለጀመረ ለውጦችዎ ከአሁን በኋላ አይቀመጡም። መስራት ለመቀጠል ገጹን እንደገና ይጫኑ።",
+  "session.reload": "ገጹን እንደገና ጫን",
   "save.conflict": "እርስዎ እየቀየሩት ሳለ {who} {drawing}ን አስቀመጠ። ፕሮጀክቱ የትኛውን ይያዝ?",
   "save.someone": "ሌላ ሰው",
   "save.keepMine": "የእኔን ያዝ",

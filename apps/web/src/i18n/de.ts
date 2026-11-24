@@ -239,6 +239,9 @@ export const de: Messages = {
   "save.saving": "Wird gespeichert…",
   "save.offline": "Noch nicht gespeichert · neuer Versuch läuft",
   "save.failed": "Nicht gespeichert: {error}",
+  "session.staleToken":
+    "Ihre Änderungen werden nicht mehr gespeichert, weil der Server neu gestartet wurde, während diese Seite offen war. Laden Sie die Seite neu, um weiterzuarbeiten.",
+  "session.reload": "Seite neu laden",
   "save.conflict":
     "{who} hat {drawing} gespeichert, während Sie daran gearbeitet haben. Welche Fassung soll das Projekt behalten?",
   "save.someone": "Jemand anderes",

@@ -234,6 +234,9 @@ export const ha: Messages = {
   "save.saving": "Ana adanawa…",
   "save.offline": "Ba a adana ba tukuna · ana sake gwadawa",
   "save.failed": "Ba a adana ba: {error}",
+  "session.staleToken":
+    "Ba a ƙara adana canje-canjenku saboda sabar ta sake farawa yayin da wannan shafi ke buɗe. Sake loda shafin don ci gaba da aiki.",
+  "session.reload": "Sake loda shafi",
   "save.conflict": "{who} ya adana {drawing} yayin da kake canza shi. Wanne ne aikin zai riƙe?",
   "save.someone": "Wani daban",
   "save.keepMine": "Riƙe nawa",

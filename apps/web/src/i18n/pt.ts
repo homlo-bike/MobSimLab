@@ -235,6 +235,9 @@ export const pt: Messages = {
   "save.saving": "Salvando…",
   "save.offline": "Ainda não salvo · tentando novamente",
   "save.failed": "Não salvo: {error}",
+  "session.staleToken":
+    "As suas alterações já não estão a ser guardadas porque o servidor reiniciou enquanto esta página estava aberta. Recarregue a página para continuar.",
+  "session.reload": "Recarregar página",
   "save.conflict":
     "{who} salvou {drawing} enquanto você fazia alterações. Qual versão o projeto deve manter?",
   "save.someone": "Outra pessoa",

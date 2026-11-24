@@ -227,6 +227,9 @@ export const ar: Messages = {
   "save.saving": "جارٍ الحفظ…",
   "save.offline": "لم يُحفظ بعد · جارٍ إعادة المحاولة",
   "save.failed": "لم يُحفظ: {error}",
+  "session.staleToken":
+    "لم تعد تغييراتك تُحفظ لأن الخادم أُعيد تشغيله بينما كانت هذه الصفحة مفتوحة. أعد تحميل الصفحة لمتابعة العمل.",
+  "session.reload": "إعادة تحميل الصفحة",
   "save.conflict": "حفظ {who} {drawing} بينما كنت تغيّره. أيّ نسخة يجب أن يحتفظ بها المشروع؟",
   "save.someone": "شخص آخر",
   "save.keepMine": "الاحتفاظ بنسختي",

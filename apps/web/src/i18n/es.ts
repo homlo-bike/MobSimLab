@@ -236,6 +236,9 @@ export const es: Messages = {
   "save.saving": "Guardando…",
   "save.offline": "Aún sin guardar · reintentando",
   "save.failed": "No se guardó: {error}",
+  "session.staleToken":
+    "Tus cambios ya no se guardan porque el servidor se reinició mientras esta página estaba abierta. Vuelve a cargar la página para seguir trabajando.",
+  "session.reload": "Volver a cargar la página",
   "save.conflict": "{who} guardó {drawing} mientras lo cambiabas. ¿Qué versión debe conservar el proyecto?",
   "save.someone": "Otra persona",
   "save.keepMine": "Conservar la mía",

@@ -235,6 +235,9 @@ export const id: Messages = {
   "save.saving": "Menyimpan…",
   "save.offline": "Belum tersimpan · mencoba lagi",
   "save.failed": "Tidak dapat menyimpan: {error}",
+  "session.staleToken":
+    "Perubahan Anda tidak lagi disimpan karena server dimulai ulang saat halaman ini terbuka. Muat ulang halaman untuk melanjutkan.",
+  "session.reload": "Muat ulang halaman",
   "save.conflict": "{who} menyimpan saat Anda mengubah {drawing}. Mana yang ingin disimpan?",
   "save.someone": "Orang lain",
   "save.keepMine": "Simpan milik saya",

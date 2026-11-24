@@ -236,6 +236,9 @@ export const uz: Messages = {
   "save.saving": "Saqlanmoqda…",
   "save.offline": "Hali saqlanmadi · qayta urinilmoqda",
   "save.failed": "Saqlanmadi: {error}",
+  "session.staleToken":
+    "Bu sahifa ochiq turganda server qayta ishga tushgani uchun o‘zgarishlaringiz endi saqlanmayapti. Ishni davom ettirish uchun sahifani qayta yuklang.",
+  "session.reload": "Sahifani qayta yuklash",
   "save.conflict": "Siz {drawing} ni oʻzgartirayotganingizda {who} uni saqladi. Loyihada qaysi biri qolsin?",
   "save.someone": "Boshqa kishi",
   "save.keepMine": "Meniki qolsin",

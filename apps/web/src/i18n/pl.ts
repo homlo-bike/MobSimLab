@@ -234,6 +234,9 @@ export const pl: Messages = {
   "save.saving": "Zapisywanie…",
   "save.offline": "Nie zapisano · ponawianie",
   "save.failed": "Nie udało się zapisać: {error}",
+  "session.staleToken":
+    "Zmiany nie są już zapisywane, ponieważ serwer został ponownie uruchomiony, gdy ta strona była otwarta. Odśwież stronę, aby kontynuować pracę.",
+  "session.reload": "Odśwież stronę",
   "save.conflict": "{who} zapisał(a) zmiany, gdy zmieniałeś(-aś) {drawing}. Którą wersję zachować?",
   "save.someone": "Ktoś inny",
   "save.keepMine": "Zachowaj moją",

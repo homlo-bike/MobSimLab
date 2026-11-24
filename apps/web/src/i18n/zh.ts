@@ -226,6 +226,8 @@ export const zh: Messages = {
   "save.saving": "正在保存…",
   "save.offline": "尚未保存 · 正在重试",
   "save.failed": "未保存：{error}",
+  "session.staleToken": "此页面打开期间服务器已重启，您的更改不再被保存。请重新加载页面以继续工作。",
+  "session.reload": "重新加载页面",
   "save.conflict": "在你修改{drawing}时，{who}保存了它。项目应保留哪一个版本？",
   "save.someone": "其他人",
   "save.keepMine": "保留我的",

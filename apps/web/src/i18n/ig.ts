@@ -234,6 +234,9 @@ export const ig: Messages = {
   "save.saving": "Na-echekwa…",
   "save.offline": "Echekwabeghị · na-anwa ọzọ",
   "save.failed": "Echekwaghị: {error}",
+  "session.staleToken":
+    "A naghị echekwa mgbanwe gị ọzọ n'ihi na sava malitere ọzọ mgbe ibe a mepere emepe. Bugharịa ibe ahụ ka ị gaa n'ihu na-arụ ọrụ.",
+  "session.reload": "Bugharịa ibe",
   "save.conflict": "{who} chekwara {drawing} mgbe ị na-agbanwe ya. Kedu nke ọrụ ahụ ga-edebe?",
   "save.someone": "Onye ọzọ",
   "save.keepMine": "Debe nke m",

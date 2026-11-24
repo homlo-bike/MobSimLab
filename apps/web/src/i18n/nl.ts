@@ -235,6 +235,9 @@ export const nl: Messages = {
   "save.saving": "Opslaan…",
   "save.offline": "Nog niet opgeslagen · probeert opnieuw",
   "save.failed": "Niet opgeslagen: {error}",
+  "session.staleToken":
+    "Uw wijzigingen worden niet meer opgeslagen, omdat de server opnieuw is gestart terwijl deze pagina open was. Laad de pagina opnieuw om verder te werken.",
+  "session.reload": "Pagina opnieuw laden",
   "save.conflict":
     "{who} heeft {drawing} opgeslagen terwijl jij het aanpaste. Welke versie moet het project houden?",
   "save.someone": "Iemand anders",

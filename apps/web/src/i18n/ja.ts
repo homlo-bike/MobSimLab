@@ -231,6 +231,9 @@ export const ja: Messages = {
   "save.saving": "保存中…",
   "save.offline": "未保存 · 再試行中",
   "save.failed": "保存できませんでした：{error}",
+  "session.staleToken":
+    "このページを開いている間にサーバーが再起動したため、変更が保存されなくなっています。作業を続けるにはページを再読み込みしてください。",
+  "session.reload": "ページを再読み込み",
   "save.conflict": "あなたが{drawing}を変更している間に{who}が保存しました。どちらを残しますか？",
   "save.someone": "他のユーザー",
   "save.keepMine": "自分のものを残す",

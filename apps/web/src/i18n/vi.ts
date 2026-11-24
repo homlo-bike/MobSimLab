@@ -232,6 +232,9 @@ export const vi: Messages = {
   "save.saving": "Đang lưu…",
   "save.offline": "Chưa lưu · đang thử lại",
   "save.failed": "Không thể lưu: {error}",
+  "session.staleToken":
+    "Các thay đổi của bạn không còn được lưu vì máy chủ đã khởi động lại trong khi trang này đang mở. Hãy tải lại trang để tiếp tục làm việc.",
+  "session.reload": "Tải lại trang",
   "save.conflict": "{who} đã lưu trong khi bạn thay đổi {drawing}. Bạn muốn giữ bản nào?",
   "save.someone": "Người khác",
   "save.keepMine": "Giữ bản của tôi",

@@ -232,6 +232,9 @@ export const yo: Messages = {
   "save.saving": "Ó ń tọ́jú…",
   "save.offline": "A kò tíì tọ́jú · à ń gbìyànjú lẹ́ẹ̀kan sí i",
   "save.failed": "A kò tọ́jú: {error}",
+  "session.staleToken":
+    "A kò tún ń fi àwọn àyípadà rẹ pamọ́ mọ́ nítorí pé sáfà tún bẹ̀rẹ̀ nígbà tí ojú-ìwé yìí ṣí sílẹ̀. Tún ojú-ìwé náà gbé láti máa bá iṣẹ́ lọ.",
+  "session.reload": "Tún ojú-ìwé gbé",
   "save.conflict": "{who} tọ́jú {drawing} nígbà tí o ń yí i padà. Èwo ni iṣẹ́ àkànṣe náà kí ó pa mọ́?",
   "save.someone": "Ẹlòmíràn",
   "save.keepMine": "Pa tèmi mọ́",

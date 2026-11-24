@@ -230,6 +230,9 @@ export const ko: Messages = {
   "save.saving": "저장 중…",
   "save.offline": "저장되지 않음 · 재시도 중",
   "save.failed": "저장할 수 없습니다: {error}",
+  "session.staleToken":
+    "이 페이지가 열려 있는 동안 서버가 다시 시작되어 변경 사항이 더 이상 저장되지 않습니다. 계속 작업하려면 페이지를 새로 고치세요.",
+  "session.reload": "페이지 새로 고침",
   "save.conflict": "내가 {drawing}을(를) 변경하는 동안 {who}이(가) 저장했습니다. 어느 쪽을 유지할까요?",
   "save.someone": "다른 사용자",
   "save.keepMine": "내 것 유지",

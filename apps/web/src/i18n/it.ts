@@ -234,6 +234,9 @@ export const it: Messages = {
   "save.saving": "Salvataggio…",
   "save.offline": "Non salvato · nuovo tentativo",
   "save.failed": "Impossibile salvare: {error}",
+  "session.staleToken":
+    "Le modifiche non vengono più salvate perché il server è stato riavviato mentre questa pagina era aperta. Ricarica la pagina per continuare.",
+  "session.reload": "Ricarica la pagina",
   "save.conflict": "{who} ha salvato mentre modificavi {drawing}. Quale versione tenere?",
   "save.someone": "Qualcun altro",
   "save.keepMine": "Tieni la mia",

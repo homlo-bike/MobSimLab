@@ -24,6 +24,7 @@ import { DEFAULT_BASEMAP } from "../src/map/basemaps";
 import type { Project } from "../src/projects/api";
 import type { Me } from "../src/session/api";
 import { parseRoute, routePath } from "../src/shell/route";
+import { resetStaleToken, watchStaleToken } from "../src/session/staleToken";
 
 const signedOut: Me = { instance: { mode: "open", name: "MobSimLab" }, signInAvailable: true };
 const owner: Me = {
@@ -594,6 +595,27 @@ describe("project workspace", () => {
     fireEvent.click(within(alert).getByRole("button", { name: "Use theirs" }));
     expect(screen.queryByRole("alert")).toBeNull();
     expect(screen.getByText("Saved")).toBeTruthy();
+  });
+
+  it("asks to reload the page once the server refuses its outdated security token", async () => {
+    window.localStorage.setItem(`mobsimlab.streetSetups.${P1}`, JSON.stringify([{ way: 7 }]));
+    stubApi(owner, { [`GET /api/projects/${P1}/drawings`]: { drawings: {} } });
+    const plain = vi.mocked(fetch).getMockImplementation()!;
+    vi.mocked(fetch).mockImplementation(async (url, init) =>
+      String(url).endsWith("/drawings/street-setups")
+        ? new Response(JSON.stringify({ statusCode: 403, message: "missing or invalid CSRF token" }), {
+            status: 403,
+          })
+        : plain(url, init),
+    );
+    resetStaleToken();
+    watchStaleToken();
+    window.history.replaceState(null, "", `/projects/${P1}/schematic`);
+    render(<App />);
+    const alert = await screen.findByRole("alert", {}, { timeout: 3000 });
+    expect(alert.textContent).toMatch(/no longer being saved because the server restarted/);
+    expect(within(alert).getByRole("button", { name: "Reload page" })).toBeTruthy();
+    resetStaleToken();
   });
 
   it("saves project preferences", async () => {
