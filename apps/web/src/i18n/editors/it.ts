@@ -1503,6 +1503,12 @@ export const editorsIt = {
   "capacity.run": "Avvia il test",
   "capacity.runAgain": "Avvia di nuovo",
   "capacity.stop": "Ferma",
+  "capacity.replay.title": "Riproduzione sulla mappa",
+  "capacity.replay.note":
+    "Tutte le linee disegnate si muovono insieme con un unico orologio. I treni viaggiano come pianificato, senza ritardi casuali; i veicoli delle linee stradali incontrano il traffico della prima esecuzione del test.",
+  "capacity.replay.none": "Non c’è nulla da riprodurre: nessuna linea ha circolato nel periodo.",
+  "capacity.replay.stopped":
+    "L’esecuzione si è fermata prima, quindi da quel momento i treni restano fermi: {why}",
   "capacity.summary":
     "{period} · {trips} corse pianificate con margini · {out} treni in servizio, {reserve} di riserva",
   "capacity.importNotes": "Note di importazione ({n})",

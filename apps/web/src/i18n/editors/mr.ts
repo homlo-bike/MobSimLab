@@ -1472,6 +1472,11 @@ export const editorsMr = {
   "capacity.run": "चाचणी चालवा",
   "capacity.runAgain": "पुन्हा चालवा",
   "capacity.stop": "थांबवा",
+  "capacity.replay.title": "नकाशावर पुन्हा चालवा",
+  "capacity.replay.note":
+    "सर्व काढलेल्या मार्गिका एकाच घड्याळावर एकत्र धावतात. गाड्या नियोजनानुसार, यादृच्छिक विलंबाशिवाय धावतात; रस्त्यावरील मार्गिकांची वाहने चाचणीच्या पहिल्या फेरीतील वाहतुकीला सामोरी जातात.",
+  "capacity.replay.none": "पुन्हा चालवण्यासारखे काही नाही: या कालावधीत एकही मार्गिका धावली नाही.",
+  "capacity.replay.stopped": "फेरी लवकर थांबली, म्हणून त्यानंतर गाड्या उभ्या राहतात: {why}",
   "capacity.summary": "{period} · मार्जिनसह {trips} फेऱ्या नियोजित · {out} गाड्या सेवेत, {reserve} राखीव",
   "capacity.importNotes": "आयात नोंदी ({n})",
   "capacity.plannerNotes": "नियोजक नोंदी ({n})",

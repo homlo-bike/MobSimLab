@@ -1485,6 +1485,12 @@ export const editorsHa = {
   "capacity.run": "Gudanar da gwaji",
   "capacity.runAgain": "Sake gudanarwa",
   "capacity.stop": "Tsaya",
+  "capacity.replay.title": "Sake kunnawa a taswira",
+  "capacity.replay.note":
+    "Duk layukan da aka zana suna tafiya tare a agogo ɗaya. Jiragen ƙasa suna tafiya kamar yadda aka tsara, ba tare da jinkiri na bazuwar ba; motocin layukan titi suna haɗuwa da cunkoson zagayen farko na gwajin.",
+  "capacity.replay.none": "Babu abin da za a sake kunnawa: babu layin da ya yi aiki a wannan lokaci.",
+  "capacity.replay.stopped":
+    "Zagayen ya tsaya da wuri, don haka jiragen ƙasa suna tsaye tun daga lokacin: {why}",
   "capacity.summary":
     "{period} · an tsara tafiye-tafiye {trips} da rata · jirage {out} suna aiki, {reserve} a ajiye",
   "capacity.importNotes": "Bayanan shigo da ({n})",

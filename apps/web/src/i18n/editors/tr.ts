@@ -1462,6 +1462,12 @@ export const editorsTr = {
   "capacity.run": "Testi çalıştır",
   "capacity.runAgain": "Yeniden çalıştır",
   "capacity.stop": "Durdur",
+  "capacity.replay.title": "Haritada oynatma",
+  "capacity.replay.note":
+    "Çizilen tüm hatlar tek bir saatle birlikte hareket eder. Trenler planlandığı gibi, rastgele gecikme olmadan çalışır; cadde hatlarının araçları testin ilk çalıştırmasındaki trafikle karşılaşır.",
+  "capacity.replay.none": "Oynatılacak bir şey yok: dönemde hiçbir hat çalışmadı.",
+  "capacity.replay.stopped":
+    "Çalıştırma erken durdu, bu yüzden trenler o andan sonra hareketsiz kalır: {why}",
   "capacity.summary": "{period} · paylarla planlanan {trips} sefer · hizmette {out} tren, yedekte {reserve}",
   "capacity.importNotes": "İçe aktarma notları ({n})",
   "capacity.plannerNotes": "Planlayıcı notları ({n})",

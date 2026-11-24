@@ -1500,6 +1500,11 @@ export const editorsNl = {
   "capacity.run": "Test uitvoeren",
   "capacity.runAgain": "Opnieuw uitvoeren",
   "capacity.stop": "Stoppen",
+  "capacity.replay.title": "Afspelen op de kaart",
+  "capacity.replay.note":
+    "Alle getekende lijnen rijden samen op één klok. Treinen rijden volgens plan, zonder willekeurige vertragingen; voertuigen van straatlijnen hebben het verkeer van de eerste testrun.",
+  "capacity.replay.none": "Er is niets af te spelen: in de periode reed geen enkele lijn.",
+  "capacity.replay.stopped": "De run stopte vroegtijdig, dus de treinen staan vanaf dan stil: {why}",
   "capacity.summary":
     "{period} · {trips} ritten met marges gepland · {out} treinen in dienst, {reserve} in reserve",
   "capacity.importNotes": "Importnotities ({n})",

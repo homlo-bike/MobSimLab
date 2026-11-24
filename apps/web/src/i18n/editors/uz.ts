@@ -1500,6 +1500,12 @@ export const editorsUz = {
   "capacity.run": "Sinovni boshlash",
   "capacity.runAgain": "Qayta boshlash",
   "capacity.stop": "To‘xtatish",
+  "capacity.replay.title": "Xaritada qayta ijro",
+  "capacity.replay.note":
+    "Barcha chizilgan liniyalar bitta soat bo‘yicha birga harakatlanadi. Poyezdlar rejaga ko‘ra, tasodifiy kechikishlarsiz yuradi; ko‘cha liniyalari transporti testning birinchi yurishidagi harakatga duch keladi.",
+  "capacity.replay.none": "Qayta ijro etadigan narsa yo‘q: bu davrda hech bir liniya yurmadi.",
+  "capacity.replay.stopped":
+    "Yurish erta to‘xtadi, shuning uchun o‘shandan keyin poyezdlar turib qoladi: {why}",
   "capacity.summary":
     "{period} · zaxira bilan {trips} ta qatnov rejalashtirildi · {out} ta poyezd xizmatda, {reserve} ta zaxirada",
   "capacity.importNotes": "Import izohlari ({n})",

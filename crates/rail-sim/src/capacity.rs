@@ -934,3 +934,201 @@ pub fn practical_maximum(points: &[&Point]) -> Option<f64> {
         .map(|x| x.per_hour)
         .reduce(f64::max)
 }
+
+/// One train of the replay.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct ReplayTrain {
+    /// Vehicle number from the plan.
+    pub vehicle: usize,
+    /// Index of its line in [`Replay::lines`] (the line of its first passenger trip).
+    pub line: usize,
+    /// Three numbers per frame: index in [`Replay::tracks`], chainage of the head on that track (m,
+    /// to 0.1 m) and speed (km/h, to 0.1); the track index is -1 for a frame without a position.
+    pub s: Vec<f64>,
+    /// Its passenger calls in time order, four numbers each: planned departure, arrival and
+    /// departure (s after midnight, -1 when it did not get there) and the kind (0 along a trip,
+    /// 2 the last call of its last trip).
+    pub st: Vec<f64>,
+}
+
+/// The replay of a capacity run's period without random delays: where every train is, frame by
+/// frame, for the map.
+#[derive(Clone, Debug, PartialEq, Serialize)]
+pub struct Replay {
+    /// Time of the first frame, s after midnight.
+    pub begin: f64,
+    /// Time between frames, s.
+    pub frame_s: f64,
+    /// Number of frames.
+    pub frames: usize,
+    /// The tracks the trains' positions refer to: the topology section id and where the track
+    /// starts on that section, m (a section the import split into tracks `{id}/{k}`).
+    pub tracks: Vec<(String, f64)>,
+    /// The lines with service in the period: id and name.
+    pub lines: Vec<(String, String)>,
+    /// The trains.
+    pub trains: Vec<ReplayTrain>,
+    /// Why the run stopped early (a deadlock or a safety check), if it did, in English.
+    pub stopped: Option<String>,
+    /// The same as a message, to show in the app language.
+    pub stopped_msg: Option<Msg>,
+}
+
+/// Purpose: the topology section of a track and where the track starts on it, m. The topology
+/// import splits a section into tracks `{id}/0`, `{id}/1`, ... in order along it.
+fn topology_place(m: &Model, track: usize) -> (String, f64) {
+    let id = &m.tracks[track].id;
+    if let Some((base, k)) = id.rsplit_once('/') {
+        if let Ok(k) = k.parse::<usize>() {
+            let parts: Option<Vec<f64>> = (0..k)
+                .map(|j| {
+                    let want = format!("{base}/{j}");
+                    m.tracks.iter().find(|t| t.id == want).map(|t| t.length_m)
+                })
+                .collect();
+            if let Some(parts) = parts {
+                return (base.to_string(), parts.iter().sum());
+            }
+        }
+    }
+    (id.clone(), 0.0)
+}
+
+/// Purpose: the replay of the period as planned and run through the kernel without random delays
+/// (the same run as the capacity run's on-time figures), with warm-up and recovery.
+/// Inputs: network, lines, settings, and the time between frames, s.
+/// Output: the replay, or Err when the lines cannot be planned or the period is empty.
+/// Side effects: none (deterministic).
+pub fn replay(
+    m: &Model,
+    lines: &[LineSpec],
+    p: &CapacityParams,
+    frame_s: f64,
+) -> Result<Replay, Msg> {
+    if p.to_s <= p.from_s {
+        return Err(msg!("rail.sim.period_reversed"));
+    }
+    let active: Vec<&LineSpec> = lines
+        .iter()
+        .filter(|l| period_headway(l, p).is_some())
+        .collect();
+    if active.is_empty() {
+        return Err(msg!("rail.sim.no_service"));
+    }
+    let cut_lines: Vec<LineSpec> = active.iter().map(|l| cut(l, p, None)).collect();
+    let pp = p.signalling.plan(PlanParams {
+        min_buffer_s: p.min_buffer_s,
+        ..PlanParams::default()
+    });
+    let pl = plan(m, &cut_lines, &pp)?;
+    let np = p.signalling.net(NetParams::default());
+    let mut sim = NetworkSim::new(m, &pl, np)?;
+    let frame_s = frame_s.max(1.0);
+    let begin = p.from_s - p.warmup_s;
+    let end = p.to_s + p.recovery_s;
+    let frames = ((end - begin) / frame_s).floor() as usize + 1;
+    let vehicles: Vec<usize> = {
+        let mut v: Vec<usize> = pl.runs.iter().map(|r| r.vehicle).collect();
+        v.sort_unstable();
+        v.dedup();
+        v
+    };
+    let slot: BTreeMap<usize, usize> = vehicles.iter().enumerate().map(|(i, &v)| (v, i)).collect();
+    let mut samples: Vec<Vec<f64>> = vec![Vec::with_capacity(frames * 3); vehicles.len()];
+    let mut track_index: BTreeMap<usize, usize> = BTreeMap::new();
+    let mut tracks: Vec<(String, f64)> = Vec::new();
+    let mut stopped = None;
+    for k in 0..frames {
+        let t = begin + k as f64 * frame_s;
+        if stopped.is_none() {
+            if let Err(e) = sim.run_until(t) {
+                stopped = Some(e);
+            }
+        }
+        let mut seen = vec![false; vehicles.len()];
+        for at in sim.positions() {
+            let Some(&i) = slot.get(&at.vehicle) else {
+                continue;
+            };
+            if seen[i] {
+                continue;
+            }
+            seen[i] = true;
+            let ti = *track_index.entry(at.track).or_insert_with(|| {
+                tracks.push(topology_place(m, at.track));
+                tracks.len() - 1
+            });
+            samples[i].extend([
+                ti as f64,
+                (at.chainage_m * 10.0).round() / 10.0,
+                (at.speed_mps * 36.0).round() / 10.0,
+            ]);
+        }
+        for (i, s) in seen.iter().enumerate() {
+            if !s {
+                samples[i].extend([-1.0, 0.0, 0.0]);
+            }
+        }
+    }
+    // Each train's line: that of its first passenger trip (else its first run).
+    let line_of = |v: usize| {
+        pl.runs
+            .iter()
+            .filter(|r| r.vehicle == v)
+            .find(|r| r.kind == RunKind::Service)
+            .or_else(|| pl.runs.iter().find(|r| r.vehicle == v))
+            .map(|r| r.line)
+            .unwrap_or(0)
+    };
+    // Passenger calls per train, in time order.
+    let mut calls: Vec<Vec<(f64, f64, f64)>> = vec![Vec::new(); vehicles.len()];
+    for c in sim.calls() {
+        let r = &pl.runs[c.run];
+        let Some(&i) = slot.get(&r.vehicle) else {
+            continue;
+        };
+        let Some(planned) = c.planned_depart_s.or(c.planned_arrive_s) else {
+            continue;
+        };
+        let arrive = c.arrive_s.or(c.depart_s).unwrap_or(-1.0);
+        let depart = c.depart_s.or(if c.planned_depart_s.is_none() {
+            c.arrive_s
+        } else {
+            None
+        });
+        calls[i].push((planned, arrive, depart.unwrap_or(-1.0)));
+    }
+    let trains = vehicles
+        .iter()
+        .enumerate()
+        .map(|(i, &v)| {
+            let mut cs = std::mem::take(&mut calls[i]);
+            cs.sort_by(|a, b| a.0.total_cmp(&b.0));
+            let n = cs.len();
+            let st = cs
+                .into_iter()
+                .enumerate()
+                .flat_map(|(j, (pd, a, d))| [pd, a, d, if j + 1 == n { 2.0 } else { 0.0 }])
+                .collect();
+            ReplayTrain {
+                vehicle: v,
+                line: line_of(v),
+                s: std::mem::take(&mut samples[i]),
+                st,
+            }
+        })
+        .collect();
+    Ok(Replay {
+        begin,
+        frame_s,
+        frames,
+        tracks,
+        lines: active
+            .iter()
+            .map(|l| (l.id.clone(), l.name.clone()))
+            .collect(),
+        trains,
+        stopped: stopped.as_ref().map(Msg::english),
+        stopped_msg: stopped,
+    })
+}

@@ -1432,6 +1432,11 @@ export const editorsAm = {
   "capacity.run": "ሙከራውን አስኪድ",
   "capacity.runAgain": "እንደገና አስኪድ",
   "capacity.stop": "አቁም",
+  "capacity.replay.title": "በካርታው ላይ እንደገና አጫውት",
+  "capacity.replay.note":
+    "የተሳሉት መስመሮች ሁሉ በአንድ ሰዓት አብረው ይንቀሳቀሳሉ። ባቡሮች እንደታቀደው ያለ ዘፈቀደ መዘግየት ይሄዳሉ፤ የመንገድ መስመሮች ተሽከርካሪዎች የሙከራው የመጀመሪያ ሩጫ ትራፊክ ያጋጥማቸዋል።",
+  "capacity.replay.none": "እንደገና የሚጫወት ነገር የለም፦ በዚህ ጊዜ ውስጥ ምንም መስመር አልሄደም።",
+  "capacity.replay.stopped": "ሩጫው ቀደም ብሎ ቆሟል፤ ስለዚህ ከዚያ በኋላ ባቡሮቹ ቆመው ይቀራሉ፦ {why}",
   "capacity.summary": "{period} · {trips} ጉዞዎች በትርፍ ጊዜ ታቅደዋል · {out} ባቡሮች በአገልግሎት፣ {reserve} በመጠባበቂያ",
   "capacity.importNotes": "የማስገቢያ ማስታወሻዎች ({n})",
   "capacity.plannerNotes": "የአቅጣጫ ሰጪው ማስታወሻዎች ({n})",

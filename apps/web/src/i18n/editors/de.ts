@@ -1522,6 +1522,12 @@ export const editorsDe = {
   "capacity.run": "Test starten",
   "capacity.runAgain": "Erneut starten",
   "capacity.stop": "Stopp",
+  "capacity.replay.title": "Wiedergabe auf der Karte",
+  "capacity.replay.note":
+    "Alle gezeichneten Linien fahren gemeinsam auf einer Uhr. Züge fahren wie geplant, ohne zufällige Verspätungen; Fahrzeuge der Buslinien haben den Verkehr des ersten Testlaufs.",
+  "capacity.replay.none": "Es gibt nichts wiederzugeben: Im Zeitraum ist keine Linie gefahren.",
+  "capacity.replay.stopped":
+    "Der Lauf wurde vorzeitig angehalten, daher stehen die Züge ab dann still: {why}",
   "capacity.summary":
     "{period} · {trips} Fahrten mit Reserven geplant · {out} Züge im Einsatz, {reserve} in Reserve",
   "capacity.importNotes": "Import-Hinweise ({n})",

@@ -1528,6 +1528,12 @@ export const editorsFr = {
   "capacity.run": "Lancer le test",
   "capacity.runAgain": "Relancer",
   "capacity.stop": "Arrêter",
+  "capacity.replay.title": "Relecture sur la carte",
+  "capacity.replay.note":
+    "Toutes les lignes dessinées circulent ensemble sur une même horloge. Les trains roulent comme prévu, sans retards aléatoires ; les véhicules des lignes routières rencontrent le trafic du premier passage du test.",
+  "capacity.replay.none": "Rien à relire : aucune ligne n’a circulé pendant la période.",
+  "capacity.replay.stopped":
+    "Le passage s’est arrêté plus tôt, les trains restent donc immobiles à partir de là : {why}",
   "capacity.summary":
     "{period} · {trips} courses planifiées avec marges · {out} trains en service, {reserve} en réserve",
   "capacity.importNotes": "Notes d’import ({n})",

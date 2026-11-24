@@ -1448,6 +1448,12 @@ export const editorsYo = {
   "capacity.run": "Ṣe ìdánwò",
   "capacity.runAgain": "Tún ṣe é",
   "capacity.stop": "Dúró",
+  "capacity.replay.title": "Tún ṣe lórí màápù",
+  "capacity.replay.note":
+    "Gbogbo ìlà tí a yà ń rìn papọ̀ lórí aago kan. Ọkọ̀ ojú irin ń rìn bí a ṣe ṣètò, láìsí ìdádúró àìròtẹ́lẹ̀; àwọn ọkọ̀ ìlà òpópónà ń pàdé ìrìnnà ìṣiṣẹ́ àkọ́kọ́ ìdánwò náà.",
+  "capacity.replay.none": "Kò sí nǹkan láti tún ṣe: kò sí ìlà tí ó rìn ní àkókò yìí.",
+  "capacity.replay.stopped":
+    "Ìṣiṣẹ́ náà dúró ní kùtùkùtù, nítorí náà àwọn ọkọ̀ ojú irin dúró jẹ́ẹ́ láti ìgbà náà: {why}",
   "capacity.summary":
     "{period} · ìrìn-àjò {trips} ní a ṣètò pẹ̀lú àlàfo · ọkọ̀ {out} ń ṣiṣẹ́, {reserve} wà ní ìpamọ́",
   "capacity.importNotes": "Àkíyèsí ìgbéwọlé ({n})",

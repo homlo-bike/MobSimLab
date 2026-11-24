@@ -1423,6 +1423,11 @@ export const editorsKo = {
   "capacity.run": "시험 실행",
   "capacity.runAgain": "다시 실행",
   "capacity.stop": "중지",
+  "capacity.replay.title": "지도에서 재생",
+  "capacity.replay.note":
+    "그린 모든 노선이 하나의 시계에 맞춰 함께 움직입니다. 열차는 무작위 지연 없이 계획대로 운행하고, 도로 노선 차량은 테스트 첫 실행의 교통을 만납니다.",
+  "capacity.replay.none": "재생할 내용이 없습니다: 이 시간대에 운행한 노선이 없습니다.",
+  "capacity.replay.stopped": "실행이 일찍 멈춰서 그 이후로 열차가 멈춰 있습니다: {why}",
   "capacity.summary":
     "{period} · 여유를 두고 계획한 운행 {trips}회 · 운행 열차 {out}편성, 예비 {reserve}편성",
   "capacity.importNotes": "가져오기 메모({n})",

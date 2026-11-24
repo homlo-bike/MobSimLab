@@ -1522,6 +1522,12 @@ export const editorsZu = {
   "capacity.run": "Qhuba ukuhlola",
   "capacity.runAgain": "Qhuba futhi",
   "capacity.stop": "Misa",
+  "capacity.replay.title": "Dlala futhi ebalazweni",
+  "capacity.replay.note":
+    "Yonke imigqa edwetshiwe ihamba ndawonye ewashini elilodwa. Izitimela zihamba njengoba kuhleliwe, ngaphandle kokubambezeleka okungahleliwe; izimoto zemigqa yemigwaqo zihlangabezana nethrafikhi yokugijima kokuqala kokuhlola.",
+  "capacity.replay.none": "Akukho okungadlalwa futhi: awukho umugqa owahamba kulesi sikhathi.",
+  "capacity.replay.stopped":
+    "Ukugijima kwama ngaphambi kwesikhathi, ngakho izitimela zimile kusukela lapho: {why}",
   "capacity.summary":
     "{period} · uhambo olungu-{trips} luhlelwe ngezikhala · izitimela ezingu-{out} ziyasebenza, ezingu-{reserve} zigciniwe",
   "capacity.importNotes": "Amanothi okungenisa ({n})",

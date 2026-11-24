@@ -1532,6 +1532,11 @@ export const editorsAr = {
   "capacity.run": "تشغيل الاختبار",
   "capacity.runAgain": "تشغيل مرة أخرى",
   "capacity.stop": "إيقاف",
+  "capacity.replay.title": "إعادة العرض على الخريطة",
+  "capacity.replay.note":
+    "تتحرك جميع الخطوط المرسومة معًا على ساعة واحدة. تسير القطارات كما هو مخطط، دون تأخيرات عشوائية؛ وتواجه مركبات خطوط الشوارع حركة المرور في التشغيل الأول للاختبار.",
+  "capacity.replay.none": "لا يوجد ما يُعاد عرضه: لم يعمل أي خط في هذه الفترة.",
+  "capacity.replay.stopped": "توقف التشغيل مبكرًا، لذلك تبقى القطارات متوقفة منذ ذلك الحين: {why}",
   "capacity.summary": "{period} · رحلات مخططة بهوامش: {trips} · قطارات في الخدمة: {out}، احتياطية: {reserve}",
   "capacity.importNotes": "ملاحظات الاستيراد ({n})",
   "capacity.plannerNotes": "ملاحظات المخطِّط ({n})",

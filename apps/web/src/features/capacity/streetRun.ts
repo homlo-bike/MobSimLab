@@ -12,6 +12,7 @@
  */
 import { projectServiceDay, servicePeriods, type ServiceDay } from "../journey-planner/network";
 import type { SavedStreetLine } from "../street-lines/saved";
+import type { LonLat } from "../street-lines/types";
 
 /** Settings of the street run (the capacity run's names, so one settings panel serves both). */
 export interface StreetRunParams {
@@ -80,7 +81,7 @@ export interface StreetLineResult {
 }
 
 /** A stop or via point on the circuit as the run sees it. */
-interface Step {
+export interface Step {
   /** Running time of the leg to this point: without traffic, and its expected traffic delay, s. */
   free_s: number;
   traffic_s: number;
@@ -90,6 +91,9 @@ interface Step {
   end: boolean;
   stop: boolean;
   name: string;
+  /** Where the point is, and the leg's route to it (for the replay on the map). */
+  at: LonLat;
+  coords: LonLat[];
 }
 
 /** Purpose: a stop's name as the journey planner and the Tables tab give it. */
@@ -145,6 +149,8 @@ export function circuit(line: SavedStreetLine): Step[] | null {
       end,
       stop,
       name: stopName(p),
+      at: p.lonlat,
+      coords: leg.coords,
     });
   }
   return steps;
@@ -167,6 +173,73 @@ export function departures(
   return out;
 }
 
+/** One trip of a street line vehicle as run. */
+export interface StreetTrip {
+  /** Vehicle, from 0. */
+  vehicle: number;
+  /** Planned departure from the first stop, s after midnight. */
+  at: number;
+  /** When it left the first stop, s. */
+  start: number;
+  /** When it got to each step's point, and when it left it (the last step: when it was back), s. */
+  arrive: number[];
+  depart: number[];
+}
+
+/**
+ * Purpose: run the departures with traffic that varies from trip to trip: each takes the vehicle that is
+ * back first; at an end stop a vehicle waits for its scheduled departure.
+ * Inputs: the line, its circuit, the departures, the planned offset of each step's departure from the trip's
+ * start, the number of vehicles and the random source.
+ * Output: the trips in departure order.
+ */
+export function runTrips(
+  line: SavedStreetLine,
+  steps: Step[],
+  deps: { at: number }[],
+  planned: number[],
+  vehicles: number,
+  rnd: () => number,
+): StreetTrip[] {
+  // When each vehicle is back at the first stop and ready.
+  const free: number[] = new Array<number>(vehicles).fill(-Infinity);
+  const trips: StreetTrip[] = [];
+  for (const d of deps) {
+    let v = 0;
+    for (let i = 1; i < free.length; i++) if (free[i]! < free[v]!) v = i;
+    const f = triangular(rnd(), TRAFFIC_FACTOR);
+    let at = Math.max(d.at, free[v]!);
+    const trip: StreetTrip = { vehicle: v, at: d.at, start: at, arrive: [], depart: [] };
+    for (let i = 0; i < steps.length; i++) {
+      const s = steps[i]!;
+      at += s.free_s + s.traffic_s * f;
+      trip.arrive.push(at);
+      if (i === steps.length - 1) {
+        trip.depart.push(at);
+        // Back at the first stop: ready after the dwell; the layover there is slack before the next trip.
+        free[v] = at + line.timing.dwellS;
+        break;
+      }
+      const dep = s.end ? Math.max(at + line.timing.dwellS, d.at + planned[i]!) : at + s.stop_s;
+      trip.depart.push(dep);
+      at = dep;
+    }
+    trips.push(trip);
+  }
+  return trips;
+}
+
+/** Purpose: the planned offset of each step's departure from the trip's start, s. */
+export function plannedOffsets(steps: Step[]): number[] {
+  const planned: number[] = [];
+  let t = 0;
+  for (const s of steps) {
+    t += s.free_s + s.traffic_s + s.stop_s;
+    planned.push(t);
+  }
+  return planned;
+}
+
 /**
  * Purpose: run one street line's timetable through the period with traffic that varies from trip to trip.
  * Inputs: the line, its index among the project's street lines, the settings.
@@ -186,12 +259,7 @@ export function runStreetLine(
   if (!inPeriod.length) return null;
   const firstStop = line.timing.dwellS + (steps.at(-1)!.end ? line.timing.layoverMin * 60 : 0);
   // The planned offset of each step's departure from the trip's start.
-  const planned: number[] = [];
-  let t = 0;
-  for (const s of steps) {
-    t += s.free_s + s.traffic_s + s.stop_s;
-    planned.push(t);
-  }
+  const planned = plannedOffsets(steps);
   const cycle = planned.at(-1)!;
   const headway = Math.min(...inPeriod.map((d) => d.headway));
   const vehicles = Math.ceil(cycle / headway);
@@ -210,33 +278,16 @@ export function runStreetLine(
   const runs = Math.max(1, Math.round(p.stability_runs));
   for (let r = 0; r < runs; r++) {
     const rnd = random(p.seed * 7919 + r * 104729 + index * 31);
-    // When each vehicle is back at the first stop and ready.
-    const free: number[] = new Array<number>(vehicles).fill(-Infinity);
     // Actual and planned departure times of every trip at every stop step.
     const act: number[][] = steps.map(() => []);
     const plan: number[][] = steps.map(() => []);
-    for (const d of deps) {
-      let v = 0;
-      for (let i = 1; i < free.length; i++) if (free[i]! < free[v]!) v = i;
-      const f = triangular(rnd(), TRAFFIC_FACTOR);
-      let at = Math.max(d.at, free[v]!);
-      const left = at;
-      for (let i = 0; i < steps.length; i++) {
-        const s = steps[i]!;
-        at += s.free_s + s.traffic_s * f;
-        if (i === steps.length - 1) {
-          cycles++;
-          cycleSum += at - left;
-          // Back at the first stop: ready after the dwell; the layover there is slack before the next trip.
-          free[v] = at + line.timing.dwellS;
-          break;
-        }
-        const dep = s.end ? Math.max(at + line.timing.dwellS, d.at + planned[i]!) : at + s.stop_s;
-        at = dep;
-        if (s.stop) {
-          act[i]!.push(dep);
-          plan[i]!.push(d.at + planned[i]!);
-        }
+    for (const trip of runTrips(line, steps, deps, planned, vehicles, rnd)) {
+      cycles++;
+      cycleSum += trip.arrive.at(-1)! - trip.start;
+      for (let i = 0; i < steps.length - 1; i++) {
+        if (!steps[i]!.stop) continue;
+        act[i]!.push(trip.depart[i]!);
+        plan[i]!.push(trip.at + planned[i]!);
       }
     }
     for (let i = 0; i < steps.length; i++) {

@@ -1927,6 +1927,7 @@ export function Workspace({
                 <LoadingScreen>
                   <CapacityRun
                     map={map}
+                    visuals={preferences?.visuals}
                     demandRidership={usedRidership}
                     runs={runs}
                     results={results}

@@ -1473,6 +1473,11 @@ export const editorsUr = {
   "capacity.run": "ٹیسٹ چلائیں",
   "capacity.runAgain": "دوبارہ چلائیں",
   "capacity.stop": "روکیں",
+  "capacity.replay.title": "نقشے پر دوبارہ چلائیں",
+  "capacity.replay.note":
+    "تمام بنائی گئی لائنیں ایک ہی گھڑی پر ساتھ چلتی ہیں۔ ٹرینیں منصوبے کے مطابق، بغیر بے ترتیب تاخیر کے چلتی ہیں؛ سڑک کی لائنوں کی گاڑیاں ٹیسٹ کے پہلے رن کی ٹریفک سے گزرتی ہیں۔",
+  "capacity.replay.none": "دوبارہ چلانے کو کچھ نہیں: اس مدت میں کوئی لائن نہیں چلی۔",
+  "capacity.replay.stopped": "رن جلد رک گیا، اس لیے ٹرینیں اس کے بعد کھڑی رہتی ہیں: {why}",
   "capacity.summary": "{period} · گنجائش کے ساتھ {trips} سفر طے · {out} ٹرینیں سروس میں، {reserve} ریزرو میں",
   "capacity.importNotes": "درآمد کے نوٹس ({n})",
   "capacity.plannerNotes": "پلانر کے نوٹس ({n})",

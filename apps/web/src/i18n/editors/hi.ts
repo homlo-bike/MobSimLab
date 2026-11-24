@@ -1476,6 +1476,11 @@ export const editorsHi = {
   "capacity.run": "टेस्ट चलाएँ",
   "capacity.runAgain": "फिर चलाएँ",
   "capacity.stop": "रोकें",
+  "capacity.replay.title": "नक्शे पर रीप्ले",
+  "capacity.replay.note":
+    "सभी बनाई गई लाइनें एक ही घड़ी पर साथ चलती हैं। ट्रेनें योजना के अनुसार, बिना यादृच्छिक देरी के चलती हैं; सड़क लाइनों के वाहन परीक्षण के पहले रन के ट्रैफ़िक से गुज़रते हैं।",
+  "capacity.replay.none": "रीप्ले करने को कुछ नहीं है: इस अवधि में कोई लाइन नहीं चली।",
+  "capacity.replay.stopped": "रन जल्दी रुक गया, इसलिए उसके बाद ट्रेनें खड़ी रहती हैं: {why}",
   "capacity.summary":
     "{period} · मार्जिन के साथ {trips} यात्राएँ नियोजित · {out} ट्रेनें सेवा में, {reserve} रिज़र्व में",
   "capacity.importNotes": "इंपोर्ट नोट्स ({n})",

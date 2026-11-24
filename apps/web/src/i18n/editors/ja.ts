@@ -1427,6 +1427,11 @@ export const editorsJa = {
   "capacity.run": "試験を実行",
   "capacity.runAgain": "再実行",
   "capacity.stop": "停止",
+  "capacity.replay.title": "地図で再生",
+  "capacity.replay.note":
+    "描いたすべての路線が一つの時計で一緒に動きます。列車は計画どおり、ランダムな遅延なしで走り、道路路線の車両はテスト1回目の交通に出会います。",
+  "capacity.replay.none": "再生するものがありません：この時間帯に運行した路線はありません。",
+  "capacity.replay.stopped": "実行が途中で止まったため、それ以降の列車は止まったままです：{why}",
   "capacity.summary": "{period} · 余裕を含めて {trips} 本を計画 · 運用 {out} 編成、予備 {reserve} 編成",
   "capacity.importNotes": "読み込みの注記（{n}）",
   "capacity.plannerNotes": "ダイヤ作成の注記（{n}）",
