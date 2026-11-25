@@ -11,6 +11,8 @@ import type { Region, RegionsDoc } from "../features/benefits/regions";
 import { MapDataPanel } from "../features/geodata/MapDataPanel";
 import { type LiveData, setDataProject, watchLiveData } from "../geodata/projectData";
 import { closeAnswers, keepAnswersFor } from "../projects/keptAnswers";
+import { useCalculatedDoc } from "../projects/calculatedDoc";
+import { SavedResultNotice } from "../projects/SavedResultNotice";
 import { projectTimetable } from "../features/benefits/timetable";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { AreaChecks } from "../features/area/AreaChecks";
@@ -230,6 +232,8 @@ const NO_REGIONS: Region[] = [];
 const NO_FEEDS: GtfsFeed[] = [];
 const NO_PLUGIN_LINES: Record<string, SavedPluginLine> = {};
 const NO_DEPOTS: SavedDepot[] = [];
+/** Purpose: whether a railway has no track, so nothing was calculated from it. */
+const noTrack = (r: Network | null) => !r || !r.tracks.length;
 const NO_MODES: string[] = [];
 /** The modifier key of shortcuts as the keyboard shows it. */
 const MOD_KEY =
@@ -572,6 +576,19 @@ export function Workspace({
   }, [api]);
   const streetLines = drawings.doc<StreetLinesDoc>("street-lines");
   const railway = drawings.doc<Network>("railway");
+  // Tables, Costs, Timetables and Schematic calculate from the railway as last calculated: after a change they
+  // show the last results, marked out of date, until the planner recalculates.
+  const calculated = useCalculatedDoc(
+    projectId,
+    "railway",
+    railway,
+    drawings.loaded,
+    noTrack,
+    tab === "schematic" || tab === "tables" || tab === "preferences",
+  );
+  const railwayNotice = calculated.stale ? (
+    <SavedResultNotice state="stale" onRecalculate={calculated.recalculate} />
+  ) : null;
   // Cable car and ferry lines of the plugin tools, per tool: the drawing, the line the journey
   // planner rides and the shape the noise map needs.
   // Lines drawn with the tools of a plugin that is now off stay in the project but are not shown or counted
@@ -1549,12 +1566,14 @@ export function Workspace({
                 place={climateAt}
                 climateLines={climateLines}
                 onTab={onTab}
+                onRecalculate={calculated.stale ? calculated.recalculate : null}
                 mapExports={
-                  drawings.loaded ? (
+                  drawings.loaded && calculated.ready ? (
                     // Its own wait, so the rest of the preferences show while the export code loads.
                     <Suspense fallback={null}>
+                      {railwayNotice}
                       <MapExports
-                        railway={railway}
+                        railway={calculated.doc}
                         streetLines={streetLines}
                         pluginLines={pluginLineList}
                         prefs={preferences?.values}
@@ -1576,20 +1595,25 @@ export function Workspace({
           />
         )}
         {!onMap && tab === "schematic" && (
-          <div className="min-h-0 flex-1">
-            {project && drawings.loaded ? (
-              <LoadingScreen>
-                <Schematic
-                  railway={railway}
-                  streetLines={streetLines}
-                  pluginLines={pluginLineList}
-                  prefs={preferences?.values}
-                  doc={drawings.doc<SchematicDoc>("schematic")}
-                  onDoc={editable ? (d) => drawings.set("schematic", d) : undefined}
-                  projectName={project.name}
-                  onCreate={editable ? () => onTab("create") : undefined}
-                />
-              </LoadingScreen>
+          <div className="flex min-h-0 flex-1 flex-col">
+            {project && drawings.loaded && calculated.ready ? (
+              <>
+                {railwayNotice && <div className="bg-slate-50 px-4 py-2">{railwayNotice}</div>}
+                <div className="min-h-0 flex-1">
+                  <LoadingScreen>
+                    <Schematic
+                      railway={calculated.doc}
+                      streetLines={streetLines}
+                      pluginLines={pluginLineList}
+                      prefs={preferences?.values}
+                      doc={drawings.doc<SchematicDoc>("schematic")}
+                      onDoc={editable ? (d) => drawings.set("schematic", d) : undefined}
+                      projectName={project.name}
+                      onCreate={editable ? () => onTab("create") : undefined}
+                    />
+                  </LoadingScreen>
+                </div>
+              </>
             ) : (
               <p role="status" className="mt-6 text-center text-slate-500">
                 {t("common.loading")}
@@ -1601,7 +1625,7 @@ export function Workspace({
           <div ref={tablesScroll} className="min-h-0 flex-1 overflow-y-auto bg-slate-50">
             <section aria-label={t("tables.title")} className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-10">
               <p className="text-slate-600">{t("tables.intro")}</p>
-              {project && drawings.loaded ? (
+              {project && drawings.loaded && calculated.ready ? (
                 <div className="mt-6 md:flex md:items-start md:gap-8">
                   {/* One group of tables at a time, chosen here: a list beside them on wide screens, a row on top on
                       narrow ones. Every group stays mounted (only hidden), because the appraisal reads the costs,
@@ -1625,6 +1649,7 @@ export function Workspace({
                       {/* Every group reads the street lines' saved routes: a route with parts not found is named
                           above them all. */}
                       <UnroutedNotice streetLines={streetLines} />
+                      {railwayNotice && <div className="mb-4">{railwayNotice}</div>}
                       <div
                         id="tables-network"
                         role="region"
@@ -1633,7 +1658,7 @@ export function Workspace({
                       >
                         <LoadingScreen>
                           <NetworkTables
-                            railway={railway}
+                            railway={calculated.doc}
                             streetLines={streetLines}
                             pluginLines={pluginSaved}
                             preferences={preferences}
@@ -1652,7 +1677,7 @@ export function Workspace({
                         <LoadingScreen>
                           <TimetableTables
                             projectName={project.name}
-                            railway={railway}
+                            railway={calculated.doc}
                             streetLines={streetLines}
                             pluginLines={pluginSaved}
                             preferences={preferences}
@@ -1668,7 +1693,7 @@ export function Workspace({
                       >
                         <LoadingScreen>
                           <CostTables
-                            railway={railway}
+                            railway={calculated.doc}
                             streetLines={streetLines}
                             pluginLines={pluginSaved}
                             preferences={preferences}
@@ -1742,7 +1767,7 @@ export function Workspace({
                         <LoadingScreen>
                           <FareTables
                             benefits={benefitEst}
-                            railway={railway}
+                            railway={calculated.doc}
                             streetLines={streetLines}
                             pluginLines={pluginLineList}
                             prefs={preferences?.values}
@@ -1782,7 +1807,7 @@ export function Workspace({
                       >
                         <LoadingScreen>
                           <Scenarios
-                            railway={railway}
+                            railway={calculated.doc}
                             streetLines={streetLines}
                             preferences={preferences}
                             doc={drawings.doc<ScenariosDoc>("scenarios")}

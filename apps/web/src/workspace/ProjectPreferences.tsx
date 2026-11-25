@@ -63,6 +63,7 @@ export function ProjectPreferences({
   place = null,
   climateLines,
   mapExports = null,
+  onRecalculate = null,
   onTab,
 }: {
   api: ProjectsApi;
@@ -92,6 +93,8 @@ export function ProjectPreferences({
   climateLines?: readonly (readonly [number, number])[][];
   /** The Export section: the project's schematic maps to download or print. */
   mapExports?: ReactNode;
+  /** Set while worked-out results are out of date: works them out again from the project as it is now. */
+  onRecalculate?: (() => void) | null;
   /** Open another tab (the Update links of Saved project files). */
   onTab?: (tab: Tab) => void;
 }) {
@@ -229,6 +232,7 @@ export function ProjectPreferences({
           editable={prefsEditable}
           onPreferences={setPrefs}
           onGo={go}
+          onRecalculate={onRecalculate}
         />
       ),
     },

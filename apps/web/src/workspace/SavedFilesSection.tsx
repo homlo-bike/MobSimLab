@@ -52,7 +52,7 @@ export function sizeText(bytes: number, language: string): string {
 /**
  * Purpose: the Saved project files section of Project preferences: for every kind of data the project holds, a
  * switch for whether a saved `.mslab` file holds it, with its size, source and the date it was last fetched or
- * worked out, and a link to where it is updated. `editable` false shows the choices only. Side effects: loads the
+ * worked out, and a link to where it is updated. Worked-out results that are out of date say so, with Recalculate. `editable` false shows the choices only. Side effects: loads the
  * sizes from the API once, and again on Refresh.
  */
 export function SavedFilesSection({
@@ -62,6 +62,7 @@ export function SavedFilesSection({
   editable,
   onPreferences,
   onGo,
+  onRecalculate,
 }: {
   api: Pick<ProjectsApi, "mslabContents">;
   projectId: string;
@@ -70,6 +71,11 @@ export function SavedFilesSection({
   onPreferences: (doc: PreferencesDoc) => void;
   /** Open where a kind of data is updated: a tab or another section of Project preferences. */
   onGo?: (target: UpdateTarget) => void;
+  /**
+   * Set while worked-out results are out of date (the railway changed since Tables, Costs, Timetables and
+   * Schematic were worked out): works them out again from the project as it is now.
+   */
+  onRecalculate?: (() => void) | null;
 }) {
   const { t, language } = useI18n();
   const [rows, setRows] = useState<ReadonlyMap<SavedDataId, SavedDataRow> | null>(null);
@@ -153,6 +159,19 @@ export function SavedFilesSection({
                     </button>
                   )}
                 </div>
+                {id === "processed" && onRecalculate && (
+                  <div
+                    className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
+                    data-result-state="stale"
+                  >
+                    <span role="status" className="rounded bg-amber-50 px-2 py-1 text-amber-900">
+                      {t("results.stale")}
+                    </span>
+                    <button type="button" className="text-blue-700 underline" onClick={onRecalculate}>
+                      {t("results.recalculate")}
+                    </button>
+                  </div>
+                )}
                 {always && <div className="mt-0.5 text-xs text-slate-500">{t("savedFiles.always")}</div>}
                 {!SAVED_NOW.has(id) && (
                   <div className="mt-0.5 text-xs text-slate-500">{t("savedFiles.later")}</div>
