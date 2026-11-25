@@ -153,12 +153,29 @@ describe("mslab project files", () => {
       "ATTRIBUTION.md",
       "data/preferences.json",
       "data/railway.json",
+      "history/values.json",
       "manifest.json",
       "plugins.json",
       "project.json",
     ]);
     const manifest = JSON.parse(files.get("manifest.json")!.toString());
-    expect(manifest).toMatchObject({ format: "mslab", formatVersion: "1.0.0", includes: { runs: false } });
+    expect(manifest).toMatchObject({ format: "mslab", formatVersion: "1.5.0", includes: { runs: false } });
+    // Saving the preferences recorded the change of the value, with who made it.
+    expect(JSON.parse(files.get("history/values.json")!.toString()).entries).toEqual([
+      expect.objectContaining({
+        id: "street.mixed_traffic_delay_share",
+        kind: "changed",
+        before: { value: null, reason: null },
+        after: { value: 0.25, reason: null },
+      }),
+    ]);
+    // Without the history, the file is one that the first MobSimLab readers still open.
+    const older = readZip(
+      (await as("alice").download(`/api/projects/${source}/mslab?history=false`)).body as Buffer,
+      { zipBytes: 1e9, entries: 1000, fileBytes: 1e9, totalBytes: 1e9, maxRatio: 1e9 },
+    );
+    expect(JSON.parse(older.get("manifest.json")!.toString())).toMatchObject({ formatVersion: "1.0.0" });
+    expect(older.has("history/values.json")).toBe(false);
     expect(JSON.parse(files.get("data/railway.json")!.toString()).doc).toEqual(railway);
 
     const withRuns = await as("alice").download(`/api/projects/${source}/mslab?runs=true`);
@@ -263,6 +280,118 @@ describe("mslab project files", () => {
     expect(second.body.project.name).toBe("Lakeside ÿ network (2)");
   });
 
+  it("carries the comments, the history of changed values and a demand run's OD matrices", async () => {
+    const c = await as("alice").post(`/api/projects/${source}/comments`, {
+      objectType: "station",
+      objectId: "1",
+      body: "Move the entrance to the lake side",
+    });
+    expect(c.status).toBe(201);
+    const thread = c.body.comment.id as string;
+    expect(
+      (
+        await as("alice").post(`/api/projects/${source}/comments`, {
+          objectType: "station",
+          objectId: "1",
+          parentId: thread,
+          body: "Done in the drawing",
+        })
+      ).status,
+    ).toBe(201);
+    expect(
+      (await as("alice").put(`/api/projects/${source}/comments/${thread}/resolved`, { resolved: true }))
+        .status,
+    ).toBe(200);
+
+    const su = await db.superuser();
+    let demand: string;
+    try {
+      const r = await su.query(
+        `INSERT INTO simulation.run (project_id, kind, status, input, network, lines, result, created_by, finished_at)
+         VALUES ($1, 'demand', 'done', '{}', '', '', '{"files":["od.omx","big.omx"]}', $2, now()) RETURNING id`,
+        [source, browsers.alice!.id],
+      );
+      demand = r.rows[0].id;
+      await su.query(
+        "INSERT INTO simulation.run_file (run_id, name, media_type, content) VALUES ($1, 'od.omx', 'application/x-hdf5', $2)",
+        [demand, Buffer.from("OMX matrices")],
+      );
+    } finally {
+      await su.end();
+    }
+
+    const file = (await as("alice").download(`/api/projects/${source}/mslab?runs=true`)).body as Buffer;
+    const inFile = readZip(file, {
+      zipBytes: 1e9,
+      entries: 1000,
+      fileBytes: 1e9,
+      totalBytes: 1e9,
+      maxRatio: 1e9,
+    });
+    expect(JSON.parse(inFile.get("manifest.json")!.toString()).formatVersion).toBe("1.5.0");
+    expect(inFile.get(`runs/${demand}/files/od.omx`)!.toString()).toBe("OMX matrices");
+    // The result lists only the files the .mslab holds.
+    expect(JSON.parse(inFile.get(`runs/${demand}/run.json`)!.toString()).result.files).toEqual(["od.omx"]);
+    const comments = JSON.parse(inFile.get("collab/comments.json")!.toString()).comments;
+    expect(comments).toHaveLength(2);
+
+    const opened = await as("bob").upload("/api/projects/import", file);
+    expect(opened.status).toBe(201);
+    const id = opened.body.project.id as string;
+
+    // The comments come back with their thread, the names of who wrote and resolved them kept as text.
+    const got = (await as("bob").get(`/api/projects/${id}/comments`)).body.comments as {
+      id: string;
+      parentId: string | null;
+      body: string;
+      author: unknown;
+      fromFile: boolean;
+      fileAuthor: string | null;
+      resolvedAt: string | null;
+      fileResolvedBy: string | null;
+    }[];
+    expect(got).toHaveLength(2);
+    const first = got.find((x) => x.parentId === null)!;
+    expect(first).toMatchObject({ body: "Move the entrance to the lake side", author: null, fromFile: true });
+    expect(first.fileAuthor).toBeTruthy();
+    expect(first.resolvedAt).not.toBeNull();
+    expect(first.fileResolvedBy).toBe(first.fileAuthor);
+    expect(got.find((x) => x.parentId !== null)!.parentId).toBe(first.id);
+
+    // The history of changed values shows read-only, as it came from the file.
+    const history = (await as("bob").get(`/api/projects/${id}/value-history/file`)).body.history;
+    expect(history).toEqual([
+      expect.objectContaining({
+        n: 0,
+        id: "street.mixed_traffic_delay_share",
+        kind: "changed",
+        fromFile: true,
+      }),
+    ]);
+    expect((await as("bob").get(`/api/projects/${id}/value-history`)).body.history).toEqual([]);
+
+    // The demand run comes back with its OD matrices.
+    const runs = (await as("bob").get(`/api/projects/${id}/simulation-runs`)).body.runs as {
+      id: string;
+      kind: string;
+    }[];
+    const run = runs.find((r) => r.kind === "demand")!;
+    const omx = await as("bob").download(`/api/projects/${id}/simulation-runs/${run.id}/files/od.omx`);
+    expect(omx.status).toBe(200);
+    expect((omx.body as Buffer).toString()).toBe("OMX matrices");
+
+    // Saving the opened project again keeps the history it came with.
+    const again = readZip((await as("bob").download(`/api/projects/${id}/mslab`)).body as Buffer, {
+      zipBytes: 1e9,
+      entries: 1000,
+      fileBytes: 1e9,
+      totalBytes: 1e9,
+      maxRatio: 1e9,
+    });
+    expect(JSON.parse(again.get("history/values.json")!.toString()).entries).toHaveLength(1);
+    expect(JSON.parse(again.get("collab/comments.json")!.toString()).comments).toHaveLength(2);
+  });
+
   it("saves the map data of the project area for the static viewer when asked, and leaves it out on opening", async () => {
     // OpenStreetMap, WorldPop and the World Bank are not reachable from tests: their answers are stubbed.
     const streets = app.get(StreetNetworkService);
@@ -338,7 +467,7 @@ describe("mslab project files", () => {
       });
       const manifest = JSON.parse(files.get("manifest.json")!.toString());
       // Map data makes it format 1.4.
-      expect(manifest).toMatchObject({ formatVersion: "1.4.0", includes: { runs: false, map: true } });
+      expect(manifest).toMatchObject({ formatVersion: "1.5.0", includes: { runs: false, map: true } });
       expect(JSON.parse(files.get("project.json")!.toString()).areaPolygons).toEqual([
         {
           id: "a1",
@@ -438,7 +567,9 @@ describe("mslab project files", () => {
     expect(rows.design!.items).toBeGreaterThanOrEqual(2);
     expect(rows.design!.bytes).toBeGreaterThan(0);
     expect(rows.design!.at).not.toBeNull();
-    expect(rows.runs).toMatchObject({ items: 1 });
+    expect(rows.runs!.items).toBeGreaterThanOrEqual(1);
+    expect(rows.comments!.items).toBeGreaterThanOrEqual(2);
+    expect(rows.history!.items).toBeGreaterThanOrEqual(1);
     // Setting the area in the test before may have kept more facts: those add to the rows.
     expect(rows.facts!.sources).toContain("Open-Meteo");
     expect(rows.economy!.sources).toContain("World Bank");

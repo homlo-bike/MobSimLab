@@ -264,6 +264,16 @@ export class ProjectsController {
   }
 
   /**
+   * Purpose: the history of changed values opened from a `.mslab` file (read-only), newest first; empty for a
+   * project not opened from a file.
+   */
+  @Get(":id/value-history/file")
+  @Requires("projects.read")
+  async fileValueHistory(@Param("id") id: string, @Req() req: MslRequest) {
+    return { history: await this.projects.fileValueHistory(this.actor(req), parse(uuid, id)) };
+  }
+
+  /**
    * Purpose: make the project public or private. Body: `{ visibility, licenceAccepted? }`; making it public needs
    * `licenceAccepted: true`.
    */

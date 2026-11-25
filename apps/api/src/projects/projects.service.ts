@@ -91,6 +91,29 @@ export interface ValueHistoryEntry {
   by: { id: string; displayName: string | null } | null;
 }
 
+/**
+ * One change of the history opened from a `.mslab` file, newest first: read-only, after the project's own
+ * changes. `byName` is the name the file kept; the person may not exist on this instance.
+ */
+export interface FileValueHistoryEntry extends Omit<ValueHistoryEntry, "seq" | "by"> {
+  /** Order in the file, 0 for the newest change. */
+  n: number;
+  byName: string | null;
+  fromFile: true;
+}
+
+/** Most changes of an opened file's history kept (`project.file_value_history`). */
+export const MAX_FILE_HISTORY = 20_000;
+
+/** Purpose: a value and its reason from an audit record's `before` or `after`. */
+export function valueState(v: unknown): ValueState {
+  const o = (v ?? {}) as { value?: unknown; reason?: unknown };
+  return {
+    value: typeof o.value === "number" ? o.value : null,
+    reason: typeof o.reason === "string" ? o.reason : null,
+  };
+}
+
 /** What each project role may do. Commenters comment on objects; Owners manage access, archive and delete. */
 export type ProjectAction = "read" | "comment" | "edit" | "manage";
 const ALLOWED: Record<ProjectAction, readonly ProjectRole[]> = {
@@ -589,6 +612,32 @@ export class ProjectsService {
   }
 
   /**
+   * Purpose: the history of changed values opened from a `.mslab` file (read-only), newest first, for anyone who
+   * may read the project. Output: at most 20 000 changes; empty for a project not opened from a file.
+   */
+  async fileValueHistory(actor: ProjectActor, id: string): Promise<FileValueHistoryEntry[]> {
+    await this.load(actor, id, "read");
+    const rows = await this.db
+      .selectFrom("project.file_value_history")
+      .selectAll()
+      .where("project_id", "=", id)
+      .orderBy("n")
+      .limit(MAX_FILE_HISTORY)
+      .execute();
+    return rows.map((r) => ({
+      n: r.n,
+      id: r.value_id,
+      kind: r.action,
+      before: valueState(r.before),
+      after: valueState(r.after),
+      reason: r.reason,
+      at: r.at.toISOString(),
+      byName: r.by_name,
+      fromFile: true,
+    }));
+  }
+
+  /**
    * Purpose: the change history of the project's values, newest first, for anyone who may read the project.
    * Inputs: `valueId` limits it to one assumption id; `before` (a `seq`) pages back; `limit` at most 500.
    * Output: who changed which value when, from what to what, and why.
@@ -619,13 +668,7 @@ export class ProjectsService {
     if (opts.valueId) q = q.where("r.object_id", "=", opts.valueId);
     if (opts.before !== undefined) q = q.where("r.seq", "<", String(opts.before));
     const rows = await q.orderBy("r.seq", "desc").limit(opts.limit).execute();
-    const state = (v: unknown): ValueState => {
-      const o = (v ?? {}) as { value?: unknown; reason?: unknown };
-      return {
-        value: typeof o.value === "number" ? o.value : null,
-        reason: typeof o.reason === "string" ? o.reason : null,
-      };
-    };
+    const state = valueState;
     return rows.map((r) => ({
       seq: Number(r.seq),
       id: r.object_id ?? "",

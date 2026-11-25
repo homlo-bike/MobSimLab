@@ -48,4 +48,7 @@ export const mslabFr = {
   "mslab.results": "Inclure les résultats calculés par les outils (le projet s’ouvre sans les recalculer)",
   "mslab.vehicles": "Inclure les véhicules propres et la flotte du projet",
   "mslab.fromPrefs": "Ces choix partent de Préférences du projet → Fichiers de projet enregistrés.",
+  "mslab.comments": "Inclure les commentaires et leurs fils de discussion",
+  "mslab.history": "Inclure l’historique des valeurs modifiées",
+  "mslab.fromFile": "du fichier de projet",
 } satisfies MslabMessages;

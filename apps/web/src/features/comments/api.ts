@@ -16,6 +16,10 @@ export interface ProjectComment {
   editedAt: string | null;
   resolvedAt: string | null;
   resolvedBy: { id: string; displayName: string | null } | null;
+  /** Opened from a .mslab file: who wrote and resolved it are the names the file kept. Absent from older APIs. */
+  fromFile?: boolean;
+  fileAuthor?: string | null;
+  fileResolvedBy?: string | null;
 }
 
 /** Purpose: the comments API of one project. Every write sends the session's CSRF token. */

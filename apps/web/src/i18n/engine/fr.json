@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "le calcul de simulation {id} dépasse la taille autorisée pour un calcul",
   "api.mslab.send_mslab_file_request_body": "envoyez le fichier .mslab comme corps de la requête (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "un calcul de simulation du fichier n'est pas valide",
+  "api.mslab.comments_or_history_not_valid": "les commentaires ou l'historique des valeurs modifiées du fichier ne sont pas valides",
   "api.mslab.too_many_tiles": "la zone du projet occupe {tiles} tuiles cartographiques, plus que les {max} qu'un fichier peut contenir ; réduisez la zone du projet ou enregistrez sans les données cartographiques",
   "api.places.unavailable": "La recherche de lieux est indisponible pour le moment",
   "api.plugins.admin_turned_off": "un administrateur a désactivé {plugin} pour ce MobSimLab",

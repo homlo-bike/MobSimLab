@@ -136,6 +136,13 @@ export class MslabContentsService {
       WHERE chain = ${projectChain(id)} AND object_type = ${VALUE_OBJECT}
         AND action IN (${VALUE_CHANGED}, ${VALUE_REASON})`.execute(this.db);
     for (const r of history.rows) add("history", num(r.bytes), num(r.n), iso(r.at));
+    // The history the project was opened with from a file.
+    const opened = await sql<{ bytes: string; n: string; at: Date | null }>`
+      SELECT coalesce(sum(coalesce(octet_length(before::text), 0) + coalesce(octet_length(after::text), 0)
+               + coalesce(octet_length(reason), 0)), 0) AS bytes,
+             count(*) AS n, max(at) AS at
+      FROM project.file_value_history WHERE project_id = ${id}`.execute(this.db);
+    for (const r of opened.rows) add("history", num(r.bytes), num(r.n), iso(r.at));
 
     // The latest finished import of each kind: the OpenStreetMap extract on disk, the elevation tiles.
     const imports = await sql<{ id: string; kind: string; method: string; stats: unknown; at: Date | null }>`

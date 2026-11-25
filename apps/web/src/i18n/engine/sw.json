@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "uendeshaji wa uigaji {id} ni mkubwa kuliko uendeshaji unavyoruhusiwa kuwa",
   "api.mslab.send_mslab_file_request_body": "tuma faili ya .mslab kama mwili wa ombi (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "uendeshaji wa uigaji katika faili si sahihi",
+  "api.mslab.comments_or_history_not_valid": "maoni au historia ya thamani zilizobadilishwa katika faili si sahihi",
   "api.mslab.too_many_tiles": "eneo la mradi linachukua vigae {tiles} vya ramani, zaidi ya {max} ambavyo faili inaweza kubeba; fanya eneo la mradi kuwa dogo zaidi au hifadhi bila data ya ramani",
   "api.places.unavailable": "Utafutaji wa mahali haupatikani kwa sasa",
   "api.plugins.admin_turned_off": "msimamizi alizima {plugin} kwa MobSimLab hii",

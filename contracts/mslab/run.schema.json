@@ -82,6 +82,30 @@
           "type": "null"
         }
       ]
+    },
+    "files": {
+      "description": "Format 1.5: the files the run saved next to its result, in runs/<id>/files/.",
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "mediaType"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,63}$"
+          },
+          "mediaType": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          }
+        }
+      }
     }
   }
 }

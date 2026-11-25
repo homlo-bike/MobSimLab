@@ -48,4 +48,7 @@ export const mslabAr = {
   "mslab.results": "تضمين النتائج التي حسبتها الأدوات (يُفتح المشروع دون إعادة حسابها)",
   "mslab.vehicles": "تضمين المركبات الخاصة بالمشروع وأسطوله",
   "mslab.fromPrefs": "تبدأ هذه الخيارات من تفضيلات المشروع ← ملفات المشروع المحفوظة.",
+  "mslab.comments": "تضمين التعليقات ونقاشاتها",
+  "mslab.history": "تضمين سجل القيم المعدّلة",
+  "mslab.fromFile": "من ملف المشروع",
 } satisfies MslabMessages;

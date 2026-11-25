@@ -26,6 +26,8 @@ const exportQuery = z.strictObject({
   map: z.enum(["true", "false"]).optional(),
   results: z.enum(["true", "false"]).optional(),
   vehicles: z.enum(["true", "false"]).optional(),
+  comments: z.enum(["true", "false"]).optional(),
+  history: z.enum(["true", "false"]).optional(),
 });
 
 /**
@@ -54,7 +56,8 @@ export class MslabController {
    * Purpose: download the project as a `.mslab` file. Query: `runs=true` adds the finished simulation runs;
    * `map=true` adds the map data of the project area for the static viewer (format 1.1; may take minutes when the
    * OpenStreetMap tiles are not cached); `results=false` leaves out the results the tools worked out
-   * and `vehicles=false` the project's own vehicles and fleet.
+   * and `vehicles=false` the project's own vehicles and fleet; `comments=false` and `history=false` leave out the
+   * comments and the history of changed values (format 1.5).
    */
   @Get(":id/mslab")
   @Requires("projects.read")
@@ -74,6 +77,8 @@ export class MslabController {
       q.data.map === "true",
       q.data.results !== "false",
       q.data.vehicles !== "false",
+      q.data.comments !== "false",
+      q.data.history !== "false",
     );
     res.setHeader("Content-Type", MSLAB_MEDIA_TYPE);
     res.setHeader(

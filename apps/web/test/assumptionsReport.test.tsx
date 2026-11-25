@@ -73,6 +73,18 @@ describe("assumptions report", () => {
     ]);
     expect(last.get("mode.dwell_s")).toEqual({ at: "2026-11-16T11:00:00Z", by: "Ann" });
     expect(last.get("fare.base")).toEqual({ at: "2026-11-14T11:00:00Z", by: null });
+
+    // A change that came with the project file it was opened from says so.
+    const opened = lastChanges([
+      {
+        id: "fare.base",
+        kind: "changed",
+        at: "2026-11-01T11:00:00Z",
+        by: { displayName: "Rana" },
+        fromFile: true,
+      },
+    ]);
+    expect(opened.get("fare.base")).toEqual({ at: "2026-11-01T11:00:00Z", by: "Rana", fromFile: true });
   });
 
   it("lists the project's other choices", () => {

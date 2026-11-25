@@ -48,4 +48,7 @@ export const mslabIg = {
   "mslab.results": "Tinye nsonaazụ ngwaọrụ gbakọrọ (ọrụ ga-emeghe na-agbakọghị ha ọzọ)",
   "mslab.vehicles": "Tinye ụgbọ nke ọrụ na otu ụgbọ ya",
   "mslab.fromPrefs": "Nhọrọ ndị a na-amalite site na Mmasị ọrụ → Faịlụ ọrụ echekwara.",
+  "mslab.comments": "Tinye nkọwa na mkparịta ụka ha",
+  "mslab.history": "Tinye akụkọ ụkpụrụ ndị a gbanwere",
+  "mslab.fromFile": "site na faịlụ ọrụ",
 } satisfies MslabMessages;

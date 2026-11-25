@@ -9,7 +9,16 @@ import { BUNDLED } from "../plugins/validate";
 import { PROJECT_MODES } from "../projects/projects.controller";
 import { DRAWING_KINDS, isDrawingKind, MAX_DRAWING_BYTES } from "../projects/drawings";
 import { INPUTS_PATTERN, isResultKind, MAX_RESULT_BYTES } from "../projects/results";
-import { type ProjectActor, ProjectsService, type ProjectSummary } from "../projects/projects.service";
+import {
+  MAX_FILE_HISTORY,
+  type ProjectActor,
+  ProjectsService,
+  type ProjectSummary,
+  valueState,
+} from "../projects/projects.service";
+import { projectChain } from "../audit/audit.service";
+import { COMMENT_OBJECT_TYPES, MAX_COMMENTS_PER_PROJECT } from "../comments/comments.service";
+import { VALUE_CHANGED, VALUE_OBJECT, VALUE_REASON } from "../projects/value-history";
 import { ToolFailedError, ToolInputError, ToolRunner } from "../tool-runner/runner";
 import { writeZip } from "../tool-runner/zip.mts";
 import {
@@ -17,6 +26,7 @@ import {
   FINISHED_RUN_STATUSES,
   FORMAT_NAME,
   FORMAT_VERSION,
+  FORMAT_VERSION_MAP,
   FORMAT_VERSION_POLYGONS,
   FORMAT_VERSION_RESULTS,
   FORMAT_VERSION_WITHOUT_MAP,
@@ -28,6 +38,8 @@ import {
   RUN_KINDS,
   type ResultFile,
   type RunFile,
+  type CommentsFile,
+  type HistoryFile,
 } from "./format.mts";
 import type { MslabReadResult } from "./read.mts";
 import { storedPolygons } from "../projects/area-polygons";
@@ -96,6 +108,16 @@ const readResult = z.object({
         network: scratchName,
         lines: scratchName,
         replay: scratchName.nullable(),
+        files: z
+          .array(
+            z.object({
+              name: z.string().regex(/^[a-z0-9][a-z0-9._-]{0,63}$/),
+              mediaType: z.string().min(1).max(100),
+              file: scratchName,
+            }),
+          )
+          .max(20)
+          .optional(),
       }),
     )
     .max(2000),
@@ -103,6 +125,8 @@ const readResult = z.object({
     .array(z.object({ kind: z.string().max(40), file: scratchName }))
     .max(100)
     .optional(),
+  comments: scratchName.nullable().optional(),
+  history: scratchName.nullable().optional(),
   skipped: z.array(z.string().max(300)).max(500),
 }) satisfies z.ZodType<
   Omit<MslabReadResult, "project"> & { project: Omit<ProjectFile, "createdAt" | "updatedAt"> }
@@ -122,8 +146,57 @@ const runFile = z.object({
   finishedAt: isoDate.nullable(),
 });
 
+const nameOrNull = z.string().max(200).nullable();
+const commentsFile = z.object({
+  comments: z
+    .array(
+      z.object({
+        id: z.uuid(),
+        objectType: z.string().regex(/^[a-z][a-z-]{1,39}$/),
+        objectId: z.string().min(1).max(100),
+        parentId: z.uuid().nullable(),
+        body: z.string().max(4000),
+        author: nameOrNull,
+        createdAt: isoDate,
+        editedAt: isoDate.nullable(),
+        resolvedAt: isoDate.nullable(),
+        resolvedBy: nameOrNull,
+      }),
+    )
+    .max(MAX_COMMENTS_PER_PROJECT),
+});
+const stateInFile = z.object({
+  value: z.number().finite().nullable(),
+  reason: z.string().max(500).nullable(),
+});
+const historyFile = z.object({
+  entries: z
+    .array(
+      z.object({
+        id: z
+          .string()
+          .regex(/^[a-z][a-z0-9_]*(\.[a-z0-9_]+)+$/)
+          .max(120),
+        kind: z.enum(["changed", "reason"]),
+        before: stateInFile,
+        after: stateInFile,
+        reason: z.string().max(500).nullable(),
+        at: isoDate,
+        by: nameOrNull,
+      }),
+    )
+    .max(MAX_FILE_HISTORY),
+});
+
 /** Size limits of a run's columns (db/migrations/0007, 0009). */
-const RUN_LIMITS = { input: 65536, network: 67108864, lines: 8388608, json: 8388608, replay: 67108864 };
+const RUN_LIMITS = {
+  input: 65536,
+  network: 67108864,
+  lines: 8388608,
+  json: 8388608,
+  replay: 67108864,
+  file: 268435456,
+};
 
 /** Purpose: SHA-256 of bytes, lower-case hex. */
 function sha256(data: Buffer): string {
@@ -184,7 +257,8 @@ export class MslabService {
    * Purpose: the project as a `.mslab` file. Members may save a copy; people who see the project only because it
    * is public may not (403), as they may not duplicate it.
    * Inputs: `includeRuns` adds the finished simulation runs, `includeMap` the viewer's map data and
-   * `includeResults` the results the tools worked out; `includeVehicles` false leaves out the own vehicles and fleet.
+   * `includeResults` the results the tools worked out; `includeVehicles` false leaves out the own vehicles and fleet;
+   * `includeComments` and `includeHistory` add the comments and the history of changed values (format 1.5).
    * Output: the file name and bytes.
    * Side effects: audit `project.exported` (runs included, size).
    */
@@ -195,6 +269,8 @@ export class MslabService {
     includeMap = false,
     includeResults = true,
     includeVehicles = true,
+    includeComments = true,
+    includeHistory = true,
   ): Promise<{ fileName: string; bytes: Buffer }> {
     if ((await this.projects.get(actor, id)).viaPublic)
       throw new ForbiddenException("public projects are read-only; ask the owner for access");
@@ -289,6 +365,7 @@ export class MslabService {
     }
 
     let runCount = 0;
+    let runFileCount = 0;
     if (includeRuns) {
       const runs = await this.db
         .selectFrom("simulation.run as r")
@@ -312,24 +389,144 @@ export class MslabService {
         .where("r.status", "in", [...FINISHED_RUN_STATUSES])
         .orderBy("r.created_at")
         .execute();
+      // The files the runs saved next to their results (a demand run's OD matrices), up to the size one file in
+      // a .mslab may have.
+      const runFiles = runs.length
+        ? await this.db
+            .selectFrom("simulation.run_file")
+            .select(["run_id", "name", "media_type", "content"])
+            .where(
+              "run_id",
+              "in",
+              runs.map((r) => r.id),
+            )
+            .orderBy("run_id")
+            .orderBy("name")
+            .execute()
+        : [];
       for (const r of runs) {
+        const saved = runFiles.filter(
+          (f) => f.run_id === r.id && f.content.length <= MSLAB_ZIP_LIMITS.fileBytes,
+        );
+        for (const f of saved) add(FILES.runFile(r.id, f.name), f.content);
+        runFileCount += saved.length;
         const run: RunFile = {
           id: r.id,
           kind: r.kind,
           status: r.status as RunFile["status"],
           input: r.input,
           progress: r.progress ?? null,
-          result: withoutRunFiles(r.kind, r.result ?? null),
+          result: withRunFiles(
+            r.kind,
+            r.result ?? null,
+            saved.map((f) => f.name),
+          ),
           error: r.error,
           createdAt: r.created_at.toISOString(),
           startedAt: r.started_at?.toISOString() ?? null,
           finishedAt: r.finished_at?.toISOString() ?? null,
         };
+        if (saved.length) run.files = saved.map((f) => ({ name: f.name, mediaType: f.media_type }));
         add(FILES.run(r.id), run);
         add(FILES.runNetwork(r.id), r.network);
         add(FILES.runLines(r.id), r.lines);
         if (r.replay) add(FILES.runReplay(r.id), r.replay);
         runCount++;
+      }
+    }
+    // Comments with their threads (format 1.5): the names of who wrote and resolved them as text, since the
+    // people may not exist on the instance that opens the file.
+    let commentCount = 0;
+    if (includeComments) {
+      const rows = await this.db
+        .selectFrom("collab.comment as c")
+        .leftJoin("iam.user as a", "a.id", "c.author_id")
+        .leftJoin("iam.user as rb", "rb.id", "c.resolved_by")
+        .select([
+          "c.id",
+          "c.object_type",
+          "c.object_id",
+          "c.parent_id",
+          "c.body",
+          "c.created_at",
+          "c.edited_at",
+          "c.resolved_at",
+          "c.file_author",
+          "c.file_resolved_by",
+          "a.display_name as author_name",
+          "rb.display_name as resolved_by_name",
+        ])
+        .where("c.project_id", "=", id)
+        .orderBy("c.created_at")
+        .orderBy("c.id")
+        .execute();
+      if (rows.length) {
+        const comments: CommentsFile = {
+          comments: rows.map((c) => ({
+            id: c.id,
+            objectType: c.object_type,
+            objectId: c.object_id,
+            parentId: c.parent_id,
+            body: c.body,
+            author: (c.author_name ?? c.file_author)?.slice(0, 200) ?? null,
+            createdAt: c.created_at.toISOString(),
+            editedAt: c.edited_at?.toISOString() ?? null,
+            resolvedAt: c.resolved_at?.toISOString() ?? null,
+            resolvedBy: c.resolved_at
+              ? ((c.resolved_by_name ?? c.file_resolved_by)?.slice(0, 200) ?? null)
+              : null,
+          })),
+        };
+        add(FILES.comments, comments);
+        commentCount = rows.length;
+      }
+    }
+    // The history of changed values (format 1.5), newest first: the project's own changes, then the history it
+    // was opened with, when it came from a file.
+    let historyCount = 0;
+    if (includeHistory) {
+      const own = await this.db
+        .selectFrom("audit.record as r")
+        .leftJoin("iam.user as u", "u.id", "r.actor_id")
+        .select(["r.at", "u.display_name", "r.action", "r.object_id", "r.before", "r.after", "r.reason"])
+        .where("r.chain", "=", projectChain(id))
+        .where("r.object_type", "=", VALUE_OBJECT)
+        .where("r.action", "in", [VALUE_CHANGED, VALUE_REASON])
+        .orderBy("r.seq", "desc")
+        .limit(MAX_FILE_HISTORY)
+        .execute();
+      const opened = await this.db
+        .selectFrom("project.file_value_history")
+        .selectAll()
+        .where("project_id", "=", id)
+        .orderBy("n")
+        .limit(MAX_FILE_HISTORY)
+        .execute();
+      const entries: HistoryFile["entries"] = [
+        ...own
+          .filter((r) => r.object_id)
+          .map((r) => ({
+            id: r.object_id!,
+            kind: r.action === VALUE_REASON ? ("reason" as const) : ("changed" as const),
+            before: valueState(r.before),
+            after: valueState(r.after),
+            reason: r.reason?.slice(0, 500) ?? null,
+            at: r.at.toISOString(),
+            by: r.display_name?.slice(0, 200) ?? null,
+          })),
+        ...opened.map((r) => ({
+          id: r.value_id,
+          kind: r.action,
+          before: valueState(r.before),
+          after: valueState(r.after),
+          reason: r.reason,
+          at: r.at.toISOString(),
+          by: r.by_name,
+        })),
+      ].slice(0, MAX_FILE_HISTORY);
+      if (entries.length) {
+        add(FILES.history, { entries } satisfies HistoryFile);
+        historyCount = entries.length;
       }
     }
     // Map data for the static viewer (format 1.4): the OpenStreetMap tiles, water, population and country
@@ -345,13 +542,16 @@ export class MslabService {
       map = m.summary;
     }
     // The oldest version that holds what the file carries, so that older readers still open it.
-    const formatVersion = includeMap
-      ? FORMAT_VERSION
-      : polygons.length
-        ? FORMAT_VERSION_POLYGONS
-        : resultCount
-          ? FORMAT_VERSION_RESULTS
-          : FORMAT_VERSION_WITHOUT_MAP;
+    const formatVersion =
+      commentCount || historyCount || runFileCount
+        ? FORMAT_VERSION
+        : includeMap
+          ? FORMAT_VERSION_MAP
+          : polygons.length
+            ? FORMAT_VERSION_POLYGONS
+            : resultCount
+              ? FORMAT_VERSION_RESULTS
+              : FORMAT_VERSION_WITHOUT_MAP;
     add(
       FILES.attribution,
       attribution(
@@ -378,7 +578,15 @@ export class MslabService {
       id,
       "project.exported",
       null,
-      { formatVersion, runs: runCount, results: resultCount, map: map ? map.tiles : 0, bytes: bytes.length },
+      {
+        formatVersion,
+        runs: runCount,
+        results: resultCount,
+        comments: commentCount,
+        history: historyCount,
+        map: map ? map.tiles : 0,
+        bytes: bytes.length,
+      },
       this.db,
     );
     return { fileName: mslabFileName(p.name), bytes };
@@ -432,6 +640,7 @@ export class MslabService {
             progress: string | null;
             result: string | null;
             replay: Buffer | null;
+            files: { name: string; mediaType: string; content: Buffer }[];
           }[] = [];
           for (const f of res.runs) {
             const meta = runFile.safeParse(JSON.parse((await scratch.read(f.file)).toString("utf8")));
@@ -440,6 +649,15 @@ export class MslabService {
             const network = (await scratch.read(f.network)).toString("utf8");
             const lines = (await scratch.read(f.lines)).toString("utf8");
             const replay = f.replay ? await scratch.read(f.replay) : null;
+            const runFiles: { name: string; mediaType: string; content: Buffer }[] = [];
+            for (const rf of f.files ?? []) {
+              const content = await scratch.read(rf.file);
+              if (content.length > RUN_LIMITS.file)
+                throw new BadRequestException(
+                  `simulation run ${m.id} has a file larger than a run file may be`,
+                );
+              runFiles.push({ name: rf.name, mediaType: rf.mediaType, content });
+            }
             const input = JSON.stringify(m.input);
             const progress = m.progress == null ? null : JSON.stringify(m.progress);
             const result = m.result == null ? null : JSON.stringify(m.result);
@@ -452,7 +670,7 @@ export class MslabService {
               (replay && replay.length > RUN_LIMITS.replay)
             )
               throw new BadRequestException(`simulation run ${m.id} is larger than a run may be`);
-            runs.push({ m, input, network, lines, progress, result, replay });
+            runs.push({ m, input, network, lines, progress, result, replay, files: runFiles });
           }
 
           const results: { kind: string; inputs: string; computedAt: Date; body: Buffer }[] = [];
@@ -474,6 +692,43 @@ export class MslabService {
             }
             results.push({ kind: f.kind, inputs: file.inputs, computedAt: new Date(file.computedAt), body });
           }
+
+          // Comments (format 1.5): threads on objects this MobSimLab knows, replies after their first comment.
+          const comments: z.infer<typeof commentsFile>["comments"] = [];
+          if (res.comments) {
+            const parsed = commentsFile.safeParse(
+              JSON.parse((await scratch.read(res.comments)).toString("utf8")),
+            );
+            if (!parsed.success)
+              throw new BadRequestException(
+                "the comments or the history of changed values in the file are not valid",
+              );
+            const firsts = new Set<string>();
+            for (const c of parsed.data.comments)
+              if (
+                c.parentId === null &&
+                (COMMENT_OBJECT_TYPES as readonly string[]).includes(c.objectType) &&
+                c.body.trim()
+              ) {
+                comments.push(c);
+                firsts.add(c.id);
+              }
+            for (const c of parsed.data.comments)
+              if (c.parentId !== null && firsts.has(c.parentId) && c.body.trim()) comments.push(c);
+            const left = parsed.data.comments.length - comments.length;
+            if (left > 0)
+              skipped.push(
+                `${left} comment${left === 1 ? "" : "s"}: on objects this MobSimLab does not have, or replies without their thread`,
+              );
+          }
+          const history = res.history
+            ? historyFile.safeParse(JSON.parse((await scratch.read(res.history)).toString("utf8")))
+            : null;
+          if (history && !history.success)
+            throw new BadRequestException(
+              "the comments or the history of changed values in the file are not valid",
+            );
+          const historyEntries = history?.success ? history.data.entries : [];
 
           const installed = await this.db
             .selectFrom("plugin.package")
@@ -601,7 +856,51 @@ export class MslabService {
                   .insertInto("simulation.run_replay")
                   .values({ run_id: run.id, data: r.replay })
                   .execute();
+              for (const f of r.files)
+                await tx
+                  .insertInto("simulation.run_file")
+                  .values({ run_id: run.id, name: f.name, media_type: f.mediaType, content: f.content })
+                  .execute();
             }
+            // New ids for the comments, the replies pointing at their thread's new first comment.
+            const newIds = new Map<string, string>();
+            for (const c of comments) {
+              const row = await tx
+                .insertInto("collab.comment")
+                .values({
+                  project_id: p.id,
+                  object_type: c.objectType,
+                  object_id: c.objectId,
+                  parent_id: c.parentId ? newIds.get(c.parentId)! : null,
+                  body: c.body,
+                  author_id: null,
+                  created_at: new Date(c.createdAt),
+                  edited_at: c.editedAt ? new Date(c.editedAt) : null,
+                  resolved_at: c.parentId === null && c.resolvedAt ? new Date(c.resolvedAt) : null,
+                  resolved_by: null,
+                  from_file: true,
+                  file_author: c.author,
+                  file_resolved_by: c.parentId === null && c.resolvedAt ? c.resolvedBy : null,
+                })
+                .returning("id")
+                .executeTakeFirstOrThrow();
+              newIds.set(c.id, row.id);
+            }
+            for (const [n, e] of historyEntries.entries())
+              await tx
+                .insertInto("project.file_value_history")
+                .values({
+                  project_id: p.id,
+                  n,
+                  at: new Date(e.at),
+                  by_name: e.by,
+                  action: e.kind,
+                  value_id: e.id,
+                  before: JSON.stringify(e.before),
+                  after: JSON.stringify(e.after),
+                  reason: e.reason,
+                })
+                .execute();
             await this.projects.logProject(
               actor,
               p.id,
@@ -623,6 +922,8 @@ export class MslabService {
                 plugins: plugins.length,
                 runs: runs.length,
                 results: results.length,
+                comments: comments.length,
+                history: historyEntries.length,
                 skipped: skipped.length,
                 bytes: bytes.length,
               },
@@ -652,12 +953,16 @@ export class MslabService {
  * data (OpenStreetMap, terrain, population) is not in the file; the project refers to it by id or position.
  */
 /**
- * Purpose: a demand run's result without its list of saved files (the OD matrices), which a `.mslab` file does
- * not carry; other results as they are.
+ * Purpose: a demand run's result listing only the saved files (the OD matrices) the `.mslab` file carries; other
+ * results as they are.
  */
-function withoutRunFiles(kind: string, result: unknown): unknown {
+export function withRunFiles(kind: string, result: unknown, carried: readonly string[]): unknown {
   if (kind !== "demand" || !result || typeof result !== "object" || !("files" in result)) return result;
-  return { ...(result as Record<string, unknown>), files: [] };
+  const listed = (result as { files?: unknown }).files;
+  return {
+    ...(result as Record<string, unknown>),
+    files: Array.isArray(listed) ? listed.filter((f) => typeof f === "string" && carried.includes(f)) : [],
+  };
 }
 
 function attribution(

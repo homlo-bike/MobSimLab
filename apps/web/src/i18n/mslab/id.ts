@@ -48,4 +48,7 @@ export const mslabId = {
   "mslab.results": "Sertakan hasil yang dihitung alat (proyek terbuka tanpa menghitung ulang)",
   "mslab.vehicles": "Sertakan kendaraan sendiri dan armada proyek",
   "mslab.fromPrefs": "Pilihan ini berasal dari Preferensi proyek → File proyek tersimpan.",
+  "mslab.comments": "Sertakan komentar dan diskusinya",
+  "mslab.history": "Sertakan riwayat nilai yang diubah",
+  "mslab.fromFile": "dari file proyek",
 } satisfies MslabMessages;

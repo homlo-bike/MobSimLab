@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "{id} модельдеу жүргізуі жүргізуге рұқсат етілген өлшемнен үлкен",
   "api.mslab.send_mslab_file_request_body": ".mslab файлын сұрау денесі ретінде жіберіңіз (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "файлдағы модельдеу жүргізулерінің бірі жарамсыз",
+  "api.mslab.comments_or_history_not_valid": "файлдағы пікірлер немесе өзгертілген мәндер тарихы жарамсыз",
   "api.mslab.too_many_tiles": "жоба аумағы {tiles} карта тайлын алады, бұл файл сыйғыза алатын шектен ({max}) көп; жоба аумағын кішірейтіңіз немесе карта деректерінсіз сақтаңыз",
   "api.places.unavailable": "Орын іздеу қазір қолжетімсіз",
   "api.plugins.admin_turned_off": "әкімші бұл MobSimLab үшін {plugin} плагинін өшірді",

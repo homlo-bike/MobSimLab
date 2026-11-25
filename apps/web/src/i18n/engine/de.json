@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "Simulationslauf {id} ist größer, als ein Lauf sein darf",
   "api.mslab.send_mslab_file_request_body": "senden Sie die .mslab-Datei als Anfrageinhalt (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "ein Simulationslauf in der Datei ist ungültig",
+  "api.mslab.comments_or_history_not_valid": "die Kommentare oder der Verlauf der geänderten Werte in der Datei sind ungültig",
   "api.mslab.too_many_tiles": "das Projektgebiet umfasst {tiles} Kartenkacheln, mehr als die {max}, die eine Datei enthalten darf; verkleinern Sie das Projektgebiet oder speichern Sie ohne Kartendaten",
   "api.places.unavailable": "Die Ortssuche ist gerade nicht verfügbar",
   "api.plugins.admin_turned_off": "ein Administrator hat {plugin} für dieses MobSimLab ausgeschaltet",

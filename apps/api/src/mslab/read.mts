@@ -21,6 +21,9 @@ import {
   RESULT_SCHEMA,
   type ResultFile,
   RUN_SCHEMA,
+  type RunFile,
+  COMMENTS_SCHEMA,
+  HISTORY_SCHEMA,
 } from "./format.mts";
 import { migrate } from "./migrations.mts";
 
@@ -44,6 +47,8 @@ export interface ReadRun {
   network: string;
   lines: string;
   replay: string | null;
+  /** Format 1.5: the files the run saved next to its result, by name. */
+  files?: { name: string; mediaType: string; file: string }[];
 }
 
 /** A saved result (format 1.2) the API should keep, and the scratch file holding its `results/<kind>.json`. */
@@ -63,6 +68,10 @@ export interface MslabReadResult {
   runs: ReadRun[];
   /** Saved results (format 1.2); absent from older readers' answers. */
   results?: ReadResult[];
+  /** Format 1.5: the scratch file holding `collab/comments.json`, when the file has comments. */
+  comments?: string | null;
+  /** Format 1.5: the scratch file holding `history/values.json`, when the file has a history of changed values. */
+  history?: string | null;
   skipped: string[];
 }
 
@@ -81,6 +90,8 @@ const check = {
   drawing: ajv.compile(DRAWING_FILE_SCHEMA),
   run: ajv.compile(RUN_SCHEMA),
   result: ajv.compile(RESULT_SCHEMA),
+  comments: ajv.compile(COMMENTS_SCHEMA),
+  history: ajv.compile(HISTORY_SCHEMA),
 };
 const docChecks = new Map<string, ReturnType<typeof ajv.compile>>();
 
@@ -178,6 +189,8 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
   const drawings: ReadDrawing[] = [];
   const runIds = new Set<string>();
   const results: ReadResult[] = [];
+  let comments: string | null = null;
+  let history: string | null = null;
   let hasMap = false;
   for (const name of [...files.keys()].sort()) {
     if (
@@ -219,6 +232,24 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
       runIds.add(r[1]!);
       continue;
     }
+    const rf = FILE_PATTERNS.runFile.exec(name);
+    if (rf) {
+      // Checked with its run below: the run must list it.
+      runIds.add(rf[1]!);
+      continue;
+    }
+    if (name === FILES.comments) {
+      json(files, name, check.comments);
+      comments = "comments.json";
+      ctx.write(comments, files.get(name)!);
+      continue;
+    }
+    if (name === FILES.history) {
+      json(files, name, check.history);
+      history = "history.json";
+      ctx.write(history, files.get(name)!);
+      continue;
+    }
     const k = FILE_PATTERNS.result.exec(name);
     if (k) {
       const kind = k[1]!;
@@ -244,7 +275,7 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
   const runs: ReadRun[] = [];
   let n = 0;
   for (const id of [...runIds].sort()) {
-    const run = json<{ id: string }>(files, FILES.run(id), check.run);
+    const run = json<RunFile>(files, FILES.run(id), check.run);
     if (run.id !== id) throw new MslabError(`${FILES.run(id)} holds run ${run.id}`);
     const network = files.get(FILES.runNetwork(id));
     const lines = files.get(FILES.runLines(id));
@@ -258,11 +289,26 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
     ctx.write(`${base}-network.txt`, network);
     ctx.write(`${base}-lines.txt`, lines);
     if (replay) ctx.write(`${base}-replay.gz`, replay);
+    const named = new Set((run.files ?? []).map((f) => f.name));
+    for (const name of files.keys()) {
+      const m = FILE_PATTERNS.runFile.exec(name);
+      if (m && m[1] === id && !named.has(m[2]!))
+        throw new MslabError(`${name} is not listed in ${FILES.run(id)}`);
+    }
+    const saved: { name: string; mediaType: string; file: string }[] = [];
+    for (const [k, f] of (run.files ?? []).entries()) {
+      const bytes = files.get(FILES.runFile(id, f.name));
+      if (!bytes) throw new MslabError(`${FILES.runFile(id, f.name)} is missing`);
+      const file = `${base}-file-${k + 1}.bin`;
+      ctx.write(file, bytes);
+      saved.push({ name: f.name, mediaType: f.mediaType, file });
+    }
     runs.push({
       file: `${base}.json`,
       network: `${base}-network.txt`,
       lines: `${base}-lines.txt`,
       replay: replay ? `${base}-replay.gz` : null,
+      files: saved,
     });
   }
 
@@ -277,6 +323,8 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
     drawings,
     runs,
     results,
+    comments,
+    history,
     skipped,
   };
 }

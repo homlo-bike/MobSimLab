@@ -47,4 +47,7 @@ export const mslabAm = {
   "mslab.results": "መሣሪያዎቹ ያሰሏቸውን ውጤቶች አካትት (ፕሮጀክቱ እንደገና ሳይሰላ ይከፈታል)",
   "mslab.vehicles": "የፕሮጀክቱን የራስ ተሽከርካሪዎች እና መርከቦች አካትት",
   "mslab.fromPrefs": "እነዚህ ምርጫዎች ከፕሮጀክት ምርጫዎች → የተቀመጡ የፕሮጀክት ፋይሎች ይጀምራሉ።",
+  "mslab.comments": "አስተያየቶችን እና ውይይቶቻቸውን አካትት",
+  "mslab.history": "የተቀየሩ እሴቶችን ታሪክ አካትት",
+  "mslab.fromFile": "ከፕሮጀክት ፋይሉ",
 } satisfies MslabMessages;

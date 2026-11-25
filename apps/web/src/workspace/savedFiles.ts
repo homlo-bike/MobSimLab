@@ -46,6 +46,8 @@ export const SAVED_NOW: ReadonlySet<SavedDataId> = new Set([
   "vehicles",
   "processed",
   "runs",
+  "comments",
+  "history",
   "viewerMap",
 ]);
 
@@ -93,6 +95,16 @@ export function saveOptions(doc: PreferencesDoc | null | undefined): {
   runs: boolean;
   map: boolean;
   results: boolean;
+  vehicles: boolean;
+  comments: boolean;
+  history: boolean;
 } {
-  return { runs: savedIn(doc, "runs"), map: savedIn(doc, "viewerMap"), results: savedIn(doc, "processed") };
+  return {
+    runs: savedIn(doc, "runs"),
+    map: savedIn(doc, "viewerMap"),
+    results: savedIn(doc, "processed"),
+    vehicles: savedIn(doc, "vehicles"),
+    comments: savedIn(doc, "comments"),
+    history: savedIn(doc, "history"),
+  };
 }

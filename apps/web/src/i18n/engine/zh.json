@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "仿真运行 {id} 超过了运行允许的大小",
   "api.mslab.send_mslab_file_request_body": "请将 .mslab 文件作为请求正文发送（application/octet-stream）",
   "api.mslab.simulation_run_file_not_valid": "文件中有一个仿真运行无效",
+  "api.mslab.comments_or_history_not_valid": "文件中的评论或已更改值的历史无效",
   "api.mslab.too_many_tiles": "项目区域需要 {tiles} 个地图图块，超过了一个文件可携带的 {max} 个；请缩小项目区域，或不含地图数据保存",
   "api.places.unavailable": "地点搜索目前不可用",
   "api.plugins.admin_turned_off": "管理员已为此 MobSimLab 关闭 {plugin}",

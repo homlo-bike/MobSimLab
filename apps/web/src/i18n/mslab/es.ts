@@ -49,4 +49,7 @@ export const mslabEs = {
     "Incluir los resultados calculados por las herramientas (el proyecto se abre sin volver a calcularlos)",
   "mslab.vehicles": "Incluir los vehículos propios y la flota del proyecto",
   "mslab.fromPrefs": "Estas opciones parten de Preferencias del proyecto → Archivos de proyecto guardados.",
+  "mslab.comments": "Incluir los comentarios y sus conversaciones",
+  "mslab.history": "Incluir el historial de valores cambiados",
+  "mslab.fromFile": "del archivo de proyecto",
 } satisfies MslabMessages;

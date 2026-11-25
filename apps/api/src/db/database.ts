@@ -209,6 +209,18 @@ export interface DB {
     key: string;
     shared_id: string;
   };
+  /** The history of changed values opened from a .mslab file, read-only (0029_file_comments_history.sql). */
+  "project.file_value_history": {
+    project_id: string;
+    n: number;
+    at: Date;
+    by_name: string | null;
+    action: "changed" | "reason";
+    value_id: string;
+    before: ColumnType<unknown, string | null, string | null>;
+    after: ColumnType<unknown, string | null, string | null>;
+    reason: string | null;
+  };
   /** Results the project's tools worked out (db/migrations/0023_project_results.sql): gzip-compressed JSON. */
   "project.result": {
     project_id: string;
@@ -297,6 +309,10 @@ export interface DB {
     edited_at: Date | null;
     resolved_at: Date | null;
     resolved_by: string | null;
+    /** Opened from a .mslab file (db/migrations/0029_file_comments_history.sql), with the names kept as text. */
+    from_file: Generated<boolean>;
+    file_author: string | null;
+    file_resolved_by: string | null;
   };
   /** Comments a person has read, for the notices of new comments (db/migrations/0026_comment_read.sql). */
   "collab.comment_read": {

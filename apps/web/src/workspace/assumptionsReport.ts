@@ -211,6 +211,8 @@ export function toCsv(lines: readonly (readonly (string | number)[])[]): string 
 export interface LastChange {
   at: string;
   by: string | null;
+  /** The change came with the project file it was opened from (read-only history). */
+  fromFile?: boolean;
 }
 
 /**
@@ -218,10 +220,17 @@ export interface LastChange {
  * changes of the value count; a reason given later does not move who changed it or when.
  */
 export function lastChanges(
-  history: readonly { id: string; kind: string; at: string; by: { displayName: string | null } | null }[],
+  history: readonly {
+    id: string;
+    kind: string;
+    at: string;
+    by: { displayName: string | null } | null;
+    fromFile?: boolean;
+  }[],
 ): Map<string, LastChange> {
   const out = new Map<string, LastChange>();
   for (const h of history)
-    if (h.kind === "changed" && !out.has(h.id)) out.set(h.id, { at: h.at, by: h.by?.displayName ?? null });
+    if (h.kind === "changed" && !out.has(h.id))
+      out.set(h.id, { at: h.at, by: h.by?.displayName ?? null, ...(h.fromFile ? { fromFile: true } : {}) });
   return out;
 }

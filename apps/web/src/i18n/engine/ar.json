@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "عملية المحاكاة {id} أكبر من الحد المسموح لعملية المحاكاة",
   "api.mslab.send_mslab_file_request_body": "أرسل ملف .mslab في متن الطلب (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "إحدى عمليات المحاكاة في الملف غير صالحة",
+  "api.mslab.comments_or_history_not_valid": "التعليقات أو سجل القيم المعدّلة في الملف غير صالحة",
   "api.mslab.too_many_tiles": "تشغل منطقة المشروع {tiles} بلاطة خريطة، أكثر من {max} التي يمكن أن يحملها الملف؛ صغّر منطقة المشروع أو احفظ دون بيانات الخريطة",
   "api.places.unavailable": "البحث عن الأماكن غير متاح حاليًا",
   "api.plugins.admin_turned_off": "عطّل أحد المسؤولين {plugin} في MobSimLab هذا",

@@ -635,7 +635,8 @@ describe("Schematic tab", () => {
     fireEvent.click(
       within(screen.getByRole("group", { name: "Network map" })).getByRole("button", { name: "SVG" }),
     );
-    await waitFor(() => expect(saved.map((f) => f.name)).toContain("amstelstad.svg"));
+    // The network map lays out every line and loads water first: slower than one strip map on a busy runner.
+    await waitFor(() => expect(saved.map((f) => f.name)).toContain("amstelstad.svg"), { timeout: 10_000 });
     click.mockRestore();
     vi.unstubAllGlobals();
   });

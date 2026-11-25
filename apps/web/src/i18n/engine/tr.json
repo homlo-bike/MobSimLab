@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "benzetim koşusu {id} bir koşunun olabileceğinden büyük",
   "api.mslab.send_mslab_file_request_body": ".mslab dosyasını istek gövdesi olarak gönderin (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "dosyadaki bir benzetim koşusu geçerli değil",
+  "api.mslab.comments_or_history_not_valid": "dosyadaki yorumlar veya değiştirilen değerlerin geçmişi geçerli değil",
   "api.mslab.too_many_tiles": "proje alanı {tiles} harita karosu tutuyor; bu, bir dosyanın taşıyabileceği {max} karodan fazla. Proje alanını küçültün veya harita verileri olmadan kaydedin",
   "api.places.unavailable": "Yer arama şu anda kullanılamıyor",
   "api.plugins.admin_turned_off": "bir yönetici bu MobSimLab için şu eklentiyi kapattı: {plugin}",

@@ -48,4 +48,7 @@ export const mslabYo = {
   "mslab.results": "Fi àwọn èsì tí àwọn irinṣẹ́ ṣírò kún un (iṣẹ́ àkànṣe yóò ṣí láìṣírò wọn lẹ́ẹ̀kan sí i)",
   "mslab.vehicles": "Fi àwọn ọkọ̀ iṣẹ́ àkànṣe àti àkójọ ọkọ̀ rẹ̀ kún un",
   "mslab.fromPrefs": "Àwọn yíyàn wọ̀nyí bẹ̀rẹ̀ láti Àwọn ààyò iṣẹ́ àkànṣe → Àwọn fáìlì iṣẹ́ àkànṣe tí a fipamọ́.",
+  "mslab.comments": "Fi àwọn àsọyé àti ìjíròrò wọn kún un",
+  "mslab.history": "Fi ìtàn àwọn iye tí a yí padà kún un",
+  "mslab.fromFile": "láti inú fáìlì iṣẹ́ àkànṣe",
 } satisfies MslabMessages;

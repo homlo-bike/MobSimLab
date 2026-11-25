@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "прогон моделирования {id} больше допустимого размера прогона",
   "api.mslab.send_mslab_file_request_body": "отправьте файл .mslab в теле запроса (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "прогон моделирования в файле недействителен",
+  "api.mslab.comments_or_history_not_valid": "комментарии или история изменённых значений в файле недействительны",
   "api.mslab.too_many_tiles": "территория проекта занимает слишком много тайлов карты ({tiles}, для файла допустимо не больше {max}); уменьшите территорию проекта или сохраните без картографических данных",
   "api.places.unavailable": "Поиск мест сейчас недоступен",
   "api.plugins.admin_turned_off": "администратор выключил {plugin} для этого MobSimLab",

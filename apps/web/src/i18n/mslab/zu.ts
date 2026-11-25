@@ -49,4 +49,7 @@ export const mslabZu = {
   "mslab.vehicles": "Faka izimoto zephrojekthi neqembu lazo",
   "mslab.fromPrefs":
     "Lezi zinketho ziqala kokuthi Okuthandwayo kwephrojekthi → Amafayela ephrojekthi alondoloziwe.",
+  "mslab.comments": "Faka amazwana nezingxoxo zawo",
+  "mslab.history": "Faka umlando wamanani ashintshiwe",
+  "mslab.fromFile": "kusuka efayeleni lephrojekthi",
 } satisfies MslabMessages;

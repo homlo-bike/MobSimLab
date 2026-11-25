@@ -184,7 +184,9 @@ function Thread({ root }: { root: ProjectComment }) {
       ))}
       {root.resolvedAt && (
         <p className="mt-1 text-xs text-slate-500">
-          {t("comments.resolvedBy", { name: root.resolvedBy?.displayName ?? t("comments.someone") })}
+          {t("comments.resolvedBy", {
+            name: root.resolvedBy?.displayName ?? root.fileResolvedBy ?? t("comments.someone"),
+          })}
         </p>
       )}
       {ctx.canComment && (
@@ -235,10 +237,13 @@ function Comment({ c }: { c: ProjectComment }) {
   return (
     <div>
       <p className="text-xs text-slate-600">
-        <span className="font-medium text-slate-800">{c.author?.displayName ?? t("comments.someone")}</span>
+        <span className="font-medium text-slate-800">
+          {c.author?.displayName ?? c.fileAuthor ?? t("comments.someone")}
+        </span>
         {" · "}
         <time dateTime={c.createdAt}>{when}</time>
         {c.editedAt && ` · ${t("comments.edited")}`}
+        {c.fromFile && ` · ${t("mslab.fromFile")}`}
       </p>
       {editing ? (
         <Composer

@@ -39,6 +39,10 @@ export interface ProjectComment {
   editedAt: string | null;
   resolvedAt: string | null;
   resolvedBy: { id: string; displayName: string | null } | null;
+  /** Opened from a .mslab file: its author and resolver are the names the file kept (`fileAuthor`, `fileResolvedBy`). */
+  fromFile: boolean;
+  fileAuthor: string | null;
+  fileResolvedBy: string | null;
 }
 
 /** How far back the notices of new comments look. */
@@ -176,8 +180,8 @@ export class CommentsService {
         .updateTable("collab.comment")
         .set(
           resolved
-            ? { resolved_at: new Date(), resolved_by: actor.userId }
-            : { resolved_at: null, resolved_by: null },
+            ? { resolved_at: new Date(), resolved_by: actor.userId, file_resolved_by: null }
+            : { resolved_at: null, resolved_by: null, file_resolved_by: null },
         )
         .where("id", "=", id)
         .execute();
@@ -277,6 +281,9 @@ export class CommentsService {
         "c.resolved_by",
         "a.display_name as author_name",
         "rb.display_name as resolved_by_name",
+        "c.from_file",
+        "c.file_author",
+        "c.file_resolved_by",
       ])
       .orderBy("c.created_at", "desc")
       .orderBy("c.id", "desc")
@@ -370,6 +377,9 @@ export class CommentsService {
         "c.resolved_by",
         "a.display_name as author_name",
         "rb.display_name as resolved_by_name",
+        "c.from_file",
+        "c.file_author",
+        "c.file_resolved_by",
       ]);
   }
 
@@ -386,6 +396,9 @@ export class CommentsService {
     resolved_by: string | null;
     author_name: string | null;
     resolved_by_name: string | null;
+    from_file: boolean;
+    file_author: string | null;
+    file_resolved_by: string | null;
   }): ProjectComment {
     return {
       id: r.id,
@@ -398,6 +411,9 @@ export class CommentsService {
       editedAt: iso(r.edited_at),
       resolvedAt: iso(r.resolved_at),
       resolvedBy: r.resolved_by ? { id: r.resolved_by, displayName: r.resolved_by_name } : null,
+      fromFile: r.from_file,
+      fileAuthor: r.file_author,
+      fileResolvedBy: r.file_resolved_by,
     };
   }
 }

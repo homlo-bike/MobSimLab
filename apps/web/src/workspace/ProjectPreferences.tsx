@@ -870,7 +870,10 @@ function CurrencySection({
   );
 }
 
-/** Purpose: the project's whole value history, newest first, read page by page (at most 10 000 changes). */
+/**
+ * Purpose: the project's whole value history, newest first, read page by page (at most 10 000 changes), then the
+ * history it was opened with from a .mslab file, marked as from the file.
+ */
 async function allValueHistory(api: ProjectsApi, projectId: string) {
   const out = [];
   let before: number | undefined;
@@ -880,5 +883,7 @@ async function allValueHistory(api: ProjectsApi, projectId: string) {
     if (h.length < 500) break;
     before = h[h.length - 1]!.seq;
   }
+  if (typeof api.fileValueHistory === "function")
+    out.push(...(await api.fileValueHistory(projectId).catch(() => [])));
   return out;
 }

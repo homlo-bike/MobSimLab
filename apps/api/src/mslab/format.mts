@@ -11,6 +11,9 @@
  *   runs/<id>/network.txt      the network it ran on, as saved with the run
  *   runs/<id>/lines.txt        the lines it ran, as saved with the run
  *   runs/<id>/replay.json.gz   a road run's replay (gzipped JSON), when it has one
+ *   runs/<id>/files/<name>     (1.5) a file the run saved next to its result: a demand run's OD matrices (od.omx)
+ *   collab/comments.json       (1.5) the comments on the project's objects and their replies, names kept as text
+ *   history/values.json        (1.5) the history of changed values: who, when, from what to what, and why
  *   map/area.json              (1.1, optional) the project area and the tiles the map data covers
  *   map/<kind>/<x>-<y>.<ext>   (1.1, optional) one zoom-14 OpenStreetMap tile as the street network API serves it
  *   map/water.json             (1.1, optional) sea, lakes and rivers of the area
@@ -25,14 +28,17 @@
  * The map data (`map/`) is there only when the person ticks "Include map data", for the static viewer
  * (`pnpm build:static`). A MobSimLab that opens the file ignores it and loads its own.
  *
- * Members, the view-only link and the audit history stay with the instance and are not in the file.
+ * Members, the view-only link and the rest of the audit history stay with the instance and are not in the file.
  * The JSON Schemas below are published in `contracts/mslab/` (written by test/mslab-schemas.test.ts).
  *
  * Plain ESM with erasable types only: the sandboxed reader (read.mts) loads it in the tool host.
  */
 
 /** Current format version (semantic): a new minor version only adds, a new major version needs a migration. */
-export const FORMAT_VERSION = "1.4.0";
+export const FORMAT_VERSION = "1.5.0";
+
+/** The version a file with map data and without comments, history or run files is saved as (MobSimLab 1.4 reads it). */
+export const FORMAT_VERSION_MAP = "1.4.0";
 
 /** The version a file with project area polygons and no map data is saved as, so that MobSimLab 1.3 readers open it. */
 export const FORMAT_VERSION_POLYGONS = "1.3.0";
@@ -64,7 +70,8 @@ export const MSLAB_ZIP_LIMITS = {
 
 /**
  * Run kinds and finished statuses a file may hold (db/migrations/0009_road_runs.sql, 0012_demand_runs.sql,
- * 0015_calendar_runs.sql). A demand run's files (its OD matrices, `simulation.run_file`) are not carried: its result lists none.
+ * 0015_calendar_runs.sql). From format 1.5 a demand run's files (its OD matrices, `simulation.run_file`) are carried;
+ * a run's result lists only the files the file holds.
  */
 export const RUN_KINDS = ["capacity", "sweep", "road", "demand", "calendar"] as const;
 export const FINISHED_RUN_STATUSES = ["done", "failed", "cancelled"] as const;
@@ -95,7 +102,10 @@ export const FILES = {
   runNetwork: (id: string) => `runs/${id}/network.txt`,
   runLines: (id: string) => `runs/${id}/lines.txt`,
   runReplay: (id: string) => `runs/${id}/replay.json.gz`,
+  runFile: (id: string, name: string) => `runs/${id}/files/${name}`,
   result: (kind: string) => `results/${kind}.json`,
+  comments: "collab/comments.json",
+  history: "history/values.json",
 } as const;
 
 /** Kinds of map tile a file may carry (format 1.1), as the street network API serves them. */
@@ -134,6 +144,7 @@ export const FILE_PATTERNS = {
   runNetwork: /^runs\/([0-9a-f-]{36})\/network\.txt$/,
   runLines: /^runs\/([0-9a-f-]{36})\/lines\.txt$/,
   runReplay: /^runs\/([0-9a-f-]{36})\/replay\.json\.gz$/,
+  runFile: /^runs\/([0-9a-f-]{36})\/files\/([a-z0-9][a-z0-9._-]{0,63})$/,
   result: /^results\/([a-z][a-z0-9-]{1,39})\.json$/,
   map: /^map\/(?:(?:area|water|population|reference)\.json|(?:streets|walk|rail)\/\d{1,5}-\d{1,5}\.xml|(?:buildings|places|bike-amenities)\/\d{1,5}-\d{1,5}\.json|(?:streets|walk|rail|buildings|places|bike-amenities)\.pmtiles)$/,
 } as const;
@@ -191,6 +202,39 @@ export interface ResultFile {
   doc: unknown;
 }
 
+/** `collab/comments.json` (format 1.5). */
+export interface CommentsFile {
+  comments: {
+    /** The comment's id in the saved project; a reply's `parentId` names its thread's first comment. */
+    id: string;
+    objectType: string;
+    objectId: string;
+    parentId: string | null;
+    body: string;
+    /** The author's name as the saved project showed it; null when unknown. */
+    author: string | null;
+    createdAt: string;
+    editedAt: string | null;
+    resolvedAt: string | null;
+    resolvedBy: string | null;
+  }[];
+}
+
+/** `history/values.json` (format 1.5): the history of changed values, newest first. */
+export interface HistoryFile {
+  entries: {
+    /** Assumption id, for example `street.mixed_traffic_delay_share`. */
+    id: string;
+    kind: "changed" | "reason";
+    before: { value: number | null; reason: string | null };
+    after: { value: number | null; reason: string | null };
+    reason: string | null;
+    at: string;
+    /** The name of who changed it, as the saved project showed it; null when unknown. */
+    by: string | null;
+  }[];
+}
+
 /** `runs/<id>/run.json`. */
 export interface RunFile {
   id: string;
@@ -203,6 +247,8 @@ export interface RunFile {
   createdAt: string;
   startedAt: string | null;
   finishedAt: string | null;
+  /** Format 1.5: the files in `runs/<id>/files/` with their media types. */
+  files?: { name: string; mediaType: string }[];
 }
 
 const ID = "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/";
@@ -392,6 +438,103 @@ export const RUN_SCHEMA = {
     createdAt: isoDate,
     startedAt: { anyOf: [isoDate, { type: "null" }] },
     finishedAt: { anyOf: [isoDate, { type: "null" }] },
+    files: {
+      description: "Format 1.5: the files the run saved next to its result, in runs/<id>/files/.",
+      type: "array",
+      maxItems: 20,
+      items: {
+        type: "object",
+        required: ["name", "mediaType"],
+        additionalProperties: false,
+        properties: {
+          name: { type: "string", pattern: "^[a-z0-9][a-z0-9._-]{0,63}$" },
+          mediaType: { type: "string", minLength: 1, maxLength: 100 },
+        },
+      },
+    },
+  },
+} as const;
+
+const nameOrNull = { type: ["string", "null"], maxLength: 200 } as const;
+const dateOrNull = { anyOf: [isoDate, { type: "null" }] } as const;
+const valueState = {
+  type: "object",
+  required: ["value", "reason"],
+  additionalProperties: false,
+  properties: { value: { type: ["number", "null"] }, reason: { type: ["string", "null"], maxLength: 500 } },
+} as const;
+
+/** JSON Schema of `collab/comments.json` (format 1.5). */
+export const COMMENTS_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: `${ID}comments.schema.json`,
+  title: "Comments on the project's objects (collab/comments.json)",
+  type: "object",
+  required: ["comments"],
+  additionalProperties: false,
+  properties: {
+    comments: {
+      type: "array",
+      maxItems: 20000,
+      items: {
+        type: "object",
+        required: [
+          "id",
+          "objectType",
+          "objectId",
+          "parentId",
+          "body",
+          "author",
+          "createdAt",
+          "editedAt",
+          "resolvedAt",
+          "resolvedBy",
+        ],
+        additionalProperties: false,
+        properties: {
+          id: uuid,
+          objectType: { type: "string", pattern: "^[a-z][a-z-]{1,39}$" },
+          objectId: { type: "string", minLength: 1, maxLength: 100 },
+          parentId: { anyOf: [uuid, { type: "null" }] },
+          body: { type: "string", minLength: 1, maxLength: 4000 },
+          author: nameOrNull,
+          createdAt: isoDate,
+          editedAt: dateOrNull,
+          resolvedAt: dateOrNull,
+          resolvedBy: nameOrNull,
+        },
+      },
+    },
+  },
+} as const;
+
+/** JSON Schema of `history/values.json` (format 1.5). */
+export const HISTORY_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: `${ID}history.schema.json`,
+  title: "History of the project's changed values, newest first (history/values.json)",
+  type: "object",
+  required: ["entries"],
+  additionalProperties: false,
+  properties: {
+    entries: {
+      type: "array",
+      maxItems: 20000,
+      items: {
+        type: "object",
+        required: ["id", "kind", "before", "after", "reason", "at", "by"],
+        additionalProperties: false,
+        properties: {
+          id: { type: "string", pattern: "^[a-z][a-z0-9_]*(\\.[a-z0-9_]+)+$", maxLength: 120 },
+          kind: { enum: ["changed", "reason"] },
+          before: valueState,
+          after: valueState,
+          reason: { type: ["string", "null"], maxLength: 500 },
+          at: isoDate,
+          by: nameOrNull,
+        },
+      },
+    },
   },
 } as const;
 
@@ -424,6 +567,8 @@ export const FILE_SCHEMAS = {
   "drawing.schema.json": DRAWING_FILE_SCHEMA,
   "run.schema.json": RUN_SCHEMA,
   "result.schema.json": RESULT_SCHEMA,
+  "comments.schema.json": COMMENTS_SCHEMA,
+  "history.schema.json": HISTORY_SCHEMA,
 } as const;
 
 /** Purpose: [major, minor, patch] of a semantic version string. */

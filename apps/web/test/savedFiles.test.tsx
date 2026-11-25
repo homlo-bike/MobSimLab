@@ -50,7 +50,14 @@ const item = (name: string) => screen.getByText(name).closest("li") as HTMLEleme
 
 describe("saved file choices", () => {
   it("saves everything but the viewer's map data unless the planner chooses otherwise", () => {
-    expect(saveOptions(null)).toEqual({ runs: true, map: false, results: true });
+    expect(saveOptions(null)).toEqual({
+      runs: true,
+      map: false,
+      results: true,
+      vehicles: true,
+      comments: true,
+      history: true,
+    });
     const off = withSaved({ values: {} }, "runs", false);
     expect(saveOptions(off).runs).toBe(false);
     // The drawings are always in the file.
@@ -164,6 +171,11 @@ describe("Save as .mslab file", () => {
       (screen.getByRole("checkbox", { name: /results the tools worked out/ }) as HTMLInputElement).checked,
     ).toBe(false);
     fireEvent.click(screen.getByRole("button", { name: "Save file" }));
-    expect(mslabUrl).toHaveBeenCalledWith(project.id, false, false, { results: false, vehicles: false });
+    expect(mslabUrl).toHaveBeenCalledWith(project.id, false, false, {
+      results: false,
+      vehicles: false,
+      comments: true,
+      history: true,
+    });
   });
 });

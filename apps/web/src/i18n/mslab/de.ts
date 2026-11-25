@@ -49,4 +49,7 @@ export const mslabDe = {
     "Von den Werkzeugen berechnete Ergebnisse einschließen (das Projekt öffnet sich, ohne sie neu zu berechnen)",
   "mslab.vehicles": "Eigene Fahrzeuge und Flotte des Projekts einschließen",
   "mslab.fromPrefs": "Diese Auswahl startet mit Projekteinstellungen → Gespeicherte Projektdateien.",
+  "mslab.comments": "Kommentare und Diskussionen einschließen",
+  "mslab.history": "Verlauf der geänderten Werte einschließen",
+  "mslab.fromFile": "aus der Projektdatei",
 } satisfies MslabMessages;
