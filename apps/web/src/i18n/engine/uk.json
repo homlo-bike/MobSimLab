@@ -50,6 +50,7 @@
   "api.mslab.send_mslab_file_request_body": "надішліть файл .mslab як тіло запиту (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "прогін симуляції у файлі недійсний",
   "api.mslab.comments_or_history_not_valid": "коментарі або історія змінених значень у файлі недійсні",
+  "api.mslab.downloaded_data_not_valid": "завантажені дані у файлі недійсні",
   "api.mslab.too_many_tiles": "територія проєкту займає тайлів карти: {tiles}, більше за {max}, які може містити файл; зменште територію проєкту або збережіть без картографічних даних",
   "api.places.unavailable": "Пошук місць зараз недоступний",
   "api.plugins.admin_turned_off": "адміністратор вимкнув {plugin} для цього MobSimLab",

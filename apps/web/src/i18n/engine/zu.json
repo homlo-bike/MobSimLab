@@ -50,6 +50,7 @@
   "api.mslab.send_mslab_file_request_body": "thumela ifayela le-.mslab njengomzimba wesicelo (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "ukusebenza kokulingisa okukufayela akuvumelekile",
   "api.mslab.comments_or_history_not_valid": "amazwana noma umlando wamanani ashintshiwe efayeleni awavumelekile",
+  "api.mslab.downloaded_data_not_valid": "idatha elandiwe efayeleni ayivumelekile",
   "api.mslab.too_many_tiles": "indawo yephrojekthi ithatha ama-tile ebalazwe angu-{tiles}, ngaphezu kwangu-{max} ifayela elingawathwala; yenza indawo yephrojekthi ibe ncane noma ulondoloze ngaphandle kwedatha yebalazwe",
   "api.places.unavailable": "Ukusesha izindawo akutholakali okwamanje",
   "api.plugins.admin_turned_off": "umlawuli uvale i-{plugin} kule MobSimLab",

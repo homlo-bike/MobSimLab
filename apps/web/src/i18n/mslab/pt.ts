@@ -50,5 +50,7 @@ export const mslabPt = {
   "mslab.fromPrefs": "Estas escolhas partem de Preferências do projeto → Arquivos de projeto salvos.",
   "mslab.comments": "Incluir os comentários e suas conversas",
   "mslab.history": "Incluir o histórico de valores alterados",
+  "mslab.fetched":
+    "Incluir os dados baixados (blocos do mapa, elevação, população, números de clima e economia), conforme escolhido nas preferências do projeto",
   "mslab.fromFile": "do arquivo de projeto",
 } satisfies MslabMessages;

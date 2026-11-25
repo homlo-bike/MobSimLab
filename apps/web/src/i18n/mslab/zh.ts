@@ -47,5 +47,6 @@ export const mslabZh = {
   "mslab.fromPrefs": "这些选项来自项目偏好 → 保存的项目文件。",
   "mslab.comments": "包含评论和讨论",
   "mslab.history": "包含已更改值的历史",
+  "mslab.fetched": "包含已下载的数据（地图瓦片、高程、人口、气候和经济数据），按项目偏好设置中的选择",
   "mslab.fromFile": "来自项目文件",
 } satisfies MslabMessages;

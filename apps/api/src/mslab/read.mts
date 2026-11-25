@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { inflateSync } from "node:zlib";
 import AjvModule from "ajv/dist/2020.js";
 import { ToolError } from "../tool-runner/errors.mts";
 import type { ToolContext } from "../tool-runner/tools.mts";
@@ -24,6 +25,14 @@ import {
   type RunFile,
   COMMENTS_SCHEMA,
   HISTORY_SCHEMA,
+  FETCHED_ELEVATION_SCHEMA,
+  FETCHED_FACTS_SCHEMA,
+  FETCHED_FILES,
+  FETCHED_LIVE_SCHEMA,
+  FETCHED_POPULATION_SCHEMA,
+  type FetchedElevationFile,
+  type FetchedLiveFile,
+  type FetchedPopulationFile,
 } from "./format.mts";
 import { migrate } from "./migrations.mts";
 
@@ -57,6 +66,18 @@ export interface ReadResult {
   file: string;
 }
 
+/** Format 1.6: the scratch files holding the data the saved project fetched or imported. */
+export interface ReadFetched {
+  /** `fetched/facts.json`. */
+  facts: string | null;
+  /** The `fetched/live-<kind>-<n>.json` files. */
+  live: string[];
+  /** `fetched/elevation.json` and its chunks by number. */
+  elevation: { index: string; chunks: { n: number; file: string }[] } | null;
+  /** `fetched/population.json` and the feature files of each layer (layers and files counted from 1). */
+  population: { index: string; files: { layer: number; n: number; file: string }[] } | null;
+}
+
 /** What the reader found: the project, what to save, and what it left out (with the reason). */
 export interface MslabReadResult {
   formatVersion: string;
@@ -72,6 +93,8 @@ export interface MslabReadResult {
   comments?: string | null;
   /** Format 1.5: the scratch file holding `history/values.json`, when the file has a history of changed values. */
   history?: string | null;
+  /** Format 1.6: fetched and imported data; absent when the file has none. */
+  fetched?: ReadFetched | null;
   skipped: string[];
 }
 
@@ -92,6 +115,10 @@ const check = {
   result: ajv.compile(RESULT_SCHEMA),
   comments: ajv.compile(COMMENTS_SCHEMA),
   history: ajv.compile(HISTORY_SCHEMA),
+  fetchedFacts: ajv.compile(FETCHED_FACTS_SCHEMA),
+  fetchedLive: ajv.compile(FETCHED_LIVE_SCHEMA),
+  fetchedElevation: ajv.compile(FETCHED_ELEVATION_SCHEMA),
+  fetchedPopulation: ajv.compile(FETCHED_POPULATION_SCHEMA),
 };
 const docChecks = new Map<string, ReturnType<typeof ajv.compile>>();
 
@@ -124,6 +151,115 @@ function json<T>(files: Map<string, Buffer>, name: string, v: ReturnType<typeof 
   }
   if (!v(value)) throw new MslabError(`${name}: ${firstError(v)}`);
   return value as T;
+}
+
+const HEX = /^(?:[0-9a-f]{2}){5,}$/;
+
+/**
+ * Purpose: check the fetched and imported data of a file (format 1.6) and write it to the scratch folder.
+ * Elevation tiles must lie inside their chunk and inflate to width × height float32 values; every population
+ * feature line must be `[n, zoneId | null, people, WKB hex]`. Output: the scratch names, or null without such data.
+ */
+function readFetched(files: Map<string, Buffer>, ctx: ToolContext): ReadFetched | null {
+  const out: ReadFetched = { facts: null, live: [], elevation: null, population: null };
+  if (files.has(FETCHED_FILES.facts)) {
+    json(files, FETCHED_FILES.facts, check.fetchedFacts);
+    out.facts = "fetched-facts.json";
+    ctx.write(out.facts, files.get(FETCHED_FILES.facts)!);
+  }
+  const chunks = new Map<number, Buffer>();
+  const features = new Map<string, Buffer>();
+  for (const name of [...files.keys()].sort()) {
+    const live = FILE_PATTERNS.fetchedLive.exec(name);
+    if (live) {
+      const f = json<FetchedLiveFile>(files, name, check.fetchedLive);
+      if (f.kind !== live[1]) throw new MslabError(`${name} holds data of kind "${f.kind}"`);
+      const file = `fetched-live-${out.live.length + 1}.json`;
+      ctx.write(file, files.get(name)!);
+      out.live.push(file);
+      continue;
+    }
+    const chunk = FILE_PATTERNS.fetchedElevationChunk.exec(name);
+    if (chunk) chunks.set(Number(chunk[1]), files.get(name)!);
+    const feat = FILE_PATTERNS.fetchedPopulationFeatures.exec(name);
+    if (feat) features.set(`${Number(feat[1])}-${Number(feat[2])}`, files.get(name)!);
+  }
+
+  if (files.has(FETCHED_FILES.elevation)) {
+    const index = json<FetchedElevationFile>(files, FETCHED_FILES.elevation, check.fetchedElevation);
+    const used = new Set<number>();
+    for (const imp of index.imports)
+      for (const t of imp.tiles) {
+        const body = chunks.get(t.chunk);
+        if (!body || t.offset + t.bytes > body.length)
+          throw new MslabError(`${FETCHED_FILES.elevation} names an elevation tile the file does not hold`);
+        const want = t.width * t.height * 4;
+        let got = -1;
+        try {
+          got = inflateSync(body.subarray(t.offset, t.offset + t.bytes), { maxOutputLength: want }).length;
+        } catch {
+          // Not deflated, or larger than its width and height say.
+        }
+        if (got !== want)
+          throw new MslabError(`an elevation tile in ${FETCHED_FILES.elevationChunk(t.chunk)} is not valid`);
+        used.add(t.chunk);
+      }
+    for (const n of chunks.keys())
+      if (!used.has(n))
+        throw new MslabError(`${FETCHED_FILES.elevationChunk(n)} is not used by ${FETCHED_FILES.elevation}`);
+    out.elevation = { index: "fetched-elevation.json", chunks: [] };
+    ctx.write(out.elevation.index, files.get(FETCHED_FILES.elevation)!);
+    for (const n of [...used].sort((a, b) => a - b)) {
+      const file = `fetched-elevation-${n}.bin`;
+      ctx.write(file, chunks.get(n)!);
+      out.elevation.chunks.push({ n, file });
+    }
+  } else if (chunks.size) throw new MslabError(`${FETCHED_FILES.elevation} is missing`);
+
+  if (files.has(FETCHED_FILES.population)) {
+    const index = json<FetchedPopulationFile>(files, FETCHED_FILES.population, check.fetchedPopulation);
+    out.population = { index: "fetched-population.json", files: [] };
+    ctx.write(out.population.index, files.get(FETCHED_FILES.population)!);
+    const named = new Set<string>();
+    for (const [k, layer] of index.layers.entries())
+      for (let n = 1; n <= layer.files; n++) {
+        const name = FETCHED_FILES.populationFeatures(k + 1, n);
+        const body = features.get(`${k + 1}-${n}`);
+        if (!body) throw new MslabError(`${name} is missing`);
+        named.add(`${k + 1}-${n}`);
+        for (const line of body.toString("utf8").split("\n")) {
+          if (!line) continue;
+          let row: unknown;
+          try {
+            row = JSON.parse(line);
+          } catch {
+            row = null;
+          }
+          const ok =
+            Array.isArray(row) &&
+            row.length === 4 &&
+            Number.isInteger(row[0]) &&
+            row[0] >= 0 &&
+            row[0] < 2 ** 31 &&
+            (row[1] === null || (typeof row[1] === "string" && row[1].length <= 200)) &&
+            typeof row[2] === "number" &&
+            Number.isFinite(row[2]) &&
+            row[2] >= 0 &&
+            typeof row[3] === "string" &&
+            row[3].length <= 4_000_000 &&
+            HEX.test(row[3]);
+          if (!ok) throw new MslabError(`${name} has a line that is not a population feature`);
+        }
+        const file = `fetched-population-${k + 1}-${n}.ndjson`;
+        ctx.write(file, body);
+        out.population.files.push({ layer: k + 1, n, file });
+      }
+    for (const k of features.keys())
+      if (!named.has(k))
+        throw new MslabError(`a population feature file is not used by ${FETCHED_FILES.population}`);
+  } else if (features.size) throw new MslabError(`${FETCHED_FILES.population} is missing`);
+
+  return out.facts || out.live.length || out.elevation || out.population ? out : null;
 }
 
 /**
@@ -260,6 +396,16 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
       results.push({ kind, file });
       continue;
     }
+    // Fetched and imported data (format 1.6): checked together below.
+    if (
+      name === FETCHED_FILES.facts ||
+      name === FETCHED_FILES.elevation ||
+      name === FETCHED_FILES.population ||
+      FILE_PATTERNS.fetchedLive.test(name) ||
+      FILE_PATTERNS.fetchedElevationChunk.test(name) ||
+      FILE_PATTERNS.fetchedPopulationFeatures.test(name)
+    )
+      continue;
     // Map data (format 1.1) is for the static viewer; this MobSimLab loads its own.
     if (FILE_PATTERNS.map.test(name)) {
       hasMap = true;
@@ -268,6 +414,7 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
     throw new MslabError(`${name} is not a file a MobSimLab project file can hold`);
   }
 
+  const fetched = readFetched(files, ctx);
   if (hasMap && !manifest.includes.map)
     throw new MslabError("the file holds map data but its manifest says it does not");
   if (runIds.size > 0 && !manifest.includes.runs)
@@ -325,6 +472,7 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
     results,
     comments,
     history,
+    fetched,
     skipped,
   };
 }

@@ -50,5 +50,7 @@ export const mslabVi = {
   "mslab.fromPrefs": "Các lựa chọn này lấy từ Tùy chọn dự án → Tệp dự án đã lưu.",
   "mslab.comments": "Đưa vào bình luận và thảo luận",
   "mslab.history": "Đưa vào lịch sử các giá trị đã thay đổi",
+  "mslab.fetched":
+    "Bao gồm dữ liệu đã tải xuống (ô bản đồ, độ cao, dân số, số liệu khí hậu và kinh tế), như đã chọn trong tùy chọn dự án",
   "mslab.fromFile": "từ tệp dự án",
 } satisfies MslabMessages;

@@ -50,5 +50,7 @@ export const mslabJa = {
   "mslab.fromPrefs": "これらの選択はプロジェクト設定 → 保存するプロジェクトファイルから始まります。",
   "mslab.comments": "コメントとスレッドを含める",
   "mslab.history": "変更された値の履歴を含める",
+  "mslab.fetched":
+    "ダウンロード済みデータ（地図タイル、標高、人口、気候と経済の数値）を、プロジェクト設定で選んだとおりに含める",
   "mslab.fromFile": "プロジェクトファイルから",
 } satisfies MslabMessages;

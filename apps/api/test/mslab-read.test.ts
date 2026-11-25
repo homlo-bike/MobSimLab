@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import { deflateSync } from "node:zlib";
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -81,7 +82,7 @@ describe("mslab reader", () => {
   });
 
   it("refuses files from a newer MobSimLab", async () => {
-    for (const v of ["1.6.0", "2.0.0"]) {
+    for (const v of ["1.7.0", "2.0.0"]) {
       const files = resign(folder(join(FIXTURES, "1.0.0")), (m) => (m.formatVersion = v));
       await refused(writeZip(files), /newer MobSimLab/);
     }
@@ -191,6 +192,114 @@ describe("mslab reader", () => {
     const bad = folder(join(FIXTURES, "1.0.0"));
     bad.set("collab/comments.json", Buffer.from(JSON.stringify({ comments: [{ ...comment, body: "" }] })));
     await refused(writeZip(resign(bad, (m) => (m.formatVersion = "1.5.0"))), /collab\/comments\.json/);
+  });
+
+  it("reads fetched and imported data (format 1.6)", async () => {
+    const files = folder(join(FIXTURES, "1.0.0"));
+    const at = "2026-11-20T09:00:00.000Z";
+    files.set(
+      "fetched/facts.json",
+      Buffer.from(JSON.stringify({ entries: [{ key: "climate/52.4,4.9", fetchedAt: at, body: "{}" }] })),
+    );
+    files.set(
+      "fetched/live-osm-1.json",
+      Buffer.from(
+        JSON.stringify({
+          kind: "osm",
+          entries: [{ key: "streets/14/8415/5384", dataDate: at, body: "<osm/>" }],
+        }),
+      ),
+    );
+    const tile = deflateSync(Buffer.from(new Float32Array([1, 2, 3, 4]).buffer));
+    const elevation = {
+      imports: [
+        {
+          kind: "dem",
+          method: "copernicus",
+          bbox: [4.8, 52.3, 4.9, 52.4],
+          bufferKm: 2,
+          source: { name: "Copernicus GLO-30" },
+          finishedAt: at,
+          tiles: [
+            {
+              chunk: 1,
+              offset: 0,
+              bytes: tile.length,
+              priority: 0,
+              width: 2,
+              height: 2,
+              originLon: 4.8,
+              originLat: 52.4,
+              stepLon: 0.001,
+              stepLat: 0.001,
+            },
+          ],
+        },
+      ],
+    };
+    files.set("fetched/elevation.json", Buffer.from(JSON.stringify(elevation)));
+    files.set("fetched/elevation-1.bin", tile);
+    const layer = {
+      name: "WorldPop 2025",
+      source: "worldpop",
+      kind: "grid",
+      licence: "CC BY 4.0",
+      sourceUrl: "https://www.worldpop.org",
+      citation: "",
+      confidence: "medium",
+      referenceYear: 2025,
+      resolutionM: 100,
+      coverage: [4.8, 52.3, 4.9, 52.4],
+      peopleTotal: 12,
+      featureCount: 1,
+      isPrimary: true,
+      options: {},
+      updatedAt: at,
+      files: 1,
+    };
+    files.set("fetched/population.json", Buffer.from(JSON.stringify({ layers: [layer] })));
+    // POINT(4.85 52.35) as WKB.
+    const point = "01010000006666666666661340cdcccccccc2c4a40";
+    files.set("fetched/population-1-1.ndjson", Buffer.from(`${JSON.stringify([0, null, 12, point])}\n`));
+    const r = await read(writeZip(resign(files, (m) => (m.formatVersion = "1.6.0"))));
+    expect(r).toMatchObject({
+      formatVersion: "1.6.0",
+      fetched: {
+        facts: "fetched-facts.json",
+        live: ["fetched-live-1.json"],
+        elevation: { index: "fetched-elevation.json", chunks: [{ n: 1, file: "fetched-elevation-1.bin" }] },
+        population: {
+          index: "fetched-population.json",
+          files: [{ layer: 1, n: 1, file: "fetched-population-1-1.ndjson" }],
+        },
+      },
+      skipped: [],
+    });
+
+    // A tile that does not hold width × height values, a chunk without its index, a feature line that is not
+    // one, and a feature file its index does not count are refused.
+    const refuse = async (change: (f: Map<string, Buffer>) => void, why: RegExp) => {
+      const f = new Map(files);
+      change(f);
+      await refused(writeZip(resign(f, (m) => (m.formatVersion = "1.6.0"))), why);
+    };
+    await refuse(
+      (f) => f.set("fetched/elevation-1.bin", Buffer.from("not deflated")),
+      /names an elevation tile|not valid/,
+    );
+    await refuse((f) => f.delete("fetched/elevation.json"), /fetched\/elevation\.json is missing/);
+    await refuse(
+      (f) => f.set("fetched/population-1-1.ndjson", Buffer.from('[0,null,-1,"00"]\n')),
+      /not a population feature/,
+    );
+    await refuse(
+      (f) => f.set("fetched/population-1-2.ndjson", Buffer.from("")),
+      /not used by fetched\/population\.json/,
+    );
+    await refuse(
+      (f) => f.set("fetched/live-height-1.json", Buffer.from(JSON.stringify({ kind: "osm", entries: [] }))),
+      /holds data of kind/,
+    );
   });
 
   it("refuses changed, missing and extra files", async () => {

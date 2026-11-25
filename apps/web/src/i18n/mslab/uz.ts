@@ -50,5 +50,7 @@ export const mslabUz = {
   "mslab.fromPrefs": "Bu tanlovlar Loyiha sozlamalari → Saqlanadigan loyiha fayllari bo‘limidan boshlanadi.",
   "mslab.comments": "Izohlar va muhokamalarni kiritish",
   "mslab.history": "O‘zgartirilgan qiymatlar tarixini kiritish",
+  "mslab.fetched":
+    "Yuklab olingan ma’lumotlarni qo‘shish (xarita plitkalari, balandlik, aholi, iqlim va iqtisod ko‘rsatkichlari), loyiha sozlamalarida tanlanganidek",
   "mslab.fromFile": "loyiha faylidan",
 } satisfies MslabMessages;

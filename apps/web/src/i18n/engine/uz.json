@@ -50,6 +50,7 @@
   "api.mslab.send_mslab_file_request_body": ".mslab faylini soʻrov tanasi sifatida yuboring (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "fayldagi modellash hisoblaridan biri yaroqsiz",
   "api.mslab.comments_or_history_not_valid": "fayldagi izohlar yoki o‘zgartirilgan qiymatlar tarixi yaroqsiz",
+  "api.mslab.downloaded_data_not_valid": "fayldagi yuklab olingan ma’lumotlar yaroqsiz",
   "api.mslab.too_many_tiles": "loyiha hududi {tiles} ta xarita plitkasini egallaydi, bu fayl olib yurishi mumkin boʻlgan {max} tadan koʻp; loyiha hududini kichraytiring yoki xarita maʼlumotlarisiz saqlang",
   "api.places.unavailable": "Joy qidiruvi hozir mavjud emas",
   "api.plugins.admin_turned_off": "administrator bu MobSimLab uchun {plugin} ni oʻchirgan",

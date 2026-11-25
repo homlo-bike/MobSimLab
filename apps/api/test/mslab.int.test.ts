@@ -1,4 +1,4 @@
-import { gzipSync } from "node:zlib";
+import { deflateSync, gzipSync } from "node:zlib";
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
@@ -466,8 +466,9 @@ describe("mslab project files", () => {
         maxRatio: 1e9,
       });
       const manifest = JSON.parse(files.get("manifest.json")!.toString());
-      // Map data makes it format 1.4.
-      expect(manifest).toMatchObject({ formatVersion: "1.5.0", includes: { runs: false, map: true } });
+      // The facts kept for the area (fetched/facts.json) make it format 1.6.
+      expect(manifest).toMatchObject({ formatVersion: "1.6.0", includes: { runs: false, map: true } });
+      expect(JSON.parse(files.get("fetched/facts.json")!.toString()).entries.length).toBeGreaterThan(0);
       expect(JSON.parse(files.get("project.json")!.toString()).areaPolygons).toEqual([
         {
           id: "a1",
@@ -517,6 +518,172 @@ describe("mslab project files", () => {
     } finally {
       for (const s of spies) s.mockRestore();
     }
+  });
+
+  it("carries the data the project fetched and imported, and opens with it", async () => {
+    const tile = (values: number[]) => deflateSync(Buffer.from(new Float32Array(values).buffer));
+    const su = await db.superuser();
+    try {
+      await su.query(
+        `INSERT INTO project.data_cache (project_id, kind, key, body) VALUES ($1, 'facts', 'climate/52.5,13.4', '{"months":[1]}')
+         ON CONFLICT DO NOTHING`,
+        [source],
+      );
+      for (const [kind, key, body] of [
+        ["osm", "streets/14/8802/5373", "<osm/>"],
+        ["height", "13.4000,52.5000", "35"],
+      ] as const) {
+        const r = await su.query(
+          "INSERT INTO geo.shared_data (kind, key, body) VALUES ($1, $2, $3) RETURNING id",
+          [kind, key, Buffer.from(body)],
+        );
+        await su.query(
+          "INSERT INTO project.data_use (project_id, kind, key, shared_id) VALUES ($1, $2, $3, $4)",
+          [source, kind, key, r.rows[0].id],
+        );
+      }
+      const imp = await su.query(
+        `INSERT INTO geo.import (project_id, kind, method, status, bbox, buffer_km, source, finished_at)
+         VALUES ($1, 'dem', 'copernicus', 'done', ARRAY[13.3, 52.4, 13.7, 52.6], 2,
+                 '{"name":"Copernicus GLO-30","licence":"Copernicus licence"}', now()) RETURNING id`,
+        [source],
+      );
+      // One tile in the full-detail polygon and one outside it; each 4 × 4 values.
+      const sixteen = Array.from({ length: 16 }, (_, i) => i);
+      for (const lon of [13.4, 13.6])
+        await su.query(
+          `INSERT INTO geo.dem_tile (project_id, import_id, priority, width, height, origin_lon, origin_lat,
+             step_lon, step_lat, data, envelope)
+           VALUES ($1, $2, 0, 4, 4, $3, 52.5, 0.001, 0.001, $4, ST_MakeEnvelope($3, 52.496, $3 + 0.004, 52.5, 4326))`,
+          [source, imp.rows[0].id, lon, tile(sixteen)],
+        );
+      for (const [name, src, people] of [
+        ["WorldPop 2025", "worldpop", 30],
+        ["Census zones", "upload", 7],
+      ] as const) {
+        const l = await su.query(
+          `INSERT INTO geo.population_layer (project_id, name, source, kind, status, confidence, reference_year,
+             resolution_m, coverage, people_total, feature_count, is_primary, options, updated_at)
+           VALUES ($1, $2, $3, 'grid', 'ready', 'medium', 2025, 100, ST_MakeEnvelope(13.37, 52.48, 13.44, 52.52, 4326),
+                   $4, 2, $5, '{"year":2025}', now()) RETURNING id`,
+          [source, name, src, people, src === "worldpop"],
+        );
+        await su.query(
+          `INSERT INTO geo.population_feature (layer_id, n, zone_id, people, geom) VALUES
+             ($1, 0, NULL, $2, ST_SetSRID(ST_MakePoint(13.40, 52.50), 4326)),
+             ($1, 1, 'z "1"', 0, ST_MakeEnvelope(13.41, 52.50, 13.42, 52.51, 4326))`,
+          [l.rows[0].id, people],
+        );
+      }
+    } finally {
+      await su.end();
+    }
+
+    // Without the planner's own files: the uploaded population layer stays out.
+    const res = await as("alice").download(`/api/projects/${source}/mslab?uploads=false`);
+    expect(res.status).toBe(200);
+    const files = readZip(res.body as Buffer, {
+      zipBytes: 1e9,
+      entries: 5000,
+      fileBytes: 1e9,
+      totalBytes: 1e9,
+      maxRatio: 1e9,
+    });
+    expect(JSON.parse(files.get("manifest.json")!.toString()).formatVersion).toBe("1.6.0");
+    const facts = JSON.parse(files.get("fetched/facts.json")!.toString()).entries as { key: string }[];
+    expect(facts.map((f) => f.key)).toContain("climate/52.5,13.4");
+    expect(JSON.parse(files.get("fetched/live-osm-1.json")!.toString()).entries).toMatchObject([
+      { key: "streets/14/8802/5373", body: "<osm/>" },
+    ]);
+    expect(JSON.parse(files.get("fetched/live-height-1.json")!.toString()).entries).toMatchObject([
+      { key: "13.4000,52.5000", body: "35" },
+    ]);
+    const elevation = JSON.parse(files.get("fetched/elevation.json")!.toString());
+    // 30 m in the full-detail polygon, every third sample (about 90 m) outside it.
+    const saved = elevation.imports[0].tiles as { width: number; stepLon: number }[];
+    expect(saved.map((t) => t.width)).toEqual([4, 2]);
+    expect(saved[0]!.stepLon).toBeCloseTo(0.001, 9);
+    expect(saved[1]!.stepLon).toBeCloseTo(0.003, 9);
+    const population = JSON.parse(files.get("fetched/population.json")!.toString());
+    expect(population.layers.map((l: { name: string }) => l.name)).toEqual(["WorldPop 2025"]);
+    expect(files.get("fetched/population-1-1.ndjson")!.toString().trim().split("\n")).toHaveLength(2);
+    const attribution = files.get("ATTRIBUTION.md")!.toString();
+    expect(attribution).toContain("Copernicus GLO-30, Copernicus licence");
+    expect(attribution).toContain('Population layer "WorldPop 2025"');
+
+    const opened = await as("bob").upload("/api/projects/import", res.body as Buffer);
+    expect(opened.status).toBe(201);
+    const id = opened.body.project.id as string;
+    // The opened project reads the population layer, the tiles and the heights without downloading them.
+    const layers = (await as("bob").get(`/api/projects/${id}/population`)).body.layers as Record<
+      string,
+      unknown
+    >[];
+    expect(layers).toMatchObject([
+      { name: "WorldPop 2025", source: "worldpop", status: "ready", peopleTotal: 30, featureCount: 2 },
+    ]);
+    const su2 = await db.superuser();
+    try {
+      const kept = await su2.query(
+        "SELECT key FROM project.data_cache WHERE project_id = $1 AND kind = 'facts' ORDER BY key",
+        [id],
+      );
+      expect(kept.rows.map((r) => r.key)).toContain("climate/52.5,13.4");
+      // The live copies belong to the opened project only: no other project is handed them.
+      const live = await su2.query(
+        `SELECT u.kind, u.key, s.key AS held, convert_from(s.body, 'UTF8') AS body
+         FROM project.data_use u JOIN geo.shared_data s ON s.id = u.shared_id
+         WHERE u.project_id = $1 ORDER BY u.kind`,
+        [id],
+      );
+      expect(live.rows).toEqual([
+        { kind: "height", key: "13.4000,52.5000", held: `file/${id}/13.4000,52.5000`, body: "35" },
+        { kind: "osm", key: "streets/14/8802/5373", held: `file/${id}/streets/14/8802/5373`, body: "<osm/>" },
+      ]);
+      const tiles = await su2.query(
+        `SELECT t.width, i.method, i.status FROM geo.dem_tile t JOIN geo.import i ON i.id = t.import_id
+         WHERE t.project_id = $1 ORDER BY t.origin_lon`,
+        [id],
+      );
+      expect(tiles.rows).toEqual([
+        { width: 4, method: "copernicus", status: "done" },
+        { width: 2, method: "copernicus", status: "done" },
+      ]);
+      const zone = await su2.query(
+        `SELECT f.zone_id, ST_AsText(f.geom) AS g FROM geo.population_feature f
+         JOIN geo.population_layer l ON l.id = f.layer_id WHERE l.project_id = $1 AND f.n = 1`,
+        [id],
+      );
+      expect(zone.rows[0].zone_id).toBe('z "1"');
+      expect(zone.rows[0].g).toMatch(/^POLYGON/);
+    } finally {
+      await su2.end();
+    }
+    // What the opened project holds shows in Saved project files.
+    const rows = Object.fromEntries(
+      (
+        (await as("bob").get(`/api/projects/${id}/mslab/contents`)).body.rows as {
+          id: string;
+          items: number;
+        }[]
+      ).map((r) => [r.id, r.items]),
+    );
+    expect(rows).toMatchObject({ liveTiles: 1, population: 1, uploads: 0 });
+    expect(rows.elevation).toBe(3);
+
+    // With every kind switched off the file holds none of it.
+    const none = await as("alice").download(
+      `/api/projects/${source}/mslab?facts=false&economy=false&otherFetched=false&liveTiles=false&elevation=false&population=false&uploads=false`,
+    );
+    const bare = readZip(none.body as Buffer, {
+      zipBytes: 1e9,
+      entries: 5000,
+      fileBytes: 1e9,
+      totalBytes: 1e9,
+      maxRatio: 1e9,
+    });
+    expect([...bare.keys()].filter((n) => n.startsWith("fetched/"))).toEqual([]);
+    expect(JSON.parse(bare.get("manifest.json")!.toString()).formatVersion).toBe("1.5.0");
   });
 
   it("refuses files it cannot open, with a plain reason", async () => {

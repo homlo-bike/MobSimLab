@@ -74,3 +74,31 @@ Project file as a complete capsule, stage 2.
 - Project preferences → Saved project files switches decide whether a file holds them (`comments=false`,
   `history=false` on the export). Only a file holding one of them is saved as 1.5.0, so older readers still open
   the rest. `tools/static-site/add-projects.mjs` reads 1.0 to 1.5.
+
+## Format 1.6.0 (2026-11-25)
+
+Project file as a complete capsule, stage 3: the data the project fetched or imported, in `fetched/`, so an opened
+project works without downloading it again.
+
+- `fetched/facts.json`: the location facts the project looked up and kept (`project.data_cache`): country, public
+  holidays, climate, the economy figures of the cost and benefit tables, and other answers, each with its key and
+  the date it was fetched. Opening the file keeps them for the new project.
+- `fetched/live-osm-<n>.json`, `fetched/live-height-<n>.json`: the street, rail, walk, building and place tiles and
+  the heights the tools fetched live (`project.data_use` → `geo.shared_data`), with their data dates. Opening the
+  file stores them under a key that carries the new project (`file/<project>/<key>`), so only that project reads
+  them: a file cannot change what other projects on the instance are handed.
+- `fetched/elevation.json` and `fetched/elevation-<n>.bin`: the tiles of the finished elevation imports
+  (`geo.dem_tile`), packed into chunks of at most 48 MB, with each tile's position in its chunk. GLO-30 tiles that
+  do not touch a full-detail polygon of the project area are saved with every third sample (about 90 m instead of
+  30 m); a tile whose size does not allow that keeps all samples. The planner's own elevation files are saved as
+  they are. Opening the file adds a finished import (`options.fromFile`) holding the tiles.
+- `fetched/population.json` and `fetched/population-<layer>-<n>.ndjson`: the ready population layers with their
+  source, licence and options, and their features as lines of `[n, zoneId | null, people, WKB hex]`. Opening the
+  file stores the layers as ready and counts their totals from the stored features.
+- The sandboxed reader checks every index against its schema, that every tile lies in its chunk and inflates to
+  width × height float32 values, and every feature line; the API checks the indexes and lines once more.
+- Project preferences → Saved project files switches decide which kinds a file holds (`facts`, `economy`,
+  `otherFetched`, `liveTiles`, `elevation`, `population`, `uploads` `=false` on the export). A kind that would
+  take the file beyond the 512 MB a file may unpack to is left out and named in `ATTRIBUTION.md`. Only a file
+  holding fetched data is saved as 1.6.0. `tools/static-site/add-projects.mjs` reads 1.0 to 1.6.
+- Not yet in the file: the OpenStreetMap extract of the project area.

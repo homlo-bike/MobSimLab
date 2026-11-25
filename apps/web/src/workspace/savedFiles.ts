@@ -48,8 +48,27 @@ export const SAVED_NOW: ReadonlySet<SavedDataId> = new Set([
   "runs",
   "comments",
   "history",
+  "liveTiles",
+  "elevation",
+  "population",
+  "uploads",
+  "facts",
+  "economy",
+  "otherFetched",
   "viewerMap",
 ]);
+
+/** The kinds of fetched and imported data a file can hold (file format 1.6), as the download's options name them. */
+export const FETCHED_IDS = [
+  "facts",
+  "economy",
+  "otherFetched",
+  "liveTiles",
+  "elevation",
+  "population",
+  "uploads",
+] as const satisfies readonly SavedDataId[];
+export type FetchedId = (typeof FETCHED_IDS)[number];
 
 /** Off unless the planner turns it on: the map data for the static viewer is large and takes minutes to make. */
 const OFF_BY_DEFAULT: ReadonlySet<SavedDataId> = new Set(["viewerMap"]);
@@ -98,6 +117,8 @@ export function saveOptions(doc: PreferencesDoc | null | undefined): {
   vehicles: boolean;
   comments: boolean;
   history: boolean;
+  /** The fetched and imported data, kind by kind. */
+  fetched: Record<FetchedId, boolean>;
 } {
   return {
     runs: savedIn(doc, "runs"),
@@ -106,5 +127,9 @@ export function saveOptions(doc: PreferencesDoc | null | undefined): {
     vehicles: savedIn(doc, "vehicles"),
     comments: savedIn(doc, "comments"),
     history: savedIn(doc, "history"),
+    fetched: Object.fromEntries(FETCHED_IDS.map((id) => [id, savedIn(doc, id)])) as Record<
+      FetchedId,
+      boolean
+    >,
   };
 }

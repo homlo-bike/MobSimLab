@@ -35,7 +35,10 @@
  */
 
 /** Current format version (semantic): a new minor version only adds, a new major version needs a migration. */
-export const FORMAT_VERSION = "1.5.0";
+export const FORMAT_VERSION = "1.6.0";
+
+/** The version of a file with comments, a history of changed values or run files, without fetched data. */
+export const FORMAT_VERSION_COMMENTS = "1.5.0";
 
 /** The version a file with map data and without comments, history or run files is saved as (MobSimLab 1.4 reads it). */
 export const FORMAT_VERSION_MAP = "1.4.0";
@@ -108,6 +111,23 @@ export const FILES = {
   history: "history/values.json",
 } as const;
 
+/** Kinds of data fetched live and held once for the instance that a file may carry (format 1.6). */
+export const LIVE_KINDS = ["osm", "height"] as const;
+export type LiveKind = (typeof LIVE_KINDS)[number];
+
+/** Files of the data a project fetched or imported (format 1.6), so it opens without downloading it again. */
+export const FETCHED_FILES = {
+  facts: "fetched/facts.json",
+  live: (kind: LiveKind, n: number) => `fetched/live-${kind}-${n}.json`,
+  elevation: "fetched/elevation.json",
+  elevationChunk: (n: number) => `fetched/elevation-${n}.bin`,
+  population: "fetched/population.json",
+  populationFeatures: (layer: number, n: number) => `fetched/population-${layer}-${n}.ndjson`,
+} as const;
+
+/** Most bytes of one chunk of elevation tiles or population features in a file. */
+export const FETCHED_CHUNK_BYTES = 48 * 1024 * 1024;
+
 /** Kinds of map tile a file may carry (format 1.1), as the street network API serves them. */
 export const MAP_TILE_KINDS = ["streets", "walk", "rail", "buildings", "places", "bike-amenities"] as const;
 export type MapTileKind = (typeof MAP_TILE_KINDS)[number];
@@ -146,6 +166,9 @@ export const FILE_PATTERNS = {
   runReplay: /^runs\/([0-9a-f-]{36})\/replay\.json\.gz$/,
   runFile: /^runs\/([0-9a-f-]{36})\/files\/([a-z0-9][a-z0-9._-]{0,63})$/,
   result: /^results\/([a-z][a-z0-9-]{1,39})\.json$/,
+  fetchedLive: /^fetched\/live-(osm|height)-(\d{1,4})\.json$/,
+  fetchedElevationChunk: /^fetched\/elevation-(\d{1,4})\.bin$/,
+  fetchedPopulationFeatures: /^fetched\/population-(\d{1,3})-(\d{1,4})\.ndjson$/,
   map: /^map\/(?:(?:area|water|population|reference)\.json|(?:streets|walk|rail)\/\d{1,5}-\d{1,5}\.xml|(?:buildings|places|bike-amenities)\/\d{1,5}-\d{1,5}\.json|(?:streets|walk|rail|buildings|places|bike-amenities)\.pmtiles)$/,
 } as const;
 
@@ -232,6 +255,78 @@ export interface HistoryFile {
     at: string;
     /** The name of who changed it, as the saved project showed it; null when unknown. */
     by: string | null;
+  }[];
+}
+
+/** `fetched/facts.json` (format 1.6): the location facts the project looked up (country, holidays, climate, economy). */
+export interface FetchedFactsFile {
+  entries: {
+    /** The request the fact answers, for example `climate/52.4,4.9` (projects/data-cache.ts `factKey`). */
+    key: string;
+    fetchedAt: string;
+    /** The answer as the provider gave it, as the project kept it. */
+    body: string;
+  }[];
+}
+
+/** `fetched/live-<kind>-<n>.json` (format 1.6): street tiles or heights the project's tools fetched live. */
+export interface FetchedLiveFile {
+  kind: LiveKind;
+  entries: { key: string; dataDate: string; body: string }[];
+}
+
+/** One elevation tile in `fetched/elevation-<chunk>.bin`: deflated float32 values, as `geo.dem_tile` holds them. */
+export interface FetchedElevationTile {
+  chunk: number;
+  offset: number;
+  bytes: number;
+  priority: number;
+  width: number;
+  height: number;
+  originLon: number;
+  originLat: number;
+  stepLon: number;
+  stepLat: number;
+}
+
+/** `fetched/elevation.json` (format 1.6): the project's elevation imports and where their tiles are. */
+export interface FetchedElevationFile {
+  imports: {
+    kind: "dem" | "dem_upload";
+    method: "copernicus" | "geotiff";
+    bbox: [number, number, number, number];
+    bufferKm: number;
+    /** The Source record of the import: name, url, licence, retrievedAt. */
+    source: Record<string, unknown>;
+    finishedAt: string;
+    tiles: FetchedElevationTile[];
+  }[];
+}
+
+/** `fetched/population.json` (format 1.6): the project's population layers. */
+export interface FetchedPopulationFile {
+  layers: {
+    name: string;
+    source: "worldpop" | "ghsl" | "upload";
+    kind: "grid" | "zones" | "points";
+    licence: string;
+    sourceUrl: string;
+    citation: string;
+    confidence: "high" | "medium" | "low";
+    referenceYear: number | null;
+    resolutionM: number | null;
+    /** The area the layer covers, `[west, south, east, north]`; null when unknown. */
+    coverage: [number, number, number, number] | null;
+    peopleTotal: number;
+    featureCount: number;
+    isPrimary: boolean;
+    options: Record<string, unknown>;
+    updatedAt: string;
+    /**
+     * How many `fetched/population-<layer>-<n>.ndjson` files hold the layer's features (n from 1). Each line is
+     * `[n, zoneId | null, people, geometry as WKB in hex]`.
+     */
+    files: number;
   }[];
 }
 
@@ -538,6 +633,173 @@ export const HISTORY_SCHEMA = {
   },
 } as const;
 
+const cacheKey = { type: "string", minLength: 1, maxLength: 250 } as const;
+const lon = { type: "number", minimum: -180, maximum: 180 } as const;
+const lat = { type: "number", minimum: -90, maximum: 90 } as const;
+const box = { type: "array", minItems: 4, maxItems: 4, prefixItems: [lon, lat, lon, lat] } as const;
+
+/** JSON Schema of `fetched/facts.json` (format 1.6). */
+export const FETCHED_FACTS_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: `${ID}fetched-facts.schema.json`,
+  title: "Location facts the project looked up: country, holidays, climate, economy (fetched/facts.json)",
+  type: "object",
+  required: ["entries"],
+  additionalProperties: false,
+  properties: {
+    entries: {
+      type: "array",
+      maxItems: 5000,
+      items: {
+        type: "object",
+        required: ["key", "fetchedAt", "body"],
+        additionalProperties: false,
+        properties: { key: cacheKey, fetchedAt: isoDate, body: { type: "string", maxLength: 8388608 } },
+      },
+    },
+  },
+} as const;
+
+/** JSON Schema of `fetched/live-<kind>-<n>.json` (format 1.6). */
+export const FETCHED_LIVE_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: `${ID}fetched-live.schema.json`,
+  title: "Street tiles or heights the project's tools fetched live (fetched/live-<kind>-<n>.json)",
+  type: "object",
+  required: ["kind", "entries"],
+  additionalProperties: false,
+  properties: {
+    kind: { enum: [...LIVE_KINDS] },
+    entries: {
+      type: "array",
+      maxItems: 200000,
+      items: {
+        type: "object",
+        required: ["key", "dataDate", "body"],
+        additionalProperties: false,
+        properties: { key: cacheKey, dataDate: isoDate, body: { type: "string", maxLength: 67108864 } },
+      },
+    },
+  },
+} as const;
+
+/** JSON Schema of `fetched/elevation.json` (format 1.6). */
+export const FETCHED_ELEVATION_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: `${ID}fetched-elevation.schema.json`,
+  title: "The project's elevation imports and where their tiles are (fetched/elevation.json)",
+  type: "object",
+  required: ["imports"],
+  additionalProperties: false,
+  properties: {
+    imports: {
+      type: "array",
+      maxItems: 20,
+      items: {
+        type: "object",
+        required: ["kind", "method", "bbox", "bufferKm", "source", "finishedAt", "tiles"],
+        additionalProperties: false,
+        properties: {
+          kind: { enum: ["dem", "dem_upload"] },
+          method: { enum: ["copernicus", "geotiff"] },
+          bbox: box,
+          bufferKm: { type: "number", minimum: 0, maximum: 50 },
+          source: { type: "object", maxProperties: 40 },
+          finishedAt: isoDate,
+          tiles: {
+            type: "array",
+            maxItems: 200000,
+            items: {
+              type: "object",
+              required: [
+                "chunk",
+                "offset",
+                "bytes",
+                "priority",
+                "width",
+                "height",
+                "originLon",
+                "originLat",
+                "stepLon",
+                "stepLat",
+              ],
+              additionalProperties: false,
+              properties: {
+                chunk: { type: "integer", minimum: 1, maximum: 9999 },
+                offset: { type: "integer", minimum: 0 },
+                bytes: { type: "integer", minimum: 1, maximum: 67108864 },
+                priority: { type: "integer", minimum: 0, maximum: 1 },
+                width: { type: "integer", minimum: 1, maximum: 4096 },
+                height: { type: "integer", minimum: 1, maximum: 4096 },
+                originLon: lon,
+                originLat: lat,
+                stepLon: { type: "number", exclusiveMinimum: 0, maximum: 1 },
+                stepLat: { type: "number", exclusiveMinimum: 0, maximum: 1 },
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+} as const;
+
+/** JSON Schema of `fetched/population.json` (format 1.6). */
+export const FETCHED_POPULATION_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: `${ID}fetched-population.schema.json`,
+  title: "The project's population layers (fetched/population.json)",
+  type: "object",
+  required: ["layers"],
+  additionalProperties: false,
+  properties: {
+    layers: {
+      type: "array",
+      maxItems: 50,
+      items: {
+        type: "object",
+        required: [
+          "name",
+          "source",
+          "kind",
+          "licence",
+          "sourceUrl",
+          "citation",
+          "confidence",
+          "referenceYear",
+          "resolutionM",
+          "coverage",
+          "peopleTotal",
+          "featureCount",
+          "isPrimary",
+          "options",
+          "updatedAt",
+          "files",
+        ],
+        additionalProperties: false,
+        properties: {
+          name: { type: "string", minLength: 1, maxLength: 200 },
+          source: { enum: ["worldpop", "ghsl", "upload"] },
+          kind: { enum: ["grid", "zones", "points"] },
+          licence: { type: "string", maxLength: 500 },
+          sourceUrl: { type: "string", maxLength: 2000 },
+          citation: { type: "string", maxLength: 2000 },
+          confidence: { enum: ["high", "medium", "low"] },
+          referenceYear: { type: ["integer", "null"], minimum: 1800, maximum: 2200 },
+          resolutionM: { type: ["number", "null"], exclusiveMinimum: 0 },
+          coverage: { anyOf: [box, { type: "null" }] },
+          peopleTotal: { type: "number", minimum: 0 },
+          featureCount: { type: "integer", minimum: 0 },
+          isPrimary: { type: "boolean" },
+          options: { type: "object", maxProperties: 60 },
+          updatedAt: isoDate,
+          files: { type: "integer", minimum: 0, maximum: 9999 },
+        },
+      },
+    },
+  },
+} as const;
+
 /** JSON Schema of `results/<kind>.json` (format 1.2). */
 export const RESULT_SCHEMA = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
@@ -569,6 +831,10 @@ export const FILE_SCHEMAS = {
   "result.schema.json": RESULT_SCHEMA,
   "comments.schema.json": COMMENTS_SCHEMA,
   "history.schema.json": HISTORY_SCHEMA,
+  "fetched-facts.schema.json": FETCHED_FACTS_SCHEMA,
+  "fetched-live.schema.json": FETCHED_LIVE_SCHEMA,
+  "fetched-elevation.schema.json": FETCHED_ELEVATION_SCHEMA,
+  "fetched-population.schema.json": FETCHED_POPULATION_SCHEMA,
 } as const;
 
 /** Purpose: [major, minor, patch] of a semantic version string. */

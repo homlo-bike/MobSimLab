@@ -50,5 +50,7 @@ export const mslabTr = {
   "mslab.fromPrefs": "Bu seçimler Proje tercihleri → Kaydedilen proje dosyaları'ndan gelir.",
   "mslab.comments": "Yorumları ve tartışmaları dahil et",
   "mslab.history": "Değiştirilen değerlerin geçmişini dahil et",
+  "mslab.fetched":
+    "İndirilen verileri dahil et (harita karoları, yükseklik, nüfus, iklim ve ekonomi rakamları), proje tercihlerinde seçildiği gibi",
   "mslab.fromFile": "proje dosyasından",
 } satisfies MslabMessages;

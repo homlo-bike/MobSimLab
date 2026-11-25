@@ -55,6 +55,7 @@ export const API_MESSAGES: Record<string, string> = {
   "api.mslab.simulation_run_file_not_valid": "a simulation run in the file is not valid",
   "api.mslab.comments_or_history_not_valid":
     "the comments or the history of changed values in the file are not valid",
+  "api.mslab.downloaded_data_not_valid": "the downloaded data in the file is not valid",
   "api.mslab.file_cannot_opened_not_read": "This file cannot be opened: it could not be read safely",
   "api.mslab.draw_something_project_first_map":
     "draw something in the project first: map data covers the project area",

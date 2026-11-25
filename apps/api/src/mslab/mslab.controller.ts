@@ -28,6 +28,13 @@ const exportQuery = z.strictObject({
   vehicles: z.enum(["true", "false"]).optional(),
   comments: z.enum(["true", "false"]).optional(),
   history: z.enum(["true", "false"]).optional(),
+  facts: z.enum(["true", "false"]).optional(),
+  economy: z.enum(["true", "false"]).optional(),
+  otherFetched: z.enum(["true", "false"]).optional(),
+  liveTiles: z.enum(["true", "false"]).optional(),
+  elevation: z.enum(["true", "false"]).optional(),
+  population: z.enum(["true", "false"]).optional(),
+  uploads: z.enum(["true", "false"]).optional(),
 });
 
 /**
@@ -57,7 +64,8 @@ export class MslabController {
    * `map=true` adds the map data of the project area for the static viewer (format 1.1; may take minutes when the
    * OpenStreetMap tiles are not cached); `results=false` leaves out the results the tools worked out
    * and `vehicles=false` the project's own vehicles and fleet; `comments=false` and `history=false` leave out the
-   * comments and the history of changed values (format 1.5).
+   * comments and the history of changed values (format 1.5); `facts`, `economy`, `otherFetched`, `liveTiles`,
+   * `elevation`, `population` and `uploads` `=false` leave out that kind of fetched or imported data (format 1.6).
    */
   @Get(":id/mslab")
   @Requires("projects.read")
@@ -79,6 +87,15 @@ export class MslabController {
       q.data.vehicles !== "false",
       q.data.comments !== "false",
       q.data.history !== "false",
+      {
+        facts: q.data.facts !== "false",
+        economy: q.data.economy !== "false",
+        otherFetched: q.data.otherFetched !== "false",
+        liveTiles: q.data.liveTiles !== "false",
+        elevation: q.data.elevation !== "false",
+        population: q.data.population !== "false",
+        uploads: q.data.uploads !== "false",
+      },
     );
     res.setHeader("Content-Type", MSLAB_MEDIA_TYPE);
     res.setHeader(

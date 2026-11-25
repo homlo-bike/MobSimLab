@@ -50,6 +50,7 @@
   "api.mslab.send_mslab_file_request_body": "پرونده .mslab را به‌عنوان بدنه درخواست بفرستید (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "یکی از اجراهای شبیه‌سازی در پرونده معتبر نیست",
   "api.mslab.comments_or_history_not_valid": "نظرها یا تاریخچهٔ مقدارهای تغییریافته در فایل معتبر نیستند",
+  "api.mslab.downloaded_data_not_valid": "داده‌های بارگیری‌شده در فایل معتبر نیستند",
   "api.mslab.too_many_tiles": "محدوده پروژه {tiles} کاشی نقشه می‌گیرد، بیش از {max} که یک پرونده می‌تواند داشته باشد؛ محدوده پروژه را کوچک‌تر کنید یا بدون داده نقشه ذخیره کنید",
   "api.places.unavailable": "جست‌وجوی مکان اکنون در دسترس نیست",
   "api.plugins.admin_turned_off": "یک مدیر {plugin} را برای این MobSimLab خاموش کرده است",

@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/fetched-facts.schema.json",
+  "title": "Location facts the project looked up: country, holidays, climate, economy (fetched/facts.json)",
+  "type": "object",
+  "required": [
+    "entries"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "entries": {
+      "type": "array",
+      "maxItems": 5000,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "fetchedAt",
+          "body"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 250
+          },
+          "fetchedAt": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 40
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 8388608
+          }
+        }
+      }
+    }
+  }
+}

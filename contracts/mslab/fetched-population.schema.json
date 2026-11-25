@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/fetched-population.schema.json",
+  "title": "The project's population layers (fetched/population.json)",
+  "type": "object",
+  "required": [
+    "layers"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "layers": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": [
+          "name",
+          "source",
+          "kind",
+          "licence",
+          "sourceUrl",
+          "citation",
+          "confidence",
+          "referenceYear",
+          "resolutionM",
+          "coverage",
+          "peopleTotal",
+          "featureCount",
+          "isPrimary",
+          "options",
+          "updatedAt",
+          "files"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "source": {
+            "enum": [
+              "worldpop",
+              "ghsl",
+              "upload"
+            ]
+          },
+          "kind": {
+            "enum": [
+              "grid",
+              "zones",
+              "points"
+            ]
+          },
+          "licence": {
+            "type": "string",
+            "maxLength": 500
+          },
+          "sourceUrl": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "citation": {
+            "type": "string",
+            "maxLength": 2000
+          },
+          "confidence": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ]
+          },
+          "referenceYear": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 1800,
+            "maximum": 2200
+          },
+          "resolutionM": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "exclusiveMinimum": 0
+          },
+          "coverage": {
+            "anyOf": [
+              {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 4,
+                "prefixItems": [
+                  {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  {
+                    "type": "number",
+                    "minimum": -90,
+                    "maximum": 90
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "peopleTotal": {
+            "type": "number",
+            "minimum": 0
+          },
+          "featureCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "isPrimary": {
+            "type": "boolean"
+          },
+          "options": {
+            "type": "object",
+            "maxProperties": 60
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 40
+          },
+          "files": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9999
+          }
+        }
+      }
+    }
+  }
+}

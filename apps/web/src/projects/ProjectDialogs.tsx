@@ -18,7 +18,7 @@ import {
 } from "./api";
 import { engineErrorText } from "../i18n/engine";
 import type { PreferencesDoc } from "../workspace/preferences";
-import { saveOptions } from "../workspace/savedFiles";
+import { FETCHED_IDS, type FetchedId, saveOptions } from "../workspace/savedFiles";
 
 /** An error line under a form. */
 function ErrorLine({ error }: { error: string | null }) {
@@ -594,6 +594,9 @@ export function SaveMslabDialog({
   const [vehicles, setVehicles] = useState(true);
   const [comments, setComments] = useState(true);
   const [history, setHistory] = useState(true);
+  // The downloaded data: in or out as a whole here, kind by kind in Project preferences.
+  const [fetched, setFetched] = useState(true);
+  const [kinds, setKinds] = useState<Partial<Record<FetchedId, boolean>>>({});
   // The choices start from Project preferences → Saved project files.
   useEffect(() => {
     if (typeof api.drawings !== "function") return;
@@ -608,6 +611,8 @@ export function SaveMslabDialog({
         setVehicles(o.vehicles);
         setComments(o.comments);
         setHistory(o.history);
+        setKinds(o.fetched);
+        setFetched(FETCHED_IDS.some((id) => o.fetched[id]));
       },
       () => {},
     );
@@ -643,7 +648,18 @@ export function SaveMslabDialog({
             onClick={() => {
               // A real button for keyboards and screen readers; the download itself goes through a link.
               const a = document.createElement("a");
-              a.href = api.mslabUrl(project.id, runs, map, { results, vehicles, comments, history });
+              a.href = api.mslabUrl(project.id, runs, map, {
+                results,
+                vehicles,
+                comments,
+                history,
+                // Ticked here while every kind is off in the preferences: all of it.
+                fetched: !fetched
+                  ? Object.fromEntries(FETCHED_IDS.map((id) => [id, false]))
+                  : FETCHED_IDS.some((id) => kinds[id])
+                    ? kinds
+                    : {},
+              });
               a.download = "";
               document.body.append(a);
               a.click();
@@ -662,6 +678,7 @@ export function SaveMslabDialog({
       {box(vehicles, setVehicles, "mslab.vehicles")}
       {box(comments, setComments, "mslab.comments")}
       {box(history, setHistory, "mslab.history")}
+      {box(fetched, setFetched, "mslab.fetched")}
       {box(map, setMap, "mslab.map")}
       <p className="mt-4 mb-0 text-xs text-slate-500">{t("mslab.fromPrefs")}</p>
     </Dialog>

@@ -50,5 +50,7 @@ export const mslabPl = {
   "mslab.fromPrefs": "Te wybory pochodzą z Ustawień projektu → Zapisane pliki projektu.",
   "mslab.comments": "Dołącz komentarze i wątki",
   "mslab.history": "Dołącz historię zmienionych wartości",
+  "mslab.fetched":
+    "Dołącz pobrane dane (kafelki mapy, wysokości, ludność, dane o klimacie i gospodarce), zgodnie z wyborem w preferencjach projektu",
   "mslab.fromFile": "z pliku projektu",
 } satisfies MslabMessages;

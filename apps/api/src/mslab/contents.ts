@@ -4,6 +4,7 @@ import { projectChain } from "../audit/audit.service";
 import { DATABASE, type Database } from "../db/database";
 import { VALUE_CHANGED, VALUE_OBJECT, VALUE_REASON } from "../projects/value-history";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
+import { factGroup } from "./fetched";
 
 /**
  * The kinds of data a project holds, as Project preferences → Saved project files lists them. `design` (what the
@@ -40,13 +41,6 @@ export interface SavedDataRow {
   at: string | null;
   /** Where it came from: the services' names, or empty for what the planner made. */
   sources: string[];
-}
-
-/** Location facts by key prefix (projects/area-facts.ts): economy figures, other fetched data, the rest. */
-function factGroup(key: string): "economy" | "otherFetched" | "facts" {
-  if (key.startsWith("economy") || key.startsWith("benefit-indicators/")) return "economy";
-  if (key.startsWith("osm-areas/")) return "otherFetched";
-  return "facts";
 }
 
 const FACT_SOURCES: Record<string, string> = {

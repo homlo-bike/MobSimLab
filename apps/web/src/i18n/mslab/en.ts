@@ -52,6 +52,8 @@ export const mslabEn = {
   "mslab.fromPrefs": "These choices start from Project preferences → Saved project files.",
   "mslab.comments": "Include comments and their threads",
   "mslab.history": "Include the history of changed values",
+  "mslab.fetched":
+    "Include downloaded data (map tiles, elevation, population, climate and economy figures), as chosen in Project preferences",
   "mslab.fromFile": "from the project file",
 } as const;
 

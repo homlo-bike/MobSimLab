@@ -50,6 +50,7 @@
   "api.mslab.send_mslab_file_request_body": "invia il file .mslab come corpo della richiesta (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "un'esecuzione di simulazione nel file non è valida",
   "api.mslab.comments_or_history_not_valid": "i commenti o la cronologia dei valori modificati nel file non sono validi",
+  "api.mslab.downloaded_data_not_valid": "i dati scaricati nel file non sono validi",
   "api.mslab.too_many_tiles": "l'area del progetto richiede {tiles} tasselli di mappa, più dei {max} che un file può contenere; riduci l'area del progetto o salva senza dati cartografici",
   "api.places.unavailable": "La ricerca dei luoghi non è disponibile al momento",
   "api.plugins.admin_turned_off": "un amministratore ha disattivato {plugin} per questo MobSimLab",
