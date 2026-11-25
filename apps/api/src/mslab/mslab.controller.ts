@@ -17,12 +17,15 @@ import { type MslRequest, SessionService } from "../auth/session.service";
 import { Requires } from "../iam/requires";
 import type { ProjectActor } from "../projects/projects.service";
 import { MSLAB_MEDIA_TYPE } from "./format.mts";
+import { MslabContentsService } from "./contents";
 import { MslabService } from "./mslab.service";
 
 const uuid = z.uuid();
 const exportQuery = z.strictObject({
   runs: z.enum(["true", "false"]).optional(),
   map: z.enum(["true", "false"]).optional(),
+  results: z.enum(["true", "false"]).optional(),
+  vehicles: z.enum(["true", "false"]).optional(),
 });
 
 /**
@@ -32,6 +35,7 @@ const exportQuery = z.strictObject({
 export class MslabController {
   constructor(
     private readonly mslab: MslabService,
+    private readonly contents: MslabContentsService,
     private readonly sessions: SessionService,
   ) {}
 
@@ -49,7 +53,8 @@ export class MslabController {
   /**
    * Purpose: download the project as a `.mslab` file. Query: `runs=true` adds the finished simulation runs;
    * `map=true` adds the map data of the project area for the static viewer (format 1.1; may take minutes when the
-   * OpenStreetMap tiles are not cached).
+   * OpenStreetMap tiles are not cached); `results=false` leaves out the results the tools worked out
+   * and `vehicles=false` the project's own vehicles and fleet.
    */
   @Get(":id/mslab")
   @Requires("projects.read")
@@ -67,6 +72,8 @@ export class MslabController {
       pid.data,
       q.data.runs === "true",
       q.data.map === "true",
+      q.data.results !== "false",
+      q.data.vehicles !== "false",
     );
     res.setHeader("Content-Type", MSLAB_MEDIA_TYPE);
     res.setHeader(
@@ -75,6 +82,18 @@ export class MslabController {
     );
     res.setHeader("Cache-Control", "private, no-store");
     return new StreamableFile(bytes);
+  }
+
+  /**
+   * Purpose: what the project holds of each kind of data a `.mslab` file can carry (Project preferences → Saved
+   * project files). Output: `{ rows: SavedDataRow[] }` with size, count, date and source.
+   */
+  @Get(":id/mslab/contents")
+  @Requires("projects.read")
+  async savedContents(@Param("id") id: string, @Req() req: MslRequest) {
+    const pid = uuid.safeParse(id);
+    if (!pid.success) throw new BadRequestException("not a valid request");
+    return { rows: await this.contents.contents(this.actor(req), pid.data) };
   }
 
   /**

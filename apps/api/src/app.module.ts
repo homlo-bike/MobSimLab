@@ -47,6 +47,7 @@ import { ProjectsService } from "./projects/projects.service";
 import { SetupController } from "./setup/setup.controller";
 import { RunsController } from "./simulation/runs.controller";
 import { MslabController } from "./mslab/mslab.controller";
+import { MslabContentsService } from "./mslab/contents";
 import { MslabService } from "./mslab/mslab.service";
 import { MslabMapService } from "./mslab/map-data";
 import { SimulationModule } from "./simulation/simulation.module";
@@ -115,6 +116,7 @@ export class AppModule {
         UsersService,
         MslabService,
         MslabMapService,
+        MslabContentsService,
         ProjectAreaService,
         ProjectResultsService,
         AreaFactsService,

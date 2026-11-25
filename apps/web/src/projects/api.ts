@@ -15,6 +15,7 @@ import { projectGeodata } from "../features/geodata/api";
 import { projectCalendarRuns } from "../features/calendar-run/api";
 import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
 import { withApiMsg } from "../i18n/engine";
+import type { SavedDataRow } from "../workspace/savedFiles";
 
 export type ProjectRole = "owner" | "editor" | "commenter" | "viewer";
 
@@ -161,12 +162,28 @@ export function projectsApi(csrf: string) {
     },
     /**
      * Where to download the project as a `.mslab` file (ADR-0021), with or without its simulation runs, and with
-     * or without the map data of its area for the static viewer.
+     * or without the map data of its area for the static viewer, and without the results or own vehicles when the
+     * Saved project files choices leave them out.
      */
-    mslabUrl: (id: string, runs: boolean, map = false) => {
-      const q = [runs && "runs=true", map && "map=true"].filter(Boolean).join("&");
+    mslabUrl: (
+      id: string,
+      runs: boolean,
+      map = false,
+      more: { results?: boolean; vehicles?: boolean } = {},
+    ) => {
+      const q = [
+        runs && "runs=true",
+        map && "map=true",
+        more.results === false && "results=false",
+        more.vehicles === false && "vehicles=false",
+      ]
+        .filter(Boolean)
+        .join("&");
       return `${one(id)}/mslab${q ? `?${q}` : ""}`;
     },
+    /** What the project holds of each kind of data a `.mslab` file can carry: size, date and source. */
+    mslabContents: (id: string) =>
+      get<{ rows?: SavedDataRow[] }>(`${one(id)}/mslab/contents`).then((r) => r.rows ?? []),
     /** Open a `.mslab` file as a new project owned by the caller; `skipped` lists what was left out. */
     importMslab: (file: Blob) => importMslab(csrf, file),
     drawings: (id: string) => loadDrawings(id),

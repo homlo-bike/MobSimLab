@@ -1548,6 +1548,7 @@ export function Workspace({
                 country={placeCountry}
                 place={climateAt}
                 climateLines={climateLines}
+                onTab={onTab}
                 mapExports={
                   drawings.loaded ? (
                     // Its own wait, so the rest of the preferences show while the export code loads.

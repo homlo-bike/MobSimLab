@@ -1,7 +1,9 @@
 import {
   type FormEvent,
+  type MutableRefObject,
   type ReactNode,
   useCallback,
+  useEffect,
   useId,
   useLayoutEffect,
   useMemo,
@@ -32,6 +34,9 @@ import { roadValue } from "../features/road-sim/params";
 import { DemandParamsSection } from "./DemandParams";
 import { StationsSection } from "./StationsSection";
 import { VisualsSection } from "./VisualsSection";
+import { SavedFilesSection } from "./SavedFilesSection";
+import type { UpdateTarget } from "./savedFiles";
+import type { Tab } from "../shell/route";
 import { CURRENCY_CODES } from "../features/costs/currencies";
 import { type CurrencyState, NO_CURRENCY, RATE_PREF, withCurrency } from "../features/costs/currency";
 import { OFF_PEAK_PREF } from "./editedElsewhere";
@@ -58,6 +63,7 @@ export function ProjectPreferences({
   place = null,
   climateLines,
   mapExports = null,
+  onTab,
 }: {
   api: ProjectsApi;
   project: Project;
@@ -86,6 +92,8 @@ export function ProjectPreferences({
   climateLines?: readonly (readonly [number, number])[][];
   /** The Export section: the project's schematic maps to download or print. */
   mapExports?: ReactNode;
+  /** Open another tab (the Update links of Saved project files). */
+  onTab?: (tab: Tab) => void;
 }) {
   const { t } = useI18n();
   const editable = can.edit(project);
@@ -119,6 +127,12 @@ export function ProjectPreferences({
   const prefsEditable = editable && !!onPreferences;
   const fleetEditable = editable && !!onFleet && !!fleet;
   const setPrefs = (d: PreferencesDoc) => onPreferences?.(d);
+  // Set by the layout: show one section of Project preferences (the Update links of Saved project files).
+  const showSection = useRef<((id: string) => void) | null>(null);
+  const go = (target: UpdateTarget) => {
+    if ("tab" in target) onTab?.(target.tab);
+    else showSection.current?.(target.section);
+  };
   const sections: readonly PrefSection[] = [
     {
       id: "project",
@@ -200,6 +214,21 @@ export function ProjectPreferences({
           preferences={preferences}
           editable={prefsEditable}
           onPreferences={setPrefs}
+        />
+      ),
+    },
+    {
+      id: "saved-files",
+      group: "project",
+      title: "savedFiles.title",
+      node: (
+        <SavedFilesSection
+          api={api}
+          projectId={project.id}
+          preferences={preferences}
+          editable={prefsEditable}
+          onPreferences={setPrefs}
+          onGo={go}
         />
       ),
     },
@@ -422,7 +451,7 @@ export function ProjectPreferences({
       ? [{ id: "export", group: "project", title: "schematic.exportTitle", node: mapExports } as const]
       : []),
   ];
-  return <PreferencesLayout projectId={project.id} sections={sections} />;
+  return <PreferencesLayout projectId={project.id} sections={sections} showSection={showSection} />;
 }
 
 /** The groups of Project preferences, in the order the navigation lists them. */
@@ -459,7 +488,16 @@ function searchText(text: string, language: string): string {
  * column on wide screens, a row along the top on phones) and a search through the text of every section. Every
  * section stays drawn while hidden, so what is typed in one is kept when the planner moves to another group.
  */
-function PreferencesLayout({ projectId, sections }: { projectId: string; sections: readonly PrefSection[] }) {
+function PreferencesLayout({
+  projectId,
+  sections,
+  showSection,
+}: {
+  projectId: string;
+  sections: readonly PrefSection[];
+  /** Set to a function that shows one section: its group, scrolled to it. */
+  showSection?: MutableRefObject<((id: string) => void) | null>;
+}) {
   const { t, language } = useI18n();
   const [group, setGroupState] = useState<GroupId>(() => lastGroup.get(projectId) ?? "project");
   const [query, setQuery] = useState("");
@@ -497,6 +535,16 @@ function PreferencesLayout({ projectId, sections }: { projectId: string; section
   const jump = (id: string) => {
     bodies.current.get(id)?.parentElement?.scrollIntoView({ block: "start" });
   };
+  useEffect(() => {
+    if (!showSection) return;
+    showSection.current = (id: string) => {
+      const s = sections.find((x) => x.id === id);
+      if (!s) return;
+      setGroup(s.group);
+      // After the group is drawn.
+      requestAnimationFrame(() => jump(id));
+    };
+  });
   const shown = (s: PrefSection) => (searching ? matches.has(s.id) : s.group === group);
   const count = (g: GroupId) => sections.filter((s) => s.group === g && matches.has(s.id)).length;
   const groupTitle = (g: GroupId) => t(GROUPS.find((x) => x.id === g)!.title);

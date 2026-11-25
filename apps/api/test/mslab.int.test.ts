@@ -398,7 +398,62 @@ describe("mslab project files", () => {
     expect(empty.status).toBe(400);
   });
 
+  it("lists the size, date and source of each kind of data the project holds", async () => {
+    const su = await db.superuser();
+    try {
+      await su.query(
+        `INSERT INTO project.data_cache (project_id, kind, key, body) VALUES
+           ($1, 'facts', 'climate/47.0,8.0', '{"months":[]}'),
+           ($1, 'facts', 'economy/CH/2020', '{"ppp":1}'),
+           ($1, 'facts', 'osm-areas/8.000000,47.000000', '[]')`,
+        [source],
+      );
+    } finally {
+      await su.end();
+    }
+    const res = await as("alice").get(`/api/projects/${source}/mslab/contents`);
+    expect(res.status).toBe(200);
+    const rows = Object.fromEntries(
+      (
+        res.body.rows as { id: string; bytes: number; items: number; at: string | null; sources: string[] }[]
+      ).map((r) => [r.id, r]),
+    );
+    expect(Object.keys(rows)).toEqual([
+      "design",
+      "vehicles",
+      "processed",
+      "runs",
+      "comments",
+      "history",
+      "osm",
+      "liveTiles",
+      "elevation",
+      "population",
+      "uploads",
+      "facts",
+      "economy",
+      "otherFetched",
+      "viewerMap",
+    ]);
+    expect(rows.design!.items).toBeGreaterThanOrEqual(2);
+    expect(rows.design!.bytes).toBeGreaterThan(0);
+    expect(rows.design!.at).not.toBeNull();
+    expect(rows.runs).toMatchObject({ items: 1 });
+    // Setting the area in the test before may have kept more facts: those add to the rows.
+    expect(rows.facts!.sources).toContain("Open-Meteo");
+    expect(rows.economy!.sources).toContain("World Bank");
+    expect(rows.otherFetched!.sources).toContain("OpenStreetMap");
+    for (const k of ["facts", "economy", "otherFetched"] as const)
+      expect(rows[k]!.items).toBeGreaterThanOrEqual(1);
+    expect(rows.osm).toMatchObject({ bytes: 0, items: 0, at: null });
+
+    // Leaving out the results keeps everything else.
+    const plain = await as("alice").download(`/api/projects/${source}/mslab?results=false`);
+    expect(plain.status).toBe(200);
+  });
+
   it("lets only people who can open a project save it", async () => {
     expect((await as("bob").download(`/api/projects/${source}/mslab`)).status).toBe(404);
+    expect((await as("bob").get(`/api/projects/${source}/mslab/contents`)).status).toBe(404);
   });
 });
