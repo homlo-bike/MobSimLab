@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { Inject, Injectable, Optional } from "@nestjs/common";
 import type { MslRequest } from "../auth/session.service";
 import { DATABASE, type Database } from "../db/database";
@@ -134,6 +135,10 @@ export const factKey = {
   /** The OpenStreetMap areas around a point (regions, project area picker). */
   osmAreas: (lon: number, lat: number, wide: boolean) =>
     `osm-areas/${lon.toFixed(6)},${lat.toFixed(6)}${wide ? "/wide" : ""}`,
+  /** The shared-bike stations a GBFS feed listed when it was last read (demand runs); the feed by its hash. */
+  gbfs: (url: string) => `gbfs/${createHash("sha256").update(url).digest("hex").slice(0, 32)}`,
+  /** The GEBCO water depth at a point (ferry route checks), to about 10 m; the grid's cells are about 450 m. */
+  depth: (lon: number, lat: number) => `depth/${lon.toFixed(4)},${lat.toFixed(4)}`,
 };
 
 /** Who may read a project's kept facts: the project gate (`?project=`) as the endpoints use it. */

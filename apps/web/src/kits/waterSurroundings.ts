@@ -3,6 +3,7 @@
  * areas and rivers), bridges and locks around the line, and GEBCO depths at the points on open sea the kit asks
  * for. Fetched from the API; the kit does the checking (crates/mode-kits/src/water_checks.rs).
  */
+import { dataProject } from "../geodata/projectData";
 import { get } from "../session/api";
 import { csrfHeader } from "../session/csrf";
 import { loadWater, waterBox, type WaterBox } from "../features/schematic/water";
@@ -30,13 +31,17 @@ export const loadSurroundings: SurroundingsLoader = async (box) => {
   };
 };
 
-/** Purpose: GEBCO depths at points from the API. */
+/**
+ * Purpose: GEBCO depths at points from the API. With a project open, depths it already asked for come from the
+ * project, and new ones are kept with it (and so travel in its saved file).
+ */
 export const fetchDepths: DepthFetcher = async (points) => {
+  const project = dataProject();
   const res = await fetch("/api/terrain/depths", {
     method: "POST",
     headers: { "Content-Type": "application/json", ...csrfHeader() },
     credentials: "same-origin",
-    body: JSON.stringify({ points }),
+    body: JSON.stringify({ points, ...(project ? { projectId: project } : {}) }),
   });
   if (!res.ok) throw new Error(`depths: ${res.status}`);
   return ((await res.json()) as { depthsM: (number | null)[] }).depthsM;

@@ -79,7 +79,8 @@ export interface FetchedSummary {
 /** Location facts by key prefix (projects/data-cache.ts `factKey`): economy figures, other answers, the rest. */
 export function factGroup(key: string): "economy" | "otherFetched" | "facts" {
   if (key.startsWith("economy") || key.startsWith("benefit-indicators/")) return "economy";
-  if (key.startsWith("osm-areas/")) return "otherFetched";
+  if (key.startsWith("osm-areas/") || key.startsWith("gbfs/") || key.startsWith("depth/"))
+    return "otherFetched";
   return "facts";
 }
 
