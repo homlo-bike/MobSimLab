@@ -137,6 +137,29 @@ describe("Project preferences → Saved project files", () => {
     expect(onGo).toHaveBeenCalledWith({ tab: "simulator" });
   });
 
+  it("says that worked-out results are out of date and recalculates them when asked", async () => {
+    const api = { mslabContents: vi.fn(async () => rows) };
+    const onRecalculate = vi.fn();
+    const section = (stale: boolean) => (
+      <SavedFilesSection
+        api={api}
+        projectId="p1"
+        preferences={{ values: {} }}
+        editable
+        onPreferences={() => {}}
+        onRecalculate={stale ? onRecalculate : null}
+      />
+    );
+    const shown = render(section(false));
+    const results = "Worked-out results (timetables, tables, GIS, schematic)";
+    await waitFor(() => item(results));
+    expect(within(item(results)).queryByRole("button", { name: "Recalculate" })).toBeNull();
+    shown.rerender(section(true));
+    expect(within(item(results)).getByRole("status").textContent).toMatch(/^Out of date/);
+    fireEvent.click(within(item(results)).getByRole("button", { name: "Recalculate" }));
+    expect(onRecalculate).toHaveBeenCalledTimes(1);
+  });
+
   it("opens the Climate section from the Update link of the location facts", async () => {
     vi.stubGlobal(
       "fetch",

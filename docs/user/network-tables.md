@@ -26,3 +26,7 @@ At the end of the tab, type a name and press **Save current design** to keep a c
 - Every scenario is measured with the project's current preferences, so the comparison shows the effect of the design alone.
 - Costs here are in US dollars at the assumption library's price base, before the conversion to the project's country, so the scenarios compare on equal terms. The cost tables give the current design in the country's currency.
 - A project keeps up to 20 scenarios. **Delete** under a scenario's name removes it. Viewers see the comparison but cannot save or delete.
+
+## After a change to the railway
+
+The tables are worked out from the railway as it was when they were last worked out, and those results are saved with the project and in its `.mslab` file. After you change the railway, the tab keeps showing the last results, with a notice that they are **out of date** and a **Recalculate** button; nothing is worked out again until you press it. The same notice shows in Costs, Timetables and Schematic, and Recalculate there works them all out again. Project preferences → **Saved project files** shows it next to the worked-out results too.

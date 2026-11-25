@@ -58,3 +58,7 @@ Each export carries the project name, a legend of the lines, water, areas and sy
 ## Not yet
 
 - The LOOM layout for large networks (ADR-0025).
+
+## After a change to the railway
+
+The schematic is laid out from the railway as it was when it was last laid out, and it is saved with the project and in its `.mslab` file. After you change the railway, the tab keeps showing the last one, with a notice that it is **out of date** and a **Recalculate** button; nothing is worked out again until you press it. The same notice shows in the Tables tab, and Recalculate there works them all out again. Project preferences → **Saved project files** shows it next to the worked-out results too.
