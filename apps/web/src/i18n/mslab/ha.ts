@@ -53,4 +53,10 @@ export const mslabHa = {
   "mslab.fetched":
     "Haɗa bayanan da aka sauke (tayal ɗin taswira, tsawo, yawan jama'a, alkaluman yanayi da tattalin arziki), kamar yadda aka zaɓa a cikin zaɓuɓɓukan aikin",
   "mslab.fromFile": "daga fayil ɗin aiki",
+  "missingData.title": "Bayanan da fayil ɗin bai kawo ba",
+  "missingData.body":
+    "An buɗe “{name}” ba tare da bayanan da ke ƙasa ba. Ba a sauke komai sai kun nema. Sauke yana buɗe aikin a wurin da kuke fara saukewa.",
+  "missingData.download": "Sauke",
+  "missingData.downloadOf": "Sauke {name}",
+  "missingData.later": "Ba yanzu ba",
 } satisfies MslabMessages;

@@ -53,4 +53,10 @@ export const mslabKk = {
   "mslab.fetched":
     "Жүктеп алынған деректерді қосу (карта плиткалары, биіктік, халық саны, климат және экономика көрсеткіштері), жоба параметрлерінде таңдалғандай",
   "mslab.fromFile": "жоба файлынан",
+  "missingData.title": "Файлда болмаған деректер",
+  "missingData.body":
+    "«{name}» төмендегі деректерсіз ашылды. Сіз сұрамайынша ештеңе жүктелмейді. «Жүктеу» жобаны жүктеуді бастайтын жерде ашады.",
+  "missingData.download": "Жүктеу",
+  "missingData.downloadOf": "{name} жүктеу",
+  "missingData.later": "Қазір емес",
 } satisfies MslabMessages;

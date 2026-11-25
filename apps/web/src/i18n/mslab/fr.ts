@@ -53,4 +53,10 @@ export const mslabFr = {
   "mslab.fetched":
     "Inclure les données téléchargées (tuiles de carte, altitude, population, chiffres du climat et de l'économie), selon le choix fait dans les préférences du projet",
   "mslab.fromFile": "du fichier de projet",
+  "missingData.title": "Données absentes du fichier",
+  "missingData.body":
+    "« {name} » a été ouvert sans les données ci-dessous. Rien n’est téléchargé tant que vous ne le demandez pas. Télécharger ouvre le projet à l’endroit où vous lancez le téléchargement.",
+  "missingData.download": "Télécharger",
+  "missingData.downloadOf": "Télécharger {name}",
+  "missingData.later": "Pas maintenant",
 } satisfies MslabMessages;

@@ -286,6 +286,8 @@ export interface ImportOutcome {
   skipped: string[];
   /** The file's format version when it was upgraded on the way in. */
   migratedFrom: string | null;
+  /** Kinds of data from the file that a job is still bringing in ("osm": the map extract's import is queued). */
+  queued: string[];
 }
 
 /**
@@ -677,8 +679,9 @@ export class MslabService {
     let newId: string;
     let skipped: string[];
     let migratedFrom: string | null;
+    let queued: string[];
     try {
-      ({ newId, skipped, migratedFrom } = await this.tools.run(
+      ({ newId, skipped, migratedFrom, queued } = await this.tools.run(
         "mslab-read",
         bytes,
         async (raw, scratch) => {
@@ -1011,6 +1014,7 @@ export class MslabService {
             return p.id;
           });
           // The map extract is imported by a job, as an uploaded extract is; the project opens meanwhile.
+          const jobs: string[] = [];
           if (fetchedData?.osm) {
             let queued = false;
             try {
@@ -1024,8 +1028,9 @@ export class MslabService {
               this.logger.warn(`mslab import: the map extract was not queued: ${(e as Error).message}`);
             }
             if (!queued) skipped.push("the map extract: it could not be imported here");
+            else jobs.push("osm");
           }
-          return { newId, skipped, migratedFrom: res.migratedFrom };
+          return { newId, skipped, migratedFrom: res.migratedFrom, queued: jobs };
         },
         READ_LIMITS,
       ));
@@ -1038,7 +1043,7 @@ export class MslabService {
       }
       throw e;
     }
-    return { project: await this.projects.get(actor, newId), skipped, migratedFrom };
+    return { project: await this.projects.get(actor, newId), skipped, migratedFrom, queued };
   }
 }
 

@@ -54,4 +54,10 @@ export const mslabNl = {
   "mslab.fetched":
     "Gedownloade gegevens opnemen (kaarttegels, hoogte, bevolking, klimaat- en economiecijfers), zoals gekozen in de projectvoorkeuren",
   "mslab.fromFile": "uit het projectbestand",
+  "missingData.title": "Gegevens die niet in het bestand zaten",
+  "missingData.body":
+    "‘{name}’ is geopend zonder de onderstaande gegevens. Er wordt niets gedownload totdat u erom vraagt. Downloaden opent het project op de plek waar u de download start.",
+  "missingData.download": "Downloaden",
+  "missingData.downloadOf": "{name} downloaden",
+  "missingData.later": "Niet nu",
 } satisfies MslabMessages;

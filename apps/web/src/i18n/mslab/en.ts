@@ -55,6 +55,12 @@ export const mslabEn = {
   "mslab.fetched":
     "Include downloaded data (map tiles, elevation, population, climate and economy figures), as chosen in Project preferences",
   "mslab.fromFile": "from the project file",
+  "missingData.title": "Data the file did not bring",
+  "missingData.body":
+    "“{name}” opened without the data below. Nothing is downloaded until you ask for it. Download opens the project where you start it.",
+  "missingData.download": "Download",
+  "missingData.downloadOf": "Download {name}",
+  "missingData.later": "Not now",
 } as const;
 
 export type MslabMessages = Record<keyof typeof mslabEn, string>;

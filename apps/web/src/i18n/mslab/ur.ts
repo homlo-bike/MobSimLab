@@ -53,4 +53,10 @@ export const mslabUr = {
   "mslab.fetched":
     "ڈاؤن لوڈ کیا گیا ڈیٹا شامل کریں (نقشے کی ٹائلیں، بلندی، آبادی، آب و ہوا اور معیشت کے اعداد)، جیسا کہ پروجیکٹ کی ترجیحات میں منتخب کیا گیا ہے",
   "mslab.fromFile": "پروجیکٹ فائل سے",
+  "missingData.title": "وہ ڈیٹا جو فائل میں نہیں تھا",
+  "missingData.body":
+    "”{name}“ نیچے دیے گئے ڈیٹا کے بغیر کھولا گیا۔ جب تک آپ نہ کہیں کچھ ڈاؤن لوڈ نہیں ہوتا۔ ”ڈاؤن لوڈ“ پروجیکٹ کو اس جگہ کھولتا ہے جہاں سے آپ ڈاؤن لوڈ شروع کرتے ہیں۔",
+  "missingData.download": "ڈاؤن لوڈ",
+  "missingData.downloadOf": "{name} ڈاؤن لوڈ کریں",
+  "missingData.later": "ابھی نہیں",
 } satisfies MslabMessages;

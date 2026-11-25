@@ -296,8 +296,8 @@ function Shell({
           api={api}
           meId={user.id}
           canCreate={canCreate}
-          onOpen={(p, fresh = false) =>
-            go({ page: "project", id: p.id, tab: fresh ? "create" : "simulator", fresh })
+          onOpen={(p, fresh = false, tab) =>
+            go({ page: "project", id: p.id, tab: tab ?? (fresh ? "create" : "simulator"), fresh })
           }
         />
       </div>

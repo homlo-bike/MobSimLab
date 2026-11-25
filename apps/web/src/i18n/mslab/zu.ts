@@ -54,4 +54,10 @@ export const mslabZu = {
   "mslab.fetched":
     "Faka idatha elandiwe (amathayela emephu, ukuphakama, inani labantu, izibalo zesimo sezulu nezomnotho), njengoba kukhethiwe kokuncanyelwayo kwephrojekthi",
   "mslab.fromFile": "kusuka efayeleni lephrojekthi",
+  "missingData.title": "Idatha ifayela elingayilethanga",
+  "missingData.body":
+    "“{name}” ivulwe ngaphandle kwedatha engezansi. Akukho okulandwayo uze ucele. Landa kuvula iphrojekthi lapho uqala khona ukulanda.",
+  "missingData.download": "Landa",
+  "missingData.downloadOf": "Landa {name}",
+  "missingData.later": "Hhayi manje",
 } satisfies MslabMessages;

@@ -318,6 +318,37 @@ describe("projects home", () => {
     ).toBeTruthy();
   });
 
+  it("offers the data an opened file did not bring, and downloads none of it by itself", async () => {
+    const row = (id: string, items: number) => ({ id, bytes: items * 1000, items, at: null, sources: [] });
+    const calls = stubApi(owner, {
+      "POST /api/projects/import": {
+        project: project(NEW, "Lakeside tram", "owner"),
+        skipped: [],
+        // The map extract came in the file; its import is still running.
+        queued: ["osm"],
+      },
+      [`GET /api/projects/${NEW}/mslab/contents`]: {
+        rows: [row("osm", 0), row("elevation", 0), row("population", 0), row("facts", 2), row("economy", 3)],
+      },
+    });
+    const { container } = render(<App />);
+    await screen.findByText("Lakeside network");
+    const input = container.querySelector<HTMLInputElement>('input[type="file"][accept=".mslab"]')!;
+    fireEvent.change(input, {
+      target: { files: [new File([new Uint8Array([0x50, 0x4b, 3, 4])], "l.mslab")] },
+    });
+    const dlg = await screen.findByRole("dialog", { name: "Data the file did not bring" });
+    expect(
+      within(dlg)
+        .getAllByRole("listitem")
+        .map((li) => li.firstChild?.textContent),
+    ).toEqual(["Elevation", "Population"]);
+    // Only the file was sent and the list read: nothing was asked to download.
+    expect(calls.filter((c) => c.method !== "GET").map((c) => c.url)).toEqual(["/api/projects/import"]);
+    fireEvent.click(within(dlg).getByRole("button", { name: "Download Elevation" }));
+    expect(window.location.pathname).toBe(`/projects/${NEW}/gis`);
+  });
+
   it("lists public projects on their own shelf, read-only", async () => {
     const open = project(P4, "Harbour ferries", "viewer", { viaPublic: true, visibility: "public" });
     stubApi(owner, { "GET /api/projects?public=true": { projects: [open] } });

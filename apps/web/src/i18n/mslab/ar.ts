@@ -53,4 +53,10 @@ export const mslabAr = {
   "mslab.fetched":
     "تضمين البيانات المنزَّلة (بلاطات الخريطة، الارتفاعات، السكان، أرقام المناخ والاقتصاد) كما اختيرت في تفضيلات المشروع",
   "mslab.fromFile": "من ملف المشروع",
+  "missingData.title": "بيانات لم يتضمنها الملف",
+  "missingData.body":
+    "فُتح «{name}» من دون البيانات أدناه. لا يُنزَّل شيء حتى تطلب ذلك. زر «تنزيل» يفتح المشروع في المكان الذي تبدأ منه التنزيل.",
+  "missingData.download": "تنزيل",
+  "missingData.downloadOf": "تنزيل {name}",
+  "missingData.later": "ليس الآن",
 } satisfies MslabMessages;

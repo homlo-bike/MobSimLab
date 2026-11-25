@@ -53,4 +53,10 @@ export const mslabYo = {
   "mslab.fetched":
     "Fi dátà tí a gbà sílẹ̀ kún un (àwọn táìlì máàpù, gíga ilẹ̀, iye ènìyàn, àwọn òǹkà ojú ọjọ́ àti ọrọ̀ ajé), gẹ́gẹ́ bí a ṣe yàn nínú àwọn àyànfẹ́ iṣẹ́ àkànṣe",
   "mslab.fromFile": "láti inú fáìlì iṣẹ́ àkànṣe",
+  "missingData.title": "Dátà tí fáìlì náà kò mú wá",
+  "missingData.body":
+    "A ṣí “{name}” láìsí dátà tó wà nísàlẹ̀. A kì í gba ohunkóhun sílẹ̀ àfi tí o bá béèrè. Gbà sílẹ̀ ń ṣí iṣẹ́ náà níbi tí o ti ń bẹ̀rẹ̀ ìgbàsílẹ̀.",
+  "missingData.download": "Gbà sílẹ̀",
+  "missingData.downloadOf": "Gba {name} sílẹ̀",
+  "missingData.later": "Kì í ṣe báyìí",
 } satisfies MslabMessages;

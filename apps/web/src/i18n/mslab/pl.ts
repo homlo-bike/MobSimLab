@@ -53,4 +53,10 @@ export const mslabPl = {
   "mslab.fetched":
     "Dołącz pobrane dane (kafelki mapy, wysokości, ludność, dane o klimacie i gospodarce), zgodnie z wyborem w preferencjach projektu",
   "mslab.fromFile": "z pliku projektu",
+  "missingData.title": "Dane, których plik nie zawierał",
+  "missingData.body":
+    "Projekt „{name}” został otwarty bez poniższych danych. Nic nie jest pobierane, dopóki o to nie poprosisz. Pobierz otwiera projekt w miejscu, w którym rozpoczynasz pobieranie.",
+  "missingData.download": "Pobierz",
+  "missingData.downloadOf": "Pobierz: {name}",
+  "missingData.later": "Nie teraz",
 } satisfies MslabMessages;

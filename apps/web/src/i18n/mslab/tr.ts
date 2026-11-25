@@ -53,4 +53,10 @@ export const mslabTr = {
   "mslab.fetched":
     "İndirilen verileri dahil et (harita karoları, yükseklik, nüfus, iklim ve ekonomi rakamları), proje tercihlerinde seçildiği gibi",
   "mslab.fromFile": "proje dosyasından",
+  "missingData.title": "Dosyanın getirmediği veriler",
+  "missingData.body":
+    "“{name}” aşağıdaki veriler olmadan açıldı. Siz istemeden hiçbir şey indirilmez. İndir, projeyi indirmeyi başlattığınız yerde açar.",
+  "missingData.download": "İndir",
+  "missingData.downloadOf": "{name} indir",
+  "missingData.later": "Şimdi değil",
 } satisfies MslabMessages;
