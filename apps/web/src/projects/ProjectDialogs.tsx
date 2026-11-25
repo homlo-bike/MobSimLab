@@ -18,7 +18,14 @@ import {
 } from "./api";
 import { engineErrorText } from "../i18n/engine";
 import type { PreferencesDoc } from "../workspace/preferences";
-import { FETCHED_IDS, type FetchedId, saveOptions } from "../workspace/savedFiles";
+import {
+  FETCHED_IDS,
+  type FetchedId,
+  type SavedDataId,
+  saveOptions,
+  type UpdateTarget,
+  updateTarget,
+} from "../workspace/savedFiles";
 
 /** An error line under a form. */
 function ErrorLine({ error }: { error: string | null }) {
@@ -681,6 +688,59 @@ export function SaveMslabDialog({
       {box(fetched, setFetched, "mslab.fetched")}
       {box(map, setMap, "mslab.map")}
       <p className="mt-4 mb-0 text-xs text-slate-500">{t("mslab.fromPrefs")}</p>
+    </Dialog>
+  );
+}
+
+/**
+ * After a `.mslab` file is opened: the downloadable data the file did not bring. Nothing is downloaded here; each
+ * Download button opens the new project where that download is started.
+ */
+export function MissingDataDialog({
+  project,
+  missing,
+  onDownload,
+  onClose,
+}: {
+  project: Project;
+  missing: readonly SavedDataId[];
+  onDownload: (target: UpdateTarget) => void;
+  onClose: () => void;
+}) {
+  const { t } = useI18n();
+  return (
+    <Dialog
+      title={t("missingData.title")}
+      onClose={onClose}
+      width="max-w-md"
+      footer={
+        <button type="button" className="btn" onClick={onClose}>
+          {t("missingData.later")}
+        </button>
+      }
+    >
+      <p className="m-0 text-sm text-slate-600">{t("missingData.body", { name: project.name })}</p>
+      <ul className="mt-3 mb-0 list-none space-y-2 p-0">
+        {missing.map((id) => {
+          const target = updateTarget(id);
+          const name = t(`savedFiles.${id}` as MessageKey);
+          return (
+            <li key={id} className="flex items-center gap-3 text-sm">
+              <span className="flex-1">{name}</span>
+              {target && (
+                <button
+                  type="button"
+                  className="btn min-h-8"
+                  aria-label={t("missingData.downloadOf", { name })}
+                  onClick={() => onDownload(target)}
+                >
+                  {t("missingData.download")}
+                </button>
+              )}
+            </li>
+          );
+        })}
+      </ul>
     </Dialog>
   );
 }

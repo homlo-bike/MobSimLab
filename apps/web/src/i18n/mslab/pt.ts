@@ -53,4 +53,10 @@ export const mslabPt = {
   "mslab.fetched":
     "Incluir os dados baixados (blocos do mapa, elevação, população, números de clima e economia), conforme escolhido nas preferências do projeto",
   "mslab.fromFile": "do arquivo de projeto",
+  "missingData.title": "Dados que o ficheiro não trazia",
+  "missingData.body":
+    "«{name}» foi aberto sem os dados abaixo. Nada é descarregado até o pedir. Descarregar abre o projeto no local onde inicia a descarga.",
+  "missingData.download": "Descarregar",
+  "missingData.downloadOf": "Descarregar {name}",
+  "missingData.later": "Agora não",
 } satisfies MslabMessages;

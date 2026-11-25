@@ -53,4 +53,10 @@ export const mslabIg = {
   "mslab.fetched":
     "Tinye data e budatara (taịl maapụ, ịdị elu, ọnụ ọgụgụ mmadụ, ọnụ ọgụgụ ihu igwe na akụ na ụba), dị ka a họọrọ na mmasị ọrụ",
   "mslab.fromFile": "site na faịlụ ọrụ",
+  "missingData.title": "Data faịlụ ahụ ebughị",
+  "missingData.body":
+    "E meghere “{name}” na-enweghị data dị n’okpuru. Ọ dịghị ihe a na-ebudata ruo mgbe ị rịọrọ ya. Budata na-emeghe ọrụ ahụ n’ebe ị na-amalite mbudata.",
+  "missingData.download": "Budata",
+  "missingData.downloadOf": "Budata {name}",
+  "missingData.later": "Ọ bụghị ugbu a",
 } satisfies MslabMessages;

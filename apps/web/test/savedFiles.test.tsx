@@ -6,6 +6,7 @@ import { ProjectPreferences } from "../src/workspace/ProjectPreferences";
 import type { PreferencesDoc } from "../src/workspace/preferences";
 import { SavedFilesSection, sizeText } from "../src/workspace/SavedFilesSection";
 import {
+  missingData,
   SAVED_DATA_IDS,
   type SavedDataRow,
   saveOptions,
@@ -49,6 +50,13 @@ Object.assign(row("facts"), { bytes: 1_000, items: 2, at: "2026-11-22T10:00:00Z"
 const item = (name: string) => screen.getByText(name).closest("li") as HTMLElement;
 
 describe("saved file choices", () => {
+  it("names the downloadable data a project does not have, but not what a job is still bringing in", () => {
+    // The shared rows: location facts and economy figures are there; map, elevation and population are not.
+    expect(missingData(rows)).toEqual(["osm", "elevation", "population"]);
+    expect(missingData(rows, ["osm"])).toEqual(["elevation", "population"]);
+    expect(missingData([])).toEqual(["osm", "elevation", "population", "facts", "economy"]);
+  });
+
   it("saves everything but the viewer's map data unless the planner chooses otherwise", () => {
     expect(saveOptions(null)).toEqual({
       runs: true,

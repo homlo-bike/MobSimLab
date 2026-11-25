@@ -53,4 +53,10 @@ export const mslabId = {
   "mslab.fetched":
     "Sertakan data unduhan (ubin peta, elevasi, populasi, angka iklim dan ekonomi), seperti yang dipilih di preferensi proyek",
   "mslab.fromFile": "dari file proyek",
+  "missingData.title": "Data yang tidak ada dalam berkas",
+  "missingData.body":
+    "“{name}” dibuka tanpa data di bawah ini. Tidak ada yang diunduh sampai Anda memintanya. Unduh membuka proyek di tempat Anda memulai unduhan.",
+  "missingData.download": "Unduh",
+  "missingData.downloadOf": "Unduh {name}",
+  "missingData.later": "Nanti saja",
 } satisfies MslabMessages;

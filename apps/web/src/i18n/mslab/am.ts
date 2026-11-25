@@ -51,4 +51,10 @@ export const mslabAm = {
   "mslab.history": "የተቀየሩ እሴቶችን ታሪክ አካትት",
   "mslab.fetched": "የወረደ ውሂብ አካትት (የካርታ ንጣፎች፣ ከፍታ፣ የሕዝብ ብዛት፣ የአየር ንብረት እና የኢኮኖሚ አኃዞች)፣ በፕሮጀክት ምርጫዎች እንደተመረጠው",
   "mslab.fromFile": "ከፕሮጀክት ፋይሉ",
+  "missingData.title": "ፋይሉ ያልያዘው ውሂብ",
+  "missingData.body":
+    "“{name}” ከታች ያለው ውሂብ ሳይኖር ተከፍቷል። እርስዎ እስኪጠይቁ ድረስ ምንም አይወርድም። “አውርድ” ማውረዱን በሚጀምሩበት ቦታ ፕሮጀክቱን ይከፍታል።",
+  "missingData.download": "አውርድ",
+  "missingData.downloadOf": "{name} አውርድ",
+  "missingData.later": "አሁን አይደለም",
 } satisfies MslabMessages;

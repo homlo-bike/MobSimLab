@@ -53,4 +53,10 @@ export const mslabFa = {
   "mslab.fetched":
     "گنجاندن داده‌های بارگیری‌شده (کاشی‌های نقشه، ارتفاع، جمعیت، ارقام اقلیم و اقتصاد)، همان‌طور که در ترجیحات پروژه انتخاب شده است",
   "mslab.fromFile": "از فایل پروژه",
+  "missingData.title": "داده‌هایی که در پرونده نبود",
+  "missingData.body":
+    "«{name}» بدون داده‌های زیر باز شد. تا وقتی نخواهید چیزی بارگیری نمی‌شود. «بارگیری» پروژه را در جایی باز می‌کند که بارگیری را از آن شروع می‌کنید.",
+  "missingData.download": "بارگیری",
+  "missingData.downloadOf": "بارگیری {name}",
+  "missingData.later": "حالا نه",
 } satisfies MslabMessages;

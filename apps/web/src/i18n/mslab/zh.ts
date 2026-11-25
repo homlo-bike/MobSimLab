@@ -49,4 +49,10 @@ export const mslabZh = {
   "mslab.history": "包含已更改值的历史",
   "mslab.fetched": "包含已下载的数据（地图瓦片、高程、人口、气候和经济数据），按项目偏好设置中的选择",
   "mslab.fromFile": "来自项目文件",
+  "missingData.title": "文件中没有的数据",
+  "missingData.body":
+    "“{name}”已打开，但缺少以下数据。在您提出要求之前不会下载任何内容。点击“下载”会在开始下载的位置打开项目。",
+  "missingData.download": "下载",
+  "missingData.downloadOf": "下载{name}",
+  "missingData.later": "暂不",
 } satisfies MslabMessages;

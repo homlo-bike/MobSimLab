@@ -100,6 +100,25 @@ export function updateTarget(id: SavedDataId): UpdateTarget | null {
   }
 }
 
+/** The kinds of data MobSimLab can download for a project, in the order the prompt lists them. */
+export const DOWNLOADABLE_IDS = [
+  "osm",
+  "elevation",
+  "population",
+  "facts",
+  "economy",
+] as const satisfies readonly SavedDataId[];
+
+/**
+ * Purpose: the downloadable kinds of data a project opened from a file does not have, so they can be offered.
+ * Inputs: what the project holds, and the kinds a job is still bringing in from the file. Output: the kinds, in
+ * the order of `DOWNLOADABLE_IDS`.
+ */
+export function missingData(rows: readonly SavedDataRow[], queued: readonly string[] = []): SavedDataId[] {
+  const has = (id: SavedDataId) => (rows.find((r) => r.id === id)?.items ?? 0) > 0;
+  return DOWNLOADABLE_IDS.filter((id) => !has(id) && !queued.includes(id));
+}
+
 /** Purpose: whether a saved file holds a kind of data: always for the design, else the planner's choice or the default. */
 export function savedIn(doc: PreferencesDoc | null | undefined, id: SavedDataId): boolean {
   if (ALWAYS_SAVED.has(id)) return true;

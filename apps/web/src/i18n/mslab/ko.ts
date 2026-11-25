@@ -53,4 +53,10 @@ export const mslabKo = {
   "mslab.fetched":
     "다운로드된 데이터(지도 타일, 고도, 인구, 기후 및 경제 수치)를 프로젝트 환경설정에서 선택한 대로 포함",
   "mslab.fromFile": "프로젝트 파일에서",
+  "missingData.title": "파일에 들어 있지 않은 데이터",
+  "missingData.body":
+    "“{name}”이(가) 아래 데이터 없이 열렸습니다. 요청하기 전에는 아무것도 다운로드되지 않습니다. 다운로드를 누르면 다운로드를 시작하는 곳에서 프로젝트가 열립니다.",
+  "missingData.download": "다운로드",
+  "missingData.downloadOf": "{name} 다운로드",
+  "missingData.later": "나중에",
 } satisfies MslabMessages;

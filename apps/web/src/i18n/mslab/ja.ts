@@ -53,4 +53,10 @@ export const mslabJa = {
   "mslab.fetched":
     "ダウンロード済みデータ（地図タイル、標高、人口、気候と経済の数値）を、プロジェクト設定で選んだとおりに含める",
   "mslab.fromFile": "プロジェクトファイルから",
+  "missingData.title": "ファイルに含まれていなかったデータ",
+  "missingData.body":
+    "「{name}」は以下のデータなしで開かれました。指示するまで何もダウンロードされません。「ダウンロード」を押すと、ダウンロードを開始する場所でプロジェクトが開きます。",
+  "missingData.download": "ダウンロード",
+  "missingData.downloadOf": "{name}をダウンロード",
+  "missingData.later": "今はしない",
 } satisfies MslabMessages;

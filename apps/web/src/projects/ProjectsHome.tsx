@@ -6,13 +6,23 @@ import { EyeIcon, MoreIcon, PlusIcon, SearchIcon } from "../shell/icons";
 import { anchorOf, Popover } from "../shell/Popover";
 import { initials } from "../shell/UserMenu";
 import { can, type Project, type ProjectsApi, type Shelf, shelfOf } from "./api";
-import { DeleteDialog, NewProjectDialog, RenameDialog, SaveMslabDialog, ShareDialog } from "./ProjectDialogs";
+import {
+  DeleteDialog,
+  MissingDataDialog,
+  NewProjectDialog,
+  RenameDialog,
+  SaveMslabDialog,
+  ShareDialog,
+} from "./ProjectDialogs";
+import { missingData, type SavedDataId } from "../workspace/savedFiles";
+import type { Tab } from "../shell/route";
 import { engineErrorText } from "../i18n/engine";
 
 type Filter = "all" | Shelf | "archived";
 type Dialogs =
   | { kind: "new" }
   | { kind: "rename" | "delete" | "mslab"; project: Project }
+  | { kind: "missing"; project: Project; missing: SavedDataId[] }
   | { kind: "share"; project: Project; focus: "invite" | "access" };
 
 const LINE_COLOURS = ["#1d4ed8", "#c81e1e", "#c2410c", "#0f766e", "#7c3aed", "#475569"];
@@ -104,7 +114,8 @@ export function ProjectsHome({
   api: ProjectsApi;
   meId: string;
   canCreate: boolean;
-  onOpen: (p: Project, fresh?: boolean) => void;
+  /** Opens a project; `tab` names the tab to open it on. */
+  onOpen: (p: Project, fresh?: boolean, tab?: Tab) => void;
 }) {
   const { t, language } = useI18n();
   const [mine, setProjects] = useState<Project[] | null>(null);
@@ -128,7 +139,7 @@ export function ProjectsHome({
     void act(async () => {
       setOpening(true);
       try {
-        const { project, skipped } = await api.importMslab(file);
+        const { project, skipped, queued } = await api.importMslab(file);
         setProjects((ps) => [project, ...(ps ?? [])]);
         setNotice(
           [
@@ -138,6 +149,12 @@ export function ProjectsHome({
             .filter(Boolean)
             .join(" "),
         );
+        // What the file did not bring is offered, never downloaded on its own. Without the list, no prompt.
+        const missing = await api.mslabContents(project.id).then(
+          (rows) => missingData(rows, queued),
+          () => [],
+        );
+        if (missing.length) setDialog({ kind: "missing", project, missing });
       } finally {
         setOpening(false);
       }
@@ -565,6 +582,19 @@ export function ProjectsHome({
       )}
       {dialog?.kind === "mslab" && (
         <SaveMslabDialog api={api} project={dialog.project} onClose={() => setDialog(null)} />
+      )}
+      {dialog?.kind === "missing" && (
+        <MissingDataDialog
+          project={dialog.project}
+          missing={dialog.missing}
+          onClose={() => setDialog(null)}
+          onDownload={(target) => {
+            const p = dialog.project;
+            setDialog(null);
+            // Map data is downloaded in the GIS tab, the location and economy figures in Project preferences.
+            onOpen(p, false, "tab" in target ? target.tab : "preferences");
+          }}
+        />
       )}
       {dialog?.kind === "delete" && (
         <DeleteDialog

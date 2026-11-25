@@ -53,4 +53,10 @@ export const mslabSw = {
   "mslab.fetched":
     "Jumuisha data iliyopakuliwa (vigae vya ramani, mwinuko, idadi ya watu, takwimu za hali ya hewa na uchumi), kama ilivyochaguliwa katika mapendeleo ya mradi",
   "mslab.fromFile": "kutoka kwenye faili ya mradi",
+  "missingData.title": "Data ambayo faili haikuwa nayo",
+  "missingData.body":
+    "“{name}” imefunguliwa bila data iliyo hapa chini. Hakuna kinachopakuliwa hadi uombe. Pakua hufungua mradi mahali unapoanzisha upakuaji.",
+  "missingData.download": "Pakua",
+  "missingData.downloadOf": "Pakua {name}",
+  "missingData.later": "Si sasa",
 } satisfies MslabMessages;

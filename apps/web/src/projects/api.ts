@@ -250,8 +250,14 @@ export function projectsApi(csrf: string) {
 }
 export type ProjectsApi = ReturnType<typeof projectsApi>;
 
-/** Purpose: upload a `.mslab` file as the raw request body. Output: the new project and what was left out. */
-async function importMslab(csrf: string, file: Blob): Promise<{ project: Project; skipped: string[] }> {
+/**
+ * Purpose: upload a `.mslab` file as the raw request body. Output: the new project, what was left out, and the
+ * kinds of data a job is still bringing in from the file ("osm").
+ */
+async function importMslab(
+  csrf: string,
+  file: Blob,
+): Promise<{ project: Project; skipped: string[]; queued: string[] }> {
   const res = await fetch(`${base}/import`, {
     method: "POST",
     credentials: "same-origin",
@@ -261,11 +267,12 @@ async function importMslab(csrf: string, file: Blob): Promise<{ project: Project
   const body = (await res.json().catch(() => ({}))) as {
     project?: Project;
     skipped?: string[];
+    queued?: string[];
     message?: string | string[];
   };
   if (!res.ok || !body.project) {
     const m = Array.isArray(body.message) ? body.message.join("; ") : body.message;
     throw withApiMsg(new Error(m ?? `POST ${base}/import failed: ${res.status}`), body);
   }
-  return { project: body.project, skipped: body.skipped ?? [] };
+  return { project: body.project, skipped: body.skipped ?? [], queued: body.queued ?? [] };
 }

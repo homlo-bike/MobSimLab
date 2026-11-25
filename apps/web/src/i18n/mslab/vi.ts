@@ -53,4 +53,10 @@ export const mslabVi = {
   "mslab.fetched":
     "Bao gồm dữ liệu đã tải xuống (ô bản đồ, độ cao, dân số, số liệu khí hậu và kinh tế), như đã chọn trong tùy chọn dự án",
   "mslab.fromFile": "từ tệp dự án",
+  "missingData.title": "Dữ liệu không có trong tệp",
+  "missingData.body":
+    "“{name}” đã được mở mà không có dữ liệu dưới đây. Không có gì được tải xuống cho đến khi bạn yêu cầu. Tải xuống sẽ mở dự án tại nơi bạn bắt đầu tải.",
+  "missingData.download": "Tải xuống",
+  "missingData.downloadOf": "Tải xuống {name}",
+  "missingData.later": "Để sau",
 } satisfies MslabMessages;

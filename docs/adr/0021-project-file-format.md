@@ -108,3 +108,7 @@ project works without downloading it again.
   Source of the saved import and is marked `options.fromFile`. The project opens at once and the map data is ready
   when the job has run. `osm=false` on the export leaves the extract out. It is added last, so the other kinds
   stay when it no longer fits.
+- Opening a file downloads nothing by itself. The import answers with `queued`, the kinds a job is still bringing
+  in from the file (`osm`). The projects home then reads what the new project holds and lists the downloadable
+  kinds it lacks (map extract, elevation, population, location facts, economy figures) in a dialog. Each has a
+  Download button that opens the project where that download is started: the GIS tab or Project preferences.

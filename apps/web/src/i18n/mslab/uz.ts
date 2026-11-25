@@ -53,4 +53,10 @@ export const mslabUz = {
   "mslab.fetched":
     "Yuklab olingan ma’lumotlarni qo‘shish (xarita plitkalari, balandlik, aholi, iqlim va iqtisod ko‘rsatkichlari), loyiha sozlamalarida tanlanganidek",
   "mslab.fromFile": "loyiha faylidan",
+  "missingData.title": "Faylda bo‘lmagan ma’lumotlar",
+  "missingData.body":
+    "“{name}” quyidagi ma’lumotlarsiz ochildi. Siz so‘ramaguningizcha hech narsa yuklab olinmaydi. “Yuklab olish” loyihani yuklashni boshlaydigan joyda ochadi.",
+  "missingData.download": "Yuklab olish",
+  "missingData.downloadOf": "{name}ni yuklab olish",
+  "missingData.later": "Hozir emas",
 } satisfies MslabMessages;

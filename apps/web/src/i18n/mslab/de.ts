@@ -54,4 +54,10 @@ export const mslabDe = {
   "mslab.fetched":
     "Heruntergeladene Daten einschließen (Kartenkacheln, Höhen, Bevölkerung, Klima- und Wirtschaftszahlen), wie in den Projekteinstellungen gewählt",
   "mslab.fromFile": "aus der Projektdatei",
+  "missingData.title": "Daten, die nicht in der Datei waren",
+  "missingData.body":
+    "„{name}“ wurde ohne die folgenden Daten geöffnet. Nichts wird heruntergeladen, bevor Sie es verlangen. „Herunterladen“ öffnet das Projekt an der Stelle, an der Sie den Download starten.",
+  "missingData.download": "Herunterladen",
+  "missingData.downloadOf": "{name} herunterladen",
+  "missingData.later": "Nicht jetzt",
 } satisfies MslabMessages;

@@ -122,7 +122,7 @@ export class MslabController {
 
   /**
    * Purpose: open a `.mslab` file as a new project owned by the caller. Body: the file (raw bytes, at most
-   * 200 MB). Output: `{ project, skipped, migratedFrom }`. 400 with a plain message when the file cannot be opened.
+   * 200 MB). Output: `{ project, skipped, migratedFrom, queued }`. 400 with a plain message when the file cannot be opened.
    */
   @Post("import")
   @Requires("projects.create")
