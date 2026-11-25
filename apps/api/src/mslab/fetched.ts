@@ -1,8 +1,11 @@
-import { BadRequestException, Inject, Injectable } from "@nestjs/common";
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
+import { BadRequestException, Inject, Injectable, Optional } from "@nestjs/common";
 import { sql, type Transaction } from "kysely";
 import { z } from "zod";
 import { DATABASE, type Database, type DB } from "../db/database";
 import { decodeValues, encodeValues, tileBounds } from "../geodata/dem-tiles";
+import { GeodataService } from "../geodata/geodata.service";
 import { type AreaPolygon, boxMeetsPolygons } from "../projects/area-polygons";
 import {
   FETCHED_CHUNK_BYTES,
@@ -11,6 +14,7 @@ import {
   type FetchedElevationTile,
   type FetchedFactsFile,
   type FetchedLiveFile,
+  type FetchedOsmFile,
   type FetchedPopulationFile,
   type LiveKind,
 } from "./format.mts";
@@ -39,6 +43,8 @@ export interface FetchedChoice {
   population: boolean;
   /** The planner's own elevation and population files. */
   uploads: boolean;
+  /** The OpenStreetMap extract of the project area. */
+  osm: boolean;
 }
 
 /** Every kind in the file. */
@@ -50,6 +56,7 @@ export const ALL_FETCHED: FetchedChoice = {
   elevation: true,
   population: true,
   uploads: true,
+  osm: true,
 };
 
 /** What of the fetched data a file holds, for its attribution and the audit trail. */
@@ -62,6 +69,9 @@ export interface FetchedSummary {
   populationLayers: { name: string; source: string; licence: string }[];
   /** Sources of the elevation: names with licences. */
   elevationSources: string[];
+  /** Megabytes of the OpenStreetMap extract (0 without one) and how the import got it. */
+  osmBytes: number;
+  osmVia: string | null;
   /** Kinds left out because the file would have grown beyond what a project file may hold. */
   leftOut: string[];
 }
@@ -175,12 +185,24 @@ const featureLine = z.tuple([
     .max(4_000_000),
 ]);
 
+const osmFile = z.object({
+  method: z.enum(["overpass", "geofabrik", "upload"]),
+  planned: z.boolean(),
+  source: z.record(z.string(), z.unknown()),
+  finishedAt: isoDate,
+  bytes: z.number().int().min(1).max(1_073_741_824),
+  sha256: z.string().regex(/^[0-9a-f]{64}$/),
+  chunks: z.number().int().min(1).max(999),
+}) satisfies z.ZodType<FetchedOsmFile>;
+
 /** The fetched data of an opened file, checked, ready to be stored with the new project. */
 export interface FetchedData {
   facts: FetchedFactsFile["entries"];
   live: FetchedLiveFile[];
   elevation: { index: FetchedElevationFile; chunks: Map<number, Buffer> } | null;
   population: { index: FetchedPopulationFile; features: Map<number, z.infer<typeof featureLine>[][]> } | null;
+  /** The OpenStreetMap extract; it is imported after the project is stored (`GeodataService.restoreOsm`). */
+  osm: { index: FetchedOsmFile; body: Buffer } | null;
 }
 
 /** What `restore` stored. */
@@ -212,7 +234,7 @@ export async function parseFetched(
     if (!r.success) throw notValid();
     return r.data;
   };
-  const out: FetchedData = { facts: [], live: [], elevation: null, population: null };
+  const out: FetchedData = { facts: [], live: [], elevation: null, population: null, osm: null };
   if (read.facts) out.facts = (await parse(read.facts, factsFile)).entries;
   for (const name of read.live) out.live.push(await parse(name, liveFile));
   if (read.elevation) {
@@ -248,12 +270,24 @@ export async function parseFetched(
     }
     out.population = { index, features };
   }
+  if (read.osm) {
+    const index = await parse(read.osm.index, osmFile);
+    if (read.osm.chunks.length !== index.chunks) throw notValid();
+    const body = Buffer.concat(await Promise.all(read.osm.chunks.map((c) => file(c))));
+    if (body.length !== index.bytes || createHash("sha256").update(body).digest("hex") !== index.sha256)
+      throw notValid();
+    out.osm = { index, body };
+  }
   return out;
 }
 
 @Injectable()
 export class MslabFetchedService {
-  constructor(@Inject(DATABASE) private readonly db: Database) {}
+  constructor(
+    @Inject(DATABASE) private readonly db: Database,
+    // Absent when the API is assembled without imports (some tests): files then carry no map extract.
+    @Optional() private readonly geodata?: GeodataService,
+  ) {}
 
   /**
    * Purpose: the files of the project's fetched and imported data for a `.mslab` file.
@@ -275,6 +309,8 @@ export class MslabFetchedService {
       elevationTiles: 0,
       populationLayers: [],
       elevationSources: [],
+      osmBytes: 0,
+      osmVia: null,
       leftOut: [],
     };
     let left = budgetBytes;
@@ -332,7 +368,48 @@ export class MslabFetchedService {
       const part = await this.populationFiles(projectId, choice);
       if (part.layers.length && take("population layers", part.files)) summary.populationLayers = part.layers;
     }
+
+    // Last, as it is the largest: the other kinds stay when it no longer fits.
+    if (choice.osm) {
+      const part = await this.osmFiles(projectId);
+      if (part && take("map extract", part.files)) {
+        summary.osmBytes = part.bytes;
+        summary.osmVia = part.via;
+      }
+    }
     return { files, summary };
+  }
+
+  /** Purpose: the extract of the project's current OpenStreetMap import, in parts, with its index. */
+  private async osmFiles(
+    projectId: string,
+  ): Promise<{ files: [string, Buffer][]; bytes: number; via: string | null } | null> {
+    const run = await this.geodata?.current(projectId, "osm");
+    if (!run || !this.geodata) return null;
+    if (run.method !== "overpass" && run.method !== "geofabrik" && run.method !== "upload") return null;
+    let body: Buffer;
+    try {
+      body = await readFile(this.geodata.extractPath(projectId, run.id));
+    } catch {
+      // Imports from before extracts were kept, or a data volume that lost the file.
+      return null;
+    }
+    if (!body.length) return null;
+    const files: [string, Buffer][] = [];
+    for (let at = 0; at < body.length; at += FETCHED_CHUNK_BYTES)
+      files.push([FETCHED_FILES.osmChunk(files.length + 1), body.subarray(at, at + FETCHED_CHUNK_BYTES)]);
+    const index: FetchedOsmFile = {
+      method: run.method,
+      planned: run.options.planned === true,
+      source: run.source ?? {},
+      finishedAt: (run.finishedAt ? new Date(run.finishedAt) : new Date()).toISOString(),
+      bytes: body.length,
+      sha256: createHash("sha256").update(body).digest("hex"),
+      chunks: files.length,
+    };
+    files.unshift([FETCHED_FILES.osm, Buffer.from(JSON.stringify(index))]);
+    const via = typeof index.source.via === "string" ? index.source.via : null;
+    return { files, bytes: body.length, via };
   }
 
   /** Purpose: the live-fetched copies the project points at, in files of at most FETCHED_CHUNK_BYTES of bodies. */

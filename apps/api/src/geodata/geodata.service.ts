@@ -343,6 +343,38 @@ export class GeodataService implements OnApplicationBootstrap {
     return run;
   }
 
+  /**
+   * Purpose: bring back the OpenStreetMap extract a project file carried: queue its import into the new project,
+   * as an uploaded file would be, keeping the method and Source the saved import had.
+   * Inputs: the extract and what the file says about it. Output: the queued run, or null when the project has no
+   * area to import into. Side effects: writes the extract to the data volume until the job has run.
+   */
+  async restoreOsm(
+    actor: ProjectActor,
+    projectId: string,
+    body: Buffer,
+    o: { method: "overpass" | "geofabrik" | "upload"; planned: boolean; source: Record<string, unknown> },
+  ): Promise<ImportRun | null> {
+    await this.projects.access(actor, projectId, "edit");
+    const area = await projectArea(this.db, projectId);
+    if (!area) return null;
+    await mkdir(this.dirs.uploads, { recursive: true });
+    const file = join(this.dirs.uploads, `${randomUUID()}.osm.pbf`);
+    await writeFile(file, body);
+    const run = await this.insert(actor, projectId, "osm", o.method, area, {
+      planned: o.planned,
+      fromFile: true,
+    });
+    this.enqueue(run.id, async () => {
+      try {
+        await this.osmJob(run, projectId, { planned: o.planned, upload: file, restored: o.source });
+      } finally {
+        await rm(file, { force: true });
+      }
+    });
+    return run;
+  }
+
   /** Purpose: queue a Copernicus GLO-30 import of the project area. */
   async startDem(actor: ProjectActor, projectId: string): Promise<ImportRun> {
     await this.projects.access(actor, projectId, "edit");
@@ -511,7 +543,13 @@ export class GeodataService implements OnApplicationBootstrap {
   private async osmJob(
     run: ImportRun,
     projectId: string,
-    o: { planned: boolean; regions?: GeofabrikRegion[]; upload?: string },
+    o: {
+      planned: boolean;
+      regions?: GeofabrikRegion[];
+      upload?: string;
+      /** The Source of the import a project file's extract came from; the run keeps it. */
+      restored?: Record<string, unknown>;
+    },
   ): Promise<void> {
     const work = join(this.dirs.work, run.id);
     await mkdir(work, { recursive: true });
@@ -521,7 +559,7 @@ export class GeodataService implements OnApplicationBootstrap {
       const polygons = importPolygons(run);
       const stats: Record<string, unknown> = {};
       let dataTimestamp: string | null = null;
-      if (run.method === "overpass") {
+      if (run.method === "overpass" && !o.upload) {
         const fetched = await fetchArea(this.overpass, run.bbox, join(work, "tiles"), {
           keep: (b) => boxMeetsPolygons(b, polygons),
           tileKm: this.settings.overpass.tileKm,
@@ -555,7 +593,7 @@ export class GeodataService implements OnApplicationBootstrap {
         await this.mark(run.id, { progress: { step: "extract" } });
         await this.cutToArea(merged, polygons, work, area);
         await rm(merged, { force: true });
-      } else if (run.method === "geofabrik") {
+      } else if (run.method === "geofabrik" && !o.upload) {
         // One download per region (a project across a border needs one per country), each cut to the polygons.
         const parts: string[] = [];
         const stamps: string[] = [];
@@ -601,18 +639,31 @@ export class GeodataService implements OnApplicationBootstrap {
       const dir = this.dirs.project(projectId);
       await mkdir(dir, { recursive: true });
       await rename(area, this.extractPath(projectId, run.id));
-      await this.finish(run, projectId, stats, {
-        ...OSM_SOURCE,
-        retrievedAt: new Date().toISOString(),
-        dataTimestamp,
-        via:
-          run.method === "overpass"
-            ? overpassEndpoint()
-            : run.method === "geofabrik"
-              ? `Geofabrik: ${(o.regions ?? []).map((r) => r.name).join(", ")}`
-              : `Uploaded file ${String((run.options.upload as { name?: string })?.name ?? "")}`,
-        tagMapping: "tools/osm/tag_mapping.lua v1",
-      });
+      await this.finish(
+        run,
+        projectId,
+        stats,
+        o.restored
+          ? // From a project file: where and when the saved import got the data, not today.
+            {
+              ...o.restored,
+              ...OSM_SOURCE,
+              fromProjectFile: true,
+              tagMapping: "tools/osm/tag_mapping.lua v1",
+            }
+          : {
+              ...OSM_SOURCE,
+              retrievedAt: new Date().toISOString(),
+              dataTimestamp,
+              via:
+                run.method === "overpass"
+                  ? overpassEndpoint()
+                  : run.method === "geofabrik"
+                    ? `Geofabrik: ${(o.regions ?? []).map((r) => r.name).join(", ")}`
+                    : `Uploaded file ${String((run.options.upload as { name?: string })?.name ?? "")}`,
+              tagMapping: "tools/osm/tag_mapping.lua v1",
+            },
+      );
       // Keep only the extract of the current import.
       for (const f of await readdir(dir).catch(() => [] as string[]))
         if (f.startsWith("area-") && f !== `area-${run.id}.osm.pbf`) await rm(join(dir, f), { force: true });

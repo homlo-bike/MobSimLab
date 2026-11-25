@@ -65,6 +65,7 @@ describe("saved file choices", () => {
         elevation: true,
         population: true,
         uploads: true,
+        osm: true,
       },
     });
     const off = withSaved({ values: {} }, "runs", false);
@@ -102,11 +103,11 @@ describe("Project preferences → Saved project files", () => {
     const economy = item("Economic data (World Bank)");
     expect(within(economy).getByText("From World Bank")).toBeTruthy();
     expect(within(economy).getByText(/^Last updated /)).toBeTruthy();
-    // The economy figures are in saved files; the OpenStreetMap extract of the area is not yet.
+    // The economy figures and the OpenStreetMap extract of the area are in saved files.
     expect(within(economy).queryByText(/coming in a later update/)).toBeNull();
     expect(
-      within(item("OpenStreetMap data of the project area")).getByText(/coming in a later update/),
-    ).toBeTruthy();
+      within(item("OpenStreetMap data of the project area")).queryByText(/coming in a later update/),
+    ).toBeNull();
     expect(within(item("History of changes")).getByText("None yet")).toBeTruthy();
 
     // The drawings cannot be left out.
@@ -198,6 +199,7 @@ describe("Save as .mslab file", () => {
         elevation: true,
         population: false,
         uploads: true,
+        osm: true,
       },
     });
 
@@ -217,6 +219,7 @@ describe("Save as .mslab file", () => {
           elevation: false,
           population: false,
           uploads: false,
+          osm: false,
         },
       }),
     );

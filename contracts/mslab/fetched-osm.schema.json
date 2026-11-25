@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/fetched-osm.schema.json",
+  "title": "The OpenStreetMap extract of the project area and where its parts are (fetched/osm.json)",
+  "type": "object",
+  "required": [
+    "method",
+    "planned",
+    "source",
+    "finishedAt",
+    "bytes",
+    "sha256",
+    "chunks"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "method": {
+      "enum": [
+        "overpass",
+        "geofabrik",
+        "upload"
+      ]
+    },
+    "planned": {
+      "type": "boolean"
+    },
+    "source": {
+      "type": "object"
+    },
+    "finishedAt": {
+      "type": "string",
+      "format": "date-time",
+      "maxLength": 40
+    },
+    "bytes": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 1073741824
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "chunks": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 999
+    }
+  }
+}

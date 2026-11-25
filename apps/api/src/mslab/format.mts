@@ -123,6 +123,8 @@ export const FETCHED_FILES = {
   elevationChunk: (n: number) => `fetched/elevation-${n}.bin`,
   population: "fetched/population.json",
   populationFeatures: (layer: number, n: number) => `fetched/population-${layer}-${n}.ndjson`,
+  osm: "fetched/osm.json",
+  osmChunk: (n: number) => `fetched/osm-${n}.osm.pbf`,
 } as const;
 
 /** Most bytes of one chunk of elevation tiles or population features in a file. */
@@ -169,6 +171,7 @@ export const FILE_PATTERNS = {
   fetchedLive: /^fetched\/live-(osm|height)-(\d{1,4})\.json$/,
   fetchedElevationChunk: /^fetched\/elevation-(\d{1,4})\.bin$/,
   fetchedPopulationFeatures: /^fetched\/population-(\d{1,3})-(\d{1,4})\.ndjson$/,
+  fetchedOsmChunk: /^fetched\/osm-(\d{1,3})\.osm\.pbf$/,
   map: /^map\/(?:(?:area|water|population|reference)\.json|(?:streets|walk|rail)\/\d{1,5}-\d{1,5}\.xml|(?:buildings|places|bike-amenities)\/\d{1,5}-\d{1,5}\.json|(?:streets|walk|rail|buildings|places|bike-amenities)\.pmtiles)$/,
 } as const;
 
@@ -301,6 +304,23 @@ export interface FetchedElevationFile {
     finishedAt: string;
     tiles: FetchedElevationTile[];
   }[];
+}
+
+/**
+ * `fetched/osm.json` (format 1.6): the OpenStreetMap extract of the project area, as the project's import cut it.
+ * The extract itself is in `fetched/osm-<n>.osm.pbf`, n from 1 to `chunks`, to be joined in that order.
+ */
+export interface FetchedOsmFile {
+  method: "overpass" | "geofabrik" | "upload";
+  /** Whether the import kept planned roads. */
+  planned: boolean;
+  /** The Source record of the import: name, url, licence, retrievedAt, dataTimestamp, via. */
+  source: Record<string, unknown>;
+  finishedAt: string;
+  /** Bytes and SHA-256 (hex) of the joined extract. */
+  bytes: number;
+  sha256: string;
+  chunks: number;
 }
 
 /** `fetched/population.json` (format 1.6): the project's population layers. */
@@ -744,6 +764,25 @@ export const FETCHED_ELEVATION_SCHEMA = {
   },
 } as const;
 
+/** JSON Schema of `fetched/osm.json` (format 1.6). */
+export const FETCHED_OSM_SCHEMA = {
+  $schema: "https://json-schema.org/draft/2020-12/schema",
+  $id: `${ID}fetched-osm.schema.json`,
+  title: "The OpenStreetMap extract of the project area and where its parts are (fetched/osm.json)",
+  type: "object",
+  required: ["method", "planned", "source", "finishedAt", "bytes", "sha256", "chunks"],
+  additionalProperties: false,
+  properties: {
+    method: { enum: ["overpass", "geofabrik", "upload"] },
+    planned: { type: "boolean" },
+    source: { type: "object" },
+    finishedAt: isoDate,
+    bytes: { type: "integer", minimum: 1, maximum: 1073741824 },
+    sha256: { type: "string", pattern: "^[0-9a-f]{64}$" },
+    chunks: { type: "integer", minimum: 1, maximum: 999 },
+  },
+} as const;
+
 /** JSON Schema of `fetched/population.json` (format 1.6). */
 export const FETCHED_POPULATION_SCHEMA = {
   $schema: "https://json-schema.org/draft/2020-12/schema",
@@ -835,6 +874,7 @@ export const FILE_SCHEMAS = {
   "fetched-live.schema.json": FETCHED_LIVE_SCHEMA,
   "fetched-elevation.schema.json": FETCHED_ELEVATION_SCHEMA,
   "fetched-population.schema.json": FETCHED_POPULATION_SCHEMA,
+  "fetched-osm.schema.json": FETCHED_OSM_SCHEMA,
 } as const;
 
 /** Purpose: [major, minor, patch] of a semantic version string. */

@@ -2,9 +2,17 @@ import { createHash } from "node:crypto";
 import { gunzipSync, gzipSync } from "node:zlib";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { BadRequestException, ForbiddenException, Inject, Injectable, Logger } from "@nestjs/common";
+import {
+  BadRequestException,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  Logger,
+  Optional,
+} from "@nestjs/common";
 import { z } from "zod";
 import { DATABASE, type Database } from "../db/database";
+import { GeodataService } from "../geodata/geodata.service";
 import { BUNDLED } from "../plugins/validate";
 import { PROJECT_MODES } from "../projects/projects.controller";
 import { DRAWING_KINDS, isDrawingKind, MAX_DRAWING_BYTES } from "../projects/drawings";
@@ -163,6 +171,10 @@ const readResult = z.object({
             .max(2000),
         })
         .nullable(),
+      osm: z
+        .object({ index: scratchName, chunks: z.array(scratchName).min(1).max(999) })
+        .nullable()
+        .optional(),
     })
     .nullable()
     .optional(),
@@ -291,6 +303,8 @@ export class MslabService {
     private readonly tools: ToolRunner,
     private readonly map: MslabMapService,
     private readonly fetched: MslabFetchedService,
+    // Absent when the API is assembled without imports (some tests): a file's map extract is then skipped.
+    @Optional() private readonly geodata?: GeodataService,
   ) {}
 
   /**
@@ -996,6 +1010,21 @@ export class MslabService {
             );
             return p.id;
           });
+          // The map extract is imported by a job, as an uploaded extract is; the project opens meanwhile.
+          if (fetchedData?.osm) {
+            let queued = false;
+            try {
+              queued = !!(await this.geodata?.restoreOsm(
+                actor,
+                newId,
+                fetchedData.osm.body,
+                fetchedData.osm.index,
+              ));
+            } catch (e) {
+              this.logger.warn(`mslab import: the map extract was not queued: ${(e as Error).message}`);
+            }
+            if (!queued) skipped.push("the map extract: it could not be imported here");
+          }
           return { newId, skipped, migratedFrom: res.migratedFrom };
         },
         READ_LIMITS,
@@ -1039,6 +1068,8 @@ function fetchedContents(f: FetchedSummary): string[] {
   if (f.elevationTiles || f.liveHeights)
     out.push(`- elevation: ${f.elevationTiles} tiles and ${f.liveHeights} heights fetched live`);
   if (f.populationLayers.length) out.push(`- ${f.populationLayers.length} population layers`);
+  if (f.osmBytes)
+    out.push(`- the OpenStreetMap extract of the project area (${(f.osmBytes / 1_048_576).toFixed(1)} MB)`);
   for (const kind of f.leftOut)
     out.push(`- not included, because the file would be larger than a project file may be: ${kind}`);
   return out;
@@ -1048,6 +1079,12 @@ function fetchedContents(f: FetchedSummary): string[] {
 function fetchedSources(f: FetchedSummary): string[] {
   const out: string[] = [];
   const line = (s: string) => s.replace(/[\r\n]/g, " ").slice(0, 400);
+  if (f.osmBytes)
+    out.push(
+      line(
+        `- The map extract in \`fetched/\` is OpenStreetMap data © OpenStreetMap contributors, available under the Open Database Licence (ODbL 1.0): https://www.openstreetmap.org/copyright${f.osmVia ? `, got from ${f.osmVia}` : ""}. Share it under the ODbL.`,
+      ),
+    );
   if (f.liveTiles)
     out.push(
       "- The map tiles in `fetched/` are OpenStreetMap data © OpenStreetMap contributors, available under the",
