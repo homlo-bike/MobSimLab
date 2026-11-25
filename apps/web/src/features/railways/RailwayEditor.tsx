@@ -61,9 +61,11 @@ import type { Publication } from "./ServiceLinesPanel";
 import type {
   Anchor,
   ConnectionView,
+  EngineServiceLine,
   FeatureCollection,
   LonLat,
   Network,
+  PublishOptions,
   RailEngine,
   RailEngineLoader,
   RailMode,
@@ -758,28 +760,40 @@ export function RailwayEditor({
       // a publish whose heights did not load stops with the reason instead of planning as if on flat ground.
       const terrainFailed = await loadAllTerrain(e, () => e.build(doc, null));
       if (terrainFailed) throw new Error(tNow("rail.publishTerrainFailed", { reason: terrainFailed }));
-      // Every day type with its own times and the calendar's peaks; the journey planner takes the weekday.
+      // Every day type with its own times and the calendar's peaks; the journey planner takes the weekday. The
+      // planner runs in a worker per day type where there are workers, all at once, so the page stays responsive
+      // while it plans and the day types are planned side by side (four in a third of the time on four cores).
+      const plan = (lines: EngineServiceLine[], day: string, options: PublishOptions) =>
+        e.publishLinesInWorker
+          ? e.publishLinesInWorker(lines, day, options)
+          : e.publishLines(lines, day, options);
+      const toPlan = days.length ? days : (["weekday"] as const);
+      const inWorker = e.publishLinesInWorker;
+      const inWorkers = inWorker
+        ? toPlan.map((day) =>
+            inWorker(dayEngineLines(doc, day, calendar, prefValues), day, publishOptionsFrom(prefValues)),
+          )
+        : null;
+      // A failed day type is reported once it is reached, in order; the others are not left unhandled meanwhile.
+      inWorkers?.forEach((p) => p.catch(() => {}));
       const byDay: DayPublications = {};
-      for (const [i, day] of (days.length ? days : (["weekday"] as const)).entries()) {
+      for (const [i, day] of toPlan.entries()) {
         setPublishing({
           step: `${tNow("rail.line.publish")} · ${dayLabel(day)}`,
           index: i + 2,
           steps,
         });
         await paint();
-        byDay[day] = e.publishLines(
-          dayEngineLines(doc, day, calendar, prefValues),
-          day,
-          publishOptionsFrom(prefValues),
-        );
+        byDay[day] = await (inWorkers?.[i] ??
+          plan(dayEngineLines(doc, day, calendar, prefValues), day, publishOptionsFrom(prefValues)));
       }
       const result =
         byDay.weekday ??
-        e.publishLines(
+        (await plan(
           dayEngineLines(doc, "weekday", calendar, prefValues),
           "weekday",
           publishOptionsFrom(prefValues),
-        );
+        ));
       byDay.weekday = result;
       next = { result, byDay, error: null, key: publishKey(doc), topology: e.topology() };
       onPublish?.(result.timetable);
@@ -872,7 +886,16 @@ export function RailwayEditor({
     },
     showIssue: (at: LonLat | null, ref: number | null) => {
       if (ref) setSel({ id: ref });
-      if (at && map) map.easeTo({ center: at, zoom: Math.max(map.getZoom(), 16) });
+      // Without a place of its own, the check is shown at the station or track it is about.
+      const track = ref ? view?.tracks.find((x) => x.id === ref) : undefined;
+      const place =
+        at ??
+        (ref
+          ? (view?.stations.find((x) => x.id === ref)?.lonlat ??
+            (track ? track.centre[Math.floor(track.centre.length / 2)] : undefined) ??
+            null)
+          : null);
+      if (place && map) map.easeTo({ center: place, zoom: Math.max(map.getZoom(), 16) });
     },
     resetSignals: () => {
       if (!doc) return;

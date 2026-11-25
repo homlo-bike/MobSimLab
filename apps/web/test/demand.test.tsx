@@ -34,7 +34,19 @@ import {
   zoneKm2,
   zonesFromGeoJson,
   zonesToGeoJson,
+  nearestStopM,
+  STOP_BANDS_M,
+  stopBand,
 } from "../src/features/demand/zones";
+
+/** A small square ring round a point (degrees). */
+const box = ([x, y]: [number, number], d: number): [number, number][] => [
+  [x - d, y - d],
+  [x + d, y - d],
+  [x + d, y + d],
+  [x - d, y + d],
+  [x - d, y - d],
+];
 import { type Note, translate } from "../src/i18n/i18n";
 
 const inEnglish = (notes: Note[]) => notes.map((n) => translate("en", n.key, n.vars));
@@ -541,6 +553,52 @@ describe("Demand zones in the GIS tab", () => {
     const doc = onDoc.mock.calls[0]![0] as DemandDoc;
     expect(doc.source).toBe("own");
     expect(doc.zones!.length).toBeGreaterThan(0);
+  });
+
+  it("colours the hexagons by the distance to the nearest stop, with a legend", async () => {
+    const { DemandZoneEditor } = await import("../src/features/demand/ZoneEditor");
+    const drawn: { features: { properties: { colour: string } }[] }[] = [];
+    const map = {
+      isStyleLoaded: () => true,
+      getSource: () => ({ setData: (d: (typeof drawn)[number]) => drawn.push(d) }),
+      addSource: () => undefined,
+      getLayer: () => undefined,
+      addLayer: () => undefined,
+      removeLayer: () => undefined,
+      removeSource: () => undefined,
+      getStyle: () => ({}),
+      on: () => undefined,
+      off: () => undefined,
+      once: () => undefined,
+      queryRenderedFeatures: () => [],
+      getCanvas: () => ({ style: {} }),
+    };
+    render(
+      <DemandZoneEditor
+        map={map as never}
+        panel={null}
+        timetable={network()}
+        preferences={{ values: { "demand.zone_max_count": 40 } }}
+        doc={null}
+      />,
+    );
+    const legend = screen.getByRole("region", { name: "Distance to the nearest stop" });
+    expect(legend.textContent).toContain("under 400 m");
+    expect(legend.textContent).toContain("over 2000 m");
+    const zones = drawn.filter((d) => d.features.length).at(-1)!;
+    // Hexagons near the stops and far from them do not share one colour.
+    expect(new Set(zones.features.map((f) => f.properties.colour)).size).toBeGreaterThan(1);
+  });
+
+  it("finds the distance from each zone to the nearest stop", () => {
+    const tt = network();
+    const s = tt.stops[0]!;
+    const near = { id: "a", name: "A", values: {}, ring: box([s.stop_lon, s.stop_lat], 0.001) };
+    const far = { id: "b", name: "B", values: {}, ring: box([s.stop_lon + 0.1, s.stop_lat + 0.1], 0.001) };
+    const m = nearestStopM([near, far], tt);
+    expect(stopBand(m.get("a")!)).toBe(0);
+    expect(stopBand(m.get("b")!)).toBe(STOP_BANDS_M.length);
+    expect(nearestStopM([near], null).size).toBe(0);
   });
 
   it("draws a new zone of the planner's own", async () => {

@@ -234,6 +234,9 @@ export const ur: Messages = {
   "save.saving": "محفوظ ہو رہا ہے…",
   "save.offline": "ابھی محفوظ نہیں ہوا · دوبارہ کوشش جاری",
   "save.failed": "محفوظ نہیں ہوا: {error}",
+  "session.staleToken":
+    "آپ کی تبدیلیاں اب محفوظ نہیں ہو رہیں کیونکہ یہ صفحہ کھلا ہونے کے دوران سرور دوبارہ شروع ہوا۔ کام جاری رکھنے کے لیے صفحہ دوبارہ لوڈ کریں۔",
+  "session.reload": "صفحہ دوبارہ لوڈ کریں",
   "save.conflict": "{who} نے {drawing} محفوظ کر دیا جب آپ اسے بدل رہے تھے۔ منصوبہ کون سا رکھے؟",
   "save.someone": "کسی اور",
   "save.keepMine": "میرا رکھیں",
@@ -264,13 +267,8 @@ export const ur: Messages = {
   "sim.test": "نظام کی جانچ کریں",
   "sim.journey": "سفر کا وقت A → B",
 
-  "create.chooseTitle": "آپ پہلے کیا بنانا چاہتے ہیں؟",
-  "create.chooseIntro": "دوسری قسم آپ بعد میں شامل کر سکتے ہیں۔ کام کے دوران موجودہ راستے نظر آتے رہتے ہیں۔",
   "create.street": "سڑک کا راستہ",
-  "create.streetHint": "بس، BRT، ٹرالی بس، بین الشہری بس۔ سڑکوں کے نیٹ ورک کی پیروی کرتا ہے۔",
   "create.rail": "ریل کا راستہ",
-  "create.railHint":
-    "ٹرام، لائٹ ریل، میٹرو، مضافاتی، علاقائی، بین الشہری، تیز رفتار۔ پٹریاں، اسٹیشن اور سوئچ بنائیں۔",
   "create.noArea":
     "ابھی کوئی مطالعہ کا علاقہ نہیں۔ راستے بنانے اور مسافروں کے اندازوں کے لیے پہلے OpenStreetMap سے سڑکیں اور آبادی درآمد کریں۔",
   "create.setArea": "GIS میں علاقہ مقرر کریں",
@@ -462,6 +460,7 @@ export const ur: Messages = {
 
   "job.stepOf": "مرحلہ {step} از {steps}",
   "job.cancel": "منسوخ کریں",
+  "job.running": "جاری کام",
   "map.search": "مقامات تلاش کریں",
   "map.searchPlaceholder": "قصبہ، سڑک، اسٹیشن یا پتہ",
   "map.searching": "تلاش جاری ہے…",
@@ -473,6 +472,15 @@ export const ur: Messages = {
   "map.places": "ملے ہوئے مقامات",
   "map.searchCredit": "مقامات کے نام © OpenStreetMap کے معاونین، Photon سے تلاش کیے گئے",
   "map.layers": "نقشے کی پرتیں",
+  "map.alwaysShow": "ہمیشہ دکھائیں",
+  "map.alwaysShowHint":
+    "کوئی بھی ٹول کھلا ہو، ہر نقشہ ٹیب پر نظر آتا ہے۔ اس منصوبے کے لیے آپ کے اکاؤنٹ میں محفوظ ہوتا ہے۔",
+  "map.pin.serviceLines": "سروس لائنیں",
+  "map.pin.tracks": "پٹریاں",
+  "map.pin.stations": "اسٹیشن",
+  "map.pin.stops": "اسٹاپ",
+  "map.pin.streetSetups": "سڑک کی ترتیبات",
+  "map.pin.regions": "علاقے",
   "map.basemap": "بنیادی نقشہ",
   "map.streetMap": "نقشہ",
   "map.aerial": "فضائی",

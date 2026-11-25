@@ -41,4 +41,45 @@ describe("Overpass client queue", () => {
     await Promise.all([c.run("1"), c.run("2"), c.run("3")]);
     expect(most).toBe(1);
   });
+
+  it("fails at once, without retries, when the server refuses the connection, and for a minute after", async () => {
+    let calls = 0;
+    const fetchImpl = (async () => {
+      calls++;
+      throw new TypeError("fetch failed", { cause: { code: "ECONNREFUSED" } });
+    }) as unknown as typeof fetch;
+    const c = new OverpassClient({ fetchImpl, minIntervalMs: 0, backoffMs: [1, 1, 1] });
+    await expect(c.run("A")).rejects.toMatchObject({ status: 503 });
+    await expect(c.run("B")).rejects.toThrow(/cannot be reached.*ECONNREFUSED/);
+    expect(calls).toBe(1);
+  });
+
+  it("answers within its deadline when Overpass is slow, without retrying", async () => {
+    let calls = 0;
+    const fetchImpl = ((_u: string, init: { signal: AbortSignal }) => {
+      calls++;
+      return new Promise((_r, reject) =>
+        init.signal.addEventListener("abort", () => reject(new Error("aborted"))),
+      );
+    }) as unknown as typeof fetch;
+    const c = new OverpassClient({ fetchImpl, minIntervalMs: 0, deadlineMs: 50 });
+    const t0 = Date.now();
+    await expect(c.run("A")).rejects.toMatchObject({ status: 503 });
+    expect(Date.now() - t0).toBeLessThan(2000);
+    expect(calls).toBe(1);
+  });
+
+  it("does not sleep through its deadline while backing off before a retry", async () => {
+    const fetchImpl = (async () => new Response("busy", { status: 503 })) as unknown as typeof fetch;
+    const c = new OverpassClient({
+      fetchImpl,
+      minIntervalMs: 0,
+      deadlineMs: 50,
+      backoffMs: [60_000],
+      sleep: (ms) => new Promise((r) => setTimeout(r, ms)),
+    });
+    const t0 = Date.now();
+    await expect(c.run("A")).rejects.toMatchObject({ status: 503 });
+    expect(Date.now() - t0).toBeLessThan(2000);
+  });
 });

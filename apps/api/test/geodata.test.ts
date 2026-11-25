@@ -1,9 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { regionsCovering, regionsHolding } from "../src/gateway/geofabrik.client";
 import { OverpassClient } from "../src/gateway/overpass.client";
 import { cutTiles, decodeValues, encodeValues, sample, tileBounds } from "../src/geodata/dem-tiles";
 import { DemUploadError, resampleDem } from "../src/geodata/dem-upload";
-import { clipTo, holds, toElement } from "../src/geodata/geodata-reader";
+import { clipTo, GeodataReader, holds, toElement } from "../src/geodata/geodata-reader";
+import type { GeodataService } from "../src/geodata/geodata.service";
+import type { ProjectDataCache } from "../src/projects/data-cache";
+import type { Database } from "../src/db/database";
 import { bufferReader } from "../src/population/geotiff";
 import { buildTiff } from "./support/tiff";
 import { areaQuery, osmBase, quarters, runtimeError, splitBox } from "../src/geodata/overpass-import";
@@ -287,5 +290,33 @@ describe("cancelling an import's download", () => {
     ctrl.abort();
     await expect(done).rejects.toMatchObject({ status: 499 });
     expect(calls.n).toBe(1);
+  });
+});
+
+describe("street tiles cut from a project's import", () => {
+  it("cuts a tile once and reads it from the project's data cache afterwards, also after a restart", async () => {
+    const filteredXml = vi.fn(async () => "<osm>streets</osm>");
+    const imports = {
+      onChange: () => undefined,
+      current: async () => ({ id: "run-1", bbox: [36, 33, 37, 34] }),
+      osmTools: { filteredXml },
+      extractPath: () => "/data/extract.osm.pbf",
+    } as unknown as GeodataService;
+    const store = new Map<string, string>();
+    const kept = {
+      get: async (_p: string, _k: string, key: string) => store.get(key) ?? null,
+      put: async (_p: string, _k: string, key: string, body: string) => void store.set(key, body),
+    } as unknown as ProjectDataCache;
+    const box: [number, number, number, number] = [36.2, 33.5, 36.22, 33.52];
+    const one = new GeodataReader({} as Database, imports, kept);
+    expect(await one.tileXml("p1", "road", box)).toBe("<osm>streets</osm>");
+    expect(await one.tileXml("p1", "road", box)).toBe("<osm>streets</osm>");
+    // The API started again: the tile is still kept with the project.
+    const two = new GeodataReader({} as Database, imports, kept);
+    expect(await two.tileXml("p1", "road", box)).toBe("<osm>streets</osm>");
+    expect(filteredXml).toHaveBeenCalledTimes(1);
+    // Another kind of way in the same box is cut on its own.
+    await two.tileXml("p1", "walk", box);
+    expect(filteredXml).toHaveBeenCalledTimes(2);
   });
 });

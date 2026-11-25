@@ -232,6 +232,9 @@ export const bn: Messages = {
   "save.saving": "সংরক্ষণ হচ্ছে…",
   "save.offline": "এখনও সংরক্ষিত হয়নি · আবার চেষ্টা হচ্ছে",
   "save.failed": "সংরক্ষিত হয়নি: {error}",
+  "session.staleToken":
+    "এই পৃষ্ঠা খোলা থাকার সময় সার্ভার পুনরায় চালু হয়েছে, তাই আপনার পরিবর্তনগুলি আর সংরক্ষিত হচ্ছে না। কাজ চালিয়ে যেতে পৃষ্ঠাটি পুনরায় লোড করুন।",
+  "session.reload": "পৃষ্ঠা পুনরায় লোড করুন",
   "save.conflict": "আপনি পরিবর্তন করার সময় {who} {drawing} সংরক্ষণ করেছেন। প্রকল্পে কোনটি রাখা হবে?",
   "save.someone": "অন্য কেউ",
   "save.keepMine": "আমারটা রাখুন",
@@ -262,13 +265,8 @@ export const bn: Messages = {
   "sim.test": "সিস্টেম পরীক্ষা করুন",
   "sim.journey": "যাত্রার সময় A → B",
 
-  "create.chooseTitle": "আপনি প্রথমে কী তৈরি করতে চান?",
-  "create.chooseIntro": "অন্য ধরনটি পরে যোগ করতে পারবেন। কাজের সময় বিদ্যমান রুট দেখা যায়।",
   "create.street": "রাস্তার রুট",
-  "create.streetHint": "বাস, BRT, ট্রলিবাস, আন্তঃনগর বাস। রাস্তার নেটওয়ার্ক অনুসরণ করে।",
   "create.rail": "রেল রুট",
-  "create.railHint":
-    "ট্রাম, লাইট রেল, মেট্রো, শহরতলি, আঞ্চলিক, আন্তঃনগর, উচ্চগতি। রেললাইন, স্টেশন ও সুইচ আঁকুন।",
   "create.noArea":
     "এখনও কোনো গবেষণা এলাকা নেই। রুট নির্ধারণ ও যাত্রী অনুমানের জন্য আগে OpenStreetMap থেকে রাস্তা ও জনসংখ্যা আমদানি করুন।",
   "create.setArea": "GIS-এ এলাকা নির্ধারণ করুন",
@@ -460,6 +458,7 @@ export const bn: Messages = {
 
   "job.stepOf": "ধাপ {step} / {steps}",
   "job.cancel": "বাতিল",
+  "job.running": "চলমান কাজ",
   "map.search": "স্থান খুঁজুন",
   "map.searchPlaceholder": "শহর, রাস্তা, স্টেশন বা ঠিকানা",
   "map.searching": "খোঁজা হচ্ছে…",
@@ -471,6 +470,15 @@ export const bn: Messages = {
   "map.places": "পাওয়া স্থান",
   "map.searchCredit": "স্থানের নাম © OpenStreetMap অবদানকারী, Photon দিয়ে খোঁজা",
   "map.layers": "মানচিত্রের স্তর",
+  "map.alwaysShow": "সবসময় দেখান",
+  "map.alwaysShowHint":
+    "যে টুলই খোলা থাকুক, প্রতিটি মানচিত্র ট্যাবে দেখা যায়। এই প্রকল্পের জন্য আপনার অ্যাকাউন্টে সংরক্ষিত।",
+  "map.pin.serviceLines": "সার্ভিস লাইন",
+  "map.pin.tracks": "ট্র্যাক",
+  "map.pin.stations": "স্টেশন",
+  "map.pin.stops": "স্টপ",
+  "map.pin.streetSetups": "রাস্তার সেটআপ",
+  "map.pin.regions": "অঞ্চল",
   "map.basemap": "ভিত্তি মানচিত্র",
   "map.streetMap": "মানচিত্র",
   "map.aerial": "আকাশ থেকে",

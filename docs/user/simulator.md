@@ -79,6 +79,15 @@ The frequencies do not always improve in order. A line can work every 5 minutes 
 
 **Test settings** changes the number of runs, the share and size of late starts, the recommended limit, the buffer between trains, the late threshold and the seed. The defaults and their sources are in the assumption library (`stability.*`, `capacity.occupancy_limit_share`, `timetable.min_buffer_s`, `recording.late_threshold_s`). Values you set in **Project preferences → All parameters** are the starting point; the signalling and driving values there (route setting, release, sighting, braking…) also reach the planner and the kernel. Drawn lines take their dwell, layover, running-time supplement, acceleration and service braking from there too, for the line's mode or for every mode.
 
+## Replay on the map
+
+After a test that ran in your browser, **Replay on the map** shows every drawn line's vehicles moving together on one clock, trains and street line vehicles alike, from the start of the warm-up to the end of the recovery after the period. **Play**, **Pause**, **Reset**, **Speed** and the time slider work as in the [road simulation's replay](road-simulation.md), and the vehicles have the same colours (Project preferences → Visuals): on time, late, very late, out of service, or parked.
+
+- **Trains** run the period as planned and run through the interlocking without the random delays, the same run that gives the on-time figure without delays. A train is in service from its first passenger departure until it arrives at the end of its last trip; before and after, it runs or stands out of service, for example on its storage track. If that run stops early (a deadlock), the trains stand still from then on and the replay says why.
+- **Street line vehicles** run their timetable with the traffic of the test's first run, at an even speed along each leg's route and standing at each stop for as long as they stood there. Before their first trip and after their last, they are parked at the line's depot, or at the first stop when the line has none.
+
+The replay is worked out when the test has finished; on a large network this takes a few seconds more. Runs saved on the server and runs opened from the project have no replay: run the test again in the browser to see it.
+
 ## Lines file
 
 [AI agents](ai-agents.md) can start a capacity run on the server with their own track topology and lines file. The lines file is the one the timetable planner reads (`crates/rail-plan/examples/publish_journeys.rs`): `{"lines": [ ... ]}`, each line with

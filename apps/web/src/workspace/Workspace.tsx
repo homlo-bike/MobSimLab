@@ -10,6 +10,7 @@ import { benefitsApi } from "../features/benefits/data";
 import type { Region, RegionsDoc } from "../features/benefits/regions";
 import { MapDataPanel } from "../features/geodata/MapDataPanel";
 import { type LiveData, setDataProject, watchLiveData } from "../geodata/projectData";
+import { closeAnswers, keepAnswersFor } from "../projects/keptAnswers";
 import { projectTimetable } from "../features/benefits/timetable";
 import type { CargoBikeDoc } from "../features/cargo-bike/model";
 import { AreaChecks } from "../features/area/AreaChecks";
@@ -88,10 +89,7 @@ import {
 import { can, type Project, type ProjectsApi } from "../projects/api";
 import {
   BackIcon,
-  BusIcon,
-  CableIcon,
   CargoBikeIcon,
-  FerryIcon,
   GearIcon,
   LayersIcon,
   PenIcon,
@@ -99,10 +97,13 @@ import {
   RedoIcon,
   SchematicIcon,
   TableIcon,
-  TrainIcon,
   UndoIcon,
 } from "../shell/icons";
 import { ChecksProvider } from "../shell/checks";
+import { JobsBar, JobsProvider } from "../shell/jobs";
+import { PINNED_LAYERS, type PinnedLayer, PinnedLayersContext } from "../map/pinnedLayers";
+import { PinnedLayers, pinnableLayers, type ProjectContent } from "./PinnedLayers";
+import { ImportsWatcher } from "../features/geodata/ImportsWatcher";
 import { COMMENT_KIND, ChecksMenu } from "../shell/ChecksMenu";
 import { OtherModesLayer } from "./OtherModesLayer";
 import { type CoreTab, type Tab, TABS } from "../shell/route";
@@ -182,6 +183,7 @@ const AppraisalSection = lazyNamed(
 const Scenarios = lazyNamed(() => import("../features/tables/Scenarios"), "Scenarios");
 const RailwayEditor = lazyNamed(() => import("../features/railways/RailwayEditor"), "RailwayEditor");
 const Schematic = lazyNamed(() => import("../features/schematic/Schematic"), "Schematic");
+const MapExports = lazyNamed(() => import("../features/schematic/MapExports"), "MapExports");
 const StreetLineEditor = lazyNamed(
   () => import("../features/street-lines/StreetLineEditor"),
   "StreetLineEditor",
@@ -214,6 +216,7 @@ const tabIcon = (x: Tab): IconFn =>
   TAB_ICONS[x as CoreTab] ?? VIEW_ICONS[PLUGIN_TABS.find((p) => p.id === x)?.view ?? ""] ?? LayersIcon;
 /** Tabs drawn over the map; the others are full pages. The plugins' tabs all use the map. */
 const MAP_TABS: readonly Tab[] = ["simulator", "create", "gis", ...PLUGIN_TABS.map((x) => x.id)];
+const NO_PINS: readonly PinnedLayer[] = [];
 const NO_SETUPS: StreetSetup[] = [];
 const NO_JUNCTIONS: JunctionSetup[] = [];
 const NO_STREET_LINES: SavedStreetLine[] = [];
@@ -254,6 +257,8 @@ export function Workspace({
   existingRailways = false,
   userId = null,
   onRefreshSession,
+  pinnedLayers = NO_PINS,
+  onPinnedLayers,
 }: {
   api: ProjectsApi;
   projectId: string;
@@ -272,6 +277,9 @@ export function Workspace({
   userId?: string | null;
   /** Load the session again (a fresh CSRF token), before saving again after a refused save. */
   onRefreshSession?: () => void;
+  /** The project layers this person keeps shown on every map tab (saved in their account). */
+  pinnedLayers?: readonly PinnedLayer[];
+  onPinnedLayers?: (layers: PinnedLayer[]) => void;
 }) {
   const { t, language } = useI18n();
   const [project, setProject] = useState<Project | null>(null);
@@ -505,6 +513,18 @@ export function Workspace({
     () => (projectKey && typeof api.results === "function" ? api.results(projectKey) : null),
     [api, projectKey],
   );
+  // The long calculations' answers (railway built, timetables planned, schematic laid out) are read back from the
+  // project instead of worked out on every visit (bug 14). Set while rendering, before the tabs' effects ask.
+  const answersApi = useMemo(
+    () => (typeof api.results === "function" ? api.results(projectId) : null),
+    [api, projectId],
+  );
+  keepAnswersFor(answersApi ? projectId : null, answersApi, editable);
+  useEffect(() => {
+    keepAnswersFor(answersApi ? projectId : null, answersApi, editable);
+    return () => closeAnswers(projectId);
+    // The right to save follows `editable` from the call above while rendering.
+  }, [answersApi, projectId]);
   const calendarRuns = useMemo(
     () => (projectKey && typeof api.calendarRuns === "function" ? api.calendarRuns(projectKey) : null),
     [api, projectKey],
@@ -738,6 +758,36 @@ export function Workspace({
     forgetSetups(projectId);
   }, [drawings.loaded, editable, projectId]);
   const savedStreet = streetLines?.lines ?? NO_STREET_LINES;
+  // The project layers kept shown on every map tab (Map layers → Always show), from the person's account.
+  const pinContent = useMemo<ProjectContent>(
+    () => ({
+      railway,
+      streetLines: savedStreet,
+      pluginLines: pluginSaved,
+      setups,
+      junctions: junctionSetups,
+      regions,
+    }),
+    [railway, savedStreet, pluginSaved, setups, junctionSetups, regions],
+  );
+  const pinKey = pinnedLayers.join();
+  const pinned = useMemo(
+    () => new Set<PinnedLayer>(pinKey ? (pinKey.split(",") as PinnedLayer[]) : []),
+    [pinKey],
+  );
+  const pinAvailable = useMemo(() => pinnableLayers(pinContent), [pinContent]);
+  const pinState = useMemo(
+    () =>
+      project && onPinnedLayers
+        ? {
+            available: pinAvailable,
+            pinned,
+            onChange: (next: ReadonlySet<PinnedLayer>) =>
+              onPinnedLayers(PINNED_LAYERS.filter((x) => next.has(x))),
+          }
+        : null,
+    [project, onPinnedLayers, pinAvailable, pinned],
+  );
   // Street lines saved before lines had ids get one, so their comments stay with them, and before lines had
   // colours a colour of their own, so lines of one mode can be told apart (Owners and Editors save).
   useEffect(() => {
@@ -760,6 +810,21 @@ export function Workspace({
     const next = [...savedStreet];
     next[editedStreet] = { ...l, id: savedStreet[editedStreet]?.id ?? l.id ?? newLineId() };
     drawings.set("street-lines", { lines: next } satisfies StreetLinesDoc);
+  };
+  // The street line whose checks were last listed, so a check of it chosen in the bell opens that line again.
+  const lastStreetLine = useRef<string | null>(null);
+  if (editedStreet !== null && savedStreet[editedStreet]?.id)
+    lastStreetLine.current = savedStreet[editedStreet]!.id!;
+  /** Purpose: open the tool a check in the bell belongs to (Create tab), so the check can show its element. */
+  const reopenCheck = (source: string) => {
+    if (source === "project-area") return onTab("preferences");
+    if (tab !== "create") onTab("create");
+    if (source === "street") {
+      const i = savedStreet.findIndex((l) => l.id === lastStreetLine.current);
+      setBuild("street");
+      if (i >= 0 && i !== editedStreet) switchStreet(i);
+    } else if (source === "rail" || source === "depots" || PLUGIN_TOOLS.some((x) => x.id === source))
+      setBuild(source);
   };
   const deleteStreet = (i: number) => {
     drawings.set("street-lines", { lines: savedStreet.filter((_, k) => k !== i) } satisfies StreetLinesDoc);
@@ -1148,7 +1213,12 @@ export function Workspace({
       )}
       <main className="relative flex min-h-0 flex-1 flex-col overflow-clip md:flex-row">
         <div className={`relative min-h-0 min-w-0 flex-1 ${onMap ? "" : "hidden"}`}>
-          <MapView onReady={setMap} />
+          <PinnedLayersContext.Provider value={pinState}>
+            <MapView onReady={setMap} />
+          </PinnedLayersContext.Provider>
+          {project && drawings.loaded && pinned.size > 0 && (
+            <PinnedLayers map={map} pinned={pinned} content={pinContent} />
+          )}
           {/* The drawn network (track, stations, platforms, street lines and stops, depots) stays in view on
               every map tab: faded under the tool in use on Create, and as the backdrop on GIS and Simulator. */}
           {project && drawings.loaded && (tab === "create" || tab === "gis" || tab === "simulator") && (
@@ -1451,79 +1521,6 @@ export function Workspace({
               {convertError}
             </p>
           )}
-          {project && tab === "create" && editable && chosen === null && (
-            <div className="absolute inset-0 z-20 flex items-start justify-center overflow-y-auto bg-slate-50/70 p-4 md:pt-16">
-              <section
-                aria-label={t("create.chooseTitle")}
-                className="w-full max-w-2xl rounded-2xl bg-white p-5 shadow-2xl md:p-7"
-              >
-                <h2 className="text-2xl font-semibold tracking-tight">{t("create.chooseTitle")}</h2>
-                <p className="mt-1 text-slate-600">{t("create.chooseIntro")}</p>
-                <div className="mt-5 grid gap-3.5 sm:grid-cols-2">
-                  {[
-                    ...(
-                      [
-                        [
-                          "street",
-                          BusIcon,
-                          t("create.street"),
-                          t("create.streetHint"),
-                          "bg-blue-100 text-blue-900",
-                        ],
-                        [
-                          "rail",
-                          TrainIcon,
-                          t("create.rail"),
-                          t("create.railHint"),
-                          "bg-red-100 text-red-900",
-                        ],
-                      ] as const
-                    ).filter(([kind]) => (kind === "street" ? showStreet : showRail)),
-                    // Tools contributed by plugins (ADR-0036 §6): cable car and ferry are bundled.
-                    ...PLUGIN_TOOLS.map(
-                      (x) =>
-                        [
-                          x.id,
-                          x.kit === "water-route"
-                            ? FerryIcon
-                            : x.kit === "service-zone"
-                              ? BusIcon
-                              : CableIcon,
-                          x.label,
-                          x.hint ?? "",
-                          x.kit === "water-route"
-                            ? "bg-cyan-100 text-cyan-900"
-                            : x.kit === "service-zone"
-                              ? "bg-purple-100 text-purple-900"
-                              : "bg-violet-100 text-violet-900",
-                        ] as const,
-                    ),
-                  ].map(([kind, Icon, title, hint, colour]) => (
-                    <button
-                      key={kind}
-                      type="button"
-                      className="flex flex-col gap-2.5 rounded-2xl border-[1.5px] border-slate-200 bg-white p-4 text-start hover:border-blue-700 hover:ring-[3px] hover:ring-blue-100 focus-visible:border-blue-700 focus-visible:ring-[3px] focus-visible:ring-blue-100 focus-visible:outline-none"
-                      onClick={() => setBuild(kind)}
-                    >
-                      <span className={`flex h-12 w-12 items-center justify-center rounded-xl ${colour}`}>
-                        <Icon size={26} />
-                      </span>
-                      <span className="text-base font-semibold">{title}</span>
-                      <span className="text-xs text-slate-500">{hint}</span>
-                    </button>
-                  ))}
-                </div>
-                {!project.areaName && (
-                  <div className="mt-4 flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3">
-                    <p className="min-w-48 flex-1 text-xs text-slate-700">{t("create.noArea")}</p>
-                    <button type="button" className="btn min-h-10" onClick={() => onTab("gis")}>
-                      {t("create.setArea")}
-                    </button>
-                  </div>
-                )}
-              </section>
-            </div>
-          )}
         </div>
 
         {!onMap && project && tab === "preferences" && (
@@ -1544,6 +1541,21 @@ export function Workspace({
                 depots={depotsDoc?.depots ?? NO_DEPOTS}
                 country={placeCountry}
                 place={place}
+                mapExports={
+                  drawings.loaded ? (
+                    // Its own wait, so the rest of the preferences show while the export code loads.
+                    <Suspense fallback={null}>
+                      <MapExports
+                        railway={railway}
+                        streetLines={streetLines}
+                        pluginLines={pluginLineList}
+                        prefs={preferences?.values}
+                        doc={drawings.doc<SchematicDoc>("schematic")}
+                        projectName={project.name}
+                      />
+                    </Suspense>
+                  ) : null
+                }
               />
             </LoadingScreen>
           </div>
@@ -1884,7 +1896,7 @@ export function Workspace({
                 </div>
               </div>
             )}
-            {tab === "create" && editable && chosen !== null && (
+            {tab === "create" && editable && (
               <div className="shrink-0 overflow-x-auto overscroll-x-contain px-4 pt-3 pb-2 md:px-5 md:pt-5">
                 <div className="seg w-max min-w-full" role="tablist" aria-label={tabLabel("create")}>
                   {showStreet && (
@@ -1927,6 +1939,7 @@ export function Workspace({
                 <LoadingScreen>
                   <CapacityRun
                     map={map}
+                    visuals={preferences?.visuals}
                     demandRidership={usedRidership}
                     runs={runs}
                     results={results}
@@ -2003,7 +2016,17 @@ export function Workspace({
                 </div>
               )}
               {tab === "create" && editable && chosen === null && (
-                <p className="px-4 py-5 text-slate-600 md:px-5">{t("create.chooseFirst")}</p>
+                <div className="flex flex-col gap-3 px-4 py-5 md:px-5">
+                  <p className="text-slate-600">{t("create.chooseFirst")}</p>
+                  {project && !project.areaName && (
+                    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3">
+                      <p className="min-w-48 flex-1 text-xs text-slate-700">{t("create.noArea")}</p>
+                      <button type="button" className="btn min-h-10" onClick={() => onTab("gis")}>
+                        {t("create.setArea")}
+                      </button>
+                    </div>
+                  )}
+                </div>
               )}
               {/* The street line tool, railway editor, journey planner and street setup render their panels here. */}
               <div key={`${tab}-${sim}-${chosen}-${gis}`} ref={setPanel} />
@@ -2061,6 +2084,7 @@ export function Workspace({
           </aside>
         )}
       </main>
+      <JobsBar />
       {bottomTabs}
       {touring && <Tour steps={PROJECT_TOUR} onTab={onTab} onClose={() => setTouring(false)} />}
       {commentsOf && project && (
@@ -2088,20 +2112,23 @@ export function Workspace({
             isOwner={project ? can.manage(project) : false}
             userId={userId}
           >
-            <ChecksProvider key={projectId}>
-              {body}
-              {areaView && (
-                <AreaChecks
-                  polygons={areaView.polygons}
-                  docs={{
-                    streetLines,
-                    railway,
-                    depots: depotsDoc,
-                    cargoBike: drawings.doc<CargoBikeDoc>("cargo-bike"),
-                    pluginLines: drawings.doc<PluginLinesDoc>("plugin-lines"),
-                  }}
-                />
-              )}
+            <ChecksProvider key={projectId} onReopen={editable ? reopenCheck : undefined}>
+              <JobsProvider key={projectId}>
+                {body}
+                {project && !STATIC_VIEWER && <ImportsWatcher api={geodata} />}
+                {areaView && (
+                  <AreaChecks
+                    polygons={areaView.polygons}
+                    docs={{
+                      streetLines,
+                      railway,
+                      depots: depotsDoc,
+                      cargoBike: drawings.doc<CargoBikeDoc>("cargo-bike"),
+                      pluginLines: drawings.doc<PluginLinesDoc>("plugin-lines"),
+                    }}
+                  />
+                )}
+              </JobsProvider>
             </ChecksProvider>
           </CommentsProvider>
         </VehiclesOffContext.Provider>

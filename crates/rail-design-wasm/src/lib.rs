@@ -360,6 +360,30 @@ impl RailDesigner {
             .map_err(JsValue::from)
     }
 
+    /// Purpose: [`Self::publish_lines_with`] on a topology given as JSON (from [`Self::topology`]), without
+    /// an engine, so a Web Worker can plan while the page stays responsive (publishing the Syria test line
+    /// held the page for 12 s).
+    /// Inputs: JSON topology, JSON lines, the day type id, JSON `rail_plan::PublishOptions` ("" for the
+    /// defaults). Output: JSON `rail_plan::ServicePublication`; Err for a line with fewer than two stops.
+    pub fn publish_on_topology(
+        topology: &str,
+        lines: &str,
+        service_id: &str,
+        options: &str,
+    ) -> Result<String, JsValue> {
+        let lines: Vec<rail_plan::ServiceLine> = serde_json::from_str(lines).map_err(js)?;
+        let opts: rail_plan::PublishOptions = if options.is_empty() {
+            rail_plan::PublishOptions::default()
+        } else {
+            serde_json::from_str(options).map_err(js)?
+        };
+        let out = rail_plan::publish_service_with(topology, &lines, service_id, &opts)
+            .map_err(|e| js_error(&e))?;
+        serde_json::to_string(&out)
+            .map_err(js)
+            .map_err(JsValue::from)
+    }
+
     /// Purpose: whether a train can run from station `from` to station `to` (document ids) on the
     /// last built design, for picking a service line's stations in order.
     /// Output: JSON `rail_plan::Reach`; Err before a build or for a design with errors.

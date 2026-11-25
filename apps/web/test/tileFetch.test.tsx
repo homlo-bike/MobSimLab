@@ -14,9 +14,9 @@ describe("fetching a tile from a busy OpenStreetMap", () => {
   });
 
   it("gives up after a few tries, and does not retry a bad request", async () => {
-    const busy = vi.fn(async () => answer(503));
+    const busy = vi.fn(async () => answer(504));
     expect((await fetchTileWithRetry("/t", {}, busy as unknown as typeof fetch, async () => {})).status).toBe(
-      503,
+      504,
     );
     expect(busy).toHaveBeenCalledTimes(4);
     const bad = vi.fn(async () => answer(400));
@@ -24,5 +24,13 @@ describe("fetching a tile from a busy OpenStreetMap", () => {
       400,
     );
     expect(bad).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not try again when the server cannot reach OpenStreetMap at all (503)", async () => {
+    const down = vi.fn(async () => answer(503));
+    expect((await fetchTileWithRetry("/t", {}, down as unknown as typeof fetch, async () => {})).status).toBe(
+      503,
+    );
+    expect(down).toHaveBeenCalledTimes(1);
   });
 });

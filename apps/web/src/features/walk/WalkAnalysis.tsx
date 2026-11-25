@@ -2,7 +2,12 @@ import type { Map as MapLibreMap } from "maplibre-gl";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { formatInt, hasMessage, tNow, useI18n } from "../../i18n/i18n";
 import type { MessageKey } from "../../i18n/messages";
-import { fetchPopulation, type PopulationFetcher, type PopulationSource } from "../noise/population";
+import {
+  fetchPopulation,
+  fetchPopulationOver,
+  type PopulationFetcher,
+  type PopulationSource,
+} from "../noise/population";
 import { loadRailEngine } from "../railways/engine";
 import type { Network, RailEngineLoader } from "../railways/types";
 import { fetchWalkTile, loadWalkEngine } from "../street-lines/engine";
@@ -387,7 +392,8 @@ export function WalkAnalysis({
       let demand = null;
       busy(4, tNow("walk.loadingPopulation"));
       try {
-        const a = await fetchPeople(area);
+        // In pieces: a city-wide area is wider than the API's 0.3° for one request.
+        const a = await fetchPopulationOver(area, null, fetchPeople);
         if (a.status === "ready") {
           demand = peopleDemand(a.grid, area, gapCellM(preferences));
           people = a.source;

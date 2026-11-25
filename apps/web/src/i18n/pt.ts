@@ -235,6 +235,9 @@ export const pt: Messages = {
   "save.saving": "Salvando…",
   "save.offline": "Ainda não salvo · tentando novamente",
   "save.failed": "Não salvo: {error}",
+  "session.staleToken":
+    "As suas alterações já não estão a ser guardadas porque o servidor reiniciou enquanto esta página estava aberta. Recarregue a página para continuar.",
+  "session.reload": "Recarregar página",
   "save.conflict":
     "{who} salvou {drawing} enquanto você fazia alterações. Qual versão o projeto deve manter?",
   "save.someone": "Outra pessoa",
@@ -266,14 +269,8 @@ export const pt: Messages = {
   "sim.test": "Testar o sistema",
   "sim.journey": "Tempo de viagem A → B",
 
-  "create.chooseTitle": "O que você quer construir primeiro?",
-  "create.chooseIntro":
-    "Você pode adicionar o outro tipo depois. As rotas existentes continuam visíveis enquanto você trabalha.",
   "create.street": "Rota de rua",
-  "create.streetHint": "Ônibus, BRT, trólebus, ônibus intermunicipal. Segue a malha viária.",
   "create.rail": "Rota ferroviária",
-  "create.railHint":
-    "Bonde, VLT, metrô, trem metropolitano, regional, intercidades, alta velocidade. Desenhe vias, estações e aparelhos de mudança de via.",
   "create.noArea":
     "Ainda não há área de estudo. Importe primeiro as ruas e a população do OpenStreetMap para o roteamento e as estimativas de passageiros.",
   "create.setArea": "Definir área no SIG",
@@ -465,6 +462,7 @@ export const pt: Messages = {
 
   "job.stepOf": "Passo {step} de {steps}",
   "job.cancel": "Cancelar",
+  "job.running": "Tarefas em curso",
   "map.search": "Pesquisar locais",
   "map.searchPlaceholder": "Cidade, rua, estação ou endereço",
   "map.searching": "A pesquisar…",
@@ -476,6 +474,15 @@ export const pt: Messages = {
   "map.places": "Locais encontrados",
   "map.searchCredit": "Nomes de locais © colaboradores do OpenStreetMap, encontrados com o Photon",
   "map.layers": "Camadas do mapa",
+  "map.alwaysShow": "Mostrar sempre",
+  "map.alwaysShowHint":
+    "Visível em todos os separadores com mapa, seja qual for a ferramenta aberta. Guardado na sua conta para este projeto.",
+  "map.pin.serviceLines": "Linhas",
+  "map.pin.tracks": "Vias",
+  "map.pin.stations": "Estações",
+  "map.pin.stops": "Paragens",
+  "map.pin.streetSetups": "Configuração das ruas",
+  "map.pin.regions": "Regiões",
   "map.basemap": "Mapa base",
   "map.streetMap": "Mapa",
   "map.aerial": "Aérea",

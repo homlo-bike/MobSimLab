@@ -971,6 +971,7 @@ describe("Railway editor", () => {
   it("loads the streets on screen and lists the level crossings with them", async () => {
     const fetchTile = vi.fn(async () => streetTile(50.88, 50.92));
     await opened({ mode: "regional_rail", fetchTile });
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
     expect(fetchTile).toHaveBeenCalled();
     expect(await screen.findByText(/Level crossings · [1-9]/)).toBeTruthy();
     expect(screen.getAllByText(/Station Road · \d+° · barriers · buses/).length).toBeGreaterThan(0);
@@ -986,6 +987,7 @@ describe("Railway editor", () => {
   it("loads the existing railways on screen alongside the streets", async () => {
     const fetchRails = vi.fn(async () => railTile());
     await opened({ mode: "tram", fetchRails, existingRailways: true });
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
     expect(fetchRails).toHaveBeenCalled();
     expect(await screen.findByText(/\(1 loaded\)/)).toBeTruthy();
     expect(screen.getByText(/Existing railways · \d+ joins?/)).toBeTruthy();
@@ -993,14 +995,29 @@ describe("Railway editor", () => {
 
   it("offers slips for a diamond of two single tracks", async () => {
     const { engine } = await opened({ mode: "tram" });
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
     // The tram sample's diamond is between double tracks: no slip on offer.
     expect(await screen.findByText(/Diamond crossings · 1/)).toBeTruthy();
     expect(screen.queryByRole("combobox", { name: /Trackwork at crossing/ })).toBeNull();
     expect(engine()).not.toBeNull();
   });
 
+  it("shows a selected switch's own settings, not the new crossover's, while the Crossover tool is picked", async () => {
+    await opened({ mode: "regional_rail" });
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
+    const list = await screen.findByRole("list", { name: "Switches" });
+    fireEvent.click(within(list).getAllByRole("button")[0]!);
+    fireEvent.keyDown(window, { key: "x" });
+    expect(screen.getByRole("button", { name: /Crossover/ }).getAttribute("aria-pressed")).toBe("true");
+    expect(screen.getByRole("button", { name: "Back to the network" })).toBeTruthy();
+    expect(screen.queryByText("New crossover")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Back to the network" }));
+    expect(screen.getByText("New crossover")).toBeTruthy();
+  });
+
   it("shows generated signals, places one of the planner's, turns it with F and resets", async () => {
     const { handlers, engine } = await opened({ mode: "regional_rail" });
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
     expect(screen.getByText(/Signals · [1-9]/)).toBeTruthy();
     expect(screen.queryByRole("button", { name: /Reset to generated/ })).toBeNull();
     fireEvent.keyDown(window, { key: "g" });
@@ -1012,8 +1029,11 @@ describe("Railway editor", () => {
     expect(await screen.findByRole("button", { name: /Turn round/ })).toBeTruthy();
     expect(screen.getByText(/ · yours/)).toBeTruthy();
     fireEvent.keyDown(window, { key: "f" });
-    // The network's signal list, with its reset, shows once the signal is put down again.
+    // The network's signal list, with its reset, shows once the signal is put down again and "Select and move"
+    // is the tool.
     fireEvent.click(screen.getByRole("button", { name: "Back to the network" }));
+    expect(screen.queryByRole("button", { name: /Reset to generated/ })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
     fireEvent.click(screen.getByRole("button", { name: /Reset to generated/ }));
     expect(screen.getByRole("status").textContent).toMatch(/reset/);
     expect(screen.queryByRole("button", { name: /Reset to generated/ })).toBeNull();
@@ -1088,6 +1108,7 @@ describe("Railway editor", () => {
       />,
     );
     await waitFor(() => expect(engine).not.toBeNull());
+    fireEvent.click(screen.getByRole("button", { name: /Select and move/ }));
     await screen.findByText(/Service lines · 0/);
     const view = engine!.build(lone, null);
     const at = (name: string) => {

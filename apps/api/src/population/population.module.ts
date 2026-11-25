@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { OverpassClient } from "../gateway/overpass.client";
+import { INTERACTIVE_DEADLINE_MS, OverpassClient } from "../gateway/overpass.client";
 import { WorldPopClient } from "../gateway/worldpop.client";
 import { PopulationController } from "./population.controller";
 import { PopulationService } from "./population.service";
@@ -9,7 +9,10 @@ import { PopulationService } from "./population.service";
   controllers: [PopulationController],
   providers: [
     PopulationService,
-    { provide: OverpassClient, useFactory: () => new OverpassClient() },
+    {
+      provide: OverpassClient,
+      useFactory: () => new OverpassClient({ deadlineMs: INTERACTIVE_DEADLINE_MS }),
+    },
     { provide: WorldPopClient, useFactory: () => new WorldPopClient() },
   ],
   exports: [PopulationService, WorldPopClient],

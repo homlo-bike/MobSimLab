@@ -71,6 +71,15 @@ function fakeLoader(): { loader: EngineLoader; engine: CapacityEngine } {
     sweepPoint: vi.fn(async (_p, _l, h: number) =>
       point({ headway_s: h, per_hour: 3600 / h, unplaced: 1, verdict: "not_enough_capacity" }),
     ),
+    replay: vi.fn(async () => ({
+      begin: 6.5 * H,
+      frame_s: 10,
+      frames: 2,
+      tracks: [["s1", 0]] as [string, number][],
+      lines: [["M1", "M1"]] as [string, string][],
+      trains: [{ vehicle: 0, line: 0, s: [0, 10, 0, 0, 20, 36], st: [] }],
+      stopped: null,
+    })),
     dispose: vi.fn(),
   };
   return { loader: vi.fn(async () => engine), engine };
@@ -255,6 +264,37 @@ describe("capacity run panel", () => {
     expect(engine.sweepPoint).toHaveBeenCalledTimes(2);
     expect(screen.getAllByText("1 trip does not fit").length).toBe(2);
     expect(screen.queryByRole("status")).toBeNull();
+  });
+
+  it("offers the replay of the run on the map, from the drawn railway's trains", async () => {
+    const { loader, engine } = fakeLoader();
+    const topology = JSON.stringify({
+      origin: [8, 47],
+      sections: [
+        {
+          id: "s1",
+          length_m: 100,
+          geometry: [
+            [0, 0],
+            [100, 0],
+          ],
+        },
+      ],
+    });
+    render(
+      <CapacityRun
+        loadEngine={loader}
+        railway={drawn()}
+        buildDrawn={vi.fn(async () => ({ ...BUILT, topology }))}
+      />,
+    );
+    fireEvent.click(screen.getByRole("checkbox"));
+    fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
+    const replay = await screen.findByRole("heading", { name: "Replay on the map" });
+    expect(engine.replay).toHaveBeenCalledWith({ from_s: 7 * H, to_s: 9 * H }, 10);
+    const box = replay.closest("section")!;
+    await waitFor(() => expect(within(box).getByRole("button", { name: "Play" })).toBeTruthy());
+    expect(within(box).getByText(/All drawn lines move together on one clock/)).toBeTruthy();
   });
 
   it("runs another period and refuses an end before the start", async () => {

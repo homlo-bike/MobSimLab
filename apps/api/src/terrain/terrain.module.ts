@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { CopernicusDemClient } from "../gateway/copernicus-dem.client";
 import { GebcoClient, gebcoSettings } from "../gateway/gebco.client";
 import { OpenElevationClient, openElevationSettings } from "../gateway/open-elevation.client";
-import { OverpassClient } from "../gateway/overpass.client";
+import { INTERACTIVE_DEADLINE_MS, OverpassClient } from "../gateway/overpass.client";
 import { SharedDataStore } from "../geodata/shared-data";
 import { TerrainController } from "./terrain.controller";
 import { TerrainService } from "./terrain.service";
@@ -22,7 +22,10 @@ import { TerrainService } from "./terrain.service";
         new CopernicusDemClient(shared ? { store: shared.glo30() } : {}),
       inject: [{ token: SharedDataStore, optional: true }],
     },
-    { provide: OverpassClient, useFactory: () => new OverpassClient() },
+    {
+      provide: OverpassClient,
+      useFactory: () => new OverpassClient({ deadlineMs: INTERACTIVE_DEADLINE_MS }),
+    },
     {
       // The fallback is off when MOBSIMLAB_ELEVATION_FALLBACK=off; TerrainService then has none.
       provide: OpenElevationClient,

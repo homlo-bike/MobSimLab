@@ -24,6 +24,10 @@ function engine() {
       calls.push(`publish ${id} ${o}`);
       return JSON.stringify({ on: built, lines, id, o });
     },
+    topology: () => {
+      calls.push("topology");
+      return JSON.stringify({ on: built });
+    },
     missing_terrain_tiles: () => {
       calls.push("missing");
       return JSON.stringify(built ? [[1, 2]] : []);
@@ -78,5 +82,31 @@ describe("rail engine answers kept for the page", () => {
     expect(two.calls).toEqual(["build doc", "tile t1", "publish sunday"]);
     expect(p.on).toBe("|doc|0");
     expect(b.catchUp()).toBe(two.d);
+  });
+});
+
+describe("rail publications planned elsewhere", () => {
+  beforeEach(forgetDesignerAnswers);
+
+  it("plans on the last build's topology and keeps the answer as the engine's would be", async () => {
+    const one = engine();
+    const a = new CachedDesigner(one.d);
+    a.build("doc", 0);
+    const seen: string[] = [];
+    const away = async (topology: string) => {
+      seen.push(topology);
+      return JSON.stringify({ planned: topology });
+    };
+    const p1 = await a.publishLinesAway("[1]", "weekday", undefined, away);
+    expect(seen).toEqual([JSON.stringify({ on: "|doc|0" })]);
+    expect(one.calls).toEqual(["build doc", "topology"]);
+    // The same publication on the same build comes from memory, on the page's engine or planned elsewhere.
+    expect(a.publishLines("[1]", "weekday")).toBe(p1);
+    expect(await a.publishLinesAway("[1]", "weekday", undefined, away)).toBe(p1);
+    expect(seen).toHaveLength(1);
+    expect(one.calls).toEqual(["build doc", "topology"]);
+    // Other settings are planned again.
+    await a.publishLinesAway("[1]", "weekday", '{"max_idle_s":60}', away);
+    expect(seen).toHaveLength(2);
   });
 });

@@ -12,10 +12,6 @@ export const editorsZu = {
   "rail.mode.long_distance_rail": "Phakathi kwamadolobha",
   "rail.params":
     "Ububanzi bukajantshi {gauge} mm · ibanga phakathi kwamaphakathi kajantshi {centres} m · irediyasi encane {minRadius} m (enconyiwe {radius} m) · ukuthambeka okuphezulu {gradient} ‰ · isivinini sokuklama {speed} km/h · amapulatifomu {platform} m ku-{height} mm · {power}",
-  "rail.stat.route": "Umzila",
-  "rail.stat.track": "Ujantshi",
-  "rail.stat.stations": "Iziteshi",
-  "rail.stat.switches": "Izishintshi",
   "rail.stations.one": "isiteshi esingu-{count}",
   "rail.stations.other": "iziteshi ezingu-{count}",
   "rail.backToNetwork": "Buyela kunethiwekhi",
@@ -404,13 +400,6 @@ export const editorsZu = {
     "Ingasebenzisa imigwaqo emikhulu esheshayo; iziteshi zingaba seziteshini zamabhasi.",
   "street.battery": "Ibanga lebhethri",
   "street.doorsBoth": "Iminyango nhlangothi zombili",
-  "street.stat.length": "Ubude bomjikelezo",
-  "street.stat.stops": "Iziteshi ({end} zokugcina)",
-  "street.stat.cycle": "Umjikelezo: {run} ukuhamba{crossings}, {dwell} ukuma, {layover} ikhefu",
-  "street.stat.atCrossings": "({min} eziweleni)",
-  "street.stat.vehicles": "Izimoto zesikhawu semizuzu engu-{headway}",
-  "street.stat.compact":
-    "umjikelezo {length} · izitobhi {stops} · umjikelezo wemizuzu {cycle} · izimoto {vehicles}",
   "street.points": "Amaphoyinti omzila · ukulandelana komjikelezo",
   "street.noPoints": "Awekho amaphoyinti okwamanje. Khetha Engeza amaphoyinti bese uchofoza umgwaqo.",
   "street.viaN": "Iphoyinti lokudlula {n}",
@@ -759,6 +748,10 @@ export const editorsZu = {
   "schematic.connections": "Amalebula anemibala ngaphansi kwesiteshi: amalayini ongashintshela kuwo lapho.",
   "schematic.noConnections": "Lo layini awunaso isiteshi owabelana ngaso namanye amalayini.",
   "schematic.exportTitle": "Khipha",
+  "schematic.exportsIntro":
+    "Landa imephu yohlelo lwenethiwekhi nemephu yomugqa ngamunye njenge-SVG noma i-PNG, noma uziphrinte noma uzigcine njenge-PDF.",
+  "schematic.exportsNone": "Ayikho imigqa ongayikhipha okwamanje. Qala udwebe umugqa ngaphansi kokuthi Dala.",
+  "schematic.exporting": "Ilungisa imephu…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Phrinta noma i-PDF",
@@ -816,9 +809,9 @@ export const editorsZu = {
   "schematic.area.color": "Umbala",
   "schematic.area.defaultName": "Indawo {n}",
   "schematic.area.draw": "Dweba indawo",
-  "schematic.area.drawHint": "Chofoza imephu ukuze wengeze amakhona, bese ucindezela Qeda.",
+  "schematic.area.drawHint":
+    "Chofoza imephu ukuze wengeze amakhona, bese ucindezela Qeda. I-Ctrl+Z isusa ikhona lokugcina.",
   "schematic.area.finish": "Qeda",
-  "schematic.area.undo": "Hlehlisa ikhona",
   "schematic.area.remove": "Susa indawo",
   "schematic.area.dragHint": "Hudula amakhona amhlophe emephini ukuze ushintshe isimo.",
   "schematic.facts": "Isevisi",
@@ -1525,6 +1518,12 @@ export const editorsZu = {
   "capacity.run": "Qhuba ukuhlola",
   "capacity.runAgain": "Qhuba futhi",
   "capacity.stop": "Misa",
+  "capacity.replay.title": "Dlala futhi ebalazweni",
+  "capacity.replay.note":
+    "Yonke imigqa edwetshiwe ihamba ndawonye ewashini elilodwa. Izitimela zihamba njengoba kuhleliwe, ngaphandle kokubambezeleka okungahleliwe; izimoto zemigqa yemigwaqo zihlangabezana nethrafikhi yokugijima kokuqala kokuhlola.",
+  "capacity.replay.none": "Akukho okungadlalwa futhi: awukho umugqa owahamba kulesi sikhathi.",
+  "capacity.replay.stopped":
+    "Ukugijima kwama ngaphambi kwesikhathi, ngakho izitimela zimile kusukela lapho: {why}",
   "capacity.summary":
     "{period} · uhambo olungu-{trips} luhlelwe ngezikhala · izitimela ezingu-{out} ziyasebenza, ezingu-{reserve} zigciniwe",
   "capacity.importNotes": "Amanothi okungenisa ({n})",

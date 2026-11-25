@@ -236,6 +236,9 @@ export const es: Messages = {
   "save.saving": "Guardando…",
   "save.offline": "Aún sin guardar · reintentando",
   "save.failed": "No se guardó: {error}",
+  "session.staleToken":
+    "Tus cambios ya no se guardan porque el servidor se reinició mientras esta página estaba abierta. Vuelve a cargar la página para seguir trabajando.",
+  "session.reload": "Volver a cargar la página",
   "save.conflict": "{who} guardó {drawing} mientras lo cambiabas. ¿Qué versión debe conservar el proyecto?",
   "save.someone": "Otra persona",
   "save.keepMine": "Conservar la mía",
@@ -266,14 +269,8 @@ export const es: Messages = {
   "sim.test": "Probar el sistema",
   "sim.journey": "Tiempo de viaje A → B",
 
-  "create.chooseTitle": "¿Qué quieres construir primero?",
-  "create.chooseIntro":
-    "Puedes añadir el otro tipo más tarde. Las rutas existentes siguen visibles mientras trabajas.",
   "create.street": "Ruta por calle",
-  "create.streetHint": "Autobús, BRT, trolebús, autobús interurbano. Sigue la red de calles.",
   "create.rail": "Ruta ferroviaria",
-  "create.railHint":
-    "Tranvía, tren ligero, metro, cercanías, regional, larga distancia, alta velocidad. Dibuja vías, estaciones y desvíos.",
   "create.noArea":
     "Todavía no hay zona de estudio. Importa primero calles y población de OpenStreetMap para el trazado y la estimación de viajeros.",
   "create.setArea": "Definir zona en SIG",
@@ -465,6 +462,7 @@ export const es: Messages = {
 
   "job.stepOf": "Paso {step} de {steps}",
   "job.cancel": "Cancelar",
+  "job.running": "Trabajos en curso",
   "map.search": "Buscar lugares",
   "map.searchPlaceholder": "Ciudad, calle, estación o dirección",
   "map.searching": "Buscando…",
@@ -476,6 +474,15 @@ export const es: Messages = {
   "map.places": "Lugares encontrados",
   "map.searchCredit": "Nombres de lugares © colaboradores de OpenStreetMap, encontrados con Photon",
   "map.layers": "Capas del mapa",
+  "map.alwaysShow": "Mostrar siempre",
+  "map.alwaysShowHint":
+    "Se ve en todas las pestañas con mapa, sea cual sea la herramienta abierta. Se guarda en tu cuenta para este proyecto.",
+  "map.pin.serviceLines": "Líneas",
+  "map.pin.tracks": "Vías",
+  "map.pin.stations": "Estaciones",
+  "map.pin.stops": "Paradas",
+  "map.pin.streetSetups": "Configuración de calles",
+  "map.pin.regions": "Regiones",
   "map.basemap": "Mapa base",
   "map.streetMap": "Mapa",
   "map.aerial": "Aérea",

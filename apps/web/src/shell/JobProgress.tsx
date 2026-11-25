@@ -1,9 +1,11 @@
 import { useI18n } from "../i18n/i18n";
+import { usePublishJob } from "./jobs";
 
 /**
  * A long job under way: what it is doing now, a bar (filled as far as the step is when that is known,
  * moving otherwise), the step number, and Cancel. An optional second button lets the job go on without
- * what it waits for.
+ * what it waits for. The job also shows in the bar at the bottom of the project, also once its panel is closed
+ * when something else keeps reporting it under the same `jobKey`.
  */
 export function JobProgress({
   label,
@@ -14,6 +16,7 @@ export function JobProgress({
   onCancel,
   skipLabel,
   onSkip,
+  jobKey,
 }: {
   /** The job's name, for screen readers. */
   label: string;
@@ -27,10 +30,13 @@ export function JobProgress({
   onCancel?: () => void;
   skipLabel?: string;
   onSkip?: () => void;
+  /** Names the job for the bottom bar, so another report of it (the project's import watcher) shows once. */
+  jobKey?: string;
 }) {
   const { t } = useI18n();
   // The whole job: the steps done, plus as far as this one is (half way when it cannot say).
   const overall = Math.min(1, Math.max(0, (index - 1 + (fraction ?? 0.5)) / Math.max(steps, 1)));
+  usePublishJob({ label, step, overall: fraction === null && steps <= 1 ? null : overall }, jobKey);
   return (
     <div className="flex flex-col gap-1.5 rounded-lg border border-slate-200 bg-slate-50 p-2.5">
       <div className="flex items-baseline justify-between gap-2 text-xs">

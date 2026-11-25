@@ -235,6 +235,9 @@ export const nl: Messages = {
   "save.saving": "Opslaan…",
   "save.offline": "Nog niet opgeslagen · probeert opnieuw",
   "save.failed": "Niet opgeslagen: {error}",
+  "session.staleToken":
+    "Uw wijzigingen worden niet meer opgeslagen, omdat de server opnieuw is gestart terwijl deze pagina open was. Laad de pagina opnieuw om verder te werken.",
+  "session.reload": "Pagina opnieuw laden",
   "save.conflict":
     "{who} heeft {drawing} opgeslagen terwijl jij het aanpaste. Welke versie moet het project houden?",
   "save.someone": "Iemand anders",
@@ -266,14 +269,8 @@ export const nl: Messages = {
   "sim.test": "Systeem testen",
   "sim.journey": "Reistijd A → B",
 
-  "create.chooseTitle": "Wat wil je eerst bouwen?",
-  "create.chooseIntro":
-    "Het andere soort kun je later toevoegen. Bestaande routes blijven zichtbaar terwijl je werkt.",
   "create.street": "Wegroute",
-  "create.streetHint": "Bus, HOV-bus, trolleybus, streekbus. Volgt het stratennet.",
   "create.rail": "Spoorroute",
-  "create.railHint":
-    "Tram, sneltram, metro, voorstads-, regionale en intercitytreinen, hogesnelheid. Teken sporen, stations en wissels.",
   "create.noArea":
     "Nog geen studiegebied. Importeer eerst straten en bevolking uit OpenStreetMap voor routes en reizigersschattingen.",
   "create.setArea": "Gebied instellen in GIS",
@@ -466,6 +463,7 @@ export const nl: Messages = {
 
   "job.stepOf": "Stap {step} van {steps}",
   "job.cancel": "Annuleren",
+  "job.running": "Lopende taken",
   "map.search": "Plaatsen zoeken",
   "map.searchPlaceholder": "Plaats, straat, station of adres",
   "map.searching": "Zoeken…",
@@ -478,6 +476,15 @@ export const nl: Messages = {
   "map.places": "Gevonden plaatsen",
   "map.searchCredit": "Plaatsnamen © OpenStreetMap-bijdragers, gevonden met Photon",
   "map.layers": "Kaartlagen",
+  "map.alwaysShow": "Altijd tonen",
+  "map.alwaysShowHint":
+    "Zichtbaar op elk tabblad met kaart, welk gereedschap ook open is. Voor dit project in uw account bewaard.",
+  "map.pin.serviceLines": "Lijnen",
+  "map.pin.tracks": "Sporen",
+  "map.pin.stations": "Stations",
+  "map.pin.stops": "Haltes",
+  "map.pin.streetSetups": "Straatinstellingen",
+  "map.pin.regions": "Regio's",
   "map.basemap": "Basiskaart",
   "map.streetMap": "Kaart",
   "map.aerial": "Luchtfoto",

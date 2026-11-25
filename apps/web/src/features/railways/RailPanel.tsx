@@ -3,7 +3,7 @@ import { usePublishChecks } from "../../shell/checks";
 import { useEngineText } from "../../i18n/engine";
 import { hasMessage, type Translate, useI18n } from "../../i18n/i18n";
 import { signalById } from "./doc";
-import { field, input, levelOpts, Num, Row, Section, Segmented, Stat } from "./panelControls";
+import { field, input, levelOpts, Num, Row, Section, Segmented } from "./panelControls";
 import { offeredModes, usePlannedModes } from "../../projects/plannedModes";
 import { POWER, RAIL_MODES } from "./modes";
 import {
@@ -30,7 +30,6 @@ export type {
   RailPanelProps,
   RailTool,
 } from "./railPanelTypes";
-import { withUnit } from "../../i18n/units";
 
 /**
  * Purpose: the railway side panel, laid out like the railways tab of the mockup: mode and its
@@ -84,6 +83,9 @@ export function RailPanel(props: Props) {
   const multi = multiIds.length > 1;
   const placing = !inspecting && (draft !== null || PLACING.includes(tool));
   const network = !inspecting;
+  // The network's lists (service lines, switches, signals…) only with "Select and move" and nothing selected; the
+  // service lines also while the "Create service line" tool picks a line's stops, which shows that line there.
+  const lists = network && !draft && tool === "select";
 
   return (
     <div className="flex flex-col gap-3 p-4 text-sm">
@@ -122,12 +124,6 @@ export function RailPanel(props: Props) {
       )}
       {network && !draft && (
         <>
-          <div className="grid grid-cols-2 gap-2">
-            <Stat value={withUnit(view.counts.route_km.toFixed(2), "km")} label={t("rail.stat.route")} />
-            <Stat value={withUnit(view.counts.track_km.toFixed(2), "km")} label={t("rail.stat.track")} />
-            <Stat value={String(doc.stations.length)} label={t("rail.stat.stations")} />
-            <Stat value={String(doc.switches.length)} label={t("rail.stat.switches")} />
-          </div>
           {doc.tracks.length > 0 && (
             <button
               type="button"
@@ -152,7 +148,7 @@ export function RailPanel(props: Props) {
         <p className="text-xs text-slate-500">{t("rail.multi.shiftHint")}</p>
       )}
 
-      {tool === "station" && (
+      {tool === "station" && !inspecting && (
         <Section title={t("rail.newStation")}>
           <Segmented
             label={t("rail.stationLevel")}
@@ -183,7 +179,7 @@ export function RailPanel(props: Props) {
         </Section>
       )}
 
-      {(tool === "track" || draft) && (
+      {(draft || (tool === "track" && !inspecting)) && (
         <Section title={draft ? t("rail.drawingTrack") : t("rail.newTrack")}>
           <Segmented<1 | 2>
             label={t("rail.tracks")}
@@ -243,7 +239,7 @@ export function RailPanel(props: Props) {
         </Section>
       )}
 
-      {(tool === "turnout" || tool === "crossover") && (
+      {(tool === "turnout" || tool === "crossover") && !inspecting && (
         <Section title={tool === "turnout" ? t("rail.newTurnout") : t("rail.newCrossover")}>
           <Row label={t("rail.element")}>
             <select
@@ -299,7 +295,7 @@ export function RailPanel(props: Props) {
         <ObjectComments type={kind} id={sel.id} />
       )}
 
-      {network && (
+      {network && !draft && (tool === "select" || tool === "line") && (
         <ServiceLinesPanel
           doc={doc}
           view={view}
@@ -311,23 +307,23 @@ export function RailPanel(props: Props) {
       )}
 
       {/* The network's lists only when they hold something. */}
-      {network && doc.switches.length > 0 && (
+      {lists && doc.switches.length > 0 && (
         <SwitchesSection doc={doc} view={view} selected={null} actions={a} />
       )}
 
-      {network && (view.signals.length > 0 || view.signals_edited) && (
+      {lists && (view.signals.length > 0 || view.signals_edited) && (
         <SignalsSection view={view} actions={a} />
       )}
 
-      {network && props.existingRailways && (view.existing_joins.length > 0 || view.existing_count > 0) && (
+      {lists && props.existingRailways && (view.existing_joins.length > 0 || view.existing_count > 0) && (
         <ExistingSection view={view} actions={a} />
       )}
 
-      {network && <DiamondSection doc={props.doc} view={view} actions={a} />}
+      {lists && <DiamondSection doc={props.doc} view={view} actions={a} />}
 
-      {network && view.street_running.length > 0 && <StreetRunningSection view={view} actions={a} />}
+      {lists && view.street_running.length > 0 && <StreetRunningSection view={view} actions={a} />}
 
-      {network && (view.level_crossings.length > 0 || !!props.streetNote) && (
+      {lists && (view.level_crossings.length > 0 || !!props.streetNote) && (
         <LevelCrossingsSection view={view} streetNote={props.streetNote} actions={a} />
       )}
 

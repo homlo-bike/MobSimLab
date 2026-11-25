@@ -1,9 +1,19 @@
 import { tNow } from "../../i18n/i18n";
+import { type EngineMsg, errorWithMsg } from "../../i18n/engine";
 import type { TileFetcher } from "../street-lines/types";
 import type { RailEngine, RailEngineLoader, RailView } from "./types";
 import { noteSource, withProject } from "../../geodata/projectData";
 import { hashText } from "../../projects/inputKey";
 import { CachedDesigner } from "./designerCache";
+import { answersReady, codeVersion } from "../../projects/keptAnswers";
+
+/**
+ * The engine's version in the fingerprint of its kept answers: its WebAssembly file and this wrapper, which a
+ * production build names by their content.
+ */
+const ENGINE_VERSION = codeVersion(
+  `${new URL("../../wasm/rail-design/rail_design_wasm_bg.wasm", import.meta.url).href} ${import.meta.url}`,
+);
 
 let wasmModule: Promise<typeof import("../../wasm/rail-design/rail_design_wasm.js")> | null = null;
 
@@ -29,8 +39,8 @@ export const nextTask = () => new Promise<void>((r) => setTimeout(r, 0));
  * Dependencies: apps/web/src/wasm/rail-design, built by tools/wasm/build-rail-design.sh.
  */
 export const loadRailEngine: RailEngineLoader = async () => {
-  const wasm = await initWasm();
-  const c = new CachedDesigner(new wasm.RailDesigner());
+  const [wasm] = await Promise.all([initWasm(), answersReady()]);
+  const c = new CachedDesigner(new wasm.RailDesigner(), ENGINE_VERSION);
   // Calls that read the last build run once the engine has caught up with the answers kept from memory.
   const d = () => c.catchUp();
   const engine: RailEngine = {
@@ -88,8 +98,52 @@ export const loadRailEngine: RailEngineLoader = async () => {
       ),
     dispose: () => c.engine.free(),
   };
+  if (typeof Worker !== "undefined")
+    engine.publishLinesInWorker = async (lines, serviceId, options) =>
+      JSON.parse(
+        await c.publishLinesAway(
+          JSON.stringify(lines),
+          serviceId,
+          options ? JSON.stringify(options) : undefined,
+          (topology) =>
+            publishInWorker(
+              topology,
+              JSON.stringify(lines),
+              serviceId,
+              options ? JSON.stringify(options) : "",
+            ),
+        ),
+      );
   return engine;
 };
+
+/**
+ * Purpose: plan and publish one day type's service lines in a Web Worker (railPublish.worker.ts), so the page
+ * keeps painting and answering input while the planner runs.
+ * Inputs: the topology, lines and options as JSON text ("" for the default options), the day type.
+ * Output: the publication as JSON text; rejects with the engine's error.
+ * Side effects: starts a worker and ends it when it has answered.
+ */
+function publishInWorker(
+  topology: string,
+  lines: string,
+  serviceId: string,
+  options: string,
+): Promise<string> {
+  return new Promise<string>((resolve, reject) => {
+    const worker = new Worker(new URL("./railPublish.worker.ts", import.meta.url), { type: "module" });
+    worker.onmessage = (e: MessageEvent<{ out: string } | { error: string; msg?: EngineMsg }>) => {
+      worker.terminate();
+      if ("error" in e.data) reject(errorWithMsg(e.data.error, e.data.msg));
+      else resolve(e.data.out);
+    };
+    worker.onerror = (e) => {
+      worker.terminate();
+      reject(new Error(e.message || "the rail planner stopped"));
+    };
+    worker.postMessage({ topology, lines, serviceId, options });
+  });
+}
 
 /** Purpose: fetch one railway tile from the API (existing OSM railways, cached server-side). */
 export const fetchRailTile: TileFetcher = async (x, y) => {

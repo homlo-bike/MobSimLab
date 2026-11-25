@@ -557,6 +557,11 @@ export const economicsDe = {
   "dzone.auto": "{count} automatische Sechsecke im Umkreis von {buffer} m um die Linien.",
   "dzone.none":
     "Noch keine Zonen: Veröffentlichen Sie eine Linie oder laden Sie Zonen im Tab „Tabellen“ hoch.",
+  "dzone.distanceTitle": "Entfernung zur nächsten Haltestelle",
+  "dzone.under": "unter {m} m",
+  "dzone.between": "{a}–{b} m",
+  "dzone.over": "über {m} m",
+  "dzone.nearest": "Nächste Haltestelle: {m} m",
   "dzone.draw": "Zone zeichnen",
   "dzone.makeOwn": "Diese Zonen übernehmen",
   "dzone.useAuto": "Automatische Sechsecke verwenden",

@@ -12,10 +12,6 @@ export const editorsTa = {
   "rail.mode.long_distance_rail": "நெடுந்தூர ரயில்",
   "rail.params":
     "அகலம் {gauge} மி.மீ · தண்டவாள மையங்களுக்கு இடையே {centres} மீ · குறைந்தபட்ச ஆரம் {minRadius} மீ (பரிந்துரை {radius} மீ) · அதிகபட்ச சாய்வு {gradient} ‰ · வடிவமைப்பு வேகம் {speed} கி.மீ/ம · நடைமேடை {platform} மீ, {height} மி.மீ உயரத்தில் · {power}",
-  "rail.stat.route": "வழித்தடம்",
-  "rail.stat.track": "தண்டவாளம்",
-  "rail.stat.stations": "நிலையங்கள்",
-  "rail.stat.switches": "சுவிட்சுகள்",
   "rail.stations.one": "{count} நிலையம்",
   "rail.stations.other": "{count} நிலையங்கள்",
   "rail.backToNetwork": "வலையமைப்புக்குத் திரும்பு",
@@ -408,13 +404,6 @@ export const editorsTa = {
     "விரைவுச் சாலைகளைப் பயன்படுத்தலாம்; நிறுத்தங்கள் பேருந்து முனையங்களில் இருக்கலாம்.",
   "street.battery": "மின்கல வரம்பு",
   "street.doorsBoth": "இரு பக்கமும் கதவுகள்",
-  "street.stat.length": "சுற்று நீளம்",
-  "street.stat.stops": "நிறுத்தங்கள் ({end} கடைசி)",
-  "street.stat.cycle": "சுற்று: {run} இயக்கம்{crossings}, {dwell} நிற்றல், {layover} ஓய்வு",
-  "street.stat.atCrossings": "(கிராசிங்குகளில் {min})",
-  "street.stat.vehicles": "{headway} நிமிட இடைவெளிக்கான வாகனங்கள்",
-  "street.stat.compact":
-    "சுற்று {length} · {stops} நிறுத்தங்கள் · {cycle} நிமிட சுழற்சி · {vehicles} வாகனங்கள்",
   "street.points": "வழித்தடப் புள்ளிகள் · சுற்று வரிசை",
   "street.noPoints":
     "இன்னும் புள்ளிகள் இல்லை. புள்ளிகளைச் சேர் என்பதைத் தேர்ந்தெடுத்து தெருவைக் கிளிக் செய்யவும்.",
@@ -762,6 +751,11 @@ export const editorsTa = {
   "schematic.connections": "நிலையத்தின் கீழ் வண்ணக் குறிகள்: அங்கு மாறக்கூடிய வழித்தடங்கள்.",
   "schematic.noConnections": "இந்த வழித்தடத்துக்கு மற்ற வழித்தடங்களுடன் பொது நிலையம் இல்லை.",
   "schematic.exportTitle": "ஏற்றுமதி",
+  "schematic.exportsIntro":
+    "வலையமைப்பின் திட்ட வரைபடத்தையும் ஒவ்வொரு வழித்தடத்தின் வரைபடத்தையும் SVG அல்லது PNG ஆகப் பதிவிறக்கவும், அல்லது அச்சிடவும் அல்லது PDF ஆகச் சேமிக்கவும்.",
+  "schematic.exportsNone":
+    "ஏற்றுமதி செய்ய இன்னும் வழித்தடங்கள் இல்லை. முதலில் உருவாக்கு பகுதியில் ஒரு வழித்தடத்தை வரையவும்.",
+  "schematic.exporting": "வரைபடம் தயாராகிறது…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "அச்சு அல்லது PDF",
@@ -819,9 +813,9 @@ export const editorsTa = {
   "schematic.area.color": "நிறம்",
   "schematic.area.defaultName": "பகுதி {n}",
   "schematic.area.draw": "பகுதி வரை",
-  "schematic.area.drawHint": "மூலைகளைச் சேர்க்க வரைபடத்தில் சொடுக்கி, பின் முடி அழுத்தவும்.",
+  "schematic.area.drawHint":
+    "மூலைகளைச் சேர்க்க வரைபடத்தில் சொடுக்கி, பின் முடி அழுத்தவும். Ctrl+Z கடைசி மூலையை நீக்கும்.",
   "schematic.area.finish": "முடி",
-  "schematic.area.undo": "மூலையை நீக்கு",
   "schematic.area.remove": "பகுதியை அகற்று",
   "schematic.area.dragHint": "வடிவத்தை மாற்ற வரைபடத்தில் வெள்ளை மூலைகளை இழுக்கவும்.",
   "schematic.facts": "சேவை",
@@ -1522,6 +1516,12 @@ export const editorsTa = {
   "capacity.run": "சோதனையை இயக்கு",
   "capacity.runAgain": "மீண்டும் இயக்கு",
   "capacity.stop": "நிறுத்து",
+  "capacity.replay.title": "வரைபடத்தில் மீண்டும் இயக்கு",
+  "capacity.replay.note":
+    "வரையப்பட்ட அனைத்து வழித்தடங்களும் ஒரே கடிகாரத்தில் ஒன்றாக நகர்கின்றன. ரயில்கள் திட்டப்படி, சீரற்ற தாமதங்கள் இல்லாமல் ஓடுகின்றன; சாலை வழித்தட வாகனங்கள் சோதனையின் முதல் ஓட்டத்தின் போக்குவரத்தைச் சந்திக்கின்றன.",
+  "capacity.replay.none": "மீண்டும் இயக்க எதுவும் இல்லை: இந்தக் காலத்தில் எந்த வழித்தடமும் இயங்கவில்லை.",
+  "capacity.replay.stopped":
+    "ஓட்டம் முன்னதாகவே நின்றது, எனவே அதன்பின் ரயில்கள் நின்றபடியே இருக்கின்றன: {why}",
   "capacity.summary":
     "{period} · இடைவெளிகளுடன் {trips} பயணங்கள் திட்டமிடப்பட்டன · {out} ரயில்கள் சேவையில், {reserve} இருப்பில்",
   "capacity.importNotes": "இறக்குமதி குறிப்புகள் ({n})",

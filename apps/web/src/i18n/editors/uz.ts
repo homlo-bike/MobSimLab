@@ -12,10 +12,6 @@ export const editorsUz = {
   "rail.mode.long_distance_rail": "Uzoq masofali poyezd",
   "rail.params":
     "Koleya {gauge} mm · relslar oʻqlari orasi {centres} m · minimal radius {minRadius} m (tavsiya {radius} m) · maksimal qiyalik {gradient} ‰ · loyiha tezligi {speed} km/s · platforma {platform} m, balandligi {height} mm · {power}",
-  "rail.stat.route": "Yoʻnalish",
-  "rail.stat.track": "Rels yoʻli",
-  "rail.stat.stations": "Stansiyalar",
-  "rail.stat.switches": "Strelkalar",
   "rail.stations.one": "{count} ta stansiya",
   "rail.stations.other": "{count} ta stansiya",
   "rail.backToNetwork": "Tarmoqqa qaytish",
@@ -397,12 +393,6 @@ export const editorsUz = {
     "Avtomagistrallardan foydalana oladi; bekatlar avtobus terminallarida boʻlishi mumkin.",
   "street.battery": "Batareya zaxirasi",
   "street.doorsBoth": "Ikki tomonda eshiklar",
-  "street.stat.length": "Aylanma uzunligi",
-  "street.stat.stops": "Bekatlar ({end} ta oxirgi)",
-  "street.stat.cycle": "Aylanma: {run} yurish{crossings}, {dwell} turish, {layover} dam olish",
-  "street.stat.atCrossings": "(kesishmalarda {min})",
-  "street.stat.vehicles": "{headway} daqiqalik oraliq uchun transport",
-  "street.stat.compact": "aylana {length} · {stops} bekat · {cycle} daq sikl · {vehicles} transport",
   "street.points": "Yoʻnalish nuqtalari · aylanma tartibi",
   "street.noPoints": "Hali nuqtalar yoʻq. Nuqta qoʻshishni tanlang va koʻchani bosing.",
   "street.viaN": "Oraliq nuqta {n}",
@@ -749,6 +739,11 @@ export const editorsUz = {
   "schematic.connections": "Bekat ostidagi rangli yorliqlar: u yerda o‘tish mumkin bo‘lgan liniyalar.",
   "schematic.noConnections": "Bu liniyaning boshqa liniyalar bilan umumiy bekati yo‘q.",
   "schematic.exportTitle": "Eksport",
+  "schematic.exportsIntro":
+    "Tarmoqning sxematik xaritasini va har bir liniya xaritasini SVG yoki PNG sifatida yuklab oling yoki chop eting yoxud PDF sifatida saqlang.",
+  "schematic.exportsNone":
+    "Eksport qilish uchun hali liniyalar yo‘q. Avval Yaratish bo‘limida liniya chizing.",
+  "schematic.exporting": "Xarita tayyorlanmoqda…",
   "schematic.svg": "SVG",
   "schematic.png": "PNG",
   "schematic.print": "Chop etish yoki PDF",
@@ -806,9 +801,9 @@ export const editorsUz = {
   "schematic.area.color": "Rangi",
   "schematic.area.defaultName": "Hudud {n}",
   "schematic.area.draw": "Hudud chizish",
-  "schematic.area.drawHint": "Burchak qo‘shish uchun xaritani bosing, so‘ng Tayyorni bosing.",
+  "schematic.area.drawHint":
+    "Burchak qo‘shish uchun xaritani bosing, so‘ng Tayyorni bosing. Ctrl+Z oxirgi burchakni olib tashlaydi.",
   "schematic.area.finish": "Tayyor",
-  "schematic.area.undo": "Burchakni bekor qilish",
   "schematic.area.remove": "Hududni o‘chirish",
   "schematic.area.dragHint": "Shaklni o‘zgartirish uchun xaritadagi oq burchaklarni torting.",
   "schematic.facts": "Harakat",
@@ -1503,6 +1498,12 @@ export const editorsUz = {
   "capacity.run": "Sinovni boshlash",
   "capacity.runAgain": "Qayta boshlash",
   "capacity.stop": "To‘xtatish",
+  "capacity.replay.title": "Xaritada qayta ijro",
+  "capacity.replay.note":
+    "Barcha chizilgan liniyalar bitta soat bo‘yicha birga harakatlanadi. Poyezdlar rejaga ko‘ra, tasodifiy kechikishlarsiz yuradi; ko‘cha liniyalari transporti testning birinchi yurishidagi harakatga duch keladi.",
+  "capacity.replay.none": "Qayta ijro etadigan narsa yo‘q: bu davrda hech bir liniya yurmadi.",
+  "capacity.replay.stopped":
+    "Yurish erta to‘xtadi, shuning uchun o‘shandan keyin poyezdlar turib qoladi: {why}",
   "capacity.summary":
     "{period} · zaxira bilan {trips} ta qatnov rejalashtirildi · {out} ta poyezd xizmatda, {reserve} ta zaxirada",
   "capacity.importNotes": "Import izohlari ({n})",

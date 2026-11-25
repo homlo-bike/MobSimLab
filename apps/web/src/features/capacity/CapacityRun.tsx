@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { JobProgress } from "../../shell/JobProgress";
 import { parseClock } from "../journey-planner/format";
@@ -46,12 +46,17 @@ import type {
   LineInfo,
   NetworkSource,
 } from "./types";
-import { engineErrorText, type EngineNote, useEngineText } from "../../i18n/engine";
+import { engineErrorText, type EngineMsg, type EngineNote, useEngineText } from "../../i18n/engine";
 import { FindingsList } from "../advice/Findings";
 import { capacityFindings } from "./advice";
 import { crowdLinks, drawCrowding, removeCrowding, stopPlaces } from "./crowdMap";
 import { topologyLocator } from "./place";
 import type { Map as MapLibreMap } from "maplibre-gl";
+import { ReplayPlayer } from "../road-sim/ReplayPlayer";
+import type { Replay } from "../road-sim/types";
+import { streetLineColor } from "../street-lines/saved";
+import { type PreferencesDoc, vehicleVisualsFrom } from "../../workspace/preferences";
+import { REPLAY_FRAME_S, systemReplay } from "./systemReplay";
 
 export { explain, practicalMaximum, VERDICTS, verdictText } from "./capacityText";
 
@@ -108,6 +113,8 @@ interface Props {
   results?: ResultsApi | null;
   /** The map, for the crowding by link and the findings' places; none in tests. */
   map?: MapLibreMap | null;
+  /** The vehicle colours of the replay (Project preferences → Visuals). */
+  visuals?: PreferencesDoc["visuals"];
 }
 
 /**
@@ -136,6 +143,7 @@ export function CapacityRun({
   pollMs = 2000,
   results = null,
   map = null,
+  visuals,
 }: Props) {
   const { t, language } = useI18n();
   const tx = useEngineText();
@@ -143,6 +151,15 @@ export function CapacityRun({
   const [runTopology, setRunTopology] = useState<string | null>(null);
   const locate = useMemo(() => topologyLocator(runTopology), [runTopology]);
   const [crowdOnMap, setCrowdOnMap] = useState(true);
+  const vehicleVisuals = useMemo(() => vehicleVisualsFrom({ values: {}, visuals }), [visuals]);
+  // The period of the last run that finished in this browser, for its replay on the map.
+  const [replayFor, setReplayFor] = useState<{
+    id: number;
+    w: { from_s: number; to_s: number };
+    rail: boolean;
+  } | null>(null);
+  // Why the replay's trains stop early (a deadlock), if they do.
+  const [replayStopped, setReplayStopped] = useState<{ text: string; msg?: EngineMsg | null } | null>(null);
   const drawn = drawnProblem(railway);
   const streets = useMemo(
     () => streetLines.map((line, index) => ({ line, index })).filter(({ line }) => circuit(line) !== null),
@@ -440,6 +457,7 @@ export function CapacityRun({
   const start = async () => {
     const runKey = capInputs;
     let failed = false;
+    setReplayFor(null);
     const w = periodWindow();
     if (!w) {
       setError(t("capacity.badPeriod"));
@@ -558,6 +576,7 @@ export function CapacityRun({
         setStatus(null);
         setProgress(null);
         if (!failed && runKey) setFinished(runKey);
+        if (!failed) setReplayFor({ id: gen, w, rail: railOn });
       }
     }
   };
@@ -705,6 +724,24 @@ export function CapacityRun({
   const shownError = viewing ? (viewing.status === "failed" ? viewing.error : null) : error;
   const when = (iso: string) =>
     new Date(iso).toLocaleString(language, { dateStyle: "medium", timeStyle: "short" });
+
+  /** Purpose: the replay of the last run in this browser: the trains and the street line vehicles together. */
+  const loadReplay = useCallback(async (): Promise<Replay> => {
+    if (!replayFor) throw new Error("no run to replay");
+    const w = replayFor.w;
+    const e = replayFor.rail ? engine.current?.engine : undefined;
+    const railReplay = e && locate ? await e.replay({ ...settings, ...w }, REPLAY_FRAME_S) : null;
+    setReplayStopped(railReplay?.stopped ? { text: railReplay.stopped, msg: railReplay.stopped_msg } : null);
+    const colors = Object.fromEntries((railway?.lines ?? []).map((l) => [l.id, l.color]));
+    const r = systemReplay(
+      railReplay && locate ? { replay: railReplay, locate, colors } : null,
+      streets.map(({ line, index }) => ({ line, index, color: streetLineColor(line) })),
+      { ...STREET_RUN_DEFAULTS, ...pickStreetParams(settings), ...w },
+    );
+    if (!r) throw new Error(t("capacity.replay.none"));
+    return r;
+    // Made once per finished run: later edits to the settings do not change the run it replays.
+  }, [replayFor]);
 
   const body = (
     <section aria-label={t("capacity.title")} className="space-y-4 px-4 pb-6 md:px-5">
@@ -864,6 +901,23 @@ export function CapacityRun({
       {shownRun && <RunResults run={shownRun} lines={shownLines} notes={shownNotes} loads={loads} />}
 
       <StreetResults results={streetResults} loads={loads} advanced={settings} prefs={prefs} />
+
+      {replayFor && !viewing && !status && (
+        <ReplayPlayer
+          key={replayFor.id}
+          load={loadReplay}
+          map={map}
+          visuals={vehicleVisuals}
+          title={t("capacity.replay.title")}
+        >
+          <p className="text-xs text-slate-600">{t("capacity.replay.note")}</p>
+          {replayStopped && (
+            <p className="text-xs text-amber-900">
+              {t("capacity.replay.stopped", { why: tx(replayStopped) })}
+            </p>
+          )}
+        </ReplayPlayer>
+      )}
     </section>
   );
   return panel ? createPortal(body, panel) : body;

@@ -232,6 +232,9 @@ export const vi: Messages = {
   "save.saving": "Đang lưu…",
   "save.offline": "Chưa lưu · đang thử lại",
   "save.failed": "Không thể lưu: {error}",
+  "session.staleToken":
+    "Các thay đổi của bạn không còn được lưu vì máy chủ đã khởi động lại trong khi trang này đang mở. Hãy tải lại trang để tiếp tục làm việc.",
+  "session.reload": "Tải lại trang",
   "save.conflict": "{who} đã lưu trong khi bạn thay đổi {drawing}. Bạn muốn giữ bản nào?",
   "save.someone": "Người khác",
   "save.keepMine": "Giữ bản của tôi",
@@ -262,15 +265,8 @@ export const vi: Messages = {
   "sim.test": "Kiểm tra hệ thống",
   "sim.journey": "Thời gian hành trình A → B",
 
-  "create.chooseTitle": "Bạn muốn tạo gì trước?",
-  "create.chooseIntro":
-    "Bạn có thể thêm loại còn lại sau. Các tuyến hiện có vẫn hiển thị trong khi bạn làm việc.",
   "create.street": "Tuyến đường phố",
-  "create.streetHint":
-    "Xe buýt, BRT, xe buýt điện bánh hơi và xe khách liên tỉnh. Đi theo mạng lưới đường phố.",
   "create.rail": "Tuyến đường sắt",
-  "create.railHint":
-    "Tàu điện mặt đất, đường sắt nhẹ, tàu điện ngầm, ngoại ô, khu vực, liên tỉnh và cao tốc. Vẽ đường ray, ga và ghi.",
   "create.noArea":
     "Chưa có khu vực nghiên cứu. Hãy nhập đường phố và dân số từ OpenStreetMap trước để có tìm đường và ước tính hành khách.",
   "create.setArea": "Đặt khu vực trong GIS",
@@ -462,6 +458,7 @@ export const vi: Messages = {
 
   "job.stepOf": "Bước {step}/{steps}",
   "job.cancel": "Hủy",
+  "job.running": "Công việc đang chạy",
   "map.search": "Tìm địa điểm",
   "map.searchPlaceholder": "Thị trấn, đường phố, nhà ga hoặc địa chỉ",
   "map.searching": "Đang tìm…",
@@ -473,6 +470,15 @@ export const vi: Messages = {
   "map.places": "Địa điểm tìm thấy",
   "map.searchCredit": "Tên địa điểm © những người đóng góp OpenStreetMap, tìm bằng Photon",
   "map.layers": "Lớp bản đồ",
+  "map.alwaysShow": "Luôn hiển thị",
+  "map.alwaysShowHint":
+    "Hiện trên mọi thẻ có bản đồ, dù đang mở công cụ nào. Được lưu trong tài khoản của bạn cho dự án này.",
+  "map.pin.serviceLines": "Tuyến dịch vụ",
+  "map.pin.tracks": "Đường ray",
+  "map.pin.stations": "Ga",
+  "map.pin.stops": "Điểm dừng",
+  "map.pin.streetSetups": "Thiết lập đường phố",
+  "map.pin.regions": "Khu vực",
   "map.basemap": "Bản đồ nền",
   "map.streetMap": "Bản đồ",
   "map.aerial": "Ảnh vệ tinh",

@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { inputKey } from "../../projects/inputKey";
-import { type ResultsApi, useSavedResult } from "../../projects/results";
+import { hashText, inputKey } from "../../projects/inputKey";
+import { resultFromJson, resultToJson, type ResultsApi, useSavedResult } from "../../projects/results";
+import { codeVersion, recallAnswer, rememberAnswer } from "../../projects/keptAnswers";
+import { withProject } from "../../geodata/projectData";
 import { SavedResultNotice } from "../../projects/SavedResultNotice";
 import { type MessageKey } from "../../i18n/messages";
 import { useI18n } from "../../i18n/i18n";
@@ -55,6 +57,9 @@ import { accessByScenario, spendingFrom } from "./run";
 import { TablePart } from "../tables/sections";
 import { RIDER_SHARE_PREFS } from "../../workspace/editedElsewhere";
 import { engineErrorText } from "../../i18n/engine";
+
+/** The benefit model's version in the fingerprint of kept zones. */
+const PREPARED_VERSION = codeVersion(import.meta.url);
 
 interface Props {
   /** The published network: street lines (`street:<i>`), rail lines (`rail:<id>`) and plugin lines. */
@@ -235,18 +240,49 @@ export function BenefitTables({
 
   const rate = costs?.rate ?? 1;
   const country = useMemo(() => countryFigures(ind, rate), [ind, rate]);
+  // The zones worked out from the buildings are kept with the project by the fingerprint of what they come from
+  // (the timetable, the map tiles and where they are read, the population, the country figures, the regions and
+  // the values), so the tables show again without working them out once more (bug 14).
+  const preparedKey = useMemo(() => {
+    if (!timetable || !net?.stations.length || (!pop && !popError)) return null;
+    const st = net.stations.map((s) => ({ at: s.at, radius: catchment(s.modes, prefs) }));
+    return hashText(
+      JSON.stringify([
+        PREPARED_VERSION,
+        withProject(""),
+        catchmentTiles(st).slice(0, MAX_TILES),
+        timetable,
+        pop?.populations ?? null,
+        country,
+        regions,
+        prepPrefs,
+      ]),
+    );
+    // `prefs` only gives the catchment sizes, which `prepPrefs` holds.
+  }, [timetable, net, pop, popError, country, regions, prepPrefs]);
+  const lastPrepared = useRef<{ key: string; value: Prepared } | null>(null);
   const prepared = useMemo(() => {
-    if (!timetable || !net?.stations.length || !tiles || (!pop && !popError)) return null;
-    return prepare({
-      timetable,
-      buildings: tiles.buildings,
-      places: tiles.places,
-      worldpop: pop?.populations ?? {},
-      country,
-      regions,
-      prefs: prepPrefs,
-    });
-  }, [timetable, net, tiles, pop, popError, country, regions, prepPrefs]);
+    if (!preparedKey || !timetable) return null;
+    if (lastPrepared.current?.key === preparedKey) return lastPrepared.current.value;
+    const saved = recallAnswer(preparedKey);
+    let value = saved ? resultFromJson<Prepared>(saved) : undefined;
+    if (!value) {
+      if (!tiles) return null;
+      value = prepare({
+        timetable,
+        buildings: tiles.buildings,
+        places: tiles.places,
+        worldpop: pop?.populations ?? {},
+        country,
+        regions,
+        prefs: prepPrefs,
+      });
+      // Zones from tiles that failed to load are worked out again next time.
+      if (!tiles.failed) rememberAnswer(preparedKey, resultToJson(value));
+    }
+    lastPrepared.current = { key: preparedKey, value };
+    return value;
+  }, [preparedKey, timetable, tiles, pop, country, regions, prepPrefs]);
 
   // The travel times with and without each line (the journey planner step) are saved with the project: they
   // show again on opening while the zones and the timetable are the same. Out of date, they still show until

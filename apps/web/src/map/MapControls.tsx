@@ -5,6 +5,7 @@ import type { MessageKey } from "../i18n/messages";
 import { CameraIcon, CloseIcon, LayersIcon, SearchIcon } from "../shell/icons";
 import { availableBasemaps, availableOverlays, type Basemap, newestDay } from "./basemaps";
 import { groupsOnMap, OVERLAY_GROUPS, type OverlayGroup } from "./mapLayers";
+import { usePinnedLayers } from "./pinnedLayers";
 import { type Place, searchPlaces } from "./places";
 import { StreetPhotoPanel } from "./StreetPhotoPanel";
 import { onStreetPhotoSources, refreshStreetPhotoSources, streetPhotoSources } from "./streetPhotos";
@@ -285,6 +286,7 @@ function LayerPanel({
   }, [map]);
 
   const offered = availableOverlays();
+  const pins = usePinnedLayers();
   const flip = (g: OverlayGroup) => {
     const next = new Set(hidden);
     if (next.has(g)) next.delete(g);
@@ -371,6 +373,28 @@ function LayerPanel({
           </label>
         ))}
       </fieldset>
+      {pins && pins.available.length > 0 && (
+        <fieldset className="border-t border-slate-100 px-3 pt-2 pb-3">
+          <legend className="caps float-left w-full pb-1">{t("map.alwaysShow")}</legend>
+          <p className="clear-both text-xs text-slate-500">{t("map.alwaysShowHint")}</p>
+          {pins.available.map((id) => (
+            <label key={id} className="clear-both flex min-h-10 cursor-pointer items-center gap-2.5">
+              <input
+                type="checkbox"
+                checked={pins.pinned.has(id)}
+                onChange={() => {
+                  const next = new Set(pins.pinned);
+                  if (next.has(id)) next.delete(id);
+                  else next.add(id);
+                  pins.onChange(next);
+                }}
+                className="h-4 w-4 accent-blue-700"
+              />
+              {t(`map.pin.${id}` as MessageKey)}
+            </label>
+          ))}
+        </fieldset>
+      )}
     </div>
   );
 }

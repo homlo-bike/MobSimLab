@@ -1,4 +1,9 @@
 import { hashText } from "../../projects/inputKey";
+import {
+  forgetAnswers,
+  recallAnswer as recall,
+  rememberAnswer as remember,
+} from "../../projects/keptAnswers";
 
 /**
  * The calls of the rail-design WebAssembly engine (`RailDesigner`) whose answers are kept, and those that
@@ -9,44 +14,17 @@ export interface Designer {
   publish_lines(lines: string, serviceId: string): string;
   publish_lines_with(lines: string, serviceId: string, options: string): string;
   missing_terrain_tiles(): string;
+  topology(): string;
 }
 
-/** Most characters of answers kept (about 128 MB in the browser's UTF-16 strings). */
-const MAX_CHARS = 64_000_000;
-
-/** Kept answers by the fingerprint of everything that led to them, least recently used first. */
-const kept = new Map<string, string>();
-let keptChars = 0;
-
-function recall(key: string): string | undefined {
-  const v = kept.get(key);
-  if (v !== undefined) {
-    kept.delete(key);
-    kept.set(key, v);
-  }
-  return v;
-}
-
-function remember(key: string, value: string) {
-  const old = kept.get(key);
-  if (old !== undefined) {
-    kept.delete(key);
-    keptChars -= old.length;
-  }
-  if (value.length > MAX_CHARS) return;
-  kept.set(key, value);
-  keptChars += value.length;
-  for (const [k, v] of kept) {
-    if (keptChars <= MAX_CHARS) break;
-    kept.delete(k);
-    keptChars -= v.length;
-  }
+/** Purpose: what a publication's kept answer is found by, besides the build it was planned on. */
+function publishToken(lines: string, serviceId: string, options?: string) {
+  return `publish\u0000${serviceId}\u0000${options ?? ""}\u0000${lines}`;
 }
 
 /** Purpose: forget every kept answer (tests). */
 export function forgetDesignerAnswers() {
-  kept.clear();
-  keptChars = 0;
+  forgetAnswers();
 }
 
 /**
@@ -58,17 +36,25 @@ export function forgetDesignerAnswers() {
  * publish the same railway (the Damascus network took 30–60 s to become usable).
  * A build answered from memory is not run until the engine is asked something it has no kept answer for:
  * then the skipped calls are run in their order first, so the engine is in the state it would have been in.
- * Side effects: keeps answers in memory for the page (at most `MAX_CHARS` characters, least recently used out).
+ * The answers are kept with the open project too (projects/keptAnswers.ts), so a page opened again reads them
+ * back instead of building and publishing again; `version` names the engine, so another engine works them out
+ * again.
+ * Side effects: keeps answers in memory for the page and saves them with the open project.
  */
 export class CachedDesigner<D extends Designer> {
-  /** Fingerprint of the calls so far that change what a build gives (tiles, settings). */
-  private inputs = "";
+  /** Fingerprint of the engine and the calls so far that change what a build gives (tiles, settings). */
+  private inputs: string;
   /** Fingerprint of the last build ("" before the first). */
   private built = "";
   /** Calls skipped (builds answered from memory, and changes after them), in order. */
   private behind: (() => void)[] = [];
 
-  constructor(readonly engine: D) {}
+  constructor(
+    readonly engine: D,
+    version = "",
+  ) {
+    this.inputs = hashText(`engine\u0000${version}`);
+  }
 
   /** Purpose: run the skipped calls, so the engine is where its callers think it is. */
   catchUp(): D {
@@ -110,11 +96,31 @@ export class CachedDesigner<D extends Designer> {
   }
 
   publishLines(lines: string, serviceId: string, options?: string): string {
-    return this.fromBuild(`publish\u0000${serviceId}\u0000${options ?? ""}\u0000${lines}`, (d) =>
+    return this.fromBuild(publishToken(lines, serviceId, options), (d) =>
       options === undefined
         ? d.publish_lines(lines, serviceId)
         : d.publish_lines_with(lines, serviceId, options),
     );
+  }
+
+  /**
+   * Purpose: `publishLines` planned elsewhere (a Web Worker) on the last build's topology, so the page stays
+   * responsive while it plans. The answer is kept as one from the engine is, for the same build and inputs.
+   * Inputs: the lines, day type and options as for `publishLines`, and the planner, given the topology.
+   */
+  async publishLinesAway(
+    lines: string,
+    serviceId: string,
+    options: string | undefined,
+    plan: (topology: string) => Promise<string>,
+  ): Promise<string> {
+    const built = this.built;
+    const key = hashText(`${built}\u0000${publishToken(lines, serviceId, options)}`);
+    const v = built ? recall(key) : undefined;
+    if (v !== undefined) return v;
+    const out = await plan(this.catchUp().topology());
+    if (built) remember(key, out);
+    return out;
   }
 
   missingTerrainTiles(): string {

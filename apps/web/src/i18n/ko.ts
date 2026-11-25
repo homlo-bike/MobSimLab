@@ -230,6 +230,9 @@ export const ko: Messages = {
   "save.saving": "저장 중…",
   "save.offline": "저장되지 않음 · 재시도 중",
   "save.failed": "저장할 수 없습니다: {error}",
+  "session.staleToken":
+    "이 페이지가 열려 있는 동안 서버가 다시 시작되어 변경 사항이 더 이상 저장되지 않습니다. 계속 작업하려면 페이지를 새로 고치세요.",
+  "session.reload": "페이지 새로 고침",
   "save.conflict": "내가 {drawing}을(를) 변경하는 동안 {who}이(가) 저장했습니다. 어느 쪽을 유지할까요?",
   "save.someone": "다른 사용자",
   "save.keepMine": "내 것 유지",
@@ -260,12 +263,8 @@ export const ko: Messages = {
   "sim.test": "시스템 검증",
   "sim.journey": "이동 시간 A → B",
 
-  "create.chooseTitle": "먼저 무엇을 만들까요?",
-  "create.chooseIntro": "나머지는 나중에 추가할 수 있습니다. 작업하는 동안 기존 노선은 계속 표시됩니다.",
   "create.street": "도로 노선",
-  "create.streetHint": "버스, BRT, 트롤리버스, 시외버스. 도로망을 따라 운행합니다.",
   "create.rail": "철도 노선",
-  "create.railHint": "트램, 경전철, 지하철, 광역, 지역, 간선, 고속. 선로, 역, 분기기를 그립니다.",
   "create.noArea":
     "아직 연구 지역이 없습니다. 경로 탐색과 승객 추정을 위해 먼저 OpenStreetMap에서 도로와 인구를 가져오세요.",
   "create.setArea": "GIS에서 지역 설정",
@@ -456,6 +455,7 @@ export const ko: Messages = {
 
   "job.stepOf": "{steps}단계 중 {step}단계",
   "job.cancel": "취소",
+  "job.running": "진행 중인 작업",
   "map.search": "장소 검색",
   "map.searchPlaceholder": "도시, 거리, 역 또는 주소",
   "map.searching": "검색 중…",
@@ -467,6 +467,15 @@ export const ko: Messages = {
   "map.places": "찾은 장소",
   "map.searchCredit": "장소 이름 © OpenStreetMap 기여자, Photon으로 검색",
   "map.layers": "지도 레이어",
+  "map.alwaysShow": "항상 표시",
+  "map.alwaysShowHint":
+    "어떤 도구가 열려 있어도 모든 지도 탭에 표시됩니다. 이 프로젝트에 대해 계정에 저장됩니다.",
+  "map.pin.serviceLines": "운행 노선",
+  "map.pin.tracks": "선로",
+  "map.pin.stations": "역",
+  "map.pin.stops": "정류장",
+  "map.pin.streetSetups": "도로 설정",
+  "map.pin.regions": "지역",
   "map.basemap": "배경 지도",
   "map.streetMap": "지도",
   "map.aerial": "항공",
