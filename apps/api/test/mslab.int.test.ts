@@ -554,7 +554,7 @@ describe("mslab project files", () => {
         await su.query(
           `INSERT INTO geo.dem_tile (project_id, import_id, priority, width, height, origin_lon, origin_lat,
              step_lon, step_lat, data, envelope)
-           VALUES ($1, $2, 0, 4, 4, $3, 52.5, 0.001, 0.001, $4, ST_MakeEnvelope($3, 52.496, $3 + 0.004, 52.5, 4326))`,
+           VALUES ($1, $2, 0, 4, 4, $3::double precision, 52.5, 0.001, 0.001, $4, ST_MakeEnvelope($3::double precision, 52.496, $3::double precision + 0.004, 52.5, 4326))`,
           [source, imp.rows[0].id, lon, tile(sixteen)],
         );
       for (const [name, src, people] of [
