@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useI18n } from "../i18n/i18n";
 import { type VariantShares, variantShares, weatherSettings } from "../features/calendar-run/weather";
 import {
@@ -9,11 +9,13 @@ import {
   climateRows,
   type FetchedClimate,
   fetchClimate,
+  type ProjectClimate,
   type MonthClimate,
   withClimate,
   withClimateValue,
   withFetchedClimate,
 } from "./climate";
+import { zoneShares } from "./climateZones";
 import type { PreferencesDoc } from "./preferences";
 import { engineErrorText } from "../i18n/engine";
 
@@ -24,6 +26,8 @@ const FIELD_LABEL = {
   max_sd_c: "climate.maxSd",
   min_sd_c: "climate.minSd",
 } as const satisfies Record<ClimateField, string>;
+
+const NO_LINES: readonly (readonly [number, number])[][] = [];
 
 const DAYS_IN_MONTH = [31, 28.25, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
@@ -38,6 +42,7 @@ export function ClimateSection({
   editable,
   onPreferences,
   place,
+  lines = NO_LINES,
   fetcher = fetchClimate,
 }: {
   preferences: PreferencesDoc | null;
@@ -45,6 +50,8 @@ export function ClimateSection({
   onPreferences: (doc: PreferencesDoc) => void;
   /** The project's location [lon, lat], or null when nothing is drawn yet. */
   place: readonly [number, number] | null;
+  /** The network's drawn lines in degrees (climateZones.ts `networkPolylines`), for each zone's share. */
+  lines?: readonly (readonly [number, number])[][];
   fetcher?: ClimateFetcher;
 }) {
   const { t, language } = useI18n();
@@ -55,8 +62,17 @@ export function ClimateSection({
   const [attempt, setAttempt] = useState(0);
   const latest = useRef(preferences);
   latest.current = preferences;
-  const view = climate.fetched || !session ? climate : withFetchedClimate(climate, session);
-  const need = !climate.fetched && !session && place !== null;
+  // A large area: a climate per zone (climateZones.ts), kept by the workspace; the table shows one zone.
+  const zones = climate.zones && climate.zones.length > 1 ? climate.zones : null;
+  const [zoneId, setZoneId] = useState<string | null>(null);
+  const zone = zones ? (zones.find((z) => z.id === zoneId) ?? zones[0]!) : null;
+  const zonePart = useMemo(
+    () => (zones ? zoneShares(zones, lines as [number, number][][]) : null),
+    [zones, lines],
+  );
+  const view: ProjectClimate =
+    zone ?? (climate.fetched || !session ? climate : withFetchedClimate(climate, session));
+  const need = !zones && !climate.fetched && !session && place !== null;
 
   useEffect(() => {
     if ((!need && attempt === 0) || !place) return;
@@ -92,7 +108,17 @@ export function ClimateSection({
     shares.map((s, i) => (s ? Math.round(s[v] * DAYS_IN_MONTH[i]! * 10) / 10 : null));
   const one = (x: number) => new Intl.NumberFormat(language, { maximumFractionDigits: 1 }).format(x);
   const set = (month: number, f: ClimateField, v: number | null) =>
-    onPreferences(withClimate(preferences, withClimateValue(climate, month, f, v)));
+    onPreferences(
+      withClimate(
+        preferences,
+        zone && zones
+          ? {
+              ...climate,
+              zones: zones.map((z) => (z.id === zone.id ? { ...z, ...withClimateValue(z, month, f, v) } : z)),
+            }
+          : withClimateValue(climate, month, f, v),
+      ),
+    );
   const fetched = view.fetched;
   return (
     <section
@@ -103,7 +129,27 @@ export function ClimateSection({
         {t("climate.title")}
       </h2>
       <p className="mt-1 text-sm text-slate-600">{t("climate.intro")}</p>
-      {!place && !fetched && <p className="mt-2 text-sm text-slate-600">{t("climate.noPlace")}</p>}
+      {!place && !fetched && !zones && <p className="mt-2 text-sm text-slate-600">{t("climate.noPlace")}</p>}
+      {zones && zone && (
+        <div className="mt-3">
+          <p className="text-sm text-slate-600">{t("climate.zonesIntro", { n: zones.length })}</p>
+          <label className="mt-2 flex flex-wrap items-center gap-2 text-sm">
+            <span className="font-semibold">{t("climate.zone")}</span>
+            <select className="field min-h-10" value={zone.id} onChange={(e) => setZoneId(e.target.value)}>
+              {zones.map((z) => (
+                <option key={z.id} value={z.id}>
+                  {z.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <p className="mt-1 text-sm text-slate-600">
+            {lines.length
+              ? t("climate.zoneShare", { share: one(100 * (zonePart?.[zones.indexOf(zone)] ?? 0)) })
+              : t("climate.zoneNoLines")}
+          </p>
+        </div>
+      )}
       {state === "loading" && (
         <p role="status" className="mt-2 text-sm text-slate-600">
           {t("climate.loading")}
@@ -199,7 +245,7 @@ export function ClimateSection({
               lon: one(fetched.lon),
             })}
           </span>
-          {editable && place && state !== "loading" && (
+          {editable && place && !zones && state !== "loading" && (
             <button
               type="button"
               className="min-h-10 text-blue-700 underline"

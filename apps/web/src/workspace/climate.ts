@@ -38,6 +38,22 @@ export interface ProjectClimate {
   fetched?: FetchedClimate;
   /** The planner's own values, by month (1–12). */
   own?: Record<string, Partial<MonthClimate>>;
+  /**
+   * A large project area's climate zones (climateZones.ts), each with its own climate; absent or fewer than two:
+   * the one climate above holds for the whole project.
+   */
+  zones?: ZoneClimate[];
+}
+
+/** One climate zone of a large project area, with its climate. */
+export interface ZoneClimate {
+  /** The area polygon's id, with `-n` for a part of a large polygon. */
+  id: string;
+  name: string;
+  /** Where its climate is asked for, [lon, lat], rounded to 0.1°. */
+  at: [number, number];
+  fetched?: FetchedClimate;
+  own?: Record<string, Partial<MonthClimate>>;
 }
 
 /** Purpose: the project's climate from its preferences (empty when it has none yet). */
@@ -48,7 +64,7 @@ export function climateFrom(doc: PreferencesDoc | null | undefined): ProjectClim
 /** Purpose: the preferences with the climate replaced. */
 export function withClimate(doc: PreferencesDoc | null | undefined, c: ProjectClimate): PreferencesDoc {
   const next: PreferencesDoc = { ...(doc ?? {}), values: { ...(doc?.values ?? {}) } };
-  if (c.fetched || (c.own && Object.keys(c.own).length)) next.climate = c;
+  if (c.fetched || (c.own && Object.keys(c.own).length) || (c.zones && c.zones.length)) next.climate = c;
   else delete next.climate;
   return next;
 }

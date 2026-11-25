@@ -116,6 +116,12 @@ export const calendarJa = {
     "プロジェクト地点の月ごとの気温です。カレンダー実行はこれをもとに暑い日・猛暑日・冬日を見込み、鉄道とエネルギーへの影響を計算します。気候はどのシミュレーション年でも同じです。",
   "climate.noPlace": "先に鉄道か道路路線を描いてください。気候はプロジェクト地点について取得されます。",
   "climate.loading": "気候を取得しています…",
+  "climate.loadingZones": "ゾーンの気候を取得中: {n} 件中 {done} 件",
+  "climate.zonesIntro":
+    "プロジェクト範囲が広いため、{n} 個のゾーンごとに気候を持ちます。カレンダー実行では、各ゾーンをネットワークの路線長に占める割合で重み付けします。",
+  "climate.zone": "ゾーン",
+  "climate.zoneShare": "ネットワークの路線長の {share} % がこのゾーンにあります。",
+  "climate.zoneNoLines": "路線がまだ描かれていないため、各ゾーンを同じ重みで数えます。",
   "climate.failed": "気候を取得できませんでした: {error}",
   "climate.refetch": "プロジェクト地点で再取得",
   "climate.month": "月",

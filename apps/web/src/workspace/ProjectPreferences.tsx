@@ -56,6 +56,7 @@ export function ProjectPreferences({
   depots = [],
   country = null,
   place = null,
+  climateLines,
   mapExports = null,
 }: {
   api: ProjectsApi;
@@ -81,6 +82,8 @@ export function ProjectPreferences({
   country?: string | null;
   /** The project's location [lon, lat], for its climate; null when nothing is drawn yet. */
   place?: readonly [number, number] | null;
+  /** The network's drawn lines in degrees, for the share of each climate zone of a large area. */
+  climateLines?: readonly (readonly [number, number])[][];
   /** The Export section: the project's schematic maps to download or print. */
   mapExports?: ReactNode;
 }) {
@@ -385,6 +388,7 @@ export function ProjectPreferences({
           editable={prefsEditable}
           onPreferences={setPrefs}
           place={place}
+          lines={climateLines}
         />
       ),
     },

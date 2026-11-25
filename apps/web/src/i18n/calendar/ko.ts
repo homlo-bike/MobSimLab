@@ -115,6 +115,12 @@ export const calendarKo = {
     "프로젝트 위치의 월별 기온입니다. 캘린더 실행은 이를 바탕으로 더운 날, 매우 더운 날, 서리 날을 예상하고 철도와 에너지에 미치는 영향을 계산합니다. 기후는 모든 시뮬레이션 연도에서 같습니다.",
   "climate.noPlace": "먼저 철도나 도로 노선을 그리세요. 기후는 프로젝트 위치에 대해 가져옵니다.",
   "climate.loading": "기후를 가져오는 중…",
+  "climate.loadingZones": "구역 기후를 가져오는 중: {n}개 중 {done}개",
+  "climate.zonesIntro":
+    "프로젝트 영역이 넓어 {n}개 구역마다 고유한 기후를 둡니다. 달력 실행은 각 구역을 네트워크 노선 길이 중 그 구역의 비율로 가중합니다.",
+  "climate.zone": "구역",
+  "climate.zoneShare": "네트워크 노선 길이의 {share} %가 이 구역에 있습니다.",
+  "climate.zoneNoLines": "아직 노선이 그려지지 않아 모든 구역을 같은 비중으로 셉니다.",
   "climate.failed": "기후를 가져오지 못했습니다: {error}",
   "climate.refetch": "프로젝트 위치로 다시 가져오기",
   "climate.month": "월",

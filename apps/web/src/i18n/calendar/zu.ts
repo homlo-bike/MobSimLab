@@ -119,6 +119,12 @@ export const calendarZu = {
   "climate.noPlace":
     "Qala ngokudweba ujantshi noma umugqa womgwaqo: isimo sezulu silandwa endaweni yephrojekthi.",
   "climate.loading": "Kulandwa isimo sezulu…",
+  "climate.loadingZones": "Kulandwa isimo sezulu sezindawo: {done} kwezingu-{n}",
+  "climate.zonesIntro":
+    "Indawo yephrojekthi inkulu, ngakho indawo ngayinye kwezingu-{n} inesimo sayo sezulu. Ukusebenza kwekhalenda kukala indawo ngayinye ngesabelo sayo sobude bemigqa yenethiwekhi.",
+  "climate.zone": "Indawo",
+  "climate.zoneShare": "U-{share} % wobude bemigqa yenethiwekhi usendaweni le.",
+  "climate.zoneNoLines": "Ayikho imigqa esidwetshiwe okwamanje, ngakho yonke indawo ibalwa ngokulinganayo.",
   "climate.failed": "Ayikwazanga ukulanda isimo sezulu: {error}",
   "climate.refetch": "Landa futhi endaweni yephrojekthi",
   "climate.month": "Inyanga",

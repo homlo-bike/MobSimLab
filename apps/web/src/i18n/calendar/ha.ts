@@ -117,6 +117,12 @@ export const calendarHa = {
     "Zafin iska a wurin aikin, wata bayan wata. Gudanar kalanda na amfani da shi don ƙiyasta ranakun zafi, zafi mai tsanani da sanyi mai ƙanƙara, da tasirinsu kan layin dogo da makamashi. Yanayin ɗaya ne a kowace shekarar kwaikwayo.",
   "climate.noPlace": "Zana layin dogo ko layin titi da farko: ana samo yanayi don wurin aikin.",
   "climate.loading": "Ana samo yanayi…",
+  "climate.loadingZones": "Ana ɗauko yanayin yankuna: {done} cikin {n}",
+  "climate.zonesIntro":
+    "Yankin aikin yana da girma, don haka kowane ɗaya daga cikin yankunansa {n} yana da nasa yanayi. Gudanar da kalanda yana auna kowane yanki da rabonsa na tsawon layukan hanyar sadarwa.",
+  "climate.zone": "Yanki",
+  "climate.zoneShare": "{share} % na tsawon layukan hanyar sadarwa yana cikin wannan yanki.",
+  "climate.zoneNoLines": "Ba a zana layi ba tukuna, don haka kowane yanki ana ƙidaya shi daidai.",
   "climate.failed": "Ba a iya samo yanayi ba: {error}",
   "climate.refetch": "Sake samowa don wurin aikin",
   "climate.month": "Wata",

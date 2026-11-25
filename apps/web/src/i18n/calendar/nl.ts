@@ -118,6 +118,12 @@ export const calendarNl = {
   "climate.noPlace":
     "Teken eerst het spoor of een straatlijn: het klimaat wordt opgehaald voor de locatie van het project.",
   "climate.loading": "Klimaat ophalen…",
+  "climate.loadingZones": "Klimaat van de zones ophalen: {done} van {n}",
+  "climate.zonesIntro":
+    "Het projectgebied is groot, dus elk van de {n} zones heeft een eigen klimaat. Een kalenderrun weegt elke zone naar haar aandeel in de lijnlengte van het net.",
+  "climate.zone": "Zone",
+  "climate.zoneShare": "{share} % van de lijnlengte van het net ligt in deze zone.",
+  "climate.zoneNoLines": "Er zijn nog geen lijnen getekend, dus elke zone telt even zwaar.",
   "climate.failed": "Het klimaat kon niet worden opgehaald: {error}",
   "climate.refetch": "Opnieuw ophalen voor de locatie van het project",
   "climate.month": "Maand",
