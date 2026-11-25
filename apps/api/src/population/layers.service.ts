@@ -363,6 +363,8 @@ export class PopulationLayersService implements OnModuleInit {
       );
       return row.id;
     });
+    // Read the layer before the import starts: with a fast source it may be ready before a later read.
+    const started = await this.layer(projectId, id);
     const job = (
       isWp
         ? this.importWorldPop(id, area.bbox, area.polygons, refYear)
@@ -380,7 +382,7 @@ export class PopulationLayersService implements OnModuleInit {
       })
       .finally(() => this.running.delete(job));
     this.running.add(job);
-    return this.layer(projectId, id);
+    return started;
   }
 
   /**
