@@ -5,6 +5,7 @@
  */
 import { tNow } from "../../i18n/i18n";
 import type { Network, RailEngineLoader } from "../railways/types";
+import { buildWithTerrain, fetchTerrainHeights, type HeightsFetcher } from "../railways/terrainTiles";
 import type { Replay, RoadParams, RoadScenario } from "../road-sim/types";
 import type { StreetLinesDoc } from "../street-lines/saved";
 import { simulatedStreetSources } from "./simulated";
@@ -36,8 +37,9 @@ export function hasLines(d: Design): boolean {
 
 /**
  * Purpose: a design's noise sources at a level of detail.
- * Inputs: the design, the level, the road run for the simulated level, and the rail engine loader.
- * Output: the sources and notes saying where the flows came from.
+ * Inputs: the design, the level, the road run for the simulated level, the rail engine loader and the height
+ * source. Output: the sources and notes saying where the flows came from. Throws at the timetabled and
+ * simulated levels when the terrain heights under the railway did not load.
  * Side effects: builds the railway (and publishes its service lines) with the rail engine.
  */
 export async function designSources(
@@ -45,6 +47,7 @@ export async function designSources(
   level: InputLevel,
   loadRail: RailEngineLoader,
   run: RoadRunInput | null = null,
+  fetchHeights: HeightsFetcher = fetchTerrainHeights,
 ): Promise<{ lines: NoiseLine[]; notes: string[] }> {
   const lines: NoiseLine[] = [];
   const notes: string[] = [];
@@ -73,7 +76,11 @@ export async function designSources(
   if (railway && railway.tracks.length) {
     const engine = await loadRail();
     try {
-      const view = engine.build(railway, null);
+      // Timetabled trains run on the terrain heights; without them this throws and says why.
+      const view =
+        level === "planned"
+          ? engine.build(railway, null)
+          : await buildWithTerrain(engine, railway, fetchHeights);
       if (level === "planned") {
         const flows = RAIL_FLOWS[railway.mode] ?? RAIL_FLOWS.tram!;
         lines.push(...railSources(railway, view, flows));

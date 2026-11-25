@@ -80,8 +80,6 @@ export const tablesUr = {
   "net.signals": "پٹری کے کنارے سگنل",
   "net.steepest": "سب سے زیادہ ڈھلوان",
   "net.steepestSub": "{track}، حد {limit}",
-  "net.terrainFailed":
-    "زمین کی بلندیاں لوڈ نہیں ہوئیں، اس لیے کچھ ڈھلوانیں موجود نہیں۔ دوبارہ کوشش کے لیے جدولیں ٹیب پھر سے کھولیں۔",
   "net.terrainWaiting": "زمین کی بلندیاں لوڈ ہونے پر ڈھلوانیں آئیں گی۔",
   "net.streetLines": "سڑک کی لائنیں",
   "net.inBusLanes": "بس لینوں میں",

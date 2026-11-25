@@ -80,7 +80,6 @@ export const tablesAm = {
   "net.signals": "የሐዲድ ዳር ምልክቶች",
   "net.steepest": "በጣም ቁልቁለታማ ዝንባሌ",
   "net.steepestSub": "{track}፣ ገደብ {limit}",
-  "net.terrainFailed": "የመሬት ከፍታዎች አልተጫኑም፣ ስለዚህ አንዳንድ ዝንባሌዎች ይጎድላሉ። እንደገና ለመሞከር የሰንጠረዦች ትሩን እንደገና ይክፈቱ።",
   "net.terrainWaiting": "የመሬት ከፍታዎች ሲጫኑ ዝንባሌዎች ይታያሉ።",
   "net.streetLines": "የመንገድ መስመሮች",
   "net.inBusLanes": "በአውቶቡስ መስመር ውስጥ",

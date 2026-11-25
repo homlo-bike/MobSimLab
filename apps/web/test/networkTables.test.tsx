@@ -365,6 +365,34 @@ describe("network tables", () => {
     expect(within(service).getByText("05:00–24:00")).toBeTruthy();
   });
 
+  it("says the service was not planned when the terrain heights did not load", async () => {
+    const withTerrain = async () =>
+      ({
+        ...(await loadRail()),
+        missingTerrainTiles: () => [[0, 0]],
+        terrainTilePoints: () => [[7, 50]],
+        addTerrainTile: () => {},
+      }) as unknown as RailEngine;
+    render(
+      <NetworkTables
+        railway={railway()}
+        streetLines={STREET}
+        preferences={{ values: {} }}
+        loadRail={withTerrain}
+        fetchHeights={() => Promise.reject(new Error("Failed to fetch"))}
+      />,
+    );
+    const service = await screen.findByRole("region", { name: "Service and fleet per line" });
+    await waitFor(() =>
+      expect(service.textContent).toMatch(
+        /No service figures yet: Ground heights did not load: Failed to fetch\. Without them the trains would run as if the line were flat, so no service was planned/,
+      ),
+    );
+    expect(screen.getByRole("region", { name: "Railway" }).textContent).toMatch(
+      /Ground heights did not load: Failed to fetch/,
+    );
+  });
+
   it("shows each line's projected riders from the benefit estimate", async () => {
     const props = {
       railway: railway(),

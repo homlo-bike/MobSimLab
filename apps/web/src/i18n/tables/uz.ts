@@ -83,8 +83,6 @@ export const tablesUz = {
   "net.signals": "Yoʻl boʻyidagi svetoforlar",
   "net.steepest": "Eng tik qiyalik",
   "net.steepestSub": "{track}, chegara {limit}",
-  "net.terrainFailed":
-    "Relyef balandliklari yuklanmadi, shuning uchun baʼzi qiyaliklar yoʻq. Qayta urinish uchun Jadvallar yorligʻini qayta oching.",
   "net.terrainWaiting": "Qiyaliklar relyef balandliklari yuklangach paydo boʻladi.",
   "net.streetLines": "Koʻcha yoʻnalishlari",
   "net.inBusLanes": "Avtobus tasmasida",

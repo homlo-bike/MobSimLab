@@ -200,6 +200,8 @@ export function CapacityRun({
   const [viewing, setViewing] = useState<SavedRunDetail | null>(null);
   const [sending, setSending] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  // The drawn lines the timetable planner cannot run, with why (a train that stalls on a gradient).
+  const [cannotRun, setCannotRun] = useState<string[]>([]);
 
   useEffect(() => {
     if (!runs) return;
@@ -509,7 +511,9 @@ export function CapacityRun({
           setError(t(`capacity.drawn.${built}`));
           return;
         }
-        const src: NetworkSource = { ...built, lines: withStopDwells(built.lines, dwellsBy) };
+        const { cannotRun: why, ...network } = built;
+        setCannotRun(why);
+        const src: NetworkSource = { ...network, lines: withStopDwells(network.lines, dwellsBy) };
         setRunTopology(src.topology);
         phase("load");
         setStatus(t("capacity.loading"));
@@ -599,6 +603,7 @@ export function CapacityRun({
       setServerError(built in DRAWN_PROBLEMS ? t(`capacity.drawn.${built as DrawnProblem}`) : built);
       return;
     }
+    setCannotRun(built.cannotRun);
     setSending(true);
     const dwells = await trainDwells(w, () => true, false).catch(() => null);
     setSending(false);
@@ -804,6 +809,16 @@ export function CapacityRun({
         </div>
       )}
       {!ready && drawn !== null && <p className="text-xs text-slate-600">{t(`capacity.drawn.${drawn}`)}</p>}
+      {cannotRun.length > 0 && (
+        <ul
+          data-testid="cannot-run"
+          className="list-disc rounded-[10px] border border-amber-200 bg-amber-50 py-2 ps-7 pe-3 text-sm text-amber-900"
+        >
+          {cannotRun.map((n, i) => (
+            <li key={i}>{n}</li>
+          ))}
+        </ul>
+      )}
       {serverError && (
         <p
           role="alert"

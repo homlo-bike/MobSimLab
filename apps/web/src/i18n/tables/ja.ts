@@ -79,8 +79,6 @@ export const tablesJa = {
   "net.signals": "沿線の信号機",
   "net.steepest": "最急勾配",
   "net.steepestSub": "{track}、上限 {limit}",
-  "net.terrainFailed":
-    "地形の標高を読み込めなかったため、一部の勾配がありません。「表」タブを開き直して再試行してください。",
   "net.terrainWaiting": "地形の標高が読み込まれると勾配が表示されます。",
   "net.streetLines": "道路路線",
   "net.inBusLanes": "バス専用車線上",

@@ -81,8 +81,6 @@ export const tablesMr = {
   "net.signals": "रुळालगतचे सिग्नल",
   "net.steepest": "सर्वात तीव्र चढ",
   "net.steepestSub": "{track}, मर्यादा {limit}",
-  "net.terrainFailed":
-    "भूप्रदेशाच्या उंची लोड झाल्या नाहीत, म्हणून काही चढ गहाळ आहेत. पुन्हा प्रयत्न करण्यासाठी तक्ते टॅब पुन्हा उघडा.",
   "net.terrainWaiting": "भूप्रदेशाच्या उंची लोड झाल्यावर चढ दिसतील.",
   "net.streetLines": "रस्त्यावरील मार्ग",
   "net.inBusLanes": "बस लेनमध्ये",

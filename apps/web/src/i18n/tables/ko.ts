@@ -79,8 +79,6 @@ export const tablesKo = {
   "net.signals": "선로변 신호기",
   "net.steepest": "최급 기울기",
   "net.steepestSub": "{track}, 한도 {limit}",
-  "net.terrainFailed":
-    "지형 고도를 불러오지 못해 일부 기울기가 없습니다. 다시 시도하려면 표 탭을 다시 여세요.",
   "net.terrainWaiting": "지형 고도를 불러오면 기울기가 표시됩니다.",
   "net.streetLines": "도로 노선",
   "net.inBusLanes": "버스 전용 차로",

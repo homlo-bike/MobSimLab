@@ -89,8 +89,6 @@ export const tablesEn = {
   "net.signals": "Lineside signals",
   "net.steepest": "Steepest gradient",
   "net.steepestSub": "{track}, limit {limit}",
-  "net.terrainFailed":
-    "The terrain heights did not load, so some gradients are missing. Open the Tables tab again to retry.",
   "net.terrainWaiting": "Gradients follow once the terrain heights load.",
   "net.streetLines": "Street lines",
   "net.inBusLanes": "In bus lanes",

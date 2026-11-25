@@ -80,8 +80,6 @@ export const tablesVi = {
   "net.signals": "Tín hiệu ven đường",
   "net.steepest": "Độ dốc lớn nhất",
   "net.steepestSub": "{track}, giới hạn {limit}",
-  "net.terrainFailed":
-    "Không tải được cao độ địa hình nên thiếu một số độ dốc. Hãy mở lại thẻ Bảng để thử lại.",
   "net.terrainWaiting": "Độ dốc sẽ hiện khi cao độ địa hình tải xong.",
   "net.streetLines": "Tuyến đường phố",
   "net.inBusLanes": "Trên làn xe buýt",

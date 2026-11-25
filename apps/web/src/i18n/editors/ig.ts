@@ -69,6 +69,9 @@ export const editorsIg = {
   "rail.terrainFailed": "Ogo ala ebughị: {reason}. Mkpọda na ogo ọdụ ga-eso ozugbo ha bujuru.",
   "rail.publishTerrainFailed":
     "Ogo ala ebughị: {reason}. E bipụtaghị usoro oge, n’ihi na na-enweghị ha ụgbọ oloko ga-agba ka a ga-asị na ụzọ ahụ dị larịị. Bipụta ọzọ.",
+  "rail.terrainRequired":
+    "Ogo ala ebughị: {reason}. Na-enweghị ha ụgbọ oloko ga-agba ka a ga-asị na ụzọ ahụ dị larịị, ya mere a haziteghị ọrụ ọ bụla. Nwaa ọzọ ma emechaa.",
+  "rail.lineCannotRun": "{line} enweghị ụgbọ oloko: {reason}",
   "rail.signals": "Akara",
   "rail.signalsSome":
     "{summary}. A na-emepụta ha site na nhazi ma ha na-eso ya mgbe ọ gbanwere. Pịa akara iji gbanwee ya ma ọ bụ hichapụ ya, ma ọ bụ jiri ngwá ọrụ Akara tinye otu; a na-enyocha mgbanwe ọ bụla.",

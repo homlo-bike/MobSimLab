@@ -83,8 +83,6 @@ export const tablesAr = {
   "net.signals": "إشارات جانب السكة",
   "net.steepest": "أشد انحدار",
   "net.steepestSub": "{track}، الحد {limit}",
-  "net.terrainFailed":
-    "لم تُحمَّل ارتفاعات التضاريس، لذا تنقص بعض الانحدارات. افتح تبويب الجداول مرة أخرى لإعادة المحاولة.",
   "net.terrainWaiting": "تظهر الانحدارات بعد تحميل ارتفاعات التضاريس.",
   "net.streetLines": "خطوط الشوارع",
   "net.inBusLanes": "في حارات الحافلات",

@@ -81,8 +81,6 @@ export const tablesTe = {
   "net.signals": "పట్టాల పక్కన సిగ్నల్‌లు",
   "net.steepest": "అత్యంత నిటారైన వాలు",
   "net.steepestSub": "{track}, పరిమితి {limit}",
-  "net.terrainFailed":
-    "భూభాగ ఎత్తులు లోడ్ కాలేదు, కాబట్టి కొన్ని వాలులు లేవు. మళ్లీ ప్రయత్నించడానికి పట్టికల ట్యాబ్‌ను మళ్లీ తెరవండి.",
   "net.terrainWaiting": "భూభాగ ఎత్తులు లోడ్ అయిన తర్వాత వాలులు కనిపిస్తాయి.",
   "net.streetLines": "వీధి మార్గాలు",
   "net.inBusLanes": "బస్ లేన్‌లో",

@@ -3,6 +3,7 @@
  * of the Tables tab and the journey planner and for the railway tool's report (FR-TT-03, FR-TT-05).
  */
 import { loadRailEngine } from "../railways/engine";
+import { buildWithTerrain, fetchTerrainHeights, type HeightsFetcher } from "../railways/terrainTiles";
 import type { Network, PublishOptions, RailEngineLoader } from "../railways/types";
 import {
   mergeTimetables,
@@ -78,7 +79,8 @@ export function feedHolidays(cal: ServiceCalendar, from: Date, to: Date): string
  * Purpose: the project's own lines on every day type as one timetable for a GTFS feed: the railway's service
  * lines (published for each day type), the street lines (each day's own times) and the plugin lines (ferries,
  * cable cars: their one timing on every day type). Ids are prefixed as in the journey planner (`lines:`, `s<i>:`).
- * Side effects: loads the rail engine when the railway has lines.
+ * Throws when the terrain heights under the railway did not load.
+ * Side effects: loads the rail engine and fetches terrain heights when the railway has lines.
  */
 export async function projectFeed({
   railway,
@@ -88,6 +90,7 @@ export async function projectFeed({
   options,
   values,
   loadRail = loadRailEngine,
+  fetchHeights = fetchTerrainHeights,
 }: {
   railway: Network | null;
   streetLines: readonly SavedStreetLine[];
@@ -96,12 +99,14 @@ export async function projectFeed({
   options?: PublishOptions;
   values?: Readonly<Record<string, number>> | null;
   loadRail?: RailEngineLoader;
+  fetchHeights?: HeightsFetcher;
 }): Promise<Timetable | null> {
   let rail: DayPublications = {};
   if (railway?.tracks.length && railway.lines?.length) {
     const engine = await loadRail();
     try {
-      engine.build(railway, null);
+      // Throws when the terrain heights did not load: the trains would run as if the line were flat.
+      await buildWithTerrain(engine, railway, fetchHeights);
       rail = publishDays(engine, railway, cal, options, values);
     } finally {
       engine.dispose();

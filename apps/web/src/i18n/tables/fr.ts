@@ -84,8 +84,6 @@ export const tablesFr = {
   "net.signals": "Signaux latéraux",
   "net.steepest": "Pente la plus forte",
   "net.steepestSub": "{track}, limite {limit}",
-  "net.terrainFailed":
-    "Les altitudes du terrain n’ont pas été chargées, certaines pentes manquent donc. Rouvrez l’onglet Tableaux pour réessayer.",
   "net.terrainWaiting": "Les pentes s’affichent une fois les altitudes du terrain chargées.",
   "net.streetLines": "Lignes sur rue",
   "net.inBusLanes": "Sur voies de bus",

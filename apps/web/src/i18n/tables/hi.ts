@@ -80,8 +80,6 @@ export const tablesHi = {
   "net.signals": "पटरी किनारे सिग्नल",
   "net.steepest": "सबसे तीखी ढलान",
   "net.steepestSub": "{track}, सीमा {limit}",
-  "net.terrainFailed":
-    "भू-भाग की ऊँचाइयाँ लोड नहीं हुईं, इसलिए कुछ ढलानें नहीं हैं। फिर से कोशिश करने के लिए तालिकाएँ टैब दोबारा खोलें।",
   "net.terrainWaiting": "भू-भाग की ऊँचाइयाँ लोड होने पर ढलानें आएँगी।",
   "net.streetLines": "सड़क लाइनें",
   "net.inBusLanes": "बस लेनों में",

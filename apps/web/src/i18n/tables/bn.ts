@@ -80,8 +80,6 @@ export const tablesBn = {
   "net.signals": "লাইনের পাশের সংকেত",
   "net.steepest": "সবচেয়ে খাড়া ঢাল",
   "net.steepestSub": "{track}, সীমা {limit}",
-  "net.terrainFailed":
-    "ভূখণ্ডের উচ্চতা লোড হয়নি, তাই কিছু ঢাল অনুপস্থিত। আবার চেষ্টা করতে সারণি ট্যাবটি আবার খুলুন।",
   "net.terrainWaiting": "ভূখণ্ডের উচ্চতা লোড হলে ঢাল দেখা যাবে।",
   "net.streetLines": "রাস্তার লাইন",
   "net.inBusLanes": "বাস লেনে",

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { loadRailEngine, nextTask } from "../railways/engine";
+import { buildWithTerrain, fetchTerrainHeights, type HeightsFetcher } from "../railways/terrainTiles";
 import { engineLines } from "../railways/serviceLines";
 import type {
   EngineServiceLine,
@@ -73,11 +74,11 @@ const NONE: DayPublications = {};
  * Purpose: publish the railway's service lines for every day type with the project's settings, for the
  * timetables in the Tables tab (the timetable planner's trips and vehicle blocks). The design is built once.
  * Inputs: the railway document, the project calendar (peak windows), the publish settings, the project's
- * preference values; the engine loader
- * (tests inject one).
+ * preference values; the engine loader and height source (tests inject them). The trains are planned on the
+ * terrain heights; when they do not load, the error says so and nothing is planned.
  * Output: the publication per day type, empty while it runs or without lines, the built design (null until
  * then), and an error message.
- * Side effects: loads the rail engine (WebAssembly).
+ * Side effects: loads the rail engine (WebAssembly) and fetches terrain heights.
  */
 export function useRailPublications(
   railway: Network | null,
@@ -85,6 +86,7 @@ export function useRailPublications(
   options: PublishOptions,
   values?: Readonly<Record<string, number>> | null,
   loadRail: RailEngineLoader = loadRailEngine,
+  fetchHeights: HeightsFetcher = fetchTerrainHeights,
 ): { publications: DayPublications; view: RailView | null; busy: boolean; error: string | null } {
   const [state, setState] = useState<{
     key: string;
@@ -112,7 +114,8 @@ export function useRailPublications(
       try {
         await nextTask();
         if (!live) return;
-        const view = engine.build(railway!, null);
+        const view = await buildWithTerrain(engine, railway!, fetchHeights);
+        if (!live) return;
         // One day type at a time, letting the page answer in between: each takes a second or more on
         // a large network (the Tables tab froze on the Damascus network, bug 21).
         const publications: DayPublications = {};
@@ -133,7 +136,7 @@ export function useRailPublications(
       live = false;
     };
     // The key holds every input.
-  }, [key, none, loadRail]);
+  }, [key, none, loadRail, fetchHeights]);
   if (none) return { publications: NONE, view: null, busy: false, error: null };
   const current = state?.key === key ? state : null;
   return {

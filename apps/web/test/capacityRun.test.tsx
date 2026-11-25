@@ -187,7 +187,7 @@ describe("drawn railway for the test", () => {
 });
 
 /** The drawn railway and a fake build of it, for a panel that tests what is drawn. */
-const BUILT = { topology: "{}", lines: '{"service_lines":[]}' };
+const BUILT = { topology: "{}", lines: '{"service_lines":[]}', cannotRun: [] };
 const drawnProps = () => ({ railway: drawn(), buildDrawn: vi.fn(async () => BUILT) });
 
 describe("capacity run panel", () => {
@@ -201,7 +201,7 @@ describe("capacity run panel", () => {
     fireEvent.click(screen.getByRole("checkbox"));
     fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
     await screen.findByTestId("capacity-result");
-    expect(loader).toHaveBeenCalledWith(BUILT);
+    expect(loader).toHaveBeenCalledWith({ topology: BUILT.topology, lines: BUILT.lines });
     expect(engine.run).toHaveBeenCalled();
     // The same drawing is not built again.
     fireEvent.click(screen.getByRole("button", { name: "Run again" }));
@@ -215,6 +215,7 @@ describe("capacity run panel", () => {
     const buildDrawn = vi.fn(async () => ({
       topology: "{}",
       lines: JSON.stringify({ service_lines: engineLines(railway) }),
+      cannotRun: [],
     }));
     render(
       <CapacityRun
@@ -256,7 +257,7 @@ describe("capacity run panel", () => {
     render(<CapacityRun loadEngine={loader} {...drawnProps()} />);
     fireEvent.click(screen.getByRole("button", { name: "Run the test" }));
     const result = await screen.findByTestId("capacity-result");
-    expect(loader).toHaveBeenCalledWith(BUILT);
+    expect(loader).toHaveBeenCalledWith({ topology: BUILT.topology, lines: BUILT.lines });
     expect(engine.run).toHaveBeenCalledWith({ from_s: 7 * H, to_s: 9 * H });
     expect(within(result).getAllByText("Works, close to the limit").length).toBeGreaterThan(0);
     await waitFor(() => expect(screen.getByText("Works up to 12 trains an hour each way")).toBeTruthy());
@@ -442,7 +443,11 @@ describe("capacity runs on the server", () => {
   it("starts the drawn railway on the server with its built topology and service lines", async () => {
     const { loader } = fakeLoader();
     const runs = fakeRuns([saved()]);
-    const buildDrawn = vi.fn(async () => ({ topology: '{"t":1}', lines: '{"service_lines":[]}' }));
+    const buildDrawn = vi.fn(async () => ({
+      topology: '{"t":1}',
+      lines: '{"service_lines":[]}',
+      cannotRun: ["R1 has no trains: the train stalls on a gradient too steep for it"],
+    }));
     render(
       <CapacityRun
         loadEngine={loader}
@@ -468,6 +473,10 @@ describe("capacity runs on the server", () => {
       ),
     );
     expect(loader).not.toHaveBeenCalled();
+    // The lines the timetable planner cannot run say why above the result.
+    expect(screen.getByTestId("cannot-run").textContent).toBe(
+      "R1 has no trains: the train stalls on a gradient too steep for it",
+    );
   });
 
   it("lists the project's saved runs for a reader who cannot start one", async () => {

@@ -80,8 +80,6 @@ export const tablesTr = {
   "net.signals": "Hat kenarı sinyalleri",
   "net.steepest": "En dik eğim",
   "net.steepestSub": "{track}, sınır {limit}",
-  "net.terrainFailed":
-    "Arazi yükseklikleri yüklenmedi, bu yüzden bazı eğimler eksik. Yeniden denemek için Tablolar sekmesini tekrar açın.",
   "net.terrainWaiting": "Eğimler arazi yükseklikleri yüklenince gelir.",
   "net.streetLines": "Cadde hatları",
   "net.inBusLanes": "Otobüs şeritlerinde",

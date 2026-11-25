@@ -83,8 +83,6 @@ export const tablesPl = {
   "net.signals": "Sygnalizatory przytorowe",
   "net.steepest": "Największe nachylenie",
   "net.steepestSub": "{track}, limit {limit}",
-  "net.terrainFailed":
-    "Wysokości terenu się nie wczytały, więc brakuje części nachyleń. Otwórz ponownie zakładkę Tabele, aby spróbować jeszcze raz.",
   "net.terrainWaiting": "Nachylenia pojawią się po wczytaniu wysokości terenu.",
   "net.streetLines": "Linie uliczne",
   "net.inBusLanes": "Na buspasach",

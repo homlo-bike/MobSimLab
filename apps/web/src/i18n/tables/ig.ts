@@ -81,8 +81,6 @@ export const tablesIg = {
   "net.signals": "Akara n'akụkụ ụzọ ígwè",
   "net.steepest": "Mkpọda kachasị elu",
   "net.steepestSub": "{track}, oke {limit}",
-  "net.terrainFailed":
-    "Ịdị elu ala ebubataghị, ya mere ụfọdụ mkpọda adịghị. Megharịa taabụ Tebụl iji nwalee ọzọ.",
   "net.terrainWaiting": "Mkpọda ga-apụta ozugbo ịdị elu ala bubatara.",
   "net.streetLines": "Ahịrị okporo ụzọ",
   "net.inBusLanes": "N'ụzọ bọs",

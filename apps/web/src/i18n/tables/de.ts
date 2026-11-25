@@ -82,8 +82,6 @@ export const tablesDe = {
   "net.signals": "Streckensignale",
   "net.steepest": "Größte Steigung",
   "net.steepestSub": "{track}, Grenze {limit}",
-  "net.terrainFailed":
-    "Die Geländehöhen wurden nicht geladen, daher fehlen einige Steigungen. Öffnen Sie den Tab Tabellen erneut, um es noch einmal zu versuchen.",
   "net.terrainWaiting": "Die Steigungen folgen, sobald die Geländehöhen geladen sind.",
   "net.streetLines": "Straßenlinien",
   "net.inBusLanes": "Auf Busspuren",

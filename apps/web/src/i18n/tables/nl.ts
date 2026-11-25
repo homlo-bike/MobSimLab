@@ -81,8 +81,6 @@ export const tablesNl = {
   "net.signals": "Seinen langs de baan",
   "net.steepest": "Grootste helling",
   "net.steepestSub": "{track}, grens {limit}",
-  "net.terrainFailed":
-    "De terreinhoogten zijn niet geladen, dus sommige hellingen ontbreken. Open het tabblad Tabellen opnieuw om het nog eens te proberen.",
   "net.terrainWaiting": "De hellingen volgen zodra de terreinhoogten geladen zijn.",
   "net.streetLines": "Straatlijnen",
   "net.inBusLanes": "Op busbanen",

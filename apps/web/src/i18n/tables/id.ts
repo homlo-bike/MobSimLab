@@ -80,8 +80,6 @@ export const tablesId = {
   "net.signals": "Sinyal tepi rel",
   "net.steepest": "Kemiringan tercuram",
   "net.steepestSub": "{track}, batas {limit}",
-  "net.terrainFailed":
-    "Ketinggian medan tidak termuat, jadi sebagian kemiringan tidak ada. Buka lagi tab Tabel untuk mencoba ulang.",
   "net.terrainWaiting": "Kemiringan muncul setelah ketinggian medan termuat.",
   "net.streetLines": "Jalur jalan",
   "net.inBusLanes": "Di lajur bus",
