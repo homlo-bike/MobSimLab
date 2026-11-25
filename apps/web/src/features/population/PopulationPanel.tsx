@@ -13,6 +13,7 @@ import type {
   PopulationOverview,
 } from "./api";
 import { type FileFormat, fieldsOf, formatOf, guessField } from "./files";
+import { layerFraction, layerJobKey, layerStepIndex, layerStepText } from "./progress";
 import { drawArea, drawLattice, legend, removeLattice, scaleTop } from "./mapLayer";
 import { engineErrorText } from "../../i18n/engine";
 
@@ -707,32 +708,16 @@ function LayerOutcome({ layer: l }: { layer: PopulationLayer }) {
 /** Purpose: a layer's import as a progress bar: step 1 downloads (filled by the bytes when known), step 2 stores. */
 function LayerProgress({ layer: l }: { layer: PopulationLayer }) {
   const { t } = useI18n();
-  const p = l.progress;
-  const storing = p?.step === "store";
-  const fraction =
-    !storing && p?.receivedBytes !== undefined && p.totalBytes
-      ? Math.min(1, p.receivedBytes / p.totalBytes)
-      : null;
   return (
     <JobProgress
       label={l.name}
-      step={progressText(l, t)}
-      index={storing ? 2 : 1}
+      step={layerStepText(l, t)}
+      index={layerStepIndex(l)}
       steps={2}
-      fraction={fraction}
+      fraction={layerFraction(l)}
+      jobKey={layerJobKey(l.id)}
     />
   );
-}
-
-function progressText(l: PopulationLayer, t: ReturnType<typeof useI18n>["t"]): string {
-  const p = l.progress;
-  const mb = (b: number) => formatInt(Math.round(b / 1e6));
-  if (p?.step === "download" && p.receivedBytes !== undefined)
-    return p.totalBytes
-      ? t("pop.status.download", { got: mb(p.receivedBytes), total: mb(p.totalBytes) })
-      : t("pop.status.downloadOpen", { got: mb(p.receivedBytes) });
-  if (p?.step === "store") return t("pop.status.store");
-  return t("pop.status.importing");
 }
 
 function LayerCard({

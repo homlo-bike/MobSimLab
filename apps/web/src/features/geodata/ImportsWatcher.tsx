@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useI18n } from "../../i18n/i18n";
 import { usePublishJob, useRunningJobs } from "../../shell/jobs";
+import type { PopulationApi, PopulationLayer } from "../population/api";
+import { layerFraction, layerJobKey, layerStepIndex, layerStepText } from "../population/progress";
 import type { GeodataApi, GeodataStatus, ImportRun } from "./api";
 import { importBusy, importProgress } from "./MapDataPanel";
 
@@ -20,38 +22,65 @@ function ImportJob({ run }: { run: ImportRun }) {
   return null;
 }
 
+/** One population layer being imported, in the bottom bar. */
+function PopulationJob({ layer: l }: { layer: PopulationLayer }) {
+  const { t } = useI18n();
+  const fraction = layerFraction(l);
+  usePublishJob(
+    { label: l.name, step: layerStepText(l, t), overall: (layerStepIndex(l) - 1 + (fraction ?? 0.5)) / 2 },
+    layerJobKey(l.id),
+  );
+  return null;
+}
+
+interface Watched {
+  geo: GeodataStatus | null;
+  population: PopulationLayer[];
+}
+
 /**
- * Purpose: keep the project's OpenStreetMap and elevation imports in the bar at the bottom of the page while they
+ * Purpose: keep the project's OpenStreetMap, elevation and population imports in the bar at the bottom of the page while they
  * run, on every tab, also after the Map data panel is closed. Renders nothing itself.
- * Side effects: reads the import status now and then (every few seconds while one runs).
+ * Side effects: reads the import status and the population layers now and then (every few seconds while one runs).
  */
-export function ImportsWatcher({ api }: { api: GeodataApi }) {
-  const [status, setStatus] = useState<GeodataStatus | null>(null);
-  // An import the Map data panel shows, so it is followed at once when that panel closes.
-  const panelImport = useRunningJobs().some((j) => j.key.startsWith("import:"));
-  const runs = status
-    ? [status.osm?.latest, status.dem?.latest, status.demUpload?.latest].filter(importBusy)
+export function ImportsWatcher({ api, population }: { api: GeodataApi; population?: PopulationApi | null }) {
+  const [status, setStatus] = useState<Watched | null>(null);
+  // An import the Map data or Population panel shows, so it is followed at once when that panel closes.
+  const panelImport = useRunningJobs().some(
+    (j) => j.key.startsWith("import:") || j.key.startsWith("population:"),
+  );
+  const runs = status?.geo
+    ? [status.geo.osm?.latest, status.geo.dem?.latest, status.geo.demUpload?.latest].filter(importBusy)
     : [];
-  const busy = runs.length > 0 || panelImport;
+  const layers = status?.population.filter((l) => l.status === "importing") ?? [];
+  const busy = runs.length > 0 || layers.length > 0 || panelImport;
   useEffect(() => {
     let live = true;
     const timer = setTimeout(
       () =>
-        void api.status().then(
-          (s) => live && setStatus(s),
-          () => {},
-        ),
+        void Promise.all([
+          api.status().catch(() => status?.geo ?? null),
+          population
+            ? population.overview().then(
+                (o) => o?.layers ?? [],
+                () => status?.population ?? [],
+              )
+            : Promise.resolve([]),
+        ]).then(([geo, pop]) => live && setStatus({ geo, population: pop })),
       status === null ? 0 : busy ? BUSY_MS : IDLE_MS,
     );
     return () => {
       live = false;
       clearTimeout(timer);
     };
-  }, [api, status, busy]);
+  }, [api, population, status, busy]);
   return (
     <>
       {runs.map((r) => (
         <ImportJob key={r!.id} run={r!} />
+      ))}
+      {layers.map((l) => (
+        <PopulationJob key={l.id} layer={l} />
       ))}
     </>
   );

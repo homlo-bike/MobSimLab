@@ -18,9 +18,11 @@ import type { EnergyEstimate } from "../src/features/energy/types";
 import { withSimulationYears } from "../src/workspace/calendar";
 import { ClimateSection } from "../src/workspace/ClimateSection";
 import {
+  climatePlace,
   type FetchedClimate,
   type MonthClimate,
   monthsOf,
+  needsClimate,
   withClimate,
   withClimateValue,
   withFetchedClimate,
@@ -203,6 +205,21 @@ describe("climate in Project preferences", () => {
     expect(monthsOf(c)![6]!.max_c).toBe(33);
     expect(monthsOf(withClimateValue(c, 7, "max_c", null))![6]!.max_c).toBe(30);
     expect(monthsOf({})).toBeNull();
+  });
+
+  it("asks for the climate at the area's centre, as the API kept it when the area was saved", () => {
+    expect(climatePlace([13.08, 52.33, 13.76, 52.68], [13.0, 52.0])).toEqual([13.4, 52.5]);
+    expect(climatePlace(null, [13.0, 52.0])).toEqual([13.0, 52.0]);
+    expect(climatePlace(undefined, null)).toBeNull();
+  });
+
+  it("fetches the climate when the project has none, or has one from outside its area", () => {
+    const berlin: [number, number, number, number] = [13.08, 52.33, 13.76, 52.68];
+    expect(needsClimate({}, null)).toBe(true);
+    expect(needsClimate(withFetchedClimate({}, FETCHED), berlin)).toBe(false);
+    expect(needsClimate(withFetchedClimate({}, FETCHED), null)).toBe(false);
+    // The area moved to Munich: the Berlin climate is fetched again.
+    expect(needsClimate(withFetchedClimate({}, FETCHED), [11.36, 48.06, 11.72, 48.25])).toBe(true);
   });
 });
 

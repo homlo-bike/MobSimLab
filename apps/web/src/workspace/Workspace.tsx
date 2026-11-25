@@ -156,6 +156,8 @@ import { Dialog } from "../shell/Dialog";
 import type { DepotsDoc, SavedDepot } from "../features/depots/types";
 import { UnroutedNotice } from "../features/tables/UnroutedNotice";
 import { engineErrorText } from "../i18n/engine";
+import { climatePlace } from "./climate";
+import { ClimateKeeper } from "./ClimateKeeper";
 
 // Editors and screens downloaded when first opened, so opening a project fetches only the tab shown.
 const BenefitTables = lazyNamed(() => import("../features/benefits/BenefitTables"), "BenefitTables");
@@ -715,6 +717,8 @@ export function Workspace({
   useEffect(() => {
     if (sideToSet) drawings.set("preferences", withCountryDrivingSide(preferences, placeCountry)!);
   }, [sideToSet, projectId]);
+  // Where the project's climate is asked for (Project preferences → Climate; kept by ClimateKeeper).
+  const climateAt = climatePlace(areaView?.bbox, place);
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
@@ -1540,7 +1544,7 @@ export function Workspace({
                 onFleet={drawings.loaded ? (d) => drawings.set("fleet", d) : undefined}
                 depots={depotsDoc?.depots ?? NO_DEPOTS}
                 country={placeCountry}
-                place={place}
+                place={climateAt}
                 mapExports={
                   drawings.loaded ? (
                     // Its own wait, so the rest of the preferences show while the export code loads.
@@ -1991,7 +1995,9 @@ export function Workspace({
                     streetLines={savedStreet}
                     preferences={preferences}
                     onPreferences={
-                      editable && drawings.loaded ? (d) => drawings.set("preferences", d) : undefined
+                      editable && drawings.loaded
+                        ? (d: PreferencesDoc) => drawings.set("preferences", d)
+                        : undefined
                     }
                     tables={tableFigures}
                     currency={costInfo?.currency ?? null}
@@ -2115,7 +2121,19 @@ export function Workspace({
             <ChecksProvider key={projectId} onReopen={editable ? reopenCheck : undefined}>
               <JobsProvider key={projectId}>
                 {body}
-                {project && !STATIC_VIEWER && <ImportsWatcher api={geodata} />}
+                {project && !STATIC_VIEWER && <ImportsWatcher api={geodata} population={population} />}
+                {project && !STATIC_VIEWER && (
+                  <ClimateKeeper
+                    place={climateAt}
+                    bbox={areaView?.bbox}
+                    preferences={preferences}
+                    onPreferences={
+                      editable && drawings.loaded
+                        ? (d: PreferencesDoc) => drawings.set("preferences", d)
+                        : undefined
+                    }
+                  />
+                )}
                 {areaView && (
                   <AreaChecks
                     polygons={areaView.polygons}

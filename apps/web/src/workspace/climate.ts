@@ -125,6 +125,35 @@ export function withFetchedClimate(c: ProjectClimate, fetched: FetchedClimate): 
   };
 }
 
+/**
+ * Purpose: where the project's climate is asked for: the centre of its area, rounded to 0.1° as the API keeps
+ * the climate it looked up when the area was saved; else the drawing's place; null with neither.
+ */
+export function climatePlace(
+  bbox: readonly [number, number, number, number] | null | undefined,
+  place: readonly [number, number] | null,
+): readonly [number, number] | null {
+  if (!bbox) return place;
+  const [w, s, e, n] = bbox;
+  return [Math.round(((w + e) / 2) * 10) / 10, Math.round(((s + n) / 2) * 10) / 10];
+}
+
+/**
+ * Purpose: whether the project's climate should be fetched for it: it has none yet, or the one it has was
+ * fetched outside the project area (the area moved). The planner's own values are kept either way.
+ */
+export function needsClimate(
+  c: ProjectClimate,
+  bbox: readonly [number, number, number, number] | null | undefined,
+): boolean {
+  if (!c.fetched) return true;
+  if (!bbox) return false;
+  const [w, s, e, n] = bbox;
+  const { lat, lon } = c.fetched;
+  // 0.05°: the climate's place is rounded to 0.1°.
+  return lon < w - 0.05 || lon > e + 0.05 || lat < s - 0.05 || lat > n + 0.05;
+}
+
 /** The call the climate makes; tests pass their own. */
 export type ClimateFetcher = (lat: number, lon: number) => Promise<FetchedClimate>;
 
