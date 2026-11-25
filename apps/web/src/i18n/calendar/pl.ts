@@ -115,6 +115,12 @@ export const calendarPl = {
     "Temperatury powietrza w miejscu projektu, miesiąc po miesiącu. Przebiegi kalendarzowe przewidują na ich podstawie dni upalne, bardzo upalne i mroźne oraz ich wpływ na kolej i zużycie energii. Klimat jest taki sam w każdym roku symulacji.",
   "climate.noPlace": "Najpierw narysuj kolej lub linię uliczną: klimat jest pobierany dla miejsca projektu.",
   "climate.loading": "Pobieranie klimatu…",
+  "climate.loadingZones": "Pobieranie klimatu stref: {done} z {n}",
+  "climate.zonesIntro":
+    "Obszar projektu jest duży, więc każda z jego {n} stref ma własny klimat. Przebieg kalendarzowy waży każdą strefę jej udziałem w długości linii sieci.",
+  "climate.zone": "Strefa",
+  "climate.zoneShare": "{share} % długości linii sieci leży w tej strefie.",
+  "climate.zoneNoLines": "Nie narysowano jeszcze linii, więc każda strefa liczy się tak samo.",
   "climate.failed": "Nie udało się pobrać klimatu: {error}",
   "climate.refetch": "Pobierz ponownie dla miejsca projektu",
   "climate.month": "Miesiąc",

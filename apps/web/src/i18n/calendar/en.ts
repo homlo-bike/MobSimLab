@@ -120,6 +120,12 @@ export const calendarEn = {
   "climate.noPlace":
     "Draw the railway or a street line first: the climate is fetched for the project's location.",
   "climate.loading": "Fetching the climate…",
+  "climate.loadingZones": "Fetching the climate of the zones: {done} of {n}",
+  "climate.zonesIntro":
+    "The project area is large, so each of its {n} zones keeps its own climate. A calendar run counts each zone by its share of the network's line length.",
+  "climate.zone": "Zone",
+  "climate.zoneShare": "{share} % of the network's line length is in this zone.",
+  "climate.zoneNoLines": "No lines are drawn yet, so every zone counts the same.",
   "climate.failed": "Could not fetch the climate: {error}",
   "climate.refetch": "Fetch again for the project's location",
   "climate.month": "Month",

@@ -158,6 +158,7 @@ import { UnroutedNotice } from "../features/tables/UnroutedNotice";
 import { engineErrorText } from "../i18n/engine";
 import { climatePlace } from "./climate";
 import { ClimateKeeper } from "./ClimateKeeper";
+import { networkPolylines } from "./climateZones";
 
 // Editors and screens downloaded when first opened, so opening a project fetches only the tab shown.
 const BenefitTables = lazyNamed(() => import("../features/benefits/BenefitTables"), "BenefitTables");
@@ -719,6 +720,7 @@ export function Workspace({
   }, [sideToSet, projectId]);
   // Where the project's climate is asked for (Project preferences → Climate; kept by ClimateKeeper).
   const climateAt = climatePlace(areaView?.bbox, place);
+  const climateLines = useMemo(() => networkPolylines(railway, streetLines?.lines), [railway, streetLines]);
   const currency = currencyState.currency;
   const delaysJson = JSON.stringify(delaysFrom(preferences));
   const delays = useMemo(() => JSON.parse(delaysJson) as DelayShares, [delaysJson]);
@@ -1545,6 +1547,7 @@ export function Workspace({
                 depots={depotsDoc?.depots ?? NO_DEPOTS}
                 country={placeCountry}
                 place={climateAt}
+                climateLines={climateLines}
                 mapExports={
                   drawings.loaded ? (
                     // Its own wait, so the rest of the preferences show while the export code loads.
@@ -2126,6 +2129,7 @@ export function Workspace({
                   <ClimateKeeper
                     place={climateAt}
                     bbox={areaView?.bbox}
+                    polygons={areaView?.polygons}
                     preferences={preferences}
                     onPreferences={
                       editable && drawings.loaded

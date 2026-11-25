@@ -116,6 +116,12 @@ export const calendarYo = {
     "Ìwọ̀n ooru afẹ́fẹ́ ní ibi iṣẹ́ àkànṣe náà, oṣù kọ̀ọ̀kan. Àwọn ìṣiṣẹ́ kàlẹ́ńdà ń lò ó láti ṣírò àwọn ọjọ́ gbígbóná, gbígbóná gidigidi àti ọjọ́ yìnyín, àti ipa wọn lórí ọ̀nà ojú irin àti agbára. Ojú ọjọ́ kò yàtọ̀ ní ọdún àfarawé kọ̀ọ̀kan.",
   "climate.noPlace": "Kọ́kọ́ ya ọ̀nà ojú irin tàbí ìlà òpópónà: a ń gba ojú ọjọ́ fún ibi iṣẹ́ àkànṣe náà.",
   "climate.loading": "Ó ń gba ojú ọjọ́…",
+  "climate.loadingZones": "A ń mú ojú ọjọ́ àwọn agbègbè: {done} nínú {n}",
+  "climate.zonesIntro":
+    "Agbègbè iṣẹ́ náà tóbi, nítorí náà ọ̀kọ̀ọ̀kan nínú àwọn agbègbè {n} rẹ̀ ní ojú ọjọ́ tirẹ̀. Ìṣiṣẹ́ kàlẹ́ńdà ń wọn agbègbè kọ̀ọ̀kan pẹ̀lú ìpín rẹ̀ nínú gígùn àwọn ìlà nẹ́tíwọ́ọ̀kì.",
+  "climate.zone": "Agbègbè",
+  "climate.zoneShare": "{share} % gígùn àwọn ìlà nẹ́tíwọ́ọ̀kì wà ní agbègbè yìí.",
+  "climate.zoneNoLines": "Kò tíì sí ìlà tí a yà, nítorí náà gbogbo agbègbè ka bákan náà.",
   "climate.failed": "Kò ṣeé ṣe láti gba ojú ọjọ́: {error}",
   "climate.refetch": "Gbà á lẹ́ẹ̀kan sí i fún ibi iṣẹ́ àkànṣe náà",
   "climate.month": "Oṣù",

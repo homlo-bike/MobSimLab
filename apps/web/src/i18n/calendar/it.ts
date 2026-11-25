@@ -119,6 +119,12 @@ export const calendarIt = {
   "climate.noPlace":
     "Disegna prima la ferrovia o una linea stradale: il clima viene recuperato per il luogo del progetto.",
   "climate.loading": "Recupero del clima…",
+  "climate.loadingZones": "Recupero del clima delle zone: {done} di {n}",
+  "climate.zonesIntro":
+    "L'area del progetto è grande, quindi ciascuna delle sue {n} zone ha un proprio clima. Una simulazione di calendario pesa ogni zona per la sua quota della lunghezza delle linee della rete.",
+  "climate.zone": "Zona",
+  "climate.zoneShare": "Il {share} % della lunghezza delle linee della rete è in questa zona.",
+  "climate.zoneNoLines": "Non ci sono ancora linee disegnate, quindi ogni zona conta allo stesso modo.",
   "climate.failed": "Impossibile recuperare il clima: {error}",
   "climate.refetch": "Recupera di nuovo per il luogo del progetto",
   "climate.month": "Mese",

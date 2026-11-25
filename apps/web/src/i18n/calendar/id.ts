@@ -116,6 +116,12 @@ export const calendarId = {
     "Suhu udara di lokasi proyek, bulan demi bulan. Simulasi kalender memperkirakan dari sini hari panas, sangat panas, dan beku serta dampaknya pada kereta api dan energi. Iklim sama di setiap tahun simulasi.",
   "climate.noPlace": "Gambar dulu jalur kereta atau jalur jalan: iklim diambil untuk lokasi proyek.",
   "climate.loading": "Mengambil iklim…",
+  "climate.loadingZones": "Mengambil iklim zona: {done} dari {n}",
+  "climate.zonesIntro":
+    "Area proyek besar, jadi masing-masing dari {n} zonanya punya iklim sendiri. Simulasi kalender membobot setiap zona menurut bagiannya dari panjang jalur jaringan.",
+  "climate.zone": "Zona",
+  "climate.zoneShare": "{share} % panjang jalur jaringan ada di zona ini.",
+  "climate.zoneNoLines": "Belum ada jalur yang digambar, jadi setiap zona dihitung sama.",
   "climate.failed": "Iklim tidak dapat diambil: {error}",
   "climate.refetch": "Ambil lagi untuk lokasi proyek",
   "climate.month": "Bulan",

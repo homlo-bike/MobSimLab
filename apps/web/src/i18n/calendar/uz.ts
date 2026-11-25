@@ -116,6 +116,12 @@ export const calendarUz = {
     "Loyiha joyidagi havo harorati, oyma-oy. Kalendar ishga tushirishlari undan issiq, juda issiq va sovuq (ayoz) kunlarni hamda ularning temir yo‘l va energiyaga ta’sirini kutadi. Iqlim har bir simulyatsiya yilida bir xil.",
   "climate.noPlace": "Avval temir yo‘l yoki ko‘cha liniyasini chizing: iqlim loyiha joyi uchun olinadi.",
   "climate.loading": "Iqlim olinmoqda…",
+  "climate.loadingZones": "Zonalar iqlimi olinmoqda: {n} tadan {done}",
+  "climate.zonesIntro":
+    "Loyiha hududi katta, shuning uchun uning {n} zonasining har biri o‘z iqlimiga ega. Kalendar hisobi har bir zonani tarmoq liniyalari uzunligidagi ulushiga ko‘ra hisoblaydi.",
+  "climate.zone": "Zona",
+  "climate.zoneShare": "Tarmoq liniyalari uzunligining {share} % shu zonada.",
+  "climate.zoneNoLines": "Hali liniya chizilmagan, shuning uchun har bir zona teng hisoblanadi.",
   "climate.failed": "Iqlimni olib bo‘lmadi: {error}",
   "climate.refetch": "Loyiha joyi uchun qayta olish",
   "climate.month": "Oy",

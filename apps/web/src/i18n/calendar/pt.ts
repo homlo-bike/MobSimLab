@@ -118,6 +118,12 @@ export const calendarPt = {
   "climate.noPlace":
     "Desenhe primeiro a ferrovia ou uma linha de rua: o clima é obtido para o local do projeto.",
   "climate.loading": "A obter o clima…",
+  "climate.loadingZones": "A obter o clima das zonas: {done} de {n}",
+  "climate.zonesIntro":
+    "A área do projeto é grande, por isso cada uma das suas {n} zonas tem o seu próprio clima. Uma simulação de calendário pondera cada zona pela sua parte do comprimento das linhas da rede.",
+  "climate.zone": "Zona",
+  "climate.zoneShare": "{share} % do comprimento das linhas da rede está nesta zona.",
+  "climate.zoneNoLines": "Ainda não há linhas desenhadas, por isso todas as zonas contam o mesmo.",
   "climate.failed": "Não foi possível obter o clima: {error}",
   "climate.refetch": "Obter de novo para o local do projeto",
   "climate.month": "Mês",

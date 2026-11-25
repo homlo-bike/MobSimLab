@@ -240,6 +240,12 @@ export function periodsFor(
 /** The climate and what it costs in energy, for `weatherPeriods`. */
 export interface WeatherInput {
   months: MonthClimate[];
+  /**
+   * A large area's climate zones, each with its share of the network (workspace/climateZones.ts); `months` is
+   * then not used. Each zone's expected hot, very hot and frost days, and its heating and air conditioning, count
+   * by its share.
+   */
+  climates?: { months: MonthClimate[]; weight: number }[];
   settings: WeatherSettings;
   /** Heating and air conditioning at full power for a day's service, kWh (null when the service is unknown). */
   hvacFullKwhPerDay: number | null;
@@ -259,8 +265,19 @@ export function weatherPeriods(
   span: { years?: SimulationYears; date?: string; from?: string; to?: string },
   wx: WeatherInput,
 ): Period[] {
-  const shares = wx.months.map((m) => variantShares(m, wx.settings));
-  const loads = wx.months.map((m) => hvacLoad(m.mean_c, wx.settings));
+  const climates = wx.climates?.length ? wx.climates : [{ months: wx.months, weight: 1 }];
+  const total = climates.reduce((t, c) => t + c.weight, 0) || 1;
+  const shares = Array.from({ length: 12 }, (_, m) => {
+    const out = { ordinary: 0, hot: 0, very_hot: 0, cold: 0 };
+    for (const c of climates) {
+      const v = variantShares(c.months[m]!, wx.settings);
+      for (const k of Object.keys(out) as (keyof typeof out)[]) out[k] += (v[k] * c.weight) / total;
+    }
+    return out;
+  });
+  const loads = Array.from({ length: 12 }, (_, m) =>
+    climates.reduce((t, c) => t + (hvacLoad(c.months[m]!.mean_c, wx.settings) * c.weight) / total, 0),
+  );
   return monthlyPeriods(mode, cal, span).map(({ period, monthly }) => {
     const counts: Record<string, number> = {};
     const allDays = zeros();

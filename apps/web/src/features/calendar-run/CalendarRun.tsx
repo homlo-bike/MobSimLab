@@ -18,7 +18,8 @@ import type { Network, PublishOptions, RailEngineLoader } from "../railways/type
 import { libraryValue as benefitLibrary } from "../benefits/params";
 import { useDayTypeLabel } from "../../workspace/dayTypeLabel";
 import { calendarFrom, DAY_TYPES, simulationYearsFrom } from "../../workspace/calendar";
-import { climateFrom, monthsOf } from "../../workspace/climate";
+import { climateFrom } from "../../workspace/climate";
+import { networkPolylines, weightedClimates } from "../../workspace/climateZones";
 import { projectRunSettings } from "../capacity/projectSettings";
 import { type PreferencesDoc, prefValue, withPref } from "../../workspace/preferences";
 import type { CalendarRunDetail, CalendarRun as SavedCalendarRun, CalendarRunsApi, RailDay } from "./api";
@@ -146,7 +147,12 @@ export function CalendarRun({
   const [status, setStatus] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
 
-  const months = useMemo(() => monthsOf(climateFrom(preferences)), [preferences]);
+  // The climate a run weighs: the one climate, or each zone of a large area by its share of the lines.
+  const climates = useMemo(
+    () => weightedClimates(climateFrom(preferences), networkPolylines(railway, streetLines)),
+    [preferences, railway, streetLines],
+  );
+  const months = climates?.[0]?.months ?? null;
   const weather = useMemo(() => weatherSettings(preferences), [preferences]);
 
   // How much each line runs on each day type (its own Saturday, Sunday and holiday times), for the day figures.
@@ -211,6 +217,7 @@ export function CalendarRun({
     return months
       ? weatherPeriods(mode, c, span, {
           months,
+          climates: climates ?? undefined,
           settings: weather,
           hvacFullKwhPerDay: hvacFull,
           switchKwhPerFrostDay: switchKwhPerFrostDay(switches, weather),
@@ -219,7 +226,7 @@ export function CalendarRun({
   };
   const periods = useMemo(
     () => periodsWith(0),
-    [mode, preferences, today, date, from, to, months, weather, hvacFull],
+    [mode, preferences, today, date, from, to, months, climates, weather, hvacFull],
   );
   const tooMany = mode === "days" && periods.length > MAX_DAYS;
   const missing = FIGURES.filter((f) => figures.days.weekday[f] === null);

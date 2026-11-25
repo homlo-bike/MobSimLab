@@ -109,6 +109,12 @@ export const calendarZh = {
     "项目所在地逐月的气温。日历运行据此预估炎热日、酷热日和霜冻日及其对铁路和能耗的影响。每个模拟年份的气候相同。",
   "climate.noPlace": "请先绘制铁路或街道线路：气候按项目所在地获取。",
   "climate.loading": "正在获取气候…",
+  "climate.loadingZones": "正在获取各分区的气候：{done}/{n}",
+  "climate.zonesIntro":
+    "项目范围较大，因此其 {n} 个分区各有自己的气候。日历运行按各分区在网络线路长度中的占比对其加权。",
+  "climate.zone": "分区",
+  "climate.zoneShare": "网络线路长度的 {share}% 位于此分区。",
+  "climate.zoneNoLines": "尚未绘制线路，因此各分区权重相同。",
   "climate.failed": "无法获取气候：{error}",
   "climate.refetch": "按项目所在地重新获取",
   "climate.month": "月份",

@@ -116,6 +116,12 @@ export const calendarSw = {
     "Joto la hewa mahali pa mradi, mwezi kwa mwezi. Uendeshaji wa kalenda huzitumia kukadiria siku za joto, joto kali na baridi kali ya barafu, na athari zake kwa reli na nishati. Hali ya hewa ni ileile kila mwaka wa uigaji.",
   "climate.noPlace": "Chora kwanza reli au mstari wa barabara: hali ya hewa hupatikana kwa mahali pa mradi.",
   "climate.loading": "Inapata hali ya hewa…",
+  "climate.loadingZones": "Inapata hali ya hewa ya kanda: {done} kati ya {n}",
+  "climate.zonesIntro":
+    "Eneo la mradi ni kubwa, kwa hiyo kila moja ya kanda zake {n} ina hali yake ya hewa. Uendeshaji wa kalenda unapima kila kanda kwa sehemu yake ya urefu wa njia za mtandao.",
+  "climate.zone": "Kanda",
+  "climate.zoneShare": "{share} % ya urefu wa njia za mtandao iko katika kanda hii.",
+  "climate.zoneNoLines": "Bado hakuna njia zilizochorwa, kwa hiyo kila kanda inahesabiwa sawa.",
   "climate.failed": "Haikuweza kupata hali ya hewa: {error}",
   "climate.refetch": "Pata tena kwa mahali pa mradi",
   "climate.month": "Mwezi",

@@ -118,6 +118,12 @@ export const calendarFr = {
   "climate.noPlace":
     "Dessinez d'abord la voie ferrée ou une ligne routière : le climat est récupéré pour le site du projet.",
   "climate.loading": "Récupération du climat…",
+  "climate.loadingZones": "Récupération du climat des zones : {done} sur {n}",
+  "climate.zonesIntro":
+    "La zone du projet est vaste : chacune de ses {n} zones garde son propre climat. Un calcul calendaire pondère chaque zone par sa part de la longueur des lignes du réseau.",
+  "climate.zone": "Zone",
+  "climate.zoneShare": "{share} % de la longueur des lignes du réseau se trouve dans cette zone.",
+  "climate.zoneNoLines": "Aucune ligne n'est encore tracée : chaque zone compte autant.",
   "climate.failed": "Impossible de récupérer le climat : {error}",
   "climate.refetch": "Récupérer à nouveau pour le site du projet",
   "climate.month": "Mois",

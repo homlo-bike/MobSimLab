@@ -114,6 +114,12 @@ export const calendarVi = {
     "Nhiệt độ không khí tại vị trí dự án theo từng tháng. Các lượt chạy theo lịch dùng nó để ước tính ngày nóng, rất nóng và ngày sương giá cùng tác động lên đường sắt và năng lượng. Khí hậu giống nhau ở mọi năm mô phỏng.",
   "climate.noPlace": "Hãy vẽ đường sắt hoặc một tuyến đường phố trước: khí hậu được lấy cho vị trí dự án.",
   "climate.loading": "Đang lấy khí hậu…",
+  "climate.loadingZones": "Đang lấy khí hậu các vùng: {done}/{n}",
+  "climate.zonesIntro":
+    "Khu vực dự án rộng, nên mỗi vùng trong {n} vùng có khí hậu riêng. Lần chạy theo lịch tính mỗi vùng theo tỷ lệ chiều dài tuyến của mạng nằm trong vùng đó.",
+  "climate.zone": "Vùng",
+  "climate.zoneShare": "{share} % chiều dài tuyến của mạng nằm trong vùng này.",
+  "climate.zoneNoLines": "Chưa vẽ tuyến nào, nên mọi vùng được tính như nhau.",
   "climate.failed": "Không lấy được khí hậu: {error}",
   "climate.refetch": "Lấy lại cho vị trí dự án",
   "climate.month": "Tháng",

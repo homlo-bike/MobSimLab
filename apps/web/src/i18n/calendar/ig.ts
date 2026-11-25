@@ -117,6 +117,12 @@ export const calendarIg = {
   "climate.noPlace":
     "Buru ụzọ see ụzọ ụgbọ oloko ma ọ bụ ahịrị okporo ụzọ: a na-ewetara ihu igwe maka ebe ọrụ ahụ dị.",
   "climate.loading": "Na-ewetara ihu igwe…",
+  "climate.loadingZones": "A na-ewete ihu igwe nke mpaghara: {done} n'ime {n}",
+  "climate.zonesIntro":
+    "Ebe ọrụ a buru ibu, ya mere mpaghara {n} ya ọ bụla nwere ihu igwe nke ya. Ịgba kalenda na-atụ mpaghara ọ bụla site n'òkè ya n'ogologo ahịrị netwọk.",
+  "climate.zone": "Mpaghara",
+  "climate.zoneShare": "{share} % nke ogologo ahịrị netwọk dị na mpaghara a.",
+  "climate.zoneNoLines": "Ọ dịbeghị ahịrị e sere, ya mere mpaghara ọ bụla na-agụ otu.",
   "climate.failed": "Enweghị ike iwetara ihu igwe: {error}",
   "climate.refetch": "Weta ọzọ maka ebe ọrụ ahụ dị",
   "climate.month": "Ọnwa",

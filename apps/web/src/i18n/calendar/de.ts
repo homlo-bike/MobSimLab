@@ -118,6 +118,12 @@ export const calendarDe = {
   "climate.noPlace":
     "Zeichnen Sie zuerst die Bahn oder eine Straßenlinie: Das Klima wird für den Ort des Projekts abgerufen.",
   "climate.loading": "Klima wird abgerufen…",
+  "climate.loadingZones": "Klima der Zonen wird abgerufen: {done} von {n}",
+  "climate.zonesIntro":
+    "Das Projektgebiet ist groß, daher hat jede seiner {n} Zonen ein eigenes Klima. Ein Kalenderlauf gewichtet jede Zone mit ihrem Anteil an der Linienlänge des Netzes.",
+  "climate.zone": "Zone",
+  "climate.zoneShare": "{share} % der Linienlänge des Netzes liegen in dieser Zone.",
+  "climate.zoneNoLines": "Noch sind keine Linien gezeichnet, daher zählt jede Zone gleich.",
   "climate.failed": "Das Klima konnte nicht abgerufen werden: {error}",
   "climate.refetch": "Für den Ort des Projekts neu abrufen",
   "climate.month": "Monat",

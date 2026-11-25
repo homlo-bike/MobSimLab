@@ -116,6 +116,12 @@ export const calendarTr = {
     "Proje konumundaki hava sıcaklıkları, ay ay. Takvim çalıştırmaları bunlardan sıcak, çok sıcak ve don günlerini ve bunların demiryoluna ve enerjiye etkilerini öngörür. İklim her simülasyon yılında aynıdır.",
   "climate.noPlace": "Önce demiryolunu ya da bir cadde hattını çizin: iklim projenin konumu için alınır.",
   "climate.loading": "İklim alınıyor…",
+  "climate.loadingZones": "Bölgelerin iklimi alınıyor: {done} / {n}",
+  "climate.zonesIntro":
+    "Proje alanı büyük olduğundan {n} bölgesinin her birinin kendi iklimi var. Takvim çalıştırması her bölgeyi ağın hat uzunluğundaki payına göre ağırlıklandırır.",
+  "climate.zone": "Bölge",
+  "climate.zoneShare": "Ağın hat uzunluğunun %{share} kadarı bu bölgede.",
+  "climate.zoneNoLines": "Henüz hat çizilmedi, bu yüzden her bölge eşit sayılır.",
   "climate.failed": "İklim alınamadı: {error}",
   "climate.refetch": "Proje konumu için yeniden al",
   "climate.month": "Ay",
