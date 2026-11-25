@@ -5,6 +5,7 @@ import type { ServiceCalendar, SimulationYears } from "./calendar";
 import type { ProjectClimate } from "./climate";
 import paramsData from "./parameters.generated.json";
 import libraryData from "../features/walk/defaults.generated.json";
+import type { SavedDataId } from "./savedFiles";
 
 /**
  * The project's preferences document (drawing kind `preferences`): assumption library values the project
@@ -33,6 +34,8 @@ export interface PreferencesDoc {
   choices?: Record<string, string>;
   /** How the project's vehicles look in the simulation (Project preferences → Visuals); absent: the defaults. */
   visuals?: VisualsDoc;
+  /** Which kinds of data a saved `.mslab` file holds (Project preferences → Saved project files); absent: the defaults. */
+  savedFiles?: Partial<Record<SavedDataId, boolean>>;
 }
 
 /** What a vehicle is doing in the road simulation's replay, which gives its colour. */

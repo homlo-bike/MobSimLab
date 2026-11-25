@@ -17,6 +17,8 @@ import {
   STREET_MODES,
 } from "./api";
 import { engineErrorText } from "../i18n/engine";
+import type { PreferencesDoc } from "../workspace/preferences";
+import { saveOptions, savedIn } from "../workspace/savedFiles";
 
 /** An error line under a form. */
 function ErrorLine({ error }: { error: string | null }) {
@@ -588,6 +590,40 @@ export function SaveMslabDialog({
   const { t } = useI18n();
   const [runs, setRuns] = useState(false);
   const [map, setMap] = useState(false);
+  const [results, setResults] = useState(true);
+  const [vehicles, setVehicles] = useState(true);
+  // The choices start from Project preferences → Saved project files.
+  useEffect(() => {
+    if (typeof api.drawings !== "function") return;
+    let live = true;
+    api.drawings(project.id).then(
+      (d) => {
+        if (!live) return;
+        const doc = (d.preferences?.doc ?? null) as PreferencesDoc | null;
+        const o = saveOptions(doc);
+        setRuns(o.runs);
+        setMap(o.map);
+        setResults(o.results);
+        setVehicles(savedIn(doc, "vehicles"));
+      },
+      () => {},
+    );
+    return () => {
+      live = false;
+    };
+  }, [api, project.id]);
+  const box = (checked: boolean, set: (v: boolean) => void, label: MessageKey, first = false) => (
+    <label className={`${first ? "mt-4" : "mt-3"} flex items-start gap-2 text-sm`}>
+      <input
+        type="checkbox"
+        className="mt-0.5"
+        data-autofocus={first || undefined}
+        checked={checked}
+        onChange={(e) => set(e.target.checked)}
+      />
+      <span>{t(label)}</span>
+    </label>
+  );
   return (
     <Dialog
       title={t("menu.saveMslab")}
@@ -604,7 +640,7 @@ export function SaveMslabDialog({
             onClick={() => {
               // A real button for keyboards and screen readers; the download itself goes through a link.
               const a = document.createElement("a");
-              a.href = api.mslabUrl(project.id, runs, map);
+              a.href = api.mslabUrl(project.id, runs, map, { results, vehicles });
               a.download = "";
               document.body.append(a);
               a.click();
@@ -618,20 +654,11 @@ export function SaveMslabDialog({
       }
     >
       <p className="m-0 text-sm text-slate-600">{t("mslab.body")}</p>
-      <label className="mt-4 flex items-start gap-2 text-sm">
-        <input
-          type="checkbox"
-          className="mt-0.5"
-          data-autofocus
-          checked={runs}
-          onChange={(e) => setRuns(e.target.checked)}
-        />
-        <span>{t("mslab.runs")}</span>
-      </label>
-      <label className="mt-3 flex items-start gap-2 text-sm">
-        <input type="checkbox" className="mt-0.5" checked={map} onChange={(e) => setMap(e.target.checked)} />
-        <span>{t("mslab.map")}</span>
-      </label>
+      {box(runs, setRuns, "mslab.runs", true)}
+      {box(results, setResults, "mslab.results")}
+      {box(vehicles, setVehicles, "mslab.vehicles")}
+      {box(map, setMap, "mslab.map")}
+      <p className="mt-4 mb-0 text-xs text-slate-500">{t("mslab.fromPrefs")}</p>
     </Dialog>
   );
 }

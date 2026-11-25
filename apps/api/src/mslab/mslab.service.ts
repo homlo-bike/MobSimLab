@@ -183,7 +183,9 @@ export class MslabService {
   /**
    * Purpose: the project as a `.mslab` file. Members may save a copy; people who see the project only because it
    * is public may not (403), as they may not duplicate it.
-   * Inputs: `includeRuns` adds the finished simulation runs. Output: the file name and bytes.
+   * Inputs: `includeRuns` adds the finished simulation runs, `includeMap` the viewer's map data and
+   * `includeResults` the results the tools worked out; `includeVehicles` false leaves out the own vehicles and fleet.
+   * Output: the file name and bytes.
    * Side effects: audit `project.exported` (runs included, size).
    */
   async export(
@@ -191,6 +193,8 @@ export class MslabService {
     id: string,
     includeRuns: boolean,
     includeMap = false,
+    includeResults = true,
+    includeVehicles = true,
   ): Promise<{ fileName: string; bytes: Buffer }> {
     if ((await this.projects.get(actor, id)).viaPublic)
       throw new ForbiddenException("public projects are read-only; ask the owner for access");
@@ -208,12 +212,14 @@ export class MslabService {
       ])
       .where("id", "=", id)
       .executeTakeFirstOrThrow();
-    const drawings = await this.db
-      .selectFrom("project.drawing")
-      .select(["kind", "schema_version", "doc", "updated_at"])
-      .where("project_id", "=", id)
-      .orderBy("kind")
-      .execute();
+    const drawings = (
+      await this.db
+        .selectFrom("project.drawing")
+        .select(["kind", "schema_version", "doc", "updated_at"])
+        .where("project_id", "=", id)
+        .orderBy("kind")
+        .execute()
+    ).filter((d) => includeVehicles || d.kind !== "fleet");
     const plugins = await this.db
       .selectFrom("project.plugin")
       .select(["plugin_id", "enabled", "version"])
@@ -256,12 +262,14 @@ export class MslabService {
 
     // Results the project's tools worked out (format 1.2), so the project opens with them, also in the static
     // viewer, without working them out again.
-    const results = await this.db
-      .selectFrom("project.result")
-      .select(["kind", "inputs", "body", "computed_at"])
-      .where("project_id", "=", id)
-      .orderBy("kind")
-      .execute();
+    const results = !includeResults
+      ? []
+      : await this.db
+          .selectFrom("project.result")
+          .select(["kind", "inputs", "body", "computed_at"])
+          .where("project_id", "=", id)
+          .orderBy("kind")
+          .execute();
     let resultCount = 0;
     for (const r of results) {
       let doc: unknown;
