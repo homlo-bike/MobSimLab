@@ -51,5 +51,7 @@ export const mslabDe = {
   "mslab.fromPrefs": "Diese Auswahl startet mit Projekteinstellungen → Gespeicherte Projektdateien.",
   "mslab.comments": "Kommentare und Diskussionen einschließen",
   "mslab.history": "Verlauf der geänderten Werte einschließen",
+  "mslab.fetched":
+    "Heruntergeladene Daten einschließen (Kartenkacheln, Höhen, Bevölkerung, Klima- und Wirtschaftszahlen), wie in den Projekteinstellungen gewählt",
   "mslab.fromFile": "aus der Projektdatei",
 } satisfies MslabMessages;

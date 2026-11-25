@@ -51,5 +51,7 @@ export const mslabNl = {
   "mslab.fromPrefs": "Deze keuzes beginnen bij Projectvoorkeuren → Opgeslagen projectbestanden.",
   "mslab.comments": "Opmerkingen en discussies opnemen",
   "mslab.history": "Geschiedenis van gewijzigde waarden opnemen",
+  "mslab.fetched":
+    "Gedownloade gegevens opnemen (kaarttegels, hoogte, bevolking, klimaat- en economiecijfers), zoals gekozen in de projectvoorkeuren",
   "mslab.fromFile": "uit het projectbestand",
 } satisfies MslabMessages;

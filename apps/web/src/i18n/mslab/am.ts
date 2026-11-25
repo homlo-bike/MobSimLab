@@ -49,5 +49,6 @@ export const mslabAm = {
   "mslab.fromPrefs": "እነዚህ ምርጫዎች ከፕሮጀክት ምርጫዎች → የተቀመጡ የፕሮጀክት ፋይሎች ይጀምራሉ።",
   "mslab.comments": "አስተያየቶችን እና ውይይቶቻቸውን አካትት",
   "mslab.history": "የተቀየሩ እሴቶችን ታሪክ አካትት",
+  "mslab.fetched": "የወረደ ውሂብ አካትት (የካርታ ንጣፎች፣ ከፍታ፣ የሕዝብ ብዛት፣ የአየር ንብረት እና የኢኮኖሚ አኃዞች)፣ በፕሮጀክት ምርጫዎች እንደተመረጠው",
   "mslab.fromFile": "ከፕሮጀክት ፋይሉ",
 } satisfies MslabMessages;

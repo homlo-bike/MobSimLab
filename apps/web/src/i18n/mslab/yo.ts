@@ -50,5 +50,7 @@ export const mslabYo = {
   "mslab.fromPrefs": "Àwọn yíyàn wọ̀nyí bẹ̀rẹ̀ láti Àwọn ààyò iṣẹ́ àkànṣe → Àwọn fáìlì iṣẹ́ àkànṣe tí a fipamọ́.",
   "mslab.comments": "Fi àwọn àsọyé àti ìjíròrò wọn kún un",
   "mslab.history": "Fi ìtàn àwọn iye tí a yí padà kún un",
+  "mslab.fetched":
+    "Fi dátà tí a gbà sílẹ̀ kún un (àwọn táìlì máàpù, gíga ilẹ̀, iye ènìyàn, àwọn òǹkà ojú ọjọ́ àti ọrọ̀ ajé), gẹ́gẹ́ bí a ṣe yàn nínú àwọn àyànfẹ́ iṣẹ́ àkànṣe",
   "mslab.fromFile": "láti inú fáìlì iṣẹ́ àkànṣe",
 } satisfies MslabMessages;

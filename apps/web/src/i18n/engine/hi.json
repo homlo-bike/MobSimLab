@@ -50,6 +50,7 @@
   "api.mslab.send_mslab_file_request_body": ".mslab फ़ाइल को अनुरोध के मुख्य भाग के रूप में भेजें (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "फ़ाइल में एक सिमुलेशन रन मान्य नहीं है",
   "api.mslab.comments_or_history_not_valid": "फ़ाइल की टिप्पणियाँ या बदले गए मानों का इतिहास मान्य नहीं है",
+  "api.mslab.downloaded_data_not_valid": "फ़ाइल का डाउनलोड किया गया डेटा मान्य नहीं है",
   "api.mslab.too_many_tiles": "परियोजना क्षेत्र {tiles} मानचित्र टाइलें लेता है, जो एक फ़ाइल की सीमा {max} से अधिक है; परियोजना क्षेत्र छोटा करें या मानचित्र डेटा के बिना सहेजें",
   "api.places.unavailable": "स्थान खोज अभी उपलब्ध नहीं है",
   "api.plugins.admin_turned_off": "एक व्यवस्थापक ने इस MobSimLab के लिए {plugin} बंद कर दिया है",

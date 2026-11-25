@@ -41,16 +41,21 @@ const ALLOWED = [
   /^runs\/[0-9a-f-]{36}\/files\/[a-z0-9][a-z0-9._-]{0,63}$/,
   /^collab\/comments\.json$/,
   /^history\/values\.json$/,
+  /^fetched\/(?:facts|elevation|population)\.json$/,
+  /^fetched\/live-(?:osm|height)-\d{1,4}\.json$/,
+  /^fetched\/elevation-\d{1,4}\.bin$/,
+  /^fetched\/population-\d{1,3}-\d{1,4}\.ndjson$/,
   /^map\/(?:(?:area|water|population|reference)\.json|(?:streets|walk|rail)\/\d{1,5}-\d{1,5}\.xml|(?:buildings|places|bike-amenities)\/\d{1,5}-\d{1,5}\.json|(?:streets|walk|rail|buildings|places|bike-amenities)\.pmtiles)$/,
   /^results\/[a-z][a-z0-9-]{1,39}\.json$/,
 ];
 const UUID = /^[0-9a-fA-F-]{36}$/;
 /**
- * The format versions this viewer reads: 1.x up to 1.5 (1.2 adds the saved results, results/; 1.3 the project
+ * The format versions this viewer reads: 1.x up to 1.6 (1.2 adds the saved results, results/; 1.3 the project
  * area's polygons; 1.4 the map tiles in one archive per kind, map/<kind>.pmtiles, read by byte range; 1.5 the
- * comments, the history of changed values and the runs' own files, which the viewer does not show).
+ * comments, the history of changed values and the runs' own files, and 1.6 the fetched data in fetched/, none of
+ * which the viewer shows).
  */
-const READS = [1, 5];
+const READS = [1, 6];
 
 class FileError extends Error {}
 

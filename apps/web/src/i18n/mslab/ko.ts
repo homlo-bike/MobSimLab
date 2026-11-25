@@ -50,5 +50,7 @@ export const mslabKo = {
   "mslab.fromPrefs": "이 선택은 프로젝트 환경설정 → 저장되는 프로젝트 파일에서 시작됩니다.",
   "mslab.comments": "댓글과 토론 포함",
   "mslab.history": "변경된 값의 기록 포함",
+  "mslab.fetched":
+    "다운로드된 데이터(지도 타일, 고도, 인구, 기후 및 경제 수치)를 프로젝트 환경설정에서 선택한 대로 포함",
   "mslab.fromFile": "프로젝트 파일에서",
 } satisfies MslabMessages;

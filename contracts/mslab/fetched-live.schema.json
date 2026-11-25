@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/fetched-live.schema.json",
+  "title": "Street tiles or heights the project's tools fetched live (fetched/live-<kind>-<n>.json)",
+  "type": "object",
+  "required": [
+    "kind",
+    "entries"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "kind": {
+      "enum": [
+        "osm",
+        "height"
+      ]
+    },
+    "entries": {
+      "type": "array",
+      "maxItems": 200000,
+      "items": {
+        "type": "object",
+        "required": [
+          "key",
+          "dataDate",
+          "body"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "key": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 250
+          },
+          "dataDate": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 40
+          },
+          "body": {
+            "type": "string",
+            "maxLength": 67108864
+          }
+        }
+      }
+    }
+  }
+}

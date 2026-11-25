@@ -50,6 +50,7 @@
   "api.mslab.send_mslab_file_request_body": "zipu faịlụ .mslab dị ka ahụ arịrịọ (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "ọrụ ṅomi dị na faịlụ ahụ ezighi ezi",
   "api.mslab.comments_or_history_not_valid": "nkọwa ma ọ bụ akụkọ ụkpụrụ ndị a gbanwere na faịlụ ahụ ezighi ezi",
+  "api.mslab.downloaded_data_not_valid": "data e budatara na faịlụ ahụ ezighi ezi",
   "api.mslab.too_many_tiles": "mpaghara ọrụ ahụ na-ewe taịlụ maapụ {tiles}, karịa {max} faịlụ nwere ike ibu; mee ka mpaghara ọrụ dị obere ma ọ bụ chekwaa na-enweghị data maapụ",
   "api.places.unavailable": "Ịchọ ebe adịghị ugbu a",
   "api.plugins.admin_turned_off": "onye nchịkwa gbanyụrụ {plugin} maka MobSimLab a",

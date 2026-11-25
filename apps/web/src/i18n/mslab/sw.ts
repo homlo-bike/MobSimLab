@@ -50,5 +50,7 @@ export const mslabSw = {
   "mslab.fromPrefs": "Chaguo hizi zinaanzia Mapendeleo ya mradi → Faili za mradi zilizohifadhiwa.",
   "mslab.comments": "Jumuisha maoni na mijadala yake",
   "mslab.history": "Jumuisha historia ya thamani zilizobadilishwa",
+  "mslab.fetched":
+    "Jumuisha data iliyopakuliwa (vigae vya ramani, mwinuko, idadi ya watu, takwimu za hali ya hewa na uchumi), kama ilivyochaguliwa katika mapendeleo ya mradi",
   "mslab.fromFile": "kutoka kwenye faili ya mradi",
 } satisfies MslabMessages;

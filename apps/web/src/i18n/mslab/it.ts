@@ -50,5 +50,7 @@ export const mslabIt = {
   "mslab.fromPrefs": "Queste scelte partono da Preferenze del progetto → File di progetto salvati.",
   "mslab.comments": "Includi i commenti e le discussioni",
   "mslab.history": "Includi la cronologia dei valori modificati",
+  "mslab.fetched":
+    "Includi i dati scaricati (tasselli della mappa, altitudine, popolazione, dati su clima ed economia), come scelto nelle preferenze del progetto",
   "mslab.fromFile": "dal file di progetto",
 } satisfies MslabMessages;

@@ -51,5 +51,7 @@ export const mslabZu = {
     "Lezi zinketho ziqala kokuthi Okuthandwayo kwephrojekthi → Amafayela ephrojekthi alondoloziwe.",
   "mslab.comments": "Faka amazwana nezingxoxo zawo",
   "mslab.history": "Faka umlando wamanani ashintshiwe",
+  "mslab.fetched":
+    "Faka idatha elandiwe (amathayela emephu, ukuphakama, inani labantu, izibalo zesimo sezulu nezomnotho), njengoba kukhethiwe kokuncanyelwayo kwephrojekthi",
   "mslab.fromFile": "kusuka efayeleni lephrojekthi",
 } satisfies MslabMessages;

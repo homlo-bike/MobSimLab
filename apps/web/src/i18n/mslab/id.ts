@@ -50,5 +50,7 @@ export const mslabId = {
   "mslab.fromPrefs": "Pilihan ini berasal dari Preferensi proyek → File proyek tersimpan.",
   "mslab.comments": "Sertakan komentar dan diskusinya",
   "mslab.history": "Sertakan riwayat nilai yang diubah",
+  "mslab.fetched":
+    "Sertakan data unduhan (ubin peta, elevasi, populasi, angka iklim dan ekonomi), seperti yang dipilih di preferensi proyek",
   "mslab.fromFile": "dari file proyek",
 } satisfies MslabMessages;

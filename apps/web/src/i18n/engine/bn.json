@@ -50,6 +50,7 @@
   "api.mslab.send_mslab_file_request_body": ".mslab ফাইলটি অনুরোধের বডি হিসেবে পাঠান (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "ফাইলের একটি সিমুলেশন রান বৈধ নয়",
   "api.mslab.comments_or_history_not_valid": "ফাইলের মন্তব্য বা পরিবর্তিত মানের ইতিহাস বৈধ নয়",
+  "api.mslab.downloaded_data_not_valid": "ফাইলের ডাউনলোড করা ডেটা বৈধ নয়",
   "api.mslab.too_many_tiles": "প্রকল্প এলাকায় {tiles}টি মানচিত্র টাইল লাগে, যা একটি ফাইলের সর্বোচ্চ {max}-এর বেশি; প্রকল্প এলাকা ছোট করুন বা মানচিত্রের তথ্য ছাড়া সংরক্ষণ করুন",
   "api.places.unavailable": "স্থান অনুসন্ধান এখন পাওয়া যাচ্ছে না",
   "api.plugins.admin_turned_off": "একজন প্রশাসক এই MobSimLab-এর জন্য {plugin} বন্ধ করেছেন",

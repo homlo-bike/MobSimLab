@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/homlo-bike/MobSimLab/blob/main/contracts/mslab/fetched-elevation.schema.json",
+  "title": "The project's elevation imports and where their tiles are (fetched/elevation.json)",
+  "type": "object",
+  "required": [
+    "imports"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "imports": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": [
+          "kind",
+          "method",
+          "bbox",
+          "bufferKm",
+          "source",
+          "finishedAt",
+          "tiles"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "kind": {
+            "enum": [
+              "dem",
+              "dem_upload"
+            ]
+          },
+          "method": {
+            "enum": [
+              "copernicus",
+              "geotiff"
+            ]
+          },
+          "bbox": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 4,
+            "prefixItems": [
+              {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              },
+              {
+                "type": "number",
+                "minimum": -180,
+                "maximum": 180
+              },
+              {
+                "type": "number",
+                "minimum": -90,
+                "maximum": 90
+              }
+            ]
+          },
+          "bufferKm": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 50
+          },
+          "source": {
+            "type": "object",
+            "maxProperties": 40
+          },
+          "finishedAt": {
+            "type": "string",
+            "format": "date-time",
+            "maxLength": 40
+          },
+          "tiles": {
+            "type": "array",
+            "maxItems": 200000,
+            "items": {
+              "type": "object",
+              "required": [
+                "chunk",
+                "offset",
+                "bytes",
+                "priority",
+                "width",
+                "height",
+                "originLon",
+                "originLat",
+                "stepLon",
+                "stepLat"
+              ],
+              "additionalProperties": false,
+              "properties": {
+                "chunk": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 9999
+                },
+                "offset": {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                "bytes": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 67108864
+                },
+                "priority": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "width": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 4096
+                },
+                "height": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 4096
+                },
+                "originLon": {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                "originLat": {
+                  "type": "number",
+                  "minimum": -90,
+                  "maximum": 90
+                },
+                "stepLon": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1
+                },
+                "stepLat": {
+                  "type": "number",
+                  "exclusiveMinimum": 0,
+                  "maximum": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

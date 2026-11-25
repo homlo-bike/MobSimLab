@@ -26,6 +26,7 @@ import {
   FINISHED_RUN_STATUSES,
   FORMAT_NAME,
   FORMAT_VERSION,
+  FORMAT_VERSION_COMMENTS,
   FORMAT_VERSION_MAP,
   FORMAT_VERSION_POLYGONS,
   FORMAT_VERSION_RESULTS,
@@ -45,6 +46,14 @@ import type { MslabReadResult } from "./read.mts";
 import { storedPolygons } from "../projects/area-polygons";
 import { areaRoundDrawing } from "../projects/project-area";
 import { type MapDataSummary, MslabMapService } from "./map-data";
+import {
+  ALL_FETCHED,
+  type FetchedChoice,
+  type FetchedCounts,
+  type FetchedSummary,
+  MslabFetchedService,
+  parseFetched,
+} from "./fetched";
 
 /** The API's version, written into each file's manifest. */
 const APP_VERSION = (() => {
@@ -56,6 +65,9 @@ const APP_VERSION = (() => {
     return "0.0.0";
   }
 })();
+
+/** Room left in a file for its manifest and attribution when fetched data fills it. */
+const FETCHED_MARGIN_BYTES = 8 * 1024 * 1024;
 
 /** Limits of the sandboxed reader: a file of up to 200 MB that unpacks to up to 512 MB. */
 const READ_LIMITS = {
@@ -127,6 +139,33 @@ const readResult = z.object({
     .optional(),
   comments: scratchName.nullable().optional(),
   history: scratchName.nullable().optional(),
+  fetched: z
+    .object({
+      facts: scratchName.nullable(),
+      live: z.array(scratchName).max(2000),
+      elevation: z
+        .object({
+          index: scratchName,
+          chunks: z.array(z.object({ n: z.number().int().min(1).max(9999), file: scratchName })).max(2000),
+        })
+        .nullable(),
+      population: z
+        .object({
+          index: scratchName,
+          files: z
+            .array(
+              z.object({
+                layer: z.number().int().min(1).max(50),
+                n: z.number().int().min(1).max(9999),
+                file: scratchName,
+              }),
+            )
+            .max(2000),
+        })
+        .nullable(),
+    })
+    .nullable()
+    .optional(),
   skipped: z.array(z.string().max(300)).max(500),
 }) satisfies z.ZodType<
   Omit<MslabReadResult, "project"> & { project: Omit<ProjectFile, "createdAt" | "updatedAt"> }
@@ -251,6 +290,7 @@ export class MslabService {
     private readonly projects: ProjectsService,
     private readonly tools: ToolRunner,
     private readonly map: MslabMapService,
+    private readonly fetched: MslabFetchedService,
   ) {}
 
   /**
@@ -258,7 +298,9 @@ export class MslabService {
    * is public may not (403), as they may not duplicate it.
    * Inputs: `includeRuns` adds the finished simulation runs, `includeMap` the viewer's map data and
    * `includeResults` the results the tools worked out; `includeVehicles` false leaves out the own vehicles and fleet;
-   * `includeComments` and `includeHistory` add the comments and the history of changed values (format 1.5).
+   * `includeComments` and `includeHistory` add the comments and the history of changed values (format 1.5);
+   * `fetched` names the kinds of fetched and imported data to add (format 1.6): location facts, live tiles,
+   * elevation and population layers.
    * Output: the file name and bytes.
    * Side effects: audit `project.exported` (runs included, size).
    */
@@ -271,6 +313,7 @@ export class MslabService {
     includeVehicles = true,
     includeComments = true,
     includeHistory = true,
+    fetched: FetchedChoice = ALL_FETCHED,
   ): Promise<{ fileName: string; bytes: Buffer }> {
     if ((await this.projects.get(actor, id)).viaPublic)
       throw new ForbiddenException("public projects are read-only; ask the owner for access");
@@ -541,10 +584,20 @@ export class MslabService {
       for (const [name, body] of m.files) add(name, body);
       map = m.summary;
     }
+    // The data the project fetched or imported (format 1.6), as far as it fits in what a file may hold.
+    const held = files.reduce((n, [, b]) => n + b.length, 0);
+    const got = await this.fetched.files(
+      id,
+      polygons,
+      fetched,
+      Math.max(0, MSLAB_ZIP_LIMITS.totalBytes - held - FETCHED_MARGIN_BYTES),
+    );
+    for (const [name, body] of got.files) add(name, body);
     // The oldest version that holds what the file carries, so that older readers still open it.
-    const formatVersion =
-      commentCount || historyCount || runFileCount
-        ? FORMAT_VERSION
+    const formatVersion = got.files.length
+      ? FORMAT_VERSION
+      : commentCount || historyCount || runFileCount
+        ? FORMAT_VERSION_COMMENTS
         : includeMap
           ? FORMAT_VERSION_MAP
           : polygons.length
@@ -560,6 +613,7 @@ export class MslabService {
         runCount,
         formatVersion,
         map,
+        got.summary,
       ),
     );
 
@@ -585,6 +639,11 @@ export class MslabService {
         comments: commentCount,
         history: historyCount,
         map: map ? map.tiles : 0,
+        facts: got.summary.facts,
+        liveTiles: got.summary.liveTiles + got.summary.liveHeights,
+        elevationTiles: got.summary.elevationTiles,
+        populationLayers: got.summary.populationLayers.length,
+        leftOut: got.summary.leftOut,
         bytes: bytes.length,
       },
       this.db,
@@ -729,6 +788,8 @@ export class MslabService {
               "the comments or the history of changed values in the file are not valid",
             );
           const historyEntries = history?.success ? history.data.entries : [];
+          // Fetched and imported data (format 1.6).
+          const fetchedData = res.fetched ? await parseFetched(res.fetched, (n) => scratch.read(n)) : null;
 
           const installed = await this.db
             .selectFrom("plugin.package")
@@ -901,6 +962,9 @@ export class MslabService {
                   reason: e.reason,
                 })
                 .execute();
+            const stored: FetchedCounts = fetchedData
+              ? await this.fetched.restore(tx, p.id, actor.userId, fetchedData)
+              : { facts: 0, live: 0, elevationTiles: 0, populationLayers: 0 };
             await this.projects.logProject(
               actor,
               p.id,
@@ -924,6 +988,7 @@ export class MslabService {
                 results: results.length,
                 comments: comments.length,
                 history: historyEntries.length,
+                fetched: stored,
                 skipped: skipped.length,
                 bytes: bytes.length,
               },
@@ -965,12 +1030,57 @@ export function withRunFiles(kind: string, result: unknown, carried: readonly st
   };
 }
 
+/** Purpose: the Contents lines of ATTRIBUTION.md for the fetched data in `fetched/`. */
+function fetchedContents(f: FetchedSummary): string[] {
+  const out: string[] = [];
+  if (f.facts)
+    out.push(`- ${f.facts} looked-up location facts (country, holidays, climate, economy figures)`);
+  if (f.liveTiles) out.push(`- ${f.liveTiles} map tiles the tools fetched live`);
+  if (f.elevationTiles || f.liveHeights)
+    out.push(`- elevation: ${f.elevationTiles} tiles and ${f.liveHeights} heights fetched live`);
+  if (f.populationLayers.length) out.push(`- ${f.populationLayers.length} population layers`);
+  for (const kind of f.leftOut)
+    out.push(`- not included, because the file would be larger than a project file may be: ${kind}`);
+  return out;
+}
+
+/** Purpose: the Sources lines of ATTRIBUTION.md for the fetched data in `fetched/`. */
+function fetchedSources(f: FetchedSummary): string[] {
+  const out: string[] = [];
+  const line = (s: string) => s.replace(/[\r\n]/g, " ").slice(0, 400);
+  if (f.liveTiles)
+    out.push(
+      "- The map tiles in `fetched/` are OpenStreetMap data © OpenStreetMap contributors, available under the",
+      "  Open Database Licence (ODbL 1.0): https://www.openstreetmap.org/copyright. Share them under the ODbL.",
+    );
+  for (const s of new Set(f.elevationSources)) out.push(line(`- Elevation in \`fetched/\`: ${s}.`));
+  if (f.liveHeights && !f.elevationSources.length)
+    out.push(
+      "- Heights in `fetched/`: Copernicus GLO-30 (© DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the European Union and ESA).",
+    );
+  for (const l of f.populationLayers)
+    out.push(
+      line(
+        `- Population layer "${l.name}" in \`fetched/\`: ${
+          l.source === "worldpop" ? "WorldPop" : l.source === "ghsl" ? "GHSL" : "the planner's own data"
+        }${l.licence ? `, ${l.licence}` : ""}.`,
+      ),
+    );
+  if (f.facts)
+    out.push(
+      "- Location facts in `fetched/facts.json`: OpenStreetMap (country), Nager.Date (public holidays),",
+      "  Open-Meteo (climate, CC BY 4.0) and World Bank Open Data (economy figures, CC BY 4.0).",
+    );
+  return out;
+}
+
 function attribution(
   project: ProjectFile,
   drawings: { kind: string; doc: unknown }[],
   runs: number,
   formatVersion: string,
   map: MapDataSummary | null,
+  fetched: FetchedSummary | null = null,
 ): string {
   const lines = [
     `# ${project.name}`,
@@ -986,6 +1096,7 @@ function attribution(
           `- map data: ${map.tiles} map tiles (${map.kinds.join(", ")}), water, population and country figures`,
         ]
       : []),
+    ...(fetched ? fetchedContents(fetched) : []),
     "",
     "## Sources",
     "",
@@ -1003,6 +1114,7 @@ function attribution(
           "  data itself is not in this file.",
         ]),
   ];
+  if (fetched) lines.push(...fetchedSources(fetched));
   const gtfs = drawings.find((d) => d.kind === "gtfs-network")?.doc as
     { feeds?: { name?: unknown }[] } | undefined;
   for (const f of gtfs?.feeds ?? [])

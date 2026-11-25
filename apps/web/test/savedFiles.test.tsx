@@ -57,9 +57,19 @@ describe("saved file choices", () => {
       vehicles: true,
       comments: true,
       history: true,
+      fetched: {
+        facts: true,
+        economy: true,
+        otherFetched: true,
+        liveTiles: true,
+        elevation: true,
+        population: true,
+        uploads: true,
+      },
     });
     const off = withSaved({ values: {} }, "runs", false);
     expect(saveOptions(off).runs).toBe(false);
+    expect(saveOptions(withSaved({ values: {} }, "elevation", false)).fetched.elevation).toBe(false);
     // The drawings are always in the file.
     expect(savedIn(withSaved({ values: {} }, "design", false), "design")).toBe(true);
   });
@@ -92,7 +102,11 @@ describe("Project preferences → Saved project files", () => {
     const economy = item("Economic data (World Bank)");
     expect(within(economy).getByText("From World Bank")).toBeTruthy();
     expect(within(economy).getByText(/^Last updated /)).toBeTruthy();
-    expect(within(economy).getByText(/coming in a later update/)).toBeTruthy();
+    // The economy figures are in saved files; the OpenStreetMap extract of the area is not yet.
+    expect(within(economy).queryByText(/coming in a later update/)).toBeNull();
+    expect(
+      within(item("OpenStreetMap data of the project area")).getByText(/coming in a later update/),
+    ).toBeTruthy();
     expect(within(item("History of changes")).getByText("None yet")).toBeTruthy();
 
     // The drawings cannot be left out.
@@ -157,7 +171,7 @@ describe("Save as .mslab file", () => {
   it("starts from the Saved project files choices and leaves out what they leave out", async () => {
     const prefs: PreferencesDoc = {
       values: {},
-      savedFiles: { runs: false, processed: false, vehicles: false },
+      savedFiles: { runs: false, processed: false, vehicles: false, population: false },
     };
     const mslabUrl = vi.fn(() => "#mslab");
     const api = {
@@ -176,6 +190,35 @@ describe("Save as .mslab file", () => {
       vehicles: false,
       comments: true,
       history: true,
+      fetched: {
+        facts: true,
+        economy: true,
+        otherFetched: true,
+        liveTiles: true,
+        elevation: true,
+        population: false,
+        uploads: true,
+      },
     });
+
+    // Without the downloaded data: every kind of it is left out.
+    fireEvent.click(screen.getByRole("checkbox", { name: /Include downloaded data/ }));
+    fireEvent.click(screen.getByRole("button", { name: "Save file" }));
+    expect(mslabUrl).toHaveBeenLastCalledWith(
+      project.id,
+      false,
+      false,
+      expect.objectContaining({
+        fetched: {
+          facts: false,
+          economy: false,
+          otherFetched: false,
+          liveTiles: false,
+          elevation: false,
+          population: false,
+          uploads: false,
+        },
+      }),
+    );
   });
 });

@@ -15,7 +15,7 @@ import { projectGeodata } from "../features/geodata/api";
 import { projectCalendarRuns } from "../features/calendar-run/api";
 import { type DrawingKind, loadDrawings, saveDrawing } from "./drawings";
 import { withApiMsg } from "../i18n/engine";
-import type { SavedDataRow } from "../workspace/savedFiles";
+import { FETCHED_IDS, type FetchedId, type SavedDataRow } from "../workspace/savedFiles";
 
 export type ProjectRole = "owner" | "editor" | "commenter" | "viewer";
 
@@ -194,7 +194,14 @@ export function projectsApi(csrf: string) {
       id: string,
       runs: boolean,
       map = false,
-      more: { results?: boolean; vehicles?: boolean; comments?: boolean; history?: boolean } = {},
+      more: {
+        results?: boolean;
+        vehicles?: boolean;
+        comments?: boolean;
+        history?: boolean;
+        /** Kinds of fetched and imported data to leave out (false); the others are in the file. */
+        fetched?: Partial<Record<FetchedId, boolean>>;
+      } = {},
     ) => {
       const q = [
         runs && "runs=true",
@@ -203,6 +210,7 @@ export function projectsApi(csrf: string) {
         more.vehicles === false && "vehicles=false",
         more.comments === false && "comments=false",
         more.history === false && "history=false",
+        ...FETCHED_IDS.map((id) => more.fetched?.[id] === false && `${id}=false`),
       ]
         .filter(Boolean)
         .join("&");

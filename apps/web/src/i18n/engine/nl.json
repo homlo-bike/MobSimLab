@@ -50,6 +50,7 @@
   "api.mslab.send_mslab_file_request_body": "stuur het .mslab-bestand als body van het verzoek (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "een simulatierun in het bestand is niet geldig",
   "api.mslab.comments_or_history_not_valid": "de opmerkingen of de geschiedenis van gewijzigde waarden in het bestand zijn ongeldig",
+  "api.mslab.downloaded_data_not_valid": "de gedownloade gegevens in het bestand zijn ongeldig",
   "api.mslab.too_many_tiles": "het projectgebied beslaat {tiles} kaarttegels, meer dan de {max} die een bestand mag bevatten; maak het projectgebied kleiner of sla op zonder kaartgegevens",
   "api.places.unavailable": "Zoeken naar plaatsen is nu niet beschikbaar",
   "api.plugins.admin_turned_off": "een beheerder heeft {plugin} voor deze MobSimLab uitgezet",

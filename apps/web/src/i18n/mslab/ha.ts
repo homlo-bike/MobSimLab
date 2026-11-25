@@ -50,5 +50,7 @@ export const mslabHa = {
   "mslab.fromPrefs": "Waɗannan zaɓuɓɓuka sun fara daga Zaɓuɓɓukan aiki → Fayilolin aikin da aka ajiye.",
   "mslab.comments": "Saka sharhi da tattaunawarsu",
   "mslab.history": "Saka tarihin ƙimomin da aka canza",
+  "mslab.fetched":
+    "Haɗa bayanan da aka sauke (tayal ɗin taswira, tsawo, yawan jama'a, alkaluman yanayi da tattalin arziki), kamar yadda aka zaɓa a cikin zaɓuɓɓukan aikin",
   "mslab.fromFile": "daga fayil ɗin aiki",
 } satisfies MslabMessages;
