@@ -3,6 +3,7 @@ import request from "supertest";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type { AppConfig } from "../src/config/env";
 import { OverpassClient } from "../src/gateway/overpass.client";
+import { GeodataService } from "../src/geodata/geodata.service";
 import { createApp, testConfig } from "./support/app";
 import { startDatabase, type TestDatabase } from "./support/database";
 import { cookieValue, signIn, startIdp, type TestIdp } from "./support/idp";
@@ -66,6 +67,8 @@ describe("project area polygons", () => {
   }, 180_000);
 
   afterAll(async () => {
+    // A smaller area queues a map data import; let it end before the database goes.
+    await app?.get(GeodataService).idle();
     await app?.close();
     await idp?.server.stop();
     await db?.container.stop();
