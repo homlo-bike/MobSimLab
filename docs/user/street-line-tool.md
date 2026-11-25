@@ -12,7 +12,9 @@ Draw bus, BRT, trolleybus and intercity bus lines on the street network. The lay
 
 The line is saved with the project a moment after each change; there is no Save button. Beside the project name the top bar says **Saving…**, then **Saved**. If the connection drops it says **Not saved yet · trying again** and keeps trying; the browser warns you before you close the page with changes not yet saved. Owners and Editors save; Commenters and Viewers see the project as it was saved.
 
-When you open the tool again, the map moves to the line and its points are routed again from the streets as they are now. The Simulator's journey planner rides the saved line even before you open the tool.
+When you open the tool again, the map moves to the line and shows its saved route as it is; the route is not worked out again. It is worked out again when you change the line (its points, vehicle or routing rules, for example) or press **Recalculate**. When something the route depends on has changed since it was saved (a street layout in GIS, traffic delays, depot gates, level crossings or the routing rules), the line keeps its saved route and a notice says it is **out of date**, with the **Recalculate** button. Changes to the OpenStreetMap streets alone do not raise the notice; they take effect the next time the line is worked out. The Simulator's journey planner rides the saved line even before you open the tool.
+
+Three kinds of line are worked out again on opening without asking: a line saved before routes were saved with the line (it is worked out once and opens as saved from then on), a line with a part of its route that was not found (it is tried again once the streets have loaded, and saved only if more of the route is found), and an out-of-date line whose route uses streets that a street layout closes.
 
 If someone else saved the same drawing while you were changing it, a banner names them and asks which one the project should keep: **Keep mine** saves yours over theirs, **Use theirs** drops your changes and opens theirs. Nothing is saved until you choose. The same goes for the [railway tool](railway-tool.md) and [street setups](gis-streets.md).
 
@@ -84,4 +86,4 @@ Where the line crosses a railway on the level, buses wait while the barriers or 
 
 ## Traffic and bus lanes
 
-On main roads, buses in the general traffic take longer at peak than in a bus lane, and the running time includes that delay. The **Reliability** line under the totals shows how much of the circuit runs in main-road traffic and in bus lanes. To give a street a bus lane, or to separate one, set it up in the GIS tab ([Streets in the GIS tab](gis-streets.md)); the line is re-routed at once.
+On main roads, buses in the general traffic take longer at peak than in a bus lane, and the running time includes that delay. The **Reliability** line under the totals shows how much of the circuit runs in main-road traffic and in bus lanes. To give a street a bus lane, or to separate one, set it up in the GIS tab ([Streets in the GIS tab](gis-streets.md)). A saved line then shows that its route is out of date, with **Recalculate** (see [Saving](#saving)).
