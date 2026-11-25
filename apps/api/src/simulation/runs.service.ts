@@ -7,6 +7,7 @@ import {
   Inject,
   Injectable,
   Logger,
+  Optional,
   NotFoundException,
   ServiceUnavailableException,
 } from "@nestjs/common";
@@ -15,6 +16,7 @@ import { AuditService, projectChain } from "../audit/audit.service";
 import { type DB, DATABASE, type Database, type RunKind, type RunStatus } from "../db/database";
 import { type ProjectActor, ProjectsService } from "../projects/projects.service";
 import { GbfsClient, GbfsError } from "../gateway/gbfs.client";
+import { factKey, ProjectDataCache } from "../projects/data-cache";
 import { OverpassError } from "../gateway/overpass.client";
 import { type BikeAccess, StreetNetworkService, TILE_ZOOM } from "../street-network/street-network.service";
 import type { CapacitySettings, SweepDesign, SweepMetric } from "./params";
@@ -277,6 +279,29 @@ const iso = (d: Date | null) => (d ? d.toISOString() : null);
 /** What the audit trail records about an agent that acted on a run. */
 const agentNote = (v: AgentVia) => ({ connectionId: v.connectionId, client: v.clientName, tool: v.tool });
 
+/** The stations a GBFS feed listed when it was last read, as kept with the project (`factKey.gbfs`). */
+interface KeptGbfs {
+  url: string;
+  readAt: string;
+  stations: [number, number][];
+}
+
+/** Purpose: the kept stations of a feed from their stored text; null when there are none or they are not valid. */
+function keptGbfs(body: string | null | undefined): KeptGbfs | null {
+  if (!body) return null;
+  try {
+    const v = JSON.parse(body) as Partial<KeptGbfs>;
+    if (typeof v.readAt !== "string" || !Array.isArray(v.stations)) return null;
+    const stations = v.stations.filter(
+      (p): p is [number, number] =>
+        Array.isArray(p) && p.length === 2 && Number.isFinite(p[0]) && Number.isFinite(p[1]),
+    );
+    return stations.length ? { url: String(v.url ?? ""), readAt: v.readAt, stations } : null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Simulation runs saved with a project (ADR-0003, ADR-0023). Owners and Editors start, stop, run again and
  * delete runs; every
@@ -294,6 +319,8 @@ export class RunsService {
     private readonly queue: RunQueue,
     private readonly streets: StreetNetworkService,
     private readonly gbfs: GbfsClient,
+    // Absent when the API is assembled without the project's kept data (some tests): feeds are then read live only.
+    @Optional() private readonly kept?: ProjectDataCache,
   ) {}
 
   /**
@@ -781,7 +808,7 @@ export class RunsService {
           .set({ progress: JSON.stringify({ step: "bikes" }) })
           .where("id", "=", id)
           .execute();
-        bikes = await this.demandBikes(tiles, gbfsUrl);
+        bikes = await this.demandBikes(tiles, gbfsUrl, projectId);
         if (!(await open())) return;
       }
       // A city's street tiles are large; gzipped they fit the run's network column.
@@ -820,11 +847,14 @@ export class RunsService {
 
   /**
    * Purpose: the bike parkings and shared-bike stations of a demand run's tiles (OpenStreetMap), and the
-   * stations of its GBFS feed; each point once. Tiles or a feed that cannot be read give a note instead.
+   * stations of its GBFS feed; each point once. Tiles or a feed that cannot be read give a note instead. The
+   * stations a feed lists are kept with the project each time it is read, so a saved project file carries them;
+   * when the feed cannot be read, the kept stations are used and the note says from when they are.
    */
   private async demandBikes(
     tiles: [number, number][],
     gbfsUrl?: string,
+    projectId?: string,
   ): Promise<{ parking: [number, number][]; rental: [number, number][]; notes: string[] }> {
     const parking = new Map<string, [number, number]>();
     const rental = new Map<string, [number, number]>();
@@ -850,12 +880,27 @@ export class RunsService {
         `bike parkings and shared-bike stations of ${failed} of ${tiles.length} OpenStreetMap tiles could not be loaded`,
       );
     if (gbfsUrl) {
+      const key = factKey.gbfs(gbfsUrl);
       try {
         const stations = await this.gbfs.stations(gbfsUrl);
         for (const p of stations) add(rental, p);
         if (!stations.length) notes.push("the GBFS feed lists no shared-bike stations");
+        else if (projectId)
+          await this.kept?.put(
+            projectId,
+            "facts",
+            key,
+            JSON.stringify({ url: gbfsUrl, readAt: new Date().toISOString(), stations } satisfies KeptGbfs),
+          );
       } catch (e) {
-        notes.push(e instanceof GbfsError ? e.message : "the GBFS feed could not be read");
+        const why = e instanceof GbfsError ? e.message : "the GBFS feed could not be read";
+        const kept = projectId ? keptGbfs(await this.kept?.get(projectId, "facts", key)) : null;
+        if (kept) {
+          for (const p of kept.stations) add(rental, p);
+          notes.push(
+            `${why}; the ${kept.stations.length} shared-bike stations kept with the project on ${kept.readAt.slice(0, 10)} were used`,
+          );
+        } else notes.push(why);
       }
     }
     return { parking: [...parking.values()], rental: [...rental.values()], notes };

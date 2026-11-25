@@ -1111,7 +1111,9 @@ function fetchedSources(f: FetchedSummary): string[] {
   if (f.facts)
     out.push(
       "- Location facts in `fetched/facts.json`: OpenStreetMap (country), Nager.Date (public holidays),",
-      "  Open-Meteo (climate, CC BY 4.0) and World Bank Open Data (economy figures, CC BY 4.0).",
+      "  Open-Meteo (climate, CC BY 4.0), World Bank Open Data (economy figures, CC BY 4.0), the GEBCO grid (water",
+      "  depths, public domain, attribution requested: GEBCO Compilation Group) and the shared-bike feeds (GBFS) the",
+      "  project's demand runs read, under each feed's own licence.",
     );
   return out;
 }

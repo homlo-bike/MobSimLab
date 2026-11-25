@@ -112,3 +112,9 @@ project works without downloading it again.
   in from the file (`osm`). The projects home then reads what the new project holds and lists the downloadable
   kinds it lacks (map extract, elevation, population, location facts, economy figures) in a dialog. Each has a
   Download button that opens the project where that download is started: the GIS tab or Project preferences.
+- Shared-bike stations and water depths (decided 2026-11-25): the stations a GBFS feed lists are kept with the
+  project each time a demand run reads the feed (`gbfs/<hash of the feed's address>`), and used with a note when
+  the feed cannot be read. The GEBCO depths the ferry checks ask for are kept per point (`depth/<lon>,<lat>`,
+  four decimals) and read from the project before the depth service. Both are location facts of the group
+  `otherFetched`, with the OpenStreetMap areas the benefit catchments look up, so `fetched/facts.json` carries
+  them without a change to the format.

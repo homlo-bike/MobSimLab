@@ -15,6 +15,7 @@ import { GEBCO_SOURCE, GebcoClient, GebcoError } from "../gateway/gebco.client";
 import { OpenElevationError } from "../gateway/open-elevation.client";
 import { OverpassError } from "../gateway/overpass.client";
 import { ProjectGate } from "../geodata/project-gate";
+import { factKey, ProjectDataCache } from "../projects/data-cache";
 import { Requires } from "../iam/requires";
 import { BUILDING_SOURCE, MAX_SAMPLES, TerrainService, type LonLat, mainSource } from "./terrain.service";
 
@@ -25,7 +26,10 @@ const pointsBody = z.object({
 });
 /** Most points one depth request asks (the ferry route checks ask up to 400). */
 export const MAX_DEPTH_POINTS = 1_000;
-const depthsBody = z.object({ points: z.array(lonLat).min(1).max(MAX_DEPTH_POINTS) });
+const depthsBody = z.object({
+  points: z.array(lonLat).min(1).max(MAX_DEPTH_POINTS),
+  projectId: z.string().optional(),
+});
 const profileBody = z.object({
   lines: z.array(z.array(lonLat).min(1).max(5_000)).min(1).max(500),
   spacingM: z.number().min(5).max(1_000).default(50),
@@ -46,21 +50,37 @@ export class TerrainController {
     private readonly terrain: TerrainService,
     @Optional() private readonly gate?: ProjectGate,
     @Optional() private readonly gebco?: GebcoClient,
+    @Optional() private readonly kept?: ProjectDataCache,
   ) {}
 
   /**
    * Purpose: water depths at points from the GEBCO grid, for the ferry route checks.
    * Inputs: { points: [[lon, lat], ...] }. Output: { depthsM: (number | null)[] (metres below sea level; land is
-   * negative), source }; 503 when depths are turned off on this instance.
+   * negative), source }; 503 when depths are turned off on this instance. With `projectId` (a project the caller
+   * can read), depths the project already asked for come from the project and new ones are kept with it, so a
+   * saved project file carries them and the checks work without the depth service.
    */
   @Post("depths")
   @HttpCode(200)
   @Requires("instance.read")
-  async depths(@Body() body: unknown) {
-    const { points } = parse(depthsBody, body);
-    if (!this.gebco) throw new HttpException("Water depths are turned off on this instance", 503);
-    const gebco = this.gebco;
-    const depthsM = await upstream(() => gebco.depths(points as LonLat[]));
+  async depths(@Body() body: unknown, @Req() req: MslRequest) {
+    const { points, projectId } = parse(depthsBody, body);
+    const project = this.kept ? await this.gate?.readable(req, projectId) : undefined;
+    const keys = (points as LonLat[]).map(([lon, lat]) => factKey.depth(lon, lat));
+    const have = project
+      ? await this.kept!.getMany(project, "facts", [...new Set(keys)])
+      : new Map<string, string>();
+    const missing = (points as LonLat[]).filter((_, i) => !have.has(keys[i]!));
+    if (missing.length) {
+      if (!this.gebco) throw new HttpException("Water depths are turned off on this instance", 503);
+      const gebco = this.gebco;
+      const got = await upstream(() => gebco.depths(missing));
+      const fresh = new Map<string, string>();
+      missing.forEach(([lon, lat], i) => fresh.set(factKey.depth(lon, lat), JSON.stringify(got[i] ?? null)));
+      if (project) await this.kept!.putMany(project, "facts", [...fresh]);
+      for (const [k, v] of fresh) have.set(k, v);
+    }
+    const depthsM = keys.map((k) => JSON.parse(have.get(k) ?? "null") as number | null);
     return { depthsM, source: GEBCO_SOURCE };
   }
 

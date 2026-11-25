@@ -51,6 +51,8 @@ const FACT_SOURCES: Record<string, string> = {
   economy: "World Bank",
   "benefit-indicators/": "World Bank",
   "osm-areas/": "OpenStreetMap",
+  "gbfs/": "GBFS feed",
+  "depth/": "GEBCO",
 };
 
 const POPULATION_SOURCES: Record<string, string> = { worldpop: "WorldPop", ghsl: "GHSL" };
