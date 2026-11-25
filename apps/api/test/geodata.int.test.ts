@@ -410,6 +410,12 @@ describe("geodata import", () => {
     expect(overpassQueries.length).toBeLessThanOrEqual(4);
     expect(st.osm.current.options.area.map((p: { id: string }) => p.id)).toEqual(["a1", "a2"]);
     expect(st.osm.coversDrawing).toBe(true);
+    expect(st.osm.matchesDrawing).toBe(true);
+    // A smaller area: the import still covers it but holds more, so saving the area downloads it again.
+    await setArea([square("a1", 6.995, 49.995, 0.02)]);
+    const smaller = (await as("alice").get(`/api/projects/${project}/geodata`)).body;
+    expect(smaller.osm.coversDrawing).toBe(true);
+    expect(smaller.osm.matchesDrawing).toBe(false);
 
     // Data outside every polygon is cut away: an area far from the file's roads keeps none of them.
     await setArea([square("a2", 7.3, 50.3, 0.01)]);

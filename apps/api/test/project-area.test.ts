@@ -76,6 +76,8 @@ describe("queueing the imports when the area is saved", () => {
   const make = (o: {
     suggested?: "overpass" | "geofabrik";
     osmCovers?: boolean;
+    /** The OSM import covers the area but holds more (polygons removed or made smaller since). */
+    osmLarger?: boolean;
     demLatest?: string;
     layers?: unknown[];
     demFails?: boolean;
@@ -83,7 +85,11 @@ describe("queueing the imports when the area is saved", () => {
     const geodata = {
       status: vi.fn(async () => ({
         suggestedMethod: o.suggested ?? "overpass",
-        osm: { coversDrawing: !!o.osmCovers, latest: null },
+        osm: {
+          coversDrawing: !!o.osmCovers || !!o.osmLarger,
+          matchesDrawing: !!o.osmCovers && !o.osmLarger,
+          latest: null,
+        },
         dem: { coversDrawing: false, latest: o.demLatest ? { status: o.demLatest } : null },
       })),
       startOsm: vi.fn(async () => ({})),
@@ -130,6 +136,13 @@ describe("queueing the imports when the area is saved", () => {
     expect(out.map((x) => x.status)).toEqual(["queued", "current", "current"]);
     expect(geodata.startDem).not.toHaveBeenCalled();
     expect(population.startImport).not.toHaveBeenCalled();
+  });
+
+  it("downloads a smaller area again, so the data follows the polygons both ways", async () => {
+    const { svc, geodata } = make({ osmLarger: true });
+    const out = await svc.queueImports(actor, "p");
+    expect(out[0]).toEqual({ kind: "osm", status: "queued" });
+    expect(geodata.startOsm).toHaveBeenCalled();
   });
 
   it("says why an import could not start and still starts the others", async () => {

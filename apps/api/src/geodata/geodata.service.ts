@@ -220,6 +220,9 @@ export class GeodataService implements OnApplicationBootstrap {
     });
     // An import covers the area when its polygons hold today's (imports before 2026-11-19 recorded a box only).
     const covers = (r: ImportRun | null) => !!r && !!area && polygonsCover(importPolygons(r), area.polygons);
+    // It matches the area when it covers it and holds nothing more: no polygon the planner has since removed or
+    // made smaller.
+    const matches = (r: ImportRun | null) => covers(r) && polygonsCover(area!.polygons, importPolygons(r!));
     const osm = of("osm");
     const dem = of("dem");
     const demUpload = of("dem_upload");
@@ -227,8 +230,8 @@ export class GeodataService implements OnApplicationBootstrap {
     return {
       canImport: role === "owner" || role === "editor",
       area: area ? { ...area, areaKm2 } : null,
-      osm: { ...osm, coversDrawing: covers(osm.current) },
-      dem: { ...dem, coversDrawing: covers(dem.current) },
+      osm: { ...osm, coversDrawing: covers(osm.current), matchesDrawing: matches(osm.current) },
+      dem: { ...dem, coversDrawing: covers(dem.current), matchesDrawing: matches(dem.current) },
       demUpload,
       suggestedMethod:
         areaKm2 !== null && areaKm2 > this.settings.overpass.maxAreaKm2 ? "geofabrik" : "overpass",

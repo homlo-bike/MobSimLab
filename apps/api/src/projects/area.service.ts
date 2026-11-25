@@ -173,7 +173,7 @@ export class ProjectAreaService {
   /**
    * Purpose: queue the OpenStreetMap (Overpass up to its limit, else the smallest Geofabrik region holding the
    * area), elevation (Copernicus GLO-30) and population (WorldPop) imports for the project area, skipping those
-   * that already cover it or are running. Each import that cannot start says why; the others still start.
+   * that already hold exactly the area (population: cover it) or are running. Each import that cannot start says why; the others still start.
    */
   async queueImports(actor: ProjectActor, projectId: string, again = false): Promise<AreaImport[]> {
     const area = await projectArea(this.db, projectId);
@@ -189,7 +189,9 @@ export class ProjectAreaService {
       }
     };
     const out: AreaImport[] = [];
-    if (running(status.osm.latest?.status) || (!again && status.osm.coversDrawing))
+    // The data follows the area both ways: a larger area is downloaded, and a smaller one replaces the data of
+    // the larger one, so the project keeps only what its polygons hold.
+    if (running(status.osm.latest?.status) || (!again && status.osm.matchesDrawing))
       out.push({ kind: "osm", status: "current" });
     else
       out.push(
@@ -205,7 +207,7 @@ export class ProjectAreaService {
           });
         }),
       );
-    if (running(status.dem.latest?.status) || (!again && status.dem.coversDrawing))
+    if (running(status.dem.latest?.status) || (!again && status.dem.matchesDrawing))
       out.push({ kind: "dem", status: "current" });
     else out.push(await attempt("dem", () => this.geodata.startDem(actor, projectId)));
     const layers = (await this.population.overview(actor, projectId)).layers;
