@@ -18,7 +18,7 @@ import {
 } from "./api";
 import { engineErrorText } from "../i18n/engine";
 import type { PreferencesDoc } from "../workspace/preferences";
-import { saveOptions, savedIn } from "../workspace/savedFiles";
+import { saveOptions } from "../workspace/savedFiles";
 
 /** An error line under a form. */
 function ErrorLine({ error }: { error: string | null }) {
@@ -592,6 +592,8 @@ export function SaveMslabDialog({
   const [map, setMap] = useState(false);
   const [results, setResults] = useState(true);
   const [vehicles, setVehicles] = useState(true);
+  const [comments, setComments] = useState(true);
+  const [history, setHistory] = useState(true);
   // The choices start from Project preferences → Saved project files.
   useEffect(() => {
     if (typeof api.drawings !== "function") return;
@@ -599,12 +601,13 @@ export function SaveMslabDialog({
     api.drawings(project.id).then(
       (d) => {
         if (!live) return;
-        const doc = (d.preferences?.doc ?? null) as PreferencesDoc | null;
-        const o = saveOptions(doc);
+        const o = saveOptions((d.preferences?.doc ?? null) as PreferencesDoc | null);
         setRuns(o.runs);
         setMap(o.map);
         setResults(o.results);
-        setVehicles(savedIn(doc, "vehicles"));
+        setVehicles(o.vehicles);
+        setComments(o.comments);
+        setHistory(o.history);
       },
       () => {},
     );
@@ -640,7 +643,7 @@ export function SaveMslabDialog({
             onClick={() => {
               // A real button for keyboards and screen readers; the download itself goes through a link.
               const a = document.createElement("a");
-              a.href = api.mslabUrl(project.id, runs, map, { results, vehicles });
+              a.href = api.mslabUrl(project.id, runs, map, { results, vehicles, comments, history });
               a.download = "";
               document.body.append(a);
               a.click();
@@ -657,6 +660,8 @@ export function SaveMslabDialog({
       {box(runs, setRuns, "mslab.runs", true)}
       {box(results, setResults, "mslab.results")}
       {box(vehicles, setVehicles, "mslab.vehicles")}
+      {box(comments, setComments, "mslab.comments")}
+      {box(history, setHistory, "mslab.history")}
       {box(map, setMap, "mslab.map")}
       <p className="mt-4 mb-0 text-xs text-slate-500">{t("mslab.fromPrefs")}</p>
     </Dialog>

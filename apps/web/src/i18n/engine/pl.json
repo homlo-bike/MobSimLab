@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "przebieg symulacji {id} jest większy, niż może być przebieg",
   "api.mslab.send_mslab_file_request_body": "wyślij plik .mslab jako treść żądania (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "przebieg symulacji w pliku jest nieprawidłowy",
+  "api.mslab.comments_or_history_not_valid": "komentarze lub historia zmienionych wartości w pliku są nieprawidłowe",
   "api.mslab.too_many_tiles": "obszar projektu zajmuje {tiles} kafelków mapy, więcej niż {max}, które może zawierać plik; zmniejsz obszar projektu lub zapisz bez danych mapy",
   "api.places.unavailable": "Wyszukiwanie miejsc jest teraz niedostępne",
   "api.plugins.admin_turned_off": "administrator wyłączył wtyczkę {plugin} w tym MobSimLab",

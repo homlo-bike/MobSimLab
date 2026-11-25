@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "సిమ్యులేషన్ రన్ {id} ఒక రన్‌కు అనుమతించిన దాని కంటే పెద్దది",
   "api.mslab.send_mslab_file_request_body": ".mslab ఫైల్‌ను అభ్యర్థన బాడీగా పంపండి (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "ఫైల్‌లోని ఒక సిమ్యులేషన్ రన్ చెల్లదు",
+  "api.mslab.comments_or_history_not_valid": "ఫైల్‌లోని వ్యాఖ్యలు లేదా మార్చిన విలువల చరిత్ర చెల్లదు",
   "api.mslab.too_many_tiles": "ప్రాజెక్ట్ ప్రాంతానికి {tiles} మ్యాప్ టైల్స్ అవసరం, ఒక ఫైల్ మోయగల {max} కంటే ఎక్కువ; ప్రాజెక్ట్ ప్రాంతాన్ని చిన్నదిగా చేయండి లేదా మ్యాప్ డేటా లేకుండా సేవ్ చేయండి",
   "api.places.unavailable": "ప్రదేశ శోధన ప్రస్తుతం అందుబాటులో లేదు",
   "api.plugins.admin_turned_off": "ఒక నిర్వాహకుడు ఈ MobSimLab కోసం {plugin}ను ఆఫ్ చేశారు",

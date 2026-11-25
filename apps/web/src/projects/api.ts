@@ -73,6 +73,8 @@ export interface ValueHistoryEntry {
   reason: string | null;
   at: string;
   by: { id: string; displayName: string | null } | null;
+  /** The change came with the .mslab file the project was opened from: read-only, after the project's own. */
+  fromFile?: boolean;
 }
 
 /** Where a project shows on the projects home. */
@@ -161,6 +163,29 @@ export function projectsApi(csrf: string) {
       );
     },
     /**
+     * The history of changed values the project was opened with from a `.mslab` file (read-only), newest first,
+     * in the shape of `valueHistory`; empty for a project not opened from a file.
+     */
+    fileValueHistory: (id: string) =>
+      get<{
+        history?: (Omit<ValueHistoryEntry, "seq" | "by" | "fromFile"> & {
+          n: number;
+          byName: string | null;
+        })[];
+      }>(`${one(id)}/value-history/file`).then((r) =>
+        (r.history ?? []).map((h): ValueHistoryEntry => ({
+          seq: -1 - h.n,
+          id: h.id,
+          kind: h.kind,
+          before: h.before,
+          after: h.after,
+          reason: h.reason,
+          at: h.at,
+          by: h.byName ? { id: "", displayName: h.byName } : null,
+          fromFile: true,
+        })),
+      ),
+    /**
      * Where to download the project as a `.mslab` file (ADR-0021), with or without its simulation runs, and with
      * or without the map data of its area for the static viewer, and without the results or own vehicles when the
      * Saved project files choices leave them out.
@@ -169,13 +194,15 @@ export function projectsApi(csrf: string) {
       id: string,
       runs: boolean,
       map = false,
-      more: { results?: boolean; vehicles?: boolean } = {},
+      more: { results?: boolean; vehicles?: boolean; comments?: boolean; history?: boolean } = {},
     ) => {
       const q = [
         runs && "runs=true",
         map && "map=true",
         more.results === false && "results=false",
         more.vehicles === false && "vehicles=false",
+        more.comments === false && "comments=false",
+        more.history === false && "history=false",
       ]
         .filter(Boolean)
         .join("&");

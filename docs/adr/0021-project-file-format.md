@@ -55,3 +55,22 @@ Large-area projects, step 5 (the plan called it 1.3; 1.3 went to the area polygo
   still works: the file is kept and the tiles cut from it. `tools/add-projects.mjs` reads 1.0 to 1.4.
 - Only a file with map data is saved as 1.4.0, so MobSimLab 1.3 readers still open the rest. A MobSimLab that
   opens a 1.4.0 file leaves the map data out, as for 1.1.
+
+## Format 1.5.0 (2026-11-25)
+
+Project file as a complete capsule, stage 2.
+
+- `collab/comments.json`: the comments on the project's objects and their replies. People may not exist on the
+  instance that opens the file, so the names of who wrote and resolved each comment are kept as text. Opening the
+  file gives the comments new ids, keeps each reply with its thread, and marks them as from the file
+  (`collab.comment.from_file`, `file_author`, `file_resolved_by`; db/migrations/0029). Comments on objects this
+  MobSimLab does not have are left out and listed.
+- `history/values.json`: the history of changed values, newest first: the project's own changes, then the history
+  it was opened with. Opening the file keeps it read-only in `project.file_value_history`, shown after the new
+  project's own changes and marked as from the file (`GET /api/projects/:id/value-history/file`).
+- `runs/<id>/files/<name>`: the files a run saved next to its result (a demand run's OD matrices, `od.omx`),
+  listed in `run.json` under `files` with their media types. A file over the 70 MB per-file limit stays out, and
+  the run's result then lists only the files the .mslab holds.
+- Project preferences → Saved project files switches decide whether a file holds them (`comments=false`,
+  `history=false` on the export). Only a file holding one of them is saved as 1.5.0, so older readers still open
+  the rest. `tools/static-site/add-projects.mjs` reads 1.0 to 1.5.

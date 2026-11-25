@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "シミュレーション計算 {id} が計算の上限サイズを超えています。",
   "api.mslab.send_mslab_file_request_body": ".mslab ファイルをリクエスト本文として送信してください（application/octet-stream）。",
   "api.mslab.simulation_run_file_not_valid": "ファイル内のシミュレーション計算が無効です。",
+  "api.mslab.comments_or_history_not_valid": "ファイル内のコメントまたは変更された値の履歴が無効です",
   "api.mslab.too_many_tiles": "対象地域には地図タイルが {tiles} 枚必要で、1 つのファイルに含められる {max} 枚を超えています。対象地域を小さくするか、地図データなしで保存してください。",
   "api.places.unavailable": "地名検索は現在利用できません。",
   "api.plugins.admin_turned_off": "管理者がこの MobSimLab で {plugin} をオフにしました。",

@@ -48,4 +48,7 @@ export const mslabHa = {
   "mslab.results": "Saka sakamakon da kayan aiki suka lissafa (aikin zai buɗe ba tare da sake lissafawa ba)",
   "mslab.vehicles": "Saka motocin aikin da rukunin motocinsa",
   "mslab.fromPrefs": "Waɗannan zaɓuɓɓuka sun fara daga Zaɓuɓɓukan aiki → Fayilolin aikin da aka ajiye.",
+  "mslab.comments": "Saka sharhi da tattaunawarsu",
+  "mslab.history": "Saka tarihin ƙimomin da aka canza",
+  "mslab.fromFile": "daga fayil ɗin aiki",
 } satisfies MslabMessages;

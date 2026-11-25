@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "gudanar kwaikwayo {id} ya fi girman da gudanarwa zai iya kasancewa",
   "api.mslab.send_mslab_file_request_body": "aika fayil ɗin .mslab a matsayin jikin buƙata (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "wani gudanar kwaikwayo a cikin fayil ɗin ba shi da inganci",
+  "api.mslab.comments_or_history_not_valid": "sharhi ko tarihin ƙimomin da aka canza a cikin fayil ɗin ba su da inganci",
   "api.mslab.too_many_tiles": "yankin aiki yana ɗaukar tayil ɗin taswira {tiles}, fiye da {max} da fayil zai iya ɗauka; rage yankin aiki ko adana ba tare da bayanan taswira ba",
   "api.places.unavailable": "Neman wuri ba ya samuwa a yanzu",
   "api.plugins.admin_turned_off": "wani mai gudanarwa ya kashe {plugin} ga wannan MobSimLab",

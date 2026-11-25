@@ -48,4 +48,7 @@ export const mslabVi = {
   "mslab.results": "Đưa vào kết quả do công cụ tính (dự án mở mà không phải tính lại)",
   "mslab.vehicles": "Đưa vào phương tiện riêng và đội xe của dự án",
   "mslab.fromPrefs": "Các lựa chọn này lấy từ Tùy chọn dự án → Tệp dự án đã lưu.",
+  "mslab.comments": "Đưa vào bình luận và thảo luận",
+  "mslab.history": "Đưa vào lịch sử các giá trị đã thay đổi",
+  "mslab.fromFile": "từ tệp dự án",
 } satisfies MslabMessages;

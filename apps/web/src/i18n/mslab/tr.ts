@@ -48,4 +48,7 @@ export const mslabTr = {
   "mslab.results": "Araçların hesapladığı sonuçları dahil et (proje yeniden hesaplamadan açılır)",
   "mslab.vehicles": "Projenin kendi araçlarını ve filosunu dahil et",
   "mslab.fromPrefs": "Bu seçimler Proje tercihleri → Kaydedilen proje dosyaları'ndan gelir.",
+  "mslab.comments": "Yorumları ve tartışmaları dahil et",
+  "mslab.history": "Değiştirilen değerlerin geçmişini dahil et",
+  "mslab.fromFile": "proje dosyasından",
 } satisfies MslabMessages;

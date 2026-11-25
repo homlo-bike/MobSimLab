@@ -48,4 +48,7 @@ export const mslabJa = {
   "mslab.results": "ツールが計算した結果を含める（再計算せずにプロジェクトが開きます）",
   "mslab.vehicles": "プロジェクト独自の車両と車両編成を含める",
   "mslab.fromPrefs": "これらの選択はプロジェクト設定 → 保存するプロジェクトファイルから始まります。",
+  "mslab.comments": "コメントとスレッドを含める",
+  "mslab.history": "変更された値の履歴を含める",
+  "mslab.fromFile": "プロジェクトファイルから",
 } satisfies MslabMessages;

@@ -48,4 +48,7 @@ export const mslabPl = {
   "mslab.results": "Dołącz wyniki obliczone przez narzędzia (projekt otworzy się bez ponownego obliczania)",
   "mslab.vehicles": "Dołącz własne pojazdy i tabor projektu",
   "mslab.fromPrefs": "Te wybory pochodzą z Ustawień projektu → Zapisane pliki projektu.",
+  "mslab.comments": "Dołącz komentarze i wątki",
+  "mslab.history": "Dołącz historię zmienionych wartości",
+  "mslab.fromFile": "z pliku projektu",
 } satisfies MslabMessages;

@@ -48,4 +48,7 @@ export const mslabSw = {
   "mslab.results": "Jumuisha matokeo yaliyokokotolewa na zana (mradi unafunguka bila kukokotoa tena)",
   "mslab.vehicles": "Jumuisha magari ya mradi na kundi lake la magari",
   "mslab.fromPrefs": "Chaguo hizi zinaanzia Mapendeleo ya mradi → Faili za mradi zilizohifadhiwa.",
+  "mslab.comments": "Jumuisha maoni na mijadala yake",
+  "mslab.history": "Jumuisha historia ya thamani zilizobadilishwa",
+  "mslab.fromFile": "kutoka kwenye faili ya mradi",
 } satisfies MslabMessages;

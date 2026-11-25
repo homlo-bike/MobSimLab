@@ -48,4 +48,7 @@ export const mslabUz = {
   "mslab.results": "Vositalar hisoblagan natijalarni kiritish (loyiha qayta hisoblamasdan ochiladi)",
   "mslab.vehicles": "Loyihaning o‘z transport vositalari va parkini kiritish",
   "mslab.fromPrefs": "Bu tanlovlar Loyiha sozlamalari → Saqlanadigan loyiha fayllari bo‘limidan boshlanadi.",
+  "mslab.comments": "Izohlar va muhokamalarni kiritish",
+  "mslab.history": "O‘zgartirilgan qiymatlar tarixini kiritish",
+  "mslab.fromFile": "loyiha faylidan",
 } satisfies MslabMessages;

@@ -92,6 +92,25 @@ describe("comments on objects", () => {
     expect(screen.getByLabelText("1 open comment thread")).toBeTruthy();
   });
 
+  it("shows comments opened from a project file with the names the file kept", async () => {
+    const api = fakeApi([
+      comment({
+        author: null,
+        fromFile: true,
+        fileAuthor: "Rana",
+        resolvedAt: "2026-11-16T12:00:00.000Z",
+        fileResolvedBy: "Sami",
+      }),
+    ]);
+    setup(api);
+    fireEvent.click(await screen.findByRole("button", { name: "Show 1 resolved thread" }));
+    expect(screen.getByText("Rana")).toBeTruthy();
+    expect(screen.getByText(/from the project file/)).toBeTruthy();
+    expect(screen.getByText(/Sami/)).toBeTruthy();
+    // Nobody here wrote it, so nobody but the Owner may delete it, and nobody may edit it.
+    expect(screen.queryByRole("button", { name: "Edit" })).toBeNull();
+  });
+
   it("starts a thread, replies to it and resolves it", async () => {
     const api = fakeApi([]);
     setup(api);

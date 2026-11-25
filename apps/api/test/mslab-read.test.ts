@@ -81,7 +81,7 @@ describe("mslab reader", () => {
   });
 
   it("refuses files from a newer MobSimLab", async () => {
-    for (const v of ["1.5.0", "2.0.0"]) {
+    for (const v of ["1.6.0", "2.0.0"]) {
       const files = resign(folder(join(FIXTURES, "1.0.0")), (m) => (m.formatVersion = v));
       await refused(writeZip(files), /newer MobSimLab/);
     }
@@ -139,6 +139,58 @@ describe("mslab reader", () => {
     const bad = folder(join(FIXTURES, "1.0.0"));
     bad.set("results/noise.json", Buffer.from(JSON.stringify({ ...result, inputs: "not a fingerprint!" })));
     await refused(writeZip(resign(bad, (m) => (m.formatVersion = "1.2.0"))), /results\/noise\.json/);
+  });
+
+  it("reads comments, the history of changed values and a run's files (format 1.5)", async () => {
+    const run = "0194f3a2-6c1d-7b2e-9f00-4a5b6c7d8e9f";
+    const files = folder(join(FIXTURES, "1.0.0"));
+    const runJson = JSON.parse(files.get(`runs/${run}/run.json`)!.toString()) as Record<string, unknown>;
+    files.set(
+      `runs/${run}/run.json`,
+      Buffer.from(
+        JSON.stringify({ ...runJson, files: [{ name: "od.omx", mediaType: "application/x-hdf5" }] }),
+      ),
+    );
+    files.set(`runs/${run}/files/od.omx`, Buffer.from("OMX"));
+    const comment = {
+      id: "0194f3a2-6c1d-7b2e-9f00-000000000001",
+      objectType: "station",
+      objectId: "s1",
+      parentId: null,
+      body: "Move the entrance",
+      author: "Rana",
+      createdAt: "2026-11-18T17:00:00.000Z",
+      editedAt: null,
+      resolvedAt: null,
+      resolvedBy: null,
+    };
+    files.set("collab/comments.json", Buffer.from(JSON.stringify({ comments: [comment] })));
+    const change = {
+      id: "street.mixed_traffic_delay_share",
+      kind: "changed",
+      before: { value: null, reason: null },
+      after: { value: 0.25, reason: "survey" },
+      reason: "survey",
+      at: "2026-11-18T17:00:00.000Z",
+      by: "Rana",
+    };
+    files.set("history/values.json", Buffer.from(JSON.stringify({ entries: [change] })));
+    const r = await read(writeZip(resign(files, (m) => (m.formatVersion = "1.5.0"))));
+    expect(r).toMatchObject({
+      formatVersion: "1.5.0",
+      comments: "comments.json",
+      history: "history.json",
+      runs: [{ files: [{ name: "od.omx", mediaType: "application/x-hdf5", file: "run-1-file-1.bin" }] }],
+      skipped: [],
+    });
+
+    // A run file its run does not list, and a comment without its fields, are refused.
+    const extra = folder(join(FIXTURES, "1.0.0"));
+    extra.set(`runs/${run}/files/od.omx`, Buffer.from("OMX"));
+    await refused(writeZip(resign(extra, (m) => (m.formatVersion = "1.5.0"))), /is not listed in/);
+    const bad = folder(join(FIXTURES, "1.0.0"));
+    bad.set("collab/comments.json", Buffer.from(JSON.stringify({ comments: [{ ...comment, body: "" }] })));
+    await refused(writeZip(resign(bad, (m) => (m.formatVersion = "1.5.0"))), /collab\/comments\.json/);
   });
 
   it("refuses changed, missing and extra files", async () => {

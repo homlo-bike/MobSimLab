@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "시뮬레이션 실행 {id}이(가) 실행 크기 한도보다 큽니다",
   "api.mslab.send_mslab_file_request_body": ".mslab 파일을 요청 본문으로 보내세요(application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "파일의 시뮬레이션 실행 중 하나가 올바르지 않습니다",
+  "api.mslab.comments_or_history_not_valid": "파일의 댓글 또는 변경된 값의 기록이 올바르지 않습니다",
   "api.mslab.too_many_tiles": "프로젝트 지역에 지도 타일이 {tiles}개 필요해 파일 한도 {max}개를 넘습니다. 프로젝트 지역을 줄이거나 지도 데이터 없이 저장하세요",
   "api.places.unavailable": "지금은 장소 검색을 사용할 수 없습니다",
   "api.plugins.admin_turned_off": "관리자가 이 MobSimLab에서 {plugin}을(를) 껐습니다",

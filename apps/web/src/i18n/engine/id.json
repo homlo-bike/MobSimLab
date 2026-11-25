@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "hasil simulasi {id} lebih besar dari ukuran yang diizinkan untuk satu simulasi",
   "api.mslab.send_mslab_file_request_body": "kirim berkas .mslab sebagai isi permintaan (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "salah satu hasil simulasi dalam berkas tidak valid",
+  "api.mslab.comments_or_history_not_valid": "komentar atau riwayat nilai yang diubah dalam file tidak valid",
   "api.mslab.too_many_tiles": "area proyek memerlukan {tiles} ubin peta, lebih dari {max} yang dapat dibawa satu berkas; perkecil area proyek atau simpan tanpa data peta",
   "api.places.unavailable": "Pencarian tempat sedang tidak tersedia",
   "api.plugins.admin_turned_off": "administrator menonaktifkan {plugin} untuk MobSimLab ini",

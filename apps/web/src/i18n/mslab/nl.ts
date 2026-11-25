@@ -49,4 +49,7 @@ export const mslabNl = {
     "Neem de door de tools berekende resultaten op (het project opent zonder ze opnieuw te berekenen)",
   "mslab.vehicles": "Neem de eigen voertuigen en vloot van het project op",
   "mslab.fromPrefs": "Deze keuzes beginnen bij Projectvoorkeuren → Opgeslagen projectbestanden.",
+  "mslab.comments": "Opmerkingen en discussies opnemen",
+  "mslab.history": "Geschiedenis van gewijzigde waarden opnemen",
+  "mslab.fromFile": "uit het projectbestand",
 } satisfies MslabMessages;

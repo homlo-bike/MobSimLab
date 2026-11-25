@@ -48,4 +48,7 @@ export const mslabKo = {
   "mslab.results": "도구가 계산한 결과 포함(다시 계산하지 않고 프로젝트가 열림)",
   "mslab.vehicles": "프로젝트의 자체 차량과 차량 편성 포함",
   "mslab.fromPrefs": "이 선택은 프로젝트 환경설정 → 저장되는 프로젝트 파일에서 시작됩니다.",
+  "mslab.comments": "댓글과 토론 포함",
+  "mslab.history": "변경된 값의 기록 포함",
+  "mslab.fromFile": "프로젝트 파일에서",
 } satisfies MslabMessages;

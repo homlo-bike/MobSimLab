@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "ìṣiṣẹ́ àfarawé {id} tóbi ju bí ìṣiṣẹ́ kan ṣe lè tóbi tó",
   "api.mslab.send_mslab_file_request_body": "fi fáìlì .mslab ránṣẹ́ gẹ́gẹ́ bí ara ìbéèrè (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "ìṣiṣẹ́ àfarawé kan nínú fáìlì náà kò tọ́",
+  "api.mslab.comments_or_history_not_valid": "àwọn àsọyé tàbí ìtàn àwọn iye tí a yí padà nínú fáìlì kò bófin mu",
   "api.mslab.too_many_tiles": "agbègbè iṣẹ́ àkànṣe ń gba tile màápù {tiles}, ju {max} tí fáìlì kan lè gbé lọ; mú agbègbè iṣẹ́ àkànṣe kéré sí i tàbí fi pamọ́ láìsí ìwífún màápù",
   "api.places.unavailable": "Ìwákiri ibi kò sí lárọ̀ọ́wọ́tó báyìí",
   "api.plugins.admin_turned_off": "alábòójútó kan ti pa {plugin} fún MobSimLab yìí",

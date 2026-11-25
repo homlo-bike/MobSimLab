@@ -50,6 +50,9 @@ export const mslabEn = {
     "Include the results the tools worked out (the project opens without working them out again)",
   "mslab.vehicles": "Include the project’s own vehicles and fleet",
   "mslab.fromPrefs": "These choices start from Project preferences → Saved project files.",
+  "mslab.comments": "Include comments and their threads",
+  "mslab.history": "Include the history of changed values",
+  "mslab.fromFile": "from the project file",
 } as const;
 
 export type MslabMessages = Record<keyof typeof mslabEn, string>;

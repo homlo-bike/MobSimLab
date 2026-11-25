@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "lần chạy mô phỏng {id} lớn hơn kích thước cho phép của một lần chạy",
   "api.mslab.send_mslab_file_request_body": "hãy gửi tệp .mslab làm nội dung yêu cầu (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "một lần chạy mô phỏng trong tệp không hợp lệ",
+  "api.mslab.comments_or_history_not_valid": "bình luận hoặc lịch sử các giá trị đã thay đổi trong tệp không hợp lệ",
   "api.mslab.too_many_tiles": "khu vực dự án cần {tiles} ô bản đồ, nhiều hơn mức {max} mà một tệp có thể chứa; hãy thu nhỏ khu vực dự án hoặc lưu không kèm dữ liệu bản đồ",
   "api.places.unavailable": "Tìm kiếm địa điểm hiện không khả dụng",
   "api.plugins.admin_turned_off": "quản trị viên đã tắt {plugin} cho MobSimLab này",

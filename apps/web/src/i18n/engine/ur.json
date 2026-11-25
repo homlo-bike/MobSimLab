@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "سمیولیشن رن {id} رن کی اجازت شدہ حد سے بڑا ہے",
   "api.mslab.send_mslab_file_request_body": ".mslab فائل درخواست کے body کے طور پر بھیجیں (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "فائل میں ایک سمیولیشن رن درست نہیں",
+  "api.mslab.comments_or_history_not_valid": "فائل میں تبصرے یا تبدیل شدہ قدروں کی تاریخ درست نہیں",
   "api.mslab.too_many_tiles": "منصوبے کا علاقہ {tiles} نقشہ ٹائلیں لیتا ہے، جو ایک فائل کی حد {max} سے زیادہ ہے؛ منصوبے کا علاقہ چھوٹا کریں یا نقشے کے ڈیٹا کے بغیر محفوظ کریں",
   "api.places.unavailable": "مقام کی تلاش اس وقت دستیاب نہیں",
   "api.plugins.admin_turned_off": "ایک منتظم نے اس MobSimLab کے لیے {plugin} بند کر دیا ہے",

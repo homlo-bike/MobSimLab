@@ -49,6 +49,7 @@
   "api.mslab.run_too_large": "உருவகப்படுத்தல் ஓட்டம் {id} ஒரு ஓட்டத்துக்கு அனுமதிக்கப்பட்ட அளவை விடப் பெரியது",
   "api.mslab.send_mslab_file_request_body": ".mslab கோப்பைக் கோரிக்கையின் உள்ளடக்கமாக அனுப்புங்கள் (application/octet-stream)",
   "api.mslab.simulation_run_file_not_valid": "கோப்பில் உள்ள ஒரு உருவகப்படுத்தல் ஓட்டம் செல்லுபடியானதல்ல",
+  "api.mslab.comments_or_history_not_valid": "கோப்பில் உள்ள கருத்துகள் அல்லது மாற்றப்பட்ட மதிப்புகளின் வரலாறு செல்லுபடியானதல்ல",
   "api.mslab.too_many_tiles": "திட்டப் பகுதிக்கு {tiles} வரைபட ஓடுகள் தேவை, இது ஒரு கோப்பு கொண்டிருக்கக்கூடிய {max} ஐ விட அதிகம்; திட்டப் பகுதியைச் சிறிதாக்குங்கள் அல்லது வரைபடத் தரவு இல்லாமல் சேமியுங்கள்",
   "api.places.unavailable": "இடத் தேடல் இப்போது கிடைக்கவில்லை",
   "api.plugins.admin_turned_off": "ஒரு நிர்வாகி இந்த MobSimLab இல் {plugin} ஐ அணைத்துள்ளார்",

@@ -419,6 +419,7 @@ function ReportLine({
             (last.by
               ? t("report.changedBy", { name: last.by, date: fmtDate(last.at) })
               : t("report.changedOn", { date: fmtDate(last.at) }))}
+          {last?.fromFile && ` · ${t("mslab.fromFile")}`}
           {last && r.reason && " · "}
           {r.reason && t("report.reason", { reason: r.reason })}
         </div>
