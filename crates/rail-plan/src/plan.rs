@@ -31,6 +31,7 @@
 use engine_msg::{msg, Msg};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, BinaryHeap, HashMap, HashSet};
+use std::sync::Arc;
 
 use rail_dynamics::Stop;
 use rail_model::{Dir, Model, PieceId, PlatformId, RouteId, TdsId, TrackUse};
@@ -291,6 +292,9 @@ struct Vehicle {
     last_run: usize,
 }
 
+/// A speed profile kept for a run shape, with the dwells it was worked out for.
+type KeptProfile = (Arc<SpeedProfile>, Vec<f64>);
+
 #[derive(Clone, Debug)]
 struct Stack {
     track: usize,
@@ -377,7 +381,10 @@ struct Planner<'a> {
     /// out for: the search for a free slot tries a run at many departure times and dwells, and the
     /// speeds do not change with them (a long run's profile takes megabytes, so one is kept per
     /// path and stops, not per dwell).
-    profiles: RefCell<HashMap<String, (SpeedProfile, Vec<f64>)>>,
+    profiles: RefCell<HashMap<String, KeptProfile>>,
+    /// The last profile of each run shape worked out for other dwells than those in
+    /// [`Planner::profiles`], with those dwells.
+    other_dwells: RefCell<HashMap<String, KeptProfile>>,
     /// Trip paths already found ([`Planner::trip_path`]), by line, direction, origin, departure
     /// direction and banned places.
     paths: RefCell<TripPaths>,
@@ -486,30 +493,37 @@ pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, Msg> 
             });
         }
     }
-    let mut pl = Planner {
-        m,
-        lines,
-        p,
-        cands,
-        runs: Vec::new(),
-        index: BTreeMap::new(),
-        issues: Vec::new(),
-        memory: HashMap::new(),
-        ends: HashMap::new(),
-        heads: HashMap::new(),
-        vehicles: Vec::new(),
-        stacks,
-        reserved: BTreeMap::new(),
-        profiles: RefCell::new(HashMap::new()),
-        paths: RefCell::new(HashMap::new()),
-        depot_paths: RefCell::new(HashMap::new()),
-        trip_of_run: HashMap::new(),
-        pulled_from: HashMap::new(),
-        pulled_in: HashMap::new(),
-        left_standing: HashMap::new(),
-    };
+    // Planned in one order of departure; where that leaves out trips of a higher-ranked line, planned
+    // again with the higher ranks first, and that plan kept if it runs more trains of the higher
+    // ranks (fast trains first where they cannot all fit, as at a terminal with one platform the
+    // trains come into: Syria test line, 2 of 22 high-speed trips with regional trains every 20 min).
+    let mut pl = planner(m, lines, p, cands.clone(), stacks.clone());
     let trips = pl.trips();
-    pl.construct(trips);
+    pl.construct(trips.clone(), false);
+    let lowest = lines.iter().map(|l| l.priority).min().unwrap_or(0);
+    let wanted = ranked_counts(lines, trips.iter().map(|t| t.line));
+    let placed = |pl: &Planner| {
+        ranked_counts(
+            lines,
+            pl.runs
+                .iter()
+                .filter(|r| r.kind == RunKind::Service && !r.calls.is_empty())
+                .map(|r| r.line),
+        )
+    };
+    let got = placed(&pl);
+    if got
+        .iter()
+        .zip(&wanted)
+        .any(|(g, w)| g.0 > lowest && g.1 < w.1)
+    {
+        let mut first = planner(m, lines, p, cands, stacks);
+        let trips = first.trips();
+        first.construct(trips, true);
+        if placed(&first) > got {
+            pl = first;
+        }
+    }
     pl.clear_layovers();
     // Drop pull-outs that were taken back, renumbering the blocking intervals.
     let keep: Vec<bool> = pl.runs.iter().map(|r| !r.calls.is_empty()).collect();
@@ -561,6 +575,55 @@ pub fn plan(m: &Model, lines: &[LineSpec], p: &PlanParams) -> Result<Plan, Msg> 
         runs: pl.runs,
         issues: pl.issues,
     })
+}
+
+/// Purpose: a planner with nothing placed yet. Inputs: the model, lines, parameters, candidate
+/// platforms per line and direction, and the stabling stacks.
+fn planner<'a>(
+    m: &'a Model,
+    lines: &'a [LineSpec],
+    p: &'a PlanParams,
+    cands: Vec<[Vec<Vec<PlatformId>>; 2]>,
+    stacks: Vec<Stack>,
+) -> Planner<'a> {
+    Planner {
+        m,
+        lines,
+        p,
+        cands,
+        runs: Vec::new(),
+        index: BTreeMap::new(),
+        issues: Vec::new(),
+        memory: HashMap::new(),
+        ends: HashMap::new(),
+        heads: HashMap::new(),
+        vehicles: Vec::new(),
+        stacks,
+        reserved: BTreeMap::new(),
+        profiles: RefCell::new(HashMap::new()),
+        other_dwells: RefCell::new(HashMap::new()),
+        paths: RefCell::new(HashMap::new()),
+        depot_paths: RefCell::new(HashMap::new()),
+        trip_of_run: HashMap::new(),
+        pulled_from: HashMap::new(),
+        pulled_in: HashMap::new(),
+        left_standing: HashMap::new(),
+    }
+}
+
+/// Purpose: trips per line rank, highest rank first, to compare plans by the trains of the higher
+/// ranks they run. Inputs: the lines and the line of each trip. Output: (rank, trips) pairs.
+fn ranked_counts(lines: &[LineSpec], trip_lines: impl Iterator<Item = usize>) -> Vec<(u8, usize)> {
+    let mut ranks: Vec<u8> = lines.iter().map(|l| l.priority).collect();
+    ranks.sort_unstable_by(|a, b| b.cmp(a));
+    ranks.dedup();
+    let mut out: Vec<(u8, usize)> = ranks.into_iter().map(|r| (r, 0)).collect();
+    for l in trip_lines {
+        if let Some(x) = out.iter_mut().find(|x| x.0 == lines[l].priority) {
+            x.1 += 1;
+        }
+    }
+    out
 }
 
 /// The periodic pattern of a line in one band.
@@ -2092,10 +2155,32 @@ impl<'a> Planner<'a> {
         let known = self.profiles.borrow().get(&key).cloned();
         let profile = match known {
             Some((p, had)) if had == dwells => p,
-            Some((p, had)) => with_dwells(p, &had, run.start_m, &run.stops),
+            Some((p, had)) => {
+                // The last other dwells of this shape are kept too: a departure is tried at many
+                // times with the same dwells (copying the profile of a 141 km line for each took most
+                // of the planning time on the Syria test line).
+                let last = self.other_dwells.borrow().get(&key).cloned();
+                match last {
+                    Some((q, d)) if d == dwells => q,
+                    _ => {
+                        let q = Arc::new(with_dwells(
+                            SpeedProfile::clone(&p),
+                            &had,
+                            run.start_m,
+                            &run.stops,
+                        ));
+                        self.other_dwells
+                            .borrow_mut()
+                            .insert(key, (Arc::clone(&q), dwells));
+                        q
+                    }
+                }
+            }
             None => {
-                let p = run_profile(self.m, run)?;
-                self.profiles.borrow_mut().insert(key, (p.clone(), dwells));
+                let p = Arc::new(run_profile(self.m, run)?);
+                self.profiles
+                    .borrow_mut()
+                    .insert(key, (Arc::clone(&p), dwells));
                 p
             }
         };
@@ -2220,161 +2305,183 @@ impl<'a> Planner<'a> {
     }
 
     /// Purpose: place every trip, with pull-outs and pull-ins.
-    fn construct(&mut self, mut trips: Vec<Trip>) {
+    fn construct(&mut self, mut trips: Vec<Trip>, rank_first: bool) {
         let mut queue = BinaryHeap::new();
         let mut seq = 0u64;
-        for (i, t) in trips.iter().enumerate() {
-            queue.push(Queued(t.dep, seq, Task::Trip(i)));
-            seq += 1;
-        }
-        // Pull-outs are planned ahead of the trips they serve, so the train is in
-        // its platform (and its way out reserved) before later trains are placed.
-        for (i, t) in trips.iter().enumerate() {
-            if t.pred.is_none() {
-                let lead = self.lines[t.line].turnback_s + 300.0;
-                queue.push(Queued(t.dep - lead, seq, Task::PullOut(i)));
-                seq += 1;
-            }
-        }
         let mut trip_vehicle: Vec<Option<usize>> = vec![None; trips.len()];
         let mut pulled: HashMap<usize, Place> = HashMap::new();
         let mut pull_in_tries: HashMap<usize, u32> = HashMap::new();
-        while let Some(Queued(at_s, _, task)) = queue.pop() {
-            match task {
-                Task::PullOut(i) => {
-                    // Choose the first platform now and reserve it with its way
-                    // out, so trains placed before the trip leave room for it;
-                    // the pull-out run itself is placed with the trip.
-                    if let Some(origin) = self.pre_pull_out(&trips[i], PRE_BASE + i) {
-                        pulled.insert(i, origin);
-                    }
+        // With `rank_first`, the lines of the highest rank are planned for the whole day first, then
+        // each lower rank around them: a train of a higher rank gets its path and its terminal
+        // platform first, and a lower-ranked train waits for it, leaves later or does not run.
+        // Otherwise all lines in one order of departure.
+        let mut ranks: Vec<Option<u8>> = if rank_first {
+            trips
+                .iter()
+                .map(|t| Some(self.lines[t.line].priority))
+                .collect()
+        } else {
+            vec![None]
+        };
+        ranks.sort_unstable_by(|a, b| b.cmp(a));
+        ranks.dedup();
+        let lines = self.lines;
+        let in_pass = |t: &Trip, rank: Option<u8>| rank.is_none_or(|r| lines[t.line].priority == r);
+        for rank in ranks {
+            for (i, t) in trips.iter().enumerate() {
+                if !in_pass(t, rank) {
+                    continue;
                 }
-                Task::Trip(i) => {
-                    let pred_v = trips[i].pred.and_then(|a| trip_vehicle[a]);
-                    // The train holds its last platform until its next departure.
-                    let hold = match trips[i].succ {
-                        Some(s) => trips[s].dep,
-                        None => trips[i].arr + self.lines[trips[i].line].turnback_s,
-                    };
-                    self.unreserve(PRE_BASE + i);
-                    match self.place_trip(&trips[i], pred_v, pulled.remove(&i), hold) {
-                        Ok(v) => {
-                            trip_vehicle[i] = Some(v);
-                            self.trip_of_run.insert(self.vehicles[v].last_run, i);
-                            let next = trips[i].succ.map(|s| trips[s].clone());
-                            let out_at = match &next {
-                                Some(n) => n.dep,
-                                None => {
-                                    self.vehicles[v].ready_s + self.lines[trips[i].line].turnback_s
+                queue.push(Queued(t.dep, seq, Task::Trip(i)));
+                seq += 1;
+            }
+            // Pull-outs are planned ahead of the trips they serve, so the train is in
+            // its platform (and its way out reserved) before later trains are placed.
+            for (i, t) in trips.iter().enumerate() {
+                if t.pred.is_none() && in_pass(t, rank) {
+                    let lead = self.lines[t.line].turnback_s + 300.0;
+                    queue.push(Queued(t.dep - lead, seq, Task::PullOut(i)));
+                    seq += 1;
+                }
+            }
+            while let Some(Queued(at_s, _, task)) = queue.pop() {
+                match task {
+                    Task::PullOut(i) => {
+                        // Choose the first platform now and reserve it with its way
+                        // out, so trains placed before the trip leave room for it;
+                        // the pull-out run itself is placed with the trip.
+                        if let Some(origin) = self.pre_pull_out(&trips[i], PRE_BASE + i) {
+                            pulled.insert(i, origin);
+                        }
+                    }
+                    Task::Trip(i) => {
+                        let pred_v = trips[i].pred.and_then(|a| trip_vehicle[a]);
+                        // The train holds its last platform until its next departure.
+                        let hold = match trips[i].succ {
+                            Some(s) => trips[s].dep,
+                            None => trips[i].arr + self.lines[trips[i].line].turnback_s,
+                        };
+                        self.unreserve(PRE_BASE + i);
+                        match self.place_trip(&trips[i], pred_v, pulled.remove(&i), hold) {
+                            Ok(v) => {
+                                trip_vehicle[i] = Some(v);
+                                self.trip_of_run.insert(self.vehicles[v].last_run, i);
+                                let next = trips[i].succ.map(|s| trips[s].clone());
+                                let out_at = match &next {
+                                    Some(n) => n.dep,
+                                    None => {
+                                        self.vehicles[v].ready_s
+                                            + self.lines[trips[i].line].turnback_s
+                                    }
+                                };
+                                // A train going to stabling can wait for a gap, so only a
+                                // train with a next trip has its way out reserved.
+                                if next.is_some() {
+                                    self.reserve_way_out(v, next.as_ref(), out_at);
                                 }
-                            };
-                            // A train going to stabling can wait for a gap, so only a
-                            // train with a next trip has its way out reserved.
-                            if next.is_some() {
-                                self.reserve_way_out(v, next.as_ref(), out_at);
-                            }
-                            if trips[i].succ.is_none() {
-                                let at =
-                                    self.vehicles[v].ready_s + self.lines[trips[i].line].turnback_s;
-                                let run = self.vehicles[v].last_run;
-                                queue.push(Queued(at, seq, Task::PullIn(v, run)));
-                                seq += 1;
-                            }
-                        }
-                        Err(left) => {
-                            // The trip is cancelled; the next trip of the circulation
-                            // starts with a pull-out, and a train left at the origin goes to stabling.
-                            if let Some(s) = trips[i].succ {
-                                trips[s].pred = None;
-                            }
-                            // Right away: its platform is free for the next train only from
-                            // the planned departure, so the train has to leave by then.
-                            if let Some(v) = left {
-                                let run = self.vehicles[v].last_run;
-                                queue.push(Queued(trips[i].dep, seq, Task::PullIn(v, run)));
-                                seq += 1;
-                            }
-                        }
-                    }
-                }
-                Task::PullIn(v, run) => {
-                    // The train has been put away, or given other work, since.
-                    if self.vehicles[v].last_run != run
-                        || matches!(self.vehicles[v].at, Place::Storage(_))
-                    {
-                        continue;
-                    }
-                    let n = pull_in_tries.entry(v).or_insert(0);
-                    *n += 1;
-                    let last = *n >= PULL_IN_TRIES;
-                    if !self.pull_in(v, false) {
-                        // The train stays in its platform: it holds it until the next try, or
-                        // for the rest of the day, so no other train is planned into it.
-                        let retry = self.vehicles[v].ready_s + self.p.max_depot_shift_s;
-                        let until = if last { END_OF_DAY_S } else { retry };
-                        let mut held = self.hold_last_place(v, until);
-                        // Trains already planned into the platform cannot come while it stands
-                        // there (example metro line at 2 minute headways, where the kernel
-                        // stopped on such a plan). A train brought out of stabling for a trip
-                        // from this platform leaves the trip to this one; trips of others are
-                        // taken back, one at a time, until it can leave or stay.
-                        let mut taken = 0;
-                        let mut gone = false;
-                        while let Err(Some((r, _))) = held {
-                            if let Some(pull_in_at) =
-                                self.hand_over(r, v, &trips, &mut trip_vehicle)
-                            {
-                                if let Some(at) = pull_in_at {
+                                if trips[i].succ.is_none() {
+                                    let at = self.vehicles[v].ready_s
+                                        + self.lines[trips[i].line].turnback_s;
                                     let run = self.vehicles[v].last_run;
                                     queue.push(Queued(at, seq, Task::PullIn(v, run)));
                                     seq += 1;
                                 }
-                                gone = true;
-                                break;
                             }
-                            // A train left standing because its own runs were taken back takes back
-                            // only runs leaving after it was left there: one leaving earlier would
-                            // leave another train standing earlier in the day, and on a busy line
-                            // that ran back through the whole day and cancelled most of its trips.
-                            if taken >= MAX_TAKEN_BACK
-                                || self.left_standing.get(&v).is_some_and(|&(run, since)| {
-                                    run == self.vehicles[v].last_run
-                                        && self.runs[r].run.depart_s < since
-                                })
-                            {
-                                break;
+                            Err(left) => {
+                                // The trip is cancelled; the next trip of the circulation
+                                // starts with a pull-out, and a train left at the origin goes to stabling.
+                                if let Some(s) = trips[i].succ {
+                                    trips[s].pred = None;
+                                }
+                                // Right away: its platform is free for the next train only from
+                                // the planned departure, so the train has to leave by then.
+                                if let Some(v) = left {
+                                    let run = self.vehicles[v].last_run;
+                                    queue.push(Queued(trips[i].dep, seq, Task::PullIn(v, run)));
+                                    seq += 1;
+                                }
                             }
-                            let Some(w) = self.take_back(r, v, &mut trips, &mut trip_vehicle)
-                            else {
-                                break;
-                            };
-                            taken += 1;
-                            let since = self.vehicles[w].ready_s;
-                            self.left_standing
-                                .insert(w, (self.vehicles[w].last_run, since));
-                            if !matches!(self.vehicles[w].at, Place::Storage(_)) {
-                                let run = self.vehicles[w].last_run;
-                                queue.push(Queued(at_s, seq, Task::PullIn(w, run)));
-                                seq += 1;
-                            }
-                            if self.pull_in(v, false) {
-                                gone = true;
-                                break;
-                            }
-                            held = self.hold_last_place(v, until);
                         }
-                        if gone {
+                    }
+                    Task::PullIn(v, run) => {
+                        // The train has been put away, or given other work, since.
+                        if self.vehicles[v].last_run != run
+                            || matches!(self.vehicles[v].at, Place::Storage(_))
+                        {
                             continue;
                         }
-                        if held.is_ok() && !last {
-                            self.vehicles[v].ready_s = retry;
-                            let run = self.vehicles[v].last_run;
-                            let at = retry + self.lines[self.runs[run].line].turnback_s;
-                            queue.push(Queued(at, seq, Task::PullIn(v, run)));
-                            seq += 1;
-                        } else {
-                            // The last try, or no place to wait: say why it stays.
-                            let _ = self.pull_in(v, true);
+                        let n = pull_in_tries.entry(v).or_insert(0);
+                        *n += 1;
+                        let last = *n >= PULL_IN_TRIES;
+                        if !self.pull_in(v, false) {
+                            // The train stays in its platform: it holds it until the next try, or
+                            // for the rest of the day, so no other train is planned into it.
+                            let retry = self.vehicles[v].ready_s + self.p.max_depot_shift_s;
+                            let until = if last { END_OF_DAY_S } else { retry };
+                            let mut held = self.hold_last_place(v, until);
+                            // Trains already planned into the platform cannot come while it stands
+                            // there (example metro line at 2 minute headways, where the kernel
+                            // stopped on such a plan). A train brought out of stabling for a trip
+                            // from this platform leaves the trip to this one; trips of others are
+                            // taken back, one at a time, until it can leave or stay.
+                            let mut taken = 0;
+                            let mut gone = false;
+                            while let Err(Some((r, _))) = held {
+                                if let Some(pull_in_at) =
+                                    self.hand_over(r, v, &trips, &mut trip_vehicle)
+                                {
+                                    if let Some(at) = pull_in_at {
+                                        let run = self.vehicles[v].last_run;
+                                        queue.push(Queued(at, seq, Task::PullIn(v, run)));
+                                        seq += 1;
+                                    }
+                                    gone = true;
+                                    break;
+                                }
+                                // A train left standing because its own runs were taken back takes back
+                                // only runs leaving after it was left there: one leaving earlier would
+                                // leave another train standing earlier in the day, and on a busy line
+                                // that ran back through the whole day and cancelled most of its trips.
+                                if taken >= MAX_TAKEN_BACK
+                                    || self.left_standing.get(&v).is_some_and(|&(run, since)| {
+                                        run == self.vehicles[v].last_run
+                                            && self.runs[r].run.depart_s < since
+                                    })
+                                {
+                                    break;
+                                }
+                                let Some(w) = self.take_back(r, v, &mut trips, &mut trip_vehicle)
+                                else {
+                                    break;
+                                };
+                                taken += 1;
+                                let since = self.vehicles[w].ready_s;
+                                self.left_standing
+                                    .insert(w, (self.vehicles[w].last_run, since));
+                                if !matches!(self.vehicles[w].at, Place::Storage(_)) {
+                                    let run = self.vehicles[w].last_run;
+                                    queue.push(Queued(at_s, seq, Task::PullIn(w, run)));
+                                    seq += 1;
+                                }
+                                if self.pull_in(v, false) {
+                                    gone = true;
+                                    break;
+                                }
+                                held = self.hold_last_place(v, until);
+                            }
+                            if gone {
+                                continue;
+                            }
+                            if held.is_ok() && !last {
+                                self.vehicles[v].ready_s = retry;
+                                let run = self.vehicles[v].last_run;
+                                let at = retry + self.lines[self.runs[run].line].turnback_s;
+                                queue.push(Queued(at, seq, Task::PullIn(v, run)));
+                                seq += 1;
+                            } else {
+                                // The last try, or no place to wait: say why it stays.
+                                let _ = self.pull_in(v, true);
+                            }
                         }
                     }
                 }
@@ -2620,20 +2727,17 @@ impl<'a> Planner<'a> {
         let mut waited: Option<Vec<Option<f64>>> = None;
         if best.as_ref().is_none_or(|b| b.0 > earliest + 0.5) && !attempts.is_empty() {
             let shift = best.as_ref().map(|b| b.0 - earliest);
-            if let Some((t, path, run, timing, prev_t, dw)) = self.overtake(
-                trip,
-                &attempts[0],
-                dwells,
-                origin,
-                depart_dir,
-                earliest,
-                vehicle,
-                prev,
-                hold_until,
-                shift,
-            ) {
-                best = Some((t, path, run, timing, prev_t));
-                waited = dw;
+            // On its usual path first, then on the others (another platform at the terminal, where
+            // a higher-ranked train stands in the usual one).
+            for path in &attempts {
+                if let Some((t, path, run, timing, prev_t, dw)) = self.overtake(
+                    trip, path, dwells, origin, depart_dir, earliest, vehicle, prev, hold_until,
+                    shift,
+                ) {
+                    best = Some((t, path, run, timing, prev_t));
+                    waited = dw;
+                    break;
+                }
             }
         }
         if let Some((t, path, run, timing, prev_t)) = best {
@@ -2775,7 +2879,7 @@ impl<'a> Planner<'a> {
                     // in a terminal platform: that train then leaves after this one has passed.
                     let buf = self.p.min_buffer_s;
                     let moved = if blocks_meet(&timing.blocking, &self.runs[r].blocking, buf) {
-                        self.hold_back(r, rank, &timing.blocking, &mut undo)
+                        self.hold_back(r, rank, &timing.blocking, t <= earliest + 0.5, &mut undo)
                     } else {
                         self.give_up_way_out(self.runs[r].vehicle, &mut undo)
                     };
@@ -2818,6 +2922,43 @@ impl<'a> Planner<'a> {
                     ) {
                         found = Some((w, wp, dw));
                     }
+                }
+                // Or it waits at several stations, for one higher-ranked train after another
+                // (where a trip is overtaken by more than one).
+                // Tried at its own departure only: each later departure would search the same loops
+                // again, and leaving later is tried below anyway.
+                let several = if found.is_none() && t <= earliest + 0.5 {
+                    let alts = |k: usize, p: &FoundPath| {
+                        self.wait_paths(trip.line, trip.dir, origin, depart_dir, p, dwells)
+                            .into_iter()
+                            .filter(|(at, _)| *at == k)
+                            .map(|(_, a)| a)
+                            .collect()
+                    };
+                    let clear =
+                        |pl: &Planner, b: &[Blocking]| pl.overlaps(b, vehicle, None).2.is_none();
+                    self.wait_as_needed(
+                        trip.line,
+                        &trip.name,
+                        path,
+                        dwells,
+                        t,
+                        occupy(t),
+                        idx,
+                        self.p.max_overtake_wait_s,
+                        &alts,
+                        &clear,
+                    )
+                } else {
+                    None
+                };
+                if let Some((_, _, wp, dw)) = several {
+                    let total: f64 = dw
+                        .iter()
+                        .zip(dwells)
+                        .map(|(a, b)| a.unwrap_or(0.0) - b.unwrap_or(0.0))
+                        .sum();
+                    found = Some((total, wp, dw));
                 }
                 // Or it leaves later, after the higher-ranked train.
                 let late_most = self.p.max_overtake_wait_s.min(most - 1.0).max(0.0);
@@ -2920,9 +3061,157 @@ impl<'a> Planner<'a> {
         None
     }
 
+    /// Purpose: a run that waits at as many of its stops as needed, each time for as short as it
+    /// can, so that it keeps clear of the trains in its way, the way a dispatcher holds a slow train
+    /// in one loop after another for each faster train to pass. Each round finds the run's first
+    /// conflict and the shortest wait (or another platform, such as a loop) at the last stop or
+    /// two before it that moves the first conflict later or removes it; it is kept only once it is
+    /// clear in full. Inputs: the line, run name, path, dwells, departure, how long it holds its last
+    /// platform, index of the run, the longest single wait, the other platforms to try at a stop,
+    /// and the test of a run's blocks. Output: the run, its timing, its path and its dwells, or None
+    /// when it does not change or cannot get clear.
+    #[allow(clippy::too_many_arguments)]
+    fn wait_as_needed(
+        &self,
+        line: usize,
+        name: &str,
+        path: &FoundPath,
+        dwells: &[Option<f64>],
+        depart_s: f64,
+        occupy_until_s: Option<f64>,
+        index: usize,
+        max_wait_s: f64,
+        alternatives: &dyn Fn(usize, &FoundPath) -> Vec<FoundPath>,
+        clear: &dyn Fn(&Planner, &[Blocking]) -> bool,
+    ) -> Option<(TrainRun, RunTiming, FoundPath, Vec<Option<f64>>)> {
+        const ROUNDS: usize = 8;
+        if std::env::var("NOMULTI").is_ok() {
+            return None;
+        }
+        let step = 30.0;
+        let build = |path: &FoundPath, dw: &[Option<f64>]| {
+            let waited: f64 = dw
+                .iter()
+                .zip(dwells)
+                .map(|(a, b)| a.unwrap_or(0.0) - b.unwrap_or(0.0))
+                .sum();
+            let (mut run, _) = self
+                .build_run(line, name, &path.routes, &path.places, dw, depart_s)
+                .ok()?;
+            run.occupy_until_s = occupy_until_s.map(|o| o + waited);
+            let timing = self.timing(&run, index).ok()?;
+            Some((run, timing))
+        };
+        // When the run's first block in conflict starts, s; None when it is clear.
+        let first_conflict = |tm: &RunTiming| -> Option<f64> {
+            if clear(self, &tm.blocking) {
+                return None;
+            }
+            tm.blocking
+                .iter()
+                .filter(|b| !clear(self, std::slice::from_ref(*b)))
+                .map(|b| b.start_s)
+                .min_by(f64::total_cmp)
+        };
+        // Whether a block that starts by `until` is in conflict.
+        let conflict_by = |tm: &RunTiming, until: f64| {
+            tm.blocking
+                .iter()
+                .any(|b| b.start_s <= until && !clear(self, std::slice::from_ref(b)))
+        };
+        // The stops of the path: index among its places, in order.
+        let stops: Vec<usize> = (0..path.places.len().saturating_sub(1))
+            .filter(|&k| dwells.get(k).copied().flatten().is_some())
+            .collect();
+        let mut path = path.clone();
+        let mut dw = dwells.to_vec();
+        let mut changed = false;
+        for _ in 0..ROUNDS {
+            let (run, tm) = build(&path, &dw)?;
+            let Some(fc) = first_conflict(&tm) else {
+                return changed.then_some((run, tm, path, dw));
+            };
+            // The last two stops the train reaches before its first conflict.
+            let reached: Vec<(usize, usize)> = stops
+                .iter()
+                .enumerate()
+                .filter(|(si, _)| {
+                    tm.profile
+                        .stops
+                        .get(*si)
+                        .is_some_and(|&(a, _)| depart_s + a < fc)
+                })
+                .map(|(si, &k)| (si, k))
+                .collect();
+            let mut found: Option<(f64, FoundPath, Vec<Option<f64>>)> = None;
+            for &(_, k) in reached.iter().rev().take(2) {
+                let mut ways = vec![path.clone()];
+                ways.extend(alternatives(k, &path).into_iter().filter(|a| {
+                    a.places.len() == path.places.len()
+                        && a.places[..k] == path.places[..k]
+                        && a.routes != path.routes
+                }));
+                for (wi, way) in ways.iter().enumerate() {
+                    let most = found.as_ref().map_or(max_wait_s, |f| f.0 - step);
+                    // On its own platform it has to wait; another platform may do without.
+                    let mut w = if wi == 0 { step } else { 0.0 };
+                    while w <= most + 1e-6 {
+                        let mut d2 = dw.clone();
+                        d2[k] = d2[k].map(|d| d + w);
+                        let Some((_, t2)) = build(way, &d2) else {
+                            break;
+                        };
+                        if std::env::var("DBG").is_ok()
+                            && name == "r1-1-000"
+                            && w + step > most + 1e-6
+                        {
+                            for b in t2
+                                .blocking
+                                .iter()
+                                .filter(|b| !clear(self, std::slice::from_ref(*b)))
+                                .take(2)
+                            {
+                                eprintln!(
+                                    "    k={} way {:?} w={} blk tds={} route={} ov={} {:.0}-{:.0}",
+                                    k,
+                                    way.places.iter().map(|x| x.id(self.m)).collect::<Vec<_>>(),
+                                    w,
+                                    self.m.tds[b.tds as usize].id,
+                                    self.m.routes[b.route as usize].id,
+                                    b.overlap,
+                                    b.start_s,
+                                    b.end_s
+                                );
+                            }
+                            eprintln!(
+                                "    stops {:?}",
+                                t2.profile
+                                    .stops
+                                    .iter()
+                                    .map(|x| ((depart_s + x.0) as i64, (depart_s + x.1) as i64))
+                                    .collect::<Vec<_>>()
+                            );
+                        }
+                        if !conflict_by(&t2, fc + 0.5) {
+                            found = Some((w, way.clone(), d2));
+                            break;
+                        }
+                        w += step;
+                    }
+                }
+            }
+            let (_, way, d2) = found?;
+            path = way;
+            dw = d2;
+            changed = true;
+        }
+        None
+    }
+
     /// Purpose: have a placed run of a lower rank wait at one of its stations so that a train of
     /// the given rank can pass. Only the last run of its train is changed, before its next trip is
-    /// placed. Inputs: the run, the rank, the passing train's blocks and the list of changes.
+    /// placed. Inputs: the run, the rank, the passing train's blocks, whether it may wait at several
+    /// stations, and the list of changes.
     /// Output: whether it now waits clear of the passing train. Effect: the run, its train and the
     /// list of changes (for [`Planner::undo`]).
     fn hold_back(
@@ -2930,6 +3219,7 @@ impl<'a> Planner<'a> {
         r: usize,
         rank: u8,
         passing: &[Blocking],
+        several: bool,
         undo: &mut Vec<Undo>,
     ) -> bool {
         let Some(pr) = self.runs.get(r).cloned() else {
@@ -2989,6 +3279,35 @@ impl<'a> Planner<'a> {
                 &ok,
             ) {
                 found = Some(((run, tm, w, dw), wp));
+            }
+        }
+        // Or it waits at several stations, where more trains of the rank pass it on its way (when
+        // asked to: for the passing train's own departure only, as each later one would search the
+        // same loops again).
+        if found.is_none() && several {
+            let alts = |k: usize, p: &FoundPath| {
+                self.wait_paths(pr.line, pr.direction, origin, depart_dir, p, &dwells)
+                    .into_iter()
+                    .filter(|(at, _)| *at == k)
+                    .map(|(_, a)| a)
+                    .collect()
+            };
+            let clear = |pl: &Planner, b: &[Blocking]| {
+                !blocks_meet(b, passing, buf) && pl.overlaps(b, v, Some(r)).2.is_none()
+            };
+            if let Some((run, tm, wp, dw)) = self.wait_as_needed(
+                pr.line,
+                &pr.name,
+                &path,
+                &dwells,
+                pr.run.depart_s,
+                pr.run.occupy_until_s,
+                r,
+                self.p.max_overtake_wait_s,
+                &alts,
+                &clear,
+            ) {
+                found = Some(((run, tm, 0.0, dw), wp));
             }
         }
         let Some(((run, tm, _, dw), wp)) = found else {

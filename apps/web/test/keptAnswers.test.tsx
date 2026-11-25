@@ -34,6 +34,7 @@ function engine() {
     publish_lines: (lines, id) => (runs++, JSON.stringify({ lines, id })),
     publish_lines_with: (lines, id) => (runs++, JSON.stringify({ lines, id })),
     missing_terrain_tiles: () => "[]",
+    topology: () => "{}",
   };
   return { d, runs: () => runs };
 }
