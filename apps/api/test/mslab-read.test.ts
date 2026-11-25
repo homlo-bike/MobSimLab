@@ -261,10 +261,26 @@ describe("mslab reader", () => {
     // POINT(4.85 52.35) as WKB.
     const point = "01010000006666666666661340cdcccccccc2c4a40";
     files.set("fetched/population-1-1.ndjson", Buffer.from(`${JSON.stringify([0, null, 12, point])}\n`));
+    // The map extract in two parts (the reader does not look inside; osmium does when it is imported).
+    const parts = [Buffer.from("first part "), Buffer.from("second part")];
+    const extract = Buffer.concat(parts);
+    const osm = {
+      method: "geofabrik",
+      planned: false,
+      source: { name: "OpenStreetMap", via: "Geofabrik: Berlin" },
+      finishedAt: at,
+      bytes: extract.length,
+      sha256: createHash("sha256").update(extract).digest("hex"),
+      chunks: 2,
+    };
+    files.set("fetched/osm.json", Buffer.from(JSON.stringify(osm)));
+    files.set("fetched/osm-1.osm.pbf", parts[0]!);
+    files.set("fetched/osm-2.osm.pbf", parts[1]!);
     const r = await read(writeZip(resign(files, (m) => (m.formatVersion = "1.6.0"))));
     expect(r).toMatchObject({
       formatVersion: "1.6.0",
       fetched: {
+        osm: { index: "fetched-osm.json", chunks: ["fetched-osm-1.osm.pbf", "fetched-osm-2.osm.pbf"] },
         facts: "fetched-facts.json",
         live: ["fetched-live-1.json"],
         elevation: { index: "fetched-elevation.json", chunks: [{ n: 1, file: "fetched-elevation-1.bin" }] },
@@ -300,6 +316,13 @@ describe("mslab reader", () => {
       (f) => f.set("fetched/live-height-1.json", Buffer.from(JSON.stringify({ kind: "osm", entries: [] }))),
       /holds data of kind/,
     );
+    // A map extract with a part missing, changed, or without its index.
+    await refuse((f) => f.delete("fetched/osm-2.osm.pbf"), /does not match the parts held/);
+    await refuse(
+      (f) => f.set("fetched/osm-2.osm.pbf", Buffer.from("other")),
+      /map extract in the file is damaged/,
+    );
+    await refuse((f) => f.delete("fetched/osm.json"), /fetched\/osm\.json is missing/);
   });
 
   it("refuses changed, missing and extra files", async () => {

@@ -29,9 +29,11 @@ import {
   FETCHED_FACTS_SCHEMA,
   FETCHED_FILES,
   FETCHED_LIVE_SCHEMA,
+  FETCHED_OSM_SCHEMA,
   FETCHED_POPULATION_SCHEMA,
   type FetchedElevationFile,
   type FetchedLiveFile,
+  type FetchedOsmFile,
   type FetchedPopulationFile,
 } from "./format.mts";
 import { migrate } from "./migrations.mts";
@@ -76,6 +78,8 @@ export interface ReadFetched {
   elevation: { index: string; chunks: { n: number; file: string }[] } | null;
   /** `fetched/population.json` and the feature files of each layer (layers and files counted from 1). */
   population: { index: string; files: { layer: number; n: number; file: string }[] } | null;
+  /** `fetched/osm.json` and the parts of the extract in order; absent from older readers' answers. */
+  osm?: { index: string; chunks: string[] } | null;
 }
 
 /** What the reader found: the project, what to save, and what it left out (with the reason). */
@@ -119,6 +123,7 @@ const check = {
   fetchedLive: ajv.compile(FETCHED_LIVE_SCHEMA),
   fetchedElevation: ajv.compile(FETCHED_ELEVATION_SCHEMA),
   fetchedPopulation: ajv.compile(FETCHED_POPULATION_SCHEMA),
+  fetchedOsm: ajv.compile(FETCHED_OSM_SCHEMA),
 };
 const docChecks = new Map<string, ReturnType<typeof ajv.compile>>();
 
@@ -161,7 +166,7 @@ const HEX = /^(?:[0-9a-f]{2}){5,}$/;
  * feature line must be `[n, zoneId | null, people, WKB hex]`. Output: the scratch names, or null without such data.
  */
 function readFetched(files: Map<string, Buffer>, ctx: ToolContext): ReadFetched | null {
-  const out: ReadFetched = { facts: null, live: [], elevation: null, population: null };
+  const out: ReadFetched = { facts: null, live: [], elevation: null, population: null, osm: null };
   if (files.has(FETCHED_FILES.facts)) {
     json(files, FETCHED_FILES.facts, check.fetchedFacts);
     out.facts = "fetched-facts.json";
@@ -259,7 +264,29 @@ function readFetched(files: Map<string, Buffer>, ctx: ToolContext): ReadFetched 
         throw new MslabError(`a population feature file is not used by ${FETCHED_FILES.population}`);
   } else if (features.size) throw new MslabError(`${FETCHED_FILES.population} is missing`);
 
-  return out.facts || out.live.length || out.elevation || out.population ? out : null;
+  const parts = [...files.keys()].filter((n) => FILE_PATTERNS.fetchedOsmChunk.test(n));
+  if (files.has(FETCHED_FILES.osm)) {
+    const index = json<FetchedOsmFile>(files, FETCHED_FILES.osm, check.fetchedOsm);
+    if (parts.length !== index.chunks)
+      throw new MslabError(`${FETCHED_FILES.osm} does not match the parts held`);
+    const hash = createHash("sha256");
+    let bytes = 0;
+    out.osm = { index: "fetched-osm.json", chunks: [] };
+    for (let n = 1; n <= index.chunks; n++) {
+      const body = files.get(FETCHED_FILES.osmChunk(n));
+      if (!body) throw new MslabError(`${FETCHED_FILES.osmChunk(n)} is missing`);
+      hash.update(body);
+      bytes += body.length;
+      const file = `fetched-osm-${n}.osm.pbf`;
+      ctx.write(file, body);
+      out.osm.chunks.push(file);
+    }
+    if (bytes !== index.bytes || hash.digest("hex") !== index.sha256)
+      throw new MslabError("the map extract in the file is damaged");
+    ctx.write(out.osm.index, files.get(FETCHED_FILES.osm)!);
+  } else if (parts.length) throw new MslabError(`${FETCHED_FILES.osm} is missing`);
+
+  return out.facts || out.live.length || out.elevation || out.population || out.osm ? out : null;
 }
 
 /**
@@ -401,6 +428,8 @@ export function readMslab(input: Buffer, ctx: ToolContext): MslabReadResult {
       name === FETCHED_FILES.facts ||
       name === FETCHED_FILES.elevation ||
       name === FETCHED_FILES.population ||
+      name === FETCHED_FILES.osm ||
+      FILE_PATTERNS.fetchedOsmChunk.test(name) ||
       FILE_PATTERNS.fetchedLive.test(name) ||
       FILE_PATTERNS.fetchedElevationChunk.test(name) ||
       FILE_PATTERNS.fetchedPopulationFeatures.test(name)

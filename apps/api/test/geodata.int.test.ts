@@ -9,6 +9,7 @@ import type { AppConfig } from "../src/config/env";
 import { cellName } from "../src/gateway/copernicus-dem.client";
 import { GeodataService } from "../src/geodata/geodata.service";
 import { tilesFor } from "../src/street-network/street-network.service";
+import { readZip } from "../src/tool-runner/zip.mts";
 import { createApp, testConfig } from "./support/app";
 import proj4 from "proj4";
 import { buildCog, height, W } from "./support/cog";
@@ -56,6 +57,16 @@ describe("geodata import", () => {
       upload: (path: string, data: Buffer) =>
         write(request(server).post(path)).set("Content-Type", "application/octet-stream").send(data),
       del: (path: string) => write(request(server).delete(path)),
+      download: (path: string) =>
+        request(server)
+          .get(path)
+          .set("Cookie", b.cookie)
+          .buffer(true)
+          .parse((res, cb) => {
+            const chunks: Buffer[] = [];
+            res.on("data", (c: Buffer) => chunks.push(c));
+            res.on("end", () => cb(null, Buffer.concat(chunks)));
+          }),
     };
   };
 
@@ -361,6 +372,45 @@ describe("geodata import", () => {
     expect(after.osm.latest.status).toBe("failed");
     expect(after.osm.latest.error).toMatch(/osmium/);
     expect(after.osm.current.id).toBe(up.body.import.id);
+  });
+
+  const LIMITS = { zipBytes: 1e9, entries: 1000, fileBytes: 1e9, totalBytes: 1e9, maxRatio: 1e6 };
+
+  it("saves the map extract in the project file and imports it when the file is opened", async () => {
+    const saved = await as("alice").download(`/api/projects/${project}/mslab`);
+    expect(saved.status).toBe(200);
+    const names = [...readZip(saved.body as Buffer, LIMITS).keys()];
+    expect(names).toContain("fetched/osm.json");
+    expect(names).toContain("fetched/osm-1.osm.pbf");
+    // Without the extract when it is switched off.
+    const without = await as("alice").download(`/api/projects/${project}/mslab?osm=false`);
+    expect([...readZip(without.body as Buffer, LIMITS).keys()]).not.toContain("fetched/osm.json");
+
+    const opened = await as("bob").upload("/api/projects/import", saved.body as Buffer);
+    expect(opened.status).toBe(201);
+    expect(opened.body.skipped).toEqual([]);
+    const id = opened.body.project.id as string;
+    await idle();
+    const st = (await as("bob").get(`/api/projects/${id}/geodata`)).body;
+    expect(st.osm.latest.error).toBeNull();
+    // The run keeps how the saved import got the data, and says it came from a file.
+    expect(st.osm.current).toMatchObject({
+      method: "upload",
+      options: { planned: true, fromFile: true },
+      source: { via: "Uploaded file small.osm.pbf", fromProjectFile: true },
+    });
+    const su = await db.superuser();
+    const roads = await su.query(
+      `SELECT osm_id::int AS id FROM geo.osm_way_road WHERE project_id = $1 ORDER BY osm_id`,
+      [id],
+    );
+    expect(roads.rows).toEqual([{ id: 100 }, { id: 101 }]);
+    // The source project keeps its own import.
+    const mine = await su.query(`SELECT count(*)::int AS n FROM geo.osm_way_road WHERE project_id = $1`, [
+      project,
+    ]);
+    expect(mine.rows[0].n).toBe(2);
+    await su.end();
   });
 
   it("removes an import and its data", async () => {

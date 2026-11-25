@@ -101,4 +101,10 @@ project works without downloading it again.
   `otherFetched`, `liveTiles`, `elevation`, `population`, `uploads` `=false` on the export). A kind that would
   take the file beyond the 512 MB a file may unpack to is left out and named in `ATTRIBUTION.md`. Only a file
   holding fetched data is saved as 1.6.0. `tools/static-site/add-projects.mjs` reads 1.0 to 1.6.
-- Not yet in the file: the OpenStreetMap extract of the project area.
+- `fetched/osm.json` and `fetched/osm-<n>.osm.pbf` (added 2026-11-25, the day 1.6.0 was introduced): the
+  OpenStreetMap extract the project's current import cut to the project area, in parts of at most 48 MB, with its
+  size and SHA-256, the import's method, whether planned roads were kept, and its Source record. Opening the file
+  queues an import of the extract into the new project, as for an uploaded extract; the run keeps the method and
+  Source of the saved import and is marked `options.fromFile`. The project opens at once and the map data is ready
+  when the job has run. `osm=false` on the export leaves the extract out. It is added last, so the other kinds
+  stay when it no longer fits.

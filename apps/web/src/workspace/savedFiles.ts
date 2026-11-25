@@ -48,6 +48,7 @@ export const SAVED_NOW: ReadonlySet<SavedDataId> = new Set([
   "runs",
   "comments",
   "history",
+  "osm",
   "liveTiles",
   "elevation",
   "population",
@@ -67,6 +68,7 @@ export const FETCHED_IDS = [
   "elevation",
   "population",
   "uploads",
+  "osm",
 ] as const satisfies readonly SavedDataId[];
 export type FetchedId = (typeof FETCHED_IDS)[number];
 

@@ -34,6 +34,7 @@ const exportQuery = z.strictObject({
   liveTiles: z.enum(["true", "false"]).optional(),
   elevation: z.enum(["true", "false"]).optional(),
   population: z.enum(["true", "false"]).optional(),
+  osm: z.enum(["true", "false"]).optional(),
   uploads: z.enum(["true", "false"]).optional(),
 });
 
@@ -65,7 +66,7 @@ export class MslabController {
    * OpenStreetMap tiles are not cached); `results=false` leaves out the results the tools worked out
    * and `vehicles=false` the project's own vehicles and fleet; `comments=false` and `history=false` leave out the
    * comments and the history of changed values (format 1.5); `facts`, `economy`, `otherFetched`, `liveTiles`,
-   * `elevation`, `population` and `uploads` `=false` leave out that kind of fetched or imported data (format 1.6).
+   * `elevation`, `population`, `uploads` and `osm` `=false` leave out that kind of fetched or imported data (format 1.6).
    */
   @Get(":id/mslab")
   @Requires("projects.read")
@@ -95,6 +96,7 @@ export class MslabController {
         elevation: q.data.elevation !== "false",
         population: q.data.population !== "false",
         uploads: q.data.uploads !== "false",
+        osm: q.data.osm !== "false",
       },
     );
     res.setHeader("Content-Type", MSLAB_MEDIA_TYPE);
